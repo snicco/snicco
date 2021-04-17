@@ -1,5 +1,6 @@
 <?php
 
+
 	namespace WPEmerge\Application;
 
 	use Contracts\ContainerAdapter;
@@ -54,7 +55,7 @@
 		 * @return void
 		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		private function loadServiceProviders( ContainerAdapter $container ) {
+		private function _loadServiceProviders( ContainerAdapter $container ) {
 
 			$config = Arr::get( $container[ WPEMERGE_CONFIG_KEY ], 'providers', [] );
 
@@ -81,6 +82,31 @@
 			$this->registerServiceProviders( $service_providers, $container );
 
 			$this->bootstrapServiceProviders( $service_providers, $container );
+		}
+
+		private function loadServiceProviders( ContainerAdapter $container ) {
+
+			$user_providers = collect( $container[ WPEMERGE_CONFIG_KEY ] )->get( 'providers', [] );
+
+			$providers = collect($this->service_providers)->merge($user_providers);
+
+			$container[ WPEMERGE_SERVICE_PROVIDERS_KEY ] = $providers->all();
+
+			$providers = $providers->map( [ $this, 'isValid' ] )
+			                       ->map(function ($provider) use ($container) {
+
+				$instance = new $provider();
+
+				$container[ $provider ] = $instance;
+
+				return $instance;
+
+			})->all();
+
+			$this->registerServiceProviders( $providers, $container );
+
+			$this->bootstrapServiceProviders( $providers, $container );
+
 		}
 
 		/**
@@ -116,6 +142,19 @@
 				$provider->bootstrap( $container );
 
 			}
+		}
+
+		private function isValid ( $provider ) : ServiceProviderInterface {
+
+			if ( ! is_subclass_of( $provider, ServiceProviderInterface::class ) ) {
+				throw new ConfigurationException(
+					'The following class does not implement ' .
+					ServiceProviderInterface::class . ': ' . $provider
+				);
+			}
+
+			return $provider;
+
 		}
 
 	}
