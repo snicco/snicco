@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmergeTests;
+	namespace WPEmergeTestTools;
 
 	use WPEmerge\Application\ApplicationTrait;
 
