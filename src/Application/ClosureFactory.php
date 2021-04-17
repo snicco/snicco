@@ -29,7 +29,9 @@ class ClosureFactory {
 	 * @param GenericFactory $factory
 	 */
 	public function __construct( GenericFactory $factory ) {
+
 		$this->factory = $factory;
+
 	}
 
 	/**
@@ -39,8 +41,10 @@ class ClosureFactory {
 	 * @return Closure
 	 */
 	public function value( $key ) {
+
 		return function () use ( $key ) {
 			return $this->factory->make( $key );
+
 		};
 	}
 

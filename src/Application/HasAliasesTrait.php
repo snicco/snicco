@@ -15,9 +15,7 @@ use WPEmerge\Support\Arr;
 
 /**
  * Add methods to classes at runtime.
- * Loosely based on spatie/macroable.
  *
- * @codeCoverageIgnore
  */
 trait HasAliasesTrait {
 	/**
@@ -33,7 +31,7 @@ trait HasAliasesTrait {
 	 * @param  string  $alias
 	 * @return boolean
 	 */
-	public function hasAlias( $alias ) {
+	public function hasAlias( $alias ) : bool {
 		return isset( $this->aliases[ $alias ] );
 	}
 
@@ -43,7 +41,7 @@ trait HasAliasesTrait {
 	 * @param  string     $alias
 	 * @return array|null
 	 */
-	public function getAlias( $alias ) {
+	public function getAlias( $alias ) : ?array {
 		if ( ! $this->hasAlias( $alias ) ) {
 			return null;
 		}
@@ -73,7 +71,6 @@ trait HasAliasesTrait {
 	 * Register an alias.
 	 * Identical to setAlias but with a more user-friendly interface.
 	 *
-	 * @codeCoverageIgnore
 	 * @param  string         $alias
 	 * @param  string|Closure $target
 	 * @param  string         $method
@@ -90,11 +87,13 @@ trait HasAliasesTrait {
 	/**
 	 * Call alias if registered.
 	 *
-	 * @param string $method
-	 * @param array  $parameters
+	 * @param  string  $method
+	 * @param  array  $parameters
+	 *
 	 * @return mixed
 	 */
-	public function __call( $method, $parameters ) {
+	public function __call( string $method, array $parameters ) {
+
 		if ( ! $this->hasAlias( $method ) ) {
 			throw new BadMethodCallException( "Method {$method} does not exist." );
 		}
@@ -117,10 +116,11 @@ trait HasAliasesTrait {
 	/**
 	 * Resolve a dependency from the IoC container.
 	 *
-	 * @param  string     $key
+	 * @param  string  $key
+	 *
 	 * @return mixed|null
 	 */
-	abstract public function resolve( $key );
+	abstract public function resolve( string $key );
 
 
 

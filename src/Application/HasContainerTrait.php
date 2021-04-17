@@ -1,11 +1,4 @@
 <?php
-	/**
-	 * @package   WPEmerge
-	 * @author    Atanas Angelov <hi@atanas.dev>
-	 * @copyright 2017-2019 Atanas Angelov
-	 * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
-	 * @link      https://wpemerge.com/
-	 */
 
 
 	namespace WPEmerge\Application;
@@ -22,12 +15,11 @@
 		 *
 		 * @var ContainerAdapter
 		 */
-		protected $container_adapter = null;
+		private $container_adapter = null;
 
 		/**
 		 * Get the IoC container instance.
 		 *
-		 * @codeCoverageIgnore
 		 * @return ContainerAdapter
 		 */
 		public function container() : ContainerAdapter {
@@ -39,7 +31,6 @@
 		/**
 		 * Set the IoC container instance.
 		 *
-		 * @codeCoverageIgnore
 		 *
 		 * @param  ContainerAdapter  $container_adapter
 		 *
@@ -58,7 +49,7 @@
 		 *
 		 * @return mixed|null
 		 */
-		public function resolve( $key ) {
+		public function resolve( string $key ) {
 
 			if ( ! isset( $this->container()[ $key ] ) ) {
 				return null;
@@ -67,19 +58,6 @@
 			return $this->container()[ $key ];
 		}
 
-		/**
-		 *
-		 * Swaps a dependency in the IoC container
-		 *
-		 */
-		public function swapInstance( $key, $new_instance ) {
 
-			if ( ! isset( $this->container()[ $key ] ) ) {
-				return;
-			}
-
-			$this->container()[ $key ] = $new_instance;
-
-		}
 
 	}
