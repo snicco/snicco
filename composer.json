@@ -1,0 +1,60 @@
+{
+  "name": "htmlburger/wpemerge",
+  "description": "A micro framework which modernizes WordPress as a CMS development by providing tools to implement MVC and more.",
+  "type": "library",
+  "keywords": ["wordpress", "framework", "controller", "template", "view", "request", "response", "middleware", "wpemerge"],
+  "license": "GPL-2.0-only",
+  "homepage": "https://wpemerge.com/",
+  "authors": [
+    {
+      "name": "Atanas Angelov",
+      "email": "hi@atanas.dev",
+      "homepage": "https://atanas.dev/",
+      "role": "Developer"
+    },
+    {
+      "name": "htmlBurger",
+      "email": "info@htmlburger.com",
+      "homepage": "http://htmlburger.com/",
+      "role": "Developer"
+    }
+  ],
+  "support": {
+    "source": "https://github.com/htmlburger/wpemerge",
+    "issues": "https://github.com/htmlburger/wpemerge/issues",
+    "email": "wordpress@htmlburger.com"
+  },
+  "minimum-stability": "dev",
+  "repositories":
+  [
+    {
+      "type": "vcs",
+      "url": "https://github.com/calvinalkan/wp-browser"
+    }
+  ],
+  "require": {
+    "php": "^7.3",
+    "guzzlehttp/psr7": "^1.5",
+    "calvinalkan/base-container": "dev-master",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "mockery/mockery": "^1.4.2",
+    "filp/whoops": "^2.2",
+    "phpunit/phpunit": "^9.0",
+    "lucatume/wp-browser": "dev-better-env-names"
+  },
+  "autoload": {
+    "psr-4": {
+      "WPEmerge\\": "src/",
+      "WPEmergeTestTools\\": "tests/tools"
+    },
+    "files": [
+      "config.php"
+    ]
+  },
+  "scripts": {
+    "lint": "phpcs",
+    "test": "phpunit --coverage-clover=./tmp/clover.xml"
+  }
+}
