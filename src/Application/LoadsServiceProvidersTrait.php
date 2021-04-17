@@ -1,12 +1,4 @@
 <?php
-	/**
-	 * @package   WPEmerge
-	 * @author    Atanas Angelov <hi@atanas.dev>
-	 * @copyright 2017-2019 Atanas Angelov
-	 * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
-	 * @link      https://wpemerge.com/
-	 */
-
 
 	namespace WPEmerge\Application;
 
@@ -27,16 +19,17 @@
 	use WPEmerge\View\ViewServiceProvider;
 
 	/**
-	 * Load service providers.
+	 * Load core service providers that hold all internal services
+	 * required for every request.
 	 */
 	trait LoadsServiceProvidersTrait {
 
 		/**
-		 * Array of default service providers.
+		 * Core service providers
 		 *
 		 * @var string[]
 		 */
-		protected $service_providers = [
+		private $service_providers = [
 			ApplicationServiceProvider::class,
 			KernelsServiceProvider::class,
 			ExceptionsServiceProvider::class,
@@ -52,15 +45,16 @@
 		];
 
 		/**
+		 *
 		 * Register and bootstrap all service providers.
 		 *
-		 * @codeCoverageIgnore
 		 *
 		 * @param  ContainerAdapter  $container
 		 *
 		 * @return void
+		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		protected function loadServiceProviders( ContainerAdapter $container ) {
+		private function loadServiceProviders( ContainerAdapter $container ) {
 
 			$config = Arr::get( $container[ WPEMERGE_CONFIG_KEY ], 'providers', [] );
 
@@ -97,25 +91,30 @@
 		 *
 		 * @return void
 		 */
-		protected function registerServiceProviders( $service_providers, ContainerAdapter $container ) {
+		private function registerServiceProviders( array $service_providers, ContainerAdapter $container ) {
 
 			foreach ( $service_providers as $provider ) {
+
 				$provider->register( $container );
+
 			}
 		}
 
 		/**
 		 * Bootstrap all service providers.
+		 * At this point all services are bootstrapped in the IoC-Container
 		 *
 		 * @param  ServiceProviderInterface[]  $service_providers
 		 * @param  ContainerAdapter  $container
 		 *
 		 * @return void
 		 */
-		protected function bootstrapServiceProviders( $service_providers, ContainerAdapter $container ) {
+		private function bootstrapServiceProviders( array $service_providers, ContainerAdapter $container ) {
 
 			foreach ( $service_providers as $provider ) {
+
 				$provider->bootstrap( $container );
+
 			}
 		}
 

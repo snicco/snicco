@@ -9,12 +9,17 @@
 
 namespace WPEmerge\Application;
 
-use Pimple\Container;
+use Contracts\ContainerAdapter;
 use Psr\Http\Message\ResponseInterface;
+use WPEmerge\Csrf\Csrf;
+use WPEmerge\Flash\Flash;
+use WPEmerge\Input\OldInput;
 use WPEmerge\Requests\RequestInterface;
 use WPEmerge\Responses\RedirectResponse;
+use WPEmerge\Responses\ResponseService;
 use WPEmerge\Routing\RouteBlueprint;
 use WPEmerge\View\ViewInterface;
+use WPEmerge\View\ViewService;
 
 /**
  * Can be applied to your App class via a "@mixin" annotation for better IDE support.
@@ -23,6 +28,7 @@ use WPEmerge\View\ViewInterface;
  * @codeCoverageIgnore
  */
 final class ApplicationMixin {
+
 	/**
 	 * Prevent class instantiation.
 	 */
@@ -49,19 +55,17 @@ final class ApplicationMixin {
 	/**
 	 * Get the IoC container instance.
 	 *
-	 * @codeCoverageIgnore
-	 * @return Container
+	 * @return \Contracts\ContainerAdapter
 	 */
-	public static function container() {}
+	public static function container() : ContainerAdapter {}
 
 	/**
 	 * Set the IoC container instance.
 	 *
-	 * @codeCoverageIgnore
-	 * @param  Container $container
+	 * @param  ContainerAdapter $container
 	 * @return void
 	 */
-	public static function setContainer( $container ) {}
+	public static function setContainer( ContainerAdapter $container ) {}
 
 	/**
 	 * Resolve a dependency from the IoC container.
@@ -76,47 +80,41 @@ final class ApplicationMixin {
 	/**
 	 * Get the Application instance.
 	 *
-	 * @codeCoverageIgnore
 	 * @return \WPEmerge\Application\Application
 	 */
-	public static function app() {}
+	public static function app() :Application {}
 
 	/**
 	 * Get the ClosureFactory instance.
 	 *
-	 * @codeCoverageIgnore
 	 * @return ClosureFactory
 	 */
-	public static function closure() {}
+	public static function closure() :ClosureFactory {}
 
 	/**
 	 * Get the CSRF service instance.
 	 *
-	 * @codeCoverageIgnore
 	 * @return \WPEmerge\Csrf\Csrf
 	 */
-	public static function csrf() {}
+	public static function csrf() :Csrf {}
 
 	/**
 	 * Get the Flash service instance.
 	 *
-	 * @codeCoverageIgnore
 	 * @return \WPEmerge\Flash\Flash
 	 */
-	public static function flash() {}
+	public static function flash() :Flash {}
 
 	/**
 	 * Get the OldInput service instance.
 	 *
-	 * @codeCoverageIgnore
 	 * @return \WPEmerge\Input\OldInput
 	 */
-	public static function oldInput() {}
+	public static function oldInput() :OldInput {}
 
 	/**
 	 * Run a full middleware + handler pipeline independently of routes.
 	 *
-	 * @codeCoverageIgnore
 	 * @see    \WPEmerge\Kernels\HttpKernel::run()
 	 * @param  RequestInterface  $request
 	 * @param  string[]          $middleware
@@ -124,86 +122,78 @@ final class ApplicationMixin {
 	 * @param  array             $arguments
 	 * @return ResponseInterface
 	 */
-	public static function run( RequestInterface $request, $middleware, $handler, $arguments = [] ) {}
+	public static function run( RequestInterface $request, $middleware, $handler, $arguments = [] ) : ResponseInterface {}
 
 	/**
 	 * Get the ResponseService instance.
 	 *
-	 * @codeCoverageIgnore
-	 * @return \WPEmerge\Responses\ResponseService
+	 * @return ResponseService
 	 */
-	public static function responses() {}
+	public static function responses() : ResponseService {}
 
 	/**
 	 * Create a "blank" response.
 	 *
-	 * @codeCoverageIgnore
 	 * @see    \WPEmerge\Responses\ResponseService::response()
 	 * @return ResponseInterface
 	 */
-	public static function response() {}
+	public static function response() :ResponseInterface {}
 
 	/**
 	 * Create a response with the specified string as its body.
 	 *
-	 * @codeCoverageIgnore
 	 * @see    \WPEmerge\Responses\ResponseService::output()
 	 * @param  string            $output
 	 * @return ResponseInterface
 	 */
-	public static function output( $output ) {}
+	public static function output( $output ) : ResponseInterface {}
 
 	/**
 	 * Create a response with the specified data encoded as JSON as its body.
 	 *
-	 * @codeCoverageIgnore
+	 * @param  mixed  $data
+	 *
+	 * @return \WPEmerge\Responses\ResponseService
 	 * @see    \WPEmerge\Responses\ResponseService::json()
-	 * @param  mixed             $data
-	 * @return ResponseInterface
 	 */
-	public static function json( $data ) {}
+	public static function json( $data ) :ResponseService {}
 
 	/**
 	 * Create a redirect response.
 	 *
-	 * @codeCoverageIgnore
 	 * @see    \WPEmerge\Responses\ResponseService::redirect()
 	 * @return RedirectResponse
 	 */
-	public static function redirect() {}
+	public static function redirect() :RedirectResponse {}
 
 	/**
 	 * Create a response with the specified error status code.
 	 *
-	 * @codeCoverageIgnore
 	 * @see    \WPEmerge\Responses\ResponseService::error()
 	 * @param  integer           $status
 	 * @return ResponseInterface
 	 */
-	public static function error( $status ) {}
+	public static function error( $status ) : ResponseInterface {}
 
 	/**
 	 * Get the ViewService instance.
 	 *
-	 * @codeCoverageIgnore
 	 * @return \WPEmerge\View\ViewService
 	 */
-	public static function views() {}
+	public static function views() : ViewService{}
 
 	/**
 	 * Create a view.
 	 *
-	 * @codeCoverageIgnore
 	 * @see    \WPEmerge\View\ViewService::make()
 	 * @param  string|string[] $views
 	 * @return ViewInterface
 	 */
-	public static function view( $views ) {}
+	public static function view( $views ) :ViewInterface {}
 
 	/**
 	 * Output child layout content.
 	 *
-	 * @codeCoverageIgnore
 	 * @see    \WPEmerge\View\PhpViewEngine::getLayoutContent()
 	 * @return void
 	 */
@@ -212,15 +202,13 @@ final class ApplicationMixin {
 	/**
 	 * Create a new route.
 	 *
-	 * @codeCoverageIgnore
 	 * @return RouteBlueprint
 	 */
-	public static function route() {}
+	public static function route() :RouteBlueprint {}
 
 	/**
 	 * Output the specified view.
 	 *
-	 * @codeCoverageIgnore
 	 * @see    \WPEmerge\View\ViewService::make()
 	 * @see    \WPEmerge\View\ViewInterface::toString()
 	 * @param  string|string[]      $views

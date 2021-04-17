@@ -48,7 +48,7 @@
 		 *
 		 * @return static
 		 */
-		public static function make( $container_adapter ) {
+		public static function make( string $container_adapter ) : Application {
 
 			return new static(
 				( $container_adapter !== 'default' ) ? $container_adapter : new BaseContainerAdapter()
@@ -85,7 +85,7 @@
 		/**
 		 * Bootstrap the application.
 		 *
-		 * @param  array  $config
+		 * @param  array  $config The configuration provided by a user during bootstrapping.
 		 * @param  boolean  $run
 		 *
 		 * @return void
@@ -119,14 +119,13 @@
 		/**
 		 * Load config into the service container.
 		 *
-		 * @codeCoverageIgnore
 		 *
 		 * @param  ContainerAdapter  $container
 		 * @param  array  $config
 		 *
 		 * @return void
 		 */
-		protected function loadConfig( ContainerAdapter $container, array $config ) {
+		private function loadConfig( ContainerAdapter $container, array $config ) {
 
 			$container[ WPEMERGE_CONFIG_KEY ] = $config;
 
@@ -135,18 +134,19 @@
 		/**
 		 * Load route definition files depending on the current request.
 		 *
-		 * @codeCoverageIgnore
 		 * @return void
 		 */
-		protected function loadRoutes() {
+		private function loadRoutes() {
 
 			if ( wp_doing_ajax() ) {
+
 				$this->loadRoutesGroup( 'ajax' );
 
 				return;
 			}
 
 			if ( is_admin() ) {
+
 				$this->loadRoutesGroup( 'admin' );
 
 				return;
@@ -158,13 +158,12 @@
 		/**
 		 * Load a route group applying default attributes, if any.
 		 *
-		 * @codeCoverageIgnore
 		 *
 		 * @param  string  $group
 		 *
 		 * @return void
 		 */
-		protected function loadRoutesGroup( $group ) {
+		private function loadRoutesGroup( string $group ) {
 
 
 			$config     = $this->resolve( WPEMERGE_CONFIG_KEY );
@@ -190,19 +189,19 @@
 		}
 
 
-		/**
-		 * Catch any configuration exceptions and short-circuit to an error page.
-		 *
-		 * @codeCoverageIgnore
-		 *
-		 * @param  Closure  $action
-		 *
-		 * @return void
-		 */
-		public function renderConfigExceptions( Closure $action ) {
+		 /**
+		  * Catch any configuration exceptions and short-circuit to an error page.
+		  *
+		  *
+		  * @param  Closure  $callable
+		  *
+		  * @return void
+		  * @throws \WPEmerge\Exceptions\ConfigurationException
+		  */
+		public function renderConfigExceptions( Closure $callable ) {
 
 			try {
-				$action();
+				$callable();
 			}
 			catch ( ConfigurationException $exception ) {
 				if ( ! $this->render_config_exceptions ) {

@@ -1,11 +1,4 @@
 <?php
-	/**
-	 * @package   WPEmerge
-	 * @author    Atanas Angelov <hi@atanas.dev>
-	 * @copyright 2017-2019 Atanas Angelov
-	 * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
-	 * @link      https://wpemerge.com/
-	 */
 
 
 	namespace WPEmerge\Helpers;
@@ -15,6 +8,7 @@
 	use WPEmerge\Application\GenericFactory;
 	use WPEmerge\Exceptions\ClassNotFoundException;
 	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\Support\Arr;
 
 	/**
 	 * Represent a generic handler - a Closure or a class method to be resolved from the service
@@ -27,38 +21,145 @@
 		 *
 		 * @var GenericFactory
 		 */
-		protected $factory = null;
+		private $factory;
 
 		/**
 		 * Parsed handler
 		 *
 		 * @var array|Closure
 		 */
-		protected $handler = null;
+		private $handler;
+
+		/**
+		 *
+		 * An array of namespaces where we can
+		 * search for a handler.
+		 *
+		 * @var array
+		 */
+		private $namespaces;
 
 		/**
 		 * Constructor
 		 *
 		 * @param  GenericFactory  $factory
-		 * @param  string|Closure  $raw_handler
+		 * @param  string|Closure|array  $raw_handler
 		 * @param  string  $default_method
 		 * @param  string  $namespace
+		 *
+		 * @throws ConfigurationException
 		 */
-		public function __construct( GenericFactory $factory, $raw_handler, $default_method = '', $namespace = '' ) {
+		public function __construct( GenericFactory $factory, $raw_handler, $default_method = '', $namespace = '', $namespaces = [] ) {
 
 			$this->factory = $factory;
+
+			$this->namespaces = $namespaces;
 
 			$handler = $this->parse( $raw_handler, $default_method, $namespace );
 
 			if ( $handler === null ) {
+
 				throw new ConfigurationException( 'No or invalid handler provided.' );
+
 			}
 
 			$this->handler = $handler;
+
 		}
 
+
 		/**
-		 * Parse a raw handler to a Closure or a [class, method] array
+		 * Get the parsed handler
+		 *
+		 * @return array|Closure
+		 */
+		public function get() {
+
+			return $this->handler;
+
+		}
+
+
+		/**
+		 * Make an instance of the handler.
+		 *
+		 * @return object
+		 * @throws ClassNotFoundException
+		 */
+		public function make() {
+
+			$handler = $this->get();
+
+			if ( $handler instanceof Closure ) {
+				return $handler;
+			}
+
+			$namespace = $handler['namespace'];
+			$class     = $handler['class'];
+
+			try {
+
+				$full_class_path = $this->findClass( $class, $namespace );
+
+			}
+			catch ( ClassNotFoundException $e ) {
+
+				throw new ClassNotFoundException( 'Class not found - tried to find: ' . $class . ', in three namespaces in your wpemerge config' );
+			}
+
+			return $this->factory->make( $full_class_path );
+		}
+
+
+
+
+		/**
+		 * Execute the parsed handler with any provided arguments and return the result.
+		 *
+		 * @param  mixed ,...$arguments
+		 * @return mixed
+		 */
+		public function execute() {
+			$arguments = func_get_args();
+			$instance = $this->make();
+
+			if ( $instance instanceof Closure ) {
+				return call_user_func_array( $instance, $arguments );
+			}
+
+			return call_user_func_array( [$instance, $this->get()['method']], $arguments );
+		}
+
+
+
+
+
+		/**
+		 * Execute the parsed handler with any provided arguments and return the result.
+		 *
+		 * @return mixed
+		 * @throws \WPEmerge\Exceptions\ClassNotFoundException
+		 */
+		public function _execute() {
+
+			$arguments = func_get_args();
+			$instance  = $this->make();
+
+			if ( $instance instanceof Closure ) {
+
+				// Remove the container_adapter closure.
+				array_pop( $arguments );
+
+				// Dont force to accept and empty view if not on web route.
+				return call_user_func_array( $instance, $this->trimArguments( $arguments ) );
+			}
+
+			return $this->callInstanceMethod( $instance, $this->get()['method'], $arguments );
+		}
+
+
+		/**
+		 * Parse a callable to a Closure or a [class, method] array
 		 *
 		 * @param  string|Closure  $raw_handler
 		 * @param  string  $default_method
@@ -66,15 +167,51 @@
 		 *
 		 * @return array|Closure|null
 		 */
-		protected function parse( $raw_handler, $default_method, $namespace ) {
+		private function parse( $raw_handler, string $default_method, string $namespace ) {
 
 			if ( $raw_handler instanceof Closure ) {
 				return $raw_handler;
 			}
 
+			if ( is_array( $raw_handler ) ) {
+				return $this->parseFromArray( $raw_handler, $default_method, $namespace );
+			}
+
 			return $this->parseFromString( $raw_handler, $default_method, $namespace );
 
 		}
+
+
+		/**
+		 * Parse a [Class::class, 'method'] array handler to a [class, method, namespace] array
+		 *
+		 * @param  array  $raw_handler
+		 * @param  string  $default_method
+		 * @param  string  $namespace
+		 *
+		 * @return array|null
+		 */
+		private function parseFromArray( array $raw_handler, string $default_method, string $namespace ) : ?array {
+
+			$class  = Arr::get( $raw_handler, 0, '' );
+			$class  = preg_replace( '/^\\\\+/', '', $class );
+			$method = Arr::get( $raw_handler, 1, $default_method );
+
+			if ( empty( $class ) ) {
+				return null;
+			}
+
+			if ( empty( $method ) ) {
+				return null;
+			}
+
+			return [
+				'class'     => $class,
+				'method'    => $method,
+				'namespace' => $namespace,
+			];
+		}
+
 
 		/**
 		 * Parse a raw string handler to a [class, method] array
@@ -85,9 +222,11 @@
 		 *
 		 * @return array|null
 		 */
-		protected function parseFromString( $raw_handler, $default_method, $namespace ) {
+		private function parseFromString( $raw_handler, $default_method, $namespace ) {
 
-			[ $class, $method ] = Str::parseCallback($raw_handler, $default_method);
+			$raw_handler = Str::replaceFirst( '::', '@', $raw_handler );
+
+			[ $class, $method ] = Str::parseCallback( $raw_handler, $default_method );
 
 			if ( empty( $method ) ) {
 				$method = $default_method;
@@ -104,65 +243,6 @@
 			return null;
 		}
 
-		/**
-		 * Get the parsed handler
-		 *
-		 * @return array|Closure
-		 */
-		public function get() {
-
-			return $this->handler;
-		}
-
-		/**
-		 * Make an instance of the handler.
-		 *
-		 * @return object
-		 * @todo Update the forked wpemperge repo. Test Exceptions
-		 */
-		public function make() {
-
-			$handler = $this->get();
-
-			if ( $handler instanceof Closure ) {
-				return $handler;
-			}
-
-			$namespace = $handler['namespace'];
-			$class     = $handler['class'];
-
-			try {
-				$full_class_path = $this->findClass( $class, $namespace );
-			}
-			catch ( ClassNotFoundException $e ) {
-				throw new ClassNotFoundException( 'Class not found - tried to find: ' . $class . ', in three namespaces in your wpemerge config' );
-			}
-
-			return $this->factory->make( $full_class_path );
-		}
-
-		/**
-		 * Execute the parsed handler with any provided arguments and return the result.
-		 *
-		 * @param  mixed ,...$arguments
-		 *
-		 * @return mixed
-		 */
-		public function execute() {
-
-			$arguments = func_get_args();
-			$instance  = $this->make();
-
-			if ( $instance instanceof Closure ) {
-				// Remove the container_adapter closure.
-				array_pop( $arguments );
-
-				// Dont force to accept and empty view if not on web route.
-				return call_user_func_array( $instance, $this->trimArguments( $arguments ) );
-			}
-
-			return $this->callInstanceMethod( $instance, $this->get()['method'], $arguments );
-		}
 
 		/**
 		 *
@@ -188,27 +268,34 @@
 
 
 			if ( class_exists( $class_no_namespace = $class ) ) {
+
 				return $class_no_namespace;
 			}
 
 			if ( class_exists( $class_with_namespace = $path . $class ) ) {
+
 				return $class_with_namespace;
+
 			}
 
-			$config     = App::resolve( WPEMERGE_CONFIG_KEY );
-			$namespaces = array_column( array_column( $config['routes'], 'attributes' ), 'namespace' );
 
-			foreach ( $namespaces as $namespace ) {
+			foreach ( $this->namespaces as $namespace ) {
+
 				if ( class_exists( $namespace . $class ) ) {
+
 					return $namespace . $class;
 				}
 
-				throw new ClassNotFoundException();
+
 			}
+
+			throw new ClassNotFoundException();
+
+
 		}
 
 
-		private function trimArguments( $arguments ) {
+		private function trimArguments( $arguments ) : array {
 
 			return $arguments = array_filter( $arguments, function ( $value ) {
 

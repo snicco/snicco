@@ -60,7 +60,7 @@
 		 *
 		 * @return void
 		 */
-		public function extendConfig( ContainerAdapter $container, $key, $default ) {
+		public function extendConfig( ContainerAdapter $container, string $key, $default ) {
 
 			$config = isset( $container[ WPEMERGE_CONFIG_KEY ] ) ? $container[ WPEMERGE_CONFIG_KEY ] : [];
 			$config = Arr::get( $config, $key, $default );

@@ -1,18 +1,11 @@
 <?php
-	/**
-	 * @package   WPEmerge
-	 * @author    Atanas Angelov <hi@atanas.dev>
-	 * @copyright 2017-2019 Atanas Angelov
-	 * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
-	 * @link      https://wpemerge.com/
-	 */
+
+
 
 	namespace WPEmerge\Application;
 
 	use Contracts\ContainerAdapter;
 	use WPEmerge\Exceptions\ClassNotFoundException;
-	use WPEmerge\Application\ContainerAdapterInterface as ContainerInterface;
-
 
 	/**
 	 * Generic class instance factory.
@@ -24,7 +17,7 @@
 		 *
 		 * @var ContainerAdapter
 		 */
-		protected $container = NULL;
+		protected $container = null;
 
 		/**
 		 * Constructor.
@@ -34,6 +27,7 @@
 		 * @param  ContainerAdapter  $container
 		 */
 		public function __construct( ContainerAdapter $container ) {
+
 			$this->container = $container;
 		}
 
@@ -43,15 +37,18 @@
 		 * @param  string  $class
 		 *
 		 * @return object
-		 * @throws ClassNotFoundException
-		 * @todo Make Construction of Handlers and Middleware use the AdapterInterface. This is the right place.
+		 * @throws ClassNotFoundException|\ReflectionException
 		 *
 		 *
 		 */
-		public function make( $class ) {
+		public function make( string $class )  {
 
 
-			if ( $resolved_class = $this->tryFromController( $class ) ) {
+			if ( ! class_exists( $class ) ) {
+				throw new ClassNotFoundException( 'Class not found: ' . $class );
+			}
+
+			if ( $resolved_class = $this->tryFromContainer( $class ) ) {
 
 				return $resolved_class;
 
@@ -71,14 +68,9 @@
 		 *
 		 * @return mixed
 		 * @throws \ReflectionException
-		 * @throws \WPEmerge\Exceptions\ClassNotFoundException
 		 */
 		private function tryToInstantiate( $class ) {
 
-
-			if ( ! class_exists( $class ) ) {
-				throw new ClassNotFoundException( 'Class not found: ' . $class );
-			}
 
 			$constructor = ( new \ReflectionClass( $class ) )->getConstructor();
 
@@ -101,12 +93,13 @@
 		 *
 		 * @return null|object
 		 */
-		private function tryFromController( $class ) {
+		private function tryFromContainer( $class ) : ?object {
+
 
 			return $this->container->make( $class );
 
-		}
 
+		}
 
 
 	}
