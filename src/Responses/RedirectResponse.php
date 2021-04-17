@@ -1,0 +1,104 @@
+<?php
+/**
+ * @package   WPEmerge
+ * @author    Atanas Angelov <hi@atanas.dev>
+ * @copyright 2017-2019 Atanas Angelov
+ * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
+ * @link      https://wpemerge.com/
+ */
+
+namespace WPEmerge\Responses;
+
+use GuzzleHttp\Psr7\Response as Psr7Response;
+use Psr\Http\Message\ResponseInterface;
+use WPEmerge\Requests\RequestInterface;
+
+/**
+ * A collection of tools for the creation of responses
+ */
+class RedirectResponse extends Psr7Response {
+	/**
+	 * Current request.
+	 *
+	 * @var RequestInterface
+	 */
+	protected $request = null;
+
+	/**
+	 *
+	 * Whether we should exit script execution after the redirect.
+	 *
+	 * @var bool
+	 */
+	protected $abort = FALSE;
+
+	/**
+	 * Constructor.
+	 *
+	 * @codeCoverageIgnore
+	 * @param RequestInterface $request
+	 */
+	public function __construct( RequestInterface $request ) {
+		parent::__construct();
+		$this->request = $request;
+	}
+
+	/**
+	 * Get a response redirecting to a specific url.
+	 *
+	 * @param  string            $url
+	 * @param  integer           $status
+	 * @return ResponseInterface
+	 */
+	public function to( $url, $status = 302 ) {
+		return $this
+			->withHeader( 'Location', $url )
+			->withStatus( $status );
+	}
+
+	/**
+	 * Get a response redirecting back to the referrer or a fallback.
+	 *
+	 * @param  string            $fallback
+	 * @param  integer           $status
+	 * @return ResponseInterface
+	 */
+	public function back( $fallback = '', $status = 302 ) {
+		$url = $this->request->getHeaderLine( 'Referer' );
+
+		if ( empty( $url ) ) {
+			$url = $fallback;
+		}
+
+		if ( empty( $url ) ) {
+			$url = $this->request->getUrl();
+		}
+
+		return $this->to( $url, $status );
+	}
+
+	/**
+	 *
+	 * Wheter we should abort after script execution.
+	 *
+	 * @param  false  $bool
+	 */
+	public function setAbort ($bool = FALSE) {
+
+			$this->abort = $bool;
+
+	}
+
+	/**
+	 * Return wheter we should abort.
+	 *
+	 * @return bool
+	 */
+	public function abort () {
+
+		return $this->abort;
+
+	}
+
+
+}
