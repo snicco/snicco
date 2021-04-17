@@ -19,8 +19,7 @@
 	use WPEmerge\Routing\RoutingServiceProvider;
 	use WPEmerge\ServiceProviders\ServiceProviderInterface;
 	use WPEmerge\View\ViewServiceProvider;
-	use WPEmergeTests\TestApp;
-	use WPEmergeTests\wpunit\TestingApp;
+	use WPEmergeTestTools\TestService;
 
 	class LoadServiceProvidersTraitTest extends WPTestCase {
 
@@ -42,7 +41,7 @@
 		/** @test */
 		public function all_core_service_providers_get_registered_correctly_in_the_container_and_can_be_merged_with_user_provided_ones() {
 
-			$app = new TestingApp();
+			$app = new TestService();
 
 			$user_config = [
 
