@@ -154,6 +154,7 @@
 		/**
 		 * Make a middleware class instance.
 		 *
+		 * @see ExecutesMiddlewareTrait::executeMiddleware()
 		 *
 		 * @param  string  $class
 		 *
@@ -199,9 +200,9 @@
 
 			try {
 
-				$handler = $handler instanceof Handler ? $handler : $this->handler_factory->make( $handler );
 
 				$middleware = array_merge( $middleware, $this->getControllerMiddleware( $handler ) );
+
 				$middleware = $this->expandMiddleware( $middleware );
 				$middleware = $this->uniqueMiddleware( $middleware );
 				$middleware = $this->sortMiddleware( $middleware );

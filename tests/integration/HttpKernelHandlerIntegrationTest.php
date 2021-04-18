@@ -85,6 +85,7 @@
 			       ->url( '/teams/{team}' )
 			       ->handle( ClassHandlerConstructorDependency::class . '@teams' );
 
+
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/teams/dortmund' );
 
