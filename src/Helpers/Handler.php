@@ -53,6 +53,14 @@
 		private $executable = null;
 
 		/**
+		 *
+		 * Stores a resolved controller instance.
+		 *
+		 * @var \WPEmerge\Contracts\HasControllerMiddlewareInterface
+		 */
+		private $resolved_instance;
+
+		/**
 		 * Constructor
 		 *
 		 * @param  GenericFactory  $factory
@@ -177,9 +185,9 @@
 
 			$executable = $this->executable;
 
-			$arguments = $this->buildNamedParameters( $callable = $this->classCallable() , $arguments );
+			$arguments = $this->buildNamedParameters( $callable = $this->classCallable(), $arguments );
 
-			return $executable( $callable , $arguments );
+			return $executable( $this->resolved_instance ?? $callable, $arguments );
 
 		}
 
@@ -279,19 +287,18 @@
 
 			}
 
-			if ( ! $this->classImplements(
-				$this->buildFullNamespace($handler['class']),
-				HasControllerMiddlewareInterface::class )
-			) {
+			if ( ! $this->usesControllerMiddleware( $class = $this->buildFullNamespace( $handler['class'] ) ) ) {
 
 				return [];
 
 			}
 
 			/** @var HasControllerMiddlewareInterface $instance */
-			$instance = $this->factory->make($handler['class']);
+			$instance = $this->factory->make( $class );
 
-			return $instance->getMiddleware($handler['method']);
+			$this->resolved_instance = $instance;
+
+			return $instance->getMiddleware( $handler['method'] );
 
 
 		}
@@ -310,7 +317,7 @@
 
 		}
 
-		private function buildFullNamespace ( $class ) {
+		private function buildFullNamespace( $class ) {
 
 			if ( class_exists( $class_no_namespace = $class ) ) {
 
@@ -322,13 +329,22 @@
 
 				if ( class_exists( $namespace . '\\' . $class ) ) {
 
-					return $namespace . '\\' . $class ;
+					return $namespace . '\\' . $class;
 				}
 
 
 			}
 
-			throw new ClassNotFoundException('Class: ' . $class . ' not found');
+			throw new ClassNotFoundException( 'Class: ' . $class . ' not found' );
+
+		}
+
+		private function usesControllerMiddleware( $fully_qualified_name_space_class ) : bool {
+
+			return $this->classImplements(
+				$fully_qualified_name_space_class,
+				HasControllerMiddlewareInterface::class
+			);
 
 		}
 

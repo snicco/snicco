@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace Tests\stubs\Controllers\Admin;
+	namespace Tests\stubs\Controllers\Ajax;
 
 	use WPEmerge\Requests\Request;
 

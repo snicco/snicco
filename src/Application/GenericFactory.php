@@ -7,9 +7,7 @@
 	use Contracts\ContainerAdapter;
 	use WPEmerge\Exceptions\ClassNotFoundException;
 
-	/**
-	 * Generic class instance factory.
-	 */
+
 	class GenericFactory {
 
 		/**
@@ -32,74 +30,39 @@
 		}
 
 		/**
-		 * Make a class instance.
+		 * Resolve a class instance from the IoC-Container Adapter.
 		 *
 		 * @param  string  $class
 		 *
 		 * @return object
-		 * @throws ClassNotFoundException|\ReflectionException
+		 * @throws ClassNotFoundException
 		 *
 		 *
 		 */
 		public function make( string $class )  {
 
 
-			if ( ! class_exists( $class ) ) {
-				throw new ClassNotFoundException( 'Class not found: ' . $class );
-			}
+			try {
 
-			if ( $resolved_class = $this->tryFromContainer( $class ) ) {
-
-				return $resolved_class;
+				return $this->container->make( $class );
 
 			}
 
-			return $this->tryToInstantiate( $class );
+			catch ( \Exception $e ) {
+
+				throw new ClassNotFoundException(
+					'Class not found: ' . $class .'.' . PHP_EOL .
+					'It was not possible to resolve the class ' . $class . ' from the service container.' . PHP_EOL .
+					$e->getMessage()
+				);
+
+			}
+
 
 
 		}
 
-		/**
-		 *
-		 * Lets see if we can instantiate the class
-		 *
-		 *
-		 * @param $class
-		 *
-		 * @return mixed
-		 * @throws \ReflectionException
-		 */
-		private function tryToInstantiate( $class ) {
 
-
-			$constructor = ( new \ReflectionClass( $class ) )->getConstructor();
-
-			if ( $constructor && $count = count( $constructor->getParameters() ) > 0 ) {
-
-				throw new \ArgumentCountError( 'The class: "' . $class . '" has
-				constructor arguments. Could not auto resolve the class because its not in the Service Container.' );
-			}
-
-			return new $class();
-
-		}
-
-		/**
-		 *
-		 * Try to resolve the class from the applications
-		 * container adapter.
-		 *
-		 * @param $class
-		 *
-		 * @return null|object
-		 */
-		private function tryFromContainer( $class ) : ?object {
-
-
-			return $this->container->make( $class );
-
-
-		}
 
 
 	}

@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace Tests\wpunit\Responses;
+	namespace Tests\wpunit\Middleware;
 
 	use GuzzleHttp\Psr7;
 	use GuzzleHttp\Psr7\Response as Psr7Response;
