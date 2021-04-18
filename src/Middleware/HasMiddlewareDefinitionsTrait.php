@@ -79,6 +79,7 @@ trait HasMiddlewareDefinitionsTrait {
 	 * @return array[]
 	 */
 	public function expandMiddleware( $middleware ) {
+
 		$classes = [];
 
 		foreach ( $middleware as $item ) {

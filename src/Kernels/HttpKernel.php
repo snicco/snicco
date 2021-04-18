@@ -141,6 +141,7 @@
 		private function getResponse() {
 
 			return isset( $this->container[ WPEMERGE_RESPONSE_KEY ] ) ? $this->container[ WPEMERGE_RESPONSE_KEY ] : null;
+
 		}
 
 		/**
@@ -179,11 +180,6 @@
 		 */
 		private function executeHandler( Handler $handler, $arguments = [] ) : ResponseInterface {
 
-			// The Container Interface has method getCallable which lets the container adapter handle
-			// the executing of handlers.
-			// for the pimple adapter just returns call_user_func_array but this gives
-			// us the necessary flexibility to use more powerful containers that can auto-resolve method dependencies.
-			$arguments[] = $this->container->getCallAble();
 
 			$response = call_user_func_array( [ $handler, 'execute' ], $arguments );
 
@@ -209,7 +205,7 @@
 
 				$handler = $handler instanceof Handler ? $handler : $this->handler_factory->make( $handler );
 
-				$middleware = array_merge( $middleware, $this->getHandlerMiddleware( $handler ) );
+				$middleware = array_merge( $middleware, $this->getControllerMiddleware( $handler ) );
 				$middleware = $this->expandMiddleware( $middleware );
 				$middleware = $this->uniqueMiddleware( $middleware );
 				$middleware = $this->sortMiddleware( $middleware );
@@ -245,22 +241,15 @@
 			                   ->withAttribute( 'route_arguments', $route_arguments );
 
 			$middleware = $route->getAttribute( 'middleware', [] );
-			$handler = $route->getAttribute( 'handler' );
+			$handler    = $route->getAttribute( 'handler' );
+			$arguments  = array_merge( [ $request ], $arguments, $route_arguments );
 
-			$response = $this->run(
-				$request,
-				$route->getAttribute( 'middleware', [] ),
-				$route->getAttribute( 'handler' ),
-				array_merge(
-					[ $request ],
-					$arguments,
-					$route_arguments
-				)
-			);
+			$response = $this->run( $request, $middleware, $handler, $arguments );
 
 			$this->container[ WPEMERGE_RESPONSE_KEY ] = $response;
 
 			return $response;
+
 		}
 
 		/**
@@ -359,6 +348,7 @@
 
 			// A route has matched so we use its response.
 			if ( $response instanceof ResponseInterface ) {
+
 				if ( $response->getStatusCode() === 404 ) {
 					$wp_query->set_404();
 				}

@@ -104,6 +104,7 @@ class ErrorHandler implements ErrorHandlerInterface {
 	 * @return ResponseInterface
 	 */
 	protected function toDebugResponse( RequestInterface $request, PhpException $exception ) {
+
 		if ( $request->isAjax() ) {
 			return $this->response_service->json( [
 				'message' => $exception->getMessage(),

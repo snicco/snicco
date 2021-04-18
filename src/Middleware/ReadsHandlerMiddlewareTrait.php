@@ -19,7 +19,7 @@
 		 * @return string[]
 		 * @throws \WPEmerge\Exceptions\ClassNotFoundException
 		 */
-		protected function getHandlerMiddleware( Handler $handler ) : array {
+		protected function getControllerMiddleware( Handler $handler ) : array {
 
 			$instance = $handler->make();
 
@@ -28,6 +28,7 @@
 			}
 
 			return $instance->getMiddleware( $handler->get()['method'] );
+
 		}
 
 	}

@@ -164,10 +164,13 @@ class RouteBlueprint {
 	/**
 	 * Create a route.
 	 *
-	 * @param  string|Closure $handler
+	 * @param  string|Closure  $handler
+	 *
 	 * @return void
+	 * @throws \WPEmerge\Exceptions\ConfigurationException
 	 */
 	public function handle( $handler = '' ) {
+
 		if ( ! empty( $handler ) ) {
 			$this->attribute( 'handler', $handler );
 		}

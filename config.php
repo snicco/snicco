@@ -31,7 +31,7 @@
 	}
 
 	if ( ! defined( 'WPEMERGE_CONTAINER_ADAPTER' ) ) {
-		define( 'WPEMERGE_CONTAINER_ADAPTER', \WPEmerge\Application\ContainerAdapterInterface::class );
+		define( 'WPEMERGE_CONTAINER_ADAPTER', \Contracts\ContainerAdapter::class );
 	}
 
 	if ( ! defined( 'WPEMERGE_APPLICATION_GENERIC_FACTORY_KEY' ) ) {

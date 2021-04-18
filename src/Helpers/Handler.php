@@ -40,14 +40,24 @@
 		private $namespaces;
 
 		/**
+		 * A closure that contains the
+		 * call method of the applications
+		 * container adapter.
+		 *
+		 * @var Closure;
+		 */
+		private $executable = null;
+
+		/**
 		 * Constructor
 		 *
 		 * @param  GenericFactory  $factory
 		 * @param  string|Closure|array  $raw_handler
 		 * @param  string  $default_method
 		 * @param  string  $namespace
+		 * @param  array  $namespaces
 		 *
-		 * @throws ConfigurationException
+		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
 		public function __construct( GenericFactory $factory, $raw_handler, $default_method = '', $namespace = '', $namespaces = [] ) {
 
@@ -110,7 +120,11 @@
 			return $this->factory->make( $full_class_path );
 		}
 
+		public function setExecutable ( Closure $closure ) {
 
+			$this->executable = $closure;
+
+		}
 
 
 		/**
@@ -119,7 +133,8 @@
 		 * @param  mixed ,...$arguments
 		 * @return mixed
 		 */
-		public function execute() {
+		public function _execute() {
+
 			$arguments = func_get_args();
 			$instance = $this->make();
 
@@ -128,9 +143,9 @@
 			}
 
 			return call_user_func_array( [$instance, $this->get()['method']], $arguments );
+
+
 		}
-
-
 
 
 
@@ -138,23 +153,25 @@
 		 * Execute the parsed handler with any provided arguments and return the result.
 		 *
 		 * @return mixed
-		 * @throws \WPEmerge\Exceptions\ClassNotFoundException
 		 */
-		public function _execute() {
+		public function execute() {
 
 			$arguments = func_get_args();
-			$instance  = $this->make();
 
-			if ( $instance instanceof Closure ) {
+			$handler = $this->get();
 
-				// Remove the container_adapter closure.
-				array_pop( $arguments );
+			if ( $handler instanceof Closure ) {
 
+				return call_user_func_array( $handler, $arguments );
 				// Dont force to accept and empty view if not on web route.
-				return call_user_func_array( $instance, $this->trimArguments( $arguments ) );
+				// return call_user_func_array( $instance, $this->trimArguments( $arguments ) );
+
 			}
 
-			return $this->callInstanceMethod( $instance, $this->get()['method'], $arguments );
+			$executable = $this->executable;
+
+			return $executable($handler['class'], $handler['method'], $arguments);
+
 		}
 
 
@@ -270,6 +287,7 @@
 			if ( class_exists( $class_no_namespace = $class ) ) {
 
 				return $class_no_namespace;
+
 			}
 
 			if ( class_exists( $class_with_namespace = $path . $class ) ) {

@@ -145,6 +145,7 @@
 			$handler  = function () use ( $expected ) {
 
 				return $expected;
+
 			};
 
 			$this->factory_handler->shouldReceive( 'make' )
@@ -583,7 +584,7 @@
 
 			$response = $next( $request );
 
-			return $response->withBody( Psr7\stream_for( 'Foo' . $response->getBody()
+			return $response->withBody( Psr7\stream_for( 'Dependency' . $response->getBody()
 			                                                              ->read( 999 ) ) );
 		}
 

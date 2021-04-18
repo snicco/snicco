@@ -5,7 +5,6 @@
 
 	use Exception as PhpException;
 	use Psr\Http\Message\ResponseInterface;
-	use WPEmerge\Contracts\RequestInterface;
 
 	interface ErrorHandlerInterface {
 

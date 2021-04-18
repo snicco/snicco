@@ -1,16 +1,11 @@
 <?php
-	/**
-	 * @package   WPEmerge
-	 * @author    Atanas Angelov <hi@atanas.dev>
-	 * @copyright 2017-2019 Atanas Angelov
-	 * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
-	 * @link      https://wpemerge.com/
-	 */
 
 
 	namespace WPEmerge\Helpers;
 
 	use Closure;
+	use Contracts\ContainerAdapter;
+	use Illuminate\Support\Str;
 	use WPEmerge\Application\GenericFactory;
 
 	/**
@@ -26,15 +21,20 @@
 		protected $factory = null;
 
 		/**
+		 * @var \Contracts\ContainerAdapter
+		 */
+		private $container;
+
+		/**
 		 * Constructor.
 		 *
 		 *
 		 * @param  GenericFactory  $factory
 		 */
-		public function __construct( GenericFactory $factory ) {
+		public function __construct( GenericFactory $factory, ContainerAdapter $container ) {
 
 			$this->factory = $factory;
-
+			$this->container = $container;
 		}
 
 		/**
@@ -50,7 +50,17 @@
 		 */
 		public function make( $raw_handler, $default_method = '', $namespace = '' ) : Handler {
 
-			return new Handler( $this->factory, $raw_handler, $default_method, $namespace );
+			$handler = new Handler( $this->factory, $raw_handler, $default_method, $namespace );
+
+			$container = $this->container;
+
+			$handler->setExecutable(function ($class, $method, $args ) use ( $container ) {
+
+				return $container->call( $class . '@' . $method, $args );
+
+			});
+
+			return $handler;
 
 		}
 

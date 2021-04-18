@@ -30,6 +30,7 @@ trait ConvertsToResponseTrait {
 	 * @return mixed
 	 */
 	protected function toResponse( $response ) {
+
 		if ( is_string( $response ) ) {
 			return $this->getResponseService()->output( $response );
 		}
