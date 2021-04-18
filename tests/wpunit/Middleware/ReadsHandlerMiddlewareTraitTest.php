@@ -4,7 +4,6 @@ namespace WPEmergeTests\Middleware;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use WP_UnitTestCase;
 use WPEmerge\Helpers\Handler;
 use WPEmerge\Contracts\HasControllerMiddlewareInterface;
 use WPEmerge\Middleware\ReadsHandlerMiddlewareTrait;
@@ -30,10 +29,14 @@ class ReadsHandlerMiddlewareTraitTest extends TestCase {
 	 * @covers ::getHandlerMiddleware
 	 */
 	public function testGetHandlerMiddleware_NonControllerMiddlewareHandler_EmptyArray() {
+
 		$handler = Mockery::mock( Handler::class );
 
 		$handler->shouldReceive( 'make' )
 			->andReturn( function () {} );
+
+		$handler->shouldReceive('controllerMiddleware')->once()->andReturn([]);
+
 
 		$this->assertEquals( [], $this->subject->publicGetHandlerMiddleware( $handler ) );
 	}
@@ -42,18 +45,16 @@ class ReadsHandlerMiddlewareTraitTest extends TestCase {
 	 * @covers ::getHandlerMiddleware
 	 */
 	public function testGetHandlerMiddleware_ControllerMiddlewareHandler_FullArray() {
+
 		$handler = Mockery::mock( Handler::class );
 		$instance = Mockery::mock( HasControllerMiddlewareInterface::class );
+
+		$handler->shouldReceive('controllerMiddleware')->andReturn(['middleware1']);
 
 		$handler->shouldReceive( 'make' )
 			->andReturn( $instance );
 
-		$handler->shouldReceive( 'get' )
-			->andReturn( ['method' => 'method1'] );
 
-		$instance->shouldReceive( 'getMiddleware' )
-			->with( 'method1' )
-			->andReturn( ['middleware1'] );
 
 		$this->assertEquals( ['middleware1'], $this->subject->publicGetHandlerMiddleware( $handler ) );
 	}

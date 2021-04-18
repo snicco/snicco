@@ -61,6 +61,7 @@
 		 * @var ErrorHandlerInterface
 		 */
 		private $error_handler;
+
 		/**
 		 * @var Handler
 		 */
@@ -148,6 +149,8 @@
 
 			};
 
+			$this->factory_handler->shouldReceive('controllerMiddleware')->once()->andReturn([]);
+
 			$this->factory_handler->shouldReceive( 'make' )
 			                      ->andReturn( $handler );
 
@@ -163,6 +166,9 @@
 		public function testExecuteHandler_InvalidResponse_Exception() {
 
 			$this->expectExceptionMessage( 'Response returned by controller is not valid' );
+
+
+			$this->factory_handler->shouldReceive('controllerMiddleware')->once()->andReturn([]);
 
 			$handler       = function () {
 
@@ -204,6 +210,9 @@
 
 				return ( new Psr7\Response() )->withBody( Psr7\stream_for( 'Handler' ) );
 			};
+
+			$this->factory_handler->shouldReceive('controllerMiddleware')->once()->andReturn([]);
+
 
 			$this->factory_handler->shouldReceive( 'make' )
 			                      ->andReturn( $handler );
@@ -247,6 +256,9 @@
 		public function testRun_Exception_UseErrorHandler() {
 
 			$this->expectExceptionMessage( 'Test exception handled' );
+
+			$this->factory_handler->shouldReceive('controllerMiddleware')->once()->andReturn([]);
+
 
 			$exception = new Exception();
 			$handler   = function () use ( $exception ) {

@@ -144,8 +144,10 @@
 
 				throw new ClassNotFoundException();
 			}
-		}
 
+			throw new ClassNotFoundException();
+
+		}
 
 
 		public function setExecutable( Closure $closure ) {
@@ -253,7 +255,7 @@
 			}
 
 			return [
-				'class'     => $this->buildFullNamespace($class),
+				'class'     => $class,
 				'method'    => $method,
 				'namespace' => $namespace,
 			];
@@ -281,7 +283,7 @@
 
 			if ( ! empty( $class ) && ! empty( $method ) ) {
 				return [
-					'class'     => $this->buildFullNamespace($class),
+					'class'     => $class,
 					'method'    => $method,
 					'namespace' => $namespace,
 				];
@@ -300,7 +302,10 @@
 
 			}
 
-			if ( ! $this->classImplements($handler['class'],HasControllerMiddlewareInterface::class )) {
+			if ( ! $this->classImplements(
+				$this->buildFullNamespace($handler['class']),
+				HasControllerMiddlewareInterface::class )
+			) {
 
 				return [];
 
