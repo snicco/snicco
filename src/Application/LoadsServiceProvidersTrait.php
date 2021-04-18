@@ -38,7 +38,6 @@
 			ResponsesServiceProvider::class,
 			RoutingServiceProvider::class,
 			ViewServiceProvider::class,
-			ControllersServiceProvider::class,
 			MiddlewareServiceProvider::class,
 			CsrfServiceProvider::class,
 			FlashServiceProvider::class,

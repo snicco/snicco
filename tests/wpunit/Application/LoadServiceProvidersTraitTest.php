@@ -5,7 +5,6 @@
 
 	use Codeception\TestCase\WPTestCase;
 	use WPEmerge\ServiceProviders\ApplicationServiceProvider;
-	use WPEmerge\Controllers\ControllersServiceProvider;
 	use WPEmerge\Csrf\CsrfServiceProvider;
 	use WPEmerge\ServiceProviders\ExceptionsServiceProvider;
 	use WPEmerge\ServiceProviders\FlashServiceProvider;
@@ -32,7 +31,6 @@
 			ResponsesServiceProvider::class,
 			RoutingServiceProvider::class,
 			ViewServiceProvider::class,
-			ControllersServiceProvider::class,
 			MiddlewareServiceProvider::class,
 			CsrfServiceProvider::class,
 
