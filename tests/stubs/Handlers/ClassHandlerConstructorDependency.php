@@ -3,6 +3,7 @@
 
 	namespace Tests\stubs\Handlers;
 
+	use Tests\stubs\TestResponse;
 	use WPEmerge\Requests\Request;
 
 	class ClassHandlerConstructorDependency {
@@ -17,21 +18,28 @@
 			$this->dependency = $foo;
 		}
 
-		public function handle( Request $request, string $view ) : string {
+		public function handle( Request $request )  {
 
-			return $this->dependency->foo . $request->bar . $view;
+			$request->body = $this->dependency->foo . $request->bar;
 
-		}
-
-		public function teams( Request $request, string $view, $team ) : string {
-
-			return $team;
+			return new TestResponse($request );
 
 		}
 
-		public function teamDependency ( Request $request, string $view, FavoriteTeam $team ) : string {
+		public function teams( Request $request, string $team )  {
 
-			return $team->name;
+			$request->body  = $team;
+
+			return new TestResponse($request );
+
+		}
+
+		public function teamDependency ( Request $request, FavoriteTeam $team )  {
+
+			$request->body  = $team->name;
+
+			return new TestResponse($request );
+
 
 		}
 

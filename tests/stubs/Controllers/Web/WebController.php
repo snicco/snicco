@@ -8,14 +8,16 @@
 
 	class WebController {
 
-		public function handle( Request $request, $view ) {
+		public function handle( Request $request ) {
 
+			$request->body = 'web_controller';
 
-			return 'web_controller';
+			return new TestResponse($request);
+
 
 		}
 
-		public function request( Request $request, $view ) {
+		public function request( Request $request ) {
 
 			$request->body .= 'web_controller';
 
@@ -23,9 +25,17 @@
 
 		}
 
-		public function nullResponse( Request $request ) {
+		public function nullResponse( Request $request) {
 
 			$foo = 'bar';
+
+		}
+
+		public function assertNoView ( Request $request , string $no_view ) {
+
+			$request->body  = $no_view;
+
+			return new TestResponse($request);
 
 		}
 
