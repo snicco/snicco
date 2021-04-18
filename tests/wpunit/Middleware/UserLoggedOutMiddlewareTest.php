@@ -1,6 +1,6 @@
 <?php
 
-namespace WPEmergeTests\Input;
+namespace Tests\wpunit\Responses;
 
 use Codeception\TestCase\WPTestCase;
 use Mockery;

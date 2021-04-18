@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmergeTestTools\Handlers;
+	namespace Tests\stubs\Handlers;
 
 	use WPEmerge\Requests\Request;
 

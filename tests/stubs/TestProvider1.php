@@ -1,20 +1,24 @@
 <?php
 
 
-	namespace WPEmergeTestTools;
+	namespace Tests\stubs;
 
 	use Contracts\ContainerAdapter;
 	use WPEmerge\Contracts\ServiceProviderInterface;
 
-	class TestProvider2 implements ServiceProviderInterface {
+	class TestProvider1 implements ServiceProviderInterface {
 
 
 		public function register( ContainerAdapter $container ) {
-			// TODO: Implement register() method.
+
+			$container['foo'] = 'bar';
+
 		}
 
 		public function bootstrap( ContainerAdapter $container ) {
-			// TODO: Implement bootstrap() method.
+
+			$container['bar'] = 'baz';
+
 		}
 
 	}

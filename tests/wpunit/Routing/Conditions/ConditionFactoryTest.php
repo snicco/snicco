@@ -1,6 +1,6 @@
 <?php
 
-namespace WPEmergeTests\Routing\Conditions;
+namespace Tests\wpunit\Routing\Conditions;
 
 use Codeception\TestCase\WPTestCase;
 use Mockery;

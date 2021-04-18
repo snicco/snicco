@@ -1,6 +1,6 @@
 <?php
 
-namespace WPEmergeTestTools;
+namespace Tests\stubs;
 
 class TestService {
 

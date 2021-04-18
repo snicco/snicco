@@ -1,23 +1,27 @@
 <?php
 
-namespace WPEmergeTests\View;
 
-use PHPUnit\Framework\TestCase;
-use WPEmerge\View\HasNameTrait;
+	namespace Tests\wpunit\View;
 
-/**
- * @coversDefaultClass \WPEmerge\View\HasNameTrait
- */
-class HasNameTraitTest extends TestCase {
+	use PHPUnit\Framework\TestCase;
+	use WPEmerge\View\HasNameTrait;
+
 	/**
-	 * @covers ::getName
-	 * @covers ::setName
+	 * @coversDefaultClass \WPEmerge\View\HasNameTrait
 	 */
-	public function testGetNameContext() {
-		$subject = $this->getMockForTrait( HasNameTrait::class );
-		$expected = 'foo';
+	class HasNameTraitTest extends TestCase {
 
-		$subject->setName( $expected );
-		$this->assertEquals( $expected, $subject->getName() );
+		/**
+		 * @covers ::getName
+		 * @covers ::setName
+		 */
+		public function testGetNameContext() {
+
+			$subject  = $this->getMockForTrait( HasNameTrait::class );
+			$expected = 'foo';
+
+			$subject->setName( $expected );
+			$this->assertEquals( $expected, $subject->getName() );
+		}
+
 	}
-}

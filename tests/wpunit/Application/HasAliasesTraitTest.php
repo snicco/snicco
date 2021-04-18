@@ -1,6 +1,6 @@
 <?php
 
-namespace WpEmergeTests\wpunit\Application;
+namespace Tests\wpunit\Application;
 
 use Codeception\TestCase\WPTestCase;
 use Mockery;
@@ -61,7 +61,7 @@ class HasAliasesTraitTest extends WPTestCase {
 	public function testSetAlias_String_ResolveFromContainer() {
 		$alias = 'test';
 		$service_key = 'test_service';
-		$service = new \WPEmergeTestTools\TestService();
+		$service = new \Tests\stubs\TestService();
 
 		$this->resolver->shouldReceive( 'resolve' )
 			->with( $service_key )
@@ -81,7 +81,7 @@ class HasAliasesTraitTest extends WPTestCase {
 	public function testSetAlias_StringWithMethod_ResolveFromContainer() {
 		$alias = 'test';
 		$service_key = 'test_service';
-		$service = new \WPEmergeTestTools\TestService();
+		$service = new \Tests\stubs\TestService();
 
 		$this->resolver->shouldReceive( 'resolve' )
 			->with( $service_key )

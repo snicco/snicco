@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmergeTests\wpunit\Application;
+	namespace Tests\wpunit\Application;
 
 	use Codeception\TestCase\WPTestCase;
 	use Exception;

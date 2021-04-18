@@ -1,6 +1,6 @@
 <?php
 
-namespace WPEmergeTests\Requests;
+namespace Tests\wpunit\Request;
 
 use PHPUnit\Framework\TestCase;
 use WPEmerge\Requests\Request;

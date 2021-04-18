@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmergeTests\wpunit\Middleware;
+	namespace Tests\wpunit\Responses;
 
 	use Codeception\PHPUnit\TestCase;
 	use Mockery;

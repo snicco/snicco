@@ -1,6 +1,6 @@
 <?php
 
-namespace WPEmergeTests\View;
+namespace Tests\wpunit\View;
 
 use PHPUnit\Framework\TestCase;
 use WPEmerge\View\HasContextTrait;

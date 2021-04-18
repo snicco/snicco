@@ -1,6 +1,6 @@
 <?php
 
-namespace WPEmergeTests\Responses;
+namespace Tests\wpunit\Responses;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;

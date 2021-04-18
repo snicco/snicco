@@ -1,6 +1,6 @@
 <?php
 
-namespace WPEmergeTests\Helpers;
+namespace Tests\wpunit\Helpers;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;

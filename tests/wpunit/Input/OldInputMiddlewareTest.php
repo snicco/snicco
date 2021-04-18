@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmergeTests\Input;
+	namespace Tests\wpunit\Responses;
 
 	use Mockery;
 	use PHPUnit\Framework\TestCase;

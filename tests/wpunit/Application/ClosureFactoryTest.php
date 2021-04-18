@@ -1,6 +1,6 @@
 <?php
 
-namespace WpEmergeTests\wpunit\Application;
+namespace Tests\wpunit\Application;
 
 use Codeception\TestCase\WPTestCase;
 use Mockery;

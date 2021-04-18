@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmergeTests\View;
+	namespace Tests\wpunit\View;
 
 	use Codeception\TestCase\WPTestCase;
 	use Mockery;

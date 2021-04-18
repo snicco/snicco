@@ -1,13 +1,13 @@
 <?php
 
 
-	namespace WpEmergeTests\wpunit\Application;
+	namespace Tests\wpunit\Application;
 
 	use PHPUnit\Framework\TestCase;
 	use SniccoAdapter\BaseContainerAdapter;
 	use WPEmerge\Application\GenericFactory;
 	use WPEmerge\Exceptions\ClassNotFoundException;
-	use WPEmergeTestTools\TestService;
+	use Tests\stubs\TestService;
 
 	/**
 	 * @coversDefaultClass \WPEmerge\Application\GenericFactory
