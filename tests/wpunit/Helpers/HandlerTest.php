@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmergeTests\Helpers;
+	namespace WPEmergeTests\wpunit\Helpers;
 
 	use Mockery;
 	use PHPUnit\Framework\TestCase;
@@ -191,7 +191,7 @@
 				'namespace' => 'WPEmergeTestTools\\',
 			];
 
-			$subject = new Handler( $this->factory, [ 'TestService' ], 'defaultMethod', 'WPEmergeTestTools\\' );
+			$subject = new Handler( $this->factory, [ 'TestService' ], 'defaultMethod', 'WPEmergeTestTools\\', ['WPEmergeTestTools'] );
 
 			$this->assertEquals( $expected, $subject->get() );
 		}
@@ -210,7 +210,7 @@
 				'namespace' => 'WPEmergeTestTools\\',
 			];
 
-			$subject = new Handler( $this->factory, [ \TestService::class ], 'defaultMethod', 'WPEmergeTestTools\\' );
+			$subject = new Handler( $this->factory, [ \TestService::class ], 'defaultMethod', 'WPEmergeTestTools\\', ['WPEmergeTestTools'] );
 
 			$this->assertEquals( $expected, $subject->get() );
 		}
@@ -305,8 +305,9 @@
 		 */
 		public function passing_the_fully_namespaced_class_works () {
 
-			$subject = new Handler( $this->factory, 'WPEmergeTests\\Helpers\\HandlerTestMock@foo' );
+			$subject = new Handler( $this->factory, 'WPEmergeTests\\wpunit\\Helpers\\HandlerTestMock@foo' );
 			$this->assertInstanceOf( HandlerTestMock::class, $subject->make() );
+
 		}
 
 		/**
@@ -315,7 +316,7 @@
 		 */
 		public function passing_the_namespace_as_a_prefix_works() {
 
-			$subject = new Handler( $this->factory, 'HandlerTestMock@foo', '', 'WPEmergeTests\\Helpers\\' );
+			$subject = new Handler( $this->factory, 'HandlerTestMock@foo', '', 'WPEmergeTests\\wpunit\\Helpers\\' );
 			$this->assertInstanceOf( HandlerTestMock::class, $subject->make() );
 		}
 

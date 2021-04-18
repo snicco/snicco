@@ -196,7 +196,7 @@
 		}
 
 
-		public function run( RequestInterface $request, $middleware, $handler, $arguments = [] ) : ResponseInterface {
+		public function run( RequestInterface $request, $middleware, $handler, $arguments = [] ) {
 
 			// whoops
 			$this->error_handler->register();
