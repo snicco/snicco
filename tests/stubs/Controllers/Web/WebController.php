@@ -23,4 +23,10 @@
 
 		}
 
+		public function nullResponse( Request $request ) {
+
+			$foo = 'bar';
+
+		}
+
 	}

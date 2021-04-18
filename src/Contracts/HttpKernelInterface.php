@@ -42,6 +42,6 @@
 		 *
 		 * @return ResponseInterface|null
 		 */
-		public function handleRequest( RequestInterface $request, $arguments = [] );
+		public function handleRequest( RequestInterface $request, array $arguments = [] );
 
 	}
