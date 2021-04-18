@@ -1,0 +1,52 @@
+<?php
+
+
+	namespace WPEmergeTestTools\Handlers;
+
+	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Requests\Request;
+
+	class ClassHandlerConstructorDependency {
+
+
+		/**
+		 */
+		private $dependency;
+
+		public function __construct( Dependency $foo ) {
+
+			$this->dependency = $foo;
+		}
+
+		public function handle( Request $request, string $view ) : string {
+
+			return $this->dependency->foo . $request->bar . $view;
+
+		}
+
+		public function teams( Request $request, string $view, $team ) : string {
+
+			return $team;
+
+		}
+
+		public function teamDependency ( RequestInterface $request, string $view, FavoriteTeam $team ) : string {
+
+			return $team->name;
+
+		}
+
+	}
+
+	class Dependency {
+
+		public $foo  = 'foo';
+
+	}
+
+	class FavoriteTeam {
+
+		public $name = 'dortmund';
+
+	}
+

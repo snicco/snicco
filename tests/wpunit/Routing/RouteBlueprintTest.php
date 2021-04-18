@@ -91,7 +91,7 @@
 			             ->andReturn( 'condition' )
 			             ->once();
 
-			$this->assertSame( $this->subject, $this->subject->url( 'foo', [ 'bar' => 'baz' ] ) );
+ 			$this->assertSame( $this->subject, $this->subject->url( 'foo', [ 'bar' => 'baz' ] ) );
 
 			$this->assertEquals( 'condition', $this->subject->getAttribute( 'condition' ) );
 		}

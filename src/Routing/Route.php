@@ -27,6 +27,7 @@ class Route implements RouteInterface, HasQueryFilterInterface {
 	 * {@inheritDoc}
 	 */
 	public function isSatisfied( RequestInterface $request ) {
+
 		$methods = $this->getAttribute( 'methods', [] );
 		$condition = $this->getAttribute( 'condition' );
 

@@ -20,7 +20,8 @@
 
 			$container[ WPEMERGE_RESPONSE_SERVICE_KEY ] = function ( $c ) {
 
-				return new ResponseService( $c[ WPEMERGE_REQUEST_KEY ], $c[ WPEMERGE_VIEW_SERVICE_KEY ] );
+				return new ResponseService( $c[ WPEMERGE_REQUEST_KEY ], $c[ WPEMERGE_VIEW_SERVICE_KEY ]);
+
 			};
 
 			$app = $container[ WPEMERGE_APPLICATION_KEY ];

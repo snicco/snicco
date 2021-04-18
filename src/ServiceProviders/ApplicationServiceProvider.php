@@ -56,7 +56,12 @@
 
 			$container->bind( WPEMERGE_HELPERS_HANDLER_FACTORY_KEY, function ( $container ) {
 
-				return new HandlerFactory( $container[ WPEMERGE_APPLICATION_GENERIC_FACTORY_KEY ] );
+				return new HandlerFactory(
+					$container[ WPEMERGE_APPLICATION_GENERIC_FACTORY_KEY ],
+					// $container is the concrete implementation. In the default setup the illuminate
+					// container
+					$container[WPEMERGE_CONTAINER_ADAPTER],
+				);
 
 			} );
 

@@ -20,6 +20,7 @@
 			$container[ WPEMERGE_REQUEST_KEY ] = function () {
 
 				return Request::fromGlobals();
+
 			};
 
 		}

@@ -36,6 +36,7 @@
     "php": "^7.3",
     "guzzlehttp/psr7": "^1.5",
     "calvinalkan/base-container": "dev-master",
+    "illuminate/collections": "8.35.1",
     "ext-json": "*"
   },
   "require-dev": {

@@ -63,6 +63,6 @@ class ReadsHandlerMiddlewareTraitImplementation {
 	use ReadsHandlerMiddlewareTrait;
 
 	public function publicGetHandlerMiddleware() {
-		return call_user_func_array( [$this, 'getHandlerMiddleware'], func_get_args() );
+		return call_user_func_array( [$this, 'getControllerMiddleware' ], func_get_args() );
 	}
 }
