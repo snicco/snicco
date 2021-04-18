@@ -21,6 +21,7 @@
 	use WPEmerge\Contracts\HasQueryFilterInterface;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Routing\SortsMiddlewareTrait;
+	use WPEmerge\Support\Arr;
 	use WPEmerge\View\ViewService;
 
 	class HttpKernel implements HttpKernelInterface {
@@ -205,9 +206,14 @@
 			$this->error_handler->unregister();
 
 			return $response;
+
 		}
 
-		public function handleRequest( RequestInterface $request, $arguments = [] ) : ?ResponseInterface {
+		public function handleRequest( RequestInterface $request, $arguments = []  )  {
+
+			$arguments = \Illuminate\Support\Arr::wrap($arguments);
+
+			$view = $arguments[0];
 
 			$route = $this->router->execute( $request );
 
@@ -222,9 +228,15 @@
 
 			$middleware = $route->getAttribute( 'middleware', [] );
 			$handler    = $route->getAttribute( 'handler' );
-			$arguments  = array_merge( [ $request ], $arguments, $route_arguments );
+			$route_arguments  = array_merge( [ $request ], $route_arguments );
 
-			$response = $this->run( $request, $middleware, $handler, $arguments );
+			$response = $this->run( $request, $middleware, $handler, $route_arguments );
+
+			if ( $response === null ) {
+
+				return $view;
+
+			}
 
 			$this->container[ WPEMERGE_RESPONSE_KEY ] = $response;
 
@@ -267,8 +279,8 @@
 			// Web. Use 3100 so it's high enough and has uncommonly used numbers
 			// before and after. For example, 1000 is too common and it would have 999 before it
 			// which is too common as well.).
-			add_action( 'request', [ $this, 'filterRequest' ], 3100 );
-			add_action( 'template_include', [ $this, 'filterTemplateInclude' ], 3100 );
+			add_filter( 'request', [ $this, 'filterRequest' ], 3100 );
+			add_filter( 'template_include', [ $this, 'filterTemplateInclude' ], 3100 );
 
 			// Ajax.
 			add_action( 'admin_init', [ $this, 'registerAjaxAction' ] );
@@ -330,6 +342,7 @@
 			if ( $response instanceof ResponseInterface ) {
 
 				if ( $response->getStatusCode() === 404 ) {
+
 					$wp_query->set_404();
 				}
 
@@ -376,7 +389,7 @@
 		 */
 		public function actionAjax() {
 
-			$response = $this->handleRequest( $this->request, [ '' ] );
+			$response = $this->handleRequest( $this->request );
 
 			if ( ! $response instanceof ResponseInterface ) {
 				return;
@@ -461,7 +474,7 @@
 		 */
 		public function actionAdminLoad() {
 
-			$response = $this->handleRequest( $this->request, [ '' ] );
+			$response = $this->handleRequest( $this->request );
 
 			if ( ! $response instanceof ResponseInterface ) {
 				return;

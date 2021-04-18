@@ -1,0 +1,6 @@
+<?php
+
+
+?>
+
+Welcome to Wordpress
