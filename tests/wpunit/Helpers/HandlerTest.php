@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmergeTests\wpunit\Helpers;
+	namespace Tests\wpunit\Helpers;
 
 	use Mockery;
 	use PHPUnit\Framework\TestCase;
@@ -70,7 +70,7 @@
 		 */
 		public function exceptions_get_raised_for_empty_array_handlers() {
 
-			$this->expectExceptionMessage('No or invalid handler');
+			$this->expectExceptionMessage( 'No or invalid handler' );
 
 			new Handler( $this->factory, [] );
 
@@ -84,7 +84,7 @@
 		 */
 		public function exceptions_get_raised_for_malformed_arrays() {
 
-			$this->expectExceptionMessage('No or invalid handler');
+			$this->expectExceptionMessage( 'No or invalid handler' );
 
 			new Handler( $this->factory, [ '', TestService::class, 'foo' ] );
 
@@ -98,7 +98,7 @@
 		 */
 		public function exceptions_get_raised_for_array_handlers_without_method() {
 
-			$this->expectExceptionMessage('No or invalid handler');
+			$this->expectExceptionMessage( 'No or invalid handler' );
 
 			new Handler( $this->factory, [ TestService::class ] );
 		}
@@ -149,7 +149,7 @@
 		 */
 		public function exceptions_for_array_handler_with_empty_method() {
 
-			$this->expectExceptionMessage('No or invalid handler');
+			$this->expectExceptionMessage( 'No or invalid handler' );
 
 			new Handler( $this->factory, [ TestService::class, '' ] );
 
@@ -191,7 +191,7 @@
 				'namespace' => 'WPEmergeTestTools\\',
 			];
 
-			$subject = new Handler( $this->factory, [ 'TestService' ], 'defaultMethod', 'WPEmergeTestTools\\', ['WPEmergeTestTools'] );
+			$subject = new Handler( $this->factory, [ 'TestService' ], 'defaultMethod', 'WPEmergeTestTools\\', [ 'WPEmergeTestTools' ] );
 
 			$this->assertEquals( $expected, $subject->get() );
 		}
@@ -210,7 +210,7 @@
 				'namespace' => 'WPEmergeTestTools\\',
 			];
 
-			$subject = new Handler( $this->factory, [ \TestService::class ], 'defaultMethod', 'WPEmergeTestTools\\', ['WPEmergeTestTools'] );
+			$subject = new Handler( $this->factory, [ \TestService::class ], 'defaultMethod', 'WPEmergeTestTools\\', [ 'WPEmergeTestTools' ] );
 
 			$this->assertEquals( $expected, $subject->get() );
 		}
@@ -242,7 +242,7 @@
 		 */
 		public function parsing_from_a_string_without_default_does_not_work() {
 
-			$this->expectExceptionMessage('No or invalid handler');
+			$this->expectExceptionMessage( 'No or invalid handler' );
 
 			new Handler( $this->factory, 'WPEmergeTestTools\\TestService' );
 		}
@@ -303,9 +303,9 @@
 		 * @test
 		 * @covers ::make
 		 */
-		public function passing_the_fully_namespaced_class_works () {
+		public function passing_the_fully_namespaced_class_works() {
 
-			$subject = new Handler( $this->factory, 'WPEmergeTests\\wpunit\\Helpers\\HandlerTestMock@foo' );
+			$subject = new Handler( $this->factory, 'Tests\\wpunit\\Helpers\\HandlerTestMock@foo' );
 			$this->assertInstanceOf( HandlerTestMock::class, $subject->make() );
 
 		}
@@ -316,7 +316,7 @@
 		 */
 		public function passing_the_namespace_as_a_prefix_works() {
 
-			$subject = new Handler( $this->factory, 'HandlerTestMock@foo', '', 'WPEmergeTests\\wpunit\\Helpers\\' );
+			$subject = new Handler( $this->factory, 'HandlerTestMock@foo', '', 'Tests\\wpunit\\Helpers\\' );
 			$this->assertInstanceOf( HandlerTestMock::class, $subject->make() );
 		}
 
@@ -326,7 +326,7 @@
 		 */
 		public function an_exception_gets_raised_for_non_existing_namespaced_classes() {
 
-			$this->expectExceptionMessage('Class not found');
+			$this->expectExceptionMessage( 'Class not found' );
 
 			$subject = new Handler( $this->factory, 'HandlerTestMock@foo', '', 'WPEmergeTests\\NonexistentNamespace\\' );
 			$subject->make();
@@ -367,15 +367,13 @@
 
 			$subject = new Handler( $this->factory, HandlerTestControllerMock::class . '@foobar' );
 
-
-			$subject->setExecutable( function ($callable, $params ) {
+			$subject->setExecutable( function ( $callable, $params ) {
 
 				$container = new BaseContainerAdapter();
 
-				return $container->call($callable, $params);
+				return $container->call( $callable, $params );
 
 			} );
-
 
 			$this->assertEquals( $expected, $subject->execute( 'foo', 'bar' ) );
 		}

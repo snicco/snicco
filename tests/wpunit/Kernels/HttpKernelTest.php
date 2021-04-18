@@ -143,21 +143,19 @@
 		public function testExecuteHandler_ValidResponse_Response() {
 
 			$expected = Mockery::mock( ResponseInterface::class );
-			$handler  = function () use ( $expected ) {
+			$closure  = function () use ( $expected ) {
 
 				return $expected;
 
 			};
 
-			$this->factory_handler->shouldReceive('controllerMiddleware')->once()->andReturn([]);
-
-			$this->factory_handler->shouldReceive( 'make' )
-			                      ->andReturn( $handler );
+			$this->factory_handler->shouldReceive( 'controllerMiddleware' )->once()
+			                      ->andReturn( [] );
 
 			$this->factory_handler->shouldReceive( 'execute' )
-			                      ->andReturnUsing( $handler );
+			                      ->andReturnUsing( $closure );
 
-			$this->assertSame( $expected, $this->subject->run( $this->request, [], $handler ) );
+			$this->assertSame( $expected, $this->subject->run( $this->request, [], $this->factory_handler ) );
 		}
 
 		/**
@@ -167,13 +165,14 @@
 
 			$this->expectExceptionMessage( 'Response returned by controller is not valid' );
 
+			$this->factory_handler->shouldReceive( 'controllerMiddleware' )->once()
+			                      ->andReturn( [] );
 
-			$this->factory_handler->shouldReceive('controllerMiddleware')->once()->andReturn([]);
-
-			$handler       = function () {
+			$closure = function () {
 
 				return null;
 			};
+
 			$error_handler = Mockery::mock( ErrorHandlerInterface::class )->shouldIgnoreMissing();
 			$subject       = new HttpKernel(
 				$this->container,
@@ -186,11 +185,8 @@
 				$error_handler
 			);
 
-			$this->factory_handler->shouldReceive( 'make' )
-			                      ->andReturn( $handler );
-
 			$this->factory_handler->shouldReceive( 'execute' )
-			                      ->andReturnUsing( $handler );
+			                      ->andReturnUsing( $closure );
 
 			$error_handler->shouldReceive( 'getResponse' )
 			              ->andReturnUsing( function ( $request, $exception ) {
@@ -198,7 +194,7 @@
 				              throw $exception;
 			              } );
 
-			$subject->run( $this->request, [], $handler );
+			$subject->run( $this->request, [], $this->factory_handler );
 		}
 
 		/**
@@ -206,17 +202,15 @@
 		 */
 		public function testRun_Middleware_ExecutedInOrder() {
 
-			$handler = function () {
+			$closure = function () {
 
 				return ( new Psr7\Response() )->withBody( Psr7\stream_for( 'Handler' ) );
 			};
 
-			$this->factory_handler->shouldReceive('controllerMiddleware')->once()->andReturn([]);
+			$this->factory_handler->shouldReceive( 'controllerMiddleware' )->once()
+			                      ->andReturn( [] );
 
-
-			$this->factory_handler->shouldReceive( 'make' )
-			                      ->andReturn( $handler );
-
+			// making the middleware
 			$this->factory->shouldReceive( 'make' )
 			              ->andReturnUsing( function ( $class ) {
 
@@ -225,7 +219,7 @@
 			              } );
 
 			$this->factory_handler->shouldReceive( 'execute' )
-			                      ->andReturnUsing( $handler );
+			                      ->andReturnUsing( $closure );
 
 			$this->subject->setMiddleware( [
 				'middleware2' => HttpKernelTestMiddlewareStub2::class,
@@ -245,7 +239,7 @@
 				'middleware3',
 				'middleware2',
 				'global',
-			], $handler );
+			], $this->factory_handler );
 
 			$this->assertEquals( 'FooBarBazHandler', $response->getBody()->read( 999 ) );
 		}
@@ -257,20 +251,19 @@
 
 			$this->expectExceptionMessage( 'Test exception handled' );
 
-			$this->factory_handler->shouldReceive('controllerMiddleware')->once()->andReturn([]);
-
+			$this->factory_handler->shouldReceive( 'controllerMiddleware' )->once()
+			                      ->andReturn( [] );
 
 			$exception = new Exception();
-			$handler   = function () use ( $exception ) {
+			$closure   = function () use ( $exception ) {
 
 				throw $exception;
 			};
 
-			$this->factory_handler->shouldReceive( 'make' )
-			                      ->andReturn( $handler );
+
 
 			$this->factory_handler->shouldReceive( 'execute' )
-			                      ->andReturnUsing( $handler );
+			                      ->andReturnUsing( $closure );
 
 			$this->error_handler->shouldReceive( 'getResponse' )
 			                    ->with( $this->request, $exception )
@@ -279,7 +272,7 @@
 				                    throw new Exception( 'Test exception handled' );
 			                    } );
 
-			$this->subject->run( $this->request, [], $handler );
+			$this->subject->run( $this->request, [], $this->factory_handler );
 		}
 
 		/**

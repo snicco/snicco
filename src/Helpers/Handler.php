@@ -98,7 +98,7 @@
 		 * Make an instance of the handler.
 		 *
 		 * @return object
-		 * @throws ClassNotFoundException
+		 * @throws ClassNotFoundException|\ReflectionException
 		 */
 		public function make() {
 
@@ -118,7 +118,7 @@
 			}
 			catch ( ClassNotFoundException $e ) {
 
-				throw new ClassNotFoundException( 'Class not found - tried to find: ' . $class . ', in three namespaces in your wpemerge config' );
+				throw new ClassNotFoundException( 'Class not found - tried to find: ' . $class . ', in three namespaces in of your config' );
 			}
 
 			return $this->factory->make( $full_class_path );
@@ -160,29 +160,8 @@
 		/**
 		 * Execute the parsed handler with any provided arguments and return the result.
 		 *
-		 * @param  mixed ,...$arguments
-		 *
 		 * @return mixed
-		 */
-		public function _execute() {
-
-			$arguments = func_get_args();
-			$instance  = $this->make();
-
-			if ( $instance instanceof Closure ) {
-				return call_user_func_array( $instance, $arguments );
-			}
-
-			return call_user_func_array( [ $instance, $this->get()['method'] ], $arguments );
-
-
-		}
-
-
-		/**
-		 * Execute the parsed handler with any provided arguments and return the result.
-		 *
-		 * @return mixed
+		 * @throws \ReflectionException
 		 */
 		public function execute() {
 
@@ -193,8 +172,6 @@
 			if ( $handler instanceof Closure ) {
 
 				return call_user_func_array( $handler, $arguments );
-				// Dont force to accept and empty view if not on web route.
-				// return call_user_func_array( $instance, $this->trimArguments( $arguments ) );
 
 			}
 
@@ -318,7 +295,6 @@
 
 
 		}
-
 
 		private function trimArguments( $arguments ) : array {
 
