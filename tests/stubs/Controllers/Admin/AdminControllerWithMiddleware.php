@@ -38,7 +38,7 @@
 
 		}
 
-		public function handle( Request $request, $view) {
+		public function handle( Request $request) {
 
 			$request->body .= 'admin_controller' . $this->dependency->add_to_response;
 

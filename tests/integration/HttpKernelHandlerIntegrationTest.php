@@ -65,15 +65,10 @@
 
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
 
-			$handler_response = 'foobarindex';
 
-			$this->response_service->shouldReceive( 'output' )
-			                       ->with( $handler_response )
-			                       ->andReturn( $this->response( $handler_response ) );
+			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
-			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
-
-			$this->assertSame( 'foobarindex', $this->responseBody( $response ) );
+			$this->assertSame( 'foobar', $test_response->body() );
 
 		}
 
@@ -89,13 +84,10 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/teams/dortmund' );
 
-			$this->response_service->shouldReceive( 'output' )
-			                       ->with( 'dortmund' )
-			                       ->andReturn( $this->response( 'dortmund' ) );
 
-			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
-			$this->assertSame( 'dortmund', $this->responseBody( $response ) );
+			$this->assertSame( 'dortmund', $test_response->body()  );
 
 
 		}
@@ -111,13 +103,10 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/' );
 
-			$this->response_service->shouldReceive( 'output' )
-			                       ->with( 'dortmund' )
-			                       ->andReturn( $this->response( 'dortmund' ) );
 
-			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
-			$this->assertSame( 'dortmund', $this->responseBody( $response ) );
+			$this->assertSame( 'dortmund', $test_response->body() );
 
 		}
 
@@ -132,13 +121,10 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/web' );
 
-			$this->response_service->shouldReceive( 'output' )
-			                       ->with( 'web_controller' )
-			                       ->andReturn( $this->response( 'web_controller' ) );
 
-			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
-			$this->assertSame( 'web_controller', $this->responseBody( $response ) );
+			$this->assertSame( 'web_controller', $test_response->body() );
 
 
 		}
@@ -154,13 +140,10 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/admin' );
 
-			$this->response_service->shouldReceive( 'output' )
-			                       ->with( 'admin_controller' )
-			                       ->andReturn( $this->response( 'admin_controller' ) );
 
-			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
-			$this->assertSame( 'admin_controller', $this->responseBody( $response ) );
+			$this->assertSame( 'admin_controller', $test_response->body() );
 
 
 		}
@@ -176,13 +159,9 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/ajax' );
 
-			$this->response_service->shouldReceive( 'output' )
-			                       ->with( 'ajax_controller' )
-			                       ->andReturn( $this->response( 'ajax_controller' ) );
+			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
-			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
-
-			$this->assertSame( 'ajax_controller', $this->responseBody( $response ) );
+			$this->assertSame( 'ajax_controller', $test_response->body() );
 
 		}
 

@@ -161,14 +161,14 @@
 		 * @return ResponseInterface
 		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		private function executeHandler( Handler $handler, $arguments = [] ) : ResponseInterface {
+		private function executeHandler( Handler $handler, $arguments = [] ) : ?ResponseInterface {
 
 
 			$response = call_user_func_array( [ $handler, 'execute' ], $arguments );
 
 			$response = $this->toResponse( $response );
 
-			if ( ! $response instanceof ResponseInterface ) {
+			if ( ! $response instanceof ResponseInterface && $response != null  ) {
 				throw new ConfigurationException(
 					'Response returned by controller is not valid ' .
 					'(expected ' . ResponseInterface::class . '; received ' . gettype( $response ) . ').'
@@ -213,7 +213,7 @@
 
 			$arguments = \Illuminate\Support\Arr::wrap($arguments);
 
-			$view = $arguments[0];
+			$view = $arguments[0] ?? null;
 
 			$route = $this->router->execute( $request );
 

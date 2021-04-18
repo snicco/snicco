@@ -75,8 +75,67 @@
 
 			$this->assertSame( $this->view_dir . 'welcome.wordpress.php', $response );
 
+		}
+
+		/** @test */
+		public function web_controllers_dont_receive_the_view_variable() {
+
+			TestApp::route()
+			       ->get()
+			       ->url( '/{no_view}' )
+			       ->handle( 'WebController@assertNoView' );
+
+			$this->request->shouldReceive( 'getUrl' )
+			              ->andReturn( 'https://wpemerge.test/no_view' );
+
+			$response = $this->kernel->handleRequest(
+				$this->request, $this->view_dir . 'welcome.wordpress.php'
+			);
+
+			$this->assertSame( 'no_view', $response->body() );
+
 
 		}
+
+		/** @test */
+		public function admin_controllers_dont_receive_the_view_variable() {
+
+			TestApp::route()
+			       ->get()
+			       ->url( '/{no_view}' )
+			       ->handle( 'AdminController@assertNoView' );
+
+			$this->request->shouldReceive( 'getUrl' )
+			              ->andReturn( 'https://wpemerge.test/no_view' );
+
+			$response = $this->kernel->handleRequest(
+				$this->request, $this->view_dir . 'welcome.wordpress.php'
+			);
+
+			$this->assertSame( 'no_view', $response->body() );
+
+		}
+
+		/** @test */
+		public function ajax_controllers_dont_receive_the_view_variable() {
+
+			TestApp::route()
+			       ->get()
+			       ->url( '/{no_view}' )
+			       ->handle( 'AjaxController@assertNoView' );
+
+			$this->request->shouldReceive( 'getUrl' )
+			              ->andReturn( 'https://wpemerge.test/no_view' );
+
+			$response = $this->kernel->handleRequest(
+				$this->request, $this->view_dir . 'welcome.wordpress.php'
+			);
+
+			$this->assertSame( 'no_view', $response->body() );
+
+
+		}
+
 
 
 		private function bootstrapTestApp() {

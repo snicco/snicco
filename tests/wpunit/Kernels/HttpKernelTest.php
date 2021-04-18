@@ -170,7 +170,8 @@
 
 			$closure = function () {
 
-				return null;
+				return 1;
+
 			};
 
 			$error_handler = Mockery::mock( ErrorHandlerInterface::class )->shouldIgnoreMissing();
