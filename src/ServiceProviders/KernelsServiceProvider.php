@@ -1,37 +1,45 @@
 <?php
-	/**
-	 * @package   WPEmerge
-	 * @author    Atanas Angelov <hi@atanas.dev>
-	 * @copyright 2017-2019 Atanas Angelov
-	 * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
-	 * @link      https://wpemerge.com/
-	 */
 
-	namespace WPEmerge\Kernels;
 
-	use WPEmerge\ServiceProviders\ExtendsConfigTrait;
-	use WPEmerge\ServiceProviders\ServiceProviderInterface;
+	namespace WPEmerge\ServiceProviders;
+
+	use WPEmerge\Csrf\CsrfMiddleware;
+	use WPEmerge\Flash\FlashMiddleware;
+	use WPEmerge\Input\OldInputMiddleware;
+	use WPEmerge\Kernels\HttpKernel;
+	use WPEmerge\Middleware\UserCanMiddleware;
+	use WPEmerge\Middleware\UserLoggedInMiddleware;
+	use WPEmerge\Middleware\UserLoggedOutMiddleware;
+
+	use const WPEMERGE_APPLICATION_GENERIC_FACTORY_KEY;
+	use const WPEMERGE_APPLICATION_KEY;
+	use const WPEMERGE_CONFIG_KEY;
+	use const WPEMERGE_CONTAINER_ADAPTER;
+	use const WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY;
+	use const WPEMERGE_HELPERS_HANDLER_FACTORY_KEY;
+	use const WPEMERGE_REQUEST_KEY;
+	use const WPEMERGE_RESPONSE_SERVICE_KEY;
+	use const WPEMERGE_ROUTING_ROUTER_KEY;
+	use const WPEMERGE_VIEW_SERVICE_KEY;
+	use const WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY;
 
 	/**
 	 * Provide old input dependencies.
 	 *
-	 * @codeCoverageIgnore
 	 */
 	class KernelsServiceProvider implements ServiceProviderInterface {
 
 		use ExtendsConfigTrait;
 
-		/**
-		 * {@inheritDoc}
-		 */
+
 		public function register( $container ) {
 			$this->extendConfig( $container, 'middleware', [
-				'flash'           => \WPEmerge\Flash\FlashMiddleware::class,
-				'old_input'       => \WPEmerge\Input\OldInputMiddleware::class,
-				'csrf'            => \WPEmerge\Csrf\CsrfMiddleware::class,
-				'user.logged_in'  => \WPEmerge\Middleware\UserLoggedInMiddleware::class,
-				'user.logged_out' => \WPEmerge\Middleware\UserLoggedOutMiddleware::class,
-				'user.can'        => \WPEmerge\Middleware\UserCanMiddleware::class,
+				'flash'           => FlashMiddleware::class,
+				'old_input'       => OldInputMiddleware::class,
+				'csrf'            => CsrfMiddleware::class,
+				'user.logged_in'  => UserLoggedInMiddleware::class,
+				'user.logged_out' => UserLoggedOutMiddleware::class,
+				'user.can'        => UserCanMiddleware::class,
 			] );
 
 			$this->extendConfig( $container, 'middleware_groups', [
@@ -79,7 +87,9 @@
 
 
 		public function bootstrap( $container ) {
+
 			// Nothing to bootstrap.
+
 		}
 
 	}
