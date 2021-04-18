@@ -30,7 +30,6 @@
 		use HasMiddlewareDefinitionsTrait;
 		use SortsMiddlewareTrait;
 		use ConvertsToResponseTrait;
-		use ReadsHandlerMiddlewareTrait;
 		use ExecutesMiddlewareTrait;
 
 		/**
@@ -201,7 +200,7 @@
 			try {
 
 
-				$middleware = array_merge( $middleware, $this->getControllerMiddleware( $handler ) );
+				$middleware = array_merge( $middleware, $handler->controllerMiddleware() );
 
 				$middleware = $this->expandMiddleware( $middleware );
 				$middleware = $this->uniqueMiddleware( $middleware );
