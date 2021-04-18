@@ -16,7 +16,7 @@
 	/**
 	 * @covers \WPEmerge\Kernels\HttpKernel
 	 */
-	class HttpKernelIntegrationTest extends WPTestCase {
+	class HttpKernelHandlerIntegrationTest extends WPTestCase {
 
 
 		/**
@@ -71,7 +71,7 @@
 			                       ->with( $handler_response )
 			                       ->andReturn( $this->response( $handler_response ) );
 
-			$response = $this->kernel->handle( $this->request, [ 'index' ] );
+			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'foobarindex', $this->responseBody( $response ) );
 
@@ -92,7 +92,7 @@
 			                       ->with( 'dortmund' )
 			                       ->andReturn( $this->response( 'dortmund' ) );
 
-			$response = $this->kernel->handle( $this->request, [ 'index' ] );
+			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'dortmund', $this->responseBody( $response ) );
 
@@ -114,7 +114,7 @@
 			                       ->with( 'dortmund' )
 			                       ->andReturn( $this->response( 'dortmund' ) );
 
-			$response = $this->kernel->handle( $this->request, [ 'index' ] );
+			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'dortmund', $this->responseBody( $response ) );
 
@@ -135,7 +135,7 @@
 			                       ->with( 'web_controller' )
 			                       ->andReturn( $this->response( 'web_controller' ) );
 
-			$response = $this->kernel->handle( $this->request, [ 'index' ] );
+			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'web_controller', $this->responseBody( $response ) );
 
@@ -157,7 +157,7 @@
 			                       ->with( 'admin_controller' )
 			                       ->andReturn( $this->response( 'admin_controller' ) );
 
-			$response = $this->kernel->handle( $this->request, [ 'index' ] );
+			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'admin_controller', $this->responseBody( $response ) );
 
@@ -165,7 +165,7 @@
 		}
 
 		/** @test */
-		public function ajax_controllers_can_be_resolved_without_the_full_namespace(  ) {
+		public function ajax_controllers_can_be_resolved_without_the_full_namespace() {
 
 			TestApp::route()
 			       ->get()
@@ -179,7 +179,7 @@
 			                       ->with( 'ajax_controller' )
 			                       ->andReturn( $this->response( 'ajax_controller' ) );
 
-			$response = $this->kernel->handle( $this->request, [ 'index' ] );
+			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'ajax_controller', $this->responseBody( $response ) );
 
@@ -215,7 +215,7 @@
 
 		}
 
-		private function config() {
+		private function config() : array {
 
 			return [
 

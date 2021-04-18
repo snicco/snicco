@@ -9,7 +9,6 @@
 
 		public function handle( Request $request, $view) {
 
-
 			return 'ajax_controller';
 
 		}

@@ -25,9 +25,6 @@
 	use WPEmerge\Routing\SortsMiddlewareTrait;
 	use WPEmerge\View\ViewService;
 
-	/**
-	 * Describes how a request is handled.
-	 */
 	class HttpKernel implements HttpKernelInterface {
 
 		use HasMiddlewareDefinitionsTrait;
@@ -195,7 +192,6 @@
 			return $response;
 		}
 
-
 		public function run( RequestInterface $request, $middleware, $handler, $arguments = [] ) {
 
 			// whoops
@@ -226,8 +222,7 @@
 			return $response;
 		}
 
-
-		public function handle( RequestInterface $request, $arguments = [] ) : ?ResponseInterface {
+		public function handleRequest( RequestInterface $request, $arguments = [] ) : ?ResponseInterface {
 
 			$route = $this->router->execute( $request );
 
@@ -279,8 +274,8 @@
 			$view = $this->view_service->make( $this->template );
 
 			echo $view->toString();
-		}
 
+		}
 
 		public function bootstrap() {
 
@@ -344,7 +339,7 @@
 
 			$this->template = $template;
 
-			$response = $this->handle( $this->request, [ $template ] );
+			$response = $this->handleRequest( $this->request, [ $template ] );
 
 			// A route has matched so we use its response.
 			if ( $response instanceof ResponseInterface ) {
@@ -396,7 +391,7 @@
 		 */
 		public function actionAjax() {
 
-			$response = $this->handle( $this->request, [ '' ] );
+			$response = $this->handleRequest( $this->request, [ '' ] );
 
 			if ( ! $response instanceof ResponseInterface ) {
 				return;
@@ -481,7 +476,7 @@
 		 */
 		public function actionAdminLoad() {
 
-			$response = $this->handle( $this->request, [ '' ] );
+			$response = $this->handleRequest( $this->request, [ '' ] );
 
 			if ( ! $response instanceof ResponseInterface ) {
 				return;
