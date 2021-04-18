@@ -94,6 +94,13 @@ trait HasAliasesTrait {
 	 */
 	public function __call( string $method, array $parameters ) {
 
+		if ( method_exists($this, $method) ) {
+
+			return call_user_func_array([$this, $method], $parameters);
+
+		}
+
+
 		if ( ! $this->hasAlias( $method ) ) {
 			throw new BadMethodCallException( "Method {$method} does not exist." );
 		}

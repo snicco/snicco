@@ -7,17 +7,17 @@
 	use WPEmerge\Controllers\ControllersServiceProvider;
 	use WPEmerge\Csrf\CsrfServiceProvider;
 	use WPEmerge\Exceptions\ConfigurationException;
-	use WPEmerge\Exceptions\ExceptionsServiceProvider;
-	use WPEmerge\Flash\FlashServiceProvider;
-	use WPEmerge\Input\OldInputServiceProvider;
-	use WPEmerge\Kernels\KernelsServiceProvider;
-	use WPEmerge\Middleware\MiddlewareServiceProvider;
-	use WPEmerge\Requests\RequestsServiceProvider;
-	use WPEmerge\Responses\ResponsesServiceProvider;
-	use WPEmerge\Routing\RoutingServiceProvider;
+	use WPEmerge\ServiceProviders\ExceptionsServiceProvider;
+	use WPEmerge\ServiceProviders\KernelsServiceProvider;
+	use WPEmerge\ServiceProviders\MiddlewareServiceProvider;
+	use WPEmerge\ServiceProviders\RequestsServiceProvider;
+	use WPEmerge\ServiceProviders\ResponsesServiceProvider;
+	use WPEmerge\ServiceProviders\ApplicationServiceProvider;
+	use WPEmerge\ServiceProviders\RoutingServiceProvider;
+	use WPEmerge\ServiceProviders\FlashServiceProvider;
+	use WPEmerge\ServiceProviders\OldInputServiceProvider;
 	use WPEmerge\ServiceProviders\ServiceProviderInterface;
-	use WPEmerge\Support\Arr;
-	use WPEmerge\View\ViewServiceProvider;
+	use WPEmerge\ServiceProviders\ViewServiceProvider;
 
 	/**
 	 * Load core service providers that hold all internal services
@@ -45,6 +45,7 @@
 			OldInputServiceProvider::class,
 		];
 
+
 		/**
 		 *
 		 * Register and bootstrap all service providers.
@@ -53,55 +54,19 @@
 		 * @param  ContainerAdapter  $container
 		 *
 		 * @return void
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		private function _loadServiceProviders( ContainerAdapter $container ) {
-
-			$config = Arr::get( $container[ WPEMERGE_CONFIG_KEY ], 'providers', [] );
-
-			$container[ WPEMERGE_SERVICE_PROVIDERS_KEY ] = array_merge(
-				$this->service_providers,
-				$config
-			);
-
-			$service_providers = array_map( function ( $service_provider ) use ( $container ) {
-
-				if ( ! is_subclass_of( $service_provider, ServiceProviderInterface::class ) ) {
-					throw new ConfigurationException(
-						'The following class does not implement ' .
-						ServiceProviderInterface::class . ': ' . $service_provider
-					);
-				}
-
-				$container[ $service_provider ] = new $service_provider();
-
-				return $container[ $service_provider ];
-
-			}, $container[ WPEMERGE_SERVICE_PROVIDERS_KEY ] );
-
-			$this->registerServiceProviders( $service_providers, $container );
-
-			$this->bootstrapServiceProviders( $service_providers, $container );
-		}
-
 		private function loadServiceProviders( ContainerAdapter $container ) {
 
 			$user_providers = collect( $container[ WPEMERGE_CONFIG_KEY ] )->get( 'providers', [] );
 
-			$providers = collect($this->service_providers)->merge($user_providers);
+			$providers = collect( $this->service_providers )->merge( $user_providers );
 
 			$container[ WPEMERGE_SERVICE_PROVIDERS_KEY ] = $providers->all();
 
-			$providers = $providers->map( [ $this, 'isValid' ] )
-			                       ->map(function ($provider) use ($container) {
-
-				$instance = new $provider();
-
-				$container[ $provider ] = $instance;
-
-				return $instance;
-
-			})->all();
+			$providers = $providers->each( [ $this, 'isValid' ] )
+			                       ->map( [ $this, 'instantiate' ] )
+			                       ->each( [ $this, 'addToContainer' ] )
+			                       ->toArray();
 
 			$this->registerServiceProviders( $providers, $container );
 
@@ -144,7 +109,12 @@
 			}
 		}
 
-		private function isValid ( $provider ) : ServiceProviderInterface {
+		/**
+		 * @param  string  $provider
+		 *
+		 * @throws ConfigurationException
+		 */
+		private function isValid( string $provider ) {
 
 			if ( ! is_subclass_of( $provider, ServiceProviderInterface::class ) ) {
 				throw new ConfigurationException(
@@ -153,7 +123,27 @@
 				);
 			}
 
-			return $provider;
+		}
+
+		/**
+		 * @param  string  $provider
+		 *
+		 * @return ServiceProviderInterface
+		 */
+		private function instantiate( string $provider ) : ServiceProviderInterface {
+
+			return new $provider();
+
+		}
+
+		/**
+		 * @param  ServiceProviderInterface  $provider
+		 *
+		 */
+		private function addToContainer( ServiceProviderInterface $provider ) {
+
+			$this->container()[ get_class( $provider ) ] = $provider;
+
 
 		}
 

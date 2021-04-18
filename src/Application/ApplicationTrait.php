@@ -1,19 +1,10 @@
 <?php
-	/**
-	 * @package   WPEmerge
-	 * @author    Atanas Angelov <hi@atanas.dev>
-	 * @copyright 2017-2019 Atanas Angelov
-	 * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
-	 * @link      https://wpemerge.com/
-	 */
+
 
 	namespace WPEmerge\Application;
 
-	use App\PimpleAdapter;
 	use BadMethodCallException;
-	use Pimple\Container;
 	use WPEmerge\Exceptions\ConfigurationException;
-	use \WPEmerge\Application\ContainerAdapterInterface as ContainerInterface;
 
 	/**
 	 * Provides static access to an Application instance.
@@ -75,6 +66,7 @@
 		 * @return mixed
 		 */
 		public static function __callStatic( $method, $parameters ) {
+
 			$application = static::getApplication();
 			$callable    = [ $application, $method ];
 

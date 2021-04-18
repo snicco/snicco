@@ -4,21 +4,18 @@
 	namespace WPEmergeTests\wpunit\Application;
 
 	use Codeception\TestCase\WPTestCase;
-	use Contracts\ContainerAdapter;
-	use Mockery as m;
-	use SniccoAdapter\BaseContainerAdapter;
-	use WPEmerge\Application\ApplicationServiceProvider;
+	use WPEmerge\ServiceProviders\ApplicationServiceProvider;
 	use WPEmerge\Controllers\ControllersServiceProvider;
 	use WPEmerge\Csrf\CsrfServiceProvider;
-	use WPEmerge\Exceptions\ExceptionsServiceProvider;
-	use WPEmerge\Flash\FlashServiceProvider;
-	use WPEmerge\Input\OldInputServiceProvider;
-	use WPEmerge\Kernels\KernelsServiceProvider;
-	use WPEmerge\Middleware\MiddlewareServiceProvider;
-	use WPEmerge\Requests\RequestsServiceProvider;
-	use WPEmerge\Responses\ResponsesServiceProvider;
-	use WPEmerge\Routing\RoutingServiceProvider;
-	use WPEmerge\View\ViewServiceProvider;
+	use WPEmerge\ServiceProviders\ExceptionsServiceProvider;
+	use WPEmerge\ServiceProviders\FlashServiceProvider;
+	use WPEmerge\ServiceProviders\KernelsServiceProvider;
+	use WPEmerge\ServiceProviders\MiddlewareServiceProvider;
+	use WPEmerge\ServiceProviders\RequestsServiceProvider;
+	use WPEmerge\ServiceProviders\ResponsesServiceProvider;
+	use WPEmerge\ServiceProviders\RoutingServiceProvider;
+	use WPEmerge\ServiceProviders\OldInputServiceProvider;
+	use WPEmerge\ServiceProviders\ViewServiceProvider;
 	use WPEmergeTestTools\TestApp;
 	use WPEmergeTestTools\TestProvider1;
 	use WPEmergeTestTools\TestProvider2;
@@ -27,6 +24,7 @@
 	class LoadServiceProvidersTraitTest extends WPTestCase {
 
 		private $service_providers = [
+
 			ApplicationServiceProvider::class,
 			KernelsServiceProvider::class,
 			ExceptionsServiceProvider::class,
@@ -37,8 +35,15 @@
 			ControllersServiceProvider::class,
 			MiddlewareServiceProvider::class,
 			CsrfServiceProvider::class,
+
+
+			#
 			FlashServiceProvider::class,
+
+			#
 			OldInputServiceProvider::class,
+
+
 		];
 
 		/** @test */
@@ -61,7 +66,7 @@
 
 			foreach ( $this->service_providers  as $service_provider ) {
 
-				$this->assertTrue($container->offsetExists($service_provider));
+				$this->assertTrue($container->offsetExists($service_provider), $service_provider . ' not found in container.');
 
 			}
 
