@@ -1,34 +1,33 @@
 <?php
-/**
- * @package   WPEmerge
- * @author    Atanas Angelov <hi@atanas.dev>
- * @copyright 2017-2019 Atanas Angelov
- * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
- * @link      https://wpemerge.com/
- */
 
-namespace WPEmerge\Middleware;
 
-use WPEmerge\Contracts\HasControllerMiddlewareInterface;
-use WPEmerge\Helpers\Handler;
+	namespace WPEmerge\Middleware;
 
-/**
- * Describes how a request is handled.
- */
-trait ReadsHandlerMiddlewareTrait {
+	use WPEmerge\Contracts\HasControllerMiddlewareInterface;
+	use WPEmerge\Helpers\Handler;
+
 	/**
-	 * Get middleware registered with the given handler.
-	 *
-	 * @param  Handler  $handler
-	 * @return string[]
+	 * Describes how a request is handled.
 	 */
-	protected function getHandlerMiddleware( Handler $handler ) {
-		$instance = $handler->make();
+	trait ReadsHandlerMiddlewareTrait {
 
-		if ( ! $instance instanceof HasControllerMiddlewareInterface ) {
-			return [];
+		/**
+		 * Get middleware registered with the given handler.
+		 *
+		 * @param  Handler  $handler
+		 *
+		 * @return string[]
+		 * @throws \WPEmerge\Exceptions\ClassNotFoundException
+		 */
+		protected function getHandlerMiddleware( Handler $handler ) : array {
+
+			$instance = $handler->make();
+
+			if ( ! $instance instanceof HasControllerMiddlewareInterface ) {
+				return [];
+			}
+
+			return $instance->getMiddleware( $handler->get()['method'] );
 		}
 
-		return $instance->getMiddleware( $handler->get()['method'] );
 	}
-}

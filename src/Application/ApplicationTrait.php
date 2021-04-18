@@ -37,23 +37,21 @@
 		/**
 		 * Get the Application instance.
 		 *
-		 * @codeCoverageIgnore
 		 * @return Application|null
 		 */
-		public static function getApplication() {
+		public static function getApplication() : ?Application {
 			return static::$instance;
 		}
 
 		/**
 		 * Set the Application instance.
 		 *
-		 * @codeCoverageIgnore
 		 *
 		 * @param  Application|null  $application
 		 *
 		 * @return void
 		 */
-		public static function setApplication( $application ) {
+		public static function setApplication( ?Application $application ) {
 			static::$instance = $application;
 		}
 
@@ -61,11 +59,11 @@
 		 * Invoke any matching instance method for the static method being called.
 		 *
 		 * @param  string  $method
-		 * @param  array   $parameters
+		 * @param  array  $parameters
 		 *
 		 * @return mixed
 		 */
-		public static function __callStatic( $method, $parameters ) {
+		public static function __callStatic( string $method, array $parameters ) {
 
 			$application = static::getApplication();
 			$callable    = [ $application, $method ];
