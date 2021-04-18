@@ -1,16 +1,15 @@
 <?php
 
 
-	namespace WPEmergeTestTools\Controllers\Admin;
+	namespace Tests\stubs\Controllers\Ajax;
 
 	use WPEmerge\Requests\Request;
 
-	class AjaxController {
+	class AdminController {
 
 		public function handle( Request $request, $view) {
 
-
-			return 'ajax_controller';
+			return 'admin_controller';
 
 		}
 

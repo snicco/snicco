@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmergeTests\wpunit\Middleware;
+	namespace Tests\wpunit\Responses;
 
 	use GuzzleHttp\Psr7;
 	use GuzzleHttp\Psr7\Response as Psr7Response;

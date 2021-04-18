@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmergeTests\wpunit\Kernels;
+	namespace Tests\wpunit\Kernels;
 
 	use Closure;
 	use Codeception\TestCase\WPTestCase;

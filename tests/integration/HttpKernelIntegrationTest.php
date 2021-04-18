@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmergeTests\integration;
+	namespace Tests\integration;
 
 	use Codeception\TestCase\WPTestCase;
 	use GuzzleHttp\Psr7\Response as Psr7Response;
@@ -9,9 +9,9 @@
 	use Mockery as m;
 	use WPEmerge\Requests\Request;
 	use WPEmerge\Responses\ResponseService;
-	use WPEmergeTestTools\Handlers\ClassHandlerConstructorDependency;
-	use WPEmergeTestTools\IntegrationTestErrorHandler;
-	use WPEmergeTestTools\TestApp;
+	use Tests\stubs\Handlers\ClassHandlerConstructorDependency;
+	use Tests\stubs\IntegrationTestErrorHandler;
+	use Tests\stubs\TestApp;
 
 	/**
 	 * @covers \WPEmerge\Kernels\HttpKernel
@@ -221,9 +221,9 @@
 
 				'controller_namespaces' => [
 
-					'web'   => 'WPEmergeTestTools\Controllers\Web',
-					'admin' => 'WPEmergeTestTools\Controllers\Admin',
-					'ajax'  => 'WPEmergeTestTools\Controllers\Ajax',
+					'web'   => 'Tests\stubs\Controllers\Web',
+					'admin' => 'Tests\stubs\Controllers\Admin',
+					'ajax'  => 'Tests\stubs\Controllers\Ajax',
 
 				],
 

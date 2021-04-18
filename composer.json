@@ -48,8 +48,7 @@
   "autoload": {
     "psr-4": {
       "WPEmerge\\": "src/",
-      "WPEmergeTestTools\\": "tests/tools",
-      "WPEmergeTests\\" : "tests/"
+      "Tests\\" : "tests/"
     },
     "files": [
       "config.php"

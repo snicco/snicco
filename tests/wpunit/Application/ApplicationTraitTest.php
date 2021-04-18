@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WpEmergeTests\wpunit\Application;
+	namespace Tests\wpunit\Application;
 
 	use BadMethodCallException;
 	use Codeception\TestCase\WPTestCase;

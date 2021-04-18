@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmergeTests\wpunit\Application;
+	namespace Tests\wpunit\Application;
 
 	use Codeception\TestCase\WPTestCase;
 	use WPEmerge\ServiceProviders\ApplicationServiceProvider;
@@ -15,10 +15,10 @@
 	use WPEmerge\ServiceProviders\RoutingServiceProvider;
 	use WPEmerge\ServiceProviders\OldInputServiceProvider;
 	use WPEmerge\ServiceProviders\ViewServiceProvider;
-	use WPEmergeTestTools\TestApp;
-	use WPEmergeTestTools\TestProvider1;
-	use WPEmergeTestTools\TestProvider2;
-	use WPEmergeTestTools\TestService;
+	use Tests\stubs\TestApp;
+	use Tests\stubs\TestProvider1;
+	use Tests\stubs\TestProvider2;
+	use Tests\stubs\TestService;
 
 	class LoadServiceProvidersTraitTest extends WPTestCase {
 

@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmergeTests\View;
+	namespace Tests\wpunit\View;
 
 	use Codeception\TestCase\WPTestCase;
 	use Mockery;
@@ -10,7 +10,7 @@
 	use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\View\PhpViewFilesystemFinder;
 	use WPEmerge\Contracts\ViewInterface;
-	use WPEmergeTestTools\Helper;
+	use Tests\stubs\Helper;
 
 	/**
 	 * @coversDefaultClass \WPEmerge\View\PhpViewEngine

@@ -1,12 +1,12 @@
 <?php
 
-namespace WPEmergeTests\Helpers;
+namespace Tests\wpunit\Helpers;
 
 use Codeception\TestCase\WPTestCase;
 use Mockery;
 use stdClass;
 use WPEmerge\Helpers\MixedType;
-use WPEmergeTestTools\TestService;
+use Tests\stubs\TestService;
 
 /**
  * @coversDefaultClass \WPEmerge\Helpers\MixedType

@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmergeTests\ServiceProviders;
+	namespace Tests\wpunit\ServiceProviders;
 
 	use Codeception\PHPUnit\TestCase;
 	use SniccoAdapter\BaseContainerAdapter;

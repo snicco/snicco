@@ -10,7 +10,7 @@
 	use WPEmerge\Exceptions\ClassNotFoundException;
 	use WPEmerge\Helpers\Handler;
 	use stdClass;
-	use WPEmergeTestTools\TestService;
+	use Tests\stubs\TestService;
 
 	/**
 	 * @coversDefaultClass \WPEmerge\Helpers\Handler
