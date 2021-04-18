@@ -5,9 +5,9 @@ namespace WPEmergeTests\Responses;
 use Codeception\TestCase\WPTestCase;
 use Mockery;
 use Psr\Http\Message\ResponseInterface;
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 use WPEmerge\Responses\ResponseService;
-use WPEmerge\View\ViewInterface;
+use WPEmerge\Contracts\ViewInterface;
 use WPEmerge\View\ViewService;
 
 /**

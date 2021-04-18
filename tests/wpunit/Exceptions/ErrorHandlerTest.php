@@ -9,7 +9,7 @@ use GuzzleHttp\Psr7\Response;
 use Mockery;
 use Whoops\RunInterface;
 use WPEmerge\Exceptions\ErrorHandler;
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 use WPEmerge\Responses\ResponseService;
 use WPEmerge\Routing\NotFoundException;
 

@@ -5,7 +5,7 @@ namespace WPEmergeTests\Helpers;
 use Mockery;
 use PHPUnit\Framework\TestCase;
 use WPEmerge\Helpers\Url;
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 
 /**
  * @coversDefaultClass \WPEmerge\Helpers\Url

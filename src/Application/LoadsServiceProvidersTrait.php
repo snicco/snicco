@@ -16,7 +16,7 @@
 	use WPEmerge\ServiceProviders\RoutingServiceProvider;
 	use WPEmerge\ServiceProviders\FlashServiceProvider;
 	use WPEmerge\ServiceProviders\OldInputServiceProvider;
-	use WPEmerge\ServiceProviders\ServiceProviderInterface;
+	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\ServiceProviders\ViewServiceProvider;
 
 	/**

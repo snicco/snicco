@@ -9,6 +9,7 @@
 
 namespace WPEmerge\Middleware;
 
+use WPEmerge\Contracts\HasControllerMiddlewareInterface;
 use WPEmerge\Helpers\Handler;
 
 /**

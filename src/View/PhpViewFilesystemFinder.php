@@ -9,6 +9,7 @@
 
 namespace WPEmerge\View;
 
+use WPEmerge\Contracts\ViewFinderInterface;
 use WPEmerge\Helpers\MixedType;
 
 /**

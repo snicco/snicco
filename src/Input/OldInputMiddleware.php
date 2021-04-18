@@ -10,7 +10,7 @@
 namespace WPEmerge\Input;
 
 use Closure;
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 
 /**
  * Store current request data and clear old request data

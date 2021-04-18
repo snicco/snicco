@@ -9,7 +9,7 @@
 
 namespace WPEmerge\Csrf;
 
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 
 /**
  * Provide CSRF protection utilities through WordPress nonces.

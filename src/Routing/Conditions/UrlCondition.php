@@ -9,9 +9,12 @@
 
 	namespace WPEmerge\Routing\Conditions;
 
+	use WPEmerge\Contracts\CanFilterQueryInterface;
+	use WPEmerge\Contracts\ConditionInterface;
+	use WPEmerge\Contracts\UrlableInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Helpers\Url as UrlUtility;
-	use WPEmerge\Requests\RequestInterface;
+	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Support\Arr;
 
 	/**

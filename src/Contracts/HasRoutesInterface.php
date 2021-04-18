@@ -7,7 +7,9 @@
  * @link      https://wpemerge.com/
  */
 
-namespace WPEmerge\Routing;
+namespace WPEmerge\Contracts;
+
+use WPEmerge\Contracts\RouteInterface;
 
 /**
  * Interface for HasRoutesTrait

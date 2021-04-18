@@ -4,6 +4,7 @@
 
 	namespace WPEmerge\ServiceProviders;
 
+	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Middleware\UserCanMiddleware;
 	use WPEmerge\Middleware\UserLoggedInMiddleware;
 	use WPEmerge\Middleware\UserLoggedOutMiddleware;

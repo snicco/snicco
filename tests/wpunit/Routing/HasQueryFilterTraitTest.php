@@ -5,8 +5,8 @@
 
 	use Mockery;
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Requests\RequestInterface;
-	use WPEmerge\Routing\Conditions\CanFilterQueryInterface;
+	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Contracts\CanFilterQueryInterface;
 	use WPEmerge\Routing\HasQueryFilterTrait;
 	use WP_UnitTestCase;
 

@@ -6,7 +6,7 @@ use Codeception\TestCase\WPTestCase;
 use Mockery;
 use Psr\Http\Message\ResponseInterface;
 use WPEmerge\Middleware\UserLoggedOutMiddleware;
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 use WPEmerge\Responses\ResponseService;
 
 /**

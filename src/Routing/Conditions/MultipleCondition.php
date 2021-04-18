@@ -9,7 +9,8 @@
 
 namespace WPEmerge\Routing\Conditions;
 
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\ConditionInterface;
+use WPEmerge\Contracts\RequestInterface;
 
 /**
  * Check against an array of conditions in an AND logical relationship.

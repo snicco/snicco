@@ -9,6 +9,8 @@
 
 namespace WPEmerge\Responses;
 
+use WPEmerge\Contracts\ResponsableInterface;
+
 /**
  * Converts values to a response.
  */

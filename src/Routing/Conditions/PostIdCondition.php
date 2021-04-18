@@ -9,7 +9,9 @@
 
 namespace WPEmerge\Routing\Conditions;
 
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\ConditionInterface;
+use WPEmerge\Contracts\RequestInterface;
+use WPEmerge\Contracts\UrlableInterface;
 
 /**
  * Check against the current post's id.

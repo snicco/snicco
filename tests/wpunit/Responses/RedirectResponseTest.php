@@ -4,7 +4,7 @@ namespace WPEmergeTests\Responses;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 use WPEmerge\Responses\RedirectResponse;
 
 /**

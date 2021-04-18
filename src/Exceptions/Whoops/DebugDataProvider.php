@@ -49,7 +49,7 @@ class DebugDataProvider {
 	 * @return array<string, mixed>
 	 */
 	public function route( $inspector ) {
-		/** @var \WPEmerge\Routing\RouteInterface|null $route */
+		/** @var \WPEmerge\Contracts\RouteInterface|null $route */
 		$route = $this->container[ WPEMERGE_ROUTING_ROUTER_KEY ]->getCurrentRoute();
 
 		if ( ! $route ) {

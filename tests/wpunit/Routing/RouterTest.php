@@ -7,12 +7,12 @@
 	use Mockery;
 	use WPEmerge\Helpers\Handler;
 	use WPEmerge\Helpers\HandlerFactory;
-	use WPEmerge\Requests\RequestInterface;
+	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Routing\Conditions\ConditionFactory;
-	use WPEmerge\Routing\Conditions\ConditionInterface;
-	use WPEmerge\Routing\Conditions\UrlableInterface;
+	use WPEmerge\Contracts\ConditionInterface;
+	use WPEmerge\Contracts\UrlableInterface;
 	use WPEmerge\Routing\Router;
-	use WPEmerge\Routing\RouteInterface;
+	use WPEmerge\Contracts\RouteInterface;
 
 	/**
 	 * @coversDefaultClass \WPEmerge\Routing\Router

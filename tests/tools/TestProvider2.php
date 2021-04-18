@@ -4,7 +4,7 @@
 	namespace WPEmergeTestTools;
 
 	use Contracts\ContainerAdapter;
-	use WPEmerge\ServiceProviders\ServiceProviderInterface;
+	use WPEmerge\Contracts\ServiceProviderInterface;
 
 	class TestProvider2 implements ServiceProviderInterface {
 

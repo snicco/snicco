@@ -9,7 +9,8 @@
 
 namespace WPEmerge\Routing\Conditions;
 
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\ConditionInterface;
+use WPEmerge\Contracts\RequestInterface;
 
 /**
  * Negate another condition's result.

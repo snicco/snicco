@@ -4,6 +4,7 @@
 	namespace WPEmerge\ServiceProviders;
 
 	use Contracts\ContainerAdapter;
+	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Input\OldInput;
 	use WPEmerge\Input\OldInputMiddleware;
 

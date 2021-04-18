@@ -9,6 +9,9 @@
 
 namespace WPEmerge\View;
 
+use WPEmerge\Contracts\ViewEngineInterface;
+use WPEmerge\Contracts\ViewInterface;
+
 /**
  * Render view files with php.
  */

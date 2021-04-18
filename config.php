@@ -55,7 +55,7 @@
 	}
 
 	if ( ! defined( 'WPEMERGE_REQUEST_KEY' ) ) {
-		define( 'WPEMERGE_REQUEST_KEY', \WPEmerge\Requests\RequestInterface::class );
+		define( 'WPEMERGE_REQUEST_KEY', \WPEmerge\Contracts\RequestInterface::class );
 	}
 
 	if ( ! defined( 'WPEMERGE_RESPONSE_KEY' ) ) {
@@ -63,7 +63,7 @@
 	}
 
 	if ( ! defined( 'WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY' ) ) {
-		define( 'WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY', \WPEmerge\Exceptions\ErrorHandlerInterface::class );
+		define( 'WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY', \WPEmerge\Contracts\ErrorHandlerInterface::class );
 	}
 
 	if ( ! defined( 'WPEMERGE_EXCEPTIONS_CONFIGURATION_ERROR_HANDLER_KEY' ) ) {
@@ -75,7 +75,7 @@
 	}
 
 	if ( ! defined( 'WPEMERGE_ROUTING_ROUTER_KEY' ) ) {
-		define( 'WPEMERGE_ROUTING_ROUTER_KEY', \WPEmerge\Routing\HasRoutesInterface::class );
+		define( 'WPEMERGE_ROUTING_ROUTER_KEY', \WPEmerge\Contracts\HasRoutesInterface::class );
 	}
 
 	if ( ! defined( 'WPEMERGE_ROUTING_ROUTE_BLUEPRINT_KEY' ) ) {
@@ -95,7 +95,7 @@
 	}
 
 	if ( ! defined( 'WPEMERGE_VIEW_COMPOSE_ACTION_KEY' ) ) {
-		define( 'WPEMERGE_VIEW_COMPOSE_ACTION_KEY', \WPEmerge\View\ViewInterface::class );
+		define( 'WPEMERGE_VIEW_COMPOSE_ACTION_KEY', \WPEmerge\Contracts\ViewInterface::class );
 	}
 
 	if ( ! defined( 'WPEMERGE_VIEW_ENGINE_KEY' ) ) {
@@ -103,7 +103,7 @@
 	}
 
 	if ( ! defined( 'WPEMERGE_VIEW_PHP_VIEW_ENGINE_KEY' ) ) {
-		define( 'WPEMERGE_VIEW_PHP_VIEW_ENGINE_KEY', \WPEmerge\View\ViewEngineInterface::class );
+		define( 'WPEMERGE_VIEW_PHP_VIEW_ENGINE_KEY', \WPEmerge\Contracts\ViewEngineInterface::class );
 	}
 
 	if ( ! defined( 'WPEMERGE_SERVICE_PROVIDERS_KEY' ) ) {

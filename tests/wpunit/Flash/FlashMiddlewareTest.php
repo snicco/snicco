@@ -5,7 +5,7 @@ namespace WPEmergeTests\Input;
 use Codeception\TestCase\WPTestCase;
 use Mockery;
 use WPEmerge\Flash\FlashMiddleware;
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 
 /**
  * @coversDefaultClass \WPEmerge\Flash\FlashMiddleware

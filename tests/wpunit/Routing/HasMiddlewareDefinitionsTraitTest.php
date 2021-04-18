@@ -8,7 +8,7 @@
 	use PHPUnit\Framework\TestCase;
 	use WP_UnitTestCase;
 	use WPEmerge\Middleware\HasMiddlewareDefinitionsTrait;
-	use WPEmerge\Requests\RequestInterface;
+	use WPEmerge\Contracts\RequestInterface;
 
 	/**
 	 * @coversDefaultClass \WPEmerge\Middleware\HasMiddlewareDefinitionsTrait

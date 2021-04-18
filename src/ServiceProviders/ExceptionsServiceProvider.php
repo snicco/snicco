@@ -6,6 +6,7 @@
 
 	use Whoops\Handler\PrettyPageHandler;
 	use Whoops\Run;
+	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Exceptions\ErrorHandler;
 	use WPEmerge\Exceptions\Whoops\DebugDataProvider;
 

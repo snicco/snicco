@@ -12,6 +12,7 @@ namespace WPEmerge\Routing\Conditions;
 use Closure;
 use ReflectionClass;
 use ReflectionException;
+use WPEmerge\Contracts\ConditionInterface;
 use WPEmerge\Exceptions\ConfigurationException;
 
 /**

@@ -10,10 +10,11 @@
 
 	namespace WPEmerge\ServiceProviders;
 
+	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Helpers\MixedType;
 	use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\View\PhpViewFilesystemFinder;
-	use WPEmerge\View\ViewInterface;
+	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\View\ViewService;
 
 	use function get_stylesheet_directory;

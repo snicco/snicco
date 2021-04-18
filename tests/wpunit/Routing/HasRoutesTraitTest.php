@@ -6,7 +6,7 @@
 	use Mockery;
 	use PHPUnit\Framework\TestCase;
 	use WPEmerge\Routing\HasRoutesTrait;
-	use WPEmerge\Routing\RouteInterface;
+	use WPEmerge\Contracts\RouteInterface;
 	use WP_UnitTestCase;
 
 	/**

@@ -11,7 +11,7 @@ namespace WPEmerge\Responses;
 
 use GuzzleHttp\Psr7\Response as Psr7Response;
 use Psr\Http\Message\ResponseInterface;
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 
 /**
  * A collection of tools for the creation of responses

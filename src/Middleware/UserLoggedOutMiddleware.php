@@ -10,7 +10,7 @@
 namespace WPEmerge\Middleware;
 
 use Closure;
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 use WPEmerge\Responses\ResponseService;
 
 /**
