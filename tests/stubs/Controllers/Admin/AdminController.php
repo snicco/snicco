@@ -1,9 +1,8 @@
 <?php
 
 
-	namespace Tests\stubs\Controllers\Ajax;
+	namespace Tests\stubs\Controllers\Admin;
 
-	use Tests\stubs\TestApp;
 	use WPEmerge\Requests\Request;
 
 	class AdminController {
@@ -14,5 +13,6 @@
 			return 'admin_controller';
 
 		}
+
 
 	}

@@ -6,7 +6,6 @@
 	use Contracts\ContainerAdapter;
 	use Exception;
 	use Psr\Http\Message\ResponseInterface;
-	use WP_Query;
 	use WPEmerge\Application\GenericFactory;
 	use WPEmerge\Contracts\HttpKernelInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
@@ -15,7 +14,6 @@
 	use WPEmerge\Helpers\HandlerFactory;
 	use WPEmerge\Middleware\ExecutesMiddlewareTrait;
 	use WPEmerge\Middleware\HasMiddlewareDefinitionsTrait;
-	use WPEmerge\Middleware\ReadsHandlerMiddlewareTrait;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Responses\ConvertsToResponseTrait;
 	use WPEmerge\Responses\RedirectResponse;
@@ -150,20 +148,7 @@
 			return $this->response_service;
 		}
 
-		/**
-		 * Make a middleware class instance.
-		 *
-		 * @see ExecutesMiddlewareTrait::executeMiddleware()
-		 *
-		 * @param  string  $class
-		 *
-		 * @return object
-		 */
-		private function makeMiddleware( $class ) : object {
 
-			return $this->factory->make( $class );
-
-		}
 
 		/**
 		 * Execute a handler.
@@ -199,9 +184,7 @@
 
 			try {
 
-
 				$middleware = array_merge( $middleware, $handler->controllerMiddleware() );
-
 				$middleware = $this->expandMiddleware( $middleware );
 				$middleware = $this->uniqueMiddleware( $middleware );
 				$middleware = $this->sortMiddleware( $middleware );
@@ -214,7 +197,9 @@
 
 			}
 			catch ( Exception $exception ) {
+
 				$response = $this->error_handler->getResponse( $request, $exception );
+
 			}
 
 			$this->error_handler->unregister();
@@ -252,7 +237,6 @@
 		 *
 		 * @return void
 		 */
-
 		public function respond() {
 
 			$response = $this->getResponse();
@@ -276,6 +260,7 @@
 			echo $view->toString();
 
 		}
+
 
 		public function bootstrap() {
 

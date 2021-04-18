@@ -148,6 +148,7 @@
 			}
 
 			$this->loadRoutesGroup( 'web' );
+
 		}
 
 		/**
@@ -177,6 +178,7 @@
 
 			$attributes['middleware'] = $middleware;
 
+			/** @var \WPEmerge\Routing\RouteBlueprint $blueprint */
 			$blueprint = $this->resolve( WPEMERGE_ROUTING_ROUTE_BLUEPRINT_KEY );
 			$blueprint->attributes( $attributes )->group( $file );
 

@@ -41,6 +41,7 @@
 			$this->factory = $factory;
 			$this->container = $container;
 			$this->controller_namespaces = $namespaces;
+
 		}
 
 		/**
@@ -68,7 +69,7 @@
 
 			$container = $this->container;
 
-			$handler->setExecutable( function ($callable, $parameters ) use ( $container ) {
+			$handler->setExecutable( function ( $callable, $parameters ) use ( $container ) {
 
 				return $container->call( $callable , $parameters );
 
