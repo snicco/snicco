@@ -283,7 +283,7 @@
 		}
 
 		/**
-		 * @covers ::handle
+		 * @covers ::handleRequest
 		 */
 		public function testHandle_SatisfiedRequest_Response() {
 
@@ -328,18 +328,18 @@
 				        return $response;
 			        } );
 
-			$this->assertSame( $response, $subject->handle( $request, $arguments ) );
+			$this->assertSame( $response, $subject->handleRequest( $request, $arguments ) );
 		}
 
 		/**
-		 * @covers ::handle
+		 * @covers ::handleRequest
 		 */
 		public function testHandle_UnsatisfiedRequest_Null() {
 
 			$this->router->shouldReceive( 'execute' )
 			             ->andReturn( null );
 
-			$this->assertNull( $this->subject->handle( $this->request, [] ) );
+			$this->assertNull( $this->subject->handleRequest( $this->request, [] ) );
 		}
 
 		/**
@@ -495,7 +495,7 @@
 				$this->error_handler,
 			] )->makePartial();
 
-			$subject->shouldReceive( 'handle' )
+			$subject->shouldReceive( 'handleRequest' )
 			        ->andReturn( $response );
 
 			$this->container->shouldReceive( 'offsetSet' )
@@ -526,7 +526,7 @@
 			$response->shouldReceive( 'getStatusCode' )
 			         ->andReturn( 404 );
 
-			$subject->shouldReceive( 'handle' )
+			$subject->shouldReceive( 'handleRequest' )
 			        ->andReturn( $response );
 
 			$this->container->shouldReceive( 'offsetSet' )

@@ -37,7 +37,7 @@ class PhpViewFilesystemFinderTest extends WPTestCase {
 	 * @covers ::exists
 	 */
 	public function testExists() {
-		$this->assertTrue( $this->subject->exists( WPEMERGE_TEST_DIR . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'view.php' ) );
+		$this->assertTrue( $this->subject->exists( WPEMERGE_TEST_DIR . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'view.php' ) );
 		$this->assertTrue( $this->subject->exists( 'index.php' ) );
 		$this->assertTrue( $this->subject->exists( 'index' ) );
 		$this->assertFalse( $this->subject->exists( 'nonexistent' ) );
@@ -62,7 +62,7 @@ class PhpViewFilesystemFinderTest extends WPTestCase {
 	 * @covers ::resolveFromAbsoluteFilepath
 	 */
 	public function testResolveFilepath_AbsoluteFilepath() {
-		$directory = WPEMERGE_TEST_DIR . DIRECTORY_SEPARATOR . 'fixtures';
+		$directory = WPEMERGE_TEST_DIR . DIRECTORY_SEPARATOR . 'views';
 		$file = $directory . DIRECTORY_SEPARATOR . 'view.php';
 
 		$this->assertEquals( $file, $this->subject->resolveFilepath( $file ) );
@@ -76,8 +76,8 @@ class PhpViewFilesystemFinderTest extends WPTestCase {
 	 * @covers ::resolveFromCustomDirectories
 	 */
 	public function testResolveFilepath_CustomDirectories() {
-		$fixtures = WPEMERGE_TEST_DIR . DIRECTORY_SEPARATOR . 'fixtures';
-		$subdirectory = WPEMERGE_TEST_DIR . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'subdirectory';
+		$fixtures = WPEMERGE_TEST_DIR . DIRECTORY_SEPARATOR . 'views';
+		$subdirectory = WPEMERGE_TEST_DIR . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'subdirectory';
 		$view = $fixtures . DIRECTORY_SEPARATOR . 'view.php';
 		$subview = $subdirectory . DIRECTORY_SEPARATOR . 'subview.php';
 
@@ -93,7 +93,7 @@ class PhpViewFilesystemFinderTest extends WPTestCase {
 		$this->assertEquals( '', $this->subject->resolveFilepath( '/nonexistent' ) );
 		$this->assertEquals( '', $this->subject->resolveFilepath( 'nonexistent' ) );
 
-		$this->subject->setDirectories( [WPEMERGE_TEST_DIR . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR] );
+		$this->subject->setDirectories( [WPEMERGE_TEST_DIR . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR] );
 		$this->assertEquals( $view, $this->subject->resolveFilepath( '/view.php' ) );
 		$this->assertEquals( $view, $this->subject->resolveFilepath( 'view.php' ) );
 		$this->assertEquals( $view, $this->subject->resolveFilepath( '/view' ) );

@@ -51,7 +51,7 @@
 		 */
 		public function testExists() {
 
-			$this->assertTrue( $this->subject->exists( WPEMERGE_TEST_DIR . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'view.php' ) );
+			$this->assertTrue( $this->subject->exists( WPEMERGE_TEST_DIR . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'view.php' ) );
 			$this->assertTrue( $this->subject->exists( 'index.php' ) );
 			$this->assertTrue( $this->subject->exists( 'index' ) );
 			$this->assertFalse( $this->subject->exists( 'nonexistent' ) );
@@ -78,7 +78,7 @@
 		 */
 		public function testMake_View() {
 
-			$file = WPEMERGE_TEST_DIR . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'view.php';
+			$file = WPEMERGE_TEST_DIR . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'view.php';
 			$view = $this->subject->make( [ $file ] );
 
 			$this->assertInstanceOf( ViewInterface::class, $view );
@@ -108,7 +108,7 @@
 			$this->expectExceptionMessage('View layout not found');
 
 			// Rely on the fact that view-with-layout.php uses a sprintf() token instead of a real path so it fails.
-			$view = WPEMERGE_TEST_DIR . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'view-with-layout.php';
+			$view = WPEMERGE_TEST_DIR . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'view-with-layout.php';
 			$view = $this->subject->make( [ $view ] );
 		}
 
@@ -129,7 +129,7 @@
 		public function testRenderView_View_Render() {
 
 			$view = Mockery::mock( PhpView::class );
-			$file = WPEMERGE_TEST_DIR . DIRECTORY_SEPARATOR . 'fixtures' . DIRECTORY_SEPARATOR . 'view-with-context.php';
+			$file = WPEMERGE_TEST_DIR . DIRECTORY_SEPARATOR . 'views' . DIRECTORY_SEPARATOR . 'view-with-context.php';
 			$expected = "Hello World!\n";
 
 			$view->shouldReceive( 'getContext' )
