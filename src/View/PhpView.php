@@ -11,6 +11,7 @@ namespace WPEmerge\View;
 
 use GuzzleHttp\Psr7;
 use GuzzleHttp\Psr7\Response;
+use WPEmerge\Contracts\ViewInterface;
 
 /**
  * Render a view file with php.

@@ -9,7 +9,7 @@
 	use WPEmerge\View\PhpView;
 	use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\View\PhpViewFilesystemFinder;
-	use WPEmerge\View\ViewInterface;
+	use WPEmerge\Contracts\ViewInterface;
 	use WPEmergeTestTools\Helper;
 
 	/**

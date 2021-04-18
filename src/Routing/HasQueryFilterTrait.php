@@ -10,8 +10,8 @@
 namespace WPEmerge\Routing;
 
 use WPEmerge\Exceptions\ConfigurationException;
-use WPEmerge\Requests\RequestInterface;
-use WPEmerge\Routing\Conditions\CanFilterQueryInterface;
+use WPEmerge\Contracts\RequestInterface;
+use WPEmerge\Contracts\CanFilterQueryInterface;
 
 /**
  * Represent an object which has a WordPress query filter attribute.

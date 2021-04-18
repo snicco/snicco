@@ -9,7 +9,7 @@
 
 namespace WPEmerge\Helpers;
 
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 use WPEmerge\Support\Arr;
 
 /**

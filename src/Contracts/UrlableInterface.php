@@ -7,7 +7,7 @@
  * @link      https://wpemerge.com/
  */
 
-namespace WPEmerge\Routing\Conditions;
+namespace WPEmerge\Contracts;
 
 /**
  * Interface signifying that an object can be converted to a URL.

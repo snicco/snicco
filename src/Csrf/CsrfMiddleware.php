@@ -11,7 +11,7 @@ namespace WPEmerge\Csrf;
 
 use Closure;
 use Psr\Http\Message\ResponseInterface;
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 
 /**
  * Store current request data and clear old request data

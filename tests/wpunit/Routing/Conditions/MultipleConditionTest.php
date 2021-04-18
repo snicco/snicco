@@ -6,7 +6,7 @@ use Codeception\TestCase\WPTestCase;
 use Mockery;
 use WPEmerge\Routing\Conditions\CustomCondition;
 use WPEmerge\Routing\Conditions\MultipleCondition;
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 
 /**
  * @coversDefaultClass \WPEmerge\Routing\Conditions\MultipleCondition

@@ -4,7 +4,7 @@ namespace WPEmergeTests\Routing\Conditions;
 
 use Codeception\TestCase\WPTestCase;
 use Mockery;
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 use WPEmerge\Routing\Conditions\UrlCondition;
 
 /**

@@ -7,7 +7,7 @@
 	use Mockery;
 	use WPEmerge\View\PhpView;
 	use WPEmerge\View\PhpViewEngine;
-	use WPEmerge\View\ViewInterface;
+	use WPEmerge\Contracts\ViewInterface;
 
 	/**
 	 * @coversDefaultClass \WPEmerge\View\PhpView

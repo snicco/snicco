@@ -11,7 +11,7 @@ namespace WPEmerge\Middleware;
 
 use Closure;
 use Psr\Http\Message\ResponseInterface;
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 
 /**
  * Executes middleware.

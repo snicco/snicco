@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 use WP_UnitTestCase;
 use WPEmerge\Application\GenericFactory;
 use WPEmerge\Middleware\ExecutesMiddlewareTrait;
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 use WPEmergeTests\Routing\HttpKernelTestMiddlewareStub1;
 use WPEmergeTests\Routing\HttpKernelTestMiddlewareStub2;
 use WPEmergeTests\Routing\HttpKernelTestMiddlewareStub3;

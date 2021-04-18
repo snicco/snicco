@@ -11,7 +11,7 @@ namespace WPEmerge\Routing;
 
 use Closure;
 use WPEmerge\Helpers\HasAttributesTrait;
-use WPEmerge\Routing\Conditions\ConditionInterface;
+use WPEmerge\Contracts\ConditionInterface;
 use WPEmerge\View\ViewService;
 
 /**

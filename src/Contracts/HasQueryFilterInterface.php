@@ -7,9 +7,9 @@
  * @link      https://wpemerge.com/
  */
 
-namespace WPEmerge\Routing;
+namespace WPEmerge\Contracts;
 
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 
 /**
  * Represent an object which has a WordPress query filter.

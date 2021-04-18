@@ -10,13 +10,15 @@
 namespace WPEmerge\Routing;
 
 use Closure;
+use WPEmerge\Contracts\HasRoutesInterface;
+use WPEmerge\Contracts\RouteInterface;
 use WPEmerge\Exceptions\ConfigurationException;
 use WPEmerge\Helpers\Handler;
 use WPEmerge\Helpers\HandlerFactory;
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 use WPEmerge\Routing\Conditions\ConditionFactory;
-use WPEmerge\Routing\Conditions\ConditionInterface;
-use WPEmerge\Routing\Conditions\UrlableInterface;
+use WPEmerge\Contracts\ConditionInterface;
+use WPEmerge\Contracts\UrlableInterface;
 use WPEmerge\Support\Arr;
 
 /**

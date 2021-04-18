@@ -7,6 +7,7 @@
 	use Contracts\ContainerAdapter;
 	use WPEmerge\Application\ClosureFactory;
 	use WPEmerge\Application\GenericFactory;
+	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Helpers\HandlerFactory;
 	use WPEmerge\Helpers\MixedType;
 

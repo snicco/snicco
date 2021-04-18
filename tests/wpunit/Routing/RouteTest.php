@@ -7,9 +7,9 @@
 	use PHPUnit\Framework\TestCase;
 	use Psr\Http\Message\ResponseInterface;
 	use WPEmerge\Helpers\Handler;
-	use WPEmerge\Requests\RequestInterface;
+	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Routing\Route;
-	use WPEmerge\Routing\Conditions\ConditionInterface;
+	use WPEmerge\Contracts\ConditionInterface;
 	use WP_UnitTestCase;
 
 	/**

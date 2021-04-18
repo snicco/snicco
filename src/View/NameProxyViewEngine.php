@@ -10,6 +10,7 @@
 namespace WPEmerge\View;
 
 use WPEmerge\Application\Application;
+use WPEmerge\Contracts\ViewEngineInterface;
 
 /**
  * Render view files with different engines depending on their filename

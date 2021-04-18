@@ -11,16 +11,16 @@ use Psr\Http\Message\ResponseInterface;
 use SniccoAdapter\BaseContainerAdapter;
 use WPEmerge\Application\Application;
 use WPEmerge\Application\GenericFactory;
-use WPEmerge\Exceptions\ErrorHandlerInterface;
+use WPEmerge\Contracts\ErrorHandlerInterface;
 use WPEmerge\Helpers\Handler;
 use WPEmerge\Helpers\HandlerFactory;
 use WPEmerge\Kernels\HttpKernel;
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 use WPEmerge\Responses\ResponseService;
-use WPEmerge\Routing\HasQueryFilterInterface;
-use WPEmerge\Routing\RouteInterface;
+use WPEmerge\Contracts\HasQueryFilterInterface;
+use WPEmerge\Contracts\RouteInterface;
 use WPEmerge\Routing\Router;
-use WPEmerge\View\ViewInterface;
+use WPEmerge\Contracts\ViewInterface;
 use WPEmerge\View\ViewService;
 
 /**

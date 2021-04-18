@@ -9,6 +9,7 @@
 
 namespace WPEmerge\Routing;
 
+use WPEmerge\Contracts\RouteInterface;
 use WPEmerge\Exceptions\ConfigurationException;
 use WPEmerge\Support\Arr;
 

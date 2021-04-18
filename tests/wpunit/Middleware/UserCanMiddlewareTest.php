@@ -7,7 +7,7 @@
 	use Mockery;
 	use Psr\Http\Message\ResponseInterface;
 	use WPEmerge\Middleware\UserCanMiddleware;
-	use WPEmerge\Requests\RequestInterface;
+	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Responses\ResponseService;
 
 	/**

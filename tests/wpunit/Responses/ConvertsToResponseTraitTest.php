@@ -8,7 +8,7 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 use Psr\Http\Message\ResponseInterface;
 use WPEmerge\Responses\ConvertsToResponseTrait;
-use WPEmerge\Responses\ResponsableInterface;
+use WPEmerge\Contracts\ResponsableInterface;
 use WPEmerge\Responses\ResponseService;
 
 /**

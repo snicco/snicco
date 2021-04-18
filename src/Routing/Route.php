@@ -9,10 +9,12 @@
 
 namespace WPEmerge\Routing;
 
+use WPEmerge\Contracts\HasQueryFilterInterface;
+use WPEmerge\Contracts\RouteInterface;
 use WPEmerge\Exceptions\ConfigurationException;
 use WPEmerge\Helpers\HasAttributesTrait;
-use WPEmerge\Requests\RequestInterface;
-use WPEmerge\Routing\Conditions\ConditionInterface;
+use WPEmerge\Contracts\RequestInterface;
+use WPEmerge\Contracts\ConditionInterface;
 
 /**
  * Represent a route

@@ -2,6 +2,7 @@
 
 	namespace WPEmerge\ServiceProviders;
 
+	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Responses\ResponseService;
 
 	use const WPEMERGE_APPLICATION_KEY;

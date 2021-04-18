@@ -9,7 +9,7 @@
 
 namespace WPEmerge\Csrf;
 
-use WPEmerge\ServiceProviders\ServiceProviderInterface;
+use WPEmerge\Contracts\ServiceProviderInterface;
 
 /**
  * Provide CSRF dependencies.

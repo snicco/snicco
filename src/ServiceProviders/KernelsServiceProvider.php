@@ -3,6 +3,7 @@
 
 	namespace WPEmerge\ServiceProviders;
 
+	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Csrf\CsrfMiddleware;
 	use WPEmerge\Flash\FlashMiddleware;
 	use WPEmerge\Input\OldInputMiddleware;

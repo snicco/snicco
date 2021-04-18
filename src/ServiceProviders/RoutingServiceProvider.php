@@ -3,6 +3,7 @@
 
 	namespace WPEmerge\ServiceProviders;
 
+	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Routing\Conditions\AdminCondition;
 	use WPEmerge\Routing\Conditions\AjaxCondition;
 	use WPEmerge\Routing\Conditions\ConditionFactory;

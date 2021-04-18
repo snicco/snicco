@@ -10,6 +10,9 @@
 namespace WPEmerge\View;
 
 use Closure;
+use WPEmerge\Contracts\ViewEngineInterface;
+use WPEmerge\Contracts\ViewFinderInterface;
+use WPEmerge\Contracts\ViewInterface;
 use WPEmerge\Helpers\Handler;
 use WPEmerge\Helpers\HandlerFactory;
 use WPEmerge\Helpers\MixedType;

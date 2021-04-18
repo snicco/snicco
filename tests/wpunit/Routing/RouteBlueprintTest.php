@@ -6,9 +6,9 @@
 	use Mockery;
 	use PHPUnit\Framework\TestCase;
 	use WPEmerge\Routing\RouteBlueprint;
-	use WPEmerge\Routing\RouteInterface;
+	use WPEmerge\Contracts\RouteInterface;
 	use WPEmerge\Routing\Router;
-	use WPEmerge\View\ViewInterface;
+	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\View\ViewService;
 
 	/**

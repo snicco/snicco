@@ -7,7 +7,7 @@
 	use PHPUnit\Framework\TestCase;
 	use WPEmerge\Input\OldInput;
 	use WPEmerge\Input\OldInputMiddleware;
-	use WPEmerge\Requests\RequestInterface;
+	use WPEmerge\Contracts\RequestInterface;
 
 	/**
 	 * @coversDefaultClass \WPEmerge\Input\OldInputMiddleware

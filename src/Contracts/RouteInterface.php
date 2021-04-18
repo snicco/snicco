@@ -7,16 +7,17 @@
  * @link      https://wpemerge.com/
  */
 
-namespace WPEmerge\Routing\Conditions;
+namespace WPEmerge\Contracts;
 
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\HasAttributesInterface;
+use WPEmerge\Contracts\RequestInterface;
 
 /**
- * Interface that condition types must implement
+ * Interface that routes must implement
  */
-interface ConditionInterface {
+interface RouteInterface extends HasAttributesInterface {
 	/**
-	 * Get whether the condition is satisfied
+	 * Get whether the route is satisfied.
 	 *
 	 * @param  RequestInterface $request
 	 * @return boolean
@@ -24,7 +25,7 @@ interface ConditionInterface {
 	public function isSatisfied( RequestInterface $request );
 
 	/**
-	 * Get an array of arguments for use in request
+	 * Get arguments.
 	 *
 	 * @param  RequestInterface $request
 	 * @return array

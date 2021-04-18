@@ -6,7 +6,7 @@ use Mockery;
 use PHPUnit\Framework\TestCase;
 use WP_UnitTestCase;
 use WPEmerge\Helpers\Handler;
-use WPEmerge\Middleware\HasControllerMiddlewareInterface;
+use WPEmerge\Contracts\HasControllerMiddlewareInterface;
 use WPEmerge\Middleware\ReadsHandlerMiddlewareTrait;
 
 /**

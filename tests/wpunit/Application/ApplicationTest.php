@@ -8,7 +8,7 @@
 	use Mockery;
 	use SniccoAdapter\BaseContainerAdapter;
 	use WPEmerge\Application\Application;
-	use WPEmerge\ServiceProviders\ServiceProviderInterface;
+	use WPEmerge\Contracts\ServiceProviderInterface;
 
 	/**
 	 * @coversDefaultClass  \WPEmerge\Application\Application

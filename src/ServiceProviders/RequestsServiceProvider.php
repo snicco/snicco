@@ -3,6 +3,7 @@
 
 	namespace WPEmerge\ServiceProviders;
 
+	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Requests\Request;
 
 	use const WPEMERGE_REQUEST_KEY;

@@ -8,8 +8,8 @@
 	use WPEmerge\Helpers\Handler;
 	use WPEmerge\Helpers\HandlerFactory;
 	use WPEmerge\View\ViewService;
-	use WPEmerge\View\ViewInterface;
-	use WPEmerge\View\ViewEngineInterface;
+	use WPEmerge\Contracts\ViewInterface;
+	use WPEmerge\Contracts\ViewEngineInterface;
 
 	/**
 	 * @coversDefaultClass \WPEmerge\View\ViewService

@@ -14,11 +14,11 @@ use Psr\Http\Message\ResponseInterface;
 use WPEmerge\Csrf\Csrf;
 use WPEmerge\Flash\Flash;
 use WPEmerge\Input\OldInput;
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 use WPEmerge\Responses\RedirectResponse;
 use WPEmerge\Responses\ResponseService;
 use WPEmerge\Routing\RouteBlueprint;
-use WPEmerge\View\ViewInterface;
+use WPEmerge\Contracts\ViewInterface;
 use WPEmerge\View\ViewService;
 
 /**
@@ -209,11 +209,12 @@ final class ApplicationMixin {
 	/**
 	 * Output the specified view.
 	 *
-	 * @see    \WPEmerge\View\ViewService::make()
-	 * @see    \WPEmerge\View\ViewInterface::toString()
 	 * @param  string|string[]      $views
-	 * @param  array<string, mixed> $context
+	 * @param  array<string, mixed>  $context
+	 *
 	 * @return void
+	 *@see    \WPEmerge\Contracts\ViewInterface::toString()
+	 * @see    \WPEmerge\View\ViewService::make()
 	 */
 	public static function render( $views, $context = [] ) {}
 }

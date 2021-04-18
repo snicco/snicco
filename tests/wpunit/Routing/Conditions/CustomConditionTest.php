@@ -5,7 +5,7 @@ namespace WPEmergeTests\Routing\Conditions;
 use Codeception\TestCase\WPTestCase;
 use Mockery;
 use WPEmerge\Routing\Conditions\CustomCondition;
-use WPEmerge\Requests\RequestInterface;
+use WPEmerge\Contracts\RequestInterface;
 
 /**
  * @coversDefaultClass \WPEmerge\Routing\Conditions\CustomCondition
