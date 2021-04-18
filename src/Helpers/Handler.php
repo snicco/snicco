@@ -6,6 +6,7 @@
 	use Closure;
 	use Illuminate\Support\Str;
 	use WPEmerge\Application\GenericFactory;
+	use WPEmerge\Contracts\HasControllerMiddlewareInterface;
 	use WPEmerge\Exceptions\ClassNotFoundException;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Support\Arr;
@@ -112,7 +113,7 @@
 
 			try {
 
-				$full_class_path = $this->findClass( $class, $namespace );
+				$full_class_path = $this->_findClass( $class, $namespace );
 
 			}
 			catch ( ClassNotFoundException $e ) {
@@ -121,8 +122,29 @@
 			}
 
 			return $this->factory->make( $full_class_path );
+
 		}
 
+
+		private function _findClass( $class, $path ) {
+
+
+			if ( class_exists( $class_no_namespace = $class ) ) {
+				return $class_no_namespace;
+			}
+
+			if ( class_exists( $class_with_namespace = $path . $class ) ) {
+				return $class_with_namespace;
+			}
+
+			foreach ( $this->namespaces as $namespace ) {
+				if ( class_exists( $namespace . $class ) ) {
+					return $namespace . $class;
+				}
+
+				throw new ClassNotFoundException();
+			}
+		}
 
 
 
@@ -182,11 +204,6 @@
 
 		}
 
-		public function hasControllerMiddleware () {
-
-
-
-		}
 
 		/**
 		 * Parse a callable to a Closure or a [class, method] array
@@ -236,7 +253,7 @@
 			}
 
 			return [
-				'class'     => $class,
+				'class'     => $this->buildFullNamespace($class),
 				'method'    => $method,
 				'namespace' => $namespace,
 			];
@@ -264,7 +281,7 @@
 
 			if ( ! empty( $class ) && ! empty( $method ) ) {
 				return [
-					'class'     => $class,
+					'class'     => $this->buildFullNamespace($class),
 					'method'    => $method,
 					'namespace' => $namespace,
 				];
@@ -273,7 +290,29 @@
 			return null;
 		}
 
+		public function controllerMiddleware() : array {
 
+			$handler = $this->get();
+
+			if ( $handler instanceof Closure ) {
+
+				return [];
+
+			}
+
+			if ( ! $this->classImplements($handler['class'],HasControllerMiddlewareInterface::class )) {
+
+				return [];
+
+			}
+
+			/** @var HasControllerMiddlewareInterface $instance */
+			$instance = $this->factory->make($handler['class']);
+
+			return $instance->getMiddleware($handler['method']);
+
+
+		}
 
 
 		private function trimArguments( $arguments ) : array {

@@ -41,27 +41,7 @@
 		 */
 		protected function getControllerMiddleware( Handler $handler ) : array {
 
-			return [];
-
-			if ( $handler instanceof \Closure ) {
-
-				return [];
-
-			}
-
-			if ( $handler->hasControllerMiddleware()  ) {
-
-
-
-			}
-
-			$instance = $handler->make();
-
-			if ( ! $instance instanceof HasControllerMiddlewareInterface ) {
-				return [];
-			}
-
-			return $instance->getMiddleware( $handler->get()['method'] );
+			return $handler->controllerMiddleware();
 
 		}
 
