@@ -58,7 +58,7 @@
 		 *
 		 * @var \WPEmerge\Contracts\HasControllerMiddlewareInterface
 		 */
-		private $resolved_instance;
+		private $resolved_instance = null;
 
 		/**
 		 * Constructor
@@ -185,9 +185,10 @@
 
 			$executable = $this->executable;
 
-			$arguments = $this->buildNamedParameters( $callable = $this->classCallable(), $arguments );
+			$arguments = $this->buildNamedParameters( $callable  = $this->classCallable(), $arguments );
 
-			return $executable( $this->resolved_instance ?? $callable, $arguments );
+			return $executable( $callable, $arguments );
+
 
 		}
 
@@ -311,7 +312,19 @@
 			} );
 		}
 
-		private function classCallable() : string {
+		private function classCallable()  {
+
+
+			if ( $this->resolved_instance ) {
+
+				return [
+
+					$this->resolved_instance ?? $this->buildFullNamespace($this->handler['class']),
+					$this->handler['method']
+
+				];
+
+			}
 
 			return $this->buildFullNamespace( $this->handler['class'] ) . '@' . $this->handler['method'];
 

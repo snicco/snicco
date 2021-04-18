@@ -97,7 +97,6 @@
 		/** @test */
 		public function controller_middleware_gets_resolved_from_the_service_container () {
 
-
 			TestApp::route()
 			       ->get()
 			       ->url( '/wp-admin/dashboard' )
@@ -117,7 +116,7 @@
 		}
 
 		/** @test */
-		public function when_a_controller_uses_controller_arguments_it_only_ever_gets_resolved_once(  ) {
+		public function when_a_controller_uses_controller_middleware_it_only_ever_gets_resolved_once() {
 
 			$GLOBALS['controller_constructor_count'] = 0;
 

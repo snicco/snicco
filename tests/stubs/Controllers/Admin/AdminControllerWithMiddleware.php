@@ -18,16 +18,24 @@
 		 */
 		private $dependency;
 
-		public function __construct(AdminControllerDependency $dependency) {
+		public function __construct( AdminControllerDependency $dependency ) {
 
-			$count = $GLOBALS['controller_constructor_count'];
 
-			$GLOBALS['controller_constructor_count'] = $count+1;
+			if ( isset( $GLOBALS['controller_constructor_count'] )) {
+
+
+				$count = $GLOBALS['controller_constructor_count'];
+
+				$GLOBALS['controller_constructor_count'] = $count+1;
+
+			}
+
 
 
 			$this->middleware(FooMiddleware::class);
 
 			$this->dependency = $dependency;
+
 		}
 
 		public function handle( Request $request, $view) {
