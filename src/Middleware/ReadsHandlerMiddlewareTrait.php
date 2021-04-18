@@ -19,7 +19,41 @@
 		 * @return string[]
 		 * @throws \WPEmerge\Exceptions\ClassNotFoundException
 		 */
+		protected function _getControllerMiddleware( Handler $handler ) : array {
+
+			$instance = $handler->make();
+
+			if ( ! $instance instanceof HasControllerMiddlewareInterface ) {
+				return [];
+			}
+
+			return $instance->getMiddleware( $handler->get()['method'] );
+
+		}
+
+		/**
+		 * Get middleware registered with the given handler.
+		 *
+		 * @param  Handler  $handler
+		 *
+		 * @return string[]
+		 * @throws \WPEmerge\Exceptions\ClassNotFoundException
+		 */
 		protected function getControllerMiddleware( Handler $handler ) : array {
+
+			return [];
+
+			if ( $handler instanceof \Closure ) {
+
+				return [];
+
+			}
+
+			if ( $handler->hasControllerMiddleware()  ) {
+
+
+
+			}
 
 			$instance = $handler->make();
 

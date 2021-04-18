@@ -5,6 +5,7 @@
 
 	use Mockery;
 	use PHPUnit\Framework\TestCase;
+	use SniccoAdapter\BaseContainerAdapter;
 	use WPEmerge\Application\GenericFactory;
 	use WPEmerge\Exceptions\ClassNotFoundException;
 	use WPEmerge\Helpers\Handler;
@@ -364,6 +365,17 @@
 			$expected = (object) [ 'value' => $foo . $bar ];
 
 			$subject = new Handler( $this->factory, HandlerTestControllerMock::class . '@foobar' );
+
+
+			$subject->setExecutable( function ($callable, $params ) {
+
+				$container = new BaseContainerAdapter();
+
+				return $container->call($callable, $params);
+
+			} );
+
+
 			$this->assertEquals( $expected, $subject->execute( 'foo', 'bar' ) );
 		}
 

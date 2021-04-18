@@ -3,7 +3,6 @@
 
 	namespace WPEmergeTestTools\Handlers;
 
-	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Requests\Request;
 
 	class ClassHandlerConstructorDependency {
@@ -30,7 +29,7 @@
 
 		}
 
-		public function teamDependency ( RequestInterface $request, string $view, FavoriteTeam $team ) : string {
+		public function teamDependency ( Request $request, string $view, FavoriteTeam $team ) : string {
 
 			return $team->name;
 

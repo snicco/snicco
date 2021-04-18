@@ -5,12 +5,12 @@
 	namespace WPEmerge\ServiceProviders;
 
 	use Contracts\ContainerAdapter;
+	use Illuminate\Support\Arr;
 	use WPEmerge\Application\ClosureFactory;
 	use WPEmerge\Application\GenericFactory;
 	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Helpers\HandlerFactory;
 	use WPEmerge\Helpers\MixedType;
-
 	use function wp_mkdir_p;
 	use function wp_upload_dir;
 
@@ -61,6 +61,9 @@
 					// $container is the concrete implementation. In the default setup the illuminate
 					// container
 					$container[WPEMERGE_CONTAINER_ADAPTER],
+
+					Arr::get($container[WPEMERGE_CONFIG_KEY], 'controller_namespaces', [])
+
 				);
 
 			} );

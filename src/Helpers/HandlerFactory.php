@@ -26,15 +26,21 @@
 		private $container;
 
 		/**
+		 * @var array
+		 */
+		private $controller_namespaces;
+
+		/**
 		 * Constructor.
 		 *
 		 *
 		 * @param  GenericFactory  $factory
 		 */
-		public function __construct( GenericFactory $factory, ContainerAdapter $container ) {
+		public function __construct( GenericFactory $factory, ContainerAdapter $container, array $namespaces ) {
 
 			$this->factory = $factory;
 			$this->container = $container;
+			$this->controller_namespaces = $namespaces;
 		}
 
 		/**
@@ -50,13 +56,21 @@
 		 */
 		public function make( $raw_handler, $default_method = '', $namespace = '' ) : Handler {
 
-			$handler = new Handler( $this->factory, $raw_handler, $default_method, $namespace );
+			$handler = new Handler(
+
+				$this->factory,
+				$raw_handler,
+				$default_method,
+				$namespace,
+				$this->controller_namespaces
+
+			);
 
 			$container = $this->container;
 
-			$handler->setExecutable(function ($class, $method, $args ) use ( $container ) {
+			$handler->setExecutable(function ($callable, $parameters ) use ( $container ) {
 
-				return $container->call( $class . '@' . $method, $args );
+				return $container->call( $callable , $parameters );
 
 			});
 
