@@ -9,12 +9,15 @@
 	use WPEmerge\Exceptions\ClassNotFoundException;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Support\Arr;
+	use WPEmerge\Traits\ReflectsCallable;
 
 	/**
 	 * Represent a generic handler - a Closure or a class method to be resolved from the service
 	 * container
 	 */
 	class Handler {
+
+		use ReflectsCallable;
 
 		/**
 		 * Injection Factory.
@@ -120,7 +123,10 @@
 			return $this->factory->make( $full_class_path );
 		}
 
-		public function setExecutable ( Closure $closure ) {
+
+
+
+		public function setExecutable( Closure $closure ) {
 
 			$this->executable = $closure;
 
@@ -131,22 +137,22 @@
 		 * Execute the parsed handler with any provided arguments and return the result.
 		 *
 		 * @param  mixed ,...$arguments
+		 *
 		 * @return mixed
 		 */
 		public function _execute() {
 
 			$arguments = func_get_args();
-			$instance = $this->make();
+			$instance  = $this->make();
 
 			if ( $instance instanceof Closure ) {
 				return call_user_func_array( $instance, $arguments );
 			}
 
-			return call_user_func_array( [$instance, $this->get()['method']], $arguments );
+			return call_user_func_array( [ $instance, $this->get()['method'] ], $arguments );
 
 
 		}
-
 
 
 		/**
@@ -170,10 +176,17 @@
 
 			$executable = $this->executable;
 
-			return $executable($handler['class'], $handler['method'], $arguments);
+			$arguments = $this->buildNamedParameters( $callable = $this->classCallable() , $arguments );
+
+			return $executable( $callable , $arguments );
 
 		}
 
+		public function hasControllerMiddleware () {
+
+
+
+		}
 
 		/**
 		 * Parse a callable to a Closure or a [class, method] array
@@ -261,56 +274,6 @@
 		}
 
 
-		/**
-		 *
-		 * Use the containerAdapter to call the Handler Method
-		 *
-		 * @param $instance
-		 * @param $method
-		 * @param $arguments
-		 *
-		 * @return false|mixed
-		 *
-		 * @todo inject the config into the handler.
-		 */
-		private function callInstanceMethod( $instance, $method, $arguments ) {
-
-			$callable = array_pop( $arguments );
-
-			return $callable( [ $instance, $method, ], $this->trimArguments( $arguments ) );
-		}
-
-
-		private function findClass( $class, $path ) {
-
-
-			if ( class_exists( $class_no_namespace = $class ) ) {
-
-				return $class_no_namespace;
-
-			}
-
-			if ( class_exists( $class_with_namespace = $path . $class ) ) {
-
-				return $class_with_namespace;
-
-			}
-
-
-			foreach ( $this->namespaces as $namespace ) {
-
-				if ( class_exists( $namespace . $class ) ) {
-
-					return $namespace . $class;
-				}
-
-
-			}
-
-			throw new ClassNotFoundException();
-
-
-		}
 
 
 		private function trimArguments( $arguments ) : array {
@@ -320,5 +283,34 @@
 				return $value != '' && $value != [];
 			} );
 		}
+
+		private function classCallable() : string {
+
+			return $this->buildFullNamespace( $this->handler['class'] ) . '@' . $this->handler['method'];
+
+		}
+
+		private function buildFullNamespace ( $class ) {
+
+			if ( class_exists( $class_no_namespace = $class ) ) {
+
+				return $class_no_namespace;
+
+			}
+
+			foreach ( $this->namespaces as $namespace ) {
+
+				if ( class_exists( $namespace . '\\' . $class ) ) {
+
+					return $namespace . '\\' . $class ;
+				}
+
+
+			}
+
+			throw new ClassNotFoundException('Class: ' . $class . ' not found');
+
+		}
+
 
 	}

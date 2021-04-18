@@ -212,6 +212,7 @@
 			              ->andReturnUsing( function ( $class ) {
 
 				              return new $class();
+
 			              } );
 
 			$this->factory_handler->shouldReceive( 'execute' )
@@ -584,7 +585,7 @@
 
 			$response = $next( $request );
 
-			return $response->withBody( Psr7\stream_for( 'Dependency' . $response->getBody()
+			return $response->withBody( Psr7\stream_for( 'Foo' . $response->getBody()
 			                                                              ->read( 999 ) ) );
 		}
 
