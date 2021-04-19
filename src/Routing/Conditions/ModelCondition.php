@@ -51,9 +51,9 @@
 
 		public function getArguments( RequestInterface $request ) {
 
-			$merge = array_merge()
+			$merge = array_merge(parent::getArguments( $request ), $this->models());
 
-			return $this->models() + parent::getArguments( $request );
+			return $merge;
 		}
 
 		private function allModelsResolved($request) {

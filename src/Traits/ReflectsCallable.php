@@ -107,7 +107,6 @@
 
 			}
 
-
 			$payload = ( ! is_array( $payload ) ) ? [ $payload ] : $payload;
 
 			$call_reflector = $this->getCallReflector( $callable , 'handle' );
@@ -130,7 +129,7 @@
 
 			$payload = $reduced->combine( $payload );
 
-			return $payload->toArray();
+			return $payload->all();
 
 
 		}
