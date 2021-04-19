@@ -234,7 +234,7 @@
 
 				catch ( Throwable $e ) {
 
-					throw new ConfigurationException( 'Condition class "' . $condition_class . '" does not exist.' );
+					throw new ConfigurationException( 'Error while creating the RouteCondition: ' .$e->getMessage() );
 
 				}
 

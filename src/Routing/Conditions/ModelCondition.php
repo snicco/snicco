@@ -3,23 +3,28 @@
 
 	namespace WPEmerge\Routing\Conditions;
 
-	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\RouteModelResolver;
 
 	class ModelCondition extends UrlCondition {
 
 
+		/**
+		 * @var array
+		 */
 		private $model_blueprint;
 
+		/**
+		 * @var \WPEmerge\Helpers\Handler
+		 */
 		private $handler;
 
 		/**
-		 * @var \WPEmerge\Contracts\RouteModelResolver
+		 * @var \WPEmerge\WpdbRouteModelResolver
 		 */
 		private $model_resolver;
 
-		public function __construct( RouteModelResolver $model_resolver,  $model_blueprint,  $handler,  $url,  $where = [] ) {
+		public function __construct( RouteModelResolver $model_resolver,  $model_blueprint, $handler,  $url,  $where = [] ) {
 
 			parent::__construct( $url, $where );
 
@@ -39,31 +44,33 @@
 
 			if ( ! $this->expectsEloquentModels() ) return true;
 
-			return $this->allModelsResolved();
+			return $this->allModelsResolved($request);
 
 
 		}
 
 		public function getArguments( RequestInterface $request ) {
 
+			$merge = array_merge()
+
 			return $this->models() + parent::getArguments( $request );
 		}
 
-		private function allModelsResolved() {
+		private function allModelsResolved($request) {
 
-			return true;
+			return $this->model_resolver->allModelsCanBeResolved(parent::getArguments($request));
 
 		}
 
 		private function models() {
 
-			return [];
+			return $this->model_resolver->models();
 
 		}
 
-		private function expectsEloquentModels() {
+		private function expectsEloquentModels() : bool {
 
-			return false;
+			return $this->model_resolver->expectsEloquent($this->handler);
 
 		}
 

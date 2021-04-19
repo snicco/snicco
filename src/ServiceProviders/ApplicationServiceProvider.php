@@ -49,25 +49,6 @@
 				'path' => $cache_dir,
 			] );
 
-			$container->singleton( RouteModelResolver::class, function () {
-
-				global $wpdb;
-
-				if ( ! $wpdb instanceof WpdbInterface ) {
-
-					$wp_conn = new WpConnection( DbFactory::make( $wpdb ) );
-
-					Eloquent::setConnectionResolver( new ConnectionResolver( $wp_conn ) );
-
-					return new WpdbRouteModelResolver($wp_conn);
-
-
-				}
-
-				return new WpdbRouteModelResolver( new WpConnection( $wpdb ) );
-
-			} );
-
 			$container->bind( WPEMERGE_APPLICATION_GENERIC_FACTORY_KEY, function ( $container ) {
 
 				return new GenericFactory(
@@ -94,6 +75,26 @@
 					Arr::get( $container[ WPEMERGE_CONFIG_KEY ], 'controller_namespaces', [] )
 
 				);
+
+			} );
+
+
+			$container->singleton( RouteModelResolver::class, function ($c) {
+
+				global $wpdb;
+
+				if ( ! $wpdb instanceof WpdbInterface ) {
+
+					$wp_conn = new WpConnection( DbFactory::make( $wpdb ) );
+
+					Eloquent::setConnectionResolver( new ConnectionResolver( $wp_conn ) );
+
+					return new WpdbRouteModelResolver($wp_conn, $c[WPEMERGE_HELPERS_HANDLER_FACTORY_KEY]);
+
+
+				}
+
+				return new WpdbRouteModelResolver( new WpConnection( $wpdb ), $c[WPEMERGE_HELPERS_HANDLER_FACTORY_KEY] );
 
 			} );
 
