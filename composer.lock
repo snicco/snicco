@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0818cbe1b24f83b029167673ee4e19a9",
+    "content-hash": "75f85255865ff03a7781d31a0fc78a9d",
     "packages": [
         {
             "name": "calvinalkan/base-container",
@@ -814,6 +814,69 @@
                 "source": "https://github.com/Behat/Transliterator/tree/v1.3.0"
             },
             "time": "2020-01-14T16:39:13+00:00"
+        },
+        {
+            "name": "calvinalkan/better-wordpress-database",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/calvinalkan/better-wordpress-database.git",
+                "reference": "4e96751cf3e85f47760720f54affbd586dac2c2c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/calvinalkan/better-wordpress-database/zipball/4e96751cf3e85f47760720f54affbd586dac2c2c",
+                "reference": "4e96751cf3e85f47760720f54affbd586dac2c2c",
+                "shasum": ""
+            },
+            "require": {
+                "composer/semver": "^3.2",
+                "fakerphp/faker": "1.13.0",
+                "illuminate/database": "dev-better-wp-db-8.x",
+                "symfony/finder": "5.2.4"
+            },
+            "require-dev": {
+                "brain/monkey": "^2.6",
+                "lucatume/wp-browser": "dev-better-env-names",
+                "mockery/mockery": "^1.4.2",
+                "nesbot/carbon": "^2.46",
+                "phpunit/phpunit": "^9.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "BetterWpdb\\": "src/"
+                }
+            },
+            "autoload-dev": {
+                "psr-4": {
+                    "Tests\\": "tests/"
+                }
+            },
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Calvin Alkan",
+                    "email": "calvin@snicco.de"
+                }
+            ],
+            "description": "Eloquent ORM for WordPress",
+            "homepage": "https://github.com/calvinalkan/better-wordpress-database",
+            "keywords": [
+                "eloquent",
+                "orm",
+                "plugin",
+                "sql",
+                "wordpress"
+            ],
+            "support": {
+                "source": "https://github.com/calvinalkan/better-wordpress-database/tree/master",
+                "issues": "https://github.com/calvinalkan/better-wordpress-database/issues"
+            },
+            "time": "2021-04-16T22:49:31+00:00"
         },
         {
             "name": "codeception/codeception",
@@ -1825,6 +1888,58 @@
             "time": "2020-11-10T19:05:51+00:00"
         },
         {
+            "name": "fakerphp/faker",
+            "version": "v1.13.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/FakerPHP/Faker.git",
+                "reference": "ab3f5364d01f2c2c16113442fb987d26e4004913"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/FakerPHP/Faker/zipball/ab3f5364d01f2c2c16113442fb987d26e4004913",
+                "reference": "ab3f5364d01f2c2c16113442fb987d26e4004913",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.1 || ^8.0"
+            },
+            "conflict": {
+                "fzaninotto/faker": "*"
+            },
+            "require-dev": {
+                "bamarni/composer-bin-plugin": "^1.4.1",
+                "ext-intl": "*",
+                "phpunit/phpunit": "^7.5.20 || ^8.5.8 || ^9.4.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Faker\\": "src/Faker/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "François Zaninotto"
+                }
+            ],
+            "description": "Faker is a PHP library that generates fake data for you.",
+            "keywords": [
+                "data",
+                "faker",
+                "fixtures"
+            ],
+            "support": {
+                "issues": "https://github.com/FakerPHP/Faker/issues",
+                "source": "https://github.com/FakerPHP/Faker/tree/v1.13.0"
+            },
+            "time": "2020-12-18T16:50:48+00:00"
+        },
+        {
             "name": "filp/whoops",
             "version": "2.12.0",
             "source": {
@@ -2154,6 +2269,73 @@
                 "source": "https://github.com/hautelook/phpass/tree/0.3.x"
             },
             "time": "2012-08-31T00:00:00+00:00"
+        },
+        {
+            "name": "illuminate/database",
+            "version": "dev-better-wp-db-8.x",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/calvinalkan/database.git",
+                "reference": "fb4e825d0751c7c54ffacc704090989b5c6b8f7c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/calvinalkan/database/zipball/fb4e825d0751c7c54ffacc704090989b5c6b8f7c",
+                "reference": "fb4e825d0751c7c54ffacc704090989b5c6b8f7c",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "illuminate/collections": "^8.0",
+                "illuminate/container": "^8.0",
+                "illuminate/contracts": "^8.0",
+                "illuminate/macroable": "^8.0",
+                "illuminate/support": "^8.0",
+                "php": "^7.3|^8.0",
+                "symfony/console": "^5.1.4"
+            },
+            "suggest": {
+                "doctrine/dbal": "Required to rename columns and drop SQLite columns (^2.6|^3.0).",
+                "fakerphp/faker": "Required to use the eloquent factory builder (^1.9.1).",
+                "illuminate/console": "Required to use the database commands (^8.0).",
+                "illuminate/events": "Required to use the observers with Eloquent (^8.0).",
+                "illuminate/filesystem": "Required to use the migrations (^8.0).",
+                "illuminate/pagination": "Required to paginate the result set (^8.0).",
+                "symfony/finder": "Required to use Eloquent model factories (^5.1.4)."
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "8.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\Database\\": ""
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Database package.",
+            "homepage": "https://laravel.com",
+            "keywords": [
+                "database",
+                "laravel",
+                "orm",
+                "sql"
+            ],
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2021-04-16T04:12:11+00:00"
         },
         {
             "name": "illuminate/support",
@@ -5309,7 +5491,7 @@
                 "terminal"
             ],
             "support": {
-                "source": "https://github.com/symfony/console/tree/5.x"
+                "source": "https://github.com/symfony/console/tree/v5.3.0-BETA1"
             },
             "funding": [
                 {
@@ -5856,7 +6038,7 @@
         },
         {
             "name": "symfony/finder",
-            "version": "5.x-dev",
+            "version": "v5.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/finder.git",
@@ -5871,7 +6053,6 @@
             "require": {
                 "php": ">=7.2.5"
             },
-            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -6617,7 +6798,7 @@
                 "utf8"
             ],
             "support": {
-                "source": "https://github.com/symfony/string/tree/5.x"
+                "source": "https://github.com/symfony/string/tree/v5.3.0-BETA1"
             },
             "funding": [
                 {
@@ -6712,7 +6893,7 @@
             "description": "Provides tools to internationalize your application",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/translation/tree/5.x"
+                "source": "https://github.com/symfony/translation/tree/v5.3.0-BETA1"
             },
             "funding": [
                 {
@@ -7797,7 +7978,8 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "calvinalkan/base-container": 20,
-        "lucatume/wp-browser": 20
+        "lucatume/wp-browser": 20,
+        "calvinalkan/better-wordpress-database": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

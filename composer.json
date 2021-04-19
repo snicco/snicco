@@ -30,6 +30,14 @@
     {
       "type": "vcs",
       "url": "https://github.com/calvinalkan/wp-browser"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/calvinalkan/better-wordpress-database"
+    },
+    {
+      "type": "vcs",
+      "url": "https://github.com/calvinalkan/database"
     }
   ],
   "require": {
@@ -43,7 +51,8 @@
     "mockery/mockery": "^1.4.2",
     "filp/whoops": "^2.2",
     "phpunit/phpunit": "^9.0",
-    "lucatume/wp-browser": "dev-better-env-names"
+    "lucatume/wp-browser": "dev-better-env-names",
+    "calvinalkan/better-wordpress-database": "dev-master"
   },
   "autoload": {
     "psr-4": {

@@ -4,13 +4,19 @@
 
 	namespace WPEmerge\ServiceProviders;
 
+	use BetterWpdb\Contracts\WpdbInterface;
+	use BetterWpdb\DbFactory;
+	use BetterWpdb\WpConnection;
 	use Contracts\ContainerAdapter;
 	use Illuminate\Support\Arr;
 	use WPEmerge\Application\ClosureFactory;
 	use WPEmerge\Application\GenericFactory;
+	use WPEmerge\Contracts\RouteModelResolver;
 	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Helpers\HandlerFactory;
 	use WPEmerge\Helpers\MixedType;
+	use WPEmerge\WpdbRouteModelResolver;
+
 	use function wp_mkdir_p;
 	use function wp_upload_dir;
 
@@ -42,6 +48,20 @@
 				'path' => $cache_dir,
 			] );
 
+			$container->singleton(RouteModelResolver::class, function ($container) {
+
+				global $wpdb;
+
+				if ( ! $wpdb instanceof WpdbInterface ) {
+
+					return new WpdbRouteModelResolver(new WpConnection(DbFactory::make($wpdb)));
+
+				}
+
+				return new WpdbRouteModelResolver(new WpConnection($wpdb));
+
+			});
+
 			$container->bind( WPEMERGE_APPLICATION_GENERIC_FACTORY_KEY, function ( $container ) {
 
 				return new GenericFactory(
@@ -56,11 +76,15 @@
 
 			$container->bind( WPEMERGE_HELPERS_HANDLER_FACTORY_KEY, function ( $container ) {
 
+
 				return new HandlerFactory(
+
 					$container[ WPEMERGE_APPLICATION_GENERIC_FACTORY_KEY ],
 					// $container is the concrete implementation. In the default setup the illuminate
 					// container
 					$container[WPEMERGE_CONTAINER_ADAPTER],
+
+					$container[RouteModelResolver::class],
 
 					Arr::get($container[WPEMERGE_CONFIG_KEY], 'controller_namespaces', [])
 
