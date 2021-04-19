@@ -7,10 +7,18 @@
 	use BetterWpdb\ExtendsIlluminate\MySqlSchemaBuilder;
 	use BetterWpdb\WpConnection;
 	use Codeception\TestCase\WPTestCase;
+	use Illuminate\Container\Container;
 	use Illuminate\Database\Eloquent\ModelNotFoundException;
 	use Illuminate\Database\Schema\Blueprint;
+	use Illuminate\Events\Dispatcher;
+	use Illuminate\Events\EventDispatcher;
+	use Illuminate\Routing\ImplicitRouteBinding;
+	use Illuminate\Routing\Router;
+	use Illuminate\Support\Testing\Fakes\EventFake;
 	use Tests\stubs\IntegrationTestErrorHandler;
 	use Tests\stubs\Middleware\FooMiddleware;
+	use Tests\stubs\Models\Country;
+	use Tests\stubs\Models\Team;
 	use Tests\stubs\TestApp;
 	use WPEmerge\Requests\Request;
 	use WPEmerge\Responses\ResponseService;
@@ -152,7 +160,7 @@
 
 		}
 
-		/** @test */
+		// /** @test */
 		public function routes_with_multiple_eloquent_models_get_scoped_to_only_use_child_models() {
 
 			TestApp::route()
@@ -169,6 +177,33 @@
 
 		}
 
+
+		/** @test */
+		public function illuminate_routing(  ) {
+
+			$events = \Mockery::mock(EventFake::class);
+			$events->shouldIgnoreMissing();
+
+			$router = new Router( $events );
+
+			$router->get('/users/{country}/posts/{post:slug}', function (Country $country, Team $team) {
+
+				return $team;
+
+			});
+
+			$routes = $router->getRoutes();
+
+			$route = $routes->get('GET');
+
+			$route = array_values($route)[0];
+
+			$route->setParameter('country', '1');
+			$route->setParameter('team', '1');
+
+			$binding = ImplicitRouteBinding::resolveForRoute(new Container() ,$route);
+
+		}
 
 		private function bootstrapTestApp() {
 
