@@ -5,6 +5,7 @@
 
 	use GuzzleHttp\Psr7\ServerRequest;
 	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Contracts\RouteInterface;
 	use WPEmerge\Support\Arr;
 
 	/**
@@ -12,9 +13,11 @@
 	 */
 	class Request extends ServerRequest implements RequestInterface {
 
+
+		private $route;
+
+
 		/**
-		 * @codeCoverageIgnore
-		 * {@inheritDoc}
 		 * @return static
 		 */
 		public static function fromGlobals() {
@@ -36,18 +39,12 @@
 				->withUploadedFiles( static::normalizeFiles( $_FILES ) );
 		}
 
-		/**
-		 * @codeCoverageIgnore
-		 * {@inheritDoc}
-		 */
+
 		public function getUrl() {
 
 			return $this->getUri();
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		protected function getMethodOverride( $default ) {
 
 			$valid_overrides = [ 'GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS' ];
@@ -235,6 +232,18 @@
 		public function headers( $key = '', $default = null ) {
 
 			return call_user_func( [ $this, 'get' ], $this->getHeaders(), $key, $default );
+		}
+
+
+		public function setRoute( RouteInterface $route ) {
+
+			$this->route = $route;
+		}
+
+		public function route() : RouteInterface {
+
+			return $this->route();
+
 		}
 
 	}

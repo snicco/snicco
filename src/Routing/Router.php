@@ -398,6 +398,8 @@
 
 					$this->setCurrentRoute( $route );
 
+					$route->setArguments($request);
+
 					return $route;
 				}
 			}

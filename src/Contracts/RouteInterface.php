@@ -1,34 +1,38 @@
 <?php
-/**
- * @package   WPEmerge
- * @author    Atanas Angelov <hi@atanas.dev>
- * @copyright 2017-2019 Atanas Angelov
- * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
- * @link      https://wpemerge.com/
- */
 
-namespace WPEmerge\Contracts;
 
-use WPEmerge\Contracts\HasAttributesInterface;
-use WPEmerge\Contracts\RequestInterface;
+	namespace WPEmerge\Contracts;
 
-/**
- * Interface that routes must implement
- */
-interface RouteInterface extends HasAttributesInterface {
-	/**
-	 * Get whether the route is satisfied.
-	 *
-	 * @param  RequestInterface $request
-	 * @return boolean
-	 */
-	public function isSatisfied( RequestInterface $request );
+
 
 	/**
-	 * Get arguments.
-	 *
-	 * @param  RequestInterface $request
-	 * @return array
+	 * Interface that routes must implement
 	 */
-	public function getArguments( RequestInterface $request );
-}
+	interface RouteInterface extends HasAttributesInterface {
+
+		/**
+		 * Get whether the route is satisfied.
+		 *
+		 * @param  RequestInterface  $request
+		 *
+		 * @return boolean
+		 */
+		public function isSatisfied( RequestInterface $request );
+
+		/**
+		 * Get arguments.
+		 *
+		 * @param  RequestInterface  $request
+		 *
+		 * @return array
+		 */
+		public function getArguments( RequestInterface $request );
+
+		public function arguments() : array;
+
+		public function setArguments(RequestInterface $request);
+
+		public function updateArguments(array $arguments);
+
+		public function signatureParameters();
+	}
