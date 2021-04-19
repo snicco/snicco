@@ -107,6 +107,7 @@
 					/** @var \WPEmerge\Kernels\HttpKernel $kernel */
 					$kernel = $this->resolve( WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY );
 					$kernel->bootstrap();
+
 				}
 			} );
 		}
@@ -198,7 +199,9 @@
 		public function renderConfigExceptions( Closure $callable ) {
 
 			try {
+
 				$callable();
+
 			}
 			catch ( ConfigurationException $exception ) {
 				if ( ! $this->render_config_exceptions ) {

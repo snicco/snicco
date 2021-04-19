@@ -18,7 +18,7 @@
 		 * @return \ReflectionFunction|\ReflectionMethod
 		 * @throws \ReflectionException
 		 */
-		private function getCallReflector( $callback, string $default_method ) {
+		private function getCallReflector( $callback, string $default_method = '' ) {
 
 			if ( $this->isClosure( $callback ) ) {
 				return new ReflectionFunction( $callback );
