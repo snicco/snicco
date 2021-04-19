@@ -187,6 +187,7 @@
 			try {
 
 				$middleware = array_merge( $middleware, $handler->controllerMiddleware() );
+				$middleware = $this->applyGlobalMiddleware($middleware);
 				$middleware = $this->expandMiddleware( $middleware );
 				$middleware = $this->uniqueMiddleware( $middleware );
 				$middleware = $this->sortMiddleware( $middleware );

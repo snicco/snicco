@@ -21,7 +21,6 @@
 	 */
 	class Router implements HasRoutesInterface {
 
-
 		use HasRoutesTrait;
 
 		/**
@@ -30,7 +29,6 @@
 		 * @var ConditionFactory
 		 */
 		protected $condition_factory = null;
-
 
 		/**
 		 * Handler factory.
