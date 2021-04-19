@@ -7,8 +7,10 @@
 	use GuzzleHttp\Psr7\Response as Psr7Response;
 	use GuzzleHttp\Psr7\Utils;
 	use Mockery as m;
+	use Tests\Laravel\App;
 	use Tests\stubs\Middleware\FooMiddleware;
 	use Tests\stubs\Middleware\GlobalFooMiddleware;
+	use WPEmerge\Middleware\SubstituteModelBindings;
 	use WPEmerge\Requests\Request;
 	use WPEmerge\Responses\ResponseService;
 	use Tests\stubs\Handlers\ClassHandlerConstructorDependency;
@@ -38,7 +40,15 @@
 
 			$this->request = m::mock( Request::class );
 			$this->request->shouldReceive( 'getMethod' )->andReturn( 'GET' );
-			$this->request->shouldReceive( 'withAttribute' )->andReturn( $this->request );
+			$this->request->shouldReceive( 'withAttribute' )->andReturnUsing( function ($key, $argument) {
+
+				$this->request->{$key} =  $argument;
+
+				return $this->request;
+
+			});
+
+
 			$this->response_service = m::mock( ResponseService::class );
 
 			$this->bootstrapTestApp();
@@ -47,6 +57,7 @@
 			$this->kernel = TestApp::resolve( WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY );
 
 		}
+
 
 		protected function tearDown() : void {
 
@@ -168,6 +179,46 @@
 		}
 
 		/** @test */
+		public function the_substitute_model_bindings_middleware_is_bound_in_the_container_correctly() {
+
+			$bound = TestApp::container()->offsetExists(SubstituteModelBindings::class);
+
+			$this->assertTrue($bound);
+
+			$config = TestApp::resolve( WPEMERGE_CONFIG_KEY );
+
+			$this->assertContains(
+				SubstituteModelBindings::class,
+				$config['middleware_groups']['global']
+			);
+
+			$this->assertSame([
+
+				SubstituteModelBindings::class,
+				GlobalFooMiddleware::class,
+
+			], $config['middleware_priority']);
+
+		}
+
+		/** @test */
+		public function foo() {
+
+			TestApp::route()
+			       ->get()
+			       ->middleware(FooMiddleware::class)
+			       ->url( '/' )
+			       ->handle( 'WebController@request');
+
+
+			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
+
+			/** @var \Tests\stubs\TestResponse $response */
+			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+
+			$this->assertSame( 'foo:foo_dependency_web_controller', $response->body() );
+
+		}
 
 
 

@@ -72,7 +72,7 @@
 
 		public function applyGlobalMiddleware(array $middleware = []) : array {
 
-			return array_merge($middleware, $this->middleware_groups['global']);
+			return array_merge($middleware, $this->middleware_groups['global'] ?? [] );
 
 		}
 
