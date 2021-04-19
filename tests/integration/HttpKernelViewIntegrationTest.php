@@ -7,12 +7,14 @@
 	use Tests\stubs\IntegrationTestErrorHandler;
 	use Tests\stubs\Middleware\FooMiddleware;
 	use Tests\stubs\TestApp;
+	use WPEmerge\Middleware\SubstituteModelBindings;
 	use WPEmerge\Requests\Request;
 	use WPEmerge\Responses\ResponseService;
 	use Mockery as m;
 
 	class HttpKernelViewIntegrationTest extends WPTestCase {
 
+		use DisableGlobalMiddleWare;
 
 		private $view_dir;
 
@@ -42,6 +44,8 @@
 			$this->response_service = m::mock( ResponseService::class );
 
 			$this->bootstrapTestApp();
+
+			$this->disableGlobalMiddleware();
 
 			$this->kernel = TestApp::resolve( WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY );
 

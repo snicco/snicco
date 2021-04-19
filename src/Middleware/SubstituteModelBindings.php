@@ -10,7 +10,7 @@
 
 		public function handle ( Request $request, \Closure $next ) {
 
-			// $route = $request->getAttribute('route');
+			$route = $request->getAttribute('route');
 
 			return $next($request);
 

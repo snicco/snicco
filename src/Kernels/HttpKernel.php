@@ -164,7 +164,6 @@
 		private function executeHandler( Handler $handler, $arguments = [] ) : ?ResponseInterface {
 
 
-
 			$response = call_user_func_array( [ $handler, 'execute' ], $arguments );
 
 			$response = $this->toResponse( $response );

@@ -22,6 +22,7 @@
 	 */
 	class HttpKernelMiddlewareIntegrationTest extends WPTestCase {
 
+		use DisableGlobalMiddleWare;
 
 		/**
 		 * @var \WPEmerge\Kernels\HttpKernel
@@ -53,6 +54,7 @@
 
 			$this->bootstrapTestApp();
 
+			$this->disableGlobalMiddleware();
 
 			$this->kernel = TestApp::resolve( WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY );
 
