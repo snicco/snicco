@@ -4,7 +4,9 @@
 	namespace WPEmerge\Traits;
 
 	use Closure;
+	use Illuminate\Support\Arr;
 	use Illuminate\Support\Str;
+	use ReflectionClass;
 	use ReflectionFunction;
 	use ReflectionMethod;
 
@@ -29,6 +31,62 @@
 				: Str::parseCallback( $callback[0], $default_method );
 
 			return new ReflectionMethod( $class, $method );
+
+		}
+
+
+		private function buildNameConstructorParameters ( $class, $payload  ) {
+
+			$payload = collect(Arr::wrap($payload));
+
+			if ( ! $this->classExists($class ) ) {
+
+				return $payload;
+
+			}
+
+			$class = new ReflectionClass($class);
+			$constructor = $class->getConstructor();
+
+			$params = collect( $constructor->getParameters() );
+
+			$parameter_names = $params->map( function ( $param ) {
+
+				return $param->getName();
+
+			} );
+
+			if ( $parameter_names->isEmpty() ) {
+
+				return $payload;
+
+			}
+
+
+			$parameter_types = $params->map( function ( $param ) {
+
+				$type = $param->getType();
+
+				$name = $type->getName();
+
+				return $name;
+
+			} );
+
+			$payload = $payload->flatMap(function ($value) use ($parameter_names, $parameter_types) {
+
+				if ( $this->parameterType($value) === $parameter_types->shift()) {
+
+					return [$parameter_names->shift() => $value];
+
+				}
+
+				return $value;
+
+			});
+
+
+			return $payload->toArray();
 
 		}
 
@@ -110,6 +168,16 @@
 			$used_interfaces = class_implements($class);
 
 			return isset($used_interfaces[$interface]);
+
+		}
+
+		private function parameterType($param) {
+
+				$type = gettype($param);
+
+				if ( $type != 'object') return $type;
+
+				return get_class($param);
 
 		}
 

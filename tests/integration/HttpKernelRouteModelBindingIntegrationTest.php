@@ -4,10 +4,10 @@
 	namespace Tests\integration;
 
 	use BetterWpdb\DbFactory;
-	use BetterWpdb\DependentInstallation\DependencyManager;
 	use BetterWpdb\ExtendsIlluminate\MySqlSchemaBuilder;
 	use BetterWpdb\WpConnection;
 	use Codeception\TestCase\WPTestCase;
+	use Illuminate\Database\Eloquent\ModelNotFoundException;
 	use Illuminate\Database\Schema\Blueprint;
 	use Tests\stubs\IntegrationTestErrorHandler;
 	use Tests\stubs\Middleware\FooMiddleware;
@@ -30,6 +30,7 @@
 		private $response_service;
 
 		protected function setUp() : void {
+
 
 			$GLOBALS['wp_test_case_without_transactions'] = true;
 
@@ -62,7 +63,7 @@
 		}
 
 		/** @test */
-		public function a_type_hinted_model_gets_injected_into_the_handler_by_id_when_type_hinted() {
+		public function a_model_gets_injected_into_the_handler_by_id_when_type_hinted() {
 
 			TestApp::route()
 			       ->get()
@@ -79,9 +80,43 @@
 
 		}
 
+		/** @test */
+		public function an_exception_gets_thrown_before_the_handler_executes_if_we_cant_retrieve_the_model () {
+
+			$this->expectException(ModelNotFoundException::class);
+			$this->expectExceptionMessage('No query results for model [Tests\stubs\Team].');
+
+			TestApp::route()
+			       ->get()
+			       ->url( '/teams/{team}' )
+			       ->handle( 'TeamsController@never');
 
 
+			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/teams/3' );
 
+			$this->kernel->handleRequest( $this->request, [ 'index' ] );
+
+			$this->assertFalse( isset ($GLOBALS['TeamsControllerExecuted']) );
+
+
+		}
+
+		/** @test */
+		public function a_model_can_be_retrieved_by_custom_column_names_if_specified_in_the_route() {
+
+			TestApp::route()
+			       ->get()
+			       ->url( '/teams/{team:name}' )
+			       ->handle( 'TeamsController@handle');
+
+
+			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/teams/1' );
+
+			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+
+			$this->assertSame( 'dortmund', $test_response->body() );
+
+		}
 
 
 

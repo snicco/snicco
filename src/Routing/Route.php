@@ -1,57 +1,61 @@
 <?php
-/**
- * @package   WPEmerge
- * @author    Atanas Angelov <hi@atanas.dev>
- * @copyright 2017-2019 Atanas Angelov
- * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
- * @link      https://wpemerge.com/
- */
+	/**
+	 * @package   WPEmerge
+	 * @author    Atanas Angelov <hi@atanas.dev>
+	 * @copyright 2017-2019 Atanas Angelov
+	 * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
+	 * @link      https://wpemerge.com/
+	 */
 
-namespace WPEmerge\Routing;
 
-use WPEmerge\Contracts\HasQueryFilterInterface;
-use WPEmerge\Contracts\RouteInterface;
-use WPEmerge\Exceptions\ConfigurationException;
-use WPEmerge\Helpers\HasAttributesTrait;
-use WPEmerge\Contracts\RequestInterface;
-use WPEmerge\Contracts\ConditionInterface;
+	namespace WPEmerge\Routing;
 
-/**
- * Represent a route
- */
-class Route implements RouteInterface, HasQueryFilterInterface {
-	use HasAttributesTrait;
-	use HasQueryFilterTrait;
+	use WPEmerge\Contracts\HasQueryFilterInterface;
+	use WPEmerge\Contracts\RouteInterface;
+	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\Helpers\HasAttributesTrait;
+	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Contracts\ConditionInterface;
 
 	/**
-	 * {@inheritDoc}
+	 * Represent a route
 	 */
-	public function isSatisfied( RequestInterface $request ) {
+	class Route implements RouteInterface, HasQueryFilterInterface {
 
-		$methods = $this->getAttribute( 'methods', [] );
-		$condition = $this->getAttribute( 'condition' );
+		use HasAttributesTrait;
+		use HasQueryFilterTrait;
 
-		if ( ! in_array( $request->getMethod(), $methods ) ) {
-			return false;
+		/**
+		 * {@inheritDoc}
+		 */
+		public function isSatisfied( RequestInterface $request ) {
+
+			$methods   = $this->getAttribute( 'methods', [] );
+			$condition = $this->getAttribute( 'condition' );
+
+			if ( ! in_array( $request->getMethod(), $methods ) ) {
+				return false;
+			}
+
+			if ( ! $condition instanceof ConditionInterface ) {
+				throw new ConfigurationException( 'Route does not have a condition.' );
+			}
+
+			return $condition->isSatisfied( $request );
 		}
 
-		if ( ! $condition instanceof ConditionInterface ) {
-			throw new ConfigurationException( 'Route does not have a condition.' );
+		/**
+		 * {@inheritDoc}
+		 */
+		public function getArguments( RequestInterface $request ) {
+
+			$condition = $this->getAttribute( 'condition' );
+
+			if ( ! $condition instanceof ConditionInterface ) {
+				throw new ConfigurationException( 'Route does not have a condition.' );
+			}
+
+			return $condition->getArguments( $request );
 		}
 
-		return $condition->isSatisfied( $request );
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getArguments( RequestInterface $request ) {
-		$condition = $this->getAttribute( 'condition' );
-
-		if ( ! $condition instanceof ConditionInterface ) {
-			throw new ConfigurationException( 'Route does not have a condition.' );
-		}
-
-		return $condition->getArguments( $request );
-	}
-}

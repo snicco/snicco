@@ -6,7 +6,6 @@
 	use Closure;
 	use Contracts\ContainerAdapter;
 	use WPEmerge\Application\GenericFactory;
-	use WPEmerge\Contracts\RouteModelResolver;
 	use WPEmerge\Traits\ResolvesRouteModels;
 
 	/**
@@ -34,11 +33,7 @@
 		 */
 		private $controller_namespaces;
 
-		/**
-		 *
-		 * @var \WPEmerge\Contracts\RouteModelResolver
-		 */
-		private $model_resolver;
+
 
 		/**
 		 * Constructor.
@@ -46,11 +41,10 @@
 		 *
 		 * @param  GenericFactory  $factory
 		 */
-		public function __construct( GenericFactory $factory, ContainerAdapter $container, RouteModelResolver $model_resolver, array $namespaces ) {
+		public function __construct( GenericFactory $factory, ContainerAdapter $container, array $namespaces ) {
 
 			$this->factory               = $factory;
 			$this->container             = $container;
-			$this->model_resolver        = $model_resolver;
 			$this->controller_namespaces = $namespaces;
 
 		}
@@ -82,7 +76,6 @@
 
 			$handler->setExecutable( function ( $callable, $parameters ) use ( $container ) {
 
-				$parameters = $this->bindRouteModels($callable, $parameters);
 
 				return $container->call( $callable, $parameters );
 

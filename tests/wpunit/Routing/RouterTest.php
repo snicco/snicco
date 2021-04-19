@@ -4,7 +4,8 @@
 	namespace WPEmergeTests\Routing;
 
 	use Codeception\TestCase\WPTestCase;
-	use Mockery;
+	use Mockery as m;
+	use SniccoAdapter\BaseContainerAdapter;
 	use WPEmerge\Helpers\Handler;
 	use WPEmerge\Helpers\HandlerFactory;
 	use WPEmerge\Contracts\RequestInterface;
@@ -28,10 +29,10 @@
 				'custom'   => \WPEmerge\Routing\Conditions\CustomCondition::class,
 				'multiple' => \WPEmerge\Routing\Conditions\MultipleCondition::class,
 				'negate'   => \WPEmerge\Routing\Conditions\NegateCondition::class,
-			] );
-			$this->handler_factory   = Mockery::mock( HandlerFactory::class )
-			                                  ->shouldIgnoreMissing();
-			$this->factory_handler   = Mockery::mock( Handler::class );
+			] , m::mock(BaseContainerAdapter::class) );
+			$this->handler_factory   = m::mock( HandlerFactory::class )
+			                            ->shouldIgnoreMissing();
+			$this->factory_handler   = m::mock( Handler::class );
 			$this->subject           = new Router( $this->condition_factory, $this->handler_factory );
 
 			$this->handler_factory->shouldReceive( 'make' )
@@ -41,7 +42,7 @@
 		public function tearDown() :void  {
 
 			parent::tearDown();
-			Mockery::close();
+			m::close();
 
 			unset( $this->condition_factory );
 			unset( $this->handler_factory );
@@ -54,7 +55,7 @@
 		 */
 		public function testSetCurrentRoute() {
 
-			$expected = Mockery::mock( RouteInterface::class );
+			$expected = m::mock( RouteInterface::class );
 
 			$this->subject->setCurrentRoute( $expected );
 			$this->assertSame( $expected, $this->subject->getCurrentRoute() );
@@ -227,7 +228,7 @@
 		public function testRouteCondition_ConditionInterface_Route() {
 
 			$subject   = new RouterTestImplementation( $this->condition_factory, $this->handler_factory );
-			$condition = Mockery::mock( ConditionInterface::class );
+			$condition = m::mock( ConditionInterface::class );
 
 			$this->assertSame( $condition, $subject->publicRouteCondition( $condition ) );
 		}
@@ -338,9 +339,9 @@
 		 */
 		public function testExecute_SatisfiedRoute_Route() {
 
-			$request   = Mockery::mock( RequestInterface::class );
-			$condition = Mockery::mock( ConditionInterface::class );
-			$route     = Mockery::mock( RouteInterface::class )->shouldIgnoreMissing();
+			$request   = m::mock( RequestInterface::class );
+			$condition = m::mock( ConditionInterface::class );
+			$route     = m::mock( RouteInterface::class )->shouldIgnoreMissing();
 
 			$route->shouldReceive( 'getAttribute' )
 			      ->with( 'condition' )
@@ -360,10 +361,10 @@
 		 */
 		public function testExecute_UnsatisfiedRoutes_Null() {
 
-			$request   = Mockery::mock( RequestInterface::class );
-			$condition = Mockery::mock( ConditionInterface::class );
-			$route1    = Mockery::mock( RouteInterface::class )->shouldIgnoreMissing();
-			$route2    = Mockery::mock( RouteInterface::class )->shouldIgnoreMissing();
+			$request   = m::mock( RequestInterface::class );
+			$condition = m::mock( ConditionInterface::class );
+			$route1    = m::mock( RouteInterface::class )->shouldIgnoreMissing();
+			$route2    = m::mock( RouteInterface::class )->shouldIgnoreMissing();
 
 			$route1->shouldReceive( 'getAttribute' )
 			       ->with( 'condition' )
@@ -400,9 +401,9 @@
 		 */
 		public function testGetRouteUrl() {
 
-			$route1    = Mockery::mock( RouteInterface::class )->shouldIgnoreMissing();
-			$route2    = Mockery::mock( RouteInterface::class );
-			$condition = Mockery::mock( UrlableInterface::class );
+			$route1    = m::mock( RouteInterface::class )->shouldIgnoreMissing();
+			$route2    = m::mock( RouteInterface::class );
+			$condition = m::mock( UrlableInterface::class );
 			$name      = 'foo';
 			$arguments = [ 'foo' ];
 			$expected  = '/foo';
@@ -432,7 +433,7 @@
 
 			$this->expectExceptionMessage('Route condition is not resolvable to a URL');
 
-			$route = Mockery::mock( RouteInterface::class );
+			$route = m::mock( RouteInterface::class );
 			$name  = 'foo';
 
 			$route->shouldReceive( 'getAttribute' )

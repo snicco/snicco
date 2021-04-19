@@ -1,13 +1,14 @@
 <?php
 
 
-
 	namespace WPEmerge\ServiceProviders;
 
+	use BetterWpdb\ConnectionResolver;
 	use BetterWpdb\Contracts\WpdbInterface;
 	use BetterWpdb\DbFactory;
 	use BetterWpdb\WpConnection;
 	use Contracts\ContainerAdapter;
+	use Illuminate\Database\Eloquent\Model as Eloquent;
 	use Illuminate\Support\Arr;
 	use WPEmerge\Application\ClosureFactory;
 	use WPEmerge\Application\GenericFactory;
@@ -48,19 +49,24 @@
 				'path' => $cache_dir,
 			] );
 
-			$container->singleton(RouteModelResolver::class, function ($container) {
+			$container->singleton( RouteModelResolver::class, function () {
 
 				global $wpdb;
 
 				if ( ! $wpdb instanceof WpdbInterface ) {
 
-					return new WpdbRouteModelResolver(new WpConnection(DbFactory::make($wpdb)));
+					$wp_conn = new WpConnection( DbFactory::make( $wpdb ) );
+
+					Eloquent::setConnectionResolver( new ConnectionResolver( $wp_conn ) );
+
+					return new WpdbRouteModelResolver($wp_conn);
+
 
 				}
 
-				return new WpdbRouteModelResolver(new WpConnection($wpdb));
+				return new WpdbRouteModelResolver( new WpConnection( $wpdb ) );
 
-			});
+			} );
 
 			$container->bind( WPEMERGE_APPLICATION_GENERIC_FACTORY_KEY, function ( $container ) {
 
@@ -82,11 +88,10 @@
 					$container[ WPEMERGE_APPLICATION_GENERIC_FACTORY_KEY ],
 					// $container is the concrete implementation. In the default setup the illuminate
 					// container
-					$container[WPEMERGE_CONTAINER_ADAPTER],
+					$container[ WPEMERGE_CONTAINER_ADAPTER ],
 
-					$container[RouteModelResolver::class],
 
-					Arr::get($container[WPEMERGE_CONFIG_KEY], 'controller_namespaces', [])
+					Arr::get( $container[ WPEMERGE_CONFIG_KEY ], 'controller_namespaces', [] )
 
 				);
 
