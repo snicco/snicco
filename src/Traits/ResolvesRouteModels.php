@@ -4,6 +4,7 @@
 	namespace WPEmerge\Traits;
 
 	use Illuminate\Database\Eloquent\Model as EloquentModel;
+	use Illuminate\Support\Arr;
 	use Illuminate\Support\Collection;
 
 	trait ResolvesRouteModels {
@@ -12,7 +13,7 @@
 
 		private function bindRouteModels( $callable, array $parameters ) : array {
 
-			$method_parameters = $this->getCallReflector( [ $callable ] )->getParameters();
+			$method_parameters = $this->getCallReflector( Arr::wrap( $callable ) )->getParameters();
 
 			$models = $this->findModels( $method_parameters );
 
@@ -45,7 +46,7 @@
 
 			});
 
-
+			return $parameters->merge($eloquent_models)->all();
 
 
 		}

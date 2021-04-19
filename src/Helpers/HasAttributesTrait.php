@@ -50,6 +50,7 @@ trait HasAttributesTrait {
 	 * @return void
 	 */
 	public function setAttribute( $attribute, $value ) {
+
 		$this->setAttributes( array_merge(
 			$this->getAttributes(),
 			[$attribute => $value]

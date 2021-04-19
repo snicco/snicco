@@ -821,12 +821,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/calvinalkan/better-wordpress-database.git",
-                "reference": "4e96751cf3e85f47760720f54affbd586dac2c2c"
+                "reference": "96defe9d412b66743dc4ba6a881e2f5775fdea16"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/calvinalkan/better-wordpress-database/zipball/4e96751cf3e85f47760720f54affbd586dac2c2c",
-                "reference": "4e96751cf3e85f47760720f54affbd586dac2c2c",
+                "url": "https://api.github.com/repos/calvinalkan/better-wordpress-database/zipball/96defe9d412b66743dc4ba6a881e2f5775fdea16",
+                "reference": "96defe9d412b66743dc4ba6a881e2f5775fdea16",
                 "shasum": ""
             },
             "require": {
@@ -876,7 +876,7 @@
                 "source": "https://github.com/calvinalkan/better-wordpress-database/tree/master",
                 "issues": "https://github.com/calvinalkan/better-wordpress-database/issues"
             },
-            "time": "2021-04-16T22:49:31+00:00"
+            "time": "2021-04-19T01:24:42+00:00"
         },
         {
             "name": "codeception/codeception",

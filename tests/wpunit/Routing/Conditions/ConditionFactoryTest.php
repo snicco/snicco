@@ -3,7 +3,7 @@
 namespace Tests\wpunit\Routing\Conditions;
 
 use Codeception\TestCase\WPTestCase;
-use Mockery;
+use Mockery as m;
 use SniccoAdapter\BaseContainerAdapter;
 use stdClass;
 use WPEmerge\Application\Application;
@@ -31,13 +31,13 @@ class ConditionFactoryTest extends WPTestCase {
 		$app->bootstrap( [], false );
 		$condition_types = $app->resolve( WPEMERGE_ROUTING_CONDITION_TYPES_KEY );
 
-		$this->request = Mockery::mock( RequestInterface::class );
-		$this->subject = new ConditionFactory( $condition_types );
+		$this->request = m::mock( RequestInterface::class );
+		$this->subject = new ConditionFactory( $condition_types, m::mock(BaseContainerAdapter::class));
 	}
 
 	public function tearDown() :void  {
 		parent::tearDown();
-		Mockery::close();
+		m::close();
 
 		unset( $this->request );
 		unset( $this->subject );
@@ -139,7 +139,7 @@ class ConditionFactoryTest extends WPTestCase {
 	 */
 	public function testMake_ArrayOfConditionsInArray_MultipleCondition() {
 		$expected_param1 = function() {};
-		$expected_param2 = Mockery::mock( PostIdCondition::class );
+		$expected_param2 = m::mock( PostIdCondition::class );
 		$expected_class = MultipleCondition::class;
 
 		$condition = $this->subject->make( [ [ $expected_param1 ], $expected_param2 ] );
@@ -200,7 +200,7 @@ class ConditionFactoryTest extends WPTestCase {
 
 		$this->expectExceptionMessage('does not exist');
 
-		$subject = new ConditionFactory( ['nonexistent_condition_type' => 'Nonexistent\\Condition\\Type\\Class'] );
+		$subject = new ConditionFactory( ['nonexistent_condition_type' => 'Nonexistent\\Condition\\Type\\Class'], m::mock(BaseContainerAdapter::class) );
 		$subject->make( ['nonexistent_condition_type'] );
 	}
 
@@ -246,8 +246,8 @@ class ConditionFactoryTest extends WPTestCase {
 	 * @covers ::condition
 	 */
 	public function testCondition() {
-		$condition = Mockery::mock( ConditionInterface::class );
-		$subject = Mockery::mock( ConditionFactory::class )->makePartial();
+		$condition = m::mock( ConditionInterface::class );
+		$subject = m::mock( ConditionFactory::class )->makePartial();
 
 		$this->assertSame( $condition, $subject->condition( $condition ) );
 
@@ -263,8 +263,8 @@ class ConditionFactoryTest extends WPTestCase {
 	 * @covers ::merge
 	 */
 	public function testMerge() {
-		$condition1 = Mockery::mock( ConditionInterface::class );
-		$condition2 = Mockery::mock( ConditionInterface::class );
+		$condition1 = m::mock( ConditionInterface::class );
+		$condition2 = m::mock( ConditionInterface::class );
 
 		$this->assertNull( $this->subject->merge( '', '' ) );
 		$this->assertSame( $condition1, $this->subject->merge( $condition1, '' ) );
@@ -277,13 +277,13 @@ class ConditionFactoryTest extends WPTestCase {
 	 */
 	public function testMergeConditions() {
 		$this->assertInstanceOf( MultipleCondition::class, $this->subject->mergeConditions(
-			Mockery::mock( ConditionInterface::class ),
-			Mockery::mock( ConditionInterface::class )
+			m::mock( ConditionInterface::class ),
+			m::mock( ConditionInterface::class )
 		) );
 
-		$url1 = Mockery::mock( UrlCondition::class );
-		$url2 = Mockery::mock( UrlCondition::class )->shouldIgnoreMissing();
-		$expected = Mockery::mock( ConditionInterface::class );
+		$url1 = m::mock( UrlCondition::class );
+		$url2 = m::mock( UrlCondition::class )->shouldIgnoreMissing();
+		$expected = m::mock( ConditionInterface::class );
 
 		$url1->shouldReceive( 'concatenate' )
 			->andReturn( $expected );
