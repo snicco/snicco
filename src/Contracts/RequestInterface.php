@@ -1,7 +1,6 @@
 <?php
 
 
-
 	namespace WPEmerge\Contracts;
 
 	use Psr\Http\Message\ServerRequestInterface;
@@ -152,5 +151,9 @@
 		 * @return mixed
 		 */
 		public function headers( $key = '', $default = null );
+
+		public function setRoute( RouteInterface $route );
+
+		public function route() : RouteInterface;
 
 	}

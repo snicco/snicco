@@ -5,6 +5,7 @@
 
 	use Contracts\ContainerAdapter;
 	use Exception;
+	use Illuminate\Support\Arr;
 	use Psr\Http\Message\ResponseInterface;
 	use WPEmerge\Application\GenericFactory;
 	use WPEmerge\Contracts\HttpKernelInterface;
@@ -21,7 +22,6 @@
 	use WPEmerge\Contracts\HasQueryFilterInterface;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Routing\SortsMiddlewareTrait;
-	use WPEmerge\Support\Arr;
 	use WPEmerge\View\ViewService;
 
 	class HttpKernel implements HttpKernelInterface {
@@ -160,10 +160,10 @@
 		 * @return ResponseInterface
 		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		private function executeHandler( Handler $handler, $arguments = [] ) : ?ResponseInterface {
+		private function executeHandler( Handler $handler, RequestInterface $request ) : ?ResponseInterface {
 
 
-			$response = call_user_func_array( [ $handler, 'execute' ], $arguments );
+			$response = call_user_func( [ $handler, 'execute' ],  $request,  ...array_values($request->route()->arguments()));
 
 			$response = $this->toResponse( $response );
 
@@ -177,7 +177,7 @@
 			return $response;
 		}
 
-		public function run( RequestInterface $request, $middleware, $handler, $arguments = [] ) {
+		public function _run( RequestInterface $request, $middleware, $handler, $arguments = [] ) {
 
 			// whoops
 			$this->error_handler->register();
@@ -209,9 +209,41 @@
 
 		}
 
-		public function handleRequest( RequestInterface $request, $arguments = [] ) {
+		public function run( RequestInterface $request, $middleware, $handler, $arguments = [] ) {
 
-			$arguments = \Illuminate\Support\Arr::wrap( $arguments );
+			// whoops
+			$this->error_handler->register();
+
+			try {
+
+				$middleware = array_merge( $middleware, $handler->controllerMiddleware() );
+				$middleware = $this->applyGlobalMiddleware( $middleware );
+				$middleware = $this->expandMiddleware( $middleware );
+				$middleware = $this->uniqueMiddleware( $middleware );
+				$middleware = $this->sortMiddleware( $middleware );
+
+				$response = $this->executeMiddleware( $middleware, $request, function ($request) use ( $handler ) {
+
+					return $this->executeHandler( $handler , $request );
+
+				} );
+
+			}
+			catch ( Exception $exception ) {
+
+				$response = $this->error_handler->getResponse( $request, $exception );
+
+			}
+
+			$this->error_handler->unregister();
+
+			return $response;
+
+		}
+
+		public function _handleRequest( RequestInterface $request, $arguments = [] ) {
+
+			$arguments = Arr::wrap( $arguments );
 
 			$view = $arguments[0] ?? null;
 
@@ -224,13 +256,44 @@
 			$route_arguments = $route->getArguments( $request );
 
 			$request = $request->withAttribute( 'route', $route )
-			                   ->withAttribute( 'route_arguments', $route_arguments );
+			                   ->withAttribute( 'arguments', $route_arguments );
 
 			$middleware      = $route->getAttribute( 'middleware', [] );
 			$handler         = $route->getAttribute( 'handler' );
 			$route_arguments = array_merge( [ $request ], $route_arguments );
 
 			$response = $this->run( $request, $middleware, $handler, $route_arguments );
+
+			if ( $response === null ) {
+
+				return $view;
+
+			}
+
+			$this->container[ WPEMERGE_RESPONSE_KEY ] = $response;
+
+			return $response;
+
+		}
+
+		public function handleRequest( RequestInterface $request, $arguments = [] ) {
+
+			$arguments = Arr::wrap( $arguments );
+
+			$view = $arguments[0] ?? null;
+
+			$route = $this->router->execute( $request );
+
+			if ( $route === null ) {
+				return null;
+			}
+
+			$request->setRoute( $route );
+
+			$middleware      = $route->getAttribute( 'middleware', [] );
+			$handler         = $route->getAttribute( 'handler' );
+
+			$response = $this->run( $request, $middleware, $handler );
 
 			if ( $response === null ) {
 

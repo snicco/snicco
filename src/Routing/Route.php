@@ -9,6 +9,7 @@
 	use WPEmerge\Helpers\HasAttributesTrait;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ConditionInterface;
+	use WPEmerge\Helpers\RouteSignatureParameters;
 
 	/**
 	 * Represent a route
@@ -18,6 +19,8 @@
 		use HasAttributesTrait;
 		use HasQueryFilterTrait;
 
+
+		private $resolved_arguments = null;
 
 		public function isSatisfied( RequestInterface $request ) {
 
@@ -35,8 +38,13 @@
 			return $condition->isSatisfied( $request );
 		}
 
-
 		public function getArguments( RequestInterface $request ) {
+
+			if ( $this->resolved_arguments) {
+
+				return $this->resolved_arguments;
+
+			}
 
 			$condition = $this->getAttribute( 'condition' );
 
@@ -44,7 +52,43 @@
 				throw new ConfigurationException( 'Route does not have a condition.' );
 			}
 
-			return $condition->getArguments( $request );
+			$condition_args =  $condition->getArguments( $request );
+
+			$this->updateArguments($condition_args);
+
+			return $condition_args;
+
+		}
+
+		public function arguments() :array {
+
+			return $this->resolved_arguments;
+
+		}
+
+		public function updateArguments(array $arguments)  {
+
+			$this->resolved_arguments = $arguments;
+
+		}
+
+
+		/**
+		 * @throws \WPEmerge\Exceptions\ConfigurationException
+		 */
+		public function setArguments( RequestInterface $request ) {
+
+			$this->resolved_arguments = $this->getArguments($request);
+
+		}
+
+
+		public function signatureParameters() {
+
+			return RouteSignatureParameters::fromCallable(
+				$this->getAttribute('handler')
+			);
+
 		}
 
 	}

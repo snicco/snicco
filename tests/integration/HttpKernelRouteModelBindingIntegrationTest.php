@@ -20,6 +20,7 @@
 	use Tests\stubs\Models\Country;
 	use Tests\stubs\Models\Team;
 	use Tests\stubs\TestApp;
+	use WPEmerge\Contracts\RouteInterface;
 	use WPEmerge\Requests\Request;
 	use WPEmerge\Responses\ResponseService;
 	use Mockery as m;
@@ -48,21 +49,18 @@
 			$this->request = m::mock( Request::class );
 			$this->request->shouldReceive( 'getMethod' )->andReturn( 'GET' );
 
-			$this->request->shouldReceive( 'withAttribute' )
-			              ->andReturnUsing( function ( $key, $argument ) {
+			$this->request->shouldReceive( 'setRoute' )
+			              ->andReturnUsing( function ( RouteInterface $route) {
 
-				              $this->request->{$key} = $argument;
-
-				              return $this->request;
+				              $this->request->mockery_route = $route;
 
 			              } );
 
-			$this->request->shouldReceive( 'getAttribute' )->with( 'route' )
-			              ->andReturnUsing( function () {
+			$this->request->shouldReceive('route')->andReturnUsing(function () {
 
-				              return $this->request->route;
+				return $this->request->mockery_route;
 
-			              } );
+			});
 
 			$this->response_service = m::mock( ResponseService::class );
 
@@ -88,8 +86,8 @@
 		}
 
 
-		// /** @test */
-		public function a_handler_without_type_hinted_model_always_makes_the_model_condition_pass() {
+		/** @test */
+		public function the_middleware_strips_all_model_blueprint_arguments_from_the_request_if_the_handler_does_not_have_type_hinted_models() {
 
 			TestApp::route()
 			       ->get()
@@ -195,7 +193,7 @@
 		}
 
 
-		// /** @test */
+		/** @test */
 		public function illuminate_routing() {
 
 			$events = \Mockery::mock( EventFake::class );

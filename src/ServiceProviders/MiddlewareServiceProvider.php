@@ -21,11 +21,11 @@
 
 		public function register( $container ) {
 
-			$container[ SubstituteModelBindings::class ] = function ( $c ) {
-
-				return new SubstituteModelBindings();
-
-			};
+			// $container[ SubstituteModelBindings::class ] = function ( $c ) {
+			//
+			// 	return new SubstituteModelBindings();
+			//
+			// };
 
 			$container[ UserLoggedOutMiddleware::class ] = function ( $c ) {
 

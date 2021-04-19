@@ -151,6 +151,8 @@
 
 			};
 
+			$this->request->shouldReceive('getRouteParameters')->andReturn([]);
+
 			$this->factory_handler->shouldReceive( 'controllerMiddleware' )->once()
 			                      ->andReturn( [] );
 
@@ -169,6 +171,8 @@
 
 			$this->factory_handler->shouldReceive( 'controllerMiddleware' )->once()
 			                      ->andReturn( [] );
+
+			$this->request->shouldReceive('getRouteParameters')->andReturn([]);
 
 			$closure = function () {
 
@@ -209,6 +213,8 @@
 
 				return ( new Psr7\Response() )->withBody( Psr7\stream_for( 'Handler' ) );
 			};
+
+			$this->request->shouldReceive('getRouteParameters')->andReturn([]);
 
 			$this->factory_handler->shouldReceive( 'controllerMiddleware' )->once()
 			                      ->andReturn( [] );
@@ -253,6 +259,8 @@
 		public function testRun_Exception_UseErrorHandler() {
 
 			$this->expectExceptionMessage( 'Test exception handled' );
+
+			$this->request->shouldReceive('getRouteParameters')->andReturn([]);
 
 			$this->factory_handler->shouldReceive( 'controllerMiddleware' )->once()
 			                      ->andReturn( [] );
@@ -323,6 +331,9 @@
 
 				        return $response;
 			        } );
+
+			$request->shouldReceive('getRouteParameters')->andReturn([]);
+			$request->shouldReceive('setRouteParameter')->andReturn($request);
 
 			$this->assertSame( $response, $subject->handleRequest( $request, $arguments ) );
 		}
