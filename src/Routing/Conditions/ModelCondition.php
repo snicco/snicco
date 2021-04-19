@@ -58,7 +58,10 @@
 
 		private function allModelsResolved($request) {
 
-			return $this->model_resolver->allModelsCanBeResolved(parent::getArguments($request));
+			return $this->model_resolver->allModelsCanBeResolved(
+				parent::getArguments($request),
+				$this->model_blueprint,
+			);
 
 		}
 

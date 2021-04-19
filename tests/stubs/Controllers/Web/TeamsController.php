@@ -3,7 +3,7 @@
 
 	namespace Tests\stubs\Controllers\Web;
 
-	use Tests\stubs\Team;
+	use Tests\stubs\Models\Team;
 	use Tests\stubs\TestResponse;
 	use WPEmerge\Requests\Request;
 

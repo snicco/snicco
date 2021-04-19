@@ -38,5 +38,12 @@
 
 		}
 
+		public static function splitToKeyValuePair( string $subject, $at ) {
+
+			[$key, $value] = explode( $at, $subject);
+
+			return [ $key => $value];
+
+		}
 
 	}
