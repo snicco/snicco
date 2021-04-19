@@ -198,7 +198,7 @@ class ConditionFactoryTest extends WPTestCase {
 	 */
 	public function testMake_NonexistentConditionType_Exception() {
 
-		$this->expectExceptionMessage('does not exist');
+		$this->expectExceptionMessage('Error while creating the RouteCondition');
 
 		$subject = new ConditionFactory( ['nonexistent_condition_type' => 'Nonexistent\\Condition\\Type\\Class'], m::mock(BaseContainerAdapter::class) );
 		$subject->make( ['nonexistent_condition_type'] );

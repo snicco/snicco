@@ -8,6 +8,7 @@
 	use Illuminate\Support\Collection;
 	use WPEmerge\Contracts\RouteModelResolver;
 	use WPEmerge\Helpers\HandlerFactory;
+	use WPEmerge\Support\Str;
 	use WPEmerge\Traits\ReflectsCallable;
 
 	class WpdbRouteModelResolver implements RouteModelResolver {
@@ -45,15 +46,37 @@
 		 * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
 		 * @see \WPEmerge\Traits\ResolvesRouteModels::bindRouteModels()
 		 */
-		private function fetchModel( $value, $model, $column = 'id' ) {
+		private function fetchModel( $value, $model, $column = 'id', array $parent_scope = []  ) {
 
-			return $model::where( $column, $value )->firstOrFail();
+			if ( ! count( $parent_scope ) ) {
+
+				return $model::where( $column, $value )->firstOrFail();
+
+			}
+
+			// $model = $model::where( $column, $value )->firstOrFail();
+			//
+			// $parent_models = collect(($parent_scope))->keys();
+			// $parent_columns = collect(($parent_scope))->values();
+			//
+			// $parent_model = $model->{$parent_models->first()}();
+			//
+			// $foo = 'bar';
+
 
 		}
 
-		private function bindRouteModels( array $parameters ) : array {
+		private function bindRouteModels( array $parameters, array $model_blueprint ) : array {
 
 			$models = collect($this->models);
+
+			$model_blueprint = collect($model_blueprint);
+
+			$model_blueprint = $model_blueprint->flatMap(function($value) {
+
+				return Str::splitToKeyValuePair($value, ':');
+
+			});
 
 			if ( ! $models->count() ) {
 
@@ -67,20 +90,26 @@
 
 			$model_values = $parameters->only( $same_type_hint->keys() );
 
-			$build = $model_values->flatMap( function ( $parameter_value, $parameter_name ) use ( $same_type_hint ) {
+			$build = $model_values->flatMap( function ( $parameter_value, $parameter_name ) use ( $same_type_hint, $model_blueprint ) {
 
 				return [
 					$parameter_name => [
 						'value' => $parameter_value,
 						'model' => $same_type_hint->get( $parameter_name ),
+						'column' => $model_blueprint->get($parameter_name, 'id')
 					],
 				];
 
 			} );
 
-			$eloquent_models = $build->map( function ( $record ) {
+			$eloquent_models = $build->map( function ( $record ) use ($model_blueprint) {
 
-				return $this->fetchModel( $record['value'], $record['model'] );
+				return $this->fetchModel(
+					$record['value'],
+					$record['model'],
+					$record['column'],
+					$model_blueprint->all()
+				);
 
 			} );
 
@@ -133,10 +162,10 @@
 
 		}
 
-		public function allModelsCanBeResolved( $args ) {
+		public function allModelsCanBeResolved( $args, array $model_blueprint = [] ) {
 
 
-			$this->models = $this->bindRouteModels( $args );
+			$this->models = $this->bindRouteModels( $args, $model_blueprint );
 
 			return true;
 

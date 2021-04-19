@@ -163,6 +163,7 @@
 			);
 
 			return $this->attribute( 'middleware', $middleware );
+
 		}
 
 		/**
