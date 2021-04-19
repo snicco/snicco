@@ -78,7 +78,6 @@
 
 			} );
 
-
 			$container->singleton( RouteModelResolver::class, function ($c) {
 
 				global $wpdb;

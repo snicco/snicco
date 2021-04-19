@@ -82,6 +82,8 @@
 			$this->factory          = Mockery::mock( GenericFactory::class )->shouldIgnoreMissing();
 			$this->handler_factory  = Mockery::mock( HandlerFactory::class )->shouldIgnoreMissing();
 			$this->request          = Mockery::mock( RequestInterface::class );
+
+
 			$this->response_service = Mockery::mock( ResponseService::class )
 			                                 ->shouldIgnoreMissing();
 			$this->router           = Mockery::mock( Router::class )->shouldIgnoreMissing();

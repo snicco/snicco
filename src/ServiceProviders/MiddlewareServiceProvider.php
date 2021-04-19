@@ -5,6 +5,7 @@
 	namespace WPEmerge\ServiceProviders;
 
 	use WPEmerge\Contracts\ServiceProviderInterface;
+	use WPEmerge\Middleware\SubstituteModelBindings;
 	use WPEmerge\Middleware\UserCanMiddleware;
 	use WPEmerge\Middleware\UserLoggedInMiddleware;
 	use WPEmerge\Middleware\UserLoggedOutMiddleware;
@@ -19,6 +20,12 @@
 
 
 		public function register( $container ) {
+
+			$container[ SubstituteModelBindings::class ] = function ( $c ) {
+
+				return new SubstituteModelBindings();
+
+			};
 
 			$container[ UserLoggedOutMiddleware::class ] = function ( $c ) {
 

@@ -72,7 +72,7 @@
 		}
 
 
-		/** @test */
+		// /** @test */
 		public function a_handler_without_type_hinted_model_always_makes_the_model_condition_pass() {
 
 			TestApp::route()
@@ -88,7 +88,7 @@
 
 		}
 
-		/** @test */
+		// /** @test */
 		public function a_model_gets_injected_into_the_handler_by_id_when_type_hinted() {
 
 			TestApp::route()
@@ -104,7 +104,7 @@
 
 		}
 
-		/** @test */
+		// /** @test */
 		public function an_exception_gets_thrown_before_the_handler_executes_if_we_cant_retrieve_the_model() {
 
 			$this->expectException( ModelNotFoundException::class );
@@ -124,7 +124,7 @@
 
 		}
 
-		/** @test */
+		// /** @test */
 		public function a_model_can_be_retrieved_by_custom_column_names_if_specified_in_the_route() {
 
 			TestApp::route()
@@ -141,7 +141,7 @@
 
 		}
 
-		/** @test */
+		// /** @test */
 		public function exceptions_get_thrown_when_trying_to_fetch_by_a_column_that_doesnt_exists() {
 
 			$this->expectExceptionMessage( 'Unknown column' );
@@ -178,7 +178,7 @@
 		}
 
 
-		/** @test */
+		// /** @test */
 		public function illuminate_routing(  ) {
 
 			$events = \Mockery::mock(EventFake::class);
