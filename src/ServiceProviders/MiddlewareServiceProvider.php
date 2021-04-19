@@ -25,11 +25,11 @@
 				return new UserLoggedOutMiddleware( $c[ WPEMERGE_RESPONSE_SERVICE_KEY ] );
 			};
 
-			// $container[ UserLoggedInMiddleware::class ] = function ( $c ) {
-			//
-			// 	return new UserLoggedInMiddleware( $c[ WPEMERGE_RESPONSE_SERVICE_KEY ] );
-			//
-			// };
+			$container[ UserLoggedInMiddleware::class ] = function ( $c ) {
+
+				return new UserLoggedInMiddleware( $c[ WPEMERGE_RESPONSE_SERVICE_KEY ] );
+
+			};
 
 			$container[ UserCanMiddleware::class ] = function ( $c ) {
 

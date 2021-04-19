@@ -8,6 +8,7 @@
 	use GuzzleHttp\Psr7\Utils;
 	use Mockery as m;
 	use Tests\stubs\Middleware\FooMiddleware;
+	use Tests\stubs\Middleware\GlobalFooMiddleware;
 	use WPEmerge\Requests\Request;
 	use WPEmerge\Responses\ResponseService;
 	use Tests\stubs\Handlers\ClassHandlerConstructorDependency;
@@ -53,6 +54,8 @@
 			parent::tearDown();
 
 			TestApp::setApplication( null );
+
+			unset($GLOBALS['global_middleware_resolved_from_container']);
 
 		}
 
@@ -139,7 +142,32 @@
 
 		}
 
+		/** @test */
+		public function global_middleware_gets_resolved_from_the_service_container() {
 
+
+			$this->assertFalse(isset($GLOBALS['global_middleware_resolved_from_container']));
+
+			TestApp::route()
+			       ->get()
+			       ->middleware(FooMiddleware::class)
+			       ->url( '/' )
+			       ->handle( 'WebController@request');
+
+
+			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
+
+			/** @var \Tests\stubs\TestResponse $response */
+			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+
+			$this->assertSame( 'foo:foo_dependency_web_controller', $response->body() );
+
+			$this->assertTrue($GLOBALS['global_middleware_resolved_from_container']);
+
+
+		}
+
+		/** @test */
 
 
 
@@ -167,8 +195,17 @@
 				'middleware' => [
 
 					'foo'  => FooMiddleware::class,
+					'foo_global' => GlobalFooMiddleware::class,
+				],
 
-				]
+				'middleware_groups' => [
+					'global' => ['foo_global'],
+				],
+
+				'middleware_priority' => [
+					// Examples:
+					GlobalFooMiddleware::class,
+				],
 
 			];
 

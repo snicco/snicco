@@ -1,79 +1,80 @@
 <?php
-/**
- * @package   WPEmerge
- * @author    Atanas Angelov <hi@atanas.dev>
- * @copyright 2017-2019 Atanas Angelov
- * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
- * @link      https://wpemerge.com/
- */
 
-namespace WPEmerge\Routing;
 
-use WPEmerge\Contracts\RouteInterface;
-use WPEmerge\Exceptions\ConfigurationException;
-use WPEmerge\Support\Arr;
+	namespace WPEmerge\Routing;
 
-/**
- * Allow objects to have routes
- */
-trait HasRoutesTrait {
-	/**
-	 * Array of registered routes
-	 *
-	 * @var RouteInterface[]
-	 */
-	protected $routes = [];
+	use WPEmerge\Contracts\RouteInterface;
+	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\Support\Arr;
 
 	/**
-	 * Get routes.
-	 *
-	 * @codeCoverageIgnore
-	 * @return RouteInterface[]
+	 * Allow objects to have routes
 	 */
-	public function getRoutes() {
-		return $this->routes;
-	}
+	trait HasRoutesTrait {
 
-	/**
-	 * Add a route.
-	 *
-	 * @param  RouteInterface $route
-	 * @return void
-	 */
-	public function addRoute( RouteInterface $route ) {
-		$routes = $this->getRoutes();
-		$name = $route->getAttribute( 'name' );
+		/**
+		 * Array of registered routes
+		 *
+		 * @var RouteInterface[]
+		 */
+		protected $routes = [];
 
-		if ( in_array( $route, $routes, true ) ) {
-			throw new ConfigurationException( 'Attempted to register a route twice.' );
+		/**
+		 * Get routes.
+		 *
+		 * @codeCoverageIgnore
+		 * @return RouteInterface[]
+		 */
+		public function getRoutes() {
+
+			return $this->routes;
 		}
 
-		if ( $name !== '' ) {
-			foreach ( $routes as $registered ) {
-				if ( $name === $registered->getAttribute( 'name' ) ) {
-					throw new ConfigurationException( "The route name \"$name\" is already registered." );
+		/**
+		 * Add a route.
+		 *
+		 * @param  RouteInterface  $route
+		 *
+		 * @return void
+		 */
+		public function addRoute( RouteInterface $route ) {
+
+			$routes = $this->getRoutes();
+			$name   = $route->getAttribute( 'name' );
+
+			if ( in_array( $route, $routes, true ) ) {
+				throw new ConfigurationException( 'Attempted to register a route twice.' );
+			}
+
+			if ( $name !== '' ) {
+				foreach ( $routes as $registered ) {
+					if ( $name === $registered->getAttribute( 'name' ) ) {
+						throw new ConfigurationException( "The route name \"$name\" is already registered." );
+					}
 				}
 			}
+
+			$this->routes[] = $route;
 		}
 
-		$this->routes[] = $route;
-	}
+		/**
+		 * Remove a route.
+		 *
+		 * @param  RouteInterface  $route
+		 *
+		 * @return void
+		 */
+		public function removeRoute( RouteInterface $route ) {
 
-	/**
-	 * Remove a route.
-	 *
-	 * @param  RouteInterface $route
-	 * @return void
-	 */
-	public function removeRoute( RouteInterface $route ) {
-		$routes = $this->getRoutes();
+			$routes = $this->getRoutes();
 
-		$index = array_search( $route, $routes, true );
+			$index = array_search( $route, $routes, true );
 
-		if ( $index === false ) {
-			return;
+			if ( $index === false ) {
+				return;
+			}
+
+			$this->routes = array_values( Arr::except( $routes, $index ) );
 		}
 
-		$this->routes = array_values( Arr::except( $routes, $index ) );
 	}
-}

@@ -34,6 +34,7 @@
 
 
 		public function register( $container ) {
+
 			$this->extendConfig( $container, 'middleware', [
 				'flash'           => FlashMiddleware::class,
 				'old_input'       => OldInputMiddleware::class,
@@ -57,6 +58,7 @@
 			$this->extendConfig( $container, 'middleware_priority', [] );
 
 			$container[ WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY ] = function ( $c ) {
+
 				$kernel = new HttpKernel(
 
 					$c[ WPEMERGE_CONTAINER_ADAPTER ],
