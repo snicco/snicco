@@ -44,7 +44,7 @@
 		/**
 		 * @var array
 		 */
-		private $model_columns;
+		private $model_columns = [];
 
 
 		/**
@@ -119,7 +119,7 @@
 
 			}
 
-			$this->url_condition = [ 'url' => $url, 'where' => $where];
+			$this->url_condition = [ 'url' => $url, 'where' => $where ];
 
 			return $this;
 
@@ -236,16 +236,18 @@
 		public function handle( $handler = '' ) {
 
 			if ( ! empty( $handler ) ) {
+
 				$this->attribute( 'handler', $handler );
+
 			}
 
-			if (count($this->url_condition)) {
+			if ( count( $this->url_condition ) ) {
 
-				$this->where('model_url',
+				$this->where( 'model_url',
 					$this->model_columns,
 					$handler,
-					$this->url_condition['url'] ,
-					$this->url_condition['where'] ,
+					$this->url_condition['url'],
+					$this->url_condition['where'],
 				);
 
 			}

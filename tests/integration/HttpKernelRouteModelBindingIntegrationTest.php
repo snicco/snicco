@@ -62,25 +62,9 @@
 			$GLOBALS['wp_test_case_without_transactions'] = false ;
 		}
 
-		/** @test */
-		public function a_model_gets_injected_into_the_handler_by_id_when_type_hinted() {
-
-			TestApp::route()
-			       ->get()
-			       ->url( '/teams/{team}' )
-			       ->handle( 'TeamsController@handle');
 
 
-			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/teams/1' );
-
-
-			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
-
-			$this->assertSame( 'dortmund', $test_response->body() );
-
-		}
-
-		/** @test */
+		// /** @test */
 		public function an_exception_gets_thrown_before_the_handler_executes_if_we_cant_retrieve_the_model () {
 
 			$this->expectException(ModelNotFoundException::class);
@@ -101,7 +85,7 @@
 
 		}
 
-		/** @test */
+		// /** @test */
 		public function a_model_can_be_retrieved_by_custom_column_names_if_specified_in_the_route() {
 
 			TestApp::route()
@@ -111,6 +95,42 @@
 
 
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/teams/1' );
+
+			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+
+			$this->assertSame( 'dortmund', $test_response->body() );
+
+		}
+
+
+		/** @test */
+		public function a_handler_without_type_hinted_model_always_makes_the_model_condition_pass() {
+
+			TestApp::route()
+			       ->get()
+			       ->url( '/teams/{team}' )
+			       ->handle( 'TeamsController@noTypeHint');
+
+
+			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/teams/1' );
+
+			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+
+			$this->assertSame( '1', $test_response->body() );
+
+		}
+
+		/** @test */
+		public function a_model_gets_injected_into_the_handler_by_id_when_type_hinted() {
+
+			TestApp::route()
+			       ->get()
+			       ->url( '/teams/{team}' )
+			       ->handle( 'TeamsController@handle');
+
+
+			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/teams/1' );
+
 
 			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 

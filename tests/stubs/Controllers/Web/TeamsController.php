@@ -9,21 +9,30 @@
 
 	class TeamsController {
 
-		public function handle( Request $request,  Team $team ) {
+		public function handle( Request $request, Team $team ) {
 
 			$request->body = $team->name;
 
-			return new TestResponse($request);
+			return new TestResponse( $request );
+
+		}
+
+
+		public function noTypeHint( Request $request, $team ) {
+
+			$request->body = $team;
+
+			return new TestResponse( $request );
 
 		}
 
 		public function never( Request $request, Team $team ) {
 
-			$GLOBALS['TeamsControllerExecuted'] = TRUE;
+			$GLOBALS['TeamsControllerExecuted'] = true;
 
 			$request->body = $team->name;
 
-			return new TestResponse($request);
+			return new TestResponse( $request );
 
 		}
 

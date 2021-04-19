@@ -361,5 +361,13 @@
 
 		}
 
+		/**
+		 * @throws \WPEmerge\Exceptions\ClassNotFoundException
+		 */
+		public function fqnCallable() :string {
+
+			return $this->buildFullNamespace( $this->handler['class'] ) . '@' . $this->handler['method'];
+
+		}
 
 	}

@@ -162,7 +162,6 @@
 
 		}
 
-
 		private function classImplements ( $class, $interface) : bool {
 
 			$used_interfaces = class_implements($class);
