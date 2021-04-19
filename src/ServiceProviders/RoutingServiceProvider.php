@@ -3,7 +3,6 @@
 
 	namespace WPEmerge\ServiceProviders;
 
-	use WPEmerge\Contracts\RouteModelResolver;
 	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Routing\Conditions\AdminCondition;
 	use WPEmerge\Routing\Conditions\AjaxCondition;
@@ -22,13 +21,13 @@
 	use WPEmerge\Routing\RouteBlueprint;
 	use WPEmerge\Routing\Router;
 
-	use const WPEMERGE_APPLICATION_KEY;
-	use const WPEMERGE_HELPERS_HANDLER_FACTORY_KEY;
-	use const WPEMERGE_ROUTING_CONDITION_TYPES_KEY;
-	use const WPEMERGE_ROUTING_CONDITIONS_CONDITION_FACTORY_KEY;
-	use const WPEMERGE_ROUTING_ROUTE_BLUEPRINT_KEY;
-	use const WPEMERGE_ROUTING_ROUTER_KEY;
-	use const WPEMERGE_VIEW_SERVICE_KEY;
+	// use const WPEMERGE_APPLICATION_KEY;
+	// use const WPEMERGE_HELPERS_HANDLER_FACTORY_KEY;
+	// use const WPEMERGE_ROUTING_CONDITION_TYPES_KEY;
+	// use const WPEMERGE_ROUTING_CONDITIONS_CONDITION_FACTORY_KEY;
+	// use const WPEMERGE_ROUTING_ROUTE_BLUEPRINT_KEY;
+	// use const WPEMERGE_ROUTING_ROUTER_KEY;
+	// use const WPEMERGE_VIEW_SERVICE_KEY;
 
 	/**
 	 * Provide routing dependencies
@@ -56,7 +55,7 @@
 			'query_var'     => QueryVarCondition::class,
 			'ajax'          => AjaxCondition::class,
 			'admin'         => AdminCondition::class,
-			'model_url'     => ModelCondition::class,
+			'model'         => ModelCondition::class,
 		];
 
 
@@ -100,7 +99,7 @@
 
 			$container->singleton( WPEMERGE_ROUTING_CONDITIONS_CONDITION_FACTORY_KEY, function ( $c ) {
 
-				return new ConditionFactory( $c[ WPEMERGE_ROUTING_CONDITION_TYPES_KEY ], $c[WPEMERGE_CONTAINER_ADAPTER] );
+				return new ConditionFactory( $c[ WPEMERGE_ROUTING_CONDITION_TYPES_KEY ], $c[ WPEMERGE_CONTAINER_ADAPTER ] );
 
 			} );
 
@@ -109,14 +108,6 @@
 				return new RouteBlueprint( $c[ WPEMERGE_ROUTING_ROUTER_KEY ], $c[ WPEMERGE_VIEW_SERVICE_KEY ] );
 
 			} );
-
-			$container->bind(ModelCondition::class, function ($container, $args) {
-
-
-				return new ModelCondition($container[RouteModelResolver::class], ...$args);
-
-
-			});
 
 			$app = $container[ WPEMERGE_APPLICATION_KEY ];
 			$app->alias( 'route', WPEMERGE_ROUTING_ROUTE_BLUEPRINT_KEY );

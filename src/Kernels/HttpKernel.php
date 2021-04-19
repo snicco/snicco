@@ -150,7 +150,6 @@
 		}
 
 
-
 		/**
 		 * Execute a handler.
 		 *
@@ -168,7 +167,7 @@
 
 			$response = $this->toResponse( $response );
 
-			if ( ! $response instanceof ResponseInterface && $response != null  ) {
+			if ( ! $response instanceof ResponseInterface && $response != null ) {
 				throw new ConfigurationException(
 					'Response returned by controller is not valid ' .
 					'(expected ' . ResponseInterface::class . '; received ' . gettype( $response ) . ').'
@@ -186,7 +185,7 @@
 			try {
 
 				$middleware = array_merge( $middleware, $handler->controllerMiddleware() );
-				$middleware = $this->applyGlobalMiddleware($middleware);
+				$middleware = $this->applyGlobalMiddleware( $middleware );
 				$middleware = $this->expandMiddleware( $middleware );
 				$middleware = $this->uniqueMiddleware( $middleware );
 				$middleware = $this->sortMiddleware( $middleware );
@@ -210,9 +209,9 @@
 
 		}
 
-		public function handleRequest( RequestInterface $request, $arguments = []  )  {
+		public function handleRequest( RequestInterface $request, $arguments = [] ) {
 
-			$arguments = \Illuminate\Support\Arr::wrap($arguments);
+			$arguments = \Illuminate\Support\Arr::wrap( $arguments );
 
 			$view = $arguments[0] ?? null;
 
@@ -227,9 +226,9 @@
 			$request = $request->withAttribute( 'route', $route )
 			                   ->withAttribute( 'route_arguments', $route_arguments );
 
-			$middleware = $route->getAttribute( 'middleware', [] );
-			$handler    = $route->getAttribute( 'handler' );
-			$route_arguments  = array_merge( [ $request ], $route_arguments );
+			$middleware      = $route->getAttribute( 'middleware', [] );
+			$handler         = $route->getAttribute( 'handler' );
+			$route_arguments = array_merge( [ $request ], $route_arguments );
 
 			$response = $this->run( $request, $middleware, $handler, $route_arguments );
 
