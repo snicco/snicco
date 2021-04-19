@@ -5,9 +5,7 @@
 
 	use Closure;
 	use Contracts\ContainerAdapter;
-	use Exception;
 	use ReflectionClass;
-	use ReflectionException;
 	use Throwable;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
@@ -198,6 +196,7 @@
 		 * @param  array  $options
 		 *
 		 * @return ConditionInterface
+		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
 		protected function makeFromArray( $options ) {
 
@@ -226,9 +225,7 @@
 
 				try {
 
-					$instance = $this->container->make( $condition_class, $condition_options['arguments'] );
-
-					return $instance;
+					return $this->container->make( $condition_class, $condition_options['arguments'] );
 
 				}
 

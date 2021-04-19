@@ -41,13 +41,8 @@
 
 			$this->request = m::mock( Request::class );
 			$this->request->shouldReceive( 'getMethod' )->andReturn( 'GET' );
-			$this->request->shouldReceive( 'withAttribute' )->andReturnUsing( function ($key, $argument) {
+			$this->request->shouldReceive( 'withAttribute' )->andReturn($this->request);
 
-				$this->request->{$key} =  $argument;
-
-				return $this->request;
-
-			});
 
 
 			$this->response_service = m::mock( ResponseService::class );

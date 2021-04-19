@@ -37,8 +37,10 @@
 
 		public function tearDown() : void {
 
-			parent::tearDown();
 			Mockery::close();
+
+
+			parent::tearDown();
 
 			unset( $this->router );
 			unset( $this->view_service );
@@ -92,7 +94,7 @@
 			$this->router->shouldReceive( 'mergeConditionAttribute' )
 			             // ->withSomeOfArgs( '', [ 'url', 'foo', [ 'bar' => 'baz' ] ] )
 			             ->andReturn( 'condition' )
-			             ->once();
+			             ->twice();
 
  			$this->assertSame( $this->subject, $this->subject->url( 'foo', [ 'bar' => 'baz' ] ) );
 

@@ -11,6 +11,7 @@
 	namespace WPEmerge\Routing;
 
 	use Closure;
+	use WPEmerge\Helpers\UrlParser;
 	use WPEmerge\Support\Str;
 	use WPEmerge\Helpers\HasAttributesTrait;
 	use WPEmerge\Contracts\ConditionInterface;
@@ -38,13 +39,6 @@
 		 */
 		protected $view_service = null;
 
-
-		private $url_condition = [];
-
-		/**
-		 * @var array
-		 */
-		private $model_columns = [];
 
 
 		/**
@@ -101,27 +95,13 @@
 		 *
 		 * @return static                $this
 		 */
-		public function url( string $url, $where = [] ) {
+		public function url( string $url_pattern, $where = [] ) {
 
-			while ( Str::contains( $url, ':' ) ) {
+			$url = UrlParser::normalize($url_pattern);
 
-				$column_id = Str::firstBetweenDot( $url, '{', '}' );
+			$this->where('model', UrlParser::parseModelsFromUrl($url_pattern));
 
-				$this->model_columns[] = $column_id;
-
-				$before = Str::before( $url, ':' );
-
-				$rest = Str::replaceFirst( $before, '', $url );
-
-				$column = Str::before( $rest, '}' );
-
-				$url = $before . Str::replaceFirst( $column, '', $rest );
-
-			}
-
-			$this->url_condition = [ 'url' => $url, 'where' => $where ];
-
-			return $this;
+			return $this->where( 'url', $url, $where );
 
 		}
 
@@ -239,17 +219,6 @@
 			if ( ! empty( $handler ) ) {
 
 				$this->attribute( 'handler', $handler );
-
-			}
-
-			if ( count( $this->url_condition ) ) {
-
-				$this->where( 'model_url',
-					$this->model_columns,
-					$handler,
-					$this->url_condition['url'],
-					$this->url_condition['where'],
-				);
 
 			}
 

@@ -47,7 +47,23 @@
 
 			$this->request = m::mock( Request::class );
 			$this->request->shouldReceive( 'getMethod' )->andReturn( 'GET' );
-			$this->request->shouldReceive( 'withAttribute' )->andReturn( $this->request );
+
+			$this->request->shouldReceive( 'withAttribute' )
+			              ->andReturnUsing( function ( $key, $argument ) {
+
+				              $this->request->{$key} = $argument;
+
+				              return $this->request;
+
+			              } );
+
+			$this->request->shouldReceive( 'getAttribute' )->with( 'route' )
+			              ->andReturnUsing( function () {
+
+				              return $this->request->route;
+
+			              } );
+
 			$this->response_service = m::mock( ResponseService::class );
 
 			$this->bootstrapTestApp();
@@ -160,16 +176,17 @@
 
 		}
 
-		// /** @test */
+		/** @test */
 		public function routes_with_multiple_eloquent_models_get_scoped_to_only_use_child_models() {
 
 			TestApp::route()
 			       ->get()
-			       ->url( '{country:name}/teams/{team}' )
+			       ->url( '/{country:name}/teams/{team}' )
+			       ->where('!is_admin')
 			       ->handle( 'TeamsController@handle' );
 
-
-			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/germany/teams/1' );
+			$this->request->shouldReceive( 'getUrl' )
+			              ->andReturn( 'https://wpemerge.test/germany/teams/1' );
 
 			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
@@ -179,29 +196,29 @@
 
 
 		// /** @test */
-		public function illuminate_routing(  ) {
+		public function illuminate_routing() {
 
-			$events = \Mockery::mock(EventFake::class);
+			$events = \Mockery::mock( EventFake::class );
 			$events->shouldIgnoreMissing();
 
 			$router = new Router( $events );
 
-			$router->get('/users/{country}/posts/{post:slug}', function (Country $country, Team $team) {
+			$router->get( '/users/{country}/posts/{post:slug}', function ( Country $country, Team $team ) {
 
 				return $team;
 
-			});
+			} );
 
 			$routes = $router->getRoutes();
 
-			$route = $routes->get('GET');
+			$route = $routes->get( 'GET' );
 
-			$route = array_values($route)[0];
+			$route = array_values( $route )[0];
 
-			$route->setParameter('country', '1');
-			$route->setParameter('team', '1');
+			$route->setParameter( 'country', '1' );
+			$route->setParameter( 'team', '1' );
 
-			$binding = ImplicitRouteBinding::resolveForRoute(new Container() ,$route);
+			ImplicitRouteBinding::resolveForRoute( new Container(), $route );
 
 		}
 
@@ -262,7 +279,7 @@
 					$table->id();
 					$table->string( 'name' )->unique();
 
-					$table->foreignId('country_id')->constrained();
+					$table->foreignId( 'country_id' )->constrained();
 
 				} );
 
