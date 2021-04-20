@@ -388,7 +388,7 @@
 		 *
 		 * @return RouteInterface|null
 		 */
-		public function execute( $request ) {
+		public function hasMatchingRoute( $request ) {
 
 			$routes = $this->getRoutes();
 

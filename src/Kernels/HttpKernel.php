@@ -247,7 +247,7 @@
 
 			$view = $arguments[0] ?? null;
 
-			$route = $this->router->execute( $request );
+			$route = $this->router->hasMatchingRoute( $request );
 
 			if ( $route === null ) {
 				return null;
@@ -282,7 +282,7 @@
 
 			$view = $arguments[0] ?? null;
 
-			$route = $this->router->execute( $request );
+			$route = $this->router->hasMatchingRoute( $request );
 
 			if ( $route === null ) {
 				return null;
