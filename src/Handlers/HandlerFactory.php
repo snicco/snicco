@@ -8,6 +8,7 @@
 	use Exception;
 	use WPEmerge\Contracts\RouteHandler;
 	use Illuminate\Support\Reflector;
+	use WPEmerge\MiddlewareResolver;
 	use WPEmerge\Support\Str;
 
 	class HandlerFactory {
@@ -50,7 +51,11 @@
 
 			if ( $namespaced_handler = $this->checkIsCallable( $handler ) ) {
 
-				return new Controller( $namespaced_handler, $this->wrapController( $namespaced_handler ) );
+				return new Controller(
+					$namespaced_handler,
+					$this->wrapController( $namespaced_handler ),
+					new MiddlewareResolver($this->container)
+				);
 
 			}
 

@@ -18,7 +18,7 @@
 
 		public function request( Request $request ) {
 
-			$request->body .= 'web_controller';
+			$request->body .= '_web_controller';
 
 			return new TestResponse($request);
 

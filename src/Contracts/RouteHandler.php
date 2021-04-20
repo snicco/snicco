@@ -10,6 +10,6 @@
 
 		public function raw();
 
-		public function middleware() : array;
+
 
 	}

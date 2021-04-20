@@ -52,7 +52,6 @@
 
 		}
 
-
 		protected function tearDown() : void {
 
 			m::close();
@@ -117,7 +116,7 @@
 			/** @var \Tests\stubs\TestResponse $response */
 			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
-			$this->assertSame( 'foo:foo_dependency_admin_controller_dependency', $response->body() );
+			$this->assertSame( 'foo:foo_admin_controller_dependency', $response->body() );
 
 
 
@@ -140,7 +139,7 @@
 			/** @var \Tests\stubs\TestResponse $response */
 			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
-			$this->assertSame( 'foo:foo_dependency_admin_controller_dependency', $response->body() );
+			$this->assertSame( 'foo:foo_admin_controller_dependency', $response->body() );
 			$this->assertSame( 1, $GLOBALS['controller_constructor_count']);
 
 			unset($GLOBALS['controller_constructor_count']);
@@ -162,10 +161,9 @@
 
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
 
-			/** @var \Tests\stubs\TestResponse $response */
 			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
-			$this->assertSame( 'foo:foo_dependency_web_controller', $response->body() );
+			$this->assertSame( 'foo:foo_web_controller', $response->body() );
 
 			$this->assertTrue($GLOBALS['global_middleware_resolved_from_container']);
 
@@ -195,24 +193,6 @@
 
 		}
 
-		/** @test */
-		public function foo() {
-
-			TestApp::route()
-			       ->get()
-			       ->middleware(FooMiddleware::class)
-			       ->url( '/' )
-			       ->handle( 'WebController@request');
-
-
-			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
-
-			/** @var \Tests\stubs\TestResponse $response */
-			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
-
-			$this->assertSame( 'foo:foo_dependency_web_controller', $response->body() );
-
-		}
 
 
 

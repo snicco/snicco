@@ -387,7 +387,7 @@
 				);
 			}
 
-			return ( new Route() )->attributes( $attributes );
+			return new Route($attributes);
 		}
 
 		/**
