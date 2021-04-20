@@ -4,9 +4,11 @@
 	namespace WPEmerge\Handlers;
 
 	use Closure;
+	use WPEmerge\Contracts\ResolveControllerMiddleware;
 	use WPEmerge\Contracts\RouteHandler;
+	use WPEmerge\MiddlewareResolver;
 
-	class Controller implements RouteHandler {
+	class Controller implements RouteHandler, ResolveControllerMiddleware {
 
 
 		/**
@@ -18,10 +20,23 @@
 		 */
 		private $executable_callable;
 
-		public function __construct(array $raw_callable, Closure $executable_callable) {
+		/**
+		 * @var \WPEmerge\MiddlewareResolver
+		 */
+		private $middleware_resolver;
 
-			$this->raw_callable = $raw_callable;
+		/**
+		 * Controller constructor.
+		 *
+		 * @param  array  $raw_callable
+		 * @param  \Closure  $executable_callable
+		 * @param  \WPEmerge\MiddlewareResolver  $resolver
+		 */
+		public function __construct(array $raw_callable, Closure $executable_callable, MiddlewareResolver $resolver ) {
+
+			$this->raw_callable        = $raw_callable;
 			$this->executable_callable = $executable_callable;
+			$this->middleware_resolver = $resolver;
 		}
 
 		public function executeUsing(...$args) {
@@ -34,13 +49,15 @@
 
 		public function raw() {
 
-			// return implode('@', $this->raw_callable );
 			return $this->raw_callable;
 
 		}
 
-		public function middleware() : array {
 
+		public function resolveControllerMiddleware() : array {
+
+
+			return $this->middleware_resolver->resolveFor($this->raw_callable);
 
 
 		}

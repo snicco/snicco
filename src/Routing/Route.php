@@ -22,6 +22,18 @@
 
 		private $resolved_arguments = null;
 
+		/**
+		 * @var \WPEmerge\Contracts\RouteHandler
+		 */
+		private $handler;
+
+		public function __construct( array $attributes ) {
+
+			$this->attributes = $attributes;
+			$this->handler    = $attributes['handler'];
+
+		}
+
 		public function isSatisfied( RequestInterface $request ) {
 
 			$methods   = $this->getAttribute( 'methods', [] );
@@ -79,40 +91,38 @@
 		public function signatureParameters() {
 
 			return RouteSignatureParameters::fromCallable(
-				$this->handler()->raw()
+				$this->handler->raw()
 			);
 
 		}
 
 		public function middleware() : array {
 
-			return array_merge($this->getAttribute( 'middleware', [] ), $this->handler()->middleware());
+			return array_merge(
+				$this->getAttribute( 'middleware', [] ),
+				$this->controllerMiddleware()
+			);
 
 		}
 
-		private function handler() : RouteHandler {
-
-			return $this->getAttribute( 'handler' );
-
-		}
 
 		public function run() {
 
 			return function ( $request ) {
 
 
-				$params = collect($this->signatureParameters());
+				$params = collect( $this->signatureParameters() );
 
 				$values = collect( [ $request ] )->merge( $this->getArguments( $request ) )
 				                                 ->values();
 
-				if ( $params->count() < $values->count()) {
+				if ( $params->count() < $values->count() ) {
 
 					$values = $values->slice( 0, count( $params ) );
 
 				}
 
-				if ( $params->count() > $values->count()) {
+				if ( $params->count() > $values->count() ) {
 
 					$params = $params->slice( 0, count( $values ) );
 
@@ -127,10 +137,28 @@
 					->values()
 					->combine( $values );
 
-				return $this->handler()->executeUsing( $payload->all() );
+				return $this->handler->executeUsing( $payload->all() );
 
 			};
 
 		}
+
+		private function controllerMiddleware() : array {
+
+			if ( ! $this->usesController() ) {
+
+				return [];
+			}
+
+			return $this->handler->resolveControllerMiddleware();
+
+		}
+
+		private function usesController() : bool {
+
+			return ! $this->handler->raw() instanceof \Closure;
+
+		}
+
 
 	}

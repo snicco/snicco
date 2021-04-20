@@ -38,7 +38,7 @@
 
 		public function handle( Request $request) {
 
-			$request->body .= 'admin_controller' . $this->dependency->add_to_response;
+			$request->body .= '_admin_controller' . $this->dependency->add_to_response;
 
 			return new TestResponse($request);
 
