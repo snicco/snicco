@@ -35,62 +35,6 @@
 		}
 
 
-		private function buildNameConstructorParameters ( $class, $payload  ) {
-
-			$payload = collect(Arr::wrap($payload));
-
-			if ( ! $this->classExists($class ) ) {
-
-				return $payload;
-
-			}
-
-			$class = new ReflectionClass($class);
-			$constructor = $class->getConstructor();
-
-			$params = collect( $constructor->getParameters() );
-
-			$parameter_names = $params->map( function ( $param ) {
-
-				return $param->getName();
-
-			} );
-
-			if ( $parameter_names->isEmpty() ) {
-
-				return $payload;
-
-			}
-
-
-			$parameter_types = $params->map( function ( $param ) {
-
-				$type = $param->getType();
-
-				$name = $type->getName();
-
-				return $name;
-
-			} );
-
-			$payload = $payload->flatMap(function ($value) use ($parameter_names, $parameter_types) {
-
-				if ( $this->parameterType($value) === $parameter_types->shift()) {
-
-					return [$parameter_names->shift() => $value];
-
-				}
-
-				return $value;
-
-			});
-
-
-			return $payload->toArray();
-
-		}
-
-
 		/**
 		 * @param string|array|Closure $callable
 		 * @param $payload
@@ -169,15 +113,7 @@
 
 		}
 
-		private function parameterType($param) {
 
-				$type = gettype($param);
-
-				if ( $type != 'object') return $type;
-
-				return get_class($param);
-
-		}
 
 
 	}

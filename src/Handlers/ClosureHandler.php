@@ -37,4 +37,10 @@
 
 		}
 
+		public function raw () {
+
+			return $this->resolves_to;
+
+		}
+
 	}

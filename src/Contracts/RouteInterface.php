@@ -35,4 +35,8 @@
 		public function updateArguments(array $arguments);
 
 		public function signatureParameters();
+
+		public function middleware() :array;
+
+		public function run();
 	}

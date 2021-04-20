@@ -32,7 +32,7 @@
 		 *
 		 * @return ResponseInterface
 		 */
-		public function run( RequestInterface $request, $middleware, $handler, $arguments = [] );
+		public function _run( RequestInterface $request, $middleware, $handler, $arguments = [] );
 
 		/**
 		 * Return a response for the given request.

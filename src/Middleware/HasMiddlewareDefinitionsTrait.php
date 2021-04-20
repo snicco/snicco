@@ -70,7 +70,7 @@
 			return array_values( array_unique( $middleware, SORT_REGULAR ) );
 		}
 
-		public function applyGlobalMiddleware(array $middleware = []) : array {
+		public function applyGlobalMiddleware( array $middleware = [] ) : array {
 
 			return array_merge($middleware, $this->middleware_groups['global'] ?? [] );
 

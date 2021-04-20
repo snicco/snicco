@@ -13,17 +13,15 @@
 		/**
 		 * Extract the route action's signature parameters.
 		 *
-		 * @param  \WPEmerge\Helpers\Handler  $handler
+		 * @param  array|\Closure
 		 *
 		 * @return \ReflectionParameter[]
 		 * @throws \ReflectionException
-		 * @throws \WPEmerge\Exceptions\ClassNotFoundException
 		 */
-		public static function fromCallable( Handler $handler) : array {
+		public static function fromCallable( $callable ) : array {
 
-
-			return is_string( $callable = $handler->fqnCallable() )
-				? static::fromClassMethodString( $callable )
+			return is_array( $callable )
+				? static::fromClassMethod( $callable )
 				: ( new ReflectionFunction( $callable ) )->getParameters();
 
 
@@ -32,16 +30,16 @@
 		/**
 		 * Get the parameters for the given class / method by string.
 		 *
-		 * @param  string  $callable
+		 * @param  array  $callable
 		 *
 		 * @return array
 		 * @throws \ReflectionException
 		 */
-		private static function fromClassMethodString( string $callable ) : array {
+		private static function fromClassMethod( array $callable ) : array {
 
-			[ $class, $method ] = Str::parseCallback( $callable );
+			[ $class, $method ] = [ $callable[0], $callable[1] ];
 
-			if ( ! method_exists( $class, $method ) && Reflector::isCallable( $class, $method ) ) {
+			if ( ! Reflector::isCallable( $class, $method ) ) {
 				return [];
 			}
 
