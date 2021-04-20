@@ -111,11 +111,9 @@
 
 		private function wrapClosure(Closure $closure ) : Closure {
 
-			return function () use ( $closure ) {
+			return function ($args) use ( $closure ) {
 
-				$args = func_get_args();
-
-				return $this->container->call($closure, ...$args);
+				return $this->container->call($closure, $args );
 
 			};
 
@@ -124,11 +122,9 @@
 
 		private function wrapController (array $controller ) : Closure {
 
-			 return function () use ( $controller ) {
+			 return function ($args) use ( $controller ) {
 
-				$args = func_get_args();
-
-				return $this->container->call( implode('@', $controller), ...$args);
+				return $this->container->call( implode('@', $controller), $args);
 
 			};
 

@@ -25,9 +25,11 @@
 		}
 
 
-		public function execute() {
+		public function executeUsing(...$args) {
 
+			$callable = $this->executable_callable;
 
+			return $callable(...$args);
 
 		}
 

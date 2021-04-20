@@ -6,6 +6,6 @@
 	interface RouteHandler {
 
 
-		public function execute();
+		public function executeUsing(...$args);
 
 	}

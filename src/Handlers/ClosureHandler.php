@@ -28,7 +28,11 @@
 
 		}
 
-		public function execute() {
+		public function executeUsing(...$args) {
+
+			$closure = $this->executable_closure;
+
+			return $closure(...$args);
 
 
 		}
