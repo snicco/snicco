@@ -4,23 +4,24 @@
 	namespace Tests\stubs\Middleware;
 
 	use Closure;
+	use Tests\stubs\Foo;
 	use WPEmerge\Requests\Request;
 
 	class FooMiddleware {
 
 		/**
-		 * @var \Tests\stubs\Middleware\FooDependency
+		 * @var \Tests\stubs\Foo
 		 */
 		private $foo_dependency;
 
-		public function __construct(FooDependency $foo_dependency) {
+		public function __construct( Foo $foo_dependency) {
 
 			$this->foo_dependency = $foo_dependency;
 		}
 
 		public function handle ( Request $request, Closure $next, string $bar = '' ) {
 
-			$request->body = 'foo' . $bar . ':' . $this->foo_dependency->dependency;
+			$request->body = 'foo' . $bar . ':' . $this->foo_dependency->foo;
 
 			return $next($request);
 
@@ -30,9 +31,3 @@
 	}
 
 
-	class FooDependency {
-
-		public $dependency = 'foo_dependency_';
-
-
-	}

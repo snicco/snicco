@@ -41,9 +41,6 @@
 
 			$this->request = m::mock( Request::class );
 			$this->request->shouldReceive( 'getMethod' )->andReturn( 'GET' );
-			$this->request->shouldReceive( 'withAttribute' )->andReturn($this->request);
-
-
 
 			$this->response_service = m::mock( ResponseService::class );
 
@@ -221,7 +218,7 @@
 
 		private function bootstrapTestApp() {
 
-			TestApp::make()->bootstrap( $this->config() , false );
+			TestApp::make()->bootstrap( array_merge(TEST_CONFIG,$this->config()) , false );
 			TestApp::container()[ WPEMERGE_REQUEST_KEY ]                  = $this->request;
 			TestApp::container()[ WPEMERGE_RESPONSE_SERVICE_KEY ]         = $this->response_service;
 			TestApp::container()[ WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY ] = new IntegrationTestErrorHandler();
@@ -232,13 +229,6 @@
 
 			return [
 
-				'controller_namespaces' => [
-
-					'web'   => 'Tests\stubs\Controllers\Web',
-					'admin' => 'Tests\stubs\Controllers\Admin',
-					'ajax'  => 'Tests\stubs\Controllers\Ajax',
-
-				],
 
 				'middleware' => [
 

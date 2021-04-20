@@ -197,14 +197,15 @@
 
 			try {
 
-				$middleware = array_merge($this->applyGlobalMiddleware(), $route->middleware());
+
+				$middleware = array_merge( $this->applyGlobalMiddleware(), $route->middleware() );
 				$middleware = $this->expandMiddleware( $middleware );
 				$middleware = $this->uniqueMiddleware( $middleware );
 				$middleware = $this->sortMiddleware( $middleware );
 
 				$response = $this->route_pipeline
 					->send($this->request)
-					->through([SubstituteModelBindings::class])
+					->through($middleware)
 					->then(
 						$route->run()
 					);

@@ -24,7 +24,6 @@
 			$this->executable_callable = $executable_callable;
 		}
 
-
 		public function executeUsing(...$args) {
 
 			$callable = $this->executable_callable;
@@ -37,6 +36,12 @@
 
 			// return implode('@', $this->raw_callable );
 			return $this->raw_callable;
+
+		}
+
+		public function middleware() : array {
+
+
 
 		}
 

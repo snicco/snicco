@@ -3,13 +3,14 @@
 
 	namespace Tests\stubs\Middleware;
 
+	use Tests\stubs\Foo;
 	use WPEmerge\Requests\Request;
 
 	class GlobalFooMiddleware {
 
 
 
-		public function __construct( FooDependency $foo_dependency) {
+		public function __construct( Foo $foo_dependency) {
 
 			$this->foo_dependency = $foo_dependency;
 
