@@ -1,24 +1,17 @@
 <?php
-	/**
-	 * @package   WPEmerge
-	 * @author    Atanas Angelov <hi@atanas.dev>
-	 * @copyright 2017-2019 Atanas Angelov
-	 * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
-	 * @link      https://wpemerge.com/
-	 */
 
 
 	namespace WPEmerge\Routing;
 
 	use Closure;
 	use WPEmerge\Helpers\UrlParser;
-	use WPEmerge\Support\Str;
 	use WPEmerge\Helpers\HasAttributesTrait;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\View\ViewService;
 
 	/**
-	 * Provide a fluent interface for registering routes with the router.
+	 * Fluent interface for registering routes with the router.
+	 * The handle() method needs to be called to create the route.
 	 */
 	class RouteBlueprint {
 
@@ -38,8 +31,6 @@
 		 * @var ViewService
 		 */
 		protected $view_service = null;
-
-
 
 		/**
 		 * Constructor.
@@ -72,7 +63,6 @@
 			return $this->attribute( 'methods', $methods );
 		}
 
-
 		/**
 		 * Set the condition attribute to a URL.
 		 *
@@ -104,7 +94,6 @@
 			return $this->where( 'url', $url, $where );
 
 		}
-
 
 		/**
 		 * Set the condition attribute.
