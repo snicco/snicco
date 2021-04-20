@@ -34,26 +34,6 @@
 		use ConvertsToResponseTrait;
 		use ExecutesMiddlewareTrait;
 
-		/**
-		 * Container.
-		 *
-		 * @var ContainerAdapter
-		 */
-		protected $container = null;
-
-		/**
-		 * Injection factory.
-		 *
-		 * @var GenericFactory
-		 */
-		protected $factory = null;
-
-		/**
-		 * Handler factory.
-		 *
-		 * @var HandlerFactory
-		 */
-		protected $handler_factory = null;
 
 		/**
 		 * Response service.
@@ -96,6 +76,7 @@
 		 * @var string
 		 */
 		protected $template = '';
+
 		/**
 		 * @var \WPEmerge\Helpers\RoutingPipeline
 		 */
@@ -104,9 +85,6 @@
 		/**
 		 * Constructor.
 		 *
-		 * @param  ContainerAdapter  $container
-		 * @param  GenericFactory  $factory
-		 * @param  HandlerFactory  $handler_factory
 		 * @param  ResponseService  $response_service
 		 * @param  RequestInterface  $request
 		 * @param  Router  $router
@@ -114,17 +92,21 @@
 		 * @param  ErrorHandlerInterface  $error_handler
 		 *
 		 */
-		public function __construct( ContainerAdapter $container, RoutingPipeline $route_pipeline, GenericFactory $factory, HandlerFactory $handler_factory, ResponseService $response_service, RequestInterface $request, Router $router, ViewService $view_service, ErrorHandlerInterface $error_handler ) {
+		public function __construct(
+			RequestInterface $request,
+			ResponseService $response_service,
+			RoutingPipeline $route_pipeline,
+			Router $router,
+			ViewService $view_service,
+			ErrorHandlerInterface $error_handler
+		) {
 
-			$this->container        = $container;
-			$this->factory          = $factory;
-			$this->handler_factory  = $handler_factory;
-			$this->response_service = $response_service;
 			$this->request          = $request;
+			$this->response_service = $response_service;
+			$this->route_pipeline   = $route_pipeline;
 			$this->router           = $router;
 			$this->view_service     = $view_service;
 			$this->error_handler    = $error_handler;
-			$this->route_pipeline   = $route_pipeline;
 		}
 
 		/**

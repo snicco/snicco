@@ -35,12 +35,7 @@ class ViewService implements ViewFinderInterface {
 	 */
 	protected $engine = null;
 
-	/**
-	 * Handler factory.
-	 *
-	 * @var HandlerFactory
-	 */
-	protected $handler_factory = null;
+
 
 	/**
 	 * Global variables.
@@ -62,12 +57,10 @@ class ViewService implements ViewFinderInterface {
 	 * @codeCoverageIgnore
 	 * @param array<string, mixed> $config
 	 * @param ViewEngineInterface  $engine
-	 * @param HandlerFactory       $handler_factory
 	 */
-	public function __construct( $config, ViewEngineInterface $engine, HandlerFactory $handler_factory ) {
+	public function __construct( $config, ViewEngineInterface $engine ) {
 		$this->config = $config;
 		$this->engine = $engine;
-		$this->handler_factory = $handler_factory;
 	}
 
 	/**

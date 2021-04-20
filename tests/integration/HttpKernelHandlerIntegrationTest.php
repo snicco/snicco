@@ -96,7 +96,7 @@
 			TestApp::route()
 			       ->get()
 			       ->url( '/' )
-			       ->handle( ClassHandlerConstructorDependency::class . '@teamDependency' );
+			       ->handle( DependencyController::class . '@withMethodDependency' );
 
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/' );
@@ -104,7 +104,7 @@
 
 			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
-			$this->assertSame( 'dortmund', $test_response->body() );
+			$this->assertSame( 'foobar', $test_response->body() );
 
 		}
 
@@ -172,22 +172,7 @@
 
 		}
 
-		private function config() : array {
 
-			return [
-
-				'controller_namespaces' => [
-
-					'web'   => 'Tests\stubs\Controllers\Web',
-					'admin' => 'Tests\stubs\Controllers\Admin',
-					'ajax'  => 'Tests\stubs\Controllers\Ajax',
-
-				],
-
-			];
-
-
-		}
 
 	}
 

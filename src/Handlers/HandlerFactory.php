@@ -7,7 +7,7 @@
 	use Contracts\ContainerAdapter;
 	use Exception;
 	use WPEmerge\Contracts\RouteHandler;
-	use WPEmerge\Helpers\Reflector;
+	use Illuminate\Support\Reflector;
 	use WPEmerge\Support\Str;
 
 	class HandlerFactory {
@@ -25,10 +25,10 @@
 		 */
 		private $container;
 
-		public function __construct( array $controller_namespaces , ContainerAdapter $container ) {
+		public function __construct( array $controller_namespaces, ContainerAdapter $container ) {
 
 			$this->controller_namespaces = $controller_namespaces;
-			$this->container = $container;
+			$this->container             = $container;
 
 		}
 
@@ -44,17 +44,18 @@
 
 			if ( $handler[0] instanceof Closure ) {
 
-				return new ClosureHandler( $handler[0], $this->wrapClosure($handler[0]) );
+				return new ClosureHandler( $handler[0], $this->wrapClosure( $handler[0] ) );
 
 			}
 
-			if ( ! ( $this->checkIsCallable( $handler ) ) ) {
+			if ( $namespaced_handler = $this->checkIsCallable( $handler ) ) {
 
-				$this->fail($handler[0], $handler[1]);
+				return new Controller( $namespaced_handler, $this->wrapController( $namespaced_handler ) );
 
 			}
 
-			return new Controller( $handler, $this->wrapController($handler));
+			$this->fail( $handler[0], $handler[1] );
+
 
 		}
 
@@ -82,24 +83,38 @@
 
 		}
 
-		private function checkIsCallable( array $handler ) : bool {
+		private function checkIsCallable( array $handler ) : ?array {
 
 			if ( Reflector::isCallable( $handler ) ) {
-				return true;
+
+				return $handler;
+
 			}
 
-			$matched = collect( $this->controller_namespaces )->filter( function ( $namespace ) use ( $handler ) {
+			[ $class, $method ] = $handler;
 
-				return Reflector::isCallable( [ $namespace . '\\' . $handler[0] , $handler[1] ] );
+			$matched = collect( $this->controller_namespaces )
+				->map( function ( $namespace ) use ( $class, $method ) {
 
-			} );
+					if ( Reflector::isCallable( [ $namespace . '\\' . $class, $method ] ) ) {
 
-			return $matched->isNotEmpty();
+						return [ $namespace . '\\' . $class , $method ] ;
+
+					}
+
+				} )
+				->filter( function ( $value ) {
+
+					return $value !== null;
+
+				} );
+
+			return $matched->isNotEmpty() ? $matched->first()  : null ;
 
 
 		}
 
-		private function fail( $class, $method) {
+		private function fail( $class, $method ) {
 
 			$method = Str::replaceFirst( '@', '', $method );
 
@@ -109,22 +124,22 @@
 
 		}
 
-		private function wrapClosure(Closure $closure ) : Closure {
+		private function wrapClosure( Closure $closure ) : Closure {
 
-			return function ($args) use ( $closure ) {
+			return function ( $args ) use ( $closure ) {
 
-				return $this->container->call($closure, $args );
+				return $this->container->call( $closure, $args );
 
 			};
 
 
 		}
 
-		private function wrapController (array $controller ) : Closure {
+		private function wrapController( array $controller ) : Closure {
 
-			 return function ($args) use ( $controller ) {
+			return function ( $args ) use ( $controller ) {
 
-				return $this->container->call( implode('@', $controller), $args);
+				return $this->container->call( implode( '@', $controller ), $args );
 
 			};
 
