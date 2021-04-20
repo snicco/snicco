@@ -14,7 +14,6 @@
 
 			return new TestResponse($request);
 
-
 		}
 
 		public function request( Request $request ) {

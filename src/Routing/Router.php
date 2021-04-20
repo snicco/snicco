@@ -6,10 +6,11 @@
 
 	use Closure;
 	use WPEmerge\Contracts\HasRoutesInterface;
+	use WPEmerge\Contracts\RouteHandler;
 	use WPEmerge\Contracts\RouteInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Helpers\Handler;
-	use WPEmerge\Helpers\HandlerFactory;
+	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Routing\Conditions\ConditionFactory;
 	use WPEmerge\Contracts\ConditionInterface;
@@ -342,13 +343,23 @@
 		 * @return Handler
 		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		protected function routeHandler( $handler, $namespace ) : Handler {
+		protected function _routeHandler( $handler, $namespace ) : Handler {
 
 			if ( $handler === null ) {
 				throw new ConfigurationException( 'No route handler specified. Did you miss to call handle()?' );
 			}
 
 			return $this->handler_factory->make( $handler, '', $namespace );
+		}
+
+
+		protected function routeHandler( $handler, $namespace ) : RouteHandler {
+
+			if ( $handler === null ) {
+				throw new ConfigurationException( 'No route handler specified. Did you miss to call handle()?' );
+			}
+
+			return $this->handler_factory->createRouteHandlerUsing( $handler );
 		}
 
 		/**

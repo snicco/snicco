@@ -6,6 +6,7 @@
 	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Csrf\CsrfMiddleware;
 	use WPEmerge\Flash\FlashMiddleware;
+	use WPEmerge\Helpers\RoutingPipeline;
 	use WPEmerge\Input\OldInputMiddleware;
 	use WPEmerge\Kernels\HttpKernel;
 	use WPEmerge\Middleware\SubstituteModelBindings;
@@ -60,9 +61,12 @@
 
 			$container[ WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY ] = function ( &$c ) {
 
+				$container_adapter = $c[ WPEMERGE_CONTAINER_ADAPTER ];
+
 				$kernel = new HttpKernel(
 
-					$c[ WPEMERGE_CONTAINER_ADAPTER ],
+					$container_adapter,
+					new RoutingPipeline($container_adapter),
 					$c[ WPEMERGE_APPLICATION_GENERIC_FACTORY_KEY ],
 					$c[ WPEMERGE_HELPERS_HANDLER_FACTORY_KEY ],
 					$c[ WPEMERGE_RESPONSE_SERVICE_KEY ],

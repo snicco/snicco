@@ -4,6 +4,7 @@
 	namespace WPEmerge\ServiceProviders;
 
 	use WPEmerge\Contracts\ServiceProviderInterface;
+	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Routing\Conditions\AdminCondition;
 	use WPEmerge\Routing\Conditions\AjaxCondition;
 	use WPEmerge\Routing\Conditions\ConditionFactory;
@@ -21,13 +22,7 @@
 	use WPEmerge\Routing\RouteBlueprint;
 	use WPEmerge\Routing\Router;
 
-	// use const WPEMERGE_APPLICATION_KEY;
-	// use const WPEMERGE_HELPERS_HANDLER_FACTORY_KEY;
-	// use const WPEMERGE_ROUTING_CONDITION_TYPES_KEY;
-	// use const WPEMERGE_ROUTING_CONDITIONS_CONDITION_FACTORY_KEY;
-	// use const WPEMERGE_ROUTING_ROUTE_BLUEPRINT_KEY;
-	// use const WPEMERGE_ROUTING_ROUTER_KEY;
-	// use const WPEMERGE_VIEW_SERVICE_KEY;
+
 
 	/**
 	 * Provide routing dependencies
@@ -93,7 +88,7 @@
 
 				return new Router(
 					$c[ WPEMERGE_ROUTING_CONDITIONS_CONDITION_FACTORY_KEY ],
-					$c[ WPEMERGE_HELPERS_HANDLER_FACTORY_KEY ]
+					new HandlerFactory($c[WPEMERGE_CONFIG_KEY]['controllers'], $c[WPEMERGE_CONTAINER_ADAPTER])
 				);
 			} );
 

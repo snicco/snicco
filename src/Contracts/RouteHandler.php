@@ -8,4 +8,6 @@
 
 		public function executeUsing(...$args);
 
+		public function raw();
+
 	}

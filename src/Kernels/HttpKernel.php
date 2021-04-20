@@ -9,13 +9,16 @@
 	use Psr\Http\Message\ResponseInterface;
 	use WPEmerge\Application\GenericFactory;
 	use WPEmerge\Contracts\HttpKernelInterface;
+	use WPEmerge\Contracts\RouteInterface as Route;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Helpers\Handler;
 	use WPEmerge\Helpers\HandlerFactory;
+	use WPEmerge\Helpers\RoutingPipeline;
 	use WPEmerge\Middleware\ExecutesMiddlewareTrait;
 	use WPEmerge\Middleware\HasMiddlewareDefinitionsTrait;
 	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Middleware\SubstituteModelBindings;
 	use WPEmerge\Responses\ConvertsToResponseTrait;
 	use WPEmerge\Responses\RedirectResponse;
 	use WPEmerge\Responses\ResponseService;
@@ -93,6 +96,10 @@
 		 * @var string
 		 */
 		protected $template = '';
+		/**
+		 * @var \WPEmerge\Helpers\RoutingPipeline
+		 */
+		private $route_pipeline;
 
 		/**
 		 * Constructor.
@@ -107,16 +114,7 @@
 		 * @param  ErrorHandlerInterface  $error_handler
 		 *
 		 */
-		public function __construct(
-			ContainerAdapter $container,
-			GenericFactory $factory,
-			HandlerFactory $handler_factory,
-			ResponseService $response_service,
-			RequestInterface $request,
-			Router $router,
-			ViewService $view_service,
-			ErrorHandlerInterface $error_handler
-		) {
+		public function __construct( ContainerAdapter $container, RoutingPipeline $route_pipeline, GenericFactory $factory, HandlerFactory $handler_factory, ResponseService $response_service, RequestInterface $request, Router $router, ViewService $view_service, ErrorHandlerInterface $error_handler ) {
 
 			$this->container        = $container;
 			$this->factory          = $factory;
@@ -126,6 +124,7 @@
 			$this->router           = $router;
 			$this->view_service     = $view_service;
 			$this->error_handler    = $error_handler;
+			$this->route_pipeline   = $route_pipeline;
 		}
 
 		/**
@@ -209,29 +208,33 @@
 
 		}
 
-		public function run( RequestInterface $request, $middleware, $handler, $arguments = [] ) {
+		public function run( Route $route ) {
 
 			// whoops
 			$this->error_handler->register();
 
 			try {
 
-				$middleware = array_merge( $middleware, $handler->controllerMiddleware() );
-				$middleware = $this->applyGlobalMiddleware( $middleware );
+				$middleware = array_merge($this->applyGlobalMiddleware(), $route->middleware());
 				$middleware = $this->expandMiddleware( $middleware );
 				$middleware = $this->uniqueMiddleware( $middleware );
 				$middleware = $this->sortMiddleware( $middleware );
 
-				$response = $this->executeMiddleware( $middleware, $request, function ($request) use ( $handler ) {
+				$response = $this->route_pipeline
+					->send($this->request)
+					->through([SubstituteModelBindings::class])
+					->then(
+						$route->run()
+					);
 
-					return $this->executeHandler( $handler , $request );
 
-				} );
 
 			}
 			catch ( Exception $exception ) {
 
-				$response = $this->error_handler->getResponse( $request, $exception );
+				$foo = 'bar';
+
+				$response = $this->error_handler->getResponse( $this->request, $exception );
 
 			}
 
@@ -262,7 +265,7 @@
 			$handler         = $route->getAttribute( 'handler' );
 			$route_arguments = array_merge( [ $request ], $route_arguments );
 
-			$response = $this->run( $request, $middleware, $handler, $route_arguments );
+			$response = $this->_run( $request, $middleware, $handler, $route_arguments );
 
 			if ( $response === null ) {
 
@@ -288,12 +291,8 @@
 				return null;
 			}
 
-			$request->setRoute( $route );
 
-			$middleware      = $route->getAttribute( 'middleware', [] );
-			$handler         = $route->getAttribute( 'handler' );
-
-			$response = $this->run( $request, $middleware, $handler );
+			$response = $this->run( $route );
 
 			if ( $response === null ) {
 

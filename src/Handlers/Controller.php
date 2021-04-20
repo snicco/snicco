@@ -33,4 +33,11 @@
 
 		}
 
+		public function raw() {
+
+			// return implode('@', $this->raw_callable );
+			return $this->raw_callable;
+
+		}
+
 	}

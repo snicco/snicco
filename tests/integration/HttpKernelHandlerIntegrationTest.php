@@ -4,12 +4,11 @@
 	namespace Tests\integration;
 
 	use Codeception\TestCase\WPTestCase;
-	use GuzzleHttp\Psr7\Response as Psr7Response;
-	use GuzzleHttp\Psr7\Utils;
 	use Mockery as m;
+	use Tests\stubs\Controllers\Web\DependencyController;
+	use Tests\stubs\Controllers\Web\TeamsController;
 	use WPEmerge\Requests\Request;
 	use WPEmerge\Responses\ResponseService;
-	use Tests\stubs\Handlers\ClassHandlerConstructorDependency;
 	use Tests\stubs\IntegrationTestErrorHandler;
 	use Tests\stubs\TestApp;
 
@@ -61,16 +60,13 @@
 		public function a_class_handler_is_auto_resolved_from_the_service_container() {
 
 			TestApp::route()->get()->url( '/' )
-			       ->handle( ClassHandlerConstructorDependency::class . '@handle' );
-
-			$this->request->bar = 'bar';
+			       ->handle( DependencyController::class . '@handle' );
 
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
 
-
 			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
-			$this->assertSame( 'foobar', $test_response->body() );
+			$this->assertSame( 'foo_web_controller', $test_response->body() );
 
 		}
 
@@ -80,7 +76,7 @@
 			TestApp::route()
 			       ->get()
 			       ->url( '/teams/{team}' )
-			       ->handle( ClassHandlerConstructorDependency::class . '@teams' );
+			       ->handle( TeamsController::class . '@noTypeHint' );
 
 
 			$this->request->shouldReceive( 'getUrl' )
@@ -167,33 +163,12 @@
 
 		}
 
-
-
-
-
-
-
-
-
 		private function bootstrapTestApp() {
 
-			TestApp::make()->bootstrap( $this->config() , false );
+			TestApp::make()->bootstrap(TEST_CONFIG, false );
 			TestApp::container()[ WPEMERGE_REQUEST_KEY ]                  = $this->request;
 			TestApp::container()[ WPEMERGE_RESPONSE_SERVICE_KEY ]         = $this->response_service;
 			TestApp::container()[ WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY ] = new IntegrationTestErrorHandler();
-
-		}
-
-		private function response( string $handler_response ) : Psr7Response {
-
-			$response = new Psr7Response();
-
-			return $response->withBody( Utils::streamFor( $handler_response ) );
-		}
-
-		private function responseBody( Psr7Response $response ) {
-
-			return $response->getBody()->read( 30 );
 
 		}
 

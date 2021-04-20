@@ -4,6 +4,7 @@
 	namespace WPEmerge\Routing;
 
 	use WPEmerge\Contracts\HasQueryFilterInterface;
+	use WPEmerge\Contracts\RouteHandler;
 	use WPEmerge\Contracts\RouteInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Helpers\HasAttributesTrait;
@@ -18,7 +19,6 @@
 
 		use HasAttributesTrait;
 		use HasQueryFilterTrait;
-
 
 		private $resolved_arguments = null;
 
@@ -40,7 +40,7 @@
 
 		public function getArguments( RequestInterface $request ) {
 
-			if ( $this->resolved_arguments) {
+			if ( $this->resolved_arguments ) {
 
 				return $this->resolved_arguments;
 
@@ -52,42 +52,64 @@
 				throw new ConfigurationException( 'Route does not have a condition.' );
 			}
 
-			$condition_args =  $condition->getArguments( $request );
+			$condition_args = $condition->getArguments( $request );
 
-			$this->updateArguments($condition_args);
+			$this->updateArguments( $condition_args );
 
 			return $condition_args;
 
 		}
 
-		public function arguments() :array {
+		public function arguments() : array {
 
 			return $this->resolved_arguments;
 
 		}
 
-		public function updateArguments(array $arguments)  {
+		public function updateArguments( array $arguments ) {
 
 			$this->resolved_arguments = $arguments;
 
 		}
-
 
 		/**
 		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
 		public function setArguments( RequestInterface $request ) {
 
-			$this->resolved_arguments = $this->getArguments($request);
+			$this->resolved_arguments = $this->getArguments( $request );
 
 		}
-
 
 		public function signatureParameters() {
 
 			return RouteSignatureParameters::fromCallable(
-				$this->getAttribute('handler')
+				$this->handler()->raw()
 			);
+
+		}
+
+		public function middleware() : array {
+
+			return $this->getAttribute( 'middleware', [] );
+
+		}
+
+		private function handler() : RouteHandler {
+
+			return $this->getAttribute( 'handler' );
+
+		}
+
+		public function run() {
+
+			return function ( $request ) {
+
+				$params = $this->signatureParameters();
+
+				return $this->handler()->executeUsing(['request' => $request]);
+
+			};
 
 		}
 
