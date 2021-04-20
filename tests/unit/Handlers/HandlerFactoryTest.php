@@ -35,9 +35,11 @@
 
 			};
 
-			$result = $this->factory->createRouteHandlerUsing($foo);
+			$handler = $this->factory->createRouteHandlerUsing($foo);
 
-			$this->assertInstanceOf(ClosureHandler::class, $result);
+			$this->assertInstanceOf(ClosureHandler::class, $handler);
+
+			$this->assertSame($foo, $handler->raw() );
 
 		}
 
@@ -46,10 +48,11 @@
 
 			$controller = WebController::class . '@handle';
 
-			$result = $this->factory->createRouteHandlerUsing($controller);
+			$handler = $this->factory->createRouteHandlerUsing($controller);
 
-			$this->assertInstanceOf(Controller::class, $result);
+			$this->assertInstanceOf(Controller::class, $handler);
 
+			$this->assertEquals([WebController::class, 'handle'], $handler->raw() );
 
 		}
 
@@ -58,9 +61,11 @@
 
 			$controller = [ WebController::class , 'handle'];
 
-			$result = $this->factory->createRouteHandlerUsing($controller);
+			$handler = $this->factory->createRouteHandlerUsing($controller);
 
-			$this->assertInstanceOf(Controller::class, $result);
+			$this->assertInstanceOf(Controller::class, $handler);
+
+			$this->assertEquals([WebController::class, 'handle'], $handler->raw() );
 
 		}
 
@@ -93,9 +98,10 @@
 
 			$controller = [ WebController::class , '@handle'];
 
-			$result = $this->factory->createRouteHandlerUsing($controller);
+			$handler = $this->factory->createRouteHandlerUsing($controller);
 
-			$this->assertInstanceOf(Controller::class, $result);
+			$this->assertInstanceOf(Controller::class, $handler);
+			$this->assertEquals([WebController::class, 'handle'], $handler->raw() );
 
 		}
 
@@ -103,10 +109,16 @@
 		public function web_controllers_can_be_resolved_without_the_full_namespace () {
 
 			$controller = [ 'WebController' , 'handle'];
+			$handler = $this->factory->createRouteHandlerUsing($controller);
+			$this->assertInstanceOf(Controller::class, $handler);
+			$this->assertEquals([WebController::class, 'handle'], $handler->raw() );
 
-			$result = $this->factory->createRouteHandlerUsing($controller);
+			$controller ='WebController@handle';
+			$handler = $this->factory->createRouteHandlerUsing($controller);
+			$this->assertInstanceOf(Controller::class, $handler);
+			$this->assertEquals([WebController::class, 'handle'], $handler->raw() );
 
-			$this->assertInstanceOf(Controller::class, $result);
+
 
 
 		}

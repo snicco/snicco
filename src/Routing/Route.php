@@ -40,11 +40,6 @@
 
 		public function getArguments( RequestInterface $request ) {
 
-			if ( $this->resolved_arguments ) {
-
-				return $this->resolved_arguments;
-
-			}
 
 			$condition = $this->getAttribute( 'condition' );
 
@@ -105,9 +100,34 @@
 
 			return function ( $request ) {
 
-				$params = $this->signatureParameters();
 
-				return $this->handler()->executeUsing(['request' => $request]);
+				$params = collect($this->signatureParameters());
+
+				$values = collect( [ $request ] )->merge( $this->getArguments( $request ) )
+				                                 ->values();
+
+				if ( $params->count() < $values->count()) {
+
+					$values = $values->slice( 0, count( $params ) );
+
+				}
+
+				if ( $params->count() > $values->count()) {
+
+					$params = $params->slice( 0, count( $values ) );
+
+				}
+
+				$payload = $params
+					->map( function ( $param ) {
+
+						return $param->getName();
+
+					} )
+					->values()
+					->combine( $values );
+
+				return $this->handler()->executeUsing( $payload->all() );
 
 			};
 

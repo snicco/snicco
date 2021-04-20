@@ -89,7 +89,7 @@
 
 			$url = UrlParser::normalize($url_pattern);
 
-			$this->where('model', UrlParser::parseModelsFromUrl($url_pattern));
+			// $this->where('model', UrlParser::parseModelsFromUrl($url_pattern));
 
 			return $this->where( 'url', $url, $where );
 

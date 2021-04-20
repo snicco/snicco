@@ -52,7 +52,6 @@
 				return new ViewService(
 					$c[ WPEMERGE_CONFIG_KEY ]['view_composers'],
 					$c[ WPEMERGE_VIEW_ENGINE_KEY ],
-					$c[ WPEMERGE_HELPERS_HANDLER_FACTORY_KEY ]
 				);
 			} );
 

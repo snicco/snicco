@@ -9,7 +9,6 @@
 	use WPEmerge\Contracts\RouteHandler;
 	use WPEmerge\Contracts\RouteInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
-	use WPEmerge\Helpers\Handler;
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Routing\Conditions\ConditionFactory;
@@ -408,8 +407,6 @@
 				if ( $route->isSatisfied( $request ) ) {
 
 					$this->setCurrentRoute( $route );
-
-					$route->setArguments($request);
 
 					return $route;
 				}
