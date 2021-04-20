@@ -43,4 +43,10 @@
 
 		}
 
+		public function middleware() : array {
+
+			return [];
+
+		}
+
 	}

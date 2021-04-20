@@ -86,7 +86,7 @@
 
 		public function middleware() : array {
 
-			return $this->getAttribute( 'middleware', [] );
+			return array_merge($this->getAttribute( 'middleware', [] ), $this->handler()->middleware());
 
 		}
 

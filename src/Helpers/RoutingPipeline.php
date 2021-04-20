@@ -7,6 +7,7 @@
 	use Contracts\ContainerAdapter;
 	use Illuminate\Contracts\Pipeline\Pipeline;
 	use Throwable;
+	use WPEmerge\Support\Str;
 
 	class RoutingPipeline implements Pipeline {
 
@@ -160,7 +161,7 @@
 
 						} elseif ( ! is_object( $pipe ) ) {
 
-							[ $name, $parameters ] = $this->parsePipeString( $pipe );
+							[ $name, $parameters ] = $this->parsePipeArray( $pipe );
 
 							// If the pipe is a string we will parse the string and resolve the class out
 							// of the dependency injection container. We can then build a callable and
@@ -192,19 +193,17 @@
 		/**
 		 * Parse full pipe string to get name and parameters.
 		 *
-		 * @param  string  $pipe
+		 * @param array $pipe
 		 *
 		 * @return array
 		 */
-		private function parsePipeString( $pipe ) {
+		private function parsePipeArray( array $pipe ) {
 
-			[ $name, $parameters ] = array_pad( explode( ':', $pipe, 2 ), 2, [] );
+			$middleware_class = array_shift($pipe);
 
-			if ( is_string( $parameters ) ) {
-				$parameters = explode( ',', $parameters );
-			}
+			$parameters = $pipe;
 
-			return [ $name, $parameters ];
+			return [ $middleware_class, $parameters ];
 		}
 
 		/**

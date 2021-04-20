@@ -30,8 +30,6 @@
 
 			}
 
-
-
 			$this->middleware(FooMiddleware::class);
 
 			$this->dependency = $dependency;
