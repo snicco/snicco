@@ -3,6 +3,8 @@
 
 	namespace WPEmerge\Application;
 
+	use BetterWpHooks\Contracts\Dispatcher;
+	use BetterWpHooks\Traits\BetterWpHooksFacade;
 	use Closure;
 	use Contracts\ContainerAdapter;
 	use SniccoAdapter\BaseContainerAdapter;
@@ -14,6 +16,8 @@
 	 * The core WP Emerge component representing an application.
 	 */
 	 class Application {
+
+	 	use BetterWpHooksFacade;
 
 		use HasAliasesTrait;
 		use LoadsServiceProvidersTrait;
@@ -41,7 +45,7 @@
 		 *
 		 * @return static
 		 */
-		public static function make( string $container_adapter ) : Application {
+		public static function create( string $container_adapter ) : Application {
 
 			return new static(
 				( $container_adapter !== 'default' ) ? $container_adapter : new BaseContainerAdapter()
@@ -61,6 +65,8 @@
 			$this->container()[ WPEMERGE_APPLICATION_KEY ]   = $this;
 			$this->container()[ WPEMERGE_CONTAINER_ADAPTER ] = $this->container();
 			$this->render_config_exceptions                  = $render_config_exceptions;
+
+
 
 		}
 
@@ -97,6 +103,8 @@
 			$this->loadConfig( $container, $config );
 
 			$this->loadServiceProviders( $container );
+
+			$this->loadEventDispatcher();
 
 			$this->renderConfigExceptions( function () use ( $run ) {
 
@@ -222,4 +230,15 @@
 
 
 
-	}
+		 private function loadEventDispatcher() {
+
+
+				$dispatcher = ApplicationEvent::make($this->container());
+				$this->container()[Dispatcher::class] = $dispatcher;
+
+				$foo = 'bar';
+
+		 }
+
+
+	 }

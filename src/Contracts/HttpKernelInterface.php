@@ -4,11 +4,8 @@
 
 	namespace WPEmerge\Contracts;
 
-	use Closure;
 	use Psr\Http\Message\ResponseInterface;
-	use WPEmerge\Helpers\Handler;
-	use WPEmerge\Contracts\HasMiddlewareDefinitionsInterface;
-	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Contracts\RouteInterface as Route;
 
 	/**
 	 * Describes how a request is handled.
@@ -25,14 +22,11 @@
 		/**
 		 * Run a response pipeline for the given request.
 		 *
-		 * @param  RequestInterface  $request
-		 * @param  string[]  $middleware
-		 * @param  string|Closure|Handler  $handler
-		 * @param  array  $arguments
+		 * @param  Route  $route
 		 *
 		 * @return ResponseInterface
 		 */
-		public function _run( RequestInterface $request, $middleware, $handler, $arguments = [] );
+		public function run( Route $route  );
 
 		/**
 		 * Return a response for the given request.

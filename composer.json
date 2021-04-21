@@ -43,10 +43,11 @@
   "require": {
     "php": "^7.3",
     "guzzlehttp/psr7": "^1.5",
-    "calvinalkan/base-container": "dev-master",
+    "calvinalkan/base-container": "0.1.3",
     "illuminate/collections": "8.35.1",
     "ext-json": "*",
-    "illuminate/routing": "8.35.1"
+    "illuminate/routing": "8.35.1",
+    "calvinalkan/better-wordpress-hooks": "0.1.0"
   },
   "require-dev": {
     "mockery/mockery": "^1.4.2",

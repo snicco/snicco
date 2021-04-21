@@ -4,16 +4,12 @@
 	namespace Tests\integration;
 
 	use Codeception\TestCase\WPTestCase;
-	use GuzzleHttp\Psr7\Response as Psr7Response;
-	use GuzzleHttp\Psr7\Utils;
 	use Mockery as m;
-	use Tests\Laravel\App;
 	use Tests\stubs\Middleware\FooMiddleware;
 	use Tests\stubs\Middleware\GlobalFooMiddleware;
 	use WPEmerge\Middleware\SubstituteModelBindings;
 	use WPEmerge\Requests\Request;
 	use WPEmerge\Responses\ResponseService;
-	use Tests\stubs\Handlers\ClassHandlerConstructorDependency;
 	use Tests\stubs\IntegrationTestErrorHandler;
 	use Tests\stubs\TestApp;
 
@@ -78,7 +74,7 @@
 			/** @var \Tests\stubs\TestResponse $response */
 			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
-			$this->assertSame( 'foo:foo_dependency_web_controller', $response->body() );
+			$this->assertSame( 'foo:foo_web_controller', $response->body() );
 
 		}
 
@@ -97,7 +93,7 @@
 			/** @var \Tests\stubs\TestResponse $response */
 			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
 
-			$this->assertSame( 'foobar:foo_dependency_web_controller', $response->body() );
+			$this->assertSame( 'foobar:foo_web_controller', $response->body() );
 
 		}
 
@@ -192,8 +188,6 @@
 			], $config['middleware_priority']);
 
 		}
-
-
 
 
 		private function bootstrapTestApp() {

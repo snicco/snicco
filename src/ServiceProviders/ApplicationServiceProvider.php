@@ -9,12 +9,11 @@
 	use BetterWpdb\WpConnection;
 	use Contracts\ContainerAdapter;
 	use Illuminate\Database\Eloquent\Model as Eloquent;
-	use Illuminate\Support\Arr;
+	use BetterWpHooks\Contracts\Dispatcher;
 	use WPEmerge\Application\ClosureFactory;
 	use WPEmerge\Application\GenericFactory;
 	use WPEmerge\Contracts\RouteModelResolver;
 	use WPEmerge\Contracts\ServiceProviderInterface;
-	use WPEmerge\Helpers\HandlerFactory;
 	use WPEmerge\Helpers\MixedType;
 	use WPEmerge\WpdbRouteModelResolver;
 
@@ -61,8 +60,6 @@
 				return new ClosureFactory( $container[ WPEMERGE_APPLICATION_GENERIC_FACTORY_KEY ] );
 			} );
 
-
-
 			$container->singleton( RouteModelResolver::class, function ($c) {
 
 				global $wpdb;
@@ -81,6 +78,8 @@
 				return new WpdbRouteModelResolver( new WpConnection( $wpdb ), $c[WPEMERGE_HELPERS_HANDLER_FACTORY_KEY] );
 
 			} );
+
+
 
 			$app = $container[ WPEMERGE_APPLICATION_KEY ];
 			$app->alias( 'app', WPEMERGE_APPLICATION_KEY );
