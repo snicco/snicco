@@ -88,7 +88,7 @@
 
 				return new Router(
 					$c[ WPEMERGE_ROUTING_CONDITIONS_CONDITION_FACTORY_KEY ],
-					new HandlerFactory($c[WPEMERGE_CONFIG_KEY]['controllers'], $c[WPEMERGE_CONTAINER_ADAPTER])
+					new HandlerFactory($c[WPEMERGE_CONFIG_KEY]['controllers'] ?? [], $c[WPEMERGE_CONTAINER_ADAPTER])
 				);
 			} );
 

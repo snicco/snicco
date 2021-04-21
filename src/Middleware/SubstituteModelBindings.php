@@ -27,7 +27,7 @@
 
 		public function handle ( Request $request, \Closure $next ) {
 
-			ImplicitRouteBindings::resolveForRoute($this->container, $request->route());
+			// ImplicitRouteBindings::resolveForRoute($this->container, $request->route());
 
 			return $next($request);
 

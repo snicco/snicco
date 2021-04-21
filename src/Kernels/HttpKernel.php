@@ -3,22 +3,16 @@
 
 	namespace WPEmerge\Kernels;
 
-	use Contracts\ContainerAdapter;
 	use Exception;
 	use Illuminate\Support\Arr;
 	use Psr\Http\Message\ResponseInterface;
-	use WPEmerge\Application\GenericFactory;
 	use WPEmerge\Contracts\HttpKernelInterface;
 	use WPEmerge\Contracts\RouteInterface as Route;
-	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
-	use WPEmerge\Helpers\Handler;
-	use WPEmerge\Helpers\HandlerFactory;
 	use WPEmerge\Helpers\RoutingPipeline;
 	use WPEmerge\Middleware\ExecutesMiddlewareTrait;
 	use WPEmerge\Middleware\HasMiddlewareDefinitionsTrait;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Middleware\SubstituteModelBindings;
 	use WPEmerge\Responses\ConvertsToResponseTrait;
 	use WPEmerge\Responses\RedirectResponse;
 	use WPEmerge\Responses\ResponseService;
@@ -56,12 +50,7 @@
 		 */
 		protected $router = null;
 
-		/**
-		 * View Service.
-		 *
-		 * @var ViewService
-		 */
-		protected $view_service = null;
+
 
 		/**
 		 * Error handler.
@@ -85,27 +74,22 @@
 		/**
 		 * Constructor.
 		 *
-		 * @param  ResponseService  $response_service
 		 * @param  RequestInterface  $request
+		 * @param  ResponseService  $response_service
+		 * @param  \WPEmerge\Helpers\RoutingPipeline  $route_pipeline
 		 * @param  Router  $router
-		 * @param  ViewService  $view_service
 		 * @param  ErrorHandlerInterface  $error_handler
-		 *
 		 */
-		public function __construct(
-			RequestInterface $request,
+		public function __construct( RequestInterface $request,
 			ResponseService $response_service,
 			RoutingPipeline $route_pipeline,
 			Router $router,
-			ViewService $view_service,
-			ErrorHandlerInterface $error_handler
-		) {
+			ErrorHandlerInterface $error_handler ) {
 
 			$this->request          = $request;
 			$this->response_service = $response_service;
 			$this->route_pipeline   = $route_pipeline;
 			$this->router           = $router;
-			$this->view_service     = $view_service;
 			$this->error_handler    = $error_handler;
 		}
 
@@ -131,64 +115,6 @@
 		}
 
 
-		/**
-		 * Execute a handler.
-		 *
-		 *
-		 * @param  Handler  $handler
-		 * @param  array  $arguments
-		 *
-		 * @return ResponseInterface
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
-		 */
-		private function executeHandler( Handler $handler, RequestInterface $request ) : ?ResponseInterface {
-
-
-			$response = call_user_func( [ $handler, 'execute' ],  $request,  ...array_values($request->route()->arguments()));
-
-			$response = $this->toResponse( $response );
-
-			if ( ! $response instanceof ResponseInterface && $response != null ) {
-				throw new ConfigurationException(
-					'Response returned by controller is not valid ' .
-					'(expected ' . ResponseInterface::class . '; received ' . gettype( $response ) . ').'
-				);
-			}
-
-			return $response;
-		}
-
-		public function _run( RequestInterface $request, $middleware, $handler, $arguments = [] ) {
-
-			// whoops
-			$this->error_handler->register();
-
-			try {
-
-				$middleware = array_merge( $middleware, $handler->controllerMiddleware() );
-				$middleware = $this->applyGlobalMiddleware( $middleware );
-				$middleware = $this->expandMiddleware( $middleware );
-				$middleware = $this->uniqueMiddleware( $middleware );
-				$middleware = $this->sortMiddleware( $middleware );
-
-				$response = $this->executeMiddleware( $middleware, $request, function () use ( $handler, $arguments ) {
-
-					return $this->executeHandler( $handler, $arguments );
-
-				} );
-
-			}
-			catch ( Exception $exception ) {
-
-				$response = $this->error_handler->getResponse( $request, $exception );
-
-			}
-
-			$this->error_handler->unregister();
-
-			return $response;
-
-		}
 
 		public function run( Route $route ) {
 
@@ -215,8 +141,6 @@
 			}
 			catch ( Exception $exception ) {
 
-				$foo = 'bar';
-
 				$response = $this->error_handler->getResponse( $this->request, $exception );
 
 			}
@@ -227,40 +151,6 @@
 
 		}
 
-		public function _handleRequest( RequestInterface $request, $arguments = [] ) {
-
-			$arguments = Arr::wrap( $arguments );
-
-			$view = $arguments[0] ?? null;
-
-			$route = $this->router->hasMatchingRoute( $request );
-
-			if ( $route === null ) {
-				return null;
-			}
-
-			$route_arguments = $route->getArguments( $request );
-
-			$request = $request->withAttribute( 'route', $route )
-			                   ->withAttribute( 'arguments', $route_arguments );
-
-			$middleware      = $route->getAttribute( 'middleware', [] );
-			$handler         = $route->getAttribute( 'handler' );
-			$route_arguments = array_merge( [ $request ], $route_arguments );
-
-			$response = $this->_run( $request, $middleware, $handler, $route_arguments );
-
-			if ( $response === null ) {
-
-				return $view;
-
-			}
-
-			$this->container[ WPEMERGE_RESPONSE_KEY ] = $response;
-
-			return $response;
-
-		}
 
 		public function handleRequest( RequestInterface $request, $arguments = [] ) {
 
@@ -305,18 +195,7 @@
 			$this->response_service->respond( $response );
 		}
 
-		/**
-		 * Output the current view outside of the routing flow.
-		 *
-		 * @return void
-		 */
-		public function compose() {
 
-			$view = $this->view_service->make( $this->template );
-
-			echo $view->toString();
-
-		}
 
 
 		public function bootstrap() {
@@ -324,7 +203,8 @@
 			// Web. Use 3100 so it's high enough and has uncommonly used numbers
 			// before and after. For example, 1000 is too common and it would have 999 before it
 			// which is too common as well.).
-			add_filter( 'request', [ $this, 'filterRequest' ], 3100 );
+
+			// add_filter( 'request', [ $this, 'filterRequest' ], 3100 );
 			add_filter( 'template_include', [ $this, 'filterTemplateInclude' ], 3100 );
 
 			// Ajax.
@@ -395,8 +275,6 @@
 				return WPEMERGE_DIR . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'view.php';
 			}
 
-			// No route has matched, but we still want to compose views.
-			$composers = $this->view_service->getComposersForView( $template );
 
 			if ( ! empty( $composers ) ) {
 
@@ -528,11 +406,7 @@
 				$this->response_service->sendHeaders( $response );
 			}
 
-			if ( $response instanceof RedirectResponse && $response->abort() ) {
 
-				exit;
-
-			}
 
 		}
 

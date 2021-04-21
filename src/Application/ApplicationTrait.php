@@ -29,7 +29,7 @@
 		 */
 		public static function make( $containerAdapter = 'default' ) {
 
-			static::setApplication( Application::make( $containerAdapter ) );
+			static::setApplication( Application::create( $containerAdapter ) );
 
 			return static::getApplication();
 		}

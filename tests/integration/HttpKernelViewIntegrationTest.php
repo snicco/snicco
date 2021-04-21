@@ -153,15 +153,8 @@
 
 		private function config() : array {
 
-			return [
+			return array_merge(TEST_CONFIG, [
 
-				'controller_namespaces' => [
-
-					'web'   => 'Tests\stubs\Controllers\Web',
-					'admin' => 'Tests\stubs\Controllers\Admin',
-					'ajax'  => 'Tests\stubs\Controllers\Ajax',
-
-				],
 
 				'middleware' => [
 
@@ -169,9 +162,9 @@
 
 				],
 
-				'views' => [ getenv( 'PACKAGE_ROOT' ) . DIRECTORY_SEPARATOR . 'tests' . DIRECTORY_SEPARATOR . 'views' ],
+				'views' => [ getenv( 'PACKAGE_ROOT' ) . DS . 'tests' . DS . 'views' ],
 
-			];
+			]);
 
 
 		}
