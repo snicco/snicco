@@ -9,7 +9,7 @@
 	use Throwable;
 	use WPEmerge\Support\Str;
 
-	class RoutingPipeline implements Pipeline {
+	class RoutePipeline implements Pipeline {
 
 		/**
 		 * The container implementation.
@@ -57,7 +57,7 @@
 		 *
 		 * @return $this
 		 */
-		public function send( $traveler ) : RoutingPipeline {
+		public function send( $traveler ) : RoutePipeline {
 
 			$this->traveler = $traveler;
 
@@ -71,7 +71,7 @@
 		 *
 		 * @return $this
 		 */
-		public function through( $stops ) : RoutingPipeline {
+		public function through( $stops ) : RoutePipeline {
 
 			$this->pipes = is_array( $stops ) ? $stops : func_get_args();
 
@@ -85,7 +85,7 @@
 		 *
 		 * @return $this
 		 */
-		public function via( $method ) : RoutingPipeline {
+		public function via( $method ) : RoutePipeline {
 
 			$this->method = $method;
 

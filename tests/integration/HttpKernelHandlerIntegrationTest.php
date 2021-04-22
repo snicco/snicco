@@ -64,7 +64,7 @@
 
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
 
-			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'foo_web_controller', $test_response->body() );
 
@@ -83,7 +83,7 @@
 			              ->andReturn( 'https://wpemerge.test/teams/dortmund' );
 
 
-			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'dortmund', $test_response->body()  );
 
@@ -102,7 +102,7 @@
 			              ->andReturn( 'https://wpemerge.test/' );
 
 
-			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'foobar', $test_response->body() );
 
@@ -120,7 +120,7 @@
 			              ->andReturn( 'https://wpemerge.test/web' );
 
 
-			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'web_controller', $test_response->body() );
 
@@ -139,7 +139,7 @@
 			              ->andReturn( 'https://wpemerge.test/admin' );
 
 
-			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'admin_controller', $test_response->body() );
 
@@ -157,7 +157,7 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/ajax' );
 
-			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'ajax_controller', $test_response->body() );
 

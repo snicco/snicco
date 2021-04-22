@@ -72,7 +72,7 @@
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
 
 			/** @var \Tests\stubs\TestResponse $response */
-			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'foo:foo_web_controller', $response->body() );
 
@@ -91,7 +91,7 @@
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
 
 			/** @var \Tests\stubs\TestResponse $response */
-			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'foobar:foo_web_controller', $response->body() );
 
@@ -110,7 +110,7 @@
 				->andReturn( 'https://wpemerge.test/wp-admin/dashboard' );
 
 			/** @var \Tests\stubs\TestResponse $response */
-			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'foo:foo_admin_controller_dependency', $response->body() );
 
@@ -133,7 +133,7 @@
 				->andReturn( 'https://wpemerge.test/wp-admin/dashboard' );
 
 			/** @var \Tests\stubs\TestResponse $response */
-			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'foo:foo_admin_controller_dependency', $response->body() );
 			$this->assertSame( 1, $GLOBALS['controller_constructor_count']);
@@ -157,7 +157,7 @@
 
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
 
-			$response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'foo:foo_web_controller', $response->body() );
 

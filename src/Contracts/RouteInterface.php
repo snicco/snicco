@@ -38,5 +38,5 @@
 
 		public function middleware() :array;
 
-		public function run();
+		public function run( RequestInterface $request );
 	}

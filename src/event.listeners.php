@@ -11,13 +11,13 @@
 
 		IncomingWebRequest::class => [
 
-			HttpKernel::class . '@filterTemplateInclude'
+			HttpKernel::class . '@handle'
 
 		],
 
 		IncomingAdminRequest::class => [
 
-			HttpKernel::class . '@filterTemplateInclude'
+			HttpKernel::class . '@handle'
 
 		],
 

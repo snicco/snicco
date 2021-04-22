@@ -105,40 +105,37 @@
 		}
 
 
-		public function run() {
-
-			return function ( $request ) {
+		public function run( $request ) {
 
 
-				$params = collect( $this->signatureParameters() );
+			$params = collect( $this->signatureParameters() );
 
-				$values = collect( [ $request ] )->merge( $this->getArguments( $request ) )
-				                                 ->values();
+			$values = collect( [ $request ] )->merge( $this->getArguments( $request ) )
+			                                 ->values();
 
-				if ( $params->count() < $values->count() ) {
+			if ( $params->count() < $values->count() ) {
 
-					$values = $values->slice( 0, count( $params ) );
+				$values = $values->slice( 0, count( $params ) );
 
-				}
+			}
 
-				if ( $params->count() > $values->count() ) {
+			if ( $params->count() > $values->count() ) {
 
-					$params = $params->slice( 0, count( $values ) );
+				$params = $params->slice( 0, count( $values ) );
 
-				}
+			}
 
-				$payload = $params
-					->map( function ( $param ) {
+			$payload = $params
+				->map( function ( $param ) {
 
-						return $param->getName();
+					return $param->getName();
 
-					} )
-					->values()
-					->combine( $values );
+				} )
+				->values()
+				->combine( $values );
 
-				return $this->handler->executeUsing( $payload->all() );
+			return $this->handler->executeUsing( $payload->all() );
 
-			};
 
 		}
 

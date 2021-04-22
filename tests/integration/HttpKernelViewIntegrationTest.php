@@ -73,7 +73,7 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test' );
 
-			$response = $this->kernel->handleRequest(
+			$response = $this->kernel->sendRequestThroughRouter(
 				$this->request, $this->view_dir . 'welcome.wordpress.php'
 			);
 
@@ -92,7 +92,7 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/no_view' );
 
-			$response = $this->kernel->handleRequest(
+			$response = $this->kernel->sendRequestThroughRouter(
 				$this->request, $this->view_dir . 'welcome.wordpress.php'
 			);
 
@@ -112,7 +112,7 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/no_view' );
 
-			$response = $this->kernel->handleRequest(
+			$response = $this->kernel->sendRequestThroughRouter(
 				$this->request, $this->view_dir . 'welcome.wordpress.php'
 			);
 
@@ -131,7 +131,7 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/no_view' );
 
-			$response = $this->kernel->handleRequest(
+			$response = $this->kernel->sendRequestThroughRouter(
 				$this->request, $this->view_dir . 'welcome.wordpress.php'
 			);
 

@@ -1,9 +1,7 @@
 <?php
 
 
-	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingWebRequest;
-	use WPEmerge\Events\QueryVarsFilterable;
 
 	return [
 
