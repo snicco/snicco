@@ -5,8 +5,11 @@
 
 
 
+	use BetterWpHooks\Traits\DispatchesConditionally;
+
 	class IncomingAdminRequest extends IncomingRequest {
 
+		use DispatchesConditionally;
 
 
 		public function __construct() {
@@ -17,7 +20,7 @@
 
 		}
 
-		public function payload( ) {
+		public function payload() {
 
 			return $this->request;
 
