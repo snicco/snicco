@@ -30,20 +30,17 @@
 
 			parent::__construct();
 
-			$this->request->setType(get_class($this));
-
 
 		}
 
-		// public function shouldDispatch() : bool {
-		//
-		//
-		// 	return ! is_admin() && ! str_contains($this->request->getFullUrlString(), admin_url());
-		//
-		// }
+		public function shouldDispatch() : bool {
 
-		public function default() : ?string {
 
+			return ! is_admin() && ! str_contains($this->request->getFullUrlString(), admin_url());
+
+		}
+
+		public function default() : ?string  {
 
 			if ( ! $this->request->route() ) {
 
@@ -51,13 +48,8 @@
 
 			}
 
-
 		}
 
-		public function payload () {
 
-			return  $this->request;
-
-		}
 
 	}
