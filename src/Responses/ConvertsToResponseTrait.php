@@ -15,6 +15,7 @@ use WPEmerge\Contracts\ResponsableInterface;
  * Converts values to a response.
  */
 trait ConvertsToResponseTrait {
+
 	/**
 	 * Get a Response Service instance.
 	 *

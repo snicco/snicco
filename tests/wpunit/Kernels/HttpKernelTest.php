@@ -350,7 +350,7 @@
 		}
 
 		/**
-		 * @covers ::respond
+		 * @covers ::sendResponse
 		 */
 		public function testRespond_Response_Respond() {
 
@@ -368,13 +368,13 @@
 			                       ->with( $response )
 			                       ->once();
 
-			$this->subject->respond();
+			$this->subject->sendResponse();
 
 			$this->assertTrue( true );
 		}
 
 		/**
-		 * @covers ::respond
+		 * @covers ::sendResponse
 		 */
 		public function testRespond_NoResponse_DoNotRespond() {
 
@@ -384,7 +384,7 @@
 
 			$this->response_service->shouldNotReceive( 'respond' );
 
-			$this->subject->respond();
+			$this->subject->sendResponse();
 
 			$this->assertTrue( true );
 		}

@@ -3,31 +3,36 @@
 
 	namespace WPEmerge\Kernels;
 
+	use BetterWpHooks\Traits\ListensConditionally;
+	use Contracts\ContainerAdapter;
 	use Exception;
 	use Illuminate\Support\Arr;
 	use Psr\Http\Message\ResponseInterface;
 	use WPEmerge\Contracts\HttpKernelInterface;
 	use WPEmerge\Contracts\RouteInterface as Route;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
+	use WPEmerge\Events\IncomingAdminRequest;
+	use WPEmerge\Events\IncomingRequest;
+	use WPEmerge\Events\IncomingWebRequest;
+	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Helpers\RoutingPipeline;
 	use WPEmerge\Middleware\ExecutesMiddlewareTrait;
 	use WPEmerge\Middleware\HasMiddlewareDefinitionsTrait;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Responses\ConvertsToResponseTrait;
-	use WPEmerge\Responses\RedirectResponse;
 	use WPEmerge\Responses\ResponseService;
 	use WPEmerge\Contracts\HasQueryFilterInterface;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Routing\SortsMiddlewareTrait;
-	use WPEmerge\View\ViewService;
 
 	class HttpKernel implements HttpKernelInterface {
+
+		use ListensConditionally;
 
 		use HasMiddlewareDefinitionsTrait;
 		use SortsMiddlewareTrait;
 		use ConvertsToResponseTrait;
 		use ExecutesMiddlewareTrait;
-
 
 		/**
 		 * Response service.
@@ -51,7 +56,6 @@
 		protected $router = null;
 
 
-
 		/**
 		 * Error handler.
 		 *
@@ -70,6 +74,15 @@
 		 * @var \WPEmerge\Helpers\RoutingPipeline
 		 */
 		private $route_pipeline;
+		/**
+		 * @var \Contracts\ContainerAdapter
+		 */
+		private $container;
+
+		/**
+		 * @var ResponseInterface;
+		 */
+		private $response;
 
 		/**
 		 * Constructor.
@@ -80,17 +93,21 @@
 		 * @param  Router  $router
 		 * @param  ErrorHandlerInterface  $error_handler
 		 */
-		public function __construct( RequestInterface $request,
+		public function __construct(
+			RequestInterface $request,
 			ResponseService $response_service,
 			RoutingPipeline $route_pipeline,
 			Router $router,
-			ErrorHandlerInterface $error_handler ) {
+			ErrorHandlerInterface $error_handler,
+			ContainerAdapter $container
+		) {
 
 			$this->request          = $request;
 			$this->response_service = $response_service;
 			$this->route_pipeline   = $route_pipeline;
 			$this->router           = $router;
 			$this->error_handler    = $error_handler;
+			$this->container        = $container;
 		}
 
 		/**
@@ -103,17 +120,6 @@
 			return isset( $this->container[ WPEMERGE_RESPONSE_KEY ] ) ? $this->container[ WPEMERGE_RESPONSE_KEY ] : null;
 
 		}
-
-		/**
-		 * Get a Response Service instance.
-		 *
-		 * @return ResponseService
-		 */
-		private function getResponseService() {
-
-			return $this->response_service;
-		}
-
 
 
 		public function run( Route $route ) {
@@ -129,13 +135,25 @@
 				$middleware = $this->uniqueMiddleware( $middleware );
 				$middleware = $this->sortMiddleware( $middleware );
 
-				$response = $this->route_pipeline
-					->send($this->request)
-					->through($middleware)
-					->then(
-						$route->run()
+				$response = $this->toResponse(
+
+					$this->route_pipeline
+						->send( $this->request )
+						->through( $middleware )
+						->then( $route->run() )
+
+				);
+
+				if ( ! $response instanceof ResponseInterface ) {
+
+					throw new ConfigurationException(
+
+						'Response returned by the Route is not valid ' . PHP_EOL .
+						'(expected ' . ResponseInterface::class . '; received ' . gettype( $response ) . ').'
+
 					);
 
+				}
 
 
 			}
@@ -152,7 +170,7 @@
 		}
 
 
-		public function handleRequest( RequestInterface $request, $arguments = [] ) {
+		public function _handleRequest( RequestInterface $request, $arguments = [] ) {
 
 			$arguments = Arr::wrap( $arguments );
 
@@ -163,7 +181,6 @@
 			if ( $route === null ) {
 				return null;
 			}
-
 
 			$response = $this->run( $route );
 
@@ -179,12 +196,34 @@
 
 		}
 
+		public function handleRequest( RequestInterface $request, $arguments = [] ) {
+
+			$arguments = Arr::wrap( $arguments );
+
+			$view = $arguments[0] ?? null;
+
+			$route = $this->router->getCurrentRoute();
+
+			$response = $this->run( $route );
+
+			if ( $response === null ) {
+
+				return $view;
+
+			}
+
+			$this->container->instance( ResponseInterface::class, $response );
+
+			return $response;
+
+		}
+
 		/**
 		 * Respond with the current response.
 		 *
 		 * @return void
 		 */
-		public function respond() {
+		public function sendResponse() {
 
 			$response = $this->getResponse();
 
@@ -193,10 +232,8 @@
 			}
 
 			$this->response_service->respond( $response );
+
 		}
-
-
-
 
 		public function bootstrap() {
 
@@ -205,13 +242,13 @@
 			// which is too common as well.).
 
 			// add_filter( 'request', [ $this, 'filterRequest' ], 3100 );
-			add_filter( 'template_include', [ $this, 'filterTemplateInclude' ], 3100 );
+			// add_filter( 'template_include', [ $this, 'filterTemplateInclude' ], 3100 );
 
 			// Ajax.
-			add_action( 'admin_init', [ $this, 'registerAjaxAction' ] );
+			// add_action( 'admin_init', [ $this, 'registerAjaxAction' ] );
 
 			// Admin.
-			add_action( 'admin_init', [ $this, 'registerAdminAction' ] );
+			// add_action( 'admin_init', [ $this, 'registerAdminAction' ] );
 
 		}
 
@@ -254,7 +291,7 @@
 		 *
 		 * @return string
 		 */
-		public function filterTemplateInclude( string $template ) : string {
+		public function _filterTemplateInclude( string $template ) : string {
 
 			global $wp_query;
 
@@ -270,11 +307,10 @@
 					$wp_query->set_404();
 				}
 
-				add_action( 'wpemerge.kernels.http_kernel.respond', [ $this, 'respond' ] );
+				add_action( 'wpemerge.kernels.http_kernel.respond', [ $this, 'sendResponse' ] );
 
 				return WPEMERGE_DIR . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'view.php';
 			}
-
 
 			if ( ! empty( $composers ) ) {
 
@@ -285,6 +321,43 @@
 
 			return $template;
 		}
+
+		public function filterTemplateInclude( RequestInterface $request ) : void {
+
+
+			$this->container->instance( RequestInterface::class, $request );
+
+			$this->response = $this->handleRequest( $request );
+
+			$this->sendHeaders();
+
+			if ( $request->type() === IncomingAdminRequest::class ) {
+
+				return;
+
+			}
+
+			$this->sendBody();
+
+
+		}
+
+		public function sendHeaders() {
+
+			if ( ! headers_sent() ) {
+
+				$this->response_service->sendHeaders( $this->response );
+
+			}
+
+		}
+
+		public function sendBody() {
+
+			$this->response_service->sendBody( $this->response );
+
+		}
+
 
 		/**
 		 * Register ajax action to hook into current one.
@@ -302,6 +375,7 @@
 
 			add_action( "wp_ajax_{$action}", [ $this, 'actionAjax' ] );
 			add_action( "wp_ajax_nopriv_{$action}", [ $this, 'actionAjax' ] );
+
 		}
 
 		/**
@@ -396,7 +470,10 @@
 		 */
 		public function actionAdminLoad() {
 
-			$response = $this->handleRequest( $this->request );
+			$route = $this->router->hasMatchingRoute( $this->request );
+
+			// $response = $this->handleRequest( $this->request );
+			$response = null;
 
 			if ( ! $response instanceof ResponseInterface ) {
 				return;
@@ -405,7 +482,6 @@
 			if ( ! headers_sent() ) {
 				$this->response_service->sendHeaders( $response );
 			}
-
 
 
 		}
@@ -425,6 +501,17 @@
 
 			$this->response_service->sendBody( $response );
 
+		}
+
+		public function shouldHandle( RequestInterface $request ) : bool {
+
+			return $this->router->hasMatchingRoute( $request ) !== null;
+
+		}
+
+
+		protected function getResponseService() {
+			// TODO: Implement getResponseService() method.
 		}
 
 	}

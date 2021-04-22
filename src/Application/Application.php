@@ -7,17 +7,22 @@
 	use BetterWpHooks\Traits\BetterWpHooksFacade;
 	use Closure;
 	use Contracts\ContainerAdapter;
+	use Psr\Http\Message\ResponseInterface;
 	use SniccoAdapter\BaseContainerAdapter;
+	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Events\AdminBodySendable;
+	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\Kernels\HttpKernel;
 	use WPEmerge\Requests\Request;
 	use WPEmerge\Support\Arr;
 
 	/**
 	 * The core WP Emerge component representing an application.
 	 */
-	 class Application {
+	class Application {
 
-	 	use BetterWpHooksFacade;
+		use BetterWpHooksFacade;
 
 		use HasAliasesTrait;
 		use LoadsServiceProvidersTrait;
@@ -67,7 +72,6 @@
 			$this->render_config_exceptions                  = $render_config_exceptions;
 
 
-
 		}
 
 
@@ -84,7 +88,7 @@
 		/**
 		 * Bootstrap the application.
 		 *
-		 * @param  array  $config The configuration provided by a user during bootstrapping.
+		 * @param  array  $config  The configuration provided by a user during bootstrapping.
 		 * @param  boolean  $run
 		 *
 		 * @return void
@@ -195,15 +199,15 @@
 		}
 
 
-		 /**
-		  * Catch any configuration exceptions and short-circuit to an error page.
-		  *
-		  *
-		  * @param  Closure  $callable
-		  *
-		  * @return void
-		  * @throws \WPEmerge\Exceptions\ConfigurationException
-		  */
+		/**
+		 * Catch any configuration exceptions and short-circuit to an error page.
+		 *
+		 *
+		 * @param  Closure  $callable
+		 *
+		 * @return void
+		 * @throws \WPEmerge\Exceptions\ConfigurationException
+		 */
 		public function renderConfigExceptions( Closure $callable ) {
 
 			try {
@@ -229,16 +233,64 @@
 		}
 
 
-
-		 private function loadEventDispatcher() {
-
-
-				$dispatcher = ApplicationEvent::make($this->container());
-				$this->container()[Dispatcher::class] = $dispatcher;
-
-				$foo = 'bar';
-
-		 }
+		private function loadEventDispatcher() {
 
 
-	 }
+			$mapped_events = dirname( __FILE__, 2 ) . DIRECTORY_SEPARATOR . 'mapped.events.php';
+			$listeners     = dirname( __FILE__, 2 ) . DIRECTORY_SEPARATOR . 'event.listeners.php';
+
+			$mapped_events = require_once $mapped_events;
+			$listeners     = require_once $listeners;
+
+			ApplicationEvent::make( $this->container() )->map( $mapped_events )
+			                ->listeners( $listeners )->boot();
+
+			ApplicationEvent::listen( 'admin_init', function () {
+
+				if ( $hook = $this->getAdminPageHook() ) {
+
+					ApplicationEvent::listen( 'load-' . $hook, function () {
+
+						IncomingAdminRequest::dispatch( [] );
+
+					} );
+
+					ApplicationEvent::listen( $hook, function () {
+
+						AdminBodySendable::dispatch( [
+							$this->container()->make( RequestInterface::class ),
+						] );
+
+					} );
+
+				}
+
+			} );
+
+			$this->container()[ Dispatcher::class ] = ApplicationEvent::dispatcher();
+
+
+		}
+
+
+		/**
+		 * Get page hook.
+		 * Slightly modified version of code from wp-admin/admin.php.
+		 *
+		 * @return string|null
+		 */
+		private function getAdminPageHook() : ?string {
+
+			global $pagenow, $plugin_page;
+
+			if ( $plugin_page ) {
+
+				return get_plugin_page_hook( $plugin_page, $pagenow );
+
+			}
+
+			return null;
+
+		}
+
+	}

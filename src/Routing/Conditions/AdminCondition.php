@@ -74,6 +74,7 @@
 				return false;
 			}
 
+
 			return $screen->id === get_plugin_page_hookname( $this->menu, $this->parent_menu );
 		}
 

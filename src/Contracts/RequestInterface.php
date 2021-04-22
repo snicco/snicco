@@ -154,6 +154,6 @@
 
 		public function setRoute( RouteInterface $route );
 
-		public function route() : RouteInterface;
+		public function route() : ?RouteInterface;
 
 	}
