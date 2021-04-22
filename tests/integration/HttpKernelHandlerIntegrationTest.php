@@ -7,6 +7,8 @@
 	use Mockery as m;
 	use Tests\stubs\Controllers\Web\DependencyController;
 	use Tests\stubs\Controllers\Web\TeamsController;
+	use WPEmerge\Contracts\RouteInterface;
+	use WPEmerge\Events\IncomingWebRequest;
 	use WPEmerge\Requests\Request;
 	use WPEmerge\Responses\ResponseService;
 	use Tests\stubs\IntegrationTestErrorHandler;
@@ -39,6 +41,16 @@
 			$this->request->shouldReceive( 'withAttribute' )->andReturn( $this->request );
 			$this->response_service = m::mock( ResponseService::class );
 
+			$this->request->shouldReceive('setRoute')->andReturnUsing(function (RouteInterface $matched_route) {
+
+				$this->request->route = $matched_route;
+
+			});
+
+			$this->request->type = IncomingWebRequest::class;
+
+			$this->request->shouldReceive('type')->andReturn($this->request->type);
+
 			$this->bootstrapTestApp();
 
 			$this->disableGlobalMiddleware();
@@ -64,7 +76,7 @@
 
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
 
-			$test_response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->handle( $this->request );
 
 			$this->assertSame( 'foo_web_controller', $test_response->body() );
 
@@ -83,7 +95,7 @@
 			              ->andReturn( 'https://wpemerge.test/teams/dortmund' );
 
 
-			$test_response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->handle( $this->request );
 
 			$this->assertSame( 'dortmund', $test_response->body()  );
 
@@ -102,7 +114,7 @@
 			              ->andReturn( 'https://wpemerge.test/' );
 
 
-			$test_response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->handle( $this->request );
 
 			$this->assertSame( 'foobar', $test_response->body() );
 
@@ -120,7 +132,7 @@
 			              ->andReturn( 'https://wpemerge.test/web' );
 
 
-			$test_response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->handle( $this->request );
 
 			$this->assertSame( 'web_controller', $test_response->body() );
 
@@ -139,9 +151,9 @@
 			              ->andReturn( 'https://wpemerge.test/admin' );
 
 
-			$test_response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
+			$this->kernel->handle( $this->request );
 
-			$this->assertSame( 'admin_controller', $test_response->body() );
+			$this->assertSame( 'admin_controller', $this->kernel->getResponse() );
 
 
 		}
@@ -157,7 +169,7 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/ajax' );
 
-			$test_response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->handle( $this->request );
 
 			$this->assertSame( 'ajax_controller', $test_response->body() );
 

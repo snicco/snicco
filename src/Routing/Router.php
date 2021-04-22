@@ -400,6 +400,12 @@
 		 */
 		public function hasMatchingRoute( $request ) : ?RouteInterface {
 
+			if ( $current_route = $this->getCurrentRoute() ) {
+
+				return $current_route;
+
+			}
+
 			$routes = $this->getRoutes();
 
 			foreach ( $routes as $route ) {

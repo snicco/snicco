@@ -114,6 +114,11 @@
 
 		}
 
+		public function getResponse() {
+
+			return $this->response;
+
+		}
 
 		/**
 		 * Get the route dispatcher callback.
@@ -137,7 +142,7 @@
 
 			$this->container->instance( RequestInterface::class, $request );
 
-			$route = $this->router->getCurrentRoute();
+			$route = $this->router->hasMatchingRoute($request);
 
 			$pipeline = new RoutePipeline( $this->container );
 
