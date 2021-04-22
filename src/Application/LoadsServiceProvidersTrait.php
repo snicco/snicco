@@ -7,6 +7,7 @@
 	use WPEmerge\Controllers\ControllersServiceProvider;
 	use WPEmerge\Csrf\CsrfServiceProvider;
 	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\ServiceProviders\EventServiceProvider;
 	use WPEmerge\ServiceProviders\ExceptionsServiceProvider;
 	use WPEmerge\ServiceProviders\KernelsServiceProvider;
 	use WPEmerge\ServiceProviders\MiddlewareServiceProvider;
@@ -42,6 +43,7 @@
 			CsrfServiceProvider::class,
 			FlashServiceProvider::class,
 			OldInputServiceProvider::class,
+			EventServiceProvider::class
 		];
 
 

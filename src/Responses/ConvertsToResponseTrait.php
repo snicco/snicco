@@ -16,12 +16,12 @@ use WPEmerge\Contracts\ResponsableInterface;
  */
 trait ConvertsToResponseTrait {
 
-	/**
-	 * Get a Response Service instance.
-	 *
-	 * @return ResponseService
-	 */
-	protected abstract function getResponseService();
+	// /**
+	//  * Get a Response Service instance.
+	//  *
+	//  * @return ResponseService
+	//  */
+	// protected abstract function getResponseService();
 
 	/**
 	 * Convert a user returned response to a ResponseInterface instance if possible.

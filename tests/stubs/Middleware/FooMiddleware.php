@@ -16,7 +16,10 @@
 
 		public function __construct( Foo $foo_dependency) {
 
+			$GLOBALS['route_middleware_resolved'] = true;
+
 			$this->foo_dependency = $foo_dependency;
+
 		}
 
 		public function handle ( Request $request, Closure $next, string $bar = '' ) {

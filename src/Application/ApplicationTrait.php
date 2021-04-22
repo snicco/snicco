@@ -23,7 +23,7 @@
 		/**
 		 * Make and assign a new application instance.
 		 *
-		 * @param  string|Object  $containerAdapter  ::class or default
+		 * @param  string|\Contracts\ContainerAdapter  $containerAdapter  ::class or default
 		 *
 		 * @return Application
 		 */

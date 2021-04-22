@@ -5,13 +5,11 @@
 
 	use Codeception\TestCase\WPTestCase;
 	use Mockery as m;
+	use Tests\MockRequest;
 	use Tests\stubs\Controllers\Web\DependencyController;
 	use Tests\stubs\Controllers\Web\TeamsController;
-	use WPEmerge\Contracts\RouteInterface;
-	use WPEmerge\Events\IncomingWebRequest;
+	use Tests\stubs\TestResponseService;
 	use WPEmerge\Requests\Request;
-	use WPEmerge\Responses\ResponseService;
-	use Tests\stubs\IntegrationTestErrorHandler;
 	use Tests\stubs\TestApp;
 
 	/**
@@ -20,6 +18,8 @@
 	class HttpKernelHandlerIntegrationTest extends WPTestCase {
 
 		use DisableGlobalMiddleWare;
+		use SetUpTestApp;
+		use MockRequest;
 
 		/**
 		 * @var \WPEmerge\Kernels\HttpKernel
@@ -32,24 +32,15 @@
 		/** @var \WPEmerge\Responses\ResponseService */
 		private $response_service;
 
+
 		protected function setUp() : void {
 
 			parent::setUp();
 
 			$this->request = m::mock( Request::class );
-			$this->request->shouldReceive( 'getMethod' )->andReturn( 'GET' );
-			$this->request->shouldReceive( 'withAttribute' )->andReturn( $this->request );
-			$this->response_service = m::mock( ResponseService::class );
+			$this->createMockWebRequest();
 
-			$this->request->shouldReceive('setRoute')->andReturnUsing(function (RouteInterface $matched_route) {
-
-				$this->request->route = $matched_route;
-
-			});
-
-			$this->request->type = IncomingWebRequest::class;
-
-			$this->request->shouldReceive('type')->andReturn($this->request->type);
+			$this->response_service = new TestResponseService();
 
 			$this->bootstrapTestApp();
 
@@ -76,9 +67,11 @@
 
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
 
-			$test_response = $this->kernel->handle( $this->request );
+			$this->kernel->handle( $this->request );
 
-			$this->assertSame( 'foo_web_controller', $test_response->body() );
+			$this->assertResponseSend();
+
+			$this->assertSame( 'foo_web_controller', $this->responseBody() );
 
 		}
 
@@ -94,10 +87,11 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/teams/dortmund' );
 
+			$this->kernel->handle( $this->request );
 
-			$test_response = $this->kernel->handle( $this->request );
+			$this->assertResponseSend();
 
-			$this->assertSame( 'dortmund', $test_response->body()  );
+			$this->assertSame( 'dortmund', $this->responseBody()  );
 
 
 		}
@@ -114,9 +108,11 @@
 			              ->andReturn( 'https://wpemerge.test/' );
 
 
-			$test_response = $this->kernel->handle( $this->request );
+			$this->kernel->handle( $this->request );
 
-			$this->assertSame( 'foobar', $test_response->body() );
+			$this->assertResponseSend();
+
+			$this->assertSame( 'foobar', $this->responseBody() );
 
 		}
 
@@ -131,10 +127,11 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/web' );
 
+			$this->kernel->handle( $this->request );
 
-			$test_response = $this->kernel->handle( $this->request );
+			$this->assertResponseSend();
 
-			$this->assertSame( 'web_controller', $test_response->body() );
+			$this->assertSame( 'web_controller', $this->responseBody() );
 
 
 		}
@@ -150,10 +147,11 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/admin' );
 
-
 			$this->kernel->handle( $this->request );
 
-			$this->assertSame( 'admin_controller', $this->kernel->getResponse() );
+			$this->assertResponseSend();
+
+			$this->assertSame( 'admin_controller', $this->responseBody() );
 
 
 		}
@@ -169,18 +167,11 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/ajax' );
 
-			$test_response = $this->kernel->handle( $this->request );
+			$this->kernel->handle( $this->request );
 
-			$this->assertSame( 'ajax_controller', $test_response->body() );
+			$this->assertResponseSend();
 
-		}
-
-		private function bootstrapTestApp() {
-
-			TestApp::make()->bootstrap(TEST_CONFIG, false );
-			TestApp::container()[ WPEMERGE_REQUEST_KEY ]                  = $this->request;
-			TestApp::container()[ WPEMERGE_RESPONSE_SERVICE_KEY ]         = $this->response_service;
-			TestApp::container()[ WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY ] = new IntegrationTestErrorHandler();
+			$this->assertSame( 'ajax_controller', $this->responseBody() );
 
 		}
 
