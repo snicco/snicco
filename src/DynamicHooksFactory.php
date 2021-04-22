@@ -6,6 +6,7 @@
 	use BetterWpHooks\Contracts\Dispatcher;
 	use WPEmerge\Events\AdminBodySendable;
 	use WPEmerge\Events\IncomingAdminRequest;
+	use WPEmerge\Events\IncomingAjaxRequest;
 
 	class DynamicHooksFactory {
 
@@ -55,6 +56,23 @@
 		}
 
 		private function createAjaxHooks() {
+
+
+			$action = ( isset( $_REQUEST['action'] ) ) ? $_REQUEST['action'] : '';
+
+			$this->dispatcher->listen( 'wp_ajax_' . $action, function () {
+
+				IncomingAjaxRequest::dispatch( [] );
+
+			} );
+
+			$this->dispatcher->listen( 'wp_ajax_nopriv_' . $action, function () {
+
+				IncomingAjaxRequest::dispatch( [] );
+
+			} );
+
+
 
 		}
 

@@ -20,10 +20,6 @@
 
 		}
 
-		// public function shouldDispatch() : bool {
-		//
-		// 	return $this->router->hasMatchingRoute($this->request) !== null;
-		//
-		// }
+
 
 	}

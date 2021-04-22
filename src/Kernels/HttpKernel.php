@@ -12,6 +12,7 @@
 	use WPEmerge\Contracts\RouteInterface as Route;
 	use WPEmerge\Contracts\ErrorHandlerInterface as ErrorHandler;
 	use WPEmerge\Events\IncomingAdminRequest;
+	use WPEmerge\Events\ResponseSent;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Middleware\ExecutesMiddlewareTrait;
 	use WPEmerge\Middleware\HasMiddlewareDefinitionsTrait;
@@ -84,13 +85,13 @@
 
 			$this->sendHeaders();
 
-			if ( $request->type() === IncomingAdminRequest::class ) {
+			if ( $request->type() !== IncomingAdminRequest::class ) {
 
-				return;
+				$this->sendBody();
 
 			}
 
-			$this->sendBody();
+			ResponseSent::dispatch([$this->response, $request]);
 
 			$this->error_handler->unregister();
 

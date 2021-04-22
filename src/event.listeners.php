@@ -1,10 +1,12 @@
 <?php
 
-
+	use WPEmerge\AjaxShutdownHandler;
 	use WPEmerge\DynamicHooksFactory;
 	use WPEmerge\Events\AdminBodySendable;
 	use WPEmerge\Events\IncomingAdminRequest;
+	use WPEmerge\Events\IncomingAjaxRequest;
 	use WPEmerge\Events\IncomingWebRequest;
+	use WPEmerge\Events\ResponseSent;
 	use WPEmerge\Events\RouteMatched;
 	use WPEmerge\Events\SendBodySeparately;
 	use WPEmerge\Events\StartedLoadingWpAdmin;
@@ -20,15 +22,21 @@
 
 		],
 
-		StartedLoadingWpAdmin::class => [
-
-			DynamicHooksFactory::class . '@handleEvent'
-
-		],
-
 		IncomingAdminRequest::class => [
 
 			RouteMatcher::class . '@handleRequest'
+
+		],
+
+		IncomingAjaxRequest::class => [
+
+			RouteMatcher::class . '@handleRequest'
+
+		],
+
+		StartedLoadingWpAdmin::class => [
+
+			DynamicHooksFactory::class . '@handleEvent'
 
 		],
 
@@ -49,6 +57,12 @@
 			HttpKernel::class . '@sendBody'
 
 		],
+
+		ResponseSent::class => [
+
+			AjaxShutdownHandler::class . '@shutdownWp'
+
+		]
 
 
 	];
