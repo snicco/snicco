@@ -26,7 +26,6 @@
 
 	class HttpKernel implements HttpKernelInterface {
 
-		use ListensConditionally;
 		use HasMiddlewareDefinitionsTrait;
 		use SortsMiddlewareTrait;
 		use ConvertsToResponseTrait;
@@ -114,11 +113,6 @@
 
 		}
 
-		public function shouldHandle( RequestInterface $request ) : bool {
-
-			return $this->router->hasMatchingRoute( $request ) !== null;
-
-		}
 
 		/**
 		 * Get the route dispatcher callback.

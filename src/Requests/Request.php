@@ -19,7 +19,7 @@
 		 */
 		private $route = null;
 
-		/** @var string The Type of request that's being handled. .*/
+		/** @var string The Type of request that's being handled. . */
 		private $type;
 
 		/**
@@ -239,13 +239,23 @@
 			return call_user_func( [ $this, 'get' ], $this->getHeaders(), $key, $default );
 		}
 
+		public function getFullUrlString() : string {
+
+			$uri   = $this->getUri();
+			$https = $uri->getScheme();
+			$path  = $uri->getPath();
+			$host  = $uri->getHost();
+
+			return $https . ':' . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . $host . $path;
+
+		}
 
 		public function setRoute( RouteInterface $route ) {
 
 			$this->route = $route;
 		}
 
-		public function setType( string $request_type) {
+		public function setType( string $request_type ) {
 
 			$this->type = $request_type;
 

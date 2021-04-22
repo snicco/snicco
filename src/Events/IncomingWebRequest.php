@@ -3,6 +3,8 @@
 
 	namespace WPEmerge\Events;
 
+
+
 	use BetterWpHooks\Traits\DispatchesConditionally;
 
 	class IncomingWebRequest extends IncomingRequest {
@@ -18,7 +20,9 @@
 		/**
 		 * @var \WPEmerge\Requests\Request
 		 */
-		public $request;
+		public  $request;
+
+
 
 		public function __construct( string $template ) {
 
@@ -28,13 +32,15 @@
 
 			$this->request->setType(get_class($this));
 
-		}
-
-		public function shouldDispatch() : bool {
-
-			return ! is_admin();
 
 		}
+
+		// public function shouldDispatch() : bool {
+		//
+		//
+		// 	return ! is_admin() && ! str_contains($this->request->getFullUrlString(), admin_url());
+		//
+		// }
 
 		public function default() : ?string {
 
