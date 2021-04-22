@@ -118,7 +118,7 @@
 
 					/** @var \WPEmerge\Kernels\HttpKernel $kernel */
 					$kernel = $this->resolve( WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY );
-					$kernel->bootstrap();
+
 
 				}
 			} );

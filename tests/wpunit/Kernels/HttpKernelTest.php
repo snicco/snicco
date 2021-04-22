@@ -287,7 +287,7 @@
 		}
 
 		/**
-		 * @covers ::handleRequest
+		 * @covers ::sendRequestThroughRouter
 		 */
 		public function testHandle_SatisfiedRequest_Response() {
 
@@ -339,14 +339,14 @@
 		}
 
 		/**
-		 * @covers ::handleRequest
+		 * @covers ::sendRequestThroughRouter
 		 */
 		public function testHandle_UnsatisfiedRequest_Null() {
 
 			$this->router->shouldReceive( 'execute' )
 			             ->andReturn( null );
 
-			$this->assertNull( $this->subject->handleRequest( $this->request, [] ) );
+			$this->assertNull( $this->subject->sendRequestThroughRouter( $this->request, [] ) );
 		}
 
 		/**

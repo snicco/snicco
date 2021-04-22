@@ -6,7 +6,7 @@
 	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Csrf\CsrfMiddleware;
 	use WPEmerge\Flash\FlashMiddleware;
-	use WPEmerge\Helpers\RoutingPipeline;
+	use WPEmerge\Helpers\RoutePipeline;
 	use WPEmerge\Input\OldInputMiddleware;
 	use WPEmerge\Kernels\HttpKernel;
 	use WPEmerge\Middleware\SubstituteModelBindings;
@@ -63,9 +63,7 @@
 
 				$kernel = new HttpKernel(
 
-					$c[ WPEMERGE_REQUEST_KEY ],
 					$c[ WPEMERGE_RESPONSE_SERVICE_KEY ],
-					new RoutingPipeline($c[ WPEMERGE_CONTAINER_ADAPTER ]),
 					$c[ WPEMERGE_ROUTING_ROUTER_KEY ],
 					$c[ WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY ],
 					$c[ WPEMERGE_CONTAINER_ADAPTER ]

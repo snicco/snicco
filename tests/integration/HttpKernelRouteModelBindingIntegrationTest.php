@@ -96,7 +96,7 @@
 
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/teams/1' );
 
-			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
 
 			$this->assertSame( '1', $test_response->body() );
 
@@ -112,7 +112,7 @@
 
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/teams/1' );
 
-			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'dortmund', $test_response->body() );
 
@@ -131,7 +131,7 @@
 
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/teams/3' );
 
-			$this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
 
 			$this->assertFalse( isset ( $GLOBALS['TeamsControllerExecuted'] ) );
 
@@ -149,7 +149,7 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/teams/dortmund' );
 
-			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'dortmund', $test_response->body() );
 
@@ -168,7 +168,7 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/teams/dortmund' );
 
-			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'dortmund', $test_response->body() );
 
@@ -186,7 +186,7 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/germany/teams/1' );
 
-			$test_response = $this->kernel->handleRequest( $this->request, [ 'index' ] );
+			$test_response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
 
 			$this->assertSame( 'dortmund', $test_response->body() );
 
