@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "af13bfa5ed9ae736e370a457db731f67",
+    "content-hash": "b4c8cec2cd194f6aa562a74555023f87",
     "packages": [
         {
             "name": "calvinalkan/base-container",
@@ -51,16 +51,16 @@
         },
         {
             "name": "calvinalkan/better-wordpress-hooks",
-            "version": "0.1.0",
+            "version": "0.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/calvinalkan/better-wordpress-hooks.git",
-                "reference": "be4c346612115dcc87226bb8bd4e6d5a8646205f"
+                "reference": "e21b8ed0665b1fb5a842b10efe84a349d7f74912"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/calvinalkan/better-wordpress-hooks/zipball/be4c346612115dcc87226bb8bd4e6d5a8646205f",
-                "reference": "be4c346612115dcc87226bb8bd4e6d5a8646205f",
+                "url": "https://api.github.com/repos/calvinalkan/better-wordpress-hooks/zipball/e21b8ed0665b1fb5a842b10efe84a349d7f74912",
+                "reference": "e21b8ed0665b1fb5a842b10efe84a349d7f74912",
                 "shasum": ""
             },
             "require": {
@@ -108,9 +108,9 @@
             ],
             "support": {
                 "issues": "https://github.com/calvinalkan/better-wordpress-hooks/issues",
-                "source": "https://github.com/calvinalkan/better-wordpress-hooks/tree/0.1.0"
+                "source": "https://github.com/calvinalkan/better-wordpress-hooks/tree/0.1.3"
             },
-            "time": "2021-04-21T00:20:27+00:00"
+            "time": "2021-04-22T01:44:04+00:00"
         },
         {
             "name": "calvinalkan/interfaces",

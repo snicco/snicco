@@ -396,9 +396,9 @@
 		 *
 		 * @param  RequestInterface  $request
 		 *
-		 * @return RouteInterface|null
+		 * @return \WPEmerge\Contracts\RouteInterface|null
 		 */
-		public function hasMatchingRoute( $request ) {
+		public function hasMatchingRoute( $request ) : ?RouteInterface {
 
 			$routes = $this->getRoutes();
 
@@ -408,11 +408,15 @@
 
 					$this->setCurrentRoute( $route );
 
+					$request->setRoute($route);
+
 					return $route;
+
 				}
 			}
 
 			return null;
+
 		}
 
 		/**

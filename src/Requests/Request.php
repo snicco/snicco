@@ -6,6 +6,7 @@
 	use GuzzleHttp\Psr7\ServerRequest;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\RouteInterface;
+	use WPEmerge\Events\IncomingRequest;
 	use WPEmerge\Support\Arr;
 
 	/**
@@ -13,9 +14,13 @@
 	 */
 	class Request extends ServerRequest implements RequestInterface {
 
+		/**
+		 * @var \WPEmerge\Routing\Route|null The route that our request matched
+		 */
+		private $route = null;
 
-		private $route;
-
+		/** @var string The Type of request that's being handled. .*/
+		private $type;
 
 		/**
 		 * @return static
@@ -240,9 +245,21 @@
 			$this->route = $route;
 		}
 
-		public function route() : RouteInterface {
+		public function setType( string $request_type) {
 
-			return $this->route();
+			$this->type = $request_type;
+
+		}
+
+		public function type() : string {
+
+			return $this->type;
+
+		}
+
+		public function route() : ?RouteInterface {
+
+			return $this->route;
 
 		}
 

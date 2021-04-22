@@ -4,7 +4,6 @@
 	namespace WPEmerge\Routing;
 
 	use WPEmerge\Contracts\HasQueryFilterInterface;
-	use WPEmerge\Contracts\RouteHandler;
 	use WPEmerge\Contracts\RouteInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Helpers\HasAttributesTrait;

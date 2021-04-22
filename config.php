@@ -17,6 +17,15 @@
 	}
 
 	/**
+	 * Absolute path to application's directory.
+	 */
+	if ( ! defined( 'WPEMERGE_DUMMY_VIEW' ) ) {
+		define( 'WPEMERGE_DUMMY_VIEW', __DIR__ . DIRECTORY_SEPARATOR . 'src'. DIRECTORY_SEPARATOR . 'view.php' );
+	}
+
+
+
+	/**
 	 *
 	 * Using Class names for better compatibility container adapter.
 	 *

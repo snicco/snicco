@@ -3,6 +3,8 @@
 
 	namespace WPEmerge\ServiceProviders;
 
+	use Psr\Http\Message\ResponseInterface;
+	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Requests\Request;
 
@@ -22,6 +24,12 @@
 				return Request::fromGlobals();
 
 			};
+
+			$container->singleton(ResponseInterface::class, function () {
+
+				return null;
+
+			});
 
 		}
 
