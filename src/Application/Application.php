@@ -39,11 +39,11 @@
 		/**
 		 * Make and assign a new application instance.
 		 *
-		 * @param  string  $container_adapter  ::class or default
+		 * @param  string|ContainerAdapter  $container_adapter  ::class or default
 		 *
 		 * @return static
 		 */
-		public static function create( string $container_adapter ) : Application {
+		public static function create( $container_adapter ) : Application {
 
 			return new static(
 				( $container_adapter !== 'default' ) ? $container_adapter : new BaseContainerAdapter()
@@ -92,7 +92,6 @@
 				throw new ConfigurationException( static::class . ' already bootstrapped.' );
 			}
 
-			$this->bootstrapped = true;
 
 			$container = $this->container();
 
@@ -100,7 +99,7 @@
 
 			$this->loadServiceProviders( $container );
 
-			$this->loadEventDispatcher();
+			$this->bootstrapped = true;
 
 			$this->renderConfigExceptions( function () use ( $run ) {
 
@@ -219,23 +218,7 @@
 		}
 
 
-		private function loadEventDispatcher() {
 
-
-			$mapped_events = WPEMERGE_DIR . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'mapped.events.php';
-			$listeners     = WPEMERGE_DIR . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'event.listeners.php';
-			$mapped_events = require_once $mapped_events;
-			$listeners     = require_once $listeners;
-
-			ApplicationEvent::make( $this->container() )
-			                ->map( $mapped_events )
-			                ->listeners( $listeners )
-			                ->boot();
-
-			$this->container()[ Dispatcher::class ] = ApplicationEvent::dispatcher();
-
-
-		}
 
 
 	}

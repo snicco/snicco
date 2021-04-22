@@ -5,11 +5,9 @@
 
 	use Closure;
 	use Contracts\ContainerAdapter;
-	use Illuminate\Contracts\Pipeline\Pipeline;
 	use Throwable;
-	use WPEmerge\Support\Str;
 
-	class RoutePipeline implements Pipeline {
+	class Pipeline  {
 
 		/**
 		 * The container implementation.
@@ -57,7 +55,7 @@
 		 *
 		 * @return $this
 		 */
-		public function send( $traveler ) : RoutePipeline {
+		public function send( $traveler ) : Pipeline {
 
 			$this->traveler = $traveler;
 
@@ -71,7 +69,7 @@
 		 *
 		 * @return $this
 		 */
-		public function through( $stops ) : RoutePipeline {
+		public function through( $stops ) : Pipeline {
 
 			$this->pipes = is_array( $stops ) ? $stops : func_get_args();
 
@@ -85,7 +83,7 @@
 		 *
 		 * @return $this
 		 */
-		public function via( $method ) : RoutePipeline {
+		public function via( $method ) : Pipeline {
 
 			$this->method = $method;
 

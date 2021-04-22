@@ -5,11 +5,12 @@
 
 	use Codeception\TestCase\WPTestCase;
 	use Mockery as m;
+	use Tests\MockRequest;
 	use Tests\stubs\Middleware\FooMiddleware;
 	use Tests\stubs\Middleware\GlobalFooMiddleware;
+	use Tests\stubs\TestResponseService;
 	use WPEmerge\Middleware\SubstituteModelBindings;
 	use WPEmerge\Requests\Request;
-	use WPEmerge\Responses\ResponseService;
 	use Tests\stubs\IntegrationTestErrorHandler;
 	use Tests\stubs\TestApp;
 
@@ -19,6 +20,9 @@
 	class HttpKernelMiddlewareIntegrationTest extends WPTestCase {
 
 		use DisableGlobalMiddleWare;
+		use SetUpTestApp;
+		use MockRequest;
+
 
 		/**
 		 * @var \WPEmerge\Kernels\HttpKernel
@@ -36,9 +40,10 @@
 			parent::setUp();
 
 			$this->request = m::mock( Request::class );
-			$this->request->shouldReceive( 'getMethod' )->andReturn( 'GET' );
 
-			$this->response_service = m::mock( ResponseService::class );
+			$this->createMockWebRequest();
+
+			$this->response_service = new TestResponseService();
 
 			$this->bootstrapTestApp();
 
@@ -59,8 +64,12 @@
 
 		}
 
+
 		/** @test */
-		public function middleware_is_auto_resolved_from_the_service_container() {
+		public function route_middleware_is_auto_resolved_from_the_service_container() {
+
+
+			$this->assertFalse(isset($GLOBALS['route_middleware_resolved']));
 
 			TestApp::route()
 			       ->get()
@@ -69,17 +78,21 @@
 			       ->handle( 'WebController@request');
 
 
-			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
+			$this->request
+				->shouldReceive( 'getUrl' )
+				->andReturn( 'https://wpemerge.test/' );
 
-			/** @var \Tests\stubs\TestResponse $response */
-			$response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
 
-			$this->assertSame( 'foo:foo_web_controller', $response->body() );
+			$this->kernel->handle( $this->request );
+
+			$this->assertSame( 'foo:foo_web_controller', $this->responseBody() );
+
+			$this->assertTrue($GLOBALS['route_middleware_resolved']);
 
 		}
 
 		/** @test */
-		public function middleware_arguments_can_be_passed() {
+		public function route_middleware_arguments_can_be_passed() {
 
 			TestApp::route()
 			       ->get()
@@ -90,10 +103,9 @@
 
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
 
-			/** @var \Tests\stubs\TestResponse $response */
-			$response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
+			$this->kernel->handle($this->request);
 
-			$this->assertSame( 'foobar:foo_web_controller', $response->body() );
+			$this->assertSame( 'foobar:foo_web_controller', $this->responseBody() );
 
 		}
 
@@ -109,10 +121,9 @@
 				->shouldReceive( 'getUrl' )
 				->andReturn( 'https://wpemerge.test/wp-admin/dashboard' );
 
-			/** @var \Tests\stubs\TestResponse $response */
-			$response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
+			$this->kernel->handle($this->request);
 
-			$this->assertSame( 'foo:foo_admin_controller_dependency', $response->body() );
+			$this->assertSame( 'foo:foo_admin_controller_dependency', $this->responseBody() );
 
 
 
@@ -132,10 +143,9 @@
 				->shouldReceive( 'getUrl' )
 				->andReturn( 'https://wpemerge.test/wp-admin/dashboard' );
 
-			/** @var \Tests\stubs\TestResponse $response */
-			$response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
+			$this->kernel->handle($this->request);
 
-			$this->assertSame( 'foo:foo_admin_controller_dependency', $response->body() );
+			$this->assertSame( 'foo:foo_admin_controller_dependency', $this->responseBody() );
 			$this->assertSame( 1, $GLOBALS['controller_constructor_count']);
 
 			unset($GLOBALS['controller_constructor_count']);
@@ -157,9 +167,9 @@
 
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
 
-			$response = $this->kernel->sendRequestThroughRouter( $this->request, [ 'index' ] );
+			$this->kernel->handle($this->request);
 
-			$this->assertSame( 'foo:foo_web_controller', $response->body() );
+			$this->assertSame( 'foo:foo_web_controller', $this->responseBody() );
 
 			$this->assertTrue($GLOBALS['global_middleware_resolved_from_container']);
 

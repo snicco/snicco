@@ -87,6 +87,7 @@
 			$container->singleton( WPEMERGE_ROUTING_ROUTER_KEY, function ( $c ) {
 
 				return new Router(
+					$c[WPEMERGE_CONTAINER_ADAPTER],
 					$c[ WPEMERGE_ROUTING_CONDITIONS_CONDITION_FACTORY_KEY ],
 					new HandlerFactory($c[WPEMERGE_CONFIG_KEY]['controllers'] ?? [], $c[WPEMERGE_CONTAINER_ADAPTER])
 

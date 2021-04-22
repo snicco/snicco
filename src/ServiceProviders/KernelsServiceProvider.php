@@ -3,10 +3,12 @@
 
 	namespace WPEmerge\ServiceProviders;
 
+	use BetterWpHooks\Contracts\Dispatcher;
+	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Csrf\CsrfMiddleware;
 	use WPEmerge\Flash\FlashMiddleware;
-	use WPEmerge\Helpers\RoutePipeline;
+	use WPEmerge\Helpers\Pipeline;
 	use WPEmerge\Input\OldInputMiddleware;
 	use WPEmerge\Kernels\HttpKernel;
 	use WPEmerge\Middleware\SubstituteModelBindings;
@@ -90,6 +92,8 @@
 				return $kernel;
 
 			};
+
+
 
 			$app = $container[ WPEMERGE_APPLICATION_KEY ];
 

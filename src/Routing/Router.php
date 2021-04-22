@@ -5,23 +5,26 @@
 	namespace WPEmerge\Routing;
 
 	use Closure;
+	use Contracts\ContainerAdapter;
 	use WPEmerge\Contracts\HasRoutesInterface;
 	use WPEmerge\Contracts\RouteHandler;
 	use WPEmerge\Contracts\RouteInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Helpers\Pipeline;
+	use WPEmerge\Responses\ConvertsToResponseTrait;
 	use WPEmerge\Routing\Conditions\ConditionFactory;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\UrlableInterface;
 	use WPEmerge\Support\Arr;
 
-	/**
-	 * Provide routing for site requests (i.e. all non-api requests).
-	 */
+
 	class Router implements HasRoutesInterface {
 
 		use HasRoutesTrait;
+		use ConvertsToResponseTrait;
+
 
 		/**
 		 * Condition factory.
@@ -50,19 +53,17 @@
 		 * @var RouteInterface|null
 		 */
 		protected $current_route = null;
-
 		/**
-		 * Constructor.
-		 *
-		 * @codeCoverageIgnore
-		 *
-		 * @param  ConditionFactory  $condition_factory
-		 * @param  HandlerFactory  $handler_factory
+		 * @var \Contracts\ContainerAdapter
 		 */
-		public function __construct( ConditionFactory $condition_factory, HandlerFactory $handler_factory ) {
+		private $container;
+
+
+		public function __construct( ContainerAdapter $container , ConditionFactory $condition_factory, HandlerFactory $handler_factory) {
 
 			$this->condition_factory = $condition_factory;
 			$this->handler_factory   = $handler_factory;
+			$this->container = $container;
 
 		}
 
@@ -331,25 +332,25 @@
 			return $condition;
 		}
 
-		/**
-		 * Make a route handler.
-		 *
-		 * @codeCoverageIgnore
-		 *
-		 * @param  string|Closure|null  $handler
-		 * @param  string  $namespace
-		 *
-		 * @return Handler
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
-		 */
-		protected function _routeHandler( $handler, $namespace ) : Handler {
-
-			if ( $handler === null ) {
-				throw new ConfigurationException( 'No route handler specified. Did you miss to call handle()?' );
-			}
-
-			return $this->handler_factory->make( $handler, '', $namespace );
-		}
+		// /**
+		//  * Make a route handler.
+		//  *
+		//  * @codeCoverageIgnore
+		//  *
+		//  * @param  string|Closure|null  $handler
+		//  * @param  string  $namespace
+		//  *
+		//  * @return Handler
+		//  * @throws \WPEmerge\Exceptions\ConfigurationException
+		//  */
+		// protected function _routeHandler( $handler, $namespace ) : Handler {
+		//
+		// 	if ( $handler === null ) {
+		// 		throw new ConfigurationException( 'No route handler specified. Did you miss to call handle()?' );
+		// 	}
+		//
+		// 	return $this->handler_factory->make( $handler, '', $namespace );
+		// }
 
 
 		protected function routeHandler( $handler, $namespace ) : RouteHandler {
@@ -455,5 +456,36 @@
 
 			throw new ConfigurationException( "No route registered with the name \"$name\"." );
 		}
+
+		public function runRoute( RequestInterface $request ) {
+
+			$route = $this->matchingRoute($request);
+
+			return $this->toResponse( $this->runWithinStack($route, $request ) );
+
+		}
+
+		private function matchingRoute( RequestInterface $request) {
+
+			return $this->hasMatchingRoute( $request );
+
+		}
+
+		private function runWithinStack( RouteInterface $route, RequestInterface $request ) {
+
+			$middleware = $route->middleware();
+
+			return (new Pipeline($this->container))
+				->send($request)
+				->through( [ $middleware ] )
+				->then(function ($request) use ($route) {
+
+					return $route->run($request);
+
+				});
+
+		}
+
+
 
 	}
