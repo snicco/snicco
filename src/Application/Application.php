@@ -7,19 +7,12 @@
 	use BetterWpHooks\Traits\BetterWpHooksFacade;
 	use Closure;
 	use Contracts\ContainerAdapter;
-	use Psr\Http\Message\ResponseInterface;
 	use SniccoAdapter\BaseContainerAdapter;
-	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Events\AdminBodySendable;
-	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Exceptions\ConfigurationException;
-	use WPEmerge\Kernels\HttpKernel;
 	use WPEmerge\Requests\Request;
 	use WPEmerge\Support\Arr;
 
-	/**
-	 * The core WP Emerge component representing an application.
-	 */
+
 	class Application {
 
 		use BetterWpHooksFacade;
@@ -73,7 +66,6 @@
 
 
 		}
-
 
 		/**
 		 * Get whether the application has been bootstrapped.
@@ -230,9 +222,8 @@
 		private function loadEventDispatcher() {
 
 
-			$mapped_events = dirname( __FILE__, 2 ) . DIRECTORY_SEPARATOR . 'mapped.events.php';
-			$listeners     = dirname( __FILE__, 2 ) . DIRECTORY_SEPARATOR . 'event.listeners.php';
-
+			$mapped_events = WPEMERGE_DIR . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'mapped.events.php';
+			$listeners     = WPEMERGE_DIR . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'event.listeners.php';
 			$mapped_events = require_once $mapped_events;
 			$listeners     = require_once $listeners;
 
@@ -241,52 +232,10 @@
 			                ->listeners( $listeners )
 			                ->boot();
 
-			// ApplicationEvent::listen( 'admin_init', function () {
-			//
-			// 	if ( $hook = $this->getAdminPageHook() ) {
-			//
-			// 		ApplicationEvent::listen( 'load-' . $hook, function () {
-			//
-			// 			IncomingAdminRequest::dispatch( [] );
-			//
-			// 		} );
-			//
-			// 		ApplicationEvent::listen( $hook, function () {
-			//
-			// 			AdminBodySendable::dispatch( [
-			// 				$this->container()->make( RequestInterface::class ),
-			// 			] );
-			//
-			// 		} );
-			//
-			// 	}
-			//
-			// } );
-
 			$this->container()[ Dispatcher::class ] = ApplicationEvent::dispatcher();
 
 
 		}
 
-
-		/**
-		 * Get page hook.
-		 * Slightly modified version of code from wp-admin/admin.php.
-		 *
-		 * @return string|null
-		 */
-		private function getAdminPageHook() : ?string {
-
-			global $pagenow, $plugin_page;
-
-			if ( $plugin_page ) {
-
-				return get_plugin_page_hook( $plugin_page, $pagenow );
-
-			}
-
-			return null;
-
-		}
 
 	}

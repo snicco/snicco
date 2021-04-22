@@ -11,12 +11,6 @@
 
 		use DispatchesConditionally;
 
-		public function __construct() {
-
-			parent::__construct();
-
-
-		}
 
 		public function shouldDispatch() : bool {
 

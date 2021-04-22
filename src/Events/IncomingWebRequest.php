@@ -23,7 +23,6 @@
 		public  $request;
 
 
-
 		public function __construct( string $template ) {
 
 			$this->template = $template;
@@ -40,7 +39,7 @@
 
 		}
 
-		public function default() : ?string  {
+		public function default()   {
 
 			if ( ! $this->request->route() ) {
 
