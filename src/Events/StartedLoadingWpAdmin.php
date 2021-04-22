@@ -5,8 +5,7 @@
 
 	use WPEmerge\Application\ApplicationEvent;
 
-	class AdminBodySendable extends ApplicationEvent {
-
+	class StartedLoadingWpAdmin extends ApplicationEvent {
 
 
 

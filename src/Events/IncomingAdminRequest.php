@@ -11,18 +11,16 @@
 
 		use DispatchesConditionally;
 
-
 		public function __construct() {
 
 			parent::__construct();
 
-			$this->request->setType(get_class($this));
 
 		}
 
-		public function payload() {
+		public function shouldDispatch() : bool {
 
-			return $this->request;
+			return is_admin();
 
 		}
 

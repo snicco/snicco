@@ -236,30 +236,32 @@
 			$mapped_events = require_once $mapped_events;
 			$listeners     = require_once $listeners;
 
-			ApplicationEvent::make( $this->container() )->map( $mapped_events )
-			                ->listeners( $listeners )->boot();
+			ApplicationEvent::make( $this->container() )
+			                ->map( $mapped_events )
+			                ->listeners( $listeners )
+			                ->boot();
 
-			ApplicationEvent::listen( 'admin_init', function () {
-
-				if ( $hook = $this->getAdminPageHook() ) {
-
-					ApplicationEvent::listen( 'load-' . $hook, function () {
-
-						IncomingAdminRequest::dispatch( [] );
-
-					} );
-
-					ApplicationEvent::listen( $hook, function () {
-
-						AdminBodySendable::dispatch( [
-							$this->container()->make( RequestInterface::class ),
-						] );
-
-					} );
-
-				}
-
-			} );
+			// ApplicationEvent::listen( 'admin_init', function () {
+			//
+			// 	if ( $hook = $this->getAdminPageHook() ) {
+			//
+			// 		ApplicationEvent::listen( 'load-' . $hook, function () {
+			//
+			// 			IncomingAdminRequest::dispatch( [] );
+			//
+			// 		} );
+			//
+			// 		ApplicationEvent::listen( $hook, function () {
+			//
+			// 			AdminBodySendable::dispatch( [
+			// 				$this->container()->make( RequestInterface::class ),
+			// 			] );
+			//
+			// 		} );
+			//
+			// 	}
+			//
+			// } );
 
 			$this->container()[ Dispatcher::class ] = ApplicationEvent::dispatcher();
 
