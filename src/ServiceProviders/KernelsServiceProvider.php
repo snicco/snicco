@@ -11,6 +11,7 @@
 	use WPEmerge\Helpers\Pipeline;
 	use WPEmerge\Input\OldInputMiddleware;
 	use WPEmerge\Kernels\HttpKernel;
+	use WPEmerge\Middleware\StartSession;
 	use WPEmerge\Middleware\SubstituteBindings;
 	use WPEmerge\Middleware\UserCanMiddleware;
 	use WPEmerge\Middleware\UserLoggedInMiddleware;
@@ -52,6 +53,7 @@
 
 				'global'   => [
 
+					StartSession::class,
 					SubstituteBindings::class,
 					FlashMiddleware::class,
 					OldInputMiddleware::class

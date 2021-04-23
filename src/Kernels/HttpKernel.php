@@ -100,13 +100,24 @@
 
 		}
 
-		public function sendHeaders() {
+		private function sendHeaders() {
 
 			$this->response_service->sendHeaders( $this->response );
 
 		}
 
+		/**
+		 * This function needs to be public because for Wordpress Admin
+		 * Pages we have to send the header and body on seperate hooks.
+		 */
 		public function sendBody() {
+
+			// guard against AdminBodySendable for non matching admin pages.
+			if ( ! $this->response instanceof ResponseInterface ) {
+
+				return;
+
+			}
 
 			$this->response_service->sendBody( $this->response );
 
