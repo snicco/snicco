@@ -81,6 +81,7 @@
 
 		];
 
+
 		public function register( ContainerAdapter $container ) {
 
 			$container->singleton( 'mapped.events', function () {

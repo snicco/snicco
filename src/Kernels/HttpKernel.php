@@ -109,11 +109,9 @@
 		/**
 		 * Get the route dispatcher callback.
 		 *
-		 * @param  \WPEmerge\Contracts\RouteInterface  $route
-		 *
 		 * @return \Closure
 		 */
-		private function dispatchToRouter( ) : \Closure {
+		private function dispatchToRouter() : \Closure {
 
 			return function ( $request )   {
 
@@ -132,7 +130,6 @@
 			$pipeline = new Pipeline( $this->container );
 
 			$skip_middleware = $this->container->make('strict.mode') === false;
-
 
 			return $pipeline->send( $request )
 			                ->through( $skip_middleware ? [] : $this->gatherMiddleware() )

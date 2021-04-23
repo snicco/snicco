@@ -22,8 +22,7 @@
 			TestApp::container()[ WPEMERGE_REQUEST_KEY ]                  = $this->request ?? m::mock( Request::class );
 			TestApp::container()[ WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY ] = new IntegrationTestErrorHandler();
 			TestApp::container()[ WPEMERGE_RESPONSE_SERVICE_KEY ]         = $this->response_service ?? new TestResponseService();
-			TestApp::container()['mapped.events']                         = [];
-			TestApp::container()['event.listeners']                       = [];
+
 
 		}
 

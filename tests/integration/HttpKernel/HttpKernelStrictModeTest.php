@@ -3,6 +3,7 @@
 
 	namespace Tests\integration\HttpKernel;
 
+	use BetterWpHooks\Contracts\Dispatcher;
 	use Codeception\TestCase\WPTestCase;
 	use Tests\integration\MockSubstituteBindings;
 	use Tests\integration\SetUpTestApp;
@@ -11,8 +12,11 @@
 	use Tests\stubs\Middleware\GlobalFooMiddleware;
 	use Tests\stubs\TestApp;
 	use Tests\stubs\TestResponseService;
+	use WPEmerge\Events\IncomingWebRequest;
+	use WPEmerge\Events\RouteMatched;
 	use WPEmerge\Requests\Request;
 	use Mockery as m;
+	use WPEmerge\RouteMatcher;
 
 	class HttpKernelStrictModeTest extends WPTestCase {
 
@@ -109,6 +113,21 @@
 
 		}
 
+		/** @test */
+		public function by_default_web_requests_without_matching_routes_will_return_wps_default_template() {
+
+			/** @var \BetterWpHooks\Dispatchers\WordpressDispatcher $dispatcher */
+			$dispatcher = TestApp::resolve(Dispatcher::class);
+
+			$dispatcher->forgetOne(IncomingWebRequest::class, RouteMatcher::class . '@handleRequest');
+
+			$dispatcher->listen(IncomingWebRequest::class , [ $this->kernel, 'handle'] );
+
+			$template = $dispatcher->dispatch( new IncomingWebRequest('wordpress.template.php') );
+
+			$foo = 'bar';
+
+		}
 
 		public function config() : array {
 
