@@ -37,6 +37,7 @@
 
 		}
 
+
 		public function default() {
 
 			if ( ! $this->request->route() ) {
