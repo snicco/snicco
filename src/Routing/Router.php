@@ -13,6 +13,7 @@
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Helpers\Pipeline;
+	use WPEmerge\Middleware\HasMiddlewareDefinitionsTrait;
 	use WPEmerge\Responses\ConvertsToResponseTrait;
 	use WPEmerge\Routing\Conditions\ConditionFactory;
 	use WPEmerge\Contracts\ConditionInterface;
@@ -24,7 +25,7 @@
 
 		use HasRoutesTrait;
 		use ConvertsToResponseTrait;
-
+		use HasMiddlewareDefinitionsTrait;
 
 		/**
 		 * Condition factory.
@@ -461,6 +462,12 @@
 
 			$route = $this->matchingRoute($request);
 
+			if ( ! $route ) {
+
+				return null;
+
+			}
+
 			return $this->toResponse( $this->runWithinStack($route, $request ) );
 
 		}
@@ -475,9 +482,12 @@
 
 			$middleware = $route->middleware();
 
+			$middleware = $this->expandMiddleware($middleware);
+			$middleware = $this->uniqueMiddleware($middleware);
+
 			return (new Pipeline($this->container))
 				->send($request)
-				->through( [ $middleware ] )
+				->through(  $middleware  )
 				->then(function ($request) use ($route) {
 
 					return $route->run($request);

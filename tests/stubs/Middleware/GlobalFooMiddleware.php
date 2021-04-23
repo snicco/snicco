@@ -15,6 +15,7 @@
 			$this->foo_dependency = $foo_dependency;
 
 			$GLOBALS['global_middleware_resolved_from_container'] = true;
+			$this->incrementCount('global_middleware_executed_times');
 
 		}
 
@@ -23,6 +24,16 @@
 
 			return $next($request);
 
+
+		}
+
+		private function incrementCount(string $global_key) {
+
+			$count = $GLOBALS[$global_key];
+
+			$count++;
+
+			$GLOBALS[$global_key] = $count;
 
 		}
 

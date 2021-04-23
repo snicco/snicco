@@ -40,6 +40,8 @@
 
 			$this->extendConfig( $container, 'providers', [] );
 
+			$this->extendConfig($container, 'strict.mode', false );
+
 			$upload_dir = wp_upload_dir();
 
 			$cache_dir = MixedType::addTrailingSlash( $upload_dir['basedir'] ) . 'wpemerge' . DIRECTORY_SEPARATOR . 'cache';
@@ -60,7 +62,7 @@
 				return new ClosureFactory( $container[ WPEMERGE_APPLICATION_GENERIC_FACTORY_KEY ] );
 			} );
 
-			$container->singleton( RouteModelResolver::class, function ($c) {
+			$container->singleton( RouteModelResolver::class, function ($container) {
 
 				global $wpdb;
 
@@ -70,15 +72,20 @@
 
 					Eloquent::setConnectionResolver( new ConnectionResolver( $wp_conn ) );
 
-					return new WpdbRouteModelResolver($wp_conn, $c[WPEMERGE_HELPERS_HANDLER_FACTORY_KEY]);
+					return new WpdbRouteModelResolver($wp_conn, $container[WPEMERGE_HELPERS_HANDLER_FACTORY_KEY]);
 
 
 				}
 
-				return new WpdbRouteModelResolver( new WpConnection( $wpdb ), $c[WPEMERGE_HELPERS_HANDLER_FACTORY_KEY] );
+				return new WpdbRouteModelResolver( new WpConnection( $wpdb ), $container[WPEMERGE_HELPERS_HANDLER_FACTORY_KEY] );
 
 			} );
 
+			$container->singleton('strict.mode', function ($container) {
+
+				return $container[WPEMERGE_CONFIG_KEY]['strict.mode'];
+
+			});
 
 
 			$app = $container[ WPEMERGE_APPLICATION_KEY ];
