@@ -75,13 +75,19 @@
 				$this->response = $this->error_handler->getResponse( $request, $exception );
 			}
 
-			$this->sendHeaders();
+			if ( $this->response_service instanceof ResponseInterface ) {
 
-			if ( $request->type() !== IncomingAdminRequest::class ) {
-				$this->sendBody();
+				$this->sendHeaders();
+
+				if ( $request->type() !== IncomingAdminRequest::class ) {
+					$this->sendBody();
+				}
+
+				ResponseSent::dispatch( [ $this->response, $request ] );
+
 			}
 
-			ResponseSent::dispatch( [ $this->response, $request ] );
+
 
 			$this->error_handler->unregister();
 
@@ -125,8 +131,11 @@
 
 			$pipeline = new Pipeline( $this->container );
 
+			$skip_middleware = $this->container->make('strict.mode') === false;
+
+
 			return $pipeline->send( $request )
-			                ->through( $this->gatherMiddleware() )
+			                ->through( $skip_middleware ? [] : $this->gatherMiddleware() )
 			                ->then( $this->dispatchToRouter() );
 
 

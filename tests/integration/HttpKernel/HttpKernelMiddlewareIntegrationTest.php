@@ -1,10 +1,12 @@
 <?php
 
 
-	namespace Tests\integration;
+	namespace Tests\integration\HttpKernel;
 
 	use Codeception\TestCase\WPTestCase;
 	use Mockery as m;
+	use Tests\integration\MockSubstituteBindings;
+	use Tests\integration\SetUpTestApp;
 	use Tests\MockRequest;
 	use Tests\stubs\Middleware\FooMiddleware;
 	use Tests\stubs\Middleware\GlobalFooMiddleware;
@@ -14,12 +16,14 @@
 	use Tests\stubs\IntegrationTestErrorHandler;
 	use Tests\stubs\TestApp;
 
+
+
 	/**
 	 * @covers \WPEmerge\Kernels\HttpKernel
 	 */
 	class HttpKernelMiddlewareIntegrationTest extends WPTestCase {
 
-		use DisableGlobalMiddleWare;
+		use MockSubstituteBindings;
 		use SetUpTestApp;
 		use MockRequest;
 
@@ -61,6 +65,7 @@
 			TestApp::setApplication( null );
 
 			unset($GLOBALS['global_middleware_resolved_from_container']);
+			unset($GLOBALS['route_middleware_resolved']);
 
 		}
 
@@ -150,6 +155,7 @@
 
 			unset($GLOBALS['controller_constructor_count']);
 
+
 		}
 
 		/** @test */
@@ -209,9 +215,9 @@
 
 		}
 
-		private function config() : array {
+		public function config() : array {
 
-			return [
+			return array_merge(TEST_CONFIG ,[
 
 
 				'middleware' => [
@@ -229,7 +235,7 @@
 					GlobalFooMiddleware::class,
 				],
 
-			];
+			]);
 
 
 		}

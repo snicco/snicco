@@ -7,11 +7,10 @@
 	use WPEmerge\Middleware\SubstituteModelBindings;
 	use Mockery as m;
 
-	trait DisableGlobalMiddleWare {
+	trait MockSubstituteBindings {
 
 
 		public function disableGlobalMiddleware() {
-
 
 			$container = TestApp::container();
 

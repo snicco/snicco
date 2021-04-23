@@ -1,10 +1,12 @@
 <?php
 
 
-	namespace Tests\integration;
+	namespace Tests\integration\HttpKernel;
 
 	use Codeception\TestCase\WPTestCase;
 	use Mockery as m;
+	use Tests\integration\MockSubstituteBindings;
+	use Tests\integration\SetUpTestApp;
 	use Tests\MockRequest;
 	use Tests\stubs\Controllers\Web\DependencyController;
 	use Tests\stubs\Controllers\Web\TeamsController;
@@ -12,12 +14,15 @@
 	use WPEmerge\Requests\Request;
 	use Tests\stubs\TestApp;
 
+	use const TEST_CONFIG;
+	use const WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY;
+
 	/**
 	 * @covers \WPEmerge\Kernels\HttpKernel
 	 */
 	class HttpKernelHandlerIntegrationTest extends WPTestCase {
 
-		use DisableGlobalMiddleWare;
+		use MockSubstituteBindings;
 		use SetUpTestApp;
 		use MockRequest;
 
@@ -175,7 +180,11 @@
 
 		}
 
+		public function config() : array {
 
+			return TEST_CONFIG;
+
+		}
 
 	}
 
