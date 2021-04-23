@@ -23,6 +23,12 @@
 		private $type;
 
 		/**
+		 * @todo Replace this with some sort of fallback route.
+		 * @var bool
+		 */
+		public $force_route_match = false;
+
+		/**
 		 * @return static
 		 */
 		public static function fromGlobals() {
@@ -270,6 +276,12 @@
 		public function route() : ?RouteInterface {
 
 			return $this->route;
+
+		}
+
+		public function forceMatch() {
+
+			$this->force_route_match = true;
 
 		}
 

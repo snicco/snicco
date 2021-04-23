@@ -11,7 +11,7 @@
 	use WPEmerge\Helpers\Pipeline;
 	use WPEmerge\Input\OldInputMiddleware;
 	use WPEmerge\Kernels\HttpKernel;
-	use WPEmerge\Middleware\SubstituteModelBindings;
+	use WPEmerge\Middleware\SubstituteBindings;
 	use WPEmerge\Middleware\UserCanMiddleware;
 	use WPEmerge\Middleware\UserLoggedInMiddleware;
 	use WPEmerge\Middleware\UserLoggedOutMiddleware;
@@ -49,11 +49,14 @@
 			] );
 
 			$this->extendConfig( $container, 'middleware_groups', [
-				'wpemerge' => [
-					'flash',
-					'old_input',
+
+				'global'   => [
+
+					SubstituteBindings::class,
+					FlashMiddleware::class,
+					OldInputMiddleware::class
+
 				],
-				'global'   => [],
 				'web'      => [],
 				'ajax'     => [],
 				'admin'    => [],
@@ -61,7 +64,7 @@
 
 			$this->extendConfig( $container, 'middleware_priority', [] );
 
-			$container[ WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY ] = function ( &$c ) {
+			$container[ WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY ] = function ( $c ) {
 
 				$kernel = new HttpKernel(
 
@@ -74,26 +77,14 @@
 
 				$config = $c[ WPEMERGE_CONFIG_KEY ];
 
-				$kernel->setMiddleware( $config['middleware'] );
-
-				$config['middleware_groups']['global'] = array_merge(
-					[SubstituteModelBindings::class],
-					$config['middleware_groups']['global']
-				);
-
-				// Make sure it always comes first.
-				array_unshift( $config['middleware_priority'] , SubstituteModelBindings::class );
-
+				$kernel->setRouteMiddlewareAliases( $config['middleware'] );
 				$kernel->setMiddlewareGroups( $config['middleware_groups'] );
 				$kernel->setMiddlewarePriority( $config['middleware_priority'] );
-
-				$c[ WPEMERGE_CONFIG_KEY ] = $config;
+				
 
 				return $kernel;
 
 			};
-
-
 
 			$app = $container[ WPEMERGE_APPLICATION_KEY ];
 

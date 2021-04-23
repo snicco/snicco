@@ -7,14 +7,14 @@
 // 	use Tests\stubs\IntegrationTestErrorHandler;
 // 	use Tests\stubs\Middleware\FooMiddleware;
 // 	use Tests\stubs\TestApp;
-// 	use WPEmerge\Middleware\SubstituteModelBindings;
+// 	use WPEmerge\Middleware\SubstituteBindings;
 // 	use WPEmerge\Requests\Request;
 // 	use WPEmerge\Responses\ResponseService;
 // 	use Mockery as m;
 //
 // 	class HttpKernelViewIntegrationTest extends WPTestCase {
 //
-// 		use MockSubstituteBindings;
+// 		use DisableMiddleware;
 //
 // 		private $view_dir;
 //

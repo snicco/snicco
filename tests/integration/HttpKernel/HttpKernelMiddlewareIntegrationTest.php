@@ -5,13 +5,13 @@
 
 	use Codeception\TestCase\WPTestCase;
 	use Mockery as m;
-	use Tests\integration\MockSubstituteBindings;
+	use Tests\integration\DisableMiddleware;
 	use Tests\integration\SetUpTestApp;
 	use Tests\MockRequest;
 	use Tests\stubs\Middleware\FooMiddleware;
 	use Tests\stubs\Middleware\GlobalFooMiddleware;
 	use Tests\stubs\TestResponseService;
-	use WPEmerge\Middleware\SubstituteModelBindings;
+	use WPEmerge\Middleware\SubstituteBindings;
 	use WPEmerge\Requests\Request;
 	use Tests\stubs\IntegrationTestErrorHandler;
 	use Tests\stubs\TestApp;
@@ -23,7 +23,6 @@
 	 */
 	class HttpKernelMiddlewareIntegrationTest extends WPTestCase {
 
-		use MockSubstituteBindings;
 		use SetUpTestApp;
 		use MockRequest;
 
@@ -51,10 +50,10 @@
 
 			$this->bootstrapTestApp();
 
-			$this->disableGlobalMiddleware();
 
 			$this->kernel = TestApp::resolve( WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY );
 
+			$GLOBALS['global_middleware_executed_times'] = 0;
 		}
 
 		protected function tearDown() : void {
@@ -64,7 +63,7 @@
 
 			TestApp::setApplication( null );
 
-			unset($GLOBALS['global_middleware_resolved_from_container']);
+			unset($GLOBALS['global_middleware_executed_times']);
 			unset($GLOBALS['route_middleware_resolved']);
 
 		}
@@ -162,7 +161,7 @@
 		public function global_middleware_gets_resolved_from_the_service_container() {
 
 
-			$this->assertFalse(isset($GLOBALS['global_middleware_resolved_from_container']));
+			$this->assertSame(0 ,($GLOBALS['global_middleware_executed_times']));
 
 			TestApp::route()
 			       ->get()
@@ -177,7 +176,7 @@
 
 			$this->assertSame( 'foo:foo_web_controller', $this->responseBody() );
 
-			$this->assertTrue($GLOBALS['global_middleware_resolved_from_container']);
+			$this->assertSame(1, $GLOBALS['global_middleware_executed_times']);
 
 
 		}
@@ -185,23 +184,19 @@
 		/** @test */
 		public function the_substitute_model_bindings_middleware_is_bound_in_the_container_correctly() {
 
-			$bound = TestApp::container()->offsetExists(SubstituteModelBindings::class);
+			TestApp::setApplication(null);
 
-			$this->assertTrue($bound);
+			TestApp::make()->bootstrap(TEST_CONFIG);
+
 
 			$config = TestApp::resolve( WPEMERGE_CONFIG_KEY );
 
 			$this->assertContains(
-				SubstituteModelBindings::class,
+				SubstituteBindings::class,
 				$config['middleware_groups']['global']
 			);
 
-			$this->assertSame([
 
-				SubstituteModelBindings::class,
-				GlobalFooMiddleware::class,
-
-			], $config['middleware_priority']);
 
 		}
 
@@ -227,7 +222,7 @@
 				],
 
 				'middleware_groups' => [
-					'global' => ['foo_global'],
+					'global' => [GlobalFooMiddleware::class],
 				],
 
 				'middleware_priority' => [

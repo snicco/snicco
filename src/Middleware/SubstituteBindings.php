@@ -7,7 +7,7 @@
 	use WPEmerge\Helpers\ImplicitRouteBindings;
 	use WPEmerge\Requests\Request;
 
-	class SubstituteModelBindings {
+	class SubstituteBindings {
 
 		/**
 		 * @var \Contracts\ContainerAdapter
@@ -15,7 +15,7 @@
 		private $container;
 
 		/**
-		 * SubstituteModelBindings constructor.
+		 * SubstituteBindings constructor.
 		 *
 		 * @param  \Contracts\ContainerAdapter  $container
 		 */

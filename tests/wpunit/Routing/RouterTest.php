@@ -335,7 +335,7 @@
 		}
 
 		/**
-		 * @covers ::hasMatchingRoute
+		 * @covers ::findRoute
 		 */
 		public function testExecute_SatisfiedRoute_Route() {
 
@@ -357,7 +357,7 @@
 		}
 
 		/**
-		 * @covers ::hasMatchingRoute
+		 * @covers ::findRoute
 		 */
 		public function testExecute_UnsatisfiedRoutes_Null() {
 

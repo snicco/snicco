@@ -27,7 +27,7 @@
 
 		public function handleRequest( IncomingRequest $request_event) {
 
-			$route = $this->router->hasMatchingRoute( $request = $request_event->request );
+			$route = $this->router->findRoute( $request = $request_event->request );
 
 			if ( $route ) {
 
