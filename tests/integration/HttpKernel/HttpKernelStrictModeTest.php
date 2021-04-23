@@ -5,7 +5,7 @@
 
 	use BetterWpHooks\Contracts\Dispatcher;
 	use Codeception\TestCase\WPTestCase;
-	use Tests\integration\MockSubstituteBindings;
+	use Psr\Http\Message\ResponseInterface;
 	use Tests\integration\SetUpTestApp;
 	use Tests\MockRequest;
 	use Tests\stubs\Middleware\FooMiddleware;
@@ -13,7 +13,6 @@
 	use Tests\stubs\TestApp;
 	use Tests\stubs\TestResponseService;
 	use WPEmerge\Events\IncomingWebRequest;
-	use WPEmerge\Events\RouteMatched;
 	use WPEmerge\Requests\Request;
 	use Mockery as m;
 	use WPEmerge\RouteMatcher;
@@ -22,7 +21,6 @@
 
 		use SetUpTestApp;
 		use MockRequest;
-		use MockSubstituteBindings;
 
 		/**
 		 * @var \WPEmerge\Kernels\HttpKernel
@@ -46,7 +44,6 @@
 
 			$this->bootstrapTestApp();
 
-			$this->disableGlobalMiddleware();
 
 			$this->kernel = TestApp::resolve( WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY );
 
@@ -61,16 +58,16 @@
 
 			TestApp::setApplication( null );
 
-			unset($GLOBALS['global_middleware_resolved_from_container']);
-			unset($GLOBALS['route_middleware_resolved']);
+			unset( $GLOBALS['global_middleware_resolved_from_container'] );
+			unset( $GLOBALS['route_middleware_resolved'] );
 
 		}
 
 
 		/** @test */
-		public function the_kernel_does_not_run_any_global_middleware_by_default_for_non_matching_routes () {
+		public function the_kernel_does_not_run_any_global_middleware_by_default_for_non_matching_routes() {
 
-			$this->assertEquals(0 , $GLOBALS['global_middleware_executed_times'] );
+			$this->assertEquals( 0, $GLOBALS['global_middleware_executed_times'] );
 
 			TestApp::route()
 			       ->get()
@@ -82,18 +79,20 @@
 
 			$this->kernel->handle( $this->request );
 
-			$this->assertNull(  $this->response_service->header_response );
-			$this->assertNull(  $this->response_service->body_response );
+			$this->assertNull( $this->response_service->header_response );
+			$this->assertNull( $this->response_service->body_response );
 
-			$this->assertEquals(0 , $GLOBALS['global_middleware_executed_times'] );
+			$this->assertEquals( 0, $GLOBALS['global_middleware_executed_times'] );
 
 
 		}
 
 		/** @test */
-		public function in_strict_mode_global_middleware_will_always_be_executed_even_tho_no_routes_match () {
+		public function in_strict_mode_global_middleware_will_always_be_executed_even_tho_no_routes_match() {
 
-			$this->assertEquals(0 , $GLOBALS['global_middleware_executed_times'] );
+			$this->assertEquals( 0, $GLOBALS['global_middleware_executed_times'] );
+
+			TestApp::container()['strict.mode'] = true;
 
 			TestApp::route()
 			       ->get()
@@ -103,12 +102,37 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/non-existing-url' );
 
+			$this->request->shouldReceive('forceMatch')->once();
+
 			$this->kernel->handle( $this->request );
 
-			$this->assertNull(  $this->response_service->header_response );
-			$this->assertNull(  $this->response_service->body_response );
+			$this->assertNull( $this->response_service->header_response );
+			$this->assertNull( $this->response_service->body_response );
 
-			$this->assertEquals(0 , $GLOBALS['global_middleware_executed_times'] );
+			$this->assertEquals( 1, $GLOBALS['global_middleware_executed_times'] );
+
+
+		}
+
+		/** @test */
+		public function in_default_mode_global_middleware_is_executed_when_a_route_matches() {
+
+			$this->assertEquals( 0, $GLOBALS['global_middleware_executed_times'] );
+
+			TestApp::route()
+			       ->get()
+			       ->url( '/web' )
+			       ->handle( 'WebController@handle' );
+
+			$this->request->shouldReceive( 'getUrl' )
+			              ->andReturn( 'https://wpemerge.test/web' );
+
+			$this->kernel->handle( $this->request );
+
+			$this->assertInstanceOf(ResponseInterface::class, $this->response_service->header_response );
+			$this->assertSame( $this->response_service->body_response, $this->response_service->header_response  );
+
+			$this->assertEquals( 1, $GLOBALS['global_middleware_executed_times'] );
 
 
 		}
@@ -117,32 +141,81 @@
 		public function by_default_web_requests_without_matching_routes_will_return_wps_default_template() {
 
 			/** @var \BetterWpHooks\Dispatchers\WordpressDispatcher $dispatcher */
-			$dispatcher = TestApp::resolve(Dispatcher::class);
+			$dispatcher = TestApp::resolve( Dispatcher::class );
 
-			$dispatcher->forgetOne(IncomingWebRequest::class, RouteMatcher::class . '@handleRequest');
+			$dispatcher->forgetOne( IncomingWebRequest::class, RouteMatcher::class . '@handleRequest' );
 
-			$dispatcher->listen(IncomingWebRequest::class , [ $this->kernel, 'handle'] );
+			$dispatcher->listen( IncomingWebRequest::class, [ $this->kernel, 'handle' ] );
 
-			$template = $dispatcher->dispatch( new IncomingWebRequest('wordpress.template.php') );
+			$template = $dispatcher->dispatch( new IncomingWebRequest( 'wordpress.template.php' ) );
 
-			$foo = 'bar';
+			$this->assertSame( 'wordpress.template.php', $template );
+
+
+		}
+
+		/** @test */
+		public function in_strict_mode_web_requests_without_matching_routes_will_return_null_to_the_wp_template_include_filter() {
+
+			/** @var \BetterWpHooks\Dispatchers\WordpressDispatcher $dispatcher */
+			$dispatcher = TestApp::resolve( Dispatcher::class );
+
+			$dispatcher->forgetOne( IncomingWebRequest::class, RouteMatcher::class . '@handleRequest' );
+
+			$dispatcher->listen( IncomingWebRequest::class, [ $this->kernel, 'handle' ] );
+
+			TestApp::container()['strict.mode'] = true;
+
+			$template = $dispatcher->dispatch( new IncomingWebRequest( 'wordpress.template.php' ) );
+
+			$this->assertNull( $template );
+
+		}
+
+		/** @test */
+		public function all_middleware_can_be_completely_disabled_for_testing () {
+
+			TestApp::container()->instance('middleware.disable', true);
+
+			$this->assertEquals( 0, $GLOBALS['global_middleware_executed_times'] );
+			$this->assertFalse(isset($GLOBALS['route_middleware_resolved']));
+
+
+			TestApp::route()
+			       ->get()
+					->middleware('foo')
+			       ->url( '/web' )
+			       ->handle( 'WebController@handle' );
+
+			$this->request->shouldReceive( 'getUrl' )
+			              ->andReturn( 'https://wpemerge.test/web' );
+
+			$this->request->shouldNotReceive('forceMatch');
+
+			$this->kernel->handle( $this->request );
+
+			$this->assertInstanceOf(ResponseInterface::class, $this->response_service->header_response );
+			$this->assertSame( $this->response_service->body_response, $this->response_service->header_response  );
+
+
+			$this->assertEquals( 0, $GLOBALS['global_middleware_executed_times'] );
+			$this->assertFalse(isset($GLOBALS['route_middleware_resolved']));
 
 		}
 
 		public function config() : array {
 
-			return array_merge(TEST_CONFIG ,[
-
+			return array_merge( TEST_CONFIG, [
 
 				'middleware' => [
 
-					'foo'  => FooMiddleware::class,
-					'foo_global' => GlobalFooMiddleware::class,
+					'foo' => FooMiddleware::class,
 
 				],
 
 				'middleware_groups' => [
-					'global' => ['foo_global'],
+					'global' => [ GlobalFooMiddleware::class ],
+					'web'    => [ 'foo' ],
 				],
 
 				'middleware_priority' => [
@@ -150,7 +223,7 @@
 					GlobalFooMiddleware::class,
 				],
 
-			]);
+			] );
 
 		}
 

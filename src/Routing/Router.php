@@ -27,6 +27,7 @@
 		use ConvertsToResponseTrait;
 		use HasMiddlewareDefinitionsTrait;
 
+
 		/**
 		 * Condition factory.
 		 *
@@ -59,6 +60,18 @@
 		 */
 		private $container;
 
+		/**
+		 * @var string[]
+		 */
+		private $middleware_groups;
+
+		/**
+		 * @var string[]
+		 */
+		private $middleware_priority;
+
+		private $middleware;
+
 
 		public function __construct( ContainerAdapter $container , ConditionFactory $condition_factory, HandlerFactory $handler_factory) {
 
@@ -68,27 +81,6 @@
 
 		}
 
-		/**
-		 * Get the current route.
-		 *
-		 * @return RouteInterface
-		 */
-		public function getCurrentRoute() : ?RouteInterface {
-
-			return $this->current_route;
-		}
-
-		/**
-		 * Set the current route.
-		 *
-		 * @param  RouteInterface  $current_route
-		 *
-		 * @return void
-		 */
-		public function setCurrentRoute( RouteInterface $current_route ) {
-
-			$this->current_route = $current_route;
-		}
 
 		/**
 		 * Merge the methods attribute combining values.
@@ -333,27 +325,6 @@
 			return $condition;
 		}
 
-		// /**
-		//  * Make a route handler.
-		//  *
-		//  * @codeCoverageIgnore
-		//  *
-		//  * @param  string|Closure|null  $handler
-		//  * @param  string  $namespace
-		//  *
-		//  * @return Handler
-		//  * @throws \WPEmerge\Exceptions\ConfigurationException
-		//  */
-		// protected function _routeHandler( $handler, $namespace ) : Handler {
-		//
-		// 	if ( $handler === null ) {
-		// 		throw new ConfigurationException( 'No route handler specified. Did you miss to call handle()?' );
-		// 	}
-		//
-		// 	return $this->handler_factory->make( $handler, '', $namespace );
-		// }
-
-
 		protected function routeHandler( $handler, $namespace ) : RouteHandler {
 
 			if ( $handler === null ) {
@@ -400,21 +371,11 @@
 		 *
 		 * @return \WPEmerge\Contracts\RouteInterface|null
 		 */
-		public function hasMatchingRoute( $request ) : ?RouteInterface {
+		private function findRoute( RequestInterface $request ) : ?RouteInterface {
 
-			if ( $current_route = $this->getCurrentRoute() ) {
-
-				return $current_route;
-
-			}
-
-			$routes = $this->getRoutes();
-
-			foreach ( $routes as $route ) {
+			foreach ( $this->getRoutes() as $route ) {
 
 				if ( $route->isSatisfied( $request ) ) {
-
-					$this->setCurrentRoute( $route );
 
 					$request->setRoute($route);
 
@@ -460,7 +421,7 @@
 
 		public function runRoute( RequestInterface $request ) {
 
-			$route = $this->matchingRoute($request);
+			$route = $this->findRoute($request);
 
 			if ( ! $route ) {
 
@@ -468,26 +429,21 @@
 
 			}
 
-			return $this->toResponse( $this->runWithinStack($route, $request ) );
+			return $this->toResponse( $this->runWithinStack( $route, $request ) );
 
 		}
 
-		private function matchingRoute( RequestInterface $request) {
-
-			return $this->hasMatchingRoute( $request );
-
-		}
-
+		/** @todo Implement sorting.  */
 		private function runWithinStack( RouteInterface $route, RequestInterface $request ) {
 
 			$middleware = $route->middleware();
-
+			$middleware = $this->mergeGlobalMiddleware($middleware);
 			$middleware = $this->expandMiddleware($middleware);
 			$middleware = $this->uniqueMiddleware($middleware);
 
 			return (new Pipeline($this->container))
 				->send($request)
-				->through(  $middleware  )
+				->through(  $this->skipMiddleware() ? [] : $middleware  )
 				->then(function ($request) use ($route) {
 
 					return $route->run($request);
@@ -496,6 +452,28 @@
 
 		}
 
+		public function middlewareGroup( string $name, array $middleware ) :void  {
 
+			$this->middleware_groups[$name] = $middleware;
+
+		}
+
+		public function middlewarePriority( array $middleware_priority ) :void  {
+
+			$this->middleware_priority = $middleware_priority;
+
+		}
+
+		public function aliasMiddleware($name, $class) :void
+		{
+			$this->middleware[$name] = $class;
+
+		}
+
+		private function skipMiddleware () {
+
+			return $this->container->offsetExists('middleware.disable');
+
+		}
 
 	}

@@ -191,11 +191,17 @@
 		/**
 		 * Parse full pipe string to get name and parameters.
 		 *
-		 * @param array $pipe
+		 * @param array|string $pipe
 		 *
 		 * @return array
 		 */
-		private function parsePipeArray( array $pipe ) {
+		private function parsePipeArray( $pipe ) {
+
+			if ( is_string($pipe) ) {
+
+				return [ $pipe, [] ];
+
+			}
 
 			$middleware_class = array_shift($pipe);
 

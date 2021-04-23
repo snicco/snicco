@@ -156,4 +156,6 @@
 
 		public function route() : ?RouteInterface;
 
+		public function forceMatch();
+
 	}

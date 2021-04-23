@@ -57,11 +57,11 @@
 		public function extendConfig( ContainerAdapter $container, string $key, $default ) {
 
 			$config = isset( $container[ WPEMERGE_CONFIG_KEY ] ) ? $container[ WPEMERGE_CONFIG_KEY ] : [];
-			$config = Arr::get( $config, $key, $default );
+			$config_part = Arr::get( $config, $key, $default );
 
 			$container[ WPEMERGE_CONFIG_KEY ] = array_merge(
 				$container[ WPEMERGE_CONFIG_KEY ],
-				[ $key => $this->replaceConfig( $default, $config ) ]
+				[ $key => $this->replaceConfig( $default, $config_part ) ]
 			);
 		}
 

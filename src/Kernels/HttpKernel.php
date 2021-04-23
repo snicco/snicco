@@ -8,42 +8,43 @@
 	use Psr\Http\Message\ResponseInterface;
 	use WPEmerge\Contracts\HttpKernelInterface;
 	use WPEmerge\Contracts\ResponseServiceInterface;
-	use WPEmerge\Contracts\RouteInterface;
-	use WPEmerge\Contracts\RouteInterface as Route;
 	use WPEmerge\Contracts\ErrorHandlerInterface as ErrorHandler;
 	use WPEmerge\Events\IncomingAdminRequest;
+	use WPEmerge\Events\IncomingRequest;
 	use WPEmerge\Events\ResponseSent;
-	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Middleware\ExecutesMiddlewareTrait;
 	use WPEmerge\Middleware\HasMiddlewareDefinitionsTrait;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Responses\ConvertsToResponseTrait;
-	use WPEmerge\Contracts\HasQueryFilterInterface;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Routing\SortsMiddlewareTrait;
 	use WPEmerge\Helpers\Pipeline;
+	use WPEmerge\Traits\MiddleWareDefinitions;
 
-	class HttpKernel implements HttpKernelInterface {
+	class HttpKernel {
 
-		use HasMiddlewareDefinitionsTrait;
-		use SortsMiddlewareTrait;
+		// use HasMiddlewareDefinitionsTrait;
+		// use SortsMiddlewareTrait;
 		use ConvertsToResponseTrait;
 		use ExecutesMiddlewareTrait;
+		use MiddleWareDefinitions;
 
 		/** @var ResponseServiceInterface */
-		protected $response_service;
+		private $response_service;
 
 		/** @var \WPEmerge\Routing\Router */
-		protected $router;
+		private $router;
 
 		/** @var \WPEmerge\Contracts\ErrorHandlerInterface */
-		protected $error_handler;
+		private $error_handler;
 
 		/** @var \Contracts\ContainerAdapter */
 		private $container;
 
 		/** @var \Psr\Http\Message\ResponseInterface */
 		private $response;
+
+
 
 
 		public function __construct(
@@ -54,28 +55,36 @@
 			Container $container
 		) {
 
-			$this->response_service = $response_service;
-			$this->router           = $router;
-			$this->error_handler    = $error_handler;
-			$this->container        = $container;
+			$this->response_service              = $response_service;
+			$this->router                        = $router;
+			$this->error_handler                 = $error_handler;
+			$this->container                     = $container;
+
 
 		}
 
 
-		public function handle( RequestInterface $request ) : void {
+		/** @todo remove conditional statement */
+		public function handle( $request ) : void {
+
+			$request = $request instanceof IncomingRequest ? $request->request : $request;
 
 			// whoops
 			$this->error_handler->register();
 
 			try {
+
+				$this->syncMiddlewareToRouter();
+
 				$this->response = $this->sendRequestThroughRouter( $request );
+
 			}
 
 			catch ( Exception $exception ) {
 				$this->response = $this->error_handler->getResponse( $request, $exception );
 			}
 
-			if ( $this->response_service instanceof ResponseInterface ) {
+			if ( $this->response instanceof ResponseInterface ) {
 
 				$this->sendHeaders();
 
@@ -86,8 +95,6 @@
 				ResponseSent::dispatch( [ $this->response, $request ] );
 
 			}
-
-
 
 			$this->error_handler->unregister();
 
@@ -105,6 +112,25 @@
 
 		}
 
+		private function sendRequestThroughRouter( RequestInterface $request ) {
+
+			if ( $this->isStrictMode() ) {
+
+				$request->forceMatch();
+
+			}
+
+			$this->container->instance( RequestInterface::class, $request );
+
+			$pipeline = new Pipeline( $this->container );
+
+			$middleware = $this->withMiddleware() ? $this->middleware_groups['global'] : [];
+
+			return $pipeline->send( $request )
+			                ->through( $middleware )
+			                ->then( $this->dispatchToRouter() );
+
+		}
 
 		/**
 		 * Get the route dispatcher callback.
@@ -113,154 +139,58 @@
 		 */
 		private function dispatchToRouter() : \Closure {
 
-			return function ( $request )   {
+			return function ( $request ) {
 
 				$this->container->instance( RequestInterface::class, $request );
 
-				return $this->router->runRoute($request);
+				return $this->router->runRoute( $request );
 
 			};
 
 		}
 
-		private function sendRequestThroughRouter( RequestInterface $request ) {
+		private function withMiddleware() {
 
-			$this->container->instance( RequestInterface::class, $request );
+			return $this->isStrictMode() && ! $this->skipAllMiddleware();
 
-			$pipeline = new Pipeline( $this->container );
+		}
 
-			$skip_middleware = $this->container->make('strict.mode') === false;
+		private function isStrictMode() : bool {
 
-			return $pipeline->send( $request )
-			                ->through( $skip_middleware ? [] : $this->gatherMiddleware() )
-			                ->then( $this->dispatchToRouter() );
+			return $this->container->make( 'strict.mode' );
 
 
 		}
 
-		private function gatherMiddleware() : array {
+		private function skipAllMiddleware() {
 
-			$middleware = array_merge( $this->applyGlobalMiddleware() );
-			$middleware = $this->expandMiddleware( $middleware );
-			$middleware = $this->uniqueMiddleware( $middleware );
-			$middleware = $this->sortMiddleware( $middleware );
+			return $this->container->offsetExists( 'middleware.disable' );
 
-			return $middleware;
 		}
 
+		private function syncMiddlewareToRouter() {
 
-		// /**
-		//  *
-		//  *
-		//  *
-		//  * NOT IN USE
-		//  *
-		//  *
-		//  *
-		//  */
-		//
-		// public function run( Route $route ) : ResponseInterface {
-		//
-		//
-		// 	$response = $this->toResponse(
-		//
-		// 		$this->route_pipeline
-		// 			->send( $this->request )
-		// 			->through( $this->gatherMiddleware() )
-		// 			->then( $route->run() )
-		//
-		// 	);
-		//
-		// 	$response = $this->route_pipeline->send( $this->request )
-		// 	                                 ->through( $this->gatherMiddleware() )
-		// 	                                 ->then( $route->run() );
-		//
-		// 	if ( ! $response instanceof ResponseInterface ) {
-		//
-		// 		throw new ConfigurationException(
-		//
-		// 			'Response returned by the Route is not valid ' . PHP_EOL .
-		// 			'(expected ' . ResponseInterface::class . '; received ' . gettype( $response ) . ').'
-		//
-		// 		);
-		//
-		// 	}
-		//
-		// 	return $response;
-		//
-		// }
-		//
-		// protected function getResponseService() {
-		// 	// TODO: Implement getResponseService() method.
-		// }
-		//
-		// /**
-		//  * Register ajax action to hook into current one.
-		//  *
-		//  * @return void
-		//  */
-		// public function registerAjaxAction() {
-		//
-		// 	if ( ! wp_doing_ajax() ) {
-		// 		return;
-		// 	}
-		//
-		// 	$action = $this->request->body( 'action', $this->request->query( 'action' ) );
-		// 	$action = sanitize_text_field( $action );
-		//
-		// 	add_action( "wp_ajax_{$action}", [ $this, 'actionAjax' ] );
-		// 	add_action( "wp_ajax_nopriv_{$action}", [ $this, 'actionAjax' ] );
-		//
-		// }
-		//
-		// /**
-		//  * Act on ajax action.
-		//  *
-		//  * @return void
-		//  */
-		// public function actionAjax() {
-		//
-		// 	$response = $this->sendRequestThroughRouter( $this->request );
-		//
-		// 	if ( ! $response instanceof ResponseInterface ) {
-		// 		return;
-		// 	}
-		//
-		// 	$this->response_service->respond( $response );
-		//
-		// 	wp_die( '', '', [ 'response' => null ] );
-		// }
-		//
-		// /**
-		//  * Filter the main query vars.
-		//  *
-		//  * @param  array  $query_vars
-		//  *
-		//  * @return array
-		//  * @throws \WPEmerge\Exceptions\ConfigurationException
-		//  */
-		// public function _filterRequest( array $query_vars ) : array {
-		//
-		// 	$routes = $this->router->getRoutes();
-		//
-		// 	foreach ( $routes as $route ) {
-		// 		if ( ! $route instanceof HasQueryFilterInterface ) {
-		// 			continue;
-		// 		}
-		//
-		// 		if ( ! $route->isSatisfied( $this->request ) ) {
-		// 			continue;
-		// 		}
-		//
-		// 		$this->container[ WPEMERGE_APPLICATION_KEY ]
-		// 			->renderConfigExceptions( function () use ( $route, &$query_vars ) {
-		//
-		// 				$query_vars = $route->applyQueryFilter( $this->request, $query_vars );
-		// 			} );
-		// 		break;
-		// 	}
-		//
-		// 	return $query_vars;
-		// }
+
+			$this->router->middlewarePriority( $this->middleware_priority );
+
+			$middleware_groups = $this->middleware_groups;
+
+			// Dont run this twice.
+			if ( $this->isStrictMode() ) {
+
+				unset( $middleware_groups['global'] );
+
+			}
+
+			foreach ( $middleware_groups as $key => $middleware ) {
+				$this->router->middlewareGroup( $key, $middleware );
+			}
+
+			foreach ( $this->route_middleware_aliases as $key => $middleware ) {
+				$this->router->aliasMiddleware( $key, $middleware );
+			}
+
+		}
+
 
 	}

@@ -7,56 +7,6 @@
 
 	trait HasMiddlewareDefinitionsTrait {
 
-		/**
-		 * Middleware available to the application.
-		 *
-		 * @var array<string, string>
-		 */
-		protected $middleware = [];
-
-		/**
-		 * Middleware groups.
-		 *
-		 * @var array<string, string[]>
-		 */
-		protected $middleware_groups = [];
-
-		/**
-		 * Middleware groups that should have the 'wpemerge' and 'global' groups prepended to them.
-		 *
-		 * @var string[]
-		 */
-		protected $prepend_special_groups_to = [
-			'web',
-			'admin',
-			'ajax',
-		];
-
-		/**
-		 * Register middleware.
-		 *
-		 *
-		 * @param  array<string, string>  $middleware
-		 *
-		 * @return void
-		 */
-		public function setMiddleware( $middleware ) {
-
-			$this->middleware = $middleware;
-		}
-
-		/**
-		 * Register middleware groups.
-		 *
-		 *
-		 * @param  array<string, string[]>  $middleware_groups
-		 *
-		 * @return void
-		 */
-		public function setMiddlewareGroups( $middleware_groups ) {
-
-			$this->middleware_groups = $middleware_groups;
-		}
 
 		/**
 		 * Filter array of middleware into a unique set.
@@ -65,16 +15,11 @@
 		 *
 		 * @return string[]
 		 */
-		public function uniqueMiddleware( $middleware ) {
+		private function uniqueMiddleware( $middleware ) {
 
 			return array_values( array_unique( $middleware, SORT_REGULAR ) );
 		}
 
-		public function applyGlobalMiddleware( array $middleware = [] ) : array {
-
-			return array_merge($middleware, $this->middleware_groups['global'] ?? [] );
-
-		}
 
 		/**
 		 * Expand array of middleware into an array of fully qualified class names.
@@ -83,7 +28,7 @@
 		 *
 		 * @return array[]
 		 */
-		public function expandMiddleware( $middleware ) : array {
+		private function expandMiddleware( $middleware ) : array {
 
 			$classes = [];
 
@@ -105,7 +50,7 @@
 		 * @return array[]
 		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		public function expandMiddlewareGroup( $group ) : array {
+		private function expandMiddlewareGroup( $group ) : array {
 
 			if ( ! isset( $this->middleware_groups[ $group ] ) ) {
 				throw new ConfigurationException( 'Unknown middleware group "' . $group . '" used.' );
@@ -113,11 +58,8 @@
 
 			$middleware = $this->middleware_groups[ $group ];
 
-			if ( in_array( $group, $this->prepend_special_groups_to, true ) ) {
-				$middleware = array_merge( [ 'wpemerge', 'global' ], $middleware );
-			}
-
 			return $this->expandMiddleware( $middleware );
+
 		}
 
 		/**
@@ -129,7 +71,7 @@
 		 * @return array[]
 		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		public function expandMiddlewareMolecule( $middleware ) : array {
+		private function expandMiddlewareMolecule( $middleware ) : array {
 
 			$pieces = explode( ':', $middleware, 2 );
 
@@ -152,7 +94,7 @@
 		 * @return string
 		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		public function expandMiddlewareAtom( $middleware ) : string {
+		private function expandMiddlewareAtom( $middleware ) : string {
 
 			if ( isset( $this->middleware[ $middleware ] ) ) {
 				return $this->middleware[ $middleware ];
@@ -163,6 +105,14 @@
 			}
 
 			throw new ConfigurationException( 'Unknown middleware "' . $middleware . '" used.' );
+		}
+
+		private function mergeGlobalMiddleware ( array $middleware ) {
+
+			$global = $this->middleware_groups['global'] ?? [];
+
+			return array_merge($global, $middleware );
+
 		}
 
 	}

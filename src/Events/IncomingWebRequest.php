@@ -38,9 +38,10 @@
 		}
 
 
+		/** @todo Replace this with some sort of fallback route logic. */
 		public function default() {
 
-			if ( ! $this->request->route() ) {
+			if ( ! $this->request->route() && ! $this->request->force_route_match ) {
 
 				return $this->template;
 
