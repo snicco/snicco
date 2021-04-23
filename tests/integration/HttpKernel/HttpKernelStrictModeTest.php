@@ -15,7 +15,6 @@
 	use WPEmerge\Events\IncomingWebRequest;
 	use WPEmerge\Requests\Request;
 	use Mockery as m;
-	use WPEmerge\RouteMatcher;
 
 	class HttpKernelStrictModeTest extends WPTestCase {
 
@@ -143,10 +142,6 @@
 			/** @var \BetterWpHooks\Dispatchers\WordpressDispatcher $dispatcher */
 			$dispatcher = TestApp::resolve( Dispatcher::class );
 
-			$dispatcher->forgetOne( IncomingWebRequest::class, RouteMatcher::class . '@handleRequest' );
-
-			$dispatcher->listen( IncomingWebRequest::class, [ $this->kernel, 'handle' ] );
-
 			$template = $dispatcher->dispatch( new IncomingWebRequest( 'wordpress.template.php' ) );
 
 			$this->assertSame( 'wordpress.template.php', $template );
@@ -159,10 +154,6 @@
 
 			/** @var \BetterWpHooks\Dispatchers\WordpressDispatcher $dispatcher */
 			$dispatcher = TestApp::resolve( Dispatcher::class );
-
-			$dispatcher->forgetOne( IncomingWebRequest::class, RouteMatcher::class . '@handleRequest' );
-
-			$dispatcher->listen( IncomingWebRequest::class, [ $this->kernel, 'handle' ] );
 
 			TestApp::container()['strict.mode'] = true;
 

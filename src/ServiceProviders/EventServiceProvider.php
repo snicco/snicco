@@ -15,10 +15,7 @@
 	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingAjaxRequest;
 	use WPEmerge\Events\ResponseSent;
-	use WPEmerge\Events\RouteMatched;
-	use WPEmerge\Events\SendBodySeparately;
 	use WPEmerge\Kernels\HttpKernel;
-	use WPEmerge\RouteMatcher;
 
 	class EventServiceProvider implements ServiceProviderInterface {
 
@@ -33,19 +30,19 @@
 
 			IncomingWebRequest::class => [
 
-				RouteMatcher::class . '@handleRequest',
+				HttpKernel::class . '@handle'
 
 			],
 
 			IncomingAdminRequest::class => [
 
-				RouteMatcher::class . '@handleRequest',
+				HttpKernel::class . '@handle'
 
 			],
 
 			IncomingAjaxRequest::class => [
 
-				RouteMatcher::class . '@handleRequest',
+				HttpKernel::class . '@handle'
 
 			],
 
@@ -57,19 +54,7 @@
 
 			AdminBodySendable::class => [
 
-				RouteMatcher::class . '@sendAdminBodySeparately',
-
-			],
-
-			RouteMatched::class => [
-
-				HttpKernel::class . '@handle',
-
-			],
-
-			SendBodySeparately::class => [
-
-				HttpKernel::class . '@sendBody',
+				HttpKernel::class . '@sendBody'
 
 			],
 
