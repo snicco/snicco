@@ -13,12 +13,8 @@ namespace WPEmerge\Routing;
  * Provide middleware sorting.
  */
 trait SortsMiddlewareTrait {
-	/**
-	 * Middleware sorted in order of execution.
-	 *
-	 * @var string[]
-	 */
-	protected $middleware_priority = [];
+
+
 
 	/**
 	 * Get middleware execution priority.

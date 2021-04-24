@@ -14,7 +14,7 @@
 	use WPEmerge\Events\AdminBodySendable;
 	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingAjaxRequest;
-	use WPEmerge\Events\ResponseSent;
+	use WPEmerge\Events\BodySent;
 	use WPEmerge\Kernels\HttpKernel;
 
 	class EventServiceProvider implements ServiceProviderInterface {
@@ -54,11 +54,11 @@
 
 			AdminBodySendable::class => [
 
-				HttpKernel::class . '@sendBody'
+				HttpKernel::class . '@sendBodyDeferred'
 
 			],
 
-			ResponseSent::class => [
+			BodySent::class => [
 
 				AjaxShutdownHandler::class . '@shutdownWp',
 

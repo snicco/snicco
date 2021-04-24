@@ -64,7 +64,14 @@
 				'admin'    => [],
 			] );
 
-			$this->extendConfig( $container, 'middleware_priority', [] );
+			$this->extendConfig( $container, 'middleware_priority', [
+
+				StartSession::class,
+				SubstituteBindings::class,
+				FlashMiddleware::class,
+				OldInputMiddleware::class
+
+			] );
 
 			$container[ WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY ] = function ( $c ) {
 

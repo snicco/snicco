@@ -57,30 +57,30 @@
 		public function register( $container ) {
 
 
-			$this->extendConfig( $container, 'routes', [
-				'web'   => [
-					'definitions' => '',
-					'attributes'  => [
-						'middleware' => [ 'web' ],
-						'namespace'  => 'App\\Controllers\\Web\\',
-						'handler'    => 'WPEmerge\\Controllers\\WordPressController@handle',
-					],
-				],
-				'admin' => [
-					'definitions' => '',
-					'attributes'  => [
-						'middleware' => [ 'admin' ],
-						'namespace'  => 'App\\Controllers\\Admin\\',
-					],
-				],
-				'ajax'  => [
-					'definitions' => '',
-					'attributes'  => [
-						'middleware' => [ 'ajax' ],
-						'namespace'  => 'App\\Controllers\\Ajax\\',
-					],
-				],
-			] );
+			// $this->extendConfig( $container, 'routes', [
+			// 	'web'   => [
+			// 		'definitions' => '',
+			// 		'attributes'  => [
+			// 			'middleware' => [ 'web' ],
+			// 			'namespace'  => 'App\\Controllers\\Web\\',
+			// 			'handler'    => 'WPEmerge\\Controllers\\WordPressController@handle',
+			// 		],
+			// 	],
+			// 	'admin' => [
+			// 		'definitions' => '',
+			// 		'attributes'  => [
+			// 			'middleware' => [ 'admin' ],
+			// 			'namespace'  => 'App\\Controllers\\Admin\\',
+			// 		],
+			// 	],
+			// 	'ajax'  => [
+			// 		'definitions' => '',
+			// 		'attributes'  => [
+			// 			'middleware' => [ 'ajax' ],
+			// 			'namespace'  => 'App\\Controllers\\Ajax\\',
+			// 		],
+			// 	],
+			// ] );
 
 			$container[ WPEMERGE_ROUTING_CONDITION_TYPES_KEY ] = static::$condition_types;
 

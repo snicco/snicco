@@ -18,6 +18,7 @@
 		public function __construct( Dispatcher $dispatcher ) {
 
 			$this->dispatcher = $dispatcher;
+
 		}
 
 		public function handleEvent() {

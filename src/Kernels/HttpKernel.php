@@ -9,12 +9,14 @@
 	use WPEmerge\Contracts\HttpKernelInterface;
 	use WPEmerge\Contracts\ResponseServiceInterface;
 	use WPEmerge\Contracts\ErrorHandlerInterface as ErrorHandler;
+	use WPEmerge\Events\HeadersSent;
 	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingRequest;
-	use WPEmerge\Events\ResponseSent;
+	use WPEmerge\Events\BodySent;
 	use WPEmerge\Middleware\ExecutesMiddlewareTrait;
 	use WPEmerge\Middleware\HasMiddlewareDefinitionsTrait;
 	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Requests\Request;
 	use WPEmerge\Responses\ConvertsToResponseTrait;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Routing\SortsMiddlewareTrait;
@@ -44,7 +46,8 @@
 		/** @var \Psr\Http\Message\ResponseInterface */
 		private $response;
 
-
+		/** @var RequestInterface */
+		private $request;
 
 
 		public function __construct(
@@ -64,10 +67,10 @@
 		}
 
 
-		/** @todo remove conditional statement */
+		/** @todo remove conditional statement, clean up unit tests. */
 		public function handle( $request ) : void {
 
-			$request = $request instanceof IncomingRequest ? $request->request : $request;
+			 $request = $request instanceof IncomingRequest ? $request->request : $request;
 
 			// whoops
 			$this->error_handler->register();
@@ -78,39 +81,27 @@
 
 				$this->response = $this->sendRequestThroughRouter( $request );
 
+				$this->request = $this->container->make(RequestInterface::class);
+
 			}
 
 			catch ( Exception $exception ) {
-				$this->response = $this->error_handler->getResponse( $request, $exception );
-			}
 
-			if ( $this->response instanceof ResponseInterface ) {
-
-				$this->sendHeaders();
-
-				if ( $request->type() !== IncomingAdminRequest::class ) {
-					$this->sendBody();
-				}
-
-				ResponseSent::dispatch( [ $this->response, $request ] );
+				$this->response = $this->error_handler->getResponse( $request , $exception );
 
 			}
+
+			$this->sendResponse();
 
 			$this->error_handler->unregister();
 
 		}
 
-		private function sendHeaders() {
-
-			$this->response_service->sendHeaders( $this->response );
-
-		}
-
 		/**
 		 * This function needs to be public because for Wordpress Admin
-		 * Pages we have to send the header and body on seperate hooks.
+		 * Pages we have to send the header and body on separate hooks.
 		 */
-		public function sendBody() {
+		public function sendBodyDeferred () {
 
 			// guard against AdminBodySendable for non matching admin pages.
 			if ( ! $this->response instanceof ResponseInterface ) {
@@ -119,11 +110,56 @@
 
 			}
 
-			$this->response_service->sendBody( $this->response );
+			$this->sendBody();
 
 		}
 
-		private function sendRequestThroughRouter( RequestInterface $request ) {
+		private function sendResponse() {
+
+			$route_matched = $this->response instanceof ResponseInterface;
+
+			if ( ! $route_matched ) {
+
+				return;
+
+			}
+
+			$this->sendHeaders();
+
+			if ( $this->request->type() !== IncomingAdminRequest::class ) {
+
+				$this->sendBody();
+
+			}
+
+
+
+
+		}
+
+		private function sendHeaders() {
+
+			if ( headers_sent() ) {
+
+				return;
+
+			}
+
+			$this->response_service->sendHeaders( $this->response );
+
+			HeadersSent::dispatch( [ $this->response, $this->request ] );
+
+		}
+
+		private function sendBody() {
+
+			$this->response_service->sendBody( $this->response );
+
+			BodySent::dispatch( [ $this->response, $this->request ] );
+
+		}
+
+		private function sendRequestThroughRouter( RequestInterface $request )  {
 
 			if ( $this->isStrictMode() ) {
 
@@ -143,11 +179,6 @@
 
 		}
 
-		/**
-		 * Get the route dispatcher callback.
-		 *
-		 * @return \Closure
-		 */
 		private function dispatchToRouter() : \Closure {
 
 			return function ( $request ) {
@@ -160,7 +191,7 @@
 
 		}
 
-		private function withMiddleware() {
+		private function withMiddleware() : bool {
 
 			return $this->isStrictMode() && ! $this->skipAllMiddleware();
 
@@ -173,13 +204,13 @@
 
 		}
 
-		private function skipAllMiddleware() {
+		private function skipAllMiddleware() : bool {
 
 			return $this->container->offsetExists( 'middleware.disable' );
 
 		}
 
-		private function syncMiddlewareToRouter() {
+		private function syncMiddlewareToRouter() :void {
 
 
 			$this->router->middlewarePriority( $this->middleware_priority );
