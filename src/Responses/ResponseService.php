@@ -76,12 +76,6 @@
 		public function sendHeaders( ResponseInterface $response ) {
 
 
-			if ( headers_sent() ) {
-
-				return;
-
-			}
-
 			// Status
 			header( sprintf(
 				'HTTP/%s %s %s',

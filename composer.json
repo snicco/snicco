@@ -64,9 +64,5 @@
     "files": [
       "config.php"
     ]
-  },
-  "scripts": {
-    "lint": "phpcs",
-    "test": "phpunit --coverage-clover=./tmp/clover.xml"
   }
 }

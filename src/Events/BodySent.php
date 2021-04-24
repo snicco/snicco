@@ -7,7 +7,7 @@
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Contracts\RequestInterface;
 
-	class ResponseSent extends ApplicationEvent {
+	class BodySent extends ApplicationEvent {
 
 
 		/**
@@ -24,6 +24,7 @@
 
 			$this->response = $response;
 			$this->request = $request;
+
 		}
 
 

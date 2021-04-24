@@ -26,7 +26,7 @@
 		use HasRoutesTrait;
 		use ConvertsToResponseTrait;
 		use HasMiddlewareDefinitionsTrait;
-
+		use SortsMiddlewareTrait;
 
 		/**
 		 * Condition factory.
@@ -440,6 +440,8 @@
 			$middleware = $this->mergeGlobalMiddleware($middleware);
 			$middleware = $this->expandMiddleware($middleware);
 			$middleware = $this->uniqueMiddleware($middleware);
+			$middleware = $this->sortMiddleware($middleware);
+
 
 			return (new Pipeline($this->container))
 				->send($request)
