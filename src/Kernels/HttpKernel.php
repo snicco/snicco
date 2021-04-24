@@ -6,7 +6,6 @@
 	use Contracts\ContainerAdapter as Container;
 	use Exception;
 	use Psr\Http\Message\ResponseInterface;
-	use WPEmerge\Contracts\HttpKernelInterface;
 	use WPEmerge\Contracts\ResponseServiceInterface;
 	use WPEmerge\Contracts\ErrorHandlerInterface as ErrorHandler;
 	use WPEmerge\Events\HeadersSent;
@@ -14,19 +13,14 @@
 	use WPEmerge\Events\IncomingRequest;
 	use WPEmerge\Events\BodySent;
 	use WPEmerge\Middleware\ExecutesMiddlewareTrait;
-	use WPEmerge\Middleware\HasMiddlewareDefinitionsTrait;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Requests\Request;
 	use WPEmerge\Responses\ConvertsToResponseTrait;
 	use WPEmerge\Routing\Router;
-	use WPEmerge\Routing\SortsMiddlewareTrait;
 	use WPEmerge\Helpers\Pipeline;
 	use WPEmerge\Traits\MiddleWareDefinitions;
 
 	class HttpKernel {
 
-		// use HasMiddlewareDefinitionsTrait;
-		// use SortsMiddlewareTrait;
 		use ConvertsToResponseTrait;
 		use ExecutesMiddlewareTrait;
 		use MiddleWareDefinitions;
