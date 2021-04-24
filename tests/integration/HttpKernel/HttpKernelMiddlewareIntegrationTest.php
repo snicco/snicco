@@ -11,6 +11,7 @@
 	use Tests\stubs\Middleware\FooMiddleware;
 	use Tests\stubs\Middleware\GlobalFooMiddleware;
 	use Tests\stubs\TestResponseService;
+	use WPEmerge\Events\IncomingRequest;
 	use WPEmerge\Middleware\SubstituteBindings;
 	use WPEmerge\Requests\Request;
 	use Tests\stubs\IntegrationTestErrorHandler;
@@ -38,13 +39,21 @@
 		/** @var \WPEmerge\Responses\ResponseService */
 		private $response_service;
 
+		/**
+		 * @var \WPEmerge\Events\IncomingRequest
+		 */
+		private $request_event;
+
 		protected function setUp() : void {
 
 			parent::setUp();
 
 			$this->request = m::mock( Request::class );
-
 			$this->createMockWebRequest();
+
+			$this->request_event = m::mock(IncomingRequest::class);
+			$this->request_event->request = $this->request;
+
 
 			$this->response_service = new TestResponseService();
 
@@ -87,7 +96,7 @@
 				->andReturn( 'https://wpemerge.test/' );
 
 
-			$this->kernel->handle( $this->request );
+			$this->kernel->handle($this->request_event);
 
 			$this->assertSame( 'foo:foo_web_controller', $this->responseBody() );
 
@@ -107,7 +116,7 @@
 
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
 
-			$this->kernel->handle($this->request);
+			$this->kernel->handle($this->request_event);
 
 			$this->assertSame( 'foobar:foo_web_controller', $this->responseBody() );
 
@@ -125,7 +134,7 @@
 				->shouldReceive( 'getUrl' )
 				->andReturn( 'https://wpemerge.test/wp-admin/dashboard' );
 
-			$this->kernel->handle($this->request);
+			$this->kernel->handle($this->request_event);
 
 			$this->assertSame( 'foo:foo_admin_controller_dependency', $this->responseBody() );
 
@@ -147,7 +156,7 @@
 				->shouldReceive( 'getUrl' )
 				->andReturn( 'https://wpemerge.test/wp-admin/dashboard' );
 
-			$this->kernel->handle($this->request);
+			$this->kernel->handle($this->request_event);
 
 			$this->assertSame( 'foo:foo_admin_controller_dependency', $this->responseBody() );
 			$this->assertSame( 1, $GLOBALS['controller_constructor_count']);
@@ -172,7 +181,7 @@
 
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
 
-			$this->kernel->handle($this->request);
+			$this->kernel->handle($this->request_event);
 
 			$this->assertSame( 'foo:foo_web_controller', $this->responseBody() );
 

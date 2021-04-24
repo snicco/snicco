@@ -12,6 +12,7 @@
 	use Tests\stubs\Middleware\GlobalFooMiddleware;
 	use Tests\stubs\TestApp;
 	use Tests\stubs\TestResponseService;
+	use WPEmerge\Events\IncomingRequest;
 	use WPEmerge\Events\IncomingWebRequest;
 	use WPEmerge\Requests\Request;
 	use Mockery as m;
@@ -32,6 +33,9 @@
 		/** @var \WPEmerge\Responses\ResponseService */
 		private $response_service;
 
+		/** @var \WPEmerge\Events\IncomingRequest  */
+		private $request_event;
+
 		protected function setUp() : void {
 
 			parent::setUp();
@@ -40,6 +44,10 @@
 			$this->createMockWebRequest();
 
 			$this->response_service = new TestResponseService();
+
+			$this->request_event = m::mock(IncomingRequest::class);
+			$this->request_event->request = $this->request;
+
 
 			$this->bootstrapTestApp();
 
@@ -76,7 +84,7 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/non-existing-url' );
 
-			$this->kernel->handle( $this->request );
+			$this->kernel->handle($this->request_event);
 
 			$this->assertNull( $this->response_service->header_response );
 			$this->assertNull( $this->response_service->body_response );
@@ -103,7 +111,7 @@
 
 			$this->request->shouldReceive('forceMatch')->once();
 
-			$this->kernel->handle( $this->request );
+			$this->kernel->handle($this->request_event);
 
 			$this->assertNull( $this->response_service->header_response );
 			$this->assertNull( $this->response_service->body_response );
@@ -126,7 +134,7 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/web' );
 
-			$this->kernel->handle( $this->request );
+			$this->kernel->handle($this->request_event);
 
 			$this->assertInstanceOf(ResponseInterface::class, $this->response_service->header_response );
 			$this->assertSame( $this->response_service->body_response, $this->response_service->header_response  );
@@ -183,7 +191,7 @@
 
 			$this->request->shouldNotReceive('forceMatch');
 
-			$this->kernel->handle( $this->request );
+			$this->kernel->handle($this->request_event);
 
 			$this->assertInstanceOf(ResponseInterface::class, $this->response_service->header_response );
 			$this->assertSame( $this->response_service->body_response, $this->response_service->header_response  );

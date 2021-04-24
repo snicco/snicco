@@ -67,10 +67,8 @@
 		}
 
 
-		/** @todo remove conditional statement, clean up unit tests. */
-		public function handle( $request ) : void {
+		public function handle( IncomingRequest $request_event) : void {
 
-			$request = $request instanceof IncomingRequest ? $request->request : $request;
 
 			// whoops
 			$this->error_handler->register();
@@ -79,7 +77,7 @@
 
 				$this->syncMiddlewareToRouter();
 
-				$this->response = $this->sendRequestThroughRouter( $request );
+				$this->response = $this->sendRequestThroughRouter( $request_event->request );
 
 				$this->request = $this->container->make( RequestInterface::class );
 
@@ -87,7 +85,7 @@
 
 			catch ( Exception $exception ) {
 
-				$this->response = $this->error_handler->getResponse( $request, $exception );
+				$this->response = $this->error_handler->getResponse( $request_event->request, $exception );
 
 			}
 

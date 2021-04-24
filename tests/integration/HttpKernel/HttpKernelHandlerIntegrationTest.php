@@ -11,6 +11,7 @@
 	use Tests\stubs\Controllers\Web\DependencyController;
 	use Tests\stubs\Controllers\Web\TeamsController;
 	use Tests\stubs\TestResponseService;
+	use WPEmerge\Events\IncomingRequest;
 	use WPEmerge\Requests\Request;
 	use Tests\stubs\TestApp;
 
@@ -31,6 +32,9 @@
 		/** @var \WPEmerge\Requests\Request */
 		private $request;
 
+		/** @var \WPEmerge\Events\IncomingRequest */
+		private $request_event;
+
 		/** @var \WPEmerge\Responses\ResponseService */
 		private $response_service;
 
@@ -41,6 +45,9 @@
 
 			$this->request = m::mock( Request::class );
 			$this->createMockWebRequest();
+
+			$this->request_event = m::mock(IncomingRequest::class);
+			$this->request_event->request = $this->request;
 
 			$this->response_service = new TestResponseService();
 
@@ -69,7 +76,7 @@
 
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
 
-			$this->kernel->handle( $this->request );
+			$this->kernel->handle($this->request_event);
 
 			$this->assertResponseSend();
 
@@ -88,7 +95,7 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/teams/dortmund' );
 
-			$this->kernel->handle( $this->request );
+			$this->kernel->handle($this->request_event);
 
 			$this->assertResponseSend();
 
@@ -108,7 +115,7 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/' );
 
-			$this->kernel->handle( $this->request );
+			$this->kernel->handle($this->request_event);
 
 			$this->assertResponseSend();
 
@@ -127,7 +134,7 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/web' );
 
-			$this->kernel->handle( $this->request );
+			$this->kernel->handle($this->request_event);
 
 			$this->assertResponseSend();
 
@@ -147,7 +154,7 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/admin' );
 
-			$this->kernel->handle( $this->request );
+			$this->kernel->handle($this->request_event);
 
 			$this->assertResponseSend();
 
@@ -167,7 +174,7 @@
 			$this->request->shouldReceive( 'getUrl' )
 			              ->andReturn( 'https://wpemerge.test/ajax' );
 
-			$this->kernel->handle( $this->request );
+			$this->kernel->handle($this->request_event);
 
 			$this->assertResponseSend();
 
