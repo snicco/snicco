@@ -73,8 +73,11 @@
 		 *
 		 * @return void
 		 */
-		public function sendHeaders( ResponseInterface $response ) {
+		public function sendHeaders( ResponseInterface $response ) : void {
 
+			if ( headers_sent() ) {
+				return;
+			}
 
 			// Status
 			header( sprintf(
@@ -90,6 +93,8 @@
 					header( sprintf( '%s: %s', $name, $value ), $i === 0 );
 				}
 			}
+
+
 		}
 
 		/**

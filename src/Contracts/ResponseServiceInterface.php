@@ -23,6 +23,6 @@
 		 * @param  ResponseInterface $response
 		 * @return void
 		 */
-		public function sendHeaders( ResponseInterface $response );
+		public function sendHeaders( ResponseInterface $response ) :void ;
 
 	}
