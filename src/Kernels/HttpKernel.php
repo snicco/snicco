@@ -58,10 +58,10 @@
 			Container $container
 		) {
 
-			$this->response_service              = $response_service;
-			$this->router                        = $router;
-			$this->error_handler                 = $error_handler;
-			$this->container                     = $container;
+			$this->response_service = $response_service;
+			$this->router           = $router;
+			$this->error_handler    = $error_handler;
+			$this->container        = $container;
 
 
 		}
@@ -70,7 +70,7 @@
 		/** @todo remove conditional statement, clean up unit tests. */
 		public function handle( $request ) : void {
 
-			 $request = $request instanceof IncomingRequest ? $request->request : $request;
+			$request = $request instanceof IncomingRequest ? $request->request : $request;
 
 			// whoops
 			$this->error_handler->register();
@@ -81,13 +81,13 @@
 
 				$this->response = $this->sendRequestThroughRouter( $request );
 
-				$this->request = $this->container->make(RequestInterface::class);
+				$this->request = $this->container->make( RequestInterface::class );
 
 			}
 
 			catch ( Exception $exception ) {
 
-				$this->response = $this->error_handler->getResponse( $request , $exception );
+				$this->response = $this->error_handler->getResponse( $request, $exception );
 
 			}
 
@@ -101,7 +101,7 @@
 		 * This function needs to be public because for Wordpress Admin
 		 * Pages we have to send the header and body on separate hooks.
 		 */
-		public function sendBodyDeferred () {
+		public function sendBodyDeferred() {
 
 			// guard against AdminBodySendable for non matching admin pages.
 			if ( ! $this->response instanceof ResponseInterface ) {
@@ -133,21 +133,14 @@
 			}
 
 
-
-
 		}
 
 		private function sendHeaders() {
 
-			if ( headers_sent() ) {
-
-				return;
-
-			}
-
 			$this->response_service->sendHeaders( $this->response );
 
 			HeadersSent::dispatch( [ $this->response, $this->request ] );
+
 
 		}
 
@@ -159,7 +152,7 @@
 
 		}
 
-		private function sendRequestThroughRouter( RequestInterface $request )  {
+		private function sendRequestThroughRouter( RequestInterface $request ) {
 
 			if ( $this->isStrictMode() ) {
 
@@ -210,7 +203,7 @@
 
 		}
 
-		private function syncMiddlewareToRouter() :void {
+		private function syncMiddlewareToRouter() : void {
 
 
 			$this->router->middlewarePriority( $this->middleware_priority );

@@ -21,7 +21,7 @@
 
 		}
 
-		public function sendHeaders( ResponseInterface $response ) {
+		public function sendHeaders( ResponseInterface $response ) :void {
 
 			$this->header_response = $response;
 
