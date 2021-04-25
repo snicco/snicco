@@ -89,6 +89,7 @@
 
 				return new ErrorHandler( $container[ WPEMERGE_RESPONSE_SERVICE_KEY ], $whoops, $debug['enable'] );
 			};
+
 		}
 
 

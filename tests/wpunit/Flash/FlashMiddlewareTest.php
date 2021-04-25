@@ -1,10 +1,11 @@
 <?php
 
 
-	namespace Tests\wpunit\Responses;
+	namespace Tests\wpunit\Flash;
 
 	use Codeception\TestCase\WPTestCase;
 	use Mockery;
+	use WPEmerge\Flash\Flash;
 	use WPEmerge\Flash\FlashMiddleware;
 	use WPEmerge\Contracts\RequestInterface;
 
@@ -17,7 +18,7 @@
 
 			parent::setUp();
 
-			$this->flash   = Mockery::mock( \WPEmerge\Flash\Flash::class );
+			$this->flash   = Mockery::mock( Flash::class );
 			$this->subject = new FlashMiddleware( $this->flash );
 		}
 

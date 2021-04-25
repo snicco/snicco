@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace Tests\wpunit\Responses;
+	namespace Tests\wpunit\Input;
 
 	use Mockery;
 	use PHPUnit\Framework\TestCase;
@@ -9,9 +9,7 @@
 	use WPEmerge\Input\OldInputMiddleware;
 	use WPEmerge\Contracts\RequestInterface;
 
-	/**
-	 * @coversDefaultClass \WPEmerge\Input\OldInputMiddleware
-	 */
+
 	class OldInputMiddlewareTest extends TestCase {
 
 		public function setUp() : void {
@@ -20,6 +18,7 @@
 
 			$this->old_input = Mockery::mock( OldInput::class );
 			$this->subject   = new OldInputMiddleware( $this->old_input );
+
 		}
 
 		public function tearDown() : void {
@@ -31,9 +30,7 @@
 			unset( $this->subject );
 		}
 
-		/**
-		 * @covers ::handle
-		 */
+
 		public function testHandle_DisabledPostRequest_Ignore() {
 
 			$request = Mockery::mock( RequestInterface::class );
@@ -49,9 +46,7 @@
 			$this->assertSame( $request, $result );
 		}
 
-		/**
-		 * @covers ::handle
-		 */
+
 		public function testHandle_EnabledPostRequest_StoresAll() {
 
 			$expected = [ 'foo' => 'bar' ];
@@ -76,9 +71,7 @@
 			$this->assertSame( $request, $result );
 		}
 
-		/**
-		 * @covers ::handle
-		 */
+
 		public function testHandle_EnabledGetRequest_Ignore() {
 
 			$request = Mockery::mock( RequestInterface::class );
