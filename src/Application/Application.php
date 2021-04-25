@@ -7,7 +7,6 @@
 	use SniccoAdapter\BaseContainerAdapter;
 	use WPEmerge\Exceptions\ConfigurationException;
 
-
 	class Application {
 
 
@@ -74,7 +73,6 @@
 			$this->container()[ WPEMERGE_CONFIG_KEY ] = $config;
 
 		}
-
 
 
 	}

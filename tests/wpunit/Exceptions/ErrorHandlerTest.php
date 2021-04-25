@@ -14,10 +14,17 @@
 	use WPEmerge\Responses\ResponseService;
 	use WPEmerge\Routing\NotFoundException;
 
-	/**
-	 * @coversDefaultClass \WPEmerge\Exceptions\ErrorHandler
-	 */
+
 	class ErrorHandlerTest extends WPTestCase {
+
+		/**
+		 * @var ResponseService
+		 */
+		private $response_service;
+		/**
+		 * @var ErrorHandler
+		 */
+		private $subject;
 
 		public function setUp() : void {
 
@@ -25,6 +32,7 @@
 
 			$this->response_service = Mockery::mock( ResponseService::class );
 			$this->subject          = new ErrorHandler( $this->response_service, null, false );
+
 		}
 
 		public function tearDown() : void {

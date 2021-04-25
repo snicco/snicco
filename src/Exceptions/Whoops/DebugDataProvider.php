@@ -45,7 +45,7 @@ class DebugDataProvider {
 	/**
 	 * Return pritable data about the current route.
 	 *
-	 * @todo Clean this shid up.
+	 * @todo Clean this shit up.
 	 * @param \Whoops\Exception\Inspector $inspector
 	 * @return array<string, mixed>
 	 */

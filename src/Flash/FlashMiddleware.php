@@ -1,49 +1,37 @@
 <?php
-/**
- * @package   WPEmerge
- * @author    Atanas Angelov <hi@atanas.dev>
- * @copyright 2017-2019 Atanas Angelov
- * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
- * @link      https://wpemerge.com/
- */
 
-namespace WPEmerge\Flash;
 
-use Closure;
-use WPEmerge\Contracts\RequestInterface;
 
-/**
- * Store current request data and clear old request data
- */
-class FlashMiddleware {
-	/**
-	 * Flash service.
-	 *
-	 * @var Flash
-	 */
-	protected $flash = null;
+	namespace WPEmerge\Flash;
 
-	/**
-	 * Constructor.
-	 *
-	 * @codeCoverageIgnore
-	 * @param Flash $flash
-	 */
-	public function __construct( Flash $flash ) {
-		$this->flash = $flash;
-	}
+	use Closure;
+	use WPEmerge\Contracts\Middleware;
+	use WPEmerge\Contracts\RequestInterface;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function handle( RequestInterface $request, Closure $next ) {
-		$response = $next( $request );
 
-		if ( $this->flash->enabled() ) {
-			$this->flash->shift();
-			$this->flash->save();
+	class FlashMiddleware implements Middleware {
+
+		/** @var \WPEmerge\Flash\Flash  */
+		private $flash;
+
+		public function __construct( Flash $flash ) {
+
+			$this->flash = $flash;
+
 		}
 
-		return $response;
+		public function handle( RequestInterface $request, Closure $next ) {
+
+			$response = $next( $request );
+
+			if ( $this->flash->enabled() ) {
+
+				$this->flash->shift();
+				$this->flash->save();
+
+			}
+
+			return $response;
+		}
+
 	}
-}
