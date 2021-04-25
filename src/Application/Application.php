@@ -18,11 +18,12 @@
 
 		private $bootstrapped = false;
 
+
 		public function __construct( ContainerAdapter $container) {
 
 			$this->setContainerAdapter( $container );
-			$this->containerAdapter()[ WPEMERGE_APPLICATION_KEY ]   = $this;
-			$this->containerAdapter()[ WPEMERGE_CONTAINER_ADAPTER ] = $this->containerAdapter();
+			$this->container()[ WPEMERGE_APPLICATION_KEY ]   = $this;
+			$this->container()[ WPEMERGE_CONTAINER_ADAPTER ] = $this->container();
 
 
 		}
@@ -60,7 +61,7 @@
 
 			$this->bindConfig( $config );
 
-			$this->loadServiceProviders( $this->containerAdapter() );
+			$this->loadServiceProviders( $this->container() );
 
 			$this->bootstrapped = true;
 
@@ -70,7 +71,7 @@
 
 		private function bindConfig( array $config ) {
 
-			$this->containerAdapter()[ WPEMERGE_CONFIG_KEY ] = $config;
+			$this->container()[ WPEMERGE_CONFIG_KEY ] = $config;
 
 		}
 

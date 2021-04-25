@@ -21,11 +21,6 @@
 
 		public function register( $container ) {
 
-			// $container[ SubstituteBindings::class ] = function ( $c ) {
-			//
-			// 	return new SubstituteBindings();
-			//
-			// };
 
 			$container[ UserLoggedOutMiddleware::class ] = function ( $c ) {
 
@@ -42,6 +37,8 @@
 
 				return new UserCanMiddleware( $c[ WPEMERGE_RESPONSE_SERVICE_KEY ] );
 			};
+
+
 		}
 
 

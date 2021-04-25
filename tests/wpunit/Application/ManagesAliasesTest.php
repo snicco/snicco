@@ -17,6 +17,7 @@
 		 */
 		private $subject;
 
+
 		protected function setUp() : void {
 
 			parent::setUp();
@@ -55,7 +56,6 @@
 			], $this->subject->getAlias( 'foo' ) );
 		}
 
-
 		/** @test */
 		public function if_no_alias_is_registered_an_exception_is_thrown () {
 
@@ -65,53 +65,8 @@
 
 		}
 
-		/**
-		 * @covers ::setAlias
-		 */
-		public function testSetAlias_String_ResolveFromContainer() {
-
-			$alias       = 'test';
-			$service_key = 'test_service';
-			$service     = new \Tests\stubs\TestService();
-
-			$this->resolver->shouldReceive( 'resolve' )
-			               ->with( $service_key )
-			               ->andReturn( $service );
-
-			$this->subject->setAlias( [
-				'name'   => $alias,
-				'target' => $service_key,
-			] );
-
-			$this->assertSame( $service, $this->subject->{$alias}() );
-		}
-
-		/**
-		 * @covers ::setAlias
-		 */
-		public function testSetAlias_StringWithMethod_ResolveFromContainer() {
-
-			$alias       = 'test';
-			$service_key = 'test_service';
-			$service     = new \Tests\stubs\TestService();
-
-			$this->resolver->shouldReceive( 'resolve' )
-			               ->with( $service_key )
-			               ->andReturn( $service );
-
-			$this->subject->setAlias( [
-				'name'   => $alias,
-				'target' => $service_key,
-				'method' => 'getTest',
-			] );
-
-			$this->assertSame( 'foobar', $this->subject->{$alias}() );
-		}
-
-		/**
-		 * @covers ::setAlias
-		 */
-		public function testSetAlias_Closure_CallClosure() {
+		/** @test */
+		public function closures_are_resolved_and_are_bound_to_the_current_class_instance () {
 
 			$expected = 'foo';
 			$alias    = 'test';
@@ -120,13 +75,51 @@
 				return $expected;
 			};
 
-			$this->subject->setAlias( [
-				'name'   => $alias,
-				'target' => $closure,
-			] );
+			$this->subject->alias('test', $closure);
 
-			$this->assertEquals( $expected, $this->subject->{$alias}() );
+			$this->assertEquals( $expected, $this->subject->test() );
+
 		}
+
+		/** @test */
+		public function aliases_can_be_used_to_resolve_objects_from_the_ioc_container () {
+
+			$container = new BaseContainerAdapter();
+			$container->bind('foobar', function () {
+
+				return new \stdClass();
+
+			});
+
+			$this->subject->container = $container;
+
+			$this->subject->alias('foo', 'foobar');
+
+			$this->assertInstanceOf(\stdClass::class, $this->subject->foo());
+
+
+		}
+
+		/** @test */
+		public function methods_can_be_called_on_objects_in_the_ioc_container () {
+
+			$container = new BaseContainerAdapter();
+			$container->bind('foobar', function () {
+
+				return new Foobar();
+
+			});
+
+			$this->subject->container = $container;
+
+			$this->subject->alias('foo', 'foobar', 'baz');
+
+			$this->assertSame('BAZ', $this->subject->foo('baz'));
+
+
+		}
+
+
 
 	}
 
@@ -144,5 +137,15 @@
 
 		}
 
+
+	}
+
+	class Foobar {
+
+		public function baz ($baz) {
+
+			return strtoupper($baz);
+
+		}
 
 	}

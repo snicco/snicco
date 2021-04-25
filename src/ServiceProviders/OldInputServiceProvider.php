@@ -33,8 +33,7 @@
 			});
 
 
-			$app = $container[ WPEMERGE_APPLICATION_KEY ];
-			$app->alias( 'oldInput', WPEMERGE_OLD_INPUT_KEY );
+
 
 
 		}

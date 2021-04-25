@@ -94,7 +94,6 @@
 
 			}
 
-
 			if ( ! $this->hasAlias( $method ) ) {
 
 				throw new BadMethodCallException( 'Method: ' . $method . ' does not exist.');
