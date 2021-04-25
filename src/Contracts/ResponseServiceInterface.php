@@ -25,4 +25,12 @@
 		 */
 		public function sendHeaders( ResponseInterface $response ) :void ;
 
+		/**
+		 * Send a complete response to the client in one shot.
+		 *
+		 * @param  ResponseInterface $response
+		 * @return void
+		 */
+		public function respond ( ResponseInterface $response) :void;
+
 	}

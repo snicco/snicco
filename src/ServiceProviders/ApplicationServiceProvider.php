@@ -46,21 +46,12 @@
 
 			$cache_dir = MixedType::addTrailingSlash( $upload_dir['basedir'] ) . 'wpemerge' . DIRECTORY_SEPARATOR . 'cache';
 
+			/** @todo Refactor to custom filesystem class. */
 			$this->extendConfig( $container, 'cache', [
 				'path' => $cache_dir,
 			] );
 
-			$container->bind( WPEMERGE_APPLICATION_GENERIC_FACTORY_KEY, function ( $container ) {
 
-				return new GenericFactory(
-					$container[ WPEMERGE_CONTAINER_ADAPTER ]
-				);
-			} );
-
-			$container->bind( WPEMERGE_APPLICATION_CLOSURE_FACTORY_KEY, function ( $container ) {
-
-				return new ClosureFactory( $container[ WPEMERGE_APPLICATION_GENERIC_FACTORY_KEY ] );
-			} );
 
 			$container->singleton( RouteModelResolver::class, function ($container) {
 
@@ -87,7 +78,6 @@
 
 			});
 
-
 			$app = $container[ WPEMERGE_APPLICATION_KEY ];
 			$app->alias( 'app', WPEMERGE_APPLICATION_KEY );
 			$app->alias( 'closure', WPEMERGE_APPLICATION_CLOSURE_FACTORY_KEY );
@@ -97,8 +87,9 @@
 
 		public function bootstrap( $container ) {
 
-			$cache_dir = $container[ WPEMERGE_CONFIG_KEY ]['cache']['path'];
-			wp_mkdir_p( $cache_dir );
+			/** @todo Refactor to custom filesystem class.  */
+			// $cache_dir = $container[ WPEMERGE_CONFIG_KEY ]['cache']['path'];
+			// wp_mkdir_p( $cache_dir );
 
 		}
 

@@ -4,7 +4,6 @@
 	namespace WPEmerge\Application;
 
 	use Contracts\ContainerAdapter;
-	use WPEmerge\Controllers\ControllersServiceProvider;
 	use WPEmerge\Csrf\CsrfServiceProvider;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\ServiceProviders\EventServiceProvider;
@@ -24,7 +23,7 @@
 	 * Load core service providers that hold all internal services
 	 * required for every request.
 	 */
-	trait LoadsServiceProvidersTrait {
+	trait LoadsServiceProviders {
 
 		/**
 		 * Core service providers
@@ -56,13 +55,14 @@
 		 *
 		 * @return void
 		 */
-		private function loadServiceProviders( ContainerAdapter $container ) {
+		public function loadServiceProviders( ContainerAdapter $container ) {
 
 			$user_providers = collect( $container[ WPEMERGE_CONFIG_KEY ] )->get( 'providers', [] );
 
 			$providers = collect( $this->service_providers )->merge( $user_providers );
 
 			$container[ WPEMERGE_SERVICE_PROVIDERS_KEY ] = $providers->all();
+
 
 			$providers = $providers->each( [ $this, 'isValid' ] )
 			                       ->map( [ $this, 'instantiate' ] )
@@ -143,7 +143,7 @@
 		 */
 		private function addToContainer( ServiceProviderInterface $provider ) {
 
-			$this->container()[ get_class( $provider ) ] = $provider;
+			$this->containerAdapter()[ get_class( $provider ) ] = $provider;
 
 
 		}

@@ -56,7 +56,7 @@
 		 *
 		 * @return void
 		 */
-		public function respond( ResponseInterface $response ) {
+		public function respond( ResponseInterface $response ) :void {
 
 			if ( ! headers_sent() ) {
 				$this->sendHeaders( $response );
