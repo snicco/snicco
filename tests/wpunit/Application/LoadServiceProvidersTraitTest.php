@@ -4,6 +4,7 @@
 	namespace Tests\wpunit\Application;
 
 	use Codeception\TestCase\WPTestCase;
+	use WPEmerge\ServiceProviders\AliasServiceProvider;
 	use WPEmerge\ServiceProviders\ApplicationServiceProvider;
 	use WPEmerge\Csrf\CsrfServiceProvider;
 	use WPEmerge\ServiceProviders\ExceptionsServiceProvider;
@@ -24,6 +25,7 @@
 
 		private $service_providers = [
 
+			AliasServiceProvider::class,
 			ApplicationServiceProvider::class,
 			KernelsServiceProvider::class,
 			ExceptionsServiceProvider::class,
@@ -33,12 +35,7 @@
 			ViewServiceProvider::class,
 			MiddlewareServiceProvider::class,
 			CsrfServiceProvider::class,
-
-
-			#
 			FlashServiceProvider::class,
-
-			#
 			OldInputServiceProvider::class,
 
 

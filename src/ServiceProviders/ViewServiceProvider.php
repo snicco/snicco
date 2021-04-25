@@ -80,23 +80,6 @@
 			} );
 
 
-			$app = $container[ WPEMERGE_APPLICATION_KEY ];
-			$app->alias( 'views', WPEMERGE_VIEW_SERVICE_KEY );
-			$app->alias( 'view', function () use ( $app ) {
-
-				return call_user_func_array( [ $app->views(), 'make' ], func_get_args() );
-			} );
-			$app->alias( 'render', function () use ( $app ) {
-
-				return call_user_func_array( [ $app->views(), 'render' ], func_get_args() );
-			} );
-			$app->alias( 'layoutContent', function () use ( $app ) {
-
-				$engine = $app->resolve( WPEMERGE_VIEW_PHP_VIEW_ENGINE_KEY );
-
-				echo $engine->getLayoutContent();
-
-			} );
 		}
 
 

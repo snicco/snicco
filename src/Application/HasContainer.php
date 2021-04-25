@@ -13,7 +13,7 @@
 		private $container_adapter;
 
 
-		public function containerAdapter() : ?ContainerAdapter {
+		public function container() : ?ContainerAdapter {
 
 			return $this->container_adapter;
 

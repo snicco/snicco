@@ -1,35 +1,32 @@
 <?php
 
-namespace WPEmerge\Csrf;
 
-use WPEmerge\Contracts\ServiceProviderInterface;
+	namespace WPEmerge\Csrf;
 
-/**
- * Provide CSRF dependencies.
- *
- * @codeCoverageIgnore
- */
-class CsrfServiceProvider implements ServiceProviderInterface {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function register( $container ) {
-		$container[ WPEMERGE_CSRF_KEY ] = function () {
-			return new Csrf();
-		};
+	use WPEmerge\Contracts\ServiceProviderInterface;
 
-		$container[ CsrfMiddleware::class ] = function ( $c ) {
-			return new CsrfMiddleware( $c[ WPEMERGE_CSRF_KEY ] );
-		};
 
-		$app = $container[ WPEMERGE_APPLICATION_KEY ];
-		$app->alias( 'csrf', WPEMERGE_CSRF_KEY );
+	class CsrfServiceProvider implements ServiceProviderInterface {
+
+
+		public function register( $container ) {
+
+			$container[ WPEMERGE_CSRF_KEY ] = function () {
+
+				return new Csrf();
+			};
+
+			$container[ CsrfMiddleware::class ] = function ( $c ) {
+
+				return new CsrfMiddleware( $c[ WPEMERGE_CSRF_KEY ] );
+			};
+
+
+		}
+
+
+		public function bootstrap( $container ) {
+			// Nothing to bootstrap.
+		}
+
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function bootstrap( $container ) {
-		// Nothing to bootstrap.
-	}
-}

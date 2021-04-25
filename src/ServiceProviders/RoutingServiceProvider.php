@@ -23,10 +23,7 @@
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Routing\RouteRegistrar;
 
-	/**
-	 * Provide routing dependencies
-	 *
-	 */
+
 	class RoutingServiceProvider implements ServiceProviderInterface {
 
 		use ExtendsConfigTrait;
@@ -81,7 +78,7 @@
 			// 	],
 			// ] );
 
-			$container[ WPEMERGE_ROUTING_CONDITION_TYPES_KEY ] = static::$condition_types;
+			$container->instance(WPEMERGE_ROUTING_CONDITION_TYPES_KEY, static::$condition_types);
 
 
 			$container->singleton( WPEMERGE_ROUTING_ROUTER_KEY, function ( $c ) {
@@ -106,9 +103,7 @@
 
 			} );
 
-			$app = $container[ WPEMERGE_APPLICATION_KEY ];
-			$app->alias( 'route', WPEMERGE_ROUTING_ROUTE_BLUEPRINT_KEY );
-			$app->alias( 'routeUrl', WPEMERGE_ROUTING_ROUTER_KEY, 'getRouteUrl' );
+
 
 		}
 

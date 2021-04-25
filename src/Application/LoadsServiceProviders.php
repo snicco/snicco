@@ -6,6 +6,7 @@
 	use Contracts\ContainerAdapter;
 	use WPEmerge\Csrf\CsrfServiceProvider;
 	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\ServiceProviders\AliasServiceProvider;
 	use WPEmerge\ServiceProviders\EventServiceProvider;
 	use WPEmerge\ServiceProviders\ExceptionsServiceProvider;
 	use WPEmerge\ServiceProviders\KernelsServiceProvider;
@@ -31,6 +32,7 @@
 		 * @var string[]
 		 */
 		private $service_providers = [
+			AliasServiceProvider::class,
 			ApplicationServiceProvider::class,
 			KernelsServiceProvider::class,
 			ExceptionsServiceProvider::class,
@@ -143,7 +145,7 @@
 		 */
 		private function addToContainer( ServiceProviderInterface $provider ) {
 
-			$this->containerAdapter()[ get_class( $provider ) ] = $provider;
+			$this->container()[ get_class( $provider ) ] = $provider;
 
 
 		}

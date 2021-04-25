@@ -32,7 +32,7 @@
 
 			$this->assertInstanceOf( Application::class, $application );
 
-			$this->assertSame($base_container, $application->containerAdapter());
+			$this->assertSame($base_container, $application->container());
 
 		}
 
@@ -78,7 +78,7 @@
 
 			$app->bootstrap(['foo' => 'bar']);
 
-			$this->assertEquals($app->containerAdapter()[WPEMERGE_CONFIG_KEY]['foo'], 'bar');
+			$this->assertEquals($app->container()[WPEMERGE_CONFIG_KEY]['foo'], 'bar');
 
 		}
 
@@ -91,8 +91,8 @@
 				[ 'providers' => [ UserServiceProvider::class, ], ],
 			);
 
-			$this->assertEquals( 'bar', $app->containerAdapter()['foo'] );
-			$this->assertEquals( 'bar_bootstrapped', $app->containerAdapter()['foo_bootstrapped'] );
+			$this->assertEquals( 'bar', $app->container()['foo'] );
+			$this->assertEquals( 'bar_bootstrapped', $app->container()['foo_bootstrapped'] );
 
 
 		}
@@ -105,7 +105,7 @@
 
 			$app = new Application($container);
 
-			$this->assertSame($container, $app->containerAdapter());
+			$this->assertSame($container, $app->container());
 
 
 		}

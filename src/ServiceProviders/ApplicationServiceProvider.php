@@ -33,7 +33,6 @@
 	 */
 	class ApplicationServiceProvider implements ServiceProviderInterface {
 
-
 		use ExtendsConfigTrait;
 
 		public function register( ContainerAdapter $container ) {
