@@ -38,6 +38,7 @@
 
 		public function register( $container ) {
 
+			/** @todo Refactor to custom class without wp functions */
 			$this->extendConfig( $container, 'views', [
 				get_stylesheet_directory(),
 				get_template_directory(),

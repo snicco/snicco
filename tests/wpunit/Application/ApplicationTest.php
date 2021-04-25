@@ -4,182 +4,147 @@
 	namespace Tests\wpunit\Application;
 
 	use Codeception\TestCase\WPTestCase;
-	use Exception;
-	use Mockery;
+	use Contracts\ContainerAdapter;
+	use Mockery as m;
 	use SniccoAdapter\BaseContainerAdapter;
 	use WPEmerge\Application\Application;
 	use WPEmerge\Contracts\ServiceProviderInterface;
+	use WPEmerge\Exceptions\ConfigurationException;
 
-	/**
-	 * @coversDefaultClass  \WPEmerge\Application\Application
-	 */
 	class ApplicationTest extends WPTestCase {
 
-		public $container;
 
-		public $subject;
-
-		public function setUp() : void {
-
-			parent::setUp();
-
-			$this->container = new BaseContainerAdapter();
-			$this->subject   = new Application( $this->container, false );
-
-			$this->container[ WPEMERGE_APPLICATION_KEY ] = $this->subject;
-
-		}
 
 		public function tearDown() :void {
 
-			Mockery::close();
+			m::close();
 			parent::tearDown();
-			unset( $this->container );
-			unset( $this->subject );
 
 		}
 
-		/**
-		 * @covers ::__construct
-		 */
-		public function testConstruct() {
 
-			$container = new BaseContainerAdapter();
-			$subject   = new Application( $container );
-			$this->assertSame( $container, $subject->container() );
+		/** @test */
+		public function the_static_constructor_returns_an_application_instance() {
 
-		}
+			$base_container = new BaseContainerAdapter();
 
-		/**
-		 * @covers ::isBootstrapped
-		 * @covers ::bootstrap
-		 */
-		public function testIsBootstrapped() {
+			$application = Application::create($base_container);
 
-			$this->assertEquals( false, $this->subject->isBootstrapped() );
-			$this->subject->bootstrap( [], false );
-			$this->assertEquals( true, $this->subject->isBootstrapped() );
+			$this->assertInstanceOf( Application::class, $application );
+
+			$this->assertSame($base_container, $application->containerAdapter());
 
 		}
 
-		/**
-		 *
-		 * @covers ::bootstrap
-		 *
-		 */
-		public function testBootstrap_CalledMultipleTimes_ThrowException() {
+		/** @test */
+		public function the_application_cant_be_bootstrapped_twice() {
 
-			$this->expectException( Exception::class);
-			$this->expectExceptionMessage( 'already bootstrapped');
+			$app = $this->newApplication();
 
-			$this->subject->bootstrap( [], false );
-			$this->subject->bootstrap( [], false );
+			try {
+
+				$app->bootstrap( [] );
+
+			}
+
+			catch (\Throwable $e ) {
+
+				$this->fail('Application could not be bootstrapped.' . PHP_EOL . $e->getMessage() );
+
+			}
+
+			try {
+
+				$app->bootstrap( [] );
+
+				$this->fail('Application was bootstrapped two times.');
+
+			}
+
+			catch ( ConfigurationException $e ) {
+
+				$this->assertStringContainsString('already bootstrapped', $e->getMessage());
+
+			}
+
+
+
 		}
 
-		/**
-		 * @covers ::bootstrap
-		 * @covers ::registerServiceProviders
-		 * @covers ::bootstrapServiceProviders
-		 */
-		public function testBootstrap_RegisterServiceProviders() {
+		/** @test */
+		public function user_provided_config_gets_bound_into_the_di_container() {
 
-			$this->subject->bootstrap( [
-				'providers' => [
-					ApplicationTestServiceProviderMock::class,
-				],
-			], false );
+			$app = $this->newApplication();
 
-			$this->assertTrue( true );
+			$app->bootstrap(['foo' => 'bar']);
+
+			$this->assertEquals($app->containerAdapter()[WPEMERGE_CONFIG_KEY]['foo'], 'bar');
+
 		}
 
-		/**
-		 * @covers ::bootstrap
-		 */
-		public function testBootstrap_RunKernel() {
+		/** @test */
+		public function users_can_register_service_providers() {
 
-			$this->subject->bootstrap( [
-				'providers' => [
-					ApplicationTestKernelServiceProviderMock::class,
-				],
-			], true );
+			$app = $this->newApplication();
 
-			$this->assertTrue( true );
+			$app->bootstrap(
+				[ 'providers' => [ UserServiceProvider::class, ], ],
+			);
+
+			$this->assertEquals( 'bar', $app->containerAdapter()['foo'] );
+			$this->assertEquals( 'bar_bootstrapped', $app->containerAdapter()['foo_bootstrapped'] );
+
+
 		}
 
-		/**
-		 * @covers ::resolve
-		 */
-		public function testResolve_NonexistentKey_ReturnNull() {
+		/** @test */
+		public function custom_container_adapters_can_be_used() {
 
-			$expected      = null;
-			$container_key = 'nonexistentcontainerkey';
+			$container = m::mock(ContainerAdapter::class );
+			$container->shouldIgnoreMissing();
 
-			$this->subject->bootstrap( [], false );
-			$this->assertSame( $expected, $this->subject->resolve( $container_key ) );
+			$app = new Application($container);
+
+			$this->assertSame($container, $app->containerAdapter());
+
+
 		}
 
-		/**
-		 * @covers ::resolve
-		 */
-		public function testResolve_ExistingKey_IsResolved() {
 
-			$expected      = 'foobar';
-			$container_key = 'test';
 
-			$container                   = $this->subject->container();
-			$container[ $container_key ] = $expected;
+		private function newApplication() : Application {
 
-			$this->subject->bootstrap( [], false );
-			$this->assertSame( $expected, $this->subject->resolve( $container_key ) );
+			return new Application(new BaseContainerAdapter());
+
+		}
+
+
+
+
+
+
+
+	}
+
+	class UserServiceProvider implements ServiceProviderInterface{
+
+
+		public function register( ContainerAdapter $container ) {
+
+			$container->instance('foo', 'bar');
+
+		}
+
+		public function bootstrap( ContainerAdapter $container ) {
+
+			$container->instance('foo_bootstrapped', 'bar_bootstrapped');
+
 		}
 
 	}
 
 
-	class ApplicationTestServiceProviderMock implements ServiceProviderInterface {
 
 
-		/**
-		 * @var Mockery\MockInterface|ServiceProviderInterface
-		 */
-		private $mock;
-
-		public function __construct() {
-
-			$this->mock = Mockery::mock( ServiceProviderInterface::class );
-			$this->mock->shouldReceive( 'register' )
-			           ->once();
-			$this->mock->shouldReceive( 'bootstrap' )
-			           ->once();
-		}
-
-		public function register( $container ) {
-
-			call_user_func_array( [ $this->mock, 'register' ], func_get_args() );
-		}
-
-		public function bootstrap( $container ) {
-
-			call_user_func_array( [ $this->mock, 'bootstrap' ], func_get_args() );
-		}
-
-	}
 
 
-	class ApplicationTestKernelServiceProviderMock implements ServiceProviderInterface {
-
-		public function register( $container ) {
-
-			$mock = Mockery::mock();
-
-			$mock->shouldReceive( 'bootstrap' )
-			     ->once();
-
-			$container[ WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY ] = $mock;
-		}
-
-		public function bootstrap( $container ) {
-			// Do nothing.
-		}
-
-	}

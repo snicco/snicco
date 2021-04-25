@@ -44,6 +44,7 @@
 
 			$this->router       = $router;
 			$this->view_service = $view_service;
+
 		}
 
 		/**

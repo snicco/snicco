@@ -21,8 +21,7 @@
 	use WPEmerge\Routing\Conditions\UrlCondition;
 	use WPEmerge\Routing\RouteBlueprint;
 	use WPEmerge\Routing\Router;
-
-
+	use WPEmerge\Routing\RouteRegistrar;
 
 	/**
 	 * Provide routing dependencies
@@ -84,6 +83,7 @@
 
 			$container[ WPEMERGE_ROUTING_CONDITION_TYPES_KEY ] = static::$condition_types;
 
+
 			$container->singleton( WPEMERGE_ROUTING_ROUTER_KEY, function ( $c ) {
 
 				return new Router(
@@ -115,7 +115,10 @@
 
 		public function bootstrap( $container ) {
 
-			// Nothing to bootstrap.
+			$blueprint = $container->make(WPEMERGE_ROUTING_ROUTE_BLUEPRINT_KEY );
+			$config = $container->make(WPEMERGE_CONFIG_KEY);
+
+			( new RouteRegistrar($blueprint, $config ) )->loadRoutes();
 
 		}
 

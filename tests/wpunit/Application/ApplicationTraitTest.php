@@ -4,27 +4,18 @@
 	namespace Tests\wpunit\Application;
 
 	use BadMethodCallException;
-	use Codeception\TestCase\WPTestCase;
-	use Mockery;
+	use Mockery as m;
+	use PHPUnit\Framework\TestCase;
 	use WPEmerge\Application\ApplicationTrait;
 	use WPEmerge\Exceptions\ConfigurationException;
 
-	/**
-	 * @coversDefaultClass \WPEmerge\Application\ApplicationTrait
-	 */
-	class ApplicationTraitTest extends WPTestCase {
+
+	class ApplicationTraitTest extends TestCase {
 
 
-		protected function setUp() : void {
+		protected function tearDown() : void {
 
-
-			parent::setUp();
-
-		}
-
-		public function tearDown() : void {
-
-			Mockery::close();
+			m::close();
 
 			FooApp::setApplication( null );
 			BarApp::setApplication( null );
@@ -33,31 +24,17 @@
 
 		}
 
-		/**
-		 * @covers ::make
-		 */
-		public function testMake_NullInstance_NewInstance() {
+		/** @test */
+		public function a_new_app_instance_can_be_created() {
 
 			$this->assertNull( FooApp::getApplication() );
 			$app = FooApp::make();
 			$this->assertSame( $app, FooApp::getApplication() );
+
 		}
 
-		/**
-		 * @covers ::make
-		 */
-		public function testMake_OldInstance_NewInstance() {
-
-			$old = FooApp::make();
-			$this->assertSame( $old, FooApp::getApplication() );
-			$new = FooApp::make();
-			$this->assertSame( $new, FooApp::getApplication() );
-		}
-
-		/**
-		 * @covers ::make
-		 */
-		public function testMake_MultipleApps_DifferentInstances() {
+		/** @test */
+		public function multiple_app_instances_can_exists_independently(  ) {
 
 			$this->assertNull( FooApp::getApplication() );
 			$this->assertNull( BarApp::getApplication() );
@@ -72,12 +49,12 @@
 			$this->assertSame( $foo, FooApp::getApplication() );
 			$this->assertSame( $bar, BarApp::getApplication() );
 			$this->assertNotSame( FooApp::getApplication(), BarApp::getApplication() );
+
 		}
 
-		/**
-		 * @covers ::__callStatic
-		 */
-		public function testCallStatic_NullInstance_Exception() {
+
+		/** @test */
+		public function exceptions_get_thrown_when_trying_to_call_a_method_on_a_non_instantiated_application_instance() {
 
 			$this->expectExceptionMessage( 'Application instance not created' );
 			$this->expectException( ConfigurationException::class );
@@ -85,45 +62,35 @@
 			FooApp::foo();
 		}
 
-		/**
-		 * @covers ::__callStatic
-		 */
-		public function testCallStatic_InvalidMethod_Exception() {
+		/** @test */
+		public function exceptions_get_thrown_when_trying_to_call_a_non_callable_method() {
 
 			$this->expectExceptionMessage( 'does not exist' );
 			$this->expectException( BadMethodCallException::class );
 
 			FooApp::make();
-			FooApp::traitTestMagicMethod();
+			FooApp::badMethod();
+
 		}
 
-		/**
-		 * @covers ::__callStatic
-		 */
-		public function testCallStatic_Method_MethodCalled() {
+
+		/** @test */
+		public function static_method_calls_get_forwarded_to_the_application_with() {
 
 			FooApp::make();
-			FooApp::alias( 'traitTestMagicMethod', function () {
+			FooApp::alias( 'application_method', function ( $foo , $bar, $baz) {
 
-				return 'foo';
+				return $foo . $bar.  $baz;
 			} );
 
-			$this->assertTrue( FooApp::hasAlias( 'traitTestMagicMethod' ) );
+			$this->assertSame( 'foobarbaz' , FooApp::application_method('foo', 'bar', 'baz') );
+
+
+
 		}
 
-		/**
-		 * @covers ::__callStatic
-		 */
-		public function testCallStatic_MagicMethod_MethodCalled() {
 
-			FooApp::make();
-			FooApp::alias( 'traitTestMagicMethod', function () {
 
-				return 'foo';
-			} );
-
-			$this->assertSame( 'foo', FooApp::traitTestMagicMethod() );
-		}
 
 	}
 
