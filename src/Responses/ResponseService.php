@@ -4,12 +4,14 @@
 	namespace WPEmerge\Responses;
 
 	use GuzzleHttp\Psr7;
+	use GuzzleHttp\Psr7\Utils;
 	use GuzzleHttp\Psr7\Response as Psr7Response;
 	use WPEmerge\Contracts\RequestInterface;
 	use Psr\Http\Message\ResponseInterface;
 	use Psr\Http\Message\StreamInterface;
 	use WPEmerge\Contracts\ResponseServiceInterface;
 	use WPEmerge\View\ViewService;
+
 
 	/**
 	 * A collection of tools for the creation of responses.
@@ -98,50 +100,6 @@
 		}
 
 		/**
-		 * Get a response's body stream so it is ready to be read.
-		 *
-		 * @codeCoverageIgnore
-		 *
-		 * @param  ResponseInterface  $response
-		 *
-		 * @return StreamInterface
-		 */
-		protected function getBody( ResponseInterface $response ) {
-
-			$body = $response->getBody();
-			if ( $body->isSeekable() ) {
-				$body->rewind();
-			}
-
-			return $body;
-		}
-
-		/**
-		 * Get a response's body's content length.
-		 *
-		 * @codeCoverageIgnore
-		 *
-		 * @param  ResponseInterface  $response
-		 *
-		 * @return integer
-		 */
-		protected function getBodyContentLength( ResponseInterface $response ) {
-
-			$content_length = $response->getHeaderLine( 'Content-Length' );
-
-			if ( ! $content_length ) {
-				$body           = $this->getBody( $response );
-				$content_length = $body->getSize();
-			}
-
-			if ( ! is_numeric( $content_length ) ) {
-				$content_length = 0;
-			}
-
-			return (integer) $content_length;
-		}
-
-		/**
 		 * Send a request's body to the client.
 		 *
 		 * @codeCoverageIgnore
@@ -164,51 +122,6 @@
 		}
 
 		/**
-		 * Send a body with an unknown length to the client.
-		 *
-		 * @codeCoverageIgnore
-		 *
-		 * @param  StreamInterface  $body
-		 * @param  integer  $chunk_size
-		 *
-		 * @return void
-		 */
-		protected function sendBodyWithoutLength( StreamInterface $body, $chunk_size ) {
-
-			while ( connection_status() === CONNECTION_NORMAL && ! $body->eof() ) {
-				echo $body->read( $chunk_size );
-			}
-		}
-
-		/**
-		 * Send a body with a known length to the client.
-		 *
-		 * @codeCoverageIgnore
-		 *
-		 * @param  StreamInterface  $body
-		 * @param  integer  $length
-		 * @param  integer  $chunk_size
-		 *
-		 * @return void
-		 */
-		protected function sendBodyWithLength( StreamInterface $body, $length, $chunk_size ) {
-
-			$content_left = $length;
-
-			while ( connection_status() === CONNECTION_NORMAL && $content_left > 0 ) {
-				$read = min( $chunk_size, $content_left );
-
-				if ( $read <= 0 ) {
-					break;
-				}
-
-				echo $body->read( $read );
-
-				$content_left -= $read;
-			}
-		}
-
-		/**
 		 * Create a new response object.
 		 *
 		 * @return ResponseInterface
@@ -217,6 +130,7 @@
 
 			return new Psr7Response();
 		}
+
 
 		/**
 		 * Get a cloned response with the passed string as the body.
@@ -228,7 +142,7 @@
 		public function output( $output ) {
 
 			$response = $this->response();
-			$response = $response->withBody( Psr7\stream_for( $output ) );
+			$response = $response->withBody( Utils::streamFor( $output ) );
 
 			return $response;
 		}
@@ -244,7 +158,7 @@
 
 			$response = $this->response();
 			$response = $response->withHeader( 'Content-Type', 'application/json' );
-			$response = $response->withBody( Psr7\stream_for( wp_json_encode( $data ) ) );
+			$response = $response->withBody(  Utils::streamFor( wp_json_encode( $data ) ) );
 
 			return $response;
 		}
@@ -256,9 +170,9 @@
 		 *
 		 * @return RedirectResponse
 		 */
-		public function redirect( RequestInterface $request = null ) {
+		public function redirect( RequestInterface $request = null )  {
 
-			$request = $request ? $request : $this->request;
+			$request = $request ?? $this->request;
 
 			return new RedirectResponse( $request );
 		}
@@ -267,6 +181,8 @@
 		 * Get an error response, with status headers and rendering a suitable view as the body.
 		 *
 		 * @param  integer  $status
+		 *
+		 * @todo This method does not belong here. SRP.
 		 *
 		 * @return ResponseInterface
 		 */
@@ -287,6 +203,95 @@
 			return $this->view_service->make( $views )
 			                          ->toResponse()
 			                          ->withStatus( $status );
+		}
+
+		/**
+		 * Get a response's body stream so it is ready to be read.
+		 *
+		 *
+		 * @param  ResponseInterface  $response
+		 *
+		 * @return StreamInterface
+		 */
+		private function getBody( ResponseInterface $response ) : StreamInterface {
+
+			$body = $response->getBody();
+			if ( $body->isSeekable() ) {
+				$body->rewind();
+			}
+
+			return $body;
+		}
+
+
+		/**
+		 * Get a response's body's content length.
+		 *
+		 * @codeCoverageIgnore
+		 *
+		 * @param  ResponseInterface  $response
+		 *
+		 * @return integer
+		 */
+		private function getBodyContentLength( ResponseInterface $response ) : int {
+
+			$content_length = $response->getHeaderLine( 'Content-Length' );
+
+			if ( ! $content_length ) {
+				$body           = $this->getBody( $response );
+				$content_length = $body->getSize();
+			}
+
+			if ( ! is_numeric( $content_length ) ) {
+				$content_length = 0;
+			}
+
+			return (integer) $content_length;
+		}
+
+		/**
+		 * Send a body with an unknown length to the client.
+		 *
+		 * @codeCoverageIgnore
+		 *
+		 * @param  StreamInterface  $body
+		 * @param  integer  $chunk_size
+		 *
+		 * @return void
+		 */
+		private function sendBodyWithoutLength( StreamInterface $body, $chunk_size ) {
+
+			while ( connection_status() === CONNECTION_NORMAL && ! $body->eof() ) {
+				echo $body->read( $chunk_size );
+			}
+		}
+
+		/**
+		 * Send a body with a known length to the client.
+		 *
+		 * @codeCoverageIgnore
+		 *
+		 * @param  StreamInterface  $body
+		 * @param  integer  $length
+		 * @param  integer  $chunk_size
+		 *
+		 * @return void
+		 */
+		private function sendBodyWithLength( StreamInterface $body, $length, $chunk_size ) {
+
+			$content_left = $length;
+
+			while ( connection_status() === CONNECTION_NORMAL && $content_left > 0 ) {
+				$read = min( $chunk_size, $content_left );
+
+				if ( $read <= 0 ) {
+					break;
+				}
+
+				echo $body->read( $read );
+
+				$content_left -= $read;
+			}
 		}
 
 	}

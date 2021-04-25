@@ -4,8 +4,10 @@
 
 	namespace WPEmerge\ServiceProviders;
 
+	use Whoops\Exception\Inspector;
 	use Whoops\Handler\PrettyPageHandler;
-	use Whoops\Run;
+	use Whoops\Run as WhoopsRun;
+	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Exceptions\ErrorHandler;
 	use WPEmerge\Exceptions\Whoops\DebugDataProvider;
@@ -32,12 +34,6 @@
 				'pretty_errors' => true,
 			] );
 
-			$container[ DebugDataProvider::class ] = function ( $container ) {
-
-				return new DebugDataProvider( $container );
-
-			};
-
 			$container[ PrettyPageHandler::class ] = function ( $container ) {
 
 				$handler = new PrettyPageHandler();
@@ -48,21 +44,22 @@
 					'Whoops',
 				] ) );
 
-				$handler->addDataTableCallback( 'WP Emerge: Route', function ( $inspector ) use ( $container ) {
+				$handler->addDataTableCallback( 'Current route', function ( Inspector $inspector ) use ( $container ) {
 
-					return $container[ DebugDataProvider::class ]->route( $inspector );
+					return (( new DebugDataProvider() ))->route( $inspector, $container[RequestInterface::class]->route() );
+
 				} );
 
 				return $handler;
 			};
 
-			$container[ Run::class ] = function ( $container ) {
+			$container[ WhoopsRun::class ] = function ( $container ) {
 
-				if ( ! class_exists( Run::class ) ) {
+				if ( ! class_exists( WhoopsRun::class ) ) {
 					return null;
 				}
 
-				$run = new Run();
+				$run = new WhoopsRun();
 				$run->allowQuit( false );
 
 				$handler = $container[ PrettyPageHandler::class ];
@@ -77,7 +74,7 @@
 			$container[ WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY ] = function ( $container ) {
 
 				$debug  = $container[ WPEMERGE_CONFIG_KEY ]['debug'];
-				$whoops = $debug['pretty_errors'] ? $container[ Run::class ] : null;
+				$whoops = $debug['pretty_errors'] ? $container[ WhoopsRun::class ] : null;
 
 				return new ErrorHandler( $container[ WPEMERGE_RESPONSE_SERVICE_KEY ], $whoops, $debug['enable'] );
 			};
@@ -85,7 +82,7 @@
 			$container[ WPEMERGE_EXCEPTIONS_CONFIGURATION_ERROR_HANDLER_KEY ] = function ( $container ) {
 
 				$debug  = $container[ WPEMERGE_CONFIG_KEY ]['debug'];
-				$whoops = $debug['pretty_errors'] ? $container[ Run::class ] : null;
+				$whoops = $debug['pretty_errors'] ? $container[ WhoopsRun::class ] : null;
 
 				return new ErrorHandler( $container[ WPEMERGE_RESPONSE_SERVICE_KEY ], $whoops, $debug['enable'] );
 			};

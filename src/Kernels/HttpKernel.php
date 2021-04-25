@@ -6,22 +6,22 @@
 	use Contracts\ContainerAdapter as Container;
 	use Exception;
 	use Psr\Http\Message\ResponseInterface;
+	use WPEmerge\Contracts\ResponsableInterface;
 	use WPEmerge\Contracts\ResponseServiceInterface;
 	use WPEmerge\Contracts\ErrorHandlerInterface as ErrorHandler;
 	use WPEmerge\Events\HeadersSent;
 	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingRequest;
 	use WPEmerge\Events\BodySent;
+	use WPEmerge\Exceptions\InvalidResponseException;
 	use WPEmerge\Middleware\ExecutesMiddlewareTrait;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Responses\ConvertsToResponseTrait;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Helpers\Pipeline;
 	use WPEmerge\Traits\MiddleWareDefinitions;
 
 	class HttpKernel {
 
-		use ConvertsToResponseTrait;
 		use ExecutesMiddlewareTrait;
 		use MiddleWareDefinitions;
 
@@ -48,20 +48,19 @@
 
 			ResponseServiceInterface $response_service,
 			Router $router,
-			ErrorHandler $error_handler,
-			Container $container
+			Container $container,
+			ErrorHandler $error_handler
 		) {
 
 			$this->response_service = $response_service;
 			$this->router           = $router;
-			$this->error_handler    = $error_handler;
 			$this->container        = $container;
-
+			$this->error_handler    = $error_handler;
 
 		}
 
 
-		public function handle( IncomingRequest $request_event) : void {
+		public function handle( IncomingRequest $request_event ) : void {
 
 
 			// whoops
@@ -144,7 +143,37 @@
 
 		}
 
-		private function sendRequestThroughRouter( RequestInterface $request ) {
+		/**
+		 * @param $response
+		 *
+		 * @return \Psr\Http\Message\ResponseInterface
+		 * @throws \WPEmerge\Exceptions\InvalidResponseException
+		 */
+		private function prepareResponse( $response ) : ResponseInterface {
+
+			if ( $response instanceof ResponseInterface ) {
+
+				return $response;
+
+			}
+
+			if ( is_string( $response ) ) {
+				return $this->response_service->output( $response );
+			}
+
+			if ( is_array( $response ) ) {
+				return $this->response_service->json( $response );
+			}
+
+			if ( $response instanceof ResponsableInterface ) {
+				return $response->toResponse();
+			}
+
+			throw new InvalidResponseException('Invalid Response: ' . $response );
+
+		}
+
+		private function sendRequestThroughRouter( RequestInterface $request ) : ResponseInterface {
 
 			if ( $this->isStrictMode() ) {
 
@@ -158,9 +187,11 @@
 
 			$middleware = $this->withMiddleware() ? $this->middleware_groups['global'] : [];
 
-			return $pipeline->send( $request )
+			$response = $pipeline->send( $request )
 			                ->through( $middleware )
 			                ->then( $this->dispatchToRouter() );
+
+			return $this->prepareResponse($response);
 
 		}
 

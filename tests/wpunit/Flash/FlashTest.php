@@ -6,11 +6,11 @@ use ArrayAccess;
 use Codeception\TestCase\WPTestCase;
 use Mockery;
 use stdClass;
-use WPEmerge\Flash\Flash;
+use WPEmerge\Session\Flash;
 use WP_UnitTestCase;
 
 /**
- * @coversDefaultClass \WPEmerge\Flash\Flash
+ * @coversDefaultClass \WPEmerge\Session\Flash
  */
 class FlashTest extends WPTestCase {
 	/**

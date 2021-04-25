@@ -120,7 +120,7 @@
 	}
 
 	if ( ! defined( 'WPEMERGE_FLASH_KEY' ) ) {
-		define( 'WPEMERGE_FLASH_KEY', \WPEmerge\Flash\Flash::class );
+		define( 'WPEMERGE_FLASH_KEY', \WPEmerge\Session\Flash::class );
 	}
 
 	if ( ! defined( 'WPEMERGE_OLD_INPUT_KEY' ) ) {

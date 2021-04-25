@@ -28,10 +28,7 @@
 		 */
 		public $force_route_match = false;
 
-		/**
-		 * @return static
-		 */
-		public static function fromGlobals() {
+		public static function fromGlobals() : Request {
 
 			$request = parent::fromGlobals();
 			$new     = new self(

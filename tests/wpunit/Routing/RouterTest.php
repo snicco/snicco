@@ -1,17 +1,19 @@
 <?php
 
 
-	namespace WPEmergeTests\Routing;
+	namespace Tests\wpunit\Routing;
 
 	use Codeception\TestCase\WPTestCase;
 	use Mockery as m;
 	use SniccoAdapter\BaseContainerAdapter;
-	use WPEmerge\Helpers\Handler;
-	use WPEmerge\Helpers\HandlerFactory;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Routing\Conditions\ConditionFactory;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\UrlableInterface;
+	use WPEmerge\Routing\Conditions\CustomCondition;
+	use WPEmerge\Routing\Conditions\MultipleCondition;
+	use WPEmerge\Routing\Conditions\NegateCondition;
+	use WPEmerge\Routing\Conditions\UrlCondition;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Contracts\RouteInterface;
 
@@ -25,10 +27,10 @@
 			parent::setUp();
 
 			$this->condition_factory = new ConditionFactory( [
-				'url'      => \WPEmerge\Routing\Conditions\UrlCondition::class,
-				'custom'   => \WPEmerge\Routing\Conditions\CustomCondition::class,
-				'multiple' => \WPEmerge\Routing\Conditions\MultipleCondition::class,
-				'negate'   => \WPEmerge\Routing\Conditions\NegateCondition::class,
+				'url'      => UrlCondition::class,
+				'custom'   => CustomCondition::class,
+				'multiple' => MultipleCondition::class,
+				'negate'   => NegateCondition::class,
 			] , m::mock(BaseContainerAdapter::class) );
 			$this->handler_factory   = m::mock( HandlerFactory::class )
 			                            ->shouldIgnoreMissing();

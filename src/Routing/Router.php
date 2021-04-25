@@ -24,7 +24,6 @@
 	class Router implements HasRoutesInterface {
 
 		use HasRoutesTrait;
-		use ConvertsToResponseTrait;
 		use HasMiddlewareDefinitionsTrait;
 		use SortsMiddlewareTrait;
 
@@ -429,11 +428,10 @@
 
 			}
 
-			return $this->toResponse( $this->runWithinStack( $route, $request ) );
+			return $this->runWithinStack( $route, $request );
 
 		}
 
-		/** @todo Implement sorting.  */
 		private function runWithinStack( RouteInterface $route, RequestInterface $request ) {
 
 			$middleware = $route->middleware();
@@ -472,7 +470,7 @@
 
 		}
 
-		private function skipMiddleware () {
+		private function skipMiddleware () : bool {
 
 			return $this->container->offsetExists('middleware.disable');
 

@@ -77,28 +77,7 @@ class RedirectResponse extends Psr7Response {
 		return $this->to( $url, $status );
 	}
 
-	/**
-	 *
-	 * Wheter we should abort after script execution.
-	 *
-	 * @param  false  $bool
-	 */
-	public function setAbort ($bool = FALSE) {
 
-			$this->abort = $bool;
-
-	}
-
-	/**
-	 * Return wheter we should abort.
-	 *
-	 * @return bool
-	 */
-	public function abort () {
-
-		return $this->abort;
-
-	}
 
 
 }

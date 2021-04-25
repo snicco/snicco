@@ -4,7 +4,7 @@
 	namespace WPEmerge\ServiceProviders;
 
 	use WPEmerge\Contracts\ServiceProviderInterface;
-	use WPEmerge\Flash\Flash;
+	use WPEmerge\Session\Flash;
 	use WPEmerge\Flash\FlashMiddleware;
 
 

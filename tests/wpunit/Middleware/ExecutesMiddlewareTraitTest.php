@@ -10,10 +10,10 @@
 	use WPEmerge\Application\GenericFactory;
 	use WPEmerge\Middleware\ExecutesMiddlewareTrait;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmergeTests\Routing\HttpKernelTestMiddlewareStub1;
-	use WPEmergeTests\Routing\HttpKernelTestMiddlewareStub2;
-	use WPEmergeTests\Routing\HttpKernelTestMiddlewareStub3;
-	use WPEmergeTests\Routing\HttpKernelTestMiddlewareStubWithParameters;
+	use Tests\wpunit\Routing\HttpKernelTestMiddlewareStub1;
+	use Tests\wpunit\Routing\HttpKernelTestMiddlewareStub2;
+	use Tests\wpunit\Routing\HttpKernelTestMiddlewareStub3;
+	use Tests\wpunit\Routing\HttpKernelTestMiddlewareStubWithParameters;
 
 	/**
 	 * @coversDefaultClass \WPEmerge\Middleware\ExecutesMiddlewareTrait

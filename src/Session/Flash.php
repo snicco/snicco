@@ -2,16 +2,14 @@
 
 
 
-	namespace WPEmerge\Flash;
+	namespace WPEmerge\Session;
 
 	use ArrayAccess;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Helpers\MixedType;
 	use WPEmerge\Support\Arr;
 
-	/**
-	 * Provide a way to flash data into the session for the next request.
-	 */
+
 	class Flash {
 
 		/**
@@ -25,21 +23,21 @@
 		 *
 		 * @var string
 		 */
-		protected $store_key = '';
+		private $store_key = '';
 
 		/**
 		 * Root store array or object implementing ArrayAccess.
 		 *
 		 * @var array|ArrayAccess
 		 */
-		protected $store = null;
+		private $store = null;
 
 		/**
 		 * Flash store array.
 		 *
 		 * @var array
 		 */
-		protected $flashed = [];
+		private $flashed = [];
 
 		/**
 		 * Constructor.
@@ -48,7 +46,7 @@
 		 * @param  array|ArrayAccess  $store
 		 * @param  string  $store_key
 		 */
-		public function __construct( &$store, $store_key = '__wpemergeFlash' ) {
+		public function __construct( &$store, $store_key = 'wpemerge.flash' ) {
 
 			$this->store_key = $store_key;
 			$this->setStore( $store );
@@ -62,7 +60,7 @@
 		 *
 		 * @return boolean
 		 */
-		protected function isValidStore( $store ) {
+		private function isValidStore( $store ) : bool {
 
 			return ( is_array( $store ) || $store instanceof ArrayAccess );
 		}
@@ -72,7 +70,7 @@
 		 *
 		 * @return void
 		 */
-		protected function validateStore() {
+		private function validateStore() {
 
 			if ( ! $this->isValidStore( $this->store ) ) {
 				throw new ConfigurationException(
@@ -136,7 +134,7 @@
 		 *
 		 * @return mixed
 		 */
-		protected function getFromRequest( $request_key, $key = null, $default = [] ) {
+		private function getFromRequest( $request_key, $key = null, $default = [] ) {
 
 			$this->validateStore();
 
@@ -156,7 +154,7 @@
 		 *
 		 * @return void
 		 */
-		protected function addToRequest( $request_key, $key, $new_items ) {
+		private function addToRequest( $request_key, $key, $new_items ) {
 
 			$this->validateStore();
 
@@ -176,7 +174,7 @@
 		 *
 		 * @return void
 		 */
-		protected function clearFromRequest( $request_key, $key = null ) {
+		private function clearFromRequest( $request_key, $key = null ) {
 
 			$this->validateStore();
 
