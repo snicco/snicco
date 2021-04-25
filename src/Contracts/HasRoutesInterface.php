@@ -12,7 +12,7 @@ namespace WPEmerge\Contracts;
 use WPEmerge\Contracts\RouteInterface;
 
 /**
- * Interface for HasRoutesTrait
+ * Interface for RegisteresRoutes
  */
 interface HasRoutesInterface {
 	/**

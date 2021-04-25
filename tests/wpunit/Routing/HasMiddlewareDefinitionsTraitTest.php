@@ -1,19 +1,20 @@
 <?php
 
 
-	namespace WPEmergeTests\Routing;
+	namespace Tests\wpunit\Routing;
 
 	use Closure;
 	use Mockery;
 	use PHPUnit\Framework\TestCase;
-	use WP_UnitTestCase;
-	use WPEmerge\Middleware\HasMiddlewareDefinitionsTrait;
+	use WPEmerge\Traits\CompilesMiddleware;
 	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Traits\HoldsMiddlewareDefinitions;
 
 	/**
-	 * @coversDefaultClass \WPEmerge\Middleware\HasMiddlewareDefinitionsTrait
+	 * @coversDefaultClass \WPEmerge\Traits\CompilesMiddleware
 	 */
 	class HasMiddlewareDefinitionsTraitTest extends TestCase {
+
 
 		public function setUp() :void {
 
@@ -55,7 +56,7 @@
 		public function testExpandMiddleware() {
 
 			$subject = new HasMiddlewareDefinitionsTraitTestImplementation();
-			$subject->setMiddleware( [
+			$subject->setRouteMiddlewareAliases( [
 				'short1' => 'long1',
 				'short2' => 'long2',
 			] );
@@ -73,42 +74,7 @@
 			], $subject->expandMiddleware( [ 'short2', 'group' ] ) );
 		}
 
-		/**
-		 * @covers ::expandMiddlewareGroup
-		 */
-		public function testExpandMiddlewareGroup_Predefined_HasWPEmergeAndGlobalPrepended() {
 
-			$subject = new HasMiddlewareDefinitionsTraitTestImplementation();
-			$subject->setMiddleware( [
-				'short'          => 'long',
-				'global-short'   => 'global-long',
-				'wpemerge-short' => 'wpemerge-long',
-			] );
-			$subject->setMiddlewareGroups( [
-				'wpemerge' => [ 'wpemerge-short' ],
-				'global'   => [ 'global-short' ],
-				'web'      => [],
-				'admin'    => [ 'short' ],
-				'ajax'     => [ 'admin' ],
-			] );
-
-			$this->assertEquals( [
-				[ 'wpemerge-long' ],
-				[ 'global-long' ],
-			], $subject->expandMiddlewareGroup( 'web' ) );
-			$this->assertEquals( [
-				[ 'wpemerge-long' ],
-				[ 'global-long' ],
-				[ 'long' ],
-			], $subject->expandMiddlewareGroup( 'admin' ) );
-			$this->assertEquals( [
-				[ 'wpemerge-long' ],
-				[ 'global-long' ],
-				[ 'wpemerge-long' ],
-				[ 'global-long' ],
-				[ 'long' ],
-			], $subject->expandMiddlewareGroup( 'ajax' ) );
-		}
 
 		/**
 		 * @covers ::expandMiddlewareGroup
@@ -116,7 +82,7 @@
 		public function testExpandMiddlewareGroup_Nested_RecursivelyExpandedGroup() {
 
 			$subject = new HasMiddlewareDefinitionsTraitTestImplementation();
-			$subject->setMiddleware( [
+			$subject->setRouteMiddlewareAliases( [
 				'short' => 'long',
 			] );
 			$subject->setMiddlewareGroups( [
@@ -146,7 +112,7 @@
 		public function testExpandMiddlewareMolecule_DefinedString_Expanded() {
 
 			$subject = new HasMiddlewareDefinitionsTraitTestImplementation();
-			$subject->setMiddleware( [
+			$subject->setRouteMiddlewareAliases( [
 				'short' => 'long',
 			] );
 
@@ -159,7 +125,7 @@
 		public function testExpandMiddlewareMolecule_DefinedStringWithArguments_Expanded() {
 
 			$subject = new HasMiddlewareDefinitionsTraitTestImplementation();
-			$subject->setMiddleware( [
+			$subject->setRouteMiddlewareAliases( [
 				'short' => 'long',
 			] );
 
@@ -192,7 +158,7 @@
 		public function testExpandMiddlewareMolecule_Group_Expanded() {
 
 			$subject = new HasMiddlewareDefinitionsTraitTestImplementation();
-			$subject->setMiddleware( [
+			$subject->setRouteMiddlewareAliases( [
 				'short' => 'long',
 			] );
 			$subject->setMiddlewareGroups( [
@@ -226,7 +192,10 @@
 
 	class HasMiddlewareDefinitionsTraitTestImplementation {
 
-		use HasMiddlewareDefinitionsTrait;
+		use CompilesMiddleware;
+		use HoldsMiddlewareDefinitions;
+
+
 	}
 
 

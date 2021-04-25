@@ -10,7 +10,7 @@
 	/**
 	 * Redirect users who do not have a capability to a specific URL.
 	 */
-	class UserCanMiddleware {
+	class UserCan {
 
 		/**
 		 * Response service.

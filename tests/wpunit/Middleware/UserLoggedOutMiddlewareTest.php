@@ -5,12 +5,12 @@ namespace Tests\wpunit\Responses;
 use Codeception\TestCase\WPTestCase;
 use Mockery;
 use Psr\Http\Message\ResponseInterface;
-use WPEmerge\Middleware\UserLoggedOutMiddleware;
+use WPEmerge\Middleware\UserLoggedOut;
 use WPEmerge\Contracts\RequestInterface;
 use WPEmerge\Responses\ResponseService;
 
 /**
- * @coversDefaultClass \WPEmerge\Middleware\UserLoggedOutMiddleware
+ * @coversDefaultClass \WPEmerge\Middleware\UserLoggedOut
  */
 class UserLoggedOutMiddlewareTest extends WPTestCase {
 	public function setUp() :void  {
@@ -19,7 +19,7 @@ class UserLoggedOutMiddlewareTest extends WPTestCase {
 		$this->user_id = 0;
 		$this->response_service = Mockery::mock( ResponseService::class );
 		$this->response = Mockery::mock( ResponseInterface::class );
-		$this->subject = new UserLoggedOutMiddleware( $this->response_service );
+		$this->subject = new UserLoggedOut( $this->response_service );
 	}
 
 	public function tearDown() :void  {

@@ -1,11 +1,13 @@
 <?php
 
 
-	namespace WPEmerge\Middleware;
+	namespace WPEmerge\Traits;
 
 	use WPEmerge\Exceptions\ConfigurationException;
 
-	trait HasMiddlewareDefinitionsTrait {
+
+	trait CompilesMiddleware {
+
 
 
 		/**
@@ -15,10 +17,11 @@
 		 *
 		 * @return string[]
 		 */
-		private function uniqueMiddleware( $middleware ) {
+		public function uniqueMiddleware( array $middleware ) {
 
 			return array_values( array_unique( $middleware, SORT_REGULAR ) );
 		}
+
 
 
 		/**
@@ -28,7 +31,7 @@
 		 *
 		 * @return array[]
 		 */
-		private function expandMiddleware( $middleware ) : array {
+		public function expandMiddleware( $middleware ) : array {
 
 			$classes = [];
 
@@ -50,7 +53,7 @@
 		 * @return array[]
 		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		private function expandMiddlewareGroup( $group ) : array {
+		public function expandMiddlewareGroup( string $group ) : array {
 
 			if ( ! isset( $this->middleware_groups[ $group ] ) ) {
 				throw new ConfigurationException( 'Unknown middleware group "' . $group . '" used.' );
@@ -71,7 +74,7 @@
 		 * @return array[]
 		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		private function expandMiddlewareMolecule( $middleware ) : array {
+		public function expandMiddlewareMolecule( string $middleware ) : array {
 
 			$pieces = explode( ':', $middleware, 2 );
 
@@ -94,10 +97,10 @@
 		 * @return string
 		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		private function expandMiddlewareAtom( $middleware ) : string {
+		public function expandMiddlewareAtom( string $middleware ) : string {
 
-			if ( isset( $this->middleware[ $middleware ] ) ) {
-				return $this->middleware[ $middleware ];
+			if ( isset( $this->route_middleware_aliases[ $middleware ] ) ) {
+				return $this->route_middleware_aliases[ $middleware ];
 			}
 
 			if ( class_exists( $middleware ) ) {
@@ -107,7 +110,8 @@
 			throw new ConfigurationException( 'Unknown middleware "' . $middleware . '" used.' );
 		}
 
-		private function mergeGlobalMiddleware ( array $middleware ) {
+
+		public function mergeGlobalMiddleware ( array $middleware ) : array {
 
 			$global = $this->middleware_groups['global'] ?? [];
 

@@ -7,6 +7,7 @@
 	use GuzzleHttp\Psr7;
 	use GuzzleHttp\Psr7\Response;
 	use WPEmerge\Contracts\ViewInterface;
+	use WPEmerge\Exceptions\ViewException;
 
 	/**
 	 * Render a view file with php.

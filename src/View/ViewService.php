@@ -19,75 +19,48 @@
 		 *
 		 * @var array<string, mixed>
 		 */
-		protected $config = [];
+		private $config = [];
 
 		/**
 		 * View engine.
 		 *
 		 * @var ViewEngineInterface
 		 */
-		protected $engine = null;
-
+		private $engine = null;
 
 		/**
 		 * Global variables.
 		 *
 		 * @var array
 		 */
-		protected $globals = [];
+		private $globals = [];
 
 		/**
 		 * View composers.
 		 *
 		 * @var array
 		 */
-		protected $composers = [];
+		private $composers = [];
 
-		/**
-		 * Constructor.
-		 *
-		 * @codeCoverageIgnore
-		 *
-		 * @param  array<string, mixed>  $config
-		 * @param  ViewEngineInterface  $engine
-		 */
-		public function __construct( $config, ViewEngineInterface $engine ) {
+
+		public function __construct( array $config, ViewEngineInterface $engine ) {
 
 			$this->config = $config;
 			$this->engine = $engine;
 		}
 
-		/**
-		 * Get global variables.
-		 *
-		 * @return array
-		 */
-		public function getGlobals() {
+
+		public function getGlobals() : array {
 
 			return $this->globals;
 		}
 
-		/**
-		 * Set a global variable.
-		 *
-		 * @param  string  $key
-		 * @param  mixed  $value
-		 *
-		 * @return void
-		 */
-		public function addGlobal( $key, $value ) {
+		public function addGlobal( string $key, $value ) :void {
 
 			$this->globals[ $key ] = $value;
 		}
 
-		/**
-		 * Set an array of global variables.
-		 *
-		 * @param  array  $globals
-		 *
-		 * @return void
-		 */
-		public function addGlobals( $globals ) {
+		public function addGlobals( array $globals ) :void {
 
 			foreach ( $globals as $key => $value ) {
 				$this->addGlobal( $key, $value );
@@ -129,6 +102,7 @@
 			$views = array_map( function ( $view ) {
 
 				return $this->engine->canonical( $view );
+
 			}, MixedType::toArray( $views ) );
 
 			$handler = $this->handler_factory->make( $composer, 'compose', $this->config['namespace'] );
@@ -149,8 +123,6 @@
 		public function compose( ViewInterface $view ) {
 
 			$global = [ 'global' => $this->getGlobals() ];
-			$local  = $view->getContext();
-
 			$view->with( $global );
 
 			$composers = $this->getComposersForView( $view->getName() );
@@ -158,7 +130,7 @@
 				$composer->execute( $view );
 			}
 
-			$view->with( $local );
+			$view->with( $view->getContext() );
 		}
 
 		/**
@@ -171,6 +143,7 @@
 		public function make( $views ) {
 
 			return $this->engine->make( MixedType::toArray( $views ) );
+
 		}
 
 		/**
@@ -214,7 +187,6 @@
 			$this->triggerPartialHooks( $view->getName() );
 			echo $view->toString();
 		}
-
 
 		public function exists( $view ) {
 

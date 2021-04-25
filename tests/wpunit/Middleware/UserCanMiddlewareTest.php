@@ -6,12 +6,12 @@
 	use Codeception\TestCase\WPTestCase;
 	use Mockery;
 	use Psr\Http\Message\ResponseInterface;
-	use WPEmerge\Middleware\UserCanMiddleware;
+	use WPEmerge\Middleware\UserCan;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Responses\ResponseService;
 
 	/**
-	 * @coversDefaultClass \WPEmerge\Middleware\UserCanMiddleware
+	 * @coversDefaultClass \WPEmerge\Middleware\UserCan
 	 */
 	class UserCanMiddlewareTest extends WPTestCase {
 
@@ -22,7 +22,7 @@
 			$this->user_ids         = [];
 			$this->response_service = Mockery::mock( ResponseService::class );
 			$this->response         = Mockery::mock( ResponseInterface::class );
-			$this->subject          = new UserCanMiddleware( $this->response_service );
+			$this->subject          = new UserCan( $this->response_service );
 		}
 
 		public function tearDown() :void {

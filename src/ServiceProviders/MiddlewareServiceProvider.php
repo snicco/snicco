@@ -6,9 +6,9 @@
 
 	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Middleware\SubstituteBindings;
-	use WPEmerge\Middleware\UserCanMiddleware;
-	use WPEmerge\Middleware\UserLoggedInMiddleware;
-	use WPEmerge\Middleware\UserLoggedOutMiddleware;
+	use WPEmerge\Middleware\UserCan;
+	use WPEmerge\Middleware\UserLoggedIn;
+	use WPEmerge\Middleware\UserLoggedOut;
 
 	use const WPEMERGE_RESPONSE_SERVICE_KEY;
 
@@ -22,20 +22,20 @@
 		public function register( $container ) {
 
 
-			$container[ UserLoggedOutMiddleware::class ] = function ( $c ) {
+			$container[ UserLoggedOut::class ] = function ( $c ) {
 
-				return new UserLoggedOutMiddleware( $c[ WPEMERGE_RESPONSE_SERVICE_KEY ] );
+				return new UserLoggedOut( $c[ WPEMERGE_RESPONSE_SERVICE_KEY ] );
 			};
 
-			$container[ UserLoggedInMiddleware::class ] = function ( $c ) {
+			$container[ UserLoggedIn::class ] = function ( $c ) {
 
-				return new UserLoggedInMiddleware( $c[ WPEMERGE_RESPONSE_SERVICE_KEY ] );
+				return new UserLoggedIn( $c[ WPEMERGE_RESPONSE_SERVICE_KEY ] );
 
 			};
 
-			$container[ UserCanMiddleware::class ] = function ( $c ) {
+			$container[ UserCan::class ] = function ( $c ) {
 
-				return new UserCanMiddleware( $c[ WPEMERGE_RESPONSE_SERVICE_KEY ] );
+				return new UserCan( $c[ WPEMERGE_RESPONSE_SERVICE_KEY ] );
 			};
 
 
