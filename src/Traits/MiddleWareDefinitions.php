@@ -35,7 +35,6 @@
 		private $middleware_priority = [];
 
 
-
 		public function setMiddlewareGroups( array $middleware_groups ) {
 
 			$this->middleware_groups = $middleware_groups;

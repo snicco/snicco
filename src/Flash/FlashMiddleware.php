@@ -7,11 +7,11 @@
 	use Closure;
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
-
+	use WPEmerge\Session\Flash;
 
 	class FlashMiddleware implements Middleware {
 
-		/** @var \WPEmerge\Flash\Flash  */
+		/** @var \WPEmerge\Session\Flash  */
 		private $flash;
 
 		public function __construct( Flash $flash ) {

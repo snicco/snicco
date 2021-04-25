@@ -6,7 +6,7 @@
 	use Contracts\ContainerAdapter;
 	use Psr\Http\Message\ResponseInterface;
 	use WPEmerge\Csrf\Csrf;
-	use WPEmerge\Flash\Flash;
+	use WPEmerge\Session\Flash;
 	use WPEmerge\Input\OldInput;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Responses\RedirectResponse;
@@ -100,7 +100,7 @@
 		/**
 		 * Get the Flash service instance.
 		 *
-		 * @return \WPEmerge\Flash\Flash
+		 * @return \WPEmerge\Session\Flash
 		 */
 		public static function flash() : Flash {
 		}

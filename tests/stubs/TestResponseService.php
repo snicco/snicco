@@ -4,7 +4,9 @@
 	namespace Tests\stubs;
 
 	use Psr\Http\Message\ResponseInterface;
+	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ResponseServiceInterface;
+	use WPEmerge\Responses\RedirectResponse;
 
 	class TestResponseService implements ResponseServiceInterface {
 
@@ -25,6 +27,22 @@
 
 			$this->header_response = $response;
 
+		}
+
+		public function respond( ResponseInterface $response ) : void {
+			// Nothing
+		}
+
+		public function output( string $output ) {
+			// Nothing
+		}
+
+		public function json( $data ) {
+			// Nothing
+		}
+
+		public function redirect( RequestInterface $request = null ) {
+			// Nothing
 		}
 
 	}

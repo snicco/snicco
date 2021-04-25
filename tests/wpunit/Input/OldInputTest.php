@@ -5,7 +5,7 @@
 
 	use Mockery;
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Flash\Flash;
+	use WPEmerge\Session\Flash;
 	use WPEmerge\Input\OldInput;
 
 

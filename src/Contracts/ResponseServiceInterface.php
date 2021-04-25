@@ -5,6 +5,7 @@
 
 
 	use Psr\Http\Message\ResponseInterface;
+	use WPEmerge\Responses\RedirectResponse;
 
 	interface ResponseServiceInterface {
 
@@ -32,5 +33,34 @@
 		 * @return void
 		 */
 		public function respond ( ResponseInterface $response) :void;
+
+		/**
+		 * Get a cloned response with the passed string as the body.
+		 *
+		 * @param  string  $output
+		 *
+		 * @return ResponseInterface
+		 */
+		public function output( string $output );
+
+		/**
+		 * Get a cloned response, json encoding the passed data as the body.
+		 *
+		 * @param  mixed  $data
+		 *
+		 * @return ResponseInterface
+		 */
+		public function json( $data );
+
+		/**
+		 * Get a cloned response, with location and status headers.
+		 *
+		 * @param  RequestInterface|null  $request
+		 *
+		 * @return RedirectResponse
+		 */
+		public function redirect( RequestInterface $request = null );
+
+
 
 	}

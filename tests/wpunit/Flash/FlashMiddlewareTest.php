@@ -5,7 +5,7 @@
 
 	use Codeception\TestCase\WPTestCase;
 	use Mockery;
-	use WPEmerge\Flash\Flash;
+	use WPEmerge\Session\Flash;
 	use WPEmerge\Flash\FlashMiddleware;
 	use WPEmerge\Contracts\RequestInterface;
 
