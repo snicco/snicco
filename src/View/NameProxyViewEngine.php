@@ -11,6 +11,7 @@ namespace WPEmerge\View;
 
 use WPEmerge\Application\Application;
 use WPEmerge\Contracts\ViewEngineInterface;
+use WPEmerge\Exceptions\ViewNotFoundException;
 
 /**
  * Render view files with different engines depending on their filename

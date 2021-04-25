@@ -4,10 +4,10 @@ namespace WPEmergeTests\Routing;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use WPEmerge\Routing\SortsMiddlewareTrait;
+use WPEmerge\Traits\SortsMiddleware;
 
 /**
- * @coversDefaultClass \WPEmerge\Routing\SortsMiddlewareTrait
+ * @coversDefaultClass \WPEmerge\Traits\SortsMiddleware
  */
 class SortsMiddlewareTraitTest extends TestCase {
 	public function setUp() :void  {
@@ -57,5 +57,5 @@ class SortsMiddlewareTraitTest extends TestCase {
 }
 
 class SortsMiddlewareTraitTestImplementation {
-	use SortsMiddlewareTrait;
+	use SortsMiddleware;
 }

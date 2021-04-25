@@ -4,10 +4,10 @@ namespace Tests\wpunit\Responses;
 
 use Mockery;
 use PHPUnit\Framework\TestCase;
-use WPEmerge\Middleware\HasControllerMiddlewareTrait;
+use WPEmerge\Traits\HasControllerMiddleware;
 
 /**
- * @coversDefaultClass \WPEmerge\Middleware\HasControllerMiddlewareTrait
+ * @coversDefaultClass \WPEmerge\Traits\HasControllerMiddleware
  */
 class HasControllerMiddlewareTest extends TestCase {
 
@@ -20,7 +20,7 @@ class HasControllerMiddlewareTest extends TestCase {
 	public function setUp() :void  {
 		parent::setUp();
 
-		$this->subject = $this->getMockForTrait( HasControllerMiddlewareTrait::class );
+		$this->subject = $this->getMockForTrait( HasControllerMiddleware::class );
 	}
 
 	public function tearDown():void  {

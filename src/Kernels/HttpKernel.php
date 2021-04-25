@@ -13,17 +13,14 @@
 	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingRequest;
 	use WPEmerge\Events\BodySent;
-	use WPEmerge\Exceptions\InvalidResponseException;
-	use WPEmerge\Middleware\ExecutesMiddlewareTrait;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Helpers\Pipeline;
-	use WPEmerge\Traits\MiddleWareDefinitions;
+	use WPEmerge\Traits\HoldsMiddlewareDefinitions;
 
 	class HttpKernel {
 
-		use ExecutesMiddlewareTrait;
-		use MiddleWareDefinitions;
+		use HoldsMiddlewareDefinitions;
 
 		/** @var ResponseServiceInterface */
 		private $response_service;
@@ -143,13 +140,7 @@
 
 		}
 
-		/**
-		 * @param $response
-		 *
-		 * @return \Psr\Http\Message\ResponseInterface
-		 * @throws \WPEmerge\Exceptions\InvalidResponseException
-		 */
-		private function prepareResponse( $response ) : ResponseInterface {
+		private function prepareResponse( $response ) {
 
 			if ( $response instanceof ResponseInterface ) {
 
@@ -169,11 +160,11 @@
 				return $response->toResponse();
 			}
 
-			throw new InvalidResponseException('Invalid Response: ' . $response );
+			return $response;
 
 		}
 
-		private function sendRequestThroughRouter( RequestInterface $request ) : ResponseInterface {
+		private function sendRequestThroughRouter( RequestInterface $request ) {
 
 			if ( $this->isStrictMode() ) {
 

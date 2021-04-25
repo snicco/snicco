@@ -16,7 +16,7 @@ use WPEmerge\Responses\ResponseService;
 /**
  * Redirect logged in users to a specific URL.
  */
-class UserLoggedOutMiddleware {
+class UserLoggedOut {
 	/**
 	 * Response service.
 	 *

@@ -5,12 +5,12 @@
 
 	use Mockery;
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Routing\HasRoutesTrait;
+	use WPEmerge\Routing\RegisteresRoutes;
 	use WPEmerge\Contracts\RouteInterface;
 	use WP_UnitTestCase;
 
 	/**
-	 * @coversDefaultClass \WPEmerge\Routing\HasRoutesTrait
+	 * @coversDefaultClass \WPEmerge\Routing\RegisteresRoutes
 	 */
 	class HasRoutesTraitTest extends TestCase {
 
@@ -109,5 +109,5 @@
 
 	class HasRoutesTraitTestImplementation {
 
-		use HasRoutesTrait;
+		use RegisteresRoutes;
 	}

@@ -4,8 +4,7 @@
 	namespace WPEmerge\Traits;
 
 
-	trait MiddleWareDefinitions {
-
+	trait HoldsMiddlewareDefinitions {
 
 		/**
 		 *

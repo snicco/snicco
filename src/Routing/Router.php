@@ -6,6 +6,8 @@
 
 	use Closure;
 	use Contracts\ContainerAdapter;
+	use SniccoAdapter\BaseContainerAdapter;
+	use Tests\stubs\TestApp;
 	use WPEmerge\Contracts\HasRoutesInterface;
 	use WPEmerge\Contracts\RouteHandler;
 	use WPEmerge\Contracts\RouteInterface;
@@ -13,19 +15,19 @@
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Helpers\Pipeline;
-	use WPEmerge\Middleware\HasMiddlewareDefinitionsTrait;
-	use WPEmerge\Responses\ConvertsToResponseTrait;
+	use WPEmerge\MiddlewareResolver;
+	use WPEmerge\Traits\CompilesMiddleware;
 	use WPEmerge\Routing\Conditions\ConditionFactory;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\UrlableInterface;
 	use WPEmerge\Support\Arr;
-
+	use WPEmerge\Traits\SortsMiddleware;
 
 	class Router implements HasRoutesInterface {
 
-		use HasRoutesTrait;
-		use HasMiddlewareDefinitionsTrait;
-		use SortsMiddlewareTrait;
+		use RegisteresRoutes;
+		use CompilesMiddleware;
+		use SortsMiddleware;
 
 		/**
 		 * Condition factory.
@@ -69,15 +71,18 @@
 		 */
 		private $middleware_priority;
 
-		private $middleware;
+		private $route_middleware_aliases;
 
 
-		public function __construct( ContainerAdapter $container , ConditionFactory $condition_factory, HandlerFactory $handler_factory) {
+		public function __construct(
+			ContainerAdapter $container ,
+			ConditionFactory $condition_factory,
+			HandlerFactory $handler_factory
+		) {
 
 			$this->condition_factory = $condition_factory;
 			$this->handler_factory   = $handler_factory;
 			$this->container = $container;
-
 		}
 
 
@@ -395,7 +400,7 @@
 		 *
 		 * @return string
 		 */
-		public function getRouteUrl( $name, $arguments = [] ) {
+		public function getRouteUrl( $name, $arguments = [] ) : string {
 
 			$routes = $this->getRoutes();
 
@@ -466,7 +471,7 @@
 
 		public function aliasMiddleware($name, $class) :void
 		{
-			$this->middleware[$name] = $class;
+			$this->route_middleware_aliases[$name] = $class;
 
 		}
 
@@ -477,3 +482,4 @@
 		}
 
 	}
+

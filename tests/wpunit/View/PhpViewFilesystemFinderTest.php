@@ -13,13 +13,19 @@
 	 */
 	class PhpViewFilesystemFinderTest extends WPTestCase {
 
+
+		/**
+		 * @var \WPEmerge\View\PhpViewFilesystemFinder;
+		 */
+		private $subject;
+
 		public function setUp() : void {
 
 			parent::setUp();
 
 			if ( ! defined( 'WPEMERGE_TEST_DIR' ) ) {
 
-				define( 'WPEMERGE_TEST_DIR', getenv( 'PACKAGE_ROOT' ) . DIRECTORY_SEPARATOR . 'tests' );
+				define( 'WPEMERGE_TEST_DIR', getenv( 'ROOT_DIR' ) . DIRECTORY_SEPARATOR . 'tests' );
 
 			}
 			$this->subject = new PhpViewFilesystemFinder( [

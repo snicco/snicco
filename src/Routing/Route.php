@@ -87,7 +87,7 @@
 
 		}
 
-		public function signatureParameters() {
+		public function signatureParameters() : array {
 
 			return RouteSignatureParameters::fromCallable(
 				$this->handler->raw()
@@ -103,7 +103,6 @@
 			);
 
 		}
-
 
 		public function run( $request ) {
 

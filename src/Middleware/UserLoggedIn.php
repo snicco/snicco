@@ -10,7 +10,7 @@
 	/**
 	 * Redirect non-logged in users to a specific URL.
 	 */
-	class UserLoggedInMiddleware {
+	class UserLoggedIn {
 
 		/**
 		 * Response service.

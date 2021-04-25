@@ -10,7 +10,7 @@
 	/**
 	 * Allow objects to have routes
 	 */
-	trait HasRoutesTrait {
+	trait RegisteresRoutes {
 
 		/**
 		 * Array of registered routes

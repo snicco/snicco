@@ -6,12 +6,12 @@
 	use Codeception\TestCase\WPTestCase;
 	use Mockery;
 	use Psr\Http\Message\ResponseInterface;
-	use WPEmerge\Middleware\UserLoggedInMiddleware;
+	use WPEmerge\Middleware\UserLoggedIn;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Responses\ResponseService;
 
 	/**
-	 * @coversDefaultClass \WPEmerge\Middleware\UserLoggedInMiddleware
+	 * @coversDefaultClass \WPEmerge\Middleware\UserLoggedIn
 	 */
 	class UserLoggedInMiddlewareTest extends WPTestCase {
 
@@ -22,7 +22,7 @@
 			$this->user_id          = 0;
 			$this->response_service = Mockery::mock( ResponseService::class );
 			$this->response         = Mockery::mock( ResponseInterface::class );
-			$this->subject          = new UserLoggedInMiddleware( $this->response_service );
+			$this->subject          = new UserLoggedIn( $this->response_service );
 		}
 
 		public function tearDown() :void  {

@@ -12,8 +12,6 @@
 	 */
 	interface HttpKernelInterface extends HasMiddlewareDefinitionsInterface {
 
-
-
 		public function handle( RequestInterface $request) :void;
 
 	}

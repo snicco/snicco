@@ -7,9 +7,8 @@
  * @link      https://wpemerge.com/
  */
 
-namespace WPEmerge\View;
+namespace WPEmerge\Exceptions;
 
-use WPEmerge\Exceptions\Exception;
 
 class ViewNotFoundException extends Exception {
 

@@ -13,9 +13,9 @@
 	use WPEmerge\Kernels\HttpKernel;
 	use WPEmerge\Middleware\StartSession;
 	use WPEmerge\Middleware\SubstituteBindings;
-	use WPEmerge\Middleware\UserCanMiddleware;
-	use WPEmerge\Middleware\UserLoggedInMiddleware;
-	use WPEmerge\Middleware\UserLoggedOutMiddleware;
+	use WPEmerge\Middleware\UserCan;
+	use WPEmerge\Middleware\UserLoggedIn;
+	use WPEmerge\Middleware\UserLoggedOut;
 
 	use const WPEMERGE_APPLICATION_GENERIC_FACTORY_KEY;
 	use const WPEMERGE_APPLICATION_KEY;
@@ -44,9 +44,9 @@
 				'flash'           => FlashMiddleware::class,
 				'old_input'       => OldInputMiddleware::class,
 				'csrf'            => CsrfMiddleware::class,
-				'user.logged_in'  => UserLoggedInMiddleware::class,
-				'user.logged_out' => UserLoggedOutMiddleware::class,
-				'user.can'        => UserCanMiddleware::class,
+				'user.logged_in'  => UserLoggedIn::class,
+				'user.logged_out' => UserLoggedOut::class,
+				'user.can'        => UserCan::class,
 			] );
 
 			$this->extendConfig( $container, 'middleware_groups', [

@@ -6,7 +6,7 @@
 	use WPEmerge\Middleware\ControllerMiddleware;
 
 	/**
-	 * Interface for HasControllerMiddlewareTrait.
+	 * Interface for HasControllerMiddleware.
 	 */
 	interface HasControllerMiddlewareInterface {
 

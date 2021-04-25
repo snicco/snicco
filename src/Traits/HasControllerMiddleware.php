@@ -1,12 +1,14 @@
 <?php
 
 
-	namespace WPEmerge\Middleware;
+	namespace WPEmerge\Traits;
+
+	use WPEmerge\Middleware\ControllerMiddleware;
 
 	/**
 	 * Allow objects to have controller middleware.
 	 */
-	trait HasControllerMiddlewareTrait {
+	trait HasControllerMiddleware {
 
 		/**
 		 * Array of middleware.
