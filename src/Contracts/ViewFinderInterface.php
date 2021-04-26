@@ -11,19 +11,19 @@
 		/**
 		 * Check if a view exists.
 		 *
-		 * @param  string  $view
+		 * @param  string  $view_name
 		 *
 		 * @return boolean
 		 */
-		public function exists( $view );
+		public function exists( string $view_name ) :bool;
 
 		/**
 		 * Return a canonical string representation of the view name.
 		 *
-		 * @param  string  $view
+		 * @param  string  $view_name
 		 *
 		 * @return string
 		 */
-		public function canonical( $view );
+		public function filePath( string $view_name ) : string;
 
 	}

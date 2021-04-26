@@ -56,17 +56,17 @@
 		}
 
 		/**
-		 * @covers ::canonical
+		 * @covers ::filePath
 		 */
 		public function testCanonical() {
 
 			$expected = realpath( MixedType::normalizePath( locate_template( 'index.php', false ) ) );
 
-			$this->assertEquals( $expected, $this->subject->canonical( $expected ) );
-			$this->assertEquals( $expected, $this->subject->canonical( 'index.php' ) );
-			$this->assertEquals( $expected, $this->subject->canonical( 'index' ) );
-			$this->assertEquals( '', $this->subject->canonical( 'nonexistent' ) );
-			$this->assertEquals( '', $this->subject->canonical( '' ) );
+			$this->assertEquals( $expected, $this->subject->filePath( $expected ) );
+			$this->assertEquals( $expected, $this->subject->filePath( 'index.php' ) );
+			$this->assertEquals( $expected, $this->subject->filePath( 'index' ) );
+			$this->assertEquals( '', $this->subject->filePath( 'nonexistent' ) );
+			$this->assertEquals( '', $this->subject->filePath( '' ) );
 		}
 
 		/**

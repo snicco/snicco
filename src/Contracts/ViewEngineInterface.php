@@ -18,4 +18,5 @@
 		 */
 		public function make( $views );
 
+
 	}

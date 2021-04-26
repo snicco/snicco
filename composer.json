@@ -47,7 +47,8 @@
     "illuminate/collections": "8.35.1",
     "ext-json": "*",
     "illuminate/routing": "8.35.1",
-    "calvinalkan/better-wordpress-hooks": "0.1.3"
+    "calvinalkan/better-wordpress-hooks": "0.1.3",
+    "illuminate/config": "8.35.1"
   },
   "require-dev": {
     "mockery/mockery": "^1.4.2",
