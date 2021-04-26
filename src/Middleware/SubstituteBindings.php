@@ -4,10 +4,11 @@
 	namespace WPEmerge\Middleware;
 
 	use Contracts\ContainerAdapter;
+	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Helpers\ImplicitRouteBindings;
 	use WPEmerge\Requests\Request;
 
-	class SubstituteBindings {
+	class SubstituteBindings implements Middleware {
 
 		/**
 		 * @var \Contracts\ContainerAdapter

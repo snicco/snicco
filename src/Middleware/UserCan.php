@@ -4,13 +4,14 @@
 	namespace WPEmerge\Middleware;
 
 	use Closure;
+	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Responses\ResponseService;
 
 	/**
 	 * Redirect users who do not have a capability to a specific URL.
 	 */
-	class UserCan {
+	class UserCan implements Middleware {
 
 		/**
 		 * Response service.

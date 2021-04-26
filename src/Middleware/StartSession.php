@@ -3,9 +3,10 @@
 
 	namespace WPEmerge\Middleware;
 
+	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
 
-	class StartSession {
+	class StartSession implements Middleware {
 
 
 		public function handle (RequestInterface $request, \Closure $next ) {
