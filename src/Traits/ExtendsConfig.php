@@ -5,7 +5,7 @@
 	namespace WPEmerge\Traits;
 
 	use Contracts\ContainerAdapter;
-	use WPEmerge\Support\Arr;
+	use WPEmerge\Support\WPEmgereArr;
 
 	use const WPEMERGE_CONFIG_KEY;
 
@@ -38,7 +38,7 @@
 			$result = $default;
 
 			foreach ( $config as $key => $value ) {
-				$result[ $key ] = $this->replaceConfig( Arr::get( $default, $key ), $value );
+				$result[ $key ] = $this->replaceConfig( WPEmgereArr::get( $default, $key ), $value );
 			}
 
 			return $result;
@@ -56,7 +56,7 @@
 		public function extendConfig( ContainerAdapter $container, string $key, $default ) {
 
 			$config = isset( $container[ WPEMERGE_CONFIG_KEY ] ) ? $container[ WPEMERGE_CONFIG_KEY ] : [];
-			$config_part = Arr::get( $config, $key, $default );
+			$config_part = WPEmgereArr::get( $config, $key, $default );
 
 			$container[ WPEMERGE_CONFIG_KEY ] = array_merge(
 				$container[ WPEMERGE_CONFIG_KEY ],

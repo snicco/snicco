@@ -6,7 +6,7 @@
 	use Closure;
 	use WPEmerge\AbstractFactory;
 	use WPEmerge\Contracts\Handler;
-	use WPEmerge\MiddlewareResolver;
+	use WPEmerge\Http\MiddlewareResolver;
 
 	class HandlerFactory extends AbstractFactory {
 

@@ -7,7 +7,7 @@
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\RouteInterface;
 	use WPEmerge\Events\IncomingRequest;
-	use WPEmerge\Support\Arr;
+	use WPEmerge\Support\WPEmgereArr;
 
 	/**
 	 * A representation of a request to the server.
@@ -176,7 +176,7 @@
 				return $source;
 			}
 
-			return Arr::get( $source, $key, $default );
+			return WPEmgereArr::get( $source, $key, $default );
 		}
 
 		/**

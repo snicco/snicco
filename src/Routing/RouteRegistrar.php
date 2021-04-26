@@ -3,7 +3,7 @@
 
 	namespace WPEmerge\Routing;
 
-	use WPEmerge\Support\Arr;
+	use WPEmerge\Support\WPEmgereArr;
 
 	class RouteRegistrar {
 
@@ -53,14 +53,14 @@
 		private function loadRoutesGroup( string $group ) {
 
 
-			$file       = Arr::get( $this->config, 'routes.' . $group . '.definitions', '' );
-			$attributes = Arr::get( $this->config, 'routes.' . $group . '.attributes', [] );
+			$file       = WPEmgereArr::get( $this->config, 'routes.' . $group . '.definitions', '' );
+			$attributes = WPEmgereArr::get( $this->config, 'routes.' . $group . '.attributes', [] );
 
 			if ( empty( $file ) ) {
 				return;
 			}
 
-			$middleware = Arr::get( $attributes, 'middleware', [] );
+			$middleware = WPEmgereArr::get( $attributes, 'middleware', [] );
 
 			if ( ! in_array( $group, $middleware, true ) ) {
 				$middleware = array_merge( [ $group ], $middleware );

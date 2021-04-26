@@ -6,7 +6,7 @@
 	use Closure;
 	use WPEmerge\Contracts\ResolveControllerMiddleware;
 	use WPEmerge\Contracts\RouteAction;
-	use WPEmerge\MiddlewareResolver;
+	use WPEmerge\Http\MiddlewareResolver;
 
 	class Controller implements RouteAction, ResolveControllerMiddleware {
 
@@ -21,7 +21,7 @@
 		private $executable_callable;
 
 		/**
-		 * @var \WPEmerge\MiddlewareResolver
+		 * @var \WPEmerge\Http\MiddlewareResolver
 		 */
 		private $middleware_resolver;
 
@@ -30,7 +30,7 @@
 		 *
 		 * @param  array  $raw_callable
 		 * @param  \Closure  $executable_callable
-		 * @param  \WPEmerge\MiddlewareResolver  $resolver
+		 * @param  \WPEmerge\Http\MiddlewareResolver  $resolver
 		 */
 		public function __construct(array $raw_callable, Closure $executable_callable, MiddlewareResolver $resolver ) {
 

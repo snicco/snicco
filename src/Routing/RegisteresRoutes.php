@@ -5,7 +5,7 @@
 
 	use WPEmerge\Contracts\RouteInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
-	use WPEmerge\Support\Arr;
+	use WPEmerge\Support\WPEmgereArr;
 
 	/**
 	 * Allow objects to have routes
@@ -74,7 +74,7 @@
 				return;
 			}
 
-			$this->routes = array_values( Arr::except( $routes, $index ) );
+			$this->routes = array_values( WPEmgereArr::except( $routes, $index ) );
 		}
 
 	}

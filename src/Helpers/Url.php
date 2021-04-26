@@ -1,17 +1,10 @@
 <?php
-	/**
-	 * @package   WPEmerge
-	 * @author    Atanas Angelov <hi@atanas.dev>
-	 * @copyright 2017-2019 Atanas Angelov
-	 * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
-	 * @link      https://wpemerge.com/
-	 */
 
 
 	namespace WPEmerge\Helpers;
 
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Support\Arr;
+	use WPEmerge\Support\WPEmgereArr;
 	use WPEmerge\Support\Str;
 
 	/**
@@ -28,26 +21,24 @@
 		 *
 		 * @return string
 		 *
-		 * @todo allow .php ending for admin pathes.
+		 * @todo allow .php ending for admin paths.
 		 * @todo replace .php endings.
 		 */
-		public static function getPath( RequestInterface $request, $home_url = '' ) {
+		public static function getPath( RequestInterface $request, $home_url = '' ) : string {
 
 			$parsed_request = wp_parse_url( $request->getUrl() );
 			$parsed_home    = wp_parse_url( $home_url ? $home_url : home_url( '/' ) );
 
-			$request_path = Arr::get( $parsed_request, 'path', '/' );
+			$request_path = WPEmgereArr::get( $parsed_request, 'path', '/' );
 			$request_path = static::removeTrailingSlash( $request_path );
 			$request_path = static::addLeadingSlash( $request_path );
 
-			// delete .php from request_path.
-			$request_path = str_replace( '.php', '', $request_path );
 
 			if ( $parsed_request['host'] !== $parsed_home['host'] ) {
 				return $request_path;
 			}
 
-			$home_path = Arr::get( $parsed_home, 'path', '/' );
+			$home_path = WPEmgereArr::get( $parsed_home, 'path', '/' );
 			$home_path = static::removeTrailingSlash( $home_path );
 			$home_path = static::addLeadingSlash( $home_path );
 			$path      = $request_path;
@@ -67,7 +58,7 @@
 		 *
 		 * @return string
 		 */
-		public static function addLeadingSlash( $url, $leave_blank = false ) {
+		public static function addLeadingSlash( $url, $leave_blank = false ) : string {
 
 			if ( $leave_blank && $url === '' ) {
 				return '';
@@ -83,7 +74,7 @@
 		 *
 		 * @return string
 		 */
-		public static function removeLeadingSlash( $url ) {
+		public static function removeLeadingSlash( $url ) : string {
 
 			return preg_replace( '/^\/+/', '', $url );
 		}
@@ -96,7 +87,7 @@
 		 *
 		 * @return string
 		 */
-		public static function addTrailingSlash( $url, $leave_blank = false ) {
+		public static function addTrailingSlash( string $url, $leave_blank = false ) : string {
 
 			if ( $leave_blank && $url === '' ) {
 				return '';
@@ -119,7 +110,7 @@
 		 *
 		 * @return string
 		 */
-		public static function removeTrailingSlash( $url ) {
+		public static function removeTrailingSlash( string $url ) : string {
 
 			return untrailingslashit( $url );
 		}

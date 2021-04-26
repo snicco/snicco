@@ -123,7 +123,7 @@
 		 * @param  array  $arguments
 		 *
 		 * @return ResponseInterface
-		 * @see    \WPEmerge\HttpKernel::run()
+		 * @see    \WPEmerge\Http\HttpKernel::run()
 		 */
 		public static function run( RequestInterface $request, $middleware, $handler, $arguments = [] ) : ResponseInterface {
 		}

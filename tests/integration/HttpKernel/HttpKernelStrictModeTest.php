@@ -23,7 +23,7 @@
 		use MockRequest;
 
 		/**
-		 * @var \WPEmerge\HttpKernel
+		 * @var \WPEmerge\Http\HttpKernel
 		 */
 		private $kernel;
 

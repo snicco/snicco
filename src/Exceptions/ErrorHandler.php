@@ -17,7 +17,7 @@ use WPEmerge\Exceptions\InvalidCsrfTokenException;
 use WPEmerge\Contracts\RequestInterface;
 use WPEmerge\Responses\ResponseService;
 use WPEmerge\Exceptions\NotFoundException;
-use WPEmerge\Support\Arr;
+use WPEmerge\Support\WPEmgereArr;
 
 class ErrorHandler implements ErrorHandlerInterface {
 	/**
@@ -112,7 +112,7 @@ class ErrorHandler implements ErrorHandlerInterface {
 				'file' => $exception->getFile(),
 				'line' => $exception->getLine(),
 				'trace' => array_map( function ( $trace ) {
-					return Arr::except( $trace, ['args'] );
+					return WPEmgereArr::except( $trace, ['args'] );
 				}, $exception->getTrace() ),
 			] )->withStatus( 500 );
 		}

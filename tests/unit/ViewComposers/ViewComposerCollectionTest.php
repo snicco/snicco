@@ -7,7 +7,7 @@
 	use Psr\Http\Message\ResponseInterface;
 	use SniccoAdapter\BaseContainerAdapter;
 	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Support\Arr;
+	use WPEmerge\Support\WPEmgereArr;
 	use WPEmerge\View\PhpViewFinder;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
 	use WPEmerge\ViewComposers\ViewComposerFactory;
@@ -176,7 +176,7 @@
 				return $this->context;
 			}
 
-			return Arr::get( $this->context, $key, $default );
+			return WPEmgereArr::get( $this->context, $key, $default );
 
 		}
 
