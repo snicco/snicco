@@ -55,8 +55,8 @@
 			$container->singleton( WPEMERGE_VIEW_SERVICE_KEY, function ( $c ) {
 
 				return new ViewService(
-					$c[ WPEMERGE_CONFIG_KEY ]['view_composers'],
 					$c[ WPEMERGE_VIEW_ENGINE_KEY ],
+					$c[ViewComposerCollection::class]
 
 				);
 			} );
@@ -107,7 +107,7 @@
 			$container->singleton(ViewComposerFactory::class, function ($c) {
 
 				return new ViewComposerFactory(
-					$c[WPEMERGE_CONFIG_KEY]['composers'],
+					$c[WPEMERGE_CONFIG_KEY]['composers'] ?? [],
 					$c[WPEMERGE_CONTAINER_ADAPTER]
 			);
 

@@ -40,6 +40,11 @@
 		/** @var RequestInterface */
 		private $request;
 
+		/**
+		 * @var bool
+		 */
+		private $caught_exception = false;
+
 
 		public function __construct(
 
@@ -69,13 +74,13 @@
 
 				$this->response = $this->sendRequestThroughRouter( $request_event->request );
 
-				$this->request = $this->container->make( RequestInterface::class );
 
 			}
 
 			catch ( Exception $exception ) {
 
 				$this->response = $this->error_handler->getResponse( $request_event->request, $exception );
+				$this->caught_exception = true;
 
 			}
 
@@ -127,7 +132,7 @@
 
 			$this->response_service->sendHeaders( $this->response );
 
-			HeadersSent::dispatch( [ $this->response, $this->request ] );
+			HeadersSent::dispatchUnless( $this->caught_exception , [ $this->response, $this->request ] );
 
 
 		}
@@ -136,7 +141,7 @@
 
 			$this->response_service->sendBody( $this->response );
 
-			BodySent::dispatch( [ $this->response, $this->request ] );
+			BodySent::dispatchUnless( $this->caught_exception, [ $this->response, $this->request ] );
 
 		}
 
@@ -191,6 +196,8 @@
 			return function ( $request ) {
 
 				$this->container->instance( RequestInterface::class, $request );
+
+				$this->request = $request;
 
 				return $this->router->runRoute( $request );
 

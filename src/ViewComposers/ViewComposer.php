@@ -5,9 +5,11 @@
 
 	use Closure;
 	use WPEmerge\Contracts\ViewComposer as ViewComposerInterface;
+	use WPEmerge\Traits\ReflectsCallable;
 
 	class ViewComposer implements ViewComposerInterface {
 
+		use ReflectsCallable;
 
 		/**
 		 *
@@ -21,19 +23,20 @@
 		 */
 		private $executable_composer;
 
-		public function __construct(  Closure $executable_closure  ) {
+		public function __construct( Closure $executable_closure  ) {
 
 			$this->executable_composer = $executable_closure;
 
 		}
 
+
 		public function executeUsing(...$args) {
 
 			$closure = $this->executable_composer;
 
-			$view = ['view' => $args[0]];
+			$payload = $this->buildNamedParameters( $this->unwrap($closure), $args);
 
-			return $closure($view);
+			return $closure($payload);
 
 
 		}

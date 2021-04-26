@@ -71,7 +71,16 @@
 
 		private function viewAliases (Application $app ) {
 
+			$app->alias('addComposer', function () use ( $app ) {
 
+				$composer_collection = $app->resolve(ViewComposerCollection::class);
+
+				$args = func_get_args();
+
+				$composer_collection->addComposer(...$args);
+
+
+			});
 			$app->alias( 'views', WPEMERGE_VIEW_SERVICE_KEY );
 			$app->alias( 'view', function () use ( $app ) {
 
@@ -79,7 +88,10 @@
 			} );
 			$app->alias( 'render', function () use ( $app ) {
 
-				return call_user_func_array( [ $app->views(), 'render' ], func_get_args() );
+				$view_as_string = call_user_func_array( [ $app->views(), 'render' ], func_get_args() );
+
+				echo $view_as_string;
+
 			} );
 			$app->alias( 'layoutContent', function () use ( $app ) {
 

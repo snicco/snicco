@@ -8,25 +8,18 @@
 	use WPEmerge\Contracts\ViewFinderInterface;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Helpers\MixedType;
+	use WPEmerge\ViewComposers\ViewComposerCollection;
 
-	/**
-	 * Provide general view-related functionality.
-	 */
+
 	class ViewService implements ViewFinderInterface {
 
-		/**
-		 * Configuration.
-		 *
-		 * @var array<string, mixed>
-		 */
-		private $config = [];
 
 		/**
 		 * View engine.
 		 *
 		 * @var ViewEngineInterface
 		 */
-		private $engine = null;
+		private $engine;
 
 		/**
 		 * Global variables.
@@ -36,23 +29,15 @@
 		private $globals = [];
 
 		/**
-		 * View composers.
-		 *
-		 * @var array
+		 * @var \WPEmerge\ViewComposers\ViewComposerCollection
 		 */
-		private $composers = [];
+		private $composer_collection;
 
 
-		public function __construct( array $config, ViewEngineInterface $engine ) {
+		public function __construct( ViewEngineInterface $engine, ViewComposerCollection $composer_collection) {
 
-			$this->config = $config;
 			$this->engine = $engine;
-		}
-
-
-		public function getGlobals() : array {
-
-			return $this->globals;
+			$this->composer_collection = $composer_collection;
 		}
 
 		public function addGlobal( string $key, $value ) :void {
@@ -68,52 +53,6 @@
 		}
 
 		/**
-		 * Get view composer.
-		 *
-		 * @param  string  $view
-		 *
-		 * @return Handler[]
-		 */
-		public function getComposersForView( $view ) {
-
-			$view = $this->engine->canonical( $view );
-
-			$composers = [];
-
-			foreach ( $this->composers as $composer ) {
-				if ( in_array( $view, $composer['views'], true ) ) {
-					$composers[] = $composer['composer'];
-				}
-			}
-
-			return $composers;
-		}
-
-		/**
-		 * Add view composer.
-		 *
-		 * @param  string|string[]  $views
-		 * @param  string|Closure  $composer
-		 *
-		 * @return void
-		 */
-		public function addComposer( $views, $composer ) {
-
-			$views = array_map( function ( $view ) {
-
-				return $this->engine->canonical( $view );
-
-			}, MixedType::toArray( $views ) );
-
-			$handler = $this->handler_factory->make( $composer, 'compose', $this->config['namespace'] );
-
-			$this->composers[] = [
-				'views'    => $views,
-				'composer' => $handler,
-			];
-		}
-
-		/**
 		 * Composes a view instance with contexts in the following order: Global, Composers, Local.
 		 *
 		 * @param  ViewInterface  $view
@@ -122,15 +61,14 @@
 		 */
 		public function compose( ViewInterface $view ) {
 
-			$global = [ 'global' => $this->getGlobals() ];
-			$view->with( $global );
+			$local_context = $view->getContext();
+			$global_context = [ 'global' => $this->globals ];
 
-			$composers = $this->getComposersForView( $view->getName() );
-			foreach ( $composers as $composer ) {
-				$composer->execute( $view );
-			}
+			$view->with( $global_context );
 
-			$view->with( $view->getContext() );
+			$this->composer_collection->executeUsing($view);
+
+			$view->with( $local_context );
 		}
 
 		/**
@@ -140,7 +78,7 @@
 		 *
 		 * @return ViewInterface
 		 */
-		public function make( $views ) {
+		public function make( $views ) : ViewInterface {
 
 			return $this->engine->make( MixedType::toArray( $views ) );
 
@@ -149,7 +87,6 @@
 		/**
 		 * Trigger core hooks for a partial, if any.
 		 *
-		 * @codeCoverageIgnore
 		 *
 		 * @param  string  $name
 		 *
@@ -174,27 +111,28 @@
 		/**
 		 * Render a view.
 		 *
-		 * @codeCoverageIgnore
-		 *
 		 * @param  string|string[]  $views
 		 * @param  array<string, mixed>  $context
 		 *
-		 * @return void
+		 * @return string
 		 */
 		public function render( $views, $context = [] ) {
 
 			$view = $this->make( $views )->with( $context );
+
 			$this->triggerPartialHooks( $view->getName() );
-			echo $view->toString();
+
+			return $view->toString();
+
 		}
 
-		public function exists( $view ) {
+		public function exists( $view ) : bool {
 
 			return $this->engine->exists( $view );
 
 		}
 
-		public function canonical( $view ) {
+		public function canonical( $view ) : string {
 
 			return $this->engine->canonical( $view );
 

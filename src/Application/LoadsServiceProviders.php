@@ -9,6 +9,7 @@
 	use WPEmerge\ServiceProviders\AliasServiceProvider;
 	use WPEmerge\ServiceProviders\EventServiceProvider;
 	use WPEmerge\ServiceProviders\ExceptionsServiceProvider;
+	use WPEmerge\ServiceProviders\FactoryServiceProvider;
 	use WPEmerge\ServiceProviders\KernelsServiceProvider;
 	use WPEmerge\ServiceProviders\MiddlewareServiceProvider;
 	use WPEmerge\ServiceProviders\RequestsServiceProvider;
@@ -33,6 +34,7 @@
 		 */
 		private $service_providers = [
 			AliasServiceProvider::class,
+			FactoryServiceProvider::class,
 			ApplicationServiceProvider::class,
 			KernelsServiceProvider::class,
 			ExceptionsServiceProvider::class,

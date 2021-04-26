@@ -13,6 +13,17 @@
 	trait ReflectsCallable {
 
 
+		private function unwrap(Closure $closure) {
+
+			$reflection =  new \ReflectionFunction($closure);
+
+			$static_vars = $reflection->getStaticVariables();
+
+			return $static_vars['closure'] ?? Arr::first( $static_vars );
+
+		}
+
+
 		/**
 		 * @param array|Closure $callback
 		 * @param string $default_method
@@ -104,6 +115,7 @@
 			return $object instanceof Closure;
 
 		}
+
 
 		private function classImplements ( $class, $interface) : bool {
 

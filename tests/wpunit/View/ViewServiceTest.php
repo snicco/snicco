@@ -65,6 +65,7 @@
 			$this->subject->addGlobal( 'foo', 'bar' );
 
 			$this->assertEquals( $expected, $this->subject->getGlobals() );
+
 		}
 
 		/**
