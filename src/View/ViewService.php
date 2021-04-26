@@ -4,14 +4,14 @@
 	namespace WPEmerge\View;
 
 	use WPEmerge\Contracts\ViewEngineInterface;
-	use WPEmerge\Contracts\ViewFinderInterface;
 	use WPEmerge\Contracts\ViewInterface;
+	use WPEmerge\Contracts\ViewServiceInterface;
 	use WPEmerge\Helpers\MixedType;
 	use WPEmerge\Helpers\VariableBag;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
 
 
-	class ViewService implements ViewFinderInterface {
+	class ViewService implements ViewServiceInterface {
 
 
 		/**
@@ -44,7 +44,6 @@
 		}
 
 
-
 		/**
 		 * Composes a view instance with contexts in the following order: Global, Composers, Local.
 		 *
@@ -65,7 +64,9 @@
 			$this->composer_collection->executeUsing($view);
 
 			$view->with( $local_context );
+
 		}
+
 
 		/**
 		 * Create a view instance.
@@ -80,6 +81,26 @@
 
 		}
 
+
+		/**
+		 * Compile a view to a string.
+		 *
+		 * @param  string|string[]  $views
+		 * @param  array<string, mixed>  $context
+		 *
+		 * @return string
+		 */
+		public function render( $views, array $context = [] ) : string {
+
+			$view = $this->make( $views )->with( $context );
+
+			$this->triggerPartialHooks( $view->getName() );
+
+			return $view->toString();
+
+		}
+
+
 		/**
 		 * Trigger core hooks for a partial, if any.
 		 *
@@ -88,7 +109,7 @@
 		 *
 		 * @return void
 		 */
-		public function triggerPartialHooks( string $name ) {
+		private function triggerPartialHooks( string $name ) {
 
 			if ( ! function_exists( 'apply_filters' ) ) {
 				// We are not in a WordPress environment - skip triggering hooks.
@@ -102,36 +123,6 @@
 			if ( $is_partial && apply_filters( "wpemerge.partials.{$matches[1]}.hook", true ) ) {
 				do_action( "get_{$matches[1]}", $matches[2] );
 			}
-		}
-
-		/**
-		 * Compile a view to a string.
-		 *
-		 * @param  string|string[]  $views
-		 * @param  array<string, mixed>  $context
-		 *
-		 * @return string
-		 */
-		public function render( $views, $context = [] ) : string {
-
-			$view = $this->make( $views )->with( $context );
-
-			$this->triggerPartialHooks( $view->getName() );
-
-			return $view->toString();
-
-		}
-
-		public function exists( $view ) : bool {
-
-			return $this->engine->exists( $view );
-
-		}
-
-		public function filePath( $view ) : string {
-
-			return $this->engine->filePath( $view );
-
 		}
 
 	}

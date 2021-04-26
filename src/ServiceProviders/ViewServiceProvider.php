@@ -14,7 +14,7 @@
 	use WPEmerge\Contracts\ViewFinderInterface;
 	use WPEmerge\Helpers\MixedType;
 	use WPEmerge\View\PhpViewEngine;
-	use WPEmerge\View\PhpViewFilesystemFinder;
+	use WPEmerge\View\PhpViewFinder;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Helpers\VariableBag;
 	use WPEmerge\View\ViewService;
@@ -76,8 +76,8 @@
 
 			$container->singleton(ViewFinderInterface::class, function ($c) {
 
-				return new PhpViewFilesystemFinder(
-					MixedType::toArray( $c[ WPEMERGE_CONFIG_KEY ]['views'] )
+				return new PhpViewFinder(
+					$c[ WPEMERGE_CONFIG_KEY ]['views'] ?? []
 				);
 
 			});

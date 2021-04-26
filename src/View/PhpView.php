@@ -75,13 +75,6 @@
 
 		public function toString() :string {
 
-			if ( empty( $this->name ) ) {
-				throw new ViewException( 'View must have a name.' );
-			}
-
-			if ( empty( $this->getFilepath() ) ) {
-				throw new ViewException( 'View must have a filepath.' );
-			}
 
 			$this->engine->pushLayoutContent( $this );
 

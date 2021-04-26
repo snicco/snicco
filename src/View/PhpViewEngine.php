@@ -29,7 +29,7 @@
 		/**
 		 * View finder.
 		 *
-		 * @var PhpViewFilesystemFinder
+		 * @var PhpViewFinder
 		 */
 		private $finder;
 
@@ -41,16 +41,16 @@
 		private $layout_content_stack = [];
 
 
-		public function __construct( callable $compose, PhpViewFilesystemFinder $finder ) {
+		public function __construct( callable $compose, PhpViewFinder $finder ) {
 
 			$this->compose = $compose;
 			$this->finder  = $finder;
 
 		}
 
-		public function exists( string $view ) :bool {
+		public function exists( string $view_name ) :bool {
 
-			return $this->finder->exists( $view );
+			return $this->finder->exists( $view_name );
 		}
 
 		public function filePath( string $view_name ) :string  {

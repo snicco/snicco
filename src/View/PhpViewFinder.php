@@ -7,31 +7,23 @@
 	use WPEmerge\Helpers\MixedType;
 
 
-	class PhpViewFilesystemFinder implements ViewFinderInterface {
+	class PhpViewFinder implements ViewFinderInterface {
 
 		/**
-		 * Custom views directories to check first.
 		 *
-		 * @var string[]
+		 * Custom views to search in
+		 *
+		 * @param string[] $directories
 		 */
 		private $directories = [];
 
-		/**
-		 * Constructor.
-		 *
-		 *
-		 * @param  string[]  $directories
-		 */
+		/** @param string[] $directories */
 		public function __construct( $directories = [] ) {
 
 			$this->setDirectories( $directories );
 		}
 
-		/**
-		 * Get the custom views directories.
-		 *
-		 * @return string[]
-		 */
+		/** @return string[] */
 		public function getDirectories() : array {
 
 			return $this->directories;
@@ -40,12 +32,10 @@
 		/**
 		 * Set the custom views directories.
 		 *
-		 *
 		 * @param  string[]  $directories
 		 *
-		 * @return void
 		 */
-		public function setDirectories( array $directories ) {
+		public function setDirectories( array $directories ) :void {
 
 			$this->directories = array_filter( array_map( [
 				MixedType::class,
@@ -53,9 +43,9 @@
 			], $directories ) );
 		}
 
-		public function exists( string $view_name ) :bool {
+		public function exists( string $view_name_name ) :bool {
 
-			return ! empty( $this->resolveFilepath( $view_name ) );
+			return ! empty( $this->resolveFilepath( $view_name_name ) );
 		}
 
 		public function filePath( string $view_name ) :string {
@@ -66,16 +56,16 @@
 		/**
 		 * Resolve a view to an absolute filepath.
 		 *
-		 * @param  string  $view
+		 * @param  string  $view_name
 		 *
 		 * @return string
 		 */
-		private function resolveFilepath( $view ) : string {
+		private function resolveFilepath( string $view_name ) : string {
 
-			$file = $this->resolveFromAbsoluteFilepath( $view );
+			$file = $this->resolveFromAbsoluteFilepath( $view_name );
 
 			if ( ! $file ) {
-				$file = $this->resolveFromCustomDirectories( $view );
+				$file = $this->resolveFromCustomDirectories( $view_name );
 			}
 
 			return $file;
