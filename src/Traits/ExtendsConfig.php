@@ -11,6 +11,30 @@
 
 	trait ExtendsConfig {
 
+
+
+		/**
+		 * Extends the WP Emerge config in the container with a new key.
+		 *
+		 * @param  ContainerAdapter  $container
+		 * @param  string  $key
+		 * @param  mixed  $default
+		 *
+		 * @return void
+		 */
+		public function extendConfig( ContainerAdapter $container, string $key, $default ) {
+
+			$config = isset( $container[ WPEMERGE_CONFIG_KEY ] ) ? $container[ WPEMERGE_CONFIG_KEY ] : [];
+			$config_part = WPEmgereArr::get( $config, $key, $default );
+
+			$container[ WPEMERGE_CONFIG_KEY ] = array_merge(
+				$container[ WPEMERGE_CONFIG_KEY ],
+				[ $key => $this->replaceConfig( $default, $config_part ) ]
+			);
+		}
+
+
+
 		/**
 		 * Recursively replace default values with the passed config.
 		 * - If either value is not an array, the config value will be used.
@@ -44,24 +68,6 @@
 			return $result;
 		}
 
-		/**
-		 * Extends the WP Emerge config in the container with a new key.
-		 *
-		 * @param  ContainerAdapter  $container
-		 * @param  string  $key
-		 * @param  mixed  $default
-		 *
-		 * @return void
-		 */
-		public function extendConfig( ContainerAdapter $container, string $key, $default ) {
 
-			$config = isset( $container[ WPEMERGE_CONFIG_KEY ] ) ? $container[ WPEMERGE_CONFIG_KEY ] : [];
-			$config_part = WPEmgereArr::get( $config, $key, $default );
-
-			$container[ WPEMERGE_CONFIG_KEY ] = array_merge(
-				$container[ WPEMERGE_CONFIG_KEY ],
-				[ $key => $this->replaceConfig( $default, $config_part ) ]
-			);
-		}
 
 	}

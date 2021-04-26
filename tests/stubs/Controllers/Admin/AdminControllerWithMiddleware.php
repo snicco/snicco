@@ -5,13 +5,11 @@
 
 	use Tests\stubs\Middleware\FooMiddleware;
 	use Tests\stubs\TestResponse;
-	use WPEmerge\Contracts\HasControllerMiddlewareInterface;
-	use WPEmerge\Traits\HasControllerMiddleware;
+	use WPEmerge\Http\Controller;
 	use WPEmerge\Requests\Request;
 
-	class AdminControllerWithMiddleware implements HasControllerMiddlewareInterface {
+	class AdminControllerWithMiddleware extends Controller {
 
-		use HasControllerMiddleware;
 
 		/**
 		 * @var AdminControllerDependency
