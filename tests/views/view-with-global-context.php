@@ -1,1 +1,1 @@
-Hello <?php echo $global['world']; ?>!
+Hello <?php echo $calvin['foo.bar.baz']; ?>

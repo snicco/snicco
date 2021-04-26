@@ -1,0 +1,1 @@
+<?php echo 'Hello '; \Tests\stubs\TestApp::render('included-subview.php');

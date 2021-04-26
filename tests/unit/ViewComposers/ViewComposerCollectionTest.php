@@ -8,7 +8,7 @@
 	use SniccoAdapter\BaseContainerAdapter;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Support\Arr;
-	use WPEmerge\View\PhpViewFilesystemFinder;
+	use WPEmerge\View\PhpViewFinder;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
 	use WPEmerge\ViewComposers\ViewComposerFactory;
 
@@ -157,7 +157,7 @@
 
 			$dir = getenv( 'ROOT_DIR' ) . DS . 'tests' . DS . 'views';
 
-			return new ViewComposerCollection( $this->factory, new PhpViewFilesystemFinder( [ $dir ] ) );
+			return new ViewComposerCollection( $this->factory, new PhpViewFinder( [ $dir ] ) );
 
 		}
 
