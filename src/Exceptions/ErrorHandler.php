@@ -13,10 +13,10 @@ use Exception as PhpException;
 use Psr\Http\Message\ResponseInterface;
 use Whoops\RunInterface;
 use WPEmerge\Contracts\ErrorHandlerInterface;
-use WPEmerge\Csrf\InvalidCsrfTokenException;
+use WPEmerge\Exceptions\InvalidCsrfTokenException;
 use WPEmerge\Contracts\RequestInterface;
 use WPEmerge\Responses\ResponseService;
-use WPEmerge\Routing\NotFoundException;
+use WPEmerge\Exceptions\NotFoundException;
 use WPEmerge\Support\Arr;
 
 class ErrorHandler implements ErrorHandlerInterface {

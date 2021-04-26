@@ -2,15 +2,14 @@
 
 
 
-	namespace WPEmerge\ServiceProviders;
+	namespace WPEmerge\Traits;
 
 	use Contracts\ContainerAdapter;
 	use WPEmerge\Support\Arr;
 
-	/**
-	 * Allows objects to extend the config.
-	 */
-	trait ExtendsConfigTrait {
+	use const WPEMERGE_CONFIG_KEY;
+
+	trait ExtendsConfig {
 
 		/**
 		 * Recursively replace default values with the passed config.
@@ -23,7 +22,7 @@
 		 *
 		 * @return mixed
 		 */
-		protected function replaceConfig( $default, $config ) {
+		private function replaceConfig( $default, $config ) {
 
 			if ( ! is_array( $default ) || ! is_array( $config ) ) {
 				return $config;

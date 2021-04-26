@@ -5,8 +5,8 @@
 
 	use Mockery;
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Input\OldInput;
-	use WPEmerge\Input\OldInputMiddleware;
+	use WPEmerge\Session\OldInputStore;
+	use WPEmerge\Middleware\OldInput;
 	use WPEmerge\Contracts\RequestInterface;
 
 
@@ -16,8 +16,8 @@
 
 			parent::setUp();
 
-			$this->old_input = Mockery::mock( OldInput::class );
-			$this->subject   = new OldInputMiddleware( $this->old_input );
+			$this->old_input = Mockery::mock( OldInputStore::class );
+			$this->subject   = new OldInput( $this->old_input );
 
 		}
 

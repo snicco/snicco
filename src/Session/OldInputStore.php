@@ -1,20 +1,20 @@
 <?php
 
 
-	namespace WPEmerge\Input;
+	namespace WPEmerge\Session;
 
-	use WPEmerge\Session\Flash;
+	use WPEmerge\Session\FlashStore;
 	use WPEmerge\Support\Arr;
 
 	/**
 	 * Provide a way to get values from the previous request.
 	 */
-	class OldInput {
+	class OldInputStore {
 
 		/**
-		 * Flash service.
+		 * FlashStore service.
 		 *
-		 * @var Flash
+		 * @var FlashStore
 		 */
 		protected $flash = null;
 
@@ -30,10 +30,10 @@
 		 *
 		 * @codeCoverageIgnore
 		 *
-		 * @param  Flash  $flash
+		 * @param  FlashStore  $flash
 		 * @param  string  $flash_key
 		 */
-		public function __construct( Flash $flash, $flash_key = '__wpemergeOldInput' ) {
+		public function __construct( FlashStore $flash, $flash_key = '__wpemergeOldInput' ) {
 
 			$this->flash     = $flash;
 			$this->flash_key = $flash_key;

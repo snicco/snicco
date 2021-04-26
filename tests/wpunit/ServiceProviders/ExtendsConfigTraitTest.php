@@ -5,10 +5,10 @@
 
 	use Codeception\PHPUnit\TestCase;
 	use SniccoAdapter\BaseContainerAdapter;
-	use WPEmerge\ServiceProviders\ExtendsConfigTrait;
+	use WPEmerge\Traits\ExtendsConfig;
 
 	/**
-	 * @coversDefaultClass \WPEmerge\ServiceProviders\ExtendsConfigTrait
+	 * @coversDefaultClass \WPEmerge\Traits\ExtendsConfig
 	 */
 	class ExtendsConfigTraitTest extends TestCase {
 
@@ -16,7 +16,7 @@
 
 			parent::setUp();
 
-			$this->subject = $this->getMockForTrait( ExtendsConfigTrait::class );
+			$this->subject = $this->getMockForTrait( ExtendsConfig::class );
 		}
 
 		public function tearDown() : void {

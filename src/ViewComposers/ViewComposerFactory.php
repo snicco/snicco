@@ -4,7 +4,7 @@
 	namespace WPEmerge\ViewComposers;
 
 	use WPEmerge\Contracts\Handler;
-	use WPEmerge\Handlers\AbstractFactory;
+	use WPEmerge\AbstractFactory;
 
 	class ViewComposerFactory extends AbstractFactory {
 

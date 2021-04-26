@@ -4,8 +4,8 @@
 	namespace WPEmerge\ServiceProviders;
 
 	use WPEmerge\Contracts\ServiceProviderInterface;
-	use WPEmerge\Session\Flash;
-	use WPEmerge\Flash\FlashMiddleware;
+	use WPEmerge\Session\FlashStore;
+	use WPEmerge\Middleware\Flash;
 
 
 	class FlashServiceProvider implements ServiceProviderInterface {
@@ -19,7 +19,7 @@
 
 					$session = &$c[ WPEMERGE_SESSION_KEY ];
 
-					return new Flash( $session );
+					return new FlashStore( $session );
 
 				}
 
@@ -27,16 +27,16 @@
 
 					$session = &$_SESSION;
 
-					return new Flash( $session );
+					return new FlashStore( $session );
 
 				}
 
 
 			});
 
-			$container->singleton(FlashMiddleware::class, function($c) {
+			$container->singleton(Flash::class, function($c) {
 
-				return new FlashMiddleware( $c[ WPEMERGE_FLASH_KEY ] );
+				return new Flash( $c[ WPEMERGE_FLASH_KEY ] );
 
 			} );
 

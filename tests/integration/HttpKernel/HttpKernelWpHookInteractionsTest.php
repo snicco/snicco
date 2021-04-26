@@ -21,7 +21,7 @@
 		use MockRequest;
 
 		/**
-		 * @var \WPEmerge\Kernels\HttpKernel
+		 * @var \WPEmerge\HttpKernel
 		 */
 		private $kernel;
 

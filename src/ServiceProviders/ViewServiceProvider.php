@@ -13,6 +13,7 @@
 	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Contracts\ViewFinderInterface;
 	use WPEmerge\Helpers\MixedType;
+	use WPEmerge\Traits\ExtendsConfig;
 	use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\View\PhpViewFinder;
 	use WPEmerge\Contracts\ViewInterface;
@@ -39,7 +40,7 @@
 	 */
 	class ViewServiceProvider implements ServiceProviderInterface {
 
-		use ExtendsConfigTrait;
+		use ExtendsConfig;
 
 		public function register( $container ) {
 

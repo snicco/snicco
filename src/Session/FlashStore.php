@@ -10,7 +10,7 @@
 	use WPEmerge\Support\Arr;
 
 
-	class Flash {
+	class FlashStore {
 
 		/**
 		 * Keys for different request contexts.
@@ -33,7 +33,7 @@
 		private $store = null;
 
 		/**
-		 * Flash store array.
+		 * FlashStore store array.
 		 *
 		 * @var array
 		 */
@@ -74,7 +74,7 @@
 
 			if ( ! $this->isValidStore( $this->store ) ) {
 				throw new ConfigurationException(
-					'Attempted to use Flash without an active session. ' .
+					'Attempted to use FlashStore without an active session. ' .
 					'Did you miss to call session_start()?'
 				);
 			}

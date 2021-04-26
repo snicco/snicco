@@ -4,7 +4,7 @@
 	namespace WPEmerge\ServiceProviders;
 
 	use Contracts\ContainerAdapter;
-	use WPEmerge\Handlers\AbstractFactory;
+	use WPEmerge\AbstractFactory;
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\ViewComposers\ViewComposerFactory;
 

@@ -6,7 +6,7 @@
 	use Codeception\TestCase\WPTestCase;
 	use WPEmerge\ServiceProviders\AliasServiceProvider;
 	use WPEmerge\ServiceProviders\ApplicationServiceProvider;
-	use WPEmerge\Csrf\CsrfServiceProvider;
+	use WPEmerge\ServiceProviders\CsrfServiceProvider;
 	use WPEmerge\ServiceProviders\ExceptionsServiceProvider;
 	use WPEmerge\ServiceProviders\FactoryServiceProvider;
 	use WPEmerge\ServiceProviders\FlashServiceProvider;

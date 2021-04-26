@@ -16,7 +16,7 @@
 	use Tests\stubs\TestApp;
 
 	/**
-	 * @covers \WPEmerge\Kernels\HttpKernel
+	 * @covers \WPEmerge\HttpKernel
 	 */
 	class HttpKernelHandlerIntegrationTest extends WPTestCase {
 
@@ -25,7 +25,7 @@
 		use MockRequest;
 
 		/**
-		 * @var \WPEmerge\Kernels\HttpKernel
+		 * @var \WPEmerge\HttpKernel
 		 */
 		private $kernel;
 

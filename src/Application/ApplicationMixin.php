@@ -5,9 +5,9 @@
 
 	use Contracts\ContainerAdapter;
 	use Psr\Http\Message\ResponseInterface;
-	use WPEmerge\Csrf\Csrf;
-	use WPEmerge\Session\Flash;
-	use WPEmerge\Input\OldInput;
+	use WPEmerge\Session\Csrf;
+	use WPEmerge\Session\FlashStore;
+	use WPEmerge\Session\OldInputStore;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Responses\RedirectResponse;
 	use WPEmerge\Responses\ResponseService;
@@ -93,25 +93,25 @@
 		/**
 		 * Get the CSRF service instance.
 		 *
-		 * @return \WPEmerge\Csrf\Csrf
+		 * @return \WPEmerge\Session\Csrf
 		 */
 		public static function csrf() : Csrf {
 		}
 
 		/**
-		 * Get the Flash service instance.
+		 * Get the FlashStore service instance.
 		 *
-		 * @return \WPEmerge\Session\Flash
+		 * @return \WPEmerge\Session\FlashStore
 		 */
-		public static function flash() : Flash {
+		public static function flash() : FlashStore {
 		}
 
 		/**
-		 * Get the OldInput service instance.
+		 * Get the OldInputStore service instance.
 		 *
-		 * @return \WPEmerge\Input\OldInput
+		 * @return \WPEmerge\Session\OldInputStore
 		 */
-		public static function oldInput() : OldInput {
+		public static function oldInput() : OldInputStore {
 		}
 
 		/**
@@ -123,7 +123,7 @@
 		 * @param  array  $arguments
 		 *
 		 * @return ResponseInterface
-		 * @see    \WPEmerge\Kernels\HttpKernel::run()
+		 * @see    \WPEmerge\HttpKernel::run()
 		 */
 		public static function run( RequestInterface $request, $middleware, $handler, $arguments = [] ) : ResponseInterface {
 		}

@@ -56,7 +56,7 @@
 	}
 
 	if ( ! defined( 'WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY' ) ) {
-		define( 'WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY', \WPEmerge\Kernels\HttpKernel::class );
+		define( 'WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY', WPEmerge\HttpKernel::class );
 	}
 
 	if ( ! defined( 'WPEMERGE_SESSION_KEY' ) ) {
@@ -120,15 +120,15 @@
 	}
 
 	if ( ! defined( 'WPEMERGE_FLASH_KEY' ) ) {
-		define( 'WPEMERGE_FLASH_KEY', \WPEmerge\Session\Flash::class );
+		define( 'WPEMERGE_FLASH_KEY', \WPEmerge\Session\FlashStore::class );
 	}
 
 	if ( ! defined( 'WPEMERGE_OLD_INPUT_KEY' ) ) {
-		define( 'WPEMERGE_OLD_INPUT_KEY', \WPEmerge\Input\OldInput::class );
+		define( 'WPEMERGE_OLD_INPUT_KEY', \WPEmerge\Session\OldInputStore::class );
 	}
 
 	if ( ! defined( 'WPEMERGE_CSRF_KEY' ) ) {
-		define( 'WPEMERGE_CSRF_KEY', \WPEmerge\Csrf\Csrf::class );
+		define( 'WPEMERGE_CSRF_KEY', \WPEmerge\Session\Csrf::class );
 	}
 
 

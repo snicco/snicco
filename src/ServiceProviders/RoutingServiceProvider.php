@@ -22,11 +22,11 @@
 	use WPEmerge\Routing\RouteBlueprint;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Routing\RouteRegistrar;
-
+	use WPEmerge\Traits\ExtendsConfig;
 
 	class RoutingServiceProvider implements ServiceProviderInterface {
 
-		use ExtendsConfigTrait;
+		use ExtendsConfig;
 
 		/**
 		 * Key=>Class dictionary of condition types

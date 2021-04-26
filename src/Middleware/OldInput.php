@@ -1,20 +1,20 @@
 <?php
 
 
-	namespace WPEmerge\Input;
+	namespace WPEmerge\Middleware;
 
 	use Closure;
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Session\OldInputStore as OldInputStore;
 
+	class OldInput implements Middleware {
 
-	class OldInputMiddleware implements Middleware {
-
-		/** @var \WPEmerge\Input\OldInput */
+		/** @var \WPEmerge\Session\OldInputStore */
 		protected $old_input;
 
 
-		public function __construct( OldInput $old_input ) {
+		public function __construct( OldInputStore $old_input ) {
 
 			$this->old_input = $old_input;
 		}

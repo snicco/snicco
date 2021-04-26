@@ -20,7 +20,7 @@
 
 
 	/**
-	 * @covers \WPEmerge\Kernels\HttpKernel
+	 * @covers \WPEmerge\HttpKernel
 	 */
 	class HttpKernelMiddlewareIntegrationTest extends WPTestCase {
 
@@ -29,7 +29,7 @@
 
 
 		/**
-		 * @var \WPEmerge\Kernels\HttpKernel
+		 * @var \WPEmerge\HttpKernel
 		 */
 		private $kernel;
 
