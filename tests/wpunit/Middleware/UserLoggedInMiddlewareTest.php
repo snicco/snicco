@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace Tests\wpunit\Responses;
+	namespace Tests\unit\Responses;
 
 	use Codeception\TestCase\WPTestCase;
 	use Mockery;
