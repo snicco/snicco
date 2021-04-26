@@ -8,6 +8,7 @@
 	use WPEmerge\ServiceProviders\ApplicationServiceProvider;
 	use WPEmerge\Csrf\CsrfServiceProvider;
 	use WPEmerge\ServiceProviders\ExceptionsServiceProvider;
+	use WPEmerge\ServiceProviders\FactoryServiceProvider;
 	use WPEmerge\ServiceProviders\FlashServiceProvider;
 	use WPEmerge\ServiceProviders\KernelsServiceProvider;
 	use WPEmerge\ServiceProviders\MiddlewareServiceProvider;
@@ -26,6 +27,7 @@
 		private $service_providers = [
 
 			AliasServiceProvider::class,
+			FactoryServiceProvider::class,
 			ApplicationServiceProvider::class,
 			KernelsServiceProvider::class,
 			ExceptionsServiceProvider::class,

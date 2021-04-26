@@ -75,7 +75,7 @@
 		}
 
 		/** @test */
-		public function multiple_composers_can_match() {
+		public function multiple_composers_can_match_for_one_view() {
 
 			$collection = $this->newViewComposerCollection();
 
@@ -100,6 +100,58 @@
 			$this->assertSame( 'baz', $view->getContext( 'bar' ) );
 
 		}
+
+		/** @test */
+		public function a_composer_can_be_created_for_multiple_views () {
+
+			$collection = $this->newViewComposerCollection();
+
+			$view1 = new TestView();
+			$view1->setName( 'view.php' );
+			$collection->addComposer( 'view.php', function ( ViewInterface $view ) {
+
+				$view->with( [ 'foo' => 'bar' ] );
+
+			} );
+			$collection->executeUsing( $view1 );
+			$this->assertSame( 'bar', $view1->getContext( 'foo' ) );
+
+			$view2 = new TestView();
+			$view2->setName( 'welcome.wordpress.php' );
+			$collection->addComposer( 'welcome.wordpress.php', function ( ViewInterface $view ) {
+
+				$view->with( [ 'foo' => 'bar' ] );
+
+			} );
+			$collection->executeUsing( $view2 );
+			$this->assertSame( 'bar', $view2->getContext( 'foo' ) );
+
+
+
+		}
+
+		/** @test */
+		public function the_view_does_not_need_to_be_type_hinted () {
+
+			$collection = $this->newViewComposerCollection();
+
+			$view = new TestView();
+			$view->setName( 'view.php' );
+			$view->with( [ 'foo' => 'bar' ] );
+
+			$collection->addComposer( 'view.php', function ( $view_file ) {
+
+				$view_file->with( [ 'foo' => 'baz' ] );
+
+			} );
+
+			$collection->executeUsing( $view );
+
+			$this->assertSame( 'baz', $view->getContext( 'foo' ) );
+
+
+		}
+
 
 		private function newViewComposerCollection() : ViewComposerCollection {
 
