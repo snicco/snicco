@@ -35,7 +35,6 @@
 		/**
 		 * Constructor.
 		 *
-		 * @codeCoverageIgnore
 		 *
 		 * @param  Router  $router
 		 * @param  ViewService  $view_service
@@ -67,21 +66,7 @@
 		/**
 		 * Set the condition attribute to a URL.
 		 *
-		 * @param  string  $url
-		 * @param  array<string, string>  $where
-		 *
-		 * @return static                $this
-		 */
-		public function _url( string $url, $where = [] ) {
-
-			return $this->where( 'url', $url, $where );
-
-		}
-
-		/**
-		 * Set the condition attribute to a URL.
-		 *
-		 * @param  string  $url
+		 * @param  string  $url_pattern
 		 * @param  array<string, string>  $where
 		 *
 		 * @return static                $this
@@ -89,8 +74,6 @@
 		public function url( string $url_pattern, $where = [] ) {
 
 			$url = UrlParser::normalize($url_pattern);
-
-			// $this->where('model', UrlParser::parseModelsFromUrl($url_pattern));
 
 			return $this->where( 'url', $url, $where );
 

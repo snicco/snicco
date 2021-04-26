@@ -22,7 +22,6 @@
 		/**
 		 * Get routes.
 		 *
-		 * @codeCoverageIgnore
 		 * @return RouteInterface[]
 		 */
 		public function getRoutes() {
