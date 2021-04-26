@@ -10,7 +10,7 @@
 	use WPEmerge\Middleware\Flash;
 	use WPEmerge\Helpers\Pipeline;
 	use WPEmerge\Middleware\OldInput;
-	use WPEmerge\HttpKernel;
+	use WPEmerge\Http\HttpKernel;
 	use WPEmerge\Middleware\StartSession;
 	use WPEmerge\Middleware\SubstituteBindings;
 	use WPEmerge\Middleware\UserCan;

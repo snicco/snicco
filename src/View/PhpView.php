@@ -8,7 +8,7 @@
 	use GuzzleHttp\Psr7\Utils;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Exceptions\ViewException;
-	use WPEmerge\Support\Arr;
+	use WPEmerge\Support\WPEmgereArr;
 
 	/**
 	 * Render a view file with php.
@@ -105,7 +105,7 @@
 				return $this->context;
 			}
 
-			return Arr::get( $this->context, $key, $default );
+			return WPEmgereArr::get( $this->context, $key, $default );
 		}
 
 		/**

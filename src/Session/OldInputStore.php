@@ -4,7 +4,7 @@
 	namespace WPEmerge\Session;
 
 	use WPEmerge\Session\FlashStore;
-	use WPEmerge\Support\Arr;
+	use WPEmerge\Support\WPEmgereArr;
 
 	/**
 	 * Provide a way to get values from the previous request.
@@ -59,7 +59,7 @@
 		 */
 		public function get( $key, $default = null ) {
 
-			return Arr::get( $this->flash->get( $this->flash_key, [] ), $key, $default );
+			return WPEmgereArr::get( $this->flash->get( $this->flash_key, [] ), $key, $default );
 		}
 
 		/**

@@ -8,7 +8,7 @@
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Helpers\Url as UrlUtility;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Support\Arr;
+	use WPEmerge\Support\WPEmgereArr;
 
 	/**
 	 * Check against the current url
@@ -88,7 +88,7 @@
 			$arguments = $this->getArguments( $request );
 
 			foreach ( $where as $parameter => $pattern ) {
-				$value = Arr::get( $arguments, $parameter, '' );
+				$value = WPEmgereArr::get( $arguments, $parameter, '' );
 
 				if ( ! preg_match( $pattern, $value ) ) {
 					return FALSE;
@@ -286,7 +286,7 @@
 			$url = preg_replace_callback( $this->url_pattern, function ( $matches ) use ( $arguments ) {
 				$name     = $matches['name'];
 				$optional = ! empty( $matches['optional'] );
-				$value    = '/' . urlencode( Arr::get( $arguments, $name, '' ) );
+				$value    = '/' . urlencode( WPEmgereArr::get( $arguments, $name, '' ) );
 
 				if ( $value === '/' ) {
 					if ( ! $optional ) {

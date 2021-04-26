@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmerge;
+	namespace WPEmerge\Http;
 
 	use Contracts\ContainerAdapter as Container;
 	use Exception;

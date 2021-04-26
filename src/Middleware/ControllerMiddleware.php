@@ -14,21 +14,21 @@
 		 *
 		 * @var string[]
 		 */
-		protected $middleware = [];
+		private $middleware = [];
 
 		/**
 		 * Methods the middleware applies to.
 		 *
 		 * @var string[]
 		 */
-		protected $whitelist = [];
+		private $whitelist = [];
 
 		/**
 		 * Methods the middleware does not apply to.
 		 *
 		 * @var string[]
 		 */
-		protected $blacklist = [];
+		private $blacklist = [];
 
 		/**
 		 * Constructor.
@@ -46,9 +46,10 @@
 		 *
 		 * @return string[]
 		 */
-		public function get() {
+		public function get() : array {
 
 			return $this->middleware;
+
 		}
 
 		/**
@@ -59,11 +60,12 @@
 		 *
 		 * @return static
 		 */
-		public function only( $methods ) {
+		public function only( $methods ) : ControllerMiddleware {
 
 			$this->whitelist = (array) $methods;
 
 			return $this;
+
 		}
 
 		/**
@@ -74,7 +76,7 @@
 		 *
 		 * @return static
 		 */
-		public function except( $methods ) {
+		public function except( $methods ) : ControllerMiddleware {
 
 			$this->blacklist = (array) $methods;
 
@@ -88,7 +90,7 @@
 		 *
 		 * @return boolean
 		 */
-		public function appliesTo( $method ) {
+		public function appliesTo( string $method ) : bool {
 
 			if ( in_array( $method, $this->blacklist, true ) ) {
 				return false;

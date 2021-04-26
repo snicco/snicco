@@ -3,7 +3,7 @@
 
 	namespace WPEmerge\Helpers;
 
-	use WPEmerge\Support\Arr;
+	use WPEmerge\Support\WPEmgereArr;
 
 	/**
 	 * Represent an object which has an array of attributes.
@@ -27,7 +27,7 @@
 		 */
 		public function getAttribute( $attribute, $default = '' ) {
 
-			return Arr::get( $this->getAttributes(), $attribute, $default );
+			return WPEmgereArr::get( $this->getAttributes(), $attribute, $default );
 		}
 
 		/**

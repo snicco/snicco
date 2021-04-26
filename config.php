@@ -56,7 +56,7 @@
 	}
 
 	if ( ! defined( 'WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY' ) ) {
-		define( 'WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY', WPEmerge\HttpKernel::class );
+		define( 'WPEMERGE_WORDPRESS_HTTP_KERNEL_KEY', \WPEmerge\Http\HttpKernel::class );
 	}
 
 	if ( ! defined( 'WPEMERGE_SESSION_KEY' ) ) {

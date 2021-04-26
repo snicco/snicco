@@ -15,12 +15,12 @@
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Helpers\Pipeline;
-	use WPEmerge\MiddlewareResolver;
+	use WPEmerge\Http\MiddlewareResolver;
 	use WPEmerge\Traits\CompilesMiddleware;
 	use WPEmerge\Routing\Conditions\ConditionFactory;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\UrlableInterface;
-	use WPEmerge\Support\Arr;
+	use WPEmerge\Support\WPEmgereArr;
 	use WPEmerge\Traits\SortsMiddleware;
 
 	class Router implements HasRoutesInterface {
@@ -215,38 +215,38 @@
 
 			return [
 				'methods' => $this->mergeMethodsAttribute(
-					(array) Arr::get( $old, 'methods', [] ),
-					(array) Arr::get( $new, 'methods', [] )
+					(array) WPEmgereArr::get( $old, 'methods', [] ),
+					(array) WPEmgereArr::get( $new, 'methods', [] )
 				),
 
 				'condition' => $this->mergeConditionAttribute(
-					Arr::get( $old, 'condition', null ),
-					Arr::get( $new, 'condition', null )
+					WPEmgereArr::get( $old, 'condition', null ),
+					WPEmgereArr::get( $new, 'condition', null )
 				),
 
 				'middleware' => $this->mergeMiddlewareAttribute(
-					(array) Arr::get( $old, 'middleware', [] ),
-					(array) Arr::get( $new, 'middleware', [] )
+					(array) WPEmgereArr::get( $old, 'middleware', [] ),
+					(array) WPEmgereArr::get( $new, 'middleware', [] )
 				),
 
 				'namespace' => $this->mergeNamespaceAttribute(
-					Arr::get( $old, 'namespace', '' ),
-					Arr::get( $new, 'namespace', '' )
+					WPEmgereArr::get( $old, 'namespace', '' ),
+					WPEmgereArr::get( $new, 'namespace', '' )
 				),
 
 				'handler' => $this->mergeHandlerAttribute(
-					Arr::get( $old, 'handler', '' ),
-					Arr::get( $new, 'handler', '' )
+					WPEmgereArr::get( $old, 'handler', '' ),
+					WPEmgereArr::get( $new, 'handler', '' )
 				),
 
 				'query' => $this->mergeQueryAttribute(
-					Arr::get( $old, 'query', null ),
-					Arr::get( $new, 'query', null )
+					WPEmgereArr::get( $old, 'query', null ),
+					WPEmgereArr::get( $new, 'query', null )
 				),
 
 				'name' => $this->mergeNameAttribute(
-					Arr::get( $old, 'name', '' ),
-					Arr::get( $new, 'name', '' )
+					WPEmgereArr::get( $old, 'name', '' ),
+					WPEmgereArr::get( $new, 'name', '' )
 				),
 			];
 		}
@@ -258,7 +258,7 @@
 		 */
 		protected function getGroup() {
 
-			return Arr::last( $this->group_stack, null, [] );
+			return WPEmgereArr::last( $this->group_stack, null, [] );
 		}
 
 		/**

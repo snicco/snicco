@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace Tests\wpunit\Application;
+	namespace Tests\integration\Application;
 
 	use Mockery as m;
 	use PHPUnit\Framework\TestCase;
@@ -13,7 +13,7 @@
 
 
 		/**
-		 * @var \Tests\wpunit\Application\ManagesAliasImplementation
+		 * @var \Tests\integration\Application\ManagesAliasImplementation
 		 */
 		private $subject;
 

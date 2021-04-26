@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace Tests\wpunit\Application;
+	namespace Tests\integration\Application;
 
 	use Codeception\TestCase\WPTestCase;
 	use WPEmerge\ServiceProviders\AliasServiceProvider;

@@ -7,7 +7,7 @@
 	use ArrayAccess;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Helpers\MixedType;
-	use WPEmerge\Support\Arr;
+	use WPEmerge\Support\WPEmgereArr;
 
 
 	class FlashStore {
@@ -139,10 +139,10 @@
 			$this->validateStore();
 
 			if ( $key === null ) {
-				return Arr::get( $this->flashed, $request_key, $default );
+				return WPEmgereArr::get( $this->flashed, $request_key, $default );
 			}
 
-			return Arr::get( $this->flashed[ $request_key ], $key, $default );
+			return WPEmgereArr::get( $this->flashed[ $request_key ], $key, $default );
 		}
 
 		/**
