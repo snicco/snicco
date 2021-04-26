@@ -93,6 +93,22 @@
 			return $this->renderView( $clone );
 		}
 
+
+		/**
+		 * Push layout content to the top of the stack.
+		 *
+		 *
+		 * @param  PhpView  $view
+		 *
+		 * @return void
+		 */
+		public function pushLayoutContent( PhpView $view ) :void {
+
+			$this->layout_content_stack[] = $view;
+		}
+
+
+
 		/**
 		 * Create a view instance.
 		 *
@@ -142,7 +158,7 @@
 				throw new ViewNotFoundException( 'View layout not found for "' . $layout_file . '"' );
 			}
 
-			return $this->makeView( $this->filePath( $layout_file ), $this->finder->resolveFilepath( $layout_file ) );
+			return $this->makeView( $this->filePath( $layout_file ), $this->finder->filePath( $layout_file ) );
 		}
 
 		/**
@@ -163,25 +179,13 @@
 			return ob_get_clean();
 		}
 
-		/**
-		 * Push layout content to the top of the stack.
-		 *
-		 *
-		 * @param  PhpView  $view
-		 *
-		 * @return void
-		 */
-		private function pushLayoutContent( PhpView $view ) :void {
-
-			$this->layout_content_stack[] = $view;
-		}
 
 		/**
 		 * Pop the top-most layout content from the stack.
 		 *
 		 * @return PhpView|null
 		 */
-		private function popLayoutContent() :string {
+		private function popLayoutContent() : ?PhpView {
 
 			return array_pop( $this->layout_content_stack );
 		}

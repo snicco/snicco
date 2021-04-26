@@ -21,86 +21,56 @@
 		 *
 		 * @var PhpViewEngine
 		 */
-		protected $engine = null;
+		private $engine;
 
 		/**
 		 * Filepath to view.
 		 *
 		 * @var string
 		 */
-		protected $filepath = '';
+		private $filepath = '';
 
 		/**
-		 * Layout to use.
-		 *
 		 * @var ViewInterface|null
 		 */
-		protected $layout = null;
+		private $layout;
 
-		/**
-		 * Constructor.
-		 *
-		 * @codeCoverageIgnore
-		 *
-		 * @param  PhpViewEngine  $engine
-		 */
+
 		public function __construct( PhpViewEngine $engine ) {
 
 			$this->engine = $engine;
+
 		}
 
-		/**
-		 * Get filepath.
-		 *
-		 * @return string
-		 */
-		public function getFilepath() {
+
+		public function getFilepath() : string {
 
 			return $this->filepath;
 		}
 
-		/**
-		 * Set filepath.
-		 *
-		 * @param  string  $filepath
-		 *
-		 * @return static $this
-		 */
-		public function setFilepath( $filepath ) {
+
+		public function setFilepath( string $filepath ) : PhpView {
 
 			$this->filepath = $filepath;
 
 			return $this;
 		}
 
-		/**
-		 * Get layout.
-		 *
-		 * @return ViewInterface|null
-		 */
-		public function getLayout() {
+
+		public function getLayout() : ?ViewInterface {
 
 			return $this->layout;
 		}
 
-		/**
-		 * Set layout.
-		 *
-		 * @param  ViewInterface|null  $layout
-		 *
-		 * @return static             $this
-		 */
-		public function setLayout( $layout ) {
+
+		public function setLayout( ?ViewInterface $layout ) : PhpView {
 
 			$this->layout = $layout;
 
 			return $this;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 * @throws ViewException
-		 */
+
 		public function toString() {
 
 			if ( empty( $this->getName() ) ) {
@@ -120,10 +90,7 @@
 			return $this->engine->getLayoutContent();
 		}
 
-		/**
-		 * {@inheritDoc}
-		 * @throws ViewException
-		 */
+
 		public function toResponse() {
 
 			return ( new Response() )
