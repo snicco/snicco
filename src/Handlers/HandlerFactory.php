@@ -4,6 +4,7 @@
 	namespace WPEmerge\Handlers;
 
 	use Closure;
+	use WPEmerge\AbstractFactory;
 	use WPEmerge\Contracts\Handler;
 	use WPEmerge\MiddlewareResolver;
 

@@ -12,6 +12,8 @@
 	use WPEmerge\Exceptions\ErrorHandler;
 	use WPEmerge\Exceptions\Whoops\DebugDataProvider;
 
+	use WPEmerge\Traits\ExtendsConfig;
+
 	use const WPEMERGE_CONFIG_KEY;
 	use const WPEMERGE_EXCEPTIONS_CONFIGURATION_ERROR_HANDLER_KEY;
 	use const WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY;
@@ -24,7 +26,7 @@
 	class ExceptionsServiceProvider implements ServiceProviderInterface {
 
 
-		use ExtendsConfigTrait;
+		use ExtendsConfig;
 
 
 		public function register( $container ) {

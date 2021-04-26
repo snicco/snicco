@@ -5,12 +5,12 @@
 
 	use Codeception\TestCase\WPTestCase;
 	use Mockery;
-	use WPEmerge\Session\Flash;
-	use WPEmerge\Flash\FlashMiddleware;
+	use WPEmerge\Session\FlashStore;
+	use WPEmerge\Middleware\Flash;
 	use WPEmerge\Contracts\RequestInterface;
 
 	/**
-	 * @coversDefaultClass \WPEmerge\Flash\FlashMiddleware
+	 * @coversDefaultClass \WPEmerge\Middleware\Flash
 	 */
 	class FlashMiddlewareTest extends WPTestCase {
 
@@ -19,7 +19,7 @@
 			parent::setUp();
 
 			$this->flash   = Mockery::mock( Flash::class );
-			$this->subject = new FlashMiddleware( $this->flash );
+			$this->subject = new Flash( $this->flash );
 		}
 
 		public function tearDown() : void {

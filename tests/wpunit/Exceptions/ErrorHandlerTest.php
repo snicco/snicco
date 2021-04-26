@@ -12,7 +12,7 @@
 	use WPEmerge\Exceptions\ErrorHandler;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Responses\ResponseService;
-	use WPEmerge\Routing\NotFoundException;
+	use WPEmerge\Exceptions\NotFoundException;
 
 
 	class ErrorHandlerTest extends WPTestCase {

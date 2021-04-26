@@ -5,8 +5,8 @@
 
 	use Mockery;
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Session\Flash;
-	use WPEmerge\Input\OldInput;
+	use WPEmerge\Session\FlashStore;
+	use WPEmerge\Session\OldInputStore;
 
 
 	class OldInputTest extends TestCase {
@@ -15,9 +15,9 @@
 
 			parent::setUp();
 
-			$this->flash     = Mockery::mock( Flash::class );
+			$this->flash     = Mockery::mock( FlashStore::class );
 			$this->flash_key = '__foobar';
-			$this->subject   = new OldInput( $this->flash, $this->flash_key );
+			$this->subject   = new OldInputStore( $this->flash, $this->flash_key );
 		}
 
 		public function tearDown() : void {
@@ -32,17 +32,17 @@
 
 		public function testEnabled() {
 
-			$flash1 = Mockery::mock( Flash::class );
+			$flash1 = Mockery::mock( FlashStore::class );
 			$flash1->shouldReceive( 'enabled' )
 			       ->andReturn( true );
-			$subject1 = new OldInput( $flash1 );
+			$subject1 = new OldInputStore( $flash1 );
 
 			$this->assertTrue( $subject1->enabled() );
 
-			$flash2 = Mockery::mock( Flash::class );
+			$flash2 = Mockery::mock( FlashStore::class );
 			$flash2->shouldReceive( 'enabled' )
 			       ->andReturn( false );
-			$subject2 = new OldInput( $flash2 );
+			$subject2 = new OldInputStore( $flash2 );
 
 			$this->assertFalse( $subject2->enabled() );
 		}

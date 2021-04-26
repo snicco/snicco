@@ -15,7 +15,7 @@
 	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingAjaxRequest;
 	use WPEmerge\Events\BodySent;
-	use WPEmerge\Kernels\HttpKernel;
+	use WPEmerge\HttpKernel;
 
 	class EventServiceProvider implements ServiceProviderInterface {
 

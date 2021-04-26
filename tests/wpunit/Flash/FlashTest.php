@@ -6,11 +6,11 @@ use ArrayAccess;
 use Codeception\TestCase\WPTestCase;
 use Mockery;
 use stdClass;
-use WPEmerge\Session\Flash;
+use WPEmerge\Session\FlashStore;
 use WP_UnitTestCase;
 
 /**
- * @coversDefaultClass \WPEmerge\Session\Flash
+ * @coversDefaultClass \WPEmerge\Session\FlashStore
  */
 class FlashTest extends WPTestCase {
 	/**
@@ -20,7 +20,7 @@ class FlashTest extends WPTestCase {
 	 */
 	public function testGetStore() {
 		$store1 = [];
-		$subject1 = new Flash( $store1 );
+		$subject1 = new FlashStore( $store1 );
 		$this->assertSame( $store1, $subject1->getStore() );
 
 		$store2 = Mockery::mock( ArrayAccess::class );
@@ -29,7 +29,7 @@ class FlashTest extends WPTestCase {
 		$store2->shouldReceive( 'offsetSet' );
 		$store2->shouldReceive( 'offsetGet' )
 			->andReturn( [] );
-		$subject2 = new Flash( $store2 );
+		$subject2 = new FlashStore( $store2 );
 		$this->assertSame( $store2, $subject2->getStore() );
 	}
 
@@ -39,7 +39,7 @@ class FlashTest extends WPTestCase {
 	 */
 	public function testSetStore_InvalidStore_Ignored() {
 		$store = new stdClass();
-		$subject = new Flash( $store );
+		$subject = new FlashStore( $store );
 		$this->assertNull( $subject->getStore() );
 	}
 
@@ -48,11 +48,11 @@ class FlashTest extends WPTestCase {
 	 */
 	public function testEnabled() {
 		$store1 = [];
-		$subject1 = new Flash( $store1 );
+		$subject1 = new FlashStore( $store1 );
 		$this->assertTrue( $subject1->enabled() );
 
 		$store2 = null;
-		$subject2 = new Flash( $store2 );
+		$subject2 = new FlashStore( $store2 );
 		$this->assertFalse( $subject2->enabled() );
 	}
 
@@ -65,7 +65,7 @@ class FlashTest extends WPTestCase {
 	public function testAdd() {
 
 		$store = [];
-		$subject = new Flash( $store );
+		$subject = new FlashStore( $store );
 
 		$subject->add( 'foo', 'foobar' );
 		$subject->add( 'foo', ['barfoo'] );
@@ -85,7 +85,7 @@ class FlashTest extends WPTestCase {
 	 */
 	public function testAddNow() {
 		$store = [];
-		$subject = new Flash( $store );
+		$subject = new FlashStore( $store );
 
 		$subject->addNow( 'foo', 'foobar' );
 		$subject->addNow( 'foo', ['barfoo'] );
@@ -104,7 +104,7 @@ class FlashTest extends WPTestCase {
 	 */
 	public function testClear() {
 		$store = [];
-		$subject = new Flash( $store );
+		$subject = new FlashStore( $store );
 
 		$subject->addNow( 'foo', 'foobar' );
 		$subject->addNow( 'bar', ['barbaz', 'bazfoo'] );
@@ -125,7 +125,7 @@ class FlashTest extends WPTestCase {
 	 */
 	public function testClearNext() {
 		$store = [];
-		$subject = new Flash( $store );
+		$subject = new FlashStore( $store );
 
 		$subject->add( 'foo', 'foobar' );
 		$subject->add( 'bar', ['barbaz', 'bazfoo'] );
@@ -145,7 +145,7 @@ class FlashTest extends WPTestCase {
 	 */
 	public function testShift() {
 		$store = [];
-		$subject = new Flash( $store );
+		$subject = new FlashStore( $store );
 
 		$subject->add( 'foo', 'foobar' );
 		$subject->shift();
@@ -160,15 +160,15 @@ class FlashTest extends WPTestCase {
 	public function testSave() {
 		$store_key = '__foobar';
 		$store = [];
-		$subject = new Flash( $store, $store_key );
+		$subject = new FlashStore( $store, $store_key );
 
 		$subject->add( 'foo', 'foobar' );
 		$subject->save();
 
 		$this->assertEquals( [
 			$store_key => [
-				Flash::CURRENT_KEY => [],
-				Flash::NEXT_KEY => ['foo' => ['foobar']],
+				FlashStore::CURRENT_KEY => [],
+				FlashStore::NEXT_KEY    => [ 'foo' => ['foobar']],
 			]
 		], $store );
 	}
@@ -178,7 +178,7 @@ class FlashTest extends WPTestCase {
 	 */
 	public function testValidateStore_Valid_DoesNotThrowException() {
 		$store = [];
-		$subject = new Flash( $store );
+		$subject = new FlashStore( $store );
 
 		$subject->get();
 
@@ -192,10 +192,10 @@ class FlashTest extends WPTestCase {
 	public function testGetFromRequest_InvalidStore_ThrowException() {
 
 
-		$this->expectExceptionMessage('Attempted to use Flash without an active session. Did you miss to call session_start()?');
+		$this->expectExceptionMessage('Attempted to use FlashStore without an active session. Did you miss to call session_start()?');
 
 		$store = new stdClass();
-		$subject = new Flash( $store );
+		$subject = new FlashStore( $store );
 		$subject->get( 'foo' );
 	}
 
@@ -205,10 +205,10 @@ class FlashTest extends WPTestCase {
 	 */
 	public function testAddToRequest_InvalidStore_ThrowException() {
 
-		$this->expectExceptionMessage('Attempted to use Flash without an active session. Did you miss to call session_start()?');
+		$this->expectExceptionMessage('Attempted to use FlashStore without an active session. Did you miss to call session_start()?');
 
 		$store = new stdClass();
-		$subject = new Flash( $store );
+		$subject = new FlashStore( $store );
 		$subject->add( 'foo', 'foobar' );
 	}
 
@@ -218,11 +218,11 @@ class FlashTest extends WPTestCase {
 	 */
 	public function testClearFromRequest_InvalidStore_ThrowException() {
 
-		$this->expectExceptionMessage('Attempted to use Flash without an active session. Did you miss to call session_start()?');
+		$this->expectExceptionMessage('Attempted to use FlashStore without an active session. Did you miss to call session_start()?');
 
 
 		$store = new stdClass();
-		$subject = new Flash( $store );
+		$subject = new FlashStore( $store );
 		$subject->clear( 'foo' );
 	}
 
@@ -233,11 +233,11 @@ class FlashTest extends WPTestCase {
 	public function testShift_InvalidStore_ThrowException() {
 
 
-		$this->expectExceptionMessage('Attempted to use Flash without an active session. Did you miss to call session_start()?');
+		$this->expectExceptionMessage('Attempted to use FlashStore without an active session. Did you miss to call session_start()?');
 
 
 		$store = new stdClass();
-		$subject = new Flash( $store );
+		$subject = new FlashStore( $store );
 		$subject->shift();
 	}
 
@@ -247,11 +247,11 @@ class FlashTest extends WPTestCase {
 	 */
 	public function testSave_InvalidStore_ThrowException() {
 
-		$this->expectExceptionMessage('Attempted to use Flash without an active session. Did you miss to call session_start()?');
+		$this->expectExceptionMessage('Attempted to use FlashStore without an active session. Did you miss to call session_start()?');
 
 
 		$store = new stdClass();
-		$subject = new Flash( $store );
+		$subject = new FlashStore( $store );
 		$subject->save();
 	}
 }

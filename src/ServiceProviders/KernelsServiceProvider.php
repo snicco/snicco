@@ -6,16 +6,18 @@
 	use BetterWpHooks\Contracts\Dispatcher;
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Contracts\ServiceProviderInterface;
-	use WPEmerge\Csrf\CsrfMiddleware;
-	use WPEmerge\Flash\FlashMiddleware;
+	use WPEmerge\Middleware\CsrfProtection;
+	use WPEmerge\Middleware\Flash;
 	use WPEmerge\Helpers\Pipeline;
-	use WPEmerge\Input\OldInputMiddleware;
-	use WPEmerge\Kernels\HttpKernel;
+	use WPEmerge\Middleware\OldInput;
+	use WPEmerge\HttpKernel;
 	use WPEmerge\Middleware\StartSession;
 	use WPEmerge\Middleware\SubstituteBindings;
 	use WPEmerge\Middleware\UserCan;
 	use WPEmerge\Middleware\UserLoggedIn;
 	use WPEmerge\Middleware\UserLoggedOut;
+
+	use WPEmerge\Traits\ExtendsConfig;
 
 	use const WPEMERGE_APPLICATION_GENERIC_FACTORY_KEY;
 	use const WPEMERGE_APPLICATION_KEY;
@@ -35,15 +37,15 @@
 	 */
 	class KernelsServiceProvider implements ServiceProviderInterface {
 
-		use ExtendsConfigTrait;
+		use ExtendsConfig;
 
 
 		public function register( $container ) {
 
 			$this->extendConfig( $container, 'middleware', [
-				'flash'           => FlashMiddleware::class,
-				'old_input'       => OldInputMiddleware::class,
-				'csrf'            => CsrfMiddleware::class,
+				'flash'           => Flash::class,
+				'old_input'       => OldInput::class,
+				'csrf'            => CsrfProtection::class,
 				'user.logged_in'  => UserLoggedIn::class,
 				'user.logged_out' => UserLoggedOut::class,
 				'user.can'        => UserCan::class,
@@ -55,8 +57,8 @@
 
 					StartSession::class,
 					SubstituteBindings::class,
-					FlashMiddleware::class,
-					OldInputMiddleware::class
+					Flash::class,
+					OldInput::class
 
 				],
 				'web'      => [],
@@ -68,8 +70,8 @@
 
 				StartSession::class,
 				SubstituteBindings::class,
-				FlashMiddleware::class,
-				OldInputMiddleware::class
+				Flash::class,
+				OldInput::class
 
 			] );
 

@@ -15,6 +15,7 @@
 	use WPEmerge\Contracts\RouteModelResolver;
 	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Helpers\MixedType;
+	use WPEmerge\Traits\ExtendsConfig;
 	use WPEmerge\WpdbRouteModelResolver;
 
 	use function wp_mkdir_p;
@@ -33,7 +34,7 @@
 	 */
 	class ApplicationServiceProvider implements ServiceProviderInterface {
 
-		use ExtendsConfigTrait;
+		use ExtendsConfig;
 
 		public function register( ContainerAdapter $container ) {
 

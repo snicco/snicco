@@ -4,7 +4,7 @@
 	namespace WPEmerge\Application;
 
 	use Contracts\ContainerAdapter;
-	use WPEmerge\Csrf\CsrfServiceProvider;
+	use WPEmerge\ServiceProviders\CsrfServiceProvider;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\ServiceProviders\AliasServiceProvider;
 	use WPEmerge\ServiceProviders\EventServiceProvider;

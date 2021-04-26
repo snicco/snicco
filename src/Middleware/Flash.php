@@ -2,19 +2,19 @@
 
 
 
-	namespace WPEmerge\Flash;
+	namespace WPEmerge\Middleware;
 
 	use Closure;
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Session\Flash;
+	use WPEmerge\Session\FlashStore;
 
-	class FlashMiddleware implements Middleware {
+	class Flash implements Middleware {
 
-		/** @var \WPEmerge\Session\Flash  */
+		/** @var \WPEmerge\Session\FlashStore  */
 		private $flash;
 
-		public function __construct( Flash $flash ) {
+		public function __construct( FlashStore $flash ) {
 
 			$this->flash = $flash;
 

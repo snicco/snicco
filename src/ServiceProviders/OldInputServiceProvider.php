@@ -5,8 +5,8 @@
 
 	use Contracts\ContainerAdapter;
 	use WPEmerge\Contracts\ServiceProviderInterface;
-	use WPEmerge\Input\OldInput;
-	use WPEmerge\Input\OldInputMiddleware;
+	use WPEmerge\Session\OldInputStore;
+	use WPEmerge\Middleware\OldInput;
 
 
 	/**
@@ -26,9 +26,9 @@
 			});
 
 
-			$container->singleton(OldInputMiddleware::class , function ( $c ) {
+			$container->singleton(OldInput::class , function ( $c ) {
 
-				return new OldInputMiddleware( $c[ WPEMERGE_OLD_INPUT_KEY ] );
+				return new OldInput( $c[ WPEMERGE_OLD_INPUT_KEY ] );
 
 			});
 

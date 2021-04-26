@@ -1,10 +1,13 @@
 <?php
 
 
-	namespace WPEmerge\Csrf;
+	namespace WPEmerge\ServiceProviders;
 
 	use WPEmerge\Contracts\ServiceProviderInterface;
+	use WPEmerge\Middleware\CsrfProtection;
+	use WPEmerge\Session\Csrf;
 
+	use const WPEMERGE_CSRF_KEY;
 
 	class CsrfServiceProvider implements ServiceProviderInterface {
 
@@ -16,9 +19,9 @@
 				return new Csrf();
 			};
 
-			$container[ CsrfMiddleware::class ] = function ( $c ) {
+			$container[ CsrfProtection::class ] = function ( $c ) {
 
-				return new CsrfMiddleware( $c[ WPEMERGE_CSRF_KEY ] );
+				return new CsrfProtection( $c[ WPEMERGE_CSRF_KEY ] );
 			};
 
 

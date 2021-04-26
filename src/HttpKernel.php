@@ -1,11 +1,12 @@
 <?php
 
 
-	namespace WPEmerge\Kernels;
+	namespace WPEmerge;
 
 	use Contracts\ContainerAdapter as Container;
 	use Exception;
 	use Psr\Http\Message\ResponseInterface;
+	use Throwable;
 	use WPEmerge\Contracts\ResponsableInterface;
 	use WPEmerge\Contracts\ResponseServiceInterface;
 	use WPEmerge\Contracts\ErrorHandlerInterface as ErrorHandler;
@@ -77,7 +78,7 @@
 
 			}
 
-			catch ( Exception $exception ) {
+			catch ( Throwable $exception ) {
 
 				$this->response = $this->error_handler->getResponse( $request_event->request, $exception );
 				$this->caught_exception = true;

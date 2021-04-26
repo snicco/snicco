@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmerge\Handlers;
+	namespace WPEmerge;
 
 	use Contracts\ContainerAdapter;
 	use Illuminate\Support\Reflector;
@@ -9,6 +9,8 @@
 	use WPEmerge\Support\Str;
 	use Closure;
 	use WPEmerge\Exceptions\Exception;
+
+	use function collect;
 
 	abstract class AbstractFactory {
 
