@@ -22,7 +22,7 @@
 		private $resolved_arguments = null;
 
 		/**
-		 * @var \WPEmerge\Contracts\RouteHandler
+		 * @var \WPEmerge\Contracts\RouteAction
 		 */
 		private $handler;
 

@@ -31,7 +31,7 @@
 
 			};
 
-			$handler = $factory->createRouteHandlerUsing($raw_closure);
+			$handler = $factory->createUsing($raw_closure);
 
 			$result = $handler->executeUsing(['request' => $request, 'url' => 'url']);
 

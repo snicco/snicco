@@ -42,6 +42,7 @@ trait HasContextTrait {
 	 * @return static                      $this
 	 */
 	public function with( $key, $value = null ) {
+
 		if ( is_array( $key ) ) {
 			$this->context = array_merge( $this->getContext(), $key );
 		} else {

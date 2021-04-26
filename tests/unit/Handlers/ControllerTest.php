@@ -24,9 +24,7 @@
 
 			$request->foo = 'foo_route';
 
-
-
-			$controller = $factory->createRouteHandlerUsing([TestController::class, 'foo']);
+			$controller = $factory->createUsing([TestController::class, 'foo']);
 
 			$result = $controller->executeUsing(['request' => $request, 'url' => 'url']);
 

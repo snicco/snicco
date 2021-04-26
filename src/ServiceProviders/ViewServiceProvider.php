@@ -11,11 +11,15 @@
 	namespace WPEmerge\ServiceProviders;
 
 	use WPEmerge\Contracts\ServiceProviderInterface;
+	use WPEmerge\Contracts\ViewFinderInterface;
 	use WPEmerge\Helpers\MixedType;
 	use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\View\PhpViewFilesystemFinder;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\View\ViewService;
+
+	use WPEmerge\ViewComposers\ViewComposerCollection;
+	use WPEmerge\ViewComposers\ViewComposerFactory;
 
 	use function get_stylesheet_directory;
 	use function get_template_directory;
@@ -53,6 +57,7 @@
 				return new ViewService(
 					$c[ WPEMERGE_CONFIG_KEY ]['view_composers'],
 					$c[ WPEMERGE_VIEW_ENGINE_KEY ],
+
 				);
 			} );
 
@@ -67,17 +72,47 @@
 				};
 			} );
 
+			$container->singleton(ViewFinderInterface::class, function ($c) {
+
+				return new PhpViewFilesystemFinder(
+					MixedType::toArray( $c[ WPEMERGE_CONFIG_KEY ]['views'] )
+				);
+
+			});
+
 			$container->singleton( WPEMERGE_VIEW_PHP_VIEW_ENGINE_KEY, function ( $c ) {
 
-				$finder = new PhpViewFilesystemFinder( MixedType::toArray( $c[ WPEMERGE_CONFIG_KEY ]['views'] ) );
+				return new PhpViewEngine(
+					$c[ WPEMERGE_VIEW_COMPOSE_ACTION_KEY ],
+					$c[ViewFinderInterface::class]
+				);
 
-				return new PhpViewEngine( $c[ WPEMERGE_VIEW_COMPOSE_ACTION_KEY ], $finder );
-			} );
+			});
 
 			$container->singleton( WPEMERGE_VIEW_ENGINE_KEY, function ( $c ) {
 
 				return $c[ WPEMERGE_VIEW_PHP_VIEW_ENGINE_KEY ];
+
 			} );
+
+			$container->singleton( ViewComposerCollection::class, function ( $c ) {
+
+				return new ViewComposerCollection(
+					$c[ViewComposerFactory::class],
+					$c[ViewFinderInterface::class]
+				);
+
+			} );
+
+			$container->singleton(ViewComposerFactory::class, function ($c) {
+
+				return new ViewComposerFactory(
+					$c[WPEMERGE_CONFIG_KEY]['composers'],
+					$c[WPEMERGE_CONTAINER_ADAPTER]
+			);
+
+			});
+
 
 
 		}

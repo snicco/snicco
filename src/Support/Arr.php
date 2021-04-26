@@ -9,7 +9,7 @@
 	 * A collection of tools dealing with arrays
 	 *
 	 */
-	class Arr {
+	class Arr  {
 
 		/**
 		 * Determine whether the given value is array accessible.

@@ -9,7 +9,7 @@
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\TestApp;
 	use WPEmerge\Contracts\HasRoutesInterface;
-	use WPEmerge\Contracts\RouteHandler;
+	use WPEmerge\Contracts\RouteAction;
 	use WPEmerge\Contracts\RouteInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Handlers\HandlerFactory;
@@ -329,13 +329,13 @@
 			return $condition;
 		}
 
-		protected function routeHandler( $handler, $namespace ) : RouteHandler {
+		protected function routeHandler( $handler, $namespace ) : RouteAction {
 
 			if ( $handler === null ) {
 				throw new ConfigurationException( 'No route handler specified. Did you miss to call handle()?' );
 			}
 
-			return $this->handler_factory->createRouteHandlerUsing( $handler );
+			return $this->handler_factory->createUsing( $handler );
 		}
 
 		/**

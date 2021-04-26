@@ -6,6 +6,8 @@
 	use Contracts\ContainerAdapter;
 	use WPEmerge\Application\Application;
 	use WPEmerge\Contracts\ServiceProviderInterface;
+	use WPEmerge\ViewComposers\ViewComposerCollection;
+	use WPEmerge\ViewComposers\ViewComposerFactory;
 
 	class AliasServiceProvider implements ServiceProviderInterface {
 
@@ -68,6 +70,7 @@
 		}
 
 		private function viewAliases (Application $app ) {
+
 
 			$app->alias( 'views', WPEMERGE_VIEW_SERVICE_KEY );
 			$app->alias( 'view', function () use ( $app ) {
