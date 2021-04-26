@@ -4,7 +4,19 @@
 
 actor: UnitTester
 modules:
-    enabled:
-        - Asserts
-        - \Helper\Unit
-    step_decorators: ~
+  enabled:
+    - WPLoader
+    - \Helper\Wpunit
+  config:
+      WPLoader:
+        wpRootFolder: "%WP_ROOT_FOLDER%"
+        dbName: "%FLUSHABLE_DB_NAME%"
+        dbHost: "%FLUSHABLE_DB_HOST%"
+        dbUser: "%FLUSHABLE_DB_USER%"
+        dbPassword: "%FLUSHABLE_DB_PASSWORD%"
+        tablePrefix: "%FLUSHABLE_TABLE_PREFIX%"
+        domain: "%FLUSHABLE_SITE_WP_DOMAIN%"
+        adminEmail: "%FLUSHABLE_SITE_ADMIN_EMAIL%"
+        title: "WP Test"
+        plugins: [ '' ]
+        activatePlugins: [ '' ]

@@ -207,7 +207,7 @@
 
 		}
 
-		public function toString() {
+		public function toString() :string  {
 
 		}
 
