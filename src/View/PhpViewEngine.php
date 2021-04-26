@@ -24,14 +24,14 @@
 		 *
 		 * @var callable
 		 */
-		private $compose = null;
+		private $compose;
 
 		/**
 		 * View finder.
 		 *
 		 * @var PhpViewFilesystemFinder
 		 */
-		private $finder = null;
+		private $finder;
 
 		/**
 		 * Stack of views ready to be rendered.
