@@ -16,6 +16,7 @@
 	use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\View\PhpViewFilesystemFinder;
 	use WPEmerge\Contracts\ViewInterface;
+	use WPEmerge\Helpers\VariableBag;
 	use WPEmerge\View\ViewService;
 
 	use WPEmerge\ViewComposers\ViewComposerCollection;
@@ -56,7 +57,8 @@
 
 				return new ViewService(
 					$c[ WPEMERGE_VIEW_ENGINE_KEY ],
-					$c[ViewComposerCollection::class]
+					$c[ViewComposerCollection::class],
+					$c['global.variables']
 
 				);
 			} );
@@ -113,7 +115,11 @@
 
 			});
 
+			$container->singleton('global.variables', function ($container) {
 
+				return new VariableBag();
+
+			});
 
 		}
 

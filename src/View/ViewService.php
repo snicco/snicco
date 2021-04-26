@@ -3,11 +3,11 @@
 
 	namespace WPEmerge\View;
 
-	use Closure;
 	use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewFinderInterface;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Helpers\MixedType;
+	use WPEmerge\Helpers\VariableBag;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
 
 
@@ -22,35 +22,28 @@
 		private $engine;
 
 		/**
-		 * Global variables.
-		 *
-		 * @var array
-		 */
-		private $globals = [];
-
-		/**
 		 * @var \WPEmerge\ViewComposers\ViewComposerCollection
 		 */
 		private $composer_collection;
 
+		/**
+		 * @var \WPEmerge\Helpers\VariableBag
+		 */
+		private $global_var_bag;
 
-		public function __construct( ViewEngineInterface $engine, ViewComposerCollection $composer_collection) {
+
+		public function __construct(
+			ViewEngineInterface $engine,
+			ViewComposerCollection $composer_collection,
+			VariableBag $global_var_bag
+		) {
 
 			$this->engine = $engine;
 			$this->composer_collection = $composer_collection;
+			$this->global_var_bag = $global_var_bag;
 		}
 
-		public function addGlobal( string $key, $value ) :void {
 
-			$this->globals[ $key ] = $value;
-		}
-
-		public function addGlobals( array $globals ) :void {
-
-			foreach ( $globals as $key => $value ) {
-				$this->addGlobal( $key, $value );
-			}
-		}
 
 		/**
 		 * Composes a view instance with contexts in the following order: Global, Composers, Local.
@@ -62,7 +55,10 @@
 		public function compose( ViewInterface $view ) {
 
 			$local_context = $view->getContext();
-			$global_context = [ 'global' => $this->globals ];
+
+			$global_context = [
+				$this->global_var_bag->getPrefix() => $this->global_var_bag
+			];
 
 			$view->with( $global_context );
 
@@ -92,7 +88,7 @@
 		 *
 		 * @return void
 		 */
-		public function triggerPartialHooks( $name ) {
+		public function triggerPartialHooks( string $name ) {
 
 			if ( ! function_exists( 'apply_filters' ) ) {
 				// We are not in a WordPress environment - skip triggering hooks.
@@ -109,14 +105,14 @@
 		}
 
 		/**
-		 * Render a view.
+		 * Compile a view to a string.
 		 *
 		 * @param  string|string[]  $views
 		 * @param  array<string, mixed>  $context
 		 *
 		 * @return string
 		 */
-		public function render( $views, $context = [] ) {
+		public function render( $views, $context = [] ) : string {
 
 			$view = $this->make( $views )->with( $context );
 
@@ -132,9 +128,9 @@
 
 		}
 
-		public function canonical( $view ) : string {
+		public function filePath( $view ) : string {
 
-			return $this->engine->canonical( $view );
+			return $this->engine->filePath( $view );
 
 		}
 

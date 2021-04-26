@@ -233,7 +233,7 @@
 		}
 
 		/**
-		 * @covers ::canonical
+		 * @covers ::filePath
 		 */
 		public function testCanonical() {
 
@@ -241,7 +241,7 @@
 			             ->with( 'foo' )
 			             ->andReturn( 'foo.php' );
 
-			$this->assertEquals( 'foo.php', $this->subject->canonical( 'foo' ) );
+			$this->assertEquals( 'foo.php', $this->subject->filePath( 'foo' ) );
 		}
 
 		/**

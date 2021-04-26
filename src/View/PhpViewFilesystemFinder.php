@@ -1,11 +1,4 @@
 <?php
-	/**
-	 * @package   WPEmerge
-	 * @author    Atanas Angelov <hi@atanas.dev>
-	 * @copyright 2017-2019 Atanas Angelov
-	 * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
-	 * @link      https://wpemerge.com/
-	 */
 
 
 	namespace WPEmerge\View;
@@ -13,9 +6,7 @@
 	use WPEmerge\Contracts\ViewFinderInterface;
 	use WPEmerge\Helpers\MixedType;
 
-	/**
-	 * Render view files with php.
-	 */
+
 	class PhpViewFilesystemFinder implements ViewFinderInterface {
 
 		/**
@@ -23,12 +14,11 @@
 		 *
 		 * @var string[]
 		 */
-		protected $directories = [];
+		private $directories = [];
 
 		/**
 		 * Constructor.
 		 *
-		 * @codeCoverageIgnore
 		 *
 		 * @param  string[]  $directories
 		 */
@@ -40,10 +30,9 @@
 		/**
 		 * Get the custom views directories.
 		 *
-		 * @codeCoverageIgnore
 		 * @return string[]
 		 */
-		public function getDirectories() {
+		public function getDirectories() : array {
 
 			return $this->directories;
 		}
@@ -51,13 +40,12 @@
 		/**
 		 * Set the custom views directories.
 		 *
-		 * @codeCoverageIgnore
 		 *
 		 * @param  string[]  $directories
 		 *
 		 * @return void
 		 */
-		public function setDirectories( $directories ) {
+		public function setDirectories( array $directories ) {
 
 			$this->directories = array_filter( array_map( [
 				MixedType::class,
@@ -65,20 +53,14 @@
 			], $directories ) );
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public function exists( $view ) {
+		public function exists( string $view_name ) :bool {
 
-			return ! empty( $this->resolveFilepath( $view ) );
+			return ! empty( $this->resolveFilepath( $view_name ) );
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public function canonical( $view ) {
+		public function filePath( string $view_name ) :string {
 
-			return $this->resolveFilepath( $view );
+			return $this->resolveFilepath( $view_name );
 		}
 
 		/**
@@ -88,7 +70,7 @@
 		 *
 		 * @return string
 		 */
-		public function resolveFilepath( $view ) {
+		private function resolveFilepath( $view ) : string {
 
 			$file = $this->resolveFromAbsoluteFilepath( $view );
 
@@ -102,13 +84,13 @@
 		/**
 		 * Resolve a view if it is a valid absolute filepath.
 		 *
-		 * @param  string  $view
+		 * @param  string  $view_name
 		 *
 		 * @return string
 		 */
-		protected function resolveFromAbsoluteFilepath( $view ) {
+		private function resolveFromAbsoluteFilepath( string $view_name ) : string {
 
-			$path = realpath( MixedType::normalizePath( $view ) );
+			$path = realpath( MixedType::normalizePath( $view_name ) );
 
 			if ( ! empty( $path ) && ! is_file( $path ) ) {
 				$path = '';
@@ -120,16 +102,17 @@
 		/**
 		 * Resolve a view if it exists in the custom views directories.
 		 *
-		 * @param  string  $view
+		 * @param  string  $view_name
 		 *
 		 * @return string
 		 */
-		protected function resolveFromCustomDirectories( $view ) {
+		private function resolveFromCustomDirectories( string $view_name ) : string {
 
 			$directories = $this->getDirectories();
 
 			foreach ( $directories as $directory ) {
-				$file = MixedType::normalizePath( $directory . DIRECTORY_SEPARATOR . $view );
+
+				$file = MixedType::normalizePath( $directory . DIRECTORY_SEPARATOR . $view_name );
 
 				if ( ! is_file( $file ) ) {
 					// Try adding a .php extension.

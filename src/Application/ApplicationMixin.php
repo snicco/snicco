@@ -13,6 +13,7 @@
 	use WPEmerge\Responses\ResponseService;
 	use WPEmerge\Routing\RouteBlueprint;
 	use WPEmerge\Contracts\ViewInterface;
+	use WPEmerge\Helpers\VariableBag;
 	use WPEmerge\View\ViewService;
 
 	/**
@@ -240,5 +241,7 @@
 		 * @param string|array|callable|\Closure $callable
 		 */
 		public static function addComposer($views, $callable) {}
+
+		public static function globals() : VariableBag {}
 
 	}

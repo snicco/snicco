@@ -57,7 +57,7 @@
 
 			$views = collect( $views )->map( function ( $view ) {
 
-				return $this->view_finder->canonical( $view );
+				return $this->view_finder->filePath( $view );
 
 			} )->all();
 
@@ -75,7 +75,7 @@
 			return $this->composers
 				->filter( function ( $value ) use ( $view ) {
 
-					return in_array( $this->view_finder->canonical( $view->getName() ), $value['views'] );
+					return in_array( $this->view_finder->filePath( $view->getName() ), $value['views'] );
 
 				})
 				->pluck('composer')

@@ -60,7 +60,7 @@
 		}
 
 		/**
-		 * @covers ::canonical
+		 * @covers ::filePath
 		 */
 		public function testCanonical() {
 

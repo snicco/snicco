@@ -6,6 +6,7 @@
 	use Contracts\ContainerAdapter;
 	use WPEmerge\Application\Application;
 	use WPEmerge\Contracts\ServiceProviderInterface;
+	use WPEmerge\Helpers\VariableBag;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
 	use WPEmerge\ViewComposers\ViewComposerFactory;
 
@@ -71,6 +72,11 @@
 
 		private function viewAliases (Application $app ) {
 
+			$app->alias('globals', function () use ($app) {
+
+				return $app->resolve('global.variables');
+
+			});
 			$app->alias('addComposer', function () use ( $app ) {
 
 				$composer_collection = $app->resolve(ViewComposerCollection::class);
@@ -79,6 +85,9 @@
 
 				$composer_collection->addComposer(...$args);
 
+
+			});
+			$app->alias('addGlobals', function () {
 
 			});
 			$app->alias( 'views', WPEMERGE_VIEW_SERVICE_KEY );

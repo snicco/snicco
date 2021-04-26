@@ -17,35 +17,30 @@
 		 *
 		 * @var string
 		 */
-		protected $layout_file_header = 'Layout';
+		private $layout_file_header = 'Layout';
 
 		/**
 		 * View compose action.
 		 *
 		 * @var callable
 		 */
-		protected $compose = null;
+		private $compose = null;
 
 		/**
 		 * View finder.
 		 *
 		 * @var PhpViewFilesystemFinder
 		 */
-		protected $finder = null;
+		private $finder = null;
 
 		/**
 		 * Stack of views ready to be rendered.
 		 *
 		 * @var PhpView[]
 		 */
-		protected $layout_content_stack = [];
+		private $layout_content_stack = [];
 
-		/**
-		 * Constructor.
-		 *
-		 * @param  callable  $compose
-		 * @param  PhpViewFilesystemFinder  $finder
-		 */
+
 		public function __construct( callable $compose, PhpViewFilesystemFinder $finder ) {
 
 			$this->compose = $compose;
@@ -53,27 +48,49 @@
 
 		}
 
-		public function exists( $view ) {
+		public function exists( string $view ) :bool {
 
 			return $this->finder->exists( $view );
 		}
 
-		public function canonical( $view ) {
+		public function filePath( string $view_name ) :string  {
 
-			return $this->finder->canonical( $view );
+			return $this->finder->filePath( $view_name );
 		}
 
 		public function make( $views ) {
 
 			foreach ( $views as $view ) {
+
 				if ( $this->exists( $view ) ) {
-					$filepath = $this->finder->resolveFilepath( $view );
+
+					$filepath = $this->finder->filePath( $view );
 
 					return $this->makeView( $view, $filepath );
 				}
 			}
 
 			throw new ViewNotFoundException( 'View not found for "' . implode( ', ', $views ) . '"' );
+		}
+
+		/**
+		 * Pop the top-most layout content from the stack, render and return it.
+		 *
+		 * @return string
+		 */
+		public function getLayoutContent() :string {
+
+			$view = $this->popLayoutContent();
+
+			if ( ! $view ) {
+				return '';
+			}
+
+			$clone = clone $view;
+
+			call_user_func( $this->compose, $clone );
+
+			return $this->renderView( $clone );
 		}
 
 		/**
@@ -85,7 +102,7 @@
 		 * @return ViewInterface
 		 * @throws ViewNotFoundException
 		 */
-		protected function makeView( $name, $filepath ) {
+		private function makeView( string $name, string $filepath ) : ViewInterface {
 
 			$view = ( new PhpView( $this ) )
 				->setName( $name )
@@ -108,7 +125,7 @@
 		 * @return ViewInterface|null
 		 * @throws ViewNotFoundException
 		 */
-		protected function getViewLayout( PhpView $view ) {
+		private function getViewLayout( PhpView $view ) : ?ViewInterface {
 
 			$layout_headers = array_filter( get_file_data(
 				$view->getFilepath(),
@@ -125,7 +142,7 @@
 				throw new ViewNotFoundException( 'View layout not found for "' . $layout_file . '"' );
 			}
 
-			return $this->makeView( $this->canonical( $layout_file ), $this->finder->resolveFilepath( $layout_file ) );
+			return $this->makeView( $this->filePath( $layout_file ), $this->finder->resolveFilepath( $layout_file ) );
 		}
 
 		/**
@@ -135,7 +152,7 @@
 		 *
 		 * @return string
 		 */
-		protected function renderView( PhpView $__view ) : string {
+		private function renderView( PhpView $__view ) : string {
 
 			$__context = $__view->getContext();
 			ob_start();
@@ -149,13 +166,12 @@
 		/**
 		 * Push layout content to the top of the stack.
 		 *
-		 * @codeCoverageIgnore
 		 *
 		 * @param  PhpView  $view
 		 *
 		 * @return void
 		 */
-		public function pushLayoutContent( PhpView $view ) {
+		private function pushLayoutContent( PhpView $view ) :void {
 
 			$this->layout_content_stack[] = $view;
 		}
@@ -163,33 +179,12 @@
 		/**
 		 * Pop the top-most layout content from the stack.
 		 *
-		 * @codeCoverageIgnore
 		 * @return PhpView|null
 		 */
-		public function popLayoutContent() {
+		private function popLayoutContent() :string {
 
 			return array_pop( $this->layout_content_stack );
 		}
 
-		/**
-		 * Pop the top-most layout content from the stack, render and return it.
-		 *
-		 * @codeCoverageIgnore
-		 * @return string
-		 */
-		public function getLayoutContent() {
-
-			$view = $this->popLayoutContent();
-
-			if ( ! $view ) {
-				return '';
-			}
-
-			$clone = clone $view;
-
-			call_user_func( $this->compose, $clone );
-
-			return $this->renderView( $clone );
-		}
 
 	}

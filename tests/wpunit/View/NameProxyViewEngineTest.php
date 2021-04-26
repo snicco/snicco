@@ -110,7 +110,7 @@ class NameProxyViewEngineTest extends WPTestCase {
 	}
 
 	/**
-	 * @covers ::canonical
+	 * @covers ::filePath
 	 */
 	public function testCanonical() {
 		$view = 'foo';
@@ -129,7 +129,7 @@ class NameProxyViewEngineTest extends WPTestCase {
 
 		$subject = new NameProxyViewEngine( $this->app, [], 'engine_mockup' );
 
-		$this->assertEquals( $expected, $subject->canonical( $view ) );
+		$this->assertEquals( $expected, $subject->filePath( $view ) );
 	}
 
 	/**

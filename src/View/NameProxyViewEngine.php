@@ -69,7 +69,7 @@ class NameProxyViewEngine implements ViewEngineInterface {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function canonical( $view ) {
+	public function filePath( $view ) {
 		$engine_key = $this->getBindingForFile( $view );
 		$engine = $this->app->resolve( $engine_key );
 		return $engine->canonical( $view );
@@ -79,7 +79,7 @@ class NameProxyViewEngine implements ViewEngineInterface {
 	 * {@inheritDoc}
 	 * @throws ViewNotFoundException
 	 */
-	public function make( $views ) {
+	public function make( array $views ) {
 		foreach ( $views as $view ) {
 			if ( $this->exists( $view ) ) {
 				$engine_key = $this->getBindingForFile( $view );
