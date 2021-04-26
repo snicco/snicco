@@ -4,8 +4,8 @@
 
 	namespace WPEmerge\View;
 
-	use GuzzleHttp\Psr7;
 	use GuzzleHttp\Psr7\Response;
+	use GuzzleHttp\Psr7\Utils;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Exceptions\ViewException;
 
@@ -128,7 +128,7 @@
 
 			return ( new Response() )
 				->withHeader( 'Content-Type', 'text/html' )
-				->withBody( Psr7\stream_for( $this->toString() ) );
+				->withBody( Utils::streamFor( $this->toString() ) );
 		}
 
 	}

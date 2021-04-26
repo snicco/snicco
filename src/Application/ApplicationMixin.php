@@ -235,4 +235,10 @@
 		public static function render( $views, $context = [] ) {
 		}
 
+		/**
+		 * @param string|string[] $views
+		 * @param string|array|callable|\Closure $callable
+		 */
+		public static function addComposer($views, $callable) {}
+
 	}

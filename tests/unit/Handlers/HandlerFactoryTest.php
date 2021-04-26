@@ -5,7 +5,7 @@
 
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\Controllers\Web\WebController;
-	use WPEmerge\Handlers\ClosureHandler;
+	use WPEmerge\Handlers\ClosureAction;
 	use WPEmerge\Handlers\Controller;
 	use WPEmerge\Handlers\HandlerFactory;
 	use PHPUnit\Framework\TestCase;
@@ -35,9 +35,9 @@
 
 			};
 
-			$handler = $this->factory->createRouteHandlerUsing($foo);
+			$handler = $this->factory->createUsing($foo);
 
-			$this->assertInstanceOf(ClosureHandler::class, $handler);
+			$this->assertInstanceOf(ClosureAction::class, $handler);
 
 			$this->assertSame($foo, $handler->raw() );
 
@@ -48,7 +48,7 @@
 
 			$controller = WebController::class . '@handle';
 
-			$handler = $this->factory->createRouteHandlerUsing($controller);
+			$handler = $this->factory->createUsing($controller);
 
 			$this->assertInstanceOf(Controller::class, $handler);
 
@@ -61,7 +61,7 @@
 
 			$controller = [ WebController::class , 'handle'];
 
-			$handler = $this->factory->createRouteHandlerUsing($controller);
+			$handler = $this->factory->createUsing($controller);
 
 			$this->assertInstanceOf(Controller::class, $handler);
 
@@ -76,7 +76,7 @@
 
 			$controller ='InvalidController@handle';
 
-			$this->factory->createRouteHandlerUsing($controller);
+			$this->factory->createUsing($controller);
 
 
 		}
@@ -88,7 +88,7 @@
 
 			$controller = [ WebController::class , 'invalidMethod'];
 
-			$this->factory->createRouteHandlerUsing($controller);
+			$this->factory->createUsing($controller);
 
 
 		}
@@ -98,7 +98,7 @@
 
 			$controller = [ WebController::class , '@handle'];
 
-			$handler = $this->factory->createRouteHandlerUsing($controller);
+			$handler = $this->factory->createUsing($controller);
 
 			$this->assertInstanceOf(Controller::class, $handler);
 			$this->assertEquals([WebController::class, 'handle'], $handler->raw() );
@@ -109,12 +109,12 @@
 		public function web_controllers_can_be_resolved_without_the_full_namespace () {
 
 			$controller = [ 'WebController' , 'handle'];
-			$handler = $this->factory->createRouteHandlerUsing($controller);
+			$handler = $this->factory->createUsing($controller);
 			$this->assertInstanceOf(Controller::class, $handler);
 			$this->assertEquals([WebController::class, 'handle'], $handler->raw() );
 
 			$controller ='WebController@handle';
-			$handler = $this->factory->createRouteHandlerUsing($controller);
+			$handler = $this->factory->createUsing($controller);
 			$this->assertInstanceOf(Controller::class, $handler);
 			$this->assertEquals([WebController::class, 'handle'], $handler->raw() );
 
@@ -129,7 +129,7 @@
 
 			$controller = [ 'AdminController' , 'handle'];
 
-			$result = $this->factory->createRouteHandlerUsing($controller);
+			$result = $this->factory->createUsing($controller);
 
 			$this->assertInstanceOf(Controller::class, $result);
 
@@ -140,7 +140,7 @@
 
 			$controller = [ 'AjaxController' , 'handle'];
 
-			$result = $this->factory->createRouteHandlerUsing($controller);
+			$result = $this->factory->createUsing($controller);
 
 			$this->assertInstanceOf(Controller::class, $result);
 

@@ -3,10 +3,8 @@
 
 	namespace WPEmerge\Contracts;
 
-	interface RouteHandler {
+	interface RouteAction extends Handler {
 
-
-		public function executeUsing(...$args);
 
 		public function raw();
 

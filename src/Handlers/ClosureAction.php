@@ -4,9 +4,9 @@
 	namespace WPEmerge\Handlers;
 
 	use Closure;
-	use WPEmerge\Contracts\RouteHandler;
+	use WPEmerge\Contracts\RouteAction;
 
-	class ClosureHandler implements RouteHandler {
+	class ClosureAction implements RouteAction {
 
 		/**
 		 * @var \Closure

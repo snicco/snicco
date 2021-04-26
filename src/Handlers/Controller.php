@@ -5,10 +5,10 @@
 
 	use Closure;
 	use WPEmerge\Contracts\ResolveControllerMiddleware;
-	use WPEmerge\Contracts\RouteHandler;
+	use WPEmerge\Contracts\RouteAction;
 	use WPEmerge\MiddlewareResolver;
 
-	class Controller implements RouteHandler, ResolveControllerMiddleware {
+	class Controller implements RouteAction, ResolveControllerMiddleware {
 
 
 		/**
@@ -37,6 +37,7 @@
 			$this->raw_callable        = $raw_callable;
 			$this->executable_callable = $executable_callable;
 			$this->middleware_resolver = $resolver;
+
 		}
 
 		public function executeUsing(...$args) {

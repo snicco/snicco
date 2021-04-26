@@ -11,6 +11,12 @@
 			'admin' => 'Tests\stubs\Controllers\Admin',
 			'ajax' => 'Tests\stubs\Controllers\Ajax',
 
+		],
+
+		'composers' => [
+
+			'Tests\stubs\ViewComposers',
+
 		]
 
 
