@@ -8,7 +8,7 @@
 	use WPEmerge\Contracts\RouteAction;
 	use WPEmerge\Http\MiddlewareResolver;
 
-	class Controller implements RouteAction, ResolveControllerMiddleware {
+	class ControllerAction implements RouteAction, ResolveControllerMiddleware {
 
 
 		/**
@@ -26,7 +26,7 @@
 		private $middleware_resolver;
 
 		/**
-		 * Controller constructor.
+		 * ControllerAction constructor.
 		 *
 		 * @param  array  $raw_callable
 		 * @param  \Closure  $executable_callable

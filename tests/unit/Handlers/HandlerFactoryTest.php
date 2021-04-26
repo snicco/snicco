@@ -6,7 +6,7 @@
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\Controllers\Web\WebController;
 	use WPEmerge\Handlers\ClosureAction;
-	use WPEmerge\Handlers\Controller;
+	use WPEmerge\Handlers\ControllerAction;
 	use WPEmerge\Handlers\HandlerFactory;
 	use PHPUnit\Framework\TestCase;
 
@@ -50,7 +50,7 @@
 
 			$handler = $this->factory->createUsing($controller);
 
-			$this->assertInstanceOf(Controller::class, $handler);
+			$this->assertInstanceOf(ControllerAction::class, $handler);
 
 			$this->assertEquals([WebController::class, 'handle'], $handler->raw() );
 
@@ -63,7 +63,7 @@
 
 			$handler = $this->factory->createUsing($controller);
 
-			$this->assertInstanceOf(Controller::class, $handler);
+			$this->assertInstanceOf(ControllerAction::class, $handler);
 
 			$this->assertEquals([WebController::class, 'handle'], $handler->raw() );
 
@@ -100,7 +100,7 @@
 
 			$handler = $this->factory->createUsing($controller);
 
-			$this->assertInstanceOf(Controller::class, $handler);
+			$this->assertInstanceOf(ControllerAction::class, $handler);
 			$this->assertEquals([WebController::class, 'handle'], $handler->raw() );
 
 		}
@@ -110,12 +110,12 @@
 
 			$controller = [ 'WebController' , 'handle'];
 			$handler = $this->factory->createUsing($controller);
-			$this->assertInstanceOf(Controller::class, $handler);
+			$this->assertInstanceOf(ControllerAction::class, $handler);
 			$this->assertEquals([WebController::class, 'handle'], $handler->raw() );
 
 			$controller ='WebController@handle';
 			$handler = $this->factory->createUsing($controller);
-			$this->assertInstanceOf(Controller::class, $handler);
+			$this->assertInstanceOf(ControllerAction::class, $handler);
 			$this->assertEquals([WebController::class, 'handle'], $handler->raw() );
 
 
@@ -131,7 +131,7 @@
 
 			$result = $this->factory->createUsing($controller);
 
-			$this->assertInstanceOf(Controller::class, $result);
+			$this->assertInstanceOf(ControllerAction::class, $result);
 
 		}
 
@@ -142,7 +142,7 @@
 
 			$result = $this->factory->createUsing($controller);
 
-			$this->assertInstanceOf(Controller::class, $result);
+			$this->assertInstanceOf(ControllerAction::class, $result);
 
 		}
 

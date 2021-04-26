@@ -56,6 +56,7 @@
 		 * @var RouteInterface|null
 		 */
 		protected $current_route = null;
+
 		/**
 		 * @var \Contracts\ContainerAdapter
 		 */
@@ -94,7 +95,7 @@
 		 *
 		 * @return string[]
 		 */
-		public function mergeMethodsAttribute( $old, $new ) {
+		public function mergeMethodsAttribute( $old, $new ) : array {
 
 			return array_merge( $old, $new );
 		}
@@ -108,7 +109,7 @@
 		 * @return ConditionInterface
 		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		public function mergeConditionAttribute( $old, $new ) {
+		public function mergeConditionAttribute( $old, $new ) : ConditionInterface {
 
 			try {
 				$condition = $this->condition_factory->merge( $old, $new );
@@ -128,7 +129,7 @@
 		 *
 		 * @return string[]
 		 */
-		public function mergeMiddlewareAttribute(  $old,  $new ) : array {
+		public function mergeMiddlewareAttribute(  array $old,  array $new ) : array {
 
 			return array_merge( $old, $new );
 		}
@@ -256,7 +257,7 @@
 		 *
 		 * @return array<string, mixed>
 		 */
-		protected function getGroup() {
+		protected function getGroup() : array {
 
 			return WPEmgereArr::last( $this->group_stack, null, [] );
 		}
@@ -268,6 +269,7 @@
 		 * @param  array<string, mixed>  $group
 		 *
 		 * @return void
+		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
 		protected function pushGroup( $group ) {
 
@@ -292,6 +294,7 @@
 		 * @param  Closure|string  $routes  Closure or path to file.
 		 *
 		 * @return void
+		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
 		public function group( $attributes, $routes ) {
 
@@ -319,7 +322,9 @@
 		protected function routeCondition( $condition ) : ConditionInterface {
 
 			if ( $condition === null ) {
-				throw new ConfigurationException( 'No route condition specified. Did you miss to call url() or where()?' );
+				throw new ConfigurationException(
+					'No route condition specified. Did you miss to call url() or where()?'
+				);
 			}
 
 			if ( ! $condition instanceof ConditionInterface ) {
@@ -399,12 +404,14 @@
 		 * @param  array  $arguments
 		 *
 		 * @return string
+		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		public function getRouteUrl( $name, $arguments = [] ) : string {
+		public function getRouteUrl( string $name, $arguments = [] ) : string {
 
 			$routes = $this->getRoutes();
 
 			foreach ( $routes as $route ) {
+
 				if ( $route->getAttribute( 'name' ) !== $name ) {
 					continue;
 				}

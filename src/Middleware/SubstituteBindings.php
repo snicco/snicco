@@ -5,6 +5,7 @@
 
 	use Contracts\ContainerAdapter;
 	use WPEmerge\Contracts\Middleware;
+	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Helpers\ImplicitRouteBindings;
 	use WPEmerge\Requests\Request;
 
@@ -26,7 +27,7 @@
 
 		}
 
-		public function handle ( Request $request, \Closure $next ) {
+		public function handle ( RequestInterface $request, \Closure $next ) {
 
 			// ImplicitRouteBindings::resolveForRoute($this->container, $request->route());
 
