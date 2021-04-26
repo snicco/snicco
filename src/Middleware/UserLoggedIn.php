@@ -4,13 +4,14 @@
 	namespace WPEmerge\Middleware;
 
 	use Closure;
+	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Responses\ResponseService;
 
 	/**
 	 * Redirect non-logged in users to a specific URL.
 	 */
-	class UserLoggedIn {
+	class UserLoggedIn implements Middleware {
 
 		/**
 		 * Response service.
