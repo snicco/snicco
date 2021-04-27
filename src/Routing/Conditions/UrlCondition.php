@@ -17,26 +17,12 @@
 
 		const WILDCARD = '*';
 
-		/**
-		 * URL to check against.
-		 *
-		 * @var string
-		 */
+
 		protected $url = '';
 
-		/**
-		 * URL where.
-		 *
-		 * @var array<string, string>
-		 */
 		protected $url_where = [];
 
-		/**
-		 * Pattern to detect parameters in urls.
-		 *
-		 * @suppress HtmlUnknownTag
-		 * @var string
-		 */
+
 		protected $url_pattern = '~
 		(?:/)                     # match leading slash
 		(?:\{)                    # opening curly brace
@@ -53,36 +39,17 @@
 		 */
 		protected $parameter_pattern = '[^/]+';
 
-		/**
-		 * Constructor.
-		 *
-		 * @codeCoverageIgnore
-		 *
-		 * @param  string                 $url
-		 * @param  array<string, string>  $where
-		 */
+
 		public function __construct( $url, $where = [] ) {
 			$this->setUrl( $url );
 			$this->setUrlWhere( $where );
 		}
 
-		/**
-		 * Make a new instance.
-		 *
-		 * @codeCoverageIgnore
-		 *
-		 * @param  string                 $url
-		 * @param  array<string, string>  $where
-		 *
-		 * @return self
-		 */
 		protected function make( $url, $where = [] ) {
 			return new self( $url, $where );
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
+
 		protected function whereIsSatisfied( RequestInterface $request ) {
 			$where     = $this->getUrlWhere();
 			$arguments = $this->getArguments( $request );
@@ -98,10 +65,9 @@
 			return TRUE;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
+
 		public function isSatisfied( RequestInterface $request ) {
+
 			if ( $this->getUrl() === static::WILDCARD ) {
 				return TRUE;
 			}
@@ -117,9 +83,7 @@
 			return $this->whereIsSatisfied( $request );
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
+
 		public function getArguments( RequestInterface $request ) {
 			$validation_pattern = $this->getValidationPattern( $this->getUrl() );
 			$url                = UrlUtility::addTrailingSlash( UrlUtility::getPath( $request ) );
@@ -139,22 +103,12 @@
 			return $arguments;
 		}
 
-		/**
-		 * Get the url for this condition.
-		 *
-		 * @return string
-		 */
+
 		public function getUrl() {
 			return $this->url;
 		}
 
-		/**
-		 * Set the url for this condition.
-		 *
-		 * @param  string  $url
-		 *
-		 * @return void
-		 */
+
 		public function setUrl( $url ) {
 
 			if ( $url !== static::WILDCARD ) {
@@ -164,16 +118,11 @@
 			$this->url = $url;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
+
 		public function getUrlWhere() {
 			return $this->url_where;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
 		public function setUrlWhere( $where ) {
 			$this->url_where = $where;
 		}
@@ -243,15 +192,8 @@
 			return $placeholder;
 		}
 
-		/**
-		 * Get pattern to test whether normal urls match the parameter-based one.
-		 *
-		 * @param  string   $url
-		 * @param  boolean  $wrap
-		 *
-		 * @return string
-		 */
-		public function getValidationPattern( $url, $wrap = TRUE ) {
+
+		public function getValidationPattern( string $url, $wrap = TRUE ) :string {
 			$parameters = [];
 
 			// Replace all parameters with placeholders
@@ -279,9 +221,7 @@
 			return $validation_pattern;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
+
 		public function toUrl( $arguments = [] ) {
 
 			$url = preg_replace_callback( $this->url_pattern, function ( $matches ) use ( $arguments ) {

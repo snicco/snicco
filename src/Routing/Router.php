@@ -6,8 +6,6 @@
 
 	use Closure;
 	use Contracts\ContainerAdapter;
-	use SniccoAdapter\BaseContainerAdapter;
-	use Tests\stubs\TestApp;
 	use WPEmerge\Contracts\HasRoutesInterface;
 	use WPEmerge\Contracts\RouteAction;
 	use WPEmerge\Contracts\RouteInterface;
@@ -15,19 +13,24 @@
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Helpers\Pipeline;
-	use WPEmerge\Http\MiddlewareResolver;
+	use WPEmerge\Helpers\UrlParser;
+	use WPEmerge\Routing\Conditions\UrlCondition;
+	use WPEmerge\Support\Arr;
 	use WPEmerge\Traits\CompilesMiddleware;
 	use WPEmerge\Routing\Conditions\ConditionFactory;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\UrlableInterface;
 	use WPEmerge\Support\WPEmgereArr;
+	use WPEmerge\Traits\HoldsRouteBlueprint;
 	use WPEmerge\Traits\SortsMiddleware;
 
-	class Router implements HasRoutesInterface {
+	/** @mixin \WPEmerge\Routing\RouteDecorator */
+	class Router  {
 
-		use RegisteresRoutes;
 		use CompilesMiddleware;
 		use SortsMiddleware;
+		use HoldsRouteBlueprint;
+
 
 		/**
 		 * Condition factory.
@@ -74,6 +77,8 @@
 
 		private $route_middleware_aliases = [];
 
+		/** @var Route[] */
+		private $routes;
 
 		public function __construct(
 			ContainerAdapter $container ,
@@ -115,7 +120,7 @@
 				$condition = $this->condition_factory->merge( $old, $new );
 			}
 			catch ( ConfigurationException $e ) {
-				throw new ConfigurationException( 'Route condition could not be created. ' . PHP_EOL . $e->getMessage() );
+				throw new ConfigurationException( '_Route condition could not be created. ' . PHP_EOL . $e->getMessage() );
 			}
 
 			return $condition;
@@ -158,30 +163,6 @@
 		public function mergeHandlerAttribute( $old, $new ) {
 
 			return ! empty( $new ) ? $new : $old;
-		}
-
-		/**
-		 * Merge the handler attribute taking the latest value.
-		 *
-		 * @param  callable|null  $old
-		 * @param  callable|null  $new
-		 *
-		 * @return string|Closure
-		 */
-		public function mergeQueryAttribute( ?callable $old, ?callable $new ) {
-
-			if ( $new === null ) {
-				return $old;
-			}
-
-			if ( $old === null ) {
-				return $new;
-			}
-
-			return function ( $query_vars ) use ( $old, $new ) {
-
-				return call_user_func( $new, call_user_func( $old, $query_vars ) );
-			};
 		}
 
 		/**
@@ -340,14 +321,6 @@
 
 		}
 
-		/**
-		 * Make a route.
-		 *
-		 * @param  array<string, mixed>  $attributes
-		 *
-		 * @return RouteInterface
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
-		 */
 		public function route(  array $attributes ) : RouteInterface {
 
 			$attributes = $this->mergeAttributes( $this->getGroup(), $attributes );
@@ -361,27 +334,20 @@
 
 			if ( empty( $attributes['methods'] ) ) {
 				throw new ConfigurationException(
-					'Route does not have any assigned request methods. ' .
+					'_Route does not have any assigned request methods. ' .
 					'Did you miss to call get() or post() on your route definition, for example?'
 				);
 			}
 
-			return new Route($attributes);
+			return new _Route($attributes);
 		}
 
-		/**
-		 * Assign and return the first satisfied route (if any) as the current one for the given
-		 * request.
-		 *
-		 * @param  RequestInterface  $request
-		 *
-		 * @return \WPEmerge\Contracts\RouteInterface|null
-		 */
+
 		private function findRoute( RequestInterface $request ) : ?RouteInterface {
 
-			foreach ( $this->getRoutes() as $route ) {
+			foreach ( $this->routes as $route ) {
 
-				if ( $route->isSatisfied( $request ) ) {
+				if ( $route->matches( $request ) ) {
 
 					$request->setRoute($route);
 
@@ -405,19 +371,18 @@
 		 */
 		public function getRouteUrl( string $name, $arguments = [] ) : string {
 
-			$routes = $this->getRoutes();
 
-			foreach ( $routes as $route ) {
+			foreach ( $this->routes as $route ) {
 
-				if ( $route->getAttribute( 'name' ) !== $name ) {
+				if ( $route->getName() !== $name ) {
 					continue;
 				}
 
-				$condition = $route->getAttribute( 'condition' );
+				$condition = Arr::firstEl($route->getConditions());
 
 				if ( ! $condition instanceof UrlableInterface ) {
 					throw new ConfigurationException(
-						'Route condition is not resolvable to a URL.'
+						'_Route condition is not resolvable to a URL.'
 					);
 				}
 
@@ -444,7 +409,7 @@
 
 		private function runWithinStack( RouteInterface $route, RequestInterface $request ) {
 
-			$middleware = $route->middleware();
+			$middleware = $route->getMiddleware();
 			$middleware = $this->mergeGlobalMiddleware($middleware);
 			$middleware = $this->expandMiddleware($middleware);
 			$middleware = $this->uniqueMiddleware($middleware);
@@ -455,6 +420,8 @@
 				->send($request)
 				->through(  $this->skipMiddleware() ? [] : $middleware  )
 				->then(function ($request) use ($route) {
+
+					$route->compileAction($this->handler_factory);
 
 					return $route->run($request);
 
@@ -483,6 +450,20 @@
 		private function skipMiddleware () : bool {
 
 			return $this->container->offsetExists('middleware.disable');
+
+		}
+
+		private function addRoute( array $methods , string $url, $action = null )  {
+
+			$url = UrlParser::normalize($url);
+
+			$route = new Route($methods, $url, $action);
+
+			$route->addCondition( new UrlCondition( $url ), 'url' );
+
+			$this->routes[] = $route;
+
+			return new RouteDecorator($this, $route);
 
 		}
 

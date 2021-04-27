@@ -3,105 +3,111 @@
 
 	namespace WPEmerge\Routing;
 
-	use WPEmerge\Contracts\RouteInterface;
-	use WPEmerge\Exceptions\ConfigurationException;
-	use WPEmerge\Helpers\HasAttributes;
-	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ConditionInterface;
+	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Contracts\RouteInterface;
+	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Helpers\RouteSignatureParameters;
-
+	use WPEmerge\Helpers\UrlParser;
+	use WPEmerge\Support\Arr;
 
 	class Route implements RouteInterface {
 
-		use HasAttributes;
-
-		private $resolved_arguments = null;
+		/**
+		 * @var array
+		 */
+		private $methods;
 
 		/**
-		 * @var \WPEmerge\Contracts\RouteAction
+		 * @var string
 		 */
-		private $handler;
+		private $url;
 
-		public function __construct( array $attributes ) {
+		/** @var string|Closure|array */
+		private $action;
 
-			$this->attributes = $attributes;
-			$this->handler    = $attributes['handler'];
+		/** @var \WPEmerge\Contracts\RouteAction */
+		private $compiled_action;
+
+		/** @var \WPEmerge\Contracts\ConditionInterface[] */
+		private $conditions;
+
+		/**
+		 * @var array
+		 */
+		private $middleware;
+
+		private $namespace;
+
+		/** @var string */
+		private $name;
+
+
+		public function __construct( array $methods, string $url, $action , array $attributes = [] ) {
+
+			$this->methods    = $methods;
+			$this->url        = $url;
+			$this->action     = $action;
+			$this->namespace  = $attributes['namespace'] ?? null;
+			$this->middleware = $attributes['middleware'] ?? null;
 
 		}
 
-		public function isSatisfied( RequestInterface $request ) {
+		public function handle( $action ) : Route {
 
-			$methods   = $this->getAttribute( 'methods', [] );
-			$condition = $this->getAttribute( 'condition' );
+			$this->action = $action;
 
-			if ( ! in_array( $request->getMethod(), $methods ) ) {
+			return $this;
+
+		}
+
+		public function namespace( string $namespace ) : Route {
+
+			$this->namespace = $namespace;
+
+			return $this;
+
+		}
+
+		public function addCondition( ConditionInterface $condition, string $type ) {
+
+			$this->conditions[$type] = $condition;
+
+		}
+
+		public function matches( RequestInterface $request ) {
+
+
+			if ( ! in_array( $request->getMethod(), $this->methods ) ) {
 				return false;
 			}
 
-			if ( ! $condition instanceof ConditionInterface ) {
-				throw new ConfigurationException( 'Route does not have a condition.' );
+			foreach ( $this->conditions as $condition ) {
+
+				return $condition->isSatisfied( $request );
+
 			}
 
-			return $condition->isSatisfied( $request );
-		}
-
-		public function getArguments( RequestInterface $request ) {
-
-
-			$condition = $this->getAttribute( 'condition' );
-
-			if ( ! $condition instanceof ConditionInterface ) {
-				throw new ConfigurationException( 'Route does not have a condition.' );
-			}
-
-			$condition_args = $condition->getArguments( $request );
-
-			$this->updateArguments( $condition_args );
-
-			return $condition_args;
 
 		}
 
-		public function arguments() : array {
+		public function middleware( $middleware_names ) : Route {
 
-			return $this->resolved_arguments;
+			$middleware_names = Arr::wrap( $middleware_names );
 
-		}
+			$this->middleware = array_merge( $this->middleware ?? [] , $middleware_names );
 
-		public function updateArguments( array $arguments ) {
-
-			$this->resolved_arguments = $arguments;
+			return $this;
 
 		}
 
-		/**
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
-		 */
-		public function setArguments( RequestInterface $request ) {
+		public function getMiddleware() {
 
-			$this->resolved_arguments = $this->getArguments( $request );
+			return $this->middleware ?? [];
 
 		}
 
-		public function signatureParameters() : array {
-
-			return RouteSignatureParameters::fromCallable(
-				$this->handler->raw()
-			);
-
-		}
-
-		public function middleware() : array {
-
-			return array_merge(
-				$this->getAttribute( 'middleware', [] ),
-				$this->controllerMiddleware()
-			);
-
-		}
-
-		public function run( $request ) {
-
+		public function run( RequestInterface $request ) {
 
 			$params = collect( $this->signatureParameters() );
 
@@ -129,25 +135,74 @@
 				->values()
 				->combine( $values );
 
-			return $this->handler->executeUsing( $payload->all() );
+			return $this->compiled_action->executeUsing( $payload->all() );
+
+		}
+
+		public function compileAction( HandlerFactory $factory ) {
+
+			$this->compiled_action = $factory->create( $this->action, $this->namespace );
+
+		}
+
+		private function getArguments( RequestInterface $request ) : array {
+
+
+			$args = collect( $this->conditions )
+				->flatMap( function ( ConditionInterface $condition ) use ( $request ) {
+
+					return $condition->getArguments( $request );
+
+				} )
+				->reject( function ( $value ) {
+
+					return $value === [] || ! $value;
+
+				} )
+				->all();
+
+				return $args;
 
 
 		}
 
-		private function controllerMiddleware() : array {
+		private function signatureParameters() : array {
 
-			if ( ! $this->usesController() ) {
+			return RouteSignatureParameters::fromCallable(
+				$this->compiled_action->raw()
+			);
 
-				return [];
+		}
+
+		public function name( string $name  ) :Route {
+
+			$this->name = $name;
+
+			return $this;
+
+		}
+
+		public function getName() : string {
+
+			return $this->name;
+
+		}
+
+		public function getConditions(string $type = null )  {
+
+			if ( $type ) {
+
+				return $this->conditions[$type] ?? null;
+
 			}
 
-			return $this->handler->resolveControllerMiddleware();
+			return $this->conditions;
 
 		}
 
-		private function usesController() : bool {
+		public function requiredSegments() : array {
 
-			return ! $this->handler->raw() instanceof \Closure;
+			return UrlParser::segments($this->url);
 
 		}
 

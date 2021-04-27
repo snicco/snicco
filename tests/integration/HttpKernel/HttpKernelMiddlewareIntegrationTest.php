@@ -86,7 +86,7 @@
 
 			TestApp::route()
 			       ->get('/')
-			       ->middleware(FooMiddleware::class)
+			       ->getMiddleware(FooMiddleware::class)
 			       ->handle( 'WebController@request');
 
 
@@ -108,7 +108,7 @@
 
 			TestApp::route()
 			       ->get('/')
-			       ->middleware(FooMiddleware::class . ':bar')
+			       ->getMiddleware( FooMiddleware::class . ':bar')
 			       ->handle( 'WebController@request');
 
 
@@ -170,7 +170,7 @@
 
 			TestApp::route()
 			       ->get('/')
-			       ->middleware(FooMiddleware::class)
+			       ->getMiddleware(FooMiddleware::class)
 			       ->handle( 'WebController@request');
 
 

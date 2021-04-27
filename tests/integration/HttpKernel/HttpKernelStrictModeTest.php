@@ -179,7 +179,7 @@
 
 			TestApp::route()
 			       ->get('web')
-					->middleware('foo')
+					->getMiddleware('foo')
 			       ->handle( 'WebController@handle' );
 
 			$this->request->shouldReceive( 'getUrl' )

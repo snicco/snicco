@@ -12,7 +12,9 @@
 
 		}
 
-		public static function firstEl( array $array ) {
+		public static function firstEl( $array ) {
+
+			$array = Arr::wrap($array);
 
 			if ( empty($array) ) {
 
