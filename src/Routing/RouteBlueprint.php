@@ -140,55 +140,89 @@
 
 		}
 
-		public function get( string $url ) : RouteBlueprint {
+		public function get( string $url = null  ) : RouteBlueprint {
 
-			$this->url($url);
+			if($url) {
+
+				$this->url($url);
+
+			}
 
 			return $this->methods( [ 'GET', 'HEAD' ] );
 		}
 
-		public function post(string $url ) : RouteBlueprint {
+		public function post( string $url = null  ) : RouteBlueprint {
 
-			$this->url($url);
+			if($url) {
+
+				$this->url($url);
+
+			}
 
 			return $this->methods( [ 'POST' ] );
 		}
 
-		public function put(string $url) : RouteBlueprint {
+		public function put(string $url = null ) : RouteBlueprint {
 
-			$this->url($url);
+			if($url) {
+
+				$this->url($url);
+
+			}
 
 			return $this->methods( [ 'PUT' ] );
 		}
 
-		public function patch(string $url) : RouteBlueprint {
+		public function patch(string $url = null ) : RouteBlueprint {
 
-			$this->url($url);
+			if($url) {
+
+				$this->url($url);
+
+			}
 			return $this->methods( [ 'PATCH' ] );
 		}
 
-		public function delete(string $url) : RouteBlueprint {
+		public function delete(string $url = null ) : RouteBlueprint {
 
-			$this->url($url);
+			if($url) {
+
+				$this->url($url);
+
+			}
 			return $this->methods( [ 'DELETE' ] );
 		}
 
-		public function options(string $url ) : RouteBlueprint {
+		public function options(string $url = null  ) : RouteBlueprint {
 
-			$this->url($url);
+			if($url) {
+
+				$this->url($url);
+
+			}
 			return $this->methods( [ 'OPTIONS' ] );
 		}
 
-		public function any(string $url) : RouteBlueprint {
+		public function any(string $url = null ) : RouteBlueprint {
 
-			$this->url($url);
+			if($url) {
+
+				$this->url($url);
+
+			}
 			return $this->methods( [ 'GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS' ] );
 		}
 
-		public function match(array $verbs, $url ) : RouteBlueprint {
+		public function match( array $verbs, $url ) : RouteBlueprint {
 
-			$this->methods($verbs);
-			return $this->url($url);
+			if($url) {
+
+				$this->url($url);
+
+			}
+
+			return $this->methods($verbs);
+
 
 		}
 	}
