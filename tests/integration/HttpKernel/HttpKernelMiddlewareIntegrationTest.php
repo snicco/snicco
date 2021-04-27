@@ -85,9 +85,8 @@
 			$this->assertFalse(isset($GLOBALS['route_middleware_resolved']));
 
 			TestApp::route()
-			       ->get()
+			       ->get('/')
 			       ->middleware(FooMiddleware::class)
-			       ->url( '/' )
 			       ->handle( 'WebController@request');
 
 
@@ -108,9 +107,8 @@
 		public function route_middleware_arguments_can_be_passed() {
 
 			TestApp::route()
-			       ->get()
+			       ->get('/')
 			       ->middleware(FooMiddleware::class . ':bar')
-			       ->url( '/' )
 			       ->handle( 'WebController@request');
 
 
@@ -126,8 +124,7 @@
 		public function controller_middleware_gets_resolved_from_the_service_container () {
 
 			TestApp::route()
-			       ->get()
-			       ->url( '/wp-admin/dashboard' )
+			       ->get('wp-admin/dashboard')
 			       ->handle( 'AdminControllerWithMiddleware@handle');
 
 			$this->request
@@ -148,8 +145,7 @@
 			$GLOBALS['controller_constructor_count'] = 0;
 
 			TestApp::route()
-			       ->get()
-			       ->url( '/wp-admin/dashboard' )
+			       ->get('wp-admin/dashboard')
 			       ->handle( 'AdminControllerWithMiddleware@handle');
 
 			$this->request
@@ -173,9 +169,8 @@
 			$this->assertSame(0 ,($GLOBALS['global_middleware_executed_times']));
 
 			TestApp::route()
-			       ->get()
+			       ->get('/')
 			       ->middleware(FooMiddleware::class)
-			       ->url( '/' )
 			       ->handle( 'WebController@request');
 
 
@@ -212,7 +207,7 @@
 
 		private function bootstrapTestApp() {
 
-			TestApp::make()->bootstrap( array_merge(TEST_CONFIG,$this->config()) , false );
+			TestApp::make()->bootstrap( array_merge(TEST_CONFIG,$this->config())  );
 			TestApp::container()[ WPEMERGE_REQUEST_KEY ]                  = $this->request;
 			TestApp::container()[ WPEMERGE_RESPONSE_SERVICE_KEY ]         = $this->response_service;
 			TestApp::container()[ WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY ] = new IntegrationTestErrorHandler();

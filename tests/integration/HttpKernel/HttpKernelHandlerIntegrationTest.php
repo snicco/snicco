@@ -71,7 +71,7 @@
 		/** @test */
 		public function a_class_handler_is_auto_resolved_from_the_service_container() {
 
-			TestApp::route()->get()->url( '/' )
+			TestApp::route()->get('/')
 			       ->handle( DependencyController::class . '@handle' );
 
 			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
@@ -88,8 +88,7 @@
 		public function a_class_handler_gets_route_arguments_passed_to_the_method() {
 
 			TestApp::route()
-			       ->get()
-			       ->url( '/teams/{team}' )
+			       ->get('teams/{team}')
 			       ->handle( TeamsController::class . '@noTypeHint' );
 
 			$this->request->shouldReceive( 'getUrl' )
@@ -108,8 +107,7 @@
 		public function a_method_dependency_gets_resolved_from_the_service_container() {
 
 			TestApp::route()
-			       ->get()
-			       ->url( '/' )
+			       ->get('/')
 			       ->handle( DependencyController::class . '@withMethodDependency' );
 
 			$this->request->shouldReceive( 'getUrl' )
@@ -127,8 +125,7 @@
 		public function web_controllers_can_be_resolved_without_the_full_namespace() {
 
 			TestApp::route()
-			       ->get()
-			       ->url( '/web' )
+			       ->get('web')
 			       ->handle( 'WebController@handle' );
 
 			$this->request->shouldReceive( 'getUrl' )
@@ -147,8 +144,7 @@
 		public function admin_controllers_can_be_resolved_without_the_full_namespace() {
 
 			TestApp::route()
-			       ->get()
-			       ->url( '/admin' )
+			       ->get('admin')
 			       ->handle( 'AdminController@handle' );
 
 			$this->request->shouldReceive( 'getUrl' )
@@ -167,8 +163,7 @@
 		public function ajax_controllers_can_be_resolved_without_the_full_namespace() {
 
 			TestApp::route()
-			       ->get()
-			       ->url( '/ajax' )
+			       ->get('ajax')
 			       ->handle( 'AjaxController@handle' );
 
 			$this->request->shouldReceive( 'getUrl' )

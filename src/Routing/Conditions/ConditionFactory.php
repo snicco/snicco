@@ -121,9 +121,13 @@
 		}
 
 
+		protected function isNegatedCondition( $condition ) : bool {
 
-		protected function isNegatedCondition( string $condition ) : bool {
+			if ( is_object( $condition ) ) {
 
+				return false;
+
+			}
 
 			if ( Str::contains( $condition, self::NEGATE_CONDITION_SIGN ) ) {
 
@@ -151,16 +155,19 @@
 		protected function parseNegatedCondition( $type, array $arguments ) {
 
 
-			if ( is_object($arguments[0]) ) {
+			if ( Arr::firstEl( $arguments ) instanceof ConditionInterface ) {
 
-				$type         = self::NEGATE_CONDITION_WORD;
-				$condition    = $arguments[0];
-
-				return [ 'type' => $type, 'arguments' => [ $condition ] ];
+				return [ 'type' => self::NEGATE_CONDITION_WORD, 'arguments' => [ $arguments[0] ] ];
 
 			}
 
+			if ( Arr::firstEl( $arguments ) instanceof Closure ) {
 
+				$condition = call_user_func( [ $this, 'make' ], $arguments );
+
+				return [ 'type' => self::NEGATE_CONDITION_WORD, 'arguments' => [ $condition ] ];
+
+			}
 
 			if ( Str::contains( $type, self::NEGATE_CONDITION_SIGN ) ) {
 
@@ -320,13 +327,19 @@
 		public function merge( $old, $new ) {
 
 			if ( empty( $old ) ) {
+
 				if ( empty( $new ) ) {
+
 					return null;
+
 				}
 
 				return $this->condition( $new );
+
 			} elseif ( empty( $new ) ) {
+
 				return $this->condition( $old );
+
 			}
 
 			return $this->mergeConditions( $this->condition( $old ), $this->condition( $new ) );
@@ -343,7 +356,9 @@
 		public function mergeConditions( ConditionInterface $old, ConditionInterface $new ) {
 
 			if ( $old instanceof UrlCondition && $new instanceof UrlCondition ) {
+
 				return $old->concatenate( $new->getUrl(), $new->getUrlWhere() );
+
 			}
 
 			return $this->makeFromArrayOfConditions( [ $old, $new ] );

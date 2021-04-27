@@ -22,7 +22,7 @@
 
 			}
 
-			if ( ! Reflector::isCallable($raw_handler) ) {
+			if ( ! Reflector::isCallable($raw_handler) && ! empty($route_namespace) ) {
 
 				return $this->createUsing(
 					$route_namespace . '\\' . $raw_handler
