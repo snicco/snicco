@@ -4,15 +4,36 @@
 	namespace WPEmerge\Handlers;
 
 	use Closure;
+	use Illuminate\Support\Reflector;
 	use WPEmerge\AbstractFactory;
 	use WPEmerge\Contracts\Handler;
 	use WPEmerge\Contracts\RouteAction;
 	use WPEmerge\Http\MiddlewareResolver;
+	use WPEmerge\Traits\ReflectsCallable;
 
 	class HandlerFactory extends AbstractFactory {
 
 
+		public function create($raw_handler, $route_namespace) {
 
+			if ( $this->isClosure($raw_handler)) {
+
+				return $this->createUsing($raw_handler);
+
+			}
+
+			if ( ! Reflector::isCallable($raw_handler) ) {
+
+				return $this->createUsing(
+					$route_namespace . '\\' . $raw_handler
+				);
+
+			}
+
+			return $this->createUsing($raw_handler);
+
+
+		}
 
 		/**
 		 * @param  string|array|callable  $raw_handler

@@ -9,6 +9,8 @@
 	use Throwable;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\Support\Arr;
+	use WPEmerge\Support\Str;
 	use WPEmerge\Traits\ReflectsCallable;
 
 	/**
@@ -18,7 +20,8 @@
 
 		use ReflectsCallable;
 
-		const NEGATE_CONDITION_PREFIX = '!';
+		const NEGATE_CONDITION_SIGN = '!';
+		const NEGATE_CONDITION_WORD = 'negate';
 
 		/**
 		 * Registered condition types.
@@ -117,38 +120,66 @@
 			return $this->getConditionTypeClass( $condition_type ) !== null;
 		}
 
-		/**
-		 * Check if a condition is negated.
-		 *
-		 * @param  mixed  $condition
-		 *
-		 * @return boolean
-		 */
-		protected function isNegatedCondition( $condition ) {
 
-			return (
-				is_string( $condition )
-				&& strpos( $condition, static::NEGATE_CONDITION_PREFIX ) === 0
-			);
+
+		protected function isNegatedCondition( string $condition ) : bool {
+
+
+			if ( Str::contains( $condition, self::NEGATE_CONDITION_SIGN ) ) {
+
+				return true;
+
+			}
+
+			if ( Str::contains( $condition, self::NEGATE_CONDITION_WORD ) ) {
+
+				return true;
+
+			}
+
+			return false;
 		}
 
 		/**
 		 * Parse a negated condition and its arguments.
 		 *
-		 * @param  string  $type
+		 * @param  string|object  $type
 		 * @param  array  $arguments
 		 *
 		 * @return array
 		 */
-		protected function parseNegatedCondition( $type, $arguments ) {
+		protected function parseNegatedCondition( $type, array $arguments ) {
 
-			$negated_type = substr( $type, strlen( static::NEGATE_CONDITION_PREFIX ) );
+
+			if ( is_object($arguments[0]) ) {
+
+				$type         = self::NEGATE_CONDITION_WORD;
+				$condition    = $arguments[0];
+
+				return [ 'type' => $type, 'arguments' => [ $condition ] ];
+
+			}
+
+
+
+			if ( Str::contains( $type, self::NEGATE_CONDITION_SIGN ) ) {
+
+				$negated_type = Str::after( $type, self::NEGATE_CONDITION_SIGN );
+				$arguments    = array_merge( [ $negated_type ], $arguments );
+				$type         = self::NEGATE_CONDITION_WORD;
+				$condition    = call_user_func( [ $this, 'make' ], $arguments );
+
+				return [ 'type' => $type, 'arguments' => [ $condition ] ];
+			}
+
+			$negated_type = $arguments[0];
 			$arguments    = array_merge( [ $negated_type ], $arguments );
-
-			$type      = 'negate';
-			$condition = call_user_func( [ $this, 'make' ], $arguments );
+			$type         = self::NEGATE_CONDITION_WORD;
+			$condition    = call_user_func( [ $this, 'make' ], $arguments );
 
 			return [ 'type' => $type, 'arguments' => [ $condition ] ];
+
+
 		}
 
 		/**
@@ -164,7 +195,9 @@
 			$arguments = array_values( array_slice( $options, 1 ) );
 
 			if ( $this->isNegatedCondition( $type ) ) {
+
 				return $this->parseNegatedCondition( $type, $arguments );
+
 			}
 
 			if ( ! $this->conditionTypeRegistered( $type ) ) {
@@ -205,7 +238,9 @@
 			}
 
 			if ( is_array( $options[0] ) ) {
+
 				return $this->makeFromArrayOfConditions( $options );
+
 			}
 
 			$condition_options = $this->parseConditionOptions( $options );
@@ -221,7 +256,7 @@
 
 			}
 
-			catch (  Throwable $e ) {
+			catch ( Throwable $e ) {
 
 				try {
 
@@ -231,7 +266,7 @@
 
 				catch ( Throwable $e ) {
 
-					throw new ConfigurationException( 'Error while creating the RouteCondition: ' .$e->getMessage() );
+					throw new ConfigurationException( 'Error while creating the RouteCondition: ' . $e->getMessage() );
 
 				}
 

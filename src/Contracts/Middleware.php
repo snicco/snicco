@@ -6,7 +6,6 @@
 	interface Middleware {
 
 
-		public function handle( RequestInterface $request, \Closure $next );
 
 
 	}

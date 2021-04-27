@@ -1,49 +1,45 @@
 <?php
-/**
- * @package   WPEmerge
- * @author    Atanas Angelov <hi@atanas.dev>
- * @copyright 2017-2019 Atanas Angelov
- * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
- * @link      https://wpemerge.com/
- */
 
-namespace WPEmerge\Routing\Conditions;
 
-use WPEmerge\Contracts\ConditionInterface;
-use WPEmerge\Contracts\RequestInterface;
+	namespace WPEmerge\Routing\Conditions;
 
-/**
- * Negate another condition's result.
- */
-class NegateCondition implements ConditionInterface {
-	/**
-	 * Condition to negate.
-	 *
-	 * @var ConditionInterface
-	 */
-	protected $condition = null;
+	use WPEmerge\Contracts\ConditionInterface;
+	use WPEmerge\Contracts\RequestInterface;
 
 	/**
-	 * Constructor.
-	 *
-	 * @codeCoverageIgnore
-	 * @param ConditionInterface $condition
+	 * Negate another condition's result.
 	 */
-	public function __construct( $condition ) {
-		$this->condition = $condition;
+	class NegateCondition implements ConditionInterface {
+
+		/**
+		 * Condition to negate.
+		 *
+		 * @var ConditionInterface
+		 */
+		protected $condition = null;
+
+		/**
+		 * Constructor.
+		 *
+		 *
+		 * @param  ConditionInterface  $condition
+		 */
+		public function __construct( $condition ) {
+
+			$this->condition = $condition;
+		}
+
+
+		public function isSatisfied( RequestInterface $request ) {
+
+			return ! $this->condition->isSatisfied( $request );
+
+		}
+
+
+		public function getArguments( RequestInterface $request ) {
+
+			return $this->condition->getArguments( $request );
+		}
+
 	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isSatisfied( RequestInterface $request ) {
-		return ! $this->condition->isSatisfied( $request );
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getArguments( RequestInterface $request ) {
-		return $this->condition->getArguments( $request );
-	}
-}

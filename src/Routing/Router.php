@@ -65,14 +65,14 @@
 		/**
 		 * @var string[]
 		 */
-		private $middleware_groups;
+		private $middleware_groups = [];
 
 		/**
 		 * @var string[]
 		 */
-		private $middleware_priority;
+		private $middleware_priority = [];
 
-		private $route_middleware_aliases;
+		private $route_middleware_aliases = [];
 
 
 		public function __construct(
@@ -115,7 +115,7 @@
 				$condition = $this->condition_factory->merge( $old, $new );
 			}
 			catch ( ConfigurationException $e ) {
-				throw new ConfigurationException( 'Route condition is not a valid route string or condition.' );
+				throw new ConfigurationException( 'Route condition could not be created. ' . PHP_EOL . $e->getMessage() );
 			}
 
 			return $condition;
@@ -340,7 +340,8 @@
 				throw new ConfigurationException( 'No route handler specified. Did you miss to call handle()?' );
 			}
 
-			return $this->handler_factory->createUsing( $handler );
+			return $this->handler_factory->create( $handler, $namespace );
+
 		}
 
 		/**

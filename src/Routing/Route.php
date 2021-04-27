@@ -3,21 +3,17 @@
 
 	namespace WPEmerge\Routing;
 
-	use WPEmerge\Contracts\HasQueryFilterInterface;
 	use WPEmerge\Contracts\RouteInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
-	use WPEmerge\Helpers\HasAttributesTrait;
+	use WPEmerge\Helpers\HasAttributes;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Helpers\RouteSignatureParameters;
 
-	/**
-	 * Represent a route
-	 */
-	class Route implements RouteInterface, HasQueryFilterInterface {
 
-		use HasAttributesTrait;
-		use HasQueryFilterTrait;
+	class Route implements RouteInterface {
+
+		use HasAttributes;
 
 		private $resolved_arguments = null;
 
