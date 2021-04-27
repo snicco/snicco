@@ -110,7 +110,7 @@
 		 *
 		 * @return bool
 		 */
-		private function isClosure( $object ): bool {
+		public function isClosure( $object ): bool {
 
 			return $object instanceof Closure;
 

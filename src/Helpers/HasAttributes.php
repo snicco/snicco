@@ -8,7 +8,7 @@
 	/**
 	 * Represent an object which has an array of attributes.
 	 */
-	trait HasAttributesTrait {
+	trait HasAttributes {
 
 		/**
 		 * Attributes.
@@ -59,7 +59,6 @@
 		/**
 		 * Fluent alias for setAttribute().
 		 *
-		 * @codeCoverageIgnore
 		 *
 		 * @param  string  $attribute
 		 * @param  mixed  $value
@@ -89,7 +88,6 @@
 		/**
 		 * Fluent alias for setAttributes().
 		 *
-		 * @codeCoverageIgnore
 		 *
 		 * @param  array<string, mixed>  $attributes
 		 *

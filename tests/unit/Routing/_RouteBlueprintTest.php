@@ -1,9 +1,9 @@
 <?php
 
 
-	namespace WPEmergeTests\Routing;
+	namespace Tests\unit\Routing;
 
-	use Mockery;
+	use Mockery as m;
 	use PHPUnit\Framework\TestCase;
 	use WPEmerge\Routing\RouteBlueprint;
 	use WPEmerge\Contracts\RouteInterface;
@@ -11,9 +11,7 @@
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\View\ViewService;
 
-	/**
-	 * @coversDefaultClass \WPEmerge\Routing\RouteBlueprint
-	 */
+
 	class RouteBlueprintTest extends TestCase {
 
 		public $router;
@@ -21,15 +19,15 @@
 		public $view_service;
 
 		/** @var RouteBlueprint */
-		public $subject;
+		public $blueprint;
 
 		public function setUp() : void {
 
 			parent::setUp();
 
-			$this->router       = Mockery::mock( Router::class )->shouldIgnoreMissing();
-			$this->view_service = Mockery::mock( ViewService::class );
-			$this->subject      = Mockery::mock( RouteBlueprint::class, [
+			$this->router       = m::mock( Router::class )->shouldIgnoreMissing();
+			$this->view_service = m::mock( ViewService::class );
+			$this->blueprint    = m::mock( RouteBlueprint::class, [
 				$this->router,
 				$this->view_service,
 			] )->makePartial();
@@ -37,14 +35,10 @@
 
 		public function tearDown() : void {
 
-			Mockery::close();
-
+			m::close();
 
 			parent::tearDown();
 
-			unset( $this->router );
-			unset( $this->view_service );
-			unset( $this->subject );
 		}
 
 		/**
@@ -54,8 +48,8 @@
 		public function testSetAttributes() {
 
 			$expected = [ 'foo' => 'bar' ];
-			$this->subject->setAttributes( $expected );
-			$this->assertEquals( $expected, $this->subject->getAttributes() );
+			$this->blueprint->setAttributes( $expected );
+			$this->assertEquals( $expected, $this->blueprint->getAttributes() );
 		}
 
 		/**
@@ -64,8 +58,8 @@
 		 */
 		public function testSetAttribute() {
 
-			$this->subject->setAttribute( 'foo', 'bar' );
-			$this->assertEquals( 'bar', $this->subject->getAttribute( 'foo' ) );
+			$this->blueprint->setAttribute( 'foo', 'bar' );
+			$this->assertEquals( 'bar', $this->blueprint->getAttribute( 'foo' ) );
 		}
 
 		/**
@@ -73,9 +67,9 @@
 		 */
 		public function testMethods() {
 
-			$router  = Mockery::mock( Router::class )->makePartial();
-			$subject = Mockery::mock( RouteBlueprint::class, [ $router, $this->view_service ] )
-			                  ->makePartial();
+			$router  = m::mock( Router::class )->makePartial();
+			$subject = m::mock( RouteBlueprint::class, [ $router, $this->view_service ] )
+			            ->makePartial();
 
 			$this->assertSame( $subject, $subject->methods( [ 'foo' ] ) );
 			$this->assertEquals( [ 'foo' ], $subject->getAttribute( 'methods' ) );
@@ -96,11 +90,11 @@
 			             ->andReturn( 'condition' )
 			             ->twice();
 
- 			$this->assertSame( $this->subject, $this->subject->url( 'foo', [ 'bar' => 'baz' ] ) );
+ 			$this->assertSame( $this->blueprint, $this->blueprint->url( 'foo', [ 'bar' => 'baz' ] ) );
 
- 			$this->subject->handle('');
+ 			$this->blueprint->handle('');
 
-			$this->assertEquals( 'condition', $this->subject->getAttribute( 'condition' ) );
+			$this->assertEquals( 'condition', $this->blueprint->getAttribute( 'condition' ) );
 
 		}
 
@@ -113,7 +107,7 @@
 			             ->with( '', [ 'foo', 'bar', 'baz' ] )
 			             ->once();
 
-			$this->assertSame( $this->subject, $this->subject->where( 'foo', 'bar', 'baz' ) );
+			$this->assertSame( $this->blueprint, $this->blueprint->where( 'foo', 'bar', 'baz' ) );
 
 			$this->assertTrue( true );
 		}
@@ -127,9 +121,9 @@
 			             ->andReturn( 'foo' )
 			             ->once();
 
-			$this->assertSame( $this->subject, $this->subject->where( 'foo' ) );
+			$this->assertSame( $this->blueprint, $this->blueprint->where( 'foo' ) );
 
-			$this->assertEquals( 'foo', $this->subject->getAttribute( 'condition' ) );
+			$this->assertEquals( 'foo', $this->blueprint->getAttribute( 'condition' ) );
 		}
 
 		/**
@@ -141,9 +135,9 @@
 			             ->andReturn( null )
 			             ->once();
 
-			$this->assertSame( $this->subject, $this->subject->where( null ) );
+			$this->assertSame( $this->blueprint, $this->blueprint->where( null ) );
 
-			$this->assertNull( $this->subject->getAttribute( 'condition' ) );
+			$this->assertNull( $this->blueprint->getAttribute( 'condition' ) );
 		}
 
 		/**
@@ -151,9 +145,9 @@
 		 */
 		public function testMiddleware() {
 
-			$router  = Mockery::mock( Router::class )->makePartial();
-			$subject = Mockery::mock( RouteBlueprint::class, [ $router, $this->view_service ] )
-			                  ->makePartial();
+			$router  = m::mock( Router::class )->makePartial();
+			$subject = m::mock( RouteBlueprint::class, [ $router, $this->view_service ] )
+			            ->makePartial();
 
 			$this->assertSame( $subject, $subject->middleware( [ 'foo' ] ) );
 			$this->assertEquals( [ 'foo' ], $subject->getAttribute( 'middleware' ) );
@@ -163,13 +157,13 @@
 		}
 
 		/**
-		 * @covers ::setNamespace
+		 * @covers ::namespace
 		 */
 		public function testSetNamespace() {
 
-			$router  = Mockery::mock( Router::class )->makePartial();
-			$subject = Mockery::mock( RouteBlueprint::class, [ $router, $this->view_service ] )
-			                  ->makePartial();
+			$router  = m::mock( Router::class )->makePartial();
+			$subject = m::mock( RouteBlueprint::class, [ $router, $this->view_service ] )
+			            ->makePartial();
 
 			$this->assertSame( $subject, $subject->setNamespace( 'foo' ) );
 			$this->assertEquals( 'foo', $subject->getAttribute( 'namespace' ) );
@@ -178,46 +172,18 @@
 			$this->assertEquals( 'bar', $subject->getAttribute( 'namespace' ) );
 		}
 
-		/**
-		 * @covers ::query
-		 */
-		public function testQuery() {
 
-			$query1 = function ( $query_vars ) {
-
-				return array_merge( $query_vars, [ 'bar' => 'bar' ] );
-			};
-
-			$query2 = function ( $query_vars ) {
-
-				return array_merge( $query_vars, [ 'baz' => 'baz' ] );
-			};
-
-			$this->router->shouldReceive( 'mergeQueryAttribute' )
-			             ->with( null, $query1 )
-			             ->andReturn( $query1 )
-			             ->once()
-			             ->ordered();
-
-			$this->router->shouldReceive( 'mergeQueryAttribute' )
-			             ->with( $query1, $query2 )
-			             ->once()
-			             ->ordered();
-
-			$this->assertSame( $this->subject, $this->subject->query( $query1 ) );
-			$this->assertSame( $this->subject, $this->subject->query( $query2 ) );
-		}
 
 		/**
 		 * @covers ::name
 		 */
 		public function testName() {
 
-			$this->assertSame( $this->subject, $this->subject->name( 'foo' ) );
-			$this->assertEquals( 'foo', $this->subject->getAttribute( 'name' ) );
+			$this->assertSame( $this->blueprint, $this->blueprint->name( 'foo' ) );
+			$this->assertEquals( 'foo', $this->blueprint->getAttribute( 'name' ) );
 
-			$this->assertSame( $this->subject, $this->subject->name( 'bar' ) );
-			$this->assertEquals( 'bar', $this->subject->getAttribute( 'name' ) );
+			$this->assertSame( $this->blueprint, $this->blueprint->name( 'bar' ) );
+			$this->assertEquals( 'bar', $this->blueprint->getAttribute( 'name' ) );
 		}
 
 		/**
@@ -229,13 +195,13 @@
 			$routes     = function () {
 			};
 
-			$this->subject->setAttributes( $attributes );
+			$this->blueprint->setAttributes( $attributes );
 
 			$this->router->shouldReceive( 'group' )
 			             ->with( $attributes, $routes )
 			             ->once();
 
-			$this->subject->group( $routes );
+			$this->blueprint->group( $routes );
 
 			$this->assertTrue( true );
 		}
@@ -246,12 +212,12 @@
 		public function testHandle_Handler_SetHandlerAttribute() {
 
 			$this->router->shouldReceive( 'route' )
-			             ->andReturn( Mockery::mock( RouteInterface::class )
-			                                 ->shouldIgnoreMissing() );
+			             ->andReturn( m::mock( RouteInterface::class )
+			                           ->shouldIgnoreMissing() );
 
-			$this->subject->handle( 'foo' );
+			$this->blueprint->handle( 'foo' );
 
-			$this->assertEquals( 'foo', $this->subject->getAttribute( 'handler' ) );
+			$this->assertEquals( 'foo', $this->blueprint->getAttribute( 'handler' ) );
 		}
 
 		/**
@@ -260,16 +226,16 @@
 		public function testHandle_EmptyHandler_PassAttributes() {
 
 			$attributes = [ 'foo' => 'bar' ];
-			$route      = Mockery::mock( RouteInterface::class )->shouldIgnoreMissing();
+			$route      = m::mock( RouteInterface::class )->shouldIgnoreMissing();
 
 			$this->router->shouldReceive( 'route' )
 			             ->with( $attributes )
 			             ->andReturn( $route )
 			             ->once();
 
-			$this->subject->setAttributes( $attributes );
+			$this->blueprint->setAttributes( $attributes );
 
-			$this->subject->handle();
+			$this->blueprint->handle();
 
 			$this->assertTrue( true );
 		}
@@ -279,7 +245,7 @@
 		 */
 		public function testHandle_EmptyHandler_AddRouteToRouter() {
 
-			$route = Mockery::mock( RouteInterface::class )->shouldIgnoreMissing();
+			$route = m::mock( RouteInterface::class )->shouldIgnoreMissing();
 
 			$this->router->shouldReceive( 'route' )
 			             ->andReturn( $route );
@@ -288,7 +254,7 @@
 			             ->with( $route )
 			             ->once();
 
-			$this->subject->handle();
+			$this->blueprint->handle();
 
 			$this->assertTrue( true );
 		}
@@ -298,7 +264,7 @@
 		 */
 		public function testHandle_EmptyHandler_ReturnRoute() {
 
-			$route = Mockery::mock( RouteInterface::class )->shouldIgnoreMissing();
+			$route = m::mock( RouteInterface::class )->shouldIgnoreMissing();
 
 			$this->router->shouldReceive( 'route' )
 			             ->andReturn( $route );
@@ -307,7 +273,7 @@
 			             ->with( $route )
 			             ->once();
 
-			$this->subject->handle();
+			$this->blueprint->handle();
 
 			$this->assertTrue( true );
 		}
@@ -318,7 +284,7 @@
 		public function testView() {
 
 			$view_name = 'foo';
-			$view      = Mockery::mock( ViewInterface::class );
+			$view      = m::mock( ViewInterface::class );
 			$handler   = null;
 
 			$this->view_service->shouldReceive( 'make' )
@@ -326,14 +292,14 @@
 			                   ->andReturn( $view )
 			                   ->once();
 
-			$this->subject->shouldReceive( 'handle' )
-			              ->andReturnUsing( function ( $handler ) {
+			$this->blueprint->shouldReceive( 'handle' )
+			                ->andReturnUsing( function ( $handler ) {
 
 				              return $handler();
 			              } )
-			              ->once();
+			                ->once();
 
-			$this->subject->view( $view_name );
+			$this->blueprint->view( $view_name );
 
 			$this->assertTrue( true );
 		}
@@ -344,7 +310,7 @@
 		public function testAll() {
 
 			$handler = 'foo';
-			$route   = Mockery::mock( RouteInterface::class )->shouldIgnoreMissing();
+			$route   = m::mock( RouteInterface::class )->shouldIgnoreMissing();
 
 			$this->router->shouldReceive( 'mergeMethodsAttribute' )
 			             ->with( [], [
@@ -392,7 +358,7 @@
 			             ->once();
 
 
-			$this->subject->all( $handler );
+			$this->blueprint->all( $handler );
 
 			$this->assertTrue( true );
 		}
@@ -408,7 +374,7 @@
 		 */
 		public function testMethodShortcuts() {
 
-			$router = Mockery::mock( Router::class )->makePartial();
+			$router = m::mock( Router::class )->makePartial();
 
 			$subject = new RouteBlueprint( $router, $this->view_service );
 			$subject->get();

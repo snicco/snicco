@@ -4,42 +4,23 @@
 	namespace WPEmerge\Routing;
 
 	use Closure;
+	use WPEmerge\Contracts\ViewServiceInterface;
 	use WPEmerge\Helpers\UrlParser;
-	use WPEmerge\Helpers\HasAttributesTrait;
+	use WPEmerge\Helpers\HasAttributes;
 	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\View\ViewService;
 
-	/**
-	 * Fluent interface for registering routes with the router.
-	 * The handle() method needs to be called to create the route.
-	 */
 	class RouteBlueprint {
 
-		use HasAttributesTrait;
+		use HasAttributes;
 
-		/**
-		 * Router.
-		 *
-		 * @var Router
-		 */
-		protected $router = null;
+		/** @var \WPEmerge\Routing\Router */
+		private $router;
+
+		/** @var ViewServiceInterface */
+		protected $view_service;
 
 
-		/**
-		 * View service.
-		 *
-		 * @var ViewService
-		 */
-		protected $view_service = null;
-
-		/**
-		 * Constructor.
-		 *
-		 *
-		 * @param  Router  $router
-		 * @param  ViewService  $view_service
-		 */
-		public function __construct( Router $router, ViewService $view_service ) {
+		public function __construct( Router $router, ViewServiceInterface $view_service ) {
 
 			$this->router       = $router;
 			$this->view_service = $view_service;
@@ -51,43 +32,31 @@
 		 *
 		 * @param  string[]  $methods
 		 *
-		 * @return static   $this
 		 */
-		public function methods( $methods ) {
+		private function methods( array $methods ) :RouteBlueprint {
 
 			$methods = $this->router->mergeMethodsAttribute(
-				(array) $this->getAttribute( 'methods', [] ),
-				(array) $methods
+				 $this->getAttribute( 'methods', [] ),
+				 $methods
 			);
 
 			return $this->attribute( 'methods', $methods );
 		}
 
-		/**
-		 * Set the condition attribute to a URL.
-		 *
-		 * @param  string  $url_pattern
-		 * @param  array<string, string>  $where
-		 *
-		 * @return static                $this
-		 */
-		public function url( string $url_pattern, $where = [] ) {
+		private function url( string $url_pattern, array $where = [] ) :RouteBlueprint {
 
-			$url = UrlParser::normalize($url_pattern);
+			$url = UrlParser::normalize( $url_pattern );
 
 			return $this->where( 'url', $url, $where );
 
 		}
 
 		/**
-		 * Set the condition attribute.
+		 * @param  string|array|ConditionInterface|closure  $condition
 		 *
-		 * @param  string|array|ConditionInterface  $condition
-		 * @param  mixed                           ,...$arguments
-		 *
-		 * @return static                          $this
+		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		public function where( $condition ) {
+		public function where( $condition ) : RouteBlueprint {
 
 			if ( ! $condition instanceof ConditionInterface ) {
 				$condition = func_get_args();
@@ -99,16 +68,13 @@
 			);
 
 			return $this->attribute( 'condition', $condition );
+
 		}
 
 		/**
-		 * Set the middleware attribute.
-		 *
 		 * @param  string|string[]  $middleware
-		 *
-		 * @return static          $this
 		 */
-		public function middleware( $middleware ) {
+		public function middleware( $middleware ) :RouteBlueprint {
 
 			$middleware = $this->router->mergeMiddlewareAttribute(
 				(array) $this->getAttribute( 'middleware', [] ),
@@ -119,16 +85,7 @@
 
 		}
 
-		/**
-		 * Set the namespace attribute.
-		 * This should be renamed to namespace for consistency once minimum PHP
-		 * version is increased to 7+.
-		 *
-		 * @param  string  $namespace
-		 *
-		 * @return static $this
-		 */
-		public function setNamespace( $namespace ) {
+		public function namespace( string $namespace ) :RouteBlueprint {
 
 			$namespace = $this->router->mergeNamespaceAttribute(
 				$this->getAttribute( 'namespace', '' ),
@@ -138,163 +95,99 @@
 			return $this->attribute( 'namespace', $namespace );
 		}
 
-		/**
-		 * Set the query attribute.
-		 *
-		 * @param  callable  $query
-		 *
-		 * @return static   $this
-		 */
-		public function query( $query ) {
-
-			$query = $this->router->mergeQueryAttribute(
-				$this->getAttribute( 'query', null ),
-				$query
-			);
-
-			return $this->attribute( 'query', $query );
-		}
-
-		/**
-		 * Set the name attribute.
-		 *
-		 * @param  string  $name
-		 *
-		 * @return static $this
-		 */
-		public function name( $name ) {
+		public function name( string $name ) :RouteBlueprint {
 
 			return $this->attribute( 'name', $name );
 		}
 
 		/**
-		 * Create a route group.
 		 *
 		 * @param  Closure|string  $routes  Closure or path to file.
 		 *
-		 * @return void
+		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		public function group( $routes ) {
+		public function group( $routes ) :void {
 
 			$this->router->group( $this->getAttributes(), $routes );
 		}
 
-		/**
-		 * Create a route.
-		 *
-		 * @param  string|Closure  $handler
-		 *
-		 * @return void
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
-		 */
-		public function handle( $handler = '' ) {
+		public function handle( $handler = null ) : void {
 
-			if ( ! empty( $handler ) ) {
 
-				$this->attribute( 'handler', $handler );
-
-			}
+			$this->attribute( 'handler', $handler );
 
 			$route = $this->router->route( $this->getAttributes() );
 
 			$this->router->addRoute( $route );
+
+
 		}
 
-		/**
-		 * Handle a request by directly rendering a view.
-		 *
-		 * @param  string|string[]  $views
-		 *
-		 * @return void
-		 */
-		public function view( $views ) {
+		public function view( string $url, string $view_name, array $context = [] ) {
 
-			$this->handle( function () use ( $views ) {
+			$this->url($url);
+			$this->methods(['GET', 'HEAD']);
+			$this->handle(function () use ($view_name, $context) {
 
-				return $this->view_service->make( $views );
-			} );
+				$view = $this->view_service->make($view_name);
+				$view->with($context);
+
+				return $view;
+
+			});
+
+
 		}
 
-		/**
-		 * Match ALL requests.
-		 *
-		 * @param  string|Closure  $handler
-		 *
-		 * @return void
-		 */
-		public function all( $handler = '' ) {
+		public function get( string $url ) : RouteBlueprint {
 
-			$this->any()->url( '*' )->handle( $handler );
-		}
-
-		/**
-		 * Match requests with a method of GET or HEAD.
-		 *
-		 * @return static $this
-		 */
-		public function get() {
+			$this->url($url);
 
 			return $this->methods( [ 'GET', 'HEAD' ] );
 		}
 
-		/**
-		 * Match requests with a method of POST.
-		 *
-		 * @return static $this
-		 */
-		public function post() {
+		public function post(string $url ) : RouteBlueprint {
+
+			$this->url($url);
 
 			return $this->methods( [ 'POST' ] );
 		}
 
-		/**
-		 * Match requests with a method of PUT.
-		 *
-		 * @return static $this
-		 */
-		public function put() {
+		public function put(string $url) : RouteBlueprint {
+
+			$this->url($url);
 
 			return $this->methods( [ 'PUT' ] );
 		}
 
-		/**
-		 * Match requests with a method of PATCH.
-		 *
-		 * @return static $this
-		 */
-		public function patch() {
+		public function patch(string $url) : RouteBlueprint {
 
+			$this->url($url);
 			return $this->methods( [ 'PATCH' ] );
 		}
 
-		/**
-		 * Match requests with a method of DELETE.
-		 *
-		 * @return static $this
-		 */
-		public function delete() {
+		public function delete(string $url) : RouteBlueprint {
 
+			$this->url($url);
 			return $this->methods( [ 'DELETE' ] );
 		}
 
-		/**
-		 * Match requests with a method of OPTIONS.
-		 *
-		 * @return static $this
-		 */
-		public function options() {
+		public function options(string $url ) : RouteBlueprint {
 
+			$this->url($url);
 			return $this->methods( [ 'OPTIONS' ] );
 		}
 
-		/**
-		 * Match requests with any method.
-		 *
-		 * @return static $this
-		 */
-		public function any() {
+		public function any(string $url) : RouteBlueprint {
 
+			$this->url($url);
 			return $this->methods( [ 'GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS' ] );
 		}
 
+		public function match(array $verbs, $url ) : RouteBlueprint {
+
+			$this->methods($verbs);
+			return $this->url($url);
+
+		}
 	}

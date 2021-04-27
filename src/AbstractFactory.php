@@ -10,10 +10,13 @@
 	use Closure;
 	use WPEmerge\Exceptions\Exception;
 
+	use WPEmerge\Traits\ReflectsCallable;
+
 	use function collect;
 
 	abstract class AbstractFactory {
 
+		use ReflectsCallable;
 
 		/**
 		 * Array of FQN from where we look for the class

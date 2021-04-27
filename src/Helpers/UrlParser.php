@@ -31,9 +31,6 @@
 
 			while ( Str::contains( $url, ':' ) ) {
 
-				// $column_id = Str::firstBetweenDot( $url, '{', '}' );
-				//
-				// $this->model_columns[] = $column_id;
 
 				$before = Str::before( $url, ':' );
 
