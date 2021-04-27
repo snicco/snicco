@@ -4,6 +4,7 @@
 	namespace WPEmerge\Routing;
 
 	use BadMethodCallException;
+	use WPEmerge\Routing\Conditions\UrlCondition;
 
 	class RouteDecorator {
 
@@ -36,6 +37,8 @@
 		 * @var \WPEmerge\Routing\Route|null
 		 */
 		private $route;
+
+		private $last_condition;
 
 		public function __construct( Router $router ,Route $route = null ) {
 
@@ -110,14 +113,21 @@
 
 		private function where () {
 
-			$params = func_get_args();
-
-
 			if ( ! $this->route ) {
 
+				throw new \Exception(
+					'Use one of the HTTP verb methods before creating conditions'
+				);
 
 			}
 
+			$params = func_get_args();
+
+			if ( $this->last_condition instanceof UrlCondition )  {
+
+				$condition = $this->router->mergeConditionAttribute($this->lastCondition, $params);
+
+			}
 
 			if ( $condition = $this->route->getConditions('url') ) {
 
@@ -139,6 +149,12 @@
 
 
 
+
+		}
+
+		public function lastCondition($condition) {
+
+			$this->last_condition = $condition;
 
 		}
 

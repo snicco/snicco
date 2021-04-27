@@ -342,7 +342,6 @@
 			return new _Route($attributes);
 		}
 
-
 		private function findRoute( RequestInterface $request ) : ?RouteInterface {
 
 			foreach ( $this->routes as $route ) {
@@ -459,11 +458,14 @@
 
 			$route = new Route($methods, $url, $action);
 
-			$route->addCondition( new UrlCondition( $url ), 'url' );
+			$route->addCondition( $condition = new UrlCondition( $url ), 'url' );
 
 			$this->routes[] = $route;
 
-			return new RouteDecorator($this, $route);
+			$decorator = new RouteDecorator($this, $route);
+			$decorator->lastCondition($condition);
+
+			return $decorator;
 
 		}
 
