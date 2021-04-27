@@ -109,7 +109,7 @@
 		 * @return ConditionInterface
 		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		public function mergeConditionAttribute( $old, $new ) : ConditionInterface {
+		public function mergeConditionAttribute( $old, $new ) : ?ConditionInterface {
 
 			try {
 				$condition = $this->condition_factory->merge( $old, $new );
@@ -240,11 +240,6 @@
 					WPEmgereArr::get( $new, 'handler', '' )
 				),
 
-				'query' => $this->mergeQueryAttribute(
-					WPEmgereArr::get( $old, 'query', null ),
-					WPEmgereArr::get( $new, 'query', null )
-				),
-
 				'name' => $this->mergeNameAttribute(
 					WPEmgereArr::get( $old, 'name', '' ),
 					WPEmgereArr::get( $new, 'name', '' )
@@ -274,6 +269,7 @@
 		protected function pushGroup( $group ) {
 
 			$this->group_stack[] = $this->mergeAttributes( $this->getGroup(), $group );
+
 		}
 
 		/**
@@ -352,7 +348,7 @@
 		 * @return RouteInterface
 		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		public function route(  $attributes ) : RouteInterface {
+		public function route(  array $attributes ) : RouteInterface {
 
 			$attributes = $this->mergeAttributes( $this->getGroup(), $attributes );
 			$attributes = array_merge(
@@ -426,6 +422,7 @@
 				}
 
 				return $condition->toUrl( $arguments );
+
 			}
 
 			throw new ConfigurationException( "No route registered with the name \"$name\"." );

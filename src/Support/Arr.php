@@ -12,4 +12,16 @@
 
 		}
 
+		public static function firstEl( array $array ) {
+
+			if ( empty($array) ) {
+
+				return null;
+
+			}
+
+			return array_values($array)[0];
+
+		}
+
 	}

@@ -4,9 +4,16 @@
 	$root_dir = getenv('ROOT_DIR');
 
 
+
 	if ( ! defined('DS') ) {
 
 		define( 'DS',  DIRECTORY_SEPARATOR );
+
+	}
+
+	if ( ! defined('SITE_URL') ) {
+
+		define( 'SITE_URL',  getenv('SITE_URL') );
 
 	}
 

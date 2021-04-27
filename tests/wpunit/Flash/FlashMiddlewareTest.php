@@ -18,7 +18,7 @@
 
 			parent::setUp();
 
-			$this->flash   = Mockery::mock( Flash::class );
+			$this->flash   = Mockery::mock( FlashStore::class );
 			$this->subject = new Flash( $this->flash );
 		}
 

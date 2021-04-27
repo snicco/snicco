@@ -283,6 +283,7 @@
 		 * {@inheritDoc}
 		 */
 		public function toUrl( $arguments = [] ) {
+
 			$url = preg_replace_callback( $this->url_pattern, function ( $matches ) use ( $arguments ) {
 				$name     = $matches['name'];
 				$optional = ! empty( $matches['optional'] );

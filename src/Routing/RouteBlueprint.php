@@ -27,13 +27,8 @@
 
 		}
 
-		/**
-		 * Match requests using one of the specified methods.
-		 *
-		 * @param  string[]  $methods
-		 *
-		 */
-		private function methods( array $methods ) :RouteBlueprint {
+
+		public function methods( array $methods ) :RouteBlueprint {
 
 			$methods = $this->router->mergeMethodsAttribute(
 				 $this->getAttribute( 'methods', [] ),
@@ -109,10 +104,16 @@
 		public function group( $routes ) :void {
 
 			$this->router->group( $this->getAttributes(), $routes );
+
+		}
+
+		public function prefix (string $url ) : RouteBlueprint {
+
+			return $this->url($url);
+
 		}
 
 		public function handle( $handler = null ) : void {
-
 
 			$this->attribute( 'handler', $handler );
 

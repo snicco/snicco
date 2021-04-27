@@ -22,6 +22,7 @@
 
     <php>
         <env name="ROOT_DIR" value="/Users/calvinalkan/valet/wpemerge/wpemerge"/>
+        <env name="SITE_URL" value="https://wpemerge.test/"/>
     </php>
 
     <coverage cacheDirectory=".phpunit.cache/code-coverage"

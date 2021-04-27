@@ -77,8 +77,7 @@
 			$this->assertEquals( 0, $GLOBALS['global_middleware_executed_times'] );
 
 			TestApp::route()
-			       ->get()
-			       ->url( '/web' )
+			       ->get('web')
 			       ->handle( 'WebController@handle' );
 
 			$this->request->shouldReceive( 'getUrl' )
@@ -102,8 +101,7 @@
 			TestApp::container()['strict.mode'] = true;
 
 			TestApp::route()
-			       ->get()
-			       ->url( '/web' )
+			       ->get('web')
 			       ->handle( 'WebController@handle' );
 
 			$this->request->shouldReceive( 'getUrl' )
@@ -127,8 +125,7 @@
 			$this->assertEquals( 0, $GLOBALS['global_middleware_executed_times'] );
 
 			TestApp::route()
-			       ->get()
-			       ->url( '/web' )
+			       ->get('web')
 			       ->handle( 'WebController@handle' );
 
 			$this->request->shouldReceive( 'getUrl' )
@@ -181,9 +178,8 @@
 
 
 			TestApp::route()
-			       ->get()
+			       ->get('web')
 					->middleware('foo')
-			       ->url( '/web' )
 			       ->handle( 'WebController@handle' );
 
 			$this->request->shouldReceive( 'getUrl' )
