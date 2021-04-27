@@ -52,4 +52,11 @@
 
 		}
 
+		public static function segments( string $url_pattern ) {
+
+			preg_match_all('/[^{]+\w(?=})/', $url_pattern, $matches);
+
+			return collect($matches)->flatten()->all();
+
+		}
 	}

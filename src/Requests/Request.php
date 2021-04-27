@@ -15,7 +15,7 @@
 	class Request extends ServerRequest implements RequestInterface {
 
 		/**
-		 * @var \WPEmerge\Routing\Route|null The route that our request matched
+		 * @var \WPEmerge\Routing\_Route|null The route that our request matched
 		 */
 		private $route = null;
 
