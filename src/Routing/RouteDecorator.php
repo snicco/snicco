@@ -29,6 +29,7 @@
 			'delete',
 			'options',
 			'any',
+			'match'
 		];
 
 		private $decorated_attributes = [];
@@ -54,11 +55,6 @@
 
 				$this->conditions->add($value);
 
-				// $this->decorated_attributes[ $attribute ] = array_merge(
-				//
-				// 	$this->decorated_attributes['where'] ?? [] , [$value]
-				//
-				// );
 
 				return $this;
 
@@ -71,8 +67,6 @@
 		}
 
 		public function __call( $method, $parameters ) {
-
-			// $args = is_array($parameters[0]) ? $parameters[0] : $parameters;
 
 
 			if ( in_array( $method, self::pass_back_to_router ) ) {
@@ -118,5 +112,19 @@
 
 		}
 
+		public function match ($methods, $url, $action = null ) {
+
+			$route = $this->router->match($methods, $url, $action);
+
+			array_walk( $this->decorated_attributes, function ( $value, $method ) use ( $route ) {
+
+				$route->{$method}( $value );
+
+			} );
+
+
+			return $route;
+
+		}
 
 	}
