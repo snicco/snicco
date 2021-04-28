@@ -368,9 +368,11 @@
 
 		public function compileConditions( Route $route ) : array {
 
-			$conditions = collect(
-				Arr::flattenOnePreserveKeys($route->getConditions())
-			);
+			// $conditions = collect(
+			// 	Arr::flattenOnePreserveKeys($route->getConditions())
+			// );
+
+			$conditions = collect($route->getConditions());
 
 			$has_regex = $conditions->filter( [ $this, 'isRegex' ] )->isNotEmpty();
 

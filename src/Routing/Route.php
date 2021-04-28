@@ -85,7 +85,10 @@
 
 		public function addCondition( ConditionInterface $condition ) {
 
-			$this->where( [$condition] );
+			$bucket = new ConditionBucket();
+			$bucket->add($condition);
+
+			$this->where( $bucket );
 
 
 		}
@@ -237,13 +240,30 @@
 
 		public function where() : Route {
 
-			$condition = func_get_args();
+			$args = func_get_args();
 
-			$condition = is_array($condition[0]) ? $condition[0] : $condition;
+			$bucket = $args[0];
+
+			if ( ! $bucket instanceof ConditionBucket ) {
+
+				$this->conditions[] = Arr::flattenOnePreserveKeys($args);
+
+				return $this;
+
+			}
+
+			// $condition = ( $bucket instanceof ConditionBucket ) ? $bucket->all() : $condition;
+
+			foreach ( $bucket->all() as $condition ) {
+
+				$this->conditions[] = $condition;
+
+			}
+
+			// $condition = is_array($condition[0]) ? $condition[0] : $condition;
 
 			// $this->conditions = array_merge( $this->conditions ?? [], $condition );
-			$this->conditions[] = $condition;
-
+			// $this->conditions[] = $condition;
 
 			return $this;
 

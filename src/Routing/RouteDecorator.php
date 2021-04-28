@@ -33,10 +33,17 @@
 
 		private $decorated_attributes = [];
 
+		/**
+		 * @var \WPEmerge\Routing\ConditionBucket
+		 */
+		private $conditions;
+
 
 		public function __construct( Router $router ) {
 
 			$this->router = $router;
+			$this->conditions = new ConditionBucket();
+			$this->decorated_attributes['where'] = $this->conditions;
 
 		}
 
@@ -45,11 +52,13 @@
 
 			if ($attribute === 'where') {
 
-				$this->decorated_attributes[ $attribute ] = array_merge(
+				$this->conditions->add($value);
 
-					$this->decorated_attributes['where'] ?? [] , [$value]
-
-				);
+				// $this->decorated_attributes[ $attribute ] = array_merge(
+				//
+				// 	$this->decorated_attributes['where'] ?? [] , [$value]
+				//
+				// );
 
 				return $this;
 
