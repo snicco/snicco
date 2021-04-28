@@ -9,7 +9,7 @@
 	class RouteDecorator {
 
 
-		/** @var \WPEmerge\Routing\Router  */
+		/** @var \WPEmerge\Routing\Router */
 		private $router;
 
 		public const allowed_attributes = [
@@ -39,20 +39,15 @@
 		private $route;
 
 
-		public function __construct( Router $router ,Route $route = null ) {
+		public function __construct( Router $router, Route $route = null ) {
 
 			$this->router = $router;
-			$this->route = $route;
+			$this->route  = $route;
 
 		}
 
 		public function decorate( $attribute, $value ) : RouteDecorator {
 
-			if ( $attribute === 'where') {
-
-				$this->where(...$value);
-
-			}
 
 			$this->decorated_attributes[ $attribute ] = $value;
 
@@ -62,9 +57,11 @@
 
 		public function __call( $method, $parameters ) {
 
-			if ( $this->route  ) {
+			$args = is_array($parameters[0]) ? $parameters[0] : $parameters;
 
-				$this->route->{$method}(...$parameters);
+			if ( $this->route ) {
+
+				$this->route->{$method}( ...$args );
 
 				return $this;
 
@@ -104,51 +101,5 @@
 
 		}
 
-		// private function where () {
-		//
-		// 	if ( ! $this->route ) {
-		//
-		// 		throw new \Exception(
-		// 			'Use one of the HTTP verb methods before creating conditions'
-		// 		);
-		//
-		// 	}
-		//
-		// 	$params = func_get_args();
-		//
-		// 	if ( $this->last_condition instanceof UrlCondition )  {
-		//
-		// 		$condition = $this->router->mergeConditionAttribute($this->lastCondition, $params);
-		//
-		// 	}
-		//
-		// 	if ( $condition = $this->route->getConditions('url') ) {
-		//
-		// 		$segments = $this->route->requiredSegments();
-		//
-		// 		if ( count($params) === 2 && in_array($params[0], $segments)) {
-		//
-		// 			$condition->setUrlWhere([$params[0] => $params[1]]);
-		//
-		// 		}
-		//
-		// 		if ( is_array($params) && array_values($segments) === array_keys($params[0])) {
-		//
-		// 			$condition->setUrlWhere($params[0]);
-		//
-		// 		}
-		//
-		// 	}
-		//
-		//
-		//
-		//
-		// }
-
-		// public function lastCondition($condition) {
-		//
-		// 	$this->last_condition = $condition;
-		//
-		// }
 
 	}

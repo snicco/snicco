@@ -5,6 +5,7 @@
 
 	use Closure;
 	use Contracts\ContainerAdapter;
+	use Illuminate\Support\Collection;
 	use ReflectionClass;
 	use Throwable;
 	use WPEmerge\Contracts\ConditionInterface;
@@ -365,32 +366,29 @@
 			return $this->makeFromArrayOfConditions( [ $old, $new ] );
 		}
 
-		public function compileConditions( Route $route ) {
+		public function compileConditions( Route $route ) : array {
 
 			$conditions = collect( $route->getConditions() );
 
-			$conditions = $conditions->filter( function ( $condition ) {
+			$has_regex = $conditions->filter( [ $this, 'isRegex' ] )->isNotEmpty();
 
-				return ! $condition[0] instanceof ConditionInterface;
-
-			} )
+			$conditions = $conditions->when( $has_regex, [ $this, 'filterUrlCondition' ] )
 			                         ->map( function ( $condition ) use ( $route ) {
 
-				                         $condition = $this->create( $condition, $route );
+			                         	return $this->create($condition, $route);
 
-				                         return $condition;
+			                            });
 
-			                         } )
-			                         ->all();
 
-			$route->compiledConditions( $conditions );
+
+			return $conditions->all();
 
 		}
 
 		private function create( array $condition, Route $route ) {
 
 
-			if ( $this->isRegexCondition( $condition ) ) {
+			if ( $this->isRegex( $condition ) ) {
 
 				return $this->newRegexUrlCondition( $condition, $route );
 
@@ -404,7 +402,9 @@
 
 		}
 
-		private function isRegexCondition( array $condition ) : bool {
+		public function isRegex( array $condition ) : bool {
+
+			$condition = collect($condition)->flatten(1)->all();
 
 			if ( Arr::isValue( $condition[0], $this->condition_types ) ) {
 
@@ -448,11 +448,23 @@
 
 		private function compileRegex( $condition ) {
 
+			$condition = collect($condition)->flatten(1)->all();
+
 			if ( is_string( $condition [0] ) ) {
 
 				return [ $condition[0] => $condition[1] ];
 
 			}
+
+		}
+
+		public function filterUrlCondition( Collection $conditions ) : Collection {
+
+			return $conditions->reject( function ( $condition ) {
+
+				return $condition[0] instanceof UrlCondition;
+
+			} );
 
 		}
 
