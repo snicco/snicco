@@ -352,7 +352,7 @@
 				} )
 				->first( function ( Route $route ) use ( $request ) {
 
-					$this->condition_factory->compileConditions( $route );
+					$route->compileConditions($this->condition_factory);
 
 					return $route->matches( $request );
 
@@ -385,9 +385,9 @@
 
 			}
 
-			$this->condition_factory->compileConditions( $route );
+			$route->compileConditions($this->condition_factory);
 
-			return $route->url( $arguments );
+			return $route->createUrl( $arguments );
 
 
 		}

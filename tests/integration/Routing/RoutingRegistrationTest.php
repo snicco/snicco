@@ -480,7 +480,7 @@
 		}
 
 		/** @test */
-		public function regex_can_be_added_to_as_a_condition_without_needing_array_syntax () {
+		public function regex_can_be_added_as_a_condition_without_needing_array_syntax () {
 
 
 			$this->router->get('users/{user}', function () {
@@ -495,6 +495,24 @@
 			$request = $this->request('GET', '/users/calvin');
 			$this->assertNull($this->router->runRoute($request));
 
+
+		}
+
+		/** @test */
+		public function regex_can_be_added_as_a_condition_as_array_syntax () {
+
+
+			$this->router->get('users/{user}', function () {
+
+				return 'foo';
+
+			})->where(['user', '/[0-9]+/']);
+
+			$request = $this->request('GET', '/users/1');
+			$this->seeResponse('foo', $this->router->runRoute($request));
+
+			$request = $this->request('GET', '/users/calvin');
+			$this->assertNull($this->router->runRoute($request));
 
 
 		}
