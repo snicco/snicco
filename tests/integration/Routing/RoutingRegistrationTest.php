@@ -480,7 +480,7 @@
 		}
 
 		/** @test */
-		public function regex_can_be_added_to_a_url_condition () {
+		public function regex_can_be_added_to_as_a_condition_without_needing_array_syntax () {
 
 
 			$this->router->get('users/{user}', function () {

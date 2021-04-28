@@ -51,6 +51,7 @@
 
 
 		protected function whereIsSatisfied( RequestInterface $request ) {
+
 			$where     = $this->getUrlWhere();
 			$arguments = $this->getArguments( $request );
 
@@ -117,7 +118,6 @@
 
 			$this->url = $url;
 		}
-
 
 		public function getUrlWhere() {
 			return $this->url_where;
@@ -194,6 +194,7 @@
 
 
 		public function getValidationPattern( string $url, $wrap = TRUE ) :string {
+
 			$parameters = [];
 
 			// Replace all parameters with placeholders
@@ -222,6 +223,7 @@
 		}
 
 
+		/** @todo make sure this always returns with / at the end */
 		public function toUrl( $arguments = [] ) {
 
 			$url = preg_replace_callback( $this->url_pattern, function ( $matches ) use ( $arguments ) {

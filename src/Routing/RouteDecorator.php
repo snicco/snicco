@@ -38,7 +38,6 @@
 		 */
 		private $route;
 
-		private $last_condition;
 
 		public function __construct( Router $router ,Route $route = null ) {
 
@@ -62,12 +61,6 @@
 		}
 
 		public function __call( $method, $parameters ) {
-
-			if ( $method === 'where') {
-
-				return $this->decorate('where', $parameters);
-
-			}
 
 			if ( $this->route  ) {
 
@@ -111,51 +104,51 @@
 
 		}
 
-		private function where () {
+		// private function where () {
+		//
+		// 	if ( ! $this->route ) {
+		//
+		// 		throw new \Exception(
+		// 			'Use one of the HTTP verb methods before creating conditions'
+		// 		);
+		//
+		// 	}
+		//
+		// 	$params = func_get_args();
+		//
+		// 	if ( $this->last_condition instanceof UrlCondition )  {
+		//
+		// 		$condition = $this->router->mergeConditionAttribute($this->lastCondition, $params);
+		//
+		// 	}
+		//
+		// 	if ( $condition = $this->route->getConditions('url') ) {
+		//
+		// 		$segments = $this->route->requiredSegments();
+		//
+		// 		if ( count($params) === 2 && in_array($params[0], $segments)) {
+		//
+		// 			$condition->setUrlWhere([$params[0] => $params[1]]);
+		//
+		// 		}
+		//
+		// 		if ( is_array($params) && array_values($segments) === array_keys($params[0])) {
+		//
+		// 			$condition->setUrlWhere($params[0]);
+		//
+		// 		}
+		//
+		// 	}
+		//
+		//
+		//
+		//
+		// }
 
-			if ( ! $this->route ) {
-
-				throw new \Exception(
-					'Use one of the HTTP verb methods before creating conditions'
-				);
-
-			}
-
-			$params = func_get_args();
-
-			if ( $this->last_condition instanceof UrlCondition )  {
-
-				$condition = $this->router->mergeConditionAttribute($this->lastCondition, $params);
-
-			}
-
-			if ( $condition = $this->route->getConditions('url') ) {
-
-				$segments = $this->route->requiredSegments();
-
-				if ( count($params) === 2 && in_array($params[0], $segments)) {
-
-					$condition->setUrlWhere([$params[0] => $params[1]]);
-
-				}
-
-				if ( is_array($params) && array_values($segments) === array_keys($params[0])) {
-
-					$condition->setUrlWhere($params[0]);
-
-				}
-
-			}
-
-
-
-
-		}
-
-		public function lastCondition($condition) {
-
-			$this->last_condition = $condition;
-
-		}
+		// public function lastCondition($condition) {
+		//
+		// 	$this->last_condition = $condition;
+		//
+		// }
 
 	}
