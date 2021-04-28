@@ -451,7 +451,7 @@
 
 		}
 
-		private function addRoute( array $methods, string $url, $action = null ) : RouteDecorator {
+		private function addRoute( array $methods, string $url, $action = null ) : Route {
 
 			$url = UrlParser::normalize( $url );
 
@@ -461,7 +461,7 @@
 
 			$this->routes[] = $route;
 
-			return new RouteDecorator( $this, $route );
+			return $route;
 
 
 		}
