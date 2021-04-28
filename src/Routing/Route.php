@@ -85,7 +85,7 @@
 
 		public function addCondition( ConditionInterface $condition ) {
 
-			$this->where( $condition );
+			$this->where( [$condition] );
 
 
 		}
@@ -213,13 +213,37 @@
 
 		}
 
+		/*
+		 * $condition = [
+		 *      0 => ConditionObject
+		 * ]
+		 * $condition = [
+		 *      0 => 'admin'
+		 * ]
+		 * $condition = [
+		 *      0 => 'user',
+		 *      1 => 'regex'
+		 * ]
+		 *
+		 * $condition = [
+		 *
+		 * 'id' => 'regex',
+		 * 'user' => 'regex,
+		 *
+		 * ]
+		 *
+		 *
+		 */
+
 		public function where() : Route {
 
 			$condition = func_get_args();
 
 			$condition = is_array($condition[0]) ? $condition[0] : $condition;
 
-			$this->conditions = array_merge( $this->conditions ?? [], [$condition] );
+			// $this->conditions = array_merge( $this->conditions ?? [], $condition );
+			$this->conditions[] = $condition;
+
 
 			return $this;
 

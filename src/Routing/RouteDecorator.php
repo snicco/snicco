@@ -42,6 +42,19 @@
 
 		public function decorate( $attribute, $value ) : RouteDecorator {
 
+
+			if ($attribute === 'where') {
+
+				$this->decorated_attributes[ $attribute ] = array_merge(
+
+					$this->decorated_attributes['where'] ?? [] , [$value]
+
+				);
+
+				return $this;
+
+			}
+
 			$this->decorated_attributes[ $attribute ] = $value;
 
 			return $this;
@@ -58,6 +71,16 @@
 				return $this->registerRoute( $method, ...$parameters );
 
 			}
+
+			if ( $method === 'where') {
+
+				return $this->decorate(
+					$method,
+					is_array($parameters[0]) ? $parameters[0] : $parameters
+				);
+
+			}
+
 
 			if ( in_array( $method, self::allowed_attributes ) ) {
 

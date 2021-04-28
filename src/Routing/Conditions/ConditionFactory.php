@@ -368,7 +368,9 @@
 
 		public function compileConditions( Route $route ) : array {
 
-			$conditions = collect( $route->getConditions() );
+			$conditions = collect(
+				Arr::flattenOnePreserveKeys($route->getConditions())
+			);
 
 			$has_regex = $conditions->filter( [ $this, 'isRegex' ] )->isNotEmpty();
 
@@ -406,27 +408,33 @@
 
 		public function isRegex( $condition ) : bool {
 
-			$condition = collect($condition)->flatten(1)->all();
+			// $condition = Arr::flattenOnePreserveKeys($condition);
 
-			if ( is_object($first = Arr::firstEl($condition))) {
-
-				return false;
-
-			}
-
-			if ( isset($this->condition_types[$first]) ) {
+			if ( is_object( Arr::firstEl($condition)) ) {
 
 				return false;
 
 			}
 
-			if ( is_string( $first ) && preg_match( '/(^\/.*\/$)/', $condition[1] ?? '' ) ) {
+			if ( isset($this->condition_types[Arr::firstEl($condition)]) ) {
+
+				return false;
+
+			}
+
+			if ( is_string(Arr::firstEl($condition)) && $this->hasRegexSyntax(Arr::nthEl($condition, 1) ) ) {
 
 				return true;
 
 			}
 
 			return false;
+
+		}
+
+		private function hasRegexSyntax( $string ) {
+
+			return is_string($string) && preg_match( '/(^\/.*\/$)/', $string);
 
 		}
 
@@ -456,6 +464,8 @@
 
 		private function compileRegex( $condition ) {
 
+			// $condition = Arr::flattenOnePreserveKeys($condition);
+
 			if ( is_int(Arr::firstEl(array_keys($condition)) ) )  {
 
 				return Arr::combineFirstTwo($condition);
@@ -467,10 +477,6 @@
 
 
 		}
-
-
-
-
 
 		public function filterUrlCondition( Collection $conditions ) : Collection {
 
