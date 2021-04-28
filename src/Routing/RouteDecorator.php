@@ -57,15 +57,8 @@
 
 		public function __call( $method, $parameters ) {
 
-			$args = is_array($parameters[0]) ? $parameters[0] : $parameters;
+			// $args = is_array($parameters[0]) ? $parameters[0] : $parameters;
 
-			if ( $this->route ) {
-
-				$this->route->{$method}( ...$args );
-
-				return $this;
-
-			}
 
 			if ( in_array( $method, self::pass_back_to_router ) ) {
 
@@ -85,7 +78,7 @@
 
 		}
 
-		private function registerRoute( $method, $url, $action = null ) : RouteDecorator {
+		private function registerRoute( $method, $url, $action = null ) : Route {
 
 			$route = $this->router->{$method}( $url, $action );
 
@@ -95,9 +88,8 @@
 
 			} );
 
-			$this->route = $route;
 
-			return $this;
+			return $route;
 
 		}
 

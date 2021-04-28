@@ -26,4 +26,12 @@
 
 		}
 
+		public static function combineFirstTwo( array $array ) : array {
+
+			$array = array_values($array);
+
+			return [$array[0] => $array[1]];
+
+		}
+
 	}

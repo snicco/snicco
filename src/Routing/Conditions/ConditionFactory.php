@@ -402,7 +402,7 @@
 
 		}
 
-		public function isRegex( array $condition ) : bool {
+		public function isRegex( $condition ) : bool {
 
 			$condition = collect($condition)->flatten(1)->all();
 
@@ -426,7 +426,7 @@
 
 			$url_condition = collect( $route->getConditions() )->filter( function ( $condition ) {
 
-				return $condition[0] instanceof UrlCondition;
+				return  Arr::firstEl($condition) instanceof UrlCondition;
 
 			} )->flatten()->first();
 
@@ -448,21 +448,27 @@
 
 		private function compileRegex( $condition ) {
 
-			$condition = collect($condition)->flatten(1)->all();
+			if ( is_int(Arr::firstEl(array_keys($condition)) ) )  {
 
-			if ( is_string( $condition [0] ) ) {
-
-				return [ $condition[0] => $condition[1] ];
+				return Arr::combineFirstTwo($condition);
 
 			}
 
+			return $condition;
+
+
+
 		}
+
+
+
+
 
 		public function filterUrlCondition( Collection $conditions ) : Collection {
 
 			return $conditions->reject( function ( $condition ) {
 
-				return $condition[0] instanceof UrlCondition;
+				return Arr::firstEl($condition) instanceof UrlCondition;
 
 			} );
 

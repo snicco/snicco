@@ -222,7 +222,9 @@
 
 			$condition = func_get_args();
 
-			$this->conditions = array_merge( $this->conditions ?? [], [ $condition ] );
+			$condition = is_array($condition[0]) ? $condition[0] : $condition;
+
+			$this->conditions = array_merge( $this->conditions ?? [], [$condition] );
 
 		}
 

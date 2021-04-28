@@ -51,43 +51,43 @@
 
 		}
 
-		public function get( string $url = null, $action = null  ) : RouteDecorator {
+		public function get( string $url = null, $action = null  ) : Route {
 
 			return $this->addRoute(['GET', 'HEAD'], $url, $action);
 
 		}
 
-		public function post( string $url = null , $action = null  ) : RouteDecorator {
+		public function post( string $url = null , $action = null  ) : Route {
 
 			return $this->addRoute(['POST'], $url, $action);
 
 		}
 
-		public function put( string $url = null, $action = null ) : RouteDecorator {
+		public function put( string $url = null, $action = null ) : Route {
 
 			return $this->addRoute(['PUT'], $url, $action);
 
 		}
 
-		public function patch( string $url = null, $action = null) : RouteDecorator {
+		public function patch( string $url = null, $action = null) : Route {
 
 			return $this->addRoute(['PATCH'], $url, $action);
 
 		}
 
-		public function delete( string $url = null, $action = null ) : RouteDecorator {
+		public function delete( string $url = null, $action = null ) : Route {
 
 			return $this->addRoute(['DELETE'], $url, $action);
 
 		}
 
-		public function options(string $url = null , $action = null ) : RouteDecorator {
+		public function options(string $url = null , $action = null ) : Route {
 
 			return $this->addRoute(['OPTIONS'], $url, $action);
 
 		}
 
-		public function any(string $url = null, $action = null ) : RouteDecorator {
+		public function any(string $url = null, $action = null ) : Route {
 
 			return $this->addRoute(
 				[ 'GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS' ],
@@ -96,7 +96,7 @@
 			);
 		}
 
-		public function match( array $verbs, $url, $action = null ) : RouteDecorator {
+		public function match( array $verbs, $url, $action = null ) : Route {
 
 			return $this->addRoute(array_map('strtoupper',$verbs), $url, $action);
 
