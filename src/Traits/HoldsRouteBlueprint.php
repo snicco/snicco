@@ -112,6 +112,16 @@
 
 			}
 
+			if ( $method === 'where') {
+
+				return ( ( new RouteDecorator($this) )->decorate(
+					$method,
+					is_array($parameters[0]) ? $parameters[0] : $parameters )
+				);
+
+			}
+
+
 			return ( ( new RouteDecorator($this) )->decorate($method, $parameters[0]) );
 
 		}
