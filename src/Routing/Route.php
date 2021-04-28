@@ -6,9 +6,11 @@
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\RouteInterface;
+	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Helpers\RouteSignatureParameters;
 	use WPEmerge\Helpers\UrlParser;
+	use WPEmerge\Routing\Conditions\UrlCondition;
 	use WPEmerge\Support\Arr;
 
 	class Route implements RouteInterface {
@@ -42,8 +44,13 @@
 		/** @var string */
 		private $name;
 
+		/**
+		 * @var array
+		 */
+		private $compiled_conditions = [];
 
-		public function __construct( array $methods, string $url, $action , array $attributes = [] ) {
+
+		public function __construct( array $methods, string $url, $action, array $attributes = [] ) {
 
 			$this->methods    = $methods;
 			$this->url        = $url;
@@ -61,6 +68,12 @@
 
 		}
 
+		public function methods() : array {
+
+			return $this->methods;
+
+		}
+
 		public function namespace( string $namespace ) : Route {
 
 			$this->namespace = $namespace;
@@ -69,24 +82,22 @@
 
 		}
 
-		public function addCondition( ConditionInterface $condition, string $type ) {
+		public function addCondition( ConditionInterface $condition ) {
 
-			$this->conditions[$type] = $condition;
+			$this->where( $condition );
+
 
 		}
 
-		public function matches( RequestInterface $request ) {
+		public function matches( RequestInterface $request ) : bool {
 
-
-			if ( ! in_array( $request->getMethod(), $this->methods ) ) {
-				return false;
-			}
-
-			foreach ( $this->conditions as $condition ) {
+			$failed = collect( $this->compiled_conditions )->reject( function ( $condition ) use ( $request ) {
 
 				return $condition->isSatisfied( $request );
 
-			}
+			} );
+
+			return $failed->isEmpty() === true;
 
 
 		}
@@ -95,7 +106,7 @@
 
 			$middleware_names = Arr::wrap( $middleware_names );
 
-			$this->middleware = array_merge( $this->middleware ?? [] , $middleware_names );
+			$this->middleware = array_merge( $this->middleware ?? [], $middleware_names );
 
 			return $this;
 
@@ -148,7 +159,7 @@
 		private function getArguments( RequestInterface $request ) : array {
 
 
-			$args = collect( $this->conditions )
+			$args = collect( $this->compiled_conditions )
 				->flatMap( function ( ConditionInterface $condition ) use ( $request ) {
 
 					return $condition->getArguments( $request );
@@ -161,7 +172,7 @@
 				} )
 				->all();
 
-				return $args;
+			return $args;
 
 
 		}
@@ -174,7 +185,7 @@
 
 		}
 
-		public function name( string $name  ) :Route {
+		public function name( string $name ) : Route {
 
 			$this->name = $name;
 
@@ -188,11 +199,11 @@
 
 		}
 
-		public function getConditions(string $type = null )  {
+		public function getConditions( string $type = null ) {
 
 			if ( $type ) {
 
-				return $this->conditions[$type] ?? null;
+				return $this->conditions[ $type ] ?? null;
 
 			}
 
@@ -202,9 +213,56 @@
 
 		public function requiredSegments() : array {
 
-			return UrlParser::segments($this->url);
+			return UrlParser::requiredSegments( $this->url );
 
 		}
 
+		public function where() {
+
+			$condition = func_get_args();
+
+			$this->conditions = array_merge( $this->conditions ?? [], [ $condition ] );
+
+		}
+
+		public function compiledConditions( array $conditions ) {
+
+			$this->compiled_conditions = $conditions;
+
+		}
+
+		public function createUrl($arguments) {
+
+			$conditions = collect( $this->compiled_conditions );
+
+			$condition = $conditions->first( function ( ConditionInterface $condition ) {
+
+				return $condition instanceof UrlCondition;
+
+			}, null );
+
+			if ( ! $condition ) {
+
+				throw new ConfigurationException(
+					'The Route can not be converted to an URL.'
+				);
+
+			}
+
+			return $condition->toUrl($arguments);
+
+		}
+
+		public function url() : string {
+
+			return $this->url;
+
+		}
+
+
+		public function getCompiledConditions() : array {
+
+			return $this->compiled_conditions;
+		}
 
 	}

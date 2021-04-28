@@ -43,19 +43,19 @@
 
 			$expected = [ 'user' ];
 
-			$this->assertSame( $expected, UrlParser::segments( $input ) );
+			$this->assertSame( $expected, UrlParser::requiredSegments( $input ) );
 
 			$input = 'https://foobar.com/users/{user}/{account}';
 
 			$expected = [ 'user', 'account' ];
 
-			$this->assertSame( $expected, UrlParser::segments( $input ) );
+			$this->assertSame( $expected, UrlParser::requiredSegments( $input ) );
 
 			$input = 'https://foobar.com/users/{user?}/{account}';
 
 			$expected = [ 'account' ];
 
-			$this->assertSame( $expected, UrlParser::segments( $input ) );
+			$this->assertSame( $expected, UrlParser::requiredSegments( $input ) );
 
 
 		}

@@ -1,5 +1,4 @@
 <?php
-	
 
 
 	namespace WPEmerge\Routing;
@@ -25,12 +24,11 @@
 	use WPEmerge\Traits\SortsMiddleware;
 
 	/** @mixin \WPEmerge\Routing\RouteDecorator */
-	class Router  {
+	class Router {
 
 		use CompilesMiddleware;
 		use SortsMiddleware;
 		use HoldsRouteBlueprint;
-
 
 		/**
 		 * Condition factory.
@@ -81,14 +79,14 @@
 		private $routes;
 
 		public function __construct(
-			ContainerAdapter $container ,
+			ContainerAdapter $container,
 			ConditionFactory $condition_factory,
 			HandlerFactory $handler_factory
 		) {
 
 			$this->condition_factory = $condition_factory;
 			$this->handler_factory   = $handler_factory;
-			$this->container = $container;
+			$this->container         = $container;
 		}
 
 
@@ -134,7 +132,7 @@
 		 *
 		 * @return string[]
 		 */
-		public function mergeMiddlewareAttribute(  array $old,  array $new ) : array {
+		public function mergeMiddlewareAttribute( array $old, array $new ) : array {
 
 			return array_merge( $old, $new );
 		}
@@ -321,7 +319,7 @@
 
 		}
 
-		public function route(  array $attributes ) : RouteInterface {
+		public function route( array $attributes ) : RouteInterface {
 
 			$attributes = $this->mergeAttributes( $this->getGroup(), $attributes );
 			$attributes = array_merge(
@@ -339,62 +337,64 @@
 				);
 			}
 
-			return new _Route($attributes);
+			return new _Route( $attributes );
 		}
 
 		private function findRoute( RequestInterface $request ) : ?RouteInterface {
 
-			foreach ( $this->routes as $route ) {
 
-				if ( $route->matches( $request ) ) {
+			$route = collect( $this->routes )
+				->filter( function ( Route $route ) use ( $request ) {
 
-					$request->setRoute($route);
+					// only correct http methods
+					return Arr::isValue( $request->getMethod(), $route->methods() );
 
-					return $route;
+				} )
+				->first( function ( Route $route ) use ( $request ) {
 
-				}
+					$this->condition_factory->compileConditions( $route );
+
+					return $route->matches( $request );
+
+				}, null );
+
+			if ( $route ) {
+
+				$request->setRoute( $route );
+
 			}
 
-			return null;
+			return $route;
 
 		}
 
-		/**
-		 * Get the url for a named route.
-		 *
-		 * @param  string  $name
-		 * @param  array  $arguments
-		 *
-		 * @return string
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
-		 */
-		public function getRouteUrl( string $name, $arguments = [] ) : string {
+		public function getRouteUrl( string $name, array $arguments = [] ) : string {
 
 
-			foreach ( $this->routes as $route ) {
+			$route = collect( $this->routes )->first( function ( Route $route ) use ( $name ) {
 
-				if ( $route->getName() !== $name ) {
-					continue;
-				}
+				return $route->getName() === $name;
 
-				$condition = Arr::firstEl($route->getConditions());
+			}, null );
 
-				if ( ! $condition instanceof UrlableInterface ) {
-					throw new ConfigurationException(
-						'_Route condition is not resolvable to a URL.'
-					);
-				}
+			if ( ! $route ) {
 
-				return $condition->toUrl( $arguments );
+				throw new ConfigurationException(
+					'There is no named route with the name: ' . $name . ' registered.'
+				);
 
 			}
 
-			throw new ConfigurationException( "No route registered with the name \"$name\"." );
+			$this->condition_factory->compileConditions( $route );
+
+			return $route->url( $arguments );
+
+
 		}
 
 		public function runRoute( RequestInterface $request ) {
 
-			$route = $this->findRoute($request);
+			$route = $this->findRoute( $request );
 
 			if ( ! $route ) {
 
@@ -409,63 +409,60 @@
 		private function runWithinStack( RouteInterface $route, RequestInterface $request ) {
 
 			$middleware = $route->getMiddleware();
-			$middleware = $this->mergeGlobalMiddleware($middleware);
-			$middleware = $this->expandMiddleware($middleware);
-			$middleware = $this->uniqueMiddleware($middleware);
-			$middleware = $this->sortMiddleware($middleware);
+			$middleware = $this->mergeGlobalMiddleware( $middleware );
+			$middleware = $this->expandMiddleware( $middleware );
+			$middleware = $this->uniqueMiddleware( $middleware );
+			$middleware = $this->sortMiddleware( $middleware );
 
+			return ( new Pipeline( $this->container ) )
+				->send( $request )
+				->through( $this->skipMiddleware() ? [] : $middleware )
+				->then( function ( $request ) use ( $route ) {
 
-			return (new Pipeline($this->container))
-				->send($request)
-				->through(  $this->skipMiddleware() ? [] : $middleware  )
-				->then(function ($request) use ($route) {
+					$route->compileAction( $this->handler_factory );
 
-					$route->compileAction($this->handler_factory);
+					return $route->run( $request );
 
-					return $route->run($request);
-
-				});
-
-		}
-
-		public function middlewareGroup( string $name, array $middleware ) :void  {
-
-			$this->middleware_groups[$name] = $middleware;
+				} );
 
 		}
 
-		public function middlewarePriority( array $middleware_priority ) :void  {
+		public function middlewareGroup( string $name, array $middleware ) : void {
+
+			$this->middleware_groups[ $name ] = $middleware;
+
+		}
+
+		public function middlewarePriority( array $middleware_priority ) : void {
 
 			$this->middleware_priority = $middleware_priority;
 
 		}
 
-		public function aliasMiddleware($name, $class) :void
-		{
-			$this->route_middleware_aliases[$name] = $class;
+		public function aliasMiddleware( $name, $class ) : void {
+
+			$this->route_middleware_aliases[ $name ] = $class;
 
 		}
 
-		private function skipMiddleware () : bool {
+		private function skipMiddleware() : bool {
 
-			return $this->container->offsetExists('middleware.disable');
+			return $this->container->offsetExists( 'middleware.disable' );
 
 		}
 
-		private function addRoute( array $methods , string $url, $action = null )  {
+		private function addRoute( array $methods, string $url, $action = null ) : RouteDecorator {
 
-			$url = UrlParser::normalize($url);
+			$url = UrlParser::normalize( $url );
 
-			$route = new Route($methods, $url, $action);
+			$route = new Route( $methods, $url, $action );
 
-			$route->addCondition( $condition = new UrlCondition( $url ), 'url' );
+			$route->addCondition( new UrlCondition( $url ) );
 
 			$this->routes[] = $route;
 
-			$decorator = new RouteDecorator($this, $route);
-			$decorator->lastCondition($condition);
+			return new RouteDecorator( $this, $route );
 
-			return $decorator;
 
 		}
 

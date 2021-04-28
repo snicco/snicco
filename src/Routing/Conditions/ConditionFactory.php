@@ -9,6 +9,7 @@
 	use Throwable;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\Routing\Route;
 	use WPEmerge\Support\Arr;
 	use WPEmerge\Support\Str;
 	use WPEmerge\Traits\ReflectsCallable;
@@ -362,6 +363,97 @@
 			}
 
 			return $this->makeFromArrayOfConditions( [ $old, $new ] );
+		}
+
+		public function compileConditions( Route $route ) {
+
+			$conditions = collect( $route->getConditions() );
+
+			$conditions = $conditions->filter( function ( $condition ) {
+
+				return ! $condition[0] instanceof ConditionInterface;
+
+			} )
+			                         ->map( function ( $condition ) use ( $route ) {
+
+				                         $condition = $this->create( $condition, $route );
+
+				                         return $condition;
+
+			                         } )
+			                         ->all();
+
+			$route->compiledConditions( $conditions );
+
+		}
+
+		private function create( array $condition, Route $route ) {
+
+
+			if ( $this->isRegexCondition( $condition ) ) {
+
+				return $this->newRegexUrlCondition( $condition, $route );
+
+			}
+
+			if ( $condition[0] instanceof UrlCondition ) {
+
+				return $condition[0];
+
+			}
+
+		}
+
+		private function isRegexCondition( array $condition ) : bool {
+
+			if ( Arr::isValue( $condition[0], $this->condition_types ) ) {
+
+				return false;
+
+			}
+
+			if ( is_string( $condition[0] ) && preg_match( '/(^\/.*\/$)/', $condition[1] ) ) {
+
+				return true;
+
+			}
+
+			return false;
+
+		}
+
+		private function newRegexUrlCondition( $condition, Route $route ) {
+
+			$url_condition = collect( $route->getConditions() )->filter( function ( $condition ) {
+
+				return $condition[0] instanceof UrlCondition;
+
+			} )->flatten()->first();
+
+			if ( ! $url_condition ) {
+
+				$condition = new UrlCondition( $route->url() );
+				$condition->setUrl( $condition );
+
+				return $condition;
+
+			}
+
+			$url_condition->setUrlWhere( $this->compileRegex( $condition ) );
+
+			return $url_condition;
+
+
+		}
+
+		private function compileRegex( $condition ) {
+
+			if ( is_string( $condition [0] ) ) {
+
+				return [ $condition[0] => $condition[1] ];
+
+			}
+
 		}
 
 	}
