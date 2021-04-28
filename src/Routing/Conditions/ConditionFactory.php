@@ -368,9 +368,6 @@
 
 		public function compileConditions( Route $route ) : array {
 
-			// $conditions = collect(
-			// 	Arr::flattenOnePreserveKeys($route->getConditions())
-			// );
 
 			$conditions = collect($route->getConditions());
 
@@ -410,7 +407,6 @@
 
 		public function isRegex( $condition ) : bool {
 
-			// $condition = Arr::flattenOnePreserveKeys($condition);
 
 			if ( is_object( Arr::firstEl($condition)) ) {
 
@@ -418,7 +414,7 @@
 
 			}
 
-			if ( isset($this->condition_types[Arr::firstEl($condition)]) ) {
+			if ( $this->isInbuiltConditionString( Arr::firstEl($condition) ) ) {
 
 				return false;
 
@@ -488,6 +484,13 @@
 
 			} );
 
+		}
+
+		private function isInbuiltConditionString(string $condition_alias) : bool {
+
+			$condition_alias = Str::after($condition_alias, self::NEGATE_CONDITION_SIGN);
+
+			return isset($this->condition_types[$condition_alias]);
 		}
 
 	}

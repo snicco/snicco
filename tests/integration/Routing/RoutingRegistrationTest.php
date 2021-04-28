@@ -62,7 +62,7 @@
 			$this->handler_factory   = new HandlerFactory( [], $this->container );
 			$this->router            = $this->newRouter();
 
-			unset($GLOBALS['test']);
+			unset( $GLOBALS['test'] );
 
 		}
 
@@ -72,7 +72,7 @@
 
 			parent::tearDown();
 
-			unset($GLOBALS['test']);
+			unset( $GLOBALS['test'] );
 		}
 
 		private function conditions() : array {
@@ -94,6 +94,7 @@
 				'model'         => ModelCondition::class,
 				'true'          => TrueCondition::class,
 				'false'         => FalseCondition::class,
+				'maybe'         => MaybeCondition::class,
 
 			];
 
@@ -526,8 +527,6 @@
 
 		}
 
-
-
 		/**
 		 *
 		 *
@@ -765,23 +764,24 @@
 
 		}
 
-
 		/** @test */
-		public function a_condition_stack_can_be_added_before_the_http_verb () {
+		public function a_condition_stack_can_be_added_before_the_http_verb() {
 
 			$this->router
-				->where(function ($foo) {
+				->where( function ( $foo ) {
 
 					$GLOBALS['test']['cond1'] = $foo;
+
 					return $foo === 'foo';
 
-				}, 'foo')
-				->where(function ($bar) {
+				}, 'foo' )
+				->where( function ( $bar ) {
 
 					$GLOBALS['test']['cond2'] = $bar;
+
 					return $bar === 'bar';
 
-				}, 'bar')
+				}, 'bar' )
 				->get( '/baz' )
 				->handle( function ( RequestInterface $request ) {
 
@@ -790,10 +790,8 @@
 				} );
 
 			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/baz' ) ) );
-			$this->assertSame('bar', $GLOBALS['test']['cond2']);
-			$this->assertSame('foo', $GLOBALS['test']['cond1'] ?? null , 'First condition did not execute');
-
-
+			$this->assertSame( 'bar', $GLOBALS['test']['cond2'] );
+			$this->assertSame( 'foo', $GLOBALS['test']['cond1'] ?? null, 'First condition did not execute' );
 
 
 		}
@@ -929,6 +927,88 @@
 
 
 		}
+
+		/** @test */
+		public function a_condition_can_be_negated_while_passing_arguments() {
+
+			$this->router
+				->get( '/foo' )
+				->where( 'maybe', true )
+				->handle( function ( RequestInterface $request ) {
+
+					return 'foo';
+
+				} );
+
+			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+
+			$this->router
+				->get( '/bar' )
+				->where( 'maybe', false )
+				->handle( function ( RequestInterface $request ) {
+
+					return 'foo';
+
+				} );
+
+			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/bar' ) ) );
+
+			$this->router
+				->get( '/baz' )
+				->where( '!maybe', false )
+				->handle( function ( RequestInterface $request ) {
+
+					return 'foo';
+
+				} );
+
+			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/baz' ) ) );
+
+			$this->router
+				->get( '/baz' )
+				->where( '!maybe', false )
+				->handle( function ( RequestInterface $request ) {
+
+					return 'foo';
+
+				} );
+
+			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/baz' ) ) );
+
+			$this->router
+				->get( '/foobar' )
+				->where( '!maybe', 'foobar' )
+				->handle( function ( RequestInterface $request ) {
+
+					return 'foo';
+
+				} );
+
+			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foobar' ) ) );
+
+
+		}
+
+		/** @test */
+		public function negated_conditions_have_precedence_over_regex() {
+
+			// This should result in two conditions.
+			// Not on regex being added to the url condition
+			// /foobar/ will make the condition fail.
+			$this->router
+				->get( '/foo' )
+				->where( '!maybe', '/foobar/' )
+				->handle( function ( RequestInterface $request ) {
+
+					return 'foo';
+
+				} );
+
+			$this->seeResponse('foo',  $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+			$this->assertTrue($GLOBALS['test']['maybe_condition_run']);
+
+		}
+
 
 		/** @test */
 		public function a_condition_object_can_be_negated() {
@@ -1297,6 +1377,35 @@
 		public function isSatisfied( RequestInterface $request ) {
 
 			return false;
+		}
+
+		public function getArguments( RequestInterface $request ) {
+
+			return [];
+
+		}
+
+	}
+
+
+	class MaybeCondition implements ConditionInterface {
+
+		/**
+		 * @var bool
+		 */
+		private $make_it_pass;
+
+		public function __construct( $make_it_pass ) {
+
+			$this->make_it_pass = $make_it_pass;
+
+		}
+
+		public function isSatisfied( RequestInterface $request ) {
+
+			$GLOBALS['test']['maybe_condition_run'] = true;
+
+			return $this->make_it_pass === TRUE || $this->make_it_pass === 'foobar';
 		}
 
 		public function getArguments( RequestInterface $request ) {
