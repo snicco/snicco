@@ -7,30 +7,60 @@
 
 		public static function isValue( $value, array $array ) : bool {
 
-			return array_search($value,$array, true) !== false;
+			return array_search( $value, $array, true ) !== false;
 
 
 		}
 
 		public static function firstEl( $array ) {
 
-			$array = Arr::wrap($array);
+			return self::nthEl($array, 0);
 
-			if ( empty($array) ) {
+		}
+
+		public static function nthEl( array $array, int $offset = 0 ) {
+
+			$array = Arr::wrap( $array );
+
+			if ( empty( $array ) ) {
 
 				return null;
 
 			}
 
-			return array_values($array)[0];
+			return array_values( $array )[$offset] ?? null;
 
 		}
 
 		public static function combineFirstTwo( array $array ) : array {
 
-			$array = array_values($array);
+			$array = array_values( $array );
 
-			return [$array[0] => $array[1]];
+			return [ $array[0] => $array[1] ];
+
+		}
+
+		public static function flattenOnePreserveKeys( array $array ) : array {
+
+			$array = collect($array)->map(function ( $value) {
+
+				$first = static::firstEl( $value );
+
+				return is_array( $first ) ? $first : $value;
+
+			})->all();
+
+			return $array;
+
+
+
+		}
+
+		public static function firstKey( array $array ) {
+
+			$array = static::wrap( $array );
+
+			return static::firstEl( array_keys( $array ) );
 
 		}
 

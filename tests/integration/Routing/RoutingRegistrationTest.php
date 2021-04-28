@@ -62,6 +62,8 @@
 			$this->handler_factory   = new HandlerFactory( [], $this->container );
 			$this->router            = $this->newRouter();
 
+			unset($GLOBALS['test']);
+
 		}
 
 		protected function tearDown() : void {
@@ -69,6 +71,8 @@
 			m::close();
 
 			parent::tearDown();
+
+			unset($GLOBALS['test']);
 		}
 
 		private function conditions() : array {
@@ -738,7 +742,7 @@
 		public function custom_conditions_can_be_added_before_the_http_verb() {
 
 			$this->router
-				->where( 'false' )
+				->where( new FalseCondition() )
 				->get( '/foo' )
 				->handle( function ( RequestInterface $request ) {
 
@@ -749,15 +753,48 @@
 			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
 			$this->router
-				->where( new FalseCondition() )
-				->get( '/foo' )
+				->where( 'false' )
+				->get( '/bar' )
 				->handle( function ( RequestInterface $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/bar' ) ) );
+
+		}
+
+
+		/** @test */
+		public function a_condition_stack_can_be_added_before_the_http_verb () {
+
+			$this->router
+				->where(function ($foo) {
+
+					$GLOBALS['test']['cond1'] = $foo;
+					return $foo === 'foo';
+
+				}, 'foo')
+				->where(function ($bar) {
+
+					$GLOBALS['test']['cond2'] = $bar;
+					return $bar === 'bar';
+
+				}, 'bar')
+				->get( '/baz' )
+				->handle( function ( RequestInterface $request ) {
+
+					return 'foo';
+
+				} );
+
+			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/baz' ) ) );
+			$this->assertSame('bar', $GLOBALS['test']['cond2']);
+			$this->assertSame('foo', $GLOBALS['test']['cond1'] ?? null , 'First condition did not execute');
+
+
+
 
 		}
 
