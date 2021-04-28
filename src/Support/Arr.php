@@ -42,15 +42,9 @@
 
 		public static function flattenOnePreserveKeys( array $array ) : array {
 
-			$array = collect($array)->map(function ( $value) {
+			$flattened = is_array( static::firstEl($array) ) ? static::firstEl($array) : $array;
 
-				$first = static::firstEl( $value );
-
-				return is_array( $first ) ? $first : $value;
-
-			})->all();
-
-			return $array;
+			return $flattened;
 
 
 
