@@ -165,12 +165,7 @@
 
 					return $condition->getArguments( $request );
 
-				} )
-				->reject( function ( $value ) {
-
-					return $value === [] || ! $value;
-
-				} )
+				})
 				->all();
 
 			return $args;
@@ -218,13 +213,15 @@
 
 		}
 
-		public function where() {
+		public function where() : Route {
 
 			$condition = func_get_args();
 
 			$condition = is_array($condition[0]) ? $condition[0] : $condition;
 
 			$this->conditions = array_merge( $this->conditions ?? [], [$condition] );
+
+			return $this;
 
 		}
 

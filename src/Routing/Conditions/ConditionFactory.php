@@ -394,11 +394,13 @@
 
 			}
 
-			if ( $condition[0] instanceof UrlCondition ) {
+			if ( $condition[0] instanceof ConditionInterface ) {
 
 				return $condition[0];
 
 			}
+
+			return $this->make($condition);
 
 		}
 
@@ -406,13 +408,19 @@
 
 			$condition = collect($condition)->flatten(1)->all();
 
-			if ( Arr::isValue( $condition[0], $this->condition_types ) ) {
+			if ( is_object($first = Arr::firstEl($condition))) {
 
 				return false;
 
 			}
 
-			if ( is_string( $condition[0] ) && preg_match( '/(^\/.*\/$)/', $condition[1] ) ) {
+			if ( isset($this->condition_types[$first]) ) {
+
+				return false;
+
+			}
+
+			if ( is_string( $first ) && preg_match( '/(^\/.*\/$)/', $condition[1] ?? '' ) ) {
 
 				return true;
 

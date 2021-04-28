@@ -33,21 +33,14 @@
 
 		private $decorated_attributes = [];
 
-		/**
-		 * @var \WPEmerge\Routing\Route|null
-		 */
-		private $route;
 
-
-		public function __construct( Router $router, Route $route = null ) {
+		public function __construct( Router $router ) {
 
 			$this->router = $router;
-			$this->route  = $route;
 
 		}
 
 		public function decorate( $attribute, $value ) : RouteDecorator {
-
 
 			$this->decorated_attributes[ $attribute ] = $value;
 

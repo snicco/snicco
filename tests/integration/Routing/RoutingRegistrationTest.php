@@ -5,15 +5,11 @@
 
 	use Codeception\TestCase\WPTestCase;
 	use Mockery as m;
-	use PHPUnit\Framework\TestCase;
-	use Psr\Http\Message\ResponseInterface;
 	use SniccoAdapter\BaseContainerAdapter;
-	use Tests\stubs\TestViewService;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\RouteInterface;
-	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Requests\Request;
 	use WPEmerge\Routing\Conditions\AdminCondition;
@@ -30,10 +26,8 @@
 	use WPEmerge\Routing\Conditions\PostTypeCondition;
 	use WPEmerge\Routing\Conditions\QueryVarCondition;
 	use WPEmerge\Routing\Conditions\UrlCondition;
-	use WPEmerge\Routing\RouteBlueprint;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Support\Str;
-	use WPEmerge\View\ViewService;
 
 	class RoutingRegistrationTest extends WPTestCase {
 
@@ -125,6 +119,41 @@
 			return $request;
 
 		}
+
+
+		/**
+		 * @todo refactor this to an internal view controller.
+		 */
+		public function view_routes_work() {
+
+			// $this->newBluePrint()->view( '/welcome', 'welcome', [ 'name' => 'Calvin' ] );
+			//
+			// $view = $this->router->runRoute( $this->request( 'GET', '/welcome' ) );
+			//
+			// $this->assertInstanceOf( ViewInterface::class, $view );
+			//
+			// $this->assertSame( 'welcome', $view->view );
+			//
+			// $this->newBluePrint()->view( '/welcome', 'welcome', [ 'name' => 'Calvin' ] );
+			//
+			// $view = $this->router->runRoute( $this->request( 'POST', '/welcome' ) );
+			//
+			// $this->assertNull( $view );
+
+		}
+
+
+		/**
+		 *
+		 *
+		 *
+		 *
+		 * BASIC ROUTING
+		 *
+		 *
+		 *
+		 *
+		 */
 
 		/** @test */
 		public function basic_get_routing_works() {
@@ -288,6 +317,20 @@
 			$this->seeResponse( 'foo', $response );
 
 		}
+
+		/**
+		 *
+		 *
+		 *
+		 *
+		 *
+		 * ROUTE ATTRIBUTES
+		 *
+		 *
+		 *
+		 *
+		 *
+		 */
 
 		/** @test */
 		public function a_route_namespace_can_be_set() {
@@ -479,500 +522,630 @@
 
 		}
 
+
+
+		/**
+		 *
+		 *
+		 *
+		 *
+		 *
+		 * REGEX CONDITIONS
+		 *
+		 *
+		 *
+		 *
+		 *
+		 *
+		 */
+
 		/** @test */
-		public function regex_can_be_added_as_a_condition_without_needing_array_syntax () {
+		public function regex_can_be_added_as_a_condition_without_needing_array_syntax() {
 
 
-			$this->router->get('users/{user}', function () {
+			$this->router->get( 'users/{user}', function () {
 
 				return 'foo';
 
-			})->where('user', '/[0-9]+/');
+			} )->where( 'user', '/[0-9]+/' );
 
-			$request = $this->request('GET', '/users/1');
-			$this->seeResponse('foo', $this->router->runRoute($request));
+			$request = $this->request( 'GET', '/users/1' );
+			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
 
-			$request = $this->request('GET', '/users/calvin');
-			$this->assertNull($this->router->runRoute($request));
+			$request = $this->request( 'GET', '/users/calvin' );
+			$this->assertNull( $this->router->runRoute( $request ) );
 
 
 		}
 
 		/** @test */
-		public function regex_can_be_added_as_a_condition_as_array_syntax () {
+		public function regex_can_be_added_as_a_condition_as_array_syntax() {
 
 
-			$this->router->get('users/{user}', function () {
+			$this->router->get( 'users/{user}', function () {
 
 				return 'foo';
 
-			})->where(['user', '/[0-9]+/']);
+			} )->where( [ 'user', '/[0-9]+/' ] );
 
-			$request = $this->request('GET', '/users/1');
-			$this->seeResponse('foo', $this->router->runRoute($request));
+			$request = $this->request( 'GET', '/users/1' );
+			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
 
-			$request = $this->request('GET', '/users/calvin');
-			$this->assertNull($this->router->runRoute($request));
+			$request = $this->request( 'GET', '/users/calvin' );
+			$this->assertNull( $this->router->runRoute( $request ) );
 
 
 		}
 
 		/** @test */
-		public function multiple_regex_conditions_can_be_added_to_an_url_condition () {
+		public function multiple_regex_conditions_can_be_added_to_an_url_condition() {
 
 
-			$this->router->get('/user/{id}/{name}', function ( Request $request, $id, $name) {
+			$this->router->get( '/user/{id}/{name}', function ( Request $request, $id, $name ) {
 
 				return $name . $id;
 
-			})->where(['id' => '/[0-9]+/', 'name' => '/[a-z]+/']);
+			} )->where( [ 'id' => '/[0-9]+/', 'name' => '/[a-z]+/' ] );
 
-			$request = $this->request('GET', '/user/1/calvin');
-			$this->seeResponse('calvin1', $this->router->runRoute($request));
+			$request = $this->request( 'GET', '/user/1/calvin' );
+			$this->seeResponse( 'calvin1', $this->router->runRoute( $request ) );
 
-			$request = $this->request('GET', '/users/calvin/1');
-			$this->assertNull($this->router->runRoute($request));
+			$request = $this->request( 'GET', '/users/calvin/1' );
+			$this->assertNull( $this->router->runRoute( $request ) );
+
+		}
+
+		/** @test */
+		public function regex_can_be_added_before_the_http_verb() {
+
+			$this->router->where( 'user', '/[0-9]+/' )->get( 'users/{user}', function () {
+
+				return 'foo';
+
+			} );
+
+			$request = $this->request( 'GET', '/users/1' );
+			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+
+			$request = $this->request( 'GET', '/users/calvin' );
+			$this->assertNull( $this->router->runRoute( $request ) );
+
+		}
+
+		/** @test */
+		public function regex_in_array_format_can_be_added_before_the_http_verb() {
+
+			$this->router->where( [ 'user', '/[0-9]+/' ] )->get( 'users/{user}', function () {
+
+				return 'foo';
+
+			} );
+
+			$request = $this->request( 'GET', '/users/1' );
+			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+
+			$request = $this->request( 'GET', '/users/calvin' );
+			$this->assertNull( $this->router->runRoute( $request ) );
+
+		}
+
+		/** @test */
+		public function multiple_regex_conditions_can_be_added_before_the_http_verb() {
+
+			$this->router->where( [ 'id' => '/[0-9]+/', 'name' => '/[a-z]+/' ] )
+			             ->get( '/user/{id}/{name}', function ( Request $request, $id, $name ) {
+
+				             return $name . $id;
+
+			             } );
+
+			$request = $this->request( 'GET', '/user/1/calvin' );
+			$this->seeResponse( 'calvin1', $this->router->runRoute( $request ) );
+
+			$request = $this->request( 'GET', '/users/calvin/1' );
+			$this->assertNull( $this->router->runRoute( $request ) );
+
+		}
+
+		/** @test */
+		public function optional_parameters_work_in_the_url_work_with_regex() {
+
+			$this->router->get( 'foo/{bar?}/{baz}', function ( Request $request, $bar, $baz ) {
+
+				return $bar . $baz;
+
+			} )->where( 'baz', '/[0-9]+/' );
+
+			$request = $this->request( 'GET', '/foo/bar/1' );
+			$this->seeResponse( 'bar1', $this->router->runRoute( $request ) );
+
+			$request = $this->request( 'GET', '/foo/bar/abc' );
+			$this->assertNull( $this->router->runRoute( $request ) );
+
+
+		}
+
+
+		/** @test */
+		public function unmatched_optional_parameters_get_passed_as_null_values_and_dont_break_the_route() {
+
+			$this->router->get( 'foo/{bar?}/{baz}', function ( Request $request, $bar, $baz ) {
+
+				$this->assertSame( '', $bar );
+
+				return $baz;
+
+			} )->where( 'baz', '/[0-9]+/' );
+
+			$request = $this->request( 'GET', '/foo/1' );
+			$this->seeResponse( '1', $this->router->runRoute( $request ) );
+
+			$request = $this->request( 'GET', '/foo/bar/abc' );
+			$this->assertNull( $this->router->runRoute( $request ) );
+
+			$request = $this->request( 'GET', '/foo/abc' );
+			$this->assertNull( $this->router->runRoute( $request ) );
+
+		}
+
+		/**
+		 *
+		 *
+		 *
+		 *
+		 * CUSTOM CONDITIONS
+		 *
+		 *
+		 *
+		 *
+		 */
+
+		/** @test */
+		public function custom_conditions_can_be_added_as_strings() {
+
+			$this->router
+				->get( '/foo' )
+				->where( 'false' )
+				->handle( function ( RequestInterface $request ) {
+
+					return 'foo';
+
+				} );
+
+			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+
+
+		}
+
+		/** @test */
+		public function custom_conditions_can_be_added_as_objects() {
+
+			$this->router
+				->get( '/foo' )
+				->where( new FalseCondition() )
+				->handle( function ( RequestInterface $request ) {
+
+					return 'foo';
+
+				} );
+
+			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+
+
+		}
+
+		/** @test */
+		public function custom_conditions_can_be_added_before_the_http_verb() {
+
+			$this->router
+				->where( 'false' )
+				->get( '/foo' )
+				->handle( function ( RequestInterface $request ) {
+
+					return 'foo';
+
+				} );
+
+			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+
+			$this->router
+				->where( new FalseCondition() )
+				->get( '/foo' )
+				->handle( function ( RequestInterface $request ) {
+
+					return 'foo';
+
+				} );
+
+			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+
+		}
+
+		/** @test */
+		public function a_closure_can_be_a_condition() {
+
+
+			$this->router
+				->get( '/foo' )
+				->where(
+					function ( $foo, $bar ) {
+
+						return $foo === 'foo' && $bar === 'bar';
+
+					},
+					'foo',
+					'bar'
+				)
+				->handle(
+					function ( $request, $foo, $bar ) {
+
+						return $foo . $bar;
+
+					}
+				);
+
+			$this->seeResponse( 'foobar', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+
+			$this->router
+				->get( '/will-fail' )
+				->where(
+					function ( $foo, $bar ) {
+
+						return $foo === 'foo' && $bar === 'bar';
+
+					},
+					'foo',
+					'baz'
+				)
+				->handle(
+					function ( $request, $foo, $bar ) {
+
+						return $foo . $bar;
+
+					}
+				);
+
+			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/will-fail' ) ) );
+
+			$this->router
+				->where(
+					function ( $foo, $bar ) {
+
+						return $foo === 'foo' && $bar === 'bar';
+
+					},
+					'foo',
+					'bar'
+				)
+				->get( '/foo-before' )
+				->handle(
+					function ( $request, $foo, $bar ) {
+
+						return $foo . $bar;
+
+					}
+				);
+
+			$this->seeResponse( 'foobar', $this->router->runRoute( $this->request( 'GET', '/foo-before' ) ) );
+
+
+		}
+
+		/** @test */
+		public function all_conditions_have_to_pass() {
+
+			$this->router
+				->get( '/foo' )
+				->where( 'true' )
+				->where( 'false' )
+				->handle( function ( RequestInterface $request ) {
+
+					return 'foo';
+
+				} );
+
+			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+
+
+		}
+
+		/** @test */
+		public function a_condition_can_be_negated() {
+
+
+			$this->router
+				->get( '/foo' )
+				->where( '!false' )
+				->handle( function ( RequestInterface $request ) {
+
+					return 'foo';
+
+				} );
+
+			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+
+			$this->router
+				->get( '/bar' )
+				->where( 'negate', 'false' )
+				->handle( function ( RequestInterface $request ) {
+
+					return 'foo';
+
+				} );
+
+			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/bar' ) ) );
+
+			$this->router
+				->get( '/baz' )
+				->where( 'negate', function ( $foo ) {
+
+					return $foo !== 'foo';
+
+				}, 'foo' )
+				->handle( function ( RequestInterface $request ) {
+
+					return 'foo';
+
+				} );
+
+			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/baz' ) ) );
+
+
+		}
+
+		/** @test */
+		public function a_condition_object_can_be_negated() {
+
+			$this->router
+				->get( '/foo' )
+				->where( 'negate', new FalseCondition() )
+				->handle( function ( RequestInterface $request ) {
+
+					return 'foo';
+
+				} );
+
+			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+
 
 		}
 
 
 
-		// /**
-		//  * @todo refactor this to an internal view controller.
-		//  */
-		// public function view_routes_work() {
-		//
-		// 	$this->newBluePrint()->view( '/welcome', 'welcome', [ 'name' => 'Calvin' ] );
-		//
-		// 	$view = $this->router->runRoute( $this->request( 'GET', '/welcome' ) );
-		//
-		// 	$this->assertInstanceOf( ViewInterface::class, $view );
-		//
-		// 	$this->assertSame( 'welcome', $view->view );
-		//
-		// 	$this->newBluePrint()->view( '/welcome', 'welcome', [ 'name' => 'Calvin' ] );
-		//
-		// 	$view = $this->router->runRoute( $this->request( 'POST', '/welcome' ) );
-		//
-		// 	$this->assertNull( $view );
-		//
-		//
-		// }
-		//
 
-		// /**
-		//  *
-		//  *
-		//  *
-		//  *
-		//  * TEST FOR ADDITIONAL NON REGEX CONDITIONS
-		//  *
-		//  *
-		//  *
-		//  *
-		//  *
-		//  */
-		//
+		/**
+		 *
+		 *
+		 *
+		 * ROUTE GROUPS
+		 *
+		 *
+		 *
+		 */
+
 		// /** @test */
-		// public function conditions_can_be_chained_and_they_all_need_to_pass_to_match_the_route() {
-		//
-		// 	$this->router
-		// 	     ->get( '/foo' )
-		// 	     ->where( 'false' )
-		// 	     ->handle( function ( RequestInterface $request ) {
-		//
-		// 		     return 'foo';
-		//
-		// 	     } );
-		//
-		// 	$this->assertNull(
-		// 		$this->router->runRoute( $this->request( 'GET', '/foo' )
-		// 		) );
-		//
-		// 	$this->newBluePrint()
-		// 	     ->get( '/foo' )
-		// 	     ->where( 'false' )
-		// 	     ->where( 'true' )
-		// 	     ->handle( function ( RequestInterface $request ) {
-		//
-		// 		     return 'foo';
-		//
-		//
-		// 	     } );
-		//
-		// 	$this->assertNull(
-		// 		$this->router->runRoute( $this->request( 'GET', '/foo' ) )
-		// 	);
-		//
-		// 	$this->newBluePrint()
-		// 	     ->get( '/foo' )
-		// 	     ->where( 'true' )
-		// 	     ->handle( function ( RequestInterface $request ) {
-		//
-		// 		     return 'foo';
-		//
-		// 	     } );
-		//
-		// 	$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
-		//
-		//
-		// }
-		//
+		public function methods_are_merged_for_route_groups() {
+
+			$this->newBluePrint()
+			     ->methods( [ 'GET', 'PUT' ] )
+			     ->group( function () {
+
+				     $this->blueprint->post( '/foo' )->handle( function () {
+
+					     return 'post_foo';
+
+				     } );
+
+			     } );
+
+			$get_request = $this->request( 'GET', '/foo' );
+			$response    = $this->router->runRoute( $get_request );
+			$this->seeResponse( 'post_foo', $response );
+
+			$put_request = $this->request( 'PUT', '/foo' );
+			$response    = $this->router->runRoute( $put_request );
+			$this->seeResponse( 'post_foo', $response );
+
+			$post_request = $this->request( 'POST', '/foo' );
+			$response     = $this->router->runRoute( $post_request );
+			$this->seeResponse( 'post_foo', $response );
+
+
+		}
+
 		// /** @test */
-		// public function a_closure_can_be_a_condition() {
-		//
-		//
-		// 	$this->newBluePrint()
-		// 	     ->get( '/foo' )
-		// 	     ->where(
-		// 		     function ( $foo, $bar ) {
-		//
-		// 			     return $foo = 'foo' && $bar = 'bar';
-		//
-		// 		     },
-		// 		     'foo',
-		// 		     'bar'
-		// 	     )
-		// 	     ->handle(
-		// 		     function ( $request, $foo, $bar ) {
-		//
-		// 			     return $foo . $bar;
-		//
-		// 		     }
-		// 	     );
-		//
-		// 	$this->seeResponse( 'foobar', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
-		//
-		// }
-		//
+		public function middleware_is_merged_for_route_groups() {
+
+
+			$blueprint = $this->newBluePrint();
+			$this->router->aliasMiddleware( 'foo', FooMiddleware::class );
+			$this->router->aliasMiddleware( 'bar', BarMiddleware::class );
+
+			$blueprint
+				->middleware( 'foo:FOO' )
+				->group( function () {
+
+					$this->newBluePrint( $this->router )
+					     ->get( '/foo' )
+					     ->middleware( 'bar:BAR' )
+					     ->handle( function ( RequestInterface $request ) {
+
+						     return $request->body;
+
+					     } );
+
+					$this->newBluePrint( $this->router )
+					     ->post( '/foo' )
+					     ->handle( function ( RequestInterface $request ) {
+
+						     return $request->body;
+
+					     } );
+
+				} );
+
+			$get_request = $this->request( 'GET', '/foo' );
+			$response    = $this->router->runRoute( $get_request );
+			$this->seeResponse( 'FOOBAR', $response );
+
+			$post_request = $this->request( 'POST', '/foo' );
+			$response     = $this->router->runRoute( $post_request );
+			$this->seeResponse( 'FOO', $response );
+
+
+		}
+
 		// /** @test */
-		// public function a_condition_can_be_negated() {
-		//
-		//
-		// 	$this->newBluePrint()
-		// 	     ->get( '/foo' )
-		// 	     ->where( '!false' )
-		// 	     ->handle( function ( RequestInterface $request ) {
-		//
-		// 		     return 'foo';
-		//
-		// 	     } );
-		//
-		// 	$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
-		//
-		// 	$this->newBluePrint()
-		// 	     ->get( '/foo' )
-		// 	     ->where( 'negate', 'false' )
-		// 	     ->handle( function ( RequestInterface $request ) {
-		//
-		// 		     return 'foo';
-		//
-		// 	     } );
-		//
-		// 	$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
-		//
-		//
-		// }
-		//
+		public function the_group_namespace_is_applied_to_child_routes() {
+
+			$this->newBluePrint()
+			     ->namespace( 'Tests\integration\Routing' )
+			     ->group( function () {
+
+				     $this->blueprint->get( '/foo' )->handle( 'RoutingController@foo' );
+
+			     } );
+
+			$get_request = $this->request( 'GET', '/foo' );
+			$response    = $this->router->runRoute( $get_request );
+			$this->seeResponse( 'foo', $response );
+
+
+		}
+
 		// /** @test */
-		// public function a_condition_object_can_be_negated() {
-		//
-		// 	$this->newBluePrint()
-		// 	     ->get( '/foo' )
-		// 	     ->where( 'negate', new FalseCondition() )
-		// 	     ->handle( function ( RequestInterface $request ) {
-		//
-		// 		     return 'foo';
-		//
-		// 	     } );
-		//
-		// 	$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
-		//
-		//
-		// }
-		//
+		public function group_conditions_are_merged() {
+
+			$this->newBluePrint()
+			     ->where( 'true' )
+			     ->namespace( 'Tests\integration\Routing' )
+			     ->group( function () {
+
+				     $this->newBluePrint( $this->router )
+				          ->get( '/foo' )
+				          ->where( new FalseCondition() )
+				          ->handle( 'RoutingController@foo' );
+
+				     $this->newBluePrint( $this->router )
+				          ->post( '/foo' )
+				          ->where( new TrueCondition() )
+				          ->handle( 'RoutingController@foo' );
+
+			     } );
+
+			$get_request = $this->request( 'GET', '/foo' );
+			$response    = $this->router->runRoute( $get_request );
+			$this->assertNull( $response );
+
+			$post_request = $this->request( 'POST', '/foo' );
+			$response     = $this->router->runRoute( $post_request );
+			$this->seeResponse( 'foo', $response );
+
+		}
+
 		// /** @test */
-		// public function an_anonymous_closure_can_be_a_negated_condition() {
-		//
-		// 	$this->newBluePrint()
-		// 	     ->get( '/foo' )
-		// 	     ->where( 'negate', function ( $foo ) {
-		//
-		// 		     return $foo === 'foo';
-		// 	     }, 'foo' )
-		// 	     ->handle( function ( RequestInterface $request ) {
-		//
-		// 		     return 'foo';
-		//
-		// 	     } );
-		//
-		// 	$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
-		//
-		// }
-		//
-		//
-		// /**
-		//  *
-		//  *
-		//  *
-		//  * ROUTE GROUPS
-		//  *
-		//  *
-		//  *
-		//  */
-		//
+		public function group_urls_are_stacked() {
+
+
+			$this->newBluePrint()
+			     ->namespace( 'Tests\integration\Routing' )
+			     ->prefix( 'foo' )
+			     ->group( function () {
+
+				     $this->newBluePrint( $this->router )->get( 'bar' )
+				          ->handle( 'RoutingController@foo' );
+
+			     } );
+
+			$get_request = $this->request( 'GET', '/foo' );
+			$response    = $this->router->runRoute( $get_request );
+			$this->assertNull( $response );
+
+			$get_request = $this->request( 'GET', '/foo/bar' );
+			$response    = $this->router->runRoute( $get_request );
+			$this->seeResponse( 'foo', $response );
+
+
+		}
+
 		// /** @test */
-		// public function methods_are_merged_for_route_groups() {
-		//
-		// 	$this->newBluePrint()
-		// 	     ->methods( [ 'GET', 'PUT' ] )
-		// 	     ->group( function () {
-		//
-		// 		     $this->blueprint->post( '/foo' )->handle( function () {
-		//
-		// 			     return 'post_foo';
-		//
-		// 		     } );
-		//
-		// 	     } );
-		//
-		// 	$get_request = $this->request( 'GET', '/foo' );
-		// 	$response    = $this->router->runRoute( $get_request );
-		// 	$this->seeResponse( 'post_foo', $response );
-		//
-		// 	$put_request = $this->request( 'PUT', '/foo' );
-		// 	$response    = $this->router->runRoute( $put_request );
-		// 	$this->seeResponse( 'post_foo', $response );
-		//
-		// 	$post_request = $this->request( 'POST', '/foo' );
-		// 	$response     = $this->router->runRoute( $post_request );
-		// 	$this->seeResponse( 'post_foo', $response );
-		//
-		//
-		// }
-		//
+		public function group_urls_are_stacked_on_multiple_levels() {
+
+
+			$this->newBluePrint()
+			     ->namespace( 'Tests\integration\Routing' )
+			     ->prefix( 'foo' )
+			     ->group( function () {
+
+				     $this->newBluePrint( $this->router )->prefix( 'bar' )->group( function () {
+
+					     $this->newBluePrint( $this->router )->get( 'baz' )
+					          ->handle( 'RoutingController@foo' );
+
+
+				     } );
+
+				     $this->newBluePrint( $this->router )->get( 'biz' )
+				          ->handle( 'RoutingController@foo' );
+
+			     } );
+
+			$get_request = $this->request( 'GET', '/foo' );
+			$this->assertNull( $this->router->runRoute( $get_request ) );
+
+			$get_request = $this->request( 'GET', '/foo/bar' );
+			$this->assertNull( $this->router->runRoute( $get_request ) );
+
+			$get_request = $this->request( 'GET', '/foo/biz' );
+			$this->seeResponse( 'foo', $this->router->runRoute( $get_request ) );
+
+			$get_request = $this->request( 'GET', '/foo/bar/baz' );
+			$this->seeResponse( 'foo', $this->router->runRoute( $get_request ) );
+
+		}
+
 		// /** @test */
-		// public function middleware_is_merged_for_route_groups() {
-		//
-		//
-		// 	$blueprint = $this->newBluePrint();
-		// 	$this->router->aliasMiddleware( 'foo', FooMiddleware::class );
-		// 	$this->router->aliasMiddleware( 'bar', BarMiddleware::class );
-		//
-		// 	$blueprint
-		// 		->middleware( 'foo:FOO' )
-		// 		->group( function () {
-		//
-		// 			$this->newBluePrint( $this->router )
-		// 			     ->get( '/foo' )
-		// 			     ->middleware( 'bar:BAR' )
-		// 			     ->handle( function ( RequestInterface $request ) {
-		//
-		// 				     return $request->body;
-		//
-		// 			     } );
-		//
-		// 			$this->newBluePrint( $this->router )
-		// 			     ->post( '/foo' )
-		// 			     ->handle( function ( RequestInterface $request ) {
-		//
-		// 				     return $request->body;
-		//
-		// 			     } );
-		//
-		// 		} );
-		//
-		// 	$get_request = $this->request( 'GET', '/foo' );
-		// 	$response    = $this->router->runRoute( $get_request );
-		// 	$this->seeResponse( 'FOOBAR', $response );
-		//
-		// 	$post_request = $this->request( 'POST', '/foo' );
-		// 	$response     = $this->router->runRoute( $post_request );
-		// 	$this->seeResponse( 'FOO', $response );
-		//
-		//
-		// }
-		//
-		// /** @test */
-		// public function the_group_namespace_is_applied_to_child_routes() {
-		//
-		// 	$this->newBluePrint()
-		// 	     ->namespace( 'Tests\integration\Routing' )
-		// 	     ->group( function () {
-		//
-		// 		     $this->blueprint->get( '/foo' )->handle( 'RoutingController@foo' );
-		//
-		// 	     } );
-		//
-		// 	$get_request = $this->request( 'GET', '/foo' );
-		// 	$response    = $this->router->runRoute( $get_request );
-		// 	$this->seeResponse( 'foo', $response );
-		//
-		//
-		// }
-		//
-		// /** @test */
-		// public function group_conditions_are_merged() {
-		//
-		// 	$this->newBluePrint()
-		// 	     ->where( 'true' )
-		// 	     ->namespace( 'Tests\integration\Routing' )
-		// 	     ->group( function () {
-		//
-		// 		     $this->newBluePrint( $this->router )
-		// 		          ->get( '/foo' )
-		// 		          ->where( new FalseCondition() )
-		// 		          ->handle( 'RoutingController@foo' );
-		//
-		// 		     $this->newBluePrint( $this->router )
-		// 		          ->post( '/foo' )
-		// 		          ->where( new TrueCondition() )
-		// 		          ->handle( 'RoutingController@foo' );
-		//
-		// 	     } );
-		//
-		// 	$get_request = $this->request( 'GET', '/foo' );
-		// 	$response    = $this->router->runRoute( $get_request );
-		// 	$this->assertNull( $response );
-		//
-		// 	$post_request = $this->request( 'POST', '/foo' );
-		// 	$response     = $this->router->runRoute( $post_request );
-		// 	$this->seeResponse( 'foo', $response );
-		//
-		// }
-		//
-		// /** @test */
-		// public function group_urls_are_stacked() {
-		//
-		//
-		// 	$this->newBluePrint()
-		// 	     ->namespace( 'Tests\integration\Routing' )
-		// 	     ->prefix( 'foo' )
-		// 	     ->group( function () {
-		//
-		// 		     $this->newBluePrint( $this->router )->get( 'bar' )
-		// 		          ->handle( 'RoutingController@foo' );
-		//
-		// 	     } );
-		//
-		// 	$get_request = $this->request( 'GET', '/foo' );
-		// 	$response    = $this->router->runRoute( $get_request );
-		// 	$this->assertNull( $response );
-		//
-		// 	$get_request = $this->request( 'GET', '/foo/bar' );
-		// 	$response    = $this->router->runRoute( $get_request );
-		// 	$this->seeResponse( 'foo', $response );
-		//
-		//
-		// }
-		//
-		// /** @test */
-		// public function group_urls_are_stacked_on_multiple_levels() {
-		//
-		//
-		// 	$this->newBluePrint()
-		// 	     ->namespace( 'Tests\integration\Routing' )
-		// 	     ->prefix( 'foo' )
-		// 	     ->group( function () {
-		//
-		// 		     $this->newBluePrint( $this->router )->prefix( 'bar' )->group( function () {
-		//
-		// 			     $this->newBluePrint( $this->router )->get( 'baz' )
-		// 			          ->handle( 'RoutingController@foo' );
-		//
-		//
-		// 		     } );
-		//
-		// 		     $this->newBluePrint( $this->router )->get( 'biz' )
-		// 		          ->handle( 'RoutingController@foo' );
-		//
-		// 	     } );
-		//
-		// 	$get_request = $this->request( 'GET', '/foo' );
-		// 	$this->assertNull( $this->router->runRoute( $get_request ) );
-		//
-		// 	$get_request = $this->request( 'GET', '/foo/bar' );
-		// 	$this->assertNull( $this->router->runRoute( $get_request ) );
-		//
-		// 	$get_request = $this->request( 'GET', '/foo/biz' );
-		// 	$this->seeResponse( 'foo', $this->router->runRoute( $get_request ) );
-		//
-		// 	$get_request = $this->request( 'GET', '/foo/bar/baz' );
-		// 	$this->seeResponse( 'foo', $this->router->runRoute( $get_request ) );
-		//
-		// }
-		//
-		// /**
-		//  *
-		//  *
-		//  *
-		//  *
-		//  * Named routes.
-		//  *
-		//  *
-		//  *
-		//  *
-		//  */
-		//
-		// /** @test */
-		// public function a_named_route_can_be_created() {
-		//
-		// 	$this->newBluePrint()
-		// 	     ->get( 'foo' )
-		// 	     ->name( 'foo' )
-		// 	     ->handle( function () {
-		//
-		// 		     return 'foo';
-		//
-		// 	     } );
-		//
-		// 	$url = $this->router->getRouteUrl( 'foo' );
-		//
-		// 	$this->seeUrl( 'foo', $url );
-		//
-		// }
-		//
-		//
-		// /** @test */
-		// public function route_groups_prefix_the_named_paths() {
-		//
-		//
-		// 	$this->newBluePrint()
-		// 	     ->name( 'foo' )
-		// 	     ->get( 'foo' )
-		// 	     ->group( function () {
-		//
-		// 		     $this->newBluePrint( $this->router )->get( 'bar' )->name( 'bar' )
-		// 		          ->handle( function () {
-		// 		          } );
-		//
-		// 		     $this->newBluePrint( $this->router )->get( 'baz' )->name( 'baz' )
-		// 		          ->handle( function () {
-		// 		          } );
-		//
-		// 		     $this->newBluePrint( $this->router )->name( 'biz' )->get( 'biz' )
-		// 		          ->group( function () {
-		//
-		// 			          $this->newBluePrint( $this->router )->get( 'boo' )->name( 'boo' )
-		// 			               ->handle( function () {
-		// 			               } );
-		//
-		// 		          } );
-		//
-		// 	     } );
-		//
-		// 	$this->seeUrl( 'foo/bar', $this->router->getRouteUrl( 'foo.bar' ) );
-		// 	$this->seeUrl( 'foo/baz', $this->router->getRouteUrl( 'foo.baz' ) );
-		// 	$this->seeUrl( 'foo/biz/boo', $this->router->getRouteUrl( 'foo.biz.boo' ) );
-		//
-		//
-		// }
+		public function route_groups_prefix_the_named_paths() {
+
+
+			$this->newBluePrint()
+			     ->name( 'foo' )
+			     ->get( 'foo' )
+			     ->group( function () {
+
+				     $this->newBluePrint( $this->router )->get( 'bar' )->name( 'bar' )
+				          ->handle( function () {
+				          } );
+
+				     $this->newBluePrint( $this->router )->get( 'baz' )->name( 'baz' )
+				          ->handle( function () {
+				          } );
+
+				     $this->newBluePrint( $this->router )->name( 'biz' )->get( 'biz' )
+				          ->group( function () {
+
+					          $this->newBluePrint( $this->router )->get( 'boo' )->name( 'boo' )
+					               ->handle( function () {
+					               } );
+
+				          } );
+
+			     } );
+
+			$this->seeUrl( 'foo/bar', $this->router->getRouteUrl( 'foo.bar' ) );
+			$this->seeUrl( 'foo/baz', $this->router->getRouteUrl( 'foo.baz' ) );
+			$this->seeUrl( 'foo/biz/boo', $this->router->getRouteUrl( 'foo.biz.boo' ) );
+
+
+		}
+
 
 		private function seeResponse( $expected, $response ) {
 
 			$this->assertSame( $expected, $response );
 
 		}
+
 
 		private function seeUrl( $route_path, $result ) {
 
