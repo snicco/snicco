@@ -15,9 +15,7 @@
 	use WPEmerge\Support\Str;
 	use WPEmerge\Traits\ReflectsCallable;
 
-	/**
-	 * Check against the current url
-	 */
+
 	class ConditionFactory {
 
 		use ReflectsCallable;
@@ -121,7 +119,6 @@
 
 			return $this->getConditionTypeClass( $condition_type ) !== null;
 		}
-
 
 		protected function isNegatedCondition( $condition ) : bool {
 
@@ -376,11 +373,9 @@
 			$conditions = $conditions->when( $has_regex, [ $this, 'filterUrlCondition' ] )
 			                         ->map( function ( $condition ) use ( $route ) {
 
-			                         	return $this->create($condition, $route);
+			                         	    return $this->create($condition, $route);
 
 			                            });
-
-
 
 			return $conditions->all();
 
@@ -389,19 +384,26 @@
 		private function create( array $condition, Route $route ) {
 
 
+			if ( $this->alreadyCompiled( $compiled = Arr::firstEl($condition))  ) {
+
+				return $compiled;
+
+			}
+
 			if ( $this->isRegex( $condition ) ) {
 
 				return $this->newRegexUrlCondition( $condition, $route );
 
 			}
 
-			if ( $condition[0] instanceof ConditionInterface ) {
-
-				return $condition[0];
-
-			}
 
 			return $this->make($condition);
+
+		}
+
+		private function alreadyCompiled($condition) : bool {
+
+			return $condition instanceof ConditionInterface;
 
 		}
 
@@ -430,7 +432,7 @@
 
 		}
 
-		private function hasRegexSyntax( $string ) {
+		private function hasRegexSyntax( $string ) : bool {
 
 			return is_string($string) && preg_match( '/(^\/.*\/$)/', $string);
 
@@ -438,31 +440,33 @@
 
 		private function newRegexUrlCondition( $condition, Route $route ) {
 
-			$url_condition = collect( $route->getConditions() )->filter( function ( $condition ) {
+			$existing_compiled_url_condition = collect( $route->getConditions() )
+				->filter( function ( $condition ) {
 
 				return  Arr::firstEl($condition) instanceof UrlCondition;
 
-			} )->flatten()->first();
+			} )
+				->flatten()
+				->first();
 
-			if ( ! $url_condition ) {
+			if ( ! $existing_compiled_url_condition ) {
 
-				$condition = new UrlCondition( $route->url() );
-				$condition->setUrl( $condition );
+				$new_url_condition = new UrlCondition( $route->url() );
+				$new_url_condition->setUrl( $new_url_condition );
 
-				return $condition;
+				return $new_url_condition;
 
 			}
 
-			$url_condition->setUrlWhere( $this->compileRegex( $condition ) );
+			$existing_compiled_url_condition->setUrlWhere( $this->compileRegex( $condition ) );
 
-			return $url_condition;
+			return $existing_compiled_url_condition;
 
 
 		}
 
 		private function compileRegex( $condition ) {
 
-			// $condition = Arr::flattenOnePreserveKeys($condition);
 
 			if ( is_int(Arr::firstEl(array_keys($condition)) ) )  {
 

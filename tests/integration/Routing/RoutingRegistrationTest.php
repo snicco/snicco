@@ -338,6 +338,58 @@
 		 */
 
 		/** @test */
+		public function all_http_verbs_can_be_defined_after_attributes_and_finalize_the_route() {
+
+
+			$this->router->namespace( 'Tests\Integration\Routing' )
+			             ->get( '/get', 'RoutingController@foo' );
+			$response = $this->router->runRoute( $this->request( 'GET', '/get' ) );
+			$this->seeResponse( 'foo', $response );
+
+			$this->router->namespace( 'Tests\Integration\Routing' )
+			             ->post( '/post', 'RoutingController@foo' );
+			$response = $this->router->runRoute( $this->request( 'POST', '/post' ) );
+			$this->seeResponse( 'foo', $response );
+
+			$this->router->namespace( 'Tests\Integration\Routing' )
+			             ->put( '/put', 'RoutingController@foo' );
+			$response = $this->router->runRoute( $this->request( 'PUT', '/put' ) );
+			$this->seeResponse( 'foo', $response );
+
+			$this->router->namespace( 'Tests\Integration\Routing' )
+			             ->patch( '/patch', 'RoutingController@foo' );
+			$response = $this->router->runRoute( $this->request( 'PATCH', '/patch' ) );
+			$this->seeResponse( 'foo', $response );
+
+			$this->router->namespace( 'Tests\Integration\Routing' )
+			             ->options( '/options', 'RoutingController@foo' );
+			$response = $this->router->runRoute( $this->request( 'OPTIONS', '/options' ) );
+			$this->seeResponse( 'foo', $response );
+
+			$this->router->namespace( 'Tests\Integration\Routing' )
+			             ->delete( '/delete', 'RoutingController@foo' );
+			$response = $this->router->runRoute( $this->request( 'DELETE', '/delete' ) );
+			$this->seeResponse( 'foo', $response );
+
+			$this->router->namespace( 'Tests\Integration\Routing' )
+			             ->match( [ 'GET', 'POST' ], '/match', 'RoutingController@foo' );
+			$response = $this->router->runRoute( $this->request( 'GET', '/match' ) );
+			$this->seeResponse( 'foo', $response );
+
+			$this->router->namespace( 'Tests\Integration\Routing' )
+			             ->match( [ 'GET', 'POST' ], '/match', 'RoutingController@foo' );
+			$response = $this->router->runRoute( $this->request( 'POST', '/match' ) );
+			$this->seeResponse( 'foo', $response );
+
+			$this->router->namespace( 'Tests\Integration\Routing' )
+			             ->match( [ 'GET', 'POST' ], '/match', 'RoutingController@foo' );
+			$response = $this->router->runRoute( $this->request( 'PUT', '/match' ) );
+			$this->assertNull(  $response );
+
+
+		}
+
+		/** @test */
 		public function a_route_namespace_can_be_set() {
 
 			$this->router
@@ -1004,11 +1056,10 @@
 
 				} );
 
-			$this->seeResponse('foo',  $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
-			$this->assertTrue($GLOBALS['test']['maybe_condition_run']);
+			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+			$this->assertTrue( $GLOBALS['test']['maybe_condition_run'] );
 
 		}
-
 
 		/** @test */
 		public function a_condition_object_can_be_negated() {
@@ -1041,7 +1092,7 @@
 		 */
 
 		// /** @test */
-		public function methods_are_merged_for_route_groups() {
+		public function methods_can_be_merged_for_a_group() {
 
 			$this->newBluePrint()
 			     ->methods( [ 'GET', 'PUT' ] )
@@ -1405,7 +1456,7 @@
 
 			$GLOBALS['test']['maybe_condition_run'] = true;
 
-			return $this->make_it_pass === TRUE || $this->make_it_pass === 'foobar';
+			return $this->make_it_pass === true || $this->make_it_pass === 'foobar';
 		}
 
 		public function getArguments( RequestInterface $request ) {

@@ -11,24 +11,6 @@
 
 	trait HoldsRouteBlueprint {
 
-
-
-		// public function where( $condition ) : RouteBlueprint {
-		//
-		// 	if ( ! $condition instanceof ConditionInterface ) {
-		// 		$condition = func_get_args();
-		// 	}
-		//
-		// 	$condition = $this->router->mergeConditionAttribute(
-		// 		$this->getAttribute( 'condition', null ),
-		// 		$condition
-		// 	);
-		//
-		// 	return $this->attribute( 'condition', $condition );
-		//
-		// }
-
-
 		public function group( $routes ) :void {
 
 			$this->router->group( $this->getAttributes(), $routes );
