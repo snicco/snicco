@@ -5,8 +5,6 @@
 
 	use Closure;
 	use Contracts\ContainerAdapter;
-	use WPEmerge\Contracts\HasRoutesInterface;
-	use WPEmerge\Contracts\RouteAction;
 	use WPEmerge\Contracts\RouteInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Handlers\HandlerFactory;
@@ -17,9 +15,6 @@
 	use WPEmerge\Support\Arr;
 	use WPEmerge\Traits\CompilesMiddleware;
 	use WPEmerge\Routing\Conditions\ConditionFactory;
-	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\Contracts\UrlableInterface;
-	use WPEmerge\Support\WPEmgereArr;
 	use WPEmerge\Traits\HoldsRouteBlueprint;
 	use WPEmerge\Traits\SortsMiddleware;
 
@@ -87,9 +82,6 @@
 
 			$this->updateGroupStack( $attributes );
 
-			// Once we have updated the group stack, we'll load the provided routes and
-			// merge in the group's attributes when the routes are created. After we
-			// have created the routes, we will pop the attributes off the stack.
 			$this->loadRoutes( $routes );
 
 			$this->deleteLastRouteGroup();
@@ -103,7 +95,7 @@
 
 				return $route->getName() === $name;
 
-			}, null );
+			});
 
 			if ( ! $route ) {
 
@@ -248,7 +240,7 @@
 
 					return $route->matches( $request );
 
-				}, null );
+				});
 
 			if ( $route ) {
 
