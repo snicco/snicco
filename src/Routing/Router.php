@@ -228,6 +228,10 @@
 
 		}
 
+		/**
+		 * @todo Find a way to not recompile shared conditions that were passed by
+		 * @todo previous routes but the route in total didnt match.
+		 */
 		private function findRoute( RequestInterface $request ) : ?Route {
 
 
@@ -297,6 +301,7 @@
 
 			}
 
+			$route->addCondition( new UrlCondition($url) );
 
 			$this->routes[] = $route;
 
