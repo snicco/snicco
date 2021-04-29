@@ -136,6 +136,7 @@
 		 * @return static
 		 */
 		public function concatenate( $url, $where = [] ) {
+
 			if ( $this->getUrl() === static::WILDCARD || $url === static::WILDCARD ) {
 				return $this->make( static::WILDCARD );
 			}
@@ -156,7 +157,7 @@
 		 *
 		 * @return string[]
 		 */
-		protected function getParameterNames( $url ) {
+		private function getParameterNames( $url ) : array {
 			$matches = [];
 			preg_match_all( $this->url_pattern, $url, $matches );
 
@@ -171,7 +172,7 @@
 		 *
 		 * @return string
 		 */
-		protected function replacePatternParameterWithPlaceholder( $matches, &$parameters ) {
+		private function replacePatternParameterWithPlaceholder( $matches, &$parameters ) {
 			$name     = $matches['name'];
 			$optional = ! empty( $matches['optional'] );
 
