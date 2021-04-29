@@ -83,49 +83,6 @@
 		}
 
 
-		/**
-		 * Merge the condition attribute.
-		 *
-		 * @param  string|array|Closure|ConditionInterface|null  $old
-		 * @param  string|array|Closure|ConditionInterface|null  $new
-		 *
-		 * @return ConditionInterface
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
-		 */
-		public function mergeConditionAttribute( $old, $new ) : ?ConditionInterface {
-
-			try {
-				$condition = $this->condition_factory->merge( $old, $new );
-			}
-			catch ( ConfigurationException $e ) {
-				throw new ConfigurationException( '_Route condition could not be created. ' . PHP_EOL . $e->getMessage() );
-			}
-
-			return $condition;
-		}
-
-
-		/**
-		 * Merge attributes into route.
-		 *
-		 * @param  array<string, mixed>  $old
-		 * @param  array<string, mixed>  $new
-		 *
-		 * @return array<string, mixed>
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
-		 */
-		public function mergeAttributes( $old, $new ) : array {
-
-			return [
-
-				'condition' => $this->mergeConditionAttribute(
-					WPEmgereArr::get( $old, 'condition', null ),
-					WPEmgereArr::get( $new, 'condition', null )
-				),
-
-			];
-		}
-
 
 		public function group( $attributes, $routes ) {
 
@@ -137,6 +94,83 @@
 			$this->loadRoutes( $routes );
 
 			$this->deleteLastRouteGroup();
+
+		}
+
+		public function route( array $attributes ) : RouteInterface {
+
+			$attributes = $this->mergeAttributes( $this->getGroup(), $attributes );
+			$attributes = array_merge(
+				$attributes,
+				[
+					'condition' => $this->routeCondition( $attributes['condition'] ),
+					'handler'   => $this->routeHandler( $attributes['handler'], $attributes['namespace'] ),
+				]
+			);
+
+			if ( empty( $attributes['methods'] ) ) {
+				throw new ConfigurationException(
+					'_Route does not have any assigned request methods. ' .
+					'Did you miss to call get() or post() on your route definition, for example?'
+				);
+			}
+
+			return new _Route( $attributes );
+		}
+
+		public function getRouteUrl( string $name, array $arguments = [] ) : string {
+
+
+			$route = collect( $this->routes )->first( function ( Route $route ) use ( $name ) {
+
+				return $route->getName() === $name;
+
+			}, null );
+
+			if ( ! $route ) {
+
+				throw new ConfigurationException(
+					'There is no named route with the name: ' . $name . ' registered.'
+				);
+
+			}
+
+			$route->compileConditions( $this->condition_factory );
+
+			return $route->createUrl( $arguments );
+
+
+		}
+
+		public function runRoute( RequestInterface $request ) {
+
+			$route = $this->findRoute( $request );
+
+			if ( ! $route ) {
+
+				return null;
+
+			}
+
+			return $this->runWithinStack( $route, $request );
+
+		}
+
+		public function middlewareGroup( string $name, array $middleware ) : void {
+
+			$this->middleware_groups[ $name ] = $middleware;
+
+		}
+
+		public function middlewarePriority( array $middleware_priority ) : void {
+
+			$this->middleware_priority = $middleware_priority;
+
+		}
+
+		public function aliasMiddleware( $name, $class ) : void {
+
+			$this->route_middleware_aliases[ $name ] = $class;
 
 		}
 
@@ -185,61 +219,6 @@
 
 		}
 
-
-		/**
-		 * Make a route condition.
-		 *
-		 * @param  mixed  $condition
-		 *
-		 * @return ConditionInterface
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
-		 */
-		protected function routeCondition( $condition ) : ConditionInterface {
-
-			if ( $condition === null ) {
-				throw new ConfigurationException(
-					'No route condition specified. Did you miss to call url() or where()?'
-				);
-			}
-
-			if ( ! $condition instanceof ConditionInterface ) {
-				$condition = $this->condition_factory->make( $condition );
-			}
-
-			return $condition;
-		}
-
-		protected function routeHandler( $handler, $namespace ) : RouteAction {
-
-			if ( $handler === null ) {
-				throw new ConfigurationException( 'No route handler specified. Did you miss to call handle()?' );
-			}
-
-			return $this->handler_factory->create( $handler, $namespace );
-
-		}
-
-		public function route( array $attributes ) : RouteInterface {
-
-			$attributes = $this->mergeAttributes( $this->getGroup(), $attributes );
-			$attributes = array_merge(
-				$attributes,
-				[
-					'condition' => $this->routeCondition( $attributes['condition'] ),
-					'handler'   => $this->routeHandler( $attributes['handler'], $attributes['namespace'] ),
-				]
-			);
-
-			if ( empty( $attributes['methods'] ) ) {
-				throw new ConfigurationException(
-					'_Route does not have any assigned request methods. ' .
-					'Did you miss to call get() or post() on your route definition, for example?'
-				);
-			}
-
-			return new _Route( $attributes );
-		}
-
 		private function findRoute( RequestInterface $request ) : ?RouteInterface {
 
 
@@ -268,44 +247,6 @@
 
 		}
 
-		public function getRouteUrl( string $name, array $arguments = [] ) : string {
-
-
-			$route = collect( $this->routes )->first( function ( Route $route ) use ( $name ) {
-
-				return $route->getName() === $name;
-
-			}, null );
-
-			if ( ! $route ) {
-
-				throw new ConfigurationException(
-					'There is no named route with the name: ' . $name . ' registered.'
-				);
-
-			}
-
-			$route->compileConditions( $this->condition_factory );
-
-			return $route->createUrl( $arguments );
-
-
-		}
-
-		public function runRoute( RequestInterface $request ) {
-
-			$route = $this->findRoute( $request );
-
-			if ( ! $route ) {
-
-				return null;
-
-			}
-
-			return $this->runWithinStack( $route, $request );
-
-		}
-
 		private function runWithinStack( RouteInterface $route, RequestInterface $request ) {
 
 			$middleware = $route->getMiddleware();
@@ -324,24 +265,6 @@
 					return $route->run( $request );
 
 				} );
-
-		}
-
-		public function middlewareGroup( string $name, array $middleware ) : void {
-
-			$this->middleware_groups[ $name ] = $middleware;
-
-		}
-
-		public function middlewarePriority( array $middleware_priority ) : void {
-
-			$this->middleware_priority = $middleware_priority;
-
-		}
-
-		public function aliasMiddleware( $name, $class ) : void {
-
-			$this->route_middleware_aliases[ $name ] = $class;
 
 		}
 

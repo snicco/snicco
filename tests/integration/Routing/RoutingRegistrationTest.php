@@ -95,6 +95,7 @@
 				'true'          => TrueCondition::class,
 				'false'         => FalseCondition::class,
 				'maybe'         => MaybeCondition::class,
+				'unique'         => UniqueCondition::class,
 
 			];
 
@@ -1265,8 +1266,57 @@
 
 		}
 
+		/** @test */
+		public function duplicate_conditions_a_removed_during_route_compilation () {
+
+			$this->router
+				->where( new UniqueCondition() )
+				->group( function () {
+
+					$this->router
+						->get( '/foo', function () {
+
+							return 'get_foo';
+
+						} )
+						->where( new UniqueCondition() );
+
+				});
+
+			$response = $this->router->runRoute($this->request('GET', '/foo'));
+			$this->seeResponse('get_foo', $response);
+
+			$count =  $GLOBALS['test']['unique_condition'];
+			$this->assertSame(1 , $count, 'Condition was run: ' . $count . ' times.');
 
 
+		}
+
+		/** @test */
+		public function unique_conditions_are_also_enforced_when_conditions_are_aliased() {
+
+			$this->router
+				->where( 'unique' )
+				->group( function () {
+
+					$this->router
+						->get( '/bar', function () {
+
+							return 'get_bar';
+
+						} )
+						->where( 'unique' );
+
+				});
+
+			$response = $this->router->runRoute($this->request('GET', '/bar'));
+			$this->seeResponse('get_bar', $response);
+
+			$count =  $GLOBALS['test']['unique_condition'];
+			$this->assertSame(1 , $count, 'Condition was run: ' . $count . ' times.');
+
+
+		}
 
 
 
@@ -1365,7 +1415,6 @@
 
 	}
 
-
 	class TrueCondition implements ConditionInterface {
 
 
@@ -1382,7 +1431,6 @@
 
 	}
 
-
 	class FalseCondition implements ConditionInterface {
 
 
@@ -1398,7 +1446,6 @@
 		}
 
 	}
-
 
 	class MaybeCondition implements ConditionInterface {
 
@@ -1421,6 +1468,29 @@
 		}
 
 		public function getArguments( RequestInterface $request ) {
+
+			return [];
+
+		}
+
+	}
+
+	class UniqueCondition implements ConditionInterface {
+
+
+		public function isSatisfied( RequestInterface $request ) : bool {
+
+			$count = $GLOBALS['test']['unique_condition'] ?? 0;
+
+			$count++;
+
+			$GLOBALS['test']['unique_condition'] = $count;
+
+			return true;
+
+		}
+
+		public function getArguments( RequestInterface $request ) : array {
 
 			return [];
 

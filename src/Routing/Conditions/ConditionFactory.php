@@ -15,7 +15,6 @@
 	use WPEmerge\Support\Str;
 	use WPEmerge\Traits\ReflectsCallable;
 
-
 	class ConditionFactory {
 
 		use ReflectsCallable;
@@ -366,16 +365,17 @@
 		public function compileConditions( Route $route ) : array {
 
 
-			$conditions = collect($route->getConditions());
+			$conditions = collect( $route->getConditions() );
 
 			$has_regex = $conditions->filter( [ $this, 'isRegex' ] )->isNotEmpty();
 
 			$conditions = $conditions->when( $has_regex, [ $this, 'filterUrlCondition' ] )
 			                         ->map( function ( $condition ) use ( $route ) {
 
-			                         	    return $this->create($condition, $route);
+				                         return $this->create( $condition, $route );
 
-			                            });
+			                         } )
+			                         ->unique();
 
 			return $conditions->all();
 
@@ -384,7 +384,7 @@
 		private function create( array $condition, Route $route ) {
 
 
-			if ( $this->alreadyCompiled( $compiled = Arr::firstEl($condition))  ) {
+			if ( $this->alreadyCompiled( $compiled = Arr::firstEl( $condition ) ) ) {
 
 				return $compiled;
 
@@ -396,12 +396,11 @@
 
 			}
 
-
-			return $this->make($condition);
+			return $this->make( $condition );
 
 		}
 
-		private function alreadyCompiled($condition) : bool {
+		private function alreadyCompiled( $condition ) : bool {
 
 			return $condition instanceof ConditionInterface;
 
@@ -410,19 +409,19 @@
 		public function isRegex( $condition ) : bool {
 
 
-			if ( is_object( Arr::firstEl($condition)) ) {
+			if ( is_object( Arr::firstEl( $condition ) ) ) {
 
 				return false;
 
 			}
 
-			if ( $this->isInbuiltConditionString( Arr::firstEl($condition) ) ) {
+			if ( $this->isInbuiltConditionString( Arr::firstEl( $condition ) ) ) {
 
 				return false;
 
 			}
 
-			if ( is_string(Arr::firstEl($condition)) && $this->hasRegexSyntax(Arr::nthEl($condition, 1) ) ) {
+			if ( is_string( Arr::firstEl( $condition ) ) && $this->hasRegexSyntax( Arr::nthEl( $condition, 1 ) ) ) {
 
 				return true;
 
@@ -434,7 +433,7 @@
 
 		private function hasRegexSyntax( $string ) : bool {
 
-			return is_string($string) && preg_match( '/(^\/.*\/$)/', $string);
+			return is_string( $string ) && preg_match( '/(^\/.*\/$)/', $string );
 
 		}
 
@@ -443,9 +442,9 @@
 			$existing_compiled_url_condition = collect( $route->getConditions() )
 				->filter( function ( $condition ) {
 
-				return  Arr::firstEl($condition) instanceof UrlCondition;
+					return Arr::firstEl( $condition ) instanceof UrlCondition;
 
-			} )
+				} )
 				->flatten()
 				->first();
 
@@ -468,14 +467,13 @@
 		private function compileRegex( $condition ) {
 
 
-			if ( is_int(Arr::firstEl(array_keys($condition)) ) )  {
+			if ( is_int( Arr::firstEl( array_keys( $condition ) ) ) ) {
 
-				return Arr::combineFirstTwo($condition);
+				return Arr::combineFirstTwo( $condition );
 
 			}
 
 			return $condition;
-
 
 
 		}
@@ -484,17 +482,17 @@
 
 			return $conditions->reject( function ( $condition ) {
 
-				return Arr::firstEl($condition) instanceof UrlCondition;
+				return Arr::firstEl( $condition ) instanceof UrlCondition;
 
 			} );
 
 		}
 
-		private function isInbuiltConditionString(string $condition_alias) : bool {
+		private function isInbuiltConditionString( string $condition_alias ) : bool {
 
-			$condition_alias = Str::after($condition_alias, self::NEGATE_CONDITION_SIGN);
+			$condition_alias = Str::after( $condition_alias, self::NEGATE_CONDITION_SIGN );
 
-			return isset($this->condition_types[$condition_alias]);
+			return isset( $this->condition_types[ $condition_alias ] );
 		}
 
 	}
