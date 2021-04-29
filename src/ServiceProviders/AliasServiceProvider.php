@@ -67,6 +67,8 @@
 
 			$app->alias( 'route', WPEMERGE_ROUTING_ROUTER_KEY );
 			$app->alias( 'routeUrl', WPEMERGE_ROUTING_ROUTER_KEY, 'getRouteUrl' );
+			$app->alias( 'post', WPEMERGE_ROUTING_ROUTER_KEY, 'post' );
+			$app->alias( 'get', WPEMERGE_ROUTING_ROUTER_KEY, 'get' );
 
 		}
 
