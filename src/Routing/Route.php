@@ -125,9 +125,13 @@
 
 		}
 
-		public function getMiddleware() {
+		public function getMiddleware() : array {
 
-			return $this->middleware ?? [];
+			return array_merge(
+				$this->middleware ?? [],
+				$this->controllerMiddleware()
+			);
+
 
 		}
 
@@ -163,9 +167,11 @@
 
 		}
 
-		public function compileAction( HandlerFactory $factory ) {
+		public function compileAction( HandlerFactory $factory ) : Route {
 
 			$this->compiled_action = $factory->create( $this->action, $this->namespace );
+
+			return $this;
 
 		}
 
@@ -295,6 +301,23 @@
 		public function compileConditions( ConditionFactory $condition_factory ) {
 
 			$this->compiled_conditions = $condition_factory->compileConditions($this);
+
+		}
+
+		private function controllerMiddleware() : array {
+
+			if ( ! $this->usesController() ) {
+
+				return [];
+			}
+
+			return $this->compiled_action->resolveControllerMiddleware();
+
+		}
+
+		private function usesController() : bool {
+
+			return ! $this->compiled_action->raw() instanceof \Closure;
 
 		}
 
