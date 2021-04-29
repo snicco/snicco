@@ -10,13 +10,19 @@
 
 		private $conditions = [];
 
+		public static function createEmpty() : ConditionBucket {
+
+			return new static();
+
+		}
+
 		public function add($condition) {
 
 			$this->conditions[] = Arr::wrap($condition);
 
 		}
 
-		public function all () {
+		public function all () : array {
 
 			return $this->conditions;
 

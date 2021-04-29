@@ -78,7 +78,7 @@
 
 		}
 
-		public function addMethods( $methods) {
+		public function methods( $methods) {
 
 			$this->methods = array_merge(
 				$this->methods ?? [] ,

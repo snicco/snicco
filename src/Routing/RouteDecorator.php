@@ -42,7 +42,7 @@
 		public function __construct( Router $router ) {
 
 			$this->router = $router;
-			$this->conditions = new ConditionBucket();
+			$this->conditions = ConditionBucket::createEmpty();
 			$this->decorated_attributes['where'] = $this->conditions;
 
 		}

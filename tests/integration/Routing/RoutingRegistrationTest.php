@@ -1685,7 +1685,7 @@
 		}
 
 		/** @test */
-		public function url_conditions_are_passed_even_if_the_route_group_doesnt_specify_an_url_condition() {
+		public function url_conditions_are_passed_even_if_the_root_group_doesnt_specify_an_url_condition() {
 
 			$this->router->where('true')->group(function () {
 

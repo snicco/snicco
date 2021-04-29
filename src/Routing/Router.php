@@ -10,7 +10,7 @@
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Helpers\Pipeline;
-	use WPEmerge\Helpers\UrlParser;
+	use WPEmerge\Helpers\Url;
 	use WPEmerge\Routing\Conditions\UrlCondition;
 	use WPEmerge\Support\Arr;
 	use WPEmerge\Traits\CompilesMiddleware;
@@ -25,30 +25,16 @@
 		use SortsMiddleware;
 		use HoldsRouteBlueprint;
 
-		/**
-		 * Condition factory.
-		 *
-		 * @var ConditionFactory
-		 */
+		/** @var ConditionFactory  */
 		private $condition_factory;
 
-		/**
-		 * Handler factory.
-		 *
-		 * @var HandlerFactory
-		 */
+		/** @var HandlerFactory  */
 		private $handler_factory;
 
-		/**
-		 * Group stack.
-		 *
-		 * @var array<array<string, mixed>>
-		 */
-		private $group_stack = [];
+		/** @var \WPEmerge\Routing\RouteGroup[] */
+		private $group_stack;
 
-		/**
-		 * @var \Contracts\ContainerAdapter
-		 */
+		/** @var \Contracts\ContainerAdapter  */
 		private $container;
 
 		/**
@@ -61,6 +47,9 @@
 		 */
 		private $middleware_priority = [];
 
+		/**
+		 * @var string[]
+		 */
 		private $route_middleware_aliases = [];
 
 		/** @var Route[] */
@@ -78,9 +67,9 @@
 		}
 
 
-		public function group( $attributes, $routes ) {
+		public function group( array $attributes, $routes ) {
 
-			$this->updateGroupStack( $attributes );
+			$this->updateGroupStack( new RouteGroup($attributes ) );
 
 			$this->loadRoutes( $routes );
 
@@ -95,7 +84,7 @@
 
 				return $route->getName() === $name;
 
-			});
+			} );
 
 			if ( ! $route ) {
 
@@ -114,18 +103,15 @@
 
 		public function runRoute( RequestInterface $request ) {
 
-			$route = $this->findRoute( $request );
+			if ( $route = $this->findRoute( $request ) ) {
 
-			if ( ! $route ) {
+				$route->compileAction( $this->handler_factory );
 
-				return null;
+				return $this->runWithinStack( $route, $request );
 
 			}
 
-			return $this->runWithinStack(
-				$route->compileAction($this->handler_factory),
-				$request
-			);
+			return null;
 
 		}
 
@@ -155,7 +141,7 @@
 
 			} else {
 
-				( new RouteFileRegistrar( $this ) )->register( $routes );
+				( new RouteRegistrar( $this ) )->loadRouteFile( $routes );
 
 			}
 
@@ -167,15 +153,15 @@
 
 		}
 
-		private function updateGroupStack( $attributes ) {
+		private function updateGroupStack( RouteGroup $group) {
 
 			if ( $this->hasGroupStack() ) {
 
-				$attributes = $this->mergeWithLastGroup( $attributes );
+				$group = $this->mergeWithLastGroup( $group );
 
 			}
 
-			$this->group_stack[] = $attributes;
+			$this->group_stack[] = $group;
 
 		}
 
@@ -185,38 +171,9 @@
 
 		}
 
-		private function mergeWithLastGroup( $new ) {
+		private function mergeWithLastGroup( RouteGroup $new_group) : RouteGroup {
 
-			$last = $this->getLastGroup();
-
-			$new['methods'] = array_merge( Arr::wrap($last['methods'] ?? []  ) , Arr::wrap($new['methods'] ?? [] ) );
-
-			$new['middleware'] = array_merge( Arr::wrap($last['middleware'] ?? []  ) , Arr::wrap($new['middleware'] ?? [] ) );
-
-			$new['name'] = $this->mergeName($new['name'] ?? '', $last['name'] ?? '');
-
-			$new['prefix'] = $this->applyPrefix($new['prefix'] ?? '');
-
-			if ( isset( $new['where'] ) && isset( $last['where'] ) ) {
-
-				/** @var \WPEmerge\Routing\ConditionBucket $new_bucket */
-				$new_bucket = $new['where'];
-
-				$new['where'] = $new_bucket->combine($last['where']);
-
-			}
-
-
-			return $new;
-
-		}
-
-		private function mergeName( $new , $old = '' ) : string {
-
-			// Remove leading and trailing dots.
-			$new = preg_replace('/^\.+|\.+$/', '', $new);
-
-			return $old . '.' . $new;
+			return $new_group->mergeWith($this->lastGroup());
 
 		}
 
@@ -227,20 +184,20 @@
 		private function findRoute( RequestInterface $request ) : ?Route {
 
 
-			$route = collect( $this->routes )
-				->filter( function ( Route $route ) use ( $request ) {
+			$routes = collect( $this->routes );
 
-					// only correct http methods
-					return Arr::isValue( $request->getMethod(), $route->getMethods() );
+			$route = $routes->filter( function ( Route $route ) use ( $request ) {
 
-				} )
-				->first( function ( Route $route ) use ( $request ) {
+				return $this->matchingHttpVerbs( $request, $route );
 
-					$route->compileConditions( $this->condition_factory );
+			} )
+			                ->first( function ( Route $route ) use ( $request ) {
 
-					return $route->matches( $request );
+				                $route->compileConditions( $this->condition_factory );
 
-				});
+				                return $route->matches( $request );
+
+			                } );
 
 			if ( $route ) {
 
@@ -249,6 +206,12 @@
 			}
 
 			return $route;
+
+		}
+
+		private function matchingHttpVerbs( RequestInterface $request, Route $route ) : bool {
+
+			return Arr::isValue( $request->getMethod(), $route->getMethods() );
 
 		}
 
@@ -279,86 +242,42 @@
 
 		private function addRoute( array $methods, string $url, $action = null ) : Route {
 
-			$url = $this->applyPrefix(UrlParser::normalize( $url ));
+			$url = $this->applyPrefix( $url );
 
-			$route = $this->newRoute(
-				$methods,
-				$url,
-				$action
-			);
+			$route = new Route ( $methods, $url, $action );
 
 			if ( $this->hasGroupStack() ) {
 
-				$this->mergeGroupAttributesIntoRoute( $route );
+				$this->mergeGroupIntoRoute( $route );
 
 			}
 
-			$route->addCondition( new UrlCondition($url) );
+			$route->addCondition( new UrlCondition( $url ) );
 
-			$this->routes[] = $route;
-
-			return $route;
+			return $this->routes[] = $route;
 
 
 		}
 
-		private function newRoute( $methods, $url, $action ) : Route {
+		private function applyPrefix( string $url ) : string {
 
-			return new Route ( $methods, $url, $action );
-
-		}
-
-		private function applyPrefix( $url ) : string {
-
-			return trim( trim( $this->getLastGroupPrefix(), '/' ) . '/' . trim( $url, '/' ), '/' ) ? : '/';
-		}
-
-		private function mergeGroupAttributesIntoRoute( Route $route ) {
-
-			$group = $this->getLastGroup();
-
-			$route->addMethods( $group['methods'] ?? [] );
-			$route->middleware( $group['middleware'] ?? [] );
-
-			if ( isset( $group['namespace'] ) ) {
-
-				$route->namespace( $group['namespace'] );
-
-			}
-
-			if ( isset( $group['name'] ) ) {
-
-				$route->name( $group['name'] );
-
-			}
-
-			if ( isset( $group['where'] ) ) {
-
-				$this->mergeConditions($group['where'], $route);
-
-			}
-
-
+			return Url::combinePath( $this->lastGroupPrefix(), $url );
 
 		}
 
-		private function mergeConditions ( ConditionBucket $bucket , Route $route ) {
+		private function mergeGroupIntoRoute( Route $route ) {
 
-			foreach ( $bucket->all() as $condition ) {
-
-				$route->where($condition);
-
-			}
+			$this->lastGroup()->mergeIntoRoute($route);
 
 		}
 
-		private function getLastGroup() {
+		private function lastGroup() {
 
 			return end( $this->group_stack );
 
 		}
 
-		private function getLastGroupPrefix() : string {
+		private function lastGroupPrefix() : string {
 
 			if ( ! $this->hasGroupStack() ) {
 
@@ -366,10 +285,32 @@
 
 			}
 
-			$last = $this->getLastGroup();
+			return $this->lastGroup()->prefix();
 
-			return $last['prefix'] ?? '';
 
+		}
+
+		public function __call( $method, $parameters ) {
+
+
+			if ( ! in_array( $method, RouteDecorator::allowed_attributes ) ) {
+
+				throw new \BadMethodCallException(
+					'Method: ' . $method . 'does not exists on ' . get_class( $this )
+				);
+
+			}
+
+			if ( $method === 'where' || $method === 'middleware' ) {
+
+				return ( ( new RouteDecorator( $this ) )->decorate(
+					$method,
+					is_array( $parameters[0] ) ? $parameters[0] : $parameters )
+				);
+
+			}
+
+			return ( ( new RouteDecorator( $this ) )->decorate( $method, $parameters[0] ) );
 
 		}
 
