@@ -18,7 +18,7 @@
 		 */
 		private $config;
 
-		public function __construct(Router $router, array $config = [] ) {
+		public function __construct( Router $router, array $config = [] ) {
 
 			$this->router = $router;
 			$this->config = $config;
@@ -41,6 +41,12 @@
 			}
 
 			$this->loadRoutesGroup( 'web' );
+
+		}
+
+		public function loadRouteFile( string $route_file ) {
+
+			require $route_file;
 
 		}
 
@@ -68,5 +74,7 @@
 
 
 		}
+
+
 
 	}

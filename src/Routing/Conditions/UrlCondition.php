@@ -8,6 +8,7 @@
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Helpers\Url as UrlUtility;
 	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Helpers\UrlParser;
 	use WPEmerge\Support\WPEmgereArr;
 
 	/**
@@ -41,8 +42,10 @@
 
 
 		public function __construct( $url, $where = [] ) {
-			$this->setUrl( $url );
+
+			$this->setUrl( UrlParser::normalize( $url ) );
 			$this->setUrlWhere( $where );
+
 		}
 
 		protected function make( $url, $where = [] ) {
