@@ -10,7 +10,7 @@
 
 
 		/** @var \WPEmerge\Routing\Router */
-		private $router;
+		protected $router;
 
 		public const allowed_attributes = [
 			'middleware',

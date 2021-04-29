@@ -97,11 +97,6 @@
 
 			} );
 
-			$container->bind( WPEMERGE_ROUTING_ROUTE_BLUEPRINT_KEY, function ( $c ) {
-
-				return new RouteBlueprint( $c[ WPEMERGE_ROUTING_ROUTER_KEY ], $c[ WPEMERGE_VIEW_SERVICE_KEY ] );
-
-			} );
 
 
 
@@ -110,10 +105,10 @@
 
 		public function bootstrap( $container ) {
 
-			$blueprint = $container->make(WPEMERGE_ROUTING_ROUTE_BLUEPRINT_KEY );
+			$router = $container->make(WPEMERGE_ROUTING_ROUTER_KEY );
 			$config = $container->make(WPEMERGE_CONFIG_KEY);
 
-			( new RouteRegistrar($blueprint, $config ) )->loadRoutes();
+			( new RouteRegistrar($router, $config ) )->loadRoutes();
 
 		}
 

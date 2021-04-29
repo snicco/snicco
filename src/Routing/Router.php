@@ -97,27 +97,6 @@
 
 		}
 
-		public function route( array $attributes ) : RouteInterface {
-
-			$attributes = $this->mergeAttributes( $this->getGroup(), $attributes );
-			$attributes = array_merge(
-				$attributes,
-				[
-					'condition' => $this->routeCondition( $attributes['condition'] ),
-					'handler'   => $this->routeHandler( $attributes['handler'], $attributes['namespace'] ),
-				]
-			);
-
-			if ( empty( $attributes['methods'] ) ) {
-				throw new ConfigurationException(
-					'_Route does not have any assigned request methods. ' .
-					'Did you miss to call get() or post() on your route definition, for example?'
-				);
-			}
-
-			return new _Route( $attributes );
-		}
-
 		public function getRouteUrl( string $name, array $arguments = [] ) : string {
 
 

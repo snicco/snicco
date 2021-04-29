@@ -5,6 +5,7 @@
 
 	use Contracts\ContainerAdapter;
 	use Psr\Http\Message\ResponseInterface;
+	use WPEmerge\Routing\Router;
 	use WPEmerge\Session\Csrf;
 	use WPEmerge\Session\FlashStore;
 	use WPEmerge\Session\OldInputStore;
@@ -218,9 +219,9 @@
 		/**
 		 * Create a new route.
 		 *
-		 * @return RouteBlueprint
+		 * @return \WPEmerge\Routing\Router
 		 */
-		public static function route() : RouteBlueprint {
+		public static function route() : Router {
 		}
 
 		/**
