@@ -9,6 +9,7 @@
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Helpers\RouteSignatureParameters;
+	use WPEmerge\Helpers\Url;
 	use WPEmerge\Helpers\UrlParser;
 	use WPEmerge\Routing\Conditions\ConditionFactory;
 	use WPEmerge\Routing\Conditions\UrlCondition;
@@ -59,6 +60,8 @@
 			$this->namespace  = $attributes['namespace'] ?? null;
 			$this->middleware = $attributes['middleware'] ?? null;
 
+			$this->addCondition( new UrlCondition($this->url) );
+
 		}
 
 		public function handle( $action ) : Route {
@@ -69,9 +72,15 @@
 
 		}
 
-		public function methods() : array {
+		public function getMethods() : array {
 
 			return $this->methods;
+
+		}
+
+		public function addMethods(array $methods) {
+
+			$this->methods = array_merge($this->methods ?? [] , $methods);
 
 		}
 
@@ -186,9 +195,13 @@
 
 		public function name( string $name ) : Route {
 
-			$this->name = $name;
+			// Remove leading and trailing dots.
+			$name = preg_replace('/^\.+|\.+$/', '', $name);
+
+			$this->name = isset($this->name) ? $this->name. '.'  . $name : $name;
 
 			return $this;
+
 
 		}
 

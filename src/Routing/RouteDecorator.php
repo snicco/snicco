@@ -39,7 +39,6 @@
 		 */
 		private $conditions;
 
-
 		public function __construct( Router $router ) {
 
 			$this->router = $router;
@@ -124,6 +123,12 @@
 
 
 			return $route;
+
+		}
+
+		public function group ($callback) {
+
+			$this->router->group($this->decorated_attributes , $callback );
 
 		}
 
