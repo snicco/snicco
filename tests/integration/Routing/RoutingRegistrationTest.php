@@ -311,6 +311,8 @@
 
 		}
 
+
+
 		/**
 		 *
 		 *
@@ -1067,14 +1069,14 @@
 		}
 
 		/** @test */
-		public function failure_of_only_one_condition_leads_to_immediate_rejection_of_the_route () {
+		public function failure_of_only_one_condition_leads_to_immediate_rejection_of_the_route() {
 
 			$this->router
 				->get( '/foo' )
 				->where( 'false' )
-				->where( function() {
+				->where( function () {
 
-					$this->fail('This condition should not have been called.');
+					$this->fail( 'This condition should not have been called.' );
 
 				} )
 				->handle( function ( RequestInterface $request ) {
@@ -1531,7 +1533,7 @@
 
 			// Given
 			$GLOBALS['test']['parent_condition_called'] = false;
-			$GLOBALS['test']['child_condition_called'] = false;
+			$GLOBALS['test']['child_condition_called']  = false;
 
 			$this->router
 				->where( function () {
@@ -1545,26 +1547,6 @@
 				} )
 				->group( function () {
 
-					$this->router->where( function () {
-
-						$GLOBALS['test']['child_condition_called'] = true;
-
-						return false;
-
-					} )
-					             ->group( function () {
-
-						$this->router
-							->get( '/foo' )
-							->where( 'true' )
-							->handle( function () {
-
-								$this->fail('This route should not have been called');
-
-							} );
-
-					} );
-
 					$this->router
 						->get( '/bar' )
 						->where( 'true' )
@@ -1574,30 +1556,101 @@
 
 						} );
 
-				});
+
+					$this->router->where( function () {
+
+						$GLOBALS['test']['child_condition_called'] = true;
+
+						return false;
+
+					} )->group( function () {
+
+						$this->router
+							->get( '/foo' )
+							->where( 'true' )
+							->handle( function () {
+
+								$this->fail( 'This route should not have been called' );
+
+							} );
+
+					} );
+
+
+
+				} );
 
 			// When
 			$get      = $this->request( 'GET', '/foo' );
 			$response = $this->router->runRoute( $get );
 
 			// Then
-			$this->seeResponse( null ,$response );
-			$this->assertSame(true , $GLOBALS['test']['parent_condition_called'] );
-			$this->assertSame(true , $GLOBALS['test']['child_condition_called'] );
+			$this->seeResponse( null, $response );
+			$this->assertSame( true, $GLOBALS['test']['parent_condition_called'] );
+			$this->assertSame( true, $GLOBALS['test']['child_condition_called'] );
 
 			// Given
 			$GLOBALS['test']['parent_condition_called'] = false;
-			$GLOBALS['test']['child_condition_called'] = false;
+			$GLOBALS['test']['child_condition_called']  = false;
 
 			// When
-			$get = $this->request( 'GET', '/bar' );
-			$response     = $this->router->runRoute( $get );
+			$get      = $this->request( 'GET', '/bar' );
+			$response = $this->router->runRoute( $get );
 
 			// Then
-			$this->seeResponse( 'bar' , $response );
-			$this->assertSame(true , $GLOBALS['test']['parent_condition_called'] );
-			$this->assertSame(false , $GLOBALS['test']['child_condition_called'] );
+			$this->seeResponse( 'bar', $response );
+			$this->assertSame( true, $GLOBALS['test']['parent_condition_called'] );
+			$this->assertSame( false, $GLOBALS['test']['child_condition_called'] );
 
+
+		}
+
+		/** @test */
+		public function the_first_matching_route_aborts_the_iteration_over_all_current_routes() {
+
+			$GLOBALS['test']['first_route_condition'] = false;
+
+			$this->router->prefix( 'foo' )->group( function () {
+
+				$this->router
+					->get( '/bar' )
+					->where( function () {
+
+						$GLOBALS['test']['first_route_condition'] = true;
+
+						return true;
+
+					} )
+					->handle( function () {
+
+						return 'bar1';
+
+					} );
+
+				$this->router
+					->get( '/bar' )
+					->where( function () {
+
+						$this->fail('Route condition evaluated even tho we already had a matching route');
+
+					} )
+					->handle( function () {
+
+						return 'bar2';
+
+					} );
+
+
+			} );
+
+			$this->seeResponse(
+				'bar1',
+				$this->router->runRoute(
+					$this->request('GET', '/foo/bar')
+				)
+			);
+
+			$this->assertTrue($GLOBALS['test']['first_route_condition']);
 
 		}
 

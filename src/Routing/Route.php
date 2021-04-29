@@ -60,7 +60,7 @@
 			$this->namespace  = $attributes['namespace'] ?? null;
 			$this->middleware = $attributes['middleware'] ?? null;
 
-			$this->addCondition( new UrlCondition($this->url) );
+			// $this->addCondition( new UrlCondition($this->url) );
 
 		}
 
