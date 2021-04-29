@@ -15,7 +15,7 @@
 	class Request extends ServerRequest implements RequestInterface {
 
 		/**
-		 * @var \WPEmerge\Routing\_Route|null The route that our request matched
+		 * @var \WPEmerge\Routing\Route|null The route that our request matched
 		 */
 		private $route = null;
 
@@ -51,6 +51,7 @@
 		public function getUrl() {
 
 			return $this->getUri();
+
 		}
 
 		protected function getMethodOverride( $default ) {

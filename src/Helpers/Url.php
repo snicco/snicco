@@ -26,7 +26,7 @@
 		 */
 		public static function getPath( RequestInterface $request, $home_url = '' ) : string {
 
-			$parsed_request = wp_parse_url( $request->getUrl() );
+			$parsed_request = wp_parse_url( $request->getUri() );
 			$parsed_home    = wp_parse_url( $home_url ? $home_url : home_url( '/' ) );
 
 			$request_path = WPEmgereArr::get( $parsed_request, 'path', '/' );
@@ -99,7 +99,9 @@
 
 			}
 
-			return trailingslashit( $url );
+			// return trailingslashit( $url );
+
+			return rtrim( $url, '/\\' ) . '/';
 
 		}
 

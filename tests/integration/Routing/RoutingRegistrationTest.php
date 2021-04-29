@@ -4,12 +4,10 @@
 	namespace Tests\integration\Routing;
 
 	use Codeception\TestCase\WPTestCase;
-	use Mockery as m;
 	use SniccoAdapter\BaseContainerAdapter;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Contracts\RouteInterface;
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Requests\Request;
 	use WPEmerge\Routing\Conditions\AdminCondition;
@@ -68,7 +66,6 @@
 
 		protected function tearDown() : void {
 
-			m::close();
 
 			parent::tearDown();
 
@@ -113,19 +110,9 @@
 
 		private function request( $method, $url ) {
 
-			$request = m::mock( Request::class );
-			$request->shouldReceive( 'getMethod' )->andReturn( strtoupper( $method ) );
-			$request->shouldReceive( 'getUrl' )->andReturn( 'https://foo.com' . $url );
-			$request->shouldReceive( 'setRoute' )
-			        ->andReturnUsing( function ( RouteInterface $route ) use ( $request ) {
-
-				        $request->test_route = $route;
-			        } );
-
-			return $request;
+			return new TestRequest(strtoupper( $method ) , 'https://foo.com' . $url);
 
 		}
-
 
 		/**
 		 * @todo refactor this to an internal view controller.
@@ -1392,7 +1379,6 @@
 
 	}
 
-
 	class GlobalMiddleware {
 
 
@@ -1495,5 +1481,24 @@
 			return [];
 
 		}
+
+	}
+
+	class TestRequest extends Request {
+
+		public function __construct(
+			$method,
+			$uri,
+			array $headers = [],
+			$body = null,
+			$version = '1.1',
+			array $serverParams = []
+		) {
+
+			parent::__construct( $method, $uri, $headers, $body, $version, $serverParams );
+
+		}
+
+
 
 	}
