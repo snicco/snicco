@@ -10,6 +10,7 @@
 /**
  * Layout template file for Whoops's pretty error output.
  *
+ * @codeCoverageIgnore
  * @noinspection ALL
  */
 
@@ -67,7 +68,7 @@ if ( $is_admin && ! $is_ajax ) {
 	return;
 }
 ?>
-<!DOCTYPE html><?php echo $preface; ?>
+<!DOCTYPE html><?php echo $preface ; ?>
 <html lang="en_US">
 <head>
 	<meta charset="utf-8">
