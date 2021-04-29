@@ -86,7 +86,7 @@
 
 			TestApp::route()
 			       ->get('/')
-			       ->getMiddleware(FooMiddleware::class)
+			       ->middleware(FooMiddleware::class)
 			       ->handle( 'WebController@request');
 
 
@@ -108,7 +108,7 @@
 
 			TestApp::route()
 			       ->get('/')
-			       ->getMiddleware( FooMiddleware::class . ':bar')
+			       ->middleware( FooMiddleware::class . ':bar')
 			       ->handle( 'WebController@request');
 
 
@@ -134,7 +134,6 @@
 			$this->kernel->handle($this->request_event);
 
 			$this->assertSame( 'foo:foo_admin_controller_dependency', $this->responseBody() );
-
 
 
 		}
@@ -170,7 +169,7 @@
 
 			TestApp::route()
 			       ->get('/')
-			       ->getMiddleware(FooMiddleware::class)
+			       ->middleware(FooMiddleware::class)
 			       ->handle( 'WebController@request');
 
 
@@ -223,6 +222,7 @@
 
 					'foo'  => FooMiddleware::class,
 					'foo_global' => GlobalFooMiddleware::class,
+
 				],
 
 				'middleware_groups' => [
