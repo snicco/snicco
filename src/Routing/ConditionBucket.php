@@ -22,4 +22,19 @@
 
 		}
 
+		public function combine ( ConditionBucket $old_bucket ) : ConditionBucket {
+
+			$this->pushOld($old_bucket->all());
+
+			return $this;
+
+		}
+
+		private function pushOld ( array $conditions ) {
+
+			$this->conditions = array_merge($conditions, $this->conditions);
+
+
+		}
+
 	}

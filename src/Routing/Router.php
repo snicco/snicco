@@ -83,7 +83,6 @@
 		}
 
 
-
 		public function group( $attributes, $routes ) {
 
 			$this->updateGroupStack( $attributes );
@@ -194,10 +193,38 @@
 
 		}
 
-		private function mergeWithLastGroup( $new, $prependExistingPrefix = true ) {
+		private function mergeWithLastGroup( $new ) {
 
-			// return RouteGroup::merge($new, end($this->groupStack), $prependExistingPrefix);
+			$last = $this->getLastGroup();
+
+			$new['methods'] = array_merge( Arr::wrap($last['methods'] ?? []  ) , Arr::wrap($new['methods'] ?? [] ) );
+
+			$new['middleware'] = array_merge( Arr::wrap($last['middleware'] ?? []  ) , Arr::wrap($new['middleware'] ?? [] ) );
+
+			$new['name'] = $this->mergeName($new['name'] ?? '', $last['name'] ?? '');
+
+			$new['prefix'] = $this->applyPrefix($new['prefix'] ?? '');
+
+			if ( isset( $new['where'] ) && isset( $last['where'] ) ) {
+
+				/** @var \WPEmerge\Routing\ConditionBucket $new_bucket */
+				$new_bucket = $new['where'];
+
+				$new['where'] = $new_bucket->combine($last['where']);
+
+			}
+
+
 			return $new;
+
+		}
+
+		private function mergeName( $new , $old = '' ) : string {
+
+			// Remove leading and trailing dots.
+			$new = preg_replace('/^\.+|\.+$/', '', $new);
+
+			return $old . '.' . $new;
 
 		}
 
@@ -256,11 +283,11 @@
 
 		private function addRoute( array $methods, string $url, $action = null ) : Route {
 
-			$url = UrlParser::normalize( $url );
+			$url = $this->applyPrefix(UrlParser::normalize( $url ));
 
 			$route = $this->newRoute(
 				$methods,
-				$this->applyPrefix( $url ),
+				$url,
 				$action
 			);
 
@@ -269,6 +296,7 @@
 				$this->mergeGroupAttributesIntoRoute( $route );
 
 			}
+
 
 			$this->routes[] = $route;
 
@@ -334,7 +362,6 @@
 		}
 
 		private function getLastGroupPrefix() : string {
-
 
 			if ( ! $this->hasGroupStack() ) {
 
