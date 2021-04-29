@@ -9,26 +9,21 @@
 
 
 		/**
-		 * @var \WPEmerge\Routing\RouteBlueprint
+		 * @var \WPEmerge\Routing\Router
 		 */
-		private $route_blueprint;
+		private $router;
 
 		/**
 		 * @var array
 		 */
 		private $config;
 
-		public function __construct(RouteBlueprint $route_blueprint, array $config = [] ) {
+		public function __construct(Router $router, array $config = [] ) {
 
-			$this->route_blueprint = $route_blueprint;
+			$this->router = $router;
 			$this->config = $config;
 		}
 
-		/**
-		 * Load route definition files depending on the current request.
-		 *
-		 * @return void
-		 */
 		public function loadRoutes() {
 
 			if ( wp_doing_ajax() ) {
@@ -49,7 +44,6 @@
 
 		}
 
-
 		private function loadRoutesGroup( string $group ) {
 
 
@@ -63,13 +57,14 @@
 			$middleware = WPEmgereArr::get( $attributes, 'middleware', [] );
 
 			if ( ! in_array( $group, $middleware, true ) ) {
+
 				$middleware = array_merge( [ $group ], $middleware );
+
 			}
 
 			$attributes['middleware'] = $middleware;
 
-
-			$this->route_blueprint->attributes( $attributes )->group( $file );
+			$this->router->group($attributes, $file );
 
 
 		}

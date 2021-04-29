@@ -65,7 +65,7 @@
 
 		private function routingAliases (Application $app ) {
 
-			$app->alias( 'route', WPEMERGE_ROUTING_ROUTE_BLUEPRINT_KEY );
+			$app->alias( 'route', WPEMERGE_ROUTING_ROUTER_KEY );
 			$app->alias( 'routeUrl', WPEMERGE_ROUTING_ROUTER_KEY, 'getRouteUrl' );
 
 		}
