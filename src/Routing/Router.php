@@ -131,7 +131,10 @@
 
 			}
 
-			return $this->runWithinStack( $route, $request );
+			return $this->runWithinStack(
+				$route->compileAction($this->handler_factory),
+				$request
+			);
 
 		}
 
@@ -198,7 +201,7 @@
 
 		}
 
-		private function findRoute( RequestInterface $request ) : ?RouteInterface {
+		private function findRoute( RequestInterface $request ) : ?Route {
 
 
 			$route = collect( $this->routes )
@@ -238,8 +241,6 @@
 				->send( $request )
 				->through( $this->skipMiddleware() ? [] : $middleware )
 				->then( function ( $request ) use ( $route ) {
-
-					$route->compileAction( $this->handler_factory );
 
 					return $route->run( $request );
 
