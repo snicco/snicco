@@ -1654,7 +1654,65 @@
 
 		}
 
+		/** @test */
+		public function url_conditions_are_passed_even_if_one_group_in_the_chain_does_not_specify_an_url_condition () {
 
+
+			$this->router->prefix('foo')->group(function () {
+
+				$this->router->where('true')->group(function () {
+
+					$this->router->get('bar', function () {
+
+						return 'foobar';
+
+					});
+
+				});
+
+			});
+
+
+			$get = $this->request('GET', '/foo/bar');
+
+			$this->seeResponse('foobar', $this->router->runRoute($get) );
+
+			$get = $this->request('GET', '/foo');
+
+			$this->seeResponse(null , $this->router->runRoute($get) );
+
+
+
+		}
+
+		/** @test */
+		public function url_conditions_are_passed_even_if_the_route_group_doesnt_specify_an_url_condition() {
+
+			$this->router->where('true')->group(function () {
+
+				$this->router->prefix('foo')->group(function () {
+
+					$this->router->get('bar', function () {
+
+						return 'foobar';
+
+					});
+
+				});
+
+			});
+
+
+			$get = $this->request('GET', '/foo/bar');
+
+			$this->seeResponse('foobar', $this->router->runRoute($get) );
+
+			$get = $this->request('GET', '/foo');
+
+			$this->seeResponse(null , $this->router->runRoute($get) );
+
+
+		}
 
 		private function seeResponse( $expected, $response ) {
 
