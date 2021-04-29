@@ -384,7 +384,7 @@
 			$this->router->namespace( 'Tests\Integration\Routing' )
 			             ->match( [ 'GET', 'POST' ], '/match', 'RoutingController@foo' );
 			$response = $this->router->runRoute( $this->request( 'PUT', '/match' ) );
-			$this->assertNull(  $response );
+			$this->assertNull( $response );
 
 
 		}
@@ -1091,20 +1091,20 @@
 		 *
 		 */
 
-		// /** @test */
+		/** @test */
 		public function methods_can_be_merged_for_a_group() {
 
-			$this->newBluePrint()
-			     ->methods( [ 'GET', 'PUT' ] )
-			     ->group( function () {
+			$this->router
+				->methods( [ 'GET', 'PUT' ] )
+				->group( function () {
 
-				     $this->blueprint->post( '/foo' )->handle( function () {
+					$this->router->post( '/foo' )->handle( function () {
 
-					     return 'post_foo';
+						return 'post_foo';
 
-				     } );
+					} );
 
-			     } );
+				} );
 
 			$get_request = $this->request( 'GET', '/foo' );
 			$response    = $this->router->runRoute( $get_request );
@@ -1118,37 +1118,40 @@
 			$response     = $this->router->runRoute( $post_request );
 			$this->seeResponse( 'post_foo', $response );
 
+			$patch_request = $this->request( 'PATCH', '/foo' );
+			$response      = $this->router->runRoute( $patch_request );
+			$this->assertNull( $response );
+
 
 		}
 
-		// /** @test */
+		/** @test */
 		public function middleware_is_merged_for_route_groups() {
 
 
-			$blueprint = $this->newBluePrint();
 			$this->router->aliasMiddleware( 'foo', FooMiddleware::class );
 			$this->router->aliasMiddleware( 'bar', BarMiddleware::class );
 
-			$blueprint
+			$this->router
 				->middleware( 'foo:FOO' )
 				->group( function () {
 
-					$this->newBluePrint( $this->router )
-					     ->get( '/foo' )
-					     ->middleware( 'bar:BAR' )
-					     ->handle( function ( RequestInterface $request ) {
+					$this->router
+						->get( '/foo' )
+						->middleware( 'bar:BAR' )
+						->handle( function ( RequestInterface $request ) {
 
-						     return $request->body;
+							return $request->body;
 
-					     } );
+						} );
 
-					$this->newBluePrint( $this->router )
-					     ->post( '/foo' )
-					     ->handle( function ( RequestInterface $request ) {
+					$this->router
+						->post( '/foo' )
+						->handle( function ( RequestInterface $request ) {
 
-						     return $request->body;
+							return $request->body;
 
-					     } );
+						} );
 
 				} );
 
@@ -1163,16 +1166,16 @@
 
 		}
 
-		// /** @test */
-		public function the_group_namespace_is_applied_to_child_routes() {
+		/** @test */
+		public function the_group_namespace_is_applied_to_child_routes_but_they_might_overwrite_it() {
 
-			$this->newBluePrint()
-			     ->namespace( 'Tests\integration\Routing' )
-			     ->group( function () {
+			$this->router
+				->namespace( 'Tests\integration\Routing' )
+				->group( function () {
 
-				     $this->blueprint->get( '/foo' )->handle( 'RoutingController@foo' );
+					$this->router->get( '/foo' )->handle( 'RoutingController@foo' );
 
-			     } );
+				} );
 
 			$get_request = $this->request( 'GET', '/foo' );
 			$response    = $this->router->runRoute( $get_request );
@@ -1181,25 +1184,76 @@
 
 		}
 
-		// /** @test */
-		public function group_conditions_are_merged() {
+		/** @test */
+		public function group_names_get_applied_to_child_routes() {
 
-			$this->newBluePrint()
-			     ->where( 'true' )
+			$this->router
+				->name( 'foo' )
+				->group( function () {
+
+					$this->router->get( 'bar' )->name( 'bar' );
+
+					$this->router->get( 'baz' )->name( 'baz' );
+
+					$this->router->name( 'biz' )->get( 'biz' );
+
+				} );
+
+			$this->seeUrl( 'bar', $this->router->getRouteUrl( 'foo.bar' ) );
+			$this->seeUrl( 'baz', $this->router->getRouteUrl( 'foo.baz' ) );
+			$this->seeUrl( 'biz', $this->router->getRouteUrl( 'foo.biz' ) );
+
+
+		}
+
+		/** @test */
+		public function a_group_can_prefix_all_child_route_urls() {
+
+			$this->router
+				->prefix( 'foo' )
+				->group( function () {
+
+					$this->router->get( 'bar', function () {
+
+						return 'foobar';
+
+					} );
+
+					$this->router->get( 'baz', function () {
+
+						return 'foobaz';
+
+					} );
+
+
+				});
+
+			$this->seeResponse('foobar', $this->router->runRoute($this->request('GET', '/foo/bar')));
+			$this->seeResponse('foobaz', $this->router->runRoute($this->request('GET', '/foo/baz')));
+
+			$this->assertNull($this->router->runRoute($this->request('GET', '/foo')));
+
+		}
+
+		/** @test */
+		public function group_conditions_are_merged_into_child_routes() {
+
+			$this->router
+			     ->where( 'maybe', false )
 			     ->namespace( 'Tests\integration\Routing' )
 			     ->group( function () {
 
-				     $this->newBluePrint( $this->router )
+				     $this->router
 				          ->get( '/foo' )
 				          ->where( new FalseCondition() )
 				          ->handle( 'RoutingController@foo' );
 
-				     $this->newBluePrint( $this->router )
+				     $this->router
 				          ->post( '/foo' )
 				          ->where( new TrueCondition() )
 				          ->handle( 'RoutingController@foo' );
 
-			     } );
+			     });
 
 			$get_request = $this->request( 'GET', '/foo' );
 			$response    = $this->router->runRoute( $get_request );
@@ -1207,105 +1261,13 @@
 
 			$post_request = $this->request( 'POST', '/foo' );
 			$response     = $this->router->runRoute( $post_request );
-			$this->seeResponse( 'foo', $response );
-
-		}
-
-		// /** @test */
-		public function group_urls_are_stacked() {
-
-
-			$this->newBluePrint()
-			     ->namespace( 'Tests\integration\Routing' )
-			     ->prefix( 'foo' )
-			     ->group( function () {
-
-				     $this->newBluePrint( $this->router )->get( 'bar' )
-				          ->handle( 'RoutingController@foo' );
-
-			     } );
-
-			$get_request = $this->request( 'GET', '/foo' );
-			$response    = $this->router->runRoute( $get_request );
 			$this->assertNull( $response );
 
-			$get_request = $this->request( 'GET', '/foo/bar' );
-			$response    = $this->router->runRoute( $get_request );
-			$this->seeResponse( 'foo', $response );
-
-
 		}
 
-		// /** @test */
-		public function group_urls_are_stacked_on_multiple_levels() {
 
 
-			$this->newBluePrint()
-			     ->namespace( 'Tests\integration\Routing' )
-			     ->prefix( 'foo' )
-			     ->group( function () {
 
-				     $this->newBluePrint( $this->router )->prefix( 'bar' )->group( function () {
-
-					     $this->newBluePrint( $this->router )->get( 'baz' )
-					          ->handle( 'RoutingController@foo' );
-
-
-				     } );
-
-				     $this->newBluePrint( $this->router )->get( 'biz' )
-				          ->handle( 'RoutingController@foo' );
-
-			     } );
-
-			$get_request = $this->request( 'GET', '/foo' );
-			$this->assertNull( $this->router->runRoute( $get_request ) );
-
-			$get_request = $this->request( 'GET', '/foo/bar' );
-			$this->assertNull( $this->router->runRoute( $get_request ) );
-
-			$get_request = $this->request( 'GET', '/foo/biz' );
-			$this->seeResponse( 'foo', $this->router->runRoute( $get_request ) );
-
-			$get_request = $this->request( 'GET', '/foo/bar/baz' );
-			$this->seeResponse( 'foo', $this->router->runRoute( $get_request ) );
-
-		}
-
-		// /** @test */
-		public function route_groups_prefix_the_named_paths() {
-
-
-			$this->newBluePrint()
-			     ->name( 'foo' )
-			     ->get( 'foo' )
-			     ->group( function () {
-
-				     $this->newBluePrint( $this->router )->get( 'bar' )->name( 'bar' )
-				          ->handle( function () {
-				          } );
-
-				     $this->newBluePrint( $this->router )->get( 'baz' )->name( 'baz' )
-				          ->handle( function () {
-				          } );
-
-				     $this->newBluePrint( $this->router )->name( 'biz' )->get( 'biz' )
-				          ->group( function () {
-
-					          $this->newBluePrint( $this->router )->get( 'boo' )->name( 'boo' )
-					               ->handle( function () {
-					               } );
-
-				          } );
-
-			     } );
-
-			$this->seeUrl( 'foo/bar', $this->router->getRouteUrl( 'foo.bar' ) );
-			$this->seeUrl( 'foo/baz', $this->router->getRouteUrl( 'foo.baz' ) );
-			$this->seeUrl( 'foo/biz/boo', $this->router->getRouteUrl( 'foo.biz.boo' ) );
-
-
-		}
 
 
 		private function seeResponse( $expected, $response ) {
@@ -1313,7 +1275,6 @@
 			$this->assertSame( $expected, $response );
 
 		}
-
 
 		private function seeUrl( $route_path, $result ) {
 

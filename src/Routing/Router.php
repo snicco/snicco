@@ -35,28 +35,21 @@
 		 *
 		 * @var ConditionFactory
 		 */
-		protected $condition_factory = null;
+		private $condition_factory;
 
 		/**
 		 * Handler factory.
 		 *
 		 * @var HandlerFactory
 		 */
-		protected $handler_factory = null;
+		private $handler_factory;
 
 		/**
 		 * Group stack.
 		 *
 		 * @var array<array<string, mixed>>
 		 */
-		protected $group_stack = [];
-
-		/**
-		 * Current active route.
-		 *
-		 * @var RouteInterface|null
-		 */
-		protected $current_route = null;
+		private $group_stack = [];
 
 		/**
 		 * @var \Contracts\ContainerAdapter
@@ -91,19 +84,6 @@
 
 
 		/**
-		 * Merge the methods attribute combining values.
-		 *
-		 * @param  string[]  $old
-		 * @param  string[]  $new
-		 *
-		 * @return string[]
-		 */
-		public function mergeMethodsAttribute( $old, $new ) : array {
-
-			return array_merge( $old, $new );
-		}
-
-		/**
 		 * Merge the condition attribute.
 		 *
 		 * @param  string|array|Closure|ConditionInterface|null  $old
@@ -124,63 +104,6 @@
 			return $condition;
 		}
 
-		/**
-		 * Merge the middleware attribute combining values.
-		 *
-		 * @param  string[]  $old
-		 * @param  string[]  $new
-		 *
-		 * @return string[]
-		 */
-		public function mergeMiddlewareAttribute( array $old, array $new ) : array {
-
-			return array_merge( $old, $new );
-		}
-
-		/**
-		 * Merge the namespace attribute taking the latest value.
-		 *
-		 * @param  string  $old
-		 * @param  string  $new
-		 *
-		 * @return string
-		 */
-		public function mergeNamespaceAttribute( string $old, string $new ) : string {
-
-			return ! empty( $new ) ? $new : $old;
-		}
-
-		/**
-		 * Merge the handler attribute taking the latest value.
-		 *
-		 * @param  string|Closure  $old
-		 * @param  string|Closure  $new
-		 *
-		 * @return string|Closure
-		 */
-		public function mergeHandlerAttribute( $old, $new ) {
-
-			return ! empty( $new ) ? $new : $old;
-		}
-
-		/**
-		 * Merge the name attribute combining values with a dot.
-		 *
-		 * @param  string  $old
-		 * @param  string  $new
-		 *
-		 * @return string
-		 */
-		public function mergeNameAttribute( $old, $new ) : string {
-
-			$name = implode( '.', array_filter( [ $old, $new ] ) );
-
-			// Trim dots.
-			$name = preg_replace( '/^\.+|\.+$/', '', $name );
-
-			// Reduce multiple dots to a single one.
-			return preg_replace( '/\.{2,}/', '.', $name );
-		}
 
 		/**
 		 * Merge attributes into route.
@@ -194,97 +117,74 @@
 		public function mergeAttributes( $old, $new ) : array {
 
 			return [
-				'methods' => $this->mergeMethodsAttribute(
-					(array) WPEmgereArr::get( $old, 'methods', [] ),
-					(array) WPEmgereArr::get( $new, 'methods', [] )
-				),
 
 				'condition' => $this->mergeConditionAttribute(
 					WPEmgereArr::get( $old, 'condition', null ),
 					WPEmgereArr::get( $new, 'condition', null )
 				),
 
-				'middleware' => $this->mergeMiddlewareAttribute(
-					(array) WPEmgereArr::get( $old, 'middleware', [] ),
-					(array) WPEmgereArr::get( $new, 'middleware', [] )
-				),
-
-				'namespace' => $this->mergeNamespaceAttribute(
-					WPEmgereArr::get( $old, 'namespace', '' ),
-					WPEmgereArr::get( $new, 'namespace', '' )
-				),
-
-				'handler' => $this->mergeHandlerAttribute(
-					WPEmgereArr::get( $old, 'handler', '' ),
-					WPEmgereArr::get( $new, 'handler', '' )
-				),
-
-				'name' => $this->mergeNameAttribute(
-					WPEmgereArr::get( $old, 'name', '' ),
-					WPEmgereArr::get( $new, 'name', '' )
-				),
 			];
 		}
 
-		/**
-		 * Get the top group from the stack.
-		 *
-		 * @return array<string, mixed>
-		 */
-		protected function getGroup() : array {
 
-			return WPEmgereArr::last( $this->group_stack, null, [] );
-		}
-
-		/**
-		 * Add a group to the group stack, merging all previous attributes.
-		 *
-		 *
-		 * @param  array<string, mixed>  $group
-		 *
-		 * @return void
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
-		 */
-		protected function pushGroup( $group ) {
-
-			$this->group_stack[] = $this->mergeAttributes( $this->getGroup(), $group );
-
-		}
-
-		/**
-		 * Remove last group from the group stack.
-		 *
-		 * @return void
-		 */
-		protected function popGroup() {
-
-			array_pop( $this->group_stack );
-		}
-
-		/**
-		 * Create a route group.
-		 *
-		 *
-		 * @param  array<string, mixed>  $attributes
-		 * @param  Closure|string  $routes  Closure or path to file.
-		 *
-		 * @return void
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
-		 */
 		public function group( $attributes, $routes ) {
 
-			$this->pushGroup( $attributes );
+			$this->updateGroupStack( $attributes );
 
-			if ( is_string( $routes ) ) {
-				/** @noinspection PhpIncludeInspection */
-				/** @codeCoverageIgnore */
-				require_once $routes;
+			// Once we have updated the group stack, we'll load the provided routes and
+			// merge in the group's attributes when the routes are created. After we
+			// have created the routes, we will pop the attributes off the stack.
+			$this->loadRoutes( $routes );
+
+			$this->deleteLastRouteGroup();
+
+		}
+
+		private function loadRoutes( $routes ) {
+
+			if ( $routes instanceof Closure ) {
+
+				$routes( $this );
+
 			} else {
-				$routes();
+
+				( new RouteFileRegistrar( $this ) )->register( $routes );
+
 			}
 
-			$this->popGroup();
 		}
+
+		private function deleteLastRouteGroup() {
+
+			array_pop( $this->group_stack );
+
+		}
+
+		private function updateGroupStack( $attributes ) {
+
+			if ( $this->hasGroupStack() ) {
+
+				$attributes = $this->mergeWithLastGroup( $attributes );
+
+			}
+
+			$this->group_stack[] = $attributes;
+
+		}
+
+		private function hasGroupStack() : bool {
+
+			return ! empty( $this->group_stack );
+
+		}
+
+		private function mergeWithLastGroup( $new, $prependExistingPrefix = true ) {
+
+			// return RouteGroup::merge($new, end($this->groupStack), $prependExistingPrefix);
+			return $new;
+
+		}
+
 
 		/**
 		 * Make a route condition.
@@ -347,12 +247,12 @@
 				->filter( function ( Route $route ) use ( $request ) {
 
 					// only correct http methods
-					return Arr::isValue( $request->getMethod(), $route->methods() );
+					return Arr::isValue( $request->getMethod(), $route->getMethods() );
 
 				} )
 				->first( function ( Route $route ) use ( $request ) {
 
-					$route->compileConditions($this->condition_factory);
+					$route->compileConditions( $this->condition_factory );
 
 					return $route->matches( $request );
 
@@ -385,7 +285,7 @@
 
 			}
 
-			$route->compileConditions($this->condition_factory);
+			$route->compileConditions( $this->condition_factory );
 
 			return $route->createUrl( $arguments );
 
@@ -455,9 +355,17 @@
 
 			$url = UrlParser::normalize( $url );
 
-			$route = new Route( $methods, $url, $action );
+			$route = $this->newRoute(
+				$methods,
+				$this->applyPrefix( $url ),
+				$action
+			);
 
-			$route->addCondition( new UrlCondition( $url ) );
+			if ( $this->hasGroupStack() ) {
+
+				$this->mergeGroupAttributesIntoRoute( $route );
+
+			}
 
 			$this->routes[] = $route;
 
@@ -465,6 +373,79 @@
 
 
 		}
+
+		private function newRoute( $methods, $url, $action ) : Route {
+
+			return new Route ( $methods, $url, $action );
+
+		}
+
+		private function applyPrefix( $url ) : string {
+
+			return trim( trim( $this->getLastGroupPrefix(), '/' ) . '/' . trim( $url, '/' ), '/' ) ? : '/';
+		}
+
+		private function mergeGroupAttributesIntoRoute( Route $route ) {
+
+			$group = $this->getLastGroup();
+
+			$route->addMethods( $group['methods'] ?? [] );
+			$route->middleware( $group['middleware'] ?? [] );
+
+			if ( isset( $group['namespace'] ) ) {
+
+				$route->namespace( $group['namespace'] );
+
+			}
+
+			if ( isset( $group['name'] ) ) {
+
+				$route->name( $group['name'] );
+
+			}
+
+			if ( isset( $group['where'] ) ) {
+
+				$this->mergeConditions($group['where'], $route);
+
+			}
+
+
+
+		}
+
+		private function mergeConditions ( ConditionBucket $bucket , Route $route ) {
+
+			foreach ( $bucket->all() as $condition ) {
+
+				$route->where($condition);
+
+			}
+
+		}
+
+		private function getLastGroup() {
+
+			return end( $this->group_stack );
+
+		}
+
+		private function getLastGroupPrefix() : string {
+
+
+			if ( ! $this->hasGroupStack() ) {
+
+				return '';
+
+			}
+
+			$last = $this->getLastGroup();
+
+			return $last['prefix'] ?? '';
+
+
+		}
+
 
 	}
 
