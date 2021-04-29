@@ -92,7 +92,7 @@
 				'true'          => TrueCondition::class,
 				'false'         => FalseCondition::class,
 				'maybe'         => MaybeCondition::class,
-				'unique'         => UniqueCondition::class,
+				'unique'        => UniqueCondition::class,
 
 			];
 
@@ -110,7 +110,7 @@
 
 		private function request( $method, $url ) {
 
-			return new TestRequest(strtoupper( $method ) , 'https://foo.com' . $url);
+			return new TestRequest( strtoupper( $method ), 'https://foo.com' . $url );
 
 		}
 
@@ -907,7 +907,7 @@
 		}
 
 		/** @test */
-		public function all_conditions_have_to_pass() {
+		public function multiple_conditions_and_all_conditions_have_to_pass() {
 
 			$this->router
 				->get( '/foo' )
@@ -1066,8 +1066,26 @@
 
 		}
 
+		/** @test */
+		public function failure_of_only_one_condition_leads_to_immediate_rejection_of_the_route () {
 
+			$this->router
+				->get( '/foo' )
+				->where( 'false' )
+				->where( function() {
 
+					$this->fail('This condition should not have been called.');
+
+				} )
+				->handle( function ( RequestInterface $request ) {
+
+					return 'foo';
+
+				} );
+
+			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+
+		}
 
 		/**
 		 *
@@ -1214,12 +1232,12 @@
 					} );
 
 
-				});
+				} );
 
-			$this->seeResponse('foobar', $this->router->runRoute($this->request('GET', '/foo/bar')));
-			$this->seeResponse('foobaz', $this->router->runRoute($this->request('GET', '/foo/baz')));
+			$this->seeResponse( 'foobar', $this->router->runRoute( $this->request( 'GET', '/foo/bar' ) ) );
+			$this->seeResponse( 'foobaz', $this->router->runRoute( $this->request( 'GET', '/foo/baz' ) ) );
 
-			$this->assertNull($this->router->runRoute($this->request('GET', '/foo')));
+			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
 		}
 
@@ -1227,21 +1245,21 @@
 		public function group_conditions_are_merged_into_child_routes() {
 
 			$this->router
-			     ->where( 'maybe', false )
-			     ->namespace( 'Tests\integration\Routing' )
-			     ->group( function () {
+				->where( 'maybe', false )
+				->namespace( 'Tests\integration\Routing' )
+				->group( function () {
 
-				     $this->router
-				          ->get( '/foo' )
-				          ->where( new FalseCondition() )
-				          ->handle( 'RoutingController@foo' );
+					$this->router
+						->get( '/foo' )
+						->where( new FalseCondition() )
+						->handle( 'RoutingController@foo' );
 
-				     $this->router
-				          ->post( '/foo' )
-				          ->where( new TrueCondition() )
-				          ->handle( 'RoutingController@foo' );
+					$this->router
+						->post( '/foo' )
+						->where( new TrueCondition() )
+						->handle( 'RoutingController@foo' );
 
-			     });
+				} );
 
 			$get_request = $this->request( 'GET', '/foo' );
 			$response    = $this->router->runRoute( $get_request );
@@ -1254,7 +1272,7 @@
 		}
 
 		/** @test */
-		public function duplicate_conditions_a_removed_during_route_compilation () {
+		public function duplicate_conditions_a_removed_during_route_compilation() {
 
 			$this->router
 				->where( new UniqueCondition() )
@@ -1268,13 +1286,13 @@
 						} )
 						->where( new UniqueCondition() );
 
-				});
+				} );
 
-			$response = $this->router->runRoute($this->request('GET', '/foo'));
-			$this->seeResponse('get_foo', $response);
+			$response = $this->router->runRoute( $this->request( 'GET', '/foo' ) );
+			$this->seeResponse( 'get_foo', $response );
 
-			$count =  $GLOBALS['test']['unique_condition'];
-			$this->assertSame(1 , $count, 'Condition was run: ' . $count . ' times.');
+			$count = $GLOBALS['test']['unique_condition'];
+			$this->assertSame( 1, $count, 'Condition was run: ' . $count . ' times.' );
 
 
 		}
@@ -1294,13 +1312,291 @@
 						} )
 						->where( 'unique' );
 
+				} );
+
+			$response = $this->router->runRoute( $this->request( 'GET', '/bar' ) );
+			$this->seeResponse( 'get_bar', $response );
+
+			$count = $GLOBALS['test']['unique_condition'];
+			$this->assertSame( 1, $count, 'Condition was run: ' . $count . ' times.' );
+
+
+		}
+
+		/**
+		 *
+		 *
+		 *
+		 *
+		 *
+		 * NESTED ROUTE GROUPS
+		 *
+		 *
+		 *
+		 *
+		 *
+		 */
+
+		/** @test */
+		public function methods_are_merged_on_multiple_levels() {
+
+			$this->router
+				->methods( 'GET' )
+				->group( function () {
+
+					$this->router->methods( 'POST' )->group( function () {
+
+						$this->router->put( '/foo' )->handle( function () {
+
+							return 'foo';
+
+						} );
+
+					} );
+
+					$this->router->patch( '/bar' )->handle( function () {
+
+						return 'bar';
+
+					} );
+
+				} );
+
+			// First route
+			$post     = $this->request( 'POST', '/foo' );
+			$response = $this->router->runRoute( $post );
+			$this->seeResponse( 'foo', $response );
+
+			$put      = $this->request( 'PUT', '/foo' );
+			$response = $this->router->runRoute( $put );
+			$this->seeResponse( 'foo', $response );
+
+			$get      = $this->request( 'GET', '/foo' );
+			$response = $this->router->runRoute( $get );
+			$this->seeResponse( 'foo', $response );
+
+			$patch    = $this->request( 'PATCH', '/foo' );
+			$response = $this->router->runRoute( $patch );
+			$this->assertNull( $response );
+
+			// Second route
+			$get      = $this->request( 'GET', '/bar' );
+			$response = $this->router->runRoute( $get );
+			$this->seeResponse( 'bar', $response );
+
+			$patch    = $this->request( 'PATCH', '/bar' );
+			$response = $this->router->runRoute( $patch );
+			$this->seeResponse( 'bar', $response );
+
+			$post     = $this->request( 'POST', '/bar' );
+			$response = $this->router->runRoute( $post );
+			$this->seeResponse( null, $response );
+
+			$put      = $this->request( 'PUT', '/bar' );
+			$response = $this->router->runRoute( $put );
+			$this->seeResponse( null, $response );
+
+		}
+
+		/** @test */
+		public function middleware_is_nested_on_multiple_levels() {
+
+
+			$this->router->aliasMiddleware( 'foo', FooMiddleware::class );
+			$this->router->aliasMiddleware( 'bar', BarMiddleware::class );
+			$this->router->aliasMiddleware( 'baz', BazMiddleware::class );
+
+			$this->router
+				->middleware( 'foo:FOO' )
+				->group( function () {
+
+					$this->router->middleware( 'bar:BAR' )->group( function () {
+
+						$this->router
+							->get( '/foo' )
+							->middleware( 'baz:BAZ' )
+							->handle( function ( RequestInterface $request ) {
+
+								return $request->body;
+
+							} );
+
+					} );
+
+					$this->router
+						->get( '/bar' )
+						->middleware( 'baz:BAZ' )
+						->handle( function ( RequestInterface $request ) {
+
+							return $request->body;
+
+						} );
+
+				} );
+
+			$get      = $this->request( 'GET', '/foo' );
+			$response = $this->router->runRoute( $get );
+			$this->seeResponse( 'FOOBARBAZ', $response );
+
+			$get      = $this->request( 'GET', '/bar' );
+			$response = $this->router->runRoute( $get );
+			$this->seeResponse( 'FOOBAZ', $response );
+
+		}
+
+		/** @test */
+		public function the_route_namespace_is_always_overwritten_by_child_routes() {
+
+			$this->router
+				->namespace( 'Tests\integration\FALSE' )
+				->group( function () {
+
+					$this->router
+						->get( '/foo' )
+						->namespace( 'Tests\integration\Routing' )
+						->handle( 'RoutingController@foo' );
+
+				} );
+
+			$get_request = $this->request( 'GET', '/foo' );
+			$response    = $this->router->runRoute( $get_request );
+			$this->seeResponse( 'foo', $response );
+
+
+		}
+
+		/** @test */
+		public function route_names_are_merged_on_multiple_levels() {
+
+			$this->router
+				->name( 'foo' )
+				->group( function () {
+
+					$this->router->name( 'bar' )->group( function () {
+
+						$this->router->get( 'baz' )->name( 'baz' );
+
+					} );
+
+					$this->router->get( 'biz' )->name( 'biz' );
+
+
+				} );
+
+			$this->seeUrl( 'baz', $this->router->getRouteUrl( 'foo.bar.baz' ) );
+			$this->seeUrl( 'biz', $this->router->getRouteUrl( 'foo.biz' ) );
+
+			$this->expectExceptionMessage( 'no named route' );
+
+			$this->seeUrl( 'baz', $this->router->getRouteUrl( 'foo.bar.biz' ) );
+
+
+		}
+
+		/** @test */
+		public function group_prefixes_are_merged_on_multiple_levels() {
+
+			$this->router
+				->prefix( 'foo' )
+				->group( function () {
+
+					$this->router->prefix( 'bar' )->group( function () {
+
+						$this->router->get( 'baz', function () {
+
+							return 'foobarbaz';
+
+						} );
+
+					} );
+
+					$this->router->get( 'biz', function () {
+
+						return 'foobiz';
+
+					} );
+
+
+				} );
+
+			$this->seeResponse( 'foobarbaz', $this->router->runRoute( $this->request( 'GET', '/foo/bar/baz' ) ) );
+			$this->seeResponse( 'foobiz', $this->router->runRoute( $this->request( 'GET', '/foo/biz' ) ) );
+			$this->seeResponse( null, $this->router->runRoute( $this->request( 'GET', '/foo/bar/biz' ) ) );
+
+
+		}
+
+		/** @test */
+		public function conditions_are_merged_on_multiple_levels() {
+
+			// Given
+			$GLOBALS['test']['parent_condition_called'] = false;
+			$GLOBALS['test']['child_condition_called'] = false;
+
+			$this->router
+				->where( function () {
+
+					$GLOBALS['test']['parent_condition_called'] = true;
+
+					$this->assertFalse($GLOBALS['test']['child_condition_called']);
+
+					return true;
+
+				} )
+				->group( function () {
+
+					$this->router->where( function () {
+
+						$GLOBALS['test']['child_condition_called'] = true;
+
+						return false;
+
+					} )
+					             ->group( function () {
+
+						$this->router
+							->get( '/foo' )
+							->where( 'true' )
+							->handle( function () {
+
+								$this->fail('This route should not have been called');
+
+							} );
+
+					} );
+
+					$this->router
+						->get( '/bar' )
+						->where( 'true' )
+						->handle( function () {
+
+							return 'bar';
+
+						} );
+
 				});
 
-			$response = $this->router->runRoute($this->request('GET', '/bar'));
-			$this->seeResponse('get_bar', $response);
+			// When
+			$get      = $this->request( 'GET', '/foo' );
+			$response = $this->router->runRoute( $get );
 
-			$count =  $GLOBALS['test']['unique_condition'];
-			$this->assertSame(1 , $count, 'Condition was run: ' . $count . ' times.');
+			// Then
+			$this->seeResponse( null ,$response );
+			$this->assertSame(true , $GLOBALS['test']['parent_condition_called'] );
+			$this->assertSame(true , $GLOBALS['test']['child_condition_called'] );
+
+			// Given
+			$GLOBALS['test']['parent_condition_called'] = false;
+			$GLOBALS['test']['child_condition_called'] = false;
+
+			// When
+			$get = $this->request( 'GET', '/bar' );
+			$response     = $this->router->runRoute( $get );
+
+			// Then
+			$this->seeResponse( 'bar' , $response );
+			$this->assertSame(true , $GLOBALS['test']['parent_condition_called'] );
+			$this->assertSame(false , $GLOBALS['test']['child_condition_called'] );
 
 
 		}
@@ -1379,6 +1675,27 @@
 
 	}
 
+
+	class BazMiddleware implements Middleware {
+
+		public function handle( RequestInterface $request, \Closure $next, $baz = 'baz' ) {
+
+			if ( isset( $request->body ) ) {
+
+				$request->body .= $baz;
+
+				return $next( $request );
+			}
+
+			$request->body = $baz;
+
+			return $next( $request );
+
+		}
+
+	}
+
+
 	class GlobalMiddleware {
 
 
@@ -1401,6 +1718,7 @@
 
 	}
 
+
 	class TrueCondition implements ConditionInterface {
 
 
@@ -1417,6 +1735,7 @@
 
 	}
 
+
 	class FalseCondition implements ConditionInterface {
 
 
@@ -1432,6 +1751,7 @@
 		}
 
 	}
+
 
 	class MaybeCondition implements ConditionInterface {
 
@@ -1461,6 +1781,7 @@
 
 	}
 
+
 	class UniqueCondition implements ConditionInterface {
 
 
@@ -1468,7 +1789,7 @@
 
 			$count = $GLOBALS['test']['unique_condition'] ?? 0;
 
-			$count++;
+			$count ++;
 
 			$GLOBALS['test']['unique_condition'] = $count;
 
@@ -1484,6 +1805,7 @@
 
 	}
 
+
 	class TestRequest extends Request {
 
 		public function __construct(
@@ -1498,7 +1820,6 @@
 			parent::__construct( $method, $uri, $headers, $body, $version, $serverParams );
 
 		}
-
 
 
 	}

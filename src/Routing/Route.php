@@ -78,9 +78,12 @@
 
 		}
 
-		public function addMethods(array $methods) {
+		public function addMethods( $methods) {
 
-			$this->methods = array_merge($this->methods ?? [] , $methods);
+			$this->methods = array_merge(
+				$this->methods ?? [] ,
+				array_map('strtoupper', Arr::wrap($methods) )
+			);
 
 		}
 
@@ -104,13 +107,15 @@
 
 		public function matches( RequestInterface $request ) : bool {
 
-			$failed = collect( $this->compiled_conditions )->reject( function ( $condition ) use ( $request ) {
 
-				return $condition->isSatisfied( $request );
+			$failed_condition = collect( $this->compiled_conditions )
+				->first( function ( $condition ) use ( $request ) {
 
-			} );
+				return ! $condition->isSatisfied( $request );
 
-			return $failed->isEmpty() === true;
+			});
+
+			return $failed_condition === null;
 
 
 		}
