@@ -119,7 +119,7 @@
 
 		public static function combinePath( $before, $new  ) : string {
 
-			return trim( trim( $before , '/' ) . '/' . trim( $new, '/' ), '/' );
+			return trim( trim( $before , '/' ) . '/' . trim( $new, '/' ), '/' ) ?: '/';
 
 		}
 

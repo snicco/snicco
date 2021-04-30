@@ -113,7 +113,6 @@
 			$this->request = TestRequest::from('get', '/');
 			$this->request->setType(IncomingWebRequest::class);
 
-
 			$this->kernel->handle($this->request_event);
 
 			$this->assertResponseSend();

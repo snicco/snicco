@@ -3,10 +3,13 @@
 
 	namespace WPEmerge\Routing;
 
+	use GuzzleHttp\Psr7\Request;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Routing\ConditionFactory;
 	use WPEmerge\Support\Arr;
+
+	use function FastRoute\simpleDispatcher;
 
 	class RouteCollection {
 
@@ -80,7 +83,7 @@
 		 * @todo Find a way to not recompile shared conditions that were passed by
 		 * @todo previous routes but the route in total didnt match.
 		 */
-		public function match( RequestInterface $request ) {
+		public function _match( RequestInterface $request ) {
 
 			$routes = collect( Arr::get( $this->routes, $request->getMethod(), [] ) );
 
@@ -91,7 +94,43 @@
 
 					return $route->matches( $request );
 
-				} );
+				});
+
+			if ( $route ) {
+
+				$route->compileAction( $this->handler_factory );
+				$request->setRoute( $route );
+
+			}
+
+			return $route;
+
+		}
+
+		public function match( RequestInterface $request ) {
+
+
+			[$method, $path_info ] = [$request->getMethod(), $request->getUri()->getPath()];
+
+			$routes = collect( Arr::get( $this->routes, $method , [] ) );
+
+			// simpleDispatcher(function ($r) use ( $routes ) {
+			//
+			// 	foreach ( $routes as $route) {
+			// 		$r->addRoute($route['method'], $route['uri'], $route['action']);
+			// 	}
+			//
+			// });
+
+
+			$route = $routes
+				->first( function ( Route $route ) use ( $request ) {
+
+					$route->compileConditions( $this->condition_factory );
+
+					return $route->matches( $request );
+
+				});
 
 			if ( $route ) {
 

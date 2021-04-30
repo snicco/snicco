@@ -130,7 +130,7 @@
 		/** @test */
 		public function basic_get_routing_works() {
 
-			$this->router->get( 'foo' )->handle( function () {
+			$this->router->get( '/foo' )->handle( function () {
 
 				return 'foo';
 
