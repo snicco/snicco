@@ -36,6 +36,8 @@
 		/**
 		 * Pattern to detect valid parameters in url segments.
 		 *
+		 * "Any character besides / followed by any character X amount of times."
+		 *
 		 * @var string
 		 */
 		private $parameter_pattern = '[^/]+';
@@ -91,6 +93,12 @@
 			}
 
 			$this->url = $url;
+		}
+
+		public function getUrl() {
+
+			return $this->url;
+
 		}
 
 		public function setRegex( $regex ) {
@@ -178,13 +186,15 @@
 			return $placeholder;
 		}
 
-		private function getValidationPattern( string $url, $wrap = TRUE ) :string {
+		public function getValidationPattern( string $url, $wrap = TRUE ) :string {
 
 			$parameters = [];
 
 			// Replace all parameters with placeholders
 			$validation_pattern = preg_replace_callback( $this->url_pattern, function ( $matches ) use ( &$parameters ) {
+
 				return $this->replacePatternParameterWithPlaceholder( $matches, $parameters );
+
 			}, $url );
 
 			// Quote the remaining string so that it does not get evaluated as a pattern.

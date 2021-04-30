@@ -31,7 +31,6 @@
 
 			while ( Str::contains( $url, ':' ) ) {
 
-
 				$before = Str::before( $url, ':' );
 
 				$rest = Str::replaceFirst( $before, '', $url );
