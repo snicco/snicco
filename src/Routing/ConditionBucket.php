@@ -30,16 +30,15 @@
 
 		public function combine ( ConditionBucket $old_bucket ) : ConditionBucket {
 
-			$this->pushOld($old_bucket->all());
+			$this->mergePrevious($old_bucket->all());
 
 			return $this;
 
 		}
 
-		private function pushOld ( array $conditions ) {
+		private function mergePrevious ( array $previous_group_conditions ) {
 
-			$this->conditions = array_merge($conditions, $this->conditions);
-
+			$this->conditions = array_merge($previous_group_conditions, $this->conditions);
 
 		}
 
