@@ -93,13 +93,6 @@
 				return '';
 			}
 
-			if ( Str::contains( $url, 'admin.php?' ) ) {
-
-				return $url;
-
-			}
-
-			// return trailingslashit( $url );
 
 			return rtrim( $url, '/\\' ) . '/';
 
@@ -120,6 +113,18 @@
 		public static function combinePath( $before, $new  ) : string {
 
 			return trim( trim( $before , '/' ) . '/' . trim( $new, '/' ), '/' ) ?: '/';
+
+		}
+
+		public static function normalizePath( $url ) : string {
+
+
+			$trimmed = trim( $url, '\\/' );
+
+			$str = ( $trimmed ) ? '/' . $trimmed . '/' : '/';
+
+			return $str;
+
 
 		}
 

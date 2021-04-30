@@ -58,4 +58,19 @@
 			return collect($matches)->flatten()->all();
 
 		}
+
+		public static function isDynamicUrl( string $url  ) {
+
+			$result = preg_match('/[^{]+(?=})/', $url, $matches);
+
+			return $result === 1;
+		}
+
+		public static function isStaticUrl( string $url  ) {
+
+			return ! self::isDynamicUrl($url);
+		}
+
+
+
 	}
