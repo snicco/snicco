@@ -46,7 +46,7 @@
 
 			$conditions = collect( $route->getConditions() );
 
-			$has_regex = $conditions->filter( [ $this, 'isRegex' ] )->isNotEmpty();
+			$has_regex = $conditions->filter( [ $this, 'isRegexCondition' ] )->isNotEmpty();
 
 			$conditions = $conditions->when( $has_regex, [ $this, 'filterUrlCondition' ] )
 			                         ->map( function ( $condition ) use ( $route ) {
@@ -69,7 +69,7 @@
 
 			}
 
-			if ( $this->isRegex( $condition ) ) {
+			if ( $this->isRegexCondition( $condition ) ) {
 
 				return $this->newRegexUrlCondition( $condition, $route );
 
@@ -261,7 +261,7 @@
 
 		}
 
-		public function isRegex( $condition ) : bool {
+		public function isRegexCondition( $condition ) : bool {
 
 
 			if ( is_object( Arr::firstEl( $condition ) ) ) {
@@ -350,5 +350,7 @@
 
 			return isset( $this->condition_types[ $condition ] );
 		}
+
+
 
 	}
