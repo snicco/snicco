@@ -6,6 +6,7 @@
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\RouteInterface;
+	use WPEmerge\Contracts\SetsRouteAttributes;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Helpers\RouteSignatureParameters;
@@ -15,7 +16,7 @@
 	use WPEmerge\Routing\Conditions\UrlCondition;
 	use WPEmerge\Support\Arr;
 
-	class Route implements RouteInterface {
+	class Route implements RouteInterface, SetsRouteAttributes {
 
 		/**
 		 * @var array
@@ -78,7 +79,7 @@
 
 		}
 
-		public function methods( $methods) {
+		public function methods( $methods ) {
 
 			$this->methods = array_merge(
 				$this->methods ?? [] ,

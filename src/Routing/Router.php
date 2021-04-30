@@ -140,8 +140,7 @@
 
 		private function populateUserAttributes( Route $route, array $attributes ) {
 
-			( new RouteGroup($attributes) )->mergeIntoRoute($route);
-
+			(( new RouteAttributes($route) ))->populateInitial( $attributes );
 		}
 
 		private function loadRoutes( $routes ) {
@@ -221,7 +220,8 @@
 
 		private function mergeGroupIntoRoute( Route $route ) {
 
-			$this->lastGroup()->mergeIntoRoute( $route );
+			( new RouteAttributes($route) )->mergeGroup($this->lastGroup());
+
 
 		}
 

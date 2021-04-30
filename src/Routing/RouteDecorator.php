@@ -4,7 +4,6 @@
 	namespace WPEmerge\Routing;
 
 	use BadMethodCallException;
-	use WPEmerge\Routing\Conditions\UrlCondition;
 	use WPEmerge\Support\Arr;
 
 	class RouteDecorator {

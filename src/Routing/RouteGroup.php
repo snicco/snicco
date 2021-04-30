@@ -24,12 +24,13 @@
 
 		public function __construct( array $attributes = [] ) {
 
-			$this->namespace  = $attributes['namespace'] ?? '';
-			$this->url_prefix = $attributes['prefix'] ?? '';
-			$this->name       = $attributes['name'] ?? '';
-			$this->middleware = $attributes['middleware'] ?? [];
-			$this->conditions = $attributes['where'] ?? ConditionBucket::createEmpty();
-			$this->methods    = Arr::wrap($attributes['methods'] ?? []);
+			$this->namespace  = Arr::get($attributes, 'namespace', '');
+			$this->url_prefix = Arr::get($attributes, 'prefix', '');
+			$this->name       = Arr::get($attributes, 'name', '');
+			$this->middleware = Arr::get($attributes, 'middleware', []);
+			$this->conditions = Arr::get($attributes, 'where', ConditionBucket::createEmpty());
+			$this->methods    = Arr::wrap(Arr::get($attributes, 'methods', []));
+
 		}
 
 		public function mergeWith( RouteGroup $old_group ) : RouteGroup {
@@ -49,47 +50,36 @@
 
 		}
 
-		public function mergeIntoRoute( Route $route ) {
+		public function prefix() :string  {
 
-			if ( $this->methods ) {
-
-				$route->methods( $this->methods );
-
-			}
-
-			if ( $this->middleware ) {
-
-				$route->middleware( $this->middleware );
-
-			}
-
-			if ( $this->namespace ) {
-
-				$route->namespace( $this->namespace );
-
-			}
-
-			if ( $this->name ) {
-
-				$route->name( $this->name );
-
-			}
-
-			if ( $this->conditions ) {
-
-				foreach ( $this->conditions->all() as $condition ) {
-
-					$route->where( $condition );
-
-				}
-
-			}
+			return $this->url_prefix;
 
 		}
 
-		public function prefix() {
+		public function namespace() :string {
 
-			return $this->url_prefix;
+			return $this->namespace;
+		}
+
+		public function name() :string {
+
+			return $this->name;
+		}
+
+		public function middleware() :array {
+
+			return $this->middleware;
+		}
+
+		public function conditions() :ConditionBucket {
+
+			return $this->conditions;
+
+		}
+
+		public function methods() : array {
+
+			return $this->methods;
 
 		}
 
