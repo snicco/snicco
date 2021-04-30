@@ -5,6 +5,7 @@
 
 	use Codeception\TestCase\WPTestCase;
 	use SniccoAdapter\BaseContainerAdapter;
+	use Tests\stubs\Foo;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
@@ -63,23 +64,22 @@
 
 			return [
 
-				'url'           => UrlCondition::class,
-				'custom'        => CustomCondition::class,
-				'multiple'      => MultipleCondition::class,
-				'negate'        => NegateCondition::class,
-				'post_id'       => PostIdCondition::class,
-				'post_slug'     => PostSlugCondition::class,
-				'post_status'   => PostStatusCondition::class,
-				'post_template' => PostTemplateCondition::class,
-				'post_type'     => PostTypeCondition::class,
-				'query_var'     => QueryVarCondition::class,
-				'ajax'          => AjaxCondition::class,
-				'admin'         => AdminCondition::class,
-				'model'         => ModelCondition::class,
-				'true'          => TrueCondition::class,
-				'false'         => FalseCondition::class,
-				'maybe'         => MaybeCondition::class,
-				'unique'        => UniqueCondition::class,
+				'url'                  => UrlCondition::class,
+				'custom'               => CustomCondition::class,
+				'negate'               => NegateCondition::class,
+				'post_id'              => PostIdCondition::class,
+				'post_slug'            => PostSlugCondition::class,
+				'post_status'          => PostStatusCondition::class,
+				'post_template'        => PostTemplateCondition::class,
+				'post_type'            => PostTypeCondition::class,
+				'query_var'            => QueryVarCondition::class,
+				'ajax'                 => AjaxCondition::class,
+				'admin'                => AdminCondition::class,
+				'true'                 => TrueCondition::class,
+				'false'                => FalseCondition::class,
+				'maybe'                => MaybeCondition::class,
+				'unique'               => UniqueCondition::class,
+				'dependency_condition' => ConditionWithDependency::class,
 
 			];
 
@@ -543,7 +543,6 @@
 			$this->seeUrl( 'bar', $url );
 
 
-
 		}
 
 		/**
@@ -715,7 +714,11 @@
 		 *
 		 *
 		 *
+		 *
+		 *
 		 * CUSTOM CONDITIONS
+		 *
+		 *
 		 *
 		 *
 		 *
@@ -821,11 +824,11 @@
 
 			$this->router
 				->get( '/foo' )
-				->where(function () {
+				->where( function () {
 
 					return true;
 
-				})
+				} )
 				->where(
 					function ( $foo, $bar ) {
 
@@ -1071,11 +1074,49 @@
 
 		}
 
+		/** @test */
+		public function conditions_can_be_resolved_using_the_service_container() {
+
+
+			$this->router
+				->where( 'dependency_condition', true )
+				->get( 'foo', function () {
+
+					return 'foo';
+
+				} );
+
+			$get = $this->request( 'GET', '/foo' );
+
+			$this->seeResponse('foo', $this->router->runRoute( $get ) );
+
+			$this->router
+				->where( 'dependency_condition', false )
+				->post( 'foo', function () {
+
+					return 'foo';
+
+				} );
+
+			$get = $this->request( 'POST', '/foo' );
+
+			$this->seeResponse(null , $this->router->runRoute( $get ) );
+
+
+
+
+		}
+
 		/**
 		 *
 		 *
 		 *
+		 *
+		 *
 		 * ROUTE GROUPS
+		 *
+		 *
+		 *
 		 *
 		 *
 		 *
@@ -1886,6 +1927,46 @@
 		}
 
 		public function getArguments( RequestInterface $request ) : array {
+
+			return [];
+
+		}
+
+	}
+
+
+	class ConditionWithDependency implements ConditionInterface {
+
+
+		/**
+		 * @var bool
+		 */
+		private $make_it_pass;
+
+		/**
+		 * @var \Tests\stubs\Foo
+		 */
+		private $foo;
+
+		public function __construct( $make_it_pass, Foo $foo ) {
+
+			$this->make_it_pass = $make_it_pass;
+			$this->foo          = $foo;
+
+		}
+
+		public function isSatisfied( RequestInterface $request ) : bool {
+
+			if ( ! isset( $this->foo ) ) {
+
+				return false;
+
+			}
+
+			return $this->make_it_pass === true || $this->make_it_pass === 'foobar';
+		}
+
+		public function getArguments( RequestInterface $request ) {
 
 			return [];
 

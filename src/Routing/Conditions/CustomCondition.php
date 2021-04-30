@@ -3,30 +3,21 @@
 
 	namespace WPEmerge\Routing\Conditions;
 
+	use Closure;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\RequestInterface;
 
-	/**
-	 * Check against a custom callable.
-	 */
+
 	class CustomCondition implements ConditionInterface {
 
-		/**
-		 * Callable to use
-		 *
-		 * @var callable
-		 */
+
+		/** @var \Closure  */
 		private $callable;
 
-		/**
-		 * Arguments to pass to the callable and controller
-		 *
-		 * @var array
-		 */
 		private $arguments;
 
 
-		public function __construct( callable $callable, ...$args  ) {
+		public function __construct( Closure $callable, ...$args  ) {
 
 			$this->callable  = $callable;
 			$this->arguments = $args;
