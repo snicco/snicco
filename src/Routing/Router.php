@@ -25,16 +25,10 @@
 		use SortsMiddleware;
 		use HoldsRouteBlueprint;
 
-		/** @var ConditionFactory  */
-		private $condition_factory;
-
-		/** @var HandlerFactory  */
-		private $handler_factory;
-
 		/** @var \WPEmerge\Routing\RouteGroup[] */
 		private $group_stack;
 
-		/** @var \Contracts\ContainerAdapter  */
+		/** @var \Contracts\ContainerAdapter */
 		private $container;
 
 		/**
@@ -52,24 +46,20 @@
 		 */
 		private $route_middleware_aliases = [];
 
-		/** @var Route[] */
+		/** @var RouteCollection */
 		private $routes;
 
-		public function __construct(
-			ContainerAdapter $container,
-			ConditionFactory $condition_factory,
-			HandlerFactory $handler_factory
-		) {
+		public function __construct( ContainerAdapter $container, RouteCollection $routes ) {
 
-			$this->condition_factory = $condition_factory;
-			$this->handler_factory   = $handler_factory;
-			$this->container         = $container;
+			$this->container = $container;
+			$this->routes    = $routes;
+
 		}
 
 
 		public function group( array $attributes, $routes ) {
 
-			$this->updateGroupStack( new RouteGroup($attributes ) );
+			$this->updateGroupStack( new RouteGroup( $attributes ) );
 
 			$this->loadRoutes( $routes );
 
@@ -79,12 +69,7 @@
 
 		public function getRouteUrl( string $name, array $arguments = [] ) : string {
 
-
-			$route = collect( $this->routes )->first( function ( Route $route ) use ( $name ) {
-
-				return $route->getName() === $name;
-
-			} );
+			$route = $this->routes->findByName($name);
 
 			if ( ! $route ) {
 
@@ -94,8 +79,6 @@
 
 			}
 
-			$route->compileConditions( $this->condition_factory );
-
 			return $route->createUrl( $arguments );
 
 
@@ -103,9 +86,7 @@
 
 		public function runRoute( RequestInterface $request ) {
 
-			if ( $route = $this->findRoute( $request ) ) {
-
-				$route->compileAction( $this->handler_factory );
+			if ( $route = $this->routes->match($request) ) {
 
 				return $this->runWithinStack( $route, $request );
 
@@ -153,7 +134,7 @@
 
 		}
 
-		private function updateGroupStack( RouteGroup $group) {
+		private function updateGroupStack( RouteGroup $group ) {
 
 			if ( $this->hasGroupStack() ) {
 
@@ -171,47 +152,9 @@
 
 		}
 
-		private function mergeWithLastGroup( RouteGroup $new_group) : RouteGroup {
+		private function mergeWithLastGroup( RouteGroup $new_group ) : RouteGroup {
 
-			return $new_group->mergeWith($this->lastGroup());
-
-		}
-
-		/**
-		 * @todo Find a way to not recompile shared conditions that were passed by
-		 * @todo previous routes but the route in total didnt match.
-		 */
-		private function findRoute( RequestInterface $request ) : ?Route {
-
-
-			$routes = collect( $this->routes );
-
-			$route = $routes->filter( function ( Route $route ) use ( $request ) {
-
-				return $this->matchingHttpVerbs( $request, $route );
-
-			} )
-			                ->first( function ( Route $route ) use ( $request ) {
-
-				                $route->compileConditions( $this->condition_factory );
-
-				                return $route->matches( $request );
-
-			                } );
-
-			if ( $route ) {
-
-				$request->setRoute( $route );
-
-			}
-
-			return $route;
-
-		}
-
-		private function matchingHttpVerbs( RequestInterface $request, Route $route ) : bool {
-
-			return Arr::isValue( $request->getMethod(), $route->getMethods() );
+			return $new_group->mergeWith( $this->lastGroup() );
 
 		}
 
@@ -254,7 +197,7 @@
 
 			$route->addCondition( new UrlCondition( $url ) );
 
-			return $this->routes[] = $route;
+			return $this->routes->add($route);
 
 
 		}
@@ -267,7 +210,7 @@
 
 		private function mergeGroupIntoRoute( Route $route ) {
 
-			$this->lastGroup()->mergeIntoRoute($route);
+			$this->lastGroup()->mergeIntoRoute( $route );
 
 		}
 

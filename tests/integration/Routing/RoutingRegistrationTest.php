@@ -24,26 +24,12 @@
 	use WPEmerge\Routing\Conditions\PostTypeCondition;
 	use WPEmerge\Routing\Conditions\QueryVarCondition;
 	use WPEmerge\Routing\Conditions\UrlCondition;
+	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Support\Str;
 
 	class RoutingRegistrationTest extends WPTestCase {
 
-
-		/**
-		 * @var \SniccoAdapter\BaseContainerAdapter|
-		 */
-		private $container;
-
-		/**
-		 * @var \WPEmerge\Routing\Conditions\ConditionFactory
-		 */
-		private $condition_factory;
-
-		/**
-		 * @var \WPEmerge\Handlers\HandlerFactory
-		 */
-		private $handler_factory;
 
 		/**
 		 * @var \WPEmerge\Routing\Router
@@ -55,10 +41,11 @@
 
 			parent::setUp();
 
-			$this->container         = new BaseContainerAdapter();
-			$this->condition_factory = new ConditionFactory( $this->conditions(), $this->container );
-			$this->handler_factory   = new HandlerFactory( [], $this->container );
-			$this->router            = $this->newRouter();
+			$container         = new BaseContainerAdapter();
+			$condition_factory = new ConditionFactory( $this->conditions(), $container );
+			$handler_factory   = new HandlerFactory( [], $container );
+			$route_collection  = new RouteCollection( $condition_factory, $handler_factory );
+			$this->router      = new Router( $container, $route_collection );
 
 			unset( $GLOBALS['test'] );
 
@@ -95,16 +82,6 @@
 				'unique'        => UniqueCondition::class,
 
 			];
-
-		}
-
-		private function newRouter() : Router {
-
-			$this->router = new Router(
-				$this->container, $this->condition_factory, $this->handler_factory
-			);
-
-			return $this->router;
 
 		}
 
@@ -1539,7 +1516,7 @@
 
 					$GLOBALS['test']['parent_condition_called'] = true;
 
-					$this->assertFalse($GLOBALS['test']['child_condition_called']);
+					$this->assertFalse( $GLOBALS['test']['child_condition_called'] );
 
 					return true;
 
@@ -1554,7 +1531,6 @@
 							return 'bar';
 
 						} );
-
 
 					$this->router->where( function () {
 
@@ -1574,7 +1550,6 @@
 							} );
 
 					} );
-
 
 
 				} );
@@ -1630,7 +1605,7 @@
 					->get( '/bar' )
 					->where( function () {
 
-						$this->fail('Route condition evaluated even tho we already had a matching route');
+						$this->fail( 'Route condition evaluated even tho we already had a matching route' );
 
 					} )
 					->handle( function () {
@@ -1645,41 +1620,39 @@
 			$this->seeResponse(
 				'bar1',
 				$this->router->runRoute(
-					$this->request('GET', '/foo/bar')
+					$this->request( 'GET', '/foo/bar' )
 				)
 			);
 
-			$this->assertTrue($GLOBALS['test']['first_route_condition']);
+			$this->assertTrue( $GLOBALS['test']['first_route_condition'] );
 
 		}
 
 		/** @test */
-		public function url_conditions_are_passed_even_if_one_group_in_the_chain_does_not_specify_an_url_condition () {
+		public function url_conditions_are_passed_even_if_one_group_in_the_chain_does_not_specify_an_url_condition() {
 
 
-			$this->router->prefix('foo')->group(function () {
+			$this->router->prefix( 'foo' )->group( function () {
 
-				$this->router->where('true')->group(function () {
+				$this->router->where( 'true' )->group( function () {
 
-					$this->router->get('bar', function () {
+					$this->router->get( 'bar', function () {
 
 						return 'foobar';
 
-					});
+					} );
 
-				});
+				} );
 
-			});
+			} );
 
+			$get = $this->request( 'GET', '/foo/bar' );
 
-			$get = $this->request('GET', '/foo/bar');
+			$this->seeResponse( 'foobar', $this->router->runRoute( $get ) );
 
-			$this->seeResponse('foobar', $this->router->runRoute($get) );
+			$get = $this->request( 'GET', '/foo' );
 
-			$get = $this->request('GET', '/foo');
-
-			$this->seeResponse(null , $this->router->runRoute($get) );
-
+			$this->seeResponse( null, $this->router->runRoute( $get ) );
 
 
 		}
@@ -1687,28 +1660,27 @@
 		/** @test */
 		public function url_conditions_are_passed_even_if_the_root_group_doesnt_specify_an_url_condition() {
 
-			$this->router->where('true')->group(function () {
+			$this->router->where( 'true' )->group( function () {
 
-				$this->router->prefix('foo')->group(function () {
+				$this->router->prefix( 'foo' )->group( function () {
 
-					$this->router->get('bar', function () {
+					$this->router->get( 'bar', function () {
 
 						return 'foobar';
 
-					});
+					} );
 
-				});
+				} );
 
-			});
+			} );
 
+			$get = $this->request( 'GET', '/foo/bar' );
 
-			$get = $this->request('GET', '/foo/bar');
+			$this->seeResponse( 'foobar', $this->router->runRoute( $get ) );
 
-			$this->seeResponse('foobar', $this->router->runRoute($get) );
+			$get = $this->request( 'GET', '/foo' );
 
-			$get = $this->request('GET', '/foo');
-
-			$this->seeResponse(null , $this->router->runRoute($get) );
+			$this->seeResponse( null, $this->router->runRoute( $get ) );
 
 
 		}

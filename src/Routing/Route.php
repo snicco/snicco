@@ -216,7 +216,7 @@
 
 		}
 
-		public function getName() : string {
+		public function getName() {
 
 			return $this->name;
 
@@ -274,13 +274,9 @@
 
 			$conditions = collect( $this->compiled_conditions );
 
-			$condition = $conditions->first( function ( ConditionInterface $condition ) {
+			$url = $conditions->whereInstanceOf(UrlCondition::class)->first();
 
-				return $condition instanceof UrlCondition;
-
-			}, null );
-
-			if ( ! $condition ) {
+			if ( ! $url ) {
 
 				throw new ConfigurationException(
 					'The Route can not be converted to an URL.'
@@ -288,7 +284,7 @@
 
 			}
 
-			return $condition->toUrl($arguments);
+			return $url->toUrl($arguments);
 
 		}
 
@@ -303,9 +299,11 @@
 			return $this->compiled_conditions;
 		}
 
-		public function compileConditions( ConditionFactory $condition_factory ) {
+		public function compileConditions( ConditionFactory $condition_factory ) : Route {
 
 			$this->compiled_conditions = $condition_factory->compileConditions($this);
+
+			return $this;
 
 		}
 
