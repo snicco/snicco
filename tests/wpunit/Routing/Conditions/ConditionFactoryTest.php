@@ -44,20 +44,20 @@ class ConditionFactoryTest extends WPTestCase {
 	}
 
 	/**
-	 * @covers ::make
+	 * @covers ::makeNew
 	 * @covers ::makeFromUrl
 	 */
 	public function testMake_Url_UrlCondition() {
 		$expected_param = '/foo/bar/';
 		$expected_class = UrlCondition::class;
 
-		$condition = $this->subject->make( $expected_param );
+		$condition = $this->subject->makeNew( $expected_param );
 		$this->assertInstanceOf( $expected_class, $condition );
 		$this->assertEquals( $expected_param, $condition->getUrl() );
 	}
 
 	/**
-	 * @covers ::make
+	 * @covers ::makeNew
 	 * @covers ::makeFromArray
 	 * @covers ::parseConditionOptions
 	 * @covers ::conditionTypeRegistered
@@ -66,13 +66,13 @@ class ConditionFactoryTest extends WPTestCase {
 		$expected_param = 10;
 		$expected_class = PostIdCondition::class;
 
-		$condition = $this->subject->make( ['post_id', $expected_param] );
+		$condition = $this->subject->makeNew( ['post_id', $expected_param] );
 		$this->assertInstanceOf( $expected_class, $condition );
 		$this->assertEquals( $expected_param, $condition->getArguments( $this->request )['post_id'] );
 	}
 
 	/**
-	 * @covers ::make
+	 * @covers ::makeNew
 	 * @covers ::makeFromArray
 	 * @covers ::parseConditionOptions
 	 * @covers ::conditionTypeRegistered
@@ -81,13 +81,13 @@ class ConditionFactoryTest extends WPTestCase {
 		$expected_param = function() {};
 		$expected_class = CustomCondition::class;
 
-		$condition = $this->subject->make( ['custom', $expected_param] );
+		$condition = $this->subject->makeNew( ['custom', $expected_param] );
 		$this->assertInstanceOf( $expected_class, $condition );
 		$this->assertSame( $expected_param, $condition->getCallable() );
 	}
 
 	/**
-	 * @covers ::make
+	 * @covers ::makeNew
 	 * @covers ::makeFromArray
 	 * @covers ::parseConditionOptions
 	 * @covers ::conditionTypeRegistered
@@ -96,13 +96,13 @@ class ConditionFactoryTest extends WPTestCase {
 		$expected_param = 'phpinfo';
 		$expected_class = CustomCondition::class;
 
-		$condition = $this->subject->make( ['custom', $expected_param] );
+		$condition = $this->subject->makeNew( ['custom', $expected_param] );
 		$this->assertInstanceOf( $expected_class, $condition );
 		$this->assertSame( $expected_param, $condition->getCallable() );
 	}
 
 	/**
-	 * @covers ::make
+	 * @covers ::makeNew
 	 * @covers ::makeFromArray
 	 * @covers ::parseConditionOptions
 	 * @covers ::conditionTypeRegistered
@@ -112,13 +112,13 @@ class ConditionFactoryTest extends WPTestCase {
 		$expected_param = function() {};
 		$expected_class = CustomCondition::class;
 
-		$condition = $this->subject->make( [$expected_param] );
+		$condition = $this->subject->makeNew( [$expected_param] );
 		$this->assertInstanceOf( $expected_class, $condition );
 		$this->assertSame( $expected_param, $condition->getCallable() );
 	}
 
 	/**
-	 * @covers ::make
+	 * @covers ::makeNew
 	 * @covers ::makeFromArray
 	 * @covers ::parseConditionOptions
 	 * @covers ::conditionTypeRegistered
@@ -127,13 +127,13 @@ class ConditionFactoryTest extends WPTestCase {
 		$expected_param = 'phpinfo';
 		$expected_class = CustomCondition::class;
 
-		$condition = $this->subject->make( [$expected_param] );
+		$condition = $this->subject->makeNew( [$expected_param] );
 		$this->assertInstanceOf( $expected_class, $condition );
 		$this->assertSame( $expected_param, $condition->getCallable() );
 	}
 
 	/**
-	 * @covers ::make
+	 * @covers ::makeNew
 	 * @covers ::makeFromArray
 	 * @covers ::makeFromArrayOfConditions
 	 */
@@ -142,7 +142,7 @@ class ConditionFactoryTest extends WPTestCase {
 		$expected_param2 = m::mock( PostIdCondition::class );
 		$expected_class = MultipleCondition::class;
 
-		$condition = $this->subject->make( [ [ $expected_param1 ], $expected_param2 ] );
+		$condition = $this->subject->makeNew( [ [ $expected_param1 ], $expected_param2 ] );
 		$this->assertInstanceOf( $expected_class, $condition );
 
 		$condition_conditions = $condition->getConditions();
@@ -151,7 +151,7 @@ class ConditionFactoryTest extends WPTestCase {
 	}
 
 	/**
-	 * @covers ::make
+	 * @covers ::makeNew
 	 * @covers ::makeFromArray
 	 * @covers ::parseConditionOptions
 	 * @covers ::isNegatedCondition
@@ -160,14 +160,14 @@ class ConditionFactoryTest extends WPTestCase {
 	public function testMake_ExclamatedConditionName_NegateCondition() {
 		$expected_class = NegateCondition::class;
 
-		$condition = $this->subject->make( ['!query_var', 'foo', 'bar'] );
+		$condition = $this->subject->makeNew( ['!query_var', 'foo', 'bar'] );
 		$this->assertInstanceOf( $expected_class, $condition );
 
 		$this->assertEquals( ['query_var' => 'foo', 'value' => 'bar'], $condition->getArguments( $this->request ) );
 	}
 
 	/**
-	 * @covers ::make
+	 * @covers ::makeNew
 	 * @covers ::makeFromArray
 	 * @covers ::parseConditionOptions
 	 * @covers ::conditionTypeRegistered
@@ -178,22 +178,22 @@ class ConditionFactoryTest extends WPTestCase {
 		$this->expectExceptionMessage('Unknown condition');
 
 		$expected_param = 'foobar';
-		$this->subject->make( [ $expected_param ] );
+		$this->subject->makeNew( [ $expected_param ] );
 	}
 
 	/**
-	 * @covers ::make
+	 * @covers ::makeNew
 	 * @covers ::makeFromArray
 	 */
 	public function testMake_NoConditionType_Exception() {
 
 		$this->expectExceptionMessage('No condition type');
 
-		$this->subject->make( [] );
+		$this->subject->makeNew( [] );
 	}
 
 	/**
-	 * @covers ::make
+	 * @covers ::makeNew
 	 * @covers ::makeFromArray
 	 */
 	public function testMake_NonexistentConditionType_Exception() {
@@ -201,36 +201,36 @@ class ConditionFactoryTest extends WPTestCase {
 		$this->expectExceptionMessage('Error while creating the RouteCondition');
 
 		$subject = new ConditionFactory( ['nonexistent_condition_type' => 'Nonexistent\\Condition\\Type\\Class'], m::mock(BaseContainerAdapter::class) );
-		$subject->make( ['nonexistent_condition_type'] );
+		$subject->makeNew( ['nonexistent_condition_type'] );
 	}
 
 	/**
-	 * @covers ::make
+	 * @covers ::makeNew
 	 * @covers ::makeFromClosure
 	 */
 	public function testMake_Closure_CustomCondition() {
 		$expected_param = function() {};
 		$expected_class = CustomCondition::class;
 
-		$condition = $this->subject->make( $expected_param );
+		$condition = $this->subject->makeNew( $expected_param );
 		$this->assertInstanceOf( $expected_class, $condition );
 		$this->assertSame( $expected_param, $condition->getCallable() );
 	}
 
 	/**
-	 * @covers ::make
+	 * @covers ::makeNew
 	 */
 	public function testMake_Callable_UrlCondition() {
 		$expected_param = 'phpinfo';
 		$expected_class = UrlCondition::class;
 
-		$condition = $this->subject->make( $expected_param );
+		$condition = $this->subject->makeNew( $expected_param );
 		$this->assertInstanceOf( $expected_class, $condition );
 		$this->assertEquals( '/' . $expected_param . '/', $condition->getUrl() );
 	}
 
 	/**
-	 * @covers ::make
+	 * @covers ::makeNew
 	 * @expectedException \WPEmerge\Exceptions\ConfigurationException
 	 * @expectedExceptionMessage Invalid condition options
 	 */
@@ -239,7 +239,7 @@ class ConditionFactoryTest extends WPTestCase {
 		$this->expectExceptionMessage('Invalid condition options');
 
 
-		$this->subject->make( new stdClass() );
+		$this->subject->makeNew( new stdClass() );
 	}
 
 	/**

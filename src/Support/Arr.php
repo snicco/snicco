@@ -58,4 +58,14 @@
 
 		}
 
+		public static function allAfter( array $array, int $index = 0 ) : array {
+
+			$copy = $array;
+
+			$array = array_values( array_slice( $copy, $index) );
+
+			return $array;
+
+		}
+
 	}

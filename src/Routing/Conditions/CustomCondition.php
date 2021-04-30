@@ -16,26 +16,21 @@
 		 *
 		 * @var callable
 		 */
-		protected $callable = null;
+		private $callable;
 
 		/**
 		 * Arguments to pass to the callable and controller
 		 *
 		 * @var array
 		 */
-		protected $arguments = [];
+		private $arguments;
 
 
-		public function __construct( callable $callable ) {
+		public function __construct( callable $callable, ...$args  ) {
 
 			$this->callable  = $callable;
-			$this->arguments = array_values( array_slice( func_get_args(), 1 ) );
-		}
+			$this->arguments = $args;
 
-
-		public function getCallable() {
-
-			return $this->callable;
 		}
 
 
@@ -45,9 +40,10 @@
 		}
 
 
-		public function getArguments( RequestInterface $request ) {
+		public function getArguments( RequestInterface $request ) : array {
 
 			return $this->arguments;
+
 		}
 
 	}
