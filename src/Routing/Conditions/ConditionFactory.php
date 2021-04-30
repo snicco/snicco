@@ -312,7 +312,8 @@
 
 			}
 
-			$existing_compiled_url_condition->setUrlWhere( $this->compileRegex( $condition ) );
+			/** @var $existing_compiled_url_condition \WPEmerge\Routing\Conditions\UrlCondition */
+			$existing_compiled_url_condition->setRegex( $this->compileRegex( $condition ) );
 
 			return $existing_compiled_url_condition;
 

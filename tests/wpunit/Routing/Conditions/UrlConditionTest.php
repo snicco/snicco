@@ -53,14 +53,14 @@ class UrlConditionTest extends WPTestCase {
 	}
 
 	/**
-	 * @covers ::getUrlWhere
-	 * @covers ::setUrlWhere
+	 * @covers ::getRegex
+	 * @covers ::setRegex
 	 */
 	public function testGetUrlWhere() {
 		$expected = ['foo' => 'bar'];
 		$subject = new UrlCondition( '' );
-		$subject->setUrlWhere( $expected );
-		$this->assertEquals( $expected, $subject->getUrlWhere() );
+		$subject->setRegex( $expected );
+		$this->assertEquals( $expected, $subject->getRegex() );
 	}
 
 	/**
@@ -106,7 +106,7 @@ class UrlConditionTest extends WPTestCase {
 		$subject = new UrlCondition( '', $expected1 );
 		$subject = $subject->concatenate( '', $expected2 );
 
-		$this->assertEquals( $expected, $subject->getUrlWhere() );
+		$this->assertEquals( $expected, $subject->getRegex() );
 	}
 
 	/**
@@ -173,39 +173,39 @@ class UrlConditionTest extends WPTestCase {
 		$this->assertTrue( $subject->isSatisfied( $request ) );
 
 		$subject = new UrlCondition( '/{param1}/{param2}' );
-		$subject->setUrlWhere( [
+		$subject->setRegex( [
 			'param1' => '/^[fobar]+$/i',
 		] );
 		$this->assertTrue( $subject->isSatisfied( $request ) );
 
 		$subject = new UrlCondition( '/{param1}/{param2}' );
-		$subject->setUrlWhere( [
+		$subject->setRegex( [
 			'param1' => '/^[fobar]+$/i',
 			'param2' => '/^[fobar]+$/i',
 		] );
 		$this->assertTrue( $subject->isSatisfied( $request ) );
 
 		$subject = new UrlCondition( '/{param1}/{param2}' );
-		$subject->setUrlWhere( [
+		$subject->setRegex( [
 			'param1' => '/^\d+$/i',
 		] );
 		$this->assertFalse( $subject->isSatisfied( $request ) );
 
 		$subject = new UrlCondition( '/{param1}/{param2}' );
-		$subject->setUrlWhere( [
+		$subject->setRegex( [
 			'param2' => '/^\d+$/i',
 		] );
 		$this->assertFalse( $subject->isSatisfied( $request ) );
 
 		$subject = new UrlCondition( '/{param1}/{param2}' );
-		$subject->setUrlWhere( [
+		$subject->setRegex( [
 			'param1' => '/^\d+$/i',
 			'param2' => '/^[fobar]+$/i',
 		] );
 		$this->assertFalse( $subject->isSatisfied( $request ) );
 
 		$subject = new UrlCondition( '/{param1}/{param2}' );
-		$subject->setUrlWhere( [
+		$subject->setRegex( [
 			'param1' => '/^[fobar]+$/i',
 			'param2' => '/^\d+$/i',
 		] );

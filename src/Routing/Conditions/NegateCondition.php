@@ -6,9 +6,7 @@
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\RequestInterface;
 
-	/**
-	 * Negate another condition's result.
-	 */
+
 	class NegateCondition implements ConditionInterface {
 
 		/**
@@ -16,28 +14,23 @@
 		 *
 		 * @var ConditionInterface
 		 */
-		protected $condition = null;
+		private $condition;
 
-		/**
-		 * Constructor.
-		 *
-		 *
-		 * @param  ConditionInterface  $condition
-		 */
-		public function __construct( $condition ) {
+
+		public function __construct( ConditionInterface $condition ) {
 
 			$this->condition = $condition;
 		}
 
 
-		public function isSatisfied( RequestInterface $request ) {
+		public function isSatisfied( RequestInterface $request ) : bool {
 
 			return ! $this->condition->isSatisfied( $request );
 
 		}
 
 
-		public function getArguments( RequestInterface $request ) {
+		public function getArguments( RequestInterface $request ) : array {
 
 			return $this->condition->getArguments( $request );
 		}
