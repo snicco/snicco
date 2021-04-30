@@ -5,6 +5,7 @@
 
 	use Codeception\TestCase\WPTestCase;
 	use Mockery;
+	use Tests\TestRequest;
 	use WPEmerge\Helpers\Url;
 	use WPEmerge\Contracts\RequestInterface;
 
@@ -17,11 +18,10 @@
 
 			$expected = '/foo';
 
-			$request = Mockery::mock( RequestInterface::class );
-			$request->shouldReceive( 'getUrl' )
-			        ->andReturn( 'http://external.example.org/foo' );
+			$request = TestRequest::from('GET', 'foo', 'http://external.example.org');
 
 			$this->assertEquals( $expected, Url::getPath( $request, 'http://example.org/foo' ) );
+
 		}
 
 		/**
@@ -31,9 +31,8 @@
 
 			$expected = '/';
 
-			$request = Mockery::mock( RequestInterface::class );
-			$request->shouldReceive( 'getUrl' )
-			        ->andReturn( 'http://example.org' );
+
+			$request = TestRequest::from('GET', '', 'http://example.org');
 
 			$this->assertEquals( $expected, Url::getPath( $request, 'http://example.org' ) );
 			$this->assertEquals( $expected, Url::getPath( $request, 'http://example.org/' ) );
@@ -46,9 +45,7 @@
 
 			$expected = '/';
 
-			$request = Mockery::mock( RequestInterface::class );
-			$request->shouldReceive( 'getUrl' )
-			        ->andReturn( 'http://example.org/' );
+			$request = TestRequest::from('GET', '', 'http://example.org/');
 
 			$this->assertEquals( $expected, Url::getPath( $request, 'http://example.org' ) );
 			$this->assertEquals( $expected, Url::getPath( $request, 'http://example.org/' ) );
@@ -59,9 +56,8 @@
 		 */
 		public function testGetPath_Subdirectory_RelativePath() {
 
-			$request = Mockery::mock( RequestInterface::class );
-			$request->shouldReceive( 'getUrl' )
-			        ->andReturn( 'http://example.org/foo/bar/' );
+
+			$request = TestRequest::from('GET', '', 'http://example.org/foo/bar');
 
 			$this->assertEquals( '/foo/bar', Url::getPath( $request, 'http://example.org/' ) );
 			$this->assertEquals( '/bar', Url::getPath( $request, 'http://example.org/foo/' ) );
@@ -75,16 +71,13 @@
 		 */
 		public function testGetPath_DifferentSubdirectory() {
 
-			$request = Mockery::mock( RequestInterface::class );
-			$request->shouldReceive( 'getUrl' )
-			        ->andReturn( 'http://example.org/baz' );
+
+			$request = TestRequest::from('GET', '', 'http://example.org/baz');
 
 			$this->assertEquals( '/baz', Url::getPath( $request, 'http://example.org/foo' ) );
 			$this->assertEquals( '/baz', Url::getPath( $request, 'http://example.org/foo/' ) );
 
-			$request = Mockery::mock( RequestInterface::class );
-			$request->shouldReceive( 'getUrl' )
-			        ->andReturn( 'http://example.org/baz/' );
+			$request = TestRequest::from('GET', '', 'http://example.org/baz/');
 
 			$this->assertEquals( '/baz', Url::getPath( $request, 'http://example.org/foo' ) );
 			$this->assertEquals( '/baz', Url::getPath( $request, 'http://example.org/foo/' ) );
@@ -97,9 +90,8 @@
 
 			$expected = '/foo/bar';
 
-			$request = Mockery::mock( RequestInterface::class );
-			$request->shouldReceive( 'getUrl' )
-			        ->andReturn( 'http://example.org/foo/bar/?foo=bar' );
+
+			$request = TestRequest::from('GET', 'foo/bar/?foo=bar', 'http://example.org');
 
 			$this->assertEquals( $expected, Url::getPath( $request, 'http://example.org/' ) );
 		}
@@ -111,9 +103,8 @@
 
 			$expected = '/foo/bar';
 
-			$request = Mockery::mock( RequestInterface::class );
-			$request->shouldReceive( 'getUrl' )
-			        ->andReturn( 'http://example.org/foo/bar/#foo' );
+
+			$request = TestRequest::from('GET', 'foo/bar/#foo', 'http://example.org');
 
 			$this->assertEquals( $expected, Url::getPath( $request, 'http://example.org/' ) );
 		}
@@ -125,9 +116,7 @@
 
 			$expected = '/foo/bar';
 
-			$request = Mockery::mock( RequestInterface::class );
-			$request->shouldReceive( 'getUrl' )
-			        ->andReturn( 'http://example.org/foo/bar/?foo=bar#foo' );
+			$request = TestRequest::from('GET', 'foo/bar/?foo=bar#foo', 'http://example.org');
 
 			$this->assertEquals( $expected, Url::getPath( $request, 'http://example.org/' ) );
 		}

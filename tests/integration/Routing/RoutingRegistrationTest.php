@@ -6,6 +6,7 @@
 	use Codeception\TestCase\WPTestCase;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\Foo;
+	use Tests\TestRequest;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
@@ -86,9 +87,9 @@
 
 		}
 
-		private function request( $method, $url ) {
+		private function request( $method, $path ) : TestRequest {
 
-			return new TestRequest( strtoupper( $method ), 'https://foo.com' . $url );
+			return TestRequest::from( $method ,  $path );
 
 		}
 
@@ -2014,25 +2015,6 @@
 			return [];
 
 		}
-
-	}
-
-
-	class TestRequest extends Request {
-
-		public function __construct(
-			$method,
-			$uri,
-			array $headers = [],
-			$body = null,
-			$version = '1.1',
-			array $serverParams = []
-		) {
-
-			parent::__construct( $method, $uri, $headers, $body, $version, $serverParams );
-
-		}
-
 
 	}
 

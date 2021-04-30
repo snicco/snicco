@@ -18,8 +18,8 @@
 
 		private function bootstrapTestApp() {
 
-			TestApp::make( new BaseContainerAdapter() )->bootstrap( $this->config(), false );
-			TestApp::container()[ WPEMERGE_REQUEST_KEY ]                  = $this->request ?? m::mock( Request::class );
+			TestApp::make( new BaseContainerAdapter() )->bootstrap( $this->config() );
+			TestApp::container()[ WPEMERGE_REQUEST_KEY ]                  = $this->request;
 			TestApp::container()[ WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY ] = new IntegrationTestErrorHandler();
 			TestApp::container()[ WPEMERGE_RESPONSE_SERVICE_KEY ]         = $this->response_service ?? new TestResponseService();
 
