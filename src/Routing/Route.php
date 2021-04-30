@@ -12,7 +12,7 @@
 	use WPEmerge\Helpers\RouteSignatureParameters;
 	use WPEmerge\Helpers\Url;
 	use WPEmerge\Helpers\UrlParser;
-	use WPEmerge\Routing\Conditions\ConditionFactory;
+	use WPEmerge\Routing\ConditionFactory;
 	use WPEmerge\Routing\Conditions\UrlCondition;
 	use WPEmerge\Support\Arr;
 

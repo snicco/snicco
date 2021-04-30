@@ -13,7 +13,7 @@
 	use WPEmerge\Requests\Request;
 	use WPEmerge\Routing\Conditions\AdminCondition;
 	use WPEmerge\Routing\Conditions\AjaxCondition;
-	use WPEmerge\Routing\Conditions\ConditionFactory;
+	use WPEmerge\Routing\ConditionFactory;
 	use WPEmerge\Routing\Conditions\CustomCondition;
 	use WPEmerge\Routing\Conditions\ModelCondition;
 	use WPEmerge\Routing\Conditions\MultipleCondition;

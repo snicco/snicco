@@ -14,7 +14,7 @@
 	use WPEmerge\Routing\Conditions\UrlCondition;
 	use WPEmerge\Support\Arr;
 	use WPEmerge\Traits\CompilesMiddleware;
-	use WPEmerge\Routing\Conditions\ConditionFactory;
+	use WPEmerge\Routing\ConditionFactory;
 	use WPEmerge\Traits\HoldsRouteBlueprint;
 	use WPEmerge\Traits\SortsMiddleware;
 

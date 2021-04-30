@@ -92,7 +92,7 @@
 	}
 
 	if ( ! defined( 'WPEMERGE_ROUTING_CONDITIONS_CONDITION_FACTORY_KEY' ) ) {
-		define( 'WPEMERGE_ROUTING_CONDITIONS_CONDITION_FACTORY_KEY', \WPEmerge\Routing\Conditions\ConditionFactory::class );
+		define( 'WPEMERGE_ROUTING_CONDITIONS_CONDITION_FACTORY_KEY', \WPEmerge\Routing\ConditionFactory::class );
 	}
 
 	if ( ! defined( 'WPEMERGE_ROUTING_CONDITION_TYPES_KEY' ) ) {
