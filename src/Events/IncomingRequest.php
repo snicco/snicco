@@ -18,6 +18,8 @@
 
 			$this->request = Request::fromGlobals();
 
+			$this->request->setType(get_class($this));
+
 		}
 
 

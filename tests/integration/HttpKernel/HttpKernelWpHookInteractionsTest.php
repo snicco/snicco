@@ -6,19 +6,14 @@
 	use BetterWpHooks\Contracts\Dispatcher;
 	use Codeception\TestCase\WPTestCase;
 	use Tests\integration\SetUpTestApp;
-	use Tests\MockRequest;
 	use Tests\stubs\TestApp;
 	use Tests\stubs\TestResponseService;
 	use WPEmerge\Events\AdminBodySendable;
-	use WPEmerge\Events\IncomingWebRequest;
-	use WPEmerge\Requests\Request;
-	use Mockery as m;
 
 	class HttpKernelWpHookInteractionsTest extends WPTestCase {
 
 
 		use SetUpTestApp;
-		use MockRequest;
 
 		/**
 		 * @var \WPEmerge\Http\HttpKernel
@@ -35,8 +30,6 @@
 
 			parent::setUp();
 
-			$this->request = m::mock( Request::class );
-			$this->createMockWebRequest();
 
 			$this->response_service = new TestResponseService();
 
@@ -49,7 +42,6 @@
 
 		protected function tearDown() : void {
 
-			m::close();
 			parent::tearDown();
 
 			TestApp::setApplication( null );

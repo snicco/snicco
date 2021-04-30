@@ -32,68 +32,7 @@ class UrlConditionTest extends WPTestCase {
 		$this->assertEquals( $expected, $subject->getUrl() );
 	}
 
-	/**
-	 * @covers ::getUrl
-	 */
-	public function testGetUrl() {
-		$subject1 = new UrlCondition( '' );
-		$this->assertEquals( '/', $subject1->getUrl() );
 
-		$subject2 = new UrlCondition( 'foo' );
-		$this->assertEquals( '/foo/', $subject2->getUrl() );
-
-		$subject3 = new UrlCondition( '/foo' );
-		$this->assertEquals( '/foo/', $subject3->getUrl() );
-
-		$subject4 = new UrlCondition( 'foo/' );
-		$this->assertEquals( '/foo/', $subject4->getUrl() );
-
-		$subject5 = new UrlCondition( '/foo/' );
-		$this->assertEquals( '/foo/', $subject5->getUrl() );
-	}
-
-	/**
-	 * @covers ::getRegex
-	 * @covers ::setRegex
-	 */
-	public function testGetUrlWhere() {
-		$expected = ['foo' => 'bar'];
-		$subject = new UrlCondition( '' );
-		$subject->setRegex( $expected );
-		$this->assertEquals( $expected, $subject->getRegex() );
-	}
-
-	/**
-	 * @covers ::concatenate
-	 */
-	public function testConcatenate_Url() {
-		$expected = '/foo/bar/';
-
-		$subject1 = new UrlCondition( 'foo' );
-		$subject2 = $subject1->concatenate( 'bar' );
-		$this->assertEquals( $expected, $subject2->getUrl() );
-		$this->assertNotSame( $subject2, $subject1 );
-
-		$subject1 = new UrlCondition( '/foo' );
-		$subject2 = $subject1->concatenate( '/bar' );
-		$this->assertEquals( $expected, $subject2->getUrl() );
-
-		$subject1 = new UrlCondition( 'foo/' );
-		$subject2 = $subject1->concatenate( 'bar/' );
-		$this->assertEquals( $expected, $subject2->getUrl() );
-
-		$subject1 = new UrlCondition( 'foo/' );
-		$subject2 = $subject1->concatenate( '/bar' );
-		$this->assertEquals( $expected, $subject2->getUrl() );
-
-		$subject1 = new UrlCondition( '/foo' );
-		$subject2 = $subject1->concatenate( 'bar/' );
-		$this->assertEquals( $expected, $subject2->getUrl() );
-
-		$subject1 = new UrlCondition( '/foo/' );
-		$subject2 = $subject1->concatenate( '/bar/' );
-		$this->assertEquals( $expected, $subject2->getUrl() );
-	}
 
 	/**
 	 * @covers ::concatenate

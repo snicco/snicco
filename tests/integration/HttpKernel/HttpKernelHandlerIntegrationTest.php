@@ -7,12 +7,12 @@
 	use Mockery as m;
 	use Tests\integration\DisableMiddleware;
 	use Tests\integration\SetUpTestApp;
-	use Tests\MockRequest;
 	use Tests\stubs\Controllers\Web\DependencyController;
 	use Tests\stubs\Controllers\Web\TeamsController;
 	use Tests\stubs\TestResponseService;
+	use Tests\TestRequest;
 	use WPEmerge\Events\IncomingRequest;
-	use WPEmerge\Requests\Request;
+	use WPEmerge\Events\IncomingWebRequest;
 	use Tests\stubs\TestApp;
 
 	/**
@@ -22,7 +22,6 @@
 
 		use DisableMiddleware;
 		use SetUpTestApp;
-		use MockRequest;
 
 		/**
 		 * @var \WPEmerge\Http\HttpKernel
@@ -43,11 +42,9 @@
 
 			parent::setUp();
 
-			$this->request = m::mock( Request::class );
-			$this->createMockWebRequest();
 
-			$this->request_event = m::mock(IncomingRequest::class);
-			$this->request_event->request = $this->request;
+			$this->request_event = new IncomingRequest();
+			$this->request_event->request = &$this->request;
 
 			$this->response_service = new TestResponseService();
 
@@ -74,7 +71,10 @@
 			TestApp::route()->get('/')
 			       ->handle( DependencyController::class . '@handle' );
 
-			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
+
+			$this->request = TestRequest::from('get', '/');
+			$this->request->setType(IncomingWebRequest::class);
+
 
 			$this->kernel->handle($this->request_event);
 
@@ -91,8 +91,8 @@
 			       ->get('teams/{team}')
 			       ->handle( TeamsController::class . '@noTypeHint' );
 
-			$this->request->shouldReceive( 'getUrl' )
-			              ->andReturn( 'https://wpemerge.test/teams/dortmund' );
+			$this->request = TestRequest::from('get', 'teams/dortmund');
+			$this->request->setType(IncomingWebRequest::class);
 
 			$this->kernel->handle($this->request_event);
 
@@ -110,8 +110,9 @@
 			       ->get('/')
 			       ->handle( DependencyController::class . '@withMethodDependency' );
 
-			$this->request->shouldReceive( 'getUrl' )
-			              ->andReturn( 'https://wpemerge.test/' );
+			$this->request = TestRequest::from('get', '/');
+			$this->request->setType(IncomingWebRequest::class);
+
 
 			$this->kernel->handle($this->request_event);
 
@@ -128,8 +129,8 @@
 			       ->get('web')
 			       ->handle( 'WebController@handle' );
 
-			$this->request->shouldReceive( 'getUrl' )
-			              ->andReturn( 'https://wpemerge.test/web' );
+			$this->request = TestRequest::from('get', 'web');
+			$this->request->setType(IncomingWebRequest::class);
 
 			$this->kernel->handle($this->request_event);
 
@@ -147,8 +148,8 @@
 			       ->get('admin')
 			       ->handle( 'AdminController@handle' );
 
-			$this->request->shouldReceive( 'getUrl' )
-			              ->andReturn( 'https://wpemerge.test/admin' );
+			$this->request = TestRequest::from('get', 'admin');
+			$this->request->setType(IncomingWebRequest::class);
 
 			$this->kernel->handle($this->request_event);
 
@@ -163,11 +164,12 @@
 		public function ajax_controllers_can_be_resolved_without_the_full_namespace() {
 
 			TestApp::route()
-			       ->get('ajax')
+			       ->get('foo')
 			       ->handle( 'AjaxController@handle' );
 
-			$this->request->shouldReceive( 'getUrl' )
-			              ->andReturn( 'https://wpemerge.test/ajax' );
+
+			$this->request = TestRequest::from('get', 'foo');
+			$this->request->setType(IncomingWebRequest::class);
 
 			$this->kernel->handle($this->request_event);
 

@@ -7,20 +7,17 @@
 	use Codeception\TestCase\WPTestCase;
 	use Psr\Http\Message\ResponseInterface;
 	use Tests\integration\SetUpTestApp;
-	use Tests\MockRequest;
 	use Tests\stubs\Middleware\FooMiddleware;
 	use Tests\stubs\Middleware\GlobalFooMiddleware;
 	use Tests\stubs\TestApp;
 	use Tests\stubs\TestResponseService;
+	use Tests\TestRequest;
 	use WPEmerge\Events\IncomingRequest;
 	use WPEmerge\Events\IncomingWebRequest;
-	use WPEmerge\Requests\Request;
-	use Mockery as m;
 
 	class HttpKernelStrictModeTest extends WPTestCase {
 
 		use SetUpTestApp;
-		use MockRequest;
 
 		/**
 		 * @var \WPEmerge\Http\HttpKernel
@@ -40,13 +37,12 @@
 
 			parent::setUp();
 
-			$this->request = m::mock( Request::class );
-			$this->createMockWebRequest();
+
 
 			$this->response_service = new TestResponseService();
 
-			$this->request_event = m::mock(IncomingRequest::class);
-			$this->request_event->request = $this->request;
+			$this->request_event = new IncomingRequest();
+			$this->request_event->request = &$this->request;
 
 
 			$this->bootstrapTestApp();
@@ -60,7 +56,6 @@
 
 		protected function tearDown() : void {
 
-			m::close();
 			parent::tearDown();
 
 			TestApp::setApplication( null );
@@ -80,8 +75,9 @@
 			       ->get('web')
 			       ->handle( 'WebController@handle' );
 
-			$this->request->shouldReceive( 'getUrl' )
-			              ->andReturn( 'https://wpemerge.test/non-existing-url' );
+			$this->request = TestRequest::from('get', 'non-existing');
+			$this->request->setType(IncomingWebRequest::class);
+
 
 			$this->kernel->handle($this->request_event);
 
@@ -104,10 +100,10 @@
 			       ->get('web')
 			       ->handle( 'WebController@handle' );
 
-			$this->request->shouldReceive( 'getUrl' )
-			              ->andReturn( 'https://wpemerge.test/non-existing-url' );
 
-			$this->request->shouldReceive('forceMatch')->once();
+			$this->request = TestRequest::from('get', 'non-existing');
+			$this->request->setType(IncomingWebRequest::class);
+
 
 			$this->kernel->handle($this->request_event);
 
@@ -128,8 +124,9 @@
 			       ->get('web')
 			       ->handle( 'WebController@handle' );
 
-			$this->request->shouldReceive( 'getUrl' )
-			              ->andReturn( 'https://wpemerge.test/web' );
+			$this->request = TestRequest::from('get', 'web');
+			$this->request->setType(IncomingWebRequest::class);
+
 
 			$this->kernel->handle($this->request_event);
 
@@ -182,10 +179,10 @@
 					->middleware('foo')
 			       ->handle( 'WebController@handle' );
 
-			$this->request->shouldReceive( 'getUrl' )
-			              ->andReturn( 'https://wpemerge.test/web' );
 
-			$this->request->shouldNotReceive('forceMatch');
+			$this->request = TestRequest::from('GET', 'web');
+			$this->request->setType(IncomingWebRequest::class);
+
 
 			$this->kernel->handle($this->request_event);
 

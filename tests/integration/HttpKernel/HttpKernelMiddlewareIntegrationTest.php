@@ -11,7 +11,9 @@
 	use Tests\stubs\Middleware\FooMiddleware;
 	use Tests\stubs\Middleware\GlobalFooMiddleware;
 	use Tests\stubs\TestResponseService;
+	use Tests\TestRequest;
 	use WPEmerge\Events\IncomingRequest;
+	use WPEmerge\Events\IncomingWebRequest;
 	use WPEmerge\Middleware\SubstituteBindings;
 	use WPEmerge\Requests\Request;
 	use Tests\stubs\IntegrationTestErrorHandler;
@@ -25,7 +27,6 @@
 	class HttpKernelMiddlewareIntegrationTest extends WPTestCase {
 
 		use SetUpTestApp;
-		use MockRequest;
 
 
 		/**
@@ -48,12 +49,9 @@
 
 			parent::setUp();
 
-			$this->request = m::mock( Request::class );
-			$this->createMockWebRequest();
 
-			$this->request_event = m::mock(IncomingRequest::class);
-			$this->request_event->request = $this->request;
-
+			$this->request_event = new IncomingRequest();
+			$this->request_event->request = &$this->request;
 
 			$this->response_service = new TestResponseService();
 
@@ -90,9 +88,8 @@
 			       ->handle( 'WebController@request');
 
 
-			$this->request
-				->shouldReceive( 'getUrl' )
-				->andReturn( 'https://wpemerge.test/' );
+			$this->request = TestRequest::from('GET', '/');
+			$this->request->setType(IncomingWebRequest::class);
 
 
 			$this->kernel->handle($this->request_event);
@@ -112,7 +109,8 @@
 			       ->handle( 'WebController@request');
 
 
-			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
+			$this->request = TestRequest::from('GET', '/');
+			$this->request->setType(IncomingWebRequest::class);
 
 			$this->kernel->handle($this->request_event);
 
@@ -127,9 +125,8 @@
 			       ->get('wp-admin/dashboard')
 			       ->handle( 'AdminControllerWithMiddleware@handle');
 
-			$this->request
-				->shouldReceive( 'getUrl' )
-				->andReturn( 'https://wpemerge.test/wp-admin/dashboard' );
+			$this->request = TestRequest::from('GET', 'wp-admin/dashboard');
+			$this->request->setType(IncomingWebRequest::class);
 
 			$this->kernel->handle($this->request_event);
 
@@ -147,9 +144,9 @@
 			       ->get('wp-admin/dashboard')
 			       ->handle( 'AdminControllerWithMiddleware@handle');
 
-			$this->request
-				->shouldReceive( 'getUrl' )
-				->andReturn( 'https://wpemerge.test/wp-admin/dashboard' );
+			$this->request = TestRequest::from('GET', 'wp-admin/dashboard');
+			$this->request->setType(IncomingWebRequest::class);
+
 
 			$this->kernel->handle($this->request_event);
 
@@ -173,7 +170,9 @@
 			       ->handle( 'WebController@request');
 
 
-			$this->request->shouldReceive( 'getUrl' )->andReturn( 'https://wpemerge.test/' );
+			$this->request = TestRequest::from('GET', '/');
+			$this->request->setType(IncomingWebRequest::class);
+
 
 			$this->kernel->handle($this->request_event);
 
