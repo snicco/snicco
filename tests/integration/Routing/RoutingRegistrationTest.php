@@ -543,6 +543,7 @@
 			$this->seeUrl( 'bar', $url );
 
 
+
 		}
 
 		/**
@@ -1430,8 +1431,8 @@
 				->group( function () {
 
 					$this->router
-						->get( '/foo' )
 						->namespace( 'Tests\integration\Routing' )
+						->get( '/foo' )
 						->handle( 'RoutingController@foo' );
 
 				} );

@@ -5,6 +5,7 @@
 
 	use BadMethodCallException;
 	use WPEmerge\Routing\Conditions\UrlCondition;
+	use WPEmerge\Support\Arr;
 
 	class RouteDecorator {
 
@@ -32,7 +33,7 @@
 			'match'
 		];
 
-		private $decorated_attributes = [];
+		private $attributes = [];
 
 		/**
 		 * @var \WPEmerge\Routing\ConditionBucket
@@ -41,25 +42,24 @@
 
 		public function __construct( Router $router ) {
 
-			$this->router = $router;
-			$this->conditions = ConditionBucket::createEmpty();
-			$this->decorated_attributes['where'] = $this->conditions;
+			$this->router              = $router;
+			$this->conditions          = ConditionBucket::createEmpty();
+			$this->attributes['where'] = $this->conditions;
 
 		}
 
-		public function decorate( $attribute, $value ) : RouteDecorator {
+		public function decorate( $called_method, $arguments ) : RouteDecorator {
 
 
-			if ($attribute === 'where') {
+			if ( $called_method === 'where') {
 
-				$this->conditions->add($value);
-
+				$this->conditions->add($arguments);
 
 				return $this;
 
 			}
 
-			$this->decorated_attributes[ $attribute ] = $value;
+			$this->attributes[ $called_method ] = $arguments;
 
 			return $this;
 
@@ -74,7 +74,7 @@
 
 			}
 
-			if ( $method === 'where') {
+			if ( $method === 'where' || $method === 'middleware') {
 
 				return $this->decorate(
 					$method,
@@ -98,37 +98,32 @@
 
 		private function registerRoute( $method, $url, $action = null ) : Route {
 
-			$route = $this->router->{$method}( $url, $action );
+			return $this->router->addRoute(
+				[strtoupper($method)],
+				$url,
+				$action,
+				$this->attributes
+			);
 
-			array_walk( $this->decorated_attributes, function ( $value, $method ) use ( $route ) {
-
-				$route->{$method}( $value );
-
-			} );
-
-
-			return $route;
 
 		}
 
-		public function match ($methods, $url, $action = null ) {
+		public function match ($methods, $url, $action = null ) : Route {
 
-			$route = $this->router->match($methods, $url, $action);
+			$methods = array_map('strtoupper', (Arr::wrap($methods)));
 
-			array_walk( $this->decorated_attributes, function ( $value, $method ) use ( $route ) {
-
-				$route->{$method}( $value );
-
-			} );
-
-
-			return $route;
+			return $this->router->addRoute(
+				$methods,
+				$url,
+				$action,
+				$this->attributes
+			);
 
 		}
 
 		public function group ($callback) {
 
-			$this->router->group($this->decorated_attributes , $callback );
+			$this->router->group($this->attributes , $callback );
 
 		}
 

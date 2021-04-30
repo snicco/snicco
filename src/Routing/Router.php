@@ -56,6 +56,30 @@
 
 		}
 
+		public function addRoute( array $methods, string $url, $action = null, $attributes = [] ) : Route {
+
+			$url = $this->applyPrefix( $url );
+
+			$route = new Route ( $methods, $url, $action );
+
+			if ( $this->hasGroupStack() ) {
+
+				$this->mergeGroupIntoRoute( $route );
+
+			}
+
+			if ( ! empty( $attributes ) ) {
+
+				$this->populateUserAttributes( $route, $attributes);
+
+			}
+
+			$route->addCondition( new UrlCondition( $url ) );
+
+			return $this->routes->add( $route );
+
+
+		}
 
 		public function group( array $attributes, $routes ) {
 
@@ -69,7 +93,7 @@
 
 		public function getRouteUrl( string $name, array $arguments = [] ) : string {
 
-			$route = $this->routes->findByName($name);
+			$route = $this->routes->findByName( $name );
 
 			if ( ! $route ) {
 
@@ -86,7 +110,7 @@
 
 		public function runRoute( RequestInterface $request ) {
 
-			if ( $route = $this->routes->match($request) ) {
+			if ( $route = $this->routes->match( $request ) ) {
 
 				return $this->runWithinStack( $route, $request );
 
@@ -111,6 +135,12 @@
 		public function aliasMiddleware( $name, $class ) : void {
 
 			$this->route_middleware_aliases[ $name ] = $class;
+
+		}
+
+		private function populateUserAttributes( Route $route, array $attributes ) {
+
+			( new RouteGroup($attributes) )->mergeIntoRoute($route);
 
 		}
 
@@ -180,25 +210,6 @@
 		private function skipMiddleware() : bool {
 
 			return $this->container->offsetExists( 'middleware.disable' );
-
-		}
-
-		private function addRoute( array $methods, string $url, $action = null ) : Route {
-
-			$url = $this->applyPrefix( $url );
-
-			$route = new Route ( $methods, $url, $action );
-
-			if ( $this->hasGroupStack() ) {
-
-				$this->mergeGroupIntoRoute( $route );
-
-			}
-
-			$route->addCondition( new UrlCondition( $url ) );
-
-			return $this->routes->add($route);
-
 
 		}
 
