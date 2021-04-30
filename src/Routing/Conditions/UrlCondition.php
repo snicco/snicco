@@ -19,12 +19,12 @@
 		const WILDCARD = '*';
 
 
-		protected $url = '';
+		private $url = '';
 
-		protected $url_where = [];
+		private $regex = [];
 
 
-		protected $url_pattern = '~
+		private $url_pattern = '~
 		(?:/)                     # match leading slash
 		(?:\{)                    # opening curly brace
 			(?P<name>[a-z]\w*)    # string starting with a-z and followed by word characters for the parameter name
@@ -38,24 +38,91 @@
 		 *
 		 * @var string
 		 */
-		protected $parameter_pattern = '[^/]+';
+		private $parameter_pattern = '[^/]+';
 
 
 		public function __construct( $url, $where = [] ) {
 
 			$this->setUrl( UrlParser::normalize( $url ) );
-			$this->setUrlWhere( $where );
+			$this->setRegex( $where );
 
 		}
 
-		protected function make( $url, $where = [] ) {
-			return new self( $url, $where );
+		public function isSatisfied( RequestInterface $request ) : bool {
+
+			if ( $this->url === static::WILDCARD ) {
+				return TRUE;
+			}
+
+			$validation_pattern = $this->getValidationPattern( $this->url );
+			$url                = UrlUtility::addTrailingSlash( UrlUtility::getPath( $request ) );
+			$match              = (bool) preg_match( $validation_pattern, $url );
+
+			if ( ! $match || empty( $this->regex ) ) {
+				return $match;
+			}
+
+			return $this->isRegexSatisfied( $request );
+		}
+
+		public function getArguments( RequestInterface $request ) : array {
+			$validation_pattern = $this->getValidationPattern( $this->url );
+			$url                = UrlUtility::addTrailingSlash( UrlUtility::getPath( $request ) );
+			$matches            = [];
+			$success            = preg_match( $validation_pattern, $url, $matches );
+
+			if ( ! $success ) {
+				return []; // this should not normally happen
+			}
+
+			$arguments       = [];
+			$parameter_names = $this->getParameterNames( $this->url );
+			foreach ( $parameter_names as $parameter_name ) {
+				$arguments[ $parameter_name ] = isset( $matches[ $parameter_name ] ) ? $matches[ $parameter_name ] : '';
+			}
+
+			return $arguments;
+		}
+
+		public function setUrl( $url ) {
+
+			if ( $url !== static::WILDCARD ) {
+				$url = UrlUtility::addLeadingSlash( UrlUtility::addTrailingSlash( $url ) );
+			}
+
+			$this->url = $url;
+		}
+
+		public function setRegex( $regex ) {
+			$this->regex = $regex;
+		}
+
+		/** @todo make sure this always returns with / at the end */
+		public function toUrl( $arguments = [] ) {
+
+			$url = preg_replace_callback( $this->url_pattern, function ( $matches ) use ( $arguments ) {
+				$name     = $matches['name'];
+				$optional = ! empty( $matches['optional'] );
+				$value    = '/' . urlencode( WPEmgereArr::get( $arguments, $name, '' ) );
+
+				if ( $value === '/' ) {
+					if ( ! $optional ) {
+						throw new ConfigurationException( "Required URL parameter \"$name\" is not specified." );
+					}
+
+					$value = '';
+				}
+
+				return $value;
+			}, $this->url );
+
+			return home_url( UrlUtility::addLeadingSlash( UrlUtility::removeTrailingSlash( $url ) ) );
 		}
 
 
-		protected function whereIsSatisfied( RequestInterface $request ) {
+		private function isRegexSatisfied( RequestInterface $request ) : bool {
 
-			$where     = $this->getUrlWhere();
+			$where     = $this->regex;
 			$arguments = $this->getArguments( $request );
 
 			foreach ( $where as $parameter => $pattern ) {
@@ -69,90 +136,6 @@
 			return TRUE;
 		}
 
-
-		public function isSatisfied( RequestInterface $request ) {
-
-			if ( $this->getUrl() === static::WILDCARD ) {
-				return TRUE;
-			}
-
-			$validation_pattern = $this->getValidationPattern( $this->getUrl() );
-			$url                = UrlUtility::addTrailingSlash( UrlUtility::getPath( $request ) );
-			$match              = (bool) preg_match( $validation_pattern, $url );
-
-			if ( ! $match || empty( $this->getUrlWhere() ) ) {
-				return $match;
-			}
-
-			return $this->whereIsSatisfied( $request );
-		}
-
-
-		public function getArguments( RequestInterface $request ) {
-			$validation_pattern = $this->getValidationPattern( $this->getUrl() );
-			$url                = UrlUtility::addTrailingSlash( UrlUtility::getPath( $request ) );
-			$matches            = [];
-			$success            = preg_match( $validation_pattern, $url, $matches );
-
-			if ( ! $success ) {
-				return []; // this should not normally happen
-			}
-
-			$arguments       = [];
-			$parameter_names = $this->getParameterNames( $this->getUrl() );
-			foreach ( $parameter_names as $parameter_name ) {
-				$arguments[ $parameter_name ] = isset( $matches[ $parameter_name ] ) ? $matches[ $parameter_name ] : '';
-			}
-
-			return $arguments;
-		}
-
-
-		public function getUrl() {
-			return $this->url;
-		}
-
-
-		public function setUrl( $url ) {
-
-			if ( $url !== static::WILDCARD ) {
-				$url = UrlUtility::addLeadingSlash( UrlUtility::addTrailingSlash( $url ) );
-			}
-
-			$this->url = $url;
-		}
-
-		public function getUrlWhere() {
-			return $this->url_where;
-		}
-
-		public function setUrlWhere( $where ) {
-			$this->url_where = $where;
-		}
-
-		/**
-		 * Append a url to this one returning a new instance.
-		 *
-		 * @param  string                 $url
-		 * @param  array<string, string>  $where
-		 *
-		 * @return static
-		 */
-		public function concatenate( $url, $where = [] ) {
-
-			if ( $this->getUrl() === static::WILDCARD || $url === static::WILDCARD ) {
-				return $this->make( static::WILDCARD );
-			}
-
-			$leading  = UrlUtility::addLeadingSlash( UrlUtility::removeTrailingSlash( $this->getUrl() ), TRUE );
-			$trailing = UrlUtility::addLeadingSlash( UrlUtility::addTrailingSlash( $url ) );
-
-			return $this->make( $leading . $trailing, array_merge(
-				$this->getUrlWhere(),
-				$where
-			) );
-		}
-
 		/**
 		 * Get parameter names as defined in the url.
 		 *
@@ -160,7 +143,7 @@
 		 *
 		 * @return string[]
 		 */
-		private function getParameterNames( $url ) : array {
+		private function getParameterNames( string $url ) : array {
 			$matches = [];
 			preg_match_all( $this->url_pattern, $url, $matches );
 
@@ -175,7 +158,7 @@
 		 *
 		 * @return string
 		 */
-		private function replacePatternParameterWithPlaceholder( $matches, &$parameters ) {
+		private function replacePatternParameterWithPlaceholder( $matches, &$parameters ) : string {
 			$name     = $matches['name'];
 			$optional = ! empty( $matches['optional'] );
 
@@ -196,8 +179,7 @@
 			return $placeholder;
 		}
 
-
-		public function getValidationPattern( string $url, $wrap = TRUE ) :string {
+		private function getValidationPattern( string $url, $wrap = TRUE ) :string {
 
 			$parameters = [];
 
@@ -227,26 +209,6 @@
 		}
 
 
-		/** @todo make sure this always returns with / at the end */
-		public function toUrl( $arguments = [] ) {
 
-			$url = preg_replace_callback( $this->url_pattern, function ( $matches ) use ( $arguments ) {
-				$name     = $matches['name'];
-				$optional = ! empty( $matches['optional'] );
-				$value    = '/' . urlencode( WPEmgereArr::get( $arguments, $name, '' ) );
-
-				if ( $value === '/' ) {
-					if ( ! $optional ) {
-						throw new ConfigurationException( "Required URL parameter \"$name\" is not specified." );
-					}
-
-					$value = '';
-				}
-
-				return $value;
-			}, $this->getUrl() );
-
-			return home_url( UrlUtility::addLeadingSlash( UrlUtility::removeTrailingSlash( $url ) ) );
-		}
 
 	}
