@@ -8,7 +8,7 @@ use SniccoAdapter\BaseContainerAdapter;
 use stdClass;
 use WPEmerge\Application\Application;
 use WPEmerge\Contracts\RequestInterface;
-use WPEmerge\Routing\Conditions\ConditionFactory;
+use WPEmerge\Routing\ConditionFactory;
 use WPEmerge\Contracts\ConditionInterface;
 use WPEmerge\Routing\Conditions\CustomCondition;
 use WPEmerge\Routing\Conditions\MultipleCondition;
@@ -17,7 +17,7 @@ use WPEmerge\Routing\Conditions\PostIdCondition;
 use WPEmerge\Routing\Conditions\UrlCondition;
 
 /**
- * @coversDefaultClass \WPEmerge\Routing\Conditions\ConditionFactory
+ * @coversDefaultClass \WPEmerge\Routing\ConditionFactory
  */
 class ConditionFactoryTest extends WPTestCase {
 	public $request;

@@ -119,7 +119,6 @@
 			return home_url( UrlUtility::addLeadingSlash( UrlUtility::removeTrailingSlash( $url ) ) );
 		}
 
-
 		private function isRegexSatisfied( RequestInterface $request ) : bool {
 
 			$where     = $this->regex;

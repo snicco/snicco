@@ -5,7 +5,7 @@
 
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Handlers\HandlerFactory;
-	use WPEmerge\Routing\Conditions\ConditionFactory;
+	use WPEmerge\Routing\ConditionFactory;
 	use WPEmerge\Support\Arr;
 
 	class RouteCollection {

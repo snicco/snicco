@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmerge\Routing\Conditions;
+	namespace WPEmerge\Routing;
 
 	use Closure;
 	use Contracts\ContainerAdapter;
@@ -11,10 +11,14 @@
 	use Throwable;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\Routing\Conditions\CustomCondition;
+	use WPEmerge\Routing\Conditions\UrlCondition;
 	use WPEmerge\Routing\Route;
 	use WPEmerge\Support\Arr;
 	use WPEmerge\Support\Str;
 	use WPEmerge\Traits\ReflectsCallable;
+
+	use function collect;
 
 	class ConditionFactory {
 
@@ -292,7 +296,7 @@
 
 		}
 
-		private function newRegexUrlCondition( $condition, Route $route ) {
+		private function newRegexUrlCondition( $condition, Route $route ) : UrlCondition {
 
 			$existing_compiled_url_condition = collect( $route->getConditions() )
 				->filter( function ( $condition ) {
