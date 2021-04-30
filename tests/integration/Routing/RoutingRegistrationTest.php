@@ -15,8 +15,6 @@
 	use WPEmerge\Routing\Conditions\AjaxCondition;
 	use WPEmerge\Routing\ConditionFactory;
 	use WPEmerge\Routing\Conditions\CustomCondition;
-	use WPEmerge\Routing\Conditions\ModelCondition;
-	use WPEmerge\Routing\Conditions\MultipleCondition;
 	use WPEmerge\Routing\Conditions\NegateCondition;
 	use WPEmerge\Routing\Conditions\PostIdCondition;
 	use WPEmerge\Routing\Conditions\PostSlugCondition;
@@ -28,6 +26,9 @@
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Support\Str;
+
+
+
 
 	class RoutingRegistrationTest extends WPTestCase {
 
@@ -1098,9 +1099,51 @@
 
 				} );
 
-			$get = $this->request( 'POST', '/foo' );
+			$post = $this->request( 'POST', '/foo' );
 
-			$this->seeResponse(null , $this->router->runRoute( $get ) );
+			$this->seeResponse(null , $this->router->runRoute( $post ) );
+
+
+
+
+		}
+
+		/** @test */
+		public function global_functions_can_be_used_as_custom_conditions() {
+
+
+			$this->router->where('is_string', 'foo')->get('foo', function () {
+
+				return 'foo';
+
+			});
+
+			$get = $this->request( 'GET', '/foo' );
+			$this->seeResponse('foo', $this->router->runRoute( $get ) );
+
+			$this->router
+				->where('is_string', 1)
+				->post( 'foo', function () {
+
+					return 'foo';
+
+				} );
+
+			$post = $this->request( 'POST', '/foo' );
+
+			$this->seeResponse(null , $this->router->runRoute( $post ) );
+
+			$this->router
+				->where('!is_string', 1)
+				->put( 'foo', function () {
+
+					return 'foo';
+
+				} );
+
+			$put = $this->request( 'PUT', '/foo' );
+
+			$this->seeResponse('foo' , $this->router->runRoute( $put ) );
 
 
 
@@ -1992,3 +2035,4 @@
 
 
 	}
+
