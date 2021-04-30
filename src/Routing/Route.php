@@ -56,7 +56,7 @@
 		public function __construct( array $methods, string $url, $action, array $attributes = [] ) {
 
 			$this->methods    = $methods;
-			$this->url        = $url;
+			$this->url        = Url::normalizePath($url);
 			$this->action     = $action;
 			$this->namespace  = $attributes['namespace'] ?? null;
 			$this->middleware = $attributes['middleware'] ?? null;
@@ -75,6 +75,12 @@
 		public function getMethods() : array {
 
 			return $this->methods;
+
+		}
+
+		public function getAction()  {
+
+			return $this->action;
 
 		}
 

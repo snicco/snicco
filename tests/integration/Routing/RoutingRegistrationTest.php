@@ -155,7 +155,7 @@
 		/** @test */
 		public function basic_post_routing_works() {
 
-			$this->router->post( '/foo' )->handle( function () {
+			$this->router->post( '/foo/' )->handle( function () {
 
 				return 'foo';
 
@@ -289,6 +289,47 @@
 			$this->seeResponse( 'foo', $response );
 
 		}
+
+		/** @test */
+		public function two_static_routes_can_be_added_for_the_same_uri() {
+
+			$this->router->post( '/foo/', function () {
+
+				return 'foo1';
+
+			} )->where('false');
+			$this->router->post( '/foo/', function () {
+
+				return 'foo2';
+
+			} )->where('true');
+
+			$response = $this->router->runRoute( $this->request( 'post', '/foo' ) );
+
+			$this->seeResponse( 'foo2', $response );
+
+		}
+
+		/** @test */
+		public function static_and_dynamic_routes_can_be_added_for_the_same_uri() {
+
+			$this->router->post( '/foo/bar', function () {
+
+				return 'foo1';
+
+			})->where('false');
+			$this->router->post( '/foo/{bar}', function () {
+
+				return 'foo2';
+
+			} )->where('true');
+
+			$response = $this->router->runRoute( $this->request( 'POST', '/foo/bar' ) );
+
+			$this->seeResponse( 'foo2', $response );
+
+		}
+
 
 
 		/**
