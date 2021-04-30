@@ -22,7 +22,7 @@
 
 		public static function from(string $method, $path, $host = null ) : TestRequest {
 
-			$path = trim($path, '/') . '/';
+			$path = trim($path, '/') . '/' ;
 			$method = strtoupper($method);
 
 			$host = $host ?? 'https://foo.com';
