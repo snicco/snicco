@@ -35,7 +35,6 @@ class CustomConditionTest extends WPTestCase {
 
 		$subject = new CustomCondition( $callable, $arguments[0], $arguments[1] );
 
-		$this->assertSame( $callable, $subject->getCallable() );
 		$this->assertEquals( $arguments, $subject->getArguments( $request ) );
 	}
 }

@@ -235,11 +235,18 @@
 			$arguments = array_values( array_slice( $options, 1 ) );
 
 
-			if ( $this->isClosure($type) ) {
+			if ( is_callable($type) ) {
 
 				return [ 'type' => 'custom', 'arguments' => $options ];
 
 			}
+
+			if ( $this->isNegatedCondition( $type ) ) {
+
+				return $this->parseNegatedCondition( $type, $arguments );
+
+			}
+
 
 			if ( ! $this->isConditionAlias( $type ) ) {
 
@@ -247,12 +254,6 @@
 
 			}
 
-
-			if ( $this->isNegatedCondition( $type ) ) {
-
-				return $this->parseNegatedCondition( $type, $arguments );
-
-			}
 
 			return [ 'type' => $type, 'arguments' => $arguments ];
 

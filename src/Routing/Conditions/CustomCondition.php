@@ -3,7 +3,6 @@
 
 	namespace WPEmerge\Routing\Conditions;
 
-	use Closure;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\RequestInterface;
 
@@ -11,13 +10,13 @@
 	class CustomCondition implements ConditionInterface {
 
 
-		/** @var \Closure  */
+		/** @var callable  */
 		private $callable;
 
 		private $arguments;
 
 
-		public function __construct( Closure $callable, ...$args  ) {
+		public function __construct( callable $callable, ...$args  ) {
 
 			$this->callable  = $callable;
 			$this->arguments = $args;
