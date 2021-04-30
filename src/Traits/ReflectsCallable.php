@@ -116,7 +116,6 @@
 
 		}
 
-
 		private function classImplements ( $class, $interface) : bool {
 
 			$used_interfaces = class_implements($class);
@@ -125,7 +124,38 @@
 
 		}
 
+		private function buildNamedConstructorArgs( string $class , $arguments) {
 
+			$payload = ( ! is_array( $arguments ) ) ? [ $arguments ] : $arguments;
 
+			$constructor =  ( new ReflectionClass($class) )->getConstructor();
+
+			if ( ! $constructor ) {
+
+				return $arguments;
+
+			}
+
+			$params = collect( $constructor->getParameters() );
+
+			$parameter_names = $params->map( function ( $param ) {
+
+				return $param->getName();
+
+			} );
+
+			if ( $parameter_names->isEmpty() ) {
+
+				return $payload;
+
+			}
+
+			$reduced = $parameter_names->slice( 0, count( ( $payload ) ) );
+
+			$payload = $reduced->combine( $payload );
+
+			return $payload->all();
+
+		}
 
 	}

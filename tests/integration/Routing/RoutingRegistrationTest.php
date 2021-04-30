@@ -821,6 +821,11 @@
 
 			$this->router
 				->get( '/foo' )
+				->where(function () {
+
+					return true;
+
+				})
 				->where(
 					function ( $foo, $bar ) {
 
