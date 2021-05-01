@@ -81,7 +81,7 @@ class ErrorHandler implements ErrorHandlerInterface {
 	 * @param  PhpException            $exception
 	 * @return ResponseInterface|false
 	 */
-	protected function toResponse( $exception ) {
+	protected function toResponse( \Throwable $exception ) {
 		// @codeCoverageIgnoreStart
 		if ( $exception instanceof InvalidCsrfTokenException ) {
 			wp_nonce_ays( '' );
@@ -103,7 +103,7 @@ class ErrorHandler implements ErrorHandlerInterface {
 	 * @param  PhpException      $exception
 	 * @return ResponseInterface
 	 */
-	protected function toDebugResponse( RequestInterface $request, PhpException $exception ) {
+	protected function toDebugResponse( RequestInterface $request, \Throwable $exception ) {
 
 		if ( $request->isAjax() ) {
 			return $this->response_service->json( [
@@ -143,7 +143,7 @@ class ErrorHandler implements ErrorHandlerInterface {
 	 * {@inheritDoc}
 	 * @throws PhpException
 	 */
-	public function getResponse( RequestInterface $request, PhpException $exception ) {
+	public function getResponse( RequestInterface $request, \Throwable $exception ) {
 		$response = $this->toResponse( $exception );
 
 		if ( $response !== false ) {

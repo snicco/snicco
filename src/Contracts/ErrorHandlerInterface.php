@@ -26,10 +26,10 @@
 		 * Get a response representing the specified exception.
 		 *
 		 * @param  RequestInterface  $request
-		 * @param  PhpException  $exception
+		 * @param  \Throwable  $exception
 		 *
 		 * @return ResponseInterface
 		 */
-		public function getResponse( RequestInterface $request, PhpException $exception );
+		public function getResponse( RequestInterface $request, \Throwable $exception );
 
 	}

@@ -10,7 +10,7 @@
 
 
 
-		// Needed because normal Wordpress Ajax Handlers always terminate
+		// Needed because normally Wordpress Ajax Handlers always terminate
 		// with an output message of 0.
 		public function shutdownWp( BodySent $response_sent_event ) {
 

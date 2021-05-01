@@ -24,7 +24,7 @@
 		/**
 		 * @throws \Exception
 		 */
-		public function getResponse( RequestInterface $request, PhpException $exception ) {
+		public function getResponse( RequestInterface $request, \Throwable $exception ) {
 
 			throw $exception;
 
