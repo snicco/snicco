@@ -12,6 +12,7 @@
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Routing\Conditions\CustomCondition;
+	use WPEmerge\Routing\Conditions\NegateCondition;
 	use WPEmerge\Routing\Conditions\UrlCondition;
 	use WPEmerge\Routing\Route;
 	use WPEmerge\Support\Arr;
@@ -24,15 +25,13 @@
 
 		use ReflectsCallable;
 
-		const NEGATE_SIGN = '!';
-		const NEGATE_WORD = 'negate';
 
 		/**
 		 * Registered condition types.
 		 *
 		 * @var array<string, string>
 		 */
-		protected $condition_types = [];
+		private $condition_types;
 
 		/**
 		 * @var \Contracts\ContainerAdapter
@@ -51,7 +50,7 @@
 			$conditions = collect( $route->getConditions() );
 
 			$conditions = $conditions
-				->map( function ( $condition ) {
+				->map( function ( ConditionBlueprint $condition ) {
 
 					if ( $compiled = $this->alreadyCompiled( $condition ) ) {
 
@@ -59,7 +58,7 @@
 
 					}
 
-					return $this->makeNew( $condition );
+					return $this->new( $condition );
 
 				} )
 				->unique();
@@ -68,198 +67,78 @@
 
 		}
 
+		private function new( ConditionBlueprint $blueprint ) {
 
-		/**
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
-		 * @throws \Exception
-		 */
-		private function makeNew( array $options ) {
+			$type = $this->transformAliasToClassName($blueprint->type());
+			$conditions_arguments = $blueprint->args();
 
-			$condition_options = $this->parseConditionOptions( $options );
-			$condition_class   = $this->getConditionTypeClass( $condition_options['type'] );
+			if ( $type === $this->condition_types[ConditionBlueprint::NEGATES_WORD] ) {
 
-			try {
-
-				$reflection = new ReflectionClass( $condition_class );
-
-				return $reflection->newInstanceArgs( $condition_options['arguments'] ?? [] );
-
+				return $this->newNegated( $blueprint, $conditions_arguments );
 
 			}
 
-			catch ( Throwable $e ) {
-
-
-				try {
-
-					$args = $this->buildNamedConstructorArgs( $condition_class, $condition_options['arguments'] );
-
-					return $this->container->make( $condition_class, $args );
-
-				}
-
-				catch ( Throwable $e ) {
-
-
-					throw new ConfigurationException( 'Error while creating the RouteCondition: ' . $condition_class . PHP_EOL . $e->getMessage() );
-
-
-				}
-
-
-			}
-
-
-		}
-
-		/**
-		 * @throws ConfigurationException
-		 */
-		private function getConditionTypeClass( string $condition_type ) : string {
-
-			if ( ! isset( $this->condition_types[ $condition_type ] ) ) {
-
-				throw new ConfigurationException( 'Trying to create unknown condition: ' . $condition_type );
-
-			}
-
-			return $this->condition_types[ $condition_type ];
-		}
-
-		private function isNegatedCondition( string $condition ) : bool {
-
-			if ( Str::contains( $condition, self::NEGATE_SIGN ) ) {
-
-				return true;
-
-			}
-
-			if ( Str::contains( $condition, self::NEGATE_WORD ) ) {
-
-				return true;
-
-			}
-
-			return false;
-		}
-
-		private function parseNegatedCondition( string $type, array $arguments ) : array {
-
-
-			if ( Arr::firstEl( $arguments ) instanceof ConditionInterface ) {
-
-				return [
-					'type'      => self::NEGATE_WORD,
-					'arguments' => $this->negatedObjectCondition( Arr::first( $arguments ) ),
-				];
-
-			}
-
-			if ( Arr::firstEl( $arguments ) instanceof Closure ) {
-
-				return [
-					'type'      => self::NEGATE_WORD,
-					'arguments' => $this->negatedCustomCondition( $arguments ),
-				];
-
-			}
-
-			return $this->negatedStringCondition( $type, $arguments );
-
-
-		}
-
-		private function negatedObjectCondition( ConditionInterface $condition ) : array {
-
-			return [ $condition ];
-
-		}
-
-		private function negatedCustomCondition( array $arguments ) : array {
-
-			$condition = new CustomCondition(
-				Arr::firstEl( $arguments ),
-				...Arr::allAfter( $arguments, 1 )
+			$args = $this->buildNamedConstructorArgs(
+				$type,
+				$conditions_arguments
 			);
 
-			return [ $condition ];
-
-		}
-
-		private function negatedStringCondition( string $type, array $arguments ) : array {
-
-			$type = $this->negates( $type );
-
-			$condition_type = ( $type === 'negate' ) ? $arguments[0] : $type;
-
-			return [
-				'type'      => self::NEGATE_WORD,
-				'arguments' => [ $this->makeNew( array_merge( [ $condition_type ], $arguments ) ) ],
-			];
+			return $blueprint->instance() ?? $this->container->make( $type, $args );
 
 
 		}
 
-		private function negates( string $type ) : string {
+		private function transformAliasToClassName( string $type ) {
 
-			if ( Str::contains( $type, self::NEGATE_SIGN ) ) {
+			return $this->condition_types[$type] ?? $type;
 
-				return Str::after( $type, self::NEGATE_SIGN );
+		}
+
+		private function alreadyCompiled( ConditionBlueprint $condition ) : ?object {
+
+			if ( $condition->type() === ConditionBlueprint::NEGATES_WORD ) {
+
+				return null;
 
 			}
 
-			return $type;
+			return $condition->instance();
 
 		}
 
-		private function parseConditionOptions( array $options ) : array {
+		private function newNegated( ConditionBlueprint $blueprint, array $args ) : NegateCondition {
 
-			$type      = $options[0];
-			$arguments = array_values( array_slice( $options, 1 ) );
+			$instance = $blueprint->instance();
 
-			if ( is_callable( $type ) ) {
+			if ( $instance instanceof ConditionInterface) {
 
-				return $this->newCustomCondition($options);
+				return new NegateCondition( $instance );
 
 			}
 
-			if ( $this->isNegatedCondition( $type ) ) {
+			if ( is_callable( $instance ) ) {
 
-				return $this->parseNegatedCondition( $type, $arguments );
-
-			}
-
-			if ( ! $this->isConditionAlias( $type ) ) {
-
-				throw new ConfigurationException( 'Unknown condition type specified: ' . $type );
+				return new NegateCondition( new CustomCondition( $instance, ...$args ) );
 
 			}
 
-			return [ 'type' => $type, 'arguments' => $arguments ];
+			if ( is_callable( $negates = $blueprint->negates() ) ) {
 
 
-		}
+				return new NegateCondition( new CustomCondition( $negates, ...$args ) );
 
-		private function newCustomCondition( array $options ) : array {
+			}
 
-			return [ 'type' => 'custom', 'arguments' => $options ];
+			$instance =  $this->container->make(
 
-		}
+				$type = $this->transformAliasToClassName( $negates ),
+				$this->buildNamedConstructorArgs( $type, $args )
 
-		private function alreadyCompiled( array $condition ) : ?ConditionInterface {
+			);
 
-			$condition = Arr::firstEl( $condition );
-
-			return ( $condition instanceof ConditionInterface ) ? $condition : null;
-
-		}
-
-		private function isConditionAlias( string $condition ) : bool {
+			return new NegateCondition($instance);
 
 
-			$condition = Str::after( $condition, self::NEGATE_SIGN );
-
-			return isset( $this->condition_types[ $condition ] );
 		}
 
 

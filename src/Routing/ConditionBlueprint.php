@@ -3,6 +3,7 @@
 
 	namespace WPEmerge\Routing;
 
+	use WPEmerge\Routing\Conditions\CustomCondition;
 	use WPEmerge\Support\Str;
 	use WPEmerge\Traits\ReflectsCallable;
 
@@ -73,6 +74,20 @@
 
 		}
 
+		public function instance () : ?object {
+
+			return $this->instance;
+
+		}
+
+
+		public function negates () : ?string {
+
+			return $this->negates;
+
+		}
+
+
 		private function parseTypeAndArgs( array $args ) : array {
 
 			$copy = $args;
@@ -99,16 +114,31 @@
 
 			}
 
+			if ( is_callable( $type ) ) {
+
+				return [ CustomCondition::class, $copy ];
+
+			}
+
 			return [ $type, $copy  ];
 
 		}
 
-		private function parseInstance(array $original_args ) : ?object {
+		private function parseInstance( array $original_args ) : ?object {
 
 			$candidate = ($original_args[0] == self::NEGATES_WORD ) ? $original_args[1] : $original_args[0];
+
+
+			if ( is_callable($candidate) ) {
+
+				return new CustomCondition($candidate, ...$this->args);
+
+			}
 
 			return ( is_object( $candidate ) ) ? $candidate : null;
 
 		}
+
+
 
 	}

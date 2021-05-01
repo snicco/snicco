@@ -20,6 +20,7 @@
 		public function __construct( ConditionInterface $condition ) {
 
 			$this->condition = $condition;
+
 		}
 
 
