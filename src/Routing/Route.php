@@ -67,7 +67,7 @@
 		public function __construct( array $methods, string $url, $action, array $attributes = [] ) {
 
 			$this->methods    = $methods;
-			$this->url        = $this->replaceOptional(Url::normalizePath($url));
+			$this->url        = $this->replaceOptional( Url::normalizePath( $url ) );
 			$this->action     = $action;
 			$this->namespace  = $attributes['namespace'] ?? null;
 			$this->middleware = $attributes['middleware'] ?? null;
@@ -85,7 +85,7 @@
 
 		public function and( ...$regex ) {
 
-			$this->regex = $this->parseRegex( Arr::flattenOnePreserveKeys($regex));
+			$this->regex = $this->parseRegex( Arr::flattenOnePreserveKeys( $regex ) );
 
 			$this->compileUrl();
 
@@ -103,32 +103,32 @@
 
 		}
 
-		public function compileUrl () {
+		public function compileUrl() {
 
-			$segments = UrlParser::segments($this->url);
+			$segments = UrlParser::segments( $this->url );
 
 			$url = $this->url;
 
 			foreach ( $segments as $segment ) {
 
 
-				$url = preg_replace_callback("/($segment(?=}))/", function ($match) {
+				$url = preg_replace_callback( "/($segment(?=}))/", function ( $match ) {
 
-					return $match[0] . ':' . $this->regex[$match[0]];
+					return $match[0] . ':' . $this->regex[ $match[0] ];
 
-				}, $url , 1);
+				}, $url, 1 );
 
 			}
 
-			$this->compiled_url = rtrim($url, '/');
+			$this->compiled_url = rtrim( $url, '/' );
 
 		}
 
-		public function getCompiledUrl () :string  {
+		public function getCompiledUrl() : string {
 
 			$url = $this->compiled_url ?? $this->url;
 
-			return rtrim($url, '/');
+			return rtrim( $url, '/' );
 
 		}
 
@@ -138,7 +138,7 @@
 
 		}
 
-		public function getAction()  {
+		public function getAction() {
 
 			return $this->action;
 
@@ -147,8 +147,8 @@
 		public function methods( $methods ) {
 
 			$this->methods = array_merge(
-				$this->methods ?? [] ,
-				array_map('strtoupper', Arr::wrap($methods) )
+				$this->methods ?? [],
+				array_map( 'strtoupper', Arr::wrap( $methods ) )
 			);
 
 		}
@@ -164,7 +164,7 @@
 		public function addCondition( ConditionInterface $condition ) {
 
 			$bucket = new ConditionBucket();
-			$bucket->add($condition);
+			$bucket->add( $condition );
 
 			$this->where( $bucket );
 
@@ -177,9 +177,9 @@
 			$failed_condition = collect( $this->compiled_conditions )
 				->first( function ( $condition ) use ( $request ) {
 
-				return ! $condition->isSatisfied( $request );
+					return ! $condition->isSatisfied( $request );
 
-			});
+				} );
 
 			return $failed_condition === null;
 
@@ -286,7 +286,7 @@
 
 					return $condition->getArguments( $request );
 
-				})
+				} )
 				->all();
 
 			return $args;
@@ -305,9 +305,9 @@
 		public function name( string $name ) : Route {
 
 			// Remove leading and trailing dots.
-			$name = preg_replace('/^\.+|\.+$/', '', $name);
+			$name = preg_replace( '/^\.+|\.+$/', '', $name );
 
-			$this->name = isset($this->name) ? $this->name. '.'  . $name : $name;
+			$this->name = isset( $this->name ) ? $this->name . '.' . $name : $name;
 
 			return $this;
 
@@ -340,7 +340,7 @@
 
 			if ( ! $bucket instanceof ConditionBucket ) {
 
-				$this->conditions[] = Arr::flattenOnePreserveKeys($args);
+				$this->conditions[] = Arr::flattenOnePreserveKeys( $args );
 
 				return $this;
 
@@ -362,11 +362,11 @@
 
 		}
 
-		public function createUrl($arguments) {
+		public function createUrl( $arguments ) {
 
 			$conditions = collect( $this->compiled_conditions );
 
-			$url = $conditions->whereInstanceOf(UrlCondition::class)->first();
+			$url = $conditions->whereInstanceOf( UrlCondition::class )->first();
 
 			if ( ! $url ) {
 
@@ -376,7 +376,7 @@
 
 			}
 
-			return $url->toUrl($arguments);
+			return $url->toUrl( $arguments );
 
 		}
 
@@ -393,7 +393,7 @@
 
 		public function compileConditions( ConditionFactory $condition_factory ) : Route {
 
-			$this->compiled_conditions = $condition_factory->compileConditions($this);
+			$this->compiled_conditions = $condition_factory->compileConditions( $this );
 
 			return $this;
 
@@ -425,25 +425,56 @@
 		private function replaceOptional( string $url_pattern ) : string {
 
 
-			$optionals = UrlParser::replaceOptionalMatch($url_pattern);
+			$optionals = UrlParser::replaceOptionalMatch( $url_pattern );
 
 			foreach ( $optionals as $optional ) {
 
-				$optional = preg_quote($optional, '/');
+				$optional = preg_quote( $optional, '/' );
 
 				$pattern = sprintf( "#(%s)#", $optional );
 
-				$url_pattern = preg_replace_callback($pattern, function ($match) {
+				$url_pattern = preg_replace_callback( $pattern, function ( $match ) {
 
-					$cleaned_match = Str::between($match[0], '{', '?');
+					$cleaned_match = Str::between( $match[0], '{', '?' );
 
 					return sprintf( "[/{%s}]", $cleaned_match );
 
-				}, $url_pattern,1  );
+				}, $url_pattern, 1 );
 
 			}
 
-			return rtrim($url_pattern, '/');
+			// We need this: /team/{id:\d+}[/{name}[/{player}]]
+			// We have this: /team/{id:\d+}[/{name}][/{player}]/
+
+			while ( $this->hasMultipleOptionalSegments( rtrim( $url_pattern, '/' ) ) ) {
+
+				$this->mergeOptional( $url_pattern );
+
+			}
+
+			return rtrim( $url_pattern, '/' );
+
+		}
+
+		private function hasMultipleOptionalSegments( string $url_pattern ) : bool {
+
+			$count = preg_match_all( '/(?<=\[).*?(?=\])/', $url_pattern, $matches );
+
+			return $count > 1;
+
+		}
+
+		private function mergeOptional( string &$url_pattern ) {
+
+			// preg_match( '/(}\[(.*?)\])/', $url_pattern, $matches );
+			preg_match( '/(\[(.*?)\])/', $url_pattern, $matches );
+
+			$first = $matches[0];
+
+			$before = Str::before( $url_pattern, $first );
+			$after  = Str::afterLast( $url_pattern, $first );
+
+			$url_pattern = $before . rtrim( $first, ']' ) . rtrim( $after, '/' ) . ']';
 
 		}
 

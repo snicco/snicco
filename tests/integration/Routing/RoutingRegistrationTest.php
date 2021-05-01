@@ -615,7 +615,6 @@
 			$this->seeResponse( 'calvin12', $response );
 
 
-
 		}
 
 		/** @test */
@@ -787,24 +786,58 @@
 
 		}
 
-
 		/** @test */
-		public function unmatched_optional_parameters_get_passed_as_null_values_and_dont_break_the_route() {
+		public function multiple_parameters_can_optional() {
 
-			$this->router->get( 'foo/{bar?}', function ( Request $request, $bar ) {
+			// Preceding Group is capturing
+			$this->router->post( '/team/{id:\d+}/{name?}/{player?}' )
+			             ->handle( function ( Request $request, $id, $name = 'foo_team', $player = 'foo_player' ) {
 
-				$this->assertSame( '', $bar );
+				             return $name . ':' . $id . ':' . $player;
 
-				return 'foo';
+			             } );
 
-			});
+			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund/calvin' ) );
+			$this->seeResponse( 'dortmund:1:calvin', $response );
 
-			$request = $this->request( 'GET', '/foo/' );
-			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund' ) );
+			$this->seeResponse( 'dortmund:1:foo_player', $response );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/team/12' ) );
+			$this->seeResponse( 'foo_team:12:foo_player', $response );
+
+			// Preceding group is required but not capturing
+			$this->router->post( '/users/{name?}/{gender?}/{age?}' )
+			             ->handle( function ( Request $request, $name = 'john', $gender = 'm', $age = '21' ) {
+
+
+				             return $name . ':' . $gender . ':' . $age;
+
+			             } );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/users/calvin/male/23' ) );
+			$this->seeResponse( 'calvin:male:23', $response );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/users/calvin/male' ) );
+			$this->seeResponse( 'calvin:male:21', $response );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/users/calvin/' ) );
+			$this->seeResponse( 'calvin:m:21', $response );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/users/' ) );
+			$this->seeResponse( 'john:m:21', $response );
 
 
 
 		}
+
+		// /** @test */
+		public function optional_parameters_work_with_custom_regex() {
+
+
+
+		}
+
 
 		/**
 		 *
@@ -1241,6 +1274,7 @@
 
 
 		}
+
 
 		/**
 		 *
@@ -1866,7 +1900,6 @@
 
 
 		}
-
 
 
 		private function seeResponse( $expected, $response ) {

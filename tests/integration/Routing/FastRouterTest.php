@@ -27,9 +27,11 @@
 
 				$r->addRoute('GET', '/team/{id:\d+}[/{name}/{player}]', 'handler');
 
+				$r->addRoute('GET', '/users[/{name}]', 'handler');
+
 			} );
 
-			$routeInfo = $dispatcher->dispatch( 'GET', '/team/10/dortmund/calvin' );
+			$routeInfo = $dispatcher->dispatch( 'GET', '/users/calvin' );
 
 			switch ( $routeInfo[0] ) {
 				case Dispatcher::NOT_FOUND:
