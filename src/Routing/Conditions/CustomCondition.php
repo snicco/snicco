@@ -27,6 +27,7 @@
 		public function isSatisfied( RequestInterface $request ) {
 
 			return call_user_func_array( $this->callable, $this->arguments );
+
 		}
 
 

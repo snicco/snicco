@@ -10,6 +10,8 @@
 	use WPEmerge\Helpers\UrlParser;
 	use WPEmerge\Support\Arr;
 
+	use WPEmerge\Support\Str;
+
 	use function FastRoute\simpleDispatcher;
 	use function tad\WPBrowser\isDsnString;
 
@@ -113,20 +115,21 @@
 
 		}
 
-		public function match( RequestInterface $request ) : ?Route {
+		public function match( RequestInterface $request ) : array {
 
 
-			[ $method, $path_info ] = [ $request->getMethod(), $request->getUri()->getPath() ];
+			[ $method, $path_info ] = [ $request->getMethod(), rtrim($request->getUri()->getPath(), '/')];
 
 			$routes = Arr::get( $this->routes, $method, [] );
 
-			$dispatcher = $this->toFastRouteDispatcher( $routes, $path_info);
+			$dispatcher = $this->toFastRouteDispatcher( $routes, $path_info );
 
-			$map = $this->createCombinedUrlMap($method);
+			$map = $this->createCombinedUrlMap( $method, $path_info );
 
 			$matching_route = null;
+			$payload = [];
 
-			while ( $map[$method] ) {
+			while ( $map[ $method ] ) {
 
 				$registered_path = $this->reverseHash( $map, $method );
 
@@ -147,7 +150,23 @@
 
 				}
 
+				$condition_args = [];
+
+				foreach ( $route->getCompiledConditions() as $compiled_condition ) {
+
+					$r =  $compiled_condition->getArguments($request);
+
+					$condition_args = array_merge($condition_args, $r);
+
+				}
+
 				$matching_route = $route;
+				$payload = $route_info[2];
+
+				$payload = array_merge($condition_args, $payload);
+
+				unset($this->static_url_map[$method][$path_info]);
+				unset($this->dynamic_url_map[$method][$path_info]);
 
 				break;
 
@@ -160,7 +179,7 @@
 
 			}
 
-			return $matching_route;
+			return [ $matching_route, $payload ];
 
 		}
 
@@ -175,7 +194,7 @@
 
 		}
 
-		private function toFastRouteDispatcher( array $routes , string $path_info ) : Dispatcher {
+		private function toFastRouteDispatcher( array $routes, string $path_info ) : Dispatcher {
 
 			return simpleDispatcher( function ( $r ) use ( $routes, $path_info ) {
 
@@ -185,7 +204,7 @@
 
 					$r->addRoute(
 						$route->getMethods(),
-						$this->createUrlHash($route, $path_info ),
+						$this->createUrlHash( $route, $path_info ),
 						$route
 					);
 
@@ -203,33 +222,38 @@
 
 		}
 
-		private function createUrlHash(  Route $route, string $path_info  ) : string {
+		private function createUrlHash( Route $route, string $path_info ) : string {
 
 
-				if ( UrlParser::isDynamicUrl( $url = $route->url() ) ) {
+			if ( UrlParser::isDynamicUrl( $route->url() ) ) {
 
-					return $path_info;
+				return $route->getCompiledUrl();
 
-				}
+			}
 
-				$url_hash = '/' . spl_object_hash( $route ) . $route->url();
+			$url_hash = '/' . spl_object_hash( $route ) . $route->url();
 
-				return $url_hash;
-
+			return $url_hash;
 
 
 		}
 
-		private function createCombinedUrlMap ( string $method ) : array {
+		private function createCombinedUrlMap( string $method, string $path_info ) : array {
 
-			return [
+			$map = array_merge(
+					Arr::get( $this->static_url_map, $method, [] ),
+					Arr::get( $this->dynamic_url_map, $method, [] )
+				);
 
-				$method => array_merge(
-					Arr::get($this->static_url_map, $method, [] ),
-					Arr::get($this->dynamic_url_map, $method, [] ),
-				)
+			$map = collect($map)->flatten()->unique()->reject( function ($hashed_path) use ( $path_info ) {
 
-			];
+				return trim(Str::afterLast($hashed_path, $path_info ), '/') !== '';
+
+			});
+
+			$foo = 'bar';
+
+			return [ $method => $map->all() ];
 
 		}
 
@@ -259,20 +283,21 @@
 
 				if ( UrlParser::isDynamicUrl( $route->url() ) ) {
 
+					if ( ! in_array( $path_info, $this->dynamic_url_map[ $route_method ] ?? [] ) ) {
 
-					if ( ! in_array($path_info, $this->dynamic_url_map[$route_method] ?? [] )  ) {
-
-						$this->dynamic_url_map[ $route_method ][] = $path_info;
+						$this->dynamic_url_map[ $route_method ][$path_info] = $path_info;
 
 					}
+
+					continue;
 
 				}
 
 				$url_hash = '/' . spl_object_hash( $route ) . $route->url();
 
-				if ( ! in_array($url_hash, $this->static_url_map[$route_method] ?? [] ) ) {
+				if ( ! in_array( $url_hash, $this->static_url_map[ $route_method ] ?? [] ) ) {
 
-					$this->static_url_map[$route_method][] = $url_hash;
+					$this->static_url_map[ $route_method ][$path_info][] = $url_hash;
 
 
 				}

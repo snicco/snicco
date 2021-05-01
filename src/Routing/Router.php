@@ -74,7 +74,7 @@
 
 			}
 
-			$route->addCondition( new UrlCondition( $url ) );
+			// $route->addCondition( new UrlCondition( $url ) );
 
 			return $this->routes->add( $route );
 
@@ -110,7 +110,12 @@
 
 		public function runRoute( RequestInterface $request ) {
 
-			if ( $route = $this->routes->match( $request ) ) {
+			[ $route, $payload ] = $this->routes->match( $request );
+
+			if ( $route ) {
+
+				/** @var Route $route */
+				$route->payload($payload);
 
 				return $this->runWithinStack( $route, $request );
 
