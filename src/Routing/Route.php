@@ -111,17 +111,17 @@
 
 			$segments = array_filter( $segments, function ( $segment ) {
 
-				return isset($this->regex[$segment]);
+				return isset( $this->regex[ $segment ] );
 
-			});
+			} );
 
 			$url = $this->url;
 
 			foreach ( $segments as $segment ) {
 
-				$pattern = sprintf( "/(%s(?=\\}))/", preg_quote( $segment, '/' ) ); ;
+				$pattern = sprintf( "/(%s(?=\\}))/", preg_quote( $segment, '/' ) );;
 
-				$url = preg_replace_callback( $pattern , function ( $match ) {
+				$url = preg_replace_callback( $pattern, function ( $match ) {
 
 					return $match[0] . ':' . $this->regex[ $match[0] ];
 
@@ -170,15 +170,15 @@
 
 		}
 
-		public function addCondition( ConditionInterface $condition ) {
-
-			$bucket = new ConditionBucket();
-			$bucket->add( $condition );
-
-			$this->where( $bucket );
-
-
-		}
+		// public function addCondition( ConditionInterface $condition ) {
+		//
+		// 	$bucket = new ConditionBucket();
+		// 	$bucket->add( $condition );
+		//
+		// 	$this->where( $bucket );
+		//
+		//
+		// }
 
 		public function matches( RequestInterface $request ) : bool {
 
@@ -255,7 +255,7 @@
 			return $this;
 
 		}
-		
+
 		private function signatureParameters() : array {
 
 			return RouteSignatureParameters::fromCallable(
@@ -294,7 +294,7 @@
 
 		}
 
-		public function where() : Route {
+		public function _where() : Route {
 
 			$args = func_get_args();
 
@@ -315,6 +315,19 @@
 			}
 
 			return $this;
+
+		}
+
+		public function where() : Route {
+
+			$args = func_get_args();
+
+			$bucket = $args[0];
+
+			$this->conditions[] = Arr::flattenOnePreserveKeys( $args );
+
+			return $this;
+
 
 		}
 
@@ -404,7 +417,6 @@
 				}, $url_pattern, 1 );
 
 			}
-
 
 			while ( $this->hasMultipleOptionalSegments( rtrim( $url_pattern, '/' ) ) ) {
 
