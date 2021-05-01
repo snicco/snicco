@@ -7,14 +7,10 @@
 	use Contracts\ContainerAdapter;
 	use WPEmerge\Contracts\RouteInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
-	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Helpers\Pipeline;
 	use WPEmerge\Helpers\Url;
-	use WPEmerge\Routing\Conditions\UrlCondition;
-	use WPEmerge\Support\Arr;
 	use WPEmerge\Traits\CompilesMiddleware;
-	use WPEmerge\Routing\ConditionFactory;
 	use WPEmerge\Traits\HoldsRouteBlueprint;
 	use WPEmerge\Traits\SortsMiddleware;
 
@@ -103,7 +99,7 @@
 
 			}
 
-			return $route->createUrl( $arguments );
+			return ( new RouteUrlGenerator($route ) )->to($arguments);
 
 
 		}

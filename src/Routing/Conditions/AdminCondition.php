@@ -7,9 +7,8 @@
 	use WPEmerge\Contracts\UrlableInterface;
 
 	/**
-	 * Check against the current ajax action.
+	 * Check against the current admin page.
 	 *
-	 * @codeCoverageIgnore
 	 */
 	class AdminCondition implements ConditionInterface, UrlableInterface {
 
@@ -30,7 +29,6 @@
 		/**
 		 * Constructor
 		 *
-		 * @codeCoverageIgnore
 		 *
 		 * @param  string  $menu
 		 * @param  string  $parent_menu
@@ -51,9 +49,7 @@
 			return is_admin() && ! wp_doing_ajax();
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
+
 		public function isSatisfied( RequestInterface $request ) {
 
 			if ( ! $this->isAdminPage() ) {
@@ -70,9 +66,7 @@
 			return $screen->id === get_plugin_page_hookname( $this->menu, $this->parent_menu );
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
+
 		public function getArguments( RequestInterface $request ) {
 
 			return [
@@ -82,9 +76,7 @@
 			];
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
+
 		public function toUrl( $arguments = [] ) {
 
 			if ( ! function_exists( 'menu_page_url' ) ) {

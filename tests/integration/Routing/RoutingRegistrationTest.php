@@ -570,21 +570,6 @@
 
 		}
 
-		/** @test */
-		public function a_route_can_be_named() {
-
-
-			$this->router->get( 'foo' )->name( 'foo_route' );
-			$url = $this->router->getRouteUrl( 'foo_route' );
-			$this->seeUrl( 'foo', $url );
-
-			$this->router->name( 'bar_route' )->get( 'bar' );
-			$url = $this->router->getRouteUrl( 'bar_route' );
-			$this->seeUrl( 'bar', $url );
-
-
-		}
-
 
 		/**
 		 *
@@ -692,6 +677,30 @@
 			$this->seeResponse( 'foo_team:12:foo_player', $response );
 
 		}
+
+		/** @test */
+		public function optional_parameters_work_with_custom_regex() {
+
+			$this->router->get( 'users/{id}[/{name:[a-z]+}]', function ( Request $request, $id, $name = 'admin' ) {
+
+				return $name . $id;
+
+			} );
+
+			$request = $this->request( 'GET', '/users/1/calvin' );
+			$this->seeResponse( 'calvin1', $this->router->runRoute( $request ) );
+
+			$request = $this->request( 'GET', 'users/1' );
+			$this->seeResponse( 'admin1', $this->router->runRoute( $request ) );
+
+			$request = $this->request( 'GET', 'users/1/12' );
+			$this->seeResponse( null , $this->router->runRoute( $request ) );
+
+
+
+		}
+
+
 
 		/**
 		 *
@@ -831,13 +840,57 @@
 
 		}
 
-		// /** @test */
-		public function optional_parameters_work_with_custom_regex() {
+		/** @test */
+		public function optional_parameters_work_with_our_custom_api() {
 
+			$this->router->get( 'users/{id}/{name?}', function ( Request $request, $id, $name = 'admin' ) {
+
+				return $name . $id;
+
+			})->and('name', '[a-z]+');
+
+			$request = $this->request( 'GET', '/users/1/calvin' );
+			$this->seeResponse( 'calvin1', $this->router->runRoute( $request ) );
+
+			$request = $this->request( 'GET', 'users/1' );
+			$this->seeResponse( 'admin1', $this->router->runRoute( $request ) );
+
+			$request = $this->request( 'GET', 'users/1/12' );
+			$this->seeResponse( null , $this->router->runRoute( $request ) );
 
 
 		}
 
+		/** @test */
+		public function multiple_parameters_can_be_optional_and_have_custom_regex () {
+
+			// Preceding Group is capturing
+			$this->router->post( '/team/{id}/{name?}/{age?}' )
+			             ->and(['name' => '[a-z]+', 'age' => '\d+'])
+			             ->handle( function ( Request $request, $id, $name = 'foo_team', $age = 21 ) {
+
+				             return $name . ':' . $id . ':' . $age;
+
+			             } );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund/23' ) );
+			$this->seeResponse( 'dortmund:1:23', $response );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund' ) );
+			$this->seeResponse( 'dortmund:1:21', $response );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/team/12' ) );
+			$this->seeResponse( 'foo_team:12:21', $response );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund/fail' ) );
+			$this->seeResponse( null , $response );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/team/1/123/123' ) );
+			$this->seeResponse( null , $response );
+
+
+
+		}
 
 		/**
 		 *
@@ -1291,6 +1344,7 @@
 		 *
 		 */
 
+
 		/** @test */
 		public function methods_can_be_merged_for_a_group() {
 
@@ -1380,28 +1434,6 @@
 			$get_request = $this->request( 'GET', '/foo' );
 			$response    = $this->router->runRoute( $get_request );
 			$this->seeResponse( 'foo', $response );
-
-
-		}
-
-		/** @test */
-		public function group_names_get_applied_to_child_routes() {
-
-			$this->router
-				->name( 'foo' )
-				->group( function () {
-
-					$this->router->get( 'bar' )->name( 'bar' );
-
-					$this->router->get( 'baz' )->name( 'baz' );
-
-					$this->router->name( 'biz' )->get( 'biz' );
-
-				} );
-
-			$this->seeUrl( 'bar', $this->router->getRouteUrl( 'foo.bar' ) );
-			$this->seeUrl( 'baz', $this->router->getRouteUrl( 'foo.baz' ) );
-			$this->seeUrl( 'biz', $this->router->getRouteUrl( 'foo.biz' ) );
 
 
 		}
@@ -1659,33 +1691,6 @@
 
 		}
 
-		/** @test */
-		public function route_names_are_merged_on_multiple_levels() {
-
-			$this->router
-				->name( 'foo' )
-				->group( function () {
-
-					$this->router->name( 'bar' )->group( function () {
-
-						$this->router->get( 'baz' )->name( 'baz' );
-
-					} );
-
-					$this->router->get( 'biz' )->name( 'biz' );
-
-
-				} );
-
-			$this->seeUrl( 'baz', $this->router->getRouteUrl( 'foo.bar.baz' ) );
-			$this->seeUrl( 'biz', $this->router->getRouteUrl( 'foo.biz' ) );
-
-			$this->expectExceptionMessage( 'no named route' );
-
-			$this->seeUrl( 'baz', $this->router->getRouteUrl( 'foo.bar.biz' ) );
-
-
-		}
 
 		/** @test */
 		public function group_prefixes_are_merged_on_multiple_levels() {
@@ -1900,6 +1905,72 @@
 
 
 		}
+
+		/** @test */
+		public function a_route_can_be_named() {
+
+
+			$this->router->get( 'foo' )->name( 'foo_route' );
+			$url = $this->router->getRouteUrl( 'foo_route' );
+			$this->seeUrl( 'foo', $url );
+
+			$this->router->name( 'bar_route' )->get( 'bar' );
+			$url = $this->router->getRouteUrl( 'bar_route' );
+			$this->seeUrl( 'bar', $url );
+
+
+		}
+
+		/** @test */
+		public function route_names_are_merged_on_multiple_levels() {
+
+			$this->router
+				->name( 'foo' )
+				->group( function () {
+
+					$this->router->name( 'bar' )->group( function () {
+
+						$this->router->get( 'baz' )->name( 'baz' );
+
+					} );
+
+					$this->router->get( 'biz' )->name( 'biz' );
+
+
+				} );
+
+			$this->seeUrl( 'baz', $this->router->getRouteUrl( 'foo.bar.baz' ) );
+			$this->seeUrl( 'biz', $this->router->getRouteUrl( 'foo.biz' ) );
+
+			$this->expectExceptionMessage( 'no named route' );
+
+			$this->seeUrl( 'baz', $this->router->getRouteUrl( 'foo.bar.biz' ) );
+
+
+		}
+
+		/** @test */
+		public function group_names_get_applied_to_child_routes() {
+
+			$this->router
+				->name( 'foo' )
+				->group( function () {
+
+					$this->router->get( 'bar' )->name( 'bar' );
+
+					$this->router->get( 'baz' )->name( 'baz' );
+
+					$this->router->name( 'biz' )->get( 'biz' );
+
+				} );
+
+			$this->seeUrl( 'bar', $this->router->getRouteUrl( 'foo.bar' ) );
+			$this->seeUrl( 'baz', $this->router->getRouteUrl( 'foo.baz' ) );
+			$this->seeUrl( 'biz', $this->router->getRouteUrl( 'foo.biz' ) );
+
+
+		}
+
 
 
 		private function seeResponse( $expected, $response ) {

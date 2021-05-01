@@ -83,11 +83,13 @@
 
 		}
 
-		public function and( ...$regex ) {
+		public function and( ...$regex ) : Route {
 
 			$this->regex = $this->parseRegex( Arr::flattenOnePreserveKeys( $regex ) );
 
 			$this->compileUrl();
+
+			return $this;
 
 		}
 
@@ -107,12 +109,19 @@
 
 			$segments = UrlParser::segments( $this->url );
 
+			$segments = array_filter( $segments, function ( $segment ) {
+
+				return isset($this->regex[$segment]);
+
+			});
+
 			$url = $this->url;
 
 			foreach ( $segments as $segment ) {
 
+				$pattern = sprintf( "/(%s(?=\\}))/", preg_quote( $segment, '/' ) ); ;
 
-				$url = preg_replace_callback( "/($segment(?=}))/", function ( $match ) {
+				$url = preg_replace_callback( $pattern , function ( $match ) {
 
 					return $match[0] . ':' . $this->regex[ $match[0] ];
 
@@ -186,11 +195,11 @@
 
 		}
 
-		public function middleware( $middleware_names ) : Route {
+		public function middleware( $middleware ) : Route {
 
-			$middleware_names = Arr::wrap( $middleware_names );
+			$middleware = Arr::wrap( $middleware );
 
-			$this->middleware = array_merge( $this->middleware ?? [], $middleware_names );
+			$this->middleware = array_merge( $this->middleware ?? [], $middleware );
 
 			return $this;
 
@@ -206,38 +215,7 @@
 
 		}
 
-		public function _run( RequestInterface $request ) {
-
-			$params = collect( $this->signatureParameters() );
-
-			$values = collect( [ $request ] )->merge( $this->getArguments( $request ) )
-			                                 ->values();
-
-			if ( $params->count() < $values->count() ) {
-
-				$values = $values->slice( 0, count( $params ) );
-
-			}
-
-			if ( $params->count() > $values->count() ) {
-
-				$params = $params->slice( 0, count( $values ) );
-
-			}
-
-			$payload = $params
-				->map( function ( $param ) {
-
-					return $param->getName();
-
-				} )
-				->values()
-				->combine( $values );
-
-			return $this->compiled_action->executeUsing( $payload->all() );
-
-		}
-
+		/** @todo Refactor this so that we dont rely on parameter order and parameter names. */
 		public function run( RequestInterface $request ) {
 
 			$params = collect( $this->signatureParameters() );
@@ -443,8 +421,6 @@
 
 			}
 
-			// We need this: /team/{id:\d+}[/{name}[/{player}]]
-			// We have this: /team/{id:\d+}[/{name}][/{player}]/
 
 			while ( $this->hasMultipleOptionalSegments( rtrim( $url_pattern, '/' ) ) ) {
 
@@ -458,7 +434,7 @@
 
 		private function hasMultipleOptionalSegments( string $url_pattern ) : bool {
 
-			$count = preg_match_all( '/(?<=\[).*?(?=\])/', $url_pattern, $matches );
+			$count = preg_match_all( '/(?<=\[).*?(?=])/', $url_pattern, $matches );
 
 			return $count > 1;
 
@@ -466,8 +442,7 @@
 
 		private function mergeOptional( string &$url_pattern ) {
 
-			// preg_match( '/(}\[(.*?)\])/', $url_pattern, $matches );
-			preg_match( '/(\[(.*?)\])/', $url_pattern, $matches );
+			preg_match( '/(\[(.*?)])/', $url_pattern, $matches );
 
 			$first = $matches[0];
 
