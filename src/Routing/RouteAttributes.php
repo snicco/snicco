@@ -123,6 +123,8 @@
 
 			$args = func_get_args();
 
+			$args = Arr::flattenOnePreserveKeys($args);
+
 			$this->route->where(...$args);
 
 		}
