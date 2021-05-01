@@ -255,23 +255,7 @@
 			return $this;
 
 		}
-
-		private function getArguments( RequestInterface $request ) : array {
-
-
-			$args = collect( $this->compiled_conditions )
-				->flatMap( function ( ConditionInterface $condition ) use ( $request ) {
-
-					return $condition->getArguments( $request );
-
-				} )
-				->all();
-
-			return $args;
-
-
-		}
-
+		
 		private function signatureParameters() : array {
 
 			return RouteSignatureParameters::fromCallable(

@@ -30,19 +30,19 @@
 
 			IncomingWebRequest::class => [
 
-				HttpKernel::class . '@handle'
+				HttpKernel::class . '@handle',
 
 			],
 
 			IncomingAdminRequest::class => [
 
-				HttpKernel::class . '@handle'
+				HttpKernel::class . '@handle',
 
 			],
 
 			IncomingAjaxRequest::class => [
 
-				HttpKernel::class . '@handle'
+				HttpKernel::class . '@handle',
 
 			],
 
@@ -54,7 +54,7 @@
 
 			AdminBodySendable::class => [
 
-				HttpKernel::class . '@sendBodyDeferred'
+				HttpKernel::class . '@sendBodyDeferred',
 
 			],
 
@@ -81,11 +81,11 @@
 
 			} );
 
-			$container->singleton(Dispatcher::class, function () {
+			$container->singleton( Dispatcher::class, function () {
 
 				return ApplicationEvent::dispatcher();
 
-			});
+			} );
 
 		}
 

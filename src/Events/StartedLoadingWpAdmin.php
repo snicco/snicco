@@ -8,5 +8,4 @@
 	class StartedLoadingWpAdmin extends ApplicationEvent {
 
 
-
 	}

@@ -91,30 +91,6 @@
 		 * @todo Find a way to not recompile shared conditions that were passed by
 		 * @todo previous routes but the route in total didnt match.
 		 */
-		public function _match( RequestInterface $request ) {
-
-			$routes = collect( Arr::get( $this->routes, $request->getMethod(), [] ) );
-
-			$route = $routes
-				->first( function ( Route $route ) use ( $request ) {
-
-					$route->compileConditions( $this->condition_factory );
-
-					return $route->matches( $request );
-
-				} );
-
-			if ( $route ) {
-
-				$route->compileAction( $this->handler_factory );
-				$request->setRoute( $route );
-
-			}
-
-			return $route;
-
-		}
-
 		public function match( RequestInterface $request ) : array {
 
 
@@ -240,10 +216,11 @@
 
 		private function createCombinedUrlMap( string $method, string $path_info ) : array {
 
-			$map = array_merge(
-					Arr::get( $this->static_url_map, $method, [] ),
-					Arr::get( $this->dynamic_url_map, $method, [] )
-				);
+			$map = array_merge_recursive(
+				Arr::get( $this->static_url_map, $method, [] ),
+				Arr::get( $this->dynamic_url_map, $method, [] ),
+
+			);
 
 			$map = collect($map)->flatten()->unique()->reject( function ($hashed_path) use ( $path_info ) {
 
@@ -251,7 +228,6 @@
 
 			});
 
-			$foo = 'bar';
 
 			return [ $method => $map->all() ];
 

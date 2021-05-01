@@ -308,13 +308,14 @@
 		}
 
 		/** @test */
-		public function static_and_dynamic_routes_can_be_added_for_the_same_uri() {
+		public function static_and_dynamic_routes_can_be_added_for_the_same_uri_while_static_routes_take_precedence() {
 
 			$this->router->post( '/foo/bar', function () {
 
 				return 'foo1';
 
 			} )->where( 'false' );
+
 			$this->router->post( '/foo/{bar}', function () {
 
 				return 'foo2';
@@ -322,7 +323,9 @@
 			} )->where( 'true' );
 
 			$response = $this->router->runRoute( $this->request( 'POST', '/foo/bar' ) );
+			$this->seeResponse( 'foo2', $response );
 
+			$response = $this->router->runRoute( $this->request( 'POST', '/foo/baz' ) );
 			$this->seeResponse( 'foo2', $response );
 
 		}
@@ -694,8 +697,7 @@
 			$this->seeResponse( 'admin1', $this->router->runRoute( $request ) );
 
 			$request = $this->request( 'GET', 'users/1/12' );
-			$this->seeResponse( null , $this->router->runRoute( $request ) );
-
+			$this->seeResponse( null, $this->router->runRoute( $request ) );
 
 
 		}
@@ -837,7 +839,6 @@
 			$this->seeResponse( 'john:m:21', $response );
 
 
-
 		}
 
 		/** @test */
@@ -847,7 +848,7 @@
 
 				return $name . $id;
 
-			})->and('name', '[a-z]+');
+			} )->and( 'name', '[a-z]+' );
 
 			$request = $this->request( 'GET', '/users/1/calvin' );
 			$this->seeResponse( 'calvin1', $this->router->runRoute( $request ) );
@@ -856,17 +857,17 @@
 			$this->seeResponse( 'admin1', $this->router->runRoute( $request ) );
 
 			$request = $this->request( 'GET', 'users/1/12' );
-			$this->seeResponse( null , $this->router->runRoute( $request ) );
+			$this->seeResponse( null, $this->router->runRoute( $request ) );
 
 
 		}
 
 		/** @test */
-		public function multiple_parameters_can_be_optional_and_have_custom_regex () {
+		public function multiple_parameters_can_be_optional_and_have_custom_regex() {
 
 			// Preceding Group is capturing
 			$this->router->post( '/team/{id}/{name?}/{age?}' )
-			             ->and(['name' => '[a-z]+', 'age' => '\d+'])
+			             ->and( [ 'name' => '[a-z]+', 'age' => '\d+' ] )
 			             ->handle( function ( Request $request, $id, $name = 'foo_team', $age = 21 ) {
 
 				             return $name . ':' . $id . ':' . $age;
@@ -883,11 +884,10 @@
 			$this->seeResponse( 'foo_team:12:21', $response );
 
 			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund/fail' ) );
-			$this->seeResponse( null , $response );
+			$this->seeResponse( null, $response );
 
 			$response = $this->router->runRoute( $this->request( 'post', '/team/1/123/123' ) );
-			$this->seeResponse( null , $response );
-
+			$this->seeResponse( null, $response );
 
 
 		}
@@ -1343,7 +1343,6 @@
 		 *
 		 *
 		 */
-
 
 		/** @test */
 		public function methods_can_be_merged_for_a_group() {
@@ -1970,7 +1969,6 @@
 
 
 		}
-
 
 
 		private function seeResponse( $expected, $response ) {

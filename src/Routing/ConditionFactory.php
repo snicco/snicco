@@ -50,10 +50,17 @@
 
 			$conditions = collect( $route->getConditions() );
 
-			$has_regex = $conditions->filter( [ $this, 'isRegexCondition' ] )->isNotEmpty();
+			// $has_regex = $conditions->filter( [ $this, 'isRegexCondition' ] )->isNotEmpty();
+			// $has_regex = null;
 
-			$conditions = $conditions->when( $has_regex, [ $this, 'filterUrlCondition' ] )
-			                         ->map( function ( $condition ) use ( $route ) {
+
+			$conditions = $conditions->map( function ( $condition ) use ( $route ) {
+
+			                         	if ( $this->alreadyCompiled($condition) ) {
+
+			                         		return $condition;
+
+			                            }
 
 				                         return $this->create( $condition, $route );
 
