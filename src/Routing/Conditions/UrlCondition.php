@@ -109,12 +109,15 @@
 		public function toUrl( $arguments = [] ) {
 
 			$url = preg_replace_callback( $this->url_pattern, function ( $matches ) use ( $arguments ) {
+
 				$name     = $matches['name'];
 				$optional = ! empty( $matches['optional'] );
 				$value    = '/' . urlencode( WPEmgereArr::get( $arguments, $name, '' ) );
 
 				if ( $value === '/' ) {
+
 					if ( ! $optional ) {
+
 						throw new ConfigurationException( "Required URL parameter \"$name\" is not specified." );
 					}
 
@@ -122,6 +125,7 @@
 				}
 
 				return $value;
+
 			}, $this->url );
 
 			return home_url( UrlUtility::addLeadingSlash( UrlUtility::removeTrailingSlash( $url ) ) );
