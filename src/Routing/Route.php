@@ -12,9 +12,9 @@
 	use WPEmerge\Helpers\RouteSignatureParameters;
 	use WPEmerge\Helpers\Url;
 	use WPEmerge\Helpers\UrlParser;
-	use WPEmerge\Routing\ConditionFactory;
 	use WPEmerge\Routing\Conditions\UrlCondition;
 	use WPEmerge\Support\Arr;
+	use WPEmerge\Support\Str;
 
 	class Route implements RouteInterface, SetsRouteAttributes {
 
@@ -48,15 +48,26 @@
 		private $name;
 
 		/**
-		 * @var array
+		 * @var ConditionInterface[]
 		 */
 		private $compiled_conditions = [];
 
+		/**
+		 * @var array
+		 */
+		private $regex;
+
+		/**
+		 * @var string
+		 */
+		private $compiled_url;
+
+		private $payload;
 
 		public function __construct( array $methods, string $url, $action, array $attributes = [] ) {
 
 			$this->methods    = $methods;
-			$this->url        = Url::normalizePath($url);
+			$this->url        = $this->replaceOptional(Url::normalizePath($url));
 			$this->action     = $action;
 			$this->namespace  = $attributes['namespace'] ?? null;
 			$this->middleware = $attributes['middleware'] ?? null;
@@ -69,6 +80,55 @@
 			$this->action = $action;
 
 			return $this;
+
+		}
+
+		public function and( ...$regex ) {
+
+			$this->regex = $this->parseRegex( Arr::flattenOnePreserveKeys($regex));
+
+			$this->compileUrl();
+
+		}
+
+		private function parseRegex( $regex ) : array {
+
+			if ( is_int( Arr::firstEl( array_keys( $regex ) ) ) ) {
+
+				return Arr::combineFirstTwo( $regex );
+
+			}
+
+			return $regex;
+
+		}
+
+		public function compileUrl () {
+
+			$segments = UrlParser::segments($this->url);
+
+			$url = $this->url;
+
+			foreach ( $segments as $segment ) {
+
+
+				$url = preg_replace_callback("/($segment(?=}))/", function ($match) {
+
+					return $match[0] . ':' . $this->regex[$match[0]];
+
+				}, $url , 1);
+
+			}
+
+			$this->compiled_url = rtrim($url, '/');
+
+		}
+
+		public function getCompiledUrl () :string  {
+
+			$url = $this->compiled_url ?? $this->url;
+
+			return rtrim($url, '/');
 
 		}
 
@@ -146,11 +206,43 @@
 
 		}
 
-		public function run( RequestInterface $request ) {
+		public function _run( RequestInterface $request ) {
 
 			$params = collect( $this->signatureParameters() );
 
 			$values = collect( [ $request ] )->merge( $this->getArguments( $request ) )
+			                                 ->values();
+
+			if ( $params->count() < $values->count() ) {
+
+				$values = $values->slice( 0, count( $params ) );
+
+			}
+
+			if ( $params->count() > $values->count() ) {
+
+				$params = $params->slice( 0, count( $values ) );
+
+			}
+
+			$payload = $params
+				->map( function ( $param ) {
+
+					return $param->getName();
+
+				} )
+				->values()
+				->combine( $values );
+
+			return $this->compiled_action->executeUsing( $payload->all() );
+
+		}
+
+		public function run( RequestInterface $request ) {
+
+			$params = collect( $this->signatureParameters() );
+
+			$values = collect( [ $request ] )->merge( $this->payload )
 			                                 ->values();
 
 			if ( $params->count() < $values->count() ) {
@@ -240,12 +332,6 @@
 
 		}
 
-		public function requiredSegments() : array {
-
-			return UrlParser::requiredSegments( $this->url );
-
-		}
-
 		public function where() : Route {
 
 			$args = func_get_args();
@@ -327,6 +413,37 @@
 		private function usesController() : bool {
 
 			return ! $this->compiled_action->raw() instanceof \Closure;
+
+		}
+
+		public function payload( $payload ) {
+
+			$this->payload = $payload;
+
+		}
+
+		private function replaceOptional( string $url_pattern ) : string {
+
+
+			$optionals = UrlParser::replaceOptionalMatch($url_pattern);
+
+			foreach ( $optionals as $optional ) {
+
+				$optional = preg_quote($optional, '/');
+
+				$pattern = sprintf( "#(%s)#", $optional );
+
+				$url_pattern = preg_replace_callback($pattern, function ($match) {
+
+					$cleaned_match = Str::between($match[0], '{', '?');
+
+					return sprintf( "[/{%s}]", $cleaned_match );
+
+				}, $url_pattern,1  );
+
+			}
+
+			return rtrim($url_pattern, '/');
 
 		}
 

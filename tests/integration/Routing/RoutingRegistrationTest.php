@@ -28,9 +28,6 @@
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Support\Str;
 
-
-
-
 	class RoutingRegistrationTest extends WPTestCase {
 
 
@@ -89,7 +86,7 @@
 
 		private function request( $method, $path ) : TestRequest {
 
-			return TestRequest::from( $method ,  $path );
+			return TestRequest::from( $method, $path );
 
 		}
 
@@ -297,12 +294,12 @@
 
 				return 'foo1';
 
-			} )->where('false');
+			} )->where( 'false' );
 			$this->router->post( '/foo/', function () {
 
 				return 'foo2';
 
-			} )->where('true');
+			} )->where( 'true' );
 
 			$response = $this->router->runRoute( $this->request( 'post', '/foo' ) );
 
@@ -317,12 +314,12 @@
 
 				return 'foo1';
 
-			})->where('false');
+			} )->where( 'false' );
 			$this->router->post( '/foo/{bar}', function () {
 
 				return 'foo2';
 
-			} )->where('true');
+			} )->where( 'true' );
 
 			$response = $this->router->runRoute( $this->request( 'POST', '/foo/bar' ) );
 
@@ -588,13 +585,122 @@
 
 		}
 
+
 		/**
 		 *
 		 *
 		 *
 		 *
 		 *
-		 * REGEX CONDITIONS
+		 * ROUTE PARAMETERS, NATIVE FAST ROUTE SYNTAX
+		 *
+		 *
+		 *
+		 *
+		 *
+		 *
+		 */
+
+		/** @test */
+		public function route_parameters_are_captured() {
+
+			$this->router->post( '/user/{id}/{name}' )
+			             ->handle( function ( Request $request, $id, $name = 'admin' ) {
+
+				             return $name . $id;
+
+			             } );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/user/12/calvin' ) );
+			$this->seeResponse( 'calvin12', $response );
+
+
+
+		}
+
+		/** @test */
+		public function custom_regex_can_be_defined_for_route_parameters() {
+
+			$this->router->post( '/user/{id:\d+}/{name:calvin|john}' )
+			             ->handle( function ( Request $request, $id, $name = 'admin' ) {
+
+				             return $name . $id;
+
+			             } );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/user/12/calvin' ) );
+			$this->seeResponse( 'calvin12', $response );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/user/12/john' ) );
+			$this->seeResponse( 'john12', $response );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/user/a/calvin' ) );
+			$this->seeResponse( null, $response );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/user/12/jane' ) );
+			$this->seeResponse( null, $response );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/user/12' ) );
+			$this->seeResponse( null, $response );
+
+		}
+
+		/** @test */
+		public function optional_parameters_work_at_the_end_of_a_route() {
+
+			$this->router->post( '/user/{id:\d+}[/{name}]' )
+			             ->handle( function ( Request $request, $id, $name = 'admin' ) {
+
+				             return $name . $id;
+
+			             } );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/user/12/calvin' ) );
+			$this->seeResponse( 'calvin12', $response );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/user/12' ) );
+			$this->seeResponse( 'admin12', $response );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/user/ab' ) );
+			$this->seeResponse( null, $response );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/user/ab/calvin' ) );
+			$this->seeResponse( null, $response );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/user/calvin/12' ) );
+			$this->seeResponse( null, $response );
+
+
+		}
+
+		/** @test */
+		public function every_segment_after_an_optional_part_will_be_its_own_capture_group_but_not_required() {
+
+			$this->router->post( '/team/{id:\d+}[/{name}[/{player}]]' )
+			             ->handle( function ( Request $request, $id, $name = 'foo_team', $player = 'foo_player' ) {
+
+				             return $name . ':' . $id . ':' . $player;
+
+			             } );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund/calvin' ) );
+			$this->seeResponse( 'dortmund:1:calvin', $response );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund' ) );
+			$this->seeResponse( 'dortmund:1:foo_player', $response );
+
+			$response = $this->router->runRoute( $this->request( 'post', '/team/12' ) );
+			$this->seeResponse( 'foo_team:12:foo_player', $response );
+
+		}
+
+		/**
+		 *
+		 *
+		 *
+		 *
+		 *
+		 * ROUTE PARAMETERS, CUSTOM API
 		 *
 		 *
 		 *
@@ -611,7 +717,7 @@
 
 				return 'foo';
 
-			} )->where( 'user', '/[0-9]+/' );
+			} )->and( 'user', '[0-9]+' );
 
 			$request = $this->request( 'GET', '/users/1' );
 			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
@@ -630,7 +736,7 @@
 
 				return 'foo';
 
-			} )->where( [ 'user', '/[0-9]+/' ] );
+			} )->and( [ 'user', '[0-9]+' ] );
 
 			$request = $this->request( 'GET', '/users/1' );
 			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
@@ -649,82 +755,34 @@
 
 				return $name . $id;
 
-			} )->where( [ 'id' => '/[0-9]+/', 'name' => '/[a-z]+/' ] );
+			} )
+			             ->and( [ 'id' => '[0-9]+', 'name' => '[a-z]+' ] );
 
 			$request = $this->request( 'GET', '/user/1/calvin' );
 			$this->seeResponse( 'calvin1', $this->router->runRoute( $request ) );
 
-			$request = $this->request( 'GET', '/users/calvin/1' );
+			$request = $this->request( 'GET', '/users/1/1' );
+			$this->assertNull( $this->router->runRoute( $request ) );
+
+			$request = $this->request( 'GET', '/users/calvin/calvin' );
 			$this->assertNull( $this->router->runRoute( $request ) );
 
 		}
 
 		/** @test */
-		public function regex_can_be_added_before_the_http_verb() {
+		public function optional_parameters_work_at_the_end_of_the_url() {
 
-			$this->router->where( 'user', '/[0-9]+/' )->get( 'users/{user}', function () {
+			$this->router->get( 'users/{id}/{name?}', function ( Request $request, $id, $name = 'admin' ) {
 
-				return 'foo';
+				return $name . $id;
 
 			} );
 
-			$request = $this->request( 'GET', '/users/1' );
-			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
-
-			$request = $this->request( 'GET', '/users/calvin' );
-			$this->assertNull( $this->router->runRoute( $request ) );
-
-		}
-
-		/** @test */
-		public function regex_in_array_format_can_be_added_before_the_http_verb() {
-
-			$this->router->where( [ 'user', '/[0-9]+/' ] )->get( 'users/{user}', function () {
-
-				return 'foo';
-
-			} );
-
-			$request = $this->request( 'GET', '/users/1' );
-			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
-
-			$request = $this->request( 'GET', '/users/calvin' );
-			$this->assertNull( $this->router->runRoute( $request ) );
-
-		}
-
-		/** @test */
-		public function multiple_regex_conditions_can_be_added_before_the_http_verb() {
-
-			$this->router->where( [ 'id' => '/[0-9]+/', 'name' => '/[a-z]+/' ] )
-			             ->get( '/user/{id}/{name}', function ( Request $request, $id, $name ) {
-
-				             return $name . $id;
-
-			             } );
-
-			$request = $this->request( 'GET', '/user/1/calvin' );
+			$request = $this->request( 'GET', '/users/1/calvin' );
 			$this->seeResponse( 'calvin1', $this->router->runRoute( $request ) );
 
-			$request = $this->request( 'GET', '/users/calvin/1' );
-			$this->assertNull( $this->router->runRoute( $request ) );
-
-		}
-
-		/** @test */
-		public function optional_parameters_work_in_the_url_work_with_regex() {
-
-			$this->router->get( 'foo/{bar?}/{baz}', function ( Request $request, $bar, $baz ) {
-
-				return $bar . $baz;
-
-			} )->where( 'baz', '/[0-9]+/' );
-
-			$request = $this->request( 'GET', '/foo/bar/1' );
-			$this->seeResponse( 'bar1', $this->router->runRoute( $request ) );
-
-			$request = $this->request( 'GET', '/foo/bar/abc' );
-			$this->assertNull( $this->router->runRoute( $request ) );
+			$request = $this->request( 'GET', 'users/1' );
+			$this->seeResponse( 'admin1', $this->router->runRoute( $request ) );
 
 
 		}
@@ -733,22 +791,18 @@
 		/** @test */
 		public function unmatched_optional_parameters_get_passed_as_null_values_and_dont_break_the_route() {
 
-			$this->router->get( 'foo/{bar?}/{baz}', function ( Request $request, $bar, $baz ) {
+			$this->router->get( 'foo/{bar?}', function ( Request $request, $bar ) {
 
 				$this->assertSame( '', $bar );
 
-				return $baz;
+				return 'foo';
 
-			} )->where( 'baz', '/[0-9]+/' );
+			});
 
-			$request = $this->request( 'GET', '/foo/1' );
-			$this->seeResponse( '1', $this->router->runRoute( $request ) );
+			$request = $this->request( 'GET', '/foo/' );
+			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
 
-			$request = $this->request( 'GET', '/foo/bar/abc' );
-			$this->assertNull( $this->router->runRoute( $request ) );
 
-			$request = $this->request( 'GET', '/foo/abc' );
-			$this->assertNull( $this->router->runRoute( $request ) );
 
 		}
 
@@ -1131,7 +1185,7 @@
 
 			$get = $this->request( 'GET', '/foo' );
 
-			$this->seeResponse('foo', $this->router->runRoute( $get ) );
+			$this->seeResponse( 'foo', $this->router->runRoute( $get ) );
 
 			$this->router
 				->where( 'dependency_condition', false )
@@ -1143,9 +1197,7 @@
 
 			$post = $this->request( 'POST', '/foo' );
 
-			$this->seeResponse(null , $this->router->runRoute( $post ) );
-
-
+			$this->seeResponse( null, $this->router->runRoute( $post ) );
 
 
 		}
@@ -1154,17 +1206,17 @@
 		public function global_functions_can_be_used_as_custom_conditions() {
 
 
-			$this->router->where('is_string', 'foo')->get('foo', function () {
+			$this->router->where( 'is_string', 'foo' )->get( 'foo', function () {
 
 				return 'foo';
 
-			});
+			} );
 
 			$get = $this->request( 'GET', '/foo' );
-			$this->seeResponse('foo', $this->router->runRoute( $get ) );
+			$this->seeResponse( 'foo', $this->router->runRoute( $get ) );
 
 			$this->router
-				->where('is_string', 1)
+				->where( 'is_string', 1 )
 				->post( 'foo', function () {
 
 					return 'foo';
@@ -1173,10 +1225,10 @@
 
 			$post = $this->request( 'POST', '/foo' );
 
-			$this->seeResponse(null , $this->router->runRoute( $post ) );
+			$this->seeResponse( null, $this->router->runRoute( $post ) );
 
 			$this->router
-				->where('!is_string', 1)
+				->where( '!is_string', 1 )
 				->put( 'foo', function () {
 
 					return 'foo';
@@ -1185,9 +1237,7 @@
 
 			$put = $this->request( 'PUT', '/foo' );
 
-			$this->seeResponse('foo' , $this->router->runRoute( $put ) );
-
-
+			$this->seeResponse( 'foo', $this->router->runRoute( $put ) );
 
 
 		}
@@ -1816,6 +1866,8 @@
 
 
 		}
+
+
 
 		private function seeResponse( $expected, $response ) {
 

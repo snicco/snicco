@@ -11,17 +11,17 @@
 
 		public static function parseModelsFromUrl( string $url_pattern ) {
 
-			preg_match_all('/[^{]+(?=})/', $url_pattern, $matches);
+			preg_match_all( '/[^{]+(?=})/', $url_pattern, $matches );
 
-			$matches = collect($matches)->flatten();
+			$matches = collect( $matches )->flatten();
 
-			$model_blueprint = $matches->flatMap(function ($value) {
+			$model_blueprint = $matches->flatMap( function ( $value ) {
 
-				$key = static::containsDot($value) ? Str::after($value, ':') : static::default_key;
+				$key = static::containsDot( $value ) ? Str::after( $value, ':' ) : static::default_key;
 
-				return [Str::before($value, ':') =>  $key];
+				return [ Str::before( $value, ':' ) => $key ];
 
-			});
+			} );
 
 			return $model_blueprint->all();
 
@@ -45,32 +45,59 @@
 
 		}
 
-		private static function containsDot ($string) {
+		private static function containsDot( $string ) {
 
-			return Str::contains($string, ':');
+			return Str::contains( $string, ':' );
 
 		}
 
 		public static function requiredSegments( string $url_pattern ) {
 
-			preg_match_all('/[^{]+\w(?=})/', $url_pattern, $matches);
+			preg_match_all( '/[^{]+\w(?=})/', $url_pattern, $matches );
 
-			return collect($matches)->flatten()->all();
+			return collect( $matches )->flatten()->all();
 
 		}
 
-		public static function isDynamicUrl( string $url  ) {
+		public static function segments( string $url_pattern ) {
 
-			$result = preg_match('/[^{]+(?=})/', $url, $matches);
+			preg_match_all( '/[^{]+(?=})/', $url_pattern, $matches );
+
+			return collect( $matches )->flatten()->all();
+
+		}
+
+		public static function isDynamicUrl( string $url ) {
+
+			$result = preg_match( '/[^{]+(?=})/', $url, $matches );
 
 			return $result === 1;
 		}
 
-		public static function isStaticUrl( string $url  ) {
+		public static function isStaticUrl( string $url ) {
 
-			return ! self::isDynamicUrl($url);
+			return ! self::isDynamicUrl( $url );
 		}
 
+		public static function optionalSegments( string $url_pattern ) {
+
+			// preg_match_all( '/[^{]+[?](?=})/', $url_pattern, $matches );
+			preg_match_all( '/[^\/{]+[?]/', $url_pattern, $matches );
+
+			return collect( $matches )->flatten()->all();
+
+
+		}
+
+		public static function replaceOptionalMatch( string $url_pattern ) {
+
+			// preg_match_all( '/({[^\/{]+[?]})/', $url_pattern, $matches );
+
+			preg_match_all( '/(\/{[^\/{]+[?]})/', $url_pattern, $matches );
+
+			return collect( $matches )->flatten()->unique()->all();
+
+		}
 
 
 	}
