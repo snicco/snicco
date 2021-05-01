@@ -34,7 +34,7 @@
 		/** @var \WPEmerge\Contracts\RouteAction */
 		private $compiled_action;
 
-		/** @var \WPEmerge\Contracts\ConditionInterface[] */
+		/** @var \WPEmerge\Routing\ConditionBlueprint[] */
 		private $conditions;
 
 		/**
@@ -170,15 +170,6 @@
 
 		}
 
-		// public function addCondition( ConditionInterface $condition ) {
-		//
-		// 	$bucket = new ConditionBucket();
-		// 	$bucket->add( $condition );
-		//
-		// 	$this->where( $bucket );
-		//
-		//
-		// }
 
 		public function matches( RequestInterface $request ) : bool {
 
@@ -294,25 +285,12 @@
 
 		}
 
+
 		public function _where() : Route {
 
 			$args = func_get_args();
 
-			$bucket = $args[0];
-
-			if ( ! $bucket instanceof ConditionBucket ) {
-
-				$this->conditions[] = Arr::flattenOnePreserveKeys( $args );
-
-				return $this;
-
-			}
-
-			foreach ( $bucket->all() as $condition ) {
-
-				$this->conditions[] = $condition;
-
-			}
+			$this->conditions[] = $args;
 
 			return $this;
 
@@ -322,12 +300,9 @@
 
 			$args = func_get_args();
 
-			$bucket = $args[0];
-
-			$this->conditions[] = Arr::flattenOnePreserveKeys( $args );
+			$this->conditions[] = new ConditionBlueprint($args);
 
 			return $this;
-
 
 		}
 

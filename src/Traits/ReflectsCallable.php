@@ -161,7 +161,7 @@
 		/**
 		 * @param string|object $class
 		 */
-		private function getClass( $class ) {
+		private function getClass( $class )  {
 
 			return ( $this->classExists($class) ) ? get_class($class) : null;
 
