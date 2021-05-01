@@ -147,12 +147,6 @@
 
 		}
 
-		public function getAction() {
-
-			return $this->action;
-
-		}
-
 		public function methods( $methods ) {
 
 			$this->methods = array_merge(
@@ -169,7 +163,6 @@
 			return $this;
 
 		}
-
 
 		public function matches( RequestInterface $request ) : bool {
 
@@ -285,17 +278,6 @@
 
 		}
 
-
-		public function _where() : Route {
-
-			$args = func_get_args();
-
-			$this->conditions[] = $args;
-
-			return $this;
-
-		}
-
 		public function where() : Route {
 
 			$args = func_get_args();
@@ -303,30 +285,6 @@
 			$this->conditions[] = new ConditionBlueprint($args);
 
 			return $this;
-
-		}
-
-		public function compiledConditions( array $conditions ) {
-
-			$this->compiled_conditions = $conditions;
-
-		}
-
-		public function createUrl( $arguments ) {
-
-			$conditions = collect( $this->compiled_conditions );
-
-			$url = $conditions->whereInstanceOf( UrlCondition::class )->first();
-
-			if ( ! $url ) {
-
-				throw new ConfigurationException(
-					'The Route can not be converted to an URL.'
-				);
-
-			}
-
-			return $url->toUrl( $arguments );
 
 		}
 
