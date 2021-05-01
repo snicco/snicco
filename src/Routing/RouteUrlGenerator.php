@@ -11,7 +11,6 @@
 
 	class RouteUrlGenerator {
 
-
 		/**
 		 * @var \WPEmerge\Routing\Route
 		 */
