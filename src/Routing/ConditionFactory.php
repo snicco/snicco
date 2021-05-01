@@ -50,45 +50,24 @@
 
 			$conditions = collect( $route->getConditions() );
 
-			// $has_regex = $conditions->filter( [ $this, 'isRegexCondition' ] )->isNotEmpty();
-			// $has_regex = null;
+			$conditions = $conditions
+				->map( function ( $condition ) {
 
+					if ( $compiled = $this->alreadyCompiled( $condition ) ) {
 
-			$conditions = $conditions->map( function ( $condition ) use ( $route ) {
+						return $compiled;
 
-			                         	if ( $this->alreadyCompiled($condition) ) {
+					}
 
-			                         		return $condition;
+					return $this->makeNew( $condition );
 
-			                            }
-
-				                         return $this->create( $condition, $route );
-
-			                         } )
-			                         ->unique();
+				} )
+				->unique();
 
 			return $conditions->all();
 
 		}
 
-
-		private function create( array $condition, Route $route ) {
-
-			if ( $this->alreadyCompiled( $compiled = Arr::firstEl( $condition ) ) ) {
-
-				return $compiled;
-
-			}
-
-			if ( $this->isRegexCondition( $condition ) ) {
-
-				return $this->newRegexUrlCondition( $condition, $route );
-
-			}
-
-			return $this->makeNew( $condition );
-
-		}
 
 		/**
 		 * @throws \WPEmerge\Exceptions\ConfigurationException
@@ -113,7 +92,7 @@
 
 				try {
 
-					$args = $this->buildNamedConstructorArgs($condition_class, $condition_options['arguments']);
+					$args = $this->buildNamedConstructorArgs( $condition_class, $condition_options['arguments'] );
 
 					return $this->container->make( $condition_class, $args );
 
@@ -128,9 +107,7 @@
 				}
 
 
-
 			}
-
 
 
 		}
@@ -142,7 +119,7 @@
 
 			if ( ! isset( $this->condition_types[ $condition_type ] ) ) {
 
-				throw new ConfigurationException('Trying to create unknown condition: ' . $condition_type);
+				throw new ConfigurationException( 'Trying to create unknown condition: ' . $condition_type );
 
 			}
 
@@ -172,8 +149,8 @@
 			if ( Arr::firstEl( $arguments ) instanceof ConditionInterface ) {
 
 				return [
-					'type' => self::NEGATE_WORD,
-					'arguments' => $this->negatedObjectCondition(Arr::first($arguments))
+					'type'      => self::NEGATE_WORD,
+					'arguments' => $this->negatedObjectCondition( Arr::first( $arguments ) ),
 				];
 
 			}
@@ -181,45 +158,44 @@
 			if ( Arr::firstEl( $arguments ) instanceof Closure ) {
 
 				return [
-					'type' => self::NEGATE_WORD,
-					'arguments' => $this->negatedCustomCondition($arguments)
+					'type'      => self::NEGATE_WORD,
+					'arguments' => $this->negatedCustomCondition( $arguments ),
 				];
 
 			}
 
-			return $this->negatedStringCondition($type, $arguments);
+			return $this->negatedStringCondition( $type, $arguments );
 
 
 		}
 
-		private function negatedObjectCondition(ConditionInterface $condition ) : array {
+		private function negatedObjectCondition( ConditionInterface $condition ) : array {
 
 			return [ $condition ];
 
 		}
 
-		private function negatedCustomCondition (array $arguments) : array {
+		private function negatedCustomCondition( array $arguments ) : array {
 
 			$condition = new CustomCondition(
 				Arr::firstEl( $arguments ),
-				...Arr::allAfter($arguments, 1 )
+				...Arr::allAfter( $arguments, 1 )
 			);
 
-			return [$condition];
+			return [ $condition ];
 
 		}
 
-		private function negatedStringCondition (string $type , array $arguments ) : array {
+		private function negatedStringCondition( string $type, array $arguments ) : array {
 
-			$type  = $this->negates($type);
+			$type = $this->negates( $type );
 
-			$condition_type = ( $type === 'negate') ? $arguments[0] : $type;
+			$condition_type = ( $type === 'negate' ) ? $arguments[0] : $type;
 
 			return [
-				'type' => self::NEGATE_WORD,
-				'arguments' => [ $this->makeNew( array_merge( [ $condition_type ], $arguments ) ) ]
+				'type'      => self::NEGATE_WORD,
+				'arguments' => [ $this->makeNew( array_merge( [ $condition_type ], $arguments ) ) ],
 			];
-
 
 
 		}
@@ -241,10 +217,9 @@
 			$type      = $options[0];
 			$arguments = array_values( array_slice( $options, 1 ) );
 
+			if ( is_callable( $type ) ) {
 
-			if ( is_callable($type) ) {
-
-				return [ 'type' => 'custom', 'arguments' => $options ];
+				return $this->newCustomCondition($options);
 
 			}
 
@@ -254,105 +229,28 @@
 
 			}
 
-
 			if ( ! $this->isConditionAlias( $type ) ) {
 
 				throw new ConfigurationException( 'Unknown condition type specified: ' . $type );
 
 			}
 
-
 			return [ 'type' => $type, 'arguments' => $arguments ];
 
 
 		}
 
-		private function alreadyCompiled( $condition ) : bool {
+		private function newCustomCondition( array $options ) : array {
 
-			return $condition instanceof ConditionInterface;
-
-		}
-
-		public function isRegexCondition( $condition ) : bool {
-
-
-			if ( is_object( Arr::firstEl( $condition ) ) ) {
-
-				return false;
-
-			}
-
-			if ( $this->isConditionAlias( Arr::firstEl( $condition ) ) ) {
-
-				return false;
-
-			}
-
-			if ( is_string( Arr::firstEl( $condition ) ) && $this->hasRegexSyntax( Arr::nthEl( $condition, 1 ) ) ) {
-
-				return true;
-
-			}
-
-			return false;
+			return [ 'type' => 'custom', 'arguments' => $options ];
 
 		}
 
-		private function hasRegexSyntax( $string ) : bool {
+		private function alreadyCompiled( array $condition ) : ?ConditionInterface {
 
-			return is_string( $string ) && preg_match( '/(^\/.*\/$)/', $string );
+			$condition = Arr::firstEl( $condition );
 
-		}
-
-		private function newRegexUrlCondition( $condition, Route $route ) : UrlCondition {
-
-			$existing_compiled_url_condition = collect( $route->getConditions() )
-				->filter( function ( $condition ) {
-
-					return Arr::firstEl( $condition ) instanceof UrlCondition;
-
-				} )
-				->flatten()
-				->first();
-
-			if ( ! $existing_compiled_url_condition ) {
-
-				$new_url_condition = new UrlCondition( $route->url() );
-				$new_url_condition->setUrl( $new_url_condition );
-
-				return $new_url_condition;
-
-			}
-
-			/** @var $existing_compiled_url_condition \WPEmerge\Routing\Conditions\UrlCondition */
-			$existing_compiled_url_condition->setRegex( $this->compileRegex( $condition ) );
-
-			return $existing_compiled_url_condition;
-
-
-		}
-
-		private function compileRegex( $condition ) {
-
-
-			if ( is_int( Arr::firstEl( array_keys( $condition ) ) ) ) {
-
-				return Arr::combineFirstTwo( $condition );
-
-			}
-
-			return $condition;
-
-
-		}
-
-		public function filterUrlCondition( Collection $conditions ) : Collection {
-
-			return $conditions->reject( function ( $condition ) {
-
-				return Arr::firstEl( $condition ) instanceof UrlCondition;
-
-			} );
+			return ( $condition instanceof ConditionInterface ) ? $condition : null;
 
 		}
 
@@ -363,7 +261,6 @@
 
 			return isset( $this->condition_types[ $condition ] );
 		}
-
 
 
 	}
