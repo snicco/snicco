@@ -4,6 +4,7 @@
 	namespace Tests\integration\Routing;
 
 	use Codeception\TestCase\WPTestCase;
+	use PHPUnit\Framework\TestCase;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\Foo;
 	use Tests\TestRequest;
@@ -36,8 +37,6 @@
 		 * @var \WPEmerge\Routing\Router
 		 */
 		private $router;
-
-		const hash_word = 'static_url';
 
 		protected function setUp() : void {
 

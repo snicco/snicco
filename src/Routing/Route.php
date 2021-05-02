@@ -7,16 +7,17 @@
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\RouteInterface;
 	use WPEmerge\Contracts\SetsRouteAttributes;
-	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Helpers\RouteSignatureParameters;
 	use WPEmerge\Helpers\Url;
 	use WPEmerge\Helpers\UrlParser;
-	use WPEmerge\Routing\Conditions\UrlCondition;
 	use WPEmerge\Support\Arr;
 	use WPEmerge\Support\Str;
+	use WPEmerge\Traits\CompilesExecutableRoute;
 
 	class Route implements RouteInterface, SetsRouteAttributes {
+
+		use CompilesExecutableRoute;
 
 		/**
 		 * @var array
@@ -72,6 +73,17 @@
 			$this->namespace  = $attributes['namespace'] ?? null;
 			$this->middleware = $attributes['middleware'] ?? null;
 
+		}
+
+		public function compile () : array {
+
+			$compiled_route = new CompiledRoute(
+				$this->action,
+				$this->middleware,
+				$this->conditions
+			);
+
+			return $compiled_route;
 
 		}
 
