@@ -17,6 +17,8 @@
 
 	class RouteCollection {
 
+		const hash_key = 'static_url';
+
 		/** @var ConditionFactory */
 		private $condition_factory;
 
@@ -97,13 +99,7 @@
 
 		}
 
-		private function addToRouteMatcher( Route $route, string $method ) {
-
-			$this->route_matcher->add( $method, $this->urlHash( $route ), $route );
-
-		}
-
-		public function match( RequestInterface $request ) : array {
+		public function _match( RequestInterface $request ) : array {
 
 			[ $method, $path_info ] = [
 				$request->getMethod(),
@@ -172,6 +168,72 @@
 			return [ $matching_route, $payload ];
 
 		}
+
+		public function match( RequestInterface $request ) : array {
+
+			[ $method, $path_info ] = [
+				$request->getMethod(),
+				rtrim( $request->getUri()->getPath(), '/' ),
+			];
+
+			$this->processRoutes( $method, $path_info );
+
+			[ $route, $payload ]   = $this->tryStaticRoutes( $request, $method, $path_info );
+
+			if ( ! $route ) {
+
+				$route   = $this->tryDynamicRoutes( $request, $method, $path_info )[0];
+				$payload = $this->tryDynamicRoutes( $request, $method, $path_info )[1];
+
+			}
+
+			if ( ! $route ) {
+
+				return [ null, [] ];
+
+			}
+
+			$condition_args = [];
+
+			foreach ( $route->getCompiledConditions() as $compiled_condition ) {
+
+				$r = $compiled_condition->getArguments( $request );
+
+				$condition_args = array_merge( $condition_args, $r );
+
+			}
+
+			$payload = array_merge( $condition_args, $payload );
+
+			$route->compileAction( $this->handler_factory );
+			$request->setRoute( $route );
+
+			return [ $route, $payload ];
+
+
+		}
+
+
+		public function processRoutes( string $method, string $path_info ) {
+
+			if ( $this->route_matcher->isCached() ) {
+
+				return;
+
+			}
+
+			$routes = Arr::get( $this->routes, $method, [] );
+
+			/** @var Route $route */
+			foreach ( $routes as $route ) {
+
+				$this->route_matcher->add( $method, $this->hashUrl( $route ), $route );
+
+			}
+
+
+		}
+
 
 
 		private function reverseHash( array &$map, string $method ) {
@@ -306,5 +368,80 @@
 		}
 
 
+		private function hashUrl( Route $route ) {
+
+			if ( UrlParser::isDynamicUrl( $route->url() ) ) {
+
+				return $route->getCompiledUrl();
+
+			}
+
+			return $this->hash( $route->url() );
+
+		}
+
+		private function hash( string $path ) {
+
+			$path = trim( $path, '/' );
+
+			return md5( static::hash_key ) . '/' . $path;
+
+		}
+
+		private function reverseHashUrl( string $path_info ) {
+
+
+		}
+
+		private function tryStaticRoutes( RequestInterface $request, $method, $path_info ) : array {
+
+			$hashed_path = $this->hash( $path_info );
+
+			$route_info = $this->route_matcher->findRoute( $method, $hashed_path );
+
+			if ( $route_info[0] != Dispatcher::FOUND ) {
+
+				return [ null, [] ];
+
+			}
+
+			/** @var Route $route */
+			$route   = $route_info[1];
+			$payload = $route_info[2];
+
+			if ( ! $this->satisfiesCustomConditions( $route, $request ) ) {
+
+				return [ null, [] ];
+
+			}
+
+			return [ $route, $payload ];
+
+
+		}
+
+		private function tryDynamicRoutes( RequestInterface $request, string $method, string $path_info ) : array {
+
+			$route_info = $this->route_matcher->findRoute( $method, $path_info );
+
+			if ( $route_info[0] != Dispatcher::FOUND ) {
+
+				return [ null, [] ];
+
+			}
+
+			/** @var Route $route */
+			$route   = $route_info[1];
+			$payload = $route_info[2];
+
+			if ( ! $this->satisfiesCustomConditions( $route, $request ) ) {
+
+				return [ null, [] ];
+
+			}
+
+			return [ $route, $payload ];
+
+		}
 
 	}

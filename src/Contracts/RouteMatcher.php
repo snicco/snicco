@@ -10,5 +10,5 @@
 
 		public function findRoute(string $method, string $path);
 
-
+		public function isCached() :bool;
 	}

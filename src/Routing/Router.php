@@ -70,8 +70,6 @@
 
 			}
 
-			// $route->addCondition( new UrlCondition( $url ) );
-
 			return $this->routes->add( $route );
 
 
