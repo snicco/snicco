@@ -243,6 +243,12 @@
 			return call_user_func( [ $this, 'get' ], $this->getHeaders(), $key, $default );
 		}
 
+		public function path () :string {
+
+			return $this->getUri()->getPath();
+
+		}
+
 		public function getFullUrlString() : string {
 
 			$uri   = $this->getUri();

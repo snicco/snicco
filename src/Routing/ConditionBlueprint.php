@@ -80,13 +80,11 @@
 
 		}
 
-
 		public function negates () : ?string {
 
 			return $this->negates;
 
 		}
-
 
 		private function parseTypeAndArgs( array $args ) : array {
 

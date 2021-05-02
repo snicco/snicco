@@ -33,22 +33,11 @@
 		private $routes = [];
 
 		/**
-		 * A flattened array of all of the routes.
-		 *
-		 * @var Route[]
-		 */
-		private $all_routes = [];
-
-		/**
 		 * A look-up table of routes by their names.
 		 *
 		 * @var Route[]
 		 */
 		private $name_list = [];
-
-		private $static_url_map = [];
-
-		private $dynamic_url_map = [];
 
 		/**
 		 * @var \WPEmerge\Contracts\RouteMatcher
@@ -77,47 +66,41 @@
 
 		}
 
-		private function addToCollection( Route $route ) {
+		public function findByName( string $name ) : ?Route {
 
+			$route = $this->name_list[ $name ] ?? null;
 
-			foreach ( $route->getMethods() as $method ) {
+			if ( $route ) {
 
-				$this->routes[ $method ][] = $route;
+				return $route->compileConditions( $this->condition_factory );
 
 			}
 
-			$this->all_routes[] = $route;
+			$route = collect( $this->routes )->flatten()->first( function ( Route $route ) use ( $name ) {
 
+				return $route->getName() === $name;
 
-		}
+			} );
 
-		private function addLookups( Route $route ) {
-
-			if ( $name = $route->getName() ) {
-				$this->name_list[ $name ] = $route;
-			}
+			return ( $route ) ? $route->compileConditions( $this->condition_factory ) : null;
 
 		}
 
 		public function match( RequestInterface $request ) : RouteMatch {
 
-			[ $method, $path_info ] = [
-				$request->getMethod(),
-				rtrim( $request->getUri()->getPath(), '/' ),
-			];
 
-			$this->processRoutes( $method );
+			$this->loadRoutes( $request->getMethod() );
 
-			$route_match = $this->findRoute($request, $method, $path_info);
+			$match = $this->findRoute($request);
 
-			if ( ! $route_match->route() ) {
+			if ( ! $match->route() ) {
 
-				return $route_match;
+				return $match;
 
 			}
 
-			$route = $route_match->route();
-			$payload = $route_match->payload();
+			$route = $match->route();
+			$original_payload = $match->payload();
 			$condition_args = [];
 
 			foreach ( $route->getCompiledConditions() as $compiled_condition ) {
@@ -128,18 +111,44 @@
 
 			}
 
-			$payload = array_merge( $condition_args, $payload );
-
 			$route->compileAction( $this->handler_factory );
 			$request->setRoute( $route );
 
-			return new RouteMatch($route, $payload);
+			return new RouteMatch(
+				$route,
+				array_merge( $condition_args, $original_payload )
+			);
 
 
 		}
 
+		private function addToCollection( Route $route ) {
 
-		public function processRoutes( string $method) {
+			foreach( $route->getMethods() as $method ) {
+
+				$this->routes[ $method ][] = $route;
+
+			}
+
+		}
+
+		private function addLookups( Route $route ) {
+
+			if ( $name = $route->getName() ) {
+
+				$this->name_list[ $name ] = $route;
+
+			}
+
+		}
+
+		// For static routes we need to place a randomized prefix before the request path.
+		// This prefix gets stripped later when we match routes.
+		// This is necessary to allow researching for a possible dynamic route after a static route
+		// that was found in the dispatcher failed due to custom conditions.
+		// $request->path = 'foo/bar' would result in first looking for a static route:
+		// 3451342sf31a/foo/'bar' and if that fails for a dynamic route that matches /foo/bar
+		private function loadRoutes( string $method) {
 
 			if ( $this->route_matcher->isCached() ) {
 
@@ -171,26 +180,6 @@
 
 		}
 
-		public function findByName( string $name ) : ?Route {
-
-			$route = $this->nameList[ $name ] ?? null;
-
-			if ( $route ) {
-
-				return $route->compileConditions( $this->condition_factory );
-
-			}
-
-			$route = collect( $this->all_routes )->first( function ( Route $route ) use ( $name ) {
-
-				return $route->getName() === $name;
-
-			} );
-
-			return ( $route ) ? $route->compileConditions( $this->condition_factory ) : null;
-
-		}
-
 		private function hash( string $path ) : string {
 
 			$path = trim( $path, '/' );
@@ -199,27 +188,28 @@
 
 		}
 
-		private function findRoute (RequestInterface $request, $method, $path_info) : RouteMatch {
+		private function findRoute (RequestInterface $request) : RouteMatch {
 
-			$route_match = $this->tryStaticRoutes( $request, $method, $path_info );
+
+			$path = $this->normalizePath($request->path());
+
+			$route_match = $this->tryHashed($request, $path );
 
 			if ( ! $route_match->route() ) {
 
-				$route_match = $this->tryDynamicRoutes($request, $method, $path_info);
+				$route_match = $this->tryAbsolute( $request, $path );
 
 			}
 
 			return $route_match;
 
+
 		}
 
-		private function tryStaticRoutes( RequestInterface $request, $method, $path_info ) : RouteMatch {
+		private function tryAbsolute (RequestInterface $request, $url ) : RouteMatch {
 
 
-			$route_info = $this->route_matcher->find(
-				$method,
-				$this->hash( $path_info )
-			);
+			$route_info = $this->route_matcher->find( $request->getMethod(), $url );
 
 			if ( $route_info[0] != Dispatcher::FOUND ) {
 
@@ -239,30 +229,17 @@
 
 			return new RouteMatch($route, $payload);
 
+		}
+
+		private function tryHashed ( RequestInterface $request, $url ) : RouteMatch {
+
+			return $this->tryAbsolute($request, $this->hash($url));
 
 		}
 
-		private function tryDynamicRoutes( RequestInterface $request, string $method, string $path_info ) : RouteMatch {
+		private function normalizePath(string $path  ) : string {
 
-			$route_info = $this->route_matcher->find( $method, $path_info );
-
-			if ( $route_info[0] != Dispatcher::FOUND ) {
-
-				return new RouteMatch(null, []);
-
-			}
-
-			/** @var Route $route */
-			$route   = $route_info[1];
-			$payload = $route_info[2];
-
-			if ( ! $this->satisfiesCustomConditions( $route, $request ) ) {
-
-				return new RouteMatch(null, []);
-
-			}
-
-			return new RouteMatch($route, $payload);
+			return rtrim( $path , '/' );
 
 		}
 

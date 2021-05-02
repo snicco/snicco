@@ -6,10 +6,10 @@
 	class RouteMatch {
 
 
-		/** @var Route  */
+		/** @var Route */
 		private $route;
 
-		/** @var array  */
+		/** @var array */
 		private $payload;
 
 

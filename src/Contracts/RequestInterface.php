@@ -158,4 +158,6 @@
 
 		public function forceMatch();
 
+		public function path() :string;
+
 	}
