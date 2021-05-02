@@ -29,7 +29,7 @@
 
 		}
 
-		public function findRoute( string $method, string $path ) {
+		public function find( string $method, string $path ) {
 
 			$dispatcher = new RouteDispatcher( $this->collector->getData() );
 
@@ -90,7 +90,7 @@
 
 		}
 
-		public function findRoute( string $method, string $path ) {
+		public function find( string $method, string $path ) {
 
 			if ( $this->route_cache ) {
 
@@ -102,7 +102,7 @@
 
 			$this->createCache( $this->uncached_matcher->getRouteMap() );
 
-			return $this->uncached_matcher->findRoute( $method, $path );
+			return $this->uncached_matcher->find( $method, $path );
 
 		}
 

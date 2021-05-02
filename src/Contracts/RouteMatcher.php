@@ -8,7 +8,7 @@
 
 		public function add( $methods, string $uri, $handler );
 
-		public function findRoute(string $method, string $path);
+		public function find(string $method, string $path);
 
 		public function isCached() :bool;
 	}
