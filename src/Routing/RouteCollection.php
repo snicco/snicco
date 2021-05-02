@@ -4,16 +4,16 @@
 	namespace WPEmerge\Routing;
 
 	use FastRoute\Dispatcher;
+	use FastRoute\RouteCollector;
 	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Contracts\RouteMatcher;
 	use WPEmerge\Handlers\HandlerFactory;
-	use WPEmerge\Helpers\Url;
 	use WPEmerge\Helpers\UrlParser;
 	use WPEmerge\Support\Arr;
 
 	use WPEmerge\Support\Str;
 
 	use function FastRoute\simpleDispatcher;
-	use function tad\WPBrowser\isDsnString;
 
 	class RouteCollection {
 
@@ -26,7 +26,7 @@
 		/**
 		 * An array of the routes keyed by method.
 		 *
-		 * @var Route[]
+		 * @var array
 		 */
 		private $routes = [];
 
@@ -48,11 +48,20 @@
 
 		private $dynamic_url_map = [];
 
+		/**
+		 * @var \WPEmerge\Contracts\RouteMatcher
+		 */
+		private $route_matcher;
 
-		public function __construct( ConditionFactory $condition_factory, HandlerFactory $handler_factory ) {
+		public function __construct(
+			ConditionFactory $condition_factory,
+			HandlerFactory $handler_factory,
+			RouteMatcher $route_matcher
+		) {
 
 			$this->condition_factory = $condition_factory;
 			$this->handler_factory   = $handler_factory;
+			$this->route_matcher     = $route_matcher;
 
 		}
 
@@ -63,6 +72,7 @@
 			$this->addLookups( $route );
 
 			return $route;
+
 		}
 
 		private function addToCollection( Route $route ) {
@@ -87,14 +97,18 @@
 
 		}
 
-		/**
-		 * @todo Find a way to not recompile shared conditions that were passed by
-		 * @todo previous routes but the route in total didnt match.
-		 */
+		private function addToRouteMatcher( Route $route, string $method ) {
+
+			$this->route_matcher->add( $method, $this->urlHash( $route ), $route );
+
+		}
+
 		public function match( RequestInterface $request ) : array {
 
-
-			[ $method, $path_info ] = [ $request->getMethod(), rtrim($request->getUri()->getPath(), '/')];
+			[ $method, $path_info ] = [
+				$request->getMethod(),
+				rtrim( $request->getUri()->getPath(), '/' ),
+			];
 
 			$routes = Arr::get( $this->routes, $method, [] );
 
@@ -103,7 +117,7 @@
 			$map = $this->createCombinedUrlMap( $method, $path_info );
 
 			$matching_route = null;
-			$payload = [];
+			$payload        = [];
 
 			while ( $map[ $method ] ) {
 
@@ -130,19 +144,19 @@
 
 				foreach ( $route->getCompiledConditions() as $compiled_condition ) {
 
-					$r =  $compiled_condition->getArguments($request);
+					$r = $compiled_condition->getArguments( $request );
 
-					$condition_args = array_merge($condition_args, $r);
+					$condition_args = array_merge( $condition_args, $r );
 
 				}
 
 				$matching_route = $route;
-				$payload = $route_info[2];
+				$payload        = $route_info[2];
 
-				$payload = array_merge($condition_args, $payload);
+				$payload = array_merge( $condition_args, $payload );
 
-				unset($this->static_url_map[$method][$path_info]);
-				unset($this->dynamic_url_map[$method][$path_info]);
+				unset( $this->static_url_map[ $method ][ $path_info ] );
+				unset( $this->dynamic_url_map[ $method ][ $path_info ] );
 
 				break;
 
@@ -159,6 +173,7 @@
 
 		}
 
+
 		private function reverseHash( array &$map, string $method ) {
 
 			$hash = &$map[ $method ];
@@ -172,16 +187,17 @@
 
 		private function toFastRouteDispatcher( array $routes, string $path_info ) : Dispatcher {
 
-			return simpleDispatcher( function ( $r ) use ( $routes, $path_info ) {
+			return simpleDispatcher( function ( RouteCollector $r ) use ( $routes, $path_info ) {
 
 				foreach ( $routes as $route ) {
 
-					$this->createUrlMap( $route, $path_info );
+					$this->addToUrlMap( $route, $path_info );
 
 					$r->addRoute(
 						$route->getMethods(),
-						$this->createUrlHash( $route, $path_info ),
+						$this->urlHash( $route ),
 						$route
+
 					);
 
 				}
@@ -198,7 +214,7 @@
 
 		}
 
-		private function createUrlHash( Route $route, string $path_info ) : string {
+		private function urlHash( Route $route ) : string {
 
 
 			if ( UrlParser::isDynamicUrl( $route->url() ) ) {
@@ -207,9 +223,7 @@
 
 			}
 
-			$url_hash = '/' . spl_object_hash( $route ) . $route->url();
-
-			return $url_hash;
+			return $this->staticUrlHash( $route );
 
 
 		}
@@ -222,12 +236,14 @@
 
 			);
 
-			$map = collect($map)->flatten()->unique()->reject( function ($hashed_path) use ( $path_info ) {
+			$map = collect( $map )
+				->flatten()
+				->unique()
+				->reject( function ( string $hashed_path ) use ( $path_info ) {
 
-				return trim(Str::afterLast($hashed_path, $path_info ), '/') !== '';
+					return trim( Str::afterLast( $hashed_path, $path_info ), '/' ) !== '';
 
-			});
-
+				} );
 
 			return [ $method => $map->all() ];
 
@@ -253,7 +269,7 @@
 
 		}
 
-		private function createUrlMap( Route $route, string $path_info ) {
+		private function addToUrlMap( Route $route, string $path_info ) {
 
 			foreach ( $route->getMethods() as $route_method ) {
 
@@ -261,7 +277,7 @@
 
 					if ( ! in_array( $path_info, $this->dynamic_url_map[ $route_method ] ?? [] ) ) {
 
-						$this->dynamic_url_map[ $route_method ][$path_info] = $path_info;
+						$this->dynamic_url_map[ $route_method ][ $path_info ] = $path_info;
 
 					}
 
@@ -269,11 +285,11 @@
 
 				}
 
-				$url_hash = '/' . spl_object_hash( $route ) . $route->url();
+				$url_hash = $this->staticUrlHash( $route );
 
 				if ( ! in_array( $url_hash, $this->static_url_map[ $route_method ] ?? [] ) ) {
 
-					$this->static_url_map[ $route_method ][$path_info][] = $url_hash;
+					$this->static_url_map[ $route_method ][ $path_info ][] = $url_hash;
 
 
 				}
@@ -281,7 +297,14 @@
 
 			}
 
+		}
+
+		private function staticUrlHash( Route $route ) : string {
+
+			return '/' . spl_object_hash( $route ) . $route->url();
 
 		}
+
+
 
 	}

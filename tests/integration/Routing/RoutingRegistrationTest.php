@@ -24,6 +24,7 @@
 	use WPEmerge\Routing\Conditions\PostTypeCondition;
 	use WPEmerge\Routing\Conditions\QueryVarCondition;
 	use WPEmerge\Routing\Conditions\UrlCondition;
+	use WPEmerge\Routing\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Support\Str;
@@ -44,7 +45,11 @@
 			$container         = new BaseContainerAdapter();
 			$condition_factory = new ConditionFactory( $this->conditions(), $container );
 			$handler_factory   = new HandlerFactory( [], $container );
-			$route_collection  = new RouteCollection( $condition_factory, $handler_factory );
+			$route_collection  = new RouteCollection(
+				$condition_factory,
+				$handler_factory,
+				new FastRouteMatcher()
+			);
 			$this->router      = new Router( $container, $route_collection );
 
 			unset( $GLOBALS['test'] );
@@ -110,6 +115,7 @@
 			// $this->assertNull( $view );
 
 		}
+
 
 
 		/**
