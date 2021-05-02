@@ -7,7 +7,6 @@
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\Foo;
 	use Tests\TestRequest;
-	use WPEmerge\AbstractFactory;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
@@ -25,7 +24,7 @@
 	use WPEmerge\Routing\Conditions\PostTypeCondition;
 	use WPEmerge\Routing\Conditions\QueryVarCondition;
 	use WPEmerge\Routing\Conditions\UrlCondition;
-	use WPEmerge\Routing\FastRouteMatcher;
+	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Support\Str;
