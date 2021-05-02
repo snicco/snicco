@@ -104,12 +104,12 @@
 
 		public function runRoute( RequestInterface $request ) {
 
-			[ $route, $payload ] = $this->routes->match( $request );
+			$route_match = $this->routes->match( $request );
 
-			if ( $route ) {
+			if ( $route_match->route() ) {
 
-				/** @var Route $route */
-				$route->payload($payload);
+				$route = $route_match->route();
+				$route->payload($route_match->payload());
 
 				return $this->runWithinStack( $route, $request );
 
