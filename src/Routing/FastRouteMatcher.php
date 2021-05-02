@@ -25,15 +25,15 @@
 
 		public function add( $methods, string $uri, $handler ) {
 
-			$this->collector->addRoute($methods, $uri, $handler);
+			$this->collector->addRoute( $methods, $uri, $handler );
 
 		}
 
 		public function findRoute( string $method, string $path ) {
 
-			$dispatcher =  new RouteDispatcher($this->collector->getData());
+			$dispatcher = new RouteDispatcher( $this->collector->getData() );
 
-			return $dispatcher->dispatch($method, $path);
+			return $dispatcher->dispatch( $method, $path );
 
 
 		}
@@ -44,7 +44,14 @@
 
 		}
 
+		public function isCached() : bool {
+
+			return false;
+
+		}
+
 	}
+
 
 	class CachedFastRouteMatcher implements RouteMatcher {
 
@@ -69,7 +76,7 @@
 
 			$this->route_cache_file = $route_cache_file;
 
-			if ( file_exists($route_cache_file) ) {
+			if ( file_exists( $route_cache_file ) ) {
 
 				$this->route_cache = require $route_cache_file;
 
@@ -79,12 +86,7 @@
 
 		public function add( $methods, string $uri, $handler ) {
 
-			if ( ! $this->route_cache ) {
-
-				$this->uncached_matcher->add($methods, $uri, $handler);
-
-			}
-
+			$this->uncached_matcher->add( $methods, $uri, $handler );
 
 		}
 
@@ -92,27 +94,32 @@
 
 			if ( $this->route_cache ) {
 
-				$dispatcher = new RouteDispatcher($this->route_cache);
+				$dispatcher = new RouteDispatcher( $this->route_cache );
 
-				return $dispatcher->dispatch($method, $path);
+				return $dispatcher->dispatch( $method, $path );
 
 			}
 
-			$this->createCache($this->uncached_matcher->getRouteMap());
+			$this->createCache( $this->uncached_matcher->getRouteMap() );
 
-			return $this->uncached_matcher->findRoute($method, $path);
+			return $this->uncached_matcher->findRoute( $method, $path );
 
 		}
 
-		private function createCache(array $route_data) {
+		private function createCache( array $route_data ) {
 
 			file_put_contents(
 				$this->route_cache_file,
-				'<?php return ' . var_export($route_data, true) . ';'
+				'<?php return ' . var_export( $route_data, true ) . ';'
 			);
 
 		}
 
+		public function isCached() : bool {
+
+			return is_array($this->route_cache);
+
+		}
 
 	}
 

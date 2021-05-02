@@ -7,6 +7,7 @@
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\Foo;
 	use Tests\TestRequest;
+	use WPEmerge\AbstractFactory;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
@@ -37,10 +38,19 @@
 		 */
 		private $router;
 
+		const hash_word = 'static_url';
 
 		protected function setUp() : void {
 
 			parent::setUp();
+
+			$this->newRouter();
+
+			unset( $GLOBALS['test'] );
+
+		}
+
+		private function newRouter() {
 
 			$container         = new BaseContainerAdapter();
 			$condition_factory = new ConditionFactory( $this->conditions(), $container );
@@ -51,8 +61,6 @@
 				new FastRouteMatcher()
 			);
 			$this->router      = new Router( $container, $route_collection );
-
-			unset( $GLOBALS['test'] );
 
 		}
 
@@ -116,7 +124,13 @@
 
 		}
 
+		private function newRouterWith( \Closure $routes ) {
 
+			$this->newRouter();
+
+			$routes( $this->router );
+
+		}
 
 		/**
 		 *
@@ -143,15 +157,10 @@
 
 			$this->seeResponse( 'foo', $response );
 
-			$this->router->get( '/foo' )->handle( function () {
-
-				return 'foo';
-
-			} );
-
 			$response = $this->router->runRoute( $this->request( 'HEAD', '/foo' ) );
 
 			$this->seeResponse( 'foo', $response );
+
 
 		}
 
@@ -233,7 +242,7 @@
 		/** @test */
 		public function a_route_can_match_all_methods() {
 
-			$this->router->any( '/foo' )->handle( function () {
+			$this->router->any( '/foo', function () {
 
 				return 'foo';
 
@@ -293,49 +302,64 @@
 
 		}
 
-		/** @test */
-		public function two_static_routes_can_be_added_for_the_same_uri() {
-
-			$this->router->post( '/foo/', function () {
-
-				return 'foo1';
-
-			} )->where( 'false' );
-			$this->router->post( '/foo/', function () {
-
-				return 'foo2';
-
-			} )->where( 'true' );
-
-			$response = $this->router->runRoute( $this->request( 'post', '/foo' ) );
-
-			$this->seeResponse( 'foo2', $response );
-
-		}
+		// /** @test */
+		// public function two_static_routes_can_be_added_for_the_same_uri() {
+		//
+		// 	$this->router->post( '/foo/', function () {
+		//
+		// 		return 'foo1';
+		//
+		// 	} )->where( 'false' );
+		// 	$this->router->post( '/foo/', function () {
+		//
+		// 		return 'foo2';
+		//
+		// 	} )->where( 'true' );
+		//
+		// 	$response = $this->router->runRoute( $this->request( 'post', '/foo' ) );
+		//
+		// 	$this->seeResponse( 'foo2', $response );
+		//
+		// }
 
 		/** @test */
 		public function static_and_dynamic_routes_can_be_added_for_the_same_uri_while_static_routes_take_precedence() {
 
-			$this->router->post( '/foo/bar', function () {
+			$routes = function () {
 
-				return 'foo1';
+				$this->router->post( '/foo/bar', function () {
 
-			} )->where( 'false' );
+					return 'foo_bar_static';
 
-			$this->router->post( '/foo/{bar}', function () {
+				} )->where( 'false' );
 
-				return 'foo2';
+				$this->router->post( '/foo/baz', function () {
 
-			} )->where( 'true' );
+					return 'foo_baz_static';
 
+				} );
+
+				$this->router->post( '/foo/{dynamic}', function () {
+
+					return 'dynamic_route';
+
+				} );
+
+			};
+
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'POST', '/foo/bar' ) );
-			$this->seeResponse( 'foo2', $response );
+			$this->seeResponse( 'dynamic_route', $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'POST', '/foo/baz' ) );
-			$this->seeResponse( 'foo2', $response );
+			$this->seeResponse( 'foo_baz_static', $response );
+
+			$this->newRouterWith( $routes );
+			$response = $this->router->runRoute( $this->request( 'POST', '/foo/biz' ) );
+			$this->seeResponse( 'dynamic_route', $response );
 
 		}
-
 
 
 		/**
@@ -357,50 +381,65 @@
 
 
 			$this->router->namespace( 'Tests\Integration\Routing' )
-			             ->get( '/get', 'RoutingController@foo' );
-			$response = $this->router->runRoute( $this->request( 'GET', '/get' ) );
+			             ->get( '/get1', 'RoutingController@foo' );
+			$response = $this->router->runRoute( $this->request( 'GET', '/get1' ) );
 			$this->seeResponse( 'foo', $response );
 
 			$this->router->namespace( 'Tests\Integration\Routing' )
-			             ->post( '/post', 'RoutingController@foo' );
-			$response = $this->router->runRoute( $this->request( 'POST', '/post' ) );
+			             ->post( '/post1', 'RoutingController@foo' );
+			$response = $this->router->runRoute( $this->request( 'POST', '/post1' ) );
 			$this->seeResponse( 'foo', $response );
 
 			$this->router->namespace( 'Tests\Integration\Routing' )
-			             ->put( '/put', 'RoutingController@foo' );
-			$response = $this->router->runRoute( $this->request( 'PUT', '/put' ) );
+			             ->put( '/put1', 'RoutingController@foo' );
+			$response = $this->router->runRoute( $this->request( 'PUT', '/put1' ) );
 			$this->seeResponse( 'foo', $response );
 
 			$this->router->namespace( 'Tests\Integration\Routing' )
-			             ->patch( '/patch', 'RoutingController@foo' );
-			$response = $this->router->runRoute( $this->request( 'PATCH', '/patch' ) );
+			             ->patch( '/patch1', 'RoutingController@foo' );
+			$response = $this->router->runRoute( $this->request( 'PATCH', '/patch1' ) );
 			$this->seeResponse( 'foo', $response );
 
 			$this->router->namespace( 'Tests\Integration\Routing' )
-			             ->options( '/options', 'RoutingController@foo' );
-			$response = $this->router->runRoute( $this->request( 'OPTIONS', '/options' ) );
+			             ->options( '/options1', 'RoutingController@foo' );
+			$response = $this->router->runRoute( $this->request( 'OPTIONS', '/options1' ) );
 			$this->seeResponse( 'foo', $response );
 
 			$this->router->namespace( 'Tests\Integration\Routing' )
-			             ->delete( '/delete', 'RoutingController@foo' );
-			$response = $this->router->runRoute( $this->request( 'DELETE', '/delete' ) );
+			             ->delete( '/delete1', 'RoutingController@foo' );
+			$response = $this->router->runRoute( $this->request( 'DELETE', '/delete1' ) );
 			$this->seeResponse( 'foo', $response );
 
-			$this->router->namespace( 'Tests\Integration\Routing' )
-			             ->match( [ 'GET', 'POST' ], '/match', 'RoutingController@foo' );
-			$response = $this->router->runRoute( $this->request( 'GET', '/match' ) );
+			$routes = function () {
+
+				$this->router->namespace( 'Tests\Integration\Routing' )
+				             ->match( [ 'GET', 'POST' ], '/match1', 'RoutingController@foo' );
+
+
+			};
+			$this->newRouterWith( $routes );
+			$response = $this->router->runRoute( $this->request( 'GET', '/match1' ) );
 			$this->seeResponse( 'foo', $response );
 
-			$this->router->namespace( 'Tests\Integration\Routing' )
-			             ->match( [ 'GET', 'POST' ], '/match', 'RoutingController@foo' );
-			$response = $this->router->runRoute( $this->request( 'POST', '/match' ) );
+			$routes = function () {
+
+				$this->router->namespace( 'Tests\Integration\Routing' )
+				             ->match( [ 'GET', 'POST' ], '/match2', 'RoutingController@foo' );
+
+			};
+			$this->newRouterWith( $routes );
+			$response = $this->router->runRoute( $this->request( 'POST', '/match2' ) );
 			$this->seeResponse( 'foo', $response );
 
-			$this->router->namespace( 'Tests\Integration\Routing' )
-			             ->match( [ 'GET', 'POST' ], '/match', 'RoutingController@foo' );
-			$response = $this->router->runRoute( $this->request( 'PUT', '/match' ) );
-			$this->assertNull( $response );
+			$routes = function () {
 
+				$this->router->namespace( 'Tests\Integration\Routing' )
+				             ->match( [ 'GET', 'POST' ], '/match3', 'RoutingController@foo' );
+
+			};
+			$this->newRouterWith( $routes );
+			$response = $this->router->runRoute( $this->request( 'PUT', '/match3' ) );
+			$this->seeResponse( null, $response );
 
 		}
 
@@ -514,7 +553,7 @@
 			$this->seeResponse( 'global_foo', $response );
 
 			$this->router
-				->get( '/bar' )
+				->post( '/bar' )
 				->middleware( 'bar' )
 				->handle( function ( RequestInterface $request ) {
 
@@ -525,7 +564,7 @@
 			$this->router->middlewareGroup( 'global', [ GlobalMiddleware::class ] );
 			$this->router->aliasMiddleware( 'bar', BarMiddleware::class );
 
-			$response = $this->router->runRoute( $this->request( 'GET', '/bar' ) );
+			$response = $this->router->runRoute( $this->request( 'POST', '/bar' ) );
 			$this->seeResponse( 'global_bar', $response );
 
 
@@ -553,32 +592,31 @@
 			// As array.
 			$this->router
 				->middleware( [ 'foo', 'bar' ] )
-				->get( '/bar' )
+				->post( '/bar' )
 				->handle( function ( RequestInterface $request ) {
 
 					return $request->body;
 
 				} );
 
-			$response = $this->router->runRoute( $this->request( 'GET', '/bar' ) );
+			$response = $this->router->runRoute( $this->request( 'POST', '/bar' ) );
 			$this->seeResponse( 'foobar', $response );
 
 			// With Args
 			$this->router
 				->middleware( [ 'foo:FOO', 'bar:BAR' ] )
-				->get( '/baz' )
+				->put( '/baz' )
 				->handle( function ( RequestInterface $request ) {
 
 					return $request->body;
 
 				} );
 
-			$response = $this->router->runRoute( $this->request( 'GET', '/baz' ) );
+			$response = $this->router->runRoute( $this->request( 'PUT', '/baz' ) );
 			$this->seeResponse( 'FOOBAR', $response );
 
 
 		}
-
 
 		/**
 		 *
@@ -614,25 +652,34 @@
 		/** @test */
 		public function custom_regex_can_be_defined_for_route_parameters() {
 
-			$this->router->post( '/user/{id:\d+}/{name:calvin|john}' )
-			             ->handle( function ( Request $request, $id, $name = 'admin' ) {
+			$routes = function () {
 
-				             return $name . $id;
+				$this->router->post( '/user/{id:\d+}/{name:calvin|john}' )
+				             ->handle( function ( Request $request, $id, $name = 'admin' ) {
 
-			             } );
+					             return $name . $id;
 
+				             } );
+
+			};
+
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/12/calvin' ) );
 			$this->seeResponse( 'calvin12', $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/12/john' ) );
 			$this->seeResponse( 'john12', $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/a/calvin' ) );
 			$this->seeResponse( null, $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/12/jane' ) );
 			$this->seeResponse( null, $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/12' ) );
 			$this->seeResponse( null, $response );
 
@@ -641,25 +688,33 @@
 		/** @test */
 		public function optional_parameters_work_at_the_end_of_a_route() {
 
-			$this->router->post( '/user/{id:\d+}[/{name}]' )
-			             ->handle( function ( Request $request, $id, $name = 'admin' ) {
+			$routes = function () {
 
-				             return $name . $id;
+				$this->router->post( '/user/{id:\d+}[/{name}]' )
+				             ->handle( function ( Request $request, $id, $name = 'admin' ) {
 
-			             } );
+					             return $name . $id;
 
+				             } );
+			};
+
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/12/calvin' ) );
 			$this->seeResponse( 'calvin12', $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/12' ) );
 			$this->seeResponse( 'admin12', $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/ab' ) );
 			$this->seeResponse( null, $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/ab/calvin' ) );
 			$this->seeResponse( null, $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/calvin/12' ) );
 			$this->seeResponse( null, $response );
 
@@ -669,19 +724,26 @@
 		/** @test */
 		public function every_segment_after_an_optional_part_will_be_its_own_capture_group_but_not_required() {
 
-			$this->router->post( '/team/{id:\d+}[/{name}[/{player}]]' )
-			             ->handle( function ( Request $request, $id, $name = 'foo_team', $player = 'foo_player' ) {
+			$routes = function () {
 
-				             return $name . ':' . $id . ':' . $player;
+				$this->router->post( '/team/{id:\d+}[/{name}[/{player}]]' )
+				             ->handle( function ( Request $request, $id, $name = 'foo_team', $player = 'foo_player' ) {
 
-			             } );
+					             return $name . ':' . $id . ':' . $player;
 
+				             } );
+
+			};
+
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund/calvin' ) );
 			$this->seeResponse( 'dortmund:1:calvin', $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund' ) );
 			$this->seeResponse( 'dortmund:1:foo_player', $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/12' ) );
 			$this->seeResponse( 'foo_team:12:foo_player', $response );
 
@@ -690,24 +752,31 @@
 		/** @test */
 		public function optional_parameters_work_with_custom_regex() {
 
-			$this->router->get( 'users/{id}[/{name:[a-z]+}]', function ( Request $request, $id, $name = 'admin' ) {
+			$routes = function () {
 
-				return $name . $id;
 
-			} );
+				$this->router->get( 'users/{id}[/{name:[a-z]+}]', function ( Request $request, $id, $name = 'admin' ) {
 
+					return $name . $id;
+
+				} );
+
+			};
+
+			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/1/calvin' );
 			$this->seeResponse( 'calvin1', $this->router->runRoute( $request ) );
 
+			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', 'users/1' );
 			$this->seeResponse( 'admin1', $this->router->runRoute( $request ) );
 
+			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', 'users/1/12' );
 			$this->seeResponse( null, $this->router->runRoute( $request ) );
 
 
 		}
-
 
 
 		/**
@@ -728,16 +797,21 @@
 		/** @test */
 		public function regex_can_be_added_as_a_condition_without_needing_array_syntax() {
 
+			$routes = function () {
 
-			$this->router->get( 'users/{user}', function () {
+				$this->router->get( 'users/{user}', function () {
 
-				return 'foo';
+					return 'foo';
 
-			} )->and( 'user', '[0-9]+' );
+				} )->and( 'user', '[0-9]+' );
 
+			};
+
+			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/1' );
 			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
 
+			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/calvin' );
 			$this->assertNull( $this->router->runRoute( $request ) );
 
@@ -747,16 +821,21 @@
 		/** @test */
 		public function regex_can_be_added_as_a_condition_as_array_syntax() {
 
+			$routes = function () {
 
-			$this->router->get( 'users/{user}', function () {
+				$this->router->get( 'users/{user}', function () {
 
-				return 'foo';
+					return 'foo';
 
-			} )->and( [ 'user', '[0-9]+' ] );
+				} )->and( [ 'user', '[0-9]+' ] );
 
+			};
+
+			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/1' );
 			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
 
+			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/calvin' );
 			$this->assertNull( $this->router->runRoute( $request ) );
 
@@ -766,20 +845,27 @@
 		/** @test */
 		public function multiple_regex_conditions_can_be_added_to_an_url_condition() {
 
+			$routes = function () {
 
-			$this->router->get( '/user/{id}/{name}', function ( Request $request, $id, $name ) {
+				$this->router->get( '/user/{id}/{name}', function ( Request $request, $id, $name ) {
 
-				return $name . $id;
+					return $name . $id;
 
-			} )
-			             ->and( [ 'id' => '[0-9]+', 'name' => '[a-z]+' ] );
+				} )
+				             ->and( [ 'id' => '[0-9]+', 'name' => '[a-z]+' ] );
 
+
+			};
+
+			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/user/1/calvin' );
 			$this->seeResponse( 'calvin1', $this->router->runRoute( $request ) );
 
+			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/1/1' );
 			$this->assertNull( $this->router->runRoute( $request ) );
 
+			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/calvin/calvin' );
 			$this->assertNull( $this->router->runRoute( $request ) );
 
@@ -788,15 +874,21 @@
 		/** @test */
 		public function optional_parameters_work_at_the_end_of_the_url() {
 
-			$this->router->get( 'users/{id}/{name?}', function ( Request $request, $id, $name = 'admin' ) {
+			$routes = function () {
 
-				return $name . $id;
+				$this->router->get( 'users/{id}/{name?}', function ( Request $request, $id, $name = 'admin' ) {
 
-			} );
+					return $name . $id;
 
+				} );
+
+			};
+
+			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/1/calvin' );
 			$this->seeResponse( 'calvin1', $this->router->runRoute( $request ) );
 
+			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', 'users/1' );
 			$this->seeResponse( 'admin1', $this->router->runRoute( $request ) );
 
@@ -806,41 +898,56 @@
 		/** @test */
 		public function multiple_parameters_can_optional() {
 
-			// Preceding Group is capturing
-			$this->router->post( '/team/{id:\d+}/{name?}/{player?}' )
-			             ->handle( function ( Request $request, $id, $name = 'foo_team', $player = 'foo_player' ) {
+			$routes = function () {
 
-				             return $name . ':' . $id . ':' . $player;
+				// Preceding Group is capturing
+				$this->router->post( '/team/{id:\d+}/{name?}/{player?}' )
+				             ->handle( function ( Request $request, $id, $name = 'foo_team', $player = 'foo_player' ) {
 
-			             } );
+					             return $name . ':' . $id . ':' . $player;
 
+				             } );
+
+			};
+
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund/calvin' ) );
 			$this->seeResponse( 'dortmund:1:calvin', $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund' ) );
 			$this->seeResponse( 'dortmund:1:foo_player', $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/12' ) );
 			$this->seeResponse( 'foo_team:12:foo_player', $response );
 
-			// Preceding group is required but not capturing
-			$this->router->post( '/users/{name?}/{gender?}/{age?}' )
-			             ->handle( function ( Request $request, $name = 'john', $gender = 'm', $age = '21' ) {
+			$routes = function () {
+
+				// Preceding group is required but not capturing
+				$this->router->post( '/users/{name?}/{gender?}/{age?}' )
+				             ->handle( function ( Request $request, $name = 'john', $gender = 'm', $age = '21' ) {
 
 
-				             return $name . ':' . $gender . ':' . $age;
+					             return $name . ':' . $gender . ':' . $age;
 
-			             } );
+				             } );
 
+			};
+
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/users/calvin/male/23' ) );
 			$this->seeResponse( 'calvin:male:23', $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/users/calvin/male' ) );
 			$this->seeResponse( 'calvin:male:21', $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/users/calvin/' ) );
 			$this->seeResponse( 'calvin:m:21', $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/users/' ) );
 			$this->seeResponse( 'john:m:21', $response );
 
@@ -850,18 +957,26 @@
 		/** @test */
 		public function optional_parameters_work_with_our_custom_api() {
 
-			$this->router->get( 'users/{id}/{name?}', function ( Request $request, $id, $name = 'admin' ) {
+			$routes = function () {
 
-				return $name . $id;
+				$this->router->get( 'users/{id}/{name?}', function ( Request $request, $id, $name = 'admin' ) {
 
-			} )->and( 'name', '[a-z]+' );
+					return $name . $id;
 
+				} )->and( 'name', '[a-z]+' );
+
+
+			};
+
+			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/1/calvin' );
 			$this->seeResponse( 'calvin1', $this->router->runRoute( $request ) );
 
+			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', 'users/1' );
 			$this->seeResponse( 'admin1', $this->router->runRoute( $request ) );
 
+			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', 'users/1/12' );
 			$this->seeResponse( null, $this->router->runRoute( $request ) );
 
@@ -871,27 +986,36 @@
 		/** @test */
 		public function multiple_parameters_can_be_optional_and_have_custom_regex() {
 
-			// Preceding Group is capturing
-			$this->router->post( '/team/{id}/{name?}/{age?}' )
-			             ->and( [ 'name' => '[a-z]+', 'age' => '\d+' ] )
-			             ->handle( function ( Request $request, $id, $name = 'foo_team', $age = 21 ) {
+			$routes = function () {
 
-				             return $name . ':' . $id . ':' . $age;
+				// Preceding Group is capturing
+				$this->router->post( '/team/{id}/{name?}/{age?}' )
+				             ->and( [ 'name' => '[a-z]+', 'age' => '\d+' ] )
+				             ->handle( function ( Request $request, $id, $name = 'foo_team', $age = 21 ) {
 
-			             } );
+					             return $name . ':' . $id . ':' . $age;
 
+				             } );
+
+			};
+
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund/23' ) );
 			$this->seeResponse( 'dortmund:1:23', $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund' ) );
 			$this->seeResponse( 'dortmund:1:21', $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/12' ) );
 			$this->seeResponse( 'foo_team:12:21', $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund/fail' ) );
 			$this->seeResponse( null, $response );
 
+			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/1/123/123' ) );
 			$this->seeResponse( null, $response );
 
@@ -964,14 +1088,14 @@
 
 			$this->router
 				->where( 'false' )
-				->get( '/bar' )
+				->post( '/bar' )
 				->handle( function ( RequestInterface $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/bar' ) ) );
+			$this->assertNull( $this->router->runRoute( $this->request( 'POST', '/bar' ) ) );
 
 		}
 
@@ -1038,7 +1162,7 @@
 			$this->seeResponse( 'foobar', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
 			$this->router
-				->get( '/will-fail' )
+				->post( '/will-fail' )
 				->where(
 					function ( $foo, $bar ) {
 
@@ -1056,7 +1180,7 @@
 					}
 				);
 
-			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/will-fail' ) ) );
+			$this->assertNull( $this->router->runRoute( $this->request( 'POST', '/will-fail' ) ) );
 
 			$this->router
 				->where(
@@ -1068,7 +1192,7 @@
 					'foo',
 					'bar'
 				)
-				->get( '/foo-before' )
+				->put( '/foo-before' )
 				->handle(
 					function ( $request, $foo, $bar ) {
 
@@ -1077,7 +1201,7 @@
 					}
 				);
 
-			$this->seeResponse( 'foobar', $this->router->runRoute( $this->request( 'GET', '/foo-before' ) ) );
+			$this->seeResponse( 'foobar', $this->router->runRoute( $this->request( 'PUT', '/foo-before' ) ) );
 
 
 		}
@@ -1116,7 +1240,7 @@
 			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
 			$this->router
-				->get( '/bar' )
+				->post( '/bar' )
 				->where( 'negate', 'false' )
 				->handle( function ( RequestInterface $request ) {
 
@@ -1124,10 +1248,10 @@
 
 				} );
 
-			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/bar' ) ) );
+			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'POST', '/bar' ) ) );
 
 			$this->router
-				->get( '/baz' )
+				->put( '/baz' )
 				->where( 'negate', function ( $foo ) {
 
 					return $foo !== 'foo';
@@ -1139,7 +1263,7 @@
 
 				} );
 
-			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/baz' ) ) );
+			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'PUT', '/baz' ) ) );
 
 
 		}
@@ -1159,7 +1283,7 @@
 			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
 			$this->router
-				->get( '/bar' )
+				->post( '/bar' )
 				->where( 'maybe', false )
 				->handle( function ( RequestInterface $request ) {
 
@@ -1167,10 +1291,10 @@
 
 				} );
 
-			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/bar' ) ) );
+			$this->assertNull( $this->router->runRoute( $this->request( 'POST', '/bar' ) ) );
 
 			$this->router
-				->get( '/baz' )
+				->put( '/baz' )
 				->where( '!maybe', false )
 				->handle( function ( RequestInterface $request ) {
 
@@ -1178,10 +1302,10 @@
 
 				} );
 
-			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/baz' ) ) );
+			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'PUT', '/baz' ) ) );
 
 			$this->router
-				->get( '/baz' )
+				->delete( '/baz' )
 				->where( '!maybe', false )
 				->handle( function ( RequestInterface $request ) {
 
@@ -1189,10 +1313,10 @@
 
 				} );
 
-			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/baz' ) ) );
+			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'DELETE', '/baz' ) ) );
 
 			$this->router
-				->get( '/foobar' )
+				->patch( '/foobar' )
 				->where( '!maybe', 'foobar' )
 				->handle( function ( RequestInterface $request ) {
 
@@ -1200,27 +1324,25 @@
 
 				} );
 
-			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foobar' ) ) );
+			$this->assertNull( $this->router->runRoute( $this->request( 'PATCH', '/foobar' ) ) );
 
 
 		}
 
 		/** @test */
-		public function negated_conditions_have_precedence_over_regex() {
+		public function matching_url_conditions_will_fail_if_custom_conditions_are_not_met() {
 
-			// This should result in two conditions.
-			// Not on regex being added to the url condition
-			// /foobar/ will make the condition fail.
+
 			$this->router
 				->get( '/foo' )
-				->where( '!maybe', '/foobar/' )
+				->where( 'maybe', false )
 				->handle( function ( RequestInterface $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+			$this->seeResponse( null, $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 			$this->assertTrue( $GLOBALS['test']['maybe_condition_run'] );
 
 		}
@@ -1255,7 +1377,7 @@
 				} )
 				->handle( function ( RequestInterface $request ) {
 
-					return 'foo';
+					$this->fail('This should never be called.');
 
 				} );
 
@@ -1446,28 +1568,36 @@
 		/** @test */
 		public function a_group_can_prefix_all_child_route_urls() {
 
-			$this->router
-				->prefix( 'foo' )
-				->group( function () {
+			$routes = function () {
 
-					$this->router->get( 'bar', function () {
+				$this->router
+					->prefix( 'foo' )
+					->group( function () {
 
-						return 'foobar';
+						$this->router->get( 'bar', function () {
+
+							return 'foobar';
+
+						} );
+
+						$this->router->get( 'baz', function () {
+
+							return 'foobaz';
+
+						} );
+
 
 					} );
 
-					$this->router->get( 'baz', function () {
+			};
 
-						return 'foobaz';
-
-					} );
-
-
-				} );
-
+			$this->newRouterWith( $routes );
 			$this->seeResponse( 'foobar', $this->router->runRoute( $this->request( 'GET', '/foo/bar' ) ) );
+
+			$this->newRouterWith( $routes );
 			$this->seeResponse( 'foobaz', $this->router->runRoute( $this->request( 'GET', '/foo/baz' ) ) );
 
+			$this->newRouterWith( $routes );
 			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
 		}
@@ -1571,29 +1701,34 @@
 		/** @test */
 		public function methods_are_merged_on_multiple_levels() {
 
-			$this->router
-				->methods( 'GET' )
-				->group( function () {
+			$routes = function () {
 
-					$this->router->methods( 'POST' )->group( function () {
+				$this->router
+					->methods( 'GET' )
+					->group( function () {
 
-						$this->router->put( '/foo' )->handle( function () {
+						$this->router->methods( 'POST' )->group( function () {
 
-							return 'foo';
+							$this->router->put( '/foo' )->handle( function () {
+
+								return 'foo';
+
+							} );
+
+						} );
+
+						$this->router->patch( '/bar' )->handle( function () {
+
+							return 'bar';
 
 						} );
 
 					} );
 
-					$this->router->patch( '/bar' )->handle( function () {
-
-						return 'bar';
-
-					} );
-
-				} );
+			};
 
 			// First route
+			$this->newRouterWith( $routes );
 			$post     = $this->request( 'POST', '/foo' );
 			$response = $this->router->runRoute( $post );
 			$this->seeResponse( 'foo', $response );
@@ -1611,6 +1746,7 @@
 			$this->assertNull( $response );
 
 			// Second route
+			$this->newRouterWith( $routes );
 			$get      = $this->request( 'GET', '/bar' );
 			$response = $this->router->runRoute( $get );
 			$this->seeResponse( 'bar', $response );
@@ -1633,18 +1769,27 @@
 		public function middleware_is_nested_on_multiple_levels() {
 
 
-			$this->router->aliasMiddleware( 'foo', FooMiddleware::class );
-			$this->router->aliasMiddleware( 'bar', BarMiddleware::class );
-			$this->router->aliasMiddleware( 'baz', BazMiddleware::class );
+			$routes = function () {
 
-			$this->router
-				->middleware( 'foo:FOO' )
-				->group( function () {
+				$this->router
+					->middleware( 'foo:FOO' )
+					->group( function () {
 
-					$this->router->middleware( 'bar:BAR' )->group( function () {
+						$this->router->middleware( 'bar:BAR' )->group( function () {
+
+							$this->router
+								->get( '/foo' )
+								->middleware( 'baz:BAZ' )
+								->handle( function ( RequestInterface $request ) {
+
+									return $request->body;
+
+								} );
+
+						} );
 
 						$this->router
-							->get( '/foo' )
+							->get( '/bar' )
 							->middleware( 'baz:BAZ' )
 							->handle( function ( RequestInterface $request ) {
 
@@ -1654,30 +1799,31 @@
 
 					} );
 
-					$this->router
-						->get( '/bar' )
-						->middleware( 'baz:BAZ' )
-						->handle( function ( RequestInterface $request ) {
+				$this->router->aliasMiddleware( 'foo', FooMiddleware::class );
+				$this->router->aliasMiddleware( 'bar', BarMiddleware::class );
+				$this->router->aliasMiddleware( 'baz', BazMiddleware::class );
 
-							return $request->body;
+			};
 
-						} );
-
-				} );
-
+			$this->newRouterWith( $routes );
 			$get      = $this->request( 'GET', '/foo' );
 			$response = $this->router->runRoute( $get );
 			$this->seeResponse( 'FOOBARBAZ', $response );
 
+			$this->newRouterWith( $routes );
 			$get      = $this->request( 'GET', '/bar' );
 			$response = $this->router->runRoute( $get );
 			$this->seeResponse( 'FOOBAZ', $response );
 
 		}
 
-		/** @test */
+		/**
+		 * @test
+		 *
+		 */
 		public function the_route_namespace_is_always_overwritten_by_child_routes() {
 
+			/** @todo decide if this is desired. */
 			$this->router
 				->namespace( 'Tests\integration\FALSE' )
 				->group( function () {
@@ -1700,31 +1846,41 @@
 		/** @test */
 		public function group_prefixes_are_merged_on_multiple_levels() {
 
-			$this->router
-				->prefix( 'foo' )
-				->group( function () {
+			$routes = function () {
 
-					$this->router->prefix( 'bar' )->group( function () {
+				$this->router
+					->prefix( 'foo' )
+					->group( function () {
 
-						$this->router->get( 'baz', function () {
+						$this->router->prefix( 'bar' )->group( function () {
 
-							return 'foobarbaz';
+							$this->router->get( 'baz', function () {
+
+								return 'foobarbaz';
+
+							} );
 
 						} );
 
+						$this->router->get( 'biz', function () {
+
+							return 'foobiz';
+
+						} );
+
+
 					} );
 
-					$this->router->get( 'biz', function () {
 
-						return 'foobiz';
+			};
 
-					} );
-
-
-				} );
-
+			$this->newRouterWith( $routes );
 			$this->seeResponse( 'foobarbaz', $this->router->runRoute( $this->request( 'GET', '/foo/bar/baz' ) ) );
+
+			$this->newRouterWith( $routes );
 			$this->seeResponse( 'foobiz', $this->router->runRoute( $this->request( 'GET', '/foo/biz' ) ) );
+
+			$this->newRouterWith( $routes );
 			$this->seeResponse( null, $this->router->runRoute( $this->request( 'GET', '/foo/bar/biz' ) ) );
 
 
@@ -1737,50 +1893,56 @@
 			$GLOBALS['test']['parent_condition_called'] = false;
 			$GLOBALS['test']['child_condition_called']  = false;
 
-			$this->router
-				->where( function () {
+			$routes = function () {
 
-					$GLOBALS['test']['parent_condition_called'] = true;
+				$this->router
+					->where( function () {
 
-					$this->assertFalse( $GLOBALS['test']['child_condition_called'] );
+						$GLOBALS['test']['parent_condition_called'] = true;
 
-					return true;
+						$this->assertFalse( $GLOBALS['test']['child_condition_called'] );
 
-				} )
-				->group( function () {
+						return true;
 
-					$this->router
-						->get( '/bar' )
-						->where( 'true' )
-						->handle( function () {
-
-							return 'bar';
-
-						} );
-
-					$this->router->where( function () {
-
-						$GLOBALS['test']['child_condition_called'] = true;
-
-						return false;
-
-					} )->group( function () {
+					} )
+					->group( function () {
 
 						$this->router
-							->get( '/foo' )
+							->get( '/bar' )
 							->where( 'true' )
 							->handle( function () {
 
-								$this->fail( 'This route should not have been called' );
+								return 'bar';
 
 							} );
 
+						$this->router->where( function () {
+
+							$GLOBALS['test']['child_condition_called'] = true;
+
+							return false;
+
+						} )->group( function () {
+
+							$this->router
+								->get( '/foo' )
+								->where( 'true' )
+								->handle( function () {
+
+									$this->fail( 'This route should not have been called' );
+
+								} );
+
+						} );
+
+
 					} );
 
+			};
 
-				} );
 
 			// When
+			$this->newRouterWith( $routes );
 			$get      = $this->request( 'GET', '/foo' );
 			$response = $this->router->runRoute( $get );
 
@@ -1794,6 +1956,7 @@
 			$GLOBALS['test']['child_condition_called']  = false;
 
 			// When
+			$this->newRouterWith( $routes );
 			$get      = $this->request( 'GET', '/bar' );
 			$response = $this->router->runRoute( $get );
 
@@ -1828,7 +1991,7 @@
 					} );
 
 				$this->router
-					->get( '/bar' )
+					->get( '/{bar}' )
 					->where( function () {
 
 						$this->fail( 'Route condition evaluated even tho we already had a matching route' );
@@ -1857,27 +2020,30 @@
 		/** @test */
 		public function url_conditions_are_passed_even_if_one_group_in_the_chain_does_not_specify_an_url_condition() {
 
+			$routes = function () {
 
-			$this->router->prefix( 'foo' )->group( function () {
+				$this->router->prefix( 'foo' )->group( function () {
 
-				$this->router->where( 'true' )->group( function () {
+					$this->router->where( 'true' )->group( function () {
 
-					$this->router->get( 'bar', function () {
+						$this->router->get( 'bar', function () {
 
-						return 'foobar';
+							return 'foobar';
+
+						} );
 
 					} );
 
 				} );
 
-			} );
+			};
 
+			$this->newRouterWith( $routes );
 			$get = $this->request( 'GET', '/foo/bar' );
-
 			$this->seeResponse( 'foobar', $this->router->runRoute( $get ) );
 
+			$this->newRouterWith( $routes );
 			$get = $this->request( 'GET', '/foo' );
-
 			$this->seeResponse( null, $this->router->runRoute( $get ) );
 
 
@@ -1886,26 +2052,31 @@
 		/** @test */
 		public function url_conditions_are_passed_even_if_the_root_group_doesnt_specify_an_url_condition() {
 
-			$this->router->where( 'true' )->group( function () {
+			$routes = function () {
 
-				$this->router->prefix( 'foo' )->group( function () {
+				$this->router->where( 'true' )->group( function () {
 
-					$this->router->get( 'bar', function () {
+					$this->router->prefix( 'foo' )->group( function () {
 
-						return 'foobar';
+						$this->router->get( 'bar', function () {
+
+							return 'foobar';
+
+						} );
 
 					} );
 
 				} );
 
-			} );
 
+			};
+
+			$this->newRouterWith( $routes );
 			$get = $this->request( 'GET', '/foo/bar' );
-
 			$this->seeResponse( 'foobar', $this->router->runRoute( $get ) );
 
+			$this->newRouterWith( $routes );
 			$get = $this->request( 'GET', '/foo' );
-
 			$this->seeResponse( null, $this->router->runRoute( $get ) );
 
 
@@ -1913,7 +2084,6 @@
 
 		/** @test */
 		public function a_route_can_be_named() {
-
 
 			$this->router->get( 'foo' )->name( 'foo_route' );
 			$url = $this->router->getRouteUrl( 'foo_route' );
