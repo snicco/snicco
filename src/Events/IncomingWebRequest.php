@@ -32,8 +32,6 @@
 
 		public function shouldDispatch() : bool {
 
-			return true;
-
 			return ! is_admin() && ! str_contains( $this->request->getFullUrlString(), admin_url() );
 
 		}
