@@ -3,8 +3,11 @@
 
 	namespace WPEmerge\ServiceProviders;
 
+	use WPEmerge\Contracts\RouteMatcher;
 	use WPEmerge\Contracts\ServiceProviderInterface;
+	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Handlers\HandlerFactory;
+	use WPEmerge\Routing\CachedFastRouteMatcher;
 	use WPEmerge\Routing\Conditions\AdminCondition;
 	use WPEmerge\Routing\Conditions\AjaxCondition;
 	use WPEmerge\Routing\ConditionFactory;
@@ -19,10 +22,12 @@
 	use WPEmerge\Routing\Conditions\PostTypeCondition;
 	use WPEmerge\Routing\Conditions\QueryVarCondition;
 	use WPEmerge\Routing\Conditions\UrlCondition;
+	use WPEmerge\Routing\FastRouteMatcher;
 	use WPEmerge\Routing\RouteBlueprint;
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Routing\RouteRegistrar;
+	use WPEmerge\Support\Arr;
 	use WPEmerge\Traits\ExtendsConfig;
 
 	class RoutingServiceProvider implements ServiceProviderInterface {
@@ -55,6 +60,30 @@
 
 			$container->instance(WPEMERGE_ROUTING_CONDITION_TYPES_KEY, static::$condition_types);
 
+			$container->singleton(RouteMatcher::class, function ($c) {
+
+				$config = $c[WPEMERGE_CONFIG_KEY];
+
+				if ( ! isset( $config['routes']['cache']['enable']) ) {
+
+					return new FastRouteMatcher();
+
+				}
+
+				$cache_file = Arr::get($config['routes']['cache'], 'enabled', 'null' );
+
+				if ( ! file_exists($cache_file ) ) {
+
+					throw new ConfigurationException(
+						'Invalid file provided for route caching'
+					);
+
+				}
+
+				return new CachedFastRouteMatcher( new FastRouteMatcher(), $cache_file );
+
+
+			} );
 
 			$container->singleton( WPEMERGE_ROUTING_ROUTER_KEY, function ( $c ) {
 
@@ -62,7 +91,8 @@
 					$c[WPEMERGE_CONTAINER_ADAPTER],
 					new RouteCollection(
 						$c[WPEMERGE_ROUTING_CONDITIONS_CONDITION_FACTORY_KEY],
-						$c[HandlerFactory::class]
+						$c[HandlerFactory::class],
+						$c[RouteMatcher::class]
 					)
 
 

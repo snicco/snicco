@@ -25,7 +25,6 @@
 			TESTS_DIR . DS  . 'views',
 			TESTS_DIR . DS  . 'views' . DS . 'subdirectory'
 
-
 		]
 
 

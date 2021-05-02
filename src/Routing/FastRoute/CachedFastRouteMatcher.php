@@ -1,62 +1,18 @@
 <?php
 
 
-	namespace WPEmerge\Routing;
 
-	use FastRoute\DataGenerator\GroupCountBased as DataGenerator;
+	namespace WPEmerge\Routing\FastRoute;
+
 	use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
-	use FastRoute\RouteCollector;
-	use FastRoute\RouteParser\Std as RouteParser;
-	use WPEmerge\Contracts\CreatesCacheableRoutes;
 	use WPEmerge\Contracts\RouteMatcher;
 
-	class FastRouteMatcher implements RouteMatcher, CreatesCacheableRoutes {
-
-		/**
-		 * @var \FastRoute\RouteCollector
-		 */
-		private $collector;
-
-		public function __construct() {
-
-			$this->collector = new RouteCollector( new RouteParser(), new DataGenerator() );
-
-		}
-
-		public function add( $methods, string $uri, $handler ) {
-
-			$this->collector->addRoute( $methods, $uri, $handler );
-
-		}
-
-		public function find( string $method, string $path ) {
-
-			$dispatcher = new RouteDispatcher( $this->collector->getData() );
-
-			return $dispatcher->dispatch( $method, $path );
-
-
-		}
-
-		public function getRouteMap() : array {
-
-			return $this->collector->getData() ?? [];
-
-		}
-
-		public function isCached() : bool {
-
-			return false;
-
-		}
-
-	}
 
 
 	class CachedFastRouteMatcher implements RouteMatcher {
 
 		/**
-		 * @var \WPEmerge\Routing\FastRouteMatcher
+		 * @var \WPEmerge\Routing\FastRoute\FastRouteMatcher
 		 */
 		private $uncached_matcher;
 
@@ -90,7 +46,7 @@
 
 		}
 
-		public function find( string $method, string $path ) {
+		public function find( string $method, string $path ) :array {
 
 			if ( $this->route_cache ) {
 
@@ -122,5 +78,3 @@
 		}
 
 	}
-
-
