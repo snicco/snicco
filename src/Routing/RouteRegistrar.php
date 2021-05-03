@@ -71,7 +71,7 @@
 
 			$attributes['middleware'] = $middleware;
 
-			$this->router->group($attributes, $file );
+			$this->router->group( $attributes, $file );
 
 
 		}
