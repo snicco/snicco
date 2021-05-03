@@ -84,7 +84,7 @@
 
 			$this->url = $this->parseUrlWithRegex( $regex_array );
 
-			$this->regex = $regex;
+			$this->regex = $regex_array;
 
 			return $this;
 
