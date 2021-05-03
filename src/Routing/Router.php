@@ -108,10 +108,7 @@
 
 			if ( $route_match->route() ) {
 
-				$route = $route_match->route();
-				$route->payload($route_match->payload());
-
-				return $this->runWithinStack( $route, $request );
+				return $this->runWithinStack( $route_match, $request );
 
 			}
 
@@ -186,9 +183,9 @@
 
 		}
 
-		private function runWithinStack( RouteInterface $route, RequestInterface $request ) {
+		private function runWithinStack( RouteMatch $route_match, RequestInterface $request ) {
 
-			$middleware = $route->getMiddleware();
+			$middleware = $route_match->route()->middleware();
 			$middleware = $this->mergeGlobalMiddleware( $middleware );
 			$middleware = $this->expandMiddleware( $middleware );
 			$middleware = $this->uniqueMiddleware( $middleware );
@@ -197,9 +194,9 @@
 			return ( new Pipeline( $this->container ) )
 				->send( $request )
 				->through( $this->skipMiddleware() ? [] : $middleware )
-				->then( function ( $request ) use ( $route ) {
+				->then( function ( $request ) use ( $route_match ) {
 
-					return $route->run( $request );
+					return $route_match->route()->run( $request, $route_match->payload() );
 
 				} );
 

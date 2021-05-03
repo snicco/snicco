@@ -8,5 +8,6 @@
 	interface RouteInterface {
 
 
+		public function getConditions();
 
 	}
