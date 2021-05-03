@@ -32,43 +32,8 @@
 
 	class RoutingRegistrationTest extends WPTestCase {
 
+		use SetUpRouter;
 
-		/**
-		 * @var \WPEmerge\Routing\Router
-		 */
-		private $router;
-
-		protected function setUp() : void {
-
-			parent::setUp();
-
-			$this->newRouter();
-
-			unset( $GLOBALS['test'] );
-
-		}
-
-		private function newRouter() {
-
-			$container         = new BaseContainerAdapter();
-			$condition_factory = new ConditionFactory( $this->conditions(), $container );
-			$handler_factory   = new HandlerFactory( [], $container );
-			$route_collection  = new RouteCollection(
-				$condition_factory,
-				$handler_factory,
-				new FastRouteMatcher()
-			);
-			$this->router      = new Router( $container, $route_collection );
-
-		}
-
-		protected function tearDown() : void {
-
-
-			parent::tearDown();
-
-			unset( $GLOBALS['test'] );
-		}
 
 		private function conditions() : array {
 
@@ -95,11 +60,6 @@
 
 		}
 
-		private function request( $method, $path ) : TestRequest {
-
-			return TestRequest::from( $method, $path );
-
-		}
 
 		/**
 		 * @todo refactor this to an internal view controller.
@@ -122,13 +82,7 @@
 
 		}
 
-		private function newRouterWith( \Closure $routes ) {
 
-			$this->newRouter();
-
-			$routes( $this->router );
-
-		}
 
 		/**
 		 *
@@ -2058,100 +2012,12 @@
 		}
 
 
-
-		/**
-		 *
-		 *
-		 *
-		 *
-		 * NAMED ROUTES
-		 *
-		 *
-		 *
-		 *
-		 */
-
-		/** @test */
-		public function a_route_can_be_named() {
-
-			$this->router->get( 'foo' )->name( 'foo_route' );
-			$url = $this->router->getRouteUrl( 'foo_route' );
-			$this->seeUrl( 'foo', $url );
-
-			$this->router->name( 'bar_route' )->get( 'bar' );
-			$url = $this->router->getRouteUrl( 'bar_route' );
-			$this->seeUrl( 'bar', $url );
-
-		}
-
-		/** @test */
-		public function route_names_are_merged_on_multiple_levels() {
-
-			$this->router
-				->name( 'foo' )
-				->group( function () {
-
-					$this->router->name( 'bar' )->group( function () {
-
-						$this->router->get( 'baz' )->name( 'baz' );
-
-					} );
-
-					$this->router->get( 'biz' )->name( 'biz' );
-
-
-				} );
-
-			$this->seeUrl( 'baz', $this->router->getRouteUrl( 'foo.bar.baz' ) );
-			$this->seeUrl( 'biz', $this->router->getRouteUrl( 'foo.biz' ) );
-
-			$this->expectExceptionMessage( 'no named route' );
-
-			$this->seeUrl( 'baz', $this->router->getRouteUrl( 'foo.bar.biz' ) );
-
-
-		}
-
-		/** @test */
-		public function group_names_get_applied_to_child_routes() {
-
-			$this->router
-				->name( 'foo' )
-				->group( function () {
-
-					$this->router->get( 'bar' )->name( 'bar' );
-
-					$this->router->get( 'baz' )->name( 'baz' );
-
-					$this->router->name( 'biz' )->get( 'biz' );
-
-				} );
-
-			$this->seeUrl( 'bar', $this->router->getRouteUrl( 'foo.bar' ) );
-			$this->seeUrl( 'baz', $this->router->getRouteUrl( 'foo.baz' ) );
-			$this->seeUrl( 'biz', $this->router->getRouteUrl( 'foo.biz' ) );
-
-
-		}
-
-
 		private function seeResponse( $expected, $response ) {
 
 			$this->assertSame( $expected, $response );
 
 		}
 
-		private function seeUrl( $route_path, $result ) {
-
-			$expected = SITE_URL . $route_path;
-
-			// Strip https, http
-			$expected = Str::after( $expected, '://' );
-			$result   = Str::after( $result, '://' );
-
-			$this->assertSame( $expected, $result );
-
-		}
 
 	}
 

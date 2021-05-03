@@ -54,17 +54,6 @@
 		 */
 		private $compiled_conditions = [];
 
-		/**
-		 * @var array
-		 */
-		private $regex;
-
-		/**
-		 * @var string
-		 */
-		private $compiled_url;
-
-		private $payload;
 
 		public function __construct( array $methods, string $url, $action, array $attributes = [] ) {
 
@@ -89,19 +78,11 @@
 
 		public function and( ...$regex ) : Route {
 
-			$this->regex = $this->normalizeRegex( Arr::flattenOnePreserveKeys( $regex ) );
+			$regex_array = $this->normalizeRegex( Arr::flattenOnePreserveKeys( $regex ) );
 
-			$this->parseUrl();
+			$this->url = $this->parseUrlWithRegex($regex_array);
 
 			return $this;
-
-		}
-
-		public function getCompiledUrl() : string {
-
-			$url = $this->compiled_url ?? $this->url;
-
-			return rtrim( $url, '/' );
 
 		}
 
@@ -117,13 +98,7 @@
 
 		}
 
-		public function getConditions( string $type = null ) {
-
-			if ( $type ) {
-
-				return $this->conditions[ $type ] ?? null;
-
-			}
+		public function getConditions() : ?array {
 
 			return $this->conditions;
 
@@ -212,13 +187,13 @@
 
 		}
 
-		private function parseUrl() {
+		private function parseUrlWithRegex( array $regex ) :string {
 
 			$segments = UrlParser::segments( $this->url );
 
-			$segments = array_filter( $segments, function ( $segment ) {
+			$segments = array_filter( $segments, function ( $segment ) use ($regex) {
 
-				return isset( $this->regex[ $segment ] );
+				return isset( $regex[ $segment ] );
 
 			} );
 
@@ -228,15 +203,15 @@
 
 				$pattern = sprintf( "/(%s(?=\\}))/", preg_quote( $segment, '/' ) );;
 
-				$url = preg_replace_callback( $pattern, function ( $match ) {
+				$url = preg_replace_callback( $pattern, function ( $match ) use ( $regex ) {
 
-					return $match[0] . ':' . $this->regex[ $match[0] ];
+					return $match[0] . ':' . $regex[ $match[0] ];
 
 				}, $url, 1 );
 
 			}
 
-			$this->compiled_url = rtrim( $url, '/' );
+			return rtrim( $url, '/' );
 
 		}
 
