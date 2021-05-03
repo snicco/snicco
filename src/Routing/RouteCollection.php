@@ -76,11 +76,12 @@
 
 			}
 
-			$route = collect( $this->routes )->flatten()->first( function ( Route $route ) use ( $name ) {
+			$route = collect( $this->routes )->flatten()
+			                                 ->first( function ( Route $route ) use ( $name ) {
 
-				return $route->getName() === $name;
+				                                 return $route->getName() === $name;
 
-			} );
+			                                 } );
 
 			return ( $route ) ? $route->compileConditions( $this->condition_factory ) : null;
 
@@ -88,10 +89,9 @@
 
 		public function match( RequestInterface $request ) : RouteMatch {
 
-
 			$this->loadRoutes( $request->getMethod() );
 
-			$match = $this->findRoute($request);
+			$match = $this->findRoute( $request );
 
 			if ( ! $match->route() ) {
 
@@ -99,11 +99,11 @@
 
 			}
 
-			$route = $match->route();
+			$route            = $match->route();
 			$original_payload = $match->payload();
-			$condition_args = [];
+			$condition_args   = [];
 
-			foreach ( $route->getCompiledConditions() as $compiled_condition ) {
+			foreach ( $route->conditions as $compiled_condition ) {
 
 				$args = $compiled_condition->getArguments( $request );
 
@@ -111,7 +111,6 @@
 
 			}
 
-			$route->compileAction( $this->handler_factory );
 			$request->setRoute( $route );
 
 			return new RouteMatch(
@@ -124,7 +123,7 @@
 
 		private function addToCollection( Route $route ) {
 
-			foreach( $route->getMethods() as $method ) {
+			foreach ( $route->getMethods() as $method ) {
 
 				$this->routes[ $method ][] = $route;
 
@@ -148,7 +147,7 @@
 		// that was found in the dispatcher failed due to custom conditions.
 		// $request->path = 'foo/bar' would result in first looking for a static route:
 		// 3451342sf31a/foo/'bar' and if that fails for a dynamic route that matches /foo/bar
-		private function loadRoutes( string $method) {
+		private function loadRoutes( string $method ) {
 
 			if ( $this->route_matcher->isCached() ) {
 
@@ -161,22 +160,14 @@
 			/** @var Route $route */
 			foreach ( $routes as $route ) {
 
-				$url = UrlParser::isDynamicUrl($url = $route->url())
+				$url = UrlParser::isDynamicUrl( $url = $route->url() )
 					? $route->getCompiledUrl()
-					: $this->hash($url);
+					: $this->hash( $url );
 
-				$this->route_matcher->add( $method, $url , $route );
+				$this->route_matcher->add( $method, $url, (array) $route->compile() );
 
 			}
 
-
-		}
-
-		private function satisfiesCustomConditions( Route $route, RequestInterface $request ) : bool {
-
-			$route->compileConditions( $this->condition_factory );
-
-			return $route->matches( $request );
 
 		}
 
@@ -188,12 +179,12 @@
 
 		}
 
-		private function findRoute (RequestInterface $request) : RouteMatch {
+		private function findRoute( RequestInterface $request ) : RouteMatch {
 
 
-			$path = $this->normalizePath($request->path());
+			$path = $this->normalizePath( $request->path() );
 
-			$route_match = $this->tryHashed($request, $path );
+			$route_match = $this->tryHashed( $request, $path );
 
 			if ( ! $route_match->route() ) {
 
@@ -206,40 +197,43 @@
 
 		}
 
-		private function tryAbsolute (RequestInterface $request, $url ) : RouteMatch {
+		private function tryAbsolute( RequestInterface $request, $url ) : RouteMatch {
 
 
 			$route_info = $this->route_matcher->find( $request->getMethod(), $url );
 
 			if ( $route_info[0] != Dispatcher::FOUND ) {
 
-				return new RouteMatch(null, []);
+				return new RouteMatch( null, [] );
 
 			}
 
-			/** @var Route $route */
-			$route   = $route_info[1];
+			$route = CompiledRoute::hydrate(
+				$route_info[1],
+				$this->handler_factory,
+				$this->condition_factory
+			);
 			$payload = $route_info[2];
 
-			if ( ! $this->satisfiesCustomConditions( $route, $request ) ) {
+			if ( ! $route->satisfiedBy($request) ) {
 
-				return new RouteMatch(null, []);
+				return new RouteMatch( null, [] );
 
 			}
 
-			return new RouteMatch($route, $payload);
+			return new RouteMatch( $route, $payload );
 
 		}
 
-		private function tryHashed ( RequestInterface $request, $url ) : RouteMatch {
+		private function tryHashed( RequestInterface $request, $url ) : RouteMatch {
 
-			return $this->tryAbsolute($request, $this->hash($url));
+			return $this->tryAbsolute( $request, $this->hash( $url ) );
 
 		}
 
-		private function normalizePath(string $path  ) : string {
+		private function normalizePath( string $path ) : string {
 
-			return rtrim( $path , '/' );
+			return rtrim( $path, '/' );
 
 		}
 

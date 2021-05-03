@@ -62,6 +62,11 @@
 
 			unset( $GLOBALS['test'] );
 
+			if (file_exists($this->cache_file)) {
+
+				$this->unlink($this->cache_file);
+			}
+
 
 		}
 
@@ -82,7 +87,6 @@
 
 			$this->assertTrue( file_exists( $this->cache_file ) );
 
-			$this->unlink( $this->cache_file );
 
 		}
 

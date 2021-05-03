@@ -75,15 +75,14 @@
 
 		}
 
-		public function compile () : array {
+		public function compile() : CompiledRoute {
 
-			$compiled_route = new CompiledRoute(
-				$this->action,
-				$this->middleware,
-				$this->conditions
-			);
-
-			return $compiled_route;
+			return new CompiledRoute([
+				'action'     => $this->action,
+				'middleware' => $this->middleware ?? [],
+				'conditions' => $this->conditions ?? [],
+				'namespace' => $this->namespace ?? ''
+			]);
 
 		}
 
@@ -294,7 +293,7 @@
 
 			$args = func_get_args();
 
-			$this->conditions[] = new ConditionBlueprint($args);
+			$this->conditions[] = new ConditionBlueprint( $args );
 
 			return $this;
 
