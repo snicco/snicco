@@ -82,11 +82,29 @@
 
 			$regex_array = $this->normalizeRegex( Arr::flattenOnePreserveKeys( $regex ) );
 
-			$this->url = $this->parseUrlWithRegex($regex_array);
+			$this->url = $this->parseUrlWithRegex( $regex_array );
 
 			$this->regex = $regex;
 
 			return $this;
+
+		}
+
+		public function andAlpha() : Route {
+
+			return $this->addRegexToSegment(func_get_args(), '[a-zA-Z]+');
+
+		}
+
+		public function andNumber() : Route {
+
+			return $this->addRegexToSegment(func_get_args(), '[0-9]+');
+
+		}
+
+		public function andAlphaNumerical() : Route {
+
+			return $this->addRegexToSegment(func_get_args(), '[a-zA-Z0-9]+');
 
 		}
 
@@ -197,11 +215,11 @@
 
 		}
 
-		private function parseUrlWithRegex( array $regex ) :string {
+		private function parseUrlWithRegex( array $regex ) : string {
 
 			$segments = UrlParser::segments( $this->url );
 
-			$segments = array_filter( $segments, function ( $segment ) use ($regex) {
+			$segments = array_filter( $segments, function ( $segment ) use ( $regex ) {
 
 				return isset( $regex[ $segment ] );
 
@@ -222,6 +240,20 @@
 			}
 
 			return rtrim( $url, '/' );
+
+		}
+
+		private function addRegexToSegment( $segments, string $pattern ) : Route {
+
+			collect( $segments )
+				->flatten()
+				->each( function ( $segment ) use ( $pattern ) {
+
+					$this->and( $segment, $pattern );
+
+				});
+
+			return $this;
 
 		}
 
