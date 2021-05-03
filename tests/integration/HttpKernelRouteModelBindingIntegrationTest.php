@@ -20,7 +20,7 @@
 // 	use Tests\stubs\Models\Country;
 // 	use Tests\stubs\Models\Team;
 // 	use Tests\stubs\TestApp;
-// 	use WPEmerge\Contracts\RouteInterface;
+// 	use WPEmerge\Contracts\RouteCondition;
 // 	use WPEmerge\Requests\Request;
 // 	use WPEmerge\Responses\ResponseService;
 // 	use Mockery as m;
@@ -50,7 +50,7 @@
 // 			$this->request->shouldReceive( 'getMethod' )->andReturn( 'GET' );
 //
 // 			$this->request->shouldReceive( 'setRoute' )
-// 			              ->andReturnUsing( function ( RouteInterface $route) {
+// 			              ->andReturnUsing( function ( RouteCondition $route) {
 //
 // 				              $this->request->mockery_route = $route;
 //

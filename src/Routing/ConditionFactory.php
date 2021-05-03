@@ -10,7 +10,7 @@
 	use ReflectionClass;
 	use Throwable;
 	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\Contracts\RouteInterface;
+	use WPEmerge\Contracts\RouteCondition;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Routing\Conditions\CustomCondition;
 	use WPEmerge\Routing\Conditions\NegateCondition;
@@ -46,7 +46,7 @@
 			$this->container       = $container;
 		}
 
-		public function compileConditions( RouteInterface $route ) : array {
+		public function compileConditions( RouteCondition $route ) : array {
 
 			$conditions = collect( $route->getConditions() );
 

@@ -5,7 +5,7 @@
 
 	use Closure;
 	use Contracts\ContainerAdapter;
-	use WPEmerge\Contracts\RouteInterface;
+	use WPEmerge\Contracts\RouteCondition;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Helpers\Pipeline;

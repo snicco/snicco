@@ -152,9 +152,9 @@
 		 */
 		public function headers( $key = '', $default = null );
 
-		public function setRoute( RouteInterface $route );
+		public function setRoute( RouteCondition $route );
 
-		public function route() : ?RouteInterface;
+		public function route() : ?RouteCondition;
 
 		public function forceMatch();
 

@@ -5,7 +5,7 @@
 	namespace WPEmerge\Contracts;
 
 	use Psr\Http\Message\ResponseInterface;
-	use WPEmerge\Contracts\RouteInterface as Route;
+	use WPEmerge\Contracts\RouteCondition as Route;
 
 	/**
 	 * Describes how a request is handled.

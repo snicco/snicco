@@ -9,7 +9,7 @@
 
 namespace WPEmerge\Contracts;
 
-use WPEmerge\Contracts\RouteInterface;
+use WPEmerge\Contracts\RouteCondition;
 
 /**
  * Interface for RegisteresRoutes
@@ -18,23 +18,25 @@ interface HasRoutesInterface {
 	/**
 	 * Get routes.
 	 *
-	 * @return RouteInterface[]
+	 * @return RouteCondition[]
 	 */
 	public function getRoutes();
 
 	/**
 	 * Add a route.
 	 *
-	 * @param  RouteInterface $route
+	 * @param  RouteCondition  $route
+	 *
 	 * @return void
 	 */
-	public function addRoute( RouteInterface $route );
+	public function addRoute( RouteCondition $route );
 
 	/**
 	 * Remove a route.
 	 *
-	 * @param  RouteInterface $route
+	 * @param  RouteCondition $route
+	 *
 	 * @return void
 	 */
-	public function removeRoute( RouteInterface $route );
+	public function removeRoute( RouteCondition $route );
 }

@@ -58,7 +58,7 @@
 
 				return $value;
 
-			}, $this->route->url() );
+			}, $this->route->getUrl() );
 
 			return home_url( UrlUtility::addLeadingSlash( UrlUtility::removeTrailingSlash( $url ) ) );
 

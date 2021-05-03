@@ -77,4 +77,10 @@
 
 		}
 
+		public function canBeCached() {
+
+			return true;
+
+		}
+
 	}

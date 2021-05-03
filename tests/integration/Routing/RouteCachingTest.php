@@ -22,7 +22,6 @@
 
 		private $cache_file;
 
-		private $configured_cache_file;
 
 		protected function setUp() : void {
 
@@ -30,8 +29,7 @@
 
 			unset( $GLOBALS['test'] );
 
-			$this->cache_file            = TESTS_DIR . DS . '_data' . DS . 'route.cache.php';
-			$this->configured_cache_file = TESTS_DIR . DS . '_data' . DS . 'tests.route.cache.php';
+			$this->cache_file = TESTS_DIR . DS . '_data' . DS . 'route.cache.php';
 
 			$this->newCachedRouter();
 
@@ -62,9 +60,9 @@
 
 			unset( $GLOBALS['test'] );
 
-			if (file_exists($this->cache_file)) {
+			if ( file_exists( $this->cache_file ) ) {
 
-				$this->unlink($this->cache_file);
+				$this->unlink( $this->cache_file );
 			}
 
 
@@ -91,9 +89,17 @@
 		}
 
 		/** @test */
-		public function the_entire_route_dispatcher_can_be_read_from_the_cache_without_needing_to_define_routes() {
+		public function routes_can_be_read_from_the_cache_without_needing_to_define_them() {
 
-			$router = $this->newCachedRouter( $this->configured_cache_file );
+			$this->router->get( 'foo', Controller::class . '@handle' );
+			$this->router->get( 'bar', Controller::class . '@handle' );
+			$this->router->get( 'baz', Controller::class . '@handle' );
+			$this->router->get( 'biz', Controller::class . '@handle' );
+			$this->router->get( 'boo', Controller::class . '@handle' );
+			$response = $this->router->runRoute( TestRequest::from( 'GET', 'foo' ) );
+			$this->assertSame( 'foo', $response );
+
+			$router = $this->newCachedRouter( $this->cache_file );
 
 			$response = $router->runRoute( TestRequest::from( 'GET', 'foo' ) );
 			$this->assertSame( 'foo', $response );
@@ -110,12 +116,54 @@
 			$response = $router->runRoute( TestRequest::from( 'GET', 'boo' ) );
 			$this->assertSame( 'foo', $response );
 
-			$router->get('/foobar', Controller::class . '@handle');
+			$router->get( '/foobar', Controller::class . '@handle' );
 			$response = $router->runRoute( TestRequest::from( 'GET', 'foobar' ) );
-			$this->assertSame( null , $response );
+			$this->assertSame( null, $response );
 
 		}
 
+		/** @test */
+		public function a_cache_file_gets_created_for_routes_with_closure_handlers() {
+
+			$class = new Controller();
+
+			$this->router->get( 'foo', function () use ( $class ) {
+
+				return $class->handle();
+
+			} );
+
+			$this->assertFalse( file_exists( $this->cache_file ) );
+
+			$response = $this->router->runRoute( TestRequest::from( 'GET', 'foo' ) );
+
+			$this->assertSame( 'foo', $response );
+
+			$this->assertTrue( file_exists( $this->cache_file ) );
+
+		}
+
+		/** @test */
+		public function closure_handlers_are_read_correctly_from_the_cache_file() {
+
+			$class = new Controller();
+
+			$this->router->get( 'foo', function () use ( $class ) {
+
+				return $class->handle();
+
+			} );
+
+			$response = $this->router->runRoute( TestRequest::from( 'GET', 'foo' ) );
+			$this->assertSame( 'foo', $response );
+
+			$router = $this->newCachedRouter( $this->cache_file );
+
+			$response = $router->runRoute( TestRequest::from( 'GET', 'foo' ) );
+			$this->assertSame( 'foo', $response );
+
+
+		}
 
 	}
 

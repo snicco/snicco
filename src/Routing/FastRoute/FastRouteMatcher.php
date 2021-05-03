@@ -52,4 +52,10 @@
 
 		}
 
+		public function canBeCached() : bool {
+
+			return false;
+
+		}
+
 	}
