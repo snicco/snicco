@@ -3,13 +3,17 @@
 
 	namespace WPEmerge\Routing;
 
+	use Closure;
+	use Illuminate\Support\Str;
+	use Opis\Closure\SerializableClosure;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Contracts\RouteInterface;
+	use WPEmerge\Contracts\RouteCondition;
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Helpers\RouteSignatureParameters;
 
-	class CompiledRoute implements RouteInterface {
+	class CompiledRoute implements RouteCondition {
 
+		/** @var \WPEmerge\Contracts\RouteAction|string */
 		public $action;
 
 		public $middleware;
@@ -40,11 +44,21 @@
 
 		}
 
-		public static function hydrate( array $attributes, HandlerFactory $handler_factory, ConditionFactory $condition_factory ) : CompiledRoute {
+		public static function hydrate(
+			array $attributes,
+			HandlerFactory $handler_factory,
+			ConditionFactory $condition_factory
+		) : CompiledRoute {
 
 			$compiled = new static( $attributes );
 
-			$compiled->action     = $handler_factory->create( $compiled->action, $compiled->namespace );
+			if ( $compiled->isSerializedClosure($action = $compiled->action) ) {
+
+				$action = \Opis\Closure\unserialize($action);
+
+			}
+
+			$compiled->action     = $handler_factory->create( $action, $compiled->namespace );
 			$compiled->conditions = $condition_factory->compileConditions( $compiled );
 
 			return $compiled;
@@ -74,12 +88,12 @@
 
 		private function usesController() : bool {
 
-			return ! $this->action->raw() instanceof \Closure;
+			return ! $this->action->raw() instanceof Closure;
 
 		}
 
 		/** @todo Refactor this so that we dont rely on parameter order and parameter names. */
-		public function run( RequestInterface $request, array $payload) {
+		public function run( RequestInterface $request, array $payload ) {
 
 			$params = collect( $this->signatureParameters() );
 
@@ -123,6 +137,26 @@
 
 			return $this->conditions;
 
+		}
+
+		public function cacheable() : CompiledRoute {
+
+			if ( $this->action instanceof Closure ) {
+
+				$closure = new SerializableClosure( $this->action );
+
+				$this->action =  \Opis\Closure\serialize($closure);
+
+			}
+
+			return $this;
+
+		}
+
+		private function isSerializedClosure(  $action ) : bool {
+
+			return is_string( $action )
+			       && Str::startsWith( $action, 'C:32:"Opis\\Closure\\SerializableClosure' ) !== false;
 		}
 
 	}

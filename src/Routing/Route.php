@@ -5,7 +5,7 @@
 
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Contracts\RouteInterface;
+	use WPEmerge\Contracts\RouteCondition;
 	use WPEmerge\Contracts\SetsRouteAttributes;
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Helpers\RouteSignatureParameters;
@@ -13,11 +13,11 @@
 	use WPEmerge\Helpers\UrlParser;
 	use WPEmerge\Support\Arr;
 	use WPEmerge\Support\Str;
-	use WPEmerge\Traits\CompilesExecutableRoute;
+	use WPEmerge\Traits\SetRouteAttributes;
 
-	class Route implements RouteInterface, SetsRouteAttributes {
+	class Route implements RouteCondition, SetsRouteAttributes {
 
-		use CompilesExecutableRoute;
+		use SetRouteAttributes;
 
 		/**
 		 * @var array
@@ -43,6 +43,7 @@
 		 */
 		private $middleware;
 
+		/** @var string */
 		private $namespace;
 
 		/** @var string */
@@ -77,70 +78,22 @@
 
 		public function compile() : CompiledRoute {
 
-			return new CompiledRoute([
+			return new CompiledRoute( [
 				'action'     => $this->action,
 				'middleware' => $this->middleware ?? [],
 				'conditions' => $this->conditions ?? [],
-				'namespace' => $this->namespace ?? ''
-			]);
-
-		}
-
-		public function handle( $action ) : Route {
-
-			$this->action = $action;
-
-			return $this;
+				'namespace'  => $this->namespace ?? '',
+			] );
 
 		}
 
 		public function and( ...$regex ) : Route {
 
-			$this->regex = $this->parseRegex( Arr::flattenOnePreserveKeys( $regex ) );
+			$this->regex = $this->normalizeRegex( Arr::flattenOnePreserveKeys( $regex ) );
 
-			$this->compileUrl();
+			$this->parseUrl();
 
 			return $this;
-
-		}
-
-		private function parseRegex( $regex ) : array {
-
-			if ( is_int( Arr::firstEl( array_keys( $regex ) ) ) ) {
-
-				return Arr::combineFirstTwo( $regex );
-
-			}
-
-			return $regex;
-
-		}
-
-		public function compileUrl() {
-
-			$segments = UrlParser::segments( $this->url );
-
-			$segments = array_filter( $segments, function ( $segment ) {
-
-				return isset( $this->regex[ $segment ] );
-
-			} );
-
-			$url = $this->url;
-
-			foreach ( $segments as $segment ) {
-
-				$pattern = sprintf( "/(%s(?=\\}))/", preg_quote( $segment, '/' ) );;
-
-				$url = preg_replace_callback( $pattern, function ( $match ) {
-
-					return $match[0] . ':' . $this->regex[ $match[0] ];
-
-				}, $url, 1 );
-
-			}
-
-			$this->compiled_url = rtrim( $url, '/' );
 
 		}
 
@@ -158,120 +111,7 @@
 
 		}
 
-		public function methods( $methods ) {
-
-			$this->methods = array_merge(
-				$this->methods ?? [],
-				array_map( 'strtoupper', Arr::wrap( $methods ) )
-			);
-
-		}
-
-		public function namespace( string $namespace ) : Route {
-
-			$this->namespace = $namespace;
-
-			return $this;
-
-		}
-
-		public function matches( RequestInterface $request ) : bool {
-
-
-			$failed_condition = collect( $this->compiled_conditions )
-				->first( function ( $condition ) use ( $request ) {
-
-					return ! $condition->isSatisfied( $request );
-
-				} );
-
-			return $failed_condition === null;
-
-
-		}
-
-		public function middleware( $middleware ) : Route {
-
-			$middleware = Arr::wrap( $middleware );
-
-			$this->middleware = array_merge( $this->middleware ?? [], $middleware );
-
-			return $this;
-
-		}
-
-		public function getMiddleware() : array {
-
-			return array_merge(
-				$this->middleware ?? [],
-				$this->controllerMiddleware()
-			);
-
-
-		}
-
-		/** @todo Refactor this so that we dont rely on parameter order and parameter names. */
-		public function run( RequestInterface $request ) {
-
-			$params = collect( $this->signatureParameters() );
-
-			$values = collect( [ $request ] )->merge( $this->payload )
-			                                 ->values();
-
-			if ( $params->count() < $values->count() ) {
-
-				$values = $values->slice( 0, count( $params ) );
-
-			}
-
-			if ( $params->count() > $values->count() ) {
-
-				$params = $params->slice( 0, count( $values ) );
-
-			}
-
-			$payload = $params
-				->map( function ( $param ) {
-
-					return $param->getName();
-
-				} )
-				->values()
-				->combine( $values );
-
-			return $this->compiled_action->executeUsing( $payload->all() );
-
-		}
-
-		public function compileAction( HandlerFactory $factory ) : Route {
-
-			$this->compiled_action = $factory->create( $this->action, $this->namespace );
-
-			return $this;
-
-		}
-
-		private function signatureParameters() : array {
-
-			return RouteSignatureParameters::fromCallable(
-				$this->compiled_action->raw()
-			);
-
-		}
-
-		public function name( string $name ) : Route {
-
-			// Remove leading and trailing dots.
-			$name = preg_replace( '/^\.+|\.+$/', '', $name );
-
-			$this->name = isset( $this->name ) ? $this->name . '.' . $name : $name;
-
-			return $this;
-
-
-		}
-
-		public function getName() {
+		public function getName() : ?string {
 
 			return $this->name;
 
@@ -289,17 +129,7 @@
 
 		}
 
-		public function where() : Route {
-
-			$args = func_get_args();
-
-			$this->conditions[] = new ConditionBlueprint( $args );
-
-			return $this;
-
-		}
-
-		public function url() : string {
+		public function getUrl() : string {
 
 			return $this->url;
 
@@ -315,29 +145,6 @@
 			$this->compiled_conditions = $condition_factory->compileConditions( $this );
 
 			return $this;
-
-		}
-
-		private function controllerMiddleware() : array {
-
-			if ( ! $this->usesController() ) {
-
-				return [];
-			}
-
-			return $this->compiled_action->resolveControllerMiddleware();
-
-		}
-
-		private function usesController() : bool {
-
-			return ! $this->compiled_action->raw() instanceof \Closure;
-
-		}
-
-		public function payload( $payload ) {
-
-			$this->payload = $payload;
 
 		}
 
@@ -364,7 +171,7 @@
 
 			while ( $this->hasMultipleOptionalSegments( rtrim( $url_pattern, '/' ) ) ) {
 
-				$this->mergeOptional( $url_pattern );
+				$this->combineOptionalSegments( $url_pattern );
 
 			}
 
@@ -380,7 +187,7 @@
 
 		}
 
-		private function mergeOptional( string &$url_pattern ) {
+		private function combineOptionalSegments( string &$url_pattern ) {
 
 			preg_match( '/(\[(.*?)])/', $url_pattern, $matches );
 
@@ -390,6 +197,46 @@
 			$after  = Str::afterLast( $url_pattern, $first );
 
 			$url_pattern = $before . rtrim( $first, ']' ) . rtrim( $after, '/' ) . ']';
+
+		}
+
+		private function normalizeRegex( $regex ) : array {
+
+			if ( is_int( Arr::firstEl( array_keys( $regex ) ) ) ) {
+
+				return Arr::combineFirstTwo( $regex );
+
+			}
+
+			return $regex;
+
+		}
+
+		private function parseUrl() {
+
+			$segments = UrlParser::segments( $this->url );
+
+			$segments = array_filter( $segments, function ( $segment ) {
+
+				return isset( $this->regex[ $segment ] );
+
+			} );
+
+			$url = $this->url;
+
+			foreach ( $segments as $segment ) {
+
+				$pattern = sprintf( "/(%s(?=\\}))/", preg_quote( $segment, '/' ) );;
+
+				$url = preg_replace_callback( $pattern, function ( $match ) {
+
+					return $match[0] . ':' . $this->regex[ $match[0] ];
+
+				}, $url, 1 );
+
+			}
+
+			$this->compiled_url = rtrim( $url, '/' );
 
 		}
 

@@ -11,4 +11,6 @@
 		public function find(string $method, string $path);
 
 		public function isCached() :bool;
+
+		public function canBeCached();
 	}

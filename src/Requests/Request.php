@@ -5,7 +5,7 @@
 
 	use GuzzleHttp\Psr7\ServerRequest;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Contracts\RouteInterface;
+	use WPEmerge\Contracts\RouteCondition;
 	use WPEmerge\Events\IncomingRequest;
 	use WPEmerge\Support\WPEmgereArr;
 
@@ -260,7 +260,7 @@
 
 		}
 
-		public function setRoute( RouteInterface $route ) {
+		public function setRoute( RouteCondition $route ) {
 
 			$this->route = $route;
 		}
@@ -277,7 +277,7 @@
 
 		}
 
-		public function route() : ?RouteInterface {
+		public function route() : ?RouteCondition {
 
 			return $this->route;
 

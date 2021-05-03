@@ -8,7 +8,7 @@
 	use Illuminate\Database\Eloquent\Model;
 	use Illuminate\Support\Str;
 	use ReflectionParameter;
-	use WPEmerge\Contracts\RouteInterface;
+	use WPEmerge\Contracts\RouteCondition;
 	use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 	class ImplicitRouteBindings {
@@ -18,13 +18,13 @@
 		 * Resolve the implicit route bindings for the given route.
 		 *
 		 * @param  ContainerAdapter  $container
-		 * @param  RouteInterface  $route
+		 * @param  RouteCondition  $route
 		 *
 		 * @return void
 		 *
 		 * @throws ModelNotFoundException
 		 */
-		public static function resolveForRoute( ContainerAdapter $container, RouteInterface $route ) {
+		public static function resolveForRoute( ContainerAdapter $container, RouteCondition $route ) {
 
 			$arguments  = collect($route->arguments());
 

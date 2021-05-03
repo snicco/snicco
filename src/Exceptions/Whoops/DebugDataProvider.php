@@ -5,7 +5,7 @@
 
 	use Whoops\Exception\Inspector;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Contracts\RouteInterface;
+	use WPEmerge\Contracts\RouteCondition;
 
 	/**
 	 * Provide debug data for usage with \Whoops\Handler\PrettyPageHandler.
@@ -37,7 +37,7 @@
 		 *
 		 * @return array<string, mixed>
 		 */
-		public function route( Inspector $inspector, RouteInterface $route = null ) : array {
+		public function route( Inspector $inspector, RouteCondition $route = null ) : array {
 
 			if ( ! $route ) {
 				return [];

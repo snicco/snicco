@@ -5,7 +5,7 @@
 
 
 
-	interface RouteInterface {
+	interface RouteCondition {
 
 
 		public function getConditions();

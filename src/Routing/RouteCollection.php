@@ -9,6 +9,7 @@
 	use WPEmerge\Contracts\RouteMatcher;
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Helpers\UrlParser;
+	use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
 	use WPEmerge\Support\Arr;
 
 	use WPEmerge\Support\Str;
@@ -141,7 +142,7 @@
 
 		}
 
-		// For static routes we need to place a randomized prefix before the request path.
+		// For static routes, we need to place a randomized prefix before the request path.
 		// This prefix gets stripped later when we match routes.
 		// This is necessary to allow researching for a possible dynamic route after a static route
 		// that was found in the dispatcher failed due to custom conditions.
@@ -157,14 +158,19 @@
 
 			$routes = Arr::get( $this->routes, $method, [] );
 
+			$cache = $this->isCacheable();
+
 			/** @var Route $route */
 			foreach ( $routes as $route ) {
 
-				$url = UrlParser::isDynamicUrl( $url = $route->url() )
+				$url = UrlParser::isDynamicUrl( $url = $route->getUrl() )
 					? $route->getCompiledUrl()
 					: $this->hash( $url );
 
-				$this->route_matcher->add( $method, $url, (array) $route->compile() );
+				$route = ( $cache ) ? $route->compile()->cacheable() : $route->compile();
+
+
+				$this->route_matcher->add( $method, $url, (array) $route );
 
 			}
 
@@ -237,4 +243,9 @@
 
 		}
 
+		private function isCacheable() {
+
+			return $this->route_matcher->canBeCached();
+
+		}
 	}
