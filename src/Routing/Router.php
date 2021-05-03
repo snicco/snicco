@@ -5,20 +5,18 @@
 
 	use Closure;
 	use Contracts\ContainerAdapter;
-	use WPEmerge\Contracts\RouteCondition;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Helpers\Pipeline;
 	use WPEmerge\Helpers\Url;
-	use WPEmerge\Traits\CompilesMiddleware;
+	use WPEmerge\Traits\GathersMiddleware;
 	use WPEmerge\Traits\HoldsRouteBlueprint;
-	use WPEmerge\Traits\SortsMiddleware;
+
 
 	/** @mixin \WPEmerge\Routing\RouteDecorator */
 	class Router {
 
-		use CompilesMiddleware;
-		use SortsMiddleware;
+		use GathersMiddleware;
 		use HoldsRouteBlueprint;
 
 		/** @var \WPEmerge\Routing\RouteGroup[] */
@@ -183,6 +181,9 @@
 
 		}
 
+		/**
+		 * @throws \WPEmerge\Exceptions\ConfigurationException
+		 */
 		private function runWithinStack( RouteMatch $route_match, RequestInterface $request ) {
 
 			$middleware = $route_match->route()->middleware();
@@ -190,6 +191,7 @@
 			$middleware = $this->expandMiddleware( $middleware );
 			$middleware = $this->uniqueMiddleware( $middleware );
 			$middleware = $this->sortMiddleware( $middleware );
+
 
 			return ( new Pipeline( $this->container ) )
 				->send( $request )

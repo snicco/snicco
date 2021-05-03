@@ -7,6 +7,8 @@
 
 	class TestRequest extends Request {
 
+		public $body;
+
 		public function __construct(
 			$method,
 			$uri,

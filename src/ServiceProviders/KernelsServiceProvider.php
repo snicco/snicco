@@ -64,7 +64,8 @@
 				'web'      => [],
 				'ajax'     => [],
 				'admin'    => [],
-			] );
+
+			]);
 
 			$this->extendConfig( $container, 'middleware_priority', [
 
