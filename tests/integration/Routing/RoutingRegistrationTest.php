@@ -83,7 +83,6 @@
 		}
 
 
-
 		/**
 		 *
 		 *
@@ -2012,11 +2011,6 @@
 		}
 
 
-		private function seeResponse( $expected, $response ) {
-
-			$this->assertSame( $expected, $response );
-
-		}
 
 
 	}
