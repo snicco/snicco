@@ -3,7 +3,7 @@
 
 	namespace Tests\stubs\Controllers\Admin;
 
-	use Tests\stubs\Middleware\FooMiddleware;
+	use Tests\stubs\Middleware\FooooooMiddleware;
 	use Tests\stubs\TestResponse;
 	use WPEmerge\Http\Controller;
 	use WPEmerge\Requests\Request;
@@ -28,7 +28,7 @@
 
 			}
 
-			$this->middleware(FooMiddleware::class);
+			$this->middleware(FooooooMiddleware::class);
 
 			$this->dependency = $dependency;
 

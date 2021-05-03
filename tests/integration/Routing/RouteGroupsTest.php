@@ -4,12 +4,20 @@
 	namespace Tests\integration\Routing;
 
 	use Codeception\TestCase\WPTestCase;
+	use Tests\stubs\Conditions\FalseCondition;
+	use Tests\stubs\Conditions\TrueCondition;
+	use Tests\stubs\Conditions\UniqueCondition;
+	use Tests\stubs\Middleware\BarMiddleware;
+	use Tests\stubs\Middleware\BazMiddleware;
+	use Tests\stubs\Middleware\FooMiddleware;
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
 
 	class RouteGroupsTest extends WPTestCase {
 
 		use SetUpRouter;
+
+		const namespace = 'Tests\stubs\Controllers\Web';
 
 		/**
 		 *
@@ -102,15 +110,15 @@
 		}
 
 		/** @test */
-		public function the_group_namespace_is_applied_to_child_routes_but_they_might_overwrite_it() {
+		public function the_group_namespace_is_applied_to_child_routes() {
 
 			$this->router
-				->namespace( 'Tests\integration\Routing' )
+				->namespace( self::namespace )
 				->group( function () {
 
 					$this->router->get( '/foo' )->handle( 'RoutingController@foo' );
 
-				} );
+				});
 
 			$get_request = $this->request( 'GET', '/foo' );
 			$response    = $this->router->runRoute( $get_request );
@@ -161,7 +169,7 @@
 
 			$this->router
 				->where( 'maybe', false )
-				->namespace( 'Tests\integration\Routing' )
+				->namespace( 'Tests\stubs\Controllers\Web' )
 				->group( function () {
 
 					$this->router
@@ -376,11 +384,11 @@
 
 			/** @todo decide if this is desired. */
 			$this->router
-				->namespace( 'Tests\integration\FALSE' )
+				->namespace( 'Tests\FalseNamespace' )
 				->group( function () {
 
 					$this->router
-						->namespace( 'Tests\integration\Routing' )
+						->namespace( self::namespace )
 						->get( '/foo' )
 						->handle( 'RoutingController@foo' );
 
@@ -392,7 +400,6 @@
 
 
 		}
-
 
 		/** @test */
 		public function group_prefixes_are_merged_on_multiple_levels() {

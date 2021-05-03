@@ -6,21 +6,20 @@
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
 
-	class FooMiddleware implements Middleware {
+	class BazMiddleware implements Middleware {
 
-		public function handle( RequestInterface $request, \Closure $next, $foo = 'foo' ) {
+		public function handle( RequestInterface $request, \Closure $next, $baz = 'baz' ) {
 
 			if ( isset( $request->body ) ) {
 
-				$request->body .= $foo;
+				$request->body .= $baz;
 
 				return $next( $request );
 			}
 
-			$request->body = $foo;
+			$request->body = $baz;
 
 			return $next( $request );
-
 
 		}
 

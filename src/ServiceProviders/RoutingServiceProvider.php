@@ -7,13 +7,11 @@
 	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Handlers\HandlerFactory;
-	use WPEmerge\Routing\CachedFastRouteMatcher;
+	use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
 	use WPEmerge\Routing\Conditions\AdminCondition;
 	use WPEmerge\Routing\Conditions\AjaxCondition;
 	use WPEmerge\Routing\ConditionFactory;
 	use WPEmerge\Routing\Conditions\CustomCondition;
-	use WPEmerge\Routing\Conditions\ModelCondition;
-	use WPEmerge\Routing\Conditions\MultipleCondition;
 	use WPEmerge\Routing\Conditions\NegateCondition;
 	use WPEmerge\Routing\Conditions\PostIdCondition;
 	use WPEmerge\Routing\Conditions\PostSlugCondition;
@@ -22,8 +20,7 @@
 	use WPEmerge\Routing\Conditions\PostTypeCondition;
 	use WPEmerge\Routing\Conditions\QueryVarCondition;
 	use WPEmerge\Routing\Conditions\UrlCondition;
-	use WPEmerge\Routing\FastRouteMatcher;
-	use WPEmerge\Routing\RouteBlueprint;
+	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Routing\RouteRegistrar;

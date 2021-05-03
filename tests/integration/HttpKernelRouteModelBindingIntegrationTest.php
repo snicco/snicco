@@ -16,7 +16,7 @@
 // 	use Illuminate\Routing\Router;
 // 	use Illuminate\Support\Testing\Fakes\EventFake;
 // 	use Tests\stubs\IntegrationTestErrorHandler;
-// 	use Tests\stubs\Middleware\FooMiddleware;
+// 	use Tests\stubs\Middleware\FooooooMiddleware;
 // 	use Tests\stubs\Models\Country;
 // 	use Tests\stubs\Models\Team;
 // 	use Tests\stubs\TestApp;
@@ -243,7 +243,7 @@
 //
 // 				'middleware' => [
 //
-// 					'foo' => FooMiddleware::class,
+// 					'foo' => FooooooMiddleware::class,
 //
 // 				],
 //

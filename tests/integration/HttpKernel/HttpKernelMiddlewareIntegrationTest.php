@@ -8,7 +8,7 @@
 	use Tests\integration\DisableMiddleware;
 	use Tests\integration\SetUpTestApp;
 	use Tests\MockRequest;
-	use Tests\stubs\Middleware\FooMiddleware;
+	use Tests\stubs\Middleware\FooooooMiddleware;
 	use Tests\stubs\Middleware\GlobalFooMiddleware;
 	use Tests\stubs\TestResponseService;
 	use Tests\TestRequest;
@@ -84,7 +84,7 @@
 
 			TestApp::route()
 			       ->get('/')
-			       ->middleware(FooMiddleware::class)
+			       ->middleware(FooooooMiddleware::class)
 			       ->handle( 'WebController@request');
 
 
@@ -105,7 +105,7 @@
 
 			TestApp::route()
 			       ->get('/')
-			       ->middleware( FooMiddleware::class . ':bar')
+			       ->middleware( FooooooMiddleware::class . ':bar')
 			       ->handle( 'WebController@request');
 
 
@@ -166,7 +166,7 @@
 
 			TestApp::route()
 			       ->get('/')
-			       ->middleware(FooMiddleware::class)
+			       ->middleware(FooooooMiddleware::class)
 			       ->handle( 'WebController@request');
 
 
@@ -219,7 +219,7 @@
 
 				'middleware' => [
 
-					'foo'  => FooMiddleware::class,
+					'foo'  => FooooooMiddleware::class,
 					'foo_global' => GlobalFooMiddleware::class,
 
 				],
