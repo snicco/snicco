@@ -3,32 +3,18 @@
 
 	namespace WPEmerge\Routing;
 
-	use Codeception\Step\Condition;
+	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\UrlableInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
-	use WPEmerge\Helpers\Url as UrlUtility;
+	use WPEmerge\Support\Arr;
 	use WPEmerge\Support\Str;
-	use WPEmerge\Support\WPEmgereArr;
 
 	class RouteUrlGenerator {
 
-		/**
-		 * @var \WPEmerge\Routing\Route
-		 */
+		/** @var \WPEmerge\Routing\Route  */
 		private $route;
 
-		public const regex_pattern =
-			"~
-			(?:/)                     	# match leading slash
-			(?:\\{)                    	# opening curly brace
-			(?<required>[a-z]\\w*) 		# string starting with a-z and followed by word characters for the parameter name
-			(?<optional>\\?)?      		# optionally allow the user to mark the parameter as option using a literal ?
-			(?:\\})                    	# closing curly brace
-			(?=/)                     	# lookahead for a trailing slash  
-			~ix";
-
-		// public const pattern = '/(?<required>{[a-z]*})/';
-		public const pattern = '/(?<optional>(?:\[\/)?(?<required>{.+?})(?:\]+)?)/';
+		public const pattern = '/(?<optional>(?:\[\/)?(?<required>{.+?})(?:\]+)?)/i';
 
 		public function __construct( Route $route ) {
 
@@ -44,23 +30,33 @@
 
 			}
 
-			$url = preg_replace_callback( self::pattern, function ( $matches ) use ( $arguments ) {
+			$regex = Arr::flattenOnePreserveKeys( $this->route->getRegexConstraints() ?? [] );
 
-				$required = $this->stripBrackets($matches['required']);
-				$optional = $this->isOptional($matches['optional']);
-				$value    = urlencode( WPEmgereArr::get( $arguments, $required, '' ) );
+			$url = preg_replace_callback( self::pattern, function ( $matches ) use ( $arguments, $regex ) {
+
+				$required = $this->stripBrackets( $matches['required'] );
+				$optional = $this->isOptional( $matches['optional'] );
+				$value    = Arr::get( $arguments, $required, '' );
 
 				if ( $value === '' && ! $optional ) {
 
-					throw new ConfigurationException('Required route segment: {' . $required . '} missing.');
+					throw new ConfigurationException( 'Required route segment: {' . $required . '} missing.' );
 
 				}
 
-				return ($optional ) ?  '/' . $value : $value;
+				if ( $regex = Arr::get( $regex, $required ) ) {
+
+					$this->checkCustomRegex( $regex, $value, $required );
+
+				}
+
+				$encoded = urlencode($value);
+
+				return ( $optional ) ? '/' . $encoded : $encoded;
 
 			}, $this->route->getUrl() );
 
-			return trim(home_url( $url ), '/') . '/';
+			return trim( home_url( $url ), '/' ) . '/';
 
 
 		}
@@ -68,7 +64,7 @@
 		private function hasUrlableCondition() : ?UrlableInterface {
 
 			return collect( $this->route->getCompiledConditions() )
-				->first( function ( Condition $condition ) {
+				->first( function ( ConditionInterface $condition ) {
 
 					return $condition instanceof UrlableInterface;
 
@@ -78,16 +74,31 @@
 
 		private function stripBrackets( string $pattern ) : string {
 
-			$pattern = Str::of($pattern)->between('{', '}')->before(':');
+			$pattern = Str::of( $pattern )->between( '{', '}' )->before( ':' );
 
 			return $pattern->__toString();
 
 		}
 
-		private function isOptional(string $pattern ) :bool {
+		private function isOptional( string $pattern ) : bool {
 
 
-			return Str::startsWith($pattern, '[/{') && Str::endsWith($pattern, [']', '}']);
+			return Str::startsWith( $pattern, '[/{' ) && Str::endsWith( $pattern, [ ']', '}' ] );
+
+		}
+
+		private function checkCustomRegex( $pattern, $value, $segment ) {
+
+			$regex_constraint = '/' . $pattern . '/';
+
+			if ( ! preg_match( $regex_constraint, $value ) ) {
+
+				throw new ConfigurationException(
+					'The provided value [bar] is not valid for the route: [foo]' .
+					PHP_EOL . 'The value for {' . $segment . '} needs to have the regex pattern: ' . $pattern . '.' );
+
+
+			}
 
 		}
 

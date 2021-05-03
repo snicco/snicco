@@ -54,6 +54,8 @@
 		 */
 		private $compiled_conditions = [];
 
+		private $regex;
+
 
 		public function __construct( array $methods, string $url, $action, array $attributes = [] ) {
 
@@ -82,6 +84,8 @@
 
 			$this->url = $this->parseUrlWithRegex($regex_array);
 
+			$this->regex = $regex;
+
 			return $this;
 
 		}
@@ -89,6 +93,12 @@
 		public function getMethods() : array {
 
 			return $this->methods;
+
+		}
+
+		public function getRegexConstraints() {
+
+			return $this->regex;
 
 		}
 
