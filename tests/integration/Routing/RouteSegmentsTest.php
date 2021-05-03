@@ -556,5 +556,34 @@
 
 		}
 
+		/** @test */
+		public function only_one_of_can_be_added_to_a_segment_as_a_helper_method() {
+
+
+			$routes = function () {
+
+				$this->router->get( 'home/{locale}', function ( Request $request, $locale ) {
+
+					return $locale;
+
+				} )->andEither( 'locale', [ 'en', 'de' ] );
+
+			};
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/home/en' );
+			$this->seeResponse( 'en', $this->router->runRoute( $request ) );
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/home/de' );
+			$this->seeResponse( 'de', $this->router->runRoute( $request ) );
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/home/es' );
+			$this->seeResponse( null, $this->router->runRoute( $request ) );
+
+
+		}
+
 
 	}

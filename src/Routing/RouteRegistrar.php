@@ -22,6 +22,7 @@
 
 			$this->router = $router;
 			$this->config = $config;
+
 		}
 
 		public function loadRoutes() {
