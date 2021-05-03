@@ -67,7 +67,7 @@
 
 		}
 
-		public static function isDynamicUrl( string $url ) {
+		public static function isDynamic( string $url ) {
 
 			$result = preg_match( '/[^{]+(?=})/', $url, $matches );
 
@@ -76,7 +76,7 @@
 
 		public static function isStaticUrl( string $url ) {
 
-			return ! self::isDynamicUrl( $url );
+			return ! self::isDynamic( $url );
 		}
 
 		public static function optionalSegments( string $url_pattern ) {

@@ -7,6 +7,7 @@
 	use WPEmerge\Contracts\UrlableInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Helpers\Url as UrlUtility;
+	use WPEmerge\Support\Str;
 	use WPEmerge\Support\WPEmgereArr;
 
 	class RouteUrlGenerator {
@@ -26,6 +27,9 @@
 			(?=/)                     	# lookahead for a trailing slash  
 			~ix";
 
+		// public const pattern = '/(?<required>{[a-z]*})/';
+		public const pattern = '/(?<optional>(?:\[\/)?(?<required>{.+?})(?:\]+)?)/';
+
 		public function __construct( Route $route ) {
 
 			$this->route = $route;
@@ -40,27 +44,23 @@
 
 			}
 
-			$url = preg_replace_callback( self::regex_pattern, function ( $matches ) use ( $arguments ) {
+			$url = preg_replace_callback( self::pattern, function ( $matches ) use ( $arguments ) {
 
-				$required = $matches['required'];
-				$optional = ! empty( $matches['optional'] );
-				$value    = '/' . urlencode( WPEmgereArr::get( $arguments, $required, '' ) );
+				$required = $this->stripBrackets($matches['required']);
+				$optional = $this->isOptional($matches['optional']);
+				$value    = urlencode( WPEmgereArr::get( $arguments, $required, '' ) );
 
-				if ( $value === '/' ) {
+				if ( $value === '' && ! $optional ) {
 
-					if ( ! $optional ) {
+					throw new ConfigurationException('Required route segment: {' . $required . '} missing.');
 
-						throw new ConfigurationException( "Required URL parameter \"$required\" is not specified." );
-					}
-
-					$value = '';
 				}
 
-				return $value;
+				return ($optional ) ?  '/' . $value : $value;
 
 			}, $this->route->getUrl() );
 
-			return home_url( UrlUtility::addLeadingSlash( UrlUtility::removeTrailingSlash( $url ) ) );
+			return trim(home_url( $url ), '/') . '/';
 
 
 		}
@@ -73,6 +73,21 @@
 					return $condition instanceof UrlableInterface;
 
 				} );
+
+		}
+
+		private function stripBrackets( string $pattern ) : string {
+
+			$pattern = Str::of($pattern)->between('{', '}')->before(':');
+
+			return $pattern->__toString();
+
+		}
+
+		private function isOptional(string $pattern ) :bool {
+
+
+			return Str::startsWith($pattern, '[/{') && Str::endsWith($pattern, [']', '}']);
 
 		}
 

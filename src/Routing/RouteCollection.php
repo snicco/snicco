@@ -163,9 +163,7 @@
 			/** @var Route $route */
 			foreach ( $routes as $route ) {
 
-				$url = UrlParser::isDynamicUrl( $url = $route->getUrl() )
-					? $route->getCompiledUrl()
-					: $this->hash( $url );
+				$url = UrlParser::isDynamic( $url = $route->getUrl() ) ? $url : $this->hash($url);
 
 				$route = ( $cache ) ? $route->compile()->cacheable() : $route->compile();
 
