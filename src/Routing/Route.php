@@ -108,6 +108,12 @@
 
 		}
 
+		public function andEither (string $segment, array $pool) : Route {
+
+			return $this->addRegexToSegment($segment, implode('|', $pool) );
+
+		}
+
 		public function getMethods() : array {
 
 			return $this->methods;

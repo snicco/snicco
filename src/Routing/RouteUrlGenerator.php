@@ -14,7 +14,9 @@
 		/** @var \WPEmerge\Routing\Route  */
 		private $route;
 
-		public const pattern = '/(?<optional>(?:\[\/)?(?<required>{.+?})(?:\]+)?)/i';
+		// public const pattern = '/(?<optional>(?:\[\/)?(?<required>{.+?})(?:\]+)?)/i';
+		public const pattern = '/(?<optional>(?:\[\/)?(?<required>{.+?}+(?!\w))(?:\]+)?)/i';
+
 
 		public function __construct( Route $route ) {
 

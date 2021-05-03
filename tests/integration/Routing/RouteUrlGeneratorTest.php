@@ -25,7 +25,7 @@
 		 *
 		 */
 
-		private function conditions () {
+		private function conditions () : array {
 
 			return [
 
@@ -240,6 +240,7 @@
 			$this->seeUrl( '/wp-admin/admin.php?page=test', $url );
 
 		}
+
 
 		private function seeUrl( $route_path, $result ) {
 
