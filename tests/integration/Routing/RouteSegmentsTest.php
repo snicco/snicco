@@ -10,7 +10,6 @@
 
 		use SetUpRouter;
 
-
 		/**
 		 *
 		 *
@@ -414,5 +413,148 @@
 
 
 		}
+
+		/** @test */
+		public function adding_regex_can_be_done_as_a_fluent_api() {
+
+			$routes = function () {
+
+				$this->router->get( 'users/{user_id}/{name}', function () {
+
+					return 'foo';
+
+				} )->and( 'user_id', '[0-9]+' )->and( 'name', 'calvin' );
+
+			};
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/users/1/calvin' );
+			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/users/1/john' );
+			$this->seeResponse( null, $this->router->runRoute( $request ) );
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/users/w/calvin' );
+			$this->seeResponse( null, $this->router->runRoute( $request ) );
+
+		}
+
+		/** @test */
+		public function only_alpha_can_be_added_to_a_segment_as_a_helper_method() {
+
+
+			$routes = function () {
+
+				$this->router->get( 'users/{name}', function () {
+
+					return 'foo';
+
+				} )->andAlpha( 'name' );
+
+				$this->router->get( 'teams/{name}/{player}', function () {
+
+					return 'foo';
+
+				} )->andAlpha( 'name', 'player' );
+
+				$this->router->get( 'countries/{country}/{city}', function () {
+
+					return 'foo';
+
+				} )->andAlpha( [ 'country', 'city' ] );
+
+			};
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/users/calvin' );
+			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/users/cal1vin' );
+			$this->seeResponse( null, $this->router->runRoute( $request ) );
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/teams/dortmund/calvin' );
+			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/teams/1/calvin' );
+			$this->seeResponse( null, $this->router->runRoute( $request ) );
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/teams/dortmund/1' );
+			$this->seeResponse( null, $this->router->runRoute( $request ) );
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/countries/germany/berlin' );
+			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/countries/germany/1' );
+			$this->seeResponse( null, $this->router->runRoute( $request ) );
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/countries/1/berlin' );
+			$this->seeResponse( null, $this->router->runRoute( $request ) );
+
+
+		}
+
+		/** @test */
+		public function only_alphanumerical_can_be_added_to_a_segment_as_a_helper_method() {
+
+
+			$routes = function () {
+
+				$this->router->get( 'users/{name}', function () {
+
+					return 'foo';
+
+				} )->andAlphaNumerical( 'name' );
+
+			};
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/users/calvin' );
+			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/users/calv1in' );
+			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+
+
+		}
+
+		/** @test */
+		public function only_number_can_be_added_to_a_segment_as_a_helper_method() {
+
+
+			$routes = function () {
+
+				$this->router->get( 'users/{name}', function () {
+
+					return 'foo';
+
+				} )->andNumber( 'name' );
+
+			};
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/users/1' );
+			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/users/calvin' );
+			$this->seeResponse( null, $this->router->runRoute( $request ) );
+
+			$this->newRouterWith( $routes );
+			$request = $this->request( 'GET', '/users/calv1in' );
+			$this->seeResponse( null, $this->router->runRoute( $request ) );
+
+
+		}
+
 
 	}
