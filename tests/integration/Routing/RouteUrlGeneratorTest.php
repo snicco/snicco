@@ -4,9 +4,11 @@
 	namespace Tests\integration\Routing;
 
 	use Codeception\TestCase\WPTestCase;
+	use WPEmerge\Routing\Conditions\AdminCondition;
+	use WPEmerge\Routing\Conditions\NegateCondition;
 	use WPEmerge\Support\Str;
 
-	class NameRouteTest extends WPTestCase {
+	class RouteUrlGeneratorTest extends WPTestCase {
 
 		use SetUpRouter;
 
@@ -23,16 +25,26 @@
 		 *
 		 */
 
+		private function conditions () {
+
+			return [
+
+				'admin' => AdminCondition::class,
+				'negate' => NegateCondition::class,
+			];
+
+		}
+
 		/** @test */
 		public function a_route_can_be_named() {
 
 			$this->router->get( 'foo' )->name( 'foo_route' );
 			$url = $this->router->getRouteUrl( 'foo_route' );
-			$this->seeUrl( 'foo', $url );
+			$this->seeUrl( '/foo/', $url );
 
 			$this->router->name( 'bar_route' )->get( 'bar' );
 			$url = $this->router->getRouteUrl( 'bar_route' );
-			$this->seeUrl( 'bar', $url );
+			$this->seeUrl( '/bar/', $url );
 
 		}
 
@@ -54,12 +66,12 @@
 
 				} );
 
-			$this->seeUrl( 'baz', $this->router->getRouteUrl( 'foo.bar.baz' ) );
-			$this->seeUrl( 'biz', $this->router->getRouteUrl( 'foo.biz' ) );
+			$this->seeUrl( '/baz/', $this->router->getRouteUrl( 'foo.bar.baz' ) );
+			$this->seeUrl( '/biz/', $this->router->getRouteUrl( 'foo.biz' ) );
 
 			$this->expectExceptionMessage( 'no named route' );
 
-			$this->seeUrl( 'baz', $this->router->getRouteUrl( 'foo.bar.biz' ) );
+			$this->seeUrl( '/baz/', $this->router->getRouteUrl( 'foo.bar.biz' ) );
 
 
 		}
@@ -133,11 +145,11 @@
 
 			$this->router->get( 'foo/{opt1?}/{opt2?}/' )->name( 'foo' );
 			$url = $this->router->getRouteUrl( 'foo', ['opt1' => 'bar', 'opt2' => 'baz']);
-			$this->seeUrl( '/foo/bar/baz', $url );
+			$this->seeUrl( '/foo/bar/baz/', $url );
 
 			$this->router->get( 'bar/{required}/{opt1?}/{opt2?}/' )->name( 'bar' );
 			$url = $this->router->getRouteUrl( 'bar', ['required' => 'biz','opt1' => 'bar', 'opt2' => 'baz']);
-			$this->seeUrl( '/bar/biz/bar/baz', $url );
+			$this->seeUrl( '/bar/biz/bar/baz/', $url );
 
 
 
@@ -171,12 +183,15 @@
 			$url = $this->router->getRouteUrl( 'foo', ['required' => 'bar'] );
 			$this->seeUrl( '/foo/bar/', $url );
 
+
 			$this->router->get( '/bar/{required}/{optional?}' )
 			             ->name( 'bar' )
 			             ->and(['required' => '\w+', 'optional' =>  '\w+']);
 
 			$url = $this->router->getRouteUrl( 'bar', ['required' => 'baz', 'optional' => 'biz'] );
 			$this->seeUrl( '/bar/baz/biz/', $url );
+
+
 
 			$this->router->get( '/foo/{required}/{optional1?}/{optional2?}' )
 			             ->name( 'foobar' )
@@ -201,9 +216,34 @@
 
 		}
 
+		/** @test */
+		public function an_exception_gets_thrown_if_the_passed_arguments_dont_satisfy_regex_constraints () {
+
+			$this->expectExceptionMessage(
+				'The provided value [bar] is not valid for the route: [foo]');
+
+			$this->router->get( '/foo/{required}' )
+			             ->name( 'foo' )
+			             ->and(['required' => '\w+']);
+
+			$this->router->getRouteUrl('foo', ['required' => '#']);
+
+		}
+
+		/** @test */
+		public function custom_conditions_that_can_be_transformed_take_precedence_over_http_conditions () {
+
+			add_menu_page('test', 'test', 'manage_options', 'test');
+
+			$this->router->get( 'foo' )->name( 'foo_route' )->where('admin', 'test');
+			$url = $this->router->getRouteUrl( 'foo_route' );
+			$this->seeUrl( '/wp-admin/admin.php?page=test', $url );
+
+		}
+
 		private function seeUrl( $route_path, $result ) {
 
-			$expected = rtrim(SITE_URL, '/') . '/' . trim($route_path, '/'). '/';
+			$expected = rtrim(SITE_URL, '/') . '/' . ltrim($route_path, '/') ;
 
 			// Strip https, http
 			$expected = Str::after( $expected, '://' );
