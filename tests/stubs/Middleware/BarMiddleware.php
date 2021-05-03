@@ -3,21 +3,24 @@
 
 	namespace Tests\stubs\Middleware;
 
-	use Closure;
-	use WPEmerge\Requests\Request;
+	use WPEmerge\Contracts\Middleware;
+	use WPEmerge\Contracts\RequestInterface;
 
-	class BarMiddleware {
+	class BarMiddleware implements Middleware {
 
+		public function handle( RequestInterface $request, \Closure $next, $bar = 'bar' ) {
 
+			if ( isset( $request->body ) ) {
 
-		public function handle ( Request $request, Closure $next) {
+				$request->body .= $bar;
 
-			$request->body = 'bar';
+				return $next( $request );
+			}
 
-			return $next($request);
+			$request->body = $bar;
 
+			return $next( $request );
 
 		}
-
 
 	}

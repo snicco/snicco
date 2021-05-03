@@ -7,7 +7,7 @@
 	use Codeception\TestCase\WPTestCase;
 	use Psr\Http\Message\ResponseInterface;
 	use Tests\integration\SetUpTestApp;
-	use Tests\stubs\Middleware\FooMiddleware;
+	use Tests\stubs\Middleware\FooooooMiddleware;
 	use Tests\stubs\Middleware\GlobalFooMiddleware;
 	use Tests\stubs\TestApp;
 	use Tests\stubs\TestResponseService;
@@ -201,7 +201,7 @@
 
 				'middleware' => [
 
-					'foo' => FooMiddleware::class,
+					'foo' => FooooooMiddleware::class,
 
 				],
 
