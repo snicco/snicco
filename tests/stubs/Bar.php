@@ -7,4 +7,10 @@
 
 		public $bar = 'bar';
 
+		public function __toString() {
+
+			return $this->bar;
+
+		}
+
 	}

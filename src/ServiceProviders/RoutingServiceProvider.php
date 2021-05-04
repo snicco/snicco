@@ -77,6 +77,8 @@
 
 				}
 
+				/** @todo Named routes will not work right now with caching enabled.  */
+				/** @todo Need a way to also cache routes outside of the route matcher */
 				return new CachedFastRouteMatcher( new FastRouteMatcher(), $cache_file );
 
 

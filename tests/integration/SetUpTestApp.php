@@ -6,7 +6,7 @@
 	use Mockery as m;
 	use Psr\Http\Message\ResponseInterface;
 	use SniccoAdapter\BaseContainerAdapter;
-	use Tests\stubs\IntegrationTestErrorHandler;
+	use Tests\stubs\TestErrorHandler;
 	use Tests\stubs\TestApp;
 	use Tests\stubs\TestResponseService;
 	use WPEmerge\Requests\Request;
@@ -20,7 +20,7 @@
 
 			TestApp::make( new BaseContainerAdapter() )->bootstrap( $this->config() );
 			TestApp::container()[ WPEMERGE_REQUEST_KEY ]                  = $this->request;
-			TestApp::container()[ WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY ] = new IntegrationTestErrorHandler();
+			TestApp::container()[ WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY ] = new TestErrorHandler();
 			TestApp::container()[ WPEMERGE_RESPONSE_SERVICE_KEY ]         = $this->response_service ?? new TestResponseService();
 
 

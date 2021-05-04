@@ -116,7 +116,7 @@
 
 			return new RouteMatch(
 				$route,
-				array_merge( $condition_args, $original_payload )
+				array_merge( $original_payload, $condition_args )
 			);
 
 

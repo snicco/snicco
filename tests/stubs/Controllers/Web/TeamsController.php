@@ -3,37 +3,36 @@
 
 	namespace Tests\stubs\Controllers\Web;
 
-	use Tests\stubs\Models\Team;
+	use Tests\stubs\Foo;
+	use Tests\stubs\Bar;
 	use Tests\stubs\TestResponse;
-	use WPEmerge\Requests\Request;
+	use Tests\TestRequest;
 
 	class TeamsController {
 
-		public function handle( Request $request, Team $team ) {
+		public function handle( TestRequest $request, string $team, string $player ) : TestResponse {
 
-			$request->body = $team->name;
-
-			return new TestResponse( $request );
-
-		}
-
-
-		public function noTypeHint( Request $request, $team ) {
-
-			$request->body = $team;
+			$request->body = $team . ':' . $player;
 
 			return new TestResponse( $request );
 
 		}
 
-		public function never( Request $request, Team $team ) {
+		public function withDependencies( TestRequest $request, string $team, string $player, Foo $foo, Bar $bar) : TestResponse {
 
-			$GLOBALS['TeamsControllerExecuted'] = true;
-
-			$request->body = $team->name;
+			$request->body = $team . ':' . $player . ':' . $foo->foo . ':' . $bar->bar;
 
 			return new TestResponse( $request );
 
 		}
+
+		public function withConditions( TestRequest $request, $team, $player, $baz, $biz ,Foo $foo, Bar $bar) : TestResponse {
+
+			$request->body = $team . ':' . $player . ':' .  $baz . ':' . $biz  . ':' . $foo->foo . ':' . $bar->bar;
+
+			return new TestResponse( $request );
+
+		}
+
 
 	}

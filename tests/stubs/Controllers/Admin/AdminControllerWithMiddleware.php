@@ -3,40 +3,30 @@
 
 	namespace Tests\stubs\Controllers\Admin;
 
-	use Tests\stubs\Middleware\FooooooMiddleware;
+	use Tests\stubs\Middleware\MiddlewareWithDependencies;
 	use Tests\stubs\TestResponse;
+	use Tests\TestRequest;
 	use WPEmerge\Http\Controller;
-	use WPEmerge\Requests\Request;
+	use Tests\stubs\Baz;
 
 	class AdminControllerWithMiddleware extends Controller {
 
-
 		/**
-		 * @var AdminControllerDependency
+		 * @var \Tests\stubs\Baz
 		 */
-		private $dependency;
+		private $baz;
 
-		public function __construct( AdminControllerDependency $dependency ) {
+		public function __construct( Baz $baz ) {
 
+			$this->middleware(MiddlewareWithDependencies::class);
 
-			if ( isset( $GLOBALS['controller_constructor_count'] )) {
-
-
-				$count = $GLOBALS['controller_constructor_count'];
-
-				$GLOBALS['controller_constructor_count'] = $count+1;
-
-			}
-
-			$this->middleware(FooooooMiddleware::class);
-
-			$this->dependency = $dependency;
+			$this->baz = $baz;
 
 		}
 
-		public function handle( Request $request) {
+		public function handle( TestRequest $request ) : TestResponse {
 
-			$request->body .= '_admin_controller' . $this->dependency->add_to_response;
+			$request->body .= $this->baz . ':controller_with_middleware';
 
 			return new TestResponse($request);
 
@@ -45,8 +35,3 @@
 
 	}
 
-	class AdminControllerDependency  {
-
-		public $add_to_response = '_dependency';
-
-	}

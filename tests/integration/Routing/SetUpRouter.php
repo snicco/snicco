@@ -4,6 +4,7 @@
 	namespace Tests\integration\Routing;
 
 	use SniccoAdapter\BaseContainerAdapter;
+	use Tests\stubs\TestResponse;
 	use Tests\TestRequest;
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Routing\ConditionFactory;
@@ -79,6 +80,12 @@
 		}
 
 		private function seeResponse( $expected, $response ) {
+
+			if ( $response instanceof TestResponse ) {
+
+				$response = $response->body();
+
+			}
 
 			$this->assertSame( $expected, $response );
 

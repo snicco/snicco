@@ -3,26 +3,24 @@
 
 	namespace Tests\stubs\Middleware;
 
-	use WPEmerge\Contracts\RequestInterface;
+	use Closure;
+	use Tests\TestRequest;
+	use WPEmerge\Contracts\Middleware;
 
-	class GlobalMiddleware {
+	class GlobalMiddleware implements Middleware {
 
+		const run_times = 'global_middleware';
 
-		public function handle( RequestInterface $request, \Closure $next ) {
+		public function handle( TestRequest $request, Closure $next ) {
 
-			if ( isset( $request->body ) ) {
-
-				$request->body .= 'global_';
-
-				return $next( $request );
-			}
+			$count = $GLOBALS['test'][ self::run_times ] ?? 0;
+			$count ++;
+			$GLOBALS['test'][ self::run_times ] = $count;
 
 			$request->body = 'global_';
 
 			return $next( $request );
 
-
 		}
-
 
 	}
