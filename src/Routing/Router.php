@@ -43,6 +43,11 @@
 		/** @var RouteCollection */
 		private $routes;
 
+		/**
+		 * @var bool
+		 */
+		private $with_middleware = true;
+
 		public function __construct( ContainerAdapter $container, RouteCollection $routes ) {
 
 			$this->container = $container;
@@ -111,6 +116,12 @@
 			}
 
 			return null;
+
+		}
+
+		public function withoutMiddleware() {
+
+			$this->with_middleware = false;
 
 		}
 
@@ -186,27 +197,27 @@
 		 */
 		private function runWithinStack( RouteMatch $route_match, RequestInterface $request ) {
 
-			$middleware = $route_match->route()->middleware();
-			$middleware = $this->mergeGlobalMiddleware( $middleware );
-			$middleware = $this->expandMiddleware( $middleware );
-			$middleware = $this->uniqueMiddleware( $middleware );
-			$middleware = $this->sortMiddleware( $middleware );
+			$middleware = [];
+
+			if ( $this->with_middleware ) {
+
+				$middleware = $route_match->route()->middleware();
+				$middleware = $this->mergeGlobalMiddleware( $middleware );
+				$middleware = $this->expandMiddleware( $middleware );
+				$middleware = $this->uniqueMiddleware( $middleware );
+				$middleware = $this->sortMiddleware( $middleware );
+
+			}
 
 
 			return ( new Pipeline( $this->container ) )
 				->send( $request )
-				->through( $this->skipMiddleware() ? [] : $middleware )
+				->through( $middleware )
 				->then( function ( $request ) use ( $route_match ) {
 
 					return $route_match->route()->run( $request, $route_match->payload() );
 
 				} );
-
-		}
-
-		private function skipMiddleware() : bool {
-
-			return $this->container->offsetExists( 'middleware.disable' );
 
 		}
 
@@ -265,6 +276,8 @@
 			return ( ( new RouteDecorator( $this ) )->decorate( $method, $parameters[0] ) );
 
 		}
+
+
 
 
 	}
