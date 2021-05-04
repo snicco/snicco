@@ -13,9 +13,9 @@
 	use WPEmerge\Http\HttpKernel;
 	use WPEmerge\Middleware\StartSession;
 	use WPEmerge\Middleware\SubstituteBindings;
-	use WPEmerge\Middleware\UserCan;
-	use WPEmerge\Middleware\UserLoggedIn;
-	use WPEmerge\Middleware\UserLoggedOut;
+	use WPEmerge\Middleware\Authorize;
+	use WPEmerge\Middleware\Authenticate;
+	use WPEmerge\Middleware\RedirectIfAuthenticated;
 
 	use WPEmerge\Traits\ExtendsConfig;
 
@@ -46,9 +46,9 @@
 				'flash'           => Flash::class,
 				'old_input'       => OldInput::class,
 				'csrf'            => CsrfProtection::class,
-				'user.logged_in'  => UserLoggedIn::class,
-				'user.logged_out' => UserLoggedOut::class,
-				'user.can'        => UserCan::class,
+				'user.logged_in'  => Authenticate::class,
+				'user.logged_out' => RedirectIfAuthenticated::class,
+				'user.can'        => Authorize::class,
 			] );
 
 			$this->extendConfig( $container, 'middleware_groups', [

@@ -156,8 +156,6 @@
 
 		public function route() : ?RouteCondition;
 
-		public function forceMatch();
-
 		public function path() :string;
 
 	}

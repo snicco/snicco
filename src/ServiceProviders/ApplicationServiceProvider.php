@@ -14,7 +14,7 @@
 	use WPEmerge\Application\GenericFactory;
 	use WPEmerge\Contracts\RouteModelResolver;
 	use WPEmerge\Contracts\ServiceProviderInterface;
-	use WPEmerge\Helpers\MixedType;
+	use WPEmerge\Helpers\Path;
 	use WPEmerge\Traits\ExtendsConfig;
 	use WPEmerge\WpdbRouteModelResolver;
 
@@ -44,7 +44,7 @@
 
 			$upload_dir = wp_upload_dir();
 
-			$cache_dir = MixedType::addTrailingSlash( $upload_dir['basedir'] ) . 'wpemerge' . DIRECTORY_SEPARATOR . 'cache';
+			$cache_dir = Path::addTrailingSlash( $upload_dir['basedir'] ) . 'wpemerge' . DIRECTORY_SEPARATOR . 'cache';
 
 			/** @todo Refactor to custom filesystem class. */
 			$this->extendConfig( $container, 'cache', [

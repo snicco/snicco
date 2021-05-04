@@ -6,7 +6,8 @@
 
 	use ArrayAccess;
 	use WPEmerge\Exceptions\ConfigurationException;
-	use WPEmerge\Helpers\MixedType;
+	use WPEmerge\Helpers\Path;
+	use WPEmerge\Support\Arr;
 	use WPEmerge\Support\WPEmgereArr;
 
 
@@ -158,10 +159,10 @@
 
 			$this->validateStore();
 
-			$new_items = MixedType::toArray( $new_items );
+			$new_items = Arr::wrap($new_items);
 
 			$method = ( $request_key === static::CURRENT_KEY ) ? 'get' : 'getNext';
-			$items  = MixedType::toArray( $this->$method( $key, [] ) );
+			$items  = Arr::wrap( $this->$method( $key, [] ) );
 
 			$this->flashed[ $request_key ][ $key ] = array_merge( $items, $new_items );
 		}
