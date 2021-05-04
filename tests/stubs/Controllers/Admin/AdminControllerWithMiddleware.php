@@ -16,11 +16,17 @@
 		 */
 		private $baz;
 
+		const constructed_times = 'controller_with_middleware';
+
 		public function __construct( Baz $baz ) {
 
 			$this->middleware(MiddlewareWithDependencies::class);
 
 			$this->baz = $baz;
+
+			$count = $GLOBALS['test'][ self::constructed_times ] ?? 0;
+			$count ++;
+			$GLOBALS['test'][ self::constructed_times ] = $count;
 
 		}
 

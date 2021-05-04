@@ -81,10 +81,5 @@
 
 		}
 
-		private function newDispatcher () :WordpressDispatcher {
-
-			return new WordpressDispatcher(new ListenerFactory());
-
-		}
 
 	}
