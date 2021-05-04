@@ -399,4 +399,26 @@
 
 		}
 
+		/** @test */
+		public function all_middleware_can_be_skipped () {
+
+			$this->router->middlewareGroup('global', [
+				FooMiddleware::class,
+				BarMiddleware::class,
+			]);
+
+			$this->router->get( '/foo', function ( TestRequest $request ) {
+
+				return $request->body;
+
+			} )->middleware([FooBarMiddleware::class, BazMiddleware::class]);
+
+			$this->router->withoutMiddleware();
+
+			$request = $this->request( 'GET', '/foo' );
+			$this->seeResponse( null , $this->router->runRoute( $request ) );
+
+
+		}
+
 	}
