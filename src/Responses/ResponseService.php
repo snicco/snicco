@@ -182,7 +182,8 @@
 		 *
 		 * @param  integer  $status
 		 *
-		 * @todo This method does not belong here. SRP.
+		 * @todo This method does not belong here. SRP. Maybe change to a redirect to an
+		 * ErrorController.
 		 *
 		 * @return ResponseInterface
 		 */

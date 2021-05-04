@@ -4,6 +4,7 @@
 	namespace Tests\integration\Routing;
 
 	use Codeception\TestCase\WPTestCase;
+	use Tests\stubs\Conditions\FalseCondition;
 	use WPEmerge\Contracts\RequestInterface;
 
 	class RouteConditionsTest extends WPTestCase {
@@ -49,7 +50,7 @@
 
 			$this->router
 				->get( '/foo' )
-				->where( new \Tests\stubs\Conditions\FalseCondition() )
+				->where( new FalseCondition() )
 				->handle( function ( RequestInterface $request ) {
 
 					return 'foo';
@@ -65,7 +66,7 @@
 		public function custom_conditions_can_be_added_before_the_http_verb() {
 
 			$this->router
-				->where( new \Tests\stubs\Conditions\FalseCondition() )
+				->where( new FalseCondition() )
 				->get( '/foo' )
 				->handle( function ( RequestInterface $request ) {
 
@@ -341,7 +342,7 @@
 
 			$this->router
 				->get( '/foo' )
-				->where( 'negate', new \Tests\stubs\Conditions\FalseCondition() )
+				->where( 'negate', new FalseCondition() )
 				->handle( function ( RequestInterface $request ) {
 
 					return 'foo';

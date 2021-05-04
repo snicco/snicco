@@ -7,6 +7,9 @@
 	use PHPUnit\Framework\TestCase;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\Foo;
+	use Tests\stubs\Middleware\BarMiddleware;
+	use Tests\stubs\Middleware\FooMiddleware;
+	use Tests\stubs\Middleware\GlobalMiddleware;
 	use Tests\TestRequest;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\Middleware;
@@ -416,7 +419,7 @@
 
 				} );
 
-			$this->router->aliasMiddleware( 'foo', \Tests\stubs\Middleware\FooMiddleware::class );
+			$this->router->aliasMiddleware( 'foo', FooMiddleware::class );
 
 			$response = $this->router->runRoute( $this->request( 'GET', '/foo' ) );
 
@@ -436,8 +439,8 @@
 
 				} );
 
-			$this->router->aliasMiddleware( 'foo', \Tests\stubs\Middleware\FooMiddleware::class );
-			$this->router->aliasMiddleware( 'bar', \Tests\stubs\Middleware\BarMiddleware::class );
+			$this->router->aliasMiddleware( 'foo', FooMiddleware::class );
+			$this->router->aliasMiddleware( 'bar', BarMiddleware::class );
 
 			$response = $this->router->runRoute( $this->request( 'GET', '/foo' ) );
 
@@ -458,8 +461,8 @@
 
 				} );
 
-			$this->router->aliasMiddleware( 'foo', \Tests\stubs\Middleware\FooMiddleware::class );
-			$this->router->aliasMiddleware( 'bar', \Tests\stubs\Middleware\BarMiddleware::class );
+			$this->router->aliasMiddleware( 'foo', FooMiddleware::class );
+			$this->router->aliasMiddleware( 'bar', BarMiddleware::class );
 
 			$response = $this->router->runRoute( $this->request( 'GET', '/foo' ) );
 
@@ -479,8 +482,8 @@
 
 				} );
 
-			$this->router->middlewareGroup( 'global', [ \Tests\stubs\Middleware\GlobalMiddleware::class ] );
-			$this->router->aliasMiddleware( 'foo', \Tests\stubs\Middleware\FooMiddleware::class );
+			$this->router->middlewareGroup( 'global', [ GlobalMiddleware::class ] );
+			$this->router->aliasMiddleware( 'foo', FooMiddleware::class );
 
 			$response = $this->router->runRoute( $this->request( 'GET', '/foo' ) );
 			$this->seeResponse( 'global_foo', $response );
@@ -494,8 +497,8 @@
 
 				} );
 
-			$this->router->middlewareGroup( 'global', [ \Tests\stubs\Middleware\GlobalMiddleware::class ] );
-			$this->router->aliasMiddleware( 'bar', \Tests\stubs\Middleware\BarMiddleware::class );
+			$this->router->middlewareGroup( 'global', [ GlobalMiddleware::class ] );
+			$this->router->aliasMiddleware( 'bar', BarMiddleware::class );
 
 			$response = $this->router->runRoute( $this->request( 'POST', '/bar' ) );
 			$this->seeResponse( 'global_bar', $response );
@@ -515,8 +518,8 @@
 
 				} );
 
-			$this->router->aliasMiddleware( 'foo', \Tests\stubs\Middleware\FooMiddleware::class );
-			$this->router->aliasMiddleware( 'bar', \Tests\stubs\Middleware\BarMiddleware::class );
+			$this->router->aliasMiddleware( 'foo', FooMiddleware::class );
+			$this->router->aliasMiddleware( 'bar', BarMiddleware::class );
 
 			$response = $this->router->runRoute( $this->request( 'GET', '/foo' ) );
 

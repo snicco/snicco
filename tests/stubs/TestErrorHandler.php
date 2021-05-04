@@ -7,7 +7,7 @@
 	use Exception as PhpException;
 	use WPEmerge\Contracts\RequestInterface;
 
-	class IntegrationTestErrorHandler implements ErrorHandlerInterface {
+	class TestErrorHandler implements ErrorHandlerInterface {
 
 		public function register() {
 

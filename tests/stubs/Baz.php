@@ -3,13 +3,13 @@
 
 	namespace Tests\stubs;
 
-	class Foo {
+	class Baz {
 
-		public $foo = 'foo';
+		public $baz = 'baz';
 
 		public function __toString() {
 
-			return $this->foo;
+			return $this->baz;
 
 		}
 

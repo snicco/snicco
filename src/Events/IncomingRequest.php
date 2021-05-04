@@ -14,6 +14,8 @@
 		 */
 		public $request;
 
+		protected $force_route_match = false;
+
 		public function __construct() {
 
 			$this->request = Request::fromGlobals();
@@ -22,6 +24,11 @@
 
 		}
 
+		public function enforceRouteMatch() {
+
+			$this->force_route_match = true;
+
+		}
 
 
 	}

@@ -8,7 +8,7 @@
 	use Psr\Http\Message\ResponseInterface;
 	use Throwable;
 	use WPEmerge\Contracts\ResponsableInterface;
-	use WPEmerge\Contracts\ResponseServiceInterface;
+	use WPEmerge\Contracts\ResponseServiceInterface as ResponseService;
 	use WPEmerge\Contracts\ErrorHandlerInterface as ErrorHandler;
 	use WPEmerge\Events\HeadersSent;
 	use WPEmerge\Events\IncomingAdminRequest;
@@ -23,7 +23,7 @@
 
 		use HoldsMiddlewareDefinitions;
 
-		/** @var ResponseServiceInterface */
+		/** @var ResponseService */
 		private $response_service;
 
 		/** @var \WPEmerge\Routing\Router */
@@ -46,10 +46,14 @@
 		 */
 		private $caught_exception = false;
 
+		private $is_test_mode = false;
+
+		private $is_takeover_mode = false;
+
 
 		public function __construct(
 
-			ResponseServiceInterface $response_service,
+			ResponseService $response_service,
 			Router $router,
 			Container $container,
 			ErrorHandler $error_handler
@@ -65,16 +69,20 @@
 
 		public function handle( IncomingRequest $request_event ) : void {
 
-
 			// whoops
 			$this->error_handler->register();
+
+			if ( $this->forceRouteMatch() ) {
+
+				$request_event->enforceRouteMatch();
+
+			}
 
 			try {
 
 				$this->syncMiddlewareToRouter();
 
 				$this->response = $this->sendRequestThroughRouter( $request_event->request );
-
 
 			}
 
@@ -93,7 +101,8 @@
 
 		/**
 		 * This function needs to be public because for Wordpress Admin
-		 * Pages we have to send the header and body on separate hooks.
+		 * pages we have to send the header and body on separate hooks.
+		 * ( sucks. but it is what it is )
 		 */
 		public function sendBodyDeferred() {
 
@@ -105,6 +114,18 @@
 			}
 
 			$this->sendBody();
+
+		}
+
+		public function runInTestMode() :void {
+
+			$this->is_test_mode = true;
+
+		}
+
+		public function runInTakeoverMode() :void {
+
+			$this->is_takeover_mode = true;
 
 		}
 
@@ -172,17 +193,12 @@
 
 		private function sendRequestThroughRouter( RequestInterface $request ) {
 
-			if ( $this->isStrictMode() ) {
-
-				$request->forceMatch();
-
-			}
 
 			$this->container->instance( RequestInterface::class, $request );
 
 			$pipeline = new Pipeline( $this->container );
 
-			$middleware = $this->withMiddleware() ? $this->middleware_groups['global'] : [];
+			$middleware = $this->withMiddleware() ? $this->middleware_groups['global'] ?? [] : [];
 
 			$response = $pipeline->send( $request )
 			                ->through( $middleware )
@@ -200,28 +216,15 @@
 
 				$this->request = $request;
 
+				if ( $this->is_test_mode ) {
+
+					$this->router->withoutMiddleware();
+
+				}
+
 				return $this->router->runRoute( $request );
 
 			};
-
-		}
-
-		private function withMiddleware() : bool {
-
-			return $this->isStrictMode() && ! $this->skipAllMiddleware();
-
-		}
-
-		private function isStrictMode() : bool {
-
-			return $this->container->make( 'strict.mode' );
-
-
-		}
-
-		private function skipAllMiddleware() : bool {
-
-			return $this->container->offsetExists( 'middleware.disable' );
 
 		}
 
@@ -232,20 +235,42 @@
 
 			$middleware_groups = $this->middleware_groups;
 
-			// Dont run this twice.
-			if ( $this->isStrictMode() ) {
+			// Dont run global middleware in the router again.
+			if ( $this->runGlobalMiddlewareWithoutMatchingRoute() ) {
 
 				unset( $middleware_groups['global'] );
 
 			}
 
 			foreach ( $middleware_groups as $key => $middleware ) {
+
 				$this->router->middlewareGroup( $key, $middleware );
+
 			}
 
 			foreach ( $this->route_middleware_aliases as $key => $middleware ) {
+
 				$this->router->aliasMiddleware( $key, $middleware );
+
 			}
+
+		}
+
+		private function runGlobalMiddlewareWithoutMatchingRoute () : bool {
+
+			return $this->is_takeover_mode;
+
+		}
+
+		private function withMiddleware() : bool {
+
+			return ! $this->is_test_mode && $this->runGlobalMiddlewareWithoutMatchingRoute();
+
+		}
+
+		private function forceRouteMatch() : bool {
+
+			return $this->is_takeover_mode;
 
 		}
 

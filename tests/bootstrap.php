@@ -4,7 +4,6 @@
 	$root_dir = getenv('ROOT_DIR');
 
 
-
 	if ( ! defined('DS') ) {
 
 		define( 'DS',  DIRECTORY_SEPARATOR );
