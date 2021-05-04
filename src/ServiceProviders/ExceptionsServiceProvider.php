@@ -46,11 +46,12 @@
 					'Whoops',
 				] ) );
 
-				$handler->addDataTableCallback( 'Current route', function ( Inspector $inspector ) use ( $container ) {
-
-					return (( new DebugDataProvider() ))->route( $inspector, $container[RequestInterface::class]->route() );
-
-				} );
+				/** @todo fix this. */
+				// $handler->addDataTableCallback( 'Current route', function ( Inspector $inspector ) use ( $container ) {
+				//
+				// 	return (( new DebugDataProvider() ))->route( $inspector, $container[RequestInterface::class]->route() );
+				//
+				// } );
 
 				return $handler;
 			};
