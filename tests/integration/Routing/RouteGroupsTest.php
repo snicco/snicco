@@ -3,17 +3,16 @@
 
 	namespace Tests\integration\Routing;
 
-	use Codeception\TestCase\WPTestCase;
+	use PHPUnit\Framework\TestCase;
 	use Tests\stubs\Conditions\FalseCondition;
 	use Tests\stubs\Conditions\TrueCondition;
 	use Tests\stubs\Conditions\UniqueCondition;
 	use Tests\stubs\Middleware\BarMiddleware;
 	use Tests\stubs\Middleware\BazMiddleware;
 	use Tests\stubs\Middleware\FooMiddleware;
-	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
 
-	class RouteGroupsTest extends WPTestCase {
+	class RouteGroupsTest extends TestCase {
 
 		use SetUpRouter;
 

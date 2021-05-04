@@ -9,6 +9,7 @@
 	use ReflectionClass;
 	use ReflectionFunction;
 	use ReflectionMethod;
+	use WPEmerge\Exceptions\Exception;
 
 	trait ReflectsCallable {
 
@@ -163,9 +164,19 @@
 		 */
 		private function getClass( $class )  {
 
-			return ( $this->classExists($class) ) ? get_class($class) : null;
+			if ( ! $this->classExists($class) ) {
 
+				return null;
 
+			}
+
+			if( is_string($class) ) {
+
+				return $class;
+
+			}
+
+			return get_class($class);
 
 		}
 

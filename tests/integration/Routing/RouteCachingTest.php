@@ -3,7 +3,7 @@
 
 	namespace Tests\integration\Routing;
 
-	use Codeception\TestCase\WPTestCase;
+	use PHPUnit\Framework\TestCase;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\TestRequest;
 	use WPEmerge\Handlers\HandlerFactory;
@@ -13,7 +13,7 @@
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
 
-	class RouteCachingTest extends WPTestCase {
+	class RouteCachingTest extends TestCase {
 
 		/**
 		 * @var \WPEmerge\Routing\Router
@@ -62,7 +62,7 @@
 
 			if ( file_exists( $this->cache_file ) ) {
 
-				$this->unlink( $this->cache_file );
+				unlink( $this->cache_file );
 			}
 
 

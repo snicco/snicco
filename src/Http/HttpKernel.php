@@ -176,15 +176,21 @@
 			}
 
 			if ( is_string( $response ) ) {
+
 				return $this->response_service->output( $response );
+
 			}
 
 			if ( is_array( $response ) ) {
+
 				return $this->response_service->json( $response );
+
 			}
 
 			if ( $response instanceof ResponsableInterface ) {
+
 				return $response->toResponse();
+
 			}
 
 			return $response;

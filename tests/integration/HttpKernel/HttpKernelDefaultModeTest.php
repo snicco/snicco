@@ -3,12 +3,12 @@
 
 	namespace Tests\integration\HttpKernel;
 
-	use Codeception\TestCase\WPTestCase;
+	use PHPUnit\Framework\TestCase;
 	use Tests\stubs\Middleware\GlobalMiddleware;
 	use Tests\stubs\Middleware\WebMiddleware;
 
 
-	class HttpKernelDefaultModeTest extends WPTestCase {
+	class HttpKernelDefaultModeTest extends TestCase {
 
 		use SetUpKernel;
 

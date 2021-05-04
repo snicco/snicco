@@ -20,10 +20,10 @@
 		// see: https://regexr.com/5s533
 		public const double_curly_brackets = '/(?<=\/)(?<opening_bracket>\{)|(?<closing_bracket>\}(?=(\/|\[\/|\]|$)))/';
 
+
 		public function __construct( Route $route ) {
 
 			$this->route = $route;
-
 		}
 
 		/**

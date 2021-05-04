@@ -3,7 +3,7 @@
 
 	namespace Tests\integration\Routing;
 
-	use Codeception\TestCase\WPTestCase;
+	use PHPUnit\Framework\TestCase;
 	use Tests\stubs\Bar;
 	use Tests\stubs\Controllers\Web\ControllerWithDependencies;
 	use Tests\stubs\Controllers\Web\TeamsController;
@@ -11,7 +11,7 @@
 	use Tests\stubs\TestResponse;
 	use Tests\TestRequest;
 
-	class RouteActionDependencyInjectionTest extends WPTestCase {
+	class RouteActionDependencyInjectionTest extends TestCase {
 
 		use SetUpRouter;
 

@@ -3,22 +3,13 @@
 
 	namespace Tests\integration\Routing;
 
-	use Codeception\TestCase\WPTestCase;
 	use PHPUnit\Framework\TestCase;
-	use SniccoAdapter\BaseContainerAdapter;
-	use Tests\stubs\Foo;
 	use Tests\stubs\Middleware\BarMiddleware;
 	use Tests\stubs\Middleware\FooMiddleware;
 	use Tests\stubs\Middleware\GlobalMiddleware;
-	use Tests\TestRequest;
-	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Handlers\HandlerFactory;
-	use WPEmerge\Requests\Request;
 	use WPEmerge\Routing\Conditions\AdminCondition;
 	use WPEmerge\Routing\Conditions\AjaxCondition;
-	use WPEmerge\Routing\ConditionFactory;
 	use WPEmerge\Routing\Conditions\CustomCondition;
 	use WPEmerge\Routing\Conditions\NegateCondition;
 	use WPEmerge\Routing\Conditions\PostIdCondition;
@@ -28,12 +19,8 @@
 	use WPEmerge\Routing\Conditions\PostTypeCondition;
 	use WPEmerge\Routing\Conditions\QueryVarCondition;
 	use WPEmerge\Routing\Conditions\UrlCondition;
-	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
-	use WPEmerge\Routing\RouteCollection;
-	use WPEmerge\Routing\Router;
-	use WPEmerge\Support\Str;
 
-	class RouteAttributesTest extends WPTestCase {
+	class RouteAttributesTest extends TestCase {
 
 		use SetUpRouter;
 
