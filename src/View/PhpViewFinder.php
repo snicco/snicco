@@ -4,7 +4,7 @@
 	namespace WPEmerge\View;
 
 	use WPEmerge\Contracts\ViewFinderInterface;
-	use WPEmerge\Helpers\MixedType;
+	use WPEmerge\Helpers\Path;
 
 
 	class PhpViewFinder implements ViewFinderInterface {
@@ -38,7 +38,7 @@
 		public function setDirectories( array $directories ) :void {
 
 			$this->directories = array_filter( array_map( [
-				MixedType::class,
+				Path::class,
 				'removeTrailingSlash',
 			], $directories ) );
 		}
@@ -80,7 +80,7 @@
 		 */
 		private function resolveFromAbsoluteFilepath( string $view_name ) : string {
 
-			$path = realpath( MixedType::normalizePath( $view_name ) );
+			$path = realpath( Path::normalize( $view_name ) );
 
 			if ( ! empty( $path ) && ! is_file( $path ) ) {
 				$path = '';
@@ -102,7 +102,7 @@
 
 			foreach ( $directories as $directory ) {
 
-				$file = MixedType::normalizePath( $directory . DIRECTORY_SEPARATOR . $view_name );
+				$file = Path::normalize( $directory . DIRECTORY_SEPARATOR . $view_name );
 
 				if ( ! is_file( $file ) ) {
 					// Try adding a .php extension.

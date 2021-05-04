@@ -6,8 +6,9 @@
 	use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Contracts\ViewServiceInterface;
-	use WPEmerge\Helpers\MixedType;
+	use WPEmerge\Helpers\Path;
 	use WPEmerge\Helpers\VariableBag;
+	use WPEmerge\Support\Arr;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
 
 
@@ -77,7 +78,7 @@
 		 */
 		public function make( $views ) : ViewInterface {
 
-			return $this->engine->make( MixedType::toArray( $views ) );
+			return $this->engine->make( Arr::wrap($views) );
 
 		}
 

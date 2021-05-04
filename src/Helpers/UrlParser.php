@@ -9,7 +9,7 @@
 
 		public const default_key = 'id';
 
-		public static function parseModelsFromUrl( string $url_pattern ) {
+		public static function parseModelsFromUrl( string $url_pattern ) : array {
 
 			preg_match_all( '/[^{]+(?=})/', $url_pattern, $matches );
 
@@ -45,13 +45,13 @@
 
 		}
 
-		private static function containsDot( $string ) {
+		private static function containsDot( $string ) : bool {
 
 			return Str::contains( $string, ':' );
 
 		}
 
-		public static function requiredSegments( string $url_pattern ) {
+		public static function requiredSegments( string $url_pattern ) : array {
 
 			preg_match_all( '/[^{]+\w(?=})/', $url_pattern, $matches );
 
@@ -59,7 +59,7 @@
 
 		}
 
-		public static function segments( string $url_pattern ) {
+		public static function segments( string $url_pattern ) : array {
 
 			preg_match_all( '/[^{]+(?=})/', $url_pattern, $matches );
 
@@ -67,14 +67,14 @@
 
 		}
 
-		public static function isDynamic( string $url ) {
+		public static function isDynamic( string $url ) : bool {
 
 			$result = preg_match( '/[^{]+(?=})/', $url, $matches );
 
 			return $result === 1;
 		}
 
-		public static function isStaticUrl( string $url ) {
+		public static function isStaticUrl( string $url ) : bool {
 
 			return ! self::isDynamic( $url );
 		}
@@ -89,7 +89,7 @@
 
 		}
 
-		public static function replaceOptionalMatch( string $url_pattern ) {
+		public static function replaceOptionalMatch( string $url_pattern ) : array {
 
 			// preg_match_all( '/({[^\/{]+[?]})/', $url_pattern, $matches );
 
