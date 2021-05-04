@@ -6,6 +6,7 @@
 	use BetterWpHooks\Dispatchers\WordpressDispatcher;
 	use BetterWpHooks\ListenerFactory;
 	use Codeception\TestCase\WPTestCase;
+	use PHPUnit\Framework\TestCase;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\Middleware\GlobalMiddleware;
 	use Tests\stubs\Middleware\WebMiddleware;
@@ -21,7 +22,7 @@
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
 
-	class HttpKernelTakeoverModeTest extends WPTestCase {
+	class HttpKernelTakeoverModeTest extends TestCase {
 
 		use SetUpKernel;
 

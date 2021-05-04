@@ -3,14 +3,14 @@
 
 	namespace Tests\integration\Routing;
 
-	use Codeception\TestCase\WPTestCase;
+	use PHPUnit\Framework\TestCase;
 	use Tests\stubs\Middleware\BarMiddleware;
 	use Tests\stubs\Middleware\BazMiddleware;
 	use Tests\stubs\Middleware\FooBarMiddleware;
 	use Tests\stubs\Middleware\FooMiddleware;
 	use Tests\TestRequest;
 
-	class RouteMiddlewareTest extends WPTestCase {
+	class RouteMiddlewareTest extends TestCase {
 
 		use SetUpRouter;
 

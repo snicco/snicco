@@ -3,10 +3,10 @@
 
 	namespace Tests\integration\Routing;
 
-	use Codeception\TestCase\WPTestCase;
+	use PHPUnit\Framework\TestCase;
 	use WPEmerge\Requests\Request;
 
-	class RouteSegmentsTest extends WPTestCase {
+	class RouteSegmentsTest extends TestCase {
 
 		use SetUpRouter;
 

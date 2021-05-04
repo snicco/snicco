@@ -3,9 +3,9 @@
 
 	namespace Tests\integration\HttpKernel;
 
-	use Codeception\TestCase\WPTestCase;
+	use PHPUnit\Framework\TestCase;
 
-	class HttpKernelWpHookInteractionsTest extends WPTestCase {
+	class HttpKernelWpHookInteractionsTest extends TestCase {
 
 
 		use SetUpKernel;

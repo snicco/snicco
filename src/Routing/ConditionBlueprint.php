@@ -56,23 +56,6 @@
 
 		}
 
-		public function isNegated() : bool {
-
-			if ( Str::contains( $this->type, self::NEGATES_SIGN ) ) {
-
-				return true;
-
-			}
-
-			if ( Str::contains( $this->type, self::NEGATES_WORD ) ) {
-
-				return true;
-
-			}
-
-			return false;
-
-		}
 
 		public function instance () : ?object {
 

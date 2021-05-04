@@ -3,11 +3,11 @@
 
 	namespace Tests\integration\Routing;
 
-	use Codeception\TestCase\WPTestCase;
+	use PHPUnit\Framework\TestCase;
 	use Tests\stubs\Conditions\FalseCondition;
 	use WPEmerge\Contracts\RequestInterface;
 
-	class RouteConditionsTest extends WPTestCase {
+	class RouteConditionsTest extends TestCase {
 
 
 		use SetUpRouter;

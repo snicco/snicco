@@ -4,6 +4,9 @@
 	namespace Tests\integration\Routing;
 
 	use Codeception\TestCase\WPTestCase;
+	use WPEmerge\Contracts\ConditionInterface;
+	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Contracts\UrlableInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Routing\Conditions\AdminCondition;
 	use WPEmerge\Routing\Conditions\NegateCondition;
@@ -245,11 +248,10 @@
 		/** @test */
 		public function custom_conditions_that_can_be_transformed_take_precedence_over_http_conditions() {
 
-			add_menu_page( 'test', 'test', 'manage_options', 'test' );
 
-			$this->router->get( 'foo' )->name( 'foo_route' )->where( 'admin', 'test' );
+			$this->router->get( 'foo' )->name( 'foo_route' )->where( ConditionWithUrl::class );
 			$url = $this->router->getRouteUrl( 'foo_route' );
-			$this->seeUrl( '/wp-admin/admin.php?page=test', $url );
+			$this->seeUrl( '/foo/bar', $url );
 
 		}
 
@@ -446,5 +448,29 @@
 
 		}
 
+
+	}
+
+
+	class ConditionWithUrl implements UrlableInterface, ConditionInterface {
+
+
+		public function toUrl( $arguments = [] ) {
+
+			return SITE_URL . 'foo/bar';
+
+		}
+
+		public function isSatisfied( RequestInterface $request ) {
+
+			return true;
+
+		}
+
+		public function getArguments( RequestInterface $request ) {
+
+			return [];
+
+		}
 
 	}

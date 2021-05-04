@@ -3,12 +3,12 @@
 
 	namespace Tests\integration\Routing;
 
-	use Codeception\TestCase\WPTestCase;
+	use PHPUnit\Framework\TestCase;
 	use Tests\stubs\Controllers\Admin\AdminControllerWithMiddleware;
 	use Tests\stubs\Middleware\MiddlewareWithDependencies;
 	use Tests\TestRequest;
 
-	class RouteMiddlewareDependencyInjectionTest extends WPTestCase {
+	class RouteMiddlewareDependencyInjectionTest extends TestCase {
 
 		use SetUpRouter;
 
