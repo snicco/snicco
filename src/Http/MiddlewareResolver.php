@@ -5,7 +5,6 @@
 
 	use Contracts\ContainerAdapter;
 
-	use WPEmerge\Traits\HasControllerMiddleware;
 
 	class MiddlewareResolver {
 
@@ -19,7 +18,7 @@
 			$this->container = $container;
 		}
 
-		public function resolveFor( array $callable ) {
+		public function resolveFor( array $callable ) : array {
 
 			[ $class, $method ] = $callable;
 
@@ -27,7 +26,7 @@
 				return [];
 			}
 
-			/** @var HasControllerMiddleware $controller_instance */
+			/** @var \WPEmerge\Http\Controller $controller_instance */
 			$controller_instance = $this->container->make( $class );
 
 			// Dont resolve this controller again when we hit the route.
