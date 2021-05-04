@@ -9,6 +9,8 @@
 	use Tests\stubs\TestErrorHandler;
 	use Tests\stubs\TestResponseService;
 	use Tests\TestRequest;
+	use WPEmerge\Application\ApplicationEvent;
+	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingWebRequest;
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Http\HttpKernel;
@@ -30,6 +32,9 @@
 		/** @var TestResponseService */
 		private $response_service;
 
+		/** @var \Contracts\ContainerAdapter */
+		private $container;
+
 		protected function setUp() : void {
 
 			parent::setUp();
@@ -47,9 +52,13 @@
 					new FastRouteMatcher() )
 			);
 
-			$this->router = $router;
+			$this->router           = $router;
 			$this->response_service = $response_service;
-			$this->kernel = new HttpKernel( $response_service, $router, $container, $error_handler );
+			$this->container        = $container;
+			$this->kernel           = new HttpKernel( $response_service, $router, $container, $error_handler );
+
+			ApplicationEvent::make($this->container);
+			ApplicationEvent::fake();
 
 			$GLOBALS['test'] = [];
 
@@ -67,16 +76,27 @@
 
 			$request_event          = new IncomingWebRequest( 'wordpress.php' );
 			$request_event->request = TestRequest::from( $method, $path );
+			$request_event->request->setType(IncomingWebRequest::class);
 
 			return $request_event;
 
 		}
 
-		private function assertMiddlewareRunTimes(int $times, $class) {
+		private function createIncomingAdminRequest( $method, $path ) : IncomingAdminRequest {
+
+			$request_event          = new IncomingAdminRequest();
+			$request_event->request = TestRequest::from( $method, $path );
+			$request_event->request->setType(IncomingAdminRequest::class);
+
+			return $request_event;
+
+		}
+
+		private function assertMiddlewareRunTimes( int $times, $class ) {
 
 			$this->assertSame(
 				$times, $GLOBALS['test'][ $class::run_times ],
-				'Middleware [' .$class . '] was supposed to run: ' . $times . ' times. Actual: ' .$GLOBALS['test'][ $class::run_times ]
+				'Middleware [' . $class . '] was supposed to run: ' . $times . ' times. Actual: ' . $GLOBALS['test'][ $class::run_times ]
 			);
 
 		}

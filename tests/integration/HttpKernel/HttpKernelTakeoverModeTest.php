@@ -15,6 +15,7 @@
 	use Tests\TestRequest;
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Events\IncomingWebRequest;
+	use WPEmerge\Exceptions\InvalidResponseException;
 	use WPEmerge\Handlers\HandlerFactory;
 	use WPEmerge\Http\HttpKernel;
 	use WPEmerge\Routing\ConditionFactory;
@@ -40,7 +41,19 @@
 
 			] );
 
-			$this->kernel->handle( $this->createIncomingWebRequest( 'GET', 'foo' ) );
+			try {
+
+				$this->kernel->handle( $this->createIncomingWebRequest( 'GET', 'foo' ) );
+				$this->fail('Exception was expected for a non matching route');
+
+			}
+
+			catch (InvalidResponseException $e) {
+
+				//
+
+			}
+
 
 			$this->assertMiddlewareRunTimes( 1, GlobalMiddleware::class );
 			$this->assertMiddlewareRunTimes( 0, WebMiddleware::class );
@@ -66,7 +79,19 @@
 				//
 			} )->middleware( 'web' );
 
-			$this->kernel->handle( $this->createIncomingWebRequest( 'GET', 'foo' ) );
+			try {
+
+				$this->kernel->handle( $this->createIncomingWebRequest( 'GET', 'foo' ) );
+				$this->fail('Exception was expected for a non matching route');
+
+			}
+
+			catch (InvalidResponseException $e) {
+
+				//
+
+			}
+
 
 			$this->assertMiddlewareRunTimes( 1, GlobalMiddleware::class );
 			$this->assertMiddlewareRunTimes( 1, WebMiddleware::class );
@@ -82,12 +107,41 @@
 
 			$this->kernel->runInTakeoverMode();
 
-			$this->kernel->handle($request_event = $this->createIncomingWebRequest('GET', '/bar'));
+			try {
+
+				$this->kernel->handle($request_event = $this->createIncomingWebRequest('GET', '/bar'));
+				$this->fail('Exception was expected for a non matching route');
+
+			}
+
+			catch (InvalidResponseException $e) {
+
+					//
+
+			}
 
 			$this->assertNull($request_event->default());
 
+
+
 		}
 
+		/** @test */
+		public function an_invalid_or_null_response_returned_from_the_handler_will_lead_to_an_exception () {
+
+			$this->router->get( '/foo', function ( TestRequest $request ) {
+				//
+			});
+
+			$this->kernel->runInTakeoverMode();
+
+			$this->expectExceptionMessage('The response by the route action is not valid');
+
+			$this->kernel->handle($this->createIncomingWebRequest('GET', '/bar'));
+
+
+
+		}
 
 	}
 

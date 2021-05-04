@@ -9,6 +9,8 @@
 
 	class TestErrorHandler implements ErrorHandlerInterface {
 
+		const bypass_messsage = 'FORCEDEXCEPTION';
+
 		public function register() {
 
 			//
@@ -26,7 +28,13 @@
 		 */
 		public function getResponse( RequestInterface $request, \Throwable $exception ) {
 
-			throw $exception;
+			if ( $exception->getMessage() !== self::bypass_messsage ) {
+
+				throw $exception;
+
+			}
+
+			return new TestResponse($request);
 
 		}
 

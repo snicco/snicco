@@ -15,6 +15,7 @@
 	use WPEmerge\Events\IncomingRequest;
 	use WPEmerge\Events\BodySent;
 	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Exceptions\InvalidResponseException;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Helpers\Pipeline;
 	use WPEmerge\Traits\HoldsMiddlewareDefinitions;
@@ -57,6 +58,7 @@
 			Router $router,
 			Container $container,
 			ErrorHandler $error_handler
+
 		) {
 
 			$this->response_service = $response_service;
@@ -147,7 +149,6 @@
 
 			}
 
-
 		}
 
 		private function sendHeaders() {
@@ -190,6 +191,14 @@
 			if ( $response instanceof ResponsableInterface ) {
 
 				return $response->toResponse();
+
+			}
+
+			if ( $this->is_takeover_mode ) {
+
+				throw new InvalidResponseException(
+					'The response by the route action is not valid.'
+				);
 
 			}
 

@@ -55,10 +55,10 @@
 
 				'global'   => [
 
-					StartSession::class,
-					SubstituteBindings::class,
-					Flash::class,
-					OldInput::class
+					// StartSession::class,
+					// SubstituteBindings::class,
+					// Flash::class,
+					// OldInput::class
 
 				],
 				'web'      => [],
