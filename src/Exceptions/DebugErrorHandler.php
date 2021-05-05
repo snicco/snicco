@@ -17,17 +17,21 @@
 
 		public function __construct(  RunInterface $whoops ) {
 
-			$this->whoops           = $whoops;
+			$this->whoops = $whoops;
 
 		}
 
 
 		public function register() {
-			// TODO: Implement register() method.
+
+			$this->whoops->register();
+
 		}
 
 		public function unregister() {
-			// TODO: Implement unregister() method.
+
+			$this->whoops->unregister();
+
 		}
 
 		public function transformToResponse( RequestInterface $request, Throwable $exception ) {

@@ -90,7 +90,9 @@
 
 			catch ( Throwable $exception ) {
 
-				$this->response = $this->error_handler->transformToResponse( $request_event->request, $exception );
+				$response = $this->error_handler->transformToResponse( $request_event->request, $exception );
+
+				$this->response = $response;
 				$this->caught_exception = true;
 
 			}
@@ -164,7 +166,8 @@
 
 			$this->response_service->sendBody( $this->response );
 
-			BodySent::dispatchUnless( $this->caught_exception, [ $this->response, $this->request ] );
+			// BodySent::dispatchUnless( $this->caught_exception, [ $this->response, $this->request ] );
+			BodySent::dispatch( [ $this->response, $this->request ] );
 
 		}
 

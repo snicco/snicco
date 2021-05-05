@@ -5,6 +5,7 @@
 
 	use Contracts\ContainerAdapter;
 	use WPEmerge\Application\Application;
+	use WPEmerge\Contracts\ResponseServiceInterface;
 	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Helpers\VariableBag;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
@@ -40,7 +41,7 @@
 		private function responseAliases (Application $app) {
 
 
-			$app->alias( 'response_service', WPEMERGE_RESPONSE_SERVICE_KEY );
+			$app->alias( 'response_service', ResponseServiceInterface::class );
 			$app->alias( 'response', function () use ( $app ) {
 				return call_user_func_array( [ $app->response_service(), 'response' ], func_get_args() );
 			} );

@@ -86,7 +86,7 @@
 			}
 
 			$whoops->appendHandler($pretty_page_handler);
-			$whoops->allowQuit(false);
+			$whoops->allowQuit(true);
 			$whoops->writeToOutput(true);
 
 
