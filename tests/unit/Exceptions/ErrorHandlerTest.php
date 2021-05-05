@@ -153,7 +153,6 @@
 		}
 
 
-
 		private function newErrorHandler(bool $debug = false) :ErrorHandler {
 
 			return new ErrorHandler(new TestResponseService(), null , $debug );

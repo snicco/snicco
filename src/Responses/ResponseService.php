@@ -13,6 +13,7 @@
 
 
 
+	/** @todo Split this class into ResponseSender and ResponseFactory.  */
 	class ResponseService implements ResponseServiceInterface {
 
 		/**

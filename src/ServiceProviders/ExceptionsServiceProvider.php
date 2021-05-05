@@ -39,12 +39,13 @@
 			$container[ PrettyPageHandler::class ] = function ( $container ) {
 
 				$handler = new PrettyPageHandler();
-				$handler->addResourcePath( implode( DIRECTORY_SEPARATOR, [
-					WPEMERGE_DIR,
-					'src',
-					'Exceptions',
-					'Whoops',
-				] ) );
+				// $handler->setEditor('phpstorm');
+				// $handler->addResourcePath( implode( DIRECTORY_SEPARATOR, [
+				// 	WPEMERGE_DIR,
+				// 	'src',
+				// 	'Exceptions',
+				// 	'Whoops',
+				// ] ) );
 
 				/** @todo fix this. */
 				// $handler->addDataTableCallback( 'Current route', function ( Inspector $inspector ) use ( $container ) {
@@ -63,7 +64,8 @@
 				}
 
 				$run = new WhoopsRun();
-				$run->allowQuit( false );
+				$run->allowQuit( true );
+				$run->writeToOutput(true);
 
 				$handler = $container[ PrettyPageHandler::class ];
 
