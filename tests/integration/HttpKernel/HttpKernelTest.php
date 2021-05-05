@@ -94,22 +94,7 @@
 
 		}
 
-		/** @test */
-		public function events_are_not_dispatched_when_an_exception_was_caught () {
 
-
-			$this->router->get( '/foo', function ( TestRequest $request ) {
-
-				throw new \Exception(TestErrorHandler::bypass_messsage);
-
-			} );
-
-			$request = $this->createIncomingWebRequest( 'GET', '/foo' );
-			$this->kernel->handle( $request );
-
-			ApplicationEvent::assertNothingDispatched();
-
-		}
 
 		/** @test */
 		public function the_body_will_never_be_sent_when_the_kernel_did_not_receive_a_response_for_admin_requests() {

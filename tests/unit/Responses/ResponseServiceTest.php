@@ -136,8 +136,8 @@
 			         ->once()
 			         ->ordered();
 
-			$response1 = $this->subject->error( $expected1 );
-			$response2 = $this->subject->error( $expected2 );
+			$response1 = $this->subject->abort( $expected1 );
+			$response2 = $this->subject->abort( $expected2 );
 
 			$this->assertSame( $response, $response1 );
 			$this->assertSame( $response, $response2 );
@@ -175,7 +175,7 @@
 
 			set_current_screen( 'options.php' );
 
-			$this->assertSame( $response, $this->subject->error( $expected ) );
+			$this->assertSame( $response, $this->subject->abort( $expected ) );
 
 			set_current_screen( 'front' );
 		}
@@ -213,7 +213,7 @@
 			set_current_screen( 'options.php' );
 			add_filter( 'wp_doing_ajax', '__return_true' );
 
-			$this->assertSame( $response, $this->subject->error( $expected ) );
+			$this->assertSame( $response, $this->subject->abort( $expected ) );
 
 			remove_filter( 'wp_doing_ajax', '__return_true' );
 			set_current_screen( 'front' );

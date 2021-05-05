@@ -16,7 +16,7 @@
 
 		public function getMiddleware( string $method = null ) : array {
 
-			$middleware = collect( $this->middleware )
+			return collect( $this->middleware )
 				->filter( function ( ControllerMiddleware $middleware ) use ( $method ) {
 
 					return $middleware->appliesTo( $method );
@@ -29,8 +29,6 @@
 				} )
 				->values()
 				->all();
-
-			return $middleware;
 
 
 		}

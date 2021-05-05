@@ -49,7 +49,7 @@
 		 *
 		 * @return ResponseInterface
 		 */
-		public function back( string $fallback = '', int $status = 302 ) : ResponseInterface {
+		public function back( string $fallback = null, int $status = 302 ) : ResponseInterface {
 
 			$url = $this->request->getHeaderLine( 'Referer' );
 

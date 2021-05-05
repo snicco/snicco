@@ -90,10 +90,10 @@
 
 			catch ( Throwable $exception ) {
 
-				$response = $this->error_handler->transformToResponse( $request_event->request, $exception );
+				$this->response = $this->error_handler->transformToResponse(
+					$request_event->request, $exception
+				);
 
-				$this->response = $response;
-				$this->caught_exception = true;
 
 			}
 
@@ -157,7 +157,7 @@
 
 			$this->response_service->sendHeaders( $this->response );
 
-			HeadersSent::dispatchUnless( $this->caught_exception , [ $this->response, $this->request ] );
+			HeadersSent::dispatch( [ $this->response, $this->request ] );
 
 
 		}
@@ -166,11 +166,11 @@
 
 			$this->response_service->sendBody( $this->response );
 
-			// BodySent::dispatchUnless( $this->caught_exception, [ $this->response, $this->request ] );
 			BodySent::dispatch( [ $this->response, $this->request ] );
 
 		}
 
+		/** @todo handle the case where a route matched but invalid response was returned */
 		private function prepareResponse( $response ) {
 
 			if ( $response instanceof ResponseInterface ) {
