@@ -9,7 +9,7 @@
 	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Helpers\VariableBag;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
-	use WPEmerge\ViewComposers\ViewComposerFactory;
+	use WPEmerge\Factories\ViewComposerFactory;
 
 	class AliasServiceProvider implements ServiceProviderInterface {
 

@@ -41,7 +41,6 @@
 			] );
 
 
-			/** @todo User Whoops as seperate Debug Handler but always inside the HttpKernel flow  */
 			$container->singleton(ErrorHandlerInterface::class, function ($container) {
 
 				$ajax = Request::fromGlobals()->isAjax();
@@ -56,13 +55,13 @@
 			// $container[ PrettyPageHandler::class ] = function ( $container ) {
 			//
 			// 	$handler = new PrettyPageHandler();
-			// 	// $handler->setEditor('phpstorm');
-			// 	// $handler->addResourcePath( implode( DIRECTORY_SEPARATOR, [
-			// 	// 	WPEMERGE_DIR,
-			// 	// 	'src',
-			// 	// 	'Exceptions',
-			// 	// 	'Whoops',
-			// 	// ] ) );
+			// 	$handler->setEditor('phpstorm');
+			// 	$handler->addResourcePath( implode( DIRECTORY_SEPARATOR, [
+			// 		WPEMERGE_DIR,
+			// 		'src',
+			// 		'Exceptions',
+			// 		'Whoops',
+			// 	] ) );
 			//
 			// 	/** @todo fix this. */
 			// 	// $handler->addDataTableCallback( 'Current route', function ( Inspector $inspector ) use ( $container ) {
@@ -73,7 +72,7 @@
 			// 	return $handler;
 			//
 			// };
-
+			//
 			// $container[ WhoopsRun::class ] = function ( $container ) {
 			//
 			// 	if ( ! class_exists( WhoopsRun::class ) ) {

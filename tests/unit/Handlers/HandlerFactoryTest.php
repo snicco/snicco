@@ -7,7 +7,7 @@
 	use Tests\stubs\Controllers\Web\WebController;
 	use WPEmerge\Handlers\ClosureAction;
 	use WPEmerge\Handlers\ControllerAction;
-	use WPEmerge\Handlers\HandlerFactory;
+	use WPEmerge\Factories\HandlerFactory;
 	use PHPUnit\Framework\TestCase;
 
 	class HandlerFactoryTest extends TestCase {

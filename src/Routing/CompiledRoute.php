@@ -8,7 +8,8 @@
 	use Opis\Closure\SerializableClosure;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\RouteCondition;
-	use WPEmerge\Handlers\HandlerFactory;
+	use WPEmerge\Factories\ConditionFactory;
+	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Helpers\RouteSignatureParameters;
 
 	class CompiledRoute implements RouteCondition {

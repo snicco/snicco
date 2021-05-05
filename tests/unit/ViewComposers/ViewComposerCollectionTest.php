@@ -10,13 +10,13 @@
 	use WPEmerge\Support\WPEmgereArr;
 	use WPEmerge\View\PhpViewFinder;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
-	use WPEmerge\ViewComposers\ViewComposerFactory;
+	use WPEmerge\Factories\ViewComposerFactory;
 
 	class ViewComposerCollectionTest extends TestCase {
 
 
 		/**
-		 * @var \WPEmerge\ViewComposers\ViewComposerFactory
+		 * @var \WPEmerge\Factories\ViewComposerFactory
 		 */
 		private $factory;
 

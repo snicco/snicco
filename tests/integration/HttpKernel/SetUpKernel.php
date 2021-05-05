@@ -12,9 +12,9 @@
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingWebRequest;
-	use WPEmerge\Handlers\HandlerFactory;
+	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Http\HttpKernel;
-	use WPEmerge\Routing\ConditionFactory;
+	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;

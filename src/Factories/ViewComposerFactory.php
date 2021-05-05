@@ -1,10 +1,11 @@
 <?php
 
 
-	namespace WPEmerge\ViewComposers;
+	namespace WPEmerge\Factories;
 
 	use WPEmerge\Contracts\Handler;
-	use WPEmerge\AbstractFactory;
+	use WPEmerge\Factories\AbstractFactory;
+	use WPEmerge\ViewComposers\ViewComposer;
 
 	class ViewComposerFactory extends AbstractFactory {
 

@@ -6,8 +6,8 @@
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\TestResponse;
 	use Tests\TestRequest;
-	use WPEmerge\Handlers\HandlerFactory;
-	use WPEmerge\Routing\ConditionFactory;
+	use WPEmerge\Factories\HandlerFactory;
+	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Routing\Conditions\AdminCondition;
 	use WPEmerge\Routing\Conditions\AjaxCondition;
 	use WPEmerge\Routing\Conditions\CustomCondition;

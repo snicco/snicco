@@ -8,7 +8,7 @@
 	use Tests\stubs\Foo;
 	use WPEmerge\Contracts\RequestInterface as Request;
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Handlers\HandlerFactory;
+	use WPEmerge\Factories\HandlerFactory;
 	use Mockery as m;
 
 	class ControllerTest extends TestCase {

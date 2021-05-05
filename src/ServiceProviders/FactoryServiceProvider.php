@@ -4,9 +4,9 @@
 	namespace WPEmerge\ServiceProviders;
 
 	use Contracts\ContainerAdapter;
-	use WPEmerge\AbstractFactory;
-	use WPEmerge\Handlers\HandlerFactory;
-	use WPEmerge\ViewComposers\ViewComposerFactory;
+	use WPEmerge\Factories\AbstractFactory;
+	use WPEmerge\Factories\HandlerFactory;
+	use WPEmerge\Factories\ViewComposerFactory;
 
 	class FactoryServiceProvider implements \WPEmerge\Contracts\ServiceProviderInterface {
 

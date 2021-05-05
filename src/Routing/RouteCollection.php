@@ -7,7 +7,8 @@
 	use FastRoute\RouteCollector;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\RouteMatcher;
-	use WPEmerge\Handlers\HandlerFactory;
+	use WPEmerge\Factories\ConditionFactory;
+	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Helpers\UrlParser;
 	use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
 	use WPEmerge\Support\Arr;

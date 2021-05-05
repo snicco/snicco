@@ -7,7 +7,8 @@
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\RouteCondition;
 	use WPEmerge\Contracts\SetsRouteAttributes;
-	use WPEmerge\Handlers\HandlerFactory;
+	use WPEmerge\Factories\ConditionFactory;
+	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Helpers\RouteSignatureParameters;
 	use WPEmerge\Helpers\Url;
 	use WPEmerge\Helpers\UrlParser;
