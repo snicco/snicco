@@ -56,9 +56,9 @@
 
 				return call_user_func_array( [ $app->response_service(), 'redirect' ], func_get_args() );
 			} );
-			$app->alias( 'error', function () use ( $app ) {
+			$app->alias( 'abort', function () use ( $app ) {
 
-				return call_user_func_array( [ $app->response_service(), 'error' ], func_get_args() );
+				return call_user_func_array( [ $app->response_service(), 'abort' ], func_get_args() );
 			} );
 
 		}
