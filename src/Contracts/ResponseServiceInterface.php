@@ -13,10 +13,11 @@
 		 * Send a request's body to the client.
 		 *
 		 * @param  ResponseInterface $response
-		 * @param  integer           $chunk_size
+		 * @param  integer  $chunk_size
+		 *
 		 * @return void
 		 */
-		public function sendBody( ResponseInterface $response, $chunk_size = 4096 );
+		public function sendBody( ResponseInterface $response, int $chunk_size = 4096 );
 
 		/**
 		 * Send a request's headers to the client.
@@ -41,7 +42,7 @@
 		 *
 		 * @return ResponseInterface
 		 */
-		public function output( string $output );
+		public function output( string $output ) : ResponseInterface;
 
 		/**
 		 * Get a cloned response, json encoding the passed data as the body.
@@ -50,16 +51,24 @@
 		 *
 		 * @return ResponseInterface
 		 */
-		public function json( $data );
+		public function json( $data ) : ResponseInterface;
 
 		/**
+		 *
 		 * Get a cloned response, with location and status headers.
 		 *
-		 * @param  RequestInterface|null  $request
-		 *
-		 * @return RedirectResponse
 		 */
-		public function redirect( RequestInterface $request = null );
+		public function redirect( ?RequestInterface $request ) : RedirectResponse;
+
+		/**
+		 *
+		 * Abort and try to render an appropriate view
+		 *
+		 * @param  int  $status_code
+		 *
+		 * @return \Psr\Http\Message\ResponseInterface
+		 */
+		public function abort( int $status_code ) :ResponseInterface;
 
 
 

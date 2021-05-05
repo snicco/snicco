@@ -52,8 +52,8 @@
 				// 	return (( new DebugDataProvider() ))->route( $inspector, $container[RequestInterface::class]->route() );
 				//
 				// } );
-
 				return $handler;
+
 			};
 
 			$container[ WhoopsRun::class ] = function ( $container ) {

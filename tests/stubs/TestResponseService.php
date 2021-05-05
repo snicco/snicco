@@ -3,6 +3,8 @@
 
 	namespace Tests\stubs;
 
+	use GuzzleHttp\Psr7\Response;
+	use GuzzleHttp\Psr7\Utils;
 	use Psr\Http\Message\ResponseInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ResponseServiceInterface;
@@ -17,7 +19,8 @@
 		public $header_response;
 
 
-		public function sendBody( ResponseInterface $response, $chunk_size = 4096 ) {
+
+		public function sendBody( ResponseInterface $response, int $chunk_size = 4096 ) {
 
 			$this->body_response = $response;
 
@@ -33,16 +36,30 @@
 			// Nothing
 		}
 
-		public function output( string $output ) {
+		public function output( string $output ) :ResponseInterface{
+
+			$response = new Response();
+			return $response->withBody( Utils::streamFor( $output ) );
+
+		}
+
+		/** @noinspection PhpIncompatibleReturnTypeInspection */
+		public function json( $data ) :ResponseInterface {
+
+			return ( new Response() )
+				->withHeader( 'Content-Type', 'application/json' )
+				->withBody( Utils::streamFor( json_encode( $data ) ) );
+
+		}
+
+		public function redirect( ?RequestInterface $request ) :RedirectResponse{
 			// Nothing
 		}
 
-		public function json( $data ) {
-			// Nothing
-		}
+		public function abort( int $status_code ) : ResponseInterface {
 
-		public function redirect( RequestInterface $request = null ) {
-			// Nothing
+			return (new Response())->withStatus($status_code);
+
 		}
 
 	}

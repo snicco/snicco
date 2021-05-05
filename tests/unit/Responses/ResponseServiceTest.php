@@ -99,7 +99,7 @@
 		}
 
 		/**
-		 * @covers ::error
+		 * @covers ::abort
 		 */
 		public function testError() {
 
@@ -144,7 +144,7 @@
 		}
 
 		/**
-		 * @covers ::error
+		 * @covers ::abort
 		 */
 		public function testError_Admin_AdminTemplate() {
 
@@ -181,7 +181,7 @@
 		}
 
 		/**
-		 * @covers ::error
+		 * @covers ::abort
 		 */
 		public function testError_Ajax_AjaxTemplate() {
 

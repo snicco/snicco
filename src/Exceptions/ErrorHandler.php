@@ -1,54 +1,34 @@
-<?php
+<?php /** @noinspection PhpMultipleClassDeclarationsInspection */
 
 
 	namespace WPEmerge\Exceptions;
 
-	use Exception as PhpException;
 	use Psr\Http\Message\ResponseInterface;
-	use Whoops\RunInterface;
+	use Throwable;
+	use Whoops\RunInterface as Whoops;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Responses\ResponseService;
-	use WPEmerge\Support\WPEmgereArr;
+	use WPEmerge\Contracts\ResponseServiceInterface as ResponseService;
+	use WPEmerge\Responses\RedirectResponse;
+	use WPEmerge\Support\Arr;
+	use WPEmerge\Helpers\Url;
 
 	class ErrorHandler implements ErrorHandlerInterface {
 
-		/**
-		 * Response service.
-		 *
-		 * @var ResponseService
-		 */
-		protected $response_service = null;
 
-		/**
-		 * Pretty handler.
-		 *
-		 * @var RunInterface|null
-		 */
-		protected $whoops = null;
+		private $response_service;
 
-		/**
-		 * Whether debug mode is enabled.
-		 *
-		 * @var boolean
-		 */
-		protected $debug = false;
+		private $whoops;
 
-		/**
-		 * Constructor.
-		 *
-		 *
-		 * @param  ResponseService  $response_service
-		 * @param  RunInterface|null  $whoops
-		 * @param  boolean  $debug
-		 */
-		public function __construct( $response_service, $whoops, $debug = false ) {
+		private $debug;
+
+		public function __construct( ResponseService $response_service, ?Whoops $whoops, $debug = false ) {
 
 			$this->response_service = $response_service;
 			$this->whoops           = $whoops;
 			$this->debug            = $debug;
-		}
 
+		}
 
 		public function register() {
 
@@ -57,7 +37,6 @@
 			}
 		}
 
-
 		public function unregister() {
 
 			if ( $this->whoops !== null ) {
@@ -65,100 +44,105 @@
 			}
 		}
 
-		/**
-		 * Convert an exception to a ResponseInterface instance if possible.
-		 *
-		 * @param  PhpException  $exception
-		 *
-		 * @return ResponseInterface|false
-		 */
-		protected function toResponse( \Throwable $exception ) {
+		public function transformToResponse( RequestInterface $request, Throwable $exception ) {
 
-			if ( $exception instanceof InvalidCsrfTokenException ) {
-				wp_nonce_ays( '' );
-			}
-
-			if ( $exception instanceof NotFoundException ) {
-				return $this->response_service->error( 404 );
-			}
-
-			return false;
-		}
-
-		/**
-		 * Convert an exception to a debug ResponseInterface instance if possible.
-		 *
-		 * @param  RequestInterface  $request
-		 * @param  PhpException  $exception
-		 *
-		 * @return ResponseInterface
-		 * @throws PhpException
-		 */
-		protected function toDebugResponse( RequestInterface $request, \Throwable $exception ) {
-
-			if ( $request->isAjax() ) {
-
-				return $this->response_service->json( [
-					'message'   => $exception->getMessage(),
-					'exception' => get_class( $exception ),
-					'file'      => $exception->getFile(),
-					'line'      => $exception->getLine(),
-					'trace'     => array_map( function ( $trace ) {
-
-						return WPEmgereArr::except( $trace, [ 'args' ] );
-					}, $exception->getTrace() ),
-				] )->withStatus( 500 );
-			}
-
-			if ( $this->whoops !== null ) {
-				return $this->toPrettyErrorResponse( $exception );
-			}
-
-			throw $exception;
-		}
-
-		/**
-		 * Convert an exception to a pretty error response.
-		 *
-		 *
-		 * @param  PhpException  $exception
-		 *
-		 * @return ResponseInterface
-		 */
-		protected function toPrettyErrorResponse( $exception ) : ResponseInterface {
-
-			$method = RunInterface::EXCEPTION_HANDLER;
-			ob_start();
-			$this->whoops->$method( $exception );
-			$response = ob_get_clean();
-
-			return $this->response_service->output( $response )->withStatus( 500 );
-		}
-
-		/**
-		 * @throws PhpException
-		 */
-		public function getResponse( RequestInterface $request, \Throwable $exception ) {
-
-			$response = $this->toResponse( $exception );
-
-			if ( $response !== false ) {
+			if ( $response = $this->toResponse( $request, $exception ) ) {
 
 				return $response;
 
 			}
 
 			if ( ! defined( 'TESTS_DIR' ) ) {
-				// Only log errors if we are not running the WP Emerge test suite.
+				// Only log errors if we are not running the test suite.
 				error_log( $exception );
 
 			}
 
-			if ( ! $this->debug ) {
-				return $this->response_service->error( 500 );
+			if ( $this->debug ) {
+
+				return $this->toDebugResponse( $request, $exception );
+
 			}
 
-			return $this->toDebugResponse( $request, $exception );
+			return $this->response_service->abort( 500 );
+
+
 		}
+
+		private function toResponse(  RequestInterface $request , Throwable $exception ) {
+
+			if ( $exception instanceof InvalidCsrfTokenException ) {
+				wp_nonce_ays( '' );
+			}
+
+			if ( $exception instanceof NotFoundException ) {
+
+				return $this->response_service->abort( 404 );
+
+			}
+
+			if ( $exception instanceof AuthorizationException ) {
+
+				$url  = $exception->redirect_to ?? $request->getHeaderLine( 'Referer' );;
+
+				return ( new RedirectResponse($request))->back( Url::addTrailing($url) );
+
+			}
+
+		}
+
+		private function toDebugResponse( RequestInterface $request, Throwable $exception ) : ResponseInterface {
+
+			if ( $request->isAjax() ) {
+
+				return $this->createAjaxDebugResponse( $exception );
+
+			}
+
+			if ( $this->whoops ) {
+
+				return $this->toWhoopsResponse( $exception );
+
+			}
+
+			throw $exception;
+
+
+		}
+
+		private function createAjaxDebugResponse( Throwable $e ) : ResponseInterface {
+
+			$trace = collect( $e->getTrace() )->map( function ( $trace ) {
+
+				return Arr::except( $trace, 'args' );
+
+			} );
+
+			$response = $this->response_service->json( [
+
+				'message'   => $e->getMessage(),
+				'exception' => get_class( $e ),
+				'file'      => $e->getFile(),
+				'line'      => $e->getLine(),
+				'trace'     => $trace->all(),
+
+			] );
+
+			return $response->withStatus( 500 );
+
+		}
+
+		private function toWhoopsResponse( Throwable $exception ) : ResponseInterface {
+
+			$method = Whoops::EXCEPTION_HANDLER;
+			ob_start();
+			$this->whoops->$method( $exception );
+			$response = ob_get_clean();
+
+			return $this->response_service->output( $response )
+			                              ->withStatus( 500 );
+
+		}
+
 
 	}
