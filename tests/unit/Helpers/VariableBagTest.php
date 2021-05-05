@@ -3,7 +3,7 @@
 
 	namespace Tests\unit\Helpers;
 
-	use WPEmerge\Helpers\VariableBag;
+	use WPEmerge\Support\VariableBag;
 	use PHPUnit\Framework\TestCase;
 
 	class VariableBagTest extends TestCase {

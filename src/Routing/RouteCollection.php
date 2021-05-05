@@ -9,7 +9,7 @@
 	use WPEmerge\Contracts\RouteMatcher;
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Factories\HandlerFactory;
-	use WPEmerge\Helpers\UrlParser;
+	use WPEmerge\Support\UrlParser;
 	use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
 	use WPEmerge\Support\Arr;
 

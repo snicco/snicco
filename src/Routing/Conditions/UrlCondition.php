@@ -6,9 +6,9 @@
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\UrlableInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
-	use WPEmerge\Helpers\Url as UrlUtility;
+	use WPEmerge\Support\Url as UrlUtility;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Helpers\UrlParser;
+	use WPEmerge\Support\UrlParser;
 	use WPEmerge\Support\WPEmgereArr;
 
 	/**

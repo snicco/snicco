@@ -12,12 +12,12 @@
 
 	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Contracts\ViewFinderInterface;
-	use WPEmerge\Helpers\Path;
+	use WPEmerge\Support\Path;
 	use WPEmerge\Traits\ExtendsConfig;
 	use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\View\PhpViewFinder;
 	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Helpers\VariableBag;
+	use WPEmerge\Support\VariableBag;
 	use WPEmerge\View\ViewService;
 
 	use WPEmerge\ViewComposers\ViewComposerCollection;

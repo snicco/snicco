@@ -4,7 +4,7 @@
 	namespace WPEmerge\View;
 
 	use WPEmerge\Contracts\ViewFinderInterface;
-	use WPEmerge\Helpers\Path;
+	use WPEmerge\Support\Path;
 
 
 	class PhpViewFinder implements ViewFinderInterface {

@@ -1,9 +1,11 @@
 <?php
 
 
-	namespace WPEmerge\Helpers;
+	namespace WPEmerge\Support;
 
 	use WPEmerge\Support\Str;
+
+	use function collect;
 
 	class UrlParser {
 
@@ -91,7 +93,6 @@
 
 		public static function replaceOptionalMatch( string $url_pattern ) : array {
 
-			// preg_match_all( '/({[^\/{]+[?]})/', $url_pattern, $matches );
 
 			preg_match_all( '/(\/{[^\/{]+[?]})/', $url_pattern, $matches );
 

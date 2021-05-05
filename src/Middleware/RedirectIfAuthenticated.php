@@ -6,7 +6,7 @@
 	use Closure;
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Helpers\Url;
+	use WPEmerge\Support\Url;
 	use WPEmerge\Responses\RedirectResponse;
 
 

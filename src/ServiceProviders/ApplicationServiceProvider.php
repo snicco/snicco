@@ -14,7 +14,7 @@
 	use WPEmerge\Application\GenericFactory;
 	use WPEmerge\Contracts\RouteModelResolver;
 	use WPEmerge\Contracts\ServiceProviderInterface;
-	use WPEmerge\Helpers\Path;
+	use WPEmerge\Support\Path;
 	use WPEmerge\Traits\ExtendsConfig;
 	use WPEmerge\WpdbRouteModelResolver;
 

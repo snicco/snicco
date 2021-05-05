@@ -14,7 +14,7 @@
 	use WPEmerge\Responses\ResponseService;
 	use WPEmerge\Routing\RouteBlueprint;
 	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Helpers\VariableBag;
+	use WPEmerge\Support\VariableBag;
 	use WPEmerge\View\ViewService;
 
 	/**

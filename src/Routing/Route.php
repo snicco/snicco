@@ -9,9 +9,9 @@
 	use WPEmerge\Contracts\SetsRouteAttributes;
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Factories\HandlerFactory;
-	use WPEmerge\Helpers\RouteSignatureParameters;
-	use WPEmerge\Helpers\Url;
-	use WPEmerge\Helpers\UrlParser;
+	use WPEmerge\Routing\RouteSignatureParameters;
+	use WPEmerge\Support\Url;
+	use WPEmerge\Support\UrlParser;
 	use WPEmerge\Support\Arr;
 	use WPEmerge\Support\Str;
 	use WPEmerge\Traits\SetRouteAttributes;

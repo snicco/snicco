@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmerge\Helpers;
+	namespace WPEmerge\Support;
 
 
 	class Url {

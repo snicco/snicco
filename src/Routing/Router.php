@@ -7,8 +7,8 @@
 	use Contracts\ContainerAdapter;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Helpers\Pipeline;
-	use WPEmerge\Helpers\Url;
+	use WPEmerge\Support\Pipeline;
+	use WPEmerge\Support\Url;
 	use WPEmerge\Traits\GathersMiddleware;
 	use WPEmerge\Traits\HoldsRouteBlueprint;
 

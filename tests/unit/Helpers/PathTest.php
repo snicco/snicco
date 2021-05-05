@@ -4,7 +4,7 @@
 	namespace Tests\unit\Helpers;
 
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Helpers\Path;
+	use WPEmerge\Support\Path;
 
 
 	class PathTest extends TestCase {

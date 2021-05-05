@@ -3,7 +3,7 @@
 
 	namespace WPEmerge\Routing;
 
-	use WPEmerge\Helpers\Url;
+	use WPEmerge\Support\Url;
 	use WPEmerge\Support\Arr;
 
 	class RouteGroup {

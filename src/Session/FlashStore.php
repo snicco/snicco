@@ -6,7 +6,7 @@
 
 	use ArrayAccess;
 	use WPEmerge\Exceptions\ConfigurationException;
-	use WPEmerge\Helpers\Path;
+	use WPEmerge\Support\Path;
 	use WPEmerge\Support\Arr;
 	use WPEmerge\Support\WPEmgereArr;
 
