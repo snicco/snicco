@@ -8,7 +8,6 @@
 	use Whoops\Run;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Contracts\ResponseServiceInterface;
-	use WPEmerge\Exceptions\AjaxDebugErrorHandler;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Exceptions\DebugErrorHandler;
 	use WPEmerge\Exceptions\ProductionErrorHandler;
@@ -49,6 +48,7 @@
 			$this->is_debug = $is_debug;
 			$this->is_ajax = $is_ajax;
 			$this->code_editor = $code_editor;
+
 		}
 
 		public function create (ResponseServiceInterface $response_service) :ErrorHandlerInterface {
@@ -62,6 +62,7 @@
 			$whoops = new Run();
 			$pretty_page_handler = new PrettyPageHandler();
 			$pretty_page_handler->handleUnconditionally(true);
+
 
 			if ( $this->is_ajax ) {
 
@@ -86,11 +87,11 @@
 			}
 
 			$whoops->appendHandler($pretty_page_handler);
-			$whoops->allowQuit(true);
-			$whoops->writeToOutput(true);
+			$whoops->allowQuit(false);
+			$whoops->writeToOutput(false);
 
 
-			return new DebugErrorHandler($whoops);
+			return new DebugErrorHandler($whoops, $this->is_ajax);
 
 		}
 

@@ -4,14 +4,14 @@
 	namespace Tests\unit\Exceptions;
 
 
+	use Codeception\TestCase\WPTestCase;
 	use Exception;
-	use PHPUnit\Framework\TestCase;
 	use Tests\stubs\TestResponseService;
 	use Tests\TestRequest;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Factories\ExceptionHandlerFactory;
 
-	class DebugErrorHandlerTest extends TestCase {
+	class DebugErrorHandlerTest extends WPTestCase {
 
 
 		/** @test */
@@ -22,12 +22,11 @@
 
 			$exception = new Exception('Whoops Exception');
 
-			ob_start();
-			$handler->transformToResponse( $this->createRequest(), $exception );
-			$output = ob_get_clean();
+			$response = $handler->transformToResponse( $this->createRequest(), $exception );
 
-
-			$this->assertStringContainsString('Whoops Exception', $output);
+			$this->assertStringContainsString('Whoops Exception', $response->getBody()->read(999));
+			$this->assertSame(500, $response->getStatusCode());
+			$this->assertContains('text/html', $response->getHeader('Content-Type'));
 
 
 		}
@@ -37,15 +36,14 @@
 
 			$handler = $this->newErrorHandler(TRUE);
 
-			$exception = new Exception('Whoops Exception');
+			$exception = new Exception('Whoops Ajax Exception');
 
-			ob_start();
-			$handler->transformToResponse( $this->createRequest(), $exception );
-			$output = ob_get_clean();
+			$response = $handler->transformToResponse( $this->createRequest(), $exception );
 
-			$output = json_decode( $output, true )['error'];
-			$this->assertArrayHasKey( 'type', $output );
-			$this->assertArrayHasKey( 'message', $output );
+
+			$output = json_decode( $response->getBody(), true )['error'];
+			$this->assertSame( 'Exception', $output['type'] );
+			$this->assertSame( 'Whoops Ajax Exception', $output['message'] );
 			$this->assertArrayHasKey( 'code', $output );
 			$this->assertArrayHasKey( 'trace', $output );
 			$this->assertArrayHasKey( 'file', $output );
