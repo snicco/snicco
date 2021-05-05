@@ -5,10 +5,7 @@
 
 	use ArrayAccess;
 
-	/**
-	 * A collection of tools dealing with arrays
-	 *
-	 */
+	/** @todo Slowly replace this class with \Arr */
 	class WPEmgereArr  {
 
 		/**

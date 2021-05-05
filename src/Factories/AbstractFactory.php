@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmerge;
+	namespace WPEmerge\Factories;
 
 	use Contracts\ContainerAdapter;
 	use Illuminate\Support\Reflector;

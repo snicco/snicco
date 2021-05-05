@@ -1,13 +1,15 @@
 <?php
 
 
-	namespace WPEmerge\Handlers;
+	namespace WPEmerge\Factories;
 
 	use Closure;
 	use Illuminate\Support\Reflector;
-	use WPEmerge\AbstractFactory;
+	use WPEmerge\Factories\AbstractFactory;
 	use WPEmerge\Contracts\Handler;
 	use WPEmerge\Contracts\RouteAction;
+	use WPEmerge\Handlers\ClosureAction;
+	use WPEmerge\Handlers\ControllerAction;
 	use WPEmerge\Http\MiddlewareResolver;
 	use WPEmerge\Traits\ReflectsCallable;
 

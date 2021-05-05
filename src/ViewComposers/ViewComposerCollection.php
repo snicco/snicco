@@ -7,6 +7,7 @@
 	use WPEmerge\Contracts\ViewComposer;
 	use WPEmerge\Contracts\ViewFinderInterface;
 	use WPEmerge\Contracts\ViewInterface;
+	use WPEmerge\Factories\ViewComposerFactory;
 
 	class ViewComposerCollection implements ViewComposer {
 
@@ -16,7 +17,7 @@
 		private $composers;
 
 		/**
-		 * @var \WPEmerge\ViewComposers\ViewComposerFactory
+		 * @var \WPEmerge\Factories\ViewComposerFactory
 		 */
 		private $composer_factory;
 		/**

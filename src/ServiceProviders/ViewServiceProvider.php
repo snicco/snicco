@@ -21,7 +21,7 @@
 	use WPEmerge\View\ViewService;
 
 	use WPEmerge\ViewComposers\ViewComposerCollection;
-	use WPEmerge\ViewComposers\ViewComposerFactory;
+	use WPEmerge\Factories\ViewComposerFactory;
 
 	use function get_stylesheet_directory;
 	use function get_template_directory;

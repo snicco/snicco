@@ -9,10 +9,10 @@
 	use Tests\stubs\ViewComposers\FooComposer;
 	use WPEmerge\Contracts\ViewComposer;
 	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Handlers\HandlerFactory;
+	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\View\PhpView;
 	use WPEmerge\View\PhpViewEngine;
-	use WPEmerge\ViewComposers\ViewComposerFactory;
+	use WPEmerge\Factories\ViewComposerFactory;
 
 	class ViewComposerFactoryTest extends TestCase {
 

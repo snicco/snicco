@@ -6,8 +6,8 @@
 	use PHPUnit\Framework\TestCase;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\TestRequest;
-	use WPEmerge\Handlers\HandlerFactory;
-	use WPEmerge\Routing\ConditionFactory;
+	use WPEmerge\Factories\HandlerFactory;
+	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;

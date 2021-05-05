@@ -16,9 +16,9 @@
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Events\IncomingWebRequest;
 	use WPEmerge\Exceptions\InvalidResponseException;
-	use WPEmerge\Handlers\HandlerFactory;
+	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Http\HttpKernel;
-	use WPEmerge\Routing\ConditionFactory;
+	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;

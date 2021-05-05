@@ -6,11 +6,11 @@
 	use WPEmerge\Contracts\RouteMatcher;
 	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
-	use WPEmerge\Handlers\HandlerFactory;
+	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
 	use WPEmerge\Routing\Conditions\AdminCondition;
 	use WPEmerge\Routing\Conditions\AjaxCondition;
-	use WPEmerge\Routing\ConditionFactory;
+	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Routing\Conditions\CustomCondition;
 	use WPEmerge\Routing\Conditions\NegateCondition;
 	use WPEmerge\Routing\Conditions\PostIdCondition;

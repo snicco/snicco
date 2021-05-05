@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmerge\Routing;
+	namespace WPEmerge\Factories;
 
 	use Closure;
 	use Contracts\ContainerAdapter;
@@ -12,6 +12,7 @@
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\RouteCondition;
 	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\Routing\ConditionBlueprint;
 	use WPEmerge\Routing\Conditions\CustomCondition;
 	use WPEmerge\Routing\Conditions\NegateCondition;
 	use WPEmerge\Routing\Conditions\UrlCondition;
