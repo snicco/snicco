@@ -1,10 +1,9 @@
 <?php
 
 
-	namespace WPEmerge\Helpers;
+	namespace WPEmerge\Routing;
 
 	use Illuminate\Support\Reflector;
-	use WPEmerge\Support\Str;
 	use ReflectionFunction;
 	use ReflectionMethod;
 

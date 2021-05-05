@@ -11,7 +11,7 @@
 	use WPEmerge\Contracts\ResponseServiceInterface as ResponseService;
 	use WPEmerge\Responses\RedirectResponse;
 	use WPEmerge\Support\Arr;
-	use WPEmerge\Helpers\Url;
+	use WPEmerge\Support\Url;
 
 	class ErrorHandler implements ErrorHandlerInterface {
 

@@ -6,8 +6,8 @@
 	use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Contracts\ViewServiceInterface;
-	use WPEmerge\Helpers\Path;
-	use WPEmerge\Helpers\VariableBag;
+	use WPEmerge\Support\Path;
+	use WPEmerge\Support\VariableBag;
 	use WPEmerge\Support\Arr;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
 
@@ -28,7 +28,7 @@
 		private $composer_collection;
 
 		/**
-		 * @var \WPEmerge\Helpers\VariableBag
+		 * @var \WPEmerge\Support\VariableBag
 		 */
 		private $global_var_bag;
 

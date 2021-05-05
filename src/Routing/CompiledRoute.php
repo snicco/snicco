@@ -10,7 +10,7 @@
 	use WPEmerge\Contracts\RouteCondition;
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Factories\HandlerFactory;
-	use WPEmerge\Helpers\RouteSignatureParameters;
+	use WPEmerge\Routing\RouteSignatureParameters;
 
 	class CompiledRoute implements RouteCondition {
 

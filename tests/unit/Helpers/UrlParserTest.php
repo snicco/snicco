@@ -3,7 +3,7 @@
 
 	namespace Tests\unit\Helpers;
 
-	use WPEmerge\Helpers\UrlParser;
+	use WPEmerge\Support\UrlParser;
 	use PHPUnit\Framework\TestCase;
 
 	class UrlParserTest extends TestCase {

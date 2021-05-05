@@ -7,7 +7,7 @@
 	use WPEmerge\Application\Application;
 	use WPEmerge\Contracts\ResponseServiceInterface;
 	use WPEmerge\Contracts\ServiceProviderInterface;
-	use WPEmerge\Helpers\VariableBag;
+	use WPEmerge\Support\VariableBag;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
 	use WPEmerge\Factories\ViewComposerFactory;
 

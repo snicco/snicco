@@ -8,7 +8,7 @@
 	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Middleware\CsrfProtection;
 	use WPEmerge\Middleware\Flash;
-	use WPEmerge\Helpers\Pipeline;
+	use WPEmerge\Support\Pipeline;
 	use WPEmerge\Middleware\OldInput;
 	use WPEmerge\Http\HttpKernel;
 	use WPEmerge\Middleware\StartSession;
