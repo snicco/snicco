@@ -16,8 +16,9 @@
 
 			if ( $response_sent_event->request->type() === IncomingAjaxRequest::class ) {
 
-				wp_die( '', '', [ 'response' => null ] );
+				// wp_die( '', '', [ 'response' => null ] );
 
+				die();
 			}
 
 		}
