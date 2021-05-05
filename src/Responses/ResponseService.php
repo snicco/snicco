@@ -168,7 +168,7 @@
 		 *
 		 * @return RedirectResponse
 		 */
-		public function redirect( ?RequestInterface $request )  :RedirectResponse {
+		public function redirect( ?RequestInterface $request = null  )  :RedirectResponse {
 
 			$request = $request ?? $this->request;
 

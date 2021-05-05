@@ -3,11 +3,11 @@
 
 	namespace WPEmerge\Exceptions;
 
-	use Psr\Http\Message\ResponseInterface;
+	use Psr\Http\Message\ResponseInterface as Psr7Response;
 	use Throwable;
 	use Whoops\RunInterface as Whoops;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
-	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Contracts\RequestInterface as Psr7Request;
 	use WPEmerge\Contracts\ResponseServiceInterface as ResponseService;
 	use WPEmerge\Responses\RedirectResponse;
 	use WPEmerge\Support\Arr;
@@ -44,7 +44,7 @@
 			}
 		}
 
-		public function transformToResponse( RequestInterface $request, Throwable $exception ) {
+		public function transformToResponse( Psr7Request $request, Throwable $exception ) : Psr7Response {
 
 			if ( $response = $this->toResponse( $request, $exception ) ) {
 
@@ -69,7 +69,7 @@
 
 		}
 
-		private function toResponse(  RequestInterface $request , Throwable $exception ) {
+		private function toResponse(  Psr7Request $request , Throwable $exception ) {
 
 			if ( $exception instanceof InvalidCsrfTokenException ) {
 				wp_nonce_ays( '' );
@@ -91,7 +91,7 @@
 
 		}
 
-		private function toDebugResponse( RequestInterface $request, Throwable $exception ) : ResponseInterface {
+		private function toDebugResponse( Psr7Request $request, Throwable $exception ) : Psr7Response {
 
 			if ( $request->isAjax() ) {
 
@@ -110,7 +110,7 @@
 
 		}
 
-		private function createAjaxDebugResponse( Throwable $e ) : ResponseInterface {
+		private function createAjaxDebugResponse( Throwable $e ) : Psr7Response {
 
 			$trace = collect( $e->getTrace() )->map( function ( $trace ) {
 
@@ -132,7 +132,7 @@
 
 		}
 
-		private function toWhoopsResponse( Throwable $exception ) : ResponseInterface {
+		private function toWhoopsResponse( Throwable $exception ) : Psr7Response {
 
 			$method = Whoops::EXCEPTION_HANDLER;
 			ob_start();
