@@ -183,7 +183,7 @@
 		 * @param  integer  $status
 		 *
 		 * @return ResponseInterface
-		 * @see    \WPEmerge\Responses\ResponseService::error()
+		 * @see    \WPEmerge\Responses\ResponseService::abort()
 		 */
 		public static function error( $status ) : ResponseInterface {
 		}

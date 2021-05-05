@@ -3,7 +3,6 @@
 
 	namespace WPEmerge\Responses;
 
-	use GuzzleHttp\Psr7;
 	use GuzzleHttp\Psr7\Utils;
 	use GuzzleHttp\Psr7\Response as Psr7Response;
 	use WPEmerge\Contracts\RequestInterface;
@@ -13,9 +12,7 @@
 	use WPEmerge\View\ViewService;
 
 
-	/**
-	 * A collection of tools for the creation of responses.
-	 */
+
 	class ResponseService implements ResponseServiceInterface {
 
 		/**
@@ -109,7 +106,7 @@
 		 *
 		 * @return void
 		 */
-		public function sendBody( ResponseInterface $response, $chunk_size = 4096 ) {
+		public function sendBody( ResponseInterface $response, int $chunk_size = 4096 ) {
 
 			$body           = $this->getBody( $response );
 			$content_length = $this->getBodyContentLength( $response );
@@ -139,7 +136,7 @@
 		 *
 		 * @return ResponseInterface
 		 */
-		public function output( $output ) {
+		public function output( string $output ) :ResponseInterface {
 
 			$response = $this->response();
 			$response = $response->withBody( Utils::streamFor( $output ) );
@@ -154,7 +151,7 @@
 		 *
 		 * @return ResponseInterface
 		 */
-		public function json( $data ) {
+		public function json( $data ) :ResponseInterface {
 
 			$response = $this->response();
 			$response = $response->withHeader( 'Content-Type', 'application/json' );
@@ -166,30 +163,20 @@
 		/**
 		 * Get a cloned response, with location and status headers.
 		 *
-		 * @param  RequestInterface|null  $request
+		 * @param  ?RequestInterface  $request
 		 *
 		 * @return RedirectResponse
 		 */
-		public function redirect( RequestInterface $request = null )  {
+		public function redirect( ?RequestInterface $request )  :RedirectResponse {
 
 			$request = $request ?? $this->request;
 
 			return new RedirectResponse( $request );
 		}
 
-		/**
-		 * Get an error response, with status headers and rendering a suitable view as the body.
-		 *
-		 * @param  integer  $status
-		 *
-		 * @todo This method does not belong here. SRP. Maybe change to a redirect to an
-		 * ErrorController.
-		 *
-		 * @return ResponseInterface
-		 */
-		public function error( $status ) {
+		public function abort( int $status_code ) :ResponseInterface {
 
-			$views = [ $status, 'error', 'index' ];
+			$views = [ $status_code, 'error', 'index' ];
 
 			if ( is_admin() ) {
 				$views = array_merge(
@@ -203,8 +190,9 @@
 
 			return $this->view_service->make( $views )
 			                          ->toResponse()
-			                          ->withStatus( $status );
+			                          ->withStatus( $status_code );
 		}
+
 
 		/**
 		 * Get a response's body stream so it is ready to be read.
@@ -223,7 +211,6 @@
 
 			return $body;
 		}
-
 
 		/**
 		 * Get a response's body's content length.
@@ -278,7 +265,7 @@
 		 *
 		 * @return void
 		 */
-		private function sendBodyWithLength( StreamInterface $body, $length, $chunk_size ) {
+		private function sendBodyWithLength( StreamInterface $body, int $length, int $chunk_size ) {
 
 			$content_left = $length;
 

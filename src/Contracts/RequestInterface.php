@@ -15,7 +15,6 @@
 		 * Even though URI and URL are slightly different things this alias returns the URI for
 		 * simplicity/familiarity.
 		 *
-		 * @return string
 		 */
 		public function getUrl();
 

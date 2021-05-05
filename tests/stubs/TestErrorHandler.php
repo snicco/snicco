@@ -26,7 +26,7 @@
 		/**
 		 * @throws \Exception
 		 */
-		public function getResponse( RequestInterface $request, \Throwable $exception ) {
+		public function transformToResponse( RequestInterface $request, \Throwable $exception ) {
 
 			if ( $exception->getMessage() !== self::bypass_messsage ) {
 

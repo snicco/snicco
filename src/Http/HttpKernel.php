@@ -90,7 +90,7 @@
 
 			catch ( Throwable $exception ) {
 
-				$this->response = $this->error_handler->getResponse( $request_event->request, $exception );
+				$this->response = $this->error_handler->transformToResponse( $request_event->request, $exception );
 				$this->caught_exception = true;
 
 			}

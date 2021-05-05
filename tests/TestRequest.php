@@ -38,7 +38,12 @@
 
 		}
 
+		public function simulateAjax () :TestRequest {
 
+			return $this->withAddedHeader( 'X-Requested-With', 'xmlhttprequest' );
+
+
+		}
 
 
 	}

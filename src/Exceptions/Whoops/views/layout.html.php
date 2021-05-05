@@ -1,18 +1,5 @@
 <?php
-/**
- * @package   WPEmerge
- * @author    Atanas Angelov <hi@atanas.dev>
- * @copyright 2017-2019 Atanas Angelov
- * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
- * @link      https://wpemerge.com/
- */
 
-/**
- * Layout template file for Whoops's pretty error output.
- *
- * @codeCoverageIgnore
- * @noinspection ALL
- */
 
 $is_admin = function_exists( 'is_admin' ) && is_admin() && apply_filters( 'wpemerge.pretty_errors.apply_admin_styles', true );
 $is_ajax = function_exists( 'wp_doing_ajax' ) && wp_doing_ajax();
