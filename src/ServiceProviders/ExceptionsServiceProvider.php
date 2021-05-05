@@ -46,7 +46,7 @@
 
 				$ajax = Request::fromGlobals()->isAjax();
 
-				return (( new ExceptionHandlerFactory(WP_DEBUG,$ajax)))
+				return (( new ExceptionHandlerFactory(WP_DEBUG,$ajax, 'phpstorm')))
 					->create(
 						$container[ResponseServiceInterface::class]
 					);
