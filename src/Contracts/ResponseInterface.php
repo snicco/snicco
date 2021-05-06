@@ -16,4 +16,10 @@
 
 		public function header( $name );
 
+		public function prepareForSending ( RequestInterface $request) : ResponseInterface;
+
+		public function sendHeaders();
+
+		public function sendBody();
+
 	}

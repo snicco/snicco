@@ -21,7 +21,7 @@
 
 			$url = $url ?? wp_login_url( $request->url() );
 
-			return new RedirectResponse($request, $url);
+			return new RedirectResponse($request, 302 ,$url);
 		}
 
 	}

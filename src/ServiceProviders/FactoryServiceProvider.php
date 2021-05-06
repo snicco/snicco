@@ -4,11 +4,12 @@
 	namespace WPEmerge\ServiceProviders;
 
 	use Contracts\ContainerAdapter;
+	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Factories\AbstractFactory;
 	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Factories\ViewComposerFactory;
 
-	class FactoryServiceProvider implements \WPEmerge\Contracts\ServiceProviderInterface {
+	class FactoryServiceProvider implements ServiceProviderInterface {
 
 
 		public function register( ContainerAdapter $container ) {

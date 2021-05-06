@@ -4,24 +4,14 @@
 
 	namespace WPEmerge\ServiceProviders;
 
-	use Whoops\Exception\Inspector;
-	use Whoops\Handler\PrettyPageHandler;
-	use Whoops\Run as WhoopsRun;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
-	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ResponseServiceInterface;
 	use WPEmerge\Contracts\ServiceProviderInterface;
-	use WPEmerge\Exceptions\ErrorHandler;
-	use WPEmerge\Exceptions\Whoops\DebugDataProvider;
 
 	use WPEmerge\Factories\ExceptionHandlerFactory;
 	use WPEmerge\Http\Request;
 	use WPEmerge\Traits\ExtendsConfig;
 
-	use const WPEMERGE_CONFIG_KEY;
-	use const WPEMERGE_EXCEPTIONS_CONFIGURATION_ERROR_HANDLER_KEY;
-	use const WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY;
-	use const WPEMERGE_RESPONSE_SERVICE_KEY;
 
 	/**
 	 * Provide exceptions dependencies.
@@ -43,6 +33,7 @@
 
 			$container->singleton(ErrorHandlerInterface::class, function ($container) {
 
+				/** @todo Replace with Container Request */
 				$ajax = Request::capture()->isAjax();
 
 				return (( new ExceptionHandlerFactory(WP_DEBUG,$ajax, 'phpstorm')))

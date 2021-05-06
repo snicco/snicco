@@ -28,7 +28,6 @@
 			$this->view_service = TestApp::resolve(WPEMERGE_VIEW_SERVICE_KEY);
 
 
-
 		}
 
 

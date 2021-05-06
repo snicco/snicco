@@ -6,7 +6,7 @@
 	use Psr\Http\Message\ResponseInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ServiceProviderInterface;
-	use WPEmerge\Request;
+	use WPEmerge\Http\Request;
 
 
 	/**

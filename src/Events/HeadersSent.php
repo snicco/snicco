@@ -3,7 +3,7 @@
 
 	namespace WPEmerge\Events;
 
-	use Psr\Http\Message\ResponseInterface;
+	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Contracts\RequestInterface;
 
@@ -11,7 +11,7 @@
 
 
 		/**
-		 * @var \Psr\Http\Message\ResponseInterface
+		 * @var ResponseInterface
 		 */
 		public $response;
 

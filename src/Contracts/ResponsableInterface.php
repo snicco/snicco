@@ -4,7 +4,6 @@
 
 	namespace WPEmerge\Contracts;
 
-	use Psr\Http\Message\ResponseInterface;
 
 	interface ResponsableInterface {
 
@@ -14,6 +13,6 @@
 		 *
 		 * @return ResponseInterface
 		 */
-		public function toResponse();
+		public function toResponse() : ResponseInterface;
 
 	}

@@ -9,17 +9,18 @@
 	use JsonSerializable;
 	use Symfony\Component\HttpFoundation\Response as SymfonyResponse;
 	use Symfony\Component\HttpFoundation\ResponseHeaderBag;
+	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ResponseInterface;
 
 	class Response extends SymfonyResponse implements ResponseInterface {
 
 
-		public function __construct( ?string $content = '', int $status = 200, array $headers = [] ) {
+		public function __construct( $content = '', int $status = 200, array $headers = [] ) {
 
-			$this->headers = new ResponseHeaderBag($headers);
-			$this->setBody($content);
-			$this->setStatusCode($status);
-			$this->setProtocolVersion('1.0');
+			$this->headers = new ResponseHeaderBag( $headers );
+			$this->setBody( $content );
+			$this->setStatusCode( $status );
+			$this->setProtocolVersion( '1.0' );
 
 		}
 
@@ -31,13 +32,12 @@
 
 		}
 
+		public function setBody(  $content ) : ResponseInterface {
 
-		public function setBody( ?string $content ) : ResponseInterface {
+			if ( $this->shouldBeJson( $content ) ) {
 
-			if ( $this->shouldBeJson($content) ) {
-
-				$this->content = $this->toJson($content);
-				$this->setType('application/json');
+				$this->content = $this->toJson( $content );
+				$this->setType( 'application/json' );
 
 				return $this;
 
@@ -49,14 +49,13 @@
 
 		}
 
-
-		public function body () :string {
+		public function body() : string {
 
 			return $this->content;
 
 		}
 
-		public function status () :int {
+		public function status() : int {
 
 			return $this->getStatusCode();
 
@@ -64,7 +63,7 @@
 
 		public function header( $name ) : ?string {
 
-			return $this->headers->get($name);
+			return $this->headers->get( $name );
 
 		}
 
@@ -72,30 +71,52 @@
 		 * Determine if the given content should be turned into JSON.
 		 *
 		 * @param  mixed  $content
+		 *
 		 * @return bool
 		 */
-		private function shouldBeJson($content) : bool {
-			return $content instanceof Arrayable ||
-			       $content instanceof Jsonable ||
-			       $content instanceof ArrayObject ||
-			       $content instanceof JsonSerializable ||
-			       is_array($content);
+		private function shouldBeJson( $content ) : bool {
+
+			return $content instanceof Arrayable
+			       || $content instanceof Jsonable
+			       || $content instanceof ArrayObject
+			       || $content instanceof JsonSerializable
+			       || is_array( $content );
 		}
 
 		/**
 		 * Morph the given content into JSON.
 		 *
 		 * @param  mixed  $content
+		 *
 		 * @return string
 		 */
-		private function toJson($content) : string {
-			if ($content instanceof Jsonable) {
+		private function toJson( $content ) : string {
+
+			if ( $content instanceof Jsonable ) {
 				return $content->toJson();
-			} elseif ($content instanceof Arrayable) {
-				return json_encode($content->toArray());
+			} elseif ( $content instanceof Arrayable ) {
+				return json_encode( $content->toArray() );
 			}
 
-			return json_encode($content);
+			return json_encode( $content );
+		}
+
+		public function prepareForSending( RequestInterface $request ) : ResponseInterface {
+
+			return parent::prepare( $request );
+
+		}
+
+		public function sendHeaders() {
+
+			parent::sendHeaders();
+
+		}
+
+		public function sendBody() {
+
+			parent::sendContent();
+
 		}
 
 	}

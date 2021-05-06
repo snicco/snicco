@@ -15,6 +15,7 @@
 	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Http\HttpKernel;
 	use WPEmerge\Factories\ConditionFactory;
+	use WPEmerge\Http\ResponseService;
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;

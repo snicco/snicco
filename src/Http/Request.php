@@ -3,275 +3,203 @@
 
 	namespace WPEmerge\Http;
 
-	use GuzzleHttp\Psr7\ServerRequest;
-	use GuzzleHttp\Psr7\Uri;
-	use GuzzleHttp\Utils;
+	use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\RouteCondition;
-	use WPEmerge\Support\Url;
-	use WPEmerge\Support\WPEmgereArr;
 
-	class Request extends ServerRequest implements RequestInterface {
-
-
-		/**
-		 * @var \WPEmerge\Routing\Route|null The route that our request matched
-		 */
-		private $route = null;
-
-		/** @var string The Type of request that's being handled. . */
-		private $type;
-
+	class Request extends SymfonyRequest implements RequestInterface {
 
 		public static function capture() : RequestInterface {
 
-			$request = parent::capture();
-			$new     = new self(
-				$request->getMethod(),
-				$request->getUri(),
-				$request->getHeaders(),
-				$request->getBody(),
-				$request->getProtocolVersion(),
-				$request->getServerParams()
+			static::enableHttpMethodParameterOverride();
+
+			return static::createFromBase(SymfonyRequest::createFromGlobals());
+
+		}
+
+		/**
+		 * Create an request from a Symfony instance.
+		 *
+		 * @return static
+		 */
+		private static function createFromBase( SymfonyRequest $request) : Request {
+
+			$newRequest = (new static)->duplicate(
+				$request->query->all(), $request->request->all(), $request->attributes->all(),
+				$request->cookies->all(), $request->files->all(), $request->server->all()
 			);
 
-			return $new
-				->withCookieParams( $_COOKIE )
-				->withQueryParams( $_GET )
-				->withParsedBody( $_POST )
-				->withUploadedFiles( static::normalizeFiles( $_FILES ) );
+			$newRequest->headers->replace($request->headers->all());
+
+			$newRequest->content = $request->content;
+
+			return $newRequest;
 		}
 
+		public function method() : string {
 
-		public function url() : string {
+			return $this->getMethod();
 
-			return rtrim(preg_replace('/\?.*/', '', $this->getUri()), '/') . '/';
-
-
-		}
-
-
-		protected function getMethodOverride( $default ) : string {
-
-			$valid_overrides = [ 'GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS' ];
-			$override        = $default;
-
-			$header_override = (string) $this->getHeaderLine( 'X-HTTP-METHOD-OVERRIDE' );
-			if ( ! empty( $header_override ) ) {
-				$override = strtoupper( $header_override );
-			}
-
-			$body_override = (string) $this->body( '_method', '' );
-			if ( ! empty( $body_override ) ) {
-				$override = strtoupper( $body_override );
-			}
-
-			if ( in_array( $override, $valid_overrides, true ) ) {
-				return $override;
-			}
-
-			return $default;
-		}
-
-
-		public function getMethod() : string {
-
-			$method = parent::getMethod();
-
-			if ( $method === 'POST' ) {
-				$method = $this->getMethodOverride( $method );
-			}
-
-			return $method;
-		}
-
-
-		public function isGet() : bool {
-
-			return $this->getMethod() === 'GET';
-		}
-
-
-		public function isHead() : bool {
-
-			return $this->getMethod() === 'HEAD';
-		}
-
-
-		public function isPost() : bool {
-
-			return $this->getMethod() === 'POST';
-		}
-
-
-		public function isPut() : bool {
-
-			return $this->getMethod() === 'PUT';
-		}
-
-
-		public function isPatch() : bool {
-
-			return $this->getMethod() === 'PATCH';
-		}
-
-
-		public function isDelete() : bool {
-
-			return $this->getMethod() === 'DELETE';
-		}
-
-
-		public function isOptions() : bool {
-
-			return $this->getMethod() === 'OPTIONS';
-		}
-
-
-		public function isReadVerb() : bool {
-
-			return in_array( $this->getMethod(), [ 'GET', 'HEAD', 'OPTIONS' ] );
-		}
-
-
-		public function isAjax() : bool {
-
-			return strtolower( $this->getHeaderLine( 'X-Requested-With' ) ) === 'xmlhttprequest';
-		}
-
-		/** @todo improve this. See Laravel InteractsWithContentType */
-		public function expectsJson() : bool {
-
-			return $this->isAjax();
-
-		}
-
-		/**
-		 * Get all values or a single one from an input type.
-		 *
-		 * @param  array  $source
-		 * @param  string  $key
-		 * @param  mixed  $default
-		 *
-		 * @return mixed
-		 */
-		protected function get( $source, $key = '', $default = null ) {
-
-			if ( empty( $key ) ) {
-				return $source;
-			}
-
-			return WPEmgereArr::get( $source, $key, $default );
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * @see ::get()
-		 */
-		public function attributes( string $key = '', $default = null ) {
-
-			return call_user_func( [ $this, 'get' ], $this->getAttributes(), $key, $default );
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * @see ::get()
-		 */
-		public function query( $key = '', $default = null ) {
-
-			return call_user_func( [ $this, 'get' ], $this->getQueryParams(), $key, $default );
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * @see ::get()
-		 */
-		public function body( $key = '', $default = null ) {
-
-			return call_user_func( [ $this, 'get' ], $this->getParsedBody(), $key, $default );
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * @see ::get()
-		 */
-		public function cookies( $key = '', $default = null ) {
-
-			return call_user_func( [ $this, 'get' ], $this->getCookieParams(), $key, $default );
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * @see ::get()
-		 */
-		public function files( $key = '', $default = null ) {
-
-			return call_user_func( [ $this, 'get' ], $this->getUploadedFiles(), $key, $default );
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * @see ::get()
-		 */
-		public function server( $key = '', $default = null ) {
-
-			return call_user_func( [ $this, 'get' ], $this->getServerParams(), $key, $default );
-		}
-
-		/**
-		 * {@inheritDoc}
-		 * @see ::get()
-		 */
-		public function headers( $key = '', $default = null ) {
-
-			return call_user_func( [ $this, 'get' ], $this->getHeaders(), $key, $default );
 		}
 
 		public function path() : string {
 
-			return $this->getUri()->getPath();
+			$pattern = trim($this->getPathInfo(), '/');
+
+			return $pattern === '' ? '/' : $pattern;
 
 		}
 
-		/** @todo implement url retreival with query string. */
-		public function fullUrl() : string {
+		public function url() :string
+		{
+			return rtrim(preg_replace('/\?.*/', '', $this->getUri()), '/');
+		}
 
-			return $this->getUri()->__toString();
+		public function fullUrl() : string
+		{
+			$query = $this->getQueryString();
+
+			$question = $this->getBaseUrl().$this->getPathInfo() === '/' ? '/?' : '?';
+
+			return $query ? $this->url().$question.$query : $this->url();
+
+		}
+
+		public function isGet() :bool {
+
+			return $this->isMethod('GET');
+
+		}
+
+		public function isHead() :bool {
+
+			return $this->isMethod('HEAD');
+
+		}
+
+		public function isPost() :bool {
+
+			return $this->isMethod('POST');
+
+		}
+
+		public function isPut() :bool {
+
+			return $this->isMethod('PUT');
+
+		}
+
+		public function isPatch() :bool {
+
+			return $this->isMethod('PATCH');
+
+		}
+
+		public function isDelete() :bool {
+
+			return $this->isMethod('DELETE');
+
+		}
+
+		public function isOptions() :bool {
+
+			return $this->isMethod('OPTIONS');
+
+		}
+
+		public function isReadVerb() :bool {
+
+			return $this->isMethodSafe();
+
+		}
+
+		public function isAjax() :bool {
+
+			return $this->isXmlHttpRequest();
+
+		}
+
+		public function attributes( string $key = '', $default = null ) {
+
+			return $this->attributes->get($key, $default);
+
+		}
+
+		public function query( $key = '', $default = null ) {
+
+			return $this->query->get($key, $default);
+
+		}
+
+		public function body( $key = '', $default = null ) {
+
+			return $this->request->get($key, $default);
+
+		}
+
+		public function cookies( $key = '', $default = null ) {
+
+			return $this->cookies->get($key, $default);
+
+		}
+
+		public function files( $key = '', $default = null ) {
+
+			return $this->files->get( $key , $default );
+
+		}
+
+		public function server( $key = '', $default = null ) {
+
+			return $this->files->get($key, $default);
+
+		}
+
+		public function headers( $key = '', $default = null ) {
+
+			return $this->headers->get($key, $default);
 
 		}
 
 		public function setRoute( RouteCondition $route ) {
 
-			$this->route = $route;
-		}
-
-		public function setType( string $request_type ) :void {
-
-			$this->type = $request_type;
-
-		}
-
-		public function type() : string {
-
-			return $this->type;
+			$this->attributes->set('route', $route);
 
 		}
 
 		public function route() : ?RouteCondition {
 
-			return $this->route;
+			return $this->attributes->get('route', null);
 
 		}
 
+		public function isPJAX() :bool
+		{
+			return $this->headers->get('X-PJAX') == true;
+		}
 
-		public function isPJAX() : bool {
+		public function expectsJson() : bool {
 
-			//
+			return $this->isAjax() && ! $this->isPJAX();
+
+		}
+
+		public function setType( string $request_event ) : void {
+
+			$this->attributes->set('type', $request_event);
+
+		}
+
+		public function type() : string {
+
+			return $this->attributes->get('type');
 
 		}
 
 		public function scheme() : string {
-			// TODO: Implement scheme() method.
+
+			return $this->getScheme();
+
 		}
 
 	}

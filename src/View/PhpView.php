@@ -4,10 +4,9 @@
 
 	namespace WPEmerge\View;
 
-	use GuzzleHttp\Psr7\Response;
-	use GuzzleHttp\Psr7\Utils;
+	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Exceptions\ViewException;
+	use WPEmerge\Http\Response;
 	use WPEmerge\Support\WPEmgereArr;
 
 	/**
@@ -83,13 +82,14 @@
 			}
 
 			return $this->engine->getLayoutContent();
+
 		}
 
-		public function toResponse() {
+		public function toResponse() :ResponseInterface {
 
-			return ( new Response() )
-				->withHeader( 'Content-Type', 'text/html' )
-				->withBody( Utils::streamFor( $this->toString() ) );
+			return ( new Response( $this->toString() ) )->setType('text/html');
+
+
 		}
 
 		/**

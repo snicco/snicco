@@ -3,10 +3,9 @@
 
 	namespace Tests\stubs;
 
-	use Psr\Http\Message\ResponseInterface;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
-	use Exception as PhpException;
 	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Contracts\ResponseInterface;
 
 	class TestErrorHandler implements ErrorHandlerInterface {
 
