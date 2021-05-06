@@ -4,15 +4,16 @@
 	namespace Tests\unit\Exceptions;
 
 	use PHPUnit\Framework\TestCase;
-	use Psr\Http\Message\ResponseInterface;
+	use Tests\AssertsResponse;
+	use WPEmerge\Contracts\ResponseInterface;
 	use Tests\stubs\TestResponseService;
-	use Tests\TestRequest;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Exceptions\Exception;
 	use WPEmerge\Factories\ExceptionHandlerFactory;
 
 	class ProductionErrorHandlerTest extends TestCase {
 
+		use AssertsResponse;
 
 		/** @test */
 		public function an_unspecified_exception_gets_converted_into_a_500_internal_server_error () {
@@ -53,27 +54,5 @@
 
 		}
 
-		private function createRequest() : TestRequest {
 
-			return TestRequest::from('GET', 'foo');
-
-		}
-
-		private function assertStatusCode(int $code, ResponseInterface $response) {
-
-			$this->assertSame($code , $response->getStatusCode());
-
-		}
-
-		private function assertContentType( string $type, ResponseInterface $response ) {
-
-			$this->assertSame($type, $response->getHeaderLine('Content-Type'));
-
-		}
-
-		private function assertOutput ( $output , ResponseInterface $response ) {
-
-			$this->assertStringContainsString($output, $response->getBody()->read(999));
-
-		}
 	}

@@ -42,7 +42,6 @@
   ],
   "require": {
     "php": "^7.3",
-    "guzzlehttp/psr7": "^1.5",
     "calvinalkan/base-container": "0.1.*",
     "illuminate/collections": "8.35.1",
     "ext-json": "*",
@@ -57,7 +56,6 @@
     "mockery/mockery": "^1.4.2",
     "filp/whoops": "^2.2",
     "phpunit/phpunit": "^9.0",
-    "lucatume/wp-browser": "dev-better-env-names",
     "calvinalkan/better-wordpress-database": "dev-master"
   },
   "autoload": {

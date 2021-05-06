@@ -3,12 +3,11 @@
 
 	namespace WPEmerge\Exceptions;
 
-	use GuzzleHttp\Psr7\Response;
-	use GuzzleHttp\Psr7\Utils;
-	use Psr\Http\Message\ResponseInterface;
+	use WPEmerge\Contracts\ResponseInterface;
 	use Throwable;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Http\Response;
 
 	class ProductionErrorHandler implements ErrorHandlerInterface {
 
@@ -31,27 +30,18 @@
 
 		}
 
-		private function contentType(RequestInterface $request) {
+		private function contentType(RequestInterface $request) : string {
 
 			return ( $request->isAjax() ) ? 'application/json' : 'text/html';
 
 		}
 
-		private function body( $body, RequestInterface $request ) {
 
-			return ( $request->expectsJson() )
-				? Utils::streamFor(json_encode($body))
-				: Utils::streamFor($body);
-
-		}
 
 		protected function defaultResponse(RequestInterface $request) : Response {
 
-			return new Response(
-				500,
-				['Content-Type' => $this->contentType($request)],
-				'Internal Server Error'
-			);
+			return (new Response( 'Internal Server Error', 500))
+				->setType($this->contentType($request));
 
 		}
 

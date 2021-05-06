@@ -9,6 +9,13 @@
 
 		public $body;
 
+		public static function fromFullUrl(string $method, string $url ) {
+
+			$request = static::create($url, $method);
+
+			return $request;
+
+		}
 
 		public static function from(string $method, $path, $host = null ) : TestRequest {
 
@@ -27,8 +34,6 @@
 
 		}
 
-
-
 		public function simulateAjax () :TestRequest {
 
 			$this->headers->set( 'X-Requested-With', 'XMLHttpRequest' );
@@ -37,5 +42,12 @@
 
 		}
 
+		public function setHeader ( $name , $value ) : TestRequest {
+
+			$this->headers->set($name , $value);
+
+			return $this;
+
+		}
 
 	}

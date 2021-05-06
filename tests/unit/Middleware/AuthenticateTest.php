@@ -71,30 +71,30 @@
 
 
 		/** @test */
-		public function by_default_users_get_redirected_to_wp_login_with_the_current_url_added_to_the_query_args () {
+		public function by_default_users_get_redirected_to_wp_login_with_the_current_url_added_to_the_query_args() {
 
 			$calvin = $this->newAdmin();
 			$this->logout( $calvin );
 
 			$response = $this->middleware->handle( $this->request, $this->route_action );
 
-			$expected = wp_login_url($this->request->url());
+			$expected = wp_login_url( $this->request->url() );
 
-			$this->assertSame($expected, $response->getHeaderLine('Location'));
+			$this->assertSame( $expected, $response->header( 'Location' ) );
 
 
 		}
 
 
 		/** @test */
-		public function users_can_be_redirected_to_a_custom_url () {
+		public function users_can_be_redirected_to_a_custom_url() {
 
 			$calvin = $this->newAdmin();
 			$this->logout( $calvin );
 
-			$response = $this->middleware->handle( $this->request, $this->route_action, 'https://example.com');
+			$response = $this->middleware->handle( $this->request, $this->route_action, 'https://example.com' );
 
-			$this->assertSame('https://example.com', $response->getHeaderLine('Location'));
+			$this->assertSame( 'https://example.com', $response->header( 'Location' ) );
 
 		}
 

@@ -3,13 +3,12 @@
 
 	namespace WPEmerge\Exceptions;
 
-	use GuzzleHttp\Psr7\Response;
-	use GuzzleHttp\Psr7\Utils;
-	use Psr\Http\Message\ResponseInterface;
 	use Throwable;
 	use Whoops\RunInterface;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Contracts\ResponseInterface;
+	use WPEmerge\Http\Response;
 
 	class DebugErrorHandler implements ErrorHandlerInterface {
 
@@ -49,11 +48,7 @@
 
 			$content_type = ( $this->is_ajax ) ? 'application/json' : 'text/html';
 
-			return ( new Response() )
-				->withHeader( 'Content-Type', $content_type )
-				->withBody( Utils::streamFor( $output ) )
-				->withStatus( 500 );
-
+			return (new Response($output, 500))->setType($content_type);
 
 
 		}

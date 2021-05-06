@@ -6,6 +6,7 @@
 
 	interface RequestInterface {
 
+
 		public static function capture () :RequestInterface;
 
 		/**
@@ -15,6 +16,15 @@
 		 *
 		 */
 		public function url() :string;
+
+		/**
+		 * Returns the url with query params
+		 *
+		 * @return string
+		 *
+		 */
+		public function fullUrl() : string;
+
 
 		/**
 		 * Get the current path info for the request.
