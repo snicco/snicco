@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmerge\Responses;
+	namespace WPEmerge\Http;
 
 	use GuzzleHttp\Psr7\Utils;
 	use GuzzleHttp\Psr7\Response as Psr7Response;
@@ -10,7 +10,6 @@
 	use Psr\Http\Message\StreamInterface;
 	use WPEmerge\Contracts\ResponseServiceInterface;
 	use WPEmerge\View\ViewService;
-
 
 
 	/** @todo Split this class into ResponseSender and ResponseFactory.  */
@@ -129,7 +128,6 @@
 			return new Psr7Response();
 		}
 
-
 		/**
 		 * Get a cloned response with the passed string as the body.
 		 *
@@ -193,7 +191,6 @@
 			                          ->toResponse()
 			                          ->withStatus( $status_code );
 		}
-
 
 		/**
 		 * Get a response's body stream so it is ready to be read.

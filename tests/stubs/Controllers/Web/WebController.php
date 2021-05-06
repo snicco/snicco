@@ -4,7 +4,7 @@
 	namespace Tests\stubs\Controllers\Web;
 
 	use Tests\stubs\TestResponse;
-	use WPEmerge\Requests\Request;
+	use WPEmerge\Http\Request;
 
 	class WebController {
 

@@ -7,7 +7,7 @@
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Support\Url;
-	use WPEmerge\Responses\RedirectResponse;
+	use WPEmerge\Http\RedirectResponse;
 
 
 	class RedirectIfAuthenticated implements Middleware {

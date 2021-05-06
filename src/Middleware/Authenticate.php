@@ -6,7 +6,7 @@
 	use Closure;
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Responses\RedirectResponse;
+	use WPEmerge\Http\RedirectResponse;
 
 
 	class Authenticate implements Middleware {
@@ -21,7 +21,7 @@
 
 			return ( new RedirectResponse($request) )->to(
 
-				$url ?? wp_login_url( $request->getUrl() )
+				$url ?? wp_login_url( $request->url() )
 
 			);
 		}

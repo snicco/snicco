@@ -15,7 +15,7 @@
 	use WPEmerge\Exceptions\Whoops\DebugDataProvider;
 
 	use WPEmerge\Factories\ExceptionHandlerFactory;
-	use WPEmerge\Requests\Request;
+	use WPEmerge\Http\Request;
 	use WPEmerge\Traits\ExtendsConfig;
 
 	use const WPEMERGE_CONFIG_KEY;

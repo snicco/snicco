@@ -7,12 +7,12 @@
 	use Mockery;
 	use Psr\Http\Message\ResponseInterface;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Responses\ResponseService;
+	use WPEmerge\Http\ResponseService;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\View\ViewService;
 
 	/**
-	 * @coversDefaultClass \WPEmerge\Responses\ResponseService
+	 * @coversDefaultClass \WPEmerge\Http\ResponseService
 	 */
 	class ResponseServiceTest extends WPTestCase {
 

@@ -3,7 +3,7 @@
 
 	namespace Tests\stubs\Controllers\Web;
 
-	use WPEmerge\Requests\Request;
+	use WPEmerge\Http\Request;
 
 	class RoutingController {
 

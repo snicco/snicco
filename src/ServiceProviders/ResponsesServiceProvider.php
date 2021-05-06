@@ -4,7 +4,7 @@
 
 	use WPEmerge\Contracts\ResponseServiceInterface;
 	use WPEmerge\Contracts\ServiceProviderInterface;
-	use WPEmerge\Responses\ResponseService;
+	use WPEmerge\Http\ResponseService;
 
 
 

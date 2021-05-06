@@ -10,8 +10,8 @@
 	use WPEmerge\Session\FlashStore;
 	use WPEmerge\Session\OldInputStore;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Responses\RedirectResponse;
-	use WPEmerge\Responses\ResponseService;
+	use WPEmerge\Http\RedirectResponse;
+	use WPEmerge\Http\ResponseService;
 	use WPEmerge\Routing\RouteBlueprint;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Support\VariableBag;
@@ -141,7 +141,7 @@
 		 * Create a "blank" response.
 		 *
 		 * @return ResponseInterface
-		 * @see    \WPEmerge\Responses\ResponseService::response()
+		 * @see    \WPEmerge\Http\ResponseService::response()
 		 */
 		public static function response() : ResponseInterface {
 		}
@@ -152,7 +152,7 @@
 		 * @param  string  $output
 		 *
 		 * @return ResponseInterface
-		 * @see    \WPEmerge\Responses\ResponseService::output()
+		 * @see    \WPEmerge\Http\ResponseService::output()
 		 */
 		public static function output( $output ) : ResponseInterface {
 		}
@@ -162,8 +162,8 @@
 		 *
 		 * @param  mixed  $data
 		 *
-		 * @return \WPEmerge\Responses\ResponseService
-		 * @see    \WPEmerge\Responses\ResponseService::json()
+		 * @return \WPEmerge\Http\ResponseService
+		 * @see    \WPEmerge\Http\ResponseService::json()
 		 */
 		public static function json( $data ) : ResponseService {
 		}
@@ -172,7 +172,7 @@
 		 * Create a redirect response.
 		 *
 		 * @return RedirectResponse
-		 * @see    \WPEmerge\Responses\ResponseService::redirect()
+		 * @see    \WPEmerge\Http\ResponseService::redirect()
 		 */
 		public static function redirect() : RedirectResponse {
 		}
@@ -183,7 +183,7 @@
 		 * @param  integer  $status
 		 *
 		 * @return ResponseInterface
-		 * @see    \WPEmerge\Responses\ResponseService::abort()
+		 * @see    \WPEmerge\Http\ResponseService::abort()
 		 */
 		public static function error( $status ) : ResponseInterface {
 		}

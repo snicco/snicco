@@ -6,7 +6,7 @@
 	use Codeception\TestCase\WPTestCase;
 	use Tests\TestRequest;
 	use WPEmerge\Middleware\RedirectIfAuthenticated;
-	use WPEmerge\Responses\RedirectResponse;
+	use WPEmerge\Http\RedirectResponse;
 
 	class RedirectIfAuthenticatedTest extends WPTestCase {
 

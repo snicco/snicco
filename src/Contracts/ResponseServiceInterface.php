@@ -5,7 +5,7 @@
 
 
 	use Psr\Http\Message\ResponseInterface;
-	use WPEmerge\Responses\RedirectResponse;
+	use WPEmerge\Http\RedirectResponse;
 
 	interface ResponseServiceInterface {
 

@@ -1,7 +1,7 @@
 <?php
 
 
-	namespace WPEmerge\Responses;
+	namespace WPEmerge\Http;
 
 	use GuzzleHttp\Psr7\Response as Psr7Response;
 	use Psr\Http\Message\ResponseInterface;
@@ -58,7 +58,7 @@
 			}
 
 			if ( empty( $url ) ) {
-				$url = $this->request->getUrl();
+				$url = $this->request->url();
 			}
 
 			return $this->to( $url, $status );
