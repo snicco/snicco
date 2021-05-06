@@ -39,21 +39,20 @@
 
 		use ExtendsConfig;
 
-
 		public function register( $container ) {
 
 			$this->extendConfig( $container, 'middleware', [
-				'flash'           => Flash::class,
-				'old_input'       => OldInput::class,
-				'csrf'            => CsrfProtection::class,
-				'user.logged_in'  => Authenticate::class,
-				'user.logged_out' => RedirectIfAuthenticated::class,
-				'user.can'        => Authorize::class,
+				'flash'     => Flash::class,
+				'old_input' => OldInput::class,
+				'csrf'      => CsrfProtection::class,
+				'auth'      => Authenticate::class,
+				'guest'     => RedirectIfAuthenticated::class,
+				'can'       => Authorize::class,
 			] );
 
 			$this->extendConfig( $container, 'middleware_groups', [
 
-				'global'   => [
+				'global' => [
 
 					// StartSession::class,
 					// SubstituteBindings::class,
@@ -61,18 +60,18 @@
 					// OldInput::class
 
 				],
-				'web'      => [],
-				'ajax'     => [],
-				'admin'    => [],
+				'web'    => [],
+				'ajax'   => [],
+				'admin'  => [],
 
-			]);
+			] );
 
 			$this->extendConfig( $container, 'middleware_priority', [
 
 				StartSession::class,
 				SubstituteBindings::class,
 				Flash::class,
-				OldInput::class
+				OldInput::class,
 
 			] );
 
@@ -82,7 +81,7 @@
 
 					$c[ WPEMERGE_ROUTING_ROUTER_KEY ],
 					$c[ WPEMERGE_CONTAINER_ADAPTER ],
-					$c[ WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY]
+					$c[ WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY ]
 
 				);
 
@@ -91,7 +90,6 @@
 				$kernel->setRouteMiddlewareAliases( $config['middleware'] );
 				$kernel->setMiddlewareGroups( $config['middleware_groups'] );
 				$kernel->setMiddlewarePriority( $config['middleware_priority'] );
-				
 
 				return $kernel;
 
