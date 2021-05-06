@@ -58,7 +58,8 @@
     "mockery/mockery": "^1.4.2",
     "filp/whoops": "^2.2",
     "phpunit/phpunit": "^9.0",
-    "calvinalkan/better-wordpress-database": "dev-master"
+    "calvinalkan/better-wordpress-database": "dev-master",
+    "lucatume/wp-browser": "dev-better-env-names"
   },
   "autoload": {
     "psr-4": {
