@@ -15,7 +15,7 @@
 		public $template;
 
 		/**
-		 * @var \WPEmerge\Requests\Request
+		 * @var \WPEmerge\Http\Request
 		 */
 		public $request;
 
@@ -32,7 +32,7 @@
 
 		public function shouldDispatch() : bool {
 
-			return ! is_admin() && ! str_contains( $this->request->getFullUrlString(), admin_url() );
+			return ! is_admin() && ! str_contains( $this->request->url(), admin_url() );
 
 		}
 

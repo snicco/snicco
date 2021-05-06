@@ -4,7 +4,7 @@
 	namespace Tests\integration\Routing;
 
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Requests\Request;
+	use WPEmerge\Http\Request;
 
 	class RouteSegmentsTest extends TestCase {
 

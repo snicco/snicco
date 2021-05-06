@@ -8,7 +8,7 @@
 	use Psr\Http\Message\ResponseInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ResponseServiceInterface;
-	use WPEmerge\Responses\RedirectResponse;
+	use WPEmerge\Http\RedirectResponse;
 
 	class TestResponseService implements ResponseServiceInterface {
 

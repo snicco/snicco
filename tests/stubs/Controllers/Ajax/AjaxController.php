@@ -4,7 +4,7 @@
 	namespace Tests\stubs\Controllers\Ajax;
 
 	use Tests\stubs\TestResponse;
-	use WPEmerge\Requests\Request;
+	use WPEmerge\Http\Request;
 
 	class AjaxController {
 

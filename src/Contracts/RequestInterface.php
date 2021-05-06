@@ -16,7 +16,7 @@
 		 * simplicity/familiarity.
 		 *
 		 */
-		public function getUrl();
+		public function url();
 
 		/**
 		 * Check if the request method is GET.
@@ -156,5 +156,7 @@
 		public function route() : ?RouteCondition;
 
 		public function path() :string;
+
+		public function expectsJson();
 
 	}

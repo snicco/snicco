@@ -1,18 +1,18 @@
 <?php
 
 
-	namespace WPEmerge\Requests;
+	namespace WPEmerge\Http;
 
 	use GuzzleHttp\Psr7\ServerRequest;
+	use GuzzleHttp\Psr7\Uri;
+	use GuzzleHttp\Utils;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\RouteCondition;
-	use WPEmerge\Events\IncomingRequest;
+	use WPEmerge\Support\Url;
 	use WPEmerge\Support\WPEmgereArr;
 
-	/**
-	 * A representation of a request to the server.
-	 */
 	class Request extends ServerRequest implements RequestInterface {
+
 
 		/**
 		 * @var \WPEmerge\Routing\Route|null The route that our request matched
@@ -21,7 +21,6 @@
 
 		/** @var string The Type of request that's being handled. . */
 		private $type;
-
 
 
 		public static function fromGlobals() : Request {
@@ -43,14 +42,14 @@
 				->withUploadedFiles( static::normalizeFiles( $_FILES ) );
 		}
 
+		public function url() : string {
 
-		public function getUrl() {
+			return rtrim(preg_replace('/\?.*/', '', $this->getUri()), '/') . '/';
 
-			return $this->getUri();
 
 		}
 
-		protected function getMethodOverride( $default ) {
+		protected function getMethodOverride( $default ) : string {
 
 			$valid_overrides = [ 'GET', 'HEAD', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS' ];
 			$override        = $default;
@@ -72,10 +71,8 @@
 			return $default;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public function getMethod() {
+
+		public function getMethod() : string {
 
 			$method = parent::getMethod();
 
@@ -86,76 +83,64 @@
 			return $method;
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public function isGet() {
+
+		public function isGet() : bool {
 
 			return $this->getMethod() === 'GET';
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public function isHead() {
+
+		public function isHead() : bool {
 
 			return $this->getMethod() === 'HEAD';
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public function isPost() {
+
+		public function isPost() : bool {
 
 			return $this->getMethod() === 'POST';
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public function isPut() {
+
+		public function isPut() : bool {
 
 			return $this->getMethod() === 'PUT';
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public function isPatch() {
+
+		public function isPatch() : bool {
 
 			return $this->getMethod() === 'PATCH';
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public function isDelete() {
+
+		public function isDelete() : bool {
 
 			return $this->getMethod() === 'DELETE';
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public function isOptions() {
+
+		public function isOptions() : bool {
 
 			return $this->getMethod() === 'OPTIONS';
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public function isReadVerb() {
+
+		public function isReadVerb() : bool {
 
 			return in_array( $this->getMethod(), [ 'GET', 'HEAD', 'OPTIONS' ] );
 		}
 
-		/**
-		 * {@inheritDoc}
-		 */
-		public function isAjax() {
+		public function isAjax() : bool {
 
 			return strtolower( $this->getHeaderLine( 'X-Requested-With' ) ) === 'xmlhttprequest';
+		}
+
+		/** @todo improve this. See Laravel InteractsWithContentType */
+		public function expectsJson() : bool {
+
+			return $this->isAjax();
+
 		}
 
 		/**
@@ -239,20 +224,16 @@
 			return call_user_func( [ $this, 'get' ], $this->getHeaders(), $key, $default );
 		}
 
-		public function path () :string {
+		public function path() : string {
 
 			return $this->getUri()->getPath();
 
 		}
 
-		public function getFullUrlString() : string {
+		/** @todo implement url retreival with query string. */
+		public function fullUrl() : string {
 
-			$uri   = $this->getUri();
-			$https = $uri->getScheme();
-			$path  = $uri->getPath();
-			$host  = $uri->getHost();
-
-			return $https . ':' . DIRECTORY_SEPARATOR . DIRECTORY_SEPARATOR . $host . $path;
+			return $this->getUri()->__toString();
 
 		}
 
@@ -278,7 +259,6 @@
 			return $this->route;
 
 		}
-
 
 
 	}

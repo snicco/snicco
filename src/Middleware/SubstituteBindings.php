@@ -7,7 +7,7 @@
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Helpers\ImplicitRouteBindings;
-	use WPEmerge\Requests\Request;
+	use WPEmerge\Http\Request;
 
 	class SubstituteBindings implements Middleware {
 

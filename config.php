@@ -80,7 +80,7 @@
 	}
 
 	if ( ! defined( 'WPEMERGE_RESPONSE_SERVICE_KEY' ) ) {
-		define( 'WPEMERGE_RESPONSE_SERVICE_KEY', \WPEmerge\Responses\ResponseService::class );
+		define( 'WPEMERGE_RESPONSE_SERVICE_KEY', \WPEmerge\Http\ResponseService::class );
 	}
 
 	if ( ! defined( 'WPEMERGE_ROUTING_ROUTER_KEY' ) ) {

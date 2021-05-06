@@ -9,7 +9,7 @@
 	use Tests\stubs\TestErrorHandler;
 	use Tests\stubs\TestApp;
 	use Tests\stubs\TestResponseService;
-	use WPEmerge\Requests\Request;
+	use WPEmerge\Http\Request;
 
 	trait SetUpTestApp {
 

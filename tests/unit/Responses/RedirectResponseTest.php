@@ -6,10 +6,10 @@
 	use Mockery;
 	use PHPUnit\Framework\TestCase;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Responses\RedirectResponse;
+	use WPEmerge\Http\RedirectResponse;
 
 	/**
-	 * @coversDefaultClass \WPEmerge\Responses\RedirectResponse
+	 * @coversDefaultClass \WPEmerge\Http\RedirectResponse
 	 */
 	class RedirectResponseTest extends TestCase {
 
@@ -95,7 +95,7 @@
 			        ->with( 'Referer' )
 			        ->andReturn( null );
 
-			$request->shouldReceive( 'getUrl' )
+			$request->shouldReceive( 'url' )
 			        ->andReturn( $expected );
 
 			$subject = ( new RedirectResponse( $request ) )->back();

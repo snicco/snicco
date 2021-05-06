@@ -6,7 +6,7 @@
 	use Codeception\TestCase\WPTestCase;
 	use Tests\TestRequest;
 	use WPEmerge\Middleware\Authenticate;
-	use WPEmerge\Responses\RedirectResponse;
+	use WPEmerge\Http\RedirectResponse;
 
 	class AuthenticateTest extends WPTestCase {
 
@@ -78,7 +78,7 @@
 
 			$response = $this->middleware->handle( $this->request, $this->route_action );
 
-			$expected = wp_login_url($this->request->getUrl());
+			$expected = wp_login_url($this->request->url());
 
 			$this->assertSame($expected, $response->getHeaderLine('Location'));
 

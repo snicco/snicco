@@ -9,7 +9,7 @@
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Contracts\RequestInterface as Psr7Request;
 	use WPEmerge\Contracts\ResponseServiceInterface as ResponseService;
-	use WPEmerge\Responses\RedirectResponse;
+	use WPEmerge\Http\RedirectResponse;
 	use WPEmerge\Support\Arr;
 	use WPEmerge\Support\Url;
 
