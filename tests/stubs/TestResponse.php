@@ -6,6 +6,7 @@
 	use Psr\Http\Message\ResponseInterface;
 	use Psr\Http\Message\StreamInterface;
 	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Http\Response;
 
 	class TestResponse implements ResponseInterface {
 
@@ -18,6 +19,7 @@
 		public function __construct( RequestInterface $request) {
 
 			$this->request = $request;
+
 		}
 
 		public function getProtocolVersion() {

@@ -3,10 +3,9 @@
 
 	namespace Tests\stubs;
 
-	use Psr\Http\Message\ResponseInterface;
+	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Contracts\ViewServiceInterface;
-	use WPEmerge\View\ViewService;
 
 	class TestViewService implements ViewServiceInterface {
 
@@ -54,7 +53,7 @@
 
 		}
 
-		public function toResponse() {
+		public function toResponse() :ResponseInterface{
 			// TODO: Implement toResponse() method.
 		}
 

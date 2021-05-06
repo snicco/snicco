@@ -53,24 +53,6 @@
 
 
 
-			$container->singleton( RouteModelResolver::class, function ($container) {
-
-				global $wpdb;
-
-				if ( ! $wpdb instanceof WpdbInterface ) {
-
-					$wp_conn = new WpConnection( DbFactory::make( $wpdb ) );
-
-					Eloquent::setConnectionResolver( new ConnectionResolver( $wp_conn ) );
-
-					return new WpdbRouteModelResolver($wp_conn, $container[WPEMERGE_HELPERS_HANDLER_FACTORY_KEY]);
-
-
-				}
-
-				return new WpdbRouteModelResolver( new WpConnection( $wpdb ), $container[WPEMERGE_HELPERS_HANDLER_FACTORY_KEY] );
-
-			} );
 
 			$container->singleton('strict.mode', function ($container) {
 

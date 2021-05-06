@@ -26,6 +26,8 @@
 		public function fullUrl() : string;
 
 
+		public function method() :string;
+
 		/**
 		 * Get the current path info for the request.
 		 *

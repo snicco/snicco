@@ -20,7 +20,7 @@
 
 			$factory = new HandlerFactory( [], $container);
 
-			$request = m::mock( \WPEmerge\Request::class);
+			$request = m::mock( \WPEmerge\Http\Request::class);
 
 			$request->foo = 'foo_route';
 

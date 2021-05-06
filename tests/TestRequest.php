@@ -3,7 +3,7 @@
 
 	namespace Tests;
 
-	use WPEmerge\Request;
+	use WPEmerge\Http\Request;
 
 	class TestRequest extends Request {
 

@@ -20,7 +20,9 @@
 		public function no_response_gets_send_when_no_route_matched() {
 
 			$request = $this->createIncomingWebRequest( 'GET', '/foo' );
+
 			$this->kernel->handle( $request );
+
 
 			$this->assertHeadersNotSent();
 			$this->assertBodyNotSent();
@@ -94,8 +96,6 @@
 
 		}
 
-
-
 		/** @test */
 		public function the_body_will_never_be_sent_when_the_kernel_did_not_receive_a_response_for_admin_requests() {
 
@@ -105,8 +105,6 @@
 
 
 		}
-
-
 
 
 		private function assertHeadersSent() {

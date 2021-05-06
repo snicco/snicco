@@ -4,7 +4,7 @@
 	namespace Tests\unit\ViewComposers;
 
 	use PHPUnit\Framework\TestCase;
-	use Psr\Http\Message\ResponseInterface;
+	use WPEmerge\Contracts\ResponseInterface;
 	use SniccoAdapter\BaseContainerAdapter;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Support\WPEmgereArr;
@@ -190,7 +190,7 @@
 
 		}
 
-		public function toResponse() {
+		public function toResponse() :ResponseInterface {
 
 
 		}

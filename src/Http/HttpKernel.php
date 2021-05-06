@@ -4,8 +4,7 @@
 	namespace WPEmerge\Http;
 
 	use Contracts\ContainerAdapter as Container;
-	use Exception;
-	use Psr\Http\Message\ResponseInterface;
+	use WPEmerge\Contracts\ResponseInterface;
 	use Throwable;
 	use WPEmerge\Contracts\ResponsableInterface;
 	use WPEmerge\Contracts\ResponseServiceInterface as ResponseService;
@@ -36,7 +35,7 @@
 		/** @var \Contracts\ContainerAdapter */
 		private $container;
 
-		/** @var \Psr\Http\Message\ResponseInterface */
+		/** @var ResponseInterface */
 		private $response;
 
 		/** @var RequestInterface */
@@ -70,6 +69,7 @@
 
 
 		public function handle( IncomingRequest $request_event ) : void {
+
 
 			// whoops
 			$this->error_handler->register();
@@ -143,6 +143,8 @@
 
 			}
 
+			$this->response = $this->response->prepareForSending($this->request);
+
 			$this->sendHeaders();
 
 			if ( $this->request->type() !== IncomingAdminRequest::class ) {
@@ -155,7 +157,7 @@
 
 		private function sendHeaders() {
 
-			$this->response_service->sendHeaders( $this->response );
+			$this->response->sendHeaders();
 
 			HeadersSent::dispatch( [ $this->response, $this->request ] );
 
@@ -164,14 +166,14 @@
 
 		private function sendBody() {
 
-			$this->response_service->sendBody( $this->response );
+			$this->response->sendBody();
 
 			BodySent::dispatch( [ $this->response, $this->request ] );
 
 		}
 
 		/** @todo handle the case where a route matched but invalid response was returned */
-		private function prepareResponse( $response ) {
+		private function prepareResponse( $response ) :ResponseInterface {
 
 			if ( $response instanceof ResponseInterface ) {
 
@@ -181,13 +183,14 @@
 
 			if ( is_string( $response ) ) {
 
-				return $this->response_service->output( $response );
+				return ( new Response( $response ) )->setType('text/html');
 
 			}
 
 			if ( is_array( $response ) ) {
 
-				return $this->response_service->json( $response );
+				/** @todo Create dedicated JSON Response. */
+				return ( new Response( $response ) );
 
 			}
 
@@ -209,6 +212,9 @@
 
 		}
 
+		/**
+		 * @throws \WPEmerge\Exceptions\InvalidResponseException
+		 */
 		private function sendRequestThroughRouter( RequestInterface $request ) {
 
 
@@ -223,6 +229,7 @@
 			                ->then( $this->dispatchToRouter() );
 
 			return $this->prepareResponse($response);
+
 
 		}
 
