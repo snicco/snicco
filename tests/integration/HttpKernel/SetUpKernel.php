@@ -5,12 +5,14 @@
 
 	use BetterWpHooks\Dispatchers\WordpressDispatcher;
 	use BetterWpHooks\ListenerFactory;
+	use PHPUnit\Framework\Assert;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\TestErrorHandler;
 	use Tests\stubs\TestResponseService;
 	use Tests\TestRequest;
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Events\IncomingAdminRequest;
+	use WPEmerge\Events\IncomingRequest;
 	use WPEmerge\Events\IncomingWebRequest;
 	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Http\HttpKernel;
@@ -44,7 +46,6 @@
 			$handler_factory   = new HandlerFactory( [], $container );
 			$condition_factory = new ConditionFactory( [], $container );
 			$error_handler     = new TestErrorHandler();
-			$response_service  = new TestResponseService();
 			$router            = new Router(
 				$container,
 				new RouteCollection(
@@ -54,9 +55,8 @@
 			);
 
 			$this->router           = $router;
-			$this->response_service = $response_service;
 			$this->container        = $container;
-			$this->kernel           = new HttpKernel( $response_service, $router, $container, $error_handler );
+			$this->kernel           = new HttpKernel( $router, $container, $error_handler );
 
 			ApplicationEvent::make($this->container);
 			ApplicationEvent::fake();
@@ -102,5 +102,23 @@
 
 		}
 
+		private function runAndGetKernelOutput (IncomingRequest $request) {
+
+			ob_start();
+			$this->kernel->handle($request);
+			return ob_get_clean();
+		}
+
+		private function assertNothingSent($output) {
+
+			Assert::assertEmpty($output);
+
+		}
+
+		private function assertBodySent($expected, $output) {
+
+			Assert::assertSame($expected, $output);
+
+		}
 
 	}

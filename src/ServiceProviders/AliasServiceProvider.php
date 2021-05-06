@@ -41,7 +41,6 @@
 		private function responseAliases (Application $app) {
 
 
-			$app->alias( 'response_service', ResponseServiceInterface::class );
 			$app->alias( 'response', function () use ( $app ) {
 				return call_user_func_array( [ $app->response_service(), 'response' ], func_get_args() );
 			} );

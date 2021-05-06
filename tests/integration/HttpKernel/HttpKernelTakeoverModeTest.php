@@ -41,19 +41,22 @@
 
 			] );
 
+			$request_event = $this->createIncomingWebRequest( 'GET', 'foo' );
+
 			try {
 
-				$this->kernel->handle( $this->createIncomingWebRequest( 'GET', 'foo' ) );
+				ob_start();
+				$this->kernel->handle($request_event);
 				$this->fail('Exception was expected for a non matching route');
 
 			}
 
-			catch (InvalidResponseException $e) {
+			catch ( InvalidResponseException $e ) {
 
-				//
+				$output = ob_get_clean();
+				$this->assertSame('', $output);
 
 			}
-
 
 			$this->assertMiddlewareRunTimes( 1, GlobalMiddleware::class );
 			$this->assertMiddlewareRunTimes( 0, WebMiddleware::class );
@@ -79,16 +82,19 @@
 				//
 			} )->middleware( 'web' );
 
+
 			try {
 
+				ob_start();
 				$this->kernel->handle( $this->createIncomingWebRequest( 'GET', 'foo' ) );
 				$this->fail('Exception was expected for a non matching route');
 
 			}
 
-			catch (InvalidResponseException $e) {
+			catch ( InvalidResponseException $e ) {
 
-				//
+				$output = ob_get_clean();
+				$this->assertSame('', $output);
 
 			}
 
@@ -107,16 +113,20 @@
 
 			$this->kernel->runInTakeoverMode();
 
+			$request_event = $this->createIncomingWebRequest('GET', '/bar');
+
 			try {
 
-				$this->kernel->handle($request_event = $this->createIncomingWebRequest('GET', '/bar'));
+				ob_start();
+				$this->kernel->handle($request_event);
 				$this->fail('Exception was expected for a non matching route');
 
 			}
 
 			catch (InvalidResponseException $e) {
 
-					//
+				$output = ob_get_clean();
+				$this->assertSame('', $output);
 
 			}
 

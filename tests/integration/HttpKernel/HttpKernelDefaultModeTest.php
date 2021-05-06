@@ -25,7 +25,7 @@
 
 			] );
 
-			$this->kernel->handle( $request );
+			$this->assertSame('', $this->runAndGetKernelOutput($request));
 
 			$this->assertMiddlewareRunTimes(0, GlobalMiddleware::class);
 
@@ -40,8 +40,14 @@
 
 			} );
 
-			$this->kernel->handle( $request_event = $this->createIncomingWebRequest( 'GET', '/bar' ) );
 
+			$output = $this->runAndGetKernelOutput(
+
+				$request_event = $this->createIncomingWebRequest( 'GET', '/bar' )
+
+			);
+
+			$this->assertSame('', $output);
 			$this->assertSame( 'wordpress.php', $request_event->default() );
 
 		}
@@ -64,8 +70,9 @@
 
 			$request = $this->createIncomingWebRequest( 'GET', '/foo' );
 
-			$this->kernel->handle( $request );
+			$output = $this->runAndGetKernelOutput($request);
 
+			$this->assertSame('foo', $output);
 			$this->assertMiddlewareRunTimes(1 , WebMiddleware::class);
 
 		}
@@ -86,14 +93,12 @@
 
 			// non matching request
 			$request = $this->createIncomingWebRequest( 'POST', '/foo' );
-			$this->kernel->handle( $request );
-
+			$this->assertSame('', $this->runAndGetKernelOutput($request));
 			$this->assertMiddlewareRunTimes(0 , GlobalMiddleware::class);
 
 			// matching request
 			$request = $this->createIncomingWebRequest( 'GET', '/foo' );
-			$this->kernel->handle( $request );
-
+			$this->assertSame('foo', $this->runAndGetKernelOutput($request));
 			$this->assertMiddlewareRunTimes(1 , GlobalMiddleware::class);
 
 		}
@@ -114,8 +119,10 @@
 
 			$this->kernel->runInTestMode();
 			$request = $this->createIncomingWebRequest( 'GET', '/foo' );
-			$this->kernel->handle( $request );
 
+
+
+			$this->assertSame('foo', $this->runAndGetKernelOutput($request));
 			$this->assertMiddlewareRunTimes(0 , GlobalMiddleware::class);
 
 		}

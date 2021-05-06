@@ -11,7 +11,6 @@
 	use WPEmerge\ServiceProviders\ExceptionsServiceProvider;
 	use WPEmerge\ServiceProviders\FactoryServiceProvider;
 	use WPEmerge\ServiceProviders\KernelsServiceProvider;
-	use WPEmerge\ServiceProviders\MiddlewareServiceProvider;
 	use WPEmerge\ServiceProviders\RequestsServiceProvider;
 	use WPEmerge\ServiceProviders\ResponsesServiceProvider;
 	use WPEmerge\ServiceProviders\ApplicationServiceProvider;
@@ -24,6 +23,10 @@
 	/**
 	 * Load core service providers that hold all internal services
 	 * required for every request.
+	 *
+	 * @todo We need integration test for all Service Providers to check if we wired
+	 * everything correctly.
+	 *
 	 */
 	trait LoadsServiceProviders {
 
@@ -42,7 +45,6 @@
 			ResponsesServiceProvider::class,
 			RoutingServiceProvider::class,
 			ViewServiceProvider::class,
-			MiddlewareServiceProvider::class,
 			CsrfServiceProvider::class,
 			FlashServiceProvider::class,
 			OldInputServiceProvider::class,

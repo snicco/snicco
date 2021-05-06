@@ -36,10 +36,8 @@
 				/** @todo Replace with Container Request */
 				$ajax = Request::capture()->isAjax();
 
-				return (( new ExceptionHandlerFactory(WP_DEBUG,$ajax, 'phpstorm')))
-					->create(
-						$container[ResponseServiceInterface::class]
-					);
+				return (( new ExceptionHandlerFactory(WP_DEBUG, $ajax, 'phpstorm')))
+					->create();
 
 			});
 

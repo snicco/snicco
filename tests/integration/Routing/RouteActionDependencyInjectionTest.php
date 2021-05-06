@@ -8,8 +8,8 @@
 	use Tests\stubs\Controllers\Web\ControllerWithDependencies;
 	use Tests\stubs\Controllers\Web\TeamsController;
 	use Tests\stubs\Foo;
-	use Tests\stubs\TestResponse;
 	use Tests\TestRequest;
+	use WPEmerge\Http\Response;
 
 	class RouteActionDependencyInjectionTest extends TestCase {
 
@@ -86,7 +86,7 @@
 
 					$request->body = $team . ':' . $player . ':' .  $baz . ':' . $biz  . ':' . $foo->foo . ':' . $bar->bar;
 
-					return new TestResponse( $request );
+					return new Response( $request->body );
 
 				});
 

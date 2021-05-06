@@ -59,7 +59,7 @@
 
 		private function newErrorHandler (bool $is_ajax = false ) : ErrorHandlerInterface {
 
-			return (( new ExceptionHandlerFactory(true, $is_ajax) ))->create(new TestResponseService());
+			return (( new ExceptionHandlerFactory(true, $is_ajax) ))->create();
 
 		}
 
