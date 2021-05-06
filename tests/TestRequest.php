@@ -3,24 +3,12 @@
 
 	namespace Tests;
 
-	use WPEmerge\Http\Request;
+	use WPEmerge\Request;
 
 	class TestRequest extends Request {
 
 		public $body;
 
-		public function __construct(
-			$method,
-			$uri,
-			array $headers = [],
-			$body = null,
-			$version = '1.1',
-			array $serverParams = []
-		) {
-
-			parent::__construct( $method, $uri, $headers, $body, $version, $serverParams );
-
-		}
 
 		public static function from(string $method, $path, $host = null ) : TestRequest {
 
@@ -33,15 +21,19 @@
 
 			$url = trim($url, '/') . '/';
 
-			return new static( $method, $url );
+			$request =  static::create($url, $method);
 
+			return $request;
 
 		}
 
+
+
 		public function simulateAjax () :TestRequest {
 
-			return $this->withAddedHeader( 'X-Requested-With', 'xmlhttprequest' );
+			$this->headers->set( 'X-Requested-With', 'XMLHttpRequest' );
 
+			return $this;
 
 		}
 

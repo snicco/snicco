@@ -3,83 +3,95 @@
 
 	namespace WPEmerge\Contracts;
 
-	use Psr\Http\Message\ServerRequestInterface;
 
-	/**
-	 * A representation of a request to the server.
-	 */
-	interface RequestInterface extends ServerRequestInterface {
+	interface RequestInterface {
+
+		public static function capture () :RequestInterface;
 
 		/**
-		 * Alias for ::getUri().
-		 * Even though URI and URL are slightly different things this alias returns the URI for
-		 * simplicity/familiarity.
+		 * Returns the url without query params
+		 *
+		 * @return string
 		 *
 		 */
-		public function url();
+		public function url() :string;
+
+		/**
+		 * Get the current path info for the request.
+		 *
+		 * @return string
+		 */
+		public function path() :string;
 
 		/**
 		 * Check if the request method is GET.
 		 *
-		 * @return boolean
+		 * @return bool
 		 */
-		public function isGet();
+		public function isGet() : bool;
 
 		/**
 		 * Check if the request method is HEAD.
 		 *
-		 * @return boolean
+		 * @return bool
 		 */
-		public function isHead();
+		public function isHead() : bool;
 
 		/**
 		 * Check if the request method is POST.
 		 *
-		 * @return boolean
+		 * @return bool
 		 */
-		public function isPost();
+		public function isPost() : bool;
 
 		/**
 		 * Check if the request method is PUT.
 		 *
-		 * @return boolean
+		 * @return bool
 		 */
-		public function isPut();
+		public function isPut() : bool;
 
 		/**
 		 * Check if the request method is PATCH.
 		 *
-		 * @return boolean
+		 * @return bool
 		 */
-		public function isPatch();
+		public function isPatch() : bool;
 
 		/**
 		 * Check if the request method is DELETE.
 		 *
-		 * @return boolean
+		 * @return bool
 		 */
-		public function isDelete();
+		public function isDelete() : bool;
 
 		/**
 		 * Check if the request method is OPTIONS.
 		 *
-		 * @return boolean
+		 * @return bool
 		 */
-		public function isOptions();
+		public function isOptions() : bool;
 
 		/**
 		 * Check if the request method is a "read" verb.
 		 *
-		 * @return boolean
+		 * @return bool
 		 */
-		public function isReadVerb();
+		public function isReadVerb() : bool;
 
 		/**
 		 * Check if the request is an ajax request.
 		 *
-		 * @return boolean
+		 * @return bool
 		 */
-		public function isAjax();
+		public function isAjax() : bool;
+
+		/**
+		 * Check if the request is the result of a PJAX call.
+		 *
+		 * @return bool
+		 */
+		public function isPJAX() : bool;
 
 		/**
 		 * Get a value from the request attributes.
@@ -89,7 +101,7 @@
 		 *
 		 * @return mixed
 		 */
-		public function attributes( $key = '', $default = null );
+		public function attributes( string $key = '', $default = null );
 
 		/**
 		 * Get a value from the request query (i.e. $_GET).
@@ -99,7 +111,7 @@
 		 *
 		 * @return mixed
 		 */
-		public function query( $key = '', $default = null );
+		public function query( string $key = '', $default = null );
 
 		/**
 		 * Get a value from the request body (i.e. $_POST).
@@ -109,7 +121,7 @@
 		 *
 		 * @return mixed
 		 */
-		public function body( $key = '', $default = null );
+		public function body( string $key = '', $default = null );
 
 		/**
 		 * Get a value from the COOKIE parameters.
@@ -119,7 +131,7 @@
 		 *
 		 * @return mixed
 		 */
-		public function cookies( $key = '', $default = null );
+		public function cookies( string $key = '', $default = null );
 
 		/**
 		 * Get a value from the FILES parameters.
@@ -129,7 +141,7 @@
 		 *
 		 * @return mixed
 		 */
-		public function files( $key = '', $default = null );
+		public function files( string $key = '', $default = null );
 
 		/**
 		 * Get a value from the SERVER parameters.
@@ -139,7 +151,7 @@
 		 *
 		 * @return mixed
 		 */
-		public function server( $key = '', $default = null );
+		public function server( string $key = '', $default = null );
 
 		/**
 		 * Get a value from the headers.
@@ -149,14 +161,18 @@
 		 *
 		 * @return mixed
 		 */
-		public function headers( $key = '', $default = null );
+		public function headers( string $key = '', $default = null );
+
+		public function scheme() :string;
 
 		public function setRoute( RouteCondition $route );
 
+		public function setType ( string $request_event): void;
+
+		public function type() : string;
+
 		public function route() : ?RouteCondition;
 
-		public function path() :string;
-
-		public function expectsJson();
+		public function expectsJson() :bool;
 
 	}

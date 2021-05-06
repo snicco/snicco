@@ -23,9 +23,9 @@
 		private $type;
 
 
-		public static function fromGlobals() : Request {
+		public static function capture() : RequestInterface {
 
-			$request = parent::fromGlobals();
+			$request = parent::capture();
 			$new     = new self(
 				$request->getMethod(),
 				$request->getUri(),
@@ -42,12 +42,14 @@
 				->withUploadedFiles( static::normalizeFiles( $_FILES ) );
 		}
 
+
 		public function url() : string {
 
 			return rtrim(preg_replace('/\?.*/', '', $this->getUri()), '/') . '/';
 
 
 		}
+
 
 		protected function getMethodOverride( $default ) : string {
 
@@ -131,6 +133,7 @@
 			return in_array( $this->getMethod(), [ 'GET', 'HEAD', 'OPTIONS' ] );
 		}
 
+
 		public function isAjax() : bool {
 
 			return strtolower( $this->getHeaderLine( 'X-Requested-With' ) ) === 'xmlhttprequest';
@@ -165,7 +168,7 @@
 		 * {@inheritDoc}
 		 * @see ::get()
 		 */
-		public function attributes( $key = '', $default = null ) {
+		public function attributes( string $key = '', $default = null ) {
 
 			return call_user_func( [ $this, 'get' ], $this->getAttributes(), $key, $default );
 		}
@@ -242,7 +245,7 @@
 			$this->route = $route;
 		}
 
-		public function setType( string $request_type ) {
+		public function setType( string $request_type ) :void {
 
 			$this->type = $request_type;
 
@@ -260,5 +263,15 @@
 
 		}
 
+
+		public function isPJAX() : bool {
+
+			//
+
+		}
+
+		public function scheme() : string {
+			// TODO: Implement scheme() method.
+		}
 
 	}

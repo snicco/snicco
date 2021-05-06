@@ -13,7 +13,6 @@
 	class ClosureHandlerTest extends TestCase {
 
 
-
 		/** @test */
 		public function a_closure_handler_resolved_from_the_container_with_passed_parameter() {
 
@@ -21,7 +20,7 @@
 
 			$factory = new HandlerFactory( [], $container);
 
-			$request = m::mock( \WPEmerge\Http\Request::class);
+			$request = m::mock( \WPEmerge\Request::class);
 
 			$request->foo = 'foo_route';
 
