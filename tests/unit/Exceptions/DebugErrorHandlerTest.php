@@ -6,13 +6,17 @@
 
 	use Codeception\TestCase\WPTestCase;
 	use Exception;
+	use PHPUnit\Framework\TestCase;
+	use Tests\AssertsResponse;
 	use Tests\stubs\TestResponseService;
 	use Tests\TestRequest;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
+	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Factories\ExceptionHandlerFactory;
 
-	class DebugErrorHandlerTest extends WPTestCase {
+	class DebugErrorHandlerTest extends TestCase {
 
+		use AssertsResponse;
 
 		/** @test */
 		public function exceptions_are_rendered_with_whoops () {
@@ -24,9 +28,10 @@
 
 			$response = $handler->transformToResponse( $this->createRequest(), $exception );
 
-			$this->assertStringContainsString('Whoops Exception', $response->getBody()->read(999));
-			$this->assertSame(500, $response->getStatusCode());
-			$this->assertContains('text/html', $response->getHeader('Content-Type'));
+			$this->assertInstanceOf(ResponseInterface::class, $response);
+			$this->assertOutput('Whoops Exception', $response);
+			$this->assertStatusCode(500, $response);
+			$this->assertContentType('text/html', $response);
 
 
 		}
@@ -41,7 +46,7 @@
 			$response = $handler->transformToResponse( $this->createRequest(), $exception );
 
 
-			$output = json_decode( $response->getBody(), true )['error'];
+			$output = json_decode( $response->body(), true )['error'];
 			$this->assertSame( 'Exception', $output['type'] );
 			$this->assertSame( 'Whoops Ajax Exception', $output['message'] );
 			$this->assertArrayHasKey( 'code', $output );
@@ -58,11 +63,6 @@
 
 		}
 
-		private function createRequest() : TestRequest {
 
-			return TestRequest::from('GET', 'foo');
-
-
-		}
 
 	}

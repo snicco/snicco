@@ -19,11 +19,9 @@
 
 			}
 
-			return ( new RedirectResponse($request) )->to(
+			$url = $url ?? wp_login_url( $request->url() );
 
-				$url ?? wp_login_url( $request->url() )
-
-			);
+			return new RedirectResponse($request, $url);
 		}
 
 	}

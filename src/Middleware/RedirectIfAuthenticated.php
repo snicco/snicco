@@ -19,7 +19,7 @@
 
 				$url = $url ?? home_url( '', $request->scheme() );
 
-				return ( new RedirectResponse( $request ) )->to( Url::addTrailing($url));
+				return  new RedirectResponse( $request, Url::addTrailing( $url ) , 302 ) ;
 
 			}
 

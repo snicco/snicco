@@ -3,124 +3,124 @@
 
 	namespace Tests\unit\Responses;
 
-	use Mockery;
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Contracts\RequestInterface;
+	use Tests\AssertsResponse;
+	use Tests\TestRequest;
+	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Http\RedirectResponse;
 
-	/**
-	 * @coversDefaultClass \WPEmerge\Http\RedirectResponse
-	 */
 	class RedirectResponseTest extends TestCase {
 
-		public function tearDown() : void {
+		use AssertsResponse;
 
-			parent::tearDown();
+		/** @test */
+		public function a_working_redirection_can_be_created_via_the_constructor() {
 
-			Mockery::close();
+			$request = $this->createRequest();
+
+			$response = new RedirectResponse( $request, 302, 'https://foobar.com/' );
+
+			$this->assertInstanceOf( ResponseInterface::class, $response );
+			$this->assertStatusCode( 302, $response );
+			$this->assertOutput( '', $response );
+			$this->assertHeader( 'Location', 'https://foobar.com/', $response );
+
 
 		}
 
-		/**
-		 * @covers ::to
-		 */
-		public function testTo_Location() {
+		/** @test */
+		public function a_redirect_can_be_created_by_calling_a_method_after_construction() {
 
-			$request  = Mockery::mock( RequestInterface::class )->shouldIgnoreMissing()
-			                   ->asUndefined();
-			$expected = '/foobar';
+			$request = $this->createRequest();
 
-			$subject = ( new RedirectResponse( $request ) )->to( $expected );
-			$this->assertEquals( $expected, $subject->getHeaderLine( 'Location' ) );
+			$response = ( new RedirectResponse( $request, 302 ) )->to( 'https://foobar.com/' );
+
+			$this->assertInstanceOf( ResponseInterface::class, $response );
+			$this->assertStatusCode( 302, $response );
+			$this->assertOutput( '', $response );
+			$this->assertHeader( 'Location', 'https://foobar.com/', $response );
+
 		}
 
-		/**
-		 * @covers ::to
-		 */
-		public function testTo_Status() {
+		/** @test */
+		public function the_status_code_can_be_adjusted() {
 
-			$request   = Mockery::mock( RequestInterface::class )->shouldIgnoreMissing()
-			                    ->asUndefined();
-			$expected1 = 301;
-			$expected2 = 302;
+			$request = $this->createRequest();
 
-			$subject1 = ( new RedirectResponse( $request ) )->to( 'foobar', $expected1 );
-			$this->assertEquals( $expected1, $subject1->getStatusCode() );
+			$response = new RedirectResponse( $request, 301 );
 
-			$subject2 = ( new RedirectResponse( $request ) )->to( 'foobar', $expected2 );
-			$this->assertEquals( $expected2, $subject2->getStatusCode() );
+			$this->assertStatusCode( 301, $response );
+
+
 		}
 
-		/**
-		 * @covers ::back
-		 */
-		public function testBack_Location() {
+		/** @test */
+		public function a_redirect_to_the_previous_request_location_can_be_created() {
 
-			$expected = 'http://example.com/foobar?hello=world';
-			$request  = Mockery::mock( RequestInterface::class );
+			$expected = 'https://example.com/?hello=world';
 
-			$request->shouldReceive( 'getHeaderLine' )
-			        ->with( 'Referer' )
-			        ->andReturn( $expected );
+			$request = $this->createRequest()->setHeader( 'Referer', $expected );
 
-			$subject = ( new RedirectResponse( $request ) )->back();
-			$this->assertEquals( $expected, $subject->getHeaderLine( 'Location' ) );
+			$response = ( new RedirectResponse( $request ) )->back();
+
+			$this->assertInstanceOf( ResponseInterface::class, $response );
+			$this->assertStatusCode( 302, $response );
+			$this->assertOutput( '', $response );
+			$this->assertHeader( 'Location', $expected, $response );
+
+
 		}
 
-		/**
-		 * @covers ::back
-		 */
-		public function testBack_Location_Fallback() {
+		/** @test */
+		public function the_status_code_can_be_adjusted_when_redirecting_back() {
 
-			$expected = 'http://example.com/foobar?hello=world';
-			$request  = Mockery::mock( RequestInterface::class );
+			$expected = 'https://example.com/?hello=world';
 
-			$request->shouldReceive( 'getHeaderLine' )
-			        ->with( 'Referer' )
-			        ->andReturn( null );
+			$request = $this->createRequest()->setHeader( 'Referer', $expected );
 
-			$subject = ( new RedirectResponse( $request ) )->back( $expected );
-			$this->assertEquals( $expected, $subject->getHeaderLine( 'Location' ) );
+			$response = ( new RedirectResponse( $request, 301 ) )->back();
+
+			$this->assertInstanceOf( ResponseInterface::class, $response );
+			$this->assertStatusCode( 301, $response );
+			$this->assertOutput( '', $response );
+			$this->assertHeader( 'Location', $expected, $response );
+
+
 		}
 
-		/**
-		 * @covers ::back
-		 */
-		public function testBack_Location_Current() {
+		/** @test */
+		public function a_fallback_url_can_be_set_for_when_no_referer_header_is_present() {
 
-			$expected = 'http://example.com/foobar?hello=world';
-			$request  = Mockery::mock( RequestInterface::class );
+			$expected = 'https://fallback.com/';
 
-			$request->shouldReceive( 'getHeaderLine' )
-			        ->with( 'Referer' )
-			        ->andReturn( null );
+			$request = $this->createRequest()->setHeader( 'Referer', '' );
 
-			$request->shouldReceive( 'url' )
-			        ->andReturn( $expected );
+			$response = ( new RedirectResponse( $request ) )->back( $expected );
 
-			$subject = ( new RedirectResponse( $request ) )->back();
-			$this->assertEquals( $expected, $subject->getHeaderLine( 'Location' ) );
+			$this->assertInstanceOf( ResponseInterface::class, $response );
+			$this->assertStatusCode( 302, $response );
+			$this->assertOutput( '', $response );
+			$this->assertHeader( 'Location', $expected, $response );
+
+
 		}
 
-		/**
-		 * @covers ::back
-		 */
-		public function testBack_Status() {
+		/** @test */
+		public function if_no_fallback_and_no_referer_header_are_available_the_redirect_is_created_to_the_current_request_url() {
 
-			$expected1 = 301;
-			$expected2 = 302;
-			$url       = 'http://example.com/foobar?hello=world';
-			$request   = Mockery::mock( RequestInterface::class );
 
-			$request->shouldReceive( 'getHeaderLine' )
-			        ->with( 'Referer' )
-			        ->andReturn( $url );
+			$request = TestRequest::fromFullUrl( 'GET', 'https://example.com/foo?bar=baz' )
+			                      ->setHeader( 'Referer', '' );
 
-			$subject1 = ( new RedirectResponse( $request ) )->back( null, $expected1 );
-			$this->assertEquals( $expected1, $subject1->getStatusCode() );
+			$response = ( new RedirectResponse( $request ) )->back();
 
-			$subject2 = ( new RedirectResponse( $request ) )->back( null, $expected2 );
-			$this->assertEquals( $expected2, $subject2->getStatusCode() );
+			$this->assertInstanceOf( ResponseInterface::class, $response );
+			$this->assertStatusCode( 302, $response );
+			$this->assertOutput( '', $response );
+			$this->assertHeader( 'Location', 'https://example.com/foo?bar=baz', $response );
+
+
 		}
+
 
 	}

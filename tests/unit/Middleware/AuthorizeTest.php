@@ -8,7 +8,7 @@
 	use WPEmerge\Middleware\Authorize;
 	use WPEmerge\Exceptions\AuthorizationException;
 
-	class AuthorizationTest extends WPTestCase {
+	class AuthorizeTest extends WPTestCase {
 
 		use WordpressFixtures;
 

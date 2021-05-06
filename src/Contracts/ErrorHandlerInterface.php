@@ -3,8 +3,6 @@
 
 	namespace WPEmerge\Contracts;
 
-	use Exception as PhpException;
-	use Psr\Http\Message\ResponseInterface;
 
 	interface ErrorHandlerInterface {
 

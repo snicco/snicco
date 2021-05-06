@@ -18,7 +18,7 @@
 		private $route_action;
 
 		/**
-		 * @var \WP_UnitTest_Factory
+		 * @var RedirectIfAuthenticated
 		 */
 		private $middleware;
 
@@ -63,7 +63,7 @@
 
 			$this->assertInstanceOf(RedirectResponse::class , $response);
 
-			$this->assertSame(SITE_URL, $response->getHeaderLine('Location'));
+			$this->assertSame(SITE_URL, $response->header('Location'));
 
 		}
 
@@ -78,7 +78,7 @@
 
 			$this->assertInstanceOf(RedirectResponse::class , $response);
 
-			$this->assertSame('https://example.com/', $response->getHeaderLine('Location'));
+			$this->assertSame('https://example.com/', $response->header('Location'));
 		}
 
 	}
