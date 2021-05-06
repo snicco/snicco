@@ -51,7 +51,7 @@
 
 		}
 
-		public function create ( ResponseServiceInterface $response_service ) :ErrorHandlerInterface {
+		public function create () :ErrorHandlerInterface {
 
 			if ( ! $this->is_debug ) {
 

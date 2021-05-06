@@ -23,8 +23,6 @@
 
 		use HoldsMiddlewareDefinitions;
 
-		/** @var ResponseService */
-		private $response_service;
 
 		/** @var \WPEmerge\Routing\Router */
 		private $router;
@@ -53,14 +51,12 @@
 
 		public function __construct(
 
-			ResponseService $response_service,
 			Router $router,
 			Container $container,
 			ErrorHandler $error_handler
 
 		) {
 
-			$this->response_service = $response_service;
 			$this->router           = $router;
 			$this->container        = $container;
 			$this->error_handler    = $error_handler;
@@ -173,7 +169,7 @@
 		}
 
 		/** @todo handle the case where a route matched but invalid response was returned */
-		private function prepareResponse( $response ) :ResponseInterface {
+		private function prepareResponse( $response ) :?ResponseInterface {
 
 			if ( $response instanceof ResponseInterface ) {
 
@@ -200,6 +196,10 @@
 
 			}
 
+			/**
+			 * @todo Decide how this should be handled in production.
+			 *  500, 404 ?
+			 */
 			if ( $this->is_takeover_mode ) {
 
 				throw new InvalidResponseException(
@@ -215,7 +215,7 @@
 		/**
 		 * @throws \WPEmerge\Exceptions\InvalidResponseException
 		 */
-		private function sendRequestThroughRouter( RequestInterface $request ) {
+		private function sendRequestThroughRouter( RequestInterface $request ) : ?ResponseInterface {
 
 
 			$this->container->instance( RequestInterface::class, $request );

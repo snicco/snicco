@@ -5,12 +5,12 @@
 
 	use PHPUnit\Framework\TestCase;
 	use Psr\Http\Message\ResponseInterface;
-	use Tests\stubs\TestErrorHandler;
 	use Tests\stubs\TestResponse;
 	use Tests\TestRequest;
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Events\BodySent;
 	use WPEmerge\Events\HeadersSent;
+	use WPEmerge\Http\Response;
 
 	class HttpKernelTest extends TestCase {
 
@@ -21,11 +21,9 @@
 
 			$request = $this->createIncomingWebRequest( 'GET', '/foo' );
 
-			$this->kernel->handle( $request );
+			$output = $this->runAndGetKernelOutput($request);
 
-
-			$this->assertHeadersNotSent();
-			$this->assertBodyNotSent();
+			$this->assertNothingSent($output);
 
 		}
 
@@ -34,37 +32,34 @@
 
 			$this->router->get( '/foo', function ( TestRequest $request ) {
 
-				return new TestResponse( $request );
+				return new Response( 'foo' );
 
 			} );
 
 			$request = $this->createIncomingWebRequest( 'GET', '/foo' );
-			$this->kernel->handle( $request );
 
-
-			$this->assertHeadersSent();
-			$this->assertBodySent();
+			$this->assertBodySent('foo', $this->runAndGetKernelOutput($request));
 
 		}
 
 		/** @test */
-		public function for_admin_requests_the_body_does_get_not_send_immediately () {
+		public function for_admin_requests_the_body_does_not_get_send_immediately () {
 
-			$this->router->get( '/admin', function ( TestRequest $request ) {
+			$this->router->get( '/admin', function () {
 
-				return new TestResponse( $request );
+				return new Response( 'foo' );
 
 			} );
 
 			$request = $this->createIncomingAdminRequest( 'GET', '/admin' );
-			$this->kernel->handle( $request );
 
-			$this->assertHeadersSent();
-			$this->assertBodyNotSent();
+			$this->assertNothingSent($this->runAndGetKernelOutput($request));
 
+			ob_start();
 			$this->kernel->sendBodyDeferred();
+			$body = ob_get_clean();
 
-			$this->assertBodySent();
+			$this->assertBodySent('foo', $body);
 
 		}
 
@@ -73,12 +68,12 @@
 
 			$this->router->get( '/foo', function ( TestRequest $request ) {
 
-				return new TestResponse( $request );
+				return new Response( $request );
 
 			} );
 
 			$request = $this->createIncomingWebRequest( 'GET', '/foo' );
-			$this->kernel->handle( $request );
+			$this->runAndGetKernelOutput($request);
 
 			ApplicationEvent::assertDispatched(HeadersSent::class , function ($event) use ( $request ) {
 
@@ -99,46 +94,14 @@
 		/** @test */
 		public function the_body_will_never_be_sent_when_the_kernel_did_not_receive_a_response_for_admin_requests() {
 
+			ob_start();
 			$this->kernel->sendBodyDeferred();
 
-			$this->assertBodyNotSent();
-
-
-		}
-
-
-		private function assertHeadersSent() {
-
-			$this->assertInstanceOf(
-				ResponseInterface::class,
-				$this->response_service->header_response );
+			$this->assertNothingSent(ob_get_clean());
 
 		}
 
-		private function assertHeadersNotSent() {
 
-			$this->assertNull( $this->response_service->header_response );
-
-		}
-
-		private function assertBodySent() {
-
-			$this->assertInstanceOf(
-				ResponseInterface::class,
-				$this->response_service->body_response );
-
-			$this->assertSame(
-				$this->response_service->body_response,
-				$this->response_service->header_response
-			);
-
-		}
-
-		private function assertBodyNotSent() {
-
-			$this->assertNull( $this->response_service->body_response );
-
-		}
 
 
 	}

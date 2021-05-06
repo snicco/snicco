@@ -8,6 +8,7 @@
 	use Tests\TestRequest;
 	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Factories\ConditionFactory;
+	use WPEmerge\Http\Response;
 	use WPEmerge\Routing\Conditions\AdminCondition;
 	use WPEmerge\Routing\Conditions\AjaxCondition;
 	use WPEmerge\Routing\Conditions\CustomCondition;
@@ -81,7 +82,7 @@
 
 		private function seeResponse( $expected, $response ) {
 
-			if ( $response instanceof TestResponse ) {
+			if ( $response instanceof Response ) {
 
 				$response = $response->body();
 

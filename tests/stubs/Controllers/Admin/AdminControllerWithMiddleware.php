@@ -8,6 +8,7 @@
 	use Tests\TestRequest;
 	use WPEmerge\Http\Controller;
 	use Tests\stubs\Baz;
+	use WPEmerge\Http\Response;
 
 	class AdminControllerWithMiddleware extends Controller {
 
@@ -30,11 +31,11 @@
 
 		}
 
-		public function handle( TestRequest $request ) : TestResponse {
+		public function handle( TestRequest $request ) : Response {
 
 			$request->body .= $this->baz . ':controller_with_middleware';
 
-			return new TestResponse($request);
+			return new Response($request->body);
 
 		}
 
