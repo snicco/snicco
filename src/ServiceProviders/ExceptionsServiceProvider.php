@@ -43,7 +43,7 @@
 
 			$container->singleton(ErrorHandlerInterface::class, function ($container) {
 
-				$ajax = Request::fromGlobals()->isAjax();
+				$ajax = Request::capture()->isAjax();
 
 				return (( new ExceptionHandlerFactory(WP_DEBUG,$ajax, 'phpstorm')))
 					->create(

@@ -6,9 +6,8 @@
 	use Psr\Http\Message\ResponseInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ServiceProviderInterface;
-	use WPEmerge\Http\Request;
+	use WPEmerge\Request;
 
-	use const WPEMERGE_REQUEST_KEY;
 
 	/**
 	 * Provide request dependencies.
@@ -19,9 +18,9 @@
 
 		public function register( $container ) {
 
-			$container[ WPEMERGE_REQUEST_KEY ] = function () {
+			$container[ RequestInterface::class ] = function () {
 
-				return Request::fromGlobals();
+				return Request::capture();
 
 			};
 

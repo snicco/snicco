@@ -17,7 +17,7 @@
 
 			if ( is_user_logged_in() ) {
 
-				$url = $url ?? home_url( '', $request->getUri()->getScheme() );
+				$url = $url ?? home_url( '', $request->scheme() );
 
 				return ( new RedirectResponse( $request ) )->to( Url::addTrailing($url));
 

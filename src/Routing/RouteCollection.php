@@ -169,7 +169,7 @@
 				$route = ( $cache ) ? $route->compile()->cacheable() : $route->compile();
 
 
-				$this->route_matcher->add( $method, $url, (array) $route );
+				$this->route_matcher->add( $method, $this->normalizePath($url), (array) $route );
 
 			}
 
@@ -238,7 +238,7 @@
 
 		private function normalizePath( string $path ) : string {
 
-			return rtrim( $path, '/' );
+			return trim( $path, '/' );
 
 		}
 

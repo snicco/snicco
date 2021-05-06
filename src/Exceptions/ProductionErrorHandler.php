@@ -26,8 +26,8 @@
 
 		public function transformToResponse( RequestInterface $request, Throwable $exception ) : ResponseInterface {
 
-
 			return $this->defaultResponse($request);
+
 
 		}
 
@@ -45,7 +45,7 @@
 
 		}
 
-		protected function defaultResponse(RequestInterface $request) {
+		protected function defaultResponse(RequestInterface $request) : Response {
 
 			return new Response(
 				500,

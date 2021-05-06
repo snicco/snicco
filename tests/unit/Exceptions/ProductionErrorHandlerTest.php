@@ -3,7 +3,6 @@
 
 	namespace Tests\unit\Exceptions;
 
-	use Codeception\TestCase\WPTestCase;
 	use PHPUnit\Framework\TestCase;
 	use Psr\Http\Message\ResponseInterface;
 	use Tests\stubs\TestResponseService;
@@ -13,7 +12,6 @@
 	use WPEmerge\Factories\ExceptionHandlerFactory;
 
 	class ProductionErrorHandlerTest extends TestCase {
-
 
 
 		/** @test */
