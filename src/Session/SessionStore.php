@@ -214,7 +214,6 @@
 			$this->attributes = [];
 		}
 
-
 		public function invalidate() :bool
 		{
 			$this->flush();
