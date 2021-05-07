@@ -4,8 +4,8 @@
 	namespace WPEmerge\Session;
 
 	use Closure;
-	use Illuminate\Support\Arr;
-	use Illuminate\Support\Str;
+	use WPEmerge\Support\Arr;
+	use WPEmerge\Support\Str;
 	use stdClass;
 	use WPEmerge\Contracts\Session;
 	use SessionHandlerInterface;
@@ -55,7 +55,7 @@
 		{
 			$this->ageFlashData();
 
-			$this->handler->write($this->getId(), serialize($this->attributes) );
+			$this->handler->write( $this->getId(), serialize($this->attributes) );
 
 			$this->started = false;
 		}
@@ -121,7 +121,7 @@
 
 		public function put($key, $value = null) :void
 		{
-			if (! is_array($key)) {
+			if ( ! is_array ($key ) ) {
 				$key = [$key => $value];
 			}
 
@@ -214,6 +214,7 @@
 			$this->attributes = [];
 		}
 
+
 		public function invalidate() :bool
 		{
 			$this->flush();
@@ -264,13 +265,9 @@
 
 		public function isValidId(string $id) :bool
 		{
-			return is_string($id) && ctype_alnum($id) && strlen($id) === 40;
+			return ctype_alnum($id) && strlen($id) === 40;
 		}
 
-		protected function generateSessionId() :string
-		{
-			return Str::random(40);
-		}
 
 		public function previousUrl() :?string
 		{
@@ -285,6 +282,12 @@
 		public function getHandler() :SessionHandlerInterface
 		{
 			return $this->handler;
+		}
+
+
+		private function generateSessionId() :string
+		{
+			return Str::random(40);
 		}
 
 		private function ageFlashData() :void

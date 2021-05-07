@@ -71,7 +71,8 @@
 		public function only( $keys ) : array;
 
 		/**
-		 * Checks if a key exists.
+		 * Checks if a key exists. If multiple keys are passed
+		 * the absence of one key should return false for the function
 		 *
 		 * @param  string|array  $key
 		 *
