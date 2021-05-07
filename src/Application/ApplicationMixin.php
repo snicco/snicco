@@ -197,7 +197,7 @@
 		}
 
 		/**
-		 * Create a view.
+		 * Create a view
 		 *
 		 * @param  string|string[]  $views
 		 *

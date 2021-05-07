@@ -2,23 +2,19 @@
 
 	namespace WPEmerge\ServiceProviders;
 
-	use WPEmerge\Contracts\ResponseServiceInterface;
+	use WPEmerge\Contracts\ResponseFactoryInterface;
 	use WPEmerge\Contracts\ServiceProviderInterface;
-	use WPEmerge\Http\ResponseService;
-
-
+	use WPEmerge\Contracts\ViewServiceInterface;
+	use WPEmerge\Http\ResponseFactory;
 
 	class ResponsesServiceProvider implements ServiceProviderInterface {
 
 		public function register( $container ) {
 
 
-			$container->singleton(ResponseServiceInterface::class, function ( $container ) {
+			$container->singleton(ResponseFactoryInterface::class, function ($c) {
 
-				return new ResponseService(
-					$container[ WPEMERGE_REQUEST_KEY ],
-					$container[ WPEMERGE_VIEW_SERVICE_KEY ]
-				);
+				return new ResponseFactory($c[ViewServiceInterface::class]);
 
 			});
 

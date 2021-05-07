@@ -17,11 +17,6 @@
 
 		}
 
-		/**
-		 * Create an request from a Symfony instance.
-		 *
-		 * @return static
-		 */
 		private static function createFromBase( SymfonyRequest $request) : Request {
 
 			$newRequest = (new static)->duplicate(

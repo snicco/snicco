@@ -4,6 +4,11 @@
 	namespace Tests\integration\Routing;
 
 	use PHPUnit\Framework\TestCase;
+	use Tests\stubs\Conditions\ConditionWithDependency;
+	use Tests\stubs\Conditions\FalseCondition;
+	use Tests\stubs\Conditions\MaybeCondition;
+	use Tests\stubs\Conditions\TrueCondition;
+	use Tests\stubs\Conditions\UniqueCondition;
 	use Tests\stubs\Middleware\BarMiddleware;
 	use Tests\stubs\Middleware\FooMiddleware;
 	use Tests\stubs\Middleware\GlobalMiddleware;
@@ -42,37 +47,16 @@
 				'query_var'            => QueryVarCondition::class,
 				'ajax'                 => AjaxCondition::class,
 				'admin'                => AdminCondition::class,
-				'true'                 => \Tests\stubs\Conditions\TrueCondition::class,
-				'false'                => \Tests\stubs\Conditions\FalseCondition::class,
-				'maybe'                => \Tests\stubs\Conditions\MaybeCondition::class,
-				'unique'               => \Tests\stubs\Conditions\UniqueCondition::class,
-				'dependency_condition' => \Tests\stubs\Conditions\ConditionWithDependency::class,
+				'true'                 => TrueCondition::class,
+				'false'                => FalseCondition::class,
+				'maybe'                => MaybeCondition::class,
+				'unique'               => UniqueCondition::class,
+				'dependency_condition' => ConditionWithDependency::class,
 
 			];
 
 		}
 
-
-		/**
-		 * @todo refactor this to an internal view controller.
-		 */
-		public function view_routes_work() {
-
-			// $this->newBluePrint()->view( '/welcome', 'welcome', [ 'name' => 'Calvin' ] );
-			//
-			// $view = $this->router->runRoute( $this->request( 'GET', '/welcome' ) );
-			//
-			// $this->assertInstanceOf( ViewInterface::class, $view );
-			//
-			// $this->assertSame( 'welcome', $view->view );
-			//
-			// $this->newBluePrint()->view( '/welcome', 'welcome', [ 'name' => 'Calvin' ] );
-			//
-			// $view = $this->router->runRoute( $this->request( 'POST', '/welcome' ) );
-			//
-			// $this->assertNull( $view );
-
-		}
 
 
 		/**

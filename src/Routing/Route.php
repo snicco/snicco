@@ -57,6 +57,8 @@
 
 		private $regex;
 
+		/** @var array */
+		private $defaults;
 
 		public function __construct( array $methods, string $url, $action, array $attributes = [] ) {
 
@@ -75,6 +77,7 @@
 				'middleware' => $this->middleware ?? [],
 				'conditions' => $this->conditions ?? [],
 				'namespace'  => $this->namespace ?? '',
+				'defaults'  => $this->defaults ?? [],
 			] );
 
 		}
