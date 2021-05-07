@@ -9,6 +9,7 @@
 	use WPEmerge\Contracts\EncryptorInterface;
 	use WPEmerge\Exceptions\EncryptException;
 	use WPEmerge\Exceptions\DecryptException;
+	use WPEmerge\Support\Str;
 
 	class Encryptor implements EncryptorInterface {
 
@@ -17,9 +18,9 @@
 		 */
 		private $encryptor;
 
-		public function __construct( $key, $cipher = 'AES-128-CBC') {
+		public function __construct( string $key ) {
 
-			$this->encryptor = new Encrypter($key, $cipher);
+			$this->encryptor = new Encrypter($this->parseKey($key), 'AES-256-CBC');
 
 		}
 
@@ -27,7 +28,7 @@
 
 			try {
 
-				return $this->encryptor->encrypt($value, $serialize);
+				return $this->encryptor->encrypt( $value, $serialize );
 
 			}
 			catch ( IlluminateEncryptException $e ) {
@@ -83,6 +84,30 @@
 
 			}
 
+		}
+
+		public static function generateKey() : string {
+
+			return 'base64:'.base64_encode( random_bytes(32) );
+
+		}
+
+		/**
+		 * Parse the encryption key.
+		 *
+		 * @param  string  $key
+		 *
+		 * @return string
+		 */
+		private function parseKey( string $key ) :string
+		{
+			if (Str::startsWith( $key, $prefix = 'base64:') ) {
+
+				$key = base64_decode(Str::after($key, $prefix));
+
+			}
+
+			return $key;
 		}
 
 	}
