@@ -1,19 +1,25 @@
 <?php
 
 
-	namespace WPEmerge;
+	namespace WPEmerge\Factories;
 
 	use BetterWpHooks\Contracts\Dispatcher;
+	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Events\AdminBodySendable;
 	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingAjaxRequest;
 
+	use function get_plugin_page_hook;
+	use function wp_doing_ajax;
+
 	class DynamicHooksFactory {
+
 
 		/**
 		 * @var \BetterWpHooks\Dispatchers\WordpressDispatcher
 		 */
 		private $dispatcher;
+
 
 		public function __construct( Dispatcher $dispatcher ) {
 
@@ -21,16 +27,16 @@
 
 		}
 
-		public function handleEvent() {
+		public function create( RequestInterface $request ) {
 
 			if ( wp_doing_ajax() ) {
 
-				$this->createAjaxHooks();
+				$this->createAjaxHooks($request);
 
 				return;
 			}
 
-			$this->createAdminHooks();
+			$this->createAdminHooks($request);
 
 
 		}
@@ -56,20 +62,20 @@
 
 		}
 
-		private function createAjaxHooks() {
+		private function createAjaxHooks(RequestInterface $request) {
 
 
 			$action = ( isset( $_REQUEST['action'] ) ) ? $_REQUEST['action'] : '';
 
-			$this->dispatcher->listen( 'wp_ajax_' . $action, function () {
+			$this->dispatcher->listen( 'wp_ajax_' . $action, function () use ( $request ) {
 
-				IncomingAjaxRequest::dispatch( [] );
+				IncomingAjaxRequest::dispatch([$request]);
 
 			} );
 
-			$this->dispatcher->listen( 'wp_ajax_nopriv_' . $action, function () {
+			$this->dispatcher->listen( 'wp_ajax_nopriv_' . $action, function () use ( $request ) {
 
-				IncomingAjaxRequest::dispatch( [] );
+				IncomingAjaxRequest::dispatch([$request]);
 
 			} );
 
@@ -77,19 +83,19 @@
 
 		}
 
-		private function createAdminHooks() {
+		private function createAdminHooks(RequestInterface $request) {
 
 			if ( $hook = $this->getAdminPageHook() ) {
 
-				$this->dispatcher->listen( 'load-' . $hook, function () {
+				$this->dispatcher->listen( 'load-' . $hook, function () use ( $request ) {
 
-					IncomingAdminRequest::dispatch( [] );
+					IncomingAdminRequest::dispatch([$request]);
 
 				} );
 
 				$this->dispatcher->listen( $hook, function () {
 
-					AdminBodySendable::dispatch( [] );
+					AdminBodySendable::dispatch();
 
 				} );
 

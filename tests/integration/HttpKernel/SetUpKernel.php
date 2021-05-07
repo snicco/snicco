@@ -75,8 +75,8 @@
 
 		private function createIncomingWebRequest( $method, $path ) : IncomingWebRequest {
 
-			$request_event          = new IncomingWebRequest( 'wordpress.php' );
-			$request_event->request = TestRequest::from( $method, $path );
+			$request = TestRequest::from( $method, $path );
+			$request_event          = new IncomingWebRequest( 'wordpress.php', $request );
 			$request_event->request->setType(IncomingWebRequest::class);
 
 			return $request_event;
@@ -85,8 +85,8 @@
 
 		private function createIncomingAdminRequest( $method, $path ) : IncomingAdminRequest {
 
-			$request_event          = new IncomingAdminRequest();
-			$request_event->request = TestRequest::from( $method, $path );
+			$request = TestRequest::from( $method, $path );
+			$request_event          = new IncomingAdminRequest($request);
 			$request_event->request->setType(IncomingAdminRequest::class);
 
 			return $request_event;

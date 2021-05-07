@@ -3,37 +3,29 @@
 
 	namespace WPEmerge\ServiceProviders;
 
-	use Psr\Http\Message\ResponseInterface;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Contracts\ServiceProviderInterface;
+	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Http\Request;
 
-
-	/**
-	 * Provide request dependencies.
-	 *
-	 */
-	class RequestsServiceProvider implements ServiceProviderInterface {
+	class RequestsServiceProvider extends ServiceProvider {
 
 
-		public function register( $container ) {
+		public function register() : void {
 
-			$container[ RequestInterface::class ] = function () {
+			$this->container->singleton( RequestInterface::class, function () {
 
-				return Request::capture();
 
-			};
+				$this->container->instance( RequestInterface::class, $request = Request::capture() );
 
-			$container->singleton(ResponseInterface::class, function () {
+				return $request;
 
-				return null;
+			} );
 
-			});
 
 		}
 
 
-		public function bootstrap( $container ) {
+		public function bootstrap() : void {
 			// Nothing to bootstrap.
 		}
 

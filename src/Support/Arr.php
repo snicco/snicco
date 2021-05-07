@@ -68,4 +68,19 @@
 
 		}
 
+		public static function combineNumerical ( array $merge_into, $values ) : array {
+
+			$merge_into = Arr::wrap($merge_into);
+			$values = array_values(Arr::wrap($values));
+
+			foreach ($values as $value) {
+
+				$merge_into[] = $value;
+
+			}
+
+			return array_values(array_unique($merge_into, SORT_REGULAR));
+
+		}
+
 	}

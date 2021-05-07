@@ -5,40 +5,36 @@
 
 	use Codeception\PHPUnit\TestCase;
 	use SniccoAdapter\BaseContainerAdapter;
+	use WPEmerge\Application\ApplicationConfig;
+	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Traits\ExtendsConfig;
 
 
-	class ExtendsConfigTraitTest extends TestCase {
+	class ExtendsConfigTest extends TestCase {
 
 
 		/**
-		 * @var \Tests\unit\Traits\TestServiceProvider
+		 * @var \WPEmerge\Application\ApplicationConfig
 		 */
-		private $subject;
+		private $config;
 
 		public function setUp() : void {
 
 			parent::setUp();
 
-			$this->subject = new TestServiceProvider();
-		}
-
-		public function tearDown() : void {
-			parent::tearDown();
-			unset( $this->subject );
+			$this->config = new ApplicationConfig();
 
 		}
+
 
 		/** @test */
 		public function the_default_gets_set_if_the_key_is_not_present_in_the_user_config() {
 
-			$container = new BaseContainerAdapter();
-			$container[ WPEMERGE_CONFIG_KEY ] = [];
+			$this->assertSame(null , $this->config->get('foo'));
 
+			$this->config->extend('foo', 'bar');
 
-			$this->subject->extendConfig( $container, 'foo', 'bar' );
-
-			$this->assertEquals( 'bar', $container[ WPEMERGE_CONFIG_KEY ][ 'foo' ] );
+			$this->assertEquals( 'bar', $this->config->get('foo') );
 
 
 		}
@@ -46,16 +42,16 @@
 		/** @test */
 		public function user_config_has_precedence_over_default_config() {
 
-			$container = new BaseContainerAdapter();
+			$this->assertSame(null , $this->config->get('foo'));
 
-			$container[ WPEMERGE_CONFIG_KEY ] = [
-				'foo' => 'foo',
-			];
+			$this->config->set('foo', 'bar');
 
+			$this->assertSame('bar' , $this->config->get('foo'));
 
-			$this->subject->extendConfig( $container, 'foo', 'bar' );
+			$this->config->extend('foo', 'baz');
 
-			$this->assertEquals( 'foo', $container[ WPEMERGE_CONFIG_KEY ][ 'foo' ] );
+			$this->assertSame('bar' , $this->config->get('foo'));
+
 		}
 
 		/** @test */
@@ -149,8 +145,14 @@
 
 	}
 
-	class TestServiceProvider {
+	class TestServiceProvider extends ServiceProvider {
 
 		use ExtendsConfig;
+
+		public function register() : void {
+		}
+
+		function bootstrap() : void {
+		}
 
 	}

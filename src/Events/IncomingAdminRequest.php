@@ -6,14 +6,15 @@
 
 
 	use BetterWpHooks\Traits\DispatchesConditionally;
+	use WPEmerge\Contracts\RequestInterface;
 
 	class IncomingAdminRequest extends IncomingRequest {
 
 		use DispatchesConditionally;
 
-		public function __construct() {
+		public function __construct(RequestInterface $request) {
 
-			parent::__construct();
+			parent::__construct($request);
 
 			$this->request->setType(get_class($this));
 

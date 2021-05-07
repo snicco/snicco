@@ -8,7 +8,7 @@
 	use Mockery as m;
 	use SniccoAdapter\BaseContainerAdapter;
 	use WPEmerge\Application\Application;
-	use WPEmerge\Contracts\ServiceProviderInterface;
+	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Exceptions\ConfigurationException;
 
 	class ApplicationTest extends WPTestCase {
@@ -78,7 +78,9 @@
 
 			$app->bootstrap(['foo' => 'bar']);
 
-			$this->assertEquals($app->container()[WPEMERGE_CONFIG_KEY]['foo'], 'bar');
+			$this->assertEquals($app->container()['_config']['foo'], 'bar');
+
+
 
 		}
 
@@ -126,18 +128,18 @@
 
 	}
 
-	class UserServiceProvider implements ServiceProviderInterface{
+	class UserServiceProvider extends ServiceProvider{
 
 
-		public function register( ContainerAdapter $container ) {
+		public function register(  ) :void {
 
-			$container->instance('foo', 'bar');
+			$this->container->instance('foo', 'bar');
 
 		}
 
-		public function bootstrap( ContainerAdapter $container ) {
+		public function bootstrap(  ) :void {
 
-			$container->instance('foo_bootstrapped', 'bar_bootstrapped');
+			$this->container->instance('foo_bootstrapped', 'bar_bootstrapped');
 
 		}
 

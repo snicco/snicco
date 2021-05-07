@@ -4,30 +4,30 @@
 	namespace WPEmerge\ServiceProviders;
 
 	use Contracts\ContainerAdapter;
-	use WPEmerge\Contracts\ServiceProviderInterface;
+	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Factories\AbstractFactory;
 	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Factories\ViewComposerFactory;
 
-	class FactoryServiceProvider implements ServiceProviderInterface {
+	class FactoryServiceProvider extends ServiceProvider {
 
 
-		public function register( ContainerAdapter $container ) {
+		public function register() :void  {
 
-			$container->singleton(HandlerFactory::class, function ($c) {
+			$this->container->singleton(HandlerFactory::class, function () {
 
 				return new HandlerFactory(
-					$c[WPEMERGE_CONFIG_KEY]['controllers'] ?? [],
-					$c[WPEMERGE_CONTAINER_ADAPTER]
+					$this->config['controllers'] ?? [],
+					$this->container
 				);
 
 			});
 
-			$container->singleton(ViewComposerFactory::class, function ($c) {
+			$this->container->singleton(ViewComposerFactory::class, function () {
 
 				return new ViewComposerFactory(
-					$c[WPEMERGE_CONFIG_KEY]['composers'] ?? [],
-					$c[WPEMERGE_CONTAINER_ADAPTER]
+					$this->config['composers'] ?? [],
+					$this->container
 				);
 
 			});
@@ -37,7 +37,7 @@
 		}
 
 
-		public function bootstrap( ContainerAdapter $container ) {
+		public function bootstrap() :void  {
 
 
 		}

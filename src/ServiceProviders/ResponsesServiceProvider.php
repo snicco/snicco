@@ -3,18 +3,18 @@
 	namespace WPEmerge\ServiceProviders;
 
 	use WPEmerge\Contracts\ResponseFactoryInterface;
-	use WPEmerge\Contracts\ServiceProviderInterface;
+	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Contracts\ViewServiceInterface;
 	use WPEmerge\Http\ResponseFactory;
 
-	class ResponsesServiceProvider implements ServiceProviderInterface {
+	class ResponsesServiceProvider extends ServiceProvider {
 
-		public function register( $container ) {
+		public function register() :void {
 
 
-			$container->singleton(ResponseFactoryInterface::class, function ($c) {
+			$this->container->singleton(ResponseFactoryInterface::class, function () {
 
-				return new ResponseFactory($c[ViewServiceInterface::class]);
+				return new ResponseFactory($this->container->make(ViewServiceInterface::class));
 
 			});
 
@@ -22,7 +22,7 @@
 
 		}
 
-		public function bootstrap( $container ) {
+		public function bootstrap() :void  {
 			// Nothing to bootstrap.
 		}
 

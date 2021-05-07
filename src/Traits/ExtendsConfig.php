@@ -4,33 +4,37 @@
 
 	namespace WPEmerge\Traits;
 
-	use Contracts\ContainerAdapter;
+	use WPEmerge\Support\Arr;
 	use WPEmerge\Support\WPEmgereArr;
 
-	use const WPEMERGE_CONFIG_KEY;
 
 	trait ExtendsConfig {
-
 
 
 		/**
 		 * Extends the WP Emerge config in the container with a new key.
 		 *
-		 * @param  ContainerAdapter  $container
 		 * @param  string  $key
 		 * @param  mixed  $default
 		 *
 		 * @return void
 		 */
-		public function extendConfig( ContainerAdapter $container, string $key, $default ) {
+		public function extend( string $key, $default ) {
 
-			$config = isset( $container[ WPEMERGE_CONFIG_KEY ] ) ? $container[ WPEMERGE_CONFIG_KEY ] : [];
-			$config_part = WPEmgereArr::get( $config, $key, $default );
 
-			$container[ WPEMERGE_CONFIG_KEY ] = array_merge(
-				$container[ WPEMERGE_CONFIG_KEY ],
-				[ $key => $this->replaceConfig( $default, $config_part ) ]
-			);
+			// $config = isset( $container[ WPEMERGE_CONFIG_KEY ] ) ? $container[ WPEMERGE_CONFIG_KEY ] : [];
+			// $config_part = WPEmgereArr::get( $config, $key, $default );
+			//
+			// $container[ WPEMERGE_CONFIG_KEY ] = array_merge(
+			// 	$container[ WPEMERGE_CONFIG_KEY ],
+			// 	[ $key => $this->replaceConfig( $default, $config_part ) ]
+			// );
+			//
+			// $this->config = array_merge(
+			// 	$this->config,
+			// 	[$key => $this->replaceConfig($default, $config_part)]
+			// );
+
 		}
 
 

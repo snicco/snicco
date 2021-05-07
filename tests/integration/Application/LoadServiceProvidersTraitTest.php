@@ -4,22 +4,19 @@
 	namespace Tests\integration\Application;
 
 	use Codeception\TestCase\WPTestCase;
+	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\ServiceProviders\AliasServiceProvider;
 	use WPEmerge\ServiceProviders\ApplicationServiceProvider;
-	use WPEmerge\ServiceProviders\CsrfServiceProvider;
+	use WPEmerge\ServiceProviders\EventServiceProvider;
 	use WPEmerge\ServiceProviders\ExceptionsServiceProvider;
 	use WPEmerge\ServiceProviders\FactoryServiceProvider;
-	use WPEmerge\ServiceProviders\FlashServiceProvider;
-	use WPEmerge\ServiceProviders\KernelsServiceProvider;
-	use WPEmerge\ServiceProviders\MiddlewareServiceProvider;
+	use WPEmerge\ServiceProviders\KernelServiceProvider;
 	use WPEmerge\ServiceProviders\RequestsServiceProvider;
 	use WPEmerge\ServiceProviders\ResponsesServiceProvider;
 	use WPEmerge\ServiceProviders\RoutingServiceProvider;
-	use WPEmerge\ServiceProviders\OldInputServiceProvider;
 	use WPEmerge\ServiceProviders\ViewServiceProvider;
 	use Tests\stubs\TestApp;
-	use Tests\stubs\TestProvider1;
-	use Tests\stubs\TestProvider2;
+	use Tests\stubs\TestProvider;
 	use Tests\stubs\TestService;
 
 	class LoadServiceProvidersTraitTest extends WPTestCase {
@@ -29,16 +26,13 @@
 			AliasServiceProvider::class,
 			FactoryServiceProvider::class,
 			ApplicationServiceProvider::class,
-			KernelsServiceProvider::class,
+			KernelServiceProvider::class,
 			ExceptionsServiceProvider::class,
 			RequestsServiceProvider::class,
 			ResponsesServiceProvider::class,
 			RoutingServiceProvider::class,
 			ViewServiceProvider::class,
-			CsrfServiceProvider::class,
-			FlashServiceProvider::class,
-			OldInputServiceProvider::class,
-
+			EventServiceProvider::class,
 
 		];
 
@@ -50,24 +44,22 @@
 			$user_config = [
 
 				'providers' => [
-					TestProvider1::class,
-					TestProvider2::class,
-				]
+					TestProvider::class,
+				],
 			];
 
 			$app::make();
-			$app::bootstrap($user_config);
+			$app::bootstrap( $user_config );
 
 			$container = $app::container();
 
-			foreach ( $this->service_providers  as $service_provider ) {
+			foreach ( $this->service_providers as $service_provider ) {
 
-				$this->assertTrue($container->offsetExists($service_provider), $service_provider . ' not found in container.');
+				$this->assertTrue( $container->offsetExists( $service_provider ), $service_provider . ' not found in container.' );
 
 			}
 
-			$this->assertTrue($container->offsetExists(TestProvider1::class));
-			$this->assertTrue($container->offsetExists(TestProvider2::class));
+			$this->assertTrue( $container->offsetExists( TestProvider::class ) );
 
 
 		}
@@ -76,41 +68,39 @@
 		public function an_exception_gets_thrown_if_a_service_provider_doesnt_implement_the_correct_interface() {
 
 
-			$this->expectExceptionMessage('The following class does not implement');
+			$this->expectExceptionMessage( 'The following class does not implement' );
 
 			$app = new TestApp();
 
 			$user_config = [
 
 				'providers' => [
-					TestService::class
-				]
+					TestService::class,
+				],
 			];
 
 			$app::make();
-			$app::bootstrap($user_config);
+			$app::bootstrap( $user_config );
 
 
 		}
 
 		/** @test */
-		public function the_register_method_gets_called_correctly_with_the_container_instance(  ) {
+		public function the_register_method_gets_called_correctly_with_the_container_instance() {
 
 			$app = new TestApp();
-
 
 			$user_config = [
 
 				'providers' => [
-					TestProvider1::class,
-				]
+					TestProvider::class,
+				],
 			];
 
-
 			$app::make();
-			$app::bootstrap($user_config);
+			$app::bootstrap( $user_config );
 
-			$this->assertSame('bar', $app::container()['foo']);
+			$this->assertSame( 'bar', $app::container()['foo'] );
 
 
 		}
@@ -120,23 +110,75 @@
 
 			$app = new TestApp();
 
+			$user_config = [
+
+				'providers' => [
+					TestProvider::class,
+				],
+			];
+
+			$app::make();
+			$app::bootstrap( $user_config );
+
+			$this->assertSame( 'baz', $app::container()['bar'] );
+
+		}
+
+		/** @test */
+		public function all_service_providers_share_the_same_configuration() {
+
+
+			$app = new TestApp();
 
 			$user_config = [
 
 				'providers' => [
-					TestProvider1::class,
-				]
+					Provider1::class,
+					Provider2::class,
+				],
 			];
 
-
 			$app::make();
-			$app::bootstrap($user_config);
+			$app::bootstrap( $user_config );
 
-			$this->assertSame('baz', $app::container()['bar']);
+			$this->assertSame( 'bar', $app::container()['config_value'] );
+			$this->assertSame( 'bar', $app::container()['_config']['bar'] );
+
 
 		}
 
 
 	}
 
+
+	class Provider1 extends ServiceProvider {
+
+		public function register() : void {
+
+			$this->config['bar'] = 'bar';
+
+		}
+
+		function bootstrap() : void {
+
+		}
+
+	}
+
+
+	class Provider2 extends ServiceProvider {
+
+		public function register() : void {
+
+			$value = $this->config['bar'] ?? 'wrong-value';
+			$this->container->instance('config_value', $value);
+
+		}
+
+		function bootstrap() : void {
+
+
+		}
+
+	}
 

@@ -4,6 +4,7 @@
 	namespace WPEmerge\Events;
 
 	use WPEmerge\Application\ApplicationEvent;
+	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Http\Request;
 
 	class IncomingRequest extends ApplicationEvent {
@@ -22,11 +23,9 @@
 		 * Implement this in BetterWpHooks to allow mapped events to resolve from the container.
 		 *
 		 */
-		public function __construct() {
+		public function __construct(RequestInterface $request) {
 
-			$this->request = Request::capture();
-
-			$this->request->setType(get_class($this));
+			$this->request = $request;
 
 		}
 

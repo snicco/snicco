@@ -4,8 +4,10 @@
 	namespace WPEmerge\Application;
 
 	use Contracts\ContainerAdapter;
+	use Illuminate\Config\Repository;
 	use SniccoAdapter\BaseContainerAdapter;
 	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\Support\VariableBag;
 
 	class Application {
 
@@ -16,6 +18,11 @@
 
 
 		private $bootstrapped = false;
+
+		/**
+		 * @var array
+		 */
+		private $config;
 
 
 		public function __construct( ContainerAdapter $container) {
@@ -60,7 +67,7 @@
 
 			$this->bindConfig( $config );
 
-			$this->loadServiceProviders( $this->container() );
+			$this->loadServiceProviders( $this->container());
 
 			$this->bootstrapped = true;
 
@@ -70,7 +77,10 @@
 
 		private function bindConfig( array $config ) {
 
-			$this->container()[ WPEMERGE_CONFIG_KEY ] = $config;
+			$config = new ApplicationConfig($config);
+
+			$this->container()->instance(ApplicationConfig::class, $config );
+			$this->config = $config;
 
 		}
 

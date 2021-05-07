@@ -1,19 +1,12 @@
 <?php
-	/**
-	 * @package   WPEmerge
-	 * @author    Atanas Angelov <hi@atanas.dev>
-	 * @copyright 2017-2019 Atanas Angelov
-	 * @license   https://www.gnu.org/licenses/gpl-2.0.html GPL-2.0
-	 * @link      https://wpemerge.com/
-	 */
 
 
 	namespace WPEmerge\ServiceProviders;
 
-	use WPEmerge\Contracts\ServiceProviderInterface;
+	use WPEmerge\Contracts\ServiceProvider;
+	use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewFinderInterface;
 	use WPEmerge\Contracts\ViewServiceInterface;
-	use WPEmerge\Support\Path;
 	use WPEmerge\Traits\ExtendsConfig;
 	use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\View\PhpViewFinder;
@@ -27,104 +20,91 @@
 	use function get_stylesheet_directory;
 	use function get_template_directory;
 
-	use const WPEMERGE_CONFIG_KEY;
-	use const WPEMERGE_VIEW_COMPOSE_ACTION_KEY;
-	use const WPEMERGE_VIEW_ENGINE_KEY;
-	use const WPEMERGE_VIEW_PHP_VIEW_ENGINE_KEY;
-	use const WPEMERGE_VIEW_SERVICE_KEY;
 
 	/**
 	 * Provide view dependencies
 	 *
 	 */
-	class ViewServiceProvider implements ServiceProviderInterface {
+	class ViewServiceProvider extends ServiceProvider {
 
 		use ExtendsConfig;
 
-		public function register( $container ) {
+		public function register() : void {
 
 			/** @todo Refactor to custom class without wp functions */
-			$this->extendConfig( $container, 'views', [
+			$this->extendConfig( $this->container, 'views', [
 				get_stylesheet_directory(),
 				get_template_directory(),
 			] );
 
-			$this->extendConfig( $container, 'view_composers', [
-				'namespace' => 'App\\ViewComposers\\',
-			] );
-
-			$container->singleton( ViewServiceInterface::class, function ( $c ) {
+			$this->container->singleton( ViewServiceInterface::class, function () {
 
 				return new ViewService(
-					$c[ WPEMERGE_VIEW_ENGINE_KEY ],
-					$c[ViewComposerCollection::class],
-					$c['global.variables']
+					$this->container->make( ViewEngineInterface::class ),
+					$this->container->make( ViewComposerCollection::class ),
+					new VariableBag()
 
 				);
+
 			} );
 
-			$container->singleton( WPEMERGE_VIEW_COMPOSE_ACTION_KEY, function ( $c ) {
+			/** @todo Why do we need this instead of injecting it directly */
+			$this->container->singleton( 'view.compose.closure', function () {
 
-				return function ( ViewInterface $view ) use ( $c ) {
+				return function ( ViewInterface $view ) {
 
-					$view_service = $c[ WPEMERGE_VIEW_SERVICE_KEY ];
+					$view_service = $this->container->make( ViewServiceInterface::class );
 					$view_service->compose( $view );
 
 					return $view;
+
 				};
 			} );
 
-			$container->singleton(ViewFinderInterface::class, function ($c) {
+			$this->container->singleton( ViewFinderInterface::class, function () {
 
-				return new PhpViewFinder(
-					$c[ WPEMERGE_CONFIG_KEY ]['views'] ?? []
-				);
+				return new PhpViewFinder( $this->config['views'] ?? [] );
 
-			});
 
-			$container->singleton( WPEMERGE_VIEW_PHP_VIEW_ENGINE_KEY, function ( $c ) {
+			} );
+
+			$this->container->singleton( PhpViewEngine::class, function () {
 
 				return new PhpViewEngine(
-					$c[ WPEMERGE_VIEW_COMPOSE_ACTION_KEY ],
-					$c[ViewFinderInterface::class]
+					$this->container->make('view.compose.closure'),
+					$this->container->make(ViewFinderInterface::class),
 				);
-
-			});
-
-			$container->singleton( WPEMERGE_VIEW_ENGINE_KEY, function ( $c ) {
-
-				return $c[ WPEMERGE_VIEW_PHP_VIEW_ENGINE_KEY ];
 
 			} );
 
-			$container->singleton( ViewComposerCollection::class, function ( $c ) {
+			$this->container->singleton( ViewEngineInterface::class, function () {
+
+				return $this->container->make( PhpViewEngine::class );
+
+			} );
+
+			$this->container->singleton( ViewComposerCollection::class, function () {
 
 				return new ViewComposerCollection(
-					$c[ViewComposerFactory::class],
-					$c[ViewFinderInterface::class]
+					$this->container->make(ViewComposerFactory::class),
+					$this->container->make(ViewFinderInterface::class),
 				);
 
 			} );
 
-			$container->singleton(ViewComposerFactory::class, function ($c) {
+			$this->container->singleton( ViewComposerFactory::class, function ( $c ) {
 
 				return new ViewComposerFactory(
-					$c[WPEMERGE_CONFIG_KEY]['composers'] ?? [],
-					$c[WPEMERGE_CONTAINER_ADAPTER]
-			);
+					$this->config['composers'] ?? [],
+					$this->container,
+				);
 
-			});
+			} );
 
-			$container->singleton('global.variables', function ($container) {
-
-				return new VariableBag();
-
-			});
 
 		}
 
-
-		public function bootstrap( $container ) {
+		public function bootstrap() : void {
 			// Nothing to bootstrap.
 		}
 
