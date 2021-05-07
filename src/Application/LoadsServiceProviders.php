@@ -4,20 +4,17 @@
 	namespace WPEmerge\Application;
 
 	use Contracts\ContainerAdapter;
-	use WPEmerge\ServiceProviders\CsrfServiceProvider;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\ServiceProviders\AliasServiceProvider;
 	use WPEmerge\ServiceProviders\EventServiceProvider;
 	use WPEmerge\ServiceProviders\ExceptionsServiceProvider;
 	use WPEmerge\ServiceProviders\FactoryServiceProvider;
-	use WPEmerge\ServiceProviders\KernelsServiceProvider;
+	use WPEmerge\ServiceProviders\KernelServiceProvider;
 	use WPEmerge\ServiceProviders\RequestsServiceProvider;
 	use WPEmerge\ServiceProviders\ResponsesServiceProvider;
 	use WPEmerge\ServiceProviders\ApplicationServiceProvider;
 	use WPEmerge\ServiceProviders\RoutingServiceProvider;
-	use WPEmerge\ServiceProviders\FlashServiceProvider;
-	use WPEmerge\ServiceProviders\OldInputServiceProvider;
-	use WPEmerge\Contracts\ServiceProviderInterface;
+	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\ServiceProviders\ViewServiceProvider;
 
 	/**
@@ -39,15 +36,12 @@
 			AliasServiceProvider::class,
 			FactoryServiceProvider::class,
 			ApplicationServiceProvider::class,
-			KernelsServiceProvider::class,
+			KernelServiceProvider::class,
 			ExceptionsServiceProvider::class,
 			RequestsServiceProvider::class,
 			ResponsesServiceProvider::class,
 			RoutingServiceProvider::class,
 			ViewServiceProvider::class,
-			CsrfServiceProvider::class,
-			FlashServiceProvider::class,
-			OldInputServiceProvider::class,
 			EventServiceProvider::class
 		];
 
@@ -56,18 +50,14 @@
 		 *
 		 * Register and bootstrap all service providers.
 		 *
-		 *
-		 * @param  ContainerAdapter  $container
-		 *
-		 * @return void
 		 */
-		public function loadServiceProviders( ContainerAdapter $container ) {
+		public function loadServiceProviders( ContainerAdapter $container ) :void {
 
-			$user_providers = collect( $container[ WPEMERGE_CONFIG_KEY ] )->get( 'providers', [] );
+			$user_providers = $this->config->get( 'providers', [] );
 
 			$providers = collect( $this->service_providers )->merge( $user_providers );
 
-			$container[ WPEMERGE_SERVICE_PROVIDERS_KEY ] = $providers->all();
+			$container->instance('_providers', $providers->all());
 
 
 			$providers = $providers->each( [ $this, 'isValid' ] )
@@ -75,25 +65,24 @@
 			                       ->each( [ $this, 'addToContainer' ] )
 			                       ->toArray();
 
-			$this->registerServiceProviders( $providers, $container );
+			$this->registerServiceProviders( $providers );
 
-			$this->bootstrapServiceProviders( $providers, $container );
+			$this->bootstrapServiceProviders( $providers );
 
 		}
 
 		/**
 		 * Register all service providers.
 		 *
-		 * @param  ServiceProviderInterface[]  $service_providers
-		 * @param  ContainerAdapter  $container
+		 * @param  ServiceProvider[]  $service_providers
 		 *
 		 * @return void
 		 */
-		private function registerServiceProviders( array $service_providers, ContainerAdapter $container ) {
+		private function registerServiceProviders( array $service_providers ) {
 
 			foreach ( $service_providers as $provider ) {
 
-				$provider->register( $container );
+				$provider->register();
 
 			}
 		}
@@ -102,16 +91,15 @@
 		 * Bootstrap all service providers.
 		 * At this point all services are bootstrapped in the IoC-Container
 		 *
-		 * @param  ServiceProviderInterface[]  $service_providers
-		 * @param  ContainerAdapter  $container
+		 * @param  ServiceProvider[]  $service_providers
 		 *
 		 * @return void
 		 */
-		private function bootstrapServiceProviders( array $service_providers, ContainerAdapter $container ) {
+		private function bootstrapServiceProviders( array $service_providers ) {
 
 			foreach ( $service_providers as $provider ) {
 
-				$provider->bootstrap( $container );
+				$provider->bootstrap();
 
 			}
 		}
@@ -123,10 +111,10 @@
 		 */
 		private function isValid( string $provider ) {
 
-			if ( ! is_subclass_of( $provider, ServiceProviderInterface::class ) ) {
+			if ( ! is_subclass_of( $provider, ServiceProvider::class ) ) {
 				throw new ConfigurationException(
 					'The following class does not implement ' .
-					ServiceProviderInterface::class . ': ' . $provider
+					ServiceProvider::class . ': ' . $provider
 				);
 			}
 
@@ -135,22 +123,21 @@
 		/**
 		 * @param  string  $provider
 		 *
-		 * @return ServiceProviderInterface
+		 * @return ServiceProvider
 		 */
-		private function instantiate( string $provider ) : ServiceProviderInterface {
+		private function instantiate( string $provider ) : ServiceProvider {
 
-			return new $provider();
+			return new $provider($this->container(), $this->config);
 
 		}
 
 		/**
-		 * @param  ServiceProviderInterface  $provider
+		 * @param  ServiceProvider  $provider
 		 *
 		 */
-		private function addToContainer( ServiceProviderInterface $provider ) {
+		private function addToContainer( ServiceProvider $provider ) {
 
-			$this->container()[ get_class( $provider ) ] = $provider;
-
+			$this->container()->instance(get_class($provider), $provider);
 
 		}
 

@@ -3,20 +3,17 @@
 
 	namespace WPEmerge\ServiceProviders;
 
-	use Contracts\ContainerAdapter;
 	use WPEmerge\Application\Application;
-	use WPEmerge\Contracts\ResponseServiceInterface;
-	use WPEmerge\Contracts\ServiceProviderInterface;
-	use WPEmerge\Support\VariableBag;
+	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
-	use WPEmerge\Factories\ViewComposerFactory;
 
-	class AliasServiceProvider implements ServiceProviderInterface {
-
-		public function register( ContainerAdapter $container ) {
+	class AliasServiceProvider extends ServiceProvider {
 
 
-			$app = $container[ WPEMERGE_APPLICATION_KEY ];
+		/** @todo clean up all aliases and create tests that they work */
+		public function register() :void {
+
+			$app = $this->container[ WPEMERGE_APPLICATION_KEY ];
 
 			$this->applicationAliases($app);
 			$this->responseAliases($app);
@@ -27,13 +24,14 @@
 
 		}
 
-		public function bootstrap( ContainerAdapter $container ) {
-			//
+		public function bootstrap( ) :void  {
+
+
 		}
 
 		private function applicationAliases ( Application $app ) {
 
-			$app->alias( 'app', WPEMERGE_APPLICATION_KEY );
+			$app->alias( 'app', Application::class );
 
 
 		}

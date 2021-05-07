@@ -12,11 +12,11 @@
 		/**
 		 * Create a view instance from the first view name that exists.
 		 *
-		 * @param  string[]  $views
+		 * @param  string|string[]  $views
 		 *
 		 * @return ViewInterface
 		 */
-		public function make( $views );
+		public function make( $views ) : ViewInterface;
 
 
 	}

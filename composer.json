@@ -45,7 +45,7 @@
     "calvinalkan/base-container": "0.1.*",
     "illuminate/collections": "8.35.1",
     "ext-json": "*",
-    "calvinalkan/better-wordpress-hooks": "0.1.3",
+    "calvinalkan/better-wordpress-hooks": "0.1.5",
     "illuminate/config": "8.35.1",
     "nikic/fast-route": "1.3.0",
     "opis/closure": "3.6.2",

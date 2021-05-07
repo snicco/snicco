@@ -3,8 +3,9 @@
 
 	namespace WPEmerge\ServiceProviders;
 
+	use Codeception\Step\Condition;
 	use WPEmerge\Contracts\RouteMatcher;
-	use WPEmerge\Contracts\ServiceProviderInterface;
+	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
@@ -26,7 +27,7 @@
 	use WPEmerge\Support\Arr;
 	use WPEmerge\Traits\ExtendsConfig;
 
-	class RoutingServiceProvider implements ServiceProviderInterface {
+	class RoutingServiceProvider extends ServiceProvider {
 
 		use ExtendsConfig;
 
@@ -49,25 +50,23 @@
 		];
 
 
-		public function register( $container ) {
+		public function register() :void  {
 
 
+			$this->container->instance('route.conditions', static::$condition_types);
 
-			$container->instance(WPEMERGE_ROUTING_CONDITION_TYPES_KEY, static::$condition_types);
+			$this->container->singleton(RouteMatcher::class, function () {
 
-			$container->singleton(RouteMatcher::class, function ($c) {
 
-				$config = $c[WPEMERGE_CONFIG_KEY];
-
-				if ( ! isset( $config['routes']['cache']['enable']) ) {
+				if ( ! isset( $this->config['routes']['cache']['enable']) ) {
 
 					return new FastRouteMatcher();
 
 				}
 
-				$cache_file = Arr::get($config['routes']['cache'], 'enabled', 'null' );
+				$cache_file = Arr::get($this->config['routes']['cache'], 'enabled', 'null' );
 
-				if ( ! file_exists($cache_file ) ) {
+				if ( ! file_exists( $cache_file ) ) {
 
 					throw new ConfigurationException(
 						'Invalid file provided for route caching'
@@ -82,23 +81,28 @@
 
 			} );
 
-			$container->singleton( WPEMERGE_ROUTING_ROUTER_KEY, function ( $c ) {
+			$this->container->singleton( Router::class, function () {
 
 				return new Router(
-					$c[WPEMERGE_CONTAINER_ADAPTER],
+					$this->container,
 					new RouteCollection(
-						$c[WPEMERGE_ROUTING_CONDITIONS_CONDITION_FACTORY_KEY],
-						$c[HandlerFactory::class],
-						$c[RouteMatcher::class]
+						$this->container->make(ConditionFactory::class),
+						$this->container->make(HandlerFactory::class),
+						$this->container->make(RouteMatcher::class)
 					)
 
 
 				);
 			} );
 
-			$container->singleton( WPEMERGE_ROUTING_CONDITIONS_CONDITION_FACTORY_KEY, function ( $c ) {
+			$this->container->singleton( ConditionFactory::class, function () {
 
-				return new ConditionFactory( $c[ WPEMERGE_ROUTING_CONDITION_TYPES_KEY ], $c[ WPEMERGE_CONTAINER_ADAPTER ] );
+				return new ConditionFactory(
+
+					$this->container->make('route.conditions'),
+					$this->container
+
+				);
 
 			} );
 
@@ -108,12 +112,11 @@
 		}
 
 
-		public function bootstrap( $container ) {
+		public function bootstrap() :void {
 
-			$router = $container->make(WPEMERGE_ROUTING_ROUTER_KEY );
-			$config = $container->make(WPEMERGE_CONFIG_KEY);
+			$router = $this->container->make(Router::class );
 
-			( new RouteRegistrar($router, $config ) )->loadRoutes();
+			( new RouteRegistrar($router, $this->config ) )->loadRoutes();
 
 		}
 

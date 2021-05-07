@@ -6,23 +6,23 @@
 	use BetterWpHooks\Contracts\Dispatcher;
 	use Contracts\ContainerAdapter;
 	use WPEmerge\Application\ApplicationEvent;
-	use WPEmerge\Contracts\ServiceProviderInterface;
+	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Events\IncomingWebRequest;
-	use WPEmerge\Events\StartedLoadingWpAdmin;
+	use WPEmerge\Events\LoadedWpAdmin;
 	use WPEmerge\AjaxShutdownHandler;
-	use WPEmerge\DynamicHooksFactory;
+	use WPEmerge\Factories\DynamicHooksFactory;
 	use WPEmerge\Events\AdminBodySendable;
 	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingAjaxRequest;
 	use WPEmerge\Events\BodySent;
 	use WPEmerge\Http\HttpKernel;
 
-	class EventServiceProvider implements ServiceProviderInterface {
+	class EventServiceProvider extends ServiceProvider {
 
 		private $mapped_events = [
 
-			'template_include' => [ [ IncomingWebRequest::class, 3001 ] ],
-			'admin_init'       => [ [ StartedLoadingWpAdmin::class, 3001 ] ],
+			'template_include' =>  [ 'resolve', IncomingWebRequest::class, 3001 ],
+			'admin_init'       =>  [ 'resolve', LoadedWpAdmin::class, 3001  ],
 
 		];
 
@@ -46,12 +46,6 @@
 
 			],
 
-			StartedLoadingWpAdmin::class => [
-
-				DynamicHooksFactory::class . '@handleEvent',
-
-			],
-
 			AdminBodySendable::class => [
 
 				HttpKernel::class . '@sendBodyDeferred',
@@ -66,22 +60,22 @@
 
 		];
 
+		public function register() :void  {
 
-		public function register( ContainerAdapter $container ) {
-
-			$container->singleton( 'mapped.events', function () {
+			/** @todo change these to instance() calss  */
+			$this->container->singleton( 'mapped.events', function () {
 
 				return $this->mapped_events;
 
 			} );
 
-			$container->singleton( 'event.listeners', function () {
+			$this->container->singleton( 'event.listeners', function () {
 
 				return $this->event_listeners;
 
 			} );
 
-			$container->singleton( Dispatcher::class, function () {
+			$this->container->singleton( Dispatcher::class, function () {
 
 				return ApplicationEvent::dispatcher();
 
@@ -89,11 +83,11 @@
 
 		}
 
-		public function bootstrap( ContainerAdapter $container ) {
+		public function bootstrap() :void  {
 
-			ApplicationEvent::make( $container )
-			                ->map( $container->make( 'mapped.events' ) )
-			                ->listeners( $container->make( 'event.listeners' ) )
+			ApplicationEvent::make( $this->container )
+			                ->map( $this->container->make( 'mapped.events' ) )
+			                ->listeners( $this->container->make( 'event.listeners' ) )
 			                ->boot();
 
 		}

@@ -1,55 +1,50 @@
 <?php
 
 
-
 	namespace WPEmerge\ServiceProviders;
 
+	use Contracts\ContainerAdapter;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
-	use WPEmerge\Contracts\ResponseServiceInterface;
-	use WPEmerge\Contracts\ServiceProviderInterface;
+	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Contracts\ServiceProvider;
 
 	use WPEmerge\Factories\ExceptionHandlerFactory;
-	use WPEmerge\Http\Request;
 	use WPEmerge\Traits\ExtendsConfig;
-
 
 	/**
 	 * Provide exceptions dependencies.
 	 *
 	 */
-	class ExceptionsServiceProvider implements ServiceProviderInterface {
+	class ExceptionsServiceProvider extends ServiceProvider {
 
 
 		use ExtendsConfig;
 
+		public function register() : void {
 
-		public function register( $container ) {
-
-			$this->extendConfig( $container, 'debug', [
+			$this->extendConfig( $this->container, 'debug', [
 				'enable'        => true,
 				'pretty_errors' => true,
 			] );
 
+			$this->container->singleton( ErrorHandlerInterface::class, function () {
 
-			$container->singleton(ErrorHandlerInterface::class, function ($container) {
 
-				/**
-				 * @todo Replace with Container Request
-				 * @todo Add Custom Datatables for current route to Whoops
-				 */
-				$ajax = Request::capture()->isAjax();
+				$request = $this->container->make( RequestInterface::class );
 
-				return (( new ExceptionHandlerFactory(WP_DEBUG, $ajax, 'phpstorm')))
-					->create();
+				return ( ( new ExceptionHandlerFactory(
+					WP_DEBUG,
+					$request->isAjax(),
+					'phpstorm' ) )
+				)->create();
 
-			});
-
+			} );
 
 
 		}
 
 
-		public function bootstrap( $container ) {
+		public function bootstrap() : void {
 
 			// Nothing to bootstrap.
 
