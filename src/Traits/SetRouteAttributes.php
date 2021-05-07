@@ -74,5 +74,13 @@
 
 		}
 
+		public function defaults ( array $defaults ) :Route {
+
+			$this->defaults = $defaults;
+
+			/** @var Route $this */
+			return $this;
+
+		}
 
 	}

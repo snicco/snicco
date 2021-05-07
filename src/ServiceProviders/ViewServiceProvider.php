@@ -12,6 +12,7 @@
 
 	use WPEmerge\Contracts\ServiceProviderInterface;
 	use WPEmerge\Contracts\ViewFinderInterface;
+	use WPEmerge\Contracts\ViewServiceInterface;
 	use WPEmerge\Support\Path;
 	use WPEmerge\Traits\ExtendsConfig;
 	use WPEmerge\View\PhpViewEngine;
@@ -26,9 +27,7 @@
 	use function get_stylesheet_directory;
 	use function get_template_directory;
 
-	use const WPEMERGE_APPLICATION_KEY;
 	use const WPEMERGE_CONFIG_KEY;
-	use const WPEMERGE_HELPERS_HANDLER_FACTORY_KEY;
 	use const WPEMERGE_VIEW_COMPOSE_ACTION_KEY;
 	use const WPEMERGE_VIEW_ENGINE_KEY;
 	use const WPEMERGE_VIEW_PHP_VIEW_ENGINE_KEY;
@@ -54,7 +53,7 @@
 				'namespace' => 'App\\ViewComposers\\',
 			] );
 
-			$container->singleton( WPEMERGE_VIEW_SERVICE_KEY, function ( $c ) {
+			$container->singleton( ViewServiceInterface::class, function ( $c ) {
 
 				return new ViewService(
 					$c[ WPEMERGE_VIEW_ENGINE_KEY ],

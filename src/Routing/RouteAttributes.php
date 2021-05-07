@@ -129,5 +129,10 @@
 
 		}
 
+		public function defaults( array $defaults ) {
+
+			$this->route->defaults($defaults);
+
+		}
 
 	}

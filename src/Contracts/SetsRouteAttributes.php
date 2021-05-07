@@ -15,4 +15,6 @@
 
 		public function where();
 
+		public function defaults (array $defaults);
+
 	}

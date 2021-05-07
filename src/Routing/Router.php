@@ -5,6 +5,7 @@
 
 	use Closure;
 	use Contracts\ContainerAdapter;
+	use WPEmerge\Controllers\ViewController;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Support\Pipeline;
@@ -52,6 +53,20 @@
 
 			$this->container = $container;
 			$this->routes    = $routes;
+
+		}
+
+		public function view ( string $url, string $view, array $data = [], int $status = 200, array $headers = [] ) : Route {
+
+			$route = $this->match(['GET', 'HEAD'], $url, ViewController::class . '@handle');
+			$route->defaults([
+				'view' => $view,
+				'data' => $data,
+				'status'=> $status,
+				'headers' => $headers,
+			]);
+
+			return $route;
 
 		}
 

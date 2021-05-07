@@ -10,11 +10,9 @@
 
 
 		public function register( ContainerAdapter $container ) {
-			// TODO: Implement register() method.
 		}
 
 		public function bootstrap( ContainerAdapter $container ) {
-			// TODO: Implement bootstrap() method.
 		}
 
 	}

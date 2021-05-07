@@ -81,6 +81,7 @@
 			       || $content instanceof ArrayObject
 			       || $content instanceof JsonSerializable
 			       || is_array( $content );
+
 		}
 
 		/**

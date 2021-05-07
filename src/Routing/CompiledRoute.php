@@ -4,6 +4,7 @@
 	namespace WPEmerge\Routing;
 
 	use Closure;
+	use Illuminate\Support\Collection;
 	use Illuminate\Support\Str;
 	use Opis\Closure\SerializableClosure;
 	use WPEmerge\Contracts\RequestInterface;
@@ -23,12 +24,19 @@
 
 		public $namespace;
 
+		/**
+		 * @var array
+		 */
+		public $defaults;
+
+
 		public function __construct( $attributes ) {
 
 			$this->action     = $attributes['action'];
 			$this->middleware = $attributes['middleware'] ?? [];
 			$this->conditions = $attributes['conditions'] ?? [];
 			$this->namespace  = $attributes['namespace'] ?? '';
+			$this->defaults   = $attributes['defaults'] ?? [];
 
 		}
 
@@ -53,9 +61,9 @@
 
 			$compiled = new static( $attributes );
 
-			if ( $compiled->isSerializedClosure($action = $compiled->action) ) {
+			if ( $compiled->isSerializedClosure( $action = $compiled->action ) ) {
 
-				$action = \Opis\Closure\unserialize($action);
+				$action = \Opis\Closure\unserialize( $action );
 
 			}
 
@@ -122,7 +130,7 @@
 				->values()
 				->combine( $values );
 
-			return $this->action->executeUsing( $payload->all() );
+			return $this->action->executeUsing( $this->mergeDefaults($payload)->all() );
 
 		}
 
@@ -146,7 +154,7 @@
 
 				$closure = new SerializableClosure( $this->action );
 
-				$this->action =  \Opis\Closure\serialize($closure);
+				$this->action = \Opis\Closure\serialize( $closure );
 
 			}
 
@@ -154,10 +162,18 @@
 
 		}
 
-		private function isSerializedClosure(  $action ) : bool {
+		private function isSerializedClosure( $action ) : bool {
 
 			return is_string( $action )
 			       && Str::startsWith( $action, 'C:32:"Opis\\Closure\\SerializableClosure' ) !== false;
+		}
+
+		private function mergeDefaults (Collection $route_payload) : Collection {
+
+			$new = $route_payload->merge($this->defaults);
+
+			return $new;
+
 		}
 
 	}

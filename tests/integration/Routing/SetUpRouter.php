@@ -31,6 +31,8 @@
 		 */
 		private $router;
 
+		/** @var \Contracts\ContainerAdapter */
+		private $container;
 
 		protected function setUp() : void {
 
@@ -62,6 +64,7 @@
 				$handler_factory,
 				new FastRouteMatcher()
 			);
+			$this->container = $container;
 			$this->router      = new Router( $container, $route_collection );
 
 		}
