@@ -6,51 +6,35 @@
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\UrlableInterface;
 
-	/**
-	 * Check against the current admin page.
-	 *
-	 */
+
 	class AdminCondition implements ConditionInterface, UrlableInterface {
 
 		/**
-		 * Menu slug.
-		 *
 		 * @var string
 		 */
-		protected $menu = '';
+		private $menu;
 
 		/**
-		 * Parent menu slug.
-		 *
 		 * @var string
 		 */
-		protected $parent_menu = '';
+		private $parent_menu;
 
-		/**
-		 * Constructor
-		 *
-		 *
-		 * @param  string  $menu
-		 * @param  string  $parent_menu
-		 */
-		public function __construct( $menu, $parent_menu = '' ) {
+
+		public function __construct( string $menu, string  $parent_menu = '' ) {
 
 			$this->menu        = $menu;
 			$this->parent_menu = $parent_menu;
 		}
 
-		/**
-		 * Check if the admin page requirement matches.
-		 *
-		 * @return boolean
-		 */
-		protected function isAdminPage() {
+
+		private function isAdminPage() : bool {
 
 			return is_admin() && ! wp_doing_ajax();
+
 		}
 
 
-		public function isSatisfied( RequestInterface $request ) {
+		public function isSatisfied( RequestInterface $request ) : bool {
 
 			if ( ! $this->isAdminPage() ) {
 				return false;
@@ -67,12 +51,11 @@
 		}
 
 
-		public function getArguments( RequestInterface $request ) {
+		public function getArguments( RequestInterface $request ) : array {
 
 			return [
 				'menu'        => $this->menu,
 				'parent_menu' => $this->parent_menu,
-				'hook'        => get_plugin_page_hookname( $this->menu, $this->parent_menu ),
 			];
 		}
 
