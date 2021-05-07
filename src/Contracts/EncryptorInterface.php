@@ -52,4 +52,12 @@
 		 */
 		public function decryptString( string $payload) : string;
 
+		/**
+		 * Create a new encryption key for the the AES-256-CBC cipher
+		 *
+		 * @param  string  $cipher
+		 * @return string
+		 */
+		public static function generateKey() :string;
+
 	}

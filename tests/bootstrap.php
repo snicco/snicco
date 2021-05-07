@@ -16,6 +16,7 @@
 
 	}
 
+
 	if ( ! defined('TESTS_DIR') ) {
 
 		define('TESTS_DIR', $root_dir . DS . 'tests');
@@ -28,6 +29,8 @@
 
 	}
 
+
+
     if ( ! defined('TEST_CONFIG') ) {
 
     	$config = require_once TESTS_CONFIG_PATH;
@@ -35,5 +38,8 @@
 		define('TEST_CONFIG', $config );
 
 	}
+
+
+
 
 	require_once $root_dir . DS . 'vendor' . DS . 'autoload.php';

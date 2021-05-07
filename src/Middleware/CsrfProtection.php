@@ -11,7 +11,7 @@
 	use WPEmerge\Session\Csrf;
 
 	/**
-	 * Store current request data and clear old request data
+	 * SessionStore current request data and clear old request data
 	 */
 	class CsrfProtection implements Middleware {
 
