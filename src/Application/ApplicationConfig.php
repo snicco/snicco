@@ -13,13 +13,6 @@
 
 			$user_config = $this->get( $key, [] );
 
-			// $this->items = array_merge(
-			//
-			// 	$this->items,
-			// 	[$key => $this->replaceConfig($app_config, $user_config)]
-			//
-			// );
-
 			$value = $this->replaceConfig($app_config, $user_config);
 
 			$this->set( $key, $value );
@@ -39,13 +32,13 @@
 		 */
 		private function replaceConfig( $app_config, $user_config ) {
 
-			if ( empty( $user_config ) && ! empty( $app_config ) ) {
+			if ( $this->isEmptyArray($user_config) && ! $this->isEmptyArray($app_config) ) {
 
 				return $app_config;
 
 			}
 
-			if ( ! is_array( $user_config ) || ! is_array( $app_config ) ) {
+			if ( ! is_array( $app_config ) ) {
 
 				return $user_config;
 
@@ -71,5 +64,10 @@
 			return $result;
 		}
 
+		private function isEmptyArray($value) :bool {
+
+			return $value === [];
+
+		}
 
 	}

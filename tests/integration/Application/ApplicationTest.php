@@ -76,9 +76,10 @@
 
 			$app = $this->newApplication();
 
+
 			$app->bootstrap(['foo' => 'bar']);
 
-			$this->assertEquals($app->container()['_config']['foo'], 'bar');
+			$this->assertEquals('bar', $app->config('foo', null ));
 
 
 
@@ -111,7 +112,6 @@
 
 
 		}
-
 
 
 		private function newApplication() : Application {

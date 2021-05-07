@@ -20,7 +20,7 @@
 		private $bootstrapped = false;
 
 		/**
-		 * @var array
+		 * @var \WPEmerge\Application\ApplicationConfig
 		 */
 		private $config;
 
@@ -74,7 +74,6 @@
 
 		}
 
-
 		private function bindConfig( array $config ) {
 
 			$config = new ApplicationConfig($config);
@@ -84,5 +83,10 @@
 
 		}
 
+		public function config (string $key, $default = null ) {
+
+			return $this->config->get($key, $default);
+
+		}
 
 	}

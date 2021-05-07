@@ -58,7 +58,7 @@
 			return $this->finder->filePath( $view_name );
 		}
 
-		public function make( $views ) {
+		public function make( $views ) :ViewInterface{
 
 			foreach ( $views as $view ) {
 

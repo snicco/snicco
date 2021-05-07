@@ -25,11 +25,9 @@
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Routing\RouteRegistrar;
 	use WPEmerge\Support\Arr;
-	use WPEmerge\Traits\ExtendsConfig;
 
 	class RoutingServiceProvider extends ServiceProvider {
 
-		use ExtendsConfig;
 
 		/**
 		 * Key=>Class dictionary of condition types

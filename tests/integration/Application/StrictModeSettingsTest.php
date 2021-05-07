@@ -28,7 +28,7 @@
 
 			TestApp::make()->bootstrap(TEST_CONFIG);
 
-			$strict_mode_enabled = TestApp::resolve('strict.mode');
+			$strict_mode_enabled = TestApp::config('strict_mode', null );
 
 			$this->assertFalse($strict_mode_enabled);
 
@@ -40,7 +40,7 @@
 
 			TestApp::make()->bootstrap($this->config());
 
-			$strict_mode_enabled = TestApp::resolve('strict.mode');
+			$strict_mode_enabled = TestApp::config('strict_mode', null );
 
 			$this->assertTrue($strict_mode_enabled);
 
@@ -49,7 +49,7 @@
 
 		public function config() : array {
 
-			return array_merge(TEST_CONFIG, ['strict.mode' => true ]);
+			return array_merge(TEST_CONFIG, ['strict_mode' => true ]);
 
 		}
 

@@ -30,6 +30,35 @@
 
 
 		/** @test */
+		public function a_value_can_be_a_boolean_false () {
+
+			$this->config->extend('foo', false);
+
+			$this->assertSame(false, $this->config->get('foo'));
+
+		}
+
+		/** @test */
+		public function a_value_can_be_null () {
+
+			$this->config->extend('foo', null);
+
+			$this->assertSame(null, $this->config->get('foo'));
+
+		}
+
+		/** @test */
+		public function a_value_can_be_string_int_zero () {
+
+			$this->config->extend('foo', '0');
+			$this->config->extend('bar', 0);
+
+			$this->assertSame('0', $this->config->get('foo'));
+			$this->assertSame(0, $this->config->get('bar'));
+
+		}
+
+		/** @test */
 		public function the_default_gets_set_if_the_key_is_not_present_in_the_user_config() {
 
 			$this->assertSame( null, $this->config->get( 'foo' ) );

@@ -65,7 +65,6 @@
 			$this->assertSame('Hello World', $view->toString());
 
 
-
 		}
 
 		/** @test */

@@ -13,24 +13,25 @@
 	use WPEmerge\Middleware\Authenticate;
 	use WPEmerge\Middleware\RedirectIfAuthenticated;
 	use WPEmerge\Routing\Router;
-	use WPEmerge\Traits\ExtendsConfig;
 
 
 
 	class KernelServiceProvider extends ServiceProvider {
 
-		use ExtendsConfig;
 
 		public function register() :void  {
 
-			$this->extendConfig( $this->container, 'middleware', [
+
+			$this->config->extend('middleware', [
+
 				'csrf'      => CsrfProtection::class,
 				'auth'      => Authenticate::class,
 				'guest'     => RedirectIfAuthenticated::class,
 				'can'       => Authorize::class,
-			] );
 
-			$this->extendConfig( $this->container, 'middleware_groups', [
+			]);
+
+			$this->config->extend( 'middleware_groups', [
 
 				'global' => [],
 				'web'    => [],
@@ -39,12 +40,12 @@
 
 			] );
 
-			$this->extendConfig( $this->container, 'middleware_priority', [
+			$this->config->extend('middleware_priority', [
 
 				StartSession::class,
 				SubstituteBindings::class,
 
-			] );
+			]);
 
 			$this->container->singleton(HttpKernel::class,  function () {
 

@@ -141,8 +141,7 @@
 			$app::make();
 			$app::bootstrap( $user_config );
 
-			$this->assertSame( 'bar', $app::container()['config_value'] );
-			$this->assertSame( 'bar', $app::container()['_config']['bar'] );
+			$this->assertSame( 'bar', $app::resolve('config_value') );
 
 
 		}

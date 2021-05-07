@@ -3,13 +3,11 @@
 
 	namespace WPEmerge\ServiceProviders;
 
-	use Contracts\ContainerAdapter;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ServiceProvider;
 
 	use WPEmerge\Factories\ExceptionHandlerFactory;
-	use WPEmerge\Traits\ExtendsConfig;
 
 	/**
 	 * Provide exceptions dependencies.
@@ -18,14 +16,12 @@
 	class ExceptionsServiceProvider extends ServiceProvider {
 
 
-		use ExtendsConfig;
 
 		public function register() : void {
 
-			$this->extendConfig( $this->container, 'debug', [
-				'enable'        => true,
-				'pretty_errors' => true,
-			] );
+			$this->config->extend('debug.enable', true );
+			$this->config->extend('debug.pretty_errors', true );
+
 
 			$this->container->singleton( ErrorHandlerInterface::class, function () {
 
