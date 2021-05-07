@@ -19,7 +19,6 @@
 	use WPEmerge\Routing\Conditions\PostTemplateCondition;
 	use WPEmerge\Routing\Conditions\PostTypeCondition;
 	use WPEmerge\Routing\Conditions\QueryVarCondition;
-	use WPEmerge\Routing\Conditions\UrlCondition;
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
@@ -37,7 +36,6 @@
 		 * @var array<string, string>
 		 */
 		protected static $condition_types = [
-			'url'           => UrlCondition::class,
 			'custom'        => CustomCondition::class,
 			'negate'        => NegateCondition::class,
 			'post_id'       => PostIdCondition::class,

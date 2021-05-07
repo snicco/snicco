@@ -23,7 +23,6 @@
 	use WPEmerge\Routing\Conditions\PostTemplateCondition;
 	use WPEmerge\Routing\Conditions\PostTypeCondition;
 	use WPEmerge\Routing\Conditions\QueryVarCondition;
-	use WPEmerge\Routing\Conditions\UrlCondition;
 
 	class RouteAttributesTest extends TestCase {
 
@@ -36,7 +35,6 @@
 
 			return [
 
-				'url'                  => UrlCondition::class,
 				'custom'               => CustomCondition::class,
 				'negate'               => NegateCondition::class,
 				'post_id'              => PostIdCondition::class,

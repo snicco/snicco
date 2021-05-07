@@ -4,7 +4,6 @@
 	namespace Tests\integration\Routing;
 
 	use SniccoAdapter\BaseContainerAdapter;
-	use Tests\stubs\TestResponse;
 	use Tests\TestRequest;
 	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Factories\ConditionFactory;
@@ -19,7 +18,6 @@
 	use WPEmerge\Routing\Conditions\PostTemplateCondition;
 	use WPEmerge\Routing\Conditions\PostTypeCondition;
 	use WPEmerge\Routing\Conditions\QueryVarCondition;
-	use WPEmerge\Routing\Conditions\UrlCondition;
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;

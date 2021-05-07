@@ -33,7 +33,10 @@
 
 			$container->singleton(ErrorHandlerInterface::class, function ($container) {
 
-				/** @todo Replace with Container Request */
+				/**
+				 * @todo Replace with Container Request
+				 * @todo Add Custom Datatables for current route to Whoops
+				 */
 				$ajax = Request::capture()->isAjax();
 
 				return (( new ExceptionHandlerFactory(WP_DEBUG, $ajax, 'phpstorm')))
@@ -41,61 +44,7 @@
 
 			});
 
-			// $container[ PrettyPageHandler::class ] = function ( $container ) {
-			//
-			// 	$handler = new PrettyPageHandler();
-			// 	$handler->setEditor('phpstorm');
-			// 	$handler->addResourcePath( implode( DIRECTORY_SEPARATOR, [
-			// 		WPEMERGE_DIR,
-			// 		'src',
-			// 		'Exceptions',
-			// 		'Whoops',
-			// 	] ) );
-			//
-			// 	/** @todo fix this. */
-			// 	// $handler->addDataTableCallback( 'Current route', function ( Inspector $inspector ) use ( $container ) {
-			// 	//
-			// 	// 	return (( new DebugDataProvider() ))->route( $inspector, $container[RequestInterface::class]->route() );
-			// 	//
-			// 	// } );
-			// 	return $handler;
-			//
-			// };
-			//
-			// $container[ WhoopsRun::class ] = function ( $container ) {
-			//
-			// 	if ( ! class_exists( WhoopsRun::class ) ) {
-			// 		return null;
-			// 	}
-			//
-			// 	$run = new WhoopsRun();
-			// 	$run->allowQuit( false );
-			// 	$run->writeToOutput(false);
-			//
-			// 	$handler = $container[ PrettyPageHandler::class ];
-			//
-			// 	if ( $handler ) {
-			// 		$run->pushHandler( $handler );
-			// 	}
-			//
-			// 	return $run;
-			// };
-			//
-			// $container[ WPEMERGE_EXCEPTIONS_ERROR_HANDLER_KEY ] = function ( $container ) {
-			//
-			// 	$debug  = $container[ WPEMERGE_CONFIG_KEY ]['debug'];
-			// 	$whoops = $debug['pretty_errors'] ? $container[ WhoopsRun::class ] : null;
-			//
-			// 	return new ErrorHandler( $container[ WPEMERGE_RESPONSE_SERVICE_KEY ], $whoops, $debug['enable'] );
-			// };
-			//
-			// $container[ WPEMERGE_EXCEPTIONS_CONFIGURATION_ERROR_HANDLER_KEY ] = function ( $container ) {
-			//
-			// 	$debug  = $container[ WPEMERGE_CONFIG_KEY ]['debug'];
-			// 	$whoops = $debug['pretty_errors'] ? $container[ WhoopsRun::class ] : null;
-			//
-			// 	return new ErrorHandler( $container[ WPEMERGE_RESPONSE_SERVICE_KEY ], $whoops, $debug['enable'] );
-			// };
+
 
 		}
 
