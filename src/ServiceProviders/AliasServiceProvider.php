@@ -33,7 +33,6 @@
 
 			$app->alias( 'app', Application::class );
 
-
 		}
 
 		private function responseAliases (Application $app) {
@@ -74,7 +73,7 @@
 
 			$app->alias('globals', function () use ($app) {
 
-				return $app->resolve('global.variables');
+				return $app->resolve('composers.globals');
 
 			});
 			$app->alias('addComposer', function () use ( $app ) {

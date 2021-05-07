@@ -7,7 +7,6 @@
 	use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewFinderInterface;
 	use WPEmerge\Contracts\ViewServiceInterface;
-	use WPEmerge\Traits\ExtendsConfig;
 	use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\View\PhpViewFinder;
 	use WPEmerge\Contracts\ViewInterface;
@@ -27,22 +26,25 @@
 	 */
 	class ViewServiceProvider extends ServiceProvider {
 
-		use ExtendsConfig;
 
 		public function register() : void {
 
 			/** @todo Refactor to custom class without wp functions */
-			$this->extendConfig( $this->container, 'views', [
+			$this->config->extend('views', [
 				get_stylesheet_directory(),
 				get_template_directory(),
-			] );
+			]);
 
 			$this->container->singleton( ViewServiceInterface::class, function () {
+
+				$global_var_bag = new VariableBag();
+
+				$this->container->instance('composers.globals', $global_var_bag);
 
 				return new ViewService(
 					$this->container->make( ViewEngineInterface::class ),
 					$this->container->make( ViewComposerCollection::class ),
-					new VariableBag()
+					$global_var_bag
 
 				);
 

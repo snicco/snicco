@@ -33,6 +33,15 @@
 
 		// --- Methods --------------------------------------- //
 
+		/**
+		 *
+		 * Resolve an item from the applications config.
+		 *
+		 * @param  string  $key
+		 * @param $default
+		 * @return mixed
+		 */
+		public static function config (string $key, $default = null ) {}
 
 		/**
 		 * Bootstrap the application.
