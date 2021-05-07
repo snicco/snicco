@@ -3,22 +3,12 @@
 
 	namespace WPEmerge\Factories;
 
-	use Closure;
 	use Contracts\ContainerAdapter;
-	use Exception;
-	use Illuminate\Support\Collection;
-	use ReflectionClass;
-	use Throwable;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\RouteCondition;
-	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Routing\ConditionBlueprint;
 	use WPEmerge\Routing\Conditions\CustomCondition;
 	use WPEmerge\Routing\Conditions\NegateCondition;
-	use WPEmerge\Routing\Conditions\UrlCondition;
-	use WPEmerge\Routing\Route;
-	use WPEmerge\Support\Arr;
-	use WPEmerge\Support\Str;
 	use WPEmerge\Traits\ReflectsCallable;
 
 	use function collect;
