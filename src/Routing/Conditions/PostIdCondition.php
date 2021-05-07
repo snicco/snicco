@@ -11,8 +11,6 @@
 	class PostIdCondition implements ConditionInterface, UrlableInterface {
 
 		/**
-		 * Post id to check against
-		 *
 		 * @var integer
 		 */
 		private $post_id;
@@ -32,7 +30,7 @@
 			return [ 'post_id' => $this->post_id ];
 		}
 
-		public function toUrl( $arguments = [] ) {
+		public function toUrl( $arguments = [] ) :string {
 
 			return get_permalink( $this->post_id );
 		}

@@ -7,10 +7,7 @@
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\UrlableInterface;
 
-	/**
-	 * Check against the current ajax action.
-	 *
-	 */
+
 	class AjaxCondition implements ConditionInterface, UrlableInterface {
 
 		/**
