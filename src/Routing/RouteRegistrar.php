@@ -47,7 +47,7 @@
 
 		}
 
-		public function loadRouteFile( string $route_file ) {
+		public static function loadRouteFile( string $route_file ) {
 
 			require $route_file;
 
@@ -55,8 +55,8 @@
 
 		private function loadRoutesGroup( string $group ) {
 
-			$file = $this->config->get('routes.' . $group . 'definitions', '');
-			$attributes = $this->config->get('routes.' . $group . 'attributes', []);
+			$file = $this->config->get('routes.' . $group . '.definitions', '');
+			$attributes = $this->config->get('routes.' . $group . '.attributes', []);
 
 			if ( empty( $file ) ) {
 				return;

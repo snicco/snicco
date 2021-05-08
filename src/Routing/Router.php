@@ -171,7 +171,8 @@
 
 			} else {
 
-				( new RouteRegistrar( $this ) )->loadRouteFile( $routes );
+				// ( new RouteRegistrar( $this ) )->loadRouteFile( $routes );
+				RouteRegistrar::loadRouteFile($routes);
 
 			}
 
