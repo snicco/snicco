@@ -3,6 +3,7 @@
 
 	namespace WPEmerge\ServiceProviders;
 
+	use Illuminate\Config\Repository;
 	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewFinderInterface;
@@ -35,16 +36,17 @@
 				get_template_directory(),
 			]);
 
+			$this->container->instance('composers.globals', new VariableBag() );
+
 			$this->container->singleton( ViewServiceInterface::class, function () {
 
-				$global_var_bag = new VariableBag();
 
-				$this->container->instance('composers.globals', $global_var_bag);
+
 
 				return new ViewService(
 					$this->container->make( ViewEngineInterface::class ),
 					$this->container->make( ViewComposerCollection::class ),
-					$global_var_bag
+					$this->container->make('composers.globals')
 
 				);
 

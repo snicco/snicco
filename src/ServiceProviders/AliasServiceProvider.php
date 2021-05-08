@@ -5,6 +5,9 @@
 
 	use WPEmerge\Application\Application;
 	use WPEmerge\Contracts\ServiceProvider;
+	use WPEmerge\Contracts\ViewServiceInterface;
+	use WPEmerge\Routing\Router;
+	use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
 
 	class AliasServiceProvider extends ServiceProvider {
@@ -13,7 +16,7 @@
 		/** @todo clean up all aliases and create tests that they work */
 		public function register() :void {
 
-			$app = $this->container[ WPEMERGE_APPLICATION_KEY ];
+			$app = $this->container->make(Application::class);
 
 			$this->applicationAliases($app);
 			$this->responseAliases($app);
@@ -26,6 +29,7 @@
 
 		public function bootstrap( ) :void  {
 
+			//
 
 		}
 
@@ -38,34 +42,15 @@
 		private function responseAliases (Application $app) {
 
 
-			$app->alias( 'response', function () use ( $app ) {
-				return call_user_func_array( [ $app->response_service(), 'response' ], func_get_args() );
-			} );
-			$app->alias( 'output', function () use ( $app ) {
-
-				return call_user_func_array( [ $app->response_service(), 'output' ], func_get_args() );
-			} );
-			$app->alias( 'json', function () use ( $app ) {
-
-				return call_user_func_array( [ $app->response_service(), 'json' ], func_get_args() );
-			} );
-			$app->alias( 'redirect', function () use ( $app ) {
-
-				return call_user_func_array( [ $app->response_service(), 'redirect' ], func_get_args() );
-			} );
-			$app->alias( 'abort', function () use ( $app ) {
-
-				return call_user_func_array( [ $app->response_service(), 'abort' ], func_get_args() );
-			} );
 
 		}
 
 		private function routingAliases (Application $app ) {
 
-			$app->alias( 'route', WPEMERGE_ROUTING_ROUTER_KEY );
-			$app->alias( 'routeUrl', WPEMERGE_ROUTING_ROUTER_KEY, 'getRouteUrl' );
-			$app->alias( 'post', WPEMERGE_ROUTING_ROUTER_KEY, 'post' );
-			$app->alias( 'get', WPEMERGE_ROUTING_ROUTER_KEY, 'get' );
+			$app->alias( 'route', Router::class );
+			$app->alias( 'routeUrl', Router::class, 'getRouteUrl' );
+			$app->alias( 'post', Router::class, 'post' );
+			$app->alias( 'get', Router::class, 'get' );
 
 		}
 
@@ -86,10 +71,8 @@
 
 
 			});
-			$app->alias('addGlobals', function () {
 
-			});
-			$app->alias( 'views', WPEMERGE_VIEW_SERVICE_KEY );
+			$app->alias( 'views', ViewServiceInterface::class );
 			$app->alias( 'view', function () use ( $app ) {
 
 				return call_user_func_array( [ $app->views(), 'make' ], func_get_args() );
@@ -103,7 +86,7 @@
 			} );
 			$app->alias( 'layoutContent', function () use ( $app ) {
 
-				$engine = $app->resolve( WPEMERGE_VIEW_PHP_VIEW_ENGINE_KEY );
+				$engine = $app->resolve( PhpViewEngine::class );
 
 				echo $engine->getLayoutContent();
 
@@ -111,11 +94,11 @@
 
 		}
 
-		private function sessionAliases (Application $app ) {
+		private function sessionAliases( Application $app ) {
 
-			$app->alias( 'oldInput', WPEMERGE_OLD_INPUT_KEY );
-			$app->alias( 'csrf', WPEMERGE_CSRF_KEY );#
-			$app->alias( 'flash', WPEMERGE_FLASH_KEY );
+			//
+
 		}
+
 
 	}
