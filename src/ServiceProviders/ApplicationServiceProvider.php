@@ -9,9 +9,7 @@
 	use test\Mockery\HasUnknownClassAsTypeHintOnMethod;
 	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Exceptions\Exception;
-	use WPEmerge\Support\Path;
-
-
+	use WPEmerge\Support\FilePath;
 
 	/**
 	 * Provide application dependencies.
@@ -21,28 +19,18 @@
 
 		public const STRICT_MODE = 'strict_mode';
 
-		public function register() :void  {
+		public function register() : void {
 
 
-			$this->config->extend(static::STRICT_MODE, false );
-
-			$upload_dir = wp_upload_dir();
-
-			$cache_dir = Path::addTrailingSlash( $upload_dir['basedir'] ) . 'wpemerge' . DIRECTORY_SEPARATOR . 'cache';
-
-			/** @todo Refactor to custom filesystem class. */
-			$this->config->extend('cache', ['path' => $cache_dir]);
-
+			$this->config->extend( static::STRICT_MODE, false );
 
 
 		}
 
 
-		public function bootstrap() :void  {
+		public function bootstrap() : void {
 
-			/** @todo Refactor to custom filesystem class.  */
-			// $cache_dir = $container[ WPEMERGE_CONFIG_KEY ]['cache']['path'];
-			// wp_mkdir_p( $cache_dir );
+
 
 		}
 

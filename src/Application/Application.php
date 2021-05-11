@@ -12,13 +12,34 @@
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Http\Request;
+	use WPEmerge\ServiceProviders\AliasServiceProvider;
 	use WPEmerge\ServiceProviders\ApplicationServiceProvider;
+	use WPEmerge\ServiceProviders\EventServiceProvider;
+	use WPEmerge\ServiceProviders\ExceptionsServiceProvider;
+	use WPEmerge\ServiceProviders\FactoryServiceProvider;
+	use WPEmerge\ServiceProviders\HttpServiceProvider;
+	use WPEmerge\ServiceProviders\RoutingServiceProvider;
+	use WPEmerge\ServiceProviders\ViewServiceProvider;
 
 	class Application {
 
 		use ManagesAliases;
 		use LoadsServiceProviders;
 		use HasContainer;
+
+		const CORE_SERVICE_PROVIDERS = [
+
+			EventServiceProvider::class,
+			FactoryServiceProvider::class,
+			ApplicationServiceProvider::class,
+			HttpServiceProvider::class,
+			ExceptionsServiceProvider::class,
+			RoutingServiceProvider::class,
+			ViewServiceProvider::class,
+			AliasServiceProvider::class,
+
+
+		];
 
 		private $bootstrapped = false;
 
@@ -68,7 +89,7 @@
 
 			$this->bindConfigInstance( $config );
 
-			$this->loadServiceProviders( $this->container() );
+			$this->loadServiceProviders();
 
 			$this->bootstrapped = true;
 

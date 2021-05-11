@@ -19,7 +19,7 @@
 	class HandlerFactory extends AbstractFactory {
 
 
-		public function create($raw_handler, $route_namespace) {
+		public function create( $raw_handler, $route_namespace) {
 
 			if ( $this->isClosure($raw_handler)) {
 

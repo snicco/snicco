@@ -8,64 +8,12 @@
 
 	use Codeception\TestCase\WPTestCase;
 	use WPEmerge\Contracts\ServiceProvider;
-	use WPEmerge\ServiceProviders\AliasServiceProvider;
-	use WPEmerge\ServiceProviders\ApplicationServiceProvider;
-	use WPEmerge\ServiceProviders\EventServiceProvider;
-	use WPEmerge\ServiceProviders\ExceptionsServiceProvider;
-	use WPEmerge\ServiceProviders\FactoryServiceProvider;
-	use WPEmerge\ServiceProviders\KernelServiceProvider;
-	use WPEmerge\ServiceProviders\RequestsServiceProvider;
-	use WPEmerge\ServiceProviders\ResponsesServiceProvider;
-	use WPEmerge\ServiceProviders\RoutingServiceProvider;
-	use WPEmerge\ServiceProviders\ViewServiceProvider;
 	use Tests\stubs\TestApp;
 	use Tests\stubs\TestProvider;
 	use Tests\stubs\TestService;
 
+
 	class LoadServiceProvidersTraitTest extends WPTestCase {
-
-		private $service_providers = [
-
-			AliasServiceProvider::class,
-			FactoryServiceProvider::class,
-			ApplicationServiceProvider::class,
-			KernelServiceProvider::class,
-			ExceptionsServiceProvider::class,
-			RequestsServiceProvider::class,
-			ResponsesServiceProvider::class,
-			RoutingServiceProvider::class,
-			ViewServiceProvider::class,
-			EventServiceProvider::class,
-
-		];
-
-		/** @test */
-		public function all_core_service_providers_get_registered_correctly_in_the_container_and_can_be_merged_with_user_provided_ones() {
-
-			$app = new TestApp();
-
-			$user_config = [
-
-				'providers' => [
-					TestProvider::class,
-				],
-			];
-
-			$app::make();
-			$app::boot( $user_config );
-
-			$container = $app::container();
-
-			foreach ( $this->service_providers as $service_provider ) {
-
-				$this->assertTrue( $container->offsetExists( $service_provider ), $service_provider . ' not found in container.' );
-
-			}
-
-			$this->assertTrue( $container->offsetExists( TestProvider::class ) );
-
-
-		}
 
 		/** @test */
 		public function an_exception_gets_thrown_if_a_service_provider_doesnt_implement_the_correct_interface() {
@@ -148,7 +96,6 @@
 
 
 		}
-
 
 	}
 

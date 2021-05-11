@@ -7,7 +7,10 @@
 	namespace WPEmerge\ServiceProviders;
 
 	use WPEmerge\Contracts\ErrorHandlerInterface;
+	use WPEmerge\Contracts\ResponseFactoryInterface;
 	use WPEmerge\Contracts\ServiceProvider;
+	use WPEmerge\Contracts\ViewServiceInterface;
+	use WPEmerge\Http\ResponseFactory;
 	use WPEmerge\Middleware\CsrfProtection;
 	use WPEmerge\Http\HttpKernel;
 	use WPEmerge\Middleware\StartSession;
@@ -19,13 +22,13 @@
 
 
 
-	class KernelServiceProvider extends ServiceProvider {
+	class HttpServiceProvider extends ServiceProvider {
 
 
 		public function register() :void  {
 
 
-			$this->config->extend('middleware', [
+			$this->config->extend('middleware.aliases', [
 
 				'csrf'      => CsrfProtection::class,
 				'auth'      => Authenticate::class,
@@ -34,7 +37,7 @@
 
 			]);
 
-			$this->config->extend( 'middleware_groups', [
+			$this->config->extend( 'middleware.groups', [
 
 				'global' => [],
 				'web'    => [],
@@ -43,7 +46,7 @@
 
 			] );
 
-			$this->config->extend('middleware_priority', [
+			$this->config->extend('middleware.priority', [
 
 				StartSession::class,
 				SubstituteBindings::class,
@@ -52,7 +55,7 @@
 
 			$this->container->singleton(HttpKernel::class,  function () {
 
-				$kernel = new HttpKernel(
+				return new HttpKernel(
 
 					$this->container[ Router::class ],
 					$this->container,
@@ -60,29 +63,32 @@
 
 				);
 
-				$kernel->setRouteMiddlewareAliases( $this->config['middleware'] );
-				$kernel->setMiddlewareGroups( $this->config['middleware_groups'] );
-				$kernel->setMiddlewarePriority( $this->config['middleware_priority'] );
-
-				if( $this->config->get(ApplicationServiceProvider::STRICT_MODE, false)) {
-
-					$kernel->runInTakeoverMode();
-
-				}
-
-
-				return $kernel;
 
 			});
 
+			$this->container->singleton(ResponseFactoryInterface::class, function () {
 
+				return new ResponseFactory($this->container->make(ViewServiceInterface::class));
+
+			});
 
 		}
 
 
 		public function bootstrap() :void {
 
-			// Nothing to bootstrap.
+			$kernel = $this->container->make(HttpKernel::class);
+
+			$kernel->setRouteMiddlewareAliases( $this->config->get('middleware.aliases', [] ) );
+			$kernel->setMiddlewareGroups( $this->config->get('middleware.groups', [] ) );
+			$kernel->setMiddlewarePriority( $this->config->get('middleware.priority', [] ) );
+
+			if( $this->config->get(ApplicationServiceProvider::STRICT_MODE, false)) {
+
+				$kernel->runInTakeoverMode();
+
+			}
+
 
 		}
 

@@ -7,7 +7,7 @@
 	namespace Tests\unit\Helpers;
 
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Support\Path;
+	use WPEmerge\Support\FilePath;
 
 
 	class PathTest extends TestCase {
@@ -19,9 +19,9 @@
 			$ds    = DIRECTORY_SEPARATOR;
 			$input = '/foo\\bar/baz\\\\foobar';
 
-			$this->assertEquals( "{$ds}foo{$ds}bar{$ds}baz{$ds}foobar", Path::normalize( $input ) );
-			$this->assertEquals( '/foo/bar/baz/foobar', Path::normalize( $input, '/' ) );
-			$this->assertEquals( '\\foo\\bar\\baz\\foobar', Path::normalize( $input, '\\' ) );
+			$this->assertEquals( "{$ds}foo{$ds}bar{$ds}baz{$ds}foobar", FilePath::normalize( $input ) );
+			$this->assertEquals( '/foo/bar/baz/foobar', FilePath::normalize( $input, '/' ) );
+			$this->assertEquals( '\\foo\\bar\\baz\\foobar', FilePath::normalize( $input, '\\' ) );
 		}
 
 		/** @test */
@@ -29,7 +29,7 @@
 
 			$input = '/foo';
 
-			$this->assertEquals( "/foo/", Path::addTrailingSlash( $input, '/' ) );
+			$this->assertEquals( "/foo/", FilePath::addTrailingSlash( $input, '/' ) );
 		}
 
 		/** @test */
@@ -37,7 +37,7 @@
 
 			$input = '/foo/';
 
-			$this->assertEquals( "/foo", Path::removeTrailingSlash( $input, '/' ) );
+			$this->assertEquals( "/foo", FilePath::removeTrailingSlash( $input, '/' ) );
 		}
 
 	}
