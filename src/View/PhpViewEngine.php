@@ -172,15 +172,12 @@
 		 *
 		 * @return string
 		 */
-		private function renderView( PhpView $__view ) : string {
+		private function renderView( PhpView $__view ) {
 
 			$__context = $__view->getContext();
-			ob_start();
 			extract( $__context, EXTR_OVERWRITE );
 
 			include $__view->getFilepath();
-
-			return ob_get_clean();
 
 		}
 
