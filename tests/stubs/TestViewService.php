@@ -1,6 +1,9 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace Tests\stubs;
 
 	use WPEmerge\Contracts\ViewInterface;
@@ -9,15 +12,15 @@
 	class TestViewService implements ViewServiceInterface {
 
 		public function compose( ViewInterface $view ) {
-			// TODO: Implement compose() method.
+			//
 		}
 
 		public function make( $views ) : ViewInterface {
-			// TODO: Implement make() method.
+			//
 		}
 
 		public function render( $views, array $context = [] ) : string {
-			// TODO: Implement render() method.
+			//
 		}
 
 	}

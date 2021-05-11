@@ -8,8 +8,7 @@
 
 	use Closure;
 	use BadMethodCallException;
-	use WPEmerge\Support\WPEmgereArr;
-
+	use WPEmerge\Support\Arr;
 
 	trait ManagesAliases {
 
@@ -53,12 +52,12 @@
 		 */
 		private function setAlias( array $alias ) :void {
 
-			$name = WPEmgereArr::get( $alias, 'name' );
+			$name = Arr::get( $alias, 'name' );
 
 			$this->aliases[ $name ] = [
 				'name'   => $name,
-				'target' => WPEmgereArr::get( $alias, 'target' ),
-				'method' => WPEmgereArr::get( $alias, 'method', '' ),
+				'target' => Arr::get( $alias, 'target' ),
+				'method' => Arr::get( $alias, 'method', '' ),
 			];
 		}
 
@@ -72,7 +71,7 @@
 		 *
 		 * @return void
 		 */
-		public function alias( string $alias, $target, $method = '' ) {
+		public function alias( string $alias, $target, string $method = '' ) {
 
 			$this->setAlias( [
 				'name'   => $alias,

@@ -4,14 +4,13 @@
 	declare( strict_types = 1 );
 
 
-	namespace Tests\integration\Application;
+	namespace Tests\unit\Application;
 
-	use BadMethodCallException;
 	use Mockery as m;
 	use PHPUnit\Framework\TestCase;
+	use BadMethodCallException;
 	use WPEmerge\Application\ApplicationTrait;
 	use WPEmerge\Exceptions\ConfigurationException;
-
 
 	class ApplicationTraitTest extends TestCase {
 
@@ -37,7 +36,7 @@
 		}
 
 		/** @test */
-		public function multiple_app_instances_can_exists_independently(  ) {
+		public function multiple_app_instances_can_exists_independently() {
 
 			$this->assertNull( FooApp::getApplication() );
 			$this->assertNull( BarApp::getApplication() );
@@ -81,22 +80,18 @@
 		public function static_method_calls_get_forwarded_to_the_application_with() {
 
 			FooApp::make();
-			FooApp::alias( 'application_method', function ( $foo , $bar, $baz) {
+			FooApp::alias( 'application_method', function ( $foo, $bar, $baz ) {
 
-				return $foo . $bar.  $baz;
+				return $foo . $bar . $baz;
 			} );
 
-			$this->assertSame( 'foobarbaz' , FooApp::application_method('foo', 'bar', 'baz') );
-
+			$this->assertSame( 'foobarbaz', FooApp::application_method( 'foo', 'bar', 'baz' ) );
 
 
 		}
 
 
-
-
 	}
-
 
 	class FooApp {
 

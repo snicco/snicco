@@ -9,7 +9,7 @@
 	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Http\Response;
-	use WPEmerge\Support\WPEmgereArr;
+	use WPEmerge\Support\Arr;
 
 	/**
 	 * Render a view file with php.
@@ -107,7 +107,7 @@
 				return $this->context;
 			}
 
-			return WPEmgereArr::get( $this->context, $key, $default );
+			return Arr::get( $this->context, $key, $default );
 		}
 
 		/**

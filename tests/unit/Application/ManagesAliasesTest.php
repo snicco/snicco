@@ -4,19 +4,18 @@
 	declare( strict_types = 1 );
 
 
-	namespace Tests\integration\Application;
+	namespace Tests\unit\Application;
 
 	use Mockery as m;
 	use PHPUnit\Framework\TestCase;
 	use SniccoAdapter\BaseContainerAdapter;
 	use WPEmerge\Application\ManagesAliases;
 
-
 	class ManagesAliasesTest extends TestCase {
 
 
 		/**
-		 * @var \Tests\integration\Application\ManagesAliasImplementation
+		 * @var \Tests\unit\Application\ManagesAliasImplementation
 		 */
 		private $subject;
 
@@ -25,7 +24,7 @@
 
 			parent::setUp();
 
-			$this->subject = new ManagesAliasImplementation();
+			$this->subject            = new ManagesAliasImplementation();
 			$this->subject->container = new BaseContainerAdapter();
 
 		}
@@ -60,16 +59,16 @@
 		}
 
 		/** @test */
-		public function if_no_alias_is_registered_an_exception_is_thrown () {
+		public function if_no_alias_is_registered_an_exception_is_thrown() {
 
-			$this->expectExceptionMessage('Method: foo does not exist.');
+			$this->expectExceptionMessage( 'Method: foo does not exist.' );
 
 			$this->subject->foo();
 
 		}
 
 		/** @test */
-		public function closures_are_resolved_and_are_bound_to_the_current_class_instance () {
+		public function closures_are_resolved_and_are_bound_to_the_current_class_instance() {
 
 			$expected = 'foo';
 			$alias    = 'test';
@@ -78,54 +77,52 @@
 				return $expected;
 			};
 
-			$this->subject->alias('test', $closure);
+			$this->subject->alias( 'test', $closure );
 
 			$this->assertEquals( $expected, $this->subject->test() );
 
 		}
 
 		/** @test */
-		public function aliases_can_be_used_to_resolve_objects_from_the_ioc_container () {
+		public function aliases_can_be_used_to_resolve_objects_from_the_ioc_container() {
 
 			$container = new BaseContainerAdapter();
-			$container->bind('foobar', function () {
+			$container->bind( 'foobar', function () {
 
 				return new \stdClass();
 
-			});
+			} );
 
 			$this->subject->container = $container;
 
-			$this->subject->alias('foo', 'foobar');
+			$this->subject->alias( 'foo', 'foobar' );
 
-			$this->assertInstanceOf(\stdClass::class, $this->subject->foo());
+			$this->assertInstanceOf( \stdClass::class, $this->subject->foo() );
 
 
 		}
 
 		/** @test */
-		public function methods_can_be_called_on_objects_in_the_ioc_container () {
+		public function methods_can_be_called_on_objects_in_the_ioc_container() {
 
 			$container = new BaseContainerAdapter();
-			$container->bind('foobar', function () {
+			$container->bind( 'foobar', function () {
 
 				return new Foobar();
 
-			});
+			} );
 
 			$this->subject->container = $container;
 
-			$this->subject->alias('foo', 'foobar', 'baz');
+			$this->subject->alias( 'foo', 'foobar', 'baz' );
 
-			$this->assertSame('BAZ', $this->subject->foo('baz'));
+			$this->assertSame( 'BAZ', $this->subject->foo( 'baz' ) );
 
 
 		}
 
 
-
 	}
-
 
 	class ManagesAliasImplementation {
 

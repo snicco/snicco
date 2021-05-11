@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace Tests\integration\Application;
+	namespace Tests\unit\Application;
 
 	use Codeception\TestCase\WPTestCase;
 	use WPEmerge\Contracts\ServiceProvider;
@@ -144,14 +144,13 @@
 			$app::make();
 			$app::boot( $user_config );
 
-			$this->assertSame( 'bar', $app::resolve('config_value') );
+			$this->assertSame( 'bar', $app::resolve( 'config_value' ) );
 
 
 		}
 
 
 	}
-
 
 	class Provider1 extends ServiceProvider {
 
@@ -166,7 +165,6 @@
 		}
 
 	}
-
 
 	class Provider2 extends ServiceProvider {
 
@@ -183,4 +181,3 @@
 		}
 
 	}
-
