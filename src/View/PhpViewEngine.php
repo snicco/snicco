@@ -16,13 +16,6 @@
 	class PhpViewEngine implements PhpEngine {
 
 		/**
-		 * Name of view file header based on which to resolve parent views.
-		 *
-		 * @var string
-		 */
-		public const PARENT_FILE_INDICATOR = 'Layout';
-
-		/**
 		 * View compose action.
 		 *
 		 * @var callable
@@ -51,7 +44,7 @@
 
 		}
 
-		public function includeChildViews() : void {
+		public function includeNextView() : void {
 
 			if ( ! $view = $this->getNextViewFromStack() ) {
 
@@ -64,15 +57,15 @@
 			call_user_func( $this->compose, $clone );
 
 			$this->finder->includeFile(
-				$clone->getFilepath(),
-				$clone->getContext()
+				$clone->path(),
+				$clone->context()
 			);
 
 		}
 
 		public function make( $views ) : ViewInterface {
 
-			$view = collect( $views )
+			$view_name = collect( $views )
 				->reject( function ( string $view_name ) {
 
 					return ! $this->finder->exists( $view_name );
@@ -86,83 +79,9 @@
 				} )
 				->first();
 
-			return $this->makePhpView( $view, $this->finder->filePath( $view ) );
 
+			return new PhpView($this, $view_name, $this->finder->filePath($view_name));
 
-		}
-
-		/**
-		 * Create a view instance.
-		 *
-		 * @param  string  $name
-		 * @param  string  $filepath
-		 *
-		 * @return \WPEmerge\View\PhpView
-		 * @throws ViewNotFoundException
-		 */
-		private function makePhpView( string $name, string $filepath ) : PhpView {
-
-			$view = new PhpView( $this, $name, $filepath );
-
-			$parent_view = $this->getParentView( $view );
-
-			if ( $parent_view !== null ) {
-				$view->withParentView( $parent_view );
-			}
-
-			return $view;
-		}
-
-		/**
-		 * Create a view instance for the given view's layout header, if any.
-		 *
-		 * @param  PhpView  $view
-		 *
-		 * @return \WPEmerge\View\PhpView|null
-		 * @throws ViewNotFoundException
-		 */
-		private function getParentView( PhpView $view ) : ?PhpView {
-
-			if ( empty( $layout_headers = $this->parseFileHeaders( $view ) ) ) {
-				return null;
-			}
-
-			$layout_file = trim( $layout_headers[0] );
-
-			if ( ! $this->finder->exists( $layout_file ) ) {
-
-				throw new ViewNotFoundException(
-					'View layout not found for [' . $layout_file . ']'
-				);
-			}
-
-			return $this->makeParentView($layout_file);
-
-		}
-
-		private function makeParentView(string $parent_file_name ) : PhpView {
-
-			return $this->makePhpView( $parent_file_name, $this->finder->filePath( $parent_file_name ) );
-
-
-		}
-
-		private function addToViewStack( PhpView $view ) : void {
-
-			$this->view_stack[] = $view;
-		}
-
-		private function getNextViewFromStack() : ?PhpView {
-
-			return array_pop( $this->view_stack );
-		}
-
-		private function parseFileHeaders( PhpView $view ) : array {
-
-			return array_filter( get_file_data(
-				$view->getFilepath(),
-				[ self::PARENT_FILE_INDICATOR ]
-			) );
 		}
 
 		public function renderPhpView( PhpView $view ) : string {
@@ -187,6 +106,16 @@
 
 		}
 
+		private function addToViewStack( PhpView $view ) : void {
+
+			$this->view_stack[] = $view;
+		}
+
+		private function getNextViewFromStack() : ?PhpView {
+
+			return array_pop( $this->view_stack );
+		}
+
 		private function handleViewException( Throwable $e , $ob_level, PhpView $view) {
 
 			while (ob_get_level() > $ob_level) {
@@ -194,7 +123,7 @@
 			}
 
 			throw new ViewException(
-				'Error rendering view: [' . $view->getName() . '].' .
+				'Error rendering view: [' . $view->name() . '].' .
 				PHP_EOL . $e->getMessage()
 			);
 
@@ -210,7 +139,7 @@
 
 			}
 
-			$this->includeChildViews();
+			$this->includeNextView();
 
 		}
 

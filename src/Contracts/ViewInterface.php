@@ -24,7 +24,7 @@
 		 *
 		 * @return mixed
 		 */
-		public function getContext( string $key = null, $default = null );
+		public function context( string $key = null, $default = null );
 
 		/**
 		 * Add context values.

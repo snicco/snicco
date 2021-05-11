@@ -54,7 +54,7 @@
 		 */
 		public function compose( ViewInterface $view ) {
 
-			$local_context = $view->getContext();
+			$local_context = $view->context();
 
 			$global_context = [
 				$this->global_var_bag->getPrefix() => $this->global_var_bag
@@ -93,7 +93,7 @@
 
 			$view = $this->make( $views )->with( $context );
 
-			$this->triggerPartialHooks( $view->getName() );
+			$this->triggerPartialHooks( $view->name() );
 
 			return $view->toString();
 

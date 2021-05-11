@@ -9,11 +9,19 @@
 	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Exceptions\ViewException;
+	use WPEmerge\Exceptions\ViewNotFoundException;
 	use WPEmerge\Http\Response;
 	use WPEmerge\Support\Arr;
 
 
 	class PhpView implements ViewInterface {
+
+		/**
+		 * Name of view file header based on which to resolve parent views.
+		 *
+		 * @var string
+		 */
+		public const PARENT_FILE_INDICATOR = 'Layout';
 
 		/**
 		 * @var PhpViewEngine
@@ -45,11 +53,11 @@
 			$this->engine = $engine;
 			$this->name = $name;
 			$this->filepath = $path;
-
+			$this->parent_view = $this->parseParentView();
 
 		}
 
-		public function getFilepath() : string {
+		public function path() : string {
 
 			return $this->filepath;
 		}
@@ -59,12 +67,9 @@
 			return $this->parent_view;
 		}
 
-		public function withParentView( ?ViewInterface $layout ) : PhpView {
+		public function name() : string {
 
-			$this->parent_view = $layout;
-
-			return $this;
-
+			return $this->name;
 		}
 
 		public function toString() : string {
@@ -86,7 +91,7 @@
 		 *
 		 * @return mixed
 		 */
-		public function getContext( string $key = null, $default = null ) {
+		public function context( string $key = null, $default = null ) {
 
 			if ( $key === null ) {
 				return $this->context;
@@ -105,7 +110,7 @@
 		public function with( $key, $value = null ) : ViewInterface {
 
 			if ( is_array( $key ) ) {
-				$this->context = array_merge( $this->getContext(), $key );
+				$this->context = array_merge( $this->context(), $key );
 			} else {
 				$this->context[ $key ] = $value;
 			}
@@ -113,10 +118,29 @@
 			return $this;
 		}
 
-		public function getName() : string {
+		/**
+		 * Create a view instance for the given view's layout header, if any.
+		 *
+		 * @return ViewInterface|\WPEmerge\View\PhpView|null
+		 */
+		private function parseParentView() : ?PhpView {
 
-			return $this->name;
+			if ( empty( $file_headers = $this->parseFileHeaders() ) ) {
+				return null;
+			}
+
+			$parent_view_name = trim( $file_headers[0] );
+
+			return $this->engine->make($parent_view_name);
+
 		}
 
+		private function parseFileHeaders() : array {
+
+			return array_filter( get_file_data(
+				$this->filepath,
+				[ self::PARENT_FILE_INDICATOR ]
+			) );
+		}
 
 	}

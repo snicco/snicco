@@ -49,7 +49,7 @@
 
 			$composer->executeUsing($view = $this->newPhpView());
 
-			$this->assertSame('foo', $view->getContext('foo') );
+			$this->assertSame('foo', $view->context('foo') );
 
 
 		}
@@ -65,7 +65,7 @@
 
 			$composer->executeUsing($view = $this->newPhpView());
 
-			$this->assertSame('foobar', $view->getContext('foo') );
+			$this->assertSame('foobar', $view->context('foo') );
 
 
 		}
@@ -82,7 +82,7 @@
 
 			$composer->executeUsing($view = $this->newPhpView());
 
-			$this->assertEquals('foobar', $view->getContext('foo'));
+			$this->assertEquals('foobar', $view->context('foo'));
 
 
 		}
@@ -122,7 +122,7 @@
 
 			$composer->executeUsing($view = $this->newPhpView());
 
-			$this->assertEquals('foobar', $view->getContext('foo'));
+			$this->assertEquals('foobar', $view->context('foo'));
 
 
 		}
@@ -139,7 +139,7 @@
 
 			$composer->executeUsing($view = $this->newPhpView());
 
-			$this->assertEquals('foobar', $view->getContext('foo'));
+			$this->assertEquals('foobar', $view->context('foo'));
 
 
 		}
@@ -155,7 +155,7 @@
 
 			$composer->executeUsing($view = $this->newPhpView());
 
-			$this->assertSame('foobar', $view->getContext('foo') );
+			$this->assertSame('foobar', $view->context('foo') );
 
 		}
 

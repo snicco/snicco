@@ -93,7 +93,7 @@
 				/** @var PhpViewEngine $engine */
 				$engine = $app->resolve( PhpViewEngine::class );
 
-				echo $engine->includeChildViews();
+				$engine->includeNextView();
 
 
 			} );

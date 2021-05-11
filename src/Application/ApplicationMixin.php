@@ -223,7 +223,7 @@
 		 * Output child layout content.
 		 *
 		 * @return void
-		 * @see    \WPEmerge\View\PhpViewEngine::includeChildViews()
+		 * @see    \WPEmerge\View\PhpViewEngine::includeNextView()
 		 */
 		public static function includeChildViews() {
 		}
