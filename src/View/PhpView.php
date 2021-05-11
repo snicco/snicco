@@ -16,35 +16,36 @@
 	class PhpView implements ViewInterface {
 
 		/**
-		 * PHP view engine.
-		 *
 		 * @var PhpViewEngine
 		 */
 		private $engine;
 
 		/**
-		 * Filepath to view.
-		 *
 		 * @var string
 		 */
-		private $filepath = '';
+		private $filepath;
 
 		/**
-		 * @var ?\WPEmerge\View\PhpView
+		 * @var \WPEmerge\View\PhpView|null
 		 */
-		private $layout;
+		private $parent_view;
 
 		/**
 		 * @var array
 		 */
 		private $context = [];
 
-		/** @var string */
-		private $name = '';
+		/**
+		 * @var string
+		 */
+		private $name;
 
-		public function __construct( PhpViewEngine $engine ) {
+		public function __construct( PhpViewEngine $engine, string $name , string $path ) {
 
 			$this->engine = $engine;
+			$this->name = $name;
+			$this->filepath = $path;
+
 
 		}
 
@@ -53,65 +54,22 @@
 			return $this->filepath;
 		}
 
-		public function setFilepath( string $filepath ) : PhpView {
+		public function parent() : ?PhpView {
 
-			$this->filepath = $filepath;
-
-			return $this;
+			return $this->parent_view;
 		}
 
-		public function getLayout() : ?PhpView {
+		public function withParentView( ?ViewInterface $layout ) : PhpView {
 
-			return $this->layout;
-		}
-
-		public function setLayout( ?ViewInterface $layout ) : PhpView {
-
-			$this->layout = $layout;
+			$this->parent_view = $layout;
 
 			return $this;
+
 		}
 
 		public function toString() : string {
 
-			$ob_level = ob_get_level();
-
-			ob_start();
-
-			try {
-
-				$this->requireView();
-
-			}
-			catch ( \Throwable $e ) {
-
-				$this->handleViewException($e, $ob_level);
-
-			}
-
-			return ob_get_clean();
-
-		}
-
-		private function requireView () {
-
-			$this->engine->pushLayoutContent( $this );
-
-			if ( $this->getLayout() !== null ) {
-				return $this->getLayout()->requireView();
-			}
-
-			$this->engine->includeChildViews();
-
-		}
-
-		private function handleViewException(\Throwable $e , $ob_level) {
-
-			while (ob_get_level() > $ob_level) {
-				ob_end_clean();
-			}
-
-			throw new ViewException('Error rendering view: [' . $this->getName() . '].');
+			return $this->engine->renderPhpView($this);
 
 		}
 
@@ -160,11 +118,5 @@
 			return $this->name;
 		}
 
-		public function setName( string $name ) : PhpView {
-
-			$this->name = $name;
-
-			return $this;
-		}
 
 	}

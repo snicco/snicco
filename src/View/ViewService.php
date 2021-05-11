@@ -13,7 +13,6 @@
 	use WPEmerge\Support\Arr;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
 
-
 	class ViewService implements ViewServiceInterface {
 
 
@@ -33,7 +32,6 @@
 		 * @var \WPEmerge\Support\VariableBag
 		 */
 		private $global_var_bag;
-
 
 		public function __construct(
 			ViewEngineInterface $engine,
@@ -83,7 +81,6 @@
 
 		}
 
-
 		/**
 		 * Compile a view to a string.
 		 *
@@ -101,7 +98,6 @@
 			return $view->toString();
 
 		}
-
 
 		/**
 		 * Trigger core hooks for a partial, if any.

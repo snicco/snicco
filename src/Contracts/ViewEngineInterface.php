@@ -18,9 +18,6 @@
 		 */
 		public function make( $views ) : ViewInterface;
 
-		/**
-		 * Pop the top-most layout content from the stack, render and return it.
-		 */
-		public function includeChildViews();
+
 
 	}
