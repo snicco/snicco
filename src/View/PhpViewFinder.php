@@ -56,6 +56,13 @@
 			return $this->resolveFilepath( $view_name );
 		}
 
+		public function includeFile (string $path, $context ) {
+
+			extract( $context, EXTR_OVERWRITE );
+			include $path;
+
+		}
+
 		/**
 		 * Resolve a view to an absolute filepath.
 		 *

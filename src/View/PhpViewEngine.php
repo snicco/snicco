@@ -6,19 +6,21 @@
 
 	namespace WPEmerge\View;
 
+	use Throwable;
 	use WPEmerge\Contracts\PhpEngine;
 	use WPEmerge\Contracts\ViewInterface;
+	use WPEmerge\Exceptions\ViewException;
 	use WPEmerge\Exceptions\ViewNotFoundException;
 
 
 	class PhpViewEngine implements PhpEngine {
 
 		/**
-		 * Name of view file header based on which to resolve layouts.
+		 * Name of view file header based on which to resolve parent views.
 		 *
 		 * @var string
 		 */
-		private $layout_file_header = 'Layout';
+		public const PARENT_FILE_INDICATOR = 'Layout';
 
 		/**
 		 * View compose action.
@@ -39,7 +41,7 @@
 		 *
 		 * @var PhpView[]
 		 */
-		private $layout_content_stack = [];
+		private $view_stack = [];
 
 
 		public function __construct( callable $compose, PhpViewFinder $finder ) {
@@ -49,13 +51,31 @@
 
 		}
 
-		public function make( $views ) : ViewInterface {
+		public function includeChildViews() : void {
 
+			if ( ! $view = $this->getNextViewFromStack() ) {
+
+				return;
+
+			}
+
+			$clone = clone $view;
+
+			call_user_func( $this->compose, $clone );
+
+			$this->finder->includeFile(
+				$clone->getFilepath(),
+				$clone->getContext()
+			);
+
+		}
+
+		public function make( $views ) : ViewInterface {
 
 			$view = collect( $views )
 				->reject( function ( string $view_name ) {
 
-					return ! $this->exists( $view_name );
+					return ! $this->finder->exists( $view_name );
 
 				} )
 				->whenEmpty( function () use ( $views ) {
@@ -66,51 +86,10 @@
 				} )
 				->first();
 
-			return $this->makePhpView( $view, $this->filePath( $view ) );
+			return $this->makePhpView( $view, $this->finder->filePath( $view ) );
 
 
 		}
-
-		public function includeChildViews() {
-
-			$view = $this->popLayoutContent();
-
-			if ( ! $view ) {
-				return '';
-			}
-
-			$clone = clone $view;
-
-			call_user_func( $this->compose, $clone );
-
-			$this->requireView( $clone );
-
-
-		}
-
-		private function exists( string $view_name ) : bool {
-
-			return $this->finder->exists( $view_name );
-		}
-
-		private function filePath( string $view_name ) : string {
-
-			return $this->finder->filePath( $view_name );
-		}
-
-		/**
-		 * Push layout content to the top of the stack.
-		 *
-		 *
-		 * @param  PhpView  $view
-		 *
-		 * @return void
-		 */
-		public function pushLayoutContent( PhpView $view ) : void {
-
-			$this->layout_content_stack[] = $view;
-		}
-
 
 		/**
 		 * Create a view instance.
@@ -123,14 +102,12 @@
 		 */
 		private function makePhpView( string $name, string $filepath ) : PhpView {
 
-			$view = ( new PhpView( $this ) )
-				->setName( $name )
-				->setFilepath( $filepath );
+			$view = new PhpView( $this, $name, $filepath );
 
-			$layout = $this->getViewLayout( $view );
+			$parent_view = $this->getParentView( $view );
 
-			if ( $layout !== null ) {
-				$view->setLayout( $layout );
+			if ( $parent_view !== null ) {
+				$view->withParentView( $parent_view );
 			}
 
 			return $view;
@@ -144,48 +121,97 @@
 		 * @return \WPEmerge\View\PhpView|null
 		 * @throws ViewNotFoundException
 		 */
-		private function getViewLayout( PhpView $view ) : ?PhpView {
+		private function getParentView( PhpView $view ) : ?PhpView {
 
-			$layout_headers = array_filter( get_file_data(
-				$view->getFilepath(),
-				[ $this->layout_file_header ]
-			) );
-
-			if ( empty( $layout_headers ) ) {
+			if ( empty( $layout_headers = $this->parseFileHeaders( $view ) ) ) {
 				return null;
 			}
 
 			$layout_file = trim( $layout_headers[0] );
 
-			if ( ! $this->exists( $layout_file ) ) {
-				throw new ViewNotFoundException( 'View layout not found for "' . $layout_file . '"' );
+			if ( ! $this->finder->exists( $layout_file ) ) {
+
+				throw new ViewNotFoundException(
+					'View layout not found for [' . $layout_file . ']'
+				);
 			}
 
-			return $this->makePhpView(
-				$this->filePath( $layout_file ),
-				$this->finder->filePath( $layout_file )
+			return $this->makeParentView($layout_file);
+
+		}
+
+		private function makeParentView(string $parent_file_name ) : PhpView {
+
+			return $this->makePhpView( $parent_file_name, $this->finder->filePath( $parent_file_name ) );
+
+
+		}
+
+		private function addToViewStack( PhpView $view ) : void {
+
+			$this->view_stack[] = $view;
+		}
+
+		private function getNextViewFromStack() : ?PhpView {
+
+			return array_pop( $this->view_stack );
+		}
+
+		private function parseFileHeaders( PhpView $view ) : array {
+
+			return array_filter( get_file_data(
+				$view->getFilepath(),
+				[ self::PARENT_FILE_INDICATOR ]
+			) );
+		}
+
+		public function renderPhpView( PhpView $view ) : string {
+
+
+			$ob_level = ob_get_level();
+
+			ob_start();
+
+			try {
+
+				$this->requirePhpView($view);
+
+			}
+			catch ( Throwable $e ) {
+
+				$this->handleViewException($e, $ob_level, $view );
+
+			}
+
+			return ob_get_clean();
+
+		}
+
+		private function handleViewException( Throwable $e , $ob_level, PhpView $view) {
+
+			while (ob_get_level() > $ob_level) {
+				ob_end_clean();
+			}
+
+			throw new ViewException(
+				'Error rendering view: [' . $view->getName() . '].' .
+				PHP_EOL . $e->getMessage()
 			);
-		}
-
-
-		private function requireView( PhpView $__view ) {
-
-			$__context = $__view->getContext();
-			extract( $__context, EXTR_OVERWRITE );
-
-			include $__view->getFilepath();
 
 		}
 
-		/**
-		 * Pop the top-most layout content from the stack.
-		 *
-		 * @return PhpView|null
-		 */
-		private function popLayoutContent() : ?PhpView {
+		private function requirePhpView(PhpView $view) {
 
-			return array_pop( $this->layout_content_stack );
+			$this->addToViewStack($view);
+
+			if ( $view->parent() !== null ) {
+
+				$this->requirePhpView($view->parent());
+
+			}
+
+			$this->includeChildViews();
+
 		}
-
 
 	}
