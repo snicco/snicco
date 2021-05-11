@@ -223,9 +223,9 @@
 		 * Output child layout content.
 		 *
 		 * @return void
-		 * @see    \WPEmerge\View\PhpViewEngine::getLayoutContent()
+		 * @see    \WPEmerge\View\PhpViewEngine::includeChildViews()
 		 */
-		public static function layoutContent() {
+		public static function includeChildViews() {
 		}
 
 		/**

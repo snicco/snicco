@@ -10,6 +10,7 @@
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\TestApp;
 	use WPEmerge\Exceptions\ViewException;
+	use WPEmerge\Exceptions\ViewNotFoundException;
 	use WPEmerge\View\PhpView;
 
 	class ViewServiceIntegrationTest extends WPTestCase {
@@ -34,11 +35,29 @@
 
 		}
 
-
 		/** @test */
 		public function a_basic_view_can_be_created () {
 
 			$view = $this->view_service->make('view.php');
+
+			$this->assertSame('Foobar', $view->toString());
+
+		}
+
+		/** @test */
+		public function non_existing_views_throw_an_exception () {
+
+			$this->expectExceptionMessage('View not found for [bogus.php]');
+			$this->expectException(ViewNotFoundException::class);
+
+			$this->view_service->make('bogus.php');
+
+		}
+
+		/** @test */
+		public function multiple_views_can_be_passed_but_only_the_first_one_gets_rendered () {
+
+			$view = $this->view_service->make(['bogus', 'view', 'welcome.wordpress']);
 
 			$this->assertSame('Foobar', $view->toString());
 

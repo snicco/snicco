@@ -9,7 +9,6 @@
 	use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Contracts\ViewServiceInterface;
-	use WPEmerge\Support\FilePath;
 	use WPEmerge\Support\VariableBag;
 	use WPEmerge\Support\Arr;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
@@ -70,7 +69,6 @@
 			$view->with( $local_context );
 
 		}
-
 
 		/**
 		 * Create a view instance.

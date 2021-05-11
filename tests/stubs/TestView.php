@@ -16,7 +16,7 @@
 
 		private $name;
 
-		public function getContext( $key = null, $default = null ) {
+		public function getContext( string $key = null, $default = null ) {
 
 			if ( $key === null ) {
 				return $this->context;

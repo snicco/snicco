@@ -6,14 +6,12 @@
 
 	namespace WPEmerge\View;
 
-	use WPEmerge\Contracts\ViewEngineInterface;
+	use WPEmerge\Contracts\PhpEngine;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Exceptions\ViewNotFoundException;
 
-	/**
-	 * Render view files with php.
-	 */
-	class PhpViewEngine implements ViewEngineInterface {
+
+	class PhpViewEngine implements PhpEngine {
 
 		/**
 		 * Name of view file header based on which to resolve layouts.
@@ -51,37 +49,29 @@
 
 		}
 
-		public function exists( string $view_name ) : bool {
-
-			return $this->finder->exists( $view_name );
-		}
-
-		public function filePath( string $view_name ) : string {
-
-			return $this->finder->filePath( $view_name );
-		}
-
 		public function make( $views ) : ViewInterface {
 
-			foreach ( $views as $view ) {
 
-				if ( $this->exists( $view ) ) {
+			$view = collect( $views )
+				->reject( function ( string $view_name ) {
 
-					$filepath = $this->finder->filePath( $view );
+					return ! $this->exists( $view_name );
 
-					return $this->makeView( $view, $filepath );
-				}
-			}
+				} )
+				->whenEmpty( function () use ( $views ) {
 
-			throw new ViewNotFoundException( 'View not found for "' . implode( ', ', $views ) . '"' );
+					throw new ViewNotFoundException( 'View not found for [' . implode( ', ', $views ) . ']' );
+
+
+				} )
+				->first();
+
+			return $this->makePhpView( $view, $this->filePath( $view ) );
+
+
 		}
 
-		/**
-		 * Pop the top-most layout content from the stack, render and return it.
-		 *
-		 * @return string
-		 */
-		public function getLayoutContent() {
+		public function includeChildViews() {
 
 			$view = $this->popLayoutContent();
 
@@ -93,11 +83,20 @@
 
 			call_user_func( $this->compose, $clone );
 
-			return $this->renderView( $clone );
+			$this->requireView( $clone );
 
 
 		}
 
+		private function exists( string $view_name ) : bool {
+
+			return $this->finder->exists( $view_name );
+		}
+
+		private function filePath( string $view_name ) : string {
+
+			return $this->finder->filePath( $view_name );
+		}
 
 		/**
 		 * Push layout content to the top of the stack.
@@ -119,10 +118,10 @@
 		 * @param  string  $name
 		 * @param  string  $filepath
 		 *
-		 * @return ViewInterface
+		 * @return \WPEmerge\View\PhpView
 		 * @throws ViewNotFoundException
 		 */
-		private function makeView( string $name, string $filepath ) : ViewInterface {
+		private function makePhpView( string $name, string $filepath ) : PhpView {
 
 			$view = ( new PhpView( $this ) )
 				->setName( $name )
@@ -142,10 +141,10 @@
 		 *
 		 * @param  PhpView  $view
 		 *
-		 * @return ViewInterface|null
+		 * @return \WPEmerge\View\PhpView|null
 		 * @throws ViewNotFoundException
 		 */
-		private function getViewLayout( PhpView $view ) : ?ViewInterface {
+		private function getViewLayout( PhpView $view ) : ?PhpView {
 
 			$layout_headers = array_filter( get_file_data(
 				$view->getFilepath(),
@@ -162,17 +161,14 @@
 				throw new ViewNotFoundException( 'View layout not found for "' . $layout_file . '"' );
 			}
 
-			return $this->makeView( $this->filePath( $layout_file ), $this->finder->filePath( $layout_file ) );
+			return $this->makePhpView(
+				$this->filePath( $layout_file ),
+				$this->finder->filePath( $layout_file )
+			);
 		}
 
-		/**
-		 * Render a view.
-		 *
-		 * @param  PhpView  $__view
-		 *
-		 * @return string
-		 */
-		private function renderView( PhpView $__view ) {
+
+		private function requireView( PhpView $__view ) {
 
 			$__context = $__view->getContext();
 			extract( $__context, EXTR_OVERWRITE );
@@ -180,9 +176,6 @@
 			include $__view->getFilepath();
 
 		}
-
-
-
 
 		/**
 		 * Pop the top-most layout content from the stack.

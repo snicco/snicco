@@ -16,7 +16,7 @@
 		 *
 		 * @return mixed
 		 */
-		public function getContext( $key = null, $default = null );
+		public function getContext( string $key = null, $default = null );
 
 		/**
 		 * Add context values.
@@ -24,8 +24,8 @@
 		 * @param  string|array<string, mixed>  $key
 		 * @param  mixed  $value
 		 *
-		 * @return static                      $this
+		 * @return \WPEmerge\Contracts\ViewInterface
 		 */
-		public function with( $key, $value = null );
+		public function with( $key, $value = null ) :ViewInterface;
 
 	}
