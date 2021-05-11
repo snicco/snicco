@@ -16,7 +16,6 @@
 	use WPEmerge\Traits\GathersMiddleware;
 	use WPEmerge\Traits\HoldsRouteBlueprint;
 
-
 	/**
 	 * @todo allow matching of admin routes by query and url instead of stupid
 	 * wp conditions.
@@ -29,7 +28,7 @@
 		use HoldsRouteBlueprint;
 
 		/** @var \WPEmerge\Routing\RouteGroup[] */
-		private $group_stack;
+		private $group_stack = [];
 
 		/** @var \Contracts\ContainerAdapter */
 		private $container;
@@ -57,6 +56,7 @@
 		 */
 		private $with_middleware = true;
 
+
 		public function __construct( ContainerAdapter $container, RouteCollection $routes ) {
 
 			$this->container = $container;
@@ -64,27 +64,40 @@
 
 		}
 
-		public function view ( string $url, string $view, array $data = [], int $status = 200, array $headers = [] ) : Route {
+		public function isAdmin( bool $admin = true ) {
 
-			$route = $this->match(['GET', 'HEAD'], $url, ViewController::class . '@handle');
-			$route->defaults([
-				'view' => $view,
-				'data' => $data,
-				'status'=> $status,
+			$this->routes->isAdmin( $admin );
+
+		}
+
+		public function isAjax( bool $ajax = true ) {
+
+			$this->routes->$this->isAjax( $ajax );
+
+		}
+
+		public function view( string $url, string $view, array $data = [], int $status = 200, array $headers = [] ) : Route {
+
+			$route = $this->match( [ 'GET', 'HEAD' ], $url, ViewController::class . '@handle' );
+			$route->defaults( [
+				'view'    => $view,
+				'data'    => $data,
+				'status'  => $status,
 				'headers' => $headers,
-			]);
+			] );
 
 			return $route;
 
 		}
 
-		public function addRoute( array $methods, string $url, $action = null, $attributes = [] ) : Route {
+		public function addRoute( array $methods, string $path, $action = null, $attributes = [] ) : Route {
 
-			$url = $this->applyPrefix( $url );
+			$url = $this->applyPrefix( $path );
 
 			$route = new Route ( $methods, $url, $action );
 
 			if ( $this->hasGroupStack() ) {
+
 
 				$this->mergeGroupIntoRoute( $route );
 
@@ -92,7 +105,7 @@
 
 			if ( ! empty( $attributes ) ) {
 
-				$this->populateUserAttributes( $route, $attributes);
+				$this->populateUserAttributes( $route, $attributes );
 
 			}
 
@@ -124,7 +137,7 @@
 
 			}
 
-			return ( new RouteUrlGenerator($route ) )->to($arguments);
+			return ( new RouteUrlGenerator( $route ) )->to( $arguments );
 
 
 		}
@@ -169,7 +182,7 @@
 
 		private function populateUserAttributes( Route $route, array $attributes ) {
 
-			(( new RouteAttributes($route) ))->populateInitial( $attributes );
+			( ( new RouteAttributes( $route ) ) )->populateInitial( $attributes );
 		}
 
 		private function loadRoutes( $routes ) {
@@ -180,8 +193,7 @@
 
 			} else {
 
-				// ( new RouteRegistrar( $this ) )->loadRouteFile( $routes );
-				RouteRegistrar::loadRouteFile($routes);
+				RouteRegistrar::loadRouteFile( $routes );
 
 			}
 
@@ -234,7 +246,6 @@
 
 			}
 
-
 			return ( new Pipeline( $this->container ) )
 				->send( $request )
 				->through( $middleware )
@@ -248,13 +259,25 @@
 
 		private function applyPrefix( string $url ) : string {
 
+			if ( ! $this->hasGroupStack() ) {
+
+				return Url::combinePath( '', $url );
+
+			}
+
+			// if ( $this->lastGroup()->preset() === RouteGroup::ADMIN_PRESET ) {
+			//
+			// 	return $this->admin_dash_board_path . '/' . $url;
+			//
+			// }
+
 			return Url::combinePath( $this->lastGroupPrefix(), $url );
 
 		}
 
 		private function mergeGroupIntoRoute( Route $route ) {
 
-			( new RouteAttributes($route) )->mergeGroup($this->lastGroup());
+			( new RouteAttributes( $route ) )->mergeGroup( $this->lastGroup() );
 
 
 		}
@@ -301,8 +324,6 @@
 			return ( ( new RouteDecorator( $this ) )->decorate( $method, $parameters[0] ) );
 
 		}
-
-
 
 
 	}

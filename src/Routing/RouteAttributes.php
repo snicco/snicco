@@ -86,9 +86,23 @@
 
 			}
 
-			if ( $conditions = $group->conditions() ) {
+			if ( $condition_bucket = $group->conditions() ) {
 
-				foreach ( $conditions->all() as $condition ) {
+				$conditions = $condition_bucket->all();
+
+				if ( $group->prefix() === RouteGroup::ADMIN_PREFIX ) {
+
+					$url = str_replace(RouteGroup::ADMIN_PREFIX , '', $this->route->getUrl() );
+
+					$conditions[] = [
+						'query_string',
+						['page' => trim( $url, '/') ]
+					];
+
+
+				}
+
+				foreach ($conditions as $condition ) {
 
 					$this->where( $condition );
 

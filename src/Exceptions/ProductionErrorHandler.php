@@ -16,11 +16,7 @@
 	use WPEmerge\Http\Response;
 	use WPEmerge\Traits\HandlesExceptions;
 
-	/**
-	 * @todo If view have a view exception in production we cant just send output.
-	 * Because output most likely has been send at this point.
-	 * We need to reset the view somehow or load on error view.
-	 */
+
 	class ProductionErrorHandler implements ErrorHandlerInterface {
 
 		use HandlesExceptions;

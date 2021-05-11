@@ -57,27 +57,7 @@
 
 			});
 
-			// /**
-			//  *
-			//  * This needs to be a closure for now, because we would have a circular dependency between
-			//  * PhpViewEngine and ViewService.
-			//  *
-			//  * @todo Refactor responsibilities and make PhpView a newable without dependencies
-			//  *
-			//  */
-			// $this->container->singleton( 'compose.callable', function () {
-			//
-			// 	return function ( ViewInterface $view ) {
-			//
-			// 		/** @var ViewServiceInterface $view_service */
-			// 		$view_service = $this->container->make( ViewServiceInterface::class );
-			// 		$view_service->compose( $view );
-			//
-			// 		return $view;
-			//
-			// 	};
-			//
-			// } );
+
 
 			$this->container->singleton( ViewFinderInterface::class, function () {
 
