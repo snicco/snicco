@@ -54,6 +54,10 @@
 			$app->alias( 'routeUrl', Router::class, 'getRouteUrl' );
 			$app->alias( 'post', Router::class, 'post' );
 			$app->alias( 'get', Router::class, 'get' );
+			$app->alias( 'patch', Router::class, 'patch' );
+			$app->alias( 'put', Router::class, 'put' );
+			$app->alias( 'options', Router::class, 'options' );
+			$app->alias( 'delete', Router::class, 'delete' );
 
 		}
 
@@ -66,24 +70,27 @@
 			} );
 			$app->alias( 'addComposer', function () use ( $app ) {
 
-				$composer_collection = $app->resolve(ViewComposerCollection::class);
+				$composer_collection = $app->resolve( ViewComposerCollection::class );
 
 				$args = func_get_args();
 
-				$composer_collection->addComposer(...$args);
+				$composer_collection->addComposer( ...$args );
 
 			} );
-			$app->alias( 'views', ViewServiceInterface::class );
 			$app->alias( 'view', function () use ( $app ) {
 
-				return call_user_func_array( [ $app->views(), 'make' ], func_get_args() );
+				/** @var ViewServiceInterface $view_service */
+				$view_service = $app->container()->make(ViewServiceInterface::class);
+
+				return call_user_func_array( [ $view_service, 'make' ], func_get_args() );
+
 			} );
 			$app->alias( 'render', function () use ( $app ) {
 
-				$view_as_string = call_user_func_array( [
-					$app->views(),
-					'render',
-				], func_get_args() );
+				/** @var ViewServiceInterface $view_service */
+				$view_service = $app->container()->make(ViewServiceInterface::class);
+
+				$view_as_string = call_user_func_array( [ $view_service, 'render', ], func_get_args() );
 
 				echo $view_as_string;
 

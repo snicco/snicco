@@ -46,7 +46,8 @@
 
 			$url = $this->replaceRouteSegmentsWithValues( $url, $regex, $arguments );
 
-			return trim( home_url( $url ), '/' ) . '/';
+			/** @todo Replace this with a schema property on the route. */
+			return trim( home_url( $url, 'https' ), '/' ) . '/';
 
 
 		}

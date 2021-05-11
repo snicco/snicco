@@ -6,7 +6,6 @@
 
 	namespace WPEmerge\Contracts;
 
-	use WPEmerge\View\PhpView;
 
 	interface PhpEngine extends ViewEngineInterface {
 
@@ -15,6 +14,6 @@
 		 */
 		public function includeNextView() :void;
 
-		public function renderPhpView(PhpView $view) :string;
+		public function renderPhpView(PhpViewInterface $view) :string;
 
 	}

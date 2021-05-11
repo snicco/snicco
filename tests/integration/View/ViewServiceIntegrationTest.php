@@ -169,7 +169,7 @@
 		}
 
 		/** @test */
-		public function views_can_be_include_parent_views () {
+		public function views_can_be_included_in_parent_views () {
 
 			$view = $this->view_service->make('subview.php');
 

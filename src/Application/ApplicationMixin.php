@@ -8,6 +8,8 @@
 
 	use Contracts\ContainerAdapter;
 	use Psr\Http\Message\ResponseInterface;
+	use WPEmerge\Http\ResponseFactory;
+	use WPEmerge\Routing\Route;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Session\Csrf;
 	use WPEmerge\Session\FlashStore;
@@ -42,9 +44,11 @@
 		 *
 		 * @param  string  $key
 		 * @param $default
+		 *
 		 * @return mixed
 		 */
-		public static function config (string $key, $default = null ) {}
+		public static function config( string $key, $default = null ) {
+		}
 
 		/**
 		 * Bootstrap the application.
@@ -96,117 +100,13 @@
 		}
 
 		/**
-		 * Get the ClosureFactory instance.
+		 * Returns a response factory instance.
 		 *
-		 * @return ClosureFactory
+		 * @return  \WPEmerge\Http\ResponseFactory
+		 * @see \WPEmerge\Http\ResponseFactory
 		 */
-		public static function closure() : ClosureFactory {
-		}
+		public static function response() : ResponseFactory {}
 
-		/**
-		 * Get the CSRF service instance.
-		 *
-		 * @return \WPEmerge\Session\Csrf
-		 */
-		public static function csrf() : Csrf {
-		}
-
-		/**
-		 * Get the FlashStore service instance.
-		 *
-		 * @return \WPEmerge\Session\FlashStore
-		 */
-		public static function flash() : FlashStore {
-		}
-
-		/**
-		 * Get the OldInputStore service instance.
-		 *
-		 * @return \WPEmerge\Session\OldInputStore
-		 */
-		public static function oldInput() : OldInputStore {
-		}
-
-		/**
-		 * Run a full middleware + handler pipeline independently of routes.
-		 *
-		 * @param  RequestInterface  $request
-		 * @param  string[]  $middleware
-		 * @param  string|\Closure  $handler
-		 * @param  array  $arguments
-		 *
-		 * @return ResponseInterface
-		 * @see    \WPEmerge\Http\HttpKernel::run()
-		 */
-		public static function run( RequestInterface $request, $middleware, $handler, $arguments = [] ) : ResponseInterface {
-		}
-
-		/**
-		 * Get the ResponseService instance.
-		 *
-		 * @return ResponseService
-		 */
-		public static function responses() : ResponseService {
-		}
-
-		/**
-		 * Create a "blank" response.
-		 *
-		 * @return ResponseInterface
-		 * @see    \WPEmerge\Http\ResponseService::response()
-		 */
-		public static function response() : ResponseInterface {
-		}
-
-		/**
-		 * Create a response with the specified string as its body.
-		 *
-		 * @param  string  $output
-		 *
-		 * @return ResponseInterface
-		 * @see    \WPEmerge\Http\ResponseService::output()
-		 */
-		public static function output( $output ) : ResponseInterface {
-		}
-
-		/**
-		 * Create a response with the specified data encoded as JSON as its body.
-		 *
-		 * @param  mixed  $data
-		 *
-		 * @return \WPEmerge\Http\ResponseService
-		 * @see    \WPEmerge\Http\ResponseService::json()
-		 */
-		public static function json( $data ) : ResponseService {
-		}
-
-		/**
-		 * Create a redirect response.
-		 *
-		 * @return RedirectResponse
-		 * @see    \WPEmerge\Http\ResponseService::redirect()
-		 */
-		public static function redirect() : RedirectResponse {
-		}
-
-		/**
-		 * Create a response with the specified error status code.
-		 *
-		 * @param  integer  $status
-		 *
-		 * @return ResponseInterface
-		 * @see    \WPEmerge\Http\ResponseService::abort()
-		 */
-		public static function error( $status ) : ResponseInterface {
-		}
-
-		/**
-		 * Get the ViewService instance.
-		 *
-		 * @return \WPEmerge\View\ViewService
-		 */
-		public static function views() : ViewService {
-		}
 
 		/**
 		 * Create a view
@@ -219,14 +119,50 @@
 		public static function view( $views ) : ViewInterface {
 		}
 
+
 		/**
 		 * Output child layout content.
 		 *
 		 * @return void
 		 * @see    \WPEmerge\View\PhpViewEngine::includeNextView()
 		 */
-		public static function includeChildViews() {
-		}
+		public static function includeChildViews() :void {}
+
+
+		/**
+		 * Output the specified view.
+		 *
+		 * @param  string|string[]  $views
+		 * @param  array<string, mixed>  $context
+		 *
+		 * @return string
+		 * @see    \WPEmerge\Contracts\ViewInterface::toString()
+		 * @see    \WPEmerge\View\ViewService::make()
+		 */
+		public static function render( $views, array $context = [] ) :string {}
+
+
+		/**
+		 *
+		 * Add a new view composer to the given views
+		 *
+		 * @param  string|string[]  $views
+		 * @param  string|array|callable|\Closure  $callable
+		 *
+		 * @return void
+		 *
+		 */
+		public static function addComposer( $views, $callable ) :void {}
+
+
+		/**
+		 *
+		 * Returns the global variable bag used by view composers.
+		 *
+		 * @return \WPEmerge\Support\VariableBag
+		 */
+		public static function globals() : VariableBag {}
+
 
 		/**
 		 * Create a new route.
@@ -237,24 +173,65 @@
 		}
 
 		/**
-		 * Output the specified view.
+		 * Get the url to a named route
 		 *
-		 * @param  string|string[]  $views
-		 * @param  array<string, mixed>  $context
-		 *
-		 * @return void
-		 * @see    \WPEmerge\Contracts\ViewInterface::toString()
-		 * @see    \WPEmerge\View\ViewService::make()
+		 * @see Router::getRouteUrl()
 		 */
-		public static function render( $views, $context = [] ) {
+		public static function routeUrl( string $route_name, array $arguments = [] ) : string {
 		}
 
 		/**
-		 * @param string|string[] $views
-		 * @param string|array|callable|\Closure $callable
+		 * Create a new post route
+		 *
+		 * @see Router::post()
 		 */
-		public static function addComposer($views, $callable) {}
+		public static function post( string $url = '*', $action = null ) : Route {
 
-		public static function globals() : VariableBag {}
+
+		}
+
+		/**
+		 * Create a new get route
+		 *
+		 * @see Router::get()
+		 */
+		public static function get( string $url = '*', $action = null ) : Route {
+
+
+		}
+
+		/**
+		 * Create a new patch route
+		 *
+		 * @see Router::patch()
+		 */
+		public static function patch( string $url = '*', $action = null ) : Route {
+
+
+		}
+
+		/** Create a new put route
+		 *
+		 * @see Router::put()
+		 */
+		public static function put( string $url = '*', $action = null ) : Route {
+		}
+
+		/**
+		 * Create a new options route
+		 *
+		 * @see Router::options()
+		 */
+		public static function options( string $url = '*', $action = null ) : Route {}
+
+		/**
+		 * Create a new delete route
+		 *
+		 * @see Router::delete()
+		 */
+		public static function delete( string $url = '*', $action = null ) : Route {}
+
+
+
 
 	}

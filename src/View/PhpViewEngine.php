@@ -8,6 +8,7 @@
 
 	use Throwable;
 	use WPEmerge\Contracts\PhpEngine;
+	use WPEmerge\Contracts\PhpViewInterface;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Events\MakingView;
 	use WPEmerge\Exceptions\ViewException;
@@ -79,7 +80,7 @@
 
 		}
 
-		public function renderPhpView( PhpView $view ) : string {
+		public function renderPhpView( PhpViewInterface $view ) : string {
 
 
 			$ob_level = ob_get_level();
@@ -101,17 +102,17 @@
 
 		}
 
-		private function addToViewStack( PhpView $view ) : void {
+		private function addToViewStack( PhpViewInterface $view ) : void {
 
 			$this->view_stack[] = $view;
 		}
 
-		private function getNextViewFromStack() : ?PhpView {
+		private function getNextViewFromStack() : ?PhpViewInterface {
 
 			return array_pop( $this->view_stack );
 		}
 
-		private function handleViewException( Throwable $e , $ob_level, PhpView $view) {
+		private function handleViewException( Throwable $e , $ob_level, PhpViewInterface $view) {
 
 			while (ob_get_level() > $ob_level) {
 				ob_end_clean();
@@ -124,7 +125,7 @@
 
 		}
 
-		private function requirePhpView(PhpView $view) {
+		private function requirePhpView(PhpViewInterface $view) {
 
 			$this->addToViewStack($view);
 
