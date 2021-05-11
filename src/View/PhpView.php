@@ -8,6 +8,8 @@
 
 	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Contracts\ViewInterface;
+	use WPEmerge\Exceptions\Exception;
+	use WPEmerge\Exceptions\ViewException;
 	use WPEmerge\Http\Response;
 	use WPEmerge\Support\Arr;
 
@@ -41,7 +43,7 @@
 		 */
 		private $context = [];
 
-		/** @var string  */
+		/** @var string */
 		private $name = '';
 
 		public function __construct( PhpViewEngine $engine ) {
@@ -74,7 +76,8 @@
 			return $this;
 		}
 
-		public function toString() :string {
+		public function toString() : ?string {
+
 
 			$this->engine->pushLayoutContent( $this );
 
@@ -82,13 +85,28 @@
 				return $this->getLayout()->toString();
 			}
 
-			return $this->engine->getLayoutContent();
+			$this->engine->getLayoutContent();
+
+			return null;
 
 		}
 
-		public function toResponse() :ResponseInterface {
+		public function toResponse() : ResponseInterface {
 
-			return ( new Response( $this->toString() ) )->setType('text/html');
+			ob_start();
+
+			try {
+				$this->toString();
+			} catch (\Throwable $exception) {
+
+				ob_end_clean();
+				throw new ViewException();
+
+			}
+
+			$content = ob_get_clean();
+
+			return ( new Response( $content ) )->setType( 'text/html' );
 
 		}
 
@@ -126,12 +144,15 @@
 			return $this;
 		}
 
-		public function getName() :string  {
+		public function getName() : string {
+
 			return $this->name;
 		}
 
-		public function setName( string $name ) :PhpView {
+		public function setName( string $name ) : PhpView {
+
 			$this->name = $name;
+
 			return $this;
 		}
 
