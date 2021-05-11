@@ -1,14 +1,22 @@
 <?php
 
 
-	namespace WPEmerge;
+	declare( strict_types = 1 );
 
-	use WPEmerge\Events\IncomingAjaxRequest;
+
+	namespace WPEmerge\Exceptions;
+
 	use WPEmerge\Events\BodySent;
+	use WPEmerge\Events\IncomingAjaxRequest;
 
-	class AjaxShutdownHandler {
+	class ShutdownHandler {
 
 
+		public function exceptionHandled () {
+
+			exit();
+
+		}
 
 		// We need to terminate ajax scripts manually because if we dont Wordpress will
 		// call wp_die() and always generate a 200 status code.

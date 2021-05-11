@@ -1,6 +1,9 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace Tests\unit\Http;
 
 	use WPEmerge\Http\Controller;

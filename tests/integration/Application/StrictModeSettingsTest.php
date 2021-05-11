@@ -1,6 +1,9 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace Tests\integration\Application;
 
 	use Codeception\TestCase\WPTestCase;
@@ -26,7 +29,7 @@
 		/** @test */
 		public function strict_mode_is_disabled_by_default () {
 
-			TestApp::make()->bootstrap(TEST_CONFIG);
+			TestApp::make()->boot(TEST_CONFIG);
 
 			$strict_mode_enabled = TestApp::config('strict_mode', null );
 
@@ -38,7 +41,7 @@
 		/** @test */
 		public function strict_mode_can_be_enabled_via_the_config() {
 
-			TestApp::make()->bootstrap($this->config());
+			TestApp::make()->boot($this->config());
 
 			$strict_mode_enabled = TestApp::config('strict_mode', null );
 

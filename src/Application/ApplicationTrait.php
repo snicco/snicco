@@ -1,6 +1,9 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace WPEmerge\Application;
 
 	use BadMethodCallException;
@@ -65,6 +68,7 @@
 		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
 		public static function __callStatic( string $method, array $parameters ) {
+
 
 			$application = static::getApplication();
 			$callable    = [ $application, $method ];

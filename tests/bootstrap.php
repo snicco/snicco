@@ -1,6 +1,8 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
 	$root_dir = getenv('ROOT_DIR');
 
 

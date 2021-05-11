@@ -1,6 +1,10 @@
 <?php
 
-namespace WPEmerge\Exceptions;
+
+	declare( strict_types = 1 );
+
+
+	namespace WPEmerge\Exceptions;
 
 use WPEmerge\Exceptions\Exception;
 

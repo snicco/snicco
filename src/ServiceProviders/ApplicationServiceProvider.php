@@ -1,9 +1,14 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace WPEmerge\ServiceProviders;
 
+	use test\Mockery\HasUnknownClassAsTypeHintOnMethod;
 	use WPEmerge\Contracts\ServiceProvider;
+	use WPEmerge\Exceptions\Exception;
 	use WPEmerge\Support\Path;
 
 
@@ -14,11 +19,12 @@
 	 */
 	class ApplicationServiceProvider extends ServiceProvider {
 
+		public const STRICT_MODE = 'strict_mode';
 
 		public function register() :void  {
 
 
-			$this->config->extend('strict_mode', false );
+			$this->config->extend(static::STRICT_MODE, false );
 
 			$upload_dir = wp_upload_dir();
 

@@ -1,6 +1,9 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace WPEmerge\ServiceProviders;
 
 	use WPEmerge\Application\Application;
@@ -15,6 +18,7 @@
 
 		/** @todo clean up all aliases and create tests that they work */
 		public function register() :void {
+
 
 			$app = $this->container->make(Application::class);
 

@@ -1,16 +1,18 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace WPEmerge\ServiceProviders;
 
 	use BetterWpHooks\Contracts\Dispatcher;
-	use Contracts\ContainerAdapter;
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Contracts\ServiceProvider;
+	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\Events\IncomingWebRequest;
 	use WPEmerge\Events\LoadedWpAdmin;
-	use WPEmerge\AjaxShutdownHandler;
-	use WPEmerge\Factories\DynamicHooksFactory;
+	use WPEmerge\Exceptions\ShutdownHandler;
 	use WPEmerge\Events\AdminBodySendable;
 	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingAjaxRequest;
@@ -54,41 +56,32 @@
 
 			BodySent::class => [
 
-				AjaxShutdownHandler::class . '@shutdownWp',
+				ShutdownHandler::class . '@shutdownWp',
 
 			],
+
+			UnrecoverableExceptionHandled::class => [
+
+				ShutdownHandler::class . '@exceptionHandled'
+
+			]
 
 		];
 
 		public function register() :void  {
 
-			/** @todo change these to instance() calss  */
-			$this->container->singleton( 'mapped.events', function () {
+			ApplicationEvent::make( $this->container )
+			                ->map( $this->mapped_events )
+			                ->listeners( $this->event_listeners )
+			                ->boot();
 
-				return $this->mapped_events;
-
-			} );
-
-			$this->container->singleton( 'event.listeners', function () {
-
-				return $this->event_listeners;
-
-			} );
-
-			$this->container->singleton( Dispatcher::class, function () {
-
-				return ApplicationEvent::dispatcher();
-
-			} );
+			$this->container->instance(Dispatcher::class, ApplicationEvent::dispatcher());
 
 		}
 
 		public function bootstrap() :void  {
 
-			ApplicationEvent::make( $this->container )
-			                ->map( $this->container->make( 'mapped.events' ) )
-			                ->listeners( $this->container->make( 'event.listeners' ) )
-			                ->boot();
+			//
 
 		}
 

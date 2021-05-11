@@ -1,6 +1,9 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace WPEmerge\Exceptions;
 
 	use Throwable;
@@ -8,49 +11,41 @@
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ResponseInterface;
-	use WPEmerge\Http\Response;
+	use WPEmerge\Events\UnrecoverableExceptionHandled;
+	use WPEmerge\Traits\HandlesExceptions;
 
 	class DebugErrorHandler implements ErrorHandlerInterface {
 
+		use HandlesExceptions;
 
 		/** @var \Whoops\RunInterface */
 		private $whoops;
 
-		/** @var bool */
-		private $is_ajax;
-
-
-		public function __construct( RunInterface $whoops, $is_ajax = false ) {
+		public function __construct( RunInterface $whoops) {
 
 			$this->whoops = $whoops;
 
-			$this->is_ajax = $is_ajax;
 		}
 
+		public function handleException( $exception )  {
 
-		public function register() {
-
-			$this->whoops->register();
-
-		}
-
-		public function unregister() {
-
-			$this->whoops->unregister();
-
-		}
-
-		public function transformToResponse( RequestInterface $request, Throwable $exception ) : ResponseInterface {
 
 			$method = RunInterface::EXCEPTION_HANDLER;
 
-			$output = $this->whoops->{$method}( $exception );
+			$this->whoops->{$method}( $exception );
 
-			$content_type = ( $this->is_ajax ) ? 'application/json' : 'text/html';
-
-			return (new Response($output, 500))->setType($content_type);
+			UnrecoverableExceptionHandled::dispatch();
 
 
 		}
+
+		public function transformToResponse( Throwable $exception, RequestInterface $request = null ) : ?ResponseInterface {
+
+			 $this->handleException( $exception);
+
+			 return null;
+
+		}
+
 
 	}

@@ -1,6 +1,9 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace WPEmerge\Contracts;
 
 
@@ -113,7 +116,7 @@
 		 *
 		 * @return mixed
 		 */
-		public function attributes( string $key = '', $default = null );
+		public function attribute( string $key = '', $default = null );
 
 		/**
 		 * Get a value from the request query (i.e. $_GET).
