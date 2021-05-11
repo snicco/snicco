@@ -8,10 +8,8 @@
 
 	use PHPUnit\Framework\TestCase;
 	use Tests\stubs\TestView;
-	use WPEmerge\Contracts\ResponseInterface;
 	use SniccoAdapter\BaseContainerAdapter;
 	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Support\Arr;
 	use WPEmerge\View\PhpViewFinder;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
 	use WPEmerge\Factories\ViewComposerFactory;
@@ -41,11 +39,10 @@
 
 			$collection = $this->newViewComposerCollection();
 
-			$view = new TestView();
-			$view->setName( 'view.php' );
+			$view = new TestView('foo_view');
 			$view->with( [ 'foo' => 'bar' ] );
 
-			$collection->addComposer( 'view.php', function ( ViewInterface $view ) {
+			$collection->addComposer( 'foo_view', function ( ViewInterface $view ) {
 
 				$view->with( [ 'foo' => 'baz' ] );
 
@@ -62,11 +59,10 @@
 
 			$collection = $this->newViewComposerCollection();
 
-			$view = new TestView();
-			$view->setName( 'view.php' );
+			$view = new TestView('foo_view');
 			$view->with( [ 'foo' => 'bar' ] );
 
-			$collection->addComposer( 'fooview.php', function ( ViewInterface $view ) {
+			$collection->addComposer( 'bar_view', function ( ViewInterface $view ) {
 
 				$view->with( [ 'foo' => 'baz' ] );
 
@@ -83,16 +79,15 @@
 
 			$collection = $this->newViewComposerCollection();
 
-			$view = new TestView();
-			$view->setName( 'view.php' );
+			$view = new TestView('foo_view');
 
-			$collection->addComposer( 'view.php', function ( ViewInterface $view ) {
+			$collection->addComposer( 'foo_view', function ( ViewInterface $view ) {
 
 				$view->with( [ 'foo' => 'bar' ] );
 
 			} );
 
-			$collection->addComposer( 'view.php', function ( ViewInterface $view ) {
+			$collection->addComposer( 'foo_view', function ( ViewInterface $view ) {
 
 				$view->with( [ 'bar' => 'baz' ] );
 
@@ -110,23 +105,18 @@
 
 			$collection = $this->newViewComposerCollection();
 
-			$view1 = new TestView();
-			$view1->setName( 'view.php' );
-			$collection->addComposer( 'view.php', function ( ViewInterface $view ) {
+			$collection->addComposer( ['view_one', 'view_two'], function ( ViewInterface $view ) {
 
 				$view->with( [ 'foo' => 'bar' ] );
 
 			} );
+
+			$view1 = new TestView('view_one');
+
 			$collection->executeUsing( $view1 );
 			$this->assertSame( 'bar', $view1->context( 'foo' ) );
 
-			$view2 = new TestView();
-			$view2->setName( 'welcome.wordpress.php' );
-			$collection->addComposer( 'welcome.wordpress.php', function ( ViewInterface $view ) {
-
-				$view->with( [ 'foo' => 'bar' ] );
-
-			} );
+			$view2 = new TestView('view_two');
 			$collection->executeUsing( $view2 );
 			$this->assertSame( 'bar', $view2->context( 'foo' ) );
 
@@ -139,11 +129,10 @@
 
 			$collection = $this->newViewComposerCollection();
 
-			$view = new TestView();
-			$view->setName( 'view.php' );
+			$view = new TestView('foo_view');
 			$view->with( [ 'foo' => 'bar' ] );
 
-			$collection->addComposer( 'view.php', function ( $view_file ) {
+			$collection->addComposer( 'foo_view', function ( $view_file ) {
 
 				$view_file->with( [ 'foo' => 'baz' ] );
 
@@ -156,7 +145,6 @@
 
 		}
 
-
 		private function newViewComposerCollection() : ViewComposerCollection {
 
 			$dir = getenv( 'ROOT_DIR' ) . DS . 'tests' . DS . 'views';
@@ -164,6 +152,8 @@
 			return new ViewComposerCollection( $this->factory, new PhpViewFinder( [ $dir ] ) );
 
 		}
+
+
 
 	}
 

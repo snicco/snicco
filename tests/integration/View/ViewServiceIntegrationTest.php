@@ -9,6 +9,7 @@
 	use Codeception\TestCase\WPTestCase;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\TestApp;
+	use WPEmerge\Contracts\ViewServiceInterface;
 	use WPEmerge\Exceptions\ViewException;
 	use WPEmerge\Exceptions\ViewNotFoundException;
 	use WPEmerge\View\PhpView;
@@ -30,7 +31,7 @@
 
 			TestApp::make($container)->boot(TEST_CONFIG);
 
-			$this->view_service = TestApp::resolve(WPEMERGE_VIEW_SERVICE_KEY);
+			$this->view_service = TestApp::resolve(ViewServiceInterface::class );
 
 
 		}

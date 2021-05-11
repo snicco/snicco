@@ -14,9 +14,11 @@
 	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingAjaxRequest;
 	use WPEmerge\Events\IncomingWebRequest;
+	use WPEmerge\Events\MakingView;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\Exceptions\ShutdownHandler;
 	use WPEmerge\Http\HttpKernel;
+	use WPEmerge\View\ViewService;
 
 	class EventServiceProviderTest extends WPTestCase {
 
@@ -56,6 +58,10 @@
 				ShutdownHandler::class,
 				'exceptionHandled',
 			], UnrecoverableExceptionHandled::class ) );
+
+			$this->assertTrue($d->hasListenerFor(
+				[ViewService::class, 'compose'], MakingView::class
+			));
 
 
 		}

@@ -49,20 +49,7 @@
 
 		}
 
-		/** @test */
-		public function the_view_composer_closure_is_resolved_correctly () {
-
-			$app = $this->bootNewApplication();
-
-			$this->assertInstanceOf( Closure::class, $c = $app->resolve('compose.callable'));
-
-			$view = new TestView();
-
-			$view = $c($view);
-
-			$this->assertInstanceOf( ViewInterface::class, $view);
-
-		}
+		
 
 		/** @test */
 		public function the_view_finder_is_resolved_correctly () {

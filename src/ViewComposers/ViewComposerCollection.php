@@ -11,6 +11,7 @@
 	use WPEmerge\Contracts\ViewFinderInterface;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Factories\ViewComposerFactory;
+	use WPEmerge\Support\Arr;
 
 	class ViewComposerCollection implements ViewComposer {
 
@@ -59,15 +60,9 @@
 		 */
 		public function addComposer( $views, $callable ) {
 
-			$views = collect( $views )->map( function ( $view ) {
-
-				return $this->view_finder->filePath( $view );
-
-			} )->all();
-
 			$this->composers->push( [
 
-				'views'    => $views,
+				'views'    => Arr::wrap($views),
 				'composer' => $this->composer_factory->createUsing( $callable ),
 
 
@@ -80,7 +75,7 @@
 			return $this->composers
 				->filter( function ( $value ) use ( $view ) {
 
-					return in_array( $this->view_finder->filePath( $view->name() ), $value['views'] );
+					return in_array( $view->name() , $value['views'] );
 
 				})
 				->pluck('composer')

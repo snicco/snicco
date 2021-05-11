@@ -6,6 +6,7 @@
 
 	namespace WPEmerge\View;
 
+	use WPEmerge\Contracts\PhpViewInterface;
 	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Exceptions\ViewException;
@@ -14,7 +15,7 @@
 	use WPEmerge\Support\Arr;
 
 
-	class PhpView implements ViewInterface {
+	class PhpView implements PhpViewInterface {
 
 		/**
 		 * Name of view file header based on which to resolve parent views.
@@ -62,7 +63,7 @@
 			return $this->filepath;
 		}
 
-		public function parent() : ?PhpView {
+		public function parent() : ?PhpViewInterface {
 
 			return $this->parent_view;
 		}

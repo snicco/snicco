@@ -9,18 +9,12 @@
 	use Throwable;
 	use WPEmerge\Contracts\PhpEngine;
 	use WPEmerge\Contracts\ViewInterface;
+	use WPEmerge\Events\MakingView;
 	use WPEmerge\Exceptions\ViewException;
 	use WPEmerge\Exceptions\ViewNotFoundException;
 
 
 	class PhpViewEngine implements PhpEngine {
-
-		/**
-		 * View compose action.
-		 *
-		 * @var callable
-		 */
-		private $compose;
 
 		/**
 		 * View finder.
@@ -36,14 +30,15 @@
 		 */
 		private $view_stack = [];
 
+		public function __construct( PhpViewFinder $finder ) {
 
-		public function __construct( callable $compose, PhpViewFinder $finder ) {
-
-			$this->compose = $compose;
 			$this->finder  = $finder;
 
 		}
 
+		/**
+		 * @throws \BetterWpHooks\Exceptions\ConfigurationException
+		 */
 		public function includeNextView() : void {
 
 			if ( ! $view = $this->getNextViewFromStack() ) {
@@ -54,7 +49,7 @@
 
 			$clone = clone $view;
 
-			call_user_func( $this->compose, $clone );
+			MakingView::dispatch([$clone]);
 
 			$this->finder->includeFile(
 				$clone->path(),

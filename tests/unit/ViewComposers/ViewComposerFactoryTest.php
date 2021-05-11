@@ -9,12 +9,12 @@
 	use PHPUnit\Framework\TestCase;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\Foo;
+	use Tests\stubs\TestView;
 	use Tests\stubs\ViewComposers\FooComposer;
+	use WPEmerge\Contracts\PhpViewInterface;
 	use WPEmerge\Contracts\ViewComposer;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Factories\HandlerFactory;
-	use WPEmerge\View\PhpView;
-	use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\Factories\ViewComposerFactory;
 
 	class ViewComposerFactoryTest extends TestCase {
@@ -160,11 +160,9 @@
 		}
 
 
-		private function newPhpView() : PhpView {
+		private function newPhpView() : PhpViewInterface {
 
-			$engine = \Mockery::mock(PhpViewEngine::class);
-
-			return new PhpView($engine);
+			return new TestView('foo');
 
 		}
 

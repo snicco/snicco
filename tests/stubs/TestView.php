@@ -6,15 +6,21 @@
 
 	namespace Tests\stubs;
 
+	use WPEmerge\Contracts\PhpViewInterface;
 	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Support\Arr;
 
-	class TestView implements ViewInterface {
+	class TestView implements PhpViewInterface {
 
 		private $context = [];
 
 		private $name;
+
+		public function __construct(string $name) {
+
+			$this->name = $name;
+		}
 
 		public function context( string $key = null, $default = null ) {
 
@@ -26,13 +32,15 @@
 
 		}
 
-		public function with( $key, $value = null ) {
+		public function with( $key, $value = null ) :ViewInterface {
 
 			if ( is_array( $key ) ) {
 				$this->context = array_merge( $this->context(), $key );
 			} else {
 				$this->context[ $key ] = $value;
 			}
+
+			return  $this;
 
 		}
 
@@ -41,19 +49,21 @@
 
 		}
 
-		public function getName() {
+		public function toString() : string {
+
+		}
+
+		public function path() : string {
+
+		}
+
+		public function parent() : ?PhpViewInterface {
+
+		}
+
+		public function name() : string {
 
 			return $this->name;
-
-		}
-
-		public function setName( $name ) {
-
-			$this->name = $name;
-
-		}
-
-		public function toString() : string {
 
 		}
 
