@@ -9,6 +9,7 @@
 	use Codeception\TestCase\WPTestCase;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\TestApp;
+	use WPEmerge\Exceptions\ViewException;
 	use WPEmerge\View\PhpView;
 
 	class ViewServiceIntegrationTest extends WPTestCase {
@@ -153,6 +154,30 @@
 			$view = $this->view_service->make('subview.php');
 
 			$this->assertSame('Hello World', $view->toString());
+
+		}
+
+		/** @test */
+		public function views_with_errors_dont_print_output_to_the_client () {
+
+			$this->expectException(ViewException::class);
+			$this->expectExceptionMessage('Error rendering view: [with-error].');
+
+			$view = $this->view_service->make('with-error');
+
+			$view->toString();
+
+		}
+
+		/** @test */
+		public function errors_in_nested_views_dont_print_output_to_the_client () {
+
+			$this->expectException(ViewException::class);
+			$this->expectExceptionMessage('Error rendering view: [with-error-subview].');
+
+			$view = $this->view_service->make('with-error-subview');
+
+			$view->toString();
 
 		}
 
