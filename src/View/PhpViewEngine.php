@@ -51,17 +51,17 @@
 
 		}
 
-		public function exists( string $view_name ) :bool {
+		public function exists( string $view_name ) : bool {
 
 			return $this->finder->exists( $view_name );
 		}
 
-		public function filePath( string $view_name ) :string  {
+		public function filePath( string $view_name ) : string {
 
 			return $this->finder->filePath( $view_name );
 		}
 
-		public function make( $views ) :ViewInterface{
+		public function make( $views ) : ViewInterface {
 
 			foreach ( $views as $view ) {
 
@@ -81,7 +81,7 @@
 		 *
 		 * @return string
 		 */
-		public function getLayoutContent() :string {
+		public function getLayoutContent() {
 
 			$view = $this->popLayoutContent();
 
@@ -94,6 +94,8 @@
 			call_user_func( $this->compose, $clone );
 
 			return $this->renderView( $clone );
+
+
 		}
 
 
@@ -105,11 +107,10 @@
 		 *
 		 * @return void
 		 */
-		public function pushLayoutContent( PhpView $view ) :void {
+		public function pushLayoutContent( PhpView $view ) : void {
 
 			$this->layout_content_stack[] = $view;
 		}
-
 
 
 		/**
@@ -180,7 +181,10 @@
 			include $__view->getFilepath();
 
 			return ob_get_clean();
+
 		}
+
+
 
 
 		/**
