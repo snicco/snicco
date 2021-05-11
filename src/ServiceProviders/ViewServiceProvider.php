@@ -41,6 +41,13 @@
 
 			$this->container->singleton( ViewServiceInterface::class, function () {
 
+				return $this->container->make(ViewService::class);
+
+			});
+
+			/** @todo Remove this when BetterWpHooks allows binding to interfaces */
+			$this->container->singleton(ViewService::class, function () {
+
 				return new ViewService(
 					$this->container->make( ViewEngineInterface::class ),
 					$this->container->make( ViewComposerCollection::class ),
@@ -50,27 +57,27 @@
 
 			});
 
-
-			/**
-			 *
-			 * This needs to be a closure for now, because we would have a circular dependency between
-			 * PhpViewEngine and ViewService.
-			 *
-			 * @todo Refactor responsibilities and make PhpView a newable without dependencies
-			 *
-			 */
-			$this->container->singleton( 'compose.callable', function () {
-
-				return function ( ViewInterface $view ) {
-
-					/** @var ViewServiceInterface $view_service */
-					$view_service = $this->container->make( ViewServiceInterface::class );
-					$view_service->compose( $view );
-
-					return $view;
-
-				};
-			} );
+			// /**
+			//  *
+			//  * This needs to be a closure for now, because we would have a circular dependency between
+			//  * PhpViewEngine and ViewService.
+			//  *
+			//  * @todo Refactor responsibilities and make PhpView a newable without dependencies
+			//  *
+			//  */
+			// $this->container->singleton( 'compose.callable', function () {
+			//
+			// 	return function ( ViewInterface $view ) {
+			//
+			// 		/** @var ViewServiceInterface $view_service */
+			// 		$view_service = $this->container->make( ViewServiceInterface::class );
+			// 		$view_service->compose( $view );
+			//
+			// 		return $view;
+			//
+			// 	};
+			//
+			// } );
 
 			$this->container->singleton( ViewFinderInterface::class, function () {
 
@@ -82,7 +89,6 @@
 			$this->container->singleton( PhpViewEngine::class, function () {
 
 				return new PhpViewEngine(
-					$this->container->make('compose.callable'),
 					$this->container->make(ViewFinderInterface::class),
 				);
 
@@ -90,7 +96,7 @@
 
 			$this->container->singleton( ViewEngineInterface::class, function () {
 
-				return $this->container->make( PhpViewEngine::class );
+				return $this->container->make(PhpViewEngine::class);
 
 			} );
 
