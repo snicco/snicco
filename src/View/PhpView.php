@@ -9,8 +9,6 @@
 	use WPEmerge\Contracts\PhpViewInterface;
 	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Exceptions\ViewException;
-	use WPEmerge\Exceptions\ViewNotFoundException;
 	use WPEmerge\Http\Response;
 	use WPEmerge\Support\Arr;
 

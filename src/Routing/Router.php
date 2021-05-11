@@ -113,6 +113,7 @@
 
 		public function getRouteUrl( string $name, array $arguments = [] ) : string {
 
+			/** @var \WPEmerge\Routing\Route $route */
 			$route = $this->routes->findByName( $name );
 
 			if ( ! $route ) {
