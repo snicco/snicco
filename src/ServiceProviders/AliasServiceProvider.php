@@ -88,11 +88,12 @@
 				echo $view_as_string;
 
 			} );
-			$app->alias( 'layoutContent', function () use ( $app ) {
+			$app->alias( 'includeChildViews', function () use ( $app ) {
 
+				/** @var PhpViewEngine $engine */
 				$engine = $app->resolve( PhpViewEngine::class );
 
-				echo $engine->getLayoutContent();
+				echo $engine->includeChildViews();
 
 
 			} );

@@ -7,10 +7,7 @@
 	namespace WPEmerge\Contracts;
 
 
-	/**
-	 * Interface that view engines must implement
-	 */
-	interface ViewEngineInterface extends ViewFinderInterface {
+	interface ViewEngineInterface  {
 
 		/**
 		 * Create a view instance from the first view name that exists.
@@ -21,5 +18,9 @@
 		 */
 		public function make( $views ) : ViewInterface;
 
+		/**
+		 * Pop the top-most layout content from the stack, render and return it.
+		 */
+		public function includeChildViews();
 
 	}

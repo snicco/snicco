@@ -28,7 +28,6 @@
 		public function make( $views ) : ViewInterface;
 
 
-
 		/**
 		 * Compile a view to a string.
 		 *

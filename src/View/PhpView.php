@@ -8,14 +8,11 @@
 
 	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Exceptions\Exception;
 	use WPEmerge\Exceptions\ViewException;
 	use WPEmerge\Http\Response;
 	use WPEmerge\Support\Arr;
 
-	/**
-	 * Render a view file with php.
-	 */
+
 	class PhpView implements ViewInterface {
 
 		/**
@@ -104,7 +101,7 @@
 				return $this->getLayout()->requireView();
 			}
 
-			$this->engine->getLayoutContent();
+			$this->engine->includeChildViews();
 
 		}
 
@@ -131,7 +128,7 @@
 		 *
 		 * @return mixed
 		 */
-		public function getContext( $key = null, $default = null ) {
+		public function getContext( string $key = null, $default = null ) {
 
 			if ( $key === null ) {
 				return $this->context;
@@ -147,7 +144,7 @@
 		 *
 		 * @return static                      $this
 		 */
-		public function with( $key, $value = null ) {
+		public function with( $key, $value = null ) : ViewInterface {
 
 			if ( is_array( $key ) ) {
 				$this->context = array_merge( $this->getContext(), $key );

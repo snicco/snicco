@@ -11,7 +11,7 @@
 
 <?php
 
-	TestApp::layoutContent();
+	TestApp::includeChildViews();
 
 ?>
 
