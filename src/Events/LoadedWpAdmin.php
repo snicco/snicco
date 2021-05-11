@@ -1,6 +1,9 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace WPEmerge\Events;
 
 	use WPEmerge\Application\ApplicationEvent;
@@ -10,11 +13,10 @@
 	class LoadedWpAdmin extends ApplicationEvent {
 
 
+		public function __construct( RequestInterface $request, DynamicHooksFactory $hook_factory ) {
 
-		public function __construct( RequestInterface $request, DynamicHooksFactory $factory ) {
 
-
-			$factory->create($request);
+			$hook_factory->create($request);
 
 
 		}

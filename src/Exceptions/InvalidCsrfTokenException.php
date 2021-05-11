@@ -1,7 +1,10 @@
 <?php
 
 
-namespace WPEmerge\Exceptions;
+	declare( strict_types = 1 );
+
+
+	namespace WPEmerge\Exceptions;
 
 
 class InvalidCsrfTokenException extends Exception {

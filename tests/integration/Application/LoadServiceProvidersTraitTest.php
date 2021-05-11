@@ -1,6 +1,9 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace Tests\integration\Application;
 
 	use Codeception\TestCase\WPTestCase;
@@ -49,7 +52,7 @@
 			];
 
 			$app::make();
-			$app::bootstrap( $user_config );
+			$app::boot( $user_config );
 
 			$container = $app::container();
 
@@ -80,7 +83,7 @@
 			];
 
 			$app::make();
-			$app::bootstrap( $user_config );
+			$app::boot( $user_config );
 
 
 		}
@@ -98,7 +101,7 @@
 			];
 
 			$app::make();
-			$app::bootstrap( $user_config );
+			$app::boot( $user_config );
 
 			$this->assertSame( 'bar', $app::container()['foo'] );
 
@@ -118,7 +121,7 @@
 			];
 
 			$app::make();
-			$app::bootstrap( $user_config );
+			$app::boot( $user_config );
 
 			$this->assertSame( 'baz', $app::container()['bar'] );
 
@@ -139,7 +142,7 @@
 			];
 
 			$app::make();
-			$app::bootstrap( $user_config );
+			$app::boot( $user_config );
 
 			$this->assertSame( 'bar', $app::resolve('config_value') );
 

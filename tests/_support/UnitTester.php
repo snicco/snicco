@@ -1,7 +1,10 @@
 <?php
 
 
-/**
+	declare( strict_types = 1 );
+
+
+	/**
  * Inherited Methods
  * @method void wantToTest($text)
  * @method void wantTo($text)

@@ -1,6 +1,9 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace WPEmerge\Http;
 
 	use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
@@ -114,7 +117,7 @@
 
 		}
 
-		public function attributes( string $key = '', $default = null ) {
+		public function attribute( string $key = '', $default = null ) {
 
 			return $this->attributes->get($key, $default);
 

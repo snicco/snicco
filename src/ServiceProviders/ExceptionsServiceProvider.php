@@ -1,48 +1,53 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace WPEmerge\ServiceProviders;
 
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ServiceProvider;
+	use WPEmerge\Exceptions\NullErrorHandler;
+	use WPEmerge\Exceptions\ProductionErrorHandler;
+	use WPEmerge\Factories\ErrorHandlerFactory;
 
-	use WPEmerge\Factories\ExceptionHandlerFactory;
-
-	/**
-	 * Provide exceptions dependencies.
-	 *
-	 */
 	class ExceptionsServiceProvider extends ServiceProvider {
-
-
 
 		public function register() : void {
 
-			$this->config->extend('debug.enable', true );
-			$this->config->extend('debug.pretty_errors', true );
-
+			$this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
 
 			$this->container->singleton( ErrorHandlerInterface::class, function () {
 
+				if ( ! $this->config->get('error_handling.enable', false ) ) {
 
+					return new NullErrorHandler();
+
+				}
+
+				/** @var RequestInterface $request */
 				$request = $this->container->make( RequestInterface::class );
 
-				return ( ( new ExceptionHandlerFactory(
-					WP_DEBUG,
+				return ErrorHandlerFactory::make(
+					$this->container,
+					$this->config->get( 'error_handling.debug', false ),
 					$request->isAjax(),
-					'phpstorm' ) )
-				)->create();
+					$this->config->get( 'exceptions.editor', 'phpstorm' )
 
+				);
 			} );
-
 
 		}
 
-
 		public function bootstrap() : void {
 
-			// Nothing to bootstrap.
+			$error_handler = $this->container->make( ErrorHandlerInterface::class );
+
+			$error_handler->register();
+
+			$this->container->instance( ErrorHandlerInterface::class, $error_handler );
 
 		}
 

@@ -1,6 +1,9 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace Tests\integration\View;
 
 	use Codeception\TestCase\WPTestCase;
@@ -23,7 +26,7 @@
 
 			$container = new BaseContainerAdapter();
 
-			TestApp::make($container)->bootstrap(TEST_CONFIG);
+			TestApp::make($container)->boot(TEST_CONFIG);
 
 			$this->view_service = TestApp::resolve(WPEMERGE_VIEW_SERVICE_KEY);
 

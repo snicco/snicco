@@ -1,6 +1,9 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace WPEmerge\Application;
 
 	use Contracts\ContainerAdapter;
@@ -33,6 +36,7 @@
 		 * @var string[]
 		 */
 		private $service_providers = [
+			EventServiceProvider::class,
 			AliasServiceProvider::class,
 			FactoryServiceProvider::class,
 			ApplicationServiceProvider::class,
@@ -42,7 +46,6 @@
 			ResponsesServiceProvider::class,
 			RoutingServiceProvider::class,
 			ViewServiceProvider::class,
-			EventServiceProvider::class
 		];
 
 

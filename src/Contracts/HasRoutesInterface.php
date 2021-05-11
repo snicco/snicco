@@ -1,5 +1,8 @@
 <?php
-/**
+
+
+	declare( strict_types = 1 );
+	/**
  * @package   WPEmerge
  * @author    Atanas Angelov <hi@atanas.dev>
  * @copyright 2017-2019 Atanas Angelov

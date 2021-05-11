@@ -1,13 +1,16 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace Tests\unit\Middleware;
 
 	use WP_Post;
 
 	trait WordpressFixtures {
 
-		private function newAdmin() {
+		private function newAdmin( )  {
 
 			return self::factory()->user->create( [
 				'role' => 'administrator',
@@ -16,7 +19,7 @@
 
 		}
 
-		private function newAuthor() {
+		private function newAuthor()  {
 
 			return self::factory()->user->create( [
 				'role' => 'author',

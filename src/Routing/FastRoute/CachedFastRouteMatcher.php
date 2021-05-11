@@ -1,6 +1,8 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
 
 	namespace WPEmerge\Routing\FastRoute;
 
@@ -66,7 +68,8 @@
 
 			file_put_contents(
 				$this->route_cache_file,
-				'<?php return ' . var_export( $route_data, true ) . ';'
+				'<?php
+declare(strict_types=1); return ' . var_export( $route_data, true ) . ';'
 			);
 
 		}

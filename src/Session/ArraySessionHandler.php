@@ -1,6 +1,9 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace WPEmerge\Session;
 
 	use Illuminate\Support\InteractsWithTime;

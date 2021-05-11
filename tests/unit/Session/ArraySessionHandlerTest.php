@@ -1,6 +1,9 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace Tests\unit\Session;
 
 	use PHPUnit\Framework\TestCase;

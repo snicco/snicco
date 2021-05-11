@@ -1,6 +1,9 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace Tests\integration\Application;
 
 	use Codeception\TestCase\WPTestCase;
@@ -43,7 +46,7 @@
 
 			try {
 
-				$app->bootstrap( [] );
+				$app->boot( [] );
 
 			}
 
@@ -55,7 +58,7 @@
 
 			try {
 
-				$app->bootstrap( [] );
+				$app->boot( [] );
 
 				$this->fail('Application was bootstrapped two times.');
 
@@ -77,7 +80,7 @@
 			$app = $this->newApplication();
 
 
-			$app->bootstrap(['foo' => 'bar']);
+			$app->boot([ 'foo' => 'bar']);
 
 			$this->assertEquals('bar', $app->config('foo', null ));
 
@@ -90,7 +93,7 @@
 
 			$app = $this->newApplication();
 
-			$app->bootstrap(
+			$app->boot(
 				[ 'providers' => [ UserServiceProvider::class, ], ],
 			);
 

@@ -1,6 +1,9 @@
 <?php
 
 
+	declare( strict_types = 1 );
+
+
 	namespace Tests\stubs;
 
 	use WPEmerge\Contracts\ErrorHandlerInterface;
@@ -26,15 +29,24 @@
 		/**
 		 * @throws \Exception
 		 */
-		public function transformToResponse( RequestInterface $request, \Throwable $exception ) :ResponseInterface {
+		public function transformToResponse( \Throwable $exception, ?RequestInterface $request = null ) :ResponseInterface {
 
-			if ( $exception->getMessage() !== self::bypass_messsage ) {
+			throw $exception;
 
-				throw $exception;
 
-			}
+		}
 
-			return new TestResponse($request);
+		public function writeToOutput( bool $false = false ) : void {
+			//
+		}
+
+		public function allowQuit( bool $false = false ) : void {
+			//
+		}
+
+		public function isRegistered() : bool {
+
+			return true;
 
 		}
 
