@@ -18,7 +18,6 @@
 	 */
 	class PhpView implements ViewInterface {
 
-
 		/**
 		 * PHP view engine.
 		 *
@@ -34,7 +33,7 @@
 		private $filepath = '';
 
 		/**
-		 * @var ViewInterface|null
+		 * @var ?\WPEmerge\View\PhpView
 		 */
 		private $layout;
 
@@ -64,7 +63,7 @@
 			return $this;
 		}
 
-		public function getLayout() : ?ViewInterface {
+		public function getLayout() : ?PhpView {
 
 			return $this->layout;
 		}
@@ -76,37 +75,52 @@
 			return $this;
 		}
 
-		public function toString() : ?string {
+		public function toString() : string {
 
+			$ob_level = ob_get_level();
+
+			ob_start();
+
+			try {
+
+				$this->requireView();
+
+			}
+			catch ( \Throwable $e ) {
+
+				$this->handleViewException($e, $ob_level);
+
+			}
+
+			return ob_get_clean();
+
+		}
+
+		private function requireView () {
 
 			$this->engine->pushLayoutContent( $this );
 
 			if ( $this->getLayout() !== null ) {
-				return $this->getLayout()->toString();
+				return $this->getLayout()->requireView();
 			}
 
 			$this->engine->getLayoutContent();
 
-			return null;
+		}
+
+		private function handleViewException(\Throwable $e , $ob_level) {
+
+			while (ob_get_level() > $ob_level) {
+				ob_end_clean();
+			}
+
+			throw new ViewException('Error rendering view: [' . $this->getName() . '].');
 
 		}
 
 		public function toResponse() : ResponseInterface {
 
-			ob_start();
-
-			try {
-				$this->toString();
-			} catch (\Throwable $exception) {
-
-				ob_end_clean();
-				throw new ViewException();
-
-			}
-
-			$content = ob_get_clean();
-
-			return ( new Response( $content ) )->setType( 'text/html' );
+			return ( new Response( $this->toString() ) )->setType( 'text/html' );
 
 		}
 
