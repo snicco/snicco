@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace Tests\integration\Application;
+	namespace Tests\unit\Application;
 
 	use WPEmerge\Application\ApplicationConfig;
 	use PHPUnit\Framework\TestCase;

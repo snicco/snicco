@@ -11,12 +11,10 @@
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
-	use WPEmerge\Factories\ErrorHandlerFactory;
 	use WPEmerge\Http\Request;
 	use WPEmerge\ServiceProviders\ApplicationServiceProvider;
 
 	class Application {
-
 
 		use ManagesAliases;
 		use LoadsServiceProviders;
@@ -32,10 +30,9 @@
 		public function __construct( ContainerAdapter $container ) {
 
 			$this->setContainerAdapter( $container );
-			$this->container()[ Application::class ]      = $this;
-			$this->container()[ ContainerAdapter::class ] = $this->container();
+			$this->container()->instance(Application::class, $this);
+			$this->container()->instance(ContainerAdapter::class, $this->container());
 			$this->container()->instance( RequestInterface::class, Request::capture() );
-
 
 		}
 
@@ -89,12 +86,9 @@
 
 		}
 
-		private function bindConfigInstance( array $config ) {
+		public function isTakeOverMode() {
 
-			$config = new ApplicationConfig( $config );
-
-			$this->container()->instance( ApplicationConfig::class, $config );
-			$this->config = $config;
+			return $this->config->get( ApplicationServiceProvider::STRICT_MODE, false );
 
 		}
 
@@ -104,10 +98,14 @@
 
 		}
 
-		private function isTakeOverMode() {
+		private function bindConfigInstance( array $config ) {
 
-			return $this->config->get( ApplicationServiceProvider::STRICT_MODE, false );
+			$config = new ApplicationConfig( $config );
+
+			$this->container()->instance( ApplicationConfig::class, $config );
+			$this->config = $config;
 
 		}
+
 
 	}

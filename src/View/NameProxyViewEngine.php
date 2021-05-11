@@ -8,11 +8,10 @@
 
 	use WPEmerge\Application\Application;
 	use WPEmerge\Contracts\ViewEngineInterface;
+	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Exceptions\ViewNotFoundException;
 
-	/**
-	 * Render view files with different engines depending on their filename
-	 */
+
 	class NameProxyViewEngine implements ViewEngineInterface {
 
 		/**
@@ -20,21 +19,21 @@
 		 *
 		 * @var string
 		 */
-		protected $default = WPEMERGE_VIEW_PHP_VIEW_ENGINE_KEY;
+		private $default = WPEMERGE_VIEW_PHP_VIEW_ENGINE_KEY;
 
 		/**
 		 * Application.
 		 *
 		 * @var Application
 		 */
-		protected $app = null;
+		private $app = null;
 
 		/**
 		 * Array of filename_suffix=>engine_container_key bindings
 		 *
 		 * @var array
 		 */
-		protected $bindings = [];
+		private $bindings = [];
 
 		/**
 		 * Constructor
@@ -73,7 +72,7 @@
 		}
 
 
-		public function make( $views ) {
+		public function make( $views ) :ViewInterface {
 
 			foreach ( $views as $view ) {
 				if ( $this->exists( $view ) ) {

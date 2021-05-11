@@ -8,7 +8,6 @@
 
 	use WPEmerge\Application\ApplicationConfig;
 	use WPEmerge\Support\Arr;
-	use WPEmerge\Support\WPEmgereArr;
 
 	class RouteRegistrar {
 
