@@ -17,7 +17,12 @@
 	use WPEmerge\Traits\HoldsRouteBlueprint;
 
 
-	/** @mixin \WPEmerge\Routing\RouteDecorator */
+	/**
+	 * @todo allow matching of admin routes by query and url instead of stupid
+	 * wp conditions.
+	 *
+	 * @mixin \WPEmerge\Routing\RouteDecorator
+	 */
 	class Router {
 
 		use GathersMiddleware;

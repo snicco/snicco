@@ -6,7 +6,6 @@
 
 	namespace WPEmerge\ServiceProviders;
 
-	use Illuminate\Config\Repository;
 	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewFinderInterface;
@@ -33,7 +32,6 @@
 
 		public function register() : void {
 
-			/** @todo Refactor to custom class without wp functions */
 			$this->config->extend('views', [
 				get_stylesheet_directory(),
 				get_template_directory(),
@@ -43,9 +41,6 @@
 
 			$this->container->singleton( ViewServiceInterface::class, function () {
 
-
-
-
 				return new ViewService(
 					$this->container->make( ViewEngineInterface::class ),
 					$this->container->make( ViewComposerCollection::class ),
@@ -53,13 +48,22 @@
 
 				);
 
-			} );
+			});
 
-			/** @todo Why do we need this instead of injecting it directly */
-			$this->container->singleton( 'view.compose.closure', function () {
+
+			/**
+			 *
+			 * This needs to be a closure for now, because we would have a circular dependency between
+			 * PhpViewEngine and ViewService.
+			 *
+			 * @todo Refactor responsibilities and make PhpView a newable without dependencies
+			 *
+			 */
+			$this->container->singleton( 'compose.callable', function () {
 
 				return function ( ViewInterface $view ) {
 
+					/** @var ViewServiceInterface $view_service */
 					$view_service = $this->container->make( ViewServiceInterface::class );
 					$view_service->compose( $view );
 
@@ -70,7 +74,7 @@
 
 			$this->container->singleton( ViewFinderInterface::class, function () {
 
-				return new PhpViewFinder( $this->config['views'] ?? [] );
+				return new PhpViewFinder( $this->config->get('views', []) );
 
 
 			} );
@@ -78,7 +82,7 @@
 			$this->container->singleton( PhpViewEngine::class, function () {
 
 				return new PhpViewEngine(
-					$this->container->make('view.compose.closure'),
+					$this->container->make('compose.callable'),
 					$this->container->make(ViewFinderInterface::class),
 				);
 
@@ -99,14 +103,6 @@
 
 			} );
 
-			$this->container->singleton( ViewComposerFactory::class, function ( $c ) {
-
-				return new ViewComposerFactory(
-					$this->config['composers'] ?? [],
-					$this->container,
-				);
-
-			} );
 
 
 		}

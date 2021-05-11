@@ -16,40 +16,39 @@
 	class AliasServiceProvider extends ServiceProvider {
 
 
-		/** @todo clean up all aliases and create tests that they work */
-		public function register() :void {
+		public function register() : void {
 
 
-			$app = $this->container->make(Application::class);
+			$app = $this->container->make( Application::class );
 
-			$this->applicationAliases($app);
-			$this->responseAliases($app);
-			$this->routingAliases($app);
-			$this->viewAliases($app);
-			$this->sessionAliases($app);
+			$this->applicationAliases( $app );
+			$this->responseAliases( $app );
+			$this->routingAliases( $app );
+			$this->viewAliases( $app );
+			$this->sessionAliases( $app );
 
 
 		}
 
-		public function bootstrap( ) :void  {
+		public function bootstrap() : void {
 
 			//
 
 		}
 
-		private function applicationAliases ( Application $app ) {
+		private function applicationAliases( Application $app ) {
 
 			$app->alias( 'app', Application::class );
 
 		}
 
-		private function responseAliases (Application $app) {
+		private function responseAliases( Application $app ) {
 
-
+			//
 
 		}
 
-		private function routingAliases (Application $app ) {
+		private function routingAliases( Application $app ) {
 
 			$app->alias( 'route', Router::class );
 			$app->alias( 'routeUrl', Router::class, 'getRouteUrl' );
@@ -58,14 +57,14 @@
 
 		}
 
-		private function viewAliases (Application $app ) {
+		private function viewAliases( Application $app ) {
 
-			$app->alias('globals', function () use ($app) {
+			$app->alias( 'globals', function () use ( $app ) {
 
-				return $app->resolve('composers.globals');
+				return $app->resolve( 'composers.globals' );
 
-			});
-			$app->alias('addComposer', function () use ( $app ) {
+			} );
+			$app->alias( 'addComposer', function () use ( $app ) {
 
 				$composer_collection = $app->resolve(ViewComposerCollection::class);
 
@@ -73,9 +72,7 @@
 
 				$composer_collection->addComposer(...$args);
 
-
-			});
-
+			} );
 			$app->alias( 'views', ViewServiceInterface::class );
 			$app->alias( 'view', function () use ( $app ) {
 
@@ -83,7 +80,10 @@
 			} );
 			$app->alias( 'render', function () use ( $app ) {
 
-				$view_as_string = call_user_func_array( [ $app->views(), 'render' ], func_get_args() );
+				$view_as_string = call_user_func_array( [
+					$app->views(),
+					'render',
+				], func_get_args() );
 
 				echo $view_as_string;
 
@@ -93,6 +93,7 @@
 				$engine = $app->resolve( PhpViewEngine::class );
 
 				echo $engine->getLayoutContent();
+
 
 			} );
 

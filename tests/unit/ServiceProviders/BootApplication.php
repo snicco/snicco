@@ -22,5 +22,11 @@
 
 		}
 
+		private function reset() {
+
+			TestApp::setApplication(null );
+
+		}
+
 
 	}

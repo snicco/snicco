@@ -76,7 +76,6 @@
 
 		public function toString() :string {
 
-
 			$this->engine->pushLayoutContent( $this );
 
 			if ( $this->getLayout() !== null ) {
@@ -90,7 +89,6 @@
 		public function toResponse() :ResponseInterface {
 
 			return ( new Response( $this->toString() ) )->setType('text/html');
-
 
 		}
 
