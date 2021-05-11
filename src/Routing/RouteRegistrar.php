@@ -8,6 +8,7 @@
 
 	use WPEmerge\Application\ApplicationConfig;
 	use WPEmerge\Support\Arr;
+	use WPEmerge\Support\FilePath;
 
 	class RouteRegistrar {
 
@@ -57,24 +58,17 @@
 
 		private function loadRoutesGroup( string $group ) {
 
-			$file = $this->config->get('routes.' . $group . '.definitions', '');
-			$attributes = $this->config->get('routes.' . $group . '.attributes', []);
+			$dir = FilePath::addTrailingSlash($this->config->get('routing.definitions',''));
 
-			if ( empty( $file ) ) {
+			if ( $dir === '/' ) {
 				return;
 			}
 
-			$middleware = Arr::get( $attributes, 'middleware', [] );
+			$file = FilePath::ending( $dir . $group ,'php');
 
-			if ( ! in_array( $group, $middleware, true ) ) {
 
-				$middleware = array_merge( [ $group ], $middleware );
 
-			}
-
-			$attributes['middleware'] = $middleware;
-
-			$this->router->group( $attributes, $file );
+			$this->router->group( ['middleware' => [$group]] , $file );
 
 
 		}

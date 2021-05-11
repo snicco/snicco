@@ -21,7 +21,7 @@
 
 			$this->container->singleton( ErrorHandlerInterface::class, function () {
 
-				if ( ! $this->config->get('error_handling.enable', false ) ) {
+				if ( ! $this->config->get('exception_handling.enable', false ) ) {
 
 					return new NullErrorHandler();
 
@@ -32,12 +32,12 @@
 
 				return ErrorHandlerFactory::make(
 					$this->container,
-					$this->config->get( 'error_handling.debug', false ),
+					$this->config->get( 'exception_handling.debug', false ),
 					$request->isAjax(),
-					$this->config->get( 'exceptions.editor', 'phpstorm' )
+					$this->config->get( 'exception_handling.editor', 'phpstorm' )
 
 				);
-			} );
+			});
 
 		}
 

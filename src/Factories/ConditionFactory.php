@@ -14,7 +14,6 @@
 	use WPEmerge\Routing\Conditions\NegateCondition;
 	use WPEmerge\Traits\ReflectsCallable;
 
-	use function collect;
 
 	class ConditionFactory {
 

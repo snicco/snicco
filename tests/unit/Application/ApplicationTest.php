@@ -10,6 +10,7 @@
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\TestContainer;
 	use WPEmerge\Application\Application;
+	use WPEmerge\Application\ApplicationConfig;
 	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Exceptions\ConfigurationException;
 
@@ -106,9 +107,12 @@
 		public function config_values_can_be_retrieved () {
 
 			$app = $this->newApplication();
-
 			$app->boot(['foo' => 'bar', 'bar' => ['baz'=>'boo']]);
 
+			$this->assertInstanceOf(
+				ApplicationConfig::class,
+				$app->resolve(ApplicationConfig::class)
+			);
 			$this->assertSame('bar', $app->config('foo'));
 			$this->assertSame('boo', $app->config('bar.baz'));
 			$this->assertSame('bogus_default', $app->config('bogus', 'bogus_default'));
