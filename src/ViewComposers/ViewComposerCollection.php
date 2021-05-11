@@ -70,6 +70,7 @@
 				'views'    => $views,
 				'composer' => $this->composer_factory->createUsing( $callable ),
 
+
 			] );
 
 		}
@@ -79,7 +80,7 @@
 			return $this->composers
 				->filter( function ( $value ) use ( $view ) {
 
-					return in_array( $this->view_finder->filePath( $view->getName() ), $value['views'] );
+					return in_array( $this->view_finder->filePath( $view->name() ), $value['views'] );
 
 				})
 				->pluck('composer')

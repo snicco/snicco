@@ -13,7 +13,7 @@
 		/**
 		 * Pop the top-most layout content from the stack, render and return it.
 		 */
-		public function includeChildViews() :void;
+		public function includeNextView() :void;
 
 		public function renderPhpView(PhpView $view) :string;
 

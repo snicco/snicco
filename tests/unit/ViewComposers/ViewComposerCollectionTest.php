@@ -53,7 +53,7 @@
 
 			$collection->executeUsing( $view );
 
-			$this->assertSame( 'baz', $view->getContext( 'foo' ) );
+			$this->assertSame( 'baz', $view->context( 'foo' ) );
 
 		}
 
@@ -74,7 +74,7 @@
 
 			$collection->executeUsing( $view );
 
-			$this->assertSame( 'bar', $view->getContext( 'foo' ) );
+			$this->assertSame( 'bar', $view->context( 'foo' ) );
 
 		}
 
@@ -100,8 +100,8 @@
 
 			$collection->executeUsing( $view );
 
-			$this->assertSame( 'bar', $view->getContext( 'foo' ) );
-			$this->assertSame( 'baz', $view->getContext( 'bar' ) );
+			$this->assertSame( 'bar', $view->context( 'foo' ) );
+			$this->assertSame( 'baz', $view->context( 'bar' ) );
 
 		}
 
@@ -118,7 +118,7 @@
 
 			} );
 			$collection->executeUsing( $view1 );
-			$this->assertSame( 'bar', $view1->getContext( 'foo' ) );
+			$this->assertSame( 'bar', $view1->context( 'foo' ) );
 
 			$view2 = new TestView();
 			$view2->setName( 'welcome.wordpress.php' );
@@ -128,7 +128,7 @@
 
 			} );
 			$collection->executeUsing( $view2 );
-			$this->assertSame( 'bar', $view2->getContext( 'foo' ) );
+			$this->assertSame( 'bar', $view2->context( 'foo' ) );
 
 
 
@@ -151,7 +151,7 @@
 
 			$collection->executeUsing( $view );
 
-			$this->assertSame( 'baz', $view->getContext( 'foo' ) );
+			$this->assertSame( 'baz', $view->context( 'foo' ) );
 
 
 		}

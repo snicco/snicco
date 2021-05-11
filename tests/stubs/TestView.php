@@ -16,7 +16,7 @@
 
 		private $name;
 
-		public function getContext( string $key = null, $default = null ) {
+		public function context( string $key = null, $default = null ) {
 
 			if ( $key === null ) {
 				return $this->context;
@@ -29,7 +29,7 @@
 		public function with( $key, $value = null ) {
 
 			if ( is_array( $key ) ) {
-				$this->context = array_merge( $this->getContext(), $key );
+				$this->context = array_merge( $this->context(), $key );
 			} else {
 				$this->context[ $key ] = $value;
 			}
