@@ -8,20 +8,26 @@
 
 	use Codeception\TestCase\WPTestCase;
 	use Tests\stubs\Conditions\TrueCondition;
+	use Tests\stubs\CreatesAdminPages;
+	use Tests\stubs\TestApp;
 	use Tests\TestRequest;
+	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\RouteMatcher;
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
+	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
 
 	class RoutingServiceProviderTest extends WPTestCase {
 
 		use BootApplication;
+		use CreatesAdminPages;
 
 		protected function tearDown() : void {
 
 			$GLOBALS['wp_filter']['wp_doing_ajax'] = [];
+
 
 			parent::tearDown();
 		}
@@ -49,6 +55,7 @@
 			$this->assertArrayHasKey( 'ajax', $conditions );
 			$this->assertArrayHasKey( 'admin', $conditions );
 			$this->assertArrayHasKey( 'true', $conditions );
+			$this->assertArrayHasKey( 'query_string', $conditions );
 
 
 		}
@@ -139,14 +146,13 @@
 		/** @test */
 		public function admin_routes_are_loaded_for_admin_requests() {
 
-			add_menu_page( 'test', 'test', 'edit_posts', 'test', function () {});
-
-			set_current_screen('toplevel_page_test');
 
 			$app = $this->bootNewApplication( $this->routeConfig() );
 
 			/** @var Router $router */
 			$router = $app->resolve( Router::class );
+			$router->isAdmin();
+
 
 			$router->middlewareGroup( 'admin', [] );
 
@@ -155,6 +161,24 @@
 			$response = $router->runRoute( $request );
 
 			$this->assertSame( 'foo', $response );
+
+		}
+
+		/** @test */
+		public function admin_routes_have_the_admin_preset_applied() {
+
+			$url = $this->urlTo( 'bar' );
+
+			$app = $this->bootNewApplication( $this->routeConfig() );
+
+			/** @var Router $router */
+			$router = $app->resolve( Router::class );
+
+			$router->middlewareGroup( 'admin', [] );
+
+			$request = TestRequest::fromFullUrl( 'GET', $url );
+
+			$this->assertSame( 'BAR', $router->runRoute( $request ) );
 
 		}
 

@@ -6,6 +6,7 @@
 
 	namespace Tests\integration\Routing;
 
+	use Codeception\TestCase\WPTestCase;
 	use PHPUnit\Framework\TestCase;
 	use Tests\stubs\Conditions\ConditionWithDependency;
 	use Tests\stubs\Conditions\FalseCondition;
@@ -26,6 +27,7 @@
 	use WPEmerge\Routing\Conditions\PostTemplateCondition;
 	use WPEmerge\Routing\Conditions\PostTypeCondition;
 	use WPEmerge\Routing\Conditions\QueryVarCondition;
+
 
 	class RouteAttributesTest extends TestCase {
 

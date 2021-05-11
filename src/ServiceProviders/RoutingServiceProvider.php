@@ -10,6 +10,7 @@
 	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Factories\HandlerFactory;
+	use WPEmerge\Routing\Conditions\QueryStringCondition;
 	use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
 	use WPEmerge\Routing\Conditions\AdminCondition;
 	use WPEmerge\Routing\Conditions\AjaxCondition;
@@ -44,32 +45,32 @@
 			'post_type'     => PostTypeCondition::class,
 			'ajax'          => AjaxCondition::class,
 			'admin'         => AdminCondition::class,
+			'query_string'  => QueryStringCondition::class,
 		];
 
 
-		public function register() :void  {
+		public function register() : void {
 
-			$this->config->extend('routing.conditions', self::CONDITION_TYPES);
+			$this->config->extend( 'routing.conditions', self::CONDITION_TYPES );
 
-			$this->container->singleton(RouteMatcher::class, function () {
+			$this->container->singleton( RouteMatcher::class, function () {
 
 
-				if ( ! $this->config->get('routing.cache', false )  ) {
+				if ( ! $this->config->get( 'routing.cache', false ) ) {
 
 					return new FastRouteMatcher();
 
 				}
 
-				$cache_file = $this->config->get('routing.cache_file', null );
-
+				$cache_file = $this->config->get( 'routing.cache_file', null );
 
 				if ( ! $cache_file ) {
 
-					throw new ConfigurationException("No cache file provided:{$cache_file}");
+					throw new ConfigurationException( "No cache file provided:{$cache_file}" );
 
 				}
 
-				/** @todo Named routes will not work right now with caching enabled.  */
+				/** @todo Named routes will not work right now with caching enabled. */
 				/** @todo Need a way to also cache routes outside of the route matcher */
 				return new CachedFastRouteMatcher( new FastRouteMatcher(), $cache_file );
 
@@ -81,11 +82,10 @@
 				return new Router(
 					$this->container,
 					new RouteCollection(
-						$this->container->make(ConditionFactory::class),
-						$this->container->make(HandlerFactory::class),
-						$this->container->make(RouteMatcher::class)
+						$this->container->make( ConditionFactory::class ),
+						$this->container->make( HandlerFactory::class ),
+						$this->container->make( RouteMatcher::class )
 					)
-
 
 				);
 			} );
@@ -94,7 +94,7 @@
 
 				return new ConditionFactory(
 
-					$this->config->get('routing.conditions', []),
+					$this->config->get( 'routing.conditions', [] ),
 					$this->container,
 
 				);
@@ -105,9 +105,9 @@
 		}
 
 
-		public function bootstrap() :void {
+		public function bootstrap() : void {
 
-			$router = $this->container->make(Router::class );
+			$router = $this->container->make( Router::class );
 
 			( new RouteRegistrar( $router, $this->config ) )->loadRoutes();
 

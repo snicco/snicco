@@ -23,7 +23,7 @@
 		 */
 		private $config;
 
-		public function __construct( Router $router, ApplicationConfig $config) {
+		public function __construct( Router $router, ApplicationConfig $config ) {
 
 			$this->router = $router;
 			$this->config = $config;
@@ -58,21 +58,32 @@
 
 		private function loadRoutesGroup( string $group ) {
 
-			$dir = FilePath::addTrailingSlash($this->config->get('routing.definitions',''));
+			$dir = FilePath::addTrailingSlash( $this->config->get( 'routing.definitions', '' ) );
 
 			if ( $dir === '/' ) {
 				return;
 			}
 
-			$file = FilePath::ending( $dir . $group ,'php');
+			$file = FilePath::ending( $dir . $group, 'php' );
 
+			$attributes = $this->applyPreset( [ 'middleware' => [ $group ] ], $group );
 
-
-			$this->router->group( ['middleware' => [$group]] , $file );
+			$this->router->group( $attributes, $file );
 
 
 		}
 
+		private function applyPreset( array $attributes, string $group ) {
+
+			if ( $group === 'admin' ) {
+
+				return array_merge( $attributes, [ 'prefix' => RouteGroup::ADMIN_PREFIX ] );
+
+			}
+
+			return $attributes;
+
+		}
 
 
 	}

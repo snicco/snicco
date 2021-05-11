@@ -16,18 +16,18 @@
 
 			static::enableHttpMethodParameterOverride();
 
-			return static::createFromBase(SymfonyRequest::createFromGlobals());
+			return static::createFromBase( SymfonyRequest::createFromGlobals() );
 
 		}
 
-		private static function createFromBase( SymfonyRequest $request) : Request {
+		private static function createFromBase( SymfonyRequest $request ) : Request {
 
-			$newRequest = (new static)->duplicate(
+			$newRequest = ( new static )->duplicate(
 				$request->query->all(), $request->request->all(), $request->attributes->all(),
 				$request->cookies->all(), $request->files->all(), $request->server->all()
 			);
 
-			$newRequest->headers->replace($request->headers->all());
+			$newRequest->headers->replace( $request->headers->all() );
 
 			$newRequest->content = $request->content;
 
@@ -42,76 +42,76 @@
 
 		public function path() : string {
 
-			$pattern = trim($this->getPathInfo(), '/');
+			$pattern = trim( $this->getPathInfo(), '/' );
 
 			return $pattern === '' ? '/' : $pattern;
 
 		}
 
-		public function url() :string
-		{
-			return rtrim(preg_replace('/\?.*/', '', $this->getUri()), '/');
+		public function url() : string {
+
+			return rtrim( preg_replace( '/\?.*/', '', $this->getUri() ), '/' );
 		}
 
-		public function fullUrl() : string
-		{
+		public function fullUrl() : string {
+
 			$query = $this->getQueryString();
 
-			$question = $this->getBaseUrl().$this->getPathInfo() === '/' ? '/?' : '?';
+			$question = $this->getBaseUrl() . $this->getPathInfo() === '/' ? '/?' : '?';
 
-			return $query ? $this->url().$question.$query : $this->url();
-
-		}
-
-		public function isGet() :bool {
-
-			return $this->isMethod('GET');
+			return $query ? $this->url() . $question . $query : $this->url();
 
 		}
 
-		public function isHead() :bool {
+		public function isGet() : bool {
 
-			return $this->isMethod('HEAD');
-
-		}
-
-		public function isPost() :bool {
-
-			return $this->isMethod('POST');
+			return $this->isMethod( 'GET' );
 
 		}
 
-		public function isPut() :bool {
+		public function isHead() : bool {
 
-			return $this->isMethod('PUT');
-
-		}
-
-		public function isPatch() :bool {
-
-			return $this->isMethod('PATCH');
+			return $this->isMethod( 'HEAD' );
 
 		}
 
-		public function isDelete() :bool {
+		public function isPost() : bool {
 
-			return $this->isMethod('DELETE');
-
-		}
-
-		public function isOptions() :bool {
-
-			return $this->isMethod('OPTIONS');
+			return $this->isMethod( 'POST' );
 
 		}
 
-		public function isReadVerb() :bool {
+		public function isPut() : bool {
+
+			return $this->isMethod( 'PUT' );
+
+		}
+
+		public function isPatch() : bool {
+
+			return $this->isMethod( 'PATCH' );
+
+		}
+
+		public function isDelete() : bool {
+
+			return $this->isMethod( 'DELETE' );
+
+		}
+
+		public function isOptions() : bool {
+
+			return $this->isMethod( 'OPTIONS' );
+
+		}
+
+		public function isReadVerb() : bool {
 
 			return $this->isMethodSafe();
 
 		}
 
-		public function isAjax() :bool {
+		public function isAjax() : bool {
 
 			return $this->isXmlHttpRequest();
 
@@ -119,61 +119,67 @@
 
 		public function attribute( string $key = '', $default = null ) {
 
-			return $this->attributes->get($key, $default);
+			return $this->attributes->get( $key, $default );
 
 		}
 
-		public function query( $key = '', $default = null ) {
+		public function query( string $key = null, $default = null ) {
 
-			return $this->query->get($key, $default);
+			if ( ! $key ) {
+
+				return $this->query->all();
+
+			}
+
+			return $this->query->get( $key, $default );
 
 		}
 
 		public function body( $key = '', $default = null ) {
 
-			return $this->request->get($key, $default);
+			return $this->request->get( $key, $default );
 
 		}
 
 		public function cookies( $key = '', $default = null ) {
 
-			return $this->cookies->get($key, $default);
+			return $this->cookies->get( $key, $default );
 
 		}
 
 		public function files( $key = '', $default = null ) {
 
-			return $this->files->get( $key , $default );
+			return $this->files->get( $key, $default );
 
 		}
 
 		public function server( $key = '', $default = null ) {
 
-			return $this->files->get($key, $default);
+			return $this->files->get( $key, $default );
 
 		}
 
 		public function headers( $key = '', $default = null ) {
 
-			return $this->headers->get($key, $default);
+			return $this->headers->get( $key, $default );
 
 		}
 
 		public function setRoute( RouteCondition $route ) {
 
-			$this->attributes->set('route', $route);
+			$this->attributes->set( 'route', $route );
 
 		}
 
 		public function route() : ?RouteCondition {
 
-			return $this->attributes->get('route', null);
+			return $this->attributes->get( 'route', null );
 
 		}
 
-		public function isPJAX() :bool
-		{
-			return $this->headers->get('X-PJAX') == true;
+		public function isPJAX() : bool {
+
+			return $this->headers->get( 'X-PJAX' ) == true;
 		}
 
 		public function expectsJson() : bool {
@@ -184,13 +190,13 @@
 
 		public function setType( string $request_event ) : void {
 
-			$this->attributes->set('type', $request_event);
+			$this->attributes->set( 'type', $request_event );
 
 		}
 
 		public function type() : string {
 
-			return $this->attributes->get('type');
+			return $this->attributes->get( 'type' );
 
 		}
 

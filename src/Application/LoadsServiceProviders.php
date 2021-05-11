@@ -9,12 +9,7 @@
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Contracts\ServiceProvider;
 
-	/**
-	 *
-	 * @todo need test for all Service Providers to check if we wired everything correctly.
-	 *
-	 *
-	 */
+
 	trait LoadsServiceProviders {
 
 

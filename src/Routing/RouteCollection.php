@@ -12,6 +12,7 @@
 	use WPEmerge\Contracts\RouteMatcher;
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Factories\HandlerFactory;
+	use WPEmerge\Support\Url;
 	use WPEmerge\Support\UrlParser;
 	use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
 	use WPEmerge\Support\Arr;
@@ -49,6 +50,10 @@
 		 */
 		private $route_matcher;
 
+		private $is_admin = false;
+
+		private $is_ajax = false;
+
 		public function __construct(
 			ConditionFactory $condition_factory,
 			HandlerFactory $handler_factory,
@@ -58,6 +63,18 @@
 			$this->condition_factory = $condition_factory;
 			$this->handler_factory   = $handler_factory;
 			$this->route_matcher     = $route_matcher;
+
+		}
+
+		public function isAjax( bool $ajax = true ) {
+
+			$this->is_ajax = $ajax;
+
+		}
+
+		public function isAdmin( bool $admin = true ) {
+
+			$this->is_admin = $admin;
 
 		}
 
@@ -94,7 +111,7 @@
 
 		public function match( RequestInterface $request ) : RouteMatch {
 
-			$this->loadRoutes( $request->getMethod() );
+			$this->loadRoutes( $request->getMethod(), $request );
 
 			$match = $this->findRoute( $request );
 
@@ -152,7 +169,7 @@
 		// that was found in the dispatcher failed due to custom conditions.
 		// $request->path = 'foo/bar' would result in first looking for a static route:
 		// 3451342sf31a/foo/'bar' and if that fails for a dynamic route that matches /foo/bar
-		private function loadRoutes( string $method ) {
+		private function loadRoutes( string $method, RequestInterface $request ) {
 
 			if ( $this->route_matcher->isCached() ) {
 
@@ -167,28 +184,41 @@
 			/** @var Route $route */
 			foreach ( $routes as $route ) {
 
-				$url = UrlParser::isDynamic( $url = $route->getUrl() ) ? $url : $this->hash($url);
+				$url = UrlParser::isDynamic( $url = $route->getUrl() ) ? $url : $this->hash( $url );
 
 				$route = ( $cache ) ? $route->compile()->cacheable() : $route->compile();
 
-
-				$this->route_matcher->add( $method, $this->normalizePath($url), (array) $route );
+				$this->route_matcher->add( $method, $this->normalizePath( $url ), (array) $route );
 
 			}
 
 
 		}
 
-		private function hash( string $path ) : string {
+		private function hash( string $path, RequestInterface $request = null ) : string {
 
 			$path = trim( $path, '/' );
 
-			return md5( static::hash_key ) . '/' . $path;
+			$hash = md5( static::hash_key ) . '/' . $path;
+
+			return $this->applyHashSuffix( $hash, $request );
+
+		}
+
+		private function applyHashSuffix( string $hash, ?RequestInterface $request ) {
+
+			if ( $this->is_admin && ! $this->is_ajax && $request ) {
+
+				return $hash . '/' . $request->query( 'page', '' );
+
+			}
+
+			return $hash;
+
 
 		}
 
 		private function findRoute( RequestInterface $request ) : RouteMatch {
-
 
 			$path = $this->normalizePath( $request->path() );
 
@@ -216,14 +246,14 @@
 
 			}
 
-			$route = CompiledRoute::hydrate(
+			$route   = CompiledRoute::hydrate(
 				$route_info[1],
 				$this->handler_factory,
 				$this->condition_factory
 			);
 			$payload = $route_info[2];
 
-			if ( ! $route->satisfiedBy($request) ) {
+			if ( ! $route->satisfiedBy( $request ) ) {
 
 				return new RouteMatch( null, [] );
 
@@ -235,13 +265,13 @@
 
 		private function tryHashed( RequestInterface $request, $url ) : RouteMatch {
 
-			return $this->tryAbsolute( $request, $this->hash( $url ) );
+			return $this->tryAbsolute( $request, $this->hash( $url, $request ) );
 
 		}
 
 		private function normalizePath( string $path ) : string {
 
-			return trim( $path, '/' );
+			return Url::toRouteMatcherFormat( $path );
 
 		}
 
@@ -250,4 +280,6 @@
 			return $this->route_matcher->canBeCached();
 
 		}
+
+
 	}

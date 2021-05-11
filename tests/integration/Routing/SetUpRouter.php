@@ -20,6 +20,7 @@
 	use WPEmerge\Routing\Conditions\PostStatusCondition;
 	use WPEmerge\Routing\Conditions\PostTemplateCondition;
 	use WPEmerge\Routing\Conditions\PostTypeCondition;
+	use WPEmerge\Routing\Conditions\QueryStringCondition;
 	use WPEmerge\Routing\Conditions\QueryVarCondition;
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
@@ -34,6 +35,9 @@
 
 		/** @var \Contracts\ContainerAdapter */
 		private $container;
+
+		/** @var RouteCollection */
+		private $route_collection;
 
 		protected function setUp() : void {
 
@@ -55,7 +59,10 @@
 
 		private function newRouter() {
 
-			$conditions = is_callable([$this, 'conditions']) ? $this->conditions() : $this->allConditions();
+			$conditions = is_callable( [
+				$this,
+				'conditions',
+			] ) ? $this->conditions() : $this->allConditions();
 
 			$container         = new BaseContainerAdapter();
 			$condition_factory = new ConditionFactory( $conditions, $container );
@@ -65,7 +72,9 @@
 				$handler_factory,
 				new FastRouteMatcher()
 			);
-			$this->container = $container;
+
+			$this->route_collection = $route_collection;
+			$this->container   = $container;
 			$this->router      = new Router( $container, $route_collection );
 
 		}
@@ -100,7 +109,6 @@
 
 			return [
 
-				'url'                  => UrlCondition::class,
 				'custom'               => CustomCondition::class,
 				'negate'               => NegateCondition::class,
 				'post_id'              => PostIdCondition::class,
@@ -116,27 +124,28 @@
 				'maybe'                => \Tests\stubs\Conditions\MaybeCondition::class,
 				'unique'               => \Tests\stubs\Conditions\UniqueCondition::class,
 				'dependency_condition' => \Tests\stubs\Conditions\ConditionWithDependency::class,
+				'query_string'         => QueryStringCondition::class,
 
 			];
 
 		}
 
-		private function assertMiddlewareRunTimes(int $times, $class) {
+		private function assertMiddlewareRunTimes( int $times, $class ) {
 
 			$this->assertSame(
 				$times, $GLOBALS['test'][ $class::run_times ],
-				'Middleware [' .$class . '] was supposed to run: ' . $times . ' times. Actual: ' .$GLOBALS['test'][ $class::run_times ]
+				'Middleware [' . $class . '] was supposed to run: ' . $times . ' times. Actual: ' . $GLOBALS['test'][ $class::run_times ]
 			);
 
 		}
 
-		private function assertRouteActionConstructedTimes(int $times, $class) {
+		private function assertRouteActionConstructedTimes( int $times, $class ) {
 
 			$actual = $GLOBALS['test'][ $class::constructed_times ] ?? 0;
 
 			$this->assertSame(
-				$times,  $actual ,
-				'RouteAction [' .$class . '] was supposed to run: ' . $times . ' times. Actual: ' . $GLOBALS['test'][ $class::constructed_times ]
+				$times, $actual,
+				'RouteAction [' . $class . '] was supposed to run: ' . $times . ' times. Actual: ' . $GLOBALS['test'][ $class::constructed_times ]
 			);
 
 		}

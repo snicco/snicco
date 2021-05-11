@@ -121,12 +121,12 @@
 		/**
 		 * Get a value from the request query (i.e. $_GET).
 		 *
-		 * @param  string  $key
+		 * @param  string|null  $key
 		 * @param  mixed  $default
 		 *
 		 * @return mixed
 		 */
-		public function query( string $key = '', $default = null );
+		public function query( string $key = null , $default = null );
 
 		/**
 		 * Get a value from the request body (i.e. $_POST).
