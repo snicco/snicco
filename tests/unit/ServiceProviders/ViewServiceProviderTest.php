@@ -9,75 +9,71 @@
 	use Closure;
 	use Codeception\TestCase\WPTestCase;
 	use Tests\stubs\TestView;
+	use Tests\TestCase;
 	use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewFinderInterface;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Contracts\ViewServiceInterface;
+	use WPEmerge\ServiceProviders\FactoryServiceProvider;
+	use WPEmerge\ServiceProviders\ViewServiceProvider;
 	use WPEmerge\Support\VariableBag;
 	use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\View\PhpViewFinder;
 	use WPEmerge\View\ViewService;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
 
-	class ViewServiceProviderTest extends WPTestCase {
+	class ViewServiceProviderTest extends TestCase {
 
-		use BootApplication;
+		use BootServiceProviders;
 
-		protected function tearDown() : void {
+		public function neededProviders() : array {
 
-			parent::tearDown();
-
-			$this->reset();
+			return [
+				ViewServiceProvider::class,
+				FactoryServiceProvider::class,
+			];
 
 		}
 
 		/** @test */
 		public function the_global_context_is_a_variable_bag_instance () {
 
-			$app = $this->bootNewApplication();
 
-			$this->assertInstanceOf(VariableBag::class, $app->resolve('composers.globals'));
+			$this->assertInstanceOf(VariableBag::class, $this->app->resolve('composers.globals'));
 
 		}
 
 		/** @test */
 		public function the_view_service_is_resolved_correctly () {
 
-			$app = $this->bootNewApplication();
-
-			$this->assertInstanceOf(ViewService::class, $app->resolve(ViewServiceInterface::class));
+			$this->assertInstanceOf(ViewService::class, $this->app->resolve(ViewServiceInterface::class));
 
 		}
-
-		
 
 		/** @test */
 		public function the_view_finder_is_resolved_correctly () {
 
-			$app = $this->bootNewApplication();
 
-			$this->assertInstanceOf(PhpViewFinder::class, $app->resolve(ViewFinderInterface::class));
+
+			$this->assertInstanceOf(PhpViewFinder::class, $this->app->resolve(ViewFinderInterface::class));
 
 		}
 
 		/** @test */
 		public function the_view_engine_is_resolved_correctly () {
 
-			$app = $this->bootNewApplication();
-
-			$this->assertInstanceOf(PhpViewEngine::class, $app->resolve(ViewEngineInterface::class));
+			$this->assertInstanceOf(PhpViewEngine::class, $this->app->resolve(ViewEngineInterface::class));
 
 		}
 
 		/** @test */
 		public function the_view_composer_collection_is_resolved_correctly () {
 
-			$app = $this->bootNewApplication();
 
-			$this->assertInstanceOf(ViewComposerCollection::class, $app->resolve(ViewComposerCollection::class));
+
+			$this->assertInstanceOf(ViewComposerCollection::class, $this->app->resolve(ViewComposerCollection::class));
 
 		}
-
 
 
 

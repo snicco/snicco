@@ -7,6 +7,7 @@
 	namespace Tests;
 
 	use PHPUnit\Framework\TestCase as PhpUnitTest;
+	use Tests\stubs\TestApp;
 	use WPEmerge\Application\ApplicationEvent;
 	use WpFacade\WpFacade;
 
@@ -17,6 +18,7 @@
 			parent::setUp();
 
 			$GLOBALS['test'] = [];
+
 
 			if ( method_exists( $this, 'afterSetup' ) ) {
 
@@ -34,28 +36,27 @@
 
 		protected function tearDown() : void {
 
-			if ( method_exists( $this, 'beforeTearDown' ) ) {
-
-				$this->beforeTearDown();
-
-			}
-
 			if ( method_exists( $this, 'closeMockery' ) ) {
 
 				$this->closeMockery();
 
 			}
 
+			if ( method_exists( $this, 'beforeTearDown' ) ) {
+
+				$this->beforeTearDown();
+
+			}
 
 			parent::tearDown();
 
 			$GLOBALS['test'] = [];
 
 			WpFacade::clearResolvedInstances();
+			TestApp::setApplication(null );
 			ApplicationEvent::setInstance(null);
 
 		}
-
 
 
 	}

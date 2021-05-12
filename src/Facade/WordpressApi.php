@@ -51,6 +51,10 @@
 
 		}
 
-		public function fileHeaderData( string $file, array $default_headers = [], string $context = '' ) : array {}
+		public function fileHeaderData( string $file, array $default_headers = [], string $context = '' ) : array {
+
+			return get_file_data($file, $default_headers, $context);
+
+		}
 
 	}

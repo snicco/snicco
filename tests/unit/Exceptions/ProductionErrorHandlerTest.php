@@ -7,10 +7,12 @@
 	namespace Tests\unit\Exceptions;
 
 	use Exception;
+	use Mockery;
 	use Psr\Log\LoggerInterface;
 	use Psr\Log\LogLevel;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\AssertsResponse;
+	use Tests\SetUpDefaultMocks;
 	use Tests\stubs\Foo;
 	use Tests\stubs\TestException;
 	use Tests\stubs\TestLogger;
@@ -23,6 +25,13 @@
 	use WPEmerge\Facade\WP;
 	use WPEmerge\Factories\ErrorHandlerFactory;
 	use WPEmerge\Http\Response;
+	use WpFacade\WpFacade;
+
+	set_error_handler(function () {
+
+		$foo = 'bar';
+
+	});
 
 	class ProductionErrorHandlerTest extends TestCase {
 
@@ -43,9 +52,12 @@
 			$this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
 			$GLOBALS['test']['log'] = [];
 
+			WpFacade::setFacadeContainer($this->container);
 			WP::shouldReceive('userId')->andReturn(10)->byDefault();
 
 		}
+
+
 
 		/** @test */
 		public function inside_the_routing_flow_the_exceptions_get_transformed_into_response_objects() {

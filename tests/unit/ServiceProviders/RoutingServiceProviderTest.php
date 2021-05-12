@@ -6,50 +6,43 @@
 
 	namespace Tests\unit\ServiceProviders;
 
-	use Codeception\TestCase\WPTestCase;
-	use Doctrine\Inflector\Rules\Word;
-	use Mockery;
 	use Tests\stubs\Conditions\TrueCondition;
 	use Tests\stubs\CreatesAdminPages;
 	use Tests\stubs\TestApp;
+	use Tests\TestCase;
 	use Tests\TestRequest;
 	use WPEmerge\Contracts\RouteMatcher;
-	use WPEmerge\Facade\WordpressApi;
 	use WPEmerge\Facade\WP;
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\Router;
-	use WpFacade\WpFacade;
+	use WPEmerge\ServiceProviders\AliasServiceProvider;
+	use WPEmerge\ServiceProviders\FactoryServiceProvider;
+	use WPEmerge\ServiceProviders\RoutingServiceProvider;
 
-	class RoutingServiceProviderTest extends WPTestCase {
+	class RoutingServiceProviderTest extends TestCase {
 
-		use BootApplication;
+		use BootServiceProviders;
 		use CreatesAdminPages;
 
 
-		protected function tearDown() : void {
+		function neededProviders() : array {
 
-			TestApp::setApplication(null);
-			WpFacade::clearResolvedInstances();
+			return  [
+				RoutingServiceProvider::class,
+				FactoryServiceProvider::class,
+				AliasServiceProvider::class
+			];
 
-			Mockery::close();
-
-			parent::tearDown();
 		}
 
 		/** @test */
 		public function all_conditions_are_loaded() {
 
-			$app = $this->bootNewApplication( [
-				'routing' => [
-					'conditions' => [
-						'true' => TrueCondition::class,
-					],
-				],
-			] );
+			$this->config->set( 'routing.conditions.true', TrueCondition::class );
 
-			$conditions = $app->config( 'routing.conditions', [] );
+			$conditions = $this->config->get( 'routing.conditions' );
 
 			$this->assertArrayHasKey( 'custom', $conditions );
 			$this->assertArrayHasKey( 'negate', $conditions );
@@ -64,74 +57,66 @@
 			$this->assertArrayHasKey( 'true', $conditions );
 
 
-
 		}
 
-		// /** @test */
+		/** @test */
 		public function without_caching_a_fast_route_matcher_is_returned() {
-
-			$this->bootNewApplication($this->routeConfig());
 
 			$this->assertInstanceOf( FastRouteMatcher::class, TestApp::resolve( RouteMatcher::class ) );
 
-
 		}
 
-		// /** @test */
+		/** @test */
 		public function an_exception_gets_thrown_if_a_cache_file_path_is_missing() {
 
 			$this->expectExceptionMessage( 'No cache file provided:' );
 
-			$this->bootNewApplication( [
-				'routing' => [
-					'cache' => true,
-				],
-			] )->resolve( RouteMatcher::class );
+			$this->config->set( 'routing.cache', true );
+
+			$this->app->resolve( RouteMatcher::class );
 
 
 		}
 
-		// /** @test */
+		/** @test */
 		public function a_cached_route_matcher_can_be_configured() {
 
-			$app = $this->bootNewApplication( [
-				'routing' => [
-					'cache'      => true,
-					'cache_file' => TESTS_DIR . '_data' . DS . 'tests.route.cache.php',
-				],
-			] );
+			$this->config->set( 'routing.cache', true );
+			$this->config->set( 'routing.cache_file', TESTS_DIR . '_data' . DS . 'tests.route.cache.php' );
 
-			$matcher = $app->resolve( RouteMatcher::class );
+			$matcher = $this->app->resolve( RouteMatcher::class );
 
 			$this->assertInstanceOf( CachedFastRouteMatcher::class, $matcher );
 
 		}
 
-		// /** @test */
+		/** @test */
 		public function the_router_is_loaded_correctly() {
 
-			$app = $this->bootNewApplication();
-
-			$this->assertInstanceOf( Router::class, $app->resolve( Router::class ) );
+			$this->assertInstanceOf( Router::class, $this->app->resolve( Router::class ) );
 
 		}
 
-		// /** @test */
+		/** @test */
 		public function the_condition_factory_can_be_loaded() {
 
-			$app = $this->bootNewApplication();
 
-			$this->assertInstanceOf( ConditionFactory::class, $app->resolve( ConditionFactory::class ) );
+			$this->assertInstanceOf( ConditionFactory::class, $this->app->resolve( ConditionFactory::class ) );
 
 		}
 
-		// /** @test */
+		/** @test */
 		public function ajax_routes_are_loaded_for_ajax_request() {
 
-			$app = $this->bootAndSimulateAjaxRequest();
+			$this->config->set('routing.definitions', TESTS_DIR . DS . 'stubs' . DS . 'Routes');
+
+			WP::shouldReceive('isAdminAjax')->andReturnTrue();
+			WP::shouldReceive('isUserLoggedIn')->andReturnTrue();
+
+			$this->boostrapProviders();
 
 			/** @var Router $router */
-			$router = $app->resolve( Router::class );
+			$router = $this->app->resolve( Router::class );
 
 			$router->middlewareGroup( 'ajax', [] );
 
@@ -144,17 +129,22 @@
 
 		}
 
-		// /** @test */
+		/** @test */
 		public function admin_routes_are_loaded_for_admin_requests_and_have_the_correct_prefix_applied() {
 
-			$app = $this->bootAndSimulateAdminRequest();
+			$this->config->set('routing.definitions', TESTS_DIR . DS . 'stubs' . DS . 'Routes');
+
+			WP::shouldReceive('isAdminAjax')->andReturnFalse();
+			WP::shouldReceive('isAdmin')->andReturnTrue();
+
+			$this->boostrapProviders();
 
 			/** @var Router $router */
-			$router = $app->resolve( Router::class );
+			$router = $this->app->resolve( Router::class );
 
 			$router->middlewareGroup( 'admin', [] );
 
-			$request = TestRequest::fromFullUrl( 'GET', $this->urlTo('foo') );
+			$request = TestRequest::fromFullUrl( 'GET', $this->urlTo( 'foo' ) );
 
 			$response = $router->runRoute( $request );
 
@@ -162,13 +152,14 @@
 
 		}
 
-		// /** @test */
+		/** @test */
 		public function web_routes_are_loaded_by_default() {
 
-			$app = $this->bootNewApplication( $this->routeConfig() );
+			$this->config->set('routing.definitions', TESTS_DIR . DS . 'stubs' . DS . 'Routes');
+			$this->boostrapProviders();
 
 			/** @var Router $router */
-			$router = $app->resolve( Router::class );
+			$router = $this->app->resolve( Router::class );
 
 			$router->middlewareGroup( 'web', [] );
 
@@ -180,24 +171,7 @@
 
 		}
 
-		private function routeConfig() : array {
 
-			return [
-				'routing' => [
-
-					'definitions' => TESTS_DIR . DS . 'stubs' . DS . 'Routes',
-
-				],
-
-			];
-
-		}
-
-		private function bootFacade () {
-
-			WpFacade::setFacadeContainer(TestApp::container());
-
-		}
 
 
 	}

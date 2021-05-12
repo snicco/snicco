@@ -9,11 +9,11 @@
 	use Codeception\TestCase\WPTestCase;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\TestApp;
-	use Tests\TestCase;
 	use WPEmerge\Contracts\ViewServiceInterface;
 	use WPEmerge\Exceptions\ViewException;
 	use WPEmerge\Exceptions\ViewNotFoundException;
 	use WPEmerge\View\PhpView;
+	use WpFacade\WpFacade;
 
 	class ViewServiceTest extends WPTestCase {
 
@@ -36,6 +36,8 @@
 
 
 		}
+
+
 
 		/** @test */
 		public function a_basic_view_can_be_created () {

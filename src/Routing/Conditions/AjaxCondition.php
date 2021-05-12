@@ -43,12 +43,12 @@
 
 		private function matchesPrivateRequirement() : bool {
 
-			return $this->private && is_user_logged_in();
+			return $this->private && WP::isUserLoggedIn();
 		}
 
 		private function matchesPublicRequirement() : bool {
 
-			return $this->public && ! is_user_logged_in();
+			return $this->public && ! WP::isUserLoggedIn();
 		}
 
 		private function matchesActionRequirement( RequestInterface $request ) : bool {
