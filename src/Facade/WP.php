@@ -13,7 +13,7 @@
 	 */
 	class WP extends WpFacade {
 
-	    public const PLUGIN_PAGE_IDENTIFIER = 'wp-admin' . DIRECTORY_SEPARATOR . 'admin.php';
+
 
 		protected static function getFacadeAccessor() {
 

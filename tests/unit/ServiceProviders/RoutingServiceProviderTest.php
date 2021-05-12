@@ -57,7 +57,7 @@
             $this->assertArrayHasKey('ajax', $conditions);
             $this->assertArrayHasKey('admin', $conditions);
             $this->assertArrayHasKey('query_string', $conditions);
-            $this->assertArrayHasKey('plugin_page', $conditions);
+            $this->assertArrayHasKey('admin_page', $conditions);
             $this->assertArrayHasKey('true', $conditions);
 
 

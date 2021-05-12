@@ -11,6 +11,7 @@
 	use WPEmerge\Contracts\RouteCondition;
     use WPEmerge\Facade\WP;
     use WPEmerge\Support\Str;
+    use WPEmerge\Support\UrlParser;
 
     class Request extends SymfonyRequest implements RequestInterface {
 
@@ -44,7 +45,7 @@
 
 		public function path() : string {
 
-		    $path = $this->isPluginAdminPage() ? $this->pluginPagePath() : $this->getPathInfo();
+		    $path = $this->isWpAdminPageRequest() ? $this->getBaseUrl() : $this->getPathInfo();
 
 			$pattern = trim( $path, '/' );
 
@@ -210,17 +211,12 @@
 
 		}
 
-		private function isPluginAdminPage () :bool {
+		private function isWpAdminPageRequest () :bool {
 
-		    return Str::contains($this->getBaseUrl(), WP::PLUGIN_PAGE_IDENTIFIER)
-                && $this->query->has('page');
-
-        }
-
-        private function pluginPagePath () {
-
-            return $this->getBaseUrl();
+		    return UrlParser::isWpAdminPageRequest ($this->getBaseUrl());
 
         }
+
+
 
 	}

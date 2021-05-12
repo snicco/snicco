@@ -9,7 +9,7 @@
     use WPEmerge\Contracts\UrlableInterface;
     use WPEmerge\Facade\WP;
 
-    class PluginPageCondition extends QueryStringCondition implements UrlableInterface
+    class AdminPageCondition extends QueryStringCondition implements UrlableInterface
     {
 
         public function toUrl($arguments = []) : string

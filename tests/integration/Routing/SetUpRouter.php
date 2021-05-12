@@ -17,7 +17,7 @@
 	use WPEmerge\Routing\Conditions\AjaxCondition;
 	use WPEmerge\Routing\Conditions\CustomCondition;
 	use WPEmerge\Routing\Conditions\NegateCondition;
-    use WPEmerge\Routing\Conditions\PluginPageCondition;
+    use WPEmerge\Routing\Conditions\AdminPageCondition;
     use WPEmerge\Routing\Conditions\PostIdCondition;
 	use WPEmerge\Routing\Conditions\PostSlugCondition;
 	use WPEmerge\Routing\Conditions\PostStatusCondition;
@@ -120,7 +120,7 @@
 				'unique'               => \Tests\stubs\Conditions\UniqueCondition::class,
 				'dependency_condition' => \Tests\stubs\Conditions\ConditionWithDependency::class,
 				'query_string'         => QueryStringCondition::class,
-                'plugin_page'          => PluginPageCondition::class,
+                'admin_page'          => AdminPageCondition::class,
 
 			];
 
