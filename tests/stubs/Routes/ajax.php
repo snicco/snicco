@@ -9,4 +9,4 @@
 
         return 'FOO_ACTION';
 
-    });
+    })->name('foo');

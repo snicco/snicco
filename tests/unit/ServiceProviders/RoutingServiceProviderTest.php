@@ -197,6 +197,24 @@
 
         }
 
+        /** @test */
+        public function named_groups_are_applied_for_ajax_routes()
+        {
+            $this->config->set('routing.definitions', TESTS_DIR.DS.'stubs'.DS.'Routes');
+            WP::shouldReceive('isAdminAjax')->andReturnTrue();
+            WP::shouldReceive('isAdmin')->andReturnTrue();
+            $this->boostrapProviders();
+
+            $router = $this->resolveRouter();
+
+            $expected = $this->ajaxUrl();
+
+            $this->assertSame($expected, $router->getRouteUrl('ajax.foo'));
+
+
+        }
+
+
 
         private function resolveRouter() : Router
         {
