@@ -6,15 +6,15 @@
 
 	namespace Tests\integration\Routing;
 
-	use Tests\TestCase;
-	use Tests\TestRequest;
+	use Tests\RequestTesting;
+    use Tests\TestCase;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Facade\WP;
-	use WPEmerge\Support\Url;
 
 	class AdminRoutesTest extends TestCase {
 
 		use SetUpRouter;
+        use RequestTesting;
 
 		protected function afterSetUp() {
 
@@ -35,7 +35,7 @@
 
 			});
 
-			$request = $this->requestTo('foo');
+			$request = $this->adminRequestTo('foo');
 
 			$this->assertSame( 'foo', $this->router->runRoute( $request ) );
 
@@ -54,7 +54,7 @@
 
 			} );
 
-			$request = $this->requestTo('bar');
+			$request = $this->adminRequestTo('bar');
 
 			$this->assertSame( null, $this->router->runRoute( $request ) );
 
@@ -78,7 +78,7 @@
 
 			} );
 
-			$request = $this->requestTo('foo');
+			$request = $this->adminRequestTo('foo');
 
 			$this->assertSame( 'foo', $this->router->runRoute( $request ) );
 
@@ -109,38 +109,47 @@
 			};
 
 			$this->newRouterWith( $routes );
-			$request = $this->requestTo('foo');
+			$request = $this->adminRequestTo('foo');
 			$this->assertSame( 'foo', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
-			$request = $this->requestTo('bar');
+			$request = $this->adminRequestTo('bar');
 			$this->assertSame( 'bar', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
-			$request = $this->requestTo('baz', 'POST');
+			$request = $this->adminRequestTo('baz', 'POST');
 			$this->assertSame( null, $this->router->runRoute( $request ) );
 
 
 		}
 
-		private function adminUrlTo(string $menu_slug ) : string {
+		/** @test */
+        public function reverse_routing_works_with_admin_routes () {
 
-			$url = Url::combinePath(SITE_URL, 'wp-admin/admin.php?page=' . $menu_slug);
+            WP::shouldReceive('pluginPageUrl')->andReturnUsing(function ($page) {
 
-			return $url;
+                return $this->adminUrlTo($page);
 
-		}
+            });
 
-        private function requestTo(string $admin_page, string $method = 'GET' ) : TestRequest {
+            $this->router->group( [ 'prefix' => 'wp-admin/admin.php', 'name' => 'admin' ] , function () {
 
-            $request = TestRequest::fromFullUrl( $method, $this->adminUrlTo( $admin_page ) );
+                $this->router->get( 'foo', function ( RequestInterface $request, string $page ) {
 
-            $request->server->set('SCRIPT_FILENAME', ROOT_DIR . DS. 'wp-admin' . DS . 'admin.php');
-            $request->server->set('SCRIPT_NAME', DS. 'wp-admin' . DS . 'admin.php' );
-            $request->overrideGlobals();
+                    return $page;
 
-            return $request;
+                })->name('foo');
+
+            });
+
+            $url = $this->router->getRouteUrl('admin.foo');
+
+            $this->assertSame($this->adminUrlTo('foo'), $url);
+
 
         }
+
+
+
 
 	}

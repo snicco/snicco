@@ -18,7 +18,7 @@
 
 		return strtoupper($page);
 
-	});
+	})->name('foo');
 
 	$router->post( 'biz', function ( RequestInterface $request, string $page ) {
 

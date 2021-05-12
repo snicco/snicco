@@ -10,7 +10,8 @@
 	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Factories\HandlerFactory;
-	use WPEmerge\Routing\Conditions\QueryStringCondition;
+    use WPEmerge\Routing\Conditions\PluginPageCondition;
+    use WPEmerge\Routing\Conditions\QueryStringCondition;
 	use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
 	use WPEmerge\Routing\Conditions\AdminCondition;
 	use WPEmerge\Routing\Conditions\AjaxCondition;
@@ -46,6 +47,7 @@
 			'ajax'          => AjaxCondition::class,
 			'admin'         => AdminCondition::class,
 			'query_string'  => QueryStringCondition::class,
+            'plugin_page'   => PluginPageCondition::class,
 		];
 
 

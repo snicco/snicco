@@ -78,7 +78,10 @@
 
 			if ( $group === 'admin' ) {
 
-				return array_merge( $attributes, [ 'prefix' => RouteGroup::ADMIN_PREFIX ] );
+				return array_merge( $attributes, [
+				    'prefix' => RouteGroup::ADMIN_PREFIX,
+                    'name' => 'admin'
+                ]);
 
 			}
 

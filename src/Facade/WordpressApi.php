@@ -45,6 +45,12 @@
 
 		}
 
+		public function pluginPageUrl (string $menu_slug) :string {
+
+		    return menu_page_url($menu_slug, false );
+
+        }
+
 		public function currentUserCan(string $cap, ...$args) :bool {
 
 			return current_user_can($cap, ...$args );
