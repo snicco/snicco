@@ -6,7 +6,10 @@
 
 	namespace WPEmerge\Facade;
 
-	/** @see \WPEmerge\Facade\WordpressApiMixin */
+	/**
+     * @see \WPEmerge\Facade\WordpressApiMixin
+     * @todo URL-ENCODING?
+     */
 	class WordpressApi {
 
 
@@ -24,17 +27,25 @@
 
 		}
 
-		public function isAdminAjax () {
+		public function isAdminAjax () : bool
+        {
 
 			return wp_doing_ajax();
 
 		}
 
-		public function homeUrl( string $path = '', string $scheme = null ) {
+		public function homeUrl( string $path = '', string $scheme = null ) :string {
 
 			return home_url($path, $scheme);
 
 		}
+
+        public function adminUrl(string $path = '', string $scheme = 'https') :string
+        {
+
+            return self_admin_url($path, $scheme);
+
+        }
 
 		public function userId () :int  {
 
@@ -71,5 +82,18 @@
 			return get_file_data($file, $default_headers, $context);
 
 		}
+
+		public function addQueryArgs(array $keys, string $url ) {
+
+            return add_query_arg($keys, $url);
+
+        }
+
+        public function addQueryArg( string $key , string $value , string $base_url )
+        {
+
+            return add_query_arg($key, $value, $base_url);
+
+        }
 
 	}

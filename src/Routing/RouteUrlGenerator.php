@@ -38,7 +38,7 @@
 
 			if ( $condition = $this->hasUrleableCondition() ) {
 
-				return $condition->toUrl( $arguments );
+				return $condition->toUrl( array_merge([ 'route' => $this->route ], $arguments) );
 
 			}
 

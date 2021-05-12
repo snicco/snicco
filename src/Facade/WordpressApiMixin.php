@@ -49,6 +49,21 @@
 		public static function homeUrl( string $path = '', string $scheme = null ) : string {
 		}
 
+        /**
+         *
+         * Create a link to an admin url
+         *
+         * @param  string  $path
+         * @param  string  $scheme
+         *
+         * @return string
+         *
+         * @see self_admin_url()
+         * @see WordpressApi::adminUrl();
+         *
+         */
+        public static function adminUrl(string $path = '', string $scheme = 'https') :string {}
+
 		/**
 		 * Get the current user's ID
 		 *
@@ -130,5 +145,26 @@
          * @return string
          */
         public static function wpAdminFolder () :string {}
+
+        /**
+         *
+         * @param  array  $keys associative array of [param => value ] pairs
+         * @param  string  $url Url to append to.
+         *
+         * @return string
+         */
+        public static function addQueryArgs(array $keys, string $url ) :string {}
+
+        /**
+         *
+         * Append a single query var to an URL.
+         *
+         * @param  string  $key parameter key
+         * @param  string  $value parameter value
+         * @param  string  $base_url URL to append to
+         *
+         * @return string
+         */
+        public static function addQueryArg( string $key , string $value , string $base_url ) :string {}
 
 	}

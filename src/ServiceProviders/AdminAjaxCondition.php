@@ -7,18 +7,21 @@
     namespace WPEmerge\ServiceProviders;
 
     use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Contracts\UrlableInterface;
+    use WPEmerge\Exceptions\RouteLogicException;
+    use WPEmerge\Facade\WP;
+    use WPEmerge\Routing\Route;
+    use WPEmerge\Support\Arr;
 
-    class AdminAjaxCondition extends RequestAttributeCondition
+    class AdminAjaxCondition extends RequestAttributeCondition implements UrlableInterface
     {
 
 
-        public function isSatisfied(RequestInterface $request) :bool
+        public function isSatisfied(RequestInterface $request) : bool
         {
 
-            $expected_action = $this->request_arguments->get('action', '');
-
             return parent::isSatisfied($request)
-                || $request->query('action') === $expected_action;
+                || $request->query('action') === $this->expectedAction();
 
 
         }
@@ -28,10 +31,44 @@
 
             return array_merge(
                 parent::getArguments($request),
-                [ $request->query('action', []) ]
+                [$request->query('action', [])]
             );
         }
 
+        private function expectedAction() : ?string
+        {
 
+            return $this->request_arguments->get('action', '');
+
+        }
+
+        public function toUrl($arguments = [])
+        {
+
+            $method = strtoupper(Arr::get($arguments, 'method', 'POST'));
+
+            $base_url = WP::adminUrl('admin-ajax.php');
+
+            if ($method !== 'GET') {
+
+                return $base_url;
+
+            }
+
+            /** @var Route $route */
+            $route = $arguments['route'];
+
+            if ( ! in_array('GET', $route->getMethods())) {
+
+                throw new RouteLogicException(
+                    'Route: '.$route->getName().'does not respond to GET requests'
+                );
+
+            }
+
+            return WP::addQueryArg('action', $this->expectedAction(), $base_url);
+
+
+        }
 
     }
