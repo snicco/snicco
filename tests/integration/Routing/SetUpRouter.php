@@ -28,8 +28,9 @@
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
+    use WPEmerge\ServiceProviders\RoutingServiceProvider;
 
-	trait SetUpRouter {
+    trait SetUpRouter {
 
 		use SetUpDefaultMocks;
 
@@ -102,27 +103,16 @@
 
 		private function allConditions() : array {
 
-			return [
+		    return array_merge(RoutingServiceProvider::CONDITION_TYPES , [
 
-				'custom'               => CustomCondition::class,
-				'negate'               => NegateCondition::class,
-				'post_id'              => PostIdCondition::class,
-				'post_slug'            => PostSlugCondition::class,
-				'post_status'          => PostStatusCondition::class,
-				'post_template'        => PostTemplateCondition::class,
-				'post_type'            => PostTypeCondition::class,
-				'query_var'            => QueryVarCondition::class,
-				'ajax'                 => AjaxCondition::class,
-				'admin'                => AdminCondition::class,
-				'true'                 => \Tests\stubs\Conditions\TrueCondition::class,
-				'false'                => \Tests\stubs\Conditions\FalseCondition::class,
-				'maybe'                => \Tests\stubs\Conditions\MaybeCondition::class,
-				'unique'               => \Tests\stubs\Conditions\UniqueCondition::class,
-				'dependency_condition' => \Tests\stubs\Conditions\ConditionWithDependency::class,
-				'query_string'         => QueryStringCondition::class,
-                'admin_page'          => AdminPageCondition::class,
+                'true'                 => \Tests\stubs\Conditions\TrueCondition::class,
+                'false'                => \Tests\stubs\Conditions\FalseCondition::class,
+                'maybe'                => \Tests\stubs\Conditions\MaybeCondition::class,
+                'unique'               => \Tests\stubs\Conditions\UniqueCondition::class,
+                'dependency_condition' => \Tests\stubs\Conditions\ConditionWithDependency::class,
 
-			];
+            ]);
+
 
 		}
 

@@ -29,38 +29,37 @@
 		 */
 		public function isSatisfied( RequestInterface $request ) {
 
-			$query_strings = $request->query();
+            $query_args = $request->query();
 
-			$failed = $this->query_string_arguments->reject(function ( $value , $query_string  ) use ( $query_strings ) {
+            foreach ( $this->query_string_arguments as $key => $value ) {
 
-				if  ( ! in_array( $query_string, array_keys($query_strings) ) ) {
+                if ( ! in_array($key, array_keys($query_args) ) ) {
 
-					return true;
+                    return false;
 
-				}
+                }
 
-				return $value === $query_strings[$query_string];
+            }
 
-			});
+            $failed_value = $this->query_string_arguments->first(function ($value, $key) use ($query_args) {
 
-			return $failed->isEmpty();
+                return $value !== $query_args[$key];
 
-			/**
-			 *
-			 * @todo Improve this. See how RouteMatcher handles conditions and aborts on first match.
-			 *
-			 */
+            });
 
+            return $failed_value === null;
+
+
+
+		}
+
+		public function getArguments( RequestInterface $request ) : array
+        {
+
+            return collect($request->query())->only($this->query_string_arguments->keys())->all();
 
 		}
 
-		public function getArguments( RequestInterface $request ) {
-
-			$values = collect($request->query())->only($this->query_string_arguments->keys())->all();
-
-			return $values;
-
-		}
 
 
 

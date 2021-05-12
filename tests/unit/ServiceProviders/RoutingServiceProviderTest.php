@@ -47,6 +47,10 @@
 
             $conditions = $this->config->get('routing.conditions');
 
+            // user provided
+            $this->assertArrayHasKey('true', $conditions);
+
+            // core
             $this->assertArrayHasKey('custom', $conditions);
             $this->assertArrayHasKey('negate', $conditions);
             $this->assertArrayHasKey('post_id', $conditions);
@@ -57,8 +61,9 @@
             $this->assertArrayHasKey('ajax', $conditions);
             $this->assertArrayHasKey('admin', $conditions);
             $this->assertArrayHasKey('query_string', $conditions);
+            $this->assertArrayHasKey('request', $conditions);
             $this->assertArrayHasKey('admin_page', $conditions);
-            $this->assertArrayHasKey('true', $conditions);
+            $this->assertArrayHasKey('admin_ajax', $conditions);
 
 
         }
@@ -127,13 +132,11 @@
 
             $router = $this->resolveRouter();
 
-
-            $request = TestRequest::from('POST', 'foo');
-            $request->request->set('action', 'test');
+            $request = $this->ajaxRequest('foo_action');
 
             $response = $router->runRoute($request);
 
-            $this->assertSame('foo', $response);
+            $this->assertSame('FOO_ACTION', $response);
 
         }
 
@@ -193,6 +196,7 @@
             $this->assertSame($this->adminUrlTo('foo'), $url);
 
         }
+
 
         private function resolveRouter() : Router
         {

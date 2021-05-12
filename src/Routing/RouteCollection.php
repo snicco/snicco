@@ -22,6 +22,7 @@
 
 	use function FastRoute\simpleDispatcher;
 
+	/** @todo this class needs to be broken up into a value object that contains route definitions and a Service class that dispatches the dynamic urls */
 	class RouteCollection {
 
 		const hash_key = 'static_url';
@@ -65,7 +66,6 @@
 		}
 
 
-
 		public function add( Route $route ) : Route {
 
 			$this->addToCollection( $route );
@@ -99,7 +99,7 @@
 
 		public function match( RequestInterface $request ) : RouteMatch {
 
-			$this->loadRoutes( $request->getMethod(), $request );
+			$this->loadRoutes( $request->getMethod() );
 
 			$match = $this->findRoute( $request );
 
@@ -157,7 +157,7 @@
 		// that was found in the dispatcher failed due to custom conditions.
 		// $request->path = 'foo/bar' would result in first looking for a static route:
 		// 3451342sf31a/foo/'bar' and if that fails for a dynamic route that matches /foo/bar
-		private function loadRoutes( string $method, RequestInterface $request ) {
+		private function loadRoutes( string $method ) {
 
 			if ( $this->route_matcher->isCached() ) {
 
@@ -197,11 +197,17 @@
 
 			if ( WP::isAdmin() && ! WP::isAdminAjax() && $request ) {
 
-				return $hash . '/' . $request->query( 'page', '' );
+				$hash =  $hash . '/' . $request->query( 'page', '' );
 
 			}
 
-			return $hash;
+			if ( WP::isAdminAjax() && $request ) {
+
+                $hash = $hash . '/' . $request->request( 'action', $request->query('action', '') );
+
+			}
+
+			return Url::toRouteMatcherFormat($hash);
 
 
 		}

@@ -130,10 +130,10 @@
 
         }
 
-        public static function getPageQueryVar(string $url) : string
+        public static function getPageQueryVar(string $route_url) : string
         {
 
-            $page = Str::after($url, '.php/');
+            $page = Str::after($route_url, '.php/');
 
             return $page;
 
@@ -159,6 +159,14 @@
             }, $url);
 
             return $url;
+
+        }
+
+        public static function parseAjaxAction(string $route_url) :string
+        {
+            $action = trim(Str::after($route_url, 'ajax.php/'),'/');
+
+            return $action;
 
         }
 

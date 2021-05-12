@@ -169,6 +169,18 @@
 		public function server( string $key = '', $default = null );
 
 		/**
+		 * Get a value from the REQUEST parameters.
+		 *
+		 * @param  string  $key
+		 * @param  mixed  $default
+		 *
+		 * @return mixed
+		 */
+		public function request( string $key = '', $default = null );
+
+
+
+		/**
 		 * Get a value from the headers.
 		 *
 		 * @param  string  $key

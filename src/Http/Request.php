@@ -13,6 +13,7 @@
     use WPEmerge\Support\Str;
     use WPEmerge\Support\UrlParser;
 
+    /** @todo maybe have to methods return the instances off parameters bags instead of getting from it */
     class Request extends SymfonyRequest implements RequestInterface {
 
 		public static function capture() : RequestInterface {
@@ -45,7 +46,9 @@
 
 		public function path() : string {
 
-		    $path = $this->isWpAdminPageRequest() ? $this->getBaseUrl() : $this->getPathInfo();
+		    $path = $this->isWpAdminPageRequest()
+                ? $this->getBaseUrl() . DIRECTORY_SEPARATOR . trim($this->getPathInfo(), '/')
+                : $this->getPathInfo();
 
 			$pattern = trim( $path, '/' );
 
@@ -160,11 +163,23 @@
 
 		public function server( $key = '', $default = null ) {
 
-			return $this->files->get( $key, $default );
+			return $this->server->get( $key, $default );
 
 		}
 
-		public function headers( $key = '', $default = null ) {
+        public function request( $key = '', $default = null ) {
+
+            if ( ! $key ) {
+
+                return $this->request->all();
+
+            }
+
+            return $this->request->get( $key, $default );
+
+        }
+
+        public function headers( $key = '', $default = null ) {
 
 			return $this->headers->get( $key, $default );
 
