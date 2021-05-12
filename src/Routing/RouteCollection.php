@@ -165,6 +165,7 @@
 
 			}
 
+
 			$routes = Arr::get( $this->routes, $method, [] );
 
 			$cache = $this->isCacheable();
