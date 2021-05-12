@@ -11,6 +11,7 @@
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Events\BodySent;
 	use WPEmerge\Events\HeadersSent;
+	use WPEmerge\Facade\WP;
 	use WPEmerge\Http\Response;
 
 	class HttpKernelTest extends TestCase {
@@ -31,6 +32,8 @@
 		/** @test */
 		public function for_matching_request_headers_and_body_get_send() {
 
+
+
 			$this->router->get( '/foo', function ( TestRequest $request ) {
 
 				return new Response( 'foo' );
@@ -45,6 +48,8 @@
 
 		/** @test */
 		public function for_admin_requests_the_body_does_not_get_send_immediately () {
+
+
 
 			$this->router->get( '/admin', function () {
 

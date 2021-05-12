@@ -14,6 +14,7 @@
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Support\Url;
 	use WPEmerge\Support\VariableBag;
+	use WpFacade\WpFacade;
 
 	class AliasServiceProviderTest extends WPTestCase {
 
@@ -24,14 +25,6 @@
 			parent::setUp();
 
 			$this->bootNewApplication(TEST_CONFIG);
-
-		}
-
-		protected function tearDown() : void {
-
-			parent::tearDown();
-
-			TestApp::setApplication(null);
 
 		}
 

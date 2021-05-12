@@ -16,6 +16,7 @@
 
 	class ApplicationTest extends WPTestCase {
 
+
 		/** @test */
 		public function the_static_constructor_returns_an_application_instance() {
 
@@ -136,12 +137,12 @@
 
 		}
 
-
-
 		private function newApplication() : Application {
 
-			return new Application( new BaseContainerAdapter() );
 
+			$app = new Application(  new BaseContainerAdapter() );
+
+			return $app;
 		}
 
 

@@ -6,6 +6,7 @@
 
 	namespace WPEmerge\Facade;
 
+	/** @see \WPEmerge\Facade\WordpressApiMixin */
 	class WordpressApi {
 
 		public function isAdmin () :bool {

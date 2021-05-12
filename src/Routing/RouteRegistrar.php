@@ -7,6 +7,7 @@
 	namespace WPEmerge\Routing;
 
 	use WPEmerge\Application\ApplicationConfig;
+	use WPEmerge\Facade\WP;
 	use WPEmerge\Support\Arr;
 	use WPEmerge\Support\FilePath;
 
@@ -32,14 +33,14 @@
 
 		public function loadRoutes() {
 
-			if ( wp_doing_ajax() ) {
+			if ( WP::isAdminAjax() ) {
 
 				$this->loadRoutesGroup( 'ajax' );
 
 				return;
 			}
 
-			if ( is_admin() ) {
+			if ( WP::isAdmin() ) {
 
 				$this->loadRoutesGroup( 'admin' );
 

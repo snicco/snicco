@@ -6,30 +6,32 @@
 
 	namespace Tests\integration\Routing;
 
+	use Mockery;
 	use PHPUnit\Framework\TestCase;
 	use Tests\TestRequest;
 	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Facade\WP;
 	use WPEmerge\Support\Url;
+	use WpFacade\WpFacade;
 
 	class AdminRoutesTest extends TestCase {
 
 		use SetUpRouter;
 
-		protected function setUp() : void {
+		protected function tearDown() : void {
 
-			parent::setUp();
+			WpFacade::clearResolvedInstances();
+			Mockery::close();
 
-			$this->newRouter();
-
-			$this->route_collection->isAdmin();
-
-			$GLOBALS['test'] = [];
+			parent::tearDown();
 
 		}
 
 
 		/** @test */
 		public function routes_in_an_admin_group_match_without_needing_to_specify_the_full_path() {
+
+			WP::shouldReceive('isAdmin')->andReturnTrue();
 
 			$this->router->group( [ 'prefix' => 'wp-admin/admin.php' ] , function () {
 
@@ -69,6 +71,7 @@
 		/** @test */
 		public function the_admin_preset_works_with_nested_route_groups() {
 
+			WP::shouldReceive('isAdmin')->andReturnTrue();
 
 			$this->router->group( [ 'prefix' => 'wp-admin/admin.php' ], function () {
 
@@ -93,6 +96,7 @@
 		/** @test */
 		public function two_different_admin_routes_can_be_created() {
 
+			WP::shouldReceive('isAdmin')->andReturnTrue();
 
 			$routes = function () {
 
@@ -115,17 +119,14 @@
 			};
 
 			$this->newRouterWith( $routes );
-			$this->route_collection->isAdmin();
 			$request = TestRequest::fromFullUrl( 'GET', $this->adminUrlTo( 'foo' ) );
 			$this->assertSame( 'foo', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
-			$this->route_collection->isAdmin();
 			$request = TestRequest::fromFullUrl( 'GET', $this->adminUrlTo( 'bar' ) );
 			$this->assertSame( 'bar', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
-			$this->route_collection->isAdmin();
 			$request = TestRequest::fromFullUrl( 'POST', $this->adminUrlTo( 'bar' ) );
 			$this->assertSame( null, $this->router->runRoute( $request ) );
 

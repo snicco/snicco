@@ -6,24 +6,23 @@
 
 	namespace Tests\integration\HttpKernel;
 
-	use BetterWpHooks\Dispatchers\WordpressDispatcher;
-	use BetterWpHooks\ListenerFactory;
+	use Mockery;
 	use PHPUnit\Framework\Assert;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\TestErrorHandler;
-	use Tests\stubs\TestResponseService;
 	use Tests\TestRequest;
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingRequest;
 	use WPEmerge\Events\IncomingWebRequest;
+	use WPEmerge\Facade\WP;
 	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Http\HttpKernel;
 	use WPEmerge\Factories\ConditionFactory;
-	use WPEmerge\Http\ResponseService;
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
+	use WpFacade\WpFacade;
 
 	trait SetUpKernel {
 
@@ -34,9 +33,6 @@
 		 * @var \WPEmerge\Routing\Router
 		 */
 		private $router;
-
-		/** @var TestResponseService */
-		private $response_service;
 
 		/** @var \Contracts\ContainerAdapter */
 		private $container;
@@ -64,6 +60,11 @@
 			ApplicationEvent::make($this->container);
 			ApplicationEvent::fake();
 
+			WP::setFacadeContainer($container);
+
+			WP::shouldReceive('isAdmin')->andReturnFalse()->byDefault();
+			WP::shouldReceive('isAdminAjax')->andReturnFalse()->byDefault();
+
 			$GLOBALS['test'] = [];
 
 		}
@@ -71,6 +72,9 @@
 		protected function tearDown() : void {
 
 			parent::tearDown();
+
+			WpFacade::clearResolvedInstances();
+			Mockery::close();
 
 			$GLOBALS['test'] = [];
 
