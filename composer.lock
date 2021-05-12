@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a1828c8fffd907df31da17b7ade02253",
+    "content-hash": "bc50bbf1e9a1a48b9fb64379f8254a65",
     "packages": [
         {
             "name": "calvinalkan/base-container",
@@ -155,6 +155,54 @@
                 "source": "https://github.com/calvinalkan/interfaces/tree/0.1.1"
             },
             "time": "2021-04-17T00:56:00+00:00"
+        },
+        {
+            "name": "calvinalkan/wp-facade",
+            "version": "0.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/calvinalkan/wp-facade.git",
+                "reference": "760ba2808df716fcb806659906108c5944bfc4e6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/calvinalkan/wp-facade/zipball/760ba2808df716fcb806659906108c5944bfc4e6",
+                "reference": "760ba2808df716fcb806659906108c5944bfc4e6",
+                "shasum": ""
+            },
+            "require": {
+                "calvinalkan/interfaces": "0.1.1",
+                "php": "^7.3"
+            },
+            "require-dev": {
+                "mockery/mockery": "^1.4"
+            },
+            "suggest": {
+                "mockery/mockery": "Required if you want to use the Facade Fake Replacement for testing purposes"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "WpFacade\\": "/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-2.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Calvin Alkan",
+                    "email": "calvin@snicco.de"
+                }
+            ],
+            "description": "A Wordpress implementation of the Laravel Facade. ",
+            "homepage": "https://github.com/calvinalkan/base-container/",
+            "support": {
+                "issues": "https://github.com/calvinalkan/wp-facade/issues",
+                "source": "https://github.com/calvinalkan/wp-facade/tree/0.1.0"
+            },
+            "time": "2021-05-11T23:54:54+00:00"
         },
         {
             "name": "doctrine/inflector",
