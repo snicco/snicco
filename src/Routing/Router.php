@@ -17,9 +17,6 @@
 	use WPEmerge\Traits\HoldsRouteBlueprint;
 
 	/**
-	 * @todo allow matching of admin routes by query and url instead of stupid
-	 * wp conditions.
-	 *
 	 * @mixin \WPEmerge\Routing\RouteDecorator
 	 */
 	class Router {
@@ -251,7 +248,6 @@
 				return Url::combinePath( '', $url );
 
 			}
-
 
 			return Url::combinePath( $this->lastGroupPrefix(), $url );
 
