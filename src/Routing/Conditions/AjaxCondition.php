@@ -74,7 +74,6 @@
 			return [ 'action' => $this->action ];
 		}
 
-
 		public function toUrl( $arguments = [] ) : string {
 
 			return add_query_arg( 'action', $this->action, self_admin_url( 'admin-ajax.php' ) );

@@ -49,6 +49,8 @@
             'admin' => AdminCondition::class,
             'query_string' => QueryStringCondition::class,
             'admin_page' => AdminPageCondition::class,
+            'admin_ajax' => AdminAjaxCondition::class,
+            'request' => RequestAttributeCondition::class,
         ];
 
 

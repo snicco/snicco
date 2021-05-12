@@ -150,7 +150,6 @@
 
 			HeadersSent::dispatch( [ $this->response, $this->request ] );
 
-
 		}
 
 		private function sendBody() {

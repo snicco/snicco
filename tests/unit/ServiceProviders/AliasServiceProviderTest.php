@@ -1,218 +1,252 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace Tests\unit\ServiceProviders;
+    namespace Tests\unit\ServiceProviders;
 
-	use Tests\stubs\TestApp;
-	use Tests\TestCase;
-	use Tests\TestRequest;
-	use WPEmerge\Application\Application;
-	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Facade\WP;
-	use WPEmerge\Routing\Router;
-	use WPEmerge\ServiceProviders\AliasServiceProvider;
-	use WPEmerge\ServiceProviders\ApplicationServiceProvider;
-	use WPEmerge\ServiceProviders\FactoryServiceProvider;
-	use WPEmerge\ServiceProviders\RoutingServiceProvider;
-	use WPEmerge\ServiceProviders\ViewServiceProvider;
-	use WPEmerge\Support\Url;
-	use WPEmerge\Support\VariableBag;
+    use Tests\stubs\TestApp;
+    use Tests\TestCase;
+    use Tests\TestRequest;
+    use WPEmerge\Application\Application;
+    use WPEmerge\Contracts\ViewInterface;
+    use WPEmerge\Facade\WP;
+    use WPEmerge\Routing\Router;
+    use WPEmerge\ServiceProviders\AliasServiceProvider;
+    use WPEmerge\ServiceProviders\ApplicationServiceProvider;
+    use WPEmerge\ServiceProviders\FactoryServiceProvider;
+    use WPEmerge\ServiceProviders\RoutingServiceProvider;
+    use WPEmerge\ServiceProviders\ViewServiceProvider;
+    use WPEmerge\Support\Url;
+    use WPEmerge\Support\VariableBag;
 
-	class AliasServiceProviderTest extends TestCase {
+    class AliasServiceProviderTest extends TestCase
+    {
 
-		use BootServiceProviders;
+        use BootServiceProviders;
 
-		public function neededProviders() : array {
+        public function neededProviders() : array
+        {
 
-			return  [
-				ApplicationServiceProvider::class,
-				AliasServiceProvider::class,
-				RoutingServiceProvider::class,
-				FactoryServiceProvider::class,
-				ViewServiceProvider::class,
-			];
-		}
+            return [
+                ApplicationServiceProvider::class,
+                AliasServiceProvider::class,
+                RoutingServiceProvider::class,
+                FactoryServiceProvider::class,
+                ViewServiceProvider::class,
+            ];
+        }
 
 
-		/** @test */
-		public function the_application_instance_can_be_aliased() {
+        /** @test */
+        public function the_application_instance_can_be_aliased()
+        {
 
 
-			$this->assertInstanceOf( Application::class, TestApp::app() );
-			$this->assertSame( $this->app, TestApp::app() );
+            $this->assertInstanceOf(Application::class, TestApp::app());
+            $this->assertSame($this->app, TestApp::app());
 
 
-		}
+        }
 
-		/** @test */
-		public function the_router_can_be_aliased() {
+        /** @test */
+        public function the_router_can_be_aliased()
+        {
 
-			$this->assertInstanceOf( Router::class, TestApp::route() );
+            $this->assertInstanceOf(Router::class, TestApp::route());
 
-		}
+        }
 
-		/** @test */
-		public function a_named_route_url_can_be_aliased() {
+        /** @test */
+        public function a_named_route_url_can_be_aliased()
+        {
 
-			WP::shouldReceive( 'homeUrl' )
-			  ->once()
-			  ->with( '/foo', 'https' )
-			  ->andReturn( Url::addTrailing( SITE_URL ) . 'foo' );
+            WP::shouldReceive('homeUrl')
+              ->once()
+              ->with('/foo', 'https')
+              ->andReturn(Url::addTrailing(SITE_URL).'foo');
 
-			TestApp::route()->get( 'foo' )->name( 'foo' );
+            TestApp::route()->get('foo')->name('foo');
 
-			$expected = Url::addTrailing( SITE_URL ) . 'foo';
+            $expected = Url::addTrailing(SITE_URL).'foo';
 
-			$this->assertSame( $expected, trim( TestApp::routeUrl( 'foo' ), '/' ) );
+            $this->assertSame($expected, trim(TestApp::routeUrl('foo'), '/'));
 
-		}
+        }
 
-		/** @test */
-		public function a_post_route_can_be_aliased() {
+        /** @test */
+        public function a_post_route_can_be_aliased()
+        {
 
-			TestApp::post( 'foo', function () {
+            TestApp::post('foo', function () {
 
-				return 'foo';
-			} );
+                return 'foo';
+            });
 
-			$response = TestApp::route()->runRoute( TestRequest::from( 'POST', 'foo' ) );
+            $response = TestApp::route()->runRoute(TestRequest::from('POST', 'foo'));
 
-			$this->assertSame( 'foo', $response );
+            $this->assertSame('foo', $response);
 
-		}
+        }
 
-		/** @test */
-		public function a_get_route_can_be_aliased() {
+        /** @test */
+        public function a_get_route_can_be_aliased()
+        {
 
-			TestApp::get( 'foo', function () {
+            TestApp::get('foo', function () {
 
-				return 'foo';
-			} );
+                return 'foo';
+            });
 
-			$response = TestApp::route()->runRoute( TestRequest::from( 'GET', 'foo' ) );
+            $response = TestApp::route()->runRoute(TestRequest::from('GET', 'foo'));
 
-			$this->assertSame( 'foo', $response );
+            $this->assertSame('foo', $response);
 
-		}
+        }
 
-		/** @test */
-		public function a_patch_route_can_be_aliased() {
+        /** @test */
+        public function a_patch_route_can_be_aliased()
+        {
 
-			TestApp::patch( 'foo', function () {
+            TestApp::patch('foo', function () {
 
-				return 'foo';
-			} );
+                return 'foo';
+            });
 
-			$response = TestApp::route()->runRoute( TestRequest::from( 'PATCH', 'foo' ) );
+            $response = TestApp::route()->runRoute(TestRequest::from('PATCH', 'foo'));
 
-			$this->assertSame( 'foo', $response );
+            $this->assertSame('foo', $response);
 
-		}
+        }
 
-		/** @test */
-		public function a_put_route_can_be_aliased() {
+        /** @test */
+        public function a_put_route_can_be_aliased()
+        {
 
-			TestApp::put( 'foo', function () {
+            TestApp::put('foo', function () {
 
-				return 'foo';
-			} );
+                return 'foo';
+            });
 
-			$response = TestApp::route()->runRoute( TestRequest::from( 'PUT', 'foo' ) );
+            $response = TestApp::route()->runRoute(TestRequest::from('PUT', 'foo'));
 
-			$this->assertSame( 'foo', $response );
+            $this->assertSame('foo', $response);
 
-		}
+        }
 
-		/** @test */
-		public function an_options_route_can_be_aliased() {
+        /** @test */
+        public function an_options_route_can_be_aliased()
+        {
 
-			TestApp::options( 'foo', function () {
+            TestApp::options('foo', function () {
 
-				return 'foo';
-			} );
+                return 'foo';
+            });
 
-			$response = TestApp::route()->runRoute( TestRequest::from( 'OPTIONS', 'foo' ) );
+            $response = TestApp::route()->runRoute(TestRequest::from('OPTIONS', 'foo'));
 
-			$this->assertSame( 'foo', $response );
+            $this->assertSame('foo', $response);
 
-		}
+        }
 
-		/** @test */
-		public function a_delete_route_can_be_aliased() {
+        /** @test */
+        public function a_delete_route_can_be_aliased()
+        {
 
-			TestApp::delete( 'foo', function () {
+            TestApp::delete('foo', function () {
 
-				return 'foo';
-			} );
+                return 'foo';
+            });
 
-			$response = TestApp::route()->runRoute( TestRequest::from( 'DELETE', 'foo' ) );
+            $response = TestApp::route()->runRoute(TestRequest::from('DELETE', 'foo'));
 
-			$this->assertSame( 'foo', $response );
+            $this->assertSame('foo', $response);
 
-		}
+        }
 
-		/** @test */
-		public function the_global_variable_bag_can_be_retrieved() {
+        /** @test */
+        public function a_match_route_can_be_aliased()
+        {
 
-			$this->assertInstanceOf( VariableBag::class, TestApp::globals() );
+            TestApp::match(['GET', 'POST'], 'foo', function () {
 
-		}
+                return 'foo';
+            });
 
-		/** @test */
-		public function a_composer_can_be_added_as_an_alias() {
+            $response = TestApp::route()->runRoute(TestRequest::from('GET', 'foo'));
+            $this->assertSame('foo', $response);
 
-			TestApp::addComposer( 'foo', function () {
-				// Assert no exception.
-			} );
+            $response = TestApp::route()->runRoute(TestRequest::from('POST', 'foo'));
+            $this->assertSame('foo', $response);
 
-			$this->assertTrue( true );
 
-		}
+        }
 
-		/** @test */
-		public function a_view_can_be_created_as_an_alias() {
+        /** @test */
+        public function the_global_variable_bag_can_be_retrieved()
+        {
 
-			$this->config->set( 'views', [ TESTS_DIR . DS . 'views' ] );
+            $this->assertInstanceOf(VariableBag::class, TestApp::globals());
 
-			$this->assertInstanceOf( ViewInterface::class, TestApp::view( 'view' ) );
+        }
 
-		}
+        /** @test */
+        public function a_composer_can_be_added_as_an_alias()
+        {
 
-		/** @test */
-		public function a_view_can_be_rendered() {
+            TestApp::addComposer('foo', function () {
+                // Assert no exception.
+            });
 
-			$this->config->set( 'views', [ TESTS_DIR . DS . 'views' ] );
+            $this->assertTrue(true);
 
-			ob_start();
-			TestApp::render( 'view' );
+        }
 
-			$this->assertSame( 'Foobar', ob_get_clean() );
+        /** @test */
+        public function a_view_can_be_created_as_an_alias()
+        {
 
-		}
+            $this->config->set('views', [TESTS_DIR.DS.'views']);
 
-		/** @test */
-		public function a_nested_view_can_be_included() {
+            $this->assertInstanceOf(ViewInterface::class, TestApp::view('view'));
 
-			WP::shouldReceive( 'fileHeaderData' )
-			  ->once()
-			  ->andReturn(['view-with-layout.php']);
+        }
 
-			WP::shouldReceive( 'fileHeaderData' )
-			  ->once()
-			  ->andReturn( [] );
+        /** @test */
+        public function a_view_can_be_rendered()
+        {
 
-			$this->config->set( 'views', [
-				TESTS_DIR . DS . 'views',
-				TESTS_DIR . DS . 'views' . DS . 'subdirectory'
-			]);
+            $this->config->set('views', [TESTS_DIR.DS.'views']);
 
-			$view = TestApp::view( 'subview.php' );
+            ob_start();
+            TestApp::render('view');
 
-			$this->assertSame( 'Hello World', $view->toString() );
+            $this->assertSame('Foobar', ob_get_clean());
 
-		}
+        }
 
-	}
+        /** @test */
+        public function a_nested_view_can_be_included()
+        {
+
+            WP::shouldReceive('fileHeaderData')
+              ->once()
+              ->andReturn(['view-with-layout.php']);
+
+            WP::shouldReceive('fileHeaderData')
+              ->once()
+              ->andReturn([]);
+
+            $this->config->set('views', [
+                TESTS_DIR.DS.'views',
+                TESTS_DIR.DS.'views'.DS.'subdirectory',
+            ]);
+
+            $view = TestApp::view('subview.php');
+
+            $this->assertSame('Hello World', $view->toString());
+
+        }
+
+    }

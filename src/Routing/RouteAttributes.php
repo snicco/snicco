@@ -101,8 +101,20 @@
 						['page' => trim( $page, '/') ]
 					];
 
+				}
+
+				if ( $group->prefix() === WP::wpAdminFolder() . DIRECTORY_SEPARATOR . 'admin-ajax.php' ) {
+
+					$action = UrlParser::parseAjaxAction($this->route->getUrl());
+
+					$conditions[] = [
+						'admin_ajax',
+						['action' => $action ]
+					];
 
 				}
+
+
 
 				foreach ($conditions as $condition ) {
 

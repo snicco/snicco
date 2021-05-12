@@ -58,6 +58,7 @@
 			$app->alias( 'put', Router::class, 'put' );
 			$app->alias( 'options', Router::class, 'options' );
 			$app->alias( 'delete', Router::class, 'delete' );
+			$app->alias( 'match', Router::class, 'match' );
 
 		}
 

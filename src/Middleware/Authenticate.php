@@ -23,7 +23,7 @@
 
 			}
 
-			$url = $url ?? WP::loginUrl( $request->url() );
+			$url = $url ?? WP::loginUrl( $request->fullUrl() );
 
 			return new RedirectResponse($request, 302 ,$url);
 		}
