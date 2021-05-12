@@ -6,14 +6,12 @@
 
 	namespace Tests\integration\Routing;
 
-	use PHPUnit\Framework\TestCase;
 	use Tests\stubs\Conditions\ConditionWithDependency;
-
+	use Tests\TestCase;
 
 	class RouteConditionsDependencyInjectionTest extends TestCase {
 
 		use SetUpRouter;
-
 
 		/** @test */
 		public function a_condition_gets_dependencies_injected_after_the_passed_arguments() {

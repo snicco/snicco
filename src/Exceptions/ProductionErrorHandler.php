@@ -13,9 +13,11 @@
 	use Throwable;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
+	use WPEmerge\Facade\WP;
 	use WPEmerge\Http\Response;
 	use WPEmerge\Traits\HandlesExceptions;
 
+	use function get_current_user_id;
 
 	class ProductionErrorHandler implements ErrorHandlerInterface {
 
@@ -88,7 +90,7 @@
 
 			try {
 				return array_filter( [
-					'user_id' => get_current_user_id(),
+					'user_id' => WP::userId(),
 				] );
 			}
 			catch ( Throwable $e ) {

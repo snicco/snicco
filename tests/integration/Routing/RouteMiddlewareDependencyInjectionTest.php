@@ -6,9 +6,9 @@
 
 	namespace Tests\integration\Routing;
 
-	use PHPUnit\Framework\TestCase;
 	use Tests\stubs\Controllers\Admin\AdminControllerWithMiddleware;
 	use Tests\stubs\Middleware\MiddlewareWithDependencies;
+	use Tests\TestCase;
 	use Tests\TestRequest;
 
 	class RouteMiddlewareDependencyInjectionTest extends TestCase {

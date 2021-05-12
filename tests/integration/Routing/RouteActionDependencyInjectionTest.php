@@ -6,11 +6,11 @@
 
 	namespace Tests\integration\Routing;
 
-	use PHPUnit\Framework\TestCase;
 	use Tests\stubs\Bar;
 	use Tests\stubs\Controllers\Web\ControllerWithDependencies;
 	use Tests\stubs\Controllers\Web\TeamsController;
 	use Tests\stubs\Foo;
+	use Tests\TestCase;
 	use Tests\TestRequest;
 	use WPEmerge\Http\Response;
 

@@ -6,10 +6,9 @@
 
 	namespace Tests\integration\HttpKernel;
 
-	use PHPUnit\Framework\TestCase;
 	use Tests\stubs\Middleware\GlobalMiddleware;
 	use Tests\stubs\Middleware\WebMiddleware;
-
+	use Tests\TestCase;
 
 	class HttpKernelDefaultModeTest extends TestCase {
 

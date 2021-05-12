@@ -11,6 +11,7 @@
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Support\Arr;
 	use WPEmerge\Support\Str;
+	use WPEmerge\Facade\WP;
 
 	class RouteUrlGenerator {
 
@@ -27,6 +28,7 @@
 		public function __construct( Route $route ) {
 
 			$this->route = $route;
+
 		}
 
 		/**
@@ -47,7 +49,7 @@
 			$url = $this->replaceRouteSegmentsWithValues( $url, $regex, $arguments );
 
 			/** @todo Replace this with a schema property on the route. */
-			return trim( home_url( $url, 'https' ), '/' ) . '/';
+			return trim( WP::homeUrl( $url, 'https' ), '/' ) . '/';
 
 
 		}

@@ -6,7 +6,6 @@
 
 	namespace Tests\unit\Application;
 
-	use Mockery as m;
 	use PHPUnit\Framework\TestCase;
 	use BadMethodCallException;
 	use WPEmerge\Application\ApplicationTrait;
@@ -16,8 +15,6 @@
 
 
 		protected function tearDown() : void {
-
-			m::close();
 
 			FooApp::setApplication( null );
 			BarApp::setApplication( null );
@@ -53,7 +50,6 @@
 			$this->assertNotSame( FooApp::getApplication(), BarApp::getApplication() );
 
 		}
-
 
 		/** @test */
 		public function exceptions_get_thrown_when_trying_to_call_a_method_on_a_non_instantiated_application_instance() {

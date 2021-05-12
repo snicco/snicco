@@ -8,12 +8,15 @@
 
 	use Mockery;
 	use SniccoAdapter\BaseContainerAdapter;
+	use Tests\SetUpDefaultMocks;
 	use Tests\stubs\TestApp;
 	use WPEmerge\Application\Application;
 	use WPEmerge\Facade\WordpressApi;
 	use WpFacade\WpFacade;
 
 	trait BootApplication {
+
+		use SetUpDefaultMocks;
 
 		private function bootNewApplication( array $config = [] ) : Application {
 

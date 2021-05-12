@@ -6,12 +6,11 @@
 
 	namespace Tests\integration\HttpKernel;
 
-	use PHPUnit\Framework\TestCase;
+	use Tests\TestCase;
 	use Tests\TestRequest;
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Events\BodySent;
 	use WPEmerge\Events\HeadersSent;
-	use WPEmerge\Facade\WP;
 	use WPEmerge\Http\Response;
 
 	class HttpKernelTest extends TestCase {
@@ -31,7 +30,6 @@
 
 		/** @test */
 		public function for_matching_request_headers_and_body_get_send() {
-
 
 
 			$this->router->get( '/foo', function ( TestRequest $request ) {

@@ -6,8 +6,8 @@
 
 	namespace Tests\integration\Routing;
 
-	use PHPUnit\Framework\TestCase;
 	use Tests\stubs\Conditions\FalseCondition;
+	use Tests\TestCase;
 	use WPEmerge\Contracts\RequestInterface;
 
 	class RouteConditionsTest extends TestCase {

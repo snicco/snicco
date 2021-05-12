@@ -6,10 +6,9 @@
 
 	namespace Tests\integration\Routing;
 
-	use PHPUnit\Framework\TestCase;
 	use WPEmerge\Contracts\RequestInterface as Request;
 
-	class RouteSegmentsTest extends TestCase {
+	class RouteSegmentsTest extends \Tests\TestCase {
 
 		use SetUpRouter;
 

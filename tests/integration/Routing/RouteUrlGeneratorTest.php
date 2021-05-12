@@ -6,16 +6,17 @@
 
 	namespace Tests\integration\Routing;
 
-	use Codeception\TestCase\WPTestCase;
+	use Tests\TestCase;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\UrlableInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\Facade\WP;
 	use WPEmerge\Routing\Conditions\AdminCondition;
 	use WPEmerge\Routing\Conditions\NegateCondition;
 	use WPEmerge\Support\Str;
 
-	class RouteUrlGeneratorTest extends WPTestCase {
+	class RouteUrlGeneratorTest extends TestCase {
 
 		use SetUpRouter;
 
@@ -31,6 +32,17 @@
 		 *
 		 *
 		 */
+
+		protected function afterSetUp() {
+
+			WP::shouldReceive('homeUrl')->andReturnUsing(function (string $path ) {
+
+				$host = SITE_URL;
+				return trim($host, '/') . '/' . trim($path, '/');
+
+			});
+
+		}
 
 		private function conditions() : array {
 
@@ -456,7 +468,6 @@
 
 
 	class ConditionWithUrl implements UrlableInterface, ConditionInterface {
-
 
 		public function toUrl( $arguments = [] ) {
 

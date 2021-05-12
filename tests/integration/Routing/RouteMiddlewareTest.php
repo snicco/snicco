@@ -6,14 +6,13 @@
 
 	namespace Tests\integration\Routing;
 
-	use PHPUnit\Framework\TestCase;
 	use Tests\stubs\Middleware\BarMiddleware;
 	use Tests\stubs\Middleware\BazMiddleware;
 	use Tests\stubs\Middleware\FooBarMiddleware;
 	use Tests\stubs\Middleware\FooMiddleware;
 	use Tests\TestRequest;
 
-	class RouteMiddlewareTest extends TestCase {
+	class RouteMiddlewareTest extends \Tests\TestCase {
 
 		use SetUpRouter;
 

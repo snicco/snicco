@@ -139,7 +139,6 @@
 
 		private function newApplication() : Application {
 
-
 			$app = new Application(  new BaseContainerAdapter() );
 
 			return $app;
