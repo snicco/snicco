@@ -83,7 +83,7 @@
                  * @todo Right its not possible to match a route that is a subpage of a wp default menu page.
                  */
 				return array_merge( $attributes, [
-				    'prefix' => RouteGroup::ADMIN_PREFIX,
+				    'prefix' => WP::wpAdminFolder(),
                     'name' => 'admin'
                 ]);
 

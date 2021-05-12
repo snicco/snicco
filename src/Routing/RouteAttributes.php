@@ -7,9 +7,11 @@
 	namespace WPEmerge\Routing;
 
 	use WPEmerge\Contracts\SetsRouteAttributes;
-	use WPEmerge\Support\Arr;
+    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\Arr;
+    use WPEmerge\Support\UrlParser;
 
-	class RouteAttributes implements SetsRouteAttributes {
+    class RouteAttributes implements SetsRouteAttributes {
 
 
 		/**
@@ -90,13 +92,13 @@
 
 				$conditions = $condition_bucket->all();
 
-				if ( $group->prefix() === RouteGroup::ADMIN_PREFIX ) {
+				if ( $group->prefix() === WP::wpAdminFolder() ) {
 
-					$url = str_replace(RouteGroup::ADMIN_PREFIX , '', $this->route->getUrl() );
+					$page = UrlParser::getPageQueryVar($this->route->getUrl());
 
 					$conditions[] = [
-						'plugin_page',
-						['page' => trim( $url, '/') ]
+						'admin_page',
+						['page' => trim( $page, '/') ]
 					];
 
 

@@ -11,7 +11,6 @@
 
 	class RouteGroup {
 
-		public const ADMIN_PREFIX = 'wp-admin/admin.php';
 
 		private $namespace;
 
@@ -51,12 +50,6 @@
 
 			return $this;
 
-
-		}
-
-		public function preset() : string {
-
-			return $this->preset;
 
 		}
 

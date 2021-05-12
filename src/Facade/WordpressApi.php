@@ -9,6 +9,15 @@
 	/** @see \WPEmerge\Facade\WordpressApiMixin */
 	class WordpressApi {
 
+
+	    private $admin_prefix = 'wp-admin';
+
+	    public function wpAdminFolder () :string {
+
+	        return $this->admin_prefix;
+
+        }
+
 		public function isAdmin () :bool {
 
 			return is_admin();

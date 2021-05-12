@@ -31,7 +31,7 @@
 
 			$query_strings = $request->query();
 
-			$failed = $this->query_string_arguments->reject(function ($value , $query_string  ) use ( $query_strings ) {
+			$failed = $this->query_string_arguments->reject(function ( $value , $query_string  ) use ( $query_strings ) {
 
 				if  ( ! in_array( $query_string, array_keys($query_strings) ) ) {
 

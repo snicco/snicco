@@ -11,20 +11,20 @@
     trait RequestTesting
     {
 
-        private function adminUrlTo(string $menu_slug ) : string {
+        private function adminUrlTo(string $menu_slug, string $parent_page = 'admin.php' ) : string {
 
-            $url = Url::combinePath(SITE_URL, 'wp-admin/admin.php?page=' . $menu_slug);
+            $url = Url::combinePath(SITE_URL, 'wp-admin/' . $parent_page . '?page=' . $menu_slug);
 
             return $url;
 
         }
 
-        private function adminRequestTo(string $admin_page, string $method = 'GET' ) : TestRequest {
+        private function adminRequestTo( string $admin_page, string $method = 'GET', string $parent_file = 'admin.php' ) : TestRequest {
 
-            $request = TestRequest::fromFullUrl( $method, $this->adminUrlTo( $admin_page ) );
+            $request = TestRequest::fromFullUrl( $method, $this->adminUrlTo( $admin_page , $parent_file) );
 
-            $request->server->set('SCRIPT_FILENAME', ROOT_DIR . DS. 'wp-admin' . DS . 'admin.php');
-            $request->server->set('SCRIPT_NAME', DS. 'wp-admin' . DS . 'admin.php' );
+            $request->server->set('SCRIPT_FILENAME', ROOT_DIR . DS. 'wp-admin' . DS . $parent_file);
+            $request->server->set('SCRIPT_NAME', DS. 'wp-admin' . DS . $parent_file );
             $request->overrideGlobals();
 
             return $request;

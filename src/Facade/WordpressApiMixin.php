@@ -123,4 +123,12 @@
          */
         public static function pluginPageUrl (string $menu_slug) :string {}
 
+        /**
+         * Return the name of the admin folder.
+         * Default 'wp-admin".
+         *
+         * @return string
+         */
+        public static function wpAdminFolder () :string {}
+
 	}

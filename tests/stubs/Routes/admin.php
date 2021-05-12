@@ -8,13 +8,13 @@
 
 
 	$router = TestApp::route();
-	$router->get( 'bar', function ( RequestInterface $request, string $page ) {
+	$router->get( 'admin.php/bar', function ( RequestInterface $request, string $page ) {
 
 		return strtoupper($page);
 
 	});
 
-	$router->get( 'foo', function ( RequestInterface $request, string $page ) {
+	$router->get( 'admin.php/foo', function ( RequestInterface $request, string $page ) {
 
 		return strtoupper($page);
 

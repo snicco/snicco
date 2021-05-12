@@ -1,273 +1,304 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace WPEmerge\Routing;
+    namespace WPEmerge\Routing;
 
-	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Contracts\RouteCondition;
-	use WPEmerge\Contracts\SetsRouteAttributes;
-	use WPEmerge\Factories\ConditionFactory;
-	use WPEmerge\Factories\HandlerFactory;
-	use WPEmerge\Routing\RouteSignatureParameters;
-	use WPEmerge\Support\Url;
-	use WPEmerge\Support\UrlParser;
-	use WPEmerge\Support\Arr;
-	use WPEmerge\Support\Str;
-	use WPEmerge\Traits\SetRouteAttributes;
+    use WPEmerge\Contracts\ConditionInterface;
+    use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Contracts\RouteCondition;
+    use WPEmerge\Contracts\SetsRouteAttributes;
+    use WPEmerge\Factories\ConditionFactory;
+    use WPEmerge\Factories\HandlerFactory;
+    use WPEmerge\Routing\RouteSignatureParameters;
+    use WPEmerge\Support\Url;
+    use WPEmerge\Support\UrlParser;
+    use WPEmerge\Support\Arr;
+    use WPEmerge\Support\Str;
+    use WPEmerge\Traits\SetRouteAttributes;
 
-	class Route implements RouteCondition, SetsRouteAttributes {
+    class Route implements RouteCondition, SetsRouteAttributes
+    {
 
-		use SetRouteAttributes;
+        use SetRouteAttributes;
 
-		/**
-		 * @var array
-		 */
-		private $methods;
+        /**
+         * @var array
+         */
+        private $methods;
 
-		/**
-		 * @var string
-		 */
-		private $url;
+        /**
+         * @var string
+         */
+        private $url;
 
-		/** @var string|Closure|array */
-		private $action;
+        /** @var string|Closure|array */
+        private $action;
 
-		/** @var \WPEmerge\Contracts\RouteAction */
-		private $compiled_action;
+        /** @var \WPEmerge\Contracts\RouteAction */
+        private $compiled_action;
 
-		/** @var \WPEmerge\Routing\ConditionBlueprint[] */
-		private $conditions;
+        /** @var \WPEmerge\Routing\ConditionBlueprint[] */
+        private $conditions;
 
-		/**
-		 * @var array
-		 */
-		private $middleware;
+        /**
+         * @var array
+         */
+        private $middleware;
 
-		/** @var string */
-		private $namespace;
+        /** @var string */
+        private $namespace;
 
-		/** @var string */
-		private $name;
+        /** @var string */
+        private $name;
 
-		/**
-		 * @var ConditionInterface[]
-		 */
-		private $compiled_conditions = [];
+        /**
+         * @var ConditionInterface[]
+         */
+        private $compiled_conditions = [];
 
-		private $regex;
+        private $regex;
 
-		/** @var array */
-		private $defaults;
+        /** @var array */
+        private $defaults;
 
-		public function __construct( array $methods, string $url, $action, array $attributes = [] ) {
+        public function __construct(array $methods, string $url, $action, array $attributes = [])
+        {
 
-			$this->methods    = $methods;
-			$this->url        = $this->replaceOptional( Url::normalizePath( $url ) );
-			$this->action     = $action;
-			$this->namespace  = $attributes['namespace'] ?? null;
-			$this->middleware = $attributes['middleware'] ?? null;
+            $this->methods = $methods;
+            $this->url = $this->parseUrl($url);
+            $this->action = $action;
+            $this->namespace = $attributes['namespace'] ?? null;
+            $this->middleware = $attributes['middleware'] ?? null;
 
-		}
+        }
 
-		public function compile() : CompiledRoute {
+        private function parseUrl(string $url)
+        {
+            $url = UrlParser::replaceAdminAliases($url);
 
-			return new CompiledRoute( [
-				'action'     => $this->action,
-				'middleware' => $this->middleware ?? [],
-				'conditions' => $this->conditions ?? [],
-				'namespace'  => $this->namespace ?? '',
-				'defaults'  => $this->defaults ?? [],
-			] );
+            $url = Url::normalizePath($url);
 
-		}
+            return $this->replaceOptional($url);
 
-		public function and( ...$regex ) : Route {
+        }
 
-			$regex_array = $this->normalizeRegex( Arr::flattenOnePreserveKeys( $regex ) );
+        public function compile() : CompiledRoute
+        {
 
-			$this->url = $this->parseUrlWithRegex( $regex_array );
+            return new CompiledRoute([
+                'action' => $this->action,
+                'middleware' => $this->middleware ?? [],
+                'conditions' => $this->conditions ?? [],
+                'namespace' => $this->namespace ?? '',
+                'defaults' => $this->defaults ?? [],
+            ]);
 
-			$this->regex = $regex_array;
+        }
 
-			return $this;
+        public function and(...$regex) : Route
+        {
 
-		}
+            $regex_array = $this->normalizeRegex(Arr::flattenOnePreserveKeys($regex));
 
-		public function andAlpha() : Route {
+            $this->url = $this->parseUrlWithRegex($regex_array);
 
-			return $this->addRegexToSegment(func_get_args(), '[a-zA-Z]+');
+            $this->regex = $regex_array;
 
-		}
+            return $this;
 
-		public function andNumber() : Route {
+        }
 
-			return $this->addRegexToSegment(func_get_args(), '[0-9]+');
+        public function andAlpha() : Route
+        {
 
-		}
+            return $this->addRegexToSegment(func_get_args(), '[a-zA-Z]+');
 
-		public function andAlphaNumerical() : Route {
+        }
 
-			return $this->addRegexToSegment(func_get_args(), '[a-zA-Z0-9]+');
+        public function andNumber() : Route
+        {
 
-		}
+            return $this->addRegexToSegment(func_get_args(), '[0-9]+');
 
-		public function andEither (string $segment, array $pool) : Route {
+        }
 
-			return $this->addRegexToSegment($segment, implode('|', $pool) );
+        public function andAlphaNumerical() : Route
+        {
 
-		}
+            return $this->addRegexToSegment(func_get_args(), '[a-zA-Z0-9]+');
 
-		public function getMethods() : array {
+        }
 
-			return $this->methods;
+        public function andEither(string $segment, array $pool) : Route
+        {
 
-		}
+            return $this->addRegexToSegment($segment, implode('|', $pool));
 
-		public function getRegexConstraints() {
+        }
 
-			return $this->regex;
+        public function getMethods() : array
+        {
 
-		}
+            return $this->methods;
 
-		public function getName() : ?string {
+        }
 
-			return $this->name;
+        public function getRegexConstraints()
+        {
 
-		}
+            return $this->regex;
 
-		public function getConditions() : ?array {
+        }
 
-			return $this->conditions;
+        public function getName() : ?string
+        {
 
-		}
+            return $this->name;
 
-		public function getUrl() : string {
+        }
 
-			return $this->url;
+        public function getConditions() : ?array
+        {
 
-		}
+            return $this->conditions;
 
-		public function getCompiledConditions() : array {
+        }
 
-			return $this->compiled_conditions;
-		}
+        public function getUrl() : string
+        {
 
-		public function compileConditions( ConditionFactory $condition_factory ) : Route {
+            return $this->url;
 
-			$this->compiled_conditions = $condition_factory->compileConditions( $this );
+        }
 
-			return $this;
+        public function getCompiledConditions() : array
+        {
 
-		}
+            return $this->compiled_conditions;
+        }
 
-		private function replaceOptional( string $url_pattern ) : string {
+        public function compileConditions(ConditionFactory $condition_factory) : Route
+        {
 
+            $this->compiled_conditions = $condition_factory->compileConditions($this);
 
-			$optionals = UrlParser::replaceOptionalMatch( $url_pattern );
+            return $this;
 
-			foreach ( $optionals as $optional ) {
+        }
 
-				$optional = preg_quote( $optional, '/' );
+        private function replaceOptional(string $url_pattern) : string
+        {
 
-				$pattern = sprintf( "#(%s)#", $optional );
 
-				$url_pattern = preg_replace_callback( $pattern, function ( $match ) {
+            $optionals = UrlParser::replaceOptionalMatch($url_pattern);
 
-					$cleaned_match = Str::between( $match[0], '{', '?' );
+            foreach ($optionals as $optional) {
 
-					return sprintf( "[/{%s}]", $cleaned_match );
+                $optional = preg_quote($optional, '/');
 
-				}, $url_pattern, 1 );
+                $pattern = sprintf("#(%s)#", $optional);
 
-			}
+                $url_pattern = preg_replace_callback($pattern, function ($match) {
 
-			while ( $this->hasMultipleOptionalSegments( rtrim( $url_pattern, '/' ) ) ) {
+                    $cleaned_match = Str::between($match[0], '{', '?');
 
-				$this->combineOptionalSegments( $url_pattern );
+                    return sprintf("[/{%s}]", $cleaned_match);
 
-			}
+                }, $url_pattern, 1);
 
-			return rtrim( $url_pattern, '/' );
+            }
 
-		}
+            while ($this->hasMultipleOptionalSegments(rtrim($url_pattern, '/'))) {
 
-		private function hasMultipleOptionalSegments( string $url_pattern ) : bool {
+                $this->combineOptionalSegments($url_pattern);
 
-			$count = preg_match_all( '/(?<=\[).*?(?=])/', $url_pattern, $matches );
+            }
 
-			return $count > 1;
+            return rtrim($url_pattern, '/');
 
-		}
+        }
 
-		private function combineOptionalSegments( string &$url_pattern ) {
+        private function hasMultipleOptionalSegments(string $url_pattern) : bool
+        {
 
-			preg_match( '/(\[(.*?)])/', $url_pattern, $matches );
+            $count = preg_match_all('/(?<=\[).*?(?=])/', $url_pattern, $matches);
 
-			$first = $matches[0];
+            return $count > 1;
 
-			$before = Str::before( $url_pattern, $first );
-			$after  = Str::afterLast( $url_pattern, $first );
+        }
 
-			$url_pattern = $before . rtrim( $first, ']' ) . rtrim( $after, '/' ) . ']';
+        private function combineOptionalSegments(string &$url_pattern)
+        {
 
-		}
+            preg_match('/(\[(.*?)])/', $url_pattern, $matches);
 
-		private function normalizeRegex( $regex ) : array {
+            $first = $matches[0];
 
-			if ( is_int( Arr::firstEl( array_keys( $regex ) ) ) ) {
+            $before = Str::before($url_pattern, $first);
+            $after = Str::afterLast($url_pattern, $first);
 
-				return Arr::combineFirstTwo( $regex );
+            $url_pattern = $before.rtrim($first, ']').rtrim($after, '/').']';
 
-			}
+        }
 
-			return $regex;
+        private function normalizeRegex($regex) : array
+        {
 
-		}
+            if (is_int(Arr::firstEl(array_keys($regex)))) {
 
-		private function parseUrlWithRegex( array $regex ) : string {
+                return Arr::combineFirstTwo($regex);
 
-			$segments = UrlParser::segments( $this->url );
+            }
 
-			$segments = array_filter( $segments, function ( $segment ) use ( $regex ) {
+            return $regex;
 
-				return isset( $regex[ $segment ] );
+        }
 
-			} );
+        private function parseUrlWithRegex(array $regex) : string
+        {
 
-			$url = $this->url;
+            $segments = UrlParser::segments($this->url);
 
-			foreach ( $segments as $segment ) {
+            $segments = array_filter($segments, function ($segment) use ($regex) {
 
-				$pattern = sprintf( "/(%s(?=\\}))/", preg_quote( $segment, '/' ) );;
+                return isset($regex[$segment]);
 
-				$url = preg_replace_callback( $pattern, function ( $match ) use ( $regex ) {
+            });
 
-					return $match[0] . ':' . $regex[ $match[0] ];
+            $url = $this->url;
 
-				}, $url, 1 );
+            foreach ($segments as $segment) {
 
-			}
+                $pattern = sprintf("/(%s(?=\\}))/", preg_quote($segment, '/'));;
 
-			return rtrim( $url, '/' );
+                $url = preg_replace_callback($pattern, function ($match) use ($regex) {
 
-		}
+                    return $match[0].':'.$regex[$match[0]];
 
-		private function addRegexToSegment( $segments, string $pattern ) : Route {
+                }, $url, 1);
 
-			collect( $segments )
-				->flatten()
-				->each( function ( $segment ) use ( $pattern ) {
+            }
 
-					$this->and( $segment, $pattern );
+            return rtrim($url, '/');
 
-				});
+        }
 
-			return $this;
+        private function addRegexToSegment($segments, string $pattern) : Route
+        {
 
-		}
+            collect($segments)
+                ->flatten()
+                ->each(function ($segment) use ($pattern) {
 
-	}
+                    $this->and($segment, $pattern);
+
+                });
+
+            return $this;
+
+        }
+
+    }
