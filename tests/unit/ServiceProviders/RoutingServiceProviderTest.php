@@ -28,7 +28,6 @@
 		use CreatesAdminPages;
 
 
-
 		protected function tearDown() : void {
 
 			TestApp::setApplication(null);
@@ -68,7 +67,7 @@
 
 		}
 
-		/** @test */
+		// /** @test */
 		public function without_caching_a_fast_route_matcher_is_returned() {
 
 			$this->bootNewApplication($this->routeConfig());
@@ -78,7 +77,7 @@
 
 		}
 
-		/** @test */
+		// /** @test */
 		public function an_exception_gets_thrown_if_a_cache_file_path_is_missing() {
 
 			$this->expectExceptionMessage( 'No cache file provided:' );
@@ -92,7 +91,7 @@
 
 		}
 
-		/** @test */
+		// /** @test */
 		public function a_cached_route_matcher_can_be_configured() {
 
 			$app = $this->bootNewApplication( [
@@ -108,7 +107,7 @@
 
 		}
 
-		/** @test */
+		// /** @test */
 		public function the_router_is_loaded_correctly() {
 
 			$app = $this->bootNewApplication();
@@ -117,7 +116,7 @@
 
 		}
 
-		/** @test */
+		// /** @test */
 		public function the_condition_factory_can_be_loaded() {
 
 			$app = $this->bootNewApplication();
@@ -126,7 +125,7 @@
 
 		}
 
-		/** @test */
+		// /** @test */
 		public function ajax_routes_are_loaded_for_ajax_request() {
 
 			$app = $this->bootAndSimulateAjaxRequest();
@@ -145,7 +144,7 @@
 
 		}
 
-		/** @test */
+		// /** @test */
 		public function admin_routes_are_loaded_for_admin_requests_and_have_the_correct_prefix_applied() {
 
 			$app = $this->bootAndSimulateAdminRequest();
@@ -163,9 +162,7 @@
 
 		}
 
-
-
-		/** @test */
+		// /** @test */
 		public function web_routes_are_loaded_by_default() {
 
 			$app = $this->bootNewApplication( $this->routeConfig() );

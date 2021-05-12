@@ -40,14 +40,13 @@
 
 				}
 
-				return Mockery::mock(WordpressApi::class)->makePartial();
+				// return Mockery::mock(WordpressApi::class);
 
 
 			});
 
 
 		}
-
 
 		public function bootstrap() : void {
 

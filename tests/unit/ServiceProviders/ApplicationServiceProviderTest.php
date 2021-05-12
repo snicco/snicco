@@ -6,27 +6,23 @@
 
 	namespace Tests\unit\ServiceProviders;
 
-	use Codeception\TestCase\WPTestCase;
 	use Contracts\ContainerAdapter;
 	use Mockery\MockInterface;
 	use Tests\stubs\Foo;
 	use Tests\stubs\TestApp;
+	use Tests\TestCase;
 	use WPEmerge\Facade\WordpressApi;
 	use WPEmerge\Facade\WP;
+	use WPEmerge\ServiceProviders\ApplicationServiceProvider;
 	use WpFacade\WpFacade;
 
-	class ApplicationServiceProviderTest extends WPTestCase {
+	class ApplicationServiceProviderTest extends TestCase {
 
-		use BootApplication;
+		use BootServiceProviders;
 
-		protected function setUp() : void {
-
-			parent::setUp();
-
-			$this->bootNewApplication( TEST_CONFIG );
-
-		}
-
+		protected $needed_providers = [
+			ApplicationServiceProvider::class,
+		];
 
 
 		/** @test */
@@ -60,27 +56,24 @@
 		/** @test */
 		public function the_wp_api_can_be_mocked_with_the_configuration() {
 
-			$this->bootNewApplication( array_merge( TEST_CONFIG, [
-				'testing' => [
-					'enabled' => true,
-				],
-			] ) );
+			$this->config->set('testing.enabled', true );
 
 			$this->assertInstanceOf( MockInterface::class, TestApp::resolve( WordpressApi::class ) );
+
+			$this->config->set('testing.enabled', false );
 
 		}
 
 		/** @test */
 		public function for_advanced_testing_cases_a_callable_can_be_passed_which_can_be_used_to_set_up_the_wordpress_api () {
 
-			$this->bootNewApplication( array_merge( TEST_CONFIG, [
-				'testing' => [
-					'enabled' => true,
-					'callable' => [ $this, 'manipulateWpApi' ]
-				],
-			]));
+			$this->config->set('testing.enabled', true );
+			$this->config->set('testing.callable', [ $this, 'manipulateWpApi' ] );
 
 			$this->assertInstanceOf(Foo::class, TestApp::resolve(WordpressApi::class));
+
+			$this->config->set('testing.enabled', false );
+
 
 
 		}

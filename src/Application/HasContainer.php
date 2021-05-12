@@ -22,7 +22,7 @@
 
 		}
 
-		public function setContainerAdapter( ContainerAdapter $container_adapter ) :void {
+		public function setContainer( ContainerAdapter $container_adapter ) :void {
 
 			$this->container_adapter = $container_adapter;
 

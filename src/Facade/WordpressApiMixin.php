@@ -100,4 +100,15 @@
 		 */
 		public static function currentUserCan( string $cap, ...$args ) :bool {}
 
+		/**
+		 * @param string $file            Absolute path to the file.
+		 * @param array  $default_headers List of headers, in the format `array( 'HeaderKey' => 'Header Name' )`.
+		 * @param string $context         Optional. If specified adds filter hook {@see 'extra_$context_headers'}.
+		 *
+		 * @return string[]
+		 * @see \get_file_data()
+		 * @see \WPEmerge\Facade\WordpressApi::fileHeaderData();
+		 */
+		public static function fileHeaderData( string $file, array $default_headers = [], string $context = '' ) :array {}
+
 	}

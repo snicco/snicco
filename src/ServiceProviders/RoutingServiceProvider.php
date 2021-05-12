@@ -90,16 +90,7 @@
 				);
 			} );
 
-			$this->container->singleton( ConditionFactory::class, function () {
 
-				return new ConditionFactory(
-
-					$this->config->get( 'routing.conditions', [] ),
-					$this->container,
-
-				);
-
-			} );
 
 
 		}

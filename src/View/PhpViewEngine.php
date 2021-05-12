@@ -13,7 +13,7 @@
 	use WPEmerge\Events\MakingView;
 	use WPEmerge\Exceptions\ViewException;
 	use WPEmerge\Exceptions\ViewNotFoundException;
-
+	use WPEmerge\Support\Arr;
 
 	class PhpViewEngine implements PhpEngine {
 
@@ -60,6 +60,8 @@
 		}
 
 		public function make( $views ) : ViewInterface {
+
+			$views = Arr::wrap($views);
 
 			$view_name = collect( $views )
 				->reject( function ( string $view_name ) {
