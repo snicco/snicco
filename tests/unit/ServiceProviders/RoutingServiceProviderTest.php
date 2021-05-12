@@ -146,7 +146,6 @@
 		/** @test */
 		public function admin_routes_are_loaded_for_admin_requests() {
 
-
 			$app = $this->bootNewApplication( $this->routeConfig() );
 
 			/** @var Router $router */

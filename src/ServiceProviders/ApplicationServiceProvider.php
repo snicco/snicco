@@ -6,10 +6,8 @@
 
 	namespace WPEmerge\ServiceProviders;
 
-	use test\Mockery\HasUnknownClassAsTypeHintOnMethod;
 	use WPEmerge\Contracts\ServiceProvider;
-	use WPEmerge\Exceptions\Exception;
-	use WPEmerge\Support\FilePath;
+	use WpFacade\WpFacade;
 
 	/**
 	 * Provide application dependencies.
@@ -23,6 +21,9 @@
 
 
 			$this->config->extend( static::STRICT_MODE, false );
+
+			WpFacade::setFacadeContainer($this->container);
+
 
 
 		}
