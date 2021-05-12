@@ -35,7 +35,7 @@
 
 			});
 
-			$request = TestRequest::fromFullUrl( 'GET', $this->adminUrlTo( 'foo' ) );
+			$request = $this->requestTo('foo');
 
 			$this->assertSame( 'foo', $this->router->runRoute( $request ) );
 
@@ -54,7 +54,7 @@
 
 			} );
 
-			$request = TestRequest::fromFullUrl( 'GET', $this->adminUrlTo( 'bar' ) );
+			$request = $this->requestTo('bar');
 
 			$this->assertSame( null, $this->router->runRoute( $request ) );
 
@@ -78,7 +78,7 @@
 
 			} );
 
-			$request = TestRequest::fromFullUrl( 'GET', $this->adminUrlTo( 'foo' ) );
+			$request = $this->requestTo('foo');
 
 			$this->assertSame( 'foo', $this->router->runRoute( $request ) );
 
@@ -109,21 +109,21 @@
 			};
 
 			$this->newRouterWith( $routes );
-			$request = TestRequest::fromFullUrl( 'GET', $this->adminUrlTo( 'foo' ) );
+			$request = $this->requestTo('foo');
 			$this->assertSame( 'foo', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
-			$request = TestRequest::fromFullUrl( 'GET', $this->adminUrlTo( 'bar' ) );
+			$request = $this->requestTo('bar');
 			$this->assertSame( 'bar', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
-			$request = TestRequest::fromFullUrl( 'POST', $this->adminUrlTo( 'bar' ) );
+			$request = $this->requestTo('baz', 'POST');
 			$this->assertSame( null, $this->router->runRoute( $request ) );
 
 
 		}
 
-		public function adminUrlTo(string $menu_slug ) {
+		private function adminUrlTo(string $menu_slug ) : string {
 
 			$url = Url::combinePath(SITE_URL, 'wp-admin/admin.php?page=' . $menu_slug);
 
@@ -131,5 +131,16 @@
 
 		}
 
+        private function requestTo(string $admin_page, string $method = 'GET' ) : TestRequest {
+
+            $request = TestRequest::fromFullUrl( $method, $this->adminUrlTo( $admin_page ) );
+
+            $request->server->set('SCRIPT_FILENAME', ROOT_DIR . DS. 'wp-admin' . DS . 'admin.php');
+            $request->server->set('SCRIPT_NAME', DS. 'wp-admin' . DS . 'admin.php' );
+            $request->overrideGlobals();
+
+            return $request;
+
+        }
 
 	}

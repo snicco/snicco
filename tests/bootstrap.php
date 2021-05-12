@@ -5,6 +5,11 @@
 
 	$root_dir = getenv('ROOT_DIR');
 
+    if ( ! defined('ROOT_DIR') ) {
+
+        define( 'ROOT_DIR',  $root_dir );
+
+    }
 
 	if ( ! defined('DS') ) {
 

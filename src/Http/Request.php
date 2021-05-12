@@ -9,8 +9,10 @@
 	use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\RouteCondition;
+    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\Str;
 
-	class Request extends SymfonyRequest implements RequestInterface {
+    class Request extends SymfonyRequest implements RequestInterface {
 
 		public static function capture() : RequestInterface {
 
@@ -42,7 +44,9 @@
 
 		public function path() : string {
 
-			$pattern = trim( $this->getPathInfo(), '/' );
+		    $path = $this->isPluginAdminPage() ? $this->pluginPagePath() : $this->getPathInfo();
+
+			$pattern = trim( $path, '/' );
 
 			return $pattern === '' ? '/' : $pattern;
 
@@ -205,5 +209,18 @@
 			return $this->getScheme();
 
 		}
+
+		private function isPluginAdminPage () :bool {
+
+		    return Str::contains($this->getBaseUrl(), WP::PLUGIN_PAGE_IDENTIFIER)
+                && $this->query->has('page');
+
+        }
+
+        private function pluginPagePath () {
+
+            return $this->getBaseUrl();
+
+        }
 
 	}
