@@ -79,7 +79,7 @@
 
         }
 
-        private function applyPreset(array $attributes, string $group)
+        private function applyPreset(array $attributes, string $group) : array
         {
 
             if ($group === 'admin') {
