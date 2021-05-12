@@ -9,6 +9,7 @@
 	use Contracts\ContainerAdapter;
 	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Factories\AbstractFactory;
+	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Factories\ViewComposerFactory;
 
@@ -34,6 +35,17 @@
 				);
 
 			});
+
+			$this->container->singleton( ConditionFactory::class, function () {
+
+				return new ConditionFactory(
+
+					$this->config->get( 'routing.conditions', [] ),
+					$this->container,
+
+				);
+
+			} );
 
 
 

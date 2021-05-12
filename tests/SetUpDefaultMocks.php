@@ -15,6 +15,7 @@
 
 			WP::shouldReceive( 'isAdmin' )->andReturnFalse()->byDefault();
 			WP::shouldReceive( 'isAdminAjax' )->andReturnFalse()->byDefault();
+			WP::shouldReceive( 'fileHeaderData' )->andReturn([])->byDefault();
 
 		}
 

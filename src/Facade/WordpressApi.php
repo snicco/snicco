@@ -51,4 +51,6 @@
 
 		}
 
+		public function fileHeaderData( string $file, array $default_headers = [], string $context = '' ) : array {}
+
 	}

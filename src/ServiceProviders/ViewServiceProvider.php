@@ -32,10 +32,6 @@
 
 		public function register() : void {
 
-			$this->config->extend('views', [
-				get_stylesheet_directory(),
-				get_template_directory(),
-			]);
 
 			$this->container->instance('composers.globals', new VariableBag() );
 
@@ -56,8 +52,6 @@
 				);
 
 			});
-
-
 
 			$this->container->singleton( ViewFinderInterface::class, function () {
 

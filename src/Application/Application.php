@@ -50,7 +50,7 @@
 
 		public function __construct( ContainerAdapter $container ) {
 
-			$this->setContainerAdapter( $container );
+			$this->setContainer( $container );
 			$this->container()->instance(Application::class, $this);
 			$this->container()->instance(ContainerAdapter::class, $this->container());
 			$this->container()->instance( RequestInterface::class, Request::capture() );

@@ -18,19 +18,22 @@
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\Exceptions\ShutdownHandler;
 	use WPEmerge\Http\HttpKernel;
+	use WPEmerge\ServiceProviders\EventServiceProvider;
 	use WPEmerge\View\ViewService;
 
 	class EventServiceProviderTest extends WPTestCase {
 
-		use BootApplication;
+		use BootServiceProviders;
+
+		protected $needed_providers = [
+			EventServiceProvider::class
+		];
 
 		/** @test */
 		public function the_event_service_provider_is_set_up_correctly() {
 
-			$app = $this->bootNewApplication();
-
 			/** @var WordpressDispatcher $d */
-			$d = $app->resolve( Dispatcher::class );
+			$d = $this->app->resolve( Dispatcher::class );
 
 			$this->assertInstanceOf( WordpressDispatcher::class, $d );
 
@@ -59,9 +62,9 @@
 				'exceptionHandled',
 			], UnrecoverableExceptionHandled::class ) );
 
-			$this->assertTrue($d->hasListenerFor(
-				[ViewService::class, 'compose'], MakingView::class
-			));
+			$this->assertTrue( $d->hasListenerFor(
+				[ ViewService::class, 'compose' ], MakingView::class
+			) );
 
 
 		}

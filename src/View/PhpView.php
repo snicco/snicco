@@ -9,6 +9,7 @@
 	use WPEmerge\Contracts\PhpViewInterface;
 	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Contracts\ViewInterface;
+	use WPEmerge\Facade\WP;
 	use WPEmerge\Http\Response;
 	use WPEmerge\Support\Arr;
 
@@ -136,7 +137,7 @@
 
 		private function parseFileHeaders() : array {
 
-			return array_filter( get_file_data(
+			return array_filter( WP::fileHeaderData(
 				$this->filepath,
 				[ self::PARENT_FILE_INDICATOR ]
 			) );
