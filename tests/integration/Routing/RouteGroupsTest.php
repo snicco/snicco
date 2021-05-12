@@ -6,7 +6,6 @@
 
 	namespace Tests\integration\Routing;
 
-	use PHPUnit\Framework\TestCase;
 	use Tests\stubs\Conditions\FalseCondition;
 	use Tests\stubs\Conditions\TrueCondition;
 	use Tests\stubs\Conditions\UniqueCondition;
@@ -15,7 +14,7 @@
 	use Tests\stubs\Middleware\FooMiddleware;
 	use WPEmerge\Contracts\RequestInterface;
 
-	class RouteGroupsTest extends TestCase {
+	class RouteGroupsTest extends \Tests\TestCase {
 
 		use SetUpRouter;
 

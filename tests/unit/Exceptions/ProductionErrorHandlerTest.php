@@ -6,7 +6,6 @@
 
 	namespace Tests\unit\Exceptions;
 
-	use Codeception\TestCase\WPTestCase;
 	use Exception;
 	use Psr\Log\LoggerInterface;
 	use Psr\Log\LogLevel;
@@ -15,29 +14,26 @@
 	use Tests\stubs\Foo;
 	use Tests\stubs\TestException;
 	use Tests\stubs\TestLogger;
-	use Tests\unit\Middleware\WordpressFixtures;
+	use Tests\TestCase;
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\Exceptions\ProductionErrorHandler;
+	use WPEmerge\Facade\WP;
 	use WPEmerge\Factories\ErrorHandlerFactory;
 	use WPEmerge\Http\Response;
 
-	class ProductionErrorHandlerTest extends WPTestCase {
+	class ProductionErrorHandlerTest extends TestCase {
 
 		use AssertsResponse;
-		use WordpressFixtures;
 
 		/**
 		 * @var \SniccoAdapter\BaseContainerAdapter
 		 */
 		private $container;
 
-
-		protected function setUp() : void {
-
-			parent::setUp();
+		protected function afterSetUp () {
 
 			ApplicationEvent::make();
 			ApplicationEvent::fake();
@@ -45,20 +41,9 @@
 			$this->container = new BaseContainerAdapter();
 			$this->container->instance(RequestInterface::class, $this->createRequest());
 			$this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
-
-
-			$GLOBALS['test'] = [];
 			$GLOBALS['test']['log'] = [];
 
-		}
-
-		protected function tearDown() : void {
-
-			parent::tearDown();
-
-			ApplicationEvent::setInstance(null);
-
-			unset($this->container);
+			WP::shouldReceive('userId')->andReturn(10)->byDefault();
 
 		}
 
@@ -186,16 +171,29 @@
 		/** @test */
 		public function the_current_user_id_is_included_in_the_exception_context () {
 
+
 			$this->container->instance(LoggerInterface::class, $logger = new TestLogger());
 
 			$handler = $this->newErrorHandler();
 
-			$calvin = $this->newAdmin();
-			$this->login($calvin);
+			$handler->transformToResponse( $e = new Exception('Foobar'));
+
+			$logger->assertHasLogEntry('Foobar', [ 'user_id' =>10, 'exception' => $e ] );
+
+		}
+
+		/** @test */
+		public function the_user_id_is_not_included_if_there_is_none_logged_in () {
+
+			WP::shouldReceive('userId')->andReturn(0);
+
+			$this->container->instance(LoggerInterface::class, $logger = new TestLogger());
+
+			$handler = $this->newErrorHandler();
 
 			$handler->transformToResponse( $e = new Exception('Foobar'));
 
-			$logger->assertHasLogEntry('Foobar', [ 'user_id' => $calvin, 'exception' => $e ] );
+			$logger->assertHasLogEntry('Foobar', [ 'exception' => $e ] );
 
 		}
 
@@ -206,12 +204,11 @@
 
 			$handler = $this->newErrorHandler();
 
-			$calvin = $this->newAdmin();
-			$this->login($calvin);
+
 
 			$handler->transformToResponse( $e = new ContextException('TestMessage') );
 
-			$logger->assertHasLogEntry('TestMessage', [ 'user_id' => $calvin, 'foo' => 'bar', 'exception' => $e ] );
+			$logger->assertHasLogEntry('TestMessage', [ 'user_id' => 10, 'foo' => 'bar', 'exception' => $e ] );
 
 		}
 
@@ -222,9 +219,9 @@
 
 			$handler = $this->newErrorHandler();
 
-			$handler->transformToResponse($e = new Exception('Foobar'));
+			$handler->transformToResponse( $e = new Exception('Foobar') );
 
-			$logger->assertHasLogEntry('Foobar', ['exception' => $e]);
+			$logger->assertHasLogEntry('Foobar', ['user_id' => 10, 'exception' => $e ]);
 
 		}
 
@@ -248,12 +245,9 @@
 
 			$handler = $this->newErrorHandler();
 
-			$calvin = $this->newAdmin();
-			$this->login($calvin);
-
 			$handler->transformToResponse( $e = new ReportableException('TestMessage') );
 
-			$logger->assertHasLogEntry('TestMessage', [ 'user_id' => $calvin, 'exception' => $e ] );
+			$logger->assertHasLogEntry('TestMessage', [ 'user_id' => 10, 'exception' => $e ] );
 			$this->assertContains('TestMessage', $GLOBALS['test']['log']);
 
 
@@ -265,9 +259,6 @@
 			$this->container->instance(LoggerInterface::class, $logger = new TestLogger() );
 
 			$handler = $this->newErrorHandler();
-
-			$calvin = $this->newAdmin();
-			$this->login($calvin);
 
 			$handler->transformToResponse(  new StopPropagationException('TestMessage') );
 
@@ -317,10 +308,6 @@
 			$this->container->instance(ProductionErrorHandler::class, CustomProductionErrorHandler::class);
 
 			$handler = $this->newErrorHandler();
-
-			// wont show up
-			$calvin = $this->newAdmin();
-			$this->login($calvin);
 
 			$handler->transformToResponse( $e = new Exception('Foobar'));
 

@@ -6,25 +6,11 @@
 
 	namespace Tests\integration\HttpKernel;
 
-	use BetterWpHooks\Dispatchers\WordpressDispatcher;
-	use BetterWpHooks\ListenerFactory;
-	use Codeception\TestCase\WPTestCase;
-	use PHPUnit\Framework\TestCase;
-	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\Middleware\GlobalMiddleware;
 	use Tests\stubs\Middleware\WebMiddleware;
-	use Tests\stubs\TestErrorHandler;
-	use Tests\stubs\TestResponseService;
+	use Tests\TestCase;
 	use Tests\TestRequest;
-	use WPEmerge\Contracts\Middleware;
-	use WPEmerge\Events\IncomingWebRequest;
 	use WPEmerge\Exceptions\InvalidResponseException;
-	use WPEmerge\Factories\HandlerFactory;
-	use WPEmerge\Http\HttpKernel;
-	use WPEmerge\Factories\ConditionFactory;
-	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
-	use WPEmerge\Routing\RouteCollection;
-	use WPEmerge\Routing\Router;
 
 	class HttpKernelTakeoverModeTest extends TestCase {
 

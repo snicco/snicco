@@ -10,7 +10,7 @@
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Exceptions\AuthorizationException;
-
+	use WPEmerge\Facade\WP;
 
 	class Authorize implements Middleware {
 
@@ -18,10 +18,7 @@
 		public function handle( RequestInterface $request, Closure $next, string $capability, ...$args ) {
 
 
-			$args = array_merge( [$capability] , $args);
-
-
-			if ( call_user_func_array( 'current_user_can', $args ) ) {
+			if ( WP::currentUserCan($capability, ...$args ) ) {
 
 				return $next( $request );
 

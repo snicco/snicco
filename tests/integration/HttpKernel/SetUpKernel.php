@@ -9,6 +9,7 @@
 	use Mockery;
 	use PHPUnit\Framework\Assert;
 	use SniccoAdapter\BaseContainerAdapter;
+	use Tests\SetUpDefaultMocks;
 	use Tests\stubs\TestErrorHandler;
 	use Tests\TestRequest;
 	use WPEmerge\Application\ApplicationEvent;
@@ -22,9 +23,11 @@
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
-	use WpFacade\WpFacade;
 
 	trait SetUpKernel {
+
+		use SetUpDefaultMocks;
+
 
 		/** @var \WPEmerge\Http\HttpKernel */
 		private $kernel;
@@ -52,31 +55,14 @@
 					$handler_factory,
 					new FastRouteMatcher() )
 			);
-
 			$this->router           = $router;
 			$this->container        = $container;
 			$this->kernel           = new HttpKernel( $router, $container, $error_handler );
 
 			ApplicationEvent::make($this->container);
 			ApplicationEvent::fake();
-
 			WP::setFacadeContainer($container);
 
-			WP::shouldReceive('isAdmin')->andReturnFalse()->byDefault();
-			WP::shouldReceive('isAdminAjax')->andReturnFalse()->byDefault();
-
-			$GLOBALS['test'] = [];
-
-		}
-
-		protected function tearDown() : void {
-
-			parent::tearDown();
-
-			WpFacade::clearResolvedInstances();
-			Mockery::close();
-
-			$GLOBALS['test'] = [];
 
 		}
 

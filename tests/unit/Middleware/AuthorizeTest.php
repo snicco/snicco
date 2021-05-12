@@ -6,14 +6,14 @@
 
 	namespace Tests\unit\Middleware;
 
-	use Codeception\TestCase\WPTestCase;
+	use Tests\TestCase;
 	use Tests\TestRequest;
+	use WPEmerge\Facade\WP;
 	use WPEmerge\Middleware\Authorize;
 	use WPEmerge\Exceptions\AuthorizationException;
 
-	class AuthorizeTest extends WPTestCase {
+	class AuthorizeTest extends TestCase {
 
-		use WordpressFixtures;
 
 		/**
 		 * @var \WPEmerge\Middleware\Authorize
@@ -30,23 +30,24 @@
 		 */
 		private $request;
 
-		protected function setUp() : void {
+		protected function afterSetUp() : void {
 
-			parent::setUp();
-
-			$this->middleware = new Authorize();
+			$this->middleware   = new Authorize();
 			$this->route_action = function () {
 
 				return 'foo';
 			};
-			$this->request = TestRequest::from('GET', '/foo');
+			$this->request      = TestRequest::from( 'GET', '/foo' );
 		}
 
+
+
 		/** @test */
-		public function a_user_with_given_capabilities_can_access_the_route () {
+		public function a_user_with_given_capabilities_can_access_the_route() {
 
-
-			$this->login( $this->newAdmin() );
+			WP::shouldReceive( 'currentUserCan' )
+			  ->with( 'manage_options' )
+			  ->andReturnTrue();
 
 			$response = $this->middleware->handle(
 				$this->request,
@@ -58,83 +59,87 @@
 
 		}
 
-
 		/** @test */
-		public function a_user_without_authorisation_to_the_route_will_throw_an_exception () {
+		public function a_user_without_authorisation_to_the_route_will_throw_an_exception() {
 
+			WP::shouldReceive( 'currentUserCan' )
+			  ->with( 'manage_options' )
+			  ->andReturnFalse();
 
-			$this->login( $this->newAuthor() );
+			$this->expectException( AuthorizationException::class );
 
-			$this->expectException(AuthorizationException::class);
-
-			$this->middleware->handle($this->request, $this->route_action, 'manage_options');
+			$this->middleware->handle( $this->request, $this->route_action, 'manage_options' );
 
 
 		}
 
-
 		/** @test */
-		public function the_user_can_be_authorized_against_a_resource () {
+		public function the_user_can_be_authorized_against_a_resource() {
 
-
-			$post = $this->newPost( $calvin = $this->newAuthor() );
-
-			$this->login($calvin);
+			WP::shouldReceive( 'currentUserCan' )
+			  ->with( 'edit_post', 10 )
+			  ->once()
+			  ->andReturnTrue();
 
 			$response = $this->middleware->handle(
 				$this->request,
 				$this->route_action,
 				'edit_post',
-				$post->ID
+				10
 			);
 
 			$this->assertSame( 'foo', $response );
 
-			$this->login( $john = $this->newAuthor());
+			WP::shouldReceive( 'currentUserCan' )
+			  ->with( 'edit_post', 10 )
+			  ->once()
+			  ->andReturnFalse();
 
-			$this->expectException(AuthorizationException::class);
+			$this->expectException( AuthorizationException::class );
 
 			$this->middleware->handle(
 				$this->request,
 				$this->route_action,
 				'edit_post',
-				$post->ID
+				10
 			);
 
 		}
 
-
 		/** @test */
-		public function several_wordpress_specific_arguments_can_be_passed () {
+		public function several_wordpress_specific_arguments_can_be_passed() {
 
-			$post = $this->newPost( $calvin = $this->newAuthor() );
-			update_post_meta($post->ID, 'test_key', 'foo');
-			$this->login($calvin);
+			WP::shouldReceive( 'currentUserCan' )
+			  ->with( 'edit_post_meta', 10, 'test_key' )
+			  ->once()
+			  ->andReturnTrue();
 
 			$response = $this->middleware->handle(
 				$this->request,
 				$this->route_action,
 				'edit_post_meta',
-				$post->ID,
+				10,
 				'test_key'
 			);
 
 			$this->assertSame( 'foo', $response );
 
-			$this->login( $john = $this->newAuthor());
+			WP::shouldReceive( 'currentUserCan' )
+			  ->with( 'edit_post_meta', 10, 'test_key' )
+			  ->once()
+			  ->andReturnFalse();
 
-			$this->expectException(AuthorizationException::class);
+			$this->expectException( AuthorizationException::class );
 
 			$this->middleware->handle(
 				$this->request,
 				$this->route_action,
 				'edit_post_meta',
-				$post->ID,
+				10,
 				'test_key'
 			);
 
 		}
-
 
 
 	}

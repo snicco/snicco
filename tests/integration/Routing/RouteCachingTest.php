@@ -6,8 +6,9 @@
 
 	namespace Tests\integration\Routing;
 
-	use PHPUnit\Framework\TestCase;
 	use SniccoAdapter\BaseContainerAdapter;
+	use Tests\SetUpDefaultMocks;
+	use Tests\TestCase;
 	use Tests\TestRequest;
 	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Factories\ConditionFactory;
@@ -15,8 +16,11 @@
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
+	use WpFacade\WpFacade;
 
 	class RouteCachingTest extends TestCase {
+
+		use SetUpDefaultMocks;
 
 		/**
 		 * @var \WPEmerge\Routing\Router
@@ -26,11 +30,7 @@
 		private $cache_file;
 
 
-		protected function setUp() : void {
-
-			parent::setUp();
-
-			unset( $GLOBALS['test'] );
+		protected function afterSetUp () {
 
 			$this->cache_file = TESTS_DIR . DS . '_data' . DS . 'route.cache.php';
 
@@ -53,15 +53,13 @@
 				new CachedFastRouteMatcher( new FastRouteMatcher(), $file ?? $this->cache_file )
 			);
 
+			WpFacade::setFacadeContainer($container);
+
 			return $this->router = new Router( $container, $route_collection );
 
 		}
 
-		protected function tearDown() : void {
-
-			parent::tearDown();
-
-			unset( $GLOBALS['test'] );
+		protected function beforeTearDown() : void {
 
 			if ( file_exists( $this->cache_file ) ) {
 

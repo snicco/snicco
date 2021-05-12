@@ -6,9 +6,9 @@
 
 	namespace Tests\integration\Routing;
 
-	use PHPUnit\Framework\TestCase;
 	use Tests\AssertsResponse;
 	use Tests\stubs\TestResponseFactory;
+	use Tests\TestCase;
 	use WPEmerge\Contracts\ResponseFactoryInterface;
 	use WPEmerge\Contracts\ResponseInterface;
 

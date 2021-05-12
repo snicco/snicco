@@ -6,32 +6,25 @@
 
 	namespace Tests\integration\Routing;
 
-	use Mockery;
-	use PHPUnit\Framework\TestCase;
+	use Tests\TestCase;
 	use Tests\TestRequest;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Facade\WP;
 	use WPEmerge\Support\Url;
-	use WpFacade\WpFacade;
 
 	class AdminRoutesTest extends TestCase {
 
 		use SetUpRouter;
 
-		protected function tearDown() : void {
+		protected function afterSetUp() {
 
-			WpFacade::clearResolvedInstances();
-			Mockery::close();
-
-			parent::tearDown();
+			WP::shouldReceive('isAdmin')->andReturnTrue();
 
 		}
-
 
 		/** @test */
 		public function routes_in_an_admin_group_match_without_needing_to_specify_the_full_path() {
 
-			WP::shouldReceive('isAdmin')->andReturnTrue();
 
 			$this->router->group( [ 'prefix' => 'wp-admin/admin.php' ] , function () {
 
@@ -40,7 +33,7 @@
 					return $page;
 				} );
 
-			} );
+			});
 
 			$request = TestRequest::fromFullUrl( 'GET', $this->adminUrlTo( 'foo' ) );
 
@@ -71,8 +64,6 @@
 		/** @test */
 		public function the_admin_preset_works_with_nested_route_groups() {
 
-			WP::shouldReceive('isAdmin')->andReturnTrue();
-
 			$this->router->group( [ 'prefix' => 'wp-admin/admin.php' ], function () {
 
 				$this->router->group( [ 'name' => 'foo_group' ], function () {
@@ -96,7 +87,6 @@
 		/** @test */
 		public function two_different_admin_routes_can_be_created() {
 
-			WP::shouldReceive('isAdmin')->andReturnTrue();
 
 			$routes = function () {
 

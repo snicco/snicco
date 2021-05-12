@@ -7,6 +7,7 @@
 	namespace Tests\integration\Routing;
 
 	use SniccoAdapter\BaseContainerAdapter;
+	use Tests\SetUpDefaultMocks;
 	use Tests\TestRequest;
 	use WPEmerge\Facade\WP;
 	use WPEmerge\Factories\HandlerFactory;
@@ -29,6 +30,8 @@
 
 	trait SetUpRouter {
 
+		use SetUpDefaultMocks;
+
 		/**
 		 * @var \WPEmerge\Routing\Router
 		 */
@@ -47,10 +50,6 @@
 			$this->newRouter();
 
 			WP::setFacadeContainer($this->container);
-			WP::shouldReceive('isAdmin')->andReturnFalse()->byDefault();
-			WP::shouldReceive('isAdminAjax')->andReturnFalse()->byDefault();
-
-			$GLOBALS['test'] = [];
 
 		}
 
@@ -67,8 +66,7 @@
 			$conditions = is_callable( [
 				$this,
 				'conditions',
-			] ) ? $this->conditions() : $this->allConditions();
-
+			]) ? $this->conditions() : $this->allConditions();
 			$container         = new BaseContainerAdapter();
 			$condition_factory = new ConditionFactory( $conditions, $container );
 			$handler_factory   = new HandlerFactory( [], $container );
@@ -77,19 +75,10 @@
 				$handler_factory,
 				new FastRouteMatcher()
 			);
-
 			$this->route_collection = $route_collection;
 			$this->container   = $container;
 			$this->router      = new Router( $container, $route_collection );
 
-		}
-
-		protected function tearDown() : void {
-
-
-			parent::tearDown();
-
-			unset( $GLOBALS['test'] );
 		}
 
 		private function request( $method, $path ) : TestRequest {

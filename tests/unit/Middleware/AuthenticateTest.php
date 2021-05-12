@@ -6,14 +6,14 @@
 
 	namespace Tests\unit\Middleware;
 
-	use Codeception\TestCase\WPTestCase;
+	use Tests\TestCase;
 	use Tests\TestRequest;
+	use WPEmerge\Facade\WP;
 	use WPEmerge\Middleware\Authenticate;
 	use WPEmerge\Http\RedirectResponse;
 
-	class AuthenticateTest extends WPTestCase {
+	class AuthenticateTest extends TestCase {
 
-		use WordpressFixtures;
 
 		/**
 		 * @var \WPEmerge\Middleware\Authenticate
@@ -42,14 +42,14 @@
 			};
 			$this->request      = TestRequest::from( 'GET', '/foo' );
 
+			WP::shouldReceive('loginUrl')->andReturn('foobar.com')->byDefault();
+
 		}
 
 		/** @test */
 		public function logged_in_users_can_access_the_route() {
 
-
-			$calvin = $this->newAdmin();
-			$this->login( $calvin );
+			WP::shouldReceive('isUserLoggedIn')->andReturnTrue();
 
 			$response = $this->middleware->handle( $this->request, $this->route_action );
 
@@ -62,13 +62,11 @@
 		/** @test */
 		public function logged_out_users_cant_access_the_route() {
 
-			$calvin = $this->newAdmin();
-			$this->logout( $calvin );
+			WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
 
 			$response = $this->middleware->handle( $this->request, $this->route_action );
 
 			$this->assertInstanceOf( RedirectResponse::class, $response );
-
 
 		}
 
@@ -76,12 +74,16 @@
 		/** @test */
 		public function by_default_users_get_redirected_to_wp_login_with_the_current_url_added_to_the_query_args() {
 
-			$calvin = $this->newAdmin();
-			$this->logout( $calvin );
+			WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
+			WP::shouldReceive('loginUrl')->andReturnUsing(function ($redirect_to) {
+
+				return 'example.com/login?redirect=' . $redirect_to;
+
+			});
+
+			$expected = 'example.com/login?redirect=' . $this->request->url();
 
 			$response = $this->middleware->handle( $this->request, $this->route_action );
-
-			$expected = wp_login_url( $this->request->url() );
 
 			$this->assertSame( $expected, $response->header( 'Location' ) );
 
@@ -92,12 +94,14 @@
 		/** @test */
 		public function users_can_be_redirected_to_a_custom_url() {
 
-			$calvin = $this->newAdmin();
-			$this->logout( $calvin );
+			WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
+			WP::shouldReceive('loginUrl')->times(0);
 
-			$response = $this->middleware->handle( $this->request, $this->route_action, 'https://example.com' );
+			$expected = 'https://foobar.com';
 
-			$this->assertSame( 'https://example.com', $response->header( 'Location' ) );
+			$response = $this->middleware->handle( $this->request, $this->route_action, 'https://foobar.com' );
+
+			$this->assertSame( $expected, $response->header( 'Location' ) );
 
 		}
 

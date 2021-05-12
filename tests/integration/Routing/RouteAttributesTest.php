@@ -6,8 +6,6 @@
 
 	namespace Tests\integration\Routing;
 
-	use Codeception\TestCase\WPTestCase;
-	use PHPUnit\Framework\TestCase;
 	use Tests\stubs\Conditions\ConditionWithDependency;
 	use Tests\stubs\Conditions\FalseCondition;
 	use Tests\stubs\Conditions\MaybeCondition;
@@ -16,6 +14,7 @@
 	use Tests\stubs\Middleware\BarMiddleware;
 	use Tests\stubs\Middleware\FooMiddleware;
 	use Tests\stubs\Middleware\GlobalMiddleware;
+	use Tests\TestCase;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Routing\Conditions\AdminCondition;
 	use WPEmerge\Routing\Conditions\AjaxCondition;
@@ -59,8 +58,6 @@
 			];
 
 		}
-
-
 
 		/**
 		 *

@@ -7,6 +7,7 @@
 	namespace Tests\unit\ServiceProviders;
 
 	use Codeception\TestCase\WPTestCase;
+	use Tests\SetUpDefaultMocks;
 	use Tests\stubs\TestApp;
 	use Tests\TestRequest;
 	use WPEmerge\Application\Application;
@@ -14,7 +15,6 @@
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Support\Url;
 	use WPEmerge\Support\VariableBag;
-	use WpFacade\WpFacade;
 
 	class AliasServiceProviderTest extends WPTestCase {
 

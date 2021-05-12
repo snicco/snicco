@@ -9,6 +9,7 @@
 	use Closure;
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
+	use WPEmerge\Facade\WP;
 	use WPEmerge\Http\RedirectResponse;
 
 
@@ -16,13 +17,13 @@
 
 		public function handle( RequestInterface $request, Closure $next, string $url = null  ) {
 
-			if ( is_user_logged_in() ) {
+			if ( WP::isUserLoggedIn()  ) {
 
 				return $next( $request );
 
 			}
 
-			$url = $url ?? wp_login_url( $request->url() );
+			$url = $url ?? WP::loginUrl( $request->url() );
 
 			return new RedirectResponse($request, 302 ,$url);
 		}

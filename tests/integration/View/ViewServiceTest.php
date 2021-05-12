@@ -9,12 +9,13 @@
 	use Codeception\TestCase\WPTestCase;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\TestApp;
+	use Tests\TestCase;
 	use WPEmerge\Contracts\ViewServiceInterface;
 	use WPEmerge\Exceptions\ViewException;
 	use WPEmerge\Exceptions\ViewNotFoundException;
 	use WPEmerge\View\PhpView;
 
-	class ViewServiceIntegrationTest extends WPTestCase {
+	class ViewServiceTest extends WPTestCase {
 
 
 		/**
