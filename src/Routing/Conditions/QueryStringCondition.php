@@ -45,6 +45,13 @@
 
 			return $failed->isEmpty();
 
+			/**
+			 *
+			 * @todo Improve this. See how RouteMatcher handles conditions and aborts on first match.
+			 *
+			 */
+
+
 		}
 
 		public function getArguments( RequestInterface $request ) {

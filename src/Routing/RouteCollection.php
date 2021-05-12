@@ -10,6 +10,7 @@
 	use FastRoute\RouteCollector;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\RouteMatcher;
+	use WPEmerge\Facade\WP;
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Support\Url;
@@ -50,9 +51,6 @@
 		 */
 		private $route_matcher;
 
-		private $is_admin = false;
-
-		private $is_ajax = false;
 
 		public function __construct(
 			ConditionFactory $condition_factory,
@@ -66,17 +64,7 @@
 
 		}
 
-		public function isAjax( bool $ajax = true ) {
 
-			$this->is_ajax = $ajax;
-
-		}
-
-		public function isAdmin( bool $admin = true ) {
-
-			$this->is_admin = $admin;
-
-		}
 
 		public function add( Route $route ) : Route {
 
@@ -207,7 +195,7 @@
 
 		private function applyHashSuffix( string $hash, ?RequestInterface $request ) {
 
-			if ( $this->is_admin && ! $this->is_ajax && $request ) {
+			if ( WP::isAdmin() && ! WP::isAdminAjax() && $request ) {
 
 				return $hash . '/' . $request->query( 'page', '' );
 

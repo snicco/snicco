@@ -25,7 +25,7 @@
 		 *
 		 * @return bool
 		 */
-		public static function isAjax() : bool {
+		public static function isAdminAjax() : bool {
 		}
 
 	}

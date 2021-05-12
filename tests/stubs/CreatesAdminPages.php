@@ -6,15 +6,15 @@
 
 	namespace Tests\stubs;
 
+	use WPEmerge\Support\Url;
+
 	trait CreatesAdminPages {
 
 		public function urlTo(string $name) {
 
-			add_menu_page($name, $name, 'edit_posts', $name);
+			$host = Url::toRouteMatcherFormat(SITE_URL);
 
-			set_current_screen("toplevel_page_{$name}");
-
-			return rtrim(menu_page_url($name, false ), '/');
+			return $host . '/wp-admin/admin.php?page=' . $name;
 
 		}
 

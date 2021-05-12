@@ -8,6 +8,7 @@
 
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\TestRequest;
+	use WPEmerge\Facade\WP;
 	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Http\Response;
@@ -44,6 +45,10 @@
 			parent::setUp();
 
 			$this->newRouter();
+
+			WP::setFacadeContainer($this->container);
+			WP::shouldReceive('isAdmin')->andReturnFalse()->byDefault();
+			WP::shouldReceive('isAdminAjax')->andReturnFalse()->byDefault();
 
 			$GLOBALS['test'] = [];
 
@@ -127,15 +132,6 @@
 				'query_string'         => QueryStringCondition::class,
 
 			];
-
-		}
-
-		private function assertMiddlewareRunTimes( int $times, $class ) {
-
-			$this->assertSame(
-				$times, $GLOBALS['test'][ $class::run_times ],
-				'Middleware [' . $class . '] was supposed to run: ' . $times . ' times. Actual: ' . $GLOBALS['test'][ $class::run_times ]
-			);
 
 		}
 

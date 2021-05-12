@@ -7,27 +7,34 @@
 	namespace Tests\unit\ServiceProviders;
 
 	use Codeception\TestCase\WPTestCase;
+	use Doctrine\Inflector\Rules\Word;
+	use Mockery;
 	use Tests\stubs\Conditions\TrueCondition;
 	use Tests\stubs\CreatesAdminPages;
 	use Tests\stubs\TestApp;
 	use Tests\TestRequest;
-	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\RouteMatcher;
+	use WPEmerge\Facade\WordpressApi;
+	use WPEmerge\Facade\WP;
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
-	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
+	use WpFacade\WpFacade;
 
 	class RoutingServiceProviderTest extends WPTestCase {
 
 		use BootApplication;
 		use CreatesAdminPages;
 
+
+
 		protected function tearDown() : void {
 
-			$GLOBALS['wp_filter']['wp_doing_ajax'] = [];
+			TestApp::setApplication(null);
+			WpFacade::clearResolvedInstances();
 
+			Mockery::close();
 
 			parent::tearDown();
 		}
@@ -54,8 +61,9 @@
 			$this->assertArrayHasKey( 'post_type', $conditions );
 			$this->assertArrayHasKey( 'ajax', $conditions );
 			$this->assertArrayHasKey( 'admin', $conditions );
-			$this->assertArrayHasKey( 'true', $conditions );
 			$this->assertArrayHasKey( 'query_string', $conditions );
+			$this->assertArrayHasKey( 'true', $conditions );
+
 
 
 		}
@@ -63,9 +71,9 @@
 		/** @test */
 		public function without_caching_a_fast_route_matcher_is_returned() {
 
-			$app = $this->bootNewApplication();
+			$this->bootNewApplication($this->routeConfig());
 
-			$this->assertInstanceOf( FastRouteMatcher::class, $app->resolve( RouteMatcher::class ) );
+			$this->assertInstanceOf( FastRouteMatcher::class, TestApp::resolve( RouteMatcher::class ) );
 
 
 		}
@@ -121,13 +129,7 @@
 		/** @test */
 		public function ajax_routes_are_loaded_for_ajax_request() {
 
-			add_filter( 'wp_doing_ajax', function () {
-
-				return true;
-
-			} );
-
-			$app = $this->bootNewApplication( $this->routeConfig() );
+			$app = $this->bootAndSimulateAjaxRequest();
 
 			/** @var Router $router */
 			$router = $app->resolve( Router::class );
@@ -144,42 +146,24 @@
 		}
 
 		/** @test */
-		public function admin_routes_are_loaded_for_admin_requests() {
+		public function admin_routes_are_loaded_for_admin_requests_and_have_the_correct_prefix_applied() {
 
-			$app = $this->bootNewApplication( $this->routeConfig() );
+			$app = $this->bootAndSimulateAdminRequest();
 
 			/** @var Router $router */
 			$router = $app->resolve( Router::class );
-			$router->isAdmin();
-
 
 			$router->middlewareGroup( 'admin', [] );
 
-			$request = TestRequest::from( 'GET', 'foo' );
+			$request = TestRequest::fromFullUrl( 'GET', $this->urlTo('foo') );
 
 			$response = $router->runRoute( $request );
 
-			$this->assertSame( 'foo', $response );
+			$this->assertSame( 'FOO', $response );
 
 		}
 
-		/** @test */
-		public function admin_routes_have_the_admin_preset_applied() {
 
-			$url = $this->urlTo( 'bar' );
-
-			$app = $this->bootNewApplication( $this->routeConfig() );
-
-			/** @var Router $router */
-			$router = $app->resolve( Router::class );
-
-			$router->middlewareGroup( 'admin', [] );
-
-			$request = TestRequest::fromFullUrl( 'GET', $url );
-
-			$this->assertSame( 'BAR', $router->runRoute( $request ) );
-
-		}
 
 		/** @test */
 		public function web_routes_are_loaded_by_default() {
@@ -199,7 +183,6 @@
 
 		}
 
-
 		private function routeConfig() : array {
 
 			return [
@@ -208,8 +191,16 @@
 					'definitions' => TESTS_DIR . DS . 'stubs' . DS . 'Routes',
 
 				],
+
 			];
 
 		}
+
+		private function bootFacade () {
+
+			WpFacade::setFacadeContainer(TestApp::container());
+
+		}
+
 
 	}

@@ -64,17 +64,7 @@
 
 		}
 
-		public function isAdmin( bool $admin = true ) {
 
-			$this->routes->isAdmin( $admin );
-
-		}
-
-		public function isAjax( bool $ajax = true ) {
-
-			$this->routes->$this->isAjax( $ajax );
-
-		}
 
 		public function view( string $url, string $view, array $data = [], int $status = 200, array $headers = [] ) : Route {
 

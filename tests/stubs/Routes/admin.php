@@ -6,9 +6,8 @@
 	use Tests\stubs\TestApp;
 	use WPEmerge\Contracts\RequestInterface;
 
+
 	$router = TestApp::route();
-
-
 	$router->get( 'bar', function ( RequestInterface $request, string $page ) {
 
 		return strtoupper($page);

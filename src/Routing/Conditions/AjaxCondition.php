@@ -9,7 +9,7 @@
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\UrlableInterface;
-
+	use WPEmerge\Facade\WP;
 
 	class AjaxCondition implements ConditionInterface, UrlableInterface {
 
@@ -34,7 +34,6 @@
 		 */
 		private $public;
 
-
 		public function __construct( string $action, $private = true, $public = false ) {
 
 			$this->action  = $action;
@@ -42,28 +41,24 @@
 			$this->public  = $public;
 		}
 
-
 		private function matchesPrivateRequirement() : bool {
 
 			return $this->private && is_user_logged_in();
 		}
-
 
 		private function matchesPublicRequirement() : bool {
 
 			return $this->public && ! is_user_logged_in();
 		}
 
-
 		private function matchesActionRequirement( RequestInterface $request ) : bool {
 
 			return $this->action === $request->body( 'action', $request->query( 'action' ) );
 		}
 
-
 		public function isSatisfied( RequestInterface $request ) : bool {
 
-			if ( ! wp_doing_ajax() ) {
+			if ( ! WP::isAdminAjax() ) {
 				return false;
 			}
 

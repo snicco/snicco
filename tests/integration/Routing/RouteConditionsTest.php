@@ -12,7 +12,6 @@
 
 	class RouteConditionsTest extends TestCase {
 
-
 		use SetUpRouter;
 
 		/**
