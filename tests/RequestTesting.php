@@ -37,7 +37,7 @@
         private function ajaxRequest(string $action, $method = 'POST', string $path = 'admin-ajax.php' )
         {
 
-            $request = TestRequest::fromFullUrl($method, trim(SITE_URL, '/').DS.WP::wpAdminFolder().DS.$path);
+            $request = TestRequest::fromFullUrl($method, $this->ajaxUrl($path));
             $request->request->set('action', $action);
 
             $request->server->set('SCRIPT_FILENAME', ROOT_DIR.DS.WP::wpAdminFolder().DS.'admin-ajax.php');
@@ -45,6 +45,13 @@
             $request->overrideGlobals();
 
             return $request;
+
+        }
+
+        private function ajaxUrl (string $path = 'admin-ajax.php') : string
+        {
+
+            return trim(SITE_URL, '/').DS.WP::wpAdminFolder().DS.$path;
 
         }
 

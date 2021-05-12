@@ -13,6 +13,9 @@
 
 		/**
 		 * Convert to URL.
+         *
+         * @todo decide if this should return a relative or absolut path.
+         * @todo refactor this when we have a dedicated URL Generator.
 		 *
 		 * @param  array  $arguments
 		 *

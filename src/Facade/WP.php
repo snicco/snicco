@@ -14,8 +14,7 @@
 	class WP extends WpFacade {
 
 
-
-		protected static function getFacadeAccessor() {
+        protected static function getFacadeAccessor() {
 
 			return WordpressApi::class;
 
