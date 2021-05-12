@@ -15,11 +15,12 @@
 	use WPEmerge\ServiceProviders\AliasServiceProvider;
 	use WPEmerge\ServiceProviders\ApplicationServiceProvider;
 	use WPEmerge\ServiceProviders\EventServiceProvider;
-	use WPEmerge\ServiceProviders\ExceptionsServiceProvider;
+	use WPEmerge\ServiceProviders\ExceptionServiceProvider;
 	use WPEmerge\ServiceProviders\FactoryServiceProvider;
 	use WPEmerge\ServiceProviders\HttpServiceProvider;
 	use WPEmerge\ServiceProviders\RoutingServiceProvider;
 	use WPEmerge\ServiceProviders\ViewServiceProvider;
+	use WpFacade\WpFacade;
 
 	class Application {
 
@@ -33,7 +34,7 @@
 			FactoryServiceProvider::class,
 			ApplicationServiceProvider::class,
 			HttpServiceProvider::class,
-			ExceptionsServiceProvider::class,
+			ExceptionServiceProvider::class,
 			RoutingServiceProvider::class,
 			ViewServiceProvider::class,
 			AliasServiceProvider::class,
@@ -54,6 +55,7 @@
 			$this->container()->instance(Application::class, $this);
 			$this->container()->instance(ContainerAdapter::class, $this->container());
 			$this->container()->instance( RequestInterface::class, Request::capture() );
+			WpFacade::setFacadeContainer( $container );
 
 		}
 

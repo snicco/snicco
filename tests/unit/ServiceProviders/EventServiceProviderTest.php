@@ -9,6 +9,7 @@
 	use BetterWpHooks\Contracts\Dispatcher;
 	use BetterWpHooks\Dispatchers\WordpressDispatcher;
 	use Codeception\TestCase\WPTestCase;
+	use Tests\stubs\TestApp;
 	use WPEmerge\Events\AdminBodySendable;
 	use WPEmerge\Events\BodySent;
 	use WPEmerge\Events\IncomingAdminRequest;
@@ -17,6 +18,7 @@
 	use WPEmerge\Events\MakingView;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\Exceptions\ShutdownHandler;
+	use WPEmerge\Facade\WP;
 	use WPEmerge\Http\HttpKernel;
 	use WPEmerge\ServiceProviders\EventServiceProvider;
 	use WPEmerge\View\ViewService;
@@ -25,9 +27,21 @@
 
 		use BootServiceProviders;
 
-		protected $needed_providers = [
-			EventServiceProvider::class
-		];
+		public function neededProviders() : array {
+
+			return [
+				EventServiceProvider::class,
+			];
+		}
+
+		protected function tearDown() : void {
+
+			\Mockery::close();
+			WP::clearResolvedInstances();
+			TestApp::setApplication(null);
+
+		}
+
 
 		/** @test */
 		public function the_event_service_provider_is_set_up_correctly() {
@@ -68,7 +82,6 @@
 
 
 		}
-
 
 
 	}

@@ -25,14 +25,17 @@
 
 		use BootServiceProviders;
 
-		protected $needed_providers = [
-			ApplicationServiceProvider::class,
-			AliasServiceProvider::class,
-			RoutingServiceProvider::class,
-			FactoryServiceProvider::class,
-			ViewServiceProvider::class,
+		public function neededProviders() : array {
 
-		];
+			return  [
+				ApplicationServiceProvider::class,
+				AliasServiceProvider::class,
+				RoutingServiceProvider::class,
+				FactoryServiceProvider::class,
+				ViewServiceProvider::class,
+			];
+		}
+
 
 		/** @test */
 		public function the_application_instance_can_be_aliased() {

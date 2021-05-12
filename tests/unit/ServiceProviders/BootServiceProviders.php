@@ -11,11 +11,11 @@
 	use Tests\stubs\TestApp;
 	use WPEmerge\Application\ApplicationConfig;
 	use WPEmerge\Application\ApplicationEvent;
+	use WpFacade\WpFacade;
 
 	trait BootServiceProviders {
 
 		use SetUpDefaultMocks;
-
 
 		/** @var \WPEmerge\Application\Application */
 		protected $app;
@@ -23,46 +23,50 @@
 		/** @var ApplicationConfig */
 		protected $config;
 
+		private $provider_classes;
+
+		abstract function neededProviders () :array;
 
 		protected function setUp() : void {
 
 			parent::setUp();
 
-			$this->setUpWithConfig([]);
+			$this->setUpWithConfig( [] );
 
 		}
 
-		protected function tearDown ()  : void {
+		protected function tearDown() : void {
 
-			TestApp::setApplication(null);
+			TestApp::setApplication( null );
 
-			unset($this->app);
-			unset($this->config);
-
+			unset( $this->app );
+			unset( $this->config );
 			parent::tearDown();
 
 		}
 
-		protected function setUpWithConfig ( array $config = [] ) {
+		protected function setUpWithConfig( array $config = [] ) {
 
 			$container = new BaseContainerAdapter();
-			$config = new ApplicationConfig($config);
+			$config    = new ApplicationConfig( $config );
+
+			WpFacade::setFacadeContainer($container);
 
 			$this->config = $config;
 
 			/** @var \WPEmerge\Contracts\ServiceProvider[] $provider_classes */
 			$provider_classes = [];
 
-			$this->app = TestApp::make($container);
+			$this->app = TestApp::make( $container );
 
-			ApplicationEvent::make($container);
+			ApplicationEvent::make( $container );
 			ApplicationEvent::fake();
 
-			if ( isset($this->needed_providers) && is_array($this->needed_providers)) {
+			if ( is_array( $providers = $this->neededProviders() ) ) {
 
-				foreach ( $this->needed_providers as $provider ) {
+				foreach ( $providers as $provider ) {
 
-					$provider_classes[] = new $provider($container, $config);
+					$provider_classes[] = new $provider( $container, $this->config );
 
 				}
 
@@ -72,14 +76,21 @@
 
 				}
 
-				foreach ( $provider_classes as $provider_class ) {
+				$this->provider_classes = $provider_classes;
 
-					$provider_class->bootstrap();
 
-				}
 
 			}
 
+		}
+
+		protected function boostrapProviders() {
+
+			foreach ( $this->provider_classes as $provider_class ) {
+
+				$provider_class->bootstrap();
+
+			}
 		}
 
 

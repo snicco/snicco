@@ -13,7 +13,7 @@
 	use WPEmerge\Exceptions\ProductionErrorHandler;
 	use WPEmerge\Factories\ErrorHandlerFactory;
 
-	class ExceptionsServiceProvider extends ServiceProvider {
+	class ExceptionServiceProvider extends ServiceProvider {
 
 		public function register() : void {
 

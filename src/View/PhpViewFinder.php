@@ -110,6 +110,7 @@
 
 			$directories = $this->getDirectories();
 
+			/** @todo Replace with Symfony finder and search all nested dirs. */
 			foreach ( $directories as $directory ) {
 
 				$file = FilePath::normalize( $directory . DIRECTORY_SEPARATOR . $view_name );
