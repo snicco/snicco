@@ -95,7 +95,7 @@
 					$url = str_replace(RouteGroup::ADMIN_PREFIX , '', $this->route->getUrl() );
 
 					$conditions[] = [
-						'query_string',
+						'plugin_page',
 						['page' => trim( $url, '/') ]
 					];
 

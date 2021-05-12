@@ -10,12 +10,12 @@
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\UrlableInterface;
 
-	class QueryStringCondition implements ConditionInterface, UrlableInterface {
+	class QueryStringCondition implements ConditionInterface{
 
 		/**
 		 * @var array
 		 */
-		private $query_string_arguments;
+		protected $query_string_arguments;
 
 		public function __construct($query_string_arguments) {
 
@@ -62,8 +62,6 @@
 
 		}
 
-		public function toUrl( $arguments = [] ) {
-			// TODO: Implement toUrl() method.
-		}
+
 
 	}

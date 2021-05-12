@@ -64,8 +64,6 @@
 
 		}
 
-
-
 		public function view( string $url, string $view, array $data = [], int $status = 200, array $headers = [] ) : Route {
 
 			$route = $this->match( [ 'GET', 'HEAD' ], $url, ViewController::class . '@handle' );
@@ -87,7 +85,6 @@
 			$route = new Route ( $methods, $url, $action );
 
 			if ( $this->hasGroupStack() ) {
-
 
 				$this->mergeGroupIntoRoute( $route );
 
@@ -255,11 +252,6 @@
 
 			}
 
-			// if ( $this->lastGroup()->preset() === RouteGroup::ADMIN_PRESET ) {
-			//
-			// 	return $this->admin_dash_board_path . '/' . $url;
-			//
-			// }
 
 			return Url::combinePath( $this->lastGroupPrefix(), $url );
 
@@ -268,7 +260,6 @@
 		private function mergeGroupIntoRoute( Route $route ) {
 
 			( new RouteAttributes( $route ) )->mergeGroup( $this->lastGroup() );
-
 
 		}
 

@@ -104,7 +104,12 @@
 
 		}
 
-		/** @todo Refactor this so that we dont rely on parameter order and parameter names. */
+		/**
+         *
+         * @todo Refactor this so that we dont rely on parameter order and parameter names.
+         * @todo It would be better if we would match the parameters based on a combination of type/name
+         * instead of order.
+         */
 		public function run( RequestInterface $request, array $payload ) {
 
 			$params = collect( $this->signatureParameters() );

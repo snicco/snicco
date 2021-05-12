@@ -111,4 +111,16 @@
 		 */
 		public static function fileHeaderData( string $file, array $default_headers = [], string $context = '' ) :array {}
 
+        /**
+         *
+         * Create a url to a plugin menu page
+         *
+         * @param  string  $menu_slug
+         *
+         * @return string
+         * @see WordpressApi::pluginPageUrl()
+         * @see menu_page_url()
+         */
+        public static function pluginPageUrl (string $menu_slug) :string {}
+
 	}
