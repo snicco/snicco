@@ -6,24 +6,24 @@
 
 	namespace WPEmerge\Events;
 
-	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Application\ApplicationEvent;
-	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Response;
 
-	class HeadersSent extends ApplicationEvent {
+    class HeadersSent extends ApplicationEvent {
 
 
 		/**
-		 * @var ResponseInterface
+		 * @var Response
 		 */
 		public $response;
 
 		/**
-		 * @var \WPEmerge\Contracts\RequestInterface
+		 * @var Request
 		 */
 		public $request;
 
-		public function __construct(ResponseInterface $response, RequestInterface $request ) {
+		public function __construct(Response $response, Request $request ) {
 
 			$this->response = $response;
 			$this->request = $request;

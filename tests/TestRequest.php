@@ -21,7 +21,7 @@
 
 		}
 
-		public static function from(string $method, $path, $host = null ) : ServerRequestInterface {
+		public static function from(string $method, $path, $host = null ) : Request {
 
             $psr17Factory = new \Nyholm\Psr7\Factory\Psr17Factory();
 

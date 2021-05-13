@@ -6,13 +6,14 @@
 
 	namespace Tests\integration\HttpKernel;
 
-	use Tests\stubs\Middleware\GlobalMiddleware;
+    use Tests\stubs\Middleware\GlobalMiddleware;
 	use Tests\stubs\Middleware\WebMiddleware;
 	use Tests\TestCase;
 
 	class HttpKernelDefaultModeTest extends TestCase {
 
 		use SetUpKernel;
+        use AssertKernelOutput;
 
 		/** @test */
 		public function the_kernel_does_not_run_global_middleware_when_not_matching_a_route() {
@@ -27,7 +28,7 @@
 
 			] );
 
-			$this->assertSame('', $this->runAndGetKernelOutput($request));
+			$this->assertOutput('', $this->runAndGetKernelOutput($request) );
 
 			$this->assertMiddlewareRunTimes(0, GlobalMiddleware::class);
 
@@ -74,7 +75,7 @@
 
 			$output = $this->runAndGetKernelOutput($request);
 
-			$this->assertSame('foo', $output);
+			$this->assertOutput('foo', $output);
 			$this->assertMiddlewareRunTimes(1 , WebMiddleware::class);
 
 		}

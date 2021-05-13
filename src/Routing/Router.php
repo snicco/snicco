@@ -12,7 +12,10 @@
     use WPEmerge\Controllers\ViewController;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\ConvertsToResponse;
     use WPEmerge\Http\Request;
+    use WPEmerge\Http\Response;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Support\Pipeline;
 	use WPEmerge\Support\Url;
 	use WPEmerge\Traits\GathersMiddleware;
@@ -25,7 +28,7 @@
 
 		use GathersMiddleware;
 		use HoldsRouteBlueprint;
-
+        use ConvertsToResponse;
 
 		/** @var \WPEmerge\Routing\RouteGroup[] */
 		private $group_stack = [];
@@ -55,14 +58,19 @@
 		 * @var bool
 		 */
 		private $with_middleware = true;
+        /**
+         * @var ResponseFactory
+         */
+        private $response_factory;
 
 
-		public function __construct( ContainerAdapter $container, RouteCollection $routes ) {
+        public function __construct( ContainerAdapter $container, RouteCollection $routes, ResponseFactory $response_factory ) {
 
 			$this->container = $container;
 			$this->routes    = $routes;
+            $this->response_factory = $response_factory;
 
-		}
+        }
 
 		public function view( string $url, string $view, array $data = [], int $status = 200, array $headers = [] ) : Route {
 
@@ -129,7 +137,10 @@
 
 		}
 
-		public function runRoute( Request $request ) : ?ResponseInterface
+        /**
+         * @throws ConfigurationException
+         */
+        public function runRoute( Request $request ) : ?ResponseInterface
         {
 
 			$route_match = $this->routes->match( $request );
@@ -140,7 +151,7 @@
 
 			}
 
-			return null;
+			return $this->response_factory->null();
 
 		}
 
@@ -220,7 +231,8 @@
 		/**
 		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		private function runWithinStack( RouteMatch $route_match, Request $request ) {
+		private function runWithinStack( RouteMatch $route_match, Request $request ) : Response
+        {
 
 			$middleware = [];
 
@@ -234,14 +246,18 @@
 
 			}
 
-			return ( new Pipeline( $this->container ) )
+			/** @var Response $response */
+			$response =  ( new Pipeline( $this->container ) )
 				->send( $request )
 				->through( $middleware )
-				->then( function ( $request ) use ( $route_match ) {
+				->then( function ( $request ) use ( $route_match ) : Response {
 
-					return $route_match->route()->run( $request, $route_match->payload() );
+                    $route_response = $route_match->route()->run( $request, $route_match->payload() );
+                    return $this->prepareResponse($route_response);
 
 				} );
+
+			return $response;
 
 		}
 

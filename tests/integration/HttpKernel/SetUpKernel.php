@@ -31,6 +31,7 @@
 
         use SetUpDefaultMocks;
         use CreateResponseFactory;
+        use CreateContainer;
 
 
         /** @var \WPEmerge\Http\HttpKernel */
@@ -49,7 +50,7 @@
 
             parent::setUp();
 
-            $container = new BaseContainerAdapter();
+            $container = $this->createContaiener();
             $handler_factory = new HandlerFactory([], $container);
             $condition_factory = new ConditionFactory([], $container);
             $error_handler = new TestErrorHandler();
@@ -58,7 +59,9 @@
                 new RouteCollection(
                     $condition_factory,
                     $handler_factory,
-                    new FastRouteMatcher())
+                    new FastRouteMatcher()
+                ),
+                new ResponseFactory(\Mockery::mock(ViewService::class), $this->createFactory())
             );
             $this->router = $router;
             $this->container = $container;
@@ -66,9 +69,7 @@
                 $router,
                 $container,
                 $error_handler,
-                new ResponseFactory(\Mockery::mock(ViewService::class), $this->createFactory())
             );
-
 
             ApplicationEvent::make($this->container);
             ApplicationEvent::fake();

@@ -26,7 +26,7 @@
         /**
          * The container implementation.
          *
-         * @var \Contracts\ContainerAdapter
+         * @var ContainerAdapter
          */
         private $container;
 
