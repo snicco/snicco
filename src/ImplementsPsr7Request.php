@@ -12,170 +12,201 @@
     use Psr\Http\Message\StreamInterface;
     use Psr\Http\Message\UriInterface;
 
-
     trait ImplementsPsr7Request
     {
 
         /**
          * @var RequestInterface|MessageInterface|ServerRequestInterface
          */
-        private $prs_request;
+        private $psr_request;
 
-        public function getProtocolVersion()
-        {
+        public function new ( ServerRequestInterface $new_psr_request ) {
 
-            return $this->prs_request->getProtocolVersion();
-
+            $this->psr_request = $new_psr_request;
+            return $this;
 
         }
 
         public function withProtocolVersion($version)
         {
-            return $this->prs_request->withProtocolVersion($version);
-        }
-
-        public function getHeaders()
-        {
-            return $this->prs_request->getHeaders();
-        }
-
-        public function hasHeader($name)
-        {
-            return $this->prs_request->hasHeader($name);
-        }
-
-        public function getHeader($name)
-        {
-            return $this->prs_request->getHeader($name);
-        }
-
-        public function getHeaderLine($name)
-        {
-            return $this->prs_request->getHeaderLine($name);
+            return $this->new($this->psr_request->withProtocolVersion($version));
         }
 
         public function withHeader($name, $value)
         {
-            return $this->prs_request->withHeader($name, $value);
+
+            return $this->new($this->psr_request->withHeader($name, $value));
         }
 
         public function withAddedHeader($name, $value)
         {
-            return $this->prs_request->withAddedHeader($name, $value);
+
+            return $this->new($this->psr_request->withAddedHeader($name, $value));
         }
 
         public function withoutHeader($name)
         {
-            return $this->prs_request->withoutHeader($name);
-        }
 
-        public function getBody()
-        {
-            return $this->prs_request->getBody();
+            return $this->new($this->psr_request->withoutHeader($name));
         }
 
         public function withBody(StreamInterface $body)
         {
-            return $this->prs_request->withBody($body);
-        }
 
-        public function getRequestTarget()
-        {
-            return $this->prs_request->getRequestTarget();
+            return $this->new($this->psr_request->withBody($body));
         }
 
         public function withRequestTarget($requestTarget)
         {
-            return $this->prs_request->withRequestTarget($requestTarget);
-        }
 
-        public function getMethod()
-        {
-            return $this->prs_request->getMethod();
+            return $this->new($this->psr_request->withRequestTarget($requestTarget));
         }
 
         public function withMethod($method)
         {
-            return $this->prs_request->withMethod($method);
-        }
 
-        public function getUri()
-        {
-            return $this->prs_request->getUri();
+            return $this->new($this->psr_request->withMethod($method));
         }
 
         public function withUri(UriInterface $uri, $preserveHost = false)
         {
-            return $this->prs_request->withUri($uri, $preserveHost);
+
+            return $this->new($this->psr_request->withUri($uri, $preserveHost));
         }
 
-        public function getServerParams()
+        public function withQueryParams(array $query)
         {
-            return $this->prs_request->getServerParams();
-        }
 
-        public function getCookieParams()
-        {
-            return $this->prs_request->getCookieParams();
+            return  $this->new($this->psr_request->withQueryParams($query));
         }
 
         public function withCookieParams(array $cookies)
         {
-            return $this->prs_request->withCookieParams($cookies);
+
+            return  $this->new($this->psr_request->withCookieParams($cookies));
+        }
+
+        public function withAttribute($name, $value)
+        {
+
+            return  $this->new($this->psr_request->withAttribute($name, $value));
+        }
+
+        public function withoutAttribute($name)
+        {
+
+            return  $this->new($this->psr_request->withoutAttribute($name));
+        }
+
+        public function getProtocolVersion()
+        {
+
+            return $this->psr_request->getProtocolVersion();
+
+        }
+
+        public function getHeaders()
+        {
+
+            return $this->psr_request->getHeaders();
+        }
+
+        public function hasHeader($name)
+        {
+
+            return $this->psr_request->hasHeader($name);
+        }
+
+        public function getHeader($name)
+        {
+
+            return $this->psr_request->getHeader($name);
+        }
+
+        public function getHeaderLine($name)
+        {
+
+            return $this->psr_request->getHeaderLine($name);
+        }
+
+        public function getBody()
+        {
+
+            return $this->psr_request->getBody();
+        }
+
+        public function getRequestTarget()
+        {
+
+            return $this->psr_request->getRequestTarget();
+        }
+
+        public function getMethod()
+        {
+
+            return $this->psr_request->getMethod();
+        }
+
+        public function getUri()
+        {
+
+            return $this->psr_request->getUri();
+        }
+
+        public function getServerParams()
+        {
+
+            return $this->psr_request->getServerParams();
+        }
+
+        public function getCookieParams()
+        {
+
+            return $this->psr_request->getCookieParams();
         }
 
         public function getQueryParams()
         {
 
-            return $this->prs_request->getQueryParams();
+            return $this->psr_request->getQueryParams();
 
-        }
-
-        public function withQueryParams(array $query)
-        {
-            return $this->prs_request->withQueryParams($query);
         }
 
         public function getUploadedFiles()
         {
-            return $this->prs_request->getUploadedFiles();
+
+            return $this->psr_request->getUploadedFiles();
         }
 
         public function withUploadedFiles(array $uploadedFiles)
         {
-            return $this->prs_request->withUploadedFiles($uploadedFiles);
+
+            return $this->psr_request->withUploadedFiles($uploadedFiles);
         }
 
         public function getParsedBody()
         {
-            return $this->prs_request->getParsedBody();
+
+            return $this->psr_request->getParsedBody();
         }
 
         public function withParsedBody($data)
         {
-            return $this->prs_request->withParsedBody($data);
+
+            return $this->psr_request->withParsedBody($data);
         }
 
         public function getAttributes()
         {
-            return $this->prs_request->getAttributes();
+
+            return $this->psr_request->getAttributes();
         }
 
         public function getAttribute($name, $default = null)
         {
-            return $this->prs_request->getAttribute($name, $default);
+
+            return $this->psr_request->getAttribute($name, $default);
 
         }
-
-        public function withAttribute($name, $value)
-        {
-            return $this->prs_request->withAttribute($name, $value);
-        }
-
-        public function withoutAttribute($name)
-        {
-            return $this->prs_request->withoutAttribute($name);
-        }
-
 
     }

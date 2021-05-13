@@ -12,7 +12,6 @@
     trait ConvertsToResponse
     {
 
-        /** @todo handle the case where a route matched but invalid response was returned */
         private function prepareResponse( $response ) : Response {
 
             if ( $response instanceof ResponseInterface ) {
@@ -40,18 +39,6 @@
             }
 
             return $this->response_factory->null();
-
-            // /**
-            //  * @todo Decide how this should be handled in production.
-            //  *  500, 404 ?
-            //  */
-            // if ( $this->is_takeover_mode ) {
-            //
-            // 	throw new InvalidResponseException(
-            // 		'The response by the route action is not valid.'
-            // 	);
-            //
-            // }
 
 
         }

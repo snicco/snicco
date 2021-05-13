@@ -11,11 +11,13 @@
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Events\BodySent;
 	use WPEmerge\Events\HeadersSent;
-	use WPEmerge\Http\Response;
+    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Response;
 
 	class HttpKernelTest extends TestCase {
 
 		use SetUpKernel;
+        use AssertKernelOutput;
 
 		/** @test */
 		public function no_response_gets_send_when_no_route_matched() {
@@ -32,11 +34,11 @@
 		public function for_matching_request_headers_and_body_get_send() {
 
 
-			$this->router->get( '/foo', function ( TestRequest $request ) {
+			$this->router->get( '/foo', function ( Request $request ) {
 
-				return new Response( 'foo' );
+				return 'foo';
 
-			} );
+			});
 
 			$request = $this->createIncomingWebRequest( 'GET', '/foo' );
 
@@ -48,10 +50,9 @@
 		public function for_admin_requests_the_body_does_not_get_send_immediately () {
 
 
-
 			$this->router->get( '/admin', function () {
 
-				return new Response( 'foo' );
+				return 'foo';
 
 			} );
 
@@ -70,9 +71,9 @@
 		/** @test */
 		public function events_are_dispatched_when_a_headers_and_body_get_send () {
 
-			$this->router->get( '/foo', function ( TestRequest $request ) {
+			$this->router->get( '/foo', function ( ) {
 
-				return new Response( $request );
+				return 'foo';
 
 			} );
 

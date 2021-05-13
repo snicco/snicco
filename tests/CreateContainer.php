@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration\HttpKernel;
+    namespace Tests;
 
     use Contracts\ContainerAdapter;
     use SniccoAdapter\BaseContainerAdapter;
@@ -12,7 +12,7 @@
     trait CreateContainer
     {
 
-        public function createContaiener() :ContainerAdapter {
+        public function createContainer() :ContainerAdapter {
 
             return new BaseContainerAdapter();
 
