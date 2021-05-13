@@ -6,12 +6,12 @@
 
     namespace Tests\integration\HttpKernel;
 
-    use Mockery;
     use PHPUnit\Framework\Assert;
     use SniccoAdapter\BaseContainerAdapter;
     use Tests\SetUpDefaultMocks;
     use Tests\stubs\TestErrorHandler;
     use Tests\TestRequest;
+    use Tests\CreateResponseFactory;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
@@ -20,14 +20,18 @@
     use WPEmerge\Factories\HandlerFactory;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Factories\ConditionFactory;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\RouteCollection;
     use WPEmerge\Routing\Router;
+    use WPEmerge\View\ViewService;
 
     trait SetUpKernel
     {
 
         use SetUpDefaultMocks;
+        use CreateResponseFactory;
+
 
         /** @var \WPEmerge\Http\HttpKernel */
         private $kernel;
@@ -58,7 +62,13 @@
             );
             $this->router = $router;
             $this->container = $container;
-            $this->kernel = new HttpKernel($router, $container, $error_handler);
+            $this->kernel = new HttpKernel(
+                $router,
+                $container,
+                $error_handler,
+                new ResponseFactory(\Mockery::mock(ViewService::class), $this->createFactory())
+            );
+
 
             ApplicationEvent::make($this->container);
             ApplicationEvent::fake();

@@ -25,13 +25,13 @@
 
 		use HoldsMiddlewareDefinitions;
 
-		/** @var \WPEmerge\Routing\Router */
+		/** @var Router */
 		private $router;
 
-		/** @var \WPEmerge\Contracts\ErrorHandlerInterface */
+		/** @var ErrorHandler */
 		private $error_handler;
 
-		/** @var \Contracts\ContainerAdapter */
+		/** @var Container */
 		private $container;
 
 		/** @var ResponseInterface */
@@ -40,25 +40,31 @@
 		/** @var RequestInterface */
 		private $request;
 
-
 		private $is_test_mode = false;
 
 		private $is_takeover_mode = false;
 
+        /**
+         * @var ResponseFactory
+         */
+        private $response_factory;
 
-		public function __construct(
+
+        public function __construct(
 
 			Router $router,
 			Container $container,
-			ErrorHandler $error_handler
-
+			/** @todo this could be a middleware */
+			ErrorHandler $error_handler,
+            ResponseFactory $response_factory
 		) {
 
 			$this->router        = $router;
 			$this->container     = $container;
 			$this->error_handler = $error_handler;
+            $this->response_factory = $response_factory;
 
-		}
+        }
 
 
 		public function handle( IncomingRequest $request_event ) : void {
@@ -124,9 +130,8 @@
 
 		private function sendResponse() {
 
-			$route_matched = $this->response instanceof ResponseInterface;
 
-			if ( ! $route_matched ) {
+			if ( $this->response instanceof NullResponse ) {
 
 				return;
 
@@ -161,7 +166,7 @@
 		}
 
 		/** @todo handle the case where a route matched but invalid response was returned */
-		private function prepareResponse( $response ) : ?ResponseInterface {
+		private function prepareResponse( $response ) : ResponseInterface {
 
 			if ( $response instanceof ResponseInterface ) {
 
@@ -171,43 +176,43 @@
 
 			if ( is_string( $response ) ) {
 
-				return ( new Response( $response ) )->setType( 'text/html' );
+				return $this->response_factory->html($response);
 
 			}
 
 			if ( is_array( $response ) ) {
 
-				/** @todo Create dedicated JSON Response. */
-				return ( new Response( $response ) );
+				return $this->response_factory->json($response);
 
 			}
 
 			if ( $response instanceof ResponsableInterface ) {
 
-				return $response->toResponse();
+				return $this->response_factory->json($response);
 
 			}
 
-			/**
-			 * @todo Decide how this should be handled in production.
-			 *  500, 404 ?
-			 */
-			if ( $this->is_takeover_mode ) {
+			return $this->response_factory->null();
 
-				throw new InvalidResponseException(
-					'The response by the route action is not valid.'
-				);
+			// /**
+			//  * @todo Decide how this should be handled in production.
+			//  *  500, 404 ?
+			//  */
+			// if ( $this->is_takeover_mode ) {
+            //
+			// 	throw new InvalidResponseException(
+			// 		'The response by the route action is not valid.'
+			// 	);
+            //
+			// }
 
-			}
-
-			return $response;
 
 		}
 
 		/**
 		 * @throws
 		 */
-		private function sendRequestThroughRouter( Request $request ) : ?ResponseInterface {
+		private function sendRequestThroughRouter( Request $request ) : ResponseInterface {
 
 
 			$this->container->instance( Request::class, $request );
@@ -216,18 +221,16 @@
 
 			$middleware = $this->withMiddleware() ? $this->middleware_groups['global'] ?? [] : [];
 
-			$response = $pipeline->send( $request )
+            return $pipeline->send( $request )
 			                     ->through( $middleware )
 			                     ->then( $this->dispatchToRouter() );
-
-			return $this->prepareResponse( $response );
 
 
 		}
 
 		private function dispatchToRouter() : \Closure {
 
-			return function ( Request $request ) {
+			return function ( Request $request ) :ResponseInterface {
 
 				$this->container->instance( RequestInterface::class, $request );
 
@@ -239,7 +242,9 @@
 
 				}
 
-				return $this->router->runRoute( $request );
+				$response =  $this->router->runRoute( $request );
+
+				return $this->prepareResponse( $response );
 
 			};
 
