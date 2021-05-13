@@ -10,9 +10,10 @@
 	use Tests\stubs\Middleware\BazMiddleware;
 	use Tests\stubs\Middleware\FooBarMiddleware;
 	use Tests\stubs\Middleware\FooMiddleware;
-	use Tests\TestRequest;
+    use Tests\TestCase;
+    use Tests\TestRequest;
 
-	class RouteMiddlewareTest extends \Tests\TestCase {
+	class RouteMiddlewareTest extends TestCase {
 
 		use SetUpRouter;
 

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b2a5d55674611f2435b168cbcad07770",
+    "content-hash": "99259e77d6a4fd2e0d7a1b5c05398709",
     "packages": [
         {
             "name": "calvinalkan/base-container",
@@ -295,6 +295,81 @@
             "time": "2020-10-28T16:09:51+00:00"
         },
         {
+            "name": "guzzlehttp/psr7",
+            "version": "1.x-dev",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/guzzle/psr7.git",
+                "reference": "dc960a912984efb74d0a90222870c72c87f10c91"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/guzzle/psr7/zipball/dc960a912984efb74d0a90222870c72c87f10c91",
+                "reference": "dc960a912984efb74d0a90222870c72c87f10c91",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4.0",
+                "psr/http-message": "~1.0",
+                "ralouphie/getallheaders": "^2.0.5 || ^3.0.0"
+            },
+            "provide": {
+                "psr/http-message-implementation": "1.0"
+            },
+            "require-dev": {
+                "ext-zlib": "*",
+                "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.14 || ^7.5.20 || ^8.5.8 || ^9.3.10"
+            },
+            "suggest": {
+                "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.7-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "GuzzleHttp\\Psr7\\": "src/"
+                },
+                "files": [
+                    "src/functions_include.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Michael Dowling",
+                    "email": "mtdowling@gmail.com",
+                    "homepage": "https://github.com/mtdowling"
+                },
+                {
+                    "name": "Tobias Schultze",
+                    "homepage": "https://github.com/Tobion"
+                }
+            ],
+            "description": "PSR-7 message implementation that also provides common utility methods",
+            "keywords": [
+                "http",
+                "message",
+                "psr-7",
+                "request",
+                "response",
+                "stream",
+                "uri",
+                "url"
+            ],
+            "support": {
+                "issues": "https://github.com/guzzle/psr7/issues",
+                "source": "https://github.com/guzzle/psr7/tree/1.x"
+            },
+            "time": "2021-04-26T09:17:50+00:00"
+        },
+        {
             "name": "illuminate/collections",
             "version": "v8.35.1",
             "source": {
@@ -496,57 +571,6 @@
             "time": "2021-04-01T13:09:31+00:00"
         },
         {
-            "name": "illuminate/encryption",
-            "version": "v8.40.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/illuminate/encryption.git",
-                "reference": "ca375feaf23335dd42a8a07bdd08f0f8e34219b6"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/encryption/zipball/ca375feaf23335dd42a8a07bdd08f0f8e34219b6",
-                "reference": "ca375feaf23335dd42a8a07bdd08f0f8e34219b6",
-                "shasum": ""
-            },
-            "require": {
-                "ext-json": "*",
-                "ext-mbstring": "*",
-                "ext-openssl": "*",
-                "illuminate/contracts": "^8.0",
-                "illuminate/support": "^8.0",
-                "php": "^7.3|^8.0"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "8.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Illuminate\\Encryption\\": ""
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Taylor Otwell",
-                    "email": "taylor@laravel.com"
-                }
-            ],
-            "description": "The Illuminate Encryption package.",
-            "homepage": "https://laravel.com",
-            "support": {
-                "issues": "https://github.com/laravel/framework/issues",
-                "source": "https://github.com/laravel/framework"
-            },
-            "time": "2021-03-12T14:45:30+00:00"
-        },
-        {
             "name": "illuminate/macroable",
             "version": "8.x-dev",
             "source": {
@@ -659,6 +683,325 @@
                 "source": "https://github.com/laravel/framework"
             },
             "time": "2021-03-30T13:39:44+00:00"
+        },
+        {
+            "name": "middlewares/base-path",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/middlewares/base-path.git",
+                "reference": "9540b7b3aea29f22be269ad4c182455e70e38b4a"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/middlewares/base-path/zipball/9540b7b3aea29f22be269ad4c182455e70e38b4a",
+                "reference": "9540b7b3aea29f22be269ad4c182455e70e38b4a",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0",
+                "psr/http-server-middleware": "^1.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.0",
+                "laminas/laminas-diactoros": "^2.3",
+                "middlewares/utils": "^3.0",
+                "oscarotero/php-cs-fixer-config": "^1.0",
+                "phpstan/phpstan": "^0.12",
+                "phpunit/phpunit": "^8|^9",
+                "squizlabs/php_codesniffer": "^3.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Middlewares\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Middleware to remove the prefix from the uri path of the request.",
+            "homepage": "https://github.com/middlewares/base-path",
+            "keywords": [
+                "http",
+                "middleware",
+                "psr-15",
+                "psr-7",
+                "server"
+            ],
+            "support": {
+                "issues": "https://github.com/middlewares/base-path/issues",
+                "source": "https://github.com/middlewares/base-path/tree/v2.1.0"
+            },
+            "time": "2021-04-08T19:21:21+00:00"
+        },
+        {
+            "name": "middlewares/request-handler",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/middlewares/request-handler.git",
+                "reference": "e5563184b4c9eab81ecb58c6ef530516559e8488"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/middlewares/request-handler/zipball/e5563184b4c9eab81ecb58c6ef530516559e8488",
+                "reference": "e5563184b4c9eab81ecb58c6ef530516559e8488",
+                "shasum": ""
+            },
+            "require": {
+                "middlewares/utils": "^3.0",
+                "php": "^7.2 || ^8.0",
+                "psr/container": "^1.0",
+                "psr/http-server-middleware": "^1.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.0",
+                "laminas/laminas-diactoros": "^2.3",
+                "oscarotero/php-cs-fixer-config": "^1.0",
+                "phpstan/phpstan": "^0.12",
+                "phpunit/phpunit": "^8|^9",
+                "squizlabs/php_codesniffer": "^3.0"
+            },
+            "suggest": {
+                "psr/container": "Can be used to resolve handlers automatically"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Middlewares\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Middleware to execute request handlers",
+            "homepage": "https://github.com/middlewares/request-handler",
+            "keywords": [
+                "controller",
+                "handler",
+                "http",
+                "invoke",
+                "middleware",
+                "psr-15",
+                "psr-7",
+                "request",
+                "server"
+            ],
+            "support": {
+                "issues": "https://github.com/middlewares/request-handler/issues",
+                "source": "https://github.com/middlewares/request-handler/tree/v2.0.1"
+            },
+            "time": "2020-12-04T00:14:39+00:00"
+        },
+        {
+            "name": "middlewares/response-time",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/middlewares/response-time.git",
+                "reference": "dd9ec6b120897c42008c61fee8d9679911ba671f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/middlewares/response-time/zipball/dd9ec6b120897c42008c61fee8d9679911ba671f",
+                "reference": "dd9ec6b120897c42008c61fee8d9679911ba671f",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0",
+                "psr/http-server-middleware": "^1.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^2.0",
+                "laminas/laminas-diactoros": "^2.3",
+                "middlewares/utils": "^3.0",
+                "oscarotero/php-cs-fixer-config": "^1.0",
+                "phpstan/phpstan": "^0.12",
+                "phpunit/phpunit": "^8|^9",
+                "squizlabs/php_codesniffer": "^3.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Middlewares\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Middleware to save the response time into the X-Response-Time header",
+            "homepage": "https://github.com/middlewares/response-time",
+            "keywords": [
+                "http",
+                "middleware",
+                "psr-15",
+                "psr-7",
+                "response",
+                "server",
+                "time"
+            ],
+            "support": {
+                "issues": "https://github.com/middlewares/response-time/issues",
+                "source": "https://github.com/middlewares/response-time/tree/v2.0.1"
+            },
+            "time": "2020-12-03T01:14:02+00:00"
+        },
+        {
+            "name": "middlewares/utils",
+            "version": "v3.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/middlewares/utils.git",
+                "reference": "a9ef1e5365020ead0ae343b95602bd877a9bf852"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/middlewares/utils/zipball/a9ef1e5365020ead0ae343b95602bd877a9bf852",
+                "reference": "a9ef1e5365020ead0ae343b95602bd877a9bf852",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^7.2 || ^8.0",
+                "psr/container": "^1.0",
+                "psr/http-factory": "^1.0",
+                "psr/http-message": "^1.0",
+                "psr/http-server-middleware": "^1.0"
+            },
+            "require-dev": {
+                "friendsofphp/php-cs-fixer": "^v2.16",
+                "guzzlehttp/psr7": "dev-master",
+                "laminas/laminas-diactoros": "^2.4",
+                "nyholm/psr7": "^1.0",
+                "oscarotero/php-cs-fixer-config": "^1.0",
+                "phpstan/phpstan": "^0.12",
+                "phpunit/phpunit": "^8|^9",
+                "slim/psr7": "~0.3",
+                "squizlabs/php_codesniffer": "^3.5",
+                "sunrise/http-message": "^1.0",
+                "sunrise/http-server-request": "^1.0",
+                "sunrise/stream": "^1.0.15",
+                "sunrise/uri": "^1.0.15"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Middlewares\\Utils\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Common utils for PSR-15 middleware packages",
+            "homepage": "https://github.com/middlewares/utils",
+            "keywords": [
+                "PSR-11",
+                "http",
+                "middleware",
+                "psr-15",
+                "psr-17",
+                "psr-7"
+            ],
+            "support": {
+                "issues": "https://github.com/middlewares/utils/issues",
+                "source": "https://github.com/middlewares/utils/tree/v3.2.0"
+            },
+            "time": "2020-11-30T20:07:15+00:00"
+        },
+        {
+            "name": "mindplay/middleman",
+            "version": "4.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mindplay-dk/middleman.git",
+                "reference": "150f119cdccd0170c3981eea2588274520aa6c74"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mindplay-dk/middleman/zipball/150f119cdccd0170c3981eea2588274520aa6c74",
+                "reference": "150f119cdccd0170c3981eea2588274520aa6c74",
+                "shasum": ""
+            },
+            "require": {
+                "mindplay/readable": "^1",
+                "php": "^7.3 || ^8.0",
+                "psr/container": "^1.0",
+                "psr/http-message": "^1.0",
+                "psr/http-server-handler": "^1.0",
+                "psr/http-server-middleware": "^1.0"
+            },
+            "require-dev": {
+                "mindplay/testies": "^1.0",
+                "nyholm/psr7": "^1.4",
+                "phpunit/php-code-coverage": "^9.2.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "mindplay\\middleman\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0+"
+            ],
+            "authors": [
+                {
+                    "name": "Rasmus Schultz",
+                    "email": "rasmus@mindplay.dk"
+                }
+            ],
+            "description": "PSR-7 middleware dispatcher. Let's stop trying to make this complicated.",
+            "support": {
+                "issues": "https://github.com/mindplay-dk/middleman/issues",
+                "source": "https://github.com/mindplay-dk/middleman/tree/4.0.0"
+            },
+            "time": "2021-02-27T15:23:58+00:00"
+        },
+        {
+            "name": "mindplay/readable",
+            "version": "1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mindplay-dk/readable.git",
+                "reference": "0d5905202c86a4671ad901cad3ac4fdd5b8fc0c0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mindplay-dk/readable/zipball/0d5905202c86a4671ad901cad3ac4fdd5b8fc0c0",
+                "reference": "0d5905202c86a4671ad901cad3ac4fdd5b8fc0c0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4"
+            },
+            "require-dev": {
+                "mindplay/testies": "dev-master",
+                "phpunit/php-code-coverage": ">=2, <4"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "src/"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "Formats PHP values as human-readable strings",
+            "support": {
+                "issues": "https://github.com/mindplay-dk/readable/issues",
+                "source": "https://github.com/mindplay-dk/readable/tree/master"
+            },
+            "time": "2018-10-09T08:21:40+00:00"
         },
         {
             "name": "nesbot/carbon",
@@ -805,39 +1148,46 @@
             "time": "2018-02-13T20:26:39+00:00"
         },
         {
-            "name": "opis/closure",
-            "version": "3.6.2",
+            "name": "nyholm/psr7",
+            "version": "dev-master",
             "source": {
                 "type": "git",
-                "url": "https://github.com/opis/closure.git",
-                "reference": "06e2ebd25f2869e54a306dda991f7db58066f7f6"
+                "url": "https://github.com/Nyholm/psr7.git",
+                "reference": "a4a362944244ed20a6bbbecacc882abc8045585a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opis/closure/zipball/06e2ebd25f2869e54a306dda991f7db58066f7f6",
-                "reference": "06e2ebd25f2869e54a306dda991f7db58066f7f6",
+                "url": "https://api.github.com/repos/Nyholm/psr7/zipball/a4a362944244ed20a6bbbecacc882abc8045585a",
+                "reference": "a4a362944244ed20a6bbbecacc882abc8045585a",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.4 || ^7.0 || ^8.0"
+                "php": ">=7.1",
+                "php-http/message-factory": "^1.0",
+                "psr/http-factory": "^1.0",
+                "psr/http-message": "^1.0"
+            },
+            "provide": {
+                "psr/http-factory-implementation": "1.0",
+                "psr/http-message-implementation": "1.0"
             },
             "require-dev": {
-                "jeremeamia/superclosure": "^2.0",
-                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0 || ^9.0"
+                "http-interop/http-factory-tests": "^0.9",
+                "php-http/psr7-integration-tests": "^1.0",
+                "phpunit/phpunit": "^7.5 || 8.5 || 9.4",
+                "symfony/error-handler": "^4.4"
             },
+            "default-branch": true,
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "3.6.x-dev"
+                    "dev-master": "1.4-dev"
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "Opis\\Closure\\": "src/"
-                },
-                "files": [
-                    "functions.php"
-                ]
+                    "Nyholm\\Psr7\\": "src/"
+                }
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -845,29 +1195,90 @@
             ],
             "authors": [
                 {
-                    "name": "Marius Sarca",
-                    "email": "marius.sarca@gmail.com"
+                    "name": "Tobias Nyholm",
+                    "email": "tobias.nyholm@gmail.com"
                 },
                 {
-                    "name": "Sorin Sarca",
-                    "email": "sarca_sorin@hotmail.com"
+                    "name": "Martijn van der Ven",
+                    "email": "martijn@vanderven.se"
                 }
             ],
-            "description": "A library that can be used to serialize closures (anonymous functions) and arbitrary objects.",
-            "homepage": "https://opis.io/closure",
+            "description": "A fast PHP7 implementation of PSR-7",
+            "homepage": "https://tnyholm.se",
             "keywords": [
-                "anonymous functions",
-                "closure",
-                "function",
-                "serializable",
-                "serialization",
-                "serialize"
+                "psr-17",
+                "psr-7"
             ],
             "support": {
-                "issues": "https://github.com/opis/closure/issues",
-                "source": "https://github.com/opis/closure/tree/3.6.2"
+                "issues": "https://github.com/Nyholm/psr7/issues",
+                "source": "https://github.com/Nyholm/psr7/tree/master"
             },
-            "time": "2021-04-09T13:42:10+00:00"
+            "funding": [
+                {
+                    "url": "https://github.com/Zegnat",
+                    "type": "github"
+                },
+                {
+                    "url": "https://github.com/nyholm",
+                    "type": "github"
+                }
+            ],
+            "time": "2021-05-10T20:13:32+00:00"
+        },
+        {
+            "name": "php-http/message-factory",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-http/message-factory.git",
+                "reference": "597f30e6dfd32a85fd7dbe58cb47554b5bad910e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-http/message-factory/zipball/597f30e6dfd32a85fd7dbe58cb47554b5bad910e",
+                "reference": "597f30e6dfd32a85fd7dbe58cb47554b5bad910e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.4",
+                "psr/http-message": "^1.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Http\\Message\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Márk Sági-Kazár",
+                    "email": "mark.sagikazar@gmail.com"
+                }
+            ],
+            "description": "Factory interfaces for PSR-7 HTTP Message",
+            "homepage": "http://php-http.org",
+            "keywords": [
+                "factory",
+                "http",
+                "message",
+                "stream",
+                "uri"
+            ],
+            "support": {
+                "issues": "https://github.com/php-http/message-factory/issues",
+                "source": "https://github.com/php-http/message-factory/tree/master"
+            },
+            "time": "2018-12-06T18:41:41+00:00"
         },
         {
             "name": "psr/container",
@@ -916,6 +1327,231 @@
                 "source": "https://github.com/php-fig/container/tree/1.1.x"
             },
             "time": "2021-03-05T17:36:06+00:00"
+        },
+        {
+            "name": "psr/http-factory",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-factory.git",
+                "reference": "36fa03d50ff82abcae81860bdaf4ed9a1510c7cd"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-factory/zipball/36fa03d50ff82abcae81860bdaf4ed9a1510c7cd",
+                "reference": "36fa03d50ff82abcae81860bdaf4ed9a1510c7cd",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0.0",
+                "psr/http-message": "^1.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Message\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interfaces for PSR-7 HTTP message factories",
+            "keywords": [
+                "factory",
+                "http",
+                "message",
+                "psr",
+                "psr-17",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/http-factory/tree/master"
+            },
+            "time": "2020-09-17T16:52:55+00:00"
+        },
+        {
+            "name": "psr/http-message",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-message.git",
+                "reference": "efd67d1dc14a7ef4fc4e518e7dee91c271d524e4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-message/zipball/efd67d1dc14a7ef4fc4e518e7dee91c271d524e4",
+                "reference": "efd67d1dc14a7ef4fc4e518e7dee91c271d524e4",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Message\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "http://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP messages",
+            "homepage": "https://github.com/php-fig/http-message",
+            "keywords": [
+                "http",
+                "http-message",
+                "psr",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/http-message/tree/master"
+            },
+            "time": "2019-08-29T13:16:46+00:00"
+        },
+        {
+            "name": "psr/http-server-handler",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-server-handler.git",
+                "reference": "cada5cd1c6a9871031e07f26d0f7b08c9de19039"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-server-handler/zipball/cada5cd1c6a9871031e07f26d0f7b08c9de19039",
+                "reference": "cada5cd1c6a9871031e07f26d0f7b08c9de19039",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0",
+                "psr/http-message": "^1.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Server\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP server-side request handler",
+            "keywords": [
+                "handler",
+                "http",
+                "http-interop",
+                "psr",
+                "psr-15",
+                "psr-7",
+                "request",
+                "response",
+                "server"
+            ],
+            "support": {
+                "source": "https://github.com/php-fig/http-server-handler/tree/master"
+            },
+            "time": "2020-09-17T16:52:43+00:00"
+        },
+        {
+            "name": "psr/http-server-middleware",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/php-fig/http-server-middleware.git",
+                "reference": "adcb26d2fb28018fea3319d0035e46e8d08eb8c8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/php-fig/http-server-middleware/zipball/adcb26d2fb28018fea3319d0035e46e8d08eb8c8",
+                "reference": "adcb26d2fb28018fea3319d0035e46e8d08eb8c8",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.0",
+                "psr/http-message": "^1.0",
+                "psr/http-server-handler": "^1.0"
+            },
+            "default-branch": true,
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Psr\\Http\\Server\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "PHP-FIG",
+                    "homepage": "https://www.php-fig.org/"
+                }
+            ],
+            "description": "Common interface for HTTP server-side middleware",
+            "keywords": [
+                "http",
+                "http-interop",
+                "middleware",
+                "psr",
+                "psr-15",
+                "psr-7",
+                "request",
+                "response"
+            ],
+            "support": {
+                "issues": "https://github.com/php-fig/http-server-middleware/issues",
+                "source": "https://github.com/php-fig/http-server-middleware/tree/master"
+            },
+            "time": "2020-09-17T16:41:19+00:00"
         },
         {
             "name": "psr/log",
@@ -1018,6 +1654,50 @@
                 "source": "https://github.com/php-fig/simple-cache/tree/master"
             },
             "time": "2020-04-21T06:43:17+00:00"
+        },
+        {
+            "name": "ralouphie/getallheaders",
+            "version": "3.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ralouphie/getallheaders.git",
+                "reference": "120b605dfeb996808c31b6477290a714d356e822"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ralouphie/getallheaders/zipball/120b605dfeb996808c31b6477290a714d356e822",
+                "reference": "120b605dfeb996808c31b6477290a714d356e822",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "php-coveralls/php-coveralls": "^2.1",
+                "phpunit/phpunit": "^5 || ^6.5"
+            },
+            "type": "library",
+            "autoload": {
+                "files": [
+                    "src/getallheaders.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ralph Khattar",
+                    "email": "ralph.khattar@gmail.com"
+                }
+            ],
+            "description": "A polyfill for getallheaders.",
+            "support": {
+                "issues": "https://github.com/ralouphie/getallheaders/issues",
+                "source": "https://github.com/ralouphie/getallheaders/tree/develop"
+            },
+            "time": "2019-03-08T08:55:37+00:00"
         },
         {
             "name": "symfony/deprecation-contracts",
@@ -3148,81 +3828,6 @@
             "time": "2021-03-07T09:25:29+00:00"
         },
         {
-            "name": "guzzlehttp/psr7",
-            "version": "1.x-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/guzzle/psr7.git",
-                "reference": "dc960a912984efb74d0a90222870c72c87f10c91"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/psr7/zipball/dc960a912984efb74d0a90222870c72c87f10c91",
-                "reference": "dc960a912984efb74d0a90222870c72c87f10c91",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.4.0",
-                "psr/http-message": "~1.0",
-                "ralouphie/getallheaders": "^2.0.5 || ^3.0.0"
-            },
-            "provide": {
-                "psr/http-message-implementation": "1.0"
-            },
-            "require-dev": {
-                "ext-zlib": "*",
-                "phpunit/phpunit": "~4.8.36 || ^5.7.27 || ^6.5.14 || ^7.5.20 || ^8.5.8 || ^9.3.10"
-            },
-            "suggest": {
-                "laminas/laminas-httphandlerrunner": "Emit PSR-7 responses"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.7-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "GuzzleHttp\\Psr7\\": "src/"
-                },
-                "files": [
-                    "src/functions_include.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Michael Dowling",
-                    "email": "mtdowling@gmail.com",
-                    "homepage": "https://github.com/mtdowling"
-                },
-                {
-                    "name": "Tobias Schultze",
-                    "homepage": "https://github.com/Tobion"
-                }
-            ],
-            "description": "PSR-7 message implementation that also provides common utility methods",
-            "keywords": [
-                "http",
-                "message",
-                "psr-7",
-                "request",
-                "response",
-                "stream",
-                "uri",
-                "url"
-            ],
-            "support": {
-                "issues": "https://github.com/guzzle/psr7/issues",
-                "source": "https://github.com/guzzle/psr7/tree/1.x"
-            },
-            "time": "2021-04-26T09:17:50+00:00"
-        },
-        {
             "name": "hamcrest/hamcrest-php",
             "version": "dev-master",
             "source": {
@@ -3388,6 +3993,57 @@
                 "source": "https://github.com/laravel/framework"
             },
             "time": "2021-04-16T04:12:11+00:00"
+        },
+        {
+            "name": "illuminate/encryption",
+            "version": "v8.40.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/illuminate/encryption.git",
+                "reference": "ca375feaf23335dd42a8a07bdd08f0f8e34219b6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/illuminate/encryption/zipball/ca375feaf23335dd42a8a07bdd08f0f8e34219b6",
+                "reference": "ca375feaf23335dd42a8a07bdd08f0f8e34219b6",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-mbstring": "*",
+                "ext-openssl": "*",
+                "illuminate/contracts": "^8.0",
+                "illuminate/support": "^8.0",
+                "php": "^7.3|^8.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "8.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Illuminate\\Encryption\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                }
+            ],
+            "description": "The Illuminate Encryption package.",
+            "homepage": "https://laravel.com",
+            "support": {
+                "issues": "https://github.com/laravel/framework/issues",
+                "source": "https://github.com/laravel/framework"
+            },
+            "time": "2021-03-12T14:45:30+00:00"
         },
         {
             "name": "lucatume/wp-browser",
@@ -3848,6 +4504,71 @@
                 "source": "https://github.com/nikic/PHP-Parser/tree/v4.10.4"
             },
             "time": "2020-12-20T10:01:03+00:00"
+        },
+        {
+            "name": "opis/closure",
+            "version": "3.6.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/opis/closure.git",
+                "reference": "06e2ebd25f2869e54a306dda991f7db58066f7f6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/opis/closure/zipball/06e2ebd25f2869e54a306dda991f7db58066f7f6",
+                "reference": "06e2ebd25f2869e54a306dda991f7db58066f7f6",
+                "shasum": ""
+            },
+            "require": {
+                "php": "^5.4 || ^7.0 || ^8.0"
+            },
+            "require-dev": {
+                "jeremeamia/superclosure": "^2.0",
+                "phpunit/phpunit": "^4.0 || ^5.0 || ^6.0 || ^7.0 || ^8.0 || ^9.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.6.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Opis\\Closure\\": "src/"
+                },
+                "files": [
+                    "functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marius Sarca",
+                    "email": "marius.sarca@gmail.com"
+                },
+                {
+                    "name": "Sorin Sarca",
+                    "email": "sarca_sorin@hotmail.com"
+                }
+            ],
+            "description": "A library that can be used to serialize closures (anonymous functions) and arbitrary objects.",
+            "homepage": "https://opis.io/closure",
+            "keywords": [
+                "anonymous functions",
+                "closure",
+                "function",
+                "serializable",
+                "serialization",
+                "serialize"
+            ],
+            "support": {
+                "issues": "https://github.com/opis/closure/issues",
+                "source": "https://github.com/opis/closure/tree/3.6.2"
+            },
+            "time": "2021-04-09T13:42:10+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -5011,104 +5732,6 @@
                 "source": "https://github.com/php-fig/http-client/tree/master"
             },
             "time": "2020-09-19T09:12:31+00:00"
-        },
-        {
-            "name": "psr/http-message",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/php-fig/http-message.git",
-                "reference": "efd67d1dc14a7ef4fc4e518e7dee91c271d524e4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/http-message/zipball/efd67d1dc14a7ef4fc4e518e7dee91c271d524e4",
-                "reference": "efd67d1dc14a7ef4fc4e518e7dee91c271d524e4",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.3.0"
-            },
-            "default-branch": true,
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Psr\\Http\\Message\\": "src/"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "PHP-FIG",
-                    "homepage": "http://www.php-fig.org/"
-                }
-            ],
-            "description": "Common interface for HTTP messages",
-            "homepage": "https://github.com/php-fig/http-message",
-            "keywords": [
-                "http",
-                "http-message",
-                "psr",
-                "psr-7",
-                "request",
-                "response"
-            ],
-            "support": {
-                "source": "https://github.com/php-fig/http-message/tree/master"
-            },
-            "time": "2019-08-29T13:16:46+00:00"
-        },
-        {
-            "name": "ralouphie/getallheaders",
-            "version": "3.0.3",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/ralouphie/getallheaders.git",
-                "reference": "120b605dfeb996808c31b6477290a714d356e822"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/ralouphie/getallheaders/zipball/120b605dfeb996808c31b6477290a714d356e822",
-                "reference": "120b605dfeb996808c31b6477290a714d356e822",
-                "shasum": ""
-            },
-            "require": {
-                "php": ">=5.6"
-            },
-            "require-dev": {
-                "php-coveralls/php-coveralls": "^2.1",
-                "phpunit/phpunit": "^5 || ^6.5"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/getallheaders.php"
-                ]
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Ralph Khattar",
-                    "email": "ralph.khattar@gmail.com"
-                }
-            ],
-            "description": "A polyfill for getallheaders.",
-            "support": {
-                "issues": "https://github.com/ralouphie/getallheaders/issues",
-                "source": "https://github.com/ralouphie/getallheaders/tree/develop"
-            },
-            "time": "2019-03-08T08:55:37+00:00"
         },
         {
             "name": "rmccue/requests",
@@ -8382,6 +9005,10 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "middlewares/request-handler": 20,
+        "middlewares/response-time": 20,
+        "middlewares/base-path": 20,
+        "nyholm/psr7": 20,
         "calvinalkan/better-wordpress-database": 20,
         "lucatume/wp-browser": 20
     },
@@ -8389,9 +9016,10 @@
     "prefer-lowest": false,
     "platform": {
         "php": "^7.3",
-        "ext-json": "*",
+        "ext-json": "*"
+    },
+    "platform-dev": {
         "ext-openssl": "*"
     },
-    "platform-dev": [],
     "plugin-api-version": "2.0.0"
 }
