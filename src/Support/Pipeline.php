@@ -1,255 +1,233 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace WPEmerge\Support;
+    namespace WPEmerge\Support;
 
-	use Closure;
-	use Contracts\ContainerAdapter;
-	use Throwable;
+    use Closure;
+    use Contracts\ContainerAdapter;
+    use LogicException;
+    use mindplay\readable;
+    use Psr\Http\Message\ResponseInterface;
+    use Psr\Http\Message\ServerRequestInterface;
+    use Psr\Http\Server\MiddlewareInterface;
+    use Psr\Http\Server\RequestHandlerInterface;
+    use Throwable;
+    use WPEmerge\Routing\Delegate;
+    use WPEmerge\Traits\ReflectsCallable;
 
-	class Pipeline  {
+    class Pipeline
+    {
 
-		/**
-		 * The container implementation.
-		 *
-		 * @var \Contracts\ContainerAdapter
-		 */
-		private $container;
+        use ReflectsCallable;
 
-		/**
-		 * The object being passed through the pipeline.
-		 *
-		 * @var mixed
-		 */
-		private $traveler;
+        /**
+         * The container implementation.
+         *
+         * @var \Contracts\ContainerAdapter
+         */
+        private $container;
 
+        /**
+         *
+         * @var ServerRequestInterface
+         */
+        private $request;
 
-		/**
-		 * The array of class pipes.
-		 *
-		 * @var array
-		 */
-		private $pipes = [];
+        /**
+         * @var array
+         */
+        private $middleware = [];
 
-		/**
-		 * The method to call on each pipe.
-		 *
-		 * @var string
-		 */
-		private $method = 'handle';
+        public function __construct(ContainerAdapter $container)
+        {
 
-		/**
-		 * Create a new class instance.
-		 *
-		 * @param  \Contracts\ContainerAdapter  $container
-		 */
-		public function __construct( ContainerAdapter $container ) {
+            $this->container = $container;
+        }
 
-			$this->container = $container;
-		}
+        public function send(ServerRequestInterface $request) : Pipeline
+        {
 
-		/**
-		 * Set the object being sent through the pipeline.
-		 *
-		 * @param  mixed  $traveler
-		 *
-		 * @return $this
-		 */
-		public function send( $traveler ) : Pipeline {
+            $this->request = $request;
 
-			$this->traveler = $traveler;
+            return $this;
+        }
 
-			return $this;
-		}
+        /**
+         * Set the array of middleware.
+         *
+         * Accepted: function ($request, Closure $next), Middleware::class , [Middleware ,
+         * 'config_value'
+         *
+         * Middleware classes must implement Psr\Http\Server\MiddlewareInterface
+         *
+         */
+        public function through(array $middleware) : Pipeline
+        {
 
-		/**
-		 * Set the array of pipes.
-		 *
-		 * @param  array|mixed  $stops
-		 *
-		 * @return $this
-		 */
-		public function through( $stops ) : Pipeline {
+            $this->middleware = $this->normalizeMiddleware($middleware);
 
-			$this->pipes = is_array( $stops ) ? $stops : func_get_args();
+            return $this;
+        }
 
-			return $this;
-		}
+        private function normalizeMiddleware(array $middleware) : array
+        {
 
-		/**
-		 * Set the method to call on the pipes.
-		 *
-		 * @param  string  $method
-		 *
-		 * @return $this
-		 */
-		public function via( $method ) : Pipeline {
+            return collect($middleware)
+                ->map(function ($middleware) {
 
-			$this->method = $method;
+                    if ($middleware instanceof Closure) {
 
-			return $this;
-		}
+                        return new Delegate($middleware);
+                    }
 
-		/**
-		 * Run the pipeline with a final destination callback.
-		 *
-		 * @param  Closure  $destination
-		 *
-		 * @return mixed
-		 */
-		public function then( Closure $destination ) {
-
-			$pipeline = array_reduce(
-				array_reverse( $this->pipes() ), $this->carry(), $this->prepareDestination( $destination )
-			);
-
-			return $pipeline( $this->traveler );
-		}
-
-		/**
-		 * Run the pipeline and return the result.
-		 *
-		 * @return mixed
-		 */
-		public function thenReturn() {
-
-			return $this->then( function ( $passable ) {
-
-				return $passable;
-			} );
-		}
-
-		/**
-		 * Get the final piece of the Closure onion.
-		 *
-		 * @param  \Closure  $destination
-		 *
-		 * @return \Closure
-		 */
-		private function prepareDestination( Closure $destination ) {
-
-			return function ( $passable ) use ( $destination ) {
-
-				try {
-					return $destination( $passable );
-				}
-				catch ( Throwable $e ) {
-					return $this->handleException( $passable, $e );
-				}
-			};
-		}
-
-		/**
-		 * Get a Closure that represents a slice of the application onion.
-		 *
-		 * @return \Closure
-		 */
-		private function carry() : Closure {
-
-			return function ( $stack, $pipe ) {
-
-				return function ( $passable ) use ( $stack, $pipe ) {
-
-					try {
-						if ( is_callable( $pipe ) ) {
-							// If the pipe is a callable, then we will call it directly, but otherwise we
-							// will resolve the pipes out of the dependency container and call it with
-							// the appropriate method and arguments, returning the results back out.
-							return $pipe( $passable, $stack );
-
-						} elseif ( ! is_object( $pipe ) ) {
-
-							[ $name, $parameters ] = $this->parsePipeArray( $pipe );
-
-							// If the pipe is a string we will parse the string and resolve the class out
-							// of the dependency injection container. We can then build a callable and
-							// execute the pipe function giving in the parameters that are required.
-							$pipe = $this->container->make( $name );
-
-							$parameters = array_merge( [ $passable, $stack ], $parameters );
-
-						} else {
-							// If the pipe is already an object we'll just make a callable and pass it to
-							// the pipe as-is. There is no need to do any extra parsing and formatting
-							// since the object we're given was already a fully instantiated object.
-							$parameters = [ $passable, $stack ];
-						}
-
-						$carry = method_exists( $pipe, $this->method )
-							? $pipe->{$this->method}( ...$parameters )
-							: $pipe( ...$parameters );
-
-						return $this->handleCarry( $carry );
-					}
-					catch ( Throwable $e ) {
-						return $this->handleException( $passable, $e );
-					}
-				};
-			};
-		}
-
-		/**
-		 * Parse full pipe string to get name and parameters.
-		 *
-		 * @param array|string $pipe
-		 *
-		 * @return array
-		 */
-		private function parsePipeArray( $pipe ) {
-
-			if ( is_string($pipe) ) {
-
-				return [ $pipe, [] ];
-
-			}
-
-			$middleware_class = array_shift($pipe);
-
-			$parameters = $pipe;
-
-			return [ $middleware_class, $parameters ];
-		}
-
-		/**
-		 * Get the array of configured pipes.
-		 *
-		 * @return array
-		 */
-		private function pipes() {
-
-			return $this->pipes;
-		}
+                    return $middleware;
 
 
+                })
+                ->map(function ($middleware) {
 
-		/**
-		 * Handle the value returned from each pipe before passing it to the next.
-		 *
-		 * @param  mixed  $carry
-		 *
-		 * @return mixed
-		 */
-		private function handleCarry( $carry ) {
+                    $middleware = Arr::wrap($middleware);
 
-			return $carry;
-		}
+                    if ( ! in_array(MiddlewareInterface::class, class_implements($middleware[0]))) {
 
-		/**
-		 * Handle the given exception.
-		 *
-		 * @param  mixed  $passable
-		 * @param  Throwable  $e
-		 *
-		 * @return mixed
-		 *
-		 * @throws Throwable
-		 */
-		private function handleException( $passable, Throwable $e ) {
+                        $type = readable::typeof($middleware);
+                        $value = readable::value($middleware);
 
-			throw $e;
-		}
+                        throw new LogicException("Unsupported middleware type: {$type} ({$value})");
 
-	}
+                    }
+
+                    return $middleware;
+
+
+                })
+                ->map(function ($middleware) {
+
+                    return $this->getMiddlewareAndParams($middleware);
+
+                })
+                ->all();
+
+        }
+
+        /**
+         * Run the pipeline with a final destination callback.
+         *
+         * @param  Closure  $request_handler
+         *
+         * @return ResponseInterface
+         */
+        public function then(Closure $request_handler) : ResponseInterface
+        {
+
+            $this->middleware[] = [ new Delegate($request_handler), [] ];
+
+            return $this->run($this->buildMiddlewareStack());
+
+
+        }
+
+        private function run($stack)
+        {
+
+            return $stack->handle($this->request);
+
+        }
+
+        private function buildMiddlewareStack() : RequestHandlerInterface
+        {
+
+            return $this->nextMiddleware();
+
+        }
+
+        private function nextMiddleware() : Delegate
+        {
+
+            if ($this->middleware === []) {
+
+                return new Delegate(function () {
+
+                    throw new LogicException("Unresolved request: middleware stack exhausted with no result");
+
+                });
+
+            }
+
+            return new Delegate(function (ServerRequestInterface $request) {
+
+                [ $middleware, $constructor_args ] = array_shift($this->middleware);
+
+                if ( $middleware instanceof MiddlewareInterface ) {
+
+                    $response = $middleware->process($request, $this->nextMiddleware());
+
+                    return $this->returnIfValid( $response, $middleware );
+
+                }
+
+                /** @var MiddlewareInterface $middleware_instance */
+                $middleware_instance = $this->container->make(
+                    $middleware,
+                    $this->buildNamedConstructorArgs($middleware, $constructor_args)
+                );
+
+                $response = $middleware_instance->process($request, $this->nextMiddleware());
+
+                return $this->returnIfValid($response, $middleware_instance);
+
+            });
+
+
+        }
+
+        private function returnIfValid($response, $middleware) : ResponseInterface
+        {
+
+            if ( ! $response instanceof ResponseInterface) {
+
+                $given = readable::value($response);
+                $source = readable::callback($middleware);
+
+                throw new LogicException("invalid middleware result: {$given} returned by: {$source}");
+
+            }
+
+            return $response;
+
+        }
+
+        /**
+         *
+         * @param  array|string|object  $middleware_blueprint
+         *
+         * @return array
+         */
+        private function getMiddlewareAndParams($middleware_blueprint) : array
+        {
+
+            if (is_object($middleware_blueprint)) {
+
+                return [$middleware_blueprint, []];
+
+            }
+
+            if (is_string($middleware_blueprint)) {
+
+                return [$middleware_blueprint, []];
+
+            }
+
+            $middleware_class = array_shift($middleware_blueprint);
+
+            $constructor_args = $middleware_blueprint;
+
+            return [$middleware_class, $constructor_args];
+
+        }
+
+
+    }
