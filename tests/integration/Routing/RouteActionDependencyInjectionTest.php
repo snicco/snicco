@@ -12,7 +12,8 @@
 	use Tests\stubs\Foo;
 	use Tests\TestCase;
 	use Tests\TestRequest;
-	use WPEmerge\Http\Response;
+    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Response;
 
 	class RouteActionDependencyInjectionTest extends TestCase {
 
@@ -24,7 +25,7 @@
 			$this->router->get( '/foo', ControllerWithDependencies::class . '@handle');
 
 			$request = $this->request( 'GET', '/foo' );
-			$this->seeResponse( 'foo_controller', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foo_controller', $this->router->runRoute( $request ) );
 
 
 		}
@@ -35,7 +36,7 @@
 			$this->router->get( '/foo', ControllerWithDependencies::class . '@withMethodDependency');
 
 			$request = $this->request( 'GET', '/foo' );
-			$this->seeResponse( 'foobar_controller', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foobar_controller', $this->router->runRoute( $request ) );
 
 		}
 
@@ -45,7 +46,7 @@
 			$this->router->get('teams/{team}/{player}', TeamsController::class . '@handle');
 
 			$request = $this->request( 'GET', '/teams/dortmund/calvin' );
-			$this->seeResponse(  'dortmund:calvin', $this->router->runRoute( $request ) );
+			$this->assertOutput(  'dortmund:calvin', $this->router->runRoute( $request ) );
 
 		}
 
@@ -55,7 +56,7 @@
 			$this->router->get('teams/{team}/{player}', TeamsController::class . '@withDependencies');
 
 			$request = $this->request( 'GET', '/teams/dortmund/calvin' );
-			$this->seeResponse(  'dortmund:calvin:foo:bar', $this->router->runRoute( $request ) );
+			$this->assertOutput(  'dortmund:calvin:foo:bar', $this->router->runRoute( $request ) );
 
 		}
 
@@ -71,7 +72,7 @@
 				}, 'baz', 'biz');
 
 			$request = $this->request( 'GET', '/teams/dortmund/calvin' );
-			$this->seeResponse(  'dortmund:calvin:baz:biz:foo:bar', $this->router->runRoute( $request ) );
+			$this->assertOutput(  'dortmund:calvin:baz:biz:foo:bar', $this->router->runRoute( $request ) );
 
 		}
 
@@ -85,16 +86,15 @@
 					return $baz === 'baz' && $biz === 'biz';
 
 				}, 'baz', 'biz')
-				->handle( function ( TestRequest $request, $team, $player, $baz, $biz ,Foo $foo, Bar $bar) {
+				->handle( function ( Request $request, $team, $player, $baz, $biz ,Foo $foo, Bar $bar) {
 
-					$request->body = $team . ':' . $player . ':' .  $baz . ':' . $biz  . ':' . $foo->foo . ':' . $bar->bar;
+					return $team . ':' . $player . ':' .  $baz . ':' . $biz  . ':' . $foo->foo . ':' . $bar->bar;
 
-					return new Response( $request->body );
 
 				});
 
 			$request = $this->request( 'GET', '/teams/dortmund/calvin' );
-			$this->seeResponse(  'dortmund:calvin:baz:biz:foo:bar', $this->router->runRoute( $request ) );
+			$this->assertOutput(  'dortmund:calvin:baz:biz:foo:bar', $this->router->runRoute( $request ) );
 
 		}
 

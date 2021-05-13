@@ -8,9 +8,9 @@
 
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
 
-
-	class CustomCondition implements ConditionInterface {
+    class CustomCondition implements ConditionInterface {
 
 
 		/** @var callable  */
@@ -27,14 +27,14 @@
 		}
 
 
-		public function isSatisfied( RequestInterface $request ) {
+		public function isSatisfied( Request $request ) :bool {
 
 			return call_user_func_array( $this->callable, $this->arguments );
 
 		}
 
 
-		public function getArguments( RequestInterface $request ) : array {
+		public function getArguments( Request $request ) : array {
 
 			return $this->arguments;
 

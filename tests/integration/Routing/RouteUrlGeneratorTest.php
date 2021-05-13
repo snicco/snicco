@@ -12,7 +12,8 @@
 	use WPEmerge\Contracts\UrlableInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Facade\WP;
-	use WPEmerge\Routing\Conditions\AdminCondition;
+    use WPEmerge\Http\Request;
+    use WPEmerge\Routing\Conditions\AdminCondition;
 	use WPEmerge\Routing\Conditions\NegateCondition;
 	use WPEmerge\Support\Str;
 
@@ -475,13 +476,13 @@
 
 		}
 
-		public function isSatisfied( RequestInterface $request ) {
+		public function isSatisfied( Request $request ) :bool {
 
 			return true;
 
 		}
 
-		public function getArguments( RequestInterface $request ) {
+		public function getArguments( Request $request ) :array  {
 
 			return [];
 

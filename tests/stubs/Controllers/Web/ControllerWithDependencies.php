@@ -9,7 +9,8 @@
 	use Tests\stubs\Bar;
 	use Tests\stubs\Foo;
 	use Tests\TestRequest;
-	use WPEmerge\Http\Response;
+    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Response;
 
 	class ControllerWithDependencies {
 
@@ -24,19 +25,17 @@
 
 		}
 
-		public function handle( TestRequest $request ) : Response {
+		public function handle( Request $request )  {
 
-			$request->body = $this->foo->foo . '_controller';
+		    return $this->foo->foo . '_controller';
 
-			return new Response($request->body);
 
 		}
 
-		public function withMethodDependency( TestRequest $request, Bar $bar ) : Response {
+		public function withMethodDependency( Request $request, Bar $bar )  {
 
-			$request->body = $this->foo->foo . $bar->bar . '_controller';
+			return $this->foo->foo . $bar->bar . '_controller';
 
-			return new Response($request->body);
 
 		}
 

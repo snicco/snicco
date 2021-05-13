@@ -6,21 +6,36 @@
 
 	namespace Tests\stubs\Middleware;
 
-	use WPEmerge\Contracts\Middleware;
-	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Contracts\Middleware;
+    use WPEmerge\Http\Request;
 
-	class FooBarMiddleware implements Middleware {
+    class FooBarMiddleware extends Middleware {
 
-		public function handle( RequestInterface $request, \Closure $next, $foo = 'foo', $bar = 'bar' ) {
+        /**
+         * @var string
+         */
+        private $foo;
+        /**
+         * @var string
+         */
+        private $bar;
+
+        public function __construct($foo = 'foo', $bar = 'bar')
+        {
+            $this->foo = $foo;
+            $this->bar = $bar;
+        }
+
+        public function handle( Request $request,  $next ) {
 
 			if ( isset( $request->body ) ) {
 
-				$request->body .= $foo.$bar;
+				$request->body .= $this->foo.$this->bar;
 
 				return $next( $request );
 			}
 
-			$request->body = $foo.$bar;
+			$request->body = $this->foo.$this->bar;
 
 			return $next( $request );
 

@@ -7,13 +7,18 @@
 	namespace Tests\integration\Routing;
 
 	use SniccoAdapter\BaseContainerAdapter;
-	use Tests\SetUpDefaultMocks;
+    use Tests\AssertsResponse;
+    use Tests\CreateContainer;
+    use Tests\CreateResponseFactory;
+    use Tests\SetUpDefaultMocks;
 	use Tests\TestRequest;
 	use WPEmerge\Facade\WP;
 	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Factories\ConditionFactory;
-	use WPEmerge\Http\Response;
-	use WPEmerge\Routing\Conditions\AdminCondition;
+    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Response;
+    use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Routing\Conditions\AdminCondition;
 	use WPEmerge\Routing\Conditions\AjaxCondition;
 	use WPEmerge\Routing\Conditions\CustomCondition;
 	use WPEmerge\Routing\Conditions\NegateCondition;
@@ -29,10 +34,16 @@
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
     use WPEmerge\ServiceProviders\RoutingServiceProvider;
+    use WPEmerge\View\ViewService;
 
     trait SetUpRouter {
 
 		use SetUpDefaultMocks;
+        use CreateContainer;
+        use CreateResponseFactory;
+        use AssertsResponse;
+
+
 
 		/**
 		 * @var \WPEmerge\Routing\Router
@@ -69,7 +80,7 @@
 				$this,
 				'conditions',
 			]) ? $this->conditions() : $this->allConditions();
-			$container         = new BaseContainerAdapter();
+			$container         = $this->createContainer();
 			$condition_factory = new ConditionFactory( $conditions, $container );
 			$handler_factory   = new HandlerFactory( [], $container );
 			$route_collection  = new RouteCollection(
@@ -79,25 +90,17 @@
 			);
 			$this->route_collection = $route_collection;
 			$this->container   = $container;
-			$this->router      = new Router( $container, $route_collection );
+			$this->router      = new Router(
+			    $container,
+                $route_collection,
+                new ResponseFactory(\Mockery::mock(ViewService::class), $this->createFactory())
+            );
 
 		}
 
-		private function request( $method, $path ) : TestRequest {
+		private function request( $method, $path ) : Request {
 
 			return TestRequest::from( $method, $path );
-
-		}
-
-		private function seeResponse( $expected, $response ) {
-
-			if ( $response instanceof Response ) {
-
-				$response = $response->body();
-
-			}
-
-			$this->assertSame( $expected, $response );
 
 		}
 

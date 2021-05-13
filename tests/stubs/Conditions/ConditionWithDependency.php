@@ -9,8 +9,9 @@
 	use Tests\stubs\Foo;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
 
-	class ConditionWithDependency implements ConditionInterface {
+    class ConditionWithDependency implements ConditionInterface {
 
 
 		/**
@@ -30,7 +31,7 @@
 
 		}
 
-		public function isSatisfied( RequestInterface $request ) : bool {
+		public function isSatisfied( Request $request ) : bool {
 
 			if ( ! isset( $this->foo ) ) {
 
@@ -41,7 +42,7 @@
 			return $this->make_it_pass === true || $this->make_it_pass === 'foobar';
 		}
 
-		public function getArguments( RequestInterface $request ) {
+		public function getArguments( Request $request ) :array {
 
 			return [];
 

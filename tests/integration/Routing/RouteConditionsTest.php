@@ -8,7 +8,7 @@
 
 	use Tests\stubs\Conditions\FalseCondition;
 	use Tests\TestCase;
-	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
 
 	class RouteConditionsTest extends TestCase {
 
@@ -36,13 +36,13 @@
 			$this->router
 				->get( '/foo' )
 				->where( 'false' )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+			$this->assertNullResponse( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
 
 		}
@@ -53,13 +53,13 @@
 			$this->router
 				->get( '/foo' )
 				->where( new FalseCondition() )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+			$this->assertNullResponse( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
 
 		}
@@ -70,24 +70,24 @@
 			$this->router
 				->where( new FalseCondition() )
 				->get( '/foo' )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+			$this->assertNullResponse( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
 			$this->router
 				->where( 'false' )
 				->post( '/bar' )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->assertNull( $this->router->runRoute( $this->request( 'POST', '/bar' ) ) );
+			$this->assertNullResponse( $this->router->runRoute( $this->request( 'POST', '/bar' ) ) );
 
 		}
 
@@ -110,13 +110,13 @@
 
 				}, 'bar' )
 				->get( '/baz' )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/baz' ) ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $this->request( 'GET', '/baz' ) ) );
 			$this->assertSame( 'bar', $GLOBALS['test']['cond2'] );
 			$this->assertSame( 'foo', $GLOBALS['test']['cond1'] ?? null, 'First condition did not execute' );
 
@@ -151,7 +151,7 @@
 					}
 				);
 
-			$this->seeResponse( 'foobar', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+			$this->assertOutput( 'foobar', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
 			$this->router
 				->post( '/will-fail' )
@@ -172,7 +172,7 @@
 					}
 				);
 
-			$this->assertNull( $this->router->runRoute( $this->request( 'POST', '/will-fail' ) ) );
+			$this->assertNullResponse( $this->router->runRoute( $this->request( 'POST', '/will-fail' ) ) );
 
 			$this->router
 				->where(
@@ -193,7 +193,7 @@
 					}
 				);
 
-			$this->seeResponse( 'foobar', $this->router->runRoute( $this->request( 'PUT', '/foo-before' ) ) );
+			$this->assertOutput( 'foobar', $this->router->runRoute( $this->request( 'PUT', '/foo-before' ) ) );
 
 
 		}
@@ -205,13 +205,13 @@
 				->get( '/foo' )
 				->where( 'true' )
 				->where( 'false' )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+			$this->assertNullResponse( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
 
 		}
@@ -223,24 +223,24 @@
 			$this->router
 				->get( '/foo' )
 				->where( '!false' )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
 			$this->router
 				->post( '/bar' )
 				->where( 'negate', 'false' )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'POST', '/bar' ) ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $this->request( 'POST', '/bar' ) ) );
 
 			$this->router
 				->put( '/baz' )
@@ -249,13 +249,13 @@
 					return $foo !== 'foo';
 
 				}, 'foo' )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'PUT', '/baz' ) ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $this->request( 'PUT', '/baz' ) ) );
 
 
 		}
@@ -266,57 +266,57 @@
 			$this->router
 				->get( '/foo' )
 				->where( 'maybe', true )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
 			$this->router
 				->post( '/bar' )
 				->where( 'maybe', false )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->assertNull( $this->router->runRoute( $this->request( 'POST', '/bar' ) ) );
+			$this->assertNullResponse( $this->router->runRoute( $this->request( 'POST', '/bar' ) ) );
 
 			$this->router
 				->put( '/baz' )
 				->where( '!maybe', false )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'PUT', '/baz' ) ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $this->request( 'PUT', '/baz' ) ) );
 
 			$this->router
 				->delete( '/baz' )
 				->where( '!maybe', false )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'DELETE', '/baz' ) ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $this->request( 'DELETE', '/baz' ) ) );
 
 			$this->router
 				->patch( '/foobar' )
 				->where( '!maybe', 'foobar' )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->assertNull( $this->router->runRoute( $this->request( 'PATCH', '/foobar' ) ) );
+			$this->assertNullResponse( $this->router->runRoute( $this->request( 'PATCH', '/foobar' ) ) );
 
 
 		}
@@ -328,13 +328,13 @@
 			$this->router
 				->get( '/foo' )
 				->where( 'maybe', false )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->seeResponse( null, $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+			$this->assertNullResponse(  $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 			$this->assertTrue( $GLOBALS['test']['maybe_condition_run'] );
 
 		}
@@ -345,13 +345,13 @@
 			$this->router
 				->get( '/foo' )
 				->where( 'negate', new FalseCondition() )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return 'foo';
 
 				} );
 
-			$this->seeResponse( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
 
 		}
@@ -367,13 +367,13 @@
 					$this->fail( 'This condition should not have been called.' );
 
 				} )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					$this->fail('This should never be called.');
 
 				} );
 
-			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+			$this->assertNullResponse( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
 		}
 
@@ -391,7 +391,7 @@
 
 			$get = $this->request( 'GET', '/foo' );
 
-			$this->seeResponse( 'foo', $this->router->runRoute( $get ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $get ) );
 
 			$this->router
 				->where( 'dependency_condition', false )
@@ -403,7 +403,7 @@
 
 			$post = $this->request( 'POST', '/foo' );
 
-			$this->seeResponse( null, $this->router->runRoute( $post ) );
+			$this->assertNullResponse(  $this->router->runRoute( $post ) );
 
 
 		}
@@ -419,7 +419,7 @@
 			} );
 
 			$get = $this->request( 'GET', '/foo' );
-			$this->seeResponse( 'foo', $this->router->runRoute( $get ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $get ) );
 
 			$this->router
 				->where( 'is_string', 1 )
@@ -431,7 +431,7 @@
 
 			$post = $this->request( 'POST', '/foo' );
 
-			$this->seeResponse( null, $this->router->runRoute( $post ) );
+			$this->assertNullResponse( $this->router->runRoute( $post ) );
 
 			$this->router
 				->where( '!is_string', 1 )
@@ -443,7 +443,7 @@
 
 			$put = $this->request( 'PUT', '/foo' );
 
-			$this->seeResponse( 'foo', $this->router->runRoute( $put ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $put ) );
 
 
 		}

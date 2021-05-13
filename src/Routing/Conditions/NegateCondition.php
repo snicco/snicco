@@ -8,9 +8,9 @@
 
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
 
-
-	class NegateCondition implements ConditionInterface {
+    class NegateCondition implements ConditionInterface {
 
 		/**
 		 * Condition to negate.
@@ -27,14 +27,14 @@
 		}
 
 
-		public function isSatisfied( RequestInterface $request ) : bool {
+		public function isSatisfied( Request $request ) : bool {
 
 			return ! $this->condition->isSatisfied( $request );
 
 		}
 
 
-		public function getArguments( RequestInterface $request ) : array {
+		public function getArguments( Request $request ) : array {
 
 			return $this->condition->getArguments( $request );
 		}

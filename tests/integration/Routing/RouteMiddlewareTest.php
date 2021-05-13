@@ -11,7 +11,7 @@
 	use Tests\stubs\Middleware\FooBarMiddleware;
 	use Tests\stubs\Middleware\FooMiddleware;
     use Tests\TestCase;
-    use Tests\TestRequest;
+    use WPEmerge\Http\Request;
 
 	class RouteMiddlewareTest extends TestCase {
 
@@ -26,7 +26,7 @@
 
 			] );
 
-			$this->router->get( '/foo', function ( TestRequest $request ) {
+			$this->router->get( '/foo', function ( Request $request ) {
 
 				return $request->body;
 
@@ -35,7 +35,7 @@
 			$request  = $this->request( 'GET', '/foo' );
 			$response = $this->router->runRoute( $request );
 
-			$this->assertSame( 'foobar', $response );
+			$this->assertOutput( 'foobar', $response );
 
 
 		}
@@ -49,7 +49,7 @@
 				BarMiddleware::class,
 			] );
 
-			$this->router->get( '/foo', function ( TestRequest $request ) {
+			$this->router->get( '/foo', function ( Request $request ) {
 
 				return $request->body;
 
@@ -58,7 +58,7 @@
 			$request  = $this->request( 'GET', '/foo' );
 			$response = $this->router->runRoute( $request );
 
-			$this->assertSame( 'foobar', $response );
+			$this->assertOutput( 'foobar', $response );
 
 		}
 
@@ -75,14 +75,14 @@
 				BarMiddleware::class,
 			] );
 
-			$this->router->middleware( 'foobar' )->get( '/foo', function ( TestRequest $request ) {
+			$this->router->middleware( 'foobar' )->get( '/foo', function ( Request $request ) {
 
 				return $request->body;
 
 			} );
 
 			$request  = $this->request( 'GET', '/foo' );
-			$this->seeResponse( 'foobar', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foobar', $this->router->runRoute( $request ) );
 
 		}
 
@@ -98,14 +98,14 @@
 
 			]);
 
-			$this->router->get( '/foo', function ( TestRequest $request ) {
+			$this->router->get( '/foo', function ( Request $request ) {
 
 				return $request->body;
 
 			})->middleware(['all', 'foo:FOO']);
 
 			$request = $this->request('GET', 'foo');
-			$this->seeResponse( 'FOObarbaz', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'FOObarbaz', $this->router->runRoute( $request ) );
 
 		}
 
@@ -121,7 +121,7 @@
 			] );
 
 			$this->router->middleware( 'foo', 'bar' )
-			             ->get( '/foo', function ( TestRequest $request ) {
+			             ->get( '/foo', function ( Request $request ) {
 
 				             return $request->body;
 
@@ -130,7 +130,7 @@
 			$request  = $this->request( 'GET', '/foo' );
 			$response = $this->router->runRoute( $request );
 
-			$this->assertSame( 'foobar', $response );
+			$this->assertOutput( 'foobar', $response );
 
 		}
 
@@ -139,7 +139,7 @@
 
 			$routes = function () {
 
-				$this->router->middleware('foo')->get( 'foo', function ( TestRequest $request ) {
+				$this->router->middleware('foo')->get( 'foo', function ( Request $request ) {
 
 					return $request->body;
 
@@ -150,13 +150,13 @@
 			$this->newRouterWith( $routes );
 			$this->router->aliasMiddleware( 'foo', FooMiddleware::class );
 			$request = $this->request('GET', '/foo');
-			$this->seeResponse('foo', $this->router->runRoute($request) );
+			$this->assertOutput('foo', $this->router->runRoute($request) );
 
 			$this->expectExceptionMessage('Unknown middleware [foo]');
 
 			$this->newRouterWith( $routes );
 			$request = $this->request('GET', '/foo');
-			$this->seeResponse('foo', $this->router->runRoute($request) );
+			$this->assertOutput('foo', $this->router->runRoute($request) );
 		}
 
 		/** @test */
@@ -164,32 +164,32 @@
 
 			$this->router->aliasMiddleware('foobar', FooBarMiddleware::class);
 
-			$this->router->get( '/foo', function ( TestRequest $request ) {
+			$this->router->get( '/foo', function ( Request $request ) {
 
 				return $request->body;
 
 			} )->middleware('foobar');
 
-			$this->router->post( '/foo', function ( TestRequest $request ) {
+			$this->router->post( '/foo', function ( Request $request ) {
 
 				return $request->body;
 
 			})->middleware('foobar:FOO');
 
-			$this->router->patch( '/foo', function ( TestRequest $request ) {
+			$this->router->patch( '/foo', function ( Request $request ) {
 
 				return $request->body;
 
 			})->middleware('foobar:FOO,BAR');
 
 			$request = $this->request( 'GET', '/foo' );
-			$this->seeResponse( 'foobar', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foobar', $this->router->runRoute( $request ) );
 
 			$request = $this->request( 'POST', '/foo' );
-			$this->seeResponse( 'FOObar', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'FOObar', $this->router->runRoute( $request ) );
 
 			$request = $this->request( 'PATCH', '/foo' );
-			$this->seeResponse( 'FOOBAR', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'FOOBAR', $this->router->runRoute( $request ) );
 
 		}
 
@@ -201,14 +201,14 @@
 				'foo'
 			]);
 
-			$this->router->get( '/foo', function ( TestRequest $request ) {
+			$this->router->get( '/foo', function ( Request $request ) {
 
 				return $request->body;
 
 			})->middleware('foogroup');
 
 			$request = $this->request( 'GET', '/foo' );
-			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $request ) );
 
 		}
 
@@ -221,14 +221,14 @@
 				BarMiddleware::class
 			]);
 
-			$this->router->get( '/foo', function ( TestRequest $request ) {
+			$this->router->get( '/foo', function ( Request $request ) {
 
 				return $request->body;
 
 			} )->middleware(['baz', 'foobar']);
 
 			$request = $this->request( 'GET', '/foo' );
-			$this->seeResponse( 'bazfoobar', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'bazfoobar', $this->router->runRoute( $request ) );
 
 
 		}
@@ -250,14 +250,14 @@
 				'bar',
 			]);
 
-			$this->router->get( '/foo', function ( TestRequest $request ) {
+			$this->router->get( '/foo', function ( Request $request ) {
 
 				return $request->body;
 
 			})->middleware('baz');
 
 			$request = $this->request( 'GET', '/foo' );
-			$this->seeResponse( 'bazbarfoo', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'bazbarfoo', $this->router->runRoute( $request ) );
 
 
 		}
@@ -265,14 +265,14 @@
 		/** @test */
 		public function middleware_can_be_applied_without_an_alias () {
 
-			$this->router->get( '/foo', function ( TestRequest $request ) {
+			$this->router->get( '/foo', function ( Request $request ) {
 
 				return $request->body;
 
 			} )->middleware(FooBarMiddleware::class. ':FOO,BAR');
 
 			$request = $this->request( 'GET', '/foo' );
-			$this->seeResponse( 'FOOBAR', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'FOOBAR', $this->router->runRoute( $request ) );
 
 
 		}
@@ -282,14 +282,14 @@
 
 			$this->expectExceptionMessage('Unknown middleware [foo] used.');
 
-			$this->router->get( '/foo', function ( TestRequest $request ) {
+			$this->router->get( '/foo', function ( Request $request ) {
 
 				return $request->body;
 
 			} )->middleware('foo');
 
 			$request = $this->request( 'GET', '/foo' );
-			$this->seeResponse( null , $this->router->runRoute( $request ) );
+			$this->assertNullResponse( $this->router->runRoute( $request ) );
 
 		}
 
@@ -327,7 +327,7 @@
 
 			$this->router->middleware('barbaz')->group(function () {
 
-				$this->router->get( '/foo', function ( TestRequest $request ) {
+				$this->router->get( '/foo', function ( Request $request ) {
 
 					return $request->body;
 
@@ -336,7 +336,7 @@
 			});
 
 			$request = $this->request( 'GET', '/foo' );
-			$this->seeResponse( 'foobarbaz', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foobarbaz', $this->router->runRoute( $request ) );
 
 		}
 
@@ -361,14 +361,14 @@
 
 			]);
 
-			$this->router->get( '/foo', function ( TestRequest $request ) {
+			$this->router->get( '/foo', function ( Request $request ) {
 
 				return $request->body;
 
 			} )->middleware('all');
 
 			$request = $this->request( 'GET', '/foo' );
-			$this->seeResponse( 'foobarfoobarbaz', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foobarfoobarbaz', $this->router->runRoute( $request ) );
 
 		}
 
@@ -390,14 +390,14 @@
 
 			]);
 
-			$this->router->get( '/foo', function ( TestRequest $request ) {
+			$this->router->get( '/foo', function ( Request $request ) {
 
 				return $request->body;
 
 			} )->middleware([FooBarMiddleware::class, BazMiddleware::class]);
 
 			$request = $this->request( 'GET', '/foo' );
-			$this->seeResponse( 'foobarbazfoobar', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foobarbazfoobar', $this->router->runRoute( $request ) );
 
 
 		}
@@ -410,16 +410,18 @@
 				BarMiddleware::class,
 			]);
 
-			$this->router->get( '/foo', function ( TestRequest $request ) {
+			$this->router->get( '/foo', function ( Request $request ) {
 
 				return $request->body;
 
 			} )->middleware([FooBarMiddleware::class, BazMiddleware::class]);
 
+			// The middleware does not run and cant append anything to $request->body
 			$this->router->withoutMiddleware();
 
 			$request = $this->request( 'GET', '/foo' );
-			$this->seeResponse( null , $this->router->runRoute( $request ) );
+			$request->body = 'test';
+			$this->assertOutput( 'test', $this->router->runRoute( $request ) );
 
 
 		}

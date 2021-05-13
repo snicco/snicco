@@ -7,12 +7,12 @@
 	namespace Tests\stubs\Conditions;
 
 	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
 
-	class UniqueCondition implements ConditionInterface {
+    class UniqueCondition implements ConditionInterface {
 
 
-		public function isSatisfied( RequestInterface $request ) : bool {
+		public function isSatisfied( Request $request ) : bool {
 
 			$count = $GLOBALS['test']['unique_condition'] ?? 0;
 
@@ -24,7 +24,7 @@
 
 		}
 
-		public function getArguments( RequestInterface $request ) : array {
+		public function getArguments( Request $request ) : array {
 
 			return [];
 

@@ -6,16 +6,17 @@
 
 	namespace Tests\stubs\Middleware;
 
-	use Closure;
 	use Tests\stubs\Bar;
 	use Tests\stubs\Foo;
-	use Tests\TestRequest;
+    use WPEmerge\Contracts\Middleware;
+    use WPEmerge\Http\Request;
+    use WPEmerge\Routing\Delegate;
 
-	class MiddlewareWithDependencies {
+    class MiddlewareWithDependencies extends Middleware {
 
-		/** @var \Tests\stubs\Foo */
+		/** @var Foo */
 		private $foo;
-		/** @var \Tests\stubs\Bar */
+		/** @var Bar */
 		private $bar;
 
 
@@ -26,9 +27,9 @@
 
 		}
 
-		public function handle(TestRequest $request, Closure $next ) {
+		public function handle(Request $request, Delegate $next ) {
 
-			$request->body = $this->foo . $this->bar;
+			$request->body = $this->foo->foo . $this->bar->bar;
 
 			return $next($request);
 

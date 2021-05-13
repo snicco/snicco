@@ -6,11 +6,11 @@
 
 	namespace Tests\stubs\Controllers\Web;
 
-	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
 
-	class RoutingController {
+    class RoutingController {
 
-		public function foo( RequestInterface $request ) {
+		public function foo( Request $request ) {
 
 			return 'foo';
 

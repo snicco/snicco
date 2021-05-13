@@ -6,18 +6,18 @@
 
 	namespace Tests\stubs\Conditions;
 
-	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Contracts\ConditionInterface;
+    use WPEmerge\Http\Request;
 
 	class FalseCondition implements ConditionInterface {
 
 
-		public function isSatisfied( RequestInterface $request ) {
+		public function isSatisfied( Request $request ) :bool {
 
 			return false;
 		}
 
-		public function getArguments( RequestInterface $request ) {
+		public function getArguments( Request $request ) : array {
 
 			return [];
 

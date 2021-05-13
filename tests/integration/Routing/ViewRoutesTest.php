@@ -6,21 +6,23 @@
 
 	namespace Tests\integration\Routing;
 
-	use Tests\AssertsResponse;
-	use Tests\stubs\TestResponseFactory;
-	use Tests\TestCase;
-	use WPEmerge\Contracts\ResponseFactoryInterface;
-	use WPEmerge\Contracts\ResponseInterface;
+    use Tests\AssertsResponse;
+    use Tests\CreateResponseFactory;
+    use Tests\stubs\TestResponseFactory;
+    use Tests\TestCase;
+    use WPEmerge\Contracts\ResponseFactoryInterface;
+    use WPEmerge\Http\Response;
 
-	class ViewRoutesTest extends TestCase {
+    class ViewRoutesTest extends TestCase {
 
 		use SetUpRouter;
 		use AssertsResponse;
+        use CreateResponseFactory;
 
 		/** @test */
 		public function view_routes_work() {
 
-			$this->bindResponseFactory();
+			$this->createBindingsForViewController();
 
 			$this->router->view('/foo', 'welcome.wordpress');
 
@@ -28,17 +30,16 @@
 
 			$response = $this->router->runRoute($request);
 
-			$this->assertInstanceOf(ResponseInterface::class, $response );
-
+			$this->assertInstanceOf(Response::class, $response );
 			$this->assertContentType('text/html', $response);
-			$this->assertOutput('welcome.wordpress', $response);
+			$this->assertOutputContains('welcome.wordpress', $response);
 
 		}
 
 		/** @test */
 		public function the_default_values_can_be_customized_for_view_routes() {
 
-			$this->bindResponseFactory();
+			$this->createBindingsForViewController();
 
 			$this->router->view('/foo', 'welcome.wordpress', ['foo' => 'bar'], 201, ['Referer' => 'foobar']);
 
@@ -46,7 +47,7 @@
 
 			$response = $this->router->runRoute($request);
 
-			$this->assertInstanceOf(ResponseInterface::class, $response );
+			$this->assertInstanceOf(Response::class, $response );
 
 			$this->assertHeader('Referer', 'foobar', $response);
 			$this->assertOutput('welcome.wordpress:foo=>bar', $response);
@@ -54,13 +55,10 @@
 
 		}
 
-		private function bindResponseFactory ( ) {
+		private function createBindingsForViewController () {
 
-			$this->container->singleton(ResponseFactoryInterface::class, function () {
+		    $this->container->instance(ResponseFactoryInterface::class, new TestResponseFactory());
 
-				return new TestResponseFactory();
-
-			});
 
 		}
 

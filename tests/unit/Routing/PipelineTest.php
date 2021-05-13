@@ -13,6 +13,7 @@
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
+    use Psr\Log\InvalidArgumentException;
     use SniccoAdapter\BaseContainerAdapter;
     use WPEmerge\Support\Pipeline;
     use PHPUnit\Framework\TestCase;
@@ -89,12 +90,11 @@
         }
 
         /** @test */
-        public function not_returning_a_responses_from_the_stack_throws_an_exception()
+        public function not_returning_a_response_object_from_the_final_handler_of_the_stack_throws_an_exception()
         {
 
-            $this->expectExceptionMessage(
-                "invalid middleware result: null returned by: {WPEmerge\Routing\Delegate}->__invoke()"
-            );
+            $this->expectException(\TypeError::class);
+
 
             $this->pipeline
                 ->send($this->request)
@@ -102,7 +102,6 @@
                 ->then(function (ServerRequestInterface $request) {
 
                     //
-
                     $foo = 'bar';
 
                 });
@@ -238,7 +237,7 @@
 
              $this->pipeline
                 ->send($this->request)
-                ->through([Middleware::class])
+                ->through([WrongMiddleware::class])
                 ->then(function () {
 
                     $this->fail('Invalid middleware did not cause an exception');
@@ -260,7 +259,9 @@
 
             $test = $request->getAttribute('test', '');
 
-            return $handler->handle($request->withAttribute('test', $test .= 'foo'));
+            $response = $handler->handle($request->withAttribute('test', $test .= 'foo'));
+
+            return $response;
 
         }
 
@@ -275,7 +276,9 @@
 
             $test = $request->getAttribute('test', '');
 
-            return $handler->handle($request->withAttribute('test', $test .= 'bar'));
+            $response = $handler->handle($request->withAttribute('test', $test .= 'bar'));
+
+            return $response;
 
         }
 
@@ -372,7 +375,7 @@
 
     }
 
-    class Middleware {
+    class WrongMiddleware {
 
         public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
         {

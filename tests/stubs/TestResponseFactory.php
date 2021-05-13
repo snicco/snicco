@@ -6,13 +6,15 @@
 
 	namespace Tests\stubs;
 
-	use WPEmerge\Contracts\ResponseFactoryInterface;
-	use WPEmerge\Contracts\ResponseInterface;
+	use Tests\CreateResponseFactory;
+    use WPEmerge\Contracts\ResponseFactoryInterface;
 	use WPEmerge\Http\Response;
 
 	class TestResponseFactory implements ResponseFactoryInterface {
 
-		public function view( string $view, array $data = [], $status = 200, array $headers = [] ) : ResponseInterface {
+	    use CreateResponseFactory;
+
+		public function view( string $view, array $data = [], $status = 200, array $headers = [] ) : Response {
 
 			$additional_data = ':';
 
@@ -24,7 +26,10 @@
 
 			$content = $view . $additional_data;
 
-			return  ( new Response($content, $status, $headers))->setType('text/html');
+			$psr =$this->createFactory()->createResponse($status, 'OK', $headers, $content);
+
+			return (new Response($psr))->html();
+
 
 		}
 
