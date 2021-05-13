@@ -1,6 +1,5 @@
 <?php
 
-
     declare(strict_types = 1);
 
 
@@ -15,6 +14,7 @@
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
     use Throwable;
+    use WPEmerge\Exceptions\ConfigurationException;
     use WPEmerge\Routing\Delegate;
     use WPEmerge\Traits\ReflectsCallable;
 
@@ -91,18 +91,12 @@
 
                     $middleware = Arr::wrap($middleware);
 
-                    if ( $middleware[0] instanceof Closure ) {
-
-                        return $middleware;
-
-                    }
-
                     if ( ! in_array(MiddlewareInterface::class, class_implements($middleware[0]))) {
 
                         $type = readable::typeof($middleware);
                         $value = readable::value($middleware);
 
-                        throw new LogicException("Unsupported middleware type: {$type} ({$value})");
+                        throw new ConfigurationException("Unsupported middleware type: {$type} ({$value})");
 
                     }
 
@@ -129,7 +123,7 @@
         public function then(Closure $request_handler) : ResponseInterface
         {
 
-            $this->middleware[] = [ $request_handler, [] ];
+            $this->middleware[] = [ new Delegate($request_handler), [] ];
 
             return $this->run($this->buildMiddlewareStack());
 
@@ -166,14 +160,6 @@
             return new Delegate( function (ServerRequestInterface $request ) {
 
                 [ $middleware, $constructor_args ] = array_shift($this->middleware);
-
-                // This is the final request handler passed into then()
-                if ( $middleware instanceof Closure ) {
-
-                    return $middleware($request, $this->nextMiddleware());
-
-                }
-
 
                 if ( $middleware instanceof MiddlewareInterface ) {
 
