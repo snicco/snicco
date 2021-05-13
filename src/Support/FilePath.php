@@ -52,9 +52,10 @@
 			$path = static::normalize( $path, $slash );
 
 			return preg_replace( '~' . preg_quote( $slash, '~' ) . '+$~', '', $path );
+
 		}
 
-		public static function ending ( string $path, string $ending ) {
+		public static function ending ( string $path, string $ending ) : string {
 
 			$cleaned_path = preg_replace('/(\.([a-z]+)?)/', '' , $path);
 

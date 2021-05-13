@@ -42,26 +42,35 @@
   ],
   "require": {
     "php": "^7.3",
-    "calvinalkan/base-container": "0.1.*",
-    "illuminate/collections": "8.35.1",
     "ext-json": "*",
+    "calvinalkan/base-container": "0.1.*",
     "calvinalkan/better-wordpress-hooks": "0.1.5",
+    "calvinalkan/wp-facade": "0.1.0",
+    "illuminate/collections": "8.35.1",
     "illuminate/config": "8.35.1",
-    "nikic/fast-route": "1.3.0",
-    "opis/closure": "3.6.2",
-    "psr/log": "1.1.4",
     "symfony/http-foundation": "5.2.7",
-    "illuminate/encryption": "8.40.0",
-    "ext-openssl": "*",
-    "calvinalkan/wp-facade": "0.1.0"
+    "symfony/finder": "^5,.0-stable",
+    "nikic/fast-route": "1.3.0",
+    "psr/log": "1.1.4"
   },
   "require-dev": {
-    "mockery/mockery": "^1.4.2",
+    "opis/closure": "3.6.2",
+    "ext-openssl": "*",
+    "illuminate/encryption": "8.40.0",
     "filp/whoops": "^2.2",
+    "mockery/mockery": "^1.4.2",
     "phpunit/phpunit": "^9.0",
     "calvinalkan/better-wordpress-database": "dev-master",
     "lucatume/wp-browser": "dev-better-env-names"
   },
+
+  "suggest": {
+    "opis/closure": "Required if you want to cache routes that use closures [3.6.2]",
+    "illuminate/encryption": "Required if you want to use sessions [8.40.0]",
+    "ext-openssl": "Required if you want to use sessions",
+    "flip/whoops" : "Required if you want the pretty page error handler during devolopment"
+  },
+
   "autoload": {
     "psr-4": {
       "WPEmerge\\": "src/",
