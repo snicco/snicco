@@ -12,23 +12,14 @@
 	use WPEmerge\Contracts\ViewServiceInterface;
 	use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\View\PhpViewFinder;
-	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Support\VariableBag;
 	use WPEmerge\View\ViewService;
-
 	use WPEmerge\ViewComposers\ViewComposerCollection;
 	use WPEmerge\Factories\ViewComposerFactory;
 
-	use function get_stylesheet_directory;
-	use function get_template_directory;
 
 
-	/**
-	 * Provide view dependencies
-	 *
-	 */
 	class ViewServiceProvider extends ServiceProvider {
-
 
 		public function register() : void {
 
