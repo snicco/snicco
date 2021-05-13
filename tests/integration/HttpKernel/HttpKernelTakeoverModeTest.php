@@ -15,6 +15,8 @@
 	class HttpKernelTakeoverModeTest extends TestCase {
 
 		use SetUpKernel;
+        use AssertKernelOutput;
+
 
 		/** @test */
 		public function the_kernel_will_always_run_global_middleware_even_when_not_matching_a_request() {

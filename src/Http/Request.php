@@ -20,10 +20,10 @@
 
 
 
-        public function __construct(ServerRequestInterface $prs_request)
+        public function __construct(ServerRequestInterface $psr_request)
         {
 
-            $this->prs_request = $prs_request;
+            $this->psr_request = $psr_request;
 
         }
 

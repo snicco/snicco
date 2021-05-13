@@ -8,6 +8,7 @@
 
     use PHPUnit\Framework\Assert;
     use SniccoAdapter\BaseContainerAdapter;
+    use Tests\CreateContainer;
     use Tests\SetUpDefaultMocks;
     use Tests\stubs\TestErrorHandler;
     use Tests\TestRequest;
@@ -50,7 +51,7 @@
 
             parent::setUp();
 
-            $container = $this->createContaiener();
+            $container = $this->createContainer();
             $handler_factory = new HandlerFactory([], $container);
             $condition_factory = new ConditionFactory([], $container);
             $error_handler = new TestErrorHandler();
