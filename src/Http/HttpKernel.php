@@ -7,6 +7,7 @@
 	namespace WPEmerge\Http;
 
 	use Contracts\ContainerAdapter as Container;
+    use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
     use Psr\Http\Message\ResponseInterface;
     use Throwable;
 	use WPEmerge\Contracts\ResponsableInterface;
@@ -49,20 +50,24 @@
          */
         private $response_factory;
 
+        /**
+         * @var ResponseEmitter
+         */
+        private $response_emitter;
+
 
         public function __construct(
 
 			Router $router,
 			Container $container,
 			/** @todo this could be a middleware */
-			ErrorHandler $error_handler,
-            ResponseFactory $response_factory
+			ErrorHandler $error_handler
 		) {
 
 			$this->router        = $router;
 			$this->container     = $container;
 			$this->error_handler = $error_handler;
-            $this->response_factory = $response_factory;
+            $this->response_emitter = new ResponseEmitter();
 
         }
 
@@ -130,14 +135,11 @@
 
 		private function sendResponse() {
 
-
 			if ( $this->response instanceof NullResponse ) {
 
 				return;
 
 			}
-
-			$this->response = $this->response->prepareForSending( $this->request );
 
 			$this->sendHeaders();
 
@@ -151,7 +153,7 @@
 
 		private function sendHeaders() {
 
-			$this->response->sendHeaders();
+			$this->response_emitter->emitHeaders($this->response);
 
 			HeadersSent::dispatch( [ $this->response, $this->request ] );
 
@@ -159,53 +161,9 @@
 
 		private function sendBody() {
 
-			$this->response->sendBody();
+            $this->response_emitter->emitBody($this->response);
 
 			BodySent::dispatch( [ $this->response, $this->request ] );
-
-		}
-
-		/** @todo handle the case where a route matched but invalid response was returned */
-		private function prepareResponse( $response ) : ResponseInterface {
-
-			if ( $response instanceof ResponseInterface ) {
-
-				return $response;
-
-			}
-
-			if ( is_string( $response ) ) {
-
-				return $this->response_factory->html($response);
-
-			}
-
-			if ( is_array( $response ) ) {
-
-				return $this->response_factory->json($response);
-
-			}
-
-			if ( $response instanceof ResponsableInterface ) {
-
-				return $this->response_factory->json($response);
-
-			}
-
-			return $this->response_factory->null();
-
-			// /**
-			//  * @todo Decide how this should be handled in production.
-			//  *  500, 404 ?
-			//  */
-			// if ( $this->is_takeover_mode ) {
-            //
-			// 	throw new InvalidResponseException(
-			// 		'The response by the route action is not valid.'
-			// 	);
-            //
-			// }
-
 
 		}
 
@@ -242,9 +200,8 @@
 
 				}
 
-				$response =  $this->router->runRoute( $request );
+				return $this->router->runRoute( $request );
 
-				return $this->prepareResponse( $response );
 
 			};
 

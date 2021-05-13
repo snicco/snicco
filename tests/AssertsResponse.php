@@ -6,38 +6,32 @@
 
 	namespace Tests;
 
-	use WPEmerge\Contracts\ResponseInterface;
+    use WPEmerge\Http\Response;
 
-	trait AssertsResponse {
-
-		private function createRequest() : TestRequest {
-
-			return TestRequest::from('GET', 'foo');
+    trait AssertsResponse {
 
 
-		}
+		private function assertStatusCode(int $code, Response $response) {
 
-		private function assertStatusCode(int $code, ResponseInterface $response) {
-
-			$this->assertSame($code , $response->status());
+			$this->assertSame($code , $response->getStatusCode());
 
 		}
 
-		private function assertContentType( string $type, ResponseInterface $response ) {
+		private function assertContentType( string $type, Response $response ) {
 
-			$this->assertSame($type, $response->header('Content-Type'));
-
-		}
-
-		private function assertOutput ( $output , ResponseInterface $response ) {
-
-			$this->assertStringContainsString($output, $response->body());
+			$this->assertSame($type, $response->getHeaderLine('Content-Type'));
 
 		}
 
-		private function assertHeader ( $name, $value , ResponseInterface $response) {
+		private function assertOutput ( $output , Response $response ) {
 
-			$this->assertSame($value, $response->header($name));
+			$this->assertStringContainsString($output, $response->getBody()->read(999));
+
+		}
+
+		private function assertHeader ( $name, $value , Response $response) {
+
+			$this->assertSame($value, $response->getHeaderLine($name));
 
 		}
 

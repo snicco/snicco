@@ -28,7 +28,6 @@
          */
         public function __construct(callable $callback)
         {
-
             $this->callback = $callback;
         }
 
@@ -42,19 +41,8 @@
         public function handle(ServerRequestInterface $request) : ResponseInterface
         {
 
-            $response = ($this->callback)($request);
+            return ($this->callback)($request);
 
-
-            if ( ! $response instanceof ResponseInterface) {
-
-                $given = readable::value($response);
-                $source = readable::callback($this);
-
-                throw new \LogicException("invalid middleware result: {$given} returned by: {$source}");
-
-            }
-
-            return $response;
 
         }
 
