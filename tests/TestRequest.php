@@ -6,13 +6,14 @@
 
 	namespace Tests;
 
-	use WPEmerge\Http\Request;
+	use Psr\Http\Message\ServerRequestInterface;
+    use WPEmerge\Http\Request;
 
 	class TestRequest extends Request {
 
 		public $body;
 
-		public static function fromFullUrl(string $method, string $url ) {
+        public static function fromFullUrl(string $method, string $url ) {
 
 			$request = static::create($url, $method);
 
@@ -20,20 +21,19 @@
 
 		}
 
-		public static function from(string $method, $path, $host = null ) : TestRequest {
+		public static function from(string $method, $path, $host = null ) : ServerRequestInterface {
 
-			$path = trim($path, '/') ?: '/';
-			$method = strtoupper($method);
+            $psr17Factory = new \Nyholm\Psr7\Factory\Psr17Factory();
 
-			$host = $host ?? 'https://foo.com';
+            $path = trim($path, '/') ?: '/';
+            $method = strtoupper($method);
 
-			$url = trim($host, '/') . '/' . $path;
+            $host = $host ?? 'https://foo.com';
+            $url = trim($host, '/') . '/' . $path;
+            $url = trim($url, '/') . '/';
 
-			$url = trim($url, '/') . '/';
+            return new Request($psr17Factory->createServerRequest( $method , $url ));
 
-			$request =  static::create($url, $method);
-
-			return $request;
 
 		}
 

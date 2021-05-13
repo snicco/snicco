@@ -8,10 +8,12 @@
 
 	use Closure;
 	use Contracts\ContainerAdapter;
-	use WPEmerge\Controllers\ViewController;
+    use Psr\Http\Message\ResponseInterface;
+    use WPEmerge\Controllers\ViewController;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Support\Pipeline;
+    use WPEmerge\Http\Request;
+    use WPEmerge\Support\Pipeline;
 	use WPEmerge\Support\Url;
 	use WPEmerge\Traits\GathersMiddleware;
 	use WPEmerge\Traits\HoldsRouteBlueprint;
@@ -23,6 +25,7 @@
 
 		use GathersMiddleware;
 		use HoldsRouteBlueprint;
+
 
 		/** @var \WPEmerge\Routing\RouteGroup[] */
 		private $group_stack = [];
@@ -126,7 +129,8 @@
 
 		}
 
-		public function runRoute( RequestInterface $request ) {
+		public function runRoute( Request $request ) : ?ResponseInterface
+        {
 
 			$route_match = $this->routes->match( $request );
 
@@ -216,7 +220,7 @@
 		/**
 		 * @throws \WPEmerge\Exceptions\ConfigurationException
 		 */
-		private function runWithinStack( RouteMatch $route_match, RequestInterface $request ) {
+		private function runWithinStack( RouteMatch $route_match, Request $request ) {
 
 			$middleware = [];
 

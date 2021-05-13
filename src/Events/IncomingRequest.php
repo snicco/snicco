@@ -7,9 +7,9 @@
 	namespace WPEmerge\Events;
 
 	use WPEmerge\Application\ApplicationEvent;
-	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
 
-	class IncomingRequest extends ApplicationEvent {
+    class IncomingRequest extends ApplicationEvent {
 
 
 		/**
@@ -20,7 +20,7 @@
 		protected $force_route_match = false;
 
 
-		public function __construct(RequestInterface $request) {
+		public function __construct( Request $request) {
 
 			$this->request = $request;
 

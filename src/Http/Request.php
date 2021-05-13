@@ -1,236 +1,112 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace WPEmerge\Http;
+    namespace WPEmerge\Http;
 
-	use Symfony\Component\HttpFoundation\Request as SymfonyRequest;
-	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Contracts\RouteCondition;
-    use WPEmerge\Facade\WP;
-    use WPEmerge\Support\Str;
+    use Psr\Http\Message\ServerRequestInterface;
+    use WPEmerge\Contracts\RouteCondition;
+    use WPEmerge\ImplementsPsr7Request;
+    use WPEmerge\Support\Arr;
     use WPEmerge\Support\UrlParser;
+    use WPEmerge\Support\VariableBag;
 
-    class Request extends SymfonyRequest implements RequestInterface {
+    class Request implements ServerRequestInterface
+    {
+        use ImplementsPsr7Request;
+        use InspectsRequest;
 
-		public static function capture() : RequestInterface {
 
-			static::enableHttpMethodParameterOverride();
 
-			return static::createFromBase( SymfonyRequest::createFromGlobals() );
+        public function __construct(ServerRequestInterface $prs_request)
+        {
 
-		}
+            $this->prs_request = $prs_request;
 
-		private static function createFromBase( SymfonyRequest $request ) : Request {
+        }
 
-			$newRequest = ( new static )->duplicate(
-				$request->query->all(), $request->request->all(), $request->attributes->all(),
-				$request->cookies->all(), $request->files->all(), $request->server->all()
-			);
+        public function path() : string
+        {
+            return $this->getUri()->getPath();
+        }
 
-			$newRequest->headers->replace( $request->headers->all() );
+        public function url( bool $trailing_slash = false ) : string
+        {
+            $url = trim(preg_replace('/\?.*/', '', $this->getUri()), '/');
 
-			$newRequest->content = $request->content;
+            if ( $trailing_slash ) {
 
-			return $newRequest;
-		}
-
-		public function method() : string {
-
-			return $this->getMethod();
-
-		}
-
-		public function path() : string {
-
-		    $path = $this->isWpAdminPageRequest()
-                ? $this->getBaseUrl() . DIRECTORY_SEPARATOR . trim($this->getPathInfo(), '/')
-                : $this->getPathInfo();
-
-			$pattern = trim( $path, '/' );
-
-			return $pattern === '' ? '/' : $pattern;
-
-		}
-
-		public function url() : string {
-
-			return rtrim( preg_replace( '/\?.*/', '', $this->getUri() ), '/' );
-		}
-
-		public function fullUrl() : string {
-
-			$query = $this->getQueryString();
-
-			$question = $this->getBaseUrl() . $this->getPathInfo() === '/' ? '/?' : '?';
-
-			return $query ? $this->url() . $question . $query : $this->url();
-
-		}
-
-		public function isGet() : bool {
-
-			return $this->isMethod( 'GET' );
-
-		}
-
-		public function isHead() : bool {
-
-			return $this->isMethod( 'HEAD' );
-
-		}
-
-		public function isPost() : bool {
-
-			return $this->isMethod( 'POST' );
-
-		}
-
-		public function isPut() : bool {
-
-			return $this->isMethod( 'PUT' );
-
-		}
-
-		public function isPatch() : bool {
-
-			return $this->isMethod( 'PATCH' );
-
-		}
-
-		public function isDelete() : bool {
-
-			return $this->isMethod( 'DELETE' );
-
-		}
-
-		public function isOptions() : bool {
-
-			return $this->isMethod( 'OPTIONS' );
-
-		}
-
-		public function isReadVerb() : bool {
-
-			return $this->isMethodSafe();
-
-		}
-
-		public function isAjax() : bool {
-
-			return $this->isXmlHttpRequest();
-
-		}
-
-		public function attribute( string $key = '', $default = null ) {
-
-			return $this->attributes->get( $key, $default );
-
-		}
-
-		public function query( string $key = null, $default = null ) {
-
-			if ( ! $key ) {
-
-				return $this->query->all();
-
-			}
-
-			return $this->query->get( $key, $default );
-
-		}
-
-		public function body( $key = '', $default = null ) {
-
-			return $this->request->get( $key, $default );
-
-		}
-
-		public function cookies( $key = '', $default = null ) {
-
-			return $this->cookies->get( $key, $default );
-
-		}
-
-		public function files( $key = '', $default = null ) {
-
-			return $this->files->get( $key, $default );
-
-		}
-
-		public function server( $key = '', $default = null ) {
-
-			return $this->server->get( $key, $default );
-
-		}
-
-        public function request( $key = '', $default = null ) {
-
-            if ( ! $key ) {
-
-                return $this->request->all();
+                $url = $url . '/';
 
             }
 
-            return $this->request->get( $key, $default );
+            return $url;
 
         }
 
-        public function headers( $key = '', $default = null ) {
+        public function fullUrl(bool $trailing_slash = false) : string
+        {
 
-			return $this->headers->get( $key, $default );
+            $full_url =  trim($this->getUri()->__toString());
 
-		}
+            return  ($trailing_slash) ? $full_url . '/' : $full_url;
 
-		public function setRoute( RouteCondition $route ) {
+        }
 
-			$this->attributes->set( 'route', $route );
+        public function setRoute(RouteCondition $route)
+        {
 
-		}
+            $this->withAttribute('route', $route);
 
-		public function route() : ?RouteCondition {
 
-			return $this->attributes->get( 'route', null );
+        }
 
-		}
+        public function route() : ?RouteCondition
+        {
 
-		public function isPJAX() : bool {
+            return $this->getAttribute('route', null );
 
-			return $this->headers->get( 'X-PJAX' ) == true;
-		}
+        }
 
-		public function expectsJson() : bool {
+        public function setType ( string $type ) {
 
-			return $this->isAjax() && ! $this->isPJAX();
+            $this->withAttribute('type', $type);
 
-		}
+        }
 
-		public function setType( string $request_event ) : void {
+        public function type() : string
+        {
 
-			$this->attributes->set( 'type', $request_event );
+            return $this->getAttribute('type', '');
 
-		}
+        }
 
-		public function type() : string {
+        public function query(string $name, $default )
+        {
 
-			return $this->attributes->get( 'type' );
+            return Arr::get($this->getQueryParams(), $name, $default);
 
-		}
+        }
 
-		public function scheme() : string {
+        /** @todo verify this.  */
+        public function request(string $name, $default )
+        {
 
-			return $this->getScheme();
-
-		}
-
-		private function isWpAdminPageRequest () :bool {
-
-		    return UrlParser::isWpAdminPageRequest ($this->getBaseUrl());
+            return Arr::get($this->getParsedBody(), $name, $default);
 
         }
 
 
 
-	}
+
+        private function isWpAdminPageRequest() : bool
+        {
+
+            return UrlParser::isWpAdminPageRequest( $this->getUri()->getPath() );
+
+        }
+
+
+    }

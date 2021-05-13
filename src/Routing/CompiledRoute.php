@@ -14,7 +14,8 @@
 	use WPEmerge\Contracts\RouteCondition;
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Factories\HandlerFactory;
-	use WPEmerge\Routing\RouteSignatureParameters;
+    use WPEmerge\Http\Request;
+    use WPEmerge\Routing\RouteSignatureParameters;
 
 	class CompiledRoute implements RouteCondition {
 
@@ -43,7 +44,7 @@
 
 		}
 
-		public function satisfiedBy( RequestInterface $request ) : bool {
+		public function satisfiedBy( Request $request ) : bool {
 
 			$failed_condition = collect( $this->conditions )
 				->first( function ( $condition ) use ( $request ) {
@@ -110,7 +111,7 @@
          * @todo It would be better if we would match the parameters based on a combination of type/name
          * instead of order.
          */
-		public function run( RequestInterface $request, array $payload ) {
+		public function run( Request $request, array $payload ) {
 
 			$params = collect( $this->signatureParameters() );
 

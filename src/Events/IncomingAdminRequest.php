@@ -9,13 +9,13 @@
 
 
 	use BetterWpHooks\Traits\DispatchesConditionally;
-	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
 
-	class IncomingAdminRequest extends IncomingRequest {
+    class IncomingAdminRequest extends IncomingRequest {
 
 		use DispatchesConditionally;
 
-		public function __construct(RequestInterface $request) {
+		public function __construct(Request $request) {
 
 			parent::__construct($request);
 

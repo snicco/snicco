@@ -91,6 +91,12 @@
 
                     $middleware = Arr::wrap($middleware);
 
+                    if ( $middleware[0] instanceof Closure ) {
+
+                        return $middleware;
+
+                    }
+
                     if ( ! in_array(MiddlewareInterface::class, class_implements($middleware[0]))) {
 
                         $type = readable::typeof($middleware);
@@ -123,7 +129,7 @@
         public function then(Closure $request_handler) : ResponseInterface
         {
 
-            $this->middleware[] = [ new Delegate($request_handler), [] ];
+            $this->middleware[] = [ $request_handler, [] ];
 
             return $this->run($this->buildMiddlewareStack());
 
@@ -157,9 +163,17 @@
 
             }
 
-            return new Delegate(function (ServerRequestInterface $request) {
+            return new Delegate( function (ServerRequestInterface $request ) {
 
                 [ $middleware, $constructor_args ] = array_shift($this->middleware);
+
+                // This is the final request handler passed into then()
+                if ( $middleware instanceof Closure ) {
+
+                    return $middleware($request, $this->nextMiddleware());
+
+                }
+
 
                 if ( $middleware instanceof MiddlewareInterface ) {
 
