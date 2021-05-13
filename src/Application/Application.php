@@ -7,7 +7,10 @@
 	namespace WPEmerge\Application;
 
 	use Contracts\ContainerAdapter;
-	use SniccoAdapter\BaseContainerAdapter;
+    use Nyholm\Psr7\Factory\Psr17Factory;
+    use Nyholm\Psr7Server\ServerRequestCreator;
+    use Psr\Http\Message\ServerRequestFactoryInterface;
+    use SniccoAdapter\BaseContainerAdapter;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
@@ -49,12 +52,20 @@
 		 */
 		private $config;
 
-		public function __construct( ContainerAdapter $container ) {
+		public function __construct( ContainerAdapter $container, ServerRequestFactoryInterface $factory = null) {
+
+		    $factory = $factory ?? new Psr17Factory();
+		    $creator = new ServerRequestCreator(
+		        $factory,
+                $factory,
+                $factory,
+                $factory
+            );
 
 			$this->setContainer( $container );
 			$this->container()->instance(Application::class, $this);
 			$this->container()->instance(ContainerAdapter::class, $this->container());
-			$this->container()->instance( RequestInterface::class, Request::capture() );
+			$this->container()->instance( Request::class, $creator->fromGlobals() );
 			WpFacade::setFacadeContainer( $container );
 
 		}

@@ -8,8 +8,9 @@
 
 	use BetterWpHooks\Traits\DispatchesConditionally;
 	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
 
-	class IncomingWebRequest extends IncomingRequest {
+    class IncomingWebRequest extends IncomingRequest {
 
 		use DispatchesConditionally;
 
@@ -19,7 +20,7 @@
 		public $template;
 
 
-		public function __construct( string $template, RequestInterface $request ) {
+		public function __construct( string $template, Request $request ) {
 
 			$this->template = $template;
 

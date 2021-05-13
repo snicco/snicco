@@ -6,12 +6,12 @@
 
 	namespace WPEmerge\Events;
 
-	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
 
-	class IncomingAjaxRequest extends IncomingRequest {
+    class IncomingAjaxRequest extends IncomingRequest {
 
 
-		public function __construct(RequestInterface $request) {
+		public function __construct(Request $request) {
 
 			parent::__construct($request);
 

@@ -7,8 +7,8 @@
 	namespace WPEmerge\Http;
 
 	use Contracts\ContainerAdapter as Container;
-	use WPEmerge\Contracts\ResponseInterface;
-	use Throwable;
+    use Psr\Http\Message\ResponseInterface;
+    use Throwable;
 	use WPEmerge\Contracts\ResponsableInterface;
 	use WPEmerge\Contracts\ErrorHandlerInterface as ErrorHandler;
 	use WPEmerge\Events\HeadersSent;
@@ -205,12 +205,12 @@
 		}
 
 		/**
-		 * @throws \WPEmerge\Exceptions\InvalidResponseException
+		 * @throws
 		 */
-		private function sendRequestThroughRouter( RequestInterface $request ) : ?ResponseInterface {
+		private function sendRequestThroughRouter( Request $request ) : ?ResponseInterface {
 
 
-			$this->container->instance( RequestInterface::class, $request );
+			$this->container->instance( Request::class, $request );
 
 			$pipeline = new Pipeline( $this->container );
 
@@ -227,7 +227,7 @@
 
 		private function dispatchToRouter() : \Closure {
 
-			return function ( $request ) {
+			return function ( Request $request ) {
 
 				$this->container->instance( RequestInterface::class, $request );
 

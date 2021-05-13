@@ -57,7 +57,8 @@
     "guzzlehttp/psr7": "^1.0-stable",
     "middlewares/response-time": "dev-master",
     "middlewares/base-path": "dev-master",
-    "nyholm/psr7": "1.4.x-dev"
+    "nyholm/psr7": "1.4.x-dev",
+    "nyholm/psr7-server": "^1.0-stable"
   },
   "require-dev": {
     "opis/closure": "3.6.2",

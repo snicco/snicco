@@ -13,7 +13,8 @@
 	use WPEmerge\Facade\WP;
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Factories\HandlerFactory;
-	use WPEmerge\Support\Url;
+    use WPEmerge\Http\Request;
+    use WPEmerge\Support\Url;
 	use WPEmerge\Support\UrlParser;
 	use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
 	use WPEmerge\Support\Arr;
@@ -97,7 +98,7 @@
 
 		}
 
-		public function match( RequestInterface $request ) : RouteMatch {
+		public function match( Request $request ) : RouteMatch {
 
 			$this->loadRoutes( $request->getMethod() );
 
@@ -183,7 +184,7 @@
 
 		}
 
-		private function hash( string $path, RequestInterface $request = null ) : string {
+		private function hash( string $path, Request $request = null ) : string {
 
 			$path = trim( $path, '/' );
 
@@ -193,7 +194,7 @@
 
 		}
 
-		private function applyHashSuffix( string $hash, ?RequestInterface $request ) {
+		private function applyHashSuffix( string $hash, ?Request $request ) {
 
 			if ( WP::isAdmin() && ! WP::isAdminAjax() && $request ) {
 
@@ -212,7 +213,7 @@
 
 		}
 
-		private function findRoute( RequestInterface $request ) : RouteMatch {
+		private function findRoute( Request $request ) : RouteMatch {
 
 			$path = $this->normalizePath( $request->path() );
 
@@ -229,7 +230,7 @@
 
 		}
 
-		private function tryAbsolute( RequestInterface $request, $url ) : RouteMatch {
+		private function tryAbsolute( Request $request, $url ) : RouteMatch {
 
 
 			$route_info = $this->route_matcher->find( $request->getMethod(), $url );
@@ -257,7 +258,7 @@
 
 		}
 
-		private function tryHashed( RequestInterface $request, $url ) : RouteMatch {
+		private function tryHashed( Request $request, $url ) : RouteMatch {
 
 			return $this->tryAbsolute( $request, $this->hash( $url, $request ) );
 
