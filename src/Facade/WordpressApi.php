@@ -8,7 +8,7 @@
 
 	/**
      * @see \WPEmerge\Facade\WordpressApiMixin
-     * @todo URL-ENCODING?
+     * @todo URL-ENCODING? move all url generatíon methods to an url generator class
      */
 	class WordpressApi {
 

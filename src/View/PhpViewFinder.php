@@ -1,133 +1,109 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace WPEmerge\View;
+    namespace WPEmerge\View;
 
-	use WPEmerge\Contracts\ViewFinderInterface;
-	use WPEmerge\Support\FilePath;
+    use Symfony\Component\Finder\Finder;
+    use WPEmerge\Contracts\ViewFinderInterface;
+    use WPEmerge\Support\FilePath;
+
+    class PhpViewFinder implements ViewFinderInterface
+    {
+
+        /**
+         * Custom views to search in. Will be searched recursively
+         *
+         * @param  string[]  $directories
+         */
+        private $directories;
+
+        /**
+         * @var string
+         */
+        private $search_depth;
+
+        public function __construct(array $directories = [], int $depth = 2)
+        {
+
+            $this->search_depth = strval($depth + 1);
+            $this->directories = $this->normalize($directories);
+
+        }
+
+        private function normalize(array $directories) : array
+        {
+
+            return array_filter(array_map([
+                FilePath::class,
+                'removeTrailingSlash',
+            ], $directories));
+
+        }
+
+        public function exists(string $view_name) : bool
+        {
+
+            if (is_file($view_name)) {
+
+                return true;
+
+            }
+
+            $finder = new Finder();
+            $finder
+                ->in($this->directories)
+                ->files()
+                ->depth('< '.$this->search_depth)
+                ->ignoreUnreadableDirs()
+                ->name(FilePath::ending($view_name, 'php'));
+
+            return $finder->hasResults();
+
+        }
+
+        public function filePath( string $view_path ) : string
+        {
+
+            if ( is_file($view_path) ) {
+
+                return $view_path;
+
+            }
+
+            $view_path = trim($view_path, '/');
+
+            $finder = new Finder();
+            $finder
+                ->in($this->directories)
+                ->files()
+                ->depth('< '.$this->search_depth)
+                ->ignoreUnreadableDirs()
+                ->name(FilePath::ending($view_path, 'php'));
+
+            if ( ! $finder->hasResults()) {
+
+                return '';
+
+            }
+
+            foreach ($finder as $file) {
+                break;
+            }
+
+            return $file->getRealPath();
+
+        }
+
+        public function includeFile(string $path, $context)
+        {
+
+            extract($context, EXTR_OVERWRITE);
+            include $path;
+
+        }
 
 
-	class PhpViewFinder implements ViewFinderInterface {
-
-		/**
-		 *
-		 * Custom views to search in
-		 *
-		 * @param string[] $directories
-		 */
-		private $directories = [];
-
-		/** @param string[] $directories */
-		public function __construct( $directories = [] ) {
-
-			$this->setDirectories( $directories );
-		}
-
-		/** @return string[] */
-		public function getDirectories() : array {
-
-			return $this->directories;
-		}
-
-		/**
-		 * Set the custom views directories.
-		 *
-		 * @param  string[]  $directories
-		 *
-		 */
-		public function setDirectories( array $directories ) :void {
-
-			$this->directories = array_filter( array_map( [
-				FilePath::class,
-				'removeTrailingSlash',
-			], $directories ) );
-		}
-
-		public function exists( string $view_name_name ) :bool {
-
-			return ! empty( $this->resolveFilepath( $view_name_name ) );
-		}
-
-		public function filePath( string $view_name ) :string {
-
-			return $this->resolveFilepath( $view_name );
-		}
-
-		public function includeFile (string $path, $context ) {
-
-			extract( $context, EXTR_OVERWRITE );
-			include $path;
-
-		}
-
-		/**
-		 * Resolve a view to an absolute filepath.
-		 *
-		 * @param  string  $view_name
-		 *
-		 * @return string
-		 */
-		private function resolveFilepath( string $view_name ) : string {
-
-			$file = $this->resolveFromAbsoluteFilepath( $view_name );
-
-			if ( ! $file ) {
-				$file = $this->resolveFromCustomDirectories( $view_name );
-			}
-
-			return $file;
-		}
-
-		/**
-		 * Resolve a view if it is a valid absolute filepath.
-		 *
-		 * @param  string  $view_name
-		 *
-		 * @return string
-		 */
-		private function resolveFromAbsoluteFilepath( string $view_name ) : string {
-
-			$path = realpath( FilePath::normalize( $view_name ) );
-
-			if ( ! empty( $path ) && ! is_file( $path ) ) {
-				$path = '';
-			}
-
-			return $path ? $path : '';
-		}
-
-		/**
-		 * Resolve a view if it exists in the custom views directories.
-		 *
-		 * @param  string  $view_name
-		 *
-		 * @return string
-		 */
-		private function resolveFromCustomDirectories( string $view_name ) : string {
-
-			$directories = $this->getDirectories();
-
-			/** @todo Replace with Symfony finder and search all nested dirs. */
-			foreach ( $directories as $directory ) {
-
-				$file = FilePath::normalize( $directory . DIRECTORY_SEPARATOR . $view_name );
-
-				if ( ! is_file( $file ) ) {
-					// Try adding a .php extension.
-					$file .= '.php';
-				}
-
-				$file = realpath( $file );
-
-				if ( $file && is_file( $file ) ) {
-					return $file;
-				}
-			}
-
-			return '';
-		}
-
-	}
+    }
