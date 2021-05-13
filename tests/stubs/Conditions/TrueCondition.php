@@ -7,17 +7,17 @@
 	namespace Tests\stubs\Conditions;
 
 	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
 
-	class TrueCondition implements ConditionInterface {
+    class TrueCondition implements ConditionInterface {
 
 
-		public function isSatisfied( RequestInterface $request ) {
+		public function isSatisfied( Request $request ) :bool {
 
 			return true;
 		}
 
-		public function getArguments( RequestInterface $request ) {
+		public function getArguments( Request $request ) :array {
 
 			return [];
 

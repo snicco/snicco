@@ -9,23 +9,23 @@
 	use Tests\stubs\Controllers\Admin\AdminControllerWithMiddleware;
 	use Tests\stubs\Middleware\MiddlewareWithDependencies;
 	use Tests\TestCase;
-	use Tests\TestRequest;
+    use WPEmerge\Http\Request;
 
-	class RouteMiddlewareDependencyInjectionTest extends TestCase {
+    class RouteMiddlewareDependencyInjectionTest extends TestCase {
 
 		use SetUpRouter;
 
 		/** @test */
 		public function middleware_is_resolved_from_the_service_container () {
 
-			$this->router->get( '/foo', function ( TestRequest $request ) {
+			$this->router->get( '/foo', function ( Request $request ) {
 
 				return $request->body;
 
 			})->middleware(MiddlewareWithDependencies::class);
 
 			$request = $this->request( 'GET', '/foo' );
-			$this->seeResponse( 'foobar', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foobar', $this->router->runRoute( $request ) );
 
 
 		}
@@ -36,7 +36,7 @@
 			$this->router->get( '/foo', AdminControllerWithMiddleware::class . '@handle');
 
 			$request = $this->request( 'GET', '/foo' );
-			$this->seeResponse( 'foobarbaz:controller_with_middleware', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foobarbaz:controller_with_middleware', $this->router->runRoute( $request ) );
 
 		}
 
@@ -48,10 +48,9 @@
 			$this->router->get( '/foo', AdminControllerWithMiddleware::class . '@handle');
 
 			$request = $this->request( 'GET', '/foo' );
-			$this->seeResponse( 'foobarbaz:controller_with_middleware', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foobarbaz:controller_with_middleware', $this->router->runRoute( $request ) );
 
 			$this->assertRouteActionConstructedTimes(1, AdminControllerWithMiddleware::class);
-
 
 
 		}

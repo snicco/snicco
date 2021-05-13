@@ -6,24 +6,24 @@
 
 	namespace WPEmerge\Controllers;
 
-	use WPEmerge\Contracts\ResponseFactoryInterface as Response;
-	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Contracts\ResponseInterface;
 
-	class ViewController {
+    use WPEmerge\Contracts\ResponseFactoryInterface;
+    use WPEmerge\Http\Response;
+
+    class ViewController {
 
 		/**
-		 * @var \WPEmerge\Contracts\ResponseFactoryInterface
+		 * @var Response
 		 */
 		private $response;
 
-		public function __construct( Response $response ) {
+		public function __construct( ResponseFactoryInterface $response ) {
 
 			$this->response = $response;
 
 		}
 
-		public function handle( ...$args ) : ResponseInterface {
+		public function handle( ...$args ) : Response {
 
 			[$view, $data, $status, $headers] = array_slice($args, -4);
 

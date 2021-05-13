@@ -140,7 +140,7 @@
         /**
          * @throws ConfigurationException
          */
-        public function runRoute( Request $request ) : ?ResponseInterface
+        public function runRoute( Request $request ) : Response
         {
 
 			$route_match = $this->routes->match( $request );

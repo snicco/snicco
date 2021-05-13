@@ -8,8 +8,9 @@
 
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
 
-	class MaybeCondition implements ConditionInterface {
+    class MaybeCondition implements ConditionInterface {
 
 		/**
 		 * @var bool
@@ -22,14 +23,14 @@
 
 		}
 
-		public function isSatisfied( RequestInterface $request ) {
+		public function isSatisfied( Request $request ) :bool {
 
 			$GLOBALS['test']['maybe_condition_run'] = true;
 
 			return $this->make_it_pass === true || $this->make_it_pass === 'foobar';
 		}
 
-		public function getArguments( RequestInterface $request ) {
+		public function getArguments( Request $request ) :array {
 
 			return [];
 

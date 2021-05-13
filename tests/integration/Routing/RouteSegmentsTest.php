@@ -6,9 +6,10 @@
 
 	namespace Tests\integration\Routing;
 
-	use WPEmerge\Contracts\RequestInterface as Request;
+	use Tests\TestCase;
+    use WPEmerge\Http\Request as Request;
 
-	class RouteSegmentsTest extends \Tests\TestCase {
+	class RouteSegmentsTest extends TestCase {
 
 		use SetUpRouter;
 
@@ -38,7 +39,7 @@
 			             } );
 
 			$response = $this->router->runRoute( $this->request( 'post', '/user/12/calvin' ) );
-			$this->seeResponse( 'calvin12', $response );
+			$this->assertOutput( 'calvin12', $response );
 
 
 		}
@@ -59,23 +60,23 @@
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/12/calvin' ) );
-			$this->seeResponse( 'calvin12', $response );
+			$this->assertOutput( 'calvin12', $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/12/john' ) );
-			$this->seeResponse( 'john12', $response );
+			$this->assertOutput( 'john12', $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/a/calvin' ) );
-			$this->seeResponse( null, $response );
+			$this->assertNullResponse( $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/12/jane' ) );
-			$this->seeResponse( null, $response );
+			$this->assertNullResponse( $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/12' ) );
-			$this->seeResponse( null, $response );
+			$this->assertNullResponse( $response );
 
 		}
 
@@ -94,23 +95,23 @@
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/12/calvin' ) );
-			$this->seeResponse( 'calvin12', $response );
+			$this->assertOutput( 'calvin12', $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/12' ) );
-			$this->seeResponse( 'admin12', $response );
+			$this->assertOutput( 'admin12', $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/ab' ) );
-			$this->seeResponse( null, $response );
+			$this->assertNullResponse( $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/ab/calvin' ) );
-			$this->seeResponse( null, $response );
+			$this->assertNullResponse( $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/user/calvin/12' ) );
-			$this->seeResponse( null, $response );
+			$this->assertNullResponse( $response );
 
 
 		}
@@ -131,15 +132,15 @@
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund/calvin' ) );
-			$this->seeResponse( 'dortmund:1:calvin', $response );
+			$this->assertOutput( 'dortmund:1:calvin', $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund' ) );
-			$this->seeResponse( 'dortmund:1:foo_player', $response );
+			$this->assertOutput( 'dortmund:1:foo_player', $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/12' ) );
-			$this->seeResponse( 'foo_team:12:foo_player', $response );
+			$this->assertOutput( 'foo_team:12:foo_player', $response );
 
 		}
 
@@ -159,15 +160,15 @@
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/1/calvin' );
-			$this->seeResponse( 'calvin1', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'calvin1', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', 'users/1' );
-			$this->seeResponse( 'admin1', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'admin1', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', 'users/1/12' );
-			$this->seeResponse( null, $this->router->runRoute( $request ) );
+			$this->assertNullResponse( $this->router->runRoute( $request ) );
 
 
 		}
@@ -203,11 +204,11 @@
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/1' );
-			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/calvin' );
-			$this->assertNull( $this->router->runRoute( $request ) );
+			$this->assertNullResponse( $this->router->runRoute( $request ) );
 
 
 		}
@@ -227,11 +228,11 @@
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/1' );
-			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/calvin' );
-			$this->assertNull( $this->router->runRoute( $request ) );
+			$this->assertNullResponse( $this->router->runRoute( $request ) );
 
 
 		}
@@ -253,15 +254,15 @@
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/user/1/calvin' );
-			$this->seeResponse( 'calvin1', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'calvin1', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/1/1' );
-			$this->assertNull( $this->router->runRoute( $request ) );
+			$this->assertNullResponse( $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/calvin/calvin' );
-			$this->assertNull( $this->router->runRoute( $request ) );
+			$this->assertNullResponse( $this->router->runRoute( $request ) );
 
 		}
 
@@ -280,11 +281,11 @@
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/1/calvin' );
-			$this->seeResponse( 'calvin1', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'calvin1', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', 'users/1' );
-			$this->seeResponse( 'admin1', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'admin1', $this->router->runRoute( $request ) );
 
 
 		}
@@ -306,15 +307,15 @@
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund/calvin' ) );
-			$this->seeResponse( 'dortmund:1:calvin', $response );
+			$this->assertOutput( 'dortmund:1:calvin', $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund' ) );
-			$this->seeResponse( 'dortmund:1:foo_player', $response );
+			$this->assertOutput( 'dortmund:1:foo_player', $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/12' ) );
-			$this->seeResponse( 'foo_team:12:foo_player', $response );
+			$this->assertOutput( 'foo_team:12:foo_player', $response );
 
 			$routes = function () {
 
@@ -331,19 +332,19 @@
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/users/calvin/male/23' ) );
-			$this->seeResponse( 'calvin:male:23', $response );
+			$this->assertOutput( 'calvin:male:23', $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/users/calvin/male' ) );
-			$this->seeResponse( 'calvin:male:21', $response );
+			$this->assertOutput( 'calvin:male:21', $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/users/calvin/' ) );
-			$this->seeResponse( 'calvin:m:21', $response );
+			$this->assertOutput( 'calvin:m:21', $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/users/' ) );
-			$this->seeResponse( 'john:m:21', $response );
+			$this->assertOutput( 'john:m:21', $response );
 
 
 		}
@@ -364,15 +365,15 @@
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/1/calvin' );
-			$this->seeResponse( 'calvin1', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'calvin1', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', 'users/1' );
-			$this->seeResponse( 'admin1', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'admin1', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', 'users/1/12' );
-			$this->seeResponse( null, $this->router->runRoute( $request ) );
+			$this->assertNullResponse( $this->router->runRoute( $request ) );
 
 
 		}
@@ -395,23 +396,23 @@
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund/23' ) );
-			$this->seeResponse( 'dortmund:1:23', $response );
+			$this->assertOutput( 'dortmund:1:23', $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund' ) );
-			$this->seeResponse( 'dortmund:1:21', $response );
+			$this->assertOutput( 'dortmund:1:21', $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/12' ) );
-			$this->seeResponse( 'foo_team:12:21', $response );
+			$this->assertOutput( 'foo_team:12:21', $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/1/dortmund/fail' ) );
-			$this->seeResponse( null, $response );
+			$this->assertNullResponse( $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'post', '/team/1/123/123' ) );
-			$this->seeResponse( null, $response );
+			$this->assertNullResponse( $response );
 
 
 		}
@@ -431,15 +432,15 @@
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/1/calvin' );
-			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/1/john' );
-			$this->seeResponse( null, $this->router->runRoute( $request ) );
+			$this->assertNullResponse( $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/w/calvin' );
-			$this->seeResponse( null, $this->router->runRoute( $request ) );
+			$this->assertNullResponse( $this->router->runRoute( $request ) );
 
 		}
 
@@ -471,35 +472,35 @@
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/calvin' );
-			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/cal1vin' );
-			$this->seeResponse( null, $this->router->runRoute( $request ) );
+			$this->assertNullResponse( $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/teams/dortmund/calvin' );
-			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/teams/1/calvin' );
-			$this->seeResponse( null, $this->router->runRoute( $request ) );
+			$this->assertNullResponse( $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/teams/dortmund/1' );
-			$this->seeResponse( null, $this->router->runRoute( $request ) );
+			$this->assertNullResponse( $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/countries/germany/berlin' );
-			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/countries/germany/1' );
-			$this->seeResponse( null, $this->router->runRoute( $request ) );
+			$this->assertNullResponse( $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/countries/1/berlin' );
-			$this->seeResponse( null, $this->router->runRoute( $request ) );
+			$this->assertNullResponse( $this->router->runRoute( $request ) );
 
 
 		}
@@ -520,11 +521,11 @@
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/calvin' );
-			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/calv1in' );
-			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $request ) );
 
 
 		}
@@ -545,15 +546,15 @@
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/1' );
-			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/calvin' );
-			$this->seeResponse( null, $this->router->runRoute( $request ) );
+			$this->assertNullResponse( $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/users/calv1in' );
-			$this->seeResponse( null, $this->router->runRoute( $request ) );
+			$this->assertNullResponse( $this->router->runRoute( $request ) );
 
 
 		}
@@ -574,15 +575,15 @@
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/home/en' );
-			$this->seeResponse( 'en', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'en', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/home/de' );
-			$this->seeResponse( 'de', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'de', $this->router->runRoute( $request ) );
 
 			$this->newRouterWith( $routes );
 			$request = $this->request( 'GET', '/home/es' );
-			$this->seeResponse( null, $this->router->runRoute( $request ) );
+			$this->assertNullResponse( $this->router->runRoute( $request ) );
 
 
 		}

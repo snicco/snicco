@@ -18,8 +18,6 @@
         use ImplementsPsr7Request;
         use InspectsRequest;
 
-
-
         public function __construct(ServerRequestInterface $psr_request)
         {
 
@@ -97,9 +95,6 @@
             return Arr::get($this->getParsedBody(), $name, $default);
 
         }
-
-
-
 
         private function isWpAdminPageRequest() : bool
         {

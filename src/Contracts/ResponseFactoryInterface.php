@@ -7,8 +7,10 @@
 	namespace WPEmerge\Contracts;
 
 
-	interface ResponseFactoryInterface {
+	use WPEmerge\Http\Response;
 
-		public function view ( string $view, array $data = [], $status = 200, array $headers = []) : ResponseInterface;
+    interface ResponseFactoryInterface {
+
+		public function view ( string $view, array $data = [], $status = 200, array $headers = []) : Response;
 
 	}

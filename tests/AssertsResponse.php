@@ -6,6 +6,8 @@
 
 	namespace Tests;
 
+    use PHPUnit\Framework\Assert;
+    use WPEmerge\Http\NullResponse;
     use WPEmerge\Http\Response;
 
     trait AssertsResponse {
@@ -23,11 +25,23 @@
 
 		}
 
-		private function assertOutput ( $output , Response $response ) {
+        private function assertOutput ( $output , Response $response ) {
 
-			$this->assertStringContainsString($output, $response->getBody()->read(999));
+            $this->assertSame($output, $response->getBody()->__toString());
+
+        }
+
+		private function assertOutputContains ( $output , Response $response ) {
+
+			$this->assertStringContainsString($output, $response->getBody()->__toString());
 
 		}
+
+		private function assertNullResponse( Response $response ) {
+
+		    Assert::assertInstanceOf(NullResponse::class, $response);
+
+        }
 
 		private function assertHeader ( $name, $value , Response $response) {
 

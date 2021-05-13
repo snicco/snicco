@@ -8,19 +8,31 @@
 
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
 
-	class BarMiddleware implements Middleware {
+    class BarMiddleware extends Middleware {
 
-		public function handle( RequestInterface $request, \Closure $next, $bar = 'bar' ) {
+        /**
+         * @var string
+         */
+        private $bar;
+
+        public function __construct($bar = 'bar')
+        {
+
+            $this->bar = $bar;
+        }
+
+        public function handle( Request $request, $next) {
 
 			if ( isset( $request->body ) ) {
 
-				$request->body .= $bar;
+				$request->body .= $this->bar;
 
 				return $next( $request );
 			}
 
-			$request->body = $bar;
+			$request->body = $this->bar;
 
 			return $next( $request );
 

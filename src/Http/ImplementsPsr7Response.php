@@ -17,82 +17,103 @@
          */
         private $psr7_response;
 
-        public function getProtocolVersion()
-        {
-            return $this->psr7_response->getProtocolVersion();
-        }
 
         public function withProtocolVersion($version)
         {
-            $this->psr7_response =  $this->psr7_response->withProtocolVersion($version);
-            return $this;
+
+            return $this->new($this->psr7_response->withProtocolVersion($version));
+
+
         }
+
+        public function withHeader($name, $value)
+        {
+
+            return $this->new($this->psr7_response->withHeader($name, $value));
+
+        }
+
+        public function withAddedHeader($name, $value)
+        {
+
+            return $this->new($this->psr7_response->withAddedHeader($name, $value));
+
+        }
+
+        public function withoutHeader($name)
+        {
+
+            return $this->new($this->psr7_response->withoutHeader($name));
+
+
+        }
+
+        public function withBody(StreamInterface $body)
+        {
+
+            return $this->new($this->psr7_response->withBody($body));
+
+        }
+
+        public function withStatus($code, $reasonPhrase = '')
+        {
+
+            return $this->new($this->psr7_response->withStatus($code, $reasonPhrase));
+
+        }
+
+
+        public function getProtocolVersion()
+        {
+
+            return $this->psr7_response->getProtocolVersion();
+        }
+
 
         public function getHeaders()
         {
+
             return $this->psr7_response->getHeaders();
         }
 
         public function hasHeader($name)
         {
+
             return $this->psr7_response->hasHeader($name);
         }
 
         public function getHeader($name)
         {
+
             return $this->psr7_response->getHeader($name);
 
         }
 
         public function getHeaderLine($name)
         {
+
             return $this->psr7_response->getHeaderLine($name);
         }
 
-        public function withHeader($name, $value)
-        {
-            $this->psr7_response = $this->psr7_response->withHeader($name, $value);
-            return $this;
-        }
-
-        public function withAddedHeader($name, $value)
-        {
-            $this->psr7_response = $this->psr7_response-> withAddedHeader($name, $value);
-            return $this;
-        }
-
-        public function withoutHeader($name)
-        {
-            $this->psr7_response = $this->psr7_response->withoutHeader($name);
-            return $this;
-
-        }
 
         public function getBody()
         {
+
             return $this->psr7_response->getBody();
         }
 
-        public function withBody(StreamInterface $body)
-        {
-            $this->psr7_response = $this->psr7_response->withBody($body);
-            return $this;
-        }
 
         public function getStatusCode()
         {
+
             return $this->psr7_response->getStatusCode();
 
         }
 
-        public function withStatus($code, $reasonPhrase = '')
-        {
-            $this->psr7_response = $this->psr7_response->withStatus($code, $reasonPhrase);
-            return $this;
-        }
 
         public function getReasonPhrase()
         {
+
             return $this->psr7_response->getReasonPhrase();
         }
 

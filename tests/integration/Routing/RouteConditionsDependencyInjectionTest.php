@@ -23,7 +23,7 @@
 			})->where(ConditionWithDependency::class, true);
 
 			$request = $this->request( 'GET', '/foo' );
-			$this->seeResponse( 'foo', $this->router->runRoute( $request ) );
+			$this->assertOutput( 'foo', $this->router->runRoute( $request ) );
 
 		}
 

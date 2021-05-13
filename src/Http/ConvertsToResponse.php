@@ -14,6 +14,12 @@
 
         private function prepareResponse( $response ) : Response {
 
+            if ( $response instanceof Response ) {
+
+                return $response;
+
+            }
+
             if ( $response instanceof ResponseInterface ) {
 
                 return new Response($response);

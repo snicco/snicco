@@ -22,6 +22,7 @@
         {
 
             $this->psr7_response = $psr7_response;
+
         }
 
         public function html() : Response
@@ -38,5 +39,12 @@
 
         }
 
+
+        private function new (ResponseInterface $new_psr_response ) :Response {
+
+            $this->psr7_response = $new_psr_response;
+            return $this;
+
+        }
 
     }

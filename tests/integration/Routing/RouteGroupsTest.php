@@ -12,9 +12,10 @@
 	use Tests\stubs\Middleware\BarMiddleware;
 	use Tests\stubs\Middleware\BazMiddleware;
 	use Tests\stubs\Middleware\FooMiddleware;
-	use WPEmerge\Contracts\RequestInterface;
+    use Tests\TestCase;
+    use WPEmerge\Http\Request;
 
-	class RouteGroupsTest extends \Tests\TestCase {
+    class RouteGroupsTest extends TestCase {
 
 		use SetUpRouter;
 
@@ -52,19 +53,19 @@
 
 			$get_request = $this->request( 'GET', '/foo' );
 			$response    = $this->router->runRoute( $get_request );
-			$this->seeResponse( 'post_foo', $response );
+			$this->assertOutput( 'post_foo', $response );
 
 			$put_request = $this->request( 'PUT', '/foo' );
 			$response    = $this->router->runRoute( $put_request );
-			$this->seeResponse( 'post_foo', $response );
+			$this->assertOutput( 'post_foo', $response );
 
 			$post_request = $this->request( 'POST', '/foo' );
 			$response     = $this->router->runRoute( $post_request );
-			$this->seeResponse( 'post_foo', $response );
+			$this->assertOutput( 'post_foo', $response );
 
 			$patch_request = $this->request( 'PATCH', '/foo' );
 			$response      = $this->router->runRoute( $patch_request );
-			$this->assertNull( $response );
+			$this->assertNullResponse( $response );
 
 
 		}
@@ -83,7 +84,7 @@
 					$this->router
 						->get( '/foo' )
 						->middleware( 'bar:BAR' )
-						->handle( function ( RequestInterface $request ) {
+						->handle( function ( Request $request ) {
 
 							return $request->body;
 
@@ -91,7 +92,7 @@
 
 					$this->router
 						->post( '/foo' )
-						->handle( function ( RequestInterface $request ) {
+						->handle( function ( Request $request ) {
 
 							return $request->body;
 
@@ -101,11 +102,11 @@
 
 			$get_request = $this->request( 'GET', '/foo' );
 			$response    = $this->router->runRoute( $get_request );
-			$this->seeResponse( 'FOOBAR', $response );
+			$this->assertOutput( 'FOOBAR', $response );
 
 			$post_request = $this->request( 'POST', '/foo' );
 			$response     = $this->router->runRoute( $post_request );
-			$this->seeResponse( 'FOO', $response );
+			$this->assertOutput( 'FOO', $response );
 
 
 		}
@@ -123,7 +124,7 @@
 
 			$get_request = $this->request( 'GET', '/foo' );
 			$response    = $this->router->runRoute( $get_request );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 
 		}
@@ -155,13 +156,13 @@
 			};
 
 			$this->newRouterWith( $routes );
-			$this->seeResponse( 'foobar', $this->router->runRoute( $this->request( 'GET', '/foo/bar' ) ) );
+			$this->assertOutput( 'foobar', $this->router->runRoute( $this->request( 'GET', '/foo/bar' ) ) );
 
 			$this->newRouterWith( $routes );
-			$this->seeResponse( 'foobaz', $this->router->runRoute( $this->request( 'GET', '/foo/baz' ) ) );
+			$this->assertOutput( 'foobaz', $this->router->runRoute( $this->request( 'GET', '/foo/baz' ) ) );
 
 			$this->newRouterWith( $routes );
-			$this->assertNull( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+			$this->assertNullResponse( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
 		}
 
@@ -187,11 +188,11 @@
 
 			$get_request = $this->request( 'GET', '/foo' );
 			$response    = $this->router->runRoute( $get_request );
-			$this->assertNull( $response );
+			$this->assertNullResponse( $response );
 
 			$post_request = $this->request( 'POST', '/foo' );
 			$response     = $this->router->runRoute( $post_request );
-			$this->assertNull( $response );
+			$this->assertNullResponse( $response );
 
 		}
 
@@ -213,7 +214,7 @@
 				} );
 
 			$response = $this->router->runRoute( $this->request( 'GET', '/foo' ) );
-			$this->seeResponse( 'get_foo', $response );
+			$this->assertOutput( 'get_foo', $response );
 
 			$count = $GLOBALS['test']['unique_condition'];
 			$this->assertSame( 1, $count, 'Condition was run: ' . $count . ' times.' );
@@ -239,7 +240,7 @@
 				} );
 
 			$response = $this->router->runRoute( $this->request( 'GET', '/bar' ) );
-			$this->seeResponse( 'get_bar', $response );
+			$this->assertOutput( 'get_bar', $response );
 
 			$count = $GLOBALS['test']['unique_condition'];
 			$this->assertSame( 1, $count, 'Condition was run: ' . $count . ' times.' );
@@ -294,37 +295,37 @@
 			$this->newRouterWith( $routes );
 			$post     = $this->request( 'POST', '/foo' );
 			$response = $this->router->runRoute( $post );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$put      = $this->request( 'PUT', '/foo' );
 			$response = $this->router->runRoute( $put );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$get      = $this->request( 'GET', '/foo' );
 			$response = $this->router->runRoute( $get );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$patch    = $this->request( 'PATCH', '/foo' );
 			$response = $this->router->runRoute( $patch );
-			$this->assertNull( $response );
+			$this->assertNullResponse( $response );
 
 			// Second route
 			$this->newRouterWith( $routes );
 			$get      = $this->request( 'GET', '/bar' );
 			$response = $this->router->runRoute( $get );
-			$this->seeResponse( 'bar', $response );
+			$this->assertOutput( 'bar', $response );
 
 			$patch    = $this->request( 'PATCH', '/bar' );
 			$response = $this->router->runRoute( $patch );
-			$this->seeResponse( 'bar', $response );
+			$this->assertOutput( 'bar', $response );
 
 			$post     = $this->request( 'POST', '/bar' );
 			$response = $this->router->runRoute( $post );
-			$this->seeResponse( null, $response );
+			$this->assertNullResponse( $response );
 
 			$put      = $this->request( 'PUT', '/bar' );
 			$response = $this->router->runRoute( $put );
-			$this->seeResponse( null, $response );
+			$this->assertNullResponse( $response );
 
 		}
 
@@ -343,7 +344,7 @@
 							$this->router
 								->get( '/foo' )
 								->middleware( 'baz:BAZ' )
-								->handle( function ( RequestInterface $request ) {
+								->handle( function ( Request $request ) {
 
 									return $request->body;
 
@@ -354,7 +355,7 @@
 						$this->router
 							->get( '/bar' )
 							->middleware( 'baz:BAZ' )
-							->handle( function ( RequestInterface $request ) {
+							->handle( function ( Request $request ) {
 
 								return $request->body;
 
@@ -371,12 +372,12 @@
 			$this->newRouterWith( $routes );
 			$get      = $this->request( 'GET', '/foo' );
 			$response = $this->router->runRoute( $get );
-			$this->seeResponse( 'FOOBARBAZ', $response );
+			$this->assertOutput( 'FOOBARBAZ', $response );
 
 			$this->newRouterWith( $routes );
 			$get      = $this->request( 'GET', '/bar' );
 			$response = $this->router->runRoute( $get );
-			$this->seeResponse( 'FOOBAZ', $response );
+			$this->assertOutput( 'FOOBAZ', $response );
 
 		}
 
@@ -397,7 +398,7 @@
 
 			$get_request = $this->request( 'GET', '/foo' );
 			$response    = $this->router->runRoute( $get_request );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 
 		}
@@ -434,13 +435,13 @@
 			};
 
 			$this->newRouterWith( $routes );
-			$this->seeResponse( 'foobarbaz', $this->router->runRoute( $this->request( 'GET', '/foo/bar/baz' ) ) );
+			$this->assertOutput( 'foobarbaz', $this->router->runRoute( $this->request( 'GET', '/foo/bar/baz' ) ) );
 
 			$this->newRouterWith( $routes );
-			$this->seeResponse( 'foobiz', $this->router->runRoute( $this->request( 'GET', '/foo/biz' ) ) );
+			$this->assertOutput( 'foobiz', $this->router->runRoute( $this->request( 'GET', '/foo/biz' ) ) );
 
 			$this->newRouterWith( $routes );
-			$this->seeResponse( null, $this->router->runRoute( $this->request( 'GET', '/foo/bar/biz' ) ) );
+			$this->assertNullResponse( $this->router->runRoute( $this->request( 'GET', '/foo/bar/biz' ) ) );
 
 
 		}
@@ -506,7 +507,7 @@
 			$response = $this->router->runRoute( $get );
 
 			// Then
-			$this->seeResponse( null, $response );
+			$this->assertNullResponse( $response );
 			$this->assertSame( true, $GLOBALS['test']['parent_condition_called'] );
 			$this->assertSame( true, $GLOBALS['test']['child_condition_called'] );
 
@@ -520,7 +521,7 @@
 			$response = $this->router->runRoute( $get );
 
 			// Then
-			$this->seeResponse( 'bar', $response );
+			$this->assertOutput( 'bar', $response );
 			$this->assertSame( true, $GLOBALS['test']['parent_condition_called'] );
 			$this->assertSame( false, $GLOBALS['test']['child_condition_called'] );
 
@@ -565,7 +566,7 @@
 
 			} );
 
-			$this->seeResponse(
+			$this->assertOutput(
 				'bar1',
 				$this->router->runRoute(
 					$this->request( 'GET', '/foo/bar' )
@@ -599,11 +600,11 @@
 
 			$this->newRouterWith( $routes );
 			$get = $this->request( 'GET', '/foo/bar' );
-			$this->seeResponse( 'foobar', $this->router->runRoute( $get ) );
+			$this->assertOutput( 'foobar', $this->router->runRoute( $get ) );
 
 			$this->newRouterWith( $routes );
 			$get = $this->request( 'GET', '/foo' );
-			$this->seeResponse( null, $this->router->runRoute( $get ) );
+			$this->assertNullResponse( $this->router->runRoute( $get ) );
 
 
 		}
@@ -632,11 +633,11 @@
 
 			$this->newRouterWith( $routes );
 			$get = $this->request( 'GET', '/foo/bar' );
-			$this->seeResponse( 'foobar', $this->router->runRoute( $get ) );
+			$this->assertOutput( 'foobar', $this->router->runRoute( $get ) );
 
 			$this->newRouterWith( $routes );
 			$get = $this->request( 'GET', '/foo' );
-			$this->seeResponse( null, $this->router->runRoute( $get ) );
+			$this->assertNullResponse( $this->router->runRoute( $get ) );
 
 
 		}

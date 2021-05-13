@@ -6,26 +6,13 @@
 
 	namespace Tests\integration\Routing;
 
-	use Tests\stubs\Conditions\ConditionWithDependency;
-	use Tests\stubs\Conditions\FalseCondition;
-	use Tests\stubs\Conditions\MaybeCondition;
-	use Tests\stubs\Conditions\TrueCondition;
-	use Tests\stubs\Conditions\UniqueCondition;
+
 	use Tests\stubs\Middleware\BarMiddleware;
 	use Tests\stubs\Middleware\FooMiddleware;
 	use Tests\stubs\Middleware\GlobalMiddleware;
 	use Tests\TestCase;
-	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Routing\Conditions\AdminCondition;
-	use WPEmerge\Routing\Conditions\AjaxCondition;
-	use WPEmerge\Routing\Conditions\CustomCondition;
-	use WPEmerge\Routing\Conditions\NegateCondition;
-	use WPEmerge\Routing\Conditions\PostIdCondition;
-	use WPEmerge\Routing\Conditions\PostSlugCondition;
-	use WPEmerge\Routing\Conditions\PostStatusCondition;
-	use WPEmerge\Routing\Conditions\PostTemplateCondition;
-	use WPEmerge\Routing\Conditions\PostTypeCondition;
-	use WPEmerge\Routing\Conditions\QueryVarCondition;
+    use WPEmerge\Http\Request;
+
 
 
 	class RouteAttributesTest extends TestCase {
@@ -58,11 +45,11 @@
 
 			$response = $this->router->runRoute( $this->request( 'GET', '/foo' ) );
 
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$response = $this->router->runRoute( $this->request( 'HEAD', '/foo' ) );
 
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 
 		}
@@ -78,7 +65,7 @@
 
 			$response = $this->router->runRoute( $this->request( 'post', '/foo' ) );
 
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 		}
 
@@ -93,7 +80,7 @@
 
 			$response = $this->router->runRoute( $this->request( 'put', '/foo' ) );
 
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 		}
 
@@ -108,7 +95,7 @@
 
 			$response = $this->router->runRoute( $this->request( 'patch', '/foo' ) );
 
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 		}
 
@@ -123,7 +110,7 @@
 
 			$response = $this->router->runRoute( $this->request( 'delete', '/foo' ) );
 
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 		}
 
@@ -138,7 +125,7 @@
 
 			$response = $this->router->runRoute( $this->request( 'options', '/foo' ) );
 
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 		}
 
@@ -152,22 +139,22 @@
 			} );
 
 			$response = $this->router->runRoute( $this->request( 'get', '/foo' ) );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$response = $this->router->runRoute( $this->request( 'post', '/foo' ) );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$response = $this->router->runRoute( $this->request( 'put', '/foo' ) );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$response = $this->router->runRoute( $this->request( 'patch', '/foo' ) );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$response = $this->router->runRoute( $this->request( 'delete', '/foo' ) );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$response = $this->router->runRoute( $this->request( 'options', '/foo' ) );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 		}
 
@@ -181,12 +168,12 @@
 			} );
 
 			$response = $this->router->runRoute( $this->request( 'get', '/foo' ) );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$response = $this->router->runRoute( $this->request( 'post', '/foo' ) );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
-			$this->assertNull( $this->router->runRoute( $this->request( 'put', '/foo' ) ) );
+			$this->assertNullResponse( $this->router->runRoute( $this->request( 'put', '/foo' ) ) );
 
 		}
 
@@ -201,7 +188,7 @@
 
 			$response = $this->router->runRoute( $this->request( 'GET', '/foo' ) );
 
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 		}
 
@@ -232,15 +219,15 @@
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'POST', '/foo/bar' ) );
-			$this->seeResponse( 'dynamic_route', $response );
+			$this->assertOutput( 'dynamic_route', $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'POST', '/foo/baz' ) );
-			$this->seeResponse( 'foo_baz_static', $response );
+			$this->assertOutput( 'foo_baz_static', $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'POST', '/foo/biz' ) );
-			$this->seeResponse( 'dynamic_route', $response );
+			$this->assertOutput( 'dynamic_route', $response );
 
 		}
 
@@ -266,32 +253,32 @@
 			$this->router->namespace( self::controller_namespace )
 			             ->get( '/get1', 'RoutingController@foo' );
 			$response = $this->router->runRoute( $this->request( 'GET', '/get1' ) );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$this->router->namespace( self::controller_namespace )
 			             ->post( '/post1', 'RoutingController@foo' );
 			$response = $this->router->runRoute( $this->request( 'POST', '/post1' ) );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$this->router->namespace( self::controller_namespace )
 			             ->put( '/put1', 'RoutingController@foo' );
 			$response = $this->router->runRoute( $this->request( 'PUT', '/put1' ) );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$this->router->namespace( self::controller_namespace )
 			             ->patch( '/patch1', 'RoutingController@foo' );
 			$response = $this->router->runRoute( $this->request( 'PATCH', '/patch1' ) );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$this->router->namespace( self::controller_namespace )
 			             ->options( '/options1', 'RoutingController@foo' );
 			$response = $this->router->runRoute( $this->request( 'OPTIONS', '/options1' ) );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$this->router->namespace( self::controller_namespace )
 			             ->delete( '/delete1', 'RoutingController@foo' );
 			$response = $this->router->runRoute( $this->request( 'DELETE', '/delete1' ) );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$routes = function () {
 
@@ -302,7 +289,7 @@
 			};
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'GET', '/match1' ) );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$routes = function () {
 
@@ -312,7 +299,7 @@
 			};
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'POST', '/match2' ) );
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$routes = function () {
 
@@ -322,7 +309,7 @@
 			};
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'PUT', '/match3' ) );
-			$this->seeResponse( null, $response );
+			$this->assertNullResponse(  $response );
 
 		}
 
@@ -336,7 +323,7 @@
 
 			$response = $this->router->runRoute( $this->request( 'GET', '/foo' ) );
 
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 		}
 
@@ -350,7 +337,7 @@
 
 			$response = $this->router->runRoute( $this->request( 'GET', '/foo' ) );
 
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 		}
 
@@ -360,7 +347,7 @@
 			$this->router
 				->get( '/foo' )
 				->middleware( 'foo' )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return $request->body;
 
@@ -370,7 +357,7 @@
 
 			$response = $this->router->runRoute( $this->request( 'GET', '/foo' ) );
 
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 		}
 
@@ -380,7 +367,7 @@
 			$this->router
 				->get( '/foo' )
 				->middleware( [ 'foo', 'bar' ] )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return $request->body;
 
@@ -391,7 +378,7 @@
 
 			$response = $this->router->runRoute( $this->request( 'GET', '/foo' ) );
 
-			$this->seeResponse( 'foobar', $response );
+			$this->assertOutput( 'foobar', $response );
 
 
 		}
@@ -402,7 +389,7 @@
 			$this->router
 				->get( '/foo' )
 				->middleware( [ 'foo:foofoo', 'bar:barbar' ] )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return $request->body;
 
@@ -413,7 +400,7 @@
 
 			$response = $this->router->runRoute( $this->request( 'GET', '/foo' ) );
 
-			$this->seeResponse( 'foofoobarbar', $response );
+			$this->assertOutput( 'foofoobarbar', $response );
 
 		}
 
@@ -423,7 +410,7 @@
 			$this->router
 				->get( '/foo' )
 				->middleware( 'foo' )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return $request->body;
 
@@ -433,12 +420,12 @@
 			$this->router->aliasMiddleware( 'foo', FooMiddleware::class );
 
 			$response = $this->router->runRoute( $this->request( 'GET', '/foo' ) );
-			$this->seeResponse( 'global_foo', $response );
+			$this->assertOutput( 'global_foo', $response );
 
 			$this->router
 				->post( '/bar' )
 				->middleware( 'bar' )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return $request->body;
 
@@ -448,7 +435,7 @@
 			$this->router->aliasMiddleware( 'bar', BarMiddleware::class );
 
 			$response = $this->router->runRoute( $this->request( 'POST', '/bar' ) );
-			$this->seeResponse( 'global_bar', $response );
+			$this->assertOutput( 'global_bar', $response );
 
 
 		}
@@ -459,7 +446,7 @@
 			$this->router
 				->middleware( 'foo' )
 				->get( '/foo' )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return $request->body;
 
@@ -470,40 +457,36 @@
 
 			$response = $this->router->runRoute( $this->request( 'GET', '/foo' ) );
 
-			$this->seeResponse( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			// As array.
 			$this->router
 				->middleware( [ 'foo', 'bar' ] )
 				->post( '/bar' )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return $request->body;
 
 				} );
 
 			$response = $this->router->runRoute( $this->request( 'POST', '/bar' ) );
-			$this->seeResponse( 'foobar', $response );
+			$this->assertOutput( 'foobar', $response );
 
 			// With Args
 			$this->router
 				->middleware( [ 'foo:FOO', 'bar:BAR' ] )
 				->put( '/baz' )
-				->handle( function ( RequestInterface $request ) {
+				->handle( function ( Request $request ) {
 
 					return $request->body;
 
 				} );
 
 			$response = $this->router->runRoute( $this->request( 'PUT', '/baz' ) );
-			$this->seeResponse( 'FOOBAR', $response );
+			$this->assertOutput( 'FOOBAR', $response );
 
 
 		}
-
-
-
-
 
 
 

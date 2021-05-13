@@ -6,12 +6,11 @@
 
 	namespace Tests\stubs\Controllers\Admin;
 
-	use Tests\stubs\Middleware\MiddlewareWithDependencies;
-	use Tests\stubs\TestResponse;
-	use Tests\TestRequest;
+    use Tests\stubs\Middleware\MiddlewareWithDependencies;
 	use WPEmerge\Http\Controller;
 	use Tests\stubs\Baz;
 	use WPEmerge\Http\Response;
+	use WPEmerge\Http\Request;
 
 	class AdminControllerWithMiddleware extends Controller {
 
@@ -34,11 +33,12 @@
 
 		}
 
-		public function handle( TestRequest $request ) : Response {
+		public function handle( Request $request ) : string
+        {
 
-			$request->body .= $this->baz . ':controller_with_middleware';
+			$request->body .= $this->baz->baz . ':controller_with_middleware';
 
-			return new Response($request->body);
+			return $request->body;
 
 		}
 

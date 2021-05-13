@@ -9,9 +9,10 @@
 	use Http\Message\ResponseFactory as Psr7ResponseFactory;
 	use Psr\Http\Message\ResponseInterface as Prs7Response;
     use WPEmerge\Contracts\ResponsableInterface;
+    use WPEmerge\Contracts\ResponseFactoryInterface;
     use WPEmerge\Contracts\ViewServiceInterface as ViewService;
 
-	class ResponseFactory  {
+	class ResponseFactory implements ResponseFactoryInterface {
 
 		/**
 		 * @var ViewService
@@ -29,7 +30,7 @@
 
         }
 
-		public function view( string $view, array $data = [], $status = 200, array $headers = [] ) : Prs7Response {
+		public function view( string $view, array $data = [], $status = 200, array $headers = [] ) : Response {
 
 			$content = $this->view->make($view)->with($data)->toString();
 
