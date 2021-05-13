@@ -33,16 +33,6 @@
 
         }
 
-        private function normalize(array $directories) : array
-        {
-
-            return array_filter(array_map([
-                FilePath::class,
-                'removeTrailingSlash',
-            ], $directories));
-
-        }
-
         public function exists(string $view_name) : bool
         {
 
@@ -102,6 +92,16 @@
 
             extract($context, EXTR_OVERWRITE);
             include $path;
+
+        }
+
+        private function normalize(array $directories) : array
+        {
+
+            return array_filter(array_map([
+                FilePath::class,
+                'removeTrailingSlash',
+            ], $directories));
 
         }
 

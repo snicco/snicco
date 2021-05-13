@@ -13,7 +13,6 @@
     use WPEmerge\Support\Str;
     use WPEmerge\Support\UrlParser;
 
-    /** @todo maybe have to methods return the instances off parameters bags instead of getting from it */
     class Request extends SymfonyRequest implements RequestInterface {
 
 		public static function capture() : RequestInterface {

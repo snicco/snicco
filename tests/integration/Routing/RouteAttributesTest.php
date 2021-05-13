@@ -35,30 +35,6 @@
 		const controller_namespace = 'Tests\stubs\Controllers\Web';
 
 
-		private function conditions() : array {
-
-			return [
-
-				'custom'               => CustomCondition::class,
-				'negate'               => NegateCondition::class,
-				'post_id'              => PostIdCondition::class,
-				'post_slug'            => PostSlugCondition::class,
-				'post_status'          => PostStatusCondition::class,
-				'post_template'        => PostTemplateCondition::class,
-				'post_type'            => PostTypeCondition::class,
-				'query_var'            => QueryVarCondition::class,
-				'ajax'                 => AjaxCondition::class,
-				'admin'                => AdminCondition::class,
-				'true'                 => TrueCondition::class,
-				'false'                => FalseCondition::class,
-				'maybe'                => MaybeCondition::class,
-				'unique'               => UniqueCondition::class,
-				'dependency_condition' => ConditionWithDependency::class,
-
-			];
-
-		}
-
 		/**
 		 *
 		 *
