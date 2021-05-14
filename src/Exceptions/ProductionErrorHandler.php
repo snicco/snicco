@@ -14,8 +14,10 @@
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\Facade\WP;
-	use WPEmerge\Http\Response;
-	use WPEmerge\Traits\HandlesExceptions;
+    use WPEmerge\Http\HttpResponseFactory;
+    use WPEmerge\Http\Response;
+    use WPEmerge\Http\ResponseEmitter;
+    use WPEmerge\Traits\HandlesExceptions;
 
 	use function get_current_user_id;
 
@@ -29,12 +31,12 @@
 		private $is_ajax;
 
 		/**
-		 * @var \Contracts\ContainerAdapter
+		 * @var ContainerAdapter
 		 */
 		private $container;
 
 		/**
-		 * @var \Psr\Log\LoggerInterface
+		 * @var LoggerInterface
 		 */
 		private $logger;
 
@@ -43,22 +45,25 @@
 		 */
 		protected $dont_report = [];
 
-		public function __construct( ContainerAdapter $container, LoggerInterface $logger, bool $is_ajax ) {
+        /**
+         * @var HttpResponseFactory
+         */
+        private $response;
+
+        public function __construct( ContainerAdapter $container, LoggerInterface $logger, HttpResponseFactory $response_factory, bool $is_ajax ) {
 
 			$this->is_ajax   = $is_ajax;
 			$this->container = $container;
 			$this->logger    = $logger;
+            $this->response = $response_factory;
+        }
 
-		}
-
-		public function handleException( $exception, $in_routing_flow = false, RequestInterface $request = null ) {
+		public function handleException( $exception, $in_routing_flow = false ) {
 
 
-			$request = $request ?? $this->container->make( RequestInterface::class );
+			$this->logException( $exception );
 
-			$this->logException( $exception, $request );
-
-			$response = $this->createResponseObject( $exception, $request );
+			$response = $this->createResponseObject( $exception );
 
 			if ( $in_routing_flow ) {
 
@@ -66,16 +71,16 @@
 
 			}
 
-			$this->sendToClient( $response, $request );
+            (new ResponseEmitter())->emit($response);
 
 			// Shuts down the script
 			UnrecoverableExceptionHandled::dispatch();
 
 		}
 
-		public function transformToResponse( Throwable $exception, RequestInterface $request = null ) : ResponseInterface {
+		public function transformToResponse( Throwable $exception ) : ?Response {
 
-			return $this->handleException( $exception, true, $request );
+			return $this->handleException( $exception, true  );
 
 		}
 
@@ -105,20 +110,26 @@
 
 		}
 
-		private function defaultResponse() : ResponseInterface {
+		private function defaultResponse() : Response {
 
-			return ( new Response( 'Internal Server Error', 500 ) )
-				->setType( $this->contentType() );
+		    if ( $this->is_ajax ) {
+
+                return $this->response->json('Internal Server Error', 500 );
+
+            }
+
+		    return $this->response->html('Internal Server Error', 500);
+
 
 		}
 
-		private function createResponseObject( Throwable $e, RequestInterface $request ) : ResponseInterface {
+		private function createResponseObject( Throwable $e ) : Response {
 
 
 			if ( method_exists( $e, 'render' ) ) {
 
 				/** @var ResponseInterface $response */
-				$response = $this->container->call( [ $e, 'render' ], [ 'request' => $request ] );
+				$response = $this->container->call( [ $e, 'render' ] );
 
 				return $response->setType( $this->contentType() );
 
@@ -128,7 +139,7 @@
 
 		}
 
-		private function logException( Throwable $exception, $request ) {
+		private function logException( Throwable $exception) {
 
 			if ( in_array(get_class($exception), $this->dont_report) ) {
 

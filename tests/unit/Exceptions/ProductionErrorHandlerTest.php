@@ -7,19 +7,20 @@
 	namespace Tests\unit\Exceptions;
 
 	use Exception;
-	use Mockery;
 	use Psr\Log\LoggerInterface;
 	use Psr\Log\LogLevel;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\AssertsResponse;
-	use Tests\SetUpDefaultMocks;
-	use Tests\stubs\Foo;
+    use Tests\CreateContainer;
+    use Tests\CreatePsr17Factories;
+    use Tests\stubs\Foo;
 	use Tests\stubs\TestException;
 	use Tests\stubs\TestLogger;
 	use Tests\TestCase;
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Contracts\ResponseInterface;
+    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\Exceptions\ProductionErrorHandler;
 	use WPEmerge\Facade\WP;
@@ -36,20 +37,22 @@
 	class ProductionErrorHandlerTest extends TestCase {
 
 		use AssertsResponse;
+        use CreateContainer;
+        use CreatePsr17Factories;
 
 		/**
-		 * @var \SniccoAdapter\BaseContainerAdapter
+		 * @var BaseContainerAdapter
 		 */
 		private $container;
 
 		protected function afterSetUp () {
 
-			ApplicationEvent::make();
+			ApplicationEvent::make($c = $this->createContainer());
 			ApplicationEvent::fake();
 
-			$this->container = new BaseContainerAdapter();
-			$this->container->instance(RequestInterface::class, $this->createRequest());
+			$this->container = $c;
 			$this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
+			$this->container->instance(ResponseFactory::class, $this->responseFactory());
 			$GLOBALS['test']['log'] = [];
 
 			WpFacade::setFacadeContainer($this->container);
@@ -57,15 +60,18 @@
 
 		}
 
-
-
 		/** @test */
 		public function inside_the_routing_flow_the_exceptions_get_transformed_into_response_objects() {
 
 
 			$handler = $this->newErrorHandler();
-			$handler->transformToResponse(new TestException('Sensitive Info'), $this->createRequest() );
 
+
+			$response = $handler->transformToResponse( new TestException('Sensitive Info') );
+
+			$this->assertInstanceOf(Response::class, $response);
+            $this->assertOutput('Internal Server Error', $response);
+            $this->assertStatusCode(500 , $response);
 			ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
 
 
@@ -82,20 +88,18 @@
 
 			$this->assertStringContainsString('Internal Server Error', $output);
 
-
 			ApplicationEvent::assertDispatched(UnrecoverableExceptionHandled::class);
 
 		}
 
 		/** @test */
-		public function for_ajax_request_the_content_type_is_set_correctly () {
+		public function for_ajax_requests_the_content_type_is_set_correctly () {
 
 			$handler = $this->newErrorHandler(true);
 
-
 			$response = $handler->transformToResponse( new TestException('Sensitive Info') );
 
-			$this->assertInstanceOf(ResponseInterface::class, $response);
+			$this->assertInstanceOf(Response::class, $response);
 			$this->assertStatusCode(500, $response);
 			$this->assertContentType('application/json', $response);
 			$this->assertOutput('Internal Server Error', $response );

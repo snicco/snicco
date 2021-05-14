@@ -8,7 +8,7 @@
 
     use Tests\RequestTesting;
     use Tests\TestCase;
-    use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
     use WPEmerge\Facade\WP;
 
     class AdminRoutesTest extends TestCase
@@ -30,7 +30,7 @@
 
             $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                $this->router->get('admin.php/foo', function (RequestInterface $request, string $page) {
+                $this->router->get('admin.php/foo', function (Request $request, string $page) {
 
                     return $page;
 
@@ -40,7 +40,7 @@
 
             $request = $this->adminRequestTo('foo');
 
-            $this->assertSame('foo', $this->router->runRoute($request));
+            $this->assertOutput('foo', $this->router->runRoute($request));
 
         }
 
@@ -60,7 +60,7 @@
 
             $request = $this->adminRequestTo('bar');
 
-            $this->assertSame(null, $this->router->runRoute($request));
+            $this->assertNullResponse( $this->router->runRoute($request));
 
 
         }
@@ -73,7 +73,7 @@
 
                 $this->router->group(['name' => 'foo_group'], function () {
 
-                    $this->router->get('admin.php/foo', function (RequestInterface $request, string $page) {
+                    $this->router->get('admin.php/foo', function (Request $request, string $page) {
 
                         return $page;
                     });
@@ -85,7 +85,7 @@
 
             $request = $this->adminRequestTo('foo');
 
-            $this->assertSame('foo', $this->router->runRoute($request));
+            $this->assertOutput('foo', $this->router->runRoute($request));
 
         }
 
@@ -98,13 +98,13 @@
 
                 $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    $this->router->get('admin.php/foo', function (RequestInterface $request, string $page) {
+                    $this->router->get('admin.php/foo', function (Request $request, string $page) {
 
                         return $page;
 
                     });
 
-                    $this->router->get('admin.php/bar', function (RequestInterface $request, string $page) {
+                    $this->router->get('admin.php/bar', function (Request $request, string $page) {
 
                         return $page;
 
@@ -116,15 +116,15 @@
 
             $this->newRouterWith($routes);
             $request = $this->adminRequestTo('foo');
-            $this->assertSame('foo', $this->router->runRoute($request));
+            $this->assertOutput('foo', $this->router->runRoute($request));
 
             $this->newRouterWith($routes);
             $request = $this->adminRequestTo('bar');
-            $this->assertSame('bar', $this->router->runRoute($request));
+            $this->assertOutput('bar', $this->router->runRoute($request));
 
             $this->newRouterWith($routes);
             $request = $this->adminRequestTo('baz', 'POST');
-            $this->assertSame(null, $this->router->runRoute($request));
+            $this->assertNullResponse( $this->router->runRoute($request));
 
 
         }
@@ -135,7 +135,7 @@
 
             $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                $this->router->get('users.php/foo', function (RequestInterface $request, string $page) {
+                $this->router->get('users.php/foo', function (Request $request, string $page) {
 
                     return $page;
 
@@ -145,7 +145,7 @@
 
             $request = $this->adminRequestTo('foo', 'GET', 'users.php');
 
-            $this->assertSame('foo', $this->router->runRoute($request));
+            $this->assertOutput('foo', $this->router->runRoute($request));
         }
 
         /** @test */
@@ -154,7 +154,7 @@
 
             $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                $this->router->get('users.php/foo', function (RequestInterface $request, string $page) {
+                $this->router->get('users.php/foo', function (Request $request, string $page) {
 
                     return $page;
 
@@ -164,7 +164,7 @@
 
             $request = $this->adminRequestTo('foo', 'GET', 'admin.php');
 
-            $this->assertSame(null, $this->router->runRoute($request));
+            $this->assertNullResponse( $this->router->runRoute($request));
 
         }
 
@@ -180,7 +180,7 @@
 
             $this->router->group(['prefix' => 'wp-admin', 'name' => 'admin'], function () {
 
-                $this->router->get('admin.php/foo', function (RequestInterface $request, string $page) {
+                $this->router->get('admin.php/foo', function (Request $request, string $page) {
 
                     return $page;
 
@@ -214,7 +214,7 @@
 
             $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                $this->router->get('admin/foo', function (RequestInterface $request, string $page) {
+                $this->router->get('admin/foo', function (Request $request, string $page) {
 
                     return $page;
 
@@ -224,7 +224,7 @@
 
             $request = $this->adminRequestTo('foo');
 
-            $this->assertSame('foo', $this->router->runRoute($request));
+            $this->assertOutput('foo', $this->router->runRoute($request));
 
         }
 
@@ -234,7 +234,7 @@
 
             $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                $this->router->get('options/foo', function (RequestInterface $request, string $page) {
+                $this->router->get('options/foo', function (Request $request, string $page) {
 
                     return $page;
 
@@ -244,7 +244,7 @@
 
             $request = $this->adminRequestTo('foo', 'GET', 'options-general.php');
 
-            $this->assertSame('foo', $this->router->runRoute($request));
+            $this->assertOutput('foo', $this->router->runRoute($request));
 
         }
 
@@ -254,7 +254,7 @@
 
             $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                $this->router->get('tools/foo', function (RequestInterface $request, string $page) {
+                $this->router->get('tools/foo', function (Request $request, string $page) {
 
                     return $page;
 
@@ -264,7 +264,7 @@
 
             $request = $this->adminRequestTo('foo', 'GET', 'tools.php');
 
-            $this->assertSame('foo', $this->router->runRoute($request));
+            $this->assertOutput('foo', $this->router->runRoute($request));
 
         }
 
@@ -274,7 +274,7 @@
 
             $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                $this->router->get('users/foo', function (RequestInterface $request, string $page) {
+                $this->router->get('users/foo', function (Request $request, string $page) {
 
                     return $page;
 
@@ -284,7 +284,7 @@
 
             $request = $this->adminRequestTo('foo', 'GET', 'users.php');
 
-            $this->assertSame('foo', $this->router->runRoute($request));
+            $this->assertOutput('foo', $this->router->runRoute($request));
 
         }
 
@@ -294,7 +294,7 @@
 
             $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                $this->router->get('plugins/foo', function (RequestInterface $request, string $page) {
+                $this->router->get('plugins/foo', function (Request $request, string $page) {
 
                     return $page;
 
@@ -304,7 +304,7 @@
 
             $request = $this->adminRequestTo('foo', 'GET', 'plugins.php');
 
-            $this->assertSame('foo', $this->router->runRoute($request));
+            $this->assertOutput('foo', $this->router->runRoute($request));
 
         }
 
@@ -314,7 +314,7 @@
 
             $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                $this->router->get('themes/foo', function (RequestInterface $request, string $page) {
+                $this->router->get('themes/foo', function (Request $request, string $page) {
 
                     return $page;
 
@@ -324,7 +324,7 @@
 
             $request = $this->adminRequestTo('foo', 'GET', 'themes.php');
 
-            $this->assertSame('foo', $this->router->runRoute($request));
+            $this->assertOutput('foo', $this->router->runRoute($request));
 
         }
 
@@ -334,7 +334,7 @@
 
             $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                $this->router->get('comments/foo', function (RequestInterface $request, string $page) {
+                $this->router->get('comments/foo', function (Request $request, string $page) {
 
                     return $page;
 
@@ -344,7 +344,7 @@
 
             $request = $this->adminRequestTo('foo', 'GET', 'edit-comments.php');
 
-            $this->assertSame('foo', $this->router->runRoute($request));
+            $this->assertOutput('foo', $this->router->runRoute($request));
 
         }
 
@@ -354,7 +354,7 @@
 
             $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                $this->router->get('upload/foo', function (RequestInterface $request, string $page) {
+                $this->router->get('upload/foo', function (Request $request, string $page) {
 
                     return $page;
 
@@ -364,7 +364,7 @@
 
             $request = $this->adminRequestTo('foo', 'GET', 'upload.php');
 
-            $this->assertSame('foo', $this->router->runRoute($request));
+            $this->assertOutput('foo', $this->router->runRoute($request));
 
         }
 
@@ -374,7 +374,7 @@
 
             $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                $this->router->get('posts/foo', function (RequestInterface $request, string $page) {
+                $this->router->get('posts/foo', function (Request $request, string $page) {
 
                     return $page;
 
@@ -384,7 +384,7 @@
 
             $request = $this->adminRequestTo('foo', 'GET', 'edit.php');
 
-            $this->assertSame('foo', $this->router->runRoute($request));
+            $this->assertOutput('foo', $this->router->runRoute($request));
 
         }
 
@@ -394,7 +394,7 @@
 
             $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                $this->router->get('dashboard/foo', function (RequestInterface $request, string $page) {
+                $this->router->get('dashboard/foo', function (Request $request, string $page) {
 
                     return $page;
 
@@ -404,7 +404,7 @@
 
             $request = $this->adminRequestTo('foo', 'GET', 'index.php');
 
-            $this->assertSame('foo', $this->router->runRoute($request));
+            $this->assertOutput('foo', $this->router->runRoute($request));
 
         }
 

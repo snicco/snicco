@@ -68,6 +68,7 @@
 
         }
 
+
         public function withType ( string $type ) {
 
             return $this->withAttribute('type', $type);
@@ -88,8 +89,7 @@
 
         }
 
-        /** @todo verify this.  */
-        public function request(string $name, $default = null )
+        public function parsedBody(string $name, $default = null )
         {
 
             return Arr::get($this->getParsedBody(), $name, $default);

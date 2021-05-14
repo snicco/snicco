@@ -13,6 +13,7 @@
     use WPEmerge\Contracts\ResponsableInterface;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Contracts\ViewServiceInterface as ViewService;
+    use WPEmerge\Support\Arr;
 
     class HttpResponseFactory implements ResponseFactory
     {
@@ -52,7 +53,7 @@
 
             foreach ($headers as $name => $value) {
 
-                $response->withHeader($name, $value);
+               $response = $response->withHeader($name, $value);
 
             }
 
@@ -69,21 +70,22 @@
 
         }
 
-        public function html(string $html) : Response
+        public function html(string $html, int $status_code = 200 ) : Response
         {
 
-            return $this->make(200)
+            return $this->make($status_code)
                         ->html($this->stream_factory->createStream($html));
 
         }
 
-        public function json($content) : Response
+        public function json($content, int $status = 200 )  : Response
         {
 
+
             /** @todo This needs more parsing or a dedicated JsonResponseClass */
-            return $this->make(200)
+            return $this->make($status)
                         ->json(
-                            $this->stream(json_encode($content, ))
+                            $this->stream(json_encode($content))
                         );
 
         }

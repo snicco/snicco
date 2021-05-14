@@ -42,7 +42,8 @@
             $ajax_request = $this->ajaxRequest('foo_action');
 
             $response = $this->router->runRoute($ajax_request);
-            $this->assertSame('FOO_ACTION', $response);
+            $this->assertOutput('FOO_ACTION', $response);
+
 
         }
 
@@ -63,7 +64,7 @@
             $ajax_request = $this->ajaxRequest('bar_action');
 
             $response = $this->router->runRoute($ajax_request);
-            $this->assertSame(null, $response);
+            $this->assertNullResponse($response);
 
         }
 
@@ -81,12 +82,13 @@
 
             });
 
-            $ajax_request = $this->ajaxRequest('foo_action', 'GET');
-            $ajax_request->request->remove('action');
-            $ajax_request->query->set('action', 'foo_action');
+            $ajax_request = $this->ajaxRequest('foo_action', 'GET')
+                                 ->withParsedBody([])
+                                 ->withQueryParams(['action' => 'foo_action']);
+
 
             $response = $this->router->runRoute($ajax_request);
-            $this->assertSame('FOO_ACTION', $response);
+            $this->assertOutput('FOO_ACTION', $response);
 
         }
 
@@ -104,11 +106,11 @@
 
             });
 
-            $ajax_request = $this->ajaxRequest('foo_action', 'GET', 'admin-ajax.php/foo_action');
-            $ajax_request->request->set('action', '');
+            $ajax_request = $this->ajaxRequest('foo_action', 'GET', 'admin-ajax.php/foo_action')
+                ->withParsedBody(['action' => 'bogus']);
 
             $response = $this->router->runRoute($ajax_request);
-            $this->assertSame(null, $response, 'This route should not have run.');
+            $this->assertNullResponse( $response );
 
         }
 
@@ -129,7 +131,7 @@
             $ajax_request = $this->ajaxRequest('bar_action');
 
             $response = $this->router->runRoute($ajax_request);
-            $this->assertSame('BAR_ACTION', $response);
+            $this->assertOutput('BAR_ACTION', $response);
 
         }
 
@@ -147,12 +149,12 @@
 
             });
 
-            $ajax_request = $this->ajaxRequest('bar_action', 'GET');
-            $ajax_request->request->remove('action');
-            $ajax_request->query->set('action', 'bar_action');
+            $ajax_request = $this->ajaxRequest('bar_action', 'GET')
+                ->withParsedBody([])
+                ->withQueryParams(['action' => 'bar_action']);
 
             $response = $this->router->runRoute($ajax_request);
-            $this->assertSame('BAR_ACTION', $response);
+            $this->assertOutput('BAR_ACTION', $response);
 
         }
 
@@ -207,6 +209,7 @@
         /** @test */
         public function an_exception_gets_thrown_when_the_route_doesnt_support_get_requests()
         {
+
             $this->expectException('Route: ajax.foo does not respond to GET requests.');
             $this->expectException(RouteLogicException::class);
 

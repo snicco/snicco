@@ -26,7 +26,7 @@
 
         }
 
-        public function html( StreamInterface $html) : Response
+        public function html(StreamInterface $html) : Response
         {
 
             return $this->withHeader('Content-Type', 'text/html')
@@ -37,11 +37,13 @@
         public function json(StreamInterface $json) : Response
         {
 
-            return $this->withHeader('Content-Type', 'application/json');
+            return $this->withHeader('Content-Type', 'application/json')
+                        ->withBody($json);
 
         }
-        
-        private function new (ResponseInterface $new_psr_response ) :Response {
+
+        private function new(ResponseInterface $new_psr_response) : Response
+        {
 
             return new static($new_psr_response);
 

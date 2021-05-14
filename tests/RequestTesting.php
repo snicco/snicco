@@ -16,9 +16,7 @@
         private function adminUrlTo(string $menu_slug, string $parent_page = 'admin.php') : string
         {
 
-            $url = Url::combinePath(SITE_URL, 'wp-admin/'.$parent_page.'?page='.$menu_slug);
-
-            return $url;
+            return Url::combinePath(SITE_URL, 'wp-admin/'.$parent_page.'?page='.$menu_slug);
 
         }
 
@@ -27,9 +25,7 @@
 
             $request = TestRequest::fromFullUrl($method, $this->adminUrlTo($admin_page, $parent_file));
 
-            $request = $request->withQueryParams( ['page' => $admin_page] );
-
-            return $request;
+            return $request->withQueryParams( ['page' => $admin_page] );
 
         }
 
@@ -38,7 +34,7 @@
 
             $request = TestRequest::fromFullUrl($method, $this->ajaxUrl($path));
 
-            return $request;
+            return $request->withParsedBody(['action' => $action]);
 
         }
 

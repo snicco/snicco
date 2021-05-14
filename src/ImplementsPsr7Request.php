@@ -99,6 +99,17 @@
             return $this->new($this->psr_request->withoutAttribute($name));
         }
 
+        public function withParsedBody($data)
+        {
+            return $this->new($this->psr_request->withParsedBody($data));
+        }
+
+        public function withUploadedFiles(array $uploadedFiles)
+        {
+
+            return  $this->new($this->psr_request->withUploadedFiles($uploadedFiles));
+        }
+
         public function getProtocolVersion()
         {
 
@@ -179,11 +190,7 @@
             return $this->psr_request->getUploadedFiles();
         }
 
-        public function withUploadedFiles(array $uploadedFiles)
-        {
 
-            return $this->psr_request->withUploadedFiles($uploadedFiles);
-        }
 
         public function getParsedBody()
         {
@@ -191,11 +198,7 @@
             return $this->psr_request->getParsedBody();
         }
 
-        public function withParsedBody($data)
-        {
 
-            return $this->psr_request->withParsedBody($data);
-        }
 
         public function getAttributes()
         {

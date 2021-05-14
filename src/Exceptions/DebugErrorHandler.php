@@ -12,7 +12,8 @@
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
-	use WPEmerge\Traits\HandlesExceptions;
+    use WPEmerge\Http\Response;
+    use WPEmerge\Traits\HandlesExceptions;
 
 	class DebugErrorHandler implements ErrorHandlerInterface {
 
@@ -39,7 +40,7 @@
 
 		}
 
-		public function transformToResponse( Throwable $exception, RequestInterface $request = null ) : ?ResponseInterface {
+		public function transformToResponse( Throwable $exception ) : ?Response {
 
 			 $this->handleException( $exception);
 

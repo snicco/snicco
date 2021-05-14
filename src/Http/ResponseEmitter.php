@@ -50,7 +50,7 @@
                 $this->emitHeaders($response);
             }
 
-            if ( ! $isEmpty) {
+            if ( ! $isEmpty ) {
                 $this->emitBody($response);
             }
         }

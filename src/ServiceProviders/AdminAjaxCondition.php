@@ -17,7 +17,6 @@
     class AdminAjaxCondition extends RequestAttributeCondition implements UrlableInterface
     {
 
-
         public function isSatisfied(Request $request) : bool
         {
 

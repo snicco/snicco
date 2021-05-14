@@ -34,7 +34,7 @@
 
             foreach ( $this->query_string_arguments as $key => $value ) {
 
-                if ( ! in_array($key, array_keys($query_args) ) ) {
+                if ( ! in_array($key, array_keys($query_args), true ) ) {
 
                     return false;
 
