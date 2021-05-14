@@ -9,11 +9,11 @@
 	use Mockery as m;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\stubs\Bar;
-	use WPEmerge\Contracts\RequestInterface as Request;
 	use PHPUnit\Framework\TestCase;
 	use WPEmerge\Factories\HandlerFactory;
+    use WPEmerge\Http\Request;
 
-	class ClosureHandlerTest extends TestCase {
+    class ClosureHandlerTest extends TestCase {
 
 
 		/** @test */

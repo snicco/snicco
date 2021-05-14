@@ -6,11 +6,11 @@
 	namespace Tests\unit\Exceptions;
 
 
-	use PHPUnit\Framework\TestCase;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\AssertsResponse;
-	use Tests\stubs\TestException;
-	use Tests\TestRequest;
+    use Tests\CreateContainer;
+    use Tests\stubs\TestException;
+    use Tests\TestCase;
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\Exceptions\DebugErrorHandler;
@@ -19,22 +19,16 @@
 	class DebugErrorHandlerTest extends TestCase {
 
 		use AssertsResponse;
+        use CreateContainer;
 
-		protected function setUp() : void {
+		protected function afterSetup() : void {
 
-			parent::setUp();
-			ApplicationEvent::make();
+		    ApplicationEvent::make($this->createContainer());
 			ApplicationEvent::fake();
 
 		}
 
-		protected function tearDown() : void {
 
-			parent::tearDown();
-
-			ApplicationEvent::setInstance(null );
-
-		}
 
 		/** @test */
 		public function exceptions_are_rendered_with_whoops () {
@@ -86,8 +80,6 @@
 
 		private function newErrorHandler (bool $is_ajax = false ) : DebugErrorHandler {
 
-			$request = TestRequest::from('GET', 'foo');
-			$request->overrideGlobals();
 
 			return ErrorHandlerFactory::make(
 				new BaseContainerAdapter(),

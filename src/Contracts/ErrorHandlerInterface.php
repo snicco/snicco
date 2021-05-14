@@ -7,7 +7,10 @@
 	namespace WPEmerge\Contracts;
 
 
-	interface ErrorHandlerInterface {
+	use WPEmerge\Http\Response;
+    use Throwable;
+
+    interface ErrorHandlerInterface {
 
 		/**
 		 * Register any necessary error, exception and shutdown handlers.
@@ -23,14 +26,15 @@
 		 */
 		public function unregister();
 
-		/**
-		 * Get a response representing the specified exception.
-		 *
-		 * @param  \Throwable  $exception
-		 *
-		 * @return ResponseInterface
-		 */
-		public function transformToResponse( \Throwable $exception, ?RequestInterface $request = null ) :?ResponseInterface;
+        /**
+         * Get a response representing the specified exception if possible.
+         * If outside of the routing flow send error message and abort.
+         *
+         * @param  Throwable  $exception
+         *
+         * @return Response|null
+         */
+		public function transformToResponse( Throwable $exception ) :?Response;
 
 
 

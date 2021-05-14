@@ -11,7 +11,9 @@
     use Tests\TestCase;
     use Tests\TestRequest;
     use WPEmerge\Application\Application;
+    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ViewInterface;
+    use WPEmerge\Events\MakingView;
     use WPEmerge\Facade\WP;
     use WPEmerge\Routing\Router;
     use WPEmerge\ServiceProviders\AliasServiceProvider;
@@ -225,6 +227,12 @@
 
             ob_start();
             TestApp::render('view');
+
+            ApplicationEvent::assertDispatched(MakingView::class, function (MakingView $event ) {
+
+                return $event->payload()->name() === 'view';
+
+            });
 
             $this->assertSame('Foobar', ob_get_clean());
 

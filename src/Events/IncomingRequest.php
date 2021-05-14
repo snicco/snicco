@@ -13,7 +13,7 @@
 
 
 		/**
-		 * @var \WPEmerge\Http\Request
+		 * @var Request
 		 */
 		public $request;
 
@@ -22,7 +22,7 @@
         /**
          * @var bool
          */
-        protected $matched_route = false;
+        protected $has_matching_route = false;
 
 
         public function __construct( Request $request) {
@@ -40,7 +40,7 @@
         public function matchedRoute()
         {
 
-            $this->matched_route = true;
+            $this->has_matching_route = true;
 
         }
 

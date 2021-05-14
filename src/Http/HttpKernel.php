@@ -98,7 +98,7 @@
 
             }
 
-            if ( $this->response instanceof NullResponse) {
+            if ( ! $this->response instanceof NullResponse) {
 
                 $request_event->matchedRoute();
 

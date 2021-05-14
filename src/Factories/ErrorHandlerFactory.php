@@ -13,7 +13,8 @@
 	use Whoops\Handler\PrettyPageHandler;
 	use Whoops\Run;
 	use Whoops\RunInterface;
-	use WPEmerge\Exceptions\ConfigurationException;
+    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Exceptions\DebugErrorHandler;
 	use WPEmerge\Exceptions\ProductionErrorHandler;
 
@@ -67,9 +68,11 @@
 				? $container->make( LoggerInterface::class )
 				: new NullLogger();
 
+			$response_factory = $container->make(ResponseFactory::class);
+
 			$class = $container->make(ProductionErrorHandler::class);
 
-			return new $class($container, $logger, $is_ajax);
+			return new $class($container, $logger, $response_factory,  $is_ajax);
 
 		}
 

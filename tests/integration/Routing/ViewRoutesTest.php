@@ -8,7 +8,6 @@
 
     use Tests\AssertsResponse;
     use Tests\CreatePsr17Factories;
-    use Tests\stubs\TestResponseFactory;
     use Tests\TestCase;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Http\Response;
@@ -32,7 +31,8 @@
 
 			$this->assertInstanceOf(Response::class, $response );
 			$this->assertContentType('text/html', $response);
-			$this->assertOutputContains('welcome.wordpress', $response);
+			$this->assertStatusCode(200, $response);
+			$this->assertOutputContains('VIEW:welcome.wordpress,CONTEXT:[]', $response);
 
 		}
 
@@ -41,7 +41,7 @@
 
 			$this->createBindingsForViewController();
 
-			$this->router->view('/foo', 'welcome.wordpress', ['foo' => 'bar'], 201, ['Referer' => 'foobar']);
+			$this->router->view('/foo', 'welcome.wordpress', ['foo' => 'bar', 'bar' => 'baz'], 201, ['Referer' => 'foobar']);
 
 			$request = $this->request( 'GET', '/foo' );
 
@@ -50,14 +50,14 @@
 			$this->assertInstanceOf(Response::class, $response );
 
 			$this->assertHeader('Referer', 'foobar', $response);
-			$this->assertOutput('welcome.wordpress:foo=>bar', $response);
+			$this->assertOutput('VIEW:welcome.wordpress,CONTEXT:[foo=>bar,bar=>baz]', $response);
 			$this->assertStatusCode(201, $response);
 
 		}
 
 		private function createBindingsForViewController () {
 
-		    $this->container->instance(ResponseFactory::class, new TestResponseFactory());
+		    $this->container->instance(ResponseFactory::class, $this->responseFactory());
 
 
 		}

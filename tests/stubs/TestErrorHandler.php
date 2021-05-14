@@ -9,8 +9,9 @@
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ResponseInterface;
+    use WPEmerge\Http\Response;
 
-	class TestErrorHandler implements ErrorHandlerInterface {
+    class TestErrorHandler implements ErrorHandlerInterface {
 
 		const bypass_messsage = 'FORCEDEXCEPTION';
 
@@ -29,7 +30,7 @@
 		/**
 		 * @throws \Exception
 		 */
-		public function transformToResponse( \Throwable $exception, ?RequestInterface $request = null ) :ResponseInterface {
+		public function transformToResponse( \Throwable $exception, ?RequestInterface $request = null ) :?Response {
 
 			throw $exception;
 

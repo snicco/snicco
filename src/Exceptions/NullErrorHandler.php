@@ -7,10 +7,9 @@
 	namespace WPEmerge\Exceptions;
 
 	use WPEmerge\Contracts\ErrorHandlerInterface;
-	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Contracts\ResponseInterface;
+    use WPEmerge\Http\Response;
 
-	class NullErrorHandler implements ErrorHandlerInterface {
+    class NullErrorHandler implements ErrorHandlerInterface {
 
 
 		public function register() {
@@ -21,7 +20,7 @@
 			//
 		}
 
-		public function transformToResponse( \Throwable $exception, ?RequestInterface $request = null ) : ?ResponseInterface {
+		public function transformToResponse( \Throwable $exception ) : ?Response {
 
 			throw $exception;
 

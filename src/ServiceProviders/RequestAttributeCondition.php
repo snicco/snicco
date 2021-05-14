@@ -32,7 +32,7 @@
 
             foreach ( $this->request_arguments as $key => $value ) {
 
-                if ( ! in_array($key, array_keys($request) ) ) {
+                if ( ! in_array($key, array_keys($request), true ) ) {
 
                     return false;
 

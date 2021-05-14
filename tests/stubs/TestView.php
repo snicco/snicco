@@ -51,6 +51,18 @@
 
 		public function toString() : string {
 
+		    $context = '[';
+
+            foreach ($this->context as $key => $value ) {
+
+                $context .= $key .  '=>' . $value . ',';
+
+            }
+            $context = rtrim($context, ',');
+            $context .= ']';
+
+		    return 'VIEW:' . $this->name . ',CONTEXT:'. $context;
+
 		}
 
 		public function path() : string {

@@ -194,24 +194,6 @@
 
 		}
 
-		private function applyHashSuffix( string $hash, ?Request $request ) {
-
-			if ( WP::isAdmin() && ! WP::isAdminAjax() && $request ) {
-
-				$hash =  $hash . '/' . $request->query( 'page', '' );
-
-			}
-
-			if ( WP::isAdminAjax() && $request ) {
-
-                $hash = $hash . '/' . $request->request( 'action', $request->query('action', '') );
-
-			}
-
-			return Url::toRouteMatcherFormat($hash);
-
-
-		}
 
 		private function findRoute( Request $request ) : RouteMatch {
 
@@ -258,7 +240,27 @@
 
 		}
 
-		private function tryHashed( Request $request, $url ) : RouteMatch {
+        private function applyHashSuffix( string $hash, ?Request $request ) : string
+        {
+
+            if ( WP::isAdmin() && ! WP::isAdminAjax() && $request ) {
+
+                $hash =  $hash . '/' . $request->query( 'page', '' );
+
+            }
+
+            if ( WP::isAdminAjax() && $request ) {
+
+                $hash = $hash . '/' . $request->parsedBody( 'action', $request->query('action', '') );
+
+            }
+
+            return Url::toRouteMatcherFormat($hash);
+
+
+        }
+
+        private function tryHashed( Request $request, $url ) : RouteMatch {
 
 			return $this->tryAbsolute( $request, $this->hash( $url, $request ) );
 

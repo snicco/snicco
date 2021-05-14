@@ -9,14 +9,16 @@
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Contracts\ViewServiceInterface;
 
-	class TestViewService implements ViewServiceInterface {
+    class TestViewService implements ViewServiceInterface {
 
 		public function compose( ViewInterface $view ) {
 			//
 		}
 
 		public function make( $views ) : ViewInterface {
-			//
+
+            return new TestView($views);
+
 		}
 
 		public function render( $views, array $context = [] ) : string {

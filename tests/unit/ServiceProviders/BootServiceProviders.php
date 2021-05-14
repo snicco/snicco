@@ -82,7 +82,7 @@
 			}
 
             ApplicationEvent::make( $container );
-            // ApplicationEvent::fake(); ??
+            ApplicationEvent::fake();
 
 		}
 
