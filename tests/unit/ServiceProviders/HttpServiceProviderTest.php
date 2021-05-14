@@ -7,9 +7,9 @@
 	namespace Tests\unit\ServiceProviders;
 
 	use Tests\TestCase;
-	use WPEmerge\Contracts\ResponseFactoryInterface;
+	use WPEmerge\Contracts\ResponseFactory;
 	use WPEmerge\Http\HttpKernel;
-	use WPEmerge\Http\ResponseFactory;
+	use WPEmerge\Http\HttpResponseFactory;
 	use WPEmerge\Middleware\StartSession;
 	use WPEmerge\Middleware\SubstituteBindings;
 	use WPEmerge\ServiceProviders\ExceptionServiceProvider;
@@ -52,7 +52,7 @@
 		public function the_response_factory_can_be_resolved() {
 
 
-			$this->assertInstanceOf( ResponseFactory::class, $this->app->resolve( ResponseFactoryInterface::class ) );
+			$this->assertInstanceOf( HttpResponseFactory::class, $this->app->resolve( ResponseFactory::class ) );
 
 		}
 

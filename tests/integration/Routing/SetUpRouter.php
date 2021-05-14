@@ -6,43 +6,28 @@
 
 	namespace Tests\integration\Routing;
 
-	use SniccoAdapter\BaseContainerAdapter;
     use Tests\AssertsResponse;
     use Tests\CreateContainer;
-    use Tests\CreateResponseFactory;
+    use Tests\CreatePsr17Factories;
     use Tests\SetUpDefaultMocks;
-	use Tests\TestRequest;
+    use Tests\stubs\TestViewService;
+    use Tests\TestRequest;
 	use WPEmerge\Facade\WP;
 	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Http\Request;
-    use WPEmerge\Http\Response;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Routing\Conditions\AdminCondition;
-	use WPEmerge\Routing\Conditions\AjaxCondition;
-	use WPEmerge\Routing\Conditions\CustomCondition;
-	use WPEmerge\Routing\Conditions\NegateCondition;
-    use WPEmerge\Routing\Conditions\AdminPageCondition;
-    use WPEmerge\Routing\Conditions\PostIdCondition;
-	use WPEmerge\Routing\Conditions\PostSlugCondition;
-	use WPEmerge\Routing\Conditions\PostStatusCondition;
-	use WPEmerge\Routing\Conditions\PostTemplateCondition;
-	use WPEmerge\Routing\Conditions\PostTypeCondition;
-	use WPEmerge\Routing\Conditions\QueryStringCondition;
-	use WPEmerge\Routing\Conditions\QueryVarCondition;
+    use WPEmerge\Http\HttpResponseFactory;
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
     use WPEmerge\ServiceProviders\RoutingServiceProvider;
-    use WPEmerge\View\ViewService;
 
     trait SetUpRouter {
 
 		use SetUpDefaultMocks;
         use CreateContainer;
-        use CreateResponseFactory;
+        use CreatePsr17Factories;
         use AssertsResponse;
-
 
 
 		/**
@@ -93,7 +78,11 @@
 			$this->router      = new Router(
 			    $container,
                 $route_collection,
-                new ResponseFactory(\Mockery::mock(ViewService::class), $this->createFactory())
+                new HttpResponseFactory(
+                    new TestViewService(),
+                    $this->psrResponseFactory(),
+                    $this->psrStreamFactory(),
+                )
             );
 
 		}

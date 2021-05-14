@@ -1,13 +1,12 @@
 <?php
 
 
+    declare(strict_types = 1);
 
-    declare(strict_types=1);
 
     namespace WPEmerge\Http;
 
     use Psr\Http\Message\ResponseInterface;
-
 
     /**
      *
@@ -27,28 +26,31 @@
         private $responseChunkSize;
 
         /**
-         * @param int $responseChunkSize
+         * @param  int  $responseChunkSize
          */
         public function __construct(int $responseChunkSize = 4096)
         {
+
             $this->responseChunkSize = $responseChunkSize;
         }
 
         /**
          * Send the response the client
          *
-         * @param ResponseInterface $response
+         * @param  ResponseInterface  $response
+         *
          * @return void
          */
-        public function emit(ResponseInterface $response): void
+        public function emit(ResponseInterface $response) : void
         {
+
             $isEmpty = $this->isResponseEmpty($response);
             if (headers_sent() === false) {
                 $this->emitStatusLine($response);
                 $this->emitHeaders($response);
             }
 
-            if (!$isEmpty) {
+            if ( ! $isEmpty) {
                 $this->emitBody($response);
             }
         }
@@ -56,15 +58,18 @@
         /**
          * Emit Response Headers
          *
-         * @param ResponseInterface $response
+         * @param  ResponseInterface  $response
          */
-        public function emitHeaders(ResponseInterface $response): void
+        public function emitHeaders(ResponseInterface $response) : void
         {
-            if ( $this->headersSent() ) {
+
+            if ($this->headersSent()) {
 
                 return;
 
             }
+
+            $this->emitStatusLine($response);
 
             foreach ($response->getHeaders() as $name => $values) {
                 $first = strtolower($name) !== 'set-cookie';
@@ -79,10 +84,11 @@
         /**
          * Emit Status Line
          *
-         * @param ResponseInterface $response
+         * @param  ResponseInterface  $response
          */
-        private function emitStatusLine(ResponseInterface $response): void
+        private function emitStatusLine(ResponseInterface $response) : void
         {
+
             $statusLine = sprintf(
                 'HTTP/%s %s %s',
                 $response->getProtocolVersion(),
@@ -95,12 +101,12 @@
         /**
          * Emit Body
          *
-         * @param ResponseInterface $response
+         * @param  ResponseInterface  $response
          */
-        public function emitBody(ResponseInterface $response): void
+        public function emitBody(ResponseInterface $response) : void
         {
 
-            if ( $this->outPutSent() ) {
+            if ($this->outPutSent()) {
 
                 return;
 
@@ -112,12 +118,12 @@
             }
 
             $amountToRead = (int) $response->getHeaderLine('Content-Length');
-            if (!$amountToRead) {
+            if ( ! $amountToRead) {
                 $amountToRead = $body->getSize();
             }
 
             if ($amountToRead) {
-                while ($amountToRead > 0 && !$body->eof()) {
+                while ($amountToRead > 0 && ! $body->eof()) {
                     $length = min($this->responseChunkSize, $amountToRead);
                     $data = $body->read($length);
                     echo $data;
@@ -128,8 +134,9 @@
                         break;
                     }
                 }
-            } else {
-                while (!$body->eof()) {
+            }
+            else {
+                while ( ! $body->eof()) {
                     echo $body->read($this->responseChunkSize);
                     if (connection_status() !== CONNECTION_NORMAL) {
                         break;
@@ -141,11 +148,13 @@
         /**
          * Asserts response body is empty or status code is 204, 205 or 304
          *
-         * @param ResponseInterface $response
+         * @param  ResponseInterface  $response
+         *
          * @return bool
          */
-        private function isResponseEmpty(ResponseInterface $response): bool
+        private function isResponseEmpty(ResponseInterface $response) : bool
         {
+
             if (in_array($response->getStatusCode(), [204, 205, 304], true)) {
                 return true;
             }
@@ -154,20 +163,23 @@
             if ($seekable) {
                 $stream->rewind();
             }
+
             return $seekable ? $stream->read(1) === '' : $stream->eof();
         }
 
-        private function headersSent () :bool {
+        private function headersSent() : bool
+        {
 
-          return headers_sent();
+            return headers_sent();
 
         }
 
-        private function outPutSent(): bool
+        private function outPutSent() : bool
         {
 
-            return ob_get_level() > 0 && ob_get_length() > 0;
-
+            return false;
+            // This does not work in wordpress admin pages.
+            // return ob_get_level() > 0 && ob_get_length() > 0;
 
         }
 

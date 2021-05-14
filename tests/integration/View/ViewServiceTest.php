@@ -13,13 +13,13 @@
 	use WPEmerge\Exceptions\ViewException;
 	use WPEmerge\Exceptions\ViewNotFoundException;
 	use WPEmerge\View\PhpView;
-	use WpFacade\WpFacade;
+    use WPEmerge\View\ViewService;
 
-	class ViewServiceTest extends WPTestCase {
+    class ViewServiceTest extends WPTestCase {
 
 
 		/**
-		 * @var \WPEmerge\View\ViewService
+		 * @var ViewService
 		 */
 		private $view_service;
 
@@ -36,7 +36,6 @@
 
 
 		}
-
 
 
 		/** @test */

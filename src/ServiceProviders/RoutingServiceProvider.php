@@ -6,6 +6,7 @@
 
     namespace WPEmerge\ServiceProviders;
 
+    use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Exceptions\ConfigurationException;
@@ -91,7 +92,8 @@
                         $this->container->make(ConditionFactory::class),
                         $this->container->make(HandlerFactory::class),
                         $this->container->make(RouteMatcher::class)
-                    )
+                    ),
+                    $this->container->make(ResponseFactory::class)
 
                 );
             });

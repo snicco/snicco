@@ -9,8 +9,9 @@
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\UrlableInterface;
+    use WPEmerge\Http\Request;
 
-	class QueryStringCondition implements ConditionInterface{
+    class QueryStringCondition implements ConditionInterface{
 
 		/**
 		 * @var array
@@ -27,9 +28,9 @@
 		 *
 		 * @return bool|void
 		 */
-		public function isSatisfied( RequestInterface $request ) {
+		public function isSatisfied( Request $request ) :bool {
 
-            $query_args = $request->query();
+            $query_args = $request->getQueryParams();
 
             foreach ( $this->query_string_arguments as $key => $value ) {
 
@@ -53,10 +54,10 @@
 
 		}
 
-		public function getArguments( RequestInterface $request ) : array
+		public function getArguments( Request $request ) : array
         {
 
-            return collect($request->query())->only($this->query_string_arguments->keys())->all();
+            return collect($request->getQueryParams())->only($this->query_string_arguments->keys())->all();
 
 		}
 

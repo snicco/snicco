@@ -7,15 +7,20 @@
 	namespace Tests\unit\Application;
 
 	use Codeception\TestCase\WPTestCase;
-	use SniccoAdapter\BaseContainerAdapter;
-	use Tests\stubs\TestContainer;
+    use Mockery\Exception\InvalidArgumentException;
+    use Psr\Http\Message\ServerRequestInterface;
+    use SniccoAdapter\BaseContainerAdapter;
+    use Tests\CreateContainer;
+    use Tests\stubs\TestContainer;
 	use WPEmerge\Application\Application;
 	use WPEmerge\Application\ApplicationConfig;
 	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Exceptions\ConfigurationException;
+    use WPEmerge\Http\Request;
 
-	class ApplicationTest extends WPTestCase {
+    class ApplicationTest extends WPTestCase {
 
+        use CreateContainer;
 
 		/** @test */
 		public function the_static_constructor_returns_an_application_instance() {
@@ -137,11 +142,27 @@
 
 		}
 
+		/** @test */
+		public function the_request_is_captured () {
+
+            $app1 = $this->newApplication();
+
+            $this->assertInstanceOf(Request::class, $app1->resolve(Request::class));
+
+		}
+
+		/** @test */
+		public function a_custom_server_request_can_be_provided () {
+
+		    $app = new Application(  $this->createContainer(), $mock = \Mockery::mock(ServerRequestInterface::class) );
+
+		    $this->assertInstanceOf(Request::class, $app->resolve(Request::class));
+
+		}
+
 		private function newApplication() : Application {
 
-			$app = new Application(  new BaseContainerAdapter() );
-
-			return $app;
+            return new Application(  $this->createContainer() );
 		}
 
 

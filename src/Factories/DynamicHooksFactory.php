@@ -7,20 +7,20 @@
 	namespace WPEmerge\Factories;
 
 	use BetterWpHooks\Contracts\Dispatcher;
-	use WPEmerge\Contracts\RequestInterface;
+    use BetterWpHooks\Dispatchers\WordpressDispatcher;
 	use WPEmerge\Events\AdminBodySendable;
 	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingAjaxRequest;
 
+    use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Request;
 
-	use function get_plugin_page_hook;
-	use function wp_doing_ajax;
 
 	class DynamicHooksFactory {
 
 
 		/**
-		 * @var \BetterWpHooks\Dispatchers\WordpressDispatcher
+		 * @var WordpressDispatcher
 		 */
 		private $dispatcher;
 
@@ -31,9 +31,9 @@
 
 		}
 
-		public function create( RequestInterface $request ) {
+		public function create( Request $request ) {
 
-			if ( wp_doing_ajax() ) {
+			if ( WP::isAdminAjax() ) {
 
 				$this->createAjaxHooks($request);
 
@@ -66,7 +66,7 @@
 
 		}
 
-		private function createAjaxHooks( RequestInterface $request ) {
+		private function createAjaxHooks( Request $request ) {
 
 			$action = ( isset( $_REQUEST['action'] ) ) ? $_REQUEST['action'] : '';
 
@@ -86,7 +86,7 @@
 
 		}
 
-		private function createAdminHooks(RequestInterface $request) {
+		private function createAdminHooks(Request $request) {
 
 			if ( $hook = $this->getAdminPageHook() ) {
 

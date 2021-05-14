@@ -20,15 +20,17 @@
          */
         private $psr_request;
 
-        public function new ( ServerRequestInterface $new_psr_request ) {
+        public function new(ServerRequestInterface $new_psr_request)
+        {
 
-            $this->psr_request = $new_psr_request;
-            return $this;
+            return new static($new_psr_request);
+
 
         }
 
         public function withProtocolVersion($version)
         {
+
             return $this->new($this->psr_request->withProtocolVersion($version));
         }
 
@@ -77,25 +79,24 @@
         public function withQueryParams(array $query)
         {
 
-            return  $this->new($this->psr_request->withQueryParams($query));
+            return $this->new($this->psr_request->withQueryParams($query));
         }
 
         public function withCookieParams(array $cookies)
         {
 
-            return  $this->new($this->psr_request->withCookieParams($cookies));
+            return $this->new($this->psr_request->withCookieParams($cookies));
         }
 
         public function withAttribute($name, $value)
         {
-
-            return  $this->new($this->psr_request->withAttribute($name, $value));
+            return $this->new($this->psr_request->withAttribute($name, $value));
         }
 
         public function withoutAttribute($name)
         {
 
-            return  $this->new($this->psr_request->withoutAttribute($name));
+            return $this->new($this->psr_request->withoutAttribute($name));
         }
 
         public function getProtocolVersion()

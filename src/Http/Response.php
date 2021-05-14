@@ -7,6 +7,7 @@
     namespace WPEmerge\Http;
 
     use Psr\Http\Message\ResponseInterface;
+    use Psr\Http\Message\StreamInterface;
 
     class Response implements ResponseInterface
     {
@@ -25,25 +26,24 @@
 
         }
 
-        public function html() : Response
+        public function html( StreamInterface $html) : Response
         {
 
-            return $this->withHeader('Content-Type', 'text/html');
+            return $this->withHeader('Content-Type', 'text/html')
+                        ->withBody($html);
 
         }
 
-        public function json() : Response
+        public function json(StreamInterface $json) : Response
         {
 
             return $this->withHeader('Content-Type', 'application/json');
 
         }
-
-
+        
         private function new (ResponseInterface $new_psr_response ) :Response {
 
-            $this->psr7_response = $new_psr_response;
-            return $this;
+            return new static($new_psr_response);
 
         }
 

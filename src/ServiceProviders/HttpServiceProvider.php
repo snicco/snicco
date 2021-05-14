@@ -6,11 +6,14 @@
 
 	namespace WPEmerge\ServiceProviders;
 
-	use WPEmerge\Contracts\ErrorHandlerInterface;
-	use WPEmerge\Contracts\ResponseFactoryInterface;
+    use Nyholm\Psr7\Factory\Psr17Factory as NyholmFactoryImplementation;
+    use Psr\Http\Message\ResponseFactoryInterface as Prs17ResponseFactory;
+    use Psr\Http\Message\StreamFactoryInterface;
+    use WPEmerge\Contracts\ErrorHandlerInterface;
+	use WPEmerge\Contracts\ResponseFactory;
 	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Contracts\ViewServiceInterface;
-	use WPEmerge\Http\ResponseFactory;
+	use WPEmerge\Http\HttpResponseFactory;
 	use WPEmerge\Middleware\CsrfProtection;
 	use WPEmerge\Http\HttpKernel;
 	use WPEmerge\Middleware\StartSession;
@@ -66,9 +69,18 @@
 
 			});
 
-			$this->container->singleton(ResponseFactoryInterface::class, function () {
+			$this->container->instance(Prs17ResponseFactory::class, new NyholmFactoryImplementation() );
 
-				return new ResponseFactory($this->container->make(ViewServiceInterface::class));
+			$this->container->instance(StreamFactoryInterface::class, new NyholmFactoryImplementation() );
+
+			$this->container->singleton(ResponseFactory::class, function () {
+
+				return new HttpResponseFactory(
+				    $this->container->make(ViewServiceInterface::class),
+                    $this->container->make(Prs17ResponseFactory::class),
+                    $this->container->make(StreamFactoryInterface::class),
+
+                );
 
 			});
 

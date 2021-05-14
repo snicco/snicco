@@ -7,7 +7,9 @@
 	namespace Tests\integration\Routing;
 
 	use SniccoAdapter\BaseContainerAdapter;
-	use Tests\SetUpDefaultMocks;
+    use Tests\AssertsResponse;
+    use Tests\CreatePsr17Factories;
+    use Tests\SetUpDefaultMocks;
 	use Tests\TestCase;
 	use Tests\TestRequest;
 	use WPEmerge\Factories\HandlerFactory;
@@ -21,9 +23,11 @@
 	class RouteCachingTest extends TestCase {
 
 		use SetUpDefaultMocks;
+        use CreatePsr17Factories;
+        use AssertsResponse;
 
 		/**
-		 * @var \WPEmerge\Routing\Router
+		 * @var Router
 		 */
 		private $router;
 
@@ -55,7 +59,11 @@
 
 			WpFacade::setFacadeContainer($container);
 
-			return $this->router = new Router( $container, $route_collection );
+			return $this->router = new Router(
+			    $container,
+                $route_collection,
+                $this->responseFactory()
+            );
 
 		}
 
@@ -82,7 +90,7 @@
 
 			$response = $this->router->runRoute( TestRequest::from( 'GET', 'foo' ) );
 
-			$this->assertSame( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$this->assertTrue( file_exists( $this->cache_file ) );
 
@@ -98,28 +106,28 @@
 			$this->router->get( 'biz', Controller::class . '@handle' );
 			$this->router->get( 'boo', Controller::class . '@handle' );
 			$response = $this->router->runRoute( TestRequest::from( 'GET', 'foo' ) );
-			$this->assertSame( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$router = $this->newCachedRouter( $this->cache_file );
 
 			$response = $router->runRoute( TestRequest::from( 'GET', 'foo' ) );
-			$this->assertSame( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$response = $router->runRoute( TestRequest::from( 'GET', 'bar' ) );
-			$this->assertSame( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$response = $router->runRoute( TestRequest::from( 'GET', 'biz' ) );
-			$this->assertSame( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$response = $router->runRoute( TestRequest::from( 'GET', 'baz' ) );
-			$this->assertSame( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$response = $router->runRoute( TestRequest::from( 'GET', 'boo' ) );
-			$this->assertSame( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$router->get( '/foobar', Controller::class . '@handle' );
 			$response = $router->runRoute( TestRequest::from( 'GET', 'foobar' ) );
-			$this->assertSame( null, $response );
+			$this->assertNullResponse(  $response );
 
 		}
 
@@ -138,7 +146,7 @@
 
 			$response = $this->router->runRoute( TestRequest::from( 'GET', 'foo' ) );
 
-			$this->assertSame( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$this->assertTrue( file_exists( $this->cache_file ) );
 
@@ -156,12 +164,12 @@
 			} );
 
 			$response = $this->router->runRoute( TestRequest::from( 'GET', 'foo' ) );
-			$this->assertSame( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 			$router = $this->newCachedRouter( $this->cache_file );
 
 			$response = $router->runRoute( TestRequest::from( 'GET', 'foo' ) );
-			$this->assertSame( 'foo', $response );
+			$this->assertOutput( 'foo', $response );
 
 
 		}

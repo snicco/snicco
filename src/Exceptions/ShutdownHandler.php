@@ -22,7 +22,7 @@
 		// call wp_die() and always generate a 200 status code.
 		public function shutdownWp( BodySent $response_sent_event ) {
 
-			if ( $response_sent_event->request->type() === IncomingAjaxRequest::class ) {
+			if ( $response_sent_event->request->getType() === IncomingAjaxRequest::class ) {
 
 				exit();
 

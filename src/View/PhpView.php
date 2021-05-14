@@ -34,7 +34,7 @@
 		private $filepath;
 
 		/**
-		 * @var \WPEmerge\View\PhpView|null
+		 * @var PhpView|null
 		 */
 		private $parent_view;
 
@@ -78,9 +78,9 @@
 
 		}
 
-		public function toResponse() : ResponseInterface {
+		public function toResponsable() : string {
 
-			return ( new Response( $this->toString() ) )->setType( 'text/html' );
+			return $this->toString();
 
 		}
 
@@ -121,7 +121,7 @@
 		/**
 		 * Create a view instance for the given view's layout header, if any.
 		 *
-		 * @return ViewInterface|\WPEmerge\View\PhpView|null
+		 * @return ViewInterface|PhpView|null
 		 */
 		private function parseParentView() : ?PhpView {
 
@@ -134,6 +134,7 @@
 			return $this->engine->make($parent_view_name);
 
 		}
+
 
 		private function parseFileHeaders() : array {
 

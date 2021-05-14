@@ -1,56 +1,44 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace Tests;
+    namespace Tests;
 
-	use Psr\Http\Message\ServerRequestInterface;
+    use Nyholm\Psr7\Factory\Psr17Factory;
     use WPEmerge\Http\Request;
 
-	class TestRequest extends Request {
+    class TestRequest extends Request
+    {
 
-		public $body;
+        public $body;
 
-        public static function fromFullUrl(string $method, string $url ) {
+        public static function fromFullUrl(string $method, string $url) : Request
+        {
 
-			$request = static::create($url, $method);
+            $psr17Factory = new Psr17Factory();
 
-			return $request;
+            return new Request($psr17Factory->createServerRequest($method, $url));
 
-		}
+        }
 
-		public static function from(string $method, $path, $host = null ) : Request {
+        public static function from(string $method, $path, $host = null) : Request
+        {
 
-            $psr17Factory = new \Nyholm\Psr7\Factory\Psr17Factory();
+            $psr17Factory = new Psr17Factory();
 
-            $path = trim($path, '/') ?: '/';
+            $path = trim($path, '/') ? : '/';
             $method = strtoupper($method);
 
             $host = $host ?? 'https://foo.com';
-            $url = trim($host, '/') . '/' . $path;
-            $url = trim($url, '/') . '/';
+            $url = trim($host, '/').'/'.$path;
+            $url = trim($url, '/').'/';
 
-            return new Request($psr17Factory->createServerRequest( $method , $url ));
+            return new Request($psr17Factory->createServerRequest($method, $url));
 
 
-		}
+        }
 
-		public function simulateAjax () :TestRequest {
 
-			$this->headers->set( 'X-Requested-With', 'XMLHttpRequest' );
-
-			return $this;
-
-		}
-
-		public function setHeader ( $name , $value ) : TestRequest {
-
-			$this->headers->set($name , $value);
-
-			return $this;
-
-		}
-
-	}
+    }

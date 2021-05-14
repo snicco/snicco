@@ -6,12 +6,12 @@
 
     namespace Tests\unit\ServiceProviders;
 
+    use Tests\AssertsResponse;
     use Tests\RequestTesting;
     use Tests\stubs\Conditions\TrueCondition;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
     use Tests\TestRequest;
-    use WPEmerge\Contracts\RequestInterface;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ConditionFactory;
@@ -19,14 +19,18 @@
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\Router;
     use WPEmerge\ServiceProviders\AliasServiceProvider;
+    use WPEmerge\ServiceProviders\ExceptionServiceProvider;
     use WPEmerge\ServiceProviders\FactoryServiceProvider;
+    use WPEmerge\ServiceProviders\HttpServiceProvider;
     use WPEmerge\ServiceProviders\RoutingServiceProvider;
+    use WPEmerge\ServiceProviders\ViewServiceProvider;
 
     class RoutingServiceProviderTest extends TestCase
     {
 
         use BootServiceProviders;
         use RequestTesting;
+        use AssertsResponse;
 
         function neededProviders() : array
         {
@@ -35,6 +39,9 @@
                 RoutingServiceProvider::class,
                 FactoryServiceProvider::class,
                 AliasServiceProvider::class,
+                HttpServiceProvider::class,
+                ExceptionServiceProvider::class,
+                ViewServiceProvider::class,
             ];
 
         }
@@ -136,7 +143,7 @@
 
             $response = $router->runRoute($request);
 
-            $this->assertSame('FOO_ACTION', $response);
+            $this->assertOutput('FOO_ACTION', $response);
 
         }
 
@@ -152,7 +159,7 @@
             $router = $this->resolveRouter();
             $response = $router->runRoute($this->adminRequestTo('foo'));
 
-            $this->assertSame('FOO', $response);
+            $this->assertOutput('FOO', $response);
 
         }
 
@@ -172,7 +179,7 @@
 
             $response = $router->runRoute($request);
 
-            $this->assertSame('foo', $response);
+            $this->assertOutput('foo', $response);
 
         }
 

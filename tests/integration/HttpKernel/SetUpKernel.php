@@ -11,8 +11,9 @@
     use Tests\CreateContainer;
     use Tests\SetUpDefaultMocks;
     use Tests\stubs\TestErrorHandler;
+    use Tests\stubs\TestViewService;
     use Tests\TestRequest;
-    use Tests\CreateResponseFactory;
+    use Tests\CreatePsr17Factories;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
@@ -21,7 +22,7 @@
     use WPEmerge\Factories\HandlerFactory;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\RouteCollection;
     use WPEmerge\Routing\Router;
@@ -31,7 +32,7 @@
     {
 
         use SetUpDefaultMocks;
-        use CreateResponseFactory;
+        use CreatePsr17Factories;
         use CreateContainer;
 
 
@@ -62,7 +63,7 @@
                     $handler_factory,
                     new FastRouteMatcher()
                 ),
-                new ResponseFactory(\Mockery::mock(ViewService::class), $this->createFactory())
+                new HttpResponseFactory(new TestViewService(), $this->psrResponseFactory(), $this->psrStreamFactory())
             );
             $this->router = $router;
             $this->container = $container;
@@ -84,7 +85,7 @@
 
             $request = TestRequest::from($method, $path);
             $request_event = new IncomingWebRequest('wordpress.php', $request);
-            $request_event->request->setType(IncomingWebRequest::class);
+            $request_event->request->withType(IncomingWebRequest::class);
 
             return $request_event;
 
@@ -95,7 +96,7 @@
 
             $request = TestRequest::from($method, $path);
             $request_event = new IncomingAdminRequest($request);
-            $request_event->request->setType(IncomingAdminRequest::class);
+            $request_event->request->withType(IncomingAdminRequest::class);
 
             return $request_event;
 

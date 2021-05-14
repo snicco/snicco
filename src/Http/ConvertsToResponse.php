@@ -40,12 +40,11 @@
 
             if ( $response instanceof ResponsableInterface ) {
 
-                return $this->response_factory->json($response);
+                return $this->response_factory->toResponse($response);
 
             }
 
             return $this->response_factory->null();
-
 
         }
 
