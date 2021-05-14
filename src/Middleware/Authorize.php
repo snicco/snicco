@@ -23,7 +23,7 @@
         /** @var array  */
         private $args;
 
-        public function __construct(string $capability, ...$args)
+        public function __construct( string $capability, ...$args )
         {
 
             $this->capability = $capability;

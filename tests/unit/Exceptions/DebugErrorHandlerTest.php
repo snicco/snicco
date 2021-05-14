@@ -6,17 +6,16 @@
 	namespace Tests\unit\Exceptions;
 
 
-	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\AssertsResponse;
     use Tests\CreateContainer;
     use Tests\stubs\TestException;
-    use Tests\TestCase;
+    use Tests\Test;
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\Exceptions\DebugErrorHandler;
 	use WPEmerge\Factories\ErrorHandlerFactory;
 
-	class DebugErrorHandlerTest extends TestCase {
+	class DebugErrorHandlerTest extends Test {
 
 		use AssertsResponse;
         use CreateContainer;
@@ -82,7 +81,7 @@
 
 
 			return ErrorHandlerFactory::make(
-				new BaseContainerAdapter(),
+				$this->createContainer(),
 				true,
 				$is_ajax
 			);

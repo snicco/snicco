@@ -90,7 +90,7 @@
 
         }
 
-        public function null() : Response
+        public function null() : NullResponse
         {
 
             return new NullResponse($this->response_factory->createResponse(204));
@@ -104,7 +104,7 @@
 
         }
 
-        public function prepareResponse( $response ) : Response {
+        public function toResponse( $response ) : Response {
 
             if ( $response instanceof Response ) {
 
@@ -132,7 +132,7 @@
 
             if ( $response instanceof ResponsableInterface ) {
 
-                return $this->prepareResponse(
+                return $this->toResponse(
                     $response->toResponsable()
                 );
 

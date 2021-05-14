@@ -7,11 +7,11 @@
     namespace Tests\integration\Routing;
 
     use Tests\RequestTesting;
-    use Tests\TestCase;
+    use Tests\Test;
     use WPEmerge\Exceptions\RouteLogicException;
     use WPEmerge\Facade\WP;
 
-    class AjaxRoutesTest extends TestCase
+    class AjaxRoutesTest extends Test
     {
 
         use SetUpRouter;

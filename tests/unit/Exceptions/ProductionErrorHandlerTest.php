@@ -7,34 +7,23 @@
 	namespace Tests\unit\Exceptions;
 
 	use Exception;
-	use Psr\Log\LoggerInterface;
-	use Psr\Log\LogLevel;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\AssertsResponse;
     use Tests\CreateContainer;
     use Tests\CreatePsr17Factories;
-    use Tests\stubs\Foo;
 	use Tests\stubs\TestException;
-	use Tests\stubs\TestLogger;
-	use Tests\TestCase;
-	use WPEmerge\Application\ApplicationEvent;
-	use WPEmerge\Contracts\RequestInterface;
+	use Tests\Test;
+    use Tests\TestRequest;
+    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ResponseFactory;
-    use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\Exceptions\ProductionErrorHandler;
-	use WPEmerge\Facade\WP;
 	use WPEmerge\Factories\ErrorHandlerFactory;
-	use WPEmerge\Http\Response;
-	use WpFacade\WpFacade;
+    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Response;
 
-	set_error_handler(function () {
 
-		$foo = 'bar';
-
-	});
-
-	class ProductionErrorHandlerTest extends TestCase {
+	class ProductionErrorHandlerTest extends Test {
 
 		use AssertsResponse;
         use CreateContainer;
@@ -53,10 +42,6 @@
 			$this->container = $c;
 			$this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
 			$this->container->instance(ResponseFactory::class, $this->responseFactory());
-			$GLOBALS['test']['log'] = [];
-
-			WpFacade::setFacadeContainer($this->container);
-			WP::shouldReceive('userId')->andReturn(10)->byDefault();
 
 		}
 
@@ -102,7 +87,8 @@
 			$this->assertInstanceOf(Response::class, $response);
 			$this->assertStatusCode(500, $response);
 			$this->assertContentType('application/json', $response);
-			$this->assertOutput('Internal Server Error', $response );
+
+			$this->assertSame('Internal Server Error', json_decode( $response->getBody()->__toString() ) );
 
 			ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
 
@@ -115,11 +101,13 @@
 
 			$response = $handler->transformToResponse( new TestException('Sensitive Info') );
 
-			$this->assertInstanceOf(ResponseInterface::class, $response);
+			$this->assertInstanceOf(Response::class, $response);
 			$this->assertStatusCode(500, $response);
 			$this->assertContentType('text/html', $response);
 			$this->assertOutput('Internal Server Error', $response);
 
+
+            ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
 
 		}
 
@@ -128,208 +116,74 @@
 
 			$handler = $this->newErrorHandler();
 
-			$response = $handler->transformToResponse( new RenderableException(), $this->createRequest() );
+			$response = $handler->transformToResponse( new RenderableException() );
 
-			$this->assertInstanceOf(ResponseInterface::class, $response);
+			$this->assertInstanceOf(Response::class, $response);
 			$this->assertStatusCode(500, $response);
 			$this->assertContentType('text/html', $response);
 			$this->assertOutput('Foo', $response);
+
+            ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
+
+		}
+
+		/** @test */
+		public function renderable_exceptions_MUST_return_a_response_object () {
+
+            $handler = $this->newErrorHandler();
+
+            $response = $handler->transformToResponse( new WrongReturnTypeException() );
+
+            $this->assertInstanceOf(Response::class, $response);
+            $this->assertStatusCode(500, $response);
+            $this->assertContentType('text/html', $response);
+
+            // We rethrow the exception.
+            $this->assertOutput('Internal Server Error', $response);
+
+            ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
 
 		}
 
 		/** @test */
 		public function renderable_exceptions_receive_the_current_request_and_a_response_factory_instance () {
 
+		    $this->container->instance(
+		        Request::class,
+                TestRequest::from('GET', 'foo')->withAttribute('foo', 'bar')
+            );
 
 			$handler = $this->newErrorHandler();
 
-			$request = $this->createRequest();
-			$request->attributes->set('message', 'foobar');
+			$response = $handler->transformToResponse( new ExceptionWithDependencyInjection() );
 
-			$response = $handler->transformToResponse( new ExceptionWithDependencyInjection(), $request );
-
-			$this->assertInstanceOf(ResponseInterface::class, $response);
-			$this->assertStatusCode(500, $response);
+			$this->assertInstanceOf(Response::class, $response);
+			$this->assertStatusCode(403, $response);
 			$this->assertContentType('text/html', $response);
-			$this->assertOutput('foobar', $response);
+			$this->assertOutput('bar', $response);
 
-
-		}
-
-		/**
-		 *
-		 *
-		 *
-		 *
-		 *
-		 * LOGGING
-		 *
-		 *
-		 *
-		 *
-		 *
-		 *
-		 */
-
-		/** @test */
-		public function exceptions_are_logged_with_the_default_logger_if_the_exception_doesnt_have_a_report_method() {
-
-			$this->container->instance(LoggerInterface::class, $logger = new TestLogger());
-
-			$handler = $this->newErrorHandler();
-
-			$handler->transformToResponse(new Exception('Foobar'));
-
-			$logger->assertHasLogLevelEntry(LogLevel::ERROR, 'Foobar');
+            ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
 
 		}
 
 		/** @test */
-		public function the_current_user_id_is_included_in_the_exception_context () {
+		public function a_custom_error_handler_can_replace_the_default_response_object () {
 
+           $this->container->instance(ProductionErrorHandler::class, CustomErrorHandler::class);
 
-			$this->container->instance(LoggerInterface::class, $logger = new TestLogger());
+            $handler = $this->newErrorHandler();
 
-			$handler = $this->newErrorHandler();
+            $response = $handler->transformToResponse( new Exception('Sensitive Data nobody should read') );
 
-			$handler->transformToResponse( $e = new Exception('Foobar'));
+            $this->assertInstanceOf(Response::class, $response);
+            $this->assertStatusCode(500, $response);
+            $this->assertContentType('text/html', $response);
+            $this->assertOutput('Custom Error Message', $response);
 
-			$logger->assertHasLogEntry('Foobar', [ 'user_id' =>10, 'exception' => $e ] );
-
-		}
-
-		/** @test */
-		public function the_user_id_is_not_included_if_there_is_none_logged_in () {
-
-			WP::shouldReceive('userId')->andReturn(0);
-
-			$this->container->instance(LoggerInterface::class, $logger = new TestLogger());
-
-			$handler = $this->newErrorHandler();
-
-			$handler->transformToResponse( $e = new Exception('Foobar'));
-
-			$logger->assertHasLogEntry('Foobar', [ 'exception' => $e ] );
+            ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
 
 		}
 
-		/** @test */
-		public function exception_context_is_included_in_the_error_log_message_if_the_exception_has_a_context_method () {
-
-			$this->container->instance(LoggerInterface::class, $logger = new TestLogger() );
-
-			$handler = $this->newErrorHandler();
-
-
-
-			$handler->transformToResponse( $e = new ContextException('TestMessage') );
-
-			$logger->assertHasLogEntry('TestMessage', [ 'user_id' => 10, 'foo' => 'bar', 'exception' => $e ] );
-
-		}
-
-		/** @test */
-		public function the_exception_object_is_included_in_the_log_context () {
-
-			$this->container->instance(LoggerInterface::class, $logger = new TestLogger());
-
-			$handler = $this->newErrorHandler();
-
-			$handler->transformToResponse( $e = new Exception('Foobar') );
-
-			$logger->assertHasLogEntry('Foobar', ['user_id' => 10, 'exception' => $e ]);
-
-		}
-
-		/** @test */
-		public function exception_objects_can_have_custom_reporting_logic () {
-
-			$this->assertEmpty($GLOBALS['test']['log']);
-
-			$handler = $this->newErrorHandler();
-
-			$handler->transformToResponse(new ReportableException('foobarlog'));
-
-			$this->assertContains('foobarlog', $GLOBALS['test']['log']);
-
-		}
-
-		/** @test */
-		public function exceptions_are_still_written_to_the_default_logger_after_custom_exceptions() {
-
-			$this->container->instance(LoggerInterface::class, $logger = new TestLogger() );
-
-			$handler = $this->newErrorHandler();
-
-			$handler->transformToResponse( $e = new ReportableException('TestMessage') );
-
-			$logger->assertHasLogEntry('TestMessage', [ 'user_id' => 10, 'exception' => $e ] );
-			$this->assertContains('TestMessage', $GLOBALS['test']['log']);
-
-
-		}
-
-		/** @test */
-		public function propagation_to_the_default_logger_can_be_stopped () {
-
-			$this->container->instance(LoggerInterface::class, $logger = new TestLogger() );
-
-			$handler = $this->newErrorHandler();
-
-			$handler->transformToResponse(  new StopPropagationException('TestMessage') );
-
-			$logger->assertHasNoLogEntries();
-			$this->assertContains('TestMessage', $GLOBALS['test']['log']);
-
-		}
-
-		/** @test */
-		public function logging_dependencies_are_resolved_from_the_container () {
-
-			$this->assertEmpty($GLOBALS['test']['log']);
-
-			$handler = $this->newErrorHandler();
-
-			$handler->transformToResponse(new LogExceptionWithFooDependency('TestMessage'));
-
-			$this->assertContains('TestMessage:foo', $GLOBALS['test']['log']);
-
-		}
-
-		/** @test */
-		public function exceptions_can_be_ignored_for_reporting_from_a_child_class () {
-
-			$this->container->instance(LoggerInterface::class, $logger = new TestLogger() );
-			$this->container->instance(
-				ProductionErrorHandler::class,
-				CustomProductionErrorHandler::class
-			);
-
-			$this->assertEmpty($GLOBALS['test']['log']);
-
-			$handler = $this->newErrorHandler();
-
-			$handler->transformToResponse(new ReportableException('foo'));
-
-			$logger->assertHasNoLogEntries();
-			$this->assertEmpty($GLOBALS['test']['log']);
-
-
-		}
-
-		/** @test */
-		public function the_global_context_can_be_overwritten_from_a_child_class () {
-
-			$this->container->instance(LoggerInterface::class, $logger = new TestLogger());
-			$this->container->instance(ProductionErrorHandler::class, CustomProductionErrorHandler::class);
-
-			$handler = $this->newErrorHandler();
-
-			$handler->transformToResponse( $e = new Exception('Foobar'));
-
-			$logger->assertHasLogEntry('Foobar', ['foo' => 'bar', 'exception' => $e] );
-
-		}
 
 
 		private function newErrorHandler (bool $is_ajax = false ) : ProductionErrorHandler {
@@ -343,75 +197,44 @@
 
 	class RenderableException extends Exception {
 
-		public function render () {
-			return new Response('Foo', 500);
-		}
+		public function render (ResponseFactory $factory) {
 
-	}
-
-	class ExceptionWithDependencyInjection  extends Exception {
-
-		public function render( RequestInterface $request ) {
-
-			return new Response($request->attribute('message', ''), 500);
+		    return $factory->html('Foo')->withStatus(500);
 
 		}
 
 	}
 
-	class ContextException extends Exception {
+	class WrongReturnTypeException extends Exception  {
 
-		public function context () : array {
+        public function render () {
 
-			return ['foo' => 'bar'];
+             return 'foo';
 
-		}
+        }
 
-	}
+    }
 
-	class ReportableException extends Exception {
+	class ExceptionWithDependencyInjection extends Exception {
 
-		public function report () {
+		public function render( Request $request, ResponseFactory $response_factory) {
 
-			$GLOBALS['test']['log'][] = $this->getMessage();
-
-		}
-
-	}
-
-	class StopPropagationException extends Exception {
-
-		public function report () : bool {
-
-			$GLOBALS['test']['log'][] = $this->getMessage();
-
-			return false;
+            return $response_factory
+                ->html($request->getAttribute('foo'))
+                ->withStatus(403);
 
 		}
 
 	}
 
-	class LogExceptionWithFooDependency extends Exception {
-
-		public function report(Foo $foo) {
-
-			$GLOBALS['test']['log'][] = $this->getMessage() . ':' . $foo->foo;
-
-		}
+	class CustomErrorHandler extends ProductionErrorHandler {
 
 
-	}
+	    protected function defaultResponse() : Response
+        {
+            return $this->response->html('Custom Error Message')->withStatus(500);
+        }
 
-	class CustomProductionErrorHandler extends ProductionErrorHandler {
 
-		protected $dont_report = [
-			ReportableException::class,
-		];
+    }
 
-		protected function globalContext() : array {
-
-			return ['foo'=>'bar'];
-
-		}
-
-	}

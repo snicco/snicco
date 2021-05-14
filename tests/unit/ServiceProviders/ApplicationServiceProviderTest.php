@@ -10,13 +10,13 @@
 	use Mockery\MockInterface;
 	use Tests\stubs\Foo;
 	use Tests\stubs\TestApp;
-	use Tests\TestCase;
+	use Tests\Test;
 	use WPEmerge\Facade\WordpressApi;
 	use WPEmerge\Facade\WP;
 	use WPEmerge\ServiceProviders\ApplicationServiceProvider;
 	use WpFacade\WpFacade;
 
-	class ApplicationServiceProviderTest extends TestCase {
+	class ApplicationServiceProviderTest extends Test {
 
 		use BootServiceProviders;
 

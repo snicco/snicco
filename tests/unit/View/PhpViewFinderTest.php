@@ -12,7 +12,7 @@
     class PhpViewFinderTest extends TestCase
     {
 
-        /** @var \WPEmerge\View\PhpViewFinder */
+        /** @var PhpViewFinder */
         private $finder;
 
         public function setUp() : void

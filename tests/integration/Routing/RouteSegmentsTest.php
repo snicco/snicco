@@ -6,10 +6,10 @@
 
 	namespace Tests\integration\Routing;
 
-	use Tests\TestCase;
+	use Tests\Test;
     use WPEmerge\Http\Request as Request;
 
-	class RouteSegmentsTest extends TestCase {
+	class RouteSegmentsTest extends Test {
 
 		use SetUpRouter;
 

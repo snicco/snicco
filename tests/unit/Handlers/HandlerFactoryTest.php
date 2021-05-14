@@ -7,13 +7,16 @@
 	namespace Tests\unit\Handlers;
 
 	use SniccoAdapter\BaseContainerAdapter;
-	use Tests\stubs\Controllers\Web\WebController;
+    use Tests\CreateContainer;
+    use Tests\stubs\Controllers\Web\WebController;
 	use WPEmerge\Handlers\ClosureAction;
 	use WPEmerge\Handlers\ControllerAction;
 	use WPEmerge\Factories\HandlerFactory;
 	use PHPUnit\Framework\TestCase;
 
 	class HandlerFactoryTest extends TestCase {
+
+	    use CreateContainer;
 
 		/**
 		 * @var HandlerFactory
@@ -25,7 +28,7 @@
 
 			parent::setUp();
 
-			$this->factory = new HandlerFactory(TEST_CONFIG['controllers'], new BaseContainerAdapter());
+			$this->factory = new HandlerFactory(TEST_CONFIG['controllers'], $this->createContainer());
 
 		}
 

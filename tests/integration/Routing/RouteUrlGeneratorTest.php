@@ -6,7 +6,7 @@
 
 	namespace Tests\integration\Routing;
 
-	use Tests\TestCase;
+	use Tests\Test;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\UrlableInterface;
@@ -17,7 +17,7 @@
 	use WPEmerge\Routing\Conditions\NegateCondition;
 	use WPEmerge\Support\Str;
 
-	class RouteUrlGeneratorTest extends TestCase {
+	class RouteUrlGeneratorTest extends Test {
 
 		use SetUpRouter;
 

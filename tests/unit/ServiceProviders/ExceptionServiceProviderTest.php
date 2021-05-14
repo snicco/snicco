@@ -6,14 +6,17 @@
 
 	namespace Tests\unit\ServiceProviders;
 
-    use Tests\TestCase;
+    use Tests\Test;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Exceptions\DebugErrorHandler;
 	use WPEmerge\Exceptions\NullErrorHandler;
 	use WPEmerge\Exceptions\ProductionErrorHandler;
 	use WPEmerge\ServiceProviders\ExceptionServiceProvider;
+    use WPEmerge\ServiceProviders\FactoryServiceProvider;
+    use WPEmerge\ServiceProviders\HttpServiceProvider;
+    use WPEmerge\ServiceProviders\ViewServiceProvider;
 
-	class ExceptionServiceProviderTest extends TestCase {
+    class ExceptionServiceProviderTest extends Test {
 
 		use BootServiceProviders;
 
@@ -21,9 +24,11 @@
 
 			return [
 				ExceptionServiceProvider::class,
+                HttpServiceProvider::class,
+                ViewServiceProvider::class,
+                FactoryServiceProvider::class
 			];
 		}
-
 
 		/** @test */
 		public function by_default_the_null_error_handler_is_used() {

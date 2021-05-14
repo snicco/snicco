@@ -6,16 +6,18 @@
 
 	namespace Tests\unit\Application;
 
-	use Mockery as m;
 	use PHPUnit\Framework\TestCase;
 	use SniccoAdapter\BaseContainerAdapter;
-	use WPEmerge\Application\ManagesAliases;
+    use stdClass;
+    use Tests\CreateContainer;
+    use WPEmerge\Application\ManagesAliases;
 
 	class ManagesAliasesTest extends TestCase {
 
+        use CreateContainer;
 
 		/**
-		 * @var \Tests\unit\Application\ManagesAliasImplementation
+		 * @var ManagesAliasImplementation
 		 */
 		private $subject;
 
@@ -25,14 +27,13 @@
 			parent::setUp();
 
 			$this->subject            = new ManagesAliasImplementation();
-			$this->subject->container = new BaseContainerAdapter();
+			$this->subject->container = $this->createContainer();
 
 		}
 
 		public function tearDown() : void {
 
 			parent::tearDown();
-			m::close();
 
 
 		}
@@ -71,7 +72,6 @@
 		public function closures_are_resolved_and_are_bound_to_the_current_class_instance() {
 
 			$expected = 'foo';
-			$alias    = 'test';
 			$closure  = function () use ( $expected ) {
 
 				return $expected;
@@ -86,10 +86,10 @@
 		/** @test */
 		public function aliases_can_be_used_to_resolve_objects_from_the_ioc_container() {
 
-			$container = new BaseContainerAdapter();
+			$container = $this->createContainer();
 			$container->bind( 'foobar', function () {
 
-				return new \stdClass();
+				return new stdClass();
 
 			} );
 
@@ -97,7 +97,7 @@
 
 			$this->subject->alias( 'foo', 'foobar' );
 
-			$this->assertInstanceOf( \stdClass::class, $this->subject->foo() );
+			$this->assertInstanceOf( stdClass::class, $this->subject->foo() );
 
 
 		}
@@ -105,7 +105,7 @@
 		/** @test */
 		public function methods_can_be_called_on_objects_in_the_ioc_container() {
 
-			$container = new BaseContainerAdapter();
+			$container = $this->createContainer();
 			$container->bind( 'foobar', function () {
 
 				return new Foobar();
@@ -128,7 +128,7 @@
 
 		use ManagesAliases;
 
-		/** @var \SniccoAdapter\BaseContainerAdapter */
+		/** @var BaseContainerAdapter */
 		public $container;
 
 		public function resolve( string $key ) {
@@ -142,7 +142,8 @@
 
 	class Foobar {
 
-		public function baz ($baz) {
+		public function baz ($baz) : string
+        {
 
 			return strtoupper($baz);
 

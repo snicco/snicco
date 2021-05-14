@@ -10,12 +10,12 @@
 	use Tests\stubs\Middleware\BarMiddleware;
 	use Tests\stubs\Middleware\FooMiddleware;
 	use Tests\stubs\Middleware\GlobalMiddleware;
-	use Tests\TestCase;
+	use Tests\Test;
     use WPEmerge\Http\Request;
 
 
 
-	class RouteAttributesTest extends TestCase {
+	class RouteAttributesTest extends Test {
 
 		use SetUpRouter;
 

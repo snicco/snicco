@@ -6,6 +6,8 @@
 
 	namespace Tests\integration\Routing;
 
+    use Closure;
+    use Contracts\ContainerAdapter;
     use Tests\AssertsResponse;
     use Tests\CreateContainer;
     use Tests\CreatePsr17Factories;
@@ -31,11 +33,11 @@
 
 
 		/**
-		 * @var \WPEmerge\Routing\Router
+		 * @var Router
 		 */
 		private $router;
 
-		/** @var \Contracts\ContainerAdapter */
+		/** @var ContainerAdapter */
 		private $container;
 
 		/** @var RouteCollection */
@@ -51,7 +53,7 @@
 
 		}
 
-		private function newRouterWith( \Closure $routes ) {
+		private function newRouterWith( Closure $routes ) {
 
 			$this->newRouter();
 

@@ -69,8 +69,6 @@
 
             }
 
-            $this->emitStatusLine($response);
-
             foreach ($response->getHeaders() as $name => $values) {
                 $first = strtolower($name) !== 'set-cookie';
                 foreach ($values as $value) {
@@ -79,6 +77,9 @@
                     $first = false;
                 }
             }
+
+            $this->emitStatusLine($response);
+
         }
 
         /**
@@ -112,17 +113,20 @@
 
             }
 
+
             $body = $response->getBody();
+
             if ($body->isSeekable()) {
                 $body->rewind();
             }
 
             $amountToRead = (int) $response->getHeaderLine('Content-Length');
-            if ( ! $amountToRead) {
+            if ( ! $amountToRead ) {
                 $amountToRead = $body->getSize();
             }
 
             if ($amountToRead) {
+
                 while ($amountToRead > 0 && ! $body->eof()) {
                     $length = min($this->responseChunkSize, $amountToRead);
                     $data = $body->read($length);
@@ -143,6 +147,8 @@
                     }
                 }
             }
+
+
         }
 
         /**

@@ -28,7 +28,7 @@
         public function isSatisfied( Request $request) :bool
         {
 
-            $request = $request->getParsedBody();
+            $request = $request->parsedBody();
 
             foreach ( $this->request_arguments as $key => $value ) {
 
