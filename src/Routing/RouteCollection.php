@@ -122,7 +122,7 @@
 
 			}
 
-			$request->setRoute( $route );
+			$request->withRoute( $route );
 
 			return new RouteMatch(
 				$route,

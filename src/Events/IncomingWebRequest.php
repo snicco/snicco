@@ -26,7 +26,8 @@
 
 			parent::__construct($request);
 
-			$this->request->setType( get_class( $this ) );
+			$this->request->withType( get_class( $this ) );
+
 
 		}
 
@@ -39,7 +40,7 @@
 
 		public function default() : ?string {
 
-			if ( ! $this->request->route() && ! $this->force_route_match ) {
+			if ( ! $this->request->getRoute() && ! $this->force_route_match ) {
 
 				return $this->template;
 

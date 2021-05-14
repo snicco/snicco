@@ -7,6 +7,7 @@
     namespace Tests;
 
     use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Request;
     use WPEmerge\Support\Url;
 
     trait RequestTesting
@@ -21,28 +22,21 @@
 
         }
 
-        private function adminRequestTo(string $admin_page, string $method = 'GET', string $parent_file = 'admin.php') : TestRequest
+        private function adminRequestTo(string $admin_page, string $method = 'GET', string $parent_file = 'admin.php') : Request
         {
 
             $request = TestRequest::fromFullUrl($method, $this->adminUrlTo($admin_page, $parent_file));
 
-            $request->server->set('SCRIPT_FILENAME', ROOT_DIR.DS.WP::wpAdminFolder().DS.$parent_file);
-            $request->server->set('SCRIPT_NAME', DS.WP::wpAdminFolder().DS.$parent_file);
-            $request->overrideGlobals();
+            $request = $request->withQueryParams( ['page' => $admin_page] );
 
             return $request;
 
         }
 
-        private function ajaxRequest(string $action, $method = 'POST', string $path = 'admin-ajax.php' )
+        private function ajaxRequest(string $action, $method = 'POST', string $path = 'admin-ajax.php' ) :Request
         {
 
             $request = TestRequest::fromFullUrl($method, $this->ajaxUrl($path));
-            $request->request->set('action', $action);
-
-            $request->server->set('SCRIPT_FILENAME', ROOT_DIR.DS.WP::wpAdminFolder().DS.'admin-ajax.php');
-            $request->server->set('SCRIPT_NAME', DS.WP::wpAdminFolder().DS.'admin-ajax.php');
-            $request->overrideGlobals();
 
             return $request;
 

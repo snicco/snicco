@@ -10,6 +10,7 @@
     use WPEmerge\Contracts\UrlableInterface;
     use WPEmerge\Exceptions\RouteLogicException;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Request;
     use WPEmerge\Routing\Route;
     use WPEmerge\Support\Arr;
 
@@ -17,7 +18,7 @@
     {
 
 
-        public function isSatisfied(RequestInterface $request) : bool
+        public function isSatisfied(Request $request) : bool
         {
 
             return parent::isSatisfied($request)
@@ -26,7 +27,7 @@
 
         }
 
-        public function getArguments(RequestInterface $request) : array
+        public function getArguments(Request $request) : array
         {
 
             return array_merge(
@@ -42,7 +43,7 @@
 
         }
 
-        public function toUrl($arguments = [])
+        public function toUrl($arguments = []) : string
         {
 
             $method = strtoupper(Arr::get($arguments, 'method', 'POST'));

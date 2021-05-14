@@ -8,7 +8,7 @@
 
 	use Contracts\ContainerAdapter;
 	use Psr\Http\Message\ResponseInterface;
-	use WPEmerge\Http\ResponseFactory;
+	use WPEmerge\Http\HttpResponseFactory;
 	use WPEmerge\Routing\Route;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Session\Csrf;
@@ -102,10 +102,10 @@
 		/**
 		 * Returns a response factory instance.
 		 *
-		 * @return  \WPEmerge\Http\ResponseFactory
-		 * @see \WPEmerge\Http\ResponseFactory
+		 * @return  \WPEmerge\Http\HttpResponseFactory
+		 * @see \WPEmerge\Http\HttpResponseFactory
 		 */
-		public static function response() : ResponseFactory {}
+		public static function response() : HttpResponseFactory {}
 
 
 		/**

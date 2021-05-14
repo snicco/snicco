@@ -24,12 +24,12 @@
 		private $engine;
 
 		/**
-		 * @var \WPEmerge\ViewComposers\ViewComposerCollection
+		 * @var ViewComposerCollection
 		 */
 		private $composer_collection;
 
 		/**
-		 * @var \WPEmerge\Support\VariableBag
+		 * @var VariableBag
 		 */
 		private $global_var_bag;
 

@@ -8,21 +8,19 @@
 
 	use Closure;
 	use Contracts\ContainerAdapter;
-    use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Controllers\ViewController;
 	use WPEmerge\Exceptions\ConfigurationException;
-	use WPEmerge\Contracts\RequestInterface;
     use WPEmerge\Http\ConvertsToResponse;
     use WPEmerge\Http\Request;
     use WPEmerge\Http\Response;
-    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Support\Pipeline;
 	use WPEmerge\Support\Url;
 	use WPEmerge\Traits\GathersMiddleware;
 	use WPEmerge\Traits\HoldsRouteBlueprint;
+	use WPEmerge\Contracts\ResponseFactory as ResponseFactory;
 
 	/**
-	 * @mixin \WPEmerge\Routing\RouteDecorator
+	 * @mixin RouteDecorator
 	 */
 	class Router {
 
@@ -30,10 +28,10 @@
 		use HoldsRouteBlueprint;
         use ConvertsToResponse;
 
-		/** @var \WPEmerge\Routing\RouteGroup[] */
+		/** @var RouteGroup[] */
 		private $group_stack = [];
 
-		/** @var \Contracts\ContainerAdapter */
+		/** @var ContainerAdapter */
 		private $container;
 
 		/**
@@ -58,6 +56,7 @@
 		 * @var bool
 		 */
 		private $with_middleware = true;
+
         /**
          * @var ResponseFactory
          */
@@ -100,7 +99,7 @@
 
 			if ( ! empty( $attributes ) ) {
 
-				$this->populateUserAttributes( $route, $attributes );
+				$this->populateInitialAttributes( $route, $attributes );
 
 			}
 
@@ -179,7 +178,7 @@
 
 		}
 
-		private function populateUserAttributes( Route $route, array $attributes ) {
+		private function populateInitialAttributes( Route $route, array $attributes ) {
 
 			( ( new RouteAttributes( $route ) ) )->populateInitial( $attributes );
 		}
@@ -253,7 +252,7 @@
 				->then( function ( $request ) use ( $route_match ) : Response {
 
                     $route_response = $route_match->route()->run( $request, $route_match->payload() );
-                    return $this->prepareResponse($route_response);
+                    return $this->response_factory->prepareResponse($route_response);
 
 				} );
 

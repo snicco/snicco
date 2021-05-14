@@ -19,8 +19,13 @@
 
 		protected $force_route_match = false;
 
+        /**
+         * @var bool
+         */
+        protected $matched_route = false;
 
-		public function __construct( Request $request) {
+
+        public function __construct( Request $request) {
 
 			$this->request = $request;
 
@@ -32,5 +37,12 @@
 
 		}
 
+        public function matchedRoute()
+        {
 
-	}
+            $this->matched_route = true;
+
+        }
+
+
+    }

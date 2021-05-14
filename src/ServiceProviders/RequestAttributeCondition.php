@@ -7,7 +7,7 @@
     namespace WPEmerge\ServiceProviders;
 
     use WPEmerge\Contracts\ConditionInterface;
-    use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
 
     class RequestAttributeCondition implements ConditionInterface
     {
@@ -25,10 +25,10 @@
         }
 
 
-        public function isSatisfied(RequestInterface $request) :bool
+        public function isSatisfied( Request $request) :bool
         {
 
-            $request = $request->request();
+            $request = $request->getParsedBody();
 
             foreach ( $this->request_arguments as $key => $value ) {
 
@@ -51,9 +51,9 @@
 
         }
 
-        public function getArguments(RequestInterface $request) : array
+        public function getArguments(Request $request) : array
         {
-            return collect($request->request())->only($this->request_arguments->keys())->all();
+            return collect($request->getParsedBody())->only($this->request_arguments->keys())->all();
         }
 
     }

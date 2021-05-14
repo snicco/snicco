@@ -7,17 +7,17 @@
 	namespace Tests\integration\Routing;
 
     use Tests\AssertsResponse;
-    use Tests\CreateResponseFactory;
+    use Tests\CreatePsr17Factories;
     use Tests\stubs\TestResponseFactory;
     use Tests\TestCase;
-    use WPEmerge\Contracts\ResponseFactoryInterface;
+    use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Http\Response;
 
     class ViewRoutesTest extends TestCase {
 
 		use SetUpRouter;
 		use AssertsResponse;
-        use CreateResponseFactory;
+        use CreatePsr17Factories;
 
 		/** @test */
 		public function view_routes_work() {
@@ -57,7 +57,7 @@
 
 		private function createBindingsForViewController () {
 
-		    $this->container->instance(ResponseFactoryInterface::class, new TestResponseFactory());
+		    $this->container->instance(ResponseFactory::class, new TestResponseFactory());
 
 
 		}

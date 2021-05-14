@@ -6,14 +6,16 @@
 
 	namespace WPEmerge\ServiceProviders;
 
-	use WPEmerge\Contracts\ErrorHandlerInterface;
+	use Psr\Http\Message\ServerRequestInterface;
+    use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Exceptions\NullErrorHandler;
 	use WPEmerge\Exceptions\ProductionErrorHandler;
 	use WPEmerge\Factories\ErrorHandlerFactory;
+    use WPEmerge\Http\Request;
 
-	class ExceptionServiceProvider extends ServiceProvider {
+    class ExceptionServiceProvider extends ServiceProvider {
 
 		public function register() : void {
 
@@ -28,7 +30,7 @@
 				}
 
 				/** @var RequestInterface $request */
-				$request = $this->container->make( RequestInterface::class );
+				$request = $this->container->make( Request::class );
 
 				return ErrorHandlerFactory::make(
 					$this->container,

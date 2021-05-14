@@ -7,17 +7,21 @@
 	namespace Tests\unit\ServiceProviders;
 
 	use SniccoAdapter\BaseContainerAdapter;
-	use Tests\SetUpDefaultMocks;
+    use Tests\CreateContainer;
+    use Tests\SetUpDefaultMocks;
 	use Tests\stubs\TestApp;
-	use WPEmerge\Application\ApplicationConfig;
+    use WPEmerge\Application\Application;
+    use WPEmerge\Application\ApplicationConfig;
 	use WPEmerge\Application\ApplicationEvent;
-	use WpFacade\WpFacade;
+    use WPEmerge\Contracts\ServiceProvider;
+    use WpFacade\WpFacade;
 
 	trait BootServiceProviders {
 
 		use SetUpDefaultMocks;
+		use CreateContainer;
 
-		/** @var \WPEmerge\Application\Application */
+		/** @var Application */
 		protected $app;
 
 		/** @var ApplicationConfig */
@@ -47,20 +51,17 @@
 
 		protected function setUpWithConfig( array $config = [] ) {
 
-			$container = new BaseContainerAdapter();
+			$container = $this->createContainer();
 			$config    = new ApplicationConfig( $config );
 
 			WpFacade::setFacadeContainer($container);
 
 			$this->config = $config;
 
-			/** @var \WPEmerge\Contracts\ServiceProvider[] $provider_classes */
+			/** @var ServiceProvider[] $provider_classes */
 			$provider_classes = [];
 
 			$this->app = TestApp::make( $container );
-
-			ApplicationEvent::make( $container );
-			ApplicationEvent::fake();
 
 			if ( is_array( $providers = $this->neededProviders() ) ) {
 
@@ -78,9 +79,10 @@
 
 				$this->provider_classes = $provider_classes;
 
-
-
 			}
+
+            ApplicationEvent::make( $container );
+            // ApplicationEvent::fake(); ??
 
 		}
 

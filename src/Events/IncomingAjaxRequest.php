@@ -15,7 +15,7 @@
 
 			parent::__construct($request);
 
-			$this->request->setType(get_class($this));
+			$this->request->withType(get_class($this));
 
 		}
 

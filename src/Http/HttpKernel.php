@@ -35,10 +35,10 @@
         /** @var Container */
         private $container;
 
-        /** @var ResponseInterface */
+        /** @var Response */
         private $response;
 
-        /** @var RequestInterface */
+        /** @var Request */
         private $request;
 
         private $is_test_mode = false;
@@ -47,7 +47,7 @@
         private $is_takeover_mode = false;
 
         /**
-         * @var ResponseFactory
+         * @var HttpResponseFactory
          */
         private $response_factory;
 
@@ -98,6 +98,12 @@
 
             }
 
+            if ( $this->response instanceof NullResponse) {
+
+                $request_event->matchedRoute();
+
+            }
+
             $this->sendResponse();
 
             $this->error_handler->unregister();
@@ -112,6 +118,7 @@
          */
         public function sendBodyDeferred()
         {
+
 
             // guard against AdminBodySendable for non matching admin pages.
             if ( ! $this->response instanceof ResponseInterface) {
@@ -141,7 +148,7 @@
         private function sendResponse()
         {
 
-            if ($this->response instanceof NullResponse) {
+            if ( $this->response instanceof NullResponse) {
 
                 return;
 
@@ -149,7 +156,7 @@
 
             $this->sendHeaders();
 
-            if ($this->request->type() !== IncomingAdminRequest::class) {
+            if ( $this->request->getType() !== IncomingAdminRequest::class) {
 
                 $this->sendBody();
 
@@ -175,19 +182,14 @@
 
         }
 
-        /**
-         * @throws
-         */
         private function sendRequestThroughRouter(Request $request) : Response
         {
-
-
-            $this->container->instance(Request::class, $request);
 
             $pipeline = new Pipeline($this->container);
 
             $middleware = $this->withMiddleware() ? $this->middleware_groups['global'] ?? [] : [];
 
+            /** @var Response $response */
             $response = $pipeline->send($request)
                                  ->through($middleware)
                                  ->then($this->dispatchToRouter());

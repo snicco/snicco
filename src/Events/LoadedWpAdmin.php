@@ -7,13 +7,13 @@
 	namespace WPEmerge\Events;
 
 	use WPEmerge\Application\ApplicationEvent;
-	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Factories\DynamicHooksFactory;
+    use WPEmerge\Http\Request;
 
-	class LoadedWpAdmin extends ApplicationEvent {
+    class LoadedWpAdmin extends ApplicationEvent {
 
 
-		public function __construct( RequestInterface $request, DynamicHooksFactory $hook_factory ) {
+		public function __construct( Request $request, DynamicHooksFactory $hook_factory ) {
 
 
 			$hook_factory->create($request);

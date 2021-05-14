@@ -6,6 +6,7 @@
 
     namespace Tests\unit\ServiceProviders;
 
+    use Tests\AssertsResponse;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
     use Tests\TestRequest;
@@ -16,6 +17,7 @@
     use WPEmerge\ServiceProviders\AliasServiceProvider;
     use WPEmerge\ServiceProviders\ApplicationServiceProvider;
     use WPEmerge\ServiceProviders\FactoryServiceProvider;
+    use WPEmerge\ServiceProviders\HttpServiceProvider;
     use WPEmerge\ServiceProviders\RoutingServiceProvider;
     use WPEmerge\ServiceProviders\ViewServiceProvider;
     use WPEmerge\Support\Url;
@@ -25,16 +27,17 @@
     {
 
         use BootServiceProviders;
+        use AssertsResponse;
 
         public function neededProviders() : array
         {
-
             return [
                 ApplicationServiceProvider::class,
                 AliasServiceProvider::class,
                 RoutingServiceProvider::class,
                 FactoryServiceProvider::class,
                 ViewServiceProvider::class,
+                HttpServiceProvider::class,
             ];
         }
 
@@ -82,11 +85,12 @@
             TestApp::post('foo', function () {
 
                 return 'foo';
+
             });
 
             $response = TestApp::route()->runRoute(TestRequest::from('POST', 'foo'));
 
-            $this->assertSame('foo', $response);
+            $this->assertOutput('foo', $response);
 
         }
 
@@ -101,7 +105,7 @@
 
             $response = TestApp::route()->runRoute(TestRequest::from('GET', 'foo'));
 
-            $this->assertSame('foo', $response);
+            $this->assertOutput('foo', $response);
 
         }
 
@@ -116,7 +120,7 @@
 
             $response = TestApp::route()->runRoute(TestRequest::from('PATCH', 'foo'));
 
-            $this->assertSame('foo', $response);
+            $this->assertOutput('foo', $response);
 
         }
 
@@ -131,7 +135,7 @@
 
             $response = TestApp::route()->runRoute(TestRequest::from('PUT', 'foo'));
 
-            $this->assertSame('foo', $response);
+            $this->assertOutput('foo', $response);
 
         }
 
@@ -146,7 +150,7 @@
 
             $response = TestApp::route()->runRoute(TestRequest::from('OPTIONS', 'foo'));
 
-            $this->assertSame('foo', $response);
+            $this->assertOutput('foo', $response);
 
         }
 
@@ -161,7 +165,7 @@
 
             $response = TestApp::route()->runRoute(TestRequest::from('DELETE', 'foo'));
 
-            $this->assertSame('foo', $response);
+            $this->assertOutput('foo', $response);
 
         }
 
@@ -175,10 +179,10 @@
             });
 
             $response = TestApp::route()->runRoute(TestRequest::from('GET', 'foo'));
-            $this->assertSame('foo', $response);
+            $this->assertOutput('foo', $response);
 
             $response = TestApp::route()->runRoute(TestRequest::from('POST', 'foo'));
-            $this->assertSame('foo', $response);
+            $this->assertOutput('foo', $response);
 
 
         }

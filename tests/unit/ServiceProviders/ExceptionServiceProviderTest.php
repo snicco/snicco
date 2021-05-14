@@ -6,10 +6,8 @@
 
 	namespace Tests\unit\ServiceProviders;
 
-	use Tests\TestCase;
-	use Tests\TestRequest;
+    use Tests\TestCase;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
-	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Exceptions\DebugErrorHandler;
 	use WPEmerge\Exceptions\NullErrorHandler;
 	use WPEmerge\Exceptions\ProductionErrorHandler;
@@ -41,11 +39,6 @@
 		public function by_default_the_inbuilt_production_handler_is_used_if_enabled() {
 
 			$this->config->set( 'exception_handling.enable', true );
-
-			$this->app->container()->instance(
-				RequestInterface::class,
-				TestRequest::from( 'GET', '/foo' )
-			);
 
 			$this->assertSame(
 				ProductionErrorHandler::class,
@@ -85,6 +78,7 @@
 			);
 
 		}
+
 
 	}
 

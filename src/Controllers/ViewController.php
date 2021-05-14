@@ -7,7 +7,7 @@
 	namespace WPEmerge\Controllers;
 
 
-    use WPEmerge\Contracts\ResponseFactoryInterface;
+    use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Http\Response;
 
     class ViewController {
@@ -17,7 +17,7 @@
 		 */
 		private $response;
 
-		public function __construct( ResponseFactoryInterface $response ) {
+		public function __construct( ResponseFactory $response ) {
 
 			$this->response = $response;
 

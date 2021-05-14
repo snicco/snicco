@@ -9,8 +9,10 @@
 
 	use WPEmerge\Http\Response;
 
-    interface ResponseFactoryInterface {
+    interface ResponseFactory {
 
 		public function view ( string $view, array $data = [], $status = 200, array $headers = []) : Response;
+
+		public function prepareResponse ( $response ) : Response;
 
 	}

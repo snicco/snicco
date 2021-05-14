@@ -53,35 +53,35 @@
 
         }
 
-        public function setRoute(RouteCondition $route)
+        public function withRoute(RouteCondition $route)
         {
 
-            $this->withAttribute('route', $route);
+            return $this->withAttribute('route', $route );
 
 
         }
 
-        public function route() : ?RouteCondition
+        public function getRoute() : ?RouteCondition
         {
 
             return $this->getAttribute('route', null );
 
         }
 
-        public function setType ( string $type ) {
+        public function withType ( string $type ) {
 
-            $this->withAttribute('type', $type);
+            return $this->withAttribute('type', $type);
 
         }
 
-        public function type() : string
+        public function getType() : string
         {
 
             return $this->getAttribute('type', '');
 
         }
 
-        public function query(string $name, $default )
+        public function query(string $name, $default = null )
         {
 
             return Arr::get($this->getQueryParams(), $name, $default);
@@ -89,7 +89,7 @@
         }
 
         /** @todo verify this.  */
-        public function request(string $name, $default )
+        public function request(string $name, $default = null )
         {
 
             return Arr::get($this->getParsedBody(), $name, $default);

@@ -11,11 +11,21 @@
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Facade\WP;
 	use WPEmerge\Http\RedirectResponse;
+    use WPEmerge\Http\Request;
 
+    class Authenticate extends Middleware {
 
-	class Authenticate implements Middleware {
+        /**
+         * @var string|null
+         */
+        private $url;
 
-		public function handle( RequestInterface $request, Closure $next, string $url = null  ) {
+        public function __construct(string $url = null )
+        {
+            $this->url = $url;
+        }
+
+		public function handle( Request $request, $next  ) {
 
 			if ( WP::isUserLoggedIn()  ) {
 
@@ -25,7 +35,7 @@
 
 			$url = $url ?? WP::loginUrl( $request->fullUrl() );
 
-			return new RedirectResponse($request, 302 ,$url);
+			// return new RedirectResponse($request, 302 ,$url);
 		}
 
 	}
