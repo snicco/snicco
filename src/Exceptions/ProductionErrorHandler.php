@@ -8,7 +8,6 @@
 
 	use Contracts\ContainerAdapter;
 	use Psr\Log\LoggerInterface;
-	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ResponseInterface;
 	use Throwable;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
@@ -19,8 +18,6 @@
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Traits\HandlesExceptions;
 
-	use function get_current_user_id;
-
 	class ProductionErrorHandler implements ErrorHandlerInterface {
 
 		use HandlesExceptions;
@@ -28,17 +25,17 @@
 		/**
 		 * @var bool
 		 */
-		private $is_ajax;
+		protected $is_ajax;
 
 		/**
 		 * @var ContainerAdapter
 		 */
-		private $container;
+		protected $container;
 
 		/**
 		 * @var LoggerInterface
 		 */
-		private $logger;
+		protected $logger;
 
 		/**
 		 * @var array
@@ -48,7 +45,7 @@
         /**
          * @var HttpResponseFactory
          */
-        private $response;
+        protected $response;
 
         public function __construct( ContainerAdapter $container, LoggerInterface $logger, HttpResponseFactory $response_factory, bool $is_ajax ) {
 
@@ -104,13 +101,15 @@
 
 		}
 
-		private function contentType() : string {
 
-			return ( $this->is_ajax ) ? 'application/json' : 'text/html';
-
-		}
-
-		private function defaultResponse() : Response {
+        /**
+         *
+         * Override this method from a child class to create
+         * your own default response for fatal errors that can not be transformed by this error handler.
+         *
+         * @return Response
+         */
+		protected function defaultResponse() : Response {
 
 		    if ( $this->is_ajax ) {
 
@@ -120,18 +119,22 @@
 
 		    return $this->response->html('Internal Server Error', 500);
 
-
 		}
 
 		private function createResponseObject( Throwable $e ) : Response {
-
 
 			if ( method_exists( $e, 'render' ) ) {
 
 				/** @var ResponseInterface $response */
 				$response = $this->container->call( [ $e, 'render' ] );
 
-				return $response->setType( $this->contentType() );
+				if ( ! $response instanceof Response ) {
+
+				    return $this->defaultResponse();
+
+                }
+
+				return $response;
 
 			}
 
@@ -177,12 +180,7 @@
 			return [];
 		}
 
-		private function sendToClient( ResponseInterface $response, RequestInterface $request ) {
 
-			$response->prepareForSending( $request );
-			$response->sendHeaders();
-			$response->sendBody();
-		}
 
 
 	}

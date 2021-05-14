@@ -52,13 +52,9 @@
     "symfony/finder": "^5.0-stable",
     "nikic/fast-route": "1.3.0",
     "psr/log": "1.1.4",
-    "mindplay/middleman": "4.0.0",
-    "middlewares/request-handler": "dev-master",
-    "guzzlehttp/psr7": "^1.0-stable",
-    "middlewares/response-time": "dev-master",
-    "middlewares/base-path": "dev-master",
-    "nyholm/psr7": "1.4.x-dev",
-    "nyholm/psr7-server": "^1.0-stable"
+    "nyholm/psr7": "1.4.0",
+    "nyholm/psr7-server": "^1.0-stable",
+    "psr/http-server-middleware": "1.0.1"
   },
   "require-dev": {
     "opis/closure": "3.6.2",

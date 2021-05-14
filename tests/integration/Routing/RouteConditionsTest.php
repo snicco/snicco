@@ -7,10 +7,10 @@
 	namespace Tests\integration\Routing;
 
 	use Tests\stubs\Conditions\FalseCondition;
-	use Tests\TestCase;
+	use Tests\Test;
     use WPEmerge\Http\Request;
 
-	class RouteConditionsTest extends TestCase {
+	class RouteConditionsTest extends Test {
 
 		use SetUpRouter;
 

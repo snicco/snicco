@@ -6,24 +6,27 @@
 
 	namespace Tests\unit\Handlers;
 
-	use SniccoAdapter\BaseContainerAdapter;
-	use Tests\stubs\Bar;
+    use Tests\CreateContainer;
+    use Tests\stubs\Bar;
 	use Tests\stubs\Foo;
-	use WPEmerge\Contracts\RequestInterface as Request;
 	use PHPUnit\Framework\TestCase;
 	use WPEmerge\Factories\HandlerFactory;
 	use Mockery as m;
+    use WPEmerge\Http\Request;
 
-	class ControllerTest extends TestCase {
+    class ControllerTest extends TestCase {
+
+        use CreateContainer;
 
 		/** @test */
 		public function a_controller_gets_resolved_from_the_container_with_passed_parameter() {
 
-			$container = new BaseContainerAdapter();
+
+			$container = $this->createContainer();
 
 			$factory = new HandlerFactory( [], $container);
 
-			$request = m::mock( \WPEmerge\Http\Request::class);
+			$request = m::mock( Request::class);
 
 			$request->foo = 'foo_route';
 
@@ -41,7 +44,7 @@
 
 
 		/**
-		 * @var \Tests\stubs\Bar
+		 * @var Bar
 		 */
 		private $bar;
 

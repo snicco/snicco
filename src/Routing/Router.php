@@ -252,7 +252,7 @@
 				->then( function ( $request ) use ( $route_match ) : Response {
 
                     $route_response = $route_match->route()->run( $request, $route_match->payload() );
-                    return $this->response_factory->prepareResponse($route_response);
+                    return $this->response_factory->toResponse($route_response);
 
 				} );
 

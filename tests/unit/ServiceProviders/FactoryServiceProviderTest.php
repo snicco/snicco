@@ -6,7 +6,7 @@
 
 	namespace Tests\unit\ServiceProviders;
 
-	use Tests\TestCase;
+	use Tests\Test;
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Factories\ViewComposerFactory;
@@ -14,7 +14,7 @@
 	use WPEmerge\ServiceProviders\FactoryServiceProvider;
 	use WPEmerge\ViewComposers\ViewComposer;
 
-	class FactoryServiceProviderTest extends TestCase {
+	class FactoryServiceProviderTest extends Test {
 
 		use BootServiceProviders;
 

@@ -10,7 +10,7 @@
     use Tests\AssertsResponse;
     use Tests\CreatePsr17Factories;
     use Tests\SetUpDefaultMocks;
-	use Tests\TestCase;
+	use Tests\Test;
 	use Tests\TestRequest;
 	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Factories\ConditionFactory;
@@ -20,7 +20,7 @@
 	use WPEmerge\Routing\Router;
 	use WpFacade\WpFacade;
 
-	class RouteCachingTest extends TestCase {
+	class RouteCachingTest extends Test {
 
 		use SetUpDefaultMocks;
         use CreatePsr17Factories;

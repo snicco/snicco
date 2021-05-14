@@ -9,7 +9,7 @@
 	use Closure;
 	use Codeception\TestCase\WPTestCase;
 	use Tests\stubs\TestView;
-	use Tests\TestCase;
+	use Tests\Test;
 	use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewFinderInterface;
 	use WPEmerge\Contracts\ViewInterface;
@@ -22,7 +22,7 @@
 	use WPEmerge\View\ViewService;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
 
-	class ViewServiceProviderTest extends TestCase {
+	class ViewServiceProviderTest extends Test {
 
 		use BootServiceProviders;
 

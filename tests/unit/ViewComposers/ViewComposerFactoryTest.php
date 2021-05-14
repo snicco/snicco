@@ -8,7 +8,8 @@
 
 	use PHPUnit\Framework\TestCase;
 	use SniccoAdapter\BaseContainerAdapter;
-	use Tests\stubs\Foo;
+    use Tests\CreateContainer;
+    use Tests\stubs\Foo;
 	use Tests\stubs\TestView;
 	use Tests\stubs\ViewComposers\FooComposer;
 	use WPEmerge\Contracts\PhpViewInterface;
@@ -20,8 +21,10 @@
 	class ViewComposerFactoryTest extends TestCase {
 
 
+	    use CreateContainer;
+
 		/**
-		 * @var HandlerFactory
+		 * @var ViewComposerFactory;
 		 */
 		private $factory;
 
@@ -30,7 +33,7 @@
 
 			parent::setUp();
 
-			$this->factory = new ViewComposerFactory(TEST_CONFIG['composers'], new BaseContainerAdapter());
+			$this->factory = new ViewComposerFactory(TEST_CONFIG['composers'], $this->createContainer() );
 
 		}
 

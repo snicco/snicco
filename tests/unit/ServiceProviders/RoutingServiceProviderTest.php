@@ -10,7 +10,7 @@
     use Tests\RequestTesting;
     use Tests\stubs\Conditions\TrueCondition;
     use Tests\stubs\TestApp;
-    use Tests\TestCase;
+    use Tests\Test;
     use Tests\TestRequest;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Facade\WP;
@@ -25,7 +25,7 @@
     use WPEmerge\ServiceProviders\RoutingServiceProvider;
     use WPEmerge\ServiceProviders\ViewServiceProvider;
 
-    class RoutingServiceProviderTest extends TestCase
+    class RoutingServiceProviderTest extends Test
     {
 
         use BootServiceProviders;

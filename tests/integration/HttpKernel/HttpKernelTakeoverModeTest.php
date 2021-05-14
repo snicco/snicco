@@ -8,11 +8,11 @@
 
 	use Tests\stubs\Middleware\GlobalMiddleware;
 	use Tests\stubs\Middleware\WebMiddleware;
-	use Tests\TestCase;
+	use Tests\Test;
 	use Tests\TestRequest;
 	use WPEmerge\Exceptions\InvalidResponseException;
 
-	class HttpKernelTakeoverModeTest extends TestCase {
+	class HttpKernelTakeoverModeTest extends Test {
 
 		use SetUpKernel;
         use AssertKernelOutput;

@@ -12,7 +12,7 @@
 	class ApplicationConfigTest extends TestCase {
 
 		/**
-		 * @var \WPEmerge\Application\ApplicationConfig
+		 * @var ApplicationConfig
 		 */
 		private $config;
 

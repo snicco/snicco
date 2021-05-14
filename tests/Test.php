@@ -11,7 +11,7 @@
 	use WPEmerge\Application\ApplicationEvent;
 	use WpFacade\WpFacade;
 
-	class TestCase extends PhpUnitTest {
+	class Test extends PhpUnitTest {
 
 		protected function setUp() : void {
 

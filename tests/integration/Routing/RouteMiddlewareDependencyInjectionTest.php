@@ -8,10 +8,10 @@
 
 	use Tests\stubs\Controllers\Admin\AdminControllerWithMiddleware;
 	use Tests\stubs\Middleware\MiddlewareWithDependencies;
-	use Tests\TestCase;
+	use Tests\Test;
     use WPEmerge\Http\Request;
 
-    class RouteMiddlewareDependencyInjectionTest extends TestCase {
+    class RouteMiddlewareDependencyInjectionTest extends Test {
 
 		use SetUpRouter;
 

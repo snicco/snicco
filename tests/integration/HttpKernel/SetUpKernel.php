@@ -6,8 +6,8 @@
 
     namespace Tests\integration\HttpKernel;
 
+    use Contracts\ContainerAdapter;
     use PHPUnit\Framework\Assert;
-    use SniccoAdapter\BaseContainerAdapter;
     use Tests\CreateContainer;
     use Tests\SetUpDefaultMocks;
     use Tests\stubs\TestErrorHandler;
@@ -26,7 +26,6 @@
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\RouteCollection;
     use WPEmerge\Routing\Router;
-    use WPEmerge\View\ViewService;
 
     trait SetUpKernel
     {
@@ -36,16 +35,13 @@
         use CreateContainer;
 
 
-        /** @var \WPEmerge\Http\HttpKernel */
+        /** @var HttpKernel */
         private $kernel;
 
         /**
-         * @var \WPEmerge\Routing\Router
+         * @var Router
          */
         private $router;
-
-        /** @var \Contracts\ContainerAdapter */
-        private $container;
 
         protected function setUp() : void
         {
@@ -53,8 +49,8 @@
             parent::setUp();
 
             $container = $this->createContainer();
-            $handler_factory = new HandlerFactory([], $container);
-            $condition_factory = new ConditionFactory([], $container);
+            $handler_factory = new HandlerFactory( [], $container );
+            $condition_factory = new ConditionFactory( [], $container );
             $error_handler = new TestErrorHandler();
             $router = new Router(
                 $container,
@@ -63,17 +59,17 @@
                     $handler_factory,
                     new FastRouteMatcher()
                 ),
-                new HttpResponseFactory(new TestViewService(), $this->psrResponseFactory(), $this->psrStreamFactory())
+                new HttpResponseFactory( new TestViewService(), $this->psrResponseFactory(), $this->psrStreamFactory() )
             );
             $this->router = $router;
-            $this->container = $container;
+            $container1 = $container;
             $this->kernel = new HttpKernel(
                 $router,
                 $container,
                 $error_handler,
             );
 
-            ApplicationEvent::make($this->container);
+            ApplicationEvent::make($container1);
             ApplicationEvent::fake();
             WP::setFacadeContainer($container);
 
@@ -134,5 +130,12 @@
             Assert::assertSame($expected, $output);
 
         }
+
+        private function assertOutput ( $expected , string $output ) {
+
+            $this->assertStringContainsString( $expected, $output );
+
+        }
+
 
     }

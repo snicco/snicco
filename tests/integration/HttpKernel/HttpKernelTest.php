@@ -8,16 +8,15 @@
 
 	use Tests\stubs\Middleware\GlobalMiddleware;
     use Tests\stubs\Middleware\WebMiddleware;
-    use Tests\TestCase;
+    use Tests\Test;
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Events\BodySent;
 	use WPEmerge\Events\HeadersSent;
     use WPEmerge\Http\Request;
 
-	class HttpKernelTest extends TestCase {
+	class HttpKernelTest extends Test {
 
 		use SetUpKernel;
-        use AssertKernelOutput;
 
 		/** @test */
 		public function no_response_gets_send_when_no_route_matched() {
@@ -167,7 +166,6 @@
 
         }
 
-
         /** @test */
         public function middleware_is_synced_to_the_router_and_run_before_a_matching_route() {
 
@@ -198,9 +196,9 @@
 
             $GLOBALS['test'][ GlobalMiddleware::run_times ] = 0;
 
-            $this->kernel->setMiddlewareGroups( [
+            $this->kernel->setMiddlewareGroups([
                 'global' => [ GlobalMiddleware::class]
-            ] );
+            ]);
             $this->router->get( '/foo', function () {
 
                 return 'foo';
@@ -209,12 +207,12 @@
 
             // non matching request
             $request = $this->createIncomingWebRequest( 'POST', '/foo' );
-            $this->assertSame('', $this->runAndGetKernelOutput($request));
+            $this->assertNothingSent($this->runAndGetKernelOutput($request));
             $this->assertMiddlewareRunTimes(0 , GlobalMiddleware::class);
 
             // matching request
             $request = $this->createIncomingWebRequest( 'GET', '/foo' );
-            $this->assertSame('foo', $this->runAndGetKernelOutput($request));
+            $this->assertOutput('foo', $this->runAndGetKernelOutput($request));
             $this->assertMiddlewareRunTimes(1 , GlobalMiddleware::class);
 
         }
@@ -235,7 +233,6 @@
 
             $this->kernel->runInTestMode();
             $request = $this->createIncomingWebRequest( 'GET', '/foo' );
-
 
 
             $this->assertSame('foo', $this->runAndGetKernelOutput($request));

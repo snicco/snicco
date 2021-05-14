@@ -7,9 +7,9 @@
 	namespace Tests\integration\Routing;
 
 	use Tests\stubs\Conditions\ConditionWithDependency;
-	use Tests\TestCase;
+	use Tests\Test;
 
-	class RouteConditionsDependencyInjectionTest extends TestCase {
+	class RouteConditionsDependencyInjectionTest extends Test {
 
 		use SetUpRouter;
 

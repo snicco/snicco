@@ -8,11 +8,11 @@
 
     use Tests\AssertsResponse;
     use Tests\CreatePsr17Factories;
-    use Tests\TestCase;
+    use Tests\Test;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Http\Response;
 
-    class ViewRoutesTest extends TestCase {
+    class ViewRoutesTest extends Test {
 
 		use SetUpRouter;
 		use AssertsResponse;

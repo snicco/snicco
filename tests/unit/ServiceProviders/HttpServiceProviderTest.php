@@ -6,7 +6,7 @@
 
 	namespace Tests\unit\ServiceProviders;
 
-	use Tests\TestCase;
+	use Tests\Test;
 	use WPEmerge\Contracts\ResponseFactory;
 	use WPEmerge\Http\HttpKernel;
 	use WPEmerge\Http\HttpResponseFactory;
@@ -18,7 +18,7 @@
 	use WPEmerge\ServiceProviders\RoutingServiceProvider;
 	use WPEmerge\ServiceProviders\ViewServiceProvider;
 
-	class HttpServiceProviderTest extends TestCase {
+	class HttpServiceProviderTest extends Test {
 
 		use BootServiceProviders;
 

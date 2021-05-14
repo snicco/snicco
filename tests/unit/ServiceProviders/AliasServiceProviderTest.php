@@ -8,7 +8,7 @@
 
     use Tests\AssertsResponse;
     use Tests\stubs\TestApp;
-    use Tests\TestCase;
+    use Tests\Test;
     use Tests\TestRequest;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationEvent;
@@ -25,7 +25,7 @@
     use WPEmerge\Support\Url;
     use WPEmerge\Support\VariableBag;
 
-    class AliasServiceProviderTest extends TestCase
+    class AliasServiceProviderTest extends Test
     {
 
         use BootServiceProviders;

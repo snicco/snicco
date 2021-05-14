@@ -7,9 +7,7 @@
 	namespace Tests\unit\Application;
 
 	use Codeception\TestCase\WPTestCase;
-    use Mockery\Exception\InvalidArgumentException;
     use Psr\Http\Message\ServerRequestInterface;
-    use SniccoAdapter\BaseContainerAdapter;
     use Tests\CreateContainer;
     use Tests\stubs\TestContainer;
 	use WPEmerge\Application\Application;
@@ -25,7 +23,7 @@
 		/** @test */
 		public function the_static_constructor_returns_an_application_instance() {
 
-			$base_container = new BaseContainerAdapter();
+			$base_container = $this->createContainer();
 
 			$application = Application::create( $base_container );
 

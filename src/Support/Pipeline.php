@@ -1,5 +1,6 @@
 <?php
 
+
     declare(strict_types = 1);
 
 
@@ -93,10 +94,9 @@
 
                     if ( ! in_array(MiddlewareInterface::class, class_implements($middleware[0]))) {
 
-                        $type = readable::typeof($middleware);
-                        $value = readable::value($middleware);
-
-                        throw new ConfigurationException("Unsupported middleware type: {$type} ({$value})");
+                        throw new ConfigurationException(
+                            "Unsupported middleware type: {$middleware[0]})"
+                        );
 
                     }
 
@@ -113,13 +113,7 @@
 
         }
 
-        /**
-         * Run the pipeline with a final destination callback.
-         *
-         * @param  Closure  $request_handler
-         *
-         * @return ResponseInterface
-         */
+
         public function then(Closure $request_handler) : ResponseInterface
         {
 
@@ -157,15 +151,13 @@
 
             }
 
-            return new Delegate( function (ServerRequestInterface $request ) {
+            return new Delegate(function (ServerRequestInterface $request) {
 
-                [ $middleware, $constructor_args ] = array_shift($this->middleware);
+                [$middleware, $constructor_args] = array_shift($this->middleware);
 
                 if ( $middleware instanceof MiddlewareInterface ) {
 
-                    $response = $middleware->process($request, $this->nextMiddleware());
-
-                    return $this->returnIfValid( $response, $middleware );
+                    return $middleware->process($request, $this->nextMiddleware());
 
                 }
 
@@ -175,9 +167,7 @@
                     $this->buildNamedConstructorArgs($middleware, $constructor_args)
                 );
 
-                $response = $middleware_instance->process($request, $this->nextMiddleware());
-
-                return $this->returnIfValid($response, $middleware_instance);
+                return $middleware_instance->process($request, $this->nextMiddleware());
 
             });
 
@@ -189,10 +179,9 @@
 
             if ( ! $response instanceof ResponseInterface) {
 
-                $given = readable::value($response);
-                $source = readable::callback($middleware);
+                $class = get_class($middleware);
 
-                throw new LogicException("invalid middleware result: {$given} returned by: {$source}");
+                throw new LogicException("invalid middleware result returned by: {$class}");
 
             }
 

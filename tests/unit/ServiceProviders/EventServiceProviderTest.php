@@ -9,8 +9,6 @@
 	use BetterWpHooks\Contracts\Dispatcher;
 	use BetterWpHooks\Dispatchers\WordpressDispatcher;
 	use Codeception\TestCase\WPTestCase;
-    use Mockery;
-    use Tests\stubs\TestApp;
     use Tests\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\AdminBodySendable;
@@ -18,7 +16,6 @@
 	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingAjaxRequest;
 	use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Events\LoadedWpAdmin;
     use WPEmerge\Events\MakingView;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\Exceptions\ShutdownHandler;
@@ -26,6 +23,7 @@
 	use WPEmerge\Http\HttpKernel;
 	use WPEmerge\ServiceProviders\EventServiceProvider;
 	use WPEmerge\View\ViewService;
+
 
 	class EventServiceProviderTest extends WPTestCase {
 

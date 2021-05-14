@@ -194,7 +194,6 @@
 
         public function getParsedBody()
         {
-
             return $this->psr_request->getParsedBody();
         }
 

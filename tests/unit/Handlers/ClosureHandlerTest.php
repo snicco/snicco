@@ -7,23 +7,24 @@
 	namespace Tests\unit\Handlers;
 
 	use Mockery as m;
-	use SniccoAdapter\BaseContainerAdapter;
-	use Tests\stubs\Bar;
+    use Tests\CreateContainer;
+    use Tests\stubs\Bar;
 	use PHPUnit\Framework\TestCase;
 	use WPEmerge\Factories\HandlerFactory;
     use WPEmerge\Http\Request;
 
     class ClosureHandlerTest extends TestCase {
 
+        use CreateContainer;
 
 		/** @test */
 		public function a_closure_handler_resolved_from_the_container_with_passed_parameter() {
 
-			$container = new BaseContainerAdapter();
+			$container = $this->createContainer();
 
 			$factory = new HandlerFactory( [], $container);
 
-			$request = m::mock( \WPEmerge\Http\Request::class);
+			$request = m::mock( Request::class);
 
 			$request->foo = 'foo_route';
 

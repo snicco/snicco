@@ -7,13 +7,12 @@
     namespace Tests\integration\Routing;
 
     use Tests\RequestTesting;
-    use Tests\TestCase;
+    use Tests\Test;
     use WPEmerge\Http\Request;
     use WPEmerge\Facade\WP;
 
-    class AdminRoutesTest extends TestCase
+    class AdminRoutesTest extends Test
     {
-
         use SetUpRouter;
         use RequestTesting;
 

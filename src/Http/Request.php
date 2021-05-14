@@ -68,7 +68,6 @@
 
         }
 
-
         public function withType ( string $type ) {
 
             return $this->withAttribute('type', $type);
@@ -82,15 +81,27 @@
 
         }
 
-        public function query(string $name, $default = null )
+        public function query(string $name = null , $default = null )
         {
+
+            if ( ! $name ) {
+
+                return $this->getQueryParams() ?? [];
+
+            }
 
             return Arr::get($this->getQueryParams(), $name, $default);
 
         }
 
-        public function parsedBody(string $name, $default = null )
+        public function parsedBody(string $name = null , $default = null )
         {
+
+            if ( ! $name ) {
+
+                return $this->getParsedBody() ?? [];
+
+            }
 
             return Arr::get($this->getParsedBody(), $name, $default);
 

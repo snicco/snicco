@@ -10,12 +10,12 @@
 	use Tests\stubs\Controllers\Web\ControllerWithDependencies;
 	use Tests\stubs\Controllers\Web\TeamsController;
 	use Tests\stubs\Foo;
-	use Tests\TestCase;
+	use Tests\Test;
 	use Tests\TestRequest;
     use WPEmerge\Http\Request;
     use WPEmerge\Http\Response;
 
-	class RouteActionDependencyInjectionTest extends TestCase {
+	class RouteActionDependencyInjectionTest extends Test {
 
 		use SetUpRouter;
 
