@@ -16,7 +16,7 @@
          */
         private $foo;
 
-        public function __construct($foo = 'foo')
+        public function __construct( $foo = 'foo')
         {
             $this->foo = $foo;
         }
