@@ -11,7 +11,8 @@
 	use Illuminate\Support\Str;
 	use Opis\Closure\SerializableClosure;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Contracts\RouteCondition;
+    use WPEmerge\Contracts\RouteAction;
+    use WPEmerge\Contracts\RouteCondition;
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Factories\HandlerFactory;
     use WPEmerge\Http\Request;
@@ -19,7 +20,7 @@
 
 	class CompiledRoute implements RouteCondition {
 
-		/** @var \WPEmerge\Contracts\RouteAction|string */
+		/** @var RouteAction|string */
 		public $action;
 
 		public $middleware;
