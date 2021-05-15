@@ -4,20 +4,21 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Support;
+    namespace WPEmerge\Routing;
 
     use Closure;
     use Contracts\ContainerAdapter;
     use LogicException;
-    use mindplay\readable;
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
-    use Throwable;
     use WPEmerge\Exceptions\ConfigurationException;
-    use WPEmerge\Routing\Delegate;
+    use WPEmerge\Http\Delegate;
+    use WPEmerge\Support\Arr;
     use WPEmerge\Traits\ReflectsCallable;
+
+    use function collect;
 
     class Pipeline
     {

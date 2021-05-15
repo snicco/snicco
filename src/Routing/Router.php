@@ -13,7 +13,7 @@
     use WPEmerge\Http\ConvertsToResponse;
     use WPEmerge\Http\Request;
     use WPEmerge\Http\Response;
-    use WPEmerge\Support\Pipeline;
+    use WPEmerge\Routing\Pipeline;
 	use WPEmerge\Support\Url;
 	use WPEmerge\Traits\GathersMiddleware;
 	use WPEmerge\Traits\HoldsRouteBlueprint;

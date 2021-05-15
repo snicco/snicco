@@ -11,7 +11,7 @@
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
     use WPEmerge\Http\Request;
-    use WPEmerge\Routing\Delegate;
+    use WPEmerge\Http\Delegate;
 
     abstract class Middleware implements MiddlewareInterface {
 

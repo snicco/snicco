@@ -9,6 +9,7 @@
 	use Exception;
 	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\AssertsResponse;
+    use Tests\BaseTestCase;
     use Tests\CreateContainer;
     use Tests\CreatePsr17Factories;
 	use Tests\stubs\TestException;
@@ -18,32 +19,34 @@
     use WPEmerge\Contracts\ResponseFactory;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\Exceptions\ProductionErrorHandler;
-	use WPEmerge\Factories\ErrorHandlerFactory;
+    use WPEmerge\Facade\WP;
+    use WPEmerge\Factories\ErrorHandlerFactory;
     use WPEmerge\Http\Request;
     use WPEmerge\Http\Response;
+    use WpFacade\WpFacade;
 
-
-	class ProductionErrorHandlerTest extends Test {
+    class ProductionErrorHandlerTest extends BaseTestCase {
 
 		use AssertsResponse;
-        use CreateContainer;
-        use CreatePsr17Factories;
 
-		/**
-		 * @var BaseContainerAdapter
-		 */
-		private $container;
+        protected function beforeTestRun()
+        {
 
-		protected function afterSetUp () {
+            ApplicationEvent::make($this->container = $this->createContainer());
+            ApplicationEvent::fake();
+            $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
+            $this->container->instance(ResponseFactory::class, $this->responseFactory());
 
-			ApplicationEvent::make($c = $this->createContainer());
-			ApplicationEvent::fake();
+        }
 
-			$this->container = $c;
-			$this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
-			$this->container->instance(ResponseFactory::class, $this->responseFactory());
+        protected function beforeTearDown()
+        {
 
-		}
+            ApplicationEvent::setInstance(null);
+
+        }
+
+
 
 		/** @test */
 		public function inside_the_routing_flow_the_exceptions_get_transformed_into_response_objects() {

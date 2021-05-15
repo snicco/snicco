@@ -6,14 +6,37 @@
 
 	namespace Tests\unit\Application;
 
-	use Codeception\TestCase\WPTestCase;
-	use WPEmerge\Contracts\ServiceProvider;
+    use Mockery;
+    use Tests\BaseTestCase;
+    use Tests\CreateDefaultWpApiMocks;
+    use WPEmerge\Contracts\ServiceProvider;
 	use Tests\stubs\TestApp;
 	use Tests\stubs\TestProvider;
 	use Tests\stubs\TestService;
+    use WPEmerge\Facade\WP;
+
+    class LoadServiceProvidersTraitTest extends BaseTestCase {
+
+        use CreateDefaultWpApiMocks;
+
+        protected function beforeTestRun()
+        {
+
+            WP::setFacadeContainer($this->createContainer());
+            $this->setUpWp(VENDOR_DIR);
 
 
-	class LoadServiceProvidersTraitTest extends WPTestCase {
+        }
+
+        protected function beforeTearDown()
+        {
+
+            WP::setFacadeContainer(null);
+            WP::clearResolvedInstances();
+            Mockery::close();
+
+        }
+
 
 		/** @test */
 		public function an_exception_gets_thrown_if_a_service_provider_doesnt_implement_the_correct_interface() {

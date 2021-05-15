@@ -11,6 +11,7 @@
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Exceptions\ConfigurationException;
     use WPEmerge\Factories\HandlerFactory;
+    use WPEmerge\Routing\Conditions\AdminAjaxCondition;
     use WPEmerge\Routing\Conditions\AdminPageCondition;
     use WPEmerge\Routing\Conditions\QueryStringCondition;
     use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;

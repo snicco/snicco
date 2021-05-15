@@ -8,7 +8,7 @@
 
     use Psr\Http\Message\ServerRequestInterface;
     use WPEmerge\Contracts\RouteCondition;
-    use WPEmerge\ImplementsPsr7Request;
+    use WPEmerge\Http\ImplementsPsr7Request;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\UrlParser;
     use WPEmerge\Support\VariableBag;

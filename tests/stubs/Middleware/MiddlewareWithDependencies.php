@@ -10,7 +10,7 @@
 	use Tests\stubs\Foo;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Request;
-    use WPEmerge\Routing\Delegate;
+    use WPEmerge\Http\Delegate;
 
     class MiddlewareWithDependencies extends Middleware {
 

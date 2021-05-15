@@ -4,18 +4,19 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\unit\Routing;
+    namespace Tests\integration\Routing;
 
     use Nyholm\Psr7\Factory\Psr17Factory;
     use Nyholm\Psr7\Response;
     use Nyholm\Psr7\Stream;
+    use PHPUnit\Framework\TestCase;
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
     use Tests\CreateContainer;
-    use WPEmerge\Support\Pipeline;
-    use PHPUnit\Framework\TestCase;
+
+    use WPEmerge\Routing\Pipeline;
 
     /** @todo fix exception handling */
     class PipelineTest extends TestCase
@@ -24,7 +25,7 @@
         use CreateContainer;
 
         /**
-         * @var Pipeline
+         * @var \WPEmerge\Routing\Pipeline
          */
         private $pipeline;
 
@@ -95,7 +96,6 @@
         {
 
             $this->expectException(\TypeError::class);
-
 
             $this->pipeline
                 ->send($this->request)
@@ -232,11 +232,12 @@
         }
 
         /** @test */
-        public function middleware_that_does_not_implement_the_correct_interface_throws_an_exception () {
+        public function middleware_that_does_not_implement_the_correct_interface_throws_an_exception()
+        {
 
             $this->expectExceptionMessage('Unsupported middleware type:');
 
-             $this->pipeline
+            $this->pipeline
                 ->send($this->request)
                 ->through([WrongMiddleware::class])
                 ->then(function () {
@@ -246,11 +247,11 @@
                 });
 
 
-
         }
 
         // /** @test */
-        public function an_exception_gets_thrown_if_one_piece_of_middleware_doesnt_return_a_response_object () {
+        public function an_exception_gets_thrown_if_one_piece_of_middleware_doesnt_return_a_response_object()
+        {
 
             $this->expectExceptionMessage('must be an instance of Psr\Http\Message\ResponseInterface');
 
@@ -271,11 +272,9 @@
                 });
 
 
-
         }
 
     }
-
 
     class Foo implements MiddlewareInterface
     {
