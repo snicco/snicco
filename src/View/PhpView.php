@@ -133,7 +133,6 @@
 
 		}
 
-
 		private function parseFileHeaders() : array {
 
 			return array_filter( WP::fileHeaderData(

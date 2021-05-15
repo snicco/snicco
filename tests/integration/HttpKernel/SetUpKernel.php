@@ -8,17 +8,12 @@
 
     use Contracts\ContainerAdapter;
     use PHPUnit\Framework\Assert;
-    use Tests\CreateContainer;
-    use Tests\SetUpDefaultMocks;
     use Tests\stubs\TestErrorHandler;
     use Tests\stubs\TestViewService;
     use Tests\TestRequest;
-    use Tests\CreatePsr17Factories;
-    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Facade\WP;
     use WPEmerge\Factories\HandlerFactory;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Factories\ConditionFactory;
@@ -30,12 +25,9 @@
     trait SetUpKernel
     {
 
-        use SetUpDefaultMocks;
-        use CreatePsr17Factories;
-        use CreateContainer;
-
-
-        /** @var HttpKernel */
+        /**
+         * @var HttpKernel
+         */
         private $kernel;
 
         /**
@@ -43,36 +35,36 @@
          */
         private $router;
 
-        protected function setUp() : void
+        private function newRouter ( ContainerAdapter $c ) : Router
         {
 
-            parent::setUp();
+            $handler_factory = new HandlerFactory( [], $c );
+            $condition_factory = new ConditionFactory( [], $c );
 
-            $container = $this->createContainer();
-            $handler_factory = new HandlerFactory( [], $container );
-            $condition_factory = new ConditionFactory( [], $container );
-            $error_handler = new TestErrorHandler();
-            $router = new Router(
-                $container,
+            return new Router(
+                $c,
                 new RouteCollection(
                     $condition_factory,
                     $handler_factory,
                     new FastRouteMatcher()
                 ),
-                new HttpResponseFactory( new TestViewService(), $this->psrResponseFactory(), $this->psrStreamFactory() )
+                new HttpResponseFactory(
+                    new TestViewService(),
+                    $this->psrResponseFactory(),
+                    $this->psrStreamFactory()
+                )
             );
-            $this->router = $router;
-            $container1 = $container;
-            $this->kernel = new HttpKernel(
+
+        }
+
+        private function newKernel ( Router $router, ContainerAdapter $c ) : HttpKernel
+        {
+
+            return new HttpKernel(
                 $router,
-                $container,
-                $error_handler,
+                $c,
+                new TestErrorHandler(),
             );
-
-            ApplicationEvent::make($container1);
-            ApplicationEvent::fake();
-            WP::setFacadeContainer($container);
-
 
         }
 

@@ -6,11 +6,11 @@
 
 	namespace Tests\integration\Routing;
 
-	use SniccoAdapter\BaseContainerAdapter;
+	use Contracts\ContainerAdapter;
     use Tests\AssertsResponse;
-    use Tests\CreatePsr17Factories;
+    use Tests\BaseTestCase;
+    use Tests\CreateDefaultWpApiMocks;
     use Tests\SetUpDefaultMocks;
-	use Tests\Test;
 	use Tests\TestRequest;
 	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Factories\ConditionFactory;
@@ -20,10 +20,9 @@
 	use WPEmerge\Routing\Router;
 	use WpFacade\WpFacade;
 
-	class RouteCachingTest extends Test {
+	class RouteCachingTest extends BaseTestCase {
 
-		use SetUpDefaultMocks;
-        use CreatePsr17Factories;
+		use CreateDefaultWpApiMocks;
         use AssertsResponse;
 
 		/**
@@ -34,21 +33,28 @@
 		private $cache_file;
 
 
-		protected function afterSetUp () {
+		protected function beforeTestRun()
+        {
+            $this->cache_file = TESTS_DIR . DS . '_data' . DS . 'route.cache.php';
 
-			$this->cache_file = TESTS_DIR . DS . '_data' . DS . 'route.cache.php';
+            $this->newCachedRouter($this->cache_file, $c = $this->createContainer());
+            WpFacade::setFacadeContainer($c);
 
-			$this->newCachedRouter();
+            $this->assertFalse( file_exists( $this->cache_file ) );
+        }
 
-			$this->assertFalse( file_exists( $this->cache_file ) );
+        protected function beforeTearDown(){
+
+            if ( file_exists( $this->cache_file ) ) {
+
+                unlink( $this->cache_file );
+            }
 
 
-		}
+        }
 
-		private function newCachedRouter( $file = null ) : Router {
+		private function newCachedRouter( $file = null, ContainerAdapter $container = null ) : Router {
 
-
-			$container         = new BaseContainerAdapter();
 			$condition_factory = new ConditionFactory( [], $container );
 			$handler_factory   = new HandlerFactory( [], $container );
 			$route_collection  = new RouteCollection(
@@ -56,8 +62,6 @@
 				$handler_factory,
 				new CachedFastRouteMatcher( new FastRouteMatcher(), $file ?? $this->cache_file )
 			);
-
-			WpFacade::setFacadeContainer($container);
 
 			return $this->router = new Router(
 			    $container,
@@ -67,15 +71,7 @@
 
 		}
 
-		protected function beforeTearDown() : void {
 
-			if ( file_exists( $this->cache_file ) ) {
-
-				unlink( $this->cache_file );
-			}
-
-
-		}
 
 		/** @test */
 		public function a_cache_file_gets_created_when_running_the_router_for_the_first_time() {
@@ -108,7 +104,7 @@
 			$response = $this->router->runRoute( TestRequest::from( 'GET', 'foo' ) );
 			$this->assertOutput( 'foo', $response );
 
-			$router = $this->newCachedRouter( $this->cache_file );
+			$router = $this->newCachedRouter( $this->cache_file, $this->createContainer() );
 
 			$response = $router->runRoute( TestRequest::from( 'GET', 'foo' ) );
 			$this->assertOutput( 'foo', $response );
@@ -166,7 +162,7 @@
 			$response = $this->router->runRoute( TestRequest::from( 'GET', 'foo' ) );
 			$this->assertOutput( 'foo', $response );
 
-			$router = $this->newCachedRouter( $this->cache_file );
+			$router = $this->newCachedRouter( $this->cache_file, $this->createContainer() );
 
 			$response = $router->runRoute( TestRequest::from( 'GET', 'foo' ) );
 			$this->assertOutput( 'foo', $response );

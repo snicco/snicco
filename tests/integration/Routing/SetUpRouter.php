@@ -9,16 +9,11 @@
     use Closure;
     use Contracts\ContainerAdapter;
     use Tests\AssertsResponse;
-    use Tests\CreateContainer;
-    use Tests\CreatePsr17Factories;
-    use Tests\SetUpDefaultMocks;
-    use Tests\stubs\TestViewService;
+    use Tests\CreateDefaultWpApiMocks;
     use Tests\TestRequest;
-	use WPEmerge\Facade\WP;
 	use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Http\Request;
-    use WPEmerge\Http\HttpResponseFactory;
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
@@ -26,67 +21,39 @@
 
     trait SetUpRouter {
 
-		use SetUpDefaultMocks;
-        use CreateContainer;
-        use CreatePsr17Factories;
+		use CreateDefaultWpApiMocks;
         use AssertsResponse;
-
 
 		/**
 		 * @var Router
 		 */
 		private $router;
 
-		/** @var ContainerAdapter */
-		private $container;
-
-		/** @var RouteCollection */
-		private $route_collection;
-
-		protected function setUp() : void {
-
-			parent::setUp();
-
-			$this->newRouter();
-
-			WP::setFacadeContainer($this->container);
-
-		}
-
 		private function newRouterWith( Closure $routes ) {
 
-			$this->newRouter();
+			$this->newRouter($this->createContainer());
 
 			$routes( $this->router );
 
 		}
 
-		private function newRouter() {
+		private function newRouter(ContainerAdapter $container)  {
 
-			$conditions = is_callable( [
-				$this,
-				'conditions',
-			]) ? $this->conditions() : $this->allConditions();
-			$container         = $this->createContainer();
-			$condition_factory = new ConditionFactory( $conditions, $container );
+			$condition_factory = new ConditionFactory( $this->allConditions(), $container );
 			$handler_factory   = new HandlerFactory( [], $container );
 			$route_collection  = new RouteCollection(
 				$condition_factory,
 				$handler_factory,
 				new FastRouteMatcher()
 			);
-			$this->route_collection = $route_collection;
-			$this->container   = $container;
-			$this->router      = new Router(
+
+			$router =  new Router(
 			    $container,
                 $route_collection,
-                new HttpResponseFactory(
-                    new TestViewService(),
-                    $this->psrResponseFactory(),
-                    $this->psrStreamFactory(),
-                )
+                $this->responseFactory()
             );
 
+			$this->router = $router;
 		}
 
 		private function request( $method, $path ) : Request {

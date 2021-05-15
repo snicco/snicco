@@ -152,6 +152,7 @@
          * @param  string  $url Url to append to.
          *
          * @return string
+         * @see WordpressApi::addQueryArgs()
          */
         public static function addQueryArgs(array $keys, string $url ) :string {}
 
@@ -164,6 +165,7 @@
          * @param  string  $base_url URL to append to
          *
          * @return string
+         * @see WordpressApi::addQueryArg()
          */
         public static function addQueryArg( string $key , string $value , string $base_url ) :string {}
 

@@ -6,17 +6,42 @@
 
 	namespace Tests\integration\HttpKernel;
 
-	use Tests\stubs\Middleware\GlobalMiddleware;
+	use Mockery;
+    use Tests\BaseTestCase;
+    use Tests\CreateDefaultWpApiMocks;
+    use Tests\stubs\Middleware\GlobalMiddleware;
     use Tests\stubs\Middleware\WebMiddleware;
-    use Tests\Test;
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Events\BodySent;
 	use WPEmerge\Events\HeadersSent;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
-	class HttpKernelTest extends Test {
+	class HttpKernelTest extends BaseTestCase {
 
 		use SetUpKernel;
+        use CreateDefaultWpApiMocks;
+
+
+        protected function beforeTestRun()
+        {
+            $this->router = $this->newRouter($c = $this->createContainer());
+            $this->kernel = $this->newKernel($this->router, $c );
+            ApplicationEvent::make($c);
+            ApplicationEvent::fake();
+            WP::setFacadeContainer($c);
+
+        }
+
+        protected function beforeTearDown()
+        {
+            ApplicationEvent::setInstance(null);
+            Wp::setFacadeContainer(null);
+            Wp::clearResolvedInstances();
+            Mockery::close();
+
+        }
+
 
 		/** @test */
 		public function no_response_gets_send_when_no_route_matched() {
@@ -53,7 +78,7 @@
 
 				return 'foo';
 
-			} );
+			});
 
 			$request = $this->createIncomingAdminRequest( 'GET', '/admin' );
 

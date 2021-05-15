@@ -6,31 +6,33 @@
 
 	namespace Tests\integration\Routing;
 
-	use Tests\stubs\Conditions\FalseCondition;
-	use Tests\Test;
+	use Mockery;
+    use Tests\BaseTestCase;
+    use Tests\stubs\Conditions\FalseCondition;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
-	class RouteConditionsTest extends Test {
+	class RouteConditionsTest extends BaseTestCase {
 
 		use SetUpRouter;
 
-		/**
-		 *
-		 *
-		 *
-		 *
-		 *
-		 *
-		 * CUSTOM CONDITIONS
-		 *
-		 *
-		 *
-		 *
-		 *
-		 *
-		 */
+        protected function beforeTestRun()
+        {
+            $this->newRouter( $c = $this->createContainer() );
+            WP::setFacadeContainer($c);
+        }
 
-		/** @test */
+        protected function beforeTearDown()
+        {
+
+            Mockery::close();
+            WP::clearResolvedInstances();
+            WP::setFacadeContainer(null);
+
+        }
+
+
+        /** @test */
 		public function custom_conditions_can_be_added_as_strings() {
 
 			$this->router

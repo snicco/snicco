@@ -6,54 +6,36 @@
 
 	namespace Tests\integration\Routing;
 
-	use Tests\Test;
+	use Mockery;
+    use Tests\BaseTestCase;
 	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\UrlableInterface;
 	use WPEmerge\Exceptions\ConfigurationException;
 	use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
-    use WPEmerge\Routing\Conditions\AdminCondition;
-	use WPEmerge\Routing\Conditions\NegateCondition;
 	use WPEmerge\Support\Str;
 
-	class RouteUrlGeneratorTest extends Test {
+	class RouteUrlGeneratorTest extends BaseTestCase {
 
 		use SetUpRouter;
 
-		/**
-		 *
-		 *
-		 *
-		 *
-		 * NAMED ROUTES
-		 *
-		 *
-		 *
-		 *
-		 *
-		 */
 
-		protected function afterSetUp() {
+        protected function beforeTestRun()
+        {
+            $this->newRouter( $c = $this->createContainer() );
+            WP::setFacadeContainer($c);
+        }
 
-			WP::shouldReceive('homeUrl')->andReturnUsing(function (string $path ) {
+        protected function beforeTearDown()
+        {
 
-				$host = SITE_URL;
-				return trim($host, '/') . '/' . trim($path, '/');
+            Mockery::close();
+            WP::clearResolvedInstances();
+            WP::setFacadeContainer(null);
 
-			});
+        }
 
-		}
 
-		private function conditions() : array {
-
-			return [
-
-				'admin'  => AdminCondition::class,
-				'negate' => NegateCondition::class,
-			];
-
-		}
 
 		/** @test */
 		public function a_route_can_be_named() {

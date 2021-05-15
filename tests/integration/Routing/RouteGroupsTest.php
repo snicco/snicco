@@ -6,20 +6,40 @@
 
 	namespace Tests\integration\Routing;
 
-	use Tests\stubs\Conditions\FalseCondition;
+	use Mockery;
+    use Tests\BaseTestCase;
+    use Tests\stubs\Conditions\FalseCondition;
 	use Tests\stubs\Conditions\TrueCondition;
 	use Tests\stubs\Conditions\UniqueCondition;
 	use Tests\stubs\Middleware\BarMiddleware;
 	use Tests\stubs\Middleware\BazMiddleware;
 	use Tests\stubs\Middleware\FooMiddleware;
-    use Tests\Test;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
-    class RouteGroupsTest extends Test {
+    class RouteGroupsTest extends BaseTestCase {
 
 		use SetUpRouter;
 
 		const namespace = 'Tests\stubs\Controllers\Web';
+
+
+        protected function beforeTestRun()
+        {
+            $this->newRouter( $c = $this->createContainer() );
+            WP::setFacadeContainer($c);
+        }
+
+        protected function beforeTearDown()
+        {
+
+            Mockery::close();
+            WP::clearResolvedInstances();
+            WP::setFacadeContainer(null);
+
+        }
+
+
 
 		/**
 		 *

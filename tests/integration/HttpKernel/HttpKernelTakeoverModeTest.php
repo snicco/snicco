@@ -6,19 +6,41 @@
 
 	namespace Tests\integration\HttpKernel;
 
-	use Tests\stubs\Middleware\GlobalMiddleware;
+	use Mockery;
+    use Tests\BaseTestCase;
+    use Tests\CreateDefaultWpApiMocks;
+    use Tests\stubs\Middleware\GlobalMiddleware;
 	use Tests\stubs\Middleware\WebMiddleware;
-	use Tests\Test;
 	use Tests\TestRequest;
-	use WPEmerge\Exceptions\InvalidResponseException;
+    use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Exceptions\InvalidResponseException;
+    use WPEmerge\Facade\WP;
 
-	class HttpKernelTakeoverModeTest extends Test {
+    class HttpKernelTakeoverModeTest extends BaseTestCase {
 
+	    use CreateDefaultWpApiMocks;
 		use SetUpKernel;
-        use AssertKernelOutput;
 
+		protected function beforeTestRun()
+        {
+            $this->router = $this->newRouter($c = $this->createContainer());
+            $this->kernel = $this->newKernel($this->router, $c );
+            ApplicationEvent::make($c);
+            ApplicationEvent::fake();
+            WP::setFacadeContainer($c);
 
-		/** @test */
+        }
+
+        protected function beforeTearDown()
+        {
+            ApplicationEvent::setInstance(null);
+            Wp::setFacadeContainer(null);
+            Wp::clearResolvedInstances();
+            Mockery::close();
+
+        }
+
+        /** @test */
 		public function the_kernel_will_always_run_global_middleware_even_when_not_matching_a_request() {
 
 			$GLOBALS['test'][ GlobalMiddleware::run_times ] = 0;

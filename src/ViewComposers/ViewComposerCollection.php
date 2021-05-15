@@ -6,9 +6,9 @@
 
 	namespace WPEmerge\ViewComposers;
 
-	use Illuminate\Support\Collection;
+	use Exception;
+    use Illuminate\Support\Collection;
 	use WPEmerge\Contracts\ViewComposer;
-	use WPEmerge\Contracts\ViewFinderInterface;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Factories\ViewComposerFactory;
 	use WPEmerge\Support\Arr;
@@ -21,20 +21,17 @@
 		private $composers;
 
 		/**
-		 * @var \WPEmerge\Factories\ViewComposerFactory
+		 * @var ViewComposerFactory
 		 */
 		private $composer_factory;
-		/**
-		 * @var ViewFinderInterface
-		 */
-		private $view_finder;
 
 
-		public function __construct( ViewComposerFactory $composer_factory, ViewFinderInterface $view_finder ) {
+
+
+		public function __construct( ViewComposerFactory $composer_factory ) {
 
 			$this->composers        = new Collection();
 			$this->composer_factory = $composer_factory;
-			$this->view_finder      = $view_finder;
 
 		}
 
@@ -56,7 +53,7 @@
 		 * @param  string|string[]  $views
 		 * @param  string|array|callable  $callable
 		 *
-		 * @throws \Exception
+		 * @throws Exception
 		 */
 		public function addComposer( $views, $callable ) {
 

@@ -7,7 +7,7 @@
     namespace Tests\unit\ServiceProviders;
 
     use Tests\AssertsResponse;
-    use Tests\RequestTesting;
+    use Tests\CreateWpTestUrls;
     use Tests\stubs\Conditions\TrueCondition;
     use Tests\stubs\TestApp;
     use Tests\Test;
@@ -29,7 +29,7 @@
     {
 
         use BootServiceProviders;
-        use RequestTesting;
+        use CreateWpTestUrls;
         use AssertsResponse;
 
         function neededProviders() : array

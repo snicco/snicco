@@ -10,7 +10,7 @@
     use WPEmerge\Http\Request;
     use WPEmerge\Support\Url;
 
-    trait RequestTesting
+    trait CreateWpTestUrls
     {
 
         private function adminUrlTo(string $menu_slug, string $parent_page = 'admin.php') : string

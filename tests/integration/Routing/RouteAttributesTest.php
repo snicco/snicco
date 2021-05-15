@@ -7,22 +7,39 @@
 	namespace Tests\integration\Routing;
 
 
-	use Tests\stubs\Middleware\BarMiddleware;
+	use Mockery;
+    use Tests\BaseTestCase;
+    use Tests\stubs\Middleware\BarMiddleware;
 	use Tests\stubs\Middleware\FooMiddleware;
 	use Tests\stubs\Middleware\GlobalMiddleware;
-	use Tests\Test;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
 
 
-	class RouteAttributesTest extends Test {
+	class RouteAttributesTest extends BaseTestCase {
 
 		use SetUpRouter;
 
 		const controller_namespace = 'Tests\stubs\Controllers\Web';
 
+		protected function beforeTestRun()
+        {
+            $this->newRouter( $c = $this->createContainer() );
+            WP::setFacadeContainer($c);
+        }
 
-		/**
+        protected function beforeTearDown()
+        {
+
+            Mockery::close();
+            WP::clearResolvedInstances();
+            WP::setFacadeContainer(null);
+
+        }
+
+
+        /**
 		 *
 		 *
 		 *

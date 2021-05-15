@@ -25,7 +25,7 @@
          */
         private $search_depth;
 
-        public function __construct(array $directories = [], int $depth = 2)
+        public function __construct(array $directories , int $depth = 2)
         {
 
             $this->search_depth = strval($depth + 1);
