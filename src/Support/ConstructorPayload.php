@@ -16,6 +16,15 @@
     class ConstructorPayload
     {
 
+        private $original_payload;
+        private $class;
+
+        public function __construct( $class, $original_payload )
+        {
+            $this->class = $class;
+            $this->original_payload = $original_payload;
+        }
+
         public static function byTypeHint(string $class, $args) : array
         {
             $args = Arr::wrap($args);
@@ -91,7 +100,6 @@
 
                 $missing_names = $constructor_names->slice($offset, $diff);
 
-                // $missing_names = $constructor_names->diff($payload->keys());
 
                 $missing_payload = $missing_payload->slice(0, $missing_names->count());
 
