@@ -9,7 +9,7 @@
 	use PHPUnit\Framework\TestCase;
 	use SniccoAdapter\BaseContainerAdapter;
     use stdClass;
-    use Tests\CreateContainer;
+    use Tests\traits\CreateContainer;
     use WPEmerge\Application\ManagesAliases;
 
 	class ManagesAliasesTest extends TestCase {
@@ -130,7 +130,7 @@
 
 		/** @var BaseContainerAdapter */
 		public $container;
-w
+
 		public function resolve( string $key ) {
 
 			return $this->container->make($key);

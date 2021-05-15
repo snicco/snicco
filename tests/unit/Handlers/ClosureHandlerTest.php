@@ -7,7 +7,7 @@
 	namespace Tests\unit\Handlers;
 
 	use Mockery as m;
-    use Tests\CreateContainer;
+    use Tests\traits\CreateContainer;
     use Tests\stubs\Bar;
 	use PHPUnit\Framework\TestCase;
 	use WPEmerge\Factories\HandlerFactory;

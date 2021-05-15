@@ -19,7 +19,7 @@
          * @param  Request  $request
          * @param  Delegate $next This class can be called as a closure. $next($request)
          *
-         * @return mixed
+         * @return ResponseInterface
          */
         abstract public function handle ( Request $request, Delegate $next );
 

@@ -11,7 +11,7 @@
     use Psr\Log\LoggerInterface;
     use Psr\Log\LogLevel;
     use SniccoAdapter\BaseContainerAdapter;
-    use Tests\AssertsResponse;
+    use Tests\traits\AssertsResponse;
     use Tests\BaseTestCase;
     use Tests\stubs\Foo;
     use Tests\stubs\TestLogger;

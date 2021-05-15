@@ -6,7 +6,7 @@
 
 	namespace Tests\unit\Handlers;
 
-    use Tests\CreateContainer;
+    use Tests\traits\CreateContainer;
     use Tests\stubs\Bar;
 	use Tests\stubs\Foo;
 	use PHPUnit\Framework\TestCase;

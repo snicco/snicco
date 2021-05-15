@@ -7,6 +7,8 @@
     namespace Tests;
 
     use BetterWpHooks\Testing\BetterWpHooksTestCase;
+    use Tests\traits\CreateContainer;
+    use Tests\traits\CreatePsr17Factories;
 
     class BaseTestCase extends BetterWpHooksTestCase
     {

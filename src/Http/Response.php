@@ -42,7 +42,7 @@
 
         }
 
-        private function new(ResponseInterface $new_psr_response) : Response
+        protected function new(ResponseInterface $new_psr_response) : Response
         {
 
             return new static($new_psr_response);

@@ -10,8 +10,8 @@
     use Mockery;
     use Psr\Http\Message\ServerRequestInterface;
     use Tests\BaseTestCase;
-    use Tests\CreateDefaultWpApiMocks;
     use Tests\stubs\TestContainer;
+    use Tests\traits\CreateDefaultWpApiMocks;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Contracts\ServiceProvider;
