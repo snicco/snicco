@@ -17,7 +17,7 @@
          */
         private $bar;
 
-        public function __construct($bar = 'bar')
+        public function __construct( $bar = 'bar')
         {
 
             $this->bar = $bar;

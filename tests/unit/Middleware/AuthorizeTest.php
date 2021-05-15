@@ -52,7 +52,6 @@
                 return $response->html('FOO');
 
             });
-            $this->response = $response;
             $this->request = TestRequest::from('GET', '/foo');
             WP::shouldReceive('loginUrl')->andReturn('foobar.com')->byDefault();
 
@@ -153,7 +152,7 @@
 
         private function newMiddleware( string $capability = 'manage_options', ...$args ) {
 
-            return new Authorize($this->response, $capability, ...$args);
+            return new Authorize( $capability, ...$args);
 
         }
 

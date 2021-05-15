@@ -86,4 +86,20 @@
 
 		}
 
+		public static function pullByValueReturnKey ( $value, &$array) {
+
+		    $index = array_search($value, $array, true);
+
+		    if ( ! $index ) {
+
+		        return null;
+
+            }
+
+		    Arr::pull($array, $index);
+
+		    return $index;
+
+        }
+
 	}

@@ -418,7 +418,7 @@
 
 			$response = $this->router->runRoute( $this->request( 'GET', '/foo' ) );
 
-			$this->assertOutput( 'foofoobarbar', $response );
+			$this->assertOutput( 'foofoobarbar', $response);
 
 		}
 
