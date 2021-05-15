@@ -11,11 +11,14 @@
     use ReflectionMethod;
     use ReflectionParameter;
 
+    use function Patchwork\Utils\args;
+
     class ConstructorPayload
     {
 
         public static function byTypeHint(string $class, $args) : array
         {
+            $args = Arr::wrap($args);
             $reflection_constructor = self::getConstructor( $class );
 
             if ( ! $reflection_constructor ) {
@@ -30,7 +33,7 @@
                 return $param->getName();
 
             });
-            $constructor = self::constructor($params);
+            $constructor = self::namedConstructorWithTypes($params);
 
             $payload = $payload
                 ->filter(function (array $type_and_value ) use ($constructor) {
@@ -61,9 +64,9 @@
 
             // Is not safe to to just return the optional params with values from the constructor
             // since values from $args could overwrite these.
-            // The payload being empty pretty much means that the developer has not provided typehint
-            // so we just build the payload by order and names and wish him luck.
-            if ( $payload->isEmpty() ) {
+            // The payload being empty most likely means that the developer has not provided typehints
+            // so we just build the named payload by order and hope the dev provided correct types.
+            if ( $payload->isEmpty() && $args !== [] ) {
 
                 return self::byOrder($class, $args);
 
@@ -71,7 +74,45 @@
 
             $optional = self::optionalParams($params);
 
-            return $optional->merge($payload)->all();
+            if( $args === [] ) {
+
+                return $optional->all();
+
+            }
+
+            $arg_count = count($args);
+            $payload_count = $payload->count();
+            $diff = $arg_count - $payload_count;
+
+            if ( $diff > 0 ) {
+
+                $offset = $constructor_names->count() -1;
+                $missing_payload = collect($args)->skip($arg_count - $diff);
+
+                $missing_names = $constructor_names->slice($offset, $diff);
+
+                // $missing_names = $constructor_names->diff($payload->keys());
+
+                $missing_payload = $missing_payload->slice(0, $missing_names->count());
+
+                $append_payload = $missing_names->values()
+                                                ->combine($missing_payload);
+
+                foreach ($append_payload as $name => $value )  {
+
+                    if ( ! self::isOptional($name, $reflection_constructor) ) {
+
+                        $payload->put( $name , $value );
+
+                    }
+
+                }
+
+
+            }
+
+
+            return $payload->union($optional)->all();
 
 
         }
@@ -228,7 +269,7 @@
          *
          * @return Collection
          */
-        private static function constructor(Collection $params) :Collection
+        private static function namedConstructorWithTypes(Collection $params) :Collection
         {
             $constructor_names = $params->map(function (ReflectionParameter $param) {
 
@@ -243,6 +284,17 @@
             });
 
             return $constructor;
+        }
+
+        private static function isOptional($name, ReflectionMethod $constructor)
+        {
+
+            $optional = self::optionalParams(collect($constructor->getParameters()));
+
+            return $optional->has($name);
+
+
+
         }
 
 
