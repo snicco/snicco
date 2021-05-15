@@ -8,6 +8,7 @@
 
 
 	use WPEmerge\Http\NullResponse;
+    use WPEmerge\Http\RedirectResponse;
     use WPEmerge\Http\Response;
 
     interface ResponseFactory {
@@ -60,4 +61,7 @@
           */
         public function null() : NullResponse;
 
-	}
+        public function redirect() : RedirectResponse;
+
+
+    }

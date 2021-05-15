@@ -7,9 +7,9 @@
 	namespace Tests\unit\ViewComposers;
 
 	use PHPUnit\Framework\TestCase;
-    use Tests\CreateContainer;
     use Tests\stubs\TestView;
-	use WPEmerge\Contracts\ViewInterface;
+    use Tests\traits\CreateContainer;
+    use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\View\PhpViewFinder;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
 	use WPEmerge\Factories\ViewComposerFactory;

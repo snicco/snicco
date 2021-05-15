@@ -6,58 +6,85 @@
 
 	namespace Tests\unit\Middleware;
 
-	use Tests\Test;
-	use Tests\TestRequest;
-	use WPEmerge\Facade\WP;
-	use WPEmerge\Middleware\RedirectIfAuthenticated;
+	use Mockery;
+    use Tests\BaseTestCase;
+	use Tests\stubs\TestRequest;
+    use Tests\traits\AssertsResponse;
+    use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Delegate;
+    use WPEmerge\Http\HttpResponseFactory;
+    use WPEmerge\Middleware\Authenticate;
 	use WPEmerge\Http\RedirectResponse;
+    use WPEmerge\Middleware\RedirectIfAuthenticated;
 
-	/** @todo Fix tests */
-	class RedirectIfAuthenticatedTest extends Test {
+    class RedirectIfAuthenticatedTest extends BaseTestCase {
+
+        use AssertsResponse;
+
+        /**
+         * @var Authenticate
+         */
+        private $middleware;
+
+        /**
+         * @var Delegate
+         */
+        private $route_action;
+
+        /**
+         * @var \Tests\stubs\TestRequest
+         */
+        private $request;
+
+        /**
+         * @var HttpResponseFactory
+         */
+        private $response;
 
 
-		/**
-		 * @var \Closure
-		 */
-		private $route_action;
+        protected function beforeTestRun()
+        {
 
-		/**
-		 * @var RedirectIfAuthenticated
-		 */
-		private $middleware;
+            $response = $this->responseFactory();
+            $this->route_action = new Delegate(function () use ($response) {
 
-		/**
-		 * @var \Tests\TestRequest
-		 */
-		private $request;
+                return $response->html('FOO');
 
-		protected function afterSetUp() : void {
+            });
+            $this->response = $response;
+            $this->request = TestRequest::from('GET', '/foo');
+            WP::shouldReceive('homeUrl')->andReturn('https://foobar.com')->byDefault();
 
 
-			$this->middleware   = new RedirectIfAuthenticated();
-			$this->route_action = function () {
+        }
 
-				return 'foo';
+        protected function beforeTearDown()
+        {
 
-			};
-			$this->request      = TestRequest::from( 'GET', '/foo' );
+            WP::clearResolvedInstances();
+            Mockery::close();
 
-			WP::shouldReceive('homeUrl')->andReturn('foobar.com')->byDefault();
+        }
 
-		}
+        private function newMiddleware( string $redirect_url = null) {
 
-		// /** @test */
-		public function guest_can_access_the_route() {
+            return new RedirectIfAuthenticated($this->response, $redirect_url);
+
+        }
+
+		/** @test */
+		public function guests_can_access_the_route() {
 
 			WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
 
-			$response = $this->middleware->handle( $this->request, $this->route_action );
+			$response = $this->newMiddleware()->handle( $this->request, $this->route_action );
 
-			$this->assertSame( 'foo', $response );
+			$this->assertOutput( 'FOO', $response );
 
 		}
 
-		// /** @test */
+
+		/** @test */
 		public function logged_in_users_are_redirected_to_the_home_url() {
 
 			WP::shouldReceive('isUserLoggedIn')->andReturnTrue();
@@ -65,27 +92,27 @@
 			  ->with('', 'https')
 			  ->andReturn(SITE_URL);
 
-			$response = $this->middleware->handle( $this->request, $this->route_action );
+			$response = $this->newMiddleware()->handle( $this->request, $this->route_action );
 
 			$this->assertInstanceOf( RedirectResponse::class, $response );
-
-			$this->assertSame( SITE_URL, $response->header( 'Location' ) );
+			$this->assertStatusCode( 302, $response );
+			$this->assertSame( SITE_URL, $response->getHeaderLine( 'Location' ) );
 
 		}
 
-		// /** @test */
+		/** @test */
 		public function logged_in_users_can_be_redirected_to_custom_urls() {
 
 			WP::shouldReceive('isUserLoggedIn')->andReturnTrue();
 			WP::shouldReceive('homeUrl')
 			  ->with('', 'https')
-			  ->andReturn('https://example.com');
+			  ->andReturn('https://example.com/');
 
-			$response = $this->middleware->handle( $this->request, $this->route_action, 'https://example.com' );
+            $response = $this->newMiddleware('https://example.com/')
+                             ->handle( $this->request, $this->route_action );
 
 			$this->assertInstanceOf( RedirectResponse::class, $response );
-
-			$this->assertSame( 'https://example.com/', $response->header( 'Location' ) );
+			$this->assertSame( 'https://example.com/', $response->getHeaderLine( 'Location' ) );
 		}
 
 	}

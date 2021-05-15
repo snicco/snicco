@@ -6,13 +6,10 @@
 
 	namespace WPEmerge\Middleware;
 
-	use Closure;
 	use WPEmerge\Contracts\Middleware;
-	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Facade\WP;
+    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
-    use WPEmerge\Support\Url;
-	use WPEmerge\Http\RedirectResponse;
 
 	class RedirectIfAuthenticated extends Middleware {
 
@@ -22,9 +19,15 @@
          */
         private $url;
 
-        public function __construct(string $url = null )
+        /**
+         * @var ResponseFactory
+         */
+        private $response;
+
+        public function __construct(ResponseFactory $response, string $url = null )
         {
             $this->url = $url;
+            $this->response = $response;
         }
 
         public function handle( Request $request, $next) {
@@ -33,7 +36,9 @@
 
 				$url = $this->url ?? WP::homeUrl( '', $request->getUri()->getScheme() );
 
-				// return new RedirectResponse( $request, 302, Url::addTrailing( $url ) );
+				return $this->response->redirect()
+                                      ->to($url)
+                                      ->withStatus(302);
 
 			}
 

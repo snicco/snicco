@@ -8,7 +8,7 @@
 
 	use Tests\stubs\Bar;
 	use Tests\stubs\Foo;
-	use Tests\TestRequest;
+	use Tests\stubs\TestRequest;
     use WPEmerge\Http\Request;
     use WPEmerge\Http\Response;
 

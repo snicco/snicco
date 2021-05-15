@@ -8,11 +8,10 @@
 
     use Mockery;
     use Tests\BaseTestCase;
-    use Tests\CreateDefaultWpApiMocks;
+    use Tests\stubs\Foo;
+    use Tests\traits\CreateDefaultWpApiMocks;
     use WPEmerge\Contracts\ServiceProvider;
 	use Tests\stubs\TestApp;
-	use Tests\stubs\TestProvider;
-	use Tests\stubs\TestService;
     use WPEmerge\Facade\WP;
 
     class LoadServiceProvidersTraitTest extends BaseTestCase {
@@ -49,7 +48,7 @@
 			$user_config = [
 
 				'providers' => [
-					TestService::class,
+					Foo::class,
 				],
 			];
 
@@ -151,3 +150,20 @@
 		}
 
 	}
+
+    class TestProvider extends ServiceProvider {
+
+
+        public function register() : void {
+
+            $this->container['foo'] = 'bar';
+
+        }
+
+        public function bootstrap() : void {
+
+            $this->container['bar'] = 'baz';
+
+        }
+
+    }

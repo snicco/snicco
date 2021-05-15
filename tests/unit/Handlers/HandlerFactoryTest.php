@@ -6,8 +6,7 @@
 
 	namespace Tests\unit\Handlers;
 
-	use SniccoAdapter\BaseContainerAdapter;
-    use Tests\CreateContainer;
+    use Tests\traits\CreateContainer;
     use Tests\stubs\Controllers\Web\WebController;
 	use WPEmerge\Handlers\ClosureAction;
 	use WPEmerge\Handlers\ControllerAction;

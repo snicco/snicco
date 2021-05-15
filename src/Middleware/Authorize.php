@@ -9,7 +9,8 @@
 	use Closure;
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Exceptions\AuthorizationException;
+    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Exceptions\AuthorizationException;
 	use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
@@ -23,11 +24,17 @@
         /** @var array  */
         private $args;
 
-        public function __construct( string $capability, ...$args )
+        /**
+         * @var ResponseFactory
+         */
+        private $response;
+
+        public function __construct( ResponseFactory $response, string $capability, ...$args )
         {
 
             $this->capability = $capability;
             $this->args = $args;
+            $this->response = $response;
 
         }
 

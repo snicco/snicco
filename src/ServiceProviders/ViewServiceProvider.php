@@ -23,7 +23,6 @@
 
 		public function register() : void {
 
-
 			$this->container->instance('composers.globals', new VariableBag() );
 
 			$this->container->singleton( ViewServiceInterface::class, function () {
@@ -69,7 +68,6 @@
 
 				return new ViewComposerCollection(
 					$this->container->make(ViewComposerFactory::class),
-					$this->container->make(ViewFinderInterface::class),
 				);
 
 			} );
