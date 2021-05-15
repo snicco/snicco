@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\ServiceProviders;
+    namespace WPEmerge\Routing\Conditions;
 
     use WPEmerge\Contracts\RequestInterface;
     use WPEmerge\Contracts\UrlableInterface;
@@ -12,6 +12,7 @@
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
     use WPEmerge\Routing\Route;
+    use WPEmerge\ServiceProviders\RequestAttributeCondition;
     use WPEmerge\Support\Arr;
 
     class AdminAjaxCondition extends RequestAttributeCondition implements UrlableInterface

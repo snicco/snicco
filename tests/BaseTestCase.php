@@ -6,9 +6,9 @@
 
     namespace Tests;
 
-    use PHPUnit\Framework\TestCase;
+    use BetterWpHooks\Testing\BetterWpHooksTestCase;
 
-    class BaseTestCase extends TestCase
+    class BaseTestCase extends BetterWpHooksTestCase
     {
 
         use CreatePsr17Factories;
@@ -30,6 +30,7 @@
 
             $this->beforeTearDown();
             $this->resetGlobalState();
+            $this->tearDownWp();
             parent::tearDown();
         }
 

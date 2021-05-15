@@ -18,7 +18,7 @@
     use WPEmerge\Contracts\RequestInterface;
     use WPEmerge\Exceptions\InvalidResponseException;
     use WPEmerge\Routing\Router;
-    use WPEmerge\Support\Pipeline;
+    use WPEmerge\Routing\Pipeline;
     use WPEmerge\Traits\HoldsMiddlewareDefinitions;
 
     class HttpKernel

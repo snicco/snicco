@@ -130,7 +130,7 @@
 
 		/** @var BaseContainerAdapter */
 		public $container;
-
+w
 		public function resolve( string $key ) {
 
 			return $this->container->make($key);

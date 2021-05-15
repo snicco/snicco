@@ -7,23 +7,29 @@
 
 
 	use Tests\AssertsResponse;
-    use Tests\CreateContainer;
+    use Tests\BaseTestCase;
     use Tests\stubs\TestException;
-    use Tests\Test;
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\Exceptions\DebugErrorHandler;
 	use WPEmerge\Factories\ErrorHandlerFactory;
 
-	class DebugErrorHandlerTest extends Test {
+	class DebugErrorHandlerTest extends BaseTestCase {
 
 		use AssertsResponse;
-        use CreateContainer;
 
-		protected function afterSetup() : void {
+		protected function beforeTestRun()
+        {
 
-		    ApplicationEvent::make($this->createContainer());
-			ApplicationEvent::fake();
+            $this->container = $this->createContainer();
+            ApplicationEvent::make($this->container);
+            ApplicationEvent::fake();
+
+        }
+
+        protected function afterSetup() : void {
+
+		    ApplicationEvent::setInstance(null );
 
 		}
 

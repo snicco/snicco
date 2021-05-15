@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge;
+    namespace WPEmerge\Http;
 
     use Psr\Http\Message\MessageInterface;
     use Psr\Http\Message\RequestInterface;

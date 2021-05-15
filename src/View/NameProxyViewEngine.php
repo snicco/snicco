@@ -12,6 +12,7 @@
 	use WPEmerge\Exceptions\ViewNotFoundException;
 
 
+	/** @todo Do we want to keep this class? */
 	class NameProxyViewEngine implements ViewEngineInterface {
 
 		/**

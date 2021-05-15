@@ -6,9 +6,8 @@
 
 	namespace Tests\integration\View;
 
-	use BetterWpHooks\Testing\BetterWpHooksTestCase;
     use Mockery;
-    use Tests\CreateContainer;
+    use Tests\BaseTestCase;
     use Tests\CreateDefaultWpApiMocks;
     use Tests\stubs\TestApp;
 	use WPEmerge\Contracts\ViewServiceInterface;
@@ -18,9 +17,8 @@
     use WPEmerge\View\PhpView;
     use WPEmerge\View\ViewService;
 
-    class ViewServiceTest extends BetterWpHooksTestCase {
+    class ViewServiceTest extends BaseTestCase {
 
-        use CreateContainer;
         use CreateDefaultWpApiMocks;
 
 		/**
@@ -34,7 +32,6 @@
 
 			$this->setUpWp(VENDOR_DIR);
 
-			$this->createDefaultWpApiMocks();
 
 			$container = $this->createContainer();
 			TestApp::make($container)->boot(TEST_CONFIG);
