@@ -6,17 +6,34 @@
 
 	namespace Tests\integration\Routing;
 
-    use Tests\AssertsResponse;
-    use Tests\CreatePsr17Factories;
-    use Tests\Test;
+    use Contracts\ContainerAdapter;
+    use Mockery;
+    use Tests\BaseTestCase;
     use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Response;
 
-    class ViewRoutesTest extends Test {
+    class ViewRoutesTest extends BaseTestCase {
 
 		use SetUpRouter;
-		use AssertsResponse;
-        use CreatePsr17Factories;
+
+		/** @var ContainerAdapter */
+        private $container;
+
+        protected function beforeTestRun()
+        {
+            $this->newRouter( $this->container = $this->createContainer() );
+            WP::setFacadeContainer($this->container);
+        }
+
+        protected function beforeTearDown()
+        {
+
+            Mockery::close();
+            WP::clearResolvedInstances();
+            WP::setFacadeContainer(null);
+
+        }
 
 		/** @test */
 		public function view_routes_work() {

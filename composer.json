@@ -64,7 +64,8 @@
     "mockery/mockery": "^1.4.2",
     "phpunit/phpunit": "^9.0",
     "calvinalkan/better-wordpress-database": "dev-master",
-    "lucatume/wp-browser": "dev-better-env-names"
+    "lucatume/wp-browser": "dev-better-env-names",
+    "calvinalkan/wordpress-hook-api-clone": "dev-master"
   },
 
   "suggest": {

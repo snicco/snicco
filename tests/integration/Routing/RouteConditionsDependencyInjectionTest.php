@@ -6,12 +6,29 @@
 
 	namespace Tests\integration\Routing;
 
-	use Tests\stubs\Conditions\ConditionWithDependency;
-	use Tests\Test;
+	use Mockery;
+    use Tests\BaseTestCase;
+    use Tests\stubs\Conditions\ConditionWithDependency;
+    use WPEmerge\Facade\WP;
 
-	class RouteConditionsDependencyInjectionTest extends Test {
+    class RouteConditionsDependencyInjectionTest extends BaseTestCase {
 
 		use SetUpRouter;
+
+        protected function beforeTestRun()
+        {
+            $this->newRouter( $c = $this->createContainer() );
+            WP::setFacadeContainer($c);
+        }
+
+        protected function beforeTearDown()
+        {
+
+            Mockery::close();
+            WP::clearResolvedInstances();
+            WP::setFacadeContainer(null);
+
+        }
 
 		/** @test */
 		public function a_condition_gets_dependencies_injected_after_the_passed_arguments() {

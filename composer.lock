@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "8d1d35d2a58f1a998a3cc491c7da36b9",
+    "content-hash": "e49832b28d9723a7d0526b1afe75716a",
     "packages": [
         {
             "name": "calvinalkan/base-container",
@@ -2117,6 +2117,39 @@
                 "issues": "https://github.com/calvinalkan/better-wordpress-database/issues"
             },
             "time": "2021-04-19T01:24:42+00:00"
+        },
+        {
+            "name": "calvinalkan/wordpress-hook-api-clone",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/calvinalkan/wordpress-hook-api-clone.git",
+                "reference": "faf24e27db40d0766eca64f5bd06a1e5ba4ae1e7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/calvinalkan/wordpress-hook-api-clone/zipball/faf24e27db40d0766eca64f5bd06a1e5ba4ae1e7",
+                "reference": "faf24e27db40d0766eca64f5bd06a1e5ba4ae1e7",
+                "shasum": ""
+            },
+            "default-branch": true,
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "calvinalkan",
+                    "email": "calvin@snicco.de"
+                }
+            ],
+            "description": "An exact copy of the Wordpress hook API Files, manually synced after every WP release",
+            "support": {
+                "issues": "https://github.com/calvinalkan/wordpress-hook-api-clone/issues",
+                "source": "https://github.com/calvinalkan/wordpress-hook-api-clone/tree/master"
+            },
+            "time": "2021-04-04T22:21:57+00:00"
         },
         {
             "name": "codeception/codeception",
@@ -7597,7 +7630,8 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "calvinalkan/better-wordpress-database": 20,
-        "lucatume/wp-browser": 20
+        "lucatume/wp-browser": 20,
+        "calvinalkan/wordpress-hook-api-clone": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

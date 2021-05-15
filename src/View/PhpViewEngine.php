@@ -6,7 +6,8 @@
 
 	namespace WPEmerge\View;
 
-	use Throwable;
+	use BetterWpHooks\Exceptions\ConfigurationException;
+    use Throwable;
 	use WPEmerge\Contracts\PhpEngine;
 	use WPEmerge\Contracts\PhpViewInterface;
 	use WPEmerge\Contracts\ViewInterface;
@@ -38,7 +39,7 @@
 		}
 
 		/**
-		 * @throws \BetterWpHooks\Exceptions\ConfigurationException
+		 * @throws ConfigurationException
 		 */
 		public function includeNextView() : void {
 

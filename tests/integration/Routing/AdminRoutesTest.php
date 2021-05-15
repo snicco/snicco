@@ -6,22 +6,36 @@
 
     namespace Tests\integration\Routing;
 
-    use Tests\RequestTesting;
-    use Tests\Test;
+    use Mockery;
+    use Tests\BaseTestCase;
+    use Tests\CreateWpTestUrls;
     use WPEmerge\Http\Request;
     use WPEmerge\Facade\WP;
 
-    class AdminRoutesTest extends Test
+    class AdminRoutesTest extends BaseTestCase
     {
-        use SetUpRouter;
-        use RequestTesting;
 
-        protected function afterSetUp()
+        use SetUpRouter;
+        use CreateWpTestUrls;
+
+        protected function beforeTestRun()
         {
 
+            $this->newRouter($c = $this->createContainer());
+            WP::setFacadeContainer($c);
             WP::shouldReceive('isAdmin')->andReturnTrue();
 
+
         }
+
+        protected function beforeTearDown()
+        {
+
+            WP::setFacadeContainer(null);
+            WP::clearResolvedInstances();
+            Mockery::close();
+        }
+
 
         /** @test */
         public function routes_in_an_admin_group_match_without_needing_to_specify_the_full_path()
@@ -59,7 +73,7 @@
 
             $request = $this->adminRequestTo('bar');
 
-            $this->assertNullResponse( $this->router->runRoute($request));
+            $this->assertNullResponse($this->router->runRoute($request));
 
 
         }
@@ -123,7 +137,7 @@
 
             $this->newRouterWith($routes);
             $request = $this->adminRequestTo('baz', 'POST');
-            $this->assertNullResponse( $this->router->runRoute($request));
+            $this->assertNullResponse($this->router->runRoute($request));
 
 
         }
@@ -163,7 +177,7 @@
 
             $request = $this->adminRequestTo('foo', 'GET', 'admin.php');
 
-            $this->assertNullResponse( $this->router->runRoute($request));
+            $this->assertNullResponse($this->router->runRoute($request));
 
         }
 

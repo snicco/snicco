@@ -6,16 +6,33 @@
 
 	namespace Tests\integration\Routing;
 
-	use Tests\stubs\Middleware\BarMiddleware;
+	use Mockery;
+    use Tests\BaseTestCase;
+    use Tests\stubs\Middleware\BarMiddleware;
 	use Tests\stubs\Middleware\BazMiddleware;
 	use Tests\stubs\Middleware\FooBarMiddleware;
 	use Tests\stubs\Middleware\FooMiddleware;
-    use Tests\Test;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
-	class RouteMiddlewareTest extends Test {
+	class RouteMiddlewareTest extends BaseTestCase {
 
 		use SetUpRouter;
+
+        protected function beforeTestRun()
+        {
+            $this->newRouter( $c = $this->createContainer() );
+            WP::setFacadeContainer($c);
+        }
+
+        protected function beforeTearDown()
+        {
+
+            Mockery::close();
+            WP::clearResolvedInstances();
+            WP::setFacadeContainer(null);
+
+        }
 
 		/** @test */
 		public function applying_a_route_group_to_a_route_applies_all_middleware_in_the_group() {

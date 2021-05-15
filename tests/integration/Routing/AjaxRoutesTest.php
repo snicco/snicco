@@ -6,24 +6,37 @@
 
     namespace Tests\integration\Routing;
 
-    use Tests\RequestTesting;
-    use Tests\Test;
+    use Mockery;
+    use Tests\BaseTestCase;
+    use Tests\CreateWpTestUrls;
     use WPEmerge\Exceptions\RouteLogicException;
     use WPEmerge\Facade\WP;
 
-    class AjaxRoutesTest extends Test
+    class AjaxRoutesTest extends BaseTestCase
     {
 
         use SetUpRouter;
-        use RequestTesting;
+        use CreateWpTestUrls;
 
-        protected function afterSetUp()
+        protected function beforeTestRun()
         {
 
+            $this->newRouter($c = $this->createContainer());
+            WP::setFacadeContainer($c);
             WP::shouldReceive('isAdmin')->andReturnTrue();
             WP::shouldReceive('isAdminAjax')->andReturnTrue();
 
+
         }
+
+        protected function beforeTearDown()
+        {
+
+            WP::setFacadeContainer(null);
+            WP::clearResolvedInstances();
+            Mockery::close();
+        }
+
 
         /** @test */
         public function ajax_routes_can_be_matched_by_passing_the_action_as_the_route_parameter()

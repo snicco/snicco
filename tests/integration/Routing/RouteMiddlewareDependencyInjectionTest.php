@@ -6,16 +6,36 @@
 
 	namespace Tests\integration\Routing;
 
-	use Tests\stubs\Controllers\Admin\AdminControllerWithMiddleware;
+	use Mockery;
+    use Tests\BaseTestCase;
+    use Tests\stubs\Controllers\Admin\AdminControllerWithMiddleware;
 	use Tests\stubs\Middleware\MiddlewareWithDependencies;
-	use Tests\Test;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
-    class RouteMiddlewareDependencyInjectionTest extends Test {
+    class RouteMiddlewareDependencyInjectionTest extends BaseTestCase {
 
 		use SetUpRouter;
 
-		/** @test */
+
+        protected function beforeTestRun()
+        {
+            $this->newRouter( $c = $this->createContainer() );
+            WP::setFacadeContainer($c);
+        }
+
+        protected function beforeTearDown()
+        {
+
+            Mockery::close();
+            WP::clearResolvedInstances();
+            WP::setFacadeContainer(null);
+
+        }
+
+
+
+        /** @test */
 		public function middleware_is_resolved_from_the_service_container () {
 
 			$this->router->get( '/foo', function ( Request $request ) {

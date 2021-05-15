@@ -51,7 +51,6 @@
 			parent::tearDown();
 
 			$GLOBALS['test'] = [];
-
 			WpFacade::clearResolvedInstances();
 			TestApp::setApplication(null );
 			ApplicationEvent::setInstance(null);

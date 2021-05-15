@@ -6,18 +6,34 @@
 
 	namespace Tests\integration\Routing;
 
-	use Tests\stubs\Bar;
+	use Mockery;
+    use Tests\BaseTestCase;
+    use Tests\stubs\Bar;
 	use Tests\stubs\Controllers\Web\ControllerWithDependencies;
 	use Tests\stubs\Controllers\Web\TeamsController;
 	use Tests\stubs\Foo;
-	use Tests\Test;
-	use Tests\TestRequest;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
-    use WPEmerge\Http\Response;
 
-	class RouteActionDependencyInjectionTest extends Test {
+	class RouteActionDependencyInjectionTest extends BaseTestCase {
 
 		use SetUpRouter;
+
+        protected function beforeTestRun()
+        {
+
+            $this->newRouter($c = $this->createContainer());
+            WP::setFacadeContainer($c);
+
+        }
+
+        protected function beforeTearDown()
+        {
+            WP::setFacadeContainer(null);
+            WP::clearResolvedInstances();
+            Mockery::close();
+        }
+
 
 		/** @test */
 		public function dependencies_for_controller_actions_are_resolved() {

@@ -12,7 +12,6 @@
      */
 	class WordpressApi {
 
-
 	    private $admin_prefix = 'wp-admin';
 
 	    public function wpAdminFolder () :string {

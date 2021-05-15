@@ -6,39 +6,54 @@
 
 	namespace Tests\integration\View;
 
-	use Codeception\TestCase\WPTestCase;
-	use SniccoAdapter\BaseContainerAdapter;
-	use Tests\stubs\TestApp;
+	use BetterWpHooks\Testing\BetterWpHooksTestCase;
+    use Mockery;
+    use Tests\CreateContainer;
+    use Tests\CreateDefaultWpApiMocks;
+    use Tests\stubs\TestApp;
 	use WPEmerge\Contracts\ViewServiceInterface;
 	use WPEmerge\Exceptions\ViewException;
 	use WPEmerge\Exceptions\ViewNotFoundException;
-	use WPEmerge\View\PhpView;
+    use WPEmerge\Facade\WP;
+    use WPEmerge\View\PhpView;
     use WPEmerge\View\ViewService;
 
-    class ViewServiceTest extends WPTestCase {
+    class ViewServiceTest extends BetterWpHooksTestCase {
 
+        use CreateContainer;
+        use CreateDefaultWpApiMocks;
 
 		/**
 		 * @var ViewService
 		 */
 		private $view_service;
 
-
-		protected function setUp() : void {
+        protected function setUp() : void {
 
 			parent::setUp();
 
-			$container = new BaseContainerAdapter();
+			$this->setUpWp(VENDOR_DIR);
 
+			$this->createDefaultWpApiMocks();
+
+			$container = $this->createContainer();
 			TestApp::make($container)->boot(TEST_CONFIG);
-
 			$this->view_service = TestApp::resolve(ViewServiceInterface::class );
 
 
 		}
 
+		protected function tearDown() : void
+        {
+            WP::setFacadeContainer(null);
+            WP::clearResolvedInstances();
+            Mockery::close();
+            TestApp::setApplication(null);
+            parent::tearDown();
 
-		/** @test */
+        }
+
+        /** @test */
 		public function a_basic_view_can_be_created () {
 
 			$view = $this->view_service->make('view.php');
@@ -172,6 +187,12 @@
 
 		/** @test */
 		public function views_can_be_included_in_parent_views () {
+
+		    $path = TESTS_DIR . DS. 'views' . DS . 'subdirectory' . DS. 'subview.php';
+
+		    WP::shouldReceive('fileHeaderData')->once()
+              ->with($path, ['Layout'])
+              ->andReturn(['view-with-layout.php']);
 
 			$view = $this->view_service->make('subview.php');
 

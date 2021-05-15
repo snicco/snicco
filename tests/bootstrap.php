@@ -1,52 +1,52 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
-	$root_dir = getenv('ROOT_DIR');
+    $root_dir = getenv('ROOT_DIR');
 
-    if ( ! defined('ROOT_DIR') ) {
+    if ( ! defined('ROOT_DIR')) {
 
-        define( 'ROOT_DIR',  $root_dir );
+        define('ROOT_DIR', $root_dir);
 
     }
 
-	if ( ! defined('DS') ) {
+    if ( ! defined('VENDOR_DIR') ) {
 
-		define( 'DS',  DIRECTORY_SEPARATOR );
+        define('VENDOR_DIR', $root_dir . DIRECTORY_SEPARATOR . 'vendor');
 
-	}
+    }
 
-	if ( ! defined('SITE_URL') ) {
+    if ( ! defined('DS')) {
 
-		define( 'SITE_URL',  getenv('SITE_URL') );
+        define('DS', DIRECTORY_SEPARATOR);
 
-	}
+    }
 
+    if ( ! defined('SITE_URL')) {
 
-	if ( ! defined('TESTS_DIR') ) {
+        define('SITE_URL', getenv('SITE_URL'));
 
-		define('TESTS_DIR', $root_dir . DS . 'tests');
+    }
 
-	}
+    if ( ! defined('TESTS_DIR')) {
 
-	if ( ! defined('TESTS_CONFIG_PATH') ) {
+        define('TESTS_DIR', $root_dir.DS.'tests');
 
-		define('TESTS_CONFIG_PATH', $root_dir . DS . 'tests' . DS . 'test-config.php' );
+    }
 
-	}
+    if ( ! defined('TESTS_CONFIG_PATH')) {
 
+        define('TESTS_CONFIG_PATH', $root_dir.DS.'tests'.DS.'test-config.php');
 
+    }
 
-    if ( ! defined('TEST_CONFIG') ) {
+    if ( ! defined('TEST_CONFIG')) {
 
-    	$config = require_once TESTS_CONFIG_PATH;
+        $config = require_once TESTS_CONFIG_PATH;
 
-		define('TEST_CONFIG', $config );
+        define('TEST_CONFIG', $config);
 
-	}
+    }
 
-
-
-
-	require_once $root_dir . DS . 'vendor' . DS . 'autoload.php';
+    require_once $root_dir.DS.'vendor'.DS.'autoload.php';
