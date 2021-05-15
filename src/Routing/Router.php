@@ -227,9 +227,7 @@
 
 		}
 
-		/**
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
-		 */
+
 		private function runWithinStack( RouteMatch $route_match, Request $request ) : Response
         {
 

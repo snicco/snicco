@@ -12,7 +12,6 @@
 	use ReflectionClass;
 	use ReflectionFunction;
 	use ReflectionMethod;
-	use WPEmerge\Exceptions\Exception;
 
 	trait ReflectsCallable {
 
@@ -128,11 +127,14 @@
 
 		}
 
-		private function buildNamedConstructorArgs( string $class , $arguments) {
+        /**
+         * @throws \ReflectionException
+         */
+        private function buildNamedConstructorArgs( string $class , $arguments) {
 
-			$payload = ( ! is_array( $arguments ) ) ? [ $arguments ] : $arguments;
+			$payload = Arr::wrap($arguments);
 
-			$constructor =  ( new ReflectionClass($class) )->getConstructor();
+			$constructor = ( new ReflectionClass($class) )->getConstructor();
 
 			if ( ! $constructor ) {
 
@@ -146,7 +148,7 @@
 
 				return $param->getName();
 
-			} );
+			});
 
 			if ( $parameter_names->isEmpty() ) {
 

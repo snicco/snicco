@@ -9,7 +9,7 @@
 	class RouteMatch {
 
 
-		/** @var \WPEmerge\Routing\CompiledRoute */
+		/** @var CompiledRoute */
 		private $route;
 
 		/** @var array */
