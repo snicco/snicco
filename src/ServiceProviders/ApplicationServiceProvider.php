@@ -6,15 +6,9 @@
 
 	namespace WPEmerge\ServiceProviders;
 
-	use Mockery;
 	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Facade\WordpressApi;
-	use WpFacade\WpFacade;
 
-	/**
-	 * Provide application dependencies.
-	 *
-	 */
 	class ApplicationServiceProvider extends ServiceProvider {
 
 		public const STRICT_MODE = 'strict_mode';

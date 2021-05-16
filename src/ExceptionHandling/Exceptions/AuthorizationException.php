@@ -4,9 +4,9 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Exceptions;
+	namespace WPEmerge\ExceptionHandling\Exceptions;
 
-	use WPEmerge\Http\Request;
+    use WPEmerge\Http\Request;
 	use WPEmerge\Http\Response;
 
 	class AuthorizationException extends Exception {

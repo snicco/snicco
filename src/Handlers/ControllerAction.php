@@ -24,7 +24,7 @@
 		private $executable_callable;
 
 		/**
-		 * @var \WPEmerge\Http\MiddlewareResolver
+		 * @var MiddlewareResolver
 		 */
 		private $middleware_resolver;
 
@@ -33,7 +33,7 @@
 		 *
 		 * @param  array  $raw_callable
 		 * @param  \Closure  $executable_callable
-		 * @param  \WPEmerge\Http\MiddlewareResolver  $resolver
+		 * @param  MiddlewareResolver  $resolver
 		 */
 		public function __construct(array $raw_callable, Closure $executable_callable, MiddlewareResolver $resolver ) {
 

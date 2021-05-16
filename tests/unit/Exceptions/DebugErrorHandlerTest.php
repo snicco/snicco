@@ -11,7 +11,7 @@
     use Tests\stubs\TestException;
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
-	use WPEmerge\Exceptions\DebugErrorHandler;
+	use WPEmerge\ExceptionHandling\DebugErrorHandler;
 	use WPEmerge\Factories\ErrorHandlerFactory;
 
 	class DebugErrorHandlerTest extends BaseTestCase {

@@ -13,7 +13,7 @@
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\Events\IncomingWebRequest;
 	use WPEmerge\Events\LoadedWpAdmin;
-	use WPEmerge\Exceptions\ShutdownHandler;
+	use WPEmerge\ExceptionHandling\ShutdownHandler;
 	use WPEmerge\Events\AdminBodySendable;
 	use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingAjaxRequest;

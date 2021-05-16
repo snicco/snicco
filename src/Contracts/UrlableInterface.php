@@ -21,6 +21,6 @@
 		 *
 		 * @return string
 		 */
-		public function toUrl( $arguments = [] );
+		public function toUrl( $arguments = [] ) : string;
 
 	}

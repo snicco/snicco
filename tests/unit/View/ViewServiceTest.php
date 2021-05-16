@@ -11,8 +11,8 @@
     use Tests\stubs\TestApp;
     use Tests\traits\CreateDefaultWpApiMocks;
     use WPEmerge\Contracts\ViewServiceInterface;
-	use WPEmerge\Exceptions\ViewException;
-	use WPEmerge\Exceptions\ViewNotFoundException;
+	use WPEmerge\ExceptionHandling\Exceptions\ViewException;
+	use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
     use WPEmerge\Facade\WP;
     use WPEmerge\View\PhpView;
     use WPEmerge\View\ViewService;

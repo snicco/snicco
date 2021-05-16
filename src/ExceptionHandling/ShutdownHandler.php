@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Exceptions;
+	namespace WPEmerge\ExceptionHandling;
 
 	use WPEmerge\Events\BodySent;
 	use WPEmerge\Events\IncomingAjaxRequest;

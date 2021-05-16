@@ -6,7 +6,10 @@
 
 	namespace WPEmerge\Contracts;
 
-	interface EncryptorInterface {
+	use WPEmerge\ExceptionHandling\Exceptions\DecryptException;
+    use WPEmerge\ExceptionHandling\Exceptions\EncryptException;
+
+    interface EncryptorInterface {
 
 		/**
 		 * Encrypt the given value.
@@ -16,7 +19,7 @@
 		 *
 		 * @return string
 		 *
-		 * @throws \WPEmerge\Exceptions\EncryptException
+		 * @throws \WPEmerge\ExceptionHandling\Exceptions\EncryptException
 		 */
 		public function encrypt($value, bool $serialize = true) : string;
 
@@ -28,7 +31,7 @@
 		 *
 		 * @return mixed
 		 *
-		 * @throws \WPEmerge\Exceptions\DecryptException
+		 * @throws DecryptException
 		 */
 		public function decrypt( string $payload, bool $unserialize = true);
 
@@ -40,7 +43,7 @@
 		 *
 		 * @return string
 		 *
-		 * @throws \WPEmerge\Exceptions\EncryptException
+		 * @throws EncryptException
 		 */
 		public function encryptString( string $value) : string;
 
@@ -51,16 +54,15 @@
 		 *
 		 * @return string
 		 *
-		 * @throws \WPEmerge\Exceptions\DecryptException
+		 * @throws \WPEmerge\ExceptionHandling\Exceptions\DecryptException
 		 */
 		public function decryptString( string $payload) : string;
 
-		/**
-		 * Create a new encryption key for the the AES-256-CBC cipher
-		 *
-		 * @param  string  $cipher
-		 * @return string
-		 */
+        /**
+         * Create a new encryption key for the the AES-256-CBC cipher
+         *
+         * @return string
+         */
 		public static function generateKey() :string;
 
 	}

@@ -16,7 +16,7 @@
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\BodySent;
     use WPEmerge\Contracts\RequestInterface;
-    use WPEmerge\Exceptions\InvalidResponseException;
+    use WPEmerge\ExceptionHandling\Exceptions\InvalidResponseException;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Traits\HoldsMiddlewareDefinitions;

@@ -9,7 +9,7 @@
 	use Closure;
 	use Contracts\ContainerAdapter;
     use WPEmerge\Controllers\ViewController;
-	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Http\ConvertsToResponse;
     use WPEmerge\Http\Request;
     use WPEmerge\Http\Response;
@@ -137,7 +137,7 @@
 		}
 
         /**
-         * @throws ConfigurationException
+         * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
          */
         public function runRoute( Request $request ) : Response
         {

@@ -15,7 +15,7 @@
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Exceptions\ConfigurationException;
+    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 

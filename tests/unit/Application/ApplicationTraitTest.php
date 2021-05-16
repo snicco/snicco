@@ -9,7 +9,7 @@
 	use PHPUnit\Framework\TestCase;
 	use BadMethodCallException;
 	use WPEmerge\Application\ApplicationTrait;
-	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
 
 	class ApplicationTraitTest extends TestCase {
 

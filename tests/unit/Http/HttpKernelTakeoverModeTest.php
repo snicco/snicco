@@ -14,7 +14,7 @@
 	use Tests\stubs\Middleware\WebMiddleware;
 	use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Exceptions\InvalidResponseException;
+    use WPEmerge\ExceptionHandling\Exceptions\InvalidResponseException;
     use WPEmerge\Facade\WP;
 
     class HttpKernelTakeoverModeTest extends BaseTestCase {

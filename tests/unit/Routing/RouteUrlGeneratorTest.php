@@ -11,7 +11,7 @@
     use Tests\traits\SetUpRouter;
     use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\UrlableInterface;
-	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
 	use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 	use WPEmerge\Support\Str;
@@ -453,7 +453,7 @@
 
 	class ConditionWithUrl implements UrlableInterface, ConditionInterface {
 
-		public function toUrl( $arguments = [] ) {
+		public function toUrl( $arguments = [] ) :string {
 
 			return SITE_URL . 'foo/bar';
 

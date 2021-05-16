@@ -13,7 +13,7 @@
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
-    use WPEmerge\Exceptions\ConfigurationException;
+    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\ConstructorPayload;

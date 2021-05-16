@@ -6,7 +6,7 @@
 
 	namespace WPEmerge\Application;
 
-	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
 	use WPEmerge\Contracts\ServiceProvider;
 
 
@@ -36,7 +36,7 @@
 		/**
 		 * @param  string  $provider
 		 *
-		 * @throws ConfigurationException
+		 * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
 		 */
 		private function isValid( string $provider ) {
 

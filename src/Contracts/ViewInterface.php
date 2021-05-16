@@ -32,7 +32,7 @@
 		 * @param  string|array<string, mixed>  $key
 		 * @param  mixed  $value
 		 *
-		 * @return \WPEmerge\Contracts\ViewInterface
+		 * @return ViewInterface
 		 */
 		public function with( $key, $value = null ) :ViewInterface;
 

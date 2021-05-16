@@ -10,7 +10,7 @@
     use Tests\BaseTestCase;
     use Tests\traits\CreateWpTestUrls;
     use Tests\traits\SetUpRouter;
-    use WPEmerge\Exceptions\RouteLogicException;
+    use WPEmerge\ExceptionHandling\Exceptions\RouteLogicException;
     use WPEmerge\Facade\WP;
 
     class AjaxRoutesTest extends BaseTestCase
