@@ -9,7 +9,6 @@
     use Contracts\ContainerAdapter;
     use Nyholm\Psr7\Factory\Psr17Factory;
     use Nyholm\Psr7Server\ServerRequestCreator;
-    use Psr\Http\Message\ServerRequestFactoryInterface;
     use Psr\Http\Message\ServerRequestInterface;
     use SniccoAdapter\BaseContainerAdapter;
     use WPEmerge\Contracts\ErrorHandlerInterface;
@@ -60,7 +59,13 @@
             $this->setContainer($container);
             $this->container()->instance(Application::class, $this);
             $this->container()->instance(ContainerAdapter::class, $this->container());
-            $this->container()->instance(Request::class, new Request($server_request));
+
+            $request = new Request($server_request);
+
+            $this->bindRequest($request);
+            $this->bindServerRequest($request);
+
+
             WpFacade::setFacadeContainer($container);
 
         }
@@ -106,7 +111,7 @@
             // If we would always unregister here it would not be possible to handle
             // any errors that happen between this point and the the triggering of the
             // hooks that run the HttpKernel.
-            if ( ! $this->isTakeOverMode()) {
+            if ( ! $this->handlesExceptionsGlobally() ) {
 
                 /** @var ErrorHandlerInterface $error_handler */
                 $error_handler = $this->container()->make(ErrorHandlerInterface::class);
@@ -117,10 +122,10 @@
 
         }
 
-        public function isTakeOverMode()
+        public function handlesExceptionsGlobally()
         {
 
-            return $this->config->get(ApplicationServiceProvider::STRICT_MODE, false);
+            return $this->config->get('exception_handling.global', false);
 
         }
 
@@ -155,5 +160,24 @@
             return $creator->fromGlobals();
 
         }
+
+        /**
+         *
+         * This is the request object that all classes in the app rely on.
+         * This object is gets updated several times in a request cycle and rebound.
+         * I.E before/after running the middleware stack or running the route handler.
+         *
+         * @param  ServerRequestInterface  $changing_request
+         */
+        private function bindRequest(ServerRequestInterface $changing_request)
+        {
+            $this->container()->instance(Request::class, $changing_request);
+        }
+
+        private function bindServerRequest(ServerRequestInterface $base_request)
+        {
+            $this->container()->instance(ServerRequestInterface::class, $base_request);
+        }
+
 
     }

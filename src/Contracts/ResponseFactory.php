@@ -7,7 +7,8 @@
 	namespace WPEmerge\Contracts;
 
 
-	use WPEmerge\Http\NullResponse;
+	use WPEmerge\Http\InvalidResponse;
+    use WPEmerge\Http\NullResponse;
     use WPEmerge\Http\RedirectResponse;
     use WPEmerge\Http\Response;
 
@@ -52,7 +53,6 @@
          */
         public function json($content, int $status = 200 )  : Response;
 
-
          /**
           *
           * Create a null response with status code 204.
@@ -63,5 +63,6 @@
 
         public function redirect() : RedirectResponse;
 
+        public function invalidResponse () :InvalidResponse;
 
     }

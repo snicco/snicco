@@ -8,6 +8,7 @@
 
     use Tests\IntegrationTest;
     use Tests\stubs\Middleware\FooMiddleware;
+    use Tests\stubs\Middleware\GlobalMiddleware;
     use Tests\stubs\TestApp;
     use Tests\unit\Routing\Foo;
     use WPEmerge\Contracts\ResponseFactory;
@@ -102,6 +103,17 @@
 
         }
 
+        /** @test */
+        public function no_global_middleware_is_run_by_default () {
+
+            $this->newTestApp();
+
+            $this->assertFalse('');
+
+            $this->assertFalse(TestApp::config('always_with_middleware', ''));
+
+
+        }
 
     }
 

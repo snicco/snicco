@@ -7,6 +7,7 @@
 	namespace Tests\unit\Http;
 
 	use Mockery;
+    use Tests\stubs\TestRequest;
     use Tests\UnitTest;
     use Tests\traits\CreateDefaultWpApiMocks;
     use Tests\traits\SetUpKernel;
@@ -15,6 +16,7 @@
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Events\BodySent;
 	use WPEmerge\Events\HeadersSent;
+    use WPEmerge\ExceptionHandling\Exceptions\InvalidResponseException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
@@ -37,12 +39,22 @@
         protected function beforeTearDown()
         {
             ApplicationEvent::setInstance(null);
-            Wp::setFacadeContainer(null);
-            Wp::clearResolvedInstances();
+            WP::reset();
             Mockery::close();
 
         }
 
+        /**
+         *
+         *
+         *
+         *
+         * CONFIG: DEFAULT
+         *
+         *
+         *
+         *
+         */
 
 		/** @test */
 		public function no_response_gets_send_when_no_route_matched() {
@@ -265,6 +277,92 @@
             $this->assertMiddlewareRunTimes(0 , GlobalMiddleware::class);
 
         }
+
+        /** @test */
+        public function an_invalid_response_returned_from_the_handler_will_lead_to_an_exception () {
+
+            $this->router->get( '/foo', function ( ) {
+
+                return 1;
+
+            });
+
+            $this->expectExceptionMessage('The response returned by the route action is not valid.');
+
+            $this->kernel->handle($this->createIncomingWebRequest('GET', '/foo'));
+
+
+        }
+
+        /**
+         *
+         *
+         *
+         *
+         * CONFIG: ALWAYS WITH MIDDLEWARE
+         *
+         *
+         *
+         *
+         */
+
+        /** @test */
+        public function the_kernel_will_always_run_global_middleware_even_when_not_matching_a_route() {
+
+            $GLOBALS['test'][ GlobalMiddleware::run_times ] = 0;
+            $GLOBALS['test'][ WebMiddleware::run_times ]    = 0;
+
+            $this->kernel->alwaysWithGlobalMiddleware();
+            $this->kernel->setMiddlewareGroups( [
+
+                'global' => [ GlobalMiddleware::class ],
+                'web'    => [ WebMiddleware::class ],
+
+            ] );
+
+            $request_event = $this->createIncomingWebRequest( 'GET', 'foo' );
+
+            ob_start();
+            $this->kernel->handle($request_event);
+            $this->assertSame('', ob_get_clean());
+
+
+            $this->assertMiddlewareRunTimes( 1, GlobalMiddleware::class );
+            $this->assertMiddlewareRunTimes( 0, WebMiddleware::class );
+
+
+        }
+
+        /** @test */
+        public function for_matching_requests_global_middleware_will_not_be_run_again_by_the_router() {
+
+            $GLOBALS['test'][ GlobalMiddleware::run_times ] = 0;
+            $GLOBALS['test'][ WebMiddleware::run_times ]    = 0;
+
+            $this->kernel->alwaysWithGlobalMiddleware();
+            $this->kernel->setMiddlewareGroups( [
+
+                'global' => [ GlobalMiddleware::class ],
+                'web'    => [ WebMiddleware::class ],
+
+            ] );
+
+            $this->router->get( '/foo', function () {
+
+                return 'FOO';
+
+            } )->middleware( 'web' );
+
+            ob_start();
+            $this->kernel->handle($this->createIncomingWebRequest( 'GET', 'foo' ));
+            $this->assertSame('FOO', ob_get_clean());
+
+
+            $this->assertMiddlewareRunTimes( 1, GlobalMiddleware::class );
+            $this->assertMiddlewareRunTimes( 1, WebMiddleware::class );
+
+        }
+
 
 
 	}

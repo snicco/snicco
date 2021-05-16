@@ -15,7 +15,6 @@
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\BodySent;
-    use WPEmerge\Contracts\RequestInterface;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidResponseException;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\Pipeline;
@@ -38,14 +37,6 @@
         /** @var Response */
         private $response;
 
-        /** @var Request */
-        private $request;
-
-        private $is_test_mode = false;
-
-        /** @var bool @todo Split this up into always run global middleware and force route match. */
-        private $is_takeover_mode = false;
-
         /**
          * @var HttpResponseFactory
          */
@@ -56,6 +47,12 @@
          */
         private $response_emitter;
 
+        private $is_test_mode = false;
+
+        /**
+         * @var bool
+         */
+        private $always_with_global_middleware = false;
 
         public function __construct(
 
@@ -78,12 +75,6 @@
 
             $this->error_handler->register();
 
-            if ($this->forceRouteMatch()) {
-
-                $request_event->enforceRouteMatch();
-
-            }
-
             try {
 
                 $this->syncMiddlewareToRouter();
@@ -98,7 +89,7 @@
 
             }
 
-            if ( ! $this->response instanceof NullResponse) {
+            if ($this->matchedRoute()) {
 
                 $request_event->matchedRoute();
 
@@ -107,7 +98,6 @@
             $this->sendResponse();
 
             $this->error_handler->unregister();
-
 
         }
 
@@ -119,7 +109,6 @@
         public function sendBodyDeferred()
         {
 
-
             // guard against AdminBodySendable for non matching admin pages.
             if ( ! $this->response instanceof ResponseInterface) {
 
@@ -127,7 +116,9 @@
 
             }
 
-            $this->sendBody();
+            $request = $this->container->make(Request::class);
+
+            $this->sendBody($request);
 
         }
 
@@ -138,47 +129,43 @@
 
         }
 
-        public function runInTakeoverMode() : void
-        {
-
-            $this->is_takeover_mode = true;
-
-        }
-
         private function sendResponse()
         {
 
-            if ( $this->response instanceof NullResponse) {
+            if ($this->response instanceof NullResponse) {
 
                 return;
 
             }
 
-            $this->sendHeaders();
 
-            if ( $this->request->getType() !== IncomingAdminRequest::class) {
+            $request = $this->container->make(Request::class);
 
-                $this->sendBody();
+            $this->sendHeaders($request);
+
+            if ($request->getType() !== IncomingAdminRequest::class) {
+
+                $this->sendBody($request);
 
             }
 
         }
 
-        private function sendHeaders()
+        private function sendHeaders(Request $request)
         {
 
             $this->response_emitter->emitHeaders($this->response);
 
-            HeadersSent::dispatch([$this->response, $this->request]);
+            HeadersSent::dispatch([$this->response, $request]);
 
         }
 
-        private function sendBody()
+        private function sendBody(Request $request)
         {
 
             $this->response_emitter->emitBody($this->response);
 
-            BodySent::dispatch([$this->response, $this->request]);
+            BodySent::dispatch([$this->response, $request]);
 
         }
 
@@ -203,9 +190,7 @@
 
             return function (Request $request) : ResponseInterface {
 
-                $this->container->instance(RequestInterface::class, $request);
-
-                $this->request = $request;
+                $this->container->instance(Request::class, $request);
 
                 if ($this->is_test_mode) {
 
@@ -229,7 +214,7 @@
             $middleware_groups = $this->middleware_groups;
 
             // Dont run global middleware in the router again.
-            if ($this->runGlobalMiddlewareWithoutMatchingRoute()) {
+            if ($this->always_with_global_middleware) {
 
                 unset($middleware_groups['global']);
 
@@ -249,46 +234,47 @@
 
         }
 
-        private function runGlobalMiddlewareWithoutMatchingRoute() : bool
-        {
-
-            return $this->is_takeover_mode;
-
-        }
-
         private function withMiddleware() : bool
         {
 
-            return ! $this->is_test_mode && $this->runGlobalMiddlewareWithoutMatchingRoute();
+            return ! $this->is_test_mode && $this->always_with_global_middleware;
 
         }
 
-        private function forceRouteMatch() : bool
+        private function returnIfValid(Response $response) : Response
         {
 
-            return $this->is_takeover_mode;
-
-        }
-
-        private function returnIfValid( Response $response ) : Response
-        {
-
-            if ( ! $response instanceof NullResponse ) {
+            // We had no matching route.
+            if ( $response instanceof NullResponse) {
 
                 return $response;
 
             }
 
-            if ($this->is_takeover_mode) {
+            // We had a route action return something but it was not transformable to a Psr7 Response.
+            if ( $response instanceof InvalidResponse ) {
 
                 throw new InvalidResponseException(
-                    'The response by the route action is not valid.'
+                    'The response returned by the route action is not valid.'
                 );
 
             }
 
             return $response;
 
+        }
+
+        public function alwaysWithGlobalMiddleware()
+        {
+
+            $this->always_with_global_middleware = true;
+
+        }
+
+        private function matchedRoute() : bool
+        {
+
+            return ! $this->response instanceof NullResponse && $this->response->getStatusCode() === 200;
         }
 
 
