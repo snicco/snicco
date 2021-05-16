@@ -7,8 +7,6 @@
 	namespace WPEmerge\Routing\Conditions;
 
 	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Contracts\UrlableInterface;
     use WPEmerge\Http\Request;
 
     class QueryStringCondition implements ConditionInterface{
