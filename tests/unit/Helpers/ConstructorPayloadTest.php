@@ -17,6 +17,23 @@
 
         use CreateContainer;
 
+        /**
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         * CLASS CONSTRUCTOR
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         */
 
         /** @test */
         public function a_class_without_constructor_returns_an_empty_array () {
@@ -280,8 +297,69 @@
 
         }
 
+        /**
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         * CLASS METHOD
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         *
+         */
+
+        /** @test */
+        public function it_works_for_class_methods () {
+
+            $payload = new ConstructorPayload( [Method::class, 'trailingPrimitive'], [
+                $foo = new Foo(), $bar = new Bar(), 'foo', 'bar'
+            ]);
+
+            $result = $payload->build();
+
+            $this->assertSame(['param1'=>$foo, 'param2' => $bar, 'param3'=> 'foo', 'param4' => 'BAR'] , $result);
+
+        }
+
+
+        /** @test */
+        public function it_works_for_closures () {
+
+            $function = function ( Foo $param1, Bar $param2, string $param3, $param4 = 'BAR' ) {
+
+
+            };
+
+            $payload = new ConstructorPayload( $function , [
+                $foo = new Foo(), $bar = new Bar(), 'foo', 'bar'
+            ]);
+
+            $result = $payload->build();
+
+            $this->assertSame(['param1'=>$foo, 'param2' => $bar, 'param3'=> 'foo', 'param4' => 'BAR'] , $result);
+
+        }
+
     }
 
+
+    class Method {
+
+        public function trailingPrimitive (Foo $param1, Bar $param2, string $param3, $param4 = 'BAR') {
+
+
+
+        }
+
+    }
 
     class CompleteVariadic {
 
