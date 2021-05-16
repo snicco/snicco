@@ -7,10 +7,9 @@
 	namespace WPEmerge\Routing\Conditions;
 
 	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
 
-
-	class PostTypeCondition implements ConditionInterface {
+    class PostTypeCondition implements ConditionInterface {
 
 
 		private $post_type;
@@ -22,13 +21,13 @@
 		}
 
 
-		public function isSatisfied( RequestInterface $request ) : bool {
+		public function isSatisfied( Request $request ) : bool {
 
 			return ( is_singular() && $this->post_type === get_post_type() );
 		}
 
 
-		public function getArguments( RequestInterface $request ) : array {
+		public function getArguments( Request $request ) : array {
 
 			return [ 'post_type' => $this->post_type ];
 		}

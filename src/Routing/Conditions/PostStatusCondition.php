@@ -7,10 +7,9 @@
 	namespace WPEmerge\Routing\Conditions;
 
 	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
 
-
-	class PostStatusCondition implements ConditionInterface {
+    class PostStatusCondition implements ConditionInterface {
 
 		/**
 		 * @var string
@@ -24,7 +23,7 @@
 		}
 
 
-		public function isSatisfied( RequestInterface $request ) :bool {
+		public function isSatisfied( Request $request ) :bool {
 
 			$post = get_post();
 
@@ -32,7 +31,7 @@
 		}
 
 
-		public function getArguments( RequestInterface $request ) : array {
+		public function getArguments( Request $request ) : array {
 
 			return [ 'post_status' => $this->post_status ];
 		}

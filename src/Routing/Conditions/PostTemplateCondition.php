@@ -7,10 +7,9 @@
 	namespace WPEmerge\Routing\Conditions;
 
 	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\Contracts\RequestInterface;
+    use WPEmerge\Http\Request;
 
-
-	class PostTemplateCondition implements ConditionInterface {
+    class PostTemplateCondition implements ConditionInterface {
 
 		/**
 		 * @var string
@@ -30,7 +29,7 @@
 		}
 
 
-		public function isSatisfied( RequestInterface $request ) : bool {
+		public function isSatisfied( Request $request ) : bool {
 
 			$template = get_post_meta( (int) get_the_ID(), '_wp_page_template', true );
 			$template = $template ? : 'default';
@@ -39,7 +38,7 @@
 		}
 
 
-		public function getArguments( RequestInterface $request ) : array {
+		public function getArguments( Request $request ) : array {
 
 			return [ 'post_template' => $this->post_template, 'post_types' => $this->post_types ];
 		}
