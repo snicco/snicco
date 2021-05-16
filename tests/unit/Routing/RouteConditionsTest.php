@@ -7,13 +7,13 @@
 	namespace Tests\unit\Routing;
 
 	use Mockery;
-    use Tests\BaseTestCase;
+    use Tests\UnitTest;
     use Tests\traits\SetUpRouter;
     use Tests\stubs\Conditions\FalseCondition;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
-	class RouteConditionsTest extends BaseTestCase {
+	class RouteConditionsTest extends UnitTest {
 
 		use SetUpRouter;
 

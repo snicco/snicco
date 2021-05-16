@@ -7,14 +7,14 @@
 	namespace Tests\unit\Routing;
 
 	use Mockery;
-    use Tests\BaseTestCase;
+    use Tests\UnitTest;
     use Tests\traits\SetUpRouter;
     use Tests\stubs\Controllers\Admin\AdminControllerWithMiddleware;
 	use Tests\stubs\Middleware\MiddlewareWithDependencies;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
-    class RouteMiddlewareDependencyInjectionTest extends BaseTestCase {
+    class RouteMiddlewareDependencyInjectionTest extends UnitTest {
 
 		use SetUpRouter;
 

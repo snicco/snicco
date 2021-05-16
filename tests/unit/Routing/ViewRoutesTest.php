@@ -8,13 +8,13 @@
 
     use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\BaseTestCase;
+    use Tests\UnitTest;
     use Tests\traits\SetUpRouter;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Response;
 
-    class ViewRoutesTest extends BaseTestCase {
+    class ViewRoutesTest extends UnitTest {
 
 		use SetUpRouter;
 

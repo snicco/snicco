@@ -7,7 +7,7 @@
 	namespace Tests\unit\Http;
 
 	use Mockery;
-    use Tests\BaseTestCase;
+    use Tests\UnitTest;
     use Tests\traits\CreateDefaultWpApiMocks;
     use Tests\traits\SetUpKernel;
     use Tests\stubs\Middleware\GlobalMiddleware;
@@ -18,7 +18,7 @@
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
-	class HttpKernelTest extends BaseTestCase {
+	class HttpKernelTest extends UnitTest {
 
 		use SetUpKernel;
         use CreateDefaultWpApiMocks;

@@ -57,8 +57,9 @@
 		 * @param  boolean  $run
 		 *
 		 * @return void
+         * @see Application::boot()
 		 */
-		public static function bootstrap( $config = [], $run = true ) {
+		public static function bootstrap( array $config = [], $run = true ) {
 		}
 
 		/**

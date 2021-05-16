@@ -6,48 +6,38 @@
 
 	namespace Tests\integration\ServiceProviders;
 
-    use Tests\Test;
-	use WPEmerge\Contracts\ErrorHandlerInterface;
-	use WPEmerge\ExceptionHandling\DebugErrorHandler;
+	use Tests\IntegrationTest;
+    use Tests\stubs\TestApp;
+    use WPEmerge\Contracts\ErrorHandlerInterface;
+    use WPEmerge\Contracts\ServiceProvider;
+    use WPEmerge\ExceptionHandling\DebugErrorHandler;
 	use WPEmerge\ExceptionHandling\NullErrorHandler;
 	use WPEmerge\ExceptionHandling\ProductionErrorHandler;
-	use WPEmerge\ServiceProviders\ExceptionServiceProvider;
-    use WPEmerge\ServiceProviders\FactoryServiceProvider;
-    use WPEmerge\ServiceProviders\HttpServiceProvider;
-    use WPEmerge\ServiceProviders\ViewServiceProvider;
 
-    class ExceptionServiceProviderTest extends Test {
+    class ExceptionServiceProviderTest extends IntegrationTest {
 
-		use BootServiceProviders;
 
-		public function neededProviders() : array {
 
-			return [
-				ExceptionServiceProvider::class,
-                HttpServiceProvider::class,
-                ViewServiceProvider::class,
-                FactoryServiceProvider::class
-			];
-		}
-
-		/** @test */
+        /** @test */
 		public function by_default_the_null_error_handler_is_used() {
 
-			$this->assertInstanceOf(
+            $this->newTestApp();
+
+            $this->assertInstanceOf(
 				NullErrorHandler::class,
-				$this->app->resolve( ErrorHandlerInterface::class )
+				TestApp::resolve( ErrorHandlerInterface::class )
 			);
 
 		}
 
 		/** @test */
-		public function by_default_the_inbuilt_production_handler_is_used_if_enabled() {
+		public function if_not_overwritten_the_default_production_error_handler_will_be_used() {
 
-			$this->config->set( 'exception_handling.enable', true );
+            $this->newTestApp();
 
 			$this->assertSame(
 				ProductionErrorHandler::class,
-				$this->app->resolve( ProductionErrorHandler::class )
+                TestApp::resolve( ProductionErrorHandler::class )
 			);
 
 		}
@@ -55,31 +45,37 @@
 		/** @test */
 		public function debug_exception_handling_can_be_set_with_the_config() {
 
-			$this->config->set( [
-				'exception_handling.enable' => true,
-				'exception_handling.debug'  => true,
-			] );
+            $this->newTestApp([
+                'exception_handling' => [
+                    'enable' => true,
+                    'debug'  => true,
+                ]
+            ]);
+
 
 			$this->assertInstanceOf(
 				DebugErrorHandler::class,
-				$this->app->resolve( ErrorHandlerInterface::class )
+				TestApp::resolve( ErrorHandlerInterface::class )
 			);
 
 		}
 
 		/** @test */
-		public function the_production_error_handler_can_be_overwritten() {
+		public function the_production_error_handler_can_be_overwritten_from_a_service_provider() {
 
-			$this->config->set( 'exception_handling.enable', true );
+            $this->newTestApp([
+                'exception_handling' => [
+                    'enable' => true,
+                ],
+                'providers' => [
+                    MyProvider::class
+                ]
+            ]);
 
-			$this->app->container()->instance(
-				ProductionErrorHandler::class,
-				MyProductionErrorHandler::class
-			);
 
 			$this->assertInstanceOf(
 				MyProductionErrorHandler::class,
-				$this->app->resolve( ErrorHandlerInterface::class )
+				TestApp::resolve( ErrorHandlerInterface::class )
 			);
 
 		}
@@ -87,6 +83,23 @@
 
 	}
 
+	class MyProvider extends ServiceProvider {
+
+
+        public function register() : void
+        {
+            $this->container->instance(
+                ProductionErrorHandler::class,
+                MyProductionErrorHandler::class
+            );
+        }
+
+        function bootstrap() : void
+        {
+            // TODO: Implement bootstrap() method.
+        }
+
+    }
 
 	class MyProductionErrorHandler extends ProductionErrorHandler {
 

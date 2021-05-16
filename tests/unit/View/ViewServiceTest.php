@@ -7,7 +7,7 @@
 	namespace Tests\unit\View;
 
     use Mockery;
-    use Tests\BaseTestCase;
+    use Tests\UnitTest;
     use Tests\stubs\TestApp;
     use Tests\traits\CreateDefaultWpApiMocks;
     use WPEmerge\Contracts\ViewServiceInterface;
@@ -22,7 +22,7 @@
     use const TESTS_DIR;
     use const VENDOR_DIR;
 
-    class ViewServiceTest extends BaseTestCase {
+    class ViewServiceTest extends UnitTest {
 
         use CreateDefaultWpApiMocks;
 

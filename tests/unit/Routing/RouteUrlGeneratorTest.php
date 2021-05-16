@@ -7,7 +7,7 @@
 	namespace Tests\unit\Routing;
 
 	use Mockery;
-    use Tests\BaseTestCase;
+    use Tests\UnitTest;
     use Tests\traits\SetUpRouter;
     use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\UrlableInterface;
@@ -16,7 +16,7 @@
     use WPEmerge\Http\Request;
 	use WPEmerge\Support\Str;
 
-	class RouteUrlGeneratorTest extends BaseTestCase {
+	class RouteUrlGeneratorTest extends UnitTest {
 
 		use SetUpRouter;
 

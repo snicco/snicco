@@ -7,7 +7,7 @@
 	namespace Tests\unit\Middleware;
 
     use Mockery;
-    use Tests\BaseTestCase;
+    use Tests\UnitTest;
 	use Tests\stubs\TestRequest;
     use Tests\traits\AssertsResponse;
     use WPEmerge\Facade\WP;
@@ -17,7 +17,7 @@
 	use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
     use WPEmerge\Middleware\Authorize;
 
-    class AuthorizeTest extends BaseTestCase {
+    class AuthorizeTest extends UnitTest {
 
 
         use AssertsResponse;

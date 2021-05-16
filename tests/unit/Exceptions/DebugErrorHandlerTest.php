@@ -7,14 +7,14 @@
 
 
 	use Tests\traits\AssertsResponse;
-    use Tests\BaseTestCase;
+    use Tests\UnitTest;
     use Tests\stubs\TestException;
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\ExceptionHandling\DebugErrorHandler;
 	use WPEmerge\Factories\ErrorHandlerFactory;
 
-	class DebugErrorHandlerTest extends BaseTestCase {
+	class DebugErrorHandlerTest extends UnitTest {
 
 		use AssertsResponse;
 

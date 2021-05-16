@@ -12,7 +12,7 @@
     use Psr\Log\LogLevel;
     use SniccoAdapter\BaseContainerAdapter;
     use Tests\traits\AssertsResponse;
-    use Tests\BaseTestCase;
+    use Tests\UnitTest;
     use Tests\stubs\Foo;
     use Tests\stubs\TestLogger;
     use WPEmerge\Application\ApplicationEvent;
@@ -22,7 +22,7 @@
     use WPEmerge\Factories\ErrorHandlerFactory;
     use WpFacade\WpFacade;
 
-    class ProductionErrorHandlerLoggingTest extends BaseTestCase
+    class ProductionErrorHandlerLoggingTest extends UnitTest
     {
 
         use AssertsResponse;

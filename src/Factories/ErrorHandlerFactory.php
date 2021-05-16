@@ -34,7 +34,7 @@
 		];
 
 		/**
-		 * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
+		 * @throws ConfigurationException
 		 */
 		public static function make( ContainerAdapter $container, bool $is_debug, bool $is_ajax_request, string $editor = null ) {
 

@@ -36,7 +36,7 @@
 		/**
 		 * @param  string  $provider
 		 *
-		 * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
+		 * @throws ConfigurationException
 		 */
 		private function isValid( string $provider ) {
 

@@ -6,23 +6,22 @@
 
 	namespace Tests\integration\ServiceProviders;
 
-	use Tests\stubs\TestApp;
-	use Tests\Test;
+	use Tests\IntegrationTest;
+    use Tests\stubs\TestApp;
 	use WPEmerge\Facade\WP;
-	use WPEmerge\ServiceProviders\ApplicationServiceProvider;
 	use WpFacade\WpFacade;
 
-	class ApplicationServiceProviderTest extends Test {
-
-		use BootServiceProviders;
+	class ApplicationServiceProviderTest extends IntegrationTest {
 
 
-		public function neededProviders() : array {
+	    protected function setUp() : void
+        {
 
-			return  [
-				ApplicationServiceProvider::class,
-			];
-		}
+            parent::setUp();
+
+            $this->newTestApp();
+
+        }
 
 
 

@@ -6,47 +6,45 @@
 
     namespace Tests\integration\ServiceProviders;
 
+    use Tests\IntegrationTest;
     use Tests\traits\AssertsResponse;
     use Tests\stubs\TestApp;
-    use Tests\Test;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\Events\MakingView;
-    use WPEmerge\Facade\WP;
     use WPEmerge\Routing\Router;
-    use WPEmerge\ServiceProviders\AliasServiceProvider;
-    use WPEmerge\ServiceProviders\ApplicationServiceProvider;
-    use WPEmerge\ServiceProviders\FactoryServiceProvider;
-    use WPEmerge\ServiceProviders\HttpServiceProvider;
-    use WPEmerge\ServiceProviders\RoutingServiceProvider;
-    use WPEmerge\ServiceProviders\ViewServiceProvider;
     use WPEmerge\Support\Url;
     use WPEmerge\Support\VariableBag;
 
-    class AliasServiceProviderTest extends Test
+    class AliasServiceProviderTest extends IntegrationTest
     {
 
-        use BootServiceProviders;
         use AssertsResponse;
 
-        public function neededProviders() : array
+
+        protected function setUp() : void
         {
-            return [
-                ApplicationServiceProvider::class,
-                AliasServiceProvider::class,
-                RoutingServiceProvider::class,
-                FactoryServiceProvider::class,
-                ViewServiceProvider::class,
-                HttpServiceProvider::class,
-            ];
+
+            parent::setUp();
+
+            $this->app = TestApp::make();
+            TestApp::boot();
+
+        }
+
+        protected function tearDown() : void
+        {
+
+            parent::tearDown();
+            TestApp::setApplication(null);
+            ApplicationEvent::setInstance(null);
+
         }
 
         /** @test */
         public function the_application_instance_can_be_aliased()
         {
-
 
             $this->assertInstanceOf(Application::class, TestApp::app());
             $this->assertSame($this->app, TestApp::app());
@@ -65,11 +63,6 @@
         /** @test */
         public function a_named_route_url_can_be_aliased()
         {
-
-            WP::shouldReceive('homeUrl')
-              ->once()
-              ->with('/foo', 'https')
-              ->andReturn(Url::addTrailing(SITE_URL).'foo');
 
             TestApp::route()->get('foo')->name('foo');
 
@@ -212,26 +205,29 @@
         public function a_view_can_be_created_as_an_alias()
         {
 
-            $this->config->set('views', [TESTS_DIR.DS.'views']);
+            $this->newTestApp( ['views' => [
+                TESTS_DIR.DS.'views',
+                TESTS_DIR.DS.'views'.DS.'subdirectory',
+            ]]);
+
 
             $this->assertInstanceOf(ViewInterface::class, TestApp::view('view'));
 
         }
 
         /** @test */
-        public function a_view_can_be_rendered()
+        public function a_view_can_be_rendered_and_echoed()
         {
 
-            $this->config->set('views', [TESTS_DIR.DS.'views']);
+            $this->newTestApp( ['views' => [
+                TESTS_DIR.DS.'views',
+                TESTS_DIR.DS.'views'.DS.'subdirectory',
+            ]]);
+
 
             ob_start();
             TestApp::render('view');
 
-            ApplicationEvent::assertDispatched(MakingView::class, function (MakingView $event ) {
-
-                return $event->payload()->name() === 'view';
-
-            });
 
             $this->assertSame('Foobar', ob_get_clean());
 
@@ -241,18 +237,10 @@
         public function a_nested_view_can_be_included()
         {
 
-            WP::shouldReceive('fileHeaderData')
-              ->once()
-              ->andReturn(['view-with-layout.php']);
-
-            WP::shouldReceive('fileHeaderData')
-              ->once()
-              ->andReturn([]);
-
-            $this->config->set('views', [
+            $this->newTestApp( ['views' => [
                 TESTS_DIR.DS.'views',
                 TESTS_DIR.DS.'views'.DS.'subdirectory',
-            ]);
+            ]]);
 
             $view = TestApp::view('subview.php');
 

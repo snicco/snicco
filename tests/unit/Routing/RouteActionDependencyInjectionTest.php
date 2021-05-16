@@ -7,7 +7,7 @@
 	namespace Tests\unit\Routing;
 
 	use Mockery;
-    use Tests\BaseTestCase;
+    use Tests\UnitTest;
     use Tests\traits\SetUpRouter;
     use Tests\stubs\Bar;
 	use Tests\stubs\Controllers\Web\ControllerWithDependencies;
@@ -16,7 +16,7 @@
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
-	class RouteActionDependencyInjectionTest extends BaseTestCase {
+	class RouteActionDependencyInjectionTest extends UnitTest {
 
 		use SetUpRouter;
 
