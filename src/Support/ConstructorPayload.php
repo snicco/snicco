@@ -6,8 +6,10 @@
 
     namespace WPEmerge\Support;
 
+    use Closure;
     use Illuminate\Support\Collection;
     use ReflectionClass;
+    use ReflectionFunctionAbstract;
     use ReflectionMethod;
     use ReflectionParameter;
 
@@ -17,8 +19,8 @@
         /** @var array */
         private $original_payload;
 
-        /** @var string */
-        private $class;
+        /** @var mixed */
+        private $target;
 
         /**
          * @var ReflectionMethod|null
@@ -52,10 +54,17 @@
         private $optional_params_with_defaults;
 
 
-        public function __construct($class, $original_payload)
+        /**
+         * ConstructorPayload constructor.
+         *
+         * @param string|array|Closure $target either a FQN class as string, or a class callable/closure
+         *
+         * @param mixed $original_payload The runtime arguments available to construct a named payload
+         */
+        public function __construct($target, $original_payload)
         {
 
-            $this->class = $class;
+            $this->target = $target;
             $this->original_payload = Arr::wrap($original_payload);
             $this->payload_by_type_and_value = $this->parsePayload();
             $this->reflection_constructor = $this->parseReflectionConstructor();
@@ -227,18 +236,31 @@
 
         }
 
-        private function parseReflectionConstructor() : ?ReflectionMethod
+        private function parseReflectionConstructor() : ?ReflectionFunctionAbstract
         {
 
-            $reflection_class = (new ReflectionClass($this->class));
+            $reflection_method = null;
 
-            if ( ! $reflection_class) {
+            if ( is_string($this->target) ) {
 
-                return null;
+                $reflection_method = ( new ReflectionClass( $this->target ) )->getConstructor();
 
             }
 
-            return $reflection_class->getConstructor();
+            if ( is_array($this->target ) ) {
+
+                return new ReflectionMethod(...$this->target);
+
+            }
+
+            if ( $this->target instanceof Closure ) {
+
+                return new \ReflectionFunction($this->target);
+
+            }
+
+
+            return $reflection_method;
 
         }
 

@@ -112,7 +112,7 @@
          * @todo It would be better if we would match the parameters based on a combination of type/name
          * instead of order.
          */
-		public function run( Request $request, array $payload ) {
+		public function _run( Request $request, array $payload ) {
 
 			$params = collect( $this->signatureParameters() );
 
@@ -143,6 +143,41 @@
 			return $this->action->executeUsing( $this->mergeDefaults($payload)->all() );
 
 		}
+
+		public function run( Request $request, array $payload ) {
+
+
+			$params = collect( $this->signatureParameters() );
+
+			$values = collect( [ $request ] )->merge( $payload )
+			                                 ->values();
+
+			if ( $params->count() < $values->count() ) {
+
+				$values = $values->slice( 0, count( $params ) );
+
+			}
+
+			if ( $params->count() > $values->count() ) {
+
+				$params = $params->slice( 0, count( $values ) );
+
+			}
+
+			$payload = $params
+				->map( function ( $param ) {
+
+					return $param->getName();
+
+				} )
+				->values()
+				->combine( $values );
+
+			return $this->action->executeUsing( $this->mergeDefaults($payload)->all() );
+
+		}
+
+
 
 		private function signatureParameters() : array {
 
