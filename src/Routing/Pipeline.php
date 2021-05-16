@@ -119,7 +119,7 @@
         public function then(Closure $request_handler) : ResponseInterface
         {
 
-            $this->middleware[] = [ new Delegate($request_handler), [] ];
+            $this->middleware[] = [new Delegate($request_handler), []];
 
             return $this->run($this->buildMiddlewareStack());
 
@@ -157,28 +157,15 @@
 
                 [$middleware, $constructor_args] = array_shift($this->middleware);
 
-                if ( $middleware instanceof MiddlewareInterface ) {
+                if ($middleware instanceof MiddlewareInterface) {
 
                     return $middleware->process($request, $this->nextMiddleware());
 
                 }
 
-                $payload = ConstructorPayload::byTypeHint($middleware, $constructor_args);
+                $payload = new ConstructorPayload($middleware, $constructor_args);
 
-                try {
-
-                    $middleware_instance = $this->container->make(
-                        $middleware,
-                        $payload
-                    );
-                } catch (\Throwable $e ) {
-
-                    $middleware_instance = $this->container->make(
-                        $middleware,
-                        ConstructorPayload::byOrder($middleware, $constructor_args)
-                    );
-
-                }
+                $middleware_instance = $this->container->make($middleware, $payload->build());
 
                 return $middleware_instance->process($request, $this->nextMiddleware());
 
