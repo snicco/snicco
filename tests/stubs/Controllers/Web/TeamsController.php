@@ -35,5 +35,12 @@
 
 		}
 
+		public function _withConditions( Request $request, string $team, string $player, string $baz, string $biz ,Foo $foo, Bar $bar)  {
+
+			return $team . ':' . $player . ':' .  $baz . ':' . $biz  . ':' . $foo->foo . ':' . $bar->bar;
+
+
+		}
+
 
 	}

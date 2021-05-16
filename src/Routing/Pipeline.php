@@ -16,7 +16,7 @@
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Support\Arr;
-    use WPEmerge\Support\ConstructorPayload;
+    use WPEmerge\Support\ReflectionPayload;
     use WPEmerge\Traits\ReflectsCallable;
 
     use function collect;
@@ -163,7 +163,7 @@
 
                 }
 
-                $payload = new ConstructorPayload($middleware, $constructor_args);
+                $payload = new ReflectionPayload($middleware, $constructor_args);
 
                 $middleware_instance = $this->container->make($middleware, $payload->build());
 

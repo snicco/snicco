@@ -30,10 +30,11 @@
         public function getArguments(Request $request) : array
         {
 
-            return array_merge(
-                parent::getArguments($request),
-                [$request->query('action', [])]
-            );
+            $parent = parent::getArguments($request);
+
+            return ( count( $parent ) ) ? $parent : Arr::wrap($request->query('action', []));
+
+
         }
 
         private function expectedAction() : ?string
