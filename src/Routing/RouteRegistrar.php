@@ -16,7 +16,7 @@
 
 
         /**
-         * @var \WPEmerge\Routing\Router
+         * @var Router
          */
         private $router;
 
@@ -33,6 +33,7 @@
 
         }
 
+        /** @todo Conditionally loading routes does not allow creating named routes in a different file. Is this any issue? What are use cases for this? */
         public function loadRoutes()
         {
 
