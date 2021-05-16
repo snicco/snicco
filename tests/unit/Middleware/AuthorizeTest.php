@@ -101,23 +101,23 @@
 		public function the_user_can_be_authorized_against_a_resource() {
 
 			WP::shouldReceive( 'currentUserCan' )
-			  ->with( 'edit_post', 10 )
+			  ->with( 'edit_post', '10' )
 			  ->once()
 			  ->andReturnTrue();
 
-			$response = $this->newMiddleware('edit_post', 10 )
+			$response = $this->newMiddleware('edit_post', '10' )
                              ->handle($this->request, $this->route_action,);
 
 			$this->assertOutput( 'FOO', $response );
 
 			WP::shouldReceive( 'currentUserCan' )
-			  ->with( 'edit_post', 10 )
+			  ->with( 'edit_post', '10' )
 			  ->once()
 			  ->andReturnFalse();
 
 			$this->expectException( AuthorizationException::class );
 
-			$this->newMiddleware('edit_post', 10 )->handle(
+			$this->newMiddleware('edit_post', '10' )->handle(
 				$this->request,
 				$this->route_action,
 			);
@@ -128,23 +128,23 @@
 		public function several_wordpress_specific_arguments_can_be_passed() {
 
 			WP::shouldReceive( 'currentUserCan' )
-			  ->with( 'edit_post_meta', 10, 'test_key' )
+			  ->with( 'edit_post_meta', '10', 'test_key' )
 			  ->once()
 			  ->andReturnTrue();
 
-			$response = $this->newMiddleware('edit_post_meta', 10, 'test_key')
+			$response = $this->newMiddleware('edit_post_meta', '10', 'test_key')
                              ->handle($this->request, $this->route_action,);
 
 			$this->assertOutput( 'FOO', $response );
 
 			WP::shouldReceive( 'currentUserCan' )
-			  ->with( 'edit_post_meta', 10, 'test_key' )
+			  ->with( 'edit_post_meta', '10', 'test_key' )
 			  ->once()
 			  ->andReturnFalse();
 
 			$this->expectException( AuthorizationException::class );
 
-            $this->newMiddleware('edit_post_meta', 10, 'test_key')
+            $this->newMiddleware('edit_post_meta', '10', 'test_key')
                              ->handle($this->request, $this->route_action,);
 
 		}

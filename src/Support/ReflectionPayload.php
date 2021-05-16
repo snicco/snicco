@@ -13,7 +13,7 @@
     use ReflectionMethod;
     use ReflectionParameter;
 
-    class ConstructorPayload
+    class ReflectionPayload
     {
 
         /** @var array */
@@ -53,13 +53,14 @@
          */
         private $optional_params_with_defaults;
 
-
         /**
-         * ConstructorPayload constructor.
+         * ReflectionPayload constructor.
          *
-         * @param string|array|Closure $target either a FQN class as string, or a class callable/closure
+         * @param  string|array|Closure  $target  either a FQN class as string, or a class
+         *     callable/closure
          *
-         * @param mixed $original_payload The runtime arguments available to construct a named payload
+         * @param  mixed  $original_payload  The runtime arguments available to construct a named
+         *     payload
          */
         public function __construct($target, $original_payload)
         {
@@ -83,23 +84,65 @@
         public function build() : array
         {
 
-            if ( ! $this->reflection_constructor) {
+            if ( ! $this->reflection_constructor || $this->reflection_constructor->getParameters() === [] ) {
                 return [];
             }
 
-            if ( $this->isFirstVariadic () ) {
+            if ($this->isFirstVariadic()) {
 
                 return $this->createVariadicOneParam();
 
             }
 
+            if ($pos = $this->hasVariadic()) {
 
-            if ( $pos = $this->hasVariadic() ) {
-
-              return $this->createVariadicPayload($pos);
+                return $this->createVariadicPayload($pos);
 
             }
 
+            if ($this->everyParamHasTypeHint()) {
+
+                $payload = $this->createTypeHinted();
+
+                return collect($payload)->union($this->optional_params_with_defaults)->all();
+
+            }
+
+            $copy = $this->reflection_params->all();
+            $include = collect([]);
+
+            while (($param = Arr::firstEl($copy))->hasType()) {
+
+                $include->add($param->getName());
+                array_shift($copy);
+
+            }
+
+            if ( $include->isNotEmpty() ) {
+
+                $only = $this->constructor_types_by_name->only($include->values());
+
+                $type_hinted = $this->createTypeHinted($only->all());
+
+                $remaining_payload = collect($this->original_payload)->skip(count($type_hinted));
+
+                $except = $this->constructor_types_by_name->except($include->values());
+
+                $by_order = $this->byOrder($remaining_payload->all(), $except->keys());
+
+                $payload = array_merge($type_hinted, $by_order);
+
+                return collect($payload)->union($this->optional_params_with_defaults)->all();
+
+            }
+
+            return $this->byOrder();
+
+
+        }
+
+        private function createTypeHinted($constructor_array = null) : array
+        {
 
             $payload = $this->payload_by_type_and_value
                 ->filter(function (array $type_and_value) {
@@ -108,7 +151,7 @@
 
                 });
 
-            $as_array = $this->constructor_types_by_name->all();
+            $as_array = $constructor_array ?? $this->constructor_types_by_name->all();
 
             $payload = $payload
                 ->flatMap(function (array $type_and_value) use (&$as_array) {
@@ -126,40 +169,12 @@
 
             });
 
+            return $payload->all();
 
-
-
-
-            // Is not safe to to just return the optional params with values from the constructor
-            // since values from the original payload could overwrite these.
-            // The payload being empty most likely means that the developer has not provided typehints
-            // so we just build the named payload by order and hope the dev provided correct types.
-            if ($payload->isEmpty() && $this->original_payload !== []) {
-
-                return $this->byOrder();
-
-            }
-
-            if ($this->original_payload === []) {
-
-                return $this->optional_params_with_defaults->all();
-
-            }
-
-            $diff = count($this->original_payload) - $payload->count();
-
-            if ($constructor_args_without_value = $diff > 0) {
-
-                $this->mergeMissingArguments($payload);
-
-
-            }
-
-            return $payload->union($this->optional_params_with_defaults)->all();
 
         }
 
-        public function byOrder(array $payload = null ) : array
+        public function byOrder(array $payload = null, $param_names = null) : array
         {
 
             $payload = collect($payload ?? $this->original_payload);
@@ -170,7 +185,7 @@
 
             }
 
-            $parameter_names = $this->constructor_names;
+            $parameter_names = $param_names ?? $this->constructor_names;
 
             // Lets hope for the best, because no typehints are provided.
             // Nothing we can do here.
@@ -186,15 +201,15 @@
 
             }
 
-            if ($count = $parameter_names->count() < $payload->count()) {
+            if ( ($count = $parameter_names->count()) < $payload->count()) {
 
                 $payload = $payload->slice(0, $count);
 
             }
 
-            $payload = $parameter_names->combine($payload);
+            $new = $parameter_names->combine($payload);
 
-            return $payload->all();
+            return $new->all();
 
         }
 
@@ -241,24 +256,23 @@
 
             $reflection_method = null;
 
-            if ( is_string($this->target) ) {
+            if (is_string($this->target)) {
 
-                $reflection_method = ( new ReflectionClass( $this->target ) )->getConstructor();
+                $reflection_method = (new ReflectionClass($this->target))->getConstructor();
 
             }
 
-            if ( is_array($this->target ) ) {
+            if (is_array($this->target)) {
 
                 return new ReflectionMethod(...$this->target);
 
             }
 
-            if ( $this->target instanceof Closure ) {
+            if ($this->target instanceof Closure) {
 
                 return new \ReflectionFunction($this->target);
 
             }
-
 
             return $reflection_method;
 
@@ -355,71 +369,13 @@
 
         }
 
-        private function isOptional($name) : bool
-        {
-
-            return $this->optional_params_with_defaults->has($name);
-
-
-        }
-
         private function constructorHasParamWithSameName($param_name) : bool
         {
 
             return $this->constructor_names->search($param_name) !== false;
         }
 
-        /** @todo decide if optional parameters WITHOUT typehint should have priority over values from the passed arguments. */
-        private function mergeMissingArguments(Collection $build_payload) : void
-        {
-
-            $unused_payload_values = $this->unUsedPayloadValues($build_payload)->all();
-
-            $constructor_params_without_values = $this->paramsWithoutValue($build_payload);
-
-            foreach ($constructor_params_without_values as $name) {
-
-                if ( ! $this->isOptional($name) && $this->wantsPrimitive($name)) {
-
-                    $build_payload->put($name, array_shift($unused_payload_values));
-
-                }
-
-            }
-        }
-
-        private function unUsedPayloadValues(Collection $built_payload) : Collection
-        {
-
-            $unused_values = collect($this->original_payload)->diffAssoc($built_payload->values());
-
-            return $unused_values->values();
-
-        }
-
-        private function paramsWithoutValue(Collection $built_payload) : Collection
-        {
-
-            $keys = $this->constructor_types_by_name->keys();
-            $payload_keys = $built_payload->keys();
-
-            $unused = $keys->diff($payload_keys);
-
-            return $unused->values();
-
-        }
-
-        private function wantsPrimitive($name) : bool
-        {
-
-            $type = $this->constructor_types_by_name->get($name);
-
-            return ! class_exists($type);
-
-
-        }
-
-        private function isFirstVariadic() :bool
+        private function isFirstVariadic() : bool
         {
 
             $first = $this->reflection_params->first();
@@ -433,13 +389,13 @@
         {
 
             /** @var ReflectionParameter $variadic */
-            $variadic = $this->reflection_params->first(function (ReflectionParameter $parameter)  {
+            $variadic = $this->reflection_params->first(function (ReflectionParameter $parameter) {
 
                 return $parameter->isVariadic();
 
             });
 
-            if ( ! $variadic ) {
+            if ( ! $variadic) {
 
                 return null;
 
@@ -449,7 +405,7 @@
 
         }
 
-        private function createVariadicPayload( int $variadic_param_position ) :array
+        private function createVariadicPayload(int $variadic_param_position) : array
         {
 
             /** @var ReflectionParameter $variadic_param */
@@ -457,7 +413,7 @@
 
             $payload = collect($this->original_payload);
 
-            $ordered =  collect($this->byOrder( $payload->slice(0, $variadic_param_position)->all() ));
+            $ordered = collect($this->byOrder($payload->slice(0, $variadic_param_position)->all()));
 
             $variadic = collect($payload)->diffAssoc($ordered->values());
 
@@ -474,6 +430,19 @@
 
             return $this->original_payload;
 
+
+        }
+
+        private function everyParamHasTypeHint() : bool
+        {
+
+            $withoutType = $this->reflection_params->first(function (ReflectionParameter $param) {
+
+                return ! $param->hasType();
+
+            });
+
+            return $withoutType === null;
 
         }
 

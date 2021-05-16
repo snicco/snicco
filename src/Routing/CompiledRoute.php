@@ -17,8 +17,9 @@
 	use WPEmerge\Factories\HandlerFactory;
     use WPEmerge\Http\Request;
     use WPEmerge\Routing\RouteSignatureParameters;
+    use WPEmerge\Support\ReflectionPayload;
 
-	class CompiledRoute implements RouteCondition {
+    class CompiledRoute implements RouteCondition {
 
 		/** @var RouteAction|string */
 		public $action;
@@ -146,34 +147,13 @@
 
 		public function run( Request $request, array $payload ) {
 
+		    $payload = array_merge([$request], $payload);
 
-			$params = collect( $this->signatureParameters() );
+            $reflection_payload = new ReflectionPayload($this->action->raw(), array_values($payload));
 
-			$values = collect( [ $request ] )->merge( $payload )
-			                                 ->values();
+            $payload = $reflection_payload->build();
 
-			if ( $params->count() < $values->count() ) {
-
-				$values = $values->slice( 0, count( $params ) );
-
-			}
-
-			if ( $params->count() > $values->count() ) {
-
-				$params = $params->slice( 0, count( $values ) );
-
-			}
-
-			$payload = $params
-				->map( function ( $param ) {
-
-					return $param->getName();
-
-				} )
-				->values()
-				->combine( $values );
-
-			return $this->action->executeUsing( $this->mergeDefaults($payload)->all() );
+			return $this->action->executeUsing( $this->mergeDefaults(collect( $payload ) )->all() );
 
 		}
 
