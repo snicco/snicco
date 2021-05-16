@@ -9,7 +9,6 @@
 
 	interface ResponsableInterface {
 
-
 		/**
 		 * Convert to Psr\Http\Message\ResponseInterface.
 		 *

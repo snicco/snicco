@@ -14,7 +14,7 @@
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Middleware\Authenticate;
-	use WPEmerge\Exceptions\AuthorizationException;
+	use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
     use WPEmerge\Middleware\Authorize;
 
     class AuthorizeTest extends BaseTestCase {

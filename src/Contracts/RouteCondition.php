@@ -7,7 +7,6 @@
 	namespace WPEmerge\Contracts;
 
 
-
 	interface RouteCondition {
 
 

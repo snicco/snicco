@@ -9,7 +9,7 @@
     use Contracts\ContainerAdapter;
     use WPEmerge\Contracts\ConditionInterface;
     use WPEmerge\Contracts\RouteCondition;
-    use WPEmerge\Exceptions\ConfigurationException;
+    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Routing\ConditionBlueprint;
     use WPEmerge\Routing\Conditions\CustomCondition;
     use WPEmerge\Routing\Conditions\NegateCondition;

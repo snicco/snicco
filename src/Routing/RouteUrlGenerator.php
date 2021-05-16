@@ -8,7 +8,7 @@
 
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\UrlableInterface;
-	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
 	use WPEmerge\Support\Arr;
 	use WPEmerge\Support\Str;
 	use WPEmerge\Facade\WP;
@@ -32,7 +32,7 @@
 		}
 
 		/**
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
+		 * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
 		 */
 		public function to( array $arguments = [] ) : string {
 

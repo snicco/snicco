@@ -18,7 +18,7 @@
 	use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Events\MakingView;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
-	use WPEmerge\Exceptions\ShutdownHandler;
+	use WPEmerge\ExceptionHandling\ShutdownHandler;
 	use WPEmerge\Facade\WP;
 	use WPEmerge\Http\HttpKernel;
 	use WPEmerge\ServiceProviders\EventServiceProvider;

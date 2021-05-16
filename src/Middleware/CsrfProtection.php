@@ -10,7 +10,7 @@
 	use Psr\Http\Message\ResponseInterface;
 	use WPEmerge\Contracts\Middleware;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Exceptions\InvalidCsrfTokenException;
+	use WPEmerge\ExceptionHandling\InvalidCsrfTokenException;
 	use WPEmerge\Session\Csrf;
 
 	/**

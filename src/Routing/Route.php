@@ -7,12 +7,9 @@
     namespace WPEmerge\Routing;
 
     use WPEmerge\Contracts\ConditionInterface;
-    use WPEmerge\Contracts\RequestInterface;
     use WPEmerge\Contracts\RouteCondition;
     use WPEmerge\Contracts\SetsRouteAttributes;
     use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Factories\HandlerFactory;
-    use WPEmerge\Routing\RouteSignatureParameters;
     use WPEmerge\Support\Url;
     use WPEmerge\Support\UrlParser;
     use WPEmerge\Support\Arr;

@@ -10,8 +10,8 @@
 	use Illuminate\Contracts\Encryption\DecryptException as IlluminateDecryptException;
 	use Illuminate\Encryption\Encrypter;
 	use WPEmerge\Contracts\EncryptorInterface;
-	use WPEmerge\Exceptions\EncryptException;
-	use WPEmerge\Exceptions\DecryptException;
+	use WPEmerge\ExceptionHandling\Exceptions\EncryptException;
+	use WPEmerge\ExceptionHandling\Exceptions\DecryptException;
 	use WPEmerge\Support\Str;
 
 	class Encryptor implements EncryptorInterface {

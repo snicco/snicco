@@ -13,7 +13,7 @@
     use Psr\Http\Message\ServerRequestInterface;
     use SniccoAdapter\BaseContainerAdapter;
     use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Exceptions\ConfigurationException;
+    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Http\Request;
     use WPEmerge\ServiceProviders\AliasServiceProvider;
     use WPEmerge\ServiceProviders\ApplicationServiceProvider;
@@ -85,7 +85,7 @@
          *
          * @param  array  $config  The configuration provided by a user during bootstrapping.
          *
-         * @throws ConfigurationException
+         * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
          */
         public function boot(array $config = []) : void
         {

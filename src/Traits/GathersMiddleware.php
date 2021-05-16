@@ -6,7 +6,7 @@
 
 	namespace WPEmerge\Traits;
 
-	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
 	use WPEmerge\Support\Arr;
 
 	trait GathersMiddleware {
@@ -59,7 +59,7 @@
 		 * @param  string[]  $middleware
 		 *
 		 * @return array[]
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
+		 * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
 		 */
 		public function expandMiddleware( array $middleware ) : array {
 
@@ -94,7 +94,7 @@
 		 * @param  string  $group
 		 *
 		 * @return array[]
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
+		 * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
 		 */
 		private function expandMiddlewareGroup( string $group ) : array {
 
@@ -111,7 +111,7 @@
 		 * @param  string  $middleware
 		 *
 		 * @return array[]
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
+		 * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
 		 */
 		private function expandMiddlewareMolecule( string $middleware ) : array {
 
@@ -134,7 +134,7 @@
 		 * @param  string  $middleware
 		 *
 		 * @return string
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
+		 * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
 		 */
 		private function expandMiddlewareAtom( string $middleware ) : string {
 

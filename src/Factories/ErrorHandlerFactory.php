@@ -14,9 +14,9 @@
 	use Whoops\Run;
 	use Whoops\RunInterface;
     use WPEmerge\Contracts\ResponseFactory;
-    use WPEmerge\Exceptions\ConfigurationException;
-	use WPEmerge\Exceptions\DebugErrorHandler;
-	use WPEmerge\Exceptions\ProductionErrorHandler;
+    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
+	use WPEmerge\ExceptionHandling\DebugErrorHandler;
+	use WPEmerge\ExceptionHandling\ProductionErrorHandler;
 
 	class ErrorHandlerFactory {
 
@@ -34,7 +34,7 @@
 		];
 
 		/**
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
+		 * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
 		 */
 		public static function make( ContainerAdapter $container, bool $is_debug, bool $is_ajax_request, string $editor = null ) {
 

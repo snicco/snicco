@@ -11,7 +11,7 @@
 	use WPEmerge\Contracts\Handler;
 	use WPEmerge\Support\Str;
 	use Closure;
-	use WPEmerge\Exceptions\Exception;
+	use WPEmerge\ExceptionHandling\Exceptions\Exception;
 
 	use WPEmerge\Traits\ReflectsCallable;
 

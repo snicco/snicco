@@ -6,7 +6,7 @@
 
 	namespace WPEmerge\Http;
 
-	use WPEmerge\Exceptions\Exception;
+	use WPEmerge\ExceptionHandling\Exceptions\Exception;
 	use WPEmerge\Support\Arr;
 
 	class ControllerMiddleware {

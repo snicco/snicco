@@ -18,7 +18,7 @@
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ResponseFactory;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
-	use WPEmerge\Exceptions\ProductionErrorHandler;
+	use WPEmerge\ExceptionHandling\ProductionErrorHandler;
     use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ErrorHandlerFactory;
     use WPEmerge\Http\Request;

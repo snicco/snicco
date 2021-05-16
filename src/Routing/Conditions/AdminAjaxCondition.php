@@ -8,7 +8,7 @@
 
     use WPEmerge\Contracts\RequestInterface;
     use WPEmerge\Contracts\UrlableInterface;
-    use WPEmerge\Exceptions\RouteLogicException;
+    use WPEmerge\ExceptionHandling\Exceptions\RouteLogicException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
     use WPEmerge\Routing\Route;

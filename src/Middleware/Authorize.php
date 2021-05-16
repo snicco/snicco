@@ -6,11 +6,8 @@
 
     namespace WPEmerge\Middleware;
 
-    use Closure;
     use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Contracts\RequestInterface;
-    use WPEmerge\Contracts\ResponseFactory;
-    use WPEmerge\Exceptions\AuthorizationException;
+    use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
@@ -33,7 +30,7 @@
          */
         private $key;
 
-        public function __construct(  string $capability = 'manage_options', $object_id = null, $key = null)
+        public function __construct(  string $capability = 'manage_options', int $object_id = null, string $key = null)
         {
 
             $this->capability = $capability;

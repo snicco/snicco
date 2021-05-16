@@ -9,7 +9,7 @@
 	use WPEmerge\Application\Application;
 	use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Exceptions\ViewNotFoundException;
+	use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
 
 
 	/** @todo Do we want to keep this class? */

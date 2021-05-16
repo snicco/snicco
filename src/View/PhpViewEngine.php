@@ -12,8 +12,8 @@
 	use WPEmerge\Contracts\PhpViewInterface;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Events\MakingView;
-	use WPEmerge\Exceptions\ViewException;
-	use WPEmerge\Exceptions\ViewNotFoundException;
+	use WPEmerge\ExceptionHandling\Exceptions\ViewException;
+	use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
 	use WPEmerge\Support\Arr;
 
 	class PhpViewEngine implements PhpEngine {

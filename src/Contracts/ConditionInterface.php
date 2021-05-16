@@ -8,9 +8,7 @@
 
 	use WPEmerge\Http\Request;
 
-    /**
-	 * Interface that condition types must implement
-	 */
+
 	interface ConditionInterface {
 
 		/**

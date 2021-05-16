@@ -7,11 +7,10 @@
 	namespace WPEmerge\Routing\Conditions;
 
 	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\UrlableInterface;
+    use WPEmerge\Http\Request;
 
-
-	class PostIdCondition implements ConditionInterface, UrlableInterface {
+    class PostIdCondition implements ConditionInterface, UrlableInterface {
 
 		/**
 		 * @var integer
@@ -23,12 +22,12 @@
 			$this->post_id = $post_id;
 		}
 
-		public function isSatisfied( RequestInterface $request ) : bool {
+		public function isSatisfied( Request $request ) : bool {
 
 			return ( is_singular() && $this->post_id === (int) get_the_ID() );
 		}
 
-		public function getArguments( RequestInterface $request ) : array {
+		public function getArguments( Request $request ) : array {
 
 			return [ 'post_id' => $this->post_id ];
 		}

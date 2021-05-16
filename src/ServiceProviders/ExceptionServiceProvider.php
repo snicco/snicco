@@ -6,12 +6,10 @@
 
 	namespace WPEmerge\ServiceProviders;
 
-	use Psr\Http\Message\ServerRequestInterface;
     use WPEmerge\Contracts\ErrorHandlerInterface;
-	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ServiceProvider;
-	use WPEmerge\Exceptions\NullErrorHandler;
-	use WPEmerge\Exceptions\ProductionErrorHandler;
+	use WPEmerge\ExceptionHandling\NullErrorHandler;
+	use WPEmerge\ExceptionHandling\ProductionErrorHandler;
 	use WPEmerge\Factories\ErrorHandlerFactory;
     use WPEmerge\Http\Request;
 
@@ -29,7 +27,7 @@
 
 				}
 
-				/** @var RequestInterface $request */
+				/** @var Request $request */
 				$request = $this->container->make( Request::class );
 
 				return ErrorHandlerFactory::make(

@@ -8,9 +8,9 @@
 
     use Tests\Test;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
-	use WPEmerge\Exceptions\DebugErrorHandler;
-	use WPEmerge\Exceptions\NullErrorHandler;
-	use WPEmerge\Exceptions\ProductionErrorHandler;
+	use WPEmerge\ExceptionHandling\DebugErrorHandler;
+	use WPEmerge\ExceptionHandling\NullErrorHandler;
+	use WPEmerge\ExceptionHandling\ProductionErrorHandler;
 	use WPEmerge\ServiceProviders\ExceptionServiceProvider;
     use WPEmerge\ServiceProviders\FactoryServiceProvider;
     use WPEmerge\ServiceProviders\HttpServiceProvider;

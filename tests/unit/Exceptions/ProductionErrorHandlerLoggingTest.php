@@ -17,7 +17,7 @@
     use Tests\stubs\TestLogger;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ResponseFactory;
-    use WPEmerge\Exceptions\ProductionErrorHandler;
+    use WPEmerge\ExceptionHandling\ProductionErrorHandler;
     use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ErrorHandlerFactory;
     use WpFacade\WpFacade;

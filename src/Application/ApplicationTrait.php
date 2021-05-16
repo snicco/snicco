@@ -7,7 +7,7 @@
 	namespace WPEmerge\Application;
 
 	use BadMethodCallException;
-	use WPEmerge\Exceptions\ConfigurationException;
+	use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
 
 	/**
 	 * Provides static access to an Application instance.
@@ -65,7 +65,7 @@
 		 * @param  array  $parameters
 		 *
 		 * @return mixed
-		 * @throws \WPEmerge\Exceptions\ConfigurationException
+		 * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
 		 */
 		public static function __callStatic( string $method, array $parameters ) {
 

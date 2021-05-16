@@ -9,7 +9,7 @@
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Exceptions\ConfigurationException;
+    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Factories\HandlerFactory;
     use WPEmerge\Routing\Conditions\AdminAjaxCondition;
     use WPEmerge\Routing\Conditions\AdminPageCondition;
