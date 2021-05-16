@@ -7,16 +7,13 @@
 	namespace WPEmerge\Routing;
 
 	use Closure;
-	use Illuminate\Support\Collection;
 	use Illuminate\Support\Str;
 	use Opis\Closure\SerializableClosure;
-	use WPEmerge\Contracts\RequestInterface;
     use WPEmerge\Contracts\RouteAction;
     use WPEmerge\Contracts\RouteCondition;
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Factories\HandlerFactory;
     use WPEmerge\Http\Request;
-    use WPEmerge\Routing\RouteSignatureParameters;
     use WPEmerge\Support\ReflectionPayload;
 
     class CompiledRoute implements RouteCondition {
@@ -34,7 +31,6 @@
 		 * @var array
 		 */
 		public $defaults;
-
 
 		public function __construct( $attributes ) {
 
@@ -107,63 +103,18 @@
 
 		}
 
-		/**
-         *
-         * @todo Refactor this so that we dont rely on parameter order and parameter names.
-         * @todo It would be better if we would match the parameters based on a combination of type/name
-         * instead of order.
-         */
-		public function _run( Request $request, array $payload ) {
-
-			$params = collect( $this->signatureParameters() );
-
-			$values = collect( [ $request ] )->merge( $payload )
-			                                 ->values();
-
-			if ( $params->count() < $values->count() ) {
-
-				$values = $values->slice( 0, count( $params ) );
-
-			}
-
-			if ( $params->count() > $values->count() ) {
-
-				$params = $params->slice( 0, count( $values ) );
-
-			}
-
-			$payload = $params
-				->map( function ( $param ) {
-
-					return $param->getName();
-
-				} )
-				->values()
-				->combine( $values );
-
-			return $this->action->executeUsing( $this->mergeDefaults($payload)->all() );
-
-		}
-
 		public function run( Request $request, array $payload ) {
 
 		    $payload = array_merge([$request], $payload);
 
             $reflection_payload = new ReflectionPayload($this->action->raw(), array_values($payload));
 
-            $payload = $reflection_payload->build();
-
-			return $this->action->executeUsing( $this->mergeDefaults(collect( $payload ) )->all() );
-
-		}
+            return $this->action->executeUsing(
+                $this->mergeDefaults($reflection_payload->build())
+            );
 
 
 
-		private function signatureParameters() : array {
-
-			return RouteSignatureParameters::fromCallable(
-				$this->action->raw()
-			);
 
 		}
 
@@ -193,11 +144,10 @@
 			       && Str::startsWith( $action, 'C:32:"Opis\\Closure\\SerializableClosure' ) !== false;
 		}
 
-		private function mergeDefaults (Collection $route_payload) : Collection {
+		private function mergeDefaults ( array $route_payload) : array {
 
-			$new = $route_payload->merge($this->defaults);
+			return array_merge($route_payload, $this->defaults);
 
-			return $new;
 
 		}
 
