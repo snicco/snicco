@@ -15,8 +15,6 @@
     use WPEmerge\Routing\Conditions\AdminPageCondition;
     use WPEmerge\Routing\Conditions\QueryStringCondition;
     use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
-    use WPEmerge\Routing\Conditions\AdminCondition;
-    use WPEmerge\Routing\Conditions\AjaxCondition;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Routing\Conditions\CustomCondition;
     use WPEmerge\Routing\Conditions\NegateCondition;
@@ -47,8 +45,6 @@
             'post_status' => PostStatusCondition::class,
             'post_template' => PostTemplateCondition::class,
             'post_type' => PostTypeCondition::class,
-            'ajax' => AjaxCondition::class,
-            'admin' => AdminCondition::class,
             'query_string' => QueryStringCondition::class,
             'admin_page' => AdminPageCondition::class,
             'admin_ajax' => AdminAjaxCondition::class,

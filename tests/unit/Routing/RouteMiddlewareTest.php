@@ -7,7 +7,7 @@
 	namespace Tests\unit\Routing;
 
 	use Mockery;
-    use Tests\BaseTestCase;
+    use Tests\UnitTest;
     use Tests\traits\SetUpRouter;
     use Tests\stubs\Middleware\BarMiddleware;
 	use Tests\stubs\Middleware\BazMiddleware;
@@ -16,7 +16,7 @@
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
-	class RouteMiddlewareTest extends BaseTestCase {
+	class RouteMiddlewareTest extends UnitTest {
 
 		use SetUpRouter;
 

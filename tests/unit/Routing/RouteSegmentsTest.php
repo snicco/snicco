@@ -7,12 +7,12 @@
 	namespace Tests\unit\Routing;
 
 	use Mockery;
-    use Tests\BaseTestCase;
+    use Tests\UnitTest;
     use Tests\traits\SetUpRouter;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request as Request;
 
-	class RouteSegmentsTest extends BaseTestCase {
+	class RouteSegmentsTest extends UnitTest {
 
 		use SetUpRouter;
 

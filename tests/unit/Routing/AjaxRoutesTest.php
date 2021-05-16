@@ -7,13 +7,13 @@
     namespace Tests\unit\Routing;
 
     use Mockery;
-    use Tests\BaseTestCase;
+    use Tests\UnitTest;
     use Tests\traits\CreateWpTestUrls;
     use Tests\traits\SetUpRouter;
     use WPEmerge\ExceptionHandling\Exceptions\RouteLogicException;
     use WPEmerge\Facade\WP;
 
-    class AjaxRoutesTest extends BaseTestCase
+    class AjaxRoutesTest extends UnitTest
     {
 
         use SetUpRouter;

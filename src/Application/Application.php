@@ -85,9 +85,9 @@
          *
          * @param  array  $config  The configuration provided by a user during bootstrapping.
          *
-         * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
+         * @throws ConfigurationException
          */
-        public function boot(array $config = []) : void
+        public function boot( array $config = []) : void
         {
 
 

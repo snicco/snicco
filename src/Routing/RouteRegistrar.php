@@ -8,7 +8,6 @@
 
     use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Support\Arr;
     use WPEmerge\Support\FilePath;
 
     class RouteRegistrar

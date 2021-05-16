@@ -7,7 +7,7 @@
 	namespace Tests\unit\Middleware;
 
 	use Mockery;
-    use Tests\BaseTestCase;
+    use Tests\UnitTest;
 	use Tests\stubs\TestRequest;
     use Tests\traits\AssertsResponse;
     use WPEmerge\Facade\WP;
@@ -17,7 +17,7 @@
 	use WPEmerge\Http\RedirectResponse;
     use WPEmerge\Middleware\RedirectIfAuthenticated;
 
-    class RedirectIfAuthenticatedTest extends BaseTestCase {
+    class RedirectIfAuthenticatedTest extends UnitTest {
 
         use AssertsResponse;
 

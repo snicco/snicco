@@ -10,7 +10,7 @@
     use Tests\traits\CreateContainer;
     use Tests\traits\CreatePsr17Factories;
 
-    class BaseTestCase extends BetterWpHooksTestCase
+    class UnitTest extends BetterWpHooksTestCase
     {
 
         use CreatePsr17Factories;

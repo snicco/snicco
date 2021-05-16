@@ -7,25 +7,19 @@
 	namespace Tests\unit\Exceptions;
 
 	use Exception;
-	use SniccoAdapter\BaseContainerAdapter;
 	use Tests\traits\AssertsResponse;
-    use Tests\BaseTestCase;
-    use Tests\CreateContainer;
-    use Tests\CreatePsr17Factories;
+    use Tests\UnitTest;
 	use Tests\stubs\TestException;
-	use Tests\Test;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ResponseFactory;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\ExceptionHandling\ProductionErrorHandler;
-    use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ErrorHandlerFactory;
     use WPEmerge\Http\Request;
     use WPEmerge\Http\Response;
-    use WpFacade\WpFacade;
 
-    class ProductionErrorHandlerTest extends BaseTestCase {
+    class ProductionErrorHandlerTest extends UnitTest {
 
 		use AssertsResponse;
 

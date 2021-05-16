@@ -6,53 +6,43 @@
 
     namespace Tests\integration\ServiceProviders;
 
+    use Mockery;
+    use Tests\IntegrationTest;
     use Tests\traits\AssertsResponse;
     use Tests\stubs\Conditions\TrueCondition;
     use Tests\stubs\TestApp;
-    use Tests\Test;
     use Tests\stubs\TestRequest;
+    use Tests\traits\CreateDefaultWpApiMocks;
     use Tests\traits\CreateWpTestUrls;
     use WPEmerge\Contracts\RouteMatcher;
+    use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\Router;
-    use WPEmerge\ServiceProviders\AliasServiceProvider;
-    use WPEmerge\ServiceProviders\ExceptionServiceProvider;
-    use WPEmerge\ServiceProviders\FactoryServiceProvider;
-    use WPEmerge\ServiceProviders\HttpServiceProvider;
-    use WPEmerge\ServiceProviders\RoutingServiceProvider;
-    use WPEmerge\ServiceProviders\ViewServiceProvider;
 
-    class RoutingServiceProviderTest extends Test
+    class RoutingServiceProviderTest extends IntegrationTest
     {
 
-        use BootServiceProviders;
         use CreateWpTestUrls;
         use AssertsResponse;
 
-        function neededProviders() : array
-        {
-
-            return [
-                RoutingServiceProvider::class,
-                FactoryServiceProvider::class,
-                AliasServiceProvider::class,
-                HttpServiceProvider::class,
-                ExceptionServiceProvider::class,
-                ViewServiceProvider::class,
-            ];
-
-        }
 
         /** @test */
         public function all_conditions_are_loaded()
         {
 
-            $this->config->set('routing.conditions.true', TrueCondition::class);
+            $this->newTestApp([
+                'routing' => [
+                    'conditions' => [
+                        'true' => TrueCondition::class
+                    ]
+                ]
+            ]);
 
-            $conditions = $this->config->get('routing.conditions');
+
+            $conditions = TestApp::config('routing.conditions');
 
             // user provided
             $this->assertArrayHasKey('true', $conditions);
@@ -65,8 +55,6 @@
             $this->assertArrayHasKey('post_status', $conditions);
             $this->assertArrayHasKey('post_template', $conditions);
             $this->assertArrayHasKey('post_type', $conditions);
-            $this->assertArrayHasKey('ajax', $conditions);
-            $this->assertArrayHasKey('admin', $conditions);
             $this->assertArrayHasKey('query_string', $conditions);
             $this->assertArrayHasKey('request', $conditions);
             $this->assertArrayHasKey('admin_page', $conditions);
@@ -79,6 +67,8 @@
         public function without_caching_a_fast_route_matcher_is_returned()
         {
 
+            $this->newTestApp();
+
             $this->assertInstanceOf(FastRouteMatcher::class, TestApp::resolve(RouteMatcher::class));
 
         }
@@ -89,9 +79,14 @@
 
             $this->expectExceptionMessage('No cache file provided:');
 
-            $this->config->set('routing.cache', true);
+            $this->newTestApp([
+                'routing' => [
+                    'cache' => true
+                ]
+            ]);
 
-            $this->app->resolve(RouteMatcher::class);
+
+            TestApp::resolve(RouteMatcher::class);
 
 
         }
@@ -100,10 +95,14 @@
         public function a_cached_route_matcher_can_be_configured()
         {
 
-            $this->config->set('routing.cache', true);
-            $this->config->set('routing.cache_file', TESTS_DIR.'_data'.DS.'tests.route.cache.php');
+            $this->newTestApp([
+                'routing' => [
+                    'cache' => true,
+                    'cache_file' => TESTS_DIR.'_data'.DS.'tests.route.cache.php'
+                ]
+            ]);
 
-            $matcher = $this->app->resolve(RouteMatcher::class);
+            $matcher = TestApp::resolve(RouteMatcher::class);
 
             $this->assertInstanceOf(CachedFastRouteMatcher::class, $matcher);
 
@@ -113,53 +112,18 @@
         public function the_router_is_loaded_correctly()
         {
 
-            $this->assertInstanceOf(Router::class, $this->app->resolve(Router::class));
+            $this->newTestApp();
+
+            $this->assertInstanceOf(Router::class, TestApp::resolve(Router::class));
 
         }
 
         /** @test */
         public function the_condition_factory_can_be_loaded()
         {
+            $this->newTestApp();
 
-
-            $this->assertInstanceOf(ConditionFactory::class, $this->app->resolve(ConditionFactory::class));
-
-        }
-
-        /** @test */
-        public function ajax_routes_are_loaded_for_ajax_request()
-        {
-
-            $this->config->set('routing.definitions', TESTS_DIR.DS.'stubs'.DS.'Routes');
-
-            WP::shouldReceive('isAdminAjax')->andReturnTrue();
-            WP::shouldReceive('isUserLoggedIn')->andReturnTrue();
-
-            $this->boostrapProviders();
-
-            $router = $this->resolveRouter();
-
-            $request = $this->ajaxRequest('foo_action');
-
-            $response = $router->runRoute($request);
-
-            $this->assertOutput('FOO_ACTION', $response);
-
-        }
-
-        /** @test */
-        public function admin_routes_are_loaded_for_admin_requests_and_have_the_correct_prefix_applied()
-        {
-
-            $this->config->set('routing.definitions', TESTS_DIR.DS.'stubs'.DS.'Routes');
-            WP::shouldReceive('isAdminAjax')->andReturnFalse();
-            WP::shouldReceive('isAdmin')->andReturnTrue();
-            $this->boostrapProviders();
-
-            $router = $this->resolveRouter();
-            $response = $router->runRoute($this->adminRequestTo('foo'));
-
-            $this->assertOutput('FOO', $response);
+            $this->assertInstanceOf(ConditionFactory::class, TestApp::resolve(ConditionFactory::class));
 
         }
 
@@ -167,12 +131,15 @@
         public function web_routes_are_loaded_by_default()
         {
 
-            $this->config->set('routing.definitions', TESTS_DIR.DS.'stubs'.DS.'Routes');
-            $this->boostrapProviders();
+            $this->newTestApp([
+                'routing' => [
+                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                ]
+            ]);
 
             /** @var Router $router */
-            $router = $this->app->resolve(Router::class);
-
+            $router = TestApp::resolve(Router::class);
+            // Needed because the sync of middleware to the router happens in the kernel.
             $router->middlewareGroup('web', []);
 
             $request = TestRequest::from('GET', 'foo');
@@ -183,58 +150,160 @@
 
         }
 
+
+        /** @test */
+        public function ajax_routes_are_loaded_for_ajax_request()
+        {
+
+            $this->newTestApp([
+                'routing' => [
+                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                ],
+                'providers' => [
+                    SimulateAjaxProvider::class
+                ]
+            ]);
+
+
+            /** @var Router $router */
+            $router = TestApp::resolve(Router::class);
+            $router->middlewareGroup('ajax', []);
+
+            $request = $this->ajaxRequest('foo_action');
+
+            $response = $router->runRoute($request);
+
+            $this->assertOutput('FOO_ACTION', $response);
+
+            Mockery::close();
+            WP::reset();
+
+        }
+
+        /** @test */
+        public function admin_routes_are_loaded_for_admin_requests_and_have_the_correct_prefix_applied()
+        {
+
+            $this->newTestApp([
+                'routing' => [
+                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                ],
+                'providers' => [
+                    SimulateAdminProvider::class
+                ]
+            ]);
+
+
+            /** @var Router $router */
+            $router = TestApp::resolve(Router::class);
+            $router->middlewareGroup('admin', []);
+
+            $response = $router->runRoute($this->adminRequestTo('foo'));
+
+            $this->assertOutput('FOO', $response);
+
+            Mockery::close();
+            WP::reset();
+
+        }
+
+
+
         /** @test */
         public function named_groups_are_applied_for_admin_routes()
         {
-            $this->config->set('routing.definitions', TESTS_DIR.DS.'stubs'.DS.'Routes');
-            WP::shouldReceive('pluginPageUrl')->andReturnUsing(function ($page) {
+            $this->newTestApp([
+                'routing' => [
+                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                ],
+                'providers' => [
+                    SimulateAdminProvider::class
+                ]
+            ]);
 
-                return $this->adminUrlTo($page);
-
-            });
-            WP::shouldReceive('isAdminAjax')->andReturnFalse();
-            WP::shouldReceive('isAdmin')->andReturnTrue();
-            $this->boostrapProviders();
-
-            $router = $this->resolveRouter();
+            /** @var Router $router */
+            $router = TestApp::resolve(Router::class);
+            $router->middlewareGroup('admin', []);
 
             $url = $router->getRouteUrl('admin.foo');
 
             $this->assertSame($this->adminUrlTo('foo'), $url);
+
+            Mockery::close();
+            WP::reset();
 
         }
 
         /** @test */
         public function named_groups_are_applied_for_ajax_routes()
         {
-            $this->config->set('routing.definitions', TESTS_DIR.DS.'stubs'.DS.'Routes');
-            WP::shouldReceive('isAdminAjax')->andReturnTrue();
-            WP::shouldReceive('isAdmin')->andReturnTrue();
-            $this->boostrapProviders();
 
-            $router = $this->resolveRouter();
+            $this->newTestApp([
+                'routing' => [
+                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                ],
+                'providers' => [
+                    SimulateAjaxProvider::class
+                ]
+            ]);
+
+            /** @var Router $router */
+            $router = TestApp::resolve(Router::class);
+            $router->middlewareGroup('ajax', []);
+
 
             $expected = $this->ajaxUrl();
 
             $this->assertSame($expected, $router->getRouteUrl('ajax.foo'));
 
+            Mockery::close();
+            WP::reset();
 
         }
 
 
+    }
 
-        private function resolveRouter() : Router
+    class SimulateAjaxProvider extends ServiceProvider
+    {
+
+        use CreateDefaultWpApiMocks;
+
+        public function register() : void
+        {
+            $this->createDefaultWpApiMocks();
+            WP::shouldReceive('isAdminAjax')->andReturnTrue();
+            WP::shouldReceive('isUserLoggedIn')->andReturnTrue();
+        }
+
+        function bootstrap() : void
         {
 
-            /** @var Router $router */
-            $router = $this->app->resolve(Router::class);
-
-            $router->middlewareGroup('ajax', []);
-            $router->middlewareGroup('admin', []);
-            $router->middlewareGroup('web', []);
-
-            return $router;
         }
 
+    }
+
+    class SimulateAdminProvider extends ServiceProvider
+    {
+        use CreateDefaultWpApiMocks;
+        use CreateWpTestUrls;
+
+        public function register() : void
+        {
+            $this->createDefaultWpApiMocks();
+
+            WP::shouldReceive('isAdminAjax')->andReturnFalse();
+            WP::shouldReceive('isAdmin')->andReturnTrue();
+            WP::shouldReceive('pluginPageUrl')->andReturnUsing(function ($page) {
+
+                return $this->adminUrlTo($page);
+
+            });
+        }
+
+        function bootstrap() : void
+        {
+
+        }
 
     }

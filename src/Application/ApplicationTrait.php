@@ -65,7 +65,7 @@
 		 * @param  array  $parameters
 		 *
 		 * @return mixed
-		 * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
+		 * @throws ConfigurationException
 		 */
 		public static function __callStatic( string $method, array $parameters ) {
 

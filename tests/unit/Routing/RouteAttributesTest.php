@@ -9,7 +9,7 @@
 
 	use FastRoute\RouteCollector;
     use Mockery;
-    use Tests\BaseTestCase;
+    use Tests\UnitTest;
     use Tests\traits\SetUpRouter;
     use Tests\stubs\Middleware\BarMiddleware;
 	use Tests\stubs\Middleware\FooMiddleware;
@@ -19,7 +19,7 @@
 
     use function FastRoute\simpleDispatcher;
 
-    class RouteAttributesTest extends BaseTestCase {
+    class RouteAttributesTest extends UnitTest {
 
 		use SetUpRouter;
 

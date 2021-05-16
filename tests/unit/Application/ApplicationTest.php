@@ -9,7 +9,7 @@
     use Contracts\ContainerAdapter;
     use Mockery;
     use Psr\Http\Message\ServerRequestInterface;
-    use Tests\BaseTestCase;
+    use Tests\UnitTest;
     use Tests\stubs\TestContainer;
     use Tests\traits\CreateDefaultWpApiMocks;
     use WPEmerge\Application\Application;
@@ -19,7 +19,7 @@
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
-    class ApplicationTest extends BaseTestCase
+    class ApplicationTest extends UnitTest
     {
 
         use CreateDefaultWpApiMocks;

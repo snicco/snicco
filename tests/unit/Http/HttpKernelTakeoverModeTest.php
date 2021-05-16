@@ -7,7 +7,7 @@
 	namespace Tests\unit\Http;
 
 	use Mockery;
-    use Tests\BaseTestCase;
+    use Tests\UnitTest;
     use Tests\traits\CreateDefaultWpApiMocks;
     use Tests\traits\SetUpKernel;
     use Tests\stubs\Middleware\GlobalMiddleware;
@@ -17,7 +17,7 @@
     use WPEmerge\ExceptionHandling\Exceptions\InvalidResponseException;
     use WPEmerge\Facade\WP;
 
-    class HttpKernelTakeoverModeTest extends BaseTestCase {
+    class HttpKernelTakeoverModeTest extends UnitTest {
 
 	    use CreateDefaultWpApiMocks;
 		use SetUpKernel;

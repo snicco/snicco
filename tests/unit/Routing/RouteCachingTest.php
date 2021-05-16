@@ -8,7 +8,7 @@
 
 	use Contracts\ContainerAdapter;
     use Tests\traits\AssertsResponse;
-    use Tests\BaseTestCase;
+    use Tests\UnitTest;
     use Tests\traits\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
 	use WPEmerge\Factories\HandlerFactory;
@@ -19,7 +19,7 @@
 	use WPEmerge\Routing\Router;
 	use WpFacade\WpFacade;
 
-	class RouteCachingTest extends BaseTestCase {
+	class RouteCachingTest extends UnitTest {
 
 		use CreateDefaultWpApiMocks;
         use AssertsResponse;
