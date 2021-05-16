@@ -165,12 +165,12 @@
             $app1 = $this->newApplication();
             $app1->boot();
 
-            $this->assertFalse($app1->isTakeOverMode());
+            $this->assertFalse($app1->handlesExceptionsGlobally());
 
             $app2 = $this->newApplication();
             $app2->boot(['strict_mode' => true]);
 
-            $this->assertTrue($app2->isTakeOverMode());
+            $this->assertTrue($app2->handlesExceptionsGlobally());
 
         }
 

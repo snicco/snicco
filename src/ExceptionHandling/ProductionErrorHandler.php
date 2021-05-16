@@ -62,6 +62,8 @@
 
 			$response = $this->createResponseObject( $exception );
 
+			$response = $this->correctContentType($response);
+
 			if ( $in_routing_flow ) {
 
 				return $response;
@@ -125,7 +127,7 @@
 
 			if ( method_exists( $e, 'render' ) ) {
 
-				/** @var ResponseInterface $response */
+				/** @var Response $response */
 				$response = $this->container->call( [ $e, 'render' ] );
 
 				if ( ! $response instanceof Response ) {
@@ -180,7 +182,18 @@
 			return [];
 		}
 
+        private function correctContentType(Response $response)
+        {
+
+            if ( $this->is_ajax ) {
+
+                return $response->withHeader('Content-Type', 'application/json');
+
+            }
+
+            return $response->withHeader('Content-Type', 'text/html');
+
+        }
 
 
-
-	}
+    }

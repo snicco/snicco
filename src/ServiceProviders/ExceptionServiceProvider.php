@@ -17,6 +17,8 @@
 
 		public function register() : void {
 
+            $this->config->extend('exception_handling.global', false);
+
 			$this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
 
 			$this->container->singleton( ErrorHandlerInterface::class, function () {

@@ -7,8 +7,6 @@
 	namespace WPEmerge\Routing;
 
 	use FastRoute\Dispatcher;
-	use FastRoute\RouteCollector;
-	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\RouteMatcher;
 	use WPEmerge\Facade\WP;
 	use WPEmerge\Factories\ConditionFactory;
@@ -16,12 +14,9 @@
     use WPEmerge\Http\Request;
     use WPEmerge\Support\Url;
 	use WPEmerge\Support\UrlParser;
-	use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
 	use WPEmerge\Support\Arr;
 
-	use WPEmerge\Support\Str;
 
-	use function FastRoute\simpleDispatcher;
 
 	/** @todo this class needs to be broken up into a value object that contains route definitions and a Service class that dispatches the dynamic urls */
 	class RouteCollection {
@@ -191,7 +186,6 @@
 			return $this->applyHashSuffix( $hash, $request );
 
 		}
-
 
 		private function findRoute( Request $request ) : RouteMatch {
 

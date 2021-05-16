@@ -27,7 +27,7 @@
 
         public function __construct( Request $request) {
 
-			$this->request = $request;
+			$this->request = $request->withType( static::class );
 
 		}
 

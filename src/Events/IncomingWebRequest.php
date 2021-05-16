@@ -7,7 +7,6 @@
 	namespace WPEmerge\Events;
 
 	use BetterWpHooks\Traits\DispatchesConditionally;
-	use WPEmerge\Contracts\RequestInterface;
     use WPEmerge\Http\Request;
 
     class IncomingWebRequest extends IncomingRequest {
@@ -25,9 +24,6 @@
 			$this->template = $template;
 
 			parent::__construct($request);
-
-			$this->request->withType( get_class( $this ) );
-
 
 		}
 

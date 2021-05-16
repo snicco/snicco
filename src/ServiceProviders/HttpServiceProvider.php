@@ -87,7 +87,6 @@
 
         }
 
-
         public function bootstrap() : void
         {
 
@@ -96,12 +95,6 @@
             $kernel->setRouteMiddlewareAliases($this->config->get('middleware.aliases', []));
             $kernel->setMiddlewareGroups($this->config->get('middleware.groups', []));
             $kernel->setMiddlewarePriority($this->config->get('middleware.priority', []));
-
-            if ($this->config->get(ApplicationServiceProvider::STRICT_MODE, false)) {
-
-                $kernel->runInTakeoverMode();
-
-            }
 
 
         }

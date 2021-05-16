@@ -7,6 +7,7 @@
     namespace WPEmerge\Routing;
 
     use WPEmerge\Contracts\ConditionInterface;
+    use WPEmerge\Contracts\RouteAction;
     use WPEmerge\Contracts\RouteCondition;
     use WPEmerge\Contracts\SetsRouteAttributes;
     use WPEmerge\Factories\ConditionFactory;
@@ -34,10 +35,10 @@
         /** @var string|Closure|array */
         private $action;
 
-        /** @var \WPEmerge\Contracts\RouteAction */
+        /** @var RouteAction */
         private $compiled_action;
 
-        /** @var \WPEmerge\Routing\ConditionBlueprint[] */
+        /** @var ConditionBlueprint[] */
         private $conditions;
 
         /**
@@ -72,7 +73,7 @@
 
         }
 
-        private function parseUrl(string $url)
+        private function parseUrl(string $url) :string
         {
             $url = UrlParser::replaceAdminAliases($url);
 

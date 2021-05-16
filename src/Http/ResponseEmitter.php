@@ -12,9 +12,10 @@
      *
      * Modified Version of Slims Response Emitter.
      *
+     * @link https://github.com/slimphp/Slim/blob/4.x/Slim/ResponseEmitter.php
+     *
      * Changed method visibility to accommodate Wordpress needs.
      *
-     * Slim Framework (https://slimframework.com)
      *
      */
     class ResponseEmitter
@@ -30,7 +31,6 @@
          */
         public function __construct(int $responseChunkSize = 4096)
         {
-
             $this->responseChunkSize = $responseChunkSize;
         }
 
@@ -63,7 +63,7 @@
         public function emitHeaders(ResponseInterface $response) : void
         {
 
-            if ($this->headersSent()) {
+            if (headers_sent()) {
 
                 return;
 
@@ -106,13 +106,6 @@
          */
         public function emitBody(ResponseInterface $response) : void
         {
-
-            if ($this->outPutSent()) {
-
-                return;
-
-            }
-
 
             $body = $response->getBody();
 
@@ -173,21 +166,6 @@
             return $seekable ? $stream->read(1) === '' : $stream->eof();
         }
 
-        private function headersSent() : bool
-        {
-
-            return headers_sent();
-
-        }
-
-        private function outPutSent() : bool
-        {
-
-            return false;
-            // This does not work in wordpress admin pages.
-            // return ob_get_level() > 0 && ob_get_length() > 0;
-
-        }
 
 
     }

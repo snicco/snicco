@@ -11,12 +11,10 @@
 
 	class ApplicationServiceProvider extends ServiceProvider {
 
-		public const STRICT_MODE = 'strict_mode';
 
 		public function register() : void {
 
-
-			$this->config->extend( static::STRICT_MODE, false );
+		    $this->config->extend('always_run_middleware', false);
 
 
 			$this->container->singleton( WordpressApi::class, function () {

@@ -80,6 +80,29 @@
 
 		}
 
+		/** @test */
+		public function global_exception_handling_is_disabled_by_default () {
+
+		    $this->newTestApp();
+
+		    $this->assertFalse(TestApp::config('exception_handling.global', ''));
+
+		}
+
+		/** @test */
+		public function global_exception_handling_can_be_enabled() {
+
+		    $this->newTestApp([
+		        'exception_handling' => [
+		            'global' => true
+                ]
+            ]);
+
+		    $this->assertTrue(TestApp::config('exception_handling.global', ''));
+
+		}
+
+
 
 	}
 

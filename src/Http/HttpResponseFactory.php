@@ -138,13 +138,18 @@
 
             }
 
-            return $this->null();
+            return $this->invalidResponse();
 
         }
 
         public function redirect( int $status_code = 302 ) : RedirectResponse
         {
             return new RedirectResponse( $this->make( $status_code) );
+        }
+
+        public function invalidResponse() : InvalidResponse
+        {
+            return new InvalidResponse($this->response_factory->createResponse(500));
         }
 
     }
