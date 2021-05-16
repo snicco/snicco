@@ -174,9 +174,7 @@
 			foreach ( $routes as $route ) {
 
 				$url = UrlParser::isDynamic( $url = $route->getUrl() ) ? $url : $this->hash( $url );
-
 				$route = ( $cache ) ? $route->compile()->cacheable() : $route->compile();
-
 				$this->route_matcher->add( $method, $this->normalizePath( $url ), (array) $route );
 
 			}
@@ -266,6 +264,9 @@
 
 		}
 
+		/** @todo FastRoute does indeed support trailing slashes. Right now is impossible to create trailing slash routes.
+         *  @link https://github.com/nikic/FastRoute/issues/106
+         */
 		private function normalizePath( string $path ) : string {
 
 			return Url::toRouteMatcherFormat( $path );

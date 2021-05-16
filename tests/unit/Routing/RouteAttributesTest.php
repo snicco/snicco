@@ -7,7 +7,8 @@
 	namespace Tests\unit\Routing;
 
 
-	use Mockery;
+	use FastRoute\RouteCollector;
+    use Mockery;
     use Tests\BaseTestCase;
     use Tests\traits\SetUpRouter;
     use Tests\stubs\Middleware\BarMiddleware;
@@ -16,9 +17,9 @@
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
+    use function FastRoute\simpleDispatcher;
 
-
-	class RouteAttributesTest extends BaseTestCase {
+    class RouteAttributesTest extends BaseTestCase {
 
 		use SetUpRouter;
 
@@ -38,6 +39,8 @@
             WP::setFacadeContainer(null);
 
         }
+
+
 
 
         /**
