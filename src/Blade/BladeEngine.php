@@ -49,7 +49,7 @@
             catch (\Throwable $e ) {
 
                 throw new ViewNotFoundException(
-                    'It was not possible to create a view from: [' . implode(',', $views) . '] with the blade engine.' . PHP_EOL . $e->getMessage()
+                    'It was not possible to create a view from: [' . implode(',', Arr::wrap($views)) . '] with the blade engine.' . PHP_EOL . $e->getMessage()
                 );
 
             }

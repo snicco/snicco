@@ -6,7 +6,9 @@
 
     namespace Tests\integration\Blade;
 
+    use Illuminate\Support\Facades\Facade;
     use PHPUnit\Framework\Assert;
+    use WPEmerge\Blade\BladeDirectiveServiceProvider;
     use WPEmerge\Blade\BladeServiceProvider;
     use WPEmerge\Contracts\ViewInterface;
 
@@ -27,19 +29,28 @@
 
             $this->clearViewCache();
 
+            Facade::clearResolvedInstances();
+
             parent::tearDown();
+
+
+        }
+
+        private function clearViewCache() {
+
+            $this->rmdir(BLADE_CACHE);
 
         }
 
         private function newApp()
         {
 
-
-            $this->rmdir(BLADE_CACHE);
+            $this->clearViewCache();
 
             $this->newTestApp([
                 'providers' => [
                     BladeServiceProvider::class,
+                    BladeDirectiveServiceProvider::class
                 ],
                 'blade' => [
                     'cache' => BLADE_CACHE,
@@ -56,14 +67,14 @@
 
             $actual = ($actual instanceof ViewInterface) ? $actual->toString() :$actual;
 
-            Assert::assertSame($expected, trim($actual));
+            $actual = preg_replace( "/\r|\n/", "", $actual );
+
+            Assert::assertSame($expected, trim($actual), 'View not rendered correctly.');
 
         }
 
-        private function clearViewCache() {
 
-            $this->rmdir(BLADE_CACHE);
 
-        }
+
 
     }

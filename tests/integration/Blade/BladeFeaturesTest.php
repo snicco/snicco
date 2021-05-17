@@ -14,10 +14,12 @@
     {
 
         use AssertBladeView;
+        use InteractsWithWordpress;
 
         /** @test */
         public function xss_protection_works()
         {
+
 
             $view = $this->view('xss');
 
@@ -55,11 +57,9 @@
             $content = $view->toString();
             $this->assertViewContent('I have one record!', $content);
 
-
-            $view = $this->view('if')->with('records', ['foo','bar']);
+            $view = $this->view('if')->with('records', ['foo', 'bar']);
             $content = $view->toString();
             $this->assertViewContent('I have multiple records!', $content);
-
 
             $view = $this->view('if')->with('records', []);
             $content = $view->toString();
@@ -69,12 +69,12 @@
         }
 
         /** @test */
-        public function unless_works () {
+        public function unless_works()
+        {
 
             $view = $this->view('unless')->with('foo', 'foo');
             $content = $view->toString();
             $this->assertViewContent('', $content);
-
 
             $view = $this->view('unless')->with('foo', 'bar');
             $content = $view->toString();
@@ -83,7 +83,8 @@
         }
 
         /** @test */
-        public function empty_isset_works () {
+        public function empty_isset_works()
+        {
 
             $view = $this->view('isset-empty')->with('isset', 'foo')->with('empty', 'blabla');
             $content = $view->toString();
@@ -94,29 +95,101 @@
             $this->assertViewContent('EMPTY', $content);
 
 
+        }
+
+        /** @test */
+        public function including_a_subview_works()
+        {
+
+            $view = $this->view('parent')->with('greeting', 'Hello');
+            $content = $view->toString();
+            $this->assertViewContent('Hello calvin', $content);
 
         }
 
         /** @test */
-        public function custom_auth_directive_works () {
+        public function include_if_works()
+        {
 
-            $foo = 'bar';
-
-            Blade::directive('foo', function () {
-
-            });
-
-            $user = $this->factory()->user->create();
-            wp_set_current_user($user);
-
-            $view = $this->view('auth');
+            $view = $this->view('include-if')->with('greeting', 'Hello');
             $content = $view->toString();
-            $this->assertViewContent('AUTH', $content);
+            $this->assertViewContent('Hello calvin', $content);
+
+            $view = $this->view('include-if-bogus')->with('greeting', 'Hello');
+            $content = $view->toString();
+            $this->assertViewContent('', $content);
 
 
         }
 
+        /** @test */
+        public function include_when_works()
+        {
 
+            $view = $this->view('include-when')->with(['greeting' => 'Hello', 'foo' => 'foo']);
+            $content = $view->toString();
+            $this->assertViewContent('Hello calvin', $content);
+
+            $view = $this->view('include-when')->with(['greeting' => 'Hello', 'foo' => 'bogus']);
+            $content = $view->toString();
+            $this->assertViewContent('', $content);
+
+
+        }
+
+        /** @test */
+        public function include_unless_works()
+        {
+
+            $view = $this->view('include-unless')->with(['greeting' => 'Hello', 'foo' => 'foo']);
+            $content = $view->toString();
+            $this->assertViewContent('', $content);
+
+            $view = $this->view('include-unless')->with(['greeting' => 'Hello', 'foo' => 'bar']);
+            $content = $view->toString();
+            $this->assertViewContent('Hello Calvin', $content);
+
+
+        }
+
+        /** @test */
+        public function include_first_works () {
+
+            $view = $this->view('include-first')->with(['greeting' => 'Hello', 'foo' => 'foo']);
+            $content = $view->toString();
+            $this->assertViewContent('Hello Calvin', $content);
+
+        }
+
+        /** @test */
+        public function each_works () {
+
+            $user1 = $this->newAdmin(['first_name' => 'Calvin']);
+            $user2 = $this->newAdmin(['first_name' => 'John']);
+            $user3 = $this->newAdmin(['first_name' => 'Jane']);
+
+            $collection = collect([$user1,$user2,$user3]);
+
+            $view = $this->view('each')->with(['users' => $collection]);
+            $content = $view->toString();
+            $this->assertViewContent('Calvin.John.Jane.', $content);
+
+
+            $view = $this->view('each')->with(['users'=>[]]);
+            $content = $view->toString();
+            $this->assertViewContent('NO USERS', $content);
+
+
+        }
+
+        /** @test */
+        public function raw_php_works () {
+
+            $view = $this->view('raw-php');
+            $content = $view->toString();
+            $this->assertViewContent('10', $content);
+
+        }
 
         private function view(string $view)
         {
@@ -124,6 +197,8 @@
             return TestApp::view('blade-features.'.$view);
 
         }
+
+
 
 
 

@@ -1,0 +1,1 @@
+@includeIf('child', ['name'=>'calvin', 'greeting', $greeting ])

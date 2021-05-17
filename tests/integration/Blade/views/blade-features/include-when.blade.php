@@ -1,0 +1,1 @@
+@includeWhen($foo === 'foo', 'child', ['name' => 'calvin', 'greeting' => $greeting])
