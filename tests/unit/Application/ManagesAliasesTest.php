@@ -9,6 +9,7 @@
 	use PHPUnit\Framework\TestCase;
 	use SniccoAdapter\BaseContainerAdapter;
     use stdClass;
+    use Tests\stubs\Foo;
     use Tests\traits\CreateContainer;
     use WPEmerge\Application\ManagesAliases;
 
@@ -121,6 +122,12 @@
 
 		}
 
+		/** @test */
+		public function services_can_be_resolved_from_the_container () {
+
+		    $this->assertInstanceOf(Foo::class, $this->subject->resolve(Foo::class));
+
+		}
 
 	}
 

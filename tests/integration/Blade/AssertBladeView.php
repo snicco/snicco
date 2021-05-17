@@ -17,7 +17,7 @@
 
         private function clearViewCache() {
 
-            $this->rmdir(BLADE_CACHE);
+            // $this->rmdir(BLADE_CACHE);
 
         }
 
@@ -67,7 +67,8 @@
 
             $actual = ($actual instanceof ViewInterface) ? $actual->toString() :$actual;
 
-            $actual = preg_replace( "/\r|\n/", "", $actual );
+            $actual = preg_replace( "/\r|\n|\s{2,}/", "", $actual );
+
 
             Assert::assertSame($expected, trim($actual), 'View not rendered correctly.');
 

@@ -33,15 +33,12 @@
 		 *
 		 * @param  string  $key
 		 *
-		 * @return mixed|null
+		 * @return mixed
 		 */
 		public function resolve( string $key ) {
 
-			if ( ! isset( $this->container_adapter[ $key ] ) ) {
-				return null;
-			}
-
 			return $this->container_adapter[ $key ];
+
 		}
 
 
