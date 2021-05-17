@@ -26,8 +26,9 @@
 
         protected function view(string $view)
         {
+            $view = str_replace('components.', '', $view);
 
-            return $this->engine->make($view);
+            return $this->engine->make('components.'.$view);
 
         }
 

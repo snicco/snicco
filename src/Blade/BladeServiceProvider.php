@@ -16,6 +16,7 @@
     use Illuminate\View\View;
     use Illuminate\View\ViewServiceProvider;
     use SniccoAdapter\BaseContainerAdapter;
+    use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewEngineInterface;
     use WPEmerge\Contracts\ViewServiceInterface;
@@ -32,8 +33,11 @@
             $views = $this->config->get('blade.views', []);
             $cache_path = $this->config->get('blade.cache', null);
 
+            $this->config->set('view.paths', Arr::$views);
+            $this->config->set('view.compiled', $cache_path);
+
             $this->setUpBindings($container, $views, $cache_path);
-            $this->setUpLaravelServiceProvider($container);
+            $this->registerLaravelProvider($container);
 
             $this->container->singleton(ViewEngineInterface::class, function () {
 
@@ -72,7 +76,7 @@
 
         }
 
-        private function setUpLaravelServiceProvider (Container $container) {
+        private function registerLaravelProvider (Container $container) {
 
 
             ( ( new ViewServiceProvider($container)) )->register();
@@ -132,6 +136,7 @@
                 $component->setEngine($container->make(ViewEngineInterface::class));
 
             });
+
 
         }
 

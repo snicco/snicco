@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "874146f89b2921c16f777d3c93850bb9",
+    "content-hash": "1bfc64275673abfdd53315ca5e5938d2",
     "packages": [
         {
             "name": "calvinalkan/base-container",
@@ -3747,16 +3747,16 @@
         },
         {
             "name": "illuminate/view",
-            "version": "v8.41.0",
+            "version": "dev-feature_view_interface_instead_of_view_implementation",
             "source": {
                 "type": "git",
-                "url": "https://github.com/illuminate/view.git",
-                "reference": "696a1d6d2213be192429e97245a3d2bb4d6d1849"
+                "url": "https://github.com/calvinalkan/view.git",
+                "reference": "b3e3ea90732f99cdda06dabe8d20be4d1424b16b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/illuminate/view/zipball/696a1d6d2213be192429e97245a3d2bb4d6d1849",
-                "reference": "696a1d6d2213be192429e97245a3d2bb4d6d1849",
+                "url": "https://api.github.com/repos/calvinalkan/view/zipball/b3e3ea90732f99cdda06dabe8d20be4d1424b16b",
+                "reference": "b3e3ea90732f99cdda06dabe8d20be4d1424b16b",
                 "shasum": ""
             },
             "require": {
@@ -3781,7 +3781,6 @@
                     "Illuminate\\View\\": ""
                 }
             },
-            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -3797,7 +3796,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2020-11-02T14:01:41+00:00"
+            "time": "2021-04-15T11:59:24+00:00"
         },
         {
             "name": "lucatume/wp-browser",
@@ -7853,7 +7852,8 @@
     "minimum-stability": "dev",
     "stability-flags": {
         "calvinalkan/better-wordpress-database": 20,
-        "lucatume/wp-browser": 20
+        "lucatume/wp-browser": 20,
+        "illuminate/view": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

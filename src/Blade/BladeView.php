@@ -7,20 +7,21 @@
     namespace WPEmerge\Blade;
 
 
+    use Illuminate\Contracts\View\View as IlluminateViewContracts;
     use Illuminate\View\View as IlluminateView;
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\ExceptionHandling\Exceptions\ViewException;
     use WPEmerge\Support\Arr;
 
-    class BladeView implements ViewInterface
+    class BladeView implements ViewInterface, IlluminateViewContracts
     {
 
         /**
-         * @var IlluminateView
+         * @var IlluminateView|IlluminateViewContracts
          */
         private $illuminate_view;
 
-        public function __construct(IlluminateView $illuminate_view)
+        public function __construct($illuminate_view)
         {
             $this->illuminate_view = $illuminate_view;
         }
@@ -85,9 +86,5 @@
             return $this->context();
         }
 
-        public function toHtml()
-        {
-            return $this->illuminate_view->toHtml();
-        }
 
     }
