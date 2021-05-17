@@ -20,7 +20,7 @@
     use WPEmerge\ExceptionHandling\ProductionErrorHandler;
     use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ErrorHandlerFactory;
-    use WpFacade\WpFacade;
+    use WPEmerge\Facade\WpFacade;
 
     class ProductionErrorHandlerLoggingTest extends UnitTest
     {

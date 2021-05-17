@@ -16,15 +16,6 @@
 		 */
 		public function toString() :string;
 
-		/**
-		 * Get context values.
-		 *
-		 * @param  string|null  $key
-		 * @param  mixed|null  $default
-		 *
-		 * @return mixed
-		 */
-		public function context( string $key = null, $default = null );
 
 		/**
 		 * Add context values.
@@ -35,5 +26,17 @@
 		 * @return ViewInterface
 		 */
 		public function with( $key, $value = null ) :ViewInterface;
+
+        /**
+         * Get context values.
+         *
+         * @param  string|null  $key
+         * @param  mixed|null  $default
+         *
+         * @return mixed
+         */
+        public function context( string $key = null, $default = null );
+
+        public function name();
 
 	}

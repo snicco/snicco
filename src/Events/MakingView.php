@@ -12,7 +12,7 @@
 	class MakingView extends ApplicationEvent {
 
 		/**
-		 * @var \WPEmerge\Contracts\ViewInterface
+		 * @var ViewInterface
 		 */
 		private $view;
 

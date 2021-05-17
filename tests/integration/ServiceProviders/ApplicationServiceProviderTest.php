@@ -12,7 +12,7 @@
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Facade\WP;
-	use WpFacade\WpFacade;
+	use WPEmerge\Facade\WpFacade;
 
 	class ApplicationServiceProviderTest extends IntegrationTest {
 
@@ -42,7 +42,10 @@
 
 			$this->assertTrue( WP::isAdmin() );
 
-		}
+            Mockery::close();
+            WP::reset();
+
+        }
 
 		/** @test */
 		public function the_error_handler_gets_unregistered_by_default_after_booting_the_app () {
@@ -56,6 +59,7 @@
 		    $this->assertTrue(true);
 
 		    Mockery::close();
+            WP::reset();
 
 
 		}
@@ -75,6 +79,7 @@
 		    $this->assertTrue(true);
 
             Mockery::close();
+            WP::reset();
 
 
         }

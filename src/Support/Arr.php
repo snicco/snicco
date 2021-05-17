@@ -17,7 +17,7 @@
 
 		public static function firstEl( $array ) {
 
-			return self::nthEl($array, 0);
+			return self::nthEl(Arr::wrap($array), 0);
 
 		}
 

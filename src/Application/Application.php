@@ -22,7 +22,7 @@
     use WPEmerge\ServiceProviders\HttpServiceProvider;
     use WPEmerge\ServiceProviders\RoutingServiceProvider;
     use WPEmerge\ServiceProviders\ViewServiceProvider;
-    use WpFacade\WpFacade;
+    use WPEmerge\Facade\WpFacade;
 
     class Application
     {
