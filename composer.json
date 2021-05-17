@@ -44,8 +44,7 @@
     "php": "^7.3",
     "ext-json": "*",
     "calvinalkan/base-container": "0.1.*",
-    "calvinalkan/better-wordpress-hooks": "0.1.5",
-    "calvinalkan/wp-facade": "0.1.0",
+    "calvinalkan/better-wordpress-hooks": "0.1.8",
     "illuminate/collections": "8.35.1",
     "illuminate/config": "8.35.1",
     "symfony/http-foundation": "5.2.7",
@@ -65,7 +64,7 @@
     "phpunit/phpunit": "^9.0",
     "calvinalkan/better-wordpress-database": "dev-master",
     "lucatume/wp-browser": "dev-better-env-names",
-    "calvinalkan/wordpress-hook-api-clone": "dev-master"
+    "illuminate/view": "8.41.0"
   },
 
   "suggest": {

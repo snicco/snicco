@@ -10,8 +10,6 @@
 	use BetterWpHooks\Dispatchers\WordpressDispatcher;
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
-    use Tests\stubs\TestRequest;
-    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\AdminBodySendable;
 	use WPEmerge\Events\BodySent;
 	use WPEmerge\Events\IncomingAdminRequest;

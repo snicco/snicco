@@ -93,34 +93,9 @@
 
 			$view = $this->make( $views )->with( $context );
 
-			$this->triggerPartialHooks( $view->name() );
-
 			return $view->toString();
 
 		}
 
-		/**
-		 * Trigger core hooks for a partial, if any.
-		 *
-		 *
-		 * @param  string  $name
-		 *
-		 * @return void
-		 */
-		private function triggerPartialHooks( string $name ) {
-
-			if ( ! function_exists( 'apply_filters' ) ) {
-				// We are not in a WordPress environment - skip triggering hooks.
-				return;
-			}
-
-			$core_partial = '/^(header|sidebar|footer)(?:-(.*?))?(\.|$)/i';
-			$matches      = [];
-			$is_partial   = preg_match( $core_partial, $name, $matches );
-
-			if ( $is_partial && apply_filters( "wpemerge.partials.{$matches[1]}.hook", true ) ) {
-				do_action( "get_{$matches[1]}", $matches[2] );
-			}
-		}
 
 	}

@@ -108,9 +108,8 @@
 
             $this->newTestApp();
 
-            $this->assertFalse('');
 
-            $this->assertFalse(TestApp::config('always_with_middleware', ''));
+            $this->assertFalse(TestApp::config('always_run_middleware', ''));
 
 
         }

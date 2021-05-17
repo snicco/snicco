@@ -17,7 +17,7 @@
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
 	use WPEmerge\Routing\Router;
-	use WpFacade\WpFacade;
+	use WPEmerge\Facade\WpFacade;
 
 	class RouteCachingTest extends UnitTest {
 

@@ -34,8 +34,7 @@
 
             $this->container = $this->createContainer();
             WP::setFacadeContainer($this->container);
-            $this->setUpWp(VENDOR_DIR);
-
+            $this->setUpWp(VENDOR_DIR  );
 
         }
 
@@ -168,7 +167,11 @@
             $this->assertFalse($app1->handlesExceptionsGlobally());
 
             $app2 = $this->newApplication();
-            $app2->boot(['strict_mode' => true]);
+            $app2->boot(['exception_handling' => [
+
+                'global'=> true
+
+            ] ]);
 
             $this->assertTrue($app2->handlesExceptionsGlobally());
 

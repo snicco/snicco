@@ -21,8 +21,9 @@
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Support\VariableBag;
 	use WPEmerge\View\ViewService;
+    use WPEmerge\ViewComposers\ViewComposerCollection;
 
-	/**
+    /**
 	 * Can be applied to your App class via a "@mixin" annotation for better IDE support.
 	 * This class is not meant to be used in any other capacity.
 	 *
@@ -151,7 +152,7 @@
 		 * @param  string|array|callable|\Closure  $callable
 		 *
 		 * @return void
-		 *
+		 * @see ViewComposerCollection::addComposer()
 		 */
 		public static function addComposer( $views, $callable ) :void {}
 

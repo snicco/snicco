@@ -6,7 +6,6 @@
 
 	namespace WPEmerge\Facade;
 
-	use WpFacade\WpFacade;
 
 	/**
 	 * @mixin \WPEmerge\Facade\WordpressApiMixin

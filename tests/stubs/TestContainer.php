@@ -50,4 +50,9 @@
 			//
 		}
 
-	}
+        public function implementation()
+        {
+            // TODO: Implement implementation() method.
+        }
+
+    }
