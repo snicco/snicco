@@ -15,6 +15,12 @@
     trait AssertBladeView
     {
 
+        private function clearViewCache() {
+
+            $this->rmdir(BLADE_CACHE);
+
+        }
+
         protected function setUp() : void
         {
 
@@ -33,12 +39,6 @@
 
             parent::tearDown();
 
-
-        }
-
-        private function clearViewCache() {
-
-            $this->rmdir(BLADE_CACHE);
 
         }
 
