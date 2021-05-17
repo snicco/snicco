@@ -49,4 +49,18 @@
 
     }
 
+    if ( ! defined('BLADE_CACHE')) {
+
+        define('BLADE_CACHE', TESTS_DIR . DS . 'integration' . DS . 'Blade' . DS . 'cache');
+
+    }
+
+     if ( ! defined('BLADE_VIEWS')) {
+
+        define('BLADE_VIEWS', TESTS_DIR . DS . 'integration' . DS . 'Blade' . DS . 'views');
+
+    }
+
+
+
     require_once $root_dir.DS.'vendor'.DS.'autoload.php';

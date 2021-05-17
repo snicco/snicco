@@ -11,8 +11,19 @@
     use WPEmerge\ExceptionHandling\Exceptions\ViewException;
     use WPEmerge\Support\Arr;
 
-    class BladeView extends View implements ViewInterface
+    class BladeView  implements ViewInterface
     {
+
+        /**
+         * @var View
+         */
+        private $illuminate_view;
+
+        public function __construct(View $illuminate_view)
+        {
+            $this->illuminate_view = $illuminate_view;
+            $this->removeIlluminateContext();
+        }
 
         public function toResponsable() : string
         {
@@ -24,7 +35,7 @@
         {
 
             try {
-                return $this->toHtml();
+                return $this->illuminate_view->toHtml();
             }
 
             catch (\Throwable $e) {
@@ -39,25 +50,28 @@
 
         public function with($key, $value = null) : ViewInterface
         {
-
-            return parent::with($key, $value);
-
+             $this->illuminate_view->with($key, $value);
+             return $this;
         }
-
-        // public function gatherData() : array
-        // {
-        //
-        //     return $this->data ?? [];
-        // }
 
         public function context(string $key = null, $default = null)
         {
             if ( $key === null ) {
-                return $this->gatherData();
+                return $this->illuminate_view->getData();
             }
 
-            return Arr::get( $this->gatherData(), $key, $default );
+            return Arr::get( $this->illuminate_view->getData(), $key, $default );
         }
 
+        public function name() :string
+        {
+           return $this->illuminate_view->name();
+        }
 
+        private function removeIlluminateContext () {
+
+            $this->illuminate_view->with('app', null);
+            $this->illuminate_view->with('__env', null);
+
+        }
     }
