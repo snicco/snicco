@@ -1,6 +1,4 @@
 @auth
-   AUTH
+   AUTHENTICATED
 @endauth
-@guest
-    GUEST
-@endguest
+

@@ -8,10 +8,11 @@
 
     use Illuminate\Container\Container as IlluminateContainer;
     use Illuminate\Contracts\Container\Container;
+    use Illuminate\Contracts\Foundation\Application;
     use Illuminate\Events\Dispatcher;
     use Illuminate\Filesystem\Filesystem;
-    use Illuminate\Support\Facades\Blade;
     use Illuminate\Support\Facades\Facade;
+    use Illuminate\Contracts\View\Factory;
     use Illuminate\View\View;
     use Illuminate\View\ViewServiceProvider;
     use SniccoAdapter\BaseContainerAdapter;
@@ -42,6 +43,7 @@
 
             });
 
+            $this->createBindingForBladeComponents($container);
 
         }
 
@@ -65,6 +67,8 @@
 
 
             });
+
+
 
         }
 
@@ -103,13 +107,33 @@
                 ];
             }, true);
 
-
             Facade::setFacadeApplication($container);
+            IlluminateContainer::setInstance($container);
 
         }
 
+        private function createBindingForBladeComponents(Container $container)
+        {
 
+            $container->bindIf(Factory::class,function (Container $c) {
 
+                return $c->make('view');
+
+            });
+
+            $container->bindIf(Application::class,function () use ($container) {
+
+                return new DummyApplication();
+
+            });
+
+            $container->resolving(BladeComponent::class, function (BladeComponent $component,Container $container) {
+
+                $component->setEngine($container->make(ViewEngineInterface::class));
+
+            });
+
+        }
 
 
     }

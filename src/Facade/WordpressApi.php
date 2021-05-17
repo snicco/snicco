@@ -52,6 +52,23 @@
 
 		}
 
+        public  function currentUser() : \WP_User
+        {
+            return wp_get_current_user();
+        }
+
+		public function userIs (string $role ) :bool {
+
+	        $user = $this->currentUser();
+
+            if ( ! empty( $user->roles ) && is_array( $user->roles ) && in_array( $role, $user->roles ) ) {
+                return true;
+            }
+
+            return false;
+
+        }
+
 		public function isUserLoggedIn() :bool {
 
 			return is_user_logged_in();

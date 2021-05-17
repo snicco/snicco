@@ -6,7 +6,9 @@
 
 	namespace WPEmerge\Facade;
 
-	/**
+	use Doctrine\Inflector\Rules\Word;
+
+    /**
 	 * mixin class for ide support.
 	 *
 	 * @see \WPEmerge\Facade\WordpressApi
@@ -72,6 +74,30 @@
 		 */
 		public static function userId() : int {
 		}
+
+        /**
+         *
+         * Check if the currently signed in user has the given role
+         *
+         * @param  string  $user_role
+         * @see WordpressApi::userIs()
+         */
+        public static function userIs(string $user_role) :bool
+        {
+        }
+
+        /**
+         *
+         * Get the current wp user object
+         *
+         * @see wp_get_current_user()
+         * @see WordpressApi::currentUser();
+         */
+        public static function currentUser() : \WP_User
+        {
+
+
+        }
 
 		/**
 		 * Determines whether the current visitor is a logged in user.

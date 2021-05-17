@@ -100,10 +100,10 @@
         }
 
         /** @test */
-        public function blade_internals_are_filtered_from_the_view_context_and_set_to_null()
+        public function blade_internals_are_included_in_the_view()
         {
 
-            $view = $this->engine->make('nointernal');
+            $view = $this->engine->make('internal');
 
             $this->assertViewContent('app:env', $view->toString());
 
