@@ -68,6 +68,8 @@
 
             WpFacade::setFacadeContainer($container);
 
+            $this->bindApplicationTrait();
+
         }
 
         /**
@@ -177,6 +179,15 @@
         private function bindServerRequest(ServerRequestInterface $base_request)
         {
             $this->container()->instance(ServerRequestInterface::class, $base_request);
+        }
+
+        private function bindApplicationTrait()
+        {
+            $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
+
+            $last = end($trace)['class'];
+
+            $this->container()->instance(ApplicationTrait::class, $last);
         }
 
 

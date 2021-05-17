@@ -16,7 +16,6 @@
     use Illuminate\View\View;
     use Illuminate\View\ViewServiceProvider;
     use SniccoAdapter\BaseContainerAdapter;
-    use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewEngineInterface;
     use WPEmerge\Contracts\ViewServiceInterface;
@@ -31,12 +30,12 @@
             $container = $this->parseContainer();
 
             $views = $this->config->get('blade.views', []);
-            $cache_path = $this->config->get('blade.cache', null);
+            $cache_dir = $this->config->get('blade.cache', null);
 
-            $this->config->set('view.paths', Arr::$views);
-            $this->config->set('view.compiled', $cache_path);
+            $this->config->set('view.paths', Arr::wrap($views));
+            $this->config->set('view.compiled', $cache_dir);
 
-            $this->setUpBindings($container, $views, $cache_path);
+            $this->setUpBindings($container);
             $this->registerLaravelProvider($container);
 
             $this->container->singleton(ViewEngineInterface::class, function () {
@@ -91,10 +90,8 @@
 
         }
 
-        private function setUpBindings(Container $container, $view_paths, string $cache_dir = null )
+        private function setUpBindings(Container $container)
         {
-
-            $view_paths = Arr::wrap($view_paths);
 
             $container->bindIf('files', function () {
                 return new Filesystem();
@@ -104,12 +101,7 @@
                 return new Dispatcher();
             }, true);
 
-            $container->bindIf('config', function () use ($view_paths, $cache_dir) {
-                return [
-                    'view.paths' => $view_paths,
-                    'view.compiled' => $cache_dir,
-                ];
-            }, true);
+            $container->instance('config', $this->config);
 
             Facade::setFacadeApplication($container);
             IlluminateContainer::setInstance($container);

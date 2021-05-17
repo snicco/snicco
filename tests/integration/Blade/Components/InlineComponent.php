@@ -11,7 +11,7 @@
     class InlineComponent extends BladeComponent
     {
 
-        private $content;
+        public $content;
 
         public function __construct($content)
         {
@@ -22,7 +22,7 @@
         {
 
             return <<<'blade'
-Content:{{$this-content}},SLOT:{{ $slot }}
+Content:{{$content}},SLOT:{{ $slot }}
 blade;
         }
 

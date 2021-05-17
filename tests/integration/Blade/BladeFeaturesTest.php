@@ -191,6 +191,16 @@
 
         }
 
+        /** @test */
+        public function service_injection_works () {
+
+
+            $view = $this->view('service-injection');
+            $content = $view->toString();
+            $this->assertViewContent('foo', $content);
+
+        }
+
         private function view(string $view)
         {
 

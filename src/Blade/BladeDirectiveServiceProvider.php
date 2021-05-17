@@ -7,6 +7,7 @@
     namespace WPEmerge\Blade;
 
     use Illuminate\Support\Facades\Blade;
+    use WPEmerge\Application\ApplicationTrait;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Facade\WP;
 
@@ -20,7 +21,6 @@
 
         function bootstrap() : void
         {
-
 
             Blade::if('auth', function () {
 
@@ -45,6 +45,23 @@
                 return WP::userIs($expression);
 
             });
+
+            Blade::directive('service', function ($expression) {
+
+                $segments = explode(',', preg_replace("/[()]/", '', $expression));
+
+                $variable = trim($segments[0], " '\"");
+
+                $service = trim($segments[1]);
+
+                $app = $this->container->make(ApplicationTrait::class);
+
+                $php = "<?php \${$variable} = {$app}::resolve({$service}::class); ?>";
+
+                return $php;
+
+            });
+
 
         }
 

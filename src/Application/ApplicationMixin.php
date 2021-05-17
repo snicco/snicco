@@ -87,8 +87,9 @@
 		 * @param  string  $key
 		 *
 		 * @return mixed|null
+         * @see HasContainer::resolve()
 		 */
-		public static function resolve( $key ) {
+		public static function resolve( string $key ) {
 		}
 
 		// --- Aliases --------------------------------------- //
@@ -96,7 +97,7 @@
 		/**
 		 * Get the Application instance.
 		 *
-		 * @return \WPEmerge\Application\Application
+		 * @return Application
 		 */
 		public static function app() : Application {
 		}
