@@ -12,6 +12,7 @@
     use Illuminate\Filesystem\Filesystem;
     use Illuminate\Support\Facades\Blade;
     use Illuminate\Support\Facades\Facade;
+    use Illuminate\View\View;
     use Illuminate\View\ViewServiceProvider;
     use SniccoAdapter\BaseContainerAdapter;
     use WPEmerge\Contracts\ServiceProvider;
@@ -54,13 +55,13 @@
 
             $dispatcher->listen('composing: *', function ( $event_name, $payload ) use ($container) {
 
-                /** @var BladeView $view */
+                /** @var View $view */
                 $view = Arr::firstEl($payload);
 
                 /** @var ViewServiceInterface $view_service */
                 $view_service = $container->make(ViewServiceInterface::class);
 
-                $view_service->compose($view);
+                $view_service->compose(new BladeView($view));
 
 
             });

@@ -100,7 +100,7 @@
         }
 
         /** @test */
-        public function blade_internals_are_filtered_from_the_view_context()
+        public function blade_internals_are_filtered_from_the_view_context_and_set_to_null()
         {
 
             $view = $this->engine->make('nointernal');

@@ -37,28 +37,37 @@
                 ],
                 'blade' => [
                     'cache' => $cache_dir,
-                    'views' => '/Users/calvinalkan/valet/wpemerge/wpemerge/tests/integration/Blade/views',
+                    'views' => [
+                        '/Users/calvinalkan/valet/wpemerge/wpemerge/tests/integration/Blade/views',
+                        '/Users/calvinalkan/valet/wpemerge/wpemerge/tests/integration/Blade/views/blade-features',
+                    ],
                 ],
             ]);
 
         }
 
         /** @test */
-        public function nested_views_can_be_rendered_relative_to_the_views_directory () {
+        public function nested_views_can_be_rendered_relative_to_the_views_directory()
+        {
 
             $view = TestApp::view('nested.view');
 
-            $this->assertViewContent('FOO', $view );
+            $this->assertViewContent('FOO', $view);
 
         }
 
         /** @test */
-        public function the_first_available_view_can_be_created () {
+        public function the_first_available_view_can_be_created()
+        {
 
             $first = TestApp::view(['bogus1', 'bogus2', 'foo']);
 
             $this->assertViewContent('FOO', $first);
 
+
         }
+
+
+
 
     }

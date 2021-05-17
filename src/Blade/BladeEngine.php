@@ -22,15 +22,9 @@
          */
         private $view_factory;
 
-        /**
-         * @var ViewFinderInterface
-         */
-        private $finder;
-
         public function __construct(Factory $view_factory)
         {
             $this->view_factory = $view_factory;
-            $this->finder = $view_factory->getFinder();
         }
 
         /**
@@ -41,24 +35,21 @@
          */
         public function make($views) : ViewInterface
         {
-            $view = Arr::firstEl($views);
 
 
             try {
 
-                $path = $this->finder->find(
-                    $view = $this->normalizeName($view)
-                );
+               $view = $this->view_factory->first(
+                   $this->normalizeNames($views)
+               );
 
-                $engine = $this->view_factory->getEngineFromPath($path);
-
-                return new BladeView($this->view_factory, $engine, $view, $path);
+                return new BladeView($view);
 
             }
             catch (\Throwable $e ) {
 
                 throw new ViewNotFoundException(
-                    'It was not possible to create view: [' . $view . '] with the blade engine.' . PHP_EOL . $e->getMessage()
+                    'It was not possible to create a view from: [' . implode(',', $views) . '] with the blade engine.' . PHP_EOL . $e->getMessage()
                 );
 
             }
@@ -70,12 +61,18 @@
         /**
          * Normalize a view name.
          *
-         * @param  string  $name
-         * @return string
+         * @param string|string[] $names
+         *
+         * @return array
          */
-        private function normalizeName(string $name) :string
+        private function normalizeNames( $names ) :array
         {
-            return ViewName::normalize($name);
+
+            return collect($names)->map(function ($name) {
+
+                return ViewName::normalize($name);
+            })->all();
+
         }
 
     }
