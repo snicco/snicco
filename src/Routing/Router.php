@@ -13,7 +13,6 @@
     use WPEmerge\Http\ConvertsToResponse;
     use WPEmerge\Http\Request;
     use WPEmerge\Http\Response;
-    use WPEmerge\Routing\Pipeline;
 	use WPEmerge\Support\Url;
 	use WPEmerge\Traits\GathersMiddleware;
 	use WPEmerge\Traits\HoldsRouteBlueprint;
@@ -61,7 +60,6 @@
          * @var ResponseFactory
          */
         private $response_factory;
-
 
         public function __construct( ContainerAdapter $container, RouteCollection $routes, ResponseFactory $response_factory ) {
 

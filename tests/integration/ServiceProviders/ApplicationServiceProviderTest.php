@@ -103,7 +103,6 @@
 
         function bootstrap() : void
         {
-            // TODO: Implement bootstrap() method.
         }
 
     }
@@ -124,7 +123,6 @@
 
         function bootstrap() : void
         {
-            // TODO: Implement bootstrap() method.
         }
 
     }

@@ -32,7 +32,7 @@
 			return [ 'post_id' => $this->post_id ];
 		}
 
-		public function toUrl( $arguments = [] ) :string {
+		public function toUrl( array $arguments = [] ) :string {
 
 			return get_permalink( $this->post_id );
 		}
