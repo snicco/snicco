@@ -11,14 +11,14 @@
 	use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
 	use FastRoute\RouteCollector;
 	use FastRoute\RouteParser\Std as RouteParser;
-	use WPEmerge\Contracts\CreatesCacheableRoutes;
 	use WPEmerge\Contracts\RouteMatcher;
+    use WPEmerge\Routing\CompiledRoute;
+    use WPEmerge\Support\Url;
 
-
-	class FastRouteMatcher implements RouteMatcher, CreatesCacheableRoutes {
+    class FastRouteMatcher implements RouteMatcher {
 
 		/**
-		 * @var \FastRoute\RouteCollector
+		 * @var RouteCollector
 		 */
 		private $collector;
 
@@ -28,9 +28,11 @@
 
 		}
 
-		public function add( $methods, string $uri, $handler ) {
+		public function add( CompiledRoute $route, string $current_method ) {
 
-			$this->collector->addRoute( $methods, $uri, $handler );
+            $url = $route->url;
+
+			$this->collector->addRoute( $current_method, $this->normalizePath($url), (array) $route );
 
 		}
 
@@ -55,10 +57,16 @@
 
 		}
 
-		public function canBeCached() : bool {
+        /**
+         * @todo FastRoute does indeed support trailing slashes. Right now is impossible to create trailing slash routes.
+         * @link https://github.com/nikic/FastRoute/issues/106
+         */
+        private function normalizePath(string $path) : string
+        {
 
-			return false;
+            return Url::toRouteMatcherFormat($path);
 
-		}
+        }
 
-	}
+
+    }

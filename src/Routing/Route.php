@@ -62,8 +62,15 @@
         /** @var array */
         private $defaults;
 
+        /**
+         * @var RouteRegex
+         */
+        private $routeRegex;
+
         public function __construct(array $methods, string $url, $action, array $attributes = [])
         {
+
+            $this->routeRegex = new RouteRegex();
 
             $this->methods = $methods;
             $this->url = $this->parseUrl($url);
@@ -71,15 +78,17 @@
             $this->namespace = $attributes['namespace'] ?? null;
             $this->middleware = $attributes['middleware'] ?? null;
 
+
         }
 
-        private function parseUrl(string $url) :string
+        private function parseUrl(string $url) : string
         {
+
             $url = UrlParser::replaceAdminAliases($url);
 
             $url = Url::normalizePath($url);
 
-            return $this->replaceOptional($url);
+            return $this->routeRegex->replaceOptional($url);
 
         }
 
@@ -92,6 +101,7 @@
                 'conditions' => $this->conditions ?? [],
                 'namespace' => $this->namespace ?? '',
                 'defaults' => $this->defaults ?? [],
+                'url' => $this->url,
             ]);
 
         }
@@ -99,10 +109,11 @@
         public function and(...$regex) : Route
         {
 
-            $regex_array = $this->normalizeRegex(Arr::flattenOnePreserveKeys($regex));
+            $regex_array = $this->normalizeRegex($regex);
 
-            $this->url = $this->parseUrlWithRegex($regex_array);
+            $this->url = $this->routeRegex->parseUrlWithRegex($regex_array, $this->url);
 
+            /** @todo This needs to added instead of replaced regex */
             $this->regex = $regex_array;
 
             return $this;
@@ -187,63 +198,10 @@
 
         }
 
-        private function replaceOptional(string $url_pattern) : string
-        {
-
-
-            $optionals = UrlParser::replaceOptionalMatch($url_pattern);
-
-            foreach ($optionals as $optional) {
-
-                $optional = preg_quote($optional, '/');
-
-                $pattern = sprintf("#(%s)#", $optional);
-
-                $url_pattern = preg_replace_callback($pattern, function ($match) {
-
-                    $cleaned_match = Str::between($match[0], '{', '?');
-
-                    return sprintf("[/{%s}]", $cleaned_match);
-
-                }, $url_pattern, 1);
-
-            }
-
-            while ($this->hasMultipleOptionalSegments(rtrim($url_pattern, '/'))) {
-
-                $this->combineOptionalSegments($url_pattern);
-
-            }
-
-            return rtrim($url_pattern, '/');
-
-        }
-
-        private function hasMultipleOptionalSegments(string $url_pattern) : bool
-        {
-
-            $count = preg_match_all('/(?<=\[).*?(?=])/', $url_pattern, $matches);
-
-            return $count > 1;
-
-        }
-
-        private function combineOptionalSegments(string &$url_pattern)
-        {
-
-            preg_match('/(\[(.*?)])/', $url_pattern, $matches);
-
-            $first = $matches[0];
-
-            $before = Str::before($url_pattern, $first);
-            $after = Str::afterLast($url_pattern, $first);
-
-            $url_pattern = $before.rtrim($first, ']').rtrim($after, '/').']';
-
-        }
-
         private function normalizeRegex($regex) : array
         {
+
+            $regex = Arr::flattenOnePreserveKeys($regex);
 
             if (is_int(Arr::firstEl(array_keys($regex)))) {
 
@@ -252,35 +210,6 @@
             }
 
             return $regex;
-
-        }
-
-        private function parseUrlWithRegex(array $regex) : string
-        {
-
-            $segments = UrlParser::segments($this->url);
-
-            $segments = array_filter($segments, function ($segment) use ($regex) {
-
-                return isset($regex[$segment]);
-
-            });
-
-            $url = $this->url;
-
-            foreach ($segments as $segment) {
-
-                $pattern = sprintf("/(%s(?=\\}))/", preg_quote($segment, '/'));;
-
-                $url = preg_replace_callback($pattern, function ($match) use ($regex) {
-
-                    return $match[0].':'.$regex[$match[0]];
-
-                }, $url, 1);
-
-            }
-
-            return rtrim($url, '/');
 
         }
 
