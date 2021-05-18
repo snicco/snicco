@@ -6,6 +6,10 @@
 
     namespace Tests\integration\Blade;
 
+    use Illuminate\Support\MessageBag;
+    use Illuminate\Support\ViewErrorBag;
+    use Tests\integration\Blade\traits\AssertBladeView;
+    use Tests\integration\Blade\traits\InteractsWithWordpress;
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
 
@@ -74,6 +78,64 @@
             $content = $view->toString();
             $this->assertViewContent('', $content);
 
+
+        }
+
+        /** @test */
+        public function custom_csrf_directives_work () {
+
+            $calvin = $this->newAdmin();
+            $john = $this->newAdmin();
+
+            $this->login($calvin);
+            $view1 = $this->view('csrf');
+            $content1 = $view1->toString();
+
+            $this->logout($calvin);
+
+            $this->login($john);
+            $view2 = $this->view('csrf');
+            $content2 = $view2->toString();
+
+            $this->assertNotSame($content1, $content2);
+            $this->assertStringStartsWith('<input', $content1);
+            $this->assertStringStartsWith('<input', $content2);
+
+
+        }
+
+        /** @test */
+        public function method_directive_works () {
+
+            $view = $this->view('method');
+            $content = $view->toString();
+            $this->assertViewContent("<input type='hidden' name='_method' value='PUT'>", $content);
+
+        }
+
+        /**
+         * @test
+         *
+         */
+        public function error_directive_works () {
+
+            /** @todo Decide how to implement with sessions and compatible with the default php engine. */
+            $error_bag = new ViewErrorBag();
+            $default = new MessageBag();
+            $default->add('title', 'ERROR_WITH_YOUR_TITLE');
+            $error_bag->put('default',$default);
+            $view = $this->view('error');
+            $view->with('errors', $error_bag);
+
+            $this->assertViewContent('ERROR_WITH_YOUR_TITLE', $view);
+
+            $view = $this->view('error');
+            $error_bag = new ViewErrorBag();
+            $default = new MessageBag();
+            $error_bag->put('default',$default);
+            $view->with('errors', $error_bag);
+
+            $this->assertViewContent('NO ERRORS WITH YOUR VIEW', $view);
 
         }
 

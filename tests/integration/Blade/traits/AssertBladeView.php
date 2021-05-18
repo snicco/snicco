@@ -4,13 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration\Blade;
+    namespace Tests\integration\Blade\traits;
 
     use Illuminate\Support\Facades\Facade;
     use PHPUnit\Framework\Assert;
     use WPEmerge\Blade\BladeDirectiveServiceProvider;
     use WPEmerge\Blade\BladeServiceProvider;
     use WPEmerge\Contracts\ViewInterface;
+
+    use const BLADE_CACHE;
+    use const BLADE_VIEWS;
+    use const DS;
 
     trait AssertBladeView
     {
@@ -57,6 +61,7 @@
                     'views' => [
                         BLADE_VIEWS,
                         BLADE_VIEWS . DS . 'blade-features',
+                        BLADE_VIEWS . DS . 'layouts',
                     ],
                 ],
             ]);

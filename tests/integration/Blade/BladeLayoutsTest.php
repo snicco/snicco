@@ -13,6 +13,7 @@
     use Tests\integration\Blade\Components\HelloWorld;
     use Tests\integration\Blade\Components\InlineComponent;
     use Tests\integration\Blade\Components\ToUppercaseComponent;
+    use Tests\integration\Blade\traits\AssertBladeView;
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
 
@@ -33,5 +34,14 @@
 
         }
 
+
+        /** @test */
+        public function stacks_work () {
+
+            $view = TestApp::view('stack-child');
+            $content = $view->toString();
+            $this->assertViewContent('FOOBAZBAR', $content);
+
+        }
 
     }
