@@ -7,6 +7,8 @@
     namespace Tests\integration\Blade;
 
     use Illuminate\Support\Facades\Blade;
+    use Tests\integration\Blade\traits\AssertBladeView;
+    use Tests\integration\Blade\traits\InteractsWithWordpress;
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
 
@@ -194,12 +196,23 @@
         /** @test */
         public function service_injection_works () {
 
-
             $view = $this->view('service-injection');
             $content = $view->toString();
             $this->assertViewContent('foo', $content);
 
         }
+
+        /** @test */
+        public function section_directives_work () {
+
+            $view = $this->view('section-child');
+            $content = $view->toString();
+            $this->assertViewContent('FOOBAZ', $content);
+
+        }
+
+
+
 
         private function view(string $view)
         {

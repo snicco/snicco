@@ -7,6 +7,7 @@
     namespace WPEmerge\Blade;
 
     use Illuminate\Support\Facades\Blade;
+    use Illuminate\Support\HtmlString;
     use WPEmerge\Application\ApplicationTrait;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Facade\WP;
@@ -61,6 +62,32 @@
                 return $php;
 
             });
+
+            Blade::directive('csrf', function ($expression) {
+
+                $expression = preg_replace('/\s/', '',$expression);
+
+                $segments = explode(',',$expression);
+
+                $action = $segments[0];
+                $name = $segments[1];
+
+                return "<?php wp_nonce_field({$action},{$name}); ?>";
+
+
+            });
+
+            Blade::directive('method', function ($method) {
+
+                // $method = trim("'", $method);
+
+                $html = new HtmlString("<input type='hidden' name='_method' value={$method}>");
+
+                return "<?php echo \"{$html->toHtml()}\";";
+
+
+            });
+
 
 
         }

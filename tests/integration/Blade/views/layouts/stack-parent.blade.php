@@ -1,0 +1,3 @@
+FOO
+@stack('parent')
+

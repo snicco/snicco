@@ -4,7 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration\Blade;
+    namespace Tests\integration\Blade\traits;
+
+    use function wp_delete_user;
+    use function wp_logout;
+    use function wp_set_current_user;
 
     trait InteractsWithWordpress
     {
@@ -35,8 +39,6 @@
             ], $args));
 
         }
-
-
 
         public function login ( $user ) {
 
