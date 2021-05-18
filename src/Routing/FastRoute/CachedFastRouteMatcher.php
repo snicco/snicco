@@ -8,10 +8,9 @@
 
 	use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
 	use WPEmerge\Contracts\RouteMatcher;
+    use WPEmerge\Routing\CompiledRoute;
 
-
-
-	class CachedFastRouteMatcher implements RouteMatcher {
+    class CachedFastRouteMatcher implements RouteMatcher {
 
 		/**
 		 * @var FastRouteMatcher
@@ -42,9 +41,11 @@
 
 		}
 
-		public function add( $methods, string $uri, $handler ) {
+		public function add( CompiledRoute $route, string $current_method ) {
 
-			$this->uncached_matcher->add( $methods, $uri, $handler );
+		    $route = $route->compileCachableAction();
+
+			$this->uncached_matcher->add( $route , $current_method );
 
 		}
 
@@ -80,10 +81,6 @@ declare(strict_types=1); return ' . var_export( $route_data, true ) . ';'
 
 		}
 
-		public function canBeCached() {
 
-			return true;
-
-		}
 
 	}

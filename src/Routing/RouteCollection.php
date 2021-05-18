@@ -18,7 +18,6 @@
     class RouteCollection
     {
 
-
         /** @var ConditionFactory */
         private $condition_factory;
 
@@ -43,7 +42,6 @@
          * @var RouteMatcher
          */
         private $route_matcher;
-
 
         public function __construct(
             ConditionFactory $condition_factory,
@@ -173,20 +171,17 @@
 
             $routes = Arr::get( $this->routes, $method, [] );
 
-            $cache = $this->isCacheable();
-
             /** @var Route $route */
             foreach ($routes as $route) {
 
-                $url = $route->getUrl();
-                $route = ($cache) ? $route->compile()->cacheable() : $route->compile();
-                $this->route_matcher->add($method, $this->normalizePath($url), (array) $route);
+                $this->route_matcher->add( $route->compile() , $method);
 
             }
 
 
         }
 
+        /** @todo this should be a global middleware that adds an attribute to the Request object */
         private function matchPathAgainstLoadedRoutes(Request $request) : RouteMatch
         {
 
@@ -247,12 +242,6 @@
 
         }
 
-        private function isCacheable()
-        {
-
-            return $this->route_matcher->canBeCached();
-
-        }
 
 
     }

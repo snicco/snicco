@@ -7,14 +7,17 @@
 	namespace WPEmerge\Contracts;
 
 
+    use WPEmerge\Routing\CompiledRoute;
+
     interface RouteMatcher {
 
-		public function add( $methods, string $uri, $handler );
+		// public function _add( $methods, string $uri, $handler );
+
+		public function add( CompiledRoute $route, string $current_method );
 
 		public function find(string $method, string $path);
 
 		public function isCached() :bool;
 
-		public function canBeCached();
 
 	}
