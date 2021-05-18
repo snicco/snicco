@@ -9,6 +9,7 @@
     use Nyholm\Psr7\Factory\Psr17Factory as NyholmFactoryImplementation;
     use Psr\Http\Message\ResponseFactoryInterface as Prs17ResponseFactory;
     use Psr\Http\Message\StreamFactoryInterface;
+    use Slim\Csrf\Guard;
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Contracts\ServiceProvider;
@@ -31,7 +32,7 @@
 
             $this->config->extend('middleware.aliases', [
 
-                'csrf' => CsrfProtection::class,
+                'csrf' => Guard::class,
                 'auth' => Authenticate::class,
                 'guest' => RedirectIfAuthenticated::class,
                 'can' => Authorize::class,
@@ -62,7 +63,7 @@
 
             });
 
-            $this->container->singleton(Prs17ResponseFactory::class, function () {
+            $this->container->singleton('psr17.response.factory', function () {
 
                 return new NyholmFactoryImplementation();
 
@@ -78,8 +79,24 @@
 
                 return new HttpResponseFactory(
                     $this->container->make(ViewServiceInterface::class),
-                    $this->container->make(Prs17ResponseFactory::class),
+                    $this->container->make('psr17.response.factory'),
                     $this->container->make(StreamFactoryInterface::class),
+
+                );
+
+            });
+
+            $this->container->singleton(Prs17ResponseFactory::class, function () {
+
+                return $this->container->make(ResponseFactory::class);
+
+            });
+
+            $this->container->singleton(Guard::class, function () {
+
+                return new Guard(
+                    $this->container->make(ResponseFactory::class),
+                    'crsf',
 
                 );
 

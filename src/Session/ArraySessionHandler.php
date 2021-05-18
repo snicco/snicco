@@ -26,7 +26,6 @@
 		 */
 		private $minutes;
 
-
 		public function __construct(int $minutes)
 		{
 			$this->minutes = $minutes;

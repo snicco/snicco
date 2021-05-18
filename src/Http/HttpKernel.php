@@ -38,11 +38,6 @@
         private $response;
 
         /**
-         * @var HttpResponseFactory
-         */
-        private $response_factory;
-
-        /**
          * @var ResponseEmitter
          */
         private $response_emitter;
