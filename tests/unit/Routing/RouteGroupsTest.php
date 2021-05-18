@@ -485,7 +485,7 @@
 
 						return true;
 
-					} )
+					})
 					->group( function () {
 
 						$this->router

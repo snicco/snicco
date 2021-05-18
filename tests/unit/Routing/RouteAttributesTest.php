@@ -213,7 +213,13 @@
 
 		}
 
-		/** @test */
+		/**
+         *
+         * @test
+         *
+         * Failed conditions on a matching static route by url will lead to no route matching.
+         *
+         */
 		public function static_and_dynamic_routes_can_be_added_for_the_same_uri_while_static_routes_take_precedence() {
 
 			$routes = function () {
@@ -240,7 +246,7 @@
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'POST', '/foo/bar' ) );
-			$this->assertOutput( 'dynamic_route', $response );
+			$this->assertNullResponse( $response );
 
 			$this->newRouterWith( $routes );
 			$response = $this->router->runRoute( $this->request( 'POST', '/foo/baz' ) );

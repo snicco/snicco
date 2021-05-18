@@ -194,11 +194,11 @@
 
             $this->router->group(['prefix' => 'wp-admin', 'name' => 'admin'], function () {
 
-                $this->router->get('admin.php/foo', function (Request $request, string $page) {
+                $this->router->name('foo')->get('admin.php/foo', function (Request $request, string $page) {
 
                     return $page;
 
-                })->name('foo');
+                });
 
             });
 
