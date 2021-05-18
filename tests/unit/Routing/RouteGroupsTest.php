@@ -405,7 +405,7 @@
 		/** @test */
 		public function the_route_namespace_is_always_overwritten_by_child_routes() {
 
-			/** @todo decide if this is desired. */
+			/** @todo decide if its desired to overwritte the route namespace. */
 			$this->router
 				->namespace( 'Tests\FalseNamespace' )
 				->group( function () {

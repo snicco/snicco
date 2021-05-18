@@ -59,7 +59,6 @@
 
 		}
 
-
 		public function instance () : ?object {
 
 			return $this->instance;

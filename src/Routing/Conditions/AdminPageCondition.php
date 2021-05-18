@@ -12,7 +12,7 @@
     class AdminPageCondition extends QueryStringCondition implements UrlableInterface
     {
 
-        public function toUrl($arguments = []) : string
+        public function toUrl(array $arguments = []) : string
         {
 
             $page = $this->query_string_arguments['page'];

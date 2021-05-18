@@ -32,7 +32,7 @@
 		}
 
 		/**
-		 * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
+		 * @throws ConfigurationException
 		 */
 		public function to( array $arguments = [] ) : string {
 
@@ -102,23 +102,21 @@
 
 		private function convertToDoubleCurlyBrackets() {
 
-			$url = preg_replace_callback( self::double_curly_brackets, function ( $matches ) {
+            return preg_replace_callback( self::double_curly_brackets, function ( $matches ) {
 
-				if ( $open = $matches['opening_bracket'] ?? null ) {
+                if ( $open = $matches['opening_bracket'] ?? null ) {
 
-					return $open . $open;
+                    return $open . $open;
 
-				}
-				if ( $closing = $matches['closing_bracket'] ?? null ) {
+                }
+                if ( $closing = $matches['closing_bracket'] ?? null ) {
 
-					return $closing . $closing;
+                    return $closing . $closing;
 
-				}
+                }
 
 
-			}, $this->route->getUrl() );
-
-			return $url;
+            }, $this->route->getUrl() );
 
 		}
 

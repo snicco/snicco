@@ -12,8 +12,8 @@
 	class RouteDecorator {
 
 
-		/** @var \WPEmerge\Routing\Router */
-		protected $router;
+		/** @var Router */
+		private $router;
 
 		public const allowed_attributes = [
 			'middleware',
@@ -38,7 +38,7 @@
 		private $attributes = [];
 
 		/**
-		 * @var \WPEmerge\Routing\ConditionBucket
+		 * @var ConditionBucket
 		 */
 		private $conditions;
 

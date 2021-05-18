@@ -453,7 +453,7 @@
 
 	class ConditionWithUrl implements UrlableInterface, ConditionInterface {
 
-		public function toUrl( $arguments = [] ) :string {
+		public function toUrl( array $arguments = [] ) :string {
 
 			return SITE_URL . 'foo/bar';
 

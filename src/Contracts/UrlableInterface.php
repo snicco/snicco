@@ -14,13 +14,13 @@
 		/**
 		 * Convert to URL.
          *
-         * @todo decide if this should return a relative or absolut path.
-         * @todo refactor this when we have a dedicated URL Generator.
-		 *
-		 * @param  array  $arguments
+         * @param  array  $arguments
 		 *
 		 * @return string
+		 * @todo decide if this should return a relative or absolut path.
+         * @todo refactor this when we have a dedicated URL Generator.
+		 *
 		 */
-		public function toUrl( $arguments = [] ) : string;
+		public function toUrl( array $arguments = [] ) : string;
 
 	}

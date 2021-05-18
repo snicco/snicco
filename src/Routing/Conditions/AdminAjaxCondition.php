@@ -44,7 +44,7 @@
 
         }
 
-        public function toUrl($arguments = []) : string
+        public function toUrl(array $arguments = []) : string
         {
 
             $method = strtoupper(Arr::get($arguments, 'method', 'POST'));
