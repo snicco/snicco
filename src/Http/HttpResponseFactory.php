@@ -152,4 +152,9 @@
             return new InvalidResponse($this->response_factory->createResponse(500));
         }
 
+        public function createResponse(int $code = 200, string $reasonPhrase = '') : ResponseInterface
+        {
+            return $this->response_factory->createResponse($code, $reasonPhrase);
+        }
+
     }

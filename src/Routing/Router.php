@@ -143,6 +143,8 @@
 
 			if ( $route_match->route() ) {
 
+			    $this->route_match = $route_match;
+
 				return $this->runWithinStack( $route_match, $request );
 
 			}
@@ -224,7 +226,6 @@
 
 		}
 
-
 		private function runWithinStack( RouteMatch $route_match, Request $request ) : Response
         {
 
@@ -247,11 +248,10 @@
 				->then( function ( $request ) use ( $route_match ) : Response {
 
 				    $this->container->instance(Request::class, $request);
-
                     $route_response = $route_match->route()->run( $request, $route_match->payload() );
                     return $this->response_factory->toResponse($route_response);
 
-				} );
+				});
 
 			return $response;
 

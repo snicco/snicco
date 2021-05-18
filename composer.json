@@ -58,7 +58,8 @@
     "psr/log": "1.1.4",
     "nyholm/psr7": "1.4.0",
     "nyholm/psr7-server": "^1.0-stable",
-    "psr/http-server-middleware": "1.0.1"
+    "psr/http-server-middleware": "1.0.1",
+    "slim/csrf": "1.2.1"
   },
   "require-dev": {
     "opis/closure": "3.6.2",

@@ -6,8 +6,10 @@
 
     namespace WPEmerge\Http;
 
+
     class NullResponse extends Response
     {
+
 
 
     }

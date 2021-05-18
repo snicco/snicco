@@ -6,7 +6,6 @@
 
 	namespace WPEmerge\Session;
 
-	use WPEmerge\Contracts\RequestInterface;
 
 	use function add_query_arg;
 	use function wp_create_nonce;

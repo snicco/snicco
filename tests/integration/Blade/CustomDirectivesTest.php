@@ -84,6 +84,8 @@
         /** @test */
         public function custom_csrf_directives_work () {
 
+            /** @todo Decide how to implement with CSRF middleware */
+
             $calvin = $this->newAdmin();
             $john = $this->newAdmin();
 

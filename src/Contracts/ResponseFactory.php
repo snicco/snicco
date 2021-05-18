@@ -7,12 +7,13 @@
 	namespace WPEmerge\Contracts;
 
 
-	use WPEmerge\Http\InvalidResponse;
+	use Psr\Http\Message\ResponseFactoryInterface;
+    use WPEmerge\Http\InvalidResponse;
     use WPEmerge\Http\NullResponse;
     use WPEmerge\Http\RedirectResponse;
     use WPEmerge\Http\Response;
 
-    interface ResponseFactory {
+    interface ResponseFactory extends ResponseFactoryInterface {
 
 		public function view ( string $view, array $data = [], $status = 200, array $headers = []) : Response;
 
