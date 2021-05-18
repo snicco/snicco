@@ -14,7 +14,7 @@
 	class CachedFastRouteMatcher implements RouteMatcher {
 
 		/**
-		 * @var \WPEmerge\Routing\FastRoute\FastRouteMatcher
+		 * @var FastRouteMatcher
 		 */
 		private $uncached_matcher;
 

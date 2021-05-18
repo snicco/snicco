@@ -6,8 +6,8 @@
 
 	namespace WPEmerge\Contracts;
 
-	interface RouteMatcher {
 
+    interface RouteMatcher {
 
 		public function add( $methods, string $uri, $handler );
 
@@ -16,4 +16,5 @@
 		public function isCached() :bool;
 
 		public function canBeCached();
+
 	}
