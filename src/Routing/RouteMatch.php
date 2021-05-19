@@ -9,7 +9,7 @@
 	class RouteMatch {
 
 
-		/** @var CompiledRoute */
+		/** @var Route */
 		private $route;
 
 		/** @var array */
@@ -29,7 +29,7 @@
 		}
 
 
-		public function payload() : array {
+		public function capturedUrlSegmentValues() : array {
 
 			return $this->payload;
 		}

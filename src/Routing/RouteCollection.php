@@ -79,24 +79,15 @@
             }
 
             $route = $match->route();
-            $original_payload = $match->payload();
-            $condition_args = [];
+            $route_url_args = $match->capturedUrlSegmentValues();
 
-            foreach ($route->getInstantiatedConditions() as $compiled_condition) {
-
-                $args = $compiled_condition->getArguments($request);
-
-                $condition_args = array_merge($condition_args, $args);
-
-            }
-
-            $original_payload = array_map(function ($value) {
+            $route_url_args = array_map(function ($value) {
                 return rtrim($value, '/');
-            }, $original_payload );
+            }, $route_url_args );
 
             return new RouteMatch(
                 $route,
-                array_merge($original_payload, $condition_args)
+                $route_url_args
             );
 
 
@@ -176,7 +167,7 @@
         private function addToCollection(Route $route)
         {
 
-            foreach ($route->getMethods() as $method) {
+            foreach ( $route->getMethods() as $method ) {
 
                 $this->routes[$method][] = $route;
 
@@ -226,7 +217,7 @@
 
         }
 
-        /** @todo this should be a global middleware that adds an attribute to the Request object */
+        /** @todo the changing of the url should be a global middleware that adds an attribute to the Request object */
         private function matchPathAgainstLoadedRoutes(Request $request) : RouteMatch
         {
 
@@ -264,7 +255,7 @@
 
             $route->instantiateConditions();
 
-            if ( ! $route->satisfiedBy($request)) {
+            if ( ! $route->satisfiedBy($request) ) {
 
                 return new RouteMatch(null, []);
 
@@ -272,7 +263,7 @@
 
             $route->instantiateAction();
 
-            return new RouteMatch($route, $route_match->payload());
+            return new RouteMatch($route, $route_match->capturedUrlSegmentValues());
 
         }
 
