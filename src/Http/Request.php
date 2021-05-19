@@ -107,12 +107,7 @@
 
         }
 
-        private function isWpAdminPageRequest() : bool
-        {
 
-            return UrlParser::isWpAdminPageRequest( $this->getUri()->getPath() );
-
-        }
 
 
     }

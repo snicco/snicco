@@ -13,6 +13,7 @@
     use WPEmerge\Contracts\SetsRouteAttributes;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Routing\Conditions\TrailingSlashCondition;
+    use WPEmerge\Routing\FastRoute\FastRouteRegex;
     use WPEmerge\Support\Url;
     use WPEmerge\Support\UrlParser;
     use WPEmerge\Support\Arr;
@@ -23,7 +24,6 @@
     {
 
         use SetRouteAttributes;
-
 
         const ROUTE_WILDCARD = '*';
 
@@ -68,7 +68,7 @@
         private $defaults;
 
         /**
-         * @var RouteRegex
+         * @var FastRouteRegex
          */
         private $routeRegex;
 
@@ -83,7 +83,7 @@
         public function __construct(array $methods, string $url, $action, array $attributes = [])
         {
 
-            $this->routeRegex = new RouteRegex();
+            $this->routeRegex = new FastRouteRegex();
 
             $this->methods = $methods;
             $this->url = $this->parseUrl($url);
@@ -105,7 +105,7 @@
 
             $this->segment_names = UrlParser::segmentNames($url);
 
-            return $this->routeRegex->replaceOptional($url);
+            return $this->routeRegex->convertOptionalSegments($url);
 
         }
 
@@ -129,7 +129,7 @@
 
             $regex_array = $this->normalizeRegex($regex);
 
-            $this->url = $this->routeRegex->parseUrlWithRegex($regex_array, $this->url);
+            $this->url = $this->routeRegex->addCustomRegexToSegments($regex_array, $this->url);
 
             /** @todo This needs to added instead of replaced regex */
             $this->regex = $regex_array;
@@ -254,7 +254,7 @@
 
         }
 
-        public function andOnlyTrailing()
+        public function andOnlyTrailing() : Route
         {
 
             $this->where(TrailingSlashCondition::class);

@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing;
+    namespace WPEmerge\Routing\FastRoute;
 
     use WPEmerge\Support\Str;
     use WPEmerge\Support\UrlParser;
 
-    class RouteRegex
+    class FastRouteRegex
     {
 
-        public function replaceOptional(string $url_pattern) : string
+        public function convertOptionalSegments(string $url_pattern) : string
         {
 
-            $optionals = UrlParser::replaceOptionalMatch($url_pattern);
+            $optionals = UrlParser::getOptionalSegments($url_pattern);
 
             foreach ($optionals as $optional) {
 
@@ -43,39 +43,12 @@
 
         }
 
-        public function hasMultipleOptionalSegments(string $url_pattern) : bool
-        {
-
-            $count = preg_match_all('/(?<=\[).*?(?=])/', $url_pattern, $matches);
-
-            return $count > 1;
-
-        }
-
-        public function combineOptionalSegments(string &$url_pattern)
-        {
-
-            preg_match('/(\[(.*?)])/', $url_pattern, $matches);
-
-            $first = $matches[0];
-
-            $before = Str::before($url_pattern, $first);
-            $after = Str::afterLast($url_pattern, $first);
-
-            $url_pattern = $before.rtrim($first, ']').rtrim($after, '/').']';
-
-        }
-
-        public function parseUrlWithRegex( array $regex, string $url) : string
+        public function addCustomRegexToSegments( array $regex, string $url) : string
         {
 
             $segments = UrlParser::segments($url);
 
-            $segments = array_filter($segments, function ($segment) use ($regex) {
-
-                return isset($regex[$segment]);
-
-            });
+            $segments = $this->segmentsWithCustomRegex($segments, $regex);
 
             foreach ($segments as $segment) {
 
@@ -92,4 +65,39 @@
             return rtrim($url, '/');
 
         }
+
+        private function hasMultipleOptionalSegments(string $url_pattern) : bool
+        {
+
+            $count = preg_match_all('/(?<=\[).*?(?=])/', $url_pattern, $matches);
+
+            return $count > 1;
+
+        }
+
+        private function combineOptionalSegments(string &$url_pattern)
+        {
+
+            preg_match('/(\[(.*?)])/', $url_pattern, $matches);
+
+            $first = $matches[0];
+
+            $before = Str::before($url_pattern, $first);
+            $after = Str::afterLast($url_pattern, $first);
+
+            $url_pattern = $before.rtrim($first, ']').rtrim($after, '/').']';
+
+        }
+
+        private function segmentsWithCustomRegex($segments, $regex) : array
+        {
+
+            return array_filter($segments, function ($segment) use ($regex) {
+
+                return isset($regex[$segment]);
+
+            });
+
+        }
+
     }

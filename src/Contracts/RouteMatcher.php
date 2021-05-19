@@ -11,7 +11,6 @@
 
     interface RouteMatcher {
 
-		// public function _add( $methods, string $uri, $handler );
 
 		public function add( CompiledRoute $route, array $methods );
 

@@ -6,7 +6,6 @@
 
 	namespace WPEmerge\Routing\FastRoute;
 
-
 	use FastRoute\DataGenerator\GroupCountBased as DataGenerator;
 	use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
 	use FastRoute\RouteCollector;
@@ -14,7 +13,7 @@
 	use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Routing\CompiledRoute;
     use WPEmerge\Routing\Route;
-    use WPEmerge\Support\Url;
+    use WPEmerge\Routing\FastRoute\FastRouteRegex;
 
     class FastRouteMatcher implements RouteMatcher {
 
@@ -23,9 +22,15 @@
 		 */
 		private $collector;
 
-		public function __construct() {
+        /**
+         * @var FastRouteRegex
+         */
+        private $route_regex;
+
+        public function __construct() {
 
 			$this->collector = new RouteCollector( new RouteParser(), new DataGenerator() );
+            $this->route_regex = new FastRouteRegex();
 
 		}
 
@@ -64,16 +69,7 @@
 
 		}
 
-        /**
-         * @todo FastRoute does indeed support trailing slashes. Right now is impossible to create trailing slash routes.
-         * @link https://github.com/nikic/FastRoute/issues/106
-         */
-        private function normalizePath(string $path) : string
-        {
 
-            return Url::toRouteMatcherFormat($path);
-
-        }
 
 
     }
