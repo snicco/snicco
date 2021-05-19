@@ -7,12 +7,12 @@
 	namespace WPEmerge\Contracts;
 
 
-    use WPEmerge\Routing\CompiledRoute;
+    use WPEmerge\Routing\Route;
 
     interface RouteMatcher {
 
 
-		public function add( CompiledRoute $route, array $methods );
+		public function add( Route $route, array $methods );
 
 		public function find(string $method, string $path);
 

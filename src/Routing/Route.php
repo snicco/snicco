@@ -86,8 +86,6 @@
         public function __construct(array $methods, string $url, $action, array $attributes = [])
         {
 
-            $this->routeRegex = new FastRouteSyntax();
-
             $this->methods = $methods;
             $this->url = $this->parseUrl($url);
             $this->action = $action;

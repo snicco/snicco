@@ -40,7 +40,7 @@
             $this->container = $container;
         }
 
-        public function compileConditions(RouteCondition $route) : array
+        public function compileConditions( RouteCondition $route) : array
         {
 
             $conditions = collect($route->getConditions());
