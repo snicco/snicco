@@ -8,11 +8,10 @@
 
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Factories\ConditionFactory;
+    use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Request;
-    use WPEmerge\Routing\CompiledRoute;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\RouteCollection;
-    use WPEmerge\Routing\RouteCompiler;
 
     class FallBackController
     {
@@ -26,10 +25,7 @@
          * @var ResponseFactory
          */
         private $response;
-        /**
-         * @var ConditionFactory
-         */
-        private $route_compiler;
+
 
         /**
          * @var callable
@@ -38,13 +34,11 @@
 
         public function __construct(
             RouteCollection $routes,
-            ResponseFactory $response,
-            RouteCompiler $route_compiler
+            ResponseFactory $response
         ) {
 
             $this->routes = $routes;
             $this->response = $response;
-            $this->route_compiler = $route_compiler;
 
         }
 
@@ -55,7 +49,7 @@
 
             $routes = $possible_routes->map(function (Route $route) {
 
-                return $this->route_compiler->buildConditions($route);
+                return $route->instantiateConditions();
 
             });
 
@@ -76,7 +70,7 @@
 
             $payload = [];
 
-            foreach ($route->getCompiledConditions() as $compiled_condition) {
+            foreach ($route->getInstantiatedConditions() as $compiled_condition) {
 
                 $args = $compiled_condition->getArguments($request);
 
@@ -84,7 +78,7 @@
 
             }
 
-            $this->route_compiler->buildActions($route);
+            $route->instantiateAction();
 
             return $route->run($request, $payload);
 

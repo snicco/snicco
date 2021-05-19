@@ -9,7 +9,7 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
 	use WPEmerge\Factories\ConditionFactory;
-	use WPEmerge\Factories\HandlerFactory;
+	use WPEmerge\Factories\RouteActionFactory;
 	use WPEmerge\Factories\ViewComposerFactory;
 	use WPEmerge\Handlers\ControllerAction;
 	use WPEmerge\ViewComposers\ViewComposer;
@@ -24,7 +24,7 @@
 
 		    $this->newTestApp();
 
-			$this->assertInstanceOf( HandlerFactory::class, TestApp::resolve( HandlerFactory::class ) );
+			$this->assertInstanceOf( RouteActionFactory::class, TestApp::resolve( RouteActionFactory::class ) );
 			$this->assertInstanceOf( ViewComposerFactory::class, TestApp::resolve( ViewComposerFactory::class ) );
 			$this->assertInstanceOf( ConditionFactory::class, TestApp::resolve( ConditionFactory::class ) );
 
@@ -43,8 +43,8 @@
             ]);
 
 
-			/** @var HandlerFactory $factory */
-			$factory = TestApp::resolve( HandlerFactory::class );
+			/** @var RouteActionFactory $factory */
+			$factory = TestApp::resolve( RouteActionFactory::class );
 
 			$this->assertInstanceOf( ControllerAction::class, $factory->createUsing( 'AdminController@handle' ) );
 			$this->assertInstanceOf( ControllerAction::class, $factory->createUsing( 'WebController@handle' ) );

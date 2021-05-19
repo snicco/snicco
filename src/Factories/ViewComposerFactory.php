@@ -7,11 +7,9 @@
 	namespace WPEmerge\Factories;
 
 	use WPEmerge\Contracts\Handler;
-	use WPEmerge\Factories\AbstractFactory;
 	use WPEmerge\ViewComposers\ViewComposer;
 
 	class ViewComposerFactory extends AbstractFactory {
-
 
 		public function createUsing( $raw_handler ) : Handler {
 

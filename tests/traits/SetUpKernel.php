@@ -15,13 +15,13 @@
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Factories\HandlerFactory;
+    use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\RouteCollection;
-    use WPEmerge\Routing\RouteCompiler;
+    use WPEmerge\Routing\RouteBuilder;
     use WPEmerge\Routing\Router;
 
     trait SetUpKernel
@@ -42,18 +42,17 @@
         private function newRouter ( ContainerAdapter $c ) : Router
         {
 
-            $handler_factory = new HandlerFactory( [], $c );
+            $handler_factory = new RouteActionFactory( [], $c );
             $condition_factory = new ConditionFactory( [], $c );
 
-            $compiler = new RouteCompiler($handler_factory, $condition_factory);
-
             $routes  = new RouteCollection(
-                $this->createRouteMatcher($compiler),
-                $compiler
+                $this->createRouteMatcher(),
+                $condition_factory,
+                $handler_factory,
             );
 
 
-            $c->instance(HandlerFactory::class, $handler_factory);
+            $c->instance(RouteActionFactory::class, $handler_factory);
             $c->instance(ConditionFactory::class, $condition_factory);
             $c->instance(RouteCollection::class, $routes);
             $c->instance(ResponseFactory::class, $response = $this->responseFactory());

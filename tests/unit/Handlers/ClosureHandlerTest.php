@@ -10,7 +10,7 @@
     use Tests\traits\CreateContainer;
     use Tests\stubs\Bar;
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Factories\HandlerFactory;
+	use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Request;
 
     class ClosureHandlerTest extends TestCase {
@@ -22,7 +22,7 @@
 
 			$container = $this->createContainer();
 
-			$factory = new HandlerFactory( [], $container);
+			$factory = new RouteActionFactory( [], $container);
 
 			$request = m::mock( Request::class);
 

@@ -12,12 +12,12 @@
     use Tests\traits\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
     use WPEmerge\Contracts\ResponseFactory;
-    use WPEmerge\Factories\HandlerFactory;
+    use WPEmerge\Factories\RouteActionFactory;
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
-    use WPEmerge\Routing\RouteCompiler;
+    use WPEmerge\Routing\RouteBuilder;
     use WPEmerge\Routing\Router;
 	use WPEmerge\Facade\WpFacade;
 
@@ -59,17 +59,15 @@
 		    $container = $container ?? $this->createContainer();
 
 			$condition_factory = new ConditionFactory( [], $container );
-			$handler_factory   = new HandlerFactory( [], $container );
-
-            $compiler = new RouteCompiler($handler_factory, $condition_factory);
-
+			$handler_factory   = new RouteActionFactory( [], $container );
 
 			$route_collection  = new RouteCollection(
-				new CachedFastRouteMatcher(  $this->createRouteMatcher($compiler), $file ?? $this->cache_file ),
-                $compiler
+				new CachedFastRouteMatcher(  $this->createRouteMatcher(), $file ?? $this->cache_file ),
+                $condition_factory,
+                $handler_factory
 			);
 
-            $container->instance(HandlerFactory::class, $handler_factory);
+            $container->instance(RouteActionFactory::class, $handler_factory);
             $container->instance(ConditionFactory::class, $condition_factory);
             $container->instance(RouteCollection::class, $route_collection);
             $container->instance(ResponseFactory::class, $response = $this->responseFactory());

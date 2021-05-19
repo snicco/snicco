@@ -9,12 +9,11 @@
     use Contracts\ContainerAdapter;
     use Tests\stubs\TestRequest;
     use WPEmerge\Contracts\ResponseFactory;
-    use WPEmerge\Factories\HandlerFactory;
+    use WPEmerge\Factories\RouteActionFactory;
 	use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Http\Request;
-	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
-    use WPEmerge\Routing\RouteCompiler;
+    use WPEmerge\Routing\RouteBuilder;
     use WPEmerge\Routing\Router;
     use WPEmerge\ServiceProviders\RoutingServiceProvider;
 
@@ -36,13 +35,13 @@
 		    $container = $container ?? $this->createContainer();
 
 			$condition_factory = new ConditionFactory( $this->allConditions(), $container );
-			$handler_factory   = new HandlerFactory( [], $container );
+			$handler_factory   = new RouteActionFactory( [], $container );
 
-			$compiler =  new RouteCompiler($handler_factory, $condition_factory);
 
             $route_collection  = new RouteCollection(
-                $this->createRouteMatcher($compiler),
-                $compiler
+                $this->createRouteMatcher(),
+                $condition_factory,
+                $handler_factory
             );
 
             $router =  new Router(
@@ -53,7 +52,7 @@
 
             $this->routes = $route_collection;
 
-			$container->instance(HandlerFactory::class, $handler_factory);
+			$container->instance(RouteActionFactory::class, $handler_factory);
 			$container->instance(ConditionFactory::class, $condition_factory);
 			$container->instance(RouteCollection::class, $route_collection);
 			$container->instance(ResponseFactory::class, $response);
