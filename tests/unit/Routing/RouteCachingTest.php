@@ -11,7 +11,8 @@
     use Tests\UnitTest;
     use Tests\traits\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
-	use WPEmerge\Factories\HandlerFactory;
+    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
@@ -62,11 +63,18 @@
 				new CachedFastRouteMatcher( new FastRouteMatcher(), $file ?? $this->cache_file )
 			);
 
+            $container->instance(HandlerFactory::class, $handler_factory);
+            $container->instance(ConditionFactory::class, $condition_factory);
+            $container->instance(RouteCollection::class, $route_collection);
+            $container->instance(ResponseFactory::class, $response = $this->responseFactory());
+
 			return $this->router = new Router(
 			    $container,
                 $route_collection,
-                $this->responseFactory()
+                $response
             );
+
+
 
 		}
 
@@ -80,6 +88,8 @@
 			$this->router->get( 'baz', Controller::class . '@handle' );
 			$this->router->get( 'biz', Controller::class . '@handle' );
 			$this->router->get( 'boo', Controller::class . '@handle' );
+
+			$this->router->loadRoutes();
 
 			$this->assertFalse( file_exists( $this->cache_file ) );
 
@@ -100,6 +110,9 @@
 			$this->router->get( 'baz', Controller::class . '@handle' );
 			$this->router->get( 'biz', Controller::class . '@handle' );
 			$this->router->get( 'boo', Controller::class . '@handle' );
+
+			$this->router->loadRoutes();
+
 			$response = $this->router->runRoute( TestRequest::from( 'GET', 'foo' ) );
 			$this->assertOutput( 'foo', $response );
 
@@ -137,6 +150,8 @@
 
 			} );
 
+			$this->router->loadRoutes();
+
 			$this->assertFalse( file_exists( $this->cache_file ) );
 
 			$response = $this->router->runRoute( TestRequest::from( 'GET', 'foo' ) );
@@ -157,6 +172,8 @@
 				return $class->handle();
 
 			} );
+
+			$this->router->loadRoutes();
 
 			$response = $this->router->runRoute( TestRequest::from( 'GET', 'foo' ) );
 			$this->assertOutput( 'foo', $response );

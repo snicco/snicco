@@ -45,6 +45,8 @@
 
 			})->middleware(MiddlewareWithDependencies::class);
 
+			$this->router->loadRoutes();
+
 			$request = $this->request( 'GET', '/foo' );
 			$this->assertOutput( 'foobar', $this->router->runRoute( $request ) );
 
@@ -55,6 +57,8 @@
 		public function controller_middleware_is_resolved_from_the_service_container () {
 
 			$this->router->get( '/foo', AdminControllerWithMiddleware::class . '@handle');
+
+			$this->router->loadRoutes();
 
 			$request = $this->request( 'GET', '/foo' );
 			$this->assertOutput( 'foobarbaz:controller_with_middleware', $this->router->runRoute( $request ) );
@@ -67,6 +71,8 @@
 			$GLOBALS['test'][ AdminControllerWithMiddleware::constructed_times ] = 0;
 
 			$this->router->get( '/foo', AdminControllerWithMiddleware::class . '@handle');
+
+			$this->router->loadRoutes();
 
 			$request = $this->request( 'GET', '/foo' );
 			$this->assertOutput( 'foobarbaz:controller_with_middleware', $this->router->runRoute( $request ) );

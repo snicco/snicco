@@ -6,11 +6,13 @@
 
     namespace WPEmerge\Routing;
 
+    use Closure;
     use WPEmerge\Contracts\ConditionInterface;
     use WPEmerge\Contracts\RouteAction;
     use WPEmerge\Contracts\RouteCondition;
     use WPEmerge\Contracts\SetsRouteAttributes;
     use WPEmerge\Factories\ConditionFactory;
+    use WPEmerge\Routing\Conditions\TrailingSlashCondition;
     use WPEmerge\Support\Url;
     use WPEmerge\Support\UrlParser;
     use WPEmerge\Support\Arr;
@@ -21,6 +23,9 @@
     {
 
         use SetRouteAttributes;
+
+
+        const ROUTE_WILDCARD = '*';
 
         /**
          * @var array
@@ -67,6 +72,14 @@
          */
         private $routeRegex;
 
+        /**
+         * @var Closure|null
+         */
+        private $wp_query_filter = null;
+
+        /** @var array */
+        private $segment_names;
+
         public function __construct(array $methods, string $url, $action, array $attributes = [])
         {
 
@@ -86,7 +99,11 @@
 
             $url = UrlParser::replaceAdminAliases($url);
 
-            $url = Url::normalizePath($url);
+            $url = Url::addLeading($url);
+
+            $this->segments = UrlParser::segments($url);
+
+            $this->segment_names = UrlParser::segmentNames($url);
 
             return $this->routeRegex->replaceOptional($url);
 
@@ -102,6 +119,7 @@
                 'namespace' => $this->namespace ?? '',
                 'defaults' => $this->defaults ?? [],
                 'url' => $this->url,
+                'wp_query_filter' => $this->wp_query_filter,
             ]);
 
         }
@@ -136,7 +154,6 @@
 
         public function andAlphaNumerical() : Route
         {
-
             return $this->addRegexToSegment(func_get_args(), '[a-zA-Z0-9]+');
 
         }
@@ -227,5 +244,31 @@
             return $this;
 
         }
+
+        public function wpquery(Closure $callback) : Route
+        {
+
+            $this->wp_query_filter = $callback;
+
+            return $this;
+
+        }
+
+        public function andOnlyTrailing()
+        {
+
+            $this->where(TrailingSlashCondition::class);
+
+            foreach ($this->segment_names as $segment) {
+
+                $this->addRegexToSegment($segment, '[^\/]+\/?');
+
+            }
+
+            $this->url = Str::replaceFirst('[/', '/[', $this->url);
+
+            return $this;
+        }
+
 
     }

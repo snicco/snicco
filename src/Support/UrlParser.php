@@ -6,7 +6,6 @@
 
     namespace WPEmerge\Support;
 
-
     use WPEmerge\Facade\WP;
 
     use function collect;
@@ -28,7 +27,6 @@
             'upload' => 'upload.php',
             'posts' => 'edit.php',
             'dashboard' => 'index.php',
-
 
         ];
 
@@ -146,7 +144,7 @@
 
         }
 
-        public static function replaceAdminAliases(string $url) :string
+        public static function replaceAdminAliases(string $url) : string
         {
 
             $options = implode('|', array_keys(self::ADMIN_ALIASES));
@@ -162,11 +160,24 @@
 
         }
 
-        public static function parseAjaxAction(string $route_url) :string
+        public static function parseAjaxAction(string $route_url) : string
         {
-            $action = trim(Str::after($route_url, 'ajax.php/'),'/');
+
+            $action = trim(Str::after($route_url, 'ajax.php/'), '/');
 
             return $action;
+
+        }
+
+        public static function segmentNames(string $url)
+        {
+
+            $segments = static::segments($url);
+
+            return collect($segments)->map(function ($segment) {
+
+                return trim($segment, '?');
+            })->all();
 
         }
 

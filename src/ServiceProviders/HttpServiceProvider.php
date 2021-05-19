@@ -25,7 +25,6 @@
     class HttpServiceProvider extends ServiceProvider
     {
 
-
         public function register() : void
         {
 

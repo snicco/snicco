@@ -10,12 +10,15 @@
     use Tests\stubs\TestApp;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Facade\WP;
 
     class IntegrationTest extends WPTestCase
     {
 
         public function newTestApp ( array $config = [] ) : Application
         {
+
+            WP::reset();
 
             $GLOBALS['wp_filter'] = [];
             $GLOBALS['wp_actions'] = [];

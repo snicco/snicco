@@ -53,6 +53,9 @@
 
             });
 
+            $this->router->loadRoutes();
+
+
             $ajax_request = $this->ajaxRequest('foo_action');
 
             $response = $this->router->runRoute($ajax_request);
@@ -95,6 +98,7 @@
                 });
 
             });
+            $this->router->loadRoutes();
 
             $ajax_request = $this->ajaxRequest('foo_action', 'GET')
                                  ->withParsedBody([])
@@ -141,6 +145,7 @@
                 });
 
             });
+            $this->router->loadRoutes();
 
             $ajax_request = $this->ajaxRequest('bar_action');
 
@@ -162,6 +167,7 @@
                 });
 
             });
+            $this->router->loadRoutes();
 
             $ajax_request = $this->ajaxRequest('bar_action', 'GET')
                 ->withParsedBody([])

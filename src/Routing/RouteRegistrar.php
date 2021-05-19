@@ -36,21 +36,27 @@
         public function loadRoutes()
         {
 
-            if (WP::isAdminAjax()) {
+            if ( WP::isAdminAjax() ) {
 
                 $this->loadRoutesGroup('ajax');
 
-                return;
             }
 
-            if (WP::isAdmin()) {
+            elseif ( WP::isAdmin() ) {
 
                 $this->loadRoutesGroup('admin');
 
-                return;
             }
 
-            $this->loadRoutesGroup('web');
+            else {
+
+                $this->loadRoutesGroup('web');
+                $this->router->createFallbackWebRoute();
+
+            }
+
+
+            $this->router->loadRoutes();
 
         }
 

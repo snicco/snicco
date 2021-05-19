@@ -39,7 +39,10 @@
 		/** @test */
 		public function dependencies_for_controller_actions_are_resolved() {
 
+
 			$this->router->get( '/foo', ControllerWithDependencies::class . '@handle');
+
+			$this->router->loadRoutes();
 
 			$request = $this->request( 'GET', '/foo' );
 			$this->assertOutput( 'foo_controller', $this->router->runRoute( $request ) );
@@ -52,6 +55,8 @@
 
 			$this->router->get( '/foo', ControllerWithDependencies::class . '@withMethodDependency');
 
+			$this->router->loadRoutes();
+
 			$request = $this->request( 'GET', '/foo' );
 			$this->assertOutput( 'foobar_controller', $this->router->runRoute( $request ) );
 
@@ -62,6 +67,8 @@
 
 			$this->router->get('teams/{team}/{player}', TeamsController::class . '@handle');
 
+			$this->router->loadRoutes();
+
 			$request = $this->request( 'GET', '/teams/dortmund/calvin' );
 			$this->assertOutput(  'dortmund:calvin', $this->router->runRoute( $request ) );
 
@@ -71,6 +78,8 @@
 		public function additional_dependencies_are_passed_to_the_controller_method_after_route_segments () {
 
 			$this->router->get('teams/{team}/{player}', TeamsController::class . '@withDependencies');
+
+			$this->router->loadRoutes();
 
 			$request = $this->request( 'GET', '/teams/dortmund/calvin' );
 			$this->assertOutput(  'dortmund:calvin:foo:bar', $this->router->runRoute( $request ) );
@@ -87,6 +96,8 @@
 					return $baz === 'baz' && $biz === 'biz';
 
 				}, 'baz', 'biz');
+
+			$this->router->loadRoutes();
 
 			$request = $this->request( 'GET', '/teams/dortmund/calvin' );
 			$this->assertOutput(  'dortmund:calvin:baz:biz:foo:bar', $this->router->runRoute( $request ) );
@@ -109,6 +120,8 @@
 
 
 				});
+
+			$this->router->loadRoutes();
 
 			$request = $this->request( 'GET', '/teams/dortmund/calvin' );
 			$this->assertOutput(  'dortmund:calvin:baz:biz:foo:bar', $this->router->runRoute( $request ) );

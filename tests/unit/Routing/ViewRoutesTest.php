@@ -43,6 +43,8 @@
 
 			$this->router->view('/foo', 'welcome.wordpress');
 
+			$this->router->loadRoutes();
+
 			$request = $this->request( 'GET', '/foo' );
 
 			$response = $this->router->runRoute($request);
@@ -61,7 +63,10 @@
 
 			$this->router->view('/foo', 'welcome.wordpress', ['foo' => 'bar', 'bar' => 'baz'], 201, ['Referer' => 'foobar']);
 
-			$request = $this->request( 'GET', '/foo' );
+            $this->router->loadRoutes();
+
+
+            $request = $this->request( 'GET', '/foo' );
 
 			$response = $this->router->runRoute($request);
 

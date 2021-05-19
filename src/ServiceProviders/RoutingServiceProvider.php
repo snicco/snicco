@@ -81,15 +81,21 @@
 
             });
 
+            $this->container->singleton(RouteCollection::class, function () {
+
+                return new RouteCollection(
+                    $this->container->make(ConditionFactory::class),
+                    $this->container->make(HandlerFactory::class),
+                    $this->container->make(RouteMatcher::class)
+                );
+
+            });
+
             $this->container->singleton(Router::class, function () {
 
                 return new Router(
                     $this->container,
-                    new RouteCollection(
-                        $this->container->make(ConditionFactory::class),
-                        $this->container->make(HandlerFactory::class),
-                        $this->container->make(RouteMatcher::class)
-                    ),
+                    $this->container->make(RouteCollection::class),
                     $this->container->make(ResponseFactory::class)
 
                 );

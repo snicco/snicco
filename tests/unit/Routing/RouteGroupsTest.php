@@ -1,33 +1,35 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace Tests\unit\Routing;
+    namespace Tests\unit\Routing;
 
-	use Mockery;
+    use Mockery;
     use Tests\UnitTest;
     use Tests\traits\SetUpRouter;
     use Tests\stubs\Conditions\FalseCondition;
-	use Tests\stubs\Conditions\TrueCondition;
-	use Tests\stubs\Conditions\UniqueCondition;
-	use Tests\stubs\Middleware\BarMiddleware;
-	use Tests\stubs\Middleware\BazMiddleware;
-	use Tests\stubs\Middleware\FooMiddleware;
+    use Tests\stubs\Conditions\TrueCondition;
+    use Tests\stubs\Conditions\UniqueCondition;
+    use Tests\stubs\Middleware\BarMiddleware;
+    use Tests\stubs\Middleware\BazMiddleware;
+    use Tests\stubs\Middleware\FooMiddleware;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
-    class RouteGroupsTest extends UnitTest {
+    class RouteGroupsTest extends UnitTest
+    {
 
-		use SetUpRouter;
+        use SetUpRouter;
 
-		const namespace = 'Tests\stubs\Controllers\Web';
+        const namespace = 'Tests\stubs\Controllers\Web';
 
 
         protected function beforeTestRun()
         {
-            $this->newRouter( $c = $this->createContainer() );
+
+            $this->newRouter($c = $this->createContainer());
             WP::setFacadeContainer($c);
         }
 
@@ -42,626 +44,628 @@
 
 
 
-		/**
-		 *
-		 *
-		 *
-		 *
-		 *
-		 * ROUTE GROUPS
-		 *
-		 *
-		 *
-		 *
-		 *
-		 *
-		 */
+        /**
+         *
+         *
+         *
+         *
+         *
+         * ROUTE GROUPS
+         *
+         *
+         *
+         *
+         *
+         *
+         */
 
-		/** @test */
-		public function methods_can_be_merged_for_a_group() {
+        /** @test */
+        public function methods_can_be_merged_for_a_group()
+        {
 
-			$this->router
-				->methods( [ 'GET', 'PUT' ] )
-				->group( function () {
+            $this->router
+                ->methods(['GET', 'PUT'])
+                ->group(function () {
 
-					$this->router->post( '/foo' )->handle( function () {
+                    $this->router->post('/foo')->handle(function () {
 
-						return 'post_foo';
+                        return 'post_foo';
 
-					} );
+                    });
 
-				} );
+                });
 
-			$get_request = $this->request( 'GET', '/foo' );
-			$response    = $this->router->runRoute( $get_request );
-			$this->assertOutput( 'post_foo', $response );
+            $this->router->loadRoutes();
 
-			$put_request = $this->request( 'PUT', '/foo' );
-			$response    = $this->router->runRoute( $put_request );
-			$this->assertOutput( 'post_foo', $response );
+            $get_request = $this->request('GET', '/foo');
+            $response = $this->router->runRoute($get_request);
+            $this->assertOutput('post_foo', $response);
 
-			$post_request = $this->request( 'POST', '/foo' );
-			$response     = $this->router->runRoute( $post_request );
-			$this->assertOutput( 'post_foo', $response );
+            $put_request = $this->request('PUT', '/foo');
+            $response = $this->router->runRoute($put_request);
+            $this->assertOutput('post_foo', $response);
 
-			$patch_request = $this->request( 'PATCH', '/foo' );
-			$response      = $this->router->runRoute( $patch_request );
-			$this->assertNullResponse( $response );
+            $post_request = $this->request('POST', '/foo');
+            $response = $this->router->runRoute($post_request);
+            $this->assertOutput('post_foo', $response);
 
+            $patch_request = $this->request('PATCH', '/foo');
+            $response = $this->router->runRoute($patch_request);
+            $this->assertNullResponse($response);
 
-		}
 
-		/** @test */
-		public function middleware_is_merged_for_route_groups() {
+        }
 
+        /** @test */
+        public function middleware_is_merged_for_route_groups()
+        {
 
-			$this->router->aliasMiddleware( 'foo', FooMiddleware::class );
-			$this->router->aliasMiddleware( 'bar', BarMiddleware::class );
 
-			$this->router
-				->middleware( 'foo:FOO' )
-				->group( function () {
+            $this->router->aliasMiddleware('foo', FooMiddleware::class);
+            $this->router->aliasMiddleware('bar', BarMiddleware::class);
 
-					$this->router
-						->get( '/foo' )
-						->middleware( 'bar:BAR' )
-						->handle( function ( Request $request ) {
+            $this->router
+                ->middleware('foo:FOO')
+                ->group(function () {
 
-							return $request->body;
+                    $this->router
+                        ->get('/foo')
+                        ->middleware('bar:BAR')
+                        ->handle(function (Request $request) {
 
-						} );
+                            return $request->body;
 
-					$this->router
-						->post( '/foo' )
-						->handle( function ( Request $request ) {
+                        });
 
-							return $request->body;
+                    $this->router
+                        ->post('/foo')
+                        ->handle(function (Request $request) {
 
-						} );
+                            return $request->body;
 
-				} );
+                        });
 
-			$get_request = $this->request( 'GET', '/foo' );
-			$response    = $this->router->runRoute( $get_request );
-			$this->assertOutput( 'FOOBAR', $response );
+                });
 
-			$post_request = $this->request( 'POST', '/foo' );
-			$response     = $this->router->runRoute( $post_request );
-			$this->assertOutput( 'FOO', $response );
+            $this->router->loadRoutes();
 
+            $get_request = $this->request('GET', '/foo');
+            $response = $this->router->runRoute($get_request);
+            $this->assertOutput('FOOBAR', $response);
 
-		}
+            $post_request = $this->request('POST', '/foo');
+            $response = $this->router->runRoute($post_request);
+            $this->assertOutput('FOO', $response);
 
-		/** @test */
-		public function the_group_namespace_is_applied_to_child_routes() {
 
-			$this->router
-				->namespace( self::namespace )
-				->group( function () {
+        }
 
-					$this->router->get( '/foo' )->handle( 'RoutingController@foo' );
+        /** @test */
+        public function the_group_namespace_is_applied_to_child_routes()
+        {
 
-				});
+            $this->router
+                ->namespace(self::namespace)
+                ->group(function () {
 
-			$get_request = $this->request( 'GET', '/foo' );
-			$response    = $this->router->runRoute( $get_request );
-			$this->assertOutput( 'foo', $response );
+                    $this->router->get('/foo')->handle('RoutingController@foo');
 
+                });
 
-		}
+            $this->router->loadRoutes();
 
-		/** @test */
-		public function a_group_can_prefix_all_child_route_urls() {
+            $get_request = $this->request('GET', '/foo');
+            $response = $this->router->runRoute($get_request);
+            $this->assertOutput('foo', $response);
 
-			$routes = function () {
 
-				$this->router
-					->prefix( 'foo' )
-					->group( function () {
+        }
 
-						$this->router->get( 'bar', function () {
+        /** @test */
+        public function a_group_can_prefix_all_child_route_urls()
+        {
 
-							return 'foobar';
+            $this->router
+                ->prefix('foo')
+                ->group(function () {
 
-						} );
+                    $this->router->get('bar', function () {
 
-						$this->router->get( 'baz', function () {
+                        return 'foobar';
 
-							return 'foobaz';
+                    });
 
-						} );
+                    $this->router->get('baz', function () {
 
+                        return 'foobaz';
 
-					} );
+                    });
 
-			};
 
-			$this->newRouterWith( $routes );
-			$this->assertOutput( 'foobar', $this->router->runRoute( $this->request( 'GET', '/foo/bar' ) ) );
+                });
 
-			$this->newRouterWith( $routes );
-			$this->assertOutput( 'foobaz', $this->router->runRoute( $this->request( 'GET', '/foo/baz' ) ) );
+            $this->router->loadRoutes();
 
-			$this->newRouterWith( $routes );
-			$this->assertNullResponse( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+            $this->assertOutput('foobar', $this->router->runRoute($this->request('GET', '/foo/bar')));
 
-		}
+            $this->assertOutput('foobaz', $this->router->runRoute($this->request('GET', '/foo/baz')));
 
-		/** @test */
-		public function group_conditions_are_merged_into_child_routes() {
+            $this->assertNullResponse($this->router->runRoute($this->request('GET', '/foo')));
 
-			$this->router
-				->where( 'maybe', false )
-				->namespace( 'Tests\stubs\Controllers\Web' )
-				->group( function () {
+        }
 
-					$this->router
-						->get( '/foo' )
-						->where( new FalseCondition() )
-						->handle( 'RoutingController@foo' );
+        /** @test */
+        public function group_conditions_are_merged_into_child_routes()
+        {
 
-					$this->router
-						->post( '/foo' )
-						->where( new TrueCondition() )
-						->handle( 'RoutingController@foo' );
+            $this->router
+                ->where('maybe', false)
+                ->namespace('Tests\stubs\Controllers\Web')
+                ->group(function () {
 
-				} );
+                    $this->router
+                        ->get('/foo')
+                        ->where(new FalseCondition())
+                        ->handle('RoutingController@foo');
 
-			$get_request = $this->request( 'GET', '/foo' );
-			$response    = $this->router->runRoute( $get_request );
-			$this->assertNullResponse( $response );
+                    $this->router
+                        ->post('/foo')
+                        ->where(new TrueCondition())
+                        ->handle('RoutingController@foo');
 
-			$post_request = $this->request( 'POST', '/foo' );
-			$response     = $this->router->runRoute( $post_request );
-			$this->assertNullResponse( $response );
+                });
 
-		}
+            $this->router->loadRoutes();
 
-		/** @test */
-		public function duplicate_conditions_a_removed_during_route_compilation() {
+            $get_request = $this->request('GET', '/foo');
+            $response = $this->router->runRoute($get_request);
+            $this->assertNullResponse($response);
 
-			$this->router
-				->where( new UniqueCondition() )
-				->group( function () {
+            $post_request = $this->request('POST', '/foo');
+            $response = $this->router->runRoute($post_request);
+            $this->assertNullResponse($response);
 
-					$this->router
-						->get( '/foo', function () {
+        }
 
-							return 'get_foo';
+        /** @test */
+        public function duplicate_conditions_a_removed_during_route_compilation()
+        {
 
-						} )
-						->where( new UniqueCondition() );
+            $this->router
+                ->where(new UniqueCondition())
+                ->group(function () {
 
-				} );
+                    $this->router
+                        ->get('/foo', function () {
 
-			$response = $this->router->runRoute( $this->request( 'GET', '/foo' ) );
-			$this->assertOutput( 'get_foo', $response );
+                            return 'get_foo';
 
-			$count = $GLOBALS['test']['unique_condition'];
-			$this->assertSame( 1, $count, 'Condition was run: ' . $count . ' times.' );
+                        })
+                        ->where(new UniqueCondition());
 
+                });
 
-		}
+            $this->router->loadRoutes();
 
-		/** @test */
-		public function unique_conditions_are_also_enforced_when_conditions_are_aliased() {
+            $response = $this->router->runRoute($this->request('GET', '/foo'));
+            $this->assertOutput('get_foo', $response);
 
-			$this->router
-				->where( 'unique' )
-				->group( function () {
+            $count = $GLOBALS['test']['unique_condition'];
+            $this->assertSame(1, $count, 'Condition was run: '.$count.' times.');
 
-					$this->router
-						->get( '/bar', function () {
 
-							return 'get_bar';
+        }
 
-						} )
-						->where( 'unique' );
+        /** @test */
+        public function unique_conditions_are_also_enforced_when_conditions_are_aliased()
+        {
 
-				} );
+            $this->router
+                ->where('unique')
+                ->group(function () {
 
-			$response = $this->router->runRoute( $this->request( 'GET', '/bar' ) );
-			$this->assertOutput( 'get_bar', $response );
+                    $this->router
+                        ->get('/bar', function () {
 
-			$count = $GLOBALS['test']['unique_condition'];
-			$this->assertSame( 1, $count, 'Condition was run: ' . $count . ' times.' );
+                            return 'get_bar';
 
+                        })
+                        ->where('unique');
 
-		}
+                });
 
-		/**
-		 *
-		 *
-		 *
-		 *
-		 *
-		 * NESTED ROUTE GROUPS
-		 *
-		 *
-		 *
-		 *
-		 *
-		 */
+            $this->router->loadRoutes();
 
-		/** @test */
-		public function methods_are_merged_on_multiple_levels() {
+            $response = $this->router->runRoute($this->request('GET', '/bar'));
+            $this->assertOutput('get_bar', $response);
 
-			$routes = function () {
+            $count = $GLOBALS['test']['unique_condition'];
+            $this->assertSame(1, $count, 'Condition was run: '.$count.' times.');
 
-				$this->router
-					->methods( 'GET' )
-					->group( function () {
 
-						$this->router->methods( 'POST' )->group( function () {
+        }
 
-							$this->router->put( '/foo' )->handle( function () {
+        /**
+         *
+         *
+         *
+         *
+         *
+         * NESTED ROUTE GROUPS
+         *
+         *
+         *
+         *
+         *
+         */
 
-								return 'foo';
+        /** @test */
+        public function methods_are_merged_on_multiple_levels()
+        {
 
-							} );
 
-						} );
+            $this->router
+                ->methods('GET')
+                ->group(function () {
 
-						$this->router->patch( '/bar' )->handle( function () {
+                    $this->router->methods('POST')->group(function () {
 
-							return 'bar';
+                        $this->router->put('/foo')->handle(function () {
 
-						} );
+                            return 'foo';
 
-					} );
+                        });
 
-			};
+                    });
 
-			// First route
-			$this->newRouterWith( $routes );
-			$post     = $this->request( 'POST', '/foo' );
-			$response = $this->router->runRoute( $post );
-			$this->assertOutput( 'foo', $response );
+                    $this->router->patch('/bar')->handle(function () {
 
-			$put      = $this->request( 'PUT', '/foo' );
-			$response = $this->router->runRoute( $put );
-			$this->assertOutput( 'foo', $response );
+                        return 'bar';
 
-			$get      = $this->request( 'GET', '/foo' );
-			$response = $this->router->runRoute( $get );
-			$this->assertOutput( 'foo', $response );
+                    });
 
-			$patch    = $this->request( 'PATCH', '/foo' );
-			$response = $this->router->runRoute( $patch );
-			$this->assertNullResponse( $response );
+                });
 
-			// Second route
-			$this->newRouterWith( $routes );
-			$get      = $this->request( 'GET', '/bar' );
-			$response = $this->router->runRoute( $get );
-			$this->assertOutput( 'bar', $response );
+            $this->router->loadRoutes();
 
-			$patch    = $this->request( 'PATCH', '/bar' );
-			$response = $this->router->runRoute( $patch );
-			$this->assertOutput( 'bar', $response );
+            // First route
+            $post = $this->request('POST', '/foo');
+            $response = $this->router->runRoute($post);
+            $this->assertOutput('foo', $response);
 
-			$post     = $this->request( 'POST', '/bar' );
-			$response = $this->router->runRoute( $post );
-			$this->assertNullResponse( $response );
+            $put = $this->request('PUT', '/foo');
+            $response = $this->router->runRoute($put);
+            $this->assertOutput('foo', $response);
 
-			$put      = $this->request( 'PUT', '/bar' );
-			$response = $this->router->runRoute( $put );
-			$this->assertNullResponse( $response );
+            $get = $this->request('GET', '/foo');
+            $response = $this->router->runRoute($get);
+            $this->assertOutput('foo', $response);
 
-		}
+            $patch = $this->request('PATCH', '/foo');
+            $response = $this->router->runRoute($patch);
+            $this->assertNullResponse($response);
 
-		/** @test */
-		public function middleware_is_nested_on_multiple_levels() {
+            // Second route
+            $get = $this->request('GET', '/bar');
+            $response = $this->router->runRoute($get);
+            $this->assertOutput('bar', $response);
 
+            $patch = $this->request('PATCH', '/bar');
+            $response = $this->router->runRoute($patch);
+            $this->assertOutput('bar', $response);
 
-			$routes = function () {
+            $post = $this->request('POST', '/bar');
+            $response = $this->router->runRoute($post);
+            $this->assertNullResponse($response);
 
-				$this->router
-					->middleware( 'foo:FOO' )
-					->group( function () {
+            $put = $this->request('PUT', '/bar');
+            $response = $this->router->runRoute($put);
+            $this->assertNullResponse($response);
 
-						$this->router->middleware( 'bar:BAR' )->group( function () {
+        }
 
-							$this->router
-								->get( '/foo' )
-								->middleware( 'baz:BAZ' )
-								->handle( function ( Request $request ) {
+        /** @test */
+        public function middleware_is_nested_on_multiple_levels()
+        {
 
-									return $request->body;
 
-								} );
+            $this->router
+                ->middleware('foo:FOO')
+                ->group(function () {
 
-						} );
+                    $this->router->middleware('bar:BAR')->group(function () {
 
-						$this->router
-							->get( '/bar' )
-							->middleware( 'baz:BAZ' )
-							->handle( function ( Request $request ) {
+                        $this->router
+                            ->get('/foo')
+                            ->middleware('baz:BAZ')
+                            ->handle(function (Request $request) {
 
-								return $request->body;
+                                return $request->body;
 
-							} );
+                            });
 
-					} );
+                    });
 
-				$this->router->aliasMiddleware( 'foo', FooMiddleware::class );
-				$this->router->aliasMiddleware( 'bar', BarMiddleware::class );
-				$this->router->aliasMiddleware( 'baz', BazMiddleware::class );
+                    $this->router
+                        ->get('/bar')
+                        ->middleware('baz:BAZ')
+                        ->handle(function (Request $request) {
 
-			};
+                            return $request->body;
 
-			$this->newRouterWith( $routes );
-			$get      = $this->request( 'GET', '/foo' );
-			$response = $this->router->runRoute( $get );
-			$this->assertOutput( 'FOOBARBAZ', $response );
+                        });
 
-			$this->newRouterWith( $routes );
-			$get      = $this->request( 'GET', '/bar' );
-			$response = $this->router->runRoute( $get );
-			$this->assertOutput( 'FOOBAZ', $response );
+                });
 
-		}
+            $this->router->aliasMiddleware('foo', FooMiddleware::class);
+            $this->router->aliasMiddleware('bar', BarMiddleware::class);
+            $this->router->aliasMiddleware('baz', BazMiddleware::class);
 
-		/** @test */
-		public function the_route_namespace_is_always_overwritten_by_child_routes() {
+            $this->router->loadRoutes();
 
-			/** @todo decide if its desired to overwritte the route namespace. */
-			$this->router
-				->namespace( 'Tests\FalseNamespace' )
-				->group( function () {
+            $get = $this->request('GET', '/foo');
+            $response = $this->router->runRoute($get);
+            $this->assertOutput('FOOBARBAZ', $response);
 
-					$this->router
-						->namespace( self::namespace )
-						->get( '/foo' )
-						->handle( 'RoutingController@foo' );
+            $get = $this->request('GET', '/bar');
+            $response = $this->router->runRoute($get);
+            $this->assertOutput('FOOBAZ', $response);
 
-				} );
+        }
 
-			$get_request = $this->request( 'GET', '/foo' );
-			$response    = $this->router->runRoute( $get_request );
-			$this->assertOutput( 'foo', $response );
+        /** @test */
+        public function the_route_namespace_is_always_overwritten_by_child_routes()
+        {
 
+            /** @todo decide if its desired to overwritte the route namespace. */
+            $this->router
+                ->namespace('Tests\FalseNamespace')
+                ->group(function () {
 
-		}
+                    $this->router
+                        ->namespace(self::namespace)
+                        ->get('/foo')
+                        ->handle('RoutingController@foo');
 
-		/** @test */
-		public function group_prefixes_are_merged_on_multiple_levels() {
+                });
 
-			$routes = function () {
+            $this->router->loadRoutes();
 
-				$this->router
-					->prefix( 'foo' )
-					->group( function () {
+            $get_request = $this->request('GET', '/foo');
+            $response = $this->router->runRoute($get_request);
+            $this->assertOutput('foo', $response);
 
-						$this->router->prefix( 'bar' )->group( function () {
 
-							$this->router->get( 'baz', function () {
+        }
 
-								return 'foobarbaz';
+        /** @test */
+        public function group_prefixes_are_merged_on_multiple_levels()
+        {
 
-							} );
 
-						} );
+            $this->router
+                ->prefix('foo')
+                ->group(function () {
 
-						$this->router->get( 'biz', function () {
+                    $this->router->prefix('bar')->group(function () {
 
-							return 'foobiz';
+                        $this->router->get('baz', function () {
 
-						} );
+                            return 'foobarbaz';
 
+                        });
 
-					} );
+                    });
 
+                    $this->router->get('biz', function () {
 
-			};
+                        return 'foobiz';
 
-			$this->newRouterWith( $routes );
-			$this->assertOutput( 'foobarbaz', $this->router->runRoute( $this->request( 'GET', '/foo/bar/baz' ) ) );
+                    });
 
-			$this->newRouterWith( $routes );
-			$this->assertOutput( 'foobiz', $this->router->runRoute( $this->request( 'GET', '/foo/biz' ) ) );
 
-			$this->newRouterWith( $routes );
-			$this->assertNullResponse( $this->router->runRoute( $this->request( 'GET', '/foo/bar/biz' ) ) );
+                });
 
+            $this->router->loadRoutes();
 
-		}
+            $this->assertOutput('foobarbaz', $this->router->runRoute($this->request('GET', '/foo/bar/baz')));
 
-		/** @test */
-		public function conditions_are_merged_on_multiple_levels() {
+            $this->assertOutput('foobiz', $this->router->runRoute($this->request('GET', '/foo/biz')));
 
-			// Given
-			$GLOBALS['test']['parent_condition_called'] = false;
-			$GLOBALS['test']['child_condition_called']  = false;
+            $this->assertNullResponse($this->router->runRoute($this->request('GET', '/foo/bar/biz')));
 
-			$routes = function () {
 
-				$this->router
-					->where( function () {
+        }
 
-						$GLOBALS['test']['parent_condition_called'] = true;
+        /** @test */
+        public function conditions_are_merged_on_multiple_levels()
+        {
 
-						$this->assertFalse( $GLOBALS['test']['child_condition_called'] );
+            // Given
+            $GLOBALS['test']['parent_condition_called'] = false;
+            $GLOBALS['test']['child_condition_called'] = false;
 
-						return true;
+            $this->router
+                ->where(function () {
 
-					})
-					->group( function () {
+                    $GLOBALS['test']['parent_condition_called'] = true;
 
-						$this->router
-							->get( '/bar' )
-							->where( 'true' )
-							->handle( function () {
+                    $this->assertFalse($GLOBALS['test']['child_condition_called']);
 
-								return 'bar';
+                    return true;
 
-							} );
+                })
+                ->group(function () {
 
-						$this->router->where( function () {
+                    $this->router
+                        ->get('/bar')
+                        ->where('true')
+                        ->handle(function () {
 
-							$GLOBALS['test']['child_condition_called'] = true;
+                            return 'bar';
 
-							return false;
+                        });
 
-						} )->group( function () {
+                    $this->router->where(function () {
 
-							$this->router
-								->get( '/foo' )
-								->where( 'true' )
-								->handle( function () {
+                        $GLOBALS['test']['child_condition_called'] = true;
 
-									$this->fail( 'This route should not have been called' );
+                        return false;
 
-								} );
+                    })->group(function () {
 
-						} );
+                        $this->router
+                            ->get('/foo')
+                            ->where('true')
+                            ->handle(function () {
 
+                                $this->fail('This route should not have been called');
 
-					} );
+                            });
 
-			};
+                    });
 
 
-			// When
-			$this->newRouterWith( $routes );
-			$get      = $this->request( 'GET', '/foo' );
-			$response = $this->router->runRoute( $get );
+                });
 
-			// Then
-			$this->assertNullResponse( $response );
-			$this->assertSame( true, $GLOBALS['test']['parent_condition_called'] );
-			$this->assertSame( true, $GLOBALS['test']['child_condition_called'] );
+            $this->router->loadRoutes();
 
-			// Given
-			$GLOBALS['test']['parent_condition_called'] = false;
-			$GLOBALS['test']['child_condition_called']  = false;
+            // When
+            $get = $this->request('GET', '/foo');
+            $response = $this->router->runRoute($get);
 
-			// When
-			$this->newRouterWith( $routes );
-			$get      = $this->request( 'GET', '/bar' );
-			$response = $this->router->runRoute( $get );
+            // Then
+            $this->assertNullResponse($response);
+            $this->assertSame(true, $GLOBALS['test']['parent_condition_called']);
+            $this->assertSame(true, $GLOBALS['test']['child_condition_called']);
 
-			// Then
-			$this->assertOutput( 'bar', $response );
-			$this->assertSame( true, $GLOBALS['test']['parent_condition_called'] );
-			$this->assertSame( false, $GLOBALS['test']['child_condition_called'] );
+            // Given
+            $GLOBALS['test']['parent_condition_called'] = false;
+            $GLOBALS['test']['child_condition_called'] = false;
 
+            // When
+            $get = $this->request('GET', '/bar');
+            $response = $this->router->runRoute($get);
 
-		}
+            // Then
+            $this->assertOutput('bar', $response);
+            $this->assertSame(true, $GLOBALS['test']['parent_condition_called']);
+            $this->assertSame(false, $GLOBALS['test']['child_condition_called']);
 
-		/** @test */
-		public function the_first_matching_route_aborts_the_iteration_over_all_current_routes() {
 
-			$GLOBALS['test']['first_route_condition'] = false;
+        }
 
-			$this->router->prefix( 'foo' )->group( function () {
+        /** @test */
+        public function the_first_matching_route_aborts_the_iteration_over_all_current_routes()
+        {
 
-				$this->router
-					->get( '/bar' )
-					->where( function () {
+            $GLOBALS['test']['first_route_condition'] = false;
 
-						$GLOBALS['test']['first_route_condition'] = true;
+            $this->router->prefix('foo')->group(function () {
 
-						return true;
+                $this->router
+                    ->get('/bar')
+                    ->where(function () {
 
-					} )
-					->handle( function () {
+                        $GLOBALS['test']['first_route_condition'] = true;
 
-						return 'bar1';
+                        return true;
 
-					} );
+                    })
+                    ->handle(function () {
 
-				$this->router
-					->get( '/{bar}' )
-					->where( function () {
+                        return 'bar1';
 
-						$this->fail( 'Route condition evaluated even tho we already had a matching route' );
+                    });
 
-					} )
-					->handle( function () {
+                $this->router
+                    ->get('/{bar}')
+                    ->where(function () {
 
-						return 'bar2';
+                        $this->fail('Route condition evaluated even tho we already had a matching route');
 
-					} );
+                    })
+                    ->handle(function () {
 
+                        return 'bar2';
 
-			} );
+                    });
 
-			$this->assertOutput(
-				'bar1',
-				$this->router->runRoute(
-					$this->request( 'GET', '/foo/bar' )
-				)
-			);
 
-			$this->assertTrue( $GLOBALS['test']['first_route_condition'] );
+            });
 
-		}
+            $this->router->loadRoutes();
 
-		/** @test */
-		public function url_conditions_are_passed_even_if_one_group_in_the_chain_does_not_specify_an_url_condition() {
+            $this->assertOutput(
+                'bar1',
+                $this->router->runRoute(
+                    $this->request('GET', '/foo/bar')
+                )
+            );
 
-			$routes = function () {
+            $this->assertTrue($GLOBALS['test']['first_route_condition']);
 
-				$this->router->prefix( 'foo' )->group( function () {
+        }
 
-					$this->router->where( 'true' )->group( function () {
+        /** @test */
+        public function url_conditions_are_passed_even_if_one_group_in_the_chain_does_not_specify_an_url_condition()
+        {
 
-						$this->router->get( 'bar', function () {
 
-							return 'foobar';
+            $this->router->prefix('foo')->group(function () {
 
-						} );
+                $this->router->where('true')->group(function () {
 
-					} );
+                    $this->router->get('bar', function () {
 
-				} );
+                        return 'foobar';
 
-			};
+                    });
 
-			$this->newRouterWith( $routes );
-			$get = $this->request( 'GET', '/foo/bar' );
-			$this->assertOutput( 'foobar', $this->router->runRoute( $get ) );
+                });
 
-			$this->newRouterWith( $routes );
-			$get = $this->request( 'GET', '/foo' );
-			$this->assertNullResponse( $this->router->runRoute( $get ) );
+            });
 
+            $this->router->loadRoutes();
 
-		}
+            $get = $this->request('GET', '/foo/bar');
+            $this->assertOutput('foobar', $this->router->runRoute($get));
 
-		/** @test */
-		public function url_conditions_are_passed_even_if_the_root_group_doesnt_specify_an_url_condition() {
+            $get = $this->request('GET', '/foo');
+            $this->assertNullResponse($this->router->runRoute($get));
 
-			$routes = function () {
 
-				$this->router->where( 'true' )->group( function () {
+        }
 
-					$this->router->prefix( 'foo' )->group( function () {
+        /** @test */
+        public function url_conditions_are_passed_even_if_the_root_group_doesnt_specify_an_url_condition()
+        {
 
-						$this->router->get( 'bar', function () {
 
-							return 'foobar';
+            $this->router->where('true')->group(function () {
 
-						} );
+                $this->router->prefix('foo')->group(function () {
 
-					} );
+                    $this->router->get('bar', function () {
 
-				} );
+                        return 'foobar';
 
+                    });
 
-			};
+                });
 
-			$this->newRouterWith( $routes );
-			$get = $this->request( 'GET', '/foo/bar' );
-			$this->assertOutput( 'foobar', $this->router->runRoute( $get ) );
+            });
 
-			$this->newRouterWith( $routes );
-			$get = $this->request( 'GET', '/foo' );
-			$this->assertNullResponse( $this->router->runRoute( $get ) );
+            $this->router->loadRoutes();
 
+            $get = $this->request('GET', '/foo/bar');
+            $this->assertOutput('foobar', $this->router->runRoute($get));
 
-		}
+            $get = $this->request('GET', '/foo');
+            $this->assertNullResponse($this->router->runRoute($get));
 
-	}
+
+        }
+
+    }
 

@@ -13,6 +13,7 @@
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ViewInterface;
+    use WPEmerge\Routing\Route;
     use WPEmerge\Routing\Router;
     use WPEmerge\Support\Url;
     use WPEmerge\Support\VariableBag;
@@ -28,8 +29,16 @@
 
             parent::setUp();
 
-            $this->app = TestApp::make();
-            TestApp::boot();
+            $this->app = $this->newTestApp([
+                'routing' => [
+                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                ]
+            ]);
+
+            /** @var Router $router */
+            $router = TestApp::resolve(Router::class);
+
+            $router->middlewareGroup('web', []);
 
         }
 
@@ -76,45 +85,38 @@
         public function a_post_route_can_be_aliased()
         {
 
-            TestApp::post('foo', function () {
+            $response = TestApp::route()->runRoute(TestRequest::from('POST', 'post'));
 
-                return 'foo';
-
-            });
-
-            $response = TestApp::route()->runRoute(TestRequest::from('POST', 'foo'));
-
-            $this->assertOutput('foo', $response);
+            $this->assertOutput('post', $response);
 
         }
 
-        /** @test */
+        /**
+         * @test
+         * see: stubs/Routes/web.php
+         */
         public function a_get_route_can_be_aliased()
         {
 
-            TestApp::get('foo', function () {
+            $response = TestApp::route()->runRoute(TestRequest::from('GET', 'get'));
 
-                return 'foo';
-            });
-
-            $response = TestApp::route()->runRoute(TestRequest::from('GET', 'foo'));
-
-            $this->assertOutput('foo', $response);
+            $this->assertOutput('get', $response);
 
         }
 
-        /** @test */
+        /**
+         * @test
+         *
+         * see: stubs/Routes/web.php
+         *
+         */
         public function a_patch_route_can_be_aliased()
         {
 
-            TestApp::patch('foo', function () {
 
-                return 'foo';
-            });
+            $response = TestApp::route()->runRoute(TestRequest::from('PATCH', 'patch'));
 
-            $response = TestApp::route()->runRoute(TestRequest::from('PATCH', 'foo'));
-
-            $this->assertOutput('foo', $response);
+            $this->assertOutput('patch', $response);
 
         }
 
@@ -122,14 +124,9 @@
         public function a_put_route_can_be_aliased()
         {
 
-            TestApp::put('foo', function () {
+            $response = TestApp::route()->runRoute(TestRequest::from('PUT', 'put'));
 
-                return 'foo';
-            });
-
-            $response = TestApp::route()->runRoute(TestRequest::from('PUT', 'foo'));
-
-            $this->assertOutput('foo', $response);
+            $this->assertOutput('put', $response);
 
         }
 
@@ -137,29 +134,18 @@
         public function an_options_route_can_be_aliased()
         {
 
-            TestApp::options('foo', function () {
+            $response = TestApp::route()->runRoute(TestRequest::from('OPTIONS', 'options'));
 
-                return 'foo';
-            });
-
-            $response = TestApp::route()->runRoute(TestRequest::from('OPTIONS', 'foo'));
-
-            $this->assertOutput('foo', $response);
+            $this->assertOutput('options', $response);
 
         }
 
         /** @test */
         public function a_delete_route_can_be_aliased()
         {
+            $response = TestApp::route()->runRoute(TestRequest::from('DELETE', 'delete'));
 
-            TestApp::delete('foo', function () {
-
-                return 'foo';
-            });
-
-            $response = TestApp::route()->runRoute(TestRequest::from('DELETE', 'foo'));
-
-            $this->assertOutput('foo', $response);
+            $this->assertOutput('delete', $response);
 
         }
 
@@ -167,16 +153,11 @@
         public function a_match_route_can_be_aliased()
         {
 
-            TestApp::match(['GET', 'POST'], 'foo', function () {
+            $response = TestApp::route()->runRoute(TestRequest::from('GET', 'match'));
+            $this->assertOutput('match', $response);
 
-                return 'foo';
-            });
-
-            $response = TestApp::route()->runRoute(TestRequest::from('GET', 'foo'));
-            $this->assertOutput('foo', $response);
-
-            $response = TestApp::route()->runRoute(TestRequest::from('POST', 'foo'));
-            $this->assertOutput('foo', $response);
+            $response = TestApp::route()->runRoute(TestRequest::from('POST', 'match'));
+            $this->assertOutput('match', $response);
 
 
         }
@@ -245,6 +226,14 @@
             $view = TestApp::view('subview.php');
 
             $this->assertSame('Hello World', $view->toString());
+
+        }
+
+        private function loadRoutes () {
+
+            /** @var Router  $router */
+            $router = TestApp::resolve(Router::class);
+            $router->loadRoutes();
 
         }
 

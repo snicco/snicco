@@ -11,6 +11,7 @@
     use Tests\stubs\TestErrorHandler;
     use Tests\stubs\TestViewService;
     use Tests\stubs\TestRequest;
+    use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\IncomingWebRequest;
@@ -42,19 +43,21 @@
 
             $handler_factory = new HandlerFactory( [], $c );
             $condition_factory = new ConditionFactory( [], $c );
+            $routes =  new RouteCollection(
+                $condition_factory,
+                $handler_factory,
+                new FastRouteMatcher()
+            );
+
+            $c->instance(HandlerFactory::class, $handler_factory);
+            $c->instance(ConditionFactory::class, $condition_factory);
+            $c->instance(RouteCollection::class, $routes);
+            $c->instance(ResponseFactory::class, $response = $this->responseFactory());
 
             return new Router(
                 $c,
-                new RouteCollection(
-                    $condition_factory,
-                    $handler_factory,
-                    new FastRouteMatcher()
-                ),
-                new HttpResponseFactory(
-                    new TestViewService(),
-                    $this->psrResponseFactory(),
-                    $this->psrStreamFactory()
-                )
+                $routes,
+                $response
             );
 
         }

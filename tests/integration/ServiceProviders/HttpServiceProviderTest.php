@@ -108,7 +108,6 @@
 
             $this->newTestApp();
 
-
             $this->assertFalse(TestApp::config('always_run_middleware', ''));
 
 

@@ -35,6 +35,8 @@
 
         public $url;
 
+        public $wp_query_filter;
+
         public function __construct($attributes)
         {
 
@@ -44,6 +46,7 @@
             $this->namespace = $attributes['namespace'] ?? '';
             $this->defaults = $attributes['defaults'] ?? [];
             $this->url = $attributes['url'] ?? '';
+            $this->wp_query_filter = $attributes['wp_query_filter'];
 
         }
 
@@ -133,7 +136,7 @@
 
         }
 
-        public function compileCachableAction() : CompiledRoute
+        public function compileCacheableAction() : CompiledRoute
         {
 
             if ($this->action instanceof Closure && class_exists(SerializableClosure::class)) {
@@ -160,6 +163,22 @@
 
             return array_merge($route_payload, $this->defaults);
 
+
+        }
+
+        public function filterWpQuery ( array $query_vars,  array $route_payload ) {
+
+            $callable = $this->wp_query_filter;
+
+            if ( ! $callable ) {
+
+                return $query_vars;
+
+            }
+
+            $combined = [$query_vars] + $route_payload;
+
+            return call_user_func_array($callable, $combined);
 
         }
 
