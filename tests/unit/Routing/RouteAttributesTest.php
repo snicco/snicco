@@ -81,7 +81,7 @@
         public function basic_post_routing_works()
         {
 
-            $this->router->post('/foo/')->handle(function () {
+            $this->router->post('/foo')->handle(function () {
 
                 return 'foo';
 

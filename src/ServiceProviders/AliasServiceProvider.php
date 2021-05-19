@@ -10,7 +10,8 @@
 	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Contracts\ViewServiceInterface;
 	use WPEmerge\Routing\Router;
-	use WPEmerge\View\PhpViewEngine;
+    use WPEmerge\Routing\UrlGenerator;
+    use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\ViewComposers\ViewComposerCollection;
 
 	class AliasServiceProvider extends ServiceProvider {
@@ -51,7 +52,7 @@
 		private function routingAliases( Application $app ) {
 
 			$app->alias( 'route', Router::class );
-			$app->alias( 'routeUrl', Router::class, 'getRouteUrl' );
+			$app->alias( 'routeUrl', UrlGenerator::class, 'toRoute' );
 			$app->alias( 'post', Router::class, 'post' );
 			$app->alias( 'get', Router::class, 'get' );
 			$app->alias( 'patch', Router::class, 'patch' );

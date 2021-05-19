@@ -6,10 +6,12 @@
 
     namespace WPEmerge\Routing\FastRoute;
 
+    use WPEmerge\Routing\CompiledRoute;
+    use WPEmerge\Routing\Route;
     use WPEmerge\Support\Str;
     use WPEmerge\Support\UrlParser;
 
-    class FastRouteRegex
+    class FastRouteSyntax
     {
 
         public function convertOptionalSegments(string $url_pattern) : string
@@ -39,7 +41,8 @@
 
             }
 
-            return rtrim($url_pattern, '/');
+            return $url_pattern;
+
 
         }
 
@@ -97,6 +100,46 @@
                 return isset($regex[$segment]);
 
             });
+
+        }
+
+        public function convert(CompiledRoute $route) : string
+        {
+            $url = $route->url;
+
+            if ( trim( $url, '/' ) === Route::ROUTE_WILDCARD ) {
+
+                $url = '__generated:wp_route_no_url_condition_' . Str::random(16);
+
+            }
+
+            $url = $this->convertOptionalSegments($url);
+
+            foreach ($route->regex as $regex) {
+
+                $url = $this->addCustomRegexToSegments($regex, $url);
+
+            }
+
+            if ( $route->trailing_slash ) {
+
+                $url = $this->ensureRouteOnlyMatchesWithTrailingSlash($url, $route);
+
+            }
+
+            return $url;
+        }
+
+        private function ensureRouteOnlyMatchesWithTrailingSlash ($url, CompiledRoute $route) : string
+        {
+
+            foreach ($route->segment_names as $segment) {
+
+                $url = $this->addCustomRegexToSegments( [$segment => '[^\/]+\/?'], $url );
+
+            }
+
+            return Str::replaceFirst('[/', '/[', $url);
 
         }
 
