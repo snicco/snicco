@@ -45,6 +45,8 @@
 
 				} );
 
+			$this->router->loadRoutes();
+
 			$this->assertNullResponse( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
 
@@ -61,6 +63,7 @@
 					return 'foo';
 
 				} );
+            $this->router->loadRoutes();
 
 			$this->assertNullResponse( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
@@ -79,16 +82,20 @@
 
 				} );
 
+            $this->router
+                ->where( 'false' )
+                ->post( '/bar' )
+                ->handle( function ( Request $request ) {
+
+                    return 'foo';
+
+                } );
+
+            $this->router->loadRoutes();
+
 			$this->assertNullResponse( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
-			$this->router
-				->where( 'false' )
-				->post( '/bar' )
-				->handle( function ( Request $request ) {
 
-					return 'foo';
-
-				} );
 
 			$this->assertNullResponse( $this->router->runRoute( $this->request( 'POST', '/bar' ) ) );
 
@@ -118,6 +125,8 @@
 					return 'foo';
 
 				} );
+
+			$this->router->loadRoutes();
 
 			$this->assertOutput( 'foo', $this->router->runRoute( $this->request( 'GET', '/baz' ) ) );
 			$this->assertSame( 'bar', $GLOBALS['test']['cond2'] );
@@ -154,48 +163,48 @@
 					}
 				);
 
-			$this->assertOutput( 'foobar', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+            $this->router
+                ->post( '/will-fail' )
+                ->where(
+                    function ( $foo, $bar ) {
 
-			$this->router
-				->post( '/will-fail' )
-				->where(
-					function ( $foo, $bar ) {
+                        return $foo === 'foo' && $bar === 'bar';
 
-						return $foo === 'foo' && $bar === 'bar';
+                    },
+                    'foo',
+                    'baz'
+                )
+                ->handle(
+                    function ( $request, $foo, $bar ) {
 
-					},
-					'foo',
-					'baz'
-				)
-				->handle(
-					function ( $request, $foo, $bar ) {
+                        return $foo . $bar;
 
-						return $foo . $bar;
+                    }
+                );
 
-					}
-				);
+            $this->router
+                ->where(
+                    function ( $foo, $bar ) {
 
+                        return $foo === 'foo' && $bar === 'bar';
+
+                    },
+                    'foo',
+                    'bar'
+                )
+                ->put( '/foo-before' )
+                ->handle(
+                    function ( $request, $foo, $bar ) {
+
+                        return $foo . $bar;
+
+                    }
+                );
+
+            $this->router->loadRoutes();
+
+            $this->assertOutput( 'foobar', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 			$this->assertNullResponse( $this->router->runRoute( $this->request( 'POST', '/will-fail' ) ) );
-
-			$this->router
-				->where(
-					function ( $foo, $bar ) {
-
-						return $foo === 'foo' && $bar === 'bar';
-
-					},
-					'foo',
-					'bar'
-				)
-				->put( '/foo-before' )
-				->handle(
-					function ( $request, $foo, $bar ) {
-
-						return $foo . $bar;
-
-					}
-				);
-
 			$this->assertOutput( 'foobar', $this->router->runRoute( $this->request( 'PUT', '/foo-before' ) ) );
 
 
@@ -213,6 +222,8 @@
 					return 'foo';
 
 				} );
+
+			$this->router->loadRoutes();
 
 			$this->assertNullResponse( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
@@ -232,31 +243,37 @@
 
 				} );
 
+            $this->router
+                ->post( '/bar' )
+                ->where( 'negate', 'false' )
+                ->handle( function ( Request $request ) {
+
+                    return 'foo';
+
+                } );
+
+            $this->router
+                ->put( '/baz' )
+                ->where( 'negate', function ( $foo ) {
+
+                    return $foo !== 'foo';
+
+                }, 'foo' )
+                ->handle( function ( Request $request ) {
+
+                    return 'foo';
+
+                } );
+
+            $this->router->loadRoutes();
+
 			$this->assertOutput( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
-			$this->router
-				->post( '/bar' )
-				->where( 'negate', 'false' )
-				->handle( function ( Request $request ) {
 
-					return 'foo';
-
-				} );
 
 			$this->assertOutput( 'foo', $this->router->runRoute( $this->request( 'POST', '/bar' ) ) );
 
-			$this->router
-				->put( '/baz' )
-				->where( 'negate', function ( $foo ) {
 
-					return $foo !== 'foo';
-
-				}, 'foo' )
-				->handle( function ( Request $request ) {
-
-					return 'foo';
-
-				} );
 
 			$this->assertOutput( 'foo', $this->router->runRoute( $this->request( 'PUT', '/baz' ) ) );
 
@@ -275,50 +292,48 @@
 
 				} );
 
+            $this->router
+                ->post( '/bar' )
+                ->where( 'maybe', false )
+                ->handle( function ( Request $request ) {
+
+                    return 'foo';
+
+                } );
+
+            $this->router
+                ->put( '/baz' )
+                ->where( '!maybe', false )
+                ->handle( function ( Request $request ) {
+
+                    return 'foo';
+
+                } );
+
+            $this->router
+                ->delete( '/baz' )
+                ->where( '!maybe', false )
+                ->handle( function ( Request $request ) {
+
+                    return 'foo';
+
+                } );
+
+            $this->router
+                ->patch( '/foobar' )
+                ->where( '!maybe', 'foobar' )
+                ->handle( function ( Request $request ) {
+
+                    return 'foo';
+
+                } );
+
+            $this->router->loadRoutes();
+
 			$this->assertOutput( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
-
-			$this->router
-				->post( '/bar' )
-				->where( 'maybe', false )
-				->handle( function ( Request $request ) {
-
-					return 'foo';
-
-				} );
-
 			$this->assertNullResponse( $this->router->runRoute( $this->request( 'POST', '/bar' ) ) );
-
-			$this->router
-				->put( '/baz' )
-				->where( '!maybe', false )
-				->handle( function ( Request $request ) {
-
-					return 'foo';
-
-				} );
-
 			$this->assertOutput( 'foo', $this->router->runRoute( $this->request( 'PUT', '/baz' ) ) );
-
-			$this->router
-				->delete( '/baz' )
-				->where( '!maybe', false )
-				->handle( function ( Request $request ) {
-
-					return 'foo';
-
-				} );
-
 			$this->assertOutput( 'foo', $this->router->runRoute( $this->request( 'DELETE', '/baz' ) ) );
-
-			$this->router
-				->patch( '/foobar' )
-				->where( '!maybe', 'foobar' )
-				->handle( function ( Request $request ) {
-
-					return 'foo';
-
-				} );
-
 			$this->assertNullResponse( $this->router->runRoute( $this->request( 'PATCH', '/foobar' ) ) );
 
 
@@ -337,6 +352,8 @@
 
 				} );
 
+			$this->router->loadRoutes();
+
 			$this->assertNullResponse(  $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 			$this->assertTrue( $GLOBALS['test']['maybe_condition_run'] );
 
@@ -353,6 +370,9 @@
 					return 'foo';
 
 				} );
+
+
+			$this->router->loadRoutes();
 
 			$this->assertOutput( 'foo', $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
@@ -376,6 +396,8 @@
 
 				} );
 
+			$this->router->loadRoutes();
+
 			$this->assertNullResponse( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
 
 		}
@@ -392,20 +414,20 @@
 
 				} );
 
+
+            $this->router
+                ->where( 'dependency_condition', false )
+                ->post( 'foo', function () {
+
+                    return 'foo';
+
+                } );
+
+            $this->router->loadRoutes();
+
 			$get = $this->request( 'GET', '/foo' );
-
 			$this->assertOutput( 'foo', $this->router->runRoute( $get ) );
-
-			$this->router
-				->where( 'dependency_condition', false )
-				->post( 'foo', function () {
-
-					return 'foo';
-
-				} );
-
 			$post = $this->request( 'POST', '/foo' );
-
 			$this->assertNullResponse(  $this->router->runRoute( $post ) );
 
 
@@ -421,31 +443,35 @@
 
 			} );
 
+
+            $this->router
+                ->where( 'is_string', 1 )
+                ->post( 'foo', function () {
+
+                    return 'foo';
+
+                } );
+
+
+            $this->router
+                ->where( '!is_string', 1 )
+                ->put( 'foo', function () {
+
+                    return 'foo';
+
+                } );
+
+            $this->router->loadRoutes();
+
 			$get = $this->request( 'GET', '/foo' );
 			$this->assertOutput( 'foo', $this->router->runRoute( $get ) );
 
-			$this->router
-				->where( 'is_string', 1 )
-				->post( 'foo', function () {
-
-					return 'foo';
-
-				} );
 
 			$post = $this->request( 'POST', '/foo' );
-
 			$this->assertNullResponse( $this->router->runRoute( $post ) );
 
-			$this->router
-				->where( '!is_string', 1 )
-				->put( 'foo', function () {
-
-					return 'foo';
-
-				} );
 
 			$put = $this->request( 'PUT', '/foo' );
-
 			$this->assertOutput( 'foo', $this->router->runRoute( $put ) );
 
 

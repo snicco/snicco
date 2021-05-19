@@ -13,6 +13,7 @@
 	use FastRoute\RouteParser\Std as RouteParser;
 	use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Routing\CompiledRoute;
+    use WPEmerge\Routing\Route;
     use WPEmerge\Support\Url;
 
     class FastRouteMatcher implements RouteMatcher {
@@ -28,11 +29,17 @@
 
 		}
 
-		public function add( CompiledRoute $route, string $current_method ) {
+		public function add( CompiledRoute $route, array $methods ) {
 
             $url = $route->url;
 
-			$this->collector->addRoute( $current_method, $this->normalizePath($url), (array) $route );
+            if ( trim($url, '/') === Route::ROUTE_WILDCARD ) {
+
+                $url = md5($url);
+
+            }
+
+			$this->collector->addRoute( $methods, $url, (array) $route );
 
 		}
 

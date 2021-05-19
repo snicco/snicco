@@ -1,28 +1,30 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace Tests\unit\Routing;
+    namespace Tests\unit\Routing;
 
-	use Mockery;
+    use Mockery;
     use Tests\UnitTest;
     use Tests\traits\SetUpRouter;
     use Tests\stubs\Middleware\BarMiddleware;
-	use Tests\stubs\Middleware\BazMiddleware;
-	use Tests\stubs\Middleware\FooBarMiddleware;
-	use Tests\stubs\Middleware\FooMiddleware;
+    use Tests\stubs\Middleware\BazMiddleware;
+    use Tests\stubs\Middleware\FooBarMiddleware;
+    use Tests\stubs\Middleware\FooMiddleware;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
-	class RouteMiddlewareTest extends UnitTest {
+    class RouteMiddlewareTest extends UnitTest
+    {
 
-		use SetUpRouter;
+        use SetUpRouter;
 
         protected function beforeTestRun()
         {
-            $this->newRouter( $c = $this->createContainer() );
+
+            $this->newRouter($c = $this->createContainer());
             WP::setFacadeContainer($c);
         }
 
@@ -35,413 +37,478 @@
 
         }
 
-		/** @test */
-		public function applying_a_route_group_to_a_route_applies_all_middleware_in_the_group() {
+        /** @test */
+        public function applying_a_route_group_to_a_route_applies_all_middleware_in_the_group()
+        {
 
-			$this->router->middlewareGroup( 'foobar', [
-				FooMiddleware::class,
-				BarMiddleware::class,
+            $this->router->middlewareGroup('foobar', [
+                FooMiddleware::class,
+                BarMiddleware::class,
 
-			] );
+            ]);
 
-			$this->router->get( '/foo', function ( Request $request ) {
+            $this->router->get('/foo', function (Request $request) {
 
-				return $request->body;
+                return $request->body;
 
-			} )->middleware( 'foobar' );
+            })->middleware('foobar');
 
-			$request  = $this->request( 'GET', '/foo' );
-			$response = $this->router->runRoute( $request );
+            $this->router->loadRoutes();
 
-			$this->assertOutput( 'foobar', $response );
+            $request = $this->request('GET', '/foo');
+            $response = $this->router->runRoute($request);
 
+            $this->assertOutput('foobar', $response);
 
-		}
 
-		/** @test */
-		public function middleware_in_the_global_group_is_always_applied() {
+        }
 
+        /** @test */
+        public function middleware_in_the_global_group_is_always_applied()
+        {
 
-			$this->router->middlewareGroup( 'global', [
-				FooMiddleware::class,
-				BarMiddleware::class,
-			] );
 
-			$this->router->get( '/foo', function ( Request $request ) {
+            $this->router->middlewareGroup('global', [
+                FooMiddleware::class,
+                BarMiddleware::class,
+            ]);
 
-				return $request->body;
+            $this->router->get('/foo', function (Request $request) {
 
-			} );
+                return $request->body;
 
-			$request  = $this->request( 'GET', '/foo' );
-			$response = $this->router->runRoute( $request );
+            });
 
-			$this->assertOutput( 'foobar', $response );
+            $this->router->loadRoutes();
 
-		}
+            $request = $this->request('GET', '/foo');
+            $response = $this->router->runRoute($request);
 
-		/** @test */
-		public function duplicate_middleware_is_filtered_out() {
+            $this->assertOutput('foobar', $response);
 
-			$this->router->middlewareGroup( 'global', [
-				FooMiddleware::class,
-				BarMiddleware::class,
-			] );
+        }
 
-			$this->router->middlewareGroup( 'foobar', [
-				FooMiddleware::class,
-				BarMiddleware::class,
-			] );
+        /** @test */
+        public function duplicate_middleware_is_filtered_out()
+        {
 
-			$this->router->middleware( 'foobar' )->get( '/foo', function ( Request $request ) {
+            $this->router->middlewareGroup('global', [
+                FooMiddleware::class,
+                BarMiddleware::class,
+            ]);
 
-				return $request->body;
+            $this->router->middlewareGroup('foobar', [
+                FooMiddleware::class,
+                BarMiddleware::class,
+            ]);
 
-			} );
+            $this->router->middleware('foobar')->get('/foo', function (Request $request) {
 
-			$request  = $this->request( 'GET', '/foo' );
-			$this->assertOutput( 'foobar', $this->router->runRoute( $request ) );
+                return $request->body;
 
-		}
+            });
 
-		/** @test */
-		public function duplicate_middleware_is_filtered_out_when_passing_the_same_middleware_arguments () {
+            $this->router->loadRoutes();
 
-			$this->router->aliasMiddleware('foo', FooMiddleware::class);
-			$this->router->middlewareGroup('all', [
+            $request = $this->request('GET', '/foo');
+            $this->assertOutput('foobar', $this->router->runRoute($request));
 
-				FooMiddleware::class . ':FOO',
-				BarMiddleware::class,
-				BazMiddleware::class,
+        }
 
-			]);
+        /** @test */
+        public function duplicate_middleware_is_filtered_out_when_passing_the_same_middleware_arguments()
+        {
 
-			$this->router->get( '/foo', function ( Request $request ) {
+            $this->router->aliasMiddleware('foo', FooMiddleware::class);
+            $this->router->middlewareGroup('all', [
 
-				return $request->body;
+                FooMiddleware::class.':FOO',
+                BarMiddleware::class,
+                BazMiddleware::class,
 
-			})->middleware(['all', 'foo:FOO']);
+            ]);
 
-			$request = $this->request('GET', 'foo');
-			$this->assertOutput( 'FOObarbaz', $this->router->runRoute( $request ) );
+            $this->router->get('/foo', function (Request $request) {
 
-		}
+                return $request->body;
 
-		/** @test */
-		public function multiple_middleware_groups_can_be_applied() {
+            })->middleware(['all', 'foo:FOO']);
 
-			$this->router->middlewareGroup( 'foo', [
-				FooMiddleware::class,
-			] );
+            $this->router->loadRoutes();
 
-			$this->router->middlewareGroup( 'bar', [
-				BarMiddleware::class,
-			] );
+            $request = $this->request('GET', 'foo');
+            $this->assertOutput('FOObarbaz', $this->router->runRoute($request));
 
-			$this->router->middleware( 'foo', 'bar' )
-			             ->get( '/foo', function ( Request $request ) {
+        }
 
-				             return $request->body;
+        /** @test */
+        public function multiple_middleware_groups_can_be_applied()
+        {
 
-			             } );
+            $this->router->middlewareGroup('foo', [
+                FooMiddleware::class,
+            ]);
 
-			$request  = $this->request( 'GET', '/foo' );
-			$response = $this->router->runRoute( $request );
+            $this->router->middlewareGroup('bar', [
+                BarMiddleware::class,
+            ]);
 
-			$this->assertOutput( 'foobar', $response );
+            $this->router->middleware('foo', 'bar')
+                         ->get('/foo', function (Request $request) {
 
-		}
+                             return $request->body;
 
-		/** @test */
-		public function middleware_can_be_aliased() {
+                         });
 
-			$routes = function () {
+            $this->router->loadRoutes();
 
-				$this->router->middleware('foo')->get( 'foo', function ( Request $request ) {
+            $request = $this->request('GET', '/foo');
+            $response = $this->router->runRoute($request);
 
-					return $request->body;
+            $this->assertOutput('foobar', $response);
 
-				} );
+        }
 
-			};
+        /** @test */
+        public function middleware_can_be_aliased()
+        {
 
-			$this->newRouterWith( $routes );
-			$this->router->aliasMiddleware( 'foo', FooMiddleware::class );
-			$request = $this->request('GET', '/foo');
-			$this->assertOutput('foo', $this->router->runRoute($request) );
 
-			$this->expectExceptionMessage('Unknown middleware [foo]');
+            $this->router->middleware('foo')->get('foo', function (Request $request) {
 
-			$this->newRouterWith( $routes );
-			$request = $this->request('GET', '/foo');
-			$this->assertOutput('foo', $this->router->runRoute($request) );
-		}
+                return $request->body;
 
-		/** @test */
-		public function multiple_middleware_arguments_can_be_passed () {
+            });
 
-			$this->router->aliasMiddleware('foobar', FooBarMiddleware::class);
+            $this->router->loadRoutes();
 
-			$this->router->get( '/foo', function ( Request $request ) {
+            $this->router->aliasMiddleware('foo', FooMiddleware::class);
+            $request = $this->request('GET', '/foo');
+            $this->assertOutput('foo', $this->router->runRoute($request));
 
-				return $request->body;
 
-			} )->middleware('foobar');
+        }
 
-			$this->router->post( '/foo', function ( Request $request ) {
+        /** @test */
+        public function unknown_middleware_throws_an_exception()
+        {
 
-				return $request->body;
+            $this->expectExceptionMessage('Unknown middleware [foo]');
 
-			})->middleware('foobar:FOO');
 
-			$this->router->patch( '/foo', function ( Request $request ) {
+            $this->router->middleware('foo')->get('foo', function (Request $request) {
 
-				return $request->body;
+                return $request->body;
 
-			})->middleware('foobar:FOO,BAR');
+            });
 
-			$request = $this->request( 'GET', '/foo' );
-			$this->assertOutput( 'foobar', $this->router->runRoute( $request ) );
+            $this->router->loadRoutes();
 
-			$request = $this->request( 'POST', '/foo' );
-			$this->assertOutput( 'FOObar', $this->router->runRoute( $request ) );
+            $request = $this->request('GET', '/foo');
+            $this->assertOutput('foo', $this->router->runRoute($request));
 
-			$request = $this->request( 'PATCH', '/foo' );
-			$this->assertOutput( 'FOOBAR', $this->router->runRoute( $request ) );
 
-		}
+        }
 
-		/** @test */
-		public function a_middleware_group_can_point_to_a_middleware_alias () {
 
-			$this->router->aliasMiddleware('foo', FooMiddleware::class);
-			$this->router->middlewareGroup('foogroup', [
-				'foo'
-			]);
+        /** @test */
+        public function multiple_middleware_arguments_can_be_passed()
+        {
 
-			$this->router->get( '/foo', function ( Request $request ) {
+            $this->router->aliasMiddleware('foobar', FooBarMiddleware::class);
 
-				return $request->body;
+            $this->router->get('/foo', function (Request $request) {
 
-			})->middleware('foogroup');
+                return $request->body;
 
-			$request = $this->request( 'GET', '/foo' );
-			$this->assertOutput( 'foo', $this->router->runRoute( $request ) );
+            })->middleware('foobar');
 
-		}
+            $this->router->post('/foo', function (Request $request) {
 
-		/** @test */
-		public function group_and_route_middleware_can_be_combined () {
+                return $request->body;
 
-			$this->router->aliasMiddleware('baz', BazMiddleware::class);
-			$this->router->middlewareGroup('foobar', [
-				FooMiddleware::class,
-				BarMiddleware::class
-			]);
+            })->middleware('foobar:FOO');
 
-			$this->router->get( '/foo', function ( Request $request ) {
+            $this->router->patch('/foo', function (Request $request) {
 
-				return $request->body;
+                return $request->body;
 
-			} )->middleware(['baz', 'foobar']);
+            })->middleware('foobar:FOO,BAR');
 
-			$request = $this->request( 'GET', '/foo' );
-			$this->assertOutput( 'bazfoobar', $this->router->runRoute( $request ) );
+            $this->router->loadRoutes();
 
+            $request = $this->request('GET', '/foo');
+            $this->assertOutput('foobar', $this->router->runRoute($request));
 
-		}
+            $request = $this->request('POST', '/foo');
+            $this->assertOutput('FOObar', $this->router->runRoute($request));
 
-		/** @test */
-		public function a_middleware_group_can_contain_another_middleware_group() {
+            $request = $this->request('PATCH', '/foo');
+            $this->assertOutput('FOOBAR', $this->router->runRoute($request));
 
-			$this->router->middlewareGroup('foo', [
-				FooMiddleware::class
-			]);
+        }
 
-			$this->router->middlewareGroup('bar', [
-				BarMiddleware::class,
-				'foo',
-			]);
+        /** @test */
+        public function a_middleware_group_can_point_to_a_middleware_alias()
+        {
 
-			$this->router->middlewareGroup('baz', [
-				BazMiddleware::class,
-				'bar',
-			]);
+            $this->router->aliasMiddleware('foo', FooMiddleware::class);
+            $this->router->middlewareGroup('foogroup', [
+                'foo',
+            ]);
 
-			$this->router->get( '/foo', function ( Request $request ) {
+            $this->router->get('/foo', function (Request $request) {
 
-				return $request->body;
+                return $request->body;
 
-			})->middleware('baz');
+            })->middleware('foogroup');
 
-			$request = $this->request( 'GET', '/foo' );
-			$this->assertOutput( 'bazbarfoo', $this->router->runRoute( $request ) );
+            $this->router->loadRoutes();
 
+            $request = $this->request('GET', '/foo');
+            $this->assertOutput('foo', $this->router->runRoute($request));
 
-		}
+        }
 
-		/** @test */
-		public function middleware_can_be_applied_without_an_alias () {
+        /** @test */
+        public function group_and_route_middleware_can_be_combined()
+        {
 
-			$this->router->get( '/foo', function ( Request $request ) {
+            $this->router->aliasMiddleware('baz', BazMiddleware::class);
+            $this->router->middlewareGroup('foobar', [
+                FooMiddleware::class,
+                BarMiddleware::class,
+            ]);
 
-				return $request->body;
+            $this->router->get('/foo', function (Request $request) {
 
-			} )->middleware(FooBarMiddleware::class. ':FOO,BAR');
+                return $request->body;
 
-			$request = $this->request( 'GET', '/foo' );
-			$this->assertOutput( 'FOOBAR', $this->router->runRoute( $request ) );
+            })->middleware(['baz', 'foobar']);
 
+            $this->router->loadRoutes();
 
-		}
+            $request = $this->request('GET', '/foo');
+            $this->assertOutput('bazfoobar', $this->router->runRoute($request));
 
-		/** @test */
-		public function string_middleware_without_an_alias_will_raise_an_exception() {
 
-			$this->expectExceptionMessage('Unknown middleware [foo] used.');
+        }
 
-			$this->router->get( '/foo', function ( Request $request ) {
+        /** @test */
+        public function a_middleware_group_can_contain_another_middleware_group()
+        {
 
-				return $request->body;
+            $this->router->middlewareGroup('foo', [
+                FooMiddleware::class,
+            ]);
 
-			} )->middleware('foo');
+            $this->router->middlewareGroup('bar', [
+                BarMiddleware::class,
+                'foo',
+            ]);
 
-			$request = $this->request( 'GET', '/foo' );
-			$this->assertNullResponse( $this->router->runRoute( $request ) );
+            $this->router->middlewareGroup('baz', [
+                BazMiddleware::class,
+                'bar',
+            ]);
 
-		}
+            $this->router->get('/foo', function (Request $request) {
 
+                return $request->body;
 
-		/**
-		 *
-		 *
-		 *
-		 *
-		 * SORTING
-		 *
-		 *
-		 *
-		 *
-		 */
+            })->middleware('baz');
 
-		/** @test */
-		public function non_global_middleware_can_be_sorted () {
+            $this->router->loadRoutes();
 
 
-			$this->router->middlewarePriority([
+            $request = $this->request('GET', '/foo');
+            $this->assertOutput('bazbarfoo', $this->router->runRoute($request));
 
-				FooMiddleware::class,
-				BarMiddleware::class,
-				BazMiddleware::class
 
-			]);
+        }
 
-			$this->router->middlewareGroup('barbaz', [
+        /** @test */
+        public function middleware_can_be_applied_without_an_alias()
+        {
 
-				BazMiddleware::class,
-				BarMiddleware::class,
+            $this->router->get('/foo', function (Request $request) {
 
-			]);
+                return $request->body;
 
-			$this->router->middleware('barbaz')->group(function () {
+            })->middleware(FooBarMiddleware::class.':FOO,BAR');
 
-				$this->router->get( '/foo', function ( Request $request ) {
+            $this->router->loadRoutes();
 
-					return $request->body;
 
-				} )->middleware(FooMiddleware::class );
+            $request = $this->request('GET', '/foo');
+            $this->assertOutput('FOOBAR', $this->router->runRoute($request));
 
-			});
 
-			$request = $this->request( 'GET', '/foo' );
-			$this->assertOutput( 'foobarbaz', $this->router->runRoute( $request ) );
+        }
 
-		}
+        /** @test */
+        public function string_middleware_without_an_alias_will_raise_an_exception()
+        {
 
-		/** @test */
-		public function middleware_keeps_its_relative_position_if_its_has_no_priority_defined () {
+            $this->expectExceptionMessage('Unknown middleware [foo] used.');
 
+            $this->router->get('/foo', function (Request $request) {
 
-			$this->router->middlewarePriority([
+                return $request->body;
 
-				FooMiddleware::class,
-				BarMiddleware::class,
+            })->middleware('foo');
 
-			]);
+            $this->router->loadRoutes();
 
-			$this->router->middlewareGroup('all', [
 
-				FooBarMiddleware::class,
-				BarMiddleware::class,
-				BazMiddleware::class,
-				FooMiddleware::class,
+            $request = $this->request('GET', '/foo');
+            $this->assertNullResponse($this->router->runRoute($request));
 
+        }
 
-			]);
 
-			$this->router->get( '/foo', function ( Request $request ) {
+        /**
+         *
+         *
+         *
+         *
+         * SORTING
+         *
+         *
+         *
+         *
+         */
 
-				return $request->body;
+        /** @test */
+        public function non_global_middleware_can_be_sorted()
+        {
 
-			} )->middleware('all');
+            $this->router->middlewarePriority([
 
-			$request = $this->request( 'GET', '/foo' );
-			$this->assertOutput( 'foobarfoobarbaz', $this->router->runRoute( $request ) );
+                FooMiddleware::class,
+                BarMiddleware::class,
+                BazMiddleware::class,
 
-		}
+            ]);
 
-		/** @test */
-		public function if_a_global_middleware_group_is_applied_its_middleware_will_be_excluded_from_the_sorting_and_always_come_first () {
+            $this->router->middlewareGroup('barbaz', [
 
-			$this->router->middlewareGroup('global', [
-				FooMiddleware::class,
-				BarMiddleware::class,
-			]);
+                BazMiddleware::class,
+                BarMiddleware::class,
 
-			$this->router->middlewarePriority([
+            ]);
 
-				BazMiddleware::class,
-				FooBarMiddleware::class,
-				BarMiddleware::class,
-				FooMiddleware::class,
+            $this->router->middleware('barbaz')->group(function () {
 
+                $this->router->get('/foo', function (Request $request) {
 
-			]);
+                    return $request->body;
 
-			$this->router->get( '/foo', function ( Request $request ) {
+                })->middleware(FooMiddleware::class);
 
-				return $request->body;
+            });
 
-			} )->middleware([FooBarMiddleware::class, BazMiddleware::class]);
+            $this->router->loadRoutes();
 
-			$request = $this->request( 'GET', '/foo' );
-			$this->assertOutput( 'foobarbazfoobar', $this->router->runRoute( $request ) );
+            $request = $this->request('GET', '/foo');
+            $this->assertOutput('foobarbaz', $this->router->runRoute($request));
 
+        }
 
-		}
+        /** @test */
+        public function middleware_keeps_its_relative_position_if_its_has_no_priority_defined()
+        {
 
-		/** @test */
-		public function all_middleware_can_be_skipped () {
 
-			$this->router->middlewareGroup('global', [
-				FooMiddleware::class,
-				BarMiddleware::class,
-			]);
+            $this->router->middlewarePriority([
 
-			$this->router->get( '/foo', function ( Request $request ) {
+                FooMiddleware::class,
+                BarMiddleware::class,
 
-				return $request->body;
+            ]);
 
-			} )->middleware([FooBarMiddleware::class, BazMiddleware::class]);
+            $this->router->middlewareGroup('all', [
 
-			// The middleware does not run and cant append anything to $request->body
-			$this->router->withoutMiddleware();
+                FooBarMiddleware::class,
+                BarMiddleware::class,
+                BazMiddleware::class,
+                FooMiddleware::class,
 
-			$request = $this->request( 'GET', '/foo' );
-			$request->body = 'test';
-			$this->assertOutput( 'test', $this->router->runRoute( $request ) );
+            ]);
 
+            $this->router->get('/foo', function (Request $request) {
 
-		}
+                return $request->body;
 
-	}
+            })->middleware('all');
+
+            $this->router->loadRoutes();
+
+
+            $request = $this->request('GET', '/foo');
+            $this->assertOutput('foobarfoobarbaz', $this->router->runRoute($request));
+
+        }
+
+        /** @test */
+        public function if_a_global_middleware_group_is_applied_its_middleware_will_be_excluded_from_the_sorting_and_always_come_first()
+        {
+
+            $this->router->middlewareGroup('global', [
+                FooMiddleware::class,
+                BarMiddleware::class,
+            ]);
+
+            $this->router->middlewarePriority([
+
+                BazMiddleware::class,
+                FooBarMiddleware::class,
+                BarMiddleware::class,
+                FooMiddleware::class,
+
+            ]);
+
+            $this->router->get('/foo', function (Request $request) {
+
+                return $request->body;
+
+            })->middleware([FooBarMiddleware::class, BazMiddleware::class]);
+
+            $this->router->loadRoutes();
+
+
+            $request = $this->request('GET', '/foo');
+            $this->assertOutput('foobarbazfoobar', $this->router->runRoute($request));
+
+
+        }
+
+        /** @test */
+        public function all_middleware_can_be_skipped()
+        {
+
+            $this->router->middlewareGroup('global', [
+                FooMiddleware::class,
+                BarMiddleware::class,
+            ]);
+
+            $this->router->get('/foo', function (Request $request) {
+
+                return $request->body;
+
+            })->middleware([FooBarMiddleware::class, BazMiddleware::class]);
+
+            // The middleware does not run and cant append anything to $request->body
+            $this->router->withoutMiddleware();
+
+            $this->router->loadRoutes();
+
+
+            $request = $this->request('GET', '/foo');
+            $request->body = 'test';
+            $this->assertOutput('test', $this->router->runRoute($request));
+
+
+        }
+
+    }

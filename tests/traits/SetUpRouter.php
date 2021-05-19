@@ -9,7 +9,8 @@
     use Closure;
     use Contracts\ContainerAdapter;
     use Tests\stubs\TestRequest;
-	use WPEmerge\Factories\HandlerFactory;
+    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Factories\HandlerFactory;
 	use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Http\Request;
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
@@ -29,31 +30,32 @@
 		 */
 		private $router;
 
-		private function newRouterWith( Closure $routes ) {
 
-			$this->newRouter($this->createContainer());
 
-			$routes( $this->router );
+		private function newRouter(ContainerAdapter $container = null)  {
 
-		}
-
-		private function newRouter(ContainerAdapter $container)  {
+		    $container = $container ?? $this->createContainer();
 
 			$condition_factory = new ConditionFactory( $this->allConditions(), $container );
 			$handler_factory   = new HandlerFactory( [], $container );
-			$route_collection  = new RouteCollection(
-				$condition_factory,
-				$handler_factory,
-				new FastRouteMatcher()
-			);
-
-			$router =  new Router(
-			    $container,
+            $route_collection  = new RouteCollection(
+                $condition_factory,
+                $handler_factory,
+                new FastRouteMatcher()
+            );
+            $router =  new Router(
+                $container,
                 $route_collection,
-                $this->responseFactory()
+                $response= $this->responseFactory()
             );
 
-			$this->router = $router;
+			$container->instance(HandlerFactory::class, $handler_factory);
+			$container->instance(ConditionFactory::class, $condition_factory);
+			$container->instance(RouteCollection::class, $route_collection);
+			$container->instance(ResponseFactory::class, $response);
+
+			return $this->router = $router;
+
 		}
 
 		private function request( $method, $path ) : Request {

@@ -13,7 +13,7 @@
 
 		// public function _add( $methods, string $uri, $handler );
 
-		public function add( CompiledRoute $route, string $current_method );
+		public function add( CompiledRoute $route, array $methods );
 
 		public function find(string $method, string $path);
 

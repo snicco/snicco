@@ -51,6 +51,7 @@
                 });
 
             });
+            $this->router->loadRoutes();
 
             $request = $this->adminRequestTo('foo');
 
@@ -62,7 +63,6 @@
         public function routes_to_different_admin_pages_dont_match()
         {
 
-
             $this->router->group(['prefix' => 'wp-admin'], function () {
 
                 $this->router->get('foo', function () {
@@ -71,6 +71,7 @@
                 });
 
             });
+
 
             $request = $this->adminRequestTo('bar');
 
@@ -97,6 +98,8 @@
 
             });
 
+            $this->router->loadRoutes();
+
             $request = $this->adminRequestTo('foo');
 
             $this->assertOutput('foo', $this->router->runRoute($request));
@@ -107,36 +110,30 @@
         public function two_different_admin_routes_can_be_created()
         {
 
+            $this->router->group(['prefix' => 'wp-admin'], function () {
 
-            $routes = function () {
+                $this->router->get('admin.php/foo', function (Request $request, string $page) {
 
-                $this->router->group(['prefix' => 'wp-admin'], function () {
-
-                    $this->router->get('admin.php/foo', function (Request $request, string $page) {
-
-                        return $page;
-
-                    });
-
-                    $this->router->get('admin.php/bar', function (Request $request, string $page) {
-
-                        return $page;
-
-                    });
+                    return $page;
 
                 });
 
-            };
+                $this->router->get('admin.php/bar', function (Request $request, string $page) {
 
-            $this->newRouterWith($routes);
+                    return $page;
+
+                });
+
+            });
+
+            $this->router->loadRoutes();
+
             $request = $this->adminRequestTo('foo');
             $this->assertOutput('foo', $this->router->runRoute($request));
 
-            $this->newRouterWith($routes);
             $request = $this->adminRequestTo('bar');
             $this->assertOutput('bar', $this->router->runRoute($request));
 
-            $this->newRouterWith($routes);
             $request = $this->adminRequestTo('baz', 'POST');
             $this->assertNullResponse($this->router->runRoute($request));
 
@@ -156,6 +153,8 @@
                 });
 
             });
+
+            $this->router->loadRoutes();
 
             $request = $this->adminRequestTo('foo', 'GET', 'users.php');
 
@@ -194,11 +193,12 @@
 
             $this->router->group(['prefix' => 'wp-admin', 'name' => 'admin'], function () {
 
-                $this->router->name('foo')->get('admin.php/foo', function (Request $request, string $page) {
+                $this->router->name('foo')
+                             ->get('admin.php/foo', function (Request $request, string $page) {
 
-                    return $page;
+                                 return $page;
 
-                });
+                             });
 
             });
 
@@ -236,6 +236,8 @@
 
             });
 
+            $this->router->loadRoutes();
+
             $request = $this->adminRequestTo('foo');
 
             $this->assertOutput('foo', $this->router->runRoute($request));
@@ -255,6 +257,8 @@
                 });
 
             });
+
+            $this->router->loadRoutes();
 
             $request = $this->adminRequestTo('foo', 'GET', 'options-general.php');
 
@@ -276,6 +280,8 @@
 
             });
 
+            $this->router->loadRoutes();
+
             $request = $this->adminRequestTo('foo', 'GET', 'tools.php');
 
             $this->assertOutput('foo', $this->router->runRoute($request));
@@ -296,6 +302,8 @@
 
             });
 
+            $this->router->loadRoutes();
+
             $request = $this->adminRequestTo('foo', 'GET', 'users.php');
 
             $this->assertOutput('foo', $this->router->runRoute($request));
@@ -315,6 +323,7 @@
                 });
 
             });
+            $this->router->loadRoutes();
 
             $request = $this->adminRequestTo('foo', 'GET', 'plugins.php');
 
@@ -335,6 +344,7 @@
                 });
 
             });
+            $this->router->loadRoutes();
 
             $request = $this->adminRequestTo('foo', 'GET', 'themes.php');
 
@@ -356,6 +366,8 @@
 
             });
 
+            $this->router->loadRoutes();
+
             $request = $this->adminRequestTo('foo', 'GET', 'edit-comments.php');
 
             $this->assertOutput('foo', $this->router->runRoute($request));
@@ -375,6 +387,9 @@
                 });
 
             });
+
+            $this->router->loadRoutes();
+
 
             $request = $this->adminRequestTo('foo', 'GET', 'upload.php');
 
@@ -396,6 +411,9 @@
 
             });
 
+            $this->router->loadRoutes();
+
+
             $request = $this->adminRequestTo('foo', 'GET', 'edit.php');
 
             $this->assertOutput('foo', $this->router->runRoute($request));
@@ -415,6 +433,8 @@
                 });
 
             });
+
+            $this->router->loadRoutes();
 
             $request = $this->adminRequestTo('foo', 'GET', 'index.php');
 

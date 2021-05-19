@@ -28,12 +28,11 @@
 
             $psr17Factory = new Psr17Factory();
 
-            $path = trim($path, '/') ? : '/';
+            $path = ltrim($path, '/');
             $method = strtoupper($method);
 
             $host = $host ?? 'https://foo.com';
             $url = trim($host, '/').'/'.$path;
-            $url = trim($url, '/').'/';
 
             return new Request($psr17Factory->createServerRequest($method, $url));
 

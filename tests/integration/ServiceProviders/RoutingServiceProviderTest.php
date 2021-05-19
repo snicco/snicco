@@ -7,6 +7,7 @@
     namespace Tests\integration\ServiceProviders;
 
     use Mockery;
+    use Tests\stubs\Conditions\IsPost;
     use Tests\IntegrationTest;
     use Tests\traits\AssertsResponse;
     use Tests\stubs\Conditions\TrueCondition;
@@ -139,6 +140,7 @@
 
             /** @var Router $router */
             $router = TestApp::resolve(Router::class);
+
             // Needed because the sync of middleware to the router happens in the kernel.
             $router->middlewareGroup('web', []);
 
@@ -148,8 +150,32 @@
 
             $this->assertOutput('foo', $response);
 
+            Mockery::close();
+
         }
 
+        /** @test */
+        public function the_fallback_route_controller_is_registered_for_web_routes () {
+
+            $this->newTestApp([
+                'routing' => [
+                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                ]
+            ]);
+
+            /** @var Router $router */
+            $router = TestApp::resolve(Router::class);
+
+            // Needed because the sync of middleware to the router happens in the kernel.
+            $router->middlewareGroup('web', []);
+
+            $request = TestRequest::from('GET', 'whatever');
+
+            $response = $router->runRoute($request);
+
+            $this->assertOutput('FOO', $response);
+
+        }
 
         /** @test */
         public function ajax_routes_are_loaded_for_ajax_request()
@@ -176,7 +202,6 @@
             $this->assertOutput('FOO_ACTION', $response);
 
             Mockery::close();
-            WP::reset();
 
         }
 
@@ -203,7 +228,6 @@
             $this->assertOutput('FOO', $response);
 
             Mockery::close();
-            WP::reset();
 
         }
 

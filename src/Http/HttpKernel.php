@@ -11,6 +11,7 @@
     use Psr\Http\Message\ResponseInterface;
     use Throwable;
     use WPEmerge\Contracts\ErrorHandlerInterface as ErrorHandler;
+    use WPEmerge\Events\FilterWpQuery;
     use WPEmerge\Events\HeadersSent;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
@@ -270,6 +271,25 @@
         {
 
             return ! $this->response instanceof NullResponse && $this->response->getStatusCode() === 200;
+        }
+
+        public function filterRequest(FilterWpQuery $event)
+        {
+
+            $match = $this->router->findRoute($event->server_request, $wp_query = true );
+
+            if ( $match->route() ) {
+
+                return $match->route()->filterWpQuery(
+                    $event->currentQueryVars(),
+                    $match->payload()
+                );
+
+            }
+
+
+            return $event->currentQueryVars();
+
         }
 
 

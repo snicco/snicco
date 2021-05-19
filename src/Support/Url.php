@@ -48,4 +48,9 @@
 
 		}
 
-	}
+        public static function addLeading(string $url) : string
+        {
+            return '/'. trim($url, '/');
+        }
+
+    }

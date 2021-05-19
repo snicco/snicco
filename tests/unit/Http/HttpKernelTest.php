@@ -77,6 +77,8 @@
 
 			});
 
+			$this->router->loadRoutes();
+
 			$request = $this->createIncomingWebRequest( 'GET', '/foo' );
 
 			$this->assertBodySent('foo', $this->runAndGetKernelOutput($request));
@@ -92,6 +94,8 @@
 				return 'foo';
 
 			});
+
+			$this->router->loadRoutes();
 
 			$request = $this->createIncomingAdminRequest( 'GET', '/admin' );
 
@@ -113,6 +117,8 @@
 				return 'foo';
 
 			} );
+
+			$this->router->loadRoutes();
 
 			$request = $this->createIncomingWebRequest( 'GET', '/foo' );
 			$this->runAndGetKernelOutput($request);
@@ -136,6 +142,8 @@
 		/** @test */
 		public function the_body_will_never_be_sent_when_the_kernel_did_not_receive_a_response_for_admin_requests() {
 
+		    $this->router->loadRoutes();
+
 			ob_start();
 			$this->kernel->sendBodyDeferred();
 
@@ -152,6 +160,7 @@
 
             } );
 
+            $this->router->loadRoutes();
 
             $output = $this->runAndGetKernelOutput(
 
@@ -174,6 +183,8 @@
             } );
 
 
+            $this->router->loadRoutes();
+
             $output = $this->runAndGetKernelOutput(
 
                 $request_event = $this->createIncomingWebRequest( 'GET', '/bar' )
@@ -182,25 +193,6 @@
 
             $this->assertSame('', $output);
             $this->assertSame( 'wordpress.php', $request_event->default() );
-
-        }
-
-        /** @test */
-        public function the_kernel_does_not_run_global_middleware_when_not_matching_a_route() {
-
-            $GLOBALS['test'][ GlobalMiddleware::run_times ] = 0;
-
-            $request = $this->createIncomingWebRequest( 'GET', 'foo' );
-
-            $this->kernel->setMiddlewareGroups( [
-
-                'global' => [ GlobalMiddleware::class ],
-
-            ] );
-
-            $this->assertOutput('', $this->runAndGetKernelOutput($request) );
-
-            $this->assertMiddlewareRunTimes(0, GlobalMiddleware::class);
 
         }
 
@@ -220,6 +212,9 @@
 
             } )->middleware( 'web' );
 
+            $this->router->loadRoutes();
+
+
             $request = $this->createIncomingWebRequest( 'GET', '/foo' );
 
             $output = $this->runAndGetKernelOutput($request);
@@ -229,8 +224,35 @@
 
         }
 
+        /**
+         * @test
+         *
+         * NOTE: for web facing routes we always have a matching route which is the fallback controller.
+         * This is needed because otherwise it would not be possible to create routes without url conditions
+         *
+         */
+        public function the_kernel_does_not_run_global_middleware_when_not_matching_a_route() {
+
+            $GLOBALS['test'][ GlobalMiddleware::run_times ] = 0;
+
+            $request = $this->createIncomingAdminRequest( 'GET', 'foo' );
+
+            $this->kernel->setMiddlewareGroups( [
+
+                'global' => [ GlobalMiddleware::class ],
+
+            ]);
+
+            $this->router->loadRoutes();
+
+            $this->assertOutput('', $this->runAndGetKernelOutput($request) );
+
+            $this->assertMiddlewareRunTimes(0, GlobalMiddleware::class);
+
+        }
+
         /** @test */
-        public function global_middleware_is_only_run_by_the_router_when_a_route_matched_and_not_by_the_kernel() {
+        public function global_middleware_is_only_run_once_when_a_route_matched() {
 
             $GLOBALS['test'][ GlobalMiddleware::run_times ] = 0;
 
@@ -243,10 +265,7 @@
 
             } );
 
-            // non matching request
-            $request = $this->createIncomingWebRequest( 'POST', '/foo' );
-            $this->assertNothingSent($this->runAndGetKernelOutput($request));
-            $this->assertMiddlewareRunTimes(0 , GlobalMiddleware::class);
+            $this->router->loadRoutes();
 
             // matching request
             $request = $this->createIncomingWebRequest( 'GET', '/foo' );
@@ -269,6 +288,9 @@
 
             } );
 
+            $this->router->loadRoutes();
+
+
             $this->kernel->runInTestMode();
             $request = $this->createIncomingWebRequest( 'GET', '/foo' );
 
@@ -286,6 +308,9 @@
                 return 1;
 
             });
+
+            $this->router->loadRoutes();
+
 
             $this->expectExceptionMessage('The response returned by the route action is not valid.');
 
@@ -320,6 +345,9 @@
 
             ] );
 
+            $this->router->loadRoutes();
+
+
             $request_event = $this->createIncomingWebRequest( 'GET', 'foo' );
 
             ob_start();
@@ -352,6 +380,9 @@
                 return 'FOO';
 
             } )->middleware( 'web' );
+
+            $this->router->loadRoutes();
+
 
             ob_start();
             $this->kernel->handle($this->createIncomingWebRequest( 'GET', 'foo' ));

@@ -25,7 +25,7 @@
         use CreateContainer;
 
         /**
-         * @var \WPEmerge\Routing\Pipeline
+         * @var Pipeline
          */
         private $pipeline;
 

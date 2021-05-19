@@ -41,11 +41,11 @@
 
 		}
 
-		public function add( CompiledRoute $route, string $current_method ) {
+		public function add( CompiledRoute $route, $methods ) {
 
-		    $route = $route->compileCachableAction();
+		    $route = $route->compileCacheableAction();
 
-			$this->uncached_matcher->add( $route , $current_method );
+			$this->uncached_matcher->add( $route , $methods );
 
 		}
 
