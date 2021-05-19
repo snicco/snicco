@@ -6,7 +6,7 @@
 
     namespace WPEmerge\Routing;
 
-    use FastRoute\Dispatcher;
+    use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ConditionFactory;
@@ -14,7 +14,7 @@
     use WPEmerge\Http\Request;
     use WPEmerge\Support\Arr;
 
-    class RouteCollection
+    class RouteCollection extends AbstractRouteCollection
     {
 
         /**
@@ -136,6 +136,37 @@
 
         }
 
+        public function loadIntoDispatcher(string $method = null)
+        {
+
+            if ($this->route_matcher->isCached() || $this->loaded_routes ) {
+
+                return;
+
+            }
+
+            $all_routes = $this->routes;
+
+            if ($method) {
+
+                $all_routes = [$method => Arr::get($this->routes, $method, [])];
+
+            }
+
+            foreach ($all_routes as $method => $routes) {
+
+                /** @var Route $route */
+                foreach ($routes as $route) {
+
+                    $this->route_matcher->add($route, [$method]);
+
+                }
+
+            }
+
+
+        }
+
         private function giveFactories (Route $route) :Route {
 
             $route->setActionFactory($this->action_factory);
@@ -183,37 +214,6 @@
                 $this->name_list[$name] = $route;
 
             }
-
-        }
-
-        public function loadIntoDispatcher(string $method = null)
-        {
-
-            if ($this->route_matcher->isCached() || $this->loaded_routes) {
-
-                return;
-
-            }
-
-            $all_routes = $this->routes;
-
-            if ($method) {
-
-                $all_routes = [$method => Arr::get($this->routes, $method, [])];
-
-            }
-
-            foreach ($all_routes as $method => $routes) {
-
-                /** @var Route $route */
-                foreach ($routes as $route) {
-
-                    $this->route_matcher->add($route, [$method]);
-
-                }
-
-            }
-
 
         }
 
