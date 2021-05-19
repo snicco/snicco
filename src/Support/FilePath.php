@@ -33,6 +33,8 @@
 		 */
 		public static function addTrailingSlash( $path, string $slash = DIRECTORY_SEPARATOR ) : string {
 
+		    $path = static::removeTrailingSlash($path);
+
 			$path = static::normalize( $path, $slash );
 			$path = preg_replace( '~' . preg_quote( $slash, '~' ) . '*$~', $slash, $path );
 

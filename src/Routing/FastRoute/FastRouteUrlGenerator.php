@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Routing\FastRoute;
 
+    use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\ConditionInterface;
     use WPEmerge\Contracts\RouteUrlGenerator;
     use WPEmerge\Contracts\UrlableInterface;
@@ -31,7 +32,7 @@
         /** @see https://regexr.com/5s533 */
         public const double_curly_brackets = '/(?<=\/)(?<opening_bracket>\{)|(?<closing_bracket>\}(?=(\/|\[\/|\]|$)))/';
 
-        public function __construct(RouteCollection $routes)
+        public function __construct(AbstractRouteCollection $routes)
         {
 
             $this->routes = $routes;

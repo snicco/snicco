@@ -79,7 +79,7 @@
 
         }
 
-        /** @todo needs improvement. See Illuminate Request */
+        /** @todo ajax detection needs improvement. See Illuminate Request */
         public function isAjax() : bool
         {
 

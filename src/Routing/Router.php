@@ -8,6 +8,7 @@
 
     use Closure;
     use Contracts\ContainerAdapter;
+    use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Controllers\FallBackController;
     use WPEmerge\Controllers\ViewController;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
@@ -50,7 +51,7 @@
          */
         private $route_middleware_aliases = [];
 
-        /** @var RouteCollection */
+        /** @var AbstractRouteCollection */
         private $routes;
 
         /**
@@ -63,7 +64,7 @@
          */
         private $response_factory;
 
-        public function __construct(ContainerAdapter $container, RouteCollection $routes, ResponseFactory $response_factory)
+        public function __construct(ContainerAdapter $container, AbstractRouteCollection $routes, ResponseFactory $response_factory)
         {
 
             $this->container = $container;
@@ -158,8 +159,6 @@
 
             $this->any('/{path}', [FallBackController::class, 'handle'])->and('path', '.+');
         }
-
-
 
         public function findRoute(Request $request, $wp_query = false) : RouteMatch
         {

@@ -6,18 +6,18 @@
 
     namespace WPEmerge\Controllers;
 
+    use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Request;
     use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RouteCollection;
 
     class FallBackController
     {
 
         /**
-         * @var RouteCollection
+         * @var AbstractRouteCollection
          */
         private $routes;
 
@@ -33,7 +33,7 @@
         private $fallback_handler;
 
         public function __construct(
-            RouteCollection $routes,
+            AbstractRouteCollection $routes,
             ResponseFactory $response
         ) {
 
@@ -51,11 +51,12 @@
             $route = $possible_routes->first(function (Route $route) use ($request) {
 
                 $route->instantiateConditions();
+
                 return $route->satisfiedBy($request);
 
             });
 
-            if ( ! $route ) {
+            if ( ! $route) {
 
                 return ($this->fallback_handler)
                     ? call_user_func($this->fallback_handler, $request)
@@ -63,9 +64,7 @@
 
             }
 
-            $route->instantiateAction();
-
-            return $route->run($request);
+            return $route->instantiateAction()->run($request);
 
         }
 

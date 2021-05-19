@@ -73,7 +73,7 @@
 			file_put_contents(
 				$this->route_cache_file,
 				'<?php
-declare(strict_types=1); return ' . var_export( $route_data, true ) . ';'
+declare(strict_types=1); return '. var_export( $route_data, true ) . ';'
 			);
 
 		}

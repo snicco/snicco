@@ -14,13 +14,16 @@
     use Tests\stubs\TestRequest;
     use Tests\traits\CreateDefaultWpApiMocks;
     use Tests\traits\CreateWpTestUrls;
+    use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ConditionFactory;
+    use WPEmerge\Routing\CachedRouteCollection;
     use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
+    use WPEmerge\Routing\RouteCollection;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Support\Url;
@@ -101,7 +104,7 @@
             $this->newTestApp([
                 'routing' => [
                     'cache' => true,
-                    'cache_file' => TESTS_DIR.'_data'.DS.'tests.route.cache.php'
+                    'cache_dir' => TESTS_DIR.'_data'.DS
                 ]
             ]);
 
@@ -118,6 +121,31 @@
             $this->newTestApp();
 
             $this->assertInstanceOf(Router::class, TestApp::resolve(Router::class));
+
+        }
+
+        /** @test */
+        public function by_default_a_normal_uncached_route_collection_is_used () {
+
+            $this->newTestApp();
+
+            $this->assertInstanceOf(RouteCollection::class, TestApp::resolve(AbstractRouteCollection::class));
+
+        }
+
+        /** @test */
+        public function a_cached_route_collection_can_be_used () {
+
+            $this->newTestApp([
+                'routing' => [
+                    'cache' => true,
+                    'cache_dir' => TESTS_DIR.'_data'.DS
+                ]
+            ]);
+
+            $routes = TestApp::resolve(AbstractRouteCollection::class);
+
+            $this->assertInstanceOf(CachedRouteCollection::class, $routes);
 
         }
 
