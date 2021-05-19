@@ -7,14 +7,13 @@
     namespace Tests\traits;
 
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
-    use WPEmerge\Routing\RouteCompiler;
 
     trait CreateRouteMatcher
     {
 
-        public function createRouteMatcher(RouteCompiler $compiler) {
+        public function createRouteMatcher() {
 
-            return new FastRouteMatcher($compiler);
+            return new FastRouteMatcher();
 
         }
 

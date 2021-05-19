@@ -103,9 +103,9 @@
 
         }
 
-        public function convert(CompiledRoute $route) : string
+        public function convert(Route $route) : string
         {
-            $url = $route->url;
+            $url = $route->getUrl();
 
             if ( trim( $url, '/' ) === Route::ROUTE_WILDCARD ) {
 
@@ -115,13 +115,13 @@
 
             $url = $this->convertOptionalSegments($url);
 
-            foreach ($route->regex as $regex) {
+            foreach ($route->getRegex() as $regex) {
 
                 $url = $this->addCustomRegexToSegments($regex, $url);
 
             }
 
-            if ( $route->trailing_slash ) {
+            if ( $route->needsTrailingSlash() ) {
 
                 $url = $this->ensureRouteOnlyMatchesWithTrailingSlash($url, $route);
 
@@ -130,10 +130,10 @@
             return $url;
         }
 
-        private function ensureRouteOnlyMatchesWithTrailingSlash ($url, CompiledRoute $route) : string
+        private function ensureRouteOnlyMatchesWithTrailingSlash ($url, Route $route) : string
         {
 
-            foreach ($route->segment_names as $segment) {
+            foreach ($route->getSegmentNames() as $segment) {
 
                 $url = $this->addCustomRegexToSegments( [$segment => '[^\/]+\/?'], $url );
 

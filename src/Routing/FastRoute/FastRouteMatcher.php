@@ -7,16 +7,20 @@
 	namespace WPEmerge\Routing\FastRoute;
 
 	use FastRoute\DataGenerator\GroupCountBased as DataGenerator;
-	use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
+    use FastRoute\Dispatcher;
+    use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
 	use FastRoute\RouteCollector;
 	use FastRoute\RouteParser\Std as RouteParser;
 	use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Routing\CompiledRoute;
     use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RouteCompiler;
+    use WPEmerge\Routing\RouteBuilder;
+    use WPEmerge\Routing\RouteMatch;
     use WPEmerge\Support\Str;
 
     class FastRouteMatcher implements RouteMatcher {
+
+        use HydratesFastRoutes;
 
 		/**
 		 * @var RouteCollector
@@ -28,33 +32,36 @@
          */
         private $route_regex;
 
-        /**
-         * @var RouteCompiler
-         */
-        private $compiler;
 
-        public function __construct(RouteCompiler $compiler) {
+        public function __construct() {
 
 			$this->collector = new RouteCollector( new RouteParser(), new DataGenerator() );
             $this->route_regex = new FastRouteSyntax();
-            $this->compiler = $compiler;
 
         }
 
-		public function add( CompiledRoute $route, array $methods ) {
+		public function add( Route $route , array $methods ) {
 
-            $url = $this->route_regex->convert($route);
+            $url =  $this->convertUrl($route);
 
-			$this->collector->addRoute( $methods, $url, $route->toArray() );
+			$this->collector->addRoute( $methods, $url, $route->asArray() );
 
 		}
 
-		public function find( string $method, string $path ) : array {
+		private function convertUrl(Route $route) : string
+        {
+
+            return $this->route_regex->convert($route);
+
+        }
+
+		public function find( string $method, string $path ) : RouteMatch {
 
 			$dispatcher = new RouteDispatcher( $this->collector->getData() );
 
-			return $dispatcher->dispatch( $method, $path );
+			$route_info = $dispatcher->dispatch( $method, $path );
 
+            return $this->hydrate($route_info);
 
 		}
 

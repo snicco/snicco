@@ -8,11 +8,10 @@
 
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Factories\ConditionFactory;
+    use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Request;
-    use WPEmerge\Routing\CompiledRoute;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\RouteCollection;
-    use WPEmerge\Routing\RouteCompiler;
 
     class FallBackController
     {
@@ -26,10 +25,7 @@
          * @var ResponseFactory
          */
         private $response;
-        /**
-         * @var ConditionFactory
-         */
-        private $route_compiler;
+
 
         /**
          * @var callable
@@ -38,13 +34,11 @@
 
         public function __construct(
             RouteCollection $routes,
-            ResponseFactory $response,
-            RouteCompiler $route_compiler
+            ResponseFactory $response
         ) {
 
             $this->routes = $routes;
             $this->response = $response;
-            $this->route_compiler = $route_compiler;
 
         }
 
@@ -53,15 +47,10 @@
 
             $possible_routes = collect($this->routes->withWildCardUrl($request->getMethod()));
 
-            $routes = $possible_routes->map(function (Route $route) {
+            /** @var Route $route */
+            $route = $possible_routes->first(function (Route $route) use ($request) {
 
-                return $this->route_compiler->hydrate($route->asArray());
-
-            });
-
-            /** @var CompiledRoute $route */
-            $route = $routes->first(function (CompiledRoute $route) use ($request) {
-
+                $route->instantiateConditions();
                 return $route->satisfiedBy($request);
 
             });
@@ -74,17 +63,9 @@
 
             }
 
-            $payload = [];
+            $route->instantiateAction();
 
-            foreach ($route->conditions as $compiled_condition) {
-
-                $args = $compiled_condition->getArguments($request);
-
-                $payload = array_merge($payload, $args);
-
-            }
-
-            return $route->run($request, $payload);
+            return $route->run($request);
 
         }
 

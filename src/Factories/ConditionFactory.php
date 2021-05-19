@@ -8,11 +8,11 @@
 
     use Contracts\ContainerAdapter;
     use WPEmerge\Contracts\ConditionInterface;
-    use WPEmerge\Contracts\RouteCondition;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Routing\ConditionBlueprint;
     use WPEmerge\Routing\Conditions\CustomCondition;
     use WPEmerge\Routing\Conditions\NegateCondition;
+    use WPEmerge\Routing\Route;
     use WPEmerge\Traits\ReflectsCallable;
 
     class ConditionFactory
@@ -28,7 +28,7 @@
         private $condition_types;
 
         /**
-         * @var \Contracts\ContainerAdapter
+         * @var ContainerAdapter
          */
         private $container;
 
@@ -40,10 +40,10 @@
             $this->container = $container;
         }
 
-        public function compileConditions(RouteCondition $route) : array
+        public function buildConditions( array $raw_conditions ) : array
         {
 
-            $conditions = collect($route->getConditions());
+            $conditions = collect($raw_conditions);
 
             $conditions = $conditions
                 ->map(function (ConditionBlueprint $condition) {
