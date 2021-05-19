@@ -31,62 +31,34 @@
             $this->condition_factory = $condition_factory;
         }
 
-        public function hydrate(array $attributes) : CompiledRoute
+        public function buildConditions(Route $route) :Route
         {
 
-            $compiled = new CompiledRoute($attributes);
-
-            if ($this->isSerializedClosure($action = $compiled->action)) {
-
-                $action = \Opis\Closure\unserialize($action);
-
-            }
-
-            $compiled->action = $this->compileRouteAction($compiled, $action);
-            $compiled->conditions = $this->compileConditions($compiled);
-
-            return $compiled;
+           return $route->compileConditions($this->condition_factory);
 
         }
 
-        public function buildConditions( Route $route ) {
-
-            $this->condition_factory->compileConditions($route);
-
-        }
-
-        private function isSerializedClosure($action) : bool
+        public function buildUrlableConditions(Route $route) : Route
         {
 
-            return is_string($action)
-                && Str::startsWith($action, 'C:32:"Opis\\Closure\\SerializableClosure') !== false;
+            return $this->compileConditions($route);
+
         }
 
-        private function compileRouteAction(CompiledRoute $compiled, $action)
+        public function buildActions(Route $route)
         {
 
-            return $this->handler_factory->create($action, $compiled->namespace);
+            $route->compileAction($this->handler_factory);
 
         }
 
-        private function compileConditions(CompiledRoute $compiled) : array
+        private function compileConditions(Route $route) : Route
         {
 
-            return $this->condition_factory->compileConditions($compiled);
+            $route->compileConditions($this->condition_factory);
+
+            return $route;
         }
-
-        public function compileUrlableConditions(array $compiled) : CompiledRoute
-        {
-
-            $compiled = new CompiledRoute($compiled);
-
-            $compiled->conditions = $this->compileConditions($compiled);
-
-            return $compiled;
-
-        }
-
-
 
 
     }

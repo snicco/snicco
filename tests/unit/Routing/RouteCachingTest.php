@@ -56,6 +56,8 @@
 
 		private function newCachedRouter( $file = null, ContainerAdapter $container = null ) : Router {
 
+		    $container = $container ?? $this->createContainer();
+
 			$condition_factory = new ConditionFactory( [], $container );
 			$handler_factory   = new HandlerFactory( [], $container );
 
@@ -81,7 +83,6 @@
 
 
 		}
-
 
 
 		/** @test */
@@ -114,6 +115,7 @@
 			$this->router->get( 'baz', Controller::class . '@handle' );
 			$this->router->get( 'biz', Controller::class . '@handle' );
 			$this->router->get( 'boo', Controller::class . '@handle' );
+			$this->router->get( 'teams/{team}', Controller::class . '@handle' );
 
 			$this->router->loadRoutes();
 

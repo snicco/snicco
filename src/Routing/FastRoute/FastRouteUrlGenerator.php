@@ -62,9 +62,8 @@
         }
 
 
-        private function findRoute( string $name ) : ?CompiledRoute {
+        private function findRoute( string $name ) : Route {
 
-            /** @var CompiledRoute $route */
             $route = $this->routes->findByName($name);
 
             if ( ! $route ) {
@@ -79,9 +78,9 @@
 
         }
 
-        private function hasUrleableCondition( CompiledRoute $route ) : ?UrlableInterface {
+        private function hasUrleableCondition( Route $route ) : ?UrlableInterface {
 
-            return collect( $route->conditions )
+            return collect( $route->getCompiledConditions() )
                 ->first( function ( ConditionInterface $condition ) {
 
                     return $condition instanceof UrlableInterface;
@@ -119,9 +118,9 @@
 
         }
 
-        private function routeRegex(CompiledRoute $route) : array {
+        private function routeRegex(Route $route) : array {
 
-            return Arr::flattenOnePreserveKeys( $route->regex ?? [] );
+            return Arr::flattenOnePreserveKeys( $route->getRegex() ?? [] );
 
         }
 
