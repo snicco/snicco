@@ -13,6 +13,7 @@
 	use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Routing\CompiledRoute;
     use WPEmerge\Routing\Route;
+    use WPEmerge\Routing\RouteCompiler;
     use WPEmerge\Support\Str;
 
     class FastRouteMatcher implements RouteMatcher {
@@ -27,12 +28,18 @@
          */
         private $route_regex;
 
-        public function __construct() {
+        /**
+         * @var RouteCompiler
+         */
+        private $compiler;
+
+        public function __construct(RouteCompiler $compiler) {
 
 			$this->collector = new RouteCollector( new RouteParser(), new DataGenerator() );
             $this->route_regex = new FastRouteSyntax();
+            $this->compiler = $compiler;
 
-		}
+        }
 
 		public function add( CompiledRoute $route, array $methods ) {
 

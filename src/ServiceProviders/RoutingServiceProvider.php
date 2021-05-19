@@ -66,7 +66,7 @@
 
                 if ( ! $this->config->get('routing.cache', false)) {
 
-                    return new FastRouteMatcher();
+                    return new FastRouteMatcher($this->container->make(RouteCompiler::class));
 
                 }
 
@@ -80,7 +80,10 @@
 
                 /** @todo Named routes will not work right now with caching enabled. */
                 /** @todo Need a way to also cache routes outside of the route matcher */
-                return new CachedFastRouteMatcher(new FastRouteMatcher(), $cache_file);
+                return new CachedFastRouteMatcher(
+                    new FastRouteMatcher( $this->container->make(RouteCompiler::class) ),
+                    $cache_file
+                );
 
 
             });

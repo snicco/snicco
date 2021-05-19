@@ -63,16 +63,16 @@
 
         }
 
-
         private function compileConditions(CompiledRoute $compiled) : array
         {
 
             return $this->condition_factory->compileConditions($compiled);
         }
 
-
-        public function compileUrlableConditions(CompiledRoute $compiled) : CompiledRoute
+        public function compileUrlableConditions(array $compiled) : CompiledRoute
         {
+
+            $compiled = new CompiledRoute($compiled);
 
             $compiled->conditions = $this->compileConditions($compiled);
 

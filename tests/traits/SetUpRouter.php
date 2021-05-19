@@ -6,7 +6,6 @@
 
 	namespace Tests\traits;
 
-    use Closure;
     use Contracts\ContainerAdapter;
     use Tests\stubs\TestRequest;
     use WPEmerge\Contracts\ResponseFactory;
@@ -23,8 +22,6 @@
 
 		use CreateDefaultWpApiMocks;
         use AssertsResponse;
-        use CreateContainer;
-        use CreatePsr17Factories;
 
 		/**
 		 * @var Router
@@ -40,10 +37,14 @@
 
 			$condition_factory = new ConditionFactory( $this->allConditions(), $container );
 			$handler_factory   = new HandlerFactory( [], $container );
+
+			$compiler =  new RouteCompiler($handler_factory, $condition_factory);
+
             $route_collection  = new RouteCollection(
-                new FastRouteMatcher(),
-                new RouteCompiler($handler_factory, $condition_factory)
+                $this->createRouteMatcher($compiler),
+                $compiler
             );
+
             $router =  new Router(
                 $container,
                 $route_collection,

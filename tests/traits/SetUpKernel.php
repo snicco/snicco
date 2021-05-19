@@ -44,10 +44,14 @@
 
             $handler_factory = new HandlerFactory( [], $c );
             $condition_factory = new ConditionFactory( [], $c );
-            $routes =  new RouteCollection(
-                new FastRouteMatcher(),
-                new RouteCompiler($handler_factory, $condition_factory)
+
+            $compiler = new RouteCompiler($handler_factory, $condition_factory);
+
+            $routes  = new RouteCollection(
+                $this->createRouteMatcher($compiler),
+                $compiler
             );
+
 
             $c->instance(HandlerFactory::class, $handler_factory);
             $c->instance(ConditionFactory::class, $condition_factory);

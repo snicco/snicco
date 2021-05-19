@@ -112,10 +112,9 @@
 
         }
 
-        public function compile() : CompiledRoute
-        {
+        public function asArray () :array {
 
-            return new CompiledRoute([
+            return [
                 'action' => $this->action,
                 'name' => $this->name,
                 'middleware' => $this->middleware ?? [],
@@ -129,7 +128,14 @@
                 'segment_names' => $this->segment_names,
                 'trailing_slash' => $this->trailing_slash,
                 'methods' => $this->methods,
-            ]);
+            ];
+
+        }
+
+        public function compile() : CompiledRoute
+        {
+
+            return new CompiledRoute($this->asArray());
 
         }
 
@@ -138,7 +144,6 @@
 
             $regex_array = $this->normalizeRegex($regex);
 
-            // $this->url = $this->routeRegex->addCustomRegexToSegments($regex_array, $this->url);
 
             /** @todo This needs to added instead of replaced regex */
             $this->regex[] = $regex_array;
