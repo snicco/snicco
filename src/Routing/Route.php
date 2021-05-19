@@ -31,6 +31,57 @@
         const ROUTE_WILDCARD = '*';
 
         /**
+         * @var array
+         */
+        private $methods;
+
+        /**
+         * @var string
+         */
+        private $url;
+
+        /** @var string|Closure|array */
+        private $action;
+
+        /** @var ConditionBlueprint[] */
+        private $condition_blueprints = [];
+
+        /**
+         * @var array
+         */
+        private $middleware;
+
+        /** @var string */
+        private $namespace;
+
+        /** @var string */
+        private $name;
+
+        /** @var array */
+        private $regex = [];
+
+        /** @var array */
+        private $defaults = [];
+
+        /**
+         * @var Closure|null
+         */
+        private $wp_query_filter = null;
+
+        /** @var array */
+        private $segment_names = [];
+
+        /**
+         * @var array
+         */
+        private $segments = [];
+
+        /**
+         * @var bool
+         */
+        private $trailing_slash = false;
+
+        /**
          * @var ConditionInterface[]
          */
         private $instantiated_conditions = [];
@@ -68,7 +119,7 @@
 
             $route->action = $route->unserializeAction($action);
             $route->middleware = $attributes['middleware'] ?? [];
-            $route ->conditions = $attributes['conditions'] ?? [];
+            $route ->condition_blueprints = $attributes['conditions'] ?? [];
             $route ->namespace = $attributes['namespace'] ?? '';
             $route ->defaults = $attributes['defaults'] ?? [];
             $route ->url = $attributes['url'] ?? '';
@@ -81,6 +132,26 @@
             $route ->methods = $attributes['methods'] ?? [];
 
             return $route;
+
+        }
+
+        public function asArray () :array {
+
+            return [
+                'action' => $this->serializeAction($this->action),
+                'name' => $this->name,
+                'middleware' => $this->middleware ?? [],
+                'conditions' => $this->condition_blueprints ?? [],
+                'namespace' => $this->namespace ?? '',
+                'defaults' => $this->defaults ?? [],
+                'url' => $this->url,
+                'wp_query_filter' => $this->wp_query_filter,
+                'regex' => $this->regex,
+                'segments' => $this->segments,
+                'segment_names' => $this->segment_names,
+                'trailing_slash' => $this->trailing_slash,
+                'methods' => $this->methods,
+            ];
 
         }
 
@@ -142,7 +213,7 @@
 
             $factory = $condition_factory ?? $this->condition_factory;
 
-            $this->instantiated_conditions = $factory->buildConditions($this->conditions);
+            $this->instantiated_conditions = $factory->buildConditions($this->condition_blueprints);
 
             return $this;
 
@@ -154,26 +225,6 @@
 
             $this->instantiated_action = $factory->create($this->action, $this->namespace);
             return $this;
-        }
-
-        public function asArray () :array {
-
-            return [
-                'action' => $this->serializeAction($this->action),
-                'name' => $this->name,
-                'middleware' => $this->middleware ?? [],
-                'conditions' => $this->conditions ?? [],
-                'namespace' => $this->namespace ?? '',
-                'defaults' => $this->defaults ?? [],
-                'url' => $this->url,
-                'wp_query_filter' => $this->wp_query_filter,
-                'regex' => $this->regex,
-                'segments' => $this->segments,
-                'segment_names' => $this->segment_names,
-                'trailing_slash' => $this->trailing_slash,
-                'methods' => $this->methods,
-            ];
-
         }
 
         public function getMethods() : array

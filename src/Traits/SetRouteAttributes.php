@@ -14,56 +14,7 @@
 
 	trait SetRouteAttributes {
 
-        /**
-         * @var array
-         */
-        private $methods;
 
-        /**
-         * @var string
-         */
-        private $url;
-
-        /** @var string|Closure|array */
-        private $action;
-
-        /** @var ConditionBlueprint[] */
-        private $conditions = [];
-
-        /**
-         * @var array
-         */
-        private $middleware;
-
-        /** @var string */
-        private $namespace;
-
-        /** @var string */
-        private $name;
-
-        /** @var array */
-        private $regex = [];
-
-        /** @var array */
-        private $defaults = [];
-
-        /**
-         * @var Closure|null
-         */
-        private $wp_query_filter = null;
-
-        /** @var array */
-        private $segment_names = [];
-
-        /**
-         * @var array
-         */
-        private $segments = [];
-
-        /**
-         * @var bool
-         */
-        private $trailing_slash = false;
 
         public function handle( $action ) : Route {
 
@@ -123,7 +74,7 @@
 
 			$args = func_get_args();
 
-			$this->conditions[] = new ConditionBlueprint( $args );
+			$this->condition_blueprints[] = new ConditionBlueprint( $args );
 
 			/** @var Route $this */
 			return $this;
