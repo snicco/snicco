@@ -13,7 +13,7 @@
 	use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Routing\CompiledRoute;
     use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\FastRoute\FastRouteRegex;
+    use WPEmerge\Support\Str;
 
     class FastRouteMatcher implements RouteMatcher {
 
@@ -36,13 +36,7 @@
 
 		public function add( CompiledRoute $route, array $methods ) {
 
-            $url = $route->url;
-
-            if ( trim($url, '/') === Route::ROUTE_WILDCARD ) {
-
-                $url = md5($url);
-
-            }
+            $url = $this->convertUrlToFastRouteSyntax($route);
 
 			$this->collector->addRoute( $methods, $url, (array) $route );
 
@@ -69,7 +63,47 @@
 
 		}
 
+        private function convertUrlToFastRouteSyntax (CompiledRoute $route) : string
+        {
+                                                    
+            $url = $route->url;
 
+            if ( trim( $url, '/' ) === Route::ROUTE_WILDCARD ) {
+
+                $url = '__generated:wp_route_no_url_condition_' . Str::random(16);
+
+            }
+
+            $url = $this->route_regex->convertOptionalSegments($url);
+
+            foreach ($route->regex as $regex) {
+
+                $url = $this->route_regex->addCustomRegexToSegments($regex, $url);
+
+            }
+
+            if ( $route->trailing_slash ) {
+
+               $url = $this->ensureRouteOnlyMatchesWithTrailingSlash($url, $route);
+
+            }
+
+            return $url;
+
+        }
+
+        private function ensureRouteOnlyMatchesWithTrailingSlash ($url, CompiledRoute $route) : string
+        {
+
+            foreach ($route->segment_names as $segment) {
+
+                $url = $this->route_regex->addCustomRegexToSegments( [$segment => '[^\/]+\/?'], $url );
+
+            }
+
+            return Str::replaceFirst('[/', '/[', $url);
+
+        }
 
 
     }

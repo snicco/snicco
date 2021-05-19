@@ -63,8 +63,6 @@
          */
         private $response_factory;
 
-
-
         public function __construct(ContainerAdapter $container, RouteCollection $routes, ResponseFactory $response_factory)
         {
 

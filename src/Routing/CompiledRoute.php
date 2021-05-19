@@ -37,6 +37,24 @@
 
         public $wp_query_filter;
 
+        public $regex;
+
+        /**
+         * @var array
+         */
+        public $segments;
+
+        /**
+         * @var array
+         */
+        public $segment_names;
+
+        /**
+         * @var bool
+         */
+        public $trailing_slash;
+
+
         public function __construct($attributes)
         {
 
@@ -47,6 +65,10 @@
             $this->defaults = $attributes['defaults'] ?? [];
             $this->url = $attributes['url'] ?? '';
             $this->wp_query_filter = $attributes['wp_query_filter'];
+            $this->regex = $attributes['regex'] ?? [];
+            $this->segments = $attributes['segments'] ?? [];
+            $this->segment_names = $attributes['segment_names'] ?? [];
+            $this->trailing_slash = $attributes['trailing_slash'] ?? false;
 
         }
 
