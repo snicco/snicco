@@ -9,14 +9,13 @@
     use FastRoute\Dispatcher;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Factories\ConditionFactory;
+    use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Request;
     use WPEmerge\Support\Arr;
 
     class RouteCollection
     {
-
-        /** @var RouteCompiler */
-        private $route_compiler;
 
         /**
          * An array of the routes keyed by method.
@@ -44,13 +43,25 @@
 
         private $matched_route;
 
+        /**
+         * @var ConditionFactory
+         */
+        private $condition_factory;
+
+        /**
+         * @var RouteActionFactory
+         */
+        private $action_factory;
+
         public function __construct(
             RouteMatcher $route_matcher,
-            RouteCompiler $compiler
+            ConditionFactory $condition_factory,
+            RouteActionFactory $action_factory
         ) {
 
-            $this->route_compiler = $compiler;
             $this->route_matcher = $route_matcher;
+            $this->condition_factory = $condition_factory;
+            $this->action_factory = $action_factory;
 
         }
 
@@ -67,32 +78,22 @@
 
             }
 
-
             $route = $match->route();
-            $original_payload = $match->payload();
-            $condition_args = [];
+            $route_url_args = $match->capturedUrlSegmentValues();
 
-            foreach ($route->conditions as $compiled_condition) {
-
-                $args = $compiled_condition->getArguments($request);
-
-                $condition_args = array_merge($condition_args, $args);
-
-            }
-
-            $original_payload = array_map(function ( $value ) {
+            $route_url_args = array_map(function ($value) {
                 return rtrim($value, '/');
-            }, $original_payload);
+            }, $route_url_args );
 
             return new RouteMatch(
                 $route,
-                array_merge($original_payload, $condition_args)
+                $route_url_args
             );
 
 
         }
 
-        public function add( Route $route ) : Route
+        public function add(Route $route) : Route
         {
 
             $this->addToCollection($route);
@@ -103,36 +104,56 @@
 
         }
 
-        public function findByName(string $name) : ?CompiledRoute
+        public function findByName(string $name) : ?Route
         {
 
             $route = $this->findInLookUps($name);
 
-            if ( ! $route ) {
+            if ( ! $route) {
 
                 $route = $this->findByRouteName($name);
 
             }
 
-            return ($route)
-                ? $this->route_compiler->compileUrlableConditions($route->asArray())
-                : null;
+            return ($route) ? $this->giveFactories($route) : null;
 
+
+        }
+
+        public function withWildCardUrl(string $method) : array
+        {
+
+            return collect($this->routes[$method] ?? [])
+                ->filter(function (Route $route) {
+
+                    return trim($route->getUrl(), '/') === ROUTE::ROUTE_WILDCARD;
+
+                })
+                ->map(function (Route $route ) {
+                    return $this->giveFactories($route);
+                })
+                ->all();
+
+        }
+
+        private function giveFactories (Route $route) :Route {
+
+            $route->setActionFactory($this->action_factory);
+            $route->setConditionFactory($this->condition_factory);
+            return $route;
 
         }
 
         private function findByRouteName(string $name) : ?Route
         {
 
-            $route = collect($this->routes)
+            return collect($this->routes)
                 ->flatten()
                 ->first(function (Route $route) use ($name) {
 
                     return $route->getName() === $name;
 
                 });
-
-            return $route ?? null;
 
         }
 
@@ -146,7 +167,7 @@
         private function addToCollection(Route $route)
         {
 
-            foreach ($route->getMethods() as $method) {
+            foreach ( $route->getMethods() as $method ) {
 
                 $this->routes[$method][] = $route;
 
@@ -165,10 +186,10 @@
 
         }
 
-        public function loadIntoDispatcher(string $method = null )
+        public function loadIntoDispatcher(string $method = null)
         {
 
-            if ( $this->route_matcher->isCached() || $this->loaded_routes ) {
+            if ($this->route_matcher->isCached() || $this->loaded_routes) {
 
                 return;
 
@@ -176,30 +197,27 @@
 
             $all_routes = $this->routes;
 
-            if ( $method ) {
+            if ($method) {
 
                 $all_routes = [$method => Arr::get($this->routes, $method, [])];
 
             }
 
-            foreach ($all_routes as $method => $routes ) {
+            foreach ($all_routes as $method => $routes) {
 
                 /** @var Route $route */
                 foreach ($routes as $route) {
 
-                    $this->route_matcher->add( $route->compile() , [$method] );
+                    $this->route_matcher->add($route, [$method]);
 
                 }
 
             }
 
 
-
-
-
         }
 
-        /** @todo this should be a global middleware that adds an attribute to the Request object */
+        /** @todo the changing of the url should be a global middleware that adds an attribute to the Request object */
         private function matchPathAgainstLoadedRoutes(Request $request) : RouteMatch
         {
 
@@ -225,18 +243,17 @@
         private function dispatchToRouteMatcher(Request $request, $url) : RouteMatch
         {
 
-            $route_info = $this->route_matcher->find($request->getMethod(), $url);
+            $route_match = $this->route_matcher->find($request->getMethod(), $url);
 
-            if ($route_info[0] != Dispatcher::FOUND) {
+            if ( ! $route = $route_match->route()) {
 
-                return new RouteMatch(null, []);
+                return $route_match;
 
             }
 
-            $route = $this->route_compiler->hydrate($route_info[1]);
+            $this->giveFactories($route);
 
-
-            $payload = $route_info[2];
+            $route->instantiateConditions();
 
             if ( ! $route->satisfiedBy($request) ) {
 
@@ -244,7 +261,9 @@
 
             }
 
-            return new RouteMatch($route, $payload);
+            $route->instantiateAction();
+
+            return new RouteMatch($route, $route_match->capturedUrlSegmentValues());
 
         }
 
@@ -252,18 +271,6 @@
         {
 
             return $this->matched_route;
-
-        }
-
-        public function withWildCardUrl(string $method)
-        {
-
-            return collect($this->routes[$method] ?? [] )
-                ->filter(function ( Route $route ) {
-
-                    return trim($route->getUrl(), '/') === ROUTE::ROUTE_WILDCARD;
-
-                })->all();
 
         }
 

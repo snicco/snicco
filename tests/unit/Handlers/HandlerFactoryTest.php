@@ -10,7 +10,7 @@
     use Tests\stubs\Controllers\Web\WebController;
 	use WPEmerge\Handlers\ClosureAction;
 	use WPEmerge\Handlers\ControllerAction;
-	use WPEmerge\Factories\HandlerFactory;
+	use WPEmerge\Factories\RouteActionFactory;
 	use PHPUnit\Framework\TestCase;
 
 	class HandlerFactoryTest extends TestCase {
@@ -18,7 +18,7 @@
 	    use CreateContainer;
 
 		/**
-		 * @var HandlerFactory
+		 * @var RouteActionFactory
 		 */
 		private $factory;
 
@@ -27,7 +27,7 @@
 
 			parent::setUp();
 
-			$this->factory = new HandlerFactory(TEST_CONFIG['controllers'], $this->createContainer());
+			$this->factory = new RouteActionFactory(TEST_CONFIG['controllers'], $this->createContainer());
 
 		}
 

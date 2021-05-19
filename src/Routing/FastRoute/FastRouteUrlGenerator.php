@@ -45,7 +45,9 @@
 
             $route = $this->findRoute($name);
 
-            if ( $condition = $this->hasUrleableCondition($route) ) {
+            $route->instantiateConditions();
+
+            if ( $condition = $route->hasUrlableCondition() ) {
 
                 return $condition->toUrl( array_merge([ 'route' => $route ], $arguments) );
 
@@ -61,10 +63,8 @@
 
         }
 
+        private function findRoute( string $name ) : Route {
 
-        private function findRoute( string $name ) : ?CompiledRoute {
-
-            /** @var CompiledRoute $route */
             $route = $this->routes->findByName($name);
 
             if ( ! $route ) {
@@ -76,17 +76,6 @@
             }
 
             return $route;
-
-        }
-
-        private function hasUrleableCondition( CompiledRoute $route ) : ?UrlableInterface {
-
-            return collect( $route->conditions )
-                ->first( function ( ConditionInterface $condition ) {
-
-                    return $condition instanceof UrlableInterface;
-
-                } );
 
         }
 
@@ -119,9 +108,9 @@
 
         }
 
-        private function routeRegex(CompiledRoute $route) : array {
+        private function routeRegex(Route $route) : array {
 
-            return Arr::flattenOnePreserveKeys( $route->regex ?? [] );
+            return Arr::flattenOnePreserveKeys( $route->getRegex() ?? [] );
 
         }
 

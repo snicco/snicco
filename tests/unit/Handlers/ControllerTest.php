@@ -10,7 +10,7 @@
     use Tests\stubs\Bar;
 	use Tests\stubs\Foo;
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Factories\HandlerFactory;
+	use WPEmerge\Factories\RouteActionFactory;
 	use Mockery as m;
     use WPEmerge\Http\Request;
 
@@ -24,7 +24,7 @@
 
 			$container = $this->createContainer();
 
-			$factory = new HandlerFactory( [], $container);
+			$factory = new RouteActionFactory( [], $container);
 
 			$request = m::mock( Request::class);
 

@@ -30,7 +30,7 @@
 		protected $namespaces;
 
 		/**
-		 * @var \Contracts\ContainerAdapter
+		 * @var ContainerAdapter
 		 */
 		protected $container;
 
@@ -44,7 +44,7 @@
 		/**
 		 * @param  string|array|callable  $raw_handler
 		 *
-		 * @return \WPEmerge\Contracts\Handler
+		 * @return Handler
 		 * @throws \Exception
 		 */
 		abstract public function createUsing($raw_handler) : Handler;

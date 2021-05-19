@@ -8,7 +8,6 @@
 
 	interface RouteAction extends Handler {
 
-
 		public function raw();
 
 
