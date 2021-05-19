@@ -62,15 +62,12 @@
          */
         private $compiled_conditions = [];
 
+
+        /** @var array */
         private $regex;
 
         /** @var array */
         private $defaults;
-
-        /**
-         * @var FastRouteRegex
-         */
-        private $routeRegex;
 
         /**
          * @var Closure|null
@@ -79,6 +76,16 @@
 
         /** @var array */
         private $segment_names;
+
+        /**
+         * @var array
+         */
+        private $segments;
+
+        /**
+         * @var bool
+         */
+        private $trailing_slash = false;
 
         public function __construct(array $methods, string $url, $action, array $attributes = [])
         {
@@ -105,7 +112,9 @@
 
             $this->segment_names = UrlParser::segmentNames($url);
 
-            return $this->routeRegex->convertOptionalSegments($url);
+            // return $this->routeRegex->convertOptionalSegments($url);
+
+            return $url;
 
         }
 
@@ -120,19 +129,24 @@
                 'defaults' => $this->defaults ?? [],
                 'url' => $this->url,
                 'wp_query_filter' => $this->wp_query_filter,
+                'regex' => $this->regex,
+                'segments' => $this->segments,
+                'segment_names' => $this->segment_names,
+                'trailing_slash' => $this->trailing_slash,
             ]);
 
         }
+
 
         public function and(...$regex) : Route
         {
 
             $regex_array = $this->normalizeRegex($regex);
 
-            $this->url = $this->routeRegex->addCustomRegexToSegments($regex_array, $this->url);
+            // $this->url = $this->routeRegex->addCustomRegexToSegments($regex_array, $this->url);
 
             /** @todo This needs to added instead of replaced regex */
-            $this->regex = $regex_array;
+            $this->regex[] = $regex_array;
 
             return $this;
 
@@ -259,15 +273,10 @@
 
             $this->where(TrailingSlashCondition::class);
 
-            foreach ($this->segment_names as $segment) {
-
-                $this->addRegexToSegment($segment, '[^\/]+\/?');
-
-            }
-
-            $this->url = Str::replaceFirst('[/', '/[', $this->url);
+            $this->trailing_slash = true;
 
             return $this;
+
         }
 
 

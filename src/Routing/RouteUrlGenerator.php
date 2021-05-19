@@ -15,13 +15,13 @@
 
 	class RouteUrlGenerator {
 
-		/** @var \WPEmerge\Routing\Route */
+		/** @var Route */
 		private $route;
 
-		// see: https://regexr.com/5s536
+		/** @see https://regexr.com/5s536 */
 		public const matching_pattern = '/(?<optional>(?:\[\/)?(?<required>{{.+?}}+)(?:\]+)?)/i';
 
-		// see: https://regexr.com/5s533
+        /** @see https://regexr.com/5s533 */
 		public const double_curly_brackets = '/(?<=\/)(?<opening_bracket>\{)|(?<closing_bracket>\}(?=(\/|\[\/|\]|$)))/';
 
 

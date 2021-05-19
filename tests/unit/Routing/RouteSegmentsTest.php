@@ -380,26 +380,6 @@
             $this->assertNullResponse($response);
 
 
-
-
-
-            // $response = $this->router->runRoute($this->request('post', '/users'));
-            // $this->assertNullResponse($response);
-            //
-            //
-            //
-            // $response = $this->router->runRoute($this->request('post', '/users/calvin'));
-            // $this->assertNullResponse($response);
-
-            // $response = $this->router->runRoute($this->request('post', '/users/calvin/male/23'));
-            // $this->assertOutput('calvin:male:23', $response);
-
-            // $response = $this->router->runRoute($this->request('post', '/users/calvin/male'));
-            // $this->assertOutput('calvin:male:21', $response);
-
-            // $response = $this->router->runRoute($this->request('post', '/users'));
-            // $this->assertOutput('john:m:21', $response);
-
         }
 
 
