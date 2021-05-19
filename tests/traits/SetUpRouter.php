@@ -30,7 +30,8 @@
 		 */
 		private $router;
 
-
+		/** @var RouteCollection */
+        private $routes;
 
 		private function newRouter(ContainerAdapter $container = null)  {
 
@@ -48,6 +49,8 @@
                 $route_collection,
                 $response= $this->responseFactory()
             );
+
+            $this->routes = $route_collection;
 
 			$container->instance(HandlerFactory::class, $handler_factory);
 			$container->instance(ConditionFactory::class, $condition_factory);

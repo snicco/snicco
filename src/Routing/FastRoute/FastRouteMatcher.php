@@ -23,20 +23,20 @@
 		private $collector;
 
         /**
-         * @var FastRouteRegex
+         * @var FastRouteSyntax
          */
         private $route_regex;
 
         public function __construct() {
 
 			$this->collector = new RouteCollector( new RouteParser(), new DataGenerator() );
-            $this->route_regex = new FastRouteRegex();
+            $this->route_regex = new FastRouteSyntax();
 
 		}
 
 		public function add( CompiledRoute $route, array $methods ) {
 
-            $url = $this->convertUrlToFastRouteSyntax($route);
+            $url = $this->route_regex->convert($route);
 
 			$this->collector->addRoute( $methods, $url, (array) $route );
 
@@ -63,47 +63,7 @@
 
 		}
 
-        private function convertUrlToFastRouteSyntax (CompiledRoute $route) : string
-        {
-                                                    
-            $url = $route->url;
 
-            if ( trim( $url, '/' ) === Route::ROUTE_WILDCARD ) {
-
-                $url = '__generated:wp_route_no_url_condition_' . Str::random(16);
-
-            }
-
-            $url = $this->route_regex->convertOptionalSegments($url);
-
-            foreach ($route->regex as $regex) {
-
-                $url = $this->route_regex->addCustomRegexToSegments($regex, $url);
-
-            }
-
-            if ( $route->trailing_slash ) {
-
-               $url = $this->ensureRouteOnlyMatchesWithTrailingSlash($url, $route);
-
-            }
-
-            return $url;
-
-        }
-
-        private function ensureRouteOnlyMatchesWithTrailingSlash ($url, CompiledRoute $route) : string
-        {
-
-            foreach ($route->segment_names as $segment) {
-
-                $url = $this->route_regex->addCustomRegexToSegments( [$segment => '[^\/]+\/?'], $url );
-
-            }
-
-            return Str::replaceFirst('[/', '/[', $url);
-
-        }
 
 
     }

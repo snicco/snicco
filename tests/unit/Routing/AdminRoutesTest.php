@@ -12,6 +12,8 @@
     use Tests\traits\SetUpRouter;
     use WPEmerge\Http\Request;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
+    use WPEmerge\Routing\UrlGenerator;
 
     class AdminRoutesTest extends UnitTest
     {
@@ -202,12 +204,16 @@
 
             });
 
-            $url = $this->router->getRouteUrl('admin.foo');
+            $url = ( new UrlGenerator(new FastRouteUrlGenerator($this->routes)) )->toRoute('admin.foo');
 
             $this->assertSame($this->adminUrlTo('foo'), $url);
 
 
         }
+
+
+
+
 
         /**
          *

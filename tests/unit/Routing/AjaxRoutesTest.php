@@ -12,6 +12,8 @@
     use Tests\traits\SetUpRouter;
     use WPEmerge\ExceptionHandling\Exceptions\RouteLogicException;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
+    use WPEmerge\Routing\UrlGenerator;
 
     class AjaxRoutesTest extends UnitTest
     {
@@ -196,7 +198,7 @@
 
             $expected = $this->ajaxUrl();
 
-            $this->assertSame($expected, $this->router->getRouteUrl('ajax.foo'));
+            $this->assertSame($expected, $this->urlGenerator()->toRoute('ajax.foo'));
 
         }
 
@@ -222,7 +224,7 @@
 
             $expected = $this->ajaxUrl().'?action=foo_action';
 
-            $this->assertSame($expected, $this->router->getRouteUrl('ajax.foo', ['method' => 'GET']));
+            $this->assertSame($expected, $this->urlGenerator()->toRoute('ajax.foo', ['method' => 'GET']));
 
         }
 
@@ -247,8 +249,14 @@
 
             $expected = $this->ajaxUrl().'?action=foo_action';
 
-            $this->assertSame($expected, $this->router->getRouteUrl('ajax.foo', ['method' => 'GET']));
+            $this->assertSame($expected, $this->urlGenerator()->toRoute('ajax.foo', ['method' => 'GET']));
 
+        }
+
+        private function urlGenerator() : UrlGenerator
+        {
+
+            return new UrlGenerator(new FastRouteUrlGenerator($this->routes));
         }
 
     }

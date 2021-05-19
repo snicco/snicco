@@ -13,7 +13,7 @@
     use WPEmerge\Contracts\SetsRouteAttributes;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Routing\Conditions\TrailingSlashCondition;
-    use WPEmerge\Routing\FastRoute\FastRouteRegex;
+    use WPEmerge\Routing\FastRoute\FastRouteSyntax;
     use WPEmerge\Support\Url;
     use WPEmerge\Support\UrlParser;
     use WPEmerge\Support\Arr;
@@ -64,10 +64,10 @@
 
 
         /** @var array */
-        private $regex;
+        private $regex = [];
 
         /** @var array */
-        private $defaults;
+        private $defaults = [];
 
         /**
          * @var Closure|null
@@ -75,12 +75,12 @@
         private $wp_query_filter = null;
 
         /** @var array */
-        private $segment_names;
+        private $segment_names = [];
 
         /**
          * @var array
          */
-        private $segments;
+        private $segments = [];
 
         /**
          * @var bool
@@ -90,7 +90,7 @@
         public function __construct(array $methods, string $url, $action, array $attributes = [])
         {
 
-            $this->routeRegex = new FastRouteRegex();
+            $this->routeRegex = new FastRouteSyntax();
 
             $this->methods = $methods;
             $this->url = $this->parseUrl($url);
@@ -186,7 +186,7 @@
 
         }
 
-        public function getRegexConstraints()
+        public function getRegexConstraints() : array
         {
 
             return $this->regex;

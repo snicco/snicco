@@ -89,4 +89,27 @@
 
         }
 
+        /** @test */
+        public function routes_with_trailing_slash_match_request_with_trailing_slash()
+        {
+
+            $this->router->get('/foo/', function () {
+
+                return 'FOO';
+
+            });
+
+            $this->router->loadRoutes();
+
+            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
+            $this->assertOutput('FOO', $this->router->runRoute($request));
+
+
+            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
+            $this->assertNullResponse($this->router->runRoute($request));
+
+        }
+
+
+
     }

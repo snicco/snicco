@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "831e694aea82625eec4bbc2d176fe04b",
+    "content-hash": "c027cf685558039b49cc48c8d6a456a9",
     "packages": [
         {
             "name": "calvinalkan/base-container",

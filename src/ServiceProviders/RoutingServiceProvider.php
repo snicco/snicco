@@ -8,6 +8,7 @@
 
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Contracts\RouteMatcher;
+    use WPEmerge\Contracts\RouteUrlGenerator;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Factories\HandlerFactory;
@@ -24,9 +25,11 @@
     use WPEmerge\Routing\Conditions\PostTemplateCondition;
     use WPEmerge\Routing\Conditions\PostTypeCondition;
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
+    use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Routing\RouteCollection;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\RouteRegistrar;
+    use WPEmerge\Routing\UrlGenerator;
 
     class RoutingServiceProvider extends ServiceProvider
     {
@@ -101,6 +104,19 @@
                 );
             });
 
+            $this->container->singleton(RouteUrlGenerator::class, function () {
+
+                return new FastRouteUrlGenerator($this->container->make(
+                    RouteCollection::class)
+                );
+
+            });
+
+            $this->container->singleton(UrlGenerator::class, function () {
+
+                return new UrlGenerator($this->container->make(RouteUrlGenerator::class));
+
+            });
 
         }
 

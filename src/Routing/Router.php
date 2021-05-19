@@ -159,24 +159,7 @@
             $this->any('/{path}', [FallBackController::class, 'handle'])->and('path', '.+');
         }
 
-        public function getRouteUrl(string $name, array $arguments = []) : string
-        {
 
-            /** @var Route $route */
-            $route = $this->routes->findByName($name);
-
-            if ( ! $route) {
-
-                throw new ConfigurationException(
-                    'There is no named route with the name: '.$name.' registered.'
-                );
-
-            }
-
-            return (new RouteUrlGenerator($route))->to($arguments);
-
-
-        }
 
         public function findRoute(Request $request, $wp_query = false) : RouteMatch
         {
@@ -311,9 +294,10 @@
         private function applyPrefix(string $url) : string
         {
 
-            if ( ! $this->hasGroupStack()) {
+            if ( ! $this->hasGroupStack() ) {
 
-                return Url::combinePath('', $url);
+                // return Url::combinePath('', $url);
+                return $url;
 
             }
 

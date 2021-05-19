@@ -7,7 +7,6 @@
     namespace Tests\integration\ServiceProviders;
 
     use Mockery;
-    use Tests\stubs\Conditions\IsPost;
     use Tests\IntegrationTest;
     use Tests\traits\AssertsResponse;
     use Tests\stubs\Conditions\TrueCondition;
@@ -21,7 +20,10 @@
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
+    use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Routing\Router;
+    use WPEmerge\Routing\UrlGenerator;
+    use WPEmerge\Support\Url;
 
     class RoutingServiceProviderTest extends IntegrationTest
     {
@@ -232,7 +234,6 @@
         }
 
 
-
         /** @test */
         public function named_groups_are_applied_for_admin_routes()
         {
@@ -249,9 +250,12 @@
             $router = TestApp::resolve(Router::class);
             $router->middlewareGroup('admin', []);
 
-            $url = $router->getRouteUrl('admin.foo');
+            /**
+             * @var UrlGenerator $url_generator
+             */
+            $url_generator = TestApp::resolve(UrlGenerator::class);
 
-            $this->assertSame($this->adminUrlTo('foo'), $url);
+            $this->assertSame($this->adminUrlTo('foo'), $url_generator->toRoute('admin.foo'));
 
             Mockery::close();
             WP::reset();
@@ -278,7 +282,12 @@
 
             $expected = $this->ajaxUrl();
 
-            $this->assertSame($expected, $router->getRouteUrl('ajax.foo'));
+            /**
+             * @var UrlGenerator $url_generator
+             */
+            $url_generator = TestApp::resolve(UrlGenerator::class);
+
+            $this->assertSame($expected, $url_generator->toRoute('ajax.foo'));
 
             Mockery::close();
             WP::reset();
