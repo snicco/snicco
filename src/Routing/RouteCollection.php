@@ -67,12 +67,11 @@
 
             }
 
-
             $route = $match->route();
             $original_payload = $match->payload();
             $condition_args = [];
 
-            foreach ($route->conditions as $compiled_condition) {
+            foreach ($route->getCompiledConditions() as $compiled_condition) {
 
                 $args = $compiled_condition->getArguments($request);
 
@@ -103,7 +102,7 @@
 
         }
 
-        public function findByName(string $name) : ?CompiledRoute
+        public function findByName(string $name) : ?Route
         {
 
             $route = $this->findInLookUps($name);
@@ -114,9 +113,7 @@
 
             }
 
-            return ($route)
-                ? $this->route_compiler->compileUrlableConditions($route->asArray())
-                : null;
+            return ($route) ? $this->route_compiler->buildUrlableConditions($route) : null;
 
 
         }
@@ -124,15 +121,13 @@
         private function findByRouteName(string $name) : ?Route
         {
 
-            $route = collect($this->routes)
+            return collect($this->routes)
                 ->flatten()
                 ->first(function (Route $route) use ($name) {
 
                     return $route->getName() === $name;
 
                 });
-
-            return $route ?? null;
 
         }
 
@@ -227,24 +222,23 @@
 
             $route_match = $this->route_matcher->find($request->getMethod(), $url);
 
-            if ( ! $route_match->route() ) {
+            if ( ! $route = $route_match->route() ) {
 
                 return $route_match;
 
             }
 
-            $this->route_compiler->
+            $this->route_compiler->buildConditions($route);
 
-
-            $payload = $route_info[2];
-
-            if ( ! $route->satisfiedBy($request) ) {
+            if ( ! $route->satisfiedBy( $request ) ) {
 
                 return new RouteMatch(null, []);
 
             }
 
-            return new RouteMatch($route, $payload);
+            $this->route_compiler->buildActions($route);
+
+            return new RouteMatch($route, $route_match->payload());
 
         }
 
@@ -255,7 +249,7 @@
 
         }
 
-        public function withWildCardUrl(string $method)
+        public function withWildCardUrl(string $method) : array
         {
 
             return collect($this->routes[$method] ?? [] )

@@ -20,6 +20,8 @@
 
     class FastRouteMatcher implements RouteMatcher {
 
+        use HydratesFastRoutes;
+
 		/**
 		 * @var RouteCollector
 		 */
@@ -43,13 +45,20 @@
 
         }
 
-		public function add( Route $route, array $methods ) {
+		public function add( Route $route , array $methods ) {
 
-            $url = $this->route_regex->convert($route);
+            $url =  $this->convertUrl($route);
 
-			$this->collector->addRoute( $methods, $url, $route->toArray() );
+			$this->collector->addRoute( $methods, $url, $route->asArray() );
 
 		}
+
+		private function convertUrl(Route $route) : string
+        {
+
+            return $this->route_regex->convert($route);
+
+        }
 
 		public function find( string $method, string $path ) : RouteMatch {
 
@@ -57,16 +66,7 @@
 
 			$route_info = $dispatcher->dispatch( $method, $path );
 
-            if ($route_info[0] !== Dispatcher::FOUND)  {
-
-                return new RouteMatch(null, []);
-
-            }
-
-            $route = $route_info[1];
-            $payload = $route_info[2];
-
-            return new RouteMatch($route, $payload);
+            return $this->hydrate($route_info);
 
 		}
 

@@ -9,8 +9,11 @@
 	use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
 	use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Routing\Route;
+    use WPEmerge\Routing\RouteMatch;
 
     class CachedFastRouteMatcher implements RouteMatcher {
+
+        use HydratesFastRoutes;
 
 		/**
 		 * @var FastRouteMatcher
@@ -41,23 +44,25 @@
 
 		}
 
-		public function add( Route $route, $methods ) {
+		public function add( Route $route , $methods) {
 
 			$this->uncached_matcher->add( $route , $methods );
 
 		}
 
-		public function find( string $method, string $path ) :array {
+		public function find( string $method, string $path ) :RouteMatch {
 
 			if ( $this->route_cache ) {
 
 				$dispatcher = new RouteDispatcher( $this->route_cache );
 
-				return $dispatcher->dispatch( $method, $path );
+				return $this->hydrate($dispatcher->dispatch( $method, $path ));
 
 			}
 
-			$this->createCache( $this->uncached_matcher->getRouteMap() );
+			$this->createCache(
+			    $this->uncached_matcher->getRouteMap()
+            );
 
 			return $this->uncached_matcher->find( $method, $path );
 

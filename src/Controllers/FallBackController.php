@@ -55,12 +55,12 @@
 
             $routes = $possible_routes->map(function (Route $route) {
 
-                return $this->route_compiler->hydrate($route->asArray());
+                return $this->route_compiler->buildConditions($route);
 
             });
 
-            /** @var CompiledRoute $route */
-            $route = $routes->first(function (CompiledRoute $route) use ($request) {
+            /** @var Route $route */
+            $route = $routes->first(function (Route $route) use ($request) {
 
                 return $route->satisfiedBy($request);
 
@@ -76,13 +76,15 @@
 
             $payload = [];
 
-            foreach ($route->conditions as $compiled_condition) {
+            foreach ($route->getCompiledConditions() as $compiled_condition) {
 
                 $args = $compiled_condition->getArguments($request);
 
                 $payload = array_merge($payload, $args);
 
             }
+
+            $this->route_compiler->buildActions($route);
 
             return $route->run($request, $payload);
 

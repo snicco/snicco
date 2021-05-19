@@ -266,7 +266,7 @@
 
             if ($this->with_middleware) {
 
-                $middleware = $route_match->route()->middleware();
+                $middleware = $route_match->route()->getMiddleware();
                 $middleware = $this->mergeGlobalMiddleware($middleware);
                 $middleware = $this->expandMiddleware($middleware);
                 $middleware = $this->uniqueMiddleware($middleware);
