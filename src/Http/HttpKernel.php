@@ -282,7 +282,7 @@
 
                 return $match->route()->filterWpQuery(
                     $event->currentQueryVars(),
-                    $match->payload()
+                    $match->capturedUrlSegmentValues()
                 );
 
             }

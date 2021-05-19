@@ -47,15 +47,10 @@
 
             $possible_routes = collect($this->routes->withWildCardUrl($request->getMethod()));
 
-            $routes = $possible_routes->map(function (Route $route) {
-
-                return $route->instantiateConditions();
-
-            });
-
             /** @var Route $route */
-            $route = $routes->first(function (Route $route) use ($request) {
+            $route = $possible_routes->first(function (Route $route) use ($request) {
 
+                $route->instantiateConditions();
                 return $route->satisfiedBy($request);
 
             });
@@ -68,19 +63,9 @@
 
             }
 
-            $payload = [];
-
-            foreach ($route->getInstantiatedConditions() as $compiled_condition) {
-
-                $args = $compiled_condition->getArguments($request);
-
-                $payload = array_merge($payload, $args);
-
-            }
-
             $route->instantiateAction();
 
-            return $route->run($request, $payload);
+            return $route->run($request);
 
         }
 

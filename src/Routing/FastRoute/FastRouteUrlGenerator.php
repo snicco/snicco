@@ -47,7 +47,7 @@
 
             $route->instantiateConditions();
 
-            if ( $condition = $this->hasUrleableCondition($route) ) {
+            if ( $condition = $route->hasUrlableCondition() ) {
 
                 return $condition->toUrl( array_merge([ 'route' => $route ], $arguments) );
 
@@ -63,7 +63,6 @@
 
         }
 
-
         private function findRoute( string $name ) : Route {
 
             $route = $this->routes->findByName($name);
@@ -77,17 +76,6 @@
             }
 
             return $route;
-
-        }
-
-        private function hasUrleableCondition( Route $route ) : ?UrlableInterface {
-
-            return collect( $route->getInstantiatedConditions() )
-                ->first( function ( ConditionInterface $condition ) {
-
-                    return $condition instanceof UrlableInterface;
-
-                } );
 
         }
 

@@ -60,7 +60,7 @@
             /** @var Route $route */
             $route = $arguments['route'];
 
-            if ( ! in_array('GET', $route->getMethods())) {
+            if ( ! in_array('GET', $route->getMethods() ) ) {
 
                 throw new RouteLogicException(
                     'Route: '.$route->getName().'does not respond to GET requests'

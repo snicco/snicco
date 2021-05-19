@@ -133,7 +133,7 @@
         private function ensureRouteOnlyMatchesWithTrailingSlash ($url, Route $route) : string
         {
 
-            foreach ($route->segmentNames() as $segment) {
+            foreach ($route->getSegmentNames() as $segment) {
 
                 $url = $this->addCustomRegexToSegments( [$segment => '[^\/]+\/?'], $url );
 

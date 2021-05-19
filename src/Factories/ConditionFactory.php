@@ -28,7 +28,7 @@
         private $condition_types;
 
         /**
-         * @var \Contracts\ContainerAdapter
+         * @var ContainerAdapter
          */
         private $container;
 
@@ -40,10 +40,10 @@
             $this->container = $container;
         }
 
-        public function compileConditions( Route $route) : array
+        public function buildConditions( array $raw_conditions ) : array
         {
 
-            $conditions = collect($route->getConditions());
+            $conditions = collect($raw_conditions);
 
             $conditions = $conditions
                 ->map(function (ConditionBlueprint $condition) {

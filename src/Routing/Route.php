@@ -11,6 +11,7 @@
     use WPEmerge\Contracts\ConditionInterface;
     use WPEmerge\Contracts\RouteAction;
     use WPEmerge\Contracts\SetsRouteAttributes;
+    use WPEmerge\Contracts\UrlableInterface;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Request;
@@ -30,61 +31,9 @@
         const ROUTE_WILDCARD = '*';
 
         /**
-         * @var array
-         */
-        private $methods;
-
-        /**
-         * @var string
-         */
-        private $url;
-
-        /** @var string|Closure|array */
-        private $action;
-
-        /** @var ConditionBlueprint[] */
-        private $conditions = [];
-
-        /**
-         * @var array
-         */
-        private $middleware;
-
-        /** @var string */
-        private $namespace;
-
-        /** @var string */
-        private $name;
-
-        /**
          * @var ConditionInterface[]
          */
         private $instantiated_conditions = [];
-
-        /** @var array */
-        private $regex = [];
-
-        /** @var array */
-        private $defaults = [];
-
-        /**
-         * @var Closure|null
-         */
-        private $wp_query_filter = null;
-
-        /** @var array */
-        private $segment_names = [];
-
-        /**
-         * @var array
-         */
-        private $segments = [];
-
-        /**
-         * @var bool
-         */
-
-        private $trailing_slash = false;
 
         /**
          * @var RouteAction
@@ -106,21 +55,6 @@
             $this->namespace = $attributes['namespace'] ?? '';
             $this->middleware = $attributes['middleware'] ?? [];
 
-
-        }
-
-        private function parseUrl(string $url) : string
-        {
-
-            $url = UrlParser::replaceAdminAliases($url);
-
-            $url = Url::addLeading($url);
-
-            $this->segments = UrlParser::segments($url);
-
-            $this->segment_names = UrlParser::segmentNames($url);
-
-            return $url;
 
         }
 
@@ -150,6 +84,78 @@
 
         }
 
+        public function filterWpQuery ( array $query_vars,  array $route_payload ) {
+
+            $callable = $this->wp_query_filter;
+
+            if ( ! $callable ) {
+
+                return $query_vars;
+
+            }
+
+            $combined = [$query_vars] + $route_payload;
+
+            return call_user_func_array($callable, $combined);
+
+        }
+
+        public function setConditionFactory(ConditionFactory $factory) {
+            $this->condition_factory = $factory;
+        }
+
+        public function setActionFactory(RouteActionFactory $factory) {
+            $this->action_factory = $factory;
+        }
+
+        public function hasUrlableCondition() :?UrlableInterface
+        {
+            return collect( $this->instantiated_conditions )
+                ->first( function ( ConditionInterface $condition ) {
+
+                    return $condition instanceof UrlableInterface;
+
+                } );
+        }
+
+        public function run(Request $request, array $route_url_args = [])
+        {
+
+            $condition_args = $this->conditionArgs($request);
+
+            $payload = array_merge([$request], $route_url_args, $condition_args);
+
+            $reflection_payload = new ReflectionPayload(
+                $this->instantiated_action->raw(),
+                array_values($payload)
+            );
+
+            return $this->instantiated_action->executeUsing(
+                $this->mergeDefaults($reflection_payload->build())
+            );
+
+
+        }
+
+        public function instantiateConditions( ConditionFactory $condition_factory = null ) : Route
+        {
+
+            $factory = $condition_factory ?? $this->condition_factory;
+
+            $this->instantiated_conditions = $factory->buildConditions($this->conditions);
+
+            return $this;
+
+        }
+
+        public function instantiateAction(RouteActionFactory $action_factory = null) :Route
+        {
+            $factory = $action_factory ?? $this->action_factory;
+
+            $this->instantiated_action = $factory->create($this->action, $this->namespace);
+            return $this;
+        }
+
         public function asArray () :array {
 
             return [
@@ -167,46 +173,6 @@
                 'trailing_slash' => $this->trailing_slash,
                 'methods' => $this->methods,
             ];
-
-        }
-
-        public function and(...$regex) : Route
-        {
-
-            $regex_array = $this->normalizeRegex($regex);
-
-
-            /** @todo This needs to added instead of replaced regex */
-            $this->regex[] = $regex_array;
-
-            return $this;
-
-        }
-
-        public function andAlpha() : Route
-        {
-
-            return $this->addRegexToSegment(func_get_args(), '[a-zA-Z]+');
-
-        }
-
-        public function andNumber() : Route
-        {
-
-            return $this->addRegexToSegment(func_get_args(), '[0-9]+');
-
-        }
-
-        public function andAlphaNumerical() : Route
-        {
-            return $this->addRegexToSegment(func_get_args(), '[a-zA-Z0-9]+');
-
-        }
-
-        public function andEither(string $segment, array $pool) : Route
-        {
-
-            return $this->addRegexToSegment($segment, implode('|', $pool));
 
         }
 
@@ -231,92 +197,10 @@
 
         }
 
-        public function getConditions() : ?array
-        {
-
-            return $this->conditions;
-
-        }
-
         public function getUrl() : string
         {
 
             return $this->url;
-
-        }
-
-        public function getInstantiatedConditions() : array
-        {
-
-            return $this->instantiated_conditions;
-        }
-
-        public function instantiateConditions( ConditionFactory $condition_factory = null ) : Route
-        {
-
-            $factory = $condition_factory ?? $this->condition_factory;
-
-            $this->instantiated_conditions = $factory->compileConditions($this);
-
-            return $this;
-
-        }
-
-        public function instantiateAction(RouteActionFactory $action_factory = null) :Route
-        {
-            $factory = $action_factory ?? $this->action_factory;
-
-            $this->instantiated_action = $factory->create($this->action, $this->namespace);
-            return $this;
-        }
-
-        private function normalizeRegex($regex) : array
-        {
-
-            $regex = Arr::flattenOnePreserveKeys($regex);
-
-            if (is_int(Arr::firstEl(array_keys($regex)))) {
-
-                return Arr::combineFirstTwo($regex);
-
-            }
-
-            return $regex;
-
-        }
-
-        private function addRegexToSegment($segments, string $pattern) : Route
-        {
-
-            collect($segments)
-                ->flatten()
-                ->each(function ($segment) use ($pattern) {
-
-                    $this->and($segment, $pattern);
-
-                });
-
-            return $this;
-
-        }
-
-        public function wpquery(Closure $callback) : Route
-        {
-
-            $this->wp_query_filter = $callback;
-
-            return $this;
-
-        }
-
-        public function andOnlyTrailing() : Route
-        {
-
-            $this->where(TrailingSlashCondition::class);
-
-            $this->trailing_slash = true;
-
-            return $this;
 
         }
 
@@ -325,7 +209,7 @@
             return $this->trailing_slash;
         }
 
-        public function segmentNames() :array
+        public function getSegmentNames() :array
         {
             return $this->segment_names;
         }
@@ -374,17 +258,32 @@
 
         }
 
-        public function run(Request $request, array $payload)
+        private function parseUrl(string $url) : string
         {
 
-            $payload = array_merge([$request], $payload);
+            $url = UrlParser::replaceAdminAliases($url);
 
-            $reflection_payload = new ReflectionPayload($this->instantiated_action->raw(), array_values($payload));
+            $url = Url::addLeading($url);
 
-            return $this->instantiated_action->executeUsing(
-                $this->mergeDefaults($reflection_payload->build())
-            );
+            $this->segments = UrlParser::segments($url);
 
+            $this->segment_names = UrlParser::segmentNames($url);
+
+            return $url;
+
+        }
+
+        private function conditionArgs(Request $request) :array {
+
+            $args = [];
+
+            foreach ($this->instantiated_conditions as $condition) {
+
+                $args = array_merge($args, $condition->getArguments($request));
+
+            }
+
+            return $args;
 
         }
 
@@ -428,30 +327,6 @@
 
             return is_string($action)
                 && Str::startsWith($action, 'C:32:"Opis\\Closure\\SerializableClosure') !== false;
-        }
-
-        public function filterWpQuery ( array $query_vars,  array $route_payload ) {
-
-            $callable = $this->wp_query_filter;
-
-            if ( ! $callable ) {
-
-                return $query_vars;
-
-            }
-
-            $combined = [$query_vars] + $route_payload;
-
-            return call_user_func_array($callable, $combined);
-
-        }
-
-        public function setConditionFactory(ConditionFactory $factory) {
-            $this->condition_factory = $factory;
-        }
-
-        public function setActionFactory(RouteActionFactory $factory) {
-            $this->action_factory = $factory;
         }
 
 

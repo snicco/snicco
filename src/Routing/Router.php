@@ -281,7 +281,7 @@
                 ->then(function ($request) use ($route_match) : Response {
 
                     $this->container->instance(Request::class, $request);
-                    $route_response = $route_match->route()->run($request, $route_match->payload());
+                    $route_response = $route_match->route()->run($request, $route_match->capturedUrlSegmentValues());
 
                     return $this->response_factory->toResponse($route_response);
 
