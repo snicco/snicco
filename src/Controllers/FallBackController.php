@@ -13,6 +13,7 @@
     use WPEmerge\Routing\CompiledRoute;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\RouteCollection;
+    use WPEmerge\Routing\RouteCompiler;
 
     class FallBackController
     {
@@ -29,11 +30,7 @@
         /**
          * @var ConditionFactory
          */
-        private $condition_factory;
-        /**
-         * @var HandlerFactory
-         */
-        private $handler_factory;
+        private $route_compiler;
 
         /**
          * @var callable
@@ -43,14 +40,12 @@
         public function __construct(
             RouteCollection $routes,
             ResponseFactory $response,
-            ConditionFactory $condition_factory,
-            HandlerFactory $handler_factory
+            RouteCompiler $route_compiler
         ) {
 
             $this->routes = $routes;
             $this->response = $response;
-            $this->condition_factory = $condition_factory;
-            $this->handler_factory = $handler_factory;
+            $this->route_compiler = $route_compiler;
 
         }
 
@@ -61,9 +56,8 @@
 
             $routes = $possible_routes->map(function (Route $route) {
 
-                $compiled = CompiledRoute::hydrate((array) $route->compile(), $this->handler_factory, $this->condition_factory);
+                return $this->route_compiler->hydrate((array)$route->compile());
 
-                return $compiled;
             });
 
             /** @var CompiledRoute $route */
@@ -74,7 +68,7 @@
 
             });
 
-            if ( ! $route ) {
+            if ( ! $route) {
 
                 return ($this->fallback_handler)
                     ? call_user_func($this->fallback_handler, $request)
@@ -98,6 +92,7 @@
 
         public function setFallbackHandler(callable $fallback_handler)
         {
+
             $this->fallback_handler = $fallback_handler;
         }
 

@@ -27,6 +27,7 @@
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Routing\RouteCollection;
+    use WPEmerge\Routing\RouteCompiler;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\RouteRegistrar;
     use WPEmerge\Routing\UrlGenerator;
@@ -84,12 +85,20 @@
 
             });
 
+            $this->container->singleton(RouteCompiler::class, function () {
+
+                return new RouteCompiler(
+                    $this->container->make(HandlerFactory::class),
+                    $this->container->make(ConditionFactory::class)
+                );
+
+            });
+
             $this->container->singleton(RouteCollection::class, function () {
 
                 return new RouteCollection(
-                    $this->container->make(ConditionFactory::class),
-                    $this->container->make(HandlerFactory::class),
-                    $this->container->make(RouteMatcher::class)
+                    $this->container->make(RouteMatcher::class),
+                    $this->container->make(RouteCompiler::class)
                 );
 
             });

@@ -17,7 +17,8 @@
 	use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
-	use WPEmerge\Routing\Router;
+    use WPEmerge\Routing\RouteCompiler;
+    use WPEmerge\Routing\Router;
 	use WPEmerge\Facade\WpFacade;
 
 	class RouteCachingTest extends UnitTest {
@@ -58,9 +59,8 @@
 			$condition_factory = new ConditionFactory( [], $container );
 			$handler_factory   = new HandlerFactory( [], $container );
 			$route_collection  = new RouteCollection(
-				$condition_factory,
-				$handler_factory,
-				new CachedFastRouteMatcher( new FastRouteMatcher(), $file ?? $this->cache_file )
+				new CachedFastRouteMatcher( new FastRouteMatcher(), $file ?? $this->cache_file ),
+                new RouteCompiler($handler_factory, $condition_factory)
 			);
 
             $container->instance(HandlerFactory::class, $handler_factory);

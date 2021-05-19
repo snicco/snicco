@@ -7,12 +7,9 @@
     namespace WPEmerge\Routing;
 
     use Closure;
-    use Illuminate\Support\Str;
     use Opis\Closure\SerializableClosure;
     use WPEmerge\Contracts\RouteAction;
     use WPEmerge\Contracts\RouteCondition;
-    use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Factories\HandlerFactory;
     use WPEmerge\Http\Request;
     use WPEmerge\Support\ReflectionPayload;
 
@@ -54,11 +51,17 @@
          */
         public $trailing_slash;
 
+        public $name;
+
+        /**
+         * @var array
+         */
+        public $methods;
 
         public function __construct($attributes)
         {
 
-            $this->action = $attributes['action'];
+            $this->action = $this->compileCacheableAction($attributes['action'] ?? '');
             $this->middleware = $attributes['middleware'] ?? [];
             $this->conditions = $attributes['conditions'] ?? [];
             $this->namespace = $attributes['namespace'] ?? '';
@@ -69,6 +72,8 @@
             $this->segments = $attributes['segments'] ?? [];
             $this->segment_names = $attributes['segment_names'] ?? [];
             $this->trailing_slash = $attributes['trailing_slash'] ?? false;
+            $this->name = $attributes['name'] ?? '';
+            $this->methods = $attributes['methods'] ?? [];
 
         }
 
@@ -86,27 +91,6 @@
 
         }
 
-        public static function hydrate(
-            array $attributes,
-            HandlerFactory $handler_factory,
-            ConditionFactory $condition_factory
-        ) : CompiledRoute {
-
-            $compiled = new static($attributes);
-
-            if ($compiled->isSerializedClosure($action = $compiled->action)) {
-
-                $action = \Opis\Closure\unserialize($action);
-
-            }
-
-            $compiled->action = $handler_factory->create($action, $compiled->namespace);
-            $compiled->conditions = $condition_factory->compileConditions($compiled);
-
-            return $compiled;
-
-        }
-
         public function middleware() : array
         {
 
@@ -116,6 +100,41 @@
 
             );
 
+        }
+
+        public function filterWpQuery ( array $query_vars,  array $route_payload ) {
+
+            $callable = $this->wp_query_filter;
+
+            if ( ! $callable ) {
+
+                return $query_vars;
+
+            }
+
+            $combined = [$query_vars] + $route_payload;
+
+            return call_user_func_array($callable, $combined);
+
+        }
+
+        public function run(Request $request, array $payload)
+        {
+
+            $payload = array_merge([$request], $payload);
+
+            $reflection_payload = new ReflectionPayload($this->action->raw(), array_values($payload));
+
+            return $this->action->executeUsing(
+                $this->mergeDefaults($reflection_payload->build())
+            );
+
+
+        }
+
+        public function toArray() : array
+        {
+            return (array) $this;
         }
 
         private function controllerMiddleware() : array
@@ -137,20 +156,6 @@
 
         }
 
-        public function run(Request $request, array $payload)
-        {
-
-            $payload = array_merge([$request], $payload);
-
-            $reflection_payload = new ReflectionPayload($this->action->raw(), array_values($payload));
-
-            return $this->action->executeUsing(
-                $this->mergeDefaults($reflection_payload->build())
-            );
-
-
-        }
-
         public function getConditions()
         {
 
@@ -158,26 +163,24 @@
 
         }
 
-        public function compileCacheableAction() : CompiledRoute
+        /**
+         * @param $action
+         *
+         * @return RouteAction|string|Closure
+         */
+        private function compileCacheableAction($action)
         {
 
-            if ($this->action instanceof Closure && class_exists(SerializableClosure::class)) {
+            if ($action instanceof Closure && class_exists(SerializableClosure::class)) {
 
-                $closure = new SerializableClosure($this->action);
+                $closure = new SerializableClosure($action);
 
-                $this->action = \Opis\Closure\serialize($closure);
+                $action = \Opis\Closure\serialize($closure);
 
             }
 
-            return $this;
+            return $action;
 
-        }
-
-        private function isSerializedClosure($action) : bool
-        {
-
-            return is_string($action)
-                && Str::startsWith($action, 'C:32:"Opis\\Closure\\SerializableClosure') !== false;
         }
 
         private function mergeDefaults(array $route_payload) : array
@@ -188,20 +191,5 @@
 
         }
 
-        public function filterWpQuery ( array $query_vars,  array $route_payload ) {
-
-            $callable = $this->wp_query_filter;
-
-            if ( ! $callable ) {
-
-                return $query_vars;
-
-            }
-
-            $combined = [$query_vars] + $route_payload;
-
-            return call_user_func_array($callable, $combined);
-
-        }
 
     }

@@ -6,11 +6,11 @@
 
     namespace WPEmerge\Routing\Conditions;
 
-    use WPEmerge\Contracts\RequestInterface;
     use WPEmerge\Contracts\UrlableInterface;
     use WPEmerge\ExceptionHandling\Exceptions\RouteLogicException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
+    use WPEmerge\Routing\CompiledRoute;
     use WPEmerge\Routing\Route;
     use WPEmerge\ServiceProviders\RequestAttributeCondition;
     use WPEmerge\Support\Arr;
@@ -57,13 +57,13 @@
 
             }
 
-            /** @var Route $route */
+            /** @var CompiledRoute $route */
             $route = $arguments['route'];
 
-            if ( ! in_array('GET', $route->getMethods())) {
+            if ( ! in_array('GET', $route->methods)) {
 
                 throw new RouteLogicException(
-                    'Route: '.$route->getName().'does not respond to GET requests'
+                    'Route: '.$route->name.'does not respond to GET requests'
                 );
 
             }
