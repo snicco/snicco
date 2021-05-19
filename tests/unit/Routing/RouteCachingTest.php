@@ -58,9 +58,13 @@
 
 			$condition_factory = new ConditionFactory( [], $container );
 			$handler_factory   = new HandlerFactory( [], $container );
+
+            $compiler = new RouteCompiler($handler_factory, $condition_factory);
+
+
 			$route_collection  = new RouteCollection(
-				new CachedFastRouteMatcher( new FastRouteMatcher(), $file ?? $this->cache_file ),
-                new RouteCompiler($handler_factory, $condition_factory)
+				new CachedFastRouteMatcher(  $this->createRouteMatcher($compiler), $file ?? $this->cache_file ),
+                $compiler
 			);
 
             $container->instance(HandlerFactory::class, $handler_factory);

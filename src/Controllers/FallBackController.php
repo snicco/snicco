@@ -8,7 +8,6 @@
 
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Factories\HandlerFactory;
     use WPEmerge\Http\Request;
     use WPEmerge\Routing\CompiledRoute;
     use WPEmerge\Routing\Route;
@@ -56,7 +55,7 @@
 
             $routes = $possible_routes->map(function (Route $route) {
 
-                return $this->route_compiler->hydrate((array)$route->compile());
+                return $this->route_compiler->hydrate($route->asArray());
 
             });
 
@@ -65,10 +64,9 @@
 
                 return $route->satisfiedBy($request);
 
-
             });
 
-            if ( ! $route) {
+            if ( ! $route ) {
 
                 return ($this->fallback_handler)
                     ? call_user_func($this->fallback_handler, $request)

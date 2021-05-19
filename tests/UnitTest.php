@@ -9,12 +9,14 @@
     use BetterWpHooks\Testing\BetterWpHooksTestCase;
     use Tests\traits\CreateContainer;
     use Tests\traits\CreatePsr17Factories;
+    use Tests\traits\CreateRouteMatcher;
 
     class UnitTest extends BetterWpHooksTestCase
     {
 
         use CreatePsr17Factories;
         use CreateContainer;
+        use CreateRouteMatcher;
 
         protected function setUp() : void
         {

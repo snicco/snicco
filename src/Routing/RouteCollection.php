@@ -115,7 +115,7 @@
             }
 
             return ($route)
-                ?  $this->route_compiler->compileUrlableConditions($route->compile())
+                ? $this->route_compiler->compileUrlableConditions($route->asArray())
                 : null;
 
 
