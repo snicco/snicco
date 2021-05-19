@@ -187,7 +187,7 @@
                 /** @var Route $route */
                 foreach ($routes as $route) {
 
-                    $this->route_matcher->add( $route->compile() , [$method] );
+                    $this->route_matcher->add( $route , [$method] );
 
                 }
 
@@ -225,15 +225,15 @@
         private function dispatchToRouteMatcher(Request $request, $url) : RouteMatch
         {
 
-            $route_info = $this->route_matcher->find($request->getMethod(), $url);
+            $route_match = $this->route_matcher->find($request->getMethod(), $url);
 
-            if ($route_info[0] != Dispatcher::FOUND) {
+            if ( ! $route_match->route() ) {
 
-                return new RouteMatch(null, []);
+                return $route_match;
 
             }
 
-            $route = $this->route_compiler->hydrate($route_info[1]);
+            $this->route_compiler->
 
 
             $payload = $route_info[2];

@@ -8,7 +8,7 @@
 
 	use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
 	use WPEmerge\Contracts\RouteMatcher;
-    use WPEmerge\Routing\CompiledRoute;
+    use WPEmerge\Routing\Route;
 
     class CachedFastRouteMatcher implements RouteMatcher {
 
@@ -41,7 +41,7 @@
 
 		}
 
-		public function add( CompiledRoute $route, $methods ) {
+		public function add( Route $route, $methods ) {
 
 			$this->uncached_matcher->add( $route , $methods );
 

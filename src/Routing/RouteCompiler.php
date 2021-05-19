@@ -49,6 +49,12 @@
 
         }
 
+        public function buildConditions( Route $route ) {
+
+            $this->condition_factory->compileConditions($route);
+
+        }
+
         private function isSerializedClosure($action) : bool
         {
 
