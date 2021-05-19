@@ -8,16 +8,13 @@
 
 	use Closure;
 	use Illuminate\Support\Reflector;
-	use WPEmerge\Factories\AbstractFactory;
 	use WPEmerge\Contracts\Handler;
 	use WPEmerge\Contracts\RouteAction;
 	use WPEmerge\Handlers\ClosureAction;
 	use WPEmerge\Handlers\ControllerAction;
 	use WPEmerge\Http\MiddlewareResolver;
-	use WPEmerge\Traits\ReflectsCallable;
 
-	class HandlerFactory extends AbstractFactory {
-
+	class RouteActionFactory extends AbstractFactory {
 
 		public function create( $raw_handler, $route_namespace) {
 
@@ -43,7 +40,7 @@
 		/**
 		 * @param  string|array|callable  $raw_handler
 		 *
-		 * @return \WPEmerge\Contracts\RouteAction
+		 * @return RouteAction
 		 * @throws \Exception
 		 */
 		public function createUsing( $raw_handler ) : Handler {

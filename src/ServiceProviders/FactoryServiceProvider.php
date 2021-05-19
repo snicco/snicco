@@ -10,7 +10,7 @@
 	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Factories\AbstractFactory;
 	use WPEmerge\Factories\ConditionFactory;
-	use WPEmerge\Factories\HandlerFactory;
+	use WPEmerge\Factories\RouteActionFactory;
 	use WPEmerge\Factories\ViewComposerFactory;
 
 	class FactoryServiceProvider extends ServiceProvider {
@@ -18,9 +18,9 @@
 
 		public function register() :void  {
 
-			$this->container->singleton(HandlerFactory::class, function () {
+			$this->container->singleton(RouteActionFactory::class, function () {
 
-				return new HandlerFactory(
+				return new RouteActionFactory(
 					$this->config['controllers'] ?? [],
 					$this->container
 				);

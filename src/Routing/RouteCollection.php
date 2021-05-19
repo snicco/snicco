@@ -9,14 +9,13 @@
     use FastRoute\Dispatcher;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Factories\ConditionFactory;
+    use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Request;
     use WPEmerge\Support\Arr;
 
     class RouteCollection
     {
-
-        /** @var RouteCompiler */
-        private $route_compiler;
 
         /**
          * An array of the routes keyed by method.
@@ -44,13 +43,25 @@
 
         private $matched_route;
 
+        /**
+         * @var ConditionFactory
+         */
+        private $condition_factory;
+
+        /**
+         * @var RouteActionFactory
+         */
+        private $action_factory;
+
         public function __construct(
             RouteMatcher $route_matcher,
-            RouteCompiler $compiler
+            ConditionFactory $condition_factory,
+            RouteActionFactory $action_factory
         ) {
 
-            $this->route_compiler = $compiler;
             $this->route_matcher = $route_matcher;
+            $this->condition_factory = $condition_factory;
+            $this->action_factory = $action_factory;
 
         }
 
@@ -71,7 +82,7 @@
             $original_payload = $match->payload();
             $condition_args = [];
 
-            foreach ($route->getCompiledConditions() as $compiled_condition) {
+            foreach ($route->getInstantiatedConditions() as $compiled_condition) {
 
                 $args = $compiled_condition->getArguments($request);
 
@@ -79,9 +90,9 @@
 
             }
 
-            $original_payload = array_map(function ( $value ) {
+            $original_payload = array_map(function ($value) {
                 return rtrim($value, '/');
-            }, $original_payload);
+            }, $original_payload );
 
             return new RouteMatch(
                 $route,
@@ -91,7 +102,7 @@
 
         }
 
-        public function add( Route $route ) : Route
+        public function add(Route $route) : Route
         {
 
             $this->addToCollection($route);
@@ -107,14 +118,38 @@
 
             $route = $this->findInLookUps($name);
 
-            if ( ! $route ) {
+            if ( ! $route) {
 
                 $route = $this->findByRouteName($name);
 
             }
 
-            return ($route) ? $this->route_compiler->buildUrlableConditions($route) : null;
+            return ($route) ? $this->giveFactories($route) : null;
 
+
+        }
+
+        public function withWildCardUrl(string $method) : array
+        {
+
+            return collect($this->routes[$method] ?? [])
+                ->filter(function (Route $route) {
+
+                    return trim($route->getUrl(), '/') === ROUTE::ROUTE_WILDCARD;
+
+                })
+                ->map(function (Route $route ) {
+                    return $this->giveFactories($route);
+                })
+                ->all();
+
+        }
+
+        private function giveFactories (Route $route) :Route {
+
+            $route->setActionFactory($this->action_factory);
+            $route->setConditionFactory($this->condition_factory);
+            return $route;
 
         }
 
@@ -160,10 +195,10 @@
 
         }
 
-        public function loadIntoDispatcher(string $method = null )
+        public function loadIntoDispatcher(string $method = null)
         {
 
-            if ( $this->route_matcher->isCached() || $this->loaded_routes ) {
+            if ($this->route_matcher->isCached() || $this->loaded_routes) {
 
                 return;
 
@@ -171,25 +206,22 @@
 
             $all_routes = $this->routes;
 
-            if ( $method ) {
+            if ($method) {
 
                 $all_routes = [$method => Arr::get($this->routes, $method, [])];
 
             }
 
-            foreach ($all_routes as $method => $routes ) {
+            foreach ($all_routes as $method => $routes) {
 
                 /** @var Route $route */
                 foreach ($routes as $route) {
 
-                    $this->route_matcher->add( $route , [$method] );
+                    $this->route_matcher->add($route, [$method]);
 
                 }
 
             }
-
-
-
 
 
         }
@@ -222,21 +254,23 @@
 
             $route_match = $this->route_matcher->find($request->getMethod(), $url);
 
-            if ( ! $route = $route_match->route() ) {
+            if ( ! $route = $route_match->route()) {
 
                 return $route_match;
 
             }
 
-            $this->route_compiler->buildConditions($route);
+            $this->giveFactories($route);
 
-            if ( ! $route->satisfiedBy( $request ) ) {
+            $route->instantiateConditions();
+
+            if ( ! $route->satisfiedBy($request)) {
 
                 return new RouteMatch(null, []);
 
             }
 
-            $this->route_compiler->buildActions($route);
+            $route->instantiateAction();
 
             return new RouteMatch($route, $route_match->payload());
 
@@ -246,18 +280,6 @@
         {
 
             return $this->matched_route;
-
-        }
-
-        public function withWildCardUrl(string $method) : array
-        {
-
-            return collect($this->routes[$method] ?? [] )
-                ->filter(function ( Route $route ) {
-
-                    return trim($route->getUrl(), '/') === ROUTE::ROUTE_WILDCARD;
-
-                })->all();
 
         }
 

@@ -14,7 +14,7 @@
 	use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Routing\CompiledRoute;
     use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RouteCompiler;
+    use WPEmerge\Routing\RouteBuilder;
     use WPEmerge\Routing\RouteMatch;
     use WPEmerge\Support\Str;
 
@@ -32,16 +32,11 @@
          */
         private $route_regex;
 
-        /**
-         * @var RouteCompiler
-         */
-        private $compiler;
 
-        public function __construct(RouteCompiler $compiler) {
+        public function __construct() {
 
 			$this->collector = new RouteCollector( new RouteParser(), new DataGenerator() );
             $this->route_regex = new FastRouteSyntax();
-            $this->compiler = $compiler;
 
         }
 

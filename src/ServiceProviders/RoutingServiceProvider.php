@@ -11,7 +11,7 @@
     use WPEmerge\Contracts\RouteUrlGenerator;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Factories\HandlerFactory;
+    use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Routing\Conditions\AdminAjaxCondition;
     use WPEmerge\Routing\Conditions\AdminPageCondition;
     use WPEmerge\Routing\Conditions\QueryStringCondition;
@@ -27,7 +27,7 @@
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Routing\RouteCollection;
-    use WPEmerge\Routing\RouteCompiler;
+    use WPEmerge\Routing\RouteBuilder;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\RouteRegistrar;
     use WPEmerge\Routing\UrlGenerator;
@@ -66,7 +66,7 @@
 
                 if ( ! $this->config->get('routing.cache', false)) {
 
-                    return new FastRouteMatcher($this->container->make(RouteCompiler::class));
+                    return new FastRouteMatcher();
 
                 }
 
@@ -81,27 +81,21 @@
                 /** @todo Named routes will not work right now with caching enabled. */
                 /** @todo Need a way to also cache routes outside of the route matcher */
                 return new CachedFastRouteMatcher(
-                    new FastRouteMatcher( $this->container->make(RouteCompiler::class) ),
+                    new FastRouteMatcher(),
                     $cache_file
                 );
 
 
             });
 
-            $this->container->singleton(RouteCompiler::class, function () {
 
-                return new RouteCompiler(
-                    $this->container->make(HandlerFactory::class),
-                    $this->container->make(ConditionFactory::class)
-                );
-
-            });
 
             $this->container->singleton(RouteCollection::class, function () {
 
                 return new RouteCollection(
                     $this->container->make(RouteMatcher::class),
-                    $this->container->make(RouteCompiler::class)
+                    $this->container->make(ConditionFactory::class),
+                    $this->container->make(RouteActionFactory::class)
                 );
 
             });

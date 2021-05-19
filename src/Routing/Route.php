@@ -10,10 +10,9 @@
     use Opis\Closure\SerializableClosure;
     use WPEmerge\Contracts\ConditionInterface;
     use WPEmerge\Contracts\RouteAction;
-    use WPEmerge\Contracts\RouteCondition;
     use WPEmerge\Contracts\SetsRouteAttributes;
     use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Factories\HandlerFactory;
+    use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Request;
     use WPEmerge\Routing\Conditions\TrailingSlashCondition;
     use WPEmerge\Support\ReflectionPayload;
@@ -23,7 +22,7 @@
     use WPEmerge\Support\Str;
     use WPEmerge\Traits\SetRouteAttributes;
 
-    class Route implements RouteCondition, SetsRouteAttributes
+    class Route implements SetsRouteAttributes
     {
 
         use SetRouteAttributes;
@@ -60,7 +59,7 @@
         /**
          * @var ConditionInterface[]
          */
-        private $compiled_conditions = [];
+        private $instantiated_conditions = [];
 
         /** @var array */
         private $regex = [];
@@ -90,7 +89,13 @@
         /**
          * @var RouteAction
          */
-        private $compiled_action;
+        private $instantiated_action;
+
+        /** @var RouteActionFactory|null */
+        private $action_factory = null;
+
+        /** @var ConditionFactory|null */
+        private $condition_factory = null;
 
         public function __construct(array $methods, string $url, $action, array $attributes = [])
         {
@@ -240,19 +245,29 @@
 
         }
 
-        public function getCompiledConditions() : array
+        public function getInstantiatedConditions() : array
         {
 
-            return $this->compiled_conditions;
+            return $this->instantiated_conditions;
         }
 
-        public function compileConditions(ConditionFactory $condition_factory) : Route
+        public function instantiateConditions( ConditionFactory $condition_factory = null ) : Route
         {
 
-            $this->compiled_conditions = $condition_factory->compileConditions($this);
+            $factory = $condition_factory ?? $this->condition_factory;
+
+            $this->instantiated_conditions = $factory->compileConditions($this);
 
             return $this;
 
+        }
+
+        public function instantiateAction(RouteActionFactory $action_factory = null) :Route
+        {
+            $factory = $action_factory ?? $this->action_factory;
+
+            $this->instantiated_action = $factory->create($this->action, $this->namespace);
+            return $this;
         }
 
         private function normalizeRegex($regex) : array
@@ -318,7 +333,7 @@
         public function satisfiedBy(Request $request) : bool
         {
 
-            $failed_condition = collect($this->compiled_conditions)
+            $failed_condition = collect($this->instantiated_conditions)
                 ->first(function ($condition) use ($request) {
 
                     return ! $condition->isSatisfied($request);
@@ -348,14 +363,14 @@
                 return [];
             }
 
-            return $this->compiled_action->resolveControllerMiddleware();
+            return $this->instantiated_action->resolveControllerMiddleware();
 
         }
 
         private function usesController() : bool
         {
 
-            return ! $this->compiled_action->raw() instanceof Closure;
+            return ! $this->instantiated_action->raw() instanceof Closure;
 
         }
 
@@ -364,9 +379,9 @@
 
             $payload = array_merge([$request], $payload);
 
-            $reflection_payload = new ReflectionPayload($this->compiled_action->raw(), array_values($payload));
+            $reflection_payload = new ReflectionPayload($this->instantiated_action->raw(), array_values($payload));
 
-            return $this->compiled_action->executeUsing(
+            return $this->instantiated_action->executeUsing(
                 $this->mergeDefaults($reflection_payload->build())
             );
 
@@ -378,12 +393,6 @@
 
             return array_merge($route_payload, $this->defaults);
 
-
-        }
-
-        public function compileAction(HandlerFactory $handler_factory)
-        {
-            $this->compiled_action = $handler_factory->create($this->action, $this->namespace);
 
         }
 
@@ -436,6 +445,15 @@
             return call_user_func_array($callable, $combined);
 
         }
+
+        public function setConditionFactory(ConditionFactory $factory) {
+            $this->condition_factory = $factory;
+        }
+
+        public function setActionFactory(RouteActionFactory $factory) {
+            $this->action_factory = $factory;
+        }
+
 
 
     }
