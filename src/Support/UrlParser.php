@@ -93,24 +93,9 @@
 
         }
 
-        public static function isDynamic(string $url) : bool
-        {
-
-            $result = preg_match('/[^{]+(?=})/', $url, $matches);
-
-            return $result === 1;
-        }
-
-        public static function isStaticUrl(string $url) : bool
-        {
-
-            return ! self::isDynamic($url);
-        }
-
         public static function optionalSegments(string $url_pattern)
         {
 
-            // preg_match_all( '/[^{]+[?](?=})/', $url_pattern, $matches );
             preg_match_all('/[^\/{]+[?]/', $url_pattern, $matches);
 
             return collect($matches)->flatten()->all();
@@ -118,9 +103,8 @@
 
         }
 
-        public static function replaceOptionalMatch(string $url_pattern) : array
+        public static function getOptionalSegments(string $url_pattern) : array
         {
-
 
             preg_match_all('/(\/{[^\/{]+[?]})/', $url_pattern, $matches);
 
@@ -137,39 +121,28 @@
 
         }
 
-        public static function isWpAdminPageRequest(string $base_path) : bool
-        {
-
-            return preg_match('/(wp-admin)\/.+(\.php)/', $base_path) === 1;
-
-        }
-
         public static function replaceAdminAliases(string $url) : string
         {
 
             $options = implode('|', array_keys(self::ADMIN_ALIASES));
             $admin = WP::wpAdminFolder();
 
-            $url = preg_replace_callback(sprintf("/(?<=%s\\/)(%s)(?=\\/)/", $admin, $options), function ($matches) {
+            return preg_replace_callback(sprintf("/(?<=%s\\/)(%s)(?=\\/)/", $admin, $options), function ($matches) {
 
                 return self::ADMIN_ALIASES[$matches[0]];
 
             }, $url);
 
-            return $url;
-
         }
 
-        public static function parseAjaxAction(string $route_url) : string
+        public static function getAjaxAction(string $route_url) : string
         {
 
-            $action = trim(Str::after($route_url, 'ajax.php/'), '/');
-
-            return $action;
+            return trim(Str::after($route_url, 'ajax.php/'), '/');
 
         }
 
-        public static function segmentNames(string $url)
+        public static function segmentNames(string $url) : array
         {
 
             $segments = static::segments($url);
