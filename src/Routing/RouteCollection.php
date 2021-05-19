@@ -9,20 +9,14 @@
     use FastRoute\Dispatcher;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Factories\HandlerFactory;
     use WPEmerge\Http\Request;
-    use WPEmerge\Support\Url;
     use WPEmerge\Support\Arr;
 
     class RouteCollection
     {
 
-        /** @var ConditionFactory */
-        private $condition_factory;
-
-        /** @var HandlerFactory */
-        private $handler_factory;
+        /** @var RouteCompiler */
+        private $route_compiler;
 
         /**
          * An array of the routes keyed by method.
@@ -51,13 +45,11 @@
         private $matched_route;
 
         public function __construct(
-            ConditionFactory $condition_factory,
-            HandlerFactory $handler_factory,
-            RouteMatcher $route_matcher
+            RouteMatcher $route_matcher,
+            RouteCompiler $compiler
         ) {
 
-            $this->condition_factory = $condition_factory;
-            $this->handler_factory = $handler_factory;
+            $this->route_compiler = $compiler;
             $this->route_matcher = $route_matcher;
 
         }
@@ -100,7 +92,7 @@
 
         }
 
-        public function add(Route $route) : Route
+        public function add( Route $route ) : Route
         {
 
             $this->addToCollection($route);
@@ -111,19 +103,21 @@
 
         }
 
-        public function findByName(string $name) : ?Route
+        public function findByName(string $name) : ?CompiledRoute
         {
 
             $route = $this->findInLookUps($name);
 
-            if ( ! $route) {
+            if ( ! $route ) {
 
                 $route = $this->findByRouteName($name);
 
             }
 
-            /** @todo There should be a method "compileUrlableConditions" */
-            return ($route) ? $route->compileConditions($this->condition_factory) : null;
+            return ($route)
+                ?  $this->route_compiler->compileUrlableConditions($route->compile())
+                : null;
+
 
         }
 
@@ -239,11 +233,9 @@
 
             }
 
-            $route = CompiledRoute::hydrate(
-                $route_info[1],
-                $this->handler_factory,
-                $this->condition_factory
-            );
+            $route = $this->route_compiler->hydrate($route_info[1]);
+
+
             $payload = $route_info[2];
 
             if ( ! $route->satisfiedBy($request) ) {
@@ -255,7 +247,6 @@
             return new RouteMatch($route, $payload);
 
         }
-
 
         public function currentMatch() : ?RouteMatch
         {

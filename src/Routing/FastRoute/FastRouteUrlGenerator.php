@@ -11,6 +11,7 @@
     use WPEmerge\Contracts\UrlableInterface;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Routing\CompiledRoute;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\RouteCollection;
     use WPEmerge\Support\Arr;
@@ -52,7 +53,7 @@
 
             $regex = $this->routeRegex($route);
 
-            $url = (( new FastRouteSyntax() ))->convert($route->compile());
+            $url = (( new FastRouteSyntax() ))->convert($route);
 
             $url = $this->convertToDoubleCurlyBrackets($url);
 
@@ -61,12 +62,12 @@
         }
 
 
-        private function findRoute(string $name ) : ?Route {
+        private function findRoute( string $name ) : ?CompiledRoute {
 
-            /** @var Route $route */
+            /** @var CompiledRoute $route */
             $route = $this->routes->findByName($name);
 
-            if ( ! $route) {
+            if ( ! $route ) {
 
                 throw new ConfigurationException(
                     'There is no named route with the name: '.$name.' registered.'
@@ -78,9 +79,9 @@
 
         }
 
-        private function hasUrleableCondition( Route $route ) : ?UrlableInterface {
+        private function hasUrleableCondition( CompiledRoute $route ) : ?UrlableInterface {
 
-            return collect( $route->getCompiledConditions() )
+            return collect( $route->conditions )
                 ->first( function ( ConditionInterface $condition ) {
 
                     return $condition instanceof UrlableInterface;
@@ -118,9 +119,9 @@
 
         }
 
-        private function routeRegex(Route $route) : array {
+        private function routeRegex(CompiledRoute $route) : array {
 
-            return Arr::flattenOnePreserveKeys( $route->getRegexConstraints() ?? [] );
+            return Arr::flattenOnePreserveKeys( $route->regex ?? [] );
 
         }
 

@@ -43,8 +43,6 @@
 
 		public function add( CompiledRoute $route, $methods ) {
 
-		    $route = $route->compileCacheableAction();
-
 			$this->uncached_matcher->add( $route , $methods );
 
 		}

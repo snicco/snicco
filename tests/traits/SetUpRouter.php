@@ -15,7 +15,8 @@
     use WPEmerge\Http\Request;
 	use WPEmerge\Routing\FastRoute\FastRouteMatcher;
 	use WPEmerge\Routing\RouteCollection;
-	use WPEmerge\Routing\Router;
+    use WPEmerge\Routing\RouteCompiler;
+    use WPEmerge\Routing\Router;
     use WPEmerge\ServiceProviders\RoutingServiceProvider;
 
     trait SetUpRouter {
@@ -40,9 +41,8 @@
 			$condition_factory = new ConditionFactory( $this->allConditions(), $container );
 			$handler_factory   = new HandlerFactory( [], $container );
             $route_collection  = new RouteCollection(
-                $condition_factory,
-                $handler_factory,
-                new FastRouteMatcher()
+                new FastRouteMatcher(),
+                new RouteCompiler($handler_factory, $condition_factory)
             );
             $router =  new Router(
                 $container,

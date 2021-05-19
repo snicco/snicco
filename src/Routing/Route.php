@@ -40,9 +40,6 @@
         /** @var string|Closure|array */
         private $action;
 
-        /** @var RouteAction */
-        private $compiled_action;
-
         /** @var ConditionBlueprint[] */
         private $conditions;
 
@@ -61,7 +58,6 @@
          * @var ConditionInterface[]
          */
         private $compiled_conditions = [];
-
 
         /** @var array */
         private $regex = [];
@@ -112,8 +108,6 @@
 
             $this->segment_names = UrlParser::segmentNames($url);
 
-            // return $this->routeRegex->convertOptionalSegments($url);
-
             return $url;
 
         }
@@ -123,6 +117,7 @@
 
             return new CompiledRoute([
                 'action' => $this->action,
+                'name' => $this->name,
                 'middleware' => $this->middleware ?? [],
                 'conditions' => $this->conditions ?? [],
                 'namespace' => $this->namespace ?? '',
@@ -133,10 +128,10 @@
                 'segments' => $this->segments,
                 'segment_names' => $this->segment_names,
                 'trailing_slash' => $this->trailing_slash,
+                'methods' => $this->methods,
             ]);
 
         }
-
 
         public function and(...$regex) : Route
         {

@@ -13,7 +13,7 @@
     class UrlGenerator
     {
 
-        private $relative = false;
+        private $relative       = false;
         private $trailing_slash = false;
 
         /**
@@ -21,46 +21,57 @@
          */
         private $route_url;
 
-        public function __construct( RouteUrlGenerator $route_url)
+        public function __construct(RouteUrlGenerator $route_url)
         {
+
             $this->route_url = $route_url;
         }
 
-        public function toRoute(string $name, array $arguments = [], $absolute = true ) : string
+        public function toRoute(string $name, array $arguments = [], $absolute = true) : string
         {
-            $path =  $this->route_url->to($name, $arguments);
+
+            $path = $this->route_url->to($name, $arguments);
 
             return $this->formatPath($path, $absolute);
+
         }
 
-        private function formatPath( string $path, bool $absolute = false, string $scheme = 'https' ) : string
+        private function formatPath(string $path, bool $absolute = false, string $scheme = 'https') : string
         {
 
-            if ( $absolute ) {
+            if ($absolute) {
 
                 $path = ($this->isAbsolute($path))
                     ? $path :
                     WP::homeUrl($path, $scheme);
 
+                return $this->formatTrailing($path);
+
             }
 
-            $path = '/' . trim($path, '/');
+            $path = '/'.trim($path, '/');
 
-            $path = ($this->trailing_slash) ? $path . '/': $path;
-
-            return $path;
+            return $this->formatTrailing($path);
 
 
         }
 
-        private function isAbsolute(string $url ) : bool
+
+        private function formatTrailing(string $path) :string {
+
+            return ($this->trailing_slash) ? $path.'/' : $path;
+
+        }
+
+        private function isAbsolute(string $url) : bool
         {
 
             return Str::contains($url, '://');
 
         }
 
-        private function pathFromAbsolute (string $full_url ) :string {
+        private function pathFromAbsolute(string $full_url) : string
+        {
 
             return parse_url($full_url)['path'] ?? '/';
 

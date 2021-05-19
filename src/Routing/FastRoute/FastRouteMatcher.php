@@ -38,7 +38,7 @@
 
             $url = $this->route_regex->convert($route);
 
-			$this->collector->addRoute( $methods, $url, (array) $route );
+			$this->collector->addRoute( $methods, $url, $route->toArray() );
 
 		}
 

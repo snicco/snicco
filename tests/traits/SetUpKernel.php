@@ -21,6 +21,7 @@
     use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\RouteCollection;
+    use WPEmerge\Routing\RouteCompiler;
     use WPEmerge\Routing\Router;
 
     trait SetUpKernel
@@ -44,9 +45,8 @@
             $handler_factory = new HandlerFactory( [], $c );
             $condition_factory = new ConditionFactory( [], $c );
             $routes =  new RouteCollection(
-                $condition_factory,
-                $handler_factory,
-                new FastRouteMatcher()
+                new FastRouteMatcher(),
+                new RouteCompiler($handler_factory, $condition_factory)
             );
 
             $c->instance(HandlerFactory::class, $handler_factory);
