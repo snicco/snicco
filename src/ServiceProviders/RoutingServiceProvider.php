@@ -72,9 +72,9 @@
 
                 }
 
-                $cache_dir = $this->config->get('routing.cache_dir', null);
+                $cache_dir = $this->config->get('routing.cache_dir', '');
 
-               $this->checkIfValidCacheDir($cache_dir);
+                $this->checkIfValidCacheDir($cache_dir);
 
                 /** @todo Named routes will not work right now with caching enabled. */
                 /** @todo Need a way to also cache routes outside of the route matcher */
@@ -99,7 +99,7 @@
 
                 }
 
-                $cache_dir = $this->config->get('routing.cache_dir', null);
+                $cache_dir = $this->config->get('routing.cache_dir', '');
 
                 $this->checkIfValidCacheDir($cache_dir);
 
@@ -153,7 +153,7 @@
 
         private function checkIfValidCacheDir( $dir ) {
 
-            if ( ! $dir || is_dir( $dir )) {
+            if ( ! $dir || ! is_dir( $dir )) {
 
                 throw new ConfigurationException("No valid cache dir provided:{$dir}");
 

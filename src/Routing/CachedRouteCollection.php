@@ -19,7 +19,7 @@
         /**
          * @var CachedFastRouteMatcher
          */
-        private $route_matcher;
+        protected $route_matcher;
 
         protected $routes = [];
 
@@ -77,56 +77,6 @@
 
             $this->createCacheFile();
 
-
-        }
-
-        public function match(Request $request) : RouteMatch
-        {
-
-            $path = $request->path();
-
-            if (WP::isAdmin() && ! WP::isAdminAjax()) {
-
-                $path = $path.'/'.$request->query('page', '');
-
-            }
-
-            if (WP::isAdminAjax()) {
-
-                $path = $path.'/'.$request->parsedBody('action', $request->query('action', ''));
-
-            }
-
-            $route_match = $this->route_matcher->find($request->getMethod(), $path);
-
-            if ( ! $route = $route_match->route()) {
-
-                return $route_match;
-
-            }
-
-            $this->giveFactories($route);
-
-            $route->instantiateConditions();
-
-            if ( ! $route->satisfiedBy($request)) {
-
-                return new RouteMatch(null, []);
-
-            }
-
-            $route_url_args = $route_match->capturedUrlSegmentValues();
-
-            $route_url_args = array_map(function ($value) {
-                return rtrim($value, '/');
-            }, $route_url_args );
-
-            $route->instantiateAction();
-
-            return new RouteMatch(
-                $route,
-                $route_url_args
-            );
 
         }
 
