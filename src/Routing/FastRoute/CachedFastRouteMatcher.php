@@ -9,7 +9,7 @@
 	use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
 	use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RouteMatch;
+    use WPEmerge\Routing\RouteResult;
 
     class CachedFastRouteMatcher implements RouteMatcher {
 
@@ -50,7 +50,7 @@
 
 		}
 
-		public function find( string $method, string $path ) :RouteMatch {
+		public function find( string $method, string $path ) :RouteResult {
 
 			if ( $this->route_cache ) {
 
@@ -73,7 +73,7 @@
 			file_put_contents(
 				$this->route_cache_file,
 				'<?php
-declare(strict_types=1); return ' . var_export( $route_data, true ) . ';'
+declare(strict_types=1); return '. var_export( $route_data, true ) . ';'
 			);
 
 		}

@@ -7,16 +7,12 @@
 	namespace WPEmerge\Routing\FastRoute;
 
 	use FastRoute\DataGenerator\GroupCountBased as DataGenerator;
-    use FastRoute\Dispatcher;
     use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
 	use FastRoute\RouteCollector;
 	use FastRoute\RouteParser\Std as RouteParser;
 	use WPEmerge\Contracts\RouteMatcher;
-    use WPEmerge\Routing\CompiledRoute;
     use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RouteBuilder;
-    use WPEmerge\Routing\RouteMatch;
-    use WPEmerge\Support\Str;
+    use WPEmerge\Routing\RouteResult;
 
     class FastRouteMatcher implements RouteMatcher {
 
@@ -55,7 +51,7 @@
 
         }
 
-		public function find( string $method, string $path ) : RouteMatch {
+		public function find( string $method, string $path ) : RouteResult {
 
 			$dispatcher = new RouteDispatcher( $this->collector->getData() );
 

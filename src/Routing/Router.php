@@ -8,6 +8,7 @@
 
     use Closure;
     use Contracts\ContainerAdapter;
+    use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Controllers\FallBackController;
     use WPEmerge\Controllers\ViewController;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
@@ -50,7 +51,7 @@
          */
         private $route_middleware_aliases = [];
 
-        /** @var RouteCollection */
+        /** @var AbstractRouteCollection */
         private $routes;
 
         /**
@@ -63,7 +64,7 @@
          */
         private $response_factory;
 
-        public function __construct(ContainerAdapter $container, RouteCollection $routes, ResponseFactory $response_factory)
+        public function __construct(ContainerAdapter $container, AbstractRouteCollection $routes, ResponseFactory $response_factory)
         {
 
             $this->container = $container;
@@ -159,14 +160,12 @@
             $this->any('/{path}', [FallBackController::class, 'handle'])->and('path', '.+');
         }
 
-
-
-        public function findRoute(Request $request, $wp_query = false) : RouteMatch
+        public function findRoute(Request $request, $wp_query = false) : RouteResult
         {
 
-            if ($wp_query && $match = $this->currentMatch()) {
+            if ( $wp_query && $result = $this->routes->hasResult() ) {
 
-                return $match;
+                return $result;
 
             }
 
@@ -177,13 +176,11 @@
         public function runRoute(Request $request) : Response
         {
 
-            $route_match = $this->findRoute($request);
+            $routing_result = $this->findRoute($request);
 
-            if ($route_match->route()) {
+            if ($routing_result->route()) {
 
-                $this->route_match = $route_match;
-
-                return $this->runWithinStack($route_match, $request);
+                return $this->runWithinStack($routing_result, $request);
 
             }
 
@@ -259,7 +256,7 @@
 
         }
 
-        private function runWithinStack(RouteMatch $route_match, Request $request) : Response
+        private function runWithinStack(RouteResult $route_match, Request $request) : Response
         {
 
             $middleware = [];
@@ -358,7 +355,7 @@
 
         }
 
-        public function currentMatch() : ?RouteMatch
+        public function existingRouteResult() : ?RouteResult
         {
 
             return $this->routes->currentMatch();

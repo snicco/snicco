@@ -6,7 +6,7 @@
 
     namespace WPEmerge\Routing;
 
-    use FastRoute\Dispatcher;
+    use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ConditionFactory;
@@ -14,7 +14,7 @@
     use WPEmerge\Http\Request;
     use WPEmerge\Support\Arr;
 
-    class RouteCollection
+    class RouteCollection extends AbstractRouteCollection
     {
 
         /**
@@ -22,36 +22,19 @@
          *
          * @var array
          */
-        private $routes = [];
+        protected $routes = [];
 
         /**
          * A look-up table of routes by their names.
          *
          * @var Route[]
          */
-        private $name_list = [];
+        protected $name_list = [];
 
         /**
          * @var RouteMatcher
          */
-        private $route_matcher;
-
-        /**
-         * @var bool
-         */
-        private $loaded_routes = false;
-
-        private $matched_route;
-
-        /**
-         * @var ConditionFactory
-         */
-        private $condition_factory;
-
-        /**
-         * @var RouteActionFactory
-         */
-        private $action_factory;
+        protected $route_matcher;
 
         public function __construct(
             RouteMatcher $route_matcher,
@@ -62,34 +45,6 @@
             $this->route_matcher = $route_matcher;
             $this->condition_factory = $condition_factory;
             $this->action_factory = $action_factory;
-
-        }
-
-        public function match(Request $request) : RouteMatch
-        {
-
-            $match = $this->matchPathAgainstLoadedRoutes($request);
-
-            $this->matched_route = $match;
-
-            if ( ! $match->route() ) {
-
-                return $match;
-
-            }
-
-            $route = $match->route();
-            $route_url_args = $match->capturedUrlSegmentValues();
-
-            $route_url_args = array_map(function ($value) {
-                return rtrim($value, '/');
-            }, $route_url_args );
-
-            return new RouteMatch(
-                $route,
-                $route_url_args
-            );
-
 
         }
 
@@ -104,96 +59,8 @@
 
         }
 
-        public function findByName(string $name) : ?Route
-        {
-
-            $route = $this->findInLookUps($name);
-
-            if ( ! $route) {
-
-                $route = $this->findByRouteName($name);
-
-            }
-
-            return ($route) ? $this->giveFactories($route) : null;
-
-
-        }
-
-        public function withWildCardUrl(string $method) : array
-        {
-
-            return collect($this->routes[$method] ?? [])
-                ->filter(function (Route $route) {
-
-                    return trim($route->getUrl(), '/') === ROUTE::ROUTE_WILDCARD;
-
-                })
-                ->map(function (Route $route ) {
-                    return $this->giveFactories($route);
-                })
-                ->all();
-
-        }
-
-        private function giveFactories (Route $route) :Route {
-
-            $route->setActionFactory($this->action_factory);
-            $route->setConditionFactory($this->condition_factory);
-            return $route;
-
-        }
-
-        private function findByRouteName(string $name) : ?Route
-        {
-
-            return collect($this->routes)
-                ->flatten()
-                ->first(function (Route $route) use ($name) {
-
-                    return $route->getName() === $name;
-
-                });
-
-        }
-
-        private function findInLookUps(string $name) : ?Route
-        {
-
-            return $this->name_list[$name] ?? null;
-
-        }
-
-        private function addToCollection(Route $route)
-        {
-
-            foreach ( $route->getMethods() as $method ) {
-
-                $this->routes[$method][] = $route;
-
-            }
-
-        }
-
-        private function addLookups(Route $route)
-        {
-
-            if ($name = $route->getName()) {
-
-                $this->name_list[$name] = $route;
-
-            }
-
-        }
-
         public function loadIntoDispatcher(string $method = null)
         {
-
-            if ($this->route_matcher->isCached() || $this->loaded_routes) {
-
-                return;
-
-            }
 
             $all_routes = $this->routes;
 
@@ -217,60 +84,35 @@
 
         }
 
-        /** @todo the changing of the url should be a global middleware that adds an attribute to the Request object */
-        private function matchPathAgainstLoadedRoutes(Request $request) : RouteMatch
+        public function findByName(string $name) : ?Route
         {
 
-            $path = $request->path();
+            $route = $this->findInLookUps($name);
 
-            if (WP::isAdmin() && ! WP::isAdminAjax()) {
+            if ( ! $route) {
 
-                $path = $path.'/'.$request->query('page', '');
-
-            }
-
-            if (WP::isAdminAjax()) {
-
-                $path = $path.'/'.$request->parsedBody('action', $request->query('action', ''));
+                $route = $this->findByRouteName($name);
 
             }
 
-            return $this->dispatchToRouteMatcher($request, $path);
+            return ($route) ? $this->giveFactories($route) : null;
 
 
         }
 
-        private function dispatchToRouteMatcher(Request $request, $url) : RouteMatch
+        public function withWildCardUrl(string $method) : array
         {
-
-            $route_match = $this->route_matcher->find($request->getMethod(), $url);
-
-            if ( ! $route = $route_match->route()) {
-
-                return $route_match;
-
-            }
-
-            $this->giveFactories($route);
-
-            $route->instantiateConditions();
-
-            if ( ! $route->satisfiedBy($request) ) {
-
-                return new RouteMatch(null, []);
-
-            }
-
-            $route->instantiateAction();
-
-            return new RouteMatch($route, $route_match->capturedUrlSegmentValues());
-
+            return $this->findWildcardsInCollection($method);
         }
 
-        public function currentMatch() : ?RouteMatch
+        private function addLookups(Route $route)
         {
 
-            return $this->matched_route;
+            if ($name = $route->getName()) {
+
+                $this->name_list[$name] = $route;
+
+            }
 
         }
 

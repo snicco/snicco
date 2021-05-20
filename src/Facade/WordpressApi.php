@@ -8,7 +8,6 @@
 
 	/**
      * @see \WPEmerge\Facade\WordpressApiMixin
-     * @todo URL-ENCODING? move all url generatíon methods to an url generator class
      */
 	class WordpressApi {
 
@@ -99,13 +98,14 @@
 
 		}
 
-		public function addQueryArgs(array $keys, string $url ) {
+		public function addQueryArgs(array $keys, string $url ) : string
+        {
 
             return add_query_arg($keys, $url);
 
         }
 
-        public function addQueryArg( string $key , string $value , string $base_url )
+        public function addQueryArg( string $key , string $value , string $base_url ) : string
         {
 
             return add_query_arg($key, $value, $base_url);
