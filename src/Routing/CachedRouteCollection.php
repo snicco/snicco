@@ -21,26 +21,16 @@
          */
         private $route_matcher;
 
-        /**
-         * @var ConditionFactory
-         */
-        private $condition_factory;
+        protected $routes = [];
 
-        /**
-         * @var RouteActionFactory
-         */
-        private $action_factory;
-
-        private $routes = [];
-
-        private $name_list = [];
+        protected $name_list = [];
 
         /**
          * @var string
          */
         private $cache_file;
 
-        private $route_objects = [];
+        private $cached_routes = [];
 
         public function __construct(
             CachedFastRouteMatcher $route_matcher,
@@ -58,7 +48,7 @@
 
                 $cache = require $cache_file;
                 $this->name_list = $cache['lookups'];
-                $this->routes = $cache['routes'];
+                $this->cached_routes = $cache['routes'];
 
             }
 
@@ -68,9 +58,25 @@
         public function add(Route $route) : Route
         {
 
-            $this->addAsRouteObject($route);
+            $this->addToCollection($route);
 
             return $route;
+
+        }
+
+        public function loadIntoDispatcher(string $method = null)
+        {
+
+            if (file_exists($this->cache_file)) {
+
+                return;
+
+            }
+
+            $this->loadOneTime();
+
+            $this->createCacheFile();
+
 
         }
 
@@ -127,7 +133,7 @@
         public function findByName(string $name) : ?Route
         {
 
-            $route = $this->name_list[$name] ?? null;
+            $route = $this->findInLookUps($name);
 
             if ($route) {
 
@@ -137,7 +143,7 @@
 
             if ( ! $route ) {
 
-                $route = $this->findInCollection( $name);
+                $route = $this->findByRouteName( $name);
 
             }
 
@@ -147,62 +153,46 @@
 
             }
 
-            $this->giveFactories($route);
-
-            return $route;
+            return $this->giveFactories($route);
 
 
-        }
-
-        private function findInCollection(string $name)
-        {
-            return collect($this->route_objects)
-                ->flatten()
-                ->first(function (Route $route) use ($name) {
-
-                    return $route->getName() === $name;
-
-                });
         }
 
         public function withWildCardUrl(string $method) : array
         {
+            $routes = $this->findCachedWildcardRoutes($method);
 
-            return [];
-        }
+            if( count($routes) ) {
 
-        public function loadIntoDispatcher(string $method = null)
-        {
-
-            if (file_exists($this->cache_file)) {
-
-                return;
+                return $routes;
 
             }
 
-            $this->loadOneTime();
-
-            $this->createCacheFile();
-
+           return $this->findWildcardsInCollection($method);
 
         }
 
-        private function addAsRouteObject(Route $route)
+        private function findCachedWildcardRoutes(string $method) : array
         {
 
-            foreach ($methods = $route->getMethods() as $method) {
+            $routes = collect($this->cached_routes[$method] ?? [])
+                ->filter(function (array $route) {
 
-                $this->route_objects[$method][] = $route;
+                    return trim($route['url'], '/') === ROUTE::ROUTE_WILDCARD;
 
-            }
+                })
+                ->map(function (array $route ) {
+                    return $this->giveFactories(Route::hydrate($route));
+                });
 
+            return $routes->all();
 
         }
 
         private function loadOneTime()
         {
 
-            foreach ($this->route_objects as $method => $routes) {
+            foreach ($this->routes as $method => $routes) {
 
                 /** @var Route $route */
                 foreach ($routes as $route) {
@@ -217,7 +207,7 @@
         private function createCacheFile()
         {
 
-            $lookups = collect($this->route_objects)
+            $lookups = collect($this->routes)
                 ->flatten()
                 ->filter(function( Route $route ) {
 
@@ -233,7 +223,7 @@
 
             $array_routes = [];
 
-            foreach ($this->route_objects as $method => $routes) {
+            foreach ($this->routes as $method => $routes) {
 
                 foreach ($routes as $route) {
 
@@ -250,14 +240,6 @@
                 '<?php
 declare(strict_types=1); return '.var_export($combined, true).';'
             );
-
-        }
-
-        private function giveFactories(Route $route)
-        {
-
-            $route->setActionFactory($this->action_factory);
-            $route->setConditionFactory($this->condition_factory);
 
         }
 

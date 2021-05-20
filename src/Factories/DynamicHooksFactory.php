@@ -6,7 +6,7 @@
 
 	namespace WPEmerge\Factories;
 
-	use WPEmerge\Contracts\Dispatcher;
+	use BetterWpHooks\Contracts\Dispatcher;
     use BetterWpHooks\Dispatchers\WordpressDispatcher;
 	use WPEmerge\Events\AdminBodySendable;
 	use WPEmerge\Events\IncomingAdminRequest;

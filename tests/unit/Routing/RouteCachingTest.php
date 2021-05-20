@@ -8,11 +8,13 @@
 
     use Contracts\ContainerAdapter;
     use Mockery;
+    use Tests\stubs\Conditions\IsPost;
     use Tests\traits\AssertsResponse;
     use Tests\traits\CreateWpTestUrls;
     use Tests\UnitTest;
     use Tests\traits\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
+    use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Facade\WP;
     use WPEmerge\Factories\RouteActionFactory;
@@ -105,6 +107,8 @@
             $container->instance(ConditionFactory::class, $condition_factory);
             $container->instance(RouteCollection::class, $route_collection);
             $container->instance(ResponseFactory::class, $response = $this->responseFactory());
+            $container->instance(AbstractRouteCollection::class, $route_collection);
+
 
             return $this->router = new Router(
                 $container,
@@ -369,6 +373,34 @@
 
         }
 
+        /** @test */
+        public function the_callback_controller_works_with_cached_works () {
+
+            $this->router->get()->where(IsPost::class, true)
+                         ->handle(function () {
+
+                             return 'FOO';
+
+                         });
+
+            $this->router->createFallbackWebRoute();
+            $this->router->loadRoutes();
+
+            $request = TestRequest::from('GET', 'post1');
+            $response = $this->router->runRoute($request);
+            $this->assertOutput('FOO', $response);
+
+            $this->newCachedRouter();
+
+            $this->router->createFallbackWebRoute();
+            $this->router->loadRoutes();
+
+            $request = TestRequest::from('GET', 'post1');
+            $response = $this->router->runRoute($request);
+            $this->assertOutput('FOO', $response);
+
+
+        }
 
 
         private function allConditions() : array
