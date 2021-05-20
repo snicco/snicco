@@ -87,7 +87,7 @@
 
                 });
 
-            if ( $response instanceof NullResponse ) {
+            if ($response instanceof NullResponse) {
 
                 return;
 
@@ -201,6 +201,8 @@
         private function sendRequestThroughRouter(Request $request) : Response
         {
 
+            $this->container->instance(Request::class, $request);
+
             $pipeline = new Pipeline($this->container);
 
             $middleware = $this->withMiddleware() ? $this->middleware_groups['global'] ?? [] : [];
@@ -302,8 +304,7 @@
 
         private function matchedRoute() : bool
         {
-
-            return ! $this->response instanceof NullResponse && $this->response->getStatusCode() === 200;
+            return ! $this->response instanceof NullResponse;
         }
 
         public function filterRequest(FilterWpQuery $event)

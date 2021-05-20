@@ -32,7 +32,8 @@
             ob_start();
 
             ApplicationEvent::fake([DoShutdown::class]);
-            ApplicationEvent::dispatch('init');
+
+            do_action('init');
 
             $output = ob_get_clean();
 
@@ -60,7 +61,9 @@
             ob_start();
 
             ApplicationEvent::fake([DoShutdown::class]);
-            ApplicationEvent::dispatch('init');
+
+            do_action('init');
+
 
             $output = ob_get_clean();
 
@@ -90,7 +93,8 @@
             ob_start();
 
             ApplicationEvent::fake([DoShutdown::class]);
-            ApplicationEvent::dispatch('init');
+
+            do_action('init');
 
             $output = ob_get_clean();
 

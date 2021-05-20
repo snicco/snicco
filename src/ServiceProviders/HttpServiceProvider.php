@@ -15,7 +15,6 @@
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewServiceInterface;
     use WPEmerge\Http\HttpResponseFactory;
-    use WPEmerge\Middleware\CsrfProtection;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Middleware\Authorize;
     use WPEmerge\Middleware\Authenticate;
@@ -108,11 +107,18 @@
         public function bootstrap() : void
         {
 
+            /** @var HttpKernel $kernel */
             $kernel = $this->container->make(HttpKernel::class);
 
             $kernel->setRouteMiddlewareAliases($this->config->get('middleware.aliases', []));
             $kernel->setMiddlewareGroups($this->config->get('middleware.groups', []));
             $kernel->setMiddlewarePriority($this->config->get('middleware.priority', []));
+
+            if ( $this->config->get('always_run_middleware', false ) ) {
+
+                $kernel->alwaysWithGlobalMiddleware();
+
+            }
 
 
         }
