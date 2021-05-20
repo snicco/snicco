@@ -12,7 +12,8 @@
     use Tests\stubs\TestApp;
     use WPEmerge\Events\AdminBodySendable;
 	use WPEmerge\Events\BodySent;
-	use WPEmerge\Events\IncomingAdminRequest;
+    use WPEmerge\Events\FilterWpQuery;
+    use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingAjaxRequest;
 	use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Events\MakingView;
@@ -44,6 +45,7 @@
 			$this->assertHasListener([ShutdownHandler::class, 'shutdownWp'], BodySent::class);
 			$this->assertHasListener([ShutdownHandler::class, 'exceptionHandled'], UnrecoverableExceptionHandled::class);
 			$this->assertHasListener([ViewService::class, 'compose'], MakingView::class);
+			$this->assertHasListener([HttpKernel::class, 'filterRequest'], FilterWpQuery::class);
 
 
 		}

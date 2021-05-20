@@ -7,6 +7,7 @@
 	namespace WPEmerge\Traits;
 
 	use Closure;
+    use WPEmerge\Controllers\FallBackController;
     use WPEmerge\Routing\ConditionBlueprint;
     use WPEmerge\Routing\Conditions\TrailingSlashCondition;
     use WPEmerge\Routing\Route;
@@ -90,8 +91,14 @@
 
 		}
 
-        public function wpquery(Closure $callback) : Route
+        public function wpquery(Closure $callback, bool $handle = true) : Route
         {
+
+            if ( ! $handle ) {
+
+                $this->handle([FallBackController::class, 'blankResponse']);
+
+            }
 
             $this->wp_query_filter = $callback;
 

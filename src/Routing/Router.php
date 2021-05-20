@@ -139,13 +139,12 @@
             }
 
 
-
         }
 
         public function loadRoutes(string $method = null)
         {
 
-            if ( ! $this->hasGroupStack() ) {
+            if ( ! $this->hasGroupStack()) {
 
 
                 $this->routes->loadIntoDispatcher($method);
@@ -159,6 +158,7 @@
         {
 
             $this->any('/{path}', [FallBackController::class, 'handle'])->and('path', '.+');
+
         }
 
         public function findRoute(Request $request, $wp_query = false) : RouteResult
@@ -171,6 +171,7 @@
             }
 
             return $this->routes->match($request);
+
 
         }
 
@@ -279,7 +280,8 @@
                 ->then(function ($request) use ($route_match) : Response {
 
                     $this->container->instance(Request::class, $request);
-                    $route_response = $route_match->route()->run($request, $route_match->capturedUrlSegmentValues());
+                    $route_response = $route_match->route()
+                                                  ->run($request, $route_match->capturedUrlSegmentValues());
 
                     return $this->response_factory->toResponse($route_response);
 
@@ -292,7 +294,7 @@
         private function applyPrefix(string $url) : string
         {
 
-            if ( ! $this->hasGroupStack() ) {
+            if ( ! $this->hasGroupStack()) {
 
                 return $url;
 
@@ -300,7 +302,7 @@
 
             $url = $this->maybeStripTrailing($url);
 
-            return Url::combineRelativePath( $this->lastGroupPrefix() , $url);
+            return Url::combineRelativePath($this->lastGroupPrefix(), $url);
 
         }
 
@@ -359,6 +361,7 @@
 
         public function fallback(callable $fallback_handler)
         {
+
             /** @var FallBackController $controller */
             $controller = $this->container->make(FallBackController::class);
             $controller->setFallbackHandler($fallback_handler);
@@ -366,22 +369,22 @@
 
         }
 
-        private function maybeStripTrailing(string $url) :string
+        private function maybeStripTrailing(string $url) : string
         {
-            if ( trim($this->lastGroupPrefix(), '/') === WP::wpAdminFolder() ) {
+
+            if (trim($this->lastGroupPrefix(), '/') === WP::wpAdminFolder()) {
 
                 return rtrim($url, '/');
 
             }
 
-            if ( trim($this->lastGroupPrefix(), '/') === WP::ajaxUrl() ) {
+            if (trim($this->lastGroupPrefix(), '/') === WP::ajaxUrl()) {
 
                 return rtrim($url, '/');
 
             }
 
             return $url;
-
 
 
         }

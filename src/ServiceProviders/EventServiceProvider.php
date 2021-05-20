@@ -1,96 +1,117 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace WPEmerge\ServiceProviders;
+    namespace WPEmerge\ServiceProviders;
 
-	use BetterWpHooks\Contracts\Dispatcher;
-	use WPEmerge\Application\ApplicationEvent;
-	use WPEmerge\Contracts\ServiceProvider;
-	use WPEmerge\Events\MakingView;
-	use WPEmerge\Events\UnrecoverableExceptionHandled;
-	use WPEmerge\Events\IncomingWebRequest;
-	use WPEmerge\Events\LoadedWpAdmin;
-	use WPEmerge\ExceptionHandling\ShutdownHandler;
-	use WPEmerge\Events\AdminBodySendable;
-	use WPEmerge\Events\IncomingAdminRequest;
-	use WPEmerge\Events\IncomingAjaxRequest;
-	use WPEmerge\Events\BodySent;
-	use WPEmerge\Http\HttpKernel;
-	use WPEmerge\View\ViewService;
+    use BetterWpHooks\Contracts\Dispatcher;
+    use Illuminate\Support\Facades\Http;
+    use Psr\Http\Message\ServerRequestInterface;
+    use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Contracts\ServiceProvider;
+    use WPEmerge\Events\FilterWpQuery;
+    use WPEmerge\Events\MakingView;
+    use WPEmerge\Events\UnrecoverableExceptionHandled;
+    use WPEmerge\Events\IncomingWebRequest;
+    use WPEmerge\Events\LoadedWpAdmin;
+    use WPEmerge\ExceptionHandling\ShutdownHandler;
+    use WPEmerge\Events\AdminBodySendable;
+    use WPEmerge\Events\IncomingAdminRequest;
+    use WPEmerge\Events\IncomingAjaxRequest;
+    use WPEmerge\Events\BodySent;
+    use WPEmerge\Http\HttpKernel;
+    use WPEmerge\View\ViewService;
 
-	class EventServiceProvider extends ServiceProvider {
+    class EventServiceProvider extends ServiceProvider
+    {
 
-		private $mapped_events = [
+        private $mapped_events = [
 
-			'template_include' => [ 'resolve', IncomingWebRequest::class, 3001 ],
-			'admin_init'       => [ 'resolve', LoadedWpAdmin::class, 3001 ],
+            'template_include' => ['resolve', IncomingWebRequest::class, 3001],
+            'admin_init' => ['resolve', LoadedWpAdmin::class, 3001],
+            'request' => ['resolve', FilterWpQuery::class, 3001],
 
-		];
+        ];
 
-		private $event_listeners = [
+        private $event_listeners = [
 
-			IncomingWebRequest::class => [
+            IncomingWebRequest::class => [
 
-				HttpKernel::class . '@handle',
+                HttpKernel::class.'@handle',
 
-			],
+            ],
 
-			IncomingAdminRequest::class => [
+            IncomingAdminRequest::class => [
 
-				HttpKernel::class . '@handle',
+                HttpKernel::class.'@handle',
 
-			],
+            ],
 
-			IncomingAjaxRequest::class => [
+            IncomingAjaxRequest::class => [
 
-				HttpKernel::class . '@handle',
+                HttpKernel::class.'@handle',
 
-			],
+            ],
 
-			AdminBodySendable::class => [
+            AdminBodySendable::class => [
 
-				HttpKernel::class . '@sendBodyDeferred',
+                HttpKernel::class.'@sendBodyDeferred',
 
-			],
+            ],
 
-			BodySent::class => [
+            BodySent::class => [
 
-				ShutdownHandler::class . '@shutdownWp',
+                ShutdownHandler::class.'@shutdownWp',
 
-			],
+            ],
 
-			UnrecoverableExceptionHandled::class => [
+            UnrecoverableExceptionHandled::class => [
 
-				ShutdownHandler::class . '@exceptionHandled',
+                ShutdownHandler::class.'@exceptionHandled',
 
-			],
+            ],
 
-			MakingView::class => [
+            MakingView::class => [
 
-				[ ViewService::class, 'compose' ],
+                [ViewService::class, 'compose'],
 
-			],
+            ],
 
-		];
+            FilterWpQuery::class => [
+                [HttpKernel::class, 'filterRequest']
+            ]
 
-		public function register() : void {
+        ];
 
-			ApplicationEvent::make( $this->container )
-			                ->map( $this->mapped_events )
-			                ->listeners( $this->event_listeners )
-			                ->boot();
+        public function register() : void
+        {
 
-			$this->container->instance( Dispatcher::class, ApplicationEvent::dispatcher() );
+            ApplicationEvent::make($this->container)
+                            ->map($this->mapped_events)
+                            ->listeners($this->event_listeners)
+                            ->boot();
 
-		}
+            $this->container->instance(Dispatcher::class, ApplicationEvent::dispatcher());
 
-		public function bootstrap() : void {
 
-			//
+            $this->container->singleton(FilterWpQuery::class, function ($container, $args) {
 
-		}
+                return new FilterWpQuery(
+                    $this->container->make(ServerRequestInterface::class),
+                    ...array_values($args)
+                );
 
-	}
+            });
+
+        }
+
+        public function bootstrap() : void
+        {
+
+            //
+
+        }
+
+    }

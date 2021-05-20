@@ -280,13 +280,14 @@
 
             if ( $match->route() ) {
 
-                return $match->route()->filterWpQuery(
+                $qvs = $match->route()->filterWpQuery(
                     $event->currentQueryVars(),
                     $match->capturedUrlSegmentValues()
                 );
 
-            }
+                return $qvs;
 
+            }
 
             return $event->currentQueryVars();
 
