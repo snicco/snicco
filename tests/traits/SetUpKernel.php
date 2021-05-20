@@ -11,6 +11,7 @@
     use Tests\stubs\TestErrorHandler;
     use Tests\stubs\TestViewService;
     use Tests\stubs\TestRequest;
+    use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
@@ -54,7 +55,7 @@
 
             $c->instance(RouteActionFactory::class, $handler_factory);
             $c->instance(ConditionFactory::class, $condition_factory);
-            $c->instance(RouteCollection::class, $routes);
+            $c->instance(AbstractRouteCollection::class, $routes);
             $c->instance(ResponseFactory::class, $response = $this->responseFactory());
 
             return new Router(

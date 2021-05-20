@@ -8,6 +8,7 @@
 
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Http\NullResponse;
     use WPEmerge\Http\Request;
     use WPEmerge\Routing\Route;
 
@@ -15,35 +16,25 @@
     {
 
         /**
-         * @var AbstractRouteCollection
-         */
-        private $routes;
-
-        /**
          * @var ResponseFactory
          */
         private $response;
-
 
         /**
          * @var callable
          */
         private $fallback_handler;
 
-        public function __construct(
-            AbstractRouteCollection $routes,
-            ResponseFactory $response
-        ) {
+        public function __construct(ResponseFactory $response) {
 
-            $this->routes = $routes;
             $this->response = $response;
 
         }
 
-        public function handle(Request $request)
+        public function handle(Request $request, AbstractRouteCollection $routes)
         {
 
-            $possible_routes = collect($this->routes->withWildCardUrl($request->getMethod()));
+            $possible_routes = collect($routes->withWildCardUrl($request->getMethod()));
 
             /** @var Route $route */
             $route = $possible_routes->first(function (Route $route) use ($request) {
@@ -63,6 +54,13 @@
             }
 
             return $route->instantiateAction()->run($request);
+
+        }
+
+        public function blankResponse() : NullResponse
+        {
+
+            return $this->response->null();
 
         }
 

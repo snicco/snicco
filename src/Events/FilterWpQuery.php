@@ -21,12 +21,13 @@
          */
         public $server_request;
 
-        public function __construct(Request $server_request, array $query_vars)
+        public function __construct( Request $server_request, array $query_vars = [] )
         {
 
             $this->original_query_vars = $query_vars;
 
             $this->server_request = $server_request;
+
         }
 
 

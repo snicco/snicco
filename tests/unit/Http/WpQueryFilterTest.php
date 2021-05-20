@@ -8,21 +8,21 @@
 
     use Mockery;
     use Tests\stubs\TestRequest;
+    use Tests\traits\AssertsResponse;
     use Tests\traits\CreateDefaultWpApiMocks;
     use Tests\traits\SetUpKernel;
     use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\FilterWpQuery;
+    use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Routing\CompiledRoute;
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RouteResult;
 
     class WpQueryFilterTest extends UnitTest
     {
 
         use SetUpKernel;
         use CreateDefaultWpApiMocks;
+
 
         protected function beforeTestRun()
         {
@@ -124,7 +124,6 @@
 
         }
 
-
         /** @test */
         public function the_query_vars_dont_get_changed_when_no_route_matches () {
 
@@ -151,5 +150,31 @@
 
         }
 
+        /** @test */
+        public function its_possible_to_define_routes_that_only_manipulate_the_wp_query_but_dont_return_a_response () {
+
+            $this->router->get('foo')->wpquery(function (array $query_vars) {
+
+                return [
+                    'foo' => 'baz',
+                ];
+
+            }, false );
+
+            $this->router->loadRoutes();
+
+            $query_vars = ['foo' => 'bar'];
+
+            $request = TestRequest::from('GET', 'foo');
+
+            $filtered = $this->kernel->filterRequest(new FilterWpQuery($request, $query_vars));
+
+            $this->assertSame(['foo'=>'baz'], $filtered);
+
+            $output = $this->runAndGetKernelOutput(new IncomingWebRequest('wordpress.php', $request));
+
+            $this->assertOutput('', $output);
+
+        }
 
     }
