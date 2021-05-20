@@ -16,7 +16,7 @@
     use WPEmerge\Facade\WP;
     use WPEmerge\Routing\CompiledRoute;
     use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RouteMatch;
+    use WPEmerge\Routing\RouteResult;
 
     class WpQueryFilterTest extends UnitTest
     {
@@ -124,38 +124,6 @@
 
         }
 
-        /** @test */
-        public function we_dont_go_through_the_entire_routing_flow_again_if_we_found_a_matching_wp_query_route () {
-
-            $this->router->get('foo', function () {
-
-                return 'FOO';
-
-            })->wpquery(function (array $query_vars) {
-
-                return [
-                    'foo' => 'baz',
-                ];
-
-            });
-
-            $this->router->loadRoutes();
-
-            $query_vars = ['foo' => 'bar'];
-            $request_event = $this->createIncomingWebRequest('GET', 'foo');
-
-            $this->assertNull($this->router->currentMatch());
-
-            $filtered = $this->kernel->filterRequest(new FilterWpQuery($request_event->request, $query_vars));
-
-            $this->assertSame(['foo' => 'baz'], $filtered);
-            $this->assertInstanceOf(RouteMatch::class, $this->router->currentMatch());
-
-
-            $response = $this->runAndGetKernelOutput($request_event);
-            $this->assertOutput('FOO', $response);
-
-        }
 
         /** @test */
         public function the_query_vars_dont_get_changed_when_no_route_matches () {
@@ -182,15 +150,6 @@
             $this->assertSame(['foo' => 'bar'], $filtered);
 
         }
-
-        // /** @test */
-        public function the_fall_back_controller_is_only_created_for_web_routes() {
-
-
-
-        }
-
-
 
 
     }

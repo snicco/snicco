@@ -6,12 +6,14 @@
 
     namespace WPEmerge\ServiceProviders;
 
+    use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Contracts\RouteUrlGenerator;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Factories\RouteActionFactory;
+    use WPEmerge\Routing\CachedRouteCollection;
     use WPEmerge\Routing\Conditions\AdminAjaxCondition;
     use WPEmerge\Routing\Conditions\AdminPageCondition;
     use WPEmerge\Routing\Conditions\QueryStringCondition;
@@ -27,10 +29,10 @@
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Routing\RouteCollection;
-    use WPEmerge\Routing\RouteBuilder;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\RouteRegistrar;
     use WPEmerge\Routing\UrlGenerator;
+    use WPEmerge\Support\FilePath;
 
     class RoutingServiceProvider extends ServiceProvider
     {
@@ -70,33 +72,45 @@
 
                 }
 
-                $cache_file = $this->config->get('routing.cache_file', null);
+                $cache_dir = $this->config->get('routing.cache_dir', '');
 
-                if ( ! $cache_file) {
-
-                    throw new ConfigurationException("No cache file provided:{$cache_file}");
-
-                }
+                $this->checkIfValidCacheDir($cache_dir);
 
                 /** @todo Named routes will not work right now with caching enabled. */
                 /** @todo Need a way to also cache routes outside of the route matcher */
                 return new CachedFastRouteMatcher(
                     new FastRouteMatcher(),
-                    $cache_file
+                    FilePath::addTrailingSlash($cache_dir) . '__generated_route_map'
                 );
 
 
             });
 
+            $this->container->singleton(AbstractRouteCollection::class, function () {
 
 
-            $this->container->singleton(RouteCollection::class, function () {
+                if ( ! $this->config->get('routing.cache', false)) {
 
-                return new RouteCollection(
+                    return new RouteCollection(
+                        $this->container->make(RouteMatcher::class),
+                        $this->container->make(ConditionFactory::class),
+                        $this->container->make(RouteActionFactory::class)
+                    );
+
+                }
+
+                $cache_dir = $this->config->get('routing.cache_dir', '');
+
+                $this->checkIfValidCacheDir($cache_dir);
+
+                return new CachedRouteCollection(
                     $this->container->make(RouteMatcher::class),
                     $this->container->make(ConditionFactory::class),
-                    $this->container->make(RouteActionFactory::class)
+                    $this->container->make(RouteActionFactory::class),
+                    FilePath::addTrailingSlash($cache_dir) . '__generated_route_collection',
                 );
+
+
 
             });
 
@@ -104,7 +118,7 @@
 
                 return new Router(
                     $this->container,
-                    $this->container->make(RouteCollection::class),
+                    $this->container->make(AbstractRouteCollection::class),
                     $this->container->make(ResponseFactory::class)
 
                 );
@@ -113,7 +127,8 @@
             $this->container->singleton(RouteUrlGenerator::class, function () {
 
                 return new FastRouteUrlGenerator($this->container->make(
-                    RouteCollection::class)
+                    AbstractRouteCollection::class
+                )
                 );
 
             });
@@ -133,6 +148,16 @@
             $router = $this->container->make(Router::class);
 
             (new RouteRegistrar($router, $this->config))->loadRoutes();
+
+        }
+
+        private function checkIfValidCacheDir( $dir ) {
+
+            if ( ! $dir || ! is_dir( $dir )) {
+
+                throw new ConfigurationException("No valid cache dir provided:{$dir}");
+
+            }
 
         }
 

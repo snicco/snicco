@@ -8,14 +8,14 @@
 
 
     use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RouteMatch;
+    use WPEmerge\Routing\RouteResult;
 
     interface RouteMatcher {
 
 
 		public function add( Route $route, array $methods );
 
-		public function find(string $method, string $path) : RouteMatch;
+		public function find(string $method, string $path) : RouteResult;
 
 		public function isCached() :bool;
 

@@ -115,8 +115,6 @@
 
             $regex_array = $this->normalizeRegex($regex);
 
-
-            /** @todo This needs to added instead of replaced regex */
             $this->regex[] = $regex_array;
 
             /** @var Route $this */
