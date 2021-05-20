@@ -8,8 +8,6 @@
 
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\ResponseFactory;
-    use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Request;
     use WPEmerge\Routing\Route;
 
@@ -70,7 +68,6 @@
 
         public function setFallbackHandler(callable $fallback_handler)
         {
-
             $this->fallback_handler = $fallback_handler;
         }
 

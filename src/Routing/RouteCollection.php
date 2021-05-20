@@ -22,14 +22,14 @@
          *
          * @var array
          */
-        private $routes = [];
+        protected $routes = [];
 
         /**
          * A look-up table of routes by their names.
          *
          * @var Route[]
          */
-        private $name_list = [];
+        protected $name_list = [];
 
         /**
          * @var RouteMatcher
@@ -43,15 +43,6 @@
 
         private $matched_route;
 
-        /**
-         * @var ConditionFactory
-         */
-        private $condition_factory;
-
-        /**
-         * @var RouteActionFactory
-         */
-        private $action_factory;
 
         public function __construct(
             RouteMatcher $route_matcher,
@@ -122,28 +113,17 @@
 
         public function withWildCardUrl(string $method) : array
         {
-
-            return collect($this->routes[$method] ?? [])
-                ->filter(function (Route $route) {
-
-                    return trim($route->getUrl(), '/') === ROUTE::ROUTE_WILDCARD;
-
-                })
-                ->map(function (Route $route ) {
-                    return $this->giveFactories($route);
-                })
-                ->all();
-
+            return $this->findWildcardsInCollection($method);
         }
 
         public function loadIntoDispatcher(string $method = null)
         {
 
-            if ($this->route_matcher->isCached() || $this->loaded_routes ) {
-
-                return;
-
-            }
+            // if ( $this->route_matcher->isCached() || $this->loaded_routes ) {
+            //
+            //     return;
+            //
+            // }
 
             $all_routes = $this->routes;
 
@@ -164,45 +144,6 @@
 
             }
 
-
-        }
-
-        private function giveFactories (Route $route) :Route {
-
-            $route->setActionFactory($this->action_factory);
-            $route->setConditionFactory($this->condition_factory);
-            return $route;
-
-        }
-
-        private function findByRouteName(string $name) : ?Route
-        {
-
-            return collect($this->routes)
-                ->flatten()
-                ->first(function (Route $route) use ($name) {
-
-                    return $route->getName() === $name;
-
-                });
-
-        }
-
-        private function findInLookUps(string $name) : ?Route
-        {
-
-            return $this->name_list[$name] ?? null;
-
-        }
-
-        private function addToCollection(Route $route)
-        {
-
-            foreach ( $route->getMethods() as $method ) {
-
-                $this->routes[$method][] = $route;
-
-            }
 
         }
 
