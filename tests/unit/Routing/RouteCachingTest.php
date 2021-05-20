@@ -7,13 +7,17 @@
     namespace Tests\unit\Routing;
 
     use Contracts\ContainerAdapter;
+    use Mockery;
     use Tests\traits\AssertsResponse;
+    use Tests\traits\CreateWpTestUrls;
     use Tests\UnitTest;
     use Tests\traits\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
     use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Factories\ConditionFactory;
+    use WPEmerge\Http\Request;
     use WPEmerge\Routing\CachedRouteCollection;
     use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
@@ -21,12 +25,14 @@
     use WPEmerge\Routing\Router;
     use WPEmerge\Facade\WpFacade;
     use WPEmerge\Routing\UrlGenerator;
+    use WPEmerge\ServiceProviders\RoutingServiceProvider;
 
     class RouteCachingTest extends UnitTest
     {
 
         use CreateDefaultWpApiMocks;
         use AssertsResponse;
+        use CreateWpTestUrls;
 
         /**
          * @var Router
@@ -72,6 +78,9 @@
                 unlink($this->route_collection_file);
             }
 
+            WP::reset();
+            Mockery::close();
+
 
         }
 
@@ -80,7 +89,7 @@
 
             $container = $container ?? $this->createContainer();
 
-            $condition_factory = new ConditionFactory([], $container);
+            $condition_factory = new ConditionFactory($this->allConditions(), $container);
             $handler_factory = new RouteActionFactory([], $container);
 
             $route_collection = new CachedRouteCollection(
@@ -107,7 +116,8 @@
         }
 
         /** @test */
-        public function a_route_can_be_run_when_no_cache_files_exist_yet () {
+        public function a_route_can_be_run_when_no_cache_files_exist_yet()
+        {
 
             $this->router->get('foo', Controller::class.'@handle');
             $this->router->loadRoutes();
@@ -117,7 +127,8 @@
         }
 
         /** @test */
-        public function running_routes_the_first_time_creates_cache_files () {
+        public function running_routes_the_first_time_creates_cache_files()
+        {
 
             $this->router->get('foo', Controller::class.'@handle');
 
@@ -199,6 +210,31 @@
         }
 
         /** @test */
+        public function a_route_with_conditions_can_be_cached()
+        {
+
+            $this->router->get('foo', Controller::class.'@handle')->where('maybe', true);
+            $this->router->get('bar', Controller::class.'@handle')->where('maybe', false);
+            $this->router->loadRoutes();
+
+            $response = $this->router->runRoute(TestRequest::from('GET', 'foo'));
+            $this->assertOutput('foo', $response);
+
+            $response = $this->router->runRoute(TestRequest::from('GET', 'bar'));
+            $this->assertNullResponse($response);
+
+            $this->newCachedRouter();
+
+            $response = $this->router->runRoute(TestRequest::from('GET', 'foo'));
+            $this->assertOutput('foo', $response);
+
+            $response = $this->router->runRoute(TestRequest::from('GET', 'bar'));
+            $this->assertNullResponse($response);
+
+
+        }
+
+        /** @test */
         public function closure_handlers_are_read_correctly_from_the_cache_file()
         {
 
@@ -232,7 +268,8 @@
         }
 
         /** @test */
-        public function reverse_routing_works_from_the_cache () {
+        public function reverse_routing_works_from_the_cache()
+        {
 
             // Create cache
             $this->router->get('foo', Controller::class.'@handle')->name('foo');
@@ -248,7 +285,8 @@
         }
 
         /** @test */
-        public function route_attributes_that_get_changed_after_the_route_got_instantiated_by_the_router_still_get_cached () {
+        public function route_attributes_that_get_changed_after_the_route_got_instantiated_by_the_router_still_get_cached()
+        {
 
             // Create cache
             $this->router->get('foo', Controller::class.'@handle')->name('foo');
@@ -257,13 +295,11 @@
 
             $this->assertOutput('foo', $this->router->runRoute(TestRequest::from('GET', 'foo')));
 
-
             // Cache is loaded into this router instance
             $this->newCachedRouter();
 
             // This call always happens in the service provider.
             $this->router->loadRoutes();
-
 
             $this->assertSame('/foo', $this->url_generator->toRoute('foo', [], false));
             $this->assertSame('/bar', $this->url_generator->toRoute('bar', [], false));
@@ -273,6 +309,83 @@
 
         }
 
+        /** @test */
+        public function cached_routes_work_with_admin_routes()
+        {
+
+            WP::shouldReceive('isAdmin')->andReturnTrue();
+            WP::shouldReceive('isAdminAjax')->andReturnFalse();
+
+            // No cache created
+            $this->router->group(['prefix' => 'wp-admin'], function () {
+
+                $this->router->get('admin/foo', function (Request $request, string $page) {
+
+                    return $page;
+
+                });
+
+            });
+            $this->router->loadRoutes();
+            $request = $this->adminRequestTo('foo');
+            $this->assertOutput('foo', $this->router->runRoute($request));
+
+            $this->newCachedRouter();
+            $request = $this->adminRequestTo('foo');
+            $this->assertOutput('foo', $this->router->runRoute($request));
+
+
+        }
+
+        /** @test */
+        public function cached_routes_work_with_ajax_routes()
+        {
+
+            WP::shouldReceive('isAdmin')->andReturnTrue();
+            WP::shouldReceive('isAdminAjax')->andReturnTrue();
+
+            $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
+
+                $this->router->post('foo_action')->handle(function () {
+
+                    return 'FOO_ACTION';
+
+                });
+
+            });
+
+            $this->router->loadRoutes();
+
+            $ajax_request = $this->ajaxRequest('foo_action');
+            $response = $this->router->runRoute($ajax_request);
+            $this->assertOutput('FOO_ACTION', $response);
+
+            $this->newCachedRouter();
+
+            $ajax_request = $this->ajaxRequest('foo_action');
+            $response = $this->router->runRoute($ajax_request);
+            $this->assertOutput('FOO_ACTION', $response);
+
+
+        }
+
+
+
+        private function allConditions() : array
+        {
+
+            return array_merge(RoutingServiceProvider::CONDITION_TYPES, [
+
+                'true' => \Tests\stubs\Conditions\TrueCondition::class,
+                'false' => \Tests\stubs\Conditions\FalseCondition::class,
+                'maybe' => \Tests\stubs\Conditions\MaybeCondition::class,
+                'unique' => \Tests\stubs\Conditions\UniqueCondition::class,
+                'dependency_condition' => \Tests\stubs\Conditions\ConditionWithDependency::class,
+
+            ]);
+
+
+        }
 
     }
 

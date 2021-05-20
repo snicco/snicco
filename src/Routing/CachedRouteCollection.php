@@ -7,6 +7,7 @@
     namespace WPEmerge\Routing;
 
     use WPEmerge\Contracts\AbstractRouteCollection;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Request;
@@ -67,10 +68,6 @@
         public function add(Route $route) : Route
         {
 
-            $as_array = $route->asArray();
-
-            $this->addLookups($as_array, $route->getName());
-            $this->addToCollection($as_array, $route->getMethods());
             $this->addAsRouteObject($route);
 
             return $route;
@@ -80,7 +77,21 @@
         public function match(Request $request) : RouteMatch
         {
 
-            $route_match = $this->route_matcher->find($request->getMethod(), $request->path());
+            $path = $request->path();
+
+            if (WP::isAdmin() && ! WP::isAdminAjax()) {
+
+                $path = $path.'/'.$request->query('page', '');
+
+            }
+
+            if (WP::isAdminAjax()) {
+
+                $path = $path.'/'.$request->parsedBody('action', $request->query('action', ''));
+
+            }
+
+            $route_match = $this->route_matcher->find($request->getMethod(), $path);
 
             if ( ! $route = $route_match->route()) {
 
@@ -176,28 +187,6 @@
 
         }
 
-        private function addLookups($route, string $name = null)
-        {
-
-            if ($name) {
-
-                $this->name_list[$name] = $route;
-
-            }
-
-        }
-
-        private function addToCollection($route, array $methods = [])
-        {
-
-            foreach ($methods as $method) {
-
-                $this->routes[$method][] = $route;
-
-            }
-
-        }
-
         private function addAsRouteObject(Route $route)
         {
 
@@ -228,7 +217,7 @@
         private function createCacheFile()
         {
 
-            $named_routes = collect($this->route_objects)
+            $lookups = collect($this->route_objects)
                 ->flatten()
                 ->filter(function( Route $route ) {
 
@@ -242,7 +231,19 @@
             })
                 ->all();
 
-            $combined = ['routes' => $this->routes, 'lookups' => $named_routes];
+            $array_routes = [];
+
+            foreach ($this->route_objects as $method => $routes) {
+
+                foreach ($routes as $route) {
+
+                    /** @var Route $route  */
+                    $array_routes[$method][] = $route->asArray();
+                }
+
+            }
+
+            $combined = ['routes' => $array_routes, 'lookups' => $lookups];
 
             file_put_contents(
                 $this->cache_file,
