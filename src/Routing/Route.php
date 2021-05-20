@@ -114,10 +114,9 @@
             $route = new Route(
                 $attributes['methods'],
                 $attributes['url'],
-                $action = $attributes['action']
+                $attributes['action']
             );
 
-            $route->action = $route->unserializeAction($action);
             $route->middleware = $attributes['middleware'] ?? [];
             $route ->condition_blueprints = $route->hydrateConditionBlueprints($attributes['conditions'] ?? []);
             $route ->namespace = $attributes['namespace'] ?? '';
@@ -138,7 +137,9 @@
         public function asArray () :array {
 
             return [
-                'action' => $this->serializeAction($this->action),
+                /** @todo this cant be here by default or we have a hard dependency on opis. */
+                // 'action' => $this->serializeAction($this->action),
+                'action' => $this->action,
                 'name' => $this->name,
                 'middleware' => $this->middleware ?? [],
                 'conditions' => $this->transformConditionBlueprintToArray(),
@@ -255,6 +256,12 @@
 
         }
 
+        public function getAction() {
+
+            return $this->action;
+
+        }
+
         public function needsTrailingSlash() : bool
         {
             return $this->trailing_slash;
@@ -344,40 +351,6 @@
             return array_merge($route_payload, $this->defaults);
 
 
-        }
-
-        private function serializeAction($action)
-        {
-
-            if ($action instanceof Closure && class_exists(SerializableClosure::class)) {
-
-                $closure = new SerializableClosure($action);
-
-                $action = \Opis\Closure\serialize($closure);
-
-            }
-
-            return $action;
-
-        }
-
-        private function unserializeAction($action) {
-
-            if ($this->isSerializedClosure($action)) {
-
-                $action = \Opis\Closure\unserialize($action);
-
-            }
-
-            return $action;
-
-        }
-
-        private function isSerializedClosure($action) : bool
-        {
-
-            return is_string($action)
-                && Str::startsWith($action, 'C:32:"Opis\\Closure\\SerializableClosure') !== false;
         }
 
         private function transformConditionBlueprintToArray() :array {

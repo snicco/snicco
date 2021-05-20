@@ -17,7 +17,7 @@
         private function adminUrlTo(string $menu_slug, string $parent_page = 'admin.php') : string
         {
 
-            return Url::combinePath(SITE_URL, 'wp-admin/'.$parent_page.'?page='.$menu_slug);
+            return Url::combineAbsPath(SITE_URL, 'wp-admin/'.$parent_page.'?page='.$menu_slug);
 
         }
 

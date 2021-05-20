@@ -76,8 +76,6 @@
 
                 $this->checkIfValidCacheDir($cache_dir);
 
-                /** @todo Named routes will not work right now with caching enabled. */
-                /** @todo Need a way to also cache routes outside of the route matcher */
                 return new CachedFastRouteMatcher(
                     new FastRouteMatcher(),
                     FilePath::addTrailingSlash($cache_dir) . '__generated_route_map'

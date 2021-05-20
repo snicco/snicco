@@ -19,6 +19,12 @@
 
         }
 
+        public function ajaxUrl() :string {
+
+           return WP::wpAdminFolder() . DIRECTORY_SEPARATOR . 'admin-ajax.php';
+
+        }
+
 		public function isAdmin () :bool {
 
 			return is_admin();

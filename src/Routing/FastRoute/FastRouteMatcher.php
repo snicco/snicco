@@ -38,7 +38,7 @@
 
 		public function add( Route $route , array $methods ) {
 
-            $url =  $this->convertUrl($route);
+            $url = $this->convertUrl($route);
 
 			$this->collector->addRoute( $methods, $url, $route->asArray() );
 

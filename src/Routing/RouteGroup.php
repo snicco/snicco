@@ -110,7 +110,7 @@
 
 		private function mergePrefix( string $old_group_prefix ) : string {
 
-			return Url::combinePath( $old_group_prefix, $this->url_prefix );
+			return Url::combineRelativePath( $old_group_prefix, $this->url_prefix );
 
 		}
 

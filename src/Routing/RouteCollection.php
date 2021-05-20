@@ -59,7 +59,7 @@
 
         }
 
-        public function loadIntoDispatcher(string $method = null)
+        public function loadIntoDispatcher(string $method = null) : void
         {
 
             $all_routes = $this->routes;
@@ -94,15 +94,24 @@
                 $route = $this->findByRouteName($name);
 
             }
+            if ( ! $route) {
 
-            return ($route) ? $this->giveFactories($route) : null;
+                return null;
 
+            }
+
+            $this->prepareOutgoingRoute($route);
+
+            return $route;
 
         }
 
         public function withWildCardUrl(string $method) : array
         {
-            return $this->findWildcardsInCollection($method);
+            $this->prepareOutgoingRoute( $routes = $this->findWildcardsInCollection($method) );
+
+            return $routes;
+
         }
 
         private function addLookups(Route $route)

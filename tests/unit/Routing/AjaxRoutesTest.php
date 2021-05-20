@@ -67,6 +67,29 @@
         }
 
         /** @test */
+        public function a_trailing_suffix_for_admin_routes_is_stripped () {
+
+            $this->router->group(['prefix' => '/wp-admin/admin-ajax.php/'], function () {
+
+                $this->router->post('/foo_action/')->handle(function () {
+
+                    return 'FOO_ACTION';
+
+                });
+
+            });
+
+            $this->router->loadRoutes();
+
+
+            $ajax_request = $this->ajaxRequest('foo_action');
+
+            $response = $this->router->runRoute($ajax_request);
+            $this->assertOutput('FOO_ACTION', $response);
+
+        }
+
+        /** @test */
         public function ajax_routes_with_the_wrong_action_dont_match()
         {
 
@@ -252,6 +275,7 @@
             $this->assertSame($expected, $this->urlGenerator()->toRoute('ajax.foo', ['method' => 'GET']));
 
         }
+
 
         private function urlGenerator() : UrlGenerator
         {

@@ -15,7 +15,7 @@
 
 
 		/**
-		 * @var \WPEmerge\Routing\Route
+		 * @var Route
 		 */
 		private $route;
 
@@ -92,7 +92,7 @@
 
 				$conditions = $condition_bucket->all();
 
-				if ( $group->prefix() === WP::wpAdminFolder() ) {
+				if ( trim($group->prefix(), '/') === WP::wpAdminFolder() ) {
 
 					$page = UrlParser::getPageQueryVar($this->route->getUrl());
 
@@ -103,7 +103,7 @@
 
 				}
 
-				if ( $group->prefix() === WP::wpAdminFolder() . DIRECTORY_SEPARATOR . 'admin-ajax.php' ) {
+				if ( trim($group->prefix(), '/') === WP::ajaxUrl() ) {
 
 					$action = UrlParser::getAjaxAction($this->route->getUrl());
 
@@ -113,8 +113,6 @@
 					];
 
 				}
-
-
 
 				foreach ($conditions as $condition ) {
 
