@@ -93,6 +93,7 @@
                     $this->router->get('admin.php/foo', function (Request $request, string $page) {
 
                         return $page;
+
                     });
 
                 });
@@ -211,10 +212,26 @@
 
         }
 
+        /** @test */
+        public function admin_routes_strip_a_possible_trailing_slash_in_the_route_definition () {
 
+            $this->router->group(['prefix' => 'wp-admin'], function () {
 
+                $this->router->get('admin.php/foo/', function (Request $request, string $page) {
 
+                    return $page;
 
+                });
+
+            });
+            $this->router->loadRoutes();
+
+            $request = $this->adminRequestTo('foo');
+
+            $this->assertOutput('foo', $this->router->runRoute($request));
+
+        }
+        
         /**
          *
          *

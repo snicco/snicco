@@ -23,6 +23,7 @@
     use WPEmerge\Routing\CachedRouteCollection;
     use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
+    use WPEmerge\Routing\Route;
     use WPEmerge\Routing\RouteCollection;
     use WPEmerge\Routing\Router;
     use WPEmerge\Facade\WpFacade;
@@ -52,6 +53,11 @@
          * @var string
          */
         private $route_collection_file;
+
+        /**
+         * @var CachedRouteCollection
+         */
+        private $routes;
 
 
         protected function beforeTestRun()
@@ -94,25 +100,26 @@
             $condition_factory = new ConditionFactory($this->allConditions(), $container);
             $handler_factory = new RouteActionFactory([], $container);
 
-            $route_collection = new CachedRouteCollection(
+            $routes = new CachedRouteCollection(
                 new CachedFastRouteMatcher($this->createRouteMatcher(), $file ?? $this->route_map_file),
                 $condition_factory,
                 $handler_factory,
                 $this->route_collection_file
             );
 
-            $this->url_generator = new UrlGenerator(new FastRouteUrlGenerator($route_collection));
+            $this->url_generator = new UrlGenerator(new FastRouteUrlGenerator($routes));
 
             $container->instance(RouteActionFactory::class, $handler_factory);
             $container->instance(ConditionFactory::class, $condition_factory);
-            $container->instance(RouteCollection::class, $route_collection);
+            $container->instance(RouteCollection::class, $routes);
             $container->instance(ResponseFactory::class, $response = $this->responseFactory());
-            $container->instance(AbstractRouteCollection::class, $route_collection);
+            $container->instance(AbstractRouteCollection::class, $routes);
 
+            $this->routes = $routes;
 
             return $this->router = new Router(
                 $container,
-                $route_collection,
+                $routes,
                 $response
             );
 
@@ -402,6 +409,25 @@
 
         }
 
+        /** @test */
+        public function a_named_route_with_a_closure_is_deserialized_when_found () {
+
+            // Create cache
+            $this->router->get('foo', function () {
+                //
+            })->name('foo');
+            $this->router->loadRoutes();
+
+            $this->newCachedRouter();
+
+            $route = $this->routes->findByName('foo');
+
+            $this->assertInstanceOf(Route::class, $route);
+
+            $this->assertInstanceOf(\Closure::class, $route->getAction());
+
+
+        }
 
         private function allConditions() : array
         {

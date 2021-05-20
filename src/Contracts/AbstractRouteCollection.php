@@ -12,6 +12,7 @@
     use WPEmerge\Http\Request;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\RouteResult;
+    use WPEmerge\Support\Arr;
 
     abstract class AbstractRouteCollection
     {
@@ -67,7 +68,7 @@
 
         abstract public function withWildCardUrl(string $method) : array;
 
-        abstract public function loadIntoDispatcher(string $method = null);
+        abstract public function loadIntoDispatcher(string $method = null) :void;
 
         protected function addToCollection(Route $route)
         {
@@ -117,11 +118,21 @@
                     return trim($route->getUrl(), '/') === ROUTE::ROUTE_WILDCARD;
 
                 })
-                ->map(function (Route $route) {
-
-                    return $this->giveFactories($route);
-                })
                 ->all();
+
+        }
+
+        protected function prepareOutgoingRoute( $routes ) :void
+        {
+             $routes = Arr::wrap($routes);
+
+             collect($routes)->each(function (Route $route)  {
+
+                $this->giveFactories($route);
+
+            });
+
+
         }
 
         /** @todo Make this function a middleware that adds to a request attribute */
@@ -144,6 +155,7 @@
 
             return $path;
         }
+
 
 
     }

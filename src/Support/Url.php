@@ -10,11 +10,28 @@
 	class Url {
 
 
-		public static function combinePath( $before, $new  ) : string {
+	    // Trailing slashes are kept if present for the last segment
+		public static function combineRelativePath( $before, $new  ) : string {
 
-			return trim( trim( $before , '/' ) . '/' . trim( $new, '/' ), '/' ) ?: '/';
+		    $before = ($before === '') ? '/' : '/' . trim($before, '/') . '/';
+
+		    return $before . ltrim($new, '/');
+
+
+			// return trim( trim( $before , '/' ) . '/' . trim( $new, '/' ), '/' ) ?: '/';
 
 		}
+
+		public static function combineAbsPath($host, $path) : string
+        {
+
+            $host = rtrim($host, '/');
+            $path = ltrim($path, '/');
+
+            return $host . '/' . $path;
+
+
+        }
 
 		public static function toRouteMatcherFormat(string $url ) {
 

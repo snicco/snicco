@@ -10,10 +10,13 @@
 	use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\RouteResult;
+    use WPEmerge\Support\Str;
+    use WPEmerge\Traits\PreparesRouteForExport;
 
     class CachedFastRouteMatcher implements RouteMatcher {
 
         use HydratesFastRoutes;
+        use PreparesRouteForExport;
 
 		/**
 		 * @var FastRouteMatcher
@@ -46,6 +49,8 @@
 
 		public function add( Route $route , $methods) {
 
+		    $route->handle($this->serializeAction($route->getAction()));
+
 			$this->uncached_matcher->add( $route , $methods );
 
 		}
@@ -61,7 +66,9 @@
 			}
 
 			$this->createCache(
+
 			    $this->uncached_matcher->getRouteMap()
+
             );
 
 			return $this->uncached_matcher->find( $method, $path );

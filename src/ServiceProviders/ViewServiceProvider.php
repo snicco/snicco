@@ -31,7 +31,6 @@
 
 			});
 
-			/** @todo Remove this when BetterWpHooks allows binding to interfaces */
 			$this->container->singleton(ViewService::class, function () {
 
 				return new ViewService(

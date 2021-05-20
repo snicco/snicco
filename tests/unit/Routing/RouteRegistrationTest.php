@@ -104,12 +104,51 @@
             $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
             $this->assertOutput('FOO', $this->router->runRoute($request));
 
-
             $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
             $this->assertNullResponse($this->router->runRoute($request));
 
         }
 
+        /** @test */
+        public function routes_with_trailing_slash_match_request_with_trailing_slash_when_inside_a_group()
+        {
+
+            $this->router->name('foo')->group(function () {
+
+                $this->router->get('/foo/', function () {
+
+                    return 'FOO';
+
+                });
+
+                $this->router->prefix('bar')->group(function () {
+
+                    $this->router->post('/foo/', function () {
+
+                        return 'FOO';
+
+                    });
+
+                });
+
+            });
+
+            $this->router->loadRoutes();
+
+            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
+            $this->assertOutput('FOO', $this->router->runRoute($request));
+
+            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
+            $this->assertNullResponse($this->router->runRoute($request));
+
+            $request = TestRequest::fromFullUrl('POST', 'https://foobar.com/bar/foo/');
+            $this->assertOutput('FOO', $this->router->runRoute($request));
+
+            $request = TestRequest::fromFullUrl('POST', 'https://foobar.com/bar/foo');
+            $this->assertNullResponse($this->router->runRoute($request));
+
+
+        }
 
 
     }

@@ -12,6 +12,7 @@
     use WPEmerge\Controllers\FallBackController;
     use WPEmerge\Controllers\ViewController;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\ConvertsToResponse;
     use WPEmerge\Http\Request;
     use WPEmerge\Http\Response;
@@ -293,12 +294,13 @@
 
             if ( ! $this->hasGroupStack() ) {
 
-                // return Url::combinePath('', $url);
                 return $url;
 
             }
 
-            return Url::combinePath($this->lastGroupPrefix(), $url);
+            $url = $this->maybeStripTrailing($url);
+
+            return Url::combineRelativePath( $this->lastGroupPrefix() , $url);
 
         }
 
@@ -355,19 +357,32 @@
 
         }
 
-        public function existingRouteResult() : ?RouteResult
-        {
-
-            return $this->routes->currentMatch();
-
-        }
-
         public function fallback(callable $fallback_handler)
         {
             /** @var FallBackController $controller */
             $controller = $this->container->make(FallBackController::class);
             $controller->setFallbackHandler($fallback_handler);
             $this->container->instance(FallBackController::class, $controller);
+
+        }
+
+        private function maybeStripTrailing(string $url) :string
+        {
+            if ( trim($this->lastGroupPrefix(), '/') === WP::wpAdminFolder() ) {
+
+                return rtrim($url, '/');
+
+            }
+
+            if ( trim($this->lastGroupPrefix(), '/') === WP::ajaxUrl() ) {
+
+                return rtrim($url, '/');
+
+            }
+
+            return $url;
+
+
 
         }
 

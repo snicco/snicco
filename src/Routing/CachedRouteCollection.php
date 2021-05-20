@@ -7,14 +7,18 @@
     namespace WPEmerge\Routing;
 
     use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Http\Request;
     use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
+    use WPEmerge\Support\Arr;
+    use WPEmerge\Traits\DeserializesRoutes;
+    use WPEmerge\Traits\PreparesRouteForExport;
 
     class CachedRouteCollection extends AbstractRouteCollection
     {
+
+        use PreparesRouteForExport;
+        use DeserializesRoutes;
 
         /**
          * @var CachedFastRouteMatcher
@@ -44,7 +48,7 @@
             $this->action_factory = $action_factory;
             $this->cache_file = $cache_file;
 
-            if ( file_exists($cache_file ) ) {
+            if (file_exists($cache_file)) {
 
                 $cache = require $cache_file;
                 $this->name_list = $cache['lookups'];
@@ -64,7 +68,7 @@
 
         }
 
-        public function loadIntoDispatcher(string $method = null)
+        public function loadIntoDispatcher(string $method = null) : void
         {
 
             if (file_exists($this->cache_file)) {
@@ -91,34 +95,58 @@
 
             }
 
-            if ( ! $route ) {
+            if ( ! $route) {
 
-                $route = $this->findByRouteName( $name);
+                $route = $this->findByRouteName($name);
 
             }
 
-            if ( ! $route ) {
+            if ( ! $route) {
 
                 return null;
 
             }
 
-            return $this->giveFactories($route);
+            $this->prepareOutgoingRoute($route);
+
+            return $route;
 
 
         }
 
         public function withWildCardUrl(string $method) : array
         {
+
             $routes = $this->findCachedWildcardRoutes($method);
 
-            if( count($routes) ) {
+            if ( ! count($routes)) {
 
-                return $routes;
+                $routes = $this->findWildcardsInCollection($method);
 
             }
 
-           return $this->findWildcardsInCollection($method);
+            return collect($routes)->each(function (Route $route) {
+
+                $this->prepareOutgoingRoute($route);
+
+            })->all();
+
+
+        }
+
+        protected function prepareOutgoingRoute( $routes ) :void
+        {
+
+            $routes = Arr::wrap($routes);
+
+            $routes = collect($routes)->each(function (Route $route) {
+
+                $this->unserializeAction($route);
+
+            })->all();
+
+            parent::prepareOutgoingRoute($routes);
+
 
         }
 
@@ -131,8 +159,9 @@
                     return trim($route['url'], '/') === ROUTE::ROUTE_WILDCARD;
 
                 })
-                ->map(function (array $route ) {
-                    return $this->giveFactories(Route::hydrate($route));
+                ->map(function (array $route) {
+
+                    return Route::hydrate($route);
                 });
 
             return $routes->all();
@@ -159,26 +188,29 @@
 
             $lookups = collect($this->routes)
                 ->flatten()
-                ->filter(function( Route $route ) {
+                ->filter(function (Route $route) {
 
-                return $route->getName() !== null && $route->getName() !== '';
+                    return $route->getName() !== null && $route->getName() !== '';
 
-            })
-                ->flatMap(function(Route $route) {
+                })
+                ->flatMap(function (Route $route) {
 
-                return [$route->getName() => $route->asArray()];
+                    return [
+                        $route->getName() => $this->prepareForVarExport($route->asArray()),
+                    ];
 
-            })
+                })
                 ->all();
 
             $array_routes = [];
 
             foreach ($this->routes as $method => $routes) {
 
+                /** @var Route $route */
                 foreach ($routes as $route) {
 
-                    /** @var Route $route  */
-                    $array_routes[$method][] = $route->asArray();
+                    $array_routes[$method][] = $this->prepareForVarExport($route->asArray());
+
                 }
 
             }
@@ -192,6 +224,7 @@ declare(strict_types=1); return '.var_export($combined, true).';'
             );
 
         }
+
 
 
     }
