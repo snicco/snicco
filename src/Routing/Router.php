@@ -277,7 +277,7 @@
             $response = (new Pipeline($this->container))
                 ->send($request)
                 ->through($middleware)
-                ->then(function ($request) use ($route_match) : Response {
+                ->then( function (Request $request) use ($route_match) : Response {
 
                     $this->container->instance(Request::class, $request);
                     $route_response = $route_match->route()

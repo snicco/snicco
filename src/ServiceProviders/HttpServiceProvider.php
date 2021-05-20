@@ -49,6 +49,8 @@
 
             $this->config->extend('middleware.priority', []);
 
+            $this->config->extend('always_run_middleware', false);
+
             $this->container->singleton(HttpKernel::class, function () {
 
                 return new HttpKernel(

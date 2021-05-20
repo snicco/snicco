@@ -9,14 +9,18 @@
     use Closure;
     use Contracts\ContainerAdapter as Container;
     use Psr\Http\Message\ResponseInterface;
+    use Psr\Http\Message\ServerRequestInterface;
     use Throwable;
     use WPEmerge\Contracts\ErrorHandlerInterface as ErrorHandler;
+    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Events\DoShutdown;
     use WPEmerge\Events\FilterWpQuery;
     use WPEmerge\Events\HeadersSent;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\BodySent;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidResponseException;
+    use WPEmerge\Middleware\ResponseEmitterMiddleware;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Traits\HoldsMiddlewareDefinitions;
@@ -65,6 +69,36 @@
 
         }
 
+
+        public function runGlobalMiddleware(ServerRequestInterface $request)
+        {
+
+            $middleware = array_merge(
+                [],
+                $this->middleware_groups['global']
+            );
+
+            $response = (new Pipeline($this->container))
+                ->send($request)
+                ->through($middleware)
+                ->then(function (Request $request, ResponseFactory $response) {
+
+                    return $response->null();
+
+                });
+
+            if ( $response instanceof NullResponse ) {
+
+                return;
+
+            }
+
+            (new ResponseEmitter())->emit($response);
+
+            DoShutdown::dispatch();
+
+
+        }
 
         public function handle(IncomingRequest $request_event) : void
         {
@@ -133,7 +167,6 @@
                 return;
 
             }
-
 
             $request = $this->container->make(Request::class);
 
@@ -241,14 +274,14 @@
         {
 
             // We had no matching route.
-            if ( $response instanceof NullResponse) {
+            if ($response instanceof NullResponse) {
 
                 return $response;
 
             }
 
             // We had a route action return something but it was not transformable to a Psr7 Response.
-            if ( $response instanceof InvalidResponse ) {
+            if ($response instanceof InvalidResponse) {
 
                 throw new InvalidResponseException(
                     'The response returned by the route action is not valid.'
@@ -276,9 +309,9 @@
         public function filterRequest(FilterWpQuery $event)
         {
 
-            $match = $this->router->findRoute($event->server_request, $wp_query = true );
+            $match = $this->router->findRoute($event->server_request, $wp_query = true);
 
-            if ( $match->route() ) {
+            if ($match->route()) {
 
                 $qvs = $match->route()->filterWpQuery(
                     $event->currentQueryVars(),

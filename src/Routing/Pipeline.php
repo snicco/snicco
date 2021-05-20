@@ -83,7 +83,7 @@
 
                     if ($middleware instanceof Closure) {
 
-                        return new Delegate($middleware);
+                        return new Delegate($middleware, $this->container);
                     }
 
                     return $middleware;
@@ -119,7 +119,7 @@
         public function then(Closure $request_handler) : ResponseInterface
         {
 
-            $this->middleware[] = [new Delegate($request_handler), []];
+            $this->middleware[] = [new Delegate($request_handler, $this->container), []];
 
             return $this->run($this->buildMiddlewareStack());
 
@@ -149,11 +149,11 @@
 
                     throw new LogicException("Unresolved request: middleware stack exhausted with no result");
 
-                });
+                }, $this->container);
 
             }
 
-            return new Delegate(function (ServerRequestInterface $request) {
+           return new Delegate(function (ServerRequestInterface $request) {
 
                 [$middleware, $constructor_args] = array_shift($this->middleware);
 
@@ -169,7 +169,8 @@
 
                 return $middleware_instance->process($request, $this->nextMiddleware());
 
-            });
+            }, $this->container);
+
 
 
         }

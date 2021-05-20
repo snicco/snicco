@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Http;
 
+    use Contracts\ContainerAdapter;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
     use Psr\Http\Message\ResponseInterface;
@@ -22,14 +23,21 @@
          * @var callable
          */
         private $callback;
+        /**
+         *
+         * @var ContainerAdapter
+         */
+        private $container;
 
         /**
          * @param  callable  $callback  function (RequestInterface $request) : ResponseInterface
          */
-        public function __construct(callable $callback)
+        public function __construct(callable $callback, ContainerAdapter $container)
         {
 
             $this->callback = $callback;
+            $this->container = $container;
+
         }
 
         /**
@@ -41,8 +49,8 @@
          */
         public function handle(ServerRequestInterface $request) : ResponseInterface
         {
-            
-            return ($this->callback)($request);
+
+            return $this->container->call($this->callback, ['request'=>$request]);
 
 
         }
@@ -69,5 +77,7 @@
             return $this->handle($request);
 
         }
+
+
 
     }
