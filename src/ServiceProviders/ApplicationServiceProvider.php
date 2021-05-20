@@ -14,15 +14,12 @@
 
 		public function register() : void {
 
-		    $this->config->extend('always_run_middleware', false);
-
 
 			$this->container->singleton( WordpressApi::class, function () {
 
 				return new WordpressApi();
 
 			} );
-
 
 		}
 

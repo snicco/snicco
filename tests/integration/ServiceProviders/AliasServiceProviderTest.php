@@ -229,12 +229,6 @@
 
         }
 
-        private function loadRoutes () {
 
-            /** @var Router  $router */
-            $router = TestApp::resolve(Router::class);
-            $router->loadRoutes();
-
-        }
 
     }

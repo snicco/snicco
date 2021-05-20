@@ -11,6 +11,7 @@
     use Psr\Http\Message\ServerRequestInterface;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ServiceProvider;
+    use WPEmerge\Events\DoShutdown;
     use WPEmerge\Events\FilterWpQuery;
     use WPEmerge\Events\MakingView;
     use WPEmerge\Events\UnrecoverableExceptionHandled;
@@ -73,6 +74,12 @@
 
             ],
 
+            DoShutdown::class => [
+
+                [ShutdownHandler::class, 'terminate']
+
+            ],
+
             MakingView::class => [
 
                 [ViewService::class, 'compose'],
@@ -110,7 +117,13 @@
         public function bootstrap() : void
         {
 
-            //
+            if ( ! $this->config->get('always_run_middleware') ) {
+
+                return;
+
+            }
+
+            ApplicationEvent::listen('init', [HttpKernel::class, 'runGlobalMiddleware'], -999);
 
         }
 

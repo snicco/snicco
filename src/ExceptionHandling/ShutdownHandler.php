@@ -14,7 +14,7 @@
 
 		public function exceptionHandled () {
 
-			exit();
+		  $this->terminate();
 
 		}
 
@@ -29,5 +29,11 @@
 			}
 
 		}
+
+		public function terminate() {
+
+		    exit();
+
+        }
 
 	}

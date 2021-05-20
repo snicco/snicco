@@ -6,6 +6,8 @@
 
     namespace Tests\integration\ServiceProviders;
 
+    use BetterWpHooks\Contracts\Dispatcher;
+    use BetterWpHooks\Dispatchers\WordpressDispatcher;
     use Tests\IntegrationTest;
     use Tests\stubs\Middleware\FooMiddleware;
     use Tests\stubs\Middleware\GlobalMiddleware;
@@ -110,8 +112,29 @@
 
             $this->assertFalse(TestApp::config('always_run_middleware', ''));
 
+            /** @var WordpressDispatcher $dispatcher */
+            $dispatcher = TestApp::resolve(Dispatcher::class);
+
+            $this->assertFalse($dispatcher->hasListenerFor([HttpKernel::class, 'runGlobalMiddleware'], 'init'));
 
         }
+
+        /** @test */
+        public function global_middleware_can_be_enabled_to_always_run_on_init () {
+
+            $this->newTestApp([
+                'always_run_middleware' => true
+            ]);
+
+            $this->assertTrue(TestApp::config('always_run_middleware', ''));
+
+            /** @var WordpressDispatcher $dispatcher */
+            $dispatcher = TestApp::resolve(Dispatcher::class);
+
+            $this->assertTrue($dispatcher->hasListenerFor([HttpKernel::class, 'runGlobalMiddleware'], 'init'));
+
+        }
+
 
     }
 

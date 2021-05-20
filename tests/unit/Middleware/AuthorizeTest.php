@@ -51,7 +51,7 @@
 
                 return $response->html('FOO');
 
-            });
+            },$this->createContainer());
             $this->request = TestRequest::from('GET', '/foo');
             WP::shouldReceive('loginUrl')->andReturn('foobar.com')->byDefault();
 

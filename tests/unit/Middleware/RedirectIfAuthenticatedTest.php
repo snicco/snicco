@@ -50,7 +50,7 @@
 
                 return $response->html('FOO');
 
-            });
+            }, $this->createContainer());
             $this->response = $response;
             $this->request = TestRequest::from('GET', '/foo');
             WP::shouldReceive('homeUrl')->andReturn('https://foobar.com')->byDefault();
