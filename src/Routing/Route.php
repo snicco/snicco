@@ -119,7 +119,7 @@
 
             $route->action = $route->unserializeAction($action);
             $route->middleware = $attributes['middleware'] ?? [];
-            $route ->condition_blueprints = $attributes['conditions'] ?? [];
+            $route ->condition_blueprints = $route->hydrateConditionBlueprints($attributes['conditions'] ?? []);
             $route ->namespace = $attributes['namespace'] ?? '';
             $route ->defaults = $attributes['defaults'] ?? [];
             $route ->url = $attributes['url'] ?? '';
@@ -141,7 +141,7 @@
                 'action' => $this->serializeAction($this->action),
                 'name' => $this->name,
                 'middleware' => $this->middleware ?? [],
-                'conditions' => $this->condition_blueprints ?? [],
+                'conditions' => $this->transformConditionBlueprintToArray(),
                 'namespace' => $this->namespace ?? '',
                 'defaults' => $this->defaults ?? [],
                 'url' => $this->url,
@@ -380,6 +380,26 @@
                 && Str::startsWith($action, 'C:32:"Opis\\Closure\\SerializableClosure') !== false;
         }
 
+        private function transformConditionBlueprintToArray() :array {
 
+            return array_map(function (ConditionBlueprint $blueprint) {
+
+                return $blueprint->asArray();
+
+            }, $this->condition_blueprints);
+
+        }
+
+        private function hydrateConditionBlueprints(array $blueprints) : array
+        {
+
+            return array_map(function (array $blueprint) {
+
+                return ConditionBlueprint::hydrate($blueprint);
+
+            }, $blueprints);
+
+
+        }
 
     }
