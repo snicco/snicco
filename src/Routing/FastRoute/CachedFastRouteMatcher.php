@@ -9,7 +9,7 @@
 	use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
 	use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RouteMatch;
+    use WPEmerge\Routing\RouteResult;
 
     class CachedFastRouteMatcher implements RouteMatcher {
 
@@ -50,7 +50,7 @@
 
 		}
 
-		public function find( string $method, string $path ) :RouteMatch {
+		public function find( string $method, string $path ) :RouteResult {
 
 			if ( $this->route_cache ) {
 

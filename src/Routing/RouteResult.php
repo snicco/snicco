@@ -6,7 +6,7 @@
 
 	namespace WPEmerge\Routing;
 
-	class RouteMatch {
+	class RouteResult {
 
 
 		/** @var Route */
@@ -16,7 +16,7 @@
 		private $payload;
 
 
-		public function __construct( ?Route $route, array $payload ) {
+		public function __construct( ?Route $route, array $payload = [] ) {
 
 			$this->route   = $route;
 			$this->payload = $payload;

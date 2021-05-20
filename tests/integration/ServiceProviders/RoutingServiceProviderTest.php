@@ -83,7 +83,7 @@
         public function an_exception_gets_thrown_if_a_cache_file_path_is_missing()
         {
 
-            $this->expectExceptionMessage('No cache file provided:');
+            $this->expectExceptionMessage('No valid cache dir provided:');
 
             $this->newTestApp([
                 'routing' => [
@@ -104,7 +104,7 @@
             $this->newTestApp([
                 'routing' => [
                     'cache' => true,
-                    'cache_dir' => TESTS_DIR.'_data'.DS
+                    'cache_dir' => TESTS_DIR. DS . '_data'. DS
                 ]
             ]);
 
@@ -139,7 +139,7 @@
             $this->newTestApp([
                 'routing' => [
                     'cache' => true,
-                    'cache_dir' => TESTS_DIR.'_data'.DS
+                    'cache_dir' => TESTS_DIR. DS. '_data'. DS
                 ]
             ]);
 

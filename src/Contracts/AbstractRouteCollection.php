@@ -6,16 +6,15 @@
 
     namespace WPEmerge\Contracts;
 
+    use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Request;
     use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RouteCollection;
-    use WPEmerge\Routing\RouteMatch;
+    use WPEmerge\Routing\RouteResult;
 
     abstract class AbstractRouteCollection
     {
-
         /**
          * @var ConditionFactory
          */
@@ -26,10 +25,43 @@
          */
         protected $action_factory;
 
+        /** @var RouteResult|null */
+        private $route_result;
+
+        public function match(Request $request) : RouteResult
+        {
+
+            $path = $this->appendSpecialWpSuffixesToPath($request);
+
+            $result = $this->route_matcher->find($request->getMethod(), $path);
+
+            if ( ! $route = $result->route() ) {
+
+                return $this->route_result = new RouteResult(null);
+
+            }
+
+            $route = $this->giveFactories($route)->instantiateConditions();
+
+            if ( ! $route->satisfiedBy($request) ) {
+
+                return $this->route_result = new RouteResult(null);
+
+            }
+
+            $route->instantiateAction();
+
+            return $result;
+
+        }
+
+        public function hasResult() :?RouteResult {
+
+            return $this->route_result;
+
+        }
 
         abstract public function add(Route $route) : Route;
-
-        abstract public function match(Request $request) : RouteMatch;
 
         abstract public function findByName(string $name) : ?Route;
 
@@ -91,5 +123,27 @@
                 })
                 ->all();
         }
+
+        /** @todo Make this function a middleware that adds to a request attribute */
+        private function appendSpecialWpSuffixesToPath(Request $request) : string
+        {
+
+            $path = $request->path();
+
+            if (WP::isAdmin() && ! WP::isAdminAjax()) {
+
+                $path = $path.'/'.$request->query('page', '');
+
+            }
+
+            if (WP::isAdminAjax()) {
+
+                $path = $path.'/'.$request->parsedBody('action', $request->query('action', ''));
+
+            }
+
+            return $path;
+        }
+
 
     }
