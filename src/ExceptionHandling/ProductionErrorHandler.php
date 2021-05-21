@@ -72,7 +72,7 @@
 
             (new ResponseEmitter())->emit($response);
 
-			// Shuts down the script
+			// Shut down the script
 			UnrecoverableExceptionHandled::dispatch();
 
 		}
@@ -83,7 +83,12 @@
 
 		}
 
-		/**
+		public function unrecoverable(Throwable $exception)
+        {
+           $this->handleException($exception);
+        }
+
+        /**
 		 *
 		 * Override this method from a child class to create
 		 * your own globalContext.
@@ -102,7 +107,6 @@
 			}
 
 		}
-
 
         /**
          *

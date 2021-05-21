@@ -102,7 +102,7 @@
 			$this->assertNothingSent($this->runAndGetKernelOutput($request));
 
 			ob_start();
-			$this->kernel->sendBodyDeferred();
+			$this->kernel->sendResponseDeferred();
 			$body = ob_get_clean();
 
 			$this->assertBodySent('foo', $body);
@@ -145,7 +145,7 @@
 		    $this->router->loadRoutes();
 
 			ob_start();
-			$this->kernel->sendBodyDeferred();
+			$this->kernel->sendResponseDeferred();
 
 			$this->assertNothingSent(ob_get_clean());
 
@@ -314,7 +314,7 @@
 
             $this->expectExceptionMessage('The response returned by the route action is not valid.');
 
-            $this->kernel->handle($this->createIncomingWebRequest('GET', '/foo'));
+            $this->kernel->run($this->createIncomingWebRequest('GET', '/foo'));
 
 
         }
@@ -351,7 +351,7 @@
             $request_event = $this->createIncomingWebRequest( 'GET', 'foo' );
 
             ob_start();
-            $this->kernel->handle($request_event);
+            $this->kernel->run($request_event);
             $this->assertSame('', ob_get_clean());
 
 
@@ -385,7 +385,7 @@
 
 
             ob_start();
-            $this->kernel->handle($this->createIncomingWebRequest( 'GET', 'foo' ));
+            $this->kernel->run($this->createIncomingWebRequest( 'GET', 'foo' ));
             $this->assertSame('FOO', ob_get_clean());
 
 

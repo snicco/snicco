@@ -6,7 +6,7 @@
 
 	namespace WPEmerge\Routing;
 
-	class RouteResult {
+	class RoutingResult {
 
 
 		/** @var Route */

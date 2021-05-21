@@ -113,7 +113,7 @@
         {
 
             ob_start();
-            $this->kernel->handle($request);
+            $this->kernel->run($request);
             return ob_get_clean();
 
         }

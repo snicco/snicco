@@ -10,8 +10,7 @@
     use Contracts\ContainerAdapter as Container;
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestInterface;
-    use Throwable;
-    use WPEmerge\Contracts\ErrorHandlerInterface as ErrorHandler;
+    use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Events\DoShutdown;
     use WPEmerge\Events\FilterWpQuery;
@@ -19,28 +18,33 @@
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\BodySent;
+    use WPEmerge\Events\ResponseSent;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidResponseException;
-    use WPEmerge\Middleware\ResponseEmitterMiddleware;
+    use WPEmerge\Middleware\ErrorHandlerMiddleware;
+    use WPEmerge\Middleware\OutputBufferMiddleware;
+    use WPEmerge\Middleware\RoutingMiddleware;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\Pipeline;
-    use WPEmerge\Traits\HoldsMiddlewareDefinitions;
+    use WPEmerge\Middleware\RouteRunner;
+    use WPEmerge\Traits\GathersMiddleware;
 
     class HttpKernel
     {
 
-        use HoldsMiddlewareDefinitions;
-
-        /** @var Router */
-        private $router;
-
-        /** @var ErrorHandler */
-        private $error_handler;
+        use GathersMiddleware;
 
         /** @var Container */
         private $container;
 
         /** @var Response */
         private $response;
+
+        /**
+         * @var AbstractRouteCollection
+         */
+        private $routes;
+
+
 
         /**
          * @var ResponseEmitter
@@ -54,34 +58,43 @@
          */
         private $always_with_global_middleware = false;
 
-        public function __construct(
+        private $internal_middleware = [
+            ErrorHandlerMiddleware::class,
+            RoutingMiddleware::class,
+            RouteRunner::class,
+        ];
 
-            Router $router,
-            Container $container,
-            /** @todo this could be a middleware */
-            ErrorHandler $error_handler
-        ) {
+        private $middleware_priority = [
 
-            $this->router = $router;
+            ErrorHandlerMiddleware::class,
+            OutputBufferMiddleware::class,
+            RoutingMiddleware::class,
+            RouteRunner::class,
+
+        ];
+
+
+        public function __construct(Container $container, AbstractRouteCollection $routes)
+        {
+
             $this->container = $container;
-            $this->error_handler = $error_handler;
             $this->response_emitter = new ResponseEmitter();
+            $this->routes = $routes;
 
         }
 
-
-        public function runGlobalMiddleware(ServerRequestInterface $request)
+        public function runGlobal(ServerRequestInterface $request)
         {
 
-            $middleware = array_merge(
-                [],
-                $this->middleware_groups['global']
-            );
+            $middleware = $this->middleware_groups['global'] ?? [];
 
+            /** @var Response $response */
             $response = (new Pipeline($this->container))
                 ->send($request)
                 ->through($middleware)
                 ->then(function (Request $request, ResponseFactory $response) {
+
+                    $this->container->instance(Request::class, $request);
 
                     return $response->null();
 
@@ -93,31 +106,22 @@
 
             }
 
-            (new ResponseEmitter())->emit($response);
+            $response = $this->returnIfValid($response);
 
-            DoShutdown::dispatch();
+            $this->response_emitter->emit($response);
+
+            ResponseSent::dispatch([
+                $request->withAttribute('from_global_middleware', true),
+                $request,
+            ]);
 
 
         }
 
-        public function handle(IncomingRequest $request_event) : void
+        public function run(IncomingRequest $request_event) : void
         {
 
-            $this->error_handler->register();
-
-            try {
-
-                $this->syncMiddlewareToRouter();
-
-                $this->response = $this->sendRequestThroughRouter($request_event->request);
-
-            }
-
-            catch (Throwable $exception) {
-
-                $this->response = $this->error_handler->transformToResponse($exception);
-
-            }
+            $this->response = $this->handle($request_event);
 
             if ($this->matchedRoute()) {
 
@@ -125,30 +129,21 @@
 
             }
 
-            $this->sendResponse();
-
-            $this->error_handler->unregister();
-
-        }
-
-        /**
-         * This function needs to be public because for Wordpress Admin
-         * pages we have to send the header and body on separate hooks.
-         * ( sucks. but it is what it is )
-         */
-        public function sendBodyDeferred()
-        {
-
-            // guard against AdminBodySendable for non matching admin pages.
-            if ( ! $this->response instanceof ResponseInterface) {
+            if ($this->response instanceof NullResponse) {
 
                 return;
 
             }
 
-            $request = $this->container->make(Request::class);
+            $this->response_emitter->emit($this->response);
 
-            $this->sendBody($request);
+            ResponseSent::dispatch(
+                [
+                    $this->container->make(Request::class),
+                    $this->response,
+
+                ]);
+
 
         }
 
@@ -159,109 +154,70 @@
 
         }
 
-        private function sendResponse()
+        public function alwaysWithGlobalMiddleware()
         {
 
-            if ($this->response instanceof NullResponse) {
+            $this->always_with_global_middleware = true;
 
-                return;
+        }
+
+        public function filterRequest(FilterWpQuery $event)
+        {
+
+            $match = $this->routes->match($event->server_request);
+
+            if ($match->route()) {
+
+                return $match->route()->filterWpQuery(
+                    $event->currentQueryVars(),
+                    $match->capturedUrlSegmentValues()
+                );
 
             }
 
-            $request = $this->container->make(Request::class);
-
-            $this->sendHeaders($request);
-
-            if ($request->getType() !== IncomingAdminRequest::class) {
-
-                $this->sendBody($request);
-
-            }
+            return $event->currentQueryVars();
 
         }
 
-        private function sendHeaders(Request $request)
+        private function handle(IncomingRequest $request_event) : Response
         {
 
-            $this->response_emitter->emitHeaders($this->response);
-
-            HeadersSent::dispatch([$this->response, $request]);
-
-        }
-
-        private function sendBody(Request $request)
-        {
-
-            $this->response_emitter->emitBody($this->response);
-
-            BodySent::dispatch([$this->response, $request]);
-
-        }
-
-        private function sendRequestThroughRouter(Request $request) : Response
-        {
-
-            $this->container->instance(Request::class, $request);
+            $this->container->instance(Request::class, $request = $request_event->request);
 
             $pipeline = new Pipeline($this->container);
 
-            $middleware = $this->withMiddleware() ? $this->middleware_groups['global'] ?? [] : [];
+            $middleware = $this->gatherMiddleware($request_event);
 
             /** @var Response $response */
             $response = $pipeline->send($request)
                                  ->through($middleware)
-                                 ->then($this->dispatchToRouter());
+                                 ->run();
 
             return $this->returnIfValid($response);
 
         }
 
-        private function dispatchToRouter() : Closure
+        private function gatherMiddleware(IncomingRequest $incoming_request) : array
         {
 
-            return function (Request $request) : ResponseInterface {
+            $middleware = $this->internal_middleware;
 
-                $this->container->instance(Request::class, $request);
+            if ( ! $this->withMiddleware()) {
 
-                if ($this->is_test_mode) {
-
-                    $this->router->withoutMiddleware();
-
-                }
-
-                return $this->router->runRoute($request);
-
-
-            };
-
-        }
-
-        private function syncMiddlewareToRouter() : void
-        {
-
-
-            $this->router->middlewarePriority($this->middleware_priority);
-
-            $middleware_groups = $this->middleware_groups;
-
-            // Dont run global middleware in the router again.
-            if ($this->always_with_global_middleware) {
-
-                unset($middleware_groups['global']);
+                return $middleware;
 
             }
 
-            foreach ($middleware_groups as $key => $middleware) {
+            if ($incoming_request instanceof IncomingAdminRequest) {
 
-                $this->router->middlewareGroup($key, $middleware);
-
-            }
-
-            foreach ($this->route_middleware_aliases as $key => $middleware) {
-
-                $this->router->aliasMiddleware($key, $middleware);
+                $middleware[] = OutputBufferMiddleware::class;
 
             }
+
+            $middleware = array_merge($middleware, $this->middleware_groups['global'] ?? []);
+
+            return $this->sortMiddleware($middleware);
+
 
         }
 
@@ -295,36 +251,10 @@
 
         }
 
-        public function alwaysWithGlobalMiddleware()
-        {
-
-            $this->always_with_global_middleware = true;
-
-        }
-
         private function matchedRoute() : bool
         {
+
             return ! $this->response instanceof NullResponse;
-        }
-
-        public function filterRequest(FilterWpQuery $event)
-        {
-
-            $match = $this->router->findRoute($event->server_request, $wp_query = true);
-
-            if ($match->route()) {
-
-                $qvs = $match->route()->filterWpQuery(
-                    $event->currentQueryVars(),
-                    $match->capturedUrlSegmentValues()
-                );
-
-                return $qvs;
-
-            }
-
-            return $event->currentQueryVars();
-
         }
 
 

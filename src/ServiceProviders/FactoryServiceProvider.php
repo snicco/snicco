@@ -18,43 +18,59 @@
 
 		public function register() :void  {
 
-			$this->container->singleton(RouteActionFactory::class, function () {
+			$this->bindRouteActionFactory();
 
-				return new RouteActionFactory(
-					$this->config['controllers'] ?? [],
-					$this->container
-				);
+			$this->bindViewComposerFactory();
 
-			});
-
-			$this->container->singleton(ViewComposerFactory::class, function () {
-
-				return new ViewComposerFactory(
-					$this->config['composers'] ?? [],
-					$this->container
-				);
-
-			});
-
-			$this->container->singleton( ConditionFactory::class, function () {
-
-				return new ConditionFactory(
-
-					$this->config->get( 'routing.conditions', [] ),
-					$this->container,
-
-				);
-
-			} );
-
-
+			$this->bindConditionFactory();
 
 		}
-
 
 		public function bootstrap() :void  {
 
+		    //
 
 		}
 
-	}
+        private function bindRouteActionFactory() : void
+        {
+
+            $this->container->singleton(RouteActionFactory::class, function () {
+
+                return new RouteActionFactory(
+                    $this->config['controllers'] ?? [],
+                    $this->container
+                );
+
+            });
+        }
+
+        private function bindViewComposerFactory() : void
+        {
+
+            $this->container->singleton(ViewComposerFactory::class, function () {
+
+                return new ViewComposerFactory(
+                    $this->config['composers'] ?? [],
+                    $this->container
+                );
+
+            });
+        }
+
+        private function bindConditionFactory() : void
+        {
+
+            $this->container->singleton(ConditionFactory::class, function () {
+
+                return new ConditionFactory(
+
+                    $this->config->get('routing.conditions', []),
+                    $this->container,
+
+                );
+
+            });
+        }
+
+    }

@@ -12,7 +12,7 @@
 	use FastRoute\RouteParser\Std as RouteParser;
 	use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RouteResult;
+    use WPEmerge\Routing\RoutingResult;
 
     class FastRouteMatcher implements RouteMatcher {
 
@@ -51,7 +51,7 @@
 
         }
 
-		public function find( string $method, string $path ) : RouteResult {
+		public function find( string $method, string $path ) : RoutingResult {
 
 			$dispatcher = new RouteDispatcher( $this->collector->getData() );
 

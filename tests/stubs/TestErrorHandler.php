@@ -6,7 +6,8 @@
 
 	namespace Tests\stubs;
 
-	use WPEmerge\Contracts\ErrorHandlerInterface;
+	use Throwable;
+    use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ResponseInterface;
     use WPEmerge\Http\Response;
@@ -51,4 +52,9 @@
 
 		}
 
-	}
+        public function unrecoverable(Throwable $exception)
+        {
+            // TODO: Implement unrecoverable() method.
+        }
+
+    }

@@ -39,12 +39,12 @@
 
 			$this->assertInstanceOf( Dispatcher::class, $this->dispatcher );
 
-			$this->assertHasListener([HttpKernel::class, 'handle'], IncomingWebRequest::class);
-			$this->assertHasListener([HttpKernel::class, 'handle'], IncomingAdminRequest::class);
-			$this->assertHasListener([HttpKernel::class, 'handle'], IncomingAjaxRequest::class);
-			$this->assertHasListener([HttpKernel::class, 'sendBodyDeferred'], AdminBodySendable::class);
+			$this->assertHasListener([HttpKernel::class, 'run'], IncomingWebRequest::class);
+			$this->assertHasListener([HttpKernel::class, 'run'], IncomingAdminRequest::class);
+			$this->assertHasListener([HttpKernel::class, 'run'], IncomingAjaxRequest::class);
+			$this->assertHasListener([HttpKernel::class, 'sendResponseDeferred'], AdminBodySendable::class);
 			$this->assertHasListener([ShutdownHandler::class, 'shutdownWp'], BodySent::class);
-			$this->assertHasListener([ShutdownHandler::class, 'exceptionHandled'], UnrecoverableExceptionHandled::class);
+			$this->assertHasListener([ShutdownHandler::class, 'unrecoverableException'], UnrecoverableExceptionHandled::class);
 			$this->assertHasListener([ViewService::class, 'compose'], MakingView::class);
 			$this->assertHasListener([HttpKernel::class, 'filterRequest'], FilterWpQuery::class);
 			$this->assertHasListener([ShutdownHandler::class, 'terminate'], DoShutdown::class);

@@ -4,10 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\ServiceProviders;
+    namespace WPEmerge\Routing\Conditions;
 
     use WPEmerge\Contracts\ConditionInterface;
     use WPEmerge\Http\Request;
+
+    use function collect;
 
     class RequestAttributeCondition implements ConditionInterface
     {

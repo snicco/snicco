@@ -9,6 +9,7 @@
 
 
 	use BetterWpHooks\Traits\DispatchesConditionally;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
 
     class IncomingAdminRequest extends IncomingRequest {
@@ -19,12 +20,11 @@
 
 			parent::__construct($request);
 
-
 		}
 
 		public function shouldDispatch() : bool {
 
-			return is_admin();
+			return WP::isAdmin();
 
 		}
 

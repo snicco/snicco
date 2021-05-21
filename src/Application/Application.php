@@ -34,10 +34,10 @@
         const CORE_SERVICE_PROVIDERS = [
 
             EventServiceProvider::class,
+            ExceptionServiceProvider::class,
             FactoryServiceProvider::class,
             ApplicationServiceProvider::class,
             HttpServiceProvider::class,
-            ExceptionServiceProvider::class,
             RoutingServiceProvider::class,
             ViewServiceProvider::class,
             AliasServiceProvider::class,

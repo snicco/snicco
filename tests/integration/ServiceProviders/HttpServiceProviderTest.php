@@ -14,6 +14,7 @@
     use Tests\stubs\TestApp;
     use Tests\unit\Routing\Foo;
     use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Events\LoadedWP;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\HttpResponseFactory;
 
@@ -115,7 +116,7 @@
             /** @var WordpressDispatcher $dispatcher */
             $dispatcher = TestApp::resolve(Dispatcher::class);
 
-            $this->assertFalse($dispatcher->hasListenerFor([HttpKernel::class, 'runGlobalMiddleware'], 'init'));
+            $this->assertFalse($dispatcher->hasListenerFor([HttpKernel::class, 'runGlobal'], 'init'));
 
         }
 
@@ -131,7 +132,7 @@
             /** @var WordpressDispatcher $dispatcher */
             $dispatcher = TestApp::resolve(Dispatcher::class);
 
-            $this->assertTrue($dispatcher->hasListenerFor([HttpKernel::class, 'runGlobalMiddleware'], 'init'));
+            $this->assertTrue($dispatcher->hasListenerFor([HttpKernel::class, 'runGlobal'], LoadedWP::class));
 
         }
 

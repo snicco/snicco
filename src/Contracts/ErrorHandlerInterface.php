@@ -36,6 +36,6 @@
          */
 		public function transformToResponse( Throwable $exception ) :?Response;
 
-
+        public function unrecoverable ( Throwable $exception );
 
 	}
