@@ -9,18 +9,12 @@
     use Nyholm\Psr7\Factory\Psr17Factory as NyholmFactoryImplementation;
     use Psr\Http\Message\ResponseFactoryInterface as Prs17ResponseFactory;
     use Psr\Http\Message\StreamFactoryInterface;
-    use Slim\Csrf\Guard;
     use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewServiceInterface;
     use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Http\HttpKernel;
-    use WPEmerge\Middleware\Authorize;
-    use WPEmerge\Middleware\Authenticate;
-    use WPEmerge\Middleware\RedirectIfAuthenticated;
-    use WPEmerge\Routing\Router;
 
     class HttpServiceProvider extends ServiceProvider
     {
@@ -28,7 +22,6 @@
         public function register() : void
         {
 
-            $this->bindConfig();
 
             $this->bindKernel();
 
@@ -49,43 +42,11 @@
 
             if ($this->config->get('always_run_middleware', false)) {
 
-                $kernel->alwaysWithGlobalMiddleware();
-
-            }
-
-            if ($this->config->get('routing.must_match_web_routes', false)) {
-
-                $kernel->mustMatchForWebRoutes();
+                $kernel->alwaysWithGlobalMiddleware($this->config->get('middleware.groups.global', [] ) );
 
             }
 
 
-        }
-
-        private function bindConfig()
-        {
-
-            $this->config->extend('middleware.aliases', [
-
-                'csrf' => Guard::class,
-                'auth' => Authenticate::class,
-                'guest' => RedirectIfAuthenticated::class,
-                'can' => Authorize::class,
-
-            ]);
-
-            $this->config->extend('middleware.groups', [
-
-                'global' => [],
-                'web' => [],
-                'ajax' => [],
-                'admin' => [],
-
-            ]);
-
-            $this->config->extend('middleware.priority', []);
-
-            $this->config->extend('always_run_middleware', false);
 
         }
 

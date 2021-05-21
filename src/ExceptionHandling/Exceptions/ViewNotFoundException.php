@@ -6,6 +6,6 @@
 
 	namespace WPEmerge\ExceptionHandling\Exceptions;
 
-    class ViewNotFoundException extends Exception {
+    class ViewNotFoundException extends ViewException {
 
 	}

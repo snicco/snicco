@@ -19,7 +19,7 @@
 		 *
 		 * @return array
 		 */
-		public function sortMiddleware( array $middleware ) : array {
+		private function sortMiddleware( array $middleware ) : array {
 
 			$sorted = $middleware;
 
@@ -47,7 +47,7 @@
 		 *
 		 * @return string[]
 		 */
-		public function uniqueMiddleware( array $middleware ) : array {
+		private function uniqueMiddleware( array $middleware ) : array {
 
 			return array_values( array_unique( $middleware, SORT_REGULAR ) );
 
@@ -61,7 +61,7 @@
 		 * @return array[]
 		 * @throws ConfigurationException
 		 */
-		public function expandMiddleware( array $middleware ) : array {
+		private function expandMiddleware( array $middleware ) : array {
 
 			$classes = [];
 
@@ -75,7 +75,7 @@
 			return $classes;
 		}
 
-		public function mergeGlobalMiddleware ( array $middleware ) : array {
+		private function mergeGlobalMiddleware ( array $middleware ) : array {
 
 			$global = $this->middleware_groups['global'] ?? [];
 

@@ -14,7 +14,6 @@
     use WPEmerge\Http\InvalidResponse;
     use WPEmerge\Http\NullResponse;
     use WPEmerge\Http\Request;
-    use WPEmerge\Http\Response;
 
     class EvaluateResponseMiddleware extends Middleware
     {
@@ -22,24 +21,25 @@
         /**
          * @var bool
          */
-        private $must_match_web_routes;
+        private $must_match_current_request;
 
-        public function __construct(bool $must_match_web_routes = false)
+        public function __construct(bool $must_match_current_request = false)
         {
-            $this->must_match_web_routes = $must_match_web_routes;
+            $this->must_match_current_request = $must_match_current_request;
         }
 
         public function handle(Request $request, Delegate $next)
         {
+
             $response = $next($request);
 
-            $this->passOnIfValid($response);
+            return $this->passOnIfValid($response);
 
         }
 
-
         private function passOnIfValid(ResponseInterface $response) : ResponseInterface
         {
+
             // We had a route action return something but it was not transformable to a Psr7 Response.
             if ($response instanceof InvalidResponse) {
 
@@ -50,7 +50,7 @@
             }
 
             // Valid response
-            if ( ! $response  instanceof NullResponse ) {
+            if ( ! $response instanceof NullResponse ) {
 
                 return $response;
 
@@ -58,7 +58,7 @@
 
             // We have a NullResponse, which means no route matched.
             // But we want WordPress to handle it from here.
-            if ( ! $this->must_match_web_routes ) {
+            if ( ! $this->must_match_current_request ) {
 
                 return $response;
 

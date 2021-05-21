@@ -11,9 +11,12 @@
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Contracts\RouteUrlGenerator;
     use WPEmerge\Contracts\ServiceProvider;
+    use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Factories\RouteActionFactory;
+    use WPEmerge\Http\Request;
     use WPEmerge\Middleware\EvaluateResponseMiddleware;
+    use WPEmerge\Middleware\RouteRunner;
     use WPEmerge\Routing\CachedRouteCollection;
     use WPEmerge\Routing\Conditions\AdminAjaxCondition;
     use WPEmerge\Routing\Conditions\AdminPageCondition;
@@ -59,7 +62,6 @@
             'request' => RequestAttributeCondition::class,
         ];
 
-
         public function register() : void
         {
 
@@ -75,7 +77,6 @@
 
             $this->bindUrlGenerator();
 
-            $this->bindMiddleware();
 
         }
 
@@ -198,15 +199,5 @@
             });
         }
 
-        private function bindMiddleware()
-        {
-            $this->container->singleton(EvaluateResponseMiddleware::class, function () {
-
-                return new EvaluateResponseMiddleware(
-                    $this->config->get('routing.must_match_web_routes', false )
-                );
-
-            });
-        }
 
     }

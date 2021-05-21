@@ -86,6 +86,20 @@
 
 		}
 
+		public static function pullByValue ( $value , &$array ) {
+
+            $index = array_search( $value, $array, true);
+
+            if ( ! $index ) {
+
+                return null;
+
+            }
+
+            Arr::pull($array, $index);
+
+        }
+
 		public static function pullByValueReturnKey ( $value, &$array) {
 
 		    $index = array_search($value, $array, true);
@@ -102,4 +116,20 @@
 
         }
 
-	}
+        public static function mergeAfterValue(string $value, array $array_to_merge_into, array $array_to_merge ) : array
+        {
+            $array_to_merge_into = array_values($array_to_merge_into);
+
+            $index = array_search($value, $array_to_merge_into, true);
+
+            $before = array_splice($array_to_merge_into, 0, $index+1);
+            $after = $array_to_merge_into;
+
+            $new = array_merge($before, $array_to_merge);
+
+            return array_merge($new, $after);
+
+
+        }
+
+    }

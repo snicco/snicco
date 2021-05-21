@@ -89,7 +89,7 @@
 
             LoadedWP::class => [
 
-                [HttpKernel::class, 'runGlobal']
+                // [HttpKernel::class, 'runGlobal']
             ]
 
         ];

@@ -20,6 +20,7 @@
     use WPEmerge\ServiceProviders\ExceptionServiceProvider;
     use WPEmerge\ServiceProviders\FactoryServiceProvider;
     use WPEmerge\ServiceProviders\HttpServiceProvider;
+    use WPEmerge\ServiceProviders\MiddlewareServiceProvider;
     use WPEmerge\ServiceProviders\RoutingServiceProvider;
     use WPEmerge\ServiceProviders\ViewServiceProvider;
     use WPEmerge\Facade\WpFacade;
@@ -39,6 +40,7 @@
             ApplicationServiceProvider::class,
             HttpServiceProvider::class,
             RoutingServiceProvider::class,
+            MiddlewareServiceProvider::class,
             ViewServiceProvider::class,
             AliasServiceProvider::class,
 

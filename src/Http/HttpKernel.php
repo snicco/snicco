@@ -6,34 +6,27 @@
 
     namespace WPEmerge\Http;
 
-    use Closure;
     use Contracts\ContainerAdapter as Container;
     use Psr\Http\Message\ResponseInterface;
-    use Psr\Http\Message\ServerRequestInterface;
     use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Contracts\ResponseFactory;
-    use WPEmerge\Events\DoShutdown;
     use WPEmerge\Events\FilterWpQuery;
-    use WPEmerge\Events\HeadersSent;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
-    use WPEmerge\Events\BodySent;
     use WPEmerge\Events\ResponseSent;
-    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
-    use WPEmerge\ExceptionHandling\Exceptions\InvalidResponseException;
     use WPEmerge\Middleware\ErrorHandlerMiddleware;
     use WPEmerge\Middleware\EvaluateResponseMiddleware;
     use WPEmerge\Middleware\OutputBufferMiddleware;
     use WPEmerge\Middleware\RoutingMiddleware;
-    use WPEmerge\Routing\Router;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Middleware\RouteRunner;
-    use WPEmerge\Traits\GathersMiddleware;
+    use WPEmerge\ServiceProviders\MiddlewareServiceProvider;
+    use WPEmerge\Support\Arr;
+    use WPEmerge\Traits\SortsMiddleware;
 
     class HttpKernel
     {
 
-        use GathersMiddleware;
+        use SortsMiddleware;
 
         /** @var Container */
         private $container;
@@ -45,8 +38,6 @@
          * @var AbstractRouteCollection
          */
         private $routes;
-
-
 
         /**
          * @var ResponseEmitter
@@ -60,27 +51,23 @@
          */
         private $always_with_global_middleware = false;
 
-        private $internal_middleware = [
-            ErrorHandlerMiddleware::class,
-            EvaluateResponseMiddleware::class,
-            RoutingMiddleware::class,
-            RouteRunner::class,
-        ];
-
-        private $middleware_priority = [
-
+        private $core_middleware = [
             ErrorHandlerMiddleware::class,
             EvaluateResponseMiddleware::class,
             OutputBufferMiddleware::class,
             RoutingMiddleware::class,
             RouteRunner::class,
-
         ];
 
-        /**
-         * @var bool
-         */
-        private $must_match_web_routes = false;
+        // Only these two get a priority, because they always need to run before any global middleware
+        // that a user might provide.
+        private $priority_map = [
+            ErrorHandlerMiddleware::class,
+            EvaluateResponseMiddleware::class,
+        ];
+
+        private $global_middleware = [];
+
 
         public function __construct(Container $container, AbstractRouteCollection $routes)
         {
@@ -88,41 +75,6 @@
             $this->container = $container;
             $this->response_emitter = new ResponseEmitter();
             $this->routes = $routes;
-
-        }
-
-        public function runGlobal(ServerRequestInterface $request)
-        {
-
-            $middleware = $this->middleware_groups['global'] ?? [];
-
-            /** @var Response $response */
-            $response = (new Pipeline($this->container))
-                ->send($request)
-                ->through($middleware)
-                ->then(function (Request $request, ResponseFactory $response) {
-
-                    $this->container->instance(Request::class, $request);
-
-                    return $response->null();
-
-                });
-
-            if ($response instanceof NullResponse) {
-
-                return;
-
-            }
-
-            $response = $this->returnIfValid($response);
-
-            $this->response_emitter->emit($response);
-
-            ResponseSent::dispatch([
-                $request->withAttribute('from_global_middleware', true),
-                $request,
-            ]);
-
 
         }
 
@@ -137,7 +89,7 @@
 
             }
 
-            if ( $this->response instanceof NullResponse ) {
+            if ($this->response instanceof NullResponse) {
 
                 return;
 
@@ -155,6 +107,20 @@
 
         }
 
+        private function handle(IncomingRequest $request_event) : ResponseInterface
+        {
+
+            $this->container->instance(Request::class, $request = $request_event->request);
+
+            $pipeline = new Pipeline($this->container);
+
+            return $pipeline->send($request)
+                            ->through($this->gatherMiddleware($request_event))
+                            ->run();
+
+
+        }
+
         public function runInTestMode() : void
         {
 
@@ -162,16 +128,12 @@
 
         }
 
-        public function alwaysWithGlobalMiddleware()
+        public function alwaysWithGlobalMiddleware(array $global_middleware = [])
         {
 
+            $this->global_middleware = $global_middleware;
             $this->always_with_global_middleware = true;
 
-        }
-
-        public function mustMatchForWebRoutes()
-        {
-            $this->must_match_web_routes = true;
         }
 
         public function filterRequest(FilterWpQuery $event)
@@ -192,43 +154,26 @@
 
         }
 
-        private function handle(IncomingRequest $request_event) : ResponseInterface
-        {
-
-            $this->container->instance(Request::class, $request = $request_event->request);
-
-            $pipeline = new Pipeline($this->container);
-
-            $middleware = $this->gatherMiddleware($request_event);
-
-            return $pipeline->send($request)
-                                 ->through($middleware)
-                                 ->run();
-
-
-
-        }
-
         private function gatherMiddleware(IncomingRequest $incoming_request) : array
         {
 
-            $middleware = $this->internal_middleware;
+            if ( ! $incoming_request instanceof IncomingAdminRequest) {
+
+                Arr::pullByValue(OutputBufferMiddleware::class, $this->core_middleware);
+
+            }
 
             if ( ! $this->withMiddleware()) {
 
-                return $middleware;
+                return $this->core_middleware;
 
             }
 
-            if ($incoming_request instanceof IncomingAdminRequest) {
+            $merged = array_merge($this->global_middleware, $this->core_middleware);
 
-                $middleware[] = OutputBufferMiddleware::class;
+            $this->container->instance(MiddlewareServiceProvider::GLOBAL_MIDDLEWARE_ALREADY_HANDLED, true);
 
-            }
-
-            $middleware = array_merge($middleware, $this->middleware_groups['global'] ?? []);
-
-            return $this->sortMiddleware($middleware);
+            return $this->sortMiddleware($merged, $this->priority_map);
 
 
         }
@@ -245,6 +190,7 @@
 
             return ! $this->response instanceof NullResponse;
         }
+
 
 
     }
