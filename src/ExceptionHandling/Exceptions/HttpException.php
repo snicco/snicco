@@ -15,17 +15,29 @@
         /** @var int  */
         private $status_code;
 
-        public function __construct(int $status_code, ?string $message = '', Throwable $previous = null, ?int $code = 0)
+        /**
+         * @var string|null
+         */
+        private $message_for_humans;
+
+        public function __construct(int $status_code, ?string $message = null, Throwable $previous = null, ?int $code = 0)
         {
             $this->status_code = $status_code;
+            $this->message_for_humans = $message;
 
-            parent::__construct($message, $code, $previous);
+            parent::__construct('', $code, $previous);
 
         }
 
-        public function getStatusCode() :int {
+        public function getStatusCode() :string {
 
-            return $this->status_code;
+            return strval($this->status_code);
+
+        }
+
+        public function getMessageForHumans () :?string {
+
+            return $this->message_for_humans;
 
         }
 

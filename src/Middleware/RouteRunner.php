@@ -12,6 +12,7 @@
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Request;
     use WPEmerge\Routing\Pipeline;
+    use WPEmerge\Routing\Route;
     use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Traits\GathersMiddleware;
 
@@ -29,28 +30,11 @@
          */
         private $container;
 
-        private $middleware_groups = [
+        private $middleware_groups = [];
 
-            'web' => [
+        private $route_middleware_aliases = [];
 
-            ],
-            'admin' => [
-
-            ],
-            'ajax' => [
-
-            ]
-
-        ];
-
-        private $route_middleware_aliases = [
-            'guest' => RedirectIfAuthenticated::class,
-            'auth' => Authenticate::class
-        ];
-
-        private $middleware_priority = [
-
-        ];
+        private $middleware_priority = [];
 
         public function __construct(ResponseFactory $response_factory, ContainerAdapter $container)
         {
@@ -66,23 +50,20 @@
             /** @var RoutingResult $route_result */
             $route_result = $request->getAttribute('route_result');
 
-            if ( ! $route = $route_result->route() ) {
+            if ( ! $route = $route_result->route()) {
 
                 return $this->response_factory->null();
 
             }
 
             $url_segments = $route_result->capturedUrlSegmentValues();
+            $middleware_stack = $this->middlewareStack($route);
+            $pipeline = new Pipeline($this->container);
 
-            $middleware = $route->getMiddleware();
-            $middleware = $this->expandMiddleware($middleware);
-            $middleware = $this->uniqueMiddleware($middleware);
-            $middleware = $this->sortMiddleware($middleware);
-
-            return ((new Pipeline($this->container)))
+            return $pipeline
                 ->send($request)
-                ->through($middleware)
-                ->then(function (Request $request) use ( $url_segments, $route ) {
+                ->through($middleware_stack)
+                ->then(function (Request $request) use ($url_segments, $route) {
 
                     $response = $route->run($request, $url_segments);
 
@@ -92,5 +73,40 @@
 
 
         }
+
+        private function middlewareStack(Route $route) : array
+        {
+
+            $middleware = $route->getMiddleware();
+            $middleware = $this->expandMiddleware($middleware);
+            $middleware = $this->mergeGlobalMiddleware($middleware);
+            $middleware = $this->uniqueMiddleware($middleware);
+            $middleware = $this->sortMiddleware($middleware);
+
+            return $middleware;
+
+        }
+
+        public function withMiddlewareGroup(string $group, array $middlewares)
+        {
+
+            $this->middleware_groups[$group] = $middlewares;
+
+        }
+
+        public function middlewarePriority(array $middleware_priority)
+        {
+
+            $this->middleware_priority = $middleware_priority;
+
+        }
+
+        public function middlewareAliases(array $route_middleware_aliases)
+        {
+
+            $this->route_middleware_aliases = $route_middleware_aliases;
+
+        }
+
 
     }

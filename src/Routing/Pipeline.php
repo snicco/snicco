@@ -177,21 +177,6 @@
 
         }
 
-        private function returnIfValid($response, $middleware) : ResponseInterface
-        {
-
-            if ( ! $response instanceof ResponseInterface) {
-
-                $class = get_class($middleware);
-
-                throw new LogicException("invalid middleware result returned by: {$class}");
-
-            }
-
-            return $response;
-
-        }
-
         /**
          *
          * @param  array|string|object  $middleware_blueprint

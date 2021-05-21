@@ -13,6 +13,9 @@
     use WPEmerge\Contracts\ResponsableInterface;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Contracts\ViewServiceInterface as ViewService;
+    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
+    use WPEmerge\ExceptionHandling\Exceptions\ViewException;
+    use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
     use WPEmerge\Facade\WP;
 
     class HttpResponseFactory implements ResponseFactory
@@ -53,7 +56,7 @@
 
             foreach ($headers as $name => $value) {
 
-               $response = $response->withHeader($name, $value);
+                $response = $response->withHeader($name, $value);
 
             }
 
@@ -70,7 +73,7 @@
 
         }
 
-        public function html(string $html, int $status_code = 200 ) : Response
+        public function html(string $html, int $status_code = 200) : Response
         {
 
             return $this->make($status_code)
@@ -78,7 +81,7 @@
 
         }
 
-        public function json($content, int $status = 200 )  : Response
+        public function json($content, int $status = 200) : Response
         {
 
 
@@ -97,33 +100,34 @@
 
         }
 
-        public function toResponse( $response ) : Response {
+        public function toResponse($response) : Response
+        {
 
-            if ( $response instanceof Response ) {
+            if ($response instanceof Response) {
 
                 return $response;
 
             }
 
-            if ( $response instanceof ResponseInterface ) {
+            if ($response instanceof ResponseInterface) {
 
                 return new Response($response);
 
             }
 
-            if ( is_string( $response ) ) {
+            if (is_string($response)) {
 
                 return $this->html($response);
 
             }
 
-            if ( is_array( $response ) ) {
+            if (is_array($response)) {
 
                 return $this->json($response);
 
             }
 
-            if ( $response instanceof ResponsableInterface ) {
+            if ($response instanceof ResponsableInterface) {
 
                 return $this->toResponse(
                     $response->toResponsable()
@@ -135,51 +139,75 @@
 
         }
 
-        public function redirect( int $status_code = 302 ) : RedirectResponse
+        public function redirect(int $status_code = 302) : RedirectResponse
         {
-            return new RedirectResponse( $this->make( $status_code) );
+
+            return new RedirectResponse($this->make($status_code));
         }
 
         public function invalidResponse() : InvalidResponse
         {
+
             return new InvalidResponse($this->response_factory->createResponse(500));
         }
 
         public function createResponse(int $code = 200, string $reasonPhrase = '') : ResponseInterface
         {
+
             return $this->response_factory->createResponse($code, $reasonPhrase);
         }
 
         public function createStream(string $content = '') : StreamInterface
         {
+
             return $this->stream_factory->createStream($content);
         }
 
         public function createStreamFromFile(string $filename, string $mode = 'r') : StreamInterface
         {
+
             return $this->stream_factory->createStreamFromFile($filename, $mode);
         }
 
         public function createStreamFromResource($resource) : StreamInterface
         {
+
             return $this->stream_factory->createStreamFromResource($resource);
         }
 
-        public function error(int $status_code) :Response
+        public function error(HttpException $e) : Response
         {
-            $views = [strval($status_code), 'error', 'index'];
 
-            if( WP::isAdmin() ) {
+            $views = ['error', 'index'];
+
+            if (WP::isAdmin()) {
 
                 $views = collect($views)->map(function ($view) {
 
-                    return $view . '-' . ( WP::isAdminAjax() ? 'ajax' : 'admin' );
+                    return $view.'-'.(WP::isAdminAjax() ? 'ajax' : 'admin');
 
                 })->merge($views)->all();
 
             }
 
-            return $this->toResponse($this->view->make($views));
+            $view = $this->view->make($views)->with([
+                    'code'=> $e->getStatusCode(),
+                    'message' => $e->getMessageForHumans(),
+                ]
+            );
+
+            try {
+
+                return $this->toResponse($view);
+
+            }
+            catch (ViewException $e) {
+
+
+                return $this->toResponse($this->view->make('500'));
+
+            }
+
 
         }
 
