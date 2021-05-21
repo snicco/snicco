@@ -53,6 +53,12 @@
 
             }
 
+            if ($this->config->get('routing.must_match_web_routes', false)) {
+
+                $kernel->mustMatchForWebRoutes();
+
+            }
+
 
         }
 
@@ -85,6 +91,7 @@
 
         private function bindKernel()
         {
+
             $this->container->singleton(HttpKernel::class, function () {
 
                 return new HttpKernel(
@@ -138,8 +145,6 @@
             });
 
         }
-
-
 
 
     }

@@ -19,8 +19,10 @@
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\BodySent;
     use WPEmerge\Events\ResponseSent;
+    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidResponseException;
     use WPEmerge\Middleware\ErrorHandlerMiddleware;
+    use WPEmerge\Middleware\EvaluateResponseMiddleware;
     use WPEmerge\Middleware\OutputBufferMiddleware;
     use WPEmerge\Middleware\RoutingMiddleware;
     use WPEmerge\Routing\Router;
@@ -60,6 +62,7 @@
 
         private $internal_middleware = [
             ErrorHandlerMiddleware::class,
+            EvaluateResponseMiddleware::class,
             RoutingMiddleware::class,
             RouteRunner::class,
         ];
@@ -67,12 +70,17 @@
         private $middleware_priority = [
 
             ErrorHandlerMiddleware::class,
+            EvaluateResponseMiddleware::class,
             OutputBufferMiddleware::class,
             RoutingMiddleware::class,
             RouteRunner::class,
 
         ];
 
+        /**
+         * @var bool
+         */
+        private $must_match_web_routes = false;
 
         public function __construct(Container $container, AbstractRouteCollection $routes)
         {
@@ -129,7 +137,7 @@
 
             }
 
-            if ($this->response instanceof NullResponse) {
+            if ( $this->response instanceof NullResponse ) {
 
                 return;
 
@@ -161,6 +169,11 @@
 
         }
 
+        public function mustMatchForWebRoutes()
+        {
+            $this->must_match_web_routes = true;
+        }
+
         public function filterRequest(FilterWpQuery $event)
         {
 
@@ -179,7 +192,7 @@
 
         }
 
-        private function handle(IncomingRequest $request_event) : Response
+        private function handle(IncomingRequest $request_event) : ResponseInterface
         {
 
             $this->container->instance(Request::class, $request = $request_event->request);
@@ -188,12 +201,11 @@
 
             $middleware = $this->gatherMiddleware($request_event);
 
-            /** @var Response $response */
-            $response = $pipeline->send($request)
+            return $pipeline->send($request)
                                  ->through($middleware)
                                  ->run();
 
-            return $this->returnIfValid($response);
+
 
         }
 
@@ -225,29 +237,6 @@
         {
 
             return ! $this->is_test_mode && $this->always_with_global_middleware;
-
-        }
-
-        private function returnIfValid(Response $response) : Response
-        {
-
-            // We had no matching route.
-            if ($response instanceof NullResponse) {
-
-                return $response;
-
-            }
-
-            // We had a route action return something but it was not transformable to a Psr7 Response.
-            if ($response instanceof InvalidResponse) {
-
-                throw new InvalidResponseException(
-                    'The response returned by the route action is not valid.'
-                );
-
-            }
-
-            return $response;
 
         }
 

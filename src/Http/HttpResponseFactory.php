@@ -13,6 +13,7 @@
     use WPEmerge\Contracts\ResponsableInterface;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Contracts\ViewServiceInterface as ViewService;
+    use WPEmerge\Facade\WP;
 
     class HttpResponseFactory implements ResponseFactory
     {
@@ -162,6 +163,24 @@
         public function createStreamFromResource($resource) : StreamInterface
         {
             return $this->stream_factory->createStreamFromResource($resource);
+        }
+
+        public function error(int $status_code) :Response
+        {
+            $views = [strval($status_code), 'error', 'index'];
+
+            if( WP::isAdmin() ) {
+
+                $views = collect($views)->map(function ($view) {
+
+                    return $view . '-' . ( WP::isAdminAjax() ? 'ajax' : 'admin' );
+
+                })->merge($views)->all();
+
+            }
+
+            return $this->toResponse($this->view->make($views));
+
         }
 
     }

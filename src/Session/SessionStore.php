@@ -270,7 +270,6 @@
 			return ctype_alnum($id) && strlen($id) === 40;
 		}
 
-
 		public function previousUrl() :?string
 		{
 			return $this->get('_previous.url');
@@ -285,7 +284,6 @@
 		{
 			return $this->handler;
 		}
-
 
 		private function generateSessionId() :string
 		{
