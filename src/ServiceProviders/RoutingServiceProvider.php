@@ -13,6 +13,7 @@
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Factories\RouteActionFactory;
+    use WPEmerge\Middleware\EvaluateResponseMiddleware;
     use WPEmerge\Routing\CachedRouteCollection;
     use WPEmerge\Routing\Conditions\AdminAjaxCondition;
     use WPEmerge\Routing\Conditions\AdminPageCondition;
@@ -74,6 +75,8 @@
 
             $this->bindUrlGenerator();
 
+            $this->bindMiddleware();
+
         }
 
         public function bootstrap() : void
@@ -99,6 +102,8 @@
         {
 
             $this->config->extend('routing.conditions', self::CONDITION_TYPES);
+            $this->config->extend('routing.must_match_web_routes', false);
+
         }
 
         private function bindRouteMatcher() : void
@@ -189,6 +194,17 @@
             $this->container->singleton(UrlGenerator::class, function () {
 
                 return new UrlGenerator($this->container->make(RouteUrlGenerator::class));
+
+            });
+        }
+
+        private function bindMiddleware()
+        {
+            $this->container->singleton(EvaluateResponseMiddleware::class, function () {
+
+                return new EvaluateResponseMiddleware(
+                    $this->config->get('routing.must_match_web_routes', false )
+                );
 
             });
         }

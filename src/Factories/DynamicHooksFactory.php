@@ -18,12 +18,10 @@
 
 	class DynamicHooksFactory {
 
-
 		/**
 		 * @var WordpressDispatcher
 		 */
 		private $dispatcher;
-
 
 		public function __construct( Dispatcher $dispatcher ) {
 
@@ -44,7 +42,6 @@
 
 
 		}
-
 
 		/**
 		 * Get page hook.

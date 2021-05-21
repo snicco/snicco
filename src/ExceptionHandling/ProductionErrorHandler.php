@@ -8,11 +8,11 @@
 
 	use Contracts\ContainerAdapter;
 	use Psr\Log\LoggerInterface;
-	use WPEmerge\Contracts\ResponseInterface;
 	use Throwable;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
-	use WPEmerge\Facade\WP;
+    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Http\Response;
     use WPEmerge\Http\ResponseEmitter;
@@ -62,7 +62,6 @@
 
 			$response = $this->createResponseObject( $exception );
 
-			$response = $this->correctContentType($response);
 
 			if ( $in_routing_flow ) {
 
@@ -144,6 +143,12 @@
 
 			}
 
+			if ( $e instanceof HttpException ) {
+
+			    return $this->renderHttpException($e);
+
+            }
+
 			return $this->defaultResponse();
 
 		}
@@ -186,16 +191,10 @@
 			return [];
 		}
 
-        private function correctContentType(Response $response)
+        private function renderHttpException(HttpException $e) : Response
         {
 
-            if ( $this->is_ajax ) {
-
-                return $response->withHeader('Content-Type', 'application/json');
-
-            }
-
-            return $response->withHeader('Content-Type', 'text/html');
+            return $this->response->error($e->getStatusCode());
 
         }
 
