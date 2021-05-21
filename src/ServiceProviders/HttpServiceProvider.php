@@ -10,6 +10,7 @@
     use Psr\Http\Message\ResponseFactoryInterface as Prs17ResponseFactory;
     use Psr\Http\Message\StreamFactoryInterface;
     use Slim\Csrf\Guard;
+    use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Contracts\ServiceProvider;
@@ -27,6 +28,36 @@
         public function register() : void
         {
 
+            $this->bindConfig();
+
+            $this->bindKernel();
+
+            $this->bindConcretePsr17ResponseFactory();
+
+            $this->bindPsr17ResponseFactoryInterface();
+
+            $this->bindPsr17StreamFactory();
+
+
+        }
+
+        public function bootstrap() : void
+        {
+
+            /** @var HttpKernel $kernel */
+            $kernel = $this->container->make(HttpKernel::class);
+
+            if ($this->config->get('always_run_middleware', false)) {
+
+                $kernel->alwaysWithGlobalMiddleware();
+
+            }
+
+
+        }
+
+        private function bindConfig()
+        {
 
             $this->config->extend('middleware.aliases', [
 
@@ -50,30 +81,44 @@
 
             $this->config->extend('always_run_middleware', false);
 
+        }
+
+        private function bindKernel()
+        {
             $this->container->singleton(HttpKernel::class, function () {
 
                 return new HttpKernel(
 
-                    $this->container[Router::class],
                     $this->container,
-                    $this->container[ErrorHandlerInterface::class]
+                    $this->container->make(AbstractRouteCollection::class)
 
                 );
 
-
             });
+        }
+
+        private function bindConcretePsr17ResponseFactory() : void
+        {
 
             $this->container->singleton('psr17.response.factory', function () {
 
                 return new NyholmFactoryImplementation();
 
             });
+        }
+
+        private function bindPsr17StreamFactory() : void
+        {
 
             $this->container->singleton(StreamFactoryInterface::class, function () {
 
                 return new NyholmFactoryImplementation();
 
             });
+        }
+
+        private function bindPsr17ResponseFactoryInterface() : void
+        {
 
             $this->container->singleton(ResponseFactory::class, function () {
 
@@ -92,35 +137,9 @@
 
             });
 
-            $this->container->singleton(Guard::class, function () {
-
-                return new Guard(
-                    $this->container->make(ResponseFactory::class),
-                    'crsf',
-
-                );
-
-            });
-
         }
 
-        public function bootstrap() : void
-        {
-
-            /** @var HttpKernel $kernel */
-            $kernel = $this->container->make(HttpKernel::class);
-
-            $kernel->setRouteMiddlewareAliases($this->config->get('middleware.aliases', []));
-            $kernel->setMiddlewareGroups($this->config->get('middleware.groups', []));
-            $kernel->setMiddlewarePriority($this->config->get('middleware.priority', []));
-
-            if ( $this->config->get('always_run_middleware', false ) ) {
-
-                $kernel->alwaysWithGlobalMiddleware();
-
-            }
 
 
-        }
 
     }

@@ -33,7 +33,7 @@
 
 			$method = RunInterface::EXCEPTION_HANDLER;
 
-			$this->whoops->{$method}( $exception );
+			$this->whoops->{ $method}( $exception );
 
 			UnrecoverableExceptionHandled::dispatch();
 
@@ -49,4 +49,9 @@
 		}
 
 
-	}
+        public function unrecoverable(Throwable $exception)
+        {
+            $this->handleException($exception);
+        }
+
+    }

@@ -17,6 +17,7 @@
 
 		public function view ( string $view, array $data = [], $status = 200, array $headers = []) : Response;
 
+
 		public function toResponse ( $response ) : Response;
 
         /**

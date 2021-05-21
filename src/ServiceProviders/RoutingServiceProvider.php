@@ -17,6 +17,7 @@
     use WPEmerge\Routing\Conditions\AdminAjaxCondition;
     use WPEmerge\Routing\Conditions\AdminPageCondition;
     use WPEmerge\Routing\Conditions\QueryStringCondition;
+    use WPEmerge\Routing\Conditions\RequestAttributeCondition;
     use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Routing\Conditions\CustomCondition;
@@ -61,7 +62,47 @@
         public function register() : void
         {
 
+            $this->bindConfig();
+
+            $this->bindRouteMatcher();
+
+            $this->bindRouteCollection();
+
+            $this->bindRouter();
+
+            $this->bindRouteUrlGenerator();
+
+            $this->bindUrlGenerator();
+
+        }
+
+        public function bootstrap() : void
+        {
+
+            $router = $this->container->make(Router::class);
+
+            (new RouteRegistrar($router, $this->config))->loadRoutes();
+
+        }
+
+        private function checkIfValidCacheDir( $dir ) {
+
+            if ( ! $dir || ! is_dir( $dir )) {
+
+                throw new ConfigurationException("No valid cache dir provided:{$dir}");
+
+            }
+
+        }
+
+        private function bindConfig() : void
+        {
+
             $this->config->extend('routing.conditions', self::CONDITION_TYPES);
+        }
+
+        private function bindRouteMatcher() : void
+        {
 
             $this->container->singleton(RouteMatcher::class, function () {
 
@@ -78,11 +119,15 @@
 
                 return new CachedFastRouteMatcher(
                     new FastRouteMatcher(),
-                    FilePath::addTrailingSlash($cache_dir) . '__generated_route_map'
+                    FilePath::addTrailingSlash($cache_dir).'__generated_route_map'
                 );
 
 
             });
+        }
+
+        private function bindRouteCollection() : void
+        {
 
             $this->container->singleton(AbstractRouteCollection::class, function () {
 
@@ -105,22 +150,28 @@
                     $this->container->make(RouteMatcher::class),
                     $this->container->make(ConditionFactory::class),
                     $this->container->make(RouteActionFactory::class),
-                    FilePath::addTrailingSlash($cache_dir) . '__generated_route_collection',
+                    FilePath::addTrailingSlash($cache_dir).'__generated_route_collection',
                 );
 
 
-
             });
+        }
+
+        private function bindRouter() : void
+        {
 
             $this->container->singleton(Router::class, function () {
 
                 return new Router(
                     $this->container,
                     $this->container->make(AbstractRouteCollection::class),
-                    $this->container->make(ResponseFactory::class)
 
                 );
             });
+        }
+
+        private function bindRouteUrlGenerator() : void
+        {
 
             $this->container->singleton(RouteUrlGenerator::class, function () {
 
@@ -130,33 +181,16 @@
                 );
 
             });
+        }
+
+        private function bindUrlGenerator() : void
+        {
 
             $this->container->singleton(UrlGenerator::class, function () {
 
                 return new UrlGenerator($this->container->make(RouteUrlGenerator::class));
 
             });
-
-        }
-
-
-        public function bootstrap() : void
-        {
-
-            $router = $this->container->make(Router::class);
-
-            (new RouteRegistrar($router, $this->config))->loadRoutes();
-
-        }
-
-        private function checkIfValidCacheDir( $dir ) {
-
-            if ( ! $dir || ! is_dir( $dir )) {
-
-                throw new ConfigurationException("No valid cache dir provided:{$dir}");
-
-            }
-
         }
 
     }

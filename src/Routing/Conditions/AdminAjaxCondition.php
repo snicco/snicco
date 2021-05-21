@@ -10,9 +10,8 @@
     use WPEmerge\ExceptionHandling\Exceptions\RouteLogicException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
-    use WPEmerge\Routing\CompiledRoute;
     use WPEmerge\Routing\Route;
-    use WPEmerge\ServiceProviders\RequestAttributeCondition;
+    use WPEmerge\Routing\Conditions\RequestAttributeCondition;
     use WPEmerge\Support\Arr;
 
     class AdminAjaxCondition extends RequestAttributeCondition implements UrlableInterface

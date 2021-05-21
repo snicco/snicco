@@ -7,7 +7,6 @@
 	namespace Tests\stubs\Middleware;
 
 	use WPEmerge\Contracts\Middleware;
-	use WPEmerge\Contracts\RequestInterface;
     use WPEmerge\Http\Request;
 
     class BarMiddleware extends Middleware {

@@ -59,7 +59,7 @@
 		 * @param  string[]  $middleware
 		 *
 		 * @return array[]
-		 * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
+		 * @throws ConfigurationException
 		 */
 		public function expandMiddleware( array $middleware ) : array {
 
@@ -75,7 +75,6 @@
 			return $classes;
 		}
 
-
 		public function mergeGlobalMiddleware ( array $middleware ) : array {
 
 			$global = $this->middleware_groups['global'] ?? [];
@@ -86,15 +85,13 @@
 
 		}
 
-
-
 		/**
 		 * Expand a middleware group into an array of fully qualified class names.
 		 *
 		 * @param  string  $group
 		 *
 		 * @return array[]
-		 * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
+		 * @throws ConfigurationException
 		 */
 		private function expandMiddlewareGroup( string $group ) : array {
 
@@ -111,7 +108,7 @@
 		 * @param  string  $middleware
 		 *
 		 * @return array[]
-		 * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
+		 * @throws ConfigurationException
 		 */
 		private function expandMiddlewareMolecule( string $middleware ) : array {
 
@@ -134,7 +131,7 @@
 		 * @param  string  $middleware
 		 *
 		 * @return string
-		 * @throws \WPEmerge\ExceptionHandling\Exceptions\ConfigurationException
+		 * @throws ConfigurationException
 		 */
 		private function expandMiddlewareAtom( string $middleware ) : string {
 
@@ -148,7 +145,6 @@
 
 			throw new ConfigurationException( 'Unknown middleware [' . $middleware . '] used.' );
 		}
-
 
 		private function pushGlobalMiddlewarePriority (array $global_middleware)  {
 

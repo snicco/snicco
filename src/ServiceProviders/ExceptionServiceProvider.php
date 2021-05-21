@@ -17,29 +17,9 @@
 
 		public function register() : void {
 
-            $this->config->extend('exception_handling.global', false);
+            $this->bindConfig();
 
-			$this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
-
-			$this->container->singleton( ErrorHandlerInterface::class, function () {
-
-				if ( ! $this->config->get('exception_handling.enable', false ) ) {
-
-					return new NullErrorHandler();
-
-				}
-
-				/** @var Request $request */
-				$request = $this->container->make( Request::class );
-
-				return ErrorHandlerFactory::make(
-					$this->container,
-					$this->config->get( 'exception_handling.debug', false ),
-					$request->isAjax(),
-					$this->config->get( 'exception_handling.editor', 'phpstorm' )
-
-				);
-			});
+            $this->bindErrorHandlerInterface();
 
 		}
 
@@ -53,4 +33,37 @@
 
 		}
 
-	}
+        private function bindConfig() : void
+        {
+
+            $this->config->extend('exception_handling.global', false);
+
+            // We bind the class name only
+            $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
+        }
+
+        private function bindErrorHandlerInterface() : void
+        {
+
+            $this->container->singleton(ErrorHandlerInterface::class, function () {
+
+                if ( ! $this->config->get('exception_handling.enable', false)) {
+
+                    return new NullErrorHandler();
+
+                }
+
+                /** @var Request $request */
+                $request = $this->container->make(Request::class);
+
+                return ErrorHandlerFactory::make(
+                    $this->container,
+                    $this->config->get('exception_handling.debug', false),
+                    $request->isAjax(),
+                    $this->config->get('exception_handling.editor', 'phpstorm')
+
+                );
+            });
+        }
+
+    }

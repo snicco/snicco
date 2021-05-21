@@ -45,12 +45,12 @@
         {
 
             $isEmpty = $this->isResponseEmpty($response);
-            if (headers_sent() === false) {
+            if ($headers = headers_sent() === false) {
                 $this->emitStatusLine($response);
                 $this->emitHeaders($response);
             }
 
-            if ( ! $isEmpty ) {
+            if ( ! $isEmpty && $headers) {
                 $this->emitBody($response);
             }
         }
@@ -63,7 +63,7 @@
         public function emitHeaders(ResponseInterface $response) : void
         {
 
-            if (headers_sent()) {
+            if ( headers_sent() ) {
 
                 return;
 

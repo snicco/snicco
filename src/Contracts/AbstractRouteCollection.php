@@ -11,7 +11,7 @@
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Request;
     use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RouteResult;
+    use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Support\Arr;
 
     abstract class AbstractRouteCollection
@@ -26,10 +26,10 @@
          */
         protected $action_factory;
 
-        /** @var RouteResult|null */
+        /** @var RoutingResult|null */
         private $route_result;
 
-        public function match(Request $request) : RouteResult
+        public function match(Request $request) : RoutingResult
         {
 
             $path = $this->appendSpecialWpSuffixesToPath($request);
@@ -38,7 +38,7 @@
 
             if ( ! $route = $result->route() ) {
 
-                return $this->route_result = new RouteResult(null);
+                return $this->route_result = new RoutingResult(null);
 
             }
 
@@ -46,7 +46,7 @@
 
             if ( ! $route->satisfiedBy($request) ) {
 
-                return $this->route_result = new RouteResult(null);
+                return $this->route_result = new RoutingResult(null);
 
             }
 
@@ -56,7 +56,7 @@
 
         }
 
-        public function hasResult() :?RouteResult {
+        public function hasResult() :?RoutingResult {
 
             return $this->route_result;
 

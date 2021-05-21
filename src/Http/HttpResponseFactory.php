@@ -13,7 +13,6 @@
     use WPEmerge\Contracts\ResponsableInterface;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Contracts\ViewServiceInterface as ViewService;
-    use WPEmerge\Support\Arr;
 
     class HttpResponseFactory implements ResponseFactory
     {
@@ -85,7 +84,7 @@
             /** @todo This needs more parsing or a dedicated JsonResponseClass */
             return $this->make($status)
                         ->json(
-                            $this->stream(json_encode($content))
+                            $this->createStream(json_encode($content))
                         );
 
         }
@@ -94,13 +93,6 @@
         {
 
             return new NullResponse($this->response_factory->createResponse(204));
-
-        }
-
-        private function stream(string $content) : StreamInterface
-        {
-
-            return $this->stream_factory->createStream($content);
 
         }
 
@@ -155,6 +147,21 @@
         public function createResponse(int $code = 200, string $reasonPhrase = '') : ResponseInterface
         {
             return $this->response_factory->createResponse($code, $reasonPhrase);
+        }
+
+        public function createStream(string $content = '') : StreamInterface
+        {
+            return $this->stream_factory->createStream($content);
+        }
+
+        public function createStreamFromFile(string $filename, string $mode = 'r') : StreamInterface
+        {
+            return $this->stream_factory->createStreamFromFile($filename, $mode);
+        }
+
+        public function createStreamFromResource($resource) : StreamInterface
+        {
+            return $this->stream_factory->createStreamFromResource($resource);
         }
 
     }

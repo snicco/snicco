@@ -7,9 +7,11 @@
     namespace Tests\integration\HttpKernel;
 
     use Tests\IntegrationTest;
-    use Tests\stubs\GlobalMiddleware\UnauthorizedMiddleware;
+    use Tests\stubs\GlobalMiddleware\ChangeRequestMiddleware;
+    use Tests\stubs\TestApp;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\DoShutdown;
+    use WPEmerge\Http\Request;
 
     class GlobalMiddlewareTest extends IntegrationTest
     {
@@ -17,13 +19,12 @@
         /** @test */
         public function global_middleware_can_be_run () {
 
-
             $this->newTestApp([
                 'always_run_middleware' => true,
                 'middleware' => [
                     'groups' => [
 
-                        'global' => [UnauthorizedMiddleware::class]
+                        'global' => [ChangeRequestMiddleware::class]
 
                     ]
                 ]
@@ -52,7 +53,7 @@
                 'middleware' => [
                     'groups' => [
 
-                        'global' => [UnauthorizedMiddleware::class]
+                        'global' => [ChangeRequestMiddleware::class]
 
                     ]
                 ]
@@ -83,7 +84,7 @@
                     'groups' => [
 
                         'global' => [
-                           [ UnauthorizedMiddleware::class, false ]
+                           [ ChangeRequestMiddleware::class, false ]
                         ]
 
                     ]
@@ -103,5 +104,40 @@
             ApplicationEvent::assertNotDispatched(DoShutdown::class);
 
         }
+
+        /** @test */
+        public function if_the_request_object_is_modified_in_the_global_middleware_stack_its_saved_again_in_the_container () {
+
+            $this->newTestApp([
+                'always_run_middleware' => true,
+                'middleware' => [
+                    'groups' => [
+
+                        'global' => [ChangeRequestMiddleware::class]
+
+                    ]
+                ]
+            ]);
+
+            $request_before = TestApp::resolve(Request::class);
+
+            ob_start();
+            ApplicationEvent::fake([DoShutdown::class]);
+
+            do_action('init');
+
+            $output = ob_get_clean();
+            $this->assertSame('', $output);
+
+            /** @var Request $request_after */
+            $request_after = TestApp::resolve(Request::class);
+            $this->assertNotSame($request_before, $request_after, 'Request was not updated');
+            $this->assertSame('bar', $request_after->getAttribute('foo'));
+
+            ApplicationEvent::assertNotDispatched(DoShutdown::class);
+
+        }
+
+
 
     }

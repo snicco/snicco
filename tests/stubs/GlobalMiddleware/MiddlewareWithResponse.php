@@ -11,7 +11,7 @@
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Request;
 
-    class UnauthorizedMiddleware extends Middleware
+    class MiddlewareWithResponse extends Middleware
     {
 
         /**

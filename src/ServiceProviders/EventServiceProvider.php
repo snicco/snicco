@@ -10,10 +10,10 @@
     use Psr\Http\Message\ServerRequestInterface;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Events\DoShutdown;
     use WPEmerge\Events\FilterWpQuery;
     use WPEmerge\Events\LoadedWP;
     use WPEmerge\Events\MakingView;
+    use WPEmerge\Events\ResponseSent;
     use WPEmerge\Events\UnrecoverableExceptionHandled;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Events\LoadedWpAdmin;
@@ -21,8 +21,8 @@
     use WPEmerge\Events\AdminBodySendable;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingAjaxRequest;
-    use WPEmerge\Events\BodySent;
     use WPEmerge\Http\HttpKernel;
+    use WPEmerge\Middleware\OutputBufferMiddleware;
     use WPEmerge\View\ViewService;
 
     class EventServiceProvider extends ServiceProvider
@@ -41,45 +41,41 @@
 
             IncomingWebRequest::class => [
 
-                HttpKernel::class.'@handle',
+                [HttpKernel::class, 'run']
 
             ],
 
             IncomingAdminRequest::class => [
 
-                HttpKernel::class.'@handle',
+                [OutputBufferMiddleware::class, 'start'],
 
             ],
 
             IncomingAjaxRequest::class => [
 
-                HttpKernel::class.'@handle',
+                [HttpKernel::class, 'run']
+
 
             ],
 
             AdminBodySendable::class => [
 
-                HttpKernel::class.'@sendBodyDeferred',
-
-            ],
-
-            BodySent::class => [
-
-                ShutdownHandler::class.'@shutdownWp',
+                [ HttpKernel::class, 'run']
 
             ],
 
             UnrecoverableExceptionHandled::class => [
 
-                ShutdownHandler::class.'@exceptionHandled',
+               [ ShutdownHandler::class ,'unrecoverableException' ]
 
             ],
 
-            DoShutdown::class => [
+            ResponseSent::class => [
 
-                [ShutdownHandler::class, 'terminate']
+                [ShutdownHandler::class, 'handle']
 
             ],
+
 
             MakingView::class => [
 
@@ -93,8 +89,7 @@
 
             LoadedWP::class => [
 
-                // [HttpKernel::class, 'runGlobalMiddleware']
-
+                [HttpKernel::class, 'runGlobal']
             ]
 
         ];
@@ -123,7 +118,7 @@
 
         public function bootstrap() : void
         {
-
+            //
         }
 
     }

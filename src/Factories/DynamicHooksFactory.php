@@ -90,17 +90,17 @@
 
 			if ( $hook = $this->getAdminPageHook() ) {
 
-				$this->dispatcher->listen( 'load-' . $hook, function () use ( $request ) {
+                $this->dispatcher->listen( 'load-' . $hook, function () use ( $request ) {
 
-					IncomingAdminRequest::dispatch([$request]);
+                    IncomingAdminRequest::dispatch([$request]);
 
-				} );
+                } );
 
-				$this->dispatcher->listen( $hook, function () {
+                $this->dispatcher->listen( $hook, function () use ( $request ) {
 
-					AdminBodySendable::dispatch();
+                    AdminBodySendable::dispatch([$request]);
 
-				} );
+                } );
 
 			}
 
