@@ -13,6 +13,7 @@
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\ResponseSent;
+    use WPEmerge\Middleware\Core\AppendSpecialPathSuffix;
     use WPEmerge\Middleware\Core\ErrorHandlerMiddleware;
     use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
     use WPEmerge\Middleware\Core\OutputBufferMiddleware;
@@ -57,6 +58,7 @@
             ErrorHandlerMiddleware::class,
             EvaluateResponseMiddleware::class,
             OutputBufferMiddleware::class,
+            AppendSpecialPathSuffix::class,
             RoutingMiddleware::class,
             RouteRunner::class,
         ];
