@@ -45,13 +45,15 @@
         {
 
             $isEmpty = $this->isResponseEmpty($response);
-            if ($headers = headers_sent() === false) {
+            if ($headers_not_sent = headers_sent() === false) {
                 $this->emitStatusLine($response);
                 $this->emitHeaders($response);
             }
 
-            if ( ! $isEmpty && $headers) {
+            if ( ! $isEmpty && $headers_not_sent ) {
+
                 $this->emitBody($response);
+
             }
         }
 
@@ -60,7 +62,7 @@
          *
          * @param  ResponseInterface  $response
          */
-        public function emitHeaders(ResponseInterface $response) : void
+        protected function emitHeaders(ResponseInterface $response) : void
         {
 
             if ( headers_sent() ) {
@@ -78,8 +80,6 @@
                 }
             }
 
-            $this->emitStatusLine($response);
-
         }
 
         /**
@@ -87,7 +87,7 @@
          *
          * @param  ResponseInterface  $response
          */
-        private function emitStatusLine(ResponseInterface $response) : void
+        protected function emitStatusLine(ResponseInterface $response) : void
         {
 
             $statusLine = sprintf(
@@ -104,7 +104,7 @@
          *
          * @param  ResponseInterface  $response
          */
-        public function emitBody(ResponseInterface $response) : void
+        protected function emitBody(ResponseInterface $response) : void
         {
 
             $body = $response->getBody();
@@ -151,7 +151,7 @@
          *
          * @return bool
          */
-        private function isResponseEmpty(ResponseInterface $response) : bool
+        protected function isResponseEmpty(ResponseInterface $response) : bool
         {
 
             if (in_array($response->getStatusCode(), [204, 205, 304], true)) {

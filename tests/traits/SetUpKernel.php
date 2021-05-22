@@ -56,7 +56,7 @@
             $c->instance(RouteActionFactory::class, $handler_factory);
             $c->instance(ConditionFactory::class, $condition_factory);
             $c->instance(AbstractRouteCollection::class, $routes);
-            $c->instance(ResponseFactory::class, $response = $this->responseFactory());
+            $c->instance(ResponseFactory::class, $response = $this->createResponseFactory());
 
             return new Router(
                 $c,

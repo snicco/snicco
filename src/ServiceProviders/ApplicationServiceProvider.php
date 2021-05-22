@@ -54,23 +54,6 @@
 
         }
 
-        private function requestType () : string
-        {
 
-		    if ( ! WP::isAdmin() ) {
-
-		        return IncomingWebRequest::class;
-
-            }
-
-		    if ( WP::isAdminAjax() ) {
-
-		        return IncomingAjaxRequest::class;
-
-            }
-
-		    return  IncomingAdminRequest::class;
-
-        }
 
     }

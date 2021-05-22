@@ -15,6 +15,7 @@
     use WPEmerge\Contracts\ViewServiceInterface;
     use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Http\HttpKernel;
+    use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Routing\Pipeline;
 
     class HttpServiceProvider extends ServiceProvider
@@ -59,7 +60,7 @@
                 return new HttpKernel(
 
                     $this->container->make(Pipeline::class),
-                    $this->container->make(AbstractRouteCollection::class)
+                    new ResponseEmitter()
 
                 );
 

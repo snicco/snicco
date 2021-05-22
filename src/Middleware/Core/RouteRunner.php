@@ -31,7 +31,12 @@
          */
         private $pipeline;
 
-        private $middleware_groups = [];
+        private $middleware_groups = [
+            'web' => [],
+            'admin' => [],
+            'ajax' => [],
+            'global'=> []
+        ];
 
         private $route_middleware_aliases = [];
 
@@ -70,7 +75,7 @@
 
         }
 
-        private function runRoute(RoutingResult $routing_result)
+        private function runRoute(RoutingResult $routing_result) : \Closure
         {
 
             return function (Request $request) use ($routing_result) {

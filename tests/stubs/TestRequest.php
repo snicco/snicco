@@ -7,10 +7,13 @@
     namespace Tests\stubs;
 
     use Nyholm\Psr7\Factory\Psr17Factory;
+    use Tests\traits\CreatePsr17Factories;
     use WPEmerge\Http\Request;
 
     class TestRequest extends Request
     {
+
+        use CreatePsr17Factories;
 
         public $body;
 

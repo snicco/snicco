@@ -80,7 +80,7 @@
 
 		private function createBindingsForViewController () {
 
-		    $this->container->instance(ResponseFactory::class, $this->responseFactory());
+		    $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
 
 
 		}

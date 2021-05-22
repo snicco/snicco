@@ -6,29 +6,49 @@
 
 	namespace Tests\unit\Routing;
 
-	use Mockery;
+	use Contracts\ContainerAdapter;
+    use Mockery;
+    use Tests\stubs\Conditions\TrueCondition;
+    use Tests\traits\CreateDefaultWpApiMocks;
+    use Tests\traits\TestHelpers;
     use Tests\UnitTest;
     use Tests\traits\SetUpRouter;
     use Tests\stubs\Conditions\FalseCondition;
+    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
+    use WPEmerge\Routing\Router;
 
-	class RouteConditionsTest extends UnitTest {
+    class RouteConditionsTest extends UnitTest {
 
-		use SetUpRouter;
+        use TestHelpers;
+        use CreateDefaultWpApiMocks;
+
+        /**
+         * @var ContainerAdapter
+         */
+        private $container;
+
+        /** @var Router */
+        private $router;
 
         protected function beforeTestRun()
         {
-            $this->newRouter( $c = $this->createContainer() );
-            WP::setFacadeContainer($c);
+
+            $this->container = $this->createContainer();
+            $this->routes = $this->newRouteCollection();
+            ApplicationEvent::make($this->container);
+            ApplicationEvent::fake();
+            WP::setFacadeContainer($this->container);
+
         }
 
         protected function beforeTearDown()
         {
 
+            ApplicationEvent::setInstance(null);
             Mockery::close();
-            WP::clearResolvedInstances();
-            WP::setFacadeContainer(null);
+            WP::reset();
 
         }
 
@@ -36,36 +56,42 @@
         /** @test */
 		public function custom_conditions_can_be_added_as_strings() {
 
-			$this->router
-				->get( '/foo' )
-				->where( 'false' )
-				->handle( function ( Request $request ) {
+		    $this->createRoutes(function () {
 
-					return 'foo';
+                $this->router
+                    ->get( '/foo' )
+                    ->where( 'false' )
+                    ->handle( function ( Request $request ) {
 
-				} );
+                        return 'foo';
 
-			$this->router->loadRoutes();
+                    });
 
-			$this->assertNullResponse( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+		    });
 
+		    $request = $this->webRequest('GET', 'foo');
+		    $this->runAndAssertEmptyOutput($request);
 
 		}
 
 		/** @test */
 		public function custom_conditions_can_be_added_as_objects() {
 
-			$this->router
-				->get( '/foo' )
-				->where( new FalseCondition() )
-				->handle( function ( Request $request ) {
+		    $this->createRoutes(function () {
 
-					return 'foo';
+                $this->router
+                    ->get( '/foo' )
+                    ->where( new FalseCondition() )
+                    ->handle( function ( Request $request ) {
 
-				} );
-            $this->router->loadRoutes();
+                        return 'foo';
 
-			$this->assertNullResponse( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+                    } );
+
+		    });
+
+            $request = $this->webRequest('GET', 'foo');
+            $this->runAndAssertEmptyOutput($request);
 
 
 		}
@@ -73,31 +99,32 @@
 		/** @test */
 		public function custom_conditions_can_be_added_before_the_http_verb() {
 
-			$this->router
-				->where( new FalseCondition() )
-				->get( '/foo' )
-				->handle( function ( Request $request ) {
+		    $this->createRoutes(function () {
 
-					return 'foo';
+                $this->router
+                    ->where( new TrueCondition() )
+                    ->get( '/foo' )
+                    ->handle( function ( Request $request ) {
 
-				} );
+                        return 'foo';
 
-            $this->router
-                ->where( 'false' )
-                ->post( '/bar' )
-                ->handle( function ( Request $request ) {
+                    } );
 
-                    return 'foo';
+                $this->router
+                    ->where( 'false' )
+                    ->post( '/bar' )
+                    ->handle( function ( Request $request ) {
 
-                } );
+                        return 'foo';
 
-            $this->router->loadRoutes();
+                    });
 
-			$this->assertNullResponse( $this->router->runRoute( $this->request( 'GET', '/foo' ) ) );
+		    });
 
+            $this->runAndAssertOutput('foo', $this->webRequest('GET', 'foo'));
 
+            $this->runAndAssertEmptyOutput( $this->webRequest('GET', 'bar') );
 
-			$this->assertNullResponse( $this->router->runRoute( $this->request( 'POST', '/bar' ) ) );
 
 		}
 
