@@ -45,7 +45,7 @@
 
             });
 
-            if ( ! $route) {
+            if ( ! $route ) {
 
                 return ($this->fallback_handler)
                     ? call_user_func($this->fallback_handler, $request)
@@ -60,7 +60,7 @@
         public function blankResponse() : NullResponse
         {
 
-            return $this->response->null();
+            return $this->response->queryFiltered();
 
         }
 

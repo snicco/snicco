@@ -67,4 +67,7 @@
 
         public function invalidResponse () :InvalidResponse;
 
+        public function queryFiltered();
+
+
     }

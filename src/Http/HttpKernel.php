@@ -9,7 +9,7 @@
     use Contracts\ContainerAdapter as Container;
     use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Events\FilterWpQuery;
+    use WPEmerge\Events\WpQueryFilterable;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\ResponseSent;
@@ -67,7 +67,6 @@
         ];
 
         private $global_middleware = [];
-
 
         public function __construct(Container $container, AbstractRouteCollection $routes)
         {
@@ -133,24 +132,6 @@
 
             $this->global_middleware = $global_middleware;
             $this->always_with_global_middleware = true;
-
-        }
-
-        public function filterRequest(FilterWpQuery $event)
-        {
-
-            $match = $this->routes->match($event->server_request);
-
-            if ($match->route()) {
-
-                return $match->route()->filterWpQuery(
-                    $event->currentQueryVars(),
-                    $match->capturedUrlSegmentValues()
-                );
-
-            }
-
-            return $event->currentQueryVars();
 
         }
 

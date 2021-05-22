@@ -9,7 +9,7 @@
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Http\Request;
 
-    class FilterWpQuery extends ApplicationEvent
+    class WpQueryFilterable extends ApplicationEvent
     {
         /**
          * @var array

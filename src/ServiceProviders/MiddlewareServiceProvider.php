@@ -70,6 +70,7 @@
 
         private function bindEvaluateResponseMiddleware()
         {
+
             $this->container->singleton(EvaluateResponseMiddleware::class, function () {
 
                 /** @var Request $request */
@@ -77,9 +78,9 @@
 
                 $is_web = $request->getType() === IncomingWebRequest::class;
 
-                return new EvaluateResponseMiddleware(
-                    $is_web && $this->config->get('routing.must_match_web_routes', false )
-                );
+                $must_match = $is_web && $this->config->get('routing.must_match_web_routes', false );
+
+                return new EvaluateResponseMiddleware($must_match);
 
             });
 
