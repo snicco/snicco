@@ -32,7 +32,7 @@
         public function match(Request $request) : RoutingResult
         {
 
-            $path = $this->appendSpecialWpSuffixesToPath($request);
+            $path = $request->path();
 
             $result = $this->route_matcher->find($request->getMethod(), $path);
 
@@ -135,26 +135,7 @@
 
         }
 
-        /** @todo Make this function a middleware that adds to a request attribute */
-        private function appendSpecialWpSuffixesToPath(Request $request) : string
-        {
 
-            $path = $request->path();
-
-            if (WP::isAdmin() && ! WP::isAdminAjax()) {
-
-                $path = $path.'/'.$request->query('page', '');
-
-            }
-
-            if (WP::isAdminAjax()) {
-
-                $path = $path.'/'.$request->parsedBody('action', $request->query('action', ''));
-
-            }
-
-            return $path;
-        }
 
 
 
