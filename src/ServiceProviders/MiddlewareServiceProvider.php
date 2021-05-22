@@ -13,14 +13,14 @@
     use WPEmerge\Http\Request;
     use WPEmerge\Middleware\Authenticate;
     use WPEmerge\Middleware\Authorize;
-    use WPEmerge\Middleware\EvaluateResponseMiddleware;
+    use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
     use WPEmerge\Middleware\RedirectIfAuthenticated;
-    use WPEmerge\Middleware\RouteRunner;
+    use WPEmerge\Middleware\Core\RouteRunner;
+    use WPEmerge\Routing\Pipeline;
 
     class MiddlewareServiceProvider extends ServiceProvider
     {
 
-        const GLOBAL_MIDDLEWARE_ALREADY_HANDLED = 'global.middleware.run';
 
         public function register() : void
         {
@@ -31,6 +31,7 @@
 
             $this->bindRouteRunnerMiddleware();
 
+            $this->bindMiddlewarePipeline();
 
         }
 
@@ -64,7 +65,6 @@
 
             $this->config->extend('always_run_middleware', false);
 
-            $this->container->instance(self::GLOBAL_MIDDLEWARE_ALREADY_HANDLED, false);
 
         }
 
@@ -93,19 +93,14 @@
 
                 $runner = new RouteRunner(
                     $this->container->make(ResponseFactory::class),
-                    $this->container
+                    $this->container->make(Pipeline::class)
                 );
 
                 $runner->withMiddlewareGroup('web', $this->config->get('middleware.groups.web', []));
                 $runner->withMiddlewareGroup('admin', $this->config->get('middleware.groups.admin', []));
                 $runner->withMiddlewareGroup('ajax', $this->config->get('middleware.groups.ajax', []));
+                $runner->withMiddlewareGroup('global', $this->config->get('middleware.groups.global', []));
 
-
-                if ( ! $this->globalMiddlewareHandledByKernel() ) {
-
-                    $runner->withMiddlewareGroup('global', $this->config->get('middleware.groups.global', []));
-
-                }
 
                 $runner->middlewarePriority($this->config->get('middleware.priority', []));
 
@@ -117,10 +112,14 @@
 
         }
 
-        private function globalMiddlewareHandledByKernel () :bool {
+        private function bindMiddlewarePipeline()
+        {
+            $this->container->bind(Pipeline::class, function () {
 
-            return $this->container->make(self::GLOBAL_MIDDLEWARE_ALREADY_HANDLED);
+                return new Pipeline($this->container);
 
+            });
         }
+
 
     }

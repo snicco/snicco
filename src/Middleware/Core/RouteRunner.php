@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware;
+    namespace WPEmerge\Middleware\Core;
 
     use Contracts\ContainerAdapter;
     use WPEmerge\Contracts\Middleware;
@@ -25,10 +25,11 @@
          * @var ResponseFactory
          */
         private $response_factory;
+
         /**
-         * @var ContainerAdapter
+         * @var Pipeline
          */
-        private $container;
+        private $pipeline;
 
         private $middleware_groups = [];
 
@@ -36,11 +37,12 @@
 
         private $middleware_priority = [];
 
-        public function __construct(ResponseFactory $response_factory, ContainerAdapter $container)
+
+        public function __construct(ResponseFactory $response_factory, Pipeline $pipeline)
         {
 
             $this->response_factory = $response_factory;
-            $this->container = $container;
+            $this->pipeline = $pipeline;
 
         }
 
@@ -50,36 +52,52 @@
             /** @var RoutingResult $route_result */
             $route_result = $request->getAttribute('route_result');
 
+            $include_global_middleware = ! $request->getAttribute('global_middleware_run', false);
+
             if ( ! $route = $route_result->route()) {
 
                 return $this->response_factory->null();
 
             }
 
-            $url_segments = $route_result->capturedUrlSegmentValues();
-            $middleware_stack = $this->middlewareStack($route);
-            $pipeline = new Pipeline($this->container);
+            $middleware_stack = $this->middlewareStack($route, $include_global_middleware);
 
-            return $pipeline
+            return $this->pipeline
                 ->send($request)
                 ->through($middleware_stack)
-                ->then(function (Request $request) use ($url_segments, $route) {
-
-                    $response = $route->run($request, $url_segments);
-
-                    return $this->response_factory->toResponse($response);
-
-                });
+                ->then($this->runRoute($route_result));
 
 
         }
 
-        private function middlewareStack(Route $route) : array
+        private function runRoute(RoutingResult $routing_result)
+        {
+
+            return function (Request $request) use ($routing_result) {
+
+                $response = $routing_result->route()->run(
+                    $request,
+                    $routing_result->capturedUrlSegmentValues()
+                );
+
+                return $this->response_factory->toResponse($response);
+
+            };
+
+        }
+
+        private function middlewareStack(Route $route, bool $with_global_middleware) : array
         {
 
             $middleware = $route->getMiddleware();
             $middleware = $this->expandMiddleware($middleware);
-            $middleware = $this->mergeGlobalMiddleware($middleware);
+
+            if ($with_global_middleware) {
+
+                $middleware = $this->mergeGlobalMiddleware($middleware);
+
+            }
+
             $middleware = $this->uniqueMiddleware($middleware);
             $middleware = $this->sortMiddleware($middleware);
 

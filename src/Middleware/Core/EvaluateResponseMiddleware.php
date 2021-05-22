@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware;
+    namespace WPEmerge\Middleware\Core;
 
     use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\Middleware;

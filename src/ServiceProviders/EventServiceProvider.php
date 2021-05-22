@@ -22,7 +22,7 @@
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Http\HttpKernel;
-    use WPEmerge\Middleware\OutputBufferMiddleware;
+    use WPEmerge\Middleware\Core\OutputBufferMiddleware;
     use WPEmerge\Routing\FilterWpQuery;
     use WPEmerge\View\ViewService;
 

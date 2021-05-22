@@ -15,8 +15,8 @@
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Request;
-    use WPEmerge\Middleware\EvaluateResponseMiddleware;
-    use WPEmerge\Middleware\RouteRunner;
+    use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
+    use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Routing\CachedRouteCollection;
     use WPEmerge\Routing\Conditions\AdminAjaxCondition;
     use WPEmerge\Routing\Conditions\AdminPageCondition;

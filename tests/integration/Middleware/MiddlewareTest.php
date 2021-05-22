@@ -13,8 +13,8 @@
     use Tests\stubs\TestRequest;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Http\HttpKernel;
-    use WPEmerge\Middleware\RoutingMiddleware;
-    use WPEmerge\Middleware\RouteRunner;
+    use WPEmerge\Middleware\Core\RoutingMiddleware;
+    use WPEmerge\Middleware\Core\RouteRunner;
 
     class MiddlewareTest extends IntegrationTest
     {
@@ -34,9 +34,9 @@
                     'groups' => [
 
                         'global' => [
-                            RoutingMiddleware::class,
+                            \WPEmerge\Middleware\Core\RoutingMiddleware::class,
                             BarMiddleware::class,
-                            RouteRunner::class,
+                            \WPEmerge\Middleware\Core\RouteRunner::class,
 
                         ],
                     ],

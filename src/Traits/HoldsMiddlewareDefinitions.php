@@ -6,10 +6,10 @@
 
     namespace WPEmerge\Traits;
 
-    use WPEmerge\Middleware\ErrorHandlerMiddleware;
-    use WPEmerge\Middleware\OutputBufferMiddleware;
-    use WPEmerge\Middleware\RouteRunner;
-    use WPEmerge\Middleware\RoutingMiddleware;
+    use WPEmerge\Middleware\Core\ErrorHandlerMiddleware;
+    use WPEmerge\Middleware\Core\OutputBufferMiddleware;
+    use WPEmerge\Middleware\Core\RouteRunner;
+    use WPEmerge\Middleware\Core\RoutingMiddleware;
 
     trait HoldsMiddlewareDefinitions
     {
