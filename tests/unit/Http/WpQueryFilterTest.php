@@ -13,7 +13,7 @@
     use Tests\traits\SetUpKernel;
     use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Events\FilterWpQuery;
+    use WPEmerge\Events\WpQueryFilterable;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Facade\WP;
 
@@ -64,7 +64,7 @@
 
             $request = TestRequest::from('GET', 'foo');
 
-            $filtered = $this->kernel->filterRequest(new FilterWpQuery($request, $query_vars));
+            $filtered = $this->kernel->filterRequest(new WpQueryFilterable($request, $query_vars));
 
             $this->assertSame(['foo' => 'baz'], $filtered);
 
@@ -89,7 +89,7 @@
 
             $request = TestRequest::from('GET', 'teams/germany/dortmund');
 
-            $filtered = $this->kernel->filterRequest(new FilterWpQuery($request, $query_vars));
+            $filtered = $this->kernel->filterRequest(new WpQueryFilterable($request, $query_vars));
 
             $this->assertSame(['spain' => 'barcelona', 'germany' => 'dortmund'], $filtered);
 
@@ -118,7 +118,7 @@
 
             $request = TestRequest::from('GET', 'foo');
 
-            $filtered = $this->kernel->filterRequest(new FilterWpQuery($request, $query_vars));
+            $filtered = $this->kernel->filterRequest(new WpQueryFilterable($request, $query_vars));
 
             $this->assertSame(['foo' => 'baz'], $filtered);
 
@@ -144,7 +144,7 @@
             $query_vars = ['foo' => 'bar'];
             $request = TestRequest::from('POST', 'bar');
 
-            $filtered = $this->kernel->filterRequest( new FilterWpQuery( $request, $query_vars ) );
+            $filtered = $this->kernel->filterRequest( new WpQueryFilterable( $request, $query_vars ) );
 
             $this->assertSame(['foo' => 'bar'], $filtered);
 
@@ -167,7 +167,7 @@
 
             $request = TestRequest::from('GET', 'foo');
 
-            $filtered = $this->kernel->filterRequest(new FilterWpQuery($request, $query_vars));
+            $filtered = $this->kernel->filterRequest(new WpQueryFilterable($request, $query_vars));
 
             $this->assertSame(['foo'=>'baz'], $filtered);
 

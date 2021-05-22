@@ -10,7 +10,7 @@
     use Psr\Http\Message\ServerRequestInterface;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Events\FilterWpQuery;
+    use WPEmerge\Events\WpQueryFilterable;
     use WPEmerge\Events\LoadedWP;
     use WPEmerge\Events\MakingView;
     use WPEmerge\Events\ResponseSent;
@@ -23,6 +23,7 @@
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Middleware\OutputBufferMiddleware;
+    use WPEmerge\Routing\FilterWpQuery;
     use WPEmerge\View\ViewService;
 
     class EventServiceProvider extends ServiceProvider
@@ -32,7 +33,7 @@
 
             'template_include' => ['resolve', IncomingWebRequest::class, 3001],
             'admin_init' => ['resolve', LoadedWpAdmin::class, 3001],
-            'request' => ['resolve', FilterWpQuery::class, 3001],
+            'request' => ['resolve', WpQueryFilterable::class, 3001],
             'init' => ['resolve', LoadedWP::class, -999],
 
         ];
@@ -76,15 +77,14 @@
 
             ],
 
-
             MakingView::class => [
 
                 [ViewService::class, 'compose'],
 
             ],
 
-            FilterWpQuery::class => [
-                [HttpKernel::class, 'filterRequest']
+            WpQueryFilterable::class => [
+                [FilterWpQuery::class, 'handle']
             ],
 
             LoadedWP::class => [
@@ -105,9 +105,9 @@
             $this->container->instance(Dispatcher::class, ApplicationEvent::dispatcher());
 
 
-            $this->container->singleton(FilterWpQuery::class, function ($container, $args) {
+            $this->container->singleton(WpQueryFilterable::class, function ($container, $args) {
 
-                return new FilterWpQuery(
+                return new WpQueryFilterable(
                     $this->container->make(ServerRequestInterface::class),
                     ...array_values($args)
                 );

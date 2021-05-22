@@ -13,7 +13,7 @@
     use WPEmerge\Events\AdminBodySendable;
 	use WPEmerge\Events\BodySent;
     use WPEmerge\Events\DoShutdown;
-    use WPEmerge\Events\FilterWpQuery;
+    use WPEmerge\Events\WpQueryFilterable;
     use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingAjaxRequest;
 	use WPEmerge\Events\IncomingWebRequest;
@@ -46,7 +46,7 @@
 			$this->assertHasListener([ShutdownHandler::class, 'shutdownWp'], BodySent::class);
 			$this->assertHasListener([ShutdownHandler::class, 'unrecoverableException'], UnrecoverableExceptionHandled::class);
 			$this->assertHasListener([ViewService::class, 'compose'], MakingView::class);
-			$this->assertHasListener([HttpKernel::class, 'filterRequest'], FilterWpQuery::class);
+			$this->assertHasListener([HttpKernel::class, 'filterRequest'], WpQueryFilterable::class);
 			$this->assertHasListener([ShutdownHandler::class, 'terminate'], DoShutdown::class);
 
 

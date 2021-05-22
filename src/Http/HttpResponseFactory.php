@@ -100,6 +100,12 @@
 
         }
 
+        public function queryFiltered () : WpQueryFilteredResponse {
+
+            return new WpQueryFilteredResponse($this->response_factory->createResponse(200));
+
+        }
+
         public function toResponse($response) : Response
         {
 

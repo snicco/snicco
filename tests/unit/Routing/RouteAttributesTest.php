@@ -27,7 +27,6 @@
 
         protected function beforeTestRun()
         {
-
             $this->newRouter($c = $this->createContainer());
             WP::setFacadeContainer($c);
         }

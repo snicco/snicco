@@ -14,6 +14,7 @@
     use WPEmerge\Http\InvalidResponse;
     use WPEmerge\Http\NullResponse;
     use WPEmerge\Http\Request;
+    use WPEmerge\Http\WpQueryFilteredResponse;
 
     class EvaluateResponseMiddleware extends Middleware
     {
@@ -46,6 +47,14 @@
                 throw new InvalidResponseException(
                     'The response returned by the route action is not valid.'
                 );
+
+            }
+
+            // A route matched but the developer decided that he just wants to alter the main
+            // wp query and let the WP template engine figure out what to load.
+            if ( $response instanceof WpQueryFilteredResponse ) {
+
+                return $response;
 
             }
 

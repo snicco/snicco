@@ -37,7 +37,7 @@
 
 			}
 
-			$url = $this->url ?? WP::loginUrl( $request->fullUrl() );
+			$url = $this->url ?? WP::loginUrl( $request->fullUrl(), true  );
 
 			return $this->response->redirect()->to($url)->withStatus(302);
 
