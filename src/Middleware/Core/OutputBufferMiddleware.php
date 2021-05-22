@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware;
+    namespace WPEmerge\Middleware\Core;
 
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\Middleware;

@@ -4,13 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware;
+    namespace WPEmerge\Middleware\Core;
 
     use Throwable;
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Events\IncomingAdminRequest;
-    use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Request;
 

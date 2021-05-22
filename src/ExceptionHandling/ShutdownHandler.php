@@ -12,23 +12,25 @@
     class ShutdownHandler {
 
 
-		public function unrecoverableException () {
+        /**
+         * @var string
+         */
+        private $request_type;
+
+        public function __construct( string $request_type )
+        {
+            $this->request_type = $request_type;
+        }
+
+        public function unrecoverableException () {
 
 		  $this->terminate();
 
 		}
 
-		public function handle(ResponseSent $response_sent) {
+		public function handle( ResponseSent $response_sent) {
 
-		    $request = $response_sent->request;
-
-		    if ( $request->getType() === IncomingAjaxRequest::class ) {
-
-		        $this->terminate();
-
-            }
-
-		    if( $request->getAttribute('from_global_middleware') ) {
+		    if ( $this->request_type === IncomingAjaxRequest::class  ) {
 
 		        $this->terminate();
 
@@ -36,7 +38,6 @@
 
 
         }
-
 
 
 		private function terminate() {
