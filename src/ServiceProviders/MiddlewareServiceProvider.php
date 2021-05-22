@@ -21,7 +21,6 @@
     class MiddlewareServiceProvider extends ServiceProvider
     {
 
-
         public function register() : void
         {
 
@@ -76,7 +75,7 @@
                 /** @var Request $request */
                 $request = $this->container->make(Request::class);
 
-                $is_web = $request->getType() === IncomingWebRequest::class;
+                $is_web = $this->requestType() === IncomingWebRequest::class;
 
                 $must_match = $is_web && $this->config->get('routing.must_match_web_routes', false );
 

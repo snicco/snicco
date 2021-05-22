@@ -46,7 +46,7 @@
         protected function beforeTestRun()
         {
 
-            $response = $this->responseFactory();
+            $response = $this->createResponseFactory();
             $this->route_action = new Delegate(function () use ($response) {
 
                 return $response->html('FOO');

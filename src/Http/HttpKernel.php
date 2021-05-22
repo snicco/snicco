@@ -29,13 +29,6 @@
 
         use SortsMiddleware;
 
-        /** @var Response */
-        private $response;
-
-        /**
-         * @var AbstractRouteCollection
-         */
-        private $routes;
 
         /**
          * @var Pipeline
@@ -62,9 +55,9 @@
             RoutingMiddleware::class,
             RouteRunner::class,
         ];
+
         // Only these two get a priority, because they always need to run before any global middleware
         // that a user might provide.
-
         private $priority_map = [
             ErrorHandlerMiddleware::class,
             EvaluateResponseMiddleware::class,
@@ -72,34 +65,31 @@
 
         private $global_middleware = [];
 
-        public function __construct(Pipeline $pipeline, AbstractRouteCollection $routes)
+
+        public function __construct(Pipeline $pipeline, ResponseEmitter $emitter)
         {
 
             $this->pipeline = $pipeline;
-            $this->response_emitter = new ResponseEmitter();
-            $this->routes = $routes;
+            $this->response_emitter = $emitter;
+
         }
 
-        public function run(IncomingRequest $request_event) : void
+        public function run( IncomingRequest $request_event ) : void
         {
 
-            $this->response = $this->handle($request_event);
+            $response = $this->handle($request_event);
 
-            if ($this->matchedRoute()) {
-
-                $request_event->matchedRoute();
-
-            }
-
-            if ($this->response instanceof NullResponse) {
+            if ($response instanceof NullResponse) {
 
                 return;
 
             }
 
-            $this->response_emitter->emit($this->response);
+            $request_event->matchedRoute();
 
-            ResponseSent::dispatch([$this->response]);
+            $this->response_emitter->emit($response);
+
+            ResponseSent::dispatch([$response]);
 
 
         }
@@ -109,15 +99,15 @@
 
             $request = $request_event->request;
 
-            if ( $this->withMiddleware() ) {
+            if ($this->withMiddleware()) {
 
                 $request = $request->withAttribute('global_middleware_run', true);
 
             }
 
             return $this->pipeline->send($request)
-                            ->through($this->gatherMiddleware($request_event))
-                            ->run();
+                                  ->through($this->gatherMiddleware($request_event))
+                                  ->run();
 
 
         }
@@ -165,13 +155,6 @@
             return ! $this->is_test_mode && $this->always_with_global_middleware;
 
         }
-
-        private function matchedRoute() : bool
-        {
-
-            return ! $this->response instanceof NullResponse;
-        }
-
 
 
     }

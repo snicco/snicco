@@ -23,7 +23,6 @@
 
         public function __construct(AbstractRouteCollection $routes)
         {
-
             $this->routes = $routes;
         }
 

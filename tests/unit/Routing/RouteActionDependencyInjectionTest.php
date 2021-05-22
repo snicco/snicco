@@ -6,46 +6,65 @@
 
 	namespace Tests\unit\Routing;
 
-	use Mockery;
+	use Contracts\ContainerAdapter;
+    use Mockery;
+    use Tests\traits\CreateDefaultWpApiMocks;
+    use Tests\traits\TestHelpers;
     use Tests\UnitTest;
-    use Tests\traits\SetUpRouter;
     use Tests\stubs\Bar;
 	use Tests\stubs\Controllers\Web\ControllerWithDependencies;
 	use Tests\stubs\Controllers\Web\TeamsController;
 	use Tests\stubs\Foo;
+    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
+    use WPEmerge\Routing\Router;
 
-	class RouteActionDependencyInjectionTest extends UnitTest {
+    class RouteActionDependencyInjectionTest extends UnitTest {
 
-		use SetUpRouter;
+        use TestHelpers;
+        use CreateDefaultWpApiMocks;
+
+        /**
+         * @var ContainerAdapter
+         */
+        private $container;
+
+        /** @var Router */
+        private $router;
 
         protected function beforeTestRun()
         {
 
-            $this->newRouter($c = $this->createContainer());
-            WP::setFacadeContainer($c);
+            $this->container = $this->createContainer();
+            $this->routes = $this->newRouteCollection();
+            ApplicationEvent::make($this->container);
+            ApplicationEvent::fake();
+            WP::setFacadeContainer($this->container);
 
         }
 
         protected function beforeTearDown()
         {
-            WP::setFacadeContainer(null);
-            WP::clearResolvedInstances();
+
+            ApplicationEvent::setInstance(null);
             Mockery::close();
+            WP::reset();
+
         }
 
 
 		/** @test */
 		public function dependencies_for_controller_actions_are_resolved() {
 
+            $this->createRoutes(function () {
 
-			$this->router->get( '/foo', ControllerWithDependencies::class . '@handle');
+                $this->router->get( '/foo', ControllerWithDependencies::class . '@handle');
 
-			$this->router->loadRoutes();
+            });
 
-			$request = $this->request( 'GET', '/foo' );
-			$this->assertOutput( 'foo_controller', $this->router->runRoute( $request ) );
+			$request = $this->webRequest('GET', 'foo');
+			$this->runAndAssertOutput('foo_controller', $request);
 
 
 		}
@@ -53,78 +72,94 @@
 		/** @test */
 		public function method_dependencies_for_controller_actions_are_resolved () {
 
-			$this->router->get( '/foo', ControllerWithDependencies::class . '@withMethodDependency');
+		    $this->createRoutes(function () {
 
-			$this->router->loadRoutes();
+                $this->router->get( '/foo', ControllerWithDependencies::class . '@withMethodDependency');
 
-			$request = $this->request( 'GET', '/foo' );
-			$this->assertOutput( 'foobar_controller', $this->router->runRoute( $request ) );
 
-		}
+            });
+
+            $request = $this->webRequest('GET', 'foo');
+            $this->runAndAssertOutput('foobar_controller', $request);
+
+
+        }
 
 		/** @test */
 		public function route_segment_values_are_passed_to_the_controller_method () {
 
-			$this->router->get('teams/{team}/{player}', TeamsController::class . '@handle');
+		    $this->createRoutes(function () {
 
-			$this->router->loadRoutes();
+                $this->router->get('teams/{team}/{player}', TeamsController::class . '@handle');
 
-			$request = $this->request( 'GET', '/teams/dortmund/calvin' );
-			$this->assertOutput(  'dortmund:calvin', $this->router->runRoute( $request ) );
+            });
+
+            $request = $this->webRequest('GET', '/teams/dortmund/calvin');
+            $this->runAndAssertOutput('dortmund:calvin', $request);
 
 		}
 
 		/** @test */
 		public function additional_dependencies_are_passed_to_the_controller_method_after_route_segments () {
 
-			$this->router->get('teams/{team}/{player}', TeamsController::class . '@withDependencies');
+		    $this->createRoutes(function () {
 
-			$this->router->loadRoutes();
+                $this->router->get('teams/{team}/{player}', TeamsController::class . '@withDependencies');
 
-			$request = $this->request( 'GET', '/teams/dortmund/calvin' );
-			$this->assertOutput(  'dortmund:calvin:foo:bar', $this->router->runRoute( $request ) );
+            });
+
+		    $request = $this->webRequest('GET','/teams/dortmund/calvin' );
+			$this->runAndAssertOutput(  'dortmund:calvin:foo:bar', $request );
 
 		}
 
 		/** @test */
 		public function arguments_from_conditions_are_passed_after_route_segments_and_before_dependencies () {
 
-			$this->router
-				->get('teams/{team}/{player}', TeamsController::class . '@withConditions')
-				->where(function ($baz, $biz ) {
+		    $this->createRoutes(function () {
 
-					return $baz === 'baz' && $biz === 'biz';
+                $this->router
+                    ->get('teams/{team}/{player}', TeamsController::class . '@withConditions')
+                    ->where(function ($baz, $biz ) {
 
-				}, 'baz', 'biz');
+                        return $baz === 'baz' && $biz === 'biz';
 
-			$this->router->loadRoutes();
+                    }, 'baz', 'biz');
 
-			$request = $this->request( 'GET', '/teams/dortmund/calvin' );
-			$this->assertOutput(  'dortmund:calvin:baz:biz:foo:bar', $this->router->runRoute( $request ) );
+
+            });
+
+            $request = $this->webRequest('GET','/teams/dortmund/calvin' );
+            $this->runAndAssertOutput(  'dortmund:calvin:baz:biz:foo:bar', $request );
+
 
 		}
 
 		/** @test */
 		public function closure_actions_also_get_all_dependencies_injected_in_the_correct_order(  ) {
 
-			$this->router
-				->get('teams/{team}/{player}')
-				->where(function ($baz, $biz ) {
 
-					return $baz === 'baz' && $biz === 'biz';
+            $this->createRoutes(function () {
 
-				}, 'baz', 'biz')
-				->handle( function ( Request $request, $team, $player, $baz, $biz ,Foo $foo, Bar $bar) {
+                $this->router
+                    ->get('teams/{team}/{player}')
+                    ->where(function ($baz, $biz ) {
 
-					return $team . ':' . $player . ':' .  $baz . ':' . $biz  . ':' . $foo->foo . ':' . $bar->bar;
+                        return $baz === 'baz' && $biz === 'biz';
+
+                    }, 'baz', 'biz')
+                    ->handle( function ( Request $request, $team, $player, $baz, $biz ,Foo $foo, Bar $bar) {
+
+                        return $team . ':' . $player . ':' .  $baz . ':' . $biz  . ':' . $foo->foo . ':' . $bar->bar;
 
 
-				});
+                    });
 
-			$this->router->loadRoutes();
+            });
 
-			$request = $this->request( 'GET', '/teams/dortmund/calvin' );
-			$this->assertOutput(  'dortmund:calvin:baz:biz:foo:bar', $this->router->runRoute( $request ) );
+
+			$request = $this->webRequest( 'GET', '/teams/dortmund/calvin' );
+			$this->runAndAssertOutput(  'dortmund:calvin:baz:biz:foo:bar', $request);
 
 		}
 

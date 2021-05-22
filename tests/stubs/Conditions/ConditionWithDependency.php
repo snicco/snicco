@@ -20,7 +20,7 @@
 		private $make_it_pass;
 
 		/**
-		 * @var \Tests\stubs\Foo
+		 * @var Foo
 		 */
 		private $foo;
 

@@ -29,7 +29,7 @@
 
         }
 
-        public function responseFactory () : HttpResponseFactory
+        public function createResponseFactory () : HttpResponseFactory
         {
 
             return new HttpResponseFactory(
@@ -38,6 +38,11 @@
                 $this->psrStreamFactory()
             );
 
+        }
+
+        public static function __callStatic($name, $arguments)
+        {
+            return static::{$name}($arguments);
         }
 
     }

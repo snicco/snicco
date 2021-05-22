@@ -10,6 +10,7 @@
     use Psr\Http\Message\ServerRequestInterface;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ServiceProvider;
+    use WPEmerge\Events\StartLoadingAdminFooter;
     use WPEmerge\Events\WpQueryFilterable;
     use WPEmerge\Events\LoadedWP;
     use WPEmerge\Events\MakingView;
@@ -35,6 +36,7 @@
             'admin_init' => ['resolve', LoadedWpAdmin::class, 3001],
             'request' => ['resolve', WpQueryFilterable::class, 3001],
             'init' => ['resolve', LoadedWP::class, -999],
+            'in_admin_footer' => [StartLoadingAdminFooter::class, 1]
 
         ];
 
@@ -52,10 +54,15 @@
 
             ],
 
+            StartLoadingAdminFooter::class => [
+
+                [OutputBufferMiddleware::class, 'flush'],
+
+            ],
+
             IncomingAjaxRequest::class => [
 
                 [HttpKernel::class, 'run']
-
 
             ],
 

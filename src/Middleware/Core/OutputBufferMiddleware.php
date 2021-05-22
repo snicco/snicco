@@ -6,7 +6,6 @@
 
     namespace WPEmerge\Middleware\Core;
 
-    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Request;
@@ -17,16 +16,7 @@
         public function handle(Request $request, Delegate $next)
         {
 
-            $response = $next($request);
-
-            ApplicationEvent::listen('in_admin_footer', function () {
-
-                $this->flushPhpOutputBuffer();
-
-            });
-
-            return $response;
-
+            return $next($request);
 
         }
 
@@ -39,7 +29,7 @@
 
         }
 
-        private function flushPhpOutputBuffer()
+        public function flush()
         {
 
             // We made sure that our admin content sends headers and body at the correct time.

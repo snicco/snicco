@@ -17,6 +17,7 @@
 		 */
 		public $request;
 
+
 		protected $force_route_match = false;
 
         /**
@@ -24,16 +25,9 @@
          */
         protected $has_matching_route = false;
 
-
         public function __construct( Request $request) {
 
 			$this->request = $request->withType( static::class );
-
-		}
-
-		public function enforceRouteMatch() {
-
-			$this->force_route_match = true;
 
 		}
 

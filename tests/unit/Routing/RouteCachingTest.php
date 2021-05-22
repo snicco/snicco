@@ -112,7 +112,7 @@
             $container->instance(RouteActionFactory::class, $handler_factory);
             $container->instance(ConditionFactory::class, $condition_factory);
             $container->instance(RouteCollection::class, $routes);
-            $container->instance(ResponseFactory::class, $response = $this->responseFactory());
+            $container->instance(ResponseFactory::class, $response = $this->createResponseFactory());
             $container->instance(AbstractRouteCollection::class, $routes);
 
             $this->routes = $routes;

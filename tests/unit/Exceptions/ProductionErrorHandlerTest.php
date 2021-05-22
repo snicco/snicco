@@ -29,7 +29,7 @@
             ApplicationEvent::make($this->container = $this->createContainer());
             ApplicationEvent::fake();
             $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
-            $this->container->instance(ResponseFactory::class, $this->responseFactory());
+            $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
 
         }
 

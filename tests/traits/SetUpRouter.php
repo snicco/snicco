@@ -48,7 +48,7 @@
             $router =  new Router(
                 $container,
                 $route_collection,
-                $response= $this->responseFactory()
+                $response= $this->createResponseFactory()
             );
 
             $this->routes = $route_collection;
