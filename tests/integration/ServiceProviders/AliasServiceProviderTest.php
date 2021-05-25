@@ -38,7 +38,6 @@
             /** @var Router $router */
             $router = TestApp::resolve(Router::class);
 
-            $router->middlewareGroup('web', []);
 
         }
 

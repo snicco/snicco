@@ -28,7 +28,7 @@
 
             $match = $this->routes->match($request);
 
-            if ($match->route()) {
+            if ( $match->route() ) {
 
                 return $match->route()->filterWpQuery(
                     $query_filterable->currentQueryVars(),

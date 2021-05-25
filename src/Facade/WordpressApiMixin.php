@@ -6,7 +6,6 @@
 
     namespace WPEmerge\Facade;
 
-    use Doctrine\Inflector\Rules\Word;
 
     /**
      * mixin class for ide support.
