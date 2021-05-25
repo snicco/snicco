@@ -6,181 +6,49 @@
 
     namespace Tests\unit\Routing;
 
+    use Contracts\ContainerAdapter;
     use Mockery;
+    use Tests\traits\CreateDefaultWpApiMocks;
+    use Tests\traits\TestHelpers;
     use Tests\UnitTest;
-    use Tests\traits\SetUpRouter;
+    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request as Request;
+    use WPEmerge\Routing\Router;
 
     class RouteSegmentsTest extends UnitTest
     {
 
-        use SetUpRouter;
+        use TestHelpers;
+        use CreateDefaultWpApiMocks;
+
+        /**
+         * @var ContainerAdapter
+         */
+        private $container;
+
+        /** @var Router */
+        private $router;
 
         protected function beforeTestRun()
         {
 
-            $this->newRouter($c = $this->createContainer());
-            WP::setFacadeContainer($c);
+            $this->container = $this->createContainer();
+            $this->routes = $this->newRouteCollection();
+            ApplicationEvent::make($this->container);
+            ApplicationEvent::fake();
+            WP::setFacadeContainer($this->container);
+
         }
 
         protected function beforeTearDown()
         {
 
+            ApplicationEvent::setInstance(null);
             Mockery::close();
-            WP::clearResolvedInstances();
-            WP::setFacadeContainer(null);
+            WP::reset();
 
         }
-
-
-        /**
-         *
-         *
-         *
-         *
-         *
-         * ROUTE PARAMETERS, NATIVE FAST ROUTE SYNTAX
-         *
-         *
-         *
-         *
-         *
-         *
-         */
-
-        /** @test */
-        public function route_parameters_are_captured()
-        {
-
-            $this->router->post('/user/{id}/{name}')
-                         ->handle(function (Request $request, $id, $name = 'admin') {
-
-                             return $name.$id;
-
-                         });
-
-            $this->router->loadRoutes();
-
-            $response = $this->router->runRoute($this->request('post', '/user/12/calvin'));
-            $this->assertOutput('calvin12', $response);
-
-
-        }
-
-        /** @test */
-        public function custom_regex_can_be_defined_for_route_parameters()
-        {
-
-
-            $this->router->post('/user/{id:\d+}/{name:calvin|john}')
-                         ->handle(function (Request $request, $id, $name = 'admin') {
-
-                             return $name.$id;
-
-                         });
-
-            $this->router->loadRoutes();
-
-            $response = $this->router->runRoute($this->request('post', '/user/12/calvin'));
-            $this->assertOutput('calvin12', $response);
-
-            $response = $this->router->runRoute($this->request('post', '/user/12/john'));
-            $this->assertOutput('john12', $response);
-
-            $response = $this->router->runRoute($this->request('post', '/user/a/calvin'));
-            $this->assertNullResponse($response);
-
-            $response = $this->router->runRoute($this->request('post', '/user/12/jane'));
-            $this->assertNullResponse($response);
-
-            $response = $this->router->runRoute($this->request('post', '/user/12'));
-            $this->assertNullResponse($response);
-
-        }
-
-        /** @test */
-        public function optional_parameters_work_at_the_end_of_a_route()
-        {
-
-
-            $this->router->post('/user/{id:\d+}[/{name}]')
-                         ->handle(function (Request $request, $id, $name = 'admin') {
-
-                             return $name.$id;
-
-                         });
-
-            $this->router->loadRoutes();
-
-            $response = $this->router->runRoute($this->request('post', '/user/12/calvin'));
-            $this->assertOutput('calvin12', $response);
-
-            $response = $this->router->runRoute($this->request('post', '/user/12'));
-            $this->assertOutput('admin12', $response);
-
-            $response = $this->router->runRoute($this->request('post', '/user/ab'));
-            $this->assertNullResponse($response);
-
-            $response = $this->router->runRoute($this->request('post', '/user/ab/calvin'));
-            $this->assertNullResponse($response);
-
-            $response = $this->router->runRoute($this->request('post', '/user/calvin/12'));
-            $this->assertNullResponse($response);
-
-
-        }
-
-        /** @test */
-        public function every_segment_after_an_optional_part_will_be_its_own_capture_group_but_not_required()
-        {
-
-
-            $this->router->post('/team/{id:\d+}[/{name}[/{player}]]')
-                         ->handle(function (Request $request, $id, $name = 'foo_team', $player = 'foo_player') {
-
-                             return $name.':'.$id.':'.$player;
-
-                         });
-
-            $this->router->loadRoutes();
-
-            $response = $this->router->runRoute($this->request('post', '/team/1/dortmund/calvin'));
-            $this->assertOutput('dortmund:1:calvin', $response);
-
-            $response = $this->router->runRoute($this->request('post', '/team/1/dortmund'));
-            $this->assertOutput('dortmund:1:foo_player', $response);
-
-            $response = $this->router->runRoute($this->request('post', '/team/12'));
-            $this->assertOutput('foo_team:12:foo_player', $response);
-
-        }
-
-        /** @test */
-        public function optional_parameters_work_with_custom_regex()
-        {
-
-
-            $this->router->get('users/{id}[/{name:[a-z]+}]', function (Request $request, $id, $name = 'admin') {
-
-                return $name.$id;
-
-            });
-
-            $this->router->loadRoutes();
-
-            $request = $this->request('GET', '/users/1/calvin');
-            $this->assertOutput('calvin1', $this->router->runRoute($request));
-
-            $request = $this->request('GET', 'users/1');
-            $this->assertOutput('admin1', $this->router->runRoute($request));
-
-            $request = $this->request('GET', 'users/1/12');
-            $this->assertNullResponse($this->router->runRoute($request));
-
-
-        }
-
 
         /**
          *
@@ -202,19 +70,21 @@
         {
 
 
-            $this->router->get('users/{user}', function () {
+            $this->createRoutes(function () {
 
-                return 'foo';
+                $this->router->get('users/{user}', function () {
 
-            })->and('user', '[0-9]+');
+                    return 'foo';
 
-            $this->router->loadRoutes();
+                })->and('user', '[0-9]+');
 
-            $request = $this->request('GET', '/users/1');
-            $this->assertOutput('foo', $this->router->runRoute($request));
+            });
 
-            $request = $this->request('GET', '/users/calvin');
-            $this->assertNullResponse($this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/users/1');
+            $this->runAndAssertOutput('foo', $request);
+
+            $request = $this->webRequest('GET', '/users/calvin');
+            $this->runAndAssertEmptyOutput($request);
 
 
         }
@@ -224,18 +94,21 @@
         {
 
 
-            $this->router->get('users/{user}', function () {
+            $this->createRoutes(function () {
 
-                return 'foo';
+                $this->router->get('users/{user}', function () {
 
-            })->and(['user', '[0-9]+']);
-            $this->router->loadRoutes();
+                    return 'foo';
 
-            $request = $this->request('GET', '/users/1');
-            $this->assertOutput('foo', $this->router->runRoute($request));
+                })->and(['user', '[0-9]+']);
 
-            $request = $this->request('GET', '/users/calvin');
-            $this->assertNullResponse($this->router->runRoute($request));
+            });
+
+            $request = $this->webRequest('GET', '/users/1');
+            $this->runAndAssertOutput('foo', $request);
+
+            $request = $this->webRequest('GET', '/users/calvin');
+            $this->runAndAssertEmptyOutput($request);
 
 
         }
@@ -244,22 +117,24 @@
         public function multiple_regex_conditions_can_be_added_to_an_url_condition()
         {
 
+            $this->createRoutes(function () {
 
-            $this->router->get('/user/{id}/{name}', function (Request $request, $id, $name) {
+                $this->router->get('/user/{id}/{name}', function (Request $request, $id, $name) {
 
-                return $name.$id;
+                    return $name.$id;
 
-            })->and(['id' => '[0-9]+', 'name' => '[a-z]+']);
-            $this->router->loadRoutes();
+                })->and(['id' => '[0-9]+', 'name' => '[a-z]+']);
 
-            $request = $this->request('GET', '/user/1/calvin');
-            $this->assertOutput('calvin1', $this->router->runRoute($request));
+            });
 
-            $request = $this->request('GET', '/users/1/1');
-            $this->assertNullResponse($this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/user/1/calvin');
+            $this->runAndAssertOutput('calvin1', $request);
 
-            $request = $this->request('GET', '/users/calvin/calvin');
-            $this->assertNullResponse($this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/users/1/1');
+            $this->runAndAssertEmptyOutput($request);
+
+            $request = $this->webRequest('GET', '/users/calvin/calvin');
+            $this->runAndAssertEmptyOutput($request);
 
         }
 
@@ -267,19 +142,21 @@
         public function optional_parameters_work_at_the_end_of_the_url()
         {
 
+            $this->createRoutes(function () {
 
-            $this->router->get('users/{id}/{name?}', function (Request $request, $id, $name = 'admin') {
+                $this->router->get('users/{id}/{name?}', function (Request $request, $id, $name = 'admin') {
 
-                return $name.$id;
+                    return $name.$id;
+
+                });
 
             });
-            $this->router->loadRoutes();
 
-            $request = $this->request('GET', '/users/1/calvin');
-            $this->assertOutput('calvin1', $this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/users/1/calvin');
+            $this->runAndAssertOutput('calvin1', $request);
 
-            $request = $this->request('GET', 'users/1');
-            $this->assertOutput('admin1', $this->router->runRoute($request));
+            $request = $this->webRequest('GET', 'users/1');
+            $this->runAndAssertOutput('admin1', $request);
 
 
         }
@@ -288,24 +165,26 @@
         public function multiple_parameters_can_optional_with_a_preceding_capturing_group()
         {
 
-            // Preceding Group is capturing
-            $this->router->post('/team/{id:\d+}/{name?}/{player?}')
-                         ->handle(function (Request $request, $id, $name = 'foo_team', $player = 'foo_player') {
+            $this->createRoutes(function () {
 
-                             return $name.':'.$id.':'.$player;
+                // Preceding Group is capturing
+                $this->router->post('/team/{id:\d+}/{name?}/{player?}')
+                             ->handle(function (Request $request, $id, $name = 'foo_team', $player = 'foo_player') {
 
-                         });
+                                 return $name.':'.$id.':'.$player;
 
-            $this->router->loadRoutes();
+                             });
 
-            $response = $this->router->runRoute($this->request('post', '/team/1/dortmund/calvin'));
-            $this->assertOutput('dortmund:1:calvin', $response);
+            });
 
-            $response = $this->router->runRoute($this->request('post', '/team/1/dortmund'));
-            $this->assertOutput('dortmund:1:foo_player', $response);
+            $response = $this->webRequest('post', '/team/1/dortmund/calvin');
+            $this->runAndAssertOutput('dortmund:1:calvin', $response);
 
-            $response = $this->router->runRoute($this->request('post', '/team/12'));
-            $this->assertOutput('foo_team:12:foo_player', $response);
+            $response = $this->webRequest('post', '/team/1/dortmund');
+            $this->runAndAssertOutput('dortmund:1:foo_player', $response);
+
+            $response = $this->webRequest('post', '/team/12');
+            $this->runAndAssertOutput('foo_team:12:foo_player', $response);
 
 
         }
@@ -314,96 +193,101 @@
         public function multiple_params_can_be_optional_with_preceding_non_capturing_group()
         {
 
-            // Preceding group is required but not capturing
-            $this->router->post('/users/{name?}/{gender?}/{age?}')
-                         ->handle(function (Request $request, $name = 'john', $gender = 'm', $age = '21') {
+            $this->createRoutes(function () {
+
+                // Preceding group is required but not capturing
+                $this->router->post('/users/{name?}/{gender?}/{age?}')
+                             ->handle(function (Request $request, $name = 'john', $gender = 'm', $age = '21') {
 
 
-                             return $name.':'.$gender.':'.$age;
+                                 return $name.':'.$gender.':'.$age;
 
-                         });
+                             });
 
-            $this->router->loadRoutes();
+            });
 
-            $response = $this->router->runRoute($this->request('post', '/users/calvin/male/23'));
-            $this->assertOutput('calvin:male:23', $response);
+            $response = $this->webRequest('post', '/users/calvin/male/23');
+            $this->runAndAssertOutput('calvin:male:23', $response);
 
-            $response = $this->router->runRoute($this->request('post', '/users/calvin/male'));
-            $this->assertOutput('calvin:male:21', $response);
+            $response = $this->webRequest('post', '/users/calvin/male');
+            $this->runAndAssertOutput('calvin:male:21', $response);
 
-            $response = $this->router->runRoute($this->request('post', '/users/calvin'));
-            $this->assertOutput('calvin:m:21', $response);
+            $response = $this->webRequest('post', '/users/calvin');
+            $this->runAndAssertOutput('calvin:m:21', $response);
 
-            $response = $this->router->runRoute($this->request('post', '/users'));
-            $this->assertOutput('john:m:21', $response);
+            $response = $this->webRequest('post', '/users');
+            $this->runAndAssertOutput('john:m:21', $response);
 
         }
-
 
         /** @test */
         public function optional_params_can_match_only_with_trailing_slash_if_desired()
         {
 
-            // Preceding group is required but not capturing
-            $this->router->post('/users/{name?}/{gender?}/{age?}')
-                         ->handle(function (Request $request, $name = 'john', $gender = 'm', $age = '21') {
+            $this->createRoutes(function () {
 
-                             return $name.':'.$gender.':'.$age;
+                // Preceding group is required but not capturing
+                $this->router->post('/users/{name?}/{gender?}/{age?}')
+                             ->handle(function (Request $request, $name = 'john', $gender = 'm', $age = '21') {
 
-                         })
-                         ->andOnlyTrailing();
+                                 return $name.':'.$gender.':'.$age;
 
-            $this->router->loadRoutes();
+                             })
+                             ->andOnlyTrailing();
 
-            $response = $this->router->runRoute($this->request('post', '/users/'));
-            $this->assertOutput('john:m:21', $response);
+            });
 
-            $response = $this->router->runRoute($this->request('post', '/users/calvin/'));
-            $this->assertOutput('calvin:m:21', $response);
+            $request = $this->webRequest('post', '/users/');
+            $this->runAndAssertOutput('john:m:21', $request);
 
-            $response = $this->router->runRoute($this->request('post', '/users/calvin/male/'));
-            $this->assertOutput('calvin:male:21', $response);
+            $request = $this->webRequest('post', '/users/calvin/');
+            $this->runAndAssertOutput('calvin:m:21', $request);
 
-            $response = $this->router->runRoute($this->request('post', '/users/calvin/male/23/'));
-            $this->assertOutput('calvin:male:23', $response);
+            $request = $this->webRequest('post', '/users/calvin/male/');
+            $this->runAndAssertOutput('calvin:male:21', $request);
 
-            $response = $this->router->runRoute($this->request('post', '/users/calvin'));
-            $this->assertNullResponse($response);
+            $request = $this->webRequest('post', '/users/calvin/male/23/');
+            $this->runAndAssertOutput('calvin:male:23', $request);
 
-            $response = $this->router->runRoute($this->request('post', '/users/calvin/male'));
-            $this->assertNullResponse($response);
+            $request = $this->webRequest('post', '/users/calvin');
+            $this->runAndAssertEmptyOutput($request);
 
-            $response = $this->router->runRoute($this->request('post', '/users/calvin/male/23'));
-            $this->assertNullResponse($response);
+            $request = $this->webRequest('post', '/users/calvin/male');
+            $this->runAndAssertEmptyOutput($request);
 
-            $response = $this->router->runRoute($this->request('post', '/users'));
-            $this->assertNullResponse($response);
+            $request = $this->webRequest('post', '/users/calvin/male/23');
+            $this->runAndAssertEmptyOutput($request);
+
+            $request = $this->webRequest('post', '/users');
+            $this->runAndAssertEmptyOutput($request);
 
 
         }
-
 
         /** @test */
         public function optional_parameters_work_with_our_custom_api()
         {
 
 
-            $this->router->get('users/{id}/{name?}', function (Request $request, $id, $name = 'admin') {
+            $this->createRoutes(function () {
 
-                return $name.$id;
+                $this->router->get('users/{id}/{name?}', function (Request $request, $id, $name = 'admin') {
 
-            })->and('name', '[a-z]+');
+                    return $name.$id;
 
-            $this->router->loadRoutes();
+                })->and('name', '[a-z]+');
 
-            $request = $this->request('GET', '/users/1/calvin');
-            $this->assertOutput('calvin1', $this->router->runRoute($request));
 
-            $request = $this->request('GET', 'users/1');
-            $this->assertOutput('admin1', $this->router->runRoute($request));
+            });
 
-            $request = $this->request('GET', 'users/1/12');
-            $this->assertNullResponse($this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/users/1/calvin');
+            $this->runAndAssertOutput('calvin1', $request);
+
+            $request = $this->webRequest('GET', 'users/1');
+            $this->runAndAssertOutput('admin1', $request);
+
+            $request = $this->webRequest('GET', 'users/1/12');
+            $this->runAndAssertEmptyOutput($request);
 
 
         }
@@ -412,31 +296,34 @@
         public function multiple_parameters_can_be_optional_and_have_custom_regex()
         {
 
-            // Preceding Group is capturing
-            $this->router->post('/team/{id}/{name?}/{age?}')
-                         ->and(['name' => '[a-z]+', 'age' => '\d+'])
-                         ->handle(function (Request $request, $id, $name = 'foo_team', $age = 21) {
+            $this->createRoutes(function () {
 
-                             return $name.':'.$id.':'.$age;
 
-                         });
+                // Preceding Group is capturing
+                $this->router->post('/team/{id}/{name?}/{age?}')
+                             ->and(['name' => '[a-z]+', 'age' => '\d+'])
+                             ->handle(function (Request $request, $id, $name = 'foo_team', $age = 21) {
 
-            $this->router->loadRoutes();
+                                 return $name.':'.$id.':'.$age;
 
-            $response = $this->router->runRoute($this->request('post', '/team/1/dortmund/23'));
-            $this->assertOutput('dortmund:1:23', $response);
+                             });
 
-            $response = $this->router->runRoute($this->request('post', '/team/1/dortmund'));
-            $this->assertOutput('dortmund:1:21', $response);
+            });
 
-            $response = $this->router->runRoute($this->request('post', '/team/12'));
-            $this->assertOutput('foo_team:12:21', $response);
+            $response = $this->webRequest('post', '/team/1/dortmund/23');
+            $this->runAndAssertOutput('dortmund:1:23', $response);
 
-            $response = $this->router->runRoute($this->request('post', '/team/1/dortmund/fail'));
-            $this->assertNullResponse($response);
+            $response = $this->webRequest('post', '/team/1/dortmund');
+            $this->runAndAssertOutput('dortmund:1:21', $response);
 
-            $response = $this->router->runRoute($this->request('post', '/team/1/123/123'));
-            $this->assertNullResponse($response);
+            $response = $this->webRequest('post', '/team/12');
+            $this->runAndAssertOutput('foo_team:12:21', $response);
+
+            $response = $this->webRequest('post', '/team/1/dortmund/fail');
+            $this->runAndAssertEmptyOutput($response);
+
+            $response = $this->webRequest('post', '/team/1/123/123');
+            $this->runAndAssertEmptyOutput($response);
 
 
         }
@@ -446,22 +333,24 @@
         {
 
 
-            $this->router->get('users/{user_id}/{name}', function () {
+            $this->createRoutes(function () {
 
-                return 'foo';
+                $this->router->get('users/{user_id}/{name}', function () {
 
-            })->and('user_id', '[0-9]+')->and('name', 'calvin');
+                    return 'foo';
 
-            $this->router->loadRoutes();
+                })->and('user_id', '[0-9]+')->and('name', 'calvin');
 
-            $request = $this->request('GET', '/users/1/calvin');
-            $this->assertOutput('foo', $this->router->runRoute($request));
+            });
 
-            $request = $this->request('GET', '/users/1/john');
-            $this->assertNullResponse($this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/users/1/calvin');
+            $this->runAndAssertOutput('foo', $request);
 
-            $request = $this->request('GET', '/users/w/calvin');
-            $this->assertNullResponse($this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/users/1/john');
+            $this->runAndAssertEmptyOutput($request);
+
+            $request = $this->webRequest('GET', '/users/w/calvin');
+            $this->runAndAssertEmptyOutput($request);
 
         }
 
@@ -469,50 +358,51 @@
         public function only_alpha_can_be_added_to_a_segment_as_a_helper_method()
         {
 
+            $this->createRoutes(function () {
 
-            $this->router->get('users/{name}', function () {
+                $this->router->get('users/{name}', function () {
 
-                return 'foo';
+                    return 'foo';
 
-            })->andAlpha('name');
+                })->andAlpha('name');
 
-            $this->router->get('teams/{name}/{player}', function () {
+                $this->router->get('teams/{name}/{player}', function () {
 
-                return 'foo';
+                    return 'foo';
 
-            })->andAlpha('name', 'player');
+                })->andAlpha('name', 'player');
 
-            $this->router->get('countries/{country}/{city}', function () {
+                $this->router->get('countries/{country}/{city}', function () {
 
-                return 'foo';
+                    return 'foo';
 
-            })->andAlpha(['country', 'city']);
+                })->andAlpha(['country', 'city']);
 
-            $this->router->loadRoutes();
+            });
 
-            $request = $this->request('GET', '/users/calvin');
-            $this->assertOutput('foo', $this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/users/calvin');
+            $this->runAndAssertOutput('foo', $request);
 
-            $request = $this->request('GET', '/users/cal1vin');
-            $this->assertNullResponse($this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/users/cal1vin');
+            $this->runAndAssertEmptyOutput($request);
 
-            $request = $this->request('GET', '/teams/dortmund/calvin');
-            $this->assertOutput('foo', $this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/teams/dortmund/calvin');
+            $this->runAndAssertOutput('foo', $request);
 
-            $request = $this->request('GET', '/teams/1/calvin');
-            $this->assertNullResponse($this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/teams/1/calvin');
+            $this->runAndAssertEmptyOutput($request);
 
-            $request = $this->request('GET', '/teams/dortmund/1');
-            $this->assertNullResponse($this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/teams/dortmund/1');
+            $this->runAndAssertEmptyOutput($request);
 
-            $request = $this->request('GET', '/countries/germany/berlin');
-            $this->assertOutput('foo', $this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/countries/germany/berlin');
+            $this->runAndAssertOutput('foo', $request);
 
-            $request = $this->request('GET', '/countries/germany/1');
-            $this->assertNullResponse($this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/countries/germany/1');
+            $this->runAndAssertEmptyOutput($request);
 
-            $request = $this->request('GET', '/countries/1/berlin');
-            $this->assertNullResponse($this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/countries/1/berlin');
+            $this->runAndAssertEmptyOutput($request);
 
 
         }
@@ -521,20 +411,21 @@
         public function only_alphanumerical_can_be_added_to_a_segment_as_a_helper_method()
         {
 
+            $this->createRoutes(function () {
 
-            $this->router->get('users/{name}', function () {
 
-                return 'foo';
+                $this->router->get('users/{name}', function () {
 
-            })->andAlphaNumerical('name');
+                    return 'foo';
 
-            $this->router->loadRoutes();
+                })->andAlphaNumerical('name');
+            });
 
-            $request = $this->request('GET', '/users/calvin');
-            $this->assertOutput('foo', $this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/users/calvin');
+            $this->runAndAssertOutput('foo', $request);
 
-            $request = $this->request('GET', '/users/calv1in');
-            $this->assertOutput('foo', $this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/users/calv1in');
+            $this->runAndAssertOutput('foo', $request);
 
 
         }
@@ -543,23 +434,24 @@
         public function only_number_can_be_added_to_a_segment_as_a_helper_method()
         {
 
+            $this->createRoutes(function () {
 
-            $this->router->get('users/{name}', function () {
+                $this->router->get('users/{name}', function () {
 
-                return 'foo';
+                    return 'foo';
 
-            })->andNumber('name');
+                })->andNumber('name');
 
-            $this->router->loadRoutes();
+            });
 
-            $request = $this->request('GET', '/users/1');
-            $this->assertOutput('foo', $this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/users/1');
+            $this->runAndAssertOutput('foo', $request);
 
-            $request = $this->request('GET', '/users/calvin');
-            $this->assertNullResponse($this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/users/calvin');
+            $this->runAndAssertEmptyOutput($request);
 
-            $request = $this->request('GET', '/users/calv1in');
-            $this->assertNullResponse($this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/users/calv1in');
+            $this->runAndAssertEmptyOutput($request);
 
 
         }
@@ -568,23 +460,26 @@
         public function only_one_of_can_be_added_to_a_segment_as_a_helper_method()
         {
 
+            $this->createRoutes(function () {
 
-            $this->router->get('home/{locale}', function (Request $request, $locale) {
+                $this->router->get('home/{locale}', function (Request $request, $locale) {
 
-                return $locale;
+                    return $locale;
 
-            })->andEither('locale', ['en', 'de']);
+                })->andEither('locale', ['en', 'de']);
 
-            $this->router->loadRoutes();
+            });
 
-            $request = $this->request('GET', '/home/en');
-            $this->assertOutput('en', $this->router->runRoute($request));
 
-            $request = $this->request('GET', '/home/de');
-            $this->assertOutput('de', $this->router->runRoute($request));
 
-            $request = $this->request('GET', '/home/es');
-            $this->assertNullResponse($this->router->runRoute($request));
+            $request = $this->webRequest('GET', '/home/en');
+            $this->runAndAssertOutput('en', $request);
+
+            $request = $this->webRequest('GET', '/home/de');
+            $this->runAndAssertOutput('de', $request);
+
+            $request = $this->webRequest('GET', '/home/es');
+            $this->runAndAssertEmptyOutput($request);
 
 
         }

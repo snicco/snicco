@@ -83,15 +83,6 @@
 
 		}
 
-		private function assertRouteActionConstructedTimes( int $times, $class ) {
 
-			$actual = $GLOBALS['test'][ $class::constructed_times ] ?? 0;
-
-			$this->assertSame(
-				$times, $actual,
-				'RouteAction [' . $class . '] was supposed to run: ' . $times . ' times. Actual: ' . $GLOBALS['test'][ $class::constructed_times ]
-			);
-
-		}
 
 	}

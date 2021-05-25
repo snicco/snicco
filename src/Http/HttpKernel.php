@@ -65,7 +65,6 @@
 
         private $global_middleware = [];
 
-
         public function __construct(Pipeline $pipeline, ResponseEmitter $emitter)
         {
 

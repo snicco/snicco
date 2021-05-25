@@ -49,7 +49,7 @@
 
 		public function add( Route $route , $methods) {
 
-		    $route->handle($this->serializeAction($route->getAction()));
+		   $this->serializeRouteAttributes($route);
 
 			$this->uncached_matcher->add( $route , $methods );
 
@@ -91,6 +91,17 @@ declare(strict_types=1); return '. var_export( $route_data, true ) . ';'
 
 		}
 
+        private function serializeRouteAttributes(Route $route) {
+
+            $route->handle($this->serializeAttribute($route->getAction()));
+
+            if ( ( $query_filter = $route->getQueryFilter() ) instanceof \Closure) {
+
+                $route->setQueryFilter($this->serializeAttribute($query_filter));
+
+            }
+
+        }
 
 
 	}

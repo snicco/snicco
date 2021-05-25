@@ -7,7 +7,9 @@
     namespace Tests\traits;
 
     use Contracts\ContainerAdapter;
+    use Illuminate\Support\Facades\Http;
     use Tests\stubs\Middleware\BarMiddleware;
+    use Tests\stubs\Middleware\BazMiddleware;
     use Tests\stubs\Middleware\FooMiddleware;
     use Tests\stubs\TestRequest;
     use Tests\stubs\TestResponseEmitter;
@@ -33,7 +35,7 @@
     trait TestHelpers
     {
 
-        private function newRouteCollection()
+        protected function newRouteCollection()
         {
 
             $condition_factory = new ConditionFactory($this->conditions(), $this->container);
@@ -74,7 +76,7 @@
             return new UrlGenerator(new FastRouteUrlGenerator($this->routes));
         }
 
-        private function newKernel(array $with_middleware = [])
+        private function newKernel(array $with_middleware = []) :HttpKernel
         {
 
             $pipeline = new Pipeline($this->container);
@@ -85,9 +87,11 @@
             $this->container->instance(ContainerAdapter::class, $this->container);
 
             $router_runner = new RouteRunner($factory, new Pipeline($this->container));
+
             $router_runner->middlewareAliases([
                 'foo' => FooMiddleware::class,
                 'bar' => BarMiddleware::class,
+                'baz' => BazMiddleware::class,
             ]);
 
             foreach ($with_middleware as $group_name => $middlewares) {
@@ -98,8 +102,7 @@
 
             $this->container->instance(RouteRunner::class, $router_runner);
 
-
-            return new HttpKernel($pipeline, new TestResponseEmitter());
+            return new HttpKernel($pipeline, $this->emitter = new TestResponseEmitter());
 
         }
 
@@ -122,6 +125,7 @@
                 $expected,
                 $actual = $this->runKernelAndGetOutput($request),
                 "Expected output:[{$expected}] Received:['{$actual}'].");
+
 
         }
 

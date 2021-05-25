@@ -27,6 +27,21 @@
 
         }
 
+        private function unserializeWpQueryFilter( Route $route ) : Route
+        {
+
+            if ($this->isSerializedClosure($route->getQueryFilter())) {
+
+                $query_filter = \Opis\Closure\unserialize($route->getQueryFilter());
+
+                $route->setQueryFilter($query_filter);
+
+            }
+
+            return $route;
+
+        }
+
         private function isSerializedClosure($action) : bool
         {
 
