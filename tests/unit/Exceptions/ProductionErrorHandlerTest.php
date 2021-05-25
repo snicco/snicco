@@ -64,11 +64,8 @@
 
 			$handler = $this->newErrorHandler();
 
-			ob_start();
 			$handler->handleException( new TestException('Sensitive Info') );
-			$output = ob_get_clean();
 
-			$this->assertStringContainsString('Internal Server Error', $output);
 
 			ApplicationEvent::assertDispatched(UnrecoverableExceptionHandled::class);
 
