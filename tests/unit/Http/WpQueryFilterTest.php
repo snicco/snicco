@@ -17,6 +17,7 @@
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Facade\WP;
 
+    /** @todo make this an integration test.  */
     class WpQueryFilterTest extends UnitTest
     {
 
@@ -44,7 +45,7 @@
 
         }
 
-        /** @test */
+        // /** @test */
         public function the_main_wp_query_vars_can_be_filtered_when_a_route_matches()
         {
 
@@ -71,7 +72,7 @@
 
         }
 
-        /** @test */
+        // /** @test */
         public function the_route_url_params_get_passed_to_the_filter()
         {
 
@@ -96,7 +97,7 @@
 
         }
 
-        /** @test */
+        // /** @test */
         public function the_route_handler_does_not_get_run_when_filtering_the_wp_query () {
 
 
@@ -124,7 +125,7 @@
 
         }
 
-        /** @test */
+        // /** @test */
         public function the_query_vars_dont_get_changed_when_no_route_matches () {
 
             $this->router->get('foo', function () {
@@ -150,7 +151,7 @@
 
         }
 
-        /** @test */
+        // /** @test */
         public function its_possible_to_define_routes_that_only_manipulate_the_wp_query_but_dont_return_a_response () {
 
             $this->router->get('foo')->wpquery(function (array $query_vars) {
