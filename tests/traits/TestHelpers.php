@@ -10,6 +10,7 @@
     use Illuminate\Support\Facades\Http;
     use Tests\stubs\Middleware\BarMiddleware;
     use Tests\stubs\Middleware\BazMiddleware;
+    use Tests\stubs\Middleware\FooBarMiddleware;
     use Tests\stubs\Middleware\FooMiddleware;
     use Tests\stubs\TestRequest;
     use Tests\stubs\TestResponseEmitter;
@@ -92,6 +93,7 @@
                 'foo' => FooMiddleware::class,
                 'bar' => BarMiddleware::class,
                 'baz' => BazMiddleware::class,
+                'foobar' => FooBarMiddleware::class,
             ]);
 
             foreach ($with_middleware as $group_name => $middlewares) {
@@ -99,6 +101,8 @@
                 $router_runner->withMiddlewareGroup($group_name, $middlewares);
 
             }
+
+            $this->route_runner = $router_runner;
 
             $this->container->instance(RouteRunner::class, $router_runner);
 

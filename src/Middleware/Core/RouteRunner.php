@@ -95,14 +95,14 @@
         {
 
             $middleware = $route->getMiddleware();
-            $middleware = $this->expandMiddleware($middleware);
 
-            if ($with_global_middleware) {
+            if ( $with_global_middleware ) {
 
                 $middleware = $this->mergeGlobalMiddleware($middleware);
 
             }
 
+            $middleware = $this->expandMiddleware($middleware);
             $middleware = $this->uniqueMiddleware($middleware);
             $middleware = $this->sortMiddleware($middleware);
 
