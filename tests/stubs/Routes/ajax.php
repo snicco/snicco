@@ -2,7 +2,9 @@
 
 	declare( strict_types = 1 );
 
-	$router = \Tests\stubs\TestApp::route();
+    use Tests\stubs\TestApp;
+
+    $router = TestApp::route();
 
 	$router->post('foo_action')->handle( function () {
 

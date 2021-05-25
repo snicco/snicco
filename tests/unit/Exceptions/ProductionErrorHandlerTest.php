@@ -66,8 +66,8 @@
 
 			$handler->handleException( new TestException('Sensitive Info') );
 
-
 			ApplicationEvent::assertDispatched(UnrecoverableExceptionHandled::class);
+            $this->expectOutputString('Internal Server Error');
 
 		}
 

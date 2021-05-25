@@ -3,6 +3,10 @@
 
     declare(strict_types = 1);
 
+    use AdrianSuter\Autoload\Override\Override;
+    use Tests\HeaderStack;
+    use WPEmerge\Http\ResponseEmitter;
+
     $root_dir = getenv('ROOT_DIR');
 
     if ( ! defined('ROOT_DIR')) {
@@ -11,9 +15,9 @@
 
     }
 
-    if ( ! defined('VENDOR_DIR') ) {
+    if ( ! defined('VENDOR_DIR')) {
 
-        define('VENDOR_DIR', $root_dir . DIRECTORY_SEPARATOR . 'vendor');
+        define('VENDOR_DIR', $root_dir.DIRECTORY_SEPARATOR.'vendor');
 
     }
 
@@ -51,16 +55,46 @@
 
     if ( ! defined('BLADE_CACHE')) {
 
-        define('BLADE_CACHE', TESTS_DIR . DS . 'integration' . DS . 'Blade' . DS . 'cache');
+        define('BLADE_CACHE', TESTS_DIR.DS.'integration'.DS.'Blade'.DS.'cache');
 
     }
 
-     if ( ! defined('BLADE_VIEWS')) {
+    if ( ! defined('BLADE_VIEWS')) {
 
-        define('BLADE_VIEWS', TESTS_DIR . DS . 'integration' . DS . 'Blade' . DS . 'views');
+        define('BLADE_VIEWS', TESTS_DIR.DS.'integration'.DS.'Blade'.DS.'views');
 
     }
 
+    $classLoader = require $root_dir.DS.'vendor'.DS.'autoload.php';
 
+    Override::apply($classLoader, [
 
-    require_once $root_dir.DS.'vendor'.DS.'autoload.php';
+        ResponseEmitter::class => [
+
+            'connection_status' => function () : int {
+
+                if (isset($GLOBALS['connection_status_return'])) {
+                    return $GLOBALS['connection_status_return'];
+                }
+
+                return connection_status();
+            },
+
+            'header' => function (string $string, bool $replace = true, int $statusCode = null) : void {
+
+                HeaderStack::push(
+                    [
+                        'header' => $string,
+                        'replace' => $replace,
+                        'status_code' => $statusCode,
+                    ]
+                );
+            },
+
+            'headers_sent' => function () : bool {
+
+                return false;
+
+            },
+        ],
+    ]);

@@ -8,6 +8,11 @@
 
     use Psr\Http\Message\ResponseInterface;
 
+    use function connection_status;
+    use function header;
+    use function headers_sent;
+
+
     /**
      *
      * Modified Version of Slims Response Emitter.
