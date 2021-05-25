@@ -29,7 +29,6 @@
 
         use SortsMiddleware;
 
-
         /**
          * @var Pipeline
          */
@@ -78,7 +77,7 @@
 
             $response = $this->handle($request_event);
 
-            if ($response instanceof NullResponse) {
+            if ( $response instanceof NullResponse ) {
 
                 return;
 
@@ -98,7 +97,7 @@
 
             $request = $request_event->request;
 
-            if ($this->withMiddleware()) {
+            if ( $this->withMiddleware() ) {
 
                 $request = $request->withAttribute('global_middleware_run', true);
 
@@ -108,13 +107,6 @@
                                   ->through($this->gatherMiddleware($request_event))
                                   ->run();
 
-
-        }
-
-        public function runInTestMode() : void
-        {
-
-            $this->is_test_mode = true;
 
         }
 
@@ -135,7 +127,7 @@
 
             }
 
-            if ( ! $this->withMiddleware()) {
+            if ( ! $this->withMiddleware() ) {
 
                 return $this->core_middleware;
 

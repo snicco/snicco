@@ -7,6 +7,7 @@
 	namespace WPEmerge\Facade;
 
 	/**
+     * @codeCoverageIgnore
      * @see \WPEmerge\Facade\WordpressApiMixin
      */
 	class WordpressApi {

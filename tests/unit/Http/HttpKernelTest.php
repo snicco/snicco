@@ -6,111 +6,100 @@
 
 	namespace Tests\unit\Http;
 
-	use Mockery;
-    use Tests\stubs\TestRequest;
+	use Contracts\ContainerAdapter;
+    use Mockery;
+    use Tests\stubs\TestResponseEmitter;
+    use Tests\traits\TestHelpers;
     use Tests\UnitTest;
     use Tests\traits\CreateDefaultWpApiMocks;
     use Tests\traits\SetUpKernel;
     use Tests\stubs\Middleware\GlobalMiddleware;
     use Tests\stubs\Middleware\WebMiddleware;
 	use WPEmerge\Application\ApplicationEvent;
-	use WPEmerge\Events\BodySent;
-	use WPEmerge\Events\HeadersSent;
-    use WPEmerge\ExceptionHandling\Exceptions\InvalidResponseException;
+    use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
+    use WPEmerge\Routing\Router;
 
-	class HttpKernelTest extends UnitTest {
+    class HttpKernelTest extends UnitTest {
 
-		use SetUpKernel;
+        use TestHelpers;
         use CreateDefaultWpApiMocks;
 
+        /**
+         * @var ContainerAdapter
+         */
+        private $container;
+
+        /** @var Router */
+        private $router;
+
+        /**
+         * @var AbstractRouteCollection
+         */
+        private $routes;
+
+        /** @var TestResponseEmitter */
+        private $emitter;
 
         protected function beforeTestRun()
         {
-            $this->router = $this->newRouter($c = $this->createContainer());
-            $this->kernel = $this->newKernel($this->router, $c );
-            ApplicationEvent::make($c);
+
+            $this->container = $this->createContainer();
+            $this->routes = $this->newRouteCollection();
+            ApplicationEvent::make($this->container);
             ApplicationEvent::fake();
-            WP::setFacadeContainer($c);
+            WP::setFacadeContainer($this->container);
 
         }
 
         protected function beforeTearDown()
         {
+
             ApplicationEvent::setInstance(null);
-            WP::reset();
             Mockery::close();
+            WP::reset();
 
         }
 
-        /**
-         *
-         *
-         *
-         *
-         * CONFIG: DEFAULT
-         *
-         *
-         *
-         *
-         */
 
 		/** @test */
 		public function no_response_gets_send_when_no_route_matched() {
 
-			$request = $this->createIncomingWebRequest( 'GET', '/foo' );
+		    $this->createRoutes(function () {
+		        $this->router->get('foo')->handle(function () {
+		            return 'foo';
+                });
+            });
 
-			$output = $this->runAndGetKernelOutput($request);
+			$request = $this->webRequest( 'GET', '/bar' );
 
-			$this->assertNothingSent($output);
+			$this->runAndAssertEmptyOutput($request);
 
 		}
 
 		/** @test */
 		public function for_matching_request_headers_and_body_get_send() {
 
+		    $this->createRoutes(function () {
 
-			$this->router->get( '/foo', function ( Request $request ) {
+                $this->router->get( '/foo', function () {
 
-				return 'foo';
+                    return 'foo';
 
-			});
+                });
 
-			$this->router->loadRoutes();
+		    });
 
-			$request = $this->createIncomingWebRequest( 'GET', '/foo' );
+			$request = $this->webRequest( 'GET', '/foo' );
+			$this->runAndAssertOutput('foo', $request);
 
-			$this->assertBodySent('foo', $this->runAndGetKernelOutput($request));
-
-		}
-
-		/** @test */
-		public function for_admin_requests_the_body_does_not_get_send_immediately () {
-
-
-			$this->router->get( '/admin', function () {
-
-				return 'foo';
-
-			});
-
-			$this->router->loadRoutes();
-
-			$request = $this->createIncomingAdminRequest( 'GET', '/admin' );
-
-			$this->assertNothingSent($this->runAndGetKernelOutput($request));
-
-			ob_start();
-			$this->kernel->sendResponseDeferred();
-			$body = ob_get_clean();
-
-			$this->assertBodySent('foo', $body);
+            $this->assertContains('Content-Type: text/html', $this->emitter->headers);
 
 		}
 
 		/** @test */
-		public function events_are_dispatched_when_a_headers_and_body_get_send () {
+		public function an_event_gets_dispatched_when_a_response_got_send () {
 
 			$this->router->get( '/foo', function ( ) {
 
@@ -136,6 +125,7 @@
 
 			});
 
+			$this->expectOutputString();
 
 		}
 

@@ -44,7 +44,6 @@
 
             $this->config->extend('middleware.aliases', [
 
-                'csrf' => Guard::class,
                 'auth' => Authenticate::class,
                 'guest' => RedirectIfAuthenticated::class,
                 'can' => Authorize::class,

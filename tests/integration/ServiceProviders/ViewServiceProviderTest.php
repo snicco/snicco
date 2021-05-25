@@ -38,14 +38,7 @@
 
 		}
 
-		/** @test */
-		public function the_view_finder_is_resolved_correctly () {
 
-            $this->newTestApp();
-
-			$this->assertInstanceOf(PhpViewFinder::class, TestApp::resolve(ViewFinderInterface::class));
-
-		}
 
 		/** @test */
 		public function the_view_engine_is_resolved_correctly () {

@@ -32,6 +32,7 @@
         </include>
         <exclude>
             <directory suffix=".php">src/Routing/Conditions/</directory>
+            <directory suffix=".php">src/Events/</directory>
         </exclude>
     </coverage>
 
