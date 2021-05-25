@@ -35,7 +35,7 @@
     trait TestHelpers
     {
 
-        protected function newRouteCollection()
+        protected function newRouteCollection() : RouteCollection
         {
 
             $condition_factory = new ConditionFactory($this->conditions(), $this->container);
@@ -64,7 +64,7 @@
 
         }
 
-        private function newRouter()
+        private function newRouter() : Router
         {
 
             return new Router($this->container, $this->routes);
@@ -150,7 +150,8 @@
 
         }
 
-        private function webRequest($method, $path) {
+        private function webRequest($method, $path) : IncomingWebRequest
+        {
 
             return new IncomingWebRequest('wordpress.php', TestRequest::from($method, $path));
 

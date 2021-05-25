@@ -59,7 +59,7 @@
 
             $include_global_middleware = ! $request->getAttribute('global_middleware_run', false);
 
-            if ( ! $route = $route_result->route()) {
+            if ( ! $route = $route_result->route() ) {
 
                 return $this->response_factory->null();
 

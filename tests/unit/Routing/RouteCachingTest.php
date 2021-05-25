@@ -15,23 +15,20 @@
     use Tests\traits\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Events\IncomingAdminRequest;
+    use WPEmerge\Events\IncomingAjaxRequest;
+    use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Events\WpQueryFilterable;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Factories\AbstractFactory;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Http\Request;
     use WPEmerge\Routing\CachedRouteCollection;
     use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
-    use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Routing\FilterWpQuery;
     use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RouteCollection;
     use WPEmerge\Routing\Router;
-    use WPEmerge\Facade\WpFacade;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\ServiceProviders\RoutingServiceProvider;
 
@@ -48,11 +45,6 @@
         private $router;
 
         private $route_map_file;
-
-        /**
-         * @var UrlGenerator
-         */
-        private $url_generator;
 
         /**
          * @var string
@@ -78,6 +70,7 @@
 
             $this->container = $this->createContainer();
             $this->routes = $this->newRouteCollection();
+
             ApplicationEvent::make($this->container);
             ApplicationEvent::fake();
             WP::setFacadeContainer($this->container);
@@ -279,15 +272,16 @@
 
             $this->createRoutes(function () {
 
-                $this->router->get('foo')->wpquery(function () {
+                $this->router->get('foo', function () {
+
+                    return 'foo';
+
+                })->wpquery(function () {
 
                     return [
                         'foo' => 'baz',
                     ];
 
-                })->handle(function () {
-
-                    return 'foo';
                 });
 
             });
@@ -313,9 +307,15 @@
         public function reverse_routing_when_no_cache_file_is_created_yet()
         {
 
-            $this->router->get('foo', Controller::class.'@handle')->name('foo');
-            $this->router->loadRoutes();
-            $this->assertSame('/foo', $this->url_generator->toRoute('foo', [], false));
+            $this->createRoutes(function () {
+
+                $this->router->get('foo', Controller::class.'@handle')->name('foo');
+
+            });
+
+            $url_generator = $this->newUrlGenerator();
+
+            $this->assertSame('/foo', $url_generator->toRoute('foo', [], false));
 
         }
 
@@ -324,14 +324,20 @@
         {
 
             // Create cache
-            $this->router->get('foo', Controller::class.'@handle')->name('foo');
-            $this->router->get('bar', Controller::class.'@handle')->name('bar');
-            $this->router->loadRoutes();
+            $this->createRoutes(function () {
+
+                $this->router->get('foo', Controller::class.'@handle')->name('foo');
+                $this->router->get('bar', Controller::class.'@handle')->name('bar');
+
+            });
+
 
             $this->newCachedRouter();
 
-            $this->assertSame('/foo', $this->url_generator->toRoute('foo', [], false));
-            $this->assertSame('/bar', $this->url_generator->toRoute('bar', [], false));
+            $url_generator = $this->newUrlGenerator();
+
+            $this->assertSame('/foo', $url_generator->toRoute('foo', [], false));
+            $this->assertSame('/bar', $url_generator->toRoute('bar', [], false));
 
 
         }
@@ -341,23 +347,25 @@
         {
 
             // Create cache
-            $this->router->get('foo', Controller::class.'@handle')->name('foo');
-            $this->router->get('bar', Controller::class.'@handle')->name('bar');
-            $this->router->loadRoutes();
+            $this->createRoutes(function () {
 
-            $this->assertOutput('foo', $this->router->runRoute(TestRequest::from('GET', 'foo')));
+                $this->router->get('foo', Controller::class.'@handle')->name('foo');
+                $this->router->get('bar', Controller::class.'@handle')->name('bar');
+
+            });
+
+            $this->runAndAssertOutput('foo', $this->webRequest('GET', 'foo'));
 
             // Cache is loaded into this router instance
             $this->newCachedRouter();
 
-            // This call always happens in the service provider.
-            $this->router->loadRoutes();
+            $url_generator = $this->newUrlGenerator();
 
-            $this->assertSame('/foo', $this->url_generator->toRoute('foo', [], false));
-            $this->assertSame('/bar', $this->url_generator->toRoute('bar', [], false));
+            $this->assertSame('/foo', $url_generator->toRoute('foo', [], false));
+            $this->assertSame('/bar', $url_generator->toRoute('bar', [], false));
 
-            $this->assertOutput('foo', $this->router->runRoute(TestRequest::from('GET', 'foo')));
-            $this->assertOutput('foo', $this->router->runRoute(TestRequest::from('GET', 'bar')));
+            $this->runAndAssertOutput('foo', $this->webRequest('GET', 'foo'));
+            $this->runAndAssertOutput('foo', $this->webRequest('GET', 'bar'));
 
         }
 
@@ -369,22 +377,26 @@
             WP::shouldReceive('isAdminAjax')->andReturnFalse();
 
             // No cache created
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->createRoutes(function () {
 
-                $this->router->get('admin/foo', function (Request $request, string $page) {
+                $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    return $page;
+                    $this->router->get('admin/foo', function (Request $request, string $page) {
+
+                        return $page;
+
+                    });
 
                 });
 
             });
-            $this->router->loadRoutes();
+
             $request = $this->adminRequestTo('foo');
-            $this->assertOutput('foo', $this->router->runRoute($request));
+            $this->runAndAssertOutput('foo', new IncomingAdminRequest($request));
 
             $this->newCachedRouter();
             $request = $this->adminRequestTo('foo');
-            $this->assertOutput('foo', $this->router->runRoute($request));
+            $this->runAndAssertOutput('foo', new IncomingAdminRequest($request));
 
 
         }
@@ -396,57 +408,60 @@
             WP::shouldReceive('isAdmin')->andReturnTrue();
             WP::shouldReceive('isAdminAjax')->andReturnTrue();
 
-            $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
+            $this->createRoutes(function () {
 
-                $this->router->post('foo_action')->handle(function () {
 
-                    return 'FOO_ACTION';
+                $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
+
+                    $this->router->post('foo_action')->handle(function () {
+
+                        return 'FOO_ACTION';
+
+                    });
 
                 });
 
             });
 
-            $this->router->loadRoutes();
-
             $ajax_request = $this->ajaxRequest('foo_action');
-            $response = $this->router->runRoute($ajax_request);
-            $this->assertOutput('FOO_ACTION', $response);
+            $this->runAndAssertOutput('FOO_ACTION', new IncomingAjaxRequest($ajax_request));
 
             $this->newCachedRouter();
 
             $ajax_request = $this->ajaxRequest('foo_action');
-            $response = $this->router->runRoute($ajax_request);
-            $this->assertOutput('FOO_ACTION', $response);
+            $this->runAndAssertOutput('FOO_ACTION', new IncomingAjaxRequest($ajax_request));
 
 
         }
 
         /** @test */
-        public function the_callback_controller_works_with_cached_works()
+        public function the_fallback_controller_works_with_cached_works()
         {
 
-            $this->router->get()->where(IsPost::class, true)
-                         ->handle(function () {
+            $this->createRoutes(function () {
 
-                             return 'FOO';
 
-                         });
+                $this->router->get()->where(IsPost::class, true)
+                             ->handle(function () {
 
-            $this->router->createFallbackWebRoute();
-            $this->router->loadRoutes();
+                                 return 'FOO';
 
-            $request = TestRequest::from('GET', 'post1');
-            $response = $this->router->runRoute($request);
-            $this->assertOutput('FOO', $response);
+                             });
+
+                $this->router->createFallbackWebRoute();
+
+
+            });
+
+
+            $request = $this->webRequest('GET', 'post1');
+            $this->runAndAssertOutput('FOO', $request);
 
             $this->newCachedRouter();
 
-            $this->router->createFallbackWebRoute();
-            $this->router->loadRoutes();
+            $request = $this->webRequest('GET', 'post1');
+            $this->runAndAssertOutput('FOO', $request);
 
-            $request = TestRequest::from('GET', 'post1');
-            $response = $this->router->runRoute($request);
-            $this->assertOutput('FOO', $response);
 
 
         }
@@ -455,11 +470,14 @@
         public function a_named_route_with_a_closure_is_deserialized_when_found()
         {
 
-            // Create cache
-            $this->router->get('foo', function () {
-                //
-            })->name('foo');
-            $this->router->loadRoutes();
+            $this->createRoutes(function () {
+
+                // Create cache
+                $this->router->get('foo', function () {
+                    //
+                })->name('foo');
+
+            });
 
             $this->newCachedRouter();
 
@@ -472,21 +490,6 @@
 
         }
 
-        private function allConditions() : array
-        {
-
-            return array_merge(RoutingServiceProvider::CONDITION_TYPES, [
-
-                'true' => \Tests\stubs\Conditions\TrueCondition::class,
-                'false' => \Tests\stubs\Conditions\FalseCondition::class,
-                'maybe' => \Tests\stubs\Conditions\MaybeCondition::class,
-                'unique' => \Tests\stubs\Conditions\UniqueCondition::class,
-                'dependency_condition' => \Tests\stubs\Conditions\ConditionWithDependency::class,
-
-            ]);
-
-
-        }
 
     }
 
