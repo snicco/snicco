@@ -7,15 +7,15 @@
     namespace Tests\unit\Routing;
 
     use Contracts\ContainerAdapter;
+    use http\Header;
     use Mockery;
-    use Tests\stubs\TestResponseEmitter;
+    use Tests\HeaderStack;
     use Tests\traits\CreateDefaultWpApiMocks;
     use Tests\traits\TestHelpers;
     use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Response;
     use WPEmerge\Routing\Router;
 
     class ViewRoutesTest extends UnitTest
@@ -32,9 +32,6 @@
         /** @var Router */
         private $router;
 
-        /** @var TestResponseEmitter */
-        private $emitter;
-
         protected function beforeTestRun()
         {
 
@@ -43,7 +40,7 @@
             ApplicationEvent::make($this->container);
             ApplicationEvent::fake();
             WP::setFacadeContainer($this->container);
-
+            HeaderStack::reset();
             $this->createBindingsForViewController();
 
 
@@ -55,6 +52,8 @@
             ApplicationEvent::setInstance(null);
             Mockery::close();
             WP::reset();
+            HeaderStack::reset();
+
 
         }
 
@@ -73,8 +72,9 @@
 
             $this->runAndAssertOutput('VIEW:welcome.wordpress,CONTEXT:[]', $request);
 
-            $this->assertContains('Content-Type: text/html', $this->emitter->headers);
-            $this->assertStringContainsString('200', $this->emitter->status_line);
+            HeaderStack::assertHas('Content-Type', 'text/html');
+            HeaderStack::assertHasStatusCode(200);
+
 
         }
 
@@ -95,9 +95,8 @@
 
             $this->runAndAssertOutput('VIEW:welcome.wordpress,CONTEXT:[foo=>bar,bar=>baz]', $request);
 
-
-            $this->assertContains('Referer: foobar', $this->emitter->headers);
-            $this->assertStringContainsString('201', $this->emitter->status_line);
+            HeaderStack::assertHas('Referer', 'foobar');
+            HeaderStack::assertHasStatusCode(201);
 
         }
 

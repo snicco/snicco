@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c027cf685558039b49cc48c8d6a456a9",
+    "content-hash": "a46093d1f8e963a8ae7be164e66adbc6",
     "packages": [
         {
             "name": "calvinalkan/base-container",
@@ -1985,6 +1985,58 @@
         }
     ],
     "packages-dev": [
+        {
+            "name": "adriansuter/php-autoload-override",
+            "version": "1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/adriansuter/php-autoload-override.git",
+                "reference": "2c487fab2f14a8cf2c8347c0fe2551ea93e1a369"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/adriansuter/php-autoload-override/zipball/2c487fab2f14a8cf2c8347c0fe2551ea93e1a369",
+                "reference": "2c487fab2f14a8cf2c8347c0fe2551ea93e1a369",
+                "shasum": ""
+            },
+            "require": {
+                "nikic/php-parser": "^4.4",
+                "php": "^7.2 || ^8.0"
+            },
+            "require-dev": {
+                "phpstan/phpstan": "^0.12.25",
+                "phpunit/phpunit": "^8.5",
+                "squizlabs/php_codesniffer": "^3.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "AdrianSuter\\Autoload\\Override\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Adrian Suter",
+                    "email": "adrian@suter-wirz.ch"
+                }
+            ],
+            "description": "Override global scoped fully qualified function calls inside your class methods in order to be able to mock them during testing.",
+            "homepage": "https://adriansuter.github.io/php-autoload-override/",
+            "keywords": [
+                "override",
+                "php",
+                "testing"
+            ],
+            "support": {
+                "issues": "https://github.com/adriansuter/php-autoload-override/issues",
+                "source": "https://github.com/adriansuter/php-autoload-override/tree/1.2"
+            },
+            "time": "2020-07-01T12:10:03+00:00"
+        },
         {
             "name": "antecedent/patchwork",
             "version": "2.1.12",

@@ -25,6 +25,7 @@
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\HttpKernel;
+    use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Routing\Pipeline;
@@ -88,13 +89,14 @@
             $this->container->instance(ContainerAdapter::class, $this->container);
 
             $router_runner = new RouteRunner($factory, new Pipeline($this->container));
-
             $router_runner->middlewareAliases([
                 'foo' => FooMiddleware::class,
                 'bar' => BarMiddleware::class,
                 'baz' => BazMiddleware::class,
                 'foobar' => FooBarMiddleware::class,
             ]);
+            $this->container->instance(RouteRunner::class, $router_runner);
+            $this->route_runner = $router_runner;
 
             foreach ($with_middleware as $group_name => $middlewares) {
 
@@ -102,12 +104,15 @@
 
             }
 
-            $this->route_runner = $router_runner;
+            return new HttpKernel($pipeline, $this->emitter = new ResponseEmitter());
 
-            $this->container->instance(RouteRunner::class, $router_runner);
 
-            return new HttpKernel($pipeline, $this->emitter = new TestResponseEmitter());
+        }
 
+        private function runKernel (IncomingRequest $request, HttpKernel $kernel = null) {
+
+            $kernel = $kernel ?? $this->newKernel();
+            $kernel->run($request);
         }
 
         private function runKernelAndGetOutput(IncomingRequest $request, HttpKernel $kernel = null)
@@ -116,8 +121,7 @@
             $kernel = $kernel ?? $this->newKernel();
 
             ob_start();
-            $kernel->run($request);
-
+            $this->runKernel($request, $kernel);
             return ob_get_clean();
 
         }
