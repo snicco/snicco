@@ -29,6 +29,8 @@
 
             $this->unserializeAction($route);
 
+            $this->unserializeWpQueryFilter($route);
+
             $payload = $this->normalize($route_info[2]);
 
             return new RoutingResult($route, $payload);

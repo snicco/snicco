@@ -6,34 +6,51 @@
 
     namespace Tests\unit\Routing;
 
+    use Contracts\ContainerAdapter;
     use Mockery;
+    use Tests\traits\CreateDefaultWpApiMocks;
+    use Tests\traits\TestHelpers;
     use Tests\UnitTest;
-    use Tests\traits\SetUpRouter;
     use Tests\stubs\Middleware\BarMiddleware;
     use Tests\stubs\Middleware\BazMiddleware;
     use Tests\stubs\Middleware\FooBarMiddleware;
     use Tests\stubs\Middleware\FooMiddleware;
+    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
+    use WPEmerge\Routing\Router;
 
     class RouteMiddlewareTest extends UnitTest
     {
 
-        use SetUpRouter;
+        use TestHelpers;
+        use CreateDefaultWpApiMocks;
+
+        /**
+         * @var ContainerAdapter
+         */
+        private $container;
+
+        /** @var Router */
+        private $router;
 
         protected function beforeTestRun()
         {
 
-            $this->newRouter($c = $this->createContainer());
-            WP::setFacadeContainer($c);
+            $this->container = $this->createContainer();
+            $this->routes = $this->newRouteCollection();
+            ApplicationEvent::make($this->container);
+            ApplicationEvent::fake();
+            WP::setFacadeContainer($this->container);
+
         }
 
         protected function beforeTearDown()
         {
 
+            ApplicationEvent::setInstance(null);
             Mockery::close();
-            WP::clearResolvedInstances();
-            WP::setFacadeContainer(null);
+            WP::reset();
 
         }
 

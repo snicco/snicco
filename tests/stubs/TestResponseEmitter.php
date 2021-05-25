@@ -12,11 +12,11 @@
     class TestResponseEmitter extends ResponseEmitter
     {
 
-        private $headers = [];
+        public $headers = [];
         /**
          * @var string
          */
-        private $status_line;
+        public $status_line;
 
         /**
          * Send the response the client
@@ -53,7 +53,7 @@
                 foreach ($values as $value) {
 
                     $header = sprintf('%s: %s', $name, $value);
-                    $this->headers[$name] = $header;
+                    $this->headers[] = $header;
 
                 }
             }

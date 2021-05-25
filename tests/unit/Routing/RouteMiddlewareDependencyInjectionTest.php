@@ -6,31 +6,50 @@
 
 	namespace Tests\unit\Routing;
 
-	use Mockery;
+	use Contracts\ContainerAdapter;
+    use Mockery;
+    use Tests\traits\CreateDefaultWpApiMocks;
+    use Tests\traits\TestHelpers;
     use Tests\UnitTest;
     use Tests\traits\SetUpRouter;
     use Tests\stubs\Controllers\Admin\AdminControllerWithMiddleware;
 	use Tests\stubs\Middleware\MiddlewareWithDependencies;
+    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Request;
+    use WPEmerge\Routing\Router;
 
     class RouteMiddlewareDependencyInjectionTest extends UnitTest {
 
-		use SetUpRouter;
+        use TestHelpers;
+        use CreateDefaultWpApiMocks;
 
+
+        /**
+         * @var ContainerAdapter
+         */
+        private $container;
+
+        /** @var Router */
+        private $router;
 
         protected function beforeTestRun()
         {
-            $this->newRouter( $c = $this->createContainer() );
-            WP::setFacadeContainer($c);
+
+            $this->container = $this->createContainer();
+            $this->routes = $this->newRouteCollection();
+            ApplicationEvent::make($this->container);
+            ApplicationEvent::fake();
+            WP::setFacadeContainer($this->container);
+
         }
 
         protected function beforeTearDown()
         {
 
+            ApplicationEvent::setInstance(null);
             Mockery::close();
-            WP::clearResolvedInstances();
-            WP::setFacadeContainer(null);
+            WP::reset();
 
         }
 
@@ -39,16 +58,19 @@
         /** @test */
 		public function middleware_is_resolved_from_the_service_container () {
 
-			$this->router->get( '/foo', function ( Request $request ) {
 
-				return $request->body;
+		    $this->createRoutes(function () {
 
-			})->middleware(MiddlewareWithDependencies::class);
+                $this->router->get( '/foo', function ( Request $request ) {
 
-			$this->router->loadRoutes();
+                    return $request->body;
 
-			$request = $this->request( 'GET', '/foo' );
-			$this->assertOutput( 'foobar', $this->router->runRoute( $request ) );
+                })->middleware(MiddlewareWithDependencies::class);
+
+            });
+
+			$request = $this->webRequest( 'GET', '/foo' );
+			$this->runAndAssertOutput( 'foobar', $request );
 
 
 		}
@@ -56,12 +78,16 @@
 		/** @test */
 		public function controller_middleware_is_resolved_from_the_service_container () {
 
-			$this->router->get( '/foo', AdminControllerWithMiddleware::class . '@handle');
+		    $this->createRoutes(function () {
 
-			$this->router->loadRoutes();
+                $this->router->get( '/foo', AdminControllerWithMiddleware::class . '@handle');
 
-			$request = $this->request( 'GET', '/foo' );
-			$this->assertOutput( 'foobarbaz:controller_with_middleware', $this->router->runRoute( $request ) );
+
+            });
+
+
+			$request = $this->webRequest( 'GET', '/foo' );
+			$this->runAndAssertOutput( 'foobarbaz:controller_with_middleware', $request );
 
 		}
 
@@ -70,16 +96,32 @@
 
 			$GLOBALS['test'][ AdminControllerWithMiddleware::constructed_times ] = 0;
 
-			$this->router->get( '/foo', AdminControllerWithMiddleware::class . '@handle');
 
-			$this->router->loadRoutes();
+			$this->createRoutes(function () {
 
-			$request = $this->request( 'GET', '/foo' );
-			$this->assertOutput( 'foobarbaz:controller_with_middleware', $this->router->runRoute( $request ) );
+                $this->router->get( '/foo', AdminControllerWithMiddleware::class . '@handle');
+
+            });
+
+
+
+			$request = $this->webRequest( 'GET', '/foo' );
+			$this->runAndAssertOutput( 'foobarbaz:controller_with_middleware', $request );
 
 			$this->assertRouteActionConstructedTimes(1, AdminControllerWithMiddleware::class);
 
 
 		}
+
+        private function assertRouteActionConstructedTimes( int $times, $class ) {
+
+            $actual = $GLOBALS['test'][ $class::constructed_times ] ?? 0;
+
+            $this->assertSame(
+                $times, $actual,
+                'RouteAction [' . $class . '] was supposed to run: ' . $times . ' times. Actual: ' . $GLOBALS['test'][ $class::constructed_times ]
+            );
+
+        }
 
 	}

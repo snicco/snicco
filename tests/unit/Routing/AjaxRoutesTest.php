@@ -121,7 +121,7 @@
             });
 
             $ajax_request = new IncomingAjaxRequest($this->ajaxRequest('bar_action'));
-            $this->runAndAssertNoOutput($ajax_request);
+            $this->runAndAssertEmptyOutput($ajax_request);
 
         }
 
@@ -149,7 +149,7 @@
 
             $this->runAndAssertOutput('FOO_ACTION', new IncomingAdminRequest($ajax_request));
 
-            $this->runAndAssertNoOutput(
+            $this->runAndAssertEmptyOutput(
                 new IncomingAdminRequest($ajax_request->withQueryParams(['action' => 'bar_action']))
             );
 
@@ -177,7 +177,7 @@
             $ajax_request = $this->ajaxRequest('foo_action', 'GET', 'admin-ajax.php/foo_action')
                                  ->withParsedBody(['action' => 'bogus']);
 
-            $this->runAndAssertNoOutput(new IncomingAjaxRequest($ajax_request));
+            $this->runAndAssertEmptyOutput(new IncomingAjaxRequest($ajax_request));
 
         }
 
