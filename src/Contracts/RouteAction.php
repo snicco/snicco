@@ -10,5 +10,4 @@
 
 		public function raw();
 
-
 	}

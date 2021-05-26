@@ -6,9 +6,8 @@
 
 	namespace WPEmerge\Contracts;
 
-	/** Interface is just used as clarification */
+	/** Interface is just used for better code clarity */
 	interface ViewComposer extends Handler {
-
 
 
 	}
