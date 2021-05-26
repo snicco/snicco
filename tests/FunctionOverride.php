@@ -1,7 +1,7 @@
 <?php
 
     /**
-     * Override PHP namespaced functions into the Slim\App namespace.
+     * Override PHP namespaced functions into the Tests namespace.
      *
      * header() and headers_sent() are from Zend-Diactoros zend-diactoros/test/TestAsset/Functions.php and are
      * Copyright (c) 2015-2016 Zend Technologies USA Inc. (http://www.zend.com) and are licensed under the New BSD License
@@ -11,16 +11,14 @@
 
     declare(strict_types=1);
 
-    namespace Slim;
-
-    use Tests\HeaderStack;
+    namespace Tests;
 
     /**
      * Have headers been sent?
      *
      * @return false
      */
-    function headers_sent()
+    function headers_sent() : bool
     {
         return false;
     }
@@ -32,7 +30,7 @@
      * @param bool     $replace
      * @param int|null $statusCode
      */
-    function header($string, $replace = true, $statusCode = null)
+    function header(string $string, bool $replace = true, int $statusCode = null)
     {
         HeaderStack::push(
             [
@@ -48,7 +46,7 @@
      *
      * @return int
      */
-    function connection_status()
+    function connection_status() :int
     {
         if (isset($GLOBALS['connection_status_return'])) {
             return $GLOBALS['connection_status_return'];

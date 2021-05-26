@@ -8,6 +8,9 @@
     use Tests\stubs\Middleware\FooMiddleware;
     use Tests\stubs\TestApp;
 
+    require __DIR__ . DS . 'query-var-routes.php';
+    require __DIR__ . DS . 'aliased-routes.php';
+
     $router = TestApp::route();
 
     $router->get('foo', function () {
@@ -20,46 +23,23 @@
 
         return 'foo';
 
-    })->middleware([FooMiddleware::class,  FooBarMiddleware::class]);
+    })
+           ->middleware([FooMiddleware::class,  FooBarMiddleware::class]);
 
+    $router->get()
+           ->where(IsPost::class, true)
+           ->handle(function () {
 
-    $router->get()->where(IsPost::class, true)->handle(function () {
-
-        return 'FOO';
+        return 'fallback_route';
 
     });
 
-    TestApp::get('get', function () {
+    $router->post()
+           ->where(IsPost::class, false)
+           ->handle(function () {
 
-        return 'get';
-    });
+               return 'fallback_route';
 
-    TestApp::post('post', function () {
+           });
 
-        return 'post';
-    });
 
-    TestApp::delete('delete', function () {
-
-        return 'delete';
-    });
-
-    TestApp::options('options', function () {
-
-        return 'options';
-    });
-
-    TestApp::put('put', function () {
-
-        return 'put';
-    });
-
-    TestApp::patch('patch', function () {
-
-        return 'patch';
-    });
-
-    TestApp::match( ['GET','POST'], 'match', function () {
-
-        return 'match';
-    });

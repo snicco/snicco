@@ -61,9 +61,4 @@
 
         }
 
-        protected function expectKernelOutput(string $expected)
-        {
-            $this->expectOutputString($expected);
-        }
-
     }

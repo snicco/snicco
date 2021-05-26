@@ -94,10 +94,7 @@
                 [FilterWpQuery::class, 'handle']
             ],
 
-            LoadedWP::class => [
 
-                // [HttpKernel::class, 'runGlobal']
-            ]
 
         ];
 

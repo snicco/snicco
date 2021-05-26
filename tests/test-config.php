@@ -20,6 +20,9 @@
 
 		],
 
+        'routing' => [
+            'definitions' => TESTS_DIR . DS . 'stubs' .DS .  'routes'
+        ],
 
 		'views' => [
 

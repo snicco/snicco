@@ -13,6 +13,8 @@
     use WPEmerge\Events\AdminBodySendable;
 	use WPEmerge\Events\BodySent;
     use WPEmerge\Events\DoShutdown;
+    use WPEmerge\Events\ResponseSent;
+    use WPEmerge\Events\StartLoadingAdminFooter;
     use WPEmerge\Events\WpQueryFilterable;
     use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\IncomingAjaxRequest;
@@ -21,7 +23,9 @@
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\ExceptionHandling\ShutdownHandler;
 	use WPEmerge\Http\HttpKernel;
-	use WPEmerge\View\ViewService;
+    use WPEmerge\Middleware\Core\OutputBufferMiddleware;
+    use WPEmerge\Routing\FilterWpQuery;
+    use WPEmerge\View\ViewService;
 
 
 	class EventServiceProviderTest extends IntegrationTest {
@@ -40,14 +44,17 @@
 			$this->assertInstanceOf( Dispatcher::class, $this->dispatcher );
 
 			$this->assertHasListener([HttpKernel::class, 'run'], IncomingWebRequest::class);
-			$this->assertHasListener([HttpKernel::class, 'run'], IncomingAdminRequest::class);
-			$this->assertHasListener([HttpKernel::class, 'run'], IncomingAjaxRequest::class);
-			$this->assertHasListener([HttpKernel::class, 'sendResponseDeferred'], AdminBodySendable::class);
-			$this->assertHasListener([ShutdownHandler::class, 'shutdownWp'], BodySent::class);
+            $this->assertHasListener([HttpKernel::class, 'run'], AdminBodySendable::class);
+            $this->assertHasListener([HttpKernel::class, 'run'], IncomingAjaxRequest::class);
+
+            $this->assertHasListener([OutputBufferMiddleware::class, 'start'], IncomingAdminRequest::class);
+            $this->assertHasListener([OutputBufferMiddleware::class, 'flush'], StartLoadingAdminFooter::class);
+
+            $this->assertHasListener([ShutdownHandler::class, 'handle'], ResponseSent::class);
 			$this->assertHasListener([ShutdownHandler::class, 'unrecoverableException'], UnrecoverableExceptionHandled::class);
+
 			$this->assertHasListener([ViewService::class, 'compose'], MakingView::class);
-			$this->assertHasListener([HttpKernel::class, 'filterRequest'], WpQueryFilterable::class);
-			$this->assertHasListener([ShutdownHandler::class, 'terminate'], DoShutdown::class);
+			$this->assertHasListener([FilterWpQuery::class, 'handle'], WpQueryFilterable::class);
 
 
 		}

@@ -9,18 +9,13 @@
 	use Contracts\ContainerAdapter;
     use Mockery;
     use Tests\HeaderStack;
-    use Tests\stubs\TestResponseEmitter;
     use Tests\traits\TestHelpers;
     use Tests\UnitTest;
     use Tests\traits\CreateDefaultWpApiMocks;
-    use Tests\traits\SetUpKernel;
-    use Tests\stubs\Middleware\GlobalMiddleware;
-    use Tests\stubs\Middleware\WebMiddleware;
 	use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Request;
     use WPEmerge\Routing\Router;
 
     class HttpKernelTest extends UnitTest {
@@ -40,9 +35,6 @@
          * @var AbstractRouteCollection
          */
         private $routes;
-
-        /** @var TestResponseEmitter */
-        private $emitter;
 
         protected function beforeTestRun()
         {
@@ -66,7 +58,6 @@
 
 
         }
-
 
 		/** @test */
 		public function no_response_gets_send_when_no_route_matched() {
@@ -120,7 +111,7 @@
 
             $request = $this->webRequest( 'GET', '/foo' );
 
-            $this->runKernel($request);
+            $this->seeOutput($request);
 
 
             $this->expectOutputString('foo');
@@ -181,7 +172,7 @@
 
             $this->expectExceptionMessage('The response returned by the route action is not valid.');
 
-            $this->runKernel($this->webRequest('GET', '/foo'));
+            $this->seeOutput($this->webRequest('GET', '/foo'));
 
 
         }

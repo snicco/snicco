@@ -7,25 +7,20 @@
     namespace Tests\traits;
 
     use Contracts\ContainerAdapter;
-    use Illuminate\Support\Facades\Http;
     use Tests\stubs\Middleware\BarMiddleware;
     use Tests\stubs\Middleware\BazMiddleware;
     use Tests\stubs\Middleware\FooBarMiddleware;
     use Tests\stubs\Middleware\FooMiddleware;
     use Tests\stubs\TestRequest;
-    use Tests\stubs\TestResponseEmitter;
-    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Events\ResponseSent;
     use WPEmerge\ExceptionHandling\NullErrorHandler;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\HttpKernel;
-    use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Routing\Pipeline;
@@ -104,12 +99,12 @@
 
             }
 
-            return new HttpKernel($pipeline, $this->emitter = new ResponseEmitter());
+            return new HttpKernel($pipeline);
 
 
         }
 
-        private function runKernel (IncomingRequest $request, HttpKernel $kernel = null) {
+        private function seeOutput (IncomingRequest $request, HttpKernel $kernel = null) {
 
             $kernel = $kernel ?? $this->newKernel();
             $kernel->run($request);
@@ -121,7 +116,7 @@
             $kernel = $kernel ?? $this->newKernel();
 
             ob_start();
-            $this->runKernel($request, $kernel);
+            $this->seeOutput($request, $kernel);
             return ob_get_clean();
 
         }

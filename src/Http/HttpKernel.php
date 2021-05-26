@@ -34,11 +34,6 @@
          */
         private $pipeline;
 
-        /**
-         * @var ResponseEmitter
-         */
-        private $response_emitter;
-
         private $is_test_mode = false;
 
         /**
@@ -64,11 +59,16 @@
 
         private $global_middleware = [];
 
-        public function __construct(Pipeline $pipeline, ResponseEmitter $emitter)
+        /**
+         * @var ResponseEmitter
+         */
+        private $emitter;
+
+        public function __construct(Pipeline $pipeline, ResponseEmitter $emitter = null )
         {
 
             $this->pipeline = $pipeline;
-            $this->response_emitter = $emitter;
+            $this->emitter = $emitter ?? new ResponseEmitter();
 
         }
 
@@ -85,7 +85,7 @@
 
             $request_event->matchedRoute();
 
-            $this->response_emitter->emit($response);
+            $this->emitter->emit($response);
 
             ResponseSent::dispatch([$response]);
 
