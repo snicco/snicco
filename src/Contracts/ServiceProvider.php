@@ -61,7 +61,7 @@
 
             }
 
-            return  IncomingAdminRequest::class;
+            return IncomingAdminRequest::class;
 
         }
 

@@ -6,7 +6,6 @@
 
     namespace WPEmerge\Contracts;
 
-    use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Request;
@@ -29,8 +28,20 @@
         /** @var RoutingResult|null */
         private $route_result;
 
+        abstract public function add(Route $route) : Route;
+
+        abstract public function findByName(string $name) : ?Route;
+
+        abstract public function withWildCardUrl(string $method) : array;
+
+        abstract public function loadIntoDispatcher(string $method = null) :void;
+
         public function match(Request $request) : RoutingResult
         {
+
+            if (  $this->route_result ) {
+                return $this->route_result;
+            }
 
             $path = rawurldecode($request->path());
 
@@ -52,23 +63,9 @@
 
             $route->instantiateAction();
 
-            return $result;
+            return $this->route_result = $result;
 
         }
-
-        public function hasResult() :?RoutingResult {
-
-            return $this->route_result;
-
-        }
-
-        abstract public function add(Route $route) : Route;
-
-        abstract public function findByName(string $name) : ?Route;
-
-        abstract public function withWildCardUrl(string $method) : array;
-
-        abstract public function loadIntoDispatcher(string $method = null) :void;
 
         protected function addToCollection(Route $route)
         {
