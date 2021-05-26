@@ -26,7 +26,7 @@
 
             $request = $query_filterable->server_request;
 
-            $match = $this->routes->match($request);
+            $match = $this->routes->matchForQueryFiltering($request);
 
             if ( $match->route() ) {
 

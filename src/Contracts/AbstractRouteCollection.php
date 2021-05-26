@@ -36,11 +36,23 @@
 
         abstract public function loadIntoDispatcher(string $method = null) :void;
 
+        public function matchForQueryFiltering (Request $request) :RoutingResult {
+
+            $result = $this->match($request);
+
+            $this->route_result = $result;
+
+            return $result;
+
+        }
+
         public function match(Request $request) : RoutingResult
         {
 
             if (  $this->route_result ) {
+
                 return $this->route_result;
+
             }
 
             $path = rawurldecode($request->path());
@@ -49,7 +61,7 @@
 
             if ( ! $route = $result->route() ) {
 
-                return $this->route_result = new RoutingResult(null);
+                return new RoutingResult(null);
 
             }
 
@@ -57,13 +69,13 @@
 
             if ( ! $route->satisfiedBy($request) ) {
 
-                return $this->route_result = new RoutingResult(null);
+                return new RoutingResult(null);
 
             }
 
             $route->instantiateAction();
 
-            return $this->route_result = $result;
+            return $result;
 
         }
 
