@@ -150,7 +150,7 @@
 
             }
 
-            if ($e instanceof HttpException) {
+            if ( $e instanceof HttpException ) {
 
                 return $this->renderHttpException($e);
 

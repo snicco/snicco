@@ -71,9 +71,6 @@
 
             $this->container->singleton(EvaluateResponseMiddleware::class, function () {
 
-                /** @var Request $request */
-                $request = $this->container->make(Request::class);
-
                 $is_web = $this->requestType() === IncomingWebRequest::class;
 
                 $must_match = $is_web && $this->config->get('routing.must_match_web_routes', false );
@@ -94,14 +91,13 @@
                     $this->container->make(Pipeline::class)
                 );
 
-                $runner->withMiddlewareGroup('web', $this->config->get('middleware.groups.web', []));
-                $runner->withMiddlewareGroup('admin', $this->config->get('middleware.groups.admin', []));
-                $runner->withMiddlewareGroup('ajax', $this->config->get('middleware.groups.ajax', []));
-                $runner->withMiddlewareGroup('global', $this->config->get('middleware.groups.global', []));
+                foreach ($this->config->get('middleware.groups') as $name => $middleware) {
 
+                    $runner->withMiddlewareGroup($name, $middleware);
+
+                }
 
                 $runner->middlewarePriority($this->config->get('middleware.priority', []));
-
                 $runner->middlewareAliases($this->config->get('middleware.aliases', []));
 
                 return $runner;

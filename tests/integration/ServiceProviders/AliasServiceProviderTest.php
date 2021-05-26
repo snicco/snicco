@@ -78,7 +78,7 @@
         public function a_post_route_can_be_aliased()
         {
 
-            $this->seeOutput('post', TestRequest::from('POST', 'alias/post'));
+            $this->seeKernelOutput('post', TestRequest::from('POST', 'alias/post'));
 
 
         }
@@ -89,7 +89,7 @@
          */
         public function a_get_route_can_be_aliased()
         {
-            $this->seeOutput('get', TestRequest::from('GET', 'alias/get'));
+            $this->seeKernelOutput('get', TestRequest::from('GET', 'alias/get'));
 
         }
 
@@ -102,7 +102,7 @@
         public function a_patch_route_can_be_aliased()
         {
 
-            $this->seeOutput('patch', TestRequest::from('PATCH', 'alias/patch'));
+            $this->seeKernelOutput('patch', TestRequest::from('PATCH', 'alias/patch'));
 
         }
 
@@ -110,7 +110,7 @@
         public function a_put_route_can_be_aliased()
         {
 
-            $this->seeOutput('put', TestRequest::from('PUT', 'alias/put'));
+            $this->seeKernelOutput('put', TestRequest::from('PUT', 'alias/put'));
 
         }
 
@@ -118,7 +118,7 @@
         public function an_options_route_can_be_aliased()
         {
 
-            $this->seeOutput('options', TestRequest::from('OPTIONS', 'alias/options'));
+            $this->seeKernelOutput('options', TestRequest::from('OPTIONS', 'alias/options'));
 
 
         }
@@ -127,7 +127,7 @@
         public function a_delete_route_can_be_aliased()
         {
 
-            $this->seeOutput('delete', TestRequest::from('DELETE', 'alias/delete'));
+            $this->seeKernelOutput('delete', TestRequest::from('DELETE', 'alias/delete'));
 
 
         }
@@ -136,9 +136,9 @@
         public function a_match_route_can_be_aliased()
         {
 
-            $this->seeOutput('', TestRequest::from('DELETE', 'alias/match'));
+            $this->seeKernelOutput('', TestRequest::from('DELETE', 'alias/match'));
 
-            $this->seeOutput('match', TestRequest::from('POST', 'alias/match'));
+            $this->seeKernelOutput('match', TestRequest::from('POST', 'alias/match'));
 
 
 

@@ -48,7 +48,7 @@
 
         }
 
-        private function createRoutes(\Closure $routes)
+        protected function createRoutes(\Closure $routes)
         {
 
             $this->routes = $this->newRouteCollection();
@@ -61,19 +61,19 @@
 
         }
 
-        private function newRouter() : Router
+        protected function newRouter() : Router
         {
 
             return new Router($this->container, $this->routes);
 
         }
 
-        private function newUrlGenerator() : UrlGenerator
+        protected function newUrlGenerator() : UrlGenerator
         {
             return new UrlGenerator(new FastRouteUrlGenerator($this->routes));
         }
 
-        private function newKernel(array $with_middleware = []) :HttpKernel
+        protected function newKernel(array $with_middleware = []) :HttpKernel
         {
 
             $pipeline = new Pipeline($this->container);
@@ -104,24 +104,25 @@
 
         }
 
-        private function seeOutput (IncomingRequest $request, HttpKernel $kernel = null) {
+        protected function runKernel (IncomingRequest $request, HttpKernel $kernel = null) {
 
             $kernel = $kernel ?? $this->newKernel();
             $kernel->run($request);
+
         }
 
-        private function runKernelAndGetOutput(IncomingRequest $request, HttpKernel $kernel = null)
+        protected function runKernelAndGetOutput(IncomingRequest $request, HttpKernel $kernel = null)
         {
 
             $kernel = $kernel ?? $this->newKernel();
 
             ob_start();
-            $this->seeOutput($request, $kernel);
+            $this->runKernel($request, $kernel);
             return ob_get_clean();
 
         }
 
-        private function runAndAssertOutput($expected, IncomingRequest $request)
+        protected function runAndAssertOutput($expected, IncomingRequest $request)
         {
 
             $this->assertSame(
@@ -132,13 +133,13 @@
 
         }
 
-        private function runAndAssertEmptyOutput(IncomingRequest $request) {
+        protected function runAndAssertEmptyOutput(IncomingRequest $request) {
 
             $this->runAndAssertOutput('', $request);
 
         }
 
-        private function conditions() : array {
+        protected function conditions() : array {
 
             return array_merge(RoutingServiceProvider::CONDITION_TYPES , [
 
@@ -153,7 +154,7 @@
 
         }
 
-        private function webRequest($method, $path) : IncomingWebRequest
+        protected function webRequest($method, $path) : IncomingWebRequest
         {
 
             return new IncomingWebRequest('wordpress.php', TestRequest::from($method, $path));

@@ -110,12 +110,10 @@
 
         }
 
-        public function alwaysWithGlobalMiddleware(array $global_middleware = [])
+        public function alwaysWithGlobalMiddleware( array $global_middleware = [] )
         {
-
             $this->global_middleware = $global_middleware;
             $this->always_with_global_middleware = true;
-
         }
 
         private function gatherMiddleware(IncomingRequest $incoming_request) : array

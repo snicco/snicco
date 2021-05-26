@@ -16,12 +16,11 @@
     class FilterWpQueryTest extends IntegrationTest
     {
 
-
-
         protected function setUp() : void
         {
             parent::setUp();
             $this->newTestApp(TEST_CONFIG);
+
         }
 
         /** @test */
