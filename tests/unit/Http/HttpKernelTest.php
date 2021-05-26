@@ -10,7 +10,7 @@
     use Mockery;
     use Tests\stubs\HeaderStack;
     use Tests\helpers\CreateTestSubjects;
-    use Tests\UnitTest;
+    use Tests\unit\UnitTest;
     use Tests\helpers\CreateDefaultWpApiMocks;
 	use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\AbstractRouteCollection;

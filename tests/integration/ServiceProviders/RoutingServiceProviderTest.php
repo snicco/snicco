@@ -7,7 +7,7 @@
     namespace Tests\integration\ServiceProviders;
 
     use Mockery;
-    use Tests\IntegrationTest;
+    use Tests\integration\IntegrationTest;
     use Tests\fixtures\Conditions\TrueCondition;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;

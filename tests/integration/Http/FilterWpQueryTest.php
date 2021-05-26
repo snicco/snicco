@@ -6,7 +6,7 @@
 
     namespace Tests\integration\Http;
 
-    use Tests\IntegrationTest;
+    use Tests\integration\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use WPEmerge\Events\IncomingWebRequest;

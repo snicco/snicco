@@ -10,7 +10,7 @@
     use Mockery;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
-    use Tests\UnitTest;
+    use Tests\unit\UnitTest;
     use Tests\fixtures\Conditions\FalseCondition;
     use Tests\fixtures\Conditions\TrueCondition;
     use Tests\fixtures\Conditions\UniqueCondition;

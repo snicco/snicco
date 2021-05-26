@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace Tests;
+    namespace Tests\unit;
 
     use BetterWpHooks\Testing\BetterWpHooksTestCase;
     use Tests\helpers\CreateContainer;

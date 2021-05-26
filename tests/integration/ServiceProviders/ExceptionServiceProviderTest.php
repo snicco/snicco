@@ -6,7 +6,7 @@
 
 	namespace Tests\integration\ServiceProviders;
 
-	use Tests\IntegrationTest;
+	use Tests\integration\IntegrationTest;
     use Tests\stubs\TestApp;
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\ServiceProvider;

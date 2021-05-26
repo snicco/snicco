@@ -7,7 +7,7 @@
 	namespace Tests\unit\View;
 
     use Mockery;
-    use Tests\UnitTest;
+    use Tests\unit\UnitTest;
     use Tests\stubs\TestApp;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use WPEmerge\Contracts\ViewFactoryInterface;

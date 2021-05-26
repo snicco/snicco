@@ -7,7 +7,7 @@
 	namespace Tests\unit\Middleware;
 
 	use Mockery;
-    use Tests\UnitTest;
+    use Tests\unit\UnitTest;
 	use Tests\stubs\TestRequest;
     use Tests\helpers\AssertsResponse;
     use WPEmerge\Facade\WP;
