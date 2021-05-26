@@ -9,8 +9,8 @@
     use BetterWpHooks\Contracts\Dispatcher;
     use BetterWpHooks\Dispatchers\WordpressDispatcher;
     use Tests\IntegrationTest;
-    use Tests\stubs\Middleware\FooMiddleware;
-    use Tests\stubs\Middleware\GlobalMiddleware;
+    use Tests\fixtures\Middleware\FooMiddleware;
+    use Tests\fixtures\Middleware\GlobalMiddleware;
     use Tests\stubs\TestApp;
     use Tests\unit\Routing\Foo;
     use WPEmerge\Http\HttpResponseFactory;

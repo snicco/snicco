@@ -31,7 +31,7 @@
 
             $this->app = $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes',
+                    'definitions' => ROUTES_DIR
                 ],
             ]);
 
@@ -221,8 +221,8 @@
 
             $this->newTestApp([
                 'views' => [
-                    TESTS_DIR.DS.'views',
-                    TESTS_DIR.DS.'views'.DS.'subdirectory',
+                    VIEWS_DIR,
+                    VIEWS_DIR.DS.'subdirectory',
                 ],
             ]);
 
@@ -236,8 +236,8 @@
 
             $this->newTestApp([
                 'views' => [
-                    TESTS_DIR.DS.'views',
-                    TESTS_DIR.DS.'views'.DS.'subdirectory',
+                    VIEWS_DIR,
+                    VIEWS_DIR.DS.'subdirectory',
                 ],
             ]);
 
@@ -254,8 +254,8 @@
 
             $this->newTestApp([
                 'views' => [
-                    TESTS_DIR.DS.'views',
-                    TESTS_DIR.DS.'views'.DS.'subdirectory',
+                    VIEWS_DIR,
+                    VIEWS_DIR.DS.'subdirectory',
                 ],
             ]);
 

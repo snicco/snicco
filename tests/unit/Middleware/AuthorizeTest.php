@@ -9,7 +9,7 @@
     use Mockery;
     use Tests\UnitTest;
 	use Tests\stubs\TestRequest;
-    use Tests\traits\AssertsResponse;
+    use Tests\helpers\AssertsResponse;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\ResponseFactory;
@@ -51,7 +51,7 @@
 
                 return $response->html('FOO');
 
-            },$this->createContainer());
+            });
             $this->request = TestRequest::from('GET', '/foo');
             WP::shouldReceive('loginUrl')->andReturn('foobar.com')->byDefault();
 

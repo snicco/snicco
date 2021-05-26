@@ -6,7 +6,7 @@
 	namespace Tests\unit\Exceptions;
 
 
-	use Tests\traits\AssertsResponse;
+	use Tests\helpers\AssertsResponse;
     use Tests\UnitTest;
     use Tests\stubs\TestException;
 	use WPEmerge\Application\ApplicationEvent;

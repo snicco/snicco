@@ -7,7 +7,7 @@
 	namespace Tests\unit\Exceptions;
 
 	use Exception;
-	use Tests\traits\AssertsResponse;
+	use Tests\helpers\AssertsResponse;
     use Tests\UnitTest;
 	use Tests\stubs\TestException;
     use Tests\stubs\TestRequest;

@@ -6,8 +6,8 @@
 
 	namespace Tests\unit\Handlers;
 
-    use Tests\traits\CreateContainer;
-    use Tests\stubs\Controllers\Web\WebController;
+    use Tests\helpers\CreateContainer;
+    use Tests\fixtures\Controllers\Web\WebController;
 	use WPEmerge\Routing\ClosureAction;
 	use WPEmerge\Routing\ControllerAction;
 	use WPEmerge\Factories\RouteActionFactory;
@@ -111,7 +111,7 @@
 		}
 
 		/** @test */
-		public function web_controllers_can_be_resolved_without_the_full_namespace () {
+		public function controllers_can_be_resolved_without_the_full_namespace () {
 
 			$controller = [ 'WebController' , 'handle'];
 			$handler = $this->factory->createUsing($controller);
@@ -128,28 +128,7 @@
 
 		}
 
-		/** @test */
-		public function admin_controllers_can_be_resolved_without_the_full_namespace () {
 
-
-			$controller = [ 'AdminController' , 'handle'];
-
-			$result = $this->factory->createUsing($controller);
-
-			$this->assertInstanceOf(ControllerAction::class, $result);
-
-		}
-
-		/** @test */
-		public function ajax_controllers_can_be_resolved_without_the_full_namespace() {
-
-			$controller = [ 'AjaxController' , 'handle'];
-
-			$result = $this->factory->createUsing($controller);
-
-			$this->assertInstanceOf(\WPEmerge\Routing\ControllerAction::class, $result);
-
-		}
 
 
 	}

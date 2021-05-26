@@ -7,8 +7,8 @@
     namespace Tests\unit\Routing;
 
     use Mockery;
-    use Tests\traits\CreateDefaultWpApiMocks;
-    use Tests\traits\TestHelpers;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ConditionInterface;
@@ -23,7 +23,7 @@
     class ReverseRoutingTest extends UnitTest
     {
 
-        use TestHelpers;
+        use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
 
         /** @var Router */

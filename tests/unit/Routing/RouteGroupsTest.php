@@ -8,15 +8,15 @@
 
     use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\traits\CreateDefaultWpApiMocks;
-    use Tests\traits\TestHelpers;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
-    use Tests\stubs\Conditions\FalseCondition;
-    use Tests\stubs\Conditions\TrueCondition;
-    use Tests\stubs\Conditions\UniqueCondition;
-    use Tests\stubs\Middleware\BarMiddleware;
-    use Tests\stubs\Middleware\BazMiddleware;
-    use Tests\stubs\Middleware\FooMiddleware;
+    use Tests\fixtures\Conditions\FalseCondition;
+    use Tests\fixtures\Conditions\TrueCondition;
+    use Tests\fixtures\Conditions\UniqueCondition;
+    use Tests\fixtures\Middleware\BarMiddleware;
+    use Tests\fixtures\Middleware\BazMiddleware;
+    use Tests\fixtures\Middleware\FooMiddleware;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
@@ -25,10 +25,10 @@
     class RouteGroupsTest extends UnitTest
     {
 
-        use TestHelpers;
+        use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
 
-        const namespace = 'Tests\stubs\Controllers\Web';
+        const namespace = 'Tests\fixtures\Controllers\Web';
 
         /**
          * @var ContainerAdapter

@@ -7,10 +7,10 @@
     namespace Tests\unit\Routing;
 
     use Mockery;
-    use Tests\stubs\Conditions\IsPost;
+    use Tests\fixtures\Conditions\IsPost;
     use Tests\stubs\TestRequest;
-    use Tests\traits\CreateDefaultWpApiMocks;
-    use Tests\traits\TestHelpers;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
@@ -20,7 +20,7 @@
     class FallbackRouteTest extends UnitTest
     {
 
-        use TestHelpers;
+        use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
 
         /** @var Router */

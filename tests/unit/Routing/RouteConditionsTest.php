@@ -8,12 +8,11 @@
 
 	use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\stubs\Conditions\TrueCondition;
-    use Tests\traits\CreateDefaultWpApiMocks;
-    use Tests\traits\TestHelpers;
+    use Tests\fixtures\Conditions\TrueCondition;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
-    use Tests\traits\SetUpRouter;
-    use Tests\stubs\Conditions\FalseCondition;
+    use Tests\fixtures\Conditions\FalseCondition;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
@@ -21,7 +20,7 @@
 
     class RouteConditionsTest extends UnitTest {
 
-        use TestHelpers;
+        use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
 
         /**

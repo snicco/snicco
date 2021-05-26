@@ -6,10 +6,10 @@
 
     namespace Tests\unit\Helpers;
 
-    use Tests\stubs\Bar;
-    use Tests\stubs\Foo;
+    use Tests\fixtures\TestDependencies\Bar;
+    use Tests\fixtures\TestDependencies\Foo;
     use Tests\stubs\TestRequest;
-    use Tests\traits\CreateContainer;
+    use Tests\helpers\CreateContainer;
     use WPEmerge\Support\ReflectionPayload;
     use PHPUnit\Framework\TestCase;
 

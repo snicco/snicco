@@ -9,7 +9,7 @@
 	use Mockery;
     use Tests\UnitTest;
 	use Tests\stubs\TestRequest;
-    use Tests\traits\AssertsResponse;
+    use Tests\helpers\AssertsResponse;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\ResponseFactory;
@@ -32,7 +32,7 @@
         private $route_action;
 
         /**
-         * @var \Tests\stubs\TestRequest
+         * @var TestRequest
          */
         private $request;
 
@@ -50,7 +50,7 @@
 
                 return $response->html('FOO');
 
-            }, $this->createContainer());
+            });
             $this->response = $response;
             $this->request = TestRequest::from('GET', '/foo');
             WP::shouldReceive('homeUrl')->andReturn('https://foobar.com')->byDefault();

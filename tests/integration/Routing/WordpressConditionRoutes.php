@@ -7,10 +7,10 @@
     namespace Tests\integration\Routing;
 
     use Tests\IntegrationTest;
-    use Tests\stubs\Middleware\WebMiddleware;
+    use Tests\fixtures\Middleware\WebMiddleware;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
-    use Tests\traits\CreateWpTestUrls;
+    use Tests\helpers\CreatesWpUrls;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\HttpKernel;
@@ -18,7 +18,7 @@
     class WordpressConditionRoutes extends IntegrationTest
     {
 
-        use CreateWpTestUrls;
+        use CreatesWpUrls;
 
         /**
          * @var HttpKernel

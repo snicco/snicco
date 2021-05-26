@@ -7,8 +7,8 @@
     namespace Tests\integration\Http;
 
     use Tests\IntegrationTest;
-    use Tests\stubs\Middleware\GlobalMiddleware;
-    use Tests\stubs\Middleware\WebMiddleware;
+    use Tests\fixtures\Middleware\GlobalMiddleware;
+    use Tests\fixtures\Middleware\WebMiddleware;
     use Tests\stubs\TestRequest;
 
     class HttpKernelMiddlewareTest extends IntegrationTest
@@ -21,7 +21,7 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR . DS . 'stubs' .DS .  'routes'
+                    'definitions' => ROUTES_DIR
                 ],
                 'middleware' => [
                     'groups' => [
@@ -44,7 +44,7 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR . DS . 'stubs' .DS .  'routes'
+                    'definitions' => ROUTES_DIR
                 ],
                 'middleware' => [
                     'groups' => [
@@ -71,7 +71,7 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR . DS . 'stubs' .DS .  'routes'
+                    'definitions' => ROUTES_DIR
                 ],
                 'middleware' => [
                     'groups' => [
@@ -94,7 +94,7 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR . DS . 'stubs' .DS .  'routes'
+                    'definitions' => ROUTES_DIR
                 ],
                 'middleware' => [
                     'groups' => [
@@ -119,7 +119,7 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR . DS . 'stubs' .DS .  'routes'
+                    'definitions' => ROUTES_DIR
                 ],
                 'middleware' => [
                     'groups' => [
@@ -149,7 +149,7 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR . DS . 'stubs' .DS .  'routes'
+                    'definitions' => ROUTES_DIR
                 ],
                 'middleware' => [
                     'groups' => [

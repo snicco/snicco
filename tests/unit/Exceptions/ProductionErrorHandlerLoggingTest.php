@@ -11,9 +11,9 @@
     use Psr\Log\LoggerInterface;
     use Psr\Log\LogLevel;
     use SniccoAdapter\BaseContainerAdapter;
-    use Tests\traits\AssertsResponse;
+    use Tests\helpers\AssertsResponse;
     use Tests\UnitTest;
-    use Tests\stubs\Foo;
+    use Tests\fixtures\TestDependencies\Foo;
     use Tests\stubs\TestLogger;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Http\ResponseFactory;

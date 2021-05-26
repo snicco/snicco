@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
     use AdrianSuter\Autoload\Override\Override;
-    use Tests\HeaderStack;
+    use Tests\stubs\HeaderStack;
     use WPEmerge\Http\ResponseEmitter;
 
     $root_dir = getenv('ROOT_DIR');
@@ -41,15 +41,7 @@
 
     if ( ! defined('TESTS_CONFIG_PATH')) {
 
-        define('TESTS_CONFIG_PATH', $root_dir.DS.'tests'.DS.'test-config.php');
-
-    }
-
-    if ( ! defined('TEST_CONFIG')) {
-
-        $config = require_once TESTS_CONFIG_PATH;
-
-        define('TEST_CONFIG', $config);
+        define('TESTS_CONFIG_PATH', $root_dir.DS.'tests'.DS. 'stubs' . DS . 'test-app-config.php');
 
     }
 
@@ -64,6 +56,27 @@
         define('BLADE_VIEWS', TESTS_DIR.DS.'integration'.DS.'Blade'.DS.'views');
 
     }
+
+    if ( ! defined('ROUTES_DIR')) {
+
+        define('ROUTES_DIR', TESTS_DIR.DS.'fixtures'.DS.'Routes');
+
+    }
+
+    if ( ! defined('VIEWS_DIR')) {
+
+        define('VIEWS_DIR', TESTS_DIR.DS.'fixtures'.DS.'views');
+
+    }
+
+    if ( ! defined('TEST_CONFIG')) {
+
+        $config = require_once TESTS_CONFIG_PATH;
+
+        define('TEST_CONFIG', $config);
+
+    }
+
 
     $classLoader = require $root_dir.DS.'vendor'.DS.'autoload.php';
 

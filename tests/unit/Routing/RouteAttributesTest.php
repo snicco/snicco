@@ -8,21 +8,21 @@
 
     use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\traits\TestHelpers;
+    use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Router;
-    use Tests\traits\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateDefaultWpApiMocks;
 
     class RouteAttributesTest extends UnitTest
     {
 
-        use TestHelpers;
+        use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
 
-        const controller_namespace = 'Tests\stubs\Controllers\Web';
+        const controller_namespace = 'Tests\fixtures\Controllers\Web';
 
         /**
          * @var ContainerAdapter

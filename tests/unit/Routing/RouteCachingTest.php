@@ -8,11 +8,11 @@
 
     use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\stubs\Conditions\IsPost;
-    use Tests\traits\CreateWpTestUrls;
-    use Tests\traits\TestHelpers;
+    use Tests\fixtures\Conditions\IsPost;
+    use Tests\helpers\CreatesWpUrls;
+    use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
-    use Tests\traits\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\IncomingAdminRequest;
@@ -36,8 +36,8 @@
     {
 
         use CreateDefaultWpApiMocks;
-        use TestHelpers;
-        use CreateWpTestUrls;
+        use CreateTestSubjects;
+        use CreatesWpUrls;
 
         /**
          * @var Router
