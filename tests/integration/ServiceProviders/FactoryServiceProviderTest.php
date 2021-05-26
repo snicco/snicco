@@ -36,9 +36,9 @@
 
             $this->newTestApp([
                 'controllers' => [
-                    'web' => 'Tests\stubs\Controllers\Web',
-                    'admin' => 'Tests\stubs\Controllers\Admin',
-                    'ajax' => 'Tests\stubs\Controllers\Ajax',
+                    'web' => 'Tests\fixtures\Controllers\Web',
+                    'admin' => 'Tests\fixtures\Controllers\Admin',
+                    'ajax' => 'Tests\fixtures\Controllers\Ajax',
                 ]
             ]);
 
@@ -59,7 +59,7 @@
 
             $this->newTestApp([
                 'composers' => [
-                    'Tests\stubs\ViewComposers',
+                    'Tests\fixtures\ViewComposers',
                 ]
             ]);
 

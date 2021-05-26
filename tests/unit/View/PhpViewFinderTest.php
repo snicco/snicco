@@ -20,13 +20,7 @@
 
             parent::setUp();
 
-            if ( ! defined('WPEMERGE_TEST_DIR')) {
-
-                define('WPEMERGE_TEST_DIR', getenv('ROOT_DIR').DS.'tests');
-                define('TEST_VIEW_DIR', WPEMERGE_TEST_DIR.DS.'views'.DS);
-
-            }
-            $this->finder = new PhpViewFinder([TEST_VIEW_DIR]);
+            $this->finder = new PhpViewFinder([VIEWS_DIR]);
 
         }
 
@@ -35,7 +29,7 @@
         public function file_existence_can_be_checked()
         {
 
-            $this->assertTrue($this->finder->exists(TEST_VIEW_DIR.'view.php'));
+            $this->assertTrue($this->finder->exists(VIEWS_DIR. DS. 'view.php'));
             $this->assertTrue($this->finder->exists('view.php'));
             $this->assertTrue($this->finder->exists('view'));
             $this->assertFalse($this->finder->exists('nonexistent'));
@@ -56,25 +50,25 @@
         public function nested_files_can_be_found_if_we_adjust_the_search_depth () {
 
             // only direct child files
-            $finder = new PhpViewFinder([TEST_VIEW_DIR], 0);
+            $finder = new PhpViewFinder([VIEWS_DIR], 0);
             $this->assertTrue($finder->exists('view.php'));
             $this->assertFalse($finder->exists('first.php'));
 
             // one child dir
-            $finder = new PhpViewFinder([TEST_VIEW_DIR], 1);
+            $finder = new PhpViewFinder([VIEWS_DIR], 1);
             $this->assertTrue($finder->exists('view.php'));
             $this->assertTrue($finder->exists('first.php'));
             $this->assertFalse($finder->exists('second.php'));
 
             // two child dirs
-            $finder = new PhpViewFinder([TEST_VIEW_DIR], 2);
+            $finder = new PhpViewFinder([VIEWS_DIR], 2);
             $this->assertTrue($finder->exists('view.php'));
             $this->assertTrue($finder->exists('first.php'));
             $this->assertTrue($finder->exists('second.php'));
             $this->assertFalse($finder->exists('third.php'));
 
             // two child, but work if we give it also the subdirectory
-            $finder = new PhpViewFinder([TEST_VIEW_DIR, TEST_VIEW_DIR. 'level-one' ], 2);
+            $finder = new PhpViewFinder([VIEWS_DIR, VIEWS_DIR. DS .  'level-one' ], 2);
             $this->assertTrue($finder->exists('view.php'));
             $this->assertTrue($finder->exists('first.php'));
             $this->assertTrue($finder->exists('second.php'));
@@ -86,7 +80,7 @@
         public function file_paths_can_be_retrieved()
         {
 
-            $expected = TEST_VIEW_DIR.'view.php';
+            $expected = VIEWS_DIR. DS . 'view.php';
 
             $this->assertEquals($expected, $this->finder->filePath($expected));
             $this->assertEquals($expected, $this->finder->filePath('view.php'));
@@ -99,8 +93,8 @@
         public function absolute_file_paths_can_be_retrieved()
         {
 
-            $directory = WPEMERGE_TEST_DIR.DIRECTORY_SEPARATOR.'views';
-            $file = $directory.DIRECTORY_SEPARATOR.'view.php';
+            $directory = VIEWS_DIR;
+            $file = $directory.DS.'view.php';
 
             $this->assertEquals($file, $this->finder->filePath($file));
             $this->assertEquals('', $this->finder->filePath($directory));
@@ -112,13 +106,13 @@
         public function files_can_be_retrieved_from_custom_directories()
         {
 
-            $subdirectory = TEST_VIEW_DIR.'subdirectory'.DS;
-            $view = TEST_VIEW_DIR.'view.php';
-            $subview = $subdirectory.'subview.php';
+            $subdirectory = VIEWS_DIR. DS . 'subdirectory';
+            $view = VIEWS_DIR. DS. 'view.php';
+            $subview = $subdirectory. DS . 'subview.php';
 
 
 
-            $finder = new PhpViewFinder([TEST_VIEW_DIR]);
+            $finder = new PhpViewFinder([VIEWS_DIR]);
             $this->assertEquals($view, $finder->filePath('/view.php'));
             $this->assertEquals($view, $finder->filePath('view.php'));
             $this->assertEquals($view, $finder->filePath('/view'));
@@ -127,7 +121,7 @@
             $this->assertEquals('', $finder->filePath('nonexistent'));
 
 
-            $finder = new PhpViewFinder([TEST_VIEW_DIR, $subdirectory]);
+            $finder = new PhpViewFinder([VIEWS_DIR, $subdirectory]);
             $this->assertEquals($view, $finder->filePath('/view.php'));
             $this->assertEquals($view, $finder->filePath('view.php'));
             $this->assertEquals($view, $finder->filePath('/view'));

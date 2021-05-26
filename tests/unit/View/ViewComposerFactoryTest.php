@@ -7,10 +7,10 @@
 	namespace Tests\unit\View;
 
 	use PHPUnit\Framework\TestCase;
-    use Tests\stubs\Foo;
+    use Tests\fixtures\TestDependencies\Foo;
 	use Tests\stubs\TestView;
-	use Tests\stubs\ViewComposers\FooComposer;
-    use Tests\traits\CreateContainer;
+	use Tests\fixtures\ViewComposers\FooComposer;
+    use Tests\helpers\CreateContainer;
     use WPEmerge\Contracts\PhpViewInterface;
 	use WPEmerge\Contracts\ViewComposer;
 	use WPEmerge\Contracts\ViewInterface;

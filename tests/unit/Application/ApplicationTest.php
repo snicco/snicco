@@ -11,7 +11,7 @@
     use Psr\Http\Message\ServerRequestInterface;
     use Tests\UnitTest;
     use Tests\stubs\TestContainer;
-    use Tests\traits\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateDefaultWpApiMocks;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Contracts\ServiceProvider;

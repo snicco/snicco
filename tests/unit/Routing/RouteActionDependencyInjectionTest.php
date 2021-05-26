@@ -8,13 +8,13 @@
 
 	use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\traits\CreateDefaultWpApiMocks;
-    use Tests\traits\TestHelpers;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
-    use Tests\stubs\Bar;
-	use Tests\stubs\Controllers\Web\ControllerWithDependencies;
-	use Tests\stubs\Controllers\Web\TeamsController;
-	use Tests\stubs\Foo;
+    use Tests\fixtures\TestDependencies\Bar;
+	use Tests\fixtures\Controllers\Web\ControllerWithDependencies;
+	use Tests\fixtures\Controllers\Web\TeamsController;
+	use Tests\fixtures\TestDependencies\Foo;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
@@ -22,7 +22,7 @@
 
     class RouteActionDependencyInjectionTest extends UnitTest {
 
-        use TestHelpers;
+        use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
 
         /**

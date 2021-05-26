@@ -7,9 +7,9 @@
     namespace Tests;
 
     use BetterWpHooks\Testing\BetterWpHooksTestCase;
-    use Tests\traits\CreateContainer;
-    use Tests\traits\CreatePsr17Factories;
-    use Tests\traits\CreateRouteMatcher;
+    use Tests\helpers\CreateContainer;
+    use Tests\helpers\CreatePsr17Factories;
+    use Tests\helpers\CreateRouteMatcher;
 
     class UnitTest extends BetterWpHooksTestCase
     {

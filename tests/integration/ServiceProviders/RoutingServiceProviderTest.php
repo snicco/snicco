@@ -8,11 +8,11 @@
 
     use Mockery;
     use Tests\IntegrationTest;
-    use Tests\stubs\Conditions\TrueCondition;
+    use Tests\fixtures\Conditions\TrueCondition;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
-    use Tests\traits\CreateDefaultWpApiMocks;
-    use Tests\traits\CreateWpTestUrls;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreatesWpUrls;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Contracts\ServiceProvider;
@@ -30,7 +30,7 @@
     class RoutingServiceProviderTest extends IntegrationTest
     {
 
-        use CreateWpTestUrls;
+        use CreatesWpUrls;
 
 
         protected function tearDown() : void
@@ -175,7 +175,7 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                    'definitions' => ROUTES_DIR
                 ]
             ]);
 
@@ -188,7 +188,7 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                    'definitions' => ROUTES_DIR
                 ]
             ]);
 
@@ -204,7 +204,7 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                    'definitions' => ROUTES_DIR
                 ],
                 'providers' => [
                     SimulateAjaxProvider::class
@@ -226,7 +226,7 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                    'definitions' => ROUTES_DIR
                 ],
                 'providers' => [
                     SimulateAdminProvider::class
@@ -248,7 +248,7 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                    'definitions' => ROUTES_DIR
                 ],
                 'providers' => [
                     SimulateAdminProvider::class
@@ -268,7 +268,7 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                    'definitions' => ROUTES_DIR
                 ],
                 'providers' => [
                     SimulateAjaxProvider::class
@@ -312,7 +312,7 @@
     class SimulateAdminProvider extends ServiceProvider
     {
         use CreateDefaultWpApiMocks;
-        use CreateWpTestUrls;
+        use CreatesWpUrls;
 
         public function register() : void
         {

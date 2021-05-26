@@ -73,7 +73,7 @@
       "Tests\\" : "tests/"
     },
     "files": [
-      "tests/FunctionOverride.php"
+      "tests/stubs/FunctionOverride.php"
     ]
   }
 }

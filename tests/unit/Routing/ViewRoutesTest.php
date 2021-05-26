@@ -9,9 +9,9 @@
     use Contracts\ContainerAdapter;
     use http\Header;
     use Mockery;
-    use Tests\HeaderStack;
-    use Tests\traits\CreateDefaultWpApiMocks;
-    use Tests\traits\TestHelpers;
+    use Tests\stubs\HeaderStack;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Http\HttpResponseFactory;
@@ -21,7 +21,7 @@
     class ViewRoutesTest extends UnitTest
     {
 
-        use TestHelpers;
+        use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
 
         /**

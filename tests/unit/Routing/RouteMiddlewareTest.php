@@ -8,13 +8,13 @@
 
     use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\traits\CreateDefaultWpApiMocks;
-    use Tests\traits\TestHelpers;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
-    use Tests\stubs\Middleware\BarMiddleware;
-    use Tests\stubs\Middleware\BazMiddleware;
-    use Tests\stubs\Middleware\FooBarMiddleware;
-    use Tests\stubs\Middleware\FooMiddleware;
+    use Tests\fixtures\Middleware\BarMiddleware;
+    use Tests\fixtures\Middleware\BazMiddleware;
+    use Tests\fixtures\Middleware\FooBarMiddleware;
+    use Tests\fixtures\Middleware\FooMiddleware;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
@@ -24,7 +24,7 @@
     class RouteMiddlewareTest extends UnitTest
     {
 
-        use TestHelpers;
+        use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
 
         /**

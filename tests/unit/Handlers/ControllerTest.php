@@ -6,9 +6,9 @@
 
 	namespace Tests\unit\Handlers;
 
-    use Tests\traits\CreateContainer;
-    use Tests\stubs\Bar;
-	use Tests\stubs\Foo;
+    use Tests\helpers\CreateContainer;
+    use Tests\fixtures\TestDependencies\Bar;
+	use Tests\fixtures\TestDependencies\Foo;
 	use PHPUnit\Framework\TestCase;
 	use WPEmerge\Factories\RouteActionFactory;
 	use Mockery as m;

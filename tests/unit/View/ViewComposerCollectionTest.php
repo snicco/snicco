@@ -8,7 +8,7 @@
 
 	use PHPUnit\Framework\TestCase;
     use Tests\stubs\TestView;
-    use Tests\traits\CreateContainer;
+    use Tests\helpers\CreateContainer;
     use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\View\PhpViewFinder;
 	use WPEmerge\View\ViewComposerCollection;

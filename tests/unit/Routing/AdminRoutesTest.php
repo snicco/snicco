@@ -7,10 +7,10 @@
     namespace Tests\unit\Routing;
 
     use Mockery;
-    use Tests\traits\CreateDefaultWpApiMocks;
-    use Tests\traits\TestHelpers;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
-    use Tests\traits\CreateWpTestUrls;
+    use Tests\helpers\CreatesWpUrls;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Http\Psr7\Request;
@@ -21,8 +21,8 @@
     class AdminRoutesTest extends UnitTest
     {
 
-        use TestHelpers;
-        use CreateWpTestUrls;
+        use CreateTestSubjects;
+        use CreatesWpUrls;
         use CreateDefaultWpApiMocks;
 
         private $router;

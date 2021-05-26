@@ -9,7 +9,7 @@
     use Mockery;
     use Tests\UnitTest;
     use Tests\stubs\TestApp;
-    use Tests\traits\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateDefaultWpApiMocks;
     use WPEmerge\Contracts\ViewFactoryInterface;
 	use WPEmerge\ExceptionHandling\Exceptions\ViewException;
 	use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
@@ -190,7 +190,7 @@
 		/** @test */
 		public function views_can_be_included_in_parent_views () {
 
-		    $path = TESTS_DIR . DS. 'views' . DS . 'subdirectory' . DS. 'subview.php';
+		    $path = VIEWS_DIR .  DS . 'subdirectory' . DS. 'subview.php';
 
 		    WP::shouldReceive('fileHeaderData')->once()
               ->with($path, ['Layout'])

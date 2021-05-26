@@ -14,7 +14,7 @@
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
-    use Tests\traits\CreateContainer;
+    use Tests\helpers\CreateContainer;
 
     use WPEmerge\Routing\Pipeline;
 
@@ -308,7 +308,7 @@
          */
         private $bar;
 
-        public function __construct(\Tests\stubs\Bar $bar)
+        public function __construct(\Tests\fixtures\TestDependencies\Bar $bar)
         {
 
             $this->bar = $bar;

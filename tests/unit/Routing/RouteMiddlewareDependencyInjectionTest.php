@@ -8,12 +8,11 @@
 
 	use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\traits\CreateDefaultWpApiMocks;
-    use Tests\traits\TestHelpers;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
-    use Tests\traits\SetUpRouter;
-    use Tests\stubs\Controllers\Admin\AdminControllerWithMiddleware;
-	use Tests\stubs\Middleware\MiddlewareWithDependencies;
+    use Tests\fixtures\Controllers\Admin\AdminControllerWithMiddleware;
+	use Tests\fixtures\Middleware\MiddlewareWithDependencies;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
@@ -21,7 +20,7 @@
 
     class RouteMiddlewareDependencyInjectionTest extends UnitTest {
 
-        use TestHelpers;
+        use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
 
 

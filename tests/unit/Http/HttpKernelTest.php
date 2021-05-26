@@ -8,10 +8,10 @@
 
 	use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\HeaderStack;
-    use Tests\traits\TestHelpers;
+    use Tests\stubs\HeaderStack;
+    use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
-    use Tests\traits\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateDefaultWpApiMocks;
 	use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Events\ResponseSent;
@@ -20,7 +20,7 @@
 
     class HttpKernelTest extends UnitTest {
 
-        use TestHelpers;
+        use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
 
         /**

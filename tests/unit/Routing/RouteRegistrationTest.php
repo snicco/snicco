@@ -9,8 +9,8 @@
     use Contracts\ContainerAdapter;
     use Mockery;
     use Tests\stubs\TestRequest;
-    use Tests\traits\CreateDefaultWpApiMocks;
-    use Tests\traits\TestHelpers;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\IncomingWebRequest;
@@ -22,7 +22,7 @@
     class RouteRegistrationTest extends UnitTest
     {
 
-        use TestHelpers;
+        use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
 
         /**
