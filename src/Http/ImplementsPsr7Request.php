@@ -173,7 +173,6 @@
 
         public function getCookieParams()
         {
-
             return $this->psr_request->getCookieParams();
         }
 
@@ -190,14 +189,10 @@
             return $this->psr_request->getUploadedFiles();
         }
 
-
-
         public function getParsedBody()
         {
             return $this->psr_request->getParsedBody();
         }
-
-
 
         public function getAttributes()
         {

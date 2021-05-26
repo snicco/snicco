@@ -6,10 +6,7 @@
 
     namespace WPEmerge\Http;
 
-    use Contracts\ContainerAdapter as Container;
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Events\WpQueryFilterable;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\ResponseSent;
@@ -20,7 +17,6 @@
     use WPEmerge\Middleware\Core\RoutingMiddleware;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Middleware\Core\RouteRunner;
-    use WPEmerge\ServiceProviders\MiddlewareServiceProvider;
     use WPEmerge\Support\Arr;
     use WPEmerge\Traits\SortsMiddleware;
 

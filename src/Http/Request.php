@@ -7,11 +7,7 @@
     namespace WPEmerge\Http;
 
     use Psr\Http\Message\ServerRequestInterface;
-    use WPEmerge\Contracts\RouteCondition;
-    use WPEmerge\Http\ImplementsPsr7Request;
     use WPEmerge\Support\Arr;
-    use WPEmerge\Support\UrlParser;
-    use WPEmerge\Support\VariableBag;
 
     class Request implements ServerRequestInterface
     {
@@ -53,21 +49,6 @@
 
         }
 
-        public function withRoute(RouteCondition $route)
-        {
-
-            return $this->withAttribute('route', $route );
-
-
-        }
-
-        public function getRoute() : ?RouteCondition
-        {
-
-            return $this->getAttribute('route', null );
-
-        }
-
         public function withType ( string $type ) {
 
             return $this->withAttribute('type', $type);
@@ -106,8 +87,6 @@
             return Arr::get($this->getParsedBody(), $name, $default);
 
         }
-
-
 
 
     }
