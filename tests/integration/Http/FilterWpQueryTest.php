@@ -31,7 +31,7 @@
 
             $after = WpQueryFilterable::dispatch(
                 [
-                    TestRequest::from('GET', '/wpquery/foo'),
+                    $request = TestRequest::from('GET', '/wpquery/foo'),
                     $query_vars,
 
                 ]
@@ -39,6 +39,7 @@
 
             $this->assertSame(['foo' => 'baz'], $after);
 
+            $this->seeKernelOutput('FOO_QUERY', $request);
 
         }
 

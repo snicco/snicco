@@ -10,7 +10,7 @@
     TestApp::route()->prefix('wpquery')->group(function (Router $router) {
 
         $router->get('foo', function () {
-            //
+            return 'FOO_QUERY';
         })
                ->wpquery(function () {
 
