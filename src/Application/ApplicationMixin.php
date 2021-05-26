@@ -15,7 +15,7 @@
 	use WPEmerge\Session\FlashStore;
 	use WPEmerge\Session\OldInputStore;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Http\RedirectResponse;
+	use WPEmerge\Http\Responses\RedirectResponse;
 	use WPEmerge\Http\ResponseService;
 	use WPEmerge\Routing\RouteBlueprint;
 	use WPEmerge\Contracts\ViewInterface;

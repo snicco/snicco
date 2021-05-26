@@ -9,7 +9,7 @@
 	use Tests\stubs\Foo;
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\RequestInterface;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class ConditionWithDependency implements ConditionInterface {
 

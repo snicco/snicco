@@ -10,6 +10,7 @@
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\ResponseSent;
+    use WPEmerge\Http\Responses\NullResponse;
     use WPEmerge\Middleware\Core\AppendSpecialPathSuffix;
     use WPEmerge\Middleware\Core\ErrorHandlerMiddleware;
     use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;

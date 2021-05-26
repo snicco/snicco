@@ -6,7 +6,7 @@
 
 	namespace WPEmerge\Contracts;
 
-	use WPEmerge\Http\Request;
+	use WPEmerge\Http\Psr7\Request;
 
 
 	interface ConditionInterface {
@@ -14,7 +14,7 @@
 		/**
 		 * Get whether the condition is satisfied
 		 *
-		 * @param  Request  $request
+		 * @param  \WPEmerge\Http\Psr7\Request  $request
 		 *
 		 * @return boolean
 		 */
@@ -23,7 +23,7 @@
 		/**
 		 * Get an array of arguments for use in request
 		 *
-		 * @param  Request  $request
+		 * @param  \WPEmerge\Http\Psr7\Request  $request
 		 *
 		 * @return array
 		 */

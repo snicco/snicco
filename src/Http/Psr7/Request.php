@@ -4,9 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http;
+    namespace WPEmerge\Http\Psr7;
 
     use Psr\Http\Message\ServerRequestInterface;
+    use WPEmerge\Http\Psr7\InspectsRequest;
+    use WPEmerge\Http\Psr7\ImplementsPsr7Request;
     use WPEmerge\Support\Arr;
 
     class Request implements ServerRequestInterface

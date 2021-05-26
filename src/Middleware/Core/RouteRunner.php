@@ -10,8 +10,8 @@
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Request;
-    use WPEmerge\Http\Response;
+    use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Middleware\MiddlewareStack;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Routing\Route;

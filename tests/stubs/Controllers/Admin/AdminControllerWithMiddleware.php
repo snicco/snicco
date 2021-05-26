@@ -9,8 +9,8 @@
     use Tests\stubs\Middleware\MiddlewareWithDependencies;
 	use WPEmerge\Http\Controller;
 	use Tests\stubs\Baz;
-	use WPEmerge\Http\Response;
-	use WPEmerge\Http\Request;
+	use WPEmerge\Http\Psr7\Response;
+	use WPEmerge\Http\Psr7\Request;
 
 	class AdminControllerWithMiddleware extends Controller {
 

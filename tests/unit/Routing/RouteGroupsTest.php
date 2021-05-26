@@ -19,7 +19,7 @@
     use Tests\stubs\Middleware\FooMiddleware;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Router;
 
     class RouteGroupsTest extends UnitTest

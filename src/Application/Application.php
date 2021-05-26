@@ -13,7 +13,7 @@
     use SniccoAdapter\BaseContainerAdapter;
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\ServiceProviders\AliasServiceProvider;
     use WPEmerge\ServiceProviders\ApplicationServiceProvider;
     use WPEmerge\ServiceProviders\EventServiceProvider;

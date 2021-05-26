@@ -10,7 +10,7 @@
 
 	use BetterWpHooks\Traits\DispatchesConditionally;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class IncomingAdminRequest extends IncomingRequest {
 

@@ -12,7 +12,7 @@
 		/**
 		 * Middleware.
 		 *
-		 * @var \WPEmerge\Http\ControllerMiddleware[]
+		 * @var ControllerMiddleware[]
 		 */
 		private $middleware = [];
 

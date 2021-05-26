@@ -8,7 +8,7 @@
 
 	use Throwable;
     use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Http\Response;
+    use WPEmerge\Http\Psr7\Response;
 
     class NullErrorHandler implements ErrorHandlerInterface {
 

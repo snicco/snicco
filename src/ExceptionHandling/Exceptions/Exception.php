@@ -7,7 +7,7 @@
 	namespace WPEmerge\ExceptionHandling\Exceptions;
 
 	use Exception as PhpException;
-	use WPEmerge\Http\Response;
+	use WPEmerge\Http\Psr7\Response;
 
 	class Exception extends PhpException {
 

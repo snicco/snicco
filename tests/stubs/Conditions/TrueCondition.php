@@ -7,7 +7,7 @@
 	namespace Tests\stubs\Conditions;
 
 	use WPEmerge\Contracts\ConditionInterface;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class TrueCondition implements ConditionInterface {
 

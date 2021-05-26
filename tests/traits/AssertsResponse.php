@@ -7,8 +7,8 @@
 	namespace Tests\traits;
 
     use PHPUnit\Framework\Assert;
-    use WPEmerge\Http\NullResponse;
-    use WPEmerge\Http\Response;
+    use WPEmerge\Http\Responses\NullResponse;
+    use WPEmerge\Http\Psr7\Response;
 
     trait AssertsResponse {
 

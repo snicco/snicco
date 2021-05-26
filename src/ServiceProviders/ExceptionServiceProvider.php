@@ -11,7 +11,7 @@
 	use WPEmerge\ExceptionHandling\NullErrorHandler;
 	use WPEmerge\ExceptionHandling\ProductionErrorHandler;
 	use WPEmerge\Factories\ErrorHandlerFactory;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class ExceptionServiceProvider extends ServiceProvider {
 

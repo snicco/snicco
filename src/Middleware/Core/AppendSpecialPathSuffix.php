@@ -9,7 +9,7 @@
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     /**
      *

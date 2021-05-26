@@ -10,7 +10,7 @@
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class ErrorHandlerMiddleware extends Middleware
     {

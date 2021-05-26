@@ -23,7 +23,7 @@
     use WPEmerge\Facade\WP;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\CachedRouteCollection;
     use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
     use WPEmerge\Listeners\FilterWpQuery;

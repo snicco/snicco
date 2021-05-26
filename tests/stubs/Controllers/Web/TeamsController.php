@@ -9,8 +9,8 @@
 	use Tests\stubs\Foo;
 	use Tests\stubs\Bar;
 	use Tests\stubs\TestRequest;
-    use WPEmerge\Http\Request;
-    use WPEmerge\Http\Response;
+    use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Psr7\Response;
 
 	class TeamsController {
 

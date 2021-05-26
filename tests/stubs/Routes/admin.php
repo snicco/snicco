@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 	use Tests\stubs\TestApp;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     $router = TestApp::route();
 	$router->get( 'admin.php/bar', function ( Request $request, string $page ) {

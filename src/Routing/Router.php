@@ -14,8 +14,8 @@
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\ConvertsToResponse;
-    use WPEmerge\Http\Request;
-    use WPEmerge\Http\Response;
+    use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Support\Url;
     use WPEmerge\Traits\GathersMiddleware;
     use WPEmerge\Traits\HoldsRouteBlueprint;

@@ -8,12 +8,12 @@
 
 
     use WPEmerge\Contracts\ResponseFactory;
-    use WPEmerge\Http\Response;
+    use WPEmerge\Http\Psr7\Response;
 
     class ViewController {
 
 		/**
-		 * @var Response
+		 * @var \WPEmerge\Http\Psr7\Response
 		 */
 		private $response;
 

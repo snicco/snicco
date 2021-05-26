@@ -9,7 +9,7 @@
 	use Tests\stubs\Bar;
 	use Tests\stubs\Foo;
     use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Delegate;
 
     class MiddlewareWithDependencies extends Middleware {

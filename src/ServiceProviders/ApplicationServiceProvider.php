@@ -13,7 +13,7 @@
     use WPEmerge\ExceptionHandling\ShutdownHandler;
     use WPEmerge\Facade\WordpressApi;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class ApplicationServiceProvider extends ServiceProvider {
 

@@ -13,7 +13,7 @@
     use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Request as Request;
+    use WPEmerge\Http\Psr7\Request as Request;
     use WPEmerge\Routing\Router;
 
     class RouteSegmentsTest extends UnitTest

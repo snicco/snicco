@@ -8,7 +8,7 @@
 
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Support\Arr;

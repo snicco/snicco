@@ -8,7 +8,7 @@
 
     use Tests\stubs\TestRequest;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Support\Url;
 
     trait CreateWpTestUrls

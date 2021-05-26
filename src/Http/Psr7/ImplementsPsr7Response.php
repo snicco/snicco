@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http;
+    namespace WPEmerge\Http\Psr7;
 
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\StreamInterface;
@@ -16,7 +16,6 @@
          * @var ResponseInterface
          */
         private $psr7_response;
-
 
         public function withProtocolVersion($version)
         {
@@ -62,13 +61,11 @@
 
         }
 
-
         public function getProtocolVersion()
         {
 
             return $this->psr7_response->getProtocolVersion();
         }
-
 
         public function getHeaders()
         {
@@ -95,13 +92,11 @@
             return $this->psr7_response->getHeaderLine($name);
         }
 
-
         public function getBody()
         {
 
             return $this->psr7_response->getBody();
         }
-
 
         public function getStatusCode()
         {
@@ -109,7 +104,6 @@
             return $this->psr7_response->getStatusCode();
 
         }
-
 
         public function getReasonPhrase()
         {
