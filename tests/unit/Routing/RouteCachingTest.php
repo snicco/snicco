@@ -26,7 +26,7 @@
     use WPEmerge\Http\Request;
     use WPEmerge\Routing\CachedRouteCollection;
     use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
-    use WPEmerge\Routing\FilterWpQuery;
+    use WPEmerge\Listeners\FilterWpQuery;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\UrlGenerator;
@@ -288,7 +288,7 @@
 
             $request = TestRequest::from('GET', 'foo');
             $event = new WpQueryFilterable($request, ['foo' => 'bar']);
-            $listener = new FilterWpQuery($this->routes);
+            $listener = new \WPEmerge\Listeners\FilterWpQuery($this->routes);
             $this->assertSame(['foo' => 'baz'], $listener->handle($event));
             $this->runAndAssertOutput('foo', new IncomingWebRequest('wp.php', $request));
 
@@ -296,7 +296,7 @@
             $this->newCachedRouter();
 
             $event = new WpQueryFilterable(TestRequest::from('GET', 'foo'), ['foo' => 'bar']);
-            $listener = new FilterWpQuery($this->routes);
+            $listener = new \WPEmerge\Listeners\FilterWpQuery($this->routes);
             $this->assertSame(['foo' => 'baz'], $listener->handle($event));
             $this->runAndAssertOutput('foo', new IncomingWebRequest('wp.php', $request));
 

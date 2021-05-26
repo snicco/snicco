@@ -12,7 +12,6 @@
 
     class MiddlewareStack
     {
-
         use GathersMiddleware;
 
         private $middleware_groups = [
@@ -65,7 +64,8 @@
 
         }
 
-        private function withGlobalMiddleware (Request $request) {
+        private function withGlobalMiddleware (Request $request) : bool
+        {
 
             return ! $request->getAttribute('global_middleware_run', false);
 

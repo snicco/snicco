@@ -24,7 +24,7 @@
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Middleware\Core\OutputBufferMiddleware;
-    use WPEmerge\Routing\FilterWpQuery;
+    use WPEmerge\Listeners\FilterWpQuery;
     use WPEmerge\View\ViewService;
 
     class EventServiceProvider extends ServiceProvider
