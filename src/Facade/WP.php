@@ -8,12 +8,13 @@
 
 
 	/**
-	 * @mixin \WPEmerge\Facade\WordpressApiMixin
+	 * @mixin WordpressApiMixin
 	 */
 	class WP extends WpFacade {
 
 
-        protected static function getFacadeAccessor() {
+        protected static function getFacadeAccessor() : string
+        {
 
 			return WordpressApi::class;
 

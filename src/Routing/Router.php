@@ -14,12 +14,12 @@
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\ConvertsToResponse;
-    use WPEmerge\Http\Request;
-    use WPEmerge\Http\Response;
+    use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Support\Url;
     use WPEmerge\Traits\GathersMiddleware;
     use WPEmerge\Traits\HoldsRouteBlueprint;
-    use WPEmerge\Contracts\ResponseFactory as ResponseFactory;
+    use WPEmerge\Http\HttpResponseFactory as ResponseFactory;
 
     /**
      * @mixin RouteDecorator
@@ -27,9 +27,7 @@
     class Router
     {
 
-        use GathersMiddleware;
         use HoldsRouteBlueprint;
-        use ConvertsToResponse;
 
         /** @var RouteGroup[] */
         private $group_stack = [];
@@ -37,40 +35,15 @@
         /** @var ContainerAdapter */
         private $container;
 
-        /**
-         * @var string[]
-         */
-        private $middleware_groups = [];
-
-        /**
-         * @var string[]
-         */
-        private $middleware_priority = [];
-
-        /**
-         * @var string[]
-         */
-        private $route_middleware_aliases = [];
-
         /** @var AbstractRouteCollection */
         private $routes;
 
-        /**
-         * @var bool
-         */
-        private $with_middleware = true;
 
-        /**
-         * @var ResponseFactory
-         */
-        private $response_factory;
-
-        public function __construct(ContainerAdapter $container, AbstractRouteCollection $routes, ResponseFactory $response_factory)
+        public function __construct(ContainerAdapter $container, AbstractRouteCollection $routes)
         {
 
             $this->container = $container;
             $this->routes = $routes;
-            $this->response_factory = $response_factory;
 
         }
 
@@ -161,60 +134,38 @@
 
         }
 
-        public function findRoute(Request $request, $wp_query = false) : RouteResult
+        public function __call($method, $parameters)
         {
 
-            if ( $wp_query && $result = $this->routes->hasResult() ) {
 
-                return $result;
+            if ( ! in_array($method, RouteDecorator::allowed_attributes)) {
+
+                throw new \BadMethodCallException(
+                    'Method: '.$method.'does not exists on '.get_class($this)
+                );
 
             }
 
-            return $this->routes->match($request);
+            if ($method === 'where' || $method === 'middleware') {
 
-
-        }
-
-        public function runRoute(Request $request) : Response
-        {
-
-            $routing_result = $this->findRoute($request);
-
-            if ($routing_result->route()) {
-
-                return $this->runWithinStack($routing_result, $request);
+                return ((new RouteDecorator($this))->decorate(
+                    $method,
+                    is_array($parameters[0]) ? $parameters[0] : $parameters)
+                );
 
             }
 
-            return $this->response_factory->null();
+            return ((new RouteDecorator($this))->decorate($method, $parameters[0]));
 
         }
 
-        public function withoutMiddleware()
+        public function fallback(callable $fallback_handler)
         {
 
-            $this->with_middleware = false;
-
-        }
-
-        public function middlewareGroup(string $name, array $middleware) : void
-        {
-
-            $this->middleware_groups[$name] = $middleware;
-
-        }
-
-        public function middlewarePriority(array $middleware_priority) : void
-        {
-
-            $this->middleware_priority = $middleware_priority;
-
-        }
-
-        public function aliasMiddleware($name, $class) : void
-        {
-
-            $this->route_middleware_aliases[$name] = $class;
+            /** @var FallBackController $controller */
+            $controller = $this->container->make(FallBackController::class);
+            $controller->setFallbackHandler($fallback_handler);
+            $this->container->instance(FallBackController::class, $controller);
 
         }
 
@@ -258,39 +209,6 @@
 
         }
 
-        private function runWithinStack(RouteResult $route_match, Request $request) : Response
-        {
-
-            $middleware = [];
-
-            if ($this->with_middleware) {
-
-                $middleware = $route_match->route()->getMiddleware();
-                $middleware = $this->mergeGlobalMiddleware($middleware);
-                $middleware = $this->expandMiddleware($middleware);
-                $middleware = $this->uniqueMiddleware($middleware);
-                $middleware = $this->sortMiddleware($middleware);
-
-            }
-
-            /** @var Response $response */
-            $response = (new Pipeline($this->container))
-                ->send($request)
-                ->through($middleware)
-                ->then( function (Request $request) use ($route_match) : Response {
-
-                    $this->container->instance(Request::class, $request);
-                    $route_response = $route_match->route()
-                                                  ->run($request, $route_match->capturedUrlSegmentValues());
-
-                    return $this->response_factory->toResponse($route_response);
-
-                });
-
-            return $response;
-
-        }
-
         private function applyPrefix(string $url) : string
         {
 
@@ -331,41 +249,6 @@
 
             return $this->lastGroup()->prefix();
 
-
-        }
-
-        public function __call($method, $parameters)
-        {
-
-
-            if ( ! in_array($method, RouteDecorator::allowed_attributes)) {
-
-                throw new \BadMethodCallException(
-                    'Method: '.$method.'does not exists on '.get_class($this)
-                );
-
-            }
-
-            if ($method === 'where' || $method === 'middleware') {
-
-                return ((new RouteDecorator($this))->decorate(
-                    $method,
-                    is_array($parameters[0]) ? $parameters[0] : $parameters)
-                );
-
-            }
-
-            return ((new RouteDecorator($this))->decorate($method, $parameters[0]));
-
-        }
-
-        public function fallback(callable $fallback_handler)
-        {
-
-            /** @var FallBackController $controller */
-            $controller = $this->container->make(FallBackController::class);
-            $controller->setFallbackHandler($fallback_handler);
-            $this->container->instance(FallBackController::class, $controller);
 
         }
 

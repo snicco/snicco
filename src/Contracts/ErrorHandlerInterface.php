@@ -7,7 +7,7 @@
 	namespace WPEmerge\Contracts;
 
 
-	use WPEmerge\Http\Response;
+	use WPEmerge\Http\Psr7\Response;
     use Throwable;
 
     interface ErrorHandlerInterface {
@@ -32,10 +32,10 @@
          *
          * @param  Throwable  $exception
          *
-         * @return Response|null
+         * @return \WPEmerge\Http\Psr7\Response|null
          */
 		public function transformToResponse( Throwable $exception ) :?Response;
 
-
+        public function unrecoverable ( Throwable $exception );
 
 	}

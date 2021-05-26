@@ -6,13 +6,17 @@
 
 	namespace WPEmerge\Facade;
 
-	/**
+	use WP_User;
+
+    /**
+     * @codeCoverageIgnore
      * @see \WPEmerge\Facade\WordpressApiMixin
      */
 	class WordpressApi {
 
 	    private $admin_prefix = 'wp-admin';
 
+	    /** @todo needs testing for bedrock installs. */
 	    public function wpAdminFolder () :string {
 
 	        return $this->admin_prefix;
@@ -57,7 +61,7 @@
 
 		}
 
-        public  function currentUser() : \WP_User
+        public  function currentUser() : WP_User
         {
             return wp_get_current_user();
         }

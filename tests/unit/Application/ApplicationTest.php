@@ -9,15 +9,15 @@
     use Contracts\ContainerAdapter;
     use Mockery;
     use Psr\Http\Message\ServerRequestInterface;
-    use Tests\UnitTest;
+    use Tests\unit\UnitTest;
     use Tests\stubs\TestContainer;
-    use Tests\traits\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateDefaultWpApiMocks;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class ApplicationTest extends UnitTest
     {

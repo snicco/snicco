@@ -8,20 +8,20 @@
 
 	use Contracts\ContainerAdapter;
 	use Psr\Http\Message\ResponseInterface;
-	use WPEmerge\Http\HttpResponseFactory;
+	use WPEmerge\Http\ResponseFactory;
 	use WPEmerge\Routing\Route;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Session\Csrf;
 	use WPEmerge\Session\FlashStore;
 	use WPEmerge\Session\OldInputStore;
 	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Http\RedirectResponse;
+	use WPEmerge\Http\Responses\RedirectResponse;
 	use WPEmerge\Http\ResponseService;
 	use WPEmerge\Routing\RouteBlueprint;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Support\VariableBag;
-	use WPEmerge\View\ViewService;
-    use WPEmerge\ViewComposers\ViewComposerCollection;
+	use WPEmerge\View\ViewFactory;
+    use WPEmerge\View\ViewComposerCollection;
 
     /**
 	 * Can be applied to your App class via a "@mixin" annotation for better IDE support.
@@ -105,10 +105,10 @@
 		/**
 		 * Returns a response factory instance.
 		 *
-		 * @return  \WPEmerge\Http\HttpResponseFactory
-		 * @see \WPEmerge\Http\HttpResponseFactory
+		 * @return  \WPEmerge\Http\ResponseFactory
+		 * @see \WPEmerge\Http\ResponseFactory
 		 */
-		public static function response() : HttpResponseFactory {}
+		public static function response() : ResponseFactory {}
 
 
 		/**
@@ -117,7 +117,7 @@
 		 * @param  string|string[]  $views
 		 *
 		 * @return ViewInterface
-		 * @see    \WPEmerge\View\ViewService::make()
+		 * @see    \WPEmerge\View\ViewFactory::make()
 		 */
 		public static function view( $views ) : ViewInterface {
 		}
@@ -140,7 +140,7 @@
 		 *
 		 * @return string
 		 * @see    \WPEmerge\Contracts\ViewInterface::toString()
-		 * @see    \WPEmerge\View\ViewService::make()
+		 * @see    \WPEmerge\View\ViewFactory::make()
 		 */
 		public static function render( $views, array $context = [] ) :string {}
 
@@ -153,7 +153,7 @@
 		 * @param  string|array|callable|\Closure  $callable
 		 *
 		 * @return void
-		 * @see ViewComposerCollection::addComposer()
+		 * @see \WPEmerge\View\ViewComposerCollection::addComposer()
 		 */
 		public static function addComposer( $views, $callable ) :void {}
 

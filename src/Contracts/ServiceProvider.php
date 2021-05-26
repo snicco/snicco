@@ -8,16 +8,20 @@
 
 	use Contracts\ContainerAdapter;
 	use WPEmerge\Application\ApplicationConfig;
+    use WPEmerge\Events\IncomingAdminRequest;
+    use WPEmerge\Events\IncomingAjaxRequest;
+    use WPEmerge\Events\IncomingWebRequest;
+    use WPEmerge\Facade\WP;
 
-	abstract class ServiceProvider {
+    abstract class ServiceProvider {
 
 		/**
-		 * @var \Contracts\ContainerAdapter
+		 * @var ContainerAdapter
 		 */
 		protected $container;
 
 		/**
-		 * @var \WPEmerge\Application\ApplicationConfig
+		 * @var ApplicationConfig
 		 */
 		protected $config;
 
@@ -41,5 +45,24 @@
 		 * @return void
 		 */
 		abstract function bootstrap() :void;
+
+        protected function requestType () : string
+        {
+
+            if ( ! WP::isAdmin() ) {
+
+                return IncomingWebRequest::class;
+
+            }
+
+            if ( WP::isAdminAjax() ) {
+
+                return IncomingAjaxRequest::class;
+
+            }
+
+            return IncomingAdminRequest::class;
+
+        }
 
 	}

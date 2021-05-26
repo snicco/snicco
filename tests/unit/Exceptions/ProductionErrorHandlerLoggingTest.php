@@ -11,12 +11,12 @@
     use Psr\Log\LoggerInterface;
     use Psr\Log\LogLevel;
     use SniccoAdapter\BaseContainerAdapter;
-    use Tests\traits\AssertsResponse;
-    use Tests\UnitTest;
-    use Tests\stubs\Foo;
+    use Tests\helpers\AssertsResponse;
+    use Tests\unit\UnitTest;
+    use Tests\fixtures\TestDependencies\Foo;
     use Tests\stubs\TestLogger;
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\ExceptionHandling\ProductionErrorHandler;
     use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ErrorHandlerFactory;
@@ -39,7 +39,7 @@
             ApplicationEvent::make($this->container = $this->createContainer());
             ApplicationEvent::fake();
             $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
-            $this->container->instance(ResponseFactory::class, $this->responseFactory());
+            $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
             WpFacade::setFacadeContainer($this->container);
             WP::shouldReceive('userId')->andReturn(10)->byDefault();
             $GLOBALS['test']['log'] = [];

@@ -7,7 +7,7 @@
     namespace WPEmerge\Routing\Conditions;
 
     use WPEmerge\Contracts\ConditionInterface;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Support\Str;
 
     class TrailingSlashCondition implements ConditionInterface

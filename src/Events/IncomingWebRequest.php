@@ -7,7 +7,7 @@
 	namespace WPEmerge\Events;
 
 	use BetterWpHooks\Traits\DispatchesConditionally;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class IncomingWebRequest extends IncomingRequest {
 

@@ -13,15 +13,16 @@
     use SniccoAdapter\BaseContainerAdapter;
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Http\Request;
-    use WPEmerge\ServiceProviders\AliasServiceProvider;
-    use WPEmerge\ServiceProviders\ApplicationServiceProvider;
-    use WPEmerge\ServiceProviders\EventServiceProvider;
-    use WPEmerge\ServiceProviders\ExceptionServiceProvider;
-    use WPEmerge\ServiceProviders\FactoryServiceProvider;
-    use WPEmerge\ServiceProviders\HttpServiceProvider;
-    use WPEmerge\ServiceProviders\RoutingServiceProvider;
-    use WPEmerge\ServiceProviders\ViewServiceProvider;
+    use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Application\AliasServiceProvider;
+    use WPEmerge\Application\ApplicationServiceProvider;
+    use WPEmerge\Events\EventServiceProvider;
+    use WPEmerge\ExceptionHandling\ExceptionServiceProvider;
+    use WPEmerge\Factories\FactoryServiceProvider;
+    use WPEmerge\Http\HttpServiceProvider;
+    use WPEmerge\Middleware\MiddlewareServiceProvider;
+    use WPEmerge\Routing\RoutingServiceProvider;
+    use WPEmerge\View\ViewServiceProvider;
     use WPEmerge\Facade\WpFacade;
 
     class Application
@@ -34,13 +35,13 @@
         const CORE_SERVICE_PROVIDERS = [
 
             EventServiceProvider::class,
+            ExceptionServiceProvider::class,
             FactoryServiceProvider::class,
             ApplicationServiceProvider::class,
             HttpServiceProvider::class,
-            ExceptionServiceProvider::class,
             RoutingServiceProvider::class,
+            MiddlewareServiceProvider::class,
             ViewServiceProvider::class,
-            AliasServiceProvider::class,
 
         ];
 

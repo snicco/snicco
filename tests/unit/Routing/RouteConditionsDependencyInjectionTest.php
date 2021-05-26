@@ -1,51 +1,70 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace Tests\unit\Routing;
+    namespace Tests\unit\Routing;
 
-	use Mockery;
-    use Tests\UnitTest;
-    use Tests\traits\SetUpRouter;
-    use Tests\stubs\Conditions\ConditionWithDependency;
+    use Mockery;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreatesWpUrls;
+    use Tests\helpers\CreateTestSubjects;
+    use Tests\unit\UnitTest;
+    use Tests\fixtures\Conditions\ConditionWithDependency;
+    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
 
-    class RouteConditionsDependencyInjectionTest extends UnitTest {
+    class RouteConditionsDependencyInjectionTest extends UnitTest
+    {
 
-		use SetUpRouter;
+        use CreateTestSubjects;
+        use CreatesWpUrls;
+        use CreateDefaultWpApiMocks;
+
+        private $router;
+
+        private $container;
 
         protected function beforeTestRun()
         {
-            $this->newRouter( $c = $this->createContainer() );
-            WP::setFacadeContainer($c);
+
+            $this->container = $this->createContainer();
+            $this->routes = $this->newRouteCollection();
+            ApplicationEvent::make($this->container);
+            ApplicationEvent::fake();
+            WP::setFacadeContainer($this->container);
+
         }
 
         protected function beforeTearDown()
         {
 
             Mockery::close();
-            WP::clearResolvedInstances();
-            WP::setFacadeContainer(null);
+            ApplicationEvent::setInstance(null);
+            WP::reset();
 
         }
 
-		/** @test */
-		public function a_condition_gets_dependencies_injected_after_the_passed_arguments() {
+        /** @test */
+        public function a_condition_gets_dependencies_injected_after_the_passed_arguments()
+        {
 
-			$this->router->get( '/foo', function ( ) {
+            $this->createRoutes(function () {
 
-				return 'foo';
+                $this->router->get('/foo', function () {
 
-			})->where(ConditionWithDependency::class, true);
+                    return 'foo';
 
-			$this->router->loadRoutes();
+                })->where(ConditionWithDependency::class, true);
 
-			$request = $this->request( 'GET', '/foo' );
-			$this->assertOutput( 'foo', $this->router->runRoute( $request ) );
+            });
 
-		}
 
-	}
+            $request = $this->webRequest('GET', '/foo');
+            $this->runAndAssertOutput('foo', $request );
+
+        }
+
+    }
 

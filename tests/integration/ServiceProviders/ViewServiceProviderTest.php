@@ -6,16 +6,16 @@
 
 	namespace Tests\integration\ServiceProviders;
 
-    use Tests\IntegrationTest;
+    use Tests\integration\IntegrationTest;
     use Tests\stubs\TestApp;
     use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewFinderInterface;
-	use WPEmerge\Contracts\ViewServiceInterface;
+	use WPEmerge\Contracts\ViewFactoryInterface;
 	use WPEmerge\Support\VariableBag;
 	use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\View\PhpViewFinder;
-	use WPEmerge\View\ViewService;
-	use WPEmerge\ViewComposers\ViewComposerCollection;
+	use WPEmerge\View\ViewFactory;
+	use WPEmerge\View\ViewComposerCollection;
 
 	class ViewServiceProviderTest extends IntegrationTest {
 
@@ -34,16 +34,7 @@
 
             $this->newTestApp();
 
-            $this->assertInstanceOf(ViewService::class, TestApp::resolve(ViewServiceInterface::class));
-
-		}
-
-		/** @test */
-		public function the_view_finder_is_resolved_correctly () {
-
-            $this->newTestApp();
-
-			$this->assertInstanceOf(PhpViewFinder::class, TestApp::resolve(ViewFinderInterface::class));
+            $this->assertInstanceOf(ViewFactory::class, TestApp::resolve(ViewFactoryInterface::class));
 
 		}
 

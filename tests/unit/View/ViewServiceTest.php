@@ -7,15 +7,15 @@
 	namespace Tests\unit\View;
 
     use Mockery;
-    use Tests\UnitTest;
+    use Tests\unit\UnitTest;
     use Tests\stubs\TestApp;
-    use Tests\traits\CreateDefaultWpApiMocks;
-    use WPEmerge\Contracts\ViewServiceInterface;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use WPEmerge\Contracts\ViewFactoryInterface;
 	use WPEmerge\ExceptionHandling\Exceptions\ViewException;
 	use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
     use WPEmerge\Facade\WP;
     use WPEmerge\View\PhpView;
-    use WPEmerge\View\ViewService;
+    use WPEmerge\View\ViewFactory;
 
     use const DS;
     use const TEST_CONFIG;
@@ -27,7 +27,7 @@
         use CreateDefaultWpApiMocks;
 
 		/**
-		 * @var ViewService
+		 * @var ViewFactory
 		 */
 		private $view_service;
 
@@ -40,7 +40,7 @@
 
 			$container = $this->createContainer();
 			TestApp::make($container)->boot(TEST_CONFIG);
-			$this->view_service = TestApp::resolve(ViewServiceInterface::class );
+			$this->view_service = TestApp::resolve(ViewFactoryInterface::class );
 
 
 		}
@@ -190,7 +190,7 @@
 		/** @test */
 		public function views_can_be_included_in_parent_views () {
 
-		    $path = TESTS_DIR . DS. 'views' . DS . 'subdirectory' . DS. 'subview.php';
+		    $path = VIEWS_DIR .  DS . 'subdirectory' . DS. 'subview.php';
 
 		    WP::shouldReceive('fileHeaderData')->once()
               ->with($path, ['Layout'])

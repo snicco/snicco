@@ -6,46 +6,30 @@
 
     namespace WPEmerge\Http;
 
-    use Closure;
-    use Contracts\ContainerAdapter as Container;
     use Psr\Http\Message\ResponseInterface;
-    use Psr\Http\Message\ServerRequestInterface;
-    use Throwable;
-    use WPEmerge\Contracts\ErrorHandlerInterface as ErrorHandler;
-    use WPEmerge\Contracts\ResponseFactory;
-    use WPEmerge\Events\DoShutdown;
-    use WPEmerge\Events\FilterWpQuery;
-    use WPEmerge\Events\HeadersSent;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
-    use WPEmerge\Events\BodySent;
-    use WPEmerge\ExceptionHandling\Exceptions\InvalidResponseException;
-    use WPEmerge\Middleware\ResponseEmitterMiddleware;
-    use WPEmerge\Routing\Router;
+    use WPEmerge\Events\ResponseSent;
+    use WPEmerge\Http\Responses\NullResponse;
+    use WPEmerge\Middleware\Core\AppendSpecialPathSuffix;
+    use WPEmerge\Middleware\Core\ErrorHandlerMiddleware;
+    use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
+    use WPEmerge\Middleware\Core\OutputBufferMiddleware;
+    use WPEmerge\Middleware\Core\RoutingMiddleware;
     use WPEmerge\Routing\Pipeline;
-    use WPEmerge\Traits\HoldsMiddlewareDefinitions;
+    use WPEmerge\Middleware\Core\RouteRunner;
+    use WPEmerge\Support\Arr;
+    use WPEmerge\Traits\SortsMiddleware;
 
     class HttpKernel
     {
 
-        use HoldsMiddlewareDefinitions;
-
-        /** @var Router */
-        private $router;
-
-        /** @var ErrorHandler */
-        private $error_handler;
-
-        /** @var Container */
-        private $container;
-
-        /** @var Response */
-        private $response;
+        use SortsMiddleware;
 
         /**
-         * @var ResponseEmitter
+         * @var Pipeline
          */
-        private $response_emitter;
+        private $pipeline;
 
         private $is_test_mode = false;
 
@@ -54,214 +38,101 @@
          */
         private $always_with_global_middleware = false;
 
-        public function __construct(
+        private $core_middleware = [
+            ErrorHandlerMiddleware::class,
+            EvaluateResponseMiddleware::class,
+            OutputBufferMiddleware::class,
+            AppendSpecialPathSuffix::class,
+            RoutingMiddleware::class,
+            RouteRunner::class,
+        ];
 
-            Router $router,
-            Container $container,
-            /** @todo this could be a middleware */
-            ErrorHandler $error_handler
-        ) {
+        // Only these two get a priority, because they always need to run before any global middleware
+        // that a user might provide.
+        private $priority_map = [
+            ErrorHandlerMiddleware::class,
+            EvaluateResponseMiddleware::class,
+        ];
 
-            $this->router = $router;
-            $this->container = $container;
-            $this->error_handler = $error_handler;
-            $this->response_emitter = new ResponseEmitter();
-
-        }
-
-
-        public function runGlobalMiddleware(ServerRequestInterface $request)
-        {
-
-            $middleware = array_merge(
-                [],
-                $this->middleware_groups['global']
-            );
-
-            $response = (new Pipeline($this->container))
-                ->send($request)
-                ->through($middleware)
-                ->then(function (Request $request, ResponseFactory $response) {
-
-                    return $response->null();
-
-                });
-
-            if ($response instanceof NullResponse) {
-
-                return;
-
-            }
-
-            (new ResponseEmitter())->emit($response);
-
-            DoShutdown::dispatch();
-
-
-        }
-
-        public function handle(IncomingRequest $request_event) : void
-        {
-
-            $this->error_handler->register();
-
-            try {
-
-                $this->syncMiddlewareToRouter();
-
-                $this->response = $this->sendRequestThroughRouter($request_event->request);
-
-            }
-
-            catch (Throwable $exception) {
-
-                $this->response = $this->error_handler->transformToResponse($exception);
-
-            }
-
-            if ($this->matchedRoute()) {
-
-                $request_event->matchedRoute();
-
-            }
-
-            $this->sendResponse();
-
-            $this->error_handler->unregister();
-
-        }
+        private $global_middleware = [];
 
         /**
-         * This function needs to be public because for Wordpress Admin
-         * pages we have to send the header and body on separate hooks.
-         * ( sucks. but it is what it is )
+         * @var ResponseEmitter
          */
-        public function sendBodyDeferred()
+        private $emitter;
+
+        public function __construct(Pipeline $pipeline, ResponseEmitter $emitter = null )
         {
 
-            // guard against AdminBodySendable for non matching admin pages.
-            if ( ! $this->response instanceof ResponseInterface) {
+            $this->pipeline = $pipeline;
+            $this->emitter = $emitter ?? new ResponseEmitter();
+
+
+        }
+
+        public function run( IncomingRequest $request_event ) : void
+        {
+
+            $response = $this->handle($request_event);
+
+            if ( $response instanceof NullResponse ) {
 
                 return;
 
             }
 
-            $request = $this->container->make(Request::class);
+            $request_event->matchedRoute();
 
-            $this->sendBody($request);
+            $this->emitter->emit($response);
 
-        }
+            ResponseSent::dispatch([$response]);
 
-        public function runInTestMode() : void
-        {
-
-            $this->is_test_mode = true;
 
         }
 
-        private function sendResponse()
+        private function handle(IncomingRequest $request_event) : ResponseInterface
         {
 
-            if ($this->response instanceof NullResponse) {
+            $request = $request_event->request;
 
-                return;
+            if ( $this->withMiddleware() ) {
+
+                $request = $request->withAttribute('global_middleware_run', true);
 
             }
 
-            $request = $this->container->make(Request::class);
+            return $this->pipeline->send($request)
+                                  ->through($this->gatherMiddleware($request_event))
+                                  ->run();
 
-            $this->sendHeaders($request);
 
-            if ($request->getType() !== IncomingAdminRequest::class) {
+        }
 
-                $this->sendBody($request);
+        public function alwaysWithGlobalMiddleware( array $global_middleware = [] )
+        {
+            $this->global_middleware = $global_middleware;
+            $this->always_with_global_middleware = true;
+        }
+
+        private function gatherMiddleware(IncomingRequest $incoming_request) : array
+        {
+
+            if ( ! $incoming_request instanceof IncomingAdminRequest ) {
+
+                Arr::pullByValue(OutputBufferMiddleware::class, $this->core_middleware);
 
             }
 
-        }
+            if ( ! $this->withMiddleware() ) {
 
-        private function sendHeaders(Request $request)
-        {
-
-            $this->response_emitter->emitHeaders($this->response);
-
-            HeadersSent::dispatch([$this->response, $request]);
-
-        }
-
-        private function sendBody(Request $request)
-        {
-
-            $this->response_emitter->emitBody($this->response);
-
-            BodySent::dispatch([$this->response, $request]);
-
-        }
-
-        private function sendRequestThroughRouter(Request $request) : Response
-        {
-
-            $this->container->instance(Request::class, $request);
-
-            $pipeline = new Pipeline($this->container);
-
-            $middleware = $this->withMiddleware() ? $this->middleware_groups['global'] ?? [] : [];
-
-            /** @var Response $response */
-            $response = $pipeline->send($request)
-                                 ->through($middleware)
-                                 ->then($this->dispatchToRouter());
-
-            return $this->returnIfValid($response);
-
-        }
-
-        private function dispatchToRouter() : Closure
-        {
-
-            return function (Request $request) : ResponseInterface {
-
-                $this->container->instance(Request::class, $request);
-
-                if ($this->is_test_mode) {
-
-                    $this->router->withoutMiddleware();
-
-                }
-
-                return $this->router->runRoute($request);
-
-
-            };
-
-        }
-
-        private function syncMiddlewareToRouter() : void
-        {
-
-
-            $this->router->middlewarePriority($this->middleware_priority);
-
-            $middleware_groups = $this->middleware_groups;
-
-            // Dont run global middleware in the router again.
-            if ($this->always_with_global_middleware) {
-
-                unset($middleware_groups['global']);
+                return $this->core_middleware;
 
             }
 
-            foreach ($middleware_groups as $key => $middleware) {
+            $merged = array_merge($this->global_middleware, $this->core_middleware);
 
-                $this->router->middlewareGroup($key, $middleware);
+            return $this->sortMiddleware($merged, $this->priority_map);
 
-            }
-
-            foreach ($this->route_middleware_aliases as $key => $middleware) {
-
-                $this->router->aliasMiddleware($key, $middleware);
-
-            }
 
         }
 
@@ -269,61 +140,6 @@
         {
 
             return ! $this->is_test_mode && $this->always_with_global_middleware;
-
-        }
-
-        private function returnIfValid(Response $response) : Response
-        {
-
-            // We had no matching route.
-            if ($response instanceof NullResponse) {
-
-                return $response;
-
-            }
-
-            // We had a route action return something but it was not transformable to a Psr7 Response.
-            if ($response instanceof InvalidResponse) {
-
-                throw new InvalidResponseException(
-                    'The response returned by the route action is not valid.'
-                );
-
-            }
-
-            return $response;
-
-        }
-
-        public function alwaysWithGlobalMiddleware()
-        {
-
-            $this->always_with_global_middleware = true;
-
-        }
-
-        private function matchedRoute() : bool
-        {
-            return ! $this->response instanceof NullResponse;
-        }
-
-        public function filterRequest(FilterWpQuery $event)
-        {
-
-            $match = $this->router->findRoute($event->server_request, $wp_query = true);
-
-            if ($match->route()) {
-
-                $qvs = $match->route()->filterWpQuery(
-                    $event->currentQueryVars(),
-                    $match->capturedUrlSegmentValues()
-                );
-
-                return $qvs;
-
-            }
-
-            return $event->currentQueryVars();
 
         }
 

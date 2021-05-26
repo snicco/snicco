@@ -8,18 +8,18 @@
 
     use BetterWpHooks\Contracts\Dispatcher;
     use BetterWpHooks\Dispatchers\WordpressDispatcher;
-    use Tests\IntegrationTest;
-    use Tests\stubs\Middleware\FooMiddleware;
-    use Tests\stubs\Middleware\GlobalMiddleware;
+    use Tests\integration\IntegrationTest;
+    use Tests\fixtures\Middleware\FooMiddleware;
+    use Tests\fixtures\Middleware\GlobalMiddleware;
     use Tests\stubs\TestApp;
     use Tests\unit\Routing\Foo;
-    use WPEmerge\Contracts\ResponseFactory;
-    use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\HttpResponseFactory;
+    use WPEmerge\Events\LoadedWP;
+    use WPEmerge\Http\HttpKernel;
+    use WPEmerge\Http\ResponseFactory;
 
     class HttpServiceProviderTest extends IntegrationTest
     {
-
 
         /** @test */
         public function the_kernel_can_be_resolved_correctly()
@@ -38,7 +38,7 @@
 
             $this->newTestApp();
 
-            $this->assertInstanceOf(HttpResponseFactory::class, TestApp::resolve(ResponseFactory::class));
+            $this->assertInstanceOf(ResponseFactory::class, TestApp::resolve(HttpResponseFactory::class));
 
         }
 
@@ -56,7 +56,6 @@
 
             $aliases = TestApp::config('middleware.aliases', []);
 
-            $this->assertArrayHasKey('csrf', $aliases);
             $this->assertArrayHasKey('auth', $aliases);
             $this->assertArrayHasKey('guest', $aliases);
             $this->assertArrayHasKey('can', $aliases);
@@ -115,25 +114,11 @@
             /** @var WordpressDispatcher $dispatcher */
             $dispatcher = TestApp::resolve(Dispatcher::class);
 
-            $this->assertFalse($dispatcher->hasListenerFor([HttpKernel::class, 'runGlobalMiddleware'], 'init'));
+            $this->assertFalse($dispatcher->hasListenerFor([HttpKernel::class, 'runGlobal'], 'init'));
 
         }
 
-        /** @test */
-        public function global_middleware_can_be_enabled_to_always_run_on_init () {
 
-            $this->newTestApp([
-                'always_run_middleware' => true
-            ]);
-
-            $this->assertTrue(TestApp::config('always_run_middleware', ''));
-
-            /** @var WordpressDispatcher $dispatcher */
-            $dispatcher = TestApp::resolve(Dispatcher::class);
-
-            $this->assertTrue($dispatcher->hasListenerFor([HttpKernel::class, 'runGlobalMiddleware'], 'init'));
-
-        }
 
 
     }

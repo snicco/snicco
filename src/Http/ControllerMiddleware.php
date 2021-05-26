@@ -63,13 +63,14 @@
 
 		}
 
-		/**
-		 * Set methods the middleware should not apply to.
-		 *
-		 *
-		 * @param  string|string[]  $methods
-		 *
-		 */
+        /**
+         * Set methods the middleware should not apply to.
+         *
+         *
+         * @param  string|string[]  $methods
+         *
+         * @throws Exception
+         */
 		public function except( $methods ) : ControllerMiddleware {
 
 			if ( ! empty($this->whitelist) ) {

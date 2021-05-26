@@ -19,5 +19,4 @@
 		public function make( $views ) : ViewInterface;
 
 
-
 	}

@@ -12,9 +12,10 @@
     use WPEmerge\Contracts\RouteAction;
     use WPEmerge\Contracts\SetsRouteAttributes;
     use WPEmerge\Contracts\UrlableInterface;
+    use WPEmerge\Controllers\FallBackController;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Conditions\TrailingSlashCondition;
     use WPEmerge\Support\ReflectionPayload;
     use WPEmerge\Support\Url;
@@ -64,7 +65,7 @@
         private $defaults = [];
 
         /**
-         * @var Closure|null
+         * @var Closure|string|null
          */
         private $wp_query_filter = null;
 
@@ -137,8 +138,6 @@
         public function asArray () :array {
 
             return [
-                /** @todo this cant be here by default or we have a hard dependency on opis. */
-                // 'action' => $this->serializeAction($this->action),
                 'action' => $this->action,
                 'name' => $this->name,
                 'middleware' => $this->middleware ?? [],
@@ -262,6 +261,20 @@
 
         }
 
+        public function getQueryFilter()
+        {
+            return $this->wp_query_filter;
+        }
+
+        /**
+         * @param Closure|string $serialized_query_filter
+         */
+        public function setQueryFilter ($serialized_query_filter) {
+
+            $this->wp_query_filter = $serialized_query_filter;
+
+        }
+
         public function needsTrailingSlash() : bool
         {
             return $this->trailing_slash;
@@ -284,6 +297,11 @@
 
             return $failed_condition === null;
 
+        }
+
+        public function isFallback() :bool
+        {
+            return $this->action === [FallBackController::class, 'handle'];
         }
 
         public function getMiddleware() : array
@@ -374,5 +392,8 @@
 
 
         }
+
+
+
 
     }

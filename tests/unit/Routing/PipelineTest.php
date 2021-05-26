@@ -14,11 +14,10 @@
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
-    use Tests\traits\CreateContainer;
+    use Tests\helpers\CreateContainer;
 
     use WPEmerge\Routing\Pipeline;
 
-    /** @todo fix exception handling */
     class PipelineTest extends TestCase
     {
 
@@ -88,25 +87,6 @@
 
             $this->assertInstanceOf(ResponseInterface::class, $response);
             $this->assertSame('foobarbiz', $response->getBody()->__toString());
-
-        }
-
-        // /** @test */
-        public function not_returning_a_response_object_from_the_final_handler_of_the_stack_throws_an_exception()
-        {
-
-            $this->expectException(\TypeError::class);
-
-            $this->pipeline
-                ->send($this->request)
-                ->through([Foo::class, Bar::class])
-                ->then(function (ServerRequestInterface $request) {
-
-                    //
-                    $foo = 'bar';
-
-                });
-
 
         }
 
@@ -249,30 +229,6 @@
 
         }
 
-        // /** @test */
-        public function an_exception_gets_thrown_if_one_piece_of_middleware_doesnt_return_a_response_object()
-        {
-
-            $this->expectExceptionMessage('must be an instance of Psr\Http\Message\ResponseInterface');
-
-            $response = $this->pipeline
-                ->send($this->request)
-                ->through([
-
-                    function () {
-
-                        return 'foo';
-
-                    },
-                ])
-                ->then(function (ServerRequestInterface $request) {
-
-                    $this->fail('This should never be called');
-
-                });
-
-
-        }
 
     }
 
@@ -352,7 +308,7 @@
          */
         private $bar;
 
-        public function __construct(\Tests\stubs\Bar $bar)
+        public function __construct(\Tests\fixtures\TestDependencies\Bar $bar)
         {
 
             $this->bar = $bar;

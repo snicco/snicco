@@ -7,33 +7,44 @@
     namespace Tests\integration\ServiceProviders;
 
     use Mockery;
-    use Tests\IntegrationTest;
-    use Tests\traits\AssertsResponse;
-    use Tests\stubs\Conditions\TrueCondition;
+    use Tests\integration\IntegrationTest;
+    use Tests\fixtures\Conditions\TrueCondition;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
-    use Tests\traits\CreateDefaultWpApiMocks;
-    use Tests\traits\CreateWpTestUrls;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreatesWpUrls;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Contracts\ServiceProvider;
+    use WPEmerge\Events\IncomingAdminRequest;
+    use WPEmerge\Events\IncomingAjaxRequest;
+    use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Routing\CachedRouteCollection;
     use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
-    use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Routing\RouteCollection;
     use WPEmerge\Routing\Router;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Support\Url;
 
     class RoutingServiceProviderTest extends IntegrationTest
     {
 
-        use CreateWpTestUrls;
-        use AssertsResponse;
+        use CreatesWpUrls;
 
+
+        protected function tearDown() : void
+        {
+
+            parent::tearDown();
+
+            if( is_file($file = TESTS_DIR. DS . '_data'. DS . '__generated_route_collection') ) {
+
+                $this->unlink($file);
+
+            }
+
+        }
 
         /** @test */
         public function all_conditions_are_loaded()
@@ -164,23 +175,11 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                    'definitions' => ROUTES_DIR
                 ]
             ]);
 
-            /** @var Router $router */
-            $router = TestApp::resolve(Router::class);
-
-            // Needed because the sync of middleware to the router happens in the kernel.
-            $router->middlewareGroup('web', []);
-
-            $request = TestRequest::from('GET', 'foo');
-
-            $response = $router->runRoute($request);
-
-            $this->assertOutput('foo', $response);
-
-            Mockery::close();
+            $this->seeKernelOutput('foo', TestRequest::from('GET', '/foo'));
 
         }
 
@@ -189,21 +188,13 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                    'definitions' => ROUTES_DIR
                 ]
             ]);
 
-            /** @var Router $router */
-            $router = TestApp::resolve(Router::class);
+            $this->seeKernelOutput('get_fallback', TestRequest::from('GET', 'post1'));
 
-            // Needed because the sync of middleware to the router happens in the kernel.
-            $router->middlewareGroup('web', []);
 
-            $request = TestRequest::from('GET', 'whatever');
-
-            $response = $router->runRoute($request);
-
-            $this->assertOutput('FOO', $response);
 
         }
 
@@ -213,7 +204,7 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                    'definitions' => ROUTES_DIR
                 ],
                 'providers' => [
                     SimulateAjaxProvider::class
@@ -221,15 +212,9 @@
             ]);
 
 
-            /** @var Router $router */
-            $router = TestApp::resolve(Router::class);
-            $router->middlewareGroup('ajax', []);
-
             $request = $this->ajaxRequest('foo_action');
 
-            $response = $router->runRoute($request);
-
-            $this->assertOutput('FOO_ACTION', $response);
+            $this->seeKernelOutput('FOO_ACTION', new IncomingAjaxRequest($request));
 
             Mockery::close();
 
@@ -241,48 +226,36 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                    'definitions' => ROUTES_DIR
                 ],
                 'providers' => [
                     SimulateAdminProvider::class
                 ]
             ]);
 
+            $request = $this->adminRequestTo('foo');
 
-            /** @var Router $router */
-            $router = TestApp::resolve(Router::class);
-            $router->middlewareGroup('admin', []);
-
-            $response = $router->runRoute($this->adminRequestTo('foo'));
-
-            $this->assertOutput('FOO', $response);
+            $this->seeKernelOutput('FOO', new IncomingAdminRequest($request));
 
             Mockery::close();
+
 
         }
 
         /** @test */
         public function named_groups_are_applied_for_admin_routes()
         {
+
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                    'definitions' => ROUTES_DIR
                 ],
                 'providers' => [
                     SimulateAdminProvider::class
                 ]
             ]);
 
-            /** @var Router $router */
-            $router = TestApp::resolve(Router::class);
-            $router->middlewareGroup('admin', []);
-
-            /**
-             * @var UrlGenerator $url_generator
-             */
-            $url_generator = TestApp::resolve(UrlGenerator::class);
-
-            $this->assertSame($this->adminUrlTo('foo'), $url_generator->toRoute('admin.foo'));
+            $this->assertSame($this->adminUrlTo('foo'), TestApp::routeUrl('admin.foo'));
 
             Mockery::close();
             WP::reset();
@@ -295,26 +268,18 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
+                    'definitions' => ROUTES_DIR
                 ],
                 'providers' => [
                     SimulateAjaxProvider::class
                 ]
             ]);
 
-            /** @var Router $router */
-            $router = TestApp::resolve(Router::class);
-            $router->middlewareGroup('ajax', []);
-
 
             $expected = $this->ajaxUrl();
 
-            /**
-             * @var UrlGenerator $url_generator
-             */
-            $url_generator = TestApp::resolve(UrlGenerator::class);
 
-            $this->assertSame($expected, $url_generator->toRoute('ajax.foo'));
+            $this->assertSame($expected, TestApp::routeUrl('ajax.foo'));
 
             Mockery::close();
             WP::reset();
@@ -347,7 +312,7 @@
     class SimulateAdminProvider extends ServiceProvider
     {
         use CreateDefaultWpApiMocks;
-        use CreateWpTestUrls;
+        use CreatesWpUrls;
 
         public function register() : void
         {

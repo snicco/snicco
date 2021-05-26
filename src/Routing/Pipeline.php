@@ -73,6 +73,7 @@
             $this->middleware = $this->normalizeMiddleware($middleware);
 
             return $this;
+
         }
 
         private function normalizeMiddleware(array $middleware) : array
@@ -115,6 +116,14 @@
 
         }
 
+        public function run($stack = null)
+        {
+
+            $stack = $stack ?? $this->buildMiddlewareStack();
+
+            return $stack->handle($this->request);
+
+        }
 
         public function then(Closure $request_handler) : ResponseInterface
         {
@@ -123,13 +132,6 @@
 
             return $this->run($this->buildMiddlewareStack());
 
-
-        }
-
-        private function run($stack)
-        {
-
-            return $stack->handle($this->request);
 
         }
 
@@ -149,7 +151,7 @@
 
                     throw new LogicException("Unresolved request: middleware stack exhausted with no result");
 
-                }, $this->container);
+                });
 
             }
 
@@ -169,24 +171,9 @@
 
                 return $middleware_instance->process($request, $this->nextMiddleware());
 
-            }, $this->container);
+            });
 
 
-
-        }
-
-        private function returnIfValid($response, $middleware) : ResponseInterface
-        {
-
-            if ( ! $response instanceof ResponseInterface) {
-
-                $class = get_class($middleware);
-
-                throw new LogicException("invalid middleware result returned by: {$class}");
-
-            }
-
-            return $response;
 
         }
 

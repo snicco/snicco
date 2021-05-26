@@ -10,10 +10,9 @@
 	use WPEmerge\Support\Arr;
 	use WPEmerge\Support\Str;
 	use stdClass;
-	use WPEmerge\Contracts\Session;
 	use SessionHandlerInterface;
 
-	class SessionStore implements Session {
+	class SessionStore {
 
 		/**
 		 * @var string
@@ -270,7 +269,6 @@
 			return ctype_alnum($id) && strlen($id) === 40;
 		}
 
-
 		public function previousUrl() :?string
 		{
 			return $this->get('_previous.url');
@@ -285,7 +283,6 @@
 		{
 			return $this->handler;
 		}
-
 
 		private function generateSessionId() :string
 		{

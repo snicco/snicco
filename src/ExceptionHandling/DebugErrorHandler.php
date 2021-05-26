@@ -12,7 +12,7 @@
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
-    use WPEmerge\Http\Response;
+    use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Traits\HandlesExceptions;
 
 	class DebugErrorHandler implements ErrorHandlerInterface {
@@ -33,7 +33,7 @@
 
 			$method = RunInterface::EXCEPTION_HANDLER;
 
-			$this->whoops->{$method}( $exception );
+			$this->whoops->{ $method}( $exception );
 
 			UnrecoverableExceptionHandled::dispatch();
 
@@ -49,4 +49,9 @@
 		}
 
 
-	}
+        public function unrecoverable(Throwable $exception)
+        {
+            $this->handleException($exception);
+        }
+
+    }

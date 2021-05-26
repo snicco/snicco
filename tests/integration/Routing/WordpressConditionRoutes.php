@@ -6,53 +6,42 @@
 
     namespace Tests\integration\Routing;
 
-    use Tests\IntegrationTest;
+    use Tests\integration\IntegrationTest;
+    use Tests\fixtures\Middleware\WebMiddleware;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
-    use Tests\traits\AssertsResponse;
-    use Tests\traits\CreateWpTestUrls;
-    use WPEmerge\Contracts\ConditionInterface;
-    use WPEmerge\Http\Request;
-    use WPEmerge\Routing\Router;
+    use Tests\helpers\CreatesWpUrls;
+    use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Events\ResponseSent;
+    use WPEmerge\Http\HttpKernel;
 
     class WordpressConditionRoutes extends IntegrationTest
     {
 
-        use CreateWpTestUrls;
-        use AssertsResponse;
+        use CreatesWpUrls;
 
         /**
-         * @var Router
+         * @var HttpKernel
          */
-        private $router;
+        private $kernel;
 
         protected function setUp() : void
         {
-
             parent::setUp();
-            $this->newTestApp();
-            $this->router = TestApp::resolve(Router::class);
+            $this->newTestApp(TEST_CONFIG);
+            $this->kernel = TestApp::resolve(HttpKernel::class);
+
         }
 
         /** @test */
         public function its_possible_to_create_routes_that_dont_match_an_url()
         {
 
-            $this->router->get()->where(\Tests\stubs\Conditions\IsPost::class, true)->handle(function () {
+            ApplicationEvent::fake([ResponseSent::class]);
 
-                return 'FOO';
+            $this->seeKernelOutput('get_fallback', TestRequest::from('GET', 'post1'));
 
-            });
-
-            $this->router->createFallbackWebRoute();
-            $this->router->loadRoutes();
-
-
-            $request = TestRequest::from('GET', 'whatever');
-
-            $response = $this->router->runRoute($request);
-
-            $this->assertOutput('FOO', $response);
+            ApplicationEvent::assertDispatchedTimes(ResponseSent::class, 1 );
 
 
         }
@@ -61,21 +50,14 @@
         public function if_no_route_matches_due_to_failed_wp_conditions_a_null_response_is_returned()
         {
 
+            ApplicationEvent::fake([ResponseSent::class]);
 
-            $this->router->get()->where(\Tests\stubs\Conditions\IsPost::class, false)->handle(function () {
 
-                return 'FOO';
+            $this->seeKernelOutput('', TestRequest::from('POST', 'post1'));
 
-            });
 
-            $this->router->createFallbackWebRoute();
-            $this->router->loadRoutes();
+            ApplicationEvent::assertNotDispatched(ResponseSent::class);
 
-            $request = TestRequest::from('GET', 'whatever');
-
-            $response = $this->router->runRoute($request);
-
-            $this->assertNullResponse($response);
 
         }
 
@@ -83,21 +65,26 @@
         public function if_no_route_matches_due_to_different_http_verbs_a_null_response_is_returned()
         {
 
+            ApplicationEvent::fake([ResponseSent::class]);
 
-            $this->router->get()->where(\Tests\stubs\Conditions\IsPost::class, true)->handle(function () {
 
-                return 'FOO';
+            $this->seeKernelOutput('', TestRequest::from('DELETE', 'post1'));
 
-            });
 
-            $this->router->createFallbackWebRoute();
-            $this->router->loadRoutes();
+            ApplicationEvent::assertNotDispatched(ResponseSent::class);
 
-            $request = TestRequest::from('POST', 'whatever');
+        }
 
-            $response = $this->router->runRoute($request);
+        /** @test */
+        public function routes_with_wordpress_conditions_can_have_middleware () {
 
-            $this->assertNullResponse($response);
+            $GLOBALS['test'][WebMiddleware::run_times] = 0;
+            ApplicationEvent::fake([ResponseSent::class]);
+
+            $this->seeKernelOutput('patch_fallback', TestRequest::from('PATCH', 'post1'));
+
+            ApplicationEvent::assertDispatchedTimes(ResponseSent::class, 1 );
+            $this->assertSame(1, $GLOBALS['test'][WebMiddleware::run_times], 'Middleware was not run as expected.');
 
         }
 

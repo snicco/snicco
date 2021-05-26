@@ -3,6 +3,10 @@
 
     declare(strict_types = 1);
 
+    use AdrianSuter\Autoload\Override\Override;
+    use Tests\stubs\HeaderStack;
+    use WPEmerge\Http\ResponseEmitter;
+
     $root_dir = getenv('ROOT_DIR');
 
     if ( ! defined('ROOT_DIR')) {
@@ -11,9 +15,9 @@
 
     }
 
-    if ( ! defined('VENDOR_DIR') ) {
+    if ( ! defined('VENDOR_DIR')) {
 
-        define('VENDOR_DIR', $root_dir . DIRECTORY_SEPARATOR . 'vendor');
+        define('VENDOR_DIR', $root_dir.DIRECTORY_SEPARATOR.'vendor');
 
     }
 
@@ -37,7 +41,31 @@
 
     if ( ! defined('TESTS_CONFIG_PATH')) {
 
-        define('TESTS_CONFIG_PATH', $root_dir.DS.'tests'.DS.'test-config.php');
+        define('TESTS_CONFIG_PATH', $root_dir.DS.'tests'.DS. 'stubs' . DS . 'test-app-config.php');
+
+    }
+
+    if ( ! defined('BLADE_CACHE')) {
+
+        define('BLADE_CACHE', TESTS_DIR.DS.'integration'.DS.'Blade'.DS.'cache');
+
+    }
+
+    if ( ! defined('BLADE_VIEWS')) {
+
+        define('BLADE_VIEWS', TESTS_DIR.DS.'integration'.DS.'Blade'.DS.'views');
+
+    }
+
+    if ( ! defined('ROUTES_DIR')) {
+
+        define('ROUTES_DIR', TESTS_DIR.DS.'fixtures'.DS.'Routes');
+
+    }
+
+    if ( ! defined('VIEWS_DIR')) {
+
+        define('VIEWS_DIR', TESTS_DIR.DS.'fixtures'.DS.'views');
 
     }
 
@@ -49,18 +77,37 @@
 
     }
 
-    if ( ! defined('BLADE_CACHE')) {
 
-        define('BLADE_CACHE', TESTS_DIR . DS . 'integration' . DS . 'Blade' . DS . 'cache');
+    $classLoader = require $root_dir.DS.'vendor'.DS.'autoload.php';
 
-    }
+    Override::apply($classLoader, [
 
-     if ( ! defined('BLADE_VIEWS')) {
+        ResponseEmitter::class => [
 
-        define('BLADE_VIEWS', TESTS_DIR . DS . 'integration' . DS . 'Blade' . DS . 'views');
+            'connection_status' => function () : int {
 
-    }
+                if (isset($GLOBALS['connection_status_return'])) {
+                    return $GLOBALS['connection_status_return'];
+                }
 
+                return connection_status();
+            },
 
+            'header' => function (string $string, bool $replace = true, int $statusCode = null) : void {
 
-    require_once $root_dir.DS.'vendor'.DS.'autoload.php';
+                HeaderStack::push(
+                    [
+                        'header' => $string,
+                        'replace' => $replace,
+                        'status_code' => $statusCode,
+                    ]
+                );
+            },
+
+            'headers_sent' => function () : bool {
+
+                return false;
+
+            },
+        ],
+    ]);

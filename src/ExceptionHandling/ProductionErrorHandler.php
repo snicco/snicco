@@ -1,197 +1,217 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace WPEmerge\ExceptionHandling;
+    namespace WPEmerge\ExceptionHandling;
 
-	use Contracts\ContainerAdapter;
-	use Psr\Log\LoggerInterface;
-	use WPEmerge\Contracts\ResponseInterface;
-	use Throwable;
-	use WPEmerge\Contracts\ErrorHandlerInterface;
-	use WPEmerge\Events\UnrecoverableExceptionHandled;
-	use WPEmerge\Facade\WP;
-    use WPEmerge\Http\HttpResponseFactory;
-    use WPEmerge\Http\Response;
+    use Contracts\ContainerAdapter;
+    use Psr\Log\LoggerInterface;
+    use Throwable;
+    use WPEmerge\Contracts\ErrorHandlerInterface;
+    use WPEmerge\Events\UnrecoverableExceptionHandled;
+    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
+    use WPEmerge\Facade\WP;
+    use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Traits\HandlesExceptions;
 
-	class ProductionErrorHandler implements ErrorHandlerInterface {
+    class ProductionErrorHandler implements ErrorHandlerInterface
+    {
 
-		use HandlesExceptions;
-
-		/**
-		 * @var bool
-		 */
-		protected $is_ajax;
-
-		/**
-		 * @var ContainerAdapter
-		 */
-		protected $container;
-
-		/**
-		 * @var LoggerInterface
-		 */
-		protected $logger;
-
-		/**
-		 * @var array
-		 */
-		protected $dont_report = [];
+        use HandlesExceptions;
 
         /**
-         * @var HttpResponseFactory
+         * @var bool
+         */
+        protected $is_ajax;
+
+        /**
+         * @var ContainerAdapter
+         */
+        protected $container;
+
+        /**
+         * @var LoggerInterface
+         */
+        protected $logger;
+
+        /**
+         * @var array
+         */
+        protected $dont_report = [];
+
+        /**
+         * @var ResponseFactory
          */
         protected $response;
 
-        public function __construct( ContainerAdapter $container, LoggerInterface $logger, HttpResponseFactory $response_factory, bool $is_ajax ) {
+        public function __construct(ContainerAdapter $container, LoggerInterface $logger, ResponseFactory $response_factory, bool $is_ajax)
+        {
 
-			$this->is_ajax   = $is_ajax;
-			$this->container = $container;
-			$this->logger    = $logger;
+            $this->is_ajax = $is_ajax;
+            $this->container = $container;
+            $this->logger = $logger;
             $this->response = $response_factory;
         }
 
-		public function handleException( $exception, $in_routing_flow = false ) {
+        public function handleException($exception, $in_routing_flow = false)
+        {
 
+            $this->logException($exception);
 
-			$this->logException( $exception );
+            $response = $this->createResponseObject($exception);
 
-			$response = $this->createResponseObject( $exception );
+            if ($in_routing_flow) {
 
-			$response = $this->correctContentType($response);
+                return $response;
 
-			if ( $in_routing_flow ) {
-
-				return $response;
-
-			}
+            }
 
             (new ResponseEmitter())->emit($response);
 
-			// Shuts down the script
-			UnrecoverableExceptionHandled::dispatch();
+            // Shut down the script
+            UnrecoverableExceptionHandled::dispatch();
 
-		}
+        }
 
-		public function transformToResponse( Throwable $exception ) : ?Response {
+        public function transformToResponse(Throwable $exception) : ?Response
+        {
 
-			return $this->handleException( $exception, true  );
+            return $this->handleException($exception, true);
 
-		}
+        }
 
-		/**
-		 *
-		 * Override this method from a child class to create
-		 * your own globalContext.
-		 *
-		 * @return array
-		 */
-		protected function globalContext() : array {
+        public function unrecoverable(Throwable $exception)
+        {
 
-			try {
-				return array_filter( [
-					'user_id' => WP::userId(),
-				] );
-			}
-			catch ( Throwable $e ) {
-				return [];
-			}
-
-		}
-
+            $this->handleException($exception);
+        }
 
         /**
          *
          * Override this method from a child class to create
-         * your own default response for fatal errors that can not be transformed by this error handler.
+         * your own globalContext.
+         *
+         * @return array
+         */
+        protected function globalContext() : array
+        {
+
+            try {
+                return array_filter([
+                    'user_id' => WP::userId(),
+                ]);
+            }
+            catch (Throwable $e) {
+                return [];
+            }
+
+        }
+
+        /**
+         *
+         * Override this method from a child class to create
+         * your own default response for fatal errors that can not be transformed by this error
+         * handler.
          *
          * @return Response
          */
-		protected function defaultResponse() : Response {
+        protected function defaultResponse() : Response
+        {
 
-		    if ( $this->is_ajax ) {
+            if ($this->is_ajax) {
 
-                return $this->response->json('Internal Server Error', 500 );
+                return $this->response->json('Internal Server Error', 500);
 
             }
 
-		    return $this->response->html('Internal Server Error', 500);
+            return $this->response->html('Internal Server Error', 500);
 
-		}
+        }
 
-		private function createResponseObject( Throwable $e ) : Response {
+        private function createResponseObject(Throwable $e) : Response
+        {
 
-			if ( method_exists( $e, 'render' ) ) {
+            if (method_exists($e, 'render')) {
 
-				/** @var Response $response */
-				$response = $this->container->call( [ $e, 'render' ] );
+                /** @var Response $response */
+                $response = $this->container->call([$e, 'render']);
 
-				if ( ! $response instanceof Response ) {
+                if ( ! $response instanceof Response) {
 
-				    return $this->defaultResponse();
+                    return $this->defaultResponse();
 
                 }
 
-				return $response;
+                return $response;
 
-			}
+            }
 
-			return $this->defaultResponse();
+            if ( $e instanceof HttpException ) {
 
-		}
+                return $this->renderHttpException($e);
 
-		private function logException( Throwable $exception) {
+            }
 
-			if ( in_array(get_class($exception), $this->dont_report) ) {
+            return $this->defaultResponse();
 
-				return;
 
-			}
 
-			if ( method_exists( $exception, 'report' ) ) {
+        }
 
-				if ( $this->container->call( [ $exception, 'report' ] ) === false ) {
+        private function logException(Throwable $exception)
+        {
 
-					return;
+            if (in_array(get_class($exception), $this->dont_report)) {
 
-				}
+                return;
 
-			}
+            }
 
-			$this->logger->error(
-				$exception->getMessage(),
-				array_merge(
-					$this->globalContext(),
-					$this->exceptionContext( $exception ),
-					[ 'exception' => $exception ]
-				)
-			);
+            if (method_exists($exception, 'report')) {
 
-		}
+                if ($this->container->call([$exception, 'report']) === false) {
 
-		private function exceptionContext( Throwable $e ) {
+                    return;
 
-			if ( method_exists( $e, 'context' ) ) {
-				return $e->context();
-			}
+                }
 
-			return [];
-		}
+            }
 
-        private function correctContentType(Response $response)
+            $this->logger->error(
+                $exception->getMessage(),
+                array_merge(
+                    $this->globalContext(),
+                    $this->exceptionContext($exception),
+                    ['exception' => $exception]
+                )
+            );
+
+        }
+
+        private function exceptionContext(Throwable $e)
+        {
+
+            if (method_exists($e, 'context')) {
+                return $e->context();
+            }
+
+            return [];
+        }
+
+        private function renderHttpException(HttpException $e) : Response
         {
 
             if ( $this->is_ajax ) {
 
-                return $response->withHeader('Content-Type', 'application/json');
+                return $this->response->json( $e->getMessageForHumans() ?? '' , (int) $e->getStatusCode() );
 
             }
 
-            return $response->withHeader('Content-Type', 'text/html');
+            return $this->response->error($e);
 
         }
 

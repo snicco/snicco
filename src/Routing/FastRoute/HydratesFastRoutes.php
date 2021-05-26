@@ -8,7 +8,7 @@
 
     use FastRoute\Dispatcher;
     use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RouteResult;
+    use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Support\Str;
     use WPEmerge\Traits\DeserializesRoutes;
 
@@ -17,11 +17,11 @@
 
         use DeserializesRoutes;
 
-        public function hydrate(array $route_info ) :RouteResult {
+        public function hydrate(array $route_info ) :RoutingResult {
 
             if ($route_info[0] !== Dispatcher::FOUND)  {
 
-                return new RouteResult(null, []);
+                return new RoutingResult(null, []);
 
             }
 
@@ -29,9 +29,11 @@
 
             $this->unserializeAction($route);
 
+            $this->unserializeWpQueryFilter($route);
+
             $payload = $this->normalize($route_info[2]);
 
-            return new RouteResult($route, $payload);
+            return new RoutingResult($route, $payload);
 
         }
 

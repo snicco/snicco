@@ -7,12 +7,8 @@
     namespace WPEmerge\Routing\FastRoute;
 
     use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Contracts\ConditionInterface;
     use WPEmerge\Contracts\RouteUrlGenerator;
-    use WPEmerge\Contracts\UrlableInterface;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Facade\WP;
-    use WPEmerge\Routing\CompiledRoute;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\RouteCollection;
     use WPEmerge\Support\Arr;
