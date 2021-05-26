@@ -10,10 +10,9 @@
 	use WPEmerge\Support\Arr;
 	use WPEmerge\Support\Str;
 	use stdClass;
-	use WPEmerge\Contracts\Session;
 	use SessionHandlerInterface;
 
-	class SessionStore implements Session {
+	class SessionStore {
 
 		/**
 		 * @var string
