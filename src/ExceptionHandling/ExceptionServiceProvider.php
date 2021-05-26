@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\ServiceProviders;
+	namespace WPEmerge\ExceptionHandling;
 
     use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Contracts\ServiceProvider;

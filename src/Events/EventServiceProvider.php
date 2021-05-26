@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\ServiceProviders;
+    namespace WPEmerge\Events;
 
     use BetterWpHooks\Contracts\Dispatcher;
     use Psr\Http\Message\ServerRequestInterface;

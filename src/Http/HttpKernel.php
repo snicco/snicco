@@ -67,6 +67,7 @@
             $this->pipeline = $pipeline;
             $this->emitter = $emitter ?? new ResponseEmitter();
 
+
         }
 
         public function run( IncomingRequest $request_event ) : void

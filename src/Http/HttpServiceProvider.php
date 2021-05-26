@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\ServiceProviders;
+    namespace WPEmerge\Http;
 
     use Nyholm\Psr7\Factory\Psr17Factory as NyholmFactoryImplementation;
     use Psr\Http\Message\ResponseFactoryInterface as Prs17ResponseFactory;
@@ -23,7 +23,6 @@
 
         public function register() : void
         {
-
 
             $this->bindKernel();
 
@@ -60,7 +59,6 @@
                 return new HttpKernel(
 
                     $this->container->make(Pipeline::class),
-                    new ResponseEmitter()
 
                 );
 

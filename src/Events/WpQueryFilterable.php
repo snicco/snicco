@@ -17,7 +17,7 @@
         private $original_query_vars;
 
         /**
-         * @var \WPEmerge\Http\Psr7\Request
+         * @var  Request
          */
         public $server_request;
 

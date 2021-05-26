@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\ServiceProviders;
+	namespace WPEmerge\Application;
 
 	use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\IncomingAdminRequest;
