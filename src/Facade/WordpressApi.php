@@ -16,6 +16,7 @@
 
 	    private $admin_prefix = 'wp-admin';
 
+	    /** @todo needs testing for bedrock installs. */
 	    public function wpAdminFolder () :string {
 
 	        return $this->admin_prefix;

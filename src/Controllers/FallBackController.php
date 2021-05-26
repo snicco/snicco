@@ -50,7 +50,7 @@
         public function handle(Request $request, AbstractRouteCollection $routes)
         {
 
-            $possible_routes = collect($routes->withWildCardUrl($request->getMethod()));
+            $possible_routes = collect($routes->withWildCardUrl( $request->getMethod() ) );
 
             /** @var Route $route */
             $route = $possible_routes->first(function (Route $route) use ($request) {
