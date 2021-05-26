@@ -9,17 +9,17 @@
     use Contracts\ContainerAdapter;
     use PHPUnit\Framework\Assert;
     use Tests\stubs\TestErrorHandler;
-    use Tests\stubs\TestViewService;
+    use Tests\stubs\TestViewFactory;
     use Tests\stubs\TestRequest;
     use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Http\HttpResponseFactory;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\RouteCollection;
     use WPEmerge\Routing\RouteBuilder;
@@ -56,7 +56,7 @@
             $c->instance(RouteActionFactory::class, $handler_factory);
             $c->instance(ConditionFactory::class, $condition_factory);
             $c->instance(AbstractRouteCollection::class, $routes);
-            $c->instance(ResponseFactory::class, $response = $this->createResponseFactory());
+            $c->instance(HttpResponseFactory::class, $response = $this->createResponseFactory());
 
             return new Router(
                 $c,

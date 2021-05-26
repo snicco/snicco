@@ -8,13 +8,11 @@
 
 	use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Contracts\ViewServiceInterface;
+	use WPEmerge\Contracts\ViewFactoryInterface;
 	use WPEmerge\Support\VariableBag;
 	use WPEmerge\Support\Arr;
-	use WPEmerge\View\ViewComposerCollection;
 
-	class ViewService implements ViewServiceInterface {
-
+	class ViewFactory implements ViewFactoryInterface {
 
 		/**
 		 * View engine.

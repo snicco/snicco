@@ -7,7 +7,7 @@
     namespace Tests\stubs\GlobalMiddleware;
 
     use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
 
@@ -15,7 +15,7 @@
     {
 
         /**
-         * @var ResponseFactory
+         * @var \WPEmerge\Http\HttpResponseFactory
          */
         private $response;
         /**
@@ -23,7 +23,7 @@
          */
         private $unauthorized;
 
-        public function __construct(ResponseFactory $response, bool $unauthorized = true )
+        public function __construct(HttpResponseFactory $response, bool $unauthorized = true )
         {
             $this->response = $response;
             $this->unauthorized = $unauthorized;

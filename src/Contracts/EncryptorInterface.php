@@ -19,7 +19,7 @@
 		 *
 		 * @return string
 		 *
-		 * @throws \WPEmerge\ExceptionHandling\Exceptions\EncryptException
+		 * @throws EncryptException
 		 */
 		public function encrypt($value, bool $serialize = true) : string;
 

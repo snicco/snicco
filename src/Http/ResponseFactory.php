@@ -6,16 +6,15 @@
 
     namespace WPEmerge\Http;
 
+    use Psr\Http\Message\ResponseFactoryInterface;
     use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
     use Psr\Http\Message\StreamInterface;
     use WPEmerge\Contracts\ResponsableInterface;
-    use WPEmerge\Contracts\ResponseFactory;
-    use WPEmerge\Contracts\ViewServiceInterface as ViewService;
+    use WPEmerge\Contracts\ViewFactoryInterface as ViewFactory;
     use WPEmerge\ExceptionHandling\Exceptions\HttpException;
     use WPEmerge\ExceptionHandling\Exceptions\ViewException;
-    use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\Responses\InvalidResponse;
@@ -23,11 +22,11 @@
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Http\Responses\WpQueryFilteredResponse;
 
-    class HttpResponseFactory implements ResponseFactory
+    class ResponseFactory implements ResponseFactoryInterface
     {
 
         /**
-         * @var ViewService
+         * @var ViewFactory
          */
         private $view;
         /**
@@ -40,7 +39,7 @@
          */
         private $stream_factory;
 
-        public function __construct(ViewService $view, Psr17ResponseFactory $response, Psr17StreamFactory $stream)
+        public function __construct(ViewFactory $view, Psr17ResponseFactory $response, Psr17StreamFactory $stream)
         {
 
             $this->view = $view;

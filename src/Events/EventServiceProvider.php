@@ -25,7 +25,7 @@
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Middleware\Core\OutputBufferMiddleware;
     use WPEmerge\Listeners\FilterWpQuery;
-    use WPEmerge\View\ViewService;
+    use WPEmerge\View\ViewFactory;
 
     class EventServiceProvider extends ServiceProvider
     {
@@ -86,7 +86,7 @@
 
             MakingView::class => [
 
-                [ViewService::class, 'compose'],
+                [ViewFactory::class, 'compose'],
 
             ],
 

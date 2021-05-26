@@ -14,13 +14,13 @@
     use Tests\stubs\TestRequest;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\ExceptionHandling\NullErrorHandler;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\HttpKernel;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Middleware\MiddlewareStack;
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;

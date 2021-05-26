@@ -14,7 +14,7 @@
 		/**
 		 * Get whether the condition is satisfied
 		 *
-		 * @param  \WPEmerge\Http\Psr7\Request  $request
+		 * @param  Request  $request
 		 *
 		 * @return boolean
 		 */
@@ -23,7 +23,7 @@
 		/**
 		 * Get an array of arguments for use in request
 		 *
-		 * @param  \WPEmerge\Http\Psr7\Request  $request
+		 * @param  Request  $request
 		 *
 		 * @return array
 		 */

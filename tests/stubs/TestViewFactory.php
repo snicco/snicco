@@ -7,9 +7,9 @@
 	namespace Tests\stubs;
 
 	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Contracts\ViewServiceInterface;
+	use WPEmerge\Contracts\ViewFactoryInterface;
 
-    class TestViewService implements ViewServiceInterface {
+    class TestViewFactory implements ViewFactoryInterface {
 
 		public function compose( ViewInterface $view ) {
 			//

@@ -12,7 +12,7 @@
 	use Tests\stubs\TestException;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Http\ResponseFactory;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\ExceptionHandling\ProductionErrorHandler;
     use WPEmerge\Factories\ErrorHandlerFactory;

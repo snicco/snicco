@@ -16,7 +16,7 @@
             parent::__construct(403, $message, $previous, $code);
         }
 
-        // public function render ( ResponseFactory $response, Request $request ) {
+        // public function render ( HttpResponseFactory $response, Request $request ) {
         //
 		//     return $response
         //         ->html('You are not allowed to do this perform this action.')

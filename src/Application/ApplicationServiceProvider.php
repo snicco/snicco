@@ -7,7 +7,7 @@
     namespace WPEmerge\Application;
 
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Contracts\ViewServiceInterface;
+    use WPEmerge\Contracts\ViewFactoryInterface;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Events\IncomingWebRequest;
@@ -112,16 +112,16 @@
             } );
             $app->alias( 'view', function () use ( $app ) {
 
-                /** @var ViewServiceInterface $view_service */
-                $view_service = $app->container()->make(ViewServiceInterface::class);
+                /** @var ViewFactoryInterface $view_service */
+                $view_service = $app->container()->make(ViewFactoryInterface::class);
 
                 return call_user_func_array( [ $view_service, 'make' ], func_get_args() );
 
             } );
             $app->alias( 'render', function () use ( $app ) {
 
-                /** @var ViewServiceInterface $view_service */
-                $view_service = $app->container()->make(ViewServiceInterface::class);
+                /** @var ViewFactoryInterface $view_service */
+                $view_service = $app->container()->make(ViewFactoryInterface::class);
 
                 $view_as_string = call_user_func_array( [ $view_service, 'render', ], func_get_args() );
 

@@ -9,7 +9,7 @@
     use Contracts\ContainerAdapter;
     use Tests\stubs\TestRequest;
     use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Factories\RouteActionFactory;
 	use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Http\Psr7\Request;
@@ -56,7 +56,7 @@
 			$container->instance(RouteActionFactory::class, $handler_factory);
 			$container->instance(ConditionFactory::class, $condition_factory);
 			$container->instance(AbstractRouteCollection::class, $route_collection);
-			$container->instance(ResponseFactory::class, $response);
+			$container->instance(HttpResponseFactory::class, $response);
 
 			return $this->router = $router;
 

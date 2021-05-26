@@ -10,12 +10,12 @@
     use Tests\UnitTest;
     use Tests\stubs\TestApp;
     use Tests\traits\CreateDefaultWpApiMocks;
-    use WPEmerge\Contracts\ViewServiceInterface;
+    use WPEmerge\Contracts\ViewFactoryInterface;
 	use WPEmerge\ExceptionHandling\Exceptions\ViewException;
 	use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
     use WPEmerge\Facade\WP;
     use WPEmerge\View\PhpView;
-    use WPEmerge\View\ViewService;
+    use WPEmerge\View\ViewFactory;
 
     use const DS;
     use const TEST_CONFIG;
@@ -27,7 +27,7 @@
         use CreateDefaultWpApiMocks;
 
 		/**
-		 * @var ViewService
+		 * @var ViewFactory
 		 */
 		private $view_service;
 
@@ -40,7 +40,7 @@
 
 			$container = $this->createContainer();
 			TestApp::make($container)->boot(TEST_CONFIG);
-			$this->view_service = TestApp::resolve(ViewServiceInterface::class );
+			$this->view_service = TestApp::resolve(ViewFactoryInterface::class );
 
 
 		}

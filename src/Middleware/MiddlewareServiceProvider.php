@@ -6,7 +6,7 @@
 
     namespace WPEmerge\Middleware;
 
-    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Middleware\Authenticate;
@@ -88,7 +88,7 @@
             $this->container->singleton(RouteRunner::class, function () {
 
                 $runner = new RouteRunner(
-                    $this->container->make(ResponseFactory::class),
+                    $this->container->make(HttpResponseFactory::class),
                     $this->container->make(Pipeline::class),
                     $this->container->make(MiddlewareStack::class)
                 );

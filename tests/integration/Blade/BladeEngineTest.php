@@ -12,7 +12,7 @@
     use WPEmerge\Blade\BladeView;
     use WPEmerge\ExceptionHandling\Exceptions\ViewException;
     use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
-    use WPEmerge\View\ViewService;
+    use WPEmerge\View\ViewFactory;
 
     class BladeEngineTest extends IntegrationTest
     {
@@ -30,8 +30,8 @@
                 ]
             ]);
 
-            /** @var ViewService $view_service */
-            $view_service = TestApp::resolve(ViewService::class);
+            /** @var ViewFactory $view_service */
+            $view_service = TestApp::resolve(ViewFactory::class);
 
             $this->assertInstanceOf(BladeView::class, $view_service->make('foo') );
 
@@ -50,8 +50,8 @@
                 ]
             ]);
 
-            /** @var ViewService $view_service */
-            $view_service = TestApp::resolve(ViewService::class);
+            /** @var ViewFactory $view_service */
+            $view_service = TestApp::resolve(ViewFactory::class);
 
             $this->expectException(ViewNotFoundException::class);
 

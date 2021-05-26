@@ -9,11 +9,11 @@
 	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewFinderInterface;
-	use WPEmerge\Contracts\ViewServiceInterface;
+	use WPEmerge\Contracts\ViewFactoryInterface;
 	use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\View\PhpViewFinder;
 	use WPEmerge\Support\VariableBag;
-	use WPEmerge\View\ViewService;
+	use WPEmerge\View\ViewFactory;
 	use WPEmerge\View\ViewComposerCollection;
 	use WPEmerge\Factories\ViewComposerFactory;
 
@@ -50,9 +50,9 @@
         private function bindViewServiceInterface() : void
         {
 
-            $this->container->singleton(ViewServiceInterface::class, function () {
+            $this->container->singleton(ViewFactoryInterface::class, function () {
 
-                return $this->container->make(ViewService::class);
+                return $this->container->make(ViewFactory::class);
 
             });
         }
@@ -60,9 +60,9 @@
         private function bindViewServiceImplementation() : void
         {
 
-            $this->container->singleton(ViewService::class, function () {
+            $this->container->singleton(ViewFactory::class, function () {
 
-                return new ViewService(
+                return new ViewFactory(
                     $this->container->make(ViewEngineInterface::class),
                     $this->container->make(ViewComposerCollection::class),
                     $this->container->make('composers.globals')

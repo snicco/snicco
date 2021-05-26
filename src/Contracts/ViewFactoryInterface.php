@@ -7,7 +7,7 @@
 	namespace WPEmerge\Contracts;
 
 
-	interface ViewServiceInterface {
+	interface ViewFactoryInterface {
 
 		/**
 		 * Composes a view instance with contexts in the following order: Global, Composers, Local.

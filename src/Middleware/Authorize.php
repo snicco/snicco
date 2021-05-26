@@ -7,7 +7,7 @@
     namespace WPEmerge\Middleware;
 
     use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
