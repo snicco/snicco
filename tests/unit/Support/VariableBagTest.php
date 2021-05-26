@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace Tests\unit\Helpers;
+	namespace Tests\unit\Support;
 
 	use WPEmerge\Support\VariableBag;
 	use PHPUnit\Framework\TestCase;
