@@ -10,10 +10,16 @@
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Http\NullResponse;
     use WPEmerge\Http\Request;
+    use WPEmerge\Middleware\MiddlewareStack;
+    use WPEmerge\Routing\Pipeline;
     use WPEmerge\Routing\Route;
+    use WPEmerge\Routing\RoutingResult;
+    use WPEmerge\Traits\GathersMiddleware;
 
     class FallBackController
     {
+
+        use GathersMiddleware;
 
         /**
          * @var ResponseFactory
@@ -24,10 +30,20 @@
          * @var callable
          */
         private $fallback_handler;
+        /**
+         * @var Pipeline
+         */
+        private $pipeline;
+        /**
+         * @var MiddlewareStack
+         */
+        private $middleware_stack;
 
-        public function __construct(ResponseFactory $response) {
+        public function __construct(ResponseFactory $response, Pipeline $pipeline, MiddlewareStack $middleware_stack) {
 
             $this->response = $response;
+            $this->pipeline = $pipeline;
+            $this->middleware_stack = $middleware_stack;
 
         }
 
@@ -53,7 +69,15 @@
 
             }
 
-            return $route->instantiateAction()->run($request);
+            $route->instantiateAction();
+
+            $middleware = $this->middleware_stack->createFor($route, $request);
+
+            return $this->pipeline
+                ->send($request)
+                ->through($middleware)
+                ->then($this->runRoute($route));
+
 
         }
 
@@ -69,5 +93,17 @@
             $this->fallback_handler = $fallback_handler;
         }
 
+        private function runRoute(Route $route ) : \Closure
+        {
+
+            return function ( Request $request ) use ($route) {
+
+                $response = $route->run($request);
+
+                return $this->response->toResponse($response);
+
+            };
+
+        }
 
     }

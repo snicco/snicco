@@ -189,6 +189,7 @@
          * Default 'wp-admin".
          *
          * @return string
+         * @see WordpressApi::wpAdminFolder()
          */
         public static function wpAdminFolder() : string
         {

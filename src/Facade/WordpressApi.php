@@ -6,7 +6,9 @@
 
 	namespace WPEmerge\Facade;
 
-	/**
+	use WP_User;
+
+    /**
      * @codeCoverageIgnore
      * @see \WPEmerge\Facade\WordpressApiMixin
      */
@@ -58,7 +60,7 @@
 
 		}
 
-        public  function currentUser() : \WP_User
+        public  function currentUser() : WP_User
         {
             return wp_get_current_user();
         }

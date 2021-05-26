@@ -42,7 +42,7 @@
 
             $failed_value = $this->query_string_arguments->first(function ($value, $key) use ($query_args) {
 
-                return $value !== $query_args[$key];
+                return $value !== rawurldecode($query_args[$key]);
 
             });
 

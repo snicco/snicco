@@ -6,20 +6,19 @@
 
     namespace WPEmerge\Middleware\Core;
 
-    use Contracts\ContainerAdapter;
+    use Closure;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Request;
+    use WPEmerge\Http\Response;
+    use WPEmerge\Middleware\MiddlewareStack;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\RoutingResult;
-    use WPEmerge\Traits\GathersMiddleware;
 
     class RouteRunner extends Middleware
     {
-
-        use GathersMiddleware;
 
         /**
          * @var ResponseFactory
@@ -31,22 +30,17 @@
          */
         private $pipeline;
 
-        private $middleware_groups = [
-            'web' => [],
-            'admin' => [],
-            'ajax' => [],
-            'global'=> []
-        ];
+        /**
+         * @var MiddlewareStack
+         */
+        private $middleware_stack;
 
-        private $route_middleware_aliases = [];
-
-        private $middleware_priority = [];
-
-        public function __construct(ResponseFactory $response_factory, Pipeline $pipeline)
+        public function __construct(ResponseFactory $response_factory, Pipeline $pipeline, MiddlewareStack $middleware_stack)
         {
 
             $this->response_factory = $response_factory;
             $this->pipeline = $pipeline;
+            $this->middleware_stack = $middleware_stack;
 
         }
 
@@ -56,25 +50,29 @@
             /** @var RoutingResult $route_result */
             $route_result = $request->getAttribute('route_result');
 
-            $include_global_middleware = ! $request->getAttribute('global_middleware_run', false);
-
-            if ( ! $route = $route_result->route() ) {
+            if ( ! $route = $route_result->route()) {
 
                 return $this->response_factory->null();
 
             }
 
-            $middleware_stack = $this->middlewareStack($route, $include_global_middleware);
+            if ( $route->isFallback() ) {
+
+                return $this->runFallbackRouteController($route, $request);
+
+            }
+
+            $middleware = $this->middleware_stack->createFor($route, $request);
 
             return $this->pipeline
                 ->send($request)
-                ->through($middleware_stack)
+                ->through($middleware)
                 ->then($this->runRoute($route_result));
 
 
         }
 
-        private function runRoute(RoutingResult $routing_result) : \Closure
+        private function runRoute(RoutingResult $routing_result) : Closure
         {
 
             return function (Request $request) use ($routing_result) {
@@ -90,45 +88,11 @@
 
         }
 
-        private function middlewareStack(Route $route, bool $with_global_middleware) : array
+        private function runFallbackRouteController(Route $route, Request $request) : Response
         {
 
-            $middleware = $route->getMiddleware();
-
-            if ( $with_global_middleware ) {
-
-                $middleware = $this->mergeGlobalMiddleware($middleware);
-
-            }
-
-            $middleware = $this->expandMiddleware($middleware);
-            $middleware = $this->uniqueMiddleware($middleware);
-            $middleware = $this->sortMiddleware($middleware);
-
-            return $middleware;
+            return $this->response_factory->toResponse($route->run($request));
 
         }
-
-        public function withMiddlewareGroup(string $group, array $middlewares)
-        {
-
-            $this->middleware_groups[$group] = $middlewares;
-
-        }
-
-        public function middlewarePriority( array $middleware_priority)
-        {
-
-            $this->middleware_priority = $middleware_priority;
-
-        }
-
-        public function middlewareAliases(array $route_middleware_aliases)
-        {
-
-            $this->route_middleware_aliases = $route_middleware_aliases;
-
-        }
-
 
     }

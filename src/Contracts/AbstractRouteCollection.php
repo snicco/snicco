@@ -32,7 +32,7 @@
         public function match(Request $request) : RoutingResult
         {
 
-            $path = $request->path();
+            $path = rawurldecode($request->path());
 
             $result = $this->route_matcher->find($request->getMethod(), $path);
 

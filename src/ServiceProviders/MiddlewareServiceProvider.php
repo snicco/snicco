@@ -6,14 +6,13 @@
 
     namespace WPEmerge\ServiceProviders;
 
-    use Slim\Csrf\Guard;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Http\Request;
     use WPEmerge\Middleware\Authenticate;
     use WPEmerge\Middleware\Authorize;
     use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
+    use WPEmerge\Middleware\MiddlewareStack;
     use WPEmerge\Middleware\RedirectIfAuthenticated;
     use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Routing\Pipeline;
@@ -25,6 +24,8 @@
         {
 
             $this->bindConfig();
+
+            $this->bindMiddlewareStack();
 
             $this->bindEvaluateResponseMiddleware();
 
@@ -88,17 +89,11 @@
 
                 $runner = new RouteRunner(
                     $this->container->make(ResponseFactory::class),
-                    $this->container->make(Pipeline::class)
+                    $this->container->make(Pipeline::class),
+                    $this->container->make(MiddlewareStack::class)
                 );
 
-                foreach ($this->config->get('middleware.groups') as $name => $middleware) {
 
-                    $runner->withMiddlewareGroup($name, $middleware);
-
-                }
-
-                $runner->middlewarePriority($this->config->get('middleware.priority', []));
-                $runner->middlewareAliases($this->config->get('middleware.aliases', []));
 
                 return $runner;
 
@@ -114,6 +109,27 @@
 
             });
         }
+
+        private function bindMiddlewareStack()
+        {
+            $this->container->singleton(MiddlewareStack::class, function () {
+
+                $stack = new MiddlewareStack();
+
+                foreach ($this->config->get('middleware.groups') as $name => $middleware) {
+
+                    $stack->withMiddlewareGroup($name, $middleware);
+
+                }
+
+                $stack->middlewarePriority($this->config->get('middleware.priority', []));
+                $stack->middlewareAliases($this->config->get('middleware.aliases', []));
+
+                return $stack;
+
+            });
+        }
+
 
 
     }
