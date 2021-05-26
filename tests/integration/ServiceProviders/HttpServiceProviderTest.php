@@ -13,10 +13,10 @@
     use Tests\stubs\Middleware\GlobalMiddleware;
     use Tests\stubs\TestApp;
     use Tests\unit\Routing\Foo;
-    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Events\LoadedWP;
     use WPEmerge\Http\HttpKernel;
-    use WPEmerge\Http\HttpResponseFactory;
+    use WPEmerge\Http\ResponseFactory;
 
     class HttpServiceProviderTest extends IntegrationTest
     {
@@ -38,7 +38,7 @@
 
             $this->newTestApp();
 
-            $this->assertInstanceOf(HttpResponseFactory::class, TestApp::resolve(ResponseFactory::class));
+            $this->assertInstanceOf(ResponseFactory::class, TestApp::resolve(HttpResponseFactory::class));
 
         }
 

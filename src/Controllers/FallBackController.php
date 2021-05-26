@@ -7,13 +7,12 @@
     namespace WPEmerge\Controllers;
 
     use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Responses\NullResponse;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Middleware\MiddlewareStack;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Traits\GathersMiddleware;
 
     class FallBackController

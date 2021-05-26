@@ -7,14 +7,19 @@
 	namespace WPEmerge\Contracts;
 
 
-	interface ResponsableInterface {
+	use WPEmerge\Http\HttpResponseFactory;
+
+    interface ResponsableInterface {
 
 		/**
-		 * Convert to Psr\Http\Message\ResponseInterface.
-		 *
-         * @return mixed string|array
+		 * Convert an object to a data type
+         * that can be processed be the response factory
          *
-		 */
+         * @return mixed
+         *
+         *@see HttpResponseFactory::toResponse()
+		 *
+         */
 		public function toResponsable() ;
 
 	}

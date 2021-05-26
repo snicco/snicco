@@ -14,7 +14,7 @@
     use Tests\traits\TestHelpers;
     use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Facade\WP;
     use WPEmerge\Routing\Router;
 
@@ -103,7 +103,7 @@
         private function createBindingsForViewController()
         {
 
-            $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
+            $this->container->instance(HttpResponseFactory::class, $this->createResponseFactory());
 
 
         }

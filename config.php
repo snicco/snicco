@@ -100,7 +100,7 @@
 	}
 
 	if ( ! defined( 'WPEMERGE_VIEW_SERVICE_KEY' ) ) {
-		define( 'WPEMERGE_VIEW_SERVICE_KEY', \WPEmerge\Contracts\ViewServiceInterface::class);
+		define( 'WPEMERGE_VIEW_SERVICE_KEY', \WPEmerge\Contracts\ViewFactoryInterface::class);
 	}
 
 	if ( ! defined( 'WPEMERGE_VIEW_COMPOSE_ACTION_KEY' ) ) {

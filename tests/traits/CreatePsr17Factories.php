@@ -9,8 +9,8 @@
     use Nyholm\Psr7\Factory\Psr17Factory;
     use Psr\Http\Message\ResponseFactoryInterface;
     use Psr\Http\Message\StreamFactoryInterface;
-    use Tests\stubs\TestViewService;
-    use WPEmerge\Http\HttpResponseFactory;
+    use Tests\stubs\TestViewFactory;
+    use WPEmerge\Http\ResponseFactory;
 
     trait CreatePsr17Factories
     {
@@ -29,11 +29,11 @@
 
         }
 
-        public function createResponseFactory () : HttpResponseFactory
+        public function createResponseFactory () : ResponseFactory
         {
 
-            return new HttpResponseFactory(
-                new TestViewService(),
+            return new ResponseFactory(
+                new TestViewFactory(),
                 $this->psrResponseFactory(),
                 $this->psrStreamFactory()
             );

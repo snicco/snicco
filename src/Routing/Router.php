@@ -19,7 +19,7 @@
     use WPEmerge\Support\Url;
     use WPEmerge\Traits\GathersMiddleware;
     use WPEmerge\Traits\HoldsRouteBlueprint;
-    use WPEmerge\Contracts\ResponseFactory as ResponseFactory;
+    use WPEmerge\Http\HttpResponseFactory as ResponseFactory;
 
     /**
      * @mixin RouteDecorator

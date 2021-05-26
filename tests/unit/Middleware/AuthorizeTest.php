@@ -12,7 +12,7 @@
     use Tests\traits\AssertsResponse;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\HttpResponseFactory;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Middleware\Authenticate;
 	use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
     use WPEmerge\Middleware\Authorize;
@@ -38,7 +38,7 @@
         private $request;
 
         /**
-         * @var HttpResponseFactory
+         * @var ResponseFactory
          */
         private $response;
 

@@ -10,10 +10,10 @@
     use Psr\Http\Message\ResponseFactoryInterface as Prs17ResponseFactory;
     use Psr\Http\Message\StreamFactoryInterface;
     use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Contracts\ResponseFactory;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Contracts\ViewServiceInterface;
     use WPEmerge\Http\HttpResponseFactory;
+    use WPEmerge\Contracts\ServiceProvider;
+    use WPEmerge\Contracts\ViewFactoryInterface;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Routing\Pipeline;
@@ -88,10 +88,10 @@
         private function bindPsr17ResponseFactoryInterface() : void
         {
 
-            $this->container->singleton(ResponseFactory::class, function () {
+            $this->container->singleton(HttpResponseFactory::class, function () {
 
-                return new HttpResponseFactory(
-                    $this->container->make(ViewServiceInterface::class),
+                return new ResponseFactory(
+                    $this->container->make(ViewFactoryInterface::class),
                     $this->container->make('psr17.response.factory'),
                     $this->container->make(StreamFactoryInterface::class),
 
@@ -101,7 +101,7 @@
 
             $this->container->singleton(Prs17ResponseFactory::class, function () {
 
-                return $this->container->make(ResponseFactory::class);
+                return $this->container->make(HttpResponseFactory::class);
 
             });
 

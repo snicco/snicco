@@ -25,7 +25,7 @@
 	use WPEmerge\Http\HttpKernel;
     use WPEmerge\Middleware\Core\OutputBufferMiddleware;
     use WPEmerge\Listeners\FilterWpQuery;
-    use WPEmerge\View\ViewService;
+    use WPEmerge\View\ViewFactory;
 
 
 	class EventServiceProviderTest extends IntegrationTest {
@@ -53,7 +53,7 @@
             $this->assertHasListener([ShutdownHandler::class, 'handle'], ResponseSent::class);
 			$this->assertHasListener([ShutdownHandler::class, 'unrecoverableException'], UnrecoverableExceptionHandled::class);
 
-			$this->assertHasListener([ViewService::class, 'compose'], MakingView::class);
+			$this->assertHasListener([ViewFactory::class, 'compose'], MakingView::class);
 			$this->assertHasListener([FilterWpQuery::class, 'handle'], WpQueryFilterable::class);
 
 

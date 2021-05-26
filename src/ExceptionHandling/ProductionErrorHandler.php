@@ -13,7 +13,7 @@
     use WPEmerge\Events\UnrecoverableExceptionHandled;
     use WPEmerge\ExceptionHandling\Exceptions\HttpException;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\HttpResponseFactory;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Traits\HandlesExceptions;
@@ -44,11 +44,11 @@
         protected $dont_report = [];
 
         /**
-         * @var HttpResponseFactory
+         * @var ResponseFactory
          */
         protected $response;
 
-        public function __construct(ContainerAdapter $container, LoggerInterface $logger, HttpResponseFactory $response_factory, bool $is_ajax)
+        public function __construct(ContainerAdapter $container, LoggerInterface $logger, ResponseFactory $response_factory, bool $is_ajax)
         {
 
             $this->is_ajax = $is_ajax;

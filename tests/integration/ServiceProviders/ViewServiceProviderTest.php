@@ -10,11 +10,11 @@
     use Tests\stubs\TestApp;
     use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewFinderInterface;
-	use WPEmerge\Contracts\ViewServiceInterface;
+	use WPEmerge\Contracts\ViewFactoryInterface;
 	use WPEmerge\Support\VariableBag;
 	use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\View\PhpViewFinder;
-	use WPEmerge\View\ViewService;
+	use WPEmerge\View\ViewFactory;
 	use WPEmerge\View\ViewComposerCollection;
 
 	class ViewServiceProviderTest extends IntegrationTest {
@@ -34,7 +34,7 @@
 
             $this->newTestApp();
 
-            $this->assertInstanceOf(ViewService::class, TestApp::resolve(ViewServiceInterface::class));
+            $this->assertInstanceOf(ViewFactory::class, TestApp::resolve(ViewFactoryInterface::class));
 
 		}
 

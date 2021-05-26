@@ -7,9 +7,9 @@
 	namespace WPEmerge\Middleware;
 
 	use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\ResponseFactory;
 
     class Authenticate extends Middleware {
 

@@ -18,7 +18,7 @@
     use SniccoAdapter\BaseContainerAdapter;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewEngineInterface;
-    use WPEmerge\Contracts\ViewServiceInterface;
+    use WPEmerge\Contracts\ViewFactoryInterface;
     use WPEmerge\Support\Arr;
 
     class BladeServiceProvider extends ServiceProvider
@@ -63,8 +63,8 @@
                 /** @var View $view */
                 $view = Arr::firstEl($payload);
 
-                /** @var ViewServiceInterface $view_service */
-                $view_service = $container->make(ViewServiceInterface::class);
+                /** @var ViewFactoryInterface $view_service */
+                $view_service = $container->make(ViewFactoryInterface::class);
 
                 $view_service->compose(new BladeView($view));
 

@@ -7,13 +7,13 @@
 	namespace WPEmerge\Controllers;
 
 
-    use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Http\Psr7\Response;
+    use WPEmerge\Http\ResponseFactory;
 
     class ViewController {
 
 		/**
-		 * @var \WPEmerge\Http\Psr7\Response
+		 * @var Response
 		 */
 		private $response;
 
