@@ -151,7 +151,7 @@
 
                     throw new LogicException("Unresolved request: middleware stack exhausted with no result");
 
-                }, $this->container);
+                });
 
             }
 
@@ -171,7 +171,7 @@
 
                 return $middleware_instance->process($request, $this->nextMiddleware());
 
-            }, $this->container);
+            });
 
 
 
