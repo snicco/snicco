@@ -38,8 +38,6 @@
 
 		}
 
-
-
 		/** @test */
 		public function the_view_engine_is_resolved_correctly () {
 

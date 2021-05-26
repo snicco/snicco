@@ -42,7 +42,6 @@
             RoutingServiceProvider::class,
             MiddlewareServiceProvider::class,
             ViewServiceProvider::class,
-            AliasServiceProvider::class,
 
         ];
 
