@@ -10,7 +10,7 @@
     use Mockery;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
-    use Tests\UnitTest;
+    use Tests\unit\UnitTest;
     use Tests\fixtures\TestDependencies\Bar;
 	use Tests\fixtures\Controllers\Web\ControllerWithDependencies;
 	use Tests\fixtures\Controllers\Web\TeamsController;

@@ -6,7 +6,7 @@
 
 	namespace Tests\integration\ServiceProviders;
 
-    use Tests\IntegrationTest;
+    use Tests\integration\IntegrationTest;
     use Tests\stubs\TestApp;
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Factories\RouteActionFactory;

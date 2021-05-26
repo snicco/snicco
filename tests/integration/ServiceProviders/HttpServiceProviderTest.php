@@ -8,7 +8,7 @@
 
     use BetterWpHooks\Contracts\Dispatcher;
     use BetterWpHooks\Dispatchers\WordpressDispatcher;
-    use Tests\IntegrationTest;
+    use Tests\integration\IntegrationTest;
     use Tests\fixtures\Middleware\FooMiddleware;
     use Tests\fixtures\Middleware\GlobalMiddleware;
     use Tests\stubs\TestApp;

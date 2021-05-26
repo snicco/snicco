@@ -11,7 +11,7 @@
     use Tests\fixtures\Conditions\TrueCondition;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
-    use Tests\UnitTest;
+    use Tests\unit\UnitTest;
     use Tests\fixtures\Conditions\FalseCondition;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;

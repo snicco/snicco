@@ -12,7 +12,7 @@
     use Psr\Log\LogLevel;
     use SniccoAdapter\BaseContainerAdapter;
     use Tests\helpers\AssertsResponse;
-    use Tests\UnitTest;
+    use Tests\unit\UnitTest;
     use Tests\fixtures\TestDependencies\Foo;
     use Tests\stubs\TestLogger;
     use WPEmerge\Application\ApplicationEvent;

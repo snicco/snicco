@@ -8,7 +8,7 @@
 
 	use Exception;
 	use Tests\helpers\AssertsResponse;
-    use Tests\UnitTest;
+    use Tests\unit\UnitTest;
 	use Tests\stubs\TestException;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;

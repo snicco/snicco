@@ -7,7 +7,7 @@
 
 
 	use Tests\helpers\AssertsResponse;
-    use Tests\UnitTest;
+    use Tests\unit\UnitTest;
     use Tests\stubs\TestException;
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;

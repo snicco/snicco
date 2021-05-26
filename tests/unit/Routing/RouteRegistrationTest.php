@@ -11,7 +11,7 @@
     use Tests\stubs\TestRequest;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
-    use Tests\UnitTest;
+    use Tests\unit\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Facade\WP;

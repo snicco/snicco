@@ -6,7 +6,7 @@
 
     namespace Tests\integration\Blade;
 
-    use Tests\IntegrationTest;
+    use Tests\integration\IntegrationTest;
     use Tests\stubs\TestApp;
     use WPEmerge\Blade\BladeServiceProvider;
     use WPEmerge\Blade\BladeView;

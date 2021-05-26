@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace Tests;
+    namespace Tests\integration;
 
     use Codeception\TestCase\WPTestCase;
     use Nyholm\Psr7\Request;
