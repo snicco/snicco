@@ -30,7 +30,7 @@
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\ServiceProviders\RoutingServiceProvider;
+    use WPEmerge\Routing\RoutingServiceProvider;
 
     class RouteCachingTest extends UnitTest
     {

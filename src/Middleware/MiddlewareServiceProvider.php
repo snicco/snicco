@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\ServiceProviders;
+    namespace WPEmerge\Middleware;
 
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Contracts\ServiceProvider;

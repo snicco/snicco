@@ -16,7 +16,7 @@
 	use WPEmerge\Routing\RouteCollection;
     use WPEmerge\Routing\RouteBuilder;
     use WPEmerge\Routing\Router;
-    use WPEmerge\ServiceProviders\RoutingServiceProvider;
+    use WPEmerge\Routing\RoutingServiceProvider;
 
     trait SetUpRouter {
 

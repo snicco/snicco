@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\ServiceProviders;
+	namespace WPEmerge\View;
 
 	use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Contracts\ViewEngineInterface;

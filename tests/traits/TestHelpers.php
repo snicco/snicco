@@ -28,7 +28,7 @@
     use WPEmerge\Routing\RouteCollection;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\ServiceProviders\RoutingServiceProvider;
+    use WPEmerge\Routing\RoutingServiceProvider;
 
     trait TestHelpers
     {

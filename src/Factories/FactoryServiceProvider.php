@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\ServiceProviders;
+	namespace WPEmerge\Factories;
 
 	use Contracts\ContainerAdapter;
 	use WPEmerge\Contracts\ServiceProvider;

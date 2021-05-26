@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\ServiceProviders;
+    namespace WPEmerge\Routing;
 
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\ResponseFactory;
