@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Handlers;
+	namespace WPEmerge\Routing;
 
 	use Closure;
 	use WPEmerge\Contracts\ResolveControllerMiddleware;

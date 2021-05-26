@@ -11,7 +11,7 @@
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Factories\RouteActionFactory;
 	use WPEmerge\Factories\ViewComposerFactory;
-	use WPEmerge\Handlers\ControllerAction;
+	use WPEmerge\Routing\ControllerAction;
 	use WPEmerge\View\ViewComposer;
 
 	class FactoryServiceProviderTest extends IntegrationTest {

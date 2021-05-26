@@ -10,8 +10,8 @@
 	use Illuminate\Support\Reflector;
 	use WPEmerge\Contracts\Handler;
 	use WPEmerge\Contracts\RouteAction;
-	use WPEmerge\Handlers\ClosureAction;
-	use WPEmerge\Handlers\ControllerAction;
+	use WPEmerge\Routing\ClosureAction;
+	use WPEmerge\Routing\ControllerAction;
 	use WPEmerge\Http\MiddlewareResolver;
 
 	class RouteActionFactory extends AbstractFactory {
