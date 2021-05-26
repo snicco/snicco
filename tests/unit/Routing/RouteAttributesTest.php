@@ -12,7 +12,7 @@
     use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Router;
     use Tests\traits\CreateDefaultWpApiMocks;
 

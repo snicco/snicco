@@ -7,7 +7,7 @@
 	namespace Tests\stubs\Controllers\Ajax;
 
 	use Tests\stubs\TestResponse;
-	use WPEmerge\Http\Request;
+	use WPEmerge\Http\Psr7\Request;
 
 	class AjaxController {
 

@@ -17,7 +17,7 @@
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class ApplicationTest extends UnitTest
     {

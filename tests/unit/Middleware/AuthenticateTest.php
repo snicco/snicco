@@ -14,7 +14,7 @@
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Middleware\Authenticate;
-    use WPEmerge\Http\RedirectResponse;
+    use WPEmerge\Http\Responses\RedirectResponse;
 
     class AuthenticateTest extends UnitTest
     {

@@ -8,8 +8,8 @@
 
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\ResponseFactory;
-    use WPEmerge\Http\NullResponse;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Responses\NullResponse;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Middleware\MiddlewareStack;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Routing\Route;

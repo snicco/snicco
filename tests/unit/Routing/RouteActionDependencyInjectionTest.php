@@ -17,7 +17,7 @@
 	use Tests\stubs\Foo;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Router;
 
     class RouteActionDependencyInjectionTest extends UnitTest {

@@ -9,7 +9,7 @@
     use WPEmerge\Contracts\UrlableInterface;
     use WPEmerge\ExceptionHandling\Exceptions\RouteLogicException;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\Conditions\RequestAttributeCondition;
     use WPEmerge\Support\Arr;

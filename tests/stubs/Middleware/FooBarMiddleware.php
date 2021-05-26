@@ -7,7 +7,7 @@
 	namespace Tests\stubs\Middleware;
 
     use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class FooBarMiddleware extends Middleware {
 

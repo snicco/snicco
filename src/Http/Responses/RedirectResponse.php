@@ -4,10 +4,12 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Http;
+	namespace WPEmerge\Http\Responses;
 
 
-	class RedirectResponse extends Response {
+	use WPEmerge\Http\Psr7\Response;
+
+    class RedirectResponse extends Response {
 
 
 		public function to( string $url ) : RedirectResponse {

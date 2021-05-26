@@ -7,7 +7,7 @@
     namespace WPEmerge\Events;
 
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class WpQueryFilterable extends ApplicationEvent
     {
@@ -17,7 +17,7 @@
         private $original_query_vars;
 
         /**
-         * @var Request
+         * @var \WPEmerge\Http\Psr7\Request
          */
         public $server_request;
 

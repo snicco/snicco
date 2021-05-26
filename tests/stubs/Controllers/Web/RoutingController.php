@@ -6,7 +6,7 @@
 
 	namespace Tests\stubs\Controllers\Web;
 
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class RoutingController {
 

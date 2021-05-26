@@ -8,7 +8,7 @@
 
 	use WPEmerge\Application\ApplicationEvent;
 	use WPEmerge\Factories\DynamicHooksFactory;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class LoadedWpAdmin extends ApplicationEvent {
 

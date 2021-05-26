@@ -14,7 +14,7 @@
     use WPEmerge\ExceptionHandling\Exceptions\HttpException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\HttpResponseFactory;
-    use WPEmerge\Http\Response;
+    use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Traits\HandlesExceptions;
 

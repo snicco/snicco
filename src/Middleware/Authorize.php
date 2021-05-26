@@ -10,7 +10,7 @@
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class Authorize extends Middleware
     {

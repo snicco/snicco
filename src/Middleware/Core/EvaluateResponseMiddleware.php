@@ -11,10 +11,10 @@
     use WPEmerge\ExceptionHandling\Exceptions\HttpException;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidResponseException;
     use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\InvalidResponse;
-    use WPEmerge\Http\NullResponse;
-    use WPEmerge\Http\Request;
-    use WPEmerge\Http\WpQueryFilteredResponse;
+    use WPEmerge\Http\Responses\InvalidResponse;
+    use WPEmerge\Http\Responses\NullResponse;
+    use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Responses\WpQueryFilteredResponse;
 
     class EvaluateResponseMiddleware extends Middleware
     {

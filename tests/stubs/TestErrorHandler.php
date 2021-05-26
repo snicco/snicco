@@ -10,7 +10,7 @@
     use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Contracts\RequestInterface;
 	use WPEmerge\Contracts\ResponseInterface;
-    use WPEmerge\Http\Response;
+    use WPEmerge\Http\Psr7\Response;
 
     class TestErrorHandler implements ErrorHandlerInterface {
 

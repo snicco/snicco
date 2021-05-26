@@ -6,7 +6,7 @@
 
     namespace WPEmerge\Middleware;
 
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Route;
     use WPEmerge\Traits\GathersMiddleware;
 

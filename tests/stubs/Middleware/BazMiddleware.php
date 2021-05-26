@@ -9,7 +9,7 @@
 	use Tests\stubs\Bar;
     use Tests\stubs\Baz;
     use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class BazMiddleware extends Middleware {
 

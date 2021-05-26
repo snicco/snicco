@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http;
+    namespace WPEmerge\Http\Psr7;
 
     trait InspectsRequest
     {
@@ -13,6 +13,7 @@
         {
 
             return $this->isMethod('GET');
+
 
         }
 

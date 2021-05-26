@@ -8,15 +8,15 @@
 
 
 	use Psr\Http\Message\ResponseFactoryInterface;
-    use WPEmerge\Http\InvalidResponse;
-    use WPEmerge\Http\NullResponse;
-    use WPEmerge\Http\RedirectResponse;
-    use WPEmerge\Http\Response;
+    use WPEmerge\Http\Responses\InvalidResponse;
+    use WPEmerge\Http\Responses\NullResponse;
+    use WPEmerge\Http\Responses\RedirectResponse;
+    use WPEmerge\Http\Psr7\Response;
 
     interface ResponseFactory extends ResponseFactoryInterface {
 
-		public function view ( string $view, array $data = [], $status = 200, array $headers = []) : Response;
 
+		public function view ( string $view, array $data = [], $status = 200, array $headers = []) : Response;
 
 		public function toResponse ( $response ) : Response;
 
@@ -27,7 +27,7 @@
          * @param  int  $status_code
          * @param  string  $reason_phrase
          *
-         * @return Response
+         * @return \WPEmerge\Http\Psr7\Response
          */
         public function make(int $status_code, string $reason_phrase = '') : Response;
 
@@ -59,7 +59,7 @@
           *
           * Create a null response with status code 204.
           *
-          * @return NullResponse
+          * @return \WPEmerge\Http\Responses\NullResponse
           */
         public function null() : NullResponse;
 

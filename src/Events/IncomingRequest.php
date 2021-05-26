@@ -7,7 +7,7 @@
 	namespace WPEmerge\Events;
 
 	use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class IncomingRequest extends ApplicationEvent {
 

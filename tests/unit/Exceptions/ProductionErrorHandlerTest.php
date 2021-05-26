@@ -16,8 +16,8 @@
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\ExceptionHandling\ProductionErrorHandler;
     use WPEmerge\Factories\ErrorHandlerFactory;
-    use WPEmerge\Http\Request;
-    use WPEmerge\Http\Response;
+    use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Psr7\Response;
 
     class ProductionErrorHandlerTest extends UnitTest {
 

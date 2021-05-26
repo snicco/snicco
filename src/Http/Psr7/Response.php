@@ -4,10 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http;
+    namespace WPEmerge\Http\Psr7;
 
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\StreamInterface;
+    use WPEmerge\Http\Psr7\ImplementsPsr7Response;
 
     class Response implements ResponseInterface
     {

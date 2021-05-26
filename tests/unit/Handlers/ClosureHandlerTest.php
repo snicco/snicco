@@ -11,7 +11,7 @@
     use Tests\stubs\Bar;
 	use PHPUnit\Framework\TestCase;
 	use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class ClosureHandlerTest extends TestCase {
 

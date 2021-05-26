@@ -9,7 +9,7 @@
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class ChangeRequestMiddleware extends Middleware
     {

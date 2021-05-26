@@ -7,13 +7,13 @@
     namespace WPEmerge\Events;
 
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Http\Response;
+    use WPEmerge\Http\Psr7\Response;
 
     class ResponseSent extends ApplicationEvent
     {
 
         /**
-         * @var Response
+         * @var \WPEmerge\Http\Psr7\Response
          */
         public $response;
 

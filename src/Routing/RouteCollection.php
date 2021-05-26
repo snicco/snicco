@@ -11,7 +11,7 @@
     use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Support\Arr;
 
     class RouteCollection extends AbstractRouteCollection

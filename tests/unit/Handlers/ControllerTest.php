@@ -12,7 +12,7 @@
 	use PHPUnit\Framework\TestCase;
 	use WPEmerge\Factories\RouteActionFactory;
 	use Mockery as m;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class ControllerTest extends TestCase {
 

@@ -17,6 +17,11 @@
     use WPEmerge\ExceptionHandling\Exceptions\ViewException;
     use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Psr7\Response;
+    use WPEmerge\Http\Responses\InvalidResponse;
+    use WPEmerge\Http\Responses\NullResponse;
+    use WPEmerge\Http\Responses\RedirectResponse;
+    use WPEmerge\Http\Responses\WpQueryFilteredResponse;
 
     class HttpResponseFactory implements ResponseFactory
     {
