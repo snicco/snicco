@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\ViewComposers;
+	namespace WPEmerge\View;
 
 	use Exception;
     use Illuminate\Support\Collection;
@@ -16,7 +16,7 @@
 	class ViewComposerCollection implements ViewComposer {
 
 		/**
-		 * @var ViewComposer[]
+		 * @var \WPEmerge\View\ViewComposer[]
 		 */
 		private $composers;
 

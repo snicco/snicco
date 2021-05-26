@@ -14,7 +14,7 @@
 	use WPEmerge\View\PhpViewFinder;
 	use WPEmerge\Support\VariableBag;
 	use WPEmerge\View\ViewService;
-	use WPEmerge\ViewComposers\ViewComposerCollection;
+	use WPEmerge\View\ViewComposerCollection;
 	use WPEmerge\Factories\ViewComposerFactory;
 
 

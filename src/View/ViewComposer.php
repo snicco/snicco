@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\ViewComposers;
+	namespace WPEmerge\View;
 
 	use Closure;
 	use WPEmerge\Contracts\ViewComposer as ViewComposerInterface;

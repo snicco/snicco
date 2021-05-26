@@ -12,7 +12,7 @@
 	use WPEmerge\Factories\RouteActionFactory;
 	use WPEmerge\Factories\ViewComposerFactory;
 	use WPEmerge\Handlers\ControllerAction;
-	use WPEmerge\ViewComposers\ViewComposer;
+	use WPEmerge\View\ViewComposer;
 
 	class FactoryServiceProviderTest extends IntegrationTest {
 

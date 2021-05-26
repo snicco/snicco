@@ -4,17 +4,20 @@
 	declare( strict_types = 1 );
 
 
-	namespace Tests\unit\ViewComposers;
+	namespace Tests\unit\View;
 
 	use PHPUnit\Framework\TestCase;
     use Tests\stubs\TestView;
     use Tests\traits\CreateContainer;
     use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\View\PhpViewFinder;
-	use WPEmerge\ViewComposers\ViewComposerCollection;
+	use WPEmerge\View\ViewComposerCollection;
 	use WPEmerge\Factories\ViewComposerFactory;
 
-	class ViewComposerCollectionTest extends TestCase {
+    use const DS;
+    use const TEST_CONFIG;
+
+    class ViewComposerCollectionTest extends TestCase {
 
 
 	    use CreateContainer;
