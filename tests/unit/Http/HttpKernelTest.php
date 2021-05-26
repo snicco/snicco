@@ -111,7 +111,7 @@
 
             $request = $this->webRequest( 'GET', '/foo' );
 
-            $this->seeOutput($request);
+            $this->runKernel($request);
 
 
             $this->expectOutputString('foo');
@@ -172,7 +172,7 @@
 
             $this->expectExceptionMessage('The response returned by the route action is not valid.');
 
-            $this->seeOutput($this->webRequest('GET', '/foo'));
+            $this->runKernel($this->webRequest('GET', '/foo'));
 
 
         }

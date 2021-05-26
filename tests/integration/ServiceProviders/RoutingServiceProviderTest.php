@@ -26,13 +26,25 @@
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\RouteCollection;
     use WPEmerge\Routing\Router;
-    use WPEmerge\Routing\UrlGenerator;
 
     class RoutingServiceProviderTest extends IntegrationTest
     {
 
         use CreateWpTestUrls;
 
+
+        protected function tearDown() : void
+        {
+
+            parent::tearDown();
+
+            if( is_file($file = TESTS_DIR. DS . '_data'. DS . '__generated_route_collection') ) {
+
+                $this->unlink($file);
+
+            }
+
+        }
 
         /** @test */
         public function all_conditions_are_loaded()
@@ -167,7 +179,7 @@
                 ]
             ]);
 
-            $this->seeOutput('foo', TestRequest::from('GET', '/foo'));
+            $this->seeKernelOutput('foo', TestRequest::from('GET', '/foo'));
 
         }
 
@@ -180,7 +192,7 @@
                 ]
             ]);
 
-            $this->seeOutput('fallback_route', TestRequest::from('GET', 'post1'));
+            $this->seeKernelOutput('get_fallback', TestRequest::from('GET', 'post1'));
 
 
 
@@ -202,7 +214,7 @@
 
             $request = $this->ajaxRequest('foo_action');
 
-            $this->seeOutput('FOO_ACTION', new IncomingAjaxRequest($request));
+            $this->seeKernelOutput('FOO_ACTION', new IncomingAjaxRequest($request));
 
             Mockery::close();
 
@@ -223,7 +235,7 @@
 
             $request = $this->adminRequestTo('foo');
 
-            $this->seeOutput('FOO', new IncomingAdminRequest($request));
+            $this->seeKernelOutput('FOO', new IncomingAdminRequest($request));
 
             Mockery::close();
 

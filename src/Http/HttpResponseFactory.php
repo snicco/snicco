@@ -84,7 +84,6 @@
         public function json($content, int $status = 200) : Response
         {
 
-
             /** @todo This needs more parsing or a dedicated JsonResponseClass */
             return $this->make($status)
                         ->json(
@@ -208,7 +207,6 @@
 
             }
             catch (ViewException $e) {
-
 
                 return $this->toResponse($this->view->make('500'));
 

@@ -42,7 +42,6 @@
 
         private $middleware_priority = [];
 
-
         public function __construct(ResponseFactory $response_factory, Pipeline $pipeline)
         {
 
@@ -117,7 +116,7 @@
 
         }
 
-        public function middlewarePriority(array $middleware_priority)
+        public function middlewarePriority( array $middleware_priority)
         {
 
             $this->middleware_priority = $middleware_priority;

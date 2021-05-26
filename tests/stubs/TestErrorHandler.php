@@ -54,7 +54,6 @@
 
         public function unrecoverable(Throwable $exception)
         {
-            // TODO: Implement unrecoverable() method.
         }
 
     }

@@ -7,19 +7,18 @@
     namespace Tests\integration\Routing;
 
     use Tests\IntegrationTest;
+    use Tests\stubs\Middleware\WebMiddleware;
     use Tests\stubs\TestApp;
+    use Tests\stubs\TestRequest;
     use Tests\traits\CreateWpTestUrls;
-    use Tests\traits\TestHelpers;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\HttpKernel;
-    use WPEmerge\Routing\Router;
 
     class WordpressConditionRoutes extends IntegrationTest
     {
 
         use CreateWpTestUrls;
-        use TestHelpers;
 
         /**
          * @var HttpKernel
@@ -30,19 +29,18 @@
         {
             parent::setUp();
             $this->newTestApp(TEST_CONFIG);
-            $this->router = TestApp::resolve(Router::class);
             $this->kernel = TestApp::resolve(HttpKernel::class);
+
         }
 
         /** @test */
         public function its_possible_to_create_routes_that_dont_match_an_url()
         {
 
-            $this->expectOutputString('FOO');
             ApplicationEvent::fake([ResponseSent::class]);
 
-            $request = $this->webRequest('GET', 'post1');
-            $this->kernel->run($request);
+            $this->seeKernelOutput('get_fallback', TestRequest::from('GET', 'post1'));
+
             ApplicationEvent::assertDispatchedTimes(ResponseSent::class, 1 );
 
 
@@ -53,10 +51,10 @@
         {
 
             ApplicationEvent::fake([ResponseSent::class]);
-            $this->expectOutputString('');
 
-            $request = $this->webRequest('POST', 'post1');
-            $this->kernel->run($request);
+
+            $this->seeKernelOutput('', TestRequest::from('POST', 'post1'));
+
 
             ApplicationEvent::assertNotDispatched(ResponseSent::class);
 
@@ -68,16 +66,27 @@
         {
 
             ApplicationEvent::fake([ResponseSent::class]);
-            $this->expectOutputString('');
 
-            // delete route is not registered for the fallback controller
-            $request = $this->webRequest('DELETE', 'post1');
-            $this->kernel->run($request);
+
+            $this->seeKernelOutput('', TestRequest::from('DELETE', 'post1'));
+
 
             ApplicationEvent::assertNotDispatched(ResponseSent::class);
 
         }
 
+        /** @test */
+        public function routes_with_wordpress_conditions_can_have_middleware () {
+
+            $GLOBALS['test'][WebMiddleware::run_times] = 0;
+            ApplicationEvent::fake([ResponseSent::class]);
+
+            $this->seeKernelOutput('patch_fallback', TestRequest::from('PATCH', 'post1'));
+
+            ApplicationEvent::assertDispatchedTimes(ResponseSent::class, 1 );
+            $this->assertSame(1, $GLOBALS['test'][WebMiddleware::run_times], 'Middleware was not run as expected.');
+
+        }
 
     }
 

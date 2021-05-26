@@ -9,6 +9,7 @@
     use Codeception\TestCase\WPTestCase;
     use Nyholm\Psr7\Request;
     use Tests\stubs\TestApp;
+    use Tests\stubs\TestRequest;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\IncomingRequest;
@@ -40,9 +41,10 @@
             $GLOBALS['wp_filter'] = [];
             $GLOBALS['wp_actions'] = [];
             $GLOBALS['wp_current_filter'] = [];
+            $GLOBALS['test'] = [];
         }
 
-        protected function seeOutput( $expected, $request ) {
+        protected function seeKernelOutput( $expected, $request ) {
 
             if ( ! $request instanceof IncomingRequest ) {
 
@@ -57,5 +59,7 @@
             $this->assertSame($expected, ob_get_clean());
 
         }
+
+
 
     }
