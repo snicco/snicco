@@ -13,7 +13,6 @@
 	trait ManagesAliases {
 
 
-
 		/**
 		 * Resolve a dependency from the IoC container while taking
 		 * aliases into account.
