@@ -7,8 +7,8 @@
 	namespace WPEmerge\Controllers;
 
 
-    use WPEmerge\Contracts\ResponseFactory;
-    use WPEmerge\Http\Response;
+    use WPEmerge\Http\Psr7\Response;
+    use WPEmerge\Http\ResponseFactory;
 
     class ViewController {
 

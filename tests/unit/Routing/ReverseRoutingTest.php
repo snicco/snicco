@@ -7,21 +7,29 @@
     namespace Tests\unit\Routing;
 
     use Mockery;
-    use Tests\UnitTest;
-    use Tests\traits\SetUpRouter;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateTestSubjects;
+    use Tests\unit\UnitTest;
+    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ConditionInterface;
     use WPEmerge\Contracts\UrlableInterface;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Request;
-    use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
+    use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Routing\Router;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Support\Str;
 
     class ReverseRoutingTest extends UnitTest
     {
 
-        use SetUpRouter;
+        use CreateTestSubjects;
+        use CreateDefaultWpApiMocks;
+
+        /** @var Router */
+        private $router;
+
+        private $container;
 
         /** @var UrlGenerator */
         private $url_generator;
@@ -29,12 +37,12 @@
         protected function beforeTestRun()
         {
 
-            $this->newRouter($c = $this->createContainer());
-            WP::setFacadeContainer($c);
+            $this->container = $this->createContainer();
+            $this->routes = $this->newRouteCollection();
+            ApplicationEvent::make($this->container);
+            ApplicationEvent::fake();
+            WP::setFacadeContainer($this->container);
 
-            $this->url_generator = new UrlGenerator(
-                new FastRouteUrlGenerator($this->routes),
-            );
 
         }
 
@@ -42,8 +50,8 @@
         {
 
             Mockery::close();
-            WP::clearResolvedInstances();
-            WP::setFacadeContainer(null);
+            ApplicationEvent::setInstance(null);
+            WP::reset();
 
         }
 
@@ -52,22 +60,36 @@
         public function a_route_can_be_named()
         {
 
-            $this->router->get('foo')->name('foo_route');
-            $this->router->name('bar_route')->get('bar');
+            $this->createRoutes(function () {
 
-            $url = $this->url_generator->toRoute('foo_route');
+                $this->router->get('foo')->name('foo_route');
+                $this->router->name('bar_route')->get('bar');
+
+            });
+
+            $url_generator = $this->newUrlGenerator();
+
+            $url = $url_generator->toRoute('foo_route');
             $this->seeFullUrl('/foo', $url);
 
-            $url = $this->url_generator->toRoute('bar_route');
+            $url = $url_generator->toRoute('bar_route');
             $this->seeFullUrl('/bar', $url);
 
         }
 
         /** @test */
-        public function a_relative_url_can_be_created () {
+        public function a_relative_url_can_be_created()
+        {
 
-            $this->router->get('foo')->name('foo_route');
-            $url = $this->url_generator->toRoute('foo_route', [] , false);
+            $this->createRoutes(function () {
+
+                $this->router->get('foo')->name('foo_route');
+
+            });
+
+            $url_generator = $this->newUrlGenerator();
+
+            $url = $url_generator->toRoute('foo_route', [], false);
             $this->assertSame('/foo', $url);
 
 
@@ -77,27 +99,33 @@
         public function route_names_are_merged_on_multiple_levels()
         {
 
-            $this->router
-                ->name('foo')
-                ->group(function () {
+            $this->createRoutes(function () {
 
-                    $this->router->name('bar')->group(function () {
+                $this->router
+                    ->name('foo')
+                    ->group(function () {
 
-                        $this->router->get('baz')->name('baz');
+                        $this->router->name('bar')->group(function () {
+
+                            $this->router->get('baz')->name('baz');
+
+                        });
+
+                        $this->router->get('biz')->name('biz');
+
 
                     });
 
-                    $this->router->get('biz')->name('biz');
+            });
 
+            $url_generator = $this->newUrlGenerator();
 
-                });
-
-            $this->seeFullUrl('/baz', $this->url_generator->toRoute('foo.bar.baz'));
-            $this->seeFullUrl('/biz', $this->url_generator->toRoute('foo.biz'));
+            $this->seeFullUrl('/baz', $url_generator->toRoute('foo.bar.baz'));
+            $this->seeFullUrl('/biz', $url_generator->toRoute('foo.biz'));
 
             $this->expectExceptionMessage('no named route');
 
-            $this->seeFullUrl('/baz', $this->url_generator->toRoute('foo.bar.biz'));
+            $this->seeFullUrl('/baz', $url_generator->toRoute('foo.bar.biz'));
 
 
         }
@@ -106,21 +134,27 @@
         public function group_names_get_applied_to_child_routes()
         {
 
-            $this->router
-                ->name('foo')
-                ->group(function () {
+            $this->createRoutes(function () {
 
-                    $this->router->get('bar')->name('bar');
+                $this->router
+                    ->name('foo')
+                    ->group(function () {
 
-                    $this->router->get('baz')->name('baz');
+                        $this->router->get('bar')->name('bar');
 
-                    $this->router->name('biz')->get('biz');
+                        $this->router->get('baz')->name('baz');
 
-                });
+                        $this->router->name('biz')->get('biz');
 
-            $this->seeFullUrl('/bar', $this->url_generator->toRoute('foo.bar'));
-            $this->seeFullUrl('/baz', $this->url_generator->toRoute('foo.baz'));
-            $this->seeFullUrl('/biz', $this->url_generator->toRoute('foo.biz'));
+                    });
+
+            });
+
+            $url_generator = $this->newUrlGenerator();
+
+            $this->seeFullUrl('/bar', $url_generator->toRoute('foo.bar'));
+            $this->seeFullUrl('/baz', $url_generator->toRoute('foo.baz'));
+            $this->seeFullUrl('/biz', $url_generator->toRoute('foo.biz'));
 
 
         }
@@ -129,8 +163,15 @@
         public function urls_for_routes_with_required_segments_can_be_generated()
         {
 
-            $this->router->get('/foo/{required}')->name('foo');
-            $url = $this->url_generator->toRoute('foo', ['required' => 'bar']);
+            $this->createRoutes(function () {
+
+                $this->router->get('/foo/{required}')->name('foo');
+
+            });
+
+            $url_generator = $this->newUrlGenerator();
+
+            $url = $url_generator->toRoute('foo', ['required' => 'bar']);
             $this->seeFullUrl('/foo/bar', $url);
 
         }
@@ -139,8 +180,15 @@
         public function urls_for_routes_with_optional_segments_can_be_generated()
         {
 
-            $this->router->get('foo/{required}/{optional?}')->name('foo');
-            $url = $this->url_generator->toRoute('foo', [
+            $this->createRoutes(function () {
+
+                $this->router->get('foo/{required}/{optional?}')->name('foo');
+
+            });
+
+            $url_generator = $this->newUrlGenerator();
+
+            $url = $url_generator->toRoute('foo', [
                 'required' => 'bar',
                 'optional' => 'baz',
             ]);
@@ -152,12 +200,19 @@
         public function optional_segments_can_be_left_blank()
         {
 
-            $this->router->get('foo/{optional?}')->name('foo');
-            $url = $this->url_generator->toRoute('foo');
+            $this->createRoutes(function () {
+
+                $this->router->get('foo/{optional?}')->name('foo');
+                $this->router->get('bar/{required}/{optional?}')->name('bar');
+
+            });
+
+            $url_generator = $this->newUrlGenerator();
+
+            $url = $url_generator->toRoute('foo');
             $this->seeFullUrl('/foo', $url);
 
-            $this->router->get('bar/{required}/{optional?}')->name('bar');
-            $url = $this->url_generator->toRoute('bar', ['required' => 'baz']);
+            $url = $url_generator->toRoute('bar', ['required' => 'baz']);
             $this->seeFullUrl('/bar/baz', $url);
 
 
@@ -167,8 +222,16 @@
         public function optional_segments_can_be_created_after_fixed_segments()
         {
 
-            $this->router->get('foo/{optional?}')->name('foo');
-            $url = $this->url_generator->toRoute('foo', ['optional' => 'bar']);
+            $this->createRoutes(function () {
+
+                $this->router->get('foo/{optional?}')->name('foo');
+
+
+            });
+
+            $url_generator = $this->newUrlGenerator();
+
+            $url = $url_generator->toRoute('foo', ['optional' => 'bar']);
             $this->seeFullUrl('/foo/bar', $url);
 
         }
@@ -177,15 +240,19 @@
         public function multiple_optional_segments_can_be_created()
         {
 
-            $this->router->get('foo/{opt1?}/{opt2?}/')->name('foo');
+            $this->createRoutes(function () {
 
-            $this->router->loadRoutes();
+                $this->router->get('foo/{opt1?}/{opt2?}/')->name('foo');
+                $this->router->get('bar/{required}/{opt1?}/{opt2?}')->name('bar');
 
-            $url = $this->url_generator->toRoute('foo', ['opt1' => 'bar', 'opt2' => 'baz']);
+            });
+
+            $url_generator = $this->newUrlGenerator();
+
+            $url = $url_generator->toRoute('foo', ['opt1' => 'bar', 'opt2' => 'baz']);
             $this->seeFullUrl('/foo/bar/baz', $url);
 
-            $this->router->get('bar/{required}/{opt1?}/{opt2?}')->name('bar');
-            $url = $this->url_generator->toRoute('bar', [
+            $url = $url_generator->toRoute('bar', [
                 'required' => 'biz',
                 'opt1' => 'bar',
                 'opt2' => 'baz',
@@ -199,8 +266,16 @@
         public function required_segments_can_be_created_with_regex_constraints()
         {
 
-            $this->router->get('/foo/{required}')->name('foo')->and('required', '\w+');
-            $url = $this->url_generator->toRoute('foo', ['required' => 'bar']);
+            $this->createRoutes(function () {
+
+                $this->router->get('/foo/{required}')->name('foo')->and('required', '\w+');
+
+
+            });
+
+            $url_generator = $this->newUrlGenerator();
+
+            $url = $url_generator->toRoute('foo', ['required' => 'bar']);
             $this->seeFullUrl('/foo/bar', $url);
 
         }
@@ -209,8 +284,16 @@
         public function optional_segments_can_be_created_with_regex()
         {
 
-            $this->router->get('/foo/{optional?}')->name('foo')->and('optional', '\w+');
-            $url = $this->url_generator->toRoute('foo', ['optional' => 'bar']);
+            $this->createRoutes(function () {
+
+                $this->router->get('/foo/{optional?}')->name('foo')->and('optional', '\w+');
+
+
+            });
+
+            $url_generator = $this->newUrlGenerator();
+
+            $url = $url_generator->toRoute('foo', ['optional' => 'bar']);
             $this->seeFullUrl('/foo/bar', $url);
 
         }
@@ -219,37 +302,45 @@
         public function required_and_optional_segments_can_be_created_with_regex()
         {
 
-            $this->router->get('/foo/{required}/{optional?}')
-                         ->name('foo')
-                         ->and(['required', '\w+', 'optional', '\w+']);
+            $this->createRoutes(function () {
 
-            $url = $this->url_generator->toRoute('foo', ['required' => 'bar']);
+                $this->router->get('/foo/{required}/{optional?}')
+                             ->name('foo')
+                             ->and(['required', '\w+', 'optional', '\w+']);
+
+                $this->router->get('/bar/{required}/{optional?}')
+                             ->name('bar')
+                             ->and(['required' => '\w+', 'optional' => '\w+']);
+
+                $this->router->get('/baz/{required}/{optional1?}/{optional2?}')
+                             ->name('foobar')
+                             ->and([
+                                 'required' => '\w+',
+                                 'optional1' => '\w+',
+                                 'optional2' => '\w+',
+                             ]);
+
+            });
+
+
+            $url_generator = $this->newUrlGenerator();
+            $url = $url_generator->toRoute('foo', ['required' => 'bar']);
             $this->seeFullUrl('/foo/bar', $url);
 
-            $this->router->get('/bar/{required}/{optional?}')
-                         ->name('bar')
-                         ->and(['required' => '\w+', 'optional' => '\w+']);
 
-            $url = $this->url_generator->toRoute('bar', [
+            $url = $url_generator->toRoute('bar', [
                 'required' => 'baz',
                 'optional' => 'biz',
             ]);
             $this->seeFullUrl('/bar/baz/biz', $url);
 
-            $this->router->get('/foo/{required}/{optional1?}/{optional2?}')
-                         ->name('foobar')
-                         ->and([
-                             'required' => '\w+',
-                             'optional1' => '\w+',
-                             'optional2' => '\w+',
-                         ]);
 
-            $url = $this->url_generator->toRoute('foobar', [
+            $url = $url_generator->toRoute('foobar', [
                 'required' => 'bar',
-                'optional1' => 'baz',
+                'optional1' => 'boo',
                 'optional2' => 'biz',
             ]);
-            $this->seeFullUrl('/foo/bar/baz/biz', $url);
+            $this->seeFullUrl('/baz/bar/boo/biz', $url);
 
 
         }
@@ -260,8 +351,16 @@
 
             $this->expectExceptionMessage('Required route segment: {required} missing');
 
-            $this->router->get('foo/{required}')->name('foo');
-            $url = $this->url_generator->toRoute('foo');
+            $this->createRoutes(function () {
+
+                $this->router->get('foo/{required}')->name('foo');
+
+
+            });
+
+            $url_generator = $this->newUrlGenerator();
+
+            $url = $url_generator->toRoute('foo');
 
 
         }
@@ -273,11 +372,18 @@
             $this->expectExceptionMessage(
                 'The provided value [#] is not valid for the route: [foo]');
 
-            $this->router->get('/foo/{required}')
-                         ->name('foo')
-                         ->and(['required' => '\w+']);
+            $this->createRoutes(function () {
 
-            $this->url_generator->toRoute('foo', ['required' => '#']);
+
+                $this->router->get('/foo/{required}')
+                             ->name('foo')
+                             ->and(['required' => '\w+']);
+
+            });
+
+            $url_generator = $this->newUrlGenerator();
+
+            $url_generator->toRoute('foo', ['required' => '#']);
 
         }
 
@@ -286,8 +392,15 @@
         {
 
 
-            $this->router->get('foo')->name('foo_route')->where(ConditionWithUrl::class);
-            $url = $this->url_generator->toRoute('foo_route');
+            $this->createRoutes(function () {
+
+                $this->router->get('foo')->name('foo_route')->where(ConditionWithUrl::class);
+
+            });
+
+            $url_generator = $this->newUrlGenerator();
+
+            $url = $url_generator->toRoute('foo_route');
             $this->seeFullUrl('/foo/bar', $url);
 
         }
@@ -310,20 +423,26 @@
         public function the_route_contains_segments_that_have_regex_using_curly_brackets_resulting_in_triple_curly_brackets_at_the_end_of_the_url()
         {
 
-            $this->router
-                ->get('/foo/{bar}')
-                ->name('foo')
-                ->and('bar', 'a{2,}');
+            $this->createRoutes(function () {
 
-            $url = $this->url_generator->toRoute('foo', ['bar' => 'aaa']);
+                $this->router
+                    ->get('/foo/{bar}')
+                    ->name('foo')
+                    ->and('bar', 'a{2,}');
+
+            });
+
+            $url_generator = $this->newUrlGenerator();
+
+            $url = $url_generator->toRoute('foo', ['bar' => 'aaa']);
             $this->seeFullUrl('/foo/aaa', $url);
 
-            $url = $this->url_generator->toRoute('foo', ['bar' => 'aaaa']);
+            $url = $url_generator->toRoute('foo', ['bar' => 'aaaa']);
             $this->seeFullUrl('/foo/aaaa', $url);
 
             try {
 
-                $this->url_generator->toRoute('foo', ['bar' => 'a']);
+                $url_generator->toRoute('foo', ['bar' => 'a']);
                 $this->fail('Invalid constraint created a route.');
 
             }
@@ -339,7 +458,7 @@
 
             try {
 
-                $this->url_generator->toRoute('foo', ['bar' => 'bbbb']);
+                $url_generator->toRoute('foo', ['bar' => 'bbbb']);
                 $this->fail('Invalid constraint created a route.');
             }
 
@@ -359,17 +478,24 @@
         public function the_route_contains_segments_that_have_regex_using_curly_brackets_and_square_brackets()
         {
 
-            $this->router
-                ->get('/foo/{bar}')
-                ->name('foo')
-                ->and('bar', 'a{2,}[calvin]');
+            $this->createRoutes(function () {
 
-            $url = $this->url_generator->toRoute('foo', ['bar' => 'aacalvin']);
+                $this->router
+                    ->get('/foo/{bar}')
+                    ->name('foo')
+                    ->and('bar', 'a{2,}[calvin]');
+
+            });
+
+
+            $url_generator = $this->newUrlGenerator();
+
+            $url = $url_generator->toRoute('foo', ['bar' => 'aacalvin']);
             $this->seeFullUrl('/foo/aacalvin', $url);
 
             $this->expectExceptionMessage('The provided value [aajohn] is not valid for the route');
 
-            $this->url_generator->toRoute('foo', ['bar' => 'aajohn']);
+            $url_generator->toRoute('foo', ['bar' => 'aajohn']);
 
         }
 
@@ -377,17 +503,24 @@
         public function problematic_regex_inside_required_and_optional_segments()
         {
 
-            $this->router
-                ->get('/teams/{team}/{player?}')
-                ->name('teams')
-                ->and([
+            $this->createRoutes(function () {
 
-                    'team' => 'm{1}.+united[xy]',
-                    'player' => 'a{2,}[calvin]',
+                $this->router
+                    ->get('/teams/{team}/{player?}')
+                    ->name('teams')
+                    ->and([
 
-                ]);
+                        'team' => 'm{1}.+united[xy]',
+                        'player' => 'a{2,}[calvin]',
 
-            $url = $this->url_generator->toRoute('teams', [
+                    ]);
+
+            });
+
+
+            $url_generator = $this->newUrlGenerator();
+
+            $url = $url_generator->toRoute('teams', [
                 'team' => 'manchesterunitedx',
                 'player' => 'aacalvin',
             ]);
@@ -396,7 +529,7 @@
             // Fails because not starting with m.
             try {
 
-                $this->url_generator->toRoute('teams', [
+                $url_generator->toRoute('teams', [
                     'team' => 'lanchesterunited',
                     'player' => 'aacalvin',
                 ]);
@@ -416,7 +549,7 @@
             // Fails because not using united.
             try {
 
-                $this->url_generator->toRoute('teams', [
+                $url_generator->toRoute('teams', [
                     'team' => 'manchestercityx',
                     'player' => 'aacalvin',
                 ]);
@@ -436,7 +569,7 @@
             // Fails because not using x or y at the end.
             try {
 
-                $this->url_generator->toRoute('teams', [
+                $url_generator->toRoute('teams', [
                     'team' => 'manchesterunitedz',
                     'player' => 'aacalvin',
                 ]);
@@ -456,7 +589,7 @@
             // Fails because optional parameter is present but doesnt match regex, only one a
             try {
 
-                $this->url_generator->toRoute('teams', [
+                $url_generator->toRoute('teams', [
                     'team' => 'manchesterunitedx',
                     'player' => 'acalvin',
                 ]);

@@ -1,89 +1,112 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace Tests\unit\Routing;
+    namespace Tests\unit\Routing;
 
     use Contracts\ContainerAdapter;
+    use http\Header;
     use Mockery;
-    use Tests\UnitTest;
-    use Tests\traits\SetUpRouter;
-    use WPEmerge\Contracts\ResponseFactory;
+    use Tests\stubs\HeaderStack;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateTestSubjects;
+    use Tests\unit\UnitTest;
+    use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Response;
+    use WPEmerge\Routing\Router;
 
-    class ViewRoutesTest extends UnitTest {
+    class ViewRoutesTest extends UnitTest
+    {
 
-		use SetUpRouter;
+        use CreateTestSubjects;
+        use CreateDefaultWpApiMocks;
 
-		/** @var ContainerAdapter */
+        /**
+         * @var ContainerAdapter
+         */
         private $container;
+
+        /** @var Router */
+        private $router;
 
         protected function beforeTestRun()
         {
-            $this->newRouter( $this->container = $this->createContainer() );
+
+            $this->container = $this->createContainer();
+            $this->routes = $this->newRouteCollection();
+            ApplicationEvent::make($this->container);
+            ApplicationEvent::fake();
             WP::setFacadeContainer($this->container);
+            HeaderStack::reset();
+            $this->createBindingsForViewController();
+
+
         }
 
         protected function beforeTearDown()
         {
 
+            ApplicationEvent::setInstance(null);
             Mockery::close();
-            WP::clearResolvedInstances();
-            WP::setFacadeContainer(null);
+            WP::reset();
+            HeaderStack::reset();
+
 
         }
 
-		/** @test */
-		public function view_routes_work() {
+        /** @test */
+        public function view_routes_work()
+        {
 
-			$this->createBindingsForViewController();
+            $this->createRoutes(function () {
 
-			$this->router->view('/foo', 'welcome.wordpress');
-
-			$this->router->loadRoutes();
-
-			$request = $this->request( 'GET', '/foo' );
-
-			$response = $this->router->runRoute($request);
-
-			$this->assertInstanceOf(Response::class, $response );
-			$this->assertContentType('text/html', $response);
-			$this->assertStatusCode(200, $response);
-			$this->assertOutputContains('VIEW:welcome.wordpress,CONTEXT:[]', $response);
-
-		}
-
-		/** @test */
-		public function the_default_values_can_be_customized_for_view_routes() {
-
-			$this->createBindingsForViewController();
-
-			$this->router->view('/foo', 'welcome.wordpress', ['foo' => 'bar', 'bar' => 'baz'], 201, ['Referer' => 'foobar']);
-
-            $this->router->loadRoutes();
+                $this->router->view('/foo', 'welcome.wordpress');
 
 
-            $request = $this->request( 'GET', '/foo' );
+            });
 
-			$response = $this->router->runRoute($request);
+            $request = $this->webRequest('GET', '/foo');
 
-			$this->assertInstanceOf(Response::class, $response );
+            $this->runAndAssertOutput('VIEW:welcome.wordpress,CONTEXT:[]', $request);
 
-			$this->assertHeader('Referer', 'foobar', $response);
-			$this->assertOutput('VIEW:welcome.wordpress,CONTEXT:[foo=>bar,bar=>baz]', $response);
-			$this->assertStatusCode(201, $response);
-
-		}
-
-		private function createBindingsForViewController () {
-
-		    $this->container->instance(ResponseFactory::class, $this->responseFactory());
+            HeaderStack::assertHas('Content-Type', 'text/html');
+            HeaderStack::assertHasStatusCode(200);
 
 
-		}
+        }
 
-	}
+        /** @test */
+        public function the_default_values_can_be_customized_for_view_routes()
+        {
+
+            $this->createRoutes(function () {
+
+                $this->router->view('/foo', 'welcome.wordpress', [
+                    'foo' => 'bar', 'bar' => 'baz',
+                ], 201, ['Referer' => 'foobar']);
+
+            });
+
+
+            $request = $this->webRequest('GET', '/foo');
+
+            $this->runAndAssertOutput('VIEW:welcome.wordpress,CONTEXT:[foo=>bar,bar=>baz]', $request);
+
+            HeaderStack::assertHas('Referer', 'foobar');
+            HeaderStack::assertHasStatusCode(201);
+
+        }
+
+        private function createBindingsForViewController()
+        {
+
+            $this->container->instance(HttpResponseFactory::class, $this->createResponseFactory());
+
+
+        }
+
+    }
 

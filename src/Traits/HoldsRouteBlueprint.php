@@ -7,7 +7,6 @@
 	namespace WPEmerge\Traits;
 
 	use WPEmerge\Routing\Route;
-	use WPEmerge\Routing\RouteDecorator;
 	use WPEmerge\Support\Arr;
 
 	trait HoldsRouteBlueprint {

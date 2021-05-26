@@ -6,19 +6,22 @@
 
 	namespace WPEmerge\ExceptionHandling\Exceptions;
 
-    use WPEmerge\Contracts\ResponseFactory;
-    use WPEmerge\Http\Request;
+    use Throwable;
 
-	class AuthorizationException extends Exception {
+	class AuthorizationException extends HttpException {
 
-		public $redirect_to;
 
-		public function render ( ResponseFactory $response, Request $request ) {
+	    public function __construct( ?string $message = null, Throwable $previous = null, ?int $code = 0)
+        {
+            parent::__construct(403, $message, $previous, $code);
+        }
 
-		    return $response
-                ->html('You are not allowed to do this perform this action.')
-                ->withStatus(419);
-
-		}
+        // public function render ( HttpResponseFactory $response, Request $request ) {
+        //
+		//     return $response
+        //         ->html('You are not allowed to do this perform this action.')
+        //         ->withStatus(419);
+        //
+		// }
 
 	}

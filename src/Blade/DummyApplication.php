@@ -9,6 +9,9 @@
     use Closure;
     use Illuminate\Contracts\Foundation\Application;
 
+    /**
+     * @codeCoverageIgnore
+     */
     class DummyApplication implements Application
     {
 

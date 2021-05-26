@@ -12,7 +12,7 @@
     trait PreparesRouteForExport
     {
 
-        private function serializeAction($action)
+        private function serializeAttribute($action)
         {
 
             if ($action instanceof Closure && class_exists(SerializableClosure::class)) {
@@ -30,7 +30,9 @@
         private function prepareForVarExport(array $asArray) : array
         {
 
-            $asArray['action'] = $this->serializeAction($asArray['action']);
+            $asArray['action'] = $this->serializeAttribute($asArray['action']);
+
+            $asArray['wp_query_filter'] = $this->serializeAttribute($asArray['wp_query_filter']);
 
             return $asArray;
 

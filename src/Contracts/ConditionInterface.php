@@ -6,7 +6,7 @@
 
 	namespace WPEmerge\Contracts;
 
-	use WPEmerge\Http\Request;
+	use WPEmerge\Http\Psr7\Request;
 
 
 	interface ConditionInterface {

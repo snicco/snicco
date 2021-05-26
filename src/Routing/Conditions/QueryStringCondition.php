@@ -7,7 +7,7 @@
 	namespace WPEmerge\Routing\Conditions;
 
 	use WPEmerge\Contracts\ConditionInterface;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class QueryStringCondition implements ConditionInterface{
 
@@ -42,7 +42,7 @@
 
             $failed_value = $this->query_string_arguments->first(function ($value, $key) use ($query_args) {
 
-                return $value !== $query_args[$key];
+                return $value !== rawurldecode($query_args[$key]);
 
             });
 

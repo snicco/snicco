@@ -6,13 +6,13 @@
 
 	namespace Tests\integration\ServiceProviders;
 
-    use Tests\IntegrationTest;
+    use Tests\integration\IntegrationTest;
     use Tests\stubs\TestApp;
 	use WPEmerge\Factories\ConditionFactory;
 	use WPEmerge\Factories\RouteActionFactory;
 	use WPEmerge\Factories\ViewComposerFactory;
-	use WPEmerge\Handlers\ControllerAction;
-	use WPEmerge\ViewComposers\ViewComposer;
+	use WPEmerge\Routing\ControllerAction;
+	use WPEmerge\View\ViewComposer;
 
 	class FactoryServiceProviderTest extends IntegrationTest {
 
@@ -36,9 +36,9 @@
 
             $this->newTestApp([
                 'controllers' => [
-                    'web' => 'Tests\stubs\Controllers\Web',
-                    'admin' => 'Tests\stubs\Controllers\Admin',
-                    'ajax' => 'Tests\stubs\Controllers\Ajax',
+                    'web' => 'Tests\fixtures\Controllers\Web',
+                    'admin' => 'Tests\fixtures\Controllers\Admin',
+                    'ajax' => 'Tests\fixtures\Controllers\Ajax',
                 ]
             ]);
 
@@ -59,7 +59,7 @@
 
             $this->newTestApp([
                 'composers' => [
-                    'Tests\stubs\ViewComposers',
+                    'Tests\fixtures\ViewComposers',
                 ]
             ]);
 

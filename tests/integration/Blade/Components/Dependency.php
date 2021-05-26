@@ -6,7 +6,7 @@
 
     namespace Tests\integration\Blade\Components;
 
-    use Tests\stubs\Foo;
+    use Tests\fixtures\TestDependencies\Foo;
     use WPEmerge\Blade\BladeComponent;
 
     class Dependency extends BladeComponent

@@ -6,31 +6,41 @@
 
 	namespace WPEmerge\ExceptionHandling;
 
-	use WPEmerge\Events\BodySent;
-	use WPEmerge\Events\IncomingAjaxRequest;
+    use WPEmerge\Events\IncomingAjaxRequest;
+    use WPEmerge\Events\ResponseSent;
 
-	class ShutdownHandler {
+    class ShutdownHandler {
 
 
-		public function exceptionHandled () {
+        /**
+         * @var string
+         */
+        private $request_type;
+
+        public function __construct( string $request_type )
+        {
+            $this->request_type = $request_type;
+        }
+
+        public function unrecoverableException () {
 
 		  $this->terminate();
 
 		}
 
-		// We need to terminate ajax scripts manually because if we dont Wordpress will
-		// call wp_die() and always generate a 200 status code.
-		public function shutdownWp( BodySent $response_sent_event ) {
+		public function handle( ResponseSent $response_sent) {
 
-			if ( $response_sent_event->request->getType() === IncomingAjaxRequest::class ) {
+		    if ( $this->request_type === IncomingAjaxRequest::class  ) {
 
-				exit();
+		        $this->terminate();
 
-			}
+            }
 
-		}
 
-		public function terminate() {
+        }
+
+
+		private function terminate() {
 
 		    exit();
 

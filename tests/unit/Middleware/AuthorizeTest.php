@@ -7,12 +7,12 @@
 	namespace Tests\unit\Middleware;
 
     use Mockery;
-    use Tests\UnitTest;
+    use Tests\unit\UnitTest;
 	use Tests\stubs\TestRequest;
-    use Tests\traits\AssertsResponse;
+    use Tests\helpers\AssertsResponse;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\HttpResponseFactory;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Middleware\Authenticate;
 	use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
     use WPEmerge\Middleware\Authorize;
@@ -38,7 +38,7 @@
         private $request;
 
         /**
-         * @var HttpResponseFactory
+         * @var ResponseFactory
          */
         private $response;
 
@@ -46,12 +46,12 @@
         protected function beforeTestRun()
         {
 
-            $response = $this->responseFactory();
+            $response = $this->createResponseFactory();
             $this->route_action = new Delegate(function () use ($response) {
 
                 return $response->html('FOO');
 
-            },$this->createContainer());
+            });
             $this->request = TestRequest::from('GET', '/foo');
             WP::shouldReceive('loginUrl')->andReturn('foobar.com')->byDefault();
 

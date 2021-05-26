@@ -8,6 +8,11 @@
 
     use Psr\Http\Message\ResponseInterface;
 
+    use function connection_status;
+    use function header;
+    use function headers_sent;
+
+
     /**
      *
      * Modified Version of Slims Response Emitter.
@@ -45,13 +50,15 @@
         {
 
             $isEmpty = $this->isResponseEmpty($response);
-            if (headers_sent() === false) {
+            if ($headers_not_sent = headers_sent() === false) {
                 $this->emitStatusLine($response);
                 $this->emitHeaders($response);
             }
 
-            if ( ! $isEmpty ) {
+            if ( ! $isEmpty && $headers_not_sent ) {
+
                 $this->emitBody($response);
+
             }
         }
 
@@ -60,10 +67,10 @@
          *
          * @param  ResponseInterface  $response
          */
-        public function emitHeaders(ResponseInterface $response) : void
+        protected function emitHeaders(ResponseInterface $response) : void
         {
 
-            if (headers_sent()) {
+            if ( headers_sent() ) {
 
                 return;
 
@@ -78,8 +85,6 @@
                 }
             }
 
-            $this->emitStatusLine($response);
-
         }
 
         /**
@@ -87,7 +92,7 @@
          *
          * @param  ResponseInterface  $response
          */
-        private function emitStatusLine(ResponseInterface $response) : void
+        protected function emitStatusLine(ResponseInterface $response) : void
         {
 
             $statusLine = sprintf(
@@ -104,7 +109,7 @@
          *
          * @param  ResponseInterface  $response
          */
-        public function emitBody(ResponseInterface $response) : void
+        protected function emitBody(ResponseInterface $response) : void
         {
 
             $body = $response->getBody();
@@ -151,7 +156,7 @@
          *
          * @return bool
          */
-        private function isResponseEmpty(ResponseInterface $response) : bool
+        protected function isResponseEmpty(ResponseInterface $response) : bool
         {
 
             if (in_array($response->getStatusCode(), [204, 205, 304], true)) {

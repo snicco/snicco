@@ -6,12 +6,11 @@
 
     namespace WPEmerge\Contracts;
 
-    use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RouteResult;
+    use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Support\Arr;
 
     abstract class AbstractRouteCollection
@@ -26,41 +25,8 @@
          */
         protected $action_factory;
 
-        /** @var RouteResult|null */
+        /** @var RoutingResult|null */
         private $route_result;
-
-        public function match(Request $request) : RouteResult
-        {
-
-            $path = $this->appendSpecialWpSuffixesToPath($request);
-
-            $result = $this->route_matcher->find($request->getMethod(), $path);
-
-            if ( ! $route = $result->route() ) {
-
-                return $this->route_result = new RouteResult(null);
-
-            }
-
-            $route = $this->giveFactories($route)->instantiateConditions();
-
-            if ( ! $route->satisfiedBy($request) ) {
-
-                return $this->route_result = new RouteResult(null);
-
-            }
-
-            $route->instantiateAction();
-
-            return $result;
-
-        }
-
-        public function hasResult() :?RouteResult {
-
-            return $this->route_result;
-
-        }
 
         abstract public function add(Route $route) : Route;
 
@@ -69,6 +35,49 @@
         abstract public function withWildCardUrl(string $method) : array;
 
         abstract public function loadIntoDispatcher(string $method = null) :void;
+
+        public function matchForQueryFiltering (Request $request) :RoutingResult {
+
+            $result = $this->match($request);
+
+            $this->route_result = $result;
+
+            return $result;
+
+        }
+
+        public function match(Request $request) : RoutingResult
+        {
+
+            if (  $this->route_result ) {
+
+                return $this->route_result;
+
+            }
+
+            $path = rawurldecode($request->path());
+
+            $result = $this->route_matcher->find($request->getMethod(), $path);
+
+            if ( ! $route = $result->route() ) {
+
+                return new RoutingResult(null);
+
+            }
+
+            $route = $this->giveFactories($route)->instantiateConditions();
+
+            if ( ! $route->satisfiedBy($request) ) {
+
+                return new RoutingResult(null);
+
+            }
+
+            $route->instantiateAction();
+
+            return $result;
+
+        }
 
         protected function addToCollection(Route $route)
         {
@@ -134,28 +143,6 @@
 
 
         }
-
-        /** @todo Make this function a middleware that adds to a request attribute */
-        private function appendSpecialWpSuffixesToPath(Request $request) : string
-        {
-
-            $path = $request->path();
-
-            if (WP::isAdmin() && ! WP::isAdminAjax()) {
-
-                $path = $path.'/'.$request->query('page', '');
-
-            }
-
-            if (WP::isAdminAjax()) {
-
-                $path = $path.'/'.$request->parsedBody('action', $request->query('action', ''));
-
-            }
-
-            return $path;
-        }
-
 
 
     }

@@ -7,37 +7,47 @@
     namespace Tests\unit\Routing;
 
     use Mockery;
-    use Tests\UnitTest;
-    use Tests\traits\CreateWpTestUrls;
-    use Tests\traits\SetUpRouter;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateTestSubjects;
+    use Tests\unit\UnitTest;
+    use Tests\helpers\CreatesWpUrls;
+    use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Events\IncomingAdminRequest;
+    use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\ExceptionHandling\Exceptions\RouteLogicException;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
-    use WPEmerge\Routing\UrlGenerator;
 
     class AjaxRoutesTest extends UnitTest
     {
 
-        use SetUpRouter;
-        use CreateWpTestUrls;
+        use CreateTestSubjects;
+        use CreatesWpUrls;
+        use CreateDefaultWpApiMocks;
+
+        private $router;
+
+        private $container;
 
         protected function beforeTestRun()
         {
 
-            $this->newRouter($c = $this->createContainer());
-            WP::setFacadeContainer($c);
+            $this->container = $this->createContainer();
+            $this->routes = $this->newRouteCollection();
+            ApplicationEvent::make($this->container);
+            ApplicationEvent::fake();
+            WP::setFacadeContainer($this->container);
             WP::shouldReceive('isAdmin')->andReturnTrue();
             WP::shouldReceive('isAdminAjax')->andReturnTrue();
-
 
         }
 
         protected function beforeTearDown()
         {
 
-            WP::setFacadeContainer(null);
-            WP::clearResolvedInstances();
             Mockery::close();
+            ApplicationEvent::setInstance(null);
+            WP::reset();
+
         }
 
 
@@ -45,47 +55,46 @@
         public function ajax_routes_can_be_matched_by_passing_the_action_as_the_route_parameter()
         {
 
-            $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
+            $this->createRoutes(function () {
 
-                $this->router->post('foo_action')->handle(function () {
+                $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
 
-                    return 'FOO_ACTION';
+                    $this->router->post('foo_action')->handle(function () {
+
+                        return 'FOO_ACTION';
+
+                    });
 
                 });
 
             });
 
-            $this->router->loadRoutes();
-
-
-            $ajax_request = $this->ajaxRequest('foo_action');
-
-            $response = $this->router->runRoute($ajax_request);
-            $this->assertOutput('FOO_ACTION', $response);
+            $ajax_request = new IncomingAjaxRequest($this->ajaxRequest('foo_action'));
+            $this->runAndAssertOutput('FOO_ACTION', $ajax_request);
 
 
         }
 
         /** @test */
-        public function a_trailing_suffix_for_admin_routes_is_stripped () {
+        public function a_trailing_suffix_for_admin_routes_is_stripped()
+        {
 
-            $this->router->group(['prefix' => '/wp-admin/admin-ajax.php/'], function () {
+            $this->createRoutes(function () {
 
-                $this->router->post('/foo_action/')->handle(function () {
+                $this->router->group(['prefix' => '/wp-admin/admin-ajax.php/'], function () {
 
-                    return 'FOO_ACTION';
+                    $this->router->post('/foo_action/')->handle(function () {
+
+                        return 'FOO_ACTION';
+
+                    });
 
                 });
 
             });
 
-            $this->router->loadRoutes();
-
-
-            $ajax_request = $this->ajaxRequest('foo_action');
-
-            $response = $this->router->runRoute($ajax_request);
-            $this->assertOutput('FOO_ACTION', $response);
+            $ajax_request = new IncomingAjaxRequest($this->ajaxRequest('foo_action'));
+            $this->runAndAssertOutput('FOO_ACTION', $ajax_request);
 
         }
 
@@ -93,20 +102,22 @@
         public function ajax_routes_with_the_wrong_action_dont_match()
         {
 
-            $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
+            $this->createRoutes(function () {
 
-                $this->router->post('foo_action')->handle(function () {
+                $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
 
-                    return 'FOO_ACTION';
+                    $this->router->post('foo_action')->handle(function () {
+
+                        return 'FOO_ACTION';
+
+                    });
 
                 });
 
             });
 
-            $ajax_request = $this->ajaxRequest('bar_action');
-
-            $response = $this->router->runRoute($ajax_request);
-            $this->assertNullResponse($response);
+            $ajax_request = new IncomingAjaxRequest($this->ajaxRequest('bar_action'));
+            $this->runAndAssertEmptyOutput($ajax_request);
 
         }
 
@@ -114,24 +125,30 @@
         public function ajax_routes_can_be_matched_if_the_action_parameter_is_in_the_query()
         {
 
-            $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
+            $this->createRoutes(function () {
 
-                $this->router->get('foo_action')->handle(function () {
+                $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
 
-                    return 'FOO_ACTION';
+                    $this->router->get('foo_action')->handle(function () {
+
+                        return 'FOO_ACTION';
+
+                    });
 
                 });
 
             });
-            $this->router->loadRoutes();
 
             $ajax_request = $this->ajaxRequest('foo_action', 'GET')
                                  ->withParsedBody([])
                                  ->withQueryParams(['action' => 'foo_action']);
 
+            $this->runAndAssertOutput('FOO_ACTION', new IncomingAdminRequest($ajax_request));
 
-            $response = $this->router->runRoute($ajax_request);
-            $this->assertOutput('FOO_ACTION', $response);
+            $this->runAndAssertEmptyOutput(
+                new IncomingAdminRequest($ajax_request->withQueryParams(['action' => 'bar_action']))
+            );
+
 
         }
 
@@ -139,21 +156,24 @@
         public function if_the_action_is_not_correct_but_the_url_is_the_route_will_not_match()
         {
 
-            $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
+            $this->createRoutes(function () {
 
-                $this->router->get('foo_action')->handle(function () {
+                $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
 
-                    return 'FOO_ACTION';
+                    $this->router->get('foo_action')->handle(function () {
+
+                        return 'FOO_ACTION';
+
+                    });
 
                 });
 
             });
 
             $ajax_request = $this->ajaxRequest('foo_action', 'GET', 'admin-ajax.php/foo_action')
-                ->withParsedBody(['action' => 'bogus']);
+                                 ->withParsedBody(['action' => 'bogus']);
 
-            $response = $this->router->runRoute($ajax_request);
-            $this->assertNullResponse( $response );
+            $this->runAndAssertEmptyOutput(new IncomingAjaxRequest($ajax_request));
 
         }
 
@@ -161,21 +181,22 @@
         public function the_action_is_passed_to_the_route_handler()
         {
 
-            $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
+            $this->createRoutes(function () {
 
-                $this->router->post('bar_action')->handle(function ($request, $action) {
+                $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
 
-                    return strtoupper($action);
+                    $this->router->post('bar_action')->handle(function ($request, $action) {
+
+                        return strtoupper($action);
+
+                    });
 
                 });
 
             });
-            $this->router->loadRoutes();
 
             $ajax_request = $this->ajaxRequest('bar_action');
-
-            $response = $this->router->runRoute($ajax_request);
-            $this->assertOutput('BAR_ACTION', $response);
+            $this->runAndAssertOutput('BAR_ACTION', new IncomingAjaxRequest($ajax_request));
 
         }
 
@@ -183,23 +204,25 @@
         public function the_action_is_passed_to_the_route_handler_for_get_requests()
         {
 
-            $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
+            $this->createRoutes(function () {
 
-                $this->router->get('bar_action')->handle(function ($request, $action) {
+                $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
 
-                    return strtoupper($action);
+                    $this->router->get('bar_action')->handle(function ($request, $action) {
+
+                        return strtoupper($action);
+
+                    });
 
                 });
 
             });
-            $this->router->loadRoutes();
 
             $ajax_request = $this->ajaxRequest('bar_action', 'GET')
-                ->withParsedBody([])
-                ->withQueryParams(['action' => 'bar_action']);
+                                 ->withParsedBody([])
+                                 ->withQueryParams(['action' => 'bar_action']);
 
-            $response = $this->router->runRoute($ajax_request);
-            $this->assertOutput('BAR_ACTION', $response);
+            $this->runAndAssertOutput('BAR_ACTION', new IncomingAjaxRequest($ajax_request));
 
         }
 
@@ -207,21 +230,25 @@
         public function ajax_routes_can_be_reversed()
         {
 
-            $this->router->group([
-                'prefix' => 'wp-admin/admin-ajax.php', 'name' => 'ajax',
-            ], function () {
+            $this->createRoutes(function () {
 
-                $this->router->post('foo_action')->handle(function () {
+                $this->router->group([
+                    'prefix' => 'wp-admin/admin-ajax.php', 'name' => 'ajax',
+                ], function () {
 
-                    //
+                    $this->router->post('foo_action')->handle(function () {
 
-                })->name('foo');
+                        //
+
+                    })->name('foo');
+
+                });
 
             });
 
             $expected = $this->ajaxUrl();
 
-            $this->assertSame($expected, $this->urlGenerator()->toRoute('ajax.foo'));
+            $this->assertSame($expected, $this->newUrlGenerator()->toRoute('ajax.foo'));
 
         }
 
@@ -233,21 +260,23 @@
               ->with('action', 'foo_action', $this->ajaxUrl())
               ->andReturn($this->ajaxUrl().'?action=foo_action');
 
-            $this->router->group([
-                'prefix' => 'wp-admin/admin-ajax.php', 'name' => 'ajax',
-            ], function () {
+            $this->createRoutes(function () {
 
-                $this->router->get('foo_action')->handle(function () {
+                $this->router->group(['prefix' => 'wp-admin/admin-ajax.php', 'name' => 'ajax'], function () {
 
-                    //
+                    $this->router->get('foo_action', function () {
+                        //
+                    })->name('foo');
 
-                })->name('foo');
+                });
 
             });
 
+
             $expected = $this->ajaxUrl().'?action=foo_action';
 
-            $this->assertSame($expected, $this->urlGenerator()->toRoute('ajax.foo', ['method' => 'GET']));
+            $this->assertSame($expected, $this->newUrlGenerator()
+                                              ->toRoute('ajax.foo', ['method' => 'GET']));
 
         }
 
@@ -258,29 +287,33 @@
             $this->expectException('Route: ajax.foo does not respond to GET requests.');
             $this->expectException(RouteLogicException::class);
 
-            $this->router->group([
-                'prefix' => 'wp-admin/admin-ajax.php', 'name' => 'ajax',
-            ], function () {
+            $this->createRoutes(function () {
 
-                $this->router->post('foo_action')->handle(function () {
 
-                    //
+                $this->router->group([
+                    'prefix' => 'wp-admin/admin-ajax.php', 'name' => 'ajax',
+                ], function () {
 
-                })->name('foo');
+                    $this->router->post('foo_action')->handle(function () {
+
+                        //
+
+                    })->name('foo');
+
+                });
+
 
             });
 
+
+
             $expected = $this->ajaxUrl().'?action=foo_action';
 
-            $this->assertSame($expected, $this->urlGenerator()->toRoute('ajax.foo', ['method' => 'GET']));
+            $this->assertSame($expected, $this->newUrlGenerator()
+                                              ->toRoute('ajax.foo', ['method' => 'GET']));
 
         }
 
 
-        private function urlGenerator() : UrlGenerator
-        {
-
-            return new UrlGenerator(new FastRouteUrlGenerator($this->routes));
-        }
 
     }

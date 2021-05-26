@@ -14,7 +14,7 @@
     use Tests\integration\Blade\Components\InlineComponent;
     use Tests\integration\Blade\Components\ToUppercaseComponent;
     use Tests\integration\Blade\traits\AssertBladeView;
-    use Tests\IntegrationTest;
+    use Tests\integration\IntegrationTest;
     use Tests\stubs\TestApp;
 
     class BladeLayoutsTest extends IntegrationTest

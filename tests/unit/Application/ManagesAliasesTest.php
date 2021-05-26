@@ -9,8 +9,8 @@
 	use PHPUnit\Framework\TestCase;
 	use SniccoAdapter\BaseContainerAdapter;
     use stdClass;
-    use Tests\stubs\Foo;
-    use Tests\traits\CreateContainer;
+    use Tests\fixtures\TestDependencies\Foo;
+    use Tests\helpers\CreateContainer;
     use WPEmerge\Application\ManagesAliases;
 
 	class ManagesAliasesTest extends TestCase {

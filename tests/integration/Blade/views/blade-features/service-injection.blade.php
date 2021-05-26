@@ -1,3 +1,3 @@
-@service('service', \Tests\stubs\Foo)
+@service('service', \Tests\fixtures\TestDependencies\Foo)
 
 {{$service->foo}}

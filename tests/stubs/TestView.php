@@ -7,7 +7,6 @@
 	namespace Tests\stubs;
 
 	use WPEmerge\Contracts\PhpViewInterface;
-	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Support\Arr;
 

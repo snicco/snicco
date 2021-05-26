@@ -10,7 +10,7 @@
     use Illuminate\Support\ViewErrorBag;
     use Tests\integration\Blade\traits\AssertBladeView;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\IntegrationTest;
+    use Tests\integration\IntegrationTest;
     use Tests\stubs\TestApp;
 
     class CustomDirectivesTest extends IntegrationTest

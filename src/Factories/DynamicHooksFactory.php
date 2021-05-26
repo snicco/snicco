@@ -13,17 +13,15 @@
 	use WPEmerge\Events\IncomingAjaxRequest;
 
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
 
 	class DynamicHooksFactory {
-
 
 		/**
 		 * @var WordpressDispatcher
 		 */
 		private $dispatcher;
-
 
 		public function __construct( Dispatcher $dispatcher ) {
 
@@ -44,7 +42,6 @@
 
 
 		}
-
 
 		/**
 		 * Get page hook.
@@ -90,17 +87,17 @@
 
 			if ( $hook = $this->getAdminPageHook() ) {
 
-				$this->dispatcher->listen( 'load-' . $hook, function () use ( $request ) {
+                $this->dispatcher->listen( 'load-' . $hook, function () use ( $request ) {
 
-					IncomingAdminRequest::dispatch([$request]);
+                    IncomingAdminRequest::dispatch([$request]);
 
-				} );
+                } );
 
-				$this->dispatcher->listen( $hook, function () {
+                $this->dispatcher->listen( $hook, function () use ( $request ) {
 
-					AdminBodySendable::dispatch();
+                    AdminBodySendable::dispatch([$request]);
 
-				} );
+                } );
 
 			}
 

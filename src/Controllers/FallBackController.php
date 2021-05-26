@@ -7,13 +7,18 @@
     namespace WPEmerge\Controllers;
 
     use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Contracts\ResponseFactory;
-    use WPEmerge\Http\NullResponse;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Http\Responses\NullResponse;
+    use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Middleware\MiddlewareStack;
+    use WPEmerge\Routing\Pipeline;
     use WPEmerge\Routing\Route;
+    use WPEmerge\Traits\GathersMiddleware;
 
     class FallBackController
     {
+
+        use GathersMiddleware;
 
         /**
          * @var ResponseFactory
@@ -24,17 +29,27 @@
          * @var callable
          */
         private $fallback_handler;
+        /**
+         * @var Pipeline
+         */
+        private $pipeline;
+        /**
+         * @var MiddlewareStack
+         */
+        private $middleware_stack;
 
-        public function __construct(ResponseFactory $response) {
+        public function __construct(ResponseFactory $response, Pipeline $pipeline, MiddlewareStack $middleware_stack) {
 
             $this->response = $response;
+            $this->pipeline = $pipeline;
+            $this->middleware_stack = $middleware_stack;
 
         }
 
         public function handle(Request $request, AbstractRouteCollection $routes)
         {
 
-            $possible_routes = collect($routes->withWildCardUrl($request->getMethod()));
+            $possible_routes = collect($routes->withWildCardUrl( $request->getMethod() ) );
 
             /** @var Route $route */
             $route = $possible_routes->first(function (Route $route) use ($request) {
@@ -45,7 +60,7 @@
 
             });
 
-            if ( ! $route) {
+            if ( ! $route ) {
 
                 return ($this->fallback_handler)
                     ? call_user_func($this->fallback_handler, $request)
@@ -53,14 +68,22 @@
 
             }
 
-            return $route->instantiateAction()->run($request);
+            $route->instantiateAction();
+
+            $middleware = $this->middleware_stack->createFor($route, $request);
+
+            return $this->pipeline
+                ->send($request)
+                ->through($middleware)
+                ->then($this->runRoute($route));
+
 
         }
 
         public function blankResponse() : NullResponse
         {
 
-            return $this->response->null();
+            return $this->response->queryFiltered();
 
         }
 
@@ -69,5 +92,17 @@
             $this->fallback_handler = $fallback_handler;
         }
 
+        private function runRoute(Route $route ) : \Closure
+        {
+
+            return function ( Request $request ) use ($route) {
+
+                $response = $route->run($request);
+
+                return $this->response->toResponse($response);
+
+            };
+
+        }
 
     }

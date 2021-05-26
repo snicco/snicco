@@ -4,26 +4,6 @@
   "type": "library",
   "keywords": ["wordpress", "framework", "controller", "template", "view", "request", "response", "middleware", "wpemerge"],
   "license": "GPL-2.0-only",
-  "homepage": "https://wpemerge.com/",
-  "authors": [
-    {
-      "name": "Atanas Angelov",
-      "email": "hi@atanas.dev",
-      "homepage": "https://atanas.dev/",
-      "role": "Developer"
-    },
-    {
-      "name": "htmlBurger",
-      "email": "info@htmlburger.com",
-      "homepage": "http://htmlburger.com/",
-      "role": "Developer"
-    }
-  ],
-  "support": {
-    "source": "https://github.com/htmlburger/wpemerge",
-    "issues": "https://github.com/htmlburger/wpemerge/issues",
-    "email": "wordpress@htmlburger.com"
-  },
   "minimum-stability": "dev",
   "repositories":
   [
@@ -49,17 +29,15 @@
     "php": "^7.3",
     "ext-json": "*",
     "calvinalkan/base-container": "0.1.*",
+    "calvinalkan/better-wordpress-hooks": "0.1.8",
     "illuminate/collections": "8.35.1",
     "illuminate/config": "8.35.1",
-    "symfony/http-foundation": "5.2.7",
-    "symfony/finder": "^5.0-stable",
     "nikic/fast-route": "1.3.0",
-    "psr/log": "1.1.4",
     "nyholm/psr7": "1.4.0",
     "nyholm/psr7-server": "^1.0-stable",
+    "psr/log": "1.1.4",
     "psr/http-server-middleware": "1.0.1",
-    "slim/csrf": "1.2.1",
-    "calvinalkan/better-wordpress-hooks": "0.1.8"
+    "symfony/finder": "^5.0-stable"
   },
   "require-dev": {
     "opis/closure": "3.6.2",
@@ -70,7 +48,8 @@
     "phpunit/phpunit": "^9.0",
     "calvinalkan/better-wordpress-database": "dev-master",
     "lucatume/wp-browser": "dev-better-env-names",
-    "illuminate/view": "dev-feature_view_interface_instead_of_view_implementation"
+    "illuminate/view": "dev-feature_view_interface_instead_of_view_implementation",
+    "adriansuter/php-autoload-override": "^1.2"
   },
 
   "suggest": {
@@ -82,11 +61,19 @@
 
   "autoload": {
     "psr-4": {
+      "WPEmerge\\": "src/"
+    },
+    "files": [
+      "config.php"
+    ]
+  },
+  "autoload-dev": {
+    "psr-4": {
       "WPEmerge\\": "src/",
       "Tests\\" : "tests/"
     },
     "files": [
-      "config.php"
+      "tests/stubs/FunctionOverride.php"
     ]
   }
 }

@@ -12,7 +12,7 @@
 	class MiddlewareResolver {
 
 		/**
-		 * @var \Contracts\ContainerAdapter
+		 * @var ContainerAdapter
 		 */
 		private $container;
 
@@ -29,7 +29,7 @@
 				return [];
 			}
 
-			/** @var \WPEmerge\Http\Controller $controller_instance */
+			/** @var Controller $controller_instance */
 			$controller_instance = $this->container->make( $class );
 
 			// Dont resolve this controller again when we hit the route.

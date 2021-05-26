@@ -13,12 +13,12 @@
 	use Whoops\Handler\PrettyPageHandler;
 	use Whoops\Run;
 	use Whoops\RunInterface;
-    use WPEmerge\Contracts\ResponseFactory;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
 	use WPEmerge\ExceptionHandling\DebugErrorHandler;
 	use WPEmerge\ExceptionHandling\ProductionErrorHandler;
+    use WPEmerge\Http\ResponseFactory;
 
-	class ErrorHandlerFactory {
+    class ErrorHandlerFactory {
 
 		const ALLOWED_EDITORS = [
 			'emacs',

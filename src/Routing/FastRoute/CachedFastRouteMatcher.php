@@ -9,7 +9,7 @@
 	use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
 	use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RouteResult;
+    use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Support\Str;
     use WPEmerge\Traits\PreparesRouteForExport;
 
@@ -49,13 +49,13 @@
 
 		public function add( Route $route , $methods) {
 
-		    $route->handle($this->serializeAction($route->getAction()));
+		   $this->serializeRouteAttributes($route);
 
 			$this->uncached_matcher->add( $route , $methods );
 
 		}
 
-		public function find( string $method, string $path ) :RouteResult {
+		public function find( string $method, string $path ) :RoutingResult {
 
 			if ( $this->route_cache ) {
 
@@ -91,6 +91,17 @@ declare(strict_types=1); return '. var_export( $route_data, true ) . ';'
 
 		}
 
+        private function serializeRouteAttributes(Route $route) {
+
+            $route->handle($this->serializeAttribute($route->getAction()));
+
+            if ( ( $query_filter = $route->getQueryFilter() ) instanceof \Closure) {
+
+                $route->setQueryFilter($this->serializeAttribute($query_filter));
+
+            }
+
+        }
 
 
 	}

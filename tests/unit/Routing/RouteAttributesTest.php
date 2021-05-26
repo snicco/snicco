@@ -6,73 +6,72 @@
 
     namespace Tests\unit\Routing;
 
-    use FastRoute\RouteCollector;
+    use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\UnitTest;
-    use Tests\traits\SetUpRouter;
-    use Tests\stubs\Middleware\BarMiddleware;
-    use Tests\stubs\Middleware\FooMiddleware;
-    use Tests\stubs\Middleware\GlobalMiddleware;
+    use Tests\helpers\CreateTestSubjects;
+    use Tests\unit\UnitTest;
+    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Request;
-
-    use function FastRoute\simpleDispatcher;
+    use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Routing\Router;
+    use Tests\helpers\CreateDefaultWpApiMocks;
 
     class RouteAttributesTest extends UnitTest
     {
 
-        use SetUpRouter;
+        use CreateTestSubjects;
+        use CreateDefaultWpApiMocks;
 
-        const controller_namespace = 'Tests\stubs\Controllers\Web';
+        const controller_namespace = 'Tests\fixtures\Controllers\Web';
+
+        /**
+         * @var ContainerAdapter
+         */
+        private $container;
+
+        /** @var Router */
+        private $router;
 
         protected function beforeTestRun()
         {
 
-            $this->newRouter($c = $this->createContainer());
-            WP::setFacadeContainer($c);
+            $this->container = $this->createContainer();
+            $this->routes = $this->newRouteCollection();
+            ApplicationEvent::make($this->container);
+            ApplicationEvent::fake();
+            WP::setFacadeContainer($this->container);
+
         }
 
         protected function beforeTearDown()
         {
 
+            ApplicationEvent::setInstance(null);
             Mockery::close();
-            WP::clearResolvedInstances();
-            WP::setFacadeContainer(null);
+            WP::reset();
 
         }
 
-
-        /**
-         *
-         *
-         *
-         *
-         * BASIC ROUTING
-         *
-         *
-         *
-         *
-         */
 
         /** @test */
         public function basic_get_routing_works()
         {
 
-            $this->router->get('/foo')->handle(function () {
+            $this->createRoutes(function () {
 
-                return 'foo';
+                $this->router->get('/foo', function () {
+
+                    return 'foo';
+
+                });
 
             });
 
-            $this->router->loadRoutes();
+            $request = $this->webRequest('GET', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
-            $response = $this->router->runRoute($this->request('GET', '/foo'));
-
-            $this->assertOutput('foo', $response);
-
-            $response = $this->router->runRoute($this->request('HEAD', '/foo'));
-
-            $this->assertOutput('foo', $response);
+            $request = $this->webRequest('HEAD', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
 
         }
@@ -81,17 +80,19 @@
         public function basic_post_routing_works()
         {
 
-            $this->router->post('/foo')->handle(function () {
+            $this->createRoutes(function () {
 
-                return 'foo';
+                $this->router->post('/foo', function () {
+
+                    return 'foo';
+
+                });
 
             });
 
-            $this->router->loadRoutes();
+            $request = $this->webRequest('POST', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
-            $response = $this->router->runRoute($this->request('post', '/foo'));
-
-            $this->assertOutput('foo', $response);
 
         }
 
@@ -99,17 +100,18 @@
         public function basic_put_routing_works()
         {
 
-            $this->router->put('/foo')->handle(function () {
+            $this->createRoutes(function () {
 
-                return 'foo';
+                $this->router->put('/foo', function () {
+
+                    return 'foo';
+
+                });
 
             });
 
-            $this->router->loadRoutes();
-
-            $response = $this->router->runRoute($this->request('put', '/foo'));
-
-            $this->assertOutput('foo', $response);
+            $request = $this->webRequest('PUT', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
         }
 
@@ -117,17 +119,18 @@
         public function basic_patch_routing_works()
         {
 
-            $this->router->patch('/foo')->handle(function () {
+            $this->createRoutes(function () {
 
-                return 'foo';
+                $this->router->patch('/foo', function () {
+
+                    return 'foo';
+
+                });
 
             });
 
-            $this->router->loadRoutes();
-
-            $response = $this->router->runRoute($this->request('patch', '/foo'));
-
-            $this->assertOutput('foo', $response);
+            $request = $this->webRequest('PATCH', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
         }
 
@@ -135,17 +138,18 @@
         public function basic_delete_routing_works()
         {
 
-            $this->router->delete('/foo')->handle(function () {
+            $this->createRoutes(function () {
 
-                return 'foo';
+                $this->router->delete('/foo', function () {
+
+                    return 'foo';
+
+                });
 
             });
 
-            $this->router->loadRoutes();
-
-            $response = $this->router->runRoute($this->request('delete', '/foo'));
-
-            $this->assertOutput('foo', $response);
+            $request = $this->webRequest('DELETE', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
         }
 
@@ -153,17 +157,18 @@
         public function basic_options_routing_works()
         {
 
-            $this->router->options('/foo')->handle(function () {
+            $this->createRoutes(function () {
 
-                return 'foo';
+                $this->router->options('/foo', function () {
+
+                    return 'foo';
+
+                });
 
             });
 
-            $this->router->loadRoutes();
-
-            $response = $this->router->runRoute($this->request('options', '/foo'));
-
-            $this->assertOutput('foo', $response);
+            $request = $this->webRequest('OPTIONS', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
         }
 
@@ -171,31 +176,34 @@
         public function a_route_can_match_all_methods()
         {
 
-            $this->router->any('/foo', function () {
+            $this->createRoutes(function () {
 
-                return 'foo';
+                $this->router->any('/foo', function () {
+
+                    return 'foo';
+
+                });
 
             });
 
-            $this->router->loadRoutes();
+            $request = $this->webRequest('GET', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
-            $response = $this->router->runRoute($this->request('get', '/foo'));
-            $this->assertOutput('foo', $response);
+            $request = $this->webRequest('POST', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
-            $response = $this->router->runRoute($this->request('post', '/foo'));
-            $this->assertOutput('foo', $response);
+            $request = $this->webRequest('PUT', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
-            $response = $this->router->runRoute($this->request('put', '/foo'));
-            $this->assertOutput('foo', $response);
+            $request = $this->webRequest('PATCH', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
-            $response = $this->router->runRoute($this->request('patch', '/foo'));
-            $this->assertOutput('foo', $response);
+            $request = $this->webRequest('DELETE', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
-            $response = $this->router->runRoute($this->request('delete', '/foo'));
-            $this->assertOutput('foo', $response);
+            $request = $this->webRequest('OPTIONS', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
-            $response = $this->router->runRoute($this->request('options', '/foo'));
-            $this->assertOutput('foo', $response);
 
         }
 
@@ -203,39 +211,42 @@
         public function a_route_can_match_specific_methods()
         {
 
-            $this->router->match(['GET', 'POST'], '/foo')->handle(function () {
+            $this->createRoutes(function () {
 
-                return 'foo';
+                $this->router->match(['GET', 'POST'], '/foo', function () {
+
+                    return 'foo';
+
+                });
 
             });
 
-            $this->router->loadRoutes();
+            $request = $this->webRequest('GET', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
-            $response = $this->router->runRoute($this->request('get', '/foo'));
-            $this->assertOutput('foo', $response);
+            $request = $this->webRequest('POST', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
-            $response = $this->router->runRoute($this->request('post', '/foo'));
-            $this->assertOutput('foo', $response);
+            $request = $this->webRequest('PUT', '/foo');
+            $this->runAndAssertOutput('', $request);
 
-            $this->assertNullResponse($this->router->runRoute($this->request('put', '/foo')));
 
         }
 
         /** @test */
-        public function the_route_handler_can_be_defined_in_the_http_verb_method()
+        public function the_route_handler_can_be_defined_with_a_separate_method()
         {
 
-            $this->router->get('foo', function () {
+            $this->createRoutes(function () {
 
-                return 'foo';
+                $this->router->get('foo')->handle(function () {
 
+                    return 'foo';
+                });
             });
 
-            $this->router->loadRoutes();
-
-            $response = $this->router->runRoute($this->request('GET', '/foo'));
-
-            $this->assertOutput('foo', $response);
+            $request = $this->webRequest('GET', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
         }
 
@@ -249,105 +260,57 @@
         public function static_and_dynamic_routes_can_be_added_for_the_same_uri_while_static_routes_take_precedence()
         {
 
+            $this->createRoutes(function () {
 
-            $this->router->post('/foo/bar', function () {
 
-                return 'foo_bar_static';
+                $this->router->post('/foo/bar', function () {
 
-            })->where('false');
+                    return 'foo_bar_static';
 
-            $this->router->post('/foo/baz', function () {
+                })->where('false');
 
-                return 'foo_baz_static';
+                $this->router->post('/foo/baz', function () {
+
+                    return 'foo_baz_static';
+
+                });
+
+                $this->router->post('/foo/{dynamic}', function () {
+
+                    return 'dynamic_route';
+
+                });
+
 
             });
 
-            $this->router->post('/foo/{dynamic}', function () {
+            // failed condition
+            $request = $this->webRequest('POST', '/foo/bar');
+            $this->runAndAssertOutput('', $request);
 
-                return 'dynamic_route';
+            $request = $this->webRequest('POST', '/foo/baz');
+            $this->runAndAssertOutput('foo_baz_static', $request);
 
-            });
+            $request = $this->webRequest('POST', '/foo/biz');
+            $this->runAndAssertOutput('dynamic_route', $request);
 
-            $this->router->loadRoutes();
-
-            $response = $this->router->runRoute($this->request('POST', '/foo/bar'));
-            $this->assertNullResponse($response);
-
-            $response = $this->router->runRoute($this->request('POST', '/foo/baz'));
-            $this->assertOutput('foo_baz_static', $response);
-
-            $response = $this->router->runRoute($this->request('POST', '/foo/biz'));
-            $this->assertOutput('dynamic_route', $response);
 
         }
-
-
-        /**
-         *
-         *
-         *
-         *
-         *
-         * ROUTE ATTRIBUTES
-         *
-         *
-         *
-         *
-         *
-         */
 
         /** @test */
         public function http_verbs_can_be_defined_after_attributes_and_finalize_the_route()
         {
 
-            $this->router->namespace(self::controller_namespace)
-                         ->get('/get1', 'RoutingController@foo');
+            $this->createRoutes(function () {
 
-            $this->router->namespace(self::controller_namespace)
-                         ->match(['GET', 'POST'], '/match1', 'RoutingController@foo');
+                $this->router->namespace(self::controller_namespace)
+                             ->get('/foo', 'RoutingController@foo');
 
-            $this->router->loadRoutes();
+            });
 
-            $this->assertOutput('foo', $this->router->runRoute($this->request('GET', 'get1')));
-            $this->assertOutput('foo', $this->router->runRoute($this->request('GET', 'match1')));
-            $this->assertOutput('foo', $this->router->runRoute($this->request('POST', 'match1')));
-            $this->assertNullResponse($this->router->runRoute($this->request('PUT', 'match1')));
+            $request = $this->webRequest('GET', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
-
-
-        }
-
-        /** @test */
-        public function a_route_namespace_can_be_set()
-        {
-
-            $this->router
-                ->get('/foo')
-                ->namespace(self::controller_namespace)
-                ->handle('RoutingController@foo');
-
-            $this->router->loadRoutes();
-
-            $response = $this->router->runRoute($this->request('GET', '/foo'));
-
-            $this->assertOutput('foo', $response);
-
-        }
-
-        /** @test */
-        public function a_route_namespace_can_be_set_before_the_http_verb()
-        {
-
-            $this->router
-                ->namespace(self::controller_namespace)
-                ->get('/foo')
-                ->handle('RoutingController@foo');
-
-            $this->router->loadRoutes();
-
-            $response = $this->router->runRoute($this->request('GET', '/foo'));
-
-            $this->assertOutput('foo', $response);
 
         }
 
@@ -355,46 +318,43 @@
         public function middleware_can_be_set()
         {
 
-            $this->router
-                ->get('/foo')
-                ->middleware('foo')
-                ->handle(function (Request $request) {
+            $this->createRoutes(function () {
 
-                    return $request->body;
+                $this->router
+                    ->get('/foo')
+                    ->middleware('foo')
+                    ->handle(function (Request $request) {
 
-                });
+                        return $request->body;
 
-            $this->router->loadRoutes();
+                    });
 
-            $this->router->aliasMiddleware('foo', FooMiddleware::class);
+            });
 
-            $response = $this->router->runRoute($this->request('GET', '/foo'));
-
-            $this->assertOutput('foo', $response);
+            $request = $this->webRequest('GET', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
         }
 
         /** @test */
-        public function a_route_can_have_multiple_middleware()
+        public function a_route_can_have_multiple_middlewares()
         {
 
-            $this->router
-                ->get('/foo')
-                ->middleware(['foo', 'bar'])
-                ->handle(function (Request $request) {
+            $this->createRoutes(function () {
 
-                    return $request->body;
+                $this->router
+                    ->get('/foo')
+                    ->middleware(['foo', 'bar'])
+                    ->handle(function (Request $request) {
 
-                });
+                        return $request->body;
 
-            $this->router->loadRoutes();
+                    });
 
-            $this->router->aliasMiddleware('foo', FooMiddleware::class);
-            $this->router->aliasMiddleware('bar', BarMiddleware::class);
+            });
 
-            $response = $this->router->runRoute($this->request('GET', '/foo'));
-
-            $this->assertOutput('foobar', $response);
+            $request = $this->webRequest('GET', '/foo');
+            $this->runAndAssertOutput('foobar', $request);
 
 
         }
@@ -403,62 +363,21 @@
         public function middleware_can_pass_arguments()
         {
 
-            $this->router
-                ->get('/foo')
-                ->middleware(['foo:foofoo', 'bar:barbar'])
-                ->handle(function (Request $request) {
+            $this->createRoutes(function () {
 
-                    return $request->body;
+                $this->router
+                    ->get('/foo')
+                    ->middleware(['foo:FOO', 'bar:BAR'])
+                    ->handle(function (Request $request) {
 
-                });
+                        return $request->body;
 
-            $this->router->loadRoutes();
+                    });
 
-            $this->router->aliasMiddleware('foo', FooMiddleware::class);
-            $this->router->aliasMiddleware('bar', BarMiddleware::class);
+            });
 
-            $response = $this->router->runRoute($this->request('GET', '/foo'));
-
-            $this->assertOutput('foofoobarbar', $response);
-
-        }
-
-        /** @test */
-        public function global_middleware_gets_merged_for_all_routes_if_set()
-        {
-
-            $this->router
-                ->get('/foo')
-                ->middleware('foo')
-                ->handle(function (Request $request) {
-
-                    return $request->body;
-
-                });
-
-            $this->router
-                ->post('/bar')
-                ->middleware('bar')
-                ->handle(function (Request $request) {
-
-                    return $request->body;
-
-                });
-
-            $this->router->loadRoutes();
-
-            $this->router->middlewareGroup('global', [GlobalMiddleware::class]);
-            $this->router->aliasMiddleware('foo', FooMiddleware::class);
-
-            $response = $this->router->runRoute($this->request('GET', '/foo'));
-            $this->assertOutput('global_foo', $response);
-
-            $this->router->middlewareGroup('global', [GlobalMiddleware::class]);
-            $this->router->aliasMiddleware('bar', BarMiddleware::class);
-
-            $response = $this->router->runRoute($this->request('POST', '/bar'));
-            $this->assertOutput('global_bar', $response);
-
+            $request = $this->webRequest('GET', '/foo');
+            $this->runAndAssertOutput('FOOBAR', $request);
 
         }
 
@@ -466,49 +385,47 @@
         public function middleware_can_be_set_before_the_http_verb()
         {
 
-            $this->router
-                ->middleware('foo')
-                ->get('/foo')
-                ->handle(function (Request $request) {
+            $this->createRoutes(function () {
 
-                    return $request->body;
+                $this->router
+                    ->middleware('foo')
+                    ->get('/foo')
+                    ->handle(function (Request $request) {
 
-                });
+                        return $request->body;
 
-            // As array.
-            $this->router
-                ->middleware(['foo', 'bar'])
-                ->post('/bar')
-                ->handle(function (Request $request) {
+                    });
 
-                    return $request->body;
+                // As array.
+                $this->router
+                    ->middleware(['foo', 'bar'])
+                    ->post('/bar')
+                    ->handle(function (Request $request) {
 
-                });
+                        return $request->body;
 
-            // With Args
-            $this->router
-                ->middleware(['foo:FOO', 'bar:BAR'])
-                ->put('/baz')
-                ->handle(function (Request $request) {
+                    });
 
-                    return $request->body;
+                // With Args
+                $this->router
+                    ->middleware(['foo:FOO', 'bar:BAR'])
+                    ->put('/baz')
+                    ->handle(function (Request $request) {
 
-                });
+                        return $request->body;
 
-            $this->router->loadRoutes();
+                    });
 
-            $this->router->aliasMiddleware('foo', FooMiddleware::class);
-            $this->router->aliasMiddleware('bar', BarMiddleware::class);
+            });
 
-            $response = $this->router->runRoute($this->request('GET', '/foo'));
-            $this->assertOutput('foo', $response);
+            $request = $this->webRequest('GET', '/foo');
+            $this->runAndAssertOutput('foo', $request);
 
-            $response = $this->router->runRoute($this->request('POST', '/bar'));
-            $this->assertOutput('foobar', $response);
+            $request = $this->webRequest('POST', '/bar');
+            $this->runAndAssertOutput('foobar', $request);
 
-
-            $response = $this->router->runRoute($this->request('PUT', '/baz'));
-            $this->assertOutput('FOOBAR', $response);
+            $request = $this->webRequest('PUT', '/baz');
+            $this->runAndAssertOutput('FOOBAR', $request);
 
 
         }

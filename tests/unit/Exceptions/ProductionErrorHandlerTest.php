@@ -7,17 +7,17 @@
 	namespace Tests\unit\Exceptions;
 
 	use Exception;
-	use Tests\traits\AssertsResponse;
-    use Tests\UnitTest;
+	use Tests\helpers\AssertsResponse;
+    use Tests\unit\UnitTest;
 	use Tests\stubs\TestException;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Contracts\ResponseFactory;
+    use WPEmerge\Http\ResponseFactory;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\ExceptionHandling\ProductionErrorHandler;
     use WPEmerge\Factories\ErrorHandlerFactory;
-    use WPEmerge\Http\Request;
-    use WPEmerge\Http\Response;
+    use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Psr7\Response;
 
     class ProductionErrorHandlerTest extends UnitTest {
 
@@ -29,7 +29,7 @@
             ApplicationEvent::make($this->container = $this->createContainer());
             ApplicationEvent::fake();
             $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
-            $this->container->instance(ResponseFactory::class, $this->responseFactory());
+            $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
 
         }
 
@@ -64,13 +64,10 @@
 
 			$handler = $this->newErrorHandler();
 
-			ob_start();
 			$handler->handleException( new TestException('Sensitive Info') );
-			$output = ob_get_clean();
-
-			$this->assertStringContainsString('Internal Server Error', $output);
 
 			ApplicationEvent::assertDispatched(UnrecoverableExceptionHandled::class);
+            $this->expectOutputString('Internal Server Error');
 
 		}
 

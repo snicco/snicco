@@ -8,7 +8,7 @@
 
 	use WPEmerge\Contracts\ConditionInterface;
 	use WPEmerge\Contracts\UrlableInterface;
-    use WPEmerge\Http\Request;
+    use WPEmerge\Http\Psr7\Request;
 
     class PostIdCondition implements ConditionInterface, UrlableInterface {
 

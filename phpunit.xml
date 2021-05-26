@@ -25,13 +25,13 @@
         <env name="SITE_URL" value="https://wpemerge.test/"/>
     </php>
 
-    <coverage cacheDirectory=".phpunit.cache/code-coverage"
-              processUncoveredFiles="true">
+    <coverage cacheDirectory=".phpunit.cache/code-coverage" processUncoveredFiles="true">
         <include>
             <directory suffix=".php">src/</directory>
         </include>
         <exclude>
             <directory suffix=".php">src/Routing/Conditions/</directory>
+            <directory suffix=".php">src/Events/</directory>
         </exclude>
     </coverage>
 
