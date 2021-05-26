@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace Tests\unit\ViewComposers;
+	namespace Tests\unit\View;
 
 	use PHPUnit\Framework\TestCase;
     use Tests\stubs\Foo;
@@ -16,7 +16,9 @@
 	use WPEmerge\Contracts\ViewInterface;
 	use WPEmerge\Factories\ViewComposerFactory;
 
-	class ViewComposerFactoryTest extends TestCase {
+    use const TEST_CONFIG;
+
+    class ViewComposerFactoryTest extends TestCase {
 
 
 	    use CreateContainer;

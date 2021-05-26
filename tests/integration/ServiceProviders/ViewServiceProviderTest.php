@@ -15,7 +15,7 @@
 	use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\View\PhpViewFinder;
 	use WPEmerge\View\ViewService;
-	use WPEmerge\ViewComposers\ViewComposerCollection;
+	use WPEmerge\View\ViewComposerCollection;
 
 	class ViewServiceProviderTest extends IntegrationTest {
 

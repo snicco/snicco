@@ -11,7 +11,7 @@
 	use WPEmerge\Contracts\ViewServiceInterface;
 	use WPEmerge\Support\VariableBag;
 	use WPEmerge\Support\Arr;
-	use WPEmerge\ViewComposers\ViewComposerCollection;
+	use WPEmerge\View\ViewComposerCollection;
 
 	class ViewService implements ViewServiceInterface {
 

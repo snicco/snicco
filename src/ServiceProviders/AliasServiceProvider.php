@@ -12,7 +12,7 @@
 	use WPEmerge\Routing\Router;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\View\PhpViewEngine;
-	use WPEmerge\ViewComposers\ViewComposerCollection;
+	use WPEmerge\View\ViewComposerCollection;
 
 	class AliasServiceProvider extends ServiceProvider {
 
