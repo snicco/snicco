@@ -42,7 +42,7 @@
             /** @var HttpKernel $kernel */
             $kernel = $this->container->make(HttpKernel::class);
 
-            if ($this->config->get('always_run_middleware', false)) {
+            if ($this->config->get('middleware.always_run_global', false)) {
 
                 $kernel->alwaysWithGlobalMiddleware($this->config->get('middleware.groups.global', [] ) );
 

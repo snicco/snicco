@@ -15,6 +15,8 @@
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Request;
+    use WPEmerge\Routing\Conditions\QueryStringCondition;
     use WPEmerge\Routing\Router;
 
     class RouteRegistrationTest extends UnitTest
@@ -66,7 +68,7 @@
 
             });
 
-            $request = new IncomingWebRequest('wp.php',TestRequest::fromFullUrl('GET', 'https://foobar.com/foo'));
+            $request = new IncomingWebRequest('wp.php', TestRequest::fromFullUrl('GET', 'https://foobar.com/foo'));
             $this->runAndAssertOutput('FOO', $request);
 
         }
@@ -84,7 +86,6 @@
                 });
 
             });
-
 
             $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
             $this->runAndAssertOutput('FOO', new IncomingWebRequest('wp.php', $request));
@@ -104,7 +105,6 @@
                 });
 
             });
-
 
             $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
             $this->runAndAssertEmptyOutput(new IncomingWebRequest('wp.php', $request));
@@ -127,7 +127,6 @@
                 });
 
             });
-
 
             $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
             $this->runAndAssertOutput('FOO', new IncomingWebRequest('wp.php', $request));
@@ -165,7 +164,6 @@
 
             });
 
-
             $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
             $this->runAndAssertOutput('FOO', new IncomingWebRequest('wp.php', $request));
 
@@ -181,5 +179,42 @@
 
         }
 
+        /** @test */
+        public function url_encoded_routes_work()
+        {
+
+            $this->createRoutes(function () {
+
+                $this->router->get('/german-city/{city}', function (Request $request, string $city) {
+
+                    return ucfirst($city);
+
+                });
+
+            });
+
+            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/german-city/münchen');
+            $this->runAndAssertOutput('München', new IncomingWebRequest('wp.php', $request));
+
+        }
+
+        /** @test */
+        public function url_encoded_query_string_conditions_work () {
+
+            $this->createRoutes(function () {
+
+                $this->router->get('/foo', function () {
+
+                    return 'FOO';
+
+                })->where(QueryStringCondition::class, ['page' => 'bayern münchen']);
+
+            });
+
+            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo?page=bayern münchen');
+            $request = $request->withQueryParams(['page'=>'bayern münchen']);
+            $this->runAndAssertOutput('FOO', new IncomingWebRequest('wp.php', $request));
+
+        }
 
     }

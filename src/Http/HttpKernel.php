@@ -119,7 +119,7 @@
         private function gatherMiddleware(IncomingRequest $incoming_request) : array
         {
 
-            if ( ! $incoming_request instanceof IncomingAdminRequest) {
+            if ( ! $incoming_request instanceof IncomingAdminRequest ) {
 
                 Arr::pullByValue(OutputBufferMiddleware::class, $this->core_middleware);
 

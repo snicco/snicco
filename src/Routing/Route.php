@@ -12,6 +12,7 @@
     use WPEmerge\Contracts\RouteAction;
     use WPEmerge\Contracts\SetsRouteAttributes;
     use WPEmerge\Contracts\UrlableInterface;
+    use WPEmerge\Controllers\FallBackController;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Request;
@@ -298,6 +299,11 @@
 
         }
 
+        public function isFallback() :bool
+        {
+            return $this->action === [FallBackController::class, 'handle'];
+        }
+
         public function getMiddleware() : array
         {
 
@@ -386,6 +392,7 @@
 
 
         }
+
 
 
 

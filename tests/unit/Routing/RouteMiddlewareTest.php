@@ -214,8 +214,6 @@
 
         }
 
-
-
         /** @test */
         public function unknown_middleware_throws_an_exception()
         {
@@ -238,7 +236,6 @@
 
 
         }
-
 
         /** @test */
         public function multiple_middleware_arguments_can_be_passed()
@@ -394,7 +391,6 @@
 
         }
 
-
         /**
          *
          *
@@ -433,7 +429,7 @@
                 ]
             ]);
 
-            $this->route_runner->middlewarePriority([
+            $this->withMiddlewarePriority([
 
                 FooMiddleware::class,
                 BarMiddleware::class,
@@ -461,7 +457,6 @@
 
             });
 
-
             $kernel = $this->newKernel([
                 'all' => [
                     FooBarMiddleware::class,
@@ -471,13 +466,12 @@
                 ]
             ]);
 
-            $this->route_runner->middlewarePriority([
+            $this->withMiddlewarePriority([
 
                 FooMiddleware::class,
                 BarMiddleware::class,
 
             ]);
-
 
             $request = $this->webRequest('GET', '/foo');
             $this->assertSame('foobarfoobarbaz', $this->runKernelAndGetOutput($request,$kernel));
@@ -507,7 +501,7 @@
                 ]
             ]);
 
-            $this->route_runner->middlewarePriority([
+            $this->withMiddlewarePriority([
 
                 BazMiddleware::class,
                 FooBarMiddleware::class,
@@ -523,6 +517,10 @@
 
         }
 
+        private function withMiddlewarePriority(array $array)
+        {
+            $this->middleware_stack->middlewarePriority($array);
+        }
 
 
     }

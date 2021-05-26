@@ -22,6 +22,7 @@
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Middleware\Core\RouteRunner;
+    use WPEmerge\Middleware\MiddlewareStack;
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Routing\RouteCollection;
@@ -31,6 +32,9 @@
 
     trait TestHelpers
     {
+
+        /** @var MiddlewareStack */
+        protected $middleware_stack;
 
         protected function newRouteCollection() : RouteCollection
         {
@@ -83,21 +87,25 @@
             $this->container->instance(ResponseFactory::class, $factory = $this->createResponseFactory());
             $this->container->instance(ContainerAdapter::class, $this->container);
 
-            $router_runner = new RouteRunner($factory, new Pipeline($this->container));
-            $router_runner->middlewareAliases([
+            $middleware_stack = new MiddlewareStack();
+            $middleware_stack->middlewareAliases([
                 'foo' => FooMiddleware::class,
                 'bar' => BarMiddleware::class,
                 'baz' => BazMiddleware::class,
                 'foobar' => FooBarMiddleware::class,
             ]);
-            $this->container->instance(RouteRunner::class, $router_runner);
-            $this->route_runner = $router_runner;
-
             foreach ($with_middleware as $group_name => $middlewares) {
 
-                $router_runner->withMiddlewareGroup($group_name, $middlewares);
+                $middleware_stack->withMiddlewareGroup($group_name, $middlewares);
 
             }
+
+            $router_runner = new RouteRunner($factory, new Pipeline($this->container), $middleware_stack);
+
+            $this->container->instance(RouteRunner::class, $router_runner);
+            $this->container->instance(MiddlewareStack::class, $middleware_stack);
+            $this->middleware_stack = $middleware_stack;
+
 
             return new HttpKernel($pipeline);
 
