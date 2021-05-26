@@ -13,6 +13,7 @@
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ViewInterface;
+    use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\Router;
     use WPEmerge\Support\Url;
@@ -23,7 +24,6 @@
 
         use AssertsResponse;
 
-
         protected function setUp() : void
         {
 
@@ -31,12 +31,9 @@
 
             $this->app = $this->newTestApp([
                 'routing' => [
-                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
-                ]
+                    'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes',
+                ],
             ]);
-
-            /** @var Router $router */
-            $router = TestApp::resolve(Router::class);
 
 
         }
@@ -72,11 +69,8 @@
         public function a_named_route_url_can_be_aliased()
         {
 
-            TestApp::route()->get('foo')->name('foo');
-
-            $expected = Url::addTrailing(SITE_URL).'foo';
-
-            $this->assertSame($expected, trim(TestApp::routeUrl('foo'), '/'));
+            $expected = Url::addTrailing(SITE_URL).'alias/get';
+            $this->assertSame($expected, trim(TestApp::routeUrl('alias.get'), '/'));
 
         }
 
@@ -84,9 +78,8 @@
         public function a_post_route_can_be_aliased()
         {
 
-            $response = TestApp::route()->runRoute(TestRequest::from('POST', 'post'));
+            $this->seeOutput('post', TestRequest::from('POST', 'alias/post'));
 
-            $this->assertOutput('post', $response);
 
         }
 
@@ -96,10 +89,7 @@
          */
         public function a_get_route_can_be_aliased()
         {
-
-            $response = TestApp::route()->runRoute(TestRequest::from('GET', 'get'));
-
-            $this->assertOutput('get', $response);
+            $this->seeOutput('get', TestRequest::from('GET', 'alias/get'));
 
         }
 
@@ -112,10 +102,7 @@
         public function a_patch_route_can_be_aliased()
         {
 
-
-            $response = TestApp::route()->runRoute(TestRequest::from('PATCH', 'patch'));
-
-            $this->assertOutput('patch', $response);
+            $this->seeOutput('patch', TestRequest::from('PATCH', 'alias/patch'));
 
         }
 
@@ -123,9 +110,7 @@
         public function a_put_route_can_be_aliased()
         {
 
-            $response = TestApp::route()->runRoute(TestRequest::from('PUT', 'put'));
-
-            $this->assertOutput('put', $response);
+            $this->seeOutput('put', TestRequest::from('PUT', 'alias/put'));
 
         }
 
@@ -133,18 +118,17 @@
         public function an_options_route_can_be_aliased()
         {
 
-            $response = TestApp::route()->runRoute(TestRequest::from('OPTIONS', 'options'));
+            $this->seeOutput('options', TestRequest::from('OPTIONS', 'alias/options'));
 
-            $this->assertOutput('options', $response);
 
         }
 
         /** @test */
         public function a_delete_route_can_be_aliased()
         {
-            $response = TestApp::route()->runRoute(TestRequest::from('DELETE', 'delete'));
 
-            $this->assertOutput('delete', $response);
+            $this->seeOutput('delete', TestRequest::from('DELETE', 'alias/delete'));
+
 
         }
 
@@ -152,11 +136,11 @@
         public function a_match_route_can_be_aliased()
         {
 
-            $response = TestApp::route()->runRoute(TestRequest::from('GET', 'match'));
-            $this->assertOutput('match', $response);
+            $this->seeOutput('', TestRequest::from('DELETE', 'alias/match'));
 
-            $response = TestApp::route()->runRoute(TestRequest::from('POST', 'match'));
-            $this->assertOutput('match', $response);
+            $this->seeOutput('match', TestRequest::from('POST', 'alias/match'));
+
+
 
 
         }
@@ -185,11 +169,12 @@
         public function a_view_can_be_created_as_an_alias()
         {
 
-            $this->newTestApp( ['views' => [
-                TESTS_DIR.DS.'views',
-                TESTS_DIR.DS.'views'.DS.'subdirectory',
-            ]]);
-
+            $this->newTestApp([
+                'views' => [
+                    TESTS_DIR.DS.'views',
+                    TESTS_DIR.DS.'views'.DS.'subdirectory',
+                ],
+            ]);
 
             $this->assertInstanceOf(ViewInterface::class, TestApp::view('view'));
 
@@ -199,15 +184,15 @@
         public function a_view_can_be_rendered_and_echoed()
         {
 
-            $this->newTestApp( ['views' => [
-                TESTS_DIR.DS.'views',
-                TESTS_DIR.DS.'views'.DS.'subdirectory',
-            ]]);
-
+            $this->newTestApp([
+                'views' => [
+                    TESTS_DIR.DS.'views',
+                    TESTS_DIR.DS.'views'.DS.'subdirectory',
+                ],
+            ]);
 
             ob_start();
             TestApp::render('view');
-
 
             $this->assertSame('Foobar', ob_get_clean());
 
@@ -217,17 +202,18 @@
         public function a_nested_view_can_be_included()
         {
 
-            $this->newTestApp( ['views' => [
-                TESTS_DIR.DS.'views',
-                TESTS_DIR.DS.'views'.DS.'subdirectory',
-            ]]);
+            $this->newTestApp([
+                'views' => [
+                    TESTS_DIR.DS.'views',
+                    TESTS_DIR.DS.'views'.DS.'subdirectory',
+                ],
+            ]);
 
             $view = TestApp::view('subview.php');
 
             $this->assertSame('Hello World', $view->toString());
 
         }
-
 
 
     }

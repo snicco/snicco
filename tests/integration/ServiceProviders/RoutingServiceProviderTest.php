@@ -8,7 +8,6 @@
 
     use Mockery;
     use Tests\IntegrationTest;
-    use Tests\traits\AssertsResponse;
     use Tests\stubs\Conditions\TrueCondition;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
@@ -17,22 +16,22 @@
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Contracts\ServiceProvider;
+    use WPEmerge\Events\IncomingAdminRequest;
+    use WPEmerge\Events\IncomingAjaxRequest;
+    use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Routing\CachedRouteCollection;
     use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
-    use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Routing\RouteCollection;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Support\Url;
 
     class RoutingServiceProviderTest extends IntegrationTest
     {
 
         use CreateWpTestUrls;
-        use AssertsResponse;
 
 
         /** @test */
@@ -168,19 +167,7 @@
                 ]
             ]);
 
-            /** @var Router $router */
-            $router = TestApp::resolve(Router::class);
-
-            // Needed because the sync of middleware to the router happens in the kernel.
-            $router->middlewareGroup('web', []);
-
-            $request = TestRequest::from('GET', 'foo');
-
-            $response = $router->runRoute($request);
-
-            $this->assertOutput('foo', $response);
-
-            Mockery::close();
+            $this->seeOutput('foo', TestRequest::from('GET', '/foo'));
 
         }
 
@@ -193,17 +180,9 @@
                 ]
             ]);
 
-            /** @var Router $router */
-            $router = TestApp::resolve(Router::class);
+            $this->seeOutput('fallback_route', TestRequest::from('GET', 'post1'));
 
-            // Needed because the sync of middleware to the router happens in the kernel.
-            $router->middlewareGroup('web', []);
 
-            $request = TestRequest::from('GET', 'whatever');
-
-            $response = $router->runRoute($request);
-
-            $this->assertOutput('FOO', $response);
 
         }
 
@@ -221,15 +200,9 @@
             ]);
 
 
-            /** @var Router $router */
-            $router = TestApp::resolve(Router::class);
-            $router->middlewareGroup('ajax', []);
-
             $request = $this->ajaxRequest('foo_action');
 
-            $response = $router->runRoute($request);
-
-            $this->assertOutput('FOO_ACTION', $response);
+            $this->seeOutput('FOO_ACTION', new IncomingAjaxRequest($request));
 
             Mockery::close();
 
@@ -248,22 +221,19 @@
                 ]
             ]);
 
+            $request = $this->adminRequestTo('foo');
 
-            /** @var Router $router */
-            $router = TestApp::resolve(Router::class);
-            $router->middlewareGroup('admin', []);
-
-            $response = $router->runRoute($this->adminRequestTo('foo'));
-
-            $this->assertOutput('FOO', $response);
+            $this->seeOutput('FOO', new IncomingAdminRequest($request));
 
             Mockery::close();
+
 
         }
 
         /** @test */
         public function named_groups_are_applied_for_admin_routes()
         {
+
             $this->newTestApp([
                 'routing' => [
                     'definitions' => TESTS_DIR.DS.'stubs'.DS.'Routes'
@@ -273,16 +243,7 @@
                 ]
             ]);
 
-            /** @var Router $router */
-            $router = TestApp::resolve(Router::class);
-            $router->middlewareGroup('admin', []);
-
-            /**
-             * @var UrlGenerator $url_generator
-             */
-            $url_generator = TestApp::resolve(UrlGenerator::class);
-
-            $this->assertSame($this->adminUrlTo('foo'), $url_generator->toRoute('admin.foo'));
+            $this->assertSame($this->adminUrlTo('foo'), TestApp::routeUrl('admin.foo'));
 
             Mockery::close();
             WP::reset();
@@ -302,19 +263,11 @@
                 ]
             ]);
 
-            /** @var Router $router */
-            $router = TestApp::resolve(Router::class);
-            $router->middlewareGroup('ajax', []);
-
 
             $expected = $this->ajaxUrl();
 
-            /**
-             * @var UrlGenerator $url_generator
-             */
-            $url_generator = TestApp::resolve(UrlGenerator::class);
 
-            $this->assertSame($expected, $url_generator->toRoute('ajax.foo'));
+            $this->assertSame($expected, TestApp::routeUrl('ajax.foo'));
 
             Mockery::close();
             WP::reset();

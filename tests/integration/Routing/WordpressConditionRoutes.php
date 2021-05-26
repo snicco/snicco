@@ -8,51 +8,42 @@
 
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
-    use Tests\stubs\TestRequest;
-    use Tests\traits\AssertsResponse;
     use Tests\traits\CreateWpTestUrls;
-    use WPEmerge\Contracts\ConditionInterface;
-    use WPEmerge\Http\Request;
+    use Tests\traits\TestHelpers;
+    use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Events\ResponseSent;
+    use WPEmerge\Http\HttpKernel;
     use WPEmerge\Routing\Router;
 
     class WordpressConditionRoutes extends IntegrationTest
     {
 
         use CreateWpTestUrls;
-        use AssertsResponse;
+        use TestHelpers;
 
         /**
-         * @var Router
+         * @var HttpKernel
          */
-        private $router;
+        private $kernel;
 
         protected function setUp() : void
         {
-
             parent::setUp();
-            $this->newTestApp();
+            $this->newTestApp(TEST_CONFIG);
             $this->router = TestApp::resolve(Router::class);
+            $this->kernel = TestApp::resolve(HttpKernel::class);
         }
 
         /** @test */
         public function its_possible_to_create_routes_that_dont_match_an_url()
         {
 
-            $this->router->get()->where(\Tests\stubs\Conditions\IsPost::class, true)->handle(function () {
+            $this->expectOutputString('FOO');
+            ApplicationEvent::fake([ResponseSent::class]);
 
-                return 'FOO';
-
-            });
-
-            $this->router->createFallbackWebRoute();
-            $this->router->loadRoutes();
-
-
-            $request = TestRequest::from('GET', 'whatever');
-
-            $response = $this->router->runRoute($request);
-
-            $this->assertOutput('FOO', $response);
+            $request = $this->webRequest('GET', 'post1');
+            $this->kernel->run($request);
+            ApplicationEvent::assertDispatchedTimes(ResponseSent::class, 1 );
 
 
         }
@@ -61,21 +52,14 @@
         public function if_no_route_matches_due_to_failed_wp_conditions_a_null_response_is_returned()
         {
 
+            ApplicationEvent::fake([ResponseSent::class]);
+            $this->expectOutputString('');
 
-            $this->router->get()->where(\Tests\stubs\Conditions\IsPost::class, false)->handle(function () {
+            $request = $this->webRequest('POST', 'post1');
+            $this->kernel->run($request);
 
-                return 'FOO';
+            ApplicationEvent::assertNotDispatched(ResponseSent::class);
 
-            });
-
-            $this->router->createFallbackWebRoute();
-            $this->router->loadRoutes();
-
-            $request = TestRequest::from('GET', 'whatever');
-
-            $response = $this->router->runRoute($request);
-
-            $this->assertNullResponse($response);
 
         }
 
@@ -83,21 +67,14 @@
         public function if_no_route_matches_due_to_different_http_verbs_a_null_response_is_returned()
         {
 
+            ApplicationEvent::fake([ResponseSent::class]);
+            $this->expectOutputString('');
 
-            $this->router->get()->where(\Tests\stubs\Conditions\IsPost::class, true)->handle(function () {
+            // delete route is not registered for the fallback controller
+            $request = $this->webRequest('DELETE', 'post1');
+            $this->kernel->run($request);
 
-                return 'FOO';
-
-            });
-
-            $this->router->createFallbackWebRoute();
-            $this->router->loadRoutes();
-
-            $request = TestRequest::from('POST', 'whatever');
-
-            $response = $this->router->runRoute($request);
-
-            $this->assertNullResponse($response);
+            ApplicationEvent::assertNotDispatched(ResponseSent::class);
 
         }
 

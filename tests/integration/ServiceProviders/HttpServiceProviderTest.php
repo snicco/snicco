@@ -21,7 +21,6 @@
     class HttpServiceProviderTest extends IntegrationTest
     {
 
-
         /** @test */
         public function the_kernel_can_be_resolved_correctly()
         {
@@ -57,7 +56,6 @@
 
             $aliases = TestApp::config('middleware.aliases', []);
 
-            $this->assertArrayHasKey('csrf', $aliases);
             $this->assertArrayHasKey('auth', $aliases);
             $this->assertArrayHasKey('guest', $aliases);
             $this->assertArrayHasKey('can', $aliases);
@@ -120,21 +118,7 @@
 
         }
 
-        /** @test */
-        public function global_middleware_can_be_enabled_to_always_run_on_init () {
 
-            $this->newTestApp([
-                'always_run_middleware' => true
-            ]);
-
-            $this->assertTrue(TestApp::config('always_run_middleware', ''));
-
-            /** @var WordpressDispatcher $dispatcher */
-            $dispatcher = TestApp::resolve(Dispatcher::class);
-
-            $this->assertTrue($dispatcher->hasListenerFor([HttpKernel::class, 'runGlobal'], LoadedWP::class));
-
-        }
 
 
     }
