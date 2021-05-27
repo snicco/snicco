@@ -1,0 +1,58 @@
+<?php
+
+
+    declare(strict_types = 1);
+
+
+    namespace WPEmerge\Session;
+
+    use WPEmerge\Contracts\EncryptorInterface;
+    use WPEmerge\ExceptionHandling\Exceptions\DecryptException;
+    use WPEmerge\ExceptionHandling\Exceptions\EncryptException;
+
+    class EncryptedStore extends SessionStore
+    {
+        /**
+         * @var EncryptorInterface
+         */
+        protected $encryptor;
+
+
+        public function __construct($name, SessionHandler $handler, EncryptorInterface $encryptor, $id = '')
+        {
+            $this->encryptor = $encryptor;
+
+            parent::__construct($name, $handler, $id);
+        }
+
+        /**
+         * Prepare the raw string data from the session for unserialization.
+         *
+         * @param  string  $data
+         *
+         * @return string
+         */
+        protected function prepareForUnserialize( string $data) : string
+        {
+            try {
+                return $this->encryptor->decrypt($data);
+            } catch (DecryptException $e) {
+                return serialize([]);
+            }
+        }
+
+        /**
+         * Prepare the serialized session data for storage.
+         *
+         * @param  string  $data
+         *
+         * @return string
+         * @throws EncryptException
+         */
+        protected function prepareForStorage(string $data) : string
+        {
+            return $this->encryptor->encrypt($data);
+        }
+
+
+    }

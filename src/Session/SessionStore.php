@@ -60,7 +60,10 @@
 		{
 			$this->ageFlashData();
 
-			$this->handler->write( $this->getId(), serialize($this->attributes) );
+			$this->handler->write(
+			    $this->getId(),
+                $this->prepareForStorage( serialize($this->attributes) )
+            );
 
 			$this->started = false;
 		}
@@ -287,6 +290,18 @@
 			return $this->handler;
 		}
 
+        protected function prepareForUnserialize ( string $data ) : string
+        {
+
+            return $data;
+
+        }
+
+        protected function prepareForStorage(string $data) :string
+        {
+            return $data;
+        }
+
 		private function generateSessionId() :string
 		{
 			return Str::random(40);
@@ -313,7 +328,7 @@
 
 			if ($data = $this->handler->read($this->getId())) {
 
-				$data = @unserialize($data);
+				$data = @unserialize($this->prepareForUnserialize($data));
 
 				if ($data !== false && ! is_null($data) && is_array($data)) {
 					return $data;
@@ -334,5 +349,7 @@
 		{
 			$this->put('_flash.old', array_diff($this->get('_flash.old', []), $keys));
 		}
+
+
 
 	}
