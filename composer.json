@@ -9,10 +9,6 @@
   [
     {
       "type": "vcs",
-      "url": "https://github.com/calvinalkan/wp-browser"
-    },
-    {
-      "type": "vcs",
       "url": "https://github.com/calvinalkan/better-wordpress-database"
     },
     {
@@ -47,14 +43,16 @@
     "mockery/mockery": "^1.4.2",
     "phpunit/phpunit": "^9.0",
     "calvinalkan/better-wordpress-database": "dev-master",
-    "lucatume/wp-browser": "dev-better-env-names",
+    "lucatume/wp-browser": "3.0.6",
     "illuminate/view": "dev-feature_view_interface_instead_of_view_implementation",
-    "adriansuter/php-autoload-override": "^1.2"
+    "adriansuter/php-autoload-override": "^1.2",
+    "slim/csrf": "1.2.1"
   },
 
   "suggest": {
     "opis/closure": "Required if you want to cache routes that use closures [3.6.2]",
     "illuminate/encryption": "Required if you want to use sessions [8.40.0]",
+    "slim/csrf" : "Required if you want to you csrf protection with sessions [1.2.1]",
     "ext-openssl": "Required if you want to use sessions",
     "flip/whoops" : "Required if you want the pretty page error handler during devolopment"
   },
@@ -62,10 +60,7 @@
   "autoload": {
     "psr-4": {
       "WPEmerge\\": "src/"
-    },
-    "files": [
-      "config.php"
-    ]
+    }
   },
   "autoload-dev": {
     "psr-4": {

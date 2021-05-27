@@ -84,7 +84,7 @@
         private function handleStatefulRequest(Request $request, SessionStore $session, Delegate $next) : ResponseInterface
         {
 
-            $request = $request->withAttribute('session', $session);
+            $request = $request->withSession($session);
 
             $response = $next($request);
 

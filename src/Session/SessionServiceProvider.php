@@ -6,10 +6,12 @@
 
     namespace WPEmerge\Session;
 
+    use Slim\Csrf\Guard;
     use WPEmerge\Application\Application;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Http\Cookies;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Session\Encryptor;
 
     class SessionServiceProvider extends ServiceProvider
@@ -22,6 +24,7 @@
             $this->bindSessionHandler();
             $this->bindSessionStore();
             $this->bindSessionMiddleware();
+            $this->bindCsrfMiddleware();
             $this->bindAliases();
             $this->bindEncryptor();
 
@@ -54,6 +57,9 @@
             $this->config->extend('session.lifetime', 120);
             $this->config->extend('session.encrypt', false);
 
+            $this->config->extend('middleware.aliases', [
+                'csrf' => CsrfMiddleware::class
+            ]);
 
         }
 
@@ -142,5 +148,18 @@
 
             });
         }
+
+        private function bindCsrfMiddleware()
+        {
+            $this->container->singleton(CsrfMiddleware::class, function () {
+
+                return new CsrfMiddleware(
+                    $this->container->make(ResponseFactory::class),
+                    $this->container->make(SessionStore::class)
+                );
+
+            });
+        }
+
 
     }
