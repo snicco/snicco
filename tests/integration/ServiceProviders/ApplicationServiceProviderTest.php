@@ -18,6 +18,8 @@
     use WPEmerge\Facade\WP;
 	use WPEmerge\Facade\WpFacade;
     use WPEmerge\Routing\Router;
+    use WPEmerge\Session\SessionServiceProvider;
+    use WPEmerge\Session\SessionStore;
     use WPEmerge\Support\Url;
     use WPEmerge\Support\VariableBag;
 
@@ -262,6 +264,19 @@
             $view = TestApp::view('subview.php');
 
             $this->assertSame('Hello World', $view->toString());
+
+        }
+
+        /** @test */
+        public function the_session_can_be_aliased () {
+
+            $this->newTestApp([
+                'providers' => [
+                    SessionServiceProvider::class
+                ]
+            ]);
+
+            $this->assertInstanceOf(SessionStore::class, TestApp::session());
 
         }
 

@@ -39,10 +39,10 @@
 		 */
 		private $started = false;
 
-		public function __construct( string $name, SessionHandler $handler, string $id = '')
+		public function __construct( string $cookie_name, SessionHandler $handler, string $id = '')
 		{
 			$this->setId($id);
-			$this->name = $name;
+			$this->name = $cookie_name;
 			$this->handler = $handler;
 		}
 
@@ -50,7 +50,10 @@
 
 			$this->loadSessionDataFromHandler();
 
-			return $this->started = true;
+			 $this->started = true;
+
+			 return  $this->started;
+
 		}
 
 		public function save() :void

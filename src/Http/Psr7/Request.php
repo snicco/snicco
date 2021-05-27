@@ -9,6 +9,7 @@
     use Psr\Http\Message\ServerRequestInterface;
     use WPEmerge\Http\Psr7\InspectsRequest;
     use WPEmerge\Http\Psr7\ImplementsPsr7Request;
+    use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Support\Arr;
 
     class Request implements ServerRequestInterface
@@ -90,5 +91,16 @@
 
         }
 
+        public function withRoutingResult(RoutingResult $routing_result) {
+
+            return $this->withAttribute('routing_result', $routing_result);
+
+        }
+
+        public function getRoutingResult () :RoutingResult {
+
+            return $this->getAttribute('routing_result', new RoutingResult(null, []));
+
+        }
 
     }

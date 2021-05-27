@@ -19,7 +19,8 @@
 	use WPEmerge\Http\ResponseService;
 	use WPEmerge\Routing\RouteBlueprint;
 	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Support\VariableBag;
+    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Support\VariableBag;
 	use WPEmerge\View\ViewFactory;
     use WPEmerge\View\ViewComposerCollection;
 
@@ -50,6 +51,13 @@
 		 */
 		public static function config( string $key, $default = null ) {
 		}
+
+        /**
+         * Return the application session store.
+         * @return SessionStore
+         */
+        public static function session() : SessionStore
+        {}
 
 		/**
 		 * Bootstrap the application.

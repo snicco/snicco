@@ -32,7 +32,7 @@
             $route_result = $this->routes->match($request);
 
             return $next(
-                $request->withAttribute('route_result', $route_result)
+                $request->withRoutingResult( $route_result)
             );
 
         }
