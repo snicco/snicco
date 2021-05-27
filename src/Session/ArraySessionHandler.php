@@ -7,8 +7,9 @@
 	namespace WPEmerge\Session;
 
 	use Illuminate\Support\InteractsWithTime;
+    use Psr\Http\Message\ServerRequestInterface;
 
-	class ArraySessionHandler implements \SessionHandlerInterface {
+    class ArraySessionHandler implements SessionHandler {
 
 		use InteractsWithTime;
 
@@ -95,4 +96,9 @@
 			return $this->currentTime() - $seconds;
 		}
 
-	}
+        public function setRequest(ServerRequestInterface $request)
+        {
+            //
+        }
+
+    }

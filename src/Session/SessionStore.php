@@ -30,7 +30,7 @@
 		private $attributes = [];
 
 		/**
-		 * @var \SessionHandlerInterface
+		 * @var SessionHandlerInterface
 		 */
 		private $handler;
 
@@ -39,7 +39,7 @@
 		 */
 		private $started = false;
 
-		public function __construct(string $name, SessionHandlerInterface $handler, string $id = null)
+		public function __construct(string $name, SessionHandler $handler, string $id = null)
 		{
 			$this->setId($id);
 			$this->name = $name;
@@ -279,7 +279,7 @@
 			$this->put('_previous.url', $url);
 		}
 
-		public function getHandler() :SessionHandlerInterface
+		public function getHandler() :SessionHandler
 		{
 			return $this->handler;
 		}
