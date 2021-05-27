@@ -1,96 +1,112 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace WPEmerge\Support;
+    namespace WPEmerge\Support;
 
-	class Arr extends \Illuminate\Support\Arr {
+    class Arr extends \Illuminate\Support\Arr
+    {
 
-		public static function isValue( $value, array $array ) : bool {
+        public static function isValue($value, array $array) : bool
+        {
 
-			return array_search( $value, $array, true ) !== false;
-
-
-		}
-
-		public static function firstEl( $array ) {
-
-			return self::nthEl(Arr::wrap($array), 0);
-
-		}
-
-		public static function nthEl( array $array, int $offset = 0 ) {
-
-			$array = Arr::wrap( $array );
-
-			if ( empty( $array ) ) {
-
-				return null;
-
-			}
-
-			return array_values( $array )[$offset] ?? null;
-
-		}
-
-		public static function combineFirstTwo( array $array ) : array {
-
-			$array = array_values( $array );
-
-			return [ $array[0] => $array[1] ];
-
-		}
-
-		public static function flattenOnePreserveKeys( array $array ) : array {
-
-			$flattened = is_array( static::firstEl($array) ) ? static::firstEl($array) : $array;
-
-			return $flattened;
+            return array_search($value, $array, true) !== false;
 
 
+        }
 
-		}
+        public static function firstEl($array)
+        {
 
-		public static function firstKey( array $array ) {
+            return self::nthEl(Arr::wrap($array), 0);
 
-			$array = static::wrap( $array );
+        }
 
-			return static::firstEl( array_keys( $array ) );
+        public static function nthEl(array $array, int $offset = 0)
+        {
 
-		}
+            $array = Arr::wrap($array);
 
-		public static function allAfter( array $array, int $index = 0 ) : array {
+            if (empty($array)) {
 
-			$copy = $array;
+                return null;
 
-			$array = array_values( array_slice( $copy, $index) );
+            }
 
-			return $array;
+            return array_values($array)[$offset] ?? null;
 
-		}
+        }
 
-		public static function combineNumerical ( array $merge_into, $values ) : array {
+        public static function combineFirstTwo(array $array) : array
+        {
 
-			$merge_into = Arr::wrap($merge_into);
-			$values = array_values(Arr::wrap($values));
+            $array = array_values($array);
 
-			foreach ($values as $value) {
+            return [$array[0] => $array[1]];
 
-				$merge_into[] = $value;
+        }
 
-			}
+        public static function flattenOnePreserveKeys(array $array) : array
+        {
 
-			return array_values(array_unique($merge_into, SORT_REGULAR));
+            $flattened = is_array(static::firstEl($array)) ? static::firstEl($array) : $array;
 
-		}
+            return $flattened;
 
-		public static function pullByValue ( $value , &$array ) {
 
-            $index = array_search( $value, $array, true);
+        }
 
-            if ( ! $index ) {
+        public static function firstKey(array $array)
+        {
+
+            $array = static::wrap($array);
+
+            return static::firstEl(array_keys($array));
+
+        }
+
+        public static function allAfter(array $array, int $index = 0) : array
+        {
+
+            $copy = $array;
+
+            $array = array_values(array_slice($copy, $index));
+
+            return $array;
+
+        }
+
+        public static function combineNumerical(array $merge_into, $values) : array
+        {
+
+            $merge_into = Arr::wrap($merge_into);
+            $values = array_values(Arr::wrap($values));
+
+            foreach ($values as $value) {
+
+                $merge_into[] = $value;
+
+            }
+
+            return array_values(array_unique($merge_into, SORT_REGULAR));
+
+        }
+
+        public static function pullNextPair(&$array) : array
+        {
+		    $key = array_key_first($array);
+		    $value = array_shift($array);
+		    return [$key => $value];
+        }
+
+        public static function pullByValue($value, &$array)
+        {
+
+            $index = array_search($value, $array, true);
+
+            if ( ! $index) {
 
                 return null;
 
@@ -100,29 +116,31 @@
 
         }
 
-		public static function pullByValueReturnKey ( $value, &$array) {
+        public static function pullByValueReturnKey($value, &$array)
+        {
 
-		    $index = array_search($value, $array, true);
+            $index = array_search($value, $array, true);
 
-		    if ( ! $index ) {
+            if ( ! $index) {
 
-		        return null;
+                return null;
 
             }
 
-		    Arr::pull($array, $index);
+            Arr::pull($array, $index);
 
-		    return $index;
+            return $index;
 
         }
 
-        public static function mergeAfterValue(string $value, array $array_to_merge_into, array $array_to_merge ) : array
+        public static function mergeAfterValue(string $value, array $array_to_merge_into, array $array_to_merge) : array
         {
+
             $array_to_merge_into = array_values($array_to_merge_into);
 
             $index = array_search($value, $array_to_merge_into, true);
 
-            $before = array_splice($array_to_merge_into, 0, $index+1);
+            $before = array_splice($array_to_merge_into, 0, $index + 1);
             $after = $array_to_merge_into;
 
             $new = array_merge($before, $array_to_merge);
