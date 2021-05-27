@@ -10,6 +10,7 @@
     use Tests\helpers\AssertsResponse;
     use Tests\stubs\TestRequest;
     use Tests\unit\UnitTest;
+    use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
@@ -32,6 +33,22 @@
          * @var Delegate
          */
         private $route_action;
+
+        /**
+         * @var Cookies
+         */
+        private $cookies;
+
+        private $config = [
+            'lifetime' => 1,
+            'lottery' => [0,100],
+            'cookie' => 'test_session',
+            'domain' => null,
+            'same_site' => 'lax',
+            'http_only' => true,
+            'secure' => true,
+            'path' => '/'
+        ];
 
         protected function beforeTestRun()
         {
@@ -56,6 +73,7 @@
                                             'test_session' => $this->sessionId(),
                                         ]));
 
+            $this->cookies = new Cookies();
 
         }
 
@@ -64,12 +82,11 @@
 
             $store = $store ?? $this->newSessionStore();
 
-            $config = [
-                'lifetime' => 1,
-                'lottery' => $gc_collection
-            ];
+            $config = $this->config;
 
-            return new StartSessionMiddleware($store, $config);
+            $config['lottery'] = $gc_collection;
+
+            return new StartSessionMiddleware($store, $this->cookies , $config);
 
         }
 
@@ -203,6 +220,28 @@
             $this->assertNotSame('', unserialize($handler->read($this->sessionId())));
 
             Carbon::setTestNow();
+
+        }
+
+        /** @test */
+        public function the_session_cookie_is_added_to_the_response () {
+
+            $this->assertEmpty($this->cookies->toHeaders());
+
+            $this->newMiddleware()->handle($this->request, $this->route_action);
+
+            $this->assertNotEmpty($this->cookies->toHeaders());
+
+            $cookie = $this->cookies->toHeaders()[0];
+
+            $this->assertStringStartsWith("test_session={$this->sessionId()}",$cookie);
+            $this->assertStringContainsString('path=/', $cookie);
+            $this->assertStringContainsString('SameSite=lax', $cookie);
+            $this->assertStringContainsString('expires=Thu, 01-Jan-1970 00:00:01 UTC', $cookie);
+            $this->assertStringContainsString('HttpOnly', $cookie);
+            $this->assertStringContainsString('secure', $cookie);
+            $this->assertStringNotContainsString('domain', $cookie);
+
 
         }
 

@@ -8,7 +8,8 @@
 
 	use Contracts\ContainerAdapter;
 	use Psr\Http\Message\ResponseInterface;
-	use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Http\Cookies;
+    use WPEmerge\Http\ResponseFactory;
 	use WPEmerge\Routing\Route;
 	use WPEmerge\Routing\Router;
 	use WPEmerge\Session\Csrf;
@@ -37,8 +38,6 @@
 		 */
 		private function __construct() {
 		}
-
-		// --- Methods --------------------------------------- //
 
 		/**
 		 *
@@ -118,7 +117,6 @@
 		 */
 		public static function response() : ResponseFactory {}
 
-
 		/**
 		 * Create a view
 		 *
@@ -130,7 +128,6 @@
 		public static function view( $views ) : ViewInterface {
 		}
 
-
 		/**
 		 * Output child layout content.
 		 *
@@ -138,7 +135,6 @@
 		 * @see    \WPEmerge\View\PhpViewEngine::includeNextView()
 		 */
 		public static function includeChildViews() :void {}
-
 
 		/**
 		 * Output the specified view.
@@ -152,7 +148,6 @@
 		 */
 		public static function render( $views, array $context = [] ) :string {}
 
-
 		/**
 		 *
 		 * Add a new view composer to the given views
@@ -165,7 +160,6 @@
 		 */
 		public static function addComposer( $views, $callable ) :void {}
 
-
 		/**
 		 *
 		 * Returns the global variable bag used by view composers.
@@ -173,6 +167,16 @@
 		 * @return \WPEmerge\Support\VariableBag
 		 */
 		public static function globals() : VariableBag {}
+
+        /**
+         * Return the response cookies instance
+         * @return Cookies
+         */
+        public static function cookies() :Cookies
+        {
+
+
+        }
 
 
 		/**

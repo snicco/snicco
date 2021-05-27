@@ -1,17 +1,18 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace WPEmerge\Middleware;
+    namespace WPEmerge\Middleware;
 
-	use WPEmerge\Contracts\Middleware;
+    use WPEmerge\Contracts\Middleware;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
 
-    class Authenticate extends Middleware {
+    class Authenticate extends Middleware
+    {
 
         /**
          * @var string|null
@@ -23,25 +24,36 @@
          */
         private $response;
 
-        public function __construct( ResponseFactory $response, string $url = null )
+        public function __construct(ResponseFactory $response, string $url = null)
         {
+
             $this->url = $url;
             $this->response = $response;
         }
 
-		public function handle( Request $request, $next  ) {
+        public function handle(Request $request, $next)
+        {
 
-			if ( WP::isUserLoggedIn()  ) {
+            if (WP::isUserLoggedIn()) {
 
-				return $next( $request );
+                return $next($request);
 
-			}
+            }
 
-			$url = $this->url ?? WP::loginUrl( $request->fullUrl(), true  );
+            $url = $this->url ?? WP::loginUrl($request->fullUrl(), true);
 
-			return $this->response->redirect()->to($url)->withStatus(302);
+            if ($request->isAjax()) {
+
+                return $this->response
+                    ->json('Authentication Required')
+                    ->withStatus(403);
 
 
-		}
+            }
 
-	}
+            return $this->response->redirect()->to($url)->withStatus(302);
+
+
+        }
+
+    }

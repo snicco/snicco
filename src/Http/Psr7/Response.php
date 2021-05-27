@@ -8,6 +8,7 @@
 
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\StreamInterface;
+    use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Psr7\ImplementsPsr7Response;
 
     class Response implements ResponseInterface
@@ -43,12 +44,13 @@
 
         }
 
-
         protected function new(ResponseInterface $new_psr_response) : Response
         {
 
             return new static($new_psr_response);
 
         }
+
+
 
     }

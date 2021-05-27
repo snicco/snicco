@@ -14,6 +14,7 @@
     use WPEmerge\ExceptionHandling\ShutdownHandler;
     use WPEmerge\Facade\WordpressApi;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\UrlGenerator;
@@ -76,7 +77,7 @@
 
         private function responseAliases( Application $app ) {
 
-            //
+            $app->alias('cookies', Cookies::class);
 
         }
 

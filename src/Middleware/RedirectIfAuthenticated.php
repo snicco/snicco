@@ -36,6 +36,17 @@
 
 				$url = $this->url ?? WP::homeUrl( '', $request->getUri()->getScheme() );
 
+
+                if ($request->isAjax()) {
+
+                    return $this->response
+                        ->json('Only guests can access this route.')
+                        ->withStatus(403);
+
+
+                }
+
+
 				return $this->response->redirect()
                                       ->to($url)
                                       ->withStatus(302);

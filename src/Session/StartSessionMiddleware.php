@@ -6,8 +6,10 @@
 
     namespace WPEmerge\Session;
 
+    use Carbon\Carbon;
     use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\Middleware;
+    use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Responses\NullResponse;
@@ -30,11 +32,17 @@
          */
         private $config;
 
-        public function __construct(SessionStore $session_store, array $config )
+        /**
+         * @var Cookies
+         */
+        private $cookies;
+
+        public function __construct(SessionStore $session_store, Cookies $cookies, array $config)
         {
 
             $this->session_store = $session_store;
             $this->config = $config;
+            $this->cookies = $cookies;
 
         }
 
@@ -57,8 +65,7 @@
         private function getSession(Request $request) : SessionStore
         {
 
-            /** @var VariableBag $cookies */
-            $cookies = $request->getAttribute('cookies');
+            $cookies = $request->getCookies();
             $cookie_name = $this->session_store->getName();
 
             $this->session_store->setId($cookies->get($cookie_name, ''));
@@ -81,7 +88,9 @@
 
             $response = $next($request);
 
-            $this->storePreviousUrl($response, $request,  $session);
+            $this->storePreviousUrl($response, $request, $session);
+
+            $this->addSessionCookie($session);
 
             $this->saveSession($session);
 
@@ -92,13 +101,13 @@
         private function storePreviousUrl(ResponseInterface $response, Request $request, SessionStore $session)
         {
 
-            if ( $response instanceof NullResponse ) {
+            if ($response instanceof NullResponse) {
 
                 return;
 
             }
 
-            if ( $request->isGet() && ! $request->isAjax() ) {
+            if ($request->isGet() && ! $request->isAjax()) {
 
                 $session->setPreviousUrl($request->fullUrl());
 
@@ -109,11 +118,13 @@
 
         private function saveSession(SessionStore $session)
         {
+
             $session->save();
         }
 
         private function collectGarbage()
         {
+
             if ($this->configHitsLottery($this->config['lottery'])) {
 
                 $this->session_store->getHandler()->gc($this->getSessionLifetimeInSeconds());
@@ -123,12 +134,32 @@
 
         private function configHitsLottery(array $lottery) : bool
         {
+
             return random_int(1, $lottery[1]) <= $lottery[0];
         }
 
         private function getSessionLifetimeInSeconds()
         {
+
             return $this->config['lifetime'] * 60;
+        }
+
+        private function addSessionCookie(SessionStore $session)
+        {
+
+            $this->cookies->set(
+                $this->config['cookie'],
+                [
+                    'value' => $session->getId(),
+                    'path' => $this->config['path'],
+                    'samesite' => ucfirst($this->config['same_site']),
+                    'expires' => Carbon::now()->addMinutes($this->config['lifetime'])->getTimestamp(),
+                    'httponly' => $this->config['http_only'],
+                    'secure' => $this->config['secure'],
+                    'domain' => $this->config['domain']
+
+                ]
+            );
         }
 
     }

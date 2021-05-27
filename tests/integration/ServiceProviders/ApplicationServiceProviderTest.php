@@ -17,6 +17,7 @@
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Facade\WP;
 	use WPEmerge\Facade\WpFacade;
+    use WPEmerge\Http\Cookies;
     use WPEmerge\Routing\Router;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Session\SessionStore;
@@ -280,6 +281,14 @@
 
         }
 
+        /** @test */
+        public function the_response_cookies_can_be_aliased () {
+
+            $this->newTestApp();
+
+            $this->assertInstanceOf(Cookies::class, TestApp::cookies());
+
+        }
 
 	}
 
