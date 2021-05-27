@@ -84,7 +84,7 @@
 
                     if ($middleware instanceof Closure) {
 
-                        return new Delegate($middleware, $this->container);
+                        return new Delegate($middleware);
                     }
 
                     return $middleware;
@@ -128,7 +128,7 @@
         public function then(Closure $request_handler) : ResponseInterface
         {
 
-            $this->middleware[] = [new Delegate($request_handler, $this->container), []];
+            $this->middleware[] = [new Delegate($request_handler), []];
 
             return $this->run($this->buildMiddlewareStack());
 
@@ -155,7 +155,7 @@
 
             }
 
-           return new Delegate(function (ServerRequestInterface $request) {
+            return new Delegate(function (ServerRequestInterface $request) {
 
                 [$middleware, $constructor_args] = array_shift($this->middleware);
 
@@ -165,6 +165,8 @@
 
                 }
 
+                $constructor_args = $this->convertStringsToBooleans($constructor_args);
+
                 $payload = new ReflectionPayload($middleware, $constructor_args);
 
                 $middleware_instance = $this->container->make($middleware, $payload->build());
@@ -172,7 +174,6 @@
                 return $middleware_instance->process($request, $this->nextMiddleware());
 
             });
-
 
 
         }
@@ -206,5 +207,22 @@
 
         }
 
+        private function convertStringsToBooleans(array $constructor_args) :array
+        {
+
+            return array_map(function ($value) {
+
+                if (strtolower($value) === 'true') {
+                    return true;
+                }
+                if (strtolower($value) === 'false') {
+                    return false;
+                }
+
+                return $value;
+
+            }, $constructor_args);
+
+        }
 
     }
