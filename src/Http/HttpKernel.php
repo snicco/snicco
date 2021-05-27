@@ -16,6 +16,7 @@
     use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
     use WPEmerge\Middleware\Core\OutputBufferMiddleware;
     use WPEmerge\Middleware\Core\RoutingMiddleware;
+    use WPEmerge\Middleware\Core\ShareCookies;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Support\Arr;
@@ -41,6 +42,7 @@
         private $core_middleware = [
             ErrorHandlerMiddleware::class,
             EvaluateResponseMiddleware::class,
+            ShareCookies::class,
             OutputBufferMiddleware::class,
             AppendSpecialPathSuffix::class,
             RoutingMiddleware::class,

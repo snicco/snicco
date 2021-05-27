@@ -68,7 +68,7 @@
 
         }
 
-        public function make(int $status_code, $reason_phrase = '') : Response
+        public function make(int $status_code = 200, $reason_phrase = '') : Response
         {
 
             $psr_response = $this->response_factory->createResponse($status_code, $reason_phrase);

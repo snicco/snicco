@@ -47,8 +47,7 @@
         public function handle(Request $request, Delegate $next)
         {
 
-            /** @var RoutingResult $route_result */
-            $route_result = $request->getAttribute('route_result');
+            $route_result = $request->getRoutingResult();
 
             if ( ! $route = $route_result->route()) {
 

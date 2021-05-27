@@ -14,8 +14,6 @@
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Application\AliasServiceProvider;
-    use WPEmerge\Application\ApplicationServiceProvider;
     use WPEmerge\Events\EventServiceProvider;
     use WPEmerge\ExceptionHandling\ExceptionServiceProvider;
     use WPEmerge\Factories\FactoryServiceProvider;
@@ -54,6 +52,7 @@
 
         public function __construct(ContainerAdapter $container, ServerRequestInterface $server_request = null)
         {
+
 
             $server_request = $server_request ?? $this->captureRequest();
 

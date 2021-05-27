@@ -6,14 +6,10 @@
 
     namespace WPEmerge\Middleware;
 
-    use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Middleware\Authenticate;
-    use WPEmerge\Middleware\Authorize;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
-    use WPEmerge\Middleware\MiddlewareStack;
-    use WPEmerge\Middleware\RedirectIfAuthenticated;
     use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Routing\Pipeline;
 
@@ -88,7 +84,7 @@
             $this->container->singleton(RouteRunner::class, function () {
 
                 $runner = new RouteRunner(
-                    $this->container->make(HttpResponseFactory::class),
+                    $this->container->make(ResponseFactory::class),
                     $this->container->make(Pipeline::class),
                     $this->container->make(MiddlewareStack::class)
                 );
@@ -112,6 +108,7 @@
 
         private function bindMiddlewareStack()
         {
+
             $this->container->singleton(MiddlewareStack::class, function () {
 
                 $stack = new MiddlewareStack();

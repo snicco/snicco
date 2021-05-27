@@ -1,0 +1,209 @@
+<?php
+
+
+    declare(strict_types = 1);
+
+
+    namespace Tests\unit\Middleware;
+
+    use Illuminate\Support\Carbon;
+    use Tests\helpers\AssertsResponse;
+    use Tests\stubs\TestRequest;
+    use Tests\unit\UnitTest;
+    use WPEmerge\Http\Delegate;
+    use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Psr7\Response;
+    use WPEmerge\Session\ArraySessionHandler;
+    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\StartSessionMiddleware;
+    use WPEmerge\Support\VariableBag;
+
+    class StartSessionMiddlewareTest extends UnitTest
+    {
+
+        use AssertsResponse;
+
+        /**
+         * @var Request
+         */
+        private $request;
+
+        /**
+         * @var Delegate
+         */
+        private $route_action;
+
+        protected function beforeTestRun()
+        {
+
+            $response = $this->createResponseFactory();
+
+            $this->route_action = new Delegate(function (Request $request) use ($response) {
+
+                $response = $response->make();
+                $response->request = $request;
+
+                $session = $request->getAttribute('session');
+                $session->put('name', 'calvin');
+
+                return $response;
+
+
+            });
+
+            $this->request = TestRequest::from('GET', '/foo')
+                                        ->withAttribute('cookies', new VariableBag([
+                                            'test_session' => $this->sessionId(),
+                                        ]));
+
+
+        }
+
+        private function newMiddleware(SessionStore $store = null, $gc_collection = [0,100]) : StartSessionMiddleware
+        {
+
+            $store = $store ?? $this->newSessionStore();
+
+            $config = [
+                'lifetime' => 1,
+                'lottery' => $gc_collection
+            ];
+
+            return new StartSessionMiddleware($store, $config);
+
+        }
+
+        private function newSessionStore(string $cookie_name = 'test_session', $handler = null) : SessionStore
+        {
+
+            $handler = $handler ?? new ArraySessionHandler(10);
+
+            return new SessionStore($cookie_name, $handler);
+
+        }
+
+        private function sessionId() : string
+        {
+
+            return str_repeat('a', 40);
+
+        }
+
+        private function anotherSessionId() : string
+        {
+
+            return str_repeat('b', 40);
+        }
+
+        private function getRequestSession($response) : SessionStore
+        {
+
+            return $response->request->getAttribute('session');
+
+        }
+
+        /** @test */
+        public function the_request_has_access_to_the_session()
+        {
+
+            $response = $this->newMiddleware()->handle($this->request, $this->route_action);
+
+            $this->assertInstanceOf(Response::class, $response);
+            $this->assertInstanceOf(SessionStore::class, $this->getRequestSession($response));
+
+        }
+
+        /** @test */
+        public function the_correct_session_gets_created_from_the_cookie()
+        {
+
+            $handler = new ArraySessionHandler(10);
+            $handler->write($this->sessionId(), serialize(['foo' => 'bar']));
+            $handler->write($this->anotherSessionId(), serialize(['foo' => 'baz']));
+
+            $store = $this->newSessionStore('test_session', $handler);
+
+            $response = $this->newMiddleware($store)->handle($this->request, $this->route_action);
+
+            $session = $this->getRequestSession($response);
+
+            $this->assertArrayHasKey('foo', $session->all());
+
+        }
+
+        /** @test */
+        public function a_session_without_matching_session_cookie_will_create_a_new_session()
+        {
+
+            $handler = new ArraySessionHandler(10);
+            $handler->write($this->anotherSessionId(), serialize(['foo' => 'bar']));
+
+            $store = $this->newSessionStore('test_session', $handler);
+
+            $response = $this->newMiddleware($store)->handle($this->request, $this->route_action);
+
+            $session = $this->getRequestSession($response);
+
+            $this->assertArrayNotHasKey('foo', $session->all());
+
+        }
+
+        /** @test */
+        public function the_previous_url_is_saved_to_the_session_after_creating_the_response () {
+
+            $handler = new ArraySessionHandler(10);
+
+            $store = $this->newSessionStore('test_session', $handler);
+
+            $this->newMiddleware($store)->handle($this->request, $this->route_action);
+
+            $persisted_url = unserialize($handler->read($this->sessionId()))['_previous']['url'];
+
+            $this->assertSame('https://foo.com/foo', $persisted_url );
+
+
+        }
+
+        /** @test */
+        public function values_added_to_the_session_are_saved () {
+
+            $handler = new ArraySessionHandler(10);
+
+            $store = $this->newSessionStore('test_session', $handler);
+
+            $this->newMiddleware($store)->handle($this->request, $this->route_action);
+
+            $persisted_data = unserialize($handler->read($this->sessionId()));
+
+            $this->assertSame('calvin', $persisted_data['name'] );
+
+        }
+
+        /** @test */
+        public function garbage_collection_works () {
+
+            $handler = new ArraySessionHandler(10);
+
+            $handler->write($this->anotherSessionId(), serialize(['foo' => 'bar']));
+
+            $this->assertNotSame('', unserialize($handler->read($this->anotherSessionId())));
+
+
+            Carbon::setTestNow(Carbon::now()->addSeconds(120));
+
+            $handler->write($this->sessionId(), serialize(['foo' => 'bar']));
+            $store = $this->newSessionStore('test_session', $handler);
+
+
+            $this->newMiddleware($store, [100,100])->handle($this->request, $this->route_action);
+
+
+            $this->assertSame('',  $handler->read($this->anotherSessionId()));
+
+            $this->assertNotSame('', unserialize($handler->read($this->sessionId())));
+
+            Carbon::setTestNow();
+
+        }
+
+    }

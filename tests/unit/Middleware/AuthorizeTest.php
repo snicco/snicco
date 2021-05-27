@@ -33,7 +33,7 @@
         private $route_action;
 
         /**
-         * @var \Tests\stubs\TestRequest
+         * @var TestRequest
          */
         private $request;
 
