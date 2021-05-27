@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Encryption;
+	namespace WPEmerge\Session;
 
 	use Illuminate\Contracts\Encryption\EncryptException as IlluminateEncryptException;
 	use Illuminate\Contracts\Encryption\DecryptException as IlluminateDecryptException;

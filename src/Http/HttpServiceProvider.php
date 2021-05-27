@@ -27,6 +27,7 @@
 
             $this->bindPsr17StreamFactory();
 
+            $this->bindCookies();
 
         }
 
@@ -100,6 +101,27 @@
 
             });
 
+        }
+
+        private function bindCookies()
+        {
+            $this->container->singleton(Cookies::class, function () {
+
+                $cookies = new Cookies();
+                $cookies->setDefaults([
+                    'value' => '',
+                    'domain' => null,
+                    'hostonly' => true,
+                    'path' => null,
+                    'expires' => null,
+                    'secure' => true,
+                    'httponly' => false,
+                    'samesite' => 'lax'
+                ]);
+
+                return $cookies;
+
+            });
         }
 
 

@@ -9,7 +9,8 @@
     use WPEmerge\Application\Application;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Encryption\Encryptor;
+    use WPEmerge\Http\Cookies;
+    use WPEmerge\Session\Encryptor;
 
     class SessionServiceProvider extends ServiceProvider
     {
@@ -116,6 +117,7 @@
 
                 return new StartSessionMiddleware(
                     $this->container->make(SessionStore::class),
+                    $this->container->make(Cookies::class),
                     $this->config->get('session')
                 );
 

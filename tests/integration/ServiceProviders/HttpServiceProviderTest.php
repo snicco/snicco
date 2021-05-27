@@ -38,7 +38,7 @@
 
             $this->newTestApp();
 
-            $this->assertInstanceOf(ResponseFactory::class, TestApp::resolve(HttpResponseFactory::class));
+            $this->assertInstanceOf(ResponseFactory::class, TestApp::resolve(ResponseFactory::class));
 
         }
 

@@ -11,6 +11,7 @@
     use WPEmerge\Http\Psr7\ImplementsPsr7Request;
     use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Support\Arr;
+    use WPEmerge\Support\VariableBag;
 
     class Request implements ServerRequestInterface
     {
@@ -100,6 +101,17 @@
         public function getRoutingResult () :RoutingResult {
 
             return $this->getAttribute('routing_result', new RoutingResult(null, []));
+
+        }
+
+        public function getCookies() : VariableBag
+        {
+            return $this->getAttribute('cookies', new VariableBag());
+        }
+
+        public function withCookies(array $cookies) {
+
+            return $this->withAttribute('cookies', new VariableBag($cookies));
 
         }
 
