@@ -105,7 +105,6 @@
 		{
 			$handler = new ArraySessionHandler(10);
 
-
 			$handler->write('foo', 'bar');
 			$this->assertTrue($handler->gc(300));
 			$this->assertSame('bar', $handler->read('foo'));
