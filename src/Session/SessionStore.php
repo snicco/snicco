@@ -39,7 +39,7 @@
 		 */
 		private $started = false;
 
-		public function __construct(string $name, SessionHandler $handler, string $id = null)
+		public function __construct( string $name, SessionHandler $handler, string $id = '')
 		{
 			$this->setId($id);
 			$this->name = $name;
@@ -264,9 +264,9 @@
 			$this->id = $this->isValidId($id) ? $id : $this->generateSessionId();
 		}
 
-		public function isValidId(string $id) :bool
+		public function isValidId( string $id ) :bool
 		{
-			return ctype_alnum($id) && strlen($id) === 40;
+			return strlen($id) === 40 && ctype_alnum($id);
 		}
 
 		public function previousUrl() :?string
