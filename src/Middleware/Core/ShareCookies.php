@@ -16,7 +16,21 @@
 
         public function handle(Request $request, Delegate $next)
         {
-            return $next($request->withAttribute('cookies', new VariableBag($_COOKIE)));
+            return $next(
+                $request->withAttribute(
+                    'cookies',
+                    new VariableBag( $this->parseCookiesFromRequest($request))
+                )
+            );
+        }
+
+        private function parseCookiesFromRequest (Request $request) : array
+        {
+
+            $cookies = $_COOKIE;
+
+            return $cookies;
+
         }
 
     }

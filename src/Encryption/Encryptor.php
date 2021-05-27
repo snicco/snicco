@@ -17,7 +17,7 @@
 	class Encryptor implements EncryptorInterface {
 
 		/**
-		 * @var \Illuminate\Encryption\Encrypter
+		 * @var Encrypter
 		 */
 		private $encryptor;
 

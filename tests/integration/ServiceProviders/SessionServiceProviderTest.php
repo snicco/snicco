@@ -9,6 +9,7 @@
     use Tests\integration\IntegrationTest;
     use Tests\stubs\TestApp;
     use WPEmerge\Session\DatabaseSessionHandler;
+    use WPEmerge\Session\EncryptedStore;
     use WPEmerge\Session\SessionHandler;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Session\SessionStore;
@@ -240,5 +241,41 @@
 
         }
 
+        /** @test */
+        public function the_session_store_is_not_encrypted_by_default () {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ]
+            ]);
+
+
+            $this->assertFalse(TestApp::config('session.encrypt', ''));
+
+        }
+
+        /** @test */
+        public function the_session_store_can_be_encrypted () {
+
+            $this->newTestApp([
+                'app_key' => 'base64:L0L/nXmGaFVpJ795dFRPt9c5eUrqIqkvJqkb98KbC10=',
+                'session' => [
+                    'enabled' => true,
+                    'encrypt' => true,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ]
+            ]);
+
+            $driver = TestApp::resolve(SessionStore::class);
+
+            $this->assertInstanceOf(EncryptedStore::class, $driver);
+
+        }
 
     }

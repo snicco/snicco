@@ -7,7 +7,9 @@
     namespace WPEmerge\Session;
 
     use WPEmerge\Application\Application;
+    use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Contracts\ServiceProvider;
+    use WPEmerge\Encryption\Encryptor;
 
     class SessionServiceProvider extends ServiceProvider
     {
@@ -20,6 +22,7 @@
             $this->bindSessionStore();
             $this->bindSessionMiddleware();
             $this->bindAliases();
+            $this->bindEncryptor();
 
         }
 
@@ -48,7 +51,7 @@
             $this->config->extend('session.same_site', 'lax');
             $this->config->extend('session.driver', 'database');
             $this->config->extend('session.lifetime', 120);
-
+            $this->config->extend('session.encrypt', false);
 
 
         }
@@ -56,13 +59,26 @@
         private function bindSessionStore()
         {
 
-            $name = $this->config->get('session.driver', 'database');
+            $name = $this->config->get('session.cookie');
 
             $this->container->singleton(SessionStore::class, function () use ($name) {
 
-                $store = new SessionStore($name, $this->container->make(SessionHandler::class));
+                $store = null;
 
-                $store->setName($this->config->get('session.cookie'));
+                if ( $this->config->get('session.encrypt') ) {
+
+                    $store = new EncryptedStore(
+                        $name,
+                        $this->container->make(SessionHandler::class),
+                        $this->container->make(EncryptorInterface::class)
+                    );
+
+                } else {
+
+                    $store = new SessionStore($name, $this->container->make(SessionHandler::class));
+
+
+                }
 
                 return $store;
 
@@ -114,6 +130,15 @@
 
             $app->alias('session', SessionStore::class);
 
+        }
+
+        private function bindEncryptor()
+        {
+            $this->container->singleton(EncryptorInterface::class, function () {
+
+                return new Encryptor($this->config->get('app_key'));
+
+            });
         }
 
     }
