@@ -212,6 +212,12 @@
 
             return array_map(function ($value) {
 
+                if ( ! is_string($value) ) {
+
+                    return $value;
+
+                }
+
                 if (strtolower($value) === 'true') {
                     return true;
                 }
