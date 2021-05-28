@@ -6,84 +6,66 @@
 
     namespace WPEmerge\Session;
 
-    use Closure;
-    use Exception;
-    use Psr\Http\Message\ResponseInterface;
-    use Psr\Http\Message\ServerRequestInterface;
-    use Psr\Http\Server\RequestHandlerInterface;
     use Slim\Csrf\Guard;
+    use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Support\Arr;
 
-    class CsrfMiddleware extends Guard
+    class CsrfMiddleware extends Middleware
     {
 
         /**
-         * @var SessionStore
+         * @var Guard
          */
-        private $session_store;
+        private $guard;
+        /**
+         * @var bool
+         */
+        private $persist_tokens;
+        /**
+         * @var ResponseFactory
+         */
+        private $response_factory;
 
-        public function __construct(ResponseFactory $response_factory, SessionStore $session_store)
+        public function __construct( ResponseFactory $response_factory, Guard $guard, string $persistent_mode = 'rotate' )
         {
 
-            $this->session_store = $session_store;
-            $storage = $session_store->get('csrf', []);
+            $this->response_factory = $response_factory;
+            $this->guard = $guard;
+            $this->persist_tokens = $persistent_mode;
 
-            parent::__construct(
-                $response_factory,
-                'csrf',
-                $storage,
-                $this->throwExceptionOnFailure(),
-                32
+            if (  strtolower($this->persist_tokens) === 'persist' ) {
 
-            );
+                $this->guard->setPersistentTokenMode(true);
+
+            }
 
         }
 
-        /**
-         * @param  Request  $request
-         * @param  Delegate  $handler
-         *
-         * @return ResponseInterface
-         * @throws Exception
-         */
-        public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface {
+        public function handle(Request $request, Delegate $next)
+        {
 
-            $response = parent::process($request, $handler);
+            try {
 
-            $this->session_store->put('csrf', $this->storage);
+                $response = $this->guard->process($request, $next);
+
+            } catch ( InvalidCsrfTokenException $e ) {
+
+                // Slim does not run the enforce storage limit method when validation failed.
+                // Slim assumes that all csrf tokens are stored in one $_SESSION array but for use
+                // one active session only stores one token for the current user so that
+                // when validation fails we want to clear everything out.
+                $request->getSession()->forget('csrf');
+
+                return $this->response_factory->error($e);
+
+            }
+
 
             return $response;
 
         }
 
-        public function generateToken() : array
-        {
-            if ( $this->session_store->get('csrf', []) !== [] ) {
-
-                $csrf = $this->session_store->get('csrf');
-
-                return [
-
-                    $this->getTokenNameKey() => Arr::firstKey($csrf),
-                    $this->getTokenValueKey() => Arr::firstEl($csrf),
-
-                ];
-
-            }
-
-            return parent::generateToken();
-        }
-
-        private function throwExceptionOnFailure() : Closure
-        {
-            return function () {
-
-                throw new InvalidCsrfTokenException(419, 'The link you followed expired.');
-
-            };
-        }
 
     }

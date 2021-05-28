@@ -8,9 +8,11 @@
 
     use Illuminate\Support\Facades\Blade;
     use Illuminate\Support\HtmlString;
+    use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationTrait;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Session\CsrfField;
 
     class BladeDirectiveServiceProvider extends ServiceProvider
     {
@@ -63,23 +65,20 @@
 
             });
 
-            Blade::directive('csrf', function ($expression) {
+            Blade::directive('csrf', function () {
 
-                $expression = preg_replace('/\s/', '',$expression);
+                /** @var CsrfField $csrf_field */
+                $csrf_field = $this->container->make(CsrfField::class);
 
-                $segments = explode(',',$expression);
+                $html = $csrf_field->asHtml();
 
-                $action = $segments[0];
-                $name = $segments[1];
-
-                return "<?php wp_nonce_field({$action},{$name}); ?>";
+                return "<?php echo '{$html}' ?>";
 
 
             });
 
             Blade::directive('method', function ($method) {
 
-                // $method = trim("'", $method);
 
                 $html = new HtmlString("<input type='hidden' name='_method' value={$method}>");
 
