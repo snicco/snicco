@@ -34,7 +34,9 @@
             $name_key = $this->guard->getTokenNameKey();
             $token_key = $this->guard->getTokenValueKey();
 
-            if ( ( $csrf = $this->session->get('csrf', [] ) ) !== [] ) {
+            $csrf = $this->session->get('csrf', [] );
+
+            if ( $csrf !== [] ) {
 
                [ $name_key_value, $token_value ] = [Arr::firstKey($csrf), Arr::firstEl($csrf)];
 
@@ -46,6 +48,25 @@
                 $name_key => $name_key_value,
                 $token_key => $token_value
             ];
+
+        }
+
+        public function asHtml() {
+
+
+            $field = $this->create();
+
+            $name = Arr::pullNextPair($field);
+            $token = Arr::pullNextPair($field);
+
+            ob_start();
+
+            ?>
+            <input type="hidden" name="<?= esc_attr(Arr::firstKey($name)); ?>" value="<?= esc_attr(Arr::firstEl($name)); ?>">
+            <input type="hidden" name="<?= esc_attr(Arr::firstKey($token)); ?>" value="<?= esc_attr(Arr::firstEl($token));?>">
+            <?php
+
+            return ob_get_clean();
 
         }
 

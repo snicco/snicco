@@ -8,10 +8,16 @@
 
     use Illuminate\Support\MessageBag;
     use Illuminate\Support\ViewErrorBag;
+    use Slim\Csrf\Guard;
     use Tests\integration\Blade\traits\AssertBladeView;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
     use Tests\integration\IntegrationTest;
     use Tests\stubs\TestApp;
+    use WPEmerge\Contracts\ViewInterface;
+    use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Session\ArraySessionHandler;
+    use WPEmerge\Session\CsrfField;
+    use WPEmerge\Session\SessionStore;
 
     class CustomDirectivesTest extends IntegrationTest
     {
@@ -84,25 +90,27 @@
         /** @test */
         public function custom_csrf_directives_work () {
 
-            /** @todo Decide how to implement with CSRF middleware */
+            TestApp::container()->bind(CsrfField::class, function () {
 
-            $calvin = $this->newAdmin();
-            $john = $this->newAdmin();
+                $storage = [];
 
-            $this->login($calvin);
-            $view1 = $this->view('csrf');
-            $content1 = $view1->toString();
+                return new CsrfField(
+                    new SessionStore('test_session', new ArraySessionHandler(10)),
+                    new Guard(
+                        TestApp::container()->make(ResponseFactory::class),
+                        'csrf', $storage
+                    )
 
-            $this->logout($calvin);
+                );
 
-            $this->login($john);
-            $view2 = $this->view('csrf');
-            $content2 = $view2->toString();
+            });
 
-            $this->assertNotSame($content1, $content2);
-            $this->assertStringStartsWith('<input', $content1);
-            $this->assertStringStartsWith('<input', $content2);
+            $view = $this->view('csrf');
+            $content = $view->toString();
 
+            $this->assertStringStartsWith('<input', $content);
+            $this->assertStringContainsString('csrf_name', $content);
+            $this->assertStringContainsString('csrf_value', $content);
 
         }
 
@@ -115,10 +123,7 @@
 
         }
 
-        /**
-         * @test
-         *
-         */
+        /** @test */
         public function error_directive_works () {
 
             /** @todo Decide how to implement with sessions and compatible with the default php engine. */
@@ -141,7 +146,7 @@
 
         }
 
-        private function view(string $view)
+        private function view(string $view) : ViewInterface
         {
 
             return TestApp::view('blade-features.'.$view);

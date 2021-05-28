@@ -10,10 +10,8 @@
     use WPEmerge\Application\Application;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Session\Encryptor;
     use WPEmerge\Support\Arr;
 
     class SessionServiceProvider extends ServiceProvider
@@ -141,6 +139,8 @@
             $app = $this->container->make(Application::class);
 
             $app->alias('session', SessionStore::class);
+            $app->alias('csrfField', CsrfField::class, 'asHtml');
+
 
         }
 
@@ -199,7 +199,6 @@
 
             });
         }
-
 
 
     }

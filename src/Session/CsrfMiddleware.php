@@ -28,14 +28,14 @@
          */
         private $response_factory;
 
-        public function __construct( ResponseFactory $response_factory, Guard $guard, bool $persistent_token = false )
+        public function __construct( ResponseFactory $response_factory, Guard $guard, string $persistent_mode = 'rotate' )
         {
 
             $this->response_factory = $response_factory;
             $this->guard = $guard;
-            $this->persist_tokens = $persistent_token;
+            $this->persist_tokens = $persistent_mode;
 
-            if (  $this->persist_tokens ) {
+            if (  strtolower($this->persist_tokens) === 'persist' ) {
 
                 $this->guard->setPersistentTokenMode(true);
 
@@ -53,7 +53,9 @@
             } catch ( InvalidCsrfTokenException $e ) {
 
                 // Slim does not run the enforce storage limit method when validation failed.
-                // When validation fails we clear everything out.
+                // Slim assumes that all csrf tokens are stored in one $_SESSION array but for use
+                // one active session only stores one token for the current user so that
+                // when validation fails we want to clear everything out.
                 $request->getSession()->forget('csrf');
 
                 return $this->response_factory->error($e);
