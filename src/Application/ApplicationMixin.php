@@ -58,6 +58,21 @@
         public static function session() : SessionStore
         {}
 
+        /**
+         * Creates hidden csrf input fields based on the current user session.
+         * If a csrf token is present in the session its used if not a new hash is created and saved
+         * in the session.
+         *
+         * Does NOT echo the output but returns the html as a string.
+         *
+         * @return string
+         */
+        public static function csrfField() :string
+        {
+
+
+        }
+
 		/**
 		 * Bootstrap the application.
 		 *

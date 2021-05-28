@@ -65,7 +65,6 @@
             $this->responseAliases( $app );
             $this->routingAliases( $app );
             $this->viewAliases( $app );
-            $this->sessionAliases( $app );
 
         }
 
@@ -141,11 +140,7 @@
 
         }
 
-        private function sessionAliases( Application $app ) {
 
-            //
-
-        }
 
 
     }
