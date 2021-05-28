@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Session;
+	namespace WPEmerge;
 
 	use Illuminate\Contracts\Encryption\EncryptException as IlluminateEncryptException;
 	use Illuminate\Contracts\Encryption\DecryptException as IlluminateDecryptException;
@@ -95,13 +95,6 @@
 
 		}
 
-		/**
-		 * Parse the encryption key.
-		 *
-		 * @param  string  $key
-		 *
-		 * @return string
-		 */
 		private function parseKey( string $key ) :string
 		{
 			if (Str::startsWith( $key, $prefix = 'base64:') ) {

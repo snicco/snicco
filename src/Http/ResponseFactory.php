@@ -187,6 +187,15 @@
         public function error(HttpException $e) : Response
         {
 
+            if ( $e->isAjax() ) {
+
+                return $this->json(
+                    $e->getMessageForHumans(),
+                    (int) $e->getStatusCode()
+                );
+
+            }
+
             $views = ['error', 'index'];
 
             if (WP::isAdmin()) {
@@ -207,12 +216,12 @@
 
             try {
 
-                return $this->toResponse($view);
+                return $this->toResponse($view)->withStatus( (int) $e->getStatusCode() );
 
             }
             catch (ViewException $e) {
 
-                return $this->toResponse($this->view->make('500'));
+                return $this->toResponse($this->view->make('500'))->withStatus(500);
 
             }
 

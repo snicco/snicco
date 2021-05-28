@@ -9,9 +9,12 @@
     use Slim\Csrf\Guard;
     use WPEmerge\Application\Application;
     use WPEmerge\Contracts\EncryptorInterface;
+    use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\ServiceProvider;
+    use WPEmerge\Encryptor;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Middleware\Core\ErrorHandlerMiddleware;
     use WPEmerge\Support\Arr;
 
     class SessionServiceProvider extends ServiceProvider
@@ -38,6 +41,7 @@
             if ($this->config->get('session.enabled')) {
 
                 $this->config->extend('middleware.groups.global', [StartSessionMiddleware::class]);
+
 
             }
 
@@ -160,7 +164,7 @@
 
 
                 return new CsrfMiddleware(
-                    $this->container->make(ResponseFactory::class),
+                    $this->container->make(ErrorHandlerInterface::class),
                     $this->container->make(Guard::class),
                     Arr::firstEl($args),
                 );
@@ -188,11 +192,7 @@
                     $this->container->make(ResponseFactory::class),
                     'csrf',
                     $storage,
-                    function () {
-
-                        throw new InvalidCsrfTokenException(419, 'The link you followed expired.');
-
-                    },
+                    null,
                     1,
                     40
                 );

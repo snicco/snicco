@@ -265,9 +265,12 @@
 			$this->name = $name;
 		}
 
-		public function setId(string $id) :void
+		public function setId(string $id) :SessionStore
 		{
 			$this->id = $this->isValidId($id) ? $id : $this->generateSessionId();
+
+			return $this;
+
 		}
 
 		public function isValidId( string $id ) :bool

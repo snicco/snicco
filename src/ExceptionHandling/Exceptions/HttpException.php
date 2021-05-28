@@ -8,6 +8,7 @@
 
     use RuntimeException;
     use Throwable;
+    use WPEmerge\Http\Psr7\Request;
 
     class HttpException extends RuntimeException
     {
@@ -20,10 +21,15 @@
          */
         private $message_for_humans;
 
-        public function __construct(int $status_code, ?string $message = null, Throwable $previous = null, ?int $code = 0)
+        /**
+         * @var Request
+         */
+        private $request;
+
+        public function __construct(int $status_code, ?string $message_for_humans = null, Throwable $previous = null, ?int $code = 0)
         {
             $this->status_code = $status_code;
-            $this->message_for_humans = $message;
+            $this->message_for_humans = $message_for_humans;
 
             parent::__construct('', $code, $previous);
 
@@ -39,6 +45,17 @@
 
             return $this->message_for_humans;
 
+        }
+
+        public function setRequest(Request $request) {
+
+            $this->request = $request;
+            return $this;
+
+        }
+
+        public function isAjax() :bool {
+            return $this->request && $this->request->isAjax();
         }
 
     }
