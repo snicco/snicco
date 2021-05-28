@@ -12,7 +12,7 @@
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Session\Encryptor;
+    use WPEmerge\Support\Arr;
 
     class SessionServiceProvider extends ServiceProvider
     {
@@ -25,6 +25,8 @@
             $this->bindSessionStore();
             $this->bindSessionMiddleware();
             $this->bindCsrfMiddleware();
+            $this->bindCsrfStore();
+            $this->bindSlimGuard();
             $this->bindAliases();
             $this->bindEncryptor();
 
@@ -137,6 +139,8 @@
             $app = $this->container->make(Application::class);
 
             $app->alias('session', SessionStore::class);
+            $app->alias('csrfField', CsrfField::class, 'asHtml');
+
 
         }
 
@@ -151,11 +155,46 @@
 
         private function bindCsrfMiddleware()
         {
-            $this->container->singleton(CsrfMiddleware::class, function () {
+
+            $this->container->singleton(CsrfMiddleware::class, function ($c, $args ) {
+
 
                 return new CsrfMiddleware(
                     $this->container->make(ResponseFactory::class),
-                    $this->container->make(SessionStore::class)
+                    $this->container->make(Guard::class),
+                    Arr::firstEl($args),
+                );
+
+            });
+        }
+
+        private function bindCsrfStore()
+        {
+            $this->container->singleton(CsrfStore::class, function () {
+
+                return new CsrfStore($this->container->make(SessionStore::class));
+
+            });
+        }
+
+        private function bindSlimGuard()
+        {
+            $this->container->singleton(Guard::class, function () {
+
+
+                $storage = $this->container->make(CsrfStore::class);
+
+                return new Guard(
+                    $this->container->make(ResponseFactory::class),
+                    'csrf',
+                    $storage,
+                    function () {
+
+                        throw new InvalidCsrfTokenException(419, 'The link you followed expired.');
+
+                    },
+                    1,
+                    40
                 );
 
             });
