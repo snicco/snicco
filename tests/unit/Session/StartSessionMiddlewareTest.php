@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\unit\Middleware;
+    namespace Tests\unit\Session;
 
     use Illuminate\Support\Carbon;
     use Tests\helpers\AssertsResponse;

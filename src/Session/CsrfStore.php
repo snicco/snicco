@@ -6,9 +6,12 @@
 
     namespace WPEmerge\Session;
 
-    use WPEmerge\Support\Arr;
 
-    class CsrfStore implements \ArrayAccess, \Countable, \Iterator
+    use ArrayAccess;
+    use Countable;
+    use Iterator;
+
+    class CsrfStore implements ArrayAccess, Countable, Iterator
     {
 
         /**

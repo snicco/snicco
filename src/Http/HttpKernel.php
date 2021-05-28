@@ -12,6 +12,7 @@
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\Responses\NullResponse;
     use WPEmerge\Middleware\Core\AppendSpecialPathSuffix;
+    use WPEmerge\Middleware\Core\CorrectContentType;
     use WPEmerge\Middleware\Core\ErrorHandlerMiddleware;
     use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
     use WPEmerge\Middleware\Core\OutputBufferMiddleware;
