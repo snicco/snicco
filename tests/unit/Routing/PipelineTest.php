@@ -14,14 +14,18 @@
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
+    use Tests\helpers\AssertsResponse;
     use Tests\helpers\CreateContainer;
 
+    use Tests\stubs\TestErrorHandler;
+    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
     use WPEmerge\Routing\Pipeline;
 
     class PipelineTest extends TestCase
     {
 
         use CreateContainer;
+        use AssertsResponse;
 
         /**
          * @var Pipeline
@@ -38,7 +42,7 @@
 
             parent::setUp();
 
-            $this->pipeline = new Pipeline($this->createContainer());
+            $this->pipeline = new Pipeline($this->createContainer(), new TestErrorHandler());
 
             $factory = new Psr17Factory();
 
@@ -72,7 +76,6 @@
         public function middleware_can_be_stacked()
         {
 
-            /** @var ResponseInterface $response */
             $response = $this->pipeline
                 ->send($this->request)
                 ->through([Foo::class, Bar::class])
@@ -229,8 +232,37 @@
 
         }
 
+        /** @test */
+        public function exceptions_get_handled_on_every_middleware_process_and_dont_break_the_pipeline()
+        {
+
+            $response = $this->pipeline
+                ->send($this->request)
+                ->through([
+                        ChangeLastMiddleware::class,
+                        ExceptionMiddleware::class,
+                        function () {
+
+                            $this->fail('Middleware run after exception.');
+
+                        },
+                    ]
+                )
+                ->then(function (ServerRequestInterface $request) {
+
+                    $this->fail('The route handler should have never be called if we have an exception.');
+
+                });
+
+            $this->assertInstanceOf(ResponseInterface::class, $response);
+            $this->assertStatusCode(404, $response);
+            $this->assertOutput('CHANGED-Error Message', $response);
+
+
+        }
 
     }
+
 
     class Foo implements MiddlewareInterface
     {
@@ -261,6 +293,18 @@
 
             return $response;
 
+        }
+
+    }
+
+
+    class ExceptionMiddleware implements MiddlewareInterface
+    {
+
+        public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
+        {
+
+            throw new HttpException(404, '-Error Message');
         }
 
     }
@@ -356,7 +400,9 @@
 
     }
 
-    class WrongMiddleware {
+
+    class WrongMiddleware
+    {
 
         public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
         {
@@ -364,4 +410,5 @@
             return new Response();
 
         }
+
     }
