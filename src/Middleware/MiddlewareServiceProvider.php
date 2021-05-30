@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Middleware;
 
+    use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Http\ResponseFactory;
@@ -101,7 +102,10 @@
         {
             $this->container->bind(Pipeline::class, function () {
 
-                return new Pipeline($this->container);
+                return new Pipeline(
+                    $this->container,
+                    $this->container->make(ErrorHandlerInterface::class)
+                );
 
             });
         }

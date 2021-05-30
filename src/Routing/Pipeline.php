@@ -13,18 +13,21 @@
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
+    use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\ReflectionPayload;
-    use WPEmerge\Traits\ReflectsCallable;
 
     use function collect;
 
     class Pipeline
     {
 
-        use ReflectsCallable;
+        /**
+         * @var ErrorHandlerInterface
+         */
+        private $error_handler;
 
         /**
          * The container implementation.
@@ -44,10 +47,11 @@
          */
         private $middleware = [];
 
-        public function __construct(ContainerAdapter $container)
+        public function __construct(ContainerAdapter $container, ErrorHandlerInterface $error_handler)
         {
 
             $this->container = $container;
+            $this->error_handler = $error_handler;
         }
 
         public function send(ServerRequestInterface $request) : Pipeline
@@ -116,7 +120,7 @@
 
         }
 
-        public function run($stack = null)
+        public function run($stack = null) : ResponseInterface
         {
 
             $stack = $stack ?? $this->buildMiddlewareStack();
@@ -157,24 +161,40 @@
 
             return new Delegate(function (ServerRequestInterface $request) {
 
-                [$middleware, $constructor_args] = array_shift($this->middleware);
+                try {
 
-                if ($middleware instanceof MiddlewareInterface) {
+                    return $this->resolveNextMiddleware($request);
+                }
+                catch (\Throwable $e) {
 
-                    return $middleware->process($request, $this->nextMiddleware());
+                    return $this->error_handler->transformToResponse($e);
 
                 }
 
-                $constructor_args = $this->convertStringsToBooleans($constructor_args);
-
-                $payload = new ReflectionPayload($middleware, $constructor_args);
-
-                $middleware_instance = $this->container->make($middleware, $payload->build());
-
-                return $middleware_instance->process($request, $this->nextMiddleware());
 
             });
 
+
+        }
+
+        private function resolveNextMiddleware(ServerRequestInterface $request) : ResponseInterface
+        {
+
+            [$middleware, $constructor_args] = array_shift($this->middleware);
+
+            if ($middleware instanceof MiddlewareInterface) {
+
+                return $middleware->process($request, $this->nextMiddleware());
+
+            }
+
+            $constructor_args = $this->convertStringsToBooleans($constructor_args);
+
+            $payload = new ReflectionPayload($middleware, $constructor_args);
+
+            $middleware_instance = $this->container->make($middleware, $payload->build());
+
+            return $middleware_instance->process($request, $this->nextMiddleware());
 
         }
 
@@ -207,12 +227,12 @@
 
         }
 
-        private function convertStringsToBooleans(array $constructor_args) :array
+        private function convertStringsToBooleans(array $constructor_args) : array
         {
 
             return array_map(function ($value) {
 
-                if ( ! is_string($value) ) {
+                if ( ! is_string($value)) {
 
                     return $value;
 

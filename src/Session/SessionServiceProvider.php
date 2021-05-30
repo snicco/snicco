@@ -103,7 +103,6 @@
         private function bindSessionHandler()
         {
 
-
             $this->container->singleton(SessionHandler::class, function () {
 
                 $name = $this->config->get('session.driver', 'database');
@@ -164,7 +163,6 @@
 
 
                 return new CsrfMiddleware(
-                    $this->container->make(ErrorHandlerInterface::class),
                     $this->container->make(Guard::class),
                     Arr::firstEl($args),
                 );
@@ -183,18 +181,15 @@
 
         private function bindSlimGuard()
         {
+
             $this->container->singleton(Guard::class, function () {
 
 
                 $storage = $this->container->make(CsrfStore::class);
 
-                return new Guard(
+                return GuardFactory::create(
                     $this->container->make(ResponseFactory::class),
-                    'csrf',
-                    $storage,
-                    null,
-                    1,
-                    40
+                    $storage
                 );
 
             });

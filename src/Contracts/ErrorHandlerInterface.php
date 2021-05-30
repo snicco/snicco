@@ -32,7 +32,7 @@
          *
          * @param  Throwable  $exception
          *
-         * @return \WPEmerge\Http\Psr7\Response|null
+         * @return Response|null
          */
 		public function transformToResponse( Throwable $exception ) :?Response;
 

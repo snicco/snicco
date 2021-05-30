@@ -16,6 +16,7 @@
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\ResponseEmitter;
+    use WPEmerge\Session\SessionStore;
     use WPEmerge\Traits\HandlesExceptions;
 
     class ProductionErrorHandler implements ErrorHandlerInterface
@@ -214,6 +215,8 @@
             return $this->response->error($e);
 
         }
+
+
 
 
     }

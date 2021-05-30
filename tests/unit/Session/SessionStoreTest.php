@@ -26,7 +26,7 @@
 			$this->assertSame( 'baz', $session->get( 'not-present', 'baz' ) );
 			$this->assertTrue( $session->has( 'foo' ) );
 			$this->assertFalse( $session->has( 'bar' ) );
-			$this->assertTrue( $session->isStarted() );
+			$this->assertTrue( $session->isActive() );
 
 		}
 
@@ -144,7 +144,7 @@
 
 			$session->save();
 
-			$this->assertFalse( $session->isStarted() );
+			$this->assertFalse( $session->isActive() );
 			$this->assertEmpty( $session->get( '_flash.new' ) );
 			$this->assertSame( 'bar', $session->get( '_flash.old' ) );
 
@@ -182,7 +182,7 @@
 
 			], unserialize( $handler->read( $new_id ) ) );
 
-			$this->assertFalse( $session->isStarted() );
+			$this->assertFalse( $session->isActive() );
 
 		}
 
@@ -602,8 +602,7 @@
 
 			$session->save();
 
-			$this->assertArrayHasKey( 'foo', unserialize( $session->getHandler()
-			                                                      ->read( $old_id ) ) );
+			$this->assertArrayHasKey( 'foo', unserialize( $session->getHandler()->read( $old_id ) ) );
 
 			$this->assertTrue( $session->invalidate() );
 

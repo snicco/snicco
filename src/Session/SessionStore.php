@@ -1,359 +1,409 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace WPEmerge\Session;
+    namespace WPEmerge\Session;
 
-	use Closure;
-	use WPEmerge\Support\Arr;
-	use WPEmerge\Support\Str;
-	use stdClass;
-	use SessionHandlerInterface;
+    use Closure;
+    use WPEmerge\Support\Arr;
+    use WPEmerge\Support\Str;
+    use stdClass;
+    use SessionHandlerInterface;
 
-	class SessionStore {
+    class SessionStore
+    {
 
-		/**
-		 * @var string
-		 */
-		private $id;
+        /**
+         * @var string
+         */
+        private $id;
 
-		/**
-		 * @var string
-		 */
-		private $name;
+        /**
+         * @var string
+         */
+        private $name;
 
-		/**
-		 * @var array
-		 */
-		private $attributes = [];
+        /**
+         * @var array
+         */
+        private $attributes = [];
 
-		/**
-		 * @var SessionHandlerInterface
-		 */
-		private $handler;
+        /**
+         * @var SessionHandlerInterface
+         */
+        private $handler;
 
-		/**
-		 * @var bool
-		 */
-		private $started = false;
+        /**
+         * @var bool
+         */
+        private $active = false;
 
-		public function __construct( string $cookie_name, SessionHandler $handler, string $id = '')
-		{
-			$this->setId($id);
-			$this->name = $cookie_name;
-			$this->handler = $handler;
-		}
+        public function __construct(string $cookie_name, SessionHandler $handler, string $id = '')
+        {
 
-		public function start() : bool {
+            $this->setId($id);
+            $this->name = $cookie_name;
+            $this->handler = $handler;
+        }
 
-			$this->loadSessionDataFromHandler();
+        public function start() : bool
+        {
 
-			 $this->started = true;
+            $this->loadSessionDataFromHandler();
 
-			 return  $this->started;
+            $this->active = true;
 
-		}
+            return $this->active;
 
-		public function save() :void
-		{
-			$this->ageFlashData();
+        }
 
-			$this->handler->write(
-			    $this->getId(),
-                $this->prepareForStorage( serialize($this->attributes) )
+        public function save() : void
+        {
+
+            if ( ! $this->active ) {
+                return;
+            }
+
+            $this->ageFlashData();
+
+            $this->handler->write(
+                $this->getId(),
+                $this->prepareForStorage(serialize($this->attributes))
             );
 
-			$this->started = false;
-		}
+            $this->active = false;
+        }
 
-		public function all() :array
-		{
-			return $this->attributes;
-		}
+        public function all() : array
+        {
 
-		public function only( $keys) : array {
+            return $this->attributes;
+        }
 
-			return Arr::only($this->attributes, $keys);
+        public function only($keys) : array
+        {
 
-		}
+            return Arr::only($this->attributes, $keys);
 
-		public function exists($key) :bool
-		{
-			$placeholder = new stdClass;
+        }
 
-			return ! collect(is_array($key) ? $key : func_get_args())->contains(function ($key) use ($placeholder) {
-				return $this->get($key, $placeholder) === $placeholder;
-			});
-		}
+        public function exists($key) : bool
+        {
 
-		public function missing($key) :bool
-		{
-			return ! $this->exists($key);
-		}
+            $placeholder = new stdClass;
 
-		public function has($key) :bool
-		{
-			return ! collect(is_array($key) ? $key : func_get_args())->contains(function ($key) {
-				return is_null($this->get($key));
-			});
-		}
+            return ! collect(is_array($key) ? $key : func_get_args())->contains(function ($key) use ($placeholder) {
 
-		public function get(string $key, $default = null)
-		{
-			return Arr::get($this->attributes, $key, $default);
-		}
+                return $this->get($key, $placeholder) === $placeholder;
+            });
+        }
 
-		public function pull(string $key, $default = null)
-		{
-			return Arr::pull($this->attributes, $key, $default);
-		}
+        public function missing($key) : bool
+        {
 
-		public function hasOldInput(string $key = null) : bool {
+            return ! $this->exists($key);
+        }
 
-			$old = $this->getOldInput($key);
+        public function has($key) : bool
+        {
 
-			return is_null($key) ? count($old) > 0 : ! is_null($old);
-		}
+            return ! collect(is_array($key) ? $key : func_get_args())->contains(function ($key) {
 
-		public function getOldInput(string $key = null, $default = null)
-		{
-			return Arr::get($this->get('_old_input', []), $key, $default);
-		}
+                return is_null($this->get($key));
+            });
+        }
 
-		public function replace( array $attributes) :void
-		{
-			$this->put($attributes);
-		}
+        public function get(string $key, $default = null)
+        {
 
-		public function put($key, $value = null) :void
-		{
-			if ( ! is_array ($key ) ) {
-				$key = [$key => $value];
-			}
+            return Arr::get($this->attributes, $key, $default);
+        }
 
-			foreach ($key as $arrayKey => $arrayValue) {
-				Arr::set($this->attributes, $arrayKey, $arrayValue);
-			}
-		}
+        public function pull(string $key, $default = null)
+        {
 
-		public function remember(string $key, Closure $callback)
-		{
-			if (! is_null($value = $this->get($key))) {
-				return $value;
-			}
+            return Arr::pull($this->attributes, $key, $default);
+        }
 
-			return tap($callback(), function ($value) use ($key) {
+        public function hasOldInput(string $key = null) : bool
+        {
 
-				$this->put($key, $value);
+            $old = $this->getOldInput($key);
 
-			});
-		}
+            return is_null($key) ? count($old) > 0 : ! is_null($old);
+        }
 
-		public function push(string $key, $value) :void
-		{
-			$array = $this->get($key, []);
+        public function getOldInput(string $key = null, $default = null)
+        {
 
-			$array[] = $value;
+            return Arr::get($this->get('_old_input', []), $key, $default);
+        }
 
-			$this->put($key, $array);
-		}
+        public function replace(array $attributes) : void
+        {
 
-		public function increment(string $key, int $amount = 1) :int
-		{
-			$this->put($key, $value = $this->get($key, 0) + $amount);
+            $this->put($attributes);
+        }
 
-			return $value;
-		}
+        public function put($key, $value = null) : void
+        {
 
-		public function decrement($key, $amount = 1) :int
-		{
-			return $this->increment($key, $amount * -1);
-		}
+            if ( ! is_array($key)) {
+                $key = [$key => $value];
+            }
 
-		public function flash(string $key, $value = true) :void
-		{
-			$this->put($key, $value);
+            foreach ($key as $arrayKey => $arrayValue) {
+                Arr::set($this->attributes, $arrayKey, $arrayValue);
+            }
+        }
 
-			$this->push('_flash.new', $key);
+        public function remember(string $key, Closure $callback)
+        {
 
-			$this->removeFromOldFlashData([$key]);
-		}
+            if ( ! is_null($value = $this->get($key))) {
+                return $value;
+            }
 
-		public function now(string $key, $value) :void
-		{
-			$this->put($key, $value);
+            return tap($callback(), function ($value) use ($key) {
 
-			$this->push('_flash.old', $key);
-		}
+                $this->put($key, $value);
 
-		public function reflash() :void
-		{
-			$this->mergeNewFlashes($this->get('_flash.old', []));
+            });
+        }
 
-			$this->put('_flash.old', []);
-		}
+        public function push(string $key, $value) : void
+        {
 
-		public function keep($keys = null) :void
-		{
-			$this->mergeNewFlashes($keys = is_array($keys) ? $keys : func_get_args());
+            $array = $this->get($key, []);
 
-			$this->removeFromOldFlashData($keys);
-		}
+            $array[] = $value;
 
-		public function flashInput(array $value) :void
-		{
-			$this->flash('_old_input', $value);
-		}
+            $this->put($key, $array);
+        }
 
-		public function remove(string $key)
-		{
-			return Arr::pull($this->attributes, $key);
-		}
+        public function increment(string $key, int $amount = 1) : int
+        {
 
-		public function forget($keys) :void
-		{
-			Arr::forget($this->attributes, $keys);
-		}
+            $this->put($key, $value = $this->get($key, 0) + $amount);
 
-		public function flush() :void
-		{
-			$this->attributes = [];
-		}
+            return $value;
+        }
 
-		public function invalidate() :bool
-		{
-			$this->flush();
+        public function decrement($key, $amount = 1) : int
+        {
 
-			return $this->migrate(true);
-		}
+            return $this->increment($key, $amount * -1);
+        }
 
-		public function regenerate( bool $destroy = false) :bool
-		{
-			return $this->migrate($destroy);
-		}
+        public function flash(string $key, $value = true) : void
+        {
 
-		public function migrate( bool $destroy = false) :bool
-		{
-			if ($destroy) {
-				$this->handler->destroy($this->getId());
-			}
+            $this->put($key, $value);
 
-			$this->setId($this->generateSessionId());
+            $this->push('_flash.new', $key);
 
-			return true;
-		}
+            $this->removeFromOldFlashData([$key]);
+        }
 
-		public function isStarted() :bool
-		{
-			return $this->started;
-		}
+        public function now(string $key, $value) : void
+        {
 
-		public function getId() :string
-		{
-			return $this->id;
-		}
+            $this->put($key, $value);
 
-		public function getName() :string
-		{
-			return $this->name;
-		}
+            $this->push('_flash.old', $key);
+        }
 
-		public function setName(string $name) :void
-		{
-			$this->name = $name;
-		}
+        public function reflash() : void
+        {
 
-		public function setId(string $id) :SessionStore
-		{
-			$this->id = $this->isValidId($id) ? $id : $this->generateSessionId();
+            $this->mergeNewFlashes($this->get('_flash.old', []));
 
-			return $this;
+            $this->put('_flash.old', []);
+        }
 
-		}
+        public function keep($keys = null) : void
+        {
 
-		public function isValidId( string $id ) :bool
-		{
-			return strlen($id) === 40 && ctype_alnum($id);
-		}
+            $this->mergeNewFlashes($keys = is_array($keys) ? $keys : func_get_args());
 
-		public function previousUrl() :?string
-		{
-			return $this->get('_previous.url');
-		}
+            $this->removeFromOldFlashData($keys);
+        }
 
-		public function setPreviousUrl(string $url) :void
-		{
-			$this->put('_previous.url', $url);
-		}
+        public function flashInput(array $value) : void
+        {
 
-		public function getHandler() :SessionHandler
-		{
-			return $this->handler;
-		}
+            $this->flash('_old_input', $value);
+        }
 
-        protected function prepareForUnserialize ( string $data ) : string
+        public function remove(string $key)
+        {
+
+            return Arr::pull($this->attributes, $key);
+        }
+
+        public function forget($keys) : void
+        {
+
+            Arr::forget($this->attributes, $keys);
+        }
+
+        public function flush() : void
+        {
+
+            $this->attributes = [];
+        }
+
+        public function invalidate() : bool
+        {
+
+            $this->flush();
+
+            return $this->migrate(true);
+        }
+
+        public function regenerate(bool $destroy = false) : bool
+        {
+
+            return $this->migrate($destroy);
+        }
+
+        public function migrate(bool $destroy = false) : bool
+        {
+
+            if ($destroy) {
+                $this->handler->destroy($this->getId());
+            }
+
+            $this->setId($this->generateSessionId());
+
+            return true;
+        }
+
+        public function isActive() : bool
+        {
+
+            return $this->active;
+        }
+
+        public function getId() : string
+        {
+
+            return $this->id;
+        }
+
+        public function getName() : string
+        {
+
+            return $this->name;
+        }
+
+        public function setName(string $name) : void
+        {
+
+            $this->name = $name;
+        }
+
+        public function setId(string $id) : SessionStore
+        {
+
+            $this->id = $this->isValidId($id) ? $id : $this->generateSessionId();
+
+            return $this;
+
+        }
+
+        public function isValidId(string $id) : bool
+        {
+
+            return strlen($id) === 40 && ctype_alnum($id);
+        }
+
+        public function previousUrl() : ?string
+        {
+
+            return $this->get('_previous.url');
+        }
+
+        public function setPreviousUrl(string $url) : void
+        {
+
+            $this->put('_previous.url', $url);
+        }
+
+        public function getHandler() : SessionHandler
+        {
+
+            return $this->handler;
+        }
+
+        protected function prepareForUnserialize(string $data) : string
         {
 
             return $data;
 
         }
 
-        protected function prepareForStorage(string $data) :string
+        protected function prepareForStorage(string $data) : string
         {
+
             return $data;
         }
 
-		private function generateSessionId() :string
-		{
-			return Str::random(40);
-		}
+        private function generateSessionId() : string
+        {
 
-		private function ageFlashData() :void
-		{
-			$this->forget($this->get('_flash.old', []));
+            return Str::random(40);
+        }
 
-			$this->put('_flash.old', $this->get('_flash.new', []));
+        private function ageFlashData() : void
+        {
 
-			$this->put('_flash.new', []);
-		}
+            $this->forget($this->get('_flash.old', []));
 
-		private function loadSessionDataFromHandler() :void
-		{
-			$this->attributes = array_merge(
-				$this->attributes,
-				$this->readFromHandler()
-			);
-		}
+            $this->put('_flash.old', $this->get('_flash.new', []));
 
-		private function readFromHandler() : array {
+            $this->put('_flash.new', []);
+        }
 
-			if ($data = $this->handler->read($this->getId())) {
+        private function loadSessionDataFromHandler() : void
+        {
 
-				$data = @unserialize($this->prepareForUnserialize($data));
+            $this->attributes = array_merge(
+                $this->attributes,
+                $this->readFromHandler()
+            );
+        }
 
-				if ($data !== false && ! is_null($data) && is_array($data)) {
-					return $data;
-				}
-			}
+        private function readFromHandler() : array
+        {
 
-			return [];
-		}
+            if ($data = $this->handler->read($this->getId())) {
 
-		private function mergeNewFlashes(array $keys) :void
-		{
-			$values = array_unique(array_merge($this->get('_flash.new', []), $keys));
+                $data = @unserialize($this->prepareForUnserialize($data));
 
-			$this->put('_flash.new', $values);
-		}
+                if ($data !== false && ! is_null($data) && is_array($data)) {
+                    return $data;
+                }
+            }
 
-		private function removeFromOldFlashData(array $keys) :void
-		{
-			$this->put('_flash.old', array_diff($this->get('_flash.old', []), $keys));
-		}
+            return [];
+        }
 
+        private function mergeNewFlashes(array $keys) : void
+        {
 
+            $values = array_unique(array_merge($this->get('_flash.new', []), $keys));
+
+            $this->put('_flash.new', $values);
+        }
+
+        private function removeFromOldFlashData(array $keys) : void
+        {
+
+            $this->put('_flash.old', array_diff($this->get('_flash.old', []), $keys));
+        }
 
 
     }
