@@ -16,7 +16,7 @@
 
         public function isSatisfied(Request $request) : bool
         {
-            $path = $request->path();
+            $path = $request->getPath();
 
             return Str::endsWith($path, '/');
 
