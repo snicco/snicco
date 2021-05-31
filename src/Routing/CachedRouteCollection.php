@@ -71,7 +71,7 @@
         public function loadIntoDispatcher(string $method = null) : void
         {
 
-            if ( file_exists($this->cache_file) ) {
+            if (file_exists($this->cache_file)) {
 
                 return;
 
@@ -134,7 +134,7 @@
 
         }
 
-        protected function prepareOutgoingRoute( $routes ) :void
+        protected function prepareOutgoingRoute($routes) : void
         {
 
             $routes = Arr::wrap($routes);
@@ -142,6 +142,7 @@
             $routes = collect($routes)->each(function (Route $route) {
 
                 $this->unserializeAction($route);
+                $this->unserializeWpQueryFilter($route);
 
             })->all();
 
@@ -224,6 +225,7 @@ declare(strict_types=1); return '.var_export($combined, true).';'
             );
 
         }
+
 
 
 

@@ -8,26 +8,29 @@
 
 	class RoutingResult {
 
-
-		/** @var Route */
+		/** @var Route|array|null */
 		private $route;
 
 		/** @var array */
 		private $payload;
 
 
-		public function __construct( ?Route $route, array $payload = [] ) {
+        /**
+         *
+         * @param Route|array|null $route
+         * @param  array  $payload
+         */
+        public function __construct( $route, array $payload = [] ) {
 
 			$this->route   = $route;
 			$this->payload = $payload;
 
 		}
 
-		public function route() : ?Route {
+		public function route(){
 
 			return $this->route;
 		}
-
 
 		public function capturedUrlSegmentValues() : array {
 

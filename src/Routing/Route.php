@@ -141,7 +141,7 @@
                 'action' => $this->action,
                 'name' => $this->name,
                 'middleware' => $this->middleware ?? [],
-                'conditions' => $this->transformConditionBlueprintToArray(),
+                'conditions' => $this->condition_blueprints,
                 'namespace' => $this->namespace ?? '',
                 'defaults' => $this->defaults ?? [],
                 'url' => $this->url,
@@ -371,29 +371,12 @@
 
         }
 
-        private function transformConditionBlueprintToArray() :array {
-
-            return array_map(function (ConditionBlueprint $blueprint) {
-
-                $blueprint = $blueprint->asArray();
-
-                if (is_object($blueprint['instance'] ) && class_exists(SerializableClosure::class) ) {
-                    $blueprint['instance'] = \Opis\Closure\serialize($blueprint['instance']);
-                }
-
-                return $blueprint;
-
-            }, $this->condition_blueprints);
-
-        }
-
         private function hydrateConditionBlueprints(array $blueprints) : array
         {
 
             return array_map(function (array $blueprint) {
 
-
-                if ( is_string($blueprint['instance'])) {
+                if ( is_string($blueprint['instance']) && function_exists('\Opis\Closure\unserialize')) {
 
                     $blueprint['instance'] = \Opis\Closure\unserialize($blueprint['instance']);
                 }

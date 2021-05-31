@@ -8,6 +8,7 @@
 
     use Closure;
     use Opis\Closure\SerializableClosure;
+    use WPEmerge\Routing\ConditionBlueprint;
     use WPEmerge\Routing\Conditions\CustomCondition;
 
     trait PreparesRouteForExport
@@ -16,13 +17,20 @@
         private function serializeAttribute($action)
         {
 
-            if ($action instanceof Closure && class_exists(SerializableClosure::class)) {
+            if ($action instanceof Closure ) {
 
                 $closure = new SerializableClosure($action);
 
                 $action = \Opis\Closure\serialize($closure);
 
             }
+
+            if( is_object($action) ) {
+
+                $action = \Opis\Closure\serialize($action);
+
+            }
+
 
             return $action;
 
@@ -36,7 +44,7 @@
             $asArray['wp_query_filter'] = $this->serializeAttribute($asArray['wp_query_filter']);
 
             $asArray['conditions'] = collect($asArray['conditions'])
-                ->map(function (array $condition) {
+                ->map(function (ConditionBlueprint $condition) {
 
                     return $this->serializeCustomConditions($condition);
 
@@ -46,31 +54,21 @@
 
         }
 
-        private function serializeCustomConditions(array $condition_blueprint) {
+        private function serializeCustomConditions(ConditionBlueprint $condition_blueprint) : array
+        {
 
-            $condition = $condition_blueprint['instance'];
+            $as_array = $condition_blueprint->asArray();
 
-            if ( ! is_object($condition) ) {
-                return $condition_blueprint;
+            if ( is_object($as_array['instance'] ) ) {
+
+                $as_array['instance'] = $this->serializeAttribute($as_array['instance']);
 
             }
 
-
-             if ( ! $condition instanceof CustomCondition) {
-                return $condition_blueprint;
-             }
-
-
-             $serializable = clone $condition;
-
-             $serializable->setCallable(
-                 $this->serializeAttribute($condition->getCallable())
-             );
-
-            $condition_blueprint['instance'] = serialize($serializable);
-
-            return $condition_blueprint;
+            return $as_array;
 
         }
+
+
 
     }

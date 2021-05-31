@@ -6,10 +6,8 @@
 
     namespace WPEmerge\Routing\FastRoute;
 
-    use FastRoute\Dispatcher;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\RoutingResult;
-    use WPEmerge\Support\Str;
     use WPEmerge\Traits\DeserializesRoutes;
 
     trait HydratesFastRoutes
@@ -17,36 +15,31 @@
 
         use DeserializesRoutes;
 
-        public function hydrate(array $route_info ) :RoutingResult {
+        public function hydrateRoutingResult(RoutingResult $routing_result) : RoutingResult
+        {
 
-            if ($route_info[0] !== Dispatcher::FOUND)  {
+            $route = $routing_result->route();
 
-                return new RoutingResult(null, []);
+            if ( ! $route instanceof Route) {
+
+                $route = $this->hydrateRoute($route);
 
             }
-
-            $route = Route::hydrate($route_info[1]);
 
             $this->unserializeAction($route);
 
             $this->unserializeWpQueryFilter($route);
 
-            $payload = $this->normalize($route_info[2]);
-
-            return new RoutingResult($route, $payload);
+            return new RoutingResult($route, $routing_result->capturedUrlSegmentValues());
 
         }
 
-        private function normalize(array $captured_url_segments) :array  {
+        public function hydrateRoute(array $route_as_array) : Route
+        {
 
-           return array_map(function ($value) {
-
-                return rtrim($value, '/');
-
-            }, $captured_url_segments);
+            return Route::hydrate($route_as_array);
 
         }
-
 
 
     }

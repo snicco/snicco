@@ -1,121 +1,114 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace WPEmerge\Routing\FastRoute;
+    namespace WPEmerge\Routing\FastRoute;
 
-	use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
-	use WPEmerge\Contracts\RouteMatcher;
-    use WPEmerge\Routing\ConditionBlueprint;
+    use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
+    use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Traits\PreparesRouteForExport;
 
-    use function collect;
 
-    class CachedFastRouteMatcher implements RouteMatcher {
+    class CachedFastRouteMatcher implements RouteMatcher
+    {
 
         use HydratesFastRoutes;
+        use TransformFastRoutes;
         use PreparesRouteForExport;
 
-		/**
-		 * @var FastRouteMatcher
-		 */
-		private $uncached_matcher;
+        /**
+         * @var FastRouteMatcher
+         */
+        private $uncached_matcher;
 
-		/**
-		 * @var array
-		 */
-		private $route_cache;
+        /**
+         * @var array
+         */
+        private $route_cache;
 
-		/**
-		 * @var string
-		 */
-		private $route_cache_file;
+        /**
+         * @var string
+         */
+        private $route_cache_file;
 
-		public function __construct( FastRouteMatcher $uncached_matcher, string $route_cache_file ) {
+        public function __construct(FastRouteMatcher $uncached_matcher, string $route_cache_file)
+        {
 
-			$this->uncached_matcher = $uncached_matcher;
+            $this->uncached_matcher = $uncached_matcher;
+            $this->uncached_matcher->setRouteStoragePreparation(function (Route $route) {
 
-			$this->route_cache_file = $route_cache_file;
+                return $this->serializeRoute($route);
 
-			if ( file_exists( $route_cache_file ) ) {
+            });
+            $this->route_cache_file = $route_cache_file;
 
-				$this->route_cache = require $route_cache_file;
+            if (file_exists($route_cache_file)) {
 
-			}
-
-		}
-
-		public function add( Route $route , $methods) {
-
-		    $this->serializeRouteAttributes($route);
-
-			$this->uncached_matcher->add( $route , $methods );
-
-		}
-
-		public function find( string $method, string $path ) :RoutingResult {
-
-			if ( $this->route_cache ) {
-
-				$dispatcher = new RouteDispatcher( $this->route_cache );
-
-				return $this->hydrate($dispatcher->dispatch( $method, $path ));
-
-			}
-
-			$this->createCache(
-
-			    $this->uncached_matcher->getRouteMap()
-
-            );
-
-			return $this->uncached_matcher->find( $method, $path );
-
-		}
-
-		private function createCache( array $route_data ) {
-
-			file_put_contents(
-				$this->route_cache_file,
-				'<?php
-declare(strict_types=1); return '. var_export( $route_data, true ) . ';'
-			);
-
-		}
-
-		public function isCached() : bool {
-
-			return is_array($this->route_cache);
-
-		}
-
-        private function serializeRouteAttributes(Route $route) {
-
-            $route->handle($this->serializeAttribute($route->getAction()));
-
-            if ( ( $query_filter = $route->getQueryFilter() ) instanceof \Closure) {
-
-                $route->setQueryFilter($this->serializeAttribute($query_filter));
+                $this->route_cache = require $route_cache_file;
 
             }
 
-            // $blueprints = $route->getConditionBlueprints();
-            //
-            // $serialized_blueprints = collect($blueprints)->map(function ( ConditionBlueprint $blueprint)  {
-            //
-            //     return \Opis\Closure\serialize($blueprint);
-            //
-            // })->all();
-            //
-            // $route->setConditionBlueprint($serialized_blueprints);
+        }
+
+        public function add(Route $route, $methods)
+        {
+
+            $this->uncached_matcher->add($route, $methods);
 
         }
 
+        public function find(string $method, string $path) : RoutingResult
+        {
 
+            if ( $this->route_cache ) {
+
+                $dispatcher = new RouteDispatcher($this->route_cache);
+
+                return $this->hydrateRoutingResult(
+                   $this->toRoutingResult( $dispatcher->dispatch($method, $path) )
+                );
+
+            }
+
+            $this->createCache(
+                $this->uncached_matcher->getRouteMap()
+            );
+
+            $routing_result = $this->uncached_matcher->find($method, $path);
+
+            return $this->hydrateRoutingResult($routing_result);
+
+        }
+
+        private function createCache(array $route_data)
+        {
+
+            file_put_contents(
+                $this->route_cache_file,
+                '<?php
+declare(strict_types=1); return '.var_export($route_data, true).';'
+            );
+
+        }
+
+        public function isCached() : bool
+        {
+
+            return is_array($this->route_cache);
+
+        }
+
+        private function serializeRoute(Route $route) : array
+        {
+
+            return $this->prepareForVarExport($route->asArray());
+
+
+        }
 
 
     }

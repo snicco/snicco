@@ -332,7 +332,6 @@
 
             });
 
-
             $this->newCachedRouter();
 
             $url_generator = $this->newUrlGenerator();
@@ -436,7 +435,7 @@
         }
 
         /** @test */
-        public function the_fallback_controller_works_with_cached_works()
+        public function the_fallback_controller_works_with_cached_routes()
         {
 
             $this->createRoutes(function () {
@@ -453,7 +452,6 @@
 
             });
 
-
             $request = $this->webRequest('GET', 'post1');
             $this->runAndAssertOutput('FOO', $request);
 
@@ -463,8 +461,44 @@
             $this->runAndAssertOutput('FOO', $request);
 
 
+        } /** @test */
+
+        /** @test */
+        public function the_fallback_controller_works_with_cached_routes_and_closure_conditions()
+        {
+
+            $_SERVER['pass_condition'] = true;
+
+            $this->createRoutes(function () {
+
+                $this->router->get()
+                             ->where(function () {
+
+                    return $_SERVER['pass_condition'];
+                })
+                             ->handle(function () {
+
+                                 return 'FOO';
+
+                             });
+
+                $this->router->createFallbackWebRoute();
+
+
+            });
+
+            $request = $this->webRequest('GET', 'post1');
+            $this->runAndAssertOutput('FOO', $request);
+
+            $this->newCachedRouter();
+
+            $request = $this->webRequest('GET', 'post1');
+            $this->runAndAssertOutput('FOO', $request);
+
+            unset($_SERVER['pass_condition']);
 
         }
+
 
         /** @test */
         public function a_named_route_with_a_closure_is_deserialized_when_found()
@@ -491,7 +525,8 @@
         }
 
         /** @test */
-        public function a_route_with_closure_condition_can_be_serialized () {
+        public function a_route_with_closure_condition_can_be_serialized()
+        {
 
             $_SERVER['pass_condition'] = true;
 
@@ -499,11 +534,11 @@
             $this->createRoutes(function () {
 
                 $this->router->get('foo', Controller::class.'@handle')
-                    ->where(function () {
+                             ->where(function () {
 
-                        return $_SERVER['pass_condition'];
+                                 return $_SERVER['pass_condition'];
 
-                    });
+                             });
 
             });
 
@@ -514,7 +549,6 @@
 
             $request = $this->webRequest('GET', 'foo');
             $this->runAndAssertOutput('foo', $request);
-
 
             unset($_SERVER['pass_condition']);
 
