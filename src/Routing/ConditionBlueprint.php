@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Routing;
 
+    use Opis\Closure\SerializableClosure;
     use WPEmerge\Routing\Conditions\CustomCondition;
     use WPEmerge\Support\Str;
     use WPEmerge\Traits\ReflectsCallable;
@@ -160,6 +161,7 @@
             ];
 
         }
+
 
 
 

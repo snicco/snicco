@@ -8,11 +8,12 @@
 
 	use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
 	use WPEmerge\Contracts\RouteMatcher;
-    use WPEmerge\Routing\Conditions\CustomCondition;
+    use WPEmerge\Routing\ConditionBlueprint;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\RoutingResult;
-    use WPEmerge\Support\Str;
     use WPEmerge\Traits\PreparesRouteForExport;
+
+    use function collect;
 
     class CachedFastRouteMatcher implements RouteMatcher {
 
@@ -102,7 +103,15 @@ declare(strict_types=1); return '. var_export( $route_data, true ) . ';'
 
             }
 
-
+            // $blueprints = $route->getConditionBlueprints();
+            //
+            // $serialized_blueprints = collect($blueprints)->map(function ( ConditionBlueprint $blueprint)  {
+            //
+            //     return \Opis\Closure\serialize($blueprint);
+            //
+            // })->all();
+            //
+            // $route->setConditionBlueprint($serialized_blueprints);
 
         }
 

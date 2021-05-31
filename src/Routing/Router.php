@@ -139,7 +139,6 @@
                      return ! WP::isAdmin();
 
                  });
-            // ->where('negate', IsAdminCondition::class);
 
         }
 

@@ -71,7 +71,7 @@
         public function loadIntoDispatcher(string $method = null) : void
         {
 
-            if (file_exists($this->cache_file)) {
+            if ( file_exists($this->cache_file) ) {
 
                 return;
 
