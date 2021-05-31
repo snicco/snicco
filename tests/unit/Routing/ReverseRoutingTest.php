@@ -89,7 +89,7 @@
 
             $url_generator = $this->newUrlGenerator();
 
-            $url = $url_generator->toRoute('foo_route', [], false);
+            $url = $url_generator->toRoute('foo_route', [], true, false);
             $this->assertSame('/foo', $url);
 
 
@@ -391,7 +391,6 @@
         public function custom_conditions_that_can_be_transformed_take_precedence_over_http_conditions()
         {
 
-
             $this->createRoutes(function () {
 
                 $this->router->get('foo')->name('foo_route')->where(ConditionWithUrl::class);
@@ -405,6 +404,21 @@
 
         }
 
+        /** @test */
+        public function relative_urls_to_custom_conditions_can_be_created_even_if_the_condition_returns_an_absolute_url () {
+
+            $this->createRoutes(function () {
+
+                $this->router->get('foo')->name('foo_route')->where(ConditionWithUrl::class);
+
+            });
+
+            $url_generator = $this->newUrlGenerator();
+
+            $url = $url_generator->toRoute('foo_route', [], true, false);
+            $this->assertSame('/foo/bar', $url);
+
+        }
 
         /**
          *
@@ -608,9 +622,10 @@
 
         }
 
-
         private function seeFullUrl($route_path, $result)
         {
+
+            $route_path = rawurldecode($route_path);
 
             $expected = rtrim(SITE_URL, '/').'/'.ltrim($route_path, '/');
 

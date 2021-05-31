@@ -20,6 +20,7 @@
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\HttpKernel;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Middleware\MiddlewareStack;
@@ -72,9 +73,33 @@
 
         }
 
-        protected function newUrlGenerator() : UrlGenerator
+        protected function newUrlGenerator(string $app_key = null, Request $request = null) : UrlGenerator
         {
-            return new UrlGenerator(new FastRouteUrlGenerator($this->routes));
+
+            $routes = $this->routes ?? $this->newRouteCollection();
+
+            if (! isset($this->routes ) ) {
+                $this->routes = $routes;
+            }
+
+            $generator = new UrlGenerator(new FastRouteUrlGenerator($this->routes));
+
+            $generator->setRequestResolver(function () use ($request ){
+
+                return $request ?? TestRequest::fromFullUrl('GET', SITE_URL);
+
+            });
+
+            if ($app_key ) {
+
+                $generator->setAppKeyResolver(function () use ($app_key) {
+                    return $app_key;
+                });
+
+            }
+
+            return $generator;
+
         }
 
         protected function newKernel(array $with_middleware = []) :HttpKernel

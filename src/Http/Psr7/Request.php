@@ -85,15 +85,10 @@
 
         }
 
-        public function getUrl( bool $trailing_slash = false ) : string
+        public function getUrl() : string
         {
-            $url = trim(preg_replace('/\?.*/', '', $this->getUri()), '/');
 
-            if ( $trailing_slash ) {
-
-                $url = $url . '/';
-
-            }
+            $url = preg_replace('/\?.*/', '', $this->getUri());
 
             return $url;
 
@@ -124,6 +119,20 @@
         {
 
             return $this->getAttribute('type', '');
+
+        }
+
+        public function getQueryString (string $key = null, $default = '') :string {
+
+            $query_string = $this->getUri()->getQuery();
+
+            if ( ! $key ) {
+                return $query_string;
+            }
+
+            parse_str($query_string, $query);
+
+            return Arr::get($query, $key, $default);
 
         }
 

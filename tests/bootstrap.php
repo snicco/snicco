@@ -29,7 +29,7 @@
 
     if ( ! defined('SITE_URL')) {
 
-        define('SITE_URL', getenv('SITE_URL'));
+        define('SITE_URL', trim(getenv('SITE_URL'), '/'));
 
     }
 

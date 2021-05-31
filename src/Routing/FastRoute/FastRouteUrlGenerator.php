@@ -151,9 +151,7 @@
 
                 }
 
-                $encoded = urlencode( $value );
-
-                return ( $optional ) ? '/' . $encoded : $encoded;
+                return ( $optional ) ? '/' . $value : $value;
 
             }, $url );
 
