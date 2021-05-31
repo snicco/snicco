@@ -12,7 +12,6 @@
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\Responses\NullResponse;
     use WPEmerge\Middleware\Core\AppendSpecialPathSuffix;
-    use WPEmerge\Middleware\Core\CorrectContentType;
     use WPEmerge\Middleware\Core\ErrorHandlerMiddleware;
     use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
     use WPEmerge\Middleware\Core\OutputBufferMiddleware;
@@ -50,11 +49,12 @@
             RouteRunner::class,
         ];
 
-        // Only these two get a priority, because they always need to run before any global middleware
+        // Only these three get a priority, because they always need to run before any global middleware
         // that a user might provide.
         private $priority_map = [
             ErrorHandlerMiddleware::class,
             EvaluateResponseMiddleware::class,
+            ShareCookies::class,
         ];
 
         private $global_middleware = [];

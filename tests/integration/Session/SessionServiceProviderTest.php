@@ -4,15 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration\ServiceProviders;
+    namespace Tests\integration\Session;
 
+    use Slim\Csrf\Guard;
     use Tests\integration\IntegrationTest;
     use Tests\stubs\TestApp;
+    use WPEmerge\Session\CsrfMiddleware;
     use WPEmerge\Session\DatabaseSessionHandler;
     use WPEmerge\Session\EncryptedStore;
     use WPEmerge\Session\SessionHandler;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\StartSessionMiddleware;
 
     class SessionServiceProviderTest extends IntegrationTest
     {
@@ -20,7 +23,12 @@
         /** @test */
         public function sessions_are_disabled_by_default () {
 
-            $this->newTestApp();
+            $this->newTestApp([
+                'providers' => [
+                    SessionServiceProvider::class,
+                ]
+            ]);
+
 
             $this->assertNull(TestApp::config('session.enable'));
 
@@ -39,6 +47,26 @@
             ]);
 
             $this->assertTrue(TestApp::config('session.enabled'));
+
+        }
+
+        /** @test */
+        public function nothing_is_bound_if_session_are_not_enabled () {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => false
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ]
+            ]);
+
+
+            $global = TestApp::config('middleware.groups.global');
+
+            $this->assertNotContains(StartSessionMiddleware::class, $global);
+
 
         }
 
@@ -275,6 +303,54 @@
             $driver = TestApp::resolve(SessionStore::class);
 
             $this->assertInstanceOf(EncryptedStore::class, $driver);
+
+        }
+
+        /** @test */
+        public function the_session_middleware_is_added_if_enabled () {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ]
+            ]);
+
+            $this->assertContains(StartSessionMiddleware::class, TestApp::config('middleware.groups.global'));
+
+        }
+
+        /** @test */
+        public function the_csrf_middleware_is_bound () {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ]
+            ]);
+
+            $this->assertInstanceOf(CsrfMiddleware::class, TestApp::resolve(CsrfMiddleware::class));
+
+        }
+
+        /** @test */
+        public function the_slim_guard_is_bound () {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ]
+            ]);
+
+            $this->assertInstanceOf(Guard::class, TestApp::resolve(Guard::class));
 
         }
 

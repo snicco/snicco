@@ -80,9 +80,7 @@
         protected function newKernel(array $with_middleware = []) :HttpKernel
         {
 
-            $pipeline = new Pipeline($this->container);
-
-            $this->container->instance(ErrorHandlerInterface::class, new NullErrorHandler());
+            $this->container->instance(ErrorHandlerInterface::class, $error_handler = new NullErrorHandler());
             $this->container->instance(AbstractRouteCollection::class, $this->routes);
             $this->container->instance(ResponseFactory::class, $factory = $this->createResponseFactory());
             $this->container->instance(ContainerAdapter::class, $this->container);
@@ -100,14 +98,14 @@
 
             }
 
-            $router_runner = new RouteRunner($factory, new Pipeline($this->container), $middleware_stack);
+            $router_runner = new RouteRunner($factory, new Pipeline($this->container, $error_handler), $middleware_stack);
 
             $this->container->instance(RouteRunner::class, $router_runner);
             $this->container->instance(MiddlewareStack::class, $middleware_stack);
             $this->middleware_stack = $middleware_stack;
 
 
-            return new HttpKernel($pipeline);
+            return new HttpKernel(new Pipeline($this->container, $error_handler));
 
 
         }

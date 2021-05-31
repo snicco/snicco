@@ -105,6 +105,7 @@
 
         private function bindCookies()
         {
+
             $this->container->singleton(Cookies::class, function () {
 
                 $cookies = new Cookies();
