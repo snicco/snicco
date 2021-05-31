@@ -95,13 +95,13 @@
 		/** @test */
 		public function the_prefix_of_the_global_context_can_be_set_and_accessed_with_dot_notation() {
 
-			TestApp::globals()->setPrefix('calvin')->add([
-				'foo' => [
-					'bar' => [
-						'baz' => 'World'
-					]
-				]
-			]);
+			TestApp::globals('calvin', [
+                'foo' => [
+                    'bar' => [
+                        'baz' => 'World'
+                    ]
+                ]
+            ]);
 
 			$view = $this->view_service->make('view-with-global-context.php');
 
@@ -111,11 +111,25 @@
 		}
 
 		/** @test */
+		public function multiple_global_variables_can_be_shared () {
+
+		    TestApp::globals('foo', 'bar');
+		    TestApp::globals('baz', 'biz');
+
+            $view = $this->view_service->make('multiple-globals.php');
+
+            $this->assertSame('barbiz', $view->toString());
+
+		}
+
+		/** @test */
 		public function view_composers_have_precedence_over_globals() {
 
-			TestApp::globals()->setPrefix('variable')->add([
-				'foo' => 'bar'
-			]);
+
+			TestApp::globals('variable', [
+			    'foo' => 'bar'
+            ]);
+
 
 			TestApp::addComposer('view-overlapping-context', function (PhpView $view) {
 
@@ -138,9 +152,10 @@
 		/** @test */
 		public function local_context_has_precedence_over_composers_and_globals() {
 
-			TestApp::globals()->setPrefix('variable')->add([
-				'foo' => 'bar'
-			]);
+
+			TestApp::globals('variable', [
+			    'foo' => 'bar'
+            ]);
 
 			TestApp::addComposer('view-overlapping-context', function (PhpView $view) {
 

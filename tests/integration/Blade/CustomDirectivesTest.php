@@ -144,6 +144,32 @@
 
             $this->assertViewContent('NO ERRORS WITH YOUR VIEW', $view);
 
+
+        }
+
+        /** @test */
+        public function errors_work_with_custom_error_bags () {
+
+            // Named error bag.
+            $error_bag = new ViewErrorBag();
+            $custom = new MessageBag();
+            $custom->add('title', 'CUSTOM_BAG_ERROR');
+            $error_bag->put('custom',$custom);
+            $view = $this->view('error-custom-bag');
+            $view->with('errors', $error_bag);
+
+            $this->assertViewContent('CUSTOM_BAG_ERROR', $view);
+
+            // Wrong Named error bag.
+            $error_bag = new ViewErrorBag();
+            $bogus = new MessageBag();
+            $bogus->add('title', 'CUSTOM_BAG_ERROR');
+            $error_bag->put('bogus',$bogus);
+            $view = $this->view('error-custom-bag');
+            $view->with('errors', $error_bag);
+
+            $this->assertViewContent('NO ERRORS IN CUSTOM BAG', $view);
+
         }
 
         private function view(string $view) : ViewInterface

@@ -29,17 +29,17 @@
 		/**
 		 * @var VariableBag
 		 */
-		private $global_var_bag;
+		private $global_context;
 
 		public function __construct(
 			ViewEngineInterface $engine,
 			ViewComposerCollection $composer_collection,
-			VariableBag $global_var_bag
+			GlobalContext $global_context
 		) {
 
 			$this->engine = $engine;
 			$this->composer_collection = $composer_collection;
-			$this->global_var_bag = $global_var_bag;
+			$this->global_context = $global_context;
 		}
 
 
@@ -54,11 +54,11 @@
 
 			$local_context = $view->context();
 
-			$global_context = [
-				$this->global_var_bag->getPrefix() => $this->global_var_bag
-			];
+            foreach ($this->global_context->get() as $name => $context) {
 
-			$view->with( $global_context );
+                $view->with( $name, $context );
+
+            }
 
 			$this->composer_collection->executeUsing($view);
 

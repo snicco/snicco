@@ -22,7 +22,8 @@
 	use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Session\SessionStore;
     use WPEmerge\Support\VariableBag;
-	use WPEmerge\View\ViewFactory;
+    use WPEmerge\View\GlobalContext;
+    use WPEmerge\View\ViewFactory;
     use WPEmerge\View\ViewComposerCollection;
 
     /**
@@ -178,10 +179,12 @@
 		/**
 		 *
 		 * Returns the global variable bag used by view composers.
-		 *
-		 * @return VariableBag
+         *
+         * Arrays are converted to instances of VariableBag.
+         *
+		 * @see GlobalContext::add()
 		 */
-		public static function globals() : VariableBag {}
+		public static function globals(string $name, $context) {}
 
         /**
          * Return the response cookies instance
