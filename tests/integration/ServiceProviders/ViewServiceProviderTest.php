@@ -12,7 +12,8 @@
 	use WPEmerge\Contracts\ViewFinderInterface;
 	use WPEmerge\Contracts\ViewFactoryInterface;
 	use WPEmerge\Support\VariableBag;
-	use WPEmerge\View\PhpViewEngine;
+    use WPEmerge\View\GlobalContext;
+    use WPEmerge\View\PhpViewEngine;
 	use WPEmerge\View\PhpViewFinder;
 	use WPEmerge\View\ViewFactory;
 	use WPEmerge\View\ViewComposerCollection;
@@ -21,11 +22,20 @@
 
 
 		/** @test */
-		public function the_global_context_is_a_variable_bag_instance () {
+		public function the_global_context_is_a_singleton () {
 
 		    $this->newTestApp();
 
-			$this->assertInstanceOf(VariableBag::class, TestApp::resolve('composers.globals'));
+		    /** @var GlobalContext $context */
+		    $context = TestApp::resolve(GlobalContext::class);
+
+			$this->assertInstanceOf(GlobalContext::class, $context);
+
+			$this->assertSame([], $context->get());
+
+			TestApp::globals('foo', 'bar');
+
+            $this->assertSame(['foo' => 'bar'], $context->get());
 
 		}
 
