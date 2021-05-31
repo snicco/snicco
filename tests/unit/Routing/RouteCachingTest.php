@@ -499,7 +499,6 @@
 
         }
 
-
         /** @test */
         public function a_named_route_with_a_closure_is_deserialized_when_found()
         {
