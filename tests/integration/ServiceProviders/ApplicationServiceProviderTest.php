@@ -272,6 +272,9 @@
         public function the_session_can_be_aliased () {
 
             $this->newTestApp([
+                'session' => [
+                    'enabled'=>true,
+                ],
                 'providers' => [
                     SessionServiceProvider::class
                 ]
