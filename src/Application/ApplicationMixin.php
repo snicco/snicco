@@ -179,7 +179,7 @@
 		 *
 		 * Returns the global variable bag used by view composers.
 		 *
-		 * @return \WPEmerge\Support\VariableBag
+		 * @return VariableBag
 		 */
 		public static function globals() : VariableBag {}
 

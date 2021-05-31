@@ -35,7 +35,6 @@
 			$this->bindViewComposerCollection();
 
 
-
 		}
 
 		public function bootstrap() : void {
