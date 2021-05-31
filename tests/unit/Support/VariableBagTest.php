@@ -13,18 +13,6 @@
 
 
 		/** @test */
-		public function the_prefix_can_be_set() {
-
-			$var_bag = new VariableBag();
-
-			$var_bag->setPrefix( 'foo' );
-
-			$this->assertSame( 'foo', $var_bag->getPrefix() );
-
-
-		}
-
-		/** @test */
 		public function single_elements_can_be_added() {
 
 			$var_bag = new VariableBag();
