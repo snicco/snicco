@@ -6,7 +6,8 @@
 
 	namespace WPEmerge\View;
 
-	use WPEmerge\Contracts\ServiceProvider;
+	use Illuminate\Config\Repository;
+    use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewFinderInterface;
 	use WPEmerge\Contracts\ViewFactoryInterface;
@@ -22,7 +23,8 @@
 
 		public function register() : void {
 
-			$this->bindConfig();
+
+		    $this->bindGlobalContext();
 
             $this->bindViewServiceImplementation();
 
@@ -41,9 +43,11 @@
 			// Nothing to bootstrap.
 		}
 
-        private function bindConfig()
+
+        private function bindGlobalContext()
         {
-            $this->container->instance('composers.globals', new VariableBag());
+            $this->container->instance(GlobalContext::class, new GlobalContext());
+
         }
 
         private function bindViewServiceInterface() : void
@@ -64,7 +68,7 @@
                 return new ViewFactory(
                     $this->container->make(ViewEngineInterface::class),
                     $this->container->make(ViewComposerCollection::class),
-                    $this->container->make('composers.globals')
+                    $this->container->make(GlobalContext::class)
 
                 );
 

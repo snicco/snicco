@@ -18,6 +18,7 @@
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\UrlGenerator;
+    use WPEmerge\View\GlobalContext;
     use WPEmerge\View\PhpViewEngine;
     use WPEmerge\View\ViewComposerCollection;
 
@@ -98,9 +99,12 @@
 
             $app->alias( 'globals', function () use ( $app ) {
 
-                return $app->resolve( 'composers.globals' );
+                /** @var GlobalContext $globals */
+                $globals = $app->resolve( GlobalContext::class );
 
-            } );
+                $globals->add(...array_values(func_get_args()));
+
+            });
             $app->alias( 'addComposer', function () use ( $app ) {
 
                 $composer_collection = $app->resolve( ViewComposerCollection::class );
