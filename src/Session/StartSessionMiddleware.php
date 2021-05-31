@@ -109,7 +109,7 @@
 
             if ($request->isGet() && ! $request->isAjax()) {
 
-                $session->setPreviousUrl($request->fullUrl());
+                $session->setPreviousUrl($request->getFullUrl());
 
             }
 

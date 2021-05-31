@@ -37,7 +37,7 @@
 
             if ( ! $this->session_store->has('password.confirmed') ) {
 
-                $url = WP::loginUrl($request->path(), true );
+                $url = WP::loginUrl( $request->getFullPath() , true );
 
                 return $this->response_factory->redirect(301)->to($url);
 
@@ -46,5 +46,7 @@
             return $next($request);
 
         }
+
+
 
     }

@@ -29,7 +29,7 @@
 
 		public function shouldDispatch() : bool {
 
-			return ! is_admin() && ! str_contains( $this->request->url(), admin_url() );
+			return ! is_admin() && ! str_contains( $this->request->getUrl(), admin_url() );
 
 		}
 

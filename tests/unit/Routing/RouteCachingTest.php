@@ -288,7 +288,7 @@
 
             $request = TestRequest::from('GET', 'foo');
             $event = new WpQueryFilterable($request, ['foo' => 'bar']);
-            $listener = new \WPEmerge\Listeners\FilterWpQuery($this->routes);
+            $listener = new FilterWpQuery($this->routes);
             $this->assertSame(['foo' => 'baz'], $listener->handle($event));
             $this->runAndAssertOutput('foo', new IncomingWebRequest('wp.php', $request));
 
@@ -296,7 +296,7 @@
             $this->newCachedRouter();
 
             $event = new WpQueryFilterable(TestRequest::from('GET', 'foo'), ['foo' => 'bar']);
-            $listener = new \WPEmerge\Listeners\FilterWpQuery($this->routes);
+            $listener = new FilterWpQuery($this->routes);
             $this->assertSame(['foo' => 'baz'], $listener->handle($event));
             $this->runAndAssertOutput('foo', new IncomingWebRequest('wp.php', $request));
 

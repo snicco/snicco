@@ -44,25 +44,24 @@
 
             $new_uri = $uri->withPath($new_path);
 
-            return $next( $request->withUri($new_uri) );
+            return $next( $request->withRoutingUri($new_uri) );
 
         }
-
 
         private function appendToPath(Request $request) : string
         {
 
-            $path = $request->path();
+            $path = $request->getPath();
 
             if (WP::isAdmin() && ! WP::isAdminAjax()) {
 
-                $path = $path.'/'.$request->query('page', '');
+                $path = $path.'/'.$request->getQuery('page', '');
 
             }
 
             if (WP::isAdminAjax()) {
 
-                $path = $path.'/'.$request->parsedBody('action', $request->query('action', ''));
+                $path = $path.'/'.$request->getBody('action', $request->getQuery('action', ''));
 
             }
 
