@@ -36,7 +36,6 @@
 
 				$url = $this->url ?? WP::homeUrl( '', $request->getUri()->getScheme() );
 
-
                 if ($request->isAjax()) {
 
                     return $this->response
@@ -45,7 +44,6 @@
 
 
                 }
-
 
 				return $this->response->redirect()
                                       ->to($url)
