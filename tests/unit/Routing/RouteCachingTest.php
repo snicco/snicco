@@ -441,7 +441,6 @@
 
             $this->createRoutes(function () {
 
-
                 $this->router->get()->where(IsPost::class, true)
                              ->handle(function () {
 
@@ -491,6 +490,35 @@
 
         }
 
+        /** @test */
+        public function a_route_with_closure_condition_can_be_serialized () {
+
+            $_SERVER['pass_condition'] = true;
+
+            // Creates the cache file
+            $this->createRoutes(function () {
+
+                $this->router->get('foo', Controller::class.'@handle')
+                    ->where(function () {
+
+                        return $_SERVER['pass_condition'];
+
+                    });
+
+            });
+
+            $request = $this->webRequest('GET', 'foo');
+            $this->runAndAssertOutput('foo', $request);
+
+            $this->newCachedRouter();
+
+            $request = $this->webRequest('GET', 'foo');
+            $this->runAndAssertOutput('foo', $request);
+
+
+            unset($_SERVER['pass_condition']);
+
+        }
 
     }
 

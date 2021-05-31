@@ -375,7 +375,13 @@
 
             return array_map(function (ConditionBlueprint $blueprint) {
 
-                return $blueprint->asArray();
+                $blueprint = $blueprint->asArray();
+
+                if (is_object($blueprint['instance'] ) && class_exists(SerializableClosure::class) ) {
+                    $blueprint['instance'] = \Opis\Closure\serialize($blueprint['instance']);
+                }
+
+                return $blueprint;
 
             }, $this->condition_blueprints);
 
@@ -386,7 +392,15 @@
 
             return array_map(function (array $blueprint) {
 
+
+                if ( is_string($blueprint['instance'])) {
+
+                    $blueprint['instance'] = \Opis\Closure\unserialize($blueprint['instance']);
+                }
+
                 return ConditionBlueprint::hydrate($blueprint);
+
+
 
             }, $blueprints);
 
