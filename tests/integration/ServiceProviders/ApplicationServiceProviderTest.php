@@ -198,13 +198,7 @@
 
         }
 
-        /** @test */
-        public function the_global_variable_bag_can_be_retrieved()
-        {
 
-            $this->assertInstanceOf(VariableBag::class, TestApp::globals());
-
-        }
 
         /** @test */
         public function a_composer_can_be_added_as_an_alias()

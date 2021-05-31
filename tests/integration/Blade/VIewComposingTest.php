@@ -63,7 +63,7 @@
         /** @test */
         public function global_data_can_be_shared_with_all_views () {
 
-            TestApp::globals()->add(['foo' => 'calvin']);
+            TestApp::globals('globals', ['foo' => 'calvin']);
 
             $this->assertSame('calvin', $this->makeView('globals'));
 
