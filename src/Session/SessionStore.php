@@ -62,10 +62,6 @@
         public function save() : void
         {
 
-            if ( ! $this->active ) {
-                return;
-            }
-
             $this->ageFlashData();
 
             $this->handler->write(

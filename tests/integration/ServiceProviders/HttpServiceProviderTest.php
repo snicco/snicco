@@ -10,11 +10,9 @@
     use BetterWpHooks\Dispatchers\WordpressDispatcher;
     use Tests\integration\IntegrationTest;
     use Tests\fixtures\Middleware\FooMiddleware;
-    use Tests\fixtures\Middleware\GlobalMiddleware;
     use Tests\stubs\TestApp;
     use Tests\unit\Routing\Foo;
-    use WPEmerge\Http\HttpResponseFactory;
-    use WPEmerge\Events\LoadedWP;
+    use WPEmerge\Http\Cookies;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\ResponseFactory;
 
@@ -118,6 +116,14 @@
 
         }
 
+        /** @test */
+        public function the_cookie_instance_can_be_resolved () {
+
+            $this->newTestApp();
+
+            $this->assertInstanceOf(Cookies::class, TestApp::resolve(Cookies::class));
+
+        }
 
 
 

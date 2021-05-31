@@ -23,6 +23,12 @@
         public function register() : void
         {
 
+            $this->config->extend('session.enabled', false);
+
+            if ( ! $this->config->get('session.enabled')) {
+                return;
+            }
+
             $this->bindConfig();
             $this->bindSessionHandler();
             $this->bindSessionStore();
@@ -38,19 +44,12 @@
         function bootstrap() : void
         {
 
-            if ($this->config->get('session.enabled')) {
-
-                $this->config->extend('middleware.groups.global', [StartSessionMiddleware::class]);
-
-
-            }
 
         }
 
         private function bindConfig()
         {
 
-            $this->config->extend('session.enabled', false);
             $this->config->extend('session.cookie', 'wp_mvc_session');
             $this->config->extend('session.table', 'sessions');
             $this->config->extend('session.lottery', [2, 100]);
@@ -64,8 +63,11 @@
             $this->config->extend('session.encrypt', false);
 
             $this->config->extend('middleware.aliases', [
-                'csrf' => CsrfMiddleware::class
+                'csrf' => CsrfMiddleware::class,
             ]);
+
+            $this->config->extend('middleware.groups.global', [StartSessionMiddleware::class]);
+
 
         }
 
@@ -78,7 +80,7 @@
 
                 $store = null;
 
-                if ( $this->config->get('session.encrypt') ) {
+                if ($this->config->get('session.encrypt')) {
 
                     $store = new EncryptedStore(
                         $name,
@@ -86,7 +88,8 @@
                         $this->container->make(EncryptorInterface::class)
                     );
 
-                } else {
+                }
+                else {
 
                     $store = new SessionStore($name, $this->container->make(SessionHandler::class));
 
@@ -124,6 +127,7 @@
 
         private function bindSessionMiddleware()
         {
+
             $this->container->singleton(StartSessionMiddleware::class, function () {
 
                 return new StartSessionMiddleware(
@@ -149,6 +153,7 @@
 
         private function bindEncryptor()
         {
+
             $this->container->singleton(EncryptorInterface::class, function () {
 
                 return new Encryptor($this->config->get('app_key'));
@@ -159,12 +164,11 @@
         private function bindCsrfMiddleware()
         {
 
-            $this->container->singleton(CsrfMiddleware::class, function ($c, $args ) {
-
+            $this->container->singleton(CsrfMiddleware::class, function ($c, $args) {
 
                 return new CsrfMiddleware(
                     $this->container->make(Guard::class),
-                    Arr::firstEl($args),
+                    empty($args) ? '' : Arr::firstEl($args),
                 );
 
             });
@@ -172,6 +176,7 @@
 
         private function bindCsrfStore()
         {
+
             $this->container->singleton(CsrfStore::class, function () {
 
                 return new CsrfStore($this->container->make(SessionStore::class));
@@ -183,7 +188,6 @@
         {
 
             $this->container->singleton(Guard::class, function () {
-
 
                 $storage = $this->container->make(CsrfStore::class);
 
