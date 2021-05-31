@@ -72,7 +72,7 @@
 
                 $html = $csrf_field->asHtml();
 
-                return "<?php echo '{$html}' ?>";
+                return "<?php declare(strict_types=1); echo '{$html}' ?>";
 
 
             });
@@ -82,7 +82,7 @@
 
                 $html = new HtmlString("<input type='hidden' name='_method' value={$method}>");
 
-                return "<?php echo \"{$html->toHtml()}\";";
+                return "<?php declare(strict_types=1); echo \"{$html->toHtml()}\";";
 
 
             });
