@@ -13,12 +13,13 @@
     use Tests\stubs\TestRequest;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreatesWpUrls;
+    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingAjaxRequest;
-    use WPEmerge\Events\IncomingRequest;
+    use WPEmerge\Events\ResponseSent;
     use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Routing\CachedRouteCollection;
@@ -195,6 +196,41 @@
             $this->seeKernelOutput('get_fallback', TestRequest::from('GET', 'post1'));
 
 
+        }
+
+        /** @test */
+        public function the_fallback_controller_does_not_match_admin_routes () {
+
+            $this->newTestApp([
+                'routing' => [
+                    'definitions' => ROUTES_DIR
+                ],
+                'providers' => [
+                    SimulateAdminProvider::class
+                ]
+            ]);
+
+            $this->seeKernelOutput('', TestRequest::from('GET', $this->adminUrlTo('foo')));
+
+            Mockery::close();
+
+        }
+
+        /** @test */
+        public function the_fallback_controller_does_not_match_ajax_routes () {
+
+            $this->newTestApp([
+                'routing' => [
+                    'definitions' => ROUTES_DIR
+                ],
+                'providers' => [
+                    SimulateAjaxProvider::class
+                ]
+            ]);
+
+            $this->seeKernelOutput('', TestRequest::from('GET', $this->ajaxUrl('foo')));
+
+            Mockery::close();
 
         }
 
@@ -211,8 +247,9 @@
                 ]
             ]);
 
-
             $request = $this->ajaxRequest('foo_action');
+
+            ApplicationEvent::fake([ResponseSent::class]);
 
             $this->seeKernelOutput('FOO_ACTION', new IncomingAjaxRequest($request));
 
@@ -288,6 +325,7 @@
 
 
 
+
     }
 
     class SimulateAjaxProvider extends ServiceProvider
@@ -299,6 +337,7 @@
         {
             $this->createDefaultWpApiMocks();
             WP::shouldReceive('isAdminAjax')->andReturnTrue();
+            WP::shouldReceive('isAdmin')->andReturnTrue();
             WP::shouldReceive('isUserLoggedIn')->andReturnTrue();
         }
 

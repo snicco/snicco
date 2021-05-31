@@ -92,6 +92,7 @@
             if (file_exists($this->route_collection_file)) {
 
                 unlink($this->route_collection_file);
+
             }
 
             ApplicationEvent::setInstance(null);

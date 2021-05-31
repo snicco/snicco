@@ -7,17 +7,15 @@
 	namespace WPEmerge\Routing\Conditions;
 
 	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\Contracts\RequestInterface;
     use WPEmerge\Http\Psr7\Request;
 
     class CustomCondition implements ConditionInterface {
 
 
-		/** @var callable  */
+		/** @var callable|string  */
 		private $callable;
 
 		private $arguments;
-
 
 		public function __construct( callable $callable, ...$args  ) {
 
@@ -26,6 +24,14 @@
 
 		}
 
+		public function getCallable()
+        {
+		    return $this->callable;
+        }
+
+        public function setCallable($callable) {
+		    $this->callable = $callable;
+        }
 
 		public function isSatisfied( Request $request ) :bool {
 

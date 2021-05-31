@@ -26,15 +26,15 @@
         return 'foo';
 
     })
-           ->middleware([FooMiddleware::class,  FooBarMiddleware::class]);
+           ->middleware([FooMiddleware::class, FooBarMiddleware::class]);
 
     $router->get()
            ->where(IsPost::class, true)
            ->handle(function () {
 
-        return 'get_fallback';
+               return 'get_fallback';
 
-    });
+           });
 
     $router->post()
            ->where(IsPost::class, false)
@@ -48,7 +48,7 @@
            ->where(IsPost::class, true)
            ->handle(function () {
 
-                    return 'patch_fallback';
+               return 'patch_fallback';
 
-                })
+           })
            ->middleware(WebMiddleware::class);

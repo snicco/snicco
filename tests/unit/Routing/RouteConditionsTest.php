@@ -246,7 +246,7 @@
 		}
 
 		/** @test */
-		public function multiple_conditions_can_be_combinded_and_all_conditions_have_to_pass() {
+		public function multiple_conditions_can_be_combined_and_all_conditions_have_to_pass() {
 
 		    $this->createRoutes(function () {
 
