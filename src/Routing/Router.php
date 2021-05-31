@@ -16,6 +16,8 @@
     use WPEmerge\Http\ConvertsToResponse;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
+    use WPEmerge\Routing\Conditions\AdminPageCondition;
+    use WPEmerge\Routing\Conditions\IsAdminCondition;
     use WPEmerge\Support\Url;
     use WPEmerge\Traits\GathersMiddleware;
     use WPEmerge\Traits\HoldsRouteBlueprint;
@@ -130,7 +132,14 @@
         public function createFallbackWebRoute()
         {
 
-            $this->any('/{path}', [FallBackController::class, 'handle'])->and('path', '.+');
+            $this->any('/{path}', [FallBackController::class, 'handle'])
+                 ->and('path', '.+')
+                 ->where(function () {
+
+                     return ! WP::isAdmin();
+
+                 });
+            // ->where('negate', IsAdminCondition::class);
 
         }
 

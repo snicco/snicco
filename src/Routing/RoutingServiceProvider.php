@@ -7,17 +7,11 @@
     namespace WPEmerge\Routing;
 
     use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Contracts\RouteUrlGenerator;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
-    use WPEmerge\Middleware\Core\RouteRunner;
-    use WPEmerge\Routing\CachedRouteCollection;
     use WPEmerge\Routing\Conditions\AdminAjaxCondition;
     use WPEmerge\Routing\Conditions\AdminPageCondition;
     use WPEmerge\Routing\Conditions\QueryStringCondition;
@@ -33,10 +27,6 @@
     use WPEmerge\Routing\Conditions\PostTypeCondition;
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
-    use WPEmerge\Routing\RouteCollection;
-    use WPEmerge\Routing\Router;
-    use WPEmerge\Routing\RouteRegistrar;
-    use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Support\FilePath;
 
     class RoutingServiceProvider extends ServiceProvider

@@ -18,6 +18,7 @@
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Routing\UrlGenerator;
 
+
     class AdminRoutesTest extends UnitTest
     {
 
@@ -510,7 +511,6 @@
 
 
         }
-
 
 
     }
