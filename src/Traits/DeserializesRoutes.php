@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Traits;
 
+
     use WPEmerge\Routing\Route;
     use WPEmerge\Support\Str;
 
@@ -44,7 +45,6 @@
 
         private function isSerializedClosure($action) : bool
         {
-
             return is_string($action)
                 && Str::startsWith($action, 'C:32:"Opis\\Closure\\SerializableClosure') !== false;
         }
