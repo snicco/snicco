@@ -66,7 +66,10 @@
                 'csrf' => CsrfMiddleware::class,
             ]);
 
-            $this->config->extend('middleware.groups.global', [StartSessionMiddleware::class]);
+            $this->config->extend('middleware.groups.global', [
+                StartSessionMiddleware::class,
+                ShareErrorsWithView::class,
+            ]);
 
 
         }

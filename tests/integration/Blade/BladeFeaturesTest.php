@@ -211,7 +211,14 @@
 
         }
 
+        /** @test */
+        public function php_files_can_be_rendered () {
 
+            $view = $this->view('php-file');
+            $content = $view->toString();
+            $this->assertViewContent('PHPONLYFILE', $content);
+
+        }
 
 
         private function view(string $view)
