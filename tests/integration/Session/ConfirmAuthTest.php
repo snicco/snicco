@@ -122,7 +122,7 @@
         }
 
         /** @test */
-        public function the_intended_url_is_flashed_to_the_session_on_failure () {
+        public function the_intended_url_is_saved_to_the_session_on_failure () {
 
             $this->newTestApp($this->config());
 
@@ -135,10 +135,6 @@
 
             $this->assertSame($new_session->get('auth.confirm.intended_url', ''), $this->protectedUrl());
 
-            // simulate another request.
-            $new_session->save();
-
-            $this->assertFalse($new_session->has('auth.confirm.intended_url'));
 
         }
 

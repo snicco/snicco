@@ -10,6 +10,7 @@
     use Illuminate\Support\MessageBag;
     use Illuminate\Support\ViewErrorBag;
     use WP_User;
+    use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
@@ -55,18 +56,25 @@
 
         }
 
-        public function show(CsrfField $csrf_field, SessionStore $session)
+        public function show(CsrfField $csrf_field) : ViewInterface
         {
 
             $post_url = $this->url_generator->toRoute('auth.confirm.send', [], true, false);
 
-            $html = $csrf_field->asHtml();
+            return $this->view->make('auth-confirm')
+                              ->with(
+                                  [
+                                      'post_url' => $post_url,
+                                      'csrf_field' => $csrf_field->asHtml(),
+                                  ]
+                              );
 
-            $attempts = $session->increment('auth.confirm.attempts');
+        }
 
-            $session->keep('auth.confirm.intended_url');
+        public function send(Request $request, SessionStore $session)
+        {
 
-            if ( $attempts > $this->attempts ) {
+            if ( ! $this->hasLeftAttemptsToInputCorrectEmail($session) ) {
 
                 $session->invalidate();
                 WP::logout();
@@ -75,24 +83,13 @@
 
             }
 
-            return $this->view->make('auth-confirm')->with([
-                'post_url' => $post_url, 'csrf_field' => $html,
-            ]);
-
-        }
-
-        public function send(Request $request, SessionStore $session)
-        {
-
-            $email = Arr::get($request->getParsedBody(), 'email', '');
-
-            if ( ! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            if ( ! ($email = $this->hasValidEmail($request) ) ) {
 
                 return $this->redirectBack($session, $request, $email);
 
             }
 
-            if ($this->toManyRequests($session)) {
+            if ( $this->canReceiveAnotherEmail($session) ) {
 
                 return $this->response_factory
                     ->redirect(429)
@@ -111,6 +108,7 @@
             $session->flashInput(['email' => $email]);
             $session->flash('auth.confirm.success', 'Success: A confirmation email was send to: '.$email);
             $session->flash('auth.confirm.lifetime', $this->link_lifetime_in_sec);
+            $session->forget('auth.confirm.attempts');
 
             $success = WP::mail($email, $this->subject($user), $this->message($user, $session));
 
@@ -180,16 +178,16 @@
 
         }
 
-        private function toManyRequests(SessionStore $session) : bool
+        private function canReceiveAnotherEmail(SessionStore $session) : bool
         {
 
             $exceeded_attempts = $session->get('auth.confirm.email.count', 0) >= $this->resends;
 
             if ( ! $exceeded_attempts ) {
-                return false;
+                return true;
             }
 
-            if ( ! $session->has('auth.confirm.email.next') ) {
+            if ( ! $session->has('auth.confirm.email.next')) {
 
                 $session->put(
                     'auth.confirm.email.next',
@@ -198,14 +196,14 @@
 
             }
 
-            if ( $this->canReceiveNextEmail($session) ) {
+            if ($this->canReceiveNextEmail($session)) {
 
                 $session->forget('auth.confirm.email');
 
-                return false;
+                return true;
             }
 
-            return true;
+            return false;
 
         }
 
@@ -219,6 +217,23 @@
             }
 
             return false;
+
+        }
+
+        private function hasLeftAttemptsToInputCorrectEmail(SessionStore $session) : bool
+        {
+
+            $attempts = $session->increment('auth.confirm.attempts');
+            return $attempts <= $this->attempts;
+        }
+
+        private function hasValidEmail(Request $request) {
+
+            $email = Arr::get($request->getParsedBody(), 'email', '');
+
+            $email = filter_var($email, FILTER_VALIDATE_EMAIL) ? $email : null;
+
+            return $email;
 
         }
 
