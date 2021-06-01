@@ -6,10 +6,12 @@
 
     namespace WPEmerge\Routing;
 
+    use Psr\Http\Message\ServerRequestInterface;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Contracts\RouteUrlGenerator;
     use WPEmerge\Contracts\ServiceProvider;
+    use WPEmerge\Encryptor;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Routing\Conditions\AdminAjaxCondition;
@@ -27,6 +29,7 @@
     use WPEmerge\Routing\Conditions\PostTypeCondition;
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
+    use WPEmerge\Session\SessionStore;
     use WPEmerge\Support\FilePath;
 
     class RoutingServiceProvider extends ServiceProvider
@@ -184,7 +187,39 @@
 
             $this->container->singleton(UrlGenerator::class, function () {
 
-                return new UrlGenerator($this->container->make(RouteUrlGenerator::class));
+                $generator = new UrlGenerator($this->container->make(RouteUrlGenerator::class));
+
+                $generator->setRequestResolver( function () {
+
+                    return $this->container->make(ServerRequestInterface::class);
+
+                });
+
+                $generator->setAppKeyResolver(function () {
+                    $key = $this->config->get('app_key',  '');
+
+                    Encryptor::validAppKey($key);
+
+                    return $key;
+                });
+
+               $generator->setSessionResolver(function () {
+
+                   if ( ! $this->container->offsetExists(SessionStore::class ) ) {
+
+                       throw new ConfigurationException(
+                           'You cant use UrlGeneration functions that depend on sessions without using the session extension.'
+                       );
+
+                   }
+
+                   return $this->container->make(SessionStore::class);
+
+
+               });
+
+               return $generator;
+
 
             });
         }

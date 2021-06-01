@@ -22,7 +22,6 @@
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Session\SessionStore;
     use WPEmerge\Support\Url;
-    use WPEmerge\Support\VariableBag;
 
     class ApplicationServiceProviderTest extends IntegrationTest {
 
@@ -36,6 +35,7 @@
                 'routing' => [
                     'definitions' => ROUTES_DIR
                 ],
+                'app_key'=> TEST_APP_KEY
             ]);
 
 
@@ -198,8 +198,6 @@
 
         }
 
-
-
         /** @test */
         public function a_composer_can_be_added_as_an_alias()
         {
@@ -286,6 +284,8 @@
             $this->assertInstanceOf(Cookies::class, TestApp::cookies());
 
         }
+
+
 
 	}
 

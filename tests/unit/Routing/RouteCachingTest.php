@@ -316,7 +316,7 @@
 
             $url_generator = $this->newUrlGenerator();
 
-            $this->assertSame('/foo', $url_generator->toRoute('foo', [], false));
+            $this->assertSame('/foo', $url_generator->toRoute('foo', [], false, false));
 
         }
 
@@ -336,8 +336,8 @@
 
             $url_generator = $this->newUrlGenerator();
 
-            $this->assertSame('/foo', $url_generator->toRoute('foo', [], false));
-            $this->assertSame('/bar', $url_generator->toRoute('bar', [], false));
+            $this->assertSame('/foo', $url_generator->toRoute('foo', [], false, false));
+            $this->assertSame('/bar', $url_generator->toRoute('bar', [], false, false));
 
 
         }
@@ -361,8 +361,8 @@
 
             $url_generator = $this->newUrlGenerator();
 
-            $this->assertSame('/foo', $url_generator->toRoute('foo', [], false));
-            $this->assertSame('/bar', $url_generator->toRoute('bar', [], false));
+            $this->assertSame('/foo', $url_generator->toRoute('foo', [], false, false));
+            $this->assertSame('/bar', $url_generator->toRoute('bar', [], false, false ));
 
             $this->runAndAssertOutput('foo', $this->webRequest('GET', 'foo'));
             $this->runAndAssertOutput('foo', $this->webRequest('GET', 'bar'));

@@ -647,7 +647,7 @@
         public function toUrl(array $arguments = []) : string
         {
 
-            return SITE_URL.'foo/bar';
+            return SITE_URL.'/foo/bar';
 
         }
 

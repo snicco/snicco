@@ -77,6 +77,19 @@
 
     }
 
+    if ( ! defined('TEST_APP_KEY')) {
+
+        define('TEST_APP_KEY', 'base64:LOK1UydvZ50A9iyTC2KxuP/C6k8TAM4UlGDcjwsKQik=');
+
+    }
+
+    if ( ! defined('WPEMERGE_RUNNING_UNIT_TESTS')) {
+
+        define('WPEMERGE_RUNNING_UNIT_TESTS', true);
+
+    }
+
+
 
     $classLoader = require $root_dir.DS.'vendor'.DS.'autoload.php';
 
