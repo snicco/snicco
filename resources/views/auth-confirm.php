@@ -3,6 +3,8 @@
 
     declare(strict_types = 1);
 
+    use Carbon\Carbon;
+
     $ds = DIRECTORY_SEPARATOR;
 
     /** @var  \Illuminate\Support\ViewErrorBag $errors */
@@ -10,6 +12,10 @@
 
     /** @var \WPEmerge\Session\SessionStore $session */
     $old_email = $session->getOldInput('email', '');
+
+    $lifetime = $session->get('auth.confirm.lifetime', 300);
+
+    $lifetime = $lifetime/60;
 
 ?>
 
@@ -173,8 +179,14 @@
                 <p id="form-heading" class="success message">
                     Email sent successfully.
                 </p>
-                <p class="text-large"><span>Please check your email inbox at: <?= $old_email ?>.</span> <br> <br> The confirmation link is valid for 5 minutes. <br> You can close this page now.</p>
-
+                <p class="text-large">
+                    <span>Please check your email inbox at: <?= $old_email ?>.</span>
+                    <br>
+                    <br>
+                        The confirmation link expires in <?= $lifetime ?> minutes from now.
+                    <br>
+                    You can close this page now.
+                </p>
 
                 <?php
 

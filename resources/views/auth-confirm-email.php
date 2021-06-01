@@ -13,4 +13,4 @@
     Someone requested a confirmation link to access the secure area of: <?= WP::homeUrl() ?>
 </p>
 <p> Click <a href="<?= esc_url($magic_link) ?>"> here </a> to access the secure area.</p>
-<p> This link will expire in 5 min.</p>
+<p> This link will expire in <?= $lifetime/60 ?> minutes from now.</p>

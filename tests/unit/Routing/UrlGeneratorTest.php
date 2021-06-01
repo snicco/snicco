@@ -130,6 +130,23 @@
 
         }
 
+        /** @test */
+        public function query_string_arguments_can_be_added_to_route_urls () {
+
+            $g = $this->newUrlGenerator($this->app_key);
+
+            $route = new Route(['GET'], '/foo/{bar}', function () {
+                return 'foo';
+            });
+            $route->name('foo');
+
+            $this->routes->add($route);
+
+            $url = $g->toRoute('foo', ['bar'=>'bar', 'query'=>['name'=>'calvin']]);
+
+            $this->seeUrl('/foo/bar?name=calvin', $url);
+
+        }
 
         /**
          *
@@ -307,6 +324,35 @@
 
             $this->assertFalse($g->hasValidRelativeSignature($wrong_request));
             $this->assertTrue($g->hasValidRelativeSignature($request));
+
+        }
+
+        /** @test */
+        public function signed_urls_can_be_created_with_additional_query_string () {
+
+            $g = $this->newUrlGenerator($this->app_key);
+
+            $route = new Route(['GET'], '/foo/{bar}', function () {
+                return 'foo';
+            });
+            $route->name('foo');
+
+            $this->routes->add($route);
+
+            $url = $g->signedRoute('foo', ['bar'=>'bar', 'query'=>['name'=>'calvin']], 300, true);
+
+            $this->assertStringStartsWith(SITE_URL . '/foo/bar', $url);
+            $this->assertStringContainsString('?expires='. Carbon::now()->addSeconds(300)->getTimestamp(), $url);
+            $this->assertStringContainsString('&signature=', $url);
+            $this->assertStringContainsString('&name=calvin', $url);
+
+            $this->assertTrue($g->hasValidSignature(TestRequest::fromFullUrl('GET', $url)));
+
+            $this->assertFalse($g->hasValidSignature(TestRequest::fromFullUrl('GET', $url. 'a')));
+
+            $url_with_wrong_query_value = str_replace('name=calvin', 'name=john', $url);
+
+            $this->assertFalse($g->hasValidSignature(TestRequest::fromFullUrl('GET', $url_with_wrong_query_value)));
 
         }
 
