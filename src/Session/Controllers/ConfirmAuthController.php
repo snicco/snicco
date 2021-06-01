@@ -89,7 +89,7 @@
 
             }
 
-            if ( $this->canReceiveAnotherEmail($session) ) {
+            if ( ! $this->canReceiveAnotherEmail($session) ) {
 
                 return $this->response_factory
                     ->redirect(429)
@@ -97,9 +97,7 @@
 
             }
 
-            $user = get_user_by('email', $email);
-
-            if ( ! $user instanceof WP_User) {
+            if ( ! ( $user = $this->userWithEmailExists($email ) ) ) {
 
                 return $this->redirectBack($session, $request, $email);
 
@@ -132,13 +130,11 @@
         protected function message(WP_User $user, SessionStore $session_store) : string
         {
 
-            $signed_url = $this->generateSignedUrl($user, $session_store);
-
             return $this->view->render(
                 'auth-confirm-email',
                 [
                     'user' => $user,
-                    'magic_link' => $signed_url,
+                    'magic_link' => $this->generateSignedUrl($user, $session_store),
                     'lifetime' => $this->link_lifetime_in_sec,
                 ]
             );
@@ -196,21 +192,22 @@
 
             }
 
-            if ($this->canReceiveNextEmail($session)) {
+            if ( ! $this->isBlockedForEmails($session) ) {
 
                 $session->forget('auth.confirm.email');
 
                 return true;
+
             }
 
             return false;
 
         }
 
-        private function canReceiveNextEmail(SessionStore $session) : bool
+        private function isBlockedForEmails(SessionStore $session) : bool
         {
 
-            if ($session->get('auth.confirm.email.next', 0) < Carbon::now()->getTimestamp()) {
+            if ($session->get('auth.confirm.email.next', 0) >= Carbon::now()->getTimestamp()) {
 
                 return true;
 
@@ -234,6 +231,12 @@
             $email = filter_var($email, FILTER_VALIDATE_EMAIL) ? $email : null;
 
             return $email;
+
+        }
+
+        private function userWithEmailExists(string $email) {
+
+            return get_user_by('email', $email);
 
         }
 
