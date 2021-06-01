@@ -108,7 +108,6 @@
 
         public function loginUrl(string $redirect_on_login_to = '', bool $force_auth = true) : string
         {
-
             return wp_login_url($redirect_on_login_to, $force_auth);
 
         }

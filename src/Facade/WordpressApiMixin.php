@@ -46,8 +46,9 @@
          *
          * @see wp_mail()
          * @see WordpressApi::mail()
+          *
          */
-        public static function mail($email, string $subject, string $message)
+        public static function mail($email, string $subject, string $message) :bool
         {
 
         }

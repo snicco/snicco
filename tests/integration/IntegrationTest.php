@@ -8,6 +8,7 @@
 
     use Codeception\TestCase\WPTestCase;
     use Nyholm\Psr7\Request;
+    use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\Application;
@@ -24,6 +25,15 @@
         {
 
             parent::setUp();
+
+            HeaderStack::reset();
+
+            WP::reset();
+            $GLOBALS['wp_filter'] = [];
+            $GLOBALS['wp_actions'] = [];
+            $GLOBALS['wp_current_filter'] = [];
+            TestApp::setApplication(null);
+            ApplicationEvent::setInstance(null);
 
             $this->afterSetup();
 
@@ -54,12 +64,6 @@
         public function newTestApp(array $config = []) : Application
         {
 
-            WP::reset();
-            $GLOBALS['wp_filter'] = [];
-            $GLOBALS['wp_actions'] = [];
-            $GLOBALS['wp_current_filter'] = [];
-            TestApp::setApplication(null);
-            ApplicationEvent::setInstance(null);
             $app = TestApp::make();
             $app->boot($config);
 
@@ -94,11 +98,11 @@
 
             }
 
-            $this->assertSame($expected, $this->runKernel($request));
+            $this->assertSame( strtolower($expected), strtolower($this->runKernel($request)));
 
         }
 
-        protected function assertOutputContains($expected, $request)
+        protected function assertOutputContains($expected, $request,string $message = '')
         {
 
             if ( ! $request instanceof IncomingRequest) {
@@ -107,7 +111,7 @@
 
             }
 
-            $this->assertStringContainsString($expected, $this->runKernel($request));
+            $this->assertStringContainsString(strtolower($expected), strtolower($this->runKernel($request)), $message);
 
         }
 
@@ -124,6 +128,18 @@
 
         }
 
+        protected function assertOutput($expected, $request, string $message = '')
+        {
+
+            if ( ! $request instanceof IncomingRequest) {
+
+                $request = new IncomingWebRequest('wordpress.php', $request);
+
+            }
+
+            $this->assertSame($expected, $this->runKernel($request), $message);
+
+        }
 
 
 
