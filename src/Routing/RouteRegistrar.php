@@ -32,29 +32,16 @@
 
         }
 
-        /** @todo Conditionally loading routes does not allow creating named routes in a different file. Is this any issue? What are use cases for this? */
         public function loadRoutes()
         {
 
-            // if ( WP::isAdminAjax() ) {
 
-                $this->loadRoutesGroup('ajax');
+            $this->loadRoutesGroup('ajax');
 
-            // }
+            $this->loadRoutesGroup('admin');
 
-            // elseif ( WP::isAdmin() ) {
-
-                $this->loadRoutesGroup('admin');
-
-            // }
-
-            // else {
-
-                $this->loadRoutesGroup('web');
-                $this->router->createFallbackWebRoute();
-
-            // }
-
+            $this->loadRoutesGroup('web');
+            $this->router->createFallbackWebRoute();
 
             $this->router->loadRoutes();
 
@@ -100,7 +87,7 @@
             if ($group === 'ajax') {
 
                 return array_merge($attributes, [
-                    'prefix' => WP::wpAdminFolder() . DIRECTORY_SEPARATOR . 'admin-ajax.php',
+                    'prefix' => WP::wpAdminFolder().DIRECTORY_SEPARATOR.'admin-ajax.php',
                     'name' => 'ajax',
                 ]);
 

@@ -11,6 +11,7 @@
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\SessionStore;
 
     class ConfirmPassword extends Middleware
@@ -24,12 +25,17 @@
          * @var ResponseFactory
          */
         private $response_factory;
+        /**
+         * @var UrlGenerator
+         */
+        private $url_generator;
 
-        public function __construct(SessionStore $session_store, ResponseFactory $response_factory)
+        public function __construct(SessionStore $session_store, ResponseFactory $response_factory, UrlGenerator $url_generator)
         {
 
             $this->session_store = $session_store;
             $this->response_factory = $response_factory;
+            $this->url_generator = $url_generator;
         }
 
         public function handle(Request $request, Delegate $next)

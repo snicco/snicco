@@ -6,7 +6,6 @@
 
     namespace WPEmerge\ExceptionHandling\Exceptions;
 
-    use WPEmerge\ExceptionHandling\Exceptions\Exception;
 
     class ConfigurationException extends Exception
     {
