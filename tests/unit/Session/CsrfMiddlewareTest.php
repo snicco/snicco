@@ -11,12 +11,12 @@
     use Tests\unit\UnitTest;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\ArraySessionHandler;
+    use WPEmerge\Session\Handlers\ArraySessionHandler;
     use WPEmerge\Session\CsrfField;
-    use WPEmerge\Session\CsrfMiddleware;
+    use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Session\CsrfStore;
     use WPEmerge\Session\GuardFactory;
-    use WPEmerge\Session\InvalidCsrfTokenException;
+    use WPEmerge\Session\Exceptions\InvalidCsrfTokenException;
     use WPEmerge\Session\SessionStore;
     use WPEmerge\Support\Arr;
 
@@ -84,7 +84,7 @@
         private function newSessionStore(string $cookie_name = 'test_session', $handler = null) : SessionStore
         {
 
-            $handler = $handler ?? new ArraySessionHandler(10);
+            $handler = $handler ?? new \WPEmerge\Session\Handlers\ArraySessionHandler(10);
 
             return new SessionStore($cookie_name, $handler);
 
@@ -160,7 +160,7 @@
                 $this->fail('No Csrf Exception thrown');
 
             }
-            catch (InvalidCsrfTokenException $e) {
+            catch (\WPEmerge\Session\Exceptions\InvalidCsrfTokenException $e) {
 
                 $this->assertFalse($session->has('csrf'));
 

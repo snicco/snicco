@@ -9,12 +9,15 @@
     use Slim\Csrf\Guard;
     use WPEmerge\Application\Application;
     use WPEmerge\Contracts\EncryptorInterface;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Encryptor;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Middleware\Core\ErrorHandlerMiddleware;
+    use WPEmerge\Session\Handlers\DatabaseSessionHandler;
+    use WPEmerge\Session\Middleware\CsrfMiddleware;
+    use WPEmerge\Session\Middleware\ShareSessionWithView;
+    use WPEmerge\Session\Middleware\StartSessionMiddleware;
+    use WPEmerge\Session\Middleware\ValidateSignature;
     use WPEmerge\Support\Arr;
 
     class SessionServiceProvider extends ServiceProvider
@@ -64,6 +67,7 @@
 
             $this->config->extend('middleware.aliases', [
                 'csrf' => CsrfMiddleware::class,
+                'validSignature' => ValidateSignature::class
             ]);
 
             $this->config->extend('middleware.groups.global', [

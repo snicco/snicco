@@ -4,12 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace WPEmerge\Session\Middleware;
 
     use Illuminate\Support\ViewErrorBag;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Session\SessionStore;
     use WPEmerge\View\GlobalContext;
 
     class ShareSessionWithView extends Middleware

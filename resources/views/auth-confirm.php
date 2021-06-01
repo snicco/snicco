@@ -208,7 +208,7 @@
                                class="<?= $error ? 'error' : '' ?>"
                                value="<?= esc_attr($old_email) ?>" required>
                     </div>
-
+                    <?= $csrf_field ?>
                     <button class="submit" type="submit">Send Confirmation Email</button>
 
                 </form>

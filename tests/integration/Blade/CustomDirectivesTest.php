@@ -15,7 +15,7 @@
     use Tests\stubs\TestApp;
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Session\ArraySessionHandler;
+    use WPEmerge\Session\Handlers\ArraySessionHandler;
     use WPEmerge\Session\CsrfField;
     use WPEmerge\Session\SessionStore;
 

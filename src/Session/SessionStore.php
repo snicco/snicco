@@ -235,7 +235,6 @@
 
         public function remove(string $key)
         {
-
             return Arr::pull($this->attributes, $key);
         }
 
@@ -261,7 +260,6 @@
 
         public function regenerate(bool $destroy = false) : bool
         {
-
             return $this->migrate($destroy);
         }
 

@@ -14,9 +14,9 @@
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Session\ArraySessionHandler;
+    use WPEmerge\Session\Handlers\ArraySessionHandler;
     use WPEmerge\Session\SessionStore;
-    use WPEmerge\Session\StartSessionMiddleware;
+    use WPEmerge\Session\Middleware\StartSessionMiddleware;
     use WPEmerge\Support\VariableBag;
 
     class StartSessionMiddlewareTest extends UnitTest
@@ -152,7 +152,7 @@
         public function a_session_without_matching_session_cookie_will_create_a_new_session()
         {
 
-            $handler = new ArraySessionHandler(10);
+            $handler = new \WPEmerge\Session\Handlers\ArraySessionHandler(10);
             $handler->write($this->anotherSessionId(), serialize(['foo' => 'bar']));
 
             $store = $this->newSessionStore('test_session', $handler);
@@ -168,7 +168,7 @@
         /** @test */
         public function the_previous_url_is_saved_to_the_session_after_creating_the_response () {
 
-            $handler = new ArraySessionHandler(10);
+            $handler = new \WPEmerge\Session\Handlers\ArraySessionHandler(10);
 
             $store = $this->newSessionStore('test_session', $handler);
 
@@ -199,7 +199,7 @@
         /** @test */
         public function garbage_collection_works () {
 
-            $handler = new ArraySessionHandler(10);
+            $handler = new \WPEmerge\Session\Handlers\ArraySessionHandler(10);
 
             $handler->write($this->anotherSessionId(), serialize(['foo' => 'bar']));
 
