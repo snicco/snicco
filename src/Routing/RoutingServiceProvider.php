@@ -7,6 +7,7 @@
     namespace WPEmerge\Routing;
 
     use Psr\Http\Message\ServerRequestInterface;
+    use Symfony\Component\Finder\Finder;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Contracts\RouteUrlGenerator;
@@ -31,6 +32,9 @@
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Session\SessionStore;
     use WPEmerge\Support\FilePath;
+    use WP_Filesystem_Direct;
+
+    use function Patchwork\Redefinitions\LanguageConstructs\_require_once;
 
     class RoutingServiceProvider extends ServiceProvider
     {
@@ -76,15 +80,31 @@
         public function bootstrap() : void
         {
 
-            $router = $this->container->make(Router::class);
+            if ( ! ($cache = $this->config->get('routing.cache', false))) {
 
-            (new RouteRegistrar($router, $this->config))->loadRoutes();
+                $dir = $this->config->get('routing.cache_dir', '');
+
+                $this->clearRouteCache($dir);
+
+                /** @var Router $router */
+                $router = $this->container->make(Router::class);
+                (new RouteRegistrar($router, $this->config))->loadRoutes();
+
+            }
+
+            if ($cache && ! is_dir($dir = $this->config->get('routing.cache_dir', ''))) {
+
+                $this->loadRoutesOneTime($dir);
+
+            }
+
 
         }
 
-        private function checkIfValidCacheDir( $dir ) {
+        private function checkIfCacheDirCreated($dir)
+        {
 
-            if ( ! $dir || ! is_dir( $dir )) {
+            if ( ! $dir || ! is_dir($dir)) {
 
                 throw new ConfigurationException("No valid cache dir provided:{$dir}");
 
@@ -114,7 +134,7 @@
 
                 $cache_dir = $this->config->get('routing.cache_dir', '');
 
-                $this->checkIfValidCacheDir($cache_dir);
+                $this->checkIfCacheDirCreated($cache_dir);
 
                 return new CachedFastRouteMatcher(
                     new FastRouteMatcher(),
@@ -143,7 +163,7 @@
 
                 $cache_dir = $this->config->get('routing.cache_dir', '');
 
-                $this->checkIfValidCacheDir($cache_dir);
+                $this->checkIfCacheDirCreated($cache_dir);
 
                 return new CachedRouteCollection(
                     $this->container->make(RouteMatcher::class),
@@ -189,40 +209,81 @@
 
                 $generator = new UrlGenerator($this->container->make(RouteUrlGenerator::class));
 
-                $generator->setRequestResolver( function () {
+                $generator->setRequestResolver(function () {
 
                     return $this->container->make(ServerRequestInterface::class);
 
                 });
 
                 $generator->setAppKeyResolver(function () {
-                    $key = $this->config->get('app_key',  '');
+
+                    $key = $this->config->get('app_key', '');
 
                     Encryptor::validAppKey($key);
 
                     return $key;
                 });
 
-               $generator->setSessionResolver(function () {
+                $generator->setSessionResolver(function () {
 
-                   if ( ! $this->container->offsetExists(SessionStore::class ) ) {
+                    if ( ! $this->container->offsetExists(SessionStore::class)) {
 
-                       throw new ConfigurationException(
-                           'You cant use UrlGeneration functions that depend on sessions without using the session extension.'
-                       );
+                        throw new ConfigurationException(
+                            'You cant use UrlGeneration functions that depend on sessions without using the session extension.'
+                        );
 
-                   }
+                    }
 
-                   return $this->container->make(SessionStore::class);
+                    return $this->container->make(SessionStore::class);
 
 
-               });
+                });
 
-               return $generator;
+                return $generator;
 
 
             });
         }
 
+        private function clearRouteCache(string $dir)
+        {
+
+
+            if ( ! is_dir( $dir ) ) {
+                return;
+            }
+
+            $finder = new Finder();
+            $finder->in($dir);
+
+            if (iterator_count($finder) === 0) {
+                rmdir($dir);
+            }
+
+            foreach ($finder as $file) {
+
+                $path = $file->getRealPath();
+                unlink($path);
+
+            }
+
+            rmdir($dir);
+
+        }
+
+        private function loadRoutesOneTime(string $dir)
+        {
+
+            if ($dir === '') {
+                throw new ConfigurationException("Route caching is enabled but no cache dir was provided.");
+            }
+
+            wp_mkdir_p($dir);
+
+            /** @var Router $router */
+            $router = $this->container->make(Router::class);
+            (new RouteRegistrar($router, $this->config))->loadRoutes();
+
+        }
 
     }

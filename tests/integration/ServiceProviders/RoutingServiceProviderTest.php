@@ -33,7 +33,6 @@
 
         use CreatesWpUrls;
 
-
         protected function tearDown() : void
         {
 
@@ -92,24 +91,6 @@
         }
 
         /** @test */
-        public function an_exception_gets_thrown_if_a_cache_file_path_is_missing()
-        {
-
-            $this->expectExceptionMessage('No valid cache dir provided:');
-
-            $this->newTestApp([
-                'routing' => [
-                    'cache' => true
-                ]
-            ]);
-
-
-            TestApp::resolve(RouteMatcher::class);
-
-
-        }
-
-        /** @test */
         public function a_cached_route_matcher_can_be_configured()
         {
 
@@ -135,8 +116,6 @@
             $this->assertInstanceOf(Router::class, TestApp::resolve(Router::class));
 
         }
-
-
 
         /** @test */
         public function by_default_a_normal_uncached_route_collection_is_used () {
@@ -324,6 +303,7 @@
             WP::reset();
 
         }
+
 
 
 

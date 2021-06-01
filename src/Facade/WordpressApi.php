@@ -1,76 +1,83 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace WPEmerge\Facade;
+    namespace WPEmerge\Facade;
 
-	use WP_User;
+    use WP_User;
 
     /**
      * @codeCoverageIgnore
-     * @see \WPEmerge\Facade\WordpressApiMixin
      */
-	class WordpressApi {
+    class WordpressApi
+    {
 
-	    private $admin_prefix = 'wp-admin';
+        private $admin_prefix = 'wp-admin';
 
-	    /** @todo needs testing for bedrock installs. */
-	    public function wpAdminFolder () :string {
-
-	        return $this->admin_prefix;
-
-        }
-
-        public function ajaxUrl() :string {
-
-           return WP::wpAdminFolder() . DIRECTORY_SEPARATOR . 'admin-ajax.php';
-
-        }
-
-		public function isAdmin () :bool {
-
-			return is_admin();
-
-		}
-
-		public function isAdminAjax () : bool
+        /** @todo needs testing for bedrock installs. */
+        public function wpAdminFolder() : string
         {
 
-			return wp_doing_ajax();
+            return $this->admin_prefix;
 
-		}
+        }
 
-		public function homeUrl( string $path = '', string $scheme = null ) :string {
+        public function ajaxUrl() : string
+        {
 
-			return home_url($path, $scheme);
+            return WP::wpAdminFolder().DIRECTORY_SEPARATOR.'admin-ajax.php';
 
-		}
+        }
 
-        public function adminUrl(string $path = '', string $scheme = 'https') :string
+        public function isAdmin() : bool
+        {
+
+            return is_admin();
+
+        }
+
+        public function isAdminAjax() : bool
+        {
+
+            return wp_doing_ajax();
+
+        }
+
+        public function homeUrl(string $path = '', string $scheme = null) : string
+        {
+
+            return home_url($path, $scheme);
+
+        }
+
+        public function adminUrl(string $path = '', string $scheme = 'https') : string
         {
 
             return self_admin_url($path, $scheme);
 
         }
 
-		public function userId () :int  {
-
-			return get_current_user_id();
-
-		}
-
-        public  function currentUser() : WP_User
+        public function userId() : int
         {
+
+            return get_current_user_id();
+
+        }
+
+        public function currentUser() : WP_User
+        {
+
             return wp_get_current_user();
         }
 
-		public function userIs (string $role ) :bool {
+        public function userIs(string $role) : bool
+        {
 
-	        $user = $this->currentUser();
+            $user = $this->currentUser();
 
-            if ( ! empty( $user->roles ) && is_array( $user->roles ) && in_array( $role, $user->roles ) ) {
+            if ( ! empty($user->roles) && is_array($user->roles) && in_array($role, $user->roles)) {
                 return true;
             }
 
@@ -78,48 +85,60 @@
 
         }
 
-		public function isUserLoggedIn() :bool {
+        public function isUserLoggedIn() : bool
+        {
 
-			return is_user_logged_in();
-
-		}
-
-		public function loginUrl (string $redirect_on_login_to = '', bool $force_auth = false ) : string {
-
-			return wp_login_url($redirect_on_login_to, $force_auth);
-
-		}
-
-		public function pluginPageUrl (string $menu_slug) :string {
-
-		    return menu_page_url($menu_slug, false );
+            return is_user_logged_in();
 
         }
 
-		public function currentUserCan(string $cap, ...$args) :bool {
+        public function loginUrl(string $redirect_on_login_to = '', bool $force_auth = false) : string
+        {
 
-			return current_user_can($cap, ...$args );
+            return wp_login_url($redirect_on_login_to, $force_auth);
 
-		}
+        }
 
-		public function fileHeaderData( string $file, array $default_headers = [], string $context = '' ) : array {
+        public function logout()
+        {
 
-			return get_file_data($file, $default_headers, $context);
+            wp_logout();
 
-		}
+        }
 
-		public function addQueryArgs(array $keys, string $url ) : string
+        public function pluginPageUrl(string $menu_slug) : string
+        {
+
+            return menu_page_url($menu_slug, false);
+
+        }
+
+        public function currentUserCan(string $cap, ...$args) : bool
+        {
+
+            return current_user_can($cap, ...$args);
+
+        }
+
+        public function fileHeaderData(string $file, array $default_headers = [], string $context = '') : array
+        {
+
+            return get_file_data($file, $default_headers, $context);
+
+        }
+
+        public function addQueryArgs(array $keys, string $url) : string
         {
 
             return add_query_arg($keys, $url);
 
         }
 
-        public function addQueryArg( string $key , string $value , string $base_url ) : string
+        public function addQueryArg(string $key, string $value, string $base_url) : string
         {
 
             return add_query_arg($key, $value, $base_url);
 
         }
 
-	}
+    }

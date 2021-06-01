@@ -14,6 +14,7 @@
     use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Routing\Pipeline;
 
+    /** @todo create tests. */
     class MiddlewareServiceProvider extends ServiceProvider
     {
 

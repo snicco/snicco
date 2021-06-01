@@ -14,7 +14,7 @@
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\SessionStore;
 
-    class ConfirmPassword extends Middleware
+    class ConfirmAuth extends Middleware
     {
 
         /**
@@ -32,7 +32,6 @@
 
         public function __construct(SessionStore $session_store, ResponseFactory $response_factory, UrlGenerator $url_generator)
         {
-
             $this->session_store = $session_store;
             $this->response_factory = $response_factory;
             $this->url_generator = $url_generator;
@@ -41,11 +40,9 @@
         public function handle(Request $request, Delegate $next)
         {
 
-            if ( ! $this->session_store->has('password.confirmed') ) {
+            if ( ! $this->session_store->has('auth.confirmed') ) {
 
-                $url = WP::loginUrl( $request->getFullPath() , true );
-
-                return $this->response_factory->redirect(301)->to($url);
+                return $this->response_factory->redirect(301)->to('/auth-confirm');
 
             }
 
