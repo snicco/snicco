@@ -90,7 +90,7 @@
 
         }
 
-        public function signed( string $path, $expiration = 300 , $absolute = true ) : string
+        public function signed( string $path, $expiration = 300 , $absolute = true, $query = [] ) : string
         {
 
             if ($this->isValidAbsoluteUrl($path)){
@@ -101,20 +101,25 @@
 
             $expires = $this->availableAt($expiration);
 
-            $url_with_expired_query_string = $this->to($path, ['expires'=>$expires], true, $absolute);
+            $query = array_merge( ['expires'=> $expires ], $query);
+
+            $url_with_expired_query_string = $this->to($path, $query, true, $absolute);
 
             $signature = hash_hmac('sha256', $url_with_expired_query_string, $app_key);
 
-            return $this->to($path, ['expires'=>$expires, 'signature'=>$signature], true , $absolute);
+            return $this->to($path, array_merge($query, ['signature'=>$signature]), true , $absolute);
 
         }
 
         public function signedRoute(string $route_name, array $arguments, $expiration = 300, bool $absolute = true) : string
         {
-            // signed() needs a path.
+
+            $query = Arr::pull($arguments, 'query', []);
+
+            // signed() needs a path, so dont use absolute urls here.
             $route_path = $this->toRoute($route_name, $arguments, true ,false);
 
-            return $this->signed($route_path, $expiration, $absolute);
+            return $this->signed($route_path, $expiration, $absolute, $query);
 
         }
 
@@ -140,10 +145,11 @@
         public function toRoute(string $name, array $arguments = [], $secure = true, $absolute = true) : string
         {
 
-            $path = $this->route_url->to($name, $arguments);
+            $query = Arr::pull($arguments, 'query', []);
 
-            return $this->to($path, [], $secure, $absolute);
+            $path = $this->route_url->to($name, $arguments );
 
+            return $this->to($path, $query, $secure, $absolute);
 
         }
 

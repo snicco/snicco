@@ -36,6 +36,10 @@
          */
         private $response_factory;
 
+        protected $link_lifetime_in_sec = 300;
+
+        protected $attempts = 3;
+
         public function __construct(ViewFactory $view, UrlGenerator $url_generator, ResponseFactory $response_factory)
         {
 
@@ -45,16 +49,30 @@
 
         }
 
-        public function show(CsrfField $csrf_field)
+        public function show(CsrfField $csrf_field, SessionStore $session)
         {
 
             $post_url = $this->url_generator->toRoute('auth.confirm.send', [], true, false);
 
             $html = $csrf_field->asHtml();
 
-            WP::logout();
+            $attempts = $session->increment('auth.confirm.attempts');
 
-            return $this->view->make('auth-confirm')->with(['post_url'=>$post_url, 'csrf_field'=>$html]);
+            $session->keep('auth.confirm.intended_url');
+
+            if ( $attempts > $this->attempts) {
+
+                $session->invalidate();
+                WP::logout();
+
+                return $this->response_factory->redirect(429)->to(WP::loginUrl());
+
+            }
+
+
+            return $this->view->make('auth-confirm')->with([
+                'post_url' => $post_url, 'csrf_field' => $html,
+            ]);
 
         }
 
@@ -65,7 +83,10 @@
 
             $user = get_user_by('email', $email);
 
+
             if ( ! $user instanceof WP_User) {
+
+                $session->keep('auth.confirm.intended_url');
 
                 $bag = new MessageBag();
                 $bag->add('email', 'The email you entered is not linked with any account.');
@@ -82,27 +103,50 @@
 
             $session->flashInput(['email' => $email]);
             $session->flash('auth.confirm.success', 'Success: A confirmation email was send to: '.$email);
+            $session->flash('auth.confirm.lifetime', $this->link_lifetime_in_sec);
+            $session->forget('auth.confirm.attempts');
 
-
-            WP::mail($email, $this->subject($user), $this->message($user));
+            WP::mail($email, $this->subject($user), $this->message($user, $session) );
 
             return $this->response_factory->redirect(200)->to($request->getFullUrl());
 
 
         }
 
-        protected function subject(WP_User $user)
+        protected function subject(WP_User $user) : string
         {
 
             return 'Your Email Confirmation link';
 
         }
 
-        protected function message (WP_User $user) {
+        private function generateSignedUrl(WP_User $user, SessionStore $session) : string
+        {
 
-            $signed_url = $this->url_generator->signedRoute('auth.magic-login', ['user_id'=>$user->ID], 3000);
+            $arguments = [
+                'user_id' => $user->ID,
+                'query'=> [
+                    'intended'=> $session->get('auth.confirm.intended_url')
+                ]
+            ];
 
-            return $this->view->render('auth-confirm-email', ['user'=>$user, 'magic_link'=>$signed_url]);
+            return $this->url_generator->signedRoute('auth.magic-login', $arguments);
+
+        }
+
+        protected function message(WP_User $user, SessionStore $session_store) : string
+        {
+
+            $signed_url = $this->generateSignedUrl($user, $session_store);
+
+            return $this->view->render(
+                'auth-confirm-email',
+                [
+                    'user' => $user,
+                    'magic_link' => $signed_url,
+                    'lifetime' => $this->link_lifetime_in_sec,
+                ]
+            );
 
 
         }

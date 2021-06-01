@@ -37,6 +37,8 @@
         public function create(Request $request, string $user_id)
         {
 
+            WP::logout();
+
             $user = get_user_by('ID', (int) $user_id);
 
             if ( ! $user instanceof WP_User ) {
@@ -52,11 +54,10 @@
             return $this->response_factory
                 ->redirect(200)
                 ->to(
-                $this->session_store->remove('auth.confirm.intended_url')
-            );
+                    rawurldecode($request->getQueryString('intended', WP::adminUrl()))
+                );
 
         }
-
 
         private function setTemporaryAuthToken()
         {
