@@ -11,17 +11,9 @@
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Controllers\FallBackController;
     use WPEmerge\Controllers\ViewController;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\ConvertsToResponse;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Routing\Conditions\AdminPageCondition;
-    use WPEmerge\Routing\Conditions\IsAdminCondition;
     use WPEmerge\Support\Url;
-    use WPEmerge\Traits\GathersMiddleware;
     use WPEmerge\Traits\HoldsRouteBlueprint;
-    use WPEmerge\Http\HttpResponseFactory as ResponseFactory;
 
     /**
      * @mixin RouteDecorator
@@ -109,7 +101,7 @@
             }
             else {
 
-                RouteRegistrar::loadRouteFile($routes);
+                RouteRegistrar::loadRouteFile($routes, $this);
 
             }
 

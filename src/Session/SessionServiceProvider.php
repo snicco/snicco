@@ -33,6 +33,7 @@
             }
 
             $this->bindConfig();
+            $this->extendRoutes();
             $this->bindSessionHandler();
             $this->bindSessionStore();
             $this->bindSessionMiddleware();
@@ -74,6 +75,7 @@
                 StartSessionMiddleware::class,
                 ShareSessionWithView::class,
             ]);
+
 
 
         }
@@ -203,6 +205,17 @@
                 );
 
             });
+        }
+
+        private function extendRoutes()
+        {
+            $routes = Arr::wrap($this->config->get('routing.definitions'));
+
+            $vendor_routes_dir = dirname(__FILE__, 3) . DIRECTORY_SEPARATOR . 'routes';
+
+            $routes = array_merge($routes, Arr::wrap($vendor_routes_dir));
+
+            $this->config->set('routing.definitions', $routes);
         }
 
 
