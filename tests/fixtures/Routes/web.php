@@ -9,10 +9,6 @@
     use Tests\fixtures\Middleware\WebMiddleware;
     use Tests\stubs\TestApp;
 
-    require __DIR__.DS.'query-var-routes.php';
-    require __DIR__.DS.'aliased-routes.php';
-    require __DIR__.DS.'middleware-testing-routes.php';
-
     $router = TestApp::route();
 
     $router->get('foo', function () {

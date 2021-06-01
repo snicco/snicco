@@ -39,7 +39,6 @@
     class RoutingServiceProvider extends ServiceProvider
     {
 
-
         /**
          * Key=>Class dictionary of condition types
          *
