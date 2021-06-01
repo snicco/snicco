@@ -16,7 +16,6 @@
 		 */
 		private $middleware = [];
 
-
 		public function getMiddleware( string $method = null ) : array {
 
 			return collect( $this->middleware )

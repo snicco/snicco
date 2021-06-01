@@ -68,7 +68,7 @@
 
             $this->config->extend('middleware.groups.global', [
                 StartSessionMiddleware::class,
-                ShareErrorsWithView::class,
+                ShareSessionWithView::class,
             ]);
 
 
@@ -130,7 +130,6 @@
 
         private function bindSessionMiddleware()
         {
-
             $this->container->singleton(StartSessionMiddleware::class, function () {
 
                 return new StartSessionMiddleware(

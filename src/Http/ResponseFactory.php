@@ -150,7 +150,6 @@
 
         public function redirect(int $status_code = 302) : RedirectResponse
         {
-
             return new RedirectResponse($this->make($status_code));
         }
 

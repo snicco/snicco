@@ -12,18 +12,22 @@
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\View\GlobalContext;
 
-    class ShareErrorsWithView extends Middleware
+    class ShareSessionWithView extends Middleware
     {
 
         /**
          * @var GlobalContext
          */
         private $global_context;
+        /**
+         * @var SessionStore
+         */
+        private $session;
 
-        public function __construct(GlobalContext $global_context)
+        public function __construct(GlobalContext $global_context, SessionStore $session)
         {
-
             $this->global_context = $global_context;
+            $this->session = $session;
         }
 
         public function handle(Request $request, Delegate $next)
@@ -35,7 +39,10 @@
 
             $this->global_context->add('errors', $errors);
 
+            $this->global_context->add('session', $this->session);
+
             return $next($request);
+
         }
 
     }

@@ -6,16 +6,9 @@
 
 	namespace WPEmerge\View;
 
-	use Illuminate\Config\Repository;
     use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Contracts\ViewEngineInterface;
-	use WPEmerge\Contracts\ViewFinderInterface;
 	use WPEmerge\Contracts\ViewFactoryInterface;
-	use WPEmerge\View\PhpViewEngine;
-	use WPEmerge\View\PhpViewFinder;
-	use WPEmerge\Support\VariableBag;
-	use WPEmerge\View\ViewFactory;
-	use WPEmerge\View\ViewComposerCollection;
 	use WPEmerge\Factories\ViewComposerFactory;
 
 
@@ -23,6 +16,8 @@
 
 		public function register() : void {
 
+
+		    $this->bindConfig();
 
 		    $this->bindGlobalContext();
 
@@ -43,6 +38,16 @@
 			// Nothing to bootstrap.
 		}
 
+        private function bindConfig()
+        {
+
+            $ds = DIRECTORY_SEPARATOR;
+            $dir = dirname(__FILE__ , 3).$ds.'resources'.$ds.'views';
+            $views = $this->config->get('views', []);
+            $views = array_merge($views, [$dir]);
+            $this->config->set('views', $views);
+
+        }
 
         private function bindGlobalContext()
         {

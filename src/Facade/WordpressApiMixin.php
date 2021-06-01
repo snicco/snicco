@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpInconsistentReturnPointsInspection */
 
 
     declare(strict_types = 1);
@@ -6,6 +6,8 @@
 
     namespace WPEmerge\Facade;
 
+
+    use WP_User;
 
     /**
      * mixin class for ide support.
@@ -20,6 +22,18 @@
         private function __construct()
         {
         }
+
+
+        /**
+         * Log out the current user and destroy all auth cookies
+         * @see WordpressApi::logout
+         */
+        public static function logout()
+        {
+        }
+
+
+
 
         /**
          * Check if we are in the admin dashboard
@@ -101,7 +115,7 @@
          * @see wp_get_current_user()
          * @see WordpressApi::currentUser();
          */
-        public static function currentUser() : \WP_User
+        public static function currentUser() : WP_User
         {
 
 
@@ -111,9 +125,9 @@
          * Determines whether the current visitor is a logged in user.
          *
          * @return bool True if user is logged in, false if not logged in.
-         * @see \WPEmerge\Facade\WordpressApi::isUserLoggedIn()
+         * @see WordpressApi::isUserLoggedIn()
          */
-        public static function isUserLoggedIn()
+        public static function isUserLoggedIn() :bool
         {
         }
 

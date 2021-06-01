@@ -13,7 +13,6 @@
     class RouteRegistrar
     {
 
-
         /**
          * @var Router
          */
@@ -34,7 +33,6 @@
 
         public function loadRoutes()
         {
-
 
             $this->loadRoutesGroup('ajax');
 
@@ -57,7 +55,7 @@
         private function loadRoutesGroup(string $group)
         {
 
-            $dir = FilePath::addTrailingSlash($this->config->get('routing.definitions', ''));
+            $dir = FilePath::addTrailingSlash($this->config->get('routing.definitions', '/'));
 
             if ($dir === '/') {
                 return;
