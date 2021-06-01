@@ -45,7 +45,7 @@
 
                 $this->session_store->invalidate();
 
-                $this->session_store->flash('auth.confirm.intended_url', $request->getFullUrl());
+                $this->session_store->put('auth.confirm.intended_url', $request->getFullUrl());
 
                 return $this->response_factory->redirect(401)->to('/auth/confirm');
 

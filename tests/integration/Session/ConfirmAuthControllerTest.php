@@ -177,63 +177,37 @@
         }
 
         /** @test */
-        public function the_intended_url_is_reflashed()
-        {
-
-            $calvin = $this->newAdmin();
-            $this->login($calvin);
-
-            $this->newTestApp($this->config());
-
-            $session = $this->getSession();
-
-            // flashed from previous request
-            $session->flash('auth.confirm.intended_url', 'foobar.com');
-            $session->save();
-
-            $this->assertOutputContains('confirmation email', $this->getRequest());
-            HeaderStack::assertHasStatusCode(200);
-
-            // Session was saved by middleware
-            $this->assertSame('foobar.com', $session->get('auth.confirm.intended_url'));
-
-            $this->logout($calvin);
-
-
-        }
-
-        /** @test */
         public function the_total_attempts_to_input_a_correct_user_email_is_three_by_default_before_a_user_gets_logged_out()
         {
 
-            $calvin = $this->newAdmin();
+            $calvin = $this->newAdmin([
+                'user_email' => 'calvin@xyz.de'
+            ]);
             $this->login($calvin);
-
             $this->newTestApp($this->config());
             $session = $this->getSession();
 
-            $this->assertNull($session->get('auth.confirm.attempts'));
+            $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
+            $session->put('auth.confirm.attempts', 2);
+            $post_request = $this->postRequest( 'bogus@web.de', $csrf);
 
-            $this->assertOutputContains('confirmation email', $this->getRequest());
-            HeaderStack::assertHasStatusCode(200);
+            // email failed but user is still logged in
+            $this->assertOutput('', $post_request);
+            HeaderStack::assertHasStatusCode(404);
+            HeaderStack::assertHas('Location', '/auth/confirm');
             HeaderStack::reset();
-            $this->assertSame(1, $session->get('auth.confirm.attempts'));
+            $this->assertUserLoggedIn($calvin);
 
-            $this->assertOutputContains('confirmation email', $this->getRequest());
-            HeaderStack::assertHasStatusCode(200);
-            HeaderStack::reset();
-            $this->assertSame(2, $session->get('auth.confirm.attempts'));
+            $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
+            $post_request = $this->postRequest( 'bogus@web.de', $csrf);
 
-            $this->assertOutputContains('confirmation email', $this->getRequest());
-            HeaderStack::assertHasStatusCode(200);
-            HeaderStack::reset();
-            $this->assertSame(3, $session->get('auth.confirm.attempts'));
-
-            $this->assertOutputNotContains('confirmation email', $this->getRequest());
+            // this failed attempt will log the user out.
+            $this->assertOutput('', $post_request);
             HeaderStack::assertHasStatusCode(429);
             HeaderStack::assertHas('Location', WP::loginUrl());
+            HeaderStack::reset();
 
-            $this->logout($calvin);
+            $this->assertUserLoggedOut();
 
         }
 
@@ -251,7 +225,10 @@
             $session->put('auth.confirm.attempts', 3);
             $id = $session->getId();
 
-            $this->assertOutputNotContains('confirmation email', $this->getRequest());
+            $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
+            $post_request = $this->postRequest( 'bogus@web.de', $csrf);
+
+            $this->assertOutput('', $post_request);
             HeaderStack::assertHasStatusCode(429);
             HeaderStack::assertHas('Location', WP::loginUrl());
 
@@ -262,26 +239,6 @@
 
         }
 
-        /** @test */
-        public function the_user_is_logged_out_completely_if_max_attempts_are_reached()
-        {
-
-            $calvin = $this->newAdmin();
-            $this->login($calvin);
-
-            $this->newTestApp($this->config());
-
-            $this->getSession()->put('auth.confirm.attempts', 3);
-            $this->assertUserLoggedIn($calvin);
-
-            $this->assertOutputNotContains('confirmation email', $this->getRequest());
-            HeaderStack::assertHasStatusCode(429);
-            HeaderStack::assertHas('Location', WP::loginUrl());
-
-            $this->assertUserLoggedOut();
-
-
-        }
 
         /**
          *
@@ -622,7 +579,7 @@
 
             $session = $this->getSession();
             $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
-            $session->flash('auth.confirm.intended_url', 'foobar.com/intended');
+            $session->put('auth.confirm.intended_url', 'foobar.com/intended');
             $post_request = $this->postRequest( $email, $csrf);
 
             $this->runKernel($post_request);
