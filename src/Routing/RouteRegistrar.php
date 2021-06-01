@@ -6,9 +6,11 @@
 
     namespace WPEmerge\Routing;
 
+    use Symfony\Component\Finder\Finder;
     use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Facade\WP;
     use WPEmerge\Support\FilePath;
+    use WPEmerge\Support\Str;
 
     class RouteRegistrar
     {
@@ -34,11 +36,35 @@
         public function loadRoutes()
         {
 
-            $this->loadRoutesGroup('ajax');
+            $dirs = $this->config->get('routing.definitions', []);
 
-            $this->loadRoutesGroup('admin');
+            if ($dirs === []) {
+                return;
+            }
 
-            $this->loadRoutesGroup('web');
+            $finder = new Finder();
+            $finder->in($dirs)->files()->name('*.php');
+
+            $seen = [];
+
+            foreach ($finder as $file) {
+
+                $name = Str::before($file->getFilename(), '.php');
+
+                if ( isset( $seen[$name] ) ) {
+                    continue;
+                }
+
+                $preset = $this->config->get('routing.presets.'.$name, []);
+
+                $path = $file->getRealPath();
+
+                $this->loadRouteGroup($name, $path, $preset);
+
+                $seen[$name] = $name;
+
+            }
+
             $this->router->createFallbackWebRoute();
 
             $this->router->loadRoutes();
@@ -50,48 +76,49 @@
 
             require $route_file;
 
-        }#
+        }
 
-        private function loadRoutesGroup(string $group)
+        private function loadRouteGroup(string $name, string $file_path, array $preset)
         {
 
-            $dir = FilePath::addTrailingSlash($this->config->get('routing.definitions', '/'));
+            $attributes = $this->applyPreset($name, $preset);
 
-            if ($dir === '/') {
-                return;
-            }
-
-            $file = FilePath::ending($dir.$group, 'php');
-
-            $attributes = $this->applyPreset(['middleware' => [$group]], $group);
-
-            $this->router->group($attributes, $file);
-
+            $this->router->group($attributes, $file_path);
 
         }
 
-        private function applyPreset(array $attributes, string $group) : array
+        private function applyPreset(string $group, array $preset) : array
         {
+
+            if ($group === 'web') {
+
+                return array_merge([
+                    'middleware' => ['web'],
+                ], $preset);
+
+            }
 
             if ($group === 'admin') {
 
-                return array_merge($attributes, [
+                return array_merge([
+                    'middleware' => ['admin'],
                     'prefix' => WP::wpAdminFolder(),
                     'name' => 'admin',
-                ]);
+                ], $preset);
 
             }
 
             if ($group === 'ajax') {
 
-                return array_merge($attributes, [
+                return array_merge([
+                    'middleware' => ['ajax'],
                     'prefix' => WP::wpAdminFolder().DIRECTORY_SEPARATOR.'admin-ajax.php',
                     'name' => 'ajax',
-                ]);
+                ], $preset);
 
             }
 
-            return $attributes;
+            return $preset;
 
         }
 

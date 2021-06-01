@@ -27,6 +27,7 @@
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\RouteCollection;
     use WPEmerge\Routing\Router;
+    use WPEmerge\Support\Arr;
 
     class RoutingServiceProviderTest extends IntegrationTest
     {
@@ -38,7 +39,7 @@
 
             parent::tearDown();
 
-            if( is_file($file = TESTS_DIR. DS . '_data'. DS . '__generated_route_collection') ) {
+            if (is_file($file = TESTS_DIR.DS.'_data'.DS.'__generated_route_collection')) {
 
                 $this->unlink($file);
 
@@ -53,11 +54,10 @@
             $this->newTestApp([
                 'routing' => [
                     'conditions' => [
-                        'true' => TrueCondition::class
-                    ]
-                ]
+                        'true' => TrueCondition::class,
+                    ],
+                ],
             ]);
-
 
             $conditions = TestApp::config('routing.conditions');
 
@@ -97,8 +97,8 @@
             $this->newTestApp([
                 'routing' => [
                     'cache' => true,
-                    'cache_dir' => TESTS_DIR. DS . '_data'. DS
-                ]
+                    'cache_dir' => TESTS_DIR.DS.'_data'.DS,
+                ],
             ]);
 
             $matcher = TestApp::resolve(RouteMatcher::class);
@@ -118,7 +118,8 @@
         }
 
         /** @test */
-        public function by_default_a_normal_uncached_route_collection_is_used () {
+        public function by_default_a_normal_uncached_route_collection_is_used()
+        {
 
             $this->newTestApp();
 
@@ -127,13 +128,14 @@
         }
 
         /** @test */
-        public function a_cached_route_collection_can_be_used () {
+        public function a_cached_route_collection_can_be_used()
+        {
 
             $this->newTestApp([
                 'routing' => [
                     'cache' => true,
-                    'cache_dir' => TESTS_DIR. DS. '_data'. DS
-                ]
+                    'cache_dir' => TESTS_DIR.DS.'_data'.DS,
+                ],
             ]);
 
             $routes = TestApp::resolve(AbstractRouteCollection::class);
@@ -145,6 +147,7 @@
         /** @test */
         public function the_condition_factory_can_be_loaded()
         {
+
             $this->newTestApp();
 
             $this->assertInstanceOf(ConditionFactory::class, TestApp::resolve(ConditionFactory::class));
@@ -157,8 +160,8 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => ROUTES_DIR
-                ]
+                    'definitions' => ROUTES_DIR,
+                ],
             ]);
 
             $this->seeKernelOutput('foo', TestRequest::from('GET', '/foo'));
@@ -166,12 +169,13 @@
         }
 
         /** @test */
-        public function the_fallback_route_controller_is_registered_for_web_routes () {
+        public function the_fallback_route_controller_is_registered_for_web_routes()
+        {
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => ROUTES_DIR
-                ]
+                    'definitions' => ROUTES_DIR,
+                ],
             ]);
 
             $this->seeKernelOutput('get_fallback', TestRequest::from('GET', 'post1'));
@@ -180,15 +184,16 @@
         }
 
         /** @test */
-        public function the_fallback_controller_does_not_match_admin_routes () {
+        public function the_fallback_controller_does_not_match_admin_routes()
+        {
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => ROUTES_DIR
+                    'definitions' => ROUTES_DIR,
                 ],
                 'providers' => [
-                    SimulateAdminProvider::class
-                ]
+                    SimulateAdminProvider::class,
+                ],
             ]);
 
             $this->seeKernelOutput('', TestRequest::from('GET', $this->adminUrlTo('foo')));
@@ -198,15 +203,16 @@
         }
 
         /** @test */
-        public function the_fallback_controller_does_not_match_ajax_routes () {
+        public function the_fallback_controller_does_not_match_ajax_routes()
+        {
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => ROUTES_DIR
+                    'definitions' => ROUTES_DIR,
                 ],
                 'providers' => [
-                    SimulateAjaxProvider::class
-                ]
+                    SimulateAjaxProvider::class,
+                ],
             ]);
 
             $this->seeKernelOutput('', TestRequest::from('GET', $this->ajaxUrl('foo')));
@@ -221,11 +227,11 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => ROUTES_DIR
+                    'definitions' => ROUTES_DIR,
                 ],
                 'providers' => [
-                    SimulateAjaxProvider::class
-                ]
+                    SimulateAjaxProvider::class,
+                ],
             ]);
 
             $request = $this->ajaxRequest('foo_action');
@@ -244,11 +250,11 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => ROUTES_DIR
+                    'definitions' => ROUTES_DIR,
                 ],
                 'providers' => [
-                    SimulateAdminProvider::class
-                ]
+                    SimulateAdminProvider::class,
+                ],
             ]);
 
             $request = $this->adminRequestTo('foo');
@@ -266,11 +272,11 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => ROUTES_DIR
+                    'definitions' => ROUTES_DIR,
                 ],
                 'providers' => [
-                    SimulateAdminProvider::class
-                ]
+                    SimulateAdminProvider::class,
+                ],
             ]);
 
             $this->assertSame($this->adminUrlTo('foo'), TestApp::routeUrl('admin.foo'));
@@ -286,16 +292,14 @@
 
             $this->newTestApp([
                 'routing' => [
-                    'definitions' => ROUTES_DIR
+                    'definitions' => ROUTES_DIR,
                 ],
                 'providers' => [
-                    SimulateAjaxProvider::class
-                ]
+                    SimulateAjaxProvider::class,
+                ],
             ]);
 
-
             $expected = $this->ajaxUrl();
-
 
             $this->assertSame($expected, TestApp::routeUrl('ajax.foo'));
 
@@ -304,9 +308,62 @@
 
         }
 
+        /** @test */
+        public function custom_routes_dirs_can_be_provided()
+        {
+
+            $this->newTestApp([
+                'routing' => [
+                    'definitions' => ROUTES_DIR,
+                ],
+                'providers' => [
+                    RoutingDefinitionServiceProvider::class,
+                ],
+            ]);
+
+            $request = TestRequest::from('GET', 'other');
+
+            $this->seeKernelOutput('other', new IncomingAdminRequest($request));
+
+        }
+
+        /** @test */
+        public function a_file_with_the_same_name_will_not_be_loaded_twice () {
+
+            $this->newTestApp([
+                'routing' => [
+                    'definitions' => ROUTES_DIR,
+                ],
+                'providers' => [
+                    RoutingDefinitionServiceProvider::class,
+                ],
+            ]);
+
+            $request = TestRequest::from('GET', 'foo');
+
+            $this->seeKernelOutput('foo', new IncomingAdminRequest($request));
+
+        }
+
+    }
+
+    class RoutingDefinitionServiceProvider extends ServiceProvider
+    {
+
+        public function register() : void
+        {
+            $routes = Arr::wrap($this->config->get('routing.definitions'));
+
+            $routes = array_merge($routes, [TESTS_DIR.DS.'fixtures'.DS.'OtherRoutes']);
+
+            $this->config->set('routing.definitions', $routes);
+
+        }
 
 
-
+        function bootstrap() : void
+        {
+        }
 
     }
 
@@ -317,6 +374,7 @@
 
         public function register() : void
         {
+
             $this->createDefaultWpApiMocks();
             WP::shouldReceive('isAdminAjax')->andReturnTrue();
             WP::shouldReceive('isAdmin')->andReturnTrue();
@@ -332,11 +390,13 @@
 
     class SimulateAdminProvider extends ServiceProvider
     {
+
         use CreateDefaultWpApiMocks;
         use CreatesWpUrls;
 
         public function register() : void
         {
+
             $this->createDefaultWpApiMocks();
 
             WP::shouldReceive('isAdminAjax')->andReturnFalse();
