@@ -4,18 +4,21 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Controllers;
+    namespace WPEmerge\Session\Controllers;
 
-    use Illuminate\Contracts\Support\MessageProvider;
     use Illuminate\Support\MessageBag;
     use Illuminate\Support\ViewErrorBag;
+    use WP_User;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Routing\UrlGenerator;
+    use WPEmerge\Session\CsrfField;
     use WPEmerge\Session\SessionStore;
     use WPEmerge\Support\Arr;
     use WPEmerge\View\ViewFactory;
+
+    use function get_user_by;
 
     class ConfirmAuthenticationController
     {
@@ -42,30 +45,33 @@
 
         }
 
-        public function show()
+        public function show(CsrfField $csrf_field)
         {
 
             $post_url = $this->url_generator->toRoute('auth.confirm.send', [], true, false);
 
+            $html = $csrf_field->asHtml();
+
             WP::logout();
 
-            return $this->view->make('auth-confirm')->with('post_url', $post_url);
+            return $this->view->make('auth-confirm')->with(['post_url'=>$post_url, 'csrf_field'=>$html]);
 
         }
 
-        public function send(Request $request, SessionStore $session) {
+        public function send(Request $request, SessionStore $session)
+        {
 
             $email = Arr::get($request->getParsedBody(), 'email', '');
 
             $user = get_user_by('email', $email);
 
-            if ( ! $user instanceof \WP_User ) {
+            if ( ! $user instanceof WP_User) {
 
                 $bag = new MessageBag();
                 $bag->add('email', 'The email you entered is not linked with any account.');
                 $errors = $session->get('errors', new ViewErrorBag);
                 $session->flash(
-                    'errors', $errors->put('default', $bag )
+                    'errors', $errors->put('default', $bag)
                 );
 
                 $session->flashInput(['email' => $email]);
@@ -75,22 +81,30 @@
             }
 
             $session->flashInput(['email' => $email]);
-            $session->flash('auth.confirm.success', 'Success: A confirmation email was send to: ' . $email);
+            $session->flash('auth.confirm.success', 'Success: A confirmation email was send to: '.$email);
+
+
+            WP::mail($email, $this->subject($user), $this->message($user));
 
             return $this->response_factory->redirect(200)->to($request->getFullUrl());
 
 
-
         }
 
-        protected function parseErrors($provider)
+        protected function subject(WP_User $user)
         {
-            if ($provider instanceof MessageProvider) {
-                return $provider->getMessageBag();
-            }
 
-            return new MessageBag((array) $provider);
+            return 'Your Email Confirmation link';
+
         }
 
+        protected function message (WP_User $user) {
+
+            $signed_url = $this->url_generator->signedRoute('auth.magic-login', ['user_id'=>$user->ID], 3000);
+
+            return $this->view->render('auth-confirm-email', ['user'=>$user, 'magic_link'=>$signed_url]);
+
+
+        }
 
     }

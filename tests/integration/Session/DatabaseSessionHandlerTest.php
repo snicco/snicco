@@ -15,8 +15,8 @@
     use Tests\stubs\TestRequest;
     use wpdb;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Session\ArraySessionHandler;
-    use WPEmerge\Session\DatabaseSessionHandler;
+    use WPEmerge\Session\Handlers\ArraySessionHandler;
+    use WPEmerge\Session\Handlers\DatabaseSessionHandler;
 
     class DatabaseSessionHandlerTest extends IntegrationTest
     {

@@ -8,6 +8,7 @@
 
     use Slim\Csrf\Guard;
     use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Session\Exceptions\InvalidCsrfTokenException;
 
     class GuardFactory
     {

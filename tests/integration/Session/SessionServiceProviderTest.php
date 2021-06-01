@@ -9,13 +9,13 @@
     use Slim\Csrf\Guard;
     use Tests\integration\IntegrationTest;
     use Tests\stubs\TestApp;
-    use WPEmerge\Session\CsrfMiddleware;
-    use WPEmerge\Session\DatabaseSessionHandler;
+    use WPEmerge\Session\Middleware\CsrfMiddleware;
+    use WPEmerge\Session\Handlers\DatabaseSessionHandler;
     use WPEmerge\Session\EncryptedStore;
     use WPEmerge\Session\SessionHandler;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Session\SessionStore;
-    use WPEmerge\Session\StartSessionMiddleware;
+    use WPEmerge\Session\Middleware\StartSessionMiddleware;
 
     class SessionServiceProviderTest extends IntegrationTest
     {
@@ -264,7 +264,7 @@
 
             $driver = TestApp::resolve(SessionHandler::class);
 
-            $this->assertInstanceOf(DatabaseSessionHandler::class, $driver);
+            $this->assertInstanceOf(\WPEmerge\Session\Handlers\DatabaseSessionHandler::class, $driver);
 
 
         }
@@ -334,7 +334,7 @@
                 ]
             ]);
 
-            $this->assertInstanceOf(CsrfMiddleware::class, TestApp::resolve(CsrfMiddleware::class));
+            $this->assertInstanceOf(\WPEmerge\Session\Middleware\CsrfMiddleware::class, TestApp::resolve(CsrfMiddleware::class));
 
         }
 

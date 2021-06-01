@@ -7,7 +7,7 @@
 	namespace Tests\unit\Session;
 
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Session\ArraySessionHandler;
+	use WPEmerge\Session\Handlers\ArraySessionHandler;
 	use WPEmerge\Session\SessionStore;
 
 	use function serialize;

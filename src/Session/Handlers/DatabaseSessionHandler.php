@@ -4,13 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace WPEmerge\Session\Handlers;
 
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
     use Psr\Http\Message\ServerRequestInterface;
     use wpdb;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Session\SessionHandler;
 
     class DatabaseSessionHandler implements SessionHandler
     {

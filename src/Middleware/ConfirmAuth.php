@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Middleware;
 
+    use Carbon\Carbon;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Delegate;
@@ -30,6 +31,7 @@
          */
         private $url_generator;
 
+
         public function __construct(SessionStore $session_store, ResponseFactory $response_factory, UrlGenerator $url_generator)
         {
             $this->session_store = $session_store;
@@ -40,9 +42,13 @@
         public function handle(Request $request, Delegate $next)
         {
 
-            if ( ! $this->session_store->has('auth.confirmed') ) {
+            if ( ! $this->hasValidAuthToken() ) {
 
-                return $this->response_factory->redirect(301)->to('/auth-confirm');
+                $this->session_store->invalidate();
+
+                $this->session_store->put('auth.confirm.intended_url', $request->getFullUrl());
+
+                return $this->response_factory->redirect(301)->to('/auth/confirm');
 
             }
 
@@ -50,6 +56,13 @@
 
         }
 
+        private function hasValidAuthToken () : bool
+        {
+
+            return false;
+            return Carbon::now()->getTimestamp() < $this->session_store->get('auth.confirm.until', 0);
+
+        }
 
 
     }

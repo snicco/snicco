@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace WPEmerge\Session\Middleware;
 
     use Slim\Csrf\Guard;
     use WPEmerge\Contracts\ErrorHandlerInterface;
@@ -12,6 +12,7 @@
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Session\Exceptions\InvalidCsrfTokenException;
 
     class CsrfMiddleware extends Middleware
     {

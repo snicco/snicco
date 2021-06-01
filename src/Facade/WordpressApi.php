@@ -24,6 +24,20 @@
 
         }
 
+        public function plaintTextMail ( $email, string $subject, string $message ) {
+
+           return wp_mail($email, $subject, $message);
+
+        }
+
+        public function mail ( $email, string $subject, string $message ) {
+
+            $headers = array('Content-Type: text/html; charset=UTF-8');
+
+            return wp_mail($email, $subject, $message, $headers);
+
+        }
+
         public function ajaxUrl() : string
         {
 
@@ -92,7 +106,7 @@
 
         }
 
-        public function loginUrl(string $redirect_on_login_to = '', bool $force_auth = false) : string
+        public function loginUrl(string $redirect_on_login_to = '', bool $force_auth = true) : string
         {
 
             return wp_login_url($redirect_on_login_to, $force_auth);

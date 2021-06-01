@@ -4,10 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Session;
+	namespace WPEmerge\Session\Handlers;
 
 	use Illuminate\Support\InteractsWithTime;
     use Psr\Http\Message\ServerRequestInterface;
+    use WPEmerge\Session\SessionHandler;
 
     class ArraySessionHandler implements SessionHandler {
 

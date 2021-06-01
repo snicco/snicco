@@ -25,6 +25,36 @@
 
 
         /**
+         *
+         * @param string|string[] $email
+         * @param  string  $subject
+         * @param string $message
+         *
+         * @see wp_mail()
+         * @see WordpressApi::plaintTextMail
+         */
+        public static function plainTextMail($email, string $subject, string $message)
+        {
+
+        }
+
+         /**
+         *
+         * @param string|string[] $email
+         * @param  string  $subject
+         * @param string $message
+         *
+         * @see wp_mail()
+         * @see WordpressApi::mail()
+         */
+        public static function mail($email, string $subject, string $message)
+        {
+
+        }
+
+
+
+        /**
          * Log out the current user and destroy all auth cookies
          * @see WordpressApi::logout
          */

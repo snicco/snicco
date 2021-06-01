@@ -7,7 +7,7 @@
 	namespace Tests\unit\Session;
 
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Session\ArraySessionHandler;
+	use WPEmerge\Session\Handlers\ArraySessionHandler;
 	use Illuminate\Support\Carbon;
 
 	class ArraySessionHandlerTest extends TestCase {
@@ -44,7 +44,7 @@
 		/** @test */
 		public function data_can_be_read_from_the_session()
 		{
-			$handler = new ArraySessionHandler(10);
+			$handler = new \WPEmerge\Session\Handlers\ArraySessionHandler(10);
 
 			$handler->write('foo', 'bar');
 
@@ -90,7 +90,7 @@
 		/** @test */
 		public function a_session_can_be_destroyed () {
 
-			$handler = new ArraySessionHandler(10);
+			$handler = new \WPEmerge\Session\Handlers\ArraySessionHandler(10);
 
 			$handler->write('foo', 'bar');
 

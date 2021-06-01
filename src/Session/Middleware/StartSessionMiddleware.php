@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace WPEmerge\Session\Middleware;
 
     use Carbon\Carbon;
     use Psr\Http\Message\ResponseInterface;
@@ -13,7 +13,8 @@
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Responses\NullResponse;
-    use WPEmerge\Support\VariableBag;
+    use WPEmerge\Session\SessionStore;
+
 
     class StartSessionMiddleware extends Middleware
     {

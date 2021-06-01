@@ -130,6 +130,18 @@
 
         }
 
+
+        /**
+         *
+         *
+         *
+         * SIGNED URLS.
+         *
+         *
+         *
+         *
+         */
+
         /** @test */
         public function a_signed_url_can_be_created()
         {
