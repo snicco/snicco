@@ -12,7 +12,8 @@
     use WPEmerge\Http\ResponseFactory;
 	use WPEmerge\Routing\Route;
 	use WPEmerge\Routing\Router;
-	use WPEmerge\Session\Csrf;
+    use WPEmerge\Routing\UrlGenerator;
+    use WPEmerge\Session\Csrf;
 	use WPEmerge\Session\FlashStore;
 	use WPEmerge\Session\OldInputStore;
 	use WPEmerge\Contracts\RequestInterface;
@@ -208,9 +209,9 @@
 		/**
 		 * Get the url to a named route
 		 *
-		 * @see Router::getRouteUrl()
+		 * @see UrlGenerator::toRoute()
 		 */
-		public static function routeUrl( string $route_name, array $arguments = [] ) : string {
+		public static function routeUrl( string $route_name, array $arguments = [], bool $secure = true, bool $absolute = true  ) : string {
 		}
 
 		/**

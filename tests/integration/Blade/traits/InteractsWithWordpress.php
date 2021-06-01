@@ -6,6 +6,10 @@
 
     namespace Tests\integration\Blade\traits;
 
+    use PHPUnit\Framework\Assert;
+
+    use WP_User;
+
     use function wp_delete_user;
     use function wp_logout;
     use function wp_set_current_user;
@@ -44,7 +48,7 @@
 
             wp_logout();
 
-            if ( $user instanceof  \WP_User ) {
+            if ( $user instanceof  WP_User ) {
 
                 wp_set_current_user($user->ID);
 
@@ -65,6 +69,26 @@
             }
 
             wp_logout();
+
+        }
+
+        public function assertUserLoggedOut() {
+
+            $user = wp_get_current_user();
+
+            Assert::assertSame(0, $user->ID);
+
+        }
+
+        public function assertUserLoggedIn($id) {
+
+            if ( $id instanceof  WP_User ) {
+
+                $id = $id->ID;
+
+            }
+
+            Assert::assertSame($id, wp_get_current_user()->ID);
 
         }
 

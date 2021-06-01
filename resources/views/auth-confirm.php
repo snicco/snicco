@@ -3,19 +3,21 @@
 
     declare(strict_types = 1);
 
-    use Carbon\Carbon;
+    use Illuminate\Support\ViewErrorBag;
+    use WPEmerge\Session\SessionStore;
 
     $ds = DIRECTORY_SEPARATOR;
 
-    /** @var  \Illuminate\Support\ViewErrorBag $errors */
+    /** @var  ViewErrorBag $errors */
     $error = $errors->has('email');
 
-    /** @var \WPEmerge\Session\SessionStore $session */
+    /** @var SessionStore $session */
     $old_email = $session->getOldInput('email', '');
 
-    $lifetime = $session->get('auth.confirm.lifetime', 300);
+    $lifetime = $session->get('auth.confirm.lifetime');
 
     $lifetime = $lifetime/60;
+
 
 ?>
 
@@ -128,7 +130,7 @@
         font-weight: 500;
     }
 
-    #form {
+    .form {
         margin-top: 30px;
     }
 
@@ -183,12 +185,35 @@
                     <span>Please check your email inbox at: <?= $old_email ?>.</span>
                     <br>
                     <br>
-                        The confirmation link expires in <?= $lifetime ?> minutes from now.
+                        The confirmation link expires in <?= $lifetime ?> minutes.
                     <br>
                     You can close this page now.
                 </p>
 
+                <form id="resend-email" class="form" action="<?= esc_attr($post_url) ?>" method="POST">
+
+                    <?php
+
+                        if ($error) {
+
+                            echo "<p class='error message'> {$errors->first('email')} </p>";
+
+                        }
+
+                    ?>
+                    <div class="form-group">
+                        <input type="email" name="email" id="email"
+                               class="<?= $error ? 'error' : '' ?>"
+                               value="<?= esc_attr($old_email) ?>" required hidden="hidden">
+                    </div>
+                    <?= $csrf_field ?>
+                    <button class="submit" type="submit">Resend Email</button>
+
+                </form>
+
                 <?php
+
+
 
                 }
                 else {
@@ -204,7 +229,7 @@
                 <p>Enter your email to receive a confirmation
                     email and click the link to confirm access this page.</p>
 
-                <form id="form" action="<?= esc_attr($post_url) ?>" method="POST">
+                <form id="send" class="form" action="<?= esc_attr($post_url) ?>" method="POST">
 
                     <?php
 

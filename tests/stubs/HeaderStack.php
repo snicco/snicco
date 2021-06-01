@@ -96,8 +96,8 @@
 
                         Assert::assertStringContainsString(
                             $value,
-                            $actual = Str::after($item['header'], ':'),
-                            "The value for header {$header} is {$actual}. Expected: {$value}"
+                            $actual = trim(Str::after($item['header'], ':')),
+                            "The value for header [{$header}] is: [{$actual}]. Expected: [{$value}]"
                         );
 
                     }

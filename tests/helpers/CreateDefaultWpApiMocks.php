@@ -28,7 +28,7 @@
                 return trim($host, '/') . '/' . trim($path, '/');
 
             });
-
+            WP::shouldReceive('mail')->andReturnTrue()->byDefault();
 		}
 
 

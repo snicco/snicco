@@ -142,5 +142,21 @@
 
         }
 
+        /** @test */
+        public function a_failing_check_is_redirected_to_the_correct_url () {
+
+            $this->newTestApp($this->config());
+
+            $expected_url = TestApp::routeUrl('auth.confirm.show', [], true, false);
+
+            $this->assertOutputNotContains('Access to foo granted', $this->requestToProtectedRoute());
+
+            HeaderStack::assertHasStatusCode(401);
+            HeaderStack::assertHas('Location', $expected_url);
+
+
+
+        }
+
     }
 
