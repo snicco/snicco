@@ -20,7 +20,38 @@
     class IntegrationTest extends WPTestCase
     {
 
-        public function newTestApp ( array $config = [] ) : Application
+        protected function setUp() : void
+        {
+
+            parent::setUp();
+
+            $this->afterSetup();
+
+        }
+
+        protected function afterSetup()
+        {
+            //
+        }
+
+        protected function beforeTearDown()
+        {
+            //
+        }
+
+        protected function tearDown() : void
+        {
+
+            $this->beforeTearDown();
+
+            parent::tearDown();
+            $GLOBALS['wp_filter'] = [];
+            $GLOBALS['wp_actions'] = [];
+            $GLOBALS['wp_current_filter'] = [];
+            $GLOBALS['test'] = [];
+        }
+
+        public function newTestApp(array $config = []) : Application
         {
 
             WP::reset();
@@ -31,22 +62,15 @@
             ApplicationEvent::setInstance(null);
             $app = TestApp::make();
             $app->boot($config);
+
             return $app;
 
         }
 
-        protected function tearDown() : void
+        protected function runKernel($request)
         {
-            parent::tearDown();
-            $GLOBALS['wp_filter'] = [];
-            $GLOBALS['wp_actions'] = [];
-            $GLOBALS['wp_current_filter'] = [];
-            $GLOBALS['test'] = [];
-        }
 
-        protected function seeKernelOutput( $expected, $request ) {
-
-            if ( ! $request instanceof IncomingRequest ) {
+            if ( ! $request instanceof IncomingRequest) {
 
                 $request = new IncomingWebRequest('wordpress.php', $request);
 
@@ -56,9 +80,50 @@
             $kernel = TestApp::resolve(HttpKernel::class);
             ob_start();
             $kernel->run($request);
-            $this->assertSame($expected, ob_get_clean());
+
+            return ob_get_clean();
 
         }
+
+        protected function seeKernelOutput($expected, $request)
+        {
+
+            if ( ! $request instanceof IncomingRequest) {
+
+                $request = new IncomingWebRequest('wordpress.php', $request);
+
+            }
+
+            $this->assertSame($expected, $this->runKernel($request));
+
+        }
+
+        protected function assertOutputContains($expected, $request)
+        {
+
+            if ( ! $request instanceof IncomingRequest) {
+
+                $request = new IncomingWebRequest('wordpress.php', $request);
+
+            }
+
+            $this->assertStringContainsString($expected, $this->runKernel($request));
+
+        }
+
+        protected function assertOutputNotContains($expected, $request, string $message = '')
+        {
+
+            if ( ! $request instanceof IncomingRequest) {
+
+                $request = new IncomingWebRequest('wordpress.php', $request);
+
+            }
+
+            $this->assertStringNotContainsString($expected, $this->runKernel($request), $message);
+
+        }
+
 
 
 

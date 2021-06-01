@@ -13,6 +13,8 @@
     use WPEmerge\Encryptor;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Middleware\ConfirmAuth;
+    use WPEmerge\Session\Handlers\ArraySessionHandler;
     use WPEmerge\Session\Handlers\DatabaseSessionHandler;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Session\Middleware\ShareSessionWithView;
@@ -68,7 +70,8 @@
 
             $this->config->extend('middleware.aliases', [
                 'csrf' => CsrfMiddleware::class,
-                'validSignature' => ValidateSignature::class
+                'validSignature' => ValidateSignature::class,
+                'confirm.auth' => ConfirmAuth::class,
             ]);
 
             $this->config->extend('middleware.groups.global', [
@@ -118,16 +121,22 @@
             $this->container->singleton(SessionHandler::class, function () {
 
                 $name = $this->config->get('session.driver', 'database');
-                $table = $this->config->get('session.table');
                 $lifetime = $this->config->get('session.lifetime');
 
-                if ($name === 'database') {
+                if ( $name === 'database') {
 
                     global $wpdb;
+
+                    $table = $this->config->get('session.table');
 
                     return new DatabaseSessionHandler($wpdb, $table, $lifetime);
 
                 }
+
+                if ( $name === 'array') {
+                    return new ArraySessionHandler($lifetime);
+                }
+
 
             });
 
