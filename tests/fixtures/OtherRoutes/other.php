@@ -3,11 +3,11 @@
 
     declare(strict_types = 1);
 
-    use Tests\stubs\TestApp;
+    use WPEmerge\Routing\Router;
 
-    $router = TestApp::route();
-
-
+    /**
+     * @var Router $router
+     */
     $router->get('other', function () {
 
         return 'other';

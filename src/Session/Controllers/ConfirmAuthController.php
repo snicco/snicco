@@ -20,7 +20,7 @@
 
     use function get_user_by;
 
-    class ConfirmAuthenticationController
+    class ConfirmAuthController
     {
 
         /**
@@ -130,7 +130,7 @@
                 ]
             ];
 
-            return $this->url_generator->signedRoute('auth.magic-login', $arguments);
+            return $this->url_generator->signedRoute('auth.confirm.magic-login', $arguments);
 
         }
 

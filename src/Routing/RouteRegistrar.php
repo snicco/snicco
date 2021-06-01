@@ -25,7 +25,7 @@
          */
         private $config;
 
-        public function __construct(Router $router, ApplicationConfig $config)
+        public function __construct(Router $router, ApplicationConfig $config )
         {
 
             $this->router = $router;
@@ -71,8 +71,10 @@
 
         }
 
-        public static function loadRouteFile(string $route_file)
+        public static function loadRouteFile(string $route_file, Router $router = null )
         {
+
+            extract(['router'=>$router], EXTR_OVERWRITE);
 
             require $route_file;
 
