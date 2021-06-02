@@ -246,13 +246,11 @@
 
         public function flush() : void
         {
-
             $this->attributes = [];
         }
 
         public function invalidate() : bool
         {
-
             $this->flush();
 
             return $this->migrate(true);
@@ -309,7 +307,6 @@
 
         public function isValidId(string $id) : bool
         {
-
             return strlen($id) === 40 && ctype_alnum($id);
         }
 
@@ -346,7 +343,6 @@
 
         private function generateSessionId() : string
         {
-
             return Str::random(40);
         }
 

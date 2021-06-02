@@ -30,10 +30,7 @@
          * @var UrlGenerator
          */
         private $url_generator;
-        /**
-         * @var bool
-         */
-        private $redirect_if_token;
+
 
         public function __construct(SessionStore $session_store, ResponseFactory $response_factory, UrlGenerator $url_generator)
         {
@@ -52,7 +49,6 @@
                     $this->session_store->invalidate();
 
                 }
-
 
                 $this->session_store->put('auth.confirm.intended_url', $request->getFullUrl());
 

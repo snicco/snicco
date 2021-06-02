@@ -94,7 +94,7 @@
             $response = $this->newMiddleware()->handle($this->request, $this->route_action);
 
             $this->assertInstanceOf(RedirectResponse::class, $response);
-            $this->assertStatusCode(302, $response);
+            $this->assertStatusCode(401, $response);
 
         }
 
