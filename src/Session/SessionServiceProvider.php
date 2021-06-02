@@ -6,6 +6,8 @@
 
     namespace WPEmerge\Session;
 
+    use BetterWpHooks\Contracts\Dispatcher;
+    use BetterWpHooks\Dispatchers\WordpressDispatcher;
     use Slim\Csrf\Guard;
     use WPEmerge\Application\Application;
     use WPEmerge\Contracts\EncryptorInterface;
@@ -45,6 +47,7 @@
             $this->bindSlimGuard();
             $this->bindAliases();
             $this->bindEncryptor();
+            $this->setEventListeners();
 
         }
 
@@ -220,7 +223,6 @@
 
         private function extendRoutes()
         {
-
             $routes = Arr::wrap($this->config->get('routing.definitions'));
 
             $vendor_routes_dir = dirname(__FILE__, 3).DIRECTORY_SEPARATOR.'routes';
@@ -228,6 +230,13 @@
             $routes = array_merge($routes, Arr::wrap($vendor_routes_dir));
 
             $this->config->set('routing.definitions', $routes);
+        }
+
+        private function setEventListeners()
+        {
+
+            /** @todo Find a clean way to delete sessions on logout. */
+
         }
 
 
