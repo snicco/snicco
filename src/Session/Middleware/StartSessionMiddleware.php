@@ -63,7 +63,7 @@
 
         }
 
-        public function getSession(Request $request) : SessionStore
+        private function getSession(Request $request) : SessionStore
         {
             $cookies = $request->getCookies();
             $cookie_name = $this->session_store->getName();
@@ -73,7 +73,7 @@
             return $this->session_store;
         }
 
-        public function addSessionCookie(SessionStore $session)
+        private function addSessionCookie(SessionStore $session)
         {
 
             $this->cookies->set(
