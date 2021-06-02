@@ -30,6 +30,10 @@
          * @var UrlGenerator
          */
         private $url_generator;
+        /**
+         * @var bool
+         */
+        private $redirect_if_token;
 
         public function __construct(SessionStore $session_store, ResponseFactory $response_factory, UrlGenerator $url_generator)
         {
@@ -41,15 +45,21 @@
         public function handle(Request $request, Delegate $next)
         {
 
-            if ( ! $this->hasValidAuthToken() ) {
+            if ( ! $this->hasValidAuthToken()  ) {
 
-                $this->session_store->invalidate();
+                if ( ! $this->session_store->has('auth.confirm.email.count') ) {
+
+                    $this->session_store->invalidate();
+
+                }
+
 
                 $this->session_store->put('auth.confirm.intended_url', $request->getFullUrl());
 
                 return $this->response_factory->redirect(401)->to('/auth/confirm');
 
             }
+
 
             return $next($request);
 

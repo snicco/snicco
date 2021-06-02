@@ -11,7 +11,7 @@
 
     $router->prefix('auth')->name('auth.confirm')->group(function ($router) {
 
-        $router->middleware('auth')->group(function ($router)  {
+        $router->middleware(['auth', 'auth.unconfirmed'])->group(function ($router)  {
 
             $router->get('confirm', [ConfirmAuthController::class, 'show'])
                    ->name('show');
@@ -24,7 +24,7 @@
 
         $router->get('confirm/{user_id}', [MagicLinkLoginController::class, 'create'])
                ->name('magic-login')
-               ->middleware('validSignature');
+               ->middleware(['validSignature', 'auth.unconfirmed']);
 
     });
 

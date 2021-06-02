@@ -11,6 +11,7 @@
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Session\SessionStore;
 
     class MagicLinkLoginController
@@ -34,7 +35,7 @@
             $this->response_factory = $response_factory;
         }
 
-        public function create(Request $request, string $user_id)
+        public function create(Request $request, string $user_id) : RedirectResponse
         {
 
             WP::logout();
@@ -47,22 +48,20 @@
 
             }
 
+            $intended_url = $this->intendedUrl($request);
+
             $this->loginUser($user);
 
             $this->setTemporaryAuthToken();
 
             return $this->response_factory
                 ->redirect(200)
-                ->to(
-                    rawurldecode($request->getQueryString('intended', WP::adminUrl()))
-                );
+                ->to($intended_url);
 
         }
 
         private function setTemporaryAuthToken()
         {
-
-            $this->session_store->migrate(true);
 
             $this->session_store->put(
                 'auth.confirm.until',
@@ -74,10 +73,30 @@
         private function loginUser(WP_User $user)
         {
 
+            $this->session_store->migrate(true);
+
             wp_set_auth_cookie($user->ID, true, true );
             wp_set_current_user($user->ID);
 
+
         }
 
+        private function intendedUrl (Request $request) {
+
+            $from_query = rawurldecode($request->getQueryString('intended', ''));
+
+            if ($from_query !== '') {
+                return $from_query;
+            }
+
+            $from_session = $this->session_store->get('auth.confirm.intended_url', '');
+
+            if ($from_session !== '') {
+                return $from_session;
+            }
+
+            return WP::adminUrl();
+
+        }
 
     }

@@ -122,6 +122,29 @@
         }
 
         /** @test */
+        public function the_session_is_not_invalidated_when_an_email_was_already_sent_out () {
+
+            $this->newTestApp($this->config());
+
+            $old_session = $this->getSession();
+            $old_session->put('auth.confirm.email.count', 1 );
+            $old_id = $old_session->getId();
+
+            $this->assertOutputNotContains('Access to foo granted', $this->requestToProtectedRoute());
+
+            HeaderStack::assertHasStatusCode(401);
+            HeaderStack::assertHas('Location');
+
+            $new_session = $this->getSession();
+            $new_id = $new_session->getId();
+
+            $this->assertSame($old_id, $new_id);
+            $this->assertSame($old_session, $new_session);
+
+
+        }
+
+        /** @test */
         public function the_intended_url_is_saved_to_the_session_on_failure () {
 
             $this->newTestApp($this->config());
