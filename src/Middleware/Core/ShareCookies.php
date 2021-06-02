@@ -36,20 +36,13 @@
 
         }
 
-        private function parseCookiesFromRequest (Request $request) : array
-        {
-
-            return Cookies::parseHeader($request->getHeader('Cookie'));
-
-        }
-
-        private function addCookiesToRequest ( Request $request) {
+        public function addCookiesToRequest ( Request $request) {
 
             return $request->withCookies($this->parseCookiesFromRequest($request));
 
         }
 
-        private function addCookiesToResponse(ResponseInterface $response) : ResponseInterface
+        public function addCookiesToResponse(ResponseInterface $response) : ResponseInterface
         {
 
             if ( ( $headers = $this->cookies->toHeaders() ) === [] ) {
@@ -59,6 +52,13 @@
             }
 
             return $response->withHeader('Set-Cookie', $headers);
+
+        }
+
+        private function parseCookiesFromRequest (Request $request) : array
+        {
+
+            return Cookies::parseHeader($request->getHeader('Cookie'));
 
         }
 
