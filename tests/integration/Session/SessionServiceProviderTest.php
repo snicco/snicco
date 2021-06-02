@@ -11,10 +11,12 @@
     use Slim\Csrf\Guard;
     use Tests\integration\IntegrationTest;
     use Tests\stubs\TestApp;
+    use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\HttpKernel;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Session\Handlers\DatabaseSessionHandler;
     use WPEmerge\Session\EncryptedStore;
@@ -437,6 +439,7 @@
 
 
         }
+
 
 
     }

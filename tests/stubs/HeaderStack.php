@@ -116,6 +116,20 @@
 
         }
 
+        public static function assertContains ( string $header_name, $value ) {
+
+            self::assertHas($header_name);
+
+            $header = collect(self::$data)->pluck('header')->first(function ($header) use ($header_name) {
+
+                return Str::startsWith($header, $header_name);
+
+            });
+
+            Assert::assertStringContainsString($value, $header, "the header {$header_name} does not contain {$value}");
+
+        }
+
         public static function isEmpty() : bool
         {
             return self::$data === [];
