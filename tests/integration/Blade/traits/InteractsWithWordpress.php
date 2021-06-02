@@ -17,7 +17,7 @@
     trait InteractsWithWordpress
     {
 
-        public function newAdmin(array $args = [])
+        public function newAdmin(array $args = []) :WP_User
         {
 
             return $this->factory()->user->create_and_get(array_merge([

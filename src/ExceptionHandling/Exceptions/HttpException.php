@@ -14,17 +14,17 @@
     {
 
         /** @var int  */
-        private $status_code;
+        protected $status_code;
 
         /**
          * @var string|null
          */
-        private $message_for_humans;
+        protected $message_for_humans;
 
         /**
          * @var Request
          */
-        private $request;
+        protected $request;
 
         public function __construct(int $status_code, ?string $message_for_humans = null, Throwable $previous = null, ?int $code = 0)
         {

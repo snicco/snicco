@@ -8,6 +8,7 @@
 
     use Nyholm\Psr7\Factory\Psr17Factory;
     use Nyholm\Psr7\Response;
+    use WPEmerge\Http\Psr7\Response as AppResponse;
     use Nyholm\Psr7\Stream;
     use PHPUnit\Framework\TestCase;
     use Psr\Http\Message\ResponseInterface;
@@ -16,8 +17,9 @@
     use Psr\Http\Server\RequestHandlerInterface;
     use Tests\helpers\AssertsResponse;
     use Tests\helpers\CreateContainer;
-
-    use Tests\stubs\TestErrorHandler;
+    use Tests\helpers\CreatePsr17Factories;
+    use Throwable;
+    use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\ExceptionHandling\Exceptions\HttpException;
     use WPEmerge\Routing\Pipeline;
 
@@ -42,7 +44,7 @@
 
             parent::setUp();
 
-            $this->pipeline = new Pipeline($this->createContainer(), new TestErrorHandler());
+            $this->pipeline = new Pipeline($this->createContainer(), new PipelineTestErrorHandler() );
 
             $factory = new Psr17Factory();
 
@@ -264,6 +266,42 @@
     }
 
 
+    class PipelineTestErrorHandler implements ErrorHandlerInterface
+    {
+
+        use CreatePsr17Factories;
+
+        public function register()
+        {
+            // TODO: Implement register() method.
+        }
+
+        public function unregister()
+        {
+            // TODO: Implement unregister() method.
+        }
+
+        public function transformToResponse(Throwable $e) : AppResponse
+        {
+
+            $code = $e instanceof HttpException ? $e->getStatusCode() : 500;
+            $body = $e instanceof HttpException ? $e->getMessageForHumans() : 'Internal Server Error';
+            $body = $this->psrStreamFactory()->createStream($body);
+
+            return new AppResponse(
+                $this->psrResponseFactory()->createResponse((int) $code)
+                     ->withBody($body)
+            );
+
+        }
+
+        public function unrecoverable(Throwable $exception)
+        {
+            // TODO: Implement unrecoverable() method.
+        }
+
+    }
+
     class Foo implements MiddlewareInterface
     {
 
@@ -279,7 +317,6 @@
         }
 
     }
-
 
     class Bar implements MiddlewareInterface
     {
@@ -297,7 +334,6 @@
 
     }
 
-
     class ExceptionMiddleware implements MiddlewareInterface
     {
 
@@ -308,7 +344,6 @@
         }
 
     }
-
 
     class StopMiddleware implements MiddlewareInterface
     {
@@ -324,7 +359,6 @@
         }
 
     }
-
 
     class ChangeLastMiddleware implements MiddlewareInterface
     {
@@ -342,7 +376,6 @@
         }
 
     }
-
 
     class MiddlewareDependency implements MiddlewareInterface
     {
@@ -367,7 +400,6 @@
         }
 
     }
-
 
     class MiddlewareWithConfig implements MiddlewareInterface
     {
@@ -399,7 +431,6 @@
         }
 
     }
-
 
     class WrongMiddleware
     {

@@ -5,7 +5,7 @@
 
     use WPEmerge\Routing\Router;
     use WPEmerge\Session\Controllers\ConfirmAuthController;
-    use WPEmerge\Session\Controllers\MagicLinkLoginController;
+    use WPEmerge\Session\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Session\Controllers\WpLoginSessionController;
 
     /** @var Router $router */
@@ -23,7 +23,7 @@
 
         });
 
-        $router->get('confirm/{user_id}', [MagicLinkLoginController::class, 'create'])
+        $router->get('confirm/{user_id}', [ConfirmAuthMagicLinkController::class, 'create'])
                ->name('magic-login')
                ->middleware(['validSignature', 'auth.unconfirmed']);
 
