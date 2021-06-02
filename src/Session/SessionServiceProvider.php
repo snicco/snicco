@@ -6,22 +6,16 @@
 
     namespace WPEmerge\Session;
 
-    use BetterWpHooks\Contracts\Dispatcher;
-    use BetterWpHooks\Dispatchers\WordpressDispatcher;
-    use Psr\Http\Message\ServerRequestInterface;
     use Slim\Csrf\Guard;
     use WPEmerge\Application\Application;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Encryptor;
-    use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Middleware\ConfirmAuth;
-    use WPEmerge\Session\Events\UserLoggedIn;
     use WPEmerge\Session\Handlers\ArraySessionHandler;
     use WPEmerge\Session\Handlers\DatabaseSessionHandler;
-    use WPEmerge\Session\Listeners\ClearSessionAfterLogin;
     use WPEmerge\Session\Middleware\AuthUnconfirmed;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Session\Middleware\ShareSessionWithView;
@@ -51,7 +45,6 @@
             $this->bindSlimGuard();
             $this->bindAliases();
             $this->bindEncryptor();
-            $this->setEventListeners();
 
         }
 
@@ -236,40 +229,5 @@
 
             $this->config->set('routing.definitions', $routes);
         }
-
-        private function setEventListeners()
-        {
-
-            // add_filter('wp_login', function () {
-            //
-            //     IncomingWebRequest::dispatch([
-            //         '', $this->container->make(ServerRequestInterface::class),
-            //     ]);
-            //
-            // }, 10, 99);
-            //
-            // add_filter('clear_auth_cookie', function () {
-            //
-            //     IncomingWebRequest::dispatch([
-            //         '', $this->container->make(ServerRequestInterface::class),
-            //     ]);
-            //
-            // }, 10, 99);
-
-            add_filter('wp_login', function () {
-
-                WpLoginAction::dispatch([$this->container->make(ServerRequestInterface::class)]);
-
-            }, 10, 99);
-
-            add_filter('clear_auth_cookie', function () {
-
-                WpLoginAction::dispatch([$this->container->make(ServerRequestInterface::class)]);
-
-            }, 10, 99);
-
-
-        }
-
 
     }

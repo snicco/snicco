@@ -11,8 +11,6 @@
     use Tests\integration\IntegrationTest;
     use Tests\stubs\TestApp;
     use WPEmerge\Events\AdminBodySendable;
-	use WPEmerge\Events\BodySent;
-    use WPEmerge\Events\DoShutdown;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Events\StartLoadingAdminFooter;
     use WPEmerge\Events\WpQueryFilterable;
@@ -25,6 +23,7 @@
 	use WPEmerge\Http\HttpKernel;
     use WPEmerge\Middleware\Core\OutputBufferMiddleware;
     use WPEmerge\Listeners\FilterWpQuery;
+    use WPEmerge\Session\WpLoginAction;
     use WPEmerge\View\ViewFactory;
 
 
@@ -46,6 +45,7 @@
 			$this->assertHasListener([HttpKernel::class, 'run'], IncomingWebRequest::class);
             $this->assertHasListener([HttpKernel::class, 'run'], AdminBodySendable::class);
             $this->assertHasListener([HttpKernel::class, 'run'], IncomingAjaxRequest::class);
+            $this->assertHasListener([HttpKernel::class, 'run'], WpLoginAction::class);
 
             $this->assertHasListener([OutputBufferMiddleware::class, 'start'], IncomingAdminRequest::class);
             $this->assertHasListener([OutputBufferMiddleware::class, 'flush'], StartLoadingAdminFooter::class);

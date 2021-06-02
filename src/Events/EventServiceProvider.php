@@ -10,21 +10,12 @@
     use Psr\Http\Message\ServerRequestInterface;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Events\StartLoadingAdminFooter;
-    use WPEmerge\Events\WpQueryFilterable;
-    use WPEmerge\Events\LoadedWP;
-    use WPEmerge\Events\MakingView;
-    use WPEmerge\Events\ResponseSent;
-    use WPEmerge\Events\UnrecoverableExceptionHandled;
-    use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Events\LoadedWpAdmin;
     use WPEmerge\ExceptionHandling\ShutdownHandler;
-    use WPEmerge\Events\AdminBodySendable;
-    use WPEmerge\Events\IncomingAdminRequest;
-    use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Http\HttpKernel;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Middleware\Core\OutputBufferMiddleware;
     use WPEmerge\Listeners\FilterWpQuery;
+    use WPEmerge\Session\WpLoginAction;
     use WPEmerge\View\ViewFactory;
 
     class EventServiceProvider extends ServiceProvider
@@ -36,7 +27,9 @@
             'admin_init' => ['resolve', LoadedWpAdmin::class, 3001],
             'request' => ['resolve', WpQueryFilterable::class, 3001],
             'init' => ['resolve', LoadedWP::class, -999],
-            'in_admin_footer' => [StartLoadingAdminFooter::class, 1]
+            'in_admin_footer' => [StartLoadingAdminFooter::class, 1],
+            'wp_login' => ['resolve', WpLoginAction::class],
+            'wp_logout' => ['resolve', WpLoginAction::class]
 
         ];
 
@@ -54,15 +47,21 @@
 
             ],
 
-            StartLoadingAdminFooter::class => [
-
-                [OutputBufferMiddleware::class, 'flush'],
-
-            ],
-
             IncomingAjaxRequest::class => [
 
                 [HttpKernel::class, 'run']
+
+            ],
+
+            WpLoginAction::class => [
+
+                [HttpKernel::class, 'run']
+
+            ],
+
+            StartLoadingAdminFooter::class => [
+
+                [OutputBufferMiddleware::class, 'flush'],
 
             ],
 
@@ -94,11 +93,24 @@
                 [FilterWpQuery::class, 'handle']
             ],
 
-
-
         ];
 
         public function register() : void
+        {
+
+            $this->bootDispatcher();
+
+            $this->bindEventObjects();
+
+
+        }
+
+        public function bootstrap() : void
+        {
+            //
+        }
+
+        private function bootDispatcher()
         {
 
             ApplicationEvent::make($this->container)
@@ -109,6 +121,11 @@
             $this->container->instance(Dispatcher::class, ApplicationEvent::dispatcher());
 
 
+        }
+
+        private function bindEventObjects()
+        {
+
             $this->container->singleton(WpQueryFilterable::class, function ($container, $args) {
 
                 return new WpQueryFilterable(
@@ -118,11 +135,18 @@
 
             });
 
-        }
+            $this->container->singleton(WpLoginAction::class, function () {
 
-        public function bootstrap() : void
-        {
-            //
+                return new WpLoginAction(
+
+                    $this->container->make(Request::class),
+                    $this->config->get('session.enabled', false)
+
+                );
+
+            });
+
+
         }
 
     }
