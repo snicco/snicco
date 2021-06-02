@@ -47,6 +47,8 @@
 
         protected $timeout_in_minutes = 15;
 
+        protected $transient_key = 'user_emails_in_jail';
+
         public function __construct(ViewFactory $view, UrlGenerator $url_generator, ResponseFactory $response_factory)
         {
 
@@ -56,7 +58,7 @@
 
         }
 
-        public function show(CsrfField $csrf_field) : ViewInterface
+        public function show(CsrfField $csrf_field, SessionStore $session) : ViewInterface
         {
 
             $post_url = $this->url_generator->toRoute('auth.confirm.send', [], true, false);
@@ -66,6 +68,8 @@
                                   [
                                       'post_url' => $post_url,
                                       'csrf_field' => $csrf_field->asHtml(),
+                                      'jail' => $this->isUserInJail($session) ? $this->getJailTime($session) : false,
+                                      'last_recipient' => $this->lastRecipient($session)
                                   ]
                               );
 
@@ -97,22 +101,25 @@
 
             }
 
-            if ( ! ( $user = $this->userWithEmailExists($email ) ) ) {
+            if ( ! ( $user = $this->userWithEmailExists( $email ) ) ) {
 
                 return $this->redirectBack($session, $request, $email);
 
             }
 
             $session->flashInput(['email' => $email]);
-            $session->flash('auth.confirm.success', 'Success: A confirmation email was send to: '.$email);
-            $session->flash('auth.confirm.lifetime', $this->link_lifetime_in_sec);
+            $session->put('auth.confirm.lifetime', $this->link_lifetime_in_sec);
             $session->forget('auth.confirm.attempts');
 
             $success = WP::mail($email, $this->subject($user), $this->message($user, $session));
 
             if ($success) {
+
+                $session->flash('auth.confirm.success', 'Success: A confirmation email was send to: '.$email);
                 $session->increment('auth.confirm.email.count');
+                $session->put('auth.confirm.email.last_recipient', $email);
                 $session->forget('auth.confirm.attempts');
+
             }
 
             return $this->response_factory->redirect(200)->to($request->getFullUrl());
@@ -180,34 +187,20 @@
             $exceeded_attempts = $session->get('auth.confirm.email.count', 0) >= $this->resends;
 
             if ( ! $exceeded_attempts ) {
+
                 return true;
-            }
-
-            if ( ! $session->has('auth.confirm.email.next')) {
-
-                $session->put(
-                    'auth.confirm.email.next',
-                    Carbon::now()->addMinutes($this->timeout_in_minutes)->getTimestamp()
-                );
 
             }
 
-            if ( ! $this->isBlockedForEmails($session) ) {
+            if ( ! $session->has('auth.confirm.email.jail') ) {
+
+                $this->putUserInJail($session);
+
+            }
+
+            if ( ! $this->isUserInJail($session) ) {
 
                 $session->forget('auth.confirm.email');
-
-                return true;
-
-            }
-
-            return false;
-
-        }
-
-        private function isBlockedForEmails(SessionStore $session) : bool
-        {
-
-            if ($session->get('auth.confirm.email.next', 0) >= Carbon::now()->getTimestamp()) {
 
                 return true;
 
@@ -238,6 +231,68 @@
 
             return get_user_by('email', $email);
 
+        }
+
+        private function isUserInJail(SessionStore $session) : bool
+        {
+
+            if ($session->get('auth.confirm.email.jail', 0) >= Carbon::now()->getTimestamp()) {
+
+                return true;
+
+            }
+
+            $in_jail = get_transient($this->transient_key . WP::userId());
+
+            if ( $in_jail && $in_jail >= Carbon::now()->getTimestamp() ) {
+
+                return true;
+
+            }
+
+            return false;
+
+        }
+
+        private function putUserInJail(SessionStore $session)
+        {
+            $session->put('auth.confirm.email.jail',
+                Carbon::now()->addMinutes($this->timeout_in_minutes)->getTimestamp()
+            );
+
+            $expiration = Carbon::now()->addMinutes($this->timeout_in_minutes)->getTimestamp();
+
+            set_transient($this->transient_key. WP::userId() , $expiration, $expiration);
+
+        }
+
+        private function getJailTime(SessionStore $session) :int
+        {
+
+            $in_jail_until = $session->get('auth.confirm.email.jail');
+
+            if ( is_int($in_jail_until) ) {
+
+                return $in_jail_until;
+
+            }
+
+            $in_jail_db = get_transient($this->transient_key . WP::userId());
+
+            if ( $in_jail_db !== false ) {
+
+                return (int) $in_jail_db;
+
+            }
+
+            return Carbon::now()->addMinutes($this->timeout_in_minutes)->getTimestamp();
+
+
+        }
+
+        private function lastRecipient(SessionStore $session)
+        {
+            return $session->get('auth.confirm.email.last_recipient', '');
         }
 
     }

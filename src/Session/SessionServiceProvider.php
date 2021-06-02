@@ -16,6 +16,7 @@
     use WPEmerge\Middleware\ConfirmAuth;
     use WPEmerge\Session\Handlers\ArraySessionHandler;
     use WPEmerge\Session\Handlers\DatabaseSessionHandler;
+    use WPEmerge\Session\Middleware\AuthUnconfirmed;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Session\Middleware\ShareSessionWithView;
     use WPEmerge\Session\Middleware\StartSessionMiddleware;
@@ -71,14 +72,14 @@
             $this->config->extend('middleware.aliases', [
                 'csrf' => CsrfMiddleware::class,
                 'validSignature' => ValidateSignature::class,
-                'confirm.auth' => ConfirmAuth::class,
+                'auth.confirmed' => ConfirmAuth::class,
+                'auth.unconfirmed' => AuthUnconfirmed::class,
             ]);
 
             $this->config->extend('middleware.groups.global', [
                 StartSessionMiddleware::class,
                 ShareSessionWithView::class,
             ]);
-
 
 
         }
@@ -123,7 +124,7 @@
                 $name = $this->config->get('session.driver', 'database');
                 $lifetime = $this->config->get('session.lifetime');
 
-                if ( $name === 'database') {
+                if ($name === 'database') {
 
                     global $wpdb;
 
@@ -133,7 +134,7 @@
 
                 }
 
-                if ( $name === 'array') {
+                if ($name === 'array') {
                     return new ArraySessionHandler($lifetime);
                 }
 
@@ -145,6 +146,7 @@
 
         private function bindSessionMiddleware()
         {
+
             $this->container->singleton(StartSessionMiddleware::class, function () {
 
                 return new StartSessionMiddleware(
@@ -218,9 +220,10 @@
 
         private function extendRoutes()
         {
+
             $routes = Arr::wrap($this->config->get('routing.definitions'));
 
-            $vendor_routes_dir = dirname(__FILE__, 3) . DIRECTORY_SEPARATOR . 'routes';
+            $vendor_routes_dir = dirname(__FILE__, 3).DIRECTORY_SEPARATOR.'routes';
 
             $routes = array_merge($routes, Arr::wrap($vendor_routes_dir));
 

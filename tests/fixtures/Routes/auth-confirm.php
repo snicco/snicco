@@ -12,6 +12,6 @@
 
             return 'Access to foo granted';
 
-        })->middleware('confirm.auth');
+        })->middleware('auth.confirmed');
 
     });

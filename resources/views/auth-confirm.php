@@ -3,6 +3,7 @@
 
     declare(strict_types = 1);
 
+    use Carbon\Carbon;
     use Illuminate\Support\ViewErrorBag;
     use WPEmerge\Session\SessionStore;
 
@@ -16,8 +17,7 @@
 
     $lifetime = $session->get('auth.confirm.lifetime');
 
-    $lifetime = $lifetime/60;
-
+    $lifetime = $lifetime / 60;
 
 ?>
 
@@ -34,13 +34,6 @@
 
 <style>
 
-    .main {
-        display: flex;
-        flex-direction: row;
-        min-height: 80vh;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-    }
-
     body {
         background: #f0f0f1;
         min-width: 0;
@@ -49,6 +42,12 @@
         line-height: 1.4;
     }
 
+    .main {
+        display: flex;
+        flex-direction: row;
+        min-height: 80vh;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    }
 
     #login-wrapper {
         width: 360px;
@@ -135,26 +134,32 @@
     }
 
     .message {
-        color: #fff;
-        padding: 10px 5px;
+
+        padding: 10px 10px;
+        border-radius: 1px;
+        border-left: solid 3px;
+        box-shadow: 0px 2px 10px 0px #47525d21;
+        font-size: 16px;
+
+    }
+
+    .message.notice {
+
+        border-color: #0a5b88;
+
     }
 
     .message.error {
 
-        border: #ce4646 solid 2px;
-        background: rgb(193, 71, 71);
+        border-color: #ce4646;
 
     }
 
     .message.success {
 
-        border: rgb(85 171 69) solid 2px;
-        background: rgb(85 171 69);
-        padding: 10px;
-        font-size: 18px;
+        border-color: rgb(85 171 69);
 
     }
-
 
     .text-large {
         font-size: 16px;
@@ -173,56 +178,96 @@
 
         <?php
 
-            if ($session->get('auth.confirm.success', false)) {
+            if ($session->get('auth.confirm.success', false) || $jail !== false || $session->has('auth.confirm.email.count')) {
 
 
-                ?>
+                if ($jail === false) {
 
-                <p id="form-heading" class="success message">
-                    Email sent successfully.
-                </p>
-                <p class="text-large">
-                    <span>Please check your email inbox at: <?= $old_email ?>.</span>
-                    <br>
-                    <br>
+
+                    ?>
+                    <?php if ($session->has('auth.confirm.success')) : ?>
+                        <p class="success message">
+                            Email sent successfully.
+                        </p>
+                    <?php else  : ?>
+                        <p class="notice message">
+                            We already sent you a confirmation email.
+                        </p>
+                    <?php endif; ?>
+
+
+                    <p class="text-large">
+                        <span>Please check your email inbox at: <?= $last_recipient ?>.</span>
+                        <br>
+                        <br>
                         The confirmation link expires in <?= $lifetime ?> minutes.
-                    <br>
-                    You can close this page now.
-                </p>
+                        <br>
+                        You can close this page now.
+                    </p>
 
-                <form id="resend-email" class="form" action="<?= esc_attr($post_url) ?>" method="POST">
+                    <form id="resend-email" class="form" action="<?= esc_attr($post_url) ?>"
+                          method="POST">
+
+                        <?php
+
+                            if ($error) {
+
+                                echo "<p class='error message'> {$errors->first('email')} </p>";
+
+                            }
+
+                        ?>
+                        <div class="form-group">
+                            <input type="email" name="email" id="email"
+                                   class="<?= $error ? 'error' : '' ?>"
+                                   value="<?= esc_attr($last_recipient) ?>" required
+                                   hidden="hidden">
+                        </div>
+                        <?= $csrf_field ?>
+                        <button class="submit" type="submit">Resend Email</button>
+
+                    </form>
+
+                    <?php
+                }
+
+                else {
+
+                    ?>
+
+                    <p id="form-heading">
+                        This page is part of the secure area of the application!
+                    </p>
+                    <hr>
+                    <p class="error message">
+                        You have requested to many emails. You can request a new confirmation link
+                        in:
+                        <?= Carbon::now()->diffInMinutes(Carbon::createFromTimestamp($jail)) ?>
+                        minute/s.
+                    </p>
+
+                    <p> Any previously sent confirmation email can still be used.</p>
+
 
                     <?php
 
-                        if ($error) {
+                }
 
-                            echo "<p class='error message'> {$errors->first('email')} </p>";
-
-                        }
-
-                    ?>
-                    <div class="form-group">
-                        <input type="email" name="email" id="email"
-                               class="<?= $error ? 'error' : '' ?>"
-                               value="<?= esc_attr($old_email) ?>" required hidden="hidden">
-                    </div>
-                    <?= $csrf_field ?>
-                    <button class="submit" type="submit">Resend Email</button>
-
-                </form>
+                ?>
 
                 <?php
 
 
+            }
 
-                }
-                else {
+            else {
 
                 ?>
 
                 <p id="form-heading">
-                    This is the secure part of the application!
+                    This page is part of the secure area of the application!
                 </p>
+                <p> You need to confirm your access before you can proceed.</p>
 
                 <hr>
 
@@ -252,6 +297,7 @@
 
                 <?php
             }
+
         ?>
 
 

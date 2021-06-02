@@ -520,6 +520,53 @@
         }
 
         /** @test */
+        public function the_submit_from_does_not_get_rendered_once_at_least_one_email_was_sent_correctly () {
+
+            $calvin = $this->newAdmin([
+                'user_email' => $email = 'c@web.de'
+            ]);
+            $this->login($calvin);
+            $this->newTestApp($this->config());
+            $get_request = $this->getRequest();
+
+            $this->assertOutputContains('id="send"', $get_request, 'id [send] was not rendered when it should.');
+
+            $this->triggerEmailSending($email);
+
+            $output = $this->runKernel($get_request);
+            $this->assertStringNotContainsString('id="send"', $output, 'id [send] was not rendered when it should.');
+            $this->assertStringContainsString($email, $output, 'the email address was not rendered when it should.');
+
+            $output = $this->runKernel($get_request);
+            $this->assertStringNotContainsString('id="send"', $output, 'id [send] was not rendered when it should.');
+            $this->assertStringContainsString($email, $output, 'the email address was not rendered when it should.');
+
+
+        }
+
+        /** @test */
+        public function the_success_message_only_shows_when_an_email_was_sent_on_the_prev_request () {
+
+            $calvin = $this->newAdmin([
+                'user_email' => $email = 'c@web.de'
+            ]);
+            $this->login($calvin);
+            $this->newTestApp($this->config());
+
+            $this->triggerEmailSending($email);
+
+            $get_request = $this->getRequest();
+
+            $output = $this->runKernel($get_request);
+            $this->assertStringContainsString('Email sent successfully', $output, 'the message [Email sent successfully] was not rendered when it should.');
+
+            $output = $this->runKernel($get_request);
+            $this->assertStringNotContainsString('Email sent successfully', $output, 'The success message was rendered when it should not.');
+            $this->assertStringContainsString('already sent', $output, 'The already sent message was rendered when it should not.');
+
+        }
+
+        /** @test */
         public function the_attempts_are_removed_from_the_session () {
 
             $calvin = $this->newAdmin([
@@ -599,6 +646,53 @@
 
         }
 
+        /** @test */
+        public function users_with_valid_session_token_cant_access_the_auth_confirm_routes_for_get_requests () {
+
+            $calvin = $this->newAdmin([
+                'user_email' => 'c@web.de',
+                'first_name' => 'calvin'
+            ]);
+            $this->login($calvin);
+            $this->newTestApp($this->config());
+
+            $session = $this->getSession();
+            $session->put('auth.confirm.until', Carbon::now()->addMinutes(30)->getTimestamp());
+
+            $get_request = $this->getRequest();
+
+            $this->assertOutput('', $get_request);
+            HeaderStack::assertHasStatusCode(200);
+            HeaderStack::assertHas('Location', WP::adminUrl());
+
+
+        }
+
+        /** @test */
+        public function users_with_valid_session_token_cant_access_the_auth_confirm_routes_for_post_requests () {
+
+            $calvin = $this->newAdmin([
+                'user_email' => 'c@web.de',
+                'first_name' => 'calvin'
+            ]);
+            $this->login($calvin);
+            $this->newTestApp($this->config());
+
+            $session = $this->getSession();
+            $session->put('auth.confirm.until', Carbon::now()->addMinutes(30)->getTimestamp());
+
+            $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
+
+            $post_request = $this->postRequest( 'c@web.de', $csrf );
+
+            $this->assertOutput('', $post_request);
+            HeaderStack::assertHasStatusCode(200);
+            HeaderStack::assertHas('Location', WP::adminUrl());
+            HeaderStack::reset();
+
+
+        }
+
         public function catchMail($null ,$attributes) : bool
         {
 
@@ -608,5 +702,17 @@
 
         }
 
+        private function triggerEmailSending (string $email) {
+
+            $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
+
+            $post_request = $this->postRequest( $email, $csrf );
+
+            $this->assertOutput('', $post_request);
+            HeaderStack::assertHasStatusCode(200);
+            HeaderStack::assertHas('Location', $this->controllerUrl());
+            HeaderStack::reset();
+
+        }
 
     }
