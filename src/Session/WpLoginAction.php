@@ -11,6 +11,9 @@
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Http\Psr7\Request;
 
+    /**
+     * Fires on the wp_login and wp_logout hooks.
+     */
     class WpLoginAction extends ApplicationEvent
     {
 
@@ -20,38 +23,23 @@
          * @var Request
          */
         private $request;
+        /**
+         * @var bool
+         */
+        private $sessions_enabled;
 
-        public function __construct(Request $request)
+        public function __construct(Request $request, bool $sessions_enabled = false )
         {
-
             $this->request = $request;
+            $this->sessions_enabled = $sessions_enabled;
         }
 
         public function shouldDispatch() : bool
         {
-
-            if ($this->request->isPost()) {
-                return true;
-            }
-
-            if ( ! $this->request->isGet() ) {
-                return false;
-            }
-
-            if ( $this->request->getQueryString('action') !== 'logout' ) {
-                return false;
-            }
-
-            if ( ! in_array('wpnonce', $this->request->getQueryParams() ) ) {
-                return false;
-            }
-
-            return true;
-
-
+            return $this->sessions_enabled;
         }
 
-        public function payload() : IncomingWebRequest
+        public function payload () : IncomingWebRequest
         {
 
             return new IncomingWebRequest('', $this->request);
