@@ -16,8 +16,10 @@
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Middleware\ConfirmAuth;
+    use WPEmerge\Session\Events\UserLoggedIn;
     use WPEmerge\Session\Handlers\ArraySessionHandler;
     use WPEmerge\Session\Handlers\DatabaseSessionHandler;
+    use WPEmerge\Session\Listeners\ClearSessionAfterLogin;
     use WPEmerge\Session\Middleware\AuthUnconfirmed;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Session\Middleware\ShareSessionWithView;
@@ -223,6 +225,7 @@
 
         private function extendRoutes()
         {
+
             $routes = Arr::wrap($this->config->get('routing.definitions'));
 
             $vendor_routes_dir = dirname(__FILE__, 3).DIRECTORY_SEPARATOR.'routes';
@@ -235,7 +238,18 @@
         private function setEventListeners()
         {
 
-            /** @todo Find a clean way to delete sessions on logout. */
+            add_filter('wp_login', function () {
+
+                UserLoggedIn::dispatch(func_get_args());
+
+            }, 10,99);
+
+            /** @var WordpressDispatcher $d */
+            $d = $this->container->make(Dispatcher::class);
+
+            $d->listen(UserLoggedIn::class, ClearSessionAfterLogin::class);
+
+
 
         }
 

@@ -63,15 +63,32 @@
 
         }
 
-        private function getSession(Request $request) : SessionStore
+        public function getSession(Request $request) : SessionStore
         {
-
             $cookies = $request->getCookies();
             $cookie_name = $this->session_store->getName();
 
             $this->session_store->setId($cookies->get($cookie_name, ''));
 
             return $this->session_store;
+        }
+
+        public function addSessionCookie(SessionStore $session)
+        {
+
+            $this->cookies->set(
+                $this->config['cookie'],
+                [
+                    'value' => $session->getId(),
+                    'path' => $this->config['path'],
+                    'samesite' => ucfirst($this->config['same_site']),
+                    'expires' => Carbon::now()->addMinutes($this->config['lifetime'])->getTimestamp(),
+                    'httponly' => $this->config['http_only'],
+                    'secure' => $this->config['secure'],
+                    'domain' => $this->config['domain']
+
+                ]
+            );
         }
 
         private function startSession(SessionStore $session_store, Request $request)
@@ -143,24 +160,6 @@
         {
 
             return $this->config['lifetime'] * 60;
-        }
-
-        private function addSessionCookie(SessionStore $session)
-        {
-
-            $this->cookies->set(
-                $this->config['cookie'],
-                [
-                    'value' => $session->getId(),
-                    'path' => $this->config['path'],
-                    'samesite' => ucfirst($this->config['same_site']),
-                    'expires' => Carbon::now()->addMinutes($this->config['lifetime'])->getTimestamp(),
-                    'httponly' => $this->config['http_only'],
-                    'secure' => $this->config['secure'],
-                    'domain' => $this->config['domain']
-
-                ]
-            );
         }
 
     }
