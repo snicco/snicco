@@ -6,6 +6,7 @@
 
     namespace Tests\integration\Session;
 
+    use Carbon\Carbon;
     use Tests\integration\IntegrationTest;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
@@ -16,12 +17,13 @@
     class WpLoginSessionControllerTest extends IntegrationTest
     {
 
-        private function simulateRequest(string $method) {
+        private function simulateRequest(string $method)
+        {
 
             $this->newTestApp([
                 'session' => [
                     'enabled' => true,
-                    'driver' => 'array'
+                    'driver' => 'array',
                 ],
                 'providers' => [
                     SessionServiceProvider::class,
@@ -32,22 +34,24 @@
                                   ->withAddedHeader('Cookie', 'wp_mvc_session='.$this->sessionId());
 
             // Simulate current request to /wp-login.php
-            TestApp::container()->instance(Request::class , $request );
+            TestApp::container()->instance(Request::class, $request);
 
         }
 
-        private function sessionId () : string
+        private function sessionId() : string
         {
+
             return str_repeat('a', 40);
         }
 
         /** @test */
-        public function session_are_migrated_on_login () {
+        public function session_are_migrated_on_login()
+        {
 
 
             $this->simulateRequest('POST');
 
-            $session =TestApp::session();
+            $session = TestApp::session();
             $array_handler = $session->getHandler();
             $array_handler->write($this->sessionId(), serialize(['foo' => 'bar']));
 
@@ -57,7 +61,7 @@
             $id_after_login = $session->getId();
 
             // Session Id not the same
-            $this->assertNotSame(str_repeat('a', 40) , $id_after_login);
+            $this->assertNotSame(str_repeat('a', 40), $id_after_login);
             HeaderStack::assertContains('Set-Cookie', $id_after_login);
 
             // Content is still in the session
@@ -71,7 +75,24 @@
         }
 
         /** @test */
-        public function session_are_invalidated_on_logout () {
+        public function the_auth_confirmed_token_is_set_on_login()
+        {
+
+            $this->simulateRequest('POST');
+
+            // The user was logged in by WordPress => run Kernel
+            do_action('wp_login');
+
+            $confirmed_until = TestApp::session()->get('auth.confirm.until');
+
+            $this->assertSame(Carbon::now()->addMinutes(180)->getTimestamp(), $confirmed_until, 'Auth confirmed token not set correctly.');
+
+
+        }
+
+        /** @test */
+        public function session_are_invalidated_on_logout()
+        {
 
             $this->simulateRequest('GET');
 
@@ -96,7 +117,6 @@
             $this->assertSame('', $array_handler->read($this->sessionId()));
 
         }
-
 
 
     }

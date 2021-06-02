@@ -373,7 +373,7 @@
             $post_request = $this->postRequest('c@web.de', $csrf);
 
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(200);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $this->controllerUrl());
 
         }
@@ -391,21 +391,21 @@
 
             $post_request = $this->postRequest('c@web.de', $csrf);
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(200);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $this->controllerUrl());
             HeaderStack::reset();
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
             $post_request = $this->postRequest('c@web.de', $csrf);
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(200);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $this->controllerUrl());
             HeaderStack::reset();
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
             $post_request = $this->postRequest('c@web.de', $csrf);
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(200);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $this->controllerUrl());
             HeaderStack::reset();
 
@@ -455,7 +455,7 @@
             $post_request = $this->postRequest( $email = 'c@web.de', $csrf);
 
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(200);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $redirected_url = $this->controllerUrl());
 
             $get_request = $this->getRequest($redirected_url);
@@ -482,7 +482,7 @@
             $post_request = $this->postRequest( $email = 'c@web.de', $csrf);
 
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(200);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $redirected_url = $this->controllerUrl());
 
             $get_request = $this->getRequest($redirected_url);
@@ -508,7 +508,7 @@
             $post_request = $this->postRequest( $email = 'c@web.de', $csrf);
 
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(200);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $redirected_url = $this->controllerUrl());
 
             $get_request = $this->getRequest($redirected_url);
@@ -531,7 +531,9 @@
 
             $this->assertOutputContains('id="send"', $get_request, 'id [send] was not rendered when it should.');
 
-            $this->triggerEmailSending($email);
+            $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
+            $post_request = $this->postRequest( $email, $csrf );
+            $this->assertOutput('', $post_request);
 
             $output = $this->runKernel($get_request);
             $this->assertStringNotContainsString('id="send"', $output, 'id [send] was not rendered when it should.');
@@ -583,14 +585,14 @@
             $post_request = $this->postRequest( $email = 'c@web.de', $csrf);
 
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(200);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $this->controllerUrl());
 
             $this->assertFalse($session->has('auth.confirm.attempts'));
         }
 
         /** @test */
-        public function an_email_is_sent_to_the_user () {
+        public function an_email_is_send_to_the_user () {
 
             $calvin = $this->newAdmin([
                 'user_email' => $email = 'c@web.de',
@@ -602,7 +604,7 @@
             $post_request = $this->postRequest( $email, $csrf);
 
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(200);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $this->controllerUrl());
 
             $this->assertSame($email,$this->mail['to']);
@@ -639,7 +641,7 @@
             $get_request = TestRequest::fromFullUrl('GET', $url);
             $this->assertOutput('', $get_request);
 
-            HeaderStack::assertHasStatusCode(200);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', 'foobar.com/intended');
 
             $this->assertUserLoggedIn($calvin);
@@ -693,6 +695,7 @@
 
         }
 
+
         public function catchMail($null ,$attributes) : bool
         {
 
@@ -709,7 +712,7 @@
             $post_request = $this->postRequest( $email, $csrf );
 
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(200);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $this->controllerUrl());
             HeaderStack::reset();
 

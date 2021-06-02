@@ -36,7 +36,8 @@
 
         public function shouldDispatch() : bool
         {
-            return $this->sessions_enabled;
+            return $this->sessions_enabled
+                && trim($this->request->getPath(), '/') === 'wp-login.php';
         }
 
         public function payload () : IncomingWebRequest

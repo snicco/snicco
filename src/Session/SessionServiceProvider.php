@@ -14,6 +14,8 @@
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Middleware\ConfirmAuth;
+    use WPEmerge\Session\Controllers\MagicLinkLoginController;
+    use WPEmerge\Session\Controllers\WpLoginSessionController;
     use WPEmerge\Session\Handlers\ArraySessionHandler;
     use WPEmerge\Session\Handlers\DatabaseSessionHandler;
     use WPEmerge\Session\Middleware\AuthUnconfirmed;
@@ -22,6 +24,8 @@
     use WPEmerge\Session\Middleware\StartSessionMiddleware;
     use WPEmerge\Session\Middleware\ValidateSignature;
     use WPEmerge\Support\Arr;
+
+    use function Patchwork\Config\read;
 
     class SessionServiceProvider extends ServiceProvider
     {
@@ -45,6 +49,7 @@
             $this->bindSlimGuard();
             $this->bindAliases();
             $this->bindEncryptor();
+            $this->bindControllers();
 
         }
 
@@ -68,6 +73,7 @@
             $this->config->extend('session.driver', 'database');
             $this->config->extend('session.lifetime', 120);
             $this->config->extend('session.encrypt', false);
+            $this->config->extend('session.auth_confirmed_lifetime', 180);
 
             $this->config->extend('middleware.aliases', [
                 'csrf' => CsrfMiddleware::class,
@@ -228,6 +234,30 @@
             $routes = array_merge($routes, Arr::wrap($vendor_routes_dir));
 
             $this->config->set('routing.definitions', $routes);
+        }
+
+        private function bindControllers()
+        {
+
+            $this->container->singleton(MagicLinkLoginController::class, function () {
+
+                return new MagicLinkLoginController(
+                    $this->container->make(SessionStore::class),
+                    $this->container->make(ResponseFactory::class),
+                    $this->config->get('session.auth_confirmed_lifetime')
+                );
+
+            });
+
+            $this->container->singleton(WpLoginSessionController::class, function () {
+
+                return new WpLoginSessionController(
+                    $this->container->make(SessionStore::class),
+                    $this->container->make(ResponseFactory::class),
+                    $this->config->get('session.auth_confirmed_lifetime')
+                );
+
+            });
         }
 
     }

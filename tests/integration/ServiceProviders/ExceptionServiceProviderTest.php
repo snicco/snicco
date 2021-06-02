@@ -17,16 +17,31 @@
     class ExceptionServiceProviderTest extends IntegrationTest {
 
 
-
         /** @test */
-		public function by_default_the_null_error_handler_is_used() {
+		public function by_default_the_production_error_handler_is_used() {
 
             $this->newTestApp();
 
             $this->assertInstanceOf(
-				NullErrorHandler::class,
+				ProductionErrorHandler::class,
 				TestApp::resolve( ErrorHandlerInterface::class )
 			);
+
+		}
+
+		/** @test */
+		public function the_null_error_handler_can_be_used () {
+
+            $this->newTestApp([
+                'exception_handling' => [
+                    'enable' => false,
+                ]
+            ]);
+
+            $this->assertInstanceOf(
+                NullErrorHandler::class,
+                TestApp::resolve( ErrorHandlerInterface::class )
+            );
 
 		}
 
@@ -35,6 +50,7 @@
 
             $this->newTestApp();
 
+            // ! a FQN is bound here. Used in the ErrorHandlerFactory
 			$this->assertSame(
 				ProductionErrorHandler::class,
                 TestApp::resolve( ProductionErrorHandler::class )
