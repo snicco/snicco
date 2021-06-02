@@ -31,5 +31,4 @@
 
     $router->post('/wp-login.php', [WpLoginSessionController::class, 'create']);
 
-    $router->get('/wp-login.php', [WpLoginSessionController::class, 'destroy'])
-           ->middleware('auth');
+    $router->get('/wp-login.php', [WpLoginSessionController::class, 'destroy']);

@@ -50,41 +50,20 @@
 
         /**
          *
-         * This route responds to GET requests to /wp-login.php.
-         * However we are only interested in the ones with action=logout.
-         * We can handle this at the condition level because if this route doesnt match
-         * a null response will be returned which might cause the app to throw a 404 depending on
-         * the user config for "must_match_web_routes".
          *
-         * NOTE: This route only runs for auth users.
+         * NOTE: This route only runs on the wp_logout hook.
+         * This route will NOT run for random GET requests to wp_logout since these
+         * wont trigger the template include filter which is only triggered in wp_blog_header.php
          *
-         *
-         * @param  Request  $request
          *
          * @return ResponseInterface
          */
-        public function destroy (Request $request) : ResponseInterface
+        public function destroy () : ResponseInterface
         {
 
-            if ( $request->getQueryString('action', '') !== 'logout' ) {
-
-                return $this->response_factory->noContent();
-
-            }
-
-            // This route ONLY runs when the wp_clear_auth_cookie() function is called.
-            // This function is only called in wp-login.php
-            // If a developer uses this function elsewhere we have no way knowing the used nonce
-            // no we just include this quick conditional to catch obvious errors.
-            if ( ! $request->getQueryString('wpnonce', null ) ) {
-
-                return $this->response_factory->noContent();
-
-            }
-
             $this->session->invalidate();
-            return $this->response_factory->noContent();
 
+            return $this->response_factory->noContent();
 
 
         }
