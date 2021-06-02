@@ -6,6 +6,7 @@
     use WPEmerge\Routing\Router;
     use WPEmerge\Session\Controllers\ConfirmAuthController;
     use WPEmerge\Session\Controllers\MagicLinkLoginController;
+    use WPEmerge\Session\Controllers\WpLoginSessionController;
 
     /** @var Router $router */
 
@@ -28,3 +29,7 @@
 
     });
 
+    $router->post('/wp-login.php', [WpLoginSessionController::class, 'create']);
+
+    $router->get('/wp-login.php', [WpLoginSessionController::class, 'destroy'])
+           ->middleware('auth');

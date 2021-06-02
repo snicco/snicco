@@ -19,7 +19,7 @@
 		public $template;
 
 
-		public function __construct( string $template, Request $request ) {
+		public function __construct( string $template = '', Request $request = null ) {
 
 			$this->template = $template;
 
@@ -32,7 +32,6 @@
 			return ! is_admin() && ! str_contains( $this->request->getUrl(), admin_url() );
 
 		}
-
 
 		public function default() : ?string {
 

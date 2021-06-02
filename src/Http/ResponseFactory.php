@@ -227,4 +227,9 @@
 
         }
 
+        public function noContent() : ResponseInterface
+        {
+            return $this->createResponse();
+        }
+
     }

@@ -8,11 +8,13 @@
 
     use BetterWpHooks\Contracts\Dispatcher;
     use BetterWpHooks\Dispatchers\WordpressDispatcher;
+    use Psr\Http\Message\ServerRequestInterface;
     use Slim\Csrf\Guard;
     use WPEmerge\Application\Application;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Encryptor;
+    use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Middleware\ConfirmAuth;
@@ -238,17 +240,33 @@
         private function setEventListeners()
         {
 
+            // add_filter('wp_login', function () {
+            //
+            //     IncomingWebRequest::dispatch([
+            //         '', $this->container->make(ServerRequestInterface::class),
+            //     ]);
+            //
+            // }, 10, 99);
+            //
+            // add_filter('clear_auth_cookie', function () {
+            //
+            //     IncomingWebRequest::dispatch([
+            //         '', $this->container->make(ServerRequestInterface::class),
+            //     ]);
+            //
+            // }, 10, 99);
+
             add_filter('wp_login', function () {
 
-                UserLoggedIn::dispatch(func_get_args());
+                WpLoginAction::dispatch([$this->container->make(ServerRequestInterface::class)]);
 
-            }, 10,99);
+            }, 10, 99);
 
-            /** @var WordpressDispatcher $d */
-            $d = $this->container->make(Dispatcher::class);
+            add_filter('clear_auth_cookie', function () {
 
-            $d->listen(UserLoggedIn::class, ClearSessionAfterLogin::class);
+                WpLoginAction::dispatch([$this->container->make(ServerRequestInterface::class)]);
 
+            }, 10, 99);
 
 
         }

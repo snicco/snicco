@@ -36,13 +36,13 @@
 
         }
 
-        public function addCookiesToRequest ( Request $request) {
+        private function addCookiesToRequest ( Request $request) {
 
             return $request->withCookies($this->parseCookiesFromRequest($request));
 
         }
 
-        public function addCookiesToResponse(ResponseInterface $response) : ResponseInterface
+        private function addCookiesToResponse(ResponseInterface $response) : ResponseInterface
         {
 
             if ( ( $headers = $this->cookies->toHeaders() ) === [] ) {
