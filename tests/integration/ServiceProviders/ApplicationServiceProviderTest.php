@@ -15,6 +15,8 @@
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewInterface;
+    use WPEmerge\ExceptionHandling\ProductionErrorHandler;
+    use WPEmerge\ExceptionHandling\TestingErrorHandler;
     use WPEmerge\Facade\WP;
 	use WPEmerge\Facade\WpFacade;
     use WPEmerge\Http\Cookies;
@@ -87,6 +89,8 @@
 
 
 		}
+
+
 
         /** @test */
 		public function the_error_handler_can_be_registered_globally () {

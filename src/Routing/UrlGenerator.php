@@ -13,6 +13,7 @@
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Support\Str;
+    use WPEmerge\Support\Url;
 
     class UrlGenerator
     {
@@ -68,7 +69,7 @@
         public function to($path, array $query = [], $secure = true, $absolute = true) : string
         {
 
-            if ($this->isValidAbsoluteUrl($path)) {
+            if (Url::isValidAbsolute($path)) {
 
                 return $this->formatAbsolute($this->formatTrailing($path), $absolute);
 
@@ -93,7 +94,7 @@
         public function signed( string $path, $expiration = 300 , $absolute = true, $query = [] ) : string
         {
 
-            if ($this->isValidAbsoluteUrl($path)){
+            if (Url::isValidAbsolute($path)){
                 throw new ConfigurationException('Signed urls do not work with absolute urls.');
             }
 
@@ -218,16 +219,6 @@
         {
 
             return array_filter($parameters, 'is_string', ARRAY_FILTER_USE_KEY);
-        }
-
-        private function isValidAbsoluteUrl($path) : bool
-        {
-
-            if ( ! preg_match('~^(#|//|https?://|(mailto|tel|sms):)~', $path)) {
-                return filter_var($path, FILTER_VALIDATE_URL) !== false;
-            }
-
-            return true;
         }
 
         private function format(string $root, string $path) : string

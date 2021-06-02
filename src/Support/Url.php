@@ -70,4 +70,14 @@
             return '/'. ltrim($url, '/');
         }
 
+        public static function isValidAbsolute($path) : bool
+        {
+            if ( ! preg_match('~^(#|//|https?://|(mailto|tel|sms):)~', $path)) {
+                return filter_var($path, FILTER_VALIDATE_URL) !== false;
+            }
+
+            return true;
+
+        }
+
     }

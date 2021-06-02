@@ -7,25 +7,14 @@
 	namespace WPEmerge\Application;
 
 	use Contracts\ContainerAdapter;
-	use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
 	use WPEmerge\Routing\Route;
 	use WPEmerge\Routing\Router;
     use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Session\Csrf;
-	use WPEmerge\Session\FlashStore;
-	use WPEmerge\Session\OldInputStore;
-	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Http\Responses\RedirectResponse;
-	use WPEmerge\Http\ResponseService;
-	use WPEmerge\Routing\RouteBlueprint;
 	use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Session\SessionStore;
-    use WPEmerge\Support\VariableBag;
     use WPEmerge\View\GlobalContext;
-    use WPEmerge\View\ViewFactory;
-    use WPEmerge\View\ViewComposerCollection;
 
     /**
 	 * Can be applied to your App class via a "@mixin" annotation for better IDE support.

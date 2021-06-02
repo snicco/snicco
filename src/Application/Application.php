@@ -87,13 +87,6 @@
             );
         }
 
-        /**
-         * Bootstrap the application and loads all service providers.
-         *
-         * @param  array  $config  The configuration provided by a user during bootstrapping.
-         *
-         * @throws ConfigurationException
-         */
         public function boot( array $config = []) : void
         {
 

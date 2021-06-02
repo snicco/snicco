@@ -7,19 +7,25 @@
     namespace Tests\integration;
 
     use Codeception\TestCase\WPTestCase;
-    use Nyholm\Psr7\Request;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
-    use Tests\stubs\TestRequest;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\IncomingWebRequest;
+    use WPEmerge\ExceptionHandling\TestingErrorHandler;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\HttpKernel;
 
     class IntegrationTest extends WPTestCase
     {
+
+        protected function withoutExceptionHandling () {
+
+            TestApp::container()->instance(ErrorHandlerInterface::class, new TestingErrorHandler());
+
+        }
 
         protected function setUp() : void
         {

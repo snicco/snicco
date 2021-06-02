@@ -12,9 +12,11 @@
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Responses\RedirectResponse;
+    use WPEmerge\ExceptionHandling\Exceptions\NotFoundException;
     use WPEmerge\Session\SessionStore;
+    use WPEmerge\Support\Url;
 
-    class MagicLinkLoginController
+    class ConfirmAuthMagicLinkController
     {
 
         /**
@@ -44,17 +46,13 @@
         public function create(Request $request, string $user_id) : RedirectResponse
         {
 
-            $this->logOutIfAuthenticated();
-
-            $user = get_user_by('ID', (int) $user_id);
+            $user = $this->getUser( ( int ) $user_id);
 
             if ( ! $user instanceof WP_User ) {
 
-                return $this->response_factory->redirect(404)->to(WP::loginUrl());
+                throw new NotFoundException();
 
             }
-
-            $intended_url = $this->intendedUrl($request);
 
             $this->loginUser($user);
 
@@ -62,7 +60,8 @@
 
             return $this->response_factory
                 ->redirect()
-                ->to($intended_url);
+                ->to($this->intendedUrl($request));
+
 
         }
 
@@ -76,11 +75,11 @@
 
         }
 
+        // If the user is logged in already we just refresh the auth cookie.
         private function loginUser(WP_User $user)
         {
 
             $this->session_store->migrate(true);
-
             wp_set_auth_cookie($user->ID, true, true);
             wp_set_current_user($user->ID);
 
@@ -92,13 +91,13 @@
 
             $from_query = rawurldecode($request->getQueryString('intended', ''));
 
-            if ($from_query !== '') {
+            if (Url::isValidAbsolute($from_query)) {
                 return $from_query;
             }
 
             $from_session = $this->session_store->get('auth.confirm.intended_url', '');
 
-            if ($from_session !== '') {
+            if (Url::isValidAbsolute($from_session)) {
                 return $from_session;
             }
 
@@ -106,14 +105,9 @@
 
         }
 
-        private function logOutIfAuthenticated()
-        {
+        private function getUser(int $user_id ) {
 
-            if ( ! WP::isUserLoggedIn()) {
-                return;
-            }
-
-            WP::logout();
+            return WP::isUserLoggedIn() ? WP::currentUser() : get_user_by('ID', $user_id);
 
         }
 

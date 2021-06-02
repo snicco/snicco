@@ -14,7 +14,7 @@
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Middleware\ConfirmAuth;
-    use WPEmerge\Session\Controllers\MagicLinkLoginController;
+    use WPEmerge\Session\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Session\Controllers\WpLoginSessionController;
     use WPEmerge\Session\Handlers\ArraySessionHandler;
     use WPEmerge\Session\Handlers\DatabaseSessionHandler;
@@ -239,9 +239,9 @@
         private function bindControllers()
         {
 
-            $this->container->singleton(MagicLinkLoginController::class, function () {
+            $this->container->singleton(ConfirmAuthMagicLinkController::class, function () {
 
-                return new MagicLinkLoginController(
+                return new ConfirmAuthMagicLinkController(
                     $this->container->make(SessionStore::class),
                     $this->container->make(ResponseFactory::class),
                     $this->config->get('session.auth_confirmed_lifetime')
