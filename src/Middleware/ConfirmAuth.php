@@ -31,7 +31,6 @@
          */
         private $url_generator;
 
-
         public function __construct(SessionStore $session_store, ResponseFactory $response_factory, UrlGenerator $url_generator)
         {
             $this->session_store = $session_store;
@@ -52,7 +51,7 @@
 
                 $this->session_store->put('auth.confirm.intended_url', $request->getFullUrl());
 
-                return $this->response_factory->redirect(401)->to('/auth/confirm');
+                return $this->response_factory->redirect()->to('/auth/confirm');
 
             }
 

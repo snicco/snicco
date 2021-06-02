@@ -65,7 +65,7 @@
 
             $this->assertOutputNotContains('Access to foo granted', $this->requestToProtectedRoute());
 
-            HeaderStack::assertHasStatusCode(401);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location');
 
 
@@ -93,7 +93,7 @@
 
             $this->assertOutputNotContains('Access to foo granted', $this->requestToProtectedRoute());
 
-            HeaderStack::assertHasStatusCode(401);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location');
 
         }
@@ -108,7 +108,7 @@
 
             $this->assertOutputNotContains('Access to foo granted', $this->requestToProtectedRoute());
 
-            HeaderStack::assertHasStatusCode(401);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location');
 
             $new_session = $this->getSession();
@@ -132,7 +132,7 @@
 
             $this->assertOutputNotContains('Access to foo granted', $this->requestToProtectedRoute());
 
-            HeaderStack::assertHasStatusCode(401);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location');
 
             $new_session = $this->getSession();
@@ -151,7 +151,7 @@
 
             $this->assertOutputNotContains('Access to foo granted', $this->requestToProtectedRoute());
 
-            HeaderStack::assertHasStatusCode(401);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location');
 
             $new_session = $this->getSession();
@@ -170,7 +170,7 @@
 
             $this->assertOutputNotContains('Access to foo granted', $this->requestToProtectedRoute());
 
-            HeaderStack::assertHasStatusCode(401);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $expected_url);
 
 

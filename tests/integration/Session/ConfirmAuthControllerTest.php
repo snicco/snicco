@@ -193,7 +193,7 @@
 
             // email failed but user is still logged in
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(404);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', '/auth/confirm');
             HeaderStack::reset();
             $this->assertUserLoggedIn($calvin);
@@ -203,7 +203,7 @@
 
             // this failed attempt will log the user out.
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(429);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', WP::loginUrl());
             HeaderStack::reset();
 
@@ -229,7 +229,7 @@
             $post_request = $this->postRequest( 'bogus@web.de', $csrf);
 
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(429);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', WP::loginUrl());
 
             $this->assertNotSame($id, $session->getId());
@@ -267,7 +267,7 @@
             $request = $this->postRequest('foo@bar@web.de', $csrf);
 
             $this->assertOutputNotContains('confirmation email', $request);
-            HeaderStack::assertHasStatusCode(404);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $this->controllerUrl());
 
 
@@ -287,7 +287,7 @@
             $request = $this->postRequest('bogus@web.de', $csrf);
 
             $this->assertOutputNotContains('confirmation email', $request);
-            HeaderStack::assertHasStatusCode(404);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $this->controllerUrl());
 
 
@@ -312,7 +312,7 @@
             $request = $this->postRequest('bogus@web.de', $csrf);
 
             $this->assertOutputNotContains('confirmation email', $request);
-            HeaderStack::assertHasStatusCode(404);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $this->controllerUrl());
 
             $this->assertSame('foobar.com', $session->get('auth.confirm.intended_url'));
@@ -332,7 +332,7 @@
             $request = $this->postRequest($email = 'bogus@web.de', $csrf);
 
             $this->assertOutputNotContains( $email, $request);
-            HeaderStack::assertHasStatusCode(404);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $url = $this->controllerUrl());
 
             $request = $this->getRequest($url);
@@ -373,7 +373,7 @@
             $post_request = $this->postRequest('c@web.de', $csrf);
 
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(302);
+            HeaderStack::assertHasStatusCode(303);
             HeaderStack::assertHas('Location', $this->controllerUrl());
 
         }
@@ -391,21 +391,21 @@
 
             $post_request = $this->postRequest('c@web.de', $csrf);
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(302);
+            HeaderStack::assertHasStatusCode(303);
             HeaderStack::assertHas('Location', $this->controllerUrl());
             HeaderStack::reset();
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
             $post_request = $this->postRequest('c@web.de', $csrf);
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(302);
+            HeaderStack::assertHasStatusCode(303);
             HeaderStack::assertHas('Location', $this->controllerUrl());
             HeaderStack::reset();
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
             $post_request = $this->postRequest('c@web.de', $csrf);
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(302);
+            HeaderStack::assertHasStatusCode(303);
             HeaderStack::assertHas('Location', $this->controllerUrl());
             HeaderStack::reset();
 
@@ -413,7 +413,7 @@
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
             $post_request = $this->postRequest('c@web.de', $csrf);
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(429);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $this->controllerUrl());
             HeaderStack::reset();
 
@@ -422,7 +422,7 @@
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
             $post_request = $this->postRequest('c@web.de', $csrf);
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(429);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $this->controllerUrl());
             HeaderStack::reset();
             Carbon::setTestNow();
@@ -432,7 +432,7 @@
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
             $post_request = $this->postRequest('c@web.de', $csrf);
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(429);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $this->controllerUrl());
             HeaderStack::reset();
 
@@ -455,7 +455,7 @@
             $post_request = $this->postRequest( $email = 'c@web.de', $csrf);
 
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(302);
+            HeaderStack::assertHasStatusCode(303);
             HeaderStack::assertHas('Location', $redirected_url = $this->controllerUrl());
 
             $get_request = $this->getRequest($redirected_url);
@@ -482,7 +482,7 @@
             $post_request = $this->postRequest( $email = 'c@web.de', $csrf);
 
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(302);
+            HeaderStack::assertHasStatusCode(303);
             HeaderStack::assertHas('Location', $redirected_url = $this->controllerUrl());
 
             $get_request = $this->getRequest($redirected_url);
@@ -508,7 +508,7 @@
             $post_request = $this->postRequest( $email = 'c@web.de', $csrf);
 
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(302);
+            HeaderStack::assertHasStatusCode(303);
             HeaderStack::assertHas('Location', $redirected_url = $this->controllerUrl());
 
             $get_request = $this->getRequest($redirected_url);
@@ -585,7 +585,7 @@
             $post_request = $this->postRequest( $email = 'c@web.de', $csrf);
 
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(302);
+            HeaderStack::assertHasStatusCode(303);
             HeaderStack::assertHas('Location', $this->controllerUrl());
 
             $this->assertFalse($session->has('auth.confirm.attempts'));
@@ -604,7 +604,7 @@
             $post_request = $this->postRequest( $email, $csrf);
 
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(302);
+            HeaderStack::assertHasStatusCode(303);
             HeaderStack::assertHas('Location', $this->controllerUrl());
 
             $this->assertSame($email,$this->mail['to']);
@@ -712,7 +712,7 @@
             $post_request = $this->postRequest( $email, $csrf );
 
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(302);
+            HeaderStack::assertHasStatusCode(303);
             HeaderStack::assertHas('Location', $this->controllerUrl());
             HeaderStack::reset();
 

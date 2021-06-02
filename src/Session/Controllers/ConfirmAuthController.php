@@ -85,7 +85,7 @@
                 $session->invalidate();
                 WP::logout();
 
-                return $this->response_factory->redirect(429)->to(WP::loginUrl());
+                return $this->response_factory->redirect()->to(WP::loginUrl());
 
             }
 
@@ -98,7 +98,7 @@
             if ( ! $this->canReceiveAnotherEmail($session) ) {
 
                 return $this->response_factory
-                    ->redirect(429)
+                    ->redirect()
                     ->to($request->getFullUrl());
 
             }
@@ -124,7 +124,7 @@
 
             }
 
-            return $this->response_factory->redirect()->to($request->getFullUrl());
+            return $this->response_factory->redirect(303)->to($request->getFullUrl());
 
 
         }
@@ -179,7 +179,7 @@
 
             $session->flashInput(['email' => $email]);
 
-            return $this->response_factory->redirect(404)->to($request->getFullUrl());
+            return $this->response_factory->redirect()->to($request->getFullUrl());
 
         }
 
