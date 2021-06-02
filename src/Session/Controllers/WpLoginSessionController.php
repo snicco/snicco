@@ -6,8 +6,8 @@
 
     namespace WPEmerge\Session\Controllers;
 
+    use Carbon\Carbon;
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Session\SessionStore;
 
@@ -24,11 +24,17 @@
          */
         private $response_factory;
 
-        public function __construct(SessionStore $session, ResponseFactory $response_factory)
+        /**
+         * @var int
+         */
+        private $auth_confirm_lifetime_in_minutes;
+
+        public function __construct(SessionStore $session, ResponseFactory $response_factory, int $auth_confirm_lifetime = 180)
         {
 
             $this->session = $session;
             $this->response_factory = $response_factory;
+            $this->auth_confirm_lifetime_in_minutes = $auth_confirm_lifetime;
 
         }
 
@@ -43,6 +49,11 @@
         {
 
             $this->session->migrate(true);
+
+            $this->session->put(
+                'auth.confirm.until',
+                Carbon::now()->addMinutes($this->auth_confirm_lifetime_in_minutes)->getTimestamp()
+            );
 
             return $this->response_factory->noContent();
 

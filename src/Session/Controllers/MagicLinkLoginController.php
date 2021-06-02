@@ -27,18 +27,24 @@
          */
         private $response_factory;
 
-        protected $lifetime_in_minutes = 180;
+        /**
+         * @var int|mixed
+         */
+        private $lifetime_in_minutes;
 
-        public function __construct(SessionStore $session_store, ResponseFactory $response_factory)
+        public function __construct(SessionStore $session_store, ResponseFactory $response_factory, int $lifetime_in_minutes = 180 )
         {
+
             $this->session_store = $session_store;
             $this->response_factory = $response_factory;
+            $this->lifetime_in_minutes = $lifetime_in_minutes;
+
         }
 
         public function create(Request $request, string $user_id) : RedirectResponse
         {
 
-            WP::logout();
+            $this->logOutIfAuthenticated();
 
             $user = get_user_by('ID', (int) $user_id);
 
@@ -55,7 +61,7 @@
             $this->setTemporaryAuthToken();
 
             return $this->response_factory
-                ->redirect(200)
+                ->redirect()
                 ->to($intended_url);
 
         }
@@ -75,13 +81,14 @@
 
             $this->session_store->migrate(true);
 
-            wp_set_auth_cookie($user->ID, true, true );
+            wp_set_auth_cookie($user->ID, true, true);
             wp_set_current_user($user->ID);
 
 
         }
 
-        private function intendedUrl (Request $request) {
+        private function intendedUrl(Request $request)
+        {
 
             $from_query = rawurldecode($request->getQueryString('intended', ''));
 
@@ -96,6 +103,17 @@
             }
 
             return WP::adminUrl();
+
+        }
+
+        private function logOutIfAuthenticated()
+        {
+
+            if ( ! WP::isUserLoggedIn()) {
+                return;
+            }
+
+            WP::logout();
 
         }
 

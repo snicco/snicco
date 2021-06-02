@@ -381,6 +381,38 @@
         }
 
         /** @test */
+        public function wp_login_logout_events_dispatch_when_sessions_are_enabled_and_the_request_path_is_wp_login()
+        {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ],
+            ]);
+
+            TestApp::container()->instance(Request::class, TestRequest::from('GET', 'wp-login.php'));
+
+            /** @var WordpressDispatcher $d */
+            $d = TestApp::resolve(Dispatcher::class);
+
+            /** @todo This is a temporary fix until BetterWpHooks supports actions. */
+            $d->forgetOne(WpLoginAction::class, [HttpKernel::class, 'run']);
+
+            $d->listen(WpLoginAction::class, function ( $request ) {
+
+                $this->assertInstanceOf(IncomingWebRequest::class, $request);
+
+            });
+
+            do_action('wp_login');
+
+
+        }
+
+        /** @test */
         public function wp_login_logout_events_dont_dispatch_when_sessions_are_disabled()
         {
 
@@ -393,6 +425,7 @@
                 ],
             ]);
 
+            TestApp::container()->instance(Request::class, TestRequest::from('GET', 'wp-login.php'));
             $d = TestApp::resolve(Dispatcher::class);
 
             /** @todo This is a temporary fix until BetterWpHooks supports actions. */
@@ -411,7 +444,7 @@
         }
 
         /** @test */
-        public function wp_login_logout_events_dispatch_when_sessions_are_enabled()
+        public function wp_login_logout_events_dont_dispatch_if_the_request_path_is_not_wp_login()
         {
 
             $this->newTestApp([
@@ -423,22 +456,24 @@
                 ],
             ]);
 
-            /** @var WordpressDispatcher $d */
+            TestApp::container()->instance(Request::class, TestRequest::from('GET', 'bogus'));
             $d = TestApp::resolve(Dispatcher::class);
 
             /** @todo This is a temporary fix until BetterWpHooks supports actions. */
             $d->forgetOne(WpLoginAction::class, [HttpKernel::class, 'run']);
 
-            $d->listen(WpLoginAction::class, function ( $request ) {
+            $d->listen(WpLoginAction::class, function () {
 
-                $this->assertInstanceOf(IncomingWebRequest::class, $request);
+                $this->fail('Event was dispatched when it should not');
 
             });
 
             do_action('wp_login');
 
+            $this->assertTrue(true);
 
         }
+
 
 
 

@@ -30,10 +30,12 @@
          * @var ViewFactory
          */
         private $view;
+
         /**
          * @var UrlGenerator
          */
         private $url_generator;
+
         /**
          * @var ResponseFactory
          */
@@ -122,7 +124,7 @@
 
             }
 
-            return $this->response_factory->redirect(200)->to($request->getFullUrl());
+            return $this->response_factory->redirect()->to($request->getFullUrl());
 
 
         }

@@ -47,7 +47,7 @@
 
             $this->container->singleton(ErrorHandlerInterface::class, function () {
 
-                if ( ! $this->config->get('exception_handling.enable', false)) {
+                if ( ! $this->config->get('exception_handling.enable', true ) ) {
 
                     return new NullErrorHandler();
 
