@@ -9,7 +9,6 @@
     use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
     use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\Session;
@@ -58,4 +57,22 @@
             return parent::intended($request, $fallback, $status);
         }
 
+        /**
+         * Create a redirect response to the given path and store the intended url in the session.
+         */
+        public function guest (string $path, $status = 302, array $query = [],  bool $secure = true, bool $absolute = true ) {
+
+            $request = $this->generator->getRequest();
+
+            $intended = $request->getMethod() === 'GET' && ! $request->isAjax()
+                ? $request->getFullUrl()
+                : $this->generator->previous();
+
+            if ($intended) {
+                $request->getSession()->setIntendedUrl($intended);
+            }
+
+            return $this->to($path, $status, $query,  $secure, $absolute);
+
+        }
     }

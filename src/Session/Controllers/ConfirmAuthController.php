@@ -93,7 +93,7 @@
                 $this->session->invalidate();
                 WP::logout();
 
-                return $this->response_factory->redirectGuest();
+                return $this->response_factory->redirectToLogin(true );
 
             }
 
