@@ -19,7 +19,7 @@
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Session\Drivers\DatabaseSessionDriver;
-    use WPEmerge\Session\Encrypted;
+    use WPEmerge\Session\EncryptedSession;
     use WPEmerge\Session\SessionDriver;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Session\Session;
@@ -325,7 +325,7 @@
 
             $driver = TestApp::resolve(Session::class);
 
-            $this->assertInstanceOf(Encrypted::class, $driver);
+            $this->assertInstanceOf(EncryptedSession::class, $driver);
 
         }
 

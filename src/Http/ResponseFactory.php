@@ -105,7 +105,6 @@
 
         public function null() : NullResponse
         {
-
             return new NullResponse($this->response_factory->createResponse(204));
 
         }
@@ -172,7 +171,6 @@
 
         public function createResponse(int $code = 200, string $reasonPhrase = '') : ResponseInterface
         {
-
             return $this->response_factory->createResponse($code, $reasonPhrase);
         }
 

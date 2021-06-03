@@ -6,12 +6,14 @@
 
     namespace Tests\integration\Http;
 
+    use Psr\Http\Message\ServerRequestInterface;
     use Tests\integration\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Events\WpQueryFilterable;
     use WPEmerge\Http\HttpKernel;
+    use WPEmerge\Http\Psr7\Request;
 
     class FilterWpQueryTest extends IntegrationTest
     {
@@ -29,16 +31,29 @@
 
             $query_vars = ['foo' => 'bar'];
 
-            $after = WpQueryFilterable::dispatch(
-                [
-                    $request = TestRequest::from('GET', '/wpquery/foo'),
-                    $query_vars,
+            $request = TestRequest::from('GET', '/wpquery/foo');
+            TestApp::container()->instance(ServerRequestInterface::class, $request);
+            $after = apply_filters('request', $query_vars);
 
-                ]
-            );
 
             $this->assertSame(['foo' => 'baz'], $after);
 
+            $this->seeKernelOutput('FOO_QUERY', $request);
+
+        }
+
+        /** @test */
+        public function the_query_can_ONLY_get_filtered_for_read_verbs () {
+
+            $query_vars = ['foo' => 'bar'];
+
+            // The route response to post but the event wont get dispatched.
+            $request = TestRequest::from('POST', '/wpquery/post');
+            TestApp::container()->instance(ServerRequestInterface::class, $request);
+            $after = apply_filters('request', $query_vars);
+
+
+            $this->assertSame(['foo' => 'bar'], $after);
             $this->seeKernelOutput('FOO_QUERY', $request);
 
         }
@@ -48,14 +63,10 @@
 
             $query_vars = ['foo' => 'bar'];
 
-            $after = WpQueryFilterable::dispatch(
-                [
-                    // Route does only response to GET.
-                    TestRequest::from('POST', '/wpquery/foo'),
-                    $query_vars,
+            $request = TestRequest::from('GET', '/wpquery/bogus');
+            TestApp::container()->instance(ServerRequestInterface::class, $request);
+            $after = apply_filters('request', $query_vars);
 
-                ]
-            );
 
             $this->assertSame(['foo' => 'bar'], $after);
 
@@ -67,9 +78,10 @@
             $query_vars = ['spain' => 'barcelona'];
             $request = TestRequest::from('GET', 'wpquery/teams/germany/dortmund');
 
-            $filter_WP_QUERY = WpQueryFilterable::dispatch([$request, $query_vars]);
+            TestApp::container()->instance(ServerRequestInterface::class, $request);
+            $after = apply_filters('request', $query_vars);
 
-            $this->assertSame(['spain' => 'barcelona', 'germany' => 'dortmund'], $filter_WP_QUERY);
+            $this->assertSame(['spain' => 'barcelona', 'germany' => 'dortmund'], $after);
 
         }
 
@@ -79,9 +91,10 @@
             $query_vars = ['foo' => 'bar'];
             $request = TestRequest::from('GET', '/wpquery/assert-no-handler-run');
 
-            $filter_WP_QUERY = WpQueryFilterable::dispatch([$request, $query_vars]);
+            TestApp::container()->instance(ServerRequestInterface::class, $request);
+            $after = apply_filters('request', $query_vars);
 
-            $this->assertSame(['foo' => 'baz'], $filter_WP_QUERY);
+            $this->assertSame(['foo' => 'baz'], $after);
             $this->expectOutputString('');
 
         }
@@ -92,7 +105,10 @@
             $query_vars = ['foo' => 'bar'];
             $request = TestRequest::from('GET', '/wpquery/do-nothing');
 
-            $filter_WP_QUERY = WpQueryFilterable::dispatch([$request, $query_vars]);
+
+            TestApp::container()->instance(ServerRequestInterface::class, $request);
+            $filter_WP_QUERY = apply_filters('request', $query_vars);
+
 
             $this->assertSame(['foo' => 'baz'], $filter_WP_QUERY);
 
@@ -105,5 +121,7 @@
 
 
         }
+
+
 
     }

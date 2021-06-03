@@ -55,13 +55,25 @@
 
             if (WP::isAdmin() && ! WP::isAdminAjax()) {
 
-                $path = $path.'/'.$request->getQuery('page', '');
+                $page = $request->getQuery('page');
+
+                if ( ! $page ) {
+                    return $path;
+                }
+
+                $path = rtrim($path, '/') .'/'. $page;
 
             }
 
             if (WP::isAdminAjax()) {
 
-                $path = $path.'/'.$request->getBody('action', $request->getQuery('action', ''));
+                $action = $request->getBody('action', $request->getQuery('action'));
+
+                if ( ! $action ) {
+                    return $path;
+                }
+
+                $path = rtrim($path, '/') .'/'.$action;
 
             }
 
