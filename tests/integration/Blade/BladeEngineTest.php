@@ -25,8 +25,8 @@
                     BladeServiceProvider::class
                 ],
                 'blade' => [
-                    'cache' => '/Users/calvinalkan/valet/wpemerge/wpemerge/tests/integration/Blade/cache',
-                    'views' => '/Users/calvinalkan/valet/wpemerge/wpemerge/tests/integration/Blade/views',
+                    'cache' => TESTS_DIR.DS.'integration'.DS.'Blade'.DS.'cache',
+                    'views' => TESTS_DIR.DS.'integration'.DS.'Blade'.DS.'views'
                 ]
             ]);
 

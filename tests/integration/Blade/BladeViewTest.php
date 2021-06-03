@@ -38,7 +38,7 @@
         private function newApp()
         {
 
-            $cache_dir = '/Users/calvinalkan/valet/wpemerge/wpemerge/tests/integration/Blade/cache';
+            $cache_dir = TESTS_DIR.DS.'integration'.DS.'Blade'.DS.'cache';
 
             $this->rmdir($cache_dir);
 
@@ -48,7 +48,7 @@
                 ],
                 'blade' => [
                     'cache' => $cache_dir,
-                    'views' => '/Users/calvinalkan/valet/wpemerge/wpemerge/tests/integration/Blade/views',
+                    'views' => TESTS_DIR.DS.'integration'.DS.'Blade'.DS.'views'
                 ],
             ]);
 
