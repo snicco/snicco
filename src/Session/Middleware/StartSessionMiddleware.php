@@ -65,10 +65,13 @@
 
         private function getSession(Request $request) : Session
         {
+
             $cookies = $request->getCookies();
             $cookie_name = $this->session_store->getName();
 
-            $this->session_store->setId($cookies->get($cookie_name, ''));
+            $session_id = $cookies->get($cookie_name, '');
+
+            $this->session_store->setId($session_id);
 
             return $this->session_store;
         }

@@ -20,6 +20,19 @@
 
         });
 
+         $router->post('post', function () {
+            return 'FOO_QUERY';
+        })
+               ->wpquery(function () {
+
+            return [
+                'foo' => 'baz',
+            ];
+
+        });
+
+
+
         $router->get('teams/{county}/{name}', function () {})
                ->wpquery(function (array $query_vars, $county, $name) {
 

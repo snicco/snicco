@@ -103,7 +103,7 @@
 
                 if ($this->config->get('session.encrypt')) {
 
-                    $store = new Encrypted(
+                    $store = new EncryptedSession(
                         $name,
                         $this->container->make(SessionDriver::class),
                         $this->container->make(EncryptorInterface::class)

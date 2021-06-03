@@ -9,11 +9,13 @@
     use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
+    use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\Responses\NullResponse;
     use WPEmerge\Middleware\Core\AppendSpecialPathSuffix;
     use WPEmerge\Middleware\Core\ErrorHandlerMiddleware;
     use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
+    use WPEmerge\Middleware\Core\MethodOverride;
     use WPEmerge\Middleware\Core\OutputBufferMiddleware;
     use WPEmerge\Middleware\Core\RoutingMiddleware;
     use WPEmerge\Middleware\Core\ShareCookies;
@@ -41,6 +43,7 @@
 
         private $core_middleware = [
             ErrorHandlerMiddleware::class,
+            MethodOverride::class,
             EvaluateResponseMiddleware::class,
             ShareCookies::class,
             OutputBufferMiddleware::class,
@@ -78,13 +81,11 @@
 
             $response = $this->handle($request_event);
 
-            if ( $response instanceof NullResponse ) {
+            if ( ! $response instanceof NullResponse && $request_event instanceof IncomingWebRequest) {
 
-                return;
+                $request_event->matchedRoute();
 
             }
-
-            $request_event->matchedRoute();
 
             $this->emitter->emit($response);
 

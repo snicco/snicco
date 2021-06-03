@@ -7,8 +7,6 @@
     namespace WPEmerge\Session\Controllers;
 
     use Carbon\Carbon;
-    use Illuminate\Support\MessageBag;
-    use Illuminate\Support\ViewErrorBag;
     use WP_User;
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Facade\WP;
@@ -274,6 +272,7 @@
 
             $expiration = Carbon::now()->addMinutes($this->timeout_in_minutes)->getTimestamp();
 
+            /** @todo replace with dedicated db-table */
             set_transient($this->transient_key. WP::userId() , $expiration, $expiration);
 
         }

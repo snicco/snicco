@@ -219,8 +219,6 @@
 
                     $key = $this->config->get('app_key', '');
 
-                    Encryptor::validAppKey($key);
-
                     return $key;
                 });
 

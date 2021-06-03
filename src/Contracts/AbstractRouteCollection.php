@@ -26,7 +26,7 @@
         protected $action_factory;
 
         /** @var RoutingResult|null */
-        private $route_result;
+        private $query_filter_routing_result;
 
         abstract public function add(Route $route) : Route;
 
@@ -40,7 +40,7 @@
 
             $result = $this->match($request);
 
-            $this->route_result = $result;
+            $this->query_filter_routing_result = $result;
 
             return $result;
 
@@ -49,9 +49,9 @@
         public function match(Request $request) : RoutingResult
         {
 
-            if (  $this->route_result ) {
+            if (  $this->query_filter_routing_result ) {
 
-                return $this->route_result;
+                return $this->query_filter_routing_result;
 
             }
 

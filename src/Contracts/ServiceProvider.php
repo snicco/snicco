@@ -8,10 +8,12 @@
 
     use Contracts\ContainerAdapter;
     use WPEmerge\Application\ApplicationConfig;
+    use WPEmerge\Encryptor;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Support\Str;
 
     abstract class ServiceProvider
     {
@@ -68,11 +70,37 @@
         }
 
         /** Only use this function after all providers have been registered. */
-        protected function sessionEnabled() :bool
+        protected function sessionEnabled() : bool
         {
 
-            return $this->config->get('session.enabled', false );
+            return $this->config->get('session.enabled', false);
 
         }
 
+        protected function validAppKey() : bool
+        {
+
+            $key = $this->appKey();
+
+            if (Str::startsWith($key, $prefix = 'base64:')) {
+
+                $key = base64_decode(Str::after($key, $prefix));
+
+            }
+
+            if ( mb_strlen($key, '8bit') !== 32  ) {
+
+                return false;
+
+            }
+
+            return true;
+
+        }
+
+        protected function appKey () {
+
+            return $this->config->get('app_key');
+
+        }
     }

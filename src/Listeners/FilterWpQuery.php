@@ -6,11 +6,14 @@
 
     namespace WPEmerge\Listeners;
 
+    use BetterWpHooks\Traits\ListensConditionally;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Events\WpQueryFilterable;
 
     class FilterWpQuery
     {
+
+        use ListensConditionally;
 
         /**
          * @var AbstractRouteCollection
@@ -42,5 +45,9 @@
         }
 
 
+        public function shouldHandle(WpQueryFilterable $event) : bool
+        {
+           return $event->server_request->isReadVerb();
+        }
 
     }
