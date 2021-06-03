@@ -110,11 +110,11 @@
             WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
             WP::shouldReceive('loginUrl')->andReturnUsing(function ($redirect_to) {
 
-                return 'example.com/login?redirect='.$redirect_to;
+                return 'https://foo.com/login?redirect='.$redirect_to;
 
             });
 
-            $expected = 'example.com/login?redirect='.$this->request->getFullUrl();
+            $expected = 'https://foo.com/login?redirect='.$this->request->getFullUrl();
 
             $response = $this->newMiddleware()->handle($this->request, $this->route_action);
 
