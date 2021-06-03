@@ -81,7 +81,6 @@
             $this->simulateRequest('POST');
 
 
-
             // The user was logged in by WordPress => run Kernel
             do_action('wp_login');
 

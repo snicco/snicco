@@ -3,25 +3,24 @@
 
     declare(strict_types = 1);
 
-    use Carbon\Carbon;
     use Illuminate\Support\ViewErrorBag;
     use WPEmerge\Session\SessionStore;
+    use WPEmerge\View\ViewFactory;
 
-    $ds = DIRECTORY_SEPARATOR;
-
-    /** @var  ViewErrorBag $errors */
-    $error = $errors->has('email');
+    /** @var ViewFactory $view */
+    /** @var int $jail */
 
     /** @var SessionStore $session */
     $old_email = $session->getOldInput('email', '');
 
-    $lifetime = $session->get('auth.confirm.lifetime');
+    /** @var  ViewErrorBag $errors */
+    $invalid_email = $errors->has('email');
 
-    $lifetime = $lifetime / 60;
+
 
 ?>
 
-<html <?php language_attributes() ?>>
+<html <?php language_attributes() ?> >
 <head>
 
     <meta charset="utf-8">
@@ -34,30 +33,56 @@
 
 <style>
 
+    #logo {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+        text-align: center;
+        transition-property: border, background, color;
+        transition-duration: .05s;
+        transition-timing-function: ease-in-out;
+        background-image: none, url(/wp-admin/images/wordpress-logo.svg);
+        background-size: 84px;
+        background-position: center top;
+        background-repeat: no-repeat;
+        color: #3c434a;
+        height: 84px;
+        font-size: 20px;
+        font-weight: 400;
+        line-height: 1.3;
+        margin: 0 auto 25px;
+        padding: 0;
+        text-decoration: none;
+        width: 84px;
+        text-indent: -9999px;
+        outline: 0;
+        overflow: hidden;
+        display: block;
+    }
+
     body {
         background: #f0f0f1;
         min-width: 0;
         color: #3c434a;
         font-size: 16px;
         line-height: 1.4;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
     }
 
     .main {
         display: flex;
         flex-direction: row;
         min-height: 80vh;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
     }
 
     #login-wrapper {
-        width: 360px;
         margin: auto;
+        width: 380px;
+    }
+
+    #login-box {
         color: #3c434a;
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
         line-height: 1.4;
         padding: 26px 24px 34px;
         font-weight: 400;
-        overflow: hidden;
         background: #fff;
         border: 1px solid #c3c4c7;
         box-shadow: 0 1px 3px rgba(0, 0, 0, .04);
@@ -81,8 +106,6 @@
     input {
 
         box-sizing: border-box;
-        font-family: inherit;
-        font-weight: inherit;
         box-shadow: 0 0 0 transparent;
         border-radius: 4px;
         border: 1px solid #8c8f94;
@@ -173,140 +196,42 @@
 
 <section class="main">
 
-
     <div id="login-wrapper">
 
-        <?php
+        <a href="https://wordpress.org/" id="logo"></a>
 
-            if ($session->get('auth.confirm.success', false) || $jail !== false || $session->has('auth.confirm.email.count')) {
-
-
-                if ($jail === false) {
+        <div id="login-box">
 
 
-                    ?>
-                    <?php if ($session->has('auth.confirm.success')) : ?>
-                        <p class="success message">
-                            Email sent successfully.
-                        </p>
-                    <?php else  : ?>
-                        <p class="notice message">
-                            We already sent you a confirmation email.
-                        </p>
-                    <?php endif; ?>
+            <?php if ($jail):
 
-
-                    <p class="text-large">
-                        <span>Please check your email inbox at: <?= $last_recipient ?>.</span>
-                        <br>
-                        <br>
-                        The confirmation link expires in <?= $lifetime ?> minutes.
-                        <br>
-                        You can close this page now.
-                    </p>
-
-                    <form id="resend-email" class="form" action="<?= esc_attr($post_url) ?>"
-                          method="POST">
-
-                        <?php
-
-                            if ($error) {
-
-                                echo "<p class='error message'> {$errors->first('email')} </p>";
-
-                            }
-
-                        ?>
-                        <div class="form-group">
-                            <input type="email" name="email" id="email"
-                                   class="<?= $error ? 'error' : '' ?>"
-                                   value="<?= esc_attr($last_recipient) ?>" required
-                                   hidden="hidden">
-                        </div>
-                        <?= $csrf_field ?>
-                        <button class="submit" type="submit">Resend Email</button>
-
-                    </form>
-
-                    <?php
-                }
-
-                else {
-
-                    ?>
-
-                    <p id="form-heading">
-                        This page is part of the secure area of the application!
-                    </p>
-                    <hr>
-                    <p class="error message">
-                        You have requested to many emails. You can request a new confirmation link
-                        in:
-                        <?= Carbon::now()->diffInMinutes(Carbon::createFromTimestamp($jail)) ?>
-                        minute/s.
-                    </p>
-
-                    <p> Any previously sent confirmation email can still be used.</p>
-
-
-                    <?php
-
-                }
+                include $view->pathForView('auth-confirm-jail');
 
                 ?>
 
-                <?php
+            <?php elseif ($session->has('auth.confirm.email.count')):
 
-
-            }
-
-            else {
+                include $view->pathForView('auth-confirm-send');
 
                 ?>
 
-                <p id="form-heading">
-                    This page is part of the secure area of the application!
-                </p>
-                <p> You need to confirm your access before you can proceed.</p>
+            <?php else :
 
-                <hr>
+                include $view->pathForView('auth-confirm-request-email');
 
-                <p>Enter your email to receive a confirmation
-                    email and click the link to confirm access this page.</p>
 
-                <form id="send" class="form" action="<?= esc_attr($post_url) ?>" method="POST">
+                ?>
 
-                    <?php
+            <?php endif; ?>
 
-                        if ($error) {
 
-                            echo "<p class='error message'> {$errors->first('email')} </p>";
-
-                        }
-
-                    ?>
-                    <div class="form-group">
-                        <input type="email" name="email" id="email"
-                               class="<?= $error ? 'error' : '' ?>"
-                               value="<?= esc_attr($old_email) ?>" required>
-                    </div>
-                    <?= $csrf_field ?>
-                    <button class="submit" type="submit">Send Confirmation Email</button>
-
-                </form>
-
-                <?php
-            }
-
-        ?>
-
+        </div>
 
     </div>
-
 
 </section>
 
 </body>
-
+</html>
 
 
