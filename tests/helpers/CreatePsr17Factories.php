@@ -10,7 +10,9 @@
     use Psr\Http\Message\ResponseFactoryInterface;
     use Psr\Http\Message\StreamFactoryInterface;
     use Tests\stubs\TestViewFactory;
+    use WPEmerge\Http\Redirector;
     use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Routing\UrlGenerator;
 
     trait CreatePsr17Factories
     {
@@ -35,7 +37,8 @@
             return new ResponseFactory(
                 new TestViewFactory(),
                 $this->psrResponseFactory(),
-                $this->psrStreamFactory()
+                $this->psrStreamFactory(),
+                new Redirector($this->newUrlGenerator(TEST_APP_KEY)),
             );
 
         }

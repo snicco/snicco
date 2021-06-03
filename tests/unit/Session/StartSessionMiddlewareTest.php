@@ -8,6 +8,8 @@
 
     use Illuminate\Support\Carbon;
     use Tests\helpers\AssertsResponse;
+    use Tests\helpers\CreateRouteCollection;
+    use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\unit\UnitTest;
     use WPEmerge\Http\Cookies;
@@ -23,6 +25,8 @@
     {
 
         use AssertsResponse;
+        use CreateRouteCollection;
+        use CreateUrlGenerator;
 
         /**
          * @var Request

@@ -92,7 +92,7 @@
                 $this->session->invalidate();
                 WP::logout();
 
-                return $this->response_factory->redirect()->to(WP::loginUrl());
+                return $this->response_factory->redirect(302)->to(WP::loginUrl());
 
             }
 
@@ -173,7 +173,11 @@
                 ],
             ];
 
-            return $this->url_generator->signedRoute('auth.confirm.magic-login', $arguments);
+            return $this->url_generator->signedRoute(
+                'auth.confirm.magic-login',
+                $arguments,
+                $this->link_lifetime_in_sec
+            );
 
         }
 

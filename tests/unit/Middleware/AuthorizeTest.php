@@ -7,6 +7,8 @@
 	namespace Tests\unit\Middleware;
 
     use Mockery;
+    use Tests\helpers\CreateRouteCollection;
+    use Tests\helpers\CreateUrlGenerator;
     use Tests\unit\UnitTest;
 	use Tests\stubs\TestRequest;
     use Tests\helpers\AssertsResponse;
@@ -19,8 +21,10 @@
 
     class AuthorizeTest extends UnitTest {
 
-
         use AssertsResponse;
+        use CreateUrlGenerator;
+        use CreateRouteCollection;
+
 
         /**
          * @var Authenticate

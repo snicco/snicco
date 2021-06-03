@@ -34,24 +34,14 @@
     trait CreateTestSubjects
     {
 
+        use CreateUrlGenerator;
+        use CreateRouteCollection;
+        use CreateRouteCollection;
+
         /** @var MiddlewareStack */
         protected $middleware_stack;
 
-        protected function newRouteCollection() : RouteCollection
-        {
 
-            $condition_factory = new ConditionFactory($this->conditions(), $this->container);
-            $handler_factory = new RouteActionFactory([], $this->container);
-
-            return new RouteCollection(
-                $this->createRouteMatcher(),
-                $condition_factory,
-                $handler_factory
-
-            );
-
-
-        }
 
         protected function createRoutes(\Closure $routes)
         {
@@ -70,35 +60,6 @@
         {
 
             return new Router($this->container, $this->routes);
-
-        }
-
-        protected function newUrlGenerator(string $app_key = null, Request $request = null) : UrlGenerator
-        {
-
-            $routes = $this->routes ?? $this->newRouteCollection();
-
-            if (! isset($this->routes ) ) {
-                $this->routes = $routes;
-            }
-
-            $generator = new UrlGenerator(new FastRouteUrlGenerator($this->routes));
-
-            $generator->setRequestResolver(function () use ($request ){
-
-                return $request ?? TestRequest::fromFullUrl('GET', SITE_URL);
-
-            });
-
-            if ($app_key ) {
-
-                $generator->setAppKeyResolver(function () use ($app_key) {
-                    return $app_key;
-                });
-
-            }
-
-            return $generator;
 
         }
 

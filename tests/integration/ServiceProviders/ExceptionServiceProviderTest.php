@@ -20,7 +20,7 @@
         /** @test */
 		public function by_default_the_production_error_handler_is_used() {
 
-            $this->newTestApp();
+            $this->newTestApp([], true );
 
             $this->assertInstanceOf(
 				ProductionErrorHandler::class,
@@ -36,7 +36,7 @@
                 'exception_handling' => [
                     'enable' => false,
                 ]
-            ]);
+            ], true );
 
             $this->assertInstanceOf(
                 NullErrorHandler::class,
@@ -48,7 +48,7 @@
 		/** @test */
 		public function if_not_overwritten_the_default_production_error_handler_will_be_used() {
 
-            $this->newTestApp();
+            $this->newTestApp([], true );
 
             // ! a FQN is bound here. Used in the ErrorHandlerFactory
 			$this->assertSame(
@@ -66,7 +66,7 @@
                     'enable' => true,
                     'debug'  => true,
                 ]
-            ]);
+            ], true );
 
 
 			$this->assertInstanceOf(
@@ -86,7 +86,7 @@
                 'providers' => [
                     MyProvider::class
                 ]
-            ]);
+            ], true );
 
 
 			$this->assertInstanceOf(
@@ -99,7 +99,7 @@
 		/** @test */
 		public function global_exception_handling_is_disabled_by_default () {
 
-		    $this->newTestApp();
+            $this->newTestApp([], true );
 
 		    $this->assertFalse(TestApp::config('exception_handling.global', ''));
 
