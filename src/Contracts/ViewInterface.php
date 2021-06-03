@@ -39,4 +39,6 @@
 
         public function name();
 
+        public function path();
+
 	}

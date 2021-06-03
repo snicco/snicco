@@ -31,12 +31,13 @@
 		 */
 		private $global_context;
 
+		private $last_view;
+
 		public function __construct(
 			ViewEngineInterface $engine,
 			ViewComposerCollection $composer_collection,
 			GlobalContext $global_context
 		) {
-
 			$this->engine = $engine;
 			$this->composer_collection = $composer_collection;
 			$this->global_context = $global_context;
@@ -94,6 +95,14 @@
 			return $view->toString();
 
 		}
+
+		public function pathForView ( string $view_name ) :string {
+
+		    $view = $this->make($view_name);
+
+		    return $view->path();
+
+        }
 
 
 	}

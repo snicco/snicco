@@ -87,4 +87,9 @@
         }
 
 
+        public function path()
+        {
+           return $this->illuminate_view->getPath();
+        }
+
     }

@@ -75,7 +75,7 @@
             $this->config->extend('session.lifetime', 120);
             $this->config->extend('session.encrypt', false);
             $this->config->extend('session.auth_confirmed_lifetime', 180);
-            $this->config->extend('session.auth_confirm_on_login', 180);
+            $this->config->extend('session.auth_confirm_on_login', true);
 
             $this->config->extend('middleware.aliases', [
                 'csrf' => CsrfMiddleware::class,

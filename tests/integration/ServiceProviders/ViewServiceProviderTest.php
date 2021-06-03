@@ -21,7 +21,6 @@
     class ViewServiceProviderTest extends IntegrationTest
     {
 
-
         /** @test */
         public function the_global_context_is_a_singleton()
         {
@@ -88,5 +87,7 @@
             ], TestApp::config('views', []));
 
         }
+
+
 
     }

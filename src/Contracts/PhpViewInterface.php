@@ -15,5 +15,4 @@
 
 		public function name() : string;
 
-
 	}

@@ -71,7 +71,8 @@
                                       'post_url' => $post_url,
                                       'csrf_field' => $csrf_field->asHtml(),
                                       'jail' => $this->isUserInJail($session) ? $this->getJailTime($session) : false,
-                                      'last_recipient' => $this->lastRecipient($session)
+                                      'last_recipient' => $this->lastRecipient($session),
+                                      'view' => $this->view
                                   ]
                               );
 
