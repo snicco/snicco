@@ -32,6 +32,8 @@
 		 */
 		private $view_stack = [];
 
+
+
 		public function __construct( PhpViewFinder $finder ) {
 
 			$this->finder  = $finder;
