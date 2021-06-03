@@ -4,14 +4,16 @@
     declare(strict_types = 1);
 
     use Illuminate\Support\ViewErrorBag;
+    use WPEmerge\Session\SessionStore;
 
     /** @var string $post_url */
     /** @var ViewErrorBag $errors */
     /** @var bool $invalid_email */
     /** @var string $csrf_field */
-
     /** @var string $old_email */
+    /** @var SessionStore $session */
 
+    $email_failed = $session->has('auth.confirm.email_sending_failed');
 
 ?>
 
@@ -34,12 +36,18 @@
 
     <?php endif; ?>
 
+    <?php if ($email_failed) : ?>
+
+        <p class='error message'> Error: The email could not be sent. Please try again. </p>
+
+    <?php endif; ?>
+
     <div class="form-group">
         <input type="email" name="email" id="email"
                class="<?= $invalid_email ? 'error' : '' ?>"
                value="<?= esc_attr($old_email) ?>" required>
     </div>
     <?= $csrf_field ?>
-    <button class="submit" type="submit">Send Confirmation Email</button>
+    <button type="submit" class="submit"> <?= $email_failed ? 'Try again' : 'Send Confirmation Email'; ?></button>
 
 </form>

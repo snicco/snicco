@@ -179,8 +179,11 @@
             $this->put($key, $array);
         }
 
-        public function increment(string $key, int $amount = 1) : int
+        public function increment(string $key, int $amount = 1, int $start_value = 0) : int
         {
+            if ( ! $this->has($key) ) {
+                $this->put($key, $start_value);
+            }
 
             $this->put($key, $value = $this->get($key, 0) + $amount);
 
