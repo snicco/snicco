@@ -74,7 +74,9 @@
             $app->boot($config);
 
             if ( ! $with_exceptions ) {
+
                 $this->withoutExceptionHandling();
+
             }
 
 

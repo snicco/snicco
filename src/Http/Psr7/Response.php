@@ -19,7 +19,7 @@
         /**
          * @var ResponseInterface
          */
-        private $psr7_response;
+        protected $psr7_response;
 
         public function __construct(ResponseInterface $psr7_response)
         {

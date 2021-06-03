@@ -21,16 +21,12 @@
          */
         private $error_handler;
 
-
-
         public function __construct(ErrorHandlerInterface $error_handler)
         {
 
             $this->error_handler = $error_handler;
 
         }
-
-
 
         public function handle(Request $request, Delegate $next)
         {

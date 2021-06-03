@@ -15,6 +15,7 @@
     use WPEmerge\Encryptor;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Factories\RouteActionFactory;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Conditions\AdminAjaxCondition;
     use WPEmerge\Routing\Conditions\AdminPageCondition;
     use WPEmerge\Routing\Conditions\QueryStringCondition;
@@ -210,7 +211,7 @@
 
                 $generator->setRequestResolver(function () {
 
-                    return $this->container->make(ServerRequestInterface::class);
+                    return $this->container->make(Request::class);
 
                 });
 

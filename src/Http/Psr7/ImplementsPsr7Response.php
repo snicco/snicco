@@ -15,7 +15,7 @@
         /**
          * @var ResponseInterface
          */
-        private $psr7_response;
+        protected $psr7_response;
 
         public function withProtocolVersion($version)
         {

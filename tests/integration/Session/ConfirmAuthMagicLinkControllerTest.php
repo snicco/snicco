@@ -14,6 +14,7 @@
     use Tests\stubs\TestRequest;
     use WPEmerge\ExceptionHandling\Exceptions\NotFoundException;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\Exceptions\InvalidSignatureException;
     use WPEmerge\Session\SessionServiceProvider;
@@ -116,7 +117,7 @@
 
             $url = $this->createSignedUrl($calvin->ID, '');
 
-            TestApp::session()->put('auth.confirm.intended_url', 'https://intended-url.com');
+            TestApp::session()->setIntendedUrl('https://intended-url.com');
 
             $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
             HeaderStack::assertHas('Location', 'https://intended-url.com');
@@ -201,7 +202,11 @@
 
             $url = $this->createSignedUrl($calvin->ID, '');
 
-            $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
+            $request = TestRequest::fromFullUrl('GET', $url)
+                                  ->withAddedHeader('Cookie', 'wp_mvc_session='.$id_old);
+
+
+            $this->seeKernelOutput('', $request);
             HeaderStack::assertHas('Location', WP::adminUrl());
             HeaderStack::assertHasStatusCode(302);
 

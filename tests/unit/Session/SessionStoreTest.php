@@ -140,7 +140,7 @@
 			$session->put( '_flash.new', 'bar' );
 			$session->put( 'baz', 'biz' );
 
-			$this->assertEmpty( $session->getHandler()->read( $session->getId() ) );
+			$this->assertEmpty( $session->getDriver()->read( $session->getId() ) );
 
 			$session->save();
 
@@ -156,7 +156,7 @@
 					'new' => [],
 				],
 
-			], \unserialize( $session->getHandler()->read( $session->getId() ) ) );
+			], \unserialize( $session->getDriver()->read( $session->getId() ) ) );
 
 		}
 
@@ -602,13 +602,13 @@
 
 			$session->save();
 
-			$this->assertArrayHasKey( 'foo', unserialize( $session->getHandler()->read( $old_id ) ) );
+			$this->assertArrayHasKey( 'foo', unserialize( $session->getDriver()->read( $old_id ) ) );
 
 			$this->assertTrue( $session->invalidate() );
 
 			$this->assertNotEquals( $old_id, $session->getId() );
 			$this->assertCount( 0, $session->all() );
-			$this->assertEquals( '', $session->getHandler()->read( $old_id ) );
+			$this->assertEquals( '', $session->getDriver()->read( $old_id ) );
 
 
 		}

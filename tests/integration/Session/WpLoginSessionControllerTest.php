@@ -52,7 +52,7 @@
             $this->simulateRequest('POST');
 
             $session = TestApp::session();
-            $array_handler = $session->getHandler();
+            $array_handler = $session->getDriver();
             $array_handler->write($this->sessionId(), serialize(['foo' => 'bar']));
 
             // The user was logged in by WordPress => run Kernel
@@ -125,7 +125,7 @@
             $this->simulateRequest('GET');
 
             $session = TestApp::session();
-            $array_handler = $session->getHandler();
+            $array_handler = $session->getDriver();
             $array_handler->write($this->sessionId(), serialize(['foo' => 'bar']));
 
             // The user was logged out by WordPress => run Kernel

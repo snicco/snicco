@@ -156,7 +156,7 @@
 
             $new_session = $this->getSession();
 
-            $this->assertSame($new_session->get('auth.confirm.intended_url', ''), $this->protectedUrl());
+            $this->assertSame($new_session->getIntendedUrl(), $this->protectedUrl());
 
 
         }

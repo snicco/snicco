@@ -8,7 +8,6 @@
 
     use Carbon\Carbon;
     use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
@@ -19,53 +18,38 @@
     {
 
         /**
-         * @var Session
-         */
-        private $session_store;
-        /**
          * @var ResponseFactory
          */
         private $response_factory;
-        /**
-         * @var UrlGenerator
-         */
-        private $url_generator;
 
-        public function __construct(Session $session_store, ResponseFactory $response_factory, UrlGenerator $url_generator)
+        public function __construct(ResponseFactory $response_factory)
         {
-            $this->session_store = $session_store;
             $this->response_factory = $response_factory;
-            $this->url_generator = $url_generator;
         }
 
         public function handle(Request $request, Delegate $next)
         {
 
-            if ( ! $this->hasValidAuthToken()  ) {
+            $session = $request->getSession();
 
-                if ( ! $this->session_store->has('auth.confirm.email.count') ) {
+            if ( ! $session->hasValidAuthConfirmToken()  ) {
 
-                    $this->session_store->invalidate();
+                if ( ! $session->has('auth.confirm.email.count') ) {
+
+                    $session->invalidate();
 
                 }
 
-                $this->session_store->put('auth.confirm.intended_url', $request->getFullUrl());
+                $session->setIntendedUrl($request->getFullUrl());
 
                 return $this->response_factory->redirect()->to('/auth/confirm');
 
             }
 
-
             return $next($request);
 
         }
 
-        private function hasValidAuthToken () : bool
-        {
-
-            return Carbon::now()->getTimestamp() < $this->session_store->get('auth.confirm.until', 0);
-
-        }
 
 
     }
