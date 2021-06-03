@@ -21,7 +21,7 @@
     </testsuites>
 
     <php>
-        <env name="ROOT_DIR" value="/Users/calvinalkan/valet/wpemerge/wpemerge"/>
+        <env name="ROOT_DIR" value="/Users/calvinalkan/valet/wpemerge/wp-mvc"/>
         <env name="SITE_URL" value="https://wpemerge.test/"/>
     </php>
 
