@@ -80,6 +80,8 @@
 
             $this->simulateRequest('POST');
 
+
+
             // The user was logged in by WordPress => run Kernel
             do_action('wp_login');
 
@@ -87,6 +89,33 @@
 
             $this->assertSame(Carbon::now()->addMinutes(180)->getTimestamp(), $confirmed_until, 'Auth confirmed token not set correctly.');
 
+
+        }
+
+        /** @test */
+        public function auth_confirmation_can_be_disabled_optionally_on_login () {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true,
+                    'driver' => 'array',
+                    'auth_confirm_on_login' => false,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ],
+            ]);
+            $request = TestRequest::from('POST', 'wp-login.php')
+                                  ->withAddedHeader('Cookie', 'wp_mvc_session='.$this->sessionId());
+
+            // Simulate current request to /wp-login.php
+            TestApp::container()->instance(Request::class, $request);
+
+            // The user was logged in by WordPress => run Kernel
+            do_action('wp_login');
+
+
+            $this->assertFalse(TestApp::session()->has('auth.confirm.until'));
 
         }
 

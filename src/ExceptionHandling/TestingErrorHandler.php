@@ -15,12 +15,10 @@
 
         public function register()
         {
-            // TODO: Implement register() method.
         }
 
         public function unregister()
         {
-            // TODO: Implement unregister() method.
         }
 
         public function transformToResponse(Throwable $exception) : ?Response

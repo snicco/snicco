@@ -28,6 +28,7 @@
     use function Patchwork\Config\read;
 
     class SessionServiceProvider extends ServiceProvider
+
     {
 
         public function register() : void
@@ -74,6 +75,7 @@
             $this->config->extend('session.lifetime', 120);
             $this->config->extend('session.encrypt', false);
             $this->config->extend('session.auth_confirmed_lifetime', 180);
+            $this->config->extend('session.auth_confirm_on_login', 180);
 
             $this->config->extend('middleware.aliases', [
                 'csrf' => CsrfMiddleware::class,
@@ -254,7 +256,8 @@
                 return new WpLoginSessionController(
                     $this->container->make(SessionStore::class),
                     $this->container->make(ResponseFactory::class),
-                    $this->config->get('session.auth_confirmed_lifetime')
+                    $this->config->get('session.auth_confirmed_lifetime'),
+                    $this->config->get('session.auth_confirm_on_login')
                 );
 
             });
