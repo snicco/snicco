@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware;
+    namespace WPEmerge\Session\Middleware;
 
     use Carbon\Carbon;
     use WPEmerge\Contracts\Middleware;
@@ -49,7 +49,6 @@
             return $next($request);
 
         }
-
 
 
     }

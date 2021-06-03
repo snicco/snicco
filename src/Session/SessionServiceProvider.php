@@ -13,7 +13,7 @@
     use WPEmerge\Encryptor;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Middleware\ConfirmAuth;
+    use WPEmerge\Session\Middleware\ConfirmAuth;
     use WPEmerge\Session\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Session\Controllers\WpLoginSessionController;
     use WPEmerge\Session\Drivers\ArraySessionDriver;

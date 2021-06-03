@@ -14,6 +14,7 @@
     use Tests\helpers\AssertsResponse;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Delegate;
+    use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Middleware\Authenticate;
     use WPEmerge\Http\Responses\RedirectResponse;
@@ -88,7 +89,6 @@
 
         }
 
-
 		/** @test */
 		public function logged_out_users_cant_access_the_route()
         {
@@ -98,10 +98,9 @@
             $response = $this->newMiddleware()->handle($this->request, $this->route_action);
 
             $this->assertInstanceOf(RedirectResponse::class, $response);
-            $this->assertStatusCode(401, $response);
+            $this->assertStatusCode(302, $response);
 
         }
-
 
 		/** @test */
 		public function by_default_users_get_redirected_to_wp_login_with_the_current_url_added_to_the_query_args()
@@ -123,7 +122,6 @@
 
         }
 
-
 		/** @test */
 		public function users_can_be_redirected_to_a_custom_url()
         {
@@ -137,6 +135,22 @@
                              ->handle($this->request, $this->route_action);
 
             $this->assertSame($expected, $response->getHeaderLine('Location'));
+
+        }
+
+        /** @test */
+        public function json_responses_are_returned_for_ajax_requests () {
+
+            WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
+
+            $response = $this->newMiddleware()->handle(
+                $this->request->withAddedHeader('X-Requested-With', 'XMLHttpRequest'),
+                $this->route_action
+            );
+
+            $this->assertInstanceOf(Response::class, $response);
+            $this->assertStatusCode(401, $response);
+            $this->assertContentType('application/json', $response);
 
         }
 

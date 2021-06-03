@@ -26,7 +26,6 @@
 
         public function __construct(ResponseFactory $response, string $url = null)
         {
-
             $this->url = $url;
             $this->response = $response;
         }
@@ -34,7 +33,7 @@
         public function handle(Request $request, $next)
         {
 
-            if (WP::isUserLoggedIn()) {
+            if ( WP::isUserLoggedIn() ) {
 
                 return $next($request);
 
@@ -46,12 +45,11 @@
 
                 return $this->response
                     ->json('Authentication Required')
-                    ->withStatus(403);
-
+                    ->withStatus(401);
 
             }
 
-            return $this->response->redirect()->to($url)->withStatus(401);
+            return $this->response->redirect()->to($url);
 
 
         }
