@@ -628,7 +628,7 @@
 
             $session = $this->getSession();
             $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
-            $session->put('auth.confirm.intended_url', 'foobar.com/intended');
+            $session->put('auth.confirm.intended_url', 'https://intended.com');
             $post_request = $this->postRequest( $email, $csrf);
 
             $this->runKernel($post_request);
@@ -642,7 +642,7 @@
             $this->assertOutput('', $get_request);
 
             HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertHas('Location', 'foobar.com/intended');
+            HeaderStack::assertHas('Location', 'https://intended.com');
 
             $this->assertUserLoggedIn($calvin);
 

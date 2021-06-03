@@ -15,8 +15,6 @@
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\ExceptionHandling\ProductionErrorHandler;
-    use WPEmerge\ExceptionHandling\TestingErrorHandler;
     use WPEmerge\Facade\WP;
 	use WPEmerge\Facade\WpFacade;
     use WPEmerge\Http\Cookies;
@@ -28,25 +26,17 @@
     class ApplicationServiceProviderTest extends IntegrationTest {
 
 
-        protected function setUp() : void
+        protected function afterSetup() : void
         {
 
-            parent::setUp();
-
-            $this->app = $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR
-                ],
-                'app_key'=> TEST_APP_KEY
-            ]);
+            $this->app = $this->newTestApp(TEST_CONFIG);
 
 
         }
 
-        protected function tearDown() : void
+        protected function beforeTearDown() : void
         {
 
-            parent::tearDown();
             TestApp::setApplication(null);
             ApplicationEvent::setInstance(null);
 
@@ -89,8 +79,6 @@
 
 
 		}
-
-
 
         /** @test */
 		public function the_error_handler_can_be_registered_globally () {
@@ -233,12 +221,6 @@
         public function a_view_can_be_rendered_and_echoed()
         {
 
-            $this->newTestApp([
-                'views' => [
-                    VIEWS_DIR,
-                    VIEWS_DIR.DS.'subdirectory',
-                ],
-            ]);
 
             ob_start();
             TestApp::render('view');
@@ -250,13 +232,6 @@
         /** @test */
         public function a_nested_view_can_be_included()
         {
-
-            $this->newTestApp([
-                'views' => [
-                    VIEWS_DIR,
-                    VIEWS_DIR.DS.'subdirectory',
-                ],
-            ]);
 
             $view = TestApp::view('subview.php');
 

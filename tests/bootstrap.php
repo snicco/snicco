@@ -69,6 +69,13 @@
 
     }
 
+    if ( ! defined('TEST_APP_KEY')) {
+
+        define('TEST_APP_KEY', 'base64:LOK1UydvZ50A9iyTC2KxuP/C6k8TAM4UlGDcjwsKQik=');
+
+    }
+
+
     if ( ! defined('TEST_CONFIG')) {
 
         $config = require_once TESTS_CONFIG_PATH;
@@ -77,11 +84,6 @@
 
     }
 
-    if ( ! defined('TEST_APP_KEY')) {
-
-        define('TEST_APP_KEY', 'base64:LOK1UydvZ50A9iyTC2KxuP/C6k8TAM4UlGDcjwsKQik=');
-
-    }
 
     if ( ! defined('WPEMERGE_RUNNING_UNIT_TESTS')) {
 

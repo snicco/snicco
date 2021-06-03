@@ -5,6 +5,7 @@
 
 	return [
 
+        'app_key' => TEST_APP_KEY,
 
 		'controllers' => [
 
