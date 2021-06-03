@@ -10,7 +10,7 @@
     use WPEmerge\ExceptionHandling\Exceptions\DecryptException;
     use WPEmerge\ExceptionHandling\Exceptions\EncryptException;
 
-    class EncryptedStore extends SessionStore
+    class Encrypted extends Session
     {
         /**
          * @var EncryptorInterface
@@ -18,7 +18,7 @@
         protected $encryptor;
 
 
-        public function __construct($name, SessionHandler $handler, EncryptorInterface $encryptor, $id = '')
+        public function __construct($name, SessionDriver $handler, EncryptorInterface $encryptor, $id = '')
         {
             $this->encryptor = $encryptor;
 

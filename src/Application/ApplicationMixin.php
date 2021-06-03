@@ -13,7 +13,7 @@
 	use WPEmerge\Routing\Router;
     use WPEmerge\Routing\UrlGenerator;
 	use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
     use WPEmerge\View\GlobalContext;
 
     /**
@@ -44,9 +44,10 @@
 
         /**
          * Return the application session store.
-         * @return SessionStore
+         *
+         * @return Session
          */
-        public static function session() : SessionStore
+        public static function session() : Session
         {}
 
         /**

@@ -16,7 +16,7 @@
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\Controllers\ConfirmAuthController;
     use WPEmerge\Session\SessionServiceProvider;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
 
@@ -59,10 +59,10 @@
 
         }
 
-        private function getSession() : SessionStore
+        private function getSession() : Session
         {
 
-            return TestApp::resolve(SessionStore::class);
+            return TestApp::resolve(Session::class);
 
         }
 

@@ -12,7 +12,7 @@
     use WPEmerge\Http\Psr7\InspectsRequest;
     use WPEmerge\Http\Psr7\ImplementsPsr7Request;
     use WPEmerge\Routing\RoutingResult;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
     use WPEmerge\Support\VariableBag;
@@ -67,7 +67,7 @@
 
         }
 
-        public function withSession (SessionStore $session_store) {
+        public function withSession (Session $session_store) {
 
             return $this->withAttribute('session', $session_store);
 
@@ -173,7 +173,7 @@
             return $this->getAttribute('cookies', new VariableBag());
         }
 
-        public function getSession () :?SessionStore {
+        public function getSession () :?Session {
 
             return $this->getAttribute('session');
 

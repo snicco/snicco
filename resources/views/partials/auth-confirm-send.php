@@ -3,7 +3,7 @@
     declare(strict_types = 1);
 
     use Illuminate\Support\ViewErrorBag;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
 
     /** @var string $post_url */
     /** @var bool $invalid_email */
@@ -11,7 +11,7 @@
     /** @var string $csrf_field */
     /** @var string $last_recipient */
 
-    /** @var SessionStore $session */
+    /** @var Session $session */
     $lifetime = $session->get('auth.confirm.lifetime');
     $lifetime = $lifetime / 60;
 

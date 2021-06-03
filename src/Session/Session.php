@@ -12,7 +12,7 @@
     use stdClass;
     use SessionHandlerInterface;
 
-    class SessionStore
+    class Session
     {
 
         /**
@@ -40,7 +40,7 @@
          */
         private $active = false;
 
-        public function __construct(string $cookie_name, SessionHandler $handler, string $id = '')
+        public function __construct(string $cookie_name, SessionDriver $handler, string $id = '')
         {
 
             $this->setId($id);
@@ -299,7 +299,7 @@
             $this->name = $name;
         }
 
-        public function setId(string $id) : SessionStore
+        public function setId(string $id) : Session
         {
 
             $this->id = $this->isValidId($id) ? $id : $this->generateSessionId();
@@ -325,7 +325,7 @@
             $this->put('_previous.url', $url);
         }
 
-        public function getHandler() : SessionHandler
+        public function getHandler() : SessionDriver
         {
 
             return $this->handler;

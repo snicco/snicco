@@ -20,7 +20,7 @@
     use WPEmerge\Http\Cookies;
     use WPEmerge\Routing\Router;
     use WPEmerge\Session\SessionServiceProvider;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
     use WPEmerge\Support\Url;
 
     class ApplicationServiceProviderTest extends IntegrationTest {
@@ -251,7 +251,7 @@
                 ]
             ]);
 
-            $this->assertInstanceOf(SessionStore::class, TestApp::session());
+            $this->assertInstanceOf(Session::class, TestApp::session());
 
         }
 

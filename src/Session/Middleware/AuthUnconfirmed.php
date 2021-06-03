@@ -12,7 +12,7 @@
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
 
     class AuthUnconfirmed extends Middleware
     {
@@ -28,11 +28,11 @@
         private $url;
 
         /**
-         * @var SessionStore
+         * @var Session
          */
         private $session;
 
-        public function __construct(ResponseFactory $response_factory, SessionStore $session, $url = 'admin')
+        public function __construct(ResponseFactory $response_factory, Session $session, $url = 'admin')
         {
             $this->response_factory = $response_factory;
             $this->url = $url;

@@ -18,11 +18,11 @@
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
-    use WPEmerge\Session\Handlers\DatabaseSessionHandler;
-    use WPEmerge\Session\EncryptedStore;
-    use WPEmerge\Session\SessionHandler;
+    use WPEmerge\Session\Drivers\DatabaseSessionDriver;
+    use WPEmerge\Session\Encrypted;
+    use WPEmerge\Session\SessionDriver;
     use WPEmerge\Session\SessionServiceProvider;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
     use WPEmerge\Session\Middleware\StartSessionMiddleware;
     use WPEmerge\Session\WpLoginAction;
 
@@ -265,9 +265,9 @@
                 ],
             ]);
 
-            $store = TestApp::resolve(SessionStore::class);
+            $store = TestApp::resolve(Session::class);
 
-            $this->assertInstanceOf(SessionStore::class, $store);
+            $this->assertInstanceOf(Session::class, $store);
 
         }
 
@@ -284,9 +284,9 @@
                 ],
             ]);
 
-            $driver = TestApp::resolve(SessionHandler::class);
+            $driver = TestApp::resolve(SessionDriver::class);
 
-            $this->assertInstanceOf(\WPEmerge\Session\Handlers\DatabaseSessionHandler::class, $driver);
+            $this->assertInstanceOf(\WPEmerge\Session\Drivers\DatabaseSessionDriver::class, $driver);
 
 
         }
@@ -323,9 +323,9 @@
                 ],
             ]);
 
-            $driver = TestApp::resolve(SessionStore::class);
+            $driver = TestApp::resolve(Session::class);
 
-            $this->assertInstanceOf(EncryptedStore::class, $driver);
+            $this->assertInstanceOf(Encrypted::class, $driver);
 
         }
 

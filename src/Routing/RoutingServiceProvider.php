@@ -30,7 +30,7 @@
     use WPEmerge\Routing\Conditions\PostTypeCondition;
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
     use WPEmerge\Support\FilePath;
     use WP_Filesystem_Direct;
 
@@ -225,7 +225,7 @@
 
                 $generator->setSessionResolver(function () {
 
-                    if ( ! $this->container->offsetExists(SessionStore::class)) {
+                    if ( ! $this->container->offsetExists(Session::class)) {
 
                         throw new ConfigurationException(
                             'You cant use UrlGeneration functions that depend on sessions without using the session extension.'
@@ -233,7 +233,7 @@
 
                     }
 
-                    return $this->container->make(SessionStore::class);
+                    return $this->container->make(Session::class);
 
 
                 });

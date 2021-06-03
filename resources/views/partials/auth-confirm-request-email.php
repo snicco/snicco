@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
     use Illuminate\Support\ViewErrorBag;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
 
     /** @var string $post_url */
     /** @var ViewErrorBag $errors */
     /** @var bool $invalid_email */
     /** @var string $csrf_field */
     /** @var string $old_email */
-    /** @var SessionStore $session */
+    /** @var Session $session */
 
     $email_failed = $session->has('auth.confirm.email_sending_failed');
 
@@ -44,8 +44,12 @@
 
     <div class="form-group">
         <input type="email" name="email" id="email"
+
+               placeholder="Your Account Email"
+               value="<?= esc_attr($old_email) ?>"
+               required
                class="<?= $invalid_email ? 'error' : '' ?>"
-               value="<?= esc_attr($old_email) ?>" required>
+        >
     </div>
     <?= $csrf_field ?>
     <button type="submit" class="submit"> <?= $email_failed ? 'Try again' : 'Send Confirmation Email'; ?></button>

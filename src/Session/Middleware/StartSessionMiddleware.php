@@ -13,14 +13,14 @@
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Responses\NullResponse;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
 
 
     class StartSessionMiddleware extends Middleware
     {
 
         /**
-         * @var SessionStore
+         * @var Session
          */
         private $session_store;
 
@@ -38,7 +38,7 @@
          */
         private $cookies;
 
-        public function __construct(SessionStore $session_store, Cookies $cookies, array $config)
+        public function __construct(Session $session_store, Cookies $cookies, array $config)
         {
 
             $this->session_store = $session_store;
@@ -63,7 +63,7 @@
 
         }
 
-        private function getSession(Request $request) : SessionStore
+        private function getSession(Request $request) : Session
         {
             $cookies = $request->getCookies();
             $cookie_name = $this->session_store->getName();
@@ -73,7 +73,7 @@
             return $this->session_store;
         }
 
-        private function addSessionCookie(SessionStore $session)
+        private function addSessionCookie(Session $session)
         {
 
             $this->cookies->set(
@@ -91,7 +91,7 @@
             );
         }
 
-        private function startSession(SessionStore $session_store, Request $request)
+        private function startSession(Session $session_store, Request $request)
         {
 
             $session_store->start();
@@ -99,7 +99,7 @@
 
         }
 
-        private function handleStatefulRequest(Request $request, SessionStore $session, Delegate $next) : ResponseInterface
+        private function handleStatefulRequest(Request $request, Session $session, Delegate $next) : ResponseInterface
         {
 
             $request = $request->withSession($session);
@@ -116,7 +116,7 @@
 
         }
 
-        private function storePreviousUrl(ResponseInterface $response, Request $request, SessionStore $session)
+        private function storePreviousUrl(ResponseInterface $response, Request $request, Session $session)
         {
 
             if ($response instanceof NullResponse) {
@@ -134,7 +134,7 @@
 
         }
 
-        private function saveSession(SessionStore $session)
+        private function saveSession(Session $session)
         {
 
             $session->save();

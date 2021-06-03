@@ -10,7 +10,7 @@
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
     use WPEmerge\View\GlobalContext;
 
     class ShareSessionWithView extends Middleware
@@ -21,11 +21,11 @@
          */
         private $global_context;
         /**
-         * @var SessionStore
+         * @var Session
          */
         private $session;
 
-        public function __construct(GlobalContext $global_context, SessionStore $session)
+        public function __construct(GlobalContext $global_context, Session $session)
         {
             $this->global_context = $global_context;
             $this->session = $session;

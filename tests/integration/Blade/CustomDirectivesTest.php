@@ -15,9 +15,9 @@
     use Tests\stubs\TestApp;
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Session\Handlers\ArraySessionHandler;
+    use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\CsrfField;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
 
     class CustomDirectivesTest extends IntegrationTest
     {
@@ -95,7 +95,7 @@
                 $storage = [];
 
                 return new CsrfField(
-                    new SessionStore('test_session', new ArraySessionHandler(10)),
+                    new Session('test_session', new ArraySessionDriver(10)),
                     new Guard(
                         TestApp::container()->make(ResponseFactory::class),
                         'csrf', $storage
