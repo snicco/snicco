@@ -11,6 +11,7 @@
     use Illuminate\Support\InteractsWithTime;
     use WPEmerge\Contracts\RouteUrlGenerator;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Str;
@@ -64,6 +65,12 @@
         {
 
             $this->request_resolver = $request_resolver;
+
+        }
+
+        public function getRequest () :Request {
+
+            return call_user_func($this->request_resolver);
 
         }
 
@@ -155,7 +162,7 @@
 
         }
 
-        public function back(string $fallback = '') : string
+        public function previous(string $fallback = '') : string
         {
 
             $referrer = $this->getRequest()->getHeaderLine('referer');
@@ -174,6 +181,11 @@
         public function current() : string
         {
             return $this->to($this->getRequest()->getFullUrl());
+        }
+
+        public function toLogin(string $redirect_on_login = '', bool $reauth = false) : string
+        {
+            return $this->to( WP::loginUrl($redirect_on_login, $reauth) );
         }
 
         private function getPreviousUrlFromSession() : ?string
@@ -315,19 +327,12 @@
 
         }
 
-        private function getRequest () :Request {
-
-            return call_user_func($this->request_resolver);
-
-        }
 
         /** @todo move everything dependet on session into the StatefulRedirector */
         private function getSession() :Session
         {
             return call_user_func($this->session_resolver);
         }
-
-
 
 
     }

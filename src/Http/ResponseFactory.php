@@ -160,9 +160,9 @@
             return $this->redirector;
         }
 
-        public function redirectGuest(int $status_code = 302) : RedirectResponse
+        public function redirectToLogin( bool $reauth = false, string $redirect_on_login = '', int $status_code = 302) : RedirectResponse
         {
-           return $this->redirector->guest($status_code);
+           return $this->redirector->toLogin($redirect_on_login, $reauth, $status_code);
         }
 
         public function invalidResponse() : InvalidResponse

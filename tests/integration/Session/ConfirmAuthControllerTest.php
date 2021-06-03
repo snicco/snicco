@@ -137,7 +137,7 @@
 
             $expected_redirect_url = '/wp-login.php?redirect_to=https%3A%2F%2Ffoo.com%2Fauth%2Fconfirm&reauth=1';
 
-            HeaderStack::assertHasStatusCode(401);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $expected_redirect_url);
 
         }
