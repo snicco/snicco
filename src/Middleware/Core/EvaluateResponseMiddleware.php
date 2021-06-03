@@ -10,6 +10,7 @@
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\ExceptionHandling\Exceptions\HttpException;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidResponseException;
+    use WPEmerge\ExceptionHandling\Exceptions\NotFoundException;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Responses\InvalidResponse;
     use WPEmerge\Http\Responses\NullResponse;
@@ -73,7 +74,7 @@
 
             }
 
-            throw new HttpException(404);
+            throw new NotFoundException('This page could not be found');
 
         }
 
