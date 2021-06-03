@@ -25,6 +25,8 @@
          */
         private $search_depth;
 
+        private $last_context = [];
+
         public function __construct(array $directories , int $depth = 2)
         {
 
@@ -89,6 +91,9 @@
 
         public function includeFile(string $path, $context)
         {
+
+            $context = array_merge($this->last_context, $context);
+            $this->last_context = $context;
 
             extract($context, EXTR_OVERWRITE);
             include $path;

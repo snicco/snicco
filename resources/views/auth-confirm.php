@@ -16,8 +16,6 @@
     /** @var  ViewErrorBag $errors */
     $invalid_email = $errors->has('email');
 
-
-
 ?>
 
 <html <?php language_attributes() ?> >
@@ -205,20 +203,29 @@
 
             <?php if ($jail):
 
-                include $view->pathForView('auth-confirm-jail');
+                echo $view->render('auth-confirm-jail');
 
                 ?>
 
             <?php elseif ($session->has('auth.confirm.email.count')):
 
-                include $view->pathForView('auth-confirm-send');
+                echo $view->render('auth-confirm-send',
+                    [
+                        'invalid_email' => $invalid_email,
+                        'old_email' => $old_email,
+                    ]
+                );
 
                 ?>
 
             <?php else :
 
-                include $view->pathForView('auth-confirm-request-email');
-
+                echo $view->render('auth-confirm-request-email',
+                    [
+                        'invalid_email' => $invalid_email,
+                        'old_email' => $old_email,
+                    ]
+                );
 
                 ?>
 

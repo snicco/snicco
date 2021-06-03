@@ -31,8 +31,6 @@
 		 */
 		private $global_context;
 
-		private $last_view;
-
 		public function __construct(
 			ViewEngineInterface $engine,
 			ViewComposerCollection $composer_collection,
