@@ -46,8 +46,7 @@
                 }
 
 				return $this->response->redirect()
-                                      ->to($url)
-                                      ->withStatus(302);
+                                      ->to($url);
 
 			}
 
