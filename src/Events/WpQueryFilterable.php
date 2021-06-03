@@ -6,11 +6,14 @@
 
     namespace WPEmerge\Events;
 
+    use BetterWpHooks\Traits\DispatchesConditionally;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Http\Psr7\Request;
 
     class WpQueryFilterable extends ApplicationEvent
     {
+
+
         /**
          * @var array
          */
@@ -43,5 +46,7 @@
             return $this->original_query_vars;
 
         }
+
+
 
     }

@@ -6,18 +6,13 @@
 
     namespace WPEmerge\Application;
 
+    use Tests\unit\View\MethodField;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewFactoryInterface;
     use WPEmerge\Encryptor;
-    use WPEmerge\Events\IncomingAdminRequest;
-    use WPEmerge\Events\IncomingAjaxRequest;
-    use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\ExceptionHandling\ShutdownHandler;
-    use WPEmerge\Facade\WordpressApi;
-    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Cookies;
-    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\View\GlobalContext;
@@ -37,7 +32,7 @@
         public function bootstrap() : void
         {
 
-            if ( ! Encryptor::validAppKey($this->config->get('app_key') ) && ! WPEMERGE_RUNNING_UNIT_TESTS ) {
+            if ( !  $this->validAppKey() && ! WPEMERGE_RUNNING_UNIT_TESTS ) {
 
                 throw new ConfigurationException('Your app_key is either missing or too insecure.');
 
@@ -158,6 +153,7 @@
 
 
             });
+            $app->alias('methodField', MethodField::class, 'html');
 
         }
 

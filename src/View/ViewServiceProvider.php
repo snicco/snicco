@@ -6,6 +6,7 @@
 
 	namespace WPEmerge\View;
 
+    use Tests\unit\View\MethodField;
     use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewFactoryInterface;
@@ -18,6 +19,8 @@
 
 
 		    $this->bindConfig();
+
+		    $this->bindMethodField();
 
 		    $this->bindGlobalContext();
 
@@ -111,6 +114,13 @@
                     $this->container->make(ViewComposerFactory::class),
                 );
 
+            });
+        }
+
+        private function bindMethodField()
+        {
+            $this->container->singleton(MethodField::class, function () {
+                return new MethodField($this->appKey());
             });
         }
 

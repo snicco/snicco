@@ -24,6 +24,7 @@
   "require": {
     "php": "^7.3",
     "ext-json": "*",
+    "ext-openssl": "*",
     "ext-mbstring": "*",
     "calvinalkan/base-container": "0.1.*",
     "calvinalkan/better-wordpress-hooks": "0.1.8",
@@ -38,7 +39,6 @@
   },
   "require-dev": {
     "opis/closure": "3.6.2",
-    "ext-openssl": "*",
     "illuminate/encryption": "8.40.0",
     "filp/whoops": "^2.2",
     "mockery/mockery": "^1.4.2",
@@ -52,9 +52,8 @@
 
   "suggest": {
     "opis/closure": "Required if you want to cache routes that use closures [3.6.2]",
-    "illuminate/encryption": "Required if you want to use sessions [8.40.0]",
+    "illuminate/encryption": "Required if you want to use strong session encryption [8.40.0]",
     "slim/csrf" : "Required if you want to you csrf protection with sessions [1.2.1]",
-    "ext-openssl": "Required if you want to use sessions",
     "flip/whoops" : "Required if you want the pretty page error handler during devolopment"
   },
 

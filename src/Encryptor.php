@@ -10,7 +10,6 @@
     use Illuminate\Contracts\Encryption\DecryptException as IlluminateDecryptException;
     use Illuminate\Encryption\Encrypter;
     use WPEmerge\Contracts\EncryptorInterface;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\ExceptionHandling\Exceptions\EncryptException;
     use WPEmerge\ExceptionHandling\Exceptions\DecryptException;
     use WPEmerge\Support\Str;
@@ -115,32 +114,5 @@
             return $key;
         }
 
-        public static function validAppKey(string $key) : bool
-        {
-
-            if (Str::startsWith($key, $prefix = 'base64:')) {
-
-                $key = base64_decode(Str::after($key, $prefix));
-
-            }
-
-            if ( ! static::supported($key)) {
-
-                return false;
-
-            }
-
-            return true;
-
-        }
-
-        private static function supported(string $key) : bool
-        {
-
-            $length = mb_strlen($key, '8bit');
-
-            return $length === 32;
-
-        }
 
     }
