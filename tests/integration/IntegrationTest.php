@@ -67,11 +67,16 @@
             $GLOBALS['test'] = [];
         }
 
-        public function newTestApp(array $config = []) : Application
+        public function newTestApp(array $config = [], bool $with_exceptions = false) : Application
         {
 
             $app = TestApp::make();
             $app->boot($config);
+
+            if ( ! $with_exceptions ) {
+                $this->withoutExceptionHandling();
+            }
+
 
             return $app;
 

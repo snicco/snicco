@@ -90,7 +90,7 @@
                     $this->container->make(ViewFactoryInterface::class),
                     $this->container->make('psr17.response.factory'),
                     $this->container->make(StreamFactoryInterface::class),
-
+                    $this->container->make(Redirector::class),
                 );
 
             });

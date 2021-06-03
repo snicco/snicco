@@ -39,13 +39,19 @@
          */
         private $stream_factory;
 
-        public function __construct(ViewFactory $view, Psr17ResponseFactory $response, Psr17StreamFactory $stream)
+        /**
+         * @var Redirector
+         */
+        private $redirector;
+
+        public function __construct(ViewFactory $view, Psr17ResponseFactory $response, Psr17StreamFactory $stream, Redirector $redirector)
         {
 
             $this->view = $view;
             $this->response_factory = $response;
             $this->stream_factory = $stream;
 
+            $this->redirector = $redirector;
         }
 
         public function view(string $view, array $data = [], $status = 200, array $headers = []) : Response
@@ -102,7 +108,7 @@
             return new NullResponse($this->response_factory->createResponse(204));
 
         }
-
+ 
         public function queryFiltered () : WpQueryFilteredResponse {
 
             return new WpQueryFilteredResponse($this->response_factory->createResponse(200));
@@ -151,6 +157,11 @@
         public function redirect(int $status_code = 302) : RedirectResponse
         {
             return new RedirectResponse($this->make($status_code));
+        }
+
+        public function redirectGuest(int $status_code = 302)
+        {
+
         }
 
         public function invalidResponse() : InvalidResponse
@@ -231,5 +242,7 @@
         {
             return $this->createResponse();
         }
+
+
 
     }

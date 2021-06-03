@@ -8,6 +8,8 @@
 
 	use Exception;
 	use Tests\helpers\AssertsResponse;
+    use Tests\helpers\CreateRouteCollection;
+    use Tests\helpers\CreateUrlGenerator;
     use Tests\unit\UnitTest;
 	use Tests\stubs\TestException;
     use Tests\stubs\TestRequest;
@@ -22,6 +24,8 @@
     class ProductionErrorHandlerTest extends UnitTest {
 
 		use AssertsResponse;
+        use CreateUrlGenerator;
+        use CreateRouteCollection;
 
         protected function beforeTestRun()
         {

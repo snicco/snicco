@@ -6,6 +6,8 @@
 
     namespace Tests\unit\Middleware;
 
+    use Tests\helpers\CreateRouteCollection;
+    use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\unit\UnitTest;
     use WPEmerge\Http\Cookies;
@@ -15,6 +17,9 @@
 
     class ShareCookiesTest extends UnitTest
     {
+
+        use CreateUrlGenerator;
+        use CreateRouteCollection;
 
         /**
          *

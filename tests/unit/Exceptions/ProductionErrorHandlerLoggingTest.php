@@ -12,6 +12,8 @@
     use Psr\Log\LogLevel;
     use SniccoAdapter\BaseContainerAdapter;
     use Tests\helpers\AssertsResponse;
+    use Tests\helpers\CreateRouteCollection;
+    use Tests\helpers\CreateUrlGenerator;
     use Tests\unit\UnitTest;
     use Tests\fixtures\TestDependencies\Foo;
     use Tests\stubs\TestLogger;
@@ -26,6 +28,8 @@
     {
 
         use AssertsResponse;
+        use CreateUrlGenerator;
+        use CreateRouteCollection;
 
         /**
          * @var BaseContainerAdapter

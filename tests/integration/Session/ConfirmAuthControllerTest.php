@@ -33,7 +33,6 @@
         protected function afterSetup()
         {
             add_filter('pre_wp_mail',[$this, 'catchMail'], 10, 3);
-
         }
 
         protected function beforeTearDown()
