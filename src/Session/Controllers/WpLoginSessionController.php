@@ -29,12 +29,18 @@
          */
         private $auth_confirm_lifetime_in_minutes;
 
-        public function __construct(SessionStore $session, ResponseFactory $response_factory, int $auth_confirm_lifetime = 180)
+        /**
+         * @var bool
+         */
+        private $confirm_on_login;
+
+        public function __construct(SessionStore $session, ResponseFactory $response_factory, int $auth_confirm_lifetime = 180, bool $confirm_on_login = true )
         {
 
             $this->session = $session;
             $this->response_factory = $response_factory;
             $this->auth_confirm_lifetime_in_minutes = $auth_confirm_lifetime;
+            $this->confirm_on_login = $confirm_on_login;
 
         }
 
@@ -50,10 +56,15 @@
 
             $this->session->migrate(true);
 
-            $this->session->put(
-                'auth.confirm.until',
-                Carbon::now()->addMinutes($this->auth_confirm_lifetime_in_minutes)->getTimestamp()
-            );
+            if ( $this->confirm_on_login ) {
+
+                $this->session->put(
+                    'auth.confirm.until',
+                    Carbon::now()->addMinutes($this->auth_confirm_lifetime_in_minutes)->getTimestamp()
+                );
+
+            }
+
 
             return $this->response_factory->noContent();
 
