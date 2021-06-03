@@ -10,7 +10,7 @@
     use WPEmerge\ExceptionHandling\Exceptions\DecryptException;
     use WPEmerge\ExceptionHandling\Exceptions\EncryptException;
 
-    class Encrypted extends Session
+    class EncryptedSession extends Session
     {
         /**
          * @var EncryptorInterface
