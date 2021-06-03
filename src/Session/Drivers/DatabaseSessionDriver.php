@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session\Handlers;
+    namespace WPEmerge\Session\Drivers;
 
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
     use Psr\Http\Message\ServerRequestInterface;
     use wpdb;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Session\SessionHandler;
+    use WPEmerge\Session\SessionDriver;
 
-    class DatabaseSessionHandler implements SessionHandler
+    class DatabaseSessionDriver implements SessionDriver
     {
 
         use InteractsWithTime;

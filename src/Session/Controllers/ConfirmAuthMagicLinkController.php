@@ -13,14 +13,14 @@
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\ExceptionHandling\Exceptions\NotFoundException;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
     use WPEmerge\Support\Url;
 
     class ConfirmAuthMagicLinkController
     {
 
         /**
-         * @var SessionStore
+         * @var Session
          */
         private $session_store;
 
@@ -34,7 +34,7 @@
          */
         private $lifetime_in_minutes;
 
-        public function __construct(SessionStore $session_store, ResponseFactory $response_factory, int $lifetime_in_minutes = 180 )
+        public function __construct(Session $session_store, ResponseFactory $response_factory, int $lifetime_in_minutes = 180 )
         {
 
             $this->session_store = $session_store;

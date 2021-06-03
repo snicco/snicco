@@ -17,7 +17,7 @@
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\CsrfField;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
     use WPEmerge\View\ViewFactory;
 
@@ -52,11 +52,11 @@
         protected $transient_key = 'user_emails_in_jail';
 
         /**
-         * @var SessionStore
+         * @var Session
          */
         private $session;
 
-        public function __construct(ViewFactory $view, UrlGenerator $url_generator, ResponseFactory $response_factory, SessionStore $session)
+        public function __construct(ViewFactory $view, UrlGenerator $url_generator, ResponseFactory $response_factory, Session $session)
         {
 
             $this->view = $view;

@@ -14,8 +14,8 @@
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Session\Handlers\ArraySessionHandler;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Drivers\ArraySessionDriver;
+    use WPEmerge\Session\Session;
     use WPEmerge\Session\Middleware\StartSessionMiddleware;
     use WPEmerge\Support\VariableBag;
 
@@ -77,7 +77,7 @@
 
         }
 
-        private function newMiddleware(SessionStore $store = null, $gc_collection = [0,100]) : StartSessionMiddleware
+        private function newMiddleware(Session $store = null, $gc_collection = [0,100]) : StartSessionMiddleware
         {
 
             $store = $store ?? $this->newSessionStore();
@@ -90,12 +90,12 @@
 
         }
 
-        private function newSessionStore(string $cookie_name = 'test_session', $handler = null) : SessionStore
+        private function newSessionStore(string $cookie_name = 'test_session', $handler = null) : Session
         {
 
-            $handler = $handler ?? new ArraySessionHandler(10);
+            $handler = $handler ?? new ArraySessionDriver(10);
 
-            return new SessionStore($cookie_name, $handler);
+            return new Session($cookie_name, $handler);
 
         }
 
@@ -112,7 +112,7 @@
             return str_repeat('b', 40);
         }
 
-        private function getRequestSession($response) : SessionStore
+        private function getRequestSession($response) : Session
         {
 
             return $response->request->getAttribute('session');
@@ -126,7 +126,7 @@
             $response = $this->newMiddleware()->handle($this->request, $this->route_action);
 
             $this->assertInstanceOf(Response::class, $response);
-            $this->assertInstanceOf(SessionStore::class, $this->getRequestSession($response));
+            $this->assertInstanceOf(Session::class, $this->getRequestSession($response));
 
         }
 
@@ -134,7 +134,7 @@
         public function the_correct_session_gets_created_from_the_cookie()
         {
 
-            $handler = new ArraySessionHandler(10);
+            $handler = new ArraySessionDriver(10);
             $handler->write($this->sessionId(), serialize(['foo' => 'bar']));
             $handler->write($this->anotherSessionId(), serialize(['foo' => 'baz']));
 
@@ -152,7 +152,7 @@
         public function a_session_without_matching_session_cookie_will_create_a_new_session()
         {
 
-            $handler = new \WPEmerge\Session\Handlers\ArraySessionHandler(10);
+            $handler = new \WPEmerge\Session\Drivers\ArraySessionDriver(10);
             $handler->write($this->anotherSessionId(), serialize(['foo' => 'bar']));
 
             $store = $this->newSessionStore('test_session', $handler);
@@ -168,7 +168,7 @@
         /** @test */
         public function the_previous_url_is_saved_to_the_session_after_creating_the_response () {
 
-            $handler = new \WPEmerge\Session\Handlers\ArraySessionHandler(10);
+            $handler = new \WPEmerge\Session\Drivers\ArraySessionDriver(10);
 
             $store = $this->newSessionStore('test_session', $handler);
 
@@ -184,7 +184,7 @@
         /** @test */
         public function values_added_to_the_session_are_saved () {
 
-            $handler = new ArraySessionHandler(10);
+            $handler = new ArraySessionDriver(10);
 
             $store = $this->newSessionStore('test_session', $handler);
 
@@ -199,7 +199,7 @@
         /** @test */
         public function garbage_collection_works () {
 
-            $handler = new \WPEmerge\Session\Handlers\ArraySessionHandler(10);
+            $handler = new \WPEmerge\Session\Drivers\ArraySessionDriver(10);
 
             $handler->write($this->anotherSessionId(), serialize(['foo' => 'bar']));
 

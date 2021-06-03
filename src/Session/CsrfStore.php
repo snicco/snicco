@@ -15,14 +15,14 @@
     {
 
         /**
-         * @var SessionStore
+         * @var Session
          */
         private $session_store;
 
         private $csrf_iteration;
 
 
-        public function __construct(SessionStore $session_store)
+        public function __construct(Session $session_store)
         {
 
             $this->session_store = $session_store;

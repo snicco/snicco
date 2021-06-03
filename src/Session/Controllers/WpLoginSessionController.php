@@ -9,13 +9,13 @@
     use Carbon\Carbon;
     use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
 
     class WpLoginSessionController
     {
 
         /**
-         * @var SessionStore
+         * @var Session
          */
         private $session;
 
@@ -34,7 +34,7 @@
          */
         private $confirm_on_login;
 
-        public function __construct(SessionStore $session, ResponseFactory $response_factory, int $auth_confirm_lifetime = 180, bool $confirm_on_login = true )
+        public function __construct(Session $session, ResponseFactory $response_factory, int $auth_confirm_lifetime = 180, bool $confirm_on_login = true )
         {
 
             $this->session = $session;

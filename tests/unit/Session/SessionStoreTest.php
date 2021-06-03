@@ -7,8 +7,8 @@
 	namespace Tests\unit\Session;
 
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Session\Handlers\ArraySessionHandler;
-	use WPEmerge\Session\SessionStore;
+	use WPEmerge\Session\Drivers\ArraySessionDriver;
+	use WPEmerge\Session\Session;
 
 	use function serialize;
 
@@ -662,18 +662,18 @@
 
 
 
-		private function newSessionStore( \SessionHandlerInterface $handler = null ) : SessionStore {
+		private function newSessionStore( \SessionHandlerInterface $handler = null ) : Session {
 
-			return new SessionStore(
+			return new Session(
 				$this->getSessionName(),
-				$handler ?? new ArraySessionHandler( 10 ),
+				$handler ?? new ArraySessionDriver( 10 ),
 				$this->getSessionId()
 			);
 		}
 
-		private function newArrayHandler( int $minutes = 10 ) : ArraySessionHandler {
+		private function newArrayHandler( int $minutes = 10 ) : ArraySessionDriver {
 
-			return new ArraySessionHandler( $minutes );
+			return new ArraySessionDriver( $minutes );
 
 		}
 

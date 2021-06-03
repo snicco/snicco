@@ -13,7 +13,7 @@
     {
 
         /**
-         * @var SessionStore
+         * @var Session
          */
         private $session;
 
@@ -22,7 +22,7 @@
          */
         private $guard;
 
-        public function __construct(SessionStore $session, Guard $guard)
+        public function __construct(Session $session, Guard $guard)
         {
             $this->session = $session;
             $this->guard = $guard;

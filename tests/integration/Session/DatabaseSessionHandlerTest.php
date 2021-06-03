@@ -15,8 +15,8 @@
     use Tests\stubs\TestRequest;
     use wpdb;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Session\Handlers\ArraySessionHandler;
-    use WPEmerge\Session\Handlers\DatabaseSessionHandler;
+    use WPEmerge\Session\Drivers\ArraySessionDriver;
+    use WPEmerge\Session\Drivers\DatabaseSessionDriver;
 
     class DatabaseSessionHandlerTest extends IntegrationTest
     {
@@ -49,10 +49,10 @@
 
         }
 
-        private function newDataBaseSessionHandler(int $lifetime = 10) : DatabaseSessionHandler
+        private function newDataBaseSessionHandler(int $lifetime = 10) : DatabaseSessionDriver
         {
 
-            return new DatabaseSessionHandler($this->db, 'sessions', $lifetime);
+            return new DatabaseSessionDriver($this->db, 'sessions', $lifetime);
 
         }
 

@@ -11,7 +11,7 @@
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
 
     class ErrorHandlerMiddleware extends Middleware
     {

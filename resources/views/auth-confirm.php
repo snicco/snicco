@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
     use Illuminate\Support\ViewErrorBag;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
     use WPEmerge\View\ViewFactory;
 
     /** @var ViewFactory $view */
     /** @var int $jail */
 
-    /** @var SessionStore $session */
+    /** @var Session $session */
     $old_email = $session->getOldInput('email', '');
 
     /** @var  ViewErrorBag $errors */
@@ -108,7 +108,7 @@
         border-radius: 4px;
         border: 1px solid #8c8f94;
         color: #2c3338;
-        font-size: 24px;
+        font-size: 18px;
         line-height: 1.33333333;
         width: 100%;
         padding: .1875rem .3125rem;
@@ -151,7 +151,7 @@
     }
 
     .form {
-        margin-top: 30px;
+        padding: 15px 0px;
     }
 
     .message {

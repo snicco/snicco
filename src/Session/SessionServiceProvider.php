@@ -16,8 +16,8 @@
     use WPEmerge\Middleware\ConfirmAuth;
     use WPEmerge\Session\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Session\Controllers\WpLoginSessionController;
-    use WPEmerge\Session\Handlers\ArraySessionHandler;
-    use WPEmerge\Session\Handlers\DatabaseSessionHandler;
+    use WPEmerge\Session\Drivers\ArraySessionDriver;
+    use WPEmerge\Session\Drivers\DatabaseSessionDriver;
     use WPEmerge\Session\Middleware\AuthUnconfirmed;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Session\Middleware\ShareSessionWithView;
@@ -97,22 +97,22 @@
 
             $name = $this->config->get('session.cookie');
 
-            $this->container->singleton(SessionStore::class, function () use ($name) {
+            $this->container->singleton(Session::class, function () use ($name) {
 
                 $store = null;
 
                 if ($this->config->get('session.encrypt')) {
 
-                    $store = new EncryptedStore(
+                    $store = new Encrypted(
                         $name,
-                        $this->container->make(SessionHandler::class),
+                        $this->container->make(SessionDriver::class),
                         $this->container->make(EncryptorInterface::class)
                     );
 
                 }
                 else {
 
-                    $store = new SessionStore($name, $this->container->make(SessionHandler::class));
+                    $store = new Session($name, $this->container->make(SessionDriver::class));
 
 
                 }
@@ -127,7 +127,7 @@
         private function bindSessionHandler()
         {
 
-            $this->container->singleton(SessionHandler::class, function () {
+            $this->container->singleton(SessionDriver::class, function () {
 
                 $name = $this->config->get('session.driver', 'database');
                 $lifetime = $this->config->get('session.lifetime');
@@ -138,12 +138,12 @@
 
                     $table = $this->config->get('session.table');
 
-                    return new DatabaseSessionHandler($wpdb, $table, $lifetime);
+                    return new DatabaseSessionDriver($wpdb, $table, $lifetime);
 
                 }
 
                 if ($name === 'array') {
-                    return new ArraySessionHandler($lifetime);
+                    return new ArraySessionDriver($lifetime);
                 }
 
 
@@ -158,7 +158,7 @@
             $this->container->singleton(StartSessionMiddleware::class, function () {
 
                 return new StartSessionMiddleware(
-                    $this->container->make(SessionStore::class),
+                    $this->container->make(Session::class),
                     $this->container->make(Cookies::class),
                     $this->config->get('session')
                 );
@@ -172,7 +172,7 @@
             /** @var Application $app */
             $app = $this->container->make(Application::class);
 
-            $app->alias('session', SessionStore::class);
+            $app->alias('session', Session::class);
             $app->alias('csrfField', CsrfField::class, 'asHtml');
 
 
@@ -206,7 +206,7 @@
 
             $this->container->singleton(CsrfStore::class, function () {
 
-                return new CsrfStore($this->container->make(SessionStore::class));
+                return new CsrfStore($this->container->make(Session::class));
 
             });
         }
@@ -244,7 +244,7 @@
             $this->container->singleton(ConfirmAuthMagicLinkController::class, function () {
 
                 return new ConfirmAuthMagicLinkController(
-                    $this->container->make(SessionStore::class),
+                    $this->container->make(Session::class),
                     $this->container->make(ResponseFactory::class),
                     $this->config->get('session.auth_confirmed_lifetime')
                 );
@@ -254,7 +254,7 @@
             $this->container->singleton(WpLoginSessionController::class, function () {
 
                 return new WpLoginSessionController(
-                    $this->container->make(SessionStore::class),
+                    $this->container->make(Session::class),
                     $this->container->make(ResponseFactory::class),
                     $this->config->get('session.auth_confirmed_lifetime'),
                     $this->config->get('session.auth_confirm_on_login')

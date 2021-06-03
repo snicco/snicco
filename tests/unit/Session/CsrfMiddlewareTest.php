@@ -11,13 +11,13 @@
     use Tests\unit\UnitTest;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\Handlers\ArraySessionHandler;
+    use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\CsrfField;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Session\CsrfStore;
     use WPEmerge\Session\GuardFactory;
     use WPEmerge\Session\Exceptions\InvalidCsrfTokenException;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
 
     class CsrfMiddlewareTest extends UnitTest
@@ -36,7 +36,7 @@
         private $route_action;
 
         /**
-         * @var ArraySessionHandler
+         * @var ArraySessionDriver
          */
         private $handler;
 
@@ -54,7 +54,7 @@
 
             $this->request = TestRequest::from('POST', '/foo');
 
-            $this->handler = new ArraySessionHandler(10);
+            $this->handler = new ArraySessionDriver(10);
             $this->handler->write($this->sessionId(), serialize([
                 'csrf' => [
                     'secret_csrf_name' => 'secret_csrf_value',
@@ -81,16 +81,16 @@
             return str_repeat('b', 40);
         }
 
-        private function newSessionStore(string $cookie_name = 'test_session', $handler = null) : SessionStore
+        private function newSessionStore(string $cookie_name = 'test_session', $handler = null) : Session
         {
 
-            $handler = $handler ?? new \WPEmerge\Session\Handlers\ArraySessionHandler(10);
+            $handler = $handler ?? new \WPEmerge\Session\Drivers\ArraySessionDriver(10);
 
-            return new SessionStore($cookie_name, $handler);
+            return new Session($cookie_name, $handler);
 
         }
 
-        private function newMiddleware(SessionStore $session, string $mode = 'rotate') : CsrfMiddleware
+        private function newMiddleware(Session $session, string $mode = 'rotate') : CsrfMiddleware
         {
 
             $csrf_store = new CsrfStore($session);
@@ -292,7 +292,7 @@
 
 
         private function createRequest(
-            SessionStore $session,
+            Session $session,
             array $body = [
                 'csrf_name' => 'secret_csrf_name',
                 'csrf_value' => 'secret_csrf_value',

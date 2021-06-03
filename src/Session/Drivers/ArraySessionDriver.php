@@ -4,13 +4,13 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Session\Handlers;
+	namespace WPEmerge\Session\Drivers;
 
 	use Illuminate\Support\InteractsWithTime;
     use Psr\Http\Message\ServerRequestInterface;
-    use WPEmerge\Session\SessionHandler;
+    use WPEmerge\Session\SessionDriver;
 
-    class ArraySessionHandler implements SessionHandler {
+    class ArraySessionDriver implements SessionDriver {
 
 		use InteractsWithTime;
 

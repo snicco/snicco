@@ -13,13 +13,13 @@
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Session\SessionStore;
+    use WPEmerge\Session\Session;
 
     class ConfirmAuth extends Middleware
     {
 
         /**
-         * @var SessionStore
+         * @var Session
          */
         private $session_store;
         /**
@@ -31,7 +31,7 @@
          */
         private $url_generator;
 
-        public function __construct(SessionStore $session_store, ResponseFactory $response_factory, UrlGenerator $url_generator)
+        public function __construct(Session $session_store, ResponseFactory $response_factory, UrlGenerator $url_generator)
         {
             $this->session_store = $session_store;
             $this->response_factory = $response_factory;
