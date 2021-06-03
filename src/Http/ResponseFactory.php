@@ -11,6 +11,7 @@
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
     use Psr\Http\Message\StreamInterface;
+    use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Contracts\ResponsableInterface;
     use WPEmerge\Contracts\ViewFactoryInterface as ViewFactory;
     use WPEmerge\ExceptionHandling\Exceptions\HttpException;
@@ -40,11 +41,11 @@
         private $stream_factory;
 
         /**
-         * @var Redirector
+         * @var AbstractRedirector
          */
         private $redirector;
 
-        public function __construct(ViewFactory $view, Psr17ResponseFactory $response, Psr17StreamFactory $stream, Redirector $redirector)
+        public function __construct(ViewFactory $view, Psr17ResponseFactory $response, Psr17StreamFactory $stream, AbstractRedirector $redirector)
         {
 
             $this->view = $view;
@@ -154,19 +155,18 @@
 
         }
 
-        public function redirect(int $status_code = 302) : RedirectResponse
+        public function redirect() :AbstractRedirector
         {
-            return new RedirectResponse($this->make($status_code));
+            return $this->redirector;
         }
 
-        public function redirectGuest(int $status_code = 302)
+        public function redirectGuest(int $status_code = 302) : RedirectResponse
         {
-
+           return $this->redirector->guest($status_code);
         }
 
         public function invalidResponse() : InvalidResponse
         {
-
             return new InvalidResponse($this->response_factory->createResponse(500));
         }
 

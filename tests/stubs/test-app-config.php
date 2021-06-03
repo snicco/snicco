@@ -31,7 +31,9 @@
 			VIEWS_DIR,
             VIEWS_DIR . DS . 'subdirectory'
 
-		]
+		],
+
+
 
 
 

@@ -6,19 +6,27 @@
 
     namespace WPEmerge\Http;
 
+    use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
+    use WPEmerge\Contracts\AbstractRedirector;
+    use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Psr7\Response;
+    use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Routing\UrlGenerator;
 
-    class Redirector
+    class Redirector extends AbstractRedirector
     {
 
-        /**
-         * @var UrlGenerator
-         */
-        private $url_generator;
+        public function createRedirectResponse ( string $path, int $status_code = 302 ) : RedirectResponse {
 
-        public function __construct(UrlGenerator $url_generator)
-        {
-            $this->url_generator = $url_generator;
+            $this->validateStatusCode($status_code);
+
+            $psr_response = $this->response_factory->createResponse($status_code);
+
+            $response = new RedirectResponse($psr_response);
+
+            return $response->to($path);
+
         }
+
 
     }

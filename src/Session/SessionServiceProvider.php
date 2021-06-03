@@ -244,7 +244,6 @@
             $this->container->singleton(ConfirmAuthMagicLinkController::class, function () {
 
                 return new ConfirmAuthMagicLinkController(
-                    $this->container->make(Session::class),
                     $this->container->make(ResponseFactory::class),
                     $this->config->get('session.auth_confirmed_lifetime')
                 );
@@ -254,7 +253,6 @@
             $this->container->singleton(WpLoginSessionController::class, function () {
 
                 return new WpLoginSessionController(
-                    $this->container->make(Session::class),
                     $this->container->make(ResponseFactory::class),
                     $this->config->get('session.auth_confirmed_lifetime'),
                     $this->config->get('session.auth_confirm_on_login')

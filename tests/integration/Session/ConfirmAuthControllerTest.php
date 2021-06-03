@@ -32,7 +32,8 @@
 
         protected function afterSetup()
         {
-            add_filter('pre_wp_mail',[$this, 'catchMail'], 10, 3);
+
+            add_filter('pre_wp_mail', [$this, 'catchMail'], 10, 3);
         }
 
         protected function beforeTearDown()
@@ -52,7 +53,6 @@
                 'enabled' => true,
                 'driver' => 'array',
             ];
-
 
             return $config;
 
@@ -75,7 +75,11 @@
         private function getRequest(string $url = null) : Request
         {
 
-            return TestRequest::from('GET', $url??$this->controllerUrl());
+            $request = TestRequest::from('GET', $url ?? $this->controllerUrl());
+
+            TestApp::container()->instance(Request::class, $request);
+
+            return $request;
 
         }
 
@@ -83,6 +87,8 @@
         {
 
             $request = TestRequest::from('POST', $this->controllerUrl());
+
+            TestApp::container()->instance(Request::class, $request);
 
             return $request->withParsedBody([
                 'email' => $email,
@@ -180,7 +186,7 @@
         {
 
             $calvin = $this->newAdmin([
-                'user_email' => 'calvin@xyz.de'
+                'user_email' => 'calvin@xyz.de',
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
@@ -188,7 +194,7 @@
 
             $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
             $session->put('auth.confirm.attempts', 2);
-            $post_request = $this->postRequest( 'bogus@web.de', $csrf);
+            $post_request = $this->postRequest('bogus@web.de', $csrf);
 
             // email failed but user is still logged in
             $this->assertOutput('', $post_request);
@@ -198,7 +204,7 @@
             $this->assertUserLoggedIn($calvin);
 
             $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
-            $post_request = $this->postRequest( 'bogus@web.de', $csrf);
+            $post_request = $this->postRequest('bogus@web.de', $csrf);
 
             // this failed attempt will log the user out.
             $this->assertOutput('', $post_request);
@@ -225,7 +231,7 @@
             $id = $session->getId();
 
             $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
-            $post_request = $this->postRequest( 'bogus@web.de', $csrf);
+            $post_request = $this->postRequest('bogus@web.de', $csrf);
 
             $this->assertOutput('', $post_request);
             HeaderStack::assertHasStatusCode(302);
@@ -237,7 +243,6 @@
             $this->logout($calvin);
 
         }
-
 
         /**
          *
@@ -292,34 +297,10 @@
 
         }
 
-        /** @test */
-        public function the_intended_url_is_reflashed_on_failure () {
-
-            $calvin = $this->newAdmin();
-            $this->login($calvin);
-
-            $this->newTestApp($this->config());
-
-            $session = $this->getSession();
-
-            // flashed from previous request
-            $session->flash('auth.confirm.intended_url', 'foobar.com');
-            $session->save();
-
-            $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
-
-            $request = $this->postRequest('bogus@web.de', $csrf);
-
-            $this->assertOutputNotContains('confirmation email', $request);
-            HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertHas('Location', $this->controllerUrl());
-
-            $this->assertSame('foobar.com', $session->get('auth.confirm.intended_url'));
-
-        }
 
         /** @test */
-        public function the_error_notice_is_rendered () {
+        public function the_error_notice_is_rendered()
+        {
 
             $calvin = $this->newAdmin();
             $this->login($calvin);
@@ -330,7 +311,7 @@
 
             $request = $this->postRequest($email = 'bogus@web.de', $csrf);
 
-            $this->assertOutputNotContains( $email, $request);
+            $this->assertOutputNotContains($email, $request);
             HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $url = $this->controllerUrl());
 
@@ -358,10 +339,11 @@
          */
 
         /** @test */
-        public function the_user_is_redirect_back_with_200_code_on_success () {
+        public function the_user_is_redirect_back_with_200_code_on_success()
+        {
 
             $calvin = $this->newAdmin([
-                'user_email' => 'c@web.de'
+                'user_email' => 'c@web.de',
             ]);
             $this->login($calvin);
 
@@ -378,10 +360,11 @@
         }
 
         /** @test */
-        public function the_user_cant_request_unlimited_email_sending () {
+        public function the_user_cant_request_unlimited_email_sending()
+        {
 
             $calvin = $this->newAdmin([
-                'user_email' => 'c@web.de'
+                'user_email' => 'c@web.de',
             ]);
             $this->login($calvin);
 
@@ -436,14 +419,14 @@
             HeaderStack::reset();
 
 
-
         }
 
         /** @test */
-        public function the_success_message_is_rendered () {
+        public function the_success_message_is_rendered()
+        {
 
             $calvin = $this->newAdmin([
-                'user_email' => 'c@web.de'
+                'user_email' => 'c@web.de',
             ]);
             $this->login($calvin);
 
@@ -451,7 +434,7 @@
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
-            $post_request = $this->postRequest( $email = 'c@web.de', $csrf);
+            $post_request = $this->postRequest($email = 'c@web.de', $csrf);
 
             $this->assertOutput('', $post_request);
             HeaderStack::assertHasStatusCode(303);
@@ -467,10 +450,11 @@
         }
 
         /** @test */
-        public function the_submit_form_is_not_rendered () {
+        public function the_submit_form_is_not_rendered()
+        {
 
             $calvin = $this->newAdmin([
-                'user_email' => 'c@web.de'
+                'user_email' => 'c@web.de',
             ]);
             $this->login($calvin);
 
@@ -478,7 +462,7 @@
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
-            $post_request = $this->postRequest( $email = 'c@web.de', $csrf);
+            $post_request = $this->postRequest($email = 'c@web.de', $csrf);
 
             $this->assertOutput('', $post_request);
             HeaderStack::assertHasStatusCode(303);
@@ -493,10 +477,11 @@
         }
 
         /** @test */
-        public function the_resend_email_form_is_rendered () {
+        public function the_resend_email_form_is_rendered()
+        {
 
             $calvin = $this->newAdmin([
-                'user_email' => 'c@web.de'
+                'user_email' => 'c@web.de',
             ]);
             $this->login($calvin);
 
@@ -504,7 +489,7 @@
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
-            $post_request = $this->postRequest( $email = 'c@web.de', $csrf);
+            $post_request = $this->postRequest($email = 'c@web.de', $csrf);
 
             $this->assertOutput('', $post_request);
             HeaderStack::assertHasStatusCode(303);
@@ -519,10 +504,11 @@
         }
 
         /** @test */
-        public function the_submit_from_does_not_get_rendered_once_at_least_one_email_was_sent_correctly () {
+        public function the_submit_from_does_not_get_rendered_once_at_least_one_email_was_sent_correctly()
+        {
 
             $calvin = $this->newAdmin([
-                'user_email' => $email = 'c@web.de'
+                'user_email' => $email = 'c@web.de',
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
@@ -531,7 +517,7 @@
             $this->assertOutputContains('id="send"', $get_request, 'id [send] was not rendered when it should.');
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
-            $post_request = $this->postRequest( $email, $csrf );
+            $post_request = $this->postRequest($email, $csrf);
             $this->assertOutput('', $post_request);
 
             $output = $this->runKernel($get_request);
@@ -546,10 +532,11 @@
         }
 
         /** @test */
-        public function the_success_message_only_shows_when_an_email_was_sent_on_the_prev_request () {
+        public function the_success_message_only_shows_when_an_email_was_sent_on_the_prev_request()
+        {
 
             $calvin = $this->newAdmin([
-                'user_email' => $email = 'c@web.de'
+                'user_email' => $email = 'c@web.de',
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
@@ -568,10 +555,11 @@
         }
 
         /** @test */
-        public function the_attempts_are_removed_from_the_session () {
+        public function the_attempts_are_removed_from_the_session()
+        {
 
             $calvin = $this->newAdmin([
-                'user_email' => 'c@web.de'
+                'user_email' => 'c@web.de',
             ]);
             $this->login($calvin);
 
@@ -581,7 +569,7 @@
             $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
             $session->put('auth.confirm.attempts', 2);
 
-            $post_request = $this->postRequest( $email = 'c@web.de', $csrf);
+            $post_request = $this->postRequest($email = 'c@web.de', $csrf);
 
             $this->assertOutput('', $post_request);
             HeaderStack::assertHasStatusCode(303);
@@ -591,23 +579,24 @@
         }
 
         /** @test */
-        public function an_email_is_send_to_the_user () {
+        public function an_email_is_send_to_the_user()
+        {
 
             $calvin = $this->newAdmin([
                 'user_email' => $email = 'c@web.de',
-                'first_name' => 'calvin'
+                'first_name' => 'calvin',
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
-            $post_request = $this->postRequest( $email, $csrf);
+            $post_request = $this->postRequest($email, $csrf);
 
             $this->assertOutput('', $post_request);
             HeaderStack::assertHasStatusCode(303);
             HeaderStack::assertHas('Location', $this->controllerUrl());
 
-            $this->assertSame($email,$this->mail['to']);
-            $this->assertStringContainsString('link',$this->mail['subject']);
+            $this->assertSame($email, $this->mail['to']);
+            $this->assertStringContainsString('link', $this->mail['subject']);
             $this->assertContains('Content-Type: text/html; charset=UTF-8', $this->mail['headers']);
             $this->assertStringContainsString('Hi calvin', $this->mail['message']);
             $this->assertStringContainsString('in 5', $this->mail['message']);
@@ -616,19 +605,20 @@
         }
 
         /** @test */
-        public function the_signed_url_included_in_the_email_works () {
+        public function the_signed_url_included_in_the_email_works()
+        {
 
             $calvin = $this->newAdmin([
                 'user_email' => $email = 'c@web.de',
-                'first_name' => 'calvin'
+                'first_name' => 'calvin',
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
 
             $session = $this->getSession();
             $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
-            $session->put('auth.confirm.intended_url', 'https://intended.com');
-            $post_request = $this->postRequest( $email, $csrf);
+            $session->setIntendedUrl('https://intended.com');
+            $post_request = $this->postRequest($email, $csrf);
 
             $this->runKernel($post_request);
             HeaderStack::reset();
@@ -648,11 +638,12 @@
         }
 
         /** @test */
-        public function users_with_valid_session_token_cant_access_the_auth_confirm_routes_for_get_requests () {
+        public function users_with_valid_session_token_cant_access_the_auth_confirm_routes_for_get_requests()
+        {
 
             $calvin = $this->newAdmin([
                 'user_email' => 'c@web.de',
-                'first_name' => 'calvin'
+                'first_name' => 'calvin',
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
@@ -663,18 +654,19 @@
             $get_request = $this->getRequest();
 
             $this->assertOutput('', $get_request);
-            HeaderStack::assertHasStatusCode(200);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', WP::adminUrl());
 
 
         }
 
         /** @test */
-        public function users_with_valid_session_token_cant_access_the_auth_confirm_routes_for_post_requests () {
+        public function users_with_valid_session_token_cant_access_the_auth_confirm_routes_for_post_requests()
+        {
 
             $calvin = $this->newAdmin([
                 'user_email' => 'c@web.de',
-                'first_name' => 'calvin'
+                'first_name' => 'calvin',
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
@@ -684,31 +676,32 @@
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
-            $post_request = $this->postRequest( 'c@web.de', $csrf );
+            $post_request = $this->postRequest('c@web.de', $csrf);
 
             $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(200);
+            HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', WP::adminUrl());
             HeaderStack::reset();
 
 
         }
 
-
-        public function catchMail($null ,$attributes) : bool
+        public function catchMail($null, $attributes) : bool
         {
 
             $this->mail = $attributes;
+
             return true;
 
 
         }
 
-        private function triggerEmailSending (string $email) {
+        private function triggerEmailSending(string $email)
+        {
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
-            $post_request = $this->postRequest( $email, $csrf );
+            $post_request = $this->postRequest($email, $csrf);
 
             $this->assertOutput('', $post_request);
             HeaderStack::assertHasStatusCode(303);

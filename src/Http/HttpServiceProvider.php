@@ -7,11 +7,15 @@
     namespace WPEmerge\Http;
 
     use Nyholm\Psr7\Factory\Psr17Factory as NyholmFactoryImplementation;
+    use Psr\Http\Message\ResponseFactoryInterface;
     use Psr\Http\Message\ResponseFactoryInterface as Prs17ResponseFactory;
     use Psr\Http\Message\StreamFactoryInterface;
+    use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewFactoryInterface;
     use WPEmerge\Routing\Pipeline;
+    use WPEmerge\Routing\UrlGenerator;
+    use WPEmerge\Session\Session;
 
     class HttpServiceProvider extends ServiceProvider
     {
@@ -29,21 +33,12 @@
 
             $this->bindCookies();
 
+            $this->bindRedirector();
+
         }
 
         public function bootstrap() : void
         {
-
-            /** @var HttpKernel $kernel */
-            $kernel = $this->container->make(HttpKernel::class);
-
-            if ($this->config->get('middleware.always_run_global', false)) {
-
-                $kernel->alwaysWithGlobalMiddleware($this->config->get('middleware.groups.global', [] ) );
-
-            }
-
-
 
         }
 
@@ -52,11 +47,20 @@
 
             $this->container->singleton(HttpKernel::class, function () {
 
-                return new HttpKernel(
+                $kernel = new HttpKernel(
 
                     $this->container->make(Pipeline::class),
 
                 );
+
+
+                if ($this->config->get('middleware.always_run_global', false)) {
+
+                    $kernel->alwaysWithGlobalMiddleware($this->config->get('middleware.groups.global', [] ) );
+
+                }
+
+                return $kernel;
 
             });
         }
@@ -64,7 +68,7 @@
         private function bindConcretePsr17ResponseFactory() : void
         {
 
-            $this->container->singleton('psr17.response.factory', function () {
+            $this->container->singleton(Prs17ResponseFactory::class, function () {
 
                 return new NyholmFactoryImplementation();
 
@@ -88,18 +92,13 @@
 
                 return new ResponseFactory(
                     $this->container->make(ViewFactoryInterface::class),
-                    $this->container->make('psr17.response.factory'),
+                    $this->container->make(Prs17ResponseFactory::class),
                     $this->container->make(StreamFactoryInterface::class),
-                    $this->container->make(Redirector::class),
+                    $this->container->make(AbstractRedirector::class),
                 );
 
             });
 
-            $this->container->singleton(Prs17ResponseFactory::class, function () {
-
-                return $this->container->make(ResponseFactory::class);
-
-            });
 
         }
 
@@ -121,6 +120,26 @@
                 ]);
 
                 return $cookies;
+
+            });
+        }
+
+        private function bindRedirector()
+        {
+            $this->container->singleton(AbstractRedirector::class, function () {
+
+                $redirector = $this->container->make(Redirector::class);
+
+                if ( $this->sessionEnabled()) {
+
+                    return new StatefulRedirector(
+                        $this->container->make(Session::class),
+                        $this->container->make(UrlGenerator::class),
+                        $this->container->make(ResponseFactoryInterface::class)
+                    );
+                }
+
+                return $redirector;
 
             });
         }

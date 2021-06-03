@@ -95,7 +95,7 @@
         {
 
             $session_store->start();
-            $session_store->getHandler()->setRequest($request);
+            $session_store->getDriver()->setRequest($request);
 
         }
 
@@ -145,7 +145,7 @@
 
             if ($this->configHitsLottery($this->config['lottery'])) {
 
-                $this->session_store->getHandler()->gc($this->getSessionLifetimeInSeconds());
+                $this->session_store->getDriver()->gc($this->getSessionLifetimeInSeconds());
 
             }
         }

@@ -13,6 +13,7 @@
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Routing\UrlGenerator;
@@ -84,7 +85,7 @@
 
         }
 
-        public function send(Request $request)
+        public function send(Request $request) : Response
         {
 
             if ( ! $this->hasLeftAttemptsToInputCorrectEmail() ) {
@@ -92,21 +93,19 @@
                 $this->session->invalidate();
                 WP::logout();
 
-                return $this->response_factory->redirect(302)->to(WP::loginUrl());
-
-            }
-
-            if ( ! ( $email = $this->hasValidEmailInput($request ) ) ) {
-
-                return $this->redirectBack($request, $email);
+                return $this->response_factory->redirectGuest();
 
             }
 
             if ( ! $this->canRequestAnotherEmail() ) {
 
-                return $this->response_factory
-                    ->redirect()
-                    ->to($request->getFullUrl());
+                return $this->response_factory->redirect()->refresh();
+
+            }
+
+            if ( ! ( $email = $this->hasValidEmailInput($request ) ) ) {
+
+                return $this->redirectBack($email);
 
             }
 
@@ -114,29 +113,31 @@
 
                 $this->session->increment('auth.confirm.attempts');
 
-                return $this->redirectBack($request, $email);
+                return $this->redirectBack($email);
 
             }
 
-            $this->session->flashInput(['email' => $email]);
-
             $success = WP::mail($email, $this->subject($user), $this->message($user) );
+
+            $redirect = $this->response_factory->redirect()->refresh(303);
 
             if ( $success ) {
 
                 $this->session->put('auth.confirm.lifetime', $this->link_lifetime_in_sec);
-                $this->session->flash('auth.confirm.success', 'Success: A confirmation email was send to: '.$email);
-                $this->session->increment('auth.confirm.email.count');
                 $this->session->put('auth.confirm.email.last_recipient', $email);
+                $this->session->increment('auth.confirm.email.count');
                 $this->session->forget('auth.confirm.attempts');
+
+                $redirect->with('auth.confirm.success', 'Success: A confirmation email was send to: '.$email);
+
 
             } else {
 
-                $this->session->flash('auth.confirm.email_sending_failed');
+                $redirect->with('auth.confirm.email_sending_failed', true );
 
             }
 
-            return $this->response_factory->redirect(303)->to($request->getFullUrl());
+            return $redirect;
 
 
         }
@@ -169,7 +170,7 @@
             $arguments = [
                 'user_id' => $user->ID,
                 'query' => [
-                    'intended' => $this->session->get('auth.confirm.intended_url'),
+                    'intended' => $this->session->getIntendedUrl()
                 ],
             ];
 
@@ -181,21 +182,13 @@
 
         }
 
-        private function redirectBack(Request $request, $email) : RedirectResponse
+        private function redirectBack( ?string $email ) : RedirectResponse
         {
 
-            $this->session->keep('auth.confirm.intended_url');
-
-            $bag = new MessageBag();
-            $bag->add('email', 'Error: The email you entered is not linked with any account.');
-            $errors = $this->session->get('errors', new ViewErrorBag);
-            $this->session->flash(
-                'errors', $errors->put('default', $bag)
-            );
-
-            $this->session->flashInput(['email' => $email]);
-
-            return $this->response_factory->redirect()->to($request->getFullUrl());
+            return $this->response_factory->redirect()
+                                          ->refresh()
+                                          ->withInput(['email' => $email])
+                                          ->withErrors(['email' => 'Error: The email you entered is not linked with any account.']);
 
         }
 

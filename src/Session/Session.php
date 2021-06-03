@@ -6,7 +6,9 @@
 
     namespace WPEmerge\Session;
 
+    use Carbon\Carbon;
     use Closure;
+    use Illuminate\Support\ViewErrorBag;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
     use stdClass;
@@ -181,7 +183,8 @@
 
         public function increment(string $key, int $amount = 1, int $start_value = 0) : int
         {
-            if ( ! $this->has($key) ) {
+
+            if ( ! $this->has($key)) {
                 $this->put($key, $start_value);
             }
 
@@ -238,6 +241,7 @@
 
         public function remove(string $key)
         {
+
             return Arr::pull($this->attributes, $key);
         }
 
@@ -249,11 +253,13 @@
 
         public function flush() : void
         {
+
             $this->attributes = [];
         }
 
         public function invalidate() : bool
         {
+
             $this->flush();
 
             return $this->migrate(true);
@@ -261,6 +267,7 @@
 
         public function regenerate(bool $destroy = false) : bool
         {
+
             return $this->migrate($destroy);
         }
 
@@ -284,6 +291,7 @@
 
         public function getId() : string
         {
+
             return $this->id;
         }
 
@@ -310,6 +318,7 @@
 
         public function isValidId(string $id) : bool
         {
+
             return strlen($id) === 40 && ctype_alnum($id);
         }
 
@@ -325,10 +334,53 @@
             $this->put('_previous.url', $url);
         }
 
-        public function getHandler() : SessionDriver
+        public function getIntendedUrl(string $default = '')
+        {
+
+            return $this->pull('_url.intended', $default);
+
+
+        }
+
+        public function confirmAuthUntil(int $duration_in_minutes)
+        {
+
+            $this->put(
+                'auth.confirm.until',
+                Carbon::now()->addMinutes($duration_in_minutes)->getTimestamp()
+        );
+
+        }
+
+        public function hasValidAuthConfirmToken() : bool
+        {
+            return Carbon::now()->getTimestamp() < $this->get('auth.confirm.until', 0);
+
+        }
+
+        public function setIntendedUrl(string $url)
+        {
+
+            $this->put('_url.intended', $url);
+
+        }
+
+        public function getDriver() : SessionDriver
         {
 
             return $this->handler;
+        }
+
+        public function errors() : ViewErrorBag
+        {
+
+            $errors = $this->get('errors', new ViewErrorBag);
+
+            if ( ! $errors instanceof ViewErrorBag) {
+                $errors = new ViewErrorBag;
+            }
+
+            return $errors;
         }
 
         protected function prepareForUnserialize(string $data) : string
@@ -346,6 +398,7 @@
 
         private function generateSessionId() : string
         {
+
             return Str::random(40);
         }
 
@@ -396,6 +449,8 @@
 
             $this->put('_flash.old', array_diff($this->get('_flash.old', []), $keys));
         }
+
+
 
 
     }

@@ -8,13 +8,9 @@
 
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Message\UriInterface;
-    use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Psr7\InspectsRequest;
-    use WPEmerge\Http\Psr7\ImplementsPsr7Request;
     use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
-    use WPEmerge\Support\Str;
     use WPEmerge\Support\VariableBag;
 
     class Request implements ServerRequestInterface
@@ -88,18 +84,14 @@
         public function getUrl() : string
         {
 
-            $url = preg_replace('/\?.*/', '', $this->getUri());
-
-            return $url;
+            return preg_replace('/\?.*/', '', $this->getUri());
 
         }
 
-        public function getFullUrl(bool $trailing_slash = false) : string
+        public function getFullUrl() : string
         {
 
-            $full_url = trim($this->getUri()->__toString());
-
-            return  ($trailing_slash) ? $full_url . '/' : $full_url;
+            return $this->getUri()->__toString();
 
         }
 

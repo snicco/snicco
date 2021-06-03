@@ -8,16 +8,14 @@
 
     use Carbon\Carbon;
     use Psr\Http\Message\ResponseInterface;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Session\Session;
 
     class WpLoginSessionController
     {
 
-        /**
-         * @var Session
-         */
-        private $session;
+
 
         /**
          * @var ResponseFactory
@@ -34,10 +32,9 @@
          */
         private $confirm_on_login;
 
-        public function __construct(Session $session, ResponseFactory $response_factory, int $auth_confirm_lifetime = 180, bool $confirm_on_login = true )
+        public function __construct(ResponseFactory $response_factory, int $auth_confirm_lifetime = 180, bool $confirm_on_login = true )
         {
 
-            $this->session = $session;
             $this->response_factory = $response_factory;
             $this->auth_confirm_lifetime_in_minutes = $auth_confirm_lifetime;
             $this->confirm_on_login = $confirm_on_login;
@@ -49,22 +46,23 @@
          * A user just logged in. We migrate the session and destroy the old one.
          * Since we are in the routing flow the middleware stack takes care of sending the cookies.
          *
+         * @param  Request  $request
+         *
          * @return ResponseInterface
          */
-        public function create() : ResponseInterface
+        public function create(Request $request) : ResponseInterface
         {
 
-            $this->session->migrate(true);
+            $session = $request->getSession();
+
+            $session->migrate(true);
 
             if ( $this->confirm_on_login ) {
 
-                $this->session->put(
-                    'auth.confirm.until',
-                    Carbon::now()->addMinutes($this->auth_confirm_lifetime_in_minutes)->getTimestamp()
-                );
+
+                $session->confirmAuthUntil($this->auth_confirm_lifetime_in_minutes);
 
             }
-
 
             return $this->response_factory->noContent();
 
@@ -78,12 +76,14 @@
          * wont trigger the template include filter which is only triggered in wp_blog_header.php
          *
          *
+         * @param  Request  $request
+         *
          * @return ResponseInterface
          */
-        public function destroy () : ResponseInterface
+        public function destroy (Request $request) : ResponseInterface
         {
 
-            $this->session->invalidate();
+            $request->getSession()->invalidate();
 
             return $this->response_factory->noContent();
 

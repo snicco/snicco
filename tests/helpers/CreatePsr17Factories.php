@@ -36,9 +36,9 @@
 
             return new ResponseFactory(
                 new TestViewFactory(),
-                $this->psrResponseFactory(),
+                $f = $this->psrResponseFactory(),
                 $this->psrStreamFactory(),
-                new Redirector($this->newUrlGenerator(TEST_APP_KEY)),
+                new Redirector($this->newUrlGenerator(TEST_APP_KEY), $f),
             );
 
         }

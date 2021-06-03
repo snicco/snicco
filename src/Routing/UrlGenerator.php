@@ -12,6 +12,7 @@
     use WPEmerge\Contracts\RouteUrlGenerator;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Session\Session;
     use WPEmerge\Support\Str;
     use WPEmerge\Support\Url;
 
@@ -143,7 +144,7 @@
             return $this->to($path, $query, true, true);
         }
 
-        public function toRoute(string $name, array $arguments = [], $secure = true, $absolute = true) : string
+        public function toRoute(string $name, array $arguments = [], bool $secure = true, bool $absolute = true) : string
         {
 
             $query = Arr::pull($arguments, 'query', []);
@@ -151,6 +152,35 @@
             $path = $this->route_url->to($name, $arguments );
 
             return $this->to($path, $query, $secure, $absolute);
+
+        }
+
+        public function back(string $fallback = '') : string
+        {
+
+            $referrer = $this->getRequest()->getHeaderLine('referer');
+
+            $url = $referrer ? $this->to($referrer) : $this->getPreviousUrlFromSession();
+
+            if ($url) {
+                return $this->to($url);
+            } elseif ($fallback !== '') {
+                return $this->to($fallback);
+            }
+
+            return $this->to('/');
+        }
+
+        public function current() : string
+        {
+            return $this->to($this->getRequest()->getFullUrl());
+        }
+
+        private function getPreviousUrlFromSession() : ?string
+        {
+            $session = $this->getSession();
+
+            return $session ? $session->previousUrl() : null;
 
         }
 
@@ -257,7 +287,7 @@
             if (is_null($root)) {
 
                 /** @var Request $request */
-                $request = call_user_func($this->request_resolver);
+                $request = $this->getRequest();
 
                 $uri = $request->getUri();
 
@@ -284,6 +314,20 @@
             return $url;
 
         }
+
+        private function getRequest () :Request {
+
+            return call_user_func($this->request_resolver);
+
+        }
+
+        /** @todo move everything dependet on session into the StatefulRedirector */
+        private function getSession() :Session
+        {
+            return call_user_func($this->session_resolver);
+        }
+
+
 
 
     }

@@ -20,11 +20,6 @@
     {
 
         /**
-         * @var Session
-         */
-        private $session_store;
-
-        /**
          * @var ResponseFactory
          */
         private $response_factory;
@@ -34,10 +29,9 @@
          */
         private $lifetime_in_minutes;
 
-        public function __construct(Session $session_store, ResponseFactory $response_factory, int $lifetime_in_minutes = 180 )
+        public function __construct(ResponseFactory $response_factory, int $lifetime_in_minutes = 180)
         {
 
-            $this->session_store = $session_store;
             $this->response_factory = $response_factory;
             $this->lifetime_in_minutes = $lifetime_in_minutes;
 
@@ -46,9 +40,9 @@
         public function create(Request $request, string $user_id) : RedirectResponse
         {
 
-            $user = $this->getUser( ( int ) $user_id);
+            $user = $this->getUser(( int ) $user_id);
 
-            if ( ! $user instanceof WP_User ) {
+            if ( ! $user instanceof WP_User) {
 
                 throw new NotFoundException();
 
@@ -56,22 +50,13 @@
 
             $this->loginUser($user);
 
-            $this->setTemporaryAuthToken();
+            $session = $request->getSession();
+            $session->migrate();
+            $session->confirmAuthUntil($this->lifetime_in_minutes);
 
-            return $this->response_factory
-                ->redirect()
-                ->to($this->intendedUrl($request));
+            return $this->response_factory->redirect()
+                                          ->intended($request, WP::adminUrl());
 
-
-        }
-
-        private function setTemporaryAuthToken()
-        {
-
-            $this->session_store->put(
-                'auth.confirm.until',
-                Carbon::now()->addMinutes($this->lifetime_in_minutes)->getTimestamp()
-            );
 
         }
 
@@ -79,33 +64,14 @@
         private function loginUser(WP_User $user)
         {
 
-            $this->session_store->migrate(true);
             wp_set_auth_cookie($user->ID, true, true);
             wp_set_current_user($user->ID);
 
 
         }
 
-        private function intendedUrl(Request $request)
+        private function getUser(int $user_id)
         {
-
-            $from_query = rawurldecode($request->getQueryString('intended', ''));
-
-            if (Url::isValidAbsolute($from_query)) {
-                return $from_query;
-            }
-
-            $from_session = $this->session_store->get('auth.confirm.intended_url', '');
-
-            if (Url::isValidAbsolute($from_session)) {
-                return $from_session;
-            }
-
-            return WP::adminUrl();
-
-        }
-
-        private function getUser(int $user_id ) {
 
             return WP::isUserLoggedIn() ? WP::currentUser() : get_user_by('ID', $user_id);
 

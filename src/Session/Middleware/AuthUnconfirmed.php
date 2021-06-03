@@ -27,28 +27,25 @@
          */
         private $url;
 
-        /**
-         * @var Session
-         */
-        private $session;
-
-        public function __construct(ResponseFactory $response_factory, Session $session, $url = 'admin')
+        public function __construct(ResponseFactory $response_factory, $url = 'admin')
         {
             $this->response_factory = $response_factory;
             $this->url = $url;
-            $this->session = $session;
         }
 
         public function handle(Request $request, Delegate $next)
         {
 
-            if ( $this->hasValidAuthToken() ) {
+            $session = $request->getSession();
 
-                $url = $this->session->get('auth.confirm.intended_url', WP::adminUrl());
+            if ( $session->hasValidAuthConfirmToken() ) {
 
-                $url = ( $this->url !== 'admin') ? $this->url : $url;
 
-                return $this->response_factory->redirect(200)->to($url);
+                $url = ( $this->url !== 'admin')
+                    ? $this->url
+                    : $session->getIntendedUrl ( WP::adminUrl() );;
+
+                return $this->response_factory->redirect()->to($url);
 
             }
 
@@ -56,11 +53,5 @@
 
         }
 
-        private function hasValidAuthToken () : bool
-        {
-
-            return Carbon::now()->getTimestamp() < $this->session->get('auth.confirm.until', 0);
-
-        }
 
     }
