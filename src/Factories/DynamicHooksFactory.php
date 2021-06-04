@@ -8,10 +8,11 @@
 
 	use BetterWpHooks\Contracts\Dispatcher;
     use BetterWpHooks\Dispatchers\WordpressDispatcher;
-	use WPEmerge\Events\AdminBodySendable;
 	use WPEmerge\Events\IncomingAdminRequest;
+	use WPEmerge\Events\OutputBufferRequired;
 	use WPEmerge\Events\IncomingAjaxRequest;
 
+    use WPEmerge\Events\RoutesLoadable;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
 
@@ -69,13 +70,13 @@
 
 			$this->dispatcher->listen( 'wp_ajax_' . $action, function () use ( $request ) {
 
-				IncomingAjaxRequest::dispatch([$request]);
+				RoutesLoadable::dispatch([$request]);
 
 			} );
 
 			$this->dispatcher->listen( 'wp_ajax_nopriv_' . $action, function () use ( $request ) {
 
-				IncomingAjaxRequest::dispatch([$request]);
+				RoutesLoadable::dispatch([$request]);
 
 			} );
 
@@ -89,13 +90,13 @@
 
                 $this->dispatcher->listen( 'load-' . $hook, function () use ( $request ) {
 
-                    IncomingAdminRequest::dispatch([$request]);
+                    OutputBufferRequired::dispatch([$request]);
 
-                } );
+                });
 
                 $this->dispatcher->listen( $hook, function () use ( $request ) {
 
-                    AdminBodySendable::dispatch([$request]);
+                    RoutesLoadable::dispatch([$request]);
 
                 } );
 

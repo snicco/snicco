@@ -36,6 +36,8 @@
          */
         protected $route_matcher;
 
+        protected $already_added = [];
+
         public function __construct(
             RouteMatcher $route_matcher,
             ConditionFactory $condition_factory,
@@ -75,12 +77,28 @@
                 /** @var Route $route */
                 foreach ($routes as $route) {
 
+                    if ( $this->wasAlreadyAdded($route, $method) ) {
+                        continue;
+                    }
+
                     $this->route_matcher->add($route, [$method]);
+
+                    $this->already_added[$method][] = $route->getUrl();
 
                 }
 
             }
 
+
+        }
+
+        private function wasAlreadyAdded(Route $route, string $method) {
+
+            if ( ! isset($this->already_added[$method] ) ) {
+                return false;
+            }
+
+            return in_array($route->getUrl(), $this->already_added[$method] );
 
         }
 

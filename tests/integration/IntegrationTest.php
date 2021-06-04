@@ -7,6 +7,7 @@
     namespace Tests\integration;
 
     use Codeception\TestCase\WPTestCase;
+    use Psr\Http\Message\ServerRequestInterface;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use WPEmerge\Application\Application;
@@ -18,6 +19,7 @@
     use WPEmerge\ExceptionHandling\TestingErrorHandler;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\HttpKernel;
+    use WPEmerge\Http\Psr7\Request;
 
     class IntegrationTest extends WPTestCase
     {
@@ -155,6 +157,14 @@
             }
 
             $this->assertSame($expected, $this->runKernel($request), $message);
+
+        }
+
+        protected function rebindRequest(Request $request) {
+
+            $c = TestApp::container();
+            $c->instance(ServerRequestInterface::class, $request);
+            $c->instance(Request::class, $request);
 
         }
 

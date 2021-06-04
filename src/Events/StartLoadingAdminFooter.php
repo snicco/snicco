@@ -18,6 +18,7 @@
         public function shouldDispatch() : bool
         {
             return WP::isAdmin() && ! WP::isAdminAjax();
+
         }
 
     }

@@ -12,7 +12,7 @@
     use Tests\unit\UnitTest;
     use Tests\helpers\CreatesWpUrls;
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Events\IncomingAdminRequest;
+    use WPEmerge\Events\OutputBufferRequired;
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\ExceptionHandling\Exceptions\RouteLogicException;
     use WPEmerge\Facade\WP;
@@ -143,10 +143,10 @@
                                  ->withParsedBody([])
                                  ->withQueryParams(['action' => 'foo_action']);
 
-            $this->runAndAssertOutput('FOO_ACTION', new IncomingAdminRequest($ajax_request));
+            $this->runAndAssertOutput('FOO_ACTION', new OutputBufferRequired($ajax_request));
 
             $this->runAndAssertEmptyOutput(
-                new IncomingAdminRequest($ajax_request->withQueryParams(['action' => 'bar_action']))
+                new OutputBufferRequired($ajax_request->withQueryParams(['action' => 'bar_action']))
             );
 
 

@@ -7,7 +7,7 @@
     namespace WPEmerge\Http;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Events\IncomingAdminRequest;
+    use WPEmerge\Events\OutputBufferRequired;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Events\ResponseSent;
@@ -123,7 +123,7 @@
         private function gatherMiddleware(IncomingRequest $incoming_request) : array
         {
 
-            if ( ! $incoming_request instanceof IncomingAdminRequest ) {
+            if ( ! $incoming_request instanceof OutputBufferRequired ) {
 
                 Arr::pullByValue(OutputBufferMiddleware::class, $this->core_middleware);
 

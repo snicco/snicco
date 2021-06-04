@@ -9,6 +9,9 @@
     use Tests\fixtures\Middleware\WebMiddleware;
     use Tests\stubs\TestApp;
 
+
+    $pass_condition =  $GLOBALS['test']['pass_fallback_route_condition'] ?? false;
+
     $router = TestApp::route();
 
     $router->get('foo', function () {
@@ -25,7 +28,7 @@
            ->middleware([FooMiddleware::class, FooBarMiddleware::class]);
 
     $router->get()
-           ->where(IsPost::class, true)
+           ->where(IsPost::class, $pass_condition)
            ->handle(function () {
 
                return 'get_fallback';
@@ -33,7 +36,7 @@
            });
 
     $router->post()
-           ->where(IsPost::class, false)
+           ->where(IsPost::class, $pass_condition)
            ->handle(function () {
 
                return 'post_fallback';
@@ -41,7 +44,7 @@
            });
 
     $router->patch()
-           ->where(IsPost::class, true)
+           ->where(IsPost::class, $pass_condition)
            ->handle(function () {
 
                return 'patch_fallback';

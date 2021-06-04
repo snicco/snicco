@@ -189,7 +189,7 @@
         }
 
         /** @test */
-        public function an_exception_is_thrown_when_the_kernel_when_the_kernel_must_match_web_routes_and_no_route_matched()
+        public function an_exception_is_thrown_when_the_kernel_must_match_web_routes_and_no_route_matched()
         {
 
             $this->createRoutes(function () {

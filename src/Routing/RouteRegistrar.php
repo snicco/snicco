@@ -9,6 +9,7 @@
     use Symfony\Component\Finder\Finder;
     use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Support\Arr;
     use WPEmerge\Support\FilePath;
     use WPEmerge\Support\Str;
 
@@ -36,14 +37,47 @@
         public function loadRoutes()
         {
 
-            $dirs = $this->config->get('routing.definitions', []);
+            $dirs = Arr::wrap( $this->config->get('routing.definitions', []) );
 
-            if ($dirs === []) {
+
+            if ( $dirs === [] ) {
                 return;
             }
 
+            $this->requireAllInDirs( $dirs);
+
+            $this->router->createFallbackWebRoute();
+
+            $this->router->loadRoutes();
+
+        }
+
+        public function requireAllFromFiles ( array $files ) {
+
+            foreach ($files as $path) {
+
+
+                if ( ! is_file($path) ) {
+                    continue;
+                }
+
+                $name = FilePath::name($path, 'php');
+
+                $preset = $this->config->get('routing.presets.'.$name, []);
+
+                $this->loadRouteGroup($name, $path, $preset);
+
+            }
+
+            $this->router->loadRoutes();
+
+        }
+
+        private function requireAllInDirs( array $dirs ) {
+
             $finder = new Finder();
-            $finder->in($dirs)->files()->name('*.php');
+            $finder->in($dirs)->files()
+                   ->name('*.php');
 
             $seen = [];
 
@@ -64,10 +98,6 @@
                 $seen[$name] = $name;
 
             }
-
-            $this->router->createFallbackWebRoute();
-
-            $this->router->loadRoutes();
 
         }
 

@@ -6,43 +6,30 @@
 
     namespace WPEmerge\Events;
 
-    use BetterWpHooks\Traits\DispatchesConditionally;
     use Psr\Http\Message\ServerRequestInterface;
     use WPEmerge\Application\ApplicationConfig;
+    use WPEmerge\Application\ApplicationEvent;
 
-    class LoadedWP
+    class GlobalRoutesLoadable extends ApplicationEvent
     {
-
-        use DispatchesConditionally;
 
         /**
          * @var ApplicationConfig
          */
-        private $config;
+        public $config;
 
         /**
          * @var ServerRequestInterface
          */
-        private $request;
+        public $request;
 
         public function __construct(ApplicationConfig $config, ServerRequestInterface $request )
         {
 
             $this->config = $config;
             $this->request = $request;
-        }
-
-        public function shouldDispatch() : bool
-        {
-
-            return $this->config->get('always_run_middleware', false );
 
         }
 
-        public function payload() {
-
-            return $this->request;
-
-        }
 
     }
