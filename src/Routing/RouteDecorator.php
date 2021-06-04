@@ -86,6 +86,11 @@
 
 			}
 
+			if ( $method === 'noAction') {
+
+                return $this->decorate( $method, true );
+
+            }
 
 			if ( in_array( $method, self::allowed_attributes ) ) {
 
