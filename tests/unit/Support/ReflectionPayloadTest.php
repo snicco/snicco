@@ -8,7 +8,6 @@
 
     use Tests\fixtures\TestDependencies\Bar;
     use Tests\fixtures\TestDependencies\Foo;
-    use Tests\stubs\TestRequest;
     use Tests\helpers\CreateContainer;
     use WPEmerge\Support\ReflectionPayload;
     use PHPUnit\Framework\TestCase;
