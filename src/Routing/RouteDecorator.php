@@ -22,6 +22,7 @@
 			'prefix',
 			'where',
 			'methods',
+            'noAction'
 		];
 
 		private const pass_back_to_router = [
@@ -50,7 +51,7 @@
 
 		}
 
-		public function decorate( $called_method, $arguments ) : RouteDecorator {
+		public function decorate( string $called_method, $arguments ) : RouteDecorator {
 
 
 			if ( $called_method === 'where') {
@@ -125,7 +126,7 @@
 
 		public function group ($callback) {
 
-			$this->router->group($this->attributes , $callback );
+			$this->router->group( $this->attributes , $callback );
 
 		}
 

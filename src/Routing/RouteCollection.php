@@ -8,6 +8,7 @@
 
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteMatcher;
+    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
@@ -61,6 +62,9 @@
 
         }
 
+        /**
+         * @throws ConfigurationException
+         */
         public function loadIntoDispatcher(string $method = null) : void
         {
 
@@ -68,7 +72,7 @@
 
             if ($method) {
 
-                $all_routes = [$method => Arr::get($this->routes, $method, [])];
+                $all_routes = [ $method => Arr::get($this->routes, $method, [] ) ];
 
             }
 
@@ -80,6 +84,8 @@
                     if ( $this->wasAlreadyAdded($route, $method) ) {
                         continue;
                     }
+
+                    $this->validateAttributes($route);
 
                     $this->route_matcher->add($route, [$method]);
 

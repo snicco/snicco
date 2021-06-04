@@ -25,28 +25,25 @@
 
         private $mapped_events = [
 
-            'template_include' => ['resolve', RoutesLoadable::class, 3001],
+
+            'init' => ['resolve', RoutesLoadable::class, -999],
+
             'admin_init' => ['resolve', LoadedWpAdmin::class, 3001],
+
             'request' => ['resolve', WpQueryFilterable::class, 3001],
-            'init' => ['resolve', GlobalRoutesLoadable::class, -999],
+
+            'template_include' => ['resolve', IncomingWebRequest::class, 3001],
+
             'in_admin_footer' => [StartLoadingAdminFooter::class, 1],
-            'wp_login' => ['resolve', WpLoginAction::class],
-            'wp_logout' => ['resolve', WpLoginAction::class]
 
         ];
 
         private $event_listeners = [
 
 
-            GlobalRoutesLoadable::class => [
-
-                [ LoadRoutes::class, 'global'],
-
-            ],
-
             RoutesLoadable::class => [
 
-                [ LoadRoutes::class, 'standard'],
+                [ LoadRoutes::class, '__invoke'],
 
             ],
 
@@ -149,19 +146,6 @@
         private function bindEventObjects()
         {
 
-            $this->container->singleton(RoutesLoadable::class, function ($c, $args) {
-
-                $template_wordpress_loads_for_frontend = is_string(Arr::firstEl($args))
-                    ? Arr::firstEl($args)
-                    : null;
-
-
-                return new RoutesLoadable(
-                    $c->make(Request::class),
-                    $template_wordpress_loads_for_frontend
-                );
-
-            });
 
             $this->container->singleton(WpQueryFilterable::class, function ($container, $args) {
 

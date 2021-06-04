@@ -13,6 +13,7 @@
     use WPEmerge\Contracts\SetsRouteAttributes;
     use WPEmerge\Contracts\UrlableInterface;
     use WPEmerge\Controllers\FallBackController;
+    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Psr7\Request;
@@ -221,9 +222,11 @@
 
         public function instantiateAction(RouteActionFactory $action_factory = null) :Route
         {
+
             $factory = $action_factory ?? $this->action_factory;
 
             $this->instantiated_action = $factory->create($this->action, $this->namespace);
+
             return $this;
         }
 
