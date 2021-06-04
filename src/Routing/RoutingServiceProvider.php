@@ -10,6 +10,7 @@
     use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteMatcher;
+    use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Contracts\RouteUrlGenerator;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
@@ -72,7 +73,7 @@
 
             $this->bindUrlGenerator();
 
-            $this->binRouteRegister();
+            $this->binRouteRegistrar();
 
 
         }
@@ -287,16 +288,16 @@
 
         }
 
-        private function binRouteRegister()
+        private function binRouteRegistrar()
         {
-            $this->container->singleton(RouteRegistrar::class, function () {
+
+            $this->container->singleton(RouteRegistrarInterface::class, function () {
 
                 return new RouteRegistrar(
                     $this->container->make(Router::class),
-                    $this->container->make(ApplicationConfig::class)
-
                 );
             });
         }
+
 
     }

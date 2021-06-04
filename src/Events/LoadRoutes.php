@@ -7,64 +7,30 @@
     namespace WPEmerge\Events;
 
 
-    use WPEmerge\Facade\WP;
-    use WPEmerge\Routing\RouteRegistrar;
-    use WPEmerge\Support\Arr;
+    use WPEmerge\Contracts\RouteRegistrarInterface;
 
     class LoadRoutes
     {
 
-        /**
-         * @var RouteRegistrar
-         */
-        private $registrar;
 
-        public function __construct(RouteRegistrar $registrar)
+        public function __invoke( RoutesLoadable $event, RouteRegistrarInterface $registrar )
         {
-            $this->registrar = $registrar;
-        }
-
-        public function global( GlobalRoutesLoadable $event ) {
 
             $config = $event->config;
 
-            $redirect_routes = Arr::wrap( $config->get('routing.redirects', [] ) );
+            $success = $registrar->loadGlobalRoutes($config);
 
-            if ( $redirect_routes === [] ) {
-                return;
+            if ( $success ) {
+
+                IncomingGlobalRequest::dispatch([$event->request]);
+
             }
 
-            $this->registrar->requireAllFromFiles($redirect_routes);
-
-            IncomingGlobalRequest::dispatch([$event->request]);
+            $registrar->loadStandardRoutes($config);
 
 
         }
 
-        public function standard ( RoutesLoadable $event ) {
-
-            $this->registrar->loadRoutes();
-
-            if ( $event->template ) {
-
-                return IncomingWebRequest::dispatch([$event->template, $event->request]);
-
-            }
-
-            if ( WP::isAdminAjax() ) {
-
-                return IncomingAjaxRequest::dispatch([$event->request]);
-
-            }
-
-            if ( WP::isAdmin() ) {
-
-                return IncomingAdminRequest::dispatch([$event->request]);
-
-            }
-
-
-        }
 
 
     }

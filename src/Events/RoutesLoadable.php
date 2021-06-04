@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Events;
 
+    use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Http\Psr7\Request;
 
@@ -13,19 +14,19 @@
     {
 
         /**
+         * @var ApplicationConfig
+         */
+        public $config;
+
+        /**
          * @var Request
          */
         public $request;
 
-        /**
-         * @var string|null
-         */
-        public $template;
-
-        public function __construct(Request $request, ?string $template = null )
+        public function __construct( ApplicationConfig $config, Request $request)
         {
+            $this->config = $config;
             $this->request = $request;
-            $this->template = $template;
         }
 
     }

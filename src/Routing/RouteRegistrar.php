@@ -7,13 +7,15 @@
     namespace WPEmerge\Routing;
 
     use Symfony\Component\Finder\Finder;
+    use Symfony\Component\Finder\SplFileInfo;
     use WPEmerge\Application\ApplicationConfig;
+    use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Facade\WP;
     use WPEmerge\Support\Arr;
-    use WPEmerge\Support\FilePath;
     use WPEmerge\Support\Str;
 
-    class RouteRegistrar
+
+    class RouteRegistrar implements RouteRegistrarInterface
     {
 
         /**
@@ -21,30 +23,54 @@
          */
         private $router;
 
-        /**
-         * @var ApplicationConfig
-         */
-        private $config;
-
-        public function __construct(Router $router, ApplicationConfig $config )
+        public function __construct(Router $router)
         {
 
             $this->router = $router;
-            $this->config = $config;
 
         }
 
-        public function loadRoutes()
+        public function loadGlobalRoutes(ApplicationConfig $config) : bool
         {
 
-            $dirs = Arr::wrap( $this->config->get('routing.definitions', []) );
+            $dirs = Arr::wrap($config->get('routing.definitions', []));
+
+            $finder = new Finder();
+            $finder->in($dirs)->files()
+                   ->name('globals.php');
+
+            $files = iterator_to_array($finder);
+
+            if ( ! count($files) ) {
+                return false;
+            }
+
+            $this->requireFiles($files, $config, false);
+
+            $this->router->loadRoutes();
+
+            return true;
 
 
-            if ( $dirs === [] ) {
+        }
+
+        public function loadStandardRoutes(ApplicationConfig $config)
+        {
+
+            $dirs = Arr::wrap($config->get('routing.definitions', []));
+
+            $finder = new Finder();
+            $finder->in($dirs)->files()
+                   ->notName(['globals.php', 'global.php'])
+                   ->name('*.php');
+
+            $files = iterator_to_array($finder);
+
+            if ( ! count($files) ) {
                 return;
             }
 
-            $this->requireAllInDirs( $dirs);
+            $this->requireFiles($files, $config);
 
             $this->router->createFallbackWebRoute();
 
@@ -52,44 +78,26 @@
 
         }
 
-        public function requireAllFromFiles ( array $files ) {
+        /**
+         * @param  SplFileInfo[]  $files
+         * @param  ApplicationConfig  $config
+         * @param  bool  $unique
+         */
+        private function requireFiles(array $files, ApplicationConfig $config, bool $unique = true)
+        {
 
-            foreach ($files as $path) {
-
-
-                if ( ! is_file($path) ) {
-                    continue;
-                }
-
-                $name = FilePath::name($path, 'php');
-
-                $preset = $this->config->get('routing.presets.'.$name, []);
-
-                $this->loadRouteGroup($name, $path, $preset);
-
-            }
-
-            $this->router->loadRoutes();
-
-        }
-
-        private function requireAllInDirs( array $dirs ) {
-
-            $finder = new Finder();
-            $finder->in($dirs)->files()
-                   ->name('*.php');
 
             $seen = [];
 
-            foreach ($finder as $file) {
+            foreach ( $files as $file ) {
 
                 $name = Str::before($file->getFilename(), '.php');
 
-                if ( isset( $seen[$name] ) ) {
+                if (isset($seen[$name]) && $unique) {
                     continue;
                 }
 
-                $preset = $this->config->get('routing.presets.'.$name, []);
+                $preset = $config->get('routing.presets.'.$name, []);
 
                 $path = $file->getRealPath();
 
@@ -101,21 +109,16 @@
 
         }
 
-        public static function loadRouteFile(string $route_file, Router $router = null )
-        {
-
-            extract(['router'=>$router], EXTR_OVERWRITE);
-
-            require $route_file;
-
-        }
-
         private function loadRouteGroup(string $name, string $file_path, array $preset)
         {
 
             $attributes = $this->applyPreset($name, $preset);
 
-            $this->router->group($attributes, $file_path);
+            $this->router->group($attributes, function ($router) use ($file_path) {
+
+                require_once $file_path;
+
+            });
 
         }
 

@@ -12,9 +12,13 @@
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Support\Arr;
+    use WPEmerge\Traits\ValidatesRoutes;
 
     abstract class AbstractRouteCollection
     {
+
+        use ValidatesRoutes;
+
         /**
          * @var ConditionFactory
          */
