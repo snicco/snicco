@@ -65,4 +65,18 @@
 
 		}
 
-	}
+        public static function name($file_path, string $ending = '')
+        {
+            $name = pathinfo($file_path,PATHINFO_BASENAME );
+
+            if ( $ending ) {
+
+                return Str::before($name, '.'. trim($ending, '.'));
+
+            }
+
+            return $name;
+
+        }
+
+    }

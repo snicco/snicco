@@ -10,11 +10,11 @@
 	use BetterWpHooks\Dispatchers\WordpressDispatcher;
     use Tests\integration\IntegrationTest;
     use Tests\stubs\TestApp;
-    use WPEmerge\Events\AdminBodySendable;
+    use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Events\StartLoadingAdminFooter;
     use WPEmerge\Events\WpQueryFilterable;
-    use WPEmerge\Events\IncomingAdminRequest;
+    use WPEmerge\Events\OutputBufferRequired;
 	use WPEmerge\Events\IncomingAjaxRequest;
 	use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Events\MakingView;
@@ -43,11 +43,11 @@
 			$this->assertInstanceOf( Dispatcher::class, $this->dispatcher );
 
 			$this->assertHasListener([HttpKernel::class, 'run'], IncomingWebRequest::class);
-            $this->assertHasListener([HttpKernel::class, 'run'], AdminBodySendable::class);
+            $this->assertHasListener([HttpKernel::class, 'run'], IncomingAdminRequest::class);
             $this->assertHasListener([HttpKernel::class, 'run'], IncomingAjaxRequest::class);
             $this->assertHasListener([HttpKernel::class, 'run'], WpLoginAction::class);
 
-            $this->assertHasListener([OutputBufferMiddleware::class, 'start'], IncomingAdminRequest::class);
+            $this->assertHasListener([OutputBufferMiddleware::class, 'start'], OutputBufferRequired::class);
             $this->assertHasListener([OutputBufferMiddleware::class, 'flush'], StartLoadingAdminFooter::class);
 
             $this->assertHasListener([ShutdownHandler::class, 'handle'], ResponseSent::class);

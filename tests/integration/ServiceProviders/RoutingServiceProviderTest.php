@@ -17,7 +17,7 @@
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Events\IncomingAdminRequest;
+    use WPEmerge\Events\OutputBufferRequired;
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Facade\WP;
@@ -260,7 +260,7 @@
 
             $request = $this->adminRequestTo('foo');
 
-            $this->seeKernelOutput('FOO', new IncomingAdminRequest($request));
+            $this->seeKernelOutput('FOO', new OutputBufferRequired($request));
 
             Mockery::close();
 
@@ -324,7 +324,7 @@
 
             $request = TestRequest::from('GET', 'other');
 
-            $this->seeKernelOutput('other', new IncomingAdminRequest($request));
+            $this->seeKernelOutput('other', new OutputBufferRequired($request));
 
         }
 
@@ -342,9 +342,12 @@
 
             $request = TestRequest::from('GET', 'foo');
 
-            $this->seeKernelOutput('foo', new IncomingAdminRequest($request));
+            $this->seeKernelOutput('foo', new OutputBufferRequired($request));
 
         }
+
+
+
 
     }
 

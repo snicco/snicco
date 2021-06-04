@@ -156,10 +156,11 @@
         public function loadRoutes(string $method = null)
         {
 
-            if ( ! $this->hasGroupStack()) {
+            if ( ! $this->hasGroupStack() ) {
 
 
                 $this->routes->loadIntoDispatcher($method);
+
 
             }
 

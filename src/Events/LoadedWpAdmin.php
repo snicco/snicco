@@ -15,9 +15,7 @@
 
 		public function __construct( Request $request, DynamicHooksFactory $hook_factory ) {
 
-
 			$hook_factory->create($request);
-
 
 		}
 

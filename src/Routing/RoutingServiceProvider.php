@@ -7,6 +7,7 @@
     namespace WPEmerge\Routing;
 
     use Symfony\Component\Finder\Finder;
+    use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Contracts\RouteUrlGenerator;
@@ -30,6 +31,7 @@
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Session\Session;
+    use WPEmerge\Support\Arr;
     use WPEmerge\Support\FilePath;
 
 
@@ -70,29 +72,34 @@
 
             $this->bindUrlGenerator();
 
+            $this->binRouteRegister();
+
 
         }
 
+        /**
+         * @throws ConfigurationException
+         */
         public function bootstrap() : void
         {
 
-            if ( ! ( $cache = $this->config->get('routing.cache', false) ) )  {
-
-                $dir = $this->config->get('routing.cache_dir', '');
-
-                $this->clearRouteCache($dir);
-
-                /** @var Router $router */
-                $router = $this->container->make(Router::class);
-                (new RouteRegistrar($router, $this->config))->loadRoutes();
-
-            }
-
-            if ( $cache && ! is_dir($dir = $this->config->get('routing.cache_dir', ''))) {
-
-                $this->loadRoutesOneTime($dir);
-
-            }
+            // if ( ! ( $cache = $this->config->get('routing.cache', false) ) )  {
+            //
+            //     $dir = $this->config->get('routing.cache_dir', '');
+            //
+            //     $this->clearRouteCache($dir);
+            //
+            //     /** @var RouteRegistrar $registrar */
+            //     $registrar = $this->container->make(RouteRegistrar::class);
+            //     $registrar->loadRoutes();
+            //
+            // }
+            //
+            // if ( $cache && ! is_dir($dir = $this->config->get('routing.cache_dir', ''))) {
+            //
+            //     $this->loadRoutesOneTime($dir);
+            //
+            // }
 
 
         }
@@ -113,7 +120,6 @@
 
             $this->config->extend('routing.conditions', self::CONDITION_TYPES);
             $this->config->extend('routing.must_match_web_routes', false);
-            $this->config->extend('routing.redirects', []);
 
         }
 
@@ -275,10 +281,22 @@
 
             wp_mkdir_p($dir);
 
-            /** @var Router $router */
-            $router = $this->container->make(Router::class);
-            (new RouteRegistrar($router, $this->config))->loadRoutes();
+            /** @var RouteRegistrar $registrar */
+            $registrar = $this->container->make(RouteRegistrar::class);
+            $registrar->loadRoutes();
 
+        }
+
+        private function binRouteRegister()
+        {
+            $this->container->singleton(RouteRegistrar::class, function () {
+
+                return new RouteRegistrar(
+                    $this->container->make(Router::class),
+                    $this->container->make(ApplicationConfig::class)
+
+                );
+            });
         }
 
     }
