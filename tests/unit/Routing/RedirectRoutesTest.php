@@ -42,7 +42,7 @@
             ApplicationEvent::make($this->container);
             ApplicationEvent::fake();
             WP::setFacadeContainer($this->container);
-
+            HeaderStack::reset();
 
         }
 

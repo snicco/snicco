@@ -14,6 +14,7 @@
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\IncomingWebRequest;
+    use WPEmerge\Events\ResponseSent;
     use WPEmerge\ExceptionHandling\TestingErrorHandler;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\HttpKernel;
@@ -65,6 +66,7 @@
             $GLOBALS['wp_actions'] = [];
             $GLOBALS['wp_current_filter'] = [];
             $GLOBALS['test'] = [];
+
         }
 
         public function newTestApp(array $config = [], bool $with_exceptions = false) : Application
@@ -78,6 +80,8 @@
                 $this->withoutExceptionHandling();
 
             }
+
+            ApplicationEvent::fake([ResponseSent::class]);
 
 
             return $app;
