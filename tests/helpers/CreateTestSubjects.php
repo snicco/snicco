@@ -12,6 +12,7 @@
     use Tests\fixtures\Middleware\FooBarMiddleware;
     use Tests\fixtures\Middleware\FooMiddleware;
     use Tests\stubs\TestRequest;
+    use Tests\unit\View\MethodField;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Events\IncomingRequest;
@@ -70,6 +71,8 @@
             $this->container->instance(AbstractRouteCollection::class, $this->routes);
             $this->container->instance(ResponseFactory::class, $factory = $this->createResponseFactory());
             $this->container->instance(ContainerAdapter::class, $this->container);
+            $this->container->instance(MethodField::class, new MethodField(TEST_APP_KEY));
+
 
             $middleware_stack = new MiddlewareStack();
             $middleware_stack->middlewareAliases([

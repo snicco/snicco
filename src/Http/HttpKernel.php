@@ -81,11 +81,13 @@
 
             $response = $this->handle($request_event);
 
-            if ( ! $response instanceof NullResponse && $request_event instanceof IncomingWebRequest) {
+            if ( $response instanceof NullResponse ) {
 
-                $request_event->matchedRoute();
+                return;
 
             }
+
+            $request_event->matchedRoute();
 
             $this->emitter->emit($response);
 

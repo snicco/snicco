@@ -215,6 +215,7 @@
                 ],
             ]);
 
+
             $this->seeKernelOutput('', TestRequest::from('GET', $this->ajaxUrl('foo')));
 
             Mockery::close();

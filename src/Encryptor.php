@@ -95,13 +95,6 @@
 
         }
 
-        public static function generateKey() : string
-        {
-
-            return 'base64:'.base64_encode(random_bytes(32));
-
-        }
-
         private function parseKey(string $key) : string
         {
 
