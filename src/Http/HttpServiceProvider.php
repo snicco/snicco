@@ -53,12 +53,13 @@
 
                 );
 
-
                 if ($this->config->get('middleware.always_run_global', false)) {
 
                     $kernel->alwaysWithGlobalMiddleware($this->config->get('middleware.groups.global', [] ) );
 
                 }
+
+                $kernel->addUniqueMiddlewares($this->config->get('middleware.unique', []));
 
                 return $kernel;
 

@@ -8,13 +8,11 @@
 
 	use BetterWpHooks\Contracts\Dispatcher;
     use BetterWpHooks\Dispatchers\WordpressDispatcher;
-	use WPEmerge\Events\IncomingAdminRequest;
+    use Psr\Http\Message\ServerRequestInterface;
+    use WPEmerge\Events\IncomingAdminRequest;
 	use WPEmerge\Events\OutputBufferRequired;
 	use WPEmerge\Events\IncomingAjaxRequest;
-
-    use WPEmerge\Events\RoutesLoadable;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Psr7\Request;
 
 
 	class DynamicHooksFactory {
@@ -30,7 +28,7 @@
 
 		}
 
-		public function create( Request $request ) {
+		public function create( ServerRequestInterface $request ) {
 
 			if ( WP::isAdminAjax() ) {
 
@@ -64,19 +62,19 @@
 
 		}
 
-		private function createAjaxHooks( Request $request ) {
+		private function createAjaxHooks( ServerRequestInterface $request ) {
 
 			$action = ( isset( $_REQUEST['action'] ) ) ? $_REQUEST['action'] : '';
 
 			$this->dispatcher->listen( 'wp_ajax_' . $action, function () use ( $request ) {
 
-				RoutesLoadable::dispatch([$request]);
+				IncomingAjaxRequest::dispatch([$request]);
 
 			} );
 
 			$this->dispatcher->listen( 'wp_ajax_nopriv_' . $action, function () use ( $request ) {
 
-				RoutesLoadable::dispatch([$request]);
+                IncomingAjaxRequest::dispatch([$request]);
 
 			} );
 
@@ -84,7 +82,7 @@
 
 		}
 
-		private function createAdminHooks(Request $request) {
+		private function createAdminHooks(ServerRequestInterface $request) {
 
 			if ( $hook = $this->getAdminPageHook() ) {
 
@@ -96,7 +94,7 @@
 
                 $this->dispatcher->listen( $hook, function () use ( $request ) {
 
-                    RoutesLoadable::dispatch([$request]);
+                    IncomingAdminRequest::dispatch([$request]);
 
                 } );
 

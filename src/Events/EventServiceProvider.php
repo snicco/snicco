@@ -8,16 +8,14 @@
 
     use BetterWpHooks\Contracts\Dispatcher;
     use Psr\Http\Message\ServerRequestInterface;
-    use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\ExceptionHandling\ShutdownHandler;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Listeners\LoadRoutes;
     use WPEmerge\Middleware\Core\OutputBufferMiddleware;
     use WPEmerge\Listeners\FilterWpQuery;
-    use WPEmerge\Session\WpLoginAction;
-    use WPEmerge\Support\Arr;
     use WPEmerge\View\ViewFactory;
 
     class EventServiceProvider extends ServiceProvider
@@ -25,23 +23,21 @@
 
         private $mapped_events = [
 
+            'init' => ['resolve', Init::class, -999],
 
-            'init' => ['resolve', RoutesLoadable::class, -999],
-
-            'admin_init' => ['resolve', LoadedWpAdmin::class, 3001],
+            'admin_init' => ['resolve', AdminInit::class, 3001],
 
             'request' => ['resolve', WpQueryFilterable::class, 3001],
 
             'template_include' => ['resolve', IncomingWebRequest::class, 3001],
 
-            'in_admin_footer' => [StartLoadingAdminFooter::class, 1],
+            'in_admin_footer' => [InAdminFooter::class, 1],
 
         ];
 
         private $event_listeners = [
 
-
-            RoutesLoadable::class => [
+            Init::class => [
 
                 [ LoadRoutes::class, '__invoke'],
 
@@ -83,13 +79,7 @@
 
             ],
 
-            WpLoginAction::class => [
-
-                [HttpKernel::class, 'run']
-
-            ],
-
-            StartLoadingAdminFooter::class => [
+            InAdminFooter::class => [
 
                 [OutputBufferMiddleware::class, 'flush'],
 

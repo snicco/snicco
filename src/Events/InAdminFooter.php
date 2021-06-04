@@ -10,7 +10,7 @@
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;
 
-    class StartLoadingAdminFooter extends ApplicationEvent
+    class InAdminFooter extends ApplicationEvent
     {
 
         use DispatchesConditionally;

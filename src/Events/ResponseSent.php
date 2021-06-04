@@ -13,7 +13,7 @@
     {
 
         /**
-         * @var \WPEmerge\Http\Psr7\Response
+         * @var Response
          */
         public $response;
 

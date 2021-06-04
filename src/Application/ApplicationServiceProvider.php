@@ -9,7 +9,7 @@
     use Tests\unit\View\MethodField;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewFactoryInterface;
-    use WPEmerge\Encryptor;
+    use WPEmerge\Session\Encryptor;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\ExceptionHandling\ShutdownHandler;
     use WPEmerge\Http\Cookies;

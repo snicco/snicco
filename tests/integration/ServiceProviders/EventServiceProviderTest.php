@@ -12,7 +12,7 @@
     use Tests\stubs\TestApp;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\ResponseSent;
-    use WPEmerge\Events\StartLoadingAdminFooter;
+    use WPEmerge\Events\InAdminFooter;
     use WPEmerge\Events\WpQueryFilterable;
     use WPEmerge\Events\OutputBufferRequired;
 	use WPEmerge\Events\IncomingAjaxRequest;
@@ -48,7 +48,7 @@
             $this->assertHasListener([HttpKernel::class, 'run'], WpLoginAction::class);
 
             $this->assertHasListener([OutputBufferMiddleware::class, 'start'], OutputBufferRequired::class);
-            $this->assertHasListener([OutputBufferMiddleware::class, 'flush'], StartLoadingAdminFooter::class);
+            $this->assertHasListener([OutputBufferMiddleware::class, 'flush'], InAdminFooter::class);
 
             $this->assertHasListener([ShutdownHandler::class, 'handle'], ResponseSent::class);
 			$this->assertHasListener([ShutdownHandler::class, 'unrecoverableException'], UnrecoverableExceptionHandled::class);

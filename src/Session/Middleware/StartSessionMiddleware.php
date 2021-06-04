@@ -47,16 +47,21 @@
 
         }
 
-        public function handle(Request $request, Delegate $next)
+        public function handle(Request $request, Delegate $next) : ResponseInterface
         {
 
             $this->collectGarbage();
 
-            $this->startSession(
-                $session = $this->getSession($request),
-                $request
+            $session = $request->getSession();
 
-            );
+            if ( $session === null ) {
+
+                $session = $this->getSession($request);
+                $this->startSession($session, $request);
+
+            }
+
+            $session->isActive(true);
 
             return $this->handleStatefulRequest($request, $session, $next);
 
@@ -74,6 +79,7 @@
             $this->session_store->setId($session_id);
 
             return $this->session_store;
+
         }
 
         private function addSessionCookie(Session $session)
@@ -139,13 +145,11 @@
 
         private function saveSession(Session $session)
         {
-
             $session->save();
         }
 
         private function collectGarbage()
         {
-
             if ($this->configHitsLottery($this->config['lottery'])) {
 
                 $this->session_store->getDriver()->gc($this->getSessionLifetimeInSeconds());
