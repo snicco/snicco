@@ -6,13 +6,11 @@
 
     namespace WPEmerge\Routing;
 
-    use Psr\Http\Message\ServerRequestInterface;
     use Symfony\Component\Finder\Finder;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Contracts\RouteUrlGenerator;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Encryptor;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Psr7\Request;
@@ -33,9 +31,7 @@
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\FilePath;
-    use WP_Filesystem_Direct;
 
-    use function Patchwork\Redefinitions\LanguageConstructs\_require_once;
 
     class RoutingServiceProvider extends ServiceProvider
     {
@@ -80,7 +76,7 @@
         public function bootstrap() : void
         {
 
-            if ( ! ($cache = $this->config->get('routing.cache', false))) {
+            if ( ! ( $cache = $this->config->get('routing.cache', false) ) )  {
 
                 $dir = $this->config->get('routing.cache_dir', '');
 
@@ -92,7 +88,7 @@
 
             }
 
-            if ($cache && ! is_dir($dir = $this->config->get('routing.cache_dir', ''))) {
+            if ( $cache && ! is_dir($dir = $this->config->get('routing.cache_dir', ''))) {
 
                 $this->loadRoutesOneTime($dir);
 
@@ -117,6 +113,7 @@
 
             $this->config->extend('routing.conditions', self::CONDITION_TYPES);
             $this->config->extend('routing.must_match_web_routes', false);
+            $this->config->extend('routing.redirects', []);
 
         }
 

@@ -11,6 +11,8 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
+    use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Session\Session;
