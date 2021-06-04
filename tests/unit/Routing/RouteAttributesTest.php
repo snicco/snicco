@@ -500,7 +500,13 @@
 
                 $this->router->noAction()->group(function () {
 
-                    $this->router->get('foo')->middleware(GlobalMiddleware::class);
+                    $this->router->name('a')->group(function () {
+
+                        $this->router->get('foo')->middleware(GlobalMiddleware::class);
+
+                    });
+
+                    $this->router->get('bar')->middleware(GlobalMiddleware::class);
 
                 });
 
@@ -510,7 +516,11 @@
             $request = $this->webRequest('GET', '/foo');
             $this->runAndAssertOutput('', $request);
 
-            $this->assertSame(1, $GLOBALS['test'][GlobalMiddleware::run_times]);
+              $request = $this->webRequest('GET', '/bar');
+            $this->runAndAssertOutput('', $request);
+
+
+            $this->assertSame(2, $GLOBALS['test'][GlobalMiddleware::run_times]);
 
         }
 
@@ -551,6 +561,7 @@
 
 
         }
+
 
     }
 

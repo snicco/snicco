@@ -33,7 +33,7 @@
 			$this->middleware = Arr::get( $attributes, 'middleware', [] );
 			$this->conditions = Arr::get( $attributes, 'where', ConditionBucket::createEmpty() );
 			$this->methods    = Arr::wrap( Arr::get( $attributes, 'methods', [] ) );
-            $this->no_action  = Arr::get( $attributes, 'noAction', false );
+            $this->no_action  = Arr::get( $attributes, 'noAction', null );
 
 		}
 
@@ -123,7 +123,7 @@
 
 		}
 
-        private function mergeNoAction( bool $old_group_no_action)
+        private function mergeNoAction( $old_group_no_action )
         {
             if ( isset($this->no_action) ) {
 

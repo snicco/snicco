@@ -62,8 +62,8 @@
 
             $this->createRoutes(function () {
 
-                $this->router->get('foo')->name('foo_route');
-                $this->router->name('bar_route')->get('bar');
+                $this->router->get('foo')->name('foo_route')->noAction();
+                $this->router->name('bar_route')->get('bar')->noAction();
 
             });
 
@@ -83,7 +83,7 @@
 
             $this->createRoutes(function () {
 
-                $this->router->get('foo')->name('foo_route');
+                $this->router->get('foo')->name('foo_route')->noAction();
 
             });
 
@@ -103,6 +103,7 @@
 
                 $this->router
                     ->name('foo')
+                    ->noAction()
                     ->group(function () {
 
                         $this->router->name('bar')->group(function () {
@@ -138,6 +139,7 @@
 
                 $this->router
                     ->name('foo')
+                    ->noAction()
                     ->group(function () {
 
                         $this->router->get('bar')->name('bar');
@@ -165,7 +167,7 @@
 
             $this->createRoutes(function () {
 
-                $this->router->get('/foo/{required}')->name('foo');
+                $this->router->get('/foo/{required}')->name('foo')->noAction();
 
             });
 
@@ -182,7 +184,7 @@
 
             $this->createRoutes(function () {
 
-                $this->router->get('foo/{required}/{optional?}')->name('foo');
+                $this->router->get('foo/{required}/{optional?}')->name('foo')->noAction();
 
             });
 
@@ -202,8 +204,8 @@
 
             $this->createRoutes(function () {
 
-                $this->router->get('foo/{optional?}')->name('foo');
-                $this->router->get('bar/{required}/{optional?}')->name('bar');
+                $this->router->get('foo/{optional?}')->name('foo')->noAction();
+                $this->router->get('bar/{required}/{optional?}')->name('bar')->noAction();
 
             });
 
@@ -224,7 +226,7 @@
 
             $this->createRoutes(function () {
 
-                $this->router->get('foo/{optional?}')->name('foo');
+                $this->router->get('foo/{optional?}')->name('foo')->noAction();
 
 
             });
@@ -242,8 +244,8 @@
 
             $this->createRoutes(function () {
 
-                $this->router->get('foo/{opt1?}/{opt2?}/')->name('foo');
-                $this->router->get('bar/{required}/{opt1?}/{opt2?}')->name('bar');
+                $this->router->get('foo/{opt1?}/{opt2?}/')->name('foo')->noAction();
+                $this->router->get('bar/{required}/{opt1?}/{opt2?}')->name('bar')->noAction();
 
             });
 
@@ -268,7 +270,10 @@
 
             $this->createRoutes(function () {
 
-                $this->router->get('/foo/{required}')->name('foo')->and('required', '\w+');
+                $this->router->get('/foo/{required}')
+                             ->name('foo')
+                             ->and('required', '\w+')
+                             ->noAction();
 
 
             });
@@ -286,7 +291,10 @@
 
             $this->createRoutes(function () {
 
-                $this->router->get('/foo/{optional?}')->name('foo')->and('optional', '\w+');
+                $this->router->get('/foo/{optional?}')
+                             ->name('foo')
+                             ->and('optional', '\w+')
+                             ->noAction();
 
 
             });
@@ -306,11 +314,13 @@
 
                 $this->router->get('/foo/{required}/{optional?}')
                              ->name('foo')
-                             ->and(['required', '\w+', 'optional', '\w+']);
+                             ->and(['required', '\w+', 'optional', '\w+'])
+                             ->noAction();
+
 
                 $this->router->get('/bar/{required}/{optional?}')
                              ->name('bar')
-                             ->and(['required' => '\w+', 'optional' => '\w+']);
+                             ->and(['required' => '\w+', 'optional' => '\w+'])->noAction();
 
                 $this->router->get('/baz/{required}/{optional1?}/{optional2?}')
                              ->name('foobar')
@@ -318,22 +328,19 @@
                                  'required' => '\w+',
                                  'optional1' => '\w+',
                                  'optional2' => '\w+',
-                             ]);
+                             ])->noAction();
 
             });
-
 
             $url_generator = $this->newUrlGenerator();
             $url = $url_generator->toRoute('foo', ['required' => 'bar']);
             $this->seeFullUrl('/foo/bar', $url);
-
 
             $url = $url_generator->toRoute('bar', [
                 'required' => 'baz',
                 'optional' => 'biz',
             ]);
             $this->seeFullUrl('/bar/baz/biz', $url);
-
 
             $url = $url_generator->toRoute('foobar', [
                 'required' => 'bar',
@@ -353,7 +360,7 @@
 
             $this->createRoutes(function () {
 
-                $this->router->get('foo/{required}')->name('foo');
+                $this->router->get('foo/{required}')->name('foo')->noAction();
 
 
             });
@@ -377,7 +384,7 @@
 
                 $this->router->get('/foo/{required}')
                              ->name('foo')
-                             ->and(['required' => '\w+']);
+                             ->and(['required' => '\w+'])->noAction();
 
             });
 
@@ -393,7 +400,7 @@
 
             $this->createRoutes(function () {
 
-                $this->router->get('foo')->name('foo_route')->where(ConditionWithUrl::class);
+                $this->router->get('foo')->name('foo_route')->where(ConditionWithUrl::class)->noAction();
 
             });
 
@@ -405,11 +412,12 @@
         }
 
         /** @test */
-        public function relative_urls_to_custom_conditions_can_be_created_even_if_the_condition_returns_an_absolute_url () {
+        public function relative_urls_to_custom_conditions_can_be_created_even_if_the_condition_returns_an_absolute_url()
+        {
 
             $this->createRoutes(function () {
 
-                $this->router->get('foo')->name('foo_route')->where(ConditionWithUrl::class);
+                $this->router->get('foo')->name('foo_route')->where(ConditionWithUrl::class)->noAction();
 
             });
 
@@ -442,7 +450,7 @@
                 $this->router
                     ->get('/foo/{bar}')
                     ->name('foo')
-                    ->and('bar', 'a{2,}');
+                    ->and('bar', 'a{2,}')->noAction();
 
             });
 
@@ -497,10 +505,9 @@
                 $this->router
                     ->get('/foo/{bar}')
                     ->name('foo')
-                    ->and('bar', 'a{2,}[calvin]');
+                    ->and('bar', 'a{2,}[calvin]')->noAction();
 
             });
-
 
             $url_generator = $this->newUrlGenerator();
 
@@ -527,10 +534,9 @@
                         'team' => 'm{1}.+united[xy]',
                         'player' => 'a{2,}[calvin]',
 
-                    ]);
+                    ])->noAction();
 
             });
-
 
             $url_generator = $this->newUrlGenerator();
 
