@@ -130,6 +130,10 @@
 
         }
 
+        public static function assertHasNone() {
+            Assert::assertEmpty(self::$data, 'Headers were sent unexpectedly.');
+        }
+
         public static function isEmpty() : bool
         {
             return self::$data === [];

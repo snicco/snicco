@@ -8,6 +8,7 @@
 
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Events\ResponseSent;
+    use WPEmerge\Http\Responses\RedirectResponse;
 
     class ShutdownHandler {
 
@@ -36,9 +37,14 @@
 
             }
 
+		    if ( $response_sent->response instanceof RedirectResponse ) {
+
+		        $this->terminate();
+
+            }
+
 
         }
-
 
 		private function terminate() {
 

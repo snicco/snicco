@@ -130,7 +130,7 @@
 
         protected function validateStatusCode (int $status_code){
 
-            $valid = in_array($status_code, [201, 301, 302, 303, 307, 308]);
+            $valid = in_array($status_code, [201, 301, 302, 303, 304,  307, 308]);
 
             if ( ! $valid ) {
                 throw new \LogicException("Status code [{$status_code} is not valid for redirects.]");

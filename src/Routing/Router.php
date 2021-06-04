@@ -10,6 +10,7 @@
     use Contracts\ContainerAdapter;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Controllers\FallBackController;
+    use WPEmerge\Controllers\RedirectController;
     use WPEmerge\Controllers\ViewController;
     use WPEmerge\Facade\WP;
     use WPEmerge\Support\Url;
@@ -32,7 +33,6 @@
         /** @var AbstractRouteCollection */
         private $routes;
 
-
         public function __construct(ContainerAdapter $container, AbstractRouteCollection $routes)
         {
 
@@ -54,6 +54,51 @@
 
             return $route;
 
+        }
+
+        public function redirect(string $url, string $location, int $status = 302, bool $secure = true, bool $absolute = false) : Route
+        {
+
+            return $this->any( $url, [ RedirectController::class, 'to'] )->defaults( [
+                'location' => $location,
+                'status' => $status,
+                'secure' => $secure,
+                'absolute' => $absolute,
+            ]);
+
+        }
+
+        public function permanentRedirect(string $url, string $location,bool $secure = true, bool $absolute = false) : Route
+        {
+
+            return $this->redirect($url, $location, 301, $secure, $absolute);
+
+        }
+
+        public function temporaryRedirect(string $url, string $location,bool $secure = true, bool $absolute = false) : Route
+        {
+
+            return $this->redirect($url, $location, 307, $secure, $absolute);
+
+        }
+
+        public function redirectAway(string $url, string $location, int $status = 302) : Route
+        {
+
+            return $this->any( $url, [ RedirectController::class, 'away'] )->defaults( [
+                'location' => $location,
+                'status' => $status,
+            ]);
+
+        }
+
+        public function redirectToRoute(string $url, string $route, array $params = [] , int $status = 302) : Route
+        {
+            return $this->any( $url, [ RedirectController::class, 'toRoute'] )->defaults( [
+                'route' => $route,
+                'status' => $status,
+                'params' => $params,
+            ]);
         }
 
         public function addRoute(array $methods, string $path, $action = null, $attributes = []) : Route
@@ -141,7 +186,7 @@
             if ( ! in_array($method, RouteDecorator::allowed_attributes)) {
 
                 throw new \BadMethodCallException(
-                    'Method: '.$method.'does not exists on '.get_class($this)
+                    'Method: '.$method.' does not exists on '.get_class($this)
                 );
 
             }
@@ -271,6 +316,8 @@
 
 
         }
+
+
 
 
     }

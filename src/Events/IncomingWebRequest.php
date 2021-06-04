@@ -8,6 +8,7 @@
 
 	use BetterWpHooks\Traits\DispatchesConditionally;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Support\Str;
 
     class IncomingWebRequest extends IncomingRequest {
 
@@ -29,7 +30,7 @@
 
 		public function shouldDispatch() : bool {
 
-			return ! is_admin() && ! str_contains( $this->request->getUrl(), admin_url() );
+			return ! is_admin() && ! Str::contains( $this->request->getUrl(), admin_url() );
 
 		}
 
