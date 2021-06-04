@@ -8,7 +8,6 @@
 
     use Contracts\ContainerAdapter;
     use WPEmerge\Application\ApplicationConfig;
-    use WPEmerge\Encryptor;
     use WPEmerge\Events\OutputBufferRequired;
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Events\IncomingWebRequest;

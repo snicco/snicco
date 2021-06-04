@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Http\Psr7;
 
+    use Contracts\ContainerAdapter;
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Message\UriInterface;
     use WPEmerge\Routing\RoutingResult;
@@ -30,7 +31,6 @@
             return $this->withAttribute('type', $type);
 
         }
-
 
         /**
          * This method stores the URI that is used for matching against the routes
@@ -170,6 +170,7 @@
             return $this->getAttribute('session');
 
         }
+
 
 
 

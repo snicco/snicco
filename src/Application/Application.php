@@ -53,7 +53,6 @@
         public function __construct(ContainerAdapter $container, ServerRequestInterface $server_request = null)
         {
 
-
             $server_request = $server_request ?? $this->captureRequest();
 
             $this->setContainer($container);
@@ -166,17 +165,24 @@
         /**
          *
          * This is the request object that all classes in the app rely on.
-         * This object is gets updated several times in a request cycle and rebound.
+         * This object is gets rebound during the request cycle.
          * I.E before/after running the middleware stack or running the route handler.
          *
-         * @param  ServerRequestInterface  $changing_request
+         * @param  Request  $changing_request
          */
-        private function bindRequest(ServerRequestInterface $changing_request)
+        private function bindRequest(Request $changing_request)
         {
             $this->container()->instance(Request::class, $changing_request);
         }
 
-        private function bindServerRequest(ServerRequestInterface $base_request)
+        /**
+         *
+         * This request is the one that got created from the PHP Globals.
+         * It should only be used during bootstrapping of the Application.
+         *
+         * @param  Request  $base_request
+         */
+        private function bindServerRequest(Request $base_request)
         {
             $this->container()->instance(ServerRequestInterface::class, $base_request);
         }

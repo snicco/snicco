@@ -4,16 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Events;
+    namespace WPEmerge\Listeners;
 
 
     use WPEmerge\Contracts\RouteRegistrarInterface;
+    use WPEmerge\Events\IncomingGlobalRequest;
+    use WPEmerge\Events\Init;
 
     class LoadRoutes
     {
 
 
-        public function __invoke( RoutesLoadable $event, RouteRegistrarInterface $registrar )
+        public function __invoke( Init $event, RouteRegistrarInterface $registrar )
         {
 
             $config = $event->config;

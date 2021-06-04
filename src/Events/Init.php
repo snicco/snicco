@@ -6,11 +6,11 @@
 
     namespace WPEmerge\Events;
 
+    use Psr\Http\Message\ServerRequestInterface;
     use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Http\Psr7\Request;
 
-    class RoutesLoadable extends ApplicationEvent
+    class Init extends ApplicationEvent
     {
 
         /**
@@ -19,11 +19,11 @@
         public $config;
 
         /**
-         * @var Request
+         * @var ServerRequestInterface
          */
         public $request;
 
-        public function __construct( ApplicationConfig $config, Request $request)
+        public function __construct( ApplicationConfig $config, ServerRequestInterface $request)
         {
             $this->config = $config;
             $this->request = $request;

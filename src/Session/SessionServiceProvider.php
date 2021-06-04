@@ -10,7 +10,7 @@
     use WPEmerge\Application\Application;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Encryptor;
+    use WPEmerge\Session\Encryptor;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Session\Middleware\ConfirmAuth;
@@ -89,6 +89,9 @@
                 ShareSessionWithView::class,
             ]);
 
+            $this->config->extend('middleware.unique', [
+                ShareSessionWithView::class
+            ]);
 
         }
 

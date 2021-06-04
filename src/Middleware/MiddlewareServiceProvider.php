@@ -62,6 +62,8 @@
 
             $this->config->extend('always_run_middleware', false);
 
+            $this->config->extend('middleware.unique', []);
+
 
         }
 
@@ -87,6 +89,7 @@
 
                 $runner = new RouteRunner(
                     $this->container->make(ResponseFactory::class),
+                    $this->container,
                     $this->container->make(Pipeline::class),
                     $this->container->make(MiddlewareStack::class)
                 );

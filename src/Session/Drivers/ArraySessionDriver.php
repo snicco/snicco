@@ -7,7 +7,7 @@
 	namespace WPEmerge\Session\Drivers;
 
 	use Illuminate\Support\InteractsWithTime;
-    use Psr\Http\Message\ServerRequestInterface;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\SessionDriver;
 
     class ArraySessionDriver implements SessionDriver {
@@ -97,7 +97,7 @@
 			return $this->currentTime() - $seconds;
 		}
 
-        public function setRequest(ServerRequestInterface $request)
+        public function setRequest(Request $request)
         {
             //
         }

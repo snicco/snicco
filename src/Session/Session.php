@@ -50,10 +50,13 @@
             $this->handler = $handler;
         }
 
+
+
         public function start() : bool
         {
 
             $this->loadSessionDataFromHandler();
+
 
             $this->active = true;
 
@@ -283,8 +286,11 @@
             return true;
         }
 
-        public function isActive() : bool
+        public function isActive( ?bool $status = null) : bool
         {
+            if ( $status ) {
+                $this->active = $status;
+            }
 
             return $this->active;
         }
