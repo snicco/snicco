@@ -27,7 +27,7 @@
     "ext-openssl": "*",
     "ext-mbstring": "*",
     "calvinalkan/base-container": "0.1.*",
-    "calvinalkan/better-wordpress-hooks": "0.1.8",
+    "calvinalkan/better-wordpress-hooks": "dev-master",
     "calvinalkan/reflection-payload": "^1.0",
     "illuminate/collections": "8.35.1",
     "illuminate/config": "8.35.1",

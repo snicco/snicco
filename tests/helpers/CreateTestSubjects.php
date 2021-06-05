@@ -152,7 +152,7 @@
         protected function webRequest($method, $path) : IncomingWebRequest
         {
 
-            return new IncomingWebRequest('wordpress.php', TestRequest::from($method, $path));
+            return new IncomingWebRequest(TestRequest::from($method, $path), 'wordpress.php');
 
         }
 
