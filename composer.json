@@ -28,6 +28,7 @@
     "ext-mbstring": "*",
     "calvinalkan/base-container": "0.1.*",
     "calvinalkan/better-wordpress-hooks": "0.1.8",
+    "calvinalkan/reflection-payload": "^1.0",
     "illuminate/collections": "8.35.1",
     "illuminate/config": "8.35.1",
     "nikic/fast-route": "1.3.0",

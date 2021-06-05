@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "47942df7da8f98357fb9771a88c5b08f",
+    "content-hash": "40a91a610099c18d041be7c8a84eb715",
     "packages": [
         {
             "name": "calvinalkan/base-container",
@@ -155,6 +155,54 @@
                 "source": "https://github.com/calvinalkan/interfaces/tree/0.1.2"
             },
             "time": "2021-05-16T22:09:45+00:00"
+        },
+        {
+            "name": "calvinalkan/reflection-payload",
+            "version": "1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/calvinalkan/reflection-payload.git",
+                "reference": "a1d9db8ff786326949ea6259460c30656ee29736"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/calvinalkan/reflection-payload/zipball/a1d9db8ff786326949ea6259460c30656ee29736",
+                "reference": "a1d9db8ff786326949ea6259460c30656ee29736",
+                "shasum": ""
+            },
+            "require": {
+                "calvinalkan/base-container": "^0.1.0",
+                "illuminate/collections": "^8.35.1",
+                "php": "^7.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ReflectionPayload\\": "src/"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "calvinalkan",
+                    "email": "calvin@snicco.de"
+                }
+            ],
+            "description": "description",
+            "support": {
+                "issues": "https://github.com/calvinalkan/reflection-payload/issues",
+                "source": "https://github.com/calvinalkan/reflection-payload/tree/1.0.1"
+            },
+            "time": "2021-06-05T00:01:11+00:00"
         },
         {
             "name": "calvinalkan/wordpress-hook-api-clone",
@@ -6964,10 +7012,10 @@
     "prefer-lowest": false,
     "platform": {
         "php": "^7.3",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-openssl": "*",
+        "ext-mbstring": "*"
     },
-    "platform-dev": {
-        "ext-openssl": "*"
-    },
+    "platform-dev": [],
     "plugin-api-version": "2.0.0"
 }
