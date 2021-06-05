@@ -7,22 +7,17 @@
     namespace WPEmerge\Routing;
 
     use Closure;
-    use Opis\Closure\SerializableClosure;
     use WPEmerge\Contracts\ConditionInterface;
     use WPEmerge\Contracts\RouteAction;
     use WPEmerge\Contracts\SetsRouteAttributes;
     use WPEmerge\Contracts\UrlableInterface;
     use WPEmerge\Controllers\FallBackController;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\Conditions\TrailingSlashCondition;
-    use WPEmerge\Support\ReflectionPayload;
+    use ReflectionPayload\ReflectionPayload;
     use WPEmerge\Support\Url;
     use WPEmerge\Support\UrlParser;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Support\Str;
     use WPEmerge\Traits\SetRouteAttributes;
 
     class Route implements SetsRouteAttributes

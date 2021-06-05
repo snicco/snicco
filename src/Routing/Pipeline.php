@@ -17,7 +17,7 @@
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Support\Arr;
-    use WPEmerge\Support\ReflectionPayload;
+    use ReflectionPayload\ReflectionPayload;
 
     use function collect;
 
