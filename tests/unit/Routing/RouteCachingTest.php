@@ -291,7 +291,7 @@
             $event = new WpQueryFilterable($request, ['foo' => 'bar']);
             $listener = new FilterWpQuery($this->routes);
             $this->assertSame(['foo' => 'baz'], $listener->handle($event));
-            $this->runAndAssertOutput('foo', new IncomingWebRequest('wp.php', $request));
+            $this->runAndAssertOutput('foo', new IncomingWebRequest($request, 'wp.php'));
 
             // from cache
             $this->newCachedRouter();
@@ -299,7 +299,7 @@
             $event = new WpQueryFilterable(TestRequest::from('GET', 'foo'), ['foo' => 'bar']);
             $listener = new FilterWpQuery($this->routes);
             $this->assertSame(['foo' => 'baz'], $listener->handle($event));
-            $this->runAndAssertOutput('foo', new IncomingWebRequest('wp.php', $request));
+            $this->runAndAssertOutput('foo', new IncomingWebRequest($request, 'wp.php'));
 
 
         }

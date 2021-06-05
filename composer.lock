@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "40a91a610099c18d041be7c8a84eb715",
+    "content-hash": "346769b686c5f39587444d7e7cab9302",
     "packages": [
         {
             "name": "calvinalkan/base-container",
@@ -51,20 +51,21 @@
         },
         {
             "name": "calvinalkan/better-wordpress-hooks",
-            "version": "0.1.8",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/calvinalkan/better-wordpress-hooks.git",
-                "reference": "0a1f24dd0e66130483c310fda0b5b4f8c25b5e7c"
+                "reference": "e84cd7bbbded59668e6f320bfec379d51a0b696f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/calvinalkan/better-wordpress-hooks/zipball/0a1f24dd0e66130483c310fda0b5b4f8c25b5e7c",
-                "reference": "0a1f24dd0e66130483c310fda0b5b4f8c25b5e7c",
+                "url": "https://api.github.com/repos/calvinalkan/better-wordpress-hooks/zipball/e84cd7bbbded59668e6f320bfec379d51a0b696f",
+                "reference": "e84cd7bbbded59668e6f320bfec379d51a0b696f",
                 "shasum": ""
             },
             "require": {
                 "calvinalkan/base-container": "0.1.5",
+                "calvinalkan/reflection-payload": "^1.0",
                 "calvinalkan/wordpress-hook-api-clone": "5.7.2",
                 "illuminate/support": "8.35.1",
                 "php": "^7.3"
@@ -78,6 +79,7 @@
             "suggest": {
                 "phpunit/phpunit": "Requiered if you want to use the FakeDispatcher for testing Event Dispatching."
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -108,9 +110,9 @@
             ],
             "support": {
                 "issues": "https://github.com/calvinalkan/better-wordpress-hooks/issues",
-                "source": "https://github.com/calvinalkan/better-wordpress-hooks/tree/0.1.8"
+                "source": "https://github.com/calvinalkan/better-wordpress-hooks/tree/master"
             },
-            "time": "2021-05-17T03:40:11+00:00"
+            "time": "2021-06-05T00:02:01+00:00"
         },
         {
             "name": "calvinalkan/interfaces",
@@ -158,16 +160,16 @@
         },
         {
             "name": "calvinalkan/reflection-payload",
-            "version": "1.0.1",
+            "version": "1.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/calvinalkan/reflection-payload.git",
-                "reference": "a1d9db8ff786326949ea6259460c30656ee29736"
+                "reference": "5359b39cba8952af760c677618e4e97ad7f32e5c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/calvinalkan/reflection-payload/zipball/a1d9db8ff786326949ea6259460c30656ee29736",
-                "reference": "a1d9db8ff786326949ea6259460c30656ee29736",
+                "url": "https://api.github.com/repos/calvinalkan/reflection-payload/zipball/5359b39cba8952af760c677618e4e97ad7f32e5c",
+                "reference": "5359b39cba8952af760c677618e4e97ad7f32e5c",
                 "shasum": ""
             },
             "require": {
@@ -200,9 +202,9 @@
             "description": "description",
             "support": {
                 "issues": "https://github.com/calvinalkan/reflection-payload/issues",
-                "source": "https://github.com/calvinalkan/reflection-payload/tree/1.0.1"
+                "source": "https://github.com/calvinalkan/reflection-payload/tree/1.1.2"
             },
-            "time": "2021-06-05T00:01:11+00:00"
+            "time": "2021-06-05T00:57:06+00:00"
         },
         {
             "name": "calvinalkan/wordpress-hook-api-clone",
@@ -7005,6 +7007,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "calvinalkan/better-wordpress-hooks": 20,
         "calvinalkan/better-wordpress-database": 20,
         "illuminate/view": 20
     },

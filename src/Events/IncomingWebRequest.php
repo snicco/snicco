@@ -20,7 +20,7 @@
 		public $template;
 
 
-		public function __construct( string $template = '', Request $request = null ) {
+		public function __construct( Request $request, string $template ) {
 
 			$this->template = $template;
 

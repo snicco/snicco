@@ -68,7 +68,7 @@
 
             });
 
-            $request = new IncomingWebRequest('wp.php', TestRequest::fromFullUrl('GET', 'https://foobar.com/foo'));
+            $request = new IncomingWebRequest(TestRequest::fromFullUrl('GET', 'https://foobar.com/foo'), 'wp.php' );
             $this->runAndAssertOutput('FOO', $request);
 
         }
@@ -88,7 +88,7 @@
             });
 
             $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
-            $this->runAndAssertOutput('FOO', new IncomingWebRequest('wp.php', $request));
+            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
 
         }
 
@@ -107,10 +107,10 @@
             });
 
             $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
-            $this->runAndAssertEmptyOutput(new IncomingWebRequest('wp.php', $request));
+            $this->runAndAssertEmptyOutput(new IncomingWebRequest($request, 'wp.php'));
 
             $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
-            $this->runAndAssertOutput('FOO', new IncomingWebRequest('wp.php', $request));
+            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
 
         }
 
@@ -129,10 +129,10 @@
             });
 
             $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
-            $this->runAndAssertOutput('FOO', new IncomingWebRequest('wp.php', $request));
+            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
 
             $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
-            $this->runAndAssertEmptyOutput(new IncomingWebRequest('wp.php', $request));
+            $this->runAndAssertEmptyOutput(new IncomingWebRequest($request, 'wp.php'));
 
         }
 
@@ -165,16 +165,16 @@
             });
 
             $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
-            $this->runAndAssertOutput('FOO', new IncomingWebRequest('wp.php', $request));
+            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
 
             $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
-            $this->runAndAssertEmptyOutput(new IncomingWebRequest('wp.php', $request));
+            $this->runAndAssertEmptyOutput(new IncomingWebRequest($request, 'wp.php'));
 
             $request = TestRequest::fromFullUrl('POST', 'https://foobar.com/bar/foo/');
-            $this->runAndAssertOutput('FOO', new IncomingWebRequest('wp.php', $request));
+            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
 
             $request = TestRequest::fromFullUrl('POST', 'https://foobar.com/bar/foo');
-            $this->runAndAssertEmptyOutput(new IncomingWebRequest('wp.php', $request));
+            $this->runAndAssertEmptyOutput(new IncomingWebRequest($request, 'wp.php'));
 
 
         }
@@ -194,7 +194,7 @@
             });
 
             $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/german-city/münchen');
-            $this->runAndAssertOutput('München', new IncomingWebRequest('wp.php', $request));
+            $this->runAndAssertOutput('München', new IncomingWebRequest($request, 'wp.php'));
 
         }
 
@@ -213,7 +213,7 @@
 
             $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo?page=bayern münchen');
             $request = $request->withQueryParams(['page'=>'bayern münchen']);
-            $this->runAndAssertOutput('FOO', new IncomingWebRequest('wp.php', $request));
+            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
 
         }
 
