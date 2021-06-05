@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Factories;
+	namespace WPEmerge\Listeners;
 
 	use BetterWpHooks\Contracts\Dispatcher;
     use BetterWpHooks\Dispatchers\WordpressDispatcher;
@@ -14,8 +14,9 @@
 	use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Facade\WP;
 
+    use function get_plugin_page_hook;
 
-	class DynamicHooksFactory {
+    class DynamicHooks {
 
 		/**
 		 * @var WordpressDispatcher
@@ -32,9 +33,10 @@
 
 			if ( WP::isAdminAjax() ) {
 
-				$this->createAjaxHooks($request);
+				// $this->createAjaxHooks($request);
 
 				return;
+
 			}
 
 			$this->createAdminHooks($request);
@@ -70,7 +72,7 @@
 
 				IncomingAjaxRequest::dispatch([$request]);
 
-			} );
+			});
 
 			$this->dispatcher->listen( 'wp_ajax_nopriv_' . $action, function () use ( $request ) {
 

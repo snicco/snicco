@@ -13,6 +13,7 @@
     use WPEmerge\ExceptionHandling\ShutdownHandler;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Listeners\DynamicHooks;
     use WPEmerge\Listeners\LoadRoutes;
     use WPEmerge\Middleware\Core\OutputBufferMiddleware;
     use WPEmerge\Listeners\FilterWpQuery;
@@ -23,9 +24,9 @@
 
         private $mapped_events = [
 
-            'init' => ['resolve', Init::class, -999],
+            'init' => ['resolve', WpInit::class, -999],
 
-            'admin_init' => ['resolve', AdminInit::class, 3001],
+            'admin_init' => ['resolve', IncomingAjaxRequest::class, 3001],
 
             'request' => ['resolve', WpQueryFilterable::class, 3001],
 
@@ -37,9 +38,10 @@
 
         private $event_listeners = [
 
-            Init::class => [
+            WpInit::class => [
 
                 [ LoadRoutes::class, '__invoke'],
+                [ DynamicHooks::class, 'create' ],
 
             ],
 

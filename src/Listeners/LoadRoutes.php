@@ -9,13 +9,13 @@
 
     use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Events\IncomingGlobalRequest;
-    use WPEmerge\Events\Init;
+    use WPEmerge\Events\WpInit;
 
     class LoadRoutes
     {
 
 
-        public function __invoke( Init $event, RouteRegistrarInterface $registrar )
+        public function __invoke( WpInit $event, RouteRegistrarInterface $registrar )
         {
 
             $config = $event->config;

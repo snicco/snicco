@@ -12,7 +12,7 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestRequest;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Events\Init;
+    use WPEmerge\Events\WpInit;
     use WPEmerge\Facade\WP;
 
     class StandardRoutesTest extends IntegrationTest
@@ -103,7 +103,7 @@
 
             ob_start();
 
-            Init::dispatch([$request]);
+            WpInit::dispatch([$request]);
 
             $this->assertSame('FOO_ADMIN', ob_get_clean());
 
@@ -129,7 +129,7 @@
 
             ob_start();
 
-            Init::dispatch([$request]);
+            WpInit::dispatch([$request]);
 
             $this->assertSame('FOO_AJAX_ACTION', ob_get_clean());
 
