@@ -6,8 +6,6 @@
 
     namespace WPEmerge\Events;
 
-    use BetterWpHooks\Traits\DispatchesConditionally;
-    use Psr\Http\Message\ServerRequestInterface;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Http\Psr7\Request;
 
@@ -25,7 +23,7 @@
          */
         public $server_request;
 
-        public function __construct( ServerRequestInterface $server_request, array $query_vars = [] )
+        public function __construct( Request $server_request, array $query_vars = [] )
         {
 
             $this->original_query_vars = $query_vars;

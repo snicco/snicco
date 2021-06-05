@@ -53,7 +53,6 @@
 
         private $unique_middleware = [
             MethodOverride::class,
-            ShareCookies::class,
             OutputBufferMiddleware::class,
             AppendSpecialPathSuffix::class,
         ];

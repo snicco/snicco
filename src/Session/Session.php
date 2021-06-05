@@ -41,6 +41,10 @@
          * @var bool
          */
         private $active = false;
+        /**
+         * @var bool
+         */
+        private $flashed_data_aged;
 
         public function __construct(string $cookie_name, SessionDriver $handler, string $id = '')
         {
@@ -67,7 +71,12 @@
         public function save() : void
         {
 
-            $this->ageFlashData();
+            if ( ! $this->flashed_data_aged ) {
+
+                $this->ageFlashData();
+
+            }
+
 
             $this->handler->write(
                 $this->getId(),
@@ -416,6 +425,9 @@
             $this->put('_flash.old', $this->get('_flash.new', []));
 
             $this->put('_flash.new', []);
+
+            $this->flashed_data_aged = true;
+
         }
 
         private function loadSessionDataFromHandler() : void
