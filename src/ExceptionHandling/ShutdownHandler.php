@@ -7,6 +7,7 @@
 	namespace WPEmerge\ExceptionHandling;
 
     use WPEmerge\Events\IncomingAjaxRequest;
+    use WPEmerge\Events\IncomingGlobalRequest;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\Responses\RedirectResponse;
 
@@ -25,11 +26,18 @@
 
         public function unrecoverableException () {
 
-		  $this->terminate();
+		   $this->terminate();
 
 		}
 
 		public function handle( ResponseSent $response_sent) {
+
+            if ( $response_sent->request->getType() === IncomingGlobalRequest::class ) {
+
+                $this->terminate();
+
+            }
+
 
 		    if ( $this->request_type === IncomingAjaxRequest::class  ) {
 

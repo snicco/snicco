@@ -7,6 +7,7 @@
     namespace WPEmerge\Events;
 
     use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
 
     class ResponseSent extends ApplicationEvent
@@ -17,9 +18,15 @@
          */
         public $response;
 
-        public function __construct( Response $response)
+        /**
+         * @var IncomingRequest
+         */
+        public $request;
+
+        public function __construct( Response $response, Request $request)
         {
             $this->response = $response;
+            $this->request = $request;
         }
 
     }

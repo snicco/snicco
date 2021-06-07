@@ -18,6 +18,7 @@
     use WPEmerge\Middleware\Core\OutputBufferMiddleware;
     use WPEmerge\Middleware\Core\RoutingMiddleware;
     use WPEmerge\Middleware\Core\ShareCookies;
+    use WPEmerge\Middleware\FlashSomethingMiddleware;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Support\Arr;
@@ -77,6 +78,7 @@
          */
         private $run_count = 0;
 
+
         public function __construct(Pipeline $pipeline, ResponseEmitter $emitter = null)
         {
 
@@ -115,7 +117,7 @@
 
             $this->emitter->emit($response);
 
-            ResponseSent::dispatch([$response]);
+            ResponseSent::dispatch([$response, $request_event->request]);
 
 
         }

@@ -55,12 +55,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/calvinalkan/better-wordpress-hooks.git",
-                "reference": "e84cd7bbbded59668e6f320bfec379d51a0b696f"
+                "reference": "459490e1fe559677ab365a30290b7e9c836fdcaa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/calvinalkan/better-wordpress-hooks/zipball/e84cd7bbbded59668e6f320bfec379d51a0b696f",
-                "reference": "e84cd7bbbded59668e6f320bfec379d51a0b696f",
+                "url": "https://api.github.com/repos/calvinalkan/better-wordpress-hooks/zipball/459490e1fe559677ab365a30290b7e9c836fdcaa",
+                "reference": "459490e1fe559677ab365a30290b7e9c836fdcaa",
                 "shasum": ""
             },
             "require": {
@@ -112,7 +112,7 @@
                 "issues": "https://github.com/calvinalkan/better-wordpress-hooks/issues",
                 "source": "https://github.com/calvinalkan/better-wordpress-hooks/tree/master"
             },
-            "time": "2021-06-05T00:02:01+00:00"
+            "time": "2021-06-07T02:17:18+00:00"
         },
         {
             "name": "calvinalkan/interfaces",

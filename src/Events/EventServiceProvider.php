@@ -11,11 +11,12 @@
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\ExceptionHandling\ShutdownHandler;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Listeners\DynamicHooks;
+    use WPEmerge\Listeners\CreateDynamicHooks;
     use WPEmerge\Listeners\LoadRoutes;
-    use WPEmerge\Middleware\Core\OutputBufferMiddleware;
+    use WPEmerge\Listeners\OutputBuffer;
     use WPEmerge\Listeners\FilterWpQuery;
     use WPEmerge\View\ViewFactory;
 
@@ -24,15 +25,26 @@
 
         private $mapped_events = [
 
-            'init' => ['resolve', WpInit::class, -999],
+            'admin_init' => [
 
-            'admin_init' => ['resolve', IncomingAjaxRequest::class, 3001],
+                [AdminAreaInit::class],
 
-            'request' => ['resolve', WpQueryFilterable::class, 3001],
+            ],
 
-            'template_include' => ['resolve', IncomingWebRequest::class, 3001],
+        ];
 
-            'in_admin_footer' => [InAdminFooter::class, 1],
+        private $ensure_first = [
+
+            'init' => WpInit::class,
+            'admin_init' => IncomingAjaxRequest::class,
+            'in_admin_footer' => InAdminFooter::class
+
+        ];
+
+        private $ensure_last = [
+
+            'request' => WpQueryFilterable::class,
+            'template_include' => IncomingWebRequest::class,
 
         ];
 
@@ -40,62 +52,62 @@
 
             WpInit::class => [
 
-                [ LoadRoutes::class, '__invoke'],
-                [ DynamicHooks::class, 'create' ],
+                LoadRoutes::class,
+
+            ],
+
+            AdminAreaInit::class => [
+
+                CreateDynamicHooks::class,
+                [OutputBuffer::class, 'start'],
 
             ],
 
             IncomingGlobalRequest::class => [
 
-                [HttpKernel::class, 'run']
+                [HttpKernel::class, 'run'],
 
             ],
 
             IncomingWebRequest::class => [
 
-                [ HttpKernel::class, 'run' ]
+                [HttpKernel::class, 'run'],
 
             ],
 
             IncomingAjaxRequest::class => [
 
-                [HttpKernel::class, 'run']
+                [HttpKernel::class, 'run'],
 
             ],
 
             IncomingAdminRequest::class => [
 
-                [ HttpKernel::class, 'run']
-
-            ],
-
-            OutputBufferRequired::class => [
-
-                [OutputBufferMiddleware::class, 'start'],
+                [HttpKernel::class, 'run'],
 
             ],
 
             WpQueryFilterable::class => [
 
-                [FilterWpQuery::class, 'handle']
+                [FilterWpQuery::class, 'handle'],
 
             ],
 
             InAdminFooter::class => [
 
-                [OutputBufferMiddleware::class, 'flush'],
+                [OutputBuffer::class, 'flush'],
 
             ],
 
             UnrecoverableExceptionHandled::class => [
 
-               [ ShutdownHandler::class ,'unrecoverableException' ]
+                [ShutdownHandler::class, 'unrecoverableException'],
 
             ],
 
             ResponseSent::class => [
 
-                [ShutdownHandler::class, 'handle']
+                [ShutdownHandler::class, 'handle'],
 
             ],
 
@@ -110,56 +122,23 @@
         public function register() : void
         {
 
-            $this->bootDispatcher();
-
-            $this->bindEventObjects();
-
+            //
 
         }
 
         public function bootstrap() : void
         {
-            //
-        }
-
-        private function bootDispatcher()
-        {
 
             ApplicationEvent::make($this->container)
                             ->map($this->mapped_events)
+                            ->ensureFirst($this->ensure_first)
+                            ->ensureLast($this->ensure_last)
                             ->listeners($this->event_listeners)
                             ->boot();
 
             $this->container->instance(Dispatcher::class, ApplicationEvent::dispatcher());
 
-
         }
 
-        private function bindEventObjects()
-        {
-
-
-            $this->container->singleton(WpQueryFilterable::class, function ($container, $args) {
-
-                return new WpQueryFilterable(
-                    $this->container->make(ServerRequestInterface::class),
-                    ...array_values($args)
-                );
-
-            });
-
-            $this->container->singleton(WpLoginAction::class, function () {
-
-                return new WpLoginAction(
-
-                    $this->container->make(Request::class),
-                    $this->config->get('session.enabled', false)
-
-                );
-
-            });
-
-
-        }
 
     }

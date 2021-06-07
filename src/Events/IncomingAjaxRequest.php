@@ -8,11 +8,13 @@
 
 
     use BetterWpHooks\Traits\DispatchesConditionally;
+    use BetterWpHooks\Traits\IsAction;
     use WPEmerge\Support\Arr;
 
     class IncomingAjaxRequest extends IncomingRequest {
 
         use DispatchesConditionally;
+        use IsAction;
 
         public function shouldDispatch() : bool
         {

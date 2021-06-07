@@ -41,10 +41,12 @@
          * @var bool
          */
         private $active = false;
+
         /**
-         * @var bool
+         * @var array
          */
-        private $flashed_data_aged;
+        private $initial_attributes;
+
 
         public function __construct(string $cookie_name, SessionDriver $handler, string $id = '')
         {
@@ -54,15 +56,14 @@
             $this->handler = $handler;
         }
 
-
-
         public function start() : bool
         {
 
             $this->loadSessionDataFromHandler();
 
-
             $this->active = true;
+
+            $this->initial_attributes = $this->attributes;
 
             return $this->active;
 
@@ -71,19 +72,20 @@
         public function save() : void
         {
 
-            if ( ! $this->flashed_data_aged ) {
-
-                $this->ageFlashData();
-
-            }
-
+            $this->ageFlashData();
 
             $this->handler->write(
                 $this->getId(),
                 $this->prepareForStorage(serialize($this->attributes))
             );
 
+
             $this->active = false;
+        }
+
+        public function wasChanged() : bool
+        {
+            return $this->initial_attributes !== $this->attributes;
         }
 
         public function all() : array
@@ -295,12 +297,8 @@
             return true;
         }
 
-        public function isActive( ?bool $status = null) : bool
+        public function isActive() : bool
         {
-            if ( $status ) {
-                $this->active = $status;
-            }
-
             return $this->active;
         }
 
@@ -339,14 +337,13 @@
 
         public function previousUrl() : ?string
         {
-
-            return $this->get('_previous.url');
+            return $this->get('_url.previous');
         }
 
         public function setPreviousUrl(string $url) : void
         {
 
-            $this->put('_previous.url', $url);
+            $this->put('_url.previous', $url);
         }
 
         public function getIntendedUrl(string $default = '')
@@ -363,12 +360,13 @@
             $this->put(
                 'auth.confirm.until',
                 Carbon::now()->addMinutes($duration_in_minutes)->getTimestamp()
-        );
+            );
 
         }
 
         public function hasValidAuthConfirmToken() : bool
         {
+
             return Carbon::now()->getTimestamp() < $this->get('auth.confirm.until', 0);
 
         }
@@ -426,7 +424,6 @@
 
             $this->put('_flash.new', []);
 
-            $this->flashed_data_aged = true;
 
         }
 
@@ -467,7 +464,6 @@
 
             $this->put('_flash.old', array_diff($this->get('_flash.old', []), $keys));
         }
-
 
 
 
