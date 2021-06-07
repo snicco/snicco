@@ -7,13 +7,10 @@
     namespace WPEmerge\Events;
 
     use BetterWpHooks\Contracts\Dispatcher;
-    use Psr\Http\Message\ServerRequestInterface;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\ExceptionHandling\ShutdownHandler;
-    use WPEmerge\Facade\WP;
     use WPEmerge\Http\HttpKernel;
-    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Listeners\CreateDynamicHooks;
     use WPEmerge\Listeners\LoadRoutes;
     use WPEmerge\Listeners\OutputBuffer;

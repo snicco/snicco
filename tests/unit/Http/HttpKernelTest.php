@@ -10,25 +10,31 @@
     use Mockery;
     use Tests\fixtures\Middleware\GlobalMiddleware;
     use Tests\fixtures\Middleware\WebMiddleware;
+    use Tests\helpers\CreatesWpUrls;
     use Tests\stubs\HeaderStack;
     use Tests\helpers\CreateTestSubjects;
     use Tests\unit\UnitTest;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\AbstractRouteCollection;
+    use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\ExceptionHandling\Exceptions\NotFoundException;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Cookies;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
     use WPEmerge\Routing\Router;
+    use WPEmerge\Session\Session;
 
     class HttpKernelTest extends UnitTest
     {
 
         use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
+        use CreatesWpUrls;
 
         /**
          * @var ContainerAdapter
@@ -310,6 +316,28 @@
 
         }
 
+        /** @test */
+        public function the_request_is_rebound_in_the_container_after_a_global_routes_run () {
+
+            $this->createRoutes( function () {
+
+                //
+
+            });
+
+            $request = $this->ajaxRequest('test_form');
+
+            $this->assertSame('/wp-admin/admin-ajax.php', $request->getRoutingPath());
+
+            $this->container->instance(Request::class, $request);
+
+            $this->runAndAssertOutput('', new IncomingAjaxRequest($request) );
+
+            $request = $this->container->make(Request::class);
+
+            $this->assertSame('/wp-admin/admin-ajax.php/test_form', $request->getRoutingPath());
+
+        }
 
 
     }
