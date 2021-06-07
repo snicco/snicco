@@ -39,7 +39,7 @@
 
             $this->newTestApp(array_merge(TEST_CONFIG, [
                 'providers'=> [
-                    RoutingDefinitionServiceProvider::class
+                    \Tests\fixtures\RoutingDefinitionServiceProvider::class
                 ]
             ]));
 
