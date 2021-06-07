@@ -8,6 +8,8 @@
 
     use Contracts\ContainerAdapter;
     use Mockery;
+    use Tests\fixtures\Middleware\GlobalMiddleware;
+    use Tests\fixtures\Middleware\WebMiddleware;
     use Tests\stubs\HeaderStack;
     use Tests\helpers\CreateTestSubjects;
     use Tests\unit\UnitTest;
@@ -236,6 +238,78 @@
 
             });
         }
+
+        /** @test */
+        public function non_unique_middleware_is_not_run_twice_for_global_and_standard_routes_when_the_kernel_runs_middleware_without_matching_a_route () {
+
+            $this->createRoutes( function () {
+
+                $this->router->get('/foo', function (ResponseFactory $factory) {
+
+                    return $factory->redirect()->to('bar');
+
+                });
+
+            });
+
+            $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
+            $GLOBALS['test'][WebMiddleware::run_times] = 0;
+
+            $kernel = $this->newKernel();
+            $kernel->alwaysWithGlobalMiddleware([GlobalMiddleware::class, WebMiddleware::class ]);
+            $kernel->addUniqueMiddlewares([GlobalMiddleware::class]);
+
+            ob_start();
+
+            // This is the run for the global routes.
+            $kernel->run($this->webRequest('GET', '/bogus'));
+            $this->assertSame(1 , $GLOBALS['test'][GlobalMiddleware::run_times]);
+            $this->assertSame(1 , $GLOBALS['test'][WebMiddleware::run_times]);
+
+            // This is the run for the web routes.
+            $kernel->run($this->webRequest('GET', '/bogus'));
+            $this->assertSame(1 , $GLOBALS['test'][GlobalMiddleware::run_times], 'unique middleware run twice.');
+            $this->assertSame(2 , $GLOBALS['test'][WebMiddleware::run_times], 'non-unique middleware was only run once.');
+
+            ob_get_clean();
+
+        }
+
+         /** @test */
+        public function non_unique_middleware_is_not_run_twice_for_global_and_standard_routes_when_the_kernel_does_not_run_global_middleware () {
+
+            $this->createRoutes( function () {
+
+                $this->router->get('/foo', function (ResponseFactory $factory) {
+
+                    return $factory->redirect()->to('bar');
+
+                });
+
+            });
+
+            $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
+            $GLOBALS['test'][WebMiddleware::run_times] = 0;
+
+            $kernel = $this->newKernel(['global'=>[GlobalMiddleware::class, WebMiddleware::class]]);
+            $this->middleware_stack->withUniqueMiddleware([GlobalMiddleware::class]);
+
+            ob_start();
+
+            // This is the run for the global routes.
+            $kernel->run($this->webRequest('GET', '/foo'));
+            $this->assertSame(1 , $GLOBALS['test'][GlobalMiddleware::run_times]);
+            $this->assertSame(1 , $GLOBALS['test'][WebMiddleware::run_times]);
+
+            // This is the run for the web routes.
+            $kernel->run($this->webRequest('GET', '/foo'));
+            $this->assertSame(1 , $GLOBALS['test'][GlobalMiddleware::run_times], 'unique middleware run twice.');
+            $this->assertSame(2 , $GLOBALS['test'][WebMiddleware::run_times], 'non-unique middleware was only run once.');
+
+            ob_get_clean();
+
+        }
+
 
 
     }

@@ -18,3 +18,9 @@
        });
 
     });
+
+    $router->get('wp-json/posts', function () {
+
+        return 'WP_JSON_ENDPOINT';
+
+    });

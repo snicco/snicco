@@ -30,7 +30,9 @@
 
 		public function shouldDispatch() : bool {
 
-			return ! is_admin() && ! Str::contains( $this->request->getUrl(), admin_url() );
+			return ! is_admin()
+                && ! Str::contains( $this->request->getUrl(), admin_url() )
+                && ! $this->isNativeWordpressJsonApiRequest();
 
 		}
 

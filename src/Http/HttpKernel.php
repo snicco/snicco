@@ -126,7 +126,7 @@
 
             $request = $request_event->request;
 
-            if ($this->withMiddleware()) {
+            if ( $this->withMiddleware() ) {
 
                 $request = $request->withAttribute('global_middleware_run', true);
 
@@ -151,7 +151,7 @@
 
             }
 
-            if ( ! $this->withMiddleware()) {
+            if ( ! $this->withMiddleware() ) {
 
                 return $this->core_middleware;
 
