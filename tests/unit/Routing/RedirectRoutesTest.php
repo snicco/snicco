@@ -12,7 +12,7 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\HeaderStack;
-    use Tests\unit\UnitTest;
+    use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Facade\WP;

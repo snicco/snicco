@@ -24,7 +24,7 @@
 
         $router->get('confirm/{user_id}', [ConfirmAuthMagicLinkController::class, 'create'])
                ->name('magic-login')
-               ->middleware(['validSignature', 'auth.unconfirmed']);
+               ->middleware(['signed', 'auth.unconfirmed']);
 
     });
 

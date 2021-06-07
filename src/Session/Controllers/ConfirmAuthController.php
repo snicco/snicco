@@ -272,7 +272,7 @@
 
             $expiration = Carbon::now()->addMinutes($this->timeout_in_minutes)->getTimestamp();
 
-            /** @todo replace with dedicated db-table */
+            /** @todo replace transient api with dedicated db-table */
             set_transient($this->transient_key. WP::userId() , $expiration, $expiration);
 
         }

@@ -11,7 +11,7 @@
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
     use Tests\stubs\TestRequest;
-    use Tests\unit\UnitTest;
+    use Tests\UnitTest;
     use WPEmerge\Facade\WP;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\RouteCollection;

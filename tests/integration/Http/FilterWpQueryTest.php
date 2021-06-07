@@ -7,7 +7,7 @@
     namespace Tests\integration\Http;
 
     use Psr\Http\Message\ServerRequestInterface;
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use WPEmerge\Events\IncomingWebRequest;

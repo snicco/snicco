@@ -223,21 +223,6 @@
                     return $key;
                 });
 
-                $generator->setSessionResolver(function () {
-
-                    if ( ! $this->container->offsetExists(Session::class)) {
-
-                        throw new ConfigurationException(
-                            'You cant use UrlGeneration functions that depend on sessions without using the session extension.'
-                        );
-
-                    }
-
-                    return $this->container->make(Session::class);
-
-
-                });
-
                 return $generator;
 
 

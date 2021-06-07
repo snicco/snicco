@@ -9,7 +9,7 @@
     use Mockery;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreatesWpUrls;
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;

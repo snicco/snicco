@@ -7,7 +7,7 @@
 	namespace Tests\integration\ServiceProviders;
 
 	use Mockery;
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\Application;
@@ -18,7 +18,9 @@
     use WPEmerge\Facade\WP;
 	use WPEmerge\Facade\WpFacade;
     use WPEmerge\Http\Cookies;
+    use WPEmerge\Http\Redirector;
     use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\SessionServiceProvider;
@@ -295,6 +297,16 @@
 
             $this->assertInstanceOf(ResponseFactory::class, TestApp::response());
 
+
+        }
+
+        /** @test */
+        public function a_redirect_response_can_be_created_as_an_alias () {
+
+            $this->newTestApp();
+
+            $this->assertInstanceOf(RedirectResponse::class, TestApp::redirect('/foo'));
+            $this->assertInstanceOf(Redirector::class, TestApp::redirect());
 
         }
 

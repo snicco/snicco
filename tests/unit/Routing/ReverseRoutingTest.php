@@ -9,7 +9,7 @@
     use Mockery;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
-    use Tests\unit\UnitTest;
+    use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ConditionInterface;
     use WPEmerge\Contracts\UrlableInterface;

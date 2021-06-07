@@ -9,7 +9,7 @@
     use Contracts\ContainerAdapter;
     use Mockery;
     use Psr\Http\Message\ServerRequestInterface;
-    use Tests\unit\UnitTest;
+    use Tests\UnitTest;
     use Tests\stubs\TestContainer;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use WPEmerge\Application\Application;

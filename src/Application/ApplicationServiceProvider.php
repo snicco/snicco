@@ -7,8 +7,10 @@
     namespace WPEmerge\Application;
 
     use Tests\unit\View\MethodField;
+    use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewFactoryInterface;
+    use WPEmerge\Http\Redirector;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Session\Encryptor;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
@@ -90,6 +92,20 @@
 
             $app->alias('cookies', Cookies::class);
             $app->alias('response', ResponseFactory::class);
+            $app->alias('redirect', function (?string $path = null , int $status = 302 ) use ($app) {
+
+                /** @var AbstractRedirector $redirector */
+                $redirector = $app->resolve(AbstractRedirector::class);
+
+                if ( $path ) {
+
+                    return $redirector->to($path, $status);
+
+                }
+
+                return $redirector;
+
+            });
 
         }
 

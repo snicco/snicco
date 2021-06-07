@@ -11,7 +11,7 @@
     use Tests\fixtures\Middleware\GlobalMiddleware;
     use Tests\helpers\CreateTestSubjects;
     use Tests\stubs\HeaderStack;
-    use Tests\unit\UnitTest;
+    use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;

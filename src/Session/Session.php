@@ -335,9 +335,9 @@
             return strlen($id) === 40 && ctype_alnum($id);
         }
 
-        public function previousUrl() : ?string
+        public function getPreviousUrl( ?string $fallback = '/') : ?string
         {
-            return $this->get('_url.previous');
+            return $this->get('_url.previous', $fallback);
         }
 
         public function setPreviousUrl(string $url) : void

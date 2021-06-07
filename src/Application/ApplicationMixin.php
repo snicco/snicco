@@ -9,8 +9,11 @@
     use Contracts\ContainerAdapter;
     use LogicException;
     use Tests\unit\View\MethodField;
+    use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Http\Responses\RedirectResponse;
+    use WPEmerge\Mail\PendingMail;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\UrlGenerator;
@@ -61,6 +64,30 @@
          */
         public static function url() : UrlGenerator
         {
+
+        }
+
+        /**
+         * Returns a redirect response object if the path is set.
+         * If not returns an instance of the bound Redirector
+         *
+         * @see AbstractRedirector
+         *
+         * @param  string|null  $path
+         * @param  int  $status
+         * @return RedirectResponse|AbstractRedirector
+         */
+        public static function redirect(?string $path = null , int $status = 302)
+        {
+
+        }
+
+        /**
+         * @return PendingMail
+         */
+        public static function mail() :PendingMail
+        {
+
 
         }
 

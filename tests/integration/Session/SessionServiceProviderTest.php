@@ -9,7 +9,7 @@
     use BetterWpHooks\Contracts\Dispatcher;
     use BetterWpHooks\Dispatchers\WordpressDispatcher;
     use Slim\Csrf\Guard;
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use WPEmerge\Events\IncomingWebRequest;
@@ -490,7 +490,7 @@
             $this->assertArrayHasKey('csrf', $middleware_aliases);
             $this->assertArrayHasKey('auth.confirmed', $middleware_aliases);
             $this->assertArrayHasKey('auth.unconfirmed', $middleware_aliases);
-            $this->assertArrayHasKey('validSignature', $middleware_aliases);
+            $this->assertArrayHasKey('signed', $middleware_aliases);
 
         }
 

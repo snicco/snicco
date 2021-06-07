@@ -14,7 +14,6 @@
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Session\Middleware\ConfirmAuth;
     use WPEmerge\Session\Controllers\ConfirmAuthMagicLinkController;
-    use WPEmerge\Session\Controllers\WpLoginSessionController;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Drivers\DatabaseSessionDriver;
     use WPEmerge\Session\Middleware\AuthUnconfirmed;
@@ -78,7 +77,7 @@
 
             $this->config->extend('middleware.aliases', [
                 'csrf' => CsrfMiddleware::class,
-                'validSignature' => ValidateSignature::class,
+                'signed' => ValidateSignature::class,
                 'auth.confirmed' => ConfirmAuth::class,
                 'auth.unconfirmed' => AuthUnconfirmed::class,
             ]);

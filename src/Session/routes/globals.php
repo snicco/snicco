@@ -10,7 +10,7 @@
     /** @var Router $router */
 
     $router->get('/auth/logout/{user_id}', LogoutController::class)
-           ->middleware('validSignature')
+           ->middleware('signed')
            ->name('auth.logout')
            ->andAlphaNumerical('user_id');
 

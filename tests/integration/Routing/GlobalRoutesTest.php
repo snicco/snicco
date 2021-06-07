@@ -6,7 +6,7 @@
 
     namespace Tests\integration\Routing;
 
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;

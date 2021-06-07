@@ -7,7 +7,7 @@
     namespace Tests\integration\Session;
 
     use Illuminate\Support\Carbon;
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;

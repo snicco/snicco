@@ -10,7 +10,7 @@
     use Mockery;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
-    use Tests\unit\UnitTest;
+    use Tests\UnitTest;
     use Tests\fixtures\Middleware\BarMiddleware;
     use Tests\fixtures\Middleware\BazMiddleware;
     use Tests\fixtures\Middleware\FooBarMiddleware;

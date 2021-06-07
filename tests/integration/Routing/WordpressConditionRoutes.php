@@ -6,7 +6,7 @@
 
     namespace Tests\integration\Routing;
 
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\fixtures\Middleware\WebMiddleware;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;

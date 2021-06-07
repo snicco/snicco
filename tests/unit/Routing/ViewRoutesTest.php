@@ -12,7 +12,7 @@
     use Tests\stubs\HeaderStack;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
-    use Tests\unit\UnitTest;
+    use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Facade\WP;

@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration;
+    namespace Tests;
 
     use Codeception\TestCase\WPTestCase;
     use Psr\Http\Message\ServerRequestInterface;
@@ -20,6 +20,8 @@
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\Psr7\Request;
+
+    use function do_action;
 
     class IntegrationTest extends WPTestCase
     {
