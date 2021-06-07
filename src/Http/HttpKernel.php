@@ -7,6 +7,7 @@
     namespace WPEmerge\Http;
 
     use Psr\Http\Message\ResponseInterface;
+    use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\OutputBufferRequired;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\ResponseSent;
@@ -45,7 +46,6 @@
             MethodOverride::class,
             EvaluateResponseMiddleware::class,
             ShareCookies::class,
-            OutputBufferMiddleware::class,
             AppendSpecialPathSuffix::class,
             RoutingMiddleware::class,
             RouteRunner::class,
@@ -53,8 +53,6 @@
 
         private $unique_middleware = [
             MethodOverride::class,
-            OutputBufferMiddleware::class,
-            AppendSpecialPathSuffix::class,
         ];
 
         // Only these three get a priority, because they always need to run before any global middleware
@@ -133,7 +131,7 @@
             }
 
             $response = $this->pipeline->send($request)
-                                       ->through($this->gatherMiddleware($request_event))
+                                       ->through($this->gatherMiddleware())
                                        ->run();
             $this->run_count++;
 
@@ -142,14 +140,8 @@
 
         }
 
-        private function gatherMiddleware(IncomingRequest $incoming_request) : array
+        private function gatherMiddleware() : array
         {
-
-            if ( ! $incoming_request instanceof OutputBufferRequired) {
-
-                Arr::pullByValue(OutputBufferMiddleware::class, $this->core_middleware);
-
-            }
 
             if ( ! $this->withMiddleware() ) {
 

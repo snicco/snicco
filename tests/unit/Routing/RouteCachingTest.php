@@ -15,6 +15,7 @@
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\OutputBufferRequired;
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Events\IncomingRequest;
@@ -392,11 +393,11 @@
             });
 
             $request = $this->adminRequestTo('foo');
-            $this->runAndAssertOutput('foo', new OutputBufferRequired($request));
+            $this->runAndAssertOutput('foo', new IncomingAdminRequest($request));
 
             $this->newCachedRouter();
             $request = $this->adminRequestTo('foo');
-            $this->runAndAssertOutput('foo', new OutputBufferRequired($request));
+            $this->runAndAssertOutput('foo', new IncomingAdminRequest($request));
 
 
         }

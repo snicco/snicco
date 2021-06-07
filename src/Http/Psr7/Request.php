@@ -9,6 +9,8 @@
     use Contracts\ContainerAdapter;
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Message\UriInterface;
+    use WPEmerge\Events\IncomingAdminRequest;
+    use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Facade\WP;
     use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Session\Session;
@@ -198,5 +200,16 @@
 
         }
 
+        public function isWpAdmin() :bool {
+
+            return $this->getType() === IncomingAdminRequest::class;
+
+        }
+
+        public function isWpAjax() :bool {
+
+            return $this->getType() === IncomingAjaxRequest::class;
+
+        }
 
     }

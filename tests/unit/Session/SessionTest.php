@@ -12,7 +12,7 @@
 
 	use function serialize;
 
-	class SessionStoreTest extends TestCase {
+	class SessionTest extends TestCase {
 
 		/** @test */
 		public function a_session_is_loaded_from_the_handler() {
@@ -645,7 +645,6 @@
 
 		}
 
-
 		/** @test */
 		public function the_previous_url_can_be_set () {
 
@@ -657,6 +656,23 @@
 
 		}
 
+		/** @test */
+		public function changes_in_the_session_can_be_detected () {
+
+            $handler = $this->newArrayHandler();
+            $handler->write( $this->getSessionId(), \serialize( [ 'foo' => 'bar' ] ) );
+            $session = $this->newSessionStore( $handler );
+            $session->start();
+
+            $session->put('bar', 'baz');
+
+            $this->assertTrue($session->wasChanged());
+
+            $session->remove('bar');
+
+            $this->assertFalse($session->wasChanged());
+
+		}
 
 
 

@@ -143,10 +143,10 @@
                                  ->withParsedBody([])
                                  ->withQueryParams(['action' => 'foo_action']);
 
-            $this->runAndAssertOutput('FOO_ACTION', new OutputBufferRequired($ajax_request));
+            $this->runAndAssertOutput('FOO_ACTION', new IncomingAjaxRequest($ajax_request));
 
             $this->runAndAssertEmptyOutput(
-                new OutputBufferRequired($ajax_request->withQueryParams(['action' => 'bar_action']))
+                new IncomingAjaxRequest($ajax_request->withQueryParams(['action' => 'bar_action']))
             );
 
 
