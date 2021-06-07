@@ -327,8 +327,7 @@
 
         }
 
-
-        /** @todo move everything dependet on session into the StatefulRedirector */
+        /** @todo move everything dependent on session into the StatefulRedirector */
         private function getSession() :Session
         {
             return call_user_func($this->session_resolver);

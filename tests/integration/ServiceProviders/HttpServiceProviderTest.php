@@ -12,9 +12,13 @@
     use Tests\fixtures\Middleware\FooMiddleware;
     use Tests\stubs\TestApp;
     use Tests\unit\Routing\Foo;
+    use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\HttpKernel;
+    use WPEmerge\Http\Redirector;
     use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Http\StatefulRedirector;
+    use WPEmerge\Session\SessionServiceProvider;
 
     class HttpServiceProviderTest extends IntegrationTest
     {
@@ -109,10 +113,6 @@
 
             $this->assertFalse(TestApp::config('always_run_middleware', ''));
 
-            /** @var WordpressDispatcher $dispatcher */
-            $dispatcher = TestApp::resolve(Dispatcher::class);
-
-            $this->assertFalse($dispatcher->hasListenerFor([HttpKernel::class, 'runGlobal'], 'init'));
 
         }
 
@@ -125,7 +125,30 @@
 
         }
 
+        /** @test */
+        public function the_redirector_can_be_resolved () {
 
+            $this->newTestApp();
+
+            $this->assertInstanceOf(Redirector::class, TestApp::resolve(AbstractRedirector::class));
+
+        }
+
+        /** @test */
+        public function if_sessions_are_enabled_a_stateful_redirector_is_used () {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled'=> true
+                ],
+                'providers'=> [
+                    SessionServiceProvider::class
+                ]
+            ]);
+
+            $this->assertInstanceOf(StatefulRedirector::class, TestApp::resolve(AbstractRedirector::class));
+
+        }
 
     }
 

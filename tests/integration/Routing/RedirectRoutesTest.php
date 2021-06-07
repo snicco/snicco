@@ -22,7 +22,6 @@
             $this->newTestApp([
                 'routing' => [
                     'definitions' => ROUTES_DIR,
-                    'redirects' => [ROUTES_DIR . DS . 'redirects.php']
                 ]
             ]);
 
@@ -45,7 +44,6 @@
             $this->newTestApp([
                 'routing' => [
                     'definitions' => ROUTES_DIR,
-                    'redirects' => [ROUTES_DIR . DS . 'redirects.php']
                 ]
             ]);
 
@@ -74,7 +72,6 @@
             $this->newTestApp([
                 'routing' => [
                     'definitions' => ROUTES_DIR,
-                    'redirects' => [ ROUTES_DIR . DS . 'redirects.php' ]
                 ]
             ]);
 
@@ -96,7 +93,6 @@
             $this->newTestApp([
                 'routing' => [
                     'definitions' => ROUTES_DIR,
-                    'redirects' => [ ROUTES_DIR . DS . 'redirects.php' ]
                 ]
             ]);
 

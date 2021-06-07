@@ -53,8 +53,6 @@
 
         }
 
-
-
         /**
          * Log out the current user and destroy all auth cookies
          * @see WordpressApi::logout
@@ -62,9 +60,6 @@
         public static function logout()
         {
         }
-
-
-
 
         /**
          * Check if we are in the admin dashboard
@@ -84,6 +79,18 @@
          */
         public static function isAdminAjax() : bool
         {
+        }
+
+        /**
+         * Return the current admin page if it was added with
+         * add_menu_page() or add_submenu_page()
+         *
+         * @see get_plugin_page_hook()
+         * @see WordpressApi::pluginPageHook
+         */
+        public static function pluginPageHook() :?string
+        {
+
         }
 
         /**

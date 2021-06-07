@@ -31,6 +31,7 @@
 
             $this->app = $this->newTestApp(TEST_CONFIG);
 
+            $this->registerRoutes();
 
         }
 
@@ -264,6 +265,17 @@
 
         }
 
+        /** @test */
+        public function a_method_override_field_can_be_outputted () {
+
+            $this->newTestApp();
+
+            $html = TestApp::methodField('PUT');
+
+            $this->assertStringStartsWith('<input', $html);
+            $this->assertStringContainsString('PUT', $html);
+
+        }
 
 
 	}

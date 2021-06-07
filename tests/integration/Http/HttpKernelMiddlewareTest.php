@@ -32,6 +32,8 @@
                 ]
             ]);
 
+            $this->registerRoutes();
+
             $this->seeKernelOutput('foo', TestRequest::from('GET', 'middleware/foo'));
             $this->assertSame(1, $GLOBALS['test'][WebMiddleware::run_times]);
 
@@ -55,7 +57,10 @@
                 ]
             ]);
 
-            $this->seeKernelOutput('get_fallback', TestRequest::from('GET', 'post1'));
+            $this->registerRoutes();
+
+
+            $this->seeKernelOutput('foo', TestRequest::from('GET', 'foo'));
             $this->assertSame(
                 1,
                 $GLOBALS['test'][GlobalMiddleware::run_times],
@@ -82,6 +87,9 @@
                 ]
             ]);
 
+            $this->registerRoutes();
+
+
             // there is no put route in Routes/web.php
             $this->seeKernelOutput('', TestRequest::from('PUT', 'middleware/foo'));
             $this->assertSame(0, $GLOBALS['test'][GlobalMiddleware::run_times], 'Middleware was run unexpectedly.');
@@ -103,8 +111,13 @@
                         ]
                     ],
                     'always_run_global' => true,
+                    'unique'=> [
+                        GlobalMiddleware::class
+                    ]
                 ]
             ]);
+
+            $this->registerRoutes();
 
             // there is no put route in Routes/web.php
             $this->seeKernelOutput('', TestRequest::from('PUT', 'middleware/foo'));
@@ -115,6 +128,7 @@
         /** @test */
         public function global_middleware_is_not_run_twice_for_fallback_routes () {
 
+            $GLOBALS['test']['pass_fallback_route_condition'] =true;
             $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
 
             $this->newTestApp([
@@ -128,9 +142,12 @@
                         ]
                     ],
                     'always_run_global' => true,
+                    'unique' => [
+                        GlobalMiddleware::class
+                    ]
                 ]
             ]);
-
+            $this->registerRoutes();
 
 
             $this->seeKernelOutput('get_fallback', TestRequest::from('GET', 'post1'));
@@ -158,10 +175,13 @@
                         ]
                     ],
                     'always_run_global' => true,
+                    'unique' => [
+                        GlobalMiddleware::class
+                    ]
                 ]
             ]);
 
-
+            $this->registerRoutes();
 
             $this->seeKernelOutput('foo', TestRequest::from('GET', 'foo'));
             $this->assertSame(

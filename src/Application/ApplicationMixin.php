@@ -7,6 +7,8 @@
 	namespace WPEmerge\Application;
 
 	use Contracts\ContainerAdapter;
+    use LogicException;
+    use Tests\unit\View\MethodField;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
 	use WPEmerge\Routing\Route;
@@ -24,9 +26,6 @@
 	 */
 	final class ApplicationMixin {
 
-		/**
-		 * Prevent class instantiation.
-		 */
 		private function __construct() {
 		}
 
@@ -105,8 +104,6 @@
 		 */
 		public static function resolve( string $key ) {
 		}
-
-		// --- Aliases --------------------------------------- //
 
 		/**
 		 * Get the Application instance.
@@ -187,7 +184,6 @@
 
         }
 
-
 		/**
 		 * Create a new route.
 		 *
@@ -255,7 +251,22 @@
 		 */
 		public static function delete( string $url = '*', $action = null ) : Route {}
 
+        /**
+         * Get the HTML for a hidden method field that can be used in HTML
+         * forms to override the POST method
+         *
+         *
+         * @param  string  $method accepted values are put,patch,delete
+         *
+         * @return string
+         *
+         * @throws LogicException
+         *
+         * @see MethodField::html()
+         */
+        public static function methodField (string $method) :string {
 
+        }
 
 
 	}

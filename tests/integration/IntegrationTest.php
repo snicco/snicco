@@ -95,7 +95,7 @@
 
             if ( ! $request instanceof IncomingRequest) {
 
-                $request = new IncomingWebRequest('wordpress.php', $request);
+                $request = new IncomingWebRequest($request, 'wordpress.php');
 
             }
 
@@ -113,7 +113,7 @@
 
             if ( ! $request instanceof IncomingRequest) {
 
-                $request = new IncomingWebRequest('wordpress.php', $request);
+                $request = new IncomingWebRequest($request, 'wordpress.php');
 
             }
 
@@ -126,7 +126,8 @@
 
             if ( ! $request instanceof IncomingRequest) {
 
-                $request = new IncomingWebRequest('wordpress.php', $request);
+                $request = new IncomingWebRequest($request, 'wordpress.php');
+
 
             }
 
@@ -139,7 +140,8 @@
 
             if ( ! $request instanceof IncomingRequest) {
 
-                $request = new IncomingWebRequest('wordpress.php', $request);
+                $request = new IncomingWebRequest($request, 'wordpress.php');
+
 
             }
 
@@ -152,7 +154,8 @@
 
             if ( ! $request instanceof IncomingRequest) {
 
-                $request = new IncomingWebRequest('wordpress.php', $request);
+                $request = new IncomingWebRequest($request, 'wordpress.php');
+
 
             }
 
@@ -168,6 +171,14 @@
 
         }
 
+        protected function registerRoutes() {
+            do_action('init');
+        }
 
+        protected function makeFallbackConditionPass () {
+
+            $GLOBALS['test']['pass_fallback_route_condition'] = true;
+
+        }
 
     }

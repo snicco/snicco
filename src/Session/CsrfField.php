@@ -61,10 +61,8 @@
 
             ob_start();
 
-            ?>
-            <input type="hidden" name="<?= esc_attr(Arr::firstKey($name)); ?>" value="<?= esc_attr(Arr::firstEl($name)); ?>">
-            <input type="hidden" name="<?= esc_attr(Arr::firstKey($token)); ?>" value="<?= esc_attr(Arr::firstEl($token));?>">
-            <?php
+            ?><input type="hidden" name="<?= esc_attr(Arr::firstKey($name)); ?>" value="<?= esc_attr(Arr::firstEl($name)); ?>">
+            <input type="hidden" name="<?= esc_attr(Arr::firstKey($token)); ?>" value="<?= esc_attr(Arr::firstEl($token));?>"><?php
 
             return ob_get_clean();
 
