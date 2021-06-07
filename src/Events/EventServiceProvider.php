@@ -118,21 +118,29 @@
 
         public function register() : void
         {
-            //
+            $this->bindConfig();
         }
 
         public function bootstrap() : void
         {
 
             ApplicationEvent::make($this->container)
-                            ->map($this->mapped_events)
-                            ->ensureFirst($this->ensure_first)
-                            ->ensureLast($this->ensure_last)
-                            ->listeners($this->event_listeners)
+                            ->map($this->config->get('events.mapped', []))
+                            ->ensureFirst($this->config->get('events.first', []))
+                            ->ensureLast($this->config->get('events.last', []))
+                            ->listeners($this->config->get('events.listeners', []))
                             ->boot();
 
             $this->container->instance(Dispatcher::class, ApplicationEvent::dispatcher());
 
+        }
+
+        private function bindConfig()
+        {
+            $this->config->extend('events.mapped', $this->mapped_events);
+            $this->config->extend('events.listeners', $this->event_listeners);
+            $this->config->extend('events.first', $this->ensure_first);
+            $this->config->extend('events.last', $this->ensure_last);
         }
 
 

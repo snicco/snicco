@@ -9,7 +9,7 @@
     use Illuminate\Support\Facades\Blade;
     use Tests\integration\Blade\traits\AssertBladeView;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
 
     class BladeFeaturesTest extends IntegrationTest

@@ -10,7 +10,7 @@
     use Mockery;
     use Tests\helpers\CreatePsr17Factories;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use wpdb;

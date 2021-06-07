@@ -7,8 +7,8 @@
     namespace WPEmerge\Contracts;
 
     use Contracts\ContainerAdapter;
+    use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationConfig;
-    use WPEmerge\Events\OutputBufferRequired;
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Facade\WP;
@@ -27,11 +27,20 @@
          */
         protected $config;
 
+        /** @var Application */
+        protected $app;
+
         public function __construct(ContainerAdapter $container_adapter, ApplicationConfig $config)
         {
 
             $this->container = $container_adapter;
             $this->config = $config;
+
+        }
+
+        public function setApp ( Application $app ) {
+
+            $this->app = $app;
 
         }
 

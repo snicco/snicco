@@ -6,7 +6,7 @@
 
     namespace Tests\integration\Http;
 
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\fixtures\Middleware\GlobalMiddleware;
     use Tests\fixtures\Middleware\WebMiddleware;
     use Tests\stubs\TestRequest;

@@ -7,7 +7,7 @@
 	namespace Tests\unit\Application;
 
     use Mockery;
-    use Tests\unit\UnitTest;
+    use Tests\UnitTest;
     use Tests\fixtures\TestDependencies\Foo;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use WPEmerge\Contracts\ServiceProvider;

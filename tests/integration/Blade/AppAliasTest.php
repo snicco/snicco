@@ -7,7 +7,7 @@
     namespace Tests\integration\Blade;
 
     use Tests\integration\Blade\traits\AssertBladeView;
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
 
     class AppAliasTest extends IntegrationTest

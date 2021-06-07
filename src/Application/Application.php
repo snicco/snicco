@@ -18,6 +18,7 @@
     use WPEmerge\ExceptionHandling\ExceptionServiceProvider;
     use WPEmerge\Factories\FactoryServiceProvider;
     use WPEmerge\Http\HttpServiceProvider;
+    use WPEmerge\Mail\MailServiceProvider;
     use WPEmerge\Middleware\MiddlewareServiceProvider;
     use WPEmerge\Routing\RoutingServiceProvider;
     use WPEmerge\View\ViewServiceProvider;
@@ -40,6 +41,7 @@
             RoutingServiceProvider::class,
             MiddlewareServiceProvider::class,
             ViewServiceProvider::class,
+            MailServiceProvider::class
 
         ];
 

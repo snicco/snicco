@@ -37,11 +37,6 @@
         /**
          * @var callable
          */
-        private $session_resolver;
-
-        /**
-         * @var callable
-         */
         private $request_resolver;
 
         public function __construct(RouteUrlGenerator $route_url)
@@ -177,17 +172,21 @@
 
         }
 
-        public function previous(string $fallback = '') : string
+        public function previous(string $fallback = '', string $session_url = '') : string
         {
 
             $referrer = $this->getRequest()->getHeaderLine('referer');
 
-            $url = $referrer ? $this->to($referrer) : $this->getPreviousUrlFromSession();
+            $url = $referrer ? $this->to($referrer) : $session_url;
 
-            if ($url) {
+            if ($url !== '') {
+
                 return $this->to($url);
+
             } elseif ($fallback !== '') {
+
                 return $this->to($fallback);
+
             }
 
             return $this->to('/');
@@ -201,14 +200,6 @@
         public function toLogin(string $redirect_on_login = '', bool $reauth = false) : string
         {
             return $this->to( WP::loginUrl($redirect_on_login, $reauth) );
-        }
-
-        private function getPreviousUrlFromSession() : ?string
-        {
-            $session = $this->getSession();
-
-            return $session ? $session->previousUrl() : null;
-
         }
 
         private function signatureHasExpired(Request $request) : bool
@@ -342,11 +333,6 @@
 
         }
 
-        /** @todo move everything dependent on session into the StatefulRedirector */
-        private function getSession() :Session
-        {
-            return call_user_func($this->session_resolver);
-        }
 
 
     }

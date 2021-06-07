@@ -649,10 +649,10 @@
 		public function the_previous_url_can_be_set () {
 
 			$session = $this->newSessionStore();
-			$this->assertEquals( null , $session->previousUrl() );
+			$this->assertEquals( null , $session->getPreviousUrl(null) );
 
 			$session->setPreviousUrl( 'https.//foo.com' );
-			$this->assertSame( 'https.//foo.com', $session->previousUrl() );
+			$this->assertSame( 'https.//foo.com', $session->getPreviousUrl() );
 
 		}
 

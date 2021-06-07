@@ -11,7 +11,7 @@
     use Tests\fixtures\Conditions\IsPost;
     use Tests\helpers\CreatesWpUrls;
     use Tests\helpers\CreateTestSubjects;
-    use Tests\unit\UnitTest;
+    use Tests\UnitTest;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;

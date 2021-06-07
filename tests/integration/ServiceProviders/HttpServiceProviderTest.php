@@ -8,7 +8,7 @@
 
     use BetterWpHooks\Contracts\Dispatcher;
     use BetterWpHooks\Dispatchers\WordpressDispatcher;
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\fixtures\Middleware\FooMiddleware;
     use Tests\stubs\TestApp;
     use Tests\unit\Routing\Foo;
@@ -106,15 +106,7 @@
 
         }
 
-        /** @test */
-        public function no_global_middleware_is_run_by_default () {
 
-            $this->newTestApp();
-
-            $this->assertFalse(TestApp::config('always_run_middleware', ''));
-
-
-        }
 
         /** @test */
         public function the_cookie_instance_can_be_resolved () {
