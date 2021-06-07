@@ -18,7 +18,6 @@
     use WPEmerge\Middleware\Core\OutputBufferMiddleware;
     use WPEmerge\Middleware\Core\RoutingMiddleware;
     use WPEmerge\Middleware\Core\ShareCookies;
-    use WPEmerge\Middleware\FlashSomethingMiddleware;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Support\Arr;
