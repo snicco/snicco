@@ -8,7 +8,6 @@
 
     use Tests\helpers\CreateContainer;
     use Tests\fixtures\Controllers\Web\WebController;
-	use WPEmerge\Routing\ClosureAction;
 	use WPEmerge\Routing\ControllerAction;
 	use WPEmerge\Factories\RouteActionFactory;
 	use PHPUnit\Framework\TestCase;
@@ -128,8 +127,27 @@
 
 		}
 
+		/** @test */
+		public function a_controller_can_be_invokeable () {
+
+            $handler = $this->factory->createUsing(InvokableController::class);
+
+            $this->assertInstanceOf(\WPEmerge\Routing\ControllerAction::class, $handler);
+
+            $this->assertEquals([InvokableController::class, '__invoke'], $handler->raw() );
+
+		}
 
 
 
 	}
+
+	class InvokableController {
+
+	    public function __invoke()
+        {
+
+        }
+
+    }
 

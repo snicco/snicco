@@ -295,9 +295,10 @@
         }
 
 
+
         private function createRequest(
             Session $session,
-            array $body = [
+            ?array $body = [
                 'csrf_name' => 'secret_csrf_name',
                 'csrf_value' => 'secret_csrf_value',
             ]
