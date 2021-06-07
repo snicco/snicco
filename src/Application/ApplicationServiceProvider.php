@@ -9,6 +9,7 @@
     use Tests\unit\View\MethodField;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewFactoryInterface;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Session\Encryptor;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\ExceptionHandling\ShutdownHandler;
@@ -88,6 +89,7 @@
         {
 
             $app->alias('cookies', Cookies::class);
+            $app->alias('response', ResponseFactory::class);
 
         }
 
@@ -95,6 +97,7 @@
         {
 
             $app->alias('route', Router::class);
+            $app->alias('url', UrlGenerator::class);
             $app->alias('routeUrl', UrlGenerator::class, 'toRoute');
             $app->alias('post', Router::class, 'post');
             $app->alias('get', Router::class, 'get');
@@ -156,6 +159,7 @@
             $app->alias('methodField', MethodField::class, 'html');
 
         }
+
 
 
     }

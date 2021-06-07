@@ -69,7 +69,6 @@
             $this->assertContains('bar', $data);
 
             // The old session is gone.
-
             $this->assertSame('', $array_handler->read($this->sessionId()));
 
         }

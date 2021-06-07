@@ -8,6 +8,7 @@
 
     use Mockery;
     use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\integration\Blade\traits\InteractsWithWordpress;
     use Tests\integration\IntegrationTest;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
@@ -18,6 +19,7 @@
     class LogoutRedirectControllerTest extends IntegrationTest
     {
 
+        use InteractsWithWordpress;
         use CreateDefaultWpApiMocks;
 
         protected function afterSetup()
@@ -40,6 +42,8 @@
               ->andReturnTrue()
               ->byDefault();
 
+            WP::shouldReceive('userId')->andReturn(1)->byDefault();
+
         }
 
         protected function beforeTearDown()
@@ -52,6 +56,7 @@
         /** @test */
         public function get_request_to_wp_login_with_are_redirected()
         {
+
 
 
             $request = TestRequest::fromFullUrl('GET', 'https://wpemerge.test/wp-login.php?action=logout');
@@ -131,11 +136,36 @@
         }
 
         /** @test */
-        public function the_redirect_url_is_flash_to_the_session_if_provided () {
+        public function the_redirect_url_is_signed () {
+
+            $calvin = $this->newAdmin();
+            $this->login($calvin);
+
+            WP::shouldReceive('userId')->andReturn($calvin->ID);
+            $request = TestRequest::fromFullUrl('GET', 'https://wpemerge.test/wp-login.php?action=logout');
+            $this->rebindRequest($request);
+
+            ob_start();
+
+            do_action('init');
+
+            $this->assertSame('', ob_get_clean());
+            HeaderStack::assertHasStatusCode(302);
+            HeaderStack::assertContains('Location', '/auth/logout/'. $calvin->ID);
+
+            $this->logout($calvin);
+
+        }
+
+        /** @test */
+        public function a_redirect_url_is_used_if_provided () {
 
 
 
+            $calvin = $this->newAdmin();
+            $this->login($calvin);
 
+            WP::shouldReceive('userId')->andReturn($calvin->ID);
             $request = TestRequest::fromFullUrl('GET', 'https://wpemerge.test/wp-login.php?action=logout&redirect_to=foobar');
             $this->rebindRequest($request);
 
@@ -145,15 +175,22 @@
 
             $this->assertSame('', ob_get_clean());
             HeaderStack::assertHasStatusCode(302);
+            HeaderStack::assertContains('Location', '/auth/logout/'. $calvin->ID);
+            HeaderStack::assertContains('Location', '&redirect_to=foobar');
 
-            $this->assertSame('foobar', TestApp::session()->get('logout.redirect_to'));
+            $this->logout($calvin);
+
+
 
         }
 
         /** @test */
         public function if_no_redirect_url_is_provided_the_user_is_redirect_to_wp_login () {
 
+            $calvin = $this->newAdmin();
+            $this->login($calvin);
 
+            WP::shouldReceive('userId')->andReturn($calvin->ID);
             $request = TestRequest::fromFullUrl('GET', 'https://wpemerge.test/wp-login.php?action=logout');
             $this->rebindRequest($request);
 
@@ -172,28 +209,15 @@
                 wp_login_url()
             );
 
-            $this->assertSame($expected, TestApp::session()->get('logout.redirect_to'));
 
-        }
-
-        /** @test */
-        public function a_new_csrf_token_is_included_in_the_user_session () {
-
-            $request = TestRequest::fromFullUrl('GET', 'https://wpemerge.test/wp-login.php?action=logout');
-            $this->rebindRequest($request);
-
-            $session = TestApp::session();
-            $this->assertFalse($session->has('csrf'));
-
-            ob_start();
-
-            do_action('init');
-
-            $this->assertSame('', ob_get_clean());
             HeaderStack::assertHasStatusCode(302);
+            HeaderStack::assertContains('Location', '/auth/logout/'. $calvin->ID);
+            HeaderStack::assertContains('Location', '&redirect_to='. rawurlencode($expected));
 
-            $this->assertTrue($session->has('csrf'));
+            $this->logout($calvin);
+
         }
+
 
 
     }

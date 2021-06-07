@@ -181,4 +181,11 @@
 
         }
 
+        protected function testSessionId () : string
+        {
+
+            return str_repeat('a', 40);
+
+    }
+
     }
