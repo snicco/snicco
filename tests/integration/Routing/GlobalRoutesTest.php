@@ -18,6 +18,7 @@
     class GlobalRoutesTest extends IntegrationTest
     {
 
+
         /** @test */
         public function global_routes_are_run_as_soon_as_a_route_file_with_the_name_global_is_auto_discovered () {
 
@@ -72,6 +73,8 @@
 
             ob_start();
 
+            ApplicationEvent::fake([ResponseSent::class]);
+
             do_action('init');
 
             $this->assertSame('FOO_GLOBAL', ob_get_clean());
@@ -92,6 +95,7 @@
             $this->newTestApp(TEST_CONFIG);
             $request = TestRequest::from('GET', 'globals/bogus');
             $this->rebindRequest($request);
+            ApplicationEvent::fake();
 
             ob_start();
 
@@ -123,21 +127,3 @@
 
     }
 
-    class RoutingDefinitionServiceProvider extends ServiceProvider
-    {
-
-        public function register() : void
-        {
-            $routes = Arr::wrap($this->config->get('routing.definitions'));
-
-            $routes = array_merge($routes, [TESTS_DIR.DS.'fixtures'.DS.'OtherRoutes']);
-
-            $this->config->set('routing.definitions', $routes);
-
-        }
-
-        function bootstrap() : void
-        {
-        }
-
-    }

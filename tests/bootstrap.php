@@ -85,11 +85,6 @@
     }
 
 
-    if ( ! defined('WPEMERGE_RUNNING_UNIT_TESTS')) {
-
-        define('WPEMERGE_RUNNING_UNIT_TESTS', true);
-
-    }
 
 
 

@@ -9,12 +9,15 @@
     use Tests\IntegrationTest;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestRequest;
+    use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\Responses\RedirectResponse;
 
     class RedirectRoutesTest extends IntegrationTest
     {
+
+
 
         /** @test */
         public function redirect_routes_are_run_on_the_init_hook_if_a_valid_redirect_file_is_provided () {
@@ -46,7 +49,7 @@
                     'definitions' => ROUTES_DIR,
                 ]
             ]);
-
+            ApplicationEvent::fake([ResponseSent::class]);
             $this->rebindRequest(TestRequest::from('GET', '/location-a'));
 
             ob_start();
@@ -95,6 +98,7 @@
                     'definitions' => ROUTES_DIR,
                 ]
             ]);
+            ApplicationEvent::fake([ResponseSent::class]);
 
             $this->rebindRequest(TestRequest::from('GET', '/foo'));
 

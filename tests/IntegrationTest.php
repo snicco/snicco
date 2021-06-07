@@ -73,20 +73,19 @@
 
         }
 
-        public function newTestApp(array $config = [], bool $with_exceptions = false) : Application
+        protected function newTestApp(array $config = [], bool $with_exceptions = false) : Application
         {
 
             $app = TestApp::make();
+            $app->runningUnitTest();
             $app->boot($config);
+
 
             if ( ! $with_exceptions ) {
 
                 $this->withoutExceptionHandling();
 
             }
-
-            ApplicationEvent::fake([ResponseSent::class]);
-
 
             return $app;
 
@@ -189,5 +188,11 @@
             return str_repeat('a', 40);
 
     }
+
+        protected function fakeResponseSending(array $events = []) {
+
+            ApplicationEvent::fake(array_merge([ResponseSent::class], $events));
+
+        }
 
     }

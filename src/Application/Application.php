@@ -52,6 +52,11 @@
          */
         private $config;
 
+        /**
+         * @var bool
+         */
+        private $running_unit_test = false;
+
         public function __construct(ContainerAdapter $container, ServerRequestInterface $server_request = null)
         {
 
@@ -138,11 +143,22 @@
 
         }
 
+        public function runningUnitTest() {
+
+            $this->running_unit_test = true;
+
+        }
+
         public static function generateKey() : string
         {
 
             return 'base64:'.base64_encode(random_bytes(32));
 
+        }
+
+        public function isRunningUnitTest() : bool
+        {
+            return $this->running_unit_test;
         }
 
         private function bindConfigInstance(array $config)
