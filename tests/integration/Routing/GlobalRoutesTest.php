@@ -103,6 +103,23 @@
 
         }
 
+        /** @test */
+        public function global_routes_are_not_run_for_the_native_wordpress_REST_API () {
+
+            $this->newTestApp(TEST_CONFIG);
+
+            $request = TestRequest::from('GET', 'wp-json/posts');
+            $this->rebindRequest($request);
+
+            ob_start();
+
+            do_action('init');
+
+            $this->assertSame('', ob_get_clean());
+            HeaderStack::assertHasNone();
+
+
+        }
 
     }
 
