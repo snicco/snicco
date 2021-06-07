@@ -71,14 +71,10 @@
         public function signedLogout ( int $user_id, string $redirect_on_logout = '/',  int $status = 302  ) : RedirectResponse
         {
 
-            $args = [
-                'user_id' => $user_id,
-                'query' => [
-                    'redirect_to' => $redirect_on_logout,
-                ]
-            ];
-
-            return $this->toTemporarySignedRoute('auth.logout', 3600, $args, $status );
+           return $this->to(
+               $this->generator->signedLogout($user_id, $redirect_on_logout),
+               $status
+           );
 
         }
 
