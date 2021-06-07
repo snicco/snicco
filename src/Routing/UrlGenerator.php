@@ -13,6 +13,7 @@
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Str;
     use WPEmerge\Support\Url;
@@ -129,6 +130,20 @@
             $route_path = $this->toRoute($route_name, $arguments, true ,false);
 
             return $this->signed($route_path, $expiration, $absolute, $query);
+
+        }
+
+        public function signedLogout ( ?int $user_id = null , string $redirect_on_logout = '/', int $expiration = 3600  ) : string
+        {
+
+            $args = [
+                'user_id' => $user_id ?? WP::userId(),
+                'query' => [
+                    'redirect_to' => $redirect_on_logout,
+                ]
+            ];
+
+            return $this->signedRoute('auth.logout', $args, $expiration );
 
         }
 
