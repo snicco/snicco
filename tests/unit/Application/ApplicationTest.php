@@ -36,6 +36,7 @@
             WP::setFacadeContainer($this->container);
             $this->setUpWp(VENDOR_DIR  );
 
+
         }
 
         protected function beforeTearDown()
@@ -54,6 +55,7 @@
             $base_container = $this->createContainer();
 
             $application = Application::create($base_container);
+            $application->runningUnitTest();
 
             $this->assertInstanceOf(Application::class, $application);
 
@@ -66,6 +68,7 @@
         {
 
             $app = $this->newApplication();
+            $app->runningUnitTest();
 
             try {
 
@@ -101,6 +104,7 @@
         {
 
             $app = $this->newApplication();
+            $app->runningUnitTest();
 
             $app->boot(['foo' => 'bar']);
 
@@ -114,6 +118,7 @@
         {
 
             $app = $this->newApplication();
+            $app->runningUnitTest();
 
             $app->boot(
                 ['providers' => [UserServiceProvider::class,],],
@@ -144,6 +149,7 @@
         {
 
             $app = $this->newApplication();
+            $app->runningUnitTest();
             $app->boot(['foo' => 'bar', 'bar' => ['baz' => 'boo']]);
 
             $this->assertInstanceOf(
@@ -162,11 +168,14 @@
         {
 
             $app1 = $this->newApplication();
+            $app1->runningUnitTest();
             $app1->boot();
+
 
             $this->assertFalse($app1->handlesExceptionsGlobally());
 
             $app2 = $this->newApplication();
+            $app2->runningUnitTest();
             $app2->boot(['exception_handling' => [
 
                 'global'=> true

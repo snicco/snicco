@@ -35,7 +35,7 @@
         public function bootstrap() : void
         {
 
-            if ( !  $this->validAppKey() && ! WPEMERGE_RUNNING_UNIT_TESTS ) {
+            if ( !  $this->validAppKey() && ! $this->app->isRunningUnitTest() ) {
 
                 throw new ConfigurationException('Your app_key is either missing or too insecure.');
 
@@ -48,7 +48,7 @@
 
             $this->container->singleton(ShutdownHandler::class, function () {
 
-                return new ShutdownHandler($this->requestType());
+                return new ShutdownHandler($this->requestType(), $this->app->isRunningUnitTest());
 
             });
         }

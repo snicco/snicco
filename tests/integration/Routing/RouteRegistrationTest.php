@@ -13,6 +13,7 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
+    use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\IncomingAdminRequest;
@@ -25,6 +26,7 @@
 
         use CreatesWpUrls;
 
+
         /** @test */
         public function web_routes_are_loaded () {
 
@@ -33,7 +35,6 @@
                     'definitions' => ROUTES_DIR,
                 ]
             ]);
-
             $this->rebindRequest(TestRequest::from('GET', '/foo'));
 
             ob_start();
@@ -163,6 +164,8 @@
             WP::shouldReceive('pluginPageHook')->andReturnNull();
 
             $this->rebindRequest($request = $this->adminRequestTo('foo'));
+
+            ApplicationEvent::fake();
 
             ob_start();
 
@@ -389,7 +392,6 @@
 
 
     }
-
 
     class SimulateAjaxProvider extends ServiceProvider
     {

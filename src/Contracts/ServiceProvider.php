@@ -111,4 +111,5 @@
             return $this->config->get('app_key');
 
         }
+
     }
