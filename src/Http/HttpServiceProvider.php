@@ -27,7 +27,7 @@
 
             $this->bindConcretePsr17ResponseFactory();
 
-            $this->bindPsr17ResponseFactoryInterface();
+            $this->bindResponseFactory();
 
             $this->bindPsr17StreamFactory();
 
@@ -86,7 +86,7 @@
             });
         }
 
-        private function bindPsr17ResponseFactoryInterface() : void
+        private function bindResponseFactory() : void
         {
 
             $this->container->singleton(ResponseFactory::class, function () {
@@ -131,7 +131,7 @@
 
                 $redirector = $this->container->make(Redirector::class);
 
-                if ( $this->sessionEnabled()) {
+                if ( $this->sessionEnabled() ) {
 
                     return new StatefulRedirector(
                         $this->container->make(Session::class),

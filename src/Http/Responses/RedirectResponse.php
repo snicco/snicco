@@ -82,7 +82,6 @@
             return $this;
         }
 
-
         private function toMessageBag($provider) : MessageBag
         {
             if ($provider instanceof MessageProvider) {
@@ -91,7 +90,6 @@
 
             return new MessageBag((array) $provider);
         }
-
 
         private function checkSession () {
 

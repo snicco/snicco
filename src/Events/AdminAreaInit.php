@@ -31,9 +31,10 @@
 
         public function __construct(Request $request)
         {
+
             $this->request = $request;
 
-            $this->hook = $this->getAdminPageHook();
+            $this->hook = WP::pluginPageHook();
 
         }
 
@@ -42,19 +43,7 @@
             return WP::isAdmin() && ! WP::isAdminAjax() && $this->hook !== null;
         }
 
-        private function getAdminPageHook() : ?string {
 
-            global $pagenow, $plugin_page;
-
-            if ( $plugin_page ) {
-
-                return get_plugin_page_hook( $plugin_page, $pagenow );
-
-            }
-
-            return null;
-
-        }
 
 
     }

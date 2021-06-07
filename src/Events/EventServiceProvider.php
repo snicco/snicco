@@ -121,9 +121,7 @@
 
         public function register() : void
         {
-
             //
-
         }
 
         public function bootstrap() : void

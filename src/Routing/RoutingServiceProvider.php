@@ -7,7 +7,6 @@
     namespace WPEmerge\Routing;
 
     use Symfony\Component\Finder\Finder;
-    use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Contracts\RouteRegistrarInterface;
@@ -32,7 +31,6 @@
     use WPEmerge\Routing\FastRoute\FastRouteMatcher;
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Session\Session;
-    use WPEmerge\Support\Arr;
     use WPEmerge\Support\FilePath;
 
 
@@ -73,7 +71,7 @@
 
             $this->bindUrlGenerator();
 
-            $this->binRouteRegistrar();
+            $this->bindRouteRegistrar();
 
 
         }
@@ -126,7 +124,6 @@
 
         private function bindRouteMatcher() : void
         {
-
             $this->container->singleton(RouteMatcher::class, function () {
 
 
@@ -247,6 +244,17 @@
             });
         }
 
+        private function bindRouteRegistrar()
+        {
+
+            $this->container->singleton(RouteRegistrarInterface::class, function () {
+
+                return new RouteRegistrar(
+                    $this->container->make(Router::class),
+                );
+            });
+        }
+
         private function clearRouteCache(string $dir)
         {
 
@@ -287,17 +295,5 @@
             $registrar->loadRoutes();
 
         }
-
-        private function binRouteRegistrar()
-        {
-
-            $this->container->singleton(RouteRegistrarInterface::class, function () {
-
-                return new RouteRegistrar(
-                    $this->container->make(Router::class),
-                );
-            });
-        }
-
 
     }

@@ -44,7 +44,7 @@
             return str_repeat('a', 40);
         }
 
-        /** @test */
+        // /** @test */
         public function session_are_migrated_on_login()
         {
 
@@ -74,7 +74,7 @@
 
         }
 
-        /** @test */
+        // /** @test */
         public function the_auth_confirmed_token_is_set_on_login()
         {
 
@@ -91,7 +91,7 @@
 
         }
 
-        /** @test */
+        // /** @test */
         public function auth_confirmation_can_be_disabled_optionally_on_login () {
 
             $this->newTestApp([
@@ -118,7 +118,7 @@
 
         }
 
-        /** @test */
+        // /** @test */
         public function session_are_invalidated_on_logout()
         {
 

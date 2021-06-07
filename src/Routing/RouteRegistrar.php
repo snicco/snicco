@@ -116,7 +116,7 @@
 
             $this->router->group($attributes, function ($router) use ($file_path) {
 
-                require_once $file_path;
+                require $file_path;
 
             });
 

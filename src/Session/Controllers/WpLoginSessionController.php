@@ -6,11 +6,10 @@
 
     namespace WPEmerge\Session\Controllers;
 
-    use Carbon\Carbon;
     use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Session\Session;
+
 
     class WpLoginSessionController
     {
@@ -58,7 +57,6 @@
             $session->migrate(true);
 
             if ( $this->confirm_on_login ) {
-
 
                 $session->confirmAuthUntil($this->auth_confirm_lifetime_in_minutes);
 

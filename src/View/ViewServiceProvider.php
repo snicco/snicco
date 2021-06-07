@@ -18,7 +18,6 @@
 		public function register() : void {
 
 
-		    $this->bindConfig();
 
 		    $this->bindMethodField();
 
@@ -40,17 +39,6 @@
 		public function bootstrap() : void {
 			// Nothing to bootstrap.
 		}
-
-        private function bindConfig()
-        {
-
-            $ds = DIRECTORY_SEPARATOR;
-            $dir = dirname(__FILE__ , 3).$ds.'resources'.$ds.'views';
-            $views = $this->config->get('views', []);
-            $views = array_merge($views, [$dir]);
-            $this->config->set('views', $views);
-
-        }
 
         private function bindGlobalContext()
         {

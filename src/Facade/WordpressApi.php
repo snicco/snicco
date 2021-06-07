@@ -24,6 +24,20 @@
 
         }
 
+        public function pluginPageHook() : ?string {
+
+            global $pagenow, $plugin_page;
+
+            if ( $plugin_page ) {
+
+                return get_plugin_page_hook( $plugin_page, $pagenow );
+
+            }
+
+            return null;
+
+        }
+
         public function plaintTextMail ( $email, string $subject, string $message ) {
 
            return wp_mail($email, $subject, $message);

@@ -12,19 +12,17 @@
     use Tests\integration\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
-    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Session\Controllers\ConfirmAuthController;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
-    use WPEmerge\Session\Drivers\DatabaseSessionDriver;
     use WPEmerge\Session\EncryptedSession;
+    use WPEmerge\Session\Middleware\ShareSessionWithView;
     use WPEmerge\Session\SessionDriver;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Session\Session;
     use WPEmerge\Session\Middleware\StartSessionMiddleware;
-    use WPEmerge\Session\WpLoginAction;
 
     class SessionServiceProviderTest extends IntegrationTest
     {
@@ -381,7 +379,7 @@
         }
 
         /** @test */
-        public function wp_login_logout_events_dispatch_when_sessions_are_enabled_and_the_request_path_is_wp_login()
+        public function the_session_can_be_resolved_as_an_alias()
         {
 
             $this->newTestApp([
@@ -393,58 +391,12 @@
                 ],
             ]);
 
-            TestApp::container()->instance(Request::class, TestRequest::from('GET', 'wp-login.php'));
-
-            /** @var WordpressDispatcher $d */
-            $d = TestApp::resolve(Dispatcher::class);
-
-            /** @todo This is a temporary fix until BetterWpHooks supports actions. */
-            $d->forgetOne(WpLoginAction::class, [HttpKernel::class, 'run']);
-
-            $d->listen(WpLoginAction::class, function ( $request ) {
-
-                $this->assertInstanceOf(IncomingWebRequest::class, $request);
-
-            });
-
-            do_action('wp_login');
-
+            $this->assertInstanceOf(Session::class, TestApp::session());
 
         }
 
         /** @test */
-        public function wp_login_logout_events_dont_dispatch_when_sessions_are_disabled()
-        {
-
-            $this->newTestApp([
-                'session' => [
-                    'enabled' => false,
-                ],
-                'providers' => [
-                    SessionServiceProvider::class,
-                ],
-            ]);
-
-            TestApp::container()->instance(Request::class, TestRequest::from('GET', 'wp-login.php'));
-            $d = TestApp::resolve(Dispatcher::class);
-
-            /** @todo This is a temporary fix until BetterWpHooks supports actions. */
-            $d->forgetOne(WpLoginAction::class, [HttpKernel::class, 'run']);
-
-            $d->listen(WpLoginAction::class, function () {
-
-                $this->fail('Event was dispatched when it should not');
-
-            });
-
-            do_action('wp_login');
-
-            $this->assertTrue(true);
-
-        }
-
-        /** @test */
-        public function wp_login_logout_events_dont_dispatch_if_the_request_path_is_not_wp_login()
+        public function a_csrf_field_can_be_created_as_an_alias()
         {
 
             $this->newTestApp([
@@ -456,25 +408,128 @@
                 ],
             ]);
 
-            TestApp::container()->instance(Request::class, TestRequest::from('GET', 'bogus'));
-            $d = TestApp::resolve(Dispatcher::class);
+            $html = TestApp::csrfField();
+            $this->assertStringContainsString('csrf', $html);
+            $this->assertStringStartsWith('<input', $html);
 
-            /** @todo This is a temporary fix until BetterWpHooks supports actions. */
-            $d->forgetOne(WpLoginAction::class, [HttpKernel::class, 'run']);
-
-            $d->listen(WpLoginAction::class, function () {
-
-                $this->fail('Event was dispatched when it should not');
-
-            });
-
-            do_action('wp_login');
-
-            $this->assertTrue(true);
 
         }
 
+        /** @test */
+        public function the_auth_routes_are_bound_in_the_config()
+        {
 
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ],
+            ]);
+
+            $routes = TestApp::config('routing.definitions');
+            $expected = ROOT_DIR.DS.'src'.DS.'Session'.DS.'routes';
+
+            $this->assertContains($expected, $routes);
+
+        }
+
+        /** @test */
+        public function the_auth_views_are_bound_in_the_config () {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ],
+            ]);
+
+            $views = TestApp::config('views');
+            $expected = ROOT_DIR.DS.'src'.DS.'Session'.DS.'views';
+
+            $this->assertContains($expected, $views);
+
+
+        }
+
+        /** @test */
+        public function confirm_auth_controller_can_be_resolved()
+        {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ],
+            ]);
+
+            $this->assertInstanceOf(ConfirmAuthController::class, TestApp::resolve(ConfirmAuthController::class));
+
+        }
+
+        /** @test */
+        public function middleware_aliases_are_bound()
+        {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ],
+            ]);
+
+            $middleware_aliases = TestApp::config('middleware.aliases');
+
+            $this->assertArrayHasKey('csrf', $middleware_aliases);
+            $this->assertArrayHasKey('auth.confirmed', $middleware_aliases);
+            $this->assertArrayHasKey('auth.unconfirmed', $middleware_aliases);
+            $this->assertArrayHasKey('validSignature', $middleware_aliases);
+
+        }
+
+        /** @test */
+        public function global_middleware_is_bound () {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ],
+            ]);
+
+            $global_middleware = TestApp::config('middleware.groups.global');
+
+            $this->assertContains(StartSessionMiddleware::class, $global_middleware);
+            $this->assertContains(ShareSessionWithView::class, $global_middleware);
+
+        }
+
+        /** @test */
+        public function the_share_session_with_view_middleware_is_unique () {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ],
+            ]);
+
+            $unique_middleware = TestApp::config('middleware.unique');
+
+            $this->assertContains(ShareSessionWithView::class, $unique_middleware);
+
+        }
 
 
     }
