@@ -18,7 +18,9 @@
     use WPEmerge\Facade\WP;
 	use WPEmerge\Facade\WpFacade;
     use WPEmerge\Http\Cookies;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Routing\Router;
+    use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Url;
@@ -277,6 +279,24 @@
 
         }
 
+        /** @test */
+        public function the_url_generator_can_be_aliased () {
+
+            $this->newTestApp();
+
+            $this->assertInstanceOf(UrlGenerator::class, TestApp::url());
+
+        }
+
+        /** @test */
+        public function the_response_factory_can_be_aliased () {
+
+            $this->newTestApp();
+
+            $this->assertInstanceOf(ResponseFactory::class, TestApp::response());
+
+
+        }
 
 	}
 

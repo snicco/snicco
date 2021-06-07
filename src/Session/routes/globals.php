@@ -9,6 +9,9 @@
 
     /** @var Router $router */
 
-    $router->middleware('csrf')->get('/auth/logout', LogoutController::class)->name('auth.logout');
+    $router->get('/auth/logout/{user_id}', LogoutController::class)
+           ->middleware('validSignature')
+           ->name('auth.logout')
+           ->andAlphaNumerical('user_id');
 
-    $router->match(['GET', 'POST'],'/wp-login.php', LogoutRedirectController::class);
+    $router->match(['GET', 'POST'], '/wp-login.php', LogoutRedirectController::class);

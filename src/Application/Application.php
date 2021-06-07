@@ -123,8 +123,14 @@
 
         }
 
-        public function config(string $key, $default = null)
+        public function config(?string $key = null, $default = null)
         {
+
+            if ( ! $key ) {
+
+                return $this->config;
+
+            }
 
             return $this->config->get($key, $default);
 

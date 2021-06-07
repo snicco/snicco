@@ -243,7 +243,7 @@
         private function addQueryString(string $uri, array $query) : string
         {
 
-            $query = $this->buildQueryString(array_map('rawurlencode', $query));
+            $query = $this->buildQueryString($query);
 
             $uri .= $query === '' ? '' : '?'.$query;
 

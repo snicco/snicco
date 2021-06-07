@@ -14,7 +14,7 @@
     class LogoutRedirectController
     {
 
-        public function __invoke(Request $request, ResponseFactory $response_factory, CsrfField $csrf ) {
+        public function __invoke(Request $request, ResponseFactory $response_factory) {
 
             $action = $request->getBody('action', $request->getQueryString('action') );
 
@@ -26,11 +26,7 @@
 
             WP::checkAdminReferer('log-out');
 
-            $request->getSession()->flash('logout.redirect_to', $this->redirectUrl($request));
-
-            $csrf->refreshToken();
-
-            return $response_factory->redirect()->toRoute('auth.logout', 302);
+            return $response_factory->signedLogout(WP::userId(), $this->redirectUrl($request));
 
         }
 
