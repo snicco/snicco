@@ -68,6 +68,12 @@
 
         }
 
+        public function refreshToken() {
+
+            $this->session->forget('csrf');
+            $this->persistNewKeyPairInSession();
+        }
+
         private function persistNewKeyPairInSession() : array
         {
             return array_values($this->guard->generateToken());

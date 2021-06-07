@@ -66,6 +66,12 @@
 
         }
 
+        public function checkAdminReferer($action = -1, $query_arg = '_wpnonce') {
+
+            return check_admin_referer($action, $query_arg);
+
+        }
+
         public function isAdminAjax() : bool
         {
 

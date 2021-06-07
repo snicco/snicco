@@ -72,6 +72,22 @@
         }
 
         /**
+         * Verify a wp-nonce and dies on failure.
+         *
+         * @param  int|string  $action
+         * @param  string  $query_arg
+         *
+         * @return int|false
+         *
+         * @see check_admin_referer()
+         * @see \WPEmerge\Facade\WordpressApi::checkAdminReferer()
+         *
+         */
+        public static function checkAdminReferer($action = -1, $query_arg = '_wpnonce')
+        {
+        }
+
+        /**
          * Check if we are doing a request to admin-ajax.php
          *
          * @return bool

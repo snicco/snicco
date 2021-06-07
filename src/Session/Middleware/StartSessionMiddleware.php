@@ -161,7 +161,9 @@
 
             }
 
-            if ( $session->wasChanged() ) {
+            // Global route. Need to save again if flash.old is present because we might
+            // have one global route and another on the next request.
+            if ( $session->wasChanged() || $session->has('_flash.old') ) {
 
                 $this->storePreviousUrl($response, $request, $session);
                 $session->save();
