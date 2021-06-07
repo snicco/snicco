@@ -9,9 +9,11 @@
     use Carbon\Carbon;
     use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\Middleware;
+    use WPEmerge\Events\IncomingGlobalRequest;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\Responses\NullResponse;
     use WPEmerge\Session\Session;
 
@@ -60,8 +62,6 @@
                 $this->startSession($session, $request);
 
             }
-
-            $session->isActive(true);
 
             return $this->handleStatefulRequest($request, $session, $next);
 
@@ -115,11 +115,9 @@
 
             $response = $next($request);
 
-            $this->storePreviousUrl($response, $request, $session);
-
             $this->addSessionCookie($session);
 
-            $this->saveSession($session);
+            $this->saveSession($session, $request, $response);
 
             return $response;
 
@@ -143,9 +141,34 @@
 
         }
 
-        private function saveSession(Session $session)
+        private function saveSession(Session $session, Request $request, ResponseInterface $response) :void
         {
-            $session->save();
+
+            if ( ! $this->requestRunsOnInitHook($request) ) {
+
+                $this->storePreviousUrl($response, $request, $session);
+                $session->save();
+                return;
+
+            }
+
+            // either web-routes, admin-routes, or ajax-routes
+            // will run this middleware again. Abort here to not save the session twice and mess
+            // up flashed data.
+            if ( $response instanceof NullResponse && $request->isRouteable() ) {
+
+                return;
+
+            }
+
+            if ( $session->wasChanged() ) {
+
+                $this->storePreviousUrl($response, $request, $session);
+                $session->save();
+
+            }
+
+
         }
 
         private function collectGarbage()
@@ -167,6 +190,13 @@
         {
 
             return $this->config['lifetime'] * 60;
+        }
+
+        private function requestRunsOnInitHook(Request $request) : bool
+        {
+
+            return $request->getType() === IncomingGlobalRequest::class;
+
         }
 
     }

@@ -116,9 +116,7 @@
             $data = $this->getPayloadData($session_id, $payload);
 
             $query = $this->db->prepare(
-                "INSERT INTO `$this->table` 
-    (`id`,`user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) 
-    VALUES(%s, %d, %s, %s, %s, %d)",
+                "INSERT INTO `$this->table` (`id`,`user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES(%s, %d, %s, %s, %s, %d)",
                 $data);
 
             return $this->db->query($query) !== false;
