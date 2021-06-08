@@ -9,7 +9,7 @@
 	use Mockery;
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
-    use Tests\unit\UnitTest;
+    use Tests\UnitTest;
 	use Tests\stubs\TestRequest;
     use Tests\helpers\AssertsResponse;
     use WPEmerge\Facade\WP;

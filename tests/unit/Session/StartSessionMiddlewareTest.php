@@ -11,7 +11,7 @@
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
-    use Tests\unit\UnitTest;
+    use Tests\UnitTest;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
@@ -156,7 +156,7 @@
         public function a_session_without_matching_session_cookie_will_create_a_new_session()
         {
 
-            $handler = new \WPEmerge\Session\Drivers\ArraySessionDriver(10);
+            $handler = new ArraySessionDriver(10);
             $handler->write($this->anotherSessionId(), serialize(['foo' => 'bar']));
 
             $store = $this->newSessionStore('test_session', $handler);
@@ -172,13 +172,13 @@
         /** @test */
         public function the_previous_url_is_saved_to_the_session_after_creating_the_response () {
 
-            $handler = new \WPEmerge\Session\Drivers\ArraySessionDriver(10);
+            $handler = new ArraySessionDriver(10);
 
             $store = $this->newSessionStore('test_session', $handler);
 
             $this->newMiddleware($store)->handle($this->request, $this->route_action);
 
-            $persisted_url = unserialize($handler->read($this->sessionId()))['_previous']['url'];
+            $persisted_url = unserialize($handler->read($this->sessionId()))['_url']['previous'];
 
             $this->assertSame('https://foo.com/foo', $persisted_url );
 
@@ -203,7 +203,7 @@
         /** @test */
         public function garbage_collection_works () {
 
-            $handler = new \WPEmerge\Session\Drivers\ArraySessionDriver(10);
+            $handler = new ArraySessionDriver(10);
 
             $handler->write($this->anotherSessionId(), serialize(['foo' => 'bar']));
 

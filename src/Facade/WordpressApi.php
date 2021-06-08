@@ -24,17 +24,29 @@
 
         }
 
+        public function pluginPageHook() : ?string {
+
+            global $pagenow, $plugin_page;
+
+            if ( $plugin_page ) {
+
+                return get_plugin_page_hook( $plugin_page, $pagenow );
+
+            }
+
+            return null;
+
+        }
+
         public function plaintTextMail ( $email, string $subject, string $message ) {
 
            return wp_mail($email, $subject, $message);
 
         }
 
-        public function mail ( $email, string $subject, string $message ) {
+        public function mail ( $email, string $subject, string $message, array $headers = [], array  $attachments = [] ) {
 
-            $headers = array('Content-Type: text/html; charset=UTF-8');
-
-            return wp_mail($email, $subject, $message, $headers);
+            return wp_mail($email, $subject, $message, $headers, $attachments);
 
         }
 
@@ -49,6 +61,12 @@
         {
 
             return is_admin();
+
+        }
+
+        public function checkAdminReferer($action = -1, $query_arg = '_wpnonce') {
+
+            return check_admin_referer($action, $query_arg);
 
         }
 

@@ -8,6 +8,7 @@
 
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteMatcher;
+    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
@@ -36,6 +37,8 @@
          */
         protected $route_matcher;
 
+        protected $already_added = [];
+
         public function __construct(
             RouteMatcher $route_matcher,
             ConditionFactory $condition_factory,
@@ -59,28 +62,44 @@
 
         }
 
-        public function loadIntoDispatcher(string $method = null) : void
+        /**
+         * @throws ConfigurationException
+         */
+        public function loadIntoDispatcher(bool $global_routes ) : void
         {
 
             $all_routes = $this->routes;
 
-            if ($method) {
-
-                $all_routes = [$method => Arr::get($this->routes, $method, [])];
-
-            }
 
             foreach ($all_routes as $method => $routes) {
 
                 /** @var Route $route */
                 foreach ($routes as $route) {
 
+                    if ( $this->wasAlreadyAdded($route, $method) ) {
+                        continue;
+                    }
+
+                    $this->validateAttributes($route);
+
                     $this->route_matcher->add($route, [$method]);
+
+                    $this->already_added[$method][] = $route->getUrl();
 
                 }
 
             }
 
+
+        }
+
+        private function wasAlreadyAdded(Route $route, string $method) {
+
+            if ( ! isset($this->already_added[$method] ) ) {
+                return false;
+            }
+
+            return in_array($route->getUrl(), $this->already_added[$method] );
 
         }
 

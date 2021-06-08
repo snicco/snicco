@@ -68,17 +68,6 @@
 
         }
 
-        public function assertViewContent(string $expected,  $actual) {
-
-            $actual = ($actual instanceof ViewInterface) ? $actual->toString() :$actual;
-
-            $actual = preg_replace( "/\r|\n|\s{2,}/", "", $actual );
-
-
-            Assert::assertSame($expected, trim($actual), 'View not rendered correctly.');
-
-        }
-
 
 
 

@@ -81,6 +81,12 @@
 
 			}
 
+			if ( count($handler) === 1 && method_exists($handler[0], '__invoke') ) {
+
+			    return [$handler[0], '__invoke'];
+
+            }
+
 			[ $class, $method ] = $handler;
 
 			$matched = collect( $this->namespaces )

@@ -8,7 +8,7 @@
 
     use Illuminate\Support\Carbon;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
@@ -117,6 +117,8 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
+            $this->registerRoutes();
+            $this->registerRoutes();
 
             $this->assertOutputContains('confirmation email', $this->getRequest());
 
@@ -132,6 +134,7 @@
         {
 
             $this->newTestApp($this->config());
+            $this->registerRoutes();
 
             $this->assertOutputNotContains('confirmation email', $this->getRequest());
 
@@ -150,6 +153,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
+            $this->registerRoutes();
 
             $expected = '/auth/confirm';
 
@@ -170,6 +174,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
+            $this->registerRoutes();
 
             $this->assertOutputContains('csrf_name', $this->getRequest());
             $this->assertOutputContains('csrf_value', $this->getRequest());
@@ -190,6 +195,7 @@
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
+            $this->registerRoutes();
             $session = $this->getSession();
 
             $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
@@ -224,6 +230,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
+            $this->registerRoutes();
 
             $session = $this->getSession();
             $session->put('foo', 'bar');
@@ -265,6 +272,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
+            $this->registerRoutes();
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
@@ -285,6 +293,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
+            $this->registerRoutes();
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
@@ -306,6 +315,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
+            $this->registerRoutes();
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
@@ -348,6 +358,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
+            $this->registerRoutes();
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
@@ -369,6 +380,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
+            $this->registerRoutes();
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
             $post_request = $this->postRequest('c@web.de', $csrf);
@@ -431,6 +443,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
+            $this->registerRoutes();
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
@@ -459,6 +472,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
+            $this->registerRoutes();
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
@@ -486,6 +500,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
+            $this->registerRoutes();
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
@@ -512,6 +527,7 @@
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
+            $this->registerRoutes();
             $get_request = $this->getRequest();
 
             $this->assertOutputContains('id="send"', $get_request, 'id [send] was not rendered when it should.');
@@ -540,6 +556,7 @@
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
+            $this->registerRoutes();
 
             $this->triggerEmailSending($email);
 
@@ -564,6 +581,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
+            $this->registerRoutes();
 
             $session = $this->getSession();
             $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
@@ -588,6 +606,7 @@
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
+            $this->registerRoutes();
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
             $post_request = $this->postRequest($email, $csrf);
 
@@ -595,7 +614,7 @@
             HeaderStack::assertHasStatusCode(303);
             HeaderStack::assertHas('Location', $this->controllerUrl());
 
-            $this->assertSame($email, $this->mail['to']);
+            $this->assertSame([$email], $this->mail['to']);
             $this->assertStringContainsString('link', $this->mail['subject']);
             $this->assertContains('Content-Type: text/html; charset=UTF-8', $this->mail['headers']);
             $this->assertStringContainsString('Hi calvin', $this->mail['message']);
@@ -614,6 +633,7 @@
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
+            $this->registerRoutes();
 
             $session = $this->getSession();
             $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
@@ -647,6 +667,7 @@
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
+            $this->registerRoutes();
 
             $session = $this->getSession();
             $session->put('auth.confirm.until', Carbon::now()->addMinutes(30)->getTimestamp());
@@ -670,6 +691,7 @@
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
+            $this->registerRoutes();
 
             $session = $this->getSession();
             $session->put('auth.confirm.until', Carbon::now()->addMinutes(30)->getTimestamp());

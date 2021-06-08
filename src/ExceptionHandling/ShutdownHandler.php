@@ -7,6 +7,7 @@
 	namespace WPEmerge\ExceptionHandling;
 
     use WPEmerge\Events\IncomingAjaxRequest;
+    use WPEmerge\Events\IncomingGlobalRequest;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\Responses\RedirectResponse;
 
@@ -17,19 +18,31 @@
          * @var string
          */
         private $request_type;
+        /**
+         * @var bool
+         */
+        private $running_unit_tests;
 
-        public function __construct( string $request_type )
+        public function __construct( string $request_type, bool $running_unit_tests = false )
         {
             $this->request_type = $request_type;
+            $this->running_unit_tests = $running_unit_tests;
         }
 
         public function unrecoverableException () {
 
-		  $this->terminate();
+		   $this->terminate();
 
 		}
 
 		public function handle( ResponseSent $response_sent) {
+
+            if ( $response_sent->request->getType() === IncomingGlobalRequest::class ) {
+
+                $this->terminate();
+
+            }
+
 
 		    if ( $this->request_type === IncomingAjaxRequest::class  ) {
 
@@ -47,6 +60,10 @@
         }
 
 		private function terminate() {
+
+            if ( $this->running_unit_tests ) {
+                return;
+            }
 
 		    exit();
 

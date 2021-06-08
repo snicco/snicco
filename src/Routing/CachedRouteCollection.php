@@ -7,6 +7,7 @@
     namespace WPEmerge\Routing;
 
     use WPEmerge\Contracts\AbstractRouteCollection;
+    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
@@ -19,6 +20,7 @@
 
         use PreparesRouteForExport;
         use DeserializesRoutes;
+
 
         /**
          * @var CachedFastRouteMatcher
@@ -68,7 +70,7 @@
 
         }
 
-        public function loadIntoDispatcher(string $method = null) : void
+        public function loadIntoDispatcher(bool $global_routes) : void
         {
 
             if (file_exists($this->cache_file)) {
@@ -169,6 +171,9 @@
 
         }
 
+        /**
+         * @throws ConfigurationException
+         */
         private function loadOneTime()
         {
 
@@ -177,11 +182,14 @@
                 /** @var Route $route */
                 foreach ($routes as $route) {
 
+                    $this->validateAttributes($route);
+
                     $this->route_matcher->add($route, [$method]);
 
                 }
 
             }
+
         }
 
         private function createCacheFile()

@@ -13,6 +13,7 @@
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Str;
     use WPEmerge\Support\Url;
@@ -32,11 +33,6 @@
          * @var callable
          */
         private $app_key_resolver;
-
-        /**
-         * @var callable
-         */
-        private $session_resolver;
 
         /**
          * @var callable
@@ -132,6 +128,20 @@
 
         }
 
+        public function signedLogout ( ?int $user_id = null , string $redirect_on_logout = '/', int $expiration = 3600  ) : string
+        {
+
+            $args = [
+                'user_id' => $user_id ?? WP::userId(),
+                'query' => [
+                    'redirect_to' => $redirect_on_logout,
+                ]
+            ];
+
+            return $this->signedRoute('auth.logout', $args, $expiration );
+
+        }
+
         public function hasValidSignature(Request $request, $absolute = true ) : bool
         {
 
@@ -162,17 +172,21 @@
 
         }
 
-        public function previous(string $fallback = '') : string
+        public function previous(string $fallback = '', string $session_url = '') : string
         {
 
             $referrer = $this->getRequest()->getHeaderLine('referer');
 
-            $url = $referrer ? $this->to($referrer) : $this->getPreviousUrlFromSession();
+            $url = $referrer ? $this->to($referrer) : $session_url;
 
-            if ($url) {
+            if ($url !== '') {
+
                 return $this->to($url);
+
             } elseif ($fallback !== '') {
+
                 return $this->to($fallback);
+
             }
 
             return $this->to('/');
@@ -186,14 +200,6 @@
         public function toLogin(string $redirect_on_login = '', bool $reauth = false) : string
         {
             return $this->to( WP::loginUrl($redirect_on_login, $reauth) );
-        }
-
-        private function getPreviousUrlFromSession() : ?string
-        {
-            $session = $this->getSession();
-
-            return $session ? $session->previousUrl() : null;
-
         }
 
         private function signatureHasExpired(Request $request) : bool
@@ -243,7 +249,7 @@
         private function addQueryString(string $uri, array $query) : string
         {
 
-            $query = $this->buildQueryString(array_map('rawurlencode', $query));
+            $query = $this->buildQueryString($query);
 
             $uri .= $query === '' ? '' : '?'.$query;
 
@@ -327,12 +333,6 @@
 
         }
 
-
-        /** @todo move everything dependet on session into the StatefulRedirector */
-        private function getSession() :Session
-        {
-            return call_user_func($this->session_resolver);
-        }
 
 
     }

@@ -87,7 +87,7 @@
 
             }
 
-            $router_runner = new RouteRunner($factory, new Pipeline($this->container, $error_handler), $middleware_stack);
+            $router_runner = new RouteRunner($factory, $this->container, new Pipeline($this->container, $error_handler), $middleware_stack);
 
             $this->container->instance(RouteRunner::class, $router_runner);
             $this->container->instance(MiddlewareStack::class, $middleware_stack);
@@ -152,7 +152,7 @@
         protected function webRequest($method, $path) : IncomingWebRequest
         {
 
-            return new IncomingWebRequest('wordpress.php', TestRequest::from($method, $path));
+            return new IncomingWebRequest(TestRequest::from($method, $path), 'wordpress.php');
 
         }
 

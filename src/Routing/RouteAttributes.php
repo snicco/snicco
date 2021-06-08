@@ -60,6 +60,12 @@
 
 			}
 
+			if ( Arr::get($attributes, 'noAction') ) {
+
+				 $this->noAction();
+
+			}
+
 		}
 
 		public function mergeGroup (RouteGroup $group ) {
@@ -122,6 +128,12 @@
 
 			}
 
+            if ( $group->no_action === true ) {
+
+                $this->noAction();
+
+            }
+
 		}
 
 		public function middleware( $middleware ) {
@@ -164,4 +176,15 @@
 
 		}
 
-	}
+        public function noAction()
+        {
+
+            if ( ! $this->route->getAction() ) {
+
+                $this->route->noAction();
+
+            }
+
+        }
+
+    }

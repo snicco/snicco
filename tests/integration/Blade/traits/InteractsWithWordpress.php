@@ -26,7 +26,7 @@
 
         }
 
-        public function newEditor(array $args = [])
+        public function newEditor(array $args = []) :WP_User
         {
 
             return $this->factory()->user->create_and_get(array_merge([
@@ -35,7 +35,7 @@
 
         }
 
-        public function newAuthor(array $args = [])
+        public function newAuthor(array $args = []) :WP_User
         {
 
             return $this->factory()->user->create_and_get(array_merge([
@@ -76,7 +76,7 @@
 
             $user = wp_get_current_user();
 
-            Assert::assertSame(0, $user->ID);
+            Assert::assertSame(0, $user->ID, 'The current user was not logged out.');
 
         }
 
