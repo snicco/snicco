@@ -23,6 +23,12 @@
          */
         abstract public function handle ( Request $request, Delegate $next );
 
+        /**
+         * @param  Request  $request
+         * @param  RequestHandlerInterface  $handler
+         *
+         * @return ResponseInterface
+         */
         public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface {
 
             return $this->handle($request, $handler);

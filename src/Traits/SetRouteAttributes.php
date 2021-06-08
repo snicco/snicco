@@ -96,7 +96,7 @@
 
             if ( ! $handle ) {
 
-                $this->handle([FallBackController::class, 'blankResponse']);
+               $this->noAction();
 
             }
 
@@ -105,6 +105,14 @@
             /** @var Route $this */
             return $this;
 
+        }
+
+        public function noAction() : Route
+        {
+            $this->handle([FallBackController::class, 'blankResponse']);
+
+            /** @var Route $this */
+            return $this;
         }
 
         /**

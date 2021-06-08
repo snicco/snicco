@@ -12,9 +12,13 @@
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Support\Arr;
+    use WPEmerge\Traits\ValidatesRoutes;
 
     abstract class AbstractRouteCollection
     {
+
+        use ValidatesRoutes;
+
         /**
          * @var ConditionFactory
          */
@@ -34,7 +38,7 @@
 
         abstract public function withWildCardUrl(string $method) : array;
 
-        abstract public function loadIntoDispatcher(string $method = null) :void;
+        abstract public function loadIntoDispatcher(bool $global_routes ) :void;
 
         public function matchForQueryFiltering (Request $request) :RoutingResult {
 

@@ -6,7 +6,7 @@
 
     namespace Tests\integration\Routing;
 
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\fixtures\Middleware\WebMiddleware;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
@@ -37,7 +37,11 @@
         public function its_possible_to_create_routes_that_dont_match_an_url()
         {
 
+            $GLOBALS['test']['pass_fallback_route_condition'] = true;
+
             ApplicationEvent::fake([ResponseSent::class]);
+
+            do_action('init');
 
             $this->seeKernelOutput('get_fallback', TestRequest::from('GET', 'post1'));
 
@@ -50,8 +54,12 @@
         public function if_no_route_matches_due_to_failed_wp_conditions_a_null_response_is_returned()
         {
 
+            $GLOBALS['test']['pass_fallback_route_condition'] =false;
+
+
             ApplicationEvent::fake([ResponseSent::class]);
 
+            do_action('init');
 
             $this->seeKernelOutput('', TestRequest::from('POST', 'post1'));
 
@@ -67,6 +75,8 @@
 
             ApplicationEvent::fake([ResponseSent::class]);
 
+            $GLOBALS['test']['pass_fallback_route_condition'] =true;
+            do_action('init');
 
             $this->seeKernelOutput('', TestRequest::from('DELETE', 'post1'));
 
@@ -77,6 +87,9 @@
 
         /** @test */
         public function routes_with_wordpress_conditions_can_have_middleware () {
+
+            $GLOBALS['test']['pass_fallback_route_condition'] =true;
+            do_action('init');
 
             $GLOBALS['test'][WebMiddleware::run_times] = 0;
             ApplicationEvent::fake([ResponseSent::class]);

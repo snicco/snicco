@@ -10,7 +10,7 @@
 	use Tests\helpers\AssertsResponse;
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
-    use Tests\unit\UnitTest;
+    use Tests\UnitTest;
 	use Tests\stubs\TestException;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;

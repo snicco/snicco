@@ -143,7 +143,7 @@
         {
             if ( ! isset(self::$data[0]['status_code'] ) ) {
 
-                Assert::fail('Status code header not found');
+                Assert::fail('Status code header not sent.');
 
             }
 

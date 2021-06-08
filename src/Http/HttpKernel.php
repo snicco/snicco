@@ -8,8 +8,8 @@
 
     use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Events\IncomingAdminRequest;
+    use WPEmerge\Events\OutputBufferRequired;
     use WPEmerge\Events\IncomingRequest;
-    use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\Responses\NullResponse;
     use WPEmerge\Middleware\Core\AppendSpecialPathSuffix;
@@ -46,10 +46,13 @@
             MethodOverride::class,
             EvaluateResponseMiddleware::class,
             ShareCookies::class,
-            OutputBufferMiddleware::class,
             AppendSpecialPathSuffix::class,
             RoutingMiddleware::class,
             RouteRunner::class,
+        ];
+
+        private $unique_middleware = [
+            MethodOverride::class,
         ];
 
         // Only these three get a priority, because they always need to run before any global middleware
@@ -67,7 +70,13 @@
          */
         private $emitter;
 
-        public function __construct(Pipeline $pipeline, ResponseEmitter $emitter = null )
+        /**
+         * @var int
+         */
+        private $run_count = 0;
+
+
+        public function __construct(Pipeline $pipeline, ResponseEmitter $emitter = null)
         {
 
             $this->pipeline = $pipeline;
@@ -76,12 +85,26 @@
 
         }
 
-        public function run( IncomingRequest $request_event ) : void
+        public function alwaysWithGlobalMiddleware(array $global_middleware = [])
+        {
+
+            $this->global_middleware = $global_middleware;
+            $this->always_with_global_middleware = true;
+        }
+
+        public function addUniqueMiddlewares(array $unique_middleware)
+        {
+
+            $this->unique_middleware = array_merge($this->unique_middleware, $unique_middleware);
+
+        }
+
+        public function run(IncomingRequest $request_event) : void
         {
 
             $response = $this->handle($request_event);
 
-            if ( $response instanceof NullResponse ) {
+            if ($response instanceof NullResponse) {
 
                 return;
 
@@ -91,7 +114,7 @@
 
             $this->emitter->emit($response);
 
-            ResponseSent::dispatch([$response]);
+            ResponseSent::dispatch([$response, $request_event->request]);
 
 
         }
@@ -107,27 +130,18 @@
 
             }
 
-            return $this->pipeline->send($request)
-                                  ->through($this->gatherMiddleware($request_event))
-                                  ->run();
+            $response = $this->pipeline->send($request)
+                                       ->through($this->gatherMiddleware())
+                                       ->run();
+            $this->run_count++;
+
+            return $response;
 
 
         }
 
-        public function alwaysWithGlobalMiddleware( array $global_middleware = [] )
+        private function gatherMiddleware() : array
         {
-            $this->global_middleware = $global_middleware;
-            $this->always_with_global_middleware = true;
-        }
-
-        private function gatherMiddleware(IncomingRequest $incoming_request) : array
-        {
-
-            if ( ! $incoming_request instanceof IncomingAdminRequest ) {
-
-                Arr::pullByValue(OutputBufferMiddleware::class, $this->core_middleware);
-
-            }
 
             if ( ! $this->withMiddleware() ) {
 
@@ -135,10 +149,25 @@
 
             }
 
-            $merged = array_merge($this->global_middleware, $this->core_middleware);
+            $global = $this->run_count < 1
+                ? $this->global_middleware
+                : $this->onlyNonUnique($this->global_middleware);
+
+            $core = $this->run_count < 1
+                ? $this->core_middleware
+                : $this->onlyNonUnique($this->core_middleware);
+
+            $merged = array_merge($global, $core);
 
             return $this->sortMiddleware($merged, $this->priority_map);
 
+
+        }
+
+        private function onlyNonUnique(array $middleware) : array
+        {
+
+            return array_values(array_diff($middleware, $this->unique_middleware));
 
         }
 

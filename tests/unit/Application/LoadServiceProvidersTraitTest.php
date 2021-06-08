@@ -7,7 +7,7 @@
 	namespace Tests\unit\Application;
 
     use Mockery;
-    use Tests\unit\UnitTest;
+    use Tests\UnitTest;
     use Tests\fixtures\TestDependencies\Foo;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use WPEmerge\Contracts\ServiceProvider;
@@ -71,6 +71,7 @@
 			];
 
 			$app::make();
+			$app::runningUnitTest();
 			$app::boot( $user_config );
 
 			$this->assertSame( 'bar', $app::container()['foo'] );
@@ -91,7 +92,8 @@
 			];
 
 			$app::make();
-			$app::boot( $user_config );
+            $app::runningUnitTest();
+            $app::boot( $user_config );
 
 			$this->assertSame( 'baz', $app::container()['bar'] );
 
@@ -112,7 +114,8 @@
 			];
 
 			$app::make();
-			$app::boot( $user_config );
+            $app::runningUnitTest();
+            $app::boot( $user_config );
 
 			$this->assertSame( 'bar', $app::resolve( 'config_value' ) );
 

@@ -49,22 +49,32 @@
 
         }
 
-        public function toRoute(string $name, int $status, array $query, bool $secure = true, bool $absolute = true ) : RedirectResponse
+        public function toRoute(string $name, int $status, array $arguments = [], bool $secure = true, bool $absolute = true ) : RedirectResponse
         {
 
             return $this->to(
-                $this->generator->toRoute($name, $query, $secure, $absolute),
+                $this->generator->toRoute($name, $arguments, $secure, $absolute),
                 $status
             );
 
         }
 
-        public function toSignedRoute( string $name, array $arguments, int $status = 302, int $expiration = 300, bool $absolute = true) : RedirectResponse
+        public function toSignedRoute( string $name, array $arguments = [], int $status = 302, int $expiration = 300, bool $absolute = true) : RedirectResponse
         {
             return $this->to(
                 $this->generator->signedRoute($name, $arguments, $expiration, $absolute),
                 $status
             );
+
+        }
+
+        public function signedLogout ( int $user_id, string $redirect_on_logout = '/',  int $status = 302  ) : RedirectResponse
+        {
+
+           return $this->to(
+               $this->generator->signedLogout($user_id, $redirect_on_logout),
+               $status
+           );
 
         }
 

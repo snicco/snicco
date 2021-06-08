@@ -23,4 +23,6 @@
 
 		public function defaults (array $defaults);
 
+		public function noAction();
+
 	}
