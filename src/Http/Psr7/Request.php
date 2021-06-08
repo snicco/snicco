@@ -6,11 +6,16 @@
 
     namespace WPEmerge\Http\Psr7;
 
+    use Contracts\ContainerAdapter;
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Message\UriInterface;
+    use WPEmerge\Events\IncomingAdminRequest;
+    use WPEmerge\Events\IncomingAjaxRequest;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
+    use WPEmerge\Support\Str;
     use WPEmerge\Support\VariableBag;
 
     class Request implements ServerRequestInterface
@@ -30,7 +35,6 @@
             return $this->withAttribute('type', $type);
 
         }
-
 
         /**
          * This method stores the URI that is used for matching against the routes
@@ -171,6 +175,41 @@
 
         }
 
+        public function isRouteable() :bool {
 
+            $script = trim($this->getServerParams()['SCRIPT_NAME'] ?? '', DIRECTORY_SEPARATOR);
+
+            // All public web requests
+            if ( $script === 'index.php') {
+
+                return true;
+
+            }
+
+            // A request to the admin dashboard. We can catch that within admin_init
+            if (  Str::contains($script, WP::wpAdminFolder() ) ) {
+
+                return true;
+
+            }
+
+            // Not routeable for web/ajax/admin routes because the correct hooks wont be triggered
+            // by WordPress. eg /wp-login.php
+            // These requests can only be "routed" by using the init hook.
+            return false;
+
+        }
+
+        public function isWpAdmin() :bool {
+
+            return $this->getType() === IncomingAdminRequest::class;
+
+        }
+
+        public function isWpAjax() :bool {
+
+            return $this->getType() === IncomingAjaxRequest::class;
+
+        }
 
     }

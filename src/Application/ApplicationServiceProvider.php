@@ -7,9 +7,12 @@
     namespace WPEmerge\Application;
 
     use Tests\unit\View\MethodField;
+    use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewFactoryInterface;
-    use WPEmerge\Encryptor;
+    use WPEmerge\Http\Redirector;
+    use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Session\Encryptor;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\ExceptionHandling\ShutdownHandler;
     use WPEmerge\Http\Cookies;
@@ -32,7 +35,7 @@
         public function bootstrap() : void
         {
 
-            if ( !  $this->validAppKey() && ! WPEMERGE_RUNNING_UNIT_TESTS ) {
+            if ( !  $this->validAppKey() && ! $this->app->isRunningUnitTest() ) {
 
                 throw new ConfigurationException('Your app_key is either missing or too insecure.');
 
@@ -45,7 +48,7 @@
 
             $this->container->singleton(ShutdownHandler::class, function () {
 
-                return new ShutdownHandler($this->requestType());
+                return new ShutdownHandler($this->requestType(), $this->app->isRunningUnitTest());
 
             });
         }
@@ -88,6 +91,21 @@
         {
 
             $app->alias('cookies', Cookies::class);
+            $app->alias('response', ResponseFactory::class);
+            $app->alias('redirect', function (?string $path = null , int $status = 302 ) use ($app) {
+
+                /** @var AbstractRedirector $redirector */
+                $redirector = $app->resolve(AbstractRedirector::class);
+
+                if ( $path ) {
+
+                    return $redirector->to($path, $status);
+
+                }
+
+                return $redirector;
+
+            });
 
         }
 
@@ -95,6 +113,7 @@
         {
 
             $app->alias('route', Router::class);
+            $app->alias('url', UrlGenerator::class);
             $app->alias('routeUrl', UrlGenerator::class, 'toRoute');
             $app->alias('post', Router::class, 'post');
             $app->alias('get', Router::class, 'get');
@@ -156,6 +175,7 @@
             $app->alias('methodField', MethodField::class, 'html');
 
         }
+
 
 
     }

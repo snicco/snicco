@@ -139,6 +139,8 @@
                 $optional = $this->isOptional( $matches['optional'] );
                 $value    = Arr::get( $values, $required, '' );
 
+                $value = is_int($value) ? strval($value) :$value;
+
                 if ( $value === '' && ! $optional ) {
 
                     throw new ConfigurationException( 'Required route segment: {' . $required . '} missing.' );

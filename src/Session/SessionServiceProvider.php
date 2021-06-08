@@ -10,12 +10,10 @@
     use WPEmerge\Application\Application;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Encryptor;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Session\Middleware\ConfirmAuth;
     use WPEmerge\Session\Controllers\ConfirmAuthMagicLinkController;
-    use WPEmerge\Session\Controllers\WpLoginSessionController;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Drivers\DatabaseSessionDriver;
     use WPEmerge\Session\Middleware\AuthUnconfirmed;
@@ -25,7 +23,6 @@
     use WPEmerge\Session\Middleware\ValidateSignature;
     use WPEmerge\Support\Arr;
 
-    use function Patchwork\Config\read;
 
     class SessionServiceProvider extends ServiceProvider
 
@@ -41,6 +38,7 @@
             }
 
             $this->bindConfig();
+            $this->extendViews();
             $this->extendRoutes();
             $this->bindSessionHandler();
             $this->bindSessionStore();
@@ -79,7 +77,7 @@
 
             $this->config->extend('middleware.aliases', [
                 'csrf' => CsrfMiddleware::class,
-                'validSignature' => ValidateSignature::class,
+                'signed' => ValidateSignature::class,
                 'auth.confirmed' => ConfirmAuth::class,
                 'auth.unconfirmed' => AuthUnconfirmed::class,
             ]);
@@ -88,6 +86,11 @@
                 StartSessionMiddleware::class,
                 ShareSessionWithView::class,
             ]);
+
+            $this->config->extend('middleware.unique', [
+                ShareSessionWithView::class
+            ]);
+
 
 
         }
@@ -231,11 +234,21 @@
 
             $routes = Arr::wrap($this->config->get('routing.definitions'));
 
-            $vendor_routes_dir = dirname(__FILE__, 3).DIRECTORY_SEPARATOR.'routes';
+            $vendor_routes_dir = __DIR__.DIRECTORY_SEPARATOR.'routes';
 
             $routes = array_merge($routes, Arr::wrap($vendor_routes_dir));
 
             $this->config->set('routing.definitions', $routes);
+        }
+
+        private function extendViews()
+        {
+
+            $dir = __DIR__ . DIRECTORY_SEPARATOR . 'views';
+            $views = $this->config->get('views', []);
+            $views = array_merge($views, [$dir]);
+            $this->config->set('views', $views);
+
         }
 
         private function bindControllers()
@@ -260,5 +273,7 @@
 
             });
         }
+
+
 
     }

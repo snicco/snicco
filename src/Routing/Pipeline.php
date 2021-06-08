@@ -10,14 +10,14 @@
     use Contracts\ContainerAdapter;
     use LogicException;
     use Psr\Http\Message\ResponseInterface;
-    use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Http\Delegate;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Support\Arr;
-    use WPEmerge\Support\ReflectionPayload;
+    use ReflectionPayload\ReflectionPayload;
 
     use function collect;
 
@@ -38,7 +38,7 @@
 
         /**
          *
-         * @var ServerRequestInterface
+         * @var Request
          */
         private $request;
 
@@ -54,7 +54,7 @@
             $this->error_handler = $error_handler;
         }
 
-        public function send(ServerRequestInterface $request) : Pipeline
+        public function send(Request $request) : Pipeline
         {
 
             $this->request = $request;
@@ -159,7 +159,7 @@
 
             }
 
-            return new Delegate(function (ServerRequestInterface $request) {
+            return new Delegate(function (Request $request) {
 
                 try {
 
@@ -177,7 +177,7 @@
 
         }
 
-        private function resolveNextMiddleware(ServerRequestInterface $request) : ResponseInterface
+        private function resolveNextMiddleware(Request $request) : ResponseInterface
         {
 
             [$middleware, $constructor_args] = array_shift($this->middleware);

@@ -78,18 +78,13 @@
 
     if ( ! defined('TEST_CONFIG')) {
 
-        $config = require_once TESTS_CONFIG_PATH;
+        $config = require TESTS_CONFIG_PATH;
 
         define('TEST_CONFIG', $config);
 
     }
 
 
-    if ( ! defined('WPEMERGE_RUNNING_UNIT_TESTS')) {
-
-        define('WPEMERGE_RUNNING_UNIT_TESTS', true);
-
-    }
 
 
 

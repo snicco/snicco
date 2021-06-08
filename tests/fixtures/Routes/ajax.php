@@ -8,6 +8,6 @@
 
 	$router->post('foo_action')->handle( function () {
 
-        return 'FOO_ACTION';
+        return 'FOO_AJAX_ACTION';
 
     })->name('foo');

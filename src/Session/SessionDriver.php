@@ -6,12 +6,12 @@
 
     namespace WPEmerge\Session;
 
-    use Psr\Http\Message\ServerRequestInterface;
     use SessionHandlerInterface;
+    use WPEmerge\Http\Psr7\Request;
 
     interface SessionDriver extends SessionHandlerInterface
     {
 
-        public function setRequest(ServerRequestInterface $request);
+        public function setRequest(Request $request);
 
     }

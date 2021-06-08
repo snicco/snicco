@@ -42,6 +42,12 @@
          */
         private $active = false;
 
+        /**
+         * @var array
+         */
+        private $initial_attributes;
+
+
         public function __construct(string $cookie_name, SessionDriver $handler, string $id = '')
         {
 
@@ -57,6 +63,8 @@
 
             $this->active = true;
 
+            $this->initial_attributes = $this->attributes;
+
             return $this->active;
 
         }
@@ -71,7 +79,13 @@
                 $this->prepareForStorage(serialize($this->attributes))
             );
 
+
             $this->active = false;
+        }
+
+        public function wasChanged() : bool
+        {
+            return $this->initial_attributes !== $this->attributes;
         }
 
         public function all() : array
@@ -285,7 +299,6 @@
 
         public function isActive() : bool
         {
-
             return $this->active;
         }
 
@@ -322,16 +335,15 @@
             return strlen($id) === 40 && ctype_alnum($id);
         }
 
-        public function previousUrl() : ?string
+        public function getPreviousUrl( ?string $fallback = '/') : ?string
         {
-
-            return $this->get('_previous.url');
+            return $this->get('_url.previous', $fallback);
         }
 
         public function setPreviousUrl(string $url) : void
         {
 
-            $this->put('_previous.url', $url);
+            $this->put('_url.previous', $url);
         }
 
         public function getIntendedUrl(string $default = '')
@@ -348,12 +360,13 @@
             $this->put(
                 'auth.confirm.until',
                 Carbon::now()->addMinutes($duration_in_minutes)->getTimestamp()
-        );
+            );
 
         }
 
         public function hasValidAuthConfirmToken() : bool
         {
+
             return Carbon::now()->getTimestamp() < $this->get('auth.confirm.until', 0);
 
         }
@@ -410,6 +423,8 @@
             $this->put('_flash.old', $this->get('_flash.new', []));
 
             $this->put('_flash.new', []);
+
+
         }
 
         private function loadSessionDataFromHandler() : void
@@ -449,7 +464,6 @@
 
             $this->put('_flash.old', array_diff($this->get('_flash.old', []), $keys));
         }
-
 
 
 

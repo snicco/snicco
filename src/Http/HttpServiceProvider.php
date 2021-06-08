@@ -27,7 +27,7 @@
 
             $this->bindConcretePsr17ResponseFactory();
 
-            $this->bindPsr17ResponseFactoryInterface();
+            $this->bindResponseFactory();
 
             $this->bindPsr17StreamFactory();
 
@@ -53,12 +53,13 @@
 
                 );
 
-
                 if ($this->config->get('middleware.always_run_global', false)) {
 
                     $kernel->alwaysWithGlobalMiddleware($this->config->get('middleware.groups.global', [] ) );
 
                 }
+
+                $kernel->addUniqueMiddlewares($this->config->get('middleware.unique', []));
 
                 return $kernel;
 
@@ -85,7 +86,7 @@
             });
         }
 
-        private function bindPsr17ResponseFactoryInterface() : void
+        private function bindResponseFactory() : void
         {
 
             $this->container->singleton(ResponseFactory::class, function () {
@@ -130,7 +131,7 @@
 
                 $redirector = $this->container->make(Redirector::class);
 
-                if ( $this->sessionEnabled()) {
+                if ( $this->sessionEnabled() ) {
 
                     return new StatefulRedirector(
                         $this->container->make(Session::class),

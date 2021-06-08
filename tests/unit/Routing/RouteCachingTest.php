@@ -11,11 +11,12 @@
     use Tests\fixtures\Conditions\IsPost;
     use Tests\helpers\CreatesWpUrls;
     use Tests\helpers\CreateTestSubjects;
-    use Tests\unit\UnitTest;
+    use Tests\UnitTest;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\IncomingAdminRequest;
+    use WPEmerge\Events\OutputBufferRequired;
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\IncomingWebRequest;
@@ -291,7 +292,7 @@
             $event = new WpQueryFilterable($request, ['foo' => 'bar']);
             $listener = new FilterWpQuery($this->routes);
             $this->assertSame(['foo' => 'baz'], $listener->handle($event));
-            $this->runAndAssertOutput('foo', new IncomingWebRequest('wp.php', $request));
+            $this->runAndAssertOutput('foo', new IncomingWebRequest($request, 'wp.php'));
 
             // from cache
             $this->newCachedRouter();
@@ -299,7 +300,7 @@
             $event = new WpQueryFilterable(TestRequest::from('GET', 'foo'), ['foo' => 'bar']);
             $listener = new FilterWpQuery($this->routes);
             $this->assertSame(['foo' => 'baz'], $listener->handle($event));
-            $this->runAndAssertOutput('foo', new IncomingWebRequest('wp.php', $request));
+            $this->runAndAssertOutput('foo', new IncomingWebRequest($request, 'wp.php'));
 
 
         }

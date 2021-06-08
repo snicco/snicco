@@ -10,7 +10,7 @@
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
-    use Tests\unit\UnitTest;
+    use Tests\UnitTest;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
@@ -295,9 +295,10 @@
         }
 
 
+
         private function createRequest(
             Session $session,
-            array $body = [
+            ?array $body = [
                 'csrf_name' => 'secret_csrf_name',
                 'csrf_value' => 'secret_csrf_value',
             ]

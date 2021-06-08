@@ -6,15 +6,13 @@
 
     namespace Tests\integration\ServiceProviders;
 
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
+    use Tests\unit\View\MethodField;
     use WPEmerge\Contracts\ViewEngineInterface;
-    use WPEmerge\Contracts\ViewFinderInterface;
     use WPEmerge\Contracts\ViewFactoryInterface;
-    use WPEmerge\Support\VariableBag;
     use WPEmerge\View\GlobalContext;
     use WPEmerge\View\PhpViewEngine;
-    use WPEmerge\View\PhpViewFinder;
     use WPEmerge\View\ViewFactory;
     use WPEmerge\View\ViewComposerCollection;
 
@@ -70,24 +68,16 @@
 
         }
 
+
+
         /** @test */
-        public function the_library_views_extend_the_config_provided_views()
-        {
+        public function the_method_field_can_be_resolved () {
 
-            $this->newTestApp([
-                    'views' => [VIEWS_DIR]
-                ]
-            );
+            $this->newTestApp();
 
-            $included_views = ROOT_DIR.DS.'resources'.DS.'views';
-
-            $this->assertSame([
-                VIEWS_DIR,
-                $included_views
-            ], TestApp::config('views', []));
+            $this->assertInstanceOf(MethodField::class, TestApp::resolve(MethodField::class));
 
         }
-
 
 
     }

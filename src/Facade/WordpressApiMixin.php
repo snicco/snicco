@@ -38,22 +38,22 @@
 
         }
 
-         /**
+        /**
          *
-         * @param string|string[] $email
+         * @param  string|string[]  $email
          * @param  string  $subject
-         * @param string $message
+         * @param  string  $message
+         * @param  array  $headers
+         * @param  array  $attachments
          *
+         * @return bool
          * @see wp_mail()
          * @see WordpressApi::mail()
-          *
          */
-        public static function mail($email, string $subject, string $message) :bool
+        public static function mail($email, string $subject, string $message, array $headers = [], array  $attachments = [] ) :bool
         {
 
         }
-
-
 
         /**
          * Log out the current user and destroy all auth cookies
@@ -62,9 +62,6 @@
         public static function logout()
         {
         }
-
-
-
 
         /**
          * Check if we are in the admin dashboard
@@ -77,6 +74,22 @@
         }
 
         /**
+         * Verify a wp-nonce and dies on failure.
+         *
+         * @param  int|string  $action
+         * @param  string  $query_arg
+         *
+         * @return int|false
+         *
+         * @see check_admin_referer()
+         * @see \WPEmerge\Facade\WordpressApi::checkAdminReferer()
+         *
+         */
+        public static function checkAdminReferer($action = -1, $query_arg = '_wpnonce')
+        {
+        }
+
+        /**
          * Check if we are doing a request to admin-ajax.php
          *
          * @return bool
@@ -84,6 +97,18 @@
          */
         public static function isAdminAjax() : bool
         {
+        }
+
+        /**
+         * Return the current admin page if it was added with
+         * add_menu_page() or add_submenu_page()
+         *
+         * @see get_plugin_page_hook()
+         * @see WordpressApi::pluginPageHook
+         */
+        public static function pluginPageHook() :?string
+        {
+
         }
 
         /**

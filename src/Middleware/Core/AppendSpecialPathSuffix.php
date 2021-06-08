@@ -53,7 +53,7 @@
 
             $path = $request->getPath();
 
-            if (WP::isAdmin() && ! WP::isAdminAjax()) {
+            if ( $request->isWpAdmin() ) {
 
                 $page = $request->getQuery('page');
 
@@ -65,7 +65,7 @@
 
             }
 
-            if (WP::isAdminAjax()) {
+            if ( $request->isWpAjax() ) {
 
                 $action = $request->getBody('action', $request->getQuery('action'));
 
@@ -76,6 +76,7 @@
                 $path = rtrim($path, '/') .'/'.$action;
 
             }
+
 
             return $path;
         }

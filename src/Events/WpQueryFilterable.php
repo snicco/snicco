@@ -6,7 +6,6 @@
 
     namespace WPEmerge\Events;
 
-    use BetterWpHooks\Traits\DispatchesConditionally;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Http\Psr7\Request;
 

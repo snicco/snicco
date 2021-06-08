@@ -7,7 +7,7 @@
 	namespace Tests\integration\ServiceProviders;
 
 	use Mockery;
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\Application;
@@ -18,7 +18,11 @@
     use WPEmerge\Facade\WP;
 	use WPEmerge\Facade\WpFacade;
     use WPEmerge\Http\Cookies;
+    use WPEmerge\Http\Redirector;
+    use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Routing\Router;
+    use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Url;
@@ -31,6 +35,7 @@
 
             $this->app = $this->newTestApp(TEST_CONFIG);
 
+            $this->registerRoutes();
 
         }
 
@@ -264,7 +269,46 @@
 
         }
 
+        /** @test */
+        public function a_method_override_field_can_be_outputted () {
 
+            $this->newTestApp();
+
+            $html = TestApp::methodField('PUT');
+
+            $this->assertStringStartsWith('<input', $html);
+            $this->assertStringContainsString('PUT', $html);
+
+        }
+
+        /** @test */
+        public function the_url_generator_can_be_aliased () {
+
+            $this->newTestApp();
+
+            $this->assertInstanceOf(UrlGenerator::class, TestApp::url());
+
+        }
+
+        /** @test */
+        public function the_response_factory_can_be_aliased () {
+
+            $this->newTestApp();
+
+            $this->assertInstanceOf(ResponseFactory::class, TestApp::response());
+
+
+        }
+
+        /** @test */
+        public function a_redirect_response_can_be_created_as_an_alias () {
+
+            $this->newTestApp();
+
+            $this->assertInstanceOf(RedirectResponse::class, TestApp::redirect('/foo'));
+            $this->assertInstanceOf(Redirector::class, TestApp::redirect());
+
+        }
 
 	}
 

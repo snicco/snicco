@@ -8,13 +8,12 @@
 
     use Illuminate\Support\Carbon;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use WPEmerge\ExceptionHandling\Exceptions\NotFoundException;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\Exceptions\InvalidSignatureException;
     use WPEmerge\Session\SessionServiceProvider;
@@ -67,7 +66,9 @@
 
             $this->withoutExceptionHandling();
 
+            $this->registerRoutes();
             $url = TestApp::routeUrl('auth.confirm.magic-login', ['user_id' => 1]);
+
 
             $this->runKernel(TestRequest::fromFullUrl('GET', $url));
 
@@ -83,6 +84,7 @@
             $this->newApp();
             $this->withoutExceptionHandling();
 
+            $this->registerRoutes();
             $url = $this->createSignedUrl(999);
 
             $this->runKernel(TestRequest::fromFullUrl('GET', $url));
@@ -97,6 +99,7 @@
             $this->login($calvin);
             $this->newApp();
 
+            $this->registerRoutes();
             $url = $this->createSignedUrl($calvin->ID, 'https://foobar.com?bar=baz');
 
             $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
@@ -115,6 +118,7 @@
             $this->login($calvin);
             $this->newApp();
 
+            $this->registerRoutes();
             $url = $this->createSignedUrl($calvin->ID, '');
 
             TestApp::session()->setIntendedUrl('https://intended-url.com');
@@ -135,6 +139,7 @@
             $this->login($calvin);
             $this->newApp();
 
+            $this->registerRoutes();
             $url = $this->createSignedUrl($calvin->ID, '');
 
             $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
@@ -152,6 +157,7 @@
             $this->login($calvin);
             $this->newApp();
 
+            $this->registerRoutes();
             $url = $this->createSignedUrl($calvin->ID, '');
 
             $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
@@ -176,6 +182,7 @@
 
             $this->newApp();
 
+            $this->registerRoutes();
             $url = $this->createSignedUrl($calvin->ID, '');
 
             $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
@@ -200,6 +207,7 @@
             $session = TestApp::session();
             $id_old  = $session->getId();
 
+            $this->registerRoutes();
             $url = $this->createSignedUrl($calvin->ID, '');
 
             $request = TestRequest::fromFullUrl('GET', $url)
@@ -223,6 +231,7 @@
 
             $this->newApp();
 
+            $this->registerRoutes();
             $url = $this->createSignedUrl($calvin->ID, '');
 
             add_action('set_auth_cookie', function () {

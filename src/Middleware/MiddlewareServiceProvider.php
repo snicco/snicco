@@ -14,7 +14,6 @@
     use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Routing\Pipeline;
 
-    /** @todo create tests. */
     class MiddlewareServiceProvider extends ServiceProvider
     {
 
@@ -60,7 +59,9 @@
 
             $this->config->extend('middleware.priority', []);
 
-            $this->config->extend('always_run_middleware', false);
+            $this->config->extend('middleware.always_run_global', false);
+
+            $this->config->extend('middleware.unique', []);
 
 
         }
@@ -85,15 +86,12 @@
 
             $this->container->singleton(RouteRunner::class, function () {
 
-                $runner = new RouteRunner(
+                return new RouteRunner(
                     $this->container->make(ResponseFactory::class),
+                    $this->container,
                     $this->container->make(Pipeline::class),
                     $this->container->make(MiddlewareStack::class)
                 );
-
-
-
-                return $runner;
 
             });
 

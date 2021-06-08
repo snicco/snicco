@@ -20,7 +20,7 @@
 		public $template;
 
 
-		public function __construct( string $template = '', Request $request = null ) {
+		public function __construct( Request $request, string $template ) {
 
 			$this->template = $template;
 
@@ -30,7 +30,9 @@
 
 		public function shouldDispatch() : bool {
 
-			return ! is_admin() && ! Str::contains( $this->request->getUrl(), admin_url() );
+			return ! is_admin()
+                && ! Str::contains( $this->request->getUrl(), admin_url() )
+                && ! $this->isNativeWordpressJsonApiRequest();
 
 		}
 

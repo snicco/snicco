@@ -9,7 +9,7 @@
     use Mockery;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
-    use Tests\unit\UnitTest;
+    use Tests\UnitTest;
     use Tests\helpers\CreatesWpUrls;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\IncomingAdminRequest;

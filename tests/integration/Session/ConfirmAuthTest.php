@@ -7,10 +7,12 @@
     namespace Tests\integration\Session;
 
     use Illuminate\Support\Carbon;
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
+    use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Session\Session;
@@ -47,6 +49,7 @@
         private function requestToProtectedRoute() :Request {
 
             $request = TestRequest::from('GET', 'auth-confirm/foo');
+            $this->rebindRequest($request);
 
             $cookie = 'wp_mvc_session=' . $this->getSession()->getId();
 
@@ -63,7 +66,10 @@
 
             $this->newTestApp($this->config());
 
-            $this->assertOutputNotContains('Access to foo granted', $this->requestToProtectedRoute());
+            $request = $this->requestToProtectedRoute();
+            $this->registerRoutes();
+
+            $this->assertOutputNotContains('Access to foo granted', $request);
 
             HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location');
@@ -78,7 +84,10 @@
 
             $this->getSession()->put('auth.confirm.until', Carbon::now()->addSecond()->getTimestamp());
 
-            $this->assertOutputContains('Access to foo granted', $this->requestToProtectedRoute());
+            $request = $this->requestToProtectedRoute();
+            $this->registerRoutes();
+
+            $this->assertOutputContains('Access to foo granted', $request);
 
             HeaderStack::assertHasStatusCode(200);
 
@@ -91,7 +100,10 @@
 
             $this->getSession()->put('auth.confirm.until', Carbon::now()->subSecond()->getTimestamp());
 
-            $this->assertOutputNotContains('Access to foo granted', $this->requestToProtectedRoute());
+            $request = $this->requestToProtectedRoute();
+            $this->registerRoutes();
+
+            $this->assertOutputNotContains('Access to foo granted', $request);
 
             HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location');
@@ -106,7 +118,11 @@
             $old_session = $this->getSession();
             $old_id = $old_session->getId();
 
-            $this->assertOutputNotContains('Access to foo granted', $this->requestToProtectedRoute());
+            $request = $this->requestToProtectedRoute();
+            $this->registerRoutes();
+
+
+            $this->assertOutputNotContains('Access to foo granted', $request);
 
             HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location');
@@ -130,7 +146,10 @@
             $old_session->put('auth.confirm.email.count', 1 );
             $old_id = $old_session->getId();
 
-            $this->assertOutputNotContains('Access to foo granted', $this->requestToProtectedRoute());
+            $request = $this->requestToProtectedRoute();
+            $this->registerRoutes();
+
+            $this->assertOutputNotContains('Access to foo granted', $request);
 
             HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location');
@@ -149,7 +168,10 @@
 
             $this->newTestApp($this->config());
 
-            $this->assertOutputNotContains('Access to foo granted', $this->requestToProtectedRoute());
+            $request = $this->requestToProtectedRoute();
+            $this->registerRoutes();
+
+            $this->assertOutputNotContains('Access to foo granted', $request);
 
             HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location');
@@ -166,9 +188,13 @@
 
             $this->newTestApp($this->config());
 
+
+            $request = $this->requestToProtectedRoute();
+            $this->registerRoutes();
             $expected_url = TestApp::routeUrl('auth.confirm.show', [], true, false);
 
-            $this->assertOutputNotContains('Access to foo granted', $this->requestToProtectedRoute());
+
+            $this->assertOutputNotContains('Access to foo granted', $request);
 
             HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $expected_url);
