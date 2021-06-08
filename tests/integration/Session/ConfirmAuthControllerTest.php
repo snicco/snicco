@@ -614,7 +614,7 @@
             HeaderStack::assertHasStatusCode(303);
             HeaderStack::assertHas('Location', $this->controllerUrl());
 
-            $this->assertSame($email, $this->mail['to']);
+            $this->assertSame([$email], $this->mail['to']);
             $this->assertStringContainsString('link', $this->mail['subject']);
             $this->assertContains('Content-Type: text/html; charset=UTF-8', $this->mail['headers']);
             $this->assertStringContainsString('Hi calvin', $this->mail['message']);
