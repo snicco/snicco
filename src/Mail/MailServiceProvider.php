@@ -5,10 +5,12 @@
 
 
     namespace WPEmerge\Mail;
+
     use BetterWpHooks\Contracts\Dispatcher;
     use WPEmerge\Contracts\Mailer;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\PendingMail;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Listeners\SendMail;
 
     class MailServiceProvider extends ServiceProvider
@@ -48,8 +50,8 @@
 
             ]);
 
-            $site_name = get_bloginfo('name');
-            $admin_email = get_bloginfo('admin_email');
+            $site_name = WP::siteName();
+            $admin_email = WP::adminEmail();
 
             $this->config->extend('mail.from', ['name' => $site_name, 'email' => $admin_email]);
             $this->config->extend('mail.reply_to', ['name' => $site_name, 'email' => $admin_email]);

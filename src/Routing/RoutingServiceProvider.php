@@ -103,17 +103,6 @@
 
         }
 
-        private function checkIfCacheDirCreated($dir)
-        {
-
-            if ( ! $dir || ! is_dir($dir)) {
-
-                throw new ConfigurationException("No valid cache dir provided:{$dir}");
-
-            }
-
-        }
-
         private function bindConfig() : void
         {
 
@@ -134,8 +123,6 @@
                 }
 
                 $cache_dir = $this->config->get('routing.cache_dir', '');
-
-                $this->checkIfCacheDirCreated($cache_dir);
 
                 return new CachedFastRouteMatcher(
                     new FastRouteMatcher(),
@@ -164,7 +151,6 @@
 
                 $cache_dir = $this->config->get('routing.cache_dir', '');
 
-                $this->checkIfCacheDirCreated($cache_dir);
 
                 return new CachedRouteCollection(
                     $this->container->make(RouteMatcher::class),
@@ -234,58 +220,24 @@
 
             $this->container->singleton(RouteRegistrarInterface::class, function () {
 
+
+                $registrar =  new RouteRegistrar(
+                    $this->container->make(Router::class),
+                );
+
                 if ( ! $this->config->get('routing.cache', false)) {
 
-                    return new RouteRegistrar(
-                        $this->container->make(Router::class),
-                    );
+                    return $registrar;
+
 
                 }
 
-                return new CacheFileRouteRegistrar();
+                return new CacheFileRouteRegistrar($registrar);
 
 
             });
         }
 
-        private function clearRouteCache(string $dir)
-        {
-            
-            if ( ! is_dir( $dir ) ) {
-                return;
-            }
 
-            $finder = new Finder();
-            $finder->in($dir);
-
-            if (iterator_count($finder) === 0) {
-                rmdir($dir);
-            }
-
-            foreach ($finder as $file) {
-
-                $path = $file->getRealPath();
-                unlink($path);
-
-            }
-
-            rmdir($dir);
-
-        }
-
-        private function loadRoutesOneTime(string $dir)
-        {
-
-            if ($dir === '') {
-                throw new ConfigurationException("Route caching is enabled but no cache dir was provided.");
-            }
-
-            wp_mkdir_p($dir);
-
-            /** @var RouteRegistrar $registrar */
-            $registrar = $this->container->make(RouteRegistrar::class);
-            $registrar->loadRoutes();
-
-        }
 
     }

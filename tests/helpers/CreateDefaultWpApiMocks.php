@@ -29,6 +29,8 @@
 
             });
             WP::shouldReceive('mail')->andReturnTrue()->byDefault();
+            WP::shouldReceive('siteName')->andReturn('WP MVC')->byDefault();
+            WP::shouldReceive('adminEmail')->andReturn('c@web.de')->byDefault();
 		}
 
 

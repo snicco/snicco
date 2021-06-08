@@ -14,7 +14,6 @@
 		/** @var array */
 		private $payload;
 
-
         /**
          *
          * @param Route|array|null $route

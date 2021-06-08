@@ -20,6 +20,12 @@
 
             $route = $routing_result->route();
 
+            if ( $route === null ) {
+
+                return new RoutingResult(null);
+
+            }
+
             if ( ! $route instanceof Route) {
 
                 $route = $this->hydrateRoute($route);
