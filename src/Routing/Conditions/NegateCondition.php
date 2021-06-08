@@ -7,7 +7,6 @@
 	namespace WPEmerge\Routing\Conditions;
 
 	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\Contracts\RequestInterface;
     use WPEmerge\Http\Psr7\Request;
 
     class NegateCondition implements ConditionInterface {

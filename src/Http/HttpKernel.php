@@ -7,8 +7,6 @@
     namespace WPEmerge\Http;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Events\IncomingAdminRequest;
-    use WPEmerge\Events\OutputBufferRequired;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\Responses\NullResponse;
@@ -16,12 +14,10 @@
     use WPEmerge\Middleware\Core\ErrorHandlerMiddleware;
     use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
     use WPEmerge\Middleware\Core\MethodOverride;
-    use WPEmerge\Middleware\Core\OutputBufferMiddleware;
     use WPEmerge\Middleware\Core\RoutingMiddleware;
     use WPEmerge\Middleware\Core\ShareCookies;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Middleware\Core\RouteRunner;
-    use WPEmerge\Support\Arr;
     use WPEmerge\Traits\SortsMiddleware;
 
     class HttpKernel

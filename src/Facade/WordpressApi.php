@@ -24,6 +24,18 @@
 
         }
 
+        public function siteName() {
+
+            return get_bloginfo('site_name');
+
+        }
+
+        public function adminEmail() {
+
+            return get_bloginfo('admin_email');
+
+        }
+
         public function pluginPageHook() : ?string {
 
             global $pagenow, $plugin_page;
@@ -38,11 +50,6 @@
 
         }
 
-        public function plaintTextMail ( $email, string $subject, string $message ) {
-
-           return wp_mail($email, $subject, $message);
-
-        }
 
         public function mail ( $email, string $subject, string $message, array $headers = [], array  $attachments = [] ) {
 
