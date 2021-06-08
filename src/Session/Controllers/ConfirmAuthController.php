@@ -103,13 +103,13 @@
 
             }
 
-            if ( ! ($email = $this->hasValidEmailInput($request))) {
+            if ( ! ( $email = $this->hasValidEmailInput($request) ) ) {
 
                 return $this->redirectBack($email);
 
             }
 
-            if ( ! ($user = $this->userWithEmailExists($email))) {
+            if ( ! ( $user = $this->userWithEmailExists($email) ) ) {
 
                 $this->session->increment('auth.confirm.attempts');
 
@@ -117,18 +117,9 @@
 
             }
 
-            $mailable = $this->mailable();
-
             $success = $mail->to($email)
-                            ->cc([['name' =>'Mr Foo', 'email' =>'foobar@web.de']])
-                            ->bcc([['name' =>'Mr Boo', 'email' =>'bar@web.de']])
-                            ->send(
-                                new $mailable(
-                                    $user,
-                                    $this->session,
-                                    $this->url_generator,
-                                    $this->link_lifetime_in_sec)
-                            );
+                            ->send(new ConfirmAuthMail($user, $this->link_lifetime_in_sec));
+
 
             $redirect = $this->response_factory->redirect()->refresh(303);
 
@@ -152,11 +143,6 @@
             return $redirect;
 
 
-        }
-
-        protected function mailable() : string
-        {
-            return ConfirmAuthMail::class;
         }
 
         private function redirectBack(?string $email) : RedirectResponse
