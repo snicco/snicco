@@ -18,12 +18,10 @@
 		 */
 		private $post_slug;
 
-
 		public function __construct( string $post_slug ) {
 
 			$this->post_slug = $post_slug;
 		}
-
 
 		public function isSatisfied( Request $request ) :bool {
 
@@ -31,7 +29,6 @@
 
 			return ( is_singular() && $post && $this->post_slug === $post->post_name );
 		}
-
 
 		public function getArguments( Request $request ) :array  {
 

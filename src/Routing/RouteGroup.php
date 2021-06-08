@@ -31,7 +31,13 @@
 			$this->url_prefix = Arr::get( $attributes, 'prefix', '' );
 			$this->name       = Arr::get( $attributes, 'name', '' );
 			$this->middleware = Arr::get( $attributes, 'middleware', [] );
+
 			$this->conditions = Arr::get( $attributes, 'where', ConditionBucket::createEmpty() );
+
+			$this->conditions = $this->conditions instanceof ConditionBucket
+                ? $this->conditions
+                : new ConditionBucket($this->conditions);
+
 			$this->methods    = Arr::wrap( Arr::get( $attributes, 'methods', [] ) );
             $this->no_action  = Arr::get( $attributes, 'noAction', null );
 

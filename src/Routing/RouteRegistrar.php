@@ -11,6 +11,7 @@
     use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Routing\Conditions\IsStandardRoute;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
 
@@ -30,7 +31,12 @@
 
         }
 
-        public function loadGlobalRoutes(ApplicationConfig $config) : bool
+        public function loadIntoRouter() : void
+        {
+            $this->router->loadRoutes();
+        }
+
+        public function globalRoutes(ApplicationConfig $config) : bool
         {
 
             $dirs = Arr::wrap($config->get('routing.definitions', []));
@@ -47,14 +53,11 @@
 
             $this->requireFiles($files, $config, false);
 
-            $this->router->loadRoutes(true);
-
             return true;
-
 
         }
 
-        public function loadStandardRoutes(ApplicationConfig $config)
+        public function standardRoutes(ApplicationConfig $config)
         {
 
             $dirs = Arr::wrap($config->get('routing.definitions', []));
@@ -74,7 +77,6 @@
 
             $this->router->createFallbackWebRoute();
 
-            $this->router->loadRoutes();
 
         }
 
@@ -85,7 +87,6 @@
          */
         private function requireFiles(array $files, ApplicationConfig $config, bool $unique = true)
         {
-
 
             $seen = [];
 
@@ -125,6 +126,15 @@
         private function applyPreset(string $group, array $preset) : array
         {
 
+            if ($group !== 'globals') {
+
+                $preset = array_merge(['where' => [
+                    IsStandardRoute::class
+                ]]);
+
+
+            }
+
             if ($group === 'web') {
 
                 return array_merge([
@@ -155,7 +165,7 @@
 
             return $preset;
 
-        }
 
+        }
 
     }

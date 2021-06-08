@@ -23,17 +23,20 @@
         {
         }
 
+        /**
+         * @see get_bloginfo()
+         * @see WordpressApi::siteName
+         */
+        public static function siteName() :string
+        {
+
+        }
 
         /**
-         *
-         * @param string|string[] $email
-         * @param  string  $subject
-         * @param string $message
-         *
-         * @see wp_mail()
-         * @see WordpressApi::plaintTextMail
+         * @see get_bloginfo()
+         * @see WordpressApi::adminEmail
          */
-        public static function plainTextMail($email, string $subject, string $message)
+        public static function adminEmail() :string
         {
 
         }

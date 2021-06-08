@@ -14,10 +14,11 @@
         /**
          * @param  ApplicationConfig  $config
          *
-         * @return bool Indicate wheter a global route file was loaded successfully.
+         * @return bool Indicate whether a global route file was loaded successfully.
          */
-        public function loadGlobalRoutes( ApplicationConfig $config) :bool;
+        public function globalRoutes( ApplicationConfig $config) :bool;
 
-        public function loadStandardRoutes( ApplicationConfig $config);
+        public function standardRoutes( ApplicationConfig $config);
 
+        public function loadIntoRouter() :void;
     }

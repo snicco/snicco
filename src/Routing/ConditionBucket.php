@@ -14,9 +14,14 @@
 
 		private $conditions = [];
 
-		public static function createEmpty() : ConditionBucket {
+		public function __construct(array $conditions = [])
+        {
+            $this->conditions = $conditions;
+        }
 
-			return new static();
+        public static function createEmpty() : ConditionBucket {
+
+			return new static([]);
 
 		}
 

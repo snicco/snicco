@@ -28,7 +28,7 @@
 
             $this->original_query_vars = $query_vars;
 
-            $this->server_request = $server_request;
+            $this->server_request = $server_request->filtersWpQuery(true);
 
         }
 

@@ -130,7 +130,7 @@
 
             ApplicationEvent::assertDispatched(PendingMail ::class, function (PendingMail $event) {
 
-                return $event->mail->product === 'Hello Calvin';
+                return $event->mail->subject === 'Hello Calvin';
 
             });
 
@@ -149,7 +149,7 @@
 
                  $event->mail->buildSubject( (object) ['name' => 'CALVIN']);
 
-                 return $event->mail->product === 'Hello CALVIN';
+                 return $event->mail->subject === 'Hello CALVIN';
 
             });
 
@@ -253,11 +253,14 @@
 
             return $this->from('c@web.de', 'Calvin')
                         ->reply_to('company@web.de', 'Company')
-                        ->text('email.basic.plain')
-                        ->subject(function ($recipient) {
+                        ->text('email.basic.plain');
 
-                            return 'Hello '.$recipient->name;
-                        });
+        }
+
+        public function subjectLine($recipient) {
+
+            return 'Hello '.$recipient->name;
+
         }
 
         public function unique() : bool
