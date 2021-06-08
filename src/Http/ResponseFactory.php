@@ -213,7 +213,7 @@
 
             $views = ['error', 'index'];
 
-            if (WP::isAdmin()) {
+            if ( WP::isAdmin() ) {
 
                 $views = collect($views)->map(function ($view) {
 
@@ -226,8 +226,7 @@
             $view = $this->view->make($views)->with([
                     'code'=> $e->getStatusCode(),
                     'message' => $e->getMessageForHumans(),
-                ]
-            );
+                ]);
 
             try {
 

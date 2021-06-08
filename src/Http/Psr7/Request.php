@@ -17,6 +17,7 @@
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
     use WPEmerge\Support\VariableBag;
+    use WPEmerge\Validation\Validator;
 
     class Request implements ServerRequestInterface
     {
@@ -82,6 +83,29 @@
         public function withSession (Session $session_store) {
 
             return $this->withAttribute('session', $session_store);
+
+        }
+
+        public function withUser(\WP_User $user)
+        {
+
+            return $this->withAttribute('_current_user', $user);
+
+        }
+
+        public function withValidator(Validator $user)
+        {
+            return $this->withAttribute('_validator', $user);
+        }
+
+        public function getValidator(Validator $user) :Validator
+        {
+            return $this->getAttribute('_validator');
+        }
+
+        public function getUser () :\WP_User {
+
+            return $this->getAttribute('_current_user');
 
         }
 
@@ -223,6 +247,7 @@
             return $this->getType() === IncomingAjaxRequest::class;
 
         }
+
 
 
     }
