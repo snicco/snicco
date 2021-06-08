@@ -93,7 +93,19 @@
 
         }
 
-        private function wasAlreadyAdded(Route $route, string $method) {
+        /**
+         *
+         * Dont load a Route twice. This can happen if a users includes a file inside
+         * globals.php or if he attempts to override an inbuilt route.
+         * In this case the first route takes priority which is almost always the user-defined route.
+         *
+         * @param  Route  $route
+         * @param  string  $method
+         *
+         * @return bool
+         */
+        private function wasAlreadyAdded(Route $route, string $method) : bool
+        {
 
             if ( ! isset($this->already_added[$method] ) ) {
                 return false;

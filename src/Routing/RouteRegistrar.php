@@ -115,9 +115,11 @@
 
             $attributes = $this->applyPreset($name, $preset);
 
+
             $this->router->group($attributes, function ($router) use ($file_path) {
 
                 require $file_path;
+
 
             });
 
