@@ -6,13 +6,12 @@
 
     namespace WPEmerge\Routing;
 
-    use Psr\Http\Message\ServerRequestInterface;
     use Symfony\Component\Finder\Finder;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteMatcher;
+    use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Contracts\RouteUrlGenerator;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Encryptor;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Psr7\Request;
@@ -33,9 +32,7 @@
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\FilePath;
-    use WP_Filesystem_Direct;
 
-    use function Patchwork\Redefinitions\LanguageConstructs\_require_once;
 
     class RoutingServiceProvider extends ServiceProvider
     {
@@ -74,29 +71,34 @@
 
             $this->bindUrlGenerator();
 
+            $this->bindRouteRegistrar();
+
 
         }
 
+        /**
+         * @throws ConfigurationException
+         */
         public function bootstrap() : void
         {
 
-            if ( ! ($cache = $this->config->get('routing.cache', false))) {
-
-                $dir = $this->config->get('routing.cache_dir', '');
-
-                $this->clearRouteCache($dir);
-
-                /** @var Router $router */
-                $router = $this->container->make(Router::class);
-                (new RouteRegistrar($router, $this->config))->loadRoutes();
-
-            }
-
-            if ($cache && ! is_dir($dir = $this->config->get('routing.cache_dir', ''))) {
-
-                $this->loadRoutesOneTime($dir);
-
-            }
+            // if ( ! ( $cache = $this->config->get('routing.cache', false) ) )  {
+            //
+            //     $dir = $this->config->get('routing.cache_dir', '');
+            //
+            //     $this->clearRouteCache($dir);
+            //
+            //     /** @var RouteRegistrar $registrar */
+            //     $registrar = $this->container->make(RouteRegistrar::class);
+            //     $registrar->loadRoutes();
+            //
+            // }
+            //
+            // if ( $cache && ! is_dir($dir = $this->config->get('routing.cache_dir', ''))) {
+            //
+            //     $this->loadRoutesOneTime($dir);
+            //
+            // }
 
 
         }
@@ -122,7 +124,6 @@
 
         private function bindRouteMatcher() : void
         {
-
             $this->container->singleton(RouteMatcher::class, function () {
 
 
@@ -222,24 +223,20 @@
                     return $key;
                 });
 
-                $generator->setSessionResolver(function () {
-
-                    if ( ! $this->container->offsetExists(Session::class)) {
-
-                        throw new ConfigurationException(
-                            'You cant use UrlGeneration functions that depend on sessions without using the session extension.'
-                        );
-
-                    }
-
-                    return $this->container->make(Session::class);
-
-
-                });
-
                 return $generator;
 
 
+            });
+        }
+
+        private function bindRouteRegistrar()
+        {
+
+            $this->container->singleton(RouteRegistrarInterface::class, function () {
+
+                return new RouteRegistrar(
+                    $this->container->make(Router::class),
+                );
             });
         }
 
@@ -278,9 +275,9 @@
 
             wp_mkdir_p($dir);
 
-            /** @var Router $router */
-            $router = $this->container->make(Router::class);
-            (new RouteRegistrar($router, $this->config))->loadRoutes();
+            /** @var RouteRegistrar $registrar */
+            $registrar = $this->container->make(RouteRegistrar::class);
+            $registrar->loadRoutes();
 
         }
 

@@ -7,6 +7,7 @@
     namespace WPEmerge\Middleware\Core;
 
     use Closure;
+    use Contracts\ContainerAdapter;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
@@ -35,17 +36,25 @@
          */
         private $middleware_stack;
 
-        public function __construct(ResponseFactory $response_factory, Pipeline $pipeline, MiddlewareStack $middleware_stack)
+        /**
+         * @var ContainerAdapter
+         */
+        private $container;
+
+        public function __construct(ResponseFactory $response_factory, ContainerAdapter $container, Pipeline $pipeline, MiddlewareStack $middleware_stack)
         {
 
             $this->response_factory = $response_factory;
             $this->pipeline = $pipeline;
             $this->middleware_stack = $middleware_stack;
+            $this->container = $container;
 
         }
 
         public function handle(Request $request, Delegate $next)
         {
+
+            $this->rebindRequest($request);
 
             $route_result = $request->getRoutingResult();
 
@@ -62,6 +71,7 @@
             }
 
             $middleware = $this->middleware_stack->createFor($route, $request);
+
 
             return $this->pipeline
                 ->send($request)
@@ -92,6 +102,21 @@
 
             return $this->response_factory->toResponse($route->run($request));
 
+        }
+
+        /**
+         *
+         * In order to allow running global routes early on the init hook
+         * we need to rebind the request class for routes that run on template_include
+         * or admin_init.
+         *
+         * If we dont rebind the request we have to run all Middleware that decorates the request again.
+         *
+         * @param  Request  $request
+         */
+        private function rebindRequest(Request $request)
+        {
+            $this->container->instance(Request::class, $request);
         }
 
     }

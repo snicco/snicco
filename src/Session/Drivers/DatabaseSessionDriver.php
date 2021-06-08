@@ -8,9 +8,9 @@
 
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
-    use Psr\Http\Message\ServerRequestInterface;
     use wpdb;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\SessionDriver;
 
     class DatabaseSessionDriver implements SessionDriver
@@ -29,7 +29,7 @@
         private $lifetime;
 
         /**
-         * @var ServerRequestInterface
+         * @var Request
          */
         private $request;
 
@@ -104,7 +104,7 @@
             return $this->performInsert($id, $data);
         }
 
-        public function setRequest(ServerRequestInterface $request)
+        public function setRequest(Request $request)
         {
 
             $this->request = $request;
@@ -116,9 +116,7 @@
             $data = $this->getPayloadData($session_id, $payload);
 
             $query = $this->db->prepare(
-                "INSERT INTO `$this->table` 
-    (`id`,`user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) 
-    VALUES(%s, %d, %s, %s, %s, %d)",
+                "INSERT INTO `$this->table` (`id`,`user_id`, `ip_address`, `user_agent`, `payload`, `last_activity`) VALUES(%s, %d, %s, %s, %s, %d)",
                 $data);
 
             return $this->db->query($query) !== false;

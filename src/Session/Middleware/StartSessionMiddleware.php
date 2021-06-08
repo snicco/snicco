@@ -9,9 +9,11 @@
     use Carbon\Carbon;
     use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\Middleware;
+    use WPEmerge\Events\IncomingGlobalRequest;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\Responses\NullResponse;
     use WPEmerge\Session\Session;
 
@@ -47,16 +49,19 @@
 
         }
 
-        public function handle(Request $request, Delegate $next)
+        public function handle(Request $request, Delegate $next) : ResponseInterface
         {
 
             $this->collectGarbage();
 
-            $this->startSession(
-                $session = $this->getSession($request),
-                $request
+            $session = $request->getSession();
 
-            );
+            if ( $session === null ) {
+
+                $session = $this->getSession($request);
+                $this->startSession($session, $request);
+
+            }
 
             return $this->handleStatefulRequest($request, $session, $next);
 
@@ -74,6 +79,7 @@
             $this->session_store->setId($session_id);
 
             return $this->session_store;
+
         }
 
         private function addSessionCookie(Session $session)
@@ -109,11 +115,9 @@
 
             $response = $next($request);
 
-            $this->storePreviousUrl($response, $request, $session);
-
             $this->addSessionCookie($session);
 
-            $this->saveSession($session);
+            $this->saveSession($session, $request, $response);
 
             return $response;
 
@@ -137,15 +141,40 @@
 
         }
 
-        private function saveSession(Session $session)
+        private function saveSession(Session $session, Request $request, ResponseInterface $response) :void
         {
 
-            $session->save();
+            if ( ! $this->requestRunsOnInitHook($request) ) {
+
+                $this->storePreviousUrl($response, $request, $session);
+                $session->save();
+                return;
+
+            }
+
+            // either web-routes, admin-routes, or ajax-routes
+            // will run this middleware again. Abort here to not save the session twice and mess
+            // up flashed data.
+            if ( $response instanceof NullResponse && $request->isRouteable() ) {
+
+                return;
+
+            }
+
+            // Global route. Need to save again if flash.old is present because we might
+            // have one global route and another on the next request.
+            if ( $session->wasChanged() || $session->has('_flash.old') ) {
+
+                $this->storePreviousUrl($response, $request, $session);
+                $session->save();
+
+            }
+
+
         }
 
         private function collectGarbage()
         {
-
             if ($this->configHitsLottery($this->config['lottery'])) {
 
                 $this->session_store->getDriver()->gc($this->getSessionLifetimeInSeconds());
@@ -163,6 +192,13 @@
         {
 
             return $this->config['lifetime'] * 60;
+        }
+
+        private function requestRunsOnInitHook(Request $request) : bool
+        {
+
+            return $request->getType() === IncomingGlobalRequest::class;
+
         }
 
     }

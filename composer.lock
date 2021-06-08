@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "47942df7da8f98357fb9771a88c5b08f",
+    "content-hash": "346769b686c5f39587444d7e7cab9302",
     "packages": [
         {
             "name": "calvinalkan/base-container",
@@ -51,20 +51,21 @@
         },
         {
             "name": "calvinalkan/better-wordpress-hooks",
-            "version": "0.1.8",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/calvinalkan/better-wordpress-hooks.git",
-                "reference": "0a1f24dd0e66130483c310fda0b5b4f8c25b5e7c"
+                "reference": "459490e1fe559677ab365a30290b7e9c836fdcaa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/calvinalkan/better-wordpress-hooks/zipball/0a1f24dd0e66130483c310fda0b5b4f8c25b5e7c",
-                "reference": "0a1f24dd0e66130483c310fda0b5b4f8c25b5e7c",
+                "url": "https://api.github.com/repos/calvinalkan/better-wordpress-hooks/zipball/459490e1fe559677ab365a30290b7e9c836fdcaa",
+                "reference": "459490e1fe559677ab365a30290b7e9c836fdcaa",
                 "shasum": ""
             },
             "require": {
                 "calvinalkan/base-container": "0.1.5",
+                "calvinalkan/reflection-payload": "^1.0",
                 "calvinalkan/wordpress-hook-api-clone": "5.7.2",
                 "illuminate/support": "8.35.1",
                 "php": "^7.3"
@@ -78,6 +79,7 @@
             "suggest": {
                 "phpunit/phpunit": "Requiered if you want to use the FakeDispatcher for testing Event Dispatching."
             },
+            "default-branch": true,
             "type": "library",
             "autoload": {
                 "psr-4": {
@@ -108,9 +110,9 @@
             ],
             "support": {
                 "issues": "https://github.com/calvinalkan/better-wordpress-hooks/issues",
-                "source": "https://github.com/calvinalkan/better-wordpress-hooks/tree/0.1.8"
+                "source": "https://github.com/calvinalkan/better-wordpress-hooks/tree/master"
             },
-            "time": "2021-05-17T03:40:11+00:00"
+            "time": "2021-06-07T02:17:18+00:00"
         },
         {
             "name": "calvinalkan/interfaces",
@@ -155,6 +157,54 @@
                 "source": "https://github.com/calvinalkan/interfaces/tree/0.1.2"
             },
             "time": "2021-05-16T22:09:45+00:00"
+        },
+        {
+            "name": "calvinalkan/reflection-payload",
+            "version": "1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/calvinalkan/reflection-payload.git",
+                "reference": "5359b39cba8952af760c677618e4e97ad7f32e5c"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/calvinalkan/reflection-payload/zipball/5359b39cba8952af760c677618e4e97ad7f32e5c",
+                "reference": "5359b39cba8952af760c677618e4e97ad7f32e5c",
+                "shasum": ""
+            },
+            "require": {
+                "calvinalkan/base-container": "^0.1.0",
+                "illuminate/collections": "^8.35.1",
+                "php": "^7.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^9.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ReflectionPayload\\": "src/"
+                },
+                "files": [
+                    "src/functions.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "calvinalkan",
+                    "email": "calvin@snicco.de"
+                }
+            ],
+            "description": "description",
+            "support": {
+                "issues": "https://github.com/calvinalkan/reflection-payload/issues",
+                "source": "https://github.com/calvinalkan/reflection-payload/tree/1.1.2"
+            },
+            "time": "2021-06-05T00:57:06+00:00"
         },
         {
             "name": "calvinalkan/wordpress-hook-api-clone",
@@ -6957,6 +7007,7 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
+        "calvinalkan/better-wordpress-hooks": 20,
         "calvinalkan/better-wordpress-database": 20,
         "illuminate/view": 20
     },
@@ -6964,10 +7015,10 @@
     "prefer-lowest": false,
     "platform": {
         "php": "^7.3",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-openssl": "*",
+        "ext-mbstring": "*"
     },
-    "platform-dev": {
-        "ext-openssl": "*"
-    },
+    "platform-dev": [],
     "plugin-api-version": "2.0.0"
 }

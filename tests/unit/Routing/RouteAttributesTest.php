@@ -8,9 +8,12 @@
 
     use Contracts\ContainerAdapter;
     use Mockery;
+    use Tests\fixtures\Middleware\GlobalMiddleware;
     use Tests\helpers\CreateTestSubjects;
-    use Tests\unit\UnitTest;
+    use Tests\stubs\HeaderStack;
+    use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Router;
@@ -426,6 +429,135 @@
 
             $request = $this->webRequest('PUT', '/baz');
             $this->runAndAssertOutput('FOOBAR', $request);
+
+
+        }
+
+        /** @test */
+        public function a_route_without_an_action_will_thrown_an_exception()
+        {
+
+            $this->expectException(ConfigurationException::class);
+
+            $this->createRoutes(function () {
+
+                $this->router->get('foo');
+
+            });
+
+            $request = $this->webRequest('GET', '/foo');
+            $this->runAndAssertOutput('foobar', $request);
+
+        }
+
+        /** @test */
+        public function a_route_can_be_set_to_not_handle_anything_but_only_run_middleware()
+        {
+
+            $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
+
+            $this->createRoutes(function () {
+
+                $this->router->get('foo')->noAction()->middleware(GlobalMiddleware::class);
+
+            });
+
+            $request = $this->webRequest('GET', '/foo');
+            $this->runAndAssertOutput('', $request);
+
+            $this->assertSame(1, $GLOBALS['test'][GlobalMiddleware::run_times]);
+
+
+        }
+
+        /** @test */
+        public function a_no_action_route_can_before_the_http_verb()
+        {
+
+            $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
+
+            $this->createRoutes(function () {
+
+                $this->router->noAction()->get('foo')->middleware(GlobalMiddleware::class);
+
+
+            });
+
+            $request = $this->webRequest('GET', '/foo');
+            $this->runAndAssertOutput('', $request);
+
+            $this->assertSame(1, $GLOBALS['test'][GlobalMiddleware::run_times]);
+
+        }
+
+        /** @test */
+        public function a_no_action_route_group_can_be_added()
+        {
+
+            $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
+
+            $this->createRoutes(function () {
+
+                $this->router->noAction()->group(function () {
+
+                    $this->router->name('a')->group(function () {
+
+                        $this->router->get('foo')->middleware(GlobalMiddleware::class);
+
+                    });
+
+                    $this->router->get('bar')->middleware(GlobalMiddleware::class);
+
+                });
+
+
+            });
+
+            $request = $this->webRequest('GET', '/foo');
+            $this->runAndAssertOutput('', $request);
+
+              $request = $this->webRequest('GET', '/bar');
+            $this->runAndAssertOutput('', $request);
+
+
+            $this->assertSame(2, $GLOBALS['test'][GlobalMiddleware::run_times]);
+
+        }
+
+        /** @test */
+        public function a_no_action_group_can_be_overwritten () {
+
+            $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
+
+            $this->createRoutes(function () {
+
+                $this->router->noAction()->group(function () {
+
+                    $this->router->get('foo', function () {
+
+                        return 'foo';
+
+                    });
+
+                     $this->router->get('bar')->middleware(GlobalMiddleware::class);
+
+
+
+                });
+
+
+            });
+
+            $request = $this->webRequest('GET', '/foo');
+            $this->runAndAssertOutput('foo', $request);
+            HeaderStack::assertHasStatusCode(200);
+            HeaderStack::reset();
+
+            $request = $this->webRequest('GET', '/bar');
+            $this->runAndAssertOutput('', $request);
+            $this->assertSame(1, $GLOBALS['test'][GlobalMiddleware::run_times]);
+            HeaderStack::assertHasNone();
+            HeaderStack::reset();
 
 
         }

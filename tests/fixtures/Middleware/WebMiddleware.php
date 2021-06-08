@@ -18,7 +18,7 @@
 
         public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
         {
-            $count = $GLOBALS['test'][ self::run_times ];
+            $count = $GLOBALS['test'][ self::run_times ] ?? 0;
             $count ++;
             $GLOBALS['test'][ self::run_times ] = $count;
 

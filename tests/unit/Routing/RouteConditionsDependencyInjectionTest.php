@@ -10,7 +10,7 @@
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreatesWpUrls;
     use Tests\helpers\CreateTestSubjects;
-    use Tests\unit\UnitTest;
+    use Tests\UnitTest;
     use Tests\fixtures\Conditions\ConditionWithDependency;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Facade\WP;

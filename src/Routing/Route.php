@@ -7,7 +7,6 @@
     namespace WPEmerge\Routing;
 
     use Closure;
-    use Opis\Closure\SerializableClosure;
     use WPEmerge\Contracts\ConditionInterface;
     use WPEmerge\Contracts\RouteAction;
     use WPEmerge\Contracts\SetsRouteAttributes;
@@ -16,12 +15,9 @@
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\Conditions\TrailingSlashCondition;
-    use WPEmerge\Support\ReflectionPayload;
+    use ReflectionPayload\ReflectionPayload;
     use WPEmerge\Support\Url;
     use WPEmerge\Support\UrlParser;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Support\Str;
     use WPEmerge\Traits\SetRouteAttributes;
 
     class Route implements SetsRouteAttributes
@@ -221,9 +217,11 @@
 
         public function instantiateAction(RouteActionFactory $action_factory = null) :Route
         {
+
             $factory = $action_factory ?? $this->action_factory;
 
             $this->instantiated_action = $factory->create($this->action, $this->namespace);
+
             return $this;
         }
 

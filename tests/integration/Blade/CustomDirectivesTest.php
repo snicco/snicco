@@ -11,7 +11,7 @@
     use Slim\Csrf\Guard;
     use Tests\integration\Blade\traits\AssertBladeView;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Http\ResponseFactory;

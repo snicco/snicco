@@ -10,7 +10,7 @@
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
-    use Tests\unit\UnitTest;
+    use Tests\UnitTest;
     use Tests\unit\View\MethodField;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Delegate;

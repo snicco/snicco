@@ -10,7 +10,7 @@
     use Illuminate\View\Engines\EngineResolver;
     use Illuminate\View\Factory;
     use Illuminate\View\FileViewFinder;
-    use Tests\integration\IntegrationTest;
+    use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use WPEmerge\Blade\BladeEngine;
     use WPEmerge\Blade\BladeServiceProvider;

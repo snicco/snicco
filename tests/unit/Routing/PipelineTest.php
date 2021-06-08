@@ -8,6 +8,7 @@
 
     use Nyholm\Psr7\Factory\Psr17Factory;
     use Nyholm\Psr7\Response;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response as AppResponse;
     use Nyholm\Psr7\Stream;
     use PHPUnit\Framework\TestCase;
@@ -48,7 +49,7 @@
 
             $factory = new Psr17Factory();
 
-            $this->request = $factory->createServerRequest('GET', 'https://foobar.com');
+            $this->request = new Request($factory->createServerRequest('GET', 'https://foobar.com'));
 
         }
 

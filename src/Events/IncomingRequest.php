@@ -8,6 +8,7 @@
 
 	use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Support\Str;
 
     class IncomingRequest extends ApplicationEvent {
 
@@ -38,5 +39,10 @@
 
         }
 
+        protected function isNativeWordpressJsonApiRequest () : bool
+        {
 
+            return Str::contains($this->request->getPath(), 'wp-json');
+
+        }
     }

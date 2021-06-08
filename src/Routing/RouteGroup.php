@@ -33,6 +33,7 @@
 			$this->middleware = Arr::get( $attributes, 'middleware', [] );
 			$this->conditions = Arr::get( $attributes, 'where', ConditionBucket::createEmpty() );
 			$this->methods    = Arr::wrap( Arr::get( $attributes, 'methods', [] ) );
+            $this->no_action  = Arr::get( $attributes, 'noAction', null );
 
 		}
 
@@ -47,6 +48,8 @@
 			$this->url_prefix = $this->mergePrefix( $old_group->url_prefix );
 
 			$this->conditions = $this->mergeConditions( $old_group->conditions );
+
+			$this->no_action = $this->mergeNoAction($old_group->no_action);
 
 			return $this;
 
@@ -120,6 +123,16 @@
 
 		}
 
+        private function mergeNoAction( $old_group_no_action )
+        {
+            if ( isset($this->no_action) ) {
+
+                return $this->no_action;
+
+            }
+
+            return $old_group_no_action;
+        }
 
 
-	}
+    }

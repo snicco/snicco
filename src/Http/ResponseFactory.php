@@ -164,6 +164,13 @@
            return $this->redirector->toLogin($redirect_on_login, $reauth, $status_code);
         }
 
+        public function signedLogout( int $user_id, string $redirect_on_logout = '/', $status = 302 ) : RedirectResponse
+        {
+
+            return $this->redirector->signedLogout( $user_id, $redirect_on_logout, $status );
+
+        }
+
         public function invalidResponse() : InvalidResponse
         {
             return new InvalidResponse($this->response_factory->createResponse(500));
@@ -240,7 +247,6 @@
         {
             return $this->createResponse();
         }
-
 
 
     }
