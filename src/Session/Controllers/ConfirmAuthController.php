@@ -14,8 +14,10 @@
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Responses\RedirectResponse;
+    use WPEmerge\Mail\MailBuilder;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\CsrfField;
+    use WPEmerge\Session\Mail\ConfirmAuthMail;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
     use WPEmerge\View\ViewFactory;
@@ -77,37 +79,37 @@
                                       'csrf_field' => $csrf_field->asHtml(),
                                       'jail' => $this->isUserInJail() ? $this->getJailTime() : false,
                                       'last_recipient' => $this->lastRecipient(),
-                                      'view' => $this->view
+                                      'view' => $this->view,
                                   ]
                               );
 
         }
 
-        public function send(Request $request) : Response
+        public function send(Request $request, MailBuilder $mail) : Response
         {
 
-            if ( ! $this->hasLeftAttemptsToInputCorrectEmail() ) {
+            if ( ! $this->hasLeftAttemptsToInputCorrectEmail()) {
 
                 $this->session->invalidate();
                 WP::logout();
 
-                return $this->response_factory->redirectToLogin(true );
+                return $this->response_factory->redirectToLogin(true);
 
             }
 
-            if ( ! $this->canRequestAnotherEmail() ) {
+            if ( ! $this->canRequestAnotherEmail()) {
 
                 return $this->response_factory->redirect()->refresh();
 
             }
 
-            if ( ! ( $email = $this->hasValidEmailInput($request ) ) ) {
+            if ( ! ($email = $this->hasValidEmailInput($request))) {
 
                 return $this->redirectBack($email);
 
             }
 
-            if ( ! ( $user = $this->userWithEmailExists( $email ) ) ) {
+            if ( ! ($user = $this->userWithEmailExists($email))) {
 
                 $this->session->increment('auth.confirm.attempts');
 
@@ -115,11 +117,22 @@
 
             }
 
-            $success = WP::mail($email, $this->subject($user), $this->message($user) );
+            $mailable = $this->mailable();
+
+            $success = $mail->to($email)
+                            ->cc([['name' =>'Mr Foo', 'email' =>'foobar@web.de']])
+                            ->bcc([['name' =>'Mr Boo', 'email' =>'bar@web.de']])
+                            ->send(
+                                new $mailable(
+                                    $user,
+                                    $this->session,
+                                    $this->url_generator,
+                                    $this->link_lifetime_in_sec)
+                            );
 
             $redirect = $this->response_factory->redirect()->refresh(303);
 
-            if ( $success ) {
+            if ($success) {
 
                 $this->session->put('auth.confirm.lifetime', $this->link_lifetime_in_sec);
                 $this->session->put('auth.confirm.email.last_recipient', $email);
@@ -129,9 +142,10 @@
                 $redirect->with('auth.confirm.success', 'Success: A confirmation email was send to: '.$email);
 
 
-            } else {
+            }
+            else {
 
-                $redirect->with('auth.confirm.email_sending_failed', true );
+                $redirect->with('auth.confirm.email_sending_failed', true);
 
             }
 
@@ -140,47 +154,12 @@
 
         }
 
-        protected function subject(WP_User $user) : string
+        protected function mailable() : string
         {
-
-            return 'Your Email Confirmation link';
-
+            return ConfirmAuthMail::class;
         }
 
-        protected function message(WP_User $user) : string
-        {
-
-            return $this->view->render(
-                'auth-confirm-email',
-                [
-                    'user' => $user,
-                    'magic_link' => $this->generateSignedUrl($user),
-                    'lifetime' => $this->link_lifetime_in_sec,
-                ]
-            );
-
-
-        }
-
-        private function generateSignedUrl(WP_User $user) : string
-        {
-
-            $arguments = [
-                'user_id' => $user->ID,
-                'query' => [
-                    'intended' => $this->session->getIntendedUrl()
-                ],
-            ];
-
-            return $this->url_generator->signedRoute(
-                'auth.confirm.magic-login',
-                $arguments,
-                $this->link_lifetime_in_sec
-            );
-
-        }
-
-        private function redirectBack( ?string $email ) : RedirectResponse
+        private function redirectBack(?string $email) : RedirectResponse
         {
 
             return $this->response_factory->redirect()
@@ -195,19 +174,19 @@
 
             $exceeded_attempts = $this->session->get('auth.confirm.email.count', 0) >= $this->resends;
 
-            if ( ! $exceeded_attempts ) {
+            if ( ! $exceeded_attempts) {
 
                 return true;
 
             }
 
-            if ( ! $this->session->has('auth.confirm.email.jail') ) {
+            if ( ! $this->session->has('auth.confirm.email.jail')) {
 
                 $this->putUserInJail();
 
             }
 
-            if ( ! $this->isUserInJail() ) {
+            if ( ! $this->isUserInJail()) {
 
                 $this->session->forget('auth.confirm.email');
 
@@ -222,12 +201,13 @@
         private function hasLeftAttemptsToInputCorrectEmail() : bool
         {
 
-            $attempts = $this->session->get('auth.confirm.attempts',0 );
+            $attempts = $this->session->get('auth.confirm.attempts', 0);
 
             return $attempts < $this->attempts;
         }
 
-        private function hasValidEmailInput(Request $request) {
+        private function hasValidEmailInput(Request $request)
+        {
 
             $email = Arr::get($request->getParsedBody(), 'email', '');
 
@@ -237,7 +217,8 @@
 
         }
 
-        private function userWithEmailExists(string $email) {
+        private function userWithEmailExists(string $email)
+        {
 
             return get_user_by('email', $email);
 
@@ -246,15 +227,16 @@
         private function isUserInJail() : bool
         {
 
-            if ($this->session->get('auth.confirm.email.jail', 0) >= Carbon::now()->getTimestamp()) {
+            if ($this->session->get('auth.confirm.email.jail', 0) >= Carbon::now()
+                                                                           ->getTimestamp()) {
 
                 return true;
 
             }
 
-            $in_jail = get_transient($this->transient_key . WP::userId());
+            $in_jail = get_transient($this->transient_key.WP::userId());
 
-            if ( $in_jail && $in_jail >= Carbon::now()->getTimestamp() ) {
+            if ($in_jail && $in_jail >= Carbon::now()->getTimestamp()) {
 
                 return true;
 
@@ -266,6 +248,7 @@
 
         private function putUserInJail()
         {
+
             $this->session->put('auth.confirm.email.jail',
                 Carbon::now()->addMinutes($this->timeout_in_minutes)->getTimestamp()
             );
@@ -273,24 +256,24 @@
             $expiration = Carbon::now()->addMinutes($this->timeout_in_minutes)->getTimestamp();
 
             /** @todo replace transient api with dedicated db-table */
-            set_transient($this->transient_key. WP::userId() , $expiration, $expiration);
+            set_transient($this->transient_key.WP::userId(), $expiration, $expiration);
 
         }
 
-        private function getJailTime() :int
+        private function getJailTime() : int
         {
 
             $in_jail_until = $this->session->get('auth.confirm.email.jail');
 
-            if ( is_int($in_jail_until) ) {
+            if (is_int($in_jail_until)) {
 
                 return $in_jail_until;
 
             }
 
-            $in_jail_db = get_transient($this->transient_key . WP::userId());
+            $in_jail_db = get_transient($this->transient_key.WP::userId());
 
-            if ( $in_jail_db !== false ) {
+            if ($in_jail_db !== false) {
 
                 return (int) $in_jail_db;
 
@@ -303,6 +286,7 @@
 
         private function lastRecipient()
         {
+
             return $this->session->get('auth.confirm.email.last_recipient', '');
         }
 

@@ -38,17 +38,19 @@
 
         }
 
-         /**
+        /**
          *
-         * @param string|string[] $email
+         * @param  string|string[]  $email
          * @param  string  $subject
-         * @param string $message
+         * @param  string  $message
+         * @param  array  $headers
+         * @param  array  $attachments
          *
+         * @return bool
          * @see wp_mail()
          * @see WordpressApi::mail()
-          *
          */
-        public static function mail($email, string $subject, string $message) :bool
+        public static function mail($email, string $subject, string $message, array $headers = [], array  $attachments = [] ) :bool
         {
 
         }

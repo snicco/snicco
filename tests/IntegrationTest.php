@@ -7,12 +7,14 @@
     namespace Tests;
 
     use Codeception\TestCase\WPTestCase;
+    use PHPUnit\Framework\Assert;
     use Psr\Http\Message\ServerRequestInterface;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ErrorHandlerInterface;
+    use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Events\ResponseSent;
@@ -25,6 +27,16 @@
 
     class IntegrationTest extends WPTestCase
     {
+
+        protected function assertViewContent(string $expected,  $actual) {
+
+            $actual = ($actual instanceof ViewInterface) ? $actual->toString() :$actual;
+
+            $actual = preg_replace( "/\r|\n|\s{2,}/", "", $actual );
+
+            Assert::assertSame($expected, trim($actual), 'View not rendered correctly.');
+
+        }
 
         protected function withoutExceptionHandling () {
 

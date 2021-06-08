@@ -44,11 +44,9 @@
 
         }
 
-        public function mail ( $email, string $subject, string $message ) {
+        public function mail ( $email, string $subject, string $message, array $headers = [], array  $attachments = [] ) {
 
-            $headers = array('Content-Type: text/html; charset=UTF-8');
-
-            return wp_mail($email, $subject, $message, $headers);
+            return wp_mail($email, $subject, $message, $headers, $attachments);
 
         }
 

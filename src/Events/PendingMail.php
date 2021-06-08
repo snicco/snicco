@@ -6,9 +6,10 @@
 
     namespace WPEmerge\Events;
 
-    use WPEmerge\Contracts\Mailable;
+    use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Mail\Mailable;
 
-    class SendMailEvent
+    class PendingMail extends ApplicationEvent
     {
 
         /**
@@ -16,8 +17,10 @@
          */
         public $mail;
 
-        public function __construct(Mailable $mail)
+        public function __construct( Mailable $mail )
         {
             $this->mail = $mail;
         }
+
+
     }

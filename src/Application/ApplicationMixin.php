@@ -13,7 +13,7 @@
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Mail\PendingMail;
+    use WPEmerge\Mail\MailBuilder;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\UrlGenerator;
@@ -83,9 +83,9 @@
         }
 
         /**
-         * @return PendingMail
+         * @return MailBuilder
          */
-        public static function mail() :PendingMail
+        public static function mail() :MailBuilder
         {
 
 
