@@ -14,22 +14,22 @@
     class LoadRoutes
     {
 
-
-        /** @todo With this set up it is not possible to create named routes from matching global routes to standard routes. */
         public function __invoke( WpInit $event, RouteRegistrarInterface $registrar )
         {
 
             $config = $event->config;
 
-            $success = $registrar->loadGlobalRoutes($config);
+            $success = $registrar->globalRoutes($config);
+            $registrar->standardRoutes($config);
+            $registrar->loadIntoRouter();
 
             if ( $success ) {
 
+                // This will run as the first hook on init.
                 IncomingGlobalRequest::dispatch([$event->request]);
 
             }
 
-            $registrar->loadStandardRoutes($config);
 
 
         }

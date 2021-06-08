@@ -61,6 +61,18 @@
 
         }
 
+        public function filtersWpQuery( ?bool $set = null)
+        {
+            if ( $set ) {
+
+                return $this->withAttribute('filtered_wp_query', true);
+
+            }
+
+            return $this->getAttribute('filtered_wp_query', false );
+
+        }
+
         public function withCookies(array $cookies) {
 
             return $this->withAttribute('cookies', new VariableBag($cookies));
@@ -211,5 +223,6 @@
             return $this->getType() === IncomingAjaxRequest::class;
 
         }
+
 
     }

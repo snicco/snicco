@@ -16,6 +16,7 @@
     use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Routing\RouteRegistrar;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\Exceptions\InvalidCsrfTokenException;
     use WPEmerge\Session\Exceptions\InvalidSignatureException;
@@ -46,8 +47,11 @@
             ]);
 
             $this->url = TestApp::url();
+            /** @var RouteRegistrar $registrar */
             $registrar = TestApp::resolve(RouteRegistrarInterface::class);
-            $registrar->loadGlobalRoutes(TestApp::config());
+            $registrar->globalRoutes(TestApp::config());
+            $registrar->standardRoutes(TestApp::config());
+            $registrar->loadIntoRouter();
         }
 
         protected function beforeTearDown()
