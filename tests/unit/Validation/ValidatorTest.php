@@ -238,7 +238,7 @@
 
         }
 
-        /** @test */
+        // /** @test */
         public function composite_error_messages_get_added_correctly () {
 
             $v = new Validator();
@@ -306,5 +306,86 @@
             }
 
         }
+
+        /** @test */
+        public function global_validation_messages_can_be_added_per_failed_rule () {
+
+            $submission1 = [
+                'author1' => 'c@web.de',
+                'author2' => 'john.de'
+            ];
+
+            $v = new Validator($submission1);
+
+            $v->globalMessages([
+                'email' => [
+                    '{{input}} ist keine gültige {{attribute}}',
+                    '{{input}} darf keine gültige {{attribute}} sein',
+                    'email addresse'
+                ]
+            ]);
+
+            try {
+
+                $v->rules([
+
+                    'author1' => v::email(),
+                    'author2' => v::email(),
+
+                ])->validate();
+
+                $this->fail('Failed check did not throw exception.');
+
+            } catch (ValidationException $e) {
+
+                $error = $e->getErrors();
+
+                $this->assertSame('john.de ist keine gültige email addresse.', $error['author2']['messages'][0] );
+
+            }
+
+
+        }
+
+        /** @test */
+        public function global_negated_validation_messages_can_be_added_per_failed_rule () {
+
+            $submission1 = [
+                'author1' => 'calvin@web.de',
+            ];
+
+            $v = new Validator($submission1);
+
+            $v->globalMessages([
+                'email' => [
+                    '{{input}} ist keine gültige {{attribute}}',
+                    'Wir brauchen deine {{attribute}}',
+                    'email addresse'
+                ]
+            ]);
+
+            try {
+
+                $v->rules([
+
+                    'author1' => v::not(v::email()),
+
+                ])->validate();
+
+                $this->fail('Failed check did not throw exception.');
+
+            } catch (ValidationException $e) {
+
+                $error = $e->getErrors();
+
+                $this->assertSame('Wir brauchen deine email addresse.', $error['author1']['messages'][0] );
+
+            }
+
+
+
+        }
+
+
 
     }

@@ -15,6 +15,7 @@
     use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
     use WPEmerge\Middleware\Core\MethodOverride;
     use WPEmerge\Middleware\Core\RoutingMiddleware;
+    use WPEmerge\Middleware\Core\SetRequestAttributes;
     use WPEmerge\Middleware\Core\ShareCookies;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Middleware\Core\RouteRunner;
@@ -39,6 +40,7 @@
 
         private $core_middleware = [
             ErrorHandlerMiddleware::class,
+            SetRequestAttributes::class,
             MethodOverride::class,
             EvaluateResponseMiddleware::class,
             ShareCookies::class,
@@ -51,12 +53,14 @@
             MethodOverride::class,
         ];
 
-        // Only these three get a priority, because they always need to run before any global middleware
+        // Only these get a priority, because they always need to run before any global middleware
         // that a user might provide.
         private $priority_map = [
             ErrorHandlerMiddleware::class,
+            SetRequestAttributes::class,
             EvaluateResponseMiddleware::class,
             ShareCookies::class,
+            AppendSpecialPathSuffix::class,
         ];
 
         private $global_middleware = [];
