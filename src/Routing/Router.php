@@ -147,7 +147,7 @@
         public function loadRoutes(bool $global_routes = false )
         {
 
-            if ( ! $this->hasGroupStack()) {
+            if ( ! $this->hasGroupStack() ) {
 
 
                 $this->routes->loadIntoDispatcher($global_routes);
