@@ -48,14 +48,16 @@
     "lucatume/wp-browser": "3.0.6",
     "illuminate/view": "dev-feature_view_interface_instead_of_view_implementation",
     "adriansuter/php-autoload-override": "^1.2",
-    "slim/csrf": "1.2.1"
+    "slim/csrf": "1.2.1",
+    "respect/validation": "2.2.3"
   },
 
   "suggest": {
     "opis/closure": "Required if you want to cache routes that use closures [3.6.2]",
     "illuminate/encryption": "Required if you want to use strong session encryption [8.40.0]",
     "slim/csrf" : "Required if you want to you csrf protection with sessions [1.2.1]",
-    "flip/whoops" : "Required if you want the pretty page error handler during devolopment"
+    "flip/whoops" : "Required if you want the pretty page error handler during devolopment",
+    "respect/validation" : "Required if you want to use the validation module"
   },
 
   "autoload": {
