@@ -27,8 +27,9 @@
             $this->container->singleton(Validator::class, function () {
 
                 $validator = new Validator();
-                $validator->attributes($this->config->get('validation.attributes'));
-                $validator->messages($this->config->get('validation.messages'));
+                $validator->globalMessages($this->config->get('validation.messages'));
+
+                return $validator;
 
             });
 
