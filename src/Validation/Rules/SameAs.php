@@ -6,9 +6,10 @@
 
     namespace WPEmerge\Validation\Rules;
 
-    use WPEmerge\Validation\Rule;
+    use Respect\Validation\Rules\AbstractRule;
+    use WPEmerge\Support\Arr;
 
-    class SameAs extends Rule
+    class SameAs extends AbstractRule
     {
 
         /**
@@ -22,10 +23,18 @@
             $this->compare_to = $compare_to;
         }
 
-        public function validate($compare_against) : bool
+        public function validate($input) : bool
         {
+            $compare = Arr::get($input, '__mapped_key');
 
-            return $this->payload[$compare_against] === $this->payload[$this->compare_to];
+            if ( ! isset($input[$this->compare_to] ) || ! $compare ) {
+                return false;
+            }
+
+            $actual_value = $input[$compare];
+            $desired_value = $input[$this->compare_to];
+
+            return $actual_value === $desired_value;
 
         }
 

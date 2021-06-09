@@ -23,6 +23,7 @@
             $v = new Validator();
 
             $validated = $v->rules([
+
                 'count' => v::min(1)->max(3),
             ])
                            ->validate([
@@ -70,13 +71,11 @@
 
             ])
                            ->validate([
-                               'count' => 3,
                                'email' => 'c@web.de',
                            ]);
 
-            $this->assertSame(['count' => 3, 'email' => 'c@web.de'], $validated);
+            $this->assertSame(['email' => 'c@web.de'], $validated);
 
-            $this->expectException(ValidationException::class);
             $validated = $v->rules([
 
                 'count' => [v::min(1)->max(3), 'optional'],
@@ -84,9 +83,24 @@
 
             ])
                            ->validate([
-                               'count' => 4,
+                               'count' => 3,
                                'email' => 'c@web.de',
                            ]);
+
+            $this->assertSame(['count' => 3, 'email' => 'c@web.de'], $validated);
+
+            // present but not valid
+            $this->expectException(ValidationException::class);
+            $v->rules([
+
+                'count' => [v::min(1)->max(3), 'optional'],
+                'email' => v::email(),
+
+            ])
+              ->validate([
+                  'count' => 4,
+                  'email' => 'c@web.de',
+              ]);
 
 
         }
@@ -181,7 +195,7 @@
 
             $v = new Validator(['release_dates' => $releaseDates]);
 
-             $v->rules([
+            $v->rules([
                 'release_dates' => v::each(v::dateTime()),
             ])->validate();
 
@@ -237,34 +251,127 @@
 
         }
 
-       /** @test */
-       public function the_same_as_rule_works () {
+        /** @test */
+        public function only_validated_data_is_returned()
+        {
 
-           Factory::setDefaultInstance(
-               (new Factory())
-                   ->withRuleNamespace('WPEmerge\Validation\Rules')
-                   ->withExceptionNamespace('WPEmerge\Validation\Exceptions')
-           );
+            $v = new Validator();
 
-           $_POST = [
-               'password' => '123',
-               'password_confirmation' => '123'
-           ];
+            $input = [
+                'foo' => 'bar',
+                'bar' => 'baz',
+                'baz' => 'biz',
+                'boo' => 'bam',
+            ];
+            $validated = $v->rules([
+                'foo' => v::equals('bar'),
+                'bar' => v::equals('baz'),
+            ])->validate($input);
+
+            $this->assertSame([
+                'foo' => 'bar',
+                'bar' => 'baz',
+            ], $validated);
+
+            $input = [
+                'foo' => [
+                    'bar' => ['baz' => 'biz'],
+                    'bam' => 'boom',
+                ],
+                'biz' => [
+                    'baz',
+                ],
+            ];
+
+            $validated = $v->rules([
+
+                'foo.bar' => v::arrayType()->contains('biz'),
+
+            ])->validate($input);
+
+            $this->assertSame([
+                'foo' => [
+                    'bar' => [
+                        'baz' => 'biz',
+                    ],
+                ],
+            ], $validated);
 
 
-           $v = new Validator();
+        }
 
-           $v->rules([
+        /** @test */
+        public function a_collection_of_data_can_be_validated()
+        {
 
-               'password' => v::length(3),
-               'password_confirmation' => v::sameAs('password')
+            $_POST = [
+                'posts' => [
+                    [
+                        'slug' => 'slug-one',
+                        'author' => 'calvin',
 
-           ])->validate($_POST);
+                    ],
+                    [
+
+                        'slug' => 'slug-two',
+                        'author' => 'marlon',
+
+                    ],
+                    [
+
+                        'slug' => 'slug-three',
+                        'author' => 'john',
+
+                    ],
+                ],
+            ];
+
+            $v = new Validator($_POST);
+
+            $post_validator = v::each(
+                v::key('slug', v::length(5))
+                 ->key('author', v::alpha())
+            );
+
+            $validated = $v->rules([
+                'posts' => $post_validator
+            ])->validate();
+
+            $this->assertSame($_POST, $validated);
 
 
-       }
+        }
 
-        // /** @test */
+        /** @test */
+        public function key_with_a_leading_star_indicate_to_pass_the_entire_input_to_the_rule()
+        {
+
+            Factory::setDefaultInstance(
+                (new Factory())
+                    ->withRuleNamespace('WPEmerge\Validation\Rules')
+                    ->withExceptionNamespace('WPEmerge\Validation\Exceptions')
+            );
+
+            $_POST = [
+                'password' => '123',
+                'password_confirmation' => '123',
+            ];
+
+            $v = new Validator();
+
+            $validated = $v->rules([
+
+                'password' => v::length(3),
+                '*password_confirmation' => v::sameAs('password'),
+
+            ])->validate($_POST);
+
+            $this->assertSame($_POST, $validated);
+
+
+        }
+
+        /** @test */
         public function a_failing_validation_rule_throws_an_exception()
         {
 
@@ -295,8 +402,8 @@
 
         }
 
-        // /** @test */
-        public function custom_error_messages_can_be_added()
+        /** @test */
+        public function custom_error_messages_can_be_added_inline()
         {
 
             $v = new Validator();
@@ -310,7 +417,7 @@
 
                 $v->rules([
 
-                    'count' => [v::min(1)->max(3), 'Your input for count is wrong.'],
+                    'count' => [v::min(1)->max(3), 'optional', 'Your input for count is wrong.'],
                     'age' => v::min(18),
 
                 ])->validate($input);
@@ -329,7 +436,7 @@
 
         }
 
-        // /** @test */
+        /** @test */
         public function custom_error_messages_can_be_added_with_placeholders()
         {
 
@@ -342,7 +449,7 @@
             try {
 
                 $v->rules([
-                    'count' => [v::min(1)->max(3), '{{input}} is not valid for {{attribute}}.'],
+                    'count' => [v::min(1)->max(3), 'required', '[input] is not valid for [attribute].'],
                 ])->validate($input);
 
                 $this->fail('Failed check did not throw exception.');
@@ -359,7 +466,7 @@
 
         }
 
-        // /** @test */
+        /** @test */
         public function messages_can_be_passed_with_a_function()
         {
 
@@ -372,7 +479,7 @@
                 'count' => v::min(1)->max(3),
 
             ])->messages([
-                'count' => '{{input}} is not valid for count.',
+                'count' => '[input] is not valid for count.',
             ]);
 
             try {
@@ -394,7 +501,7 @@
 
         }
 
-        // /** @test */
+        /** @test */
         public function attributes_can_be_customized_for_validation_messages()
         {
 
@@ -404,7 +511,7 @@
 
             $v->rules([
 
-                'email' => [v::email(), '{{input}} is not a valid {{attribute}}'],
+                'email' => [v::email(), '', '[input] is not a valid [attribute]'],
 
             ])
               ->attributes([
@@ -430,7 +537,40 @@
 
         }
 
-        // /** @test */
+        /** @test */
+        public function the_input_value_is_replaced_by_default_with_the_attribute_name_if_not_specified_otherwise () {
+
+            $v = new Validator();
+
+            $input = [
+                'user_name' => 'reallymess#edupscreenname',
+            ];
+
+            try {
+
+                $v->rules([
+
+                    'user_name' => v::alnum()
+
+                ])
+                  ->validate($input);
+
+                $this->fail('Failed check did not throw exception.');
+
+            }
+            catch (ValidationException $e) {
+
+                $error = $e->getErrors()['user_name'];
+
+                $this->assertSame('reallymess#edupscreenname', $error['input']);
+                $this->assertSame('user_name must contain only letters (a-z) and digits (0-9).', $error['messages'][0]);
+
+
+            }
+
+        }
+
+        /** @test */
         public function composite_error_messages_get_added_correctly()
         {
 
@@ -446,7 +586,8 @@
 
                     'user_name' => v::alnum()->noWhitespace()->length(1, 15),
 
-                ])->validate($input);
+                ])
+                  ->validate($input);
 
                 $this->fail('Failed check did not throw exception.');
 
@@ -464,7 +605,7 @@
 
         }
 
-        // /** @test */
+        /** @test */
         public function nested_array_values_can_be_validated()
         {
 
@@ -481,7 +622,7 @@
 
                 $v->rules([
 
-                    'post.title' => [v::alpha(), '{{attribute}} can not have whitespace'],
+                    'post.title' => [v::noWhitespace(), 'required', '[attribute] can not have whitespace'],
                     'post.author' => v::email(),
 
                 ])->attributes([
@@ -503,7 +644,7 @@
 
         }
 
-        // /** @test */
+        /** @test */
         public function global_validation_messages_can_be_added_per_failed_rule()
         {
 
@@ -516,8 +657,8 @@
 
             $v->globalMessages([
                 'email' => [
-                    '{{input}} ist keine gültige {{attribute}}',
-                    '{{input}} darf keine gültige {{attribute}} sein',
+                    '[input] ist keine gültige [attribute]',
+                    '[input] darf keine gültige [attribute] sein',
                     'email addresse',
                 ],
             ]);
@@ -545,7 +686,7 @@
 
         }
 
-        // /** @test */
+        /** @test */
         public function global_negated_validation_messages_can_be_added_per_failed_rule()
         {
 
@@ -557,8 +698,8 @@
 
             $v->globalMessages([
                 'email' => [
-                    '{{input}} ist keine gültige {{attribute}}',
-                    'Wir brauchen deine {{attribute}}',
+                    '[input] ist keine gültige [attribute]',
+                    'Wir brauchen deine [attribute]',
                     'email addresse',
                 ],
             ]);
