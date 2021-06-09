@@ -6,7 +6,10 @@
 
     namespace WPEmerge\Validation;
 
+    use Illuminate\Support\Collection;
     use Respect\Validation\Exceptions\ValidationException;
+    use Respect\Validation\Rules\AbstractRule;
+    use Respect\Validation\Rules\Key;
     use Respect\Validation\Rules\Not;
     use Respect\Validation\Validator as v;
     use WPEmerge\Support\Arr;
@@ -41,6 +44,7 @@
          */
         private $global_message_replacements = [];
 
+        private $validated_array_keys = [];
 
         public function __construct(?array $input = null)
         {
@@ -65,30 +69,33 @@
         public function validate(?array $input = null) : array
         {
 
-            $pool = $input ?? $this->input;
+            $input = $input ?? $this->input;
 
-            if ( ! $pool ) {
+            if ( ! $input) {
 
                 throw new \LogicException('No input provided for validation');
 
             }
 
-            $validate = $this->inputToBeValidated($pool);
+            $complete_input = $this->inputToBeValidated($input);
 
-            foreach ($this->rules as $key => $rule) {
+            foreach ($this->rules as $key => $validator) {
 
-                /** @var v $rule */
+                /** @var v $validator */
                 try {
 
-                    $input = $validate[$key] ?? null;
+                    $input = $this->buildRuleInput($key, $complete_input);
 
-                    $valid = $rule->validate($input);
+                    $valid = $validator->validate($input);
 
                     if ( ! $valid) {
 
-                        $rule->assert($input);
+                        $validator->assert($input);
 
                     }
+
+                    $this->validated_array_keys[] = trim($key, '*');
+
 
                 }
                 catch (ValidationException $e) {
@@ -107,7 +114,8 @@
 
             }
 
-            return $validate;
+            return $complete_input;
+
 
         }
 
@@ -137,7 +145,6 @@
         private function addToErrors(ValidationException $e, $key, $input)
         {
 
-
             $messages = $this->reformatMessages($e, $key, $input);
 
             Arr::set($this->errors, $key, ['input' => $input, 'messages' => $messages]);
@@ -150,43 +157,80 @@
 
             $exceptions = $e->getChildren();
 
-            $messages = collect($exceptions)
-                ->map(function (ValidationException $e) use ($input, $name) {
+            $messages = new Collection($exceptions);
 
-                    $message = $this->replaceInputWithName($input, $e->getMessage(), $name);
+            $rule_id = null;
 
-                    return ['id' => $e->getId(), 'message' => $message];
+            $messages = $messages
+                ->map(function (ValidationException $e) use ($name, &$rule_id) {
 
-                })
-                ->map(function (array $exception) use ($input) {
-                    return [
-                        'id' => $exception['id'],
-                        'message' => $this->replaceInputWithPlaceholder($input, $exception['message']),
-                    ];
-                })
-                ->map(function (array $exception) use ($input, $name) {
-
-                    return $this->replaceWithCustomMessage($exception['message'],$input, $name, $exception['id']);
+                    $rule_id = $e->getId();
+                    return $this->replaceWithCustomMessage($e, $name);
 
                 })
-                ->map(function ($message) {
+                ->map(function ($message) use ($name, $input) {
 
-                    if ( ! Str::endsWith($message, '.')) {
-
-                        $message .= '.';
-
-                    }
-
-                    return $message;
+                    return $this->replaceRawInputWithAttributeName($input, $name, $message);
 
                 })
+                ->map(function ($message) use ($name, $input, $rule_id) {
+
+                    return $this->swapOutPlaceHolders($message, $name, $input, $rule_id);
+                })
+                ->map(function ($message)  {
+
+                    return $this->addTrailingPoint($message);
+
+            })
                 ->values()
                 ->all();
 
             return $messages;
 
 
+        }
 
+        private function addTrailingPoint($message)
+        {
+
+            if ( ! Str::endsWith($message, '.') ) {
+
+                $message .= '.';
+
+            }
+
+            return $message;
+
+        }
+
+        private function swapOutPlaceHolders($message, $name, $input, $rule_id)
+        {
+
+            $message = $this->replaceCustomAttributeNames($message, $name, $rule_id);
+            $message = $this->replaceInputPlaceHolders($message, $input);
+
+            return $message;
+
+        }
+
+        private function replaceWithCustomMessage($e, $attribute_name)
+        {
+
+            return $this->custom_messages[$attribute_name] ?? $e->getMessage();
+
+        }
+
+        private function replaceRawInputWithAttributeName($input, $name, $message)
+        {
+
+            if ( ! is_scalar($input)) {
+
+                return $message;
+
+            }
+
+
+            return str_replace('"'.$input.'"', $name, $message);
         }
 
         private function normalizeRules(array $rules) : array
@@ -198,38 +242,34 @@
                     return Arr::wrap($rule);
 
                 })
-                ->flatMap(function (array $rule, $key) {
+                ->map(function (array $rule, $key) {
 
-                    /** @var v $v */
-                    $v = $rule[0];
 
-                    if (isset($rule[1])) {
+                    $optional = ($rule[1] ?? 'required') === 'optional';
 
-                        $this->custom_messages[$key] = $rule[1];
+                    if (isset($rule[2])) {
+
+                        $this->custom_messages[trim($key, '*')] = $rule[2];
+
                     }
 
-                    return [$key => $v];
+                    if ($optional) {
+
+                        return v::nullable($rule[0]);
+
+                    }
+
+                    return $rule[0];
+
 
                 })
                 ->all();
 
         }
 
-        private function replaceInputWithName($search_for, string $in, $replace_with ) {
+        private function replaceInputPlaceHolders($message, $input) {
 
-            return str_replace($search_for, $replace_with, $in);
-
-        }
-
-        private function replaceWithCustomMessage($message, $input, $name, $rule_id) : string
-        {
-
-            $message = $this->custom_messages[$name] ?? $message;
-
-            $message = (string) Str::of($message)
-                                   ->replace('{{input}}', $this->readable($input));
-
-            return $this->replaceCustomAttributeNames($message, $name, $rule_id);
+            return str_replace('[input]', $this->readable($input), $message);
 
         }
 
@@ -265,9 +305,9 @@
             $replacement = $this->global_message_replacements[$rule_id][2] ?? $name;
             $replacement = $this->replace_attributes[$name] ?? $replacement;
 
-            if (Str::contains($message, '{{attribute}}')) {
+            if (Str::contains($message, '[attribute]')) {
 
-                return str_replace('{{attribute}}', $replacement, $message);
+                return str_replace('[attribute]', $replacement, $message);
             }
 
             return str_replace($name, $replacement, $message);
@@ -284,25 +324,42 @@
         private function inputToBeValidated(array $pool) : array
         {
 
-            $keys = array_keys($this->rules);
+            $keys = collect($this->rules)->keys()->reject(function ($key) {
+
+                return is_int($key);
+
+            })->all();
 
             $validate = [];
 
             foreach ($keys as $key) {
 
-                $validate[$key] = Arr::get($pool, $key);
+                $key = trim($key, '*');
+
+                Arr::set($validate, $key, Arr::get($pool, $key));
 
             }
 
-            return $validate;
+            return Arr::removeNullRecursive($validate);
+
 
         }
 
-        private function replaceInputWithPlaceholder( $search_for, string $in)
+        private function buildRuleInput($key, array $complete_input)
         {
 
-            return str_replace('"'.$search_for.'"', '{{input}}', $in);
+            if (Str::startsWith($key, '*')) {
+
+                $complete_input['__mapped_key'] = trim($key, '*');
+
+                return $complete_input;
+
+            }
+
+            return Arr::get($complete_input, $key);
 
         }
+
+
 
     }

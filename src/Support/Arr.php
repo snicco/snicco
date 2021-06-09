@@ -150,4 +150,36 @@
 
         }
 
+        public static function removeNullRecursive(array $validate) : array
+        {
+            return self::walkRecursiveRemove($validate, function ($value) {
+
+                return $value === null || $value === '';
+
+            });
+        }
+
+        public static function walkRecursiveRemove (array $array, callable $callback) : array
+        {
+
+            foreach  ($array as $key => $value ) {
+
+                if ( is_array($value) ) {
+
+                    $array[$key] = call_user_func([self::class, 'walkRecursiveRemove'], $value, $callback);
+
+                } else {
+
+                    if ($callback($value, $key)) {
+
+                        unset($array[$key]);
+
+                    }
+                }
+            }
+
+            return $array;
+        }
+
+
     }
