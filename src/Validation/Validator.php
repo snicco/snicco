@@ -7,6 +7,8 @@
     namespace WPEmerge\Validation;
 
     use Respect\Validation\Exceptions\ValidationException;
+    use Respect\Validation\Rules\AbstractRule;
+    use Respect\Validation\Rules\Key;
     use Respect\Validation\Rules\Not;
     use Respect\Validation\Validator as v;
     use WPEmerge\Support\Arr;
@@ -62,31 +64,38 @@
 
         }
 
+        private function isNested($input_name) : bool
+        {
+
+            return Str::contains($input_name, '.');
+
+        }
+
         public function validate(?array $input = null) : array
         {
 
             $pool = $input ?? $this->input;
 
-            if ( ! $pool ) {
+            if ( ! $pool) {
 
                 throw new \LogicException('No input provided for validation');
 
             }
 
-            $validate = $this->inputToBeValidated($pool);
+            $pool = $this->inputToBeValidated($pool);
 
-            foreach ($this->rules as $key => $rule) {
+            foreach ($this->rules as $key => $validator) {
 
-                /** @var v $rule */
+                /** @var v $validator */
                 try {
 
-                    $input = $validate[$key] ?? null;
+                    $this->giveFullInputToRules($validator, $pool);
 
-                    $valid = $rule->validate($input);
+                    $valid = $validator->validate($pool);
 
                     if ( ! $valid) {
 
-                        $rule->assert($input);
+                        $validator->assert($input);
 
                     }
 
@@ -107,7 +116,7 @@
 
             }
 
-            return $validate;
+            return $pool;
 
         }
 
@@ -137,8 +146,9 @@
         private function addToErrors(ValidationException $e, $key, $input)
         {
 
+            $messages = $e->getMessages();
 
-            $messages = $this->reformatMessages($e, $key, $input);
+            // $messages = $this->reformatMessages($e, $key, $input);
 
             Arr::set($this->errors, $key, ['input' => $input, 'messages' => $messages]);
 
@@ -159,6 +169,7 @@
 
                 })
                 ->map(function (array $exception) use ($input) {
+
                     return [
                         'id' => $exception['id'],
                         'message' => $this->replaceInputWithPlaceholder($input, $exception['message']),
@@ -166,7 +177,7 @@
                 })
                 ->map(function (array $exception) use ($input, $name) {
 
-                    return $this->replaceWithCustomMessage($exception['message'],$input, $name, $exception['id']);
+                    return $this->replaceWithCustomMessage($exception['message'], $input, $name, $exception['id']);
 
                 })
                 ->map(function ($message) {
@@ -186,10 +197,36 @@
             return $messages;
 
 
-
         }
 
         private function normalizeRules(array $rules) : array
+        {
+
+            return collect($rules)
+                ->map(function ($rule) {
+
+                    return Arr::wrap($rule);
+
+                })
+                ->map(function (array $rule, $input_name) {
+
+
+                    $value = $rule[1] ?? 'required';
+                    $optional = $value === 'optional';
+                    $nested = $this->isNested($input_name);
+
+                    $method = $nested ? 'keyNested' : 'key';
+
+                    return v::$method($input_name, $rule[0], ! $optional);
+
+
+                })
+                ->all();
+
+
+        }
+
+        private function _normalizeRules(array $rules) : array
         {
 
             return collect($rules)
@@ -215,7 +252,8 @@
 
         }
 
-        private function replaceInputWithName($search_for, string $in, $replace_with ) {
+        private function replaceInputWithName($search_for, string $in, $replace_with)
+        {
 
             return str_replace($search_for, $replace_with, $in);
 
@@ -284,25 +322,61 @@
         private function inputToBeValidated(array $pool) : array
         {
 
-            $keys = array_keys($this->rules);
+            $keys = collect($this->rules)->keys()->reject(function ($key) {
+
+                return is_int($key);
+
+            })->all();
+
 
             $validate = [];
 
             foreach ($keys as $key) {
 
-                $validate[$key] = Arr::get($pool, $key);
+                Arr::set($validate, $key, Arr::get($pool, $key));
 
             }
 
-            return $validate;
+            return $this->stripNullValues($validate);
 
         }
 
-        private function replaceInputWithPlaceholder( $search_for, string $in)
+        public function stripNullValues($input) : array
+        {
+
+            foreach ($input as &$value) {
+
+                if (is_array($value)) {
+
+                    $value = call_user_func([$this, 'stripNullValues'], $value );
+
+                }
+            }
+
+            return array_filter($input, function ($value) {
+
+                return $value !== null;
+
+            });
+        }
+
+        private function replaceInputWithPlaceholder($search_for, string $in)
         {
 
             return str_replace('"'.$search_for.'"', '{{input}}', $in);
 
         }
+
+        private function giveFullInputToRules(v $validators, array $pool)
+        {
+
+            foreach ($validators->getRules() as $rules) {
+
+                $rules->
+
+            }
+
+        }
+
 
     }
