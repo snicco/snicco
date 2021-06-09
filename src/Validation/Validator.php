@@ -336,7 +336,7 @@
 
                 $key = trim($key, '*');
 
-                Arr::set($validate, $key, Arr::get($pool, $key));
+                Arr::set($validate, $key, trim(Arr::get($pool, $key)));
 
             }
 

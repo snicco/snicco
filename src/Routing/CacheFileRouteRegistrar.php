@@ -47,8 +47,6 @@
 
             if ($this->cacheFilesCreates($dir)) {
                 return;
-            } else {
-                $this->clearRouteCache($dir);
             }
 
             $this->createCacheDirIfNotExists($dir);
