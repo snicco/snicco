@@ -56,6 +56,7 @@
             $this->container = $container;
             $this->logger = $logger;
             $this->response = $response_factory;
+
         }
 
         public function handleException($exception, $in_routing_flow = false)
@@ -129,7 +130,7 @@
 
             }
 
-            return $this->response->html('Internal Server Error', 500);
+            return $this->response->error(new HttpException(500, 'Internal Server Error'));
 
         }
 
@@ -141,7 +142,7 @@
                 /** @var Response $response */
                 $response = $this->container->call([$e, 'render']);
 
-                if ( ! $response instanceof Response) {
+                if ( ! $response instanceof Response ) {
 
                     return $this->defaultResponse();
 
@@ -208,7 +209,7 @@
 
             if ( $this->is_ajax ) {
 
-                return $this->response->json( $e->getMessageForHumans() ?? '' , (int) $e->getStatusCode() );
+                return $this->response->json( $e->getMessage() ,  $e->getStatusCode() );
 
             }
 

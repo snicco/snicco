@@ -11,9 +11,10 @@
 	class AuthorizationException extends HttpException {
 
 
-	    public function __construct( ?string $message = null, Throwable $previous = null, ?int $code = 0)
+	    public function __construct( ?string $message = 'You are not allowed to perform this action.', Throwable $previous = null, ?int $code = 0)
         {
             parent::__construct(403, $message, $previous, $code);
+
         }
 
 

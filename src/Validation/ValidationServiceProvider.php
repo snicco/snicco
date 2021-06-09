@@ -7,6 +7,8 @@
     namespace WPEmerge\Validation;
 
     use WPEmerge\Contracts\ServiceProvider;
+    use WPEmerge\Session\Middleware\ShareSessionWithView;
+    use WPEmerge\Validation\Middleware\ShareValidatorWithRequest;
 
     class ValidationServiceProvider extends ServiceProvider
     {
@@ -38,9 +40,9 @@
         private function bindConfig()
         {
 
-            $this->config->extend('validation.attributes', []);
             $this->config->extend('validation.messages', []);
-
+            $this->config->extend('middleware.groups.global', [ShareValidatorWithRequest::class]);
+            $this->config->extend('middleware.unique', [ShareValidatorWithRequest::class]);
         }
 
     }

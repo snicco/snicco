@@ -6,7 +6,6 @@
 
     namespace WPEmerge\Http\Psr7;
 
-    use Contracts\ContainerAdapter;
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Message\UriInterface;
     use WPEmerge\Events\IncomingAdminRequest;
@@ -17,12 +16,15 @@
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
     use WPEmerge\Support\VariableBag;
+    use WPEmerge\Http\Psr7\InteractsWithInput;
     use WPEmerge\Validation\Validator;
 
     class Request implements ServerRequestInterface
     {
+
         use ImplementsPsr7Request;
         use InspectsRequest;
+        use InteractsWithInput;
 
         public function __construct(ServerRequestInterface $psr_request)
         {
@@ -31,7 +33,8 @@
 
         }
 
-        public function withType ( string $type ) {
+        public function withType(string $type)
+        {
 
             return $this->withAttribute('type', $type);
 
@@ -53,59 +56,74 @@
          */
         public function withRoutingUri(UriInterface $uri)
         {
+
             return $this->withAttribute('routing.uri', $uri);
         }
 
-        public function withRoutingResult(RoutingResult $routing_result) {
+        public function withRoutingResult(RoutingResult $routing_result)
+        {
 
             return $this->withAttribute('routing.result', $routing_result);
 
         }
 
-        public function filtersWpQuery( ?bool $set = null)
+        public function filtersWpQuery(?bool $set = null)
         {
-            if ( $set ) {
+
+            if ($set) {
 
                 return $this->withAttribute('filtered_wp_query', true);
 
             }
 
-            return $this->getAttribute('filtered_wp_query', false );
+            return $this->getAttribute('filtered_wp_query', false);
 
         }
 
-        public function withCookies(array $cookies) {
+        public function withCookies(array $cookies)
+        {
 
             return $this->withAttribute('cookies', new VariableBag($cookies));
 
         }
 
-        public function withSession (Session $session_store) {
+        public function withSession(Session $session_store)
+        {
 
             return $this->withAttribute('session', $session_store);
 
         }
 
-        public function withUser(\WP_User $user)
+        public function withUser(int $id)
         {
-
-            return $this->withAttribute('_current_user', $user);
+            return $this->withAttribute('_current_user_id', $id);
 
         }
 
         public function withValidator(Validator $user)
         {
+
             return $this->withAttribute('_validator', $user);
         }
 
-        public function getValidator(Validator $user) :Validator
+        public function getValidator() : Validator
         {
-            return $this->getAttribute('_validator');
+            $v = $this->getAttribute('_validator');
+
+            if ( ! $v instanceof Validator) {
+                throw new \RuntimeException('A validator instance has not been set on the request.');
+            }
+
+            return $v;
+
         }
 
-        public function getUser () :\WP_User {
+        public function getUser(bool $by_id = false )
+        {
 
-            return $this->getAttribute('_current_user');
+            $id = $this->getAttribute('_current_user_id');
+
+            return $by_id ? $id : WP::currentUser();
 
         }
 
@@ -117,7 +135,12 @@
         public function getFullPath() : string
         {
 
-           return $this->getRequestTarget();
+            $fragment = $this->getUri()->getFragment();
+
+            return ($fragment !== '')
+                ? $this->getRequestTarget() . '#' .$fragment
+                : $this->getRequestTarget();
+
 
         }
 
@@ -135,10 +158,13 @@
 
         }
 
-        public function getRoutingPath () : string
+        /**
+         * @internal
+         */
+        public function getRoutingPath() : string
         {
 
-            $uri = $this->getAttribute('routing.uri', null);
+            $uri = $this->getAttribute('routing.uri');
 
             /** @var UriInterface $uri */
             $uri = $uri ?? $this->getUri();
@@ -154,11 +180,12 @@
 
         }
 
-        public function getQueryString (string $key = null, $default = '') :string {
+        public function getQueryString(string $key = null, $default = '') : string
+        {
 
             $query_string = $this->getUri()->getQuery();
 
-            if ( ! $key ) {
+            if ( ! $key) {
                 return $query_string;
             }
 
@@ -168,10 +195,10 @@
 
         }
 
-        public function getQuery(string $name = null , $default = null )
+        public function getQuery(string $name = null, $default = null)
         {
 
-            if ( ! $name ) {
+            if ( ! $name) {
 
                 return $this->getQueryParams() ?? [];
 
@@ -181,20 +208,21 @@
 
         }
 
-        public function getBody(string $name = null , $default = null )
+        public function getBody(string $name = null, $default = null)
         {
 
-            if ( ! $name ) {
+            if ( ! $name) {
 
                 return $this->getParsedBody() ?? [];
 
             }
 
-            return Arr::get($this->getParsedBody(),$name, $default);
+            return Arr::get($this->getParsedBody(), $name, $default);
 
         }
 
-        public function getRoutingResult () :RoutingResult {
+        public function getRoutingResult() : RoutingResult
+        {
 
             return $this->getAttribute('routing.result', new RoutingResult(null, []));
 
@@ -202,28 +230,40 @@
 
         public function getCookies() : VariableBag
         {
+
             return $this->getAttribute('cookies', new VariableBag());
         }
 
-        public function getSession () :?Session {
+        public function getSession() : Session
+        {
 
-            return $this->getAttribute('session');
+            $session = $this->getAttribute('session');
+
+            if ( ! $session instanceof Session) {
+                throw new \RuntimeException('A session has not been set on the request.');
+            }
+
+            return $session;
 
         }
 
-        public function isRouteable() :bool {
+        /**
+         * @internal
+         */
+        public function isRouteable() : bool
+        {
 
-            $script = trim($this->getServerParams()['SCRIPT_NAME'] ?? '', DIRECTORY_SEPARATOR);
+            $script = $this->getLoadingScript();
 
             // All public web requests
-            if ( $script === 'index.php') {
+            if ($script === 'index.php') {
 
                 return true;
 
             }
 
             // A request to the admin dashboard. We can catch that within admin_init
-            if (  Str::contains($script, WP::wpAdminFolder() ) ) {
+            if (Str::contains($script, $this->getAttribute('_wp_admin_folder'))) {
 
                 return true;
 
@@ -236,18 +276,35 @@
 
         }
 
-        public function isWpAdmin() :bool {
+        public function getLoadingScript() :string
+        {
 
-            return $this->getType() === IncomingAdminRequest::class;
-
-        }
-
-        public function isWpAjax() :bool {
-
-            return $this->getType() === IncomingAjaxRequest::class;
+            return trim($this->getServerParams()['SCRIPT_NAME'] ?? '', DIRECTORY_SEPARATOR);
 
         }
 
+        public function isWpAdmin() : bool
+        {
+
+            // A request to the admin dashboard. We can catch that within admin_init
+            return Str::contains($this->getLoadingScript(), $this->getAttribute('_wp_admin_folder')) && ! $this->isWpAjax();
+
+
+        }
+
+        public function isWpAjax() : bool
+        {
+
+            return $this->getLoadingScript() === 'wp-admin/admin-ajax.php';
+
+        }
+
+        public function isWpFrontEnd() : bool
+        {
+
+            return $this->getLoadingScript() === 'index.php';
+
+        }
 
 
     }

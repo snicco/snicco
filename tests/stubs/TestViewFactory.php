@@ -17,7 +17,9 @@
 
 		public function make( $views ) : ViewInterface {
 
-            return new TestView($views);
+		    $view = is_array($views) ? $views[0] : $views;
+
+            return new TestView($view);
 
 		}
 

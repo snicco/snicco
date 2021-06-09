@@ -43,8 +43,9 @@
 
 		}
 
-		public function toResponsable() : ResponseInterface {
+		public function toResponsable() {
 
+		    return $this->toString();
 
 		}
 

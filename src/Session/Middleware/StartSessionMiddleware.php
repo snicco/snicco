@@ -40,6 +40,8 @@
          */
         private $cookies;
 
+        private $session_initialized = false;
+
         public function __construct(Session $session_store, Cookies $cookies, array $config)
         {
 
@@ -54,16 +56,15 @@
 
             $this->collectGarbage();
 
-            $session = $request->getSession();
 
-            if ( $session === null ) {
+            if ( ! $this->session_initialized ) {
 
                 $session = $this->getSession($request);
                 $this->startSession($session, $request);
 
             }
 
-            return $this->handleStatefulRequest($request, $session, $next);
+            return $this->handleStatefulRequest($request, $this->session_store, $next);
 
 
         }
@@ -71,12 +72,16 @@
         private function getSession(Request $request) : Session
         {
 
+
+
             $cookies = $request->getCookies();
             $cookie_name = $this->session_store->getName();
 
             $session_id = $cookies->get($cookie_name, '');
 
             $this->session_store->setId($session_id);
+
+            $this->session_initialized = true;
 
             return $this->session_store;
 

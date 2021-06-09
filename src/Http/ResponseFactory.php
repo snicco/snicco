@@ -23,6 +23,10 @@
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Http\Responses\WpQueryFilteredResponse;
 
+    /**
+     * @todo either this class or the Response class need a prepare method to fix obvious mistakes.
+     * See implementation in Symfony Response.
+     */
     class ResponseFactory implements ResponseFactoryInterface
     {
 
@@ -105,11 +109,13 @@
 
         public function null() : NullResponse
         {
+
             return new NullResponse($this->response_factory->createResponse(204));
 
         }
- 
-        public function queryFiltered () : WpQueryFilteredResponse {
+
+        public function queryFiltered() : WpQueryFilteredResponse
+        {
 
             return new WpQueryFilteredResponse($this->response_factory->createResponse(200));
 
@@ -154,30 +160,40 @@
 
         }
 
-        public function redirect() :AbstractRedirector
+        public function redirect() : AbstractRedirector
         {
+
             return $this->redirector;
         }
 
-        public function redirectToLogin( bool $reauth = false, string $redirect_on_login = '', int $status_code = 302) : RedirectResponse
+        public function redirectToLogin(bool $reauth = false, string $redirect_on_login = '', int $status_code = 302) : RedirectResponse
         {
-           return $this->redirector->toLogin($redirect_on_login, $reauth, $status_code);
+
+            return $this->redirector->toLogin($redirect_on_login, $reauth, $status_code);
         }
 
-        public function signedLogout( int $user_id, string $redirect_on_logout = '/', $status = 302 ) : RedirectResponse
+        public function signedLogout(int $user_id, string $redirect_on_logout = '/', $status = 302) : RedirectResponse
         {
 
-            return $this->redirector->signedLogout( $user_id, $redirect_on_logout, $status );
+            return $this->redirector->signedLogout($user_id, $redirect_on_logout, $status);
 
         }
 
         public function invalidResponse() : InvalidResponse
         {
+
             return new InvalidResponse($this->response_factory->createResponse(500));
+        }
+
+        public function noContent() : ResponseInterface
+        {
+
+            return $this->make(204);
         }
 
         public function createResponse(int $code = 200, string $reasonPhrase = '') : ResponseInterface
         {
+
             return $this->response_factory->createResponse($code, $reasonPhrase);
         }
 
@@ -199,21 +215,22 @@
             return $this->stream_factory->createStreamFromResource($resource);
         }
 
+        /** @todo needs tests */
         public function error(HttpException $e) : Response
         {
 
-            if ( $e->isAjax() ) {
+            if ($e->isAjax()) {
 
                 return $this->json(
-                    $e->getMessageForHumans(),
-                    (int) $e->getStatusCode()
+                    $e->getMessage(),
+                    $e->getStatusCode()
                 );
 
             }
 
-            $views = ['error', 'index'];
+            $views = [(string) $e->getStatusCode(), 'error', 'index'];
 
-            if ( WP::isAdmin() ) {
+            if (WP::isAdmin()) {
 
                 $views = collect($views)->map(function ($view) {
 
@@ -224,27 +241,37 @@
             }
 
             $view = $this->view->make($views)->with([
-                    'code'=> $e->getStatusCode(),
-                    'message' => $e->getMessageForHumans(),
-                ]);
+                'status_code' => $e->getStatusCode(),
+                'message' => $e->getMessage(),
+            ]);
 
             try {
 
-                return $this->toResponse($view)->withStatus( (int) $e->getStatusCode() );
+                return $this->toResponse($view)->withStatus($e->getStatusCode());
 
             }
-            catch (ViewException $e) {
+            catch (\Throwable $e) {
 
-                return $this->toResponse($this->view->make('500'))->withStatus(500);
+                try {
+
+                    return $this->toResponse(
+
+                        $this->view->make('error')
+                                   ->with(['status_code' => 500, 'message', 'Server Error'])
+
+                    )->withStatus(500);
+
+                }
+                catch (\Throwable $e) {
+
+                    return $this->html('Server Error')->withStatus(500);
+
+                }
+
 
             }
 
 
-        }
-
-        public function noContent() : ResponseInterface
-        {
-            return $this->createResponse();
         }
 
 
