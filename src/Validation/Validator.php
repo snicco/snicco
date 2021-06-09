@@ -336,7 +336,10 @@
 
                 $key = trim($key, '*');
 
-                Arr::set($validate, $key, trim(Arr::get($pool, $key)));
+                $value = Arr::get($pool, $key);
+                $value = is_string($value) ? trim($value) : $value;
+
+                Arr::set($validate, $key, $value);
 
             }
 

@@ -20,7 +20,11 @@
         /** @test */
 		public function by_default_the_production_error_handler_is_used() {
 
-            $this->newTestApp([], true );
+            $this->newTestApp([
+                'exception_handling' => [
+                    'enabled' =>true
+                ]
+            ], true );
 
             $this->assertInstanceOf(
 				ProductionErrorHandler::class,
@@ -34,7 +38,7 @@
 
             $this->newTestApp([
                 'exception_handling' => [
-                    'enable' => false,
+                    'enabled' => false,
                 ]
             ], true );
 
@@ -63,7 +67,7 @@
 
             $this->newTestApp([
                 'exception_handling' => [
-                    'enable' => true,
+                    'enabled' => true,
                     'debug'  => true,
                 ]
             ], true );
@@ -81,7 +85,7 @@
 
             $this->newTestApp([
                 'exception_handling' => [
-                    'enable' => true,
+                    'enabled' => true,
                 ],
                 'providers' => [
                     MyProvider::class

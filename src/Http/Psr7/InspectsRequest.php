@@ -6,6 +6,8 @@
 
     namespace WPEmerge\Http\Psr7;
 
+    use WPEmerge\Support\Str;
+
     trait InspectsRequest
     {
 
@@ -59,7 +61,7 @@
 
         }
 
-        private function isMethod (string $method) : bool
+        private function isMethod(string $method) : bool
         {
 
             return strtoupper($this->getMethod()) === strtoupper($method);
@@ -73,14 +75,13 @@
 
         }
 
-        public function isMethodSafe () : bool
+        public function isMethodSafe() : bool
         {
 
             return in_array($this->getMethod(), ['GET', 'HEAD', 'OPTIONS', 'TRACE']);
 
         }
 
-        /** @todo ajax detection needs improvement. See Illuminate Request */
         public function isAjax() : bool
         {
 
@@ -88,9 +89,92 @@
 
         }
 
-        public function isXmlHttpRequest() :bool
+        public function isSendingJson() : bool
         {
+
+            return Str::contains($this->getHeaderLine('Content-Type'), ['/json', '+json']);
+
+        }
+
+        public function wantsJson() : bool
+        {
+
+            $accepts = $this->getAcceptableContentTypes(false);
+
+            return Str::contains($accepts, ['/json', '+json']);
+
+        }
+
+        public function isXmlHttpRequest() : bool
+        {
+
             return 'XMLHttpRequest' == $this->getHeaderLine('X-Requested-With');
+        }
+
+        public function getAcceptableContentTypes(bool $as_array = true)
+        {
+
+            return $as_array ? $this->getHeader('Accept') : $this->getHeaderLine('Accept');
+        }
+
+        public function accepts(string $content_type) : bool
+        {
+
+            $accepts = $this->getAcceptableContentTypes();
+
+            return $this->matchesType($content_type, $accepts);
+
+        }
+
+        public function acceptsHtml() : bool
+        {
+
+            return $this->accepts('text/html');
+
+        }
+
+        public function acceptsOneOf(array $content_types ) : bool
+        {
+
+            $accepts = $this->getAcceptableContentTypes();
+
+            foreach ($content_types as $content_type) {
+
+                if ( $this->matchesType($content_type, $accepts) ) {
+                    return true;
+                }
+
+            }
+
+            return false;
+
+        }
+
+        private function matchesType(string $match_against, array $content_types) : bool
+        {
+
+
+            if ($content_types === []) {
+                return true;
+            }
+
+            foreach ($content_types as $content_type) {
+
+                if ($content_type === '*/*' || $content_type === '*') {
+                    return true;
+                }
+
+                if ($content_type === strtok($match_against, '/').'/*') {
+
+                    return true;
+
+                }
+
+            }
+
+            return in_array($match_against, $content_types);
+
+
         }
 
     }

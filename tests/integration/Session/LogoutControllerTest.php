@@ -13,12 +13,10 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
-    use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Facade\WP;
     use WPEmerge\Routing\RouteRegistrar;
     use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Session\Exceptions\InvalidCsrfTokenException;
     use WPEmerge\Session\Exceptions\InvalidSignatureException;
     use WPEmerge\Session\SessionServiceProvider;
 

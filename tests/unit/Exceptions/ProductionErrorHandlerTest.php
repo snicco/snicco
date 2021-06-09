@@ -8,12 +8,14 @@
 
 	use Exception;
 	use Tests\helpers\AssertsResponse;
+    use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\UnitTest;
 	use Tests\stubs\TestException;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\ResponseFactory;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
 	use WPEmerge\ExceptionHandling\ProductionErrorHandler;
@@ -26,6 +28,7 @@
 		use AssertsResponse;
         use CreateUrlGenerator;
         use CreateRouteCollection;
+        use CreateDefaultWpApiMocks;
 
         protected function beforeTestRun()
         {
@@ -34,13 +37,16 @@
             ApplicationEvent::fake();
             $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
             $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
+            WP::setFacadeContainer($this->createContainer());
 
         }
 
         protected function beforeTearDown()
         {
 
+            WP::reset();
             ApplicationEvent::setInstance(null);
+            \Mockery::close();
 
         }
 
@@ -56,7 +62,7 @@
 			$response = $handler->transformToResponse( new TestException('Sensitive Info') );
 
 			$this->assertInstanceOf(Response::class, $response);
-            $this->assertOutput('Internal Server Error', $response);
+            $this->assertOutput('VIEW:500,CONTEXT:[status_code=>500,message=>Internal Server Error]', $response);
             $this->assertStatusCode(500 , $response);
 			ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
 
@@ -71,7 +77,7 @@
 			$handler->handleException( new TestException('Sensitive Info') );
 
 			ApplicationEvent::assertDispatched(UnrecoverableExceptionHandled::class);
-            $this->expectOutputString('Internal Server Error');
+            $this->expectOutputString('VIEW:500,CONTEXT:[status_code=>500,message=>Internal Server Error]');
 
 		}
 
@@ -102,7 +108,7 @@
 			$this->assertInstanceOf(Response::class, $response);
 			$this->assertStatusCode(500, $response);
 			$this->assertContentType('text/html', $response);
-			$this->assertOutput('Internal Server Error', $response);
+			$this->assertOutput('VIEW:500,CONTEXT:[status_code=>500,message=>Internal Server Error]', $response);
 
 
             ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
@@ -137,7 +143,7 @@
             $this->assertContentType('text/html', $response);
 
             // We rethrow the exception.
-            $this->assertOutput('Internal Server Error', $response);
+            $this->assertOutput('VIEW:500,CONTEXT:[status_code=>500,message=>Internal Server Error]', $response);
 
             ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
 

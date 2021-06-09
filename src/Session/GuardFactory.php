@@ -23,8 +23,7 @@
                 function () {
 
                     throw new InvalidCsrfTokenException(
-                        400,
-                        'The Link you followed expired.'
+                        'The Link you followed expired.',
                     );
                 },
                 1,

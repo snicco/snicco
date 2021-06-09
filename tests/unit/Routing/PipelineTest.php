@@ -286,7 +286,7 @@
         {
 
             $code = $e instanceof HttpException ? $e->getStatusCode() : 500;
-            $body = $e instanceof HttpException ? $e->getMessageForHumans() : 'Internal Server Error';
+            $body = $e instanceof HttpException ? $e->getMessage() : 'Internal Server Error';
             $body = $this->psrStreamFactory()->createStream($body);
 
             return new AppResponse(

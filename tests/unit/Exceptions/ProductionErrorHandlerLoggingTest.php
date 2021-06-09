@@ -12,6 +12,7 @@
     use Psr\Log\LogLevel;
     use SniccoAdapter\BaseContainerAdapter;
     use Tests\helpers\AssertsResponse;
+    use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\UnitTest;
@@ -30,6 +31,8 @@
         use AssertsResponse;
         use CreateUrlGenerator;
         use CreateRouteCollection;
+        use CreateDefaultWpApiMocks;
+
 
         /**
          * @var BaseContainerAdapter
@@ -230,6 +233,7 @@
             $logger->assertHasLogEntry('Foobar', ['foo' => 'bar', 'exception' => $e]);
 
         }
+
 
         private function newErrorHandler(bool $is_ajax = false) : ProductionErrorHandler
         {

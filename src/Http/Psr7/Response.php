@@ -28,6 +28,13 @@
 
         }
 
+        protected function new(ResponseInterface $new_psr_response) : Response
+        {
+
+            return new static($new_psr_response);
+
+        }
+
         public function html(StreamInterface $html) : Response
         {
 
@@ -43,14 +50,6 @@
                         ->withBody($json);
 
         }
-
-        protected function new(ResponseInterface $new_psr_response) : Response
-        {
-
-            return new static($new_psr_response);
-
-        }
-
 
 
     }

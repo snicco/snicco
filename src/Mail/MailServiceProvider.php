@@ -25,7 +25,6 @@
 
         public function bootstrap() : void
         {
-            // TODO: Implement bootstrap() method.
         }
 
         private function bindMailer()

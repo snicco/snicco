@@ -15,23 +15,12 @@
     class SetRequestAttributes extends Middleware
     {
 
-        /**
-         * @var Validator
-         */
-        private $validator;
-
-        public function __construct(Validator $validator)
-        {
-
-            $this->validator = $validator;
-        }
-
         public function handle(Request $request, Delegate $next)
         {
 
             $request = $request
-                ->withUser(WP::currentUser())
-                ->withValidator($this->validator);
+                ->withUser(WP::userId())
+                ->withAttribute('_wp_admin_folder', WP::wpAdminFolder());
 
             return $next($request);
 

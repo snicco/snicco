@@ -7,8 +7,6 @@
 	namespace WPEmerge\Contracts;
 
 
-	use WPEmerge\Http\HttpResponseFactory;
-
     interface ResponsableInterface {
 
 		/**
@@ -17,7 +15,7 @@
          *
          * @return mixed
          *
-         *@see HttpResponseFactory::toResponse()
+         * @see HttpResponseFactory::toResponse()
 		 *
          */
 		public function toResponsable() ;

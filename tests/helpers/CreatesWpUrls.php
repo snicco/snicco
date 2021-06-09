@@ -26,6 +26,8 @@
 
             $request = TestRequest::fromFullUrl($method, $this->adminUrlTo($admin_page, $parent_file));
 
+            $request = TestRequest::withServerParams($request,['SCRIPT_NAME'=> 'wp-admin/index.php']);
+
             return $request->withQueryParams( ['page' => $admin_page] );
 
         }
@@ -34,6 +36,9 @@
         {
 
             $request = TestRequest::fromFullUrl($method, $this->ajaxUrl($path));
+
+            $request = TestRequest::withServerParams($request,['SCRIPT_NAME'=> 'wp-admin/admin-ajax.php']);
+
 
             return $request->withParsedBody(['action' => $action]);
 
