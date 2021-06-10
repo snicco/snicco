@@ -6,10 +6,17 @@
 
     namespace WPEmerge\Http\Psr7;
 
+    use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
 
     trait InspectsRequest
     {
+
+        public function getRealMethod() {
+
+            return Arr::get($this->getServerParams(), 'REQUEST_METHOD', 'GET');
+
+        }
 
         public function isGet() : bool
         {

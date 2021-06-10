@@ -67,7 +67,7 @@
 
             if ( $request->isWpAjax() ) {
 
-                $action = $request->getBody('action', $request->getQuery('action'));
+                $action = $request->getFromBody('action', $request->getQuery('action'));
 
                 if ( ! $action ) {
                     return $path;
