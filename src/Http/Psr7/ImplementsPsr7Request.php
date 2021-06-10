@@ -143,8 +143,7 @@
 
         public function getBody()
         {
-
-            return $this->psr_request->getFromBody();
+            return $this->psr_request->getBody();
         }
 
         public function getRequestTarget()
