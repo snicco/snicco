@@ -6,11 +6,14 @@
 
     namespace Tests\unit\Http;
 
+    use Respect\Validation\Validator as v;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Session;
+    use WPEmerge\Validation\Exceptions\ValidationException;
+    use WPEmerge\Validation\Validator;
 
     class InteractsWithInputTest extends UnitTest
     {
@@ -309,6 +312,91 @@
             $this->expectException(\RuntimeException::class);
 
             $this->request->old();
+
+        }
+
+        public function testValidate()
+        {
+
+            $request = $this->request->withQueryParams(
+                [
+                    'foo' => 'bar',
+                    'baz' => 'biz',
+                    'team' => [
+                        'player' => 'calvin',
+                        'coach' => 'marlon',
+                        'ceo' => 'john'
+                    ],
+                ]
+
+            );
+            $request = $request->withValidator(new Validator());
+
+            $validated = $request->validate([
+                'foo' => v::equals('bar'),
+                'baz' => v::equals('biz'),
+                'team.player' => v::equals('calvin'),
+                'team' => v::contains('marlon'),
+            ]);
+
+            $expected = [
+                'foo' => 'bar',
+                'baz' => 'biz',
+                'team' => [
+                    'player' => 'calvin',
+                    'coach' => 'marlon',
+                    'ceo' => 'john'
+                ],
+            ];
+
+            $this->assertSame($expected, $validated);
+
+            $this->expectException(ValidationException::class);
+
+            $request->validate([
+                'foo' => v::equals('bar'),
+                'baz' => v::equals('biz'),
+                'team.player' => v::equals('calvin'),
+                'team' => v::contains('jeff'),
+            ]);
+
+
+        }
+
+        public function testValidateWithCustomMessages () {
+
+            $request = $this->request->withQueryParams(
+                [
+                    'team' => [
+                        'player' => 'calvin',
+                        'coach' => 'marlon',
+                        'ceo' => 'john'
+                    ],
+                ]
+
+            );
+            $request = $request->withValidator(new Validator());
+
+            try {
+
+                $rules = [
+                    'team.player' => [v::equals('john'), 'required', '[input] is not valid for [attribute]. Must be equal to john']
+                ];
+
+                $request->validate($rules, [
+                    'team.player' => 'The player'
+                ]);
+
+                $this->fail('Failed validation did not throw exception');
+
+            } catch ( ValidationException $e ) {
+
+                $errors = $e->getErrors()['team']['player']['messages'][0];
+
+                $this->assertSame('calvin is not valid for The player. Must be equal to john.', $errors);
+
+            }
+
 
         }
 
