@@ -12,7 +12,7 @@
     trait InspectsRequest
     {
 
-        public function getRealMethod() {
+        public function realMethod() {
 
             return Arr::get($this->getServerParams(), 'REQUEST_METHOD', 'GET');
 
@@ -103,10 +103,10 @@
 
         }
 
-        public function wantsJson() : bool
+        public function isExpectingJson() : bool
         {
 
-            $accepts = $this->getAcceptableContentTypes(false);
+            $accepts = $this->acceptableContentTypes(false);
 
             return Str::contains($accepts, ['/json', '+json']);
 
@@ -118,7 +118,7 @@
             return 'XMLHttpRequest' == $this->getHeaderLine('X-Requested-With');
         }
 
-        public function getAcceptableContentTypes(bool $as_array = true)
+        public function acceptableContentTypes(bool $as_array = true)
         {
 
             return $as_array ? $this->getHeader('Accept') : $this->getHeaderLine('Accept');
@@ -127,7 +127,7 @@
         public function accepts(string $content_type) : bool
         {
 
-            $accepts = $this->getAcceptableContentTypes();
+            $accepts = $this->acceptableContentTypes();
 
             return $this->matchesType($content_type, $accepts);
 
@@ -143,7 +143,7 @@
         public function acceptsOneOf(array $content_types ) : bool
         {
 
-            $accepts = $this->getAcceptableContentTypes();
+            $accepts = $this->acceptableContentTypes();
 
             foreach ($content_types as $content_type) {
 

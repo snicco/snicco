@@ -58,7 +58,7 @@
         }
 
         private function protectedUrl() :string {
-            return $this->requestToProtectedRoute()->getFullUrl();
+            return $this->requestToProtectedRoute()->fullUrl();
         }
 
         /** @test */

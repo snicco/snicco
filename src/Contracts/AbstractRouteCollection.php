@@ -59,7 +59,7 @@
 
             }
 
-            $path = rawurldecode( $request->getRoutingPath() );
+            $path = rawurldecode( $request->routingPath() );
 
             $result = $this->route_matcher->find($request->getMethod(), $path);
 

@@ -40,7 +40,7 @@
 
         public function methodOverride (Request $request) {
 
-            return $request->getFromBody($this->key(), $request->getMethod());
+            return $request->post($this->key(), $request->getMethod());
 
         }
 

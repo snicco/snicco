@@ -21,7 +21,7 @@
         {
 
             return parent::isSatisfied($request)
-                || $request->getQuery('action') === $this->expectedAction();
+                || $request->query('action') === $this->expectedAction();
 
 
         }
@@ -31,7 +31,7 @@
 
             $parent = parent::getArguments($request);
 
-            return ( count( $parent ) ) ? $parent : Arr::wrap($request->getQuery('action', []));
+            return ( count( $parent ) ) ? $parent : Arr::wrap($request->query('action', []));
 
 
         }

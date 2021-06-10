@@ -80,7 +80,7 @@
             $this->assertSame('FOO_GLOBAL', ob_get_clean());
             ApplicationEvent::assertDispatched(ResponseSent::class, function (ResponseSent $event) {
 
-                return $event->request->getType() === IncomingGlobalRequest::class;
+                return $event->request->type() === IncomingGlobalRequest::class;
 
             });
             HeaderStack::assertHasStatusCode(200);

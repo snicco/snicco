@@ -50,7 +50,7 @@
 
             $this->loginUser($user);
 
-            $session = $request->getSession();
+            $session = $request->session();
             $session->migrate();
             $session->confirmAuthUntil($this->lifetime_in_minutes);
 

@@ -63,15 +63,15 @@
         public function guest (string $path, $status = 302, array $query = [],  bool $secure = true, bool $absolute = true ) {
 
             $request = $this->generator->getRequest();
-            $session = $request->getSession();
+            $session = $request->session();
 
             $intended = $request->getMethod() === 'GET' && ! $request->isAjax()
-                ? $request->getFullUrl()
+                ? $request->fullUrl()
                 : $this->generator->previous('/', $session->getPreviousUrl('/'));
 
             if ($intended) {
 
-                $request->getSession()->setIntendedUrl($intended);
+                $request->session()->setIntendedUrl($intended);
 
             }
 

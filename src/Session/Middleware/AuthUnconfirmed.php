@@ -36,7 +36,7 @@
         public function handle(Request $request, Delegate $next)
         {
 
-            $session = $request->getSession();
+            $session = $request->session();
 
             if ( $session->hasValidAuthConfirmToken() ) {
 

@@ -78,7 +78,6 @@
 
         public function withQueryParams(array $query)
         {
-
             return $this->new($this->psr_request->withQueryParams($query));
         }
 

@@ -39,7 +39,7 @@
 
             }
 
-            $url = $this->url ?? WP::loginUrl($request->getFullUrl(), true);
+            $url = $this->url ?? WP::loginUrl($request->fullUrl(), true);
 
             if ($request->isAjax()) {
 

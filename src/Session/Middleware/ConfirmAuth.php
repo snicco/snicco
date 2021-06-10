@@ -30,7 +30,7 @@
         public function handle(Request $request, Delegate $next)
         {
 
-            $session = $request->getSession();
+            $session = $request->session();
 
             if ( ! $session->hasValidAuthConfirmToken()  ) {
 
@@ -40,7 +40,7 @@
 
                 }
 
-                $session->setIntendedUrl($request->getFullUrl());
+                $session->setIntendedUrl($request->fullUrl());
 
                 return $this->response_factory->redirect()->to('/auth/confirm');
 

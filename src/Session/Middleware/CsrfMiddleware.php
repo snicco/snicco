@@ -54,7 +54,7 @@
                 // Slim assumes that all csrf tokens are stored in one $_SESSION array but for use
                 // one active session only stores one token for the current user so that
                 // when validation fails we want to clear everything out.
-                $request->getSession()->forget('csrf');
+                $request->session()->forget('csrf');
 
                 // Let error handling process the exception.
                 throw $e;

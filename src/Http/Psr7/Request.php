@@ -30,18 +30,6 @@
 
         }
 
-        public function getFromBody(string $name = null, $default = null)
-        {
-            if ( ! $name) {
-
-                return $this->getParsedBody() ?? [];
-
-            }
-
-            return Arr::get($this->getParsedBody(), $name, $default);
-
-        }
-
         public function withType(string $type)
         {
 
@@ -115,7 +103,7 @@
             return $this->withAttribute('_validator', $user);
         }
 
-        public function getValidator() : Validator
+        public function validator() : Validator
         {
             $v = $this->getAttribute('_validator');
 
@@ -127,7 +115,7 @@
 
         }
 
-        public function getUser(bool $by_id = false )
+        public function user(bool $by_id = false )
         {
 
             $id = $this->getAttribute('_current_user_id');
@@ -136,12 +124,12 @@
 
         }
 
-        public function getPath() : string
+        public function path() : string
         {
             return $this->getUri()->getPath();
         }
 
-        public function getFullPath() : string
+        public function fullPath() : string
         {
 
             $fragment = $this->getUri()->getFragment();
@@ -153,14 +141,14 @@
 
         }
 
-        public function getUrl() : string
+        public function url() : string
         {
 
             return preg_replace('/\?.*/', '', $this->getUri());
 
         }
 
-        public function getFullUrl() : string
+        public function fullUrl() : string
         {
 
             return $this->getUri()->__toString();
@@ -170,7 +158,7 @@
         /**
          * @internal
          */
-        public function getRoutingPath() : string
+        public function routingPath() : string
         {
 
             $uri = $this->getAttribute('routing.uri');
@@ -182,27 +170,27 @@
 
         }
 
-        public function getType() : string
+        public function type() : string
         {
 
             return $this->getAttribute('type', '');
 
         }
 
-        public function getRoutingResult() : RoutingResult
+        public function routingResult() : RoutingResult
         {
 
             return $this->getAttribute('routing.result', new RoutingResult(null, []));
 
         }
 
-        public function getCookies() : VariableBag
+        public function cookies() : VariableBag
         {
 
             return $this->getAttribute('cookies', new VariableBag());
         }
 
-        public function getSession() : Session
+        public function session() : Session
         {
 
             $session = $this->getAttribute('session');
@@ -221,7 +209,7 @@
         public function isRouteable() : bool
         {
 
-            $script = $this->getLoadingScript();
+            $script = $this->loadingScript();
 
             // All public web requests
             if ($script === 'index.php') {
@@ -244,7 +232,7 @@
 
         }
 
-        public function getLoadingScript() :string
+        public function loadingScript() :string
         {
 
             return trim($this->getServerParams()['SCRIPT_NAME'] ?? '', DIRECTORY_SEPARATOR);
@@ -255,7 +243,7 @@
         {
 
             // A request to the admin dashboard. We can catch that within admin_init
-            return Str::contains($this->getLoadingScript(), $this->getAttribute('_wp_admin_folder')) && ! $this->isWpAjax();
+            return Str::contains($this->loadingScript(), $this->getAttribute('_wp_admin_folder')) && ! $this->isWpAjax();
 
 
         }
@@ -263,14 +251,14 @@
         public function isWpAjax() : bool
         {
 
-            return $this->getLoadingScript() === 'wp-admin/admin-ajax.php';
+            return $this->loadingScript() === 'wp-admin/admin-ajax.php';
 
         }
 
         public function isWpFrontEnd() : bool
         {
 
-            return $this->getLoadingScript() === 'index.php';
+            return $this->loadingScript() === 'index.php';
 
         }
 

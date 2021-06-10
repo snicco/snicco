@@ -56,7 +56,7 @@
 
             $this->rebindRequest($request);
 
-            $route_result = $request->getRoutingResult();
+            $route_result = $request->routingResult();
 
             if ( ! $route = $route_result->route()) {
 

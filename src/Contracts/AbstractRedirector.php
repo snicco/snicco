@@ -124,7 +124,7 @@
         public function intended (Request $request, string $fallback = '', int $status = 302) : RedirectResponse
         {
 
-            $from_query = rawurldecode($request->getQueryString('intended', ''));
+            $from_query = rawurldecode($request->query('intended', ''));
 
             if (Url::isValidAbsolute( $from_query ) ) {
                 return $this->to($from_query, $status);

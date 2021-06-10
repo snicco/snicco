@@ -38,7 +38,7 @@
             $host = $host ?? 'https://foo.com';
             $url = trim($host, '/').'/'.$path;
 
-            $request = new Request($psr17Factory->createServerRequest($method, $url));
+            $request = new Request($psr17Factory->createServerRequest($method, $url, ['REQUEST_METHOD' => $method]));
             return $request->withAttribute('_wp_admin_folder', 'wp-admin');
 
 
@@ -53,5 +53,7 @@
             return $request->withAttribute('_wp_admin_folder', 'wp-admin');
 
         }
+
+
 
     }
