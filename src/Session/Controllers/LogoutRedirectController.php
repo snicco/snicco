@@ -16,7 +16,7 @@
 
         public function __invoke(Request $request, ResponseFactory $response_factory) {
 
-            $action = $request->getBody('action', $request->getQueryString('action') );
+            $action = $request->getFromBody('action', $request->getQueryString('action') );
 
             if ( $action !== 'logout' ) {
 

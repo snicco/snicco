@@ -13,7 +13,6 @@
     class InspectsRequestTest extends UnitTest
     {
 
-
         public function testIsGet()
         {
 
@@ -239,6 +238,21 @@
 
             $request = $request->withHeader('Accept', 'text/plain');
             $this->assertFalse($request->acceptsHtml());
+
+        }
+
+        public function testGetRealMethod () {
+
+            $request = TestRequest::from('GET', 'foo');
+            $request = TestRequest::withServerParams($request, ['REQUEST_METHOD'=> 'GET']);
+
+            $this->assertSame('GET', $request->getRealMethod() );
+
+            $request = $request->withMethod('POST');
+
+            $this->assertSame('GET', $request->getRealMethod() );
+
+
 
         }
 

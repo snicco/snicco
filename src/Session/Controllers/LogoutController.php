@@ -18,7 +18,8 @@
         public function __invoke(Request $request, string $user_id, Redirector $redirector) : RedirectResponse
         {
 
-            if ( (int) $user_id !== WP::userId() ) {
+
+            if ((int) $user_id !== WP::userId()) {
 
                 throw new InvalidSignatureException();
 
@@ -30,7 +31,9 @@
 
             $redirect_to = $request->getQueryString('redirect_to', WP::homeUrl());
 
-            return $redirector->to($redirect_to);
+            return $redirector->to($redirect_to)
+                              ->withAddedHeader('Expires', 'Wed, 11 Jan 1984 06:00:00 GMT')
+                              ->withAddedHeader('Cache-Control', 'no-cache, must-revalidate, max-age=0');
 
         }
 

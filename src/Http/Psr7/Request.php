@@ -8,15 +8,12 @@
 
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Message\UriInterface;
-    use WPEmerge\Events\IncomingAdminRequest;
-    use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Facade\WP;
     use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
     use WPEmerge\Support\VariableBag;
-    use WPEmerge\Http\Psr7\InteractsWithInput;
     use WPEmerge\Validation\Validator;
 
     class Request implements ServerRequestInterface
@@ -30,6 +27,18 @@
         {
 
             $this->psr_request = $psr_request;
+
+        }
+
+        public function getFromBody(string $name = null, $default = null)
+        {
+            if ( ! $name) {
+
+                return $this->getParsedBody() ?? [];
+
+            }
+
+            return Arr::get($this->getParsedBody(), $name, $default);
 
         }
 
@@ -177,47 +186,6 @@
         {
 
             return $this->getAttribute('type', '');
-
-        }
-
-        public function getQueryString(string $key = null, $default = '') : string
-        {
-
-            $query_string = $this->getUri()->getQuery();
-
-            if ( ! $key) {
-                return $query_string;
-            }
-
-            parse_str($query_string, $query);
-
-            return Arr::get($query, $key, $default);
-
-        }
-
-        public function getQuery(string $name = null, $default = null)
-        {
-
-            if ( ! $name) {
-
-                return $this->getQueryParams() ?? [];
-
-            }
-
-            return Arr::get($this->getQueryParams(), $name, $default);
-
-        }
-
-        public function getBody(string $name = null, $default = null)
-        {
-
-            if ( ! $name) {
-
-                return $this->getParsedBody() ?? [];
-
-            }
-
-            return Arr::get($this->getParsedBody(), $name, $default);
 
         }
 
