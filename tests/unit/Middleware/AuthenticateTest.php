@@ -113,7 +113,7 @@
 
             });
 
-            $expected = 'https://foo.com/login?redirect='.$this->request->getFullUrl();
+            $expected = 'https://foo.com/login?redirect='.$this->request->fullUrl();
 
             $response = $this->newMiddleware()->handle($this->request, $this->route_action);
 

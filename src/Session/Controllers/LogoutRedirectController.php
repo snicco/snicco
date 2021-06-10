@@ -16,7 +16,7 @@
 
         public function __invoke(Request $request, ResponseFactory $response_factory) {
 
-            $action = $request->getFromBody('action', $request->getQueryString('action') );
+            $action = $request->post('action', $request->query('action') );
 
             if ( $action !== 'logout' ) {
 
@@ -33,7 +33,7 @@
         /** @todo needs more url validation. */
         private function redirectUrl (Request $request) :string {
 
-            if ( $redirect_to = $request->getQueryString('redirect_to') ) {
+            if ( $redirect_to = $request->query('redirect_to') ) {
 
                 return $redirect_to;
 

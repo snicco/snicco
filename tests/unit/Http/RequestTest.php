@@ -54,41 +54,41 @@
         {
 
             $request = TestRequest::from('GET', '/foo/bar');
-            $this->assertSame('/foo/bar', $request->getPath());
+            $this->assertSame('/foo/bar', $request->path());
 
             $request = TestRequest::from('GET', '/foo/bar/');
-            $this->assertSame('/foo/bar/', $request->getPath());
+            $this->assertSame('/foo/bar/', $request->path());
 
             $request = TestRequest::from('GET', '/');
-            $this->assertSame('/', $request->getPath());
+            $this->assertSame('/', $request->path());
 
             $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar?baz=biz');
-            $this->assertSame('/foo/bar', $request->getPath());
+            $this->assertSame('/foo/bar', $request->path());
 
             $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar/?baz=biz');
-            $this->assertSame('/foo/bar/', $request->getPath());
+            $this->assertSame('/foo/bar/', $request->path());
 
         }
 
         public function testGetFullPath() {
 
             $request = TestRequest::from('GET', '/foo/bar');
-            $this->assertSame('/foo/bar', $request->getFullPath());
+            $this->assertSame('/foo/bar', $request->fullPath());
 
             $request = TestRequest::from('GET', '/foo/bar/');
-            $this->assertSame('/foo/bar/', $request->getFullPath());
+            $this->assertSame('/foo/bar/', $request->fullPath());
 
             $request = TestRequest::from('GET', '/');
-            $this->assertSame('/', $request->getFullPath());
+            $this->assertSame('/', $request->fullPath());
 
             $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar?baz=biz');
-            $this->assertSame('/foo/bar?baz=biz', $request->getFullPath());
+            $this->assertSame('/foo/bar?baz=biz', $request->fullPath());
 
             $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar/?baz=biz');
-            $this->assertSame('/foo/bar/?baz=biz', $request->getFullPath());
+            $this->assertSame('/foo/bar/?baz=biz', $request->fullPath());
 
             $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar?baz=biz#section');
-            $this->assertSame('/foo/bar?baz=biz#section', $request->getFullPath());
+            $this->assertSame('/foo/bar?baz=biz#section', $request->fullPath());
 
 
 
@@ -98,16 +98,16 @@
 
 
             $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar');
-            $this->assertSame('https://foo.com/foo/bar', $request->getUrl());
+            $this->assertSame('https://foo.com/foo/bar', $request->url());
 
             $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar/');
-            $this->assertSame('https://foo.com/foo/bar/', $request->getUrl());
+            $this->assertSame('https://foo.com/foo/bar/', $request->url());
 
             $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar?baz=biz');
-            $this->assertSame('https://foo.com/foo/bar', $request->getUrl());
+            $this->assertSame('https://foo.com/foo/bar', $request->url());
 
             $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar/?baz=biz');
-            $this->assertSame('https://foo.com/foo/bar/', $request->getUrl());
+            $this->assertSame('https://foo.com/foo/bar/', $request->url());
 
 
         }
@@ -115,31 +115,31 @@
         public function testGetFullUrl () {
 
             $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar');
-            $this->assertSame('https://foo.com/foo/bar', $request->getFullUrl());
+            $this->assertSame('https://foo.com/foo/bar', $request->fullUrl());
 
             $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar/');
-            $this->assertSame('https://foo.com/foo/bar/', $request->getFullUrl());
+            $this->assertSame('https://foo.com/foo/bar/', $request->fullUrl());
 
             $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar?baz=biz');
-            $this->assertSame('https://foo.com/foo/bar?baz=biz', $request->getFullUrl());
+            $this->assertSame('https://foo.com/foo/bar?baz=biz', $request->fullUrl());
 
             $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar/?baz=biz');
-            $this->assertSame('https://foo.com/foo/bar/?baz=biz', $request->getFullUrl());
+            $this->assertSame('https://foo.com/foo/bar/?baz=biz', $request->fullUrl());
 
             $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar?baz=biz#section');
-            $this->assertSame('https://foo.com/foo/bar?baz=biz#section', $request->getFullUrl());
+            $this->assertSame('https://foo.com/foo/bar?baz=biz#section', $request->fullUrl());
 
         }
 
         public function testCookies()
         {
 
-            $cookies = $this->request->getCookies();
+            $cookies = $this->request->cookies();
             $this->assertInstanceOf(VariableBag::class, $cookies);
             $this->assertSame([], $cookies->all());
 
             $request = $this->request->withCookies(['foo' => 'bar']);
-            $cookies = $request->getCookies();
+            $cookies = $request->cookies();
             $this->assertInstanceOf(VariableBag::class, $cookies);
             $this->assertSame(['foo' => 'bar'], $cookies->all());
 
@@ -150,7 +150,7 @@
 
             try {
 
-                $this->request->getSession();
+                $this->request->session();
 
                 $this->fail('Missing session did not throw an exception');
 
@@ -165,7 +165,7 @@
 
             $request = $request->withMethod('POST');
 
-            $this->assertSame($session, $request->getSession());
+            $this->assertSame($session, $request->session());
 
         }
 
@@ -193,10 +193,10 @@
         {
 
             $request = TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'index.php']);
-            $this->assertSame('index.php', $request->getLoadingScript());
+            $this->assertSame('index.php', $request->loadingScript());
 
             $request = TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'wp-admin/edit.php']);
-            $this->assertSame('wp-admin/edit.php', $request->getLoadingScript());
+            $this->assertSame('wp-admin/edit.php', $request->loadingScript());
 
 
         }
@@ -248,13 +248,13 @@
         public function testGetRoutingResult()
         {
 
-            $result = $this->request->getRoutingResult();
+            $result = $this->request->routingResult();
             $this->assertInstanceOf(RoutingResult::class, $result);
             $this->assertNull($result->route());
             $this->assertSame([], $result->capturedUrlSegmentValues());
 
             $request = $this->request->withRoutingResult(new RoutingResult(['route'], ['foo' => 'bar']));
-            $result = $request->getRoutingResult();
+            $result = $request->routingResult();
             $this->assertInstanceOf(RoutingResult::class, $result);
             $this->assertNotNull($result);
             $this->assertSame(['foo' => 'bar'], $result->capturedUrlSegmentValues());
@@ -266,7 +266,7 @@
 
             try {
 
-                $this->request->getValidator();
+                $this->request->validator();
 
                 $this->fail('Missing validator did not throw an exception');
 
@@ -281,7 +281,7 @@
 
             $request = $request->withMethod('POST');
 
-            $this->assertSame($v, $request->getValidator());
+            $this->assertSame($v, $request->validator());
 
         }
 

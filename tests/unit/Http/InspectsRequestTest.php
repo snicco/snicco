@@ -182,13 +182,13 @@
                                   ->withAddedHeader('Content-Type', 'application/json')
                                   ->withAddedHeader('Accept', 'application/json');
 
-            $this->assertTrue($request->wantsJson());
+            $this->assertTrue($request->isExpectingJson());
 
             $request = TestRequest::from('POST', 'foo')
                                   ->withAddedHeader('Content-Type', 'application/json')
                                   ->withAddedHeader('Accept', 'text/html');
 
-            $this->assertFalse($request->wantsJson());
+            $this->assertFalse($request->isExpectingJson());
 
         }
 
@@ -246,11 +246,11 @@
             $request = TestRequest::from('GET', 'foo');
             $request = TestRequest::withServerParams($request, ['REQUEST_METHOD'=> 'GET']);
 
-            $this->assertSame('GET', $request->getRealMethod() );
+            $this->assertSame('GET', $request->realMethod() );
 
             $request = $request->withMethod('POST');
 
-            $this->assertSame('GET', $request->getRealMethod() );
+            $this->assertSame('GET', $request->realMethod() );
 
 
 

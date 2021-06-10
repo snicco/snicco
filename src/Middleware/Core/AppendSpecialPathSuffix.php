@@ -51,11 +51,11 @@
         private function appendToPath(Request $request) : string
         {
 
-            $path = $request->getPath();
+            $path = $request->path();
 
             if ( $request->isWpAdmin() ) {
 
-                $page = $request->getQuery('page');
+                $page = $request->query('page');
 
                 if ( ! $page ) {
                     return $path;
@@ -67,7 +67,7 @@
 
             if ( $request->isWpAjax() ) {
 
-                $action = $request->getFromBody('action', $request->getQuery('action'));
+                $action = $request->post('action', $request->query('action'));
 
                 if ( ! $action ) {
                     return $path;

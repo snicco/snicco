@@ -30,7 +30,7 @@
         public function isSatisfied( Request $request) :bool
         {
 
-            $request = $request->getFromBody();
+            $request = $request->post();
 
             foreach ( $this->request_arguments as $key => $value ) {
 

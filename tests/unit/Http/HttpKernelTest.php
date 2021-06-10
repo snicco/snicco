@@ -327,15 +327,16 @@
 
             $request = $this->ajaxRequest('test_form');
 
-            $this->assertSame('/wp-admin/admin-ajax.php', $request->getRoutingPath());
+            $this->assertSame('/wp-admin/admin-ajax.php', $request->routingPath());
 
             $this->container->instance(Request::class, $request);
 
             $this->runAndAssertOutput('', new IncomingAjaxRequest($request) );
 
+            /** @var Request $request */
             $request = $this->container->make(Request::class);
 
-            $this->assertSame('/wp-admin/admin-ajax.php/test_form', $request->getRoutingPath());
+            $this->assertSame('/wp-admin/admin-ajax.php/test_form', $request->routingPath());
 
         }
 

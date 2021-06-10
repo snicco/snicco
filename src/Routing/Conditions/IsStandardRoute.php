@@ -15,7 +15,7 @@
 
         public function isSatisfied(Request $request) : bool
         {
-            return $request->getType() !== IncomingGlobalRequest::class || $request->filtersWpQuery();
+            return $request->type() !== IncomingGlobalRequest::class || $request->filtersWpQuery();
         }
 
         public function getArguments(Request $request) : array

@@ -58,7 +58,7 @@
             $this->newMiddleware()
                  ->handle($request, new Delegate(function (Request $request) {
 
-                     $this->assertTrue($request->getCookies()->has('foo'));
+                     $this->assertTrue($request->cookies()->has('foo'));
 
                      return $this->createResponseFactory()->createResponse();
 

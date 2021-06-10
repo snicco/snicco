@@ -25,11 +25,11 @@
 
             }
 
-            $request->getSession()->invalidate();
+            $request->session()->invalidate();
 
             WP::logout();
 
-            $redirect_to = $request->getQueryString('redirect_to', WP::homeUrl());
+            $redirect_to = $request->query('redirect_to', WP::homeUrl());
 
             return $redirector->to($redirect_to)
                               ->withAddedHeader('Expires', 'Wed, 11 Jan 1984 06:00:00 GMT')

@@ -37,7 +37,7 @@
 
 		public function handle( ResponseSent $response_sent) {
 
-            if ( $response_sent->request->getType() === IncomingGlobalRequest::class ) {
+            if ( $response_sent->request->type() === IncomingGlobalRequest::class ) {
 
                 $this->terminate();
 

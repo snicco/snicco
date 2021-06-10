@@ -74,7 +74,7 @@
 
 
 
-            $cookies = $request->getCookies();
+            $cookies = $request->cookies();
             $cookie_name = $this->session_store->getName();
 
             $session_id = $cookies->get($cookie_name, '');
@@ -139,7 +139,7 @@
 
             if ($request->isGet() && ! $request->isAjax()) {
 
-                $session->setPreviousUrl($request->getFullUrl());
+                $session->setPreviousUrl($request->fullUrl());
 
             }
 
@@ -202,7 +202,7 @@
         private function requestRunsOnInitHook(Request $request) : bool
         {
 
-            return $request->getType() === IncomingGlobalRequest::class;
+            return $request->type() === IncomingGlobalRequest::class;
 
         }
 

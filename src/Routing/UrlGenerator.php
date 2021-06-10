@@ -51,12 +51,6 @@
             $this->app_key_resolver = $key_resolver;
         }
 
-        public function setSessionResolver(callable $session_resolver)
-        {
-
-            $this->session_resolver = $session_resolver;
-        }
-
         public function setRequestResolver(callable $request_resolver)
         {
 
@@ -194,7 +188,7 @@
 
         public function current() : string
         {
-            return $this->to($this->getRequest()->getFullUrl());
+            return $this->to($this->getRequest()->fullUrl());
         }
 
         public function toLogin(string $redirect_on_login = '', bool $reauth = false) : string
@@ -204,7 +198,7 @@
 
         private function signatureHasExpired(Request $request) : bool
         {
-            $expires = $request->getQueryString('expires', null );
+            $expires = $request->query('expires', null );
 
             if ( ! $expires ) {
                 return false;
@@ -217,18 +211,18 @@
         private function hasCorrectSignature(Request $request, $absolute = true) : bool
         {
 
-            $url = $absolute ? $request->getUrl() : $request->getPath();
+            $url = $absolute ? $request->url() : $request->path();
 
             $query_without_signature = preg_replace(
                 '/(^|&)signature=[^&]+/',
                     '',
-                    $request->getQueryString());
+                    $request->queryString());
 
             $query_without_signature = ltrim($query_without_signature, '&');
 
             $signature = hash_hmac('sha256', $url.'?'.$query_without_signature, call_user_func($this->app_key_resolver));
 
-            return hash_equals($signature, $request->getQueryString('signature', ''));
+            return hash_equals($signature, $request->query('signature', ''));
 
         }
 
