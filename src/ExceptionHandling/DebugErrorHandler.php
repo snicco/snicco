@@ -9,8 +9,6 @@
 	use Throwable;
 	use Whoops\RunInterface;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
-	use WPEmerge\Contracts\RequestInterface;
-	use WPEmerge\Contracts\ResponseInterface;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Traits\HandlesExceptions;
@@ -19,7 +17,7 @@
 
 		use HandlesExceptions;
 
-		/** @var \Whoops\RunInterface */
+		/** @var RunInterface */
 		private $whoops;
 
 		public function __construct( RunInterface $whoops) {
