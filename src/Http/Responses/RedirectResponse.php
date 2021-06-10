@@ -66,7 +66,7 @@
          * @param  string  $key
          * @return $this
          */
-        public function withErrors($provider, string $key = 'default') : RedirectResponse
+        public function withErrors( $provider, string $key = 'default' ) : RedirectResponse
         {
 
             $this->checkSession();

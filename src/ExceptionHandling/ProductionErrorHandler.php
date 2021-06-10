@@ -18,6 +18,7 @@
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Session\Session;
     use WPEmerge\Traits\HandlesExceptions;
+    use WPEmerge\Validation\Exceptions\ValidationException;
 
     class ProductionErrorHandler implements ErrorHandlerInterface
     {
@@ -137,7 +138,7 @@
         private function createResponseObject(Throwable $e) : Response
         {
 
-            if (method_exists($e, 'render')) {
+            if ( method_exists($e, 'render') ) {
 
                 /** @var Response $response */
                 $response = $this->container->call([$e, 'render']);
@@ -151,6 +152,12 @@
                 return $response;
 
             }
+
+            // if ( $e instanceof ValidationException ) {
+            //
+            //     return $this->renderValidationException($e);
+            //
+            // }
 
             if ( $e instanceof HttpException ) {
 
@@ -217,6 +224,12 @@
 
         }
 
+        private function renderValidationException(ValidationException $e)
+        {
+
+            $errors = $e->getErrors();
+
+        }
 
 
 

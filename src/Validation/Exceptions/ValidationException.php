@@ -8,8 +8,9 @@
 
 
     use Throwable;
+    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
 
-    class ValidationException extends \RuntimeException
+    class ValidationException extends HttpException
     {
 
         /**
@@ -17,11 +18,13 @@
          */
         private $errors;
 
-        public function __construct(array $errors, $message = "", $code = 0, Throwable $previous = null)
+        public function __construct(array $errors, ?string $message_for_humans = 'We could not process your request.', Throwable $previous = null, ?int $code = 0)
        {
 
            $this->errors = $errors;
-           parent::__construct($message, $code, $previous);
+
+           parent::__construct(400, $message_for_humans, $previous, $code);
+
        }
 
        public function getErrors() : array

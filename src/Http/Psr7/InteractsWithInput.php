@@ -6,13 +6,23 @@
 
     namespace WPEmerge\Http\Psr7;
 
-    use Illuminate\Support\Collection;
     use stdClass;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
 
     trait InteractsWithInput
     {
+
+        public function validate (array $rules, array $attributes = [], array $messages = [] ) {
+
+            $v = $this->validator();
+            $v->rules($rules)
+              ->messages($messages)
+              ->attributes($attributes);
+
+            return $v->validate($this->all());
+
+        }
 
         public function all() : array
         {
