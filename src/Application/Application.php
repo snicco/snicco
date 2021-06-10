@@ -71,7 +71,6 @@
             $this->bindRequest($request);
             $this->bindServerRequest($request);
 
-
             WpFacade::setFacadeContainer($container);
 
             $this->bindApplicationTrait();

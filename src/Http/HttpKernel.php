@@ -75,7 +75,6 @@
          */
         private $run_count = 0;
 
-
         public function __construct(Pipeline $pipeline, ResponseEmitter $emitter = null)
         {
 

@@ -49,7 +49,9 @@
         public function emit(ResponseInterface $response) : void
         {
 
+
             $isEmpty = $this->isResponseEmpty($response);
+
             if ($headers_not_sent = headers_sent() === false) {
                 $this->emitStatusLine($response);
                 $this->emitHeaders($response);
