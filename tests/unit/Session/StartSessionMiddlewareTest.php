@@ -12,10 +12,13 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
+    use WPEmerge\ExceptionHandling\TestingErrorHandler;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
+    use WPEmerge\Middleware\Core\ShareCookies;
+    use WPEmerge\Routing\Pipeline;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Session;
     use WPEmerge\Session\Middleware\StartSessionMiddleware;
@@ -77,8 +80,6 @@
                                             'test_session' => $this->sessionId(),
                                         ]));
 
-            $this->cookies = new Cookies();
-
         }
 
         private function newMiddleware(Session $store = null, $gc_collection = [0,100]) : StartSessionMiddleware
@@ -90,7 +91,7 @@
 
             $config['lottery'] = $gc_collection;
 
-            return new StartSessionMiddleware($store, $this->cookies , $config);
+            return new StartSessionMiddleware($store,  $config);
 
         }
 
@@ -153,7 +154,7 @@
         }
 
         /** @test */
-        public function a_session_without_matching_session_cookie_will_create_a_new_session()
+        public function a_session_without_matching_session_cookie_in_the_driver_will_create_a_new_session()
         {
 
             $handler = new ArraySessionDriver(10);
@@ -232,21 +233,31 @@
 
             Carbon::setTestNow(Carbon::createFromTimestamp(1));
 
-            $this->assertEmpty($this->cookies->toHeaders());
+            $pipeline = new Pipeline($this->createContainer(), new TestingErrorHandler());
+            $response_factory = $this->createResponseFactory();
 
-            $this->newMiddleware()->handle($this->request, $this->route_action);
+            $request = TestRequest::from('GET', 'foo')
+                                  ->withAddedHeader('Cookie', 'test_session='.$this->sessionId());
 
-            $this->assertNotEmpty($this->cookies->toHeaders());
+            $response = $pipeline
+                ->send($request)
+                ->through([ShareCookies::class, $this->newMiddleware()])
+                ->then(function () use ($response_factory) {
 
-            $cookie = $this->cookies->toHeaders()[0];
+                    return $response_factory->make();
 
-            $this->assertStringStartsWith("test_session={$this->sessionId()}",$cookie);
-            $this->assertStringContainsString('path=/', $cookie);
-            $this->assertStringContainsString('SameSite=Lax', $cookie);
-            $this->assertStringContainsString('expires=Thu, 01-Jan-1970 00:01:01 UTC', $cookie);
-            $this->assertStringContainsString('HttpOnly', $cookie);
-            $this->assertStringContainsString('secure', $cookie);
-            $this->assertStringNotContainsString('domain', $cookie);
+                });
+
+
+            $cookies = $response->getHeaderLine('Set-Cookie');
+
+            $this->assertStringStartsWith("test_session={$this->sessionId()}",$cookies);
+            $this->assertStringContainsString('path=/', $cookies);
+            $this->assertStringContainsString('SameSite=Lax', $cookies);
+            $this->assertStringContainsString('expires=Thu, 01-Jan-1970 00:01:01 UTC', $cookies);
+            $this->assertStringContainsString('HttpOnly', $cookies);
+            $this->assertStringContainsString('secure', $cookies);
+            $this->assertStringNotContainsString('domain', $cookies);
 
             Carbon::setTestNow();
 

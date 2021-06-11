@@ -18,11 +18,6 @@
         use ImplementsPsr7Response;
 
         /**
-         * @var ResponseInterface
-         */
-        protected $psr7_response;
-
-        /**
          * @var Cookies
          */
         protected $cookies;
@@ -31,22 +26,64 @@
         {
 
             $this->psr7_response = $psr7_response;
-            $this->cookies = new Cookies();
 
         }
+
+
 
         protected function new(ResponseInterface $new_psr_response) : Response
         {
 
-            return new static($new_psr_response);
+            $new = clone $this;
+            $new->setPsr7Response($new_psr_response);
+            return $new;
+
+        }
+
+        protected function setPsr7Response(ResponseInterface $psr_response)
+        {
+
+            $this->psr7_response = $psr_response;
 
         }
 
         public function withCookie(Cookie $cookie) : Response
         {
+
+            if ( ! $this->cookies instanceof Cookies) {
+                $this->cookies = new Cookies();
+            }
+
             $this->cookies->set($cookie->name(), $cookie->properties());
 
             return clone $this;
+
+        }
+
+        public function withoutCookie(string $name, string $path = '/') : Response
+        {
+            if ( ! $this->cookies instanceof Cookies) {
+                $this->cookies = new Cookies();
+            }
+
+            $cookie = new Cookie($name, 'deleted');
+            $cookie->expires(1)->path($path);
+
+            $this->cookies->add($cookie);
+
+            return clone $this;
+        }
+
+        public function cookies() : Cookies
+        {
+
+            if ( ! $this->cookies instanceof Cookies) {
+
+                return new Cookies();
+
+            }
+
+            return $this->cookies;
 
         }
 
