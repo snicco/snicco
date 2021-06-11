@@ -380,7 +380,7 @@
             try {
 
                 $rules = [
-                    'team.player' => [v::equals('john'), 'required', '[input] is not valid for [attribute]. Must be equal to john']
+                    'team.player' => [v::equals('john'), '[input] is not valid for [attribute]. Must be equal to john']
                 ];
 
                 $request->validate($rules, [
