@@ -2,7 +2,7 @@
 
     /**
      *
-     * Exact copy of Slims Cookie class
+     * Modified version of Slims Cookie class
      *
      * Slim Framework (https://slimframework.com)
      *
@@ -56,12 +56,12 @@
         protected $defaults = [
             'value' => '',
             'domain' => null,
-            'hostonly' => null,
-            'path' => null,
+            'hostonly' => true,
+            'path' => '/',
             'expires' => null,
-            'secure' => false,
-            'httponly' => false,
-            'samesite' => null
+            'secure' => true,
+            'httponly' => true,
+            'samesite' => 'Lax'
         ];
 
         /**

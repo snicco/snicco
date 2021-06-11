@@ -29,11 +29,6 @@
         use HandlesExceptions;
 
         /**
-         * @var bool
-         */
-        protected $is_ajax;
-
-        /**
          * @var ContainerAdapter
          */
         protected $container;
@@ -61,10 +56,9 @@
 
         protected $fallback_error_message = 'Internal Server Error';
 
-        public function __construct(ContainerAdapter $container, LoggerInterface $logger, ResponseFactory $response_factory, bool $is_ajax)
+        public function __construct(ContainerAdapter $container, LoggerInterface $logger, ResponseFactory $response_factory)
         {
 
-            $this->is_ajax = $is_ajax;
             $this->container = $container;
             $this->logger = $logger;
             $this->response = $response_factory;

@@ -55,13 +55,9 @@
 
                 }
 
-                /** @var Request $request */
-                $request = $this->container->make(Request::class);
-
                 return ErrorHandlerFactory::make(
                     $this->container,
                     $this->config->get('exception_handling.debug', false),
-                    $request->isAjax(),
                     $this->config->get('exception_handling.editor', 'phpstorm')
 
                 );
