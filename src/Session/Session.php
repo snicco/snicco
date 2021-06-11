@@ -249,7 +249,6 @@
 
         public function flashInput(array $value) : void
         {
-
             $this->flash('_old_input', $value);
         }
 

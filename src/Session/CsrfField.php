@@ -24,6 +24,7 @@
 
         public function __construct(Session $session, Guard $guard)
         {
+
             $this->session = $session;
             $this->guard = $guard;
         }
@@ -34,24 +35,35 @@
             $name_key = $this->guard->getTokenNameKey();
             $token_key = $this->guard->getTokenValueKey();
 
-            $csrf = $this->session->get('csrf', [] );
+            $csrf = $this->session->get('csrf', []);
 
-            if ( $csrf !== [] ) {
+            if ($csrf !== []) {
 
-               [ $name_key_value, $token_value ] = [Arr::firstKey($csrf), Arr::firstEl($csrf)];
+                [$name_key_value, $token_value] = [Arr::firstKey($csrf), Arr::firstEl($csrf)];
 
-            } else {
-                [ $name_key_value, $token_value ] = $this->persistNewKeyPairInSession();
+            }
+            else {
+                [$name_key_value, $token_value] = $this->persistNewKeyPairInSession();
             }
 
             return [
                 $name_key => $name_key_value,
-                $token_key => $token_value
+                $token_key => $token_value,
             ];
 
         }
 
-        public function asHtml() {
+        public function asStringToken() : string
+        {
+            $csrf = $this->create();
+            $name = Arr::pullNextPair($csrf);
+            $token = Arr::pullNextPair($csrf);
+
+            return Arr::firstKey($name).'='.Arr::firstEl($name).'&'.Arr::firstKey($token).'='.Arr::firstEl($token);
+        }
+
+        public function asHtml()
+        {
 
 
             $field = $this->create();
@@ -61,14 +73,17 @@
 
             ob_start();
 
-            ?><input type="hidden" name="<?= esc_attr(Arr::firstKey($name)); ?>" value="<?= esc_attr(Arr::firstEl($name)); ?>">
-            <input type="hidden" name="<?= esc_attr(Arr::firstKey($token)); ?>" value="<?= esc_attr(Arr::firstEl($token));?>"><?php
+            ?><input type="hidden" name="<?= esc_attr(Arr::firstKey($name)); ?>"
+                     value="<?= esc_attr(Arr::firstEl($name)); ?>">
+            <input type="hidden" name="<?= esc_attr(Arr::firstKey($token)); ?>"
+                   value="<?= esc_attr(Arr::firstEl($token)); ?>"><?php
 
             return ob_get_clean();
 
         }
 
-        public function refreshToken() {
+        public function refreshToken()
+        {
 
             $this->session->forget('csrf');
             $this->persistNewKeyPairInSession();
@@ -76,6 +91,7 @@
 
         private function persistNewKeyPairInSession() : array
         {
+
             return array_values($this->guard->generateToken());
         }
 

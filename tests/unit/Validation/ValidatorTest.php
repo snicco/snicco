@@ -106,6 +106,64 @@
         }
 
         /** @test */
+        public function a_validator_can_be_optional_in_combination_with_an_inline_message () {
+
+            $v = new Validator();
+
+            $validated = $v->rules([
+
+                'count' => [v::min(1)->max(3), 'failed', 'optional'],
+                'email' => v::email(),
+
+            ])
+                           ->validate([
+                               'missing_count' => 3,
+                               'email' => 'c@web.de',
+                           ]);
+
+            $this->assertSame(['email' => 'c@web.de'], $validated);
+
+            $validated = $v->rules([
+
+                'count' => [v::min(1)->max(3), 'failed', 'optional'],
+                'email' => v::email(),
+
+            ])
+                           ->validate([
+                               'email' => 'c@web.de',
+                           ]);
+
+            $this->assertSame(['email' => 'c@web.de'], $validated);
+
+            $validated = $v->rules([
+
+                'count' => [v::min(1)->max(3), 'failed', 'optional'],
+                'email' => v::email(),
+
+            ])
+                           ->validate([
+                               'count' => 3,
+                               'email' => 'c@web.de',
+                           ]);
+
+            $this->assertSame(['count' => 3, 'email' => 'c@web.de'], $validated);
+
+            // present but not valid
+            $this->expectException(ValidationException::class);
+            $v->rules([
+
+                'count' => [v::min(1)->max(3), 'failed', 'optional'],
+                'email' => v::email(),
+
+            ])
+              ->validate([
+                  'count' => 4,
+                  'email' => 'c@web.de',
+              ]);
+
+        }
+
+        /** @test */
         public function nested_array_values_can_be_validated_with_dot_notation()
         {
 
@@ -334,7 +392,7 @@
             );
 
             $validated = $v->rules([
-                'posts' => $post_validator
+                'posts' => $post_validator,
             ])->validate();
 
             $this->assertSame($_POST, $validated);
@@ -394,8 +452,8 @@
             }
             catch (ValidationException $e) {
 
-                $this->assertArrayHasKey('count', $e->getErrors());
-                $this->assertArrayNotHasKey('age', $e->getErrors());
+                $this->assertArrayHasKey('count', $e->errorsAsArray());
+                $this->assertArrayNotHasKey('age', $e->errorsAsArray());
 
             }
 
@@ -417,7 +475,7 @@
 
                 $v->rules([
 
-                    'count' => [v::min(1)->max(3), 'optional', 'Your input for count is wrong.'],
+                    'count' => [v::min(1)->max(3), 'Your input for count is wrong.'],
                     'age' => v::min(18),
 
                 ])->validate($input);
@@ -427,10 +485,12 @@
             }
             catch (ValidationException $e) {
 
-                $errors = $e->getErrors()['count'];
+                $errors = $e->errorsAsArray()['count'];
 
-                $this->assertContains('Your input for count is wrong.', $errors['messages']);
-                $this->assertSame(4, $errors['input']);
+                $this->assertContains('Your input for count is wrong.', $errors);
+                $this->assertSame('Your input for count is wrong.', $e->messages()->first('count'));
+
+
 
             }
 
@@ -449,7 +509,9 @@
             try {
 
                 $v->rules([
-                    'count' => [v::min(1)->max(3), 'required', '[input] is not valid for [attribute].'],
+                    'count' => [
+                        v::min(1)->max(3), '[input] is not valid for [attribute].',
+                    ],
                 ])->validate($input);
 
                 $this->fail('Failed check did not throw exception.');
@@ -457,10 +519,10 @@
             }
             catch (ValidationException $e) {
 
-                $errors = $e->getErrors()['count'];
+                $errors = $e->errorsAsArray()['count'];
 
-                $this->assertContains('4 is not valid for count.', $errors['messages']);
-                $this->assertSame(4, $errors['input']);
+                $this->assertContains('4 is not valid for count.', $errors);
+                $this->assertSame('4 is not valid for count.', $e->messages()->first('count'));
 
             }
 
@@ -491,10 +553,10 @@
             }
             catch (ValidationException $e) {
 
-                $errors = $e->getErrors()['count'];
+                $errors = $e->errorsAsArray()['count'];
 
-                $this->assertContains('4 is not valid for count.', $errors['messages']);
-                $this->assertSame(4, $errors['input']);
+                $this->assertContains('4 is not valid for count.', $errors);
+                $this->assertSame('4 is not valid for count.', $e->messages()->first('count'));
 
             }
 
@@ -511,7 +573,7 @@
 
             $v->rules([
 
-                'email' => [v::email(), '', '[input] is not a valid [attribute]'],
+                'email' => [v::email(), '[input] is not a valid [attribute]'],
 
             ])
               ->attributes([
@@ -527,10 +589,11 @@
             }
             catch (ValidationException $e) {
 
-                $errors = $e->getErrors()['email'];
+                $errors = $e->errorsAsArray()['email'];
 
-                $this->assertSame('c.de is not a valid email address.', $errors['messages'][0]);
-                $this->assertSame('c.de', $errors['input']);
+                $this->assertSame('c.de is not a valid email address.', $errors[0]);
+                $this->assertSame('c.de is not a valid email address.', $e->messages()->first('email'));
+
 
             }
 
@@ -538,7 +601,8 @@
         }
 
         /** @test */
-        public function the_input_value_is_replaced_by_default_with_the_attribute_name_if_not_specified_otherwise () {
+        public function the_input_value_is_replaced_by_default_with_the_attribute_name_if_not_specified_otherwise()
+        {
 
             $v = new Validator();
 
@@ -550,7 +614,7 @@
 
                 $v->rules([
 
-                    'user_name' => v::alnum()
+                    'user_name' => v::alnum(),
 
                 ])
                   ->validate($input);
@@ -560,10 +624,10 @@
             }
             catch (ValidationException $e) {
 
-                $error = $e->getErrors()['user_name'];
+                $error = $e->errorsAsArray()['user_name'];
 
-                $this->assertSame('reallymess#edupscreenname', $error['input']);
-                $this->assertSame('user_name must contain only letters (a-z) and digits (0-9).', $error['messages'][0]);
+                $this->assertSame('user_name must contain only letters (a-z) and digits (0-9).', $error[0]);
+                $this->assertSame('user_name must contain only letters (a-z) and digits (0-9).', $e->messages()->first('user_name'));
 
 
             }
@@ -594,11 +658,13 @@
             }
             catch (ValidationException $e) {
 
-                $error = $e->getErrors()['user_name'];
+                $error = $e->errorsAsArray()['user_name'];
 
-                $this->assertSame('reallymess#edupscreenname', $error['input']);
-                $this->assertSame('user_name must contain only letters (a-z) and digits (0-9).', $error['messages'][0]);
-                $this->assertSame('user_name must have a length between 1 and 15.', $error['messages'][1]);
+                $this->assertSame('user_name must contain only letters (a-z) and digits (0-9).', $error[0]);
+                $this->assertSame('user_name must have a length between 1 and 15.', $error[1]);
+
+                $this->assertContains('user_name must contain only letters (a-z) and digits (0-9).', $e->messages()->get('user_name'));
+                $this->assertContains('user_name must have a length between 1 and 15.', $e->messages()->get('user_name'));
 
 
             }
@@ -622,7 +688,9 @@
 
                 $v->rules([
 
-                    'post.title' => [v::noWhitespace(), 'required', '[attribute] can not have whitespace'],
+                    'post.title' => [
+                        v::noWhitespace(), '[attribute] can not have whitespace',
+                    ],
                     'post.author' => v::email(),
 
                 ])->attributes([
@@ -634,10 +702,52 @@
             }
             catch (ValidationException $e) {
 
-                $error = Arr::get($e->getErrors(), 'post.title');
+                $error = Arr::get($e->errorsAsArray(), 'post.title');
 
-                $this->assertSame('My Post', $error['input']);
-                $this->assertSame('The post title can not have whitespace.', $error['messages'][0]);
+                $this->assertSame('The post title can not have whitespace.', $error[0]);
+                $this->assertSame('The post title can not have whitespace.', $e->messages()->first('post.title'));
+
+
+
+            }
+
+        }
+
+        /** @test */
+        public function custom_error_bags_can_be_used () {
+
+            $submission1 = [
+                'post' => [
+                    'title' => 'My Post',
+                    'author' => 'c@web.de',
+                ],
+            ];
+
+            $v = new Validator($submission1);
+
+            try {
+
+                $v->rules([
+
+                    'post.title' => [
+                        v::noWhitespace(), '[attribute] can not have whitespace',
+                    ],
+                    'post.author' => v::email(),
+
+                ])->attributes([
+                    'post.title' => 'The post title',
+                ])->validateWithBag('custom');
+
+                $this->fail('Failed check did not throw exception.');
+
+            }
+            catch (ValidationException $e) {
+
+                $error = Arr::get($e->errorsAsArray(), 'post.title');
+
+                $this->assertSame('The post title can not have whitespace.', $error[0]);
+                $this->assertSame('The post title can not have whitespace.', $e->messages()->first('post.title'));
+                $this->assertSame('custom', $e->namedBag());
 
 
             }
@@ -677,9 +787,11 @@
             }
             catch (ValidationException $e) {
 
-                $error = $e->getErrors();
+                $error = $e->errorsAsArray();
 
-                $this->assertSame('john.de ist keine gültige email addresse.', $error['author2']['messages'][0]);
+                $this->assertSame('john.de ist keine gültige email addresse.', $error['author2'][0]);
+                $this->assertSame('john.de ist keine gültige email addresse.', $e->messages()->first('author2'));
+
 
             }
 
@@ -717,14 +829,17 @@
             }
             catch (ValidationException $e) {
 
-                $error = $e->getErrors();
+                $error = $e->errorsAsArray();
 
-                $this->assertSame('Wir brauchen deine email addresse.', $error['author1']['messages'][0]);
+                $this->assertSame('Wir brauchen deine email addresse.', $error['author1'][0]);
+                $this->assertSame('Wir brauchen deine email addresse.', $e->messages()->first('author1'));
 
             }
 
 
         }
+
+
 
 
     }
