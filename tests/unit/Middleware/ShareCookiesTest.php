@@ -11,9 +11,9 @@
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
     use WPEmerge\Http\Cookie;
-    use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Middleware\Core\ShareCookies;
 
     class ShareCookiesTest extends UnitTest
@@ -28,13 +28,8 @@
          */
         private $request;
 
-        /** @var Cookies */
-        private $cookies;
-
         protected function beforeTestRun()
         {
-
-            $this->cookies = new Cookies();
 
             $this->request = TestRequest::from('GET', '/foo');
 
@@ -43,9 +38,7 @@
         private function newMiddleware() : ShareCookies
         {
 
-            $middleware = new ShareCookies($this->cookies);
-
-            return $middleware;
+            return new ShareCookies();
 
         }
 
@@ -71,32 +64,8 @@
         }
 
         /** @test */
-        public function added_cookies_are_transformed_to_a_http_header()
-        {
-
-            $this->assertEmpty($this->cookies->toHeaders());
-
-            $response = $this->newMiddleware()
-                             ->handle($this->request, new Delegate(function (Request $request) {
-
-                                 $this->cookies->set('foo', 'bar');
-
-                                 return $this->createResponseFactory()->createResponse();
-
-                             }
-
-                             ));
-
-            $cookie_header = $response->getHeaderLine('Set-Cookie');
-
-            $this->assertSame('foo=bar', $cookie_header);
-
-        }
-
-        /** @test */
         public function response_cookies_can_be_added () {
 
-            $this->assertEmpty($this->cookies->toHeaders());
 
             $response = $this->newMiddleware()
                              ->handle($this->request, new Delegate(function () {
@@ -113,9 +82,55 @@
 
             $cookie_header = $response->getHeaderLine('Set-Cookie');
 
-            $this->assertSame('foo=bar', $cookie_header);
+            $this->assertSame('foo=bar; path=/; secure; HostOnly; HttpOnly; SameSite=Lax', $cookie_header);
 
         }
+
+        /** @test */
+        public function multiple_cookies_can_be_added () {
+
+            $response = $this->newMiddleware()
+                             ->handle($this->request, new Delegate(function () {
+
+                                 $response = $this->createResponseFactory()->make();
+
+                                 $cookie1 = new Cookie('foo', 'bar');
+                                 $cookie2 = new Cookie('baz', 'biz');
+
+                                 return $response->withCookie( $cookie1 )
+                                                 ->withCookie($cookie2);
+
+                             }
+
+                             ));
+
+            $cookie_header = $response->getHeader('Set-Cookie');
+
+            $this->assertSame('foo=bar; path=/; secure; HostOnly; HttpOnly; SameSite=Lax', $cookie_header[0]);
+            $this->assertSame('baz=biz; path=/; secure; HostOnly; HttpOnly; SameSite=Lax', $cookie_header[1]);
+
+        }
+
+        /** @test */
+        public function a_cookie_can_be_deleted () {
+
+
+            $response = $this->newMiddleware()
+                             ->handle($this->request, new Delegate(function () {
+
+                                 $response = $this->createResponseFactory()->make();
+
+                                 return $response->withoutCookie( 'foo' );
+
+                             }
+
+                             ));
+
+            $cookie_header = $response->getHeader('Set-Cookie');
+            $this->assertSame("foo=deleted; path=/; expires=Thu, 01-Jan-1970 00:00:01 UTC; secure; HostOnly; HttpOnly; SameSite=Lax", $cookie_header[0]);
+
+        }
+
 
     }
 

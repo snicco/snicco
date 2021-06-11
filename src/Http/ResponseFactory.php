@@ -194,9 +194,12 @@
             return $this->make(204);
         }
 
+        /**
+         * @return Response
+         */
         public function createResponse(int $code = 200, string $reasonPhrase = '') : ResponseInterface
         {
-            return $this->response_factory->createResponse($code, $reasonPhrase);
+            return $this->make($code, $reasonPhrase);
         }
 
         public function createStream(string $content = '') : StreamInterface

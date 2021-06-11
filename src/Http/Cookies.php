@@ -116,6 +116,14 @@
             return $this;
         }
 
+        public function add ( Cookie $cookie ) {
+
+            $this->responseCookies[$cookie->name()] = $cookie->properties();
+            return $this;
+
+        }
+
+
         /**
          * Convert all response cookies into an associate array of header values
          *

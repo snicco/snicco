@@ -11,24 +11,17 @@
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Psr7\Response;
 
     class ShareCookies extends Middleware
     {
 
-        /**
-         * @var Cookies
-         */
-        private $cookies;
-
-        public function __construct(Cookies $cookies)
-        {
-            $this->cookies = $cookies;
-        }
 
         public function handle(Request $request, Delegate $next)
         {
 
             $response = $next($this->addCookiesToRequest($request));
+
 
             return $this->addCookiesToResponse($response);
 
@@ -41,23 +34,31 @@
 
         }
 
-        private function addCookiesToResponse(ResponseInterface $response) : ResponseInterface
+        private function addCookiesToResponse(Response $response) : ResponseInterface
         {
 
-            if ( ( $headers = $this->cookies->toHeaders() ) === [] ) {
+            if ( ( $headers = $response->cookies()->toHeaders() ) === [] ) {
 
                 return $response;
 
             }
 
-            return $response->withHeader('Set-Cookie', $headers);
+            foreach ($headers as $header) {
+
+                $response = $response->withAddedHeader('Set-Cookie', $header);
+
+            }
+
+            return $response;
 
         }
 
         private function parseCookiesFromRequest (Request $request) : array
         {
 
-            return Cookies::parseHeader($request->getHeader('Cookie'));
+            $cookies = Cookies::parseHeader($request->getHeader('Cookie'));
+
+            return  $cookies;
 
         }
 
