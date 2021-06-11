@@ -7,9 +7,11 @@
 	namespace WPEmerge\ExceptionHandling;
 
 	use Throwable;
-	use Whoops\RunInterface;
+    use Whoops\Handler\JsonResponseHandler;
+    use Whoops\RunInterface;
 	use WPEmerge\Contracts\ErrorHandlerInterface;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Traits\HandlesExceptions;
 
@@ -26,26 +28,34 @@
 
 		}
 
-		public function handleException( $exception )  {
+		public function handleException( $exception, ?Request $request = null )  {
 
+		    $request = $request ?? $this->resolveRequestFromContainer();
+
+		    if ( $request && $request->isExpectingJson() ) {
+
+                $json_handler = new JsonResponseHandler();
+                $json_handler->addTraceToOutput( true );
+                $this->whoops->prependHandler( $json_handler );
+
+            }
 
 			$method = RunInterface::EXCEPTION_HANDLER;
 
-			$this->whoops->{ $method}( $exception );
+			$this->whoops->{ $method }( $exception );
 
 			UnrecoverableExceptionHandled::dispatch();
 
 
 		}
 
-		public function transformToResponse( Throwable $exception ) : ?Response {
+		public function transformToResponse( Throwable $exception, Request $request) : ?Response {
 
-			 $this->handleException( $exception);
+			 $this->handleException( $exception, $request );
 
 			 return null;
 
 		}
-
 
         public function unrecoverable(Throwable $exception)
         {

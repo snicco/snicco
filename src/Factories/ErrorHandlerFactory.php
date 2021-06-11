@@ -16,7 +16,10 @@
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
 	use WPEmerge\ExceptionHandling\DebugErrorHandler;
 	use WPEmerge\ExceptionHandling\ProductionErrorHandler;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
+
+    use function PHPUnit\TestFixture\func;
 
     class ErrorHandlerFactory {
 
@@ -40,17 +43,17 @@
 
 			if ( ! $is_debug ) {
 
-				return static::createProductionHandler( $container, $is_ajax_request );
+				$production_handler = static::createProductionHandler( $container, $is_ajax_request );
+				$production_handler->setRequestResolver(function () use ($container) {
+				    return $container->make(Request::class);
+                });
+
+				return $production_handler;
 
 			}
 
 			[ $whoops, $pretty_page_handler ] = static::createWhoops( $container );
 
-			if ( $is_ajax_request ) {
-
-				static::prependJsonHandler( $whoops );
-
-			}
 
 			if ( $editor ) {
 
@@ -58,7 +61,13 @@
 
 			}
 
-			return new DebugErrorHandler( $whoops );
+			 $debug_handler = new DebugErrorHandler( $whoops );
+
+             $debug_handler->setRequestResolver(function () use ($container) {
+                return $container->make(Request::class);
+            });
+
+			 return $debug_handler;
 
 		}
 
@@ -76,14 +85,6 @@
 
 		}
 
-		private static function prependJsonHandler( Run $whoops ) {
-
-			$json_handler = new JsonResponseHandler();
-			$json_handler->addTraceToOutput( true );
-			$whoops->prependHandler( $json_handler );
-
-		}
-
 		private static function createWhoops( ContainerAdapter $container ) : array {
 
 			$whoops              = new Run();
@@ -96,6 +97,7 @@
 
 			$container->instance( RunInterface::class, $whoops );
 			$container->instance( PrettyPageHandler::class, $pretty_page_handler );
+
 
 			return [ $whoops, $pretty_page_handler ];
 

@@ -37,15 +37,27 @@
 
         }
 
-        public function setRequest(Request $request) {
-
+        public function causedBy(Request $request) : HttpException
+        {
             $this->request = $request;
             return $this;
+        }
+
+        public function inAdminArea () :bool  {
+
+            return $this->request->isWpAdmin();
 
         }
 
-        public function isAjax() :bool {
-            return $this->request && $this->request->isAjax();
+        /**
+         * Returned string SHOULD NOT BE JSON ENCODED.
+         *
+         * @return string
+         */
+        public function jsonMessage () : string
+        {
+            return $this->getMessage();
+
         }
 
     }

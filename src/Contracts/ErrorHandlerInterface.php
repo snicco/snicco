@@ -7,7 +7,8 @@
 	namespace WPEmerge\Contracts;
 
 
-	use WPEmerge\Http\Psr7\Response;
+	use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Psr7\Response;
     use Throwable;
 
     interface ErrorHandlerInterface {
@@ -31,10 +32,11 @@
          * If outside of the routing flow send error message and abort.
          *
          * @param  Throwable  $exception
+         * @param  Request  $request
          *
          * @return Response|null
          */
-		public function transformToResponse( Throwable $exception ) :?Response;
+		public function transformToResponse( Throwable $exception, Request $request) :?Response;
 
         public function unrecoverable ( Throwable $exception );
 
