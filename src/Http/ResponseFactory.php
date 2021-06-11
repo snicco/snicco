@@ -50,6 +50,8 @@
          */
         private $redirector;
 
+        private $unrecoverable_error_message = 'Something has gone completely wrong.';
+
         public function __construct(ViewFactory $view, Psr17ResponseFactory $response, Psr17StreamFactory $stream, AbstractRedirector $redirector)
         {
 
@@ -216,6 +218,12 @@
             return $this->stream_factory->createStreamFromResource($resource);
         }
 
+        public function setFallbackErrorMessage (string $message) {
+
+            $this->unrecoverable_error_message = $message;
+
+        }
+
         /**
          *
          * Render the most appropriate error view for the given Exception.
@@ -228,7 +236,9 @@
 
             $views = [(string) $e->getStatusCode(), 'error', 'index'];
 
-            if ($e->inAdminArea()) {
+            $is_admin = $e->inAdminArea();
+
+            if ($is_admin) {
 
                 $views = collect($views)
                     ->map(function ($view) {
@@ -240,42 +250,43 @@
 
             }
 
-            $view = $this->view_factory->make($views)->with([
-                'status_code' => $e->getStatusCode(),
-                'message' => $e->getMessage(),
-            ]);
-
             try {
+
+                $view = $this->view_factory->make($views)->with([
+                    'status_code' => $e->getStatusCode(),
+                    'message' => $e->getMessage(),
+                ]);
 
                 return $this->toResponse($view)
                             ->withStatus($e->getStatusCode());
 
             }
-            catch (Throwable $e) {
+            catch (ViewException $e) {
+
+                $view = $is_admin ? 'error-admin' : 'error';
 
                 try {
 
                     return $this->toResponse(
 
                         $this->view_factory
-                            ->make('error')
-                            ->with(['status_code' => 500, 'message', 'Server Error'])
+                            ->make($view)
+                            ->with([
+                                'status_code' => 500,
+                                'message' => $this->unrecoverable_error_message
+                            ])
 
                     )->withStatus(500);
-
                 }
 
                 catch (Throwable $e) {
 
-                    return $this->html('Server Error')->withStatus(500);
+                    return $this->html("<h1>$this->unrecoverable_error_message</h1>", 500);
 
                 }
 
-
             }
 
-
         }
-
 
     }
