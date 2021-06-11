@@ -47,9 +47,7 @@
 
 			if ( error_reporting() ) {
 
-				$this->handleException(
-					new \ErrorException( $errstr, 0, $errno, $errfile, $errline ),
-				);
+                throw new \ErrorException( $errstr, 0, $errno, $errfile, $errline );
 
 			}
 
