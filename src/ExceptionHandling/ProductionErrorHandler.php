@@ -13,6 +13,7 @@
     use WPEmerge\Events\UnrecoverableExceptionHandled;
     use WPEmerge\ExceptionHandling\Exceptions\HttpException;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\ResponseEmitter;
@@ -60,12 +61,15 @@
 
         }
 
-        public function handleException($exception, $in_routing_flow = false)
+        public function handleException($exception, $in_routing_flow = false, ?Request $request = null)
         {
 
             $this->logException($exception);
 
-            $response = $this->createResponseObject($exception);
+            $response = $this->createResponseObject(
+                $exception,
+                $request ?? $this->resolveRequestFromContainer()
+            );
 
             if ($in_routing_flow) {
 
@@ -80,10 +84,10 @@
 
         }
 
-        public function transformToResponse(Throwable $exception) : ?Response
+        public function transformToResponse(Throwable $exception, Request $request) : ?Response
         {
 
-            return $this->handleException($exception, true);
+            return $this->handleException($exception, true, $request);
 
         }
 
@@ -120,12 +124,14 @@
          * your own default response for fatal errors that can not be transformed by this error
          * handler.
          *
+         * @param  Request  $request
+         *
          * @return Response
          */
-        protected function defaultResponse() : Response
+        protected function defaultResponse(Request $request) : Response
         {
 
-            if ($this->is_ajax) {
+            if ($request->isExpectingJson()) {
 
                 return $this->response->json('Internal Server Error', 500);
 
@@ -135,17 +141,17 @@
 
         }
 
-        private function createResponseObject(Throwable $e) : Response
+        private function createResponseObject(Throwable $e, Request $request) : Response
         {
 
-            if ( method_exists($e, 'render') ) {
+            if (method_exists($e, 'render')) {
 
                 /** @var Response $response */
-                $response = $this->container->call([$e, 'render']);
+                $response = $this->container->call([$e, 'render'], ['request' => $request]);
 
-                if ( ! $response instanceof Response ) {
+                if ( ! $response instanceof Response) {
 
-                    return $this->defaultResponse();
+                    return $this->defaultResponse($request);
 
                 }
 
@@ -153,20 +159,14 @@
 
             }
 
-            // if ( $e instanceof ValidationException ) {
-            //
-            //     return $this->renderValidationException($e);
-            //
-            // }
 
-            if ( $e instanceof HttpException ) {
+            if ($e instanceof HttpException) {
 
-                return $this->renderHttpException($e);
+                return $this->renderHttpException($e, $request);
 
             }
 
-            return $this->defaultResponse();
-
+            return $this->defaultResponse($request);
 
 
         }
@@ -211,16 +211,18 @@
             return [];
         }
 
-        private function renderHttpException(HttpException $e) : Response
+        private function renderHttpException(HttpException $http_exception, Request $request) : Response
         {
 
-            if ( $this->is_ajax ) {
+            if ($request->isExpectingJson()) {
 
-                return $this->response->json( $e->getMessage() ,  $e->getStatusCode() );
+                return $this->response->json($http_exception->jsonMessage(), $http_exception->getStatusCode());
 
             }
 
-            return $this->response->error($e);
+            $http_exception = $http_exception->causedBy($request);
+
+            return $this->response->error($http_exception);
 
         }
 
@@ -230,7 +232,6 @@
             $errors = $e->getErrors();
 
         }
-
 
 
     }
