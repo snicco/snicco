@@ -29,7 +29,33 @@
 
         }
 
+        public function noIndex(?string $bot = null)
+        {
+            $value = $bot ? $bot .': noindex' : 'noindex';
 
+            return $this->withAddedHeader('X-Robots-Tag', $value);
+        }
+
+        public function noFollow(?string $bot = null)
+        {
+            $value = $bot ? $bot .': nofollow' : 'nofollow';
+
+            return $this->withAddedHeader('X-Robots-Tag', $value);
+        }
+
+        public function noRobots(?string $bot = null)
+        {
+            $value = $bot ? $bot .': none' : 'none';
+
+            return $this->withAddedHeader('X-Robots-Tag', $value);
+        }
+
+        public function noArchive(?string $bot = null)
+        {
+            $value = $bot ? $bot .': noarchive' : 'noarchive';
+
+            return $this->withAddedHeader('X-Robots-Tag', $value);
+        }
 
         protected function new(ResponseInterface $new_psr_response) : Response
         {

@@ -15,6 +15,15 @@
     use WPEmerge\Routing\Route;
     use WPEmerge\Traits\GathersMiddleware;
 
+    /**
+     *
+     * This class is the the default route handler for ALL routes that
+     * do not have a URL-Constraint specified but instead rely on WordPress conditional tags.
+     *
+     * We cant match these routes with FastRoute so this Controller will figure out if we
+     * have a matching route.
+     *
+     */
     class FallBackController
     {
 

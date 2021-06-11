@@ -64,6 +64,7 @@
 
             }
 
+            // The Middleware Pipeline is created within the FallbackController::class
             if ( $route->isFallback() ) {
 
                 return $this->runFallbackRouteController($route, $request);
