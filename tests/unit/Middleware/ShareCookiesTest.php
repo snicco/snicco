@@ -10,6 +10,7 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
+    use WPEmerge\Http\Cookie;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
@@ -73,7 +74,6 @@
         public function added_cookies_are_transformed_to_a_http_header()
         {
 
-
             $this->assertEmpty($this->cookies->toHeaders());
 
             $response = $this->newMiddleware()
@@ -82,6 +82,30 @@
                                  $this->cookies->set('foo', 'bar');
 
                                  return $this->createResponseFactory()->createResponse();
+
+                             }
+
+                             ));
+
+            $cookie_header = $response->getHeaderLine('Set-Cookie');
+
+            $this->assertSame('foo=bar', $cookie_header);
+
+        }
+
+        /** @test */
+        public function response_cookies_can_be_added () {
+
+            $this->assertEmpty($this->cookies->toHeaders());
+
+            $response = $this->newMiddleware()
+                             ->handle($this->request, new Delegate(function () {
+
+                                 $response = $this->createResponseFactory()->make();
+
+                                 $cookie = new Cookie('foo', 'bar');
+
+                                 return $response->withCookie( $cookie );
 
                              }
 

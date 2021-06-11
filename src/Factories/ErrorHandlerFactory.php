@@ -39,11 +39,11 @@
 		/**
 		 * @throws ConfigurationException
 		 */
-		public static function make( ContainerAdapter $container, bool $is_debug, bool $is_ajax_request, string $editor = null ) {
+		public static function make( ContainerAdapter $container, bool $is_debug,  string $editor = null ) {
 
 			if ( ! $is_debug ) {
 
-				$production_handler = static::createProductionHandler( $container, $is_ajax_request );
+				$production_handler = static::createProductionHandler( $container );
 				$production_handler->setRequestResolver(function () use ($container) {
 				    return $container->make(Request::class);
                 });
@@ -71,7 +71,7 @@
 
 		}
 
-		private static function createProductionHandler( ContainerAdapter $container, bool $is_ajax ) : ProductionErrorHandler {
+		private static function createProductionHandler( ContainerAdapter $container ) : ProductionErrorHandler {
 
 			$logger = $container->offsetExists( LoggerInterface::class )
 				? $container->make( LoggerInterface::class )
@@ -81,7 +81,7 @@
 
 			$class = $container->make(ProductionErrorHandler::class);
 
-			return new $class($container, $logger, $response_factory,  $is_ajax);
+			return new $class($container, $logger, $response_factory);
 
 		}
 

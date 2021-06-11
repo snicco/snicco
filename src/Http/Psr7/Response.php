@@ -8,6 +8,7 @@
 
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\StreamInterface;
+    use WPEmerge\Http\Cookie;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Psr7\ImplementsPsr7Response;
 
@@ -21,10 +22,16 @@
          */
         protected $psr7_response;
 
+        /**
+         * @var Cookies
+         */
+        protected $cookies;
+
         public function __construct(ResponseInterface $psr7_response)
         {
 
             $this->psr7_response = $psr7_response;
+            $this->cookies = new Cookies();
 
         }
 
@@ -32,6 +39,14 @@
         {
 
             return new static($new_psr_response);
+
+        }
+
+        public function withCookie(Cookie $cookie) : Response
+        {
+            $this->cookies->set($cookie->name(), $cookie->properties());
+
+            return clone $this;
 
         }
 

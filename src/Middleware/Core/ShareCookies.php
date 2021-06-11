@@ -22,7 +22,6 @@
 
         public function __construct(Cookies $cookies)
         {
-
             $this->cookies = $cookies;
         }
 
