@@ -19,6 +19,7 @@
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Session\Session;
+    use WPEmerge\Support\Arr;
     use WPEmerge\Traits\HandlesExceptions;
     use WPEmerge\Validation\Exceptions\ValidationException;
 
@@ -45,7 +46,13 @@
         /**
          * @var array
          */
-        protected $dont_report = [];
+        protected $dont_report = [
+            ValidationException::class,
+        ];
+
+        protected $dont_flash = [
+
+        ];
 
         /**
          * @var ResponseFactory
@@ -64,15 +71,12 @@
 
         }
 
-        public function handleException($exception, $in_routing_flow = false, ?Request $request = null)
+        public function handleException($e, $in_routing_flow = false, ?Request $request = null)
         {
 
-            $this->logException($exception);
+            $this->logException($e);
 
-            $response = $this->createResponseObject(
-                $exception,
-                $request ?? $this->resolveRequestFromContainer()
-            );
+            $response = $this->convertToResponse($e, $request ?? $this->resolveRequestFromContainer());
 
             if ($in_routing_flow) {
 
@@ -82,7 +86,7 @@
 
             (new ResponseEmitter())->emit($response);
 
-            // Shut down the script
+            // Shuts down the script if not running unit tests.
             UnrecoverableExceptionHandled::dispatch();
 
         }
@@ -141,28 +145,22 @@
 
         }
 
-        private function createResponseObject(Throwable $e, Request $request) : Response
+        private function convertToResponse(Throwable $e, Request $request) : Response
         {
 
             if (method_exists($e, 'render')) {
 
-                /** @var Response $response */
-                $response = $this->container->call([$e, 'render'], ['request' => $request]);
-
-                if ( ! $response instanceof Response) {
-
-                    return $this->renderHttpException(
-                        new HttpException(500, $this->fallback_error_message),
-                        $request
-                    );
-
-                }
-
-                return $response;
+                return $this->renderableException($e, $request);
 
             }
 
-            if ( ! $e instanceof HttpException ) {
+            if ($e instanceof ValidationException) {
+
+                return $this->renderValidationException($e, $request);
+
+            }
+
+            if ( ! $e instanceof HttpException) {
 
                 $e = $this->toHttpException($e, $request);
 
@@ -228,12 +226,50 @@
 
         }
 
-        private function renderValidationException(ValidationException $e)
+        private function renderValidationException(ValidationException $e, Request $request)
         {
 
-            $errors = $e->getErrors();
+            if ($request->isExpectingJson()) {
+
+                return $this->response->json([
+
+                    'message' => $e->jsonMessage(),
+                    'errors' => $e->errorsAsArray(),
+
+                ], $e->getStatusCode());
+
+            }
+
+            $response = $this->response->redirect()->back();
+
+            if ( ! $response->hasSession()) {
+
+                return $response;
+
+            }
+
+            return $response->withErrors($e->messages(), $e->namedBag())
+                            ->withInput(Arr::except($request->input(), $this->dont_flash));
 
         }
 
+        private function renderableException(Throwable $e, Request $request) : Response
+        {
+
+            /** @var Response $response */
+            $response = $this->container->call([$e, 'render'], ['request' => $request]);
+
+            // User did not provide a valid response from the callback.
+            if ( ! $response instanceof Response) {
+
+                return $this->renderHttpException(
+                    new HttpException(500, $this->fallback_error_message),
+                    $request
+                );
+
+            }
+
+            return $response;
+        }
 
     }

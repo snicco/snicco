@@ -18,6 +18,7 @@
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Contracts\ViewInterface;
+    use WPEmerge\Session\CsrfField;
     use WPEmerge\Session\Session;
     use WPEmerge\View\GlobalContext;
 
@@ -98,11 +99,17 @@
          *
          * Does NOT echo the output but returns the html as a string.
          *
+         * @see CsrfField::asHtml()
+         *
          * @return string
          */
         public static function csrfField() : string
         {
 
+        }
+
+        public static function csrf() : CsrfField
+        {
 
         }
 

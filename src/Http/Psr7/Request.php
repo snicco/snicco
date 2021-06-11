@@ -97,10 +97,10 @@
 
         }
 
-        public function withValidator(Validator $user)
+        public function withValidator(Validator $v)
         {
 
-            return $this->withAttribute('_validator', $user);
+            return $this->withAttribute('_validator', $v);
         }
 
         public function validator() : Validator
