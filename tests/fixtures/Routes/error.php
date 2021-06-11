@@ -27,3 +27,10 @@
 
     });
 
+    $router->get('error/fatal', function () {
+
+        trigger_error('Sensitive Info', E_USER_ERROR);
+
+    });
+
+

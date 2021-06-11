@@ -133,4 +133,24 @@
 
         }
 
+        /** @test */
+        public function errors_that_can_not_be_converted_to_any_at_all_are_rendered_with_the_default_error_view () {
+
+            $this->newTestApp($this->config(), true );
+
+            $this->rebindRequest(TestRequest::from('GET', 'error/fatal'));
+            $this->registerRoutes();
+
+            ob_start();
+
+            $tpl = apply_filters('template_include', 'wp.php');
+
+            $output = ob_get_clean();
+
+            $this->assertSame('VIEW:error.php,STATUS:500,MESSAGE:Internal Server Error', $output);
+            HeaderStack::assertHasStatusCode(500);
+            HeaderStack::assertHas('Content-Type', 'text/html');
+
+        }
+
     }
