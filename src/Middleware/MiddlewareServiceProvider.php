@@ -45,6 +45,7 @@
                 'auth' => Authenticate::class,
                 'guest' => RedirectIfAuthenticated::class,
                 'can' => Authorize::class,
+                'json' => JsonPayload::class
 
             ]);
 

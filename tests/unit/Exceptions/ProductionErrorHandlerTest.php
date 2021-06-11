@@ -6,15 +6,18 @@
 
 	namespace Tests\unit\Exceptions;
 
-	use Exception;
+	use Contracts\ContainerAdapter;
+    use Exception;
 	use Tests\helpers\AssertsResponse;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
+    use Tests\stubs\HeaderStack;
     use Tests\UnitTest;
 	use Tests\stubs\TestException;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\ResponseFactory;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
@@ -30,6 +33,17 @@
         use CreateRouteCollection;
         use CreateDefaultWpApiMocks;
 
+
+        /**
+         * @var ContainerAdapter
+         */
+        private $container;
+
+        /**
+         * @var Request
+         */
+        private $request;
+
         protected function beforeTestRun()
         {
 
@@ -38,6 +52,7 @@
             $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
             $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
             WP::setFacadeContainer($this->createContainer());
+            $this->request = TestRequest::from('GET', 'foo');
 
         }
 
@@ -47,9 +62,9 @@
             WP::reset();
             ApplicationEvent::setInstance(null);
             \Mockery::close();
+            HeaderStack::reset();
 
         }
-
 
 
 		/** @test */
@@ -58,8 +73,7 @@
 
 			$handler = $this->newErrorHandler();
 
-
-			$response = $handler->transformToResponse( new TestException('Sensitive Info') );
+			$response = $handler->transformToResponse( new TestException('Sensitive Info'), $this->request );
 
 			$this->assertInstanceOf(Response::class, $response);
             $this->assertOutput('VIEW:500,CONTEXT:[status_code=>500,message=>Internal Server Error]', $response);
@@ -74,6 +88,8 @@
 
 			$handler = $this->newErrorHandler();
 
+			$this->container->instance(Request::class, $this->request);
+
 			$handler->handleException( new TestException('Sensitive Info') );
 
 			ApplicationEvent::assertDispatched(UnrecoverableExceptionHandled::class);
@@ -82,19 +98,35 @@
 		}
 
 		/** @test */
-		public function for_ajax_requests_the_content_type_is_set_correctly () {
+		public function the_response_will_be_sent_as_json_if_the_request_expects_json () {
 
 			$handler = $this->newErrorHandler(true);
 
-			$response = $handler->transformToResponse( new TestException('Sensitive Info') );
+			$request = $this->request->withAddedHeader('Accept', 'application/json');
+
+			$response = $handler->transformToResponse( new TestException('Sensitive Info'), $request );
 
 			$this->assertInstanceOf(Response::class, $response);
 			$this->assertStatusCode(500, $response);
 			$this->assertContentType('application/json', $response);
-
 			$this->assertSame('Internal Server Error', json_decode( $response->getBody()->__toString() ) );
-
 			ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
+
+		}
+
+		/** @test */
+		public function outside_the_routing_flow_responses_are_send_as_json_if_expected_by_the_request () {
+
+            $handler = $this->newErrorHandler();
+
+            $this->container->instance(Request::class, $this->request->withAddedHeader('Accept', 'application/json'));
+
+            $handler->handleException( new TestException('Sensitive Info') );
+
+            ApplicationEvent::assertDispatched(UnrecoverableExceptionHandled::class);
+            HeaderStack::assertHasStatusCode(500);
+            HeaderStack::assertHas('Content-Type', 'application/json');
+            $this->expectOutputString(json_encode('Internal Server Error'));
 
 		}
 
@@ -103,7 +135,7 @@
 
 			$handler = $this->newErrorHandler();
 
-			$response = $handler->transformToResponse( new TestException('Sensitive Info') );
+			$response = $handler->transformToResponse( new TestException('Sensitive Info'), $this->request );
 
 			$this->assertInstanceOf(Response::class, $response);
 			$this->assertStatusCode(500, $response);
@@ -120,7 +152,7 @@
 
 			$handler = $this->newErrorHandler();
 
-			$response = $handler->transformToResponse( new RenderableException() );
+			$response = $handler->transformToResponse( new RenderableException(), $this->request );
 
 			$this->assertInstanceOf(Response::class, $response);
 			$this->assertStatusCode(500, $response);
@@ -136,7 +168,7 @@
 
             $handler = $this->newErrorHandler();
 
-            $response = $handler->transformToResponse( new WrongReturnTypeException() );
+            $response = $handler->transformToResponse( new WrongReturnTypeException(), $this->request );
 
             $this->assertInstanceOf(Response::class, $response);
             $this->assertStatusCode(500, $response);
@@ -152,14 +184,11 @@
 		/** @test */
 		public function renderable_exceptions_receive_the_current_request_and_a_response_factory_instance () {
 
-		    $this->container->instance(
-		        Request::class,
-                TestRequest::from('GET', 'foo')->withAttribute('foo', 'bar')
-            );
+
 
 			$handler = $this->newErrorHandler();
 
-			$response = $handler->transformToResponse( new ExceptionWithDependencyInjection() );
+			$response = $handler->transformToResponse( new ExceptionWithDependencyInjection(), $this->request->withAttribute('foo', 'bar') );
 
 			$this->assertInstanceOf(Response::class, $response);
 			$this->assertStatusCode(403, $response);
@@ -177,16 +206,17 @@
 
             $handler = $this->newErrorHandler();
 
-            $response = $handler->transformToResponse( new Exception('Sensitive Data nobody should read') );
+            $response = $handler->transformToResponse( new Exception('Sensitive Data nobody should read'), $this->request );
 
             $this->assertInstanceOf(Response::class, $response);
             $this->assertStatusCode(500, $response);
             $this->assertContentType('text/html', $response);
-            $this->assertOutput('Custom Error Message', $response);
+            $this->assertOutput('VIEW:500,CONTEXT:[status_code=>500,message=>Custom Error Message]', $response);
 
             ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
 
 		}
+
 
 
 
@@ -234,9 +264,10 @@
 	class CustomErrorHandler extends ProductionErrorHandler {
 
 
-	    protected function defaultResponse() : Response
+	    protected function toHttpException(\Throwable $e, Request $request) : HttpException
         {
-            return $this->response->html('Custom Error Message')->withStatus(500);
+            return new HttpException(500, 'Custom Error Message');
+
         }
 
 

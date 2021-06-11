@@ -15,10 +15,12 @@
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
+    use Tests\stubs\TestRequest;
     use Tests\UnitTest;
     use Tests\fixtures\TestDependencies\Foo;
     use Tests\stubs\TestLogger;
     use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\ExceptionHandling\ProductionErrorHandler;
     use WPEmerge\Facade\WP;
@@ -39,6 +41,11 @@
          */
         private $container;
 
+        /**
+         * @var Request
+         */
+        private $request;
+
 
         protected function beforeTestRun()
         {
@@ -50,6 +57,7 @@
             WpFacade::setFacadeContainer($this->container);
             WP::shouldReceive('userId')->andReturn(10)->byDefault();
             $GLOBALS['test']['log'] = [];
+            $this->request = TestRequest::from('GET', 'foo');
 
         }
 
@@ -71,7 +79,7 @@
 
             $handler = $this->newErrorHandler();
 
-            $handler->transformToResponse(new Exception('Foobar'));
+            $handler->transformToResponse(new Exception('Foobar'), $this->request);
 
             $logger->assertHasLogLevelEntry(LogLevel::ERROR, 'Foobar');
 
@@ -86,7 +94,7 @@
 
             $handler = $this->newErrorHandler();
 
-            $handler->transformToResponse($e = new Exception('Foobar'));
+            $handler->transformToResponse($e = new Exception('Foobar'), $this->request);
 
             $logger->assertHasLogEntry('Foobar', ['user_id' => 10, 'exception' => $e]);
 
@@ -102,7 +110,7 @@
 
             $handler = $this->newErrorHandler();
 
-            $handler->transformToResponse($e = new Exception('Foobar'));
+            $handler->transformToResponse($e = new Exception('Foobar'),$this->request);
 
             $logger->assertHasLogEntry('Foobar', ['exception' => $e]);
 
@@ -116,7 +124,7 @@
 
             $handler = $this->newErrorHandler();
 
-            $handler->transformToResponse($e = new ContextException('TestMessage'));
+            $handler->transformToResponse($e = new ContextException('TestMessage'), $this->request);
 
             $logger->assertHasLogEntry('TestMessage', [
                 'user_id' => 10, 'foo' => 'bar', 'exception' => $e,
@@ -132,7 +140,7 @@
 
             $handler = $this->newErrorHandler();
 
-            $handler->transformToResponse($e = new Exception('Foobar'));
+            $handler->transformToResponse($e = new Exception('Foobar'), $this->request);
 
             $logger->assertHasLogEntry('Foobar', ['user_id' => 10, 'exception' => $e]);
 
@@ -146,7 +154,7 @@
 
             $handler = $this->newErrorHandler();
 
-            $handler->transformToResponse(new ReportableException('foobarlog'));
+            $handler->transformToResponse(new ReportableException('foobarlog'), $this->request);
 
             $this->assertContains('foobarlog', $GLOBALS['test']['log']);
 
@@ -160,7 +168,7 @@
 
             $handler = $this->newErrorHandler();
 
-            $handler->transformToResponse($e = new ReportableException('TestMessage'));
+            $handler->transformToResponse($e = new ReportableException('TestMessage'), $this->request);
 
             $logger->assertHasLogEntry('TestMessage', ['user_id' => 10, 'exception' => $e]);
             $this->assertContains('TestMessage', $GLOBALS['test']['log']);
@@ -176,7 +184,7 @@
 
             $handler = $this->newErrorHandler();
 
-            $handler->transformToResponse(new StopPropagationException('TestMessage'));
+            $handler->transformToResponse(new StopPropagationException('TestMessage'), $this->request);
 
             $logger->assertHasNoLogEntries();
             $this->assertContains('TestMessage', $GLOBALS['test']['log']);
@@ -191,7 +199,7 @@
 
             $handler = $this->newErrorHandler();
 
-            $handler->transformToResponse(new LogExceptionWithFooDependency('TestMessage'));
+            $handler->transformToResponse(new LogExceptionWithFooDependency('TestMessage'), $this->request);
 
             $this->assertContains('TestMessage:foo', $GLOBALS['test']['log']);
 
@@ -211,7 +219,7 @@
 
             $handler = $this->newErrorHandler();
 
-            $handler->transformToResponse(new ReportableException('foo'));
+            $handler->transformToResponse(new ReportableException('foo'), $this->request);
 
             $logger->assertHasNoLogEntries();
             $this->assertEmpty($GLOBALS['test']['log']);
@@ -228,7 +236,7 @@
 
             $handler = $this->newErrorHandler();
 
-            $handler->transformToResponse($e = new Exception('Foobar'));
+            $handler->transformToResponse($e = new Exception('Foobar'), $this->request);
 
             $logger->assertHasLogEntry('Foobar', ['foo' => 'bar', 'exception' => $e]);
 

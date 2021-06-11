@@ -66,7 +66,7 @@
          * @param  string  $key
          * @return $this
          */
-        public function withErrors( $provider, string $key = 'default' ) : RedirectResponse
+        public function withErrors( $provider , string $key = 'default' ) : RedirectResponse
         {
 
             $this->checkSession();
@@ -91,10 +91,17 @@
             return new MessageBag((array) $provider);
         }
 
+        public function hasSession () : bool
+        {
+
+            return $this->session instanceof Session;
+
+        }
+
         private function checkSession () {
 
 
-            if ( ! $this->session instanceof Session ) {
+            if ( ! $this->hasSession() ) {
 
                 $called_method = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'];
 

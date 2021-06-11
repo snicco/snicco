@@ -7,16 +7,19 @@
     namespace WPEmerge\ExceptionHandling;
 
     use Contracts\ContainerAdapter;
+    use Illuminate\Support\Facades\Http;
     use Psr\Log\LoggerInterface;
     use Throwable;
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Events\UnrecoverableExceptionHandled;
     use WPEmerge\ExceptionHandling\Exceptions\HttpException;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Session\Session;
+    use WPEmerge\Support\Arr;
     use WPEmerge\Traits\HandlesExceptions;
     use WPEmerge\Validation\Exceptions\ValidationException;
 
@@ -43,12 +46,20 @@
         /**
          * @var array
          */
-        protected $dont_report = [];
+        protected $dont_report = [
+            ValidationException::class,
+        ];
+
+        protected $dont_flash = [
+
+        ];
 
         /**
          * @var ResponseFactory
          */
         protected $response;
+
+        protected $fallback_error_message = 'Internal Server Error';
 
         public function __construct(ContainerAdapter $container, LoggerInterface $logger, ResponseFactory $response_factory, bool $is_ajax)
         {
@@ -60,12 +71,12 @@
 
         }
 
-        public function handleException($exception, $in_routing_flow = false)
+        public function handleException($e, $in_routing_flow = false, ?Request $request = null)
         {
 
-            $this->logException($exception);
+            $this->logException($e);
 
-            $response = $this->createResponseObject($exception);
+            $response = $this->convertToResponse($e, $request ?? $this->resolveRequestFromContainer());
 
             if ($in_routing_flow) {
 
@@ -75,15 +86,15 @@
 
             (new ResponseEmitter())->emit($response);
 
-            // Shut down the script
+            // Shuts down the script if not running unit tests.
             UnrecoverableExceptionHandled::dispatch();
 
         }
 
-        public function transformToResponse(Throwable $exception) : ?Response
+        public function transformToResponse(Throwable $exception, Request $request) : ?Response
         {
 
-            return $this->handleException($exception, true);
+            return $this->handleException($exception, true, $request);
 
         }
 
@@ -120,53 +131,42 @@
          * your own default response for fatal errors that can not be transformed by this error
          * handler.
          *
-         * @return Response
+         * @param  Throwable  $e
+         * @param  Request  $request
+         *
+         * @return HttpException
          */
-        protected function defaultResponse() : Response
+        protected function toHttpException(Throwable $e, Request $request) : HttpException
         {
 
-            if ($this->is_ajax) {
+            $e = new HttpException(500, $this->fallback_error_message);
 
-                return $this->response->json('Internal Server Error', 500);
-
-            }
-
-            return $this->response->error(new HttpException(500, 'Internal Server Error'));
+            return $e;
 
         }
 
-        private function createResponseObject(Throwable $e) : Response
+        private function convertToResponse(Throwable $e, Request $request) : Response
         {
 
-            if ( method_exists($e, 'render') ) {
+            if (method_exists($e, 'render')) {
 
-                /** @var Response $response */
-                $response = $this->container->call([$e, 'render']);
-
-                if ( ! $response instanceof Response ) {
-
-                    return $this->defaultResponse();
-
-                }
-
-                return $response;
+                return $this->renderableException($e, $request);
 
             }
 
-            // if ( $e instanceof ValidationException ) {
-            //
-            //     return $this->renderValidationException($e);
-            //
-            // }
+            if ($e instanceof ValidationException) {
 
-            if ( $e instanceof HttpException ) {
-
-                return $this->renderHttpException($e);
+                return $this->renderValidationException($e, $request);
 
             }
 
-            return $this->defaultResponse();
+            if ( ! $e instanceof HttpException) {
 
+                $e = $this->toHttpException($e, $request);
+
+            }
+
+            return $this->renderHttpException($e, $request);
 
 
         }
@@ -211,26 +211,65 @@
             return [];
         }
 
-        private function renderHttpException(HttpException $e) : Response
+        private function renderHttpException(HttpException $http_exception, Request $request) : Response
         {
 
-            if ( $this->is_ajax ) {
+            if ($request->isExpectingJson()) {
 
-                return $this->response->json( $e->getMessage() ,  $e->getStatusCode() );
+                return $this->response->json($http_exception->jsonMessage(), $http_exception->getStatusCode());
 
             }
 
-            return $this->response->error($e);
+            $http_exception = $http_exception->causedBy($request);
+
+            return $this->response->error($http_exception);
 
         }
 
-        private function renderValidationException(ValidationException $e)
+        private function renderValidationException(ValidationException $e, Request $request)
         {
 
-            $errors = $e->getErrors();
+            if ($request->isExpectingJson()) {
+
+                return $this->response->json([
+
+                    'message' => $e->jsonMessage(),
+                    'errors' => $e->errorsAsArray(),
+
+                ], $e->getStatusCode());
+
+            }
+
+            $response = $this->response->redirect()->back();
+
+            if ( ! $response->hasSession()) {
+
+                return $response;
+
+            }
+
+            return $response->withErrors($e->messages(), $e->namedBag())
+                            ->withInput(Arr::except($request->input(), $this->dont_flash));
 
         }
 
+        private function renderableException(Throwable $e, Request $request) : Response
+        {
 
+            /** @var Response $response */
+            $response = $this->container->call([$e, 'render'], ['request' => $request]);
+
+            // User did not provide a valid response from the callback.
+            if ( ! $response instanceof Response) {
+
+                return $this->renderHttpException(
+                    new HttpException(500, $this->fallback_error_message),
+                    $request
+                );
+
+            }
+
+            return $response;
+        }
 
     }

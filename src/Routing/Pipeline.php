@@ -167,7 +167,7 @@
                 }
                 catch (\Throwable $e) {
 
-                    return $this->error_handler->transformToResponse($e);
+                    return $this->error_handler->transformToResponse($e, $request);
 
                 }
 

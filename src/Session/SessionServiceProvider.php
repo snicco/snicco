@@ -177,6 +177,7 @@
 
             $app->alias('session', Session::class);
             $app->alias('csrfField', CsrfField::class, 'asHtml');
+            $app->alias('csrf', CsrfField::class);
 
 
         }

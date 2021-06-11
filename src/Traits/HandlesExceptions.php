@@ -6,9 +6,13 @@
 
 	namespace WPEmerge\Traits;
 
-	trait HandlesExceptions {
+	use WPEmerge\Http\Psr7\Request;
+
+    trait HandlesExceptions {
 
 		private $registered = false;
+
+		private $request_resolver;
 
 		public function register() {
 
@@ -43,14 +47,23 @@
 
 			if ( error_reporting() ) {
 
-				$this->handleException(
-					new \ErrorException( $errstr, 0, $errno, $errfile, $errline ),
-				);
+                throw new \ErrorException( $errstr, 0, $errno, $errfile, $errline );
 
 			}
 
 
 		}
 
+		public function setRequestResolver ( \Closure $closure) {
+
+		    $this->request_resolver = $closure;
+
+        }
+
+        public function resolveRequestFromContainer() :Request {
+
+		    return call_user_func($this->request_resolver);
+
+        }
 
 	}

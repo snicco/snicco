@@ -6,10 +6,10 @@
 
     namespace WPEmerge\Validation;
 
+    use Illuminate\Contracts\Support\MessageProvider;
     use Illuminate\Support\Collection;
-    use Respect\Validation\Exceptions\ValidationException;
-    use Respect\Validation\Rules\AbstractRule;
-    use Respect\Validation\Rules\Key;
+    use Illuminate\Support\MessageBag;
+    use Respect\Validation\Exceptions\ValidationException as RespectValidationError;
     use Respect\Validation\Rules\Not;
     use Respect\Validation\Validator as v;
     use WPEmerge\Support\Arr;
@@ -20,7 +20,7 @@
     class Validator
     {
 
-        private $errors = [];
+        private $errors_as_array = [];
 
         private $custom_messages = [];
 
@@ -44,12 +44,20 @@
          */
         private $global_message_replacements = [];
 
-        private $validated_array_keys = [];
+        /**
+         * @var MessageBag
+         */
+        private $message_bag;
+
+        /**
+         * @var string
+         */
+        private $message_bag_name = 'default';
 
         public function __construct(?array $input = null)
         {
-
             $this->input = $input;
+            $this->message_bag = new MessageBag();
         }
 
         /**
@@ -94,11 +102,10 @@
 
                     }
 
-                    $this->validated_array_keys[] = trim($key, '*');
 
 
                 }
-                catch (ValidationException $e) {
+                catch (RespectValidationError $e) {
 
                     $this->updateGlobalTemplates($e, $key, $input);
 
@@ -108,14 +115,24 @@
 
             }
 
-            if (count($this->errors)) {
+            if (count($this->errors_as_array)) {
 
-                throw new Exceptions\ValidationException($this->errors);
+                $e = new Exceptions\ValidationException($this->errors_as_array);
+                $e->setMessageBag($this->message_bag, $this->message_bag_name);
 
+                throw $e;
             }
 
             return $complete_input;
 
+
+        }
+
+        public function validateWithBag( string $named_bag, ?array $input = null) {
+
+            $this->message_bag_name = $named_bag;
+
+            return $this->validate($input);
 
         }
 
@@ -142,17 +159,23 @@
             $this->global_message_replacements = $messages;
         }
 
-        private function addToErrors(ValidationException $e, $key, $input)
+        private function addToErrors(RespectValidationError $e, $key, $input)
         {
 
             $messages = $this->reformatMessages($e, $key, $input);
 
-            Arr::set($this->errors, $key, ['input' => $input, 'messages' => $messages]);
+            Arr::set($this->errors_as_array, $key,  $messages );
+
+            foreach ($messages as $message) {
+
+                $this->message_bag->add($key, $message);
+
+            }
 
 
         }
 
-        private function reformatMessages(ValidationException $e, $name, $input) : array
+        private function reformatMessages(RespectValidationError $e, $name, $input) : array
         {
 
             $exceptions = $e->getChildren();
@@ -162,7 +185,7 @@
             $rule_id = null;
 
             $messages = $messages
-                ->map(function (ValidationException $e) use ($name, &$rule_id) {
+                ->map(function (RespectValidationError $e) use ($name, &$rule_id) {
 
                     $rule_id = $e->getId();
                     return $this->replaceWithCustomMessage($e, $name);
@@ -244,12 +267,21 @@
                 })
                 ->map(function (array $rule, $key) {
 
+                    $optional = false;
 
-                    $optional = ($rule[1] ?? 'required') === 'optional';
+                    if( ! isset($rule[2] ) ) {
 
-                    if (isset($rule[2])) {
+                        $optional = ($rule[1] ?? 'required') === 'optional';
 
-                        $this->custom_messages[trim($key, '*')] = $rule[2];
+                    } else {
+
+                        $optional = ($rule[2] ?? 'required') === 'optional';
+
+                    }
+
+                    if (isset($rule[1] ) && ! Str::contains($rule[1], ['optional', 'required'])) {
+
+                        $this->custom_messages[trim($key, '*')] = $rule[1];
 
                     }
 
@@ -273,12 +305,12 @@
 
         }
 
-        private function updateGlobalTemplates(ValidationException $e, $name, $input)
+        private function updateGlobalTemplates(RespectValidationError $e, $name, $input)
         {
 
             $negated_template = $e->getParam('rules')[0] instanceof Not;
 
-            collect($e->getChildren())->each(function (ValidationException $e) use ($input, $name, $negated_template) {
+            collect($e->getChildren())->each(function (RespectValidationError $e) use ($input, $name, $negated_template) {
 
                 if ( ! isset($this->global_message_replacements[$e->getId()])) {
                     return;
@@ -286,7 +318,7 @@
 
                 if ($negated_template) {
 
-                    $e->updateMode(ValidationException::MODE_NEGATIVE);
+                    $e->updateMode(RespectValidationError::MODE_NEGATIVE);
                     $e->updateTemplate($this->global_message_replacements[$e->getId()][1]);
 
                     return;
