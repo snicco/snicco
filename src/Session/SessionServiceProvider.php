@@ -23,7 +23,6 @@
     use WPEmerge\Session\Middleware\ValidateSignature;
     use WPEmerge\Support\Arr;
 
-
     class SessionServiceProvider extends ServiceProvider
 
     {
@@ -88,9 +87,8 @@
             ]);
 
             $this->config->extend('middleware.unique', [
-                ShareSessionWithView::class
+                ShareSessionWithView::class,
             ]);
-
 
 
         }
@@ -162,7 +160,6 @@
 
                 return new StartSessionMiddleware(
                     $this->container->make(Session::class),
-                    $this->container->make(Cookies::class),
                     $this->config->get('session')
                 );
 
@@ -245,7 +242,7 @@
         private function extendViews()
         {
 
-            $dir = __DIR__ . DIRECTORY_SEPARATOR . 'views';
+            $dir = __DIR__.DIRECTORY_SEPARATOR.'views';
             $views = $this->config->get('views', []);
             $views = array_merge($views, [$dir]);
             $this->config->set('views', $views);
@@ -274,7 +271,6 @@
 
             });
         }
-
 
 
     }

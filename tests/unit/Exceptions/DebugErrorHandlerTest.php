@@ -126,12 +126,11 @@
 		}
 
 
-		private function newErrorHandler (bool $is_ajax = false ) : DebugErrorHandler {
+		private function newErrorHandler (  ) : DebugErrorHandler {
 
 			return ErrorHandlerFactory::make(
 				$this->container,
 				true,
-				$is_ajax
 			);
 
 		}

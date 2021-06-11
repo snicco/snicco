@@ -10,6 +10,7 @@
     use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Events\IncomingGlobalRequest;
+    use WPEmerge\Http\Cookie;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
@@ -17,14 +18,13 @@
     use WPEmerge\Http\Responses\NullResponse;
     use WPEmerge\Session\Session;
 
-
     class StartSessionMiddleware extends Middleware
     {
 
         /**
          * @var Session
          */
-        private $session_store;
+        private $session;
 
         /**
          * @var array|int[]
@@ -35,19 +35,14 @@
          */
         private $config;
 
-        /**
-         * @var Cookies
-         */
-        private $cookies;
 
         private $session_initialized = false;
 
-        public function __construct(Session $session_store, Cookies $cookies, array $config)
+        public function __construct(Session $session, array $config)
         {
 
-            $this->session_store = $session_store;
+            $this->session = $session;
             $this->config = $config;
-            $this->cookies = $cookies;
 
         }
 
@@ -56,7 +51,7 @@
 
             $this->collectGarbage();
 
-
+            /** @todo tests */
             if ( ! $this->session_initialized ) {
 
                 $session = $this->getSession($request);
@@ -64,7 +59,7 @@
 
             }
 
-            return $this->handleStatefulRequest($request, $this->session_store, $next);
+            return $this->handleStatefulRequest($request, $this->session, $next);
 
 
         }
@@ -72,37 +67,35 @@
         private function getSession(Request $request) : Session
         {
 
-
-
             $cookies = $request->cookies();
-            $cookie_name = $this->session_store->getName();
+            $cookie_name = $this->session->getName();
 
             $session_id = $cookies->get($cookie_name, '');
 
-            $this->session_store->setId($session_id);
+            $this->session->setId($session_id);
 
             $this->session_initialized = true;
 
-            return $this->session_store;
+            return $this->session;
 
         }
 
-        private function addSessionCookie(Session $session)
+        private function withSessionCookie(Response $response, Session $session) : Response
         {
 
-            $this->cookies->set(
-                $this->config['cookie'],
-                [
-                    'value' => $session->getId(),
-                    'path' => $this->config['path'],
-                    'samesite' => ucfirst($this->config['same_site']),
-                    'expires' => Carbon::now()->addMinutes($this->config['lifetime'])->getTimestamp(),
-                    'httponly' => $this->config['http_only'],
-                    'secure' => $this->config['secure'],
-                    'domain' => $this->config['domain']
+            $cookie = new Cookie($this->config['cookie'], $session->getId());
+            $cookie->setProperties([
+                'path' => $this->config['path'],
+                'samesite' => ucfirst($this->config['same_site']),
+                'expires' => Carbon::now()->addMinutes($this->config['lifetime'])->getTimestamp(),
+                'httponly' => $this->config['http_only'],
+                'secure' => $this->config['secure'],
+                'domain' => $this->config['domain']
 
-                ]
-            );
+            ]);
+
+            return $response->withCookie($cookie);
+
         }
 
         private function startSession(Session $session_store, Request $request)
@@ -120,7 +113,7 @@
 
             $response = $next($request);
 
-            $this->addSessionCookie($session);
+            $response = $this->withSessionCookie($response, $session);
 
             $this->saveSession($session, $request, $response);
 
@@ -149,6 +142,7 @@
         private function saveSession(Session $session, Request $request, ResponseInterface $response) :void
         {
 
+            /** @todo tests */
             if ( ! $this->requestRunsOnInitHook($request) ) {
 
                 $this->storePreviousUrl($response, $request, $session);
@@ -182,7 +176,7 @@
         {
             if ($this->configHitsLottery($this->config['lottery'])) {
 
-                $this->session_store->getDriver()->gc($this->getSessionLifetimeInSeconds());
+                $this->session->getDriver()->gc($this->getSessionLifetimeInSeconds());
 
             }
         }

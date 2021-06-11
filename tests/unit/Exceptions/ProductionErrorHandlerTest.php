@@ -220,9 +220,9 @@
 
 
 
-		private function newErrorHandler (bool $is_ajax = false ) : ProductionErrorHandler {
+		private function newErrorHandler ( ) : ProductionErrorHandler {
 
-			return ErrorHandlerFactory::make($this->container, false, $is_ajax);
+			return ErrorHandlerFactory::make($this->container, false);
 
 		}
 
