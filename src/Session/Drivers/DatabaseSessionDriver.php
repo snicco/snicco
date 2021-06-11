@@ -156,7 +156,7 @@ WHERE
 
             $query = $this->db->prepare("SELECT * FROM `$this->table` WHERE `id` = %s", $id);
 
-            return (object) $this->db->get_row($query);
+            return (object) $this->db->get_row($query, ARRAY_A);
 
         }
 

@@ -24,7 +24,7 @@
         /**
          * @var Session
          */
-        private $session_store;
+        private $session;
 
         /**
          * @var array|int[]
@@ -38,10 +38,10 @@
 
         private $session_initialized = false;
 
-        public function __construct(Session $session_store, array $config)
+        public function __construct(Session $session, array $config)
         {
 
-            $this->session_store = $session_store;
+            $this->session = $session;
             $this->config = $config;
 
         }
@@ -59,7 +59,7 @@
 
             }
 
-            return $this->handleStatefulRequest($request, $this->session_store, $next);
+            return $this->handleStatefulRequest($request, $this->session, $next);
 
 
         }
@@ -68,15 +68,15 @@
         {
 
             $cookies = $request->cookies();
-            $cookie_name = $this->session_store->getName();
+            $cookie_name = $this->session->getName();
 
             $session_id = $cookies->get($cookie_name, '');
 
-            $this->session_store->setId($session_id);
+            $this->session->setId($session_id);
 
             $this->session_initialized = true;
 
-            return $this->session_store;
+            return $this->session;
 
         }
 
@@ -176,7 +176,7 @@
         {
             if ($this->configHitsLottery($this->config['lottery'])) {
 
-                $this->session_store->getDriver()->gc($this->getSessionLifetimeInSeconds());
+                $this->session->getDriver()->gc($this->getSessionLifetimeInSeconds());
 
             }
         }
