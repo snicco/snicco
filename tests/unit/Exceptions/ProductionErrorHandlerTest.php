@@ -17,6 +17,7 @@
 	use Tests\stubs\TestException;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\ResponseFactory;
 	use WPEmerge\Events\UnrecoverableExceptionHandled;
@@ -210,7 +211,7 @@
             $this->assertInstanceOf(Response::class, $response);
             $this->assertStatusCode(500, $response);
             $this->assertContentType('text/html', $response);
-            $this->assertOutput('Custom Error Message', $response);
+            $this->assertOutput('VIEW:500,CONTEXT:[status_code=>500,message=>Custom Error Message]', $response);
 
             ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
 
@@ -263,9 +264,10 @@
 	class CustomErrorHandler extends ProductionErrorHandler {
 
 
-	    protected function defaultResponse() : Response
+	    protected function toHttpException(\Throwable $e, Request $request) : HttpException
         {
-            return $this->response->html('Custom Error Message')->withStatus(500);
+            return new HttpException(500, 'Custom Error Message');
+
         }
 
 

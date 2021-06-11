@@ -7,6 +7,7 @@
     namespace WPEmerge\ExceptionHandling;
 
     use Contracts\ContainerAdapter;
+    use Illuminate\Support\Facades\Http;
     use Psr\Log\LoggerInterface;
     use Throwable;
     use WPEmerge\Contracts\ErrorHandlerInterface;
@@ -50,6 +51,8 @@
          * @var ResponseFactory
          */
         protected $response;
+
+        protected $fallback_error_message = 'Internal Server Error';
 
         public function __construct(ContainerAdapter $container, LoggerInterface $logger, ResponseFactory $response_factory, bool $is_ajax)
         {
@@ -124,20 +127,17 @@
          * your own default response for fatal errors that can not be transformed by this error
          * handler.
          *
+         * @param  Throwable  $e
          * @param  Request  $request
          *
-         * @return Response
+         * @return HttpException
          */
-        protected function defaultResponse(Request $request) : Response
+        protected function toHttpException(Throwable $e, Request $request) : HttpException
         {
 
-            if ($request->isExpectingJson()) {
+            $e = new HttpException(500, $this->fallback_error_message);
 
-                return $this->response->json('Internal Server Error', 500);
-
-            }
-
-            return $this->response->error(new HttpException(500, 'Internal Server Error'));
+            return $e;
 
         }
 
@@ -151,7 +151,10 @@
 
                 if ( ! $response instanceof Response) {
 
-                    return $this->defaultResponse($request);
+                    return $this->renderHttpException(
+                        new HttpException(500, $this->fallback_error_message),
+                        $request
+                    );
 
                 }
 
@@ -159,14 +162,13 @@
 
             }
 
+            if ( ! $e instanceof HttpException ) {
 
-            if ($e instanceof HttpException) {
-
-                return $this->renderHttpException($e, $request);
+                $e = $this->toHttpException($e, $request);
 
             }
 
-            return $this->defaultResponse($request);
+            return $this->renderHttpException($e, $request);
 
 
         }
