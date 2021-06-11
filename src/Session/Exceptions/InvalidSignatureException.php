@@ -18,12 +18,7 @@
             parent::__construct(403, $message_for_humans, $previous, $code);
         }
 
-        public function render(ResponseFactory $response_factory ) {
 
-            /** @todo Refactor once we have inbuilt error pages. */
-            return $response_factory->html($this->getMessage(), $this->getStatusCode());
-
-        }
 
 
     }

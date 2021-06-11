@@ -26,6 +26,7 @@
             $this->assertArrayHasKey('auth', $aliases);
             $this->assertArrayHasKey('can', $aliases);
             $this->assertArrayHasKey('guest', $aliases);
+            $this->assertArrayHasKey('json', $aliases);
 
         }
 

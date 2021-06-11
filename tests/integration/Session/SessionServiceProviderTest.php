@@ -416,6 +416,25 @@
         }
 
         /** @test */
+        public function a_csrf_token_can_be_generated_as_ajax_token  () {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled'=>true,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class
+                ]
+            ]);
+
+            $token = TestApp::csrf()->asStringToken();
+
+            $this->assertStringContainsString('csrf_name', $token);
+            $this->assertStringContainsString('csrf_value', $token);
+
+        }
+
+        /** @test */
         public function the_auth_routes_are_bound_in_the_config()
         {
 

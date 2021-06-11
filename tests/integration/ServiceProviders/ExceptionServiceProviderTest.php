@@ -122,6 +122,17 @@
 
 		}
 
+        /** @test */
+        public function the_error_views_are_registered () {
+
+            $this->newTestApp(TEST_CONFIG);
+
+            $views = TestApp::config('views');
+            $expected = ROOT_DIR.DS.'src'.DS.'ExceptionHandling'.DS.'views';
+
+            $this->assertContains($expected, $views);
+
+        }
 
 
 	}

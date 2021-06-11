@@ -391,7 +391,11 @@
 
             } catch ( ValidationException $e ) {
 
-                $errors = $e->getErrors()['team']['player']['messages'][0];
+                $errors = $e->errorsAsArray()['team']['player'][0];
+
+                $messages = $e->messages();
+
+                $this->assertSame('calvin is not valid for The player. Must be equal to john.', $messages->first('team.player'));
 
                 $this->assertSame('calvin is not valid for The player. Must be equal to john.', $errors);
 

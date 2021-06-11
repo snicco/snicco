@@ -7,7 +7,10 @@
 	namespace WPEmerge\Contracts;
 
 
-	interface ViewFactoryInterface {
+	use WPEmerge\ExceptionHandling\Exceptions\ViewException;
+    use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
+
+    interface ViewFactoryInterface {
 
 		/**
 		 * Composes a view instance with contexts in the following order: Global, Composers, Local.
@@ -24,6 +27,7 @@
 		 * @param  string|string[]  $views
 		 *
 		 * @return ViewInterface
+         * @throws ViewException|ViewNotFoundException
 		 */
 		public function make( $views ) : ViewInterface;
 

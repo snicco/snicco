@@ -282,7 +282,7 @@
             // TODO: Implement unregister() method.
         }
 
-        public function transformToResponse(Throwable $e) : AppResponse
+        public function transformToResponse(Throwable $e, Request $request) : AppResponse
         {
 
             $code = $e instanceof HttpException ? $e->getStatusCode() : 500;
