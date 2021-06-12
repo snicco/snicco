@@ -105,6 +105,7 @@
 
             if ($response instanceof NullResponse) {
 
+
                 return;
 
             }

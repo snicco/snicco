@@ -14,13 +14,13 @@
     class WordpressApi
     {
 
-        private $admin_prefix = 'wp-admin';
-
-        /** @todo needs testing for bedrock installs. */
+        /** @todo needs testing for bedrock installs. But this should return wp/wp-admin normally. */
         public function wpAdminFolder() : string
         {
 
-            return $this->admin_prefix;
+            $path = parse_url($this->adminUrl(), PHP_URL_PATH );
+
+            return trim($path, '/');
 
         }
 
@@ -49,7 +49,6 @@
             return null;
 
         }
-
 
         public function mail ( $email, string $subject, string $message, array $headers = [], array  $attachments = [] ) {
 
@@ -94,7 +93,7 @@
         public function adminUrl(string $path = '', string $scheme = 'https') : string
         {
 
-            return self_admin_url($path, $scheme);
+            return admin_url($path, $scheme);
 
         }
 

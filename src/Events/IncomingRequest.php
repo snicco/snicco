@@ -19,8 +19,6 @@
 		public $request;
 
 
-		protected $force_route_match = false;
-
         /**
          * @var bool
          */
