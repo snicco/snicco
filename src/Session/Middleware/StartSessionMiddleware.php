@@ -15,6 +15,7 @@
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
+    use WPEmerge\Http\Responses\InvalidResponse;
     use WPEmerge\Http\Responses\NullResponse;
     use WPEmerge\Session\Session;
 
@@ -124,15 +125,15 @@
         private function storePreviousUrl(ResponseInterface $response, Request $request, Session $session)
         {
 
-            if ($response instanceof NullResponse) {
+            if ($response instanceof NullResponse || $response instanceof InvalidResponse) {
 
                 return;
 
             }
 
-            if ($request->isGet() && ! $request->isAjax()) {
+            if ( $request->isGet() && ! $request->isAjax() ) {
 
-                $session->setPreviousUrl($request->fullUrl());
+                $session->setPreviousUrl( $request->fullUrl() );
 
             }
 
