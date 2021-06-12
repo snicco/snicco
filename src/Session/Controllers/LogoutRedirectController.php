@@ -30,7 +30,6 @@
 
         }
 
-        /** @todo needs more url validation. */
         private function redirectUrl (Request $request) :string {
 
             if ( $redirect_to = $request->query('redirect_to') ) {
@@ -38,6 +37,7 @@
                 return $redirect_to;
 
             }
+
 
             return add_query_arg(
                 array(

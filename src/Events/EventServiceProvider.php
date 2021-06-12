@@ -15,6 +15,7 @@
     use WPEmerge\Listeners\LoadRoutes;
     use WPEmerge\Listeners\OutputBuffer;
     use WPEmerge\Listeners\FilterWpQuery;
+    use WPEmerge\Listeners\ShortCircuit404;
     use WPEmerge\View\ViewFactory;
 
     class EventServiceProvider extends ServiceProvider
@@ -28,13 +29,19 @@
 
             ],
 
+            'pre_handle_404' => [
+
+               [ Wp404::class, 999 ]
+
+            ],
+
         ];
 
         private $ensure_first = [
 
             'init' => WpInit::class,
             'admin_init' => IncomingAjaxRequest::class,
-            'in_admin_footer' => InAdminFooter::class
+            'in_admin_footer' => InAdminFooter::class,
 
         ];
 
@@ -114,10 +121,17 @@
 
             ],
 
+            Wp404::class => [
+
+                ShortCircuit404::class,
+
+            ],
+
         ];
 
         public function register() : void
         {
+
             $this->bindConfig();
         }
 
@@ -137,6 +151,7 @@
 
         private function bindConfig()
         {
+
             $this->config->extend('events.mapped', $this->mapped_events);
             $this->config->extend('events.listeners', $this->event_listeners);
             $this->config->extend('events.first', $this->ensure_first);

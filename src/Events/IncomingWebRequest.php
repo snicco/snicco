@@ -6,8 +6,10 @@
 
 	namespace WPEmerge\Events;
 
-	use BetterWpHooks\Traits\DispatchesConditionally;
+    use BetterWpHooks\Traits\DispatchesConditionally;
+    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Listeners\ShortCircuit404;
     use WPEmerge\Support\Str;
 
     class IncomingWebRequest extends IncomingRequest {
@@ -17,12 +19,12 @@
 		/**
 		 * @var string
 		 */
-		public $template;
+		public $template_wordpress_tried_to_load;
 
 
 		public function __construct( Request $request, string $template ) {
 
-			$this->template = $template;
+			$this->template_wordpress_tried_to_load = $template;
 
 			parent::__construct($request);
 
@@ -38,15 +40,52 @@
 
 		public function default() : ?string {
 
-			if ( ! $this->has_matching_route && ! $this->force_route_match ) {
+            return $this->determineTemplateToLoad();
 
-				return $this->template;
+        }
 
-			}
+        private function determineTemplateToLoad() : ?string
+        {
 
-			return null;
+            if ( ! $this->has_matching_route ) {
 
-		}
+                if ( $this->is404() ) {
+
+                    return get_404_template();
+
+                }
+
+                return $this->template_wordpress_tried_to_load;
+
+            }
+
+            return null;
+        }
+
+        private function is404() : bool
+        {
+
+            global $wp, $wp_query;
+
+            if ( ! $wp_query instanceof \WP_Query || ! $wp instanceof \WP ) {
+
+                return false;
+
+            }
+
+            if ( $wp_query->is_404() ) {
+
+                return true;
+
+            }
+
+            ApplicationEvent::forgetOne(Wp404::class, [ShortCircuit404::class, '__invoke']);
+
+            $wp->handle_404();
+
+            return $wp_query->is_404();
+
+        }
 
 
-	}
+    }
