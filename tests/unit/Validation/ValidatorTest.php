@@ -401,7 +401,7 @@
         }
 
         /** @test */
-        public function key_with_a_leading_star_indicate_to_pass_the_entire_input_to_the_rule()
+        public function keys_with_a_leading_star_indicate_to_pass_the_entire_input_to_the_rule()
         {
 
             Factory::setDefaultInstance(
@@ -510,7 +510,7 @@
 
                 $v->rules([
                     'count' => [
-                        v::min(1)->max(3), '[input] is not valid for [attribute].',
+                        v::min(1)->max(3), 'This is not valid for [attribute].',
                     ],
                 ])->validate($input);
 
@@ -521,8 +521,8 @@
 
                 $errors = $e->errorsAsArray()['count'];
 
-                $this->assertContains('4 is not valid for count.', $errors);
-                $this->assertSame('4 is not valid for count.', $e->messages()->first('count'));
+                $this->assertContains('This is not valid for count.', $errors);
+                $this->assertSame('This is not valid for count.', $e->messages()->first('count'));
 
             }
 
@@ -541,7 +541,7 @@
                 'count' => v::min(1)->max(3),
 
             ])->messages([
-                'count' => '[input] is not valid for count.',
+                'count' => 'This is not valid for count.',
             ]);
 
             try {
@@ -555,8 +555,8 @@
 
                 $errors = $e->errorsAsArray()['count'];
 
-                $this->assertContains('4 is not valid for count.', $errors);
-                $this->assertSame('4 is not valid for count.', $e->messages()->first('count'));
+                $this->assertContains('This is not valid for count.', $errors);
+                $this->assertSame('This is not valid for count.', $e->messages()->first('count'));
 
             }
 
@@ -573,7 +573,7 @@
 
             $v->rules([
 
-                'email' => [v::email(), '[input] is not a valid [attribute]'],
+                'email' => [v::email(), 'This is not a valid [attribute]'],
 
             ])
               ->attributes([
@@ -591,8 +591,8 @@
 
                 $errors = $e->errorsAsArray()['email'];
 
-                $this->assertSame('c.de is not a valid email address.', $errors[0]);
-                $this->assertSame('c.de is not a valid email address.', $e->messages()->first('email'));
+                $this->assertSame('This is not a valid email address.', $errors[0]);
+                $this->assertSame('This is not a valid email address.', $e->messages()->first('email'));
 
 
             }
@@ -767,8 +767,8 @@
 
             $v->globalMessages([
                 'email' => [
-                    '[input] ist keine gültige [attribute]',
-                    '[input] darf keine gültige [attribute] sein',
+                    'Leider keine gültige [attribute]',
+                    'Darf keine gültige [attribute] sein',
                     'email addresse',
                 ],
             ]);
@@ -777,7 +777,7 @@
 
                 $v->rules([
 
-                    'author1' => v::email(),
+                    'author1' => v::not(v::email()),
                     'author2' => v::email(),
 
                 ])->validate();
@@ -789,8 +789,8 @@
 
                 $error = $e->errorsAsArray();
 
-                $this->assertSame('john.de ist keine gültige email addresse.', $error['author2'][0]);
-                $this->assertSame('john.de ist keine gültige email addresse.', $e->messages()->first('author2'));
+                $this->assertSame('Leider keine gültige email addresse.', $e->messages()->first('author2'));
+                $this->assertSame('Darf keine gültige email addresse sein.', $e->messages()->first('author1'));
 
 
             }

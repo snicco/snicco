@@ -9,7 +9,7 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestRequest;
 
-    class IncomingWebRequestTest extends IntegrationTest
+    class IncomingWebRequest404CompatTest extends IntegrationTest
     {
 
         /** @test */
