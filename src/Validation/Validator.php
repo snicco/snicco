@@ -230,7 +230,6 @@
         {
 
             $message = $this->replaceCustomAttributeNames($message, $name, $rule_id);
-            $message = $this->replaceInputPlaceHolders($message, $input);
 
             return $message;
 
@@ -299,11 +298,7 @@
 
         }
 
-        private function replaceInputPlaceHolders($message, $input) {
 
-            return str_replace('[input]', $this->readable($input), $message);
-
-        }
 
         private function updateGlobalTemplates(RespectValidationError $e, $name, $input)
         {
