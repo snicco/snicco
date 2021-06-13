@@ -54,8 +54,7 @@
             /** @todo tests */
             if ( ! $this->session_initialized ) {
 
-                $session = $this->getSession($request);
-                $this->startSession($session, $request);
+                $this->startSession($request);
 
             }
 
@@ -64,19 +63,20 @@
 
         }
 
-        private function getSession(Request $request) : Session
+        private function startSession(Request $request)
         {
 
             $cookies = $request->cookies();
+
             $cookie_name = $this->session->getName();
 
             $session_id = $cookies->get($cookie_name, '');
 
-            $this->session->setId($session_id);
+            $this->session->start($session_id);
+            $this->session->getDriver()->setRequest($request);
 
             $this->session_initialized = true;
 
-            return $this->session;
 
         }
 
@@ -95,14 +95,6 @@
             ]);
 
             return $response->withCookie($cookie);
-
-        }
-
-        private function startSession(Session $session_store, Request $request)
-        {
-
-            $session_store->start();
-            $session_store->getDriver()->setRequest($request);
 
         }
 
