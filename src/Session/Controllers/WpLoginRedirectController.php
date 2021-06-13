@@ -11,7 +11,7 @@
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Session\CsrfField;
 
-    class LogoutRedirectController
+    class WpLoginRedirectController
     {
 
         public function __invoke(Request $request, ResponseFactory $response_factory) {

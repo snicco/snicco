@@ -380,7 +380,7 @@
             try {
 
                 $rules = [
-                    'team.player' => [v::equals('john'), '[input] is not valid for [attribute]. Must be equal to john']
+                    'team.player' => [v::equals('john'), 'This is not valid for [attribute]. Must be equal to john']
                 ];
 
                 $request->validate($rules, [
@@ -395,9 +395,9 @@
 
                 $messages = $e->messages();
 
-                $this->assertSame('calvin is not valid for The player. Must be equal to john.', $messages->first('team.player'));
+                $this->assertSame('This is not valid for The player. Must be equal to john.', $messages->first('team.player'));
 
-                $this->assertSame('calvin is not valid for The player. Must be equal to john.', $errors);
+                $this->assertSame('This is not valid for The player. Must be equal to john.', $errors);
 
             }
 

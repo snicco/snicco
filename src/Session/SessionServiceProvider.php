@@ -12,6 +12,8 @@
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Session\Events\NewLogin;
+    use WPEmerge\Session\Listeners\InvalidateOldSessions;
     use WPEmerge\Session\Middleware\ConfirmAuth;
     use WPEmerge\Session\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
@@ -48,6 +50,7 @@
             $this->bindAliases();
             $this->bindEncryptor();
             $this->bindControllers();
+            $this->bindEvents();
 
         }
 
@@ -261,15 +264,33 @@
 
             });
 
-            $this->container->singleton(WpLoginSessionController::class, function () {
 
-                return new WpLoginSessionController(
-                    $this->container->make(ResponseFactory::class),
-                    $this->config->get('session.auth_confirmed_lifetime'),
-                    $this->config->get('session.auth_confirm_on_login')
-                );
+        }
+
+        private function bindEvents()
+        {
+
+            $this->config->extend('events.mapped', [
+                'wp_login' => NewLogin::class
+            ]);
+
+            $this->config->extend('events.listeners', [
+
+                 NewLogin::class => [
+
+                     InvalidateOldSessions::class
+
+                 ]
+
+            ]);
+
+            $this->container->singleton(InvalidateOldSessions::class, function () {
+
+                return new InvalidateOldSessions($this->config->get('session'));
 
             });
+
+
         }
 
 

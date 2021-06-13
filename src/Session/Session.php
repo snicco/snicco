@@ -47,13 +47,17 @@
          */
         private $initial_attributes;
 
+        /**
+         * @var string
+         */
+        private $loaded_data;
 
-        public function __construct(string $cookie_name, SessionDriver $handler, string $id = '')
+        public function __construct(string $cookie_name, SessionDriver $handler)
         {
 
-            $this->setId($id);
-            $this->name = $cookie_name;
             $this->handler = $handler;
+            $this->name = $cookie_name;
+
         }
 
         public function start() : bool
@@ -330,7 +334,6 @@
 
         public function isValidId(string $id) : bool
         {
-
             return strlen($id) === 40 && ctype_alnum($id);
         }
 
@@ -429,10 +432,10 @@
         private function loadSessionDataFromHandler() : void
         {
 
-            $this->attributes = array_merge(
-                $this->attributes,
-                $this->readFromHandler()
-            );
+            $data = $this->readFromHandler();
+
+            $this->attributes = array_merge($this->attributes, $data);
+
         }
 
         private function readFromHandler() : array
@@ -463,7 +466,5 @@
 
             $this->put('_flash.old', array_diff($this->get('_flash.old', []), $keys));
         }
-
-
 
     }
