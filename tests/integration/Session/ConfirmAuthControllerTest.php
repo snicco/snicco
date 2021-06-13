@@ -17,7 +17,6 @@
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\Controllers\ConfirmAuthController;
     use WPEmerge\Session\SessionServiceProvider;
-    use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
 
@@ -688,6 +687,7 @@
             HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', WP::adminUrl());
 
+            Carbon::setTestNow();
 
         }
 
@@ -714,6 +714,7 @@
             HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', WP::adminUrl());
             HeaderStack::reset();
+            Carbon::setTestNow();
 
 
         }
