@@ -7,6 +7,7 @@
     namespace Tests\integration\Session;
 
     use Illuminate\Support\Carbon;
+    use Tests\helpers\InteractsWithSessionDriver;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
     use Tests\IntegrationTest;
     use Tests\stubs\HeaderStack;
@@ -24,6 +25,7 @@
     {
 
         use InteractsWithWordpress;
+        use InteractsWithSessionDriver;
 
         /**
          * @var array;
@@ -55,13 +57,6 @@
             ];
 
             return $config;
-
-        }
-
-        private function getSession() : Session
-        {
-
-            return TestApp::resolve(Session::class);
 
         }
 
@@ -97,6 +92,7 @@
             ]);
 
         }
+
 
         /**
          *
@@ -196,11 +192,18 @@
             $this->login($calvin);
             $this->newTestApp($this->config());
             $this->registerRoutes();
-            $session = $this->getSession();
 
-            $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
-            $session->put('auth.confirm.attempts', 2);
+            $this->writeToDriver([
+                'csrf' => $csrf = ['csrf_secret_name' => 'csrf_secret_value'],
+                'auth' => [
+                    'confirm' => [
+                        'attempts' => 2
+                    ]
+                ]
+            ]);
+
             $post_request = $this->postRequest('bogus@web.de', $csrf);
+            $post_request = $this->withSessionCookie($post_request);
 
             // email failed but user is still logged in
             $this->assertOutput('', $post_request);
@@ -209,8 +212,9 @@
             HeaderStack::reset();
             $this->assertUserLoggedIn($calvin);
 
-            $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
+            $this->getSession()->put('csrf', $csrf);
             $post_request = $this->postRequest('bogus@web.de', $csrf);
+            $post_request = $this->withSessionCookie($post_request);
 
             // this failed attempt will log the user out.
             $this->assertOutput('', $post_request);
@@ -232,20 +236,26 @@
             $this->newTestApp($this->config());
             $this->registerRoutes();
 
-            $session = $this->getSession();
-            $session->put('foo', 'bar');
-            $session->put('auth.confirm.attempts', 3);
-            $id = $session->getId();
+            $this->writeToDriver([
+                'csrf' => $csrf = ['csrf_secret_name' => 'csrf_secret_value'],
+                'auth' => [
+                    'confirm' => [
+                        'attempts' => 3
+                    ]
+                ],
+                'foo' => 'bar'
+            ]);
 
-            $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
-            $post_request = $this->postRequest('bogus@web.de', $csrf);
+            $this->assertNotSame('', $this->readFromDriver($this->testSessionId()));
+
+            $post_request = $this->withSessionCookie($this->postRequest('bogus@web.de', $csrf));
 
             $this->assertOutput('', $post_request);
             HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', WP::loginUrl());
 
-            $this->assertNotSame($id, $session->getId());
-            $this->assertFalse($session->has('foo'));
+
+            $this->assertSame('', $this->readFromDriver($this->testSessionId()));
 
             $this->logout($calvin);
 

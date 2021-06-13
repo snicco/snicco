@@ -51,7 +51,7 @@
             $this->loginUser($user);
 
             $session = $request->session();
-            $session->migrate();
+            $session->migrate(true);
             $session->confirmAuthUntil($this->lifetime_in_minutes);
 
             return $this->response_factory->redirect()

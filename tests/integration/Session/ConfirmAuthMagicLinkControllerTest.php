@@ -7,6 +7,7 @@
     namespace Tests\integration\Session;
 
     use Illuminate\Support\Carbon;
+    use Tests\helpers\InteractsWithSessionDriver;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
     use Tests\IntegrationTest;
     use Tests\stubs\HeaderStack;
@@ -22,6 +23,7 @@
     {
 
         use InteractsWithWordpress;
+        use InteractsWithSessionDriver;
 
         private function createSignedUrl(int $user_id, $intended = '') : string
         {
@@ -121,9 +123,17 @@
             $this->registerRoutes();
             $url = $this->createSignedUrl($calvin->ID, '');
 
-            TestApp::session()->setIntendedUrl('https://intended-url.com');
+            $this->writeToDriver([
+                '_url' => [
+                    'intended' => 'https://intended-url.com'
+                ]
+            ]);
 
-            $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
+
+            $request = TestRequest::fromFullUrl('GET', $url);
+            $request = $this->withSessionCookie($request);
+
+            $this->seeKernelOutput('', $request);
             HeaderStack::assertHas('Location', 'https://intended-url.com');
             HeaderStack::assertHasStatusCode(302);
 
@@ -204,21 +214,22 @@
 
             $this->newApp();
 
-            $session = TestApp::session();
-            $id_old  = $session->getId();
+            $this->writeToDriver([
+                'foo' => 'bar'
+            ]);
 
             $this->registerRoutes();
             $url = $this->createSignedUrl($calvin->ID, '');
 
-            $request = TestRequest::fromFullUrl('GET', $url)
-                                  ->withAddedHeader('Cookie', 'wp_mvc_session='.$id_old);
+            $request = TestRequest::fromFullUrl('GET', $url);
+            $request = $this->withSessionCookie($request);
 
 
             $this->seeKernelOutput('', $request);
             HeaderStack::assertHas('Location', WP::adminUrl());
             HeaderStack::assertHasStatusCode(302);
 
-            $this->assertNotSame($id_old, $session->getId());
+            $this->assertSame('', TestApp::session()->getDriver()->read($this->testSessionId()));
 
             $this->logout();
 

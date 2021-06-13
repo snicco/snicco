@@ -294,6 +294,7 @@
         {
 
             $session = new Session('cookie', New ArraySessionDriver(10));
+            $session->start('a');
             $session->flashInput(['foo' => 'bar', 'bar' => 'baz']);
             $session->save();
 

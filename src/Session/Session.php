@@ -47,11 +47,6 @@
          */
         private $initial_attributes;
 
-        /**
-         * @var string
-         */
-        private $loaded_data;
-
         public function __construct(string $cookie_name, SessionDriver $handler)
         {
 
@@ -60,10 +55,18 @@
 
         }
 
-        public function start() : bool
+        public function start(string $session_id) : bool
         {
 
-            $this->loadSessionDataFromHandler();
+            $this->setId($session_id);
+
+            $this->loadDataFromDriver();
+
+            if ( ! $this->sessionExisted() ) {
+
+                $this->id = $this->generateSessionId();
+
+            }
 
             $this->active = true;
 
@@ -270,7 +273,6 @@
 
         public function flush() : void
         {
-
             $this->attributes = [];
         }
 
@@ -331,7 +333,6 @@
             return $this;
 
         }
-
         public function isValidId(string $id) : bool
         {
             return strlen($id) === 40 && ctype_alnum($id);
@@ -429,16 +430,7 @@
 
         }
 
-        private function loadSessionDataFromHandler() : void
-        {
-
-            $data = $this->readFromHandler();
-
-            $this->attributes = array_merge($this->attributes, $data);
-
-        }
-
-        private function readFromHandler() : array
+        private function readFromDriver() : array
         {
 
             if ($data = $this->handler->read($this->getId())) {
@@ -466,5 +458,21 @@
 
             $this->put('_flash.old', array_diff($this->get('_flash.old', []), $keys));
         }
+
+        private function loadDataFromDriver()
+        {
+
+            $data = $this->readFromDriver();
+
+            $this->attributes = Arr::mergeRecursive($this->attributes, $data);
+
+        }
+
+        private function sessionExisted() : bool
+        {
+            return $this->attributes !== [];
+        }
+
+
 
     }
