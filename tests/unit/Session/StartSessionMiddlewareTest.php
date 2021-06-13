@@ -269,7 +269,7 @@
         /** @test */
         public function providing_a_cookie_that_does_not_have_an_active_session_regenerates_the_id () {
 
-            // This works because the session driver has an act session for the the provided cookie value.
+            // This works because the session driver has an active session for the the provided cookie value.
             $driver = new ArraySessionDriver(10);
             $driver->write($this->sessionId(), serialize(['foo' => 'bar']));
             $session = $this->newSessionStore('test_session', $driver);
@@ -284,7 +284,6 @@
 
             $this->newMiddleware($session)->handle($this->request, $this->route_action);
 
-            $this->assertFalse( $session->has('foo'));
             $this->assertNotSame($session->getId(), $this->sessionId());
 
 

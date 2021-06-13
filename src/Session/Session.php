@@ -47,6 +47,11 @@
          */
         private $initial_attributes;
 
+        /**
+         * @var array
+         */
+        private $loaded_data_from_handler = [];
+
         public function __construct(string $cookie_name, SessionDriver $handler)
         {
 
@@ -464,13 +469,15 @@
 
             $data = $this->readFromDriver();
 
+            $this->loaded_data_from_handler = $data;
+
             $this->attributes = Arr::mergeRecursive($this->attributes, $data);
 
         }
 
         private function sessionExisted() : bool
         {
-            return $this->attributes !== [];
+            return $this->loaded_data_from_handler !== [];
         }
 
 

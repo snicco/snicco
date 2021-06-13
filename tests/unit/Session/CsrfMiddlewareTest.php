@@ -88,7 +88,7 @@
         private function newSessionStore(string $cookie_name = 'test_session', $handler = null) : Session
         {
 
-            $handler = $handler ?? new \WPEmerge\Session\Drivers\ArraySessionDriver(10);
+            $handler = $handler ?? new ArraySessionDriver(10);
 
             return new Session($cookie_name, $handler);
 
@@ -111,8 +111,7 @@
         {
 
             $session = $this->newSessionStore('test_session', $this->handler);
-            $session->setId($this->sessionId());
-            $session->start();
+            $session->start($this->sessionId());
             $request = $this->createRequest($session);
 
             $response = $this->newMiddleware($session)->handle($request, $this->route_action);
@@ -128,9 +127,7 @@
             $this->expectException(InvalidCsrfTokenException::class);
 
             $session = $this->newSessionStore('test_session', $this->handler);
-            $session->setId(
-                $this->sessionId()
-            )->start();
+            $session->start($this->sessionId());
 
             $request = $this->createRequest($session, [
                 'csrf_name' => 'secret_csrf_name',
@@ -147,7 +144,7 @@
 
 
             $session = $this->newSessionStore('test_session', $this->handler);
-            $session->setId($this->sessionId())->start();
+            $session->start($this->sessionId());
 
             $this->assertTrue($session->has('csrf'));
 
@@ -177,8 +174,7 @@
         public function by_default_the_csrf_token_is_replaced_in_the_session_on_successful_validation () {
 
             $session = $this->newSessionStore('test_session', $this->handler);
-            $session->setId($this->sessionId());
-            $session->start();
+            $session->start($this->sessionId());
             $request = $this->createRequest($session);
 
             $this->assertSame('secret_csrf_value', $session->get('csrf.secret_csrf_name'));
@@ -203,8 +199,7 @@
 
 
             $session = $this->newSessionStore('test_session', $this->handler);
-            $session->setId($this->sessionId());
-            $session->start();
+            $session->start($this->sessionId());
             $request = $this->createRequest($session);
 
             $this->assertSame('secret_csrf_value', $session->get('csrf.secret_csrf_name'));
@@ -220,8 +215,7 @@
         public function only_one_session_token_is_saved_for_persistent_mode () {
 
             $session = $this->newSessionStore('test_session', $this->handler);
-            $session->setId($this->sessionId());
-            $session->start();
+            $session->start($this->sessionId());
             $request = $this->createRequest($session);
 
             $this->newMiddleware($session, 'persist')->handle($request, $this->route_action);
@@ -234,8 +228,7 @@
         public function only_one_session_token_is_saved_for_rotating_mode () {
 
             $session = $this->newSessionStore('test_session', $this->handler);
-            $session->setId($this->sessionId());
-            $session->start();
+            $session->start($this->sessionId());
             $request = $this->createRequest($session);
 
             $this->newMiddleware($session)->handle($request, $this->route_action);
@@ -293,8 +286,6 @@
             $this->assertNotEmpty($session->get('csrf'));
 
         }
-
-
 
         private function createRequest(
             Session $session,

@@ -52,7 +52,7 @@
             $this->collectGarbage();
 
             /** @todo tests */
-            if ( ! $this->session_initialized ) {
+            if ( ! $this->session_initialized) {
 
                 $this->startSession($request);
 
@@ -90,7 +90,7 @@
                 'expires' => Carbon::now()->addMinutes($this->config['lifetime'])->getTimestamp(),
                 'httponly' => $this->config['http_only'],
                 'secure' => $this->config['secure'],
-                'domain' => $this->config['domain']
+                'domain' => $this->config['domain'],
 
             ]);
 
@@ -109,7 +109,7 @@
 
             $this->saveSession($session, $request, $response);
 
-            return $response;
+            return $response->withAddedHeader('Cache-Control', 'private, no-cache');
 
         }
 
@@ -122,23 +122,24 @@
 
             }
 
-            if ( $request->isGet() && ! $request->isAjax() ) {
+            if ($request->isGet() && ! $request->isAjax()) {
 
-                $session->setPreviousUrl( $request->fullUrl() );
+                $session->setPreviousUrl($request->fullUrl());
 
             }
 
 
         }
 
-        private function saveSession(Session $session, Request $request, ResponseInterface $response) :void
+        private function saveSession(Session $session, Request $request, ResponseInterface $response) : void
         {
 
             /** @todo tests */
-            if ( ! $this->requestRunsOnInitHook($request) ) {
+            if ( ! $this->requestRunsOnInitHook($request)) {
 
                 $this->storePreviousUrl($response, $request, $session);
                 $session->save();
+
                 return;
 
             }
@@ -146,7 +147,7 @@
             // either web-routes, admin-routes, or ajax-routes
             // will run this middleware again. Abort here to not save the session twice and mess
             // up flashed data.
-            if ( $response instanceof NullResponse && $request->isRouteable() ) {
+            if ($response instanceof NullResponse && $request->isRouteable()) {
 
                 return;
 
@@ -154,7 +155,7 @@
 
             // Global route. Need to save again if flash.old is present because we might
             // have one global route and another on the next request.
-            if ( $session->wasChanged() || $session->has('_flash.old') ) {
+            if ($session->wasChanged() || $session->has('_flash.old')) {
 
                 $this->storePreviousUrl($response, $request, $session);
                 $session->save();
@@ -166,6 +167,7 @@
 
         private function collectGarbage()
         {
+
             if ($this->configHitsLottery($this->config['lottery'])) {
 
                 $this->session->getDriver()->gc($this->getSessionLifetimeInSeconds());
