@@ -36,7 +36,6 @@
          */
         private $config;
 
-
         private $session_initialized = false;
 
         public function __construct(Session $session, array $config)

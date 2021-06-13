@@ -7,6 +7,7 @@
     namespace Tests\integration\Events;
 
     use Tests\IntegrationTest;
+    use Tests\stubs\HeaderStack;
     use Tests\stubs\TestRequest;
 
     class IncomingWebRequest404CompatTest extends IntegrationTest
@@ -99,5 +100,35 @@
             $this->assertNull($tpl);
 
         }
+
+        /** @test */
+        public function the_template_WP_tried_to_load_is_returned_when_no_route_was_found()
+        {
+
+            $this->newTestApp([
+                'routing' => [
+                    'definitions' => ROUTES_DIR,
+                ]
+            ]);
+
+            $this->rebindRequest(TestRequest::from('GET', '/bogus'));
+
+            global $wp_query;
+
+            // Simulate that its not a 404 page.
+            $wp_query->is_robots = true;
+
+            ob_start();
+
+            do_action('init');
+            $tpl = apply_filters('template_include', 'wp-template.php');
+
+            $this->assertSame('wp-template.php', $tpl);
+            $this->assertSame('', ob_get_clean());
+            HeaderStack::assertHasNone();
+
+
+        }
+
 
     }

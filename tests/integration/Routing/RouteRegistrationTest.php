@@ -102,52 +102,6 @@
 
         }
 
-        /** @test */
-        public function when_a_web_route_matches_null_is_returned_to_WP_and_the_current_template_is_not_included()
-        {
-
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR,
-                ]
-            ]);
-
-            $this->rebindRequest(TestRequest::from('GET', '/foo'));
-
-            ob_start();
-
-            do_action('init');
-            $tpl = apply_filters('template_include', 'wp-template.php');
-
-            $this->assertNull($tpl);
-            $this->assertSame('foo', ob_get_clean());
-            HeaderStack::assertHasStatusCode(200);
-
-        }
-
-        /** @test */
-        public function the_template_WP_tried_to_load_is_returned_when_no_route_was_found()
-        {
-
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR,
-                ]
-            ]);
-
-            $this->rebindRequest(TestRequest::from('GET', '/bogus'));
-
-            ob_start();
-
-            do_action('init');
-            $tpl = apply_filters('template_include', 'wp-template.php');
-
-            $this->assertSame('wp-template.php', $tpl);
-            $this->assertSame('', ob_get_clean());
-            HeaderStack::assertHasNone();
-
-
-        }
 
         /** @test */
         public function admin_routes_are_only_run_for_pages_added_with_add_menu_page () {

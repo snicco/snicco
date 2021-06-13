@@ -28,6 +28,7 @@
 
         public function handle(Request $request, Delegate $next)
         {
+
             $route_result = $this->routes->match($request);
 
             return $next(

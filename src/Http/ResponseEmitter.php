@@ -64,6 +64,27 @@
             }
         }
 
+        public function emitCookies(Cookies $cookies)
+        {
+
+            if ( headers_sent() ) {
+                return;
+            }
+
+            $cookies = $cookies->toHeaders();
+
+            foreach ($cookies as $cookie) {
+
+                $header = sprintf('%s: %s', 'Set-Cookie', $cookie);
+                header($header, false);
+
+            }
+
+
+
+
+        }
+
         /**
          * Emit Response Headers
          *
@@ -172,6 +193,7 @@
 
             return $seekable ? $stream->read(1) === '' : $stream->eof();
         }
+
 
 
 

@@ -30,6 +30,20 @@
 
 		}
 
+		// /** @test */
+		public function provided_a_semanticly_correct_session_id_that_does_not_exist_in_the_driver_regenerates_the_id () {
+
+            $handler = $this->newArrayHandler( );
+            $handler->write( $this->getSessionId(), \serialize( [ 'foo' => 'bar' ] ) );
+            $session = $this->newSessionStore( $handler );
+
+            $session->setId($this->anotherSessionId());
+
+            $this->assertNotSame($session->getId(), $this->anotherSessionId());
+
+
+		}
+
 		/** @test */
 		public function session_attributes_are_merged_with_handler_attributes() {
 
@@ -680,11 +694,13 @@
 
 		private function newSessionStore( \SessionHandlerInterface $handler = null ) : Session {
 
-			return new Session(
+			$session = new Session(
 				$this->getSessionName(),
 				$handler ?? new ArraySessionDriver( 10 ),
-				$this->getSessionId()
 			);
+			$session->setId($this->getSessionId());
+			return $session;
+
 		}
 
 		private function newArrayHandler( int $minutes = 10 ) : ArraySessionDriver {
@@ -696,6 +712,11 @@
 		private function getSessionId() : string {
 
 			return 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+		}
+
+		private function anotherSessionId() : string {
+
+			return str_repeat('b', 40);
 		}
 
 		private function getSessionName() : string {
