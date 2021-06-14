@@ -75,14 +75,14 @@
         private function sessionId() : string
         {
 
-            return str_repeat('a', 40);
+            return str_repeat('a', 64);
 
         }
 
         private function anotherSessionId() : string
         {
 
-            return str_repeat('b', 40);
+            return str_repeat('b', 64);
         }
 
         private function newSessionStore(string $cookie_name = 'test_session', $handler = null) : Session
