@@ -657,20 +657,14 @@
 		public function its_not_possible_to_set_an_invalid_session_id() {
 
 			$session = $this->newSessionStore();
-			$session->start('bogus');
-			$this->assertTrue( $session->isValidId( $session->getId() ) );
-			$this->assertNotSame('bogus', $session->getId());
-
-			$session->setId( 'null' );
-			$this->assertNotSame( 'null', $session->getId() );
+			$session->getDriver()->write($this->getSessionId(), serialize(['foo' => 'bar']));
+			$session->start($this->getSessionId());
 			$this->assertTrue( $session->isValidId( $session->getId() ) );
 
-			$session->setId( str_repeat( 'a', 41 ) );
-			$this->assertNotSame( str_repeat( 'a', 41 ), $session->getId() );
+			$session->setId( $this->anotherSessionId() );
+			$this->assertNotSame( $this->anotherSessionId(), $session->getId() );
+			$this->assertFalse( $session->isValidId( $this->anotherSessionId() ) );
 
-
-			$session->setId( 'wrong' );
-			$this->assertNotSame( 'wrong', $session->getId() );
 
 		}
 
@@ -731,13 +725,13 @@
 
 		private function getSessionId() : string {
 
-            return str_repeat('a', 40);
+            return str_repeat('a', 64);
 
 		}
 
 		private function anotherSessionId() : string {
 
-			return str_repeat('b', 40);
+			return str_repeat('b', 64);
 		}
 
 		private function getSessionName() : string {

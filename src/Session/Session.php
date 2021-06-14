@@ -52,11 +52,17 @@
          */
         private $loaded_data_from_handler = [];
 
-        public function __construct(string $cookie_name, SessionDriver $handler)
+        /**
+         * @var int
+         */
+        private $token_strength_in_bytes;
+
+        public function __construct(string $cookie_name, SessionDriver $handler, int $token_strength_in_bytes = 32)
         {
 
             $this->handler = $handler;
             $this->name = $cookie_name;
+            $this->token_strength_in_bytes = $token_strength_in_bytes;
 
         }
 
@@ -340,7 +346,11 @@
         }
         public function isValidId(string $id) : bool
         {
-            return strlen($id) === 40 && ctype_alnum($id);
+
+            return ( strlen($id) === 2 * $this->token_strength_in_bytes)
+                && ctype_alnum($id)
+                && $this->getDriver()->isValid($id);
+
         }
 
         public function getPreviousUrl( ?string $fallback = '/') : ?string
@@ -420,7 +430,8 @@
         private function generateSessionId() : string
         {
 
-            return Str::random(40);
+            return bin2hex(random_bytes($this->token_strength_in_bytes));
+
         }
 
         private function ageFlashData() : void

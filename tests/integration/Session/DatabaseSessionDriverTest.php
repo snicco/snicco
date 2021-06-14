@@ -18,7 +18,7 @@
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Drivers\DatabaseSessionDriver;
 
-    class DatabaseSessionHandlerTest extends IntegrationTest
+    class DatabaseSessionDriverTest extends IntegrationTest
     {
 
 
@@ -100,6 +100,24 @@
             Carbon::setTestNow(Carbon::now()->addMinutes(5)->addSecond());
             $this->assertSame('', $handler->read('foo'));
             Carbon::setTestNow();
+
+        }
+
+        /** @test */
+        public function testIsValid () {
+
+            $handler = $this->newDataBaseSessionHandler(5);
+
+            $handler->write('foo', 'bar');
+
+            $this->assertFalse($handler->isValid('bar'));
+
+            $this->travelIntoFuture(299);
+            $this->assertTrue($handler->isValid('foo'));
+
+
+            $this->travelIntoFuture(300);
+            $this->assertFalse($handler->isValid('foo'));
 
         }
 
