@@ -38,6 +38,11 @@
          */
         private $table;
 
+        /**
+         * @var object
+         */
+        private $session;
+
         public function __construct(wpdb $db, string $table, int $lifetime)
         {
 
@@ -54,6 +59,7 @@
 
         public function destroy($id) : bool
         {
+
             $result = $this->db->delete($this->table, ['id' => $id], ['%s']);
 
             return $result !== false;
@@ -102,6 +108,13 @@
             }
 
             return $this->performInsert($id, $data);
+        }
+
+        public function isValid(string $id) : bool
+        {
+
+            return $this->hasSessionId($id);
+
         }
 
         public function setRequest(Request $request)
@@ -187,6 +200,20 @@ WHERE
             }
 
             return substr($this->request->getHeaderLine('User-Agent'), 0, 500);
+        }
+
+        private function hasSessionId(string $id) : bool
+        {
+
+            $must_be_newer_than = Carbon::now()->subMinutes($this->lifetime)
+                                        ->getTimestamp();
+
+            $query = $this->db->prepare("SELECT EXISTS(SELECT 1 FROM $this->table WHERE id = %s AND last_activity > %d LIMIT 1)", $id, $must_be_newer_than);
+
+            $exists = $this->db->get_var($query);
+
+            return ( is_string($exists) && $exists === '1' );
+
         }
 
     }

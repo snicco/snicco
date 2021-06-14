@@ -32,7 +32,7 @@
 
             $session = $request->session();
 
-            if ( ! $session->hasValidAuthConfirmToken()  ) {
+            if ( ! $session->hasValidAuthConfirmToken() ) {
 
                 if ( ! $session->has('auth.confirm.email.count') ) {
 

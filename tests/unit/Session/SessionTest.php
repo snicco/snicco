@@ -14,13 +14,14 @@
 
 	class SessionTest extends TestCase {
 
+
 		/** @test */
 		public function a_session_is_loaded_from_the_handler() {
 
 			$handler = $this->newArrayHandler( 10 );
 			$handler->write( $this->getSessionId(), \serialize( [ 'foo' => 'bar' ] ) );
 			$session = $this->newSessionStore( $handler );
-			$session->start();
+			$session->start($this->getSessionId());
 
 			$this->assertSame( 'bar', $session->get( 'foo' ) );
 			$this->assertSame( 'baz', $session->get( 'not-present', 'baz' ) );
@@ -30,17 +31,16 @@
 
 		}
 
-		// /** @test */
+		/** @test */
 		public function provided_a_semanticly_correct_session_id_that_does_not_exist_in_the_driver_regenerates_the_id () {
 
             $handler = $this->newArrayHandler( );
             $handler->write( $this->getSessionId(), \serialize( [ 'foo' => 'bar' ] ) );
             $session = $this->newSessionStore( $handler );
+            $session->start($this->anotherSessionId());
 
-            $session->setId($this->anotherSessionId());
 
             $this->assertNotSame($session->getId(), $this->anotherSessionId());
-
 
 		}
 
@@ -48,12 +48,33 @@
 		public function session_attributes_are_merged_with_handler_attributes() {
 
 			$handler = $this->newArrayHandler( 10 );
-			$handler->write( $this->getSessionId(), \serialize( [ 'foo' => 'bar' ] ) );
-			$session = $this->newSessionStore( $handler );
-			$session->put( 'baz', 'biz' );
-			$session->start();
+			$handler->write( $this->getSessionId(), \serialize([
 
-			$this->assertSame( [ 'baz' => 'biz', 'foo' => 'bar' ], $session->all() );
+			    'foo' => [
+			        'bar',
+                    'baz' => [
+                        'biz' => 'boom'
+                    ]
+                ]
+
+            ]));
+
+			$session = $this->newSessionStore( $handler );
+			$session->put('foo.baz.biz', 'bam' );
+			$session->put('foo.biz', 'boom' );
+			$session->start($this->getSessionId());
+
+			$this->assertEquals([
+
+                'foo' => [
+                    'bar',
+                    'baz' => [
+                        'biz' => 'boom'
+                    ],
+                    'biz' => 'boom'
+                ]
+
+            ] , $session->all() );
 
 
 		}
@@ -62,8 +83,9 @@
 		public function the_session_has_no_attributes_if_the_handler_doesnt() {
 
 			$handler = $this->newArrayHandler( 10 );
+			$handler->write($this->getSessionId(), serialize([]));
 			$session = $this->newSessionStore( $handler );
-			$session->start();
+			$session->start($this->getSessionId());
 
 			$this->assertSame( [], $session->all() );
 
@@ -75,7 +97,7 @@
 			$handler = $this->newArrayHandler( 10 );
 			$handler->write( $this->getSessionId(), \serialize( [ 'foo' => 'bar' ] ) );
 			$session = $this->newSessionStore( $handler );
-			$session->start();
+			$session->start($this->getSessionId());
 
 			$old_id = $session->getId();
 
@@ -94,7 +116,7 @@
 			$handler = $this->newArrayHandler( 10 );
 			$handler->write( $this->getSessionId(), \serialize( [ 'foo' => 'bar' ] ) );
 			$session = $this->newSessionStore( $handler );
-			$session->start();
+			$session->start($this->getSessionId());
 
 			$old_id = $session->getId();
 
@@ -112,7 +134,7 @@
 			$handler = $this->newArrayHandler( 10 );
 			$handler->write( $this->getSessionId(), \serialize( [ 'foo' => 'bar' ] ) );
 			$session = $this->newSessionStore( $handler );
-			$session->start();
+			$session->start($this->getSessionId());
 
 			$old_id = $session->getId();
 
@@ -131,7 +153,7 @@
 			$handler = $this->newArrayHandler( 10 );
 			$handler->write( $this->getSessionId(), \serialize( [ 'foo' => 'bar' ] ) );
 			$session = $this->newSessionStore( $handler );
-			$session->start();
+			$session->start($this->getSessionId());
 
 			$old_id = $session->getId();
 
@@ -148,7 +170,7 @@
 		public function a_session_is_properly_saved() {
 
 			$session = $this->newSessionStore();
-			$session->start();
+			$session->start($this->getSessionId());
 
 			$session->put( '_flash.old', 'foo' );
 			$session->put( '_flash.new', 'bar' );
@@ -180,7 +202,7 @@
 			$handler = $this->newArrayHandler();
 			$handler->write( $this->getSessionId(), serialize( [ 'foo' => 'bar' ] ) );
 			$session = $this->newSessionStore( $handler );
-			$session->start();
+			$session->start($this->getSessionId());
 
 			$session->migrate();
 			$new_id = $session->getId();
@@ -206,7 +228,7 @@
 			$handler = $this->newArrayHandler();
 			$handler->write( $this->getSessionId(), serialize( [ 'foo' => 'bar' ] ) );
 			$session = $this->newSessionStore( $handler );
-			$session->start();
+			$session->start($this->getSessionId());
 
 			$this->assertSame( [ 'foo' => 'bar' ], $session->all() );
 
@@ -299,7 +321,7 @@
 			] ) );
 			$session = $this->newSessionStore( $handler );
 
-			$session->start();
+			$session->start($this->getSessionId());
 
 			$this->assertSame( [ 'foo' => 'bar', 'baz' => 'biz' ], $session->all() );
 			$this->assertSame( 'biz', $session->pull( 'baz' ) );
@@ -450,6 +472,7 @@
 		public function a_value_can_be_flashed_for_the_next_request() {
 
 			$session = $this->newSessionStore();
+			$session->start($this->getSessionId());
 			$session->flash( 'foo', 'bar' );
 			$session->flash( 'bar', 0 );
 			$session->flash( 'baz' );
@@ -475,6 +498,7 @@
 		public function data_can_be_flashed_to_the_current_request() {
 
 			$session = $this->newSessionStore();
+			$session->start($this->getSessionId());
 			$session->now( 'foo', 'bar' );
 			$session->now( 'bar', 0 );
 
@@ -518,6 +542,7 @@
 
 
 			$session = $this->newSessionStore();
+			$session->start($this->getSessionId());
 			$session->put( 'boom', 'baz' );
 			$session->flashInput( [ 'foo' => 'bar', 'bar' => 0 ] );
 
@@ -609,6 +634,7 @@
 		public function the_entire_session_can_be_invalidated() {
 
 			$session = $this->newSessionStore();
+			$session->start('bogus');
 			$old_id  = $session->getId();
 
 			$session->put( 'foo', 'bar' );
@@ -631,20 +657,14 @@
 		public function its_not_possible_to_set_an_invalid_session_id() {
 
 			$session = $this->newSessionStore();
+			$session->getDriver()->write($this->getSessionId(), serialize(['foo' => 'bar']));
+			$session->start($this->getSessionId());
 			$this->assertTrue( $session->isValidId( $session->getId() ) );
 
-			$session->setId( 'null' );
-			$this->assertNotNull( $session->getId() );
-			$this->assertTrue( $session->isValidId( $session->getId() ) );
+			$session->setId( $this->anotherSessionId() );
+			$this->assertNotSame( $this->anotherSessionId(), $session->getId() );
+			$this->assertFalse( $session->isValidId( $this->anotherSessionId() ) );
 
-			$session->setId( str_repeat( 'a', 41 ) );
-			$this->assertNotSame( str_repeat( 'a', 41 ), $session->getId() );
-
-			$session->setId( str_repeat( 'a', 40 ) );
-			$this->assertSame( str_repeat( 'a', 40 ), $session->getId() );
-
-			$session->setId( 'wrong' );
-			$this->assertNotSame( 'wrong', $session->getId() );
 
 		}
 
@@ -676,7 +696,7 @@
             $handler = $this->newArrayHandler();
             $handler->write( $this->getSessionId(), \serialize( [ 'foo' => 'bar' ] ) );
             $session = $this->newSessionStore( $handler );
-            $session->start();
+            $session->start($this->getSessionId());
 
             $session->put('bar', 'baz');
 
@@ -688,18 +708,12 @@
 
 		}
 
-
-
-
-
 		private function newSessionStore( \SessionHandlerInterface $handler = null ) : Session {
 
-			$session = new Session(
-				$this->getSessionName(),
-				$handler ?? new ArraySessionDriver( 10 ),
-			);
-			$session->setId($this->getSessionId());
-			return $session;
+            return new Session(
+                $this->getSessionName(),
+                $handler ?? new ArraySessionDriver( 10 ),
+            );
 
 		}
 
@@ -711,12 +725,13 @@
 
 		private function getSessionId() : string {
 
-			return 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa';
+            return str_repeat('a', 64);
+
 		}
 
 		private function anotherSessionId() : string {
 
-			return str_repeat('b', 40);
+			return str_repeat('b', 64);
 		}
 
 		private function getSessionName() : string {

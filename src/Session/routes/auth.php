@@ -9,7 +9,9 @@
 
     /** @var Router $router */
 
-    $router->prefix('auth')->name('auth.confirm')->group(function ($router) {
+    $router->prefix('auth')->name('auth.confirm')
+                           ->middleware('secure')
+                           ->group(function ($router) {
 
         $router->middleware(['auth', 'auth.unconfirmed'])->group(function ($router)  {
 

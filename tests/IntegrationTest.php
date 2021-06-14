@@ -196,8 +196,9 @@
 
         protected function testSessionId () : string
         {
-
-            return str_repeat('a', 40);
+            // Dont change the strength of the tokens for tests unless a different strength is provided
+            // for the session store than the default 32 bytes.
+            return str_repeat('a', 64);
 
     }
 

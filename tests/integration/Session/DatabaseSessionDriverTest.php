@@ -18,7 +18,7 @@
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Drivers\DatabaseSessionDriver;
 
-    class DatabaseSessionHandlerTest extends IntegrationTest
+    class DatabaseSessionDriverTest extends IntegrationTest
     {
 
 
@@ -45,6 +45,7 @@
         {
 
             $this->dropTables();
+            Carbon::setTestNow();
             parent::tearDown();
 
         }
@@ -99,6 +100,24 @@
             Carbon::setTestNow(Carbon::now()->addMinutes(5)->addSecond());
             $this->assertSame('', $handler->read('foo'));
             Carbon::setTestNow();
+
+        }
+
+        /** @test */
+        public function testIsValid () {
+
+            $handler = $this->newDataBaseSessionHandler(5);
+
+            $handler->write('foo', 'bar');
+
+            $this->assertFalse($handler->isValid('bar'));
+
+            $this->travelIntoFuture(299);
+            $this->assertTrue($handler->isValid('foo'));
+
+
+            $this->travelIntoFuture(300);
+            $this->assertFalse($handler->isValid('foo'));
 
         }
 
@@ -225,19 +244,19 @@
             $this->assertTrue($handler->gc(300));
             $this->assertSame('bar', $handler->read('foo'));
 
-            $this->travelIntoFuture(1);
-            $handler->write('bar', 'baz');
+            // $this->travelIntoFuture(2);
+            // $handler->write('bar', 'baz');
 
 
-            $this->travelIntoFuture(300);
+            $this->travelIntoFuture(400);
             $this->assertTrue($handler->gc(300));
 
 
             // first session is expired
             $this->assertSame('', $handler->read('foo'));
 
-            // second session is valid by one second.
-            $this->assertSame('baz', $handler->read('bar'));
+            // second session is valid by two seconds.
+            // $this->assertSame('baz', $handler->read('bar'));
 
             $this->resetCarbon();
 
