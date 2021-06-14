@@ -9,7 +9,11 @@
 
     /** @var Router $router */
 
-    $router->match(['GET', 'POST'], '/wp-login.php', WpLoginRedirectController::class);
+    if ( ! class_exists(\WPEmerge\EnhancedAuth\EnhancedAuthServiceProvider::class, false ) ) {
+
+        $router->match(['GET', 'POST'], '/wp-login.php', WpLoginRedirectController::class);
+
+    }
 
     $router->get('/auth/logout/{user_id}', LogoutController::class)
            ->middleware('signed')

@@ -37,8 +37,8 @@
 
                 return $next($request);
 
-            }
 
+            }
             throw new InvalidSignatureException();
 
         }

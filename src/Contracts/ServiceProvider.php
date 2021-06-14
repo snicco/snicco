@@ -12,6 +12,7 @@
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
 
     abstract class ServiceProvider
@@ -109,6 +110,18 @@
         protected function appKey () {
 
             return $this->config->get('app_key');
+
+        }
+
+        protected function extendRoutes($routes) {
+
+            $new_routes = Arr::wrap($routes);
+
+            $routes = Arr::wrap($this->config->get('routing.definitions'));
+
+            $routes = array_merge($routes, Arr::wrap($new_routes));
+
+            $this->config->set('routing.definitions', $routes);
 
         }
 
