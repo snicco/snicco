@@ -63,6 +63,7 @@
             ]);
 
             $this->config->extend('middleware.priority', [Secure::class]);
+            $this->config->extend('middleware.priority', []);
 
             $this->config->extend('middleware.always_run_global', false);
 

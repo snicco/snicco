@@ -43,7 +43,7 @@
             $this->assertSame([], $groups['web']);
             $this->assertSame([], $groups['ajax']);
             $this->assertSame([], $groups['admin']);
-            $this->assertSame([], $groups['global']);
+            $this->assertSame([Secure::class], $groups['global']);
 
 
         }

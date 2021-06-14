@@ -103,6 +103,12 @@
         private function isSecure(Request $request) : bool
         {
 
+            if ( strtolower($request->getUri()->getScheme()) === 'https') {
+
+                return true;
+
+            }
+
             if ($request->server('HTTPS') === 'on') {
 
                 return true;

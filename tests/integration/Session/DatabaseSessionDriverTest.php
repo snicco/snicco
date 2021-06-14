@@ -38,6 +38,7 @@
             global $wpdb;
             $this->db = $wpdb;
             $this->createTables();
+            Carbon::setTestNow();
 
         }
 
@@ -99,7 +100,6 @@
 
             Carbon::setTestNow(Carbon::now()->addMinutes(5)->addSecond());
             $this->assertSame('', $handler->read('foo'));
-            Carbon::setTestNow();
 
         }
 
@@ -143,7 +143,6 @@
 
             Carbon::setTestNow(Carbon::now()->addMinutes(5));
             $this->assertSame('bar', $handler->read('foo'));
-            Carbon::setTestNow();
 
         }
 
@@ -235,6 +234,7 @@
         /** @test */
         public function garbage_collection_works_for_old_sessions()
         {
+
 
             $handler = $this->newDataBaseSessionHandler(10);
 
