@@ -11,6 +11,7 @@
     use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
     use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Middleware\MiddlewareStack;
+    use WPEmerge\Middleware\Secure;
     use WPEmerge\Routing\Pipeline;
 
     class MiddlewareServiceProviderTest extends IntegrationTest
@@ -28,6 +29,7 @@
             $this->assertArrayHasKey('guest', $aliases);
             $this->assertArrayHasKey('json', $aliases);
             $this->assertArrayHasKey('robots', $aliases);
+            $this->assertArrayHasKey('secure', $aliases);
 
         }
 
@@ -53,7 +55,7 @@
 
             $priority = TestApp::config('middleware.priority');
 
-            $this->assertSame([], $priority);
+            $this->assertSame([Secure::class], $priority);
 
 
         }

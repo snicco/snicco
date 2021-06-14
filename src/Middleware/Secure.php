@@ -28,7 +28,6 @@
          */
         private $preload;
 
-
         /**
          * @var ResponseFactory
          */
@@ -43,7 +42,6 @@
          * @var false
          */
         private $subdomains;
-
 
         public function __construct(ResponseFactory $response_factory, int $max_age = 31536000, $preload = false, $subdomains = false)
         {
@@ -133,7 +131,7 @@
 
             $header = sprintf(
                 'max-age=%d%s%s',
-                $this->maxAge,
+                $this->max_age,
                 $this->subdomains ? ';includeSubDomains' : '',
                 $this->preload ? ';preload' : ''
             );
@@ -141,7 +139,6 @@
             return $response->withHeader(self::HEADER, $header);
 
         }
-
 
         /**
          * Stringify a url parsed with parse_url()
