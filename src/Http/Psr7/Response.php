@@ -10,7 +10,7 @@
     use Psr\Http\Message\StreamInterface;
     use WPEmerge\Http\Cookie;
     use WPEmerge\Http\Cookies;
-    use WPEmerge\Http\Psr7\ImplementsPsr7Response;
+
 
     class Response implements ResponseInterface
     {
@@ -129,5 +129,8 @@
 
         }
 
-
+        public function isRedirect(): bool
+        {
+            return in_array($this->getStatusCode(), [201, 301, 302, 303, 307, 308]) && $this->hasHeader('location');
+        }
     }

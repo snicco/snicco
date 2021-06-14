@@ -107,14 +107,14 @@
         private function sessionId() : string
         {
 
-            return str_repeat('a', 40);
+            return str_repeat('a', 64);
 
         }
 
         private function anotherSessionId() : string
         {
 
-            return str_repeat('b', 40);
+            return str_repeat('b', 64);
         }
 
         private function getRequestSession($response) : Session
@@ -149,7 +149,7 @@
 
             $session = $this->getRequestSession($response);
 
-            $this->assertArrayHasKey('foo', $session->all());
+            $this->assertSame('bar', $session->get('foo'));
 
         }
 
@@ -174,6 +174,7 @@
         public function the_previous_url_is_saved_to_the_session_after_creating_the_response () {
 
             $handler = new ArraySessionDriver(10);
+            $handler->write($this->sessionId(), serialize(['foo' => 'bar']) );
 
             $store = $this->newSessionStore('test_session', $handler);
 
@@ -190,6 +191,7 @@
         public function values_added_to_the_session_are_saved () {
 
             $handler = new ArraySessionDriver(10);
+            $handler->write($this->sessionId(), serialize(['foo' => 'bar'] ) );
 
             $store = $this->newSessionStore('test_session', $handler);
 
@@ -236,12 +238,13 @@
             $pipeline = new Pipeline($this->createContainer(), new TestingErrorHandler());
             $response_factory = $this->createResponseFactory();
 
-            $request = TestRequest::from('GET', 'foo')
-                                  ->withAddedHeader('Cookie', 'test_session='.$this->sessionId());
+            $request = TestRequest::from('GET', 'foo');
+
+            $session = $this->newSessionStore();
 
             $response = $pipeline
                 ->send($request)
-                ->through([ShareCookies::class, $this->newMiddleware()])
+                ->through([ShareCookies::class, $this->newMiddleware($session)])
                 ->then(function () use ($response_factory) {
 
                     return $response_factory->make();
@@ -251,7 +254,7 @@
 
             $cookies = $response->getHeaderLine('Set-Cookie');
 
-            $this->assertStringStartsWith("test_session={$this->sessionId()}",$cookies);
+            $this->assertStringStartsWith("test_session={$session->getId()}",$cookies);
             $this->assertStringContainsString('path=/', $cookies);
             $this->assertStringContainsString('SameSite=Lax', $cookies);
             $this->assertStringContainsString('expires=Thu, 01-Jan-1970 00:01:01 UTC', $cookies);
@@ -260,6 +263,29 @@
             $this->assertStringNotContainsString('domain', $cookies);
 
             Carbon::setTestNow();
+
+        }
+
+        /** @test */
+        public function providing_a_cookie_that_does_not_have_an_active_session_regenerates_the_id () {
+
+            // This works because the session driver has an active session for the the provided cookie value.
+            $driver = new ArraySessionDriver(10);
+            $driver->write($this->sessionId(), serialize(['foo' => 'bar']));
+            $session = $this->newSessionStore('test_session', $driver);
+
+            $this->newMiddleware($session)->handle($this->request, $this->route_action);
+
+            $this->assertSame('bar', $session->get('foo'));
+            $this->assertSame($session->getId(), $this->sessionId());
+
+            // Now we reject the session id.
+            $driver->destroy($this->sessionId());
+
+            $this->newMiddleware($session)->handle($this->request, $this->route_action);
+
+            $this->assertNotSame($session->getId(), $this->sessionId());
+
 
         }
 

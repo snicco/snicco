@@ -46,20 +46,23 @@
                 'guest' => RedirectIfAuthenticated::class,
                 'can' => Authorize::class,
                 'json' => JsonPayload::class,
-                'robots' => NoRobots::class
+                'robots' => NoRobots::class,
+                'secure' => Secure::class,
 
             ]);
 
             $this->config->extend('middleware.groups', [
 
-                'global' => [],
+                'global' => [
+                    Secure::class
+                ],
                 'web' => [],
                 'ajax' => [],
                 'admin' => [],
 
             ]);
 
-            $this->config->extend('middleware.priority', []);
+            $this->config->extend('middleware.priority', [Secure::class]);
 
             $this->config->extend('middleware.always_run_global', false);
 

@@ -60,6 +60,25 @@
 			return '';
 		}
 
+        public function isValid(string $id) : bool
+        {
+
+            if (! isset($this->storage[$id])) {
+               return false;
+            }
+
+            $session = $this->storage[$id];
+
+            $expiration = $this->calculateExpiration($this->minutes * 60);
+
+            if ( ! isset($session['time']) && $session['time'] < $expiration) {
+                return false;
+            }
+
+            return true;
+
+        }
+
 		public function write($sessionId, $data)
 		{
 			$this->storage[$sessionId] = [
@@ -101,5 +120,7 @@
         {
             //
         }
+
+
 
     }
