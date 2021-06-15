@@ -13,7 +13,7 @@
     use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Contracts\RouteUrlGenerator;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\EnhancedAuth\DatabaseMagicLink;
+    use WPEmerge\Auth\DatabaseMagicLink;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Psr7\Request;

@@ -9,7 +9,7 @@
 
     /** @var Router $router */
 
-    if ( ! class_exists(\WPEmerge\EnhancedAuth\EnhancedAuthServiceProvider::class, false ) ) {
+    if ( ! class_exists(\WPEmerge\Auth\EnhancedAuthServiceProvider::class, false ) ) {
 
         $router->match(['GET', 'POST'], '/wp-login.php', WpLoginRedirectController::class);
 

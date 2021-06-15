@@ -10,7 +10,7 @@
     use Illuminate\Support\Arr;
     use Illuminate\Support\InteractsWithTime;
     use WPEmerge\Contracts\RouteUrlGenerator;
-    use WPEmerge\EnhancedAuth\DatabaseMagicLink;
+    use WPEmerge\Auth\DatabaseMagicLink;
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;

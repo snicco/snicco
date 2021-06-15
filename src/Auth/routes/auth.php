@@ -3,9 +3,9 @@
 
     declare(strict_types = 1);
 
-    use WPEmerge\EnhancedAuth\Controllers\AuthController;
-    use WPEmerge\EnhancedAuth\Controllers\ForgotPasswordController;
-    use WPEmerge\EnhancedAuth\Controllers\ResetPasswordController;
+    use WPEmerge\Auth\Controllers\AuthController;
+    use WPEmerge\Auth\Controllers\ForgotPasswordController;
+    use WPEmerge\Auth\Controllers\ResetPasswordController;
     use WPEmerge\Routing\Router;
 
     /** @var Router $router */
@@ -15,7 +15,7 @@
            ->name('login');
 
     $router->post('/login', AuthController::class)
-           ->middleware(['secure', 'csrf', 'guest'])
+           ->middleware(['secure', 'csrf', 'guest:/wp-admin/'])
            ->name('login');
 
     $router->get('forgot-password', [ForgotPasswordController::class, 'create'])

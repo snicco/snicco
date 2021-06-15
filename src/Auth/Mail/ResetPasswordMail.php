@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\EnhancedAuth\Mail;
+    namespace WPEmerge\Auth\Mail;
 
     use WPEmerge\Facade\WP;
     use WPEmerge\Mail\Mailable;

@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\EnhancedAuth\Controllers;
+    namespace WPEmerge\Auth\Controllers;
 
     use Carbon\Carbon;
     use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\EnhancedAuth\Mail\ResetPasswordMail;
+    use WPEmerge\Auth\Mail\ResetPasswordMail;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Responses\RedirectResponse;

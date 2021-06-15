@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\EnhancedAuth\Exceptions;
+    namespace WPEmerge\Auth\Exceptions;
 
     use Throwable;
 
