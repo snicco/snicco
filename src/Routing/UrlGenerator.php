@@ -34,11 +34,6 @@
         /**
          * @var callable
          */
-        private $app_key_resolver;
-
-        /**
-         * @var callable
-         */
         private $request_resolver;
 
         /**
@@ -52,12 +47,6 @@
             $this->route_url = $route_url;
             $this->magic_link = $magic_link;
 
-        }
-
-        public function setAppKeyResolver(callable $key_resolver)
-        {
-
-            $this->app_key_resolver = $key_resolver;
         }
 
         public function setRequestResolver(callable $request_resolver)
@@ -111,7 +100,7 @@
 
             $url_with_expired_query_string = $this->to($path, $query, true, $absolute);
 
-            $signature = $this->magic_link->create($url_with_expired_query_string, $expires);
+            $signature = $this->magic_link->create($url_with_expired_query_string, $expires, $this->getRequest());
 
             return $this->to($path, array_merge($query, ['signature'=>$signature] ), true , $absolute);
 
