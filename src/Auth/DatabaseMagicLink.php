@@ -4,16 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\EnhancedAuth;
+    namespace WPEmerge\Auth;
 
-    use Illuminate\Support\InteractsWithTime;
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\HasLottery;
 
     class DatabaseMagicLink extends MagicLink
     {
-
 
         /**
          * @var string

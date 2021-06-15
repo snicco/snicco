@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\EnhancedAuth\Controllers;
+    namespace WPEmerge\Auth\Controllers;
 
     use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\EnhancedAuth\Authenticator;
-    use WPEmerge\EnhancedAuth\Exceptions\FailedAuthenticationException;
+    use WPEmerge\Auth\Authenticator;
+    use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;

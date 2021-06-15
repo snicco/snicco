@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\EnhancedAuth;
+    namespace WPEmerge\Auth;
 
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\EnhancedAuth\Controllers\ForgotPasswordController;
-    use WPEmerge\EnhancedAuth\Controllers\ResetPasswordController;
+    use WPEmerge\Auth\Controllers\ForgotPasswordController;
+    use WPEmerge\Auth\Controllers\ResetPasswordController;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;

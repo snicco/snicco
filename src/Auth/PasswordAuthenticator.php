@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\EnhancedAuth;
+    namespace WPEmerge\Auth;
 
     use WP_User;
-    use WPEmerge\EnhancedAuth\Exceptions\FailedAuthenticationException;
+    use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
     use WPEmerge\Http\Psr7\Request;
 
     class PasswordAuthenticator implements Authenticator
