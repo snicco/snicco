@@ -14,7 +14,6 @@
     class DatabaseMagicLink extends MagicLink
     {
 
-        use InteractsWithTime;
 
         /**
          * @var string
@@ -71,7 +70,16 @@
         public function store(string $signature, int $expires) : bool
         {
 
+            $cached = wp_cache_get($signature ,'magic_links');
+
+            if ( $cached !== false ) {
+                return true;
+            }
+
             $query = $this->wpdb->prepare("INSERT INTO `$this->table` (`signature`, `expires`) VALUES(%s, %d)", md5($signature), $expires);
+
+            wp_cache_add($signature, $signature, 'magic_links', $expires);
+
 
             return $this->wpdb->query($query) !== false;
 

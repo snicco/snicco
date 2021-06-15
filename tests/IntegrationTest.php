@@ -11,9 +11,11 @@
     use Psr\Http\Message\ServerRequestInterface;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
+    use Tests\stubs\TestMagicLink;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ErrorHandlerInterface;
+    use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\IncomingWebRequest;
@@ -92,6 +94,7 @@
             $app->runningUnitTest();
             $app->boot($config);
 
+            $app->container()->instance(MagicLink::class, new TestMagicLink());
 
             if ( ! $with_exceptions ) {
 

@@ -7,6 +7,7 @@
     namespace WPEmerge\Contracts;
 
     use Carbon\Carbon;
+    use Illuminate\Support\InteractsWithTime;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\HasLottery;
 
@@ -14,6 +15,7 @@
     {
 
         use HasLottery;
+        use InteractsWithTime;
 
         protected $app_key;
 
@@ -27,12 +29,6 @@
 
             $this->app_key = $app_key;
 
-        }
-
-        public function setRequest(Request $request)
-        {
-
-            $this->request = $request;
         }
 
         abstract public function notUsed(Request $request) : bool;
@@ -53,16 +49,10 @@
 
         }
 
-        public function create(string $url, int $expires) : string
+        public function create(string $url, int $expires, Request $request) : string
         {
 
-            $signature = wp_cache_get($url . $this->request->userAgent() ,'magic_links');
-
-            if ( $signature !== false ) {
-                return $signature;
-            }
-
-            $signature = $this->hash($url);
+            $signature = $this->hash($url, $request);
 
             if ($this->hitsLottery($this->lottery)) {
 
@@ -71,8 +61,6 @@
             }
 
             $stored = $this->store($signature, $expires);
-
-            wp_cache_add($url . $this->request->userAgent(), $signature, 'magic_links', $expires);
 
             if ( ! $stored ) {
                 throw new \RuntimeException('Magic link could not be stored');
@@ -123,24 +111,21 @@
 
             $query_without_signature = ltrim($query_without_signature, '&');
 
-            $signature = $this->hash($url.'?'.$query_without_signature);
+            $signature = $this->hash($url.'?'.$query_without_signature, $request);
 
             return hash_equals($signature, $request->query('signature', ''));
 
         }
 
-        protected function hash(string $url) : string
+        protected function hash(string $url, Request $request) : string
         {
 
             if ( ! $this->app_key) {
                 throw new \RuntimeException('App key not set.');
             }
 
-            if ( ! $this->request) {
-                throw new \RuntimeException('Request not set.');
-            }
 
-            $salt = $this->app_key.$this->request->userAgent();
+            $salt = $this->app_key. $request->userAgent();
 
             return hash_hmac('sha256', $url, $salt);
 

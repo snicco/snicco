@@ -71,11 +71,12 @@
 
             $this->bindRouteUrlGenerator();
 
+            $this->bindDatabaseMagicLink();
+
             $this->bindUrlGenerator();
 
             $this->bindRouteRegistrar();
 
-            $this->bindDatabaseMagicLink();
 
         }
 
@@ -208,12 +209,7 @@
 
                 });
 
-                $generator->setAppKeyResolver(function () {
 
-                    $key = $this->config->get('app_key', '');
-
-                    return $key;
-                });
 
                 return $generator;
 
@@ -249,7 +245,6 @@
             $this->container->singleton(MagicLink::class, function () {
 
                 $magic_link = new DatabaseMagicLink('magic_links' );
-                $magic_link->setRequest($this->container->make(Request::class));
                 $magic_link->setAppKey($this->appKey());
 
                 return $magic_link;
