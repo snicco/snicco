@@ -13,6 +13,7 @@
     use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Contracts\RouteUrlGenerator;
     use WPEmerge\Contracts\ServiceProvider;
+    use WPEmerge\EnhancedAuth\DatabaseMagicLink;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Psr7\Request;
@@ -74,7 +75,7 @@
 
             $this->bindRouteRegistrar();
 
-            $this->bindMagicLink();
+            $this->bindDatabaseMagicLink();
 
         }
 
@@ -243,11 +244,15 @@
             });
         }
 
-        private function bindMagicLink()
+        private function bindDatabaseMagicLink()
         {
             $this->container->singleton(MagicLink::class, function () {
 
-                return new ArrayMagicLink();
+                $magic_link = new DatabaseMagicLink('magic_links' );
+                $magic_link->setRequest($this->container->make(Request::class));
+                $magic_link->setAppKey($this->appKey());
+
+                return $magic_link;
 
             });
         }

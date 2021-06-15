@@ -35,7 +35,7 @@
             $this->request = $request;
         }
 
-        abstract public function notUsed(string $url) : bool;
+        abstract public function notUsed(Request $request) : bool;
 
         abstract public function destroy($signature);
 
@@ -79,7 +79,7 @@
 
             return $this->hasCorrectSignature($request, $absolute)
                 && ! $this->signatureHasExpired($request)
-                && $this->notUsed($request->fullUrl());
+                && $this->notUsed($request);
 
         }
 
@@ -137,8 +137,6 @@
             return hash_hmac('sha256', $url, $salt);
 
         }
-
-
 
 
     }
