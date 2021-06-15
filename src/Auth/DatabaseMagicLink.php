@@ -22,7 +22,7 @@
          */
         private $wpdb;
 
-        public function __construct(string $table, array $lottery = [2, 100])
+        public function __construct(string $table, array $lottery = [4, 100])
         {
 
             global $wpdb;

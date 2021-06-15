@@ -59,7 +59,6 @@
 
                 }
 
-                $kernel->addUniqueMiddlewares($this->config->get('middleware.unique', []));
 
                 return $kernel;
 

@@ -73,17 +73,7 @@
 
         }
 
-        /** @test */
-        public function the_unique_middleware_is_extended () {
 
-            $this->newTestApp();
-
-            $unique = TestApp::config('middleware.unique');
-
-            $this->assertSame([], $unique);
-
-
-        }
 
         /** @test */
         public function all_services_are_built_correctly () {

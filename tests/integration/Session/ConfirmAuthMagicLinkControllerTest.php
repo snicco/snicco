@@ -16,7 +16,7 @@
     use WPEmerge\ExceptionHandling\Exceptions\NotFoundException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Session\Exceptions\InvalidSignatureException;
+    use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
     use WPEmerge\Session\SessionServiceProvider;
 
     class ConfirmAuthMagicLinkControllerTest extends IntegrationTest

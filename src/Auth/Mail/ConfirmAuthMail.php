@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session\Mail;
+    namespace WPEmerge\Auth\Mail;
 
     use WP_User;
     use WPEmerge\Mail\Mailable;

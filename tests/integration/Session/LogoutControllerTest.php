@@ -17,7 +17,7 @@
     use WPEmerge\Facade\WP;
     use WPEmerge\Routing\RouteRegistrar;
     use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Session\Exceptions\InvalidSignatureException;
+    use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
     use WPEmerge\Session\SessionServiceProvider;
 
     class LogoutControllerTest extends IntegrationTest
@@ -47,7 +47,6 @@
             $this->url = TestApp::url();
             /** @var RouteRegistrar $registrar */
             $registrar = TestApp::resolve(RouteRegistrarInterface::class);
-            $registrar->globalRoutes(TestApp::config());
             $registrar->standardRoutes(TestApp::config());
             $registrar->loadIntoRouter();
         }
@@ -62,12 +61,13 @@
         /** @test */
         public function the_route_can_not_be_accessed_without_a_valid_signature() {
 
+
             $request = TestRequest::from('GET', '/auth/logout/1');
             $this->rebindRequest($request);
 
             $this->expectException(InvalidSignatureException::class);
 
-            do_action('init');
+            apply_filters('template_include', 'wordpress.php');
 
 
         }
@@ -87,7 +87,8 @@
 
             $this->expectException(InvalidSignatureException::class);
 
-            do_action('init');
+            apply_filters('template_include', 'wordpress.php');
+
 
             $this->logout($calvin);
 
@@ -106,7 +107,8 @@
             $this->rebindRequest($request);
 
             ob_start();
-            do_action('init');
+            apply_filters('template_include', 'wordpress.php');
+
             $this->assertSame('', ob_get_clean());
             HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location');
@@ -131,7 +133,8 @@
             $this->rebindRequest($request);
 
             ob_start();
-            do_action('init');
+            apply_filters('template_include', 'wordpress.php');
+
             $this->assertSame('', ob_get_clean());
             HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertContains('Location', '/foo');
@@ -159,7 +162,8 @@
             $this->rebindRequest($request);
 
             ob_start();
-            do_action('init');
+            apply_filters('template_include', 'wordpress.php');
+
             $this->assertSame('', ob_get_clean());
             HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertContains('Location', '/foo');

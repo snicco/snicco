@@ -66,7 +66,6 @@
 
         }
 
-
         public function previous(Request $request, int $status = 302, string $fallback = '') : RedirectResponse
         {
             $path = $this->session->getPreviousUrl($fallback);
@@ -77,7 +76,6 @@
 
             return parent::previous($request, $status, $fallback);
         }
-
 
         /**
          * Create a redirect response to the given path and store the intended url in the session.
@@ -100,4 +98,5 @@
             return $this->to($path, $status, $query,  $secure, $absolute);
 
         }
+
     }

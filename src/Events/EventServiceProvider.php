@@ -13,9 +13,9 @@
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Listeners\CreateDynamicHooks;
     use WPEmerge\Listeners\LoadRoutes;
-    use WPEmerge\Listeners\OutputBuffer;
     use WPEmerge\Listeners\FilterWpQuery;
     use WPEmerge\Listeners\ShortCircuit404;
+    use WPEmerge\Middleware\Core\OutputBufferMiddleware;
     use WPEmerge\View\ViewFactory;
 
     class EventServiceProvider extends ServiceProvider
@@ -25,7 +25,7 @@
 
             'admin_init' => [
 
-                [AdminAreaInit::class],
+                [AdminInit::class],
 
             ],
 
@@ -35,13 +35,18 @@
 
             ],
 
+            'all_admin_notices' => [
+
+                BeforeAdminFooter::class
+
+            ]
+
         ];
 
         private $ensure_first = [
 
             'init' => WpInit::class,
             'admin_init' => IncomingAjaxRequest::class,
-            'in_admin_footer' => InAdminFooter::class,
 
         ];
 
@@ -60,16 +65,10 @@
 
             ],
 
-            AdminAreaInit::class => [
+            AdminInit::class => [
 
-                CreateDynamicHooks::class,
-                [OutputBuffer::class, 'start'],
-
-            ],
-
-            IncomingGlobalRequest::class => [
-
-                [HttpKernel::class, 'run'],
+                [OutputBufferMiddleware::class, 'start'],
+                CreateDynamicHooks::class
 
             ],
 
@@ -97,15 +96,15 @@
 
             ],
 
-            InAdminFooter::class => [
-
-                [OutputBuffer::class, 'flush'],
-
-            ],
-
             UnrecoverableExceptionHandled::class => [
 
                 [ShutdownHandler::class, 'unrecoverableException'],
+
+            ],
+
+            BeforeAdminFooter::class => [
+
+                [OutputBufferMiddleware::class, 'flush']
 
             ],
 

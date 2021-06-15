@@ -9,6 +9,7 @@
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Message\UriInterface;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Cookies;
     use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
@@ -193,7 +194,20 @@
         public function cookies() : VariableBag
         {
 
-            return $this->getAttribute('cookies', new VariableBag());
+            /** @var VariableBag $bag */
+            $bag = $this->getAttribute('cookies', new VariableBag());
+
+            if ( $bag->all() === [] ) {
+
+                $cookies = Cookies::parseHeader($this->getHeader('Cookie'));
+
+                $bag->add($cookies);
+
+            }
+
+            return $bag;
+
+
         }
 
         public function session() : Session
@@ -268,6 +282,18 @@
 
         }
 
+        public function isApiEndPoint() : bool
+        {
+
+            $endpoint= $this->getAttribute('api-endpoint');
+
+            if ( ! $endpoint ) {
+                return false;
+            }
+
+            return Str::startsWith(trim($this->path(), '/'), trim($endpoint, '/'));
+
+        }
 
 
     }

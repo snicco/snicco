@@ -102,7 +102,6 @@
 
         }
 
-
         /** @test */
         public function admin_routes_are_only_run_for_pages_added_with_add_menu_page () {
 

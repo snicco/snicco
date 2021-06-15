@@ -9,8 +9,10 @@
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\IncomingWebRequest;
+    use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
+    use WPEmerge\Middleware\Core\OutputBufferMiddleware;
     use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Routing\Pipeline;
 
@@ -29,6 +31,8 @@
             $this->bindRouteRunnerMiddleware();
 
             $this->bindMiddlewarePipeline();
+
+            $this->bindOutputBufferMiddleware();
 
         }
 
@@ -66,8 +70,6 @@
             $this->config->extend('middleware.priority', []);
 
             $this->config->extend('middleware.always_run_global', false);
-
-            $this->config->extend('middleware.unique', []);
 
 
         }
@@ -136,6 +138,23 @@
             });
         }
 
+        private function bindOutputBufferMiddleware()
+        {
+
+            $this->container->singleton(OutputBufferMiddleware::class, function () {
+
+                $middleware = new OutputBufferMiddleware(
+                    $this->container->make(ResponseEmitter::class),
+                    $this->container->make(ResponseFactory::class),
+                );
+
+                $this->container->instance(OutputBufferMiddleware::class, $middleware);
+
+                return $middleware;
+
+            });
+
+        }
 
 
     }

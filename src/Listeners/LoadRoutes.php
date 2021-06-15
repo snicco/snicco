@@ -8,7 +8,7 @@
 
 
     use WPEmerge\Contracts\RouteRegistrarInterface;
-    use WPEmerge\Events\IncomingGlobalRequest;
+    use WPEmerge\Events\IncomingApiRequest;
     use WPEmerge\Events\WpInit;
 
     class LoadRoutes
@@ -19,17 +19,16 @@
 
             $config = $event->config;
 
-            $success = $registrar->globalRoutes($config);
+            $success = $registrar->apiRoutes($config);
             $registrar->standardRoutes($config);
             $registrar->loadIntoRouter();
 
-            if ( $success ) {
+            if ( $success && $event->request->isApiEndPoint() ) {
 
                 // This will run as the first hook on init.
-                IncomingGlobalRequest::dispatch([$event->request]);
+                IncomingApiRequest::dispatch([$event->request]);
 
             }
-
 
 
         }

@@ -9,10 +9,9 @@
     use BetterWpHooks\Traits\IsAction;
     use WPEmerge\Application\ApplicationEvent;
 
-    class NewLogin extends ApplicationEvent
+    class NewLogout extends ApplicationEvent
     {
 
         use IsAction;
-
 
     }

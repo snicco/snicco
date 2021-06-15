@@ -11,7 +11,7 @@
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Redirector;
     use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Session\Exceptions\InvalidSignatureException;
+    use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
 
     class LogoutController
     {

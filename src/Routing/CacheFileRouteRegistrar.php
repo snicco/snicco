@@ -24,7 +24,7 @@
             $this->registrar = $registrar;
         }
 
-        public function globalRoutes(ApplicationConfig $config) : bool
+        public function apiRoutes(ApplicationConfig $config) : bool
         {
             $dir = $config->get('routing.cache_dir', '');
 
@@ -36,7 +36,7 @@
 
             $this->createCacheDirIfNotExists($dir);
 
-            return $this->registrar->globalRoutes($config);
+            return $this->registrar->apiRoutes($config);
 
         }
 

@@ -16,21 +16,13 @@
     class ShareCookies extends Middleware
     {
 
-
         public function handle(Request $request, Delegate $next)
         {
 
-            $response = $next($this->addCookiesToRequest($request));
-
+            $response = $next($request);
 
             return $this->addCookiesToResponse($response);
 
-
-        }
-
-        private function addCookiesToRequest ( Request $request) {
-
-            return $request->withCookies($this->parseCookiesFromRequest($request));
 
         }
 
@@ -53,13 +45,5 @@
 
         }
 
-        private function parseCookiesFromRequest (Request $request) : array
-        {
-
-            $cookies = Cookies::parseHeader($request->getHeader('Cookie'));
-
-            return  $cookies;
-
-        }
 
     }
