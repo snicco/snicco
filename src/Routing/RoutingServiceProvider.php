@@ -8,10 +8,12 @@
 
     use Symfony\Component\Finder\Finder;
     use WPEmerge\Contracts\AbstractRouteCollection;
+    use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Contracts\RouteUrlGenerator;
     use WPEmerge\Contracts\ServiceProvider;
+    use WPEmerge\Auth\DatabaseMagicLink;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Psr7\Request;
@@ -68,6 +70,8 @@
             $this->bindRouter();
 
             $this->bindRouteUrlGenerator();
+
+            $this->bindDatabaseMagicLink();
 
             $this->bindUrlGenerator();
 
@@ -194,7 +198,10 @@
 
             $this->container->singleton(UrlGenerator::class, function () {
 
-                $generator = new UrlGenerator($this->container->make(RouteUrlGenerator::class));
+                $generator = new UrlGenerator(
+                    $this->container->make(RouteUrlGenerator::class),
+                    $this->container->make(MagicLink::class)
+                );
 
                 $generator->setRequestResolver(function () {
 
@@ -202,12 +209,7 @@
 
                 });
 
-                $generator->setAppKeyResolver(function () {
 
-                    $key = $this->config->get('app_key', '');
-
-                    return $key;
-                });
 
                 return $generator;
 
@@ -238,6 +240,17 @@
             });
         }
 
+        private function bindDatabaseMagicLink()
+        {
+            $this->container->singleton(MagicLink::class, function () {
+
+                $magic_link = new DatabaseMagicLink('magic_links' );
+                $magic_link->setAppKey($this->appKey());
+
+                return $magic_link;
+
+            });
+        }
 
 
     }

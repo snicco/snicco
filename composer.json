@@ -49,7 +49,8 @@
     "illuminate/view": "dev-feature_view_interface_instead_of_view_implementation",
     "adriansuter/php-autoload-override": "^1.2",
     "slim/csrf": "1.2.1",
-    "respect/validation": "2.2.3"
+    "respect/validation": "2.2.3",
+    "bjeavons/zxcvbn-php": "^1.0"
   },
 
   "suggest": {

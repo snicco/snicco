@@ -11,6 +11,11 @@
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Session\CsrfField;
 
+    /**
+     *
+     * Handle direct links to wp_logout.php
+     *
+     */
     class WpLoginRedirectController
     {
 

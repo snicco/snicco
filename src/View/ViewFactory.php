@@ -102,5 +102,14 @@
 
         }
 
+        public function includeChild () {
+
+		    if ( ! $this->engine instanceof PhpViewEngine ) {
+		        return;
+            }
+
+		    return $this->engine->includeNextView();
+
+        }
 
 	}

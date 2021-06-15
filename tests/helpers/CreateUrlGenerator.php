@@ -6,13 +6,18 @@
 
     namespace Tests\helpers;
 
+    use Tests\stubs\TestMagicLink;
     use Tests\stubs\TestRequest;
+    use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Routing\UrlGenerator;
 
     trait CreateUrlGenerator
     {
+
+        /** @var MagicLink */
+        protected $magic_link;
 
         protected function newUrlGenerator(string $app_key = null, Request $request = null) : UrlGenerator
         {
@@ -23,7 +28,11 @@
                 $this->routes = $routes;
             }
 
-            $generator = new UrlGenerator(new FastRouteUrlGenerator($this->routes));
+            $magic_link = new TestMagicLink();
+
+            $this->magic_link = $magic_link;
+
+            $generator = new UrlGenerator(new FastRouteUrlGenerator($this->routes), $magic_link);
 
             $generator->setRequestResolver(function () use ($request ){
 
@@ -31,13 +40,6 @@
 
             });
 
-            if ( $app_key ) {
-
-                $generator->setAppKeyResolver(function () use ($app_key) {
-                    return $app_key;
-                });
-
-            }
 
             return $generator;
 
