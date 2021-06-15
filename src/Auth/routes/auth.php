@@ -4,11 +4,12 @@
     declare(strict_types = 1);
 
     use WPEmerge\Auth\Controllers\AuthController;
+    use WPEmerge\Auth\Controllers\ConfirmAuthController;
     use WPEmerge\Auth\Controllers\ForgotPasswordController;
     use WPEmerge\Auth\Controllers\ResetPasswordController;
     use WPEmerge\Routing\Router;
-    use WPEmerge\Session\Controllers\ConfirmAuthMagicLinkController;
-    use WPEmerge\Session\Controllers\LogoutController;
+    use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
+    use WPEmerge\Auth\Controllers\LogoutController;
 
     /** @var Router $router */
 

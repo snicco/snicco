@@ -8,15 +8,14 @@
 
     use Slim\Csrf\Guard;
     use WPEmerge\Application\Application;
+    use WPEmerge\Auth\AuthServiceProvider;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Session\Events\NewLogin;
     use WPEmerge\Session\Events\NewLogout;
-    use WPEmerge\Session\Listeners\SessionManager;
     use WPEmerge\Auth\Middleware\ConfirmAuth;
-    use WPEmerge\Session\Controllers\ConfirmAuthMagicLinkController;
+    use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Drivers\DatabaseSessionDriver;
     use WPEmerge\Auth\Middleware\AuthUnconfirmed;
@@ -49,16 +48,12 @@
             $this->bindSlimGuard();
             $this->bindAliases();
             $this->bindEncryptor();
-            $this->bindControllers();
             $this->bindEvents();
-            $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views');
-            $this->extendRoutes(__DIR__.DIRECTORY_SEPARATOR.'routes');
 
         }
 
         function bootstrap() : void
         {
-
 
         }
 
@@ -81,9 +76,6 @@
 
             $this->config->extend('middleware.aliases', [
                 'csrf' => CsrfMiddleware::class,
-                'signed' => ValidateSignature::class,
-                'auth.confirmed' => ConfirmAuth::class,
-                'auth.unconfirmed' => AuthUnconfirmed::class,
             ]);
 
             $this->config->extend('middleware.groups.global', [
@@ -229,23 +221,12 @@
             });
         }
 
-        private function bindControllers()
-        {
-
-            $this->container->singleton(ConfirmAuthMagicLinkController::class, function () {
-
-                return new ConfirmAuthMagicLinkController(
-                    $this->container->make(ResponseFactory::class),
-                    $this->config->get('session.auth_confirmed_lifetime')
-                );
-
-            });
-
-
-        }
-
         private function bindEvents()
         {
+
+            if (class_exists(AuthServiceProvider::class, false)) {
+                return;
+            }
 
             $this->config->extend('events.mapped', [
                 'wp_login' => NewLogin::class,
@@ -268,15 +249,6 @@
 
             ]);
 
-            $this->container->singleton(SessionManager::class, function () {
-
-                return new SessionManager(
-                    $this->config->get('session'),
-                    $this->container->make(Session::class),
-                );
-
-            });
-
 
         }
 
@@ -286,8 +258,8 @@
             $this->container->singleton(SessionManager::class, function () {
 
                 return new SessionManager(
+                    $this->config->get('session'),
                     $this->container->make(Session::class),
-                    $this->config->get('session')
                 );
 
             });

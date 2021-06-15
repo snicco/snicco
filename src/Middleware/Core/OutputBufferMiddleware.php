@@ -71,7 +71,10 @@
         public function flush()
         {
 
-            $this->emitter->emit($this->retained_response);
+            if ( $this->retained_response instanceof Response ) {
+
+                $this->emitter->emit($this->retained_response);
+            }
 
             // We made sure that our admin content sends headers and body at the correct time.
             // Now flush all output so the user does not have to wait until admin-footer-php finished

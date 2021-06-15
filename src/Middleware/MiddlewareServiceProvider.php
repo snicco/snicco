@@ -52,6 +52,7 @@
                 'json' => JsonPayload::class,
                 'robots' => NoRobots::class,
                 'secure' => Secure::class,
+                'signed' => ValidateSignature::class,
 
             ]);
 

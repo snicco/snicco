@@ -18,7 +18,7 @@
     class SessionManager
     {
 
-        use \WPEmerge\Traits\HasLottery;
+        use HasLottery;
 
         /**
          * @var array

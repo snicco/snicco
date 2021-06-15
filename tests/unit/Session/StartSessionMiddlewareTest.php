@@ -20,9 +20,9 @@
     use WPEmerge\Middleware\Core\ShareCookies;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
-    use WPEmerge\Session\Listeners\SessionManager;
     use WPEmerge\Session\Session;
     use WPEmerge\Session\Middleware\SessionMiddleware;
+    use WPEmerge\Session\SessionManager;
     use WPEmerge\Support\VariableBag;
 
     class StartSessionMiddlewareTest extends UnitTest

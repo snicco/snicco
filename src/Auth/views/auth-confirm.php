@@ -37,7 +37,7 @@
         transition-property: border, background, color;
         transition-duration: .05s;
         transition-timing-function: ease-in-out;
-        background-image: none, url(/images/wordpress-logo.svg);
+        background-image: none, url(/wp-admin/images/wordpress-logo.svg);
         background-size: 84px;
         background-position: center top;
         background-repeat: no-repeat;
