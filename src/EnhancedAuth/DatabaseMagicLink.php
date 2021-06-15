@@ -27,11 +27,6 @@
         private $wpdb;
 
         /**
-         * @var array|int[]
-         */
-        private $lottery;
-
-        /**
          * @var int
          */
         private $grace_period_in_ms;

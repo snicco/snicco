@@ -8,34 +8,73 @@
 
     use Carbon\Carbon;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Session\HasLottery;
 
     abstract class MagicLink
     {
+
+        use HasLottery;
 
         protected $app_key;
 
         /** @var Request */
         protected $request;
 
-        public function setAppKey(string $app_key) {
+        protected $lottery = [2, 100];
+
+        public function setAppKey(string $app_key)
+        {
 
             $this->app_key = $app_key;
 
         }
 
-        public function setRequest( Request $request ) {
+        public function setRequest(Request $request)
+        {
+
             $this->request = $request;
         }
 
         abstract public function notUsed(string $url) : bool;
 
-        abstract public function invalidate(string $url );
+        abstract public function destroy($signature);
 
-        abstract public function create( string $url, int $expires ) : string;
+        abstract public function store(string $signature, int $expires) :bool;
 
-        abstract public function gc () :bool;
+        abstract public function gc() : bool;
 
-        public function hasValidSignature(Request $request, $absolute = true ) : bool
+        public function invalidate(string $url) {
+
+
+            parse_str(parse_url($url)['query'] ?? '', $query);
+            $signature = $query['signature'] ?? '';
+
+            $this->destroy($signature);
+
+        }
+
+        public function create(string $url, int $expires) : string
+        {
+
+            $signature = $this->hash($url);
+
+            if ($this->hitsLottery($this->lottery)) {
+
+                $this->gc();
+
+            }
+
+            $stored = $this->store($signature, $expires);
+
+            if ( ! $stored ) {
+                throw new \RuntimeException('Magic link could not be stored');
+            }
+
+            return $signature;
+
+        }
+
+        public function hasValidSignature(Request $request, $absolute = true) : bool
         {
 
             return $this->hasCorrectSignature($request, $absolute)
@@ -44,7 +83,7 @@
 
         }
 
-        public function hasValidRelativeSignature(Request $request ) : bool
+        public function hasValidRelativeSignature(Request $request) : bool
         {
 
             return $this->hasValidSignature($request, false);
@@ -53,9 +92,10 @@
 
         private function signatureHasExpired(Request $request) : bool
         {
-            $expires = $request->query('expires', null );
 
-            if ( ! $expires ) {
+            $expires = $request->query('expires', null);
+
+            if ( ! $expires) {
                 return false;
             }
 
@@ -75,28 +115,30 @@
 
             $query_without_signature = ltrim($query_without_signature, '&');
 
-            $signature = $this->hash( $url.'?'.$query_without_signature);
+            $signature = $this->hash($url.'?'.$query_without_signature);
 
             return hash_equals($signature, $request->query('signature', ''));
 
         }
 
-        protected function hash ( string $url ) :string {
+        protected function hash(string $url) : string
+        {
 
-            if ( ! $this->app_key ) {
+            if ( ! $this->app_key) {
                 throw new \RuntimeException('App key not set.');
             }
 
-             if ( ! $this->request ) {
+            if ( ! $this->request) {
                 throw new \RuntimeException('Request not set.');
             }
 
-
-
-            $salt = $this->app_key . $this->request->userAgent();
+            $salt = $this->app_key.$this->request->userAgent();
 
             return hash_hmac('sha256', $url, $salt);
 
         }
+
+
+
 
     }
