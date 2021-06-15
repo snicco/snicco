@@ -10,11 +10,9 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
-    use WPEmerge\Contracts\RouteRegistrarInterface;
-    use WPEmerge\Routing\RouteRegistrar;
     use WPEmerge\Session\SessionServiceProvider;
 
-    class InvalidateOldSessionsTest extends IntegrationTest
+    class SessionManagerTest extends IntegrationTest
     {
 
         protected function afterSetup()
@@ -58,6 +56,37 @@
             // Data is for the new id is in the handler.
             $data = unserialize($array_handler->read($id_after_login));
             $this->assertSame('bar', $data['foo']);
+
+            // The old session is gone.
+            $this->assertSame('', $array_handler->read($this->testSessionId()));
+
+        }
+
+        /** @test */
+        public function session_are_invalidated_on_logout () {
+
+            $session = TestApp::session();
+            $array_handler = $session->getDriver();
+            $array_handler->write($this->testSessionId(), serialize(['foo' => 'bar']));
+
+            $this->rebindRequest(TestRequest::from('GET', 'foo')
+                                            ->withAddedHeader('Cookie', 'wp_mvc_session='.$this->testSessionId()));
+
+            ob_start();
+
+            do_action('wp_logout');
+
+            $this->assertSame('', ob_get_clean());
+
+            $id_after_login = $session->getId();
+
+            // Session Id not the same
+            $this->assertNotSame($this->testSessionId(), $id_after_login);
+            HeaderStack::assertContains('Set-Cookie', $id_after_login);
+
+            // Data is for the new id is not in the handler.
+            $data = unserialize($array_handler->read($id_after_login));
+            $this->assertArrayNotHasKey('foo', $data);
 
             // The old session is gone.
             $this->assertSame('', $array_handler->read($this->testSessionId()));

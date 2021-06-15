@@ -15,7 +15,7 @@
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\Controllers\ConfirmAuthController;
+    use WPEmerge\Auth\Controllers\ConfirmAuthController;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Session\EncryptedSession;
     use WPEmerge\Session\Middleware\ShareSessionWithView;
@@ -434,45 +434,6 @@
 
         }
 
-        /** @test */
-        public function the_auth_routes_are_bound_in_the_config()
-        {
-
-            $this->newTestApp([
-                'session' => [
-                    'enabled' => true,
-                ],
-                'providers' => [
-                    SessionServiceProvider::class,
-                ],
-            ]);
-
-            $routes = TestApp::config('routing.definitions');
-            $expected = ROOT_DIR.DS.'src'.DS.'Session'.DS.'routes';
-
-            $this->assertContains($expected, $routes);
-
-        }
-
-        /** @test */
-        public function the_auth_views_are_bound_in_the_config () {
-
-            $this->newTestApp([
-                'session' => [
-                    'enabled' => true,
-                ],
-                'providers' => [
-                    SessionServiceProvider::class,
-                ],
-            ]);
-
-            $views = TestApp::config('views');
-            $expected = ROOT_DIR.DS.'src'.DS.'Session'.DS.'views';
-
-            $this->assertContains($expected, $views);
-
-
-        }
 
         /** @test */
         public function confirm_auth_controller_can_be_resolved()
@@ -507,9 +468,6 @@
             $middleware_aliases = TestApp::config('middleware.aliases');
 
             $this->assertArrayHasKey('csrf', $middleware_aliases);
-            $this->assertArrayHasKey('auth.confirmed', $middleware_aliases);
-            $this->assertArrayHasKey('auth.unconfirmed', $middleware_aliases);
-            $this->assertArrayHasKey('signed', $middleware_aliases);
 
         }
 

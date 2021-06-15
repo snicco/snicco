@@ -30,6 +30,7 @@
             $this->assertArrayHasKey('json', $aliases);
             $this->assertArrayHasKey('robots', $aliases);
             $this->assertArrayHasKey('secure', $aliases);
+            $this->assertArrayHasKey('signed', $aliases);
 
         }
 

@@ -6,24 +6,28 @@
 
     namespace WPEmerge\Auth;
 
+    use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Auth\Events\GenerateLoginUrl;
     use WPEmerge\Auth\Events\GenerateLogoutUrl;
     use WPEmerge\Auth\Listeners\WpLoginRedirectManager;
-    use WPEmerge\Contracts\MagicLink;
+    use WPEmerge\Auth\Middleware\AuthUnconfirmed;
+    use WPEmerge\Auth\Middleware\ConfirmAuth;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Auth\Controllers\ForgotPasswordController;
     use WPEmerge\Auth\Controllers\ResetPasswordController;
     use WPEmerge\Events\WpInit;
-    use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Routing\UrlGenerator;
+    use WPEmerge\Session\Events\NewLogin;
+    use WPEmerge\Session\Events\NewLogout;
 
     class AuthServiceProvider extends ServiceProvider
     {
 
         public function register() : void
         {
+
+            $this->bindConfig();
 
             $this->extendRoutes(__DIR__.DIRECTORY_SEPARATOR.'routes');
 
@@ -33,8 +37,7 @@
 
             $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views');
 
-            $this->bindForgetPasswordController();
-            $this->bindPasswordResetController();
+            $this->bindControllers();
 
         }
 
@@ -48,27 +51,23 @@
             $this->config->extend('events.listeners', [
                 WpInit::class => [
 
-                    [WpLoginRedirectManager::class, 'redirect']
+                    [WpLoginRedirectManager::class, 'redirect'],
 
                 ],
                 GenerateLoginUrl::class => [
 
-                    [WpLoginRedirectManager::class, 'loginUrl']
+                    [WpLoginRedirectManager::class, 'loginUrl'],
 
                 ],
                 GenerateLogoutUrl::class => [
-                    [WpLoginRedirectManager::class, 'logoutUrl']
-                ]
+                    [WpLoginRedirectManager::class, 'logoutUrl'],
+                ],
             ]);
 
             $this->config->extend('events.last', [
 
-                'login_url' => [
-                    GenerateLoginUrl::class
-                ],
-                'logout_url' => [
-                    GenerateLogoutUrl::class
-                ]
+                'login_url' => GenerateLoginUrl::class,
+                'logout_url' => GenerateLogoutUrl::class,
 
             ]);
 
@@ -86,8 +85,17 @@
 
         }
 
-        private function bindForgetPasswordController()
+        private function bindControllers()
         {
+
+            $this->container->singleton(ConfirmAuthMagicLinkController::class, function () {
+
+                return new ConfirmAuthMagicLinkController(
+                    $this->container->make(ResponseFactory::class),
+                    $this->config->get('session.auth_confirmed_lifetime')
+                );
+
+            });
 
             $this->container->singleton(ForgotPasswordController::class, function () {
 
@@ -99,10 +107,6 @@
 
             });
 
-        }
-
-        private function bindPasswordResetController()
-        {
             $this->container->singleton(ResetPasswordController::class, function () {
 
 
@@ -114,6 +118,15 @@
 
             });
 
+        }
+
+        private function bindConfig()
+        {
+
+            $this->config->extend('middleware.aliases', [
+                'auth.confirmed' => ConfirmAuth::class,
+                'auth.unconfirmed' => AuthUnconfirmed::class,
+            ]);
         }
 
 

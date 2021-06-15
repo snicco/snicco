@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session\Controllers;
+    namespace WPEmerge\Auth\Controllers;
 
     use Carbon\Carbon;
     use WP_User;

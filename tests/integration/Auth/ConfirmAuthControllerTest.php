@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration\Session;
+    namespace Tests\integration\Auth;
 
     use Illuminate\Support\Carbon;
     use Tests\helpers\InteractsWithSessionDriver;
@@ -13,9 +13,10 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
+    use WPEmerge\Auth\AuthServiceProvider;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\Controllers\ConfirmAuthController;
+    use WPEmerge\Auth\Controllers\ConfirmAuthController;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
@@ -49,7 +50,7 @@
 
             $config = TEST_CONFIG;
 
-            $config['providers'] = [SessionServiceProvider::class];
+            $config['providers'] = [SessionServiceProvider::class, AuthServiceProvider::class];
             $config['session'] = [
                 'enabled' => true,
                 'driver' => 'array',
