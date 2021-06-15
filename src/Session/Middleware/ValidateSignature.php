@@ -38,10 +38,12 @@
 
             if ( $valid ) {
 
+                $this->magic_link->invalidate($request->fullUrl());
+
                 return $next($request);
 
-            }
 
+            }
 
             throw new InvalidSignatureException();
 
