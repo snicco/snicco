@@ -7,6 +7,7 @@
     namespace WPEmerge\Http;
 
     use Psr\Http\Message\ResponseInterface;
+    use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\Responses\NullResponse;
@@ -14,11 +15,13 @@
     use WPEmerge\Middleware\Core\ErrorHandlerMiddleware;
     use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
     use WPEmerge\Middleware\Core\MethodOverride;
+    use WPEmerge\Middleware\Core\OutputBufferMiddleware;
     use WPEmerge\Middleware\Core\RoutingMiddleware;
     use WPEmerge\Middleware\Core\SetRequestAttributes;
     use WPEmerge\Middleware\Core\ShareCookies;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Middleware\Core\RouteRunner;
+    use WPEmerge\Support\Arr;
     use WPEmerge\Traits\SortsMiddleware;
 
     class HttpKernel
@@ -45,12 +48,9 @@
             EvaluateResponseMiddleware::class,
             ShareCookies::class,
             AppendSpecialPathSuffix::class,
+            OutputBufferMiddleware::class,
             RoutingMiddleware::class,
             RouteRunner::class,
-        ];
-
-        private $unique_middleware = [
-            MethodOverride::class,
         ];
 
         // Only these get a priority, because they always need to run before any global middleware
@@ -70,11 +70,6 @@
          */
         private $emitter;
 
-        /**
-         * @var int
-         */
-        private $run_count = 0;
-
         public function __construct(Pipeline $pipeline, ResponseEmitter $emitter = null)
         {
 
@@ -91,12 +86,7 @@
             $this->always_with_global_middleware = true;
         }
 
-        public function addUniqueMiddlewares(array $unique_middleware)
-        {
 
-            $this->unique_middleware = array_merge($this->unique_middleware, $unique_middleware);
-
-        }
 
         public function run(IncomingRequest $request_event) : void
         {
@@ -104,7 +94,6 @@
             $response = $this->handle($request_event);
 
             if ($response instanceof NullResponse) {
-
 
                 return;
 
@@ -130,18 +119,21 @@
 
             }
 
-            $response = $this->pipeline->send($request)
-                                       ->through($this->gatherMiddleware())
-                                       ->run();
-            $this->run_count++;
-
-            return $response;
+            return $this->pipeline->send($request)
+                                  ->through($this->gatherMiddleware($request_event))
+                                  ->run();
 
 
         }
 
-        private function gatherMiddleware() : array
+        private function gatherMiddleware(IncomingRequest $event) : array
         {
+
+            if ( ! $event instanceof IncomingAdminRequest) {
+
+                Arr::pullByValue(OutputBufferMiddleware::class, $this->core_middleware);
+
+            }
 
             if ( ! $this->withMiddleware() ) {
 
@@ -149,25 +141,10 @@
 
             }
 
-            $global = $this->run_count < 1
-                ? $this->global_middleware
-                : $this->onlyNonUnique($this->global_middleware);
-
-            $core = $this->run_count < 1
-                ? $this->core_middleware
-                : $this->onlyNonUnique($this->core_middleware);
-
-            $merged = array_merge($global, $core);
+            $merged = array_merge($this->global_middleware, $this->core_middleware);
 
             return $this->sortMiddleware($merged, $this->priority_map);
 
-
-        }
-
-        private function onlyNonUnique(array $middleware) : array
-        {
-
-            return array_values(array_diff($middleware, $this->unique_middleware));
 
         }
 

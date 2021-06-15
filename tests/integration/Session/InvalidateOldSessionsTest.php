@@ -30,11 +30,6 @@
                 ],
             ]);
 
-            /** @var RouteRegistrar $registrar */
-            $registrar = TestApp::resolve(RouteRegistrarInterface::class);
-            $registrar->globalRoutes(TestApp::config());
-            $registrar->standardRoutes(TestApp::config());
-            $registrar->loadIntoRouter();
         }
 
         /** @test */
@@ -45,15 +40,14 @@
             $array_handler = $session->getDriver();
             $array_handler->write($this->testSessionId(), serialize(['foo' => 'bar']));
 
-            $request = TestRequest::fromFullUrl('GET', 'https://wpemerge.test/wp-login.php?action=login');
-            $request = $request->withAddedHeader('Cookie', 'wp_mvc_session='.$this->testSessionId() );
-            $this->rebindRequest($request);
+            $this->rebindRequest(TestRequest::from('GET', 'foo')
+                                            ->withAddedHeader('Cookie', 'wp_mvc_session='.$this->testSessionId()));
 
             ob_start();
-            do_action('init');
-            do_action('wp_login');
-            $this->assertSame('', ob_get_clean());
 
+            do_action('wp_login');
+
+            $this->assertSame('', ob_get_clean());
 
             $id_after_login = $session->getId();
 
@@ -61,7 +55,7 @@
             $this->assertNotSame($this->testSessionId(), $id_after_login);
             HeaderStack::assertContains('Set-Cookie', $id_after_login);
 
-            // Data is not in the handler anymore
+            // Data is for the new id is in the handler.
             $data = unserialize($array_handler->read($id_after_login));
             $this->assertSame('bar', $data['foo']);
 

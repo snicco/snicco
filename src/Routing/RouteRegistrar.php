@@ -11,7 +11,6 @@
     use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Facade\WP;
-    use WPEmerge\Routing\Conditions\IsStandardRoute;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
 
@@ -36,14 +35,14 @@
             $this->router->loadRoutes();
         }
 
-        public function globalRoutes(ApplicationConfig $config) : bool
+        public function apiRoutes(ApplicationConfig $config) : bool
         {
 
             $dirs = Arr::wrap($config->get('routing.definitions', []));
 
             $finder = new Finder();
             $finder->in($dirs)->files()
-                   ->name('globals.php');
+                   ->name('api.php');
 
             $files = iterator_to_array($finder);
 
@@ -64,7 +63,7 @@
 
             $finder = new Finder();
             $finder->in($dirs)->files()
-                   ->notName(['globals.php', 'global.php'])
+                   ->notName(['api.php'])
                    ->name('*.php');
 
             $files = iterator_to_array($finder);
@@ -128,14 +127,6 @@
         private function applyPreset(string $group, array $preset) : array
         {
 
-            if ($group !== 'globals') {
-
-                $preset = array_merge(['where' => [
-                    IsStandardRoute::class
-                ]]);
-
-
-            }
 
             if ($group === 'web') {
 

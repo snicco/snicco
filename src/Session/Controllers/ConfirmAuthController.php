@@ -17,7 +17,7 @@
     use WPEmerge\Mail\MailBuilder;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\CsrfField;
-    use WPEmerge\Session\Mail\ConfirmAuthMail;
+    use WPEmerge\Auth\Mail\ConfirmAuthMail;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
     use WPEmerge\View\ViewFactory;

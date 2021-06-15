@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session\Middleware;
+    namespace WPEmerge\Middleware;
 
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\Exceptions\InvalidSignatureException;
+    use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
 
     class ValidateSignature extends Middleware
     {

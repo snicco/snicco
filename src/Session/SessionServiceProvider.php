@@ -13,16 +13,17 @@
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Session\Events\NewLogin;
-    use WPEmerge\Session\Listeners\InvalidateOldSessions;
-    use WPEmerge\Session\Middleware\ConfirmAuth;
+    use WPEmerge\Session\Events\NewLogout;
+    use WPEmerge\Session\Listeners\SessionManager;
+    use WPEmerge\Auth\Middleware\ConfirmAuth;
     use WPEmerge\Session\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Drivers\DatabaseSessionDriver;
-    use WPEmerge\Session\Middleware\AuthUnconfirmed;
+    use WPEmerge\Auth\Middleware\AuthUnconfirmed;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Session\Middleware\ShareSessionWithView;
-    use WPEmerge\Session\Middleware\StartSessionMiddleware;
-    use WPEmerge\Session\Middleware\ValidateSignature;
+    use WPEmerge\Session\Middleware\SessionMiddleware;
+    use WPEmerge\Middleware\ValidateSignature;
     use WPEmerge\Support\Arr;
 
     class SessionServiceProvider extends ServiceProvider
@@ -39,8 +40,9 @@
             }
 
             $this->bindConfig();
-            $this->bindSessionHandler();
-            $this->bindSessionStore();
+            $this->bindSessionDriver();
+            $this->bindSessionManager();
+            $this->bindSession();
             $this->bindSessionMiddleware();
             $this->bindCsrfMiddleware();
             $this->bindCsrfStore();
@@ -85,18 +87,14 @@
             ]);
 
             $this->config->extend('middleware.groups.global', [
-                StartSessionMiddleware::class,
-                ShareSessionWithView::class,
-            ]);
-
-            $this->config->extend('middleware.unique', [
+                SessionMiddleware::class,
                 ShareSessionWithView::class,
             ]);
 
 
         }
 
-        private function bindSessionStore()
+        private function bindSession()
         {
 
             $name = $this->config->get('session.cookie');
@@ -121,6 +119,8 @@
 
                 }
 
+                $this->container->instance(Session::class, $store);
+
                 return $store;
 
             });
@@ -128,7 +128,7 @@
 
         }
 
-        private function bindSessionHandler()
+        private function bindSessionDriver()
         {
 
             $this->container->singleton(SessionDriver::class, function () {
@@ -159,11 +159,10 @@
         private function bindSessionMiddleware()
         {
 
-            $this->container->singleton(StartSessionMiddleware::class, function () {
+            $this->container->singleton(SessionMiddleware::class, function () {
 
-                return new StartSessionMiddleware(
-                    $this->container->make(Session::class),
-                    $this->config->get('session')
+                return new SessionMiddleware(
+                    $this->container->make(SessionManager::class),
                 );
 
             });
@@ -230,7 +229,6 @@
             });
         }
 
-
         private function bindControllers()
         {
 
@@ -250,25 +248,49 @@
         {
 
             $this->config->extend('events.mapped', [
-                'wp_login' => NewLogin::class
+                'wp_login' => NewLogin::class,
+                'wp_logout' => NewLogout::class,
             ]);
 
             $this->config->extend('events.listeners', [
 
-                 NewLogin::class => [
+                NewLogin::class => [
 
-                     InvalidateOldSessions::class
+                    [SessionManager::class, 'migrateAfterLogin'],
 
-                 ]
+                ],
+
+                NewLogout::class => [
+
+                    [SessionManager::class, 'invalidateAfterLogout'],
+
+                ],
 
             ]);
 
-            $this->container->singleton(InvalidateOldSessions::class, function () {
+            $this->container->singleton(SessionManager::class, function () {
 
-                return new InvalidateOldSessions($this->config->get('session'));
+                return new SessionManager(
+                    $this->config->get('session'),
+                    $this->container->make(Session::class),
+                );
 
             });
 
+
+        }
+
+        private function bindSessionManager()
+        {
+
+            $this->container->singleton(SessionManager::class, function () {
+
+                return new SessionManager(
+                    $this->container->make(Session::class),
+                    $this->config->get('session')
+                );
+
+            });
 
         }
 

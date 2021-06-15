@@ -20,14 +20,18 @@
         public function isSatisfied(Request $request) : bool
         {
 
-            return parent::isSatisfied($request)
-                || $request->query('action') === $this->expectedAction();
+            return true;
+
+            // return parent::isSatisfied($request)
+            //     || $request->query('action') === $this->expectedAction();
 
 
         }
 
         public function getArguments(Request $request) : array
         {
+
+            return [];
 
             $parent = parent::getArguments($request);
 

@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session\Exceptions;
+    namespace WPEmerge\ExceptionHandling\Exceptions;
 
     use Throwable;
     use WPEmerge\ExceptionHandling\Exceptions\HttpException;

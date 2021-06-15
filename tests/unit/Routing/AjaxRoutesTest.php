@@ -177,54 +177,6 @@
 
         }
 
-        /** @test */
-        public function the_action_is_passed_to_the_route_handler()
-        {
-
-            $this->createRoutes(function () {
-
-                $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
-
-                    $this->router->post('bar_action')->handle(function ($request, $action) {
-
-                        return strtoupper($action);
-
-                    });
-
-                });
-
-            });
-
-            $ajax_request = $this->ajaxRequest('bar_action');
-            $this->runAndAssertOutput('BAR_ACTION', new IncomingAjaxRequest($ajax_request));
-
-        }
-
-        /** @test */
-        public function the_action_is_passed_to_the_route_handler_for_get_requests()
-        {
-
-            $this->createRoutes(function () {
-
-                $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
-
-                    $this->router->get('bar_action')->handle(function ($request, $action) {
-
-                        return strtoupper($action);
-
-                    });
-
-                });
-
-            });
-
-            $ajax_request = $this->ajaxRequest('bar_action', 'GET')
-                                 ->withParsedBody([])
-                                 ->withQueryParams(['action' => 'bar_action']);
-
-            $this->runAndAssertOutput('BAR_ACTION', new IncomingAjaxRequest($ajax_request));
-
-        }
 
         /** @test */
         public function ajax_routes_can_be_reversed()

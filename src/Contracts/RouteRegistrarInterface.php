@@ -16,7 +16,7 @@
          *
          * @return bool Indicate whether a global route file was loaded successfully.
          */
-        public function globalRoutes( ApplicationConfig $config) :bool;
+        public function apiRoutes( ApplicationConfig $config) :bool;
 
         public function standardRoutes( ApplicationConfig $config);
 

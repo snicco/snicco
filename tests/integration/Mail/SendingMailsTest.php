@@ -14,7 +14,7 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use WPEmerge\Mail\Mailable;
-    use WPEmerge\Session\Mail\ConfirmAuthMail;
+    use WPEmerge\Auth\Mail\ConfirmAuthMail;
 
     class SendingMailsTest extends IntegrationTest
     {

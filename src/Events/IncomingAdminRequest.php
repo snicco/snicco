@@ -8,8 +8,15 @@
 
 
 
+    use BetterWpHooks\Traits\DispatchesConditionally;
+    use BetterWpHooks\Traits\IsAction;
+    use WPEmerge\Facade\WP;
+
     class IncomingAdminRequest extends IncomingRequest {
 
 
+        use IsAction;
 
-	}
+
+
+    }

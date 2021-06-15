@@ -20,8 +20,9 @@
     use WPEmerge\Middleware\Core\ShareCookies;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
+    use WPEmerge\Session\Listeners\SessionManager;
     use WPEmerge\Session\Session;
-    use WPEmerge\Session\Middleware\StartSessionMiddleware;
+    use WPEmerge\Session\Middleware\SessionMiddleware;
     use WPEmerge\Support\VariableBag;
 
     class StartSessionMiddlewareTest extends UnitTest
@@ -82,20 +83,20 @@
 
         }
 
-        private function newMiddleware(Session $store = null, $gc_collection = [0,100]) : StartSessionMiddleware
+        private function newMiddleware(Session $session = null, $gc_collection = [0,100]) : SessionMiddleware
         {
 
-            $store = $store ?? $this->newSessionStore();
+            $session = $session ?? $this->newSession();
 
             $config = $this->config;
 
             $config['lottery'] = $gc_collection;
 
-            return new StartSessionMiddleware($store,  $config);
+            return new SessionMiddleware(new SessionManager($config, $session) );
 
         }
 
-        private function newSessionStore(string $cookie_name = 'test_session', $handler = null) : Session
+        private function newSession(string $cookie_name = 'test_session', $handler = null) : Session
         {
 
             $handler = $handler ?? new ArraySessionDriver(10);
@@ -143,7 +144,7 @@
             $handler->write($this->sessionId(), serialize(['foo' => 'bar']));
             $handler->write($this->anotherSessionId(), serialize(['foo' => 'baz']));
 
-            $store = $this->newSessionStore('test_session', $handler);
+            $store = $this->newSession('test_session', $handler);
 
             $response = $this->newMiddleware($store)->handle($this->request, $this->route_action);
 
@@ -160,7 +161,7 @@
             $handler = new ArraySessionDriver(10);
             $handler->write($this->anotherSessionId(), serialize(['foo' => 'bar']));
 
-            $store = $this->newSessionStore('test_session', $handler);
+            $store = $this->newSession('test_session', $handler);
 
             $response = $this->newMiddleware($store)->handle($this->request, $this->route_action);
 
@@ -176,7 +177,7 @@
             $handler = new ArraySessionDriver(10);
             $handler->write($this->sessionId(), serialize(['foo' => 'bar']) );
 
-            $store = $this->newSessionStore('test_session', $handler);
+            $store = $this->newSession('test_session', $handler);
 
             $this->newMiddleware($store)->handle($this->request, $this->route_action);
 
@@ -193,7 +194,7 @@
             $handler = new ArraySessionDriver(10);
             $handler->write($this->sessionId(), serialize(['foo' => 'bar'] ) );
 
-            $store = $this->newSessionStore('test_session', $handler);
+            $store = $this->newSession('test_session', $handler);
 
             $this->newMiddleware($store)->handle($this->request, $this->route_action);
 
@@ -216,7 +217,7 @@
             Carbon::setTestNow(Carbon::now()->addSeconds(120));
 
             $handler->write($this->sessionId(), serialize(['foo' => 'bar']));
-            $store = $this->newSessionStore('test_session', $handler);
+            $store = $this->newSession('test_session', $handler);
 
 
             $this->newMiddleware($store, [100,100])->handle($this->request, $this->route_action);
@@ -240,7 +241,7 @@
 
             $request = TestRequest::from('GET', 'foo');
 
-            $session = $this->newSessionStore();
+            $session = $this->newSession();
 
             $response = $pipeline
                 ->send($request)
@@ -272,7 +273,7 @@
             // This works because the session driver has an active session for the the provided cookie value.
             $driver = new ArraySessionDriver(10);
             $driver->write($this->sessionId(), serialize(['foo' => 'bar']));
-            $session = $this->newSessionStore('test_session', $driver);
+            $session = $this->newSession('test_session', $driver);
 
             $this->newMiddleware($session)->handle($this->request, $this->route_action);
 

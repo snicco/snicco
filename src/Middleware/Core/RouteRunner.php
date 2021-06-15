@@ -105,16 +105,7 @@
 
         }
 
-        /**
-         *
-         * In order to allow running global routes early on the init hook
-         * we need to rebind the request class for routes that run on template_include
-         * or admin_init.
-         *
-         * If we dont rebind the request we have to run all Middleware that decorates the request again.
-         *
-         * @param  Request  $request
-         */
+
         private function rebindRequest(Request $request)
         {
             $this->container->instance(Request::class, $request);

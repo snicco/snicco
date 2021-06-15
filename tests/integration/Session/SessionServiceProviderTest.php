@@ -22,7 +22,7 @@
     use WPEmerge\Session\SessionDriver;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Session\Session;
-    use WPEmerge\Session\Middleware\StartSessionMiddleware;
+    use WPEmerge\Session\Middleware\SessionMiddleware;
 
     class SessionServiceProviderTest extends IntegrationTest
     {
@@ -73,7 +73,7 @@
 
             $global = TestApp::config('middleware.groups.global');
 
-            $this->assertNotContains(StartSessionMiddleware::class, $global);
+            $this->assertNotContains(SessionMiddleware::class, $global);
 
 
         }
@@ -340,7 +340,7 @@
                 ],
             ]);
 
-            $this->assertContains(StartSessionMiddleware::class, TestApp::config('middleware.groups.global'));
+            $this->assertContains(SessionMiddleware::class, TestApp::config('middleware.groups.global'));
 
         }
 
@@ -527,28 +527,12 @@
 
             $global_middleware = TestApp::config('middleware.groups.global');
 
-            $this->assertContains(StartSessionMiddleware::class, $global_middleware);
+            $this->assertContains(SessionMiddleware::class, $global_middleware);
             $this->assertContains(ShareSessionWithView::class, $global_middleware);
 
         }
 
-        /** @test */
-        public function the_share_session_with_view_middleware_is_unique () {
 
-            $this->newTestApp([
-                'session' => [
-                    'enabled' => true,
-                ],
-                'providers' => [
-                    SessionServiceProvider::class,
-                ],
-            ]);
-
-            $unique_middleware = TestApp::config('middleware.unique');
-
-            $this->assertContains(ShareSessionWithView::class, $unique_middleware);
-
-        }
 
 
 

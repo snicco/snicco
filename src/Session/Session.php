@@ -40,7 +40,7 @@
         /**
          * @var bool
          */
-        private $active = false;
+        private $started = false;
 
         /**
          * @var array
@@ -79,11 +79,11 @@
 
             }
 
-            $this->active = true;
+            $this->started = true;
 
             $this->initial_attributes = $this->attributes;
 
-            return $this->active;
+            return $this->started;
 
         }
 
@@ -98,7 +98,6 @@
             );
 
 
-            $this->active = false;
         }
 
         public function wasChanged() : bool
@@ -313,9 +312,9 @@
             return true;
         }
 
-        public function isActive() : bool
+        public function isStarted() : bool
         {
-            return $this->active;
+            return $this->started;
         }
 
         public function getId() : string

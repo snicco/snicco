@@ -99,7 +99,7 @@
 
         }
 
-        public function domain(string $domain) : Cookie
+        public function domain(?string $domain) : Cookie
         {
 
             $this->properties['domain'] = $domain;

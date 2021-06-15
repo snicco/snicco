@@ -9,7 +9,7 @@
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\HasLottery;
+    use WPEmerge\Traits\HasLottery;
 
     abstract class MagicLink
     {
@@ -22,7 +22,7 @@
         /** @var Request */
         protected $request;
 
-        protected $lottery = [2, 100];
+        protected $lottery = [4, 100];
 
         public function setAppKey(string $app_key)
         {

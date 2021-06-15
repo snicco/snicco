@@ -25,8 +25,6 @@
 
         private $middleware_priority = [];
 
-        private $unique_middleware = [];
-
         private $run_count = 0;
 
         public function createFor(Route $route, Request $request) : array
@@ -42,12 +40,6 @@
 
             $middleware = $this->expandMiddleware($middleware);
             $middleware = $this->uniqueMiddleware($middleware);
-
-            $middleware = $this->run_count < 1
-                ? $middleware
-                : $this->onlyNonUnique($middleware);
-
-            $this->run_count++;
 
             return $this->sortMiddleware($middleware);
 
@@ -74,12 +66,6 @@
 
         }
 
-        public function withUniqueMiddleware ( array $unique_middleware) {
-
-            $this->unique_middleware =$unique_middleware;
-
-        }
-
         private function withGlobalMiddleware (Request $request) : bool
         {
 
@@ -87,15 +73,5 @@
 
         }
 
-        private function onlyNonUnique(array $middleware) : array
-        {
-
-            return collect($middleware)->reject(function (array $middleware) {
-
-                return in_array($middleware[0], $this->unique_middleware);
-
-            })->all();
-
-        }
 
     }

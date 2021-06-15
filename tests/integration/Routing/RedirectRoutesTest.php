@@ -17,8 +17,6 @@
     class RedirectRoutesTest extends IntegrationTest
     {
 
-
-
         /** @test */
         public function redirect_routes_are_run_on_the_init_hook_if_a_valid_redirect_file_is_provided () {
 
@@ -28,11 +26,12 @@
                 ]
             ]);
 
+            $this->registerRoutes();
             $this->rebindRequest(TestRequest::from('GET', '/location-a'));
 
             ob_start();
 
-            do_action('init');
+            apply_filters('template_include', 'wordpress.php');
 
             $this->assertSame('', ob_get_clean());
 
@@ -50,11 +49,12 @@
                 ]
             ]);
             ApplicationEvent::fake([ResponseSent::class]);
+            $this->registerRoutes();
             $this->rebindRequest(TestRequest::from('GET', '/location-a'));
 
             ob_start();
 
-            do_action('init');
+            apply_filters('template_include', 'wordpress.php');
 
             $this->assertSame('', ob_get_clean());
 
@@ -69,55 +69,5 @@
 
         }
 
-        /** @test */
-        public function non_redirect_routes_are_not_run_on_the_init_hook_even_if_the_route_would_have_matched () {
-
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR,
-                ]
-            ]);
-
-            $this->rebindRequest(TestRequest::from('GET', '/foo'));
-
-            ob_start();
-
-            do_action('init');
-
-            $this->assertSame('', ob_get_clean());
-            HeaderStack::assertHasNone();
-
-
-        }
-
-        /** @test */
-        public function if_no_redirect_route_matches_standard_routes_can_still_run_on_a_later_hook () {
-
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR,
-                ]
-            ]);
-            ApplicationEvent::fake([ResponseSent::class]);
-
-            $this->rebindRequest(TestRequest::from('GET', '/foo'));
-
-            ob_start();
-
-            do_action('init');
-
-            $this->assertSame('', ob_get_clean());
-            HeaderStack::assertHasNone();
-
-            ApplicationEvent::assertNotDispatched(ResponseSent::class);
-
-            ob_start();
-
-            apply_filters('template_include', 'wordpress_template');
-
-            $this->assertSame('foo', ob_get_clean());
-            HeaderStack::assertHasStatusCode(200);
-
-        }
 
     }

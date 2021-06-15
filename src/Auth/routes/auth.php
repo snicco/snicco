@@ -7,6 +7,8 @@
     use WPEmerge\Auth\Controllers\ForgotPasswordController;
     use WPEmerge\Auth\Controllers\ResetPasswordController;
     use WPEmerge\Routing\Router;
+    use WPEmerge\Session\Controllers\ConfirmAuthMagicLinkController;
+    use WPEmerge\Session\Controllers\LogoutController;
 
     /** @var Router $router */
 
@@ -40,6 +42,31 @@
            ->name('reset.password.show');
 
 
+    $router->prefix('auth')->name('auth.confirm')
+           ->middleware('secure')
+           ->group(function ($router) {
+
+               $router->middleware(['auth', 'auth.unconfirmed'])->group(function ($router)  {
+
+                   $router->get('confirm', [ConfirmAuthController::class, 'show'])
+                          ->name('show');
+
+                   $router->post('confirm', [ConfirmAuthController::class, 'send'])
+                          ->name('send')
+                          ->middleware('csrf');
+
+               });
+
+               $router->get('confirm/{user_id}', [ConfirmAuthMagicLinkController::class, 'create'])
+                      ->name('magic-login')
+                      ->middleware(['signed', 'auth.unconfirmed']);
+
+           });
+
+    $router->get('/auth/logout/{user_id}', LogoutController::class)
+           ->middleware('signed')
+           ->name('auth.logout')
+           ->andAlphaNumerical('user_id');
 
 
 

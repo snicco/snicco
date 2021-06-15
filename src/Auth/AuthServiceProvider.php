@@ -6,16 +6,20 @@
 
     namespace WPEmerge\Auth;
 
+    use WPEmerge\Auth\Events\GenerateLoginUrl;
+    use WPEmerge\Auth\Events\GenerateLogoutUrl;
+    use WPEmerge\Auth\Listeners\WpLoginRedirectManager;
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Auth\Controllers\ForgotPasswordController;
     use WPEmerge\Auth\Controllers\ResetPasswordController;
+    use WPEmerge\Events\WpInit;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Routing\UrlGenerator;
 
-    class EnhancedAuthServiceProvider extends ServiceProvider
+    class AuthServiceProvider extends ServiceProvider
     {
 
         public function register() : void
@@ -41,37 +45,33 @@
         private function bindEvents()
         {
 
-            add_filter('login_url', function ($url, $redirect_to) {
+            $this->config->extend('events.listeners', [
+                WpInit::class => [
 
-                /** @var UrlGenerator $url_generator */
-                $url_generator = $this->container->make(UrlGenerator::class);
+                    [WpLoginRedirectManager::class, 'redirect']
 
-                $query = [];
+                ],
+                GenerateLoginUrl::class => [
 
-                if ( $redirect_to !== '' ) {
-                    $query['redirect_to'] = $redirect_to;
-                }
+                    [WpLoginRedirectManager::class, 'loginUrl']
 
-                return $url_generator->toRoute('login', [
-                    'query' => $query
-                ]);
+                ],
+                GenerateLogoutUrl::class => [
+                    [WpLoginRedirectManager::class, 'logoutUrl']
+                ]
+            ]);
 
+            $this->config->extend('events.last', [
 
-            }, 10, 3);
+                'login_url' => [
+                    GenerateLoginUrl::class
+                ],
+                'logout_url' => [
+                    GenerateLogoutUrl::class
+                ]
 
-            add_filter('logout_url', function ($url, $redirect_url) {
+            ]);
 
-                /** @var UrlGenerator $url_generator */
-                $url_generator = $this->container->make(UrlGenerator::class);
-
-                $redirect = ! empty($redirect_url) ? $redirect_url : '/';
-
-                $url = $url_generator->signedLogout(WP::userId(), $redirect);
-
-                return esc_html( $url );
-
-
-            }, 10, 3);
 
         }
 
@@ -115,8 +115,6 @@
             });
 
         }
-
-
 
 
     }

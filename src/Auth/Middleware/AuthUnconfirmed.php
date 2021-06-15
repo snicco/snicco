@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session\Middleware;
+    namespace WPEmerge\Auth\Middleware;
 
     use Carbon\Carbon;
     use WPEmerge\Contracts\Middleware;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\Session;
 
-    class ConfirmAuth extends Middleware
+    class AuthUnconfirmed extends Middleware
     {
 
         /**
@@ -22,9 +22,15 @@
          */
         private $response_factory;
 
-        public function __construct(ResponseFactory $response_factory)
+        /**
+         * @var string
+         */
+        private $url;
+
+        public function __construct(ResponseFactory $response_factory, $url = 'admin')
         {
             $this->response_factory = $response_factory;
+            $this->url = $url;
         }
 
         public function handle(Request $request, Delegate $next)
@@ -32,17 +38,14 @@
 
             $session = $request->session();
 
-            if ( ! $session->hasValidAuthConfirmToken() ) {
+            if ( $session->hasValidAuthConfirmToken() ) {
 
-                if ( ! $session->has('auth.confirm.email.count') ) {
 
-                    $session->invalidate();
+                $url = ( $this->url !== 'admin')
+                    ? $this->url
+                    : $session->getIntendedUrl ( WP::adminUrl() );;
 
-                }
-
-                $session->setIntendedUrl($request->fullUrl());
-
-                return $this->response_factory->redirect()->to('/auth/confirm');
+                return $this->response_factory->redirect()->to($url);
 
             }
 

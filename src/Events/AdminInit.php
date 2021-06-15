@@ -12,12 +12,11 @@
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
 
-    class AdminAreaInit extends ApplicationEvent
+    class AdminInit extends ApplicationEvent
     {
 
         use IsAction;
         use DispatchesConditionally;
-
 
         /**
          * @var Request
@@ -25,7 +24,7 @@
         public $request;
 
         /**
-         * @var string|null
+         * @var string
          */
         public $hook;
 
@@ -36,14 +35,18 @@
 
             $this->hook = WP::pluginPageHook();
 
+            if ( ! $this->hook ) {
+
+                global $pagenow;
+                $this->hook = $pagenow;
+
+            }
+
         }
 
         public function shouldDispatch() : bool
         {
-            return WP::isAdmin() && ! WP::isAdminAjax() && $this->hook !== null;
+            return WP::isAdmin() && ! WP::isAdminAjax();
         }
-
-
-
 
     }
