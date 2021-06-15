@@ -6,8 +6,8 @@
 
     namespace WPEmerge\Validation;
 
+    use Respect\Validation\Factory;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Session\Middleware\ShareSessionWithView;
     use WPEmerge\Validation\Middleware\ShareValidatorWithRequest;
 
     class ValidationServiceProvider extends ServiceProvider
@@ -17,6 +17,7 @@
         {
             $this->bindConfig();
             $this->bindValidator();
+            $this->addRuleNamespace();
         }
 
         function bootstrap() : void
@@ -43,6 +44,15 @@
             $this->config->extend('validation.messages', []);
             $this->config->extend('middleware.groups.global', [ShareValidatorWithRequest::class]);
             $this->config->extend('middleware.unique', [ShareValidatorWithRequest::class]);
+        }
+
+        private function addRuleNamespace()
+        {
+            Factory::setDefaultInstance(
+                (new Factory())
+                    ->withRuleNamespace('WPEmerge\Validation\Rules')
+                    ->withExceptionNamespace('WPEmerge\Validation\Exceptions')
+            );
         }
 
     }

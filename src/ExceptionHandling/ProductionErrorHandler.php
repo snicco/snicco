@@ -234,7 +234,7 @@
 
             }
 
-            $response = $this->response->redirect()->back();
+            $response = $this->response->redirect()->previous($request);
 
             if ( ! $response->hasSession()) {
 

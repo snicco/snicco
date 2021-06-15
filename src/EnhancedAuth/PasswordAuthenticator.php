@@ -41,7 +41,12 @@
 
                 do_action( 'wp_login_failed', $username, $user );
 
-                throw new FailedAuthenticationException($this->failure_message, ['username' => $username]);
+                throw new FailedAuthenticationException($this->failure_message,
+                    [
+                        'username' => $username,
+                        'remember_me' => $request->input('remember_me', 'off')
+                    ]
+                );
 
 
             }
@@ -50,5 +55,10 @@
 
         }
 
+
+        public function view() : string
+        {
+            return 'auth-login-password';
+        }
 
     }

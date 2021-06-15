@@ -125,4 +125,16 @@
 
         }
 
+        protected function extendViews($views)
+        {
+
+            $views = Arr::wrap($views);
+
+            $dir = __DIR__.DIRECTORY_SEPARATOR.'views';
+            $old_views = $this->config->get('views', []);
+            $views = array_merge($old_views, $views);
+            $this->config->set('views', $views);
+
+        }
+
     }

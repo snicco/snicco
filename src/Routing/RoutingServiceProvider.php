@@ -8,6 +8,7 @@
 
     use Symfony\Component\Finder\Finder;
     use WPEmerge\Contracts\AbstractRouteCollection;
+    use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Contracts\RouteUrlGenerator;
@@ -73,6 +74,7 @@
 
             $this->bindRouteRegistrar();
 
+            $this->bindMagicLink();
 
         }
 
@@ -194,7 +196,10 @@
 
             $this->container->singleton(UrlGenerator::class, function () {
 
-                $generator = new UrlGenerator($this->container->make(RouteUrlGenerator::class));
+                $generator = new UrlGenerator(
+                    $this->container->make(RouteUrlGenerator::class),
+                    $this->container->make(MagicLink::class)
+                );
 
                 $generator->setRequestResolver(function () {
 
@@ -238,6 +243,14 @@
             });
         }
 
+        private function bindMagicLink()
+        {
+            $this->container->singleton(MagicLink::class, function () {
+
+                return new ArrayMagicLink();
+
+            });
+        }
 
 
     }

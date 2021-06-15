@@ -10,6 +10,8 @@
     use Illuminate\Support\Arr;
     use Illuminate\Support\InteractsWithTime;
     use WPEmerge\Contracts\RouteUrlGenerator;
+    use WPEmerge\EnhancedAuth\DatabaseMagicLink;
+    use WPEmerge\Contracts\MagicLink;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
@@ -39,10 +41,17 @@
          */
         private $request_resolver;
 
-        public function __construct(RouteUrlGenerator $route_url)
+        /**
+         * @var MagicLink
+         */
+        private $magic_link;
+
+        public function __construct(RouteUrlGenerator $route_url, MagicLink $magic_link)
         {
 
             $this->route_url = $route_url;
+            $this->magic_link = $magic_link;
+
         }
 
         public function setAppKeyResolver(callable $key_resolver)
@@ -96,17 +105,16 @@
                 throw new ConfigurationException('Signed urls do not work with absolute urls.');
             }
 
-            $app_key = call_user_func($this->app_key_resolver);
-
             $expires = $this->availableAt($expiration);
 
             $query = array_merge( ['expires'=> $expires ], $query);
 
             $url_with_expired_query_string = $this->to($path, $query, true, $absolute);
 
-            $signature = hash_hmac('sha256', $url_with_expired_query_string, $app_key);
+            $signature = $this->magic_link->create($url_with_expired_query_string, $expires);
 
-            return $this->to($path, array_merge($query, ['signature'=>$signature]), true , $absolute);
+            return $this->to($path, array_merge($query, ['signature'=>$signature] ), true , $absolute);
+
 
         }
 
@@ -136,20 +144,6 @@
 
         }
 
-        public function hasValidSignature(Request $request, $absolute = true ) : bool
-        {
-
-            return $this->hasCorrectSignature($request, $absolute) && ! $this->signatureHasExpired($request);
-
-        }
-
-        public function hasValidRelativeSignature(Request $request ) : bool
-        {
-
-            return $this->hasValidSignature($request, false);
-
-        }
-
         public function secure(string $path, array $query = []) : string
         {
             return $this->to($path, $query, true, true);
@@ -166,7 +160,7 @@
 
         }
 
-        public function previous(string $fallback = '', string $session_url = '') : string
+        public function back(string $fallback = '', string $session_url = '') : string
         {
 
             $referrer = $this->getRequest()->getHeaderLine('referer');
@@ -194,36 +188,6 @@
         public function toLogin(string $redirect_on_login = '', bool $reauth = false) : string
         {
             return $this->to( WP::loginUrl($redirect_on_login, $reauth) );
-        }
-
-        private function signatureHasExpired(Request $request) : bool
-        {
-            $expires = $request->query('expires', null );
-
-            if ( ! $expires ) {
-                return false;
-            }
-
-            return Carbon::now()->getTimestamp() > $expires;
-
-        }
-
-        private function hasCorrectSignature(Request $request, $absolute = true) : bool
-        {
-
-            $url = $absolute ? $request->url() : $request->path();
-
-            $query_without_signature = preg_replace(
-                '/(^|&)signature=[^&]+/',
-                    '',
-                    $request->queryString());
-
-            $query_without_signature = ltrim($query_without_signature, '&');
-
-            $signature = hash_hmac('sha256', $url.'?'.$query_without_signature, call_user_func($this->app_key_resolver));
-
-            return hash_equals($signature, $request->query('signature', ''));
-
         }
 
         private function removeFragment(string &$uri)

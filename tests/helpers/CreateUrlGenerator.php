@@ -8,6 +8,7 @@
 
     use Tests\stubs\TestRequest;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Routing\ArrayMagicLink;
     use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
     use WPEmerge\Routing\UrlGenerator;
 
@@ -23,7 +24,7 @@
                 $this->routes = $routes;
             }
 
-            $generator = new UrlGenerator(new FastRouteUrlGenerator($this->routes));
+            $generator = new UrlGenerator(new FastRouteUrlGenerator($this->routes), new ArrayMagicLink());
 
             $generator->setRequestResolver(function () use ($request ){
 

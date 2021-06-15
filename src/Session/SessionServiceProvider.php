@@ -49,7 +49,7 @@
             $this->bindEncryptor();
             $this->bindControllers();
             $this->bindEvents();
-            $this->extendViews();
+            $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views');
             $this->extendRoutes(__DIR__.DIRECTORY_SEPARATOR.'routes');
 
         }
@@ -230,15 +230,6 @@
             });
         }
 
-        private function extendViews()
-        {
-
-            $dir = __DIR__.DIRECTORY_SEPARATOR.'views';
-            $views = $this->config->get('views', []);
-            $views = array_merge($views, [$dir]);
-            $this->config->set('views', $views);
-
-        }
 
         private function bindControllers()
         {
