@@ -8,13 +8,13 @@
 
     use Illuminate\Support\InteractsWithTime;
     use WPEmerge\Contracts\MagicLink;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\HasLottery;
 
     class DatabaseMagicLink extends MagicLink
     {
 
         use InteractsWithTime;
-        use HasLottery;
 
         /**
          * @var string
@@ -26,12 +26,7 @@
          */
         private $wpdb;
 
-        /**
-         * @var int
-         */
-        private $grace_period_in_ms;
-
-        public function __construct(string $table, $grace_period_in_ms = 500, array $lottery = [2, 100])
+        public function __construct(string $table, array $lottery = [2, 100])
         {
 
             global $wpdb;
@@ -39,16 +34,15 @@
             $this->wpdb = $wpdb;
             $this->table = $this->wpdb->prefix.$table;
             $this->lottery = $lottery;
-            $this->grace_period_in_ms = $grace_period_in_ms;
 
         }
 
-        public function notUsed(string $url) : bool
+        public function notUsed(Request $request) : bool
         {
 
-            $hash = md5($url);
+            $hash = md5($request->query('signature', ''));
 
-            $query = $this->wpdb->prepare("SELECT EXISTS(SELECT 1 FROM $this->table WHERE link = %s LIMIT 1)", $hash);
+            $query = $this->wpdb->prepare("SELECT EXISTS(SELECT 1 FROM $this->table WHERE signature = %s LIMIT 1)", $hash);
 
             $exists = $this->wpdb->get_var($query);
 
@@ -78,11 +72,9 @@
         public function invalidate(string $url)
         {
 
-
             $hash = md5($url);
 
             $this->wpdb->delete($this->table, ['link' => $hash], ['%s']);
-
 
         }
 
@@ -97,5 +89,20 @@
 
         }
 
+        public function destroy($signature)
+        {
+            $hash = md5($signature);
+
+            $this->wpdb->delete($this->table, ['signature' => $hash], ['%s']);
+        }
+
+        public function store(string $signature, int $expires) : bool
+        {
+
+            $query = $this->wpdb->prepare("INSERT INTO `$this->table` (`signature`, `expires`) VALUES(%s, %d)", md5($signature), $expires);
+
+            return $this->wpdb->query($query) !== false;
+
+        }
 
     }

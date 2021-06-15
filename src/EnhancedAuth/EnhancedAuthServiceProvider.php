@@ -31,7 +31,6 @@
 
             $this->bindForgetPasswordController();
             $this->bindPasswordResetController();
-            $this->bindDatabaseMagicLink();
 
         }
 
@@ -117,18 +116,7 @@
 
         }
 
-        private function bindDatabaseMagicLink()
-        {
-            $this->container->singleton(MagicLink::class, function () {
 
-                $magic_link = new DatabaseMagicLink('magic_links' );
-                $magic_link->setRequest($this->container->make(Request::class));
-                $magic_link->setAppKey($this->appKey());
-
-                return $magic_link;
-
-            });
-        }
 
 
     }
