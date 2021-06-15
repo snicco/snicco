@@ -50,34 +50,6 @@
 
         }
 
-        public function create(string $url, int $expires) : string
-        {
-
-            $signed_url = $this->hash($url);
-
-            if ($this->hitsLottery($this->lottery)) {
-
-                $this->gc();
-
-            }
-
-            $query = $this->wpdb->prepare("INSERT INTO `$this->table` (`link`, `signature`) VALUES(%s, %d)", md5($signed_url), $expires);
-
-            $this->wpdb->query($query);
-
-            return $signed_url;
-
-        }
-
-        public function invalidate(string $url)
-        {
-
-            $hash = md5($url);
-
-            $this->wpdb->delete($this->table, ['link' => $hash], ['%s']);
-
-        }
-
         public function gc() : bool
         {
 

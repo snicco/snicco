@@ -56,6 +56,12 @@
         public function create(string $url, int $expires) : string
         {
 
+            $signature = wp_cache_get($url . $this->request->userAgent() ,'magic_links');
+
+            if ( $signature !== false ) {
+                return $signature;
+            }
+
             $signature = $this->hash($url);
 
             if ($this->hitsLottery($this->lottery)) {
@@ -65,6 +71,8 @@
             }
 
             $stored = $this->store($signature, $expires);
+
+            wp_cache_add($url . $this->request->userAgent(), $signature, 'magic_links', $expires);
 
             if ( ! $stored ) {
                 throw new \RuntimeException('Magic link could not be stored');
