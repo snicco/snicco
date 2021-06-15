@@ -12,6 +12,7 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
+    use WPEmerge\Auth\AuthServiceProvider;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\SessionServiceProvider;
 
@@ -31,7 +32,7 @@
 
             $config = TEST_CONFIG;
 
-            $config['providers'] = [SessionServiceProvider::class];
+            $config['providers'] = [SessionServiceProvider::class, AuthServiceProvider::class];
             $config['session'] = [
                 'enabled' => true,
                 'driver' => 'array',

@@ -38,7 +38,8 @@
 
             if ( $valid ) {
 
-                $this->magic_link->invalidate($request->fullUrl());
+                /** @todo find a way to delete the magic link for others but still allow the user access to the route until expiration. */
+                // $this->magic_link->invalidate($request->fullUrl());
 
                 return $next($request);
 

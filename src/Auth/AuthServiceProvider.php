@@ -39,6 +39,8 @@
 
             $this->bindControllers();
 
+            $this->bindWpSessionToken();
+
         }
 
         public function bootstrap() : void
@@ -123,11 +125,24 @@
         private function bindConfig()
         {
 
+
             $this->config->extend('middleware.aliases', [
                 'auth.confirmed' => ConfirmAuth::class,
                 'auth.unconfirmed' => AuthUnconfirmed::class,
             ]);
         }
+
+        private function bindWpSessionToken()
+        {
+
+            // add_filter('session_token_manager', function () {
+            //
+            //     return WpSessionToken::class;
+            //
+            // });
+
+        }
+
 
 
     }

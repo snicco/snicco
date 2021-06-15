@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration\Session;
+    namespace Tests\integration\Auth;
 
     use Illuminate\Support\Carbon;
     use Tests\helpers\InteractsWithSessionDriver;
@@ -13,6 +13,7 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
+    use WPEmerge\Auth\AuthServiceProvider;
     use WPEmerge\ExceptionHandling\Exceptions\NotFoundException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Routing\UrlGenerator;
@@ -51,6 +52,7 @@
                 ],
                 'providers' => [
                     SessionServiceProvider::class,
+                    AuthServiceProvider::class
                 ],
                 'exception_handling' => [
                     'enable' => false,

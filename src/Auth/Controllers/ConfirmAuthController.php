@@ -88,12 +88,12 @@
         public function send(Request $request, MailBuilder $mail) : Response
         {
 
-            if ( ! $this->hasLeftAttemptsToInputCorrectEmail()) {
+            if ( ! $this->hasLeftAttemptsToInputCorrectEmail() ) {
 
                 $this->session->invalidate();
                 WP::logout();
 
-                return $this->response_factory->redirectToLogin(true);
+                return $this->response_factory->redirectToLogin(true, $request->fullUrl());
 
             }
 

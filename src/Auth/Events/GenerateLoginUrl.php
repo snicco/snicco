@@ -17,7 +17,7 @@
          */
         public $redirect_to;
 
-        public function __construct(string $redirect_to = null )
+        public function __construct(string $url, string $redirect_to = null )
         {
 
             $this->redirect_to = $redirect_to ?? WP::adminUrl();

@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration\Session;
+    namespace Tests\integration\Auth;
 
     use Mockery;
     use Tests\helpers\CreateDefaultWpApiMocks;
@@ -13,6 +13,7 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
+    use WPEmerge\Auth\AuthServiceProvider;
     use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Facade\WP;
     use WPEmerge\Routing\RouteRegistrar;
@@ -41,6 +42,7 @@
                 ],
                 'providers' => [
                     SessionServiceProvider::class,
+                    AuthServiceProvider::class
                 ],
             ]);
 

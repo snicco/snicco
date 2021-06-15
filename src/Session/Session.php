@@ -343,6 +343,7 @@
             return $this;
 
         }
+
         public function isValidId(string $id) : bool
         {
 
@@ -489,7 +490,6 @@
         {
             return $this->loaded_data_from_handler !== [];
         }
-
 
 
     }

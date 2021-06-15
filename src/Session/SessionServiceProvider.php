@@ -26,7 +26,6 @@
     use WPEmerge\Support\Arr;
 
     class SessionServiceProvider extends ServiceProvider
-
     {
 
         public function register() : void
@@ -73,16 +72,13 @@
             $this->config->extend('session.encrypt', false);
             $this->config->extend('session.auth_confirmed_lifetime', 180);
             $this->config->extend('session.auth_confirm_on_login', true);
-
             $this->config->extend('middleware.aliases', [
                 'csrf' => CsrfMiddleware::class,
             ]);
-
             $this->config->extend('middleware.groups.global', [
                 SessionMiddleware::class,
                 ShareSessionWithView::class,
             ]);
-
 
         }
 
@@ -224,8 +220,11 @@
         private function bindEvents()
         {
 
-            if (class_exists(AuthServiceProvider::class, false)) {
+
+            if ( in_array(AuthServiceProvider::class, $this->config->get('providers', []))) {
+
                 return;
+
             }
 
             $this->config->extend('events.mapped', [

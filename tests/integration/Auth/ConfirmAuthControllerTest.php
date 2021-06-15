@@ -134,7 +134,7 @@
 
             $this->assertOutputNotContains('confirmation email', $this->getRequest());
 
-            $expected_redirect_url = '/wp-login.php?redirect_to=https%3A%2F%2Ffoo.com%2Fauth%2Fconfirm&reauth=1';
+            $expected_redirect_url = 'https://foo.com/login?redirect_to=https%3A%2F%2Ffoo.com%2Fauth%2Fconfirm';
 
             HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $expected_redirect_url);
@@ -219,7 +219,7 @@
             // this failed attempt will log the user out.
             $this->assertOutput('', $post_request);
             HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertHas('Location', WP::loginUrl());
+            HeaderStack::assertHas('Location', 'https://foo.com/login?redirect_to=https%3A%2F%2Ffoo.com%2Fauth%2Fconfirm');
             HeaderStack::reset();
 
             $this->assertUserLoggedOut();
@@ -252,7 +252,7 @@
 
             $this->assertOutput('', $post_request);
             HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertHas('Location', WP::loginUrl());
+            HeaderStack::assertHas('Location', 'https://foo.com/login?redirect_to=https%3A%2F%2Ffoo.com%2Fauth%2Fconfirm');
 
 
             $this->assertSame('', $this->readFromDriver($this->testSessionId()));
