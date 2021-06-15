@@ -57,7 +57,7 @@
             return $this->withAddedHeader('X-Robots-Tag', $value);
         }
 
-        protected function new(ResponseInterface $new_psr_response) : Response
+        protected function new(ResponseInterface $new_psr_response) : self
         {
 
             $new = clone $this;

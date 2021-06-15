@@ -6,36 +6,42 @@
 
     namespace WPEmerge\Session\Middleware;
 
+    use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\Exceptions\InvalidSignatureException;
 
     class ValidateSignature extends Middleware
     {
 
         /**
-         * @var UrlGenerator
-         */
-        private $url_generator;
-        /**
          * @var string
          */
         private $type;
 
-        public function __construct(UrlGenerator $url_generator, string $type = 'absolute')
+        /**
+         * @var MagicLink
+         */
+        private $magic_link;
+
+        public function __construct(MagicLink $magic_link, string $type = 'absolute')
         {
-            $this->url_generator = $url_generator;
             $this->type = $type;
+            $this->magic_link = $magic_link;
         }
 
         public function handle(Request $request, Delegate $next)
         {
 
-            if ( $this->url_generator->hasValidSignature($request, $this->type !== 'relative') ) {
+            $valid = $this->magic_link->hasValidSignature($request, $this->type !== 'relative');
+
+            if ( $valid ) {
+
+                $this->magic_link->invalidate($request->fullUrl());
 
                 return $next($request);
+
 
             }
 

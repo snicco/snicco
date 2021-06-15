@@ -57,6 +57,28 @@
             return parent::intended($request, $fallback, $status);
         }
 
+        public function back(  int $status = 302, string $fallback = '') : RedirectResponse
+        {
+
+            $previous_url = $this->generator->back($fallback);
+
+            return $this->createRedirectResponse($previous_url, $status);
+
+        }
+
+
+        public function previous(Request $request, int $status = 302, string $fallback = '') : RedirectResponse
+        {
+            $path = $this->session->getPreviousUrl($fallback);
+
+            if ($path !== '') {
+                return $this->createRedirectResponse($path, $status);
+            }
+
+            return parent::previous($request, $status, $fallback);
+        }
+
+
         /**
          * Create a redirect response to the given path and store the intended url in the session.
          */
@@ -67,7 +89,7 @@
 
             $intended = $request->getMethod() === 'GET' && ! $request->isAjax()
                 ? $request->fullUrl()
-                : $this->generator->previous('/', $session->getPreviousUrl('/'));
+                : $this->generator->back('/', $session->getPreviousUrl('/'));
 
             if ($intended) {
 

@@ -124,6 +124,12 @@
 
         }
 
+        public function userAgent() {
+
+            return substr($this->getHeaderLine('User-Agent'), 0, 500);
+
+        }
+
         public function path() : string
         {
             return $this->getUri()->getPath();
@@ -261,6 +267,7 @@
             return $this->loadingScript() === 'index.php';
 
         }
+
 
 
     }

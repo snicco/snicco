@@ -39,8 +39,6 @@
             }
 
             $this->bindConfig();
-            $this->extendViews();
-            $this->extendRoutes();
             $this->bindSessionHandler();
             $this->bindSessionStore();
             $this->bindSessionMiddleware();
@@ -51,6 +49,8 @@
             $this->bindEncryptor();
             $this->bindControllers();
             $this->bindEvents();
+            $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views');
+            $this->extendRoutes(__DIR__.DIRECTORY_SEPARATOR.'routes');
 
         }
 
@@ -230,27 +230,6 @@
             });
         }
 
-        private function extendRoutes()
-        {
-
-            $routes = Arr::wrap($this->config->get('routing.definitions'));
-
-            $vendor_routes_dir = __DIR__.DIRECTORY_SEPARATOR.'routes';
-
-            $routes = array_merge($routes, Arr::wrap($vendor_routes_dir));
-
-            $this->config->set('routing.definitions', $routes);
-        }
-
-        private function extendViews()
-        {
-
-            $dir = __DIR__.DIRECTORY_SEPARATOR.'views';
-            $views = $this->config->get('views', []);
-            $views = array_merge($views, [$dir]);
-            $this->config->set('views', $views);
-
-        }
 
         private function bindControllers()
         {

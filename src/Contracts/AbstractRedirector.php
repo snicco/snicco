@@ -7,6 +7,7 @@
     namespace WPEmerge\Contracts;
 
     use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
+    use Respect\Stringifier\Quoters\CodeQuoter;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Responses\RedirectResponse;
@@ -49,7 +50,7 @@
 
         }
 
-        public function toRoute(string $name, int $status, array $arguments = [], bool $secure = true, bool $absolute = true ) : RedirectResponse
+        public function toRoute(string $name, int $status =302, array $arguments = [], bool $secure = true, bool $absolute = true ) : RedirectResponse
         {
 
             return $this->to(
@@ -112,10 +113,10 @@
             return $this->createRedirectResponse($this->generator->current(), $status);
         }
 
-        public function back( int $status = 302, string $fallback = '') : RedirectResponse
+        public function back(  int $status = 302, string $fallback = '') : RedirectResponse
         {
 
-            $previous_url = $this->generator->previous($fallback);
+            $previous_url = $this->generator->back($fallback);
 
             return $this->createRedirectResponse($previous_url, $status);
 
@@ -136,6 +137,11 @@
 
             return $this->to('/', $status);
 
+        }
+
+        public function previous(Request $request, int $status = 302, string $fallback = '') : RedirectResponse
+        {
+            return $this->back($status, $fallback);
         }
 
         protected function validateStatusCode (int $status_code){

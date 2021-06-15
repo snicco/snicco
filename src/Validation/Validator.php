@@ -222,7 +222,7 @@
 
             }
 
-            return $message;
+            return str_replace('"', '',$message);
 
         }
 

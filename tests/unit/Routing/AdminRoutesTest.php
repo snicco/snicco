@@ -9,6 +9,7 @@
     use Mockery;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
+    use Tests\helpers\CreateUrlGenerator;
     use Tests\UnitTest;
     use Tests\helpers\CreatesWpUrls;
     use WPEmerge\Application\ApplicationEvent;
@@ -25,6 +26,7 @@
         use CreateTestSubjects;
         use CreatesWpUrls;
         use CreateDefaultWpApiMocks;
+        use CreateUrlGenerator;
 
         private $router;
 
@@ -235,7 +237,7 @@
 
             });
 
-            $url = (new UrlGenerator(new FastRouteUrlGenerator($this->routes)))->toRoute('admin.foo');
+            $url = $this->newUrlGenerator()->toRoute('admin.foo');
             $this->assertSame($this->adminUrlTo('foo'), $url);
 
 
