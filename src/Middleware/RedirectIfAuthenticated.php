@@ -34,7 +34,7 @@
 
 			if ( WP::isUserLoggedIn() ) {
 
-				$url = $this->url ?? WP::homeUrl( '', $request->getUri()->getScheme() );
+				$url = $this->url ?? WP::homeUrl( '', 'https' );
 
                 if ($request->isAjax()) {
 

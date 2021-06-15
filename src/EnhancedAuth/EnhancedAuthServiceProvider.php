@@ -6,8 +6,13 @@
 
     namespace WPEmerge\EnhancedAuth;
 
+    use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Contracts\ServiceProvider;
+    use WPEmerge\EnhancedAuth\Controllers\ForgotPasswordController;
+    use WPEmerge\EnhancedAuth\Controllers\ResetPasswordController;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Routing\UrlGenerator;
 
     class EnhancedAuthServiceProvider extends ServiceProvider
@@ -22,18 +27,22 @@
 
             $this->bindEvents();
 
+            $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views');
+
+            $this->bindForgetPasswordController();
+            $this->bindPasswordResetController();
+            $this->bindDatabaseMagicLink();
 
         }
 
-
-        function bootstrap() : void
+        public function bootstrap() : void
         {
         }
 
         private function bindEvents()
         {
 
-            add_filter('login_url', function ($url, $redirect_to, $force_auth) {
+            add_filter('login_url', function ($url, $redirect_to) {
 
                 /** @var UrlGenerator $url_generator */
                 $url_generator = $this->container->make(UrlGenerator::class);
@@ -42,10 +51,6 @@
 
                 if ( $redirect_to !== '' ) {
                     $query['redirect_to'] = $redirect_to;
-                }
-
-                if ( $force_auth ) {
-                    $query['force_auth'] = '1';
                 }
 
                 return $url_generator->toRoute('login', [
@@ -81,5 +86,49 @@
             });
 
         }
+
+        private function bindForgetPasswordController()
+        {
+
+            $this->container->singleton(ForgotPasswordController::class, function () {
+
+
+                return new ForgotPasswordController(
+                    $this->container->make(UrlGenerator::class),
+                    $this->appKey(),
+                );
+
+            });
+
+        }
+
+        private function bindPasswordResetController()
+        {
+            $this->container->singleton(ResetPasswordController::class, function () {
+
+
+                return new ResetPasswordController(
+                    $this->container->make(UrlGenerator::class),
+                    $this->container->make(ResponseFactory::class),
+                    $this->appKey(),
+                );
+
+            });
+
+        }
+
+        private function bindDatabaseMagicLink()
+        {
+            $this->container->singleton(MagicLink::class, function () {
+
+                $magic_link = new DatabaseMagicLink('magic_links' );
+                $magic_link->setRequest($this->container->make(Request::class));
+                $magic_link->setAppKey($this->appKey());
+
+                return $magic_link;
+
+            });
+        }
+
 
     }

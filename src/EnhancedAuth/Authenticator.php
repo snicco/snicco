@@ -21,5 +21,7 @@
          */
         public function authenticate(Request $request) : WP_User;
 
+        public function view() :string;
+
 
     }

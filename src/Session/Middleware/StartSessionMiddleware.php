@@ -17,10 +17,13 @@
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\Responses\InvalidResponse;
     use WPEmerge\Http\Responses\NullResponse;
+    use WPEmerge\Session\HasLottery;
     use WPEmerge\Session\Session;
 
     class StartSessionMiddleware extends Middleware
     {
+
+        use HasLottery;
 
         /**
          * @var Session
@@ -178,7 +181,8 @@
         private function configHitsLottery(array $lottery) : bool
         {
 
-            return random_int(1, $lottery[1]) <= $lottery[0];
+            return $this->hitsLottery($lottery);
+
         }
 
         private function getSessionLifetimeInSeconds()

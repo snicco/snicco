@@ -11,10 +11,10 @@
 
         protected $defaultTemplates = [
             self::MODE_DEFAULT => [
-                self::STANDARD => '{{compare_to}} must be equal to {{name}}',
+                self::STANDARD => '{{key}} must be equal to {{compare_to}}',
             ],
             self::MODE_NEGATIVE => [
-                self::STANDARD => '{{compare_to}} must be different than {{name}}',
+                self::STANDARD => '{{key}} must be different than {{compare_to}}',
             ],
         ];
 
