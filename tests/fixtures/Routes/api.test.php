@@ -13,10 +13,10 @@
 
     });
 
-    TestApp::get('{bad-endpoint}', function (string $endpoint) {
+    TestApp::get('/{badendpoint}', function (string $badendpoint) {
 
         return TestApp::response()->make(400)->withBody(
-            TestApp::response()->createStream('The endpoint: ' . $endpoint . ' does not exist.')
+            TestApp::response()->createStream('The endpoint: ' . $badendpoint . ' does not exist.')
         );
 
     });
