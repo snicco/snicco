@@ -42,6 +42,11 @@
            ->middleware(['secure'])
            ->name('reset.password.show');
 
+     $router->get('abc/foo', function () {
+
+         return 'auth';
+
+     });
 
     $router->prefix('auth')->name('auth.confirm')
            ->middleware('secure')

@@ -137,4 +137,18 @@
 
         }
 
+        protected function withSlashes () :bool {
+
+            $slashes = $this->config->get('routing.trailing_slash');
+
+            if ( $slashes === null ) {
+
+                $slashes = WP::usesTrailingSlashes();
+
+            }
+
+            return $slashes;
+
+        }
+
     }

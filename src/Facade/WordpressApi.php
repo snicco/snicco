@@ -30,6 +30,19 @@
 
         }
 
+        public static function usesTrailingSlashes() : bool
+        {
+
+            $permalink_structure = get_option( 'permalink_structure' );
+
+            if ( is_bool($permalink_structure) ) {
+                return $permalink_structure;
+            }
+
+            return ( '/' === substr( $permalink_structure, -1, 1 ) );
+
+        }
+
         public function adminEmail() {
 
             return get_bloginfo('admin_email');

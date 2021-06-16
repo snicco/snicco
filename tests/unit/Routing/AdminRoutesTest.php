@@ -62,9 +62,9 @@
 
                 $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    $this->router->get('admin.php/foo', function (Request $request, string $page) {
+                    $this->router->get('admin.php/foo', function (Request $request) {
 
-                        return $page;
+                        return $request->input('page');
 
                     });
 
@@ -86,9 +86,9 @@
 
                 $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    $this->router->get('admin.php/foo', function (Request $request, string $page) {
+                    $this->router->get('admin.php/foo', function (Request $request) {
 
-                        return $page;
+                        return $request->input('page');
 
                     });
 
@@ -112,9 +112,9 @@
 
                     $this->router->group(['name' => 'foo_group'], function () {
 
-                        $this->router->get('admin.php/foo', function (Request $request, string $page) {
+                        $this->router->get('admin.php/foo', function (Request $request) {
 
-                            return $page;
+                            return $request->input('page');
 
                         });
 
@@ -138,15 +138,15 @@
 
                 $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    $this->router->get('admin.php/foo', function (Request $request, string $page) {
+                    $this->router->get('admin.php/foo', function (Request $request) {
 
-                        return $page;
+                        return $request->input('page');
 
                     });
 
-                    $this->router->get('admin.php/bar', function (Request $request, string $page) {
+                    $this->router->get('admin.php/bar', function (Request $request) {
 
-                        return $page;
+                        return $request->input('page');
 
                     });
 
@@ -174,9 +174,9 @@
 
                 $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    $this->router->get('users.php/foo', function (Request $request, string $page) {
+                    $this->router->get('users.php/foo', function (Request $request) {
 
-                        return $page;
+                        return $request->input('page');
 
                     });
 
@@ -197,9 +197,9 @@
 
                 $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    $this->router->get('users.php/foo', function (Request $request, string $page) {
+                    $this->router->get('users.php/foo', function (Request $request) {
 
-                        return $page;
+                        return $request->input('page');
 
                     });
 
@@ -227,9 +227,9 @@
                 $this->router->group(['prefix' => 'wp-admin', 'name' => 'admin'], function () {
 
                     $this->router->name('foo')
-                                 ->get('admin.php/foo', function (Request $request, string $page) {
+                                 ->get('admin.php/foo', function (Request $request) {
 
-                                     return $page;
+                                     return $request->input('page');
 
                                  });
 
@@ -238,7 +238,7 @@
             });
 
             $url = $this->newUrlGenerator()->toRoute('admin.foo');
-            $this->assertSame($this->adminUrlTo('foo'), $url);
+            $this->assertSame('/wp-admin/admin.php?page=foo', $url);
 
 
         }
@@ -251,9 +251,9 @@
 
                 $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    $this->router->get('admin.php/foo/', function (Request $request, string $page) {
+                    $this->router->get('admin.php/foo/', function (Request $request) {
 
-                        return $page;
+                        return $request->input('page');
 
                     });
 
@@ -287,9 +287,9 @@
 
                 $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    $this->router->get('admin/foo', function (Request $request, string $page) {
+                    $this->router->get('admin/foo', function (Request $request) {
 
-                        return $page;
+                        return $request->input('page');
 
                     });
 
@@ -310,9 +310,9 @@
 
                 $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    $this->router->get('options/foo', function (Request $request, string $page) {
+                    $this->router->get('options/foo', function (Request $request) {
 
-                        return $page;
+                        return $request->input('page');
 
                     });
 
@@ -334,9 +334,9 @@
 
                 $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    $this->router->get('tools/foo', function (Request $request, string $page) {
+                    $this->router->get('tools/foo', function (Request $request) {
 
-                        return $page;
+                        return $request->input('page');
 
                     });
 
@@ -357,9 +357,9 @@
 
                 $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    $this->router->get('users/foo', function (Request $request, string $page) {
+                    $this->router->get('users/foo', function (Request $request) {
 
-                        return $page;
+                        return $request->input('page');
 
                     });
 
@@ -380,9 +380,9 @@
 
                 $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    $this->router->get('plugins/foo', function (Request $request, string $page) {
+                    $this->router->get('plugins/foo', function (Request $request) {
 
-                        return $page;
+                        return $request->input('page');
 
                     });
 
@@ -403,9 +403,9 @@
 
                 $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    $this->router->get('themes/foo', function (Request $request, string $page) {
+                    $this->router->get('themes/foo', function (Request $request) {
 
-                        return $page;
+                        return $request->input('page');
 
                     });
 
@@ -427,9 +427,9 @@
 
                 $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    $this->router->get('comments/foo', function (Request $request, string $page) {
+                    $this->router->get('comments/foo', function (Request $request) {
 
-                        return $page;
+                        return $request->input('page');
 
                     });
 
@@ -451,9 +451,9 @@
 
                 $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    $this->router->get('upload/foo', function (Request $request, string $page) {
+                    $this->router->get('upload/foo', function (Request $request) {
 
-                        return $page;
+                        return $request->input('page');
 
                     });
 
@@ -474,9 +474,9 @@
 
                 $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    $this->router->get('posts/foo', function (Request $request, string $page) {
+                    $this->router->get('posts/foo', function (Request $request) {
 
-                        return $page;
+                        return $request->input('page');
 
                     });
 
@@ -498,9 +498,9 @@
 
                 $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    $this->router->get('dashboard/foo', function (Request $request, string $page) {
+                    $this->router->get('dashboard/foo', function (Request $request) {
 
-                        return $page;
+                        return $request->input('page');
 
                     });
 

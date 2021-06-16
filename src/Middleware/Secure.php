@@ -57,7 +57,7 @@
 
             $uri = $request->getUri();
 
-            if ( ! $this->isSecure($request)) {
+            if ( ! $this->isSecure($request) ) {
 
                 // transport security header is ignored for http access.
                 // @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security#description

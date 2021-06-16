@@ -15,6 +15,7 @@
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Auth\DatabaseMagicLink;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Conditions\AdminAjaxCondition;
@@ -183,7 +184,7 @@
                 return new Router(
                     $this->container,
                     $this->container->make(AbstractRouteCollection::class),
-
+                    $this->withSlashes()
                 );
             });
         }
@@ -206,9 +207,12 @@
 
             $this->container->singleton(UrlGenerator::class, function () {
 
+
+
                 $generator = new UrlGenerator(
                     $this->container->make(RouteUrlGenerator::class),
-                    $this->container->make(MagicLink::class)
+                    $this->container->make(MagicLink::class),
+                    $this->withSlashes(),
                 );
 
                 $generator->setRequestResolver(function () {
@@ -259,6 +263,7 @@
 
             });
         }
+
 
 
     }

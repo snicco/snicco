@@ -6,17 +6,13 @@
 
     namespace WPEmerge\Routing;
 
-    use Carbon\Carbon;
     use Illuminate\Support\Arr;
     use Illuminate\Support\InteractsWithTime;
     use WPEmerge\Contracts\RouteUrlGenerator;
-    use WPEmerge\Auth\DatabaseMagicLink;
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Session\Session;
     use WPEmerge\Support\Str;
     use WPEmerge\Support\Url;
 
@@ -41,11 +37,12 @@
          */
         private $magic_link;
 
-        public function __construct(RouteUrlGenerator $route_url, MagicLink $magic_link)
+        public function __construct(RouteUrlGenerator $route_url, MagicLink $magic_link, bool $trailing_slash = false)
         {
 
             $this->route_url = $route_url;
             $this->magic_link = $magic_link;
+            $this->trailing_slash = $trailing_slash;
 
         }
 
@@ -62,7 +59,7 @@
 
         }
 
-        public function to($path, array $query = [], $secure = true, $absolute = true) : string
+        public function to($path, array $query = [], $secure = true, bool $absolute = false ) : string
         {
 
             if (Url::isValidAbsolute($path)) {
@@ -107,7 +104,7 @@
 
         }
 
-        public function signedRoute(string $route_name, array $arguments, $expiration = 300, bool $absolute = true) : string
+        public function signedRoute(string $route_name, array $arguments, $expiration = 300, bool $absolute = false ) : string
         {
 
             $query = Arr::pull($arguments, 'query', []);
@@ -119,7 +116,7 @@
 
         }
 
-        public function signedLogout ( ?int $user_id = null , string $redirect_on_logout = '/', int $expiration = 3600  ) : string
+        public function signedLogout ( ?int $user_id = null , string $redirect_on_logout = '/', int $expiration = 3600, bool $absolute = false ) : string
         {
 
             $args = [
@@ -129,7 +126,7 @@
                 ]
             ];
 
-            return $this->signedRoute('auth.logout', $args, $expiration );
+            return $this->signedRoute('auth.logout', $args, $expiration, $absolute );
 
         }
 
@@ -138,7 +135,7 @@
             return $this->to($path, $query, true, true);
         }
 
-        public function toRoute(string $name, array $arguments = [], bool $secure = true, bool $absolute = true) : string
+        public function toRoute(string $name, array $arguments = [], bool $secure = true, bool $absolute = false ) : string
         {
 
             $query = Arr::pull($arguments, 'query', []);
@@ -251,7 +248,6 @@
 
             if (is_null($root)) {
 
-                /** @var Request $request */
                 $request = $this->getRequest();
 
                 $uri = $request->getUri();

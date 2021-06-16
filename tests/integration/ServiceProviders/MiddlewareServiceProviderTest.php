@@ -12,6 +12,7 @@
     use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Middleware\MiddlewareStack;
     use WPEmerge\Middleware\Secure;
+    use WPEmerge\Middleware\TrailingSlash;
     use WPEmerge\Routing\Pipeline;
 
     class MiddlewareServiceProviderTest extends IntegrationTest
@@ -44,7 +45,7 @@
             $this->assertSame([], $groups['web']);
             $this->assertSame([], $groups['ajax']);
             $this->assertSame([], $groups['admin']);
-            $this->assertSame([Secure::class], $groups['global']);
+            $this->assertSame([Secure::class, TrailingSlash::class], $groups['global']);
 
 
         }
@@ -73,7 +74,6 @@
 
 
         }
-
 
 
         /** @test */

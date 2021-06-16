@@ -42,6 +42,17 @@
         }
 
         /**
+         * Check if trailing slashes are used.
+         *
+         * @see \WP_Rewrite
+         * @see WordpressApi::usesTrailingSlashes
+         *
+         */
+        public static function usesTrailingSlashes() : bool
+        {
+        }
+
+        /**
          *
          * @param  string|string[]  $email
          * @param  string  $subject

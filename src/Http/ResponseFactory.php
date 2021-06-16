@@ -169,6 +169,14 @@
             return $this->redirector;
         }
 
+        /** NOTE: no formatting is performed on the path. */
+        public function permanentRedirectTo(string $path) : RedirectResponse
+        {
+
+            return $this->redirector->createRedirectResponse($path, 301);
+
+        }
+
         public function redirectToLogin(bool $reauth = false, string $redirect_on_login = '', int $status_code = 302) : RedirectResponse
         {
 

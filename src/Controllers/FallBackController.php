@@ -69,6 +69,7 @@
 
             });
 
+
             if ( ! $route ) {
 
                 return ($this->fallback_handler)

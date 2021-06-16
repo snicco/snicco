@@ -113,10 +113,10 @@
         {
 
             $url = $this->newUrlGenerator()->to('base#section');
-            $this->seeUrl('/base#section', $url);
+            $this->assertSame('/base#section', $url);
 
             $url = $this->newUrlGenerator()->to('base#section', ['foo' => 'bar', 'baz' => 'biz']);
-            $this->seeUrl('/base?foo=bar&baz=biz#section', $url);
+            $this->assertSame('/base?foo=bar&baz=biz#section', $url);
 
         }
 
@@ -144,7 +144,7 @@
 
             $url = $g->toRoute('foo', ['bar'=>'bar', 'query'=>['name'=>'calvin']]);
 
-            $this->seeUrl('/foo/bar?name=calvin', $url);
+            $this->assertSame('/foo/bar?name=calvin', $url);
 
         }
 

@@ -378,9 +378,9 @@
 
                 $this->router->group(['prefix' => 'wp-admin'], function () {
 
-                    $this->router->get('admin/foo', function (Request $request, string $page) {
+                    $this->router->get('admin/foo', function (Request $request) {
 
-                        return $page;
+                        return $request->input('page');
 
                     });
 
