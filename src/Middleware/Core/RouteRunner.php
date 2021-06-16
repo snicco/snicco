@@ -105,7 +105,6 @@
 
         }
 
-
         private function rebindRequest(Request $request)
         {
             $this->container->instance(Request::class, $request);

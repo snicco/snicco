@@ -285,13 +285,19 @@
         public function isApiEndPoint() : bool
         {
 
-            $endpoint= $this->getAttribute('api-endpoint');
+            $endpoints = $this->getAttribute('_api.endpoints', []);
 
-            if ( ! $endpoint ) {
-                return false;
+            foreach ($endpoints as $endpoint) {
+
+                if ( Str::startsWith(trim($this->path(), '/'), trim($endpoint, '/')) ) {
+
+                    return true;
+
+                }
+
             }
 
-            return Str::startsWith(trim($this->path(), '/'), trim($endpoint, '/'));
+            return false;
 
         }
 

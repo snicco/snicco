@@ -24,33 +24,37 @@
             $this->registrar = $registrar;
         }
 
-        public function apiRoutes(ApplicationConfig $config) : bool
+        public function loadApiRoutes(ApplicationConfig $config) : bool
         {
             $dir = $config->get('routing.cache_dir', '');
 
-            if ($this->cacheFilesCreates($dir)) {
+            if ( $this->cacheFilesCreated($dir) && count($this->registrar->apiRoutes($config)) ) {
+
                 return true;
-            } else {
+
+            }
+            else {
+
                 $this->clearRouteCache($dir);
             }
 
             $this->createCacheDirIfNotExists($dir);
 
-            return $this->registrar->apiRoutes($config);
+            return $this->registrar->loadApiRoutes($config);
 
         }
 
-        public function standardRoutes(ApplicationConfig $config)
+        public function loadStandardRoutes(ApplicationConfig $config)
         {
 
             $dir = $config->get('routing.cache_dir', '');
 
-            if ($this->cacheFilesCreates($dir)) {
+            if ($this->cacheFilesCreated($dir)) {
                 return;
             }
 
             $this->createCacheDirIfNotExists($dir);
-            $this->registrar->standardRoutes($config);
+            $this->registrar->loadStandardRoutes($config);
 
         }
 
@@ -76,7 +80,7 @@
 
         }
 
-        private function cacheFilesCreates($dir) :bool {
+        private function cacheFilesCreated($dir) :bool {
 
             return is_file($dir . DIRECTORY_SEPARATOR . '__generated_route_map') &&
                    is_file($dir . DIRECTORY_SEPARATOR . '__generated_route_collection');
