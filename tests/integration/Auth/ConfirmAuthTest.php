@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration\Session;
+    namespace Tests\integration\Auth;
 
     use Illuminate\Support\Carbon;
     use Tests\helpers\InteractsWithSessionDriver;

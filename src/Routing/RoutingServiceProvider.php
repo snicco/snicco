@@ -86,35 +86,6 @@
         public function bootstrap() : void
         {
 
-            // if ( ! ( $cache = $this->config->get('routing.cache', false) ) )  {
-            //
-            //     $dir = $this->config->get('routing.cache_dir', '');
-            //
-            //     $this->clearRouteCache($dir);
-            //
-            //     /** @var RouteRegistrar $registrar */
-            //     $registrar = $this->container->make(RouteRegistrar::class);
-            //     $registrar->loadRoutes();
-            //
-            // }
-            //
-            // if ( $cache && ! is_dir($dir = $this->config->get('routing.cache_dir', ''))) {
-            //
-            //     $this->loadRoutesOneTime($dir);
-            //
-            // }
-
-
-        }
-
-        private function bindConfig() : void
-        {
-
-            $this->config->extend('routing.conditions', self::CONDITION_TYPES);
-            $this->config->extend('routing.must_match_web_routes', false);
-
-            $this->config->extend('routing.api.endpoints', []);
-
             $endpoints = $this->config->get('routing.api.endpoints');
 
             foreach ($endpoints as $id => $prefix) {
@@ -136,6 +107,18 @@
                 ]);
 
             }
+
+        }
+
+        private function bindConfig() : void
+        {
+
+            $this->config->extend('routing.conditions', self::CONDITION_TYPES);
+            $this->config->extend('routing.must_match_web_routes', false);
+
+            $this->config->extend('routing.api.endpoints', []);
+
+
 
 
         }
