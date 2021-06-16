@@ -44,12 +44,12 @@
 
 
 
-        protected function createRoutes(\Closure $routes)
+        protected function createRoutes(\Closure $routes, bool $force_trailing = false)
         {
 
             $this->routes = $this->newRouteCollection();
 
-            $this->router = $this->newRouter();
+            $this->router = $this->newRouter($force_trailing);
 
             $routes();
 
@@ -57,10 +57,10 @@
 
         }
 
-        protected function newRouter() : Router
+        protected function newRouter(bool $force_trailing = false) : Router
         {
 
-            return new Router($this->container, $this->routes);
+            return new Router($this->container, $this->routes, $force_trailing);
 
         }
 

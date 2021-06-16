@@ -34,6 +34,8 @@
 
             $this->bindOutputBufferMiddleware();
 
+            $this->bindTrailingSlash();
+
         }
 
         function bootstrap() : void
@@ -59,7 +61,8 @@
             $this->config->extend('middleware.groups', [
 
                 'global' => [
-                    Secure::class
+                    Secure::class,
+                    TrailingSlash::class
                 ],
                 'web' => [],
                 'ajax' => [],
@@ -151,6 +154,20 @@
                 $this->container->instance(OutputBufferMiddleware::class, $middleware);
 
                 return $middleware;
+
+            });
+
+        }
+
+        private function bindTrailingSlash()
+        {
+
+            $this->container->singleton(TrailingSlash::class, function () {
+
+                    return new TrailingSlash(
+                        $this->container->make(ResponseFactory::class),
+                        $this->withSlashes()
+                    );
 
             });
 

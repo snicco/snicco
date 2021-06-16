@@ -25,6 +25,8 @@
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\Psr7\Request;
 
+    use WPEmerge\Support\Arr;
+
     use function do_action;
 
     class IntegrationTest extends WPTestCase
@@ -92,6 +94,9 @@
 
             $app = TestApp::make();
             $app->runningUnitTest();
+
+            Arr::set($config, 'routing.trailing_slash', false);
+
             $app->boot($config);
 
             $app->container()->instance(MagicLink::class, new TestMagicLink());

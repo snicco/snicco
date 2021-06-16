@@ -6,9 +6,9 @@
 
     namespace WPEmerge\Routing\FastRoute;
 
-    use WPEmerge\Routing\CompiledRoute;
     use WPEmerge\Routing\Route;
     use WPEmerge\Support\Str;
+    use WPEmerge\Support\Url;
     use WPEmerge\Support\UrlParser;
 
     class FastRouteSyntax
@@ -18,6 +18,10 @@
         {
 
             $optionals = UrlParser::getOptionalSegments($url_pattern);
+
+            if ( ! count($optionals) ) {
+                return $url_pattern;
+            }
 
             foreach ($optionals as $optional) {
 
@@ -105,7 +109,12 @@
 
         public function convert(Route $route) : string
         {
+
+
             $url = $route->getUrl();
+
+            $with_trailing = Str::endsWith($url, '/');
+
 
             if ( trim( $url, '/' ) === Route::ROUTE_WILDCARD ) {
 
@@ -127,7 +136,7 @@
 
             }
 
-            return $url;
+            return $with_trailing ? Url::addTrailing($url) : $url;
         }
 
         private function ensureRouteOnlyMatchesWithTrailingSlash ($url, Route $route) : string

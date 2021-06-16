@@ -70,10 +70,10 @@
             $url_generator = $this->newUrlGenerator();
 
             $url = $url_generator->toRoute('foo_route');
-            $this->seeFullUrl('/foo', $url);
+            $this->assertSame('/foo', $url);
 
             $url = $url_generator->toRoute('bar_route');
-            $this->seeFullUrl('/bar', $url);
+            $this->assertSame('/bar', $url);
 
         }
 
@@ -121,12 +121,12 @@
 
             $url_generator = $this->newUrlGenerator();
 
-            $this->seeFullUrl('/baz', $url_generator->toRoute('foo.bar.baz'));
-            $this->seeFullUrl('/biz', $url_generator->toRoute('foo.biz'));
+            $this->assertSame('/baz', $url_generator->toRoute('foo.bar.baz'));
+            $this->assertSame('/biz', $url_generator->toRoute('foo.biz'));
 
             $this->expectExceptionMessage('no named route');
 
-            $this->seeFullUrl('/baz', $url_generator->toRoute('foo.bar.biz'));
+            $this->assertSame('/baz', $url_generator->toRoute('foo.bar.biz'));
 
 
         }
@@ -154,9 +154,9 @@
 
             $url_generator = $this->newUrlGenerator();
 
-            $this->seeFullUrl('/bar', $url_generator->toRoute('foo.bar'));
-            $this->seeFullUrl('/baz', $url_generator->toRoute('foo.baz'));
-            $this->seeFullUrl('/biz', $url_generator->toRoute('foo.biz'));
+            $this->assertSame('/bar', $url_generator->toRoute('foo.bar'));
+            $this->assertSame('/baz', $url_generator->toRoute('foo.baz'));
+            $this->assertSame('/biz', $url_generator->toRoute('foo.biz'));
 
 
         }
@@ -174,7 +174,7 @@
             $url_generator = $this->newUrlGenerator();
 
             $url = $url_generator->toRoute('foo', ['required' => 'bar']);
-            $this->seeFullUrl('/foo/bar', $url);
+            $this->assertSame('/foo/bar', $url);
 
         }
 
@@ -194,7 +194,7 @@
                 'required' => 'bar',
                 'optional' => 'baz',
             ]);
-            $this->seeFullUrl('/foo/bar/baz', $url);
+            $this->assertSame('/foo/bar/baz', $url);
 
         }
 
@@ -212,10 +212,10 @@
             $url_generator = $this->newUrlGenerator();
 
             $url = $url_generator->toRoute('foo');
-            $this->seeFullUrl('/foo', $url);
+            $this->assertSame('/foo', $url);
 
             $url = $url_generator->toRoute('bar', ['required' => 'baz']);
-            $this->seeFullUrl('/bar/baz', $url);
+            $this->assertSame('/bar/baz', $url);
 
 
         }
@@ -234,7 +234,7 @@
             $url_generator = $this->newUrlGenerator();
 
             $url = $url_generator->toRoute('foo', ['optional' => 'bar']);
-            $this->seeFullUrl('/foo/bar', $url);
+            $this->assertSame('/foo/bar', $url);
 
         }
 
@@ -252,14 +252,14 @@
             $url_generator = $this->newUrlGenerator();
 
             $url = $url_generator->toRoute('foo', ['opt1' => 'bar', 'opt2' => 'baz']);
-            $this->seeFullUrl('/foo/bar/baz', $url);
+            $this->assertSame('/foo/bar/baz', $url);
 
             $url = $url_generator->toRoute('bar', [
                 'required' => 'biz',
                 'opt1' => 'bar',
                 'opt2' => 'baz',
             ]);
-            $this->seeFullUrl('/bar/biz/bar/baz', $url);
+            $this->assertSame('/bar/biz/bar/baz', $url);
 
 
         }
@@ -281,7 +281,7 @@
             $url_generator = $this->newUrlGenerator();
 
             $url = $url_generator->toRoute('foo', ['required' => 'bar']);
-            $this->seeFullUrl('/foo/bar', $url);
+            $this->assertSame('/foo/bar', $url);
 
         }
 
@@ -302,7 +302,7 @@
             $url_generator = $this->newUrlGenerator();
 
             $url = $url_generator->toRoute('foo', ['optional' => 'bar']);
-            $this->seeFullUrl('/foo/bar', $url);
+            $this->assertSame('/foo/bar', $url);
 
         }
 
@@ -334,20 +334,20 @@
 
             $url_generator = $this->newUrlGenerator();
             $url = $url_generator->toRoute('foo', ['required' => 'bar']);
-            $this->seeFullUrl('/foo/bar', $url);
+            $this->assertSame('/foo/bar', $url);
 
             $url = $url_generator->toRoute('bar', [
                 'required' => 'baz',
                 'optional' => 'biz',
             ]);
-            $this->seeFullUrl('/bar/baz/biz', $url);
+            $this->assertSame('/bar/baz/biz', $url);
 
             $url = $url_generator->toRoute('foobar', [
                 'required' => 'bar',
                 'optional1' => 'boo',
                 'optional2' => 'biz',
             ]);
-            $this->seeFullUrl('/baz/bar/boo/biz', $url);
+            $this->assertSame('/baz/bar/boo/biz', $url);
 
 
         }
@@ -407,7 +407,7 @@
             $url_generator = $this->newUrlGenerator();
 
             $url = $url_generator->toRoute('foo_route');
-            $this->seeFullUrl('/foo/bar', $url);
+            $this->assertSame('/foo/bar', $url);
 
         }
 
@@ -457,10 +457,10 @@
             $url_generator = $this->newUrlGenerator();
 
             $url = $url_generator->toRoute('foo', ['bar' => 'aaa']);
-            $this->seeFullUrl('/foo/aaa', $url);
+            $this->assertSame('/foo/aaa', $url);
 
             $url = $url_generator->toRoute('foo', ['bar' => 'aaaa']);
-            $this->seeFullUrl('/foo/aaaa', $url);
+            $this->assertSame('/foo/aaaa', $url);
 
             try {
 
@@ -512,7 +512,7 @@
             $url_generator = $this->newUrlGenerator();
 
             $url = $url_generator->toRoute('foo', ['bar' => 'aacalvin']);
-            $this->seeFullUrl('/foo/aacalvin', $url);
+            $this->assertSame('/foo/aacalvin', $url);
 
             $this->expectExceptionMessage('The provided value [aajohn] is not valid for the route');
 
@@ -544,7 +544,7 @@
                 'team' => 'manchesterunitedx',
                 'player' => 'aacalvin',
             ]);
-            $this->seeFullUrl('/teams/manchesterunitedx/aacalvin', $url);
+            $this->assertSame('/teams/manchesterunitedx/aacalvin', $url);
 
             // Fails because not starting with m.
             try {
@@ -628,20 +628,6 @@
 
         }
 
-        private function seeFullUrl($route_path, $result)
-        {
-
-            $route_path = rawurldecode($route_path);
-
-            $expected = rtrim(SITE_URL, '/').'/'.ltrim($route_path, '/');
-
-            // Strip https, http
-            $expected = Str::after($expected, '://');
-            $result = Str::after($result, '://');
-
-            $this->assertSame($expected, $result);
-
-        }
 
 
     }

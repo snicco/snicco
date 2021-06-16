@@ -21,7 +21,6 @@
 		 */
 		public $template_wordpress_tried_to_load;
 
-
 		public function __construct( Request $request, string $template ) {
 
 			$this->template_wordpress_tried_to_load = $template;

@@ -36,7 +36,7 @@
 
 				$url = $this->url ?? WP::homeUrl( '', 'https' );
 
-                if ($request->isAjax()) {
+                if ($request->isExpectingJson()) {
 
                     return $this->response
                         ->json('Only guests can access this route.')

@@ -24,7 +24,7 @@
          */
         private $response;
 
-        public function __construct(ResponseFactory $response, string $url = null)
+        public function __construct(ResponseFactory $response, ?string $url = null)
         {
             $this->url = $url;
             $this->response = $response;
@@ -39,9 +39,7 @@
 
             }
 
-            $url = $this->url ?? WP::loginUrl( $request->fullUrl(), true);
-
-            if ($request->isAjax()) {
+            if ( $request->isExpectingJson() ) {
 
                 return $this->response
                     ->json('Authentication Required')
@@ -49,7 +47,9 @@
 
             }
 
-            return $this->response->redirect()->to($url);
+            $redirect_after_login = $this->url ?? $request->fullPath();
+
+            return $this->response->redirectToLogin(true, $redirect_after_login);
 
 
         }

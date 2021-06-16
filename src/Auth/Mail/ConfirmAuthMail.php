@@ -57,7 +57,8 @@
             return $generator->signedRoute(
                 'auth.confirm.magic-login',
                 $arguments,
-                $this->lifetime
+                $this->lifetime,
+                true
             );
 
         }
