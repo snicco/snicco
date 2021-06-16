@@ -125,11 +125,12 @@
         private function bindConfig()
         {
 
-
             $this->config->extend('middleware.aliases', [
                 'auth.confirmed' => ConfirmAuth::class,
                 'auth.unconfirmed' => AuthUnconfirmed::class,
             ]);
+
+
         }
 
         private function bindWpSessionToken()
