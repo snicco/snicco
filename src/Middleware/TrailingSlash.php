@@ -34,13 +34,17 @@
         public function handle(Request $request, Delegate $next)
         {
 
+            if ( ! $request->isWpFrontEnd() ) {
+                return $next($request);
+            }
+
             $path = $request->path();
 
             $accept_request = $this->trailing_slash
                 ? Str::endsWith($path, '/')
                 : Str::doesNotEndWith($path, '/');
 
-            if ( $accept_request ) {
+            if ( $accept_request || $path === '/') {
 
                 return $next($request);
 

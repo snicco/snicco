@@ -48,7 +48,7 @@
 
         public function testRedirectNoSlashToTrailingSlash () {
 
-            $request = TestRequest::fromFullUrl('GET', 'https://foo.com/bar');
+            $request = TestRequest::fromFullUrl('GET', 'https://foo.com/bar')->withLoadingScript('index.php');
 
             $response = $this->newMiddleware(true)->handle($request, $this->delegate);
 
@@ -62,6 +62,7 @@
         public function testRedirectSlashToNoSlash () {
 
             $request = TestRequest::fromFullUrl('GET', 'https://foo.com/bar/');
+            $request = $request->withLoadingScript('index.php');
 
             $response = $this->newMiddleware(false)->handle($request, $this->delegate);
 
@@ -73,7 +74,7 @@
 
         public function testNoRedirectIfMatches () {
 
-            $request = TestRequest::fromFullUrl('GET', 'https://foo.com/bar');
+            $request = TestRequest::fromFullUrl('GET', 'https://foo.com/bar')->withLoadingScript('index.php');
             $response = $this->newMiddleware(false )->handle($request, $this->delegate);
             $this->assertNotInstanceOf(RedirectResponse::class, $response);
             $this->assertStatusCode(200, $response);

@@ -30,6 +30,12 @@
 
         }
 
+        public function siteUrl() {
+
+            return get_bloginfo('url');
+
+        }
+
         public static function usesTrailingSlashes() : bool
         {
 
