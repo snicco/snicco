@@ -43,10 +43,10 @@
 
             $groups = TestApp::config('middleware.groups');
 
-            $this->assertSame([], $groups['web']);
+            $this->assertSame([TrailingSlash::class, Www::class], $groups['web']);
             $this->assertSame([], $groups['ajax']);
             $this->assertSame([], $groups['admin']);
-            $this->assertSame([Secure::class, TrailingSlash::class, Www::class], $groups['global']);
+            $this->assertSame([Secure::class], $groups['global']);
 
 
         }

@@ -45,6 +45,23 @@
 
         }
 
+        public function onlyGroups ( array $groups, Request $request) {
+
+            $middleware = $groups;
+
+            if ( $this->withGlobalMiddleware( $request ) ) {
+
+                $middleware = $this->mergeGlobalMiddleware($middleware);
+
+            }
+
+            $middleware = $this->expandMiddleware($middleware);
+            $middleware = $this->uniqueMiddleware($middleware);
+
+            return $this->sortMiddleware($middleware);
+
+        }
+
         public function withMiddlewareGroup(string $group, array $middlewares)
         {
 
