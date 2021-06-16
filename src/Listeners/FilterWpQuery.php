@@ -9,6 +9,7 @@
     use BetterWpHooks\Traits\ListensConditionally;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Events\WpQueryFilterable;
+    use WPEmerge\Facade\WP;
 
     class FilterWpQuery
     {
@@ -55,10 +56,9 @@
 
         private function removeUnneededFilters()
         {
-
-            remove_filter('template_redirect', 'redirect_canonical');
-            remove_filter('template_redirect', 'rest_output_link_header');
-            remove_filter('template_redirect', 'wp_old_slug_redirect');
+            WP::removeFilter('template_redirect', 'redirect_canonical');
+            WP::removeFilter('template_redirect', 'rest_output_link_header');
+            WP::removeFilter('template_redirect', 'wp_old_slug_redirect');
 
         }
 

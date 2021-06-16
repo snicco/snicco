@@ -69,11 +69,11 @@
 
         }
 
-        public function signedLogout ( int $user_id, string $redirect_on_logout = '/',  int $status = 302  ) : RedirectResponse
+        public function signedLogout ( int $user_id, string $redirect_on_logout = '/',  int $status = 302, int $expiration = 3600   ) : RedirectResponse
         {
 
            return $this->createRedirectResponse(
-               $this->generator->signedLogout($user_id, $redirect_on_logout),
+               $this->generator->signedLogout($user_id, $redirect_on_logout ,$expiration),
                $status
            );
 

@@ -36,6 +36,13 @@
 
         }
 
+        public function removeFilter(string $tag, $filter, int $priority = 10) : bool
+        {
+
+            return remove_filter($tag, $filter, $priority);
+
+        }
+
         public static function usesTrailingSlashes() : bool
         {
 

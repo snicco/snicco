@@ -8,19 +8,19 @@
     use WPEmerge\Session\Exceptions\InvalidCsrfTokenException;
 
     $router = TestApp::route();
-	$router->get( 'admin.php/bar', function ( Request $request, string $page ) {
+	$router->get( 'admin.php/bar', function ( Request $request ) {
 
-		return strtoupper($page). '_ADMIN';
+		return strtoupper($request->input('page')). '_ADMIN';
 
 	});
-	$router->get( 'admin.php/foo', function ( Request $request, string $page ) {
+	$router->get( 'admin.php/foo', function ( Request $request ) {
 
-		return strtoupper($page). '_ADMIN';
+		return strtoupper($request->input('page')). '_ADMIN';
 
 	})->name('foo');
-	$router->post( 'biz', function ( Request $request, string $page ) {
+	$router->post( 'biz', function ( Request $request ) {
 
-		return strtoupper($page). '_ADMIN';
+		return strtoupper($request->input('page')). '_ADMIN';
 
 	});
     $router->get('admin.php/error', function () {
