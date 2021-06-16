@@ -38,6 +38,7 @@
             WP::shouldReceive('adminEmail')->andReturn('c@web.de')->byDefault();
             WP::shouldReceive('userId')->andReturn(1)->byDefault();
             WP::shouldReceive('usesTrailingSlashes')->andReturnFalse()->byDefault();
+            WP::shouldReceive('siteUrl')->andReturn(SITE_URL);
         }
 
 

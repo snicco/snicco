@@ -111,18 +111,17 @@
         {
 
 
-            $url = $route->getUrl();
+            $route_url = $route->getUrl();
 
-            $with_trailing = Str::endsWith($url, '/');
+            $with_trailing = Str::endsWith($route_url, '/') && Str::doesNotEndWith($route_url, '?}/');
 
-
-            if ( trim( $url, '/' ) === Route::ROUTE_WILDCARD ) {
+            if ( trim( $route_url, '/' ) === Route::ROUTE_WILDCARD ) {
 
                 $url = '__generated:wp_route_no_url_condition_' . Str::random(16);
 
             }
 
-            $url = $this->convertOptionalSegments($url);
+            $url = $this->convertOptionalSegments($route_url);
 
             foreach ($route->getRegex() as $regex) {
 
@@ -130,13 +129,15 @@
 
             }
 
+            $url = $with_trailing ? Url::addTrailing($url) : $url;
+
             if ( $route->needsTrailingSlash() ) {
 
                 $url = $this->ensureRouteOnlyMatchesWithTrailingSlash($url, $route);
 
             }
 
-            return $with_trailing ? Url::addTrailing($url) : $url;
+            return $url;
         }
 
         private function ensureRouteOnlyMatchesWithTrailingSlash ($url, Route $route) : string

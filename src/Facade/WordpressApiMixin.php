@@ -34,6 +34,14 @@
 
         /**
          * @see get_bloginfo()
+         * @see WordpressApi::siteUrl
+         */
+        public static function siteUrl()
+        {
+        }
+
+        /**
+         * @see get_bloginfo()
          * @see WordpressApi::adminEmail
          */
         public static function adminEmail() :string

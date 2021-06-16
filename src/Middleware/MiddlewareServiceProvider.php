@@ -36,6 +36,8 @@
 
             $this->bindTrailingSlash();
 
+            $this->bindWww();
+
         }
 
         function bootstrap() : void
@@ -62,7 +64,8 @@
 
                 'global' => [
                     Secure::class,
-                    TrailingSlash::class
+                    TrailingSlash::class,
+                    Www::class,
                 ],
                 'web' => [],
                 'ajax' => [],
@@ -70,8 +73,7 @@
 
             ]);
 
-            $this->config->extend('middleware.priority', [Secure::class]);
-            $this->config->extend('middleware.priority', []);
+            $this->config->extend('middleware.priority', [ Secure::class, Www::class, TrailingSlash::class,]);
             $this->config->extend('middleware.always_run_global', false);
 
 
@@ -168,6 +170,20 @@
                         $this->container->make(ResponseFactory::class),
                         $this->withSlashes()
                     );
+
+            });
+
+        }
+
+        private function bindWww()
+        {
+
+             $this->container->singleton(Www::class, function () {
+
+                 return new Www(
+                     $this->responseFactory(),
+                     $this->siteUrl()
+                 );
 
             });
 

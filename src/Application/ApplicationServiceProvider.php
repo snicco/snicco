@@ -10,6 +10,7 @@
     use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewFactoryInterface;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Redirector;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Session\Encryptor;
@@ -65,6 +66,8 @@
                 define('WPEMERGE_RUNNING_UNIT_TESTS', false);
 
             }
+
+            $this->config->set('_siteurl', WP::siteUrl());
 
         }
 
