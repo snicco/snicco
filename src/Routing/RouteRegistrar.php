@@ -14,7 +14,6 @@
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
 
-
     class RouteRegistrar implements RouteRegistrarInterface
     {
 
@@ -32,19 +31,30 @@
 
         public function loadIntoRouter() : void
         {
+
             $this->router->loadRoutes();
         }
 
-        public function apiRoutes (ApplicationConfig $config) : array
+        public function apiRoutes(ApplicationConfig $config) : array
         {
 
             $dirs = Arr::wrap($config->get('routing.definitions', []));
+            $endpoints = Arr::wrap($config->get('routing.api.endpoints', []));
 
             $finder = new Finder();
             $finder->in($dirs)->files()
-                   ->name('/api\.\w+(?=\.php)/');
+                   ->name('/api\..+(?=\.php)/');
 
-            return iterator_to_array($finder);
+            return collect(iterator_to_array($finder))
+                ->reject(function (SplFileInfo $file) use ($endpoints) {
+
+                    $name = Str::between($file->getRelativePathname(), '.', '.');
+
+                    return ! isset($endpoints[$name]);
+
+                })
+                ->all();
+
 
         }
 
@@ -53,7 +63,7 @@
 
             $files = $this->apiRoutes($config);
 
-            if ( ! count($files) ) {
+            if ( ! count($files)) {
                 return false;
             }
 
@@ -70,11 +80,11 @@
 
             $finder = new Finder();
             $finder->in($dirs)->files()
-                   ->name('/^(?!api\.)\w+(?=\.php)/');
+                   ->name('/^(?!api\.).+(?=\.php)/');
 
             $files = iterator_to_array($finder);
 
-            if ( ! count($files) ) {
+            if ( ! count($files)) {
                 return;
             }
 
@@ -94,7 +104,7 @@
 
             $seen = [];
 
-            foreach ( $files as $file ) {
+            foreach ($files as $file) {
 
                 $name = Str::before($file->getFilename(), '.php');
 
@@ -118,7 +128,6 @@
         {
 
             $attributes = $this->applyPreset($name, $preset);
-
 
             $this->router->group($attributes, function ($router) use ($file_path) {
 

@@ -26,7 +26,6 @@
 
         use CreatesWpUrls;
 
-
         /** @test */
         public function web_routes_are_loaded () {
 

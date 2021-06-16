@@ -37,10 +37,5 @@
 
         }
 
-        protected function isNativeWordpressJsonApiRequest () : bool
-        {
 
-            return Str::contains($this->request->path(), 'wp-json');
-
-        }
     }
