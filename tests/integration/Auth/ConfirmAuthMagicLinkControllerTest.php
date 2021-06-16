@@ -154,7 +154,7 @@
             $url = $this->createSignedUrl($calvin->ID, '');
 
             $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
-            HeaderStack::assertHas('Location', WP::adminUrl());
+            HeaderStack::assertHas('Location', '/wp-admin/');
             HeaderStack::assertHasStatusCode(302);
 
             $this->logout($calvin);
@@ -171,8 +171,8 @@
             $this->registerRoutes();
             $url = $this->createSignedUrl($calvin->ID, '');
 
-            $this->seeKernelOutput('', TestRequest::from('GET', $url));
-            HeaderStack::assertHas('Location', WP::adminUrl());
+            $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
+            HeaderStack::assertHas('Location', '/wp-admin/');
             HeaderStack::assertHasStatusCode(302);
 
             $this->assertSame(
@@ -196,8 +196,8 @@
             $this->registerRoutes();
             $url = $this->createSignedUrl($calvin->ID, '');
 
-            $this->seeKernelOutput('', TestRequest::from('GET', $url));
-            HeaderStack::assertHas('Location', WP::adminUrl());
+            $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
+            HeaderStack::assertHas('Location', '/wp-admin/');
             HeaderStack::assertHasStatusCode(302);
 
             $this->assertUserLoggedIn($calvin->ID);
@@ -222,12 +222,12 @@
             $this->registerRoutes();
             $url = $this->createSignedUrl($calvin->ID, '');
 
-            $request = TestRequest::from('GET', $url);
+            $request = TestRequest::fromFullUrl('GET', $url);
             $request = $this->withSessionCookie($request);
 
 
             $this->seeKernelOutput('', $request);
-            HeaderStack::assertHas('Location', WP::adminUrl());
+            HeaderStack::assertHas('Location', '/wp-admin/');
             HeaderStack::assertHasStatusCode(302);
 
             $this->assertSame('', TestApp::session()->getDriver()->read($this->testSessionId()));
@@ -250,8 +250,8 @@
                 $GLOBALS['test']['auth_cookie'] = true;
             });
 
-            $this->seeKernelOutput('', TestRequest::from('GET', $url));
-            HeaderStack::assertHas('Location', WP::adminUrl());
+            $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
+            HeaderStack::assertHas('Location', '/wp-admin/');
             HeaderStack::assertHasStatusCode(302);
 
             $this->assertTrue($GLOBALS['test']['auth_cookie']);

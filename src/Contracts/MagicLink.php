@@ -70,7 +70,7 @@
 
         }
 
-        public function hasValidSignature(Request $request, $absolute = true) : bool
+        public function hasValidSignature(Request $request, $absolute = false) : bool
         {
 
             return $this->hasCorrectSignature($request, $absolute)
@@ -82,7 +82,7 @@
         public function hasValidRelativeSignature(Request $request) : bool
         {
 
-            return $this->hasValidSignature($request, false);
+            return $this->hasValidSignature($request);
 
         }
 

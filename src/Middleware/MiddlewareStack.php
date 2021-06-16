@@ -8,6 +8,7 @@
 
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Route;
+    use WPEmerge\Support\Arr;
     use WPEmerge\Traits\GathersMiddleware;
 
     class MiddlewareStack
@@ -45,13 +46,14 @@
 
         }
 
-        public function onlyGroups ( array $groups, Request $request) {
+        public function onlyGroups ( array $groups, Request $request) : array
+        {
 
             $middleware = $groups;
 
-            if ( $this->withGlobalMiddleware( $request ) ) {
+            if (  $this->globalMiddlewareRun($request) ) {
 
-                $middleware = $this->mergeGlobalMiddleware($middleware);
+                Arr::pullByValue('global', $middleware);
 
             }
 
@@ -90,5 +92,11 @@
 
         }
 
+        private function globalMiddlewareRun(Request $request) :bool  {
+
+            return  $request->getAttribute('global_middleware_run', false);
+
+
+        }
 
     }

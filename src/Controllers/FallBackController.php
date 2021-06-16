@@ -85,7 +85,7 @@
 
             $middleware = $route
                 ? $this->middleware_stack->createFor($route, $request)
-                : $this->middleware_stack->onlyGroups(['web'], $request);
+                : $this->middleware_stack->onlyGroups($this->fallback_handler ? ['global', 'web'] : ['web'], $request);
 
             return $this->pipeline
                 ->send($request)

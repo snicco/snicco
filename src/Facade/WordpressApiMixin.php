@@ -33,6 +33,15 @@
         }
 
         /**
+         * @see remove_filter()
+         * @see WordpressApi::removeFilter()
+         */
+        public static function removeFilter(string $tag, callable $function_to_remove, $priority = 10) :bool
+        {
+
+        }
+
+        /**
          * @see get_bloginfo()
          * @see WordpressApi::siteUrl
          */
