@@ -19,8 +19,8 @@
 
             $config = $event->config;
 
-            $success = $registrar->apiRoutes($config);
-            $registrar->standardRoutes($config);
+            $success = $registrar->loadApiRoutes($config);
+            $registrar->loadStandardRoutes($config);
             $registrar->loadIntoRouter();
 
             if ( $success && $event->request->isApiEndPoint() ) {

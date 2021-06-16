@@ -15,6 +15,9 @@
     use WPEmerge\Session\Session;
     use WPEmerge\Session\SessionManager;
 
+    /**
+     * @todo dont make this middleware global.
+     */
     class SessionMiddleware extends Middleware
     {
 

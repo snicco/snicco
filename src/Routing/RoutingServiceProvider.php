@@ -113,6 +113,31 @@
             $this->config->extend('routing.conditions', self::CONDITION_TYPES);
             $this->config->extend('routing.must_match_web_routes', false);
 
+            $this->config->extend('routing.api.endpoints', []);
+
+            $endpoints = $this->config->get('routing.api.endpoints');
+
+            foreach ($endpoints as $id => $prefix) {
+
+                $name = 'api.'.$id;
+
+                $this->config->extend(
+                    'routing.presets.'.$name,
+                    [
+                        'prefix' => $prefix,
+                        'middleware' => [$name]
+                    ]
+                );
+
+                $this->config->extend('middleware.groups', [
+
+                    $name => []
+
+                ]);
+
+            }
+
+
         }
 
         private function bindRouteMatcher() : void

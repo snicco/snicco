@@ -63,6 +63,12 @@
 
     }
 
+    if ( ! defined('FIXTURES_DIR')) {
+
+        define('FIXTURES_DIR', TESTS_DIR.DS.'fixtures');
+
+    }
+
     if ( ! defined('VIEWS_DIR')) {
 
         define('VIEWS_DIR', TESTS_DIR.DS.'fixtures'.DS.'views');

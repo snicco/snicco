@@ -90,6 +90,12 @@
 
             ],
 
+            IncomingApiRequest::class => [
+
+                [HttpKernel::class, 'run'],
+
+            ],
+
             WpQueryFilterable::class => [
 
                 [FilterWpQuery::class, 'handle'],

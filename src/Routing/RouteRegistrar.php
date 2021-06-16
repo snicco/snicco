@@ -35,36 +35,42 @@
             $this->router->loadRoutes();
         }
 
-        public function apiRoutes(ApplicationConfig $config) : bool
+        public function apiRoutes (ApplicationConfig $config) : array
         {
 
             $dirs = Arr::wrap($config->get('routing.definitions', []));
 
             $finder = new Finder();
             $finder->in($dirs)->files()
-                   ->name('api.php');
+                   ->name('/api\.\w+(?=\.php)/');
 
-            $files = iterator_to_array($finder);
+            return iterator_to_array($finder);
+
+        }
+
+        public function loadApiRoutes(ApplicationConfig $config) : bool
+        {
+
+            $files = $this->apiRoutes($config);
 
             if ( ! count($files) ) {
                 return false;
             }
 
-            $this->requireFiles($files, $config, false);
+            $this->requireFiles($files, $config);
 
             return true;
 
         }
 
-        public function standardRoutes(ApplicationConfig $config)
+        public function loadStandardRoutes(ApplicationConfig $config)
         {
 
             $dirs = Arr::wrap($config->get('routing.definitions', []));
 
             $finder = new Finder();
             $finder->in($dirs)->files()
-                   ->notName(['api.php'])
-                   ->name('*.php');
+                   ->name('/^(?!api\.)\w+(?=\.php)/');
 
             $files = iterator_to_array($finder);
 
@@ -82,9 +88,8 @@
         /**
          * @param  SplFileInfo[]  $files
          * @param  ApplicationConfig  $config
-         * @param  bool  $unique
          */
-        private function requireFiles(array $files, ApplicationConfig $config, bool $unique = true)
+        private function requireFiles(array $files, ApplicationConfig $config)
         {
 
             $seen = [];
@@ -93,7 +98,7 @@
 
                 $name = Str::before($file->getFilename(), '.php');
 
-                if (isset($seen[$name]) && $unique) {
+                if (isset($seen[$name])) {
                     continue;
                 }
 

@@ -7,7 +7,6 @@
 	namespace WPEmerge\ExceptionHandling;
 
     use WPEmerge\Events\IncomingAjaxRequest;
-    use WPEmerge\Events\IncomingGlobalRequest;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\Responses\RedirectResponse;
 
@@ -37,7 +36,7 @@
 
 		public function handle( ResponseSent $response_sent) {
 
-            if ( $response_sent->request->type() === IncomingGlobalRequest::class ) {
+            if ( $response_sent->request->isApiEndPoint()  ) {
 
                 $this->terminate();
 

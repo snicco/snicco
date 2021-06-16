@@ -49,7 +49,7 @@
             $this->url = TestApp::url();
             /** @var RouteRegistrar $registrar */
             $registrar = TestApp::resolve(RouteRegistrarInterface::class);
-            $registrar->standardRoutes(TestApp::config());
+            $registrar->loadStandardRoutes(TestApp::config());
             $registrar->loadIntoRouter();
         }
 
