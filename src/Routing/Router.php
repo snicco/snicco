@@ -171,7 +171,7 @@
         {
 
             $this->any('/{path}', [FallBackController::class, 'handle'])
-                 ->and('path', '.+')
+                 ->and('path', '[^.]+')
                  ->where(function () {
 
                      return ! WP::isAdmin();

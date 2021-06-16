@@ -64,10 +64,11 @@
 
                 'global' => [
                     Secure::class,
+                ],
+                'web' => [
                     TrailingSlash::class,
                     Www::class,
                 ],
-                'web' => [],
                 'ajax' => [],
                 'admin' => [],
 

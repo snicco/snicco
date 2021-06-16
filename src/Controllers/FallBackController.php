@@ -6,6 +6,8 @@
 
     namespace WPEmerge\Controllers;
 
+    use Closure;
+    use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Responses\NullResponse;
@@ -13,7 +15,6 @@
     use WPEmerge\Middleware\MiddlewareStack;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Routing\Route;
-    use WPEmerge\Traits\GathersMiddleware;
 
     /**
      *
@@ -26,8 +27,6 @@
      */
     class FallBackController
     {
-
-        use GathersMiddleware;
 
         /**
          * @var ResponseFactory
@@ -47,6 +46,9 @@
          */
         private $middleware_stack;
 
+        /** @var Closure */
+        private $respond_with;
+
         public function __construct(ResponseFactory $response, Pipeline $pipeline, MiddlewareStack $middleware_stack) {
 
             $this->response = $response;
@@ -55,7 +57,7 @@
 
         }
 
-        public function handle(Request $request, AbstractRouteCollection $routes)
+        public function handle(Request $request, AbstractRouteCollection $routes) :ResponseInterface
         {
 
             $possible_routes = collect($routes->withWildCardUrl( $request->getMethod() ) );
@@ -70,22 +72,30 @@
             });
 
 
-            if ( ! $route ) {
+            if ( $route ) {
 
-                return ($this->fallback_handler)
-                    ? call_user_func($this->fallback_handler, $request)
-                    : $this->response->null();
+                $this->respond_with = $this->runRoute($route);
+                $route->instantiateAction();
+
+            } else {
+
+                $this->respond_with = $this->nonMatchingRoute();
 
             }
 
-            $route->instantiateAction();
-
-            $middleware = $this->middleware_stack->createFor($route, $request);
+            $middleware = $route
+                ? $this->middleware_stack->createFor($route, $request)
+                : $this->middleware_stack->onlyGroups(['web'], $request);
 
             return $this->pipeline
                 ->send($request)
                 ->through($middleware)
-                ->then($this->runRoute($route));
+                ->then(function (Request $request) {
+
+                    $response = call_user_func($this->respond_with, $request);
+                    return $this->response->toResponse($response);
+
+                });
 
 
         }
@@ -102,7 +112,7 @@
             $this->fallback_handler = $fallback_handler;
         }
 
-        private function runRoute(Route $route ) : \Closure
+        private function runRoute(Route $route ) : Closure
         {
 
             return function ( Request $request ) use ($route) {
@@ -110,6 +120,19 @@
                 $response = $route->run($request);
 
                 return $this->response->toResponse($response);
+
+            };
+
+        }
+
+        private function nonMatchingRoute() : Closure
+        {
+
+            return function ( Request $request )  {
+
+                return ($this->fallback_handler)
+                    ? call_user_func($this->fallback_handler, $request)
+                    : $this->response->null();
 
             };
 
