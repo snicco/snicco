@@ -84,7 +84,7 @@
 
         }
 
-        public function signed( string $path, $expiration = 300 , $absolute = true, $query = [] ) : string
+        public function signed( string $path, $expiration = 300 , $absolute = false, $query = [] ) : string
         {
 
             if (Url::isValidAbsolute($path)){
