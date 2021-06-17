@@ -42,6 +42,11 @@
            ->middleware(['secure'])
            ->name('reset.password.show');
 
+     $router->get('abc/foo', function () {
+
+         return 'auth';
+
+     });
 
     $router->prefix('auth')->name('auth.confirm')
            ->middleware('secure')
@@ -60,12 +65,12 @@
 
                $router->get('confirm/{user_id}', [ConfirmAuthMagicLinkController::class, 'create'])
                       ->name('magic-login')
-                      ->middleware(['signed', 'auth.unconfirmed']);
+                      ->middleware(['signed:absolute', 'auth.unconfirmed']);
 
            });
 
     $router->get('/auth/logout/{user_id}', LogoutController::class)
-           ->middleware('signed')
+           ->middleware('signed:absolute')
            ->name('auth.logout')
            ->andAlphaNumerical('user_id');
 

@@ -41,7 +41,7 @@
             $this->factory = $factory;
         }
 
-        public function handle(Request $request, Delegate $next)
+        public function handle(Request $request, Delegate $next) :ResponseInterface
         {
 
             $response = $next($request);

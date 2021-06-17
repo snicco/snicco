@@ -17,7 +17,7 @@
 
         public $body;
 
-        public static function fromFullUrl(string $method, string $url) : Request
+        public static function fromFullUrl(string $method, string $url) : TestRequest
         {
 
             $psr17Factory = new Psr17Factory();
@@ -27,7 +27,7 @@
 
         }
 
-        public static function from(string $method, $path, $host = null) : Request
+        public static function from(string $method, $path, $host = null) : TestRequest
         {
 
             $psr17Factory = new Psr17Factory();
@@ -44,7 +44,7 @@
 
         }
 
-        public static function withServerParams(Request $request, array $params) :Request {
+        public static function withServerParams(Request $request, array $params) :TestRequest {
 
             $psr17Factory = new Psr17Factory();
 
@@ -54,5 +54,14 @@
 
         }
 
+        public function withLoadingScript (string $script ) {
+
+            $psr17Factory = new Psr17Factory();
+
+            $request = new TestRequest($psr17Factory->createServerRequest($this->getMethod(), $this->getUri(), ['SCRIPT_NAME' => $script]));
+
+            return $request;
+
+        }
 
     }

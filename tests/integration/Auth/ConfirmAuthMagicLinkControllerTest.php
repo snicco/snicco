@@ -38,7 +38,7 @@
                     'query' => [
                         'intended' => $intended,
                     ],
-                ]);
+                ], 300 , true );
 
         }
 
@@ -74,7 +74,7 @@
             $url = TestApp::routeUrl('auth.confirm.magic-login', ['user_id' => 1]);
 
 
-            $this->runKernel(TestRequest::fromFullUrl('GET', $url));
+            $this->runKernel(TestRequest::from('GET', $url));
 
 
         }
@@ -104,10 +104,10 @@
             $this->newApp();
 
             $this->registerRoutes();
-            $url = $this->createSignedUrl($calvin->ID, 'https://foobar.com?bar=baz');
+            $url = $this->createSignedUrl($calvin->ID, '/settings');
 
             $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
-            HeaderStack::assertHas('Location', 'https://foobar.com?bar=baz');
+            HeaderStack::assertHas('Location', '/settings');
             HeaderStack::assertHasStatusCode(302);
 
             $this->logout($calvin);
@@ -127,16 +127,15 @@
 
             $this->writeToDriver([
                 '_url' => [
-                    'intended' => 'https://intended-url.com'
+                    'intended' => '/settings'
                 ]
             ]);
-
 
             $request = TestRequest::fromFullUrl('GET', $url);
             $request = $this->withSessionCookie($request);
 
             $this->seeKernelOutput('', $request);
-            HeaderStack::assertHas('Location', 'https://intended-url.com');
+            HeaderStack::assertHas('Location', '/settings');
             HeaderStack::assertHasStatusCode(302);
 
             $this->logout($calvin);
@@ -155,7 +154,7 @@
             $url = $this->createSignedUrl($calvin->ID, '');
 
             $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
-            HeaderStack::assertHas('Location', WP::adminUrl());
+            HeaderStack::assertHas('Location', '/wp-admin/');
             HeaderStack::assertHasStatusCode(302);
 
             $this->logout($calvin);
@@ -173,7 +172,7 @@
             $url = $this->createSignedUrl($calvin->ID, '');
 
             $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
-            HeaderStack::assertHas('Location', WP::adminUrl());
+            HeaderStack::assertHas('Location', '/wp-admin/');
             HeaderStack::assertHasStatusCode(302);
 
             $this->assertSame(
@@ -198,7 +197,7 @@
             $url = $this->createSignedUrl($calvin->ID, '');
 
             $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
-            HeaderStack::assertHas('Location', WP::adminUrl());
+            HeaderStack::assertHas('Location', '/wp-admin/');
             HeaderStack::assertHasStatusCode(302);
 
             $this->assertUserLoggedIn($calvin->ID);
@@ -228,7 +227,7 @@
 
 
             $this->seeKernelOutput('', $request);
-            HeaderStack::assertHas('Location', WP::adminUrl());
+            HeaderStack::assertHas('Location', '/wp-admin/');
             HeaderStack::assertHasStatusCode(302);
 
             $this->assertSame('', TestApp::session()->getDriver()->read($this->testSessionId()));
@@ -252,7 +251,7 @@
             });
 
             $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
-            HeaderStack::assertHas('Location', WP::adminUrl());
+            HeaderStack::assertHas('Location', '/wp-admin/');
             HeaderStack::assertHasStatusCode(302);
 
             $this->assertTrue($GLOBALS['test']['auth_cookie']);

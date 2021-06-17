@@ -8,6 +8,9 @@
 
     use Nyholm\Psr7\Factory\Psr17Factory;
     use Nyholm\Psr7\Response;
+    use Tests\helpers\CreateRouteCollection;
+    use Tests\helpers\CreateUrlGenerator;
+    use Tests\UnitTest;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response as AppResponse;
     use Nyholm\Psr7\Stream;
@@ -22,13 +25,16 @@
     use Throwable;
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\ExceptionHandling\Exceptions\HttpException;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Routing\Pipeline;
 
-    class PipelineTest extends TestCase
+    class PipelineTest extends UnitTest
     {
 
         use CreateContainer;
         use AssertsResponse;
+        use CreateUrlGenerator;
+        use CreateRouteCollection;
 
         /**
          * @var Pipeline
@@ -45,7 +51,9 @@
 
             parent::setUp();
 
-            $this->pipeline = new Pipeline($this->createContainer(), new PipelineTestErrorHandler() );
+            $c = $this->createContainer();
+            $c->instance(ResponseFactory::class, $this->createResponseFactory());
+            $this->pipeline = new Pipeline($c, new PipelineTestErrorHandler() );
 
             $factory = new Psr17Factory();
 

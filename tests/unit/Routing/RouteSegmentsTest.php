@@ -224,10 +224,12 @@
         public function optional_params_can_match_only_with_trailing_slash_if_desired()
         {
 
+            WP::shouldReceive('usesTrailingSlashes')->andReturnTrue();
+
             $this->createRoutes(function () {
 
                 // Preceding group is required but not capturing
-                $this->router->post('/users/{name?}/{gender?}/{age?}')
+                $this->router->post('/users/{name?}/{gender?}/{age?}/')
                              ->handle(function (Request $request, $name = 'john', $gender = 'm', $age = '21') {
 
                                  return $name.':'.$gender.':'.$age;

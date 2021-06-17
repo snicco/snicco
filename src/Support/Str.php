@@ -49,5 +49,10 @@
 
 		}
 
+        public static function doesNotEndWith(string $path, string $string) : bool
+        {
+            return ! static::endsWith($path, $string);
+        }
 
-	}
+
+    }

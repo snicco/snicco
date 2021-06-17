@@ -86,7 +86,9 @@
             $this->always_with_global_middleware = true;
         }
 
-
+        public function withPriority( array $priority) {
+            $this->priority_map = array_merge($this->priority_map, $priority);
+        }
 
         public function run(IncomingRequest $request_event) : void
         {

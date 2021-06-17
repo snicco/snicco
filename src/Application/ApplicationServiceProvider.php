@@ -10,6 +10,7 @@
     use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewFactoryInterface;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Redirector;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Session\Encryptor;
@@ -56,6 +57,8 @@
         private function bindConfig()
         {
 
+            $this->config->set('root_dir', dirname(__FILE__, 3) );
+
             $this->container->instance('request.type', $this->requestType());
 
             $this->config->extend('app_key', '');
@@ -65,6 +68,8 @@
                 define('WPEMERGE_RUNNING_UNIT_TESTS', false);
 
             }
+
+            $this->config->set('_siteurl', WP::siteUrl());
 
         }
 

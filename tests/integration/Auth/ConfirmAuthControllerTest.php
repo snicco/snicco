@@ -134,7 +134,7 @@
 
             $this->assertOutputNotContains('confirmation email', $this->getRequest());
 
-            $expected_redirect_url = 'https://foo.com/login?redirect_to=https%3A%2F%2Ffoo.com%2Fauth%2Fconfirm';
+            $expected_redirect_url = '/login?redirect_to=%2Fauth%2Fconfirm';
 
             HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $expected_redirect_url);
@@ -219,7 +219,7 @@
             // this failed attempt will log the user out.
             $this->assertOutput('', $post_request);
             HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertHas('Location', 'https://foo.com/login?redirect_to=https%3A%2F%2Ffoo.com%2Fauth%2Fconfirm');
+            HeaderStack::assertHas('Location', '/login?redirect_to=%2Fauth%2Fconfirm');
             HeaderStack::reset();
 
             $this->assertUserLoggedOut();
@@ -252,7 +252,7 @@
 
             $this->assertOutput('', $post_request);
             HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertHas('Location', 'https://foo.com/login?redirect_to=https%3A%2F%2Ffoo.com%2Fauth%2Fconfirm');
+            HeaderStack::assertHas('Location', '/login?redirect_to=%2Fauth%2Fconfirm');
 
 
             $this->assertSame('', $this->readFromDriver($this->testSessionId()));
@@ -647,7 +647,7 @@
 
             $session = $this->getSession();
             $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
-            $session->setIntendedUrl('https://intended.com');
+            $session->setIntendedUrl('/intended-page');
             $post_request = $this->postRequest($email, $csrf);
 
             $this->runKernel($post_request);
@@ -661,7 +661,7 @@
             $this->assertOutput('', $get_request);
 
             HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertHas('Location', 'https://intended.com');
+            HeaderStack::assertHas('Location', '/intended-page');
 
             $this->assertUserLoggedIn($calvin);
 
@@ -686,7 +686,7 @@
 
             $this->assertOutput('', $get_request);
             HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertHas('Location', WP::adminUrl());
+            HeaderStack::assertHas('Location', '/wp-admin');
 
             Carbon::setTestNow();
 
@@ -713,7 +713,7 @@
 
             $this->assertOutput('', $post_request);
             HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertHas('Location', WP::adminUrl());
+            HeaderStack::assertHas('Location', '/wp-admin');
             HeaderStack::reset();
             Carbon::setTestNow();
 

@@ -7,6 +7,7 @@
     namespace WPEmerge\Auth\Middleware;
 
     use Carbon\Carbon;
+    use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Delegate;
@@ -17,23 +18,18 @@
     class AuthUnconfirmed extends Middleware
     {
 
-        /**
-         * @var ResponseFactory
-         */
-        private $response_factory;
 
         /**
          * @var string
          */
         private $url;
 
-        public function __construct(ResponseFactory $response_factory, $url = 'admin')
+        public function __construct( $url = 'admin')
         {
-            $this->response_factory = $response_factory;
             $this->url = $url;
         }
 
-        public function handle(Request $request, Delegate $next)
+        public function handle(Request $request, Delegate $next):ResponseInterface
         {
 
             $session = $request->session();

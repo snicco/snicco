@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Middleware\Core;
 
+    use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Delegate;
@@ -26,7 +27,7 @@
         }
 
 
-        public function handle(Request $request, Delegate $next)
+        public function handle(Request $request, Delegate $next):ResponseInterface
         {
 
             $route_result = $this->routes->match($request);

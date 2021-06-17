@@ -29,4 +29,9 @@
 
         }
 
+        public function getArguments(Request $request) : array
+        {
+            return [];
+        }
+
     }

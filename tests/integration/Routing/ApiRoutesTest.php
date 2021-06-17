@@ -158,7 +158,7 @@
             $this->factory = $factory;
         }
 
-        public function handle(Request $request, Delegate $next)
+        public function handle(Request $request, Delegate $next):ResponseInterface
         {
             return $this->factory->make(403)->html($this->factory->createStream('you cant access this api endpoint.'));
         }

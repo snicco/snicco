@@ -93,7 +93,7 @@
                 $this->session->invalidate();
                 WP::logout();
 
-                return $this->response_factory->redirectToLogin(true, $request->fullUrl());
+                return $this->response_factory->redirectToLogin(true, $request->path());
 
             }
 
@@ -129,9 +129,7 @@
                 $this->session->put('auth.confirm.email.last_recipient', $email);
                 $this->session->increment('auth.confirm.email.count');
                 $this->session->forget('auth.confirm.attempts');
-
                 $redirect->with('auth.confirm.success', 'Success: A confirmation email was send to: '.$email);
-
 
             }
             else {

@@ -9,9 +9,12 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
+    use WPEmerge\Middleware\Core\OpenRedirectProtection;
     use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Middleware\MiddlewareStack;
     use WPEmerge\Middleware\Secure;
+    use WPEmerge\Middleware\TrailingSlash;
+    use WPEmerge\Middleware\Www;
     use WPEmerge\Routing\Pipeline;
 
     class MiddlewareServiceProviderTest extends IntegrationTest
@@ -41,10 +44,10 @@
 
             $groups = TestApp::config('middleware.groups');
 
-            $this->assertSame([], $groups['web']);
+            $this->assertSame([TrailingSlash::class, Www::class], $groups['web']);
             $this->assertSame([], $groups['ajax']);
             $this->assertSame([], $groups['admin']);
-            $this->assertSame([Secure::class], $groups['global']);
+            $this->assertSame([Secure::class, OpenRedirectProtection::class], $groups['global']);
 
 
         }
@@ -56,7 +59,7 @@
 
             $priority = TestApp::config('middleware.priority');
 
-            $this->assertSame([Secure::class], $priority);
+            $this->assertSame([Secure::class, Www::class, TrailingSlash::class ], $priority);
 
 
         }
@@ -73,8 +76,6 @@
 
 
         }
-
-
 
         /** @test */
         public function all_services_are_built_correctly () {
@@ -99,6 +100,15 @@
             $this->assertInstanceOf(Pipeline::class, $pipeline2);
 
             $this->assertNotSame($pipeline1, $pipeline2);
+
+        }
+
+        /** @test */
+        public function the_open_redirect_middleware_can_be_resolved () {
+
+            $this->newTestApp();
+
+            $this->assertInstanceOf(OpenRedirectProtection::class, TestApp::resolve(OpenRedirectProtection::class));
 
         }
 

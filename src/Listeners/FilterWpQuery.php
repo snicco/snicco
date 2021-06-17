@@ -9,6 +9,7 @@
     use BetterWpHooks\Traits\ListensConditionally;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Events\WpQueryFilterable;
+    use WPEmerge\Facade\WP;
 
     class FilterWpQuery
     {
@@ -31,16 +32,19 @@
 
             $match = $this->routes->matchForQueryFiltering($request);
 
-            if ( $match->route() ) {
+            if ( ! $match->route() ) {
 
-                return $match->route()->filterWpQuery(
-                    $query_filterable->currentQueryVars(),
-                    $match->capturedUrlSegmentValues()
-                );
+                return $query_filterable->currentQueryVars();
 
             }
 
-            return $query_filterable->currentQueryVars();
+            $this->removeUnneededFilters();
+
+            return $match->route()->filterWpQuery(
+                $query_filterable->currentQueryVars(),
+                $match->capturedUrlSegmentValues()
+            );
+
 
         }
 
@@ -49,5 +53,14 @@
         {
            return $event->server_request->isReadVerb();
         }
+
+        private function removeUnneededFilters()
+        {
+            WP::removeFilter('template_redirect', 'redirect_canonical');
+            WP::removeFilter('template_redirect', 'rest_output_link_header');
+            WP::removeFilter('template_redirect', 'wp_old_slug_redirect');
+
+        }
+
 
     }

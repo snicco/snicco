@@ -64,7 +64,13 @@
         public function the_route_can_not_be_accessed_without_a_valid_signature() {
 
 
-            $request = TestRequest::from('GET', '/auth/logout/1');
+            $calvin = $this->newAdmin();
+            $this->login($calvin);
+
+
+            $url = $this->url->signedRoute('auth.logout', ['user_id' => $calvin->ID], 300, true  );
+
+            $request = TestRequest::fromFullUrl('GET', $url. 'a');
             $this->rebindRequest($request);
 
             $this->expectException(InvalidSignatureException::class);
@@ -82,7 +88,7 @@
 
             $john = $this->newAdmin();
 
-            $url = $this->url->signedRoute('auth.logout', ['user_id' => $john->ID] );
+            $url = $this->url->signedRoute('auth.logout', ['user_id' => $john->ID], 300, true  );
 
             $request = TestRequest::fromFullUrl('GET', $url);
             $this->rebindRequest($request);
@@ -103,7 +109,7 @@
             $this->login($calvin);
             $this->assertUserLoggedIn($calvin);
 
-            $url = $this->url->signedRoute('auth.logout', ['user_id' => $calvin->ID] );
+            $url = $this->url->signedRoute('auth.logout', ['user_id' => $calvin->ID], 300, true  );
 
             $request = TestRequest::fromFullUrl('GET', $url);
             $this->rebindRequest($request);
@@ -129,7 +135,7 @@
             $this->login($calvin);
             $this->assertUserLoggedIn($calvin);
 
-            $url = $this->url->signedRoute('auth.logout', ['user_id' => $calvin->ID, 'query' => ['redirect_to' => '/foo']] );
+            $url = $this->url->signedRoute('auth.logout', ['user_id' => $calvin->ID, 'query' => ['redirect_to' => '/foo']], 300, true );
 
             $request = TestRequest::fromFullUrl('GET', $url);
             $this->rebindRequest($request);
@@ -153,12 +159,11 @@
             $calvin = $this->newAdmin();
             $this->login($calvin);
 
-
             $session = TestApp::session();
             $array_handler = $session->getDriver();
             $array_handler->write($this->testSessionId(), serialize(['foo' => 'bar']));
 
-            $url = $this->url->signedRoute('auth.logout', ['user_id' => $calvin->ID, 'query' => ['redirect_to' => '/foo']] );
+            $url = $this->url->signedRoute('auth.logout', ['user_id' => $calvin->ID, 'query' => ['redirect_to' => '/foo']], 300, true);
             $request = TestRequest::fromFullUrl('GET', $url);
             $request = $request->withAddedHeader('Cookie', 'wp_mvc_session='.$this->testSessionId() );
             $this->rebindRequest($request);

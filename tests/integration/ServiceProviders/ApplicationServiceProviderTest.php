@@ -127,8 +127,8 @@
         public function a_named_route_url_can_be_aliased()
         {
 
-            $expected = Url::addTrailing(SITE_URL).'alias/get';
-            $this->assertSame($expected, trim(TestApp::routeUrl('alias.get'), '/'));
+            $expected = '/alias/get';
+            $this->assertSame($expected, TestApp::routeUrl('alias.get'));
 
         }
 

@@ -113,10 +113,10 @@
         {
 
             $url = $this->newUrlGenerator()->to('base#section');
-            $this->seeUrl('/base#section', $url);
+            $this->assertSame('/base#section', $url);
 
             $url = $this->newUrlGenerator()->to('base#section', ['foo' => 'bar', 'baz' => 'biz']);
-            $this->seeUrl('/base?foo=bar&baz=biz#section', $url);
+            $this->assertSame('/base?foo=bar&baz=biz#section', $url);
 
         }
 
@@ -144,7 +144,7 @@
 
             $url = $g->toRoute('foo', ['bar'=>'bar', 'query'=>['name'=>'calvin']]);
 
-            $this->seeUrl('/foo/bar?name=calvin', $url);
+            $this->assertSame('/foo/bar?name=calvin', $url);
 
         }
 
@@ -165,7 +165,7 @@
 
             $g = $this->newUrlGenerator($this->app_key);
 
-            $url = $g->signed('foo');
+            $url = $g->signed('foo', 300 , true );
 
             $parts = parse_url($url);
             $query = explode('&', $parts['query']);
@@ -212,8 +212,6 @@
             $parts = parse_url($url);
             $query = explode('&', $parts['query']);
 
-            $this->assertSame('https', $parts['scheme']);
-            $this->assertStringEndsWith($parts['host'], trim(SITE_URL, '/'));
             $this->assertSame('/foo', $parts['path']);
             $this->assertSame('expires='.Carbon::now()->addSeconds(500)->getTimestamp(), $query[0]);
             $this->assertStringContainsString('signature', $query[1]);
@@ -227,7 +225,7 @@
             $url = $g->signed('/foo');
 
 
-            $this->assertTrue($this->magic_link->hasValidSignature(TestRequest::fromFullUrl('GET', $url )));
+            $this->assertTrue($this->magic_link->hasValidSignature(TestRequest::from('GET', $url )));
 
         }
 
@@ -235,11 +233,11 @@
         public function a_relative_signed_url_can_be_validated () {
 
             $g = $this->newUrlGenerator($this->app_key);
-            $rel_url = $g->signed('/foo', 300, false);
+            $rel_url = $g->signed('/foo', 300);
 
             // Full url check fails
             $request = TestRequest::fromFullUrl('GET',  trim(SITE_URL, '/') . '/' . trim($rel_url, '/'));
-            $this->assertFalse($this->magic_link->hasValidSignature($request));
+            $this->assertFalse($this->magic_link->hasValidSignature($request, true ));
 
             // rel url check works
             $this->assertTrue($this->magic_link->hasValidRelativeSignature($request));
@@ -252,8 +250,8 @@
             $g = $this->newUrlGenerator($this->app_key);
             $url = $g->signed('/foo');
 
-            $this->assertTrue($this->magic_link->hasValidSignature(TestRequest::fromFullUrl('GET', $url )));
-            $this->assertFalse($this->magic_link->hasValidSignature(TestRequest::fromFullUrl('GET', $url. 'a')));
+            $this->assertTrue($this->magic_link->hasValidSignature(TestRequest::from('GET', $url )));
+            $this->assertFalse($this->magic_link->hasValidSignature(TestRequest::from('GET', $url. 'a')));
 
         }
 
@@ -285,9 +283,8 @@
 
             $this->routes->add($route);
 
-            $url = $g->signedRoute('foo', ['bar'=>'bar'], 300, true);
+            $url = $g->signedRoute('foo', ['bar'=>'bar']);
 
-            $this->assertStringStartsWith(SITE_URL . '/foo/bar', $url);
             $this->assertStringContainsString('?expires='. Carbon::now()->addSeconds(300)->getTimestamp(), $url);
             $this->assertStringContainsString('&signature=', $url);
 
@@ -309,7 +306,7 @@
 
             $this->routes->add($route);
 
-            $rel_url = $g->signedRoute('foo', ['bar'=>'bar'], 300, false);
+            $rel_url = $g->signedRoute('foo', ['bar'=>'bar']);
 
             $this->assertStringStartsWith('/foo/bar', $rel_url);
             $this->assertStringContainsString('?expires='. Carbon::now()->addSeconds(300)->getTimestamp(), $rel_url);
@@ -318,7 +315,7 @@
             $request = TestRequest::fromFullUrl('GET',  SITE_URL . '/' . trim($rel_url, '/'));
 
             // Full url check fails
-            $this->assertFalse($this->magic_link->hasValidSignature($request));
+            $this->assertFalse($this->magic_link->hasValidSignature($request, true ));
 
             // modified url fails
             $wrong_request = TestRequest::fromFullUrl('GET',  SITE_URL . '/' . trim($rel_url. 'a', '/'));
@@ -340,20 +337,19 @@
 
             $this->routes->add($route);
 
-            $url = $g->signedRoute('foo', ['bar'=>'bar', 'query'=>['name'=>'calvin']], 300, true);
+            $url = $g->signedRoute('foo', ['bar'=>'bar', 'query'=>['name'=>'calvin']]);
 
-            $this->assertStringStartsWith(SITE_URL . '/foo/bar', $url);
             $this->assertStringContainsString('?expires='. Carbon::now()->addSeconds(300)->getTimestamp(), $url);
             $this->assertStringContainsString('&signature=', $url);
             $this->assertStringContainsString('&name=calvin', $url);
 
-            $this->assertTrue($this->magic_link->hasValidSignature(TestRequest::fromFullUrl('GET', $url)));
+            $this->assertTrue($this->magic_link->hasValidSignature(TestRequest::from('GET', $url)));
 
-            $this->assertFalse($this->magic_link->hasValidSignature(TestRequest::fromFullUrl('GET', $url. 'a')));
+            $this->assertFalse($this->magic_link->hasValidSignature(TestRequest::from('GET', $url. 'a')));
 
             $url_with_wrong_query_value = str_replace('name=calvin', 'name=john', $url);
 
-            $this->assertFalse($this->magic_link->hasValidSignature(TestRequest::fromFullUrl('GET', $url_with_wrong_query_value)));
+            $this->assertFalse($this->magic_link->hasValidSignature(TestRequest::from('GET', $url_with_wrong_query_value)));
 
         }
 
