@@ -14,6 +14,7 @@
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use WPEmerge\Auth\AuthServiceProvider;
+    use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
     use WPEmerge\ExceptionHandling\Exceptions\NotFoundException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Routing\UrlGenerator;
@@ -32,7 +33,7 @@
             /** @var UrlGenerator $url */
             $url = TestApp::resolve(UrlGenerator::class);
 
-            return $url->signedRoute('auth.confirm.magic-login',
+            return $url->signedRoute('auth.confirm.store',
                 [
                     'user_id' => $user_id,
                     'query' => [
@@ -58,11 +59,17 @@
                     'enable' => false,
                 ],
             ]);
+
+
+
         }
 
         /** @test */
         public function the_route_cant_be_accessed_without_valid_signature()
         {
+
+            $calvin = $this->newAdmin();
+            $this->login($calvin);
 
             $this->expectException(InvalidSignatureException::class);
 
@@ -70,9 +77,8 @@
 
             $this->withoutExceptionHandling();
 
-            $this->registerRoutes();
-            $url = TestApp::routeUrl('auth.confirm.magic-login', ['user_id' => 1]);
-
+            $this->registerAndRunApiRoutes();
+            $url = TestApp::routeUrl('auth.confirm.store', ['user_id' => 1]);
 
             $this->runKernel(TestRequest::from('GET', $url));
 
@@ -80,18 +86,42 @@
         }
 
         /** @test */
-        public function a_404_exception_is_created_for_user_ids_that_dont_exist()
-        {
-
-            $this->expectException(NotFoundException::class);
+        public function the_route_cant_be_accessed_without_being_logged_in () {
 
             $this->newApp();
+
             $this->withoutExceptionHandling();
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
+            $url = TestApp::url()->signedRoute('auth.confirm.store', ['user_id' => 1], 300, true );
+
+
+            $output = $this->runKernel(TestRequest::fromFullUrl('GET', $url));
+            $this->assertSame('',$output);
+            HeaderStack::assertHasStatusCode(302);
+
+            $expected = '/auth/login?redirect_to=' . urlencode('/auth/confirm/1?expires');
+
+            HeaderStack::assertContains('Location', $expected);
+
+        }
+
+        /** @test */
+        public function a_403_exception_is_created_for_user_ids_that_dont_match_the_signature()
+        {
+
+            $calvin = $this->newAdmin();
+            $this->login($calvin);
+
+            $this->expectException(AuthorizationException::class);
+
+            $this->newApp();
+
+            $this->registerAndRunApiRoutes();
             $url = $this->createSignedUrl(999);
 
             $this->runKernel(TestRequest::fromFullUrl('GET', $url));
+            HeaderStack::assertHasStatusCode(403);
 
         }
 
@@ -103,7 +133,7 @@
             $this->login($calvin);
             $this->newApp();
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
             $url = $this->createSignedUrl($calvin->ID, '/settings');
 
             $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
@@ -122,7 +152,7 @@
             $this->login($calvin);
             $this->newApp();
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
             $url = $this->createSignedUrl($calvin->ID, '');
 
             $this->writeToDriver([
@@ -150,7 +180,7 @@
             $this->login($calvin);
             $this->newApp();
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
             $url = $this->createSignedUrl($calvin->ID, '');
 
             $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
@@ -168,7 +198,7 @@
             $this->login($calvin);
             $this->newApp();
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
             $url = $this->createSignedUrl($calvin->ID, '');
 
             $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
@@ -184,34 +214,13 @@
 
         }
 
-        /** @test */
-        public function a_user_that_is_not_logged_in_gets_logged_in () {
-
-            $calvin = $this->newAdmin();
-
-            $this->assertUserLoggedOut();
-
-            $this->newApp();
-
-            $this->registerRoutes();
-            $url = $this->createSignedUrl($calvin->ID, '');
-
-            $this->seeKernelOutput('', TestRequest::fromFullUrl('GET', $url));
-            HeaderStack::assertHas('Location', '/wp-admin/');
-            HeaderStack::assertHasStatusCode(302);
-
-            $this->assertUserLoggedIn($calvin->ID);
-
-            $this->logout($calvin);
-
-
-        }
 
         /** @test */
         public function the_current_session_is_migrated()
         {
 
             $calvin = $this->newAdmin();
+            $this->login($calvin);
 
             $this->newApp();
 
@@ -219,8 +228,8 @@
                 'foo' => 'bar'
             ]);
 
-            $this->registerRoutes();
-            $url = $this->createSignedUrl($calvin->ID, '');
+            $this->registerAndRunApiRoutes();
+            $url = $this->createSignedUrl($calvin->ID, '' );
 
             $request = TestRequest::fromFullUrl('GET', $url);
             $request = $this->withSessionCookie($request);
@@ -240,10 +249,11 @@
         public function the_wp_auth_cookie_is_set () {
 
             $calvin = $this->newAdmin();
+            $this->login($calvin);
 
             $this->newApp();
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
             $url = $this->createSignedUrl($calvin->ID, '');
 
             add_action('set_auth_cookie', function () {

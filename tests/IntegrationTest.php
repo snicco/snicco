@@ -192,7 +192,7 @@
 
         }
 
-        protected function registerRoutes() {
+        protected function registerAndRunApiRoutes() {
             do_action('init');
         }
 

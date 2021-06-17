@@ -16,12 +16,12 @@
     use WPEmerge\Auth\AuthServiceProvider;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Auth\Controllers\ConfirmAuthController;
+    use WPEmerge\Auth\Controllers\AuthConfirmationController;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
 
-    class ConfirmAuthControllerTest extends IntegrationTest
+    class AuthConfirmationControllerTest extends IntegrationTest
     {
 
         use InteractsWithWordpress;
@@ -99,7 +99,7 @@
          *
          *
          * @show
-         * @see ConfirmAuthController::show()
+         * @see AuthConfirmationController::create()
          *
          *
          *
@@ -113,8 +113,8 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
-            $this->registerRoutes();
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->assertOutputContains('confirmation email', $this->getRequest());
 
@@ -130,7 +130,7 @@
         {
 
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->assertOutputNotContains('confirmation email', $this->getRequest());
 
@@ -149,7 +149,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $expected = '/auth/confirm';
 
@@ -170,7 +170,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->assertOutputContains('csrf_name', $this->getRequest());
             $this->assertOutputContains('csrf_value', $this->getRequest());
@@ -191,7 +191,7 @@
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->writeToDriver([
                 'csrf' => $csrf = ['csrf_secret_name' => 'csrf_secret_value'],
@@ -234,7 +234,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->writeToDriver([
                 'csrf' => $csrf = ['csrf_secret_name' => 'csrf_secret_value'],
@@ -266,7 +266,7 @@
          *
          *
          * @send
-         * @see ConfirmAuthController::send()
+         * @see AuthConfirmationController::send()
          *
          *
          * FAILED CHECKS
@@ -282,7 +282,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
@@ -303,7 +303,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
@@ -325,7 +325,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
@@ -350,7 +350,7 @@
          *
          *
          * @send
-         * @see ConfirmAuthController::send()
+         * @see AuthConfirmationController::send()
          *
          *
          * PASSING CHECKS
@@ -368,7 +368,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
@@ -390,7 +390,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
             $post_request = $this->postRequest('c@web.de', $csrf);
@@ -453,7 +453,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
@@ -482,7 +482,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
@@ -510,7 +510,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
@@ -537,7 +537,7 @@
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
             $get_request = $this->getRequest();
 
             $this->assertOutputContains('id="send"', $get_request, 'id [send] was not rendered when it should.');
@@ -566,7 +566,7 @@
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->triggerEmailSending($email);
 
@@ -591,7 +591,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $session = $this->getSession();
             $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
@@ -616,7 +616,7 @@
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
             $post_request = $this->postRequest($email, $csrf);
 
@@ -643,7 +643,7 @@
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $session = $this->getSession();
             $session->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
@@ -677,7 +677,7 @@
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $session = $this->getSession();
             $session->put('auth.confirm.until', Carbon::now()->addMinutes(30)->getTimestamp());
@@ -702,7 +702,7 @@
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $session = $this->getSession();
             $session->put('auth.confirm.until', Carbon::now()->addMinutes(30)->getTimestamp());

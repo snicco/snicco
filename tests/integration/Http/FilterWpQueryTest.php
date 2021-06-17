@@ -24,7 +24,7 @@
             parent::setUp();
             $this->newTestApp(TEST_CONFIG);
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
         }
 

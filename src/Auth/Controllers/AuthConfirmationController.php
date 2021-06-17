@@ -24,7 +24,7 @@
 
     use function get_user_by;
 
-    class ConfirmAuthController
+    class AuthConfirmationController
     {
 
         /**
@@ -67,7 +67,7 @@
 
         }
 
-        public function show(CsrfField $csrf_field) : ViewInterface
+        public function create(CsrfField $csrf_field) : ViewInterface
         {
 
             $post_url = $this->url_generator->toRoute('auth.confirm.send', [], true, false);
@@ -142,6 +142,8 @@
 
 
         }
+
+
 
         private function redirectBack(?string $email) : RedirectResponse
         {

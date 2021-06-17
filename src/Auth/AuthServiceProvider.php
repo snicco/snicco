@@ -130,6 +130,13 @@
                 'auth.unconfirmed' => AuthUnconfirmed::class,
             ]);
 
+            $this->config->extend('auth.endpoint', 'auth');
+
+            $this->config->extend('routing.api.endpoints', [
+
+                'auth' =>  $this->config->get('auth.endpoint', )
+
+            ]);
 
         }
 

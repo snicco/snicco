@@ -21,7 +21,7 @@
     use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
     use WPEmerge\Session\SessionServiceProvider;
 
-    class LogoutControllerTest extends IntegrationTest
+    class AuthControllerLogoutTest extends IntegrationTest
     {
 
         use CreateDefaultWpApiMocks;
@@ -49,6 +49,7 @@
             $this->url = TestApp::url();
             /** @var RouteRegistrar $registrar */
             $registrar = TestApp::resolve(RouteRegistrarInterface::class);
+            $registrar->loadApiRoutes(TestApp::config());
             $registrar->loadStandardRoutes(TestApp::config());
             $registrar->loadIntoRouter();
         }

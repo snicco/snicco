@@ -39,7 +39,7 @@
             $this->newTestApp($this->config(), true );
 
             $this->rebindRequest(TestRequest::from('GET', 'error/500'));
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             ob_start();
 
@@ -59,7 +59,7 @@
             $this->newTestApp($this->config(), true );
 
             $this->rebindRequest(TestRequest::from('GET', 'error/419'));
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             ob_start();
 
@@ -79,7 +79,7 @@
             $this->newTestApp($this->config(), true );
 
             $this->rebindRequest(TestRequest::from('GET', 'error/400'));
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             ob_start();
 
@@ -99,7 +99,7 @@
             $this->newTestApp($this->config(), true );
 
             $this->rebindRequest($request = $this->adminRequestTo('error'));
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             ob_start();
 
@@ -119,7 +119,7 @@
             $this->newTestApp($this->config(), true );
 
             $this->rebindRequest(TestRequest::from('GET', 'error/500')->withAddedHeader('Accept', 'application/json'));
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             ob_start();
 
@@ -139,7 +139,7 @@
             $this->newTestApp($this->config(), true );
 
             $this->rebindRequest(TestRequest::from('GET', 'error/fatal'));
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             ob_start();
 

@@ -86,7 +86,7 @@
             $this->newTestApp(TEST_CONFIG);
             $this->rebindRequest(TestRequest::from('GET', 'foo'));
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
 
             global $wp, $wp_query;

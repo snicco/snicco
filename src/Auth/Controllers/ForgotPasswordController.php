@@ -57,7 +57,7 @@
                 'view' => 'auth-forgot-password',
                 'view_factory' => $view_factory,
                 'csrf_field' => $csrf->asHtml(),
-                'post' => $this->url->toRoute('forgot.password.create'),
+                'post' => $this->url->toRoute('auth.forgot.password'),
             ]);
 
         }
@@ -90,7 +90,7 @@
             }
 
             return $response_factory->redirect()
-                                    ->toRoute('forgot.password.show', 302)
+                                    ->toRoute('auth.forgot.password', 302)
                                     ->with('_password_reset_message', $this->success_message);
 
         }
@@ -109,9 +109,10 @@
         {
 
             return $this->url->signedRoute(
-                'reset.password.create',
+                'auth.reset.password',
                 ['query' => ['id' => $user->ID ] ],
-                $this->expiration
+                $this->expiration,
+                true
             );
 
         }

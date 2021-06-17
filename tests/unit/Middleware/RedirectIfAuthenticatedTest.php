@@ -92,15 +92,14 @@
 		public function logged_in_users_are_redirected_to_the_home_url() {
 
 			WP::shouldReceive('isUserLoggedIn')->andReturnTrue();
-			WP::shouldReceive('homeUrl')
-			  ->with('', 'https')
-			  ->andReturn(SITE_URL);
+			WP::shouldReceive('adminUrl')
+			  ->andReturn('/wp-admin');
 
 			$response = $this->newMiddleware()->handle( $this->request, $this->route_action );
 
 			$this->assertInstanceOf( RedirectResponse::class, $response );
 			$this->assertStatusCode( 302, $response );
-			$this->assertSame( '/', $response->getHeaderLine( 'Location' ) );
+			$this->assertSame( '/wp-admin', $response->getHeaderLine( 'Location' ) );
 
 		}
 

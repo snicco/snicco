@@ -23,7 +23,7 @@
 
             $this->newTestApp(TEST_CONFIG);
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
             $this->rebindRequest(TestRequest::from('GET', 'robots.txt'));
 
             TestApp::route()->fallback(function () {
@@ -45,7 +45,7 @@
 
             $this->newTestApp(TEST_CONFIG);
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
             $this->rebindRequest(TestRequest::from('GET', 'sitemap.xml'));
 
             TestApp::route()->fallback(function () {
@@ -84,7 +84,7 @@
 
             $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
             $this->rebindRequest(TestRequest::from('GET', 'bogus'));
 
             ob_start();
@@ -124,7 +124,7 @@
 
             $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
             $this->rebindRequest(TestRequest::from('GET', 'bogus'));
 
             ob_start();
@@ -161,7 +161,7 @@
 
             $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
             $this->rebindRequest(TestRequest::from('GET', 'bogus'));
 
             ob_start();
@@ -200,7 +200,7 @@
                 return 'FOO_FALLBACK';
             });
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
             $this->rebindRequest(TestRequest::from('GET', 'bogus'));
 
             ob_start();
@@ -234,7 +234,7 @@
 
             $GLOBALS['test'][WebMiddleware::run_times] = 0;
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
             $this->rebindRequest(TestRequest::from('GET', 'bogus'));
 
             ob_start();

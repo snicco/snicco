@@ -35,7 +35,7 @@
 
             $this->app = $this->newTestApp(TEST_CONFIG);
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
         }
 
