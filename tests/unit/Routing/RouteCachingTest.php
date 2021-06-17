@@ -11,6 +11,8 @@
     use Tests\fixtures\Conditions\IsPost;
     use Tests\helpers\CreatesWpUrls;
     use Tests\helpers\CreateTestSubjects;
+    use Tests\helpers\CreateUrlGenerator;
+    use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
@@ -23,11 +25,14 @@
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Routing\CachedRouteCollection;
     use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
     use WPEmerge\Listeners\FilterWpQuery;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\Router;
+    use WPEmerge\Routing\UrlGenerator;
+    use WPEmerge\View\ViewFactory;
 
     class RouteCachingTest extends UnitTest
     {
@@ -35,6 +40,8 @@
         use CreateDefaultWpApiMocks;
         use CreateTestSubjects;
         use CreatesWpUrls;
+        use CreateUrlGenerator;
+
 
         /**
          * @var Router
@@ -67,6 +74,10 @@
 
             $this->container = $this->createContainer();
             $this->routes = $this->newRouteCollection();
+
+            $this->container->instance(UrlGenerator::class, $this->newUrlGenerator());
+            $this->container->instance(ViewFactory::class, new TestViewFactory());
+            $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
 
             ApplicationEvent::make($this->container);
             ApplicationEvent::fake();
