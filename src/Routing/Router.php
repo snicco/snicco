@@ -13,6 +13,7 @@
     use WPEmerge\Controllers\RedirectController;
     use WPEmerge\Controllers\ViewController;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Support\Str;
     use WPEmerge\Support\Url;
     use WPEmerge\Traits\HoldsRouteBlueprint;
 
@@ -33,11 +34,17 @@
         /** @var AbstractRouteCollection */
         private $routes;
 
-        public function __construct(ContainerAdapter $container, AbstractRouteCollection $routes)
+        /**
+         * @var bool
+         */
+        private $force_trailing;
+
+        public function __construct(ContainerAdapter $container, AbstractRouteCollection $routes, bool $force_trailing = false )
         {
 
             $this->container = $container;
             $this->routes = $routes;
+            $this->force_trailing = $force_trailing;
 
         }
 
@@ -107,6 +114,8 @@
 
             $url = $this->applyPrefix($path);
 
+            $url = $this->formatTrailing($url);
+
             $route = new Route ($methods, $url, $action);
 
             if ($this->hasGroupStack()) {
@@ -162,7 +171,7 @@
         {
 
             $this->any('/{path}', [FallBackController::class, 'handle'])
-                 ->and('path', '.+')
+                 ->and('path', '[^.]+')
                  ->where(function () {
 
                      return ! WP::isAdmin();
@@ -311,6 +320,21 @@
 
             return $url;
 
+
+        }
+
+        private function formatTrailing(string $url) : string
+        {
+
+            if ( Str::contains($url, WP::wpAdminFolder()) ) {
+                return rtrim($url, '/');
+            }
+
+            if ( ! $this->force_trailing ) {
+                return $url;
+            }
+
+            return Url::addTrailing($url);
 
         }
 

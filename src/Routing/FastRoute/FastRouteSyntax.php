@@ -6,9 +6,9 @@
 
     namespace WPEmerge\Routing\FastRoute;
 
-    use WPEmerge\Routing\CompiledRoute;
     use WPEmerge\Routing\Route;
     use WPEmerge\Support\Str;
+    use WPEmerge\Support\Url;
     use WPEmerge\Support\UrlParser;
 
     class FastRouteSyntax
@@ -18,6 +18,10 @@
         {
 
             $optionals = UrlParser::getOptionalSegments($url_pattern);
+
+            if ( ! count($optionals) ) {
+                return $url_pattern;
+            }
 
             foreach ($optionals as $optional) {
 
@@ -105,21 +109,27 @@
 
         public function convert(Route $route) : string
         {
-            $url = $route->getUrl();
 
-            if ( trim( $url, '/' ) === Route::ROUTE_WILDCARD ) {
+
+            $route_url = $route->getUrl();
+
+            $with_trailing = Str::endsWith($route_url, '/') && Str::doesNotEndWith($route_url, '?}/');
+
+            if ( trim( $route_url, '/' ) === Route::ROUTE_WILDCARD ) {
 
                 $url = '__generated:wp_route_no_url_condition_' . Str::random(16);
 
             }
 
-            $url = $this->convertOptionalSegments($url);
+            $url = $this->convertOptionalSegments($route_url);
 
             foreach ($route->getRegex() as $regex) {
 
                 $url = $this->addCustomRegexToSegments($regex, $url);
 
             }
+
+            $url = $with_trailing ? Url::addTrailing($url) : $url;
 
             if ( $route->needsTrailingSlash() ) {
 

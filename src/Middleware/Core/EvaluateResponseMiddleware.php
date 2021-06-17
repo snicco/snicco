@@ -32,7 +32,7 @@
             $this->must_match_current_request = $must_match_current_request;
         }
 
-        public function handle(Request $request, Delegate $next)
+        public function handle(Request $request, Delegate $next) :ResponseInterface
         {
 
             $response = $next($request);

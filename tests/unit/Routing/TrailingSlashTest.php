@@ -19,7 +19,7 @@
     use WPEmerge\Routing\Conditions\QueryStringCondition;
     use WPEmerge\Routing\Router;
 
-    class RouteRegistrationTest extends UnitTest
+    class TrailingSlashTest extends UnitTest
     {
 
         use CreateTestSubjects;
@@ -68,7 +68,7 @@
 
             });
 
-            $request = new IncomingWebRequest(TestRequest::fromFullUrl('GET', 'https://foobar.com/foo'), 'wp.php' );
+            $request = new IncomingWebRequest(TestRequest::fromFullUrl('GET', 'https://foobar.com/foo'), 'wp.php');
             $this->runAndAssertOutput('FOO', $request);
 
         }
@@ -180,6 +180,49 @@
         }
 
         /** @test */
+        public function routes_with_segments_can_only_match_trailing_slashes () {
+
+            $this->createRoutes(function () {
+
+                $this->router->get('/foo/{bar}/', function (string $bar) {
+
+                    return strtoupper($bar);
+
+                });
+
+            });
+
+            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/bar/');
+            $this->runAndAssertOutput('BAR', new IncomingWebRequest($request, 'wp.php'));
+
+            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/bar');
+            $this->runAndAssertEmptyOutput(new IncomingWebRequest($request, 'wp.php'));
+
+        }
+
+        /** @test */
+        public function the_router_can_be_forced_to_always_add_trailing_slashes_to_routes () {
+
+
+            $this->createRoutes(function () {
+
+                $this->router->get('/foo', function () {
+
+                    return 'FOO';
+
+                });
+
+            }, true );
+
+            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
+            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
+
+            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
+            $this->runAndAssertEmptyOutput(new IncomingWebRequest($request, 'wp.php'));
+
+        }
+
+        /** @test */
         public function url_encoded_routes_work()
         {
 
@@ -199,7 +242,8 @@
         }
 
         /** @test */
-        public function url_encoded_query_string_conditions_work () {
+        public function url_encoded_query_string_conditions_work()
+        {
 
             $this->createRoutes(function () {
 
@@ -212,7 +256,7 @@
             });
 
             $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo?page=bayern münchen');
-            $request = $request->withQueryParams(['page'=>'bayern münchen']);
+            $request = $request->withQueryParams(['page' => 'bayern münchen']);
             $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
 
         }

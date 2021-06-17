@@ -68,7 +68,27 @@
 
         }
 
+        /** @test */
+        public function the_internal_views_are_included () {
 
+            $this->newTestApp();
+
+            $views = TestApp::config('views');
+
+            $this->assertContains(ROOT_DIR . DS.  'resources' . DS . 'views', $views);
+
+        }
+
+        /** @test */
+        public function the_internal_routes_are_included () {
+
+            $this->newTestApp();
+
+            $routes = TestApp::config('routing.definitions');
+
+            $this->assertContains(ROOT_DIR . DS.  'routes', $routes);
+
+        }
 
         /** @test */
         public function the_method_field_can_be_resolved () {

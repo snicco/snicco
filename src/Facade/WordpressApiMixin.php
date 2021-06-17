@@ -33,12 +33,40 @@
         }
 
         /**
+         * @see remove_filter()
+         * @see WordpressApi::removeFilter()
+         */
+        public static function removeFilter(string $tag, callable $function_to_remove, $priority = 10) :bool
+        {
+
+        }
+
+        /**
+         * @see get_bloginfo()
+         * @see WordpressApi::siteUrl
+         */
+        public static function siteUrl() :string
+        {
+        }
+
+        /**
          * @see get_bloginfo()
          * @see WordpressApi::adminEmail
          */
         public static function adminEmail() :string
         {
 
+        }
+
+        /**
+         * Check if trailing slashes are used.
+         *
+         * @see \WP_Rewrite
+         * @see WordpressApi::usesTrailingSlashes
+         *
+         */
+        public static function usesTrailingSlashes() : bool
+        {
         }
 
         /**

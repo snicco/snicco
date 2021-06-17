@@ -63,7 +63,8 @@
 
         }
 
-        private function newMiddleware( string $url = null ) {
+        private function newMiddleware(string $url = null)
+        {
 
             return new Authenticate($this->response, $url);
 
@@ -77,8 +78,8 @@
 
         }
 
-		/** @test */
-		public function logged_in_users_can_access_the_route()
+        /** @test */
+        public function logged_in_users_can_access_the_route()
         {
 
             WP::shouldReceive('isUserLoggedIn')->andReturnTrue();
@@ -89,8 +90,8 @@
 
         }
 
-		/** @test */
-		public function logged_out_users_cant_access_the_route()
+        /** @test */
+        public function logged_out_users_cant_access_the_route()
         {
 
             WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
@@ -102,36 +103,43 @@
 
         }
 
-		/** @test */
-		public function by_default_users_get_redirected_to_wp_login_with_the_current_url_added_to_the_query_args()
+        /** @test */
+        public function by_default_users_get_redirected_to_wp_login_with_the_current_url_added_to_the_query_args()
         {
 
             WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
             WP::shouldReceive('loginUrl')->andReturnUsing(function ($redirect_to) {
 
-                return 'https://foo.com/login?redirect='.$redirect_to;
+                return 'https://foo.com/login?redirect_to='.$redirect_to;
 
             });
 
-            $expected = 'https://foo.com/login?redirect='.$this->request->fullUrl();
+            $enc = urlencode('üäö');
+            $request = TestRequest::fromFullUrl('GET', 'https://foo.com/'.$enc.'?param=1');
 
-            $response = $this->newMiddleware()->handle($this->request, $this->route_action);
+            $response = $this->newMiddleware()->handle($request, $this->route_action);
+
+            $expected = '/login?redirect_to=/'.$enc.'?param=1';
 
             $this->assertSame($expected, $response->getHeaderLine('Location'));
 
 
         }
 
-		/** @test */
-		public function users_can_be_redirected_to_a_custom_url()
+        /** @test */
+        public function users_can_be_redirected_to_a_custom_url()
         {
 
             WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
-            WP::shouldReceive('loginUrl')->times(0);
+            WP::shouldReceive('loginUrl')->andReturnUsing(function ($redirect_to) {
 
-            $expected = 'https://foobarbaz.com';
+                return 'https://foo.com/login?redirect_to='.$redirect_to;
 
-            $response = $this->newMiddleware('https://foobarbaz.com')
+            });
+
+            $expected = '/login?redirect_to=/my-custom-login';
+
+            $response = $this->newMiddleware('/my-custom-login')
                              ->handle($this->request, $this->route_action);
 
             $this->assertSame($expected, $response->getHeaderLine('Location'));
@@ -139,12 +147,14 @@
         }
 
         /** @test */
-        public function json_responses_are_returned_for_ajax_requests () {
+        public function json_responses_are_returned_for_ajax_requests()
+        {
 
             WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
 
             $response = $this->newMiddleware()->handle(
-                $this->request->withAddedHeader('X-Requested-With', 'XMLHttpRequest'),
+                $this->request->withAddedHeader('X-Requested-With', 'XMLHttpRequest')
+                              ->withAddedHeader('Accept', 'application/json'),
                 $this->route_action
             );
 
@@ -154,4 +164,4 @@
 
         }
 
-	}
+    }

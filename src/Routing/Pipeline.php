@@ -16,6 +16,7 @@
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Support\Arr;
     use ReflectionPayload\ReflectionPayload;
 
@@ -47,11 +48,18 @@
          */
         private $middleware = [];
 
+        /**
+         * @var mixed
+         */
+        private $response_factory;
+
         public function __construct(ContainerAdapter $container, ErrorHandlerInterface $error_handler)
         {
 
             $this->container = $container;
             $this->error_handler = $error_handler;
+            $this->response_factory = $this->container->make(ResponseFactory::class);
+
         }
 
         public function send(Request $request) : Pipeline
@@ -193,6 +201,12 @@
             $payload = new ReflectionPayload($middleware, $constructor_args);
 
             $middleware_instance = $this->container->make($middleware, $payload->build());
+
+            if ( method_exists($middleware_instance, 'setResponseFactory')) {
+
+                $middleware_instance->setResponseFactory($this->response_factory);
+
+            }
 
             return $middleware_instance->process($request, $this->nextMiddleware());
 

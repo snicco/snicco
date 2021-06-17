@@ -30,6 +30,32 @@
 
         }
 
+        public function siteUrl() {
+
+            return get_bloginfo('url');
+
+        }
+
+        public function removeFilter(string $tag, $filter, int $priority = 10) : bool
+        {
+
+            return remove_filter($tag, $filter, $priority);
+
+        }
+
+        public static function usesTrailingSlashes() : bool
+        {
+
+            $permalink_structure = get_option( 'permalink_structure' );
+
+            if ( is_bool($permalink_structure) ) {
+                return $permalink_structure;
+            }
+
+            return ( '/' === substr( $permalink_structure, -1, 1 ) );
+
+        }
+
         public function adminEmail() {
 
             return get_bloginfo('admin_email');

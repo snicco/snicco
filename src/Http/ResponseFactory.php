@@ -169,16 +169,24 @@
             return $this->redirector;
         }
 
+        /** NOTE: no formatting is performed on the path. */
+        public function permanentRedirectTo(string $path) : RedirectResponse
+        {
+
+            return $this->redirector->createRedirectResponse($path, 301);
+
+        }
+
         public function redirectToLogin(bool $reauth = false, string $redirect_on_login = '', int $status_code = 302) : RedirectResponse
         {
 
             return $this->redirector->toLogin($redirect_on_login, $reauth, $status_code);
         }
 
-        public function signedLogout(int $user_id, string $redirect_on_logout = '/', $status = 302) : RedirectResponse
+        public function signedLogout(int $user_id, string $redirect_on_logout = '/', $status = 302, int $expiration = 3600 ) : RedirectResponse
         {
 
-            return $this->redirector->signedLogout($user_id, $redirect_on_logout, $status);
+            return $this->redirector->signedLogout($user_id, $redirect_on_logout, $status, $expiration);
 
         }
 

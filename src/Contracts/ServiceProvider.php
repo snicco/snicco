@@ -12,6 +12,7 @@
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
 
@@ -31,6 +32,9 @@
         /** @var Application */
         protected $app;
 
+        /** @var ResponseFactory */
+        protected $response_factory;
+
         public function __construct(ContainerAdapter $container_adapter, ApplicationConfig $config)
         {
 
@@ -39,7 +43,8 @@
 
         }
 
-        public function setApp ( Application $app ) {
+        public function setApp(Application $app)
+        {
 
             $this->app = $app;
 
@@ -97,7 +102,7 @@
 
             }
 
-            if ( mb_strlen($key, '8bit') !== 32  ) {
+            if (mb_strlen($key, '8bit') !== 32) {
 
                 return false;
 
@@ -107,13 +112,15 @@
 
         }
 
-        protected function appKey () {
+        protected function appKey()
+        {
 
             return $this->config->get('app_key');
 
         }
 
-        protected function extendRoutes($routes) {
+        protected function extendRoutes($routes)
+        {
 
             $new_routes = Arr::wrap($routes);
 
@@ -135,6 +142,44 @@
             $views = array_merge($old_views, $views);
             $this->config->set('views', $views);
 
+        }
+
+        protected function withSlashes() : bool
+        {
+
+            $slashes = $this->config->get('routing.trailing_slash');
+
+            if ($slashes === null) {
+
+                $slashes = WP::usesTrailingSlashes();
+
+            }
+
+            return $slashes;
+
+        }
+
+        protected function responseFactory()
+        {
+
+            if ( ! $this->response_factory instanceof ResponseFactory) {
+
+                $factory = $this->container->make(ResponseFactory::class);
+                $this->container->instance(ResponseFactory::class, $factory);
+                $this->response_factory = $factory;
+
+                return $factory;
+
+            }
+
+            return $this->response_factory;
+
+        }
+
+        protected function siteUrl()
+        {
+
+            return $this->config->get('_siteurl');
         }
 
     }

@@ -70,7 +70,8 @@
 
         }
 
-        private function newMiddleware( string $redirect_url = null) {
+        private function newMiddleware( string $redirect_url = null) : RedirectIfAuthenticated
+        {
 
             return new RedirectIfAuthenticated($this->response, $redirect_url);
 
@@ -87,7 +88,6 @@
 
 		}
 
-
 		/** @test */
 		public function logged_in_users_are_redirected_to_the_home_url() {
 
@@ -100,7 +100,7 @@
 
 			$this->assertInstanceOf( RedirectResponse::class, $response );
 			$this->assertStatusCode( 302, $response );
-			$this->assertSame( SITE_URL, $response->getHeaderLine( 'Location' ) );
+			$this->assertSame( '/', $response->getHeaderLine( 'Location' ) );
 
 		}
 
@@ -110,13 +110,13 @@
 			WP::shouldReceive('isUserLoggedIn')->andReturnTrue();
 			WP::shouldReceive('homeUrl')
 			  ->with('', 'https')
-			  ->andReturn('https://example.com/');
+			  ->andReturn(SITE_URL );
 
-            $response = $this->newMiddleware('https://example.com/')
+            $response = $this->newMiddleware('/custom-home-page')
                              ->handle( $this->request, $this->route_action );
 
 			$this->assertInstanceOf( RedirectResponse::class, $response );
-			$this->assertSame( 'https://example.com/', $response->getHeaderLine( 'Location' ) );
+			$this->assertSame( '/custom-home-page', $response->getHeaderLine( 'Location' ) );
 		}
 
 	}

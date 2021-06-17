@@ -18,8 +18,6 @@
 		    return $before . ltrim($new, '/');
 
 
-			// return trim( trim( $before , '/' ) . '/' . trim( $new, '/' ), '/' ) ?: '/';
-
 		}
 
 		public static function combineAbsPath($host, $path) : string
@@ -33,7 +31,8 @@
 
         }
 
-		public static function toRouteMatcherFormat(string $url ) {
+		public static function toRouteMatcherFormat(string $url ) : string
+        {
 
 			return trim($url, '\\/');
 
@@ -78,6 +77,11 @@
 
             return true;
 
+        }
+
+        public static function removeTrailing(string $path) : string
+        {
+            return rtrim($path, '/');
         }
 
     }

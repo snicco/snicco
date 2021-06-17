@@ -12,6 +12,7 @@
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
+    use WPEmerge\Middleware\Core\OpenRedirectProtection;
     use WPEmerge\Middleware\Core\OutputBufferMiddleware;
     use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Routing\Pipeline;
@@ -33,6 +34,12 @@
             $this->bindMiddlewarePipeline();
 
             $this->bindOutputBufferMiddleware();
+
+            $this->bindTrailingSlash();
+
+            $this->bindWww();
+
+            $this->bindOpenRedirectProtection();
 
         }
 
@@ -59,16 +66,19 @@
             $this->config->extend('middleware.groups', [
 
                 'global' => [
-                    Secure::class
+                    Secure::class,
+                    OpenRedirectProtection::class
                 ],
-                'web' => [],
+                'web' => [
+                    TrailingSlash::class,
+                    Www::class,
+                ],
                 'ajax' => [],
                 'admin' => [],
 
             ]);
 
-            $this->config->extend('middleware.priority', [Secure::class]);
-            $this->config->extend('middleware.priority', []);
+            $this->config->extend('middleware.priority', [ Secure::class, Www::class, TrailingSlash::class,]);
             $this->config->extend('middleware.always_run_global', false);
 
 
@@ -154,6 +164,43 @@
 
             });
 
+        }
+
+        private function bindTrailingSlash()
+        {
+
+            $this->container->singleton(TrailingSlash::class, function () {
+
+                    return new TrailingSlash(
+                        $this->withSlashes()
+                    );
+
+            });
+
+        }
+
+        private function bindWww()
+        {
+
+             $this->container->singleton(Www::class, function () {
+
+                 return new Www(
+                     $this->siteUrl()
+                 );
+
+            });
+
+        }
+
+        private function bindOpenRedirectProtection()
+        {
+            $this->container->singleton(OpenRedirectProtection::class, function () {
+
+                return new OpenRedirectProtection(
+                    $this->siteUrl()
+                );
+
+            });
         }
 
 

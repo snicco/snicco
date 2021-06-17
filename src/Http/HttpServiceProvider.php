@@ -59,6 +59,8 @@
 
                 }
 
+                $kernel->withPriority($this->config->get('middleware.priority', []));
+
 
                 return $kernel;
 

@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Middleware;
 
+    use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
@@ -24,13 +25,13 @@
          */
         private $response;
 
-        public function __construct(ResponseFactory $response, string $url = null)
+        public function __construct(ResponseFactory $response, ?string $url = null)
         {
             $this->url = $url;
             $this->response = $response;
         }
 
-        public function handle(Request $request, $next)
+        public function handle(Request $request, $next):ResponseInterface
         {
 
             if ( WP::isUserLoggedIn() ) {
@@ -39,9 +40,7 @@
 
             }
 
-            $url = $this->url ?? WP::loginUrl( $request->fullUrl(), true);
-
-            if ($request->isAjax()) {
+            if ( $request->isExpectingJson() ) {
 
                 return $this->response
                     ->json('Authentication Required')
@@ -49,7 +48,9 @@
 
             }
 
-            return $this->response->redirect()->to($url);
+            $redirect_after_login = $this->url ?? $request->fullPath();
+
+            return $this->response->redirectToLogin(true, $redirect_after_login);
 
 
         }

@@ -89,10 +89,11 @@
 
             $this->registerRoutes();
 
-
             // there is no put route in Routes/web.php
             $this->seeKernelOutput('', TestRequest::from('PUT', 'middleware/foo'));
             $this->assertSame(0, $GLOBALS['test'][GlobalMiddleware::run_times], 'Middleware was run unexpectedly.');
+
+
         }
 
         /** @test */

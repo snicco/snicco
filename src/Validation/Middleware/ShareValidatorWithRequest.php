@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Validation\Middleware;
 
+    use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
@@ -25,7 +26,7 @@
             $this->validator = $validator;
         }
 
-        public function handle(Request $request, Delegate $next)
+        public function handle(Request $request, Delegate $next):ResponseInterface
         {
             return $next($request->withValidator($this->validator));
         }

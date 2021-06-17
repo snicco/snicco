@@ -8,6 +8,7 @@
 
     use Mockery;
     use Tests\fixtures\Conditions\IsPost;
+    use Tests\stubs\HeaderStack;
     use Tests\stubs\TestRequest;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
@@ -115,7 +116,6 @@
             });
 
 
-
             $request = $this->webRequest('GET', 'post1');
             $this->runAndAssertEmptyOutput($request);
 
@@ -142,6 +142,7 @@
             $this->runAndAssertOutput('FOO', $request);
 
         }
+
 
 
     }

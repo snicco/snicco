@@ -12,7 +12,6 @@
     use Tests\UnitTest;
     use Tests\helpers\CreatesWpUrls;
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Events\OutputBufferRequired;
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\ExceptionHandling\Exceptions\RouteLogicException;
     use WPEmerge\Facade\WP;
@@ -49,7 +48,6 @@
             WP::reset();
 
         }
-
 
         /** @test */
         public function ajax_routes_can_be_matched_by_passing_the_action_as_the_route_parameter()
@@ -177,7 +175,6 @@
 
         }
 
-
         /** @test */
         public function ajax_routes_can_be_reversed()
         {
@@ -198,7 +195,7 @@
 
             });
 
-            $expected = $this->ajaxUrl();
+            $expected = '/wp-admin/admin-ajax.php';
 
             $this->assertSame($expected, $this->newUrlGenerator()->toRoute('ajax.foo'));
 
@@ -225,7 +222,7 @@
             });
 
 
-            $expected = $this->ajaxUrl().'?action=foo_action';
+            $expected = '/wp-admin/admin-ajax.php?action=foo_action';
 
             $this->assertSame($expected, $this->newUrlGenerator()
                                               ->toRoute('ajax.foo', ['method' => 'GET']));

@@ -12,6 +12,7 @@
 
         public function __invoke() : bool
         {
+
             return true;
 
         }

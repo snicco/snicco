@@ -258,7 +258,7 @@
             ]);
             $this->registerRoutes();
 
-            $this->assertSame($this->adminUrlTo('foo'), TestApp::routeUrl('admin.foo'));
+            $this->assertSame('/wp-admin/admin.php?page=foo', TestApp::routeUrl('admin.foo'));
 
             Mockery::close();
             WP::reset();
@@ -280,9 +280,7 @@
 
             $this->registerRoutes();
 
-            $expected = $this->ajaxUrl();
-
-            $this->assertSame($expected, TestApp::routeUrl('ajax.foo'));
+            $this->assertSame('/wp-admin/admin-ajax.php', TestApp::routeUrl('ajax.foo'));
 
             Mockery::close();
             WP::reset();

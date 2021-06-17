@@ -32,6 +32,7 @@
 
         }
 
+        /** NOTE: Wordpress always returns these as absolute urls so lets stay compatible */
         public function loginUrl (GenerateLoginUrl $event, UrlGenerator $url) : string
         {
 
@@ -43,16 +44,17 @@
 
             return $url->toRoute('login', [
                 'query' => $query
-            ]);
+            ], true , true );
 
         }
 
+        /** NOTE: Wordpress always returns these as absolute urls so lets stay compatible */
         public function logoutUrl (GenerateLogoutUrl $event, UrlGenerator $url) : string
         {
 
                 $redirect = $event->redirect_to;
 
-                $url = $url->signedLogout(WP::userId(), $redirect);
+                $url = $url->signedLogout(WP::userId(), $redirect );
 
                 return esc_html( $url );
 
