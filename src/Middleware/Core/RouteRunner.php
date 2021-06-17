@@ -8,6 +8,7 @@
 
     use Closure;
     use Contracts\ContainerAdapter;
+    use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
@@ -21,10 +22,7 @@
     class RouteRunner extends Middleware
     {
 
-        /**
-         * @var ResponseFactory
-         */
-        private $response_factory;
+
 
         /**
          * @var Pipeline
@@ -51,7 +49,7 @@
 
         }
 
-        public function handle(Request $request, Delegate $next)
+        public function handle(Request $request, Delegate $next) :ResponseInterface
         {
 
             $this->rebindRequest($request);

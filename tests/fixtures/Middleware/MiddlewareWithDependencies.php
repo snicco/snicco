@@ -6,7 +6,8 @@
 
 	namespace Tests\fixtures\Middleware;
 
-	use Tests\fixtures\TestDependencies\Bar;
+	use Psr\Http\Message\ResponseInterface;
+    use Tests\fixtures\TestDependencies\Bar;
 	use Tests\fixtures\TestDependencies\Foo;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Psr7\Request;
@@ -27,7 +28,7 @@
 
 		}
 
-		public function handle(Request $request, Delegate $next ) {
+		public function handle(Request $request, Delegate $next ) :ResponseInterface{
 
 			$request->body = $this->foo->foo . $this->bar->bar;
 

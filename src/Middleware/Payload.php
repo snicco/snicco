@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Middleware;
 
+    use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\StreamInterface;
     use RuntimeException;
     use WPEmerge\Contracts\Middleware;
@@ -48,7 +49,7 @@
             return $this;
         }
 
-        public function handle(Request $request, Delegate $next)
+        public function handle(Request $request, Delegate $next):ResponseInterface
         {
 
             if ( ! $this->shouldParseRequest($request) ) {

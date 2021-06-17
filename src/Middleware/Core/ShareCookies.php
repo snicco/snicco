@@ -16,7 +16,7 @@
     class ShareCookies extends Middleware
     {
 
-        public function handle(Request $request, Delegate $next)
+        public function handle(Request $request, Delegate $next) :ResponseInterface
         {
 
             $response = $next($request);

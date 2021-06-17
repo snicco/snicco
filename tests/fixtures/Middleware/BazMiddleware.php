@@ -6,7 +6,8 @@
 
 	namespace Tests\fixtures\Middleware;
 
-	use Tests\fixtures\TestDependencies\Bar;
+	use Psr\Http\Message\ResponseInterface;
+    use Tests\fixtures\TestDependencies\Bar;
     use Tests\fixtures\TestDependencies\Baz;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Psr7\Request;
@@ -23,7 +24,7 @@
             $this->baz = $baz;
         }
 
-        public function handle( Request $request, $next ) {
+        public function handle( Request $request, $next ) :ResponseInterface {
 
 			if ( isset( $request->body ) ) {
 

@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Middleware;
 
+    use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
@@ -30,7 +31,7 @@
             $this->response = $response;
         }
 
-        public function handle(Request $request, $next)
+        public function handle(Request $request, $next):ResponseInterface
         {
 
             if ( WP::isUserLoggedIn() ) {

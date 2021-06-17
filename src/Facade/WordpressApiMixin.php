@@ -45,7 +45,7 @@
          * @see get_bloginfo()
          * @see WordpressApi::siteUrl
          */
-        public static function siteUrl()
+        public static function siteUrl() :string
         {
         }
 

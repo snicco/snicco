@@ -12,8 +12,17 @@
     use Psr\Http\Server\RequestHandlerInterface;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Delegate;
+    use WPEmerge\Http\ResponseFactory;
 
     abstract class Middleware implements MiddlewareInterface {
+
+
+        /** @var ResponseFactory */
+        protected $response_factory;
+
+        public function setResponseFactory(ResponseFactory $response_factory) {
+            $this->response_factory = $response_factory;
+        }
 
         /**
          * @param  Request  $request
@@ -21,7 +30,7 @@
          *
          * @return ResponseInterface
          */
-        abstract public function handle ( Request $request, Delegate $next );
+        abstract public function handle ( Request $request, Delegate $next ) :ResponseInterface;
 
         /**
          * @param  Request  $request

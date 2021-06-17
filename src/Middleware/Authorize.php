@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Middleware;
 
+    use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
     use WPEmerge\Facade\WP;
@@ -39,7 +40,7 @@
 
         }
 
-        public function handle(Request $request, $next)
+        public function handle(Request $request, $next):ResponseInterface
         {
 
             $args = [];

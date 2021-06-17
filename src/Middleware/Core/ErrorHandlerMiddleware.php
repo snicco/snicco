@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Middleware\Core;
 
+    use Psr\Http\Message\ResponseInterface;
     use Throwable;
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\Middleware;
@@ -28,7 +29,7 @@
 
         }
 
-        public function handle(Request $request, Delegate $next)
+        public function handle(Request $request, Delegate $next) : ResponseInterface
         {
 
             try {

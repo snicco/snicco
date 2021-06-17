@@ -18,6 +18,8 @@
 		public function register() : void {
 
 
+		    $this->extendViews($this->config->get('root_dir') . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'views');
+		    $this->extendRoutes($this->config->get('root_dir') . DIRECTORY_SEPARATOR . 'routes');
 
 		    $this->bindMethodField();
 
