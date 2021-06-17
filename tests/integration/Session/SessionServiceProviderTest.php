@@ -131,6 +131,54 @@
         }
 
         /** @test */
+        public function the_default_idle_timeout_is_thirty_minutes () {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ],
+            ]);
+
+            $this->assertSame(1800, TestApp::config('session.idle'));
+
+        }
+
+        /** @test */
+        public function the_default_absolute_timeout_is_eight_hours () {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ],
+            ]);
+
+            $this->assertSame(28800, TestApp::config('session.lifetime'));
+
+        }
+
+        /** @test */
+        public function the_rotation_timeout_is_half_of_the_absolute_timeout_by_default () {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ],
+            ]);
+
+            $this->assertSame(14400, TestApp::config('session.rotate'));
+
+        }
+
+        /** @test */
         public function the_default_lottery_chance_is_2_percent()
         {
 
