@@ -93,7 +93,6 @@
             $this->container->singleton(ConfirmAuthMagicLinkController::class, function () {
 
                 return new ConfirmAuthMagicLinkController(
-                    $this->container->make(ResponseFactory::class),
                     $this->config->get('session.auth_confirmed_lifetime')
                 );
 

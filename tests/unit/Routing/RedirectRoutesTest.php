@@ -9,15 +9,20 @@
     use Contracts\ContainerAdapter;
     use Mockery;
     use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateTestSubjects;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\HeaderStack;
+    use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Redirector;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Routing\Router;
+    use WPEmerge\Routing\UrlGenerator;
+    use WPEmerge\View\ViewFactory;
 
     class RedirectRoutesTest extends UnitTest
     {
@@ -39,6 +44,9 @@
 
             $this->container = $this->createContainer();
             $this->routes = $this->newRouteCollection();
+            $this->container->instance(UrlGenerator::class, $this->newUrlGenerator());
+            $this->container->instance(ViewFactory::class, new TestViewFactory());
+            $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
             ApplicationEvent::make($this->container);
             ApplicationEvent::fake();
             WP::setFacadeContainer($this->container);

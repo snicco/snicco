@@ -10,20 +10,26 @@
     use Mockery;
     use Tests\fixtures\Middleware\GlobalMiddleware;
     use Tests\helpers\CreateTestSubjects;
+    use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\HeaderStack;
+    use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Routing\Router;
     use Tests\helpers\CreateDefaultWpApiMocks;
+    use WPEmerge\Routing\UrlGenerator;
+    use WPEmerge\View\ViewFactory;
 
     class RouteAttributesTest extends UnitTest
     {
 
         use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
+        use CreateUrlGenerator;
 
         const controller_namespace = 'Tests\fixtures\Controllers\Web';
 
@@ -40,6 +46,9 @@
 
             $this->container = $this->createContainer();
             $this->routes = $this->newRouteCollection();
+            $this->container->instance(UrlGenerator::class, $this->newUrlGenerator());
+            $this->container->instance(ViewFactory::class, new TestViewFactory());
+            $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
             ApplicationEvent::make($this->container);
             ApplicationEvent::fake();
             WP::setFacadeContainer($this->container);
