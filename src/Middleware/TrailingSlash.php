@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Middleware;
 
+    use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
@@ -19,19 +20,19 @@
         /**
          * @var ResponseFactory
          */
-        private $response_factory;
+        protected $response_factory;
+
         /**
          * @var bool
          */
         private $trailing_slash;
 
-        public function __construct(ResponseFactory $response_factory, bool $trailing_slash = true)
+        public function __construct(bool $trailing_slash = true)
         {
-            $this->response_factory = $response_factory;
             $this->trailing_slash = $trailing_slash;
         }
 
-        public function handle(Request $request, Delegate $next)
+        public function handle(Request $request, Delegate $next) :ResponseInterface
         {
 
             if ( ! $request->isWpFrontEnd() ) {

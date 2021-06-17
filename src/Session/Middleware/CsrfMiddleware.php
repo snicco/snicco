@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Session\Middleware;
 
+    use Psr\Http\Message\ResponseInterface;
     use Slim\Csrf\Guard;
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\Middleware;
@@ -40,7 +41,7 @@
 
         }
 
-        public function handle(Request $request, Delegate $next)
+        public function handle(Request $request, Delegate $next):ResponseInterface
         {
 
             try {

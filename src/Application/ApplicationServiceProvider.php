@@ -57,6 +57,8 @@
         private function bindConfig()
         {
 
+            $this->config->set('root_dir', dirname(__FILE__, 3) );
+
             $this->container->instance('request.type', $this->requestType());
 
             $this->config->extend('app_key', '');

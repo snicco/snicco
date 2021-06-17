@@ -16,25 +16,20 @@
     class Www extends Middleware
     {
 
-        /**
-         * @var ResponseFactory
-         */
-        private $response_factory;
 
         /**
          * @var bool
          */
         private $with_www;
 
-        public function __construct(ResponseFactory $response_factory, string $site_url)
+        public function __construct( string $site_url)
         {
 
-            $this->response_factory = $response_factory;
             $this->with_www = strpos($site_url, 'www.');;
 
         }
 
-        public function handle(Request $request, Delegate $next)
+        public function handle(Request $request, Delegate $next) :ResponseInterface
         {
 
             if ( ! $request->isWpFrontEnd() ) {

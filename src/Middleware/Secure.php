@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Middleware;
 
+    use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\UriInterface;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Delegate;
@@ -18,20 +19,12 @@
 
         const HEADER = 'Strict-Transport-Security';
 
-        /**
-         * @var int One year by default
-         */
-        private $maxAge;
 
         /**
          * @var bool Whether add the preload directive or not
          */
         private $preload;
 
-        /**
-         * @var ResponseFactory
-         */
-        private $response_factory;
 
         /**
          * @var int
@@ -52,7 +45,7 @@
             $this->subdomains = $subdomains;
         }
 
-        public function handle(Request $request, Delegate $next)
+        public function handle(Request $request, Delegate $next):ResponseInterface
         {
 
             $uri = $request->getUri();

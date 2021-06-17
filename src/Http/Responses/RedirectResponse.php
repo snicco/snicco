@@ -20,6 +20,11 @@
          */
         private $session;
 
+        /**
+         * @var bool
+         */
+        private $bypass_validation = false;
+
         public function to( string $url ) : RedirectResponse {
 
 		    return $this->new($this->withHeader('Location', $url));
@@ -108,6 +113,17 @@
                 throw new \LogicException("The method: [RedirectResponse::{$called_method}] can only be used if session are enabled in the config.");
             }
 
+        }
+
+        public function canBypassValidation() : bool
+        {
+            return $this->bypass_validation;
+        }
+
+        public function bypassValidation() : RedirectResponse
+        {
+            $this->bypass_validation = true;
+            return $this;
         }
 
     }

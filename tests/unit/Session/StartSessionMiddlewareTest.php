@@ -17,6 +17,7 @@
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Middleware\Core\ShareCookies;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
@@ -236,8 +237,11 @@
 
             Carbon::setTestNow(Carbon::createFromTimestamp(1));
 
-            $pipeline = new Pipeline($this->createContainer(), new TestingErrorHandler());
+            $c = $this->createContainer();
             $response_factory = $this->createResponseFactory();
+            $c->instance(ResponseFactory::class, $response_factory);
+
+            $pipeline = new Pipeline($c, new TestingErrorHandler());
 
             $request = TestRequest::from('GET', 'foo');
 

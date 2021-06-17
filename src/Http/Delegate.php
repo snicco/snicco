@@ -25,7 +25,6 @@
          */
         private $callback;
 
-
         /**
          * @param  callable  $callback  function (RequestInterface $request) : ResponseInterface
          */

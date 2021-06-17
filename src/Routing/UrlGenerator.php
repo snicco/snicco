@@ -266,7 +266,7 @@
 
             $host = parse_url($url)['host'];
 
-            if ( ! $absolute) {
+            if ( ! $absolute ) {
 
                 return '/'.ltrim(Str::after($url, $host), '/');
 

@@ -70,7 +70,6 @@
 
             $all_routes = $this->routes;
 
-
             foreach ($all_routes as $method => $routes) {
 
                 /** @var Route $route */
@@ -148,7 +147,9 @@
         private function addLookups(Route $route)
         {
 
-            if ($name = $route->getName()) {
+            $name = $route->getName();
+
+            if ($name && ! isset($this->name_list[$name])) {
 
                 $this->name_list[$name] = $route;
 

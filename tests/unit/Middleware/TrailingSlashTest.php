@@ -42,7 +42,9 @@
                 return $this->response_factory->make(200);
             });
 
-            return new TrailingSlash($this->response_factory, $trailing_slash);
+            $m = new TrailingSlash( $trailing_slash);
+            $m->setResponseFactory($this->response_factory);
+            return $m;
 
         }
 

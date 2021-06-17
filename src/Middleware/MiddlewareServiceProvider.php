@@ -12,6 +12,7 @@
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
+    use WPEmerge\Middleware\Core\OpenRedirectProtection;
     use WPEmerge\Middleware\Core\OutputBufferMiddleware;
     use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Routing\Pipeline;
@@ -37,6 +38,8 @@
             $this->bindTrailingSlash();
 
             $this->bindWww();
+
+            $this->bindOpenRedirectProtection();
 
         }
 
@@ -64,6 +67,7 @@
 
                 'global' => [
                     Secure::class,
+                    OpenRedirectProtection::class
                 ],
                 'web' => [
                     TrailingSlash::class,
@@ -168,7 +172,6 @@
             $this->container->singleton(TrailingSlash::class, function () {
 
                     return new TrailingSlash(
-                        $this->container->make(ResponseFactory::class),
                         $this->withSlashes()
                     );
 
@@ -182,12 +185,22 @@
              $this->container->singleton(Www::class, function () {
 
                  return new Www(
-                     $this->responseFactory(),
                      $this->siteUrl()
                  );
 
             });
 
+        }
+
+        private function bindOpenRedirectProtection()
+        {
+            $this->container->singleton(OpenRedirectProtection::class, function () {
+
+                return new OpenRedirectProtection(
+                    $this->siteUrl()
+                );
+
+            });
         }
 
 

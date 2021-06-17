@@ -6,7 +6,8 @@
 
 	namespace Tests\fixtures\Middleware;
 
-	use WPEmerge\Contracts\Middleware;
+	use Psr\Http\Message\ResponseInterface;
+    use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Psr7\Request;
 
     class BarMiddleware extends Middleware {
@@ -22,7 +23,7 @@
             $this->bar = $bar;
         }
 
-        public function handle( Request $request, $next) {
+        public function handle( Request $request, $next) :ResponseInterface{
 
 			if ( isset( $request->body ) ) {
 
