@@ -7,7 +7,8 @@
 	namespace WPEmerge\Routing;
 
 	use Closure;
-	use WPEmerge\Contracts\ResolveControllerMiddleware;
+    use Contracts\ContainerAdapter;
+    use WPEmerge\Contracts\ResolveControllerMiddleware;
 	use WPEmerge\Contracts\RouteAction;
 	use WPEmerge\Http\MiddlewareResolver;
 
@@ -18,8 +19,9 @@
 		 * @var array
 		 */
 		private $raw_callable;
+
 		/**
-		 * @var \Closure
+		 * @var Closure
 		 */
 		private $executable_callable;
 
@@ -28,20 +30,19 @@
 		 */
 		private $middleware_resolver;
 
-		/**
-		 * ControllerAction constructor.
-		 *
-		 * @param  array  $raw_callable
-		 * @param  \Closure  $executable_callable
-		 * @param  MiddlewareResolver  $resolver
-		 */
-		public function __construct(array $raw_callable, Closure $executable_callable, MiddlewareResolver $resolver ) {
+        /**
+         * @var ContainerAdapter
+         */
+        private $container;
+
+		public function __construct(array $raw_callable, Closure $executable_callable, MiddlewareResolver $resolver, ContainerAdapter $container) {
 
 			$this->raw_callable        = $raw_callable;
 			$this->executable_callable = $executable_callable;
 			$this->middleware_resolver = $resolver;
+            $this->container = $container;
 
-		}
+        }
 
 		public function executeUsing(...$args) {
 
@@ -51,12 +52,12 @@
 
 		}
 
-		public function raw() {
+		public function raw() : array
+        {
 
 			return $this->raw_callable;
 
 		}
-
 
 		public function resolveControllerMiddleware() : array {
 
