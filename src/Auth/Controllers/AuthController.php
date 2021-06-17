@@ -7,11 +7,14 @@
     namespace WPEmerge\Auth\Controllers;
 
     use WPEmerge\Contracts\AbstractRedirector;
+    use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Auth\Authenticator;
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
+    use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Redirector;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Routing\UrlGenerator;
@@ -50,17 +53,17 @@
             return $view_factory->make('auth-parent')
                                 ->with([
                                     'csrf_field' => $csrf->asHtml(),
-                                    'post_url' => wp_login_url(),
+                                    'post_url' => WP::loginUrl(),
                                     'redirect_to' => $request->input('redirect_to', admin_url()),
                                     'view_factory' => $view_factory,
                                     'view' => $view,
                                     'title' => 'Log-in | ' . WP::siteName(),
-                                    'forgot_password' => $this->generator->toRoute('forgot.password.show')
+                                    'forgot_password' => $this->generator->toRoute('auth.forgot.password')
                                 ]);
 
         }
 
-        public function __invoke(Request $request, ResponseFactory $response_factory)
+        public function store(Request $request, ResponseFactory $response_factory) : RedirectResponse
         {
 
             try {
@@ -87,7 +90,30 @@
 
         }
 
-        protected function redirectResponse(Request $request) : RedirectResponse
+        public function destroy(Request $request, string $user_id, MagicLink $magic_link) : RedirectResponse
+        {
+
+            if ((int) $user_id !== WP::userId()) {
+
+                throw new InvalidSignatureException();
+
+            }
+
+            $request->session()->invalidate();
+
+            WP::logout();
+
+            $magic_link->invalidate($request->fullUrl());
+
+            $redirect_to = $request->query('redirect_to', $this->generator->toRoute('home'));
+
+            return $this->redirector->to($redirect_to)
+                              ->withAddedHeader('Expires', 'Wed, 11 Jan 1984 06:00:00 GMT')
+                              ->withAddedHeader('Cache-Control', 'no-cache, must-revalidate, max-age=0');
+
+        }
+
+        private function redirectResponse(Request $request) : RedirectResponse
         {
 
             $location = WP::adminUrl();

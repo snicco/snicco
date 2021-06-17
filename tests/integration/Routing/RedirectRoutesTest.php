@@ -26,7 +26,7 @@
                 ]
             ]);
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
             $this->rebindRequest(TestRequest::from('GET', '/location-a'));
 
             ob_start();
@@ -49,7 +49,7 @@
                 ]
             ]);
             ApplicationEvent::fake([ResponseSent::class]);
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
             $this->rebindRequest(TestRequest::from('GET', '/location-a'));
 
             ob_start();

@@ -8,6 +8,7 @@
 
     use Carbon\Carbon;
     use WP_User;
+    use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
@@ -37,14 +38,20 @@
 
         }
 
-        public function create(Request $request, string $user_id) : RedirectResponse
+        public function store(Request $request, string $user_id) : RedirectResponse
         {
 
             $user = $this->getUser(( int ) $user_id);
 
-            if ( ! $user instanceof WP_User) {
+            if ( ! $user instanceof WP_User ) {
 
                 throw new NotFoundException();
+
+            }
+
+            if ( $user->ID !== (int) $user_id ) {
+
+                throw new AuthorizationException();
 
             }
 

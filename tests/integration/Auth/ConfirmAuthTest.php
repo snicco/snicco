@@ -42,14 +42,13 @@
 
         }
 
-        private function requestToProtectedRoute() : Request
+        private function requestToProtectedRoute() :Request
         {
 
             $request = TestRequest::from('GET', 'auth-confirm/foo');
+            $request = $this->withSessionCookie($request);
             $this->rebindRequest($request);
-
-            return $this->withSessionCookie($request);
-
+            return $request;
         }
 
         private function protectedUrl() : string
@@ -65,7 +64,7 @@
             $this->newTestApp($this->config());
 
             $request = $this->requestToProtectedRoute();
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->assertOutputNotContains('Access to foo granted', $request);
 
@@ -83,9 +82,9 @@
             $this->writeTokenToSessionDriver(Carbon::now()->addSecond());
 
             $request = $this->requestToProtectedRoute();
-            $this->registerRoutes();
-
-            $this->assertOutputContains('Access to foo granted', $request);
+            ob_start();
+            $this->registerAndRunApiRoutes();
+            $this->assertSame('Access to foo granted', ob_get_clean());
 
             HeaderStack::assertHasStatusCode(200);
 
@@ -99,7 +98,7 @@
             $this->writeTokenToSessionDriver(Carbon::now()->subSecond());
 
             $request = $this->requestToProtectedRoute();
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->assertOutputNotContains('Access to foo granted', $request);
 
@@ -117,7 +116,7 @@
             $session = $this->getSession();
 
             $request = $this->requestToProtectedRoute();
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->assertOutputNotContains('Access to foo granted', $request);
 
@@ -145,7 +144,7 @@
             ]]);
 
             $request = $this->requestToProtectedRoute();
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->assertOutputNotContains('Access to foo granted', $request);
 
@@ -164,7 +163,7 @@
             $this->newTestApp($this->config());
 
             $request = $this->requestToProtectedRoute();
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->assertOutputNotContains('Access to foo granted', $request);
 
@@ -185,7 +184,7 @@
             $this->newTestApp($this->config());
 
             $request = $this->requestToProtectedRoute();
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
             $expected_url = TestApp::routeUrl('auth.confirm.show', [], true, false);
 
             $this->assertOutputNotContains('Access to foo granted', $request);

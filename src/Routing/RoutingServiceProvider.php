@@ -97,6 +97,7 @@
                     'routing.presets.'.$name,
                     [
                         'prefix' => $prefix,
+                        'name' => $id,
                         'middleware' => [$name]
                     ]
                 );
@@ -116,7 +117,6 @@
 
             $this->config->extend('routing.conditions', self::CONDITION_TYPES);
             $this->config->extend('routing.must_match_web_routes', false);
-
             $this->config->extend('routing.api.endpoints', []);
 
 

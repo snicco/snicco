@@ -32,7 +32,7 @@
                 ]
             ]);
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->seeKernelOutput('foo', TestRequest::from('GET', 'middleware/foo'));
             $this->assertSame(1, $GLOBALS['test'][WebMiddleware::run_times]);
@@ -57,7 +57,7 @@
                 ]
             ]);
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
 
             $this->seeKernelOutput('foo', TestRequest::from('GET', 'foo'));
@@ -87,7 +87,7 @@
                 ]
             ]);
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             // there is no put route in Routes/web.php
             $this->seeKernelOutput('', TestRequest::from('PUT', 'middleware/foo'));
@@ -118,7 +118,7 @@
                 ]
             ]);
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             // there is no put route in Routes/web.php
             $this->seeKernelOutput('', TestRequest::from('PUT', 'middleware/foo'));
@@ -148,7 +148,7 @@
                     ]
                 ]
             ]);
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
 
             $this->seeKernelOutput('get_fallback', TestRequest::from('GET', 'post1'));
@@ -182,7 +182,7 @@
                 ]
             ]);
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->seeKernelOutput('foo', TestRequest::from('GET', 'foo'));
             $this->assertSame(

@@ -42,7 +42,7 @@
                 $query['redirect_to'] = $event->redirect_to;
             }
 
-            return $url->toRoute('login', [
+            return $url->toRoute('auth.login', [
                 'query' => $query
             ], true , true );
 

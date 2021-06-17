@@ -175,7 +175,7 @@
             ]);
             $this->rebindRequest(TestRequest::from('GET', 'post1'));
             $this->makeFallbackConditionPass();
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             ob_start();
 
@@ -201,7 +201,7 @@
             $request = TestRequest::from('GET', $this->adminUrlTo('foo'));
             $this->rebindRequest($request);
             $this->makeFallbackConditionPass();
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             ob_start();
 
@@ -230,7 +230,7 @@
             $request = TestRequest::from('GET', $this->ajaxUrl('foo'));
             $this->rebindRequest($request);
             $this->makeFallbackConditionPass();
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             ob_start();
 
@@ -256,7 +256,7 @@
                     SimulateAdminProvider::class,
                 ],
             ]);
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->assertSame('/wp-admin/admin.php?page=foo', TestApp::routeUrl('admin.foo'));
 
@@ -278,7 +278,7 @@
                 ],
             ]);
 
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             $this->assertSame('/wp-admin/admin-ajax.php', TestApp::routeUrl('ajax.foo'));
 
@@ -302,7 +302,7 @@
 
             $request = TestRequest::from('GET', 'other');
             $this->rebindRequest($request);
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             ob_start();
 
@@ -327,7 +327,7 @@
 
             $request = TestRequest::from('GET', 'foo');
             $this->rebindRequest($request);
-            $this->registerRoutes();
+            $this->registerAndRunApiRoutes();
 
             ob_start();
 

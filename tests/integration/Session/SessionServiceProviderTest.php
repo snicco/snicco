@@ -15,7 +15,7 @@
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Auth\Controllers\ConfirmAuthController;
+    use WPEmerge\Auth\Controllers\AuthConfirmationController;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Session\EncryptedSession;
     use WPEmerge\Session\Middleware\ShareSessionWithView;
@@ -448,7 +448,7 @@
                 ],
             ]);
 
-            $this->assertInstanceOf(ConfirmAuthController::class, TestApp::resolve(ConfirmAuthController::class));
+            $this->assertInstanceOf(AuthConfirmationController::class, TestApp::resolve(AuthConfirmationController::class));
 
         }
 

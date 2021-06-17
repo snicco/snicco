@@ -56,7 +56,7 @@
                 'view_factory' => $view_factory,
                 'user_id' => $id,
                 'signature' => $request->query('signature', ''),
-                'post_to' => $this->url_generator->toRoute('reset.password.update'),
+                'post_to' => $this->url_generator->toRoute('auth.reset.password'),
                 'csrf_field' => $csrf_field->asHtml(),
             ])->withHeader('Referrer-Policy', 'strict-origin');
 
@@ -119,7 +119,7 @@
             $magic_link->invalidate($request->session()->getPreviousUrl());
 
             return $this->response_factory->redirect()
-                                          ->toRoute('reset.password.show')
+                                          ->toRoute('auth.reset.password.show')
                                           ->with([
                                                 '_password_reset.success_message' => $this->success_message,
                                                 ]);

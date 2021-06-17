@@ -25,7 +25,7 @@
          */
         private $response;
 
-        public function __construct(ResponseFactory $response, string $url = null )
+        public function __construct( ResponseFactory $response, string $url = null )
         {
             $this->url = $url;
             $this->response = $response;
@@ -35,7 +35,7 @@
 
 			if ( WP::isUserLoggedIn() ) {
 
-				$url = $this->url ?? WP::homeUrl( '', 'https' );
+				$url = $this->url ?? WP::adminUrl();
 
                 if ($request->isExpectingJson()) {
 
