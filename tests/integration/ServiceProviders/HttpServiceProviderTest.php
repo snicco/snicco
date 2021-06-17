@@ -17,7 +17,7 @@
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\Redirector;
     use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Http\StatefulRedirector;
+    use WPEmerge\Session\StatefulRedirector;
     use WPEmerge\Session\SessionServiceProvider;
 
     class HttpServiceProviderTest extends IntegrationTest

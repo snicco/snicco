@@ -4,10 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth;
+    namespace WPEmerge\Http;
 
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Http\Psr7\Request;
+
+    use function wp_cache_add;
+    use function wp_cache_get;
 
     class DatabaseMagicLink extends MagicLink
     {
@@ -59,6 +62,7 @@
 
         public function destroy($signature)
         {
+
             $hash = md5($signature);
 
             $this->wpdb->delete($this->table, ['signature' => $hash], ['%s']);
@@ -67,9 +71,9 @@
         public function store(string $signature, int $expires) : bool
         {
 
-            $cached = wp_cache_get($signature ,'magic_links');
+            $cached = wp_cache_get($signature, 'magic_links');
 
-            if ( $cached !== false ) {
+            if ($cached !== false) {
                 return true;
             }
 
@@ -77,9 +81,10 @@
 
             wp_cache_add($signature, $signature, 'magic_links', $expires);
 
-
             return $this->wpdb->query($query) !== false;
 
         }
+
+
 
     }

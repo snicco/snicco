@@ -8,6 +8,7 @@
 
     use Carbon\Carbon;
     use Closure;
+    use Illuminate\Support\InteractsWithTime;
     use Illuminate\Support\ViewErrorBag;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
@@ -16,6 +17,8 @@
 
     class Session
     {
+
+        use InteractsWithTime;
 
         /**
          * @var string
@@ -66,7 +69,7 @@
 
         }
 
-        public function start(string $session_id) : bool
+        public function start(string $session_id ='') : bool
         {
 
             $this->setId($session_id);
@@ -414,6 +417,40 @@
             return $errors;
         }
 
+        public function allowAccessToRoute(string $path, $expires)
+        {
+            $allowed = $this->allowedRoutes();
+
+            $allowed[$path] = (int) $expires;
+
+            $this->put('_allow_routes', $allowed);
+        }
+
+        public function canAccessRoute(string $path) : bool
+        {
+
+            $expires = $this->allowedRoutes()[$path] ?? null;
+
+            if ( ! $expires ) {
+                return false;
+            }
+
+            if ( $expires < $this->currentTime() ) {
+
+                $this->remove('_allow_routes.' .$path);
+                return false;
+
+            }
+
+            return true;
+
+        }
+
+        private function allowedRoutes () :array {
+
+            return $this->get('_allow_routes', []);
+
+        }
         protected function prepareForUnserialize(string $data) : string
         {
 
@@ -490,6 +527,7 @@
         {
             return $this->loaded_data_from_handler !== [];
         }
+
 
 
     }

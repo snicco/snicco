@@ -104,7 +104,7 @@
 
         }
 
-        public function signedRoute(string $route_name, array $arguments, $expiration = 300, bool $absolute = false ) : string
+        public function signedRoute(string $route_name, array $arguments = [], $expiration = 300, bool $absolute = false ) : string
         {
 
             $query = Arr::pull($arguments, 'query', []);
