@@ -59,19 +59,25 @@
         private function bindConfig()
         {
 
-            $this->config->extend('session.cookie', 'wp_mvc_session');
             $this->config->extend('session.table', 'sessions');
             $this->config->extend('session.lottery', [2, 100]);
+            $this->config->extend('session.driver', 'database');
+            $this->config->extend('session.encrypt', false);
+
+            $this->config->extend('session.cookie', 'wp_mvc_session');
             $this->config->extend('session.path', '/');
             $this->config->extend('session.domain', null);
             $this->config->extend('session.secure', true);
             $this->config->extend('session.http_only', true);
             $this->config->extend('session.same_site', 'lax');
-            $this->config->extend('session.driver', 'database');
-            $this->config->extend('session.lifetime', 120);
-            $this->config->extend('session.encrypt', false);
+
+            $this->config->extend('session.idle', SessionManager::HOUR_IN_SEC / 2);
+            $this->config->extend('session.lifetime', SessionManager::HOUR_IN_SEC * 8);
+            $this->config->extend('session.rotate', $this->config->get('session.lifetime') / 2);
             $this->config->extend('session.auth_confirmed_lifetime', 180);
             $this->config->extend('session.auth_confirm_on_login', true);
+
+
             $this->config->extend('middleware.aliases', [
                 'csrf' => CsrfMiddleware::class,
             ]);

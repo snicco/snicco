@@ -18,6 +18,7 @@
     class SessionMiddleware extends Middleware
     {
 
+
         /**
          * @var SessionManager
          */
@@ -76,7 +77,7 @@
         {
 
             $this->storePreviousUrl($response, $request, $session);
-            $request->session()->save();
+            $this->manager->save();
 
         }
 

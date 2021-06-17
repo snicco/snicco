@@ -26,7 +26,7 @@
     use WPEmerge\Session\SessionManager;
     use WPEmerge\Support\VariableBag;
 
-    class StartSessionMiddlewareTest extends UnitTest
+    class SessionMiddlewareTest extends UnitTest
     {
 
         use AssertsResponse;

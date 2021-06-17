@@ -10,6 +10,7 @@
     use Closure;
     use Illuminate\Support\InteractsWithTime;
     use Illuminate\Support\ViewErrorBag;
+    use Respect\Validation\Rules\DateTime;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
     use stdClass;
@@ -76,11 +77,6 @@
 
             $this->loadDataFromDriver();
 
-            if ( ! $this->sessionExisted() ) {
-
-                $this->id = $this->generateSessionId();
-
-            }
 
             $this->started = true;
 
@@ -451,6 +447,7 @@
             return $this->get('_allow_routes', []);
 
         }
+
         protected function prepareForUnserialize(string $data) : string
         {
 
@@ -523,11 +520,57 @@
 
         }
 
-        private function sessionExisted() : bool
+        /**
+         * @param \DateTimeInterface|int|Carbon $timestamp
+         */
+        public function lastActivity($timestamp = null ) :int
         {
-            return $this->loaded_data_from_handler !== [];
+
+            if ( $timestamp === null ) {
+                return $this->get('_last_activity', 0);
+            }
+
+            $ts = $timestamp instanceof \DateTimeInterface ? $timestamp->getTimestamp() : $timestamp;
+
+            $this->put('_last_activity', $ts);
+
+            return $ts;
+
         }
 
+        /**
+         * @param \DateTimeInterface|int|Carbon $timestamp
+         */
+        public function rotateAt( $timestamp = null ) :int
+        {
+
+            if ( $timestamp === null ) {
+                return $this->get('_rotate_at', 0 );
+            }
+
+            $ts = $this->availableAt($timestamp);
+
+            $this->put('_rotate_at', $ts);
+
+            return $ts;
+
+        }
+
+        /**
+         * @param \DateTimeInterface|int|Carbon $timestamp
+         */
+        public function expiresAt($timestamp = null) :int
+        {
+            if ( $timestamp === null ) {
+                return $this->get('_expires_at', 0);
+            }
+
+            $ts = $this->availableAt($timestamp);
+
+            $this->put('_expires_at', $ts);
+
+            return $ts;
+        }
 
 
     }

@@ -7,6 +7,7 @@
     namespace WPEmerge\Session;
 
     use Carbon\Carbon;
+    use Illuminate\Support\InteractsWithTime;
     use WPEmerge\Http\Cookie;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Psr7\Request;
@@ -19,6 +20,11 @@
     {
 
         use HasLottery;
+        use InteractsWithTime;
+
+        public const DAY_IN_SEC  = 86400;
+        public const HOUR_IN_SEC = 3600;
+        public const THIRTY_MIN_IN_SEC = 1800;
 
         /**
          * @var array
@@ -46,6 +52,26 @@
             $session_id = $cookies->get($cookie_name, '');
             $this->session->start($session_id);
             $this->session->getDriver()->setRequest($request);
+
+            if ($this->isIdle()) {
+
+                $this->session->invalidate();
+
+            }
+
+            elseif ($this->needsRotation()) {
+
+                $this->setRotation();
+                $this->session->migrate(true);
+
+            }
+
+            elseif ($this->isAbsoluteTimeout()) {
+
+                $this->setExpiration();
+                $this->session->invalidate();
+
+            }
 
             return $this->session;
 
@@ -128,5 +154,66 @@
 
         }
 
+        public function save()
+        {
+
+            $this->session->lastActivity($this->currentTime());
+
+            if ( ! $this->session->rotateAt()) {
+
+                $this->setRotation();
+
+            }
+
+            if ( ! $this->session->expiresAt()) {
+
+                $this->setExpiration();
+
+            }
+
+            $this->session->save();
+
+        }
+
+        private function needsRotation() : bool
+        {
+
+            return $this->session->rotateAt() !== 0 && $this->currentTime() > $this->session->rotateAt();
+        }
+
+        private function setRotation()
+        {
+
+            $this->session->rotateAt($this->config['rotate'] ?? static::HOUR_IN_SEC);
+
+        }
+
+        private function setExpiration()
+        {
+
+            $this->session->expiresAt($this->config['lifetime'] ?? static::DAY_IN_SEC);
+
+
+        }
+
+        private function isIdle() : bool
+        {
+
+            if ( $this->session->lastActivity() === 0 ) {
+                return false;
+            }
+
+            $idle_period = $this->config['idle'] ?? static::THIRTY_MIN_IN_SEC;
+
+            return $this->session->lastActivity() + $idle_period < $this->currentTime();
+        }
+
+        private function isAbsoluteTimeout() : bool
+        {
+
+            return $this->session->expiresAt() !== 0 && $this->currentTime() > $this->session->expiresAt();
+
+
+        }
 
     }
