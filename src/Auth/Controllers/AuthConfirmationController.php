@@ -10,6 +10,7 @@
     use WP_User;
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\ResponseFactory;
@@ -24,7 +25,7 @@
 
     use function get_user_by;
 
-    class AuthConfirmationController
+    class AuthConfirmationController extends Controller
     {
 
         /**
@@ -36,11 +37,6 @@
          * @var UrlGenerator
          */
         private $url_generator;
-
-        /**
-         * @var ResponseFactory
-         */
-        private $response_factory;
 
         protected $link_lifetime_in_sec = 300;
 
@@ -142,8 +138,6 @@
 
 
         }
-
-
 
         private function redirectBack(?string $email) : RedirectResponse
         {

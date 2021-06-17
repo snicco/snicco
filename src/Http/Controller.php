@@ -6,7 +6,10 @@
 
 	namespace WPEmerge\Http;
 
-	class Controller {
+	use WPEmerge\Routing\UrlGenerator;
+    use WPEmerge\View\ViewFactory;
+
+    class Controller {
 
 
 		/**
@@ -16,7 +19,20 @@
 		 */
 		private $middleware = [];
 
-		public function getMiddleware( string $method = null ) : array {
+        /**
+         * @var ViewFactory
+         */
+        protected $view_factory;
+
+        /** @var ResponseFactory */
+        protected $response_factory;
+
+        /**
+         * @var UrlGenerator
+         */
+        protected $url;
+
+        public function getMiddleware( string $method = null ) : array {
 
 			return collect( $this->middleware )
 				->filter( function ( ControllerMiddleware $middleware ) use ( $method ) {
@@ -37,11 +53,22 @@
 
 		protected function middleware( string $middleware_name ) : ControllerMiddleware {
 
-
 			return $this->middleware[] = new ControllerMiddleware( $middleware_name );
 
 
 		}
+
+		public function giveViewFactory(ViewFactory $view_factory ) {
+		    $this->view_factory = $view_factory;
+        }
+
+        public function giveResponseFactory(ResponseFactory $response_factory ) {
+		    $this->response_factory = $response_factory;
+        }
+
+        public function giveUrlGenerator ( UrlGenerator $url) {
+            $this->url = $url;
+        }
 
 
 	}

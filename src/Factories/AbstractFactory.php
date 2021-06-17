@@ -135,13 +135,12 @@
 
 			return function ( $args ) use ( $controller ) {
 
+
 				return $this->container->call( implode( '@', $controller ), $args );
 
 			};
 
 		}
-
-
 
 
 	}
