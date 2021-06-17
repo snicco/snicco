@@ -8,7 +8,8 @@
 
     use Closure;
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Contracts\AbstractRouteCollection;
+    use WPEmerge\Contracts\AbstractRouteCollection as Routes;
+    use WPEmerge\Http\Controller;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Responses\NullResponse;
     use WPEmerge\Http\Psr7\Request;
@@ -25,13 +26,9 @@
      * have a matching route.
      *
      */
-    class FallBackController
+    class FallBackController extends Controller
     {
 
-        /**
-         * @var ResponseFactory
-         */
-        private $response;
 
         /**
          * @var callable
@@ -41,6 +38,7 @@
          * @var Pipeline
          */
         private $pipeline;
+
         /**
          * @var MiddlewareStack
          */
@@ -49,15 +47,14 @@
         /** @var Closure */
         private $respond_with;
 
-        public function __construct(ResponseFactory $response, Pipeline $pipeline, MiddlewareStack $middleware_stack) {
+        public function __construct(Pipeline $pipeline, MiddlewareStack $middleware_stack) {
 
-            $this->response = $response;
             $this->pipeline = $pipeline;
             $this->middleware_stack = $middleware_stack;
 
         }
 
-        public function handle(Request $request, AbstractRouteCollection $routes) :ResponseInterface
+        public function handle(Request $request, Routes $routes) :ResponseInterface
         {
 
             $possible_routes = collect($routes->withWildCardUrl( $request->getMethod() ) );
@@ -93,7 +90,7 @@
                 ->then(function (Request $request) {
 
                     $response = call_user_func($this->respond_with, $request);
-                    return $this->response->toResponse($response);
+                    return $this->response_factory->toResponse($response);
 
                 });
 
@@ -103,7 +100,7 @@
         public function blankResponse() : NullResponse
         {
 
-            return $this->response->queryFiltered();
+            return $this->response_factory->queryFiltered();
 
         }
 
@@ -119,7 +116,7 @@
 
                 $response = $route->run($request);
 
-                return $this->response->toResponse($response);
+                return $this->response_factory->toResponse($response);
 
             };
 
@@ -132,7 +129,7 @@
 
                 return ($this->fallback_handler)
                     ? call_user_func($this->fallback_handler, $request)
-                    : $this->response->null();
+                    : $this->response_factory->null();
 
             };
 

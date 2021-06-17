@@ -7,22 +7,26 @@
     namespace Tests\unit\Routing;
 
     use Contracts\ContainerAdapter;
-    use http\Header;
     use Mockery;
+    use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\HeaderStack;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
+    use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Http\HttpResponseFactory;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Routing\Router;
+    use WPEmerge\Routing\UrlGenerator;
+    use WPEmerge\View\ViewFactory;
 
     class ViewRoutesTest extends UnitTest
     {
 
         use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
+        use CreateUrlGenerator;
 
         /**
          * @var ContainerAdapter
@@ -37,6 +41,9 @@
 
             $this->container = $this->createContainer();
             $this->routes = $this->newRouteCollection();
+            $this->container->instance(UrlGenerator::class, $this->newUrlGenerator());
+            $this->container->instance(ViewFactory::class, new TestViewFactory());
+            $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
             ApplicationEvent::make($this->container);
             ApplicationEvent::fake();
             WP::setFacadeContainer($this->container);

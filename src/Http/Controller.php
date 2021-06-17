@@ -6,7 +6,8 @@
 
 	namespace WPEmerge\Http;
 
-	use WPEmerge\Routing\UrlGenerator;
+	use WPEmerge\Contracts\ViewFactoryInterface;
+    use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\View\ViewFactory;
 
     class Controller {
@@ -58,7 +59,7 @@
 
 		}
 
-		public function giveViewFactory(ViewFactory $view_factory ) {
+		public function giveViewFactory(ViewFactoryInterface $view_factory ) {
 		    $this->view_factory = $view_factory;
         }
 

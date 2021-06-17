@@ -9,20 +9,28 @@
 	use Contracts\ContainerAdapter;
     use Mockery;
     use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateTestSubjects;
+    use Tests\helpers\CreateUrlGenerator;
+    use Tests\stubs\TestMagicLink;
+    use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
     use Tests\fixtures\Controllers\Admin\AdminControllerWithMiddleware;
 	use Tests\fixtures\Middleware\MiddlewareWithDependencies;
     use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Contracts\MagicLink;
+    use WPEmerge\Contracts\RouteUrlGenerator;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Router;
+    use WPEmerge\Routing\UrlGenerator;
+    use WPEmerge\View\ViewFactory;
 
     class RouteMiddlewareDependencyInjectionTest extends UnitTest {
 
         use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
-
+        use CreateUrlGenerator;
 
         /**
          * @var ContainerAdapter
@@ -37,6 +45,9 @@
 
             $this->container = $this->createContainer();
             $this->routes = $this->newRouteCollection();
+            $this->container->instance(UrlGenerator::class, $this->newUrlGenerator());
+            $this->container->instance(MagicLink::class, new TestMagicLink());
+            $this->container->instance(ViewFactory::class, new TestViewFactory());
             ApplicationEvent::make($this->container);
             ApplicationEvent::fake();
             WP::setFacadeContainer($this->container);

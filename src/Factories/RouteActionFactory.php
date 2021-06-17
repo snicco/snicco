@@ -57,7 +57,6 @@
 
 				return new ControllerAction(
 					$namespaced_handler,
-					$this->wrapClass( $namespaced_handler ),
 					new MiddlewareResolver($this->container),
                     $this->container
 				);

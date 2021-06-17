@@ -6,34 +6,25 @@
 
     namespace WPEmerge\Auth\Controllers;
 
-    use Carbon\Carbon;
     use WP_User;
     use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\ExceptionHandling\Exceptions\NotFoundException;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Support\Url;
 
-    class ConfirmAuthMagicLinkController
+    class ConfirmAuthMagicLinkController extends Controller
     {
-
-        /**
-         * @var ResponseFactory
-         */
-        private $response_factory;
 
         /**
          * @var int|mixed
          */
         private $lifetime_in_minutes;
 
-        public function __construct(ResponseFactory $response_factory, int $lifetime_in_minutes = 180)
+        public function __construct( int $lifetime_in_minutes = 180)
         {
 
-            $this->response_factory = $response_factory;
             $this->lifetime_in_minutes = $lifetime_in_minutes;
 
         }
