@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http;
+    namespace WPEmerge\Session;
 
     use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
     use WPEmerge\Contracts\AbstractRedirector;

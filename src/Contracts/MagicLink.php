@@ -8,7 +8,10 @@
 
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
+    use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Cookie;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Traits\HasLottery;
 
     abstract class MagicLink
@@ -72,10 +75,43 @@
 
         public function hasValidSignature(Request $request, $absolute = false) : bool
         {
-
             return $this->hasCorrectSignature($request, $absolute)
                 && ! $this->signatureHasExpired($request)
                 && $this->notUsed($request);
+
+        }
+
+        public function hasAccessToRoute(Request $request) : bool
+        {
+
+            if ( $request->hasSession() ) {
+
+                return $request->session()->canAccessRoute($request->fullPath());
+
+            }
+
+            $cookie = $request->cookies()->get($this->accessCookieName($request), '');
+
+            return $cookie === $this->hash($request->fullPath(), $request);
+
+        }
+
+        public function withPersistentAccessToRoute(Response $response, Request $request) : Response
+        {
+
+            if ($request->hasSession()) {
+
+                $request->session()
+                        ->allowAccessToRoute($request->fullPath(), $request->query('expires'));
+
+            }
+            else {
+
+                $response = $this->addAccessCookie($response, $request);
+
+            }
+
+            return $response;
 
         }
 
@@ -128,6 +164,31 @@
             $salt = $this->app_key. $request->userAgent();
 
             return hash_hmac('sha256', $url, $salt);
+
+        }
+
+        private function accessCookieName(Request $request) {
+
+
+            $id = WP::isUserLoggedIn() ? WP::userId() : '';
+            $path = $request->fullPath();
+            $agent = $request->userAgent();
+
+            return hash_hmac('sha256', $id.$path.$agent , $this->app_key);
+
+        }
+
+        private function addAccessCookie(Response $response, Request $request) : Response
+        {
+
+            $value = $this->hash($request->fullPath(), $request);
+
+            $cookie = new Cookie($this->accessCookieName($request), $value);
+            $cookie->expires( $request->expires() )
+                   ->path($request->path())
+                   ->onlyHttp();
+
+            return $response->withCookie($cookie);
 
         }
 

@@ -6,7 +6,8 @@
 
 	namespace Tests\unit\Session;
 
-	use PHPUnit\Framework\TestCase;
+	use Carbon\Carbon;
+    use PHPUnit\Framework\TestCase;
 	use WPEmerge\Session\Drivers\ArraySessionDriver;
 	use WPEmerge\Session\Session;
 
@@ -706,6 +707,29 @@
 
 		}
 
+		/** @test */
+		public function allow_routes_can_be_set_for_a_defined_time () {
+
+            $session = $this->newSessionStore();
+            $session->start();
+
+            $session->allowAccessToRoute('/protected/route', Carbon::now()->addSeconds(300)->getTimestamp());
+            $this->assertTrue($session->canAccessRoute('/protected/route'));
+
+            $this->assertNotSame([], $session->get('_allow_routes'));
+
+            $session->allowAccessToRoute('/other/route', $ts = Carbon::now()->addSeconds(300)->getTimestamp());
+            Carbon::setTestNow(Carbon::now()->addSeconds(301));
+            $this->assertFalse($session->canAccessRoute('/protected/route'));
+
+            // The other route did not get deleted.
+            $this->assertSame(['/other/route' => $ts], $session->get('_allow_routes'));
+
+
+            Carbon::setTestNow();
+
+        }
+		
 		private function newSessionStore( \SessionHandlerInterface $handler = null ) : Session {
 
             return new Session(

@@ -16,6 +16,7 @@
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\Session;
+    use WPEmerge\Session\StatefulRedirector;
 
     class HttpServiceProvider extends ServiceProvider
     {

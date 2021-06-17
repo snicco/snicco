@@ -177,6 +177,35 @@
 
         }
 
+        /**
+         * @internal
+         */
+        public function isRouteable() : bool
+        {
+
+            $script = $this->loadingScript();
+
+            // All public web requests
+            if ($script === 'index.php') {
+
+                return true;
+
+            }
+
+            // A request to the admin dashboard. We can catch that within admin_init
+            if (Str::contains($script, $this->getAttribute('_wp_admin_folder'))) {
+
+                return true;
+
+            }
+
+            // Not routeable for web/ajax/admin routes because the correct hooks wont be triggered
+            // by WordPress. eg /wp-login.php
+            // These requests can only be "routed" by using the init hook.
+            return false;
+
+        }
+
         public function type() : string
         {
 
@@ -213,42 +242,28 @@
         public function session() : Session
         {
 
-            $session = $this->getAttribute('session');
-
-            if ( ! $session instanceof Session) {
+            if ( ! $this->hasSession() ) {
                 throw new \RuntimeException('A session has not been set on the request.');
             }
 
-            return $session;
+            return $this->getAttribute('session');
 
         }
 
-        /**
-         * @internal
-         */
-        public function isRouteable() : bool
+        public function expires(int $default = 0) :int
         {
 
-            $script = $this->loadingScript();
+            return (int) $this->query('expires', $default);
 
-            // All public web requests
-            if ($script === 'index.php') {
+        }
 
-                return true;
 
-            }
+        public function hasSession() : bool
+        {
 
-            // A request to the admin dashboard. We can catch that within admin_init
-            if (Str::contains($script, $this->getAttribute('_wp_admin_folder'))) {
+            $session = $this->getAttribute('session');
 
-                return true;
-
-            }
-
-            // Not routeable for web/ajax/admin routes because the correct hooks wont be triggered
-            // by WordPress. eg /wp-login.php
-            // These requests can only be "routed" by using the init hook.
-            return false;
+            return $session instanceof Session;
 
         }
 
@@ -300,6 +315,7 @@
             return false;
 
         }
+
 
 
     }
