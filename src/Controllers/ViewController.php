@@ -7,27 +7,17 @@
 	namespace WPEmerge\Controllers;
 
 
+    use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\ResponseFactory;
 
-    class ViewController {
+    class ViewController extends Controller {
 
-		/**
-		 * @var Response
-		 */
-		private $response;
-
-		public function __construct( ResponseFactory $response ) {
-
-			$this->response = $response;
-
-		}
 
 		public function handle( ...$args ) : Response {
 
 			[$view, $data, $status, $headers] = array_slice($args, -4);
 
-			return $this->response->view( $view, $data, $status, $headers );
+			return $this->response_factory->view( $view, $data, $status, $headers );
 
 		}
 

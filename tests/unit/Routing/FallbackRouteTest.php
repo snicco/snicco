@@ -8,21 +8,30 @@
 
     use Mockery;
     use Tests\fixtures\Conditions\IsPost;
+    use Tests\helpers\CreateRouteCollection;
+    use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestRequest;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
+    use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Contracts\ViewFactoryInterface;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Routing\Router;
+    use WPEmerge\Routing\UrlGenerator;
+    use WPEmerge\View\ViewFactory;
 
     class FallbackRouteTest extends UnitTest
     {
 
         use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
+        use CreateUrlGenerator;
+        use CreateRouteCollection;
 
         /** @var Router */
         private $router;
@@ -34,6 +43,9 @@
 
             $this->container = $this->createContainer();
             $this->routes = $this->newRouteCollection();
+            $this->container->instance(UrlGenerator::class, $this->newUrlGenerator());
+            $this->container->instance(ViewFactory::class, new TestViewFactory());
+            $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
             ApplicationEvent::make($this->container);
             ApplicationEvent::fake();
             WP::setFacadeContainer($this->container);

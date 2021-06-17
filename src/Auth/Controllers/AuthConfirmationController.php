@@ -7,36 +7,22 @@
     namespace WPEmerge\Auth\Controllers;
 
     use Carbon\Carbon;
-    use WP_User;
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Mail\MailBuilder;
-    use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\CsrfField;
     use WPEmerge\Auth\Mail\ConfirmAuthMail;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
-    use WPEmerge\View\ViewFactory;
 
     use function get_user_by;
 
     class AuthConfirmationController extends Controller
     {
-
-        /**
-         * @var ViewFactory
-         */
-        private $view;
-
-        /**
-         * @var UrlGenerator
-         */
-        private $url_generator;
 
         protected $link_lifetime_in_sec = 300;
 
@@ -53,12 +39,9 @@
          */
         private $session;
 
-        public function __construct(ViewFactory $view, UrlGenerator $url_generator, ResponseFactory $response_factory, Session $session)
+        public function __construct(Session $session)
         {
 
-            $this->view = $view;
-            $this->url_generator = $url_generator;
-            $this->response_factory = $response_factory;
             $this->session = $session;
 
         }
@@ -66,16 +49,16 @@
         public function create(CsrfField $csrf_field) : ViewInterface
         {
 
-            $post_url = $this->url_generator->toRoute('auth.confirm.send', [], true, false);
+            $post_url = $this->url->toRoute('auth.confirm.send', [], true, false);
 
-            return $this->view->make('auth-confirm')
+            return $this->view_factory->make('auth-confirm')
                               ->with(
                                   [
                                       'post_url' => $post_url,
                                       'csrf_field' => $csrf_field->asHtml(),
                                       'jail' => $this->isUserInJail() ? $this->getJailTime() : false,
                                       'last_recipient' => $this->lastRecipient(),
-                                      'view' => $this->view,
+                                      'view' => $this->view_factory,
                                   ]
                               );
 
