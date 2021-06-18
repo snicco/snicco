@@ -10,6 +10,8 @@
 
     $router->get('/')->noAction()->name('home');
 
+    $router->get('/wp-admin/')->noAction()->name('dashboard');
+
     $router->get('redirect/exit', [RedirectController::class, 'exit'])
            ->middleware( 'robots')
            ->name('redirect.protection');

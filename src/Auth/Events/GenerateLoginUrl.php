@@ -17,10 +17,15 @@
          */
         public $redirect_to;
 
-        public function __construct(string $url, string $redirect_to = null )
-        {
+        /**
+         * @var bool
+         */
+        public $force_reauth;
 
+        public function __construct(string $url, string $redirect_to = null, bool $force_reauth = false  )
+        {
             $this->redirect_to = $redirect_to ?? WP::adminUrl();
+            $this->force_reauth = $force_reauth;
         }
 
     }

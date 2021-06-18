@@ -32,7 +32,7 @@
         public function handle(Request $request, Delegate $next) : ResponseInterface
         {
 
-            $session = $this->manager->start($request);
+            $session = $this->manager->start($request, $request->user()->ID);
 
             $this->manager->collectGarbage();
 
@@ -51,7 +51,14 @@
 
             $this->saveSession($session, $request, $response);
 
-            return $response->withAddedHeader('Cache-Control', 'private, no-cache');
+            if ( ! $response->hasHeader('Cache-Control') ) {
+
+                $response = $response->withAddedHeader('Cache-Control', 'private, no-cache');
+
+            }
+
+            return $response;
+
 
         }
 

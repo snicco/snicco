@@ -108,6 +108,7 @@
 
             $this->bootstrapped = true;
 
+
             // If we would always unregister here it would not be possible to handle
             // any errors that happen between this point and the the triggering of the
             // hooks that run the HttpKernel.

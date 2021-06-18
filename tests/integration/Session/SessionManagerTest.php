@@ -93,4 +93,11 @@
 
         }
 
+        /** @test */
+        public function a_session_gets_timed_out_if_its_idle_for_too_long () {
+
+
+
+        }
+
     }
