@@ -7,6 +7,7 @@
     namespace Tests\integration\Auth;
 
     use Illuminate\Support\Carbon;
+    use Tests\helpers\HashesSessionIds;
     use Tests\helpers\InteractsWithSessionDriver;
     use Tests\IntegrationTest;
     use Tests\stubs\HeaderStack;
@@ -20,6 +21,7 @@
     {
 
         use InteractsWithSessionDriver;
+        use HashesSessionIds;
 
         protected function afterSetup()
         {
@@ -125,7 +127,7 @@
 
             $new_id = $session->getId();
 
-            $this->assertNotSame($this->testSessionId(), $new_id);
+            $this->assertNotSame($this->getSessionId(), $new_id);
 
 
         }
