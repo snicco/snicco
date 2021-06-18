@@ -117,16 +117,15 @@
         }
 
         /**
-         * @param  bool  $by_id
          *
-         * @return \WP_User|int
+         * @return |int
          */
-        public function user(bool $by_id = false )
+        public function user()
         {
 
-            $user = $this->getAttribute('_current_user_id');
+            $user_id = $this->getAttribute('_current_user_id', 0);
 
-            return $by_id ? $user->ID : $user;
+            return $user_id;
 
         }
 

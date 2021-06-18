@@ -33,9 +33,12 @@
         /**
          * @param  int  $user_id
          *
-         * @return array<string> An array of serialized session data
+         * @return array<\stdClass> An array of serialized session data as plain objects.
+         *
+         * The objects MUST contain a "payload" property and an "id" property
+         *
          */
-        public function getAllByUser(int $user_id) :array;
+        public function getAllByUserId(int $user_id) :array;
 
         /**
          *

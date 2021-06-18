@@ -8,6 +8,7 @@
 
     use Carbon\Carbon;
     use PHPUnit\Framework\TestCase;
+    use Tests\helpers\HashesSessionIds;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Session;
 
@@ -16,13 +17,14 @@
     class SessionTest extends TestCase
     {
 
+        use HashesSessionIds;
 
         /** @test */
         public function a_session_is_loaded_from_the_handler()
         {
 
             $handler = $this->newArrayHandler(10);
-            $handler->write($this->getSessionId(), \serialize(['foo' => 'bar']));
+            $handler->write($this->hashedSessionId(), \serialize(['foo' => 'bar']));
             $session = $this->newSessionStore($handler);
             $session->start($this->getSessionId());
 
@@ -87,13 +89,12 @@
 
         }
 
-
         /** @test */
         public function session_attributes_are_merged_with_handler_attributes()
         {
 
             $handler = $this->newArrayHandler(10);
-            $handler->write($this->getSessionId(), \serialize([
+            $handler->write($this->hashedSessionId(), \serialize([
 
                 'foo' => [
                     'bar',
@@ -142,7 +143,7 @@
         {
 
             $handler = $this->newArrayHandler(10);
-            $handler->write($this->getSessionId(), \serialize(['foo' => 'bar']));
+            $handler->write($this->hashedSessionId(), \serialize(['foo' => 'bar']));
             $session = $this->newSessionStore($handler);
             $session->start($this->getSessionId());
 
@@ -152,7 +153,7 @@
             $new_id = $session->getId();
 
             $this->assertNotEquals($old_id, $new_id);
-            $this->assertNotEmpty($handler->read($old_id));
+            $this->assertNotEmpty($handler->read($this->hash($old_id)));
 
 
         }
@@ -162,7 +163,7 @@
         {
 
             $handler = $this->newArrayHandler(10);
-            $handler->write($this->getSessionId(), \serialize(['foo' => 'bar']));
+            $handler->write($this->hashedSessionId(), \serialize(['foo' => 'bar']));
             $session = $this->newSessionStore($handler);
             $session->start($this->getSessionId());
 
@@ -172,7 +173,7 @@
             $new_id = $session->getId();
 
             $this->assertNotEquals($old_id, $new_id);
-            $this->assertNotEmpty($handler->read($old_id));
+            $this->assertNotEmpty($handler->read($this->hash($old_id)));
 
         }
 
@@ -227,7 +228,7 @@
             $session->put('_flash.new', 'bar');
             $session->put('baz', 'biz');
 
-            $this->assertEmpty($session->getDriver()->read($session->getId()));
+            $this->assertEmpty($session->getDriver()->read($this->hash($session->getId())));
 
             $session->save();
 
@@ -242,7 +243,7 @@
                     'new' => [],
                 ],
 
-            ], \unserialize($session->getDriver()->read($session->getId())));
+            ], \unserialize($session->getDriver()->read($this->hash($session->getId()))));
 
         }
 
@@ -251,7 +252,7 @@
         {
 
             $handler = $this->newArrayHandler();
-            $handler->write($this->getSessionId(), serialize(['foo' => 'bar']));
+            $handler->write($this->hashedSessionId(), serialize(['foo' => 'bar']));
             $session = $this->newSessionStore($handler);
             $session->start($this->getSessionId());
 
@@ -260,14 +261,14 @@
 
             $session->save();
 
-            $this->assertSame([
+            $this->assertEquals([
                 'foo' => 'bar',
                 '_flash' => [
                     'old' => [],
                     'new' => [],
                 ],
 
-            ], unserialize($handler->read($new_id)));
+            ], unserialize($handler->read($this->hash($new_id))));
 
 
         }
@@ -277,11 +278,11 @@
         {
 
             $handler = $this->newArrayHandler();
-            $handler->write($this->getSessionId(), serialize(['foo' => 'bar']));
+            $handler->write($this->hashedSessionId(), serialize(['foo' => 'bar']));
             $session = $this->newSessionStore($handler);
             $session->start($this->getSessionId());
 
-            $this->assertSame(['foo' => 'bar'], $session->all());
+            $this->assertSame(['foo' => 'bar',], $session->all());
 
         }
 
@@ -372,7 +373,7 @@
         {
 
             $handler = $this->newArrayHandler();
-            $handler->write($this->getSessionId(), serialize([
+            $handler->write($this->hashedSessionId(), serialize([
                 'foo' => 'bar',
                 'baz' => 'biz',
             ]));
@@ -716,13 +717,13 @@
 
             $session->save();
 
-            $this->assertArrayHasKey('foo', unserialize($session->getDriver()->read($old_id)));
+            $this->assertArrayHasKey('foo', unserialize($session->getDriver()->read($this->hash($old_id))));
 
             $this->assertTrue($session->invalidate());
 
             $this->assertNotEquals($old_id, $session->getId());
             $this->assertCount(0, $session->all());
-            $this->assertEquals('', $session->getDriver()->read($old_id));
+            $this->assertEquals('', $session->getDriver()->read($this->hash($old_id)));
 
 
         }
@@ -732,25 +733,13 @@
         {
 
             $session = $this->newSessionStore();
-            $session->getDriver()->write($this->getSessionId(), serialize(['foo' => 'bar']));
+            $session->getDriver()->write($this->hashedSessionId(), serialize(['foo' => 'bar']));
             $session->start($this->getSessionId());
             $this->assertTrue($session->isValidId($session->getId()));
 
             $session->setId($this->anotherSessionId());
             $this->assertNotSame($this->anotherSessionId(), $session->getId());
             $this->assertFalse($session->isValidId($this->anotherSessionId()));
-
-
-        }
-
-        /** @test */
-        public function a_session_can_be_named()
-        {
-
-            $session = $this->newSessionStore();
-            $this->assertEquals($session->getName(), $this->getSessionName());
-            $session->setName('foo');
-            $this->assertSame('foo', $session->getName());
 
 
         }
@@ -815,7 +804,6 @@
         {
 
             return new Session(
-                $this->getSessionName(),
                 $handler ?? new ArraySessionDriver(10),
             );
 
@@ -828,23 +816,6 @@
 
         }
 
-        private function getSessionId() : string
-        {
 
-            return str_repeat('a', 64);
-
-        }
-
-        private function anotherSessionId() : string
-        {
-
-            return str_repeat('b', 64);
-        }
-
-        private function getSessionName() : string
-        {
-
-            return 'name';
-        }
 
     }
