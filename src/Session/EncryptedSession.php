@@ -18,11 +18,11 @@
         protected $encryptor;
 
 
-        public function __construct($name, SessionDriver $handler, EncryptorInterface $encryptor, int $strength = 24)
+        public function __construct( SessionDriver $handler, EncryptorInterface $encryptor, int $strength = 32)
         {
             $this->encryptor = $encryptor;
 
-            parent::__construct($name, $handler, $strength);
+            parent::__construct( $handler, $strength);
         }
 
         /**

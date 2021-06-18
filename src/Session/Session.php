@@ -11,6 +11,7 @@
     use Illuminate\Support\InteractsWithTime;
     use Illuminate\Support\ViewErrorBag;
     use Respect\Validation\Rules\DateTime;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
     use stdClass;
@@ -61,22 +62,20 @@
          */
         private $token_strength_in_bytes;
 
-        public function __construct(string $cookie_name, SessionDriver $handler, int $token_strength_in_bytes = 32)
+        public function __construct( SessionDriver $handler, int $token_strength_in_bytes = 32)
         {
 
             $this->handler = $handler;
-            $this->name = $cookie_name;
             $this->token_strength_in_bytes = $token_strength_in_bytes;
 
         }
 
-        public function start(string $session_id ='') : bool
+        public function start(string $session_id ='', int $user_id = 0) : bool
         {
 
             $this->setId($session_id);
-
             $this->loadDataFromDriver();
-
+            $this->setUserId($user_id);
 
             $this->started = true;
 
@@ -92,7 +91,7 @@
             $this->ageFlashData();
 
             $this->handler->write(
-                $this->getId(),
+                $this->hash($this->getId()),
                 $this->prepareForStorage(serialize($this->attributes))
             );
 
@@ -303,7 +302,7 @@
         {
 
             if ($destroy) {
-                $this->handler->destroy($this->getId());
+                $this->handler->destroy($this->hash($this->getId()));
             }
 
             $this->setId($this->generateSessionId());
@@ -343,12 +342,18 @@
 
         }
 
+        public function setUserId(int $user_id) {
+
+            $this->put('_user.id', $user_id);
+
+        }
+
         public function isValidId(string $id) : bool
         {
 
             return ( strlen($id) === 2 * $this->token_strength_in_bytes)
                 && ctype_alnum($id)
-                && $this->getDriver()->isValid($id);
+                && $this->getDriver()->isValid($this->hash($id));
 
         }
 
@@ -483,7 +488,7 @@
         private function readFromDriver() : array
         {
 
-            if ($data = $this->handler->read($this->getId())) {
+            if ($data = $this->handler->read( $this->hash($this->getId() ) ) ) {
 
                 $data = @unserialize($this->prepareForUnserialize($data));
 
@@ -570,6 +575,48 @@
             $this->put('_expires_at', $ts);
 
             return $ts;
+        }
+
+        public function userId() {
+
+            return $this->get('_user.id', 0);
+
+        }
+
+        private function hash(string $id)
+        {
+            if ( function_exists( 'hash' ) ) {
+                return hash( 'sha256', $id );
+            } else {
+                return sha1( $id );
+            }
+        }
+
+        public function getAllForUser() : array
+        {
+
+            $sessions = $this->getDriver()->getAllByUser($this->userId());
+
+            $collection = [];
+
+            foreach ($sessions as $session) {
+
+                $payload = @unserialize($this->prepareForUnserialize($session->payload));
+
+                if ($payload !== false && ! is_null($payload) && is_array($payload)) {
+
+                    $session->payload = $payload;
+
+                } else{
+                    $session->payload = [];
+                }
+
+                $collection[] = $session;
+            }
+
+            return $collection;
+
+
         }
 
 

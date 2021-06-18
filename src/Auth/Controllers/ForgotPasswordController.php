@@ -6,63 +6,49 @@
 
     namespace WPEmerge\Auth\Controllers;
 
-    use Carbon\Carbon;
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Auth\Mail\ResetPasswordMail;
+    use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Mail\MailBuilder;
-    use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\CsrfField;
-    use WPEmerge\View\ViewFactory;
     use Respect\Validation\Validator as v;
 
-    class ForgotPasswordController
+    class ForgotPasswordController extends Controller
     {
 
         /**
          * @var string|null
          */
-        private $success_message;
-
-        /**
-         * @var UrlGenerator
-         */
-        private $url;
+        protected $message;
 
         /**
          * @var int
          */
-        private $expiration;
+        protected $expiration;
 
-        /**
-         * @var string
-         */
-        private $app_key;
-
-        public function __construct(UrlGenerator $url, string $app_key, ?string $success_message = null, int $expiration = 3000 )
+        public function __construct( ?string $message = null, int $expiration = 3000 )
         {
 
-            $this->success_message = $success_message ?? 'We sent an email with instructions to the associated account if it exists.';
-            $this->url = $url;
+            $this->message = $message ?? 'We sent an email with instructions to the associated account if it exists.';
             $this->expiration = $expiration;
-            $this->app_key = $app_key;
+
         }
 
-        public function create(ViewFactory $view_factory, CsrfField $csrf) : ViewInterface
+        public function create(CsrfField $csrf) : ViewInterface
         {
 
-            return $view_factory->make('auth-parent')->with([
+            return $this->view_factory->make('auth-parent')->with([
                 'view' => 'auth-forgot-password',
-                'view_factory' => $view_factory,
+                'view_factory' => $this->view_factory,
                 'csrf_field' => $csrf->asHtml(),
                 'post' => $this->url->toRoute('auth.forgot.password'),
             ]);
 
         }
 
-        public function store(Request $request, MailBuilder $mail, ResponseFactory $response_factory) : RedirectResponse
+        public function store(Request $request, MailBuilder $mail) : RedirectResponse
         {
 
             $login = $request->input('login');
@@ -72,26 +58,15 @@
             if ($user instanceof \WP_User) {
 
                 $magic_link = $this->generateSignedUrl($user);
-                parse_str(parse_url($magic_link)['query'], $query);
 
                 $mail->to($user->user_email)
                      ->send(new ResetPasswordMail($user, $magic_link, $this->expiration));
 
-                $token = $user->ID.$query['signature'];
-                $token = hash_hmac('sha256', $token, $this->app_key);
-
-                $request->session()->put([
-                    '_password_reset' => [
-                        'token' => $token,
-                        'expires' => Carbon::now()->addSeconds($this->expiration)->getTimestamp()
-                    ]
-                ]);
-
             }
 
-            return $response_factory->redirect()
-                                    ->toRoute('auth.forgot.password', 302)
-                                    ->with('_password_reset_message', $this->success_message);
+            return $this->response_factory->redirect()
+                                    ->toRoute('auth.forgot.password')
+                                    ->with('_password_reset_message', $this->message);
 
         }
 

@@ -12,7 +12,6 @@
     interface SessionDriver extends SessionHandlerInterface
     {
 
-        public function setRequest(Request $request);
 
         /**
          *
@@ -25,11 +24,44 @@
          * The session ID is user provided. The driver has to sanitize the input.
          *
          *
-         * @param  string  $id
+         * @param  string  $hashed_id
          *
          * @return bool
          */
-        public function isValid(string $id ) :bool;
+        public function isValid(string $hashed_id ) :bool;
+
+        /**
+         * @param  int  $user_id
+         *
+         * @return array<string> An array of serialized session data
+         */
+        public function getAllByUser(int $user_id) :array;
+
+        /**
+         *
+         * Destroy all session for the user with the provided id
+         * except the the one for the provided token.
+         *
+         * @param  string  $hashed_token
+         * @param  int  $user_id
+         *
+         */
+        public function destroyOthersForUser(string $hashed_token, int $user_id);
+
+
+        /**
+         *
+         * Destroy all session for the user with the provided id
+         *
+         * @param  int  $user_id
+         *
+         */
+        public function destroyAllForUser(int $user_id);
+
+        /**
+         * Destroy all sessions for every user.
+         */
+        public function destroyAll();
 
 
     }

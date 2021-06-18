@@ -92,9 +92,9 @@
 
         }
 
-        public function withUser(int $id)
+        public function withUser(int $user_id)
         {
-            return $this->withAttribute('_current_user_id', $id);
+            return $this->withAttribute('_current_user_id', $user_id);
 
         }
 
@@ -116,12 +116,17 @@
 
         }
 
+        /**
+         * @param  bool  $by_id
+         *
+         * @return \WP_User|int
+         */
         public function user(bool $by_id = false )
         {
 
-            $id = $this->getAttribute('_current_user_id');
+            $user = $this->getAttribute('_current_user_id');
 
-            return $by_id ? $id : WP::currentUser();
+            return $by_id ? $user->ID : $user;
 
         }
 
@@ -256,7 +261,6 @@
             return (int) $this->query('expires', $default);
 
         }
-
 
         public function hasSession() : bool
         {

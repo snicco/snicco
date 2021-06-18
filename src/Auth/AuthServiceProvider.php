@@ -9,6 +9,8 @@
     use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Auth\Events\GenerateLoginUrl;
     use WPEmerge\Auth\Events\GenerateLogoutUrl;
+    use WPEmerge\Auth\Events\SettingAuthCookie;
+    use WPEmerge\Auth\Listeners\GenerateNewAuthCookie;
     use WPEmerge\Auth\Listeners\WpLoginRedirectManager;
     use WPEmerge\Auth\Middleware\AuthUnconfirmed;
     use WPEmerge\Auth\Middleware\ConfirmAuth;
@@ -16,10 +18,12 @@
     use WPEmerge\Auth\Controllers\ForgotPasswordController;
     use WPEmerge\Auth\Controllers\ResetPasswordController;
     use WPEmerge\Events\WpInit;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\Events\NewLogin;
     use WPEmerge\Session\Events\NewLogout;
+    use WPEmerge\Session\SessionManager;
 
     class AuthServiceProvider extends ServiceProvider
     {
@@ -45,10 +49,12 @@
 
         public function bootstrap() : void
         {
+            //
         }
 
         private function bindEvents()
         {
+
 
             $this->config->extend('events.listeners', [
                 WpInit::class => [
@@ -64,13 +70,23 @@
                 GenerateLogoutUrl::class => [
                     [WpLoginRedirectManager::class, 'logoutUrl'],
                 ],
+                SettingAuthCookie::class => [
+                    GenerateNewAuthCookie::class,
+                ],
+
+            ]);
+
+            $this->config->extend('events.mapped', [
+
+                'auth_cookie' => [
+                    [SettingAuthCookie::class, 999],
+                ],
+
             ]);
 
             $this->config->extend('events.last', [
-
                 'login_url' => GenerateLoginUrl::class,
                 'logout_url' => GenerateLogoutUrl::class,
-
             ]);
 
 
@@ -98,26 +114,6 @@
 
             });
 
-            $this->container->singleton(ForgotPasswordController::class, function () {
-
-
-                return new ForgotPasswordController(
-                    $this->container->make(UrlGenerator::class),
-                    $this->appKey(),
-                );
-
-            });
-
-            $this->container->singleton(ResetPasswordController::class, function () {
-
-
-                return new ResetPasswordController(
-                    $this->container->make(UrlGenerator::class),
-                    $this->container->make(ResponseFactory::class),
-                    $this->appKey(),
-                );
-
-            });
 
         }
 
@@ -133,7 +129,7 @@
 
             $this->config->extend('routing.api.endpoints', [
 
-                'auth' =>  $this->config->get('auth.endpoint', )
+                'auth' => $this->config->get('auth.endpoint',),
 
             ]);
 
@@ -142,11 +138,21 @@
         private function bindWpSessionToken()
         {
 
-            // add_filter('session_token_manager', function () {
-            //
-            //     return WpSessionToken::class;
-            //
-            // });
+            add_filter('session_token_manager', function () {
+
+                /** @var SessionManager $manager */
+                $manager = $this->container->make(SessionManager::class);
+                // Ugly hack. But there is no other way to get this instance to the class that
+                // extends WP_SESSION_TOKENS because of Wordpress not using interfaces or DI:
+                global $session_manager;
+                $session_manager = $manager;
+
+                global $__request;
+                $__request = $this->container->make(Request::class);
+
+                return WpAuthSessionToken::class;
+
+            });
 
         }
 
