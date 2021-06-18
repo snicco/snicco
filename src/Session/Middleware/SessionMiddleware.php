@@ -32,9 +32,10 @@
         public function handle(Request $request, Delegate $next) : ResponseInterface
         {
 
-            $session = $this->manager->start($request, $request->user()->ID);
-
             $this->manager->collectGarbage();
+
+            $session = $this->manager->start($request, $request->user());
+
 
             return $this->handleStatefulRequest($request, $session, $next);
 

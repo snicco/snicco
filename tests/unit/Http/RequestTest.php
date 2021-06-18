@@ -161,7 +161,7 @@
 
             }
 
-            $request = $this->request->withSession($session = new Session('cookie', new ArraySessionDriver(10)));
+            $request = $this->request->withSession($session = new Session( new ArraySessionDriver(10)));
 
             $request = $request->withMethod('POST');
 

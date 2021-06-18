@@ -123,7 +123,7 @@
             $this->request = $request;
         }
 
-        public function getAllByUser(int $user_id) : array
+        public function getAllByUserId(int $user_id) : array
         {
 
             $query = $this->db->prepare("SELECT * FROM `$this->table` WHERE `user_id` = %d", $user_id);

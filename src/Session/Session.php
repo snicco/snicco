@@ -70,12 +70,11 @@
 
         }
 
-        public function start(string $session_id ='', int $user_id = 0) : bool
+        public function start(string $session_id ='') : bool
         {
 
             $this->setId($session_id);
             $this->loadDataFromDriver();
-            $this->setUserId($user_id);
 
             $this->started = true;
 
@@ -319,18 +318,6 @@
         {
 
             return $this->id;
-        }
-
-        public function getName() : string
-        {
-
-            return $this->name;
-        }
-
-        public function setName(string $name) : void
-        {
-
-            $this->name = $name;
         }
 
         public function setId(string $id) : Session
@@ -595,7 +582,7 @@
         public function getAllForUser() : array
         {
 
-            $sessions = $this->getDriver()->getAllByUser($this->userId());
+            $sessions = $this->getDriver()->getAllByUserId($this->userId());
 
             $collection = [];
 
@@ -608,6 +595,7 @@
                     $session->payload = $payload;
 
                 } else{
+
                     $session->payload = [];
                 }
 

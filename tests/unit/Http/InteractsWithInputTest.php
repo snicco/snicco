@@ -293,7 +293,7 @@
         public function testOld()
         {
 
-            $session = new Session('cookie', New ArraySessionDriver(10));
+            $session = new Session( new ArraySessionDriver(10));
             $session->start('a');
             $session->flashInput(['foo' => 'bar', 'bar' => 'baz']);
             $session->save();

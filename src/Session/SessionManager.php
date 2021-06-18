@@ -79,7 +79,7 @@
         public function migrateAfterLogin(Request $request, ResponseEmitter $emitter)
         {
 
-            $this->start($request);
+            $this->start($request, $request->user());
 
             $this->session->migrate(true);
             $this->session->save();
@@ -104,7 +104,7 @@
         public function invalidateAfterLogout(Request $request, ResponseEmitter $emitter)
         {
 
-            $this->start($request);
+            $this->start($request,$request->user());
 
             $this->session->invalidate();
             $this->session->save();
@@ -125,7 +125,8 @@
 
             $cookie_name = $this->config['cookie'];
             $session_id = $request->cookies()->get($cookie_name, '');
-            $this->session->start($session_id, $user_id);
+            $this->session->start($session_id);
+            $this->session->setUserId($user_id);
 
             return $this->session;
 
