@@ -7,6 +7,7 @@
     namespace Tests\integration\Auth;
 
     use Illuminate\Support\Carbon;
+    use Tests\helpers\HashesSessionIds;
     use Tests\helpers\InteractsWithSessionDriver;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
     use Tests\IntegrationTest;
@@ -26,6 +27,7 @@
 
         use InteractsWithWordpress;
         use InteractsWithSessionDriver;
+        use HashesSessionIds;
 
         /**
          * @var array;
@@ -246,7 +248,7 @@
                 'foo' => 'bar'
             ]);
 
-            $this->assertNotSame('', $this->readFromDriver($this->testSessionId()));
+            $this->assertNotSame('', $this->readFromDriver($this->hashedSessionId()));
 
             $post_request = $this->withSessionCookie($this->postRequest('bogus@web.de', $csrf));
 

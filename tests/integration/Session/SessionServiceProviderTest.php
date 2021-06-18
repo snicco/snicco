@@ -20,6 +20,7 @@
     use WPEmerge\Session\EncryptedSession;
     use WPEmerge\Session\Middleware\ShareSessionWithView;
     use WPEmerge\Session\SessionDriver;
+    use WPEmerge\Session\SessionManager;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Session\Session;
     use WPEmerge\Session\Middleware\SessionMiddleware;
@@ -282,7 +283,7 @@
         }
 
         /** @test */
-        public function session_lifetime_is_set_to_120_minutes()
+        public function session_lifetime_is_set()
         {
 
             $this->newTestApp([
@@ -294,7 +295,7 @@
                 ],
             ]);
 
-            $this->assertSame(120, TestApp::config('session.lifetime'));
+            $this->assertSame(SessionManager::HOUR_IN_SEC * 8, TestApp::config('session.lifetime'));
 
         }
 

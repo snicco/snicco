@@ -6,6 +6,7 @@
 
     namespace Tests\integration\Session;
 
+    use Tests\helpers\HashesSessionIds;
     use Tests\IntegrationTest;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
@@ -14,6 +15,8 @@
 
     class SessionManagerTest extends IntegrationTest
     {
+
+        use HashesSessionIds;
 
         protected function afterSetup()
         {
@@ -36,10 +39,10 @@
 
             $session = TestApp::session();
             $array_handler = $session->getDriver();
-            $array_handler->write($this->testSessionId(), serialize(['foo' => 'bar']));
+            $array_handler->write($this->hashedSessionId(), serialize(['foo' => 'bar']));
 
             $this->rebindRequest(TestRequest::from('GET', 'foo')
-                                            ->withAddedHeader('Cookie', 'wp_mvc_session='.$this->testSessionId()));
+                                            ->withAddedHeader('Cookie', 'wp_mvc_session='.$this->getSessionId()));
 
             ob_start();
 
@@ -50,15 +53,15 @@
             $id_after_login = $session->getId();
 
             // Session Id not the same
-            $this->assertNotSame($this->testSessionId(), $id_after_login);
+            $this->assertNotSame($this->getSessionId(), $id_after_login);
             HeaderStack::assertContains('Set-Cookie', $id_after_login);
 
             // Data is for the new id is in the handler.
-            $data = unserialize($array_handler->read($id_after_login));
+            $data = unserialize($array_handler->read($this->hash($id_after_login)));
             $this->assertSame('bar', $data['foo']);
 
             // The old session is gone.
-            $this->assertSame('', $array_handler->read($this->testSessionId()));
+            $this->assertSame('', $array_handler->read($this->hashedSessionId()));
 
         }
 
@@ -67,10 +70,10 @@
 
             $session = TestApp::session();
             $array_handler = $session->getDriver();
-            $array_handler->write($this->testSessionId(), serialize(['foo' => 'bar']));
+            $array_handler->write($this->hashedSessionId(), serialize(['foo' => 'bar']));
 
             $this->rebindRequest(TestRequest::from('GET', 'foo')
-                                            ->withAddedHeader('Cookie', 'wp_mvc_session='.$this->testSessionId()));
+                                            ->withAddedHeader('Cookie', 'wp_mvc_session='.$this->getSessionId()));
 
             ob_start();
 
@@ -81,23 +84,17 @@
             $id_after_login = $session->getId();
 
             // Session Id not the same
-            $this->assertNotSame($this->testSessionId(), $id_after_login);
+            $this->assertNotSame($this->getSessionId(), $id_after_login);
             HeaderStack::assertContains('Set-Cookie', $id_after_login);
 
             // Data is for the new id is not in the handler.
-            $data = unserialize($array_handler->read($id_after_login));
+            $data = unserialize($array_handler->read($this->hash($id_after_login)));
             $this->assertArrayNotHasKey('foo', $data);
 
             // The old session is gone.
-            $this->assertSame('', $array_handler->read($this->testSessionId()));
+            $this->assertSame('', $array_handler->read($this->hashedSessionId()));
 
         }
 
-        /** @test */
-        public function a_session_gets_timed_out_if_its_idle_for_too_long () {
-
-
-
-        }
 
     }
