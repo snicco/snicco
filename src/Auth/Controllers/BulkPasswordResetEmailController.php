@@ -27,7 +27,6 @@
 
         public function __construct(MailBuilder $mail)
         {
-
             $this->mail = $mail;
         }
 
@@ -42,7 +41,7 @@
 
             }
 
-            if ( ! $request->has('users') || ! is_array($request->input('users'))) {
+            if ( ! $request->has('users') || ! is_array($request->input('users') ) ) {
 
                 $this->response_factory->redirect()->back();
 

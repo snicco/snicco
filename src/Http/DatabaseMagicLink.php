@@ -81,7 +81,9 @@
 
             wp_cache_add($signature, $signature, 'magic_links', $expires);
 
-            return $this->wpdb->query($query) !== false;
+            $result = $this->wpdb->query($query);
+
+            return $result !== false && $result !== 0;
 
         }
 

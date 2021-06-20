@@ -99,7 +99,7 @@
 
             $signature = $this->magic_link->create($url_with_expired_query_string, $expires, $this->getRequest());
 
-            return $this->to($path, array_merge($query, ['signature'=>$signature] ), true , $absolute);
+            return $this->to($path, array_merge($query, [MagicLink::QUERY_STRING_ID=>$signature] ), true , $absolute);
 
 
         }

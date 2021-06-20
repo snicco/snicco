@@ -169,6 +169,16 @@
 
         }
 
+        public function testHasSession () {
+
+            $this->assertFalse($this->request->hasSession());
+
+            $request = $this->request->withSession(new Session(new ArraySessionDriver(10)));
+
+            $this->assertTrue($request->hasSession());
+
+        }
+
         public function testIsRouteable()
         {
 

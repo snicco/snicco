@@ -8,6 +8,8 @@
 
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
+    use Tests\stubs\TestApp;
+    use WPEmerge\Application\Application;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Cookie;
     use WPEmerge\Http\Psr7\Request;
@@ -20,6 +22,8 @@
         use HasLottery;
         use InteractsWithTime;
 
+        public const QUERY_STRING_ID = 'signature';
+
         protected $app_key;
 
         /** @var Request */
@@ -29,8 +33,18 @@
 
         public function setAppKey(string $app_key)
         {
-
             $this->app_key = $app_key;
+        }
+
+        public function setLottery ( array $lottery ) {
+
+            if ( ! is_int($lottery[0]) || ! is_int($lottery[1]) ) {
+
+                throw new \InvalidArgumentException('Invalid lottery provided');
+
+            }
+
+            $this->lottery = $lottery;
 
         }
 
@@ -46,13 +60,13 @@
 
 
             parse_str(parse_url($url)['query'] ?? '', $query);
-            $signature = $query['signature'] ?? '';
+            $signature = $query[self::QUERY_STRING_ID] ?? '';
 
             $this->destroy($signature);
 
         }
 
-        public function create(string $url, int $expires, Request $request) : string
+        public function create(string $url, int $expires_at, Request $request) : string
         {
 
             $signature = $this->hash($url, $request);
@@ -63,7 +77,7 @@
 
             }
 
-            $stored = $this->store($signature, $expires);
+            $stored = $this->store($signature, $expires_at);
 
             if ( ! $stored ) {
                 throw new \RuntimeException('Magic link could not be stored');
@@ -141,7 +155,7 @@
             $url = $absolute ? $request->url() : $request->path();
 
             $query_without_signature = preg_replace(
-                '/(^|&)signature=[^&]+/',
+                '/(^|&)'.static::QUERY_STRING_ID.'=[^&]+/',
                 '',
                 $request->queryString());
 
@@ -149,19 +163,20 @@
 
             $signature = $this->hash($url.'?'.$query_without_signature, $request);
 
-            return hash_equals($signature, $request->query('signature', ''));
+            $valid = hash_equals($signature, $request->query(self::QUERY_STRING_ID, ''));
+
+            return $valid;
 
         }
 
         protected function hash(string $url, Request $request) : string
         {
 
-            if ( ! $this->app_key) {
+            if ( ! $this->app_key ) {
                 throw new \RuntimeException('App key not set.');
             }
 
-
-            $salt = $this->app_key. $request->userAgent();
+            $salt = $this->app_key.$request->userAgent();
 
             return hash_hmac('sha256', $url, $salt);
 
