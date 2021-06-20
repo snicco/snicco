@@ -106,7 +106,8 @@
 
             $cookie = $request->cookies()->get($this->accessCookieName($request), '');
 
-            return $cookie === $this->hash($request->fullPath(), $request);
+            return $cookie === $this->hash($request->fullPath(), $request)
+                && $request->expires() > $this->currentTime();
 
         }
 
@@ -184,8 +185,7 @@
 
         private function accessCookieName(Request $request) {
 
-
-            $id = WP::isUserLoggedIn() ? WP::userId() : '';
+            $id = WP::userId();
             $path = $request->fullPath();
             $agent = $request->userAgent();
 

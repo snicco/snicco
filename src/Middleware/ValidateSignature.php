@@ -39,7 +39,6 @@
         public function handle(Request $request, Delegate $next) : ResponseInterface
         {
 
-
             if ( $this->magic_link->hasAccessToRoute($request) ) {
 
                 return $next($request);
@@ -64,8 +63,6 @@
             throw new InvalidSignatureException();
 
         }
-
-
 
 
 
