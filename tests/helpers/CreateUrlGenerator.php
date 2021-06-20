@@ -19,6 +19,9 @@
         /** @var MagicLink */
         protected $magic_link;
 
+        /** @var UrlGenerator */
+        protected $generator;
+
         protected function newUrlGenerator(string $app_key = null, Request $request = null) : UrlGenerator
         {
 
@@ -33,6 +36,8 @@
             $this->magic_link = $magic_link;
 
             $generator = new UrlGenerator(new FastRouteUrlGenerator($this->routes), $magic_link);
+
+            $this->generator = $generator;
 
             $generator->setRequestResolver(function () use ($request ){
 
