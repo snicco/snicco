@@ -35,11 +35,11 @@
 
             $this->extendRoutes(__DIR__.DIRECTORY_SEPARATOR.'routes');
 
+            $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views');
+
             $this->bindAuthenticator();
 
             $this->bindEvents();
-
-            $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views');
 
             $this->bindControllers();
 
@@ -88,6 +88,7 @@
                 'login_url' => GenerateLoginUrl::class,
                 'logout_url' => GenerateLogoutUrl::class,
             ]);
+
 
 
         }

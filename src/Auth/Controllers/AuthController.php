@@ -47,7 +47,7 @@
 
             }
 
-            $view = $this->authenticator->view();
+             $view = $this->authenticator->view();
 
             return $this->view_factory->make('auth-parent')
                                 ->with([

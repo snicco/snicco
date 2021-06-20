@@ -18,6 +18,11 @@
 
         public const wp_auth_key = '_wp_auth_session_content';
 
+        /**
+         * @var array
+         */
+        private $all_sessions_for_user;
+
         protected function __construct($user_id)
         {
 
@@ -42,6 +47,10 @@
         protected function get_sessions() : array
         {
 
+            if ( is_array($this->all_sessions_for_user ) ) {
+                return $this->all_sessions_for_user;
+            }
+
             $sessions = collect($this->session_manager->getAllForUser());
             $sessions = $sessions
                 ->map(function (array $payload) {
@@ -51,7 +60,9 @@
                 })
                 ->all();
 
-            return is_array($sessions) ? $sessions : [];
+            $this->all_sessions_for_user = is_array($sessions) ? $sessions : [];
+
+            return $this->all_sessions_for_user;
 
         }
 
