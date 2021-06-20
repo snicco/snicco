@@ -14,8 +14,7 @@
     <meta charset="utf-8">
     <title><?= $title ?? 'Log-in' ?></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
 
 </head>
 
@@ -68,27 +67,38 @@
 
 </style>
 
-<section class="hero is-fullheight">
-    <div class="hero-body">
-        <div class="container">
 
-            <a href="https://wordpress.org/" id="logo"></a>
+<!--Interim Login -->
+<?php if ($session->has('interim_login_success') || false ) : ?>
 
-            <div class="columns is-centered">
-                <div class="column is-5-tablet is-4-desktop is-3-widescreen">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" type="text/javascript"></script>
+    <script>
+        jQuery(parent.document).find('.wp-auth-check-close').click();
+    </script>
+
+<?php else : ?>
+
+    <section class="hero is-fullheight">
+        <div class="hero-body">
+            <div class="container">
+
+                <a href="https://wordpress.org/" id="logo"></a>
+
+                <div class="columns is-centered">
+                    <div class="column is-5-tablet is-4-desktop is-3-widescreen">
 
 
-            <?= $view_factory->render($view) ?>
+                        <?= $view_factory->render($view) ?>
+
+                    </div>
+
 
                 </div>
 
-
             </div>
-
         </div>
-    </div>
-</section>
-
+    </section>
+<?php endif; ?>
 </body>
 </html>
 

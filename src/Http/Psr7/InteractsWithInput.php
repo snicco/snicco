@@ -87,7 +87,6 @@
 
         public function boolean($key = null, $default = false)
         {
-
             return filter_var($this->input($key, $default), FILTER_VALIDATE_BOOLEAN);
         }
 

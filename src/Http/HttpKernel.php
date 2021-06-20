@@ -93,6 +93,7 @@
         public function run(IncomingRequest $request_event) : void
         {
 
+
             $response = $this->handle($request_event);
 
             if ($response instanceof NullResponse) {
