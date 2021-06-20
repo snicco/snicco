@@ -16,6 +16,7 @@
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\Redirector;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Responses\RedirectResponse;
@@ -47,7 +48,7 @@
 
             }
 
-             $view = $this->authenticator->view();
+            $view = $this->authenticator->view();
 
             return $this->view_factory->make('auth-parent')
                                 ->with([
@@ -57,12 +58,13 @@
                                     'view_factory' => $this->view_factory,
                                     'view' => $view,
                                     'title' => 'Log-in | ' . WP::siteName(),
-                                    'forgot_password' => $this->url->toRoute('auth.forgot.password')
+                                    'forgot_password' => $this->url->toRoute('auth.forgot.password'),
+                                    'is_interim_login' => $request->boolean('interim-login')
                                 ]);
 
         }
 
-        public function store(Request $request) : RedirectResponse
+        public function store(Request $request) : Response
         {
 
             try {
@@ -84,6 +86,13 @@
             $request->session()->migrate(true );
             Login::dispatch([$user, $remember]);
 
+            if ( $request->boolean('is_interim_login') ) {
+
+                $request->session()->flash('interim_login_success', true );
+                $html = $this->view_factory->render('auth-parent');
+                return $this->response_factory->html($html);
+
+            }
 
             return $this->redirectToDashboard($request);
 
@@ -126,5 +135,6 @@
 
 
         }
+
 
     }
