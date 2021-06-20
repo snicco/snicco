@@ -32,25 +32,19 @@
         public function store(Request $request, string $user_id) : RedirectResponse
         {
 
-            $user = $this->getUser(( int ) $user_id);
+            $user = get_user_by('ID', (int) $user_id);
 
-            if ( ! $user instanceof WP_User ) {
-
-                throw new NotFoundException();
-
-            }
-
-            if ( $user->ID !== (int) $user_id ) {
+            if ( ! $user instanceof WP_User || $user->ID !== WP::currentUser()->ID ) {
 
                 throw new AuthorizationException();
 
             }
 
-            $this->loginUser($user);
-
             $session = $request->session();
-            $session->migrate(true);
             $session->confirmAuthUntil($this->lifetime_in_minutes);
+            $session->migrate(true);
+
+            wp_set_auth_cookie($user_id, true, true, $session->getId());
 
             return $this->response_factory->redirect()
                                           ->intended($request, WP::adminUrl());
@@ -58,21 +52,5 @@
 
         }
 
-        // If the user is logged in already we just refresh the auth cookie.
-        private function loginUser(WP_User $user)
-        {
-
-            wp_set_auth_cookie($user->ID, true, true);
-            wp_set_current_user($user->ID);
-
-
-        }
-
-        private function getUser(int $user_id)
-        {
-
-            return WP::isUserLoggedIn() ? WP::currentUser() : get_user_by('ID', $user_id);
-
-        }
 
     }

@@ -26,11 +26,11 @@
 
             if ( ! $session->hasValidAuthConfirmToken() ) {
 
-                if ( ! $session->has('auth.confirm.email.count') ) {
-
-                    $session->invalidate();
-
-                }
+                // if ( ! $session->has('auth.confirm.email.count') ) {
+                //
+                //     $session->invalidate();
+                //
+                // }
 
                 $session->setIntendedUrl($request->fullUrl());
 
