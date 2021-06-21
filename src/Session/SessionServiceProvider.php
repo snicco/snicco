@@ -9,6 +9,7 @@
     use Slim\Csrf\Guard;
     use WPEmerge\Application\Application;
     use WPEmerge\Auth\AuthServiceProvider;
+    use WPEmerge\Auth\AuthSessionValidator;
     use WPEmerge\Auth\Events\GenerateLoginUrl;
     use WPEmerge\Auth\Events\GenerateLogoutUrl;
     use WPEmerge\Auth\Events\SettingAuthCookie;
@@ -79,11 +80,9 @@
             $this->config->extend('session.same_site', 'lax');
 
             // timeouts
-            $this->config->extend('session.idle', SessionManager::HOUR_IN_SEC / 2);
             $this->config->extend('session.lifetime', SessionManager::HOUR_IN_SEC * 8);
-            $this->config->extend('session.rotate', $this->config->get('session.lifetime') / 2);
-            $this->config->extend('session.auth_confirmed_lifetime', 180);
-            $this->config->extend('session.auth_confirm_on_login', true);
+
+
 
             // middleware
             $this->config->extend('middleware.aliases', [
@@ -99,9 +98,8 @@
         private function bindSession()
         {
 
-            $name = $this->config->get('session.cookie');
 
-            $this->container->singleton(Session::class, function () use ($name) {
+            $this->container->singleton(Session::class, function ()  {
 
                 $store = null;
 
@@ -275,6 +273,7 @@
                     $this->config->get('session'),
                     $this->container->make(Session::class),
                 );
+
 
             });
 

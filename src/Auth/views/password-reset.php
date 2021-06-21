@@ -8,11 +8,11 @@
 
 ?>
 
-<?php if ($session->has('_password_reset.success_message')) : ?>
+<?php if ($session->get('_password_reset.success', false )) : ?>
 
     <div class="box">
             <div class="notification is-success is-light">
-                <?= $session->get('_password_reset.success_message') ?>
+                You have successfully reset your password. You can now log-in with your new credentials.
             </div>
         <a href="<?= wp_login_url() ?>" class="is-link"> Proceed to login</a>
     </div>

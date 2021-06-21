@@ -79,9 +79,7 @@
 
             return $this->response_factory->redirect()
                                           ->refresh()
-                                          ->with([
-                                              '_password_reset.success_message' => $this->success_message,
-                                          ]);
+                                          ->with('_password_reset.success', true);
 
         }
 

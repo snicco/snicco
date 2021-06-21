@@ -18,20 +18,15 @@
     class ForgotPasswordController extends Controller
     {
 
-        /**
-         * @var string|null
-         */
-        protected $message;
 
         /**
          * @var int
          */
         protected $expiration;
 
-        public function __construct( ?string $message = null, int $expiration = 3000 )
+        public function __construct( int $expiration = 3000 )
         {
 
-            $this->message = $message ?? 'We sent an email with instructions to the associated account if it exists.';
             $this->expiration = $expiration;
 
         }
@@ -64,9 +59,10 @@
 
             }
 
+
             return $this->response_factory->redirect()
                                     ->toRoute('auth.forgot.password')
-                                    ->with('_password_reset_message', $this->message);
+                                    ->with('_password_reset_processed', true);
 
         }
 
