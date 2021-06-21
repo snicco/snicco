@@ -3,23 +3,25 @@
 
     declare(strict_types = 1);
 
+    use WPEmerge\Session\Session;
+    use Illuminate\Support\ViewErrorBag;
+    
     /** @var ViewErrorBag $errors */
+
     /** @var Session $session */
 
-    use Illuminate\Support\ViewErrorBag;
-    use WPEmerge\Session\Session;
 
-    $message = $session->get('_password_reset_message', false);
+    $processed = $session->get('_password_reset_processed', false);
 
 ?>
 
 
 <form method="POST" action="<?= esc_attr($post) ?>" class="box">
 
-    <div class="notification <?= $message ? 'is-success' : 'is-info' ?> is-light">
+    <div class="notification <?= $processed ? 'is-success' : 'is-info' ?> is-light">
 
-        <?php if ($message) : ?>
-            <?= $message ?>
+        <?php if ($processed) : ?>
+            We sent an email to the provided account if it exists.
         <?php else : ?>
             Enter your username or account email and we will sent you an email with instructions to reset your password.
         <?php endif; ?>

@@ -8,6 +8,7 @@
 
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
+    use WPEmerge\Auth\AuthSessionValidator;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Cookie;
     use WPEmerge\Http\Cookies;
@@ -27,6 +28,7 @@
         public const DAY_IN_SEC        = 86400;
         public const HOUR_IN_SEC       = 3600;
         public const THIRTY_MIN_IN_SEC = 1800;
+        public const WEEK_IN_SEC = self::DAY_IN_SEC * 7;
 
         /**
          * @var array
@@ -48,6 +50,11 @@
          */
         private $driver;
 
+        /**
+         * @var AuthSessionValidator
+         */
+        private $auth_session_validator;
+
         public function __construct(array $session_config, Session $session)
         {
 
@@ -64,6 +71,111 @@
                 return $this->session;
             }
 
+        }
+
+        public function start(Request $request, int $user_id) : Session
+        {
+
+            if ($this->session->isStarted()) {
+                return $this->session;
+            }
+
+            $cookie_name = $this->config['cookie'];
+            $session_id = $request->cookies()->get($cookie_name, '');
+            $this->session->start($session_id);
+            $this->session->setUserId($user_id);
+
+            return $this->session;
+
+        }
+
+        public function sessionCookie() : Cookie
+        {
+
+            $cookie = new Cookie($this->config['cookie'], $this->session->getId());
+
+            $cookie->path($this->config['path'])
+                   ->sameSite($this->config['same_site'])
+                   ->expires(Carbon::now()->addMinutes($this->config['lifetime']))
+                   ->onlyHttp()
+                   ->domain($this->config['domain']);
+
+            return $cookie;
+
+        }
+
+        public function driver() : SessionDriver
+        {
+
+            return $this->session->getDriver();
+        }
+
+        public function collectGarbage()
+        {
+
+            if ($this->hitsLottery($this->config['lottery'])) {
+
+                $this->session->getDriver()->gc($this->maxSessionLifetime());
+
+            }
+        }
+
+        public function save()
+        {
+
+            $this->session->lastActivity($this->currentTime());
+
+            $this->session->save();
+
+        }
+
+        public function getAllForUser() : array
+        {
+
+            $sessions = $this->session->getAllForUser();
+
+            return collect($sessions)
+                ->flatMap(function (object $session) {
+
+                    return [$session->id => $session->payload];
+
+                })
+                ->reject(function (array $payload) {
+
+                    return $this->auth_session_validator->isIdle($payload);
+
+                })
+                ->all();
+
+        }
+
+        public function destroyOthersForUser(string $hashed_token, int $user_id)
+        {
+
+            $this->driver->destroyOthersForUser($hashed_token, $user_id);
+
+        }
+
+        public function destroyAllForUser(int $user_id)
+        {
+            $this->driver->destroyAllForUser($user_id);
+
+        }
+
+        public function destroyAll()
+        {
+            $this->driver->destroyAll();
+        }
+
+        private function maxSessionLifetime() {
+
+            return $this->config['lifetime'];
+
+        }
+
+        public function setAuthSessionValidator(AuthSessionValidator $v)
+        {
+            $this->auth_session_validator = $v;
         }
 
         /**
@@ -116,167 +228,6 @@
 
         }
 
-        public function start(Request $request, int $user_id) : Session
-        {
-
-            if ($this->session->isStarted()) {
-                return $this->session;
-            }
-
-            $cookie_name = $this->config['cookie'];
-            $session_id = $request->cookies()->get($cookie_name, '');
-            $this->session->start($session_id);
-            $this->session->setUserId($user_id);
-
-            return $this->session;
-
-        }
-
-        public function sessionCookie() : Cookie
-        {
-
-            $cookie = new Cookie($this->config['cookie'], $this->session->getId());
-
-            $cookie->path($this->config['path'])
-                   ->sameSite($this->config['same_site'])
-                   ->expires(Carbon::now()->addMinutes($this->config['lifetime']))
-                   ->onlyHttp()
-                   ->domain($this->config['domain']);
-
-            return $cookie;
-
-        }
-
-        public function driver() : SessionDriver
-        {
-
-            return $this->session->getDriver();
-        }
-
-        public function collectGarbage()
-        {
-
-            if ($this->hitsLottery($this->config['lottery'])) {
-
-                $this->session->getDriver()->gc($this->sessionLifetimeInSeconds());
-
-            }
-        }
-
-        private function sessionLifetimeInSeconds()
-        {
-
-            return $this->config['lifetime'] * 60;
-        }
-
-        public function save()
-        {
-
-            $this->session->lastActivity($this->currentTime());
-
-            if ( ! $this->session->rotateAt()) {
-
-                $this->setRotation();
-
-            }
-
-            if ( ! $this->session->expiresAt()) {
-
-                $this->setExpiration();
-
-            }
-
-            $this->session->save();
-
-        }
-
-        private function needsRotation() : bool
-        {
-
-            return $this->session->rotateAt() !== 0 && $this->currentTime() > $this->session->rotateAt();
-        }
-
-        private function setRotation()
-        {
-
-            $this->session->rotateAt($this->config['rotate'] ?? static::HOUR_IN_SEC);
-
-        }
-
-        private function setExpiration()
-        {
-
-            $this->session->expiresAt($this->config['lifetime'] ?? static::DAY_IN_SEC);
-
-
-        }
-
-        private function isIdle() : bool
-        {
-
-            if ($this->session->lastActivity() === 0) {
-                return false;
-            }
-
-            $idle_period = $this->config['idle'] ?? static::THIRTY_MIN_IN_SEC;
-
-            return $this->session->lastActivity() + $idle_period < $this->currentTime();
-        }
-
-        private function isAbsoluteTimeout() : bool
-        {
-
-            return $this->session->expiresAt() !== 0 && $this->currentTime() > $this->session->expiresAt();
-
-
-        }
-
-        public function getAllForUser() : array
-        {
-
-            $sessions = $this->session->getAllForUser();
-
-            $sessions = collect($sessions)
-                ->flatMap(function (object $session) {
-
-                    return [$session->id => $session->payload];
-
-                })
-                ->filter(function (array $payload) {
-
-                    return $this->isValid($payload);
-
-                })->all();
-
-           return $sessions;
-
-
-        }
-
-        private function isValid(array $payload)
-        {
-
-            return true;
-
-        }
-
-        public function destroyOthersForUser(string $hashed_token, int $user_id)
-        {
-
-            $this->driver->destroyOthersForUser($hashed_token, $user_id);
-
-        }
-
-        public function destroyAllForUser(int $user_id)
-        {
-            $this->driver->destroyAllForUser($user_id);
-
-        }
-
-        public function destroyAll()
-        {
-            $this->driver->destroyAll();
-        }
 
 
     }

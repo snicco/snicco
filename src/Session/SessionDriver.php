@@ -9,6 +9,12 @@
     use SessionHandlerInterface;
     use WPEmerge\Http\Psr7\Request;
 
+    /**
+     * NOTE: for all methods that return a session or multiple sessions the driver MUST ONLY
+     * validate that the session is not expired absolutely. Session idle/rotation timeouts are
+     * handled in the @see SessionManager
+     *
+     */
     interface SessionDriver extends SessionHandlerInterface
     {
 
