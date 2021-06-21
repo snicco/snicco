@@ -10,6 +10,8 @@
     use WPEmerge\Routing\Router;
     use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
 
+
+
     /** @var Router $router */
 
     $router->middleware('secure')->group(function (Router $router)  {

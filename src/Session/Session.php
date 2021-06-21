@@ -17,6 +17,7 @@
     use stdClass;
     use SessionHandlerInterface;
 
+
     class Session
     {
 
@@ -449,7 +450,6 @@
 
         protected function prepareForStorage(string $data) : string
         {
-
             return $data;
         }
 

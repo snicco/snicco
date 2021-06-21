@@ -32,6 +32,7 @@
 
             }
 
+
             $password =  $request->input('pwd');
             $username = $request->input('log');
 

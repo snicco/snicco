@@ -22,6 +22,7 @@
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\CsrfField;
+    use WPEmerge\Session\Example2;
     use WPEmerge\View\ViewFactory;
 
     class AuthController extends Controller
@@ -41,6 +42,7 @@
 
         public function create(Request $request, CsrfField $csrf) : ViewInterface
         {
+
 
             if ( $request->boolean('reauth')) {
 
@@ -66,6 +68,7 @@
 
         public function store(Request $request) : Response
         {
+
 
             try {
 
@@ -138,3 +141,4 @@
 
 
     }
+
