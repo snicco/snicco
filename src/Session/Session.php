@@ -477,7 +477,7 @@
 
             if ($data = $this->handler->read( $this->hash($this->getId() ) ) ) {
 
-                $data = @unserialize($this->prepareForUnserialize($data));
+                $data = @unserialize($this->prepareForUnserialize($data) );
 
                 if ($data !== false && ! is_null($data) && is_array($data)) {
                     return $data;
