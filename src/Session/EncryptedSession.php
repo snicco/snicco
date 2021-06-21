@@ -32,7 +32,7 @@
          *
          * @return string
          */
-        protected function prepareForUnserialize( string $data) : string
+        protected function prepareForUnserialize( string $data ) : string
         {
             try {
                 return $this->encryptor->decrypt($data);

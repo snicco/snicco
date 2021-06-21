@@ -7,7 +7,6 @@
     namespace WPEmerge\Auth\Controllers;
 
     use WPEmerge\Auth\Events\Login;
-    use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Auth\Authenticator;
@@ -17,13 +16,8 @@
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\Redirector;
-    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\CsrfField;
-    use WPEmerge\Session\Example2;
-    use WPEmerge\View\ViewFactory;
 
     class AuthController extends Controller
     {

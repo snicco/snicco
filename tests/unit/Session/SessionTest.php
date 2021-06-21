@@ -14,6 +14,7 @@
 
     use function serialize;
 
+
     class SessionTest extends TestCase
     {
 
@@ -85,7 +86,8 @@
             $session = $this->newSessionStore();
             $session->expiresAt(300);
 
-            $this->assertSame(Carbon::now()->addSeconds(300)->getTimestamp(), $session->expiresAt());
+            $this->assertSame(Carbon::now()->addSeconds(300)
+                                    ->getTimestamp(), $session->expiresAt());
 
         }
 
@@ -717,7 +719,8 @@
 
             $session->save();
 
-            $this->assertArrayHasKey('foo', unserialize($session->getDriver()->read($this->hash($old_id))));
+            $this->assertArrayHasKey('foo', unserialize($session->getDriver()
+                                                                ->read($this->hash($old_id))));
 
             $this->assertTrue($session->invalidate());
 
@@ -815,7 +818,6 @@
             return new ArraySessionDriver($minutes);
 
         }
-
 
 
     }
