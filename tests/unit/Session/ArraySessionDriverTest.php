@@ -6,30 +6,34 @@
 
 	namespace Tests\unit\Session;
 
-	use PHPUnit\Framework\TestCase;
+	use Mockery;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\TravelsTime;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
-	use Illuminate\Support\Carbon;
 
 	class ArraySessionDriverTest extends UnitTest {
 
 	    use TravelsTime;
+        use CreateDefaultWpApiMocks;
 
-	    protected function setUp() : void
+	    protected function beforeTestRun() : void
         {
 
-            parent::setUp();
             $this->backToPresent();
+            WP::reset();
+            WP::shouldReceive('userId')->andReturn(1)->byDefault();
+
 
         }
 
-        protected function tearDown() : void
+        protected function beforeTearDown() : void
         {
             $this->backToPresent();
-            parent::tearDown();
+            WP::reset();
+            Mockery::close();
         }
 
         /** @test */
@@ -141,14 +145,16 @@
 		/** @test */
 		public function all_session_for_a_given_user_id_can_be_retrieved () {
 
+		    WP::shouldReceive('userId')->andReturn(1)->byDefault();
             $handler = new ArraySessionDriver(10);
-            $handler->setRequest($this->newRequestWithUserId(1));
+            $handler->setRequest($this->newRequest());
             $handler->write('foo', 'bar');
 
-            $handler->setRequest($this->newRequestWithUserId(1));
+            $handler->setRequest($this->newRequest());
             $handler->write('bar', 'baz');
 
-            $handler->setRequest($this->newRequestWithUserId(2));
+            WP::shouldReceive('userId')->andReturn(2);
+            $handler->setRequest($this->newRequest());
             $handler->write('biz', 'bam');
 
             $sessions = $handler->getAllByUserId(1);
@@ -166,12 +172,15 @@
 		/** @test */
 		public function all_sessions_but_the_one_with_the_provided_token_can_be_destroyed_for_the_user () {
 
+            WP::shouldReceive('userId')->andReturn(1)->byDefault();
             $handler = new ArraySessionDriver(10);
-            $handler->setRequest($this->newRequestWithUserId(1));
+            $handler->setRequest($this->newRequest());
             $handler->write('foo', 'bar');
-            $handler->setRequest($this->newRequestWithUserId(1));
+            $handler->setRequest($this->newRequest());
             $handler->write('bar', 'baz');
-            $handler->setRequest($this->newRequestWithUserId(2));
+
+            WP::shouldReceive('userId')->andReturn(2);
+            $handler->setRequest($this->newRequest());
             $handler->write('biz', 'bam');
 
             $handler->destroyOthersForUser('foo', 1);
@@ -187,12 +196,16 @@
 		/** @test */
 		public function all_sessions_for_a_user_can_be_destroyed () {
 
+            WP::shouldReceive('userId')->andReturn(1)->byDefault();
             $handler = new ArraySessionDriver(10);
-            $handler->setRequest($this->newRequestWithUserId(1));
+            $handler->setRequest($this->newRequest());
             $handler->write('foo', 'bar');
-            $handler->setRequest($this->newRequestWithUserId(1));
+            $handler->setRequest($this->newRequest());
             $handler->write('bar', 'baz');
-            $handler->setRequest($this->newRequestWithUserId(2));
+
+            WP::shouldReceive('userId')->andReturn(2);
+
+            $handler->setRequest($this->newRequest());
             $handler->write('biz', 'bam');
 
             $handler->destroyAllForUser(1);
@@ -210,11 +223,15 @@
         public function all_sessions_can_be_destroyed () {
 
             $handler = new ArraySessionDriver(10);
-            $handler->setRequest($this->newRequestWithUserId(1));
+            $handler->setRequest($this->newRequest());
             $handler->write('foo', 'bar');
-            $handler->setRequest($this->newRequestWithUserId(1));
+            $handler->setRequest($this->newRequest());
             $handler->write('bar', 'baz');
-            $handler->setRequest($this->newRequestWithUserId(2));
+
+
+            WP::shouldReceive('userId')->andReturn(2);
+
+            $handler->setRequest($this->newRequest());
             $handler->write('biz', 'bam');
 
             $handler->destroyAll();
@@ -224,10 +241,10 @@
 
         }
 
-		private function newRequestWithUserId(int $id) {
+		private function newRequest() {
 		    $request = TestRequest::from('GET', 'foo');
 
-		    return $request->withUser($id);
+		    return $request;
         }
 
 	}
