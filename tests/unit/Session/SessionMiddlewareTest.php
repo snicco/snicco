@@ -14,6 +14,7 @@
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
     use WPEmerge\ExceptionHandling\TestingErrorHandler;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
@@ -58,11 +59,14 @@
             'same_site' => 'lax',
             'http_only' => true,
             'secure' => true,
-            'path' => '/'
+            'path' => '/',
+            'rotate' => 3600
         ];
 
         protected function beforeTestRun()
         {
+
+            WP::shouldReceive('userId')->andReturn(1)->byDefault();
 
             $response = $this->createResponseFactory();
 
@@ -84,6 +88,13 @@
                                             'test_session' => $this->getSessionId(),
                                         ]));
 
+        }
+
+        protected function beforeTearDown()
+        {
+
+           WP::reset();
+           \Mockery::close();
         }
 
         private function newMiddleware(Session $session = null, $gc_collection = [0,100]) : StartSessionMiddleware

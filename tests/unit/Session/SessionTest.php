@@ -9,9 +9,11 @@
     use Carbon\Carbon;
     use PHPUnit\Framework\TestCase;
     use SniccoAdapter\BaseContainerAdapter;
+    use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\HashesSessionIds;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Auth\Events\Logout;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Session;
 
@@ -29,13 +31,15 @@
             parent::setUp();
 
             Carbon::setTestNow();
+            WP::shouldReceive('userId')->andReturn(1)->byDefault();
 
         }
 
         protected function tearDown() : void
         {
             Carbon::setTestNow();
-
+            WP::reset();
+            \Mockery::close();
             parent::tearDown();
         }
 
