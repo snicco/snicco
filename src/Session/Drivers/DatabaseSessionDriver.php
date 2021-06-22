@@ -146,7 +146,7 @@
         public function destroyOthersForUser(string $hashed_token, int $user_id)
         {
 
-            $query = $this->db->prepare("DELETE FROM $this->table WHERE user_id <= %d AND NOT `id` = %s", $user_id, $hashed_token);
+            $query = $this->db->prepare("DELETE FROM $this->table WHERE user_id = %d AND NOT `id` = %s", $user_id, $hashed_token);
 
             $this->db->query($query);
 

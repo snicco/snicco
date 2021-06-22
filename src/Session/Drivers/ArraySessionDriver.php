@@ -96,7 +96,8 @@
             $this->storage[$sessionId] = [
                 'payload' => $data,
                 'time' => $this->currentTime(),
-                'user_id' => $this->request ? $this->request->user() : 0,
+                // 'user_id' => $this->request ? $this->request->user() : 0,
+                'user_id' => WP::userId(),
             ];
 
             return true;

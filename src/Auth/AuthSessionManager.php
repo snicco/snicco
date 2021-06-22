@@ -30,7 +30,7 @@
         private $active_session;
 
         /**
-         * @var \WPEmerge\Session\Contracts\SessionDriver
+         * @var  SessionDriver
          */
         private $driver;
 
