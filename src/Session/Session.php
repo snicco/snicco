@@ -13,6 +13,7 @@
     use Illuminate\Support\InteractsWithTime;
     use Illuminate\Support\ViewErrorBag;
     use Respect\Validation\Rules\DateTime;
+    use WPEmerge\Auth\Events\Logout;
     use WPEmerge\Facade\WP;
     use WPEmerge\Session\Contracts\SessionDriver;
     use WPEmerge\Session\Events\SessionRegenerated;

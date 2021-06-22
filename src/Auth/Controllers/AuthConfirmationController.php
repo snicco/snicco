@@ -7,7 +7,10 @@
     namespace WPEmerge\Auth\Controllers;
 
     use Carbon\Carbon;
+    use WPEmerge\Auth\Events\Logout;
+    use WPEmerge\Auth\Exceptions\TooManyFailedAuthConfirmationsException;
     use WPEmerge\Contracts\ViewInterface;
+    use WPEmerge\ExceptionHandling\Exceptions\TooManyRequestsException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
@@ -51,14 +54,15 @@
 
             $post_url = $this->url->toRoute('auth.confirm.send', [], true, false);
 
-            return $this->view_factory->make('auth-confirm')
+            return $this->view_factory->make('auth-parent')
                               ->with(
                                   [
                                       'post_url' => $post_url,
                                       'csrf_field' => $csrf_field->asHtml(),
                                       'jail' => $this->isUserInJail() ? $this->getJailTime() : false,
                                       'last_recipient' => $this->lastRecipient(),
-                                      'view' => $this->view_factory,
+                                      'view' => 'auth-confirm',
+                                      'view_factory' => $this->view_factory
                                   ]
                               );
 
@@ -69,14 +73,16 @@
 
             if ( ! $this->hasLeftAttemptsToInputCorrectEmail() ) {
 
-                $this->session->invalidate();
-                WP::logout();
+                Logout::dispatch([$request->session()]);
 
-                return $this->response_factory->redirectToLogin(true, $request->path());
+                throw new TooManyFailedAuthConfirmationsException(
+                    'You dont have attempts left to enter your correct email.'
+                );
 
             }
 
-            if ( ! $this->canRequestAnotherEmail()) {
+            if ( ! $this->canRequestAnotherEmail() ) {
+
 
                 return $this->response_factory->redirect()->refresh();
 
@@ -149,7 +155,7 @@
 
             }
 
-            if ( ! $this->isUserInJail()) {
+            if ( ! $this->isUserInJail() ) {
 
                 $this->session->forget('auth.confirm.email');
 
