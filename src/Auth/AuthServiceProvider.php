@@ -105,8 +105,8 @@
                 'logout_url' => GenerateLogoutUrl::class,
             ]);
 
-            // This filter is very misleading by WordPress. It does not filter expire value in
-            // "setcookie()" but filter the expiration fragment in the cookie hash.
+            // This filter is very misleading from WordPress. It does not filter expire value in
+            // "setcookie()" function, but filters the expiration fragment in the cookie hash.
             add_filter('auth_cookie_expiration', function () {
 
                 return $this->config->get('auth.remember.lifetime');

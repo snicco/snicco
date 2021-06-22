@@ -116,7 +116,7 @@
 
         }
 
-        public function signedLogout ( ?int $user_id = null , string $redirect_on_logout = '/', int $expiration = 3600 ) : string
+        public function signedLogout ( ?int $user_id = null , string $redirect_on_logout = '/', int $expiration = 3600, bool $absolute = false ) : string
         {
 
             $args = [
@@ -126,7 +126,7 @@
                 ]
             ];
 
-            return $this->signedRoute('auth.logout', $args, $expiration, true );
+            return $this->signedRoute('auth.logout', $args, $expiration, $absolute );
 
         }
 

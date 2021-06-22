@@ -14,6 +14,14 @@
     use WPEmerge\Mail\MailBuilder;
     use WPEmerge\Support\Arr;
 
+    /**
+     * This Controller performs the same logic that happens inside user.php
+     * when password reset emails ar sent from the admin interface.
+     *
+     * This Controller sends password reset emails that are compatible with the Auth Package by
+     * creating a signed link to the password reset route.
+     *
+     */
     class BulkPasswordResetEmailController extends Controller
     {
 

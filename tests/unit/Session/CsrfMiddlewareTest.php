@@ -12,6 +12,7 @@
     use Tests\helpers\HashesSessionIds;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
@@ -49,6 +50,8 @@
         protected function beforeTestRun()
         {
 
+            WP::shouldReceive('userID')->andReturn(1)->byDefault();
+
             $response = $this->createResponseFactory();
 
             $this->route_action = new Delegate(function () use ($response) {
@@ -72,6 +75,12 @@
                 ],
             ]));
 
+        }
+
+        protected function beforeTearDown()
+        {
+            WP::reset();
+            \Mockery::close();
         }
 
         private function sessionId() : string

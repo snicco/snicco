@@ -6,8 +6,12 @@
 
     namespace Tests\integration\Auth;
 
+    use Tests\integration\Blade\traits\InteractsWithWordpress;
     use Tests\IntegrationTest;
+    use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
+    use Tests\stubs\TestRequest;
+    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Auth\AuthServiceProvider;
     use WPEmerge\Auth\AuthSessionManager;
     use WPEmerge\Auth\Controllers\AuthController;
@@ -17,6 +21,8 @@
     use WPEmerge\Auth\Middleware\AuthenticateSession;
     use WPEmerge\Auth\PasswordAuthenticator;
     use WPEmerge\Auth\WpAuthSessionToken;
+    use WPEmerge\Events\ResponseSent;
+    use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Session\Contracts\SessionManagerInterface;
     use WPEmerge\Session\Events\NewLogin;
     use WPEmerge\Session\Events\NewLogout;
@@ -25,6 +31,8 @@
 
     class AuthServiceProviderTest extends IntegrationTest
     {
+
+        use InteractsWithWordpress;
 
         private $config = [
             'session' => [
@@ -236,6 +244,91 @@
             $this->assertSame(3600, TestApp::config('session.lifetime'));
             $this->assertSame(3600, TestApp::config('auth.remember.lifetime'));
             $this->assertSame(3600, TestApp::config('auth.timeouts.absolute'));
+
+        }
+
+        /** @test */
+        public function wp_login_php_is_redirected () {
+
+            $this->newTestApp($this->config);
+
+            $this->rebindRequest(TestRequest::from('GET', 'foo')->withLoadingScript('wp-login.php'));
+
+            ApplicationEvent::fake([ResponseSent::class]);
+
+            do_action('init');
+
+            HeaderStack::assertHasStatusCode(301);
+            HeaderStack::assertContains('Location', '/auth/login');
+            ApplicationEvent::assertDispatched(function (ResponseSent $event) {
+
+                return $event->response instanceof RedirectResponse;
+
+            });
+
+        }
+
+        /** @test */
+        public function the_login_url_is_filtered () {
+
+            $this->newTestApp($this->config);
+
+            do_action('init');
+
+            $url = wp_login_url();
+
+            $this->assertStringNotContainsString('wp-login', $url);
+            $this->assertStringContainsString('/auth/login', $url);
+
+        }
+
+        /** @test */
+        public function the_logout_url_is_filtered () {
+
+            $this->newTestApp($this->config);
+
+            do_action('init');
+
+            $url = wp_logout_url();
+
+            $this->assertStringNotContainsString('wp-login', $url);
+            $this->assertStringContainsString('/auth/logout', $url);
+
+        }
+
+        /** @test */
+        public function the_auth_cookie_is_filtered_and_contains_the_current_session_id () {
+
+            $this->newTestApp($this->config);
+
+            $calvin = $this->newAdmin();
+
+            do_action('init');
+            // create random id.
+            TestApp::session()->setId('bogus');
+
+            $cookie = wp_generate_auth_cookie($calvin->ID, 3600, 'auth', $token = wp_generate_password());
+            $elements = wp_parse_auth_cookie($cookie);
+
+            $this->assertNotSame($elements['token'], $token);
+            $this->assertSame($elements['token'], TestApp::session()->getId());
+        }
+
+        /** @test */
+        public function the_cookie_expiration_is_filtered () {
+
+            $this->newTestApp(array_merge($this->config, [
+                'auth' => [
+                    'remember' => [
+                        'enabled' => true,
+                        'lifetime' => SessionManager::WEEK_IN_SEC,
+                    ]
+                ],
+            ]));
+
+            $lifetime = apply_filters('auth_cookie_expiration', 3600);
+
+            $this->assertSame($lifetime, SessionManager::WEEK_IN_SEC);
 
         }
 

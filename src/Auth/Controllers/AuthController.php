@@ -118,7 +118,7 @@
 
             }
 
-            $request->session()->invalidate();
+            Logout::dispatch([$request->session()]);
 
             $redirect_to = $request->query('redirect_to', $this->url->toRoute('home'));
 

@@ -59,7 +59,7 @@
 
             $redirect = $event->redirect_to;
 
-            $url = $url->signedLogout(WP::userId(), $redirect);
+            $url = $url->signedLogout(WP::userId(), $redirect, 3600, true );
 
             return esc_html($url);
 
