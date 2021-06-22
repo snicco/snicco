@@ -477,6 +477,7 @@
             $result = $session->remember('foo', function () {
 
                 return 'bar';
+
             });
             $this->assertSame('bar', $session->get('foo'));
             $this->assertSame('bar', $result);

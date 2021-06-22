@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace WPEmerge\Session\Contracts;
 
     use SessionHandlerInterface;
     use WPEmerge\Http\Psr7\Request;

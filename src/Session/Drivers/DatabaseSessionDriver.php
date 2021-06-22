@@ -11,7 +11,7 @@
     use wpdb;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\SessionDriver;
+    use WPEmerge\Session\Contracts\SessionDriver;
 
     class DatabaseSessionDriver implements SessionDriver
     {

@@ -23,7 +23,7 @@
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Session;
-    use WPEmerge\Session\Middleware\SessionMiddleware;
+    use WPEmerge\Session\Middleware\StartSessionMiddleware;
     use WPEmerge\Session\SessionManager;
     use WPEmerge\Support\VariableBag;
 
@@ -86,7 +86,7 @@
 
         }
 
-        private function newMiddleware(Session $session = null, $gc_collection = [0,100]) : SessionMiddleware
+        private function newMiddleware(Session $session = null, $gc_collection = [0,100]) : StartSessionMiddleware
         {
 
             $session = $session ?? $this->newSession();
@@ -95,7 +95,7 @@
 
             $config['lottery'] = $gc_collection;
 
-            return new SessionMiddleware(new SessionManager($config, $session) );
+            return new StartSessionMiddleware(new SessionManager($config, $session) );
 
         }
 
@@ -274,6 +274,17 @@
 
             $this->assertNotSame($session->getId(), $this->getSessionId());
 
+
+        }
+
+        /** @test */
+        public function the_user_id_is_set_on_the_session () {
+
+            $response = $this->newMiddleware()->handle($this->request->withUser(99), $this->route_action);
+
+            $session = $this->getRequestSession($response);
+
+            $this->assertSame(99, $session->userId());
 
         }
 

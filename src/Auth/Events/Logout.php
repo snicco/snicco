@@ -9,7 +9,7 @@
     use BetterWpHooks\Traits\IsAction;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Session\Session;
-    use WPEmerge\Session\SessionDriver;
+    use WPEmerge\Session\Contracts\SessionDriver;
 
     class Logout extends ApplicationEvent
     {

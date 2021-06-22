@@ -12,13 +12,15 @@
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Session\Contracts\SessionDriver;
+    use WPEmerge\Session\Contracts\SessionManagerInterface;
     use WPEmerge\Session\Events\NewLogin;
     use WPEmerge\Session\Events\NewLogout;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Drivers\DatabaseSessionDriver;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Session\Middleware\ShareSessionWithView;
-    use WPEmerge\Session\Middleware\SessionMiddleware;
+    use WPEmerge\Session\Middleware\StartSessionMiddleware;
     use WPEmerge\Support\Arr;
 
 
@@ -79,7 +81,7 @@
                 'csrf' => CsrfMiddleware::class,
             ]);
             $this->config->extend('middleware.groups.global', [
-                SessionMiddleware::class,
+                StartSessionMiddleware::class,
                 ShareSessionWithView::class,
             ]);
 

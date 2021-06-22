@@ -14,11 +14,10 @@
     use WPEmerge\Http\Responses\NullResponse;
     use WPEmerge\Session\Session;
     use WPEmerge\Session\SessionManager;
-    use WPEmerge\Session\SessionManagerInterface;
+    use WPEmerge\Session\Contracts\SessionManagerInterface;
 
-    class SessionMiddleware extends Middleware
+    class StartSessionMiddleware extends Middleware
     {
-
 
         /**
          * @var SessionManager
@@ -88,6 +87,5 @@
             $this->manager->save();
 
         }
-
 
     }

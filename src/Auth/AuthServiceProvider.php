@@ -27,11 +27,11 @@
     use WPEmerge\Session\Events\NewLogin;
     use WPEmerge\Session\Events\NewLogout;
     use WPEmerge\Session\Events\SessionRegenerated;
-    use WPEmerge\Session\Middleware\SessionMiddleware;
+    use WPEmerge\Session\Middleware\StartSessionMiddleware;
     use WPEmerge\Session\Middleware\ShareSessionWithView;
-    use WPEmerge\Session\SessionDriver;
+    use WPEmerge\Session\Contracts\SessionDriver;
     use WPEmerge\Session\SessionManager;
-    use WPEmerge\Session\SessionManagerInterface;
+    use WPEmerge\Session\Contracts\SessionManagerInterface;
 
     class AuthServiceProvider extends ServiceProvider
     {
