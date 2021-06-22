@@ -8,6 +8,8 @@
 
     use Carbon\Carbon;
     use Psr\Http\Message\ResponseInterface;
+    use WPEmerge\Auth\Exceptions\TooManyFailedAuthConfirmationsException;
+    use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
@@ -24,17 +26,14 @@
 
             $session = $request->session();
 
-            if ( ! $session->hasValidAuthConfirmToken() ) {
 
-                // if ( ! $session->has('auth.confirm.email.count') ) {
-                //
-                //     $session->invalidate();
-                //
-                // }
+
+            if ( ! $session->hasValidAuthConfirmToken() ) {
 
                 $session->setIntendedUrl($request->fullUrl());
 
-                return $this->response_factory->redirect()->to('/auth/confirm');
+
+                return $this->response_factory->redirect()->toRoute('auth.confirm.show');
 
             }
 

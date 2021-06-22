@@ -13,7 +13,7 @@
     class WpAuthSessionToken extends \WP_Session_Tokens
     {
 
-        /** @var SessionManager */
+        /** @var AuthSessionManager */
         private $session_manager;
 
         public const wp_auth_key = '_wp_auth_session_content';
@@ -103,7 +103,7 @@
         protected function update_session($verifier, $session = null) : void
         {
 
-            if ( ! $session) {
+            if ( ! $session ) {
 
                 $this->session_manager->activeSession()->invalidate();
 

@@ -27,6 +27,8 @@
 
             $routes = $this->routes ?? $this->newRouteCollection();
 
+            $this->routes = $routes;
+
             if (! isset($this->routes ) ) {
                 $this->routes = $routes;
             }

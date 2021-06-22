@@ -6,12 +6,15 @@
 
     namespace WPEmerge\Auth;
 
+    use WPEmerge\Auth\Controllers\AuthController;
     use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Auth\Events\GenerateLoginUrl;
     use WPEmerge\Auth\Events\GenerateLogoutUrl;
     use WPEmerge\Auth\Events\SettingAuthCookie;
     use WPEmerge\Auth\Listeners\GenerateNewAuthCookie;
+    use WPEmerge\Auth\Listeners\RefreshAuthCookies;
     use WPEmerge\Auth\Listeners\WpLoginRedirectManager;
+    use WPEmerge\Auth\Middleware\AuthenticateSession;
     use WPEmerge\Auth\Middleware\AuthUnconfirmed;
     use WPEmerge\Auth\Middleware\ConfirmAuth;
     use WPEmerge\Contracts\ServiceProvider;
@@ -23,7 +26,12 @@
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\Events\NewLogin;
     use WPEmerge\Session\Events\NewLogout;
+    use WPEmerge\Session\Events\SessionRegenerated;
+    use WPEmerge\Session\Middleware\SessionMiddleware;
+    use WPEmerge\Session\Middleware\ShareSessionWithView;
+    use WPEmerge\Session\SessionDriver;
     use WPEmerge\Session\SessionManager;
+    use WPEmerge\Session\SessionManagerInterface;
 
     class AuthServiceProvider extends ServiceProvider
     {
@@ -32,8 +40,6 @@
         {
 
             $this->bindConfig();
-
-            $this->updateSessionLifetime();
 
             $this->extendRoutes(__DIR__.DIRECTORY_SEPARATOR.'routes');
 
@@ -47,16 +53,29 @@
 
             $this->bindWpSessionToken();
 
+            $this->bindAuthSessionManager();
+
+            $this->bindMiddleware();
+
         }
 
         public function bootstrap() : void
         {
-            //
+
+            $this->bindSessionManagerInterface();
+
+            $this->updateSessionLifetime();
+
+            $this->config->set('session.rotate',
+                min(
+                    $this->config->get('session.rotate'),
+                    $this->config->get('auth.timeouts.idle') * 2
+                )
+            );
         }
 
         private function bindEvents()
         {
-
 
             $this->config->extend('events.listeners', [
                 WpInit::class => [
@@ -75,7 +94,9 @@
                 SettingAuthCookie::class => [
                     GenerateNewAuthCookie::class,
                 ],
-
+                SessionRegenerated::class => [
+                    RefreshAuthCookies::class
+                ]
             ]);
 
             $this->config->extend('events.mapped', [
@@ -90,6 +111,14 @@
                 'login_url' => GenerateLoginUrl::class,
                 'logout_url' => GenerateLogoutUrl::class,
             ]);
+
+            // This filter is very misleading by WordPress. It does not filter expire value in
+            // "setcookie()" but filter the expiration fragment in the cookie hash.
+            add_filter('auth_cookie_expiration', function () {
+
+                return $this->config->get('auth.remember.lifetime');
+
+            }, 10, 3);
 
 
         }
@@ -116,18 +145,24 @@
 
             });
 
+            $this->container->singleton(AuthController::class, function () {
+
+                return new AuthController(
+                    $this->container->make(Authenticator::class),
+                    $this->config->get('auth')
+                );
+
+            });
 
         }
 
         private function bindConfig()
         {
 
-            $this->config->extend('auth.confirmation.duration', 180);
+            $this->config->extend('auth.confirmation.duration', SessionManager::HOUR_IN_SEC * 3);
             $this->config->extend('auth.remember.enabled', true);
             $this->config->extend('auth.remember.lifetime', SessionManager::WEEK_IN_SEC);
             $this->config->extend('auth.timeouts.idle', SessionManager::HOUR_IN_SEC / 2);
-            $this->config->extend('auth.timeouts.rotate', $this->config->get('auth.timeouts.idle') * 2);
-
             $this->config->extend('middleware.aliases', [
                 'auth.confirmed' => ConfirmAuth::class,
                 'auth.unconfirmed' => AuthUnconfirmed::class,
@@ -146,10 +181,7 @@
 
             add_filter('session_token_manager', function () {
 
-                /** @var SessionManager $manager */
-                $manager = $this->container->make(SessionManager::class);
-
-                $manager->setAuthSessionValidator(new AuthSessionValidator($this->config->get('auth')));
+                $manager = $this->container->make(SessionManagerInterface::class);
 
                 // Ugly hack. But there is no other way to get this instance to the class that
                 // extends WP_SESSION_TOKENS because of Wordpress not using interfaces or DI:
@@ -182,15 +214,49 @@
                 $this->config->set('session.lifetime', $max);
                 $this->config->set('auth.timeouts.absolute', $max);
 
-            } else {
+            }
+            else {
 
                 $session_lifetime = $this->config->get('session.lifetime');
                 $this->config->set('auth.timeouts.absolute', $session_lifetime);
+                $this->config->set('auth.remember.lifetime', $session_lifetime);
 
 
             }
 
         }
 
+        private function bindSessionManagerInterface()
+        {
+
+            $this->container->singleton(SessionManagerInterface::class, function () {
+
+                return $this->container->make(AuthSessionManager::class);
+
+            });
+
+        }
+
+        private function bindAuthSessionManager()
+        {
+
+            $this->container->singleton(AuthSessionManager::class, function () {
+
+                return new AuthSessionManager(
+                    $this->container->make(SessionManager::class),
+                    $this->container->make(SessionDriver::class),
+                    $this->config->get('auth')
+                );
+
+            });
+        }
+
+        private function bindMiddleware()
+        {
+
+            $this->config->extend('middleware.groups.global', [
+                AuthenticateSession::class,
+            ]);
+        }
 
     }

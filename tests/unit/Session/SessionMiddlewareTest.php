@@ -218,7 +218,7 @@
         /** @test */
         public function the_session_cookie_is_added_to_the_response () {
 
-            Carbon::setTestNow(Carbon::createFromTimestamp(1));
+            Carbon::setTestNow(Carbon::createFromTimestamp(0));
 
             $c = $this->createContainer();
             $response_factory = $this->createResponseFactory();
@@ -245,7 +245,7 @@
             $this->assertStringStartsWith("test_session={$session->getId()}",$cookies);
             $this->assertStringContainsString('path=/', $cookies);
             $this->assertStringContainsString('SameSite=Lax', $cookies);
-            $this->assertStringContainsString('expires=Thu, 01-Jan-1970 00:01:01 UTC', $cookies);
+            $this->assertStringContainsString('expires=Thu, 01-Jan-1970 00:00:01 UTC', $cookies);
             $this->assertStringContainsString('HttpOnly', $cookies);
             $this->assertStringContainsString('secure', $cookies);
             $this->assertStringNotContainsString('domain', $cookies);

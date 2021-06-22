@@ -13,6 +13,8 @@
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\ExceptionHandling\Exceptions\NotFoundException;
+    use WPEmerge\Session\Events\SessionRegenerated;
+    use WPEmerge\Session\SessionManager;
 
     class ConfirmAuthMagicLinkController extends Controller
     {
@@ -20,12 +22,12 @@
         /**
          * @var int|mixed
          */
-        private $lifetime_in_minutes;
+        private $lifetime_in_seconds;
 
-        public function __construct( int $lifetime_in_minutes = 180)
+        public function __construct( int $lifetime_in_seconds = SessionManager::HOUR_IN_SEC * 3 )
         {
 
-            $this->lifetime_in_minutes = $lifetime_in_minutes;
+            $this->lifetime_in_seconds = $lifetime_in_seconds;
 
         }
 
@@ -41,10 +43,9 @@
             }
 
             $session = $request->session();
-            $session->confirmAuthUntil($this->lifetime_in_minutes);
-            $session->migrate(true);
-
-            wp_set_auth_cookie($user_id, true, true, $session->getId());
+            $session->confirmAuthUntil($this->lifetime_in_seconds);
+            $session->regenerate();
+            SessionRegenerated::dispatch([$session]);
 
             return $this->response_factory->redirect()
                                           ->intended($request, WP::adminUrl());

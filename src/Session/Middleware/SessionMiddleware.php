@@ -14,6 +14,7 @@
     use WPEmerge\Http\Responses\NullResponse;
     use WPEmerge\Session\Session;
     use WPEmerge\Session\SessionManager;
+    use WPEmerge\Session\SessionManagerInterface;
 
     class SessionMiddleware extends Middleware
     {
@@ -24,7 +25,7 @@
          */
         private $manager;
 
-        public function __construct(SessionManager $manager)
+        public function __construct(SessionManagerInterface $manager)
         {
             $this->manager = $manager;
         }
@@ -35,7 +36,6 @@
             $this->manager->collectGarbage();
 
             $session = $this->manager->start($request, $request->user());
-
 
             return $this->handleStatefulRequest($request, $session, $next);
 
@@ -48,9 +48,9 @@
 
             $response = $next($request);
 
-            $response = $response->withCookie($this->manager->sessionCookie());
-
             $this->saveSession($session, $request, $response);
+
+            $response = $response->withCookie($this->manager->sessionCookie());
 
             if ( ! $response->hasHeader('Cache-Control') ) {
 
