@@ -40,7 +40,7 @@
             $id = $request->input('id');
 
             $response = $this->response_factory->view('auth-parent', [
-                'view' => 'password-reset',
+                'view' => 'auth-password-reset',
                 'view_factory' => $this->view_factory,
                 'user_id' => $id,
                 'signature' => $request->query('signature', ''),

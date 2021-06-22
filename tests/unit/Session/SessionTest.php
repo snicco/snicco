@@ -8,7 +8,10 @@
 
     use Carbon\Carbon;
     use PHPUnit\Framework\TestCase;
+    use SniccoAdapter\BaseContainerAdapter;
     use Tests\helpers\HashesSessionIds;
+    use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Auth\Events\Logout;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Session;
 

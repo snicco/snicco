@@ -82,7 +82,7 @@
     <?php endif; ?>
     <!--    Submit Button -->
     <div class="field">
-        <button id="login_button" class="button ">
+        <button id="login_button" class="button">
             Login
         </button>
     </div>
