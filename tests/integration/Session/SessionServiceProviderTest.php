@@ -131,21 +131,7 @@
 
         }
 
-        /** @test */
-        public function the_default_idle_timeout_is_thirty_minutes () {
 
-            $this->newTestApp([
-                'session' => [
-                    'enabled' => true,
-                ],
-                'providers' => [
-                    SessionServiceProvider::class,
-                ],
-            ]);
-
-            $this->assertSame(1800, TestApp::config('session.idle'));
-
-        }
 
         /** @test */
         public function the_default_absolute_timeout_is_eight_hours () {

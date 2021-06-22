@@ -167,7 +167,7 @@
             ob_start();
             apply_filters('template_include', 'wp.php');
             $this->assertSame('', ob_get_clean());
-            HeaderStack::assertHasNone();
+            HeaderStack::assertNoStatusCodeSent();
 
             $this->assertSame(1, $GLOBALS['test'][GlobalMiddleware::run_times], 'global middleware not run for non matching web route.');
 

@@ -8,10 +8,13 @@
 
     use Carbon\Carbon;
     use Closure;
+    use DateInterval;
+    use DateTimeInterface;
     use Illuminate\Support\InteractsWithTime;
     use Illuminate\Support\ViewErrorBag;
     use Respect\Validation\Rules\DateTime;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Session\Events\SessionRegenerated;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
     use stdClass;
@@ -89,6 +92,8 @@
         {
 
             $this->ageFlashData();
+
+            $this->setLastActivity($this->currentTime());
 
             $this->handler->write(
                 $this->hash($this->getId()),
@@ -275,7 +280,6 @@
 
         public function forget($keys) : void
         {
-
             Arr::forget($this->attributes, $keys);
         }
 
@@ -288,20 +292,19 @@
         {
 
             $this->flush();
+            return $this->migrate();
 
-            return $this->migrate(true);
         }
 
-        public function regenerate(bool $destroy = false) : bool
+        public function regenerate(bool $destroy_old = true) : bool
         {
-
-            return $this->migrate($destroy);
+            return $this->migrate($destroy_old);
         }
 
-        public function migrate(bool $destroy = false) : bool
+        private function migrate(bool $destroy_old = true) : bool
         {
 
-            if ($destroy) {
+            if ($destroy_old) {
                 $this->handler->destroy($this->hash($this->getId()));
             }
 
@@ -364,13 +367,14 @@
 
         }
 
-        public function confirmAuthUntil(int $duration_in_minutes)
+        /**
+         * @param DateTimeInterface|DateInterval|int  $delay
+         */
+        public function confirmAuthUntil($delay)
         {
+            $ts = $this->availableAt($delay);
 
-            $this->put(
-                'auth.confirm.until',
-                Carbon::now()->addMinutes($duration_in_minutes)->getTimestamp()
-            );
+            $this->put('auth.confirm.until', $ts );
 
         }
 
@@ -512,56 +516,50 @@
 
         }
 
-        /**
-         * @param \DateTimeInterface|int|Carbon $timestamp
-         */
-        public function lastActivity($timestamp = null ) :int
+        public function setLastActivity(int $timestamp) {
+
+            $this->put('_last_activity', $timestamp);
+
+        }
+
+        public function lastActivity() :int
         {
 
-            if ( $timestamp === null ) {
-                return $this->get('_last_activity', 0);
-            }
-
-            $ts = $timestamp instanceof \DateTimeInterface ? $timestamp->getTimestamp() : $timestamp;
-
-            $this->put('_last_activity', $ts);
-
-            return $ts;
+            return $this->get('_last_activity', 0);
 
         }
 
         /**
-         * @param \DateTimeInterface|int|Carbon $timestamp
+         * @param  DateTimeInterface|DateInterval|int $delay
          */
-        public function rotateAt( $timestamp = null ) :int
-        {
+        public function setNextRotation($delay) {
 
-            if ( $timestamp === null ) {
-                return $this->get('_rotate_at', 0 );
-            }
-
-            $ts = $this->availableAt($timestamp);
-
+            $ts = $this->availableAt($delay);
             $this->put('_rotate_at', $ts);
 
-            return $ts;
+        }
+
+        public function rotationDueAt() :int {
+
+            return $this->get('_rotate_at', 0 );
+
 
         }
 
         /**
-         * @param \DateTimeInterface|int|Carbon $timestamp
+         * @param  DateTimeInterface|DateInterval|int $delay
          */
-        public function expiresAt($timestamp = null) :int
-        {
-            if ( $timestamp === null ) {
-                return $this->get('_expires_at', 0);
-            }
+        public function setAbsoluteTimeout($delay) {
 
-            $ts = $this->availableAt($timestamp);
-
+            $ts = $this->availableAt($delay);
             $this->put('_expires_at', $ts);
 
-            return $ts;
+        }
+
+        public function absoluteTimeout() :int  {
+
+            return $this->get('_expires_at', 0);
+
         }
 
         public function userId() {
@@ -605,6 +603,16 @@
             return $collection;
 
 
+        }
+
+        public function isIdle(int $idle_timeout) : bool
+        {
+            return ($this->currentTime() - $this->lastActivity() ) > $idle_timeout;
+        }
+
+        public function hasRememberMeToken() :bool
+        {
+            return $this->get('auth.has_remember_token', false);
         }
 
 

@@ -8,18 +8,16 @@
 
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
-    use WPEmerge\Auth\AuthSessionValidator;
+    use WPEmerge\Auth\WpAuthSessionToken;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Cookie;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Support\VariableBag;
+    use WPEmerge\Session\Events\SessionRegenerated;
     use WPEmerge\Traits\HasLottery;
-    use WPEmerge\Session\Session;
 
-    class SessionManager
+    class SessionManager implements SessionManagerInterface
     {
 
         use HasLottery;
@@ -40,45 +38,16 @@
          */
         private $session;
 
-        /**
-         * @var string
-         */
-        private $cookies;
-
-        /**
-         * @var SessionDriver
-         */
-        private $driver;
-
-        /**
-         * @var AuthSessionValidator
-         */
-        private $auth_session_validator;
-
         public function __construct(array $session_config, Session $session)
         {
 
             $this->config = $session_config;
             $this->session = $session;
-            $this->driver = $this->driver();
-
-        }
-
-        public function activeSession() : Session
-        {
-
-            if ($this->session->isStarted()) {
-                return $this->session;
-            }
 
         }
 
         public function start(Request $request, int $user_id) : Session
         {
-
-            if ($this->session->isStarted()) {
-                return $this->session;
-            }
 
             $cookie_name = $this->config['cookie'];
             $session_id = $request->cookies()->get($cookie_name, '');
@@ -96,7 +65,7 @@
 
             $cookie->path($this->config['path'])
                    ->sameSite($this->config['same_site'])
-                   ->expires(Carbon::now()->addMinutes($this->config['lifetime']))
+                   ->expires($this->session->absoluteTimeout())
                    ->onlyHttp()
                    ->domain($this->config['domain']);
 
@@ -104,10 +73,25 @@
 
         }
 
-        public function driver() : SessionDriver
+        public function save()
         {
 
-            return $this->session->getDriver();
+            if ( $this->needsRotation () ) {
+
+                $this->session->regenerate();
+                $this->session->setNextRotation($this->rotationInterval());
+                SessionRegenerated::dispatch([$this->session]);
+
+            }
+
+            if ( ! $this->session->has('_expires_at') ) {
+
+                $this->session->setAbsoluteTimeout($this->maxSessionLifetime());
+
+            }
+
+            $this->session->save();
+
         }
 
         public function collectGarbage()
@@ -118,53 +102,7 @@
                 $this->session->getDriver()->gc($this->maxSessionLifetime());
 
             }
-        }
 
-        public function save()
-        {
-
-            $this->session->lastActivity($this->currentTime());
-
-            $this->session->save();
-
-        }
-
-        public function getAllForUser() : array
-        {
-
-            $sessions = $this->session->getAllForUser();
-
-            return collect($sessions)
-                ->flatMap(function (object $session) {
-
-                    return [$session->id => $session->payload];
-
-                })
-                ->reject(function (array $payload) {
-
-                    return $this->auth_session_validator->isIdle($payload);
-
-                })
-                ->all();
-
-        }
-
-        public function destroyOthersForUser(string $hashed_token, int $user_id)
-        {
-
-            $this->driver->destroyOthersForUser($hashed_token, $user_id);
-
-        }
-
-        public function destroyAllForUser(int $user_id)
-        {
-            $this->driver->destroyAllForUser($user_id);
-
-        }
-
-        public function destroyAll()
-        {
-            $this->driver->destroyAll();
         }
 
         private function maxSessionLifetime() {
@@ -173,9 +111,21 @@
 
         }
 
-        public function setAuthSessionValidator(AuthSessionValidator $v)
+        private function needsRotation() : bool
         {
-            $this->auth_session_validator = $v;
+
+            if ( ! isset($this->config['rotate']) || ! is_int($this->config['rotate']) ) {
+                return false;
+            }
+
+            $rotation = $this->session->rotationDueAt();
+
+            return ($this->currentTime() - $rotation ) > $this->rotationInterval();
+
+        }
+
+        private function rotationInterval() :int {
+            return $this->config['rotate'];
         }
 
         /**
@@ -193,7 +143,7 @@
 
             $this->start($request, $request->user());
 
-            $this->session->migrate(true);
+            $this->session->regenerate();
             $this->session->save();
 
             $cookies = new Cookies();
@@ -227,7 +177,6 @@
             $emitter->emitCookies($cookies);
 
         }
-
 
 
     }

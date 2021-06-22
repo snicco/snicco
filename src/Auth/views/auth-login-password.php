@@ -71,13 +71,15 @@
         </div>
     </div>
     <!--Remember me-->
-    <div class="field">
-        <label for="" class="checkbox">
-            <input name="remember_me"
-                   type="checkbox" <?= $session->getOldInput('remember_me', 'off') === 'on' ? 'checked' : '' ?>>
-            Remember me
-        </label>
-    </div>
+    <?php if ($allow_remember) : ?>
+        <div class="field">
+            <label for="" class="checkbox">
+                <input name="remember_me"
+                       type="checkbox" <?= $session->getOldInput('remember_me', 'off') === 'on' ? 'checked' : '' ?>>
+                Remember me
+            </label>
+        </div>
+    <?php endif; ?>
     <!--    Submit Button -->
     <div class="field">
         <button id="login_button" class="button ">

@@ -28,17 +28,17 @@
          *
          * @var int
          */
-        private $minutes;
+        private $lifetime_in_seconds;
 
         /**
          * @var Request
          */
         private $request;
 
-        public function __construct(int $minutes)
+        public function __construct(int $lifetime_in_seconds)
         {
 
-            $this->minutes = $minutes;
+            $this->lifetime_in_seconds = $lifetime_in_seconds;
         }
 
         public function open($savePath, $sessionName)
@@ -62,7 +62,7 @@
 
             $session = $this->storage[$sessionId];
 
-            $expiration = $this->calculateExpiration($this->minutes * 60);
+            $expiration = $this->calculateExpiration($this->lifetime_in_seconds);
 
             if (isset($session['time']) && $session['time'] >= $expiration) {
                 return $session['payload'];
@@ -80,7 +80,7 @@
 
             $session = $this->storage[$id];
 
-            $expiration = $this->calculateExpiration($this->minutes * 60);
+            $expiration = $this->calculateExpiration($this->lifetime_in_seconds);
 
             if ( ! isset($session['time']) && $session['time'] < $expiration) {
                 return false;

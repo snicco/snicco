@@ -9,27 +9,18 @@
     use Slim\Csrf\Guard;
     use WPEmerge\Application\Application;
     use WPEmerge\Auth\AuthServiceProvider;
-    use WPEmerge\Auth\AuthSessionValidator;
-    use WPEmerge\Auth\Events\GenerateLoginUrl;
-    use WPEmerge\Auth\Events\GenerateLogoutUrl;
-    use WPEmerge\Auth\Events\SettingAuthCookie;
-    use WPEmerge\Auth\Listeners\GenerateNewAuthCookie;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Session\Events\NewLogin;
     use WPEmerge\Session\Events\NewLogout;
-    use WPEmerge\Auth\Middleware\ConfirmAuth;
-    use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Drivers\DatabaseSessionDriver;
-    use WPEmerge\Auth\Middleware\AuthUnconfirmed;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Session\Middleware\ShareSessionWithView;
     use WPEmerge\Session\Middleware\SessionMiddleware;
-    use WPEmerge\Middleware\ValidateSignature;
     use WPEmerge\Support\Arr;
+
 
     class SessionServiceProvider extends ServiceProvider
     {
@@ -47,7 +38,6 @@
             $this->bindSessionDriver();
             $this->bindSessionManager();
             $this->bindSession();
-            $this->bindSessionMiddleware();
             $this->bindCsrfMiddleware();
             $this->bindCsrfStore();
             $this->bindSlimGuard();
@@ -79,9 +69,9 @@
             $this->config->extend('session.http_only', true);
             $this->config->extend('session.same_site', 'lax');
 
-            // timeouts
+            // lifetime
             $this->config->extend('session.lifetime', SessionManager::HOUR_IN_SEC * 8);
-
+            $this->config->extend('session.rotate', $this->config->get('session.lifetime') / 2);
 
 
             // middleware
@@ -153,18 +143,6 @@
             });
 
 
-        }
-
-        private function bindSessionMiddleware()
-        {
-
-            $this->container->singleton(SessionMiddleware::class, function () {
-
-                return new SessionMiddleware(
-                    $this->container->make(SessionManager::class),
-                );
-
-            });
         }
 
         private function bindAliases()
@@ -274,6 +252,12 @@
                     $this->container->make(Session::class),
                 );
 
+
+            });
+
+            $this->container->singleton(SessionManagerInterface::class, function () {
+
+                return $this->container->make(SessionManager::class);
 
             });
 

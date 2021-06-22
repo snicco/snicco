@@ -8,6 +8,7 @@
 
 	use PHPUnit\Framework\TestCase;
     use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\TravelsTime;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
@@ -15,7 +16,23 @@
 
 	class ArraySessionDriverTest extends UnitTest {
 
-		/** @test */
+	    use TravelsTime;
+
+	    protected function setUp() : void
+        {
+
+            parent::setUp();
+            $this->backToPresent();
+
+        }
+
+        protected function tearDown() : void
+        {
+            $this->backToPresent();
+            parent::tearDown();
+        }
+
+        /** @test */
 		public function a_session_can_be_opened () {
 
 			$handler = new ArraySessionDriver(10);
@@ -61,9 +78,8 @@
 
 			$handler->write('foo', 'bar');
 
-			Carbon::setTestNow(Carbon::now()->addMinutes(10));
+			$this->travelIntoFuture(10);
 			$this->assertSame('bar', $handler->read('foo'));
-			Carbon::setTestNow();
 		}
 
 		/** @test */
@@ -73,9 +89,9 @@
 
 			$handler->write('foo', 'bar');
 
-			Carbon::setTestNow(Carbon::now()->addMinutes(10)->addSecond());
+			$this->travelIntoFuture(11);
 			$this->assertSame('', $handler->read('foo'));
-			Carbon::setTestNow();
+
 		}
 
 		/** @test */
@@ -109,20 +125,17 @@
 			$handler = new ArraySessionDriver(10);
 
 			$handler->write('foo', 'bar');
-			$this->assertTrue($handler->gc(300));
+			$this->assertTrue($handler->gc(10));
 			$this->assertSame('bar', $handler->read('foo'));
 
-			Carbon::setTestNow(Carbon::now()->addSecond());
-
+			$this->travelIntoFuture(1);
 			$handler->write('bar', 'baz');
 
-			Carbon::setTestNow(Carbon::now()->addMinutes(5));
-
+            $this->travelIntoFuture(10);
 			$this->assertTrue($handler->gc(300));
 			$this->assertSame('', $handler->read('foo'));
 			$this->assertSame('baz', $handler->read('bar'));
 
-			Carbon::setTestNow();
 		}
 
 		/** @test */

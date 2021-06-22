@@ -20,6 +20,22 @@
 
         use HashesSessionIds;
 
+        protected function setUp() : void
+        {
+
+            parent::setUp();
+
+            Carbon::setTestNow();
+
+        }
+
+        protected function tearDown() : void
+        {
+            Carbon::setTestNow();
+
+            parent::tearDown();
+        }
+
         /** @test */
         public function a_session_is_loaded_from_the_handler()
         {
@@ -51,19 +67,15 @@
         }
 
         /** @test */
-        public function last_activity_can_be_set_and_retrieved()
+        public function the_last_activity_gets_added_when_saving_the_session()
         {
 
             $session = $this->newSessionStore();
-            $session->lastActivity(Carbon::now());
+            $session->start();
+            $session->save();
 
             $this->assertSame(Carbon::now()->getTimestamp(), $session->lastActivity());
 
-            $session = $this->newSessionStore();
-            $session->lastActivity(Carbon::now()->addMinutes(15));
-
-            $this->assertSame(Carbon::now()->addMinutes(15)
-                                    ->getTimestamp(), $session->lastActivity());
 
 
         }
@@ -73,9 +85,9 @@
         {
 
             $session = $this->newSessionStore();
-            $session->rotateAt(30);
+            $session->setNextRotation(30);
 
-            $this->assertSame(Carbon::now()->addSeconds(30)->getTimestamp(), $session->rotateAt());
+            $this->assertSame(Carbon::now()->addSeconds(30)->getTimestamp(), $session->rotationDueAt());
 
         }
 
@@ -84,10 +96,10 @@
         {
 
             $session = $this->newSessionStore();
-            $session->expiresAt(300);
+            $session->setAbsoluteTimeout(300);
 
             $this->assertSame(Carbon::now()->addSeconds(300)
-                                    ->getTimestamp(), $session->expiresAt());
+                                    ->getTimestamp(), $session->absoluteTimeout());
 
         }
 
@@ -141,7 +153,7 @@
         }
 
         /** @test */
-        public function a_session_id_can_be_migrated_without_destroying_the_data()
+        public function a_session_id_can_be_migrated_without_destroying_the_old_sessions()
         {
 
             $handler = $this->newArrayHandler(10);
@@ -151,7 +163,7 @@
 
             $old_id = $session->getId();
 
-            $this->assertTrue($session->migrate());
+            $this->assertTrue($session->regenerate(false));
             $new_id = $session->getId();
 
             $this->assertNotEquals($old_id, $new_id);
@@ -172,10 +184,12 @@
             $old_id = $session->getId();
 
             $this->assertTrue($session->regenerate());
+            $session->save();
             $new_id = $session->getId();
 
             $this->assertNotEquals($old_id, $new_id);
-            $this->assertNotEmpty($handler->read($this->hash($old_id)));
+            $this->assertEmpty($handler->read($this->hash($old_id)));
+            $this->assertNotEmpty($handler->read($this->hash($new_id)));
 
         }
 
@@ -190,7 +204,7 @@
 
             $old_id = $session->getId();
 
-            $this->assertTrue($session->migrate(true));
+            $this->assertTrue($session->regenerate());
             $new_id = $session->getId();
 
             $this->assertNotEquals($old_id, $new_id);
@@ -244,6 +258,7 @@
                     'old' => 'bar',
                     'new' => [],
                 ],
+                '_last_activity' => time()
 
             ], \unserialize($session->getDriver()->read($this->hash($session->getId()))));
 
@@ -258,7 +273,7 @@
             $session = $this->newSessionStore($handler);
             $session->start($this->getSessionId());
 
-            $session->migrate();
+            $session->regenerate();
             $new_id = $session->getId();
 
             $session->save();
@@ -269,6 +284,7 @@
                     'old' => [],
                     'new' => [],
                 ],
+                '_last_activity' => time()
 
             ], unserialize($handler->read($this->hash($new_id))));
 

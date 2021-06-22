@@ -26,7 +26,7 @@
         /**
          * @var int
          */
-        private $lifetime;
+        private $absolute_lifetime_in_seconds;
 
         /**
          * @var Request
@@ -43,12 +43,12 @@
          */
         private $session;
 
-        public function __construct(wpdb $db, string $table, int $lifetime)
+        public function __construct(wpdb $db, string $table, int $lifetime_in_sec)
         {
 
             $this->db = $db;
             $this->table = $this->db->prefix.$table;
-            $this->lifetime = $lifetime;
+            $this->absolute_lifetime_in_seconds = $lifetime_in_sec;
         }
 
         public function close() : bool
@@ -73,7 +73,6 @@
             $query = $this->db->prepare("DELETE FROM $this->table WHERE last_activity <= %d", $must_be_newer_than);
 
             return $this->db->query($query) !== false;
-
 
         }
 
@@ -112,9 +111,7 @@
 
         public function isValid(string $hashed_id) : bool
         {
-
             return $this->hasSessionId($hashed_id);
-
         }
 
         public function setRequest(Request $request)
@@ -221,7 +218,7 @@ WHERE
         {
 
             return isset($session->last_activity)
-                && $session->last_activity < Carbon::now()->subMinutes($this->lifetime)
+                && $session->last_activity < Carbon::now()->subSeconds($this->absolute_lifetime_in_seconds)
                                                    ->getTimestamp();
         }
 
@@ -249,7 +246,7 @@ WHERE
         private function hasSessionId(string $id) : bool
         {
 
-            $must_be_newer_than = Carbon::now()->subMinutes($this->lifetime)
+            $must_be_newer_than = Carbon::now()->subSeconds($this->absolute_lifetime_in_seconds)
                                         ->getTimestamp();
 
             $query = $this->db->prepare("SELECT EXISTS(SELECT 1 FROM $this->table WHERE id = %s AND last_activity > %d LIMIT 1)", $id, $must_be_newer_than);

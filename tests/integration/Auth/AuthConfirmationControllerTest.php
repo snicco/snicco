@@ -207,6 +207,9 @@
             $post_request = $this->postRequest('bogus@web.de', $csrf);
             $post_request = $this->withSessionCookie($post_request);
 
+            $session = $this->getSession();
+            $session->setLastActivity(time());
+
             // email failed but user is still logged in
             $this->assertOutput('', $post_request);
             HeaderStack::assertHasStatusCode(302);
@@ -215,6 +218,7 @@
             $this->assertUserLoggedIn($calvin);
 
             $this->getSession()->put('csrf', $csrf);
+
             $post_request = $this->postRequest('bogus@web.de', $csrf);
             $post_request = $this->withSessionCookie($post_request);
 
@@ -245,7 +249,8 @@
                         'attempts' => 3
                     ]
                 ],
-                'foo' => 'bar'
+                'foo' => 'bar',
+                '_last_activity' => time()
             ]);
 
             $this->assertNotSame('', $this->readFromDriver($this->hashedSessionId()));
@@ -683,6 +688,7 @@
 
             $session = $this->getSession();
             $session->put('auth.confirm.until', Carbon::now()->addMinutes(30)->getTimestamp());
+            $session->setLastActivity(time());
 
             $get_request = $this->getRequest();
 
@@ -708,6 +714,8 @@
 
             $session = $this->getSession();
             $session->put('auth.confirm.until', Carbon::now()->addMinutes(30)->getTimestamp());
+            $session->setLastActivity(time());
+
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
