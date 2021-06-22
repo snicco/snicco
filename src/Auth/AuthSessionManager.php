@@ -95,9 +95,9 @@
                     return [$session->id => $session->payload];
 
                 })
-                ->reject(function (array $payload) {
+                ->filter(function (array $payload) {
 
-                    return ! $this->authenticated($payload);
+                    return $this->valid($payload);
 
                 })
                 ->all();
@@ -150,7 +150,7 @@
 
         }
 
-        private function isIdle(array $session_payload) :bool
+        private function    isIdle(array $session_payload) :bool
         {
 
             $last_activity = $session_payload['_last_activity'] ?? 0;
@@ -174,7 +174,7 @@
 
         }
 
-        private function authenticated(array $session_payload) : bool
+        private function valid(array $session_payload) : bool
         {
 
             if ( $this->isExpired($session_payload) ) {
