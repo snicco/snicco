@@ -14,6 +14,7 @@
     use Illuminate\Support\ViewErrorBag;
     use Respect\Validation\Rules\DateTime;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Session\Contracts\SessionDriver;
     use WPEmerge\Session\Events\SessionRegenerated;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;

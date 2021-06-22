@@ -10,9 +10,9 @@
     use WPEmerge\Http\Cookie;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\Session;
-    use WPEmerge\Session\SessionDriver;
+    use WPEmerge\Session\Contracts\SessionDriver;
     use WPEmerge\Session\SessionManager;
-    use WPEmerge\Session\SessionManagerInterface;
+    use WPEmerge\Session\Contracts\SessionManagerInterface;
     use WPEmerge\Support\Arr;
     use WPEmerge\Traits\HasLottery;
 
@@ -30,7 +30,7 @@
         private $active_session;
 
         /**
-         * @var SessionDriver
+         * @var \WPEmerge\Session\Contracts\SessionDriver
          */
         private $driver;
 

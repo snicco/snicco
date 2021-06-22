@@ -4,10 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace WPEmerge\Session\Contracts;
 
     use WPEmerge\Http\Cookie;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Session\Session;
 
     interface SessionManagerInterface
     {
@@ -19,5 +20,6 @@
         public function save();
 
         public function collectGarbage();
+
 
     }

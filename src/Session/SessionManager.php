@@ -14,6 +14,7 @@
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseEmitter;
+    use WPEmerge\Session\Contracts\SessionManagerInterface;
     use WPEmerge\Session\Events\SessionRegenerated;
     use WPEmerge\Traits\HasLottery;
 
@@ -26,7 +27,7 @@
         public const DAY_IN_SEC        = 86400;
         public const HOUR_IN_SEC       = 3600;
         public const THIRTY_MIN_IN_SEC = 1800;
-        public const WEEK_IN_SEC = self::DAY_IN_SEC * 7;
+        public const WEEK_IN_SEC       = self::DAY_IN_SEC * 7;
 
         /**
          * @var array
@@ -76,17 +77,23 @@
         public function save()
         {
 
-            if ( $this->needsRotation () ) {
+            if ($this->session->rotationDueAt() === 0) {
+
+                $this->session->setNextRotation($this->rotationInterval());
+
+            }
+
+            if ($this->session->absoluteTimeout() === 0) {
+
+                $this->session->setAbsoluteTimeout($this->maxSessionLifetime());
+
+            }
+
+            if ($this->needsRotation()) {
 
                 $this->session->regenerate();
                 $this->session->setNextRotation($this->rotationInterval());
                 SessionRegenerated::dispatch([$this->session]);
-
-            }
-
-            if ( ! $this->session->has('_expires_at') ) {
-
-                $this->session->setAbsoluteTimeout($this->maxSessionLifetime());
 
             }
 
@@ -105,7 +112,8 @@
 
         }
 
-        private function maxSessionLifetime() {
+        private function maxSessionLifetime()
+        {
 
             return $this->config['lifetime'];
 
@@ -114,17 +122,19 @@
         private function needsRotation() : bool
         {
 
-            if ( ! isset($this->config['rotate']) || ! is_int($this->config['rotate']) ) {
+            if ( ! isset($this->config['rotate']) || ! is_int($this->config['rotate'])) {
                 return false;
             }
 
             $rotation = $this->session->rotationDueAt();
 
-            return ($this->currentTime() - $rotation ) > $this->rotationInterval();
+            return $this->currentTime() - $rotation > 0;
 
         }
 
-        private function rotationInterval() :int {
+        private function rotationInterval() : int
+        {
+
             return $this->config['rotate'];
         }
 
@@ -166,7 +176,7 @@
         public function invalidateAfterLogout(Request $request, ResponseEmitter $emitter)
         {
 
-            $this->start($request,$request->user());
+            $this->start($request, $request->user());
 
             $this->session->invalidate();
             $this->session->save();

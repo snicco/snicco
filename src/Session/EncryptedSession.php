@@ -9,6 +9,7 @@
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\ExceptionHandling\Exceptions\DecryptException;
     use WPEmerge\ExceptionHandling\Exceptions\EncryptException;
+    use WPEmerge\Session\Contracts\SessionDriver;
 
     class EncryptedSession extends Session
     {
