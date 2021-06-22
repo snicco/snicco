@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Auth;
 
+    use WPEmerge\Auth\Contracts\Authenticator;
     use WPEmerge\Auth\Controllers\AuthController;
     use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Auth\Events\GenerateLoginUrl;
@@ -18,17 +19,9 @@
     use WPEmerge\Auth\Middleware\AuthUnconfirmed;
     use WPEmerge\Auth\Middleware\ConfirmAuth;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Auth\Controllers\ForgotPasswordController;
-    use WPEmerge\Auth\Controllers\ResetPasswordController;
     use WPEmerge\Events\WpInit;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Session\Events\NewLogin;
-    use WPEmerge\Session\Events\NewLogout;
     use WPEmerge\Session\Events\SessionRegenerated;
-    use WPEmerge\Session\Middleware\StartSessionMiddleware;
-    use WPEmerge\Session\Middleware\ShareSessionWithView;
     use WPEmerge\Session\Contracts\SessionDriver;
     use WPEmerge\Session\SessionManager;
     use WPEmerge\Session\Contracts\SessionManagerInterface;
@@ -220,7 +213,6 @@
                 $session_lifetime = $this->config->get('session.lifetime');
                 $this->config->set('auth.timeouts.absolute', $session_lifetime);
                 $this->config->set('auth.remember.lifetime', $session_lifetime);
-
 
             }
 

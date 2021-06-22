@@ -7,6 +7,7 @@
     namespace WPEmerge\Auth;
 
     use WP_User;
+    use WPEmerge\Auth\Contracts\Authenticator;
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
     use WPEmerge\Http\Psr7\Request;
 

@@ -10,7 +10,7 @@
     use WPEmerge\Auth\Events\Logout;
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\Auth\Authenticator;
+    use WPEmerge\Auth\Contracts\Authenticator;
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
     use WPEmerge\Facade\WP;

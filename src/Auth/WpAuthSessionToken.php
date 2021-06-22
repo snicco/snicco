@@ -6,8 +6,6 @@
 
     namespace WPEmerge\Auth;
 
-    use WPEmerge\Session\Session;
-    use WPEmerge\Session\SessionManager;
     use WPEmerge\Support\Arr;
 
     class WpAuthSessionToken extends \WP_Session_Tokens
@@ -89,13 +87,11 @@
          * Omitting the second argument destroys the session.
          *
          * We can discard the $verifier here. The only way to get a valid session token
-         * programmatically is to use @param  string  $verifier  Verifier for the session to update.
-         *
-         * @param  array  $session  Optional. Session. Omitting this argument destroys the session.
-         *
-         * @see wp_get_session_token() which parses the current logged in
+         * programmatically is to use @see wp_get_session_token() which parses the current logged in
          * user cookie which will always(?) be equal to the current active Session.
          *
+         * @param  string  $verifier  Verifier for the session to update.
+         * @param  array  $session  Optional. Session. Omitting this argument destroys the session.
          *
          * @since 4.0.0
          *
