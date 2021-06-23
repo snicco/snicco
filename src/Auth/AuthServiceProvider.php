@@ -6,7 +6,8 @@
 
     namespace WPEmerge\Auth;
 
-    use WPEmerge\Auth\Contracts\Authenticator;
+    use WPEmerge\Auth\Authenticators\PasswordAuthenticator;
+    use WPEmerge\Auth\Contracts\Authenticatorrr;
     use WPEmerge\Auth\Controllers\AuthController;
     use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Auth\Events\GenerateLoginUrl;
@@ -18,6 +19,8 @@
     use WPEmerge\Auth\Middleware\AuthenticateSession;
     use WPEmerge\Auth\Middleware\AuthUnconfirmed;
     use WPEmerge\Auth\Middleware\ConfirmAuth;
+    use WPEmerge\Auth\Responses\LoginViewResponse;
+    use WPEmerge\Auth\Responses\PasswordLoginResponse;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\WpInit;
     use WPEmerge\Http\Psr7\Request;
@@ -34,6 +37,8 @@
 
             $this->bindConfig();
 
+            $this->bindAuthPipeline();
+
             $this->extendRoutes(__DIR__.DIRECTORY_SEPARATOR.'routes');
 
             $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views');
@@ -49,6 +54,10 @@
             $this->bindAuthSessionManager();
 
             $this->bindMiddleware();
+
+            $this->bindLoginViewResponse();
+
+
 
         }
 
@@ -88,8 +97,8 @@
                     GenerateNewAuthCookie::class,
                 ],
                 SessionRegenerated::class => [
-                    RefreshAuthCookies::class
-                ]
+                    RefreshAuthCookies::class,
+                ],
             ]);
 
             $this->config->extend('events.mapped', [
@@ -119,9 +128,9 @@
         private function bindAuthenticator()
         {
 
-            $this->container->singleton(Authenticator::class, function () {
+            $this->container->singleton(Authenticatorrr::class, function () {
 
-                return new PasswordAuthenticator();
+                return new PasswordAuthenticatorrr();
 
             });
 
@@ -141,7 +150,7 @@
             $this->container->singleton(AuthController::class, function () {
 
                 return new AuthController(
-                    $this->container->make(Authenticator::class),
+                    $this->container->make(LoginViewResponse::class),
                     $this->config->get('auth')
                 );
 
@@ -248,6 +257,26 @@
 
             $this->config->extend('middleware.groups.global', [
                 AuthenticateSession::class,
+            ]);
+        }
+
+        private function bindLoginViewResponse()
+        {
+
+            $this->container->singleton(LoginViewResponse::class, function () {
+
+                return $this->container->make(PasswordLoginResponse::class);
+
+            });
+        }
+
+        private function bindAuthPipeline()
+        {
+
+            $this->config->set('auth.through', [
+
+                PasswordAuthenticator::class
+
             ]);
         }
 

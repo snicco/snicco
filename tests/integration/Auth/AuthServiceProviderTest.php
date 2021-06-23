@@ -19,7 +19,7 @@
     use WPEmerge\Auth\Controllers\ForgotPasswordController;
     use WPEmerge\Auth\Controllers\ResetPasswordController;
     use WPEmerge\Auth\Middleware\AuthenticateSession;
-    use WPEmerge\Auth\PasswordAuthenticator;
+    use WPEmerge\Auth\PasswordAuthenticatorrr;
     use WPEmerge\Auth\WpAuthSessionToken;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\Responses\RedirectResponse;
@@ -186,7 +186,7 @@
 
             $this->newTestApp($this->config);
 
-            $this->assertInstanceOf(PasswordAuthenticator::class, TestApp::resolve(\WPEmerge\Auth\Contracts\Authenticator::class));
+            $this->assertInstanceOf(PasswordAuthenticatorrr::class, TestApp::resolve(\WPEmerge\Auth\Contracts\Authenticatorrr::class));
 
         }
 

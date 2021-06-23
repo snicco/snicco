@@ -6,10 +6,13 @@
 
     namespace WPEmerge\Auth\Controllers;
 
+    use Closure;
+    use SniccoAdapter\BaseContainerAdapter;
     use WPEmerge\Auth\Events\Login;
     use WPEmerge\Auth\Events\Logout;
-    use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\Auth\Contracts\Authenticator;
+    use WPEmerge\Auth\Responses\LoginResponse;
+    use WPEmerge\Auth\Responses\LoginViewResponse;
+    use WPEmerge\Contracts\ResponsableInterface;
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
     use WPEmerge\Facade\WP;
@@ -17,32 +20,30 @@
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Session\CsrfField;
+    use WPEmerge\Routing\Pipeline;
     use WPEmerge\Session\Session;
-    use WPEmerge\Support\Arr;
 
     class AuthController extends Controller
     {
-
-        /**
-         * @var Authenticator
-         */
-        private $authenticator;
 
         /**
          * @var array
          */
         private $auth_config;
 
-        public function __construct(Authenticator $authenticator, array $auth_config)
+        /**
+         * @var LoginViewResponse
+         */
+        private $login_view_response;
+
+        public function __construct(LoginViewResponse $login_view_response, array $auth_config)
         {
 
-            $this->authenticator = $authenticator;
-
             $this->auth_config = $auth_config;
+            $this->login_view_response = $login_view_response;
         }
 
-        public function create(Request $request) : ViewInterface
+        public function create(Request $request) : ResponsableInterface
         {
 
             if ($request->boolean('reauth')) {
@@ -51,23 +52,35 @@
 
             }
 
-            $view = $this->authenticator->view();
+            $redirect_to = $request->input('redirect_to', admin_url());
 
-            return $this->view_factory->make('auth-parent')
-                                      ->with([
-                                          'post_url' => WP::loginUrl(),
-                                          'redirect_to' => $request->input('redirect_to', admin_url()),
-                                          'view' => $view,
-                                          'title' => 'Log-in | '.WP::siteName(),
-                                          'forgot_password' => $this->url->toRoute('auth.forgot.password'),
-                                          'is_interim_login' => $request->boolean('interim-login'),
-                                          'allow_remember' => $this->allowRememberMe(),
-                                      ]);
+            $request->session()->setIntendedUrl($redirect_to);
+
+            return $this->login_view_response->withRequest($request)
+                                             ->withAuthConfig($this->auth_config);
 
         }
 
-        public function store(Request $request) : Response
+        public function store(Request $request, Pipeline $auth_pipeline) : Response
         {
+
+
+            $response = $auth_pipeline->send($request)
+                                      ->through($this->auth_config['through'])
+                                      ->then($this->handleAuthFailure());
+
+
+            if ( $response instanceof LoginResponse ) {
+
+                $remember = $response->rememberUser() && $this->auth_config['remember'] === true;
+
+                Login::dispatch([$response->authenticatedUser(), $remember]);
+
+
+            }
+
+            return $response;
+
 
             try {
 
@@ -89,8 +102,7 @@
             $session->put('auth.has_remember_token', $remember);
             $session->regenerate();
 
-
-            Login::dispatch([$user, $remember ]);
+            Login::dispatch([$user, $remember]);
 
             if ($request->boolean('is_interim_login')) {
 
@@ -148,10 +160,16 @@
 
         }
 
-        private function allowRememberMe() : bool
+        // None of our authenticators where able to authenticate the user.
+        // Time to bail.
+        private function handleAuthFailure() : Closure
         {
 
-            return Arr::get($this->auth_config, 'remember.enabled', true);
+            return function () {
+
+                throw new FailedAuthenticationException('Login failed', []);
+
+            };
 
         }
 

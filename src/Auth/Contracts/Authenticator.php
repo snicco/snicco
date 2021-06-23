@@ -6,22 +6,38 @@
 
     namespace WPEmerge\Auth\Contracts;
 
-    use WP_User;
+    use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
+    use WPEmerge\Auth\Responses\LoginResponse;
+    use WPEmerge\Contracts\Middleware;
+    use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Psr7\Response;
 
-    interface Authenticator
+    abstract class Authenticator extends Middleware
     {
-
         /**
          * @param  Request  $request
+         * @param  Delegate $next This class can be called as a closure. $next($request)
          *
-         * @return WP_User
+         * @return LoginResponse If authentication was successful.
+         *
          * @throws FailedAuthenticationException
+         *
          */
-        public function authenticate(Request $request) : WP_User;
+        abstract public function attempt ( Request $request, $next ) :Response;
 
-        public function view() :string;
+        public function handle(Request $request, Delegate $next) : ResponseInterface {
+
+            return $this->attempt($request, $next);
+
+        }
+
+        protected function loginResponse(\WP_User $user, bool $remember = false ) {
+
+            $response = $this->response_factory->redirect();
+
+        }
 
 
     }
