@@ -16,6 +16,14 @@
             If you did not receive your email feel free to request a new one.
         </div>
 
+    <?php elseif ($errors->has('message')): ?>
+
+        <div class="notification is-danger is-light">
+
+            <?= esc_html($errors->first('message')) ?>
+
+        </div>
+
     <?php else : ?>
 
         <div class="notification is-info is-light">

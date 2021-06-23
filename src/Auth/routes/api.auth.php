@@ -24,30 +24,43 @@
                ->middleware(['csrf', 'guest'])
                ->name('login');
 
+        // login magic link creation
+        $router->post('login/create-magic-link', [LoginMagicLinkController::class, 'store'])
+               ->middleware('guest')->name('login.create-magic-link');
+
+        $router->get('login/magic-link', [AuthSessionController::class, 'store'])
+               ->middleware('guest')
+               ->name('login.magic-link');
+
         // Logout
         $router->get('/logout/{user_id}', [AuthSessionController::class, 'destroy'])
                ->middleware('signed:absolute')
                ->name('logout')
                ->andNumber('user_id');
 
-        // forgot-password
-        $router->get('/forgot-password', [ForgotPasswordController::class, 'create'])
-               ->middleware('guest')
-               ->name('forgot.password');
 
-        $router->post('/forgot-password', [ForgotPasswordController::class, 'store'])
-               ->middleware(['csrf', 'guest'])
-               ->name('forgot.password');
+        if( AUTH_ALLOW_PW_RESETS ) {
 
-        // reset-password
-        $router->get('/reset-password', [ResetPasswordController::class, 'create'])
-               ->middleware('signed:absolute')
-               ->name('reset.password')
-               ->andNumber('user_id');
+            // forgot-password
+            $router->get('/forgot-password', [ForgotPasswordController::class, 'create'])
+                   ->middleware('guest')
+                   ->name('forgot.password');
 
-        $router->post('/reset-password', [ResetPasswordController::class, 'update'])
-               ->middleware(['csrf', 'signed:absolute'])
-               ->name('reset.password');
+            $router->post('/forgot-password', [ForgotPasswordController::class, 'store'])
+                   ->middleware(['csrf', 'guest'])
+                   ->name('forgot.password');
+
+            // reset-password
+            $router->get('/reset-password', [ResetPasswordController::class, 'create'])
+                   ->middleware('signed:absolute')
+                   ->name('reset.password')
+                   ->andNumber('user_id');
+
+            $router->post('/reset-password', [ResetPasswordController::class, 'update'])
+                   ->middleware(['csrf', 'signed:absolute'])
+                   ->name('reset.password');
+
+        }
 
         // Auth Confirmation
         $router->get('confirm', [AuthConfirmationController::class, 'create'])->middleware([
@@ -62,13 +75,6 @@
                ->middleware(['auth', 'signed:absolute', 'auth.unconfirmed'])
                ->name('confirm.store');
 
-        // login magic link creation
-        $router->post('login/create-magic-link', [LoginMagicLinkController::class, 'store'])
-               ->middleware('guest')->name('login.create-magic-link');
-
-        $router->get('foo', [AuthSessionController::class, 'store'])
-               ->middleware(['signed:absolute', 'guest',])
-               ->name('login.magic-link');
 
     });
 

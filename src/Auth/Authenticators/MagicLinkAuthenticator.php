@@ -25,30 +25,43 @@
 
         public function __construct(MagicLink $magic_link)
         {
+
             $this->magic_link = $magic_link;
         }
 
-        // The validation of the magic link happens in the middleware.
         public function attempt(Request $request, $next) : Response
         {
 
-            $user = get_user_by('id', $request->query('user_id'));
+            $valid = $this->magic_link->hasValidSignature($request, true );
 
-            if ( ! $user instanceof WP_User ) {
+            if ( ! $valid  ) {
 
-                $this->fail();
+                $this->fail($request);
 
             }
 
-            return $this->login( $user, true );
+            $this->magic_link->invalidate($request->fullUrl());
+
+            $user = get_user_by('id', $request->query('user_id'));
+
+            if ( ! $user instanceof WP_User) {
+
+                $this->fail($request);
+
+            }
+
+            return $this->login($user, true);
 
 
         }
 
-        private function fail () {
-            $e = new FailedAuthenticationException($this->failure_message, []);
+        private function fail(Request $request)
+        {
+
+            $e = new FailedAuthenticationException($this->failure_message, $request, []);
             $e->redirectToRoute('auth.login');
             throw $e;
+
         }
 
     }

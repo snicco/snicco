@@ -163,6 +163,8 @@
 
             ]);
 
+            define('AUTH_ALLOW_PW_RESETS', $this->config->get('auth.features.password-resets', true));
+
         }
 
         private function bindWpSessionToken()

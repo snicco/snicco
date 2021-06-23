@@ -108,6 +108,7 @@
         {
 
             $session = $request->session();
+            $session->setUserId($user->ID);
             $session->put('auth.has_remember_token', $remember);
             $session->regenerate();
 
@@ -132,9 +133,9 @@
         private function handleAuthFailure() : Closure
         {
 
-            return function () {
+            return function (Request $request) {
 
-                throw new FailedAuthenticationException('Login failed', []);
+                throw new FailedAuthenticationException('Login failed' , $request, null , [] );
 
             };
 

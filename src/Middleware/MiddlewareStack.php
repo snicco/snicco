@@ -40,6 +40,8 @@
             }
 
             $middleware = $this->expandMiddleware($middleware);
+
+            /** @todo fix bug when global middleware was already run and is also added to the route. */
             $middleware = $this->uniqueMiddleware($middleware);
 
             return $this->sortMiddleware($middleware);
