@@ -63,7 +63,7 @@
                 hidden="hidden"
         >
 
-        <?= $csrf_field ?>
+        <?= $csrf->asHtml() ?>
 
         <button
                 id="login_button"

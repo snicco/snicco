@@ -55,6 +55,10 @@
 
             foreach ($this->global_context->get() as $name => $context) {
 
+                $context = is_callable($context)
+                    ? call_user_func($context)
+                    : $context;
+
                 $view->with( $name, $context );
 
             }

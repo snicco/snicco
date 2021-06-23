@@ -154,10 +154,9 @@
 
 			$dir = getenv( 'ROOT_DIR' ) . DS . 'tests' . DS . 'views';
 
-			return new ViewComposerCollection( $this->factory, new PhpViewFinder( [ $dir ] ) );
+			return new ViewComposerCollection( $this->factory );
 
 		}
-
 
 
 	}

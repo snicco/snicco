@@ -253,7 +253,7 @@
         /**
          * Create a new route.
          *
-         * @return \WPEmerge\Routing\Router
+         * @return Router
          */
         public static function route() : Router
         {

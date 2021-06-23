@@ -65,7 +65,6 @@
         public function asHtml()
         {
 
-
             $field = $this->create();
 
             $name = Arr::pullNextPair($field);

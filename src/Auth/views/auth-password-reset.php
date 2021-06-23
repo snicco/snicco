@@ -54,7 +54,7 @@
             </div>
         <?php endif; ?>
 
-        <?= $csrf_field ?>
+        <?= $csrf->asHtml() ?>
 
         <div class="field">
             <label for="" class="label">Password</label>

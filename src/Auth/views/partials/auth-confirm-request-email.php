@@ -76,7 +76,7 @@
             </div>
         </div>
 
-        <?= $csrf_field ?>
+        <?= $csrf->asHtml() ?>
         <button
                 id="login_button"
                 type="submit"
