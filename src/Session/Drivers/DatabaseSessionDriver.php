@@ -11,7 +11,7 @@
     use wpdb;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\SessionDriver;
+    use WPEmerge\Session\Contracts\SessionDriver;
 
     class DatabaseSessionDriver implements SessionDriver
     {
@@ -26,7 +26,7 @@
         /**
          * @var int
          */
-        private $lifetime;
+        private $absolute_lifetime_in_seconds;
 
         /**
          * @var Request
@@ -43,12 +43,12 @@
          */
         private $session;
 
-        public function __construct(wpdb $db, string $table, int $lifetime)
+        public function __construct(wpdb $db, string $table, int $lifetime_in_sec)
         {
 
             $this->db = $db;
             $this->table = $this->db->prefix.$table;
-            $this->lifetime = $lifetime;
+            $this->absolute_lifetime_in_seconds = $lifetime_in_sec;
         }
 
         public function close() : bool
@@ -57,10 +57,10 @@
             return true;
         }
 
-        public function destroy($id) : bool
+        public function destroy($hased_id) : bool
         {
 
-            $result = $this->db->delete($this->table, ['id' => $id], ['%s']);
+            $result = $this->db->delete($this->table, ['id' => $hased_id], ['%s']);
 
             return $result !== false;
         }
@@ -74,7 +74,6 @@
 
             return $this->db->query($query) !== false;
 
-
         }
 
         public function open($path, $name) : bool
@@ -83,10 +82,10 @@
             return true;
         }
 
-        public function read($id)
+        public function read($hashed_id)
         {
 
-            $session = $this->findSession($id);
+            $session = $this->findSession($hashed_id);
 
             if ( ! isset($session->payload) || $this->isExpired($session)) {
 
@@ -98,29 +97,71 @@
 
         }
 
-        public function write($id, $data) : bool
+        public function write($hashed_id, $data) : bool
         {
 
-            if ($this->exists($id)) {
+            if ($this->exists($hashed_id)) {
 
-                return $this->performUpdate($id, $data);
+                return $this->performUpdate($hashed_id, $data);
 
             }
 
-            return $this->performInsert($id, $data);
+            return $this->performInsert($hashed_id, $data);
         }
 
-        public function isValid(string $id) : bool
+        public function isValid(string $hashed_id) : bool
         {
-
-            return $this->hasSessionId($id);
-
+            return $this->hasSessionId($hashed_id);
         }
 
         public function setRequest(Request $request)
         {
 
             $this->request = $request;
+        }
+
+        public function getAllByUserId(int $user_id) : array
+        {
+
+            $query = $this->db->prepare("SELECT * FROM `$this->table` WHERE `user_id` = %d", $user_id);
+
+            $sessions = $this->db->get_results($query, OBJECT) ?? [];
+
+            $sessions = collect($sessions)->map(function (object $session) {
+
+                if ( ! $session->payload) {
+                    return null;
+                }
+
+                $session->payload = base64_decode($session->payload);
+
+                return $session;
+
+            })->whereNotNull()->all();
+
+            return $sessions;
+
+        }
+
+        public function destroyOthersForUser(string $hashed_token, int $user_id)
+        {
+
+            $query = $this->db->prepare("DELETE FROM $this->table WHERE user_id = %d AND NOT `id` = %s", $user_id, $hashed_token);
+
+            $this->db->query($query);
+
+        }
+
+        public function destroyAllForUser(int $user_id)
+        {
+            $query = $this->db->prepare("DELETE FROM $this->table WHERE user_id = %d", $user_id);
+
+            $this->db->query($query);
+        }
+
+        public function destroyAll()
+        {
+            $this->db->query("TRUNCATE TABLE $this->table");
         }
 
         private function performInsert(string $session_id, string $payload) : bool
@@ -177,7 +218,7 @@ WHERE
         {
 
             return isset($session->last_activity)
-                && $session->last_activity < Carbon::now()->subMinutes($this->lifetime)
+                && $session->last_activity < Carbon::now()->subSeconds($this->absolute_lifetime_in_seconds)
                                                    ->getTimestamp();
         }
 
@@ -205,15 +246,16 @@ WHERE
         private function hasSessionId(string $id) : bool
         {
 
-            $must_be_newer_than = Carbon::now()->subMinutes($this->lifetime)
+            $must_be_newer_than = Carbon::now()->subSeconds($this->absolute_lifetime_in_seconds)
                                         ->getTimestamp();
 
             $query = $this->db->prepare("SELECT EXISTS(SELECT 1 FROM $this->table WHERE id = %s AND last_activity > %d LIMIT 1)", $id, $must_be_newer_than);
 
             $exists = $this->db->get_var($query);
 
-            return ( is_string($exists) && $exists === '1' );
+            return (is_string($exists) && $exists === '1');
 
         }
+
 
     }

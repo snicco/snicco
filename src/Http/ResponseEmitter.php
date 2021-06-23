@@ -90,7 +90,7 @@
          *
          * @param  ResponseInterface  $response
          */
-        protected function emitHeaders(ResponseInterface $response) : void
+        public function emitHeaders(ResponseInterface $response) : void
         {
 
             if ( headers_sent() ) {

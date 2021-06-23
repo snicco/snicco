@@ -13,6 +13,8 @@
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\ExceptionHandling\Exceptions\NotFoundException;
+    use WPEmerge\Session\Events\SessionRegenerated;
+    use WPEmerge\Session\SessionManager;
 
     class ConfirmAuthMagicLinkController extends Controller
     {
@@ -20,37 +22,30 @@
         /**
          * @var int|mixed
          */
-        private $lifetime_in_minutes;
+        private $lifetime_in_seconds;
 
-        public function __construct( int $lifetime_in_minutes = 180)
+        public function __construct( int $lifetime_in_seconds = SessionManager::HOUR_IN_SEC * 3 )
         {
 
-            $this->lifetime_in_minutes = $lifetime_in_minutes;
+            $this->lifetime_in_seconds = $lifetime_in_seconds;
 
         }
 
         public function store(Request $request, string $user_id) : RedirectResponse
         {
 
-            $user = $this->getUser(( int ) $user_id);
+            $user = get_user_by('ID', (int) $user_id);
 
-            if ( ! $user instanceof WP_User ) {
-
-                throw new NotFoundException();
-
-            }
-
-            if ( $user->ID !== (int) $user_id ) {
+            if ( ! $user instanceof WP_User || $user->ID !== WP::currentUser()->ID ) {
 
                 throw new AuthorizationException();
 
             }
 
-            $this->loginUser($user);
-
             $session = $request->session();
-            $session->migrate(true);
-            $session->confirmAuthUntil($this->lifetime_in_minutes);
+            $session->confirmAuthUntil($this->lifetime_in_seconds);
+            $session->regenerate();
+            SessionRegenerated::dispatch([$session]);
 
             return $this->response_factory->redirect()
                                           ->intended($request, WP::adminUrl());
@@ -58,21 +53,5 @@
 
         }
 
-        // If the user is logged in already we just refresh the auth cookie.
-        private function loginUser(WP_User $user)
-        {
-
-            wp_set_auth_cookie($user->ID, true, true);
-            wp_set_current_user($user->ID);
-
-
-        }
-
-        private function getUser(int $user_id)
-        {
-
-            return WP::isUserLoggedIn() ? WP::currentUser() : get_user_by('ID', $user_id);
-
-        }
 
     }

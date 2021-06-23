@@ -99,7 +99,7 @@
 
             $signature = $this->magic_link->create($url_with_expired_query_string, $expires, $this->getRequest());
 
-            return $this->to($path, array_merge($query, ['signature'=>$signature] ), true , $absolute);
+            return $this->to($path, array_merge($query, [MagicLink::QUERY_STRING_ID=>$signature] ), true , $absolute);
 
 
         }
@@ -116,7 +116,7 @@
 
         }
 
-        public function signedLogout ( ?int $user_id = null , string $redirect_on_logout = '/', int $expiration = 3600 ) : string
+        public function signedLogout ( ?int $user_id = null , string $redirect_on_logout = '/', int $expiration = 3600, bool $absolute = false ) : string
         {
 
             $args = [
@@ -126,7 +126,7 @@
                 ]
             ];
 
-            return $this->signedRoute('auth.logout', $args, $expiration, true );
+            return $this->signedRoute('auth.logout', $args, $expiration, $absolute );
 
         }
 

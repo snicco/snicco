@@ -95,7 +95,7 @@
                 $storage = [];
 
                 return new CsrfField(
-                    new Session('test_session', new ArraySessionDriver(10)),
+                    new Session( new ArraySessionDriver(10)),
                     new Guard(
                         TestApp::container()->make(ResponseFactory::class),
                         'csrf', $storage

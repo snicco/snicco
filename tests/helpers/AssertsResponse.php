@@ -13,37 +13,37 @@
     trait AssertsResponse {
 
 
-		private function assertStatusCode(int $code, ResponseInterface $response) {
+		protected function assertStatusCode(int $code, ResponseInterface $response) {
 
 			$this->assertSame($code , $response->getStatusCode());
 
 		}
 
-		private function assertContentType( string $type, ResponseInterface $response ) {
+		protected function assertContentType( string $type, ResponseInterface $response ) {
 
 			$this->assertSame($type, $response->getHeaderLine('Content-Type'));
 
 		}
 
-        private function assertOutput ( $output , ResponseInterface $response ) {
+        protected function assertOutput ( $output , ResponseInterface $response ) {
 
             $this->assertSame($output, $response->getBody()->__toString());
 
         }
 
-		private function assertOutputContains ( $output , ResponseInterface $response ) {
+		protected function assertOutputContains ( $output , ResponseInterface $response ) {
 
 			$this->assertStringContainsString($output, $response->getBody()->__toString());
 
 		}
 
-		private function assertNullResponse( ResponseInterface $response ) {
+		protected function assertNullResponse( ResponseInterface $response ) {
 
 		    Assert::assertInstanceOf(NullResponse::class, $response);
 
         }
 
-		private function assertHeader ( $name, $value , ResponseInterface $response) {
+		protected function assertHeader ( $name, $value , ResponseInterface $response) {
 
 			$this->assertSame($value, $response->getHeaderLine($name));
 

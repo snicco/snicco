@@ -35,9 +35,20 @@
            parent::__construct($status, $message_for_humans, $previous, $code);
 
            $this->errors = $errors;
+
        }
 
-       public function setMessageBag(MessageBag $message_bag, string $name = 'default') {
+        public static function withMessages(array $messages) : ValidationException
+        {
+            $bag = new MessageBag($messages);
+            $e = new static($messages);
+            $e->setMessageBag($bag);
+
+            return $e;
+
+        }
+
+        public function setMessageBag(MessageBag $message_bag, string $name = 'default') {
 
             $this->messages = $message_bag;
             $this->message_bag_name = $name;
@@ -51,9 +62,7 @@
 
         public function messages() : MessageBag
         {
-
             return $this->messages;
-
         }
 
         public function namedBag () {

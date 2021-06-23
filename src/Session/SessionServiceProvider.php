@@ -12,18 +12,17 @@
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Session\Contracts\SessionDriver;
+    use WPEmerge\Session\Contracts\SessionManagerInterface;
     use WPEmerge\Session\Events\NewLogin;
     use WPEmerge\Session\Events\NewLogout;
-    use WPEmerge\Auth\Middleware\ConfirmAuth;
-    use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Drivers\DatabaseSessionDriver;
-    use WPEmerge\Auth\Middleware\AuthUnconfirmed;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Session\Middleware\ShareSessionWithView;
-    use WPEmerge\Session\Middleware\SessionMiddleware;
-    use WPEmerge\Middleware\ValidateSignature;
+    use WPEmerge\Session\Middleware\StartSessionMiddleware;
     use WPEmerge\Support\Arr;
+
 
     class SessionServiceProvider extends ServiceProvider
     {
@@ -41,7 +40,6 @@
             $this->bindSessionDriver();
             $this->bindSessionManager();
             $this->bindSession();
-            $this->bindSessionMiddleware();
             $this->bindCsrfMiddleware();
             $this->bindCsrfStore();
             $this->bindSlimGuard();
@@ -59,24 +57,31 @@
         private function bindConfig()
         {
 
-            $this->config->extend('session.cookie', 'wp_mvc_session');
+            // misc
             $this->config->extend('session.table', 'sessions');
             $this->config->extend('session.lottery', [2, 100]);
+            $this->config->extend('session.driver', 'database');
+            $this->config->extend('session.encrypt', false);
+
+            // cookie
+            $this->config->extend('session.cookie', 'wp_mvc_session');
             $this->config->extend('session.path', '/');
             $this->config->extend('session.domain', null);
             $this->config->extend('session.secure', true);
             $this->config->extend('session.http_only', true);
             $this->config->extend('session.same_site', 'lax');
-            $this->config->extend('session.driver', 'database');
-            $this->config->extend('session.lifetime', 120);
-            $this->config->extend('session.encrypt', false);
-            $this->config->extend('session.auth_confirmed_lifetime', 180);
-            $this->config->extend('session.auth_confirm_on_login', true);
+
+            // lifetime
+            $this->config->extend('session.lifetime', SessionManager::HOUR_IN_SEC * 8);
+            $this->config->extend('session.rotate', $this->config->get('session.lifetime') / 2);
+
+
+            // middleware
             $this->config->extend('middleware.aliases', [
                 'csrf' => CsrfMiddleware::class,
             ]);
             $this->config->extend('middleware.groups.global', [
-                SessionMiddleware::class,
+                StartSessionMiddleware::class,
                 ShareSessionWithView::class,
             ]);
 
@@ -85,16 +90,14 @@
         private function bindSession()
         {
 
-            $name = $this->config->get('session.cookie');
 
-            $this->container->singleton(Session::class, function () use ($name) {
+            $this->container->singleton(Session::class, function ()  {
 
                 $store = null;
 
                 if ($this->config->get('session.encrypt')) {
 
                     $store = new EncryptedSession(
-                        $name,
                         $this->container->make(SessionDriver::class),
                         $this->container->make(EncryptorInterface::class)
                     );
@@ -102,7 +105,7 @@
                 }
                 else {
 
-                    $store = new Session($name, $this->container->make(SessionDriver::class));
+                    $store = new Session($this->container->make(SessionDriver::class));
 
 
                 }
@@ -142,18 +145,6 @@
             });
 
 
-        }
-
-        private function bindSessionMiddleware()
-        {
-
-            $this->container->singleton(SessionMiddleware::class, function () {
-
-                return new SessionMiddleware(
-                    $this->container->make(SessionManager::class),
-                );
-
-            });
         }
 
         private function bindAliases()
@@ -232,6 +223,7 @@
                 'wp_logout' => NewLogout::class,
             ]);
 
+
             $this->config->extend('events.listeners', [
 
                 NewLogin::class => [
@@ -245,6 +237,7 @@
                     [SessionManager::class, 'invalidateAfterLogout'],
 
                 ],
+
 
             ]);
 
@@ -260,6 +253,13 @@
                     $this->config->get('session'),
                     $this->container->make(Session::class),
                 );
+
+
+            });
+
+            $this->container->singleton(SessionManagerInterface::class, function () {
+
+                return $this->container->make(SessionManager::class);
 
             });
 

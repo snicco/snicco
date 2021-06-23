@@ -10,9 +10,11 @@
     use Tests\helpers\AssertsResponse;
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
+    use Tests\helpers\HashesSessionIds;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
     use WPEmerge\ExceptionHandling\TestingErrorHandler;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
@@ -22,16 +24,17 @@
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Session;
-    use WPEmerge\Session\Middleware\SessionMiddleware;
+    use WPEmerge\Session\Middleware\StartSessionMiddleware;
     use WPEmerge\Session\SessionManager;
     use WPEmerge\Support\VariableBag;
 
-    class StartSessionMiddlewareTest extends UnitTest
+    class SessionMiddlewareTest extends UnitTest
     {
 
         use AssertsResponse;
         use CreateRouteCollection;
         use CreateUrlGenerator;
+        use HashesSessionIds;
 
         /**
          * @var Request
@@ -56,11 +59,14 @@
             'same_site' => 'lax',
             'http_only' => true,
             'secure' => true,
-            'path' => '/'
+            'path' => '/',
+            'rotate' => 3600
         ];
 
         protected function beforeTestRun()
         {
+
+            WP::shouldReceive('userId')->andReturn(1)->byDefault();
 
             $response = $this->createResponseFactory();
 
@@ -79,12 +85,19 @@
 
             $this->request = TestRequest::from('GET', '/foo')
                                         ->withAttribute('cookies', new VariableBag([
-                                            'test_session' => $this->sessionId(),
+                                            'test_session' => $this->getSessionId(),
                                         ]));
 
         }
 
-        private function newMiddleware(Session $session = null, $gc_collection = [0,100]) : SessionMiddleware
+        protected function beforeTearDown()
+        {
+
+           WP::reset();
+           \Mockery::close();
+        }
+
+        private function newMiddleware(Session $session = null, $gc_collection = [0,100]) : StartSessionMiddleware
         {
 
             $session = $session ?? $this->newSession();
@@ -93,30 +106,17 @@
 
             $config['lottery'] = $gc_collection;
 
-            return new SessionMiddleware(new SessionManager($config, $session) );
+            return new StartSessionMiddleware(new SessionManager($config, $session) );
 
         }
 
-        private function newSession(string $cookie_name = 'test_session', $handler = null) : Session
+        private function newSession( $handler = null) : Session
         {
 
             $handler = $handler ?? new ArraySessionDriver(10);
 
-            return new Session($cookie_name, $handler);
+            return new Session($handler);
 
-        }
-
-        private function sessionId() : string
-        {
-
-            return str_repeat('a', 64);
-
-        }
-
-        private function anotherSessionId() : string
-        {
-
-            return str_repeat('b', 64);
         }
 
         private function getRequestSession($response) : Session
@@ -142,10 +142,10 @@
         {
 
             $handler = new ArraySessionDriver(10);
-            $handler->write($this->sessionId(), serialize(['foo' => 'bar']));
+            $handler->write($this->hashedSessionId(), serialize(['foo' => 'bar']));
             $handler->write($this->anotherSessionId(), serialize(['foo' => 'baz']));
 
-            $store = $this->newSession('test_session', $handler);
+            $store = $this->newSession( $handler);
 
             $response = $this->newMiddleware($store)->handle($this->request, $this->route_action);
 
@@ -160,9 +160,9 @@
         {
 
             $handler = new ArraySessionDriver(10);
-            $handler->write($this->anotherSessionId(), serialize(['foo' => 'bar']));
+            $handler->write($this->hash($this->anotherSessionId()), serialize(['foo' => 'bar']));
 
-            $store = $this->newSession('test_session', $handler);
+            $store = $this->newSession( $handler);
 
             $response = $this->newMiddleware($store)->handle($this->request, $this->route_action);
 
@@ -176,13 +176,13 @@
         public function the_previous_url_is_saved_to_the_session_after_creating_the_response () {
 
             $handler = new ArraySessionDriver(10);
-            $handler->write($this->sessionId(), serialize(['foo' => 'bar']) );
+            $handler->write($this->hashedSessionId(), serialize(['foo' => 'bar']) );
 
-            $store = $this->newSession('test_session', $handler);
+            $store = $this->newSession( $handler);
 
             $this->newMiddleware($store)->handle($this->request, $this->route_action);
 
-            $persisted_url = unserialize($handler->read($this->sessionId()))['_url']['previous'];
+            $persisted_url = unserialize($handler->read($this->hashedSessionId()))['_url']['previous'];
 
             $this->assertSame('https://foo.com/foo', $persisted_url );
 
@@ -193,13 +193,13 @@
         public function values_added_to_the_session_are_saved () {
 
             $handler = new ArraySessionDriver(10);
-            $handler->write($this->sessionId(), serialize(['foo' => 'bar'] ) );
+            $handler->write($this->hashedSessionId(), serialize(['foo' => 'bar'] ) );
 
-            $store = $this->newSession('test_session', $handler);
+            $store = $this->newSession( $handler);
 
             $this->newMiddleware($store)->handle($this->request, $this->route_action);
 
-            $persisted_data = unserialize($handler->read($this->sessionId()));
+            $persisted_data = unserialize($handler->read($this->hashedSessionId()));
 
             $this->assertSame('calvin', $persisted_data['name'] );
 
@@ -209,24 +209,18 @@
         public function garbage_collection_works () {
 
             $handler = new ArraySessionDriver(10);
-
-            $handler->write($this->anotherSessionId(), serialize(['foo' => 'bar']));
-
-            $this->assertNotSame('', unserialize($handler->read($this->anotherSessionId())));
+            $handler->write($this->hashedSessionId(), serialize(['foo' => 'bar']));
+            $this->assertNotSame('', unserialize($handler->read($this->hashedSessionId())));
 
 
             Carbon::setTestNow(Carbon::now()->addSeconds(120));
 
-            $handler->write($this->sessionId(), serialize(['foo' => 'bar']));
-            $store = $this->newSession('test_session', $handler);
-
+            $store = $this->newSession($handler);
 
             $this->newMiddleware($store, [100,100])->handle($this->request, $this->route_action);
 
+            $this->assertSame('',  $handler->read($this->hashedSessionId()));
 
-            $this->assertSame('',  $handler->read($this->anotherSessionId()));
-
-            $this->assertNotSame('', unserialize($handler->read($this->sessionId())));
 
             Carbon::setTestNow();
 
@@ -235,7 +229,7 @@
         /** @test */
         public function the_session_cookie_is_added_to_the_response () {
 
-            Carbon::setTestNow(Carbon::createFromTimestamp(1));
+            Carbon::setTestNow(Carbon::createFromTimestamp(0));
 
             $c = $this->createContainer();
             $response_factory = $this->createResponseFactory();
@@ -262,7 +256,7 @@
             $this->assertStringStartsWith("test_session={$session->getId()}",$cookies);
             $this->assertStringContainsString('path=/', $cookies);
             $this->assertStringContainsString('SameSite=Lax', $cookies);
-            $this->assertStringContainsString('expires=Thu, 01-Jan-1970 00:01:01 UTC', $cookies);
+            $this->assertStringContainsString('expires=Thu, 01-Jan-1970 00:00:01 UTC', $cookies);
             $this->assertStringContainsString('HttpOnly', $cookies);
             $this->assertStringContainsString('secure', $cookies);
             $this->assertStringNotContainsString('domain', $cookies);
@@ -276,21 +270,32 @@
 
             // This works because the session driver has an active session for the the provided cookie value.
             $driver = new ArraySessionDriver(10);
-            $driver->write($this->sessionId(), serialize(['foo' => 'bar']));
-            $session = $this->newSession('test_session', $driver);
+            $driver->write($this->hashedSessionId(), serialize(['foo' => 'bar']));
+            $session = $this->newSession( $driver );
 
             $this->newMiddleware($session)->handle($this->request, $this->route_action);
 
             $this->assertSame('bar', $session->get('foo'));
-            $this->assertSame($session->getId(), $this->sessionId());
+            $this->assertSame($session->getId(), $this->getSessionId());
 
             // Now we reject the session id.
-            $driver->destroy($this->sessionId());
-
+            $driver->destroy($this->hashedSessionId());
+            $session = $this->newSession( $driver );
             $this->newMiddleware($session)->handle($this->request, $this->route_action);
 
-            $this->assertNotSame($session->getId(), $this->sessionId());
+            $this->assertNotSame($session->getId(), $this->getSessionId());
 
+
+        }
+
+        /** @test */
+        public function the_user_id_is_set_on_the_session () {
+
+            $response = $this->newMiddleware()->handle($this->request->withUser(99), $this->route_action);
+
+            $session = $this->getRequestSession($response);
+
+            $this->assertSame(99, $session->userId());
 
         }
 

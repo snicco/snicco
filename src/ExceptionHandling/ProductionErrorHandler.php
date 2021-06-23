@@ -220,6 +220,7 @@
 
         }
 
+        /** @todo needs tests */
         private function renderValidationException(ValidationException $e, Request $request)
         {
 
@@ -236,7 +237,7 @@
 
             $response = $this->response->redirect()->previous($request);
 
-            if ( ! $response->hasSession()) {
+            if ( ! $response->hasSession() ) {
 
                 return $response;
 

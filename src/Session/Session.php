@@ -8,12 +8,20 @@
 
     use Carbon\Carbon;
     use Closure;
+    use DateInterval;
+    use DateTimeInterface;
     use Illuminate\Support\InteractsWithTime;
     use Illuminate\Support\ViewErrorBag;
+    use Respect\Validation\Rules\DateTime;
+    use WPEmerge\Auth\Events\Logout;
+    use WPEmerge\Facade\WP;
+    use WPEmerge\Session\Contracts\SessionDriver;
+    use WPEmerge\Session\Events\SessionRegenerated;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
     use stdClass;
     use SessionHandlerInterface;
+
 
     class Session
     {
@@ -60,11 +68,10 @@
          */
         private $token_strength_in_bytes;
 
-        public function __construct(string $cookie_name, SessionDriver $handler, int $token_strength_in_bytes = 32)
+        public function __construct( SessionDriver $handler, int $token_strength_in_bytes = 32)
         {
 
             $this->handler = $handler;
-            $this->name = $cookie_name;
             $this->token_strength_in_bytes = $token_strength_in_bytes;
 
         }
@@ -73,14 +80,7 @@
         {
 
             $this->setId($session_id);
-
             $this->loadDataFromDriver();
-
-            if ( ! $this->sessionExisted() ) {
-
-                $this->id = $this->generateSessionId();
-
-            }
 
             $this->started = true;
 
@@ -95,8 +95,10 @@
 
             $this->ageFlashData();
 
+            $this->setLastActivity($this->currentTime());
+
             $this->handler->write(
-                $this->getId(),
+                $this->hash($this->getId()),
                 $this->prepareForStorage(serialize($this->attributes))
             );
 
@@ -280,7 +282,6 @@
 
         public function forget($keys) : void
         {
-
             Arr::forget($this->attributes, $keys);
         }
 
@@ -293,21 +294,20 @@
         {
 
             $this->flush();
+            return $this->migrate();
 
-            return $this->migrate(true);
         }
 
-        public function regenerate(bool $destroy = false) : bool
+        public function regenerate(bool $destroy_old = true) : bool
         {
-
-            return $this->migrate($destroy);
+            return $this->migrate($destroy_old);
         }
 
-        public function migrate(bool $destroy = false) : bool
+        private function migrate(bool $destroy_old = true) : bool
         {
 
-            if ($destroy) {
-                $this->handler->destroy($this->getId());
+            if ($destroy_old) {
+                $this->handler->destroy($this->hash($this->getId()));
             }
 
             $this->setId($this->generateSessionId());
@@ -326,18 +326,6 @@
             return $this->id;
         }
 
-        public function getName() : string
-        {
-
-            return $this->name;
-        }
-
-        public function setName(string $name) : void
-        {
-
-            $this->name = $name;
-        }
-
         public function setId(string $id) : Session
         {
 
@@ -347,12 +335,18 @@
 
         }
 
+        public function setUserId(int $user_id) {
+
+            $this->put('_user.id', $user_id);
+
+        }
+
         public function isValidId(string $id) : bool
         {
 
             return ( strlen($id) === 2 * $this->token_strength_in_bytes)
                 && ctype_alnum($id)
-                && $this->getDriver()->isValid($id);
+                && $this->getDriver()->isValid($this->hash($id));
 
         }
 
@@ -375,13 +369,14 @@
 
         }
 
-        public function confirmAuthUntil(int $duration_in_minutes)
+        /**
+         * @param DateTimeInterface|DateInterval|int  $delay
+         */
+        public function confirmAuthUntil($delay)
         {
+            $ts = $this->availableAt($delay);
 
-            $this->put(
-                'auth.confirm.until',
-                Carbon::now()->addMinutes($duration_in_minutes)->getTimestamp()
-            );
+            $this->put('auth.confirm.until', $ts );
 
         }
 
@@ -451,6 +446,7 @@
             return $this->get('_allow_routes', []);
 
         }
+
         protected function prepareForUnserialize(string $data) : string
         {
 
@@ -460,7 +456,6 @@
 
         protected function prepareForStorage(string $data) : string
         {
-
             return $data;
         }
 
@@ -486,9 +481,9 @@
         private function readFromDriver() : array
         {
 
-            if ($data = $this->handler->read($this->getId())) {
+            if ($data = $this->handler->read( $this->hash($this->getId() ) ) ) {
 
-                $data = @unserialize($this->prepareForUnserialize($data));
+                $data = @unserialize($this->prepareForUnserialize($data) );
 
                 if ($data !== false && ! is_null($data) && is_array($data)) {
                     return $data;
@@ -523,11 +518,104 @@
 
         }
 
-        private function sessionExisted() : bool
-        {
-            return $this->loaded_data_from_handler !== [];
+        public function setLastActivity(int $timestamp) {
+
+            $this->put('_last_activity', $timestamp);
+
         }
 
+        public function lastActivity() :int
+        {
+
+            return $this->get('_last_activity', 0);
+
+        }
+
+        /**
+         * @param  DateTimeInterface|DateInterval|int $delay
+         */
+        public function setNextRotation($delay) {
+
+            $ts = $this->availableAt($delay);
+            $this->put('_rotate_at', $ts);
+
+        }
+
+        public function rotationDueAt() :int {
+
+            return $this->get('_rotate_at', 0 );
+
+
+        }
+
+        /**
+         * @param  DateTimeInterface|DateInterval|int $delay
+         */
+        public function setAbsoluteTimeout($delay) {
+
+            $ts = $this->availableAt($delay);
+            $this->put('_expires_at', $ts);
+
+        }
+
+        public function absoluteTimeout() :int  {
+
+            return $this->get('_expires_at', 0);
+
+        }
+
+        public function userId() {
+
+            return $this->get('_user.id', 0);
+
+        }
+
+        private function hash(string $id)
+        {
+            if ( function_exists( 'hash' ) ) {
+                return hash( 'sha256', $id );
+            } else {
+                return sha1( $id );
+            }
+        }
+
+        public function getAllForUser() : array
+        {
+
+            $sessions = $this->getDriver()->getAllByUserId($this->userId());
+
+            $collection = [];
+
+            foreach ($sessions as $session) {
+
+                $payload = @unserialize($this->prepareForUnserialize($session->payload));
+
+                if ($payload !== false && ! is_null($payload) && is_array($payload)) {
+
+                    $session->payload = $payload;
+
+                } else{
+
+                    $session->payload = [];
+                }
+
+                $collection[] = $session;
+            }
+
+            return $collection;
+
+
+        }
+
+        public function isIdle(int $idle_timeout) : bool
+        {
+            return ($this->currentTime() - $this->lastActivity() ) > $idle_timeout;
+        }
+
+        public function hasRememberMeToken() :bool
+        {
+            return $this->get('auth.has_remember_token', false);
+        }
 
 
     }

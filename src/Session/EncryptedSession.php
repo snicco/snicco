@@ -9,6 +9,7 @@
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\ExceptionHandling\Exceptions\DecryptException;
     use WPEmerge\ExceptionHandling\Exceptions\EncryptException;
+    use WPEmerge\Session\Contracts\SessionDriver;
 
     class EncryptedSession extends Session
     {
@@ -18,11 +19,11 @@
         protected $encryptor;
 
 
-        public function __construct($name, SessionDriver $handler, EncryptorInterface $encryptor, int $strength = 24)
+        public function __construct( SessionDriver $handler, EncryptorInterface $encryptor, int $strength = 32)
         {
             $this->encryptor = $encryptor;
 
-            parent::__construct($name, $handler, $strength);
+            parent::__construct( $handler, $strength);
         }
 
         /**
@@ -32,7 +33,7 @@
          *
          * @return string
          */
-        protected function prepareForUnserialize( string $data) : string
+        protected function prepareForUnserialize( string $data ) : string
         {
             try {
                 return $this->encryptor->decrypt($data);

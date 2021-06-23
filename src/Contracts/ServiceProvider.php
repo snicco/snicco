@@ -9,10 +9,12 @@
     use Contracts\ContainerAdapter;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationConfig;
+    use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
 
@@ -79,7 +81,7 @@
 
             }
 
-            return OutputBufferRequired::class;
+            return IncomingAdminRequest::class;
 
         }
 
@@ -87,7 +89,8 @@
         protected function sessionEnabled() : bool
         {
 
-            return $this->config->get('session.enabled', false);
+            return $this->config->get('session.enabled', false)
+                && in_array(SessionServiceProvider::class, $this->config->get('providers', [] ));
 
         }
 

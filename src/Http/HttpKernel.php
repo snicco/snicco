@@ -86,7 +86,9 @@
             $this->always_with_global_middleware = true;
         }
 
-        public function withPriority( array $priority) {
+        public function withPriority(array $priority)
+        {
+
             $this->priority_map = array_merge($this->priority_map, $priority);
         }
 
@@ -96,6 +98,9 @@
             $response = $this->handle($request_event);
 
             if ($response instanceof NullResponse) {
+
+                // We might have a NullResponse where the headers got modified by middleware.
+                $this->emitter->emitHeaders($response);
 
                 return;
 
@@ -115,7 +120,7 @@
 
             $request = $request_event->request;
 
-            if ( $this->withMiddleware() ) {
+            if ($this->withMiddleware()) {
 
                 $request = $request->withAttribute('global_middleware_run', true);
 
@@ -137,7 +142,7 @@
 
             }
 
-            if ( ! $this->withMiddleware() ) {
+            if ( ! $this->withMiddleware()) {
 
                 return $this->core_middleware;
 
@@ -159,3 +164,8 @@
 
 
     }
+
+    // web:
+    // no route matches + ! must_match ==> let wordpress figure out what to do.
+    // no route matches + must_match ==> throw 404 and send response
+    //
