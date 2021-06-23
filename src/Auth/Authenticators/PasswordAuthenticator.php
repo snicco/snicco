@@ -4,35 +4,27 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth;
+    namespace WPEmerge\Auth\Authenticators;
 
     use WP_User;
     use WPEmerge\Auth\Contracts\Authenticator;
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Psr7\Response;
 
-    class PasswordAuthenticator implements Authenticator
+    class PasswordAuthenticator extends Authenticator
     {
 
-        /**
-         * @var string
-         */
-        private $failure_message;
+        protected $failure_message = 'Your password or username is not correct.';
 
-        public function __construct(string $failure_message = 'Your password or username is not correct.')
-        {
-            $this->failure_message = $failure_message;
-        }
-
-        public function authenticate(Request $request) : WP_User
+        public function attempt(Request $request, $next) : Response
         {
 
             if ( ! $request->has('pwd') || ! $request->has('log') ) {
 
-                throw new FailedAuthenticationException($this->failure_message, []);
+                throw new FailedAuthenticationException($this->failure_message, $request->only(['pwd', 'log']));
 
             }
-
 
             $password =  $request->input('pwd');
             $username = $request->input('log');
@@ -50,17 +42,9 @@
                     ]
                 );
 
-
             }
 
-            return $user;
-
-        }
-
-
-        public function view() : string
-        {
-            return 'auth-login-password';
+            return $this->loginResponse($user);
         }
 
     }
