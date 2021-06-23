@@ -16,6 +16,7 @@
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\MagicLink;
+    use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\IncomingWebRequest;
@@ -31,6 +32,39 @@
 
     class IntegrationTest extends WPTestCase
     {
+
+        protected $send_emails = [];
+
+        protected function catchMail () {
+
+            add_filter('pre_wp_mail', [$this, 'emailContents'], 10, 3);
+
+        }
+
+        public function emailContents($null, $attributes) : bool
+        {
+
+            $this->send_emails = $attributes;
+
+            return true;
+
+
+        }
+
+        protected function loadRoutes () {
+
+            $registrar = TestApp::resolve(RouteRegistrarInterface::class);
+            $registrar->loadApiRoutes(TestApp::config());
+            $registrar->loadStandardRoutes(TestApp::config());
+            $registrar->loadIntoRouter();
+
+        }
+
+        protected function loadApiRoutes () {
+            $registrar = TestApp::resolve(RouteRegistrarInterface::class);
+            $registrar->loadStandardRoutes(TestApp::config());
+            $registrar->loadIntoRouter();
+        }
 
         protected function assertViewContent(string $expected,  $actual) {
 
@@ -97,15 +131,26 @@
 
             Arr::set($config, 'routing.trailing_slash', false);
 
-            $app->boot($config);
+            if ( $with_exceptions ) {
 
-            $app->container()->instance(MagicLink::class, new TestMagicLink());
+                if ( null === Arr::get($config,'exception_handling.enabled', null ) ) {
+
+                    Arr::set($config, 'exception_handling.enabled', true);
+
+                }
+
+
+            }
+
+            $app->boot($config);
 
             if ( ! $with_exceptions ) {
 
                 $this->withoutExceptionHandling();
 
             }
+
+            // $app->container()->instance(MagicLink::class, new TestMagicLink());
 
             return $app;
 

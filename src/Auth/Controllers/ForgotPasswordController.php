@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Auth\Controllers;
 
+    use WP_User;
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Auth\Mail\ResetPasswordMail;
     use WPEmerge\Http\Controller;
@@ -18,7 +19,6 @@
     class ForgotPasswordController extends Controller
     {
 
-
         /**
          * @var int
          */
@@ -26,9 +26,7 @@
 
         public function __construct( int $expiration = 3000 )
         {
-
             $this->expiration = $expiration;
-
         }
 
         public function create(CsrfField $csrf) : ViewInterface
@@ -50,7 +48,7 @@
 
             $user = $this->getUser($login);
 
-            if ($user instanceof \WP_User) {
+            if ($user instanceof WP_User) {
 
                 $magic_link = $this->generateSignedUrl($user);
 
@@ -58,7 +56,6 @@
                      ->send(new ResetPasswordMail($user, $magic_link, $this->expiration));
 
             }
-
 
             return $this->response_factory->redirect()
                                     ->toRoute('auth.forgot.password')
@@ -76,7 +73,7 @@
 
         }
 
-        private function generateSignedUrl(\WP_User $user ) : string
+        private function generateSignedUrl(WP_User $user ) : string
         {
 
             return $this->url->signedRoute(

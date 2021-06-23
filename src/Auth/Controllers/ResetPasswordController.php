@@ -7,6 +7,7 @@
     namespace WPEmerge\Auth\Controllers;
 
     use Carbon\Carbon;
+    use WP_User;
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
@@ -37,13 +38,9 @@
         public function create(Request $request, CsrfField $csrf_field)
         {
 
-            $id = $request->input('id');
-
             $response = $this->response_factory->view('auth-parent', [
                 'view' => 'auth-password-reset',
                 'view_factory' => $this->view_factory,
-                'user_id' => $id,
-                'signature' => $request->query('signature', ''),
                 'post_to' => $request->fullPath(),
                 'csrf_field' => $csrf_field->asHtml(),
             ])->withHeader('Referrer-Policy', 'strict-origin');
@@ -58,20 +55,18 @@
 
             $user = $this->getUser($request);
 
-            if ( ! $user instanceof \WP_User) {
+            if ( ! $user instanceof WP_User) {
 
                 return $this->redirectBackFailure($request);
 
             }
 
-            $rules = $this->rules !== []
-                ? $this->rules
-                : [
-                    'password' => v::noWhitespace()->length(12, 64),
-                    '*password_confirmation' => [
-                        v::sameAs('password'), 'The provided passwords do not match',
-                    ]
-                ];
+            $rules = array_merge($this->rules, [
+                'password' => v::noWhitespace()->length(12, 64),
+                '*password_confirmation' => [
+                    v::sameAs('password'), 'The provided passwords do not match',
+                ]
+            ]);
 
             $validated = $request->validate($rules);
 
@@ -90,15 +85,14 @@
                                           ->to($request->session()->getPreviousUrl(wp_login_url()))
                                           ->withErrors(['failure' => 'We could not reset your password.']);
 
-
         }
 
-        private function getUser(Request $request)
+        private function getUser(Request $request) : ?WP_User
         {
 
-            $user = get_user_by('id', (int) $request->input('id', 0));
+            $user = get_user_by('id', (int) $request->query('id', 0));
 
-            return $user->ID === 0 ? null : $user;
+            return (! $user || $user->ID === 0 ) ? null : $user;
 
 
         }
