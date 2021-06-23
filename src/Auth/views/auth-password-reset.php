@@ -3,8 +3,11 @@
 
     declare(strict_types = 1);
 
-    /** @var \Illuminate\Support\ViewErrorBag $errors */
-    /** @var \WPEmerge\Session\Session $session */
+    /** @var ViewErrorBag $errors */
+    /** @var Session $session */
+
+    use Illuminate\Support\ViewErrorBag;
+    use WPEmerge\Session\Session;
 
 ?>
 
@@ -43,8 +46,6 @@
 
 
         <?= $csrf_field ?>
-        <input name="id" type="text" hidden value="<?= esc_attr($user_id) ?>">
-        <input name="signature" type="text" hidden value="<?= esc_attr($signature) ?>">
 
         <div class="field">
             <label for="" class="label">Password</label>

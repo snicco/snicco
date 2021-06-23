@@ -35,6 +35,7 @@
            parent::__construct($status, $message_for_humans, $previous, $code);
 
            $this->errors = $errors;
+
        }
 
        public function setMessageBag(MessageBag $message_bag, string $name = 'default') {
@@ -51,9 +52,7 @@
 
         public function messages() : MessageBag
         {
-
             return $this->messages;
-
         }
 
         public function namedBag () {

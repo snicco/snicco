@@ -22,7 +22,7 @@
 
             $psr17Factory = new Psr17Factory();
 
-            $request = new TestRequest($psr17Factory->createServerRequest($method, $url));
+            $request = new TestRequest($psr17Factory->createServerRequest($method, $url, ['REQUEST_METHOD' => $method]));
             return $request->withAttribute('_wp_admin_folder', 'wp-admin');
 
         }
