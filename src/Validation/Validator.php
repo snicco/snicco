@@ -299,8 +299,6 @@
 
         }
 
-
-
         private function updateGlobalTemplates(RespectValidationError $e, $name, $input)
         {
 
