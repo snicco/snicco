@@ -38,7 +38,17 @@
 
        }
 
-       public function setMessageBag(MessageBag $message_bag, string $name = 'default') {
+        public static function withMessages(array $messages) : ValidationException
+        {
+            $bag = new MessageBag($messages);
+            $e = new static($messages);
+            $e->setMessageBag($bag);
+
+            return $e;
+
+        }
+
+        public function setMessageBag(MessageBag $message_bag, string $name = 'default') {
 
             $this->messages = $message_bag;
             $this->message_bag_name = $name;

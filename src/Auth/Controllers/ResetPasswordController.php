@@ -7,6 +7,7 @@
     namespace WPEmerge\Auth\Controllers;
 
     use Carbon\Carbon;
+    use Closure;
     use WP_User;
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Http\Controller;
@@ -15,8 +16,10 @@
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\CsrfField;
+    use WPEmerge\Validation\Exceptions\ValidationException;
     use WPEmerge\View\ViewFactory;
     use Respect\Validation\Validator as v;
+    use ZxcvbnPhp\Zxcvbn;
 
     class ResetPasswordController extends Controller
     {
@@ -27,6 +30,8 @@
         protected $success_message;
 
         protected $rules = [];
+
+        protected $min_strength = 3;
 
         public function __construct(string $success_message = null)
         {
@@ -65,10 +70,12 @@
                 'password' => v::noWhitespace()->length(12, 64),
                 '*password_confirmation' => [
                     v::sameAs('password'), 'The provided passwords do not match',
-                ]
+                ],
             ]);
 
             $validated = $request->validate($rules);
+
+            $this->checkPasswordStrength($validated, $user);
 
             reset_password($user, $validated['password']);
 
@@ -92,8 +99,53 @@
 
             $user = get_user_by('id', (int) $request->query('id', 0));
 
-            return (! $user || $user->ID === 0 ) ? null : $user;
+            return ( ! $user || $user->ID === 0) ? null : $user;
 
+
+        }
+
+        private function checkPasswordStrength(array $validated, WP_User $user)
+        {
+
+            $user_data = [
+                $user->user_login,
+                $user->user_email,
+            ];
+
+            $password_evaluator = new Zxcvbn();
+            $result = $password_evaluator->passwordStrength($validated['password'], $user_data);
+
+            if ($result['score'] < $this->min_strength) {
+
+
+                $messages = $this->provideMessages($result);
+
+                throw ValidationException::withMessages($messages);
+
+            }
+
+        }
+
+        protected function provideMessages(array $result) : array
+        {
+
+            $messages = [
+                'password' => [
+                    'Your password is too weak and can be easily guessed by a computer.',
+                ],
+            ];
+
+            if (isset($result['feedback']['warning'])) {
+
+                $messages['reason'][] = trim($result['feedback']['warning'], '.') . '.';
+
+            }
+
+            foreach ($result['feedback']['suggestions'] ?? [] as $suggestion) {
+                $messages['suggestions'][] = $suggestion;
+            }
+
+            return $messages;
 
         }
 

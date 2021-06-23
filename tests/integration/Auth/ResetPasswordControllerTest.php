@@ -204,6 +204,33 @@
         }
 
         /** @test */
+        public function weak_passwords_throw_an_exception () {
+
+            $this->newTestApp($this->config, true);
+
+            $this->loadRoutes();
+            $calvin = $this->newAdmin();
+
+            $request = $this->postRequest($calvin->ID, ['secret_csrf_name' => 'secret_csrf_value'], [
+                'password' => str_repeat('a', 12),
+                'password_confirmation' => str_repeat('a', 12),
+            ]);
+
+            TestApp::session()->setPreviousUrl($request->path());
+
+            $this->assertOutput('', $request);
+            HeaderStack::assertHas('Location', $request->path());
+            HeaderStack::assertHasStatusCode(302);
+
+            $errors = TestApp::session()->errors();
+
+            $this->assertTrue($errors->has('password'));
+            $this->assertTrue($errors->has('reason'));
+            $this->assertTrue($errors->has('suggestions'));
+
+        }
+
+        /** @test */
         public function a_password_can_be_reset () {
 
             $this->newTestApp($this->config, true);
@@ -213,10 +240,9 @@
             $old_pass = $calvin->user_pass;
 
             $request = $this->postRequest($calvin->ID, ['secret_csrf_name' => 'secret_csrf_value'], [
-                'password' => $pw = str_repeat('a', 12),
-                'password_confirmation' => str_repeat('a', 12),
+                'password' => $pw = 'asdasdcvqwe23442as$asd21!',
+                'password_confirmation' => $pw,
             ]);
-
 
             $this->assertOutput('', $request);
             HeaderStack::assertHas('Location', $request->path());
@@ -227,8 +253,10 @@
             $new_pass = $calvin->user_pass;
 
             $this->assertNotSame($old_pass, $new_pass);
-
             $this->assertTrue(wp_check_password($pw, $new_pass));
+
         }
+
+
 
     }

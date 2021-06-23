@@ -36,7 +36,8 @@
     "nyholm/psr7-server": "^1.0-stable",
     "psr/log": "1.1.4",
     "psr/http-server-middleware": "1.0.1",
-    "symfony/finder": "^5.0-stable"
+    "symfony/finder": "^5.0-stable",
+    "roots/wp-password-bcrypt": "dev-master"
   },
   "require-dev": {
     "opis/closure": "3.6.2",
