@@ -42,7 +42,8 @@
                                               'view' => 'auth-login-password',
                                               'allow_remember' => $this->allowRememberMe(),
                                               'is_interim_login' => $this->request->boolean('interim-login'),
-                                              'forgot_password' => $this->url->toRoute('auth.forgot.password'),
+                                              'allow_password_reset' => AUTH_ALLOW_PW_RESETS,
+                                              'forgot_password_url' => $this->url->toRoute('auth.forgot.password'),
                                               'post_url' => $this->url->toRoute('auth.login'),
                                           ]
                                       );
