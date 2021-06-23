@@ -161,11 +161,21 @@
 
             }
 
-            $request = $this->request->withSession($session = new Session('cookie', new ArraySessionDriver(10)));
+            $request = $this->request->withSession($session = new Session( new ArraySessionDriver(10)));
 
             $request = $request->withMethod('POST');
 
             $this->assertSame($session, $request->session());
+
+        }
+
+        public function testHasSession () {
+
+            $this->assertFalse($this->request->hasSession());
+
+            $request = $this->request->withSession(new Session(new ArraySessionDriver(10)));
+
+            $this->assertTrue($request->hasSession());
 
         }
 

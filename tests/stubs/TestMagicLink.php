@@ -49,4 +49,8 @@
             return true;
         }
 
+        public function getStored() : array
+        {
+            return $this->links;
+        }
     }

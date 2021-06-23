@@ -17,41 +17,76 @@
 
 ?>
 
-<p id="form-heading">
-    This page is part of the secure area of the application!
-</p>
-<p> You need to confirm your access before you can proceed.</p>
 
-<hr>
-
-<p>Enter your email to receive a confirmation
-    email and click the link to confirm access this page.</p>
-
-<form id="send" class="form" action="<?= esc_attr($post_url) ?>" method="POST">
-
+<div class="box">
 
     <?php if ($invalid_email) : ?>
 
-        <p class='error message'> <?= $errors->first('email') ?> </p>
+        <div class="notification is-danger is-light">
+            <p class="is-size-5">
+                <?= $errors->first('email') ?>
+            </p>
+        </div>
+
+    <?php elseif($email_failed) : ?>
+
+        <div class="notification is-danger is-light">
+            <p class="is-size-5">
+                Error: The email could not be sent. Please try again.
+            </p>
+        </div>
+
+    <?php else : ?>
+
+        <div class="notification is-info is-light">
+            <p class="is-size-5">
+                This page is part of the secure area of the application!
+            </p>
+            <p class="is-size-5 mt-2">
+                You need to confirm your access before you can proceed.
+            </p>
+        </div>
+
+        <p class="is-size-6">
+            Enter your email to receive a confirmation
+            email and click the link to confirm access this page.
+        </p>
 
     <?php endif; ?>
 
-    <?php if ($email_failed) : ?>
+    <form id="send" class="mt-4" action="<?= esc_attr($post_url) ?>" method="POST">
 
-        <p class='error message'> Error: The email could not be sent. Please try again. </p>
+        <div class="field">
 
-    <?php endif; ?>
+            <label for="" class="label">Your Account Email</label>
+            <div class="control has-icons-left is-size-6">
+                <input
+                        name="email"
+                        type="text"
+                        placeholder="e.g. bobsmith@gmail.com"
+                        value="<?= esc_attr($old_email) ?>"
+                        class="input is-normal <?= $errors->count() ? 'is-danger' : '' ?>"
+                        required
+                        size="20"
+                >
 
-    <div class="form-group">
-        <input type="email" name="email" id="email"
+                <span class="icon is-small is-left">
+                     <i class="fa fa-envelope"> </i>
+                </span>
+            </div>
+        </div>
 
-               placeholder="Your Account Email"
-               value="<?= esc_attr($old_email) ?>"
-               required
-               class="<?= $invalid_email ? 'error' : '' ?>"
+        <?= $csrf_field ?>
+        <button
+                id="login_button"
+                type="submit"
+                class="button"
         >
-    </div>
-    <?= $csrf_field ?>
-    <button type="submit" class="submit"> <?= $email_failed ? 'Try again' : 'Send Confirmation Email'; ?></button>
+            <?= $email_failed ? 'Try again' : 'Send Confirmation Email'; ?>
 
-</form>
+        </button>
+
+    </form>
+</div>
+
+

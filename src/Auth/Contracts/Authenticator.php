@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth;
+    namespace WPEmerge\Auth\Contracts;
 
     use WP_User;
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;

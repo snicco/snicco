@@ -13,6 +13,8 @@
     trait InteractsWithSessionDriver
     {
 
+        use HashesSessionIds;
+
         private function getSession() : Session
         {
 
@@ -27,7 +29,7 @@
         {
 
             $driver = $this->getSession()->getDriver();
-            $driver->write($this->testSessionId(), serialize([
+            $driver->write($this->hashedSessionId(), serialize([
                 'auth' => [
                     'confirm' => [
                         'until' => $carbon->getTimestamp(),
@@ -40,7 +42,7 @@
         private function writeToDriver(array $attributes)
         {
             $driver = $this->getSession()->getDriver();
-            $driver->write($this->testSessionId(), serialize($attributes));
+            $driver->write($this->hashedSessionId(), serialize($attributes));
 
         }
 
@@ -56,7 +58,7 @@
 
         private function withSessionCookie( Request $request) {
 
-            $cookie = 'wp_mvc_session='.$this->testSessionId();
+            $cookie = 'wp_mvc_session='.$this->getSessionId();
 
             return $request->withAddedHeader('Cookie', $cookie);
 

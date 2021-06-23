@@ -7,6 +7,7 @@
     namespace WPEmerge\Auth;
 
     use WP_User;
+    use WPEmerge\Auth\Contracts\Authenticator;
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
     use WPEmerge\Http\Psr7\Request;
 
@@ -31,6 +32,7 @@
                 throw new FailedAuthenticationException($this->failure_message, []);
 
             }
+
 
             $password =  $request->input('pwd');
             $username = $request->input('log');

@@ -7,6 +7,7 @@
     namespace WPEmerge\Routing;
 
     use Symfony\Component\Finder\Finder;
+    use Tests\stubs\TestMagicLink;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Contracts\RouteMatcher;
@@ -72,7 +73,7 @@
 
             $this->bindRouteUrlGenerator();
 
-            $this->bindDatabaseMagicLink();
+            $this->bindMagicLink();
 
             $this->bindUrlGenerator();
 
@@ -208,7 +209,6 @@
             $this->container->singleton(UrlGenerator::class, function () {
 
 
-
                 $generator = new UrlGenerator(
                     $this->container->make(RouteUrlGenerator::class),
                     $this->container->make(MagicLink::class),
@@ -252,9 +252,14 @@
             });
         }
 
-        private function bindDatabaseMagicLink()
+        private function bindMagicLink()
         {
+
             $this->container->singleton(MagicLink::class, function () {
+
+                if ( $this->app->isRunningUnitTest() ) {
+                    return new TestMagicLink();
+                }
 
                 $magic_link = new DatabaseMagicLink('magic_links' );
                 $magic_link->setAppKey($this->appKey());
@@ -263,7 +268,6 @@
 
             });
         }
-
 
 
     }

@@ -128,7 +128,8 @@
 
         }
 
-        public function validateWithBag( string $named_bag, ?array $input = null) {
+        public function validateWithBag( string $named_bag, ?array $input = null) : array
+        {
 
             $this->message_bag_name = $named_bag;
 
@@ -168,7 +169,7 @@
 
             foreach ($messages as $message) {
 
-                $this->message_bag->add($key, $message);
+                $this->message_bag->add(ltrim($key,'*'), $message);
 
             }
 
@@ -298,8 +299,6 @@
 
         }
 
-
-
         private function updateGlobalTemplates(RespectValidationError $e, $name, $input)
         {
 
@@ -338,13 +337,6 @@
             }
 
             return str_replace($name, $replacement, $message);
-
-        }
-
-        private function readable($input) : string
-        {
-
-            return trim(stringify($input), '"');
 
         }
 

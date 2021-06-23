@@ -9,6 +9,7 @@
     use Illuminate\Support\Carbon;
     use Mockery;
     use Tests\helpers\CreatePsr17Factories;
+    use Tests\helpers\TravelsTime;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
@@ -18,9 +19,11 @@
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Drivers\DatabaseSessionDriver;
 
+    /** @todo test for getting all session for a user */
     class DatabaseSessionDriverTest extends IntegrationTest
     {
 
+        use TravelsTime;
 
         /**
          * @var wpdb
@@ -38,7 +41,7 @@
             global $wpdb;
             $this->db = $wpdb;
             $this->createTables();
-            Carbon::setTestNow();
+            $this->backToPresent();
 
         }
 
@@ -46,14 +49,13 @@
         {
 
             $this->dropTables();
-            Carbon::setTestNow();
+            $this->backToPresent();
             parent::tearDown();
 
         }
 
         private function newDataBaseSessionHandler(int $lifetime = 10) : DatabaseSessionDriver
         {
-
             return new DatabaseSessionDriver($this->db, 'sessions', $lifetime);
 
         }
@@ -98,25 +100,24 @@
 
             $handler->write('foo', 'bar');
 
-            Carbon::setTestNow(Carbon::now()->addMinutes(5)->addSecond());
-            $this->assertSame('', $handler->read('foo'));
+           $this->travelIntoFuture(6);
+           $this->assertSame('', $handler->read('foo'));
 
         }
 
         /** @test */
         public function testIsValid () {
 
-            $handler = $this->newDataBaseSessionHandler(5);
+            $handler = $this->newDataBaseSessionHandler(50);
 
             $handler->write('foo', 'bar');
 
             $this->assertFalse($handler->isValid('bar'));
 
-            $this->travelIntoFuture(299);
+            $this->travelIntoFuture(49);
             $this->assertTrue($handler->isValid('foo'));
 
-
-            $this->travelIntoFuture(300);
+            $this->travelIntoFuture(1);
             $this->assertFalse($handler->isValid('foo'));
 
         }
@@ -141,7 +142,7 @@
 
             $handler->write('foo', 'bar');
 
-            Carbon::setTestNow(Carbon::now()->addMinutes(5));
+            $this->travelIntoFuture(5);
             $this->assertSame('bar', $handler->read('foo'));
 
         }
@@ -236,29 +237,27 @@
         {
 
 
-            $handler = $this->newDataBaseSessionHandler(10);
+            $handler = $this->newDataBaseSessionHandler(5);
 
             $handler->write('foo', 'bar');
 
             // 300s = 5 min
-            $this->assertTrue($handler->gc(300));
+            $this->assertTrue($handler->gc(5));
             $this->assertSame('bar', $handler->read('foo'));
 
-            // $this->travelIntoFuture(2);
-            // $handler->write('bar', 'baz');
+            $this->travelIntoFuture(1);
+            $handler->write('bar', 'baz');
 
+            $this->travelIntoFuture(5);
 
-            $this->travelIntoFuture(400);
-            $this->assertTrue($handler->gc(300));
-
+            $this->assertTrue($handler->gc(6));
 
             // first session is expired
             $this->assertSame('', $handler->read('foo'));
 
-            // second session is valid by two seconds.
-            // $this->assertSame('baz', $handler->read('bar'));
+            // second session is valid by one seconds.
+            $this->assertSame('baz', $handler->read('bar'));
 
-            $this->resetCarbon();
 
 
         }
@@ -302,17 +301,6 @@
             return (string) $this->db->get_var("SELECT user_agent FROM wp_sessions WHERE id = '{$id}'");
         }
 
-        private function resetCarbon () {
 
-             Carbon::setTestNow();
-
-        }
-
-        private function travelIntoFuture(int $seconds) {
-
-            $this->resetCarbon();
-            Carbon::setTestNow( Carbon::now()->addSeconds($seconds) );
-
-        }
 
     }

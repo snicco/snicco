@@ -8,6 +8,7 @@
 
     use Mockery;
     use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\HashesSessionIds;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
     use Tests\IntegrationTest;
     use Tests\stubs\HeaderStack;
@@ -26,6 +27,7 @@
 
         use CreateDefaultWpApiMocks;
         use InteractsWithWordpress;
+        use HashesSessionIds;
 
         /**
          * @var UrlGenerator
@@ -162,7 +164,7 @@
 
             $session = TestApp::session();
             $array_handler = $session->getDriver();
-            $array_handler->write($this->testSessionId(), serialize(['foo' => 'bar']));
+            $array_handler->write($this->hashedSessionId(), serialize(['foo' => 'bar']));
 
             $url = $this->url->signedRoute('auth.logout', ['user_id' => $calvin->ID, 'query' => ['redirect_to' => '/foo']], 300, true);
             $request = TestRequest::fromFullUrl('GET', $url);
@@ -183,7 +185,7 @@
             HeaderStack::assertContains('Set-Cookie', $id_after_login);
 
             // Data is not in the handler anymore
-            $data = unserialize($array_handler->read($id_after_login));
+            $data = unserialize($array_handler->read($this->hash($id_after_login)));
             $this->assertNotContains('bar', $data);
 
             // The old session is gone.

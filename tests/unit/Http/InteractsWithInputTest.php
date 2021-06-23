@@ -7,8 +7,10 @@
     namespace Tests\unit\Http;
 
     use Respect\Validation\Validator as v;
+    use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Session;
@@ -17,6 +19,7 @@
 
     class InteractsWithInputTest extends UnitTest
     {
+
 
         /**
          * @var Request
@@ -293,7 +296,8 @@
         public function testOld()
         {
 
-            $session = new Session('cookie', New ArraySessionDriver(10));
+            $session = new Session( new ArraySessionDriver(10));
+            WP::shouldReceive('userId')->andReturn(1)->byDefault();
             $session->start('a');
             $session->flashInput(['foo' => 'bar', 'bar' => 'baz']);
             $session->save();
@@ -303,6 +307,8 @@
             $this->assertSame('bar', $request->old('foo'));
             $this->assertSame('default', $request->old('bogus', 'default'));
 
+            WP::reset();
+            \Mockery::close();
 
 
         }

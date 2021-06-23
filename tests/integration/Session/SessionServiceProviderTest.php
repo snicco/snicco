@@ -16,13 +16,15 @@
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Auth\Controllers\AuthConfirmationController;
+    use WPEmerge\Session\Contracts\SessionManagerInterface;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Session\EncryptedSession;
     use WPEmerge\Session\Middleware\ShareSessionWithView;
-    use WPEmerge\Session\SessionDriver;
+    use WPEmerge\Session\Contracts\SessionDriver;
+    use WPEmerge\Session\SessionManager;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Session\Session;
-    use WPEmerge\Session\Middleware\SessionMiddleware;
+    use WPEmerge\Session\Middleware\StartSessionMiddleware;
 
     class SessionServiceProviderTest extends IntegrationTest
     {
@@ -73,7 +75,7 @@
 
             $global = TestApp::config('middleware.groups.global');
 
-            $this->assertNotContains(SessionMiddleware::class, $global);
+            $this->assertNotContains(StartSessionMiddleware::class, $global);
 
 
         }
@@ -127,6 +129,38 @@
             ]);
 
             $this->assertSame('sessions', TestApp::config('session.table'));
+
+        }
+
+        /** @test */
+        public function the_default_absolute_timeout_is_eight_hours () {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ],
+            ]);
+
+            $this->assertSame(28800, TestApp::config('session.lifetime'));
+
+        }
+
+        /** @test */
+        public function the_rotation_timeout_is_half_of_the_absolute_timeout_by_default () {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ],
+            ]);
+
+            $this->assertSame(14400, TestApp::config('session.rotate'));
 
         }
 
@@ -234,7 +268,7 @@
         }
 
         /** @test */
-        public function session_lifetime_is_set_to_120_minutes()
+        public function session_lifetime_is_set()
         {
 
             $this->newTestApp([
@@ -246,7 +280,7 @@
                 ],
             ]);
 
-            $this->assertSame(120, TestApp::config('session.lifetime'));
+            $this->assertSame(SessionManager::HOUR_IN_SEC * 8, TestApp::config('session.lifetime'));
 
         }
 
@@ -282,7 +316,7 @@
                 ],
             ]);
 
-            $driver = TestApp::resolve(SessionDriver::class);
+            $driver = TestApp::resolve(\WPEmerge\Session\Contracts\SessionDriver::class);
 
             $this->assertInstanceOf(\WPEmerge\Session\Drivers\DatabaseSessionDriver::class, $driver);
 
@@ -340,7 +374,7 @@
                 ],
             ]);
 
-            $this->assertContains(SessionMiddleware::class, TestApp::config('middleware.groups.global'));
+            $this->assertContains(StartSessionMiddleware::class, TestApp::config('middleware.groups.global'));
 
         }
 
@@ -434,7 +468,6 @@
 
         }
 
-
         /** @test */
         public function confirm_auth_controller_can_be_resolved()
         {
@@ -485,12 +518,27 @@
 
             $global_middleware = TestApp::config('middleware.groups.global');
 
-            $this->assertContains(SessionMiddleware::class, $global_middleware);
+            $this->assertContains(StartSessionMiddleware::class, $global_middleware);
             $this->assertContains(ShareSessionWithView::class, $global_middleware);
 
         }
 
+        /** @test */
+        public function the_session_manager_is_bound () {
 
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ],
+            ]);
+
+            $this->assertInstanceOf(SessionManager::class, TestApp::resolve(SessionManager::class));
+            $this->assertInstanceOf(SessionManager::class, TestApp::resolve(SessionManagerInterface::class));
+
+        }
 
 
 

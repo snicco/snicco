@@ -154,4 +154,9 @@
 
         }
 
+        public static function assertNoStatusCodeSent()
+        {
+            Assert::assertSame([], collect(self::$data)->pluck('status_code')->whereNotNull()->all(), 'status code header was sent unexpectedly.');
+        }
+
     }

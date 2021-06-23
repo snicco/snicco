@@ -123,7 +123,6 @@
 
         }
 
-
         /**
          * Convert all response cookies into an associate array of header values
          *

@@ -7,13 +7,18 @@
     namespace Tests\integration\Auth;
 
     use Illuminate\Support\Carbon;
+    use Illuminate\Support\Facades\Log;
+    use Tests\helpers\HashesSessionIds;
     use Tests\helpers\InteractsWithSessionDriver;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
     use Tests\IntegrationTest;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
+    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Auth\AuthServiceProvider;
+    use WPEmerge\Auth\Events\Logout;
+    use WPEmerge\Auth\Exceptions\TooManyFailedAuthConfirmationsException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Auth\Controllers\AuthConfirmationController;
@@ -26,6 +31,7 @@
 
         use InteractsWithWordpress;
         use InteractsWithSessionDriver;
+        use HashesSessionIds;
 
         /**
          * @var array;
@@ -191,6 +197,7 @@
             ]);
             $this->login($calvin);
             $this->newTestApp($this->config());
+            ApplicationEvent::fake([Logout::class]);
             $this->registerAndRunApiRoutes();
 
             $this->writeToDriver([
@@ -205,24 +212,37 @@
             $post_request = $this->postRequest('bogus@web.de', $csrf);
             $post_request = $this->withSessionCookie($post_request);
 
+            $session = $this->getSession();
+            $session->setLastActivity(time());
+
             // email failed but user is still logged in
             $this->assertOutput('', $post_request);
             HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', '/auth/confirm');
             HeaderStack::reset();
             $this->assertUserLoggedIn($calvin);
+            ApplicationEvent::assertNotDispatched(Logout::class);
 
             $this->getSession()->put('csrf', $csrf);
+
             $post_request = $this->postRequest('bogus@web.de', $csrf);
             $post_request = $this->withSessionCookie($post_request);
 
-            // this failed attempt will log the user out.
-            $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertHas('Location', '/login?redirect_to=%2Fauth%2Fconfirm');
+            try {
+                // this failed attempt will log the user out.
+                $this->runKernel( $post_request);
+                $this->fail('exception not throw');
+            }
+            catch (TooManyFailedAuthConfirmationsException $e ) {
+
+                ApplicationEvent::assertDispatched(Logout::class);
+                $this->assertUserLoggedOut();
+
+            }
+
             HeaderStack::reset();
 
-            $this->assertUserLoggedOut();
+
 
         }
 
@@ -234,6 +254,7 @@
             $this->login($calvin);
 
             $this->newTestApp($this->config());
+            ApplicationEvent::fake([Logout::class]);
             $this->registerAndRunApiRoutes();
 
             $this->writeToDriver([
@@ -243,21 +264,28 @@
                         'attempts' => 3
                     ]
                 ],
-                'foo' => 'bar'
+                'foo' => 'bar',
+                '_last_activity' => time()
             ]);
 
-            $this->assertNotSame('', $this->readFromDriver($this->testSessionId()));
+            $this->assertNotSame('', $this->readFromDriver($this->hashedSessionId()));
 
             $post_request = $this->withSessionCookie($this->postRequest('bogus@web.de', $csrf));
 
-            $this->assertOutput('', $post_request);
-            HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertHas('Location', '/login?redirect_to=%2Fauth%2Fconfirm');
+            try {
 
+                $this->runKernel( $post_request);
+                $this->fail('No exception thrown.');
 
-            $this->assertSame('', $this->readFromDriver($this->testSessionId()));
+            } catch (TooManyFailedAuthConfirmationsException $e ) {
+
+                $this->assertSame('', $this->readFromDriver($this->testSessionId()));
+                ApplicationEvent::assertDispatched(Logout::class);
+
+            }
 
             $this->logout($calvin);
+
 
         }
 
@@ -681,6 +709,7 @@
 
             $session = $this->getSession();
             $session->put('auth.confirm.until', Carbon::now()->addMinutes(30)->getTimestamp());
+            $session->setLastActivity(time());
 
             $get_request = $this->getRequest();
 
@@ -706,6 +735,8 @@
 
             $session = $this->getSession();
             $session->put('auth.confirm.until', Carbon::now()->addMinutes(30)->getTimestamp());
+            $session->setLastActivity(time());
+
 
             $this->getSession()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 

@@ -18,11 +18,12 @@
     class WpLoginRedirectManager
     {
 
-        public function redirect(Request $request, Redirector $redirector, ResponseEmitter $emitter) {
+        public function redirect(Request $request, Redirector $redirector, ResponseEmitter $emitter)
+        {
 
-            if ( $request->loadingScript() === 'wp-login.php' && $request->isGet() ) {
+            if ($request->loadingScript() === 'wp-login.php' && $request->isGet()) {
 
-                $response = $redirector->toRoute('login', 301);
+                $response = $redirector->toRoute('auth.login', 301);
 
                 $emitter->emit($response);
 
@@ -33,30 +34,34 @@
         }
 
         /** NOTE: Wordpress always returns these as absolute urls so lets stay compatible */
-        public function loginUrl (GenerateLoginUrl $event, UrlGenerator $url) : string
+        public function loginUrl(GenerateLoginUrl $event, UrlGenerator $url) : string
         {
 
             $query = [];
 
-            if ( $event->redirect_to !== '' ) {
-                $query['redirect_to'] = $event->redirect_to;
+            $query['redirect_to'] = $event->redirect_to !== ''
+                ? $event->redirect_to
+                : $url->toRoute('dashboard');
+
+            if ($event->force_reauth) {
+                $query['reauth'] = 'yes';
             }
 
             return $url->toRoute('auth.login', [
-                'query' => $query
-            ], true , true );
+                'query' => $query,
+            ], true, true);
 
         }
 
         /** NOTE: Wordpress always returns these as absolute urls so lets stay compatible */
-        public function logoutUrl (GenerateLogoutUrl $event, UrlGenerator $url) : string
+        public function logoutUrl(GenerateLogoutUrl $event, UrlGenerator $url) : string
         {
 
-                $redirect = $event->redirect_to;
+            $redirect = $event->redirect_to;
 
-                $url = $url->signedLogout(WP::userId(), $redirect );
+            $url = $url->signedLogout(WP::userId(), $redirect, 3600, true );
 
-                return esc_html( $url );
+            return esc_html($url);
 
         }
 
