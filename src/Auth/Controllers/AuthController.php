@@ -8,7 +8,6 @@
 
     use WPEmerge\Auth\Events\Login;
     use WPEmerge\Auth\Events\Logout;
-    use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Auth\Contracts\Authenticator;
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
@@ -19,7 +18,6 @@
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Session\CsrfField;
-    use WPEmerge\Session\Events\SessionRegenerated;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
 
