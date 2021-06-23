@@ -26,6 +26,14 @@
         background: #f1f1f1;
     }
 
+    .button.submit {
+        background: #2271b1;
+        border-color: #2271b1;
+        display: inline-block;
+        width: 100%;
+        color: white;
+    }
+
     #login_button {
 
         background: #2271b1;

@@ -45,10 +45,7 @@
 
             return $this
                 ->subject($title = sprintf( __( '[%s] Password Reset' ), WP::siteName() ) )
-                ->view('password-forgot-email')
-                ->with([
-                    'magic_link' => $this->magic_link,
-                ]);
+                ->view('password-forgot-email');
 
         }
 

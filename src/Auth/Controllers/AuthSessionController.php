@@ -7,10 +7,11 @@
     namespace WPEmerge\Auth\Controllers;
 
     use Closure;
-    use SniccoAdapter\BaseContainerAdapter;
+    use WP_User;
     use WPEmerge\Auth\Events\Login;
     use WPEmerge\Auth\Events\Logout;
     use WPEmerge\Auth\Responses\LoginResponse;
+    use WPEmerge\Auth\Responses\SuccesfullLoginResponse;
     use WPEmerge\Auth\Responses\LoginViewResponse;
     use WPEmerge\Contracts\ResponsableInterface;
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
@@ -18,12 +19,11 @@
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Session\Session;
 
-    class AuthController extends Controller
+    class AuthSessionController extends Controller
     {
 
         /**
@@ -31,19 +31,13 @@
          */
         private $auth_config;
 
-        /**
-         * @var LoginViewResponse
-         */
-        private $login_view_response;
-
-        public function __construct(LoginViewResponse $login_view_response, array $auth_config)
+        public function __construct(array $auth_config)
         {
 
             $this->auth_config = $auth_config;
-            $this->login_view_response = $login_view_response;
         }
 
-        public function create(Request $request) : ResponsableInterface
+        public function create(Request $request, LoginViewResponse $view_response) : ResponsableInterface
         {
 
             if ($request->boolean('reauth')) {
@@ -52,68 +46,33 @@
 
             }
 
-            $redirect_to = $request->input('redirect_to', admin_url());
+            $redirect_to = $request->input('redirect_to', $this->url->toRoute('dashboard'));
 
             $request->session()->setIntendedUrl($redirect_to);
 
-            return $this->login_view_response->withRequest($request)
-                                             ->withAuthConfig($this->auth_config);
+            return $view_response->withRequest($request)
+                                 ->withAuthConfig($this->auth_config);
 
         }
 
-        public function store(Request $request, Pipeline $auth_pipeline) : Response
+        public function store(Request $request, Pipeline $auth_pipeline, LoginResponse $login_response)
         {
-
 
             $response = $auth_pipeline->send($request)
                                       ->through($this->auth_config['through'])
                                       ->then($this->handleAuthFailure());
 
-
-            if ( $response instanceof LoginResponse ) {
+            if ($response instanceof SuccesfullLoginResponse) {
 
                 $remember = $response->rememberUser() && $this->auth_config['remember'] === true;
+                $user = $response->authenticatedUser();
 
-                Login::dispatch([$response->authenticatedUser(), $remember]);
-
+                return $this->handleLogin($user, $remember, $login_response, $request);
 
             }
 
             return $response;
 
-
-            try {
-
-                $user = $this->authenticator->authenticate($request);
-
-            }
-            catch (FailedAuthenticationException $e) {
-
-                return $this->response_factory->redirect()
-                                              ->refresh()
-                                              ->withErrors(['message' => $e->getMessage()])
-                                              ->withInput($e->oldInput());
-
-            }
-
-            $remember = $request->boolean('remember_me');
-
-            $session = $request->session();
-            $session->put('auth.has_remember_token', $remember);
-            $session->regenerate();
-
-            Login::dispatch([$user, $remember]);
-
-            if ($request->boolean('is_interim_login')) {
-
-                $request->session()->flash('interim_login_success', true);
-                $html = $this->view_factory->render('auth-parent');
-
-                return $this->response_factory->html($html);
-
-            }
-
-            return $this->redirectToDashboard($request);
 
         }
 
@@ -136,26 +95,34 @@
 
         }
 
-        private function redirectToDashboard(Request $request) : RedirectResponse
-        {
-
-            if ( ! $request->has('redirect_to')) {
-
-
-                return $this->response_factory->redirect()->toRoute('dashboard');
-
-            }
-
-            return $this->response_factory->redirect()->to($request->input('redirect_to'));
-
-
-        }
-
         private function resetAuthSession(Session $session)
         {
 
             $session->invalidate();
             wp_clear_auth_cookie();
+
+
+        }
+
+        private function handleLogin(WP_User $user, bool $remember, LoginResponse $login_response, Request $request)
+        {
+
+            $session = $request->session();
+            $session->put('auth.has_remember_token', $remember);
+            $session->regenerate();
+
+            Login::dispatch([$user, $remember]);
+
+            // We are inside an iframe and just need to close it with js.
+            if ($request->boolean('is_interim_login')) {
+
+                $request->session()->flash('interim_login_success', true);
+
+                return $this->response_factory->view('auth-parent');
+
+            }
+
+            return $login_response->forRequest($request)->forUser($user);
 
 
         }

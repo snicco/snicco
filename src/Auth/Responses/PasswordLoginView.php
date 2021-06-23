@@ -11,7 +11,7 @@
     use WPEmerge\Support\Arr;
     use WPEmerge\View\ViewFactory;
 
-    class PasswordLoginResponse extends LoginViewResponse
+    class PasswordLoginView extends LoginViewResponse
     {
 
         private $view = 'auth-parent';

@@ -7,8 +7,7 @@
     namespace WPEmerge\Auth;
 
     use WPEmerge\Auth\Authenticators\PasswordAuthenticator;
-    use WPEmerge\Auth\Contracts\Authenticatorrr;
-    use WPEmerge\Auth\Controllers\AuthController;
+    use WPEmerge\Auth\Controllers\AuthSessionController;
     use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Auth\Events\GenerateLoginUrl;
     use WPEmerge\Auth\Events\GenerateLogoutUrl;
@@ -19,8 +18,10 @@
     use WPEmerge\Auth\Middleware\AuthenticateSession;
     use WPEmerge\Auth\Middleware\AuthUnconfirmed;
     use WPEmerge\Auth\Middleware\ConfirmAuth;
+    use WPEmerge\Auth\Responses\LoginResponse;
     use WPEmerge\Auth\Responses\LoginViewResponse;
-    use WPEmerge\Auth\Responses\PasswordLoginResponse;
+    use WPEmerge\Auth\Responses\PasswordLoginView;
+    use WPEmerge\Auth\Responses\RedirectToDashboardResponse;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\WpInit;
     use WPEmerge\Http\Psr7\Request;
@@ -43,8 +44,6 @@
 
             $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views');
 
-            $this->bindAuthenticator();
-
             $this->bindEvents();
 
             $this->bindControllers();
@@ -57,7 +56,7 @@
 
             $this->bindLoginViewResponse();
 
-
+            $this->bindLoginResponse();
 
         }
 
@@ -125,17 +124,6 @@
 
         }
 
-        private function bindAuthenticator()
-        {
-
-            $this->container->singleton(Authenticatorrr::class, function () {
-
-                return new PasswordAuthenticatorrr();
-
-            });
-
-        }
-
         private function bindControllers()
         {
 
@@ -147,10 +135,9 @@
 
             });
 
-            $this->container->singleton(AuthController::class, function () {
+            $this->container->singleton(AuthSessionController::class, function () {
 
-                return new AuthController(
-                    $this->container->make(LoginViewResponse::class),
+                return new AuthSessionController(
                     $this->config->get('auth')
                 );
 
@@ -265,7 +252,9 @@
 
             $this->container->singleton(LoginViewResponse::class, function () {
 
-                return $this->container->make(PasswordLoginResponse::class);
+                $response = $this->config->get('auth.view', PasswordLoginView::class);
+
+                return $this->container->make($response);
 
             });
         }
@@ -273,11 +262,28 @@
         private function bindAuthPipeline()
         {
 
-            $this->config->set('auth.through', [
+            $pipeline = $this->config->get('auth.through', []);
 
-                PasswordAuthenticator::class
+            if ( ! count($pipeline) ) {
 
-            ]);
+                $this->config->set('auth.through', [
+
+                    PasswordAuthenticator::class
+
+                ]);
+
+            }
+
+
+        }
+
+        private function bindLoginResponse()
+        {
+            $this->container->singleton(LoginResponse::class, function () {
+
+                return $this->container->make(RedirectToDashboardResponse::class);
+
+            });
         }
 
     }

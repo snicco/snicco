@@ -20,31 +20,42 @@
         public function attempt(Request $request, $next) : Response
         {
 
-            if ( ! $request->has('pwd') || ! $request->has('log') ) {
+            if ( ! $request->has('pwd') || ! $request->has('log')) {
 
-                throw new FailedAuthenticationException($this->failure_message, $request->only(['pwd', 'log']));
+                throw new FailedAuthenticationException($this->failure_message, $request->only([
+                    'pwd', 'log',
+                ]));
 
             }
 
-            $password =  $request->input('pwd');
+            $password = $request->input('pwd');
             $username = $request->input('log');
+            $remember = $request->boolean('remember_me');
 
-            $user = wp_authenticate_username_password(null, $username, $password );
+            $user = wp_authenticate_username_password(null, $username, $password);
 
-            if ( ! $user instanceof WP_User ) {
+            if ( ! $user instanceof WP_User) {
 
-                do_action( 'wp_login_failed', $username, $user );
-
-                throw new FailedAuthenticationException($this->failure_message,
-                    [
-                        'username' => $username,
-                        'remember_me' => $request->input('remember_me', 'off')
-                    ]
-                );
+                $this->fail($username, $remember, $user);
 
             }
 
-            return $this->loginResponse($user);
+            return $this->login($user, $remember);
+
+        }
+
+        private function fail($username, $remember, \WP_Error $error)
+        {
+
+            do_action('wp_login_failed', $username, $error);
+
+            throw new FailedAuthenticationException($this->failure_message,
+                [
+                    'username' => $username,
+                    'remember_me' => $remember,
+                ]
+            );
+
         }
 
     }

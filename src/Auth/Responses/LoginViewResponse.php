@@ -12,9 +12,10 @@
 
     abstract class LoginViewResponse implements ResponsableInterface
     {
-
+        /** @var Request */
         protected $request;
 
+        /** @var array */
         protected $auth_config;
 
         public function withRequest(Request $request) : LoginViewResponse
