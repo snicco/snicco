@@ -88,11 +88,12 @@
 
         public function withoutCookie(string $name, string $path = '/') : Response
         {
+
             if ( ! $this->cookies instanceof Cookies) {
                 $this->cookies = new Cookies();
             }
 
-            $cookie = new Cookie($name, 'deleted');
+            $cookie = new Cookie($name, 'delete');
             $cookie->expires(1)->path($path);
 
             $this->cookies->add($cookie);

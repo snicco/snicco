@@ -14,7 +14,7 @@
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Auth\AuthServiceProvider;
     use WPEmerge\Auth\AuthSessionManager;
-    use WPEmerge\Auth\Controllers\AuthController;
+    use WPEmerge\Auth\Controllers\AuthSessionController;
     use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Auth\Controllers\ForgotPasswordController;
     use WPEmerge\Auth\Controllers\ResetPasswordController;
@@ -136,7 +136,7 @@
             $this->assertInstanceOf(ConfirmAuthMagicLinkController::class, TestApp::resolve(ConfirmAuthMagicLinkController::class));
             $this->assertInstanceOf(ForgotPasswordController::class, TestApp::resolve(ForgotPasswordController::class));
             $this->assertInstanceOf(ResetPasswordController::class, TestApp::resolve(ResetPasswordController::class));
-            $this->assertInstanceOf(AuthController::class, TestApp::resolve(AuthController::class));
+            $this->assertInstanceOf(AuthSessionController::class, TestApp::resolve(AuthSessionController::class));
 
         }
 

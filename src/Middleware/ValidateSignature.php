@@ -9,11 +9,9 @@
     use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\Cookie;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
-    use WPEmerge\Http\Psr7\Response;
 
     class ValidateSignature extends Middleware
     {
@@ -63,7 +61,6 @@
             throw new InvalidSignatureException();
 
         }
-
 
 
     }
