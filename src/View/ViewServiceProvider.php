@@ -39,7 +39,12 @@
 		}
 
 		public function bootstrap() : void {
-			// Nothing to bootstrap.
+
+		    $context = $this->container->make(GlobalContext::class);
+		    $context->add('__view', function () {
+		        return $this->container->make(ViewFactory::class);
+            });
+
 		}
 
         private function bindGlobalContext()

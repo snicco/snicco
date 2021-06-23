@@ -17,6 +17,7 @@
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Auth\Controllers\AuthConfirmationController;
     use WPEmerge\Session\Contracts\SessionManagerInterface;
+    use WPEmerge\Session\CsrfField;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Session\EncryptedSession;
     use WPEmerge\Session\Middleware\ShareSessionWithView;
@@ -25,6 +26,7 @@
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Session\Session;
     use WPEmerge\Session\Middleware\StartSessionMiddleware;
+    use WPEmerge\View\GlobalContext;
 
     class SessionServiceProviderTest extends IntegrationTest
     {
@@ -540,6 +542,23 @@
 
         }
 
+        /** @test */
+        public function the_csrf_field_is_bound_to_the_global_view_context () {
+
+            $this->newTestApp([
+                'session' => [
+                    'enabled' => true,
+                ],
+                'providers' => [
+                    SessionServiceProvider::class,
+                ],
+            ]);
+
+            $context = TestApp::resolve(GlobalContext::class)->get();
+
+            $this->assertInstanceOf(CsrfField::class, $context['csrf']);
+
+        }
 
 
     }

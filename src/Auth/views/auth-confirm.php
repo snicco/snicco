@@ -7,7 +7,7 @@
     use WPEmerge\Session\Session;
     use WPEmerge\View\ViewFactory;
 
-    /** @var ViewFactory $view_factory */
+    /** @var ViewFactory $__view */
     /** @var int $jail */
 
     /** @var Session $session */
@@ -21,13 +21,13 @@
 
 <?php if ($jail):
 
-    echo $view_factory->render('auth-confirm-jail');
+    echo $__view->render('auth-confirm-jail');
 
     ?>
 
 <?php elseif ($session->has('auth.confirm.email.count')):
 
-    echo $view_factory->render('auth-confirm-send',
+    echo $__view->render('auth-confirm-send',
         [
             'invalid_email' => $invalid_email,
             'old_email' => $old_email,
@@ -38,7 +38,7 @@
 
 <?php else :
 
-    echo $view_factory->render('auth-confirm-request-email',
+    echo $__view->render('auth-confirm-request-email',
         [
             'invalid_email' => $invalid_email,
             'old_email' => $old_email,

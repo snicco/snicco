@@ -37,7 +37,7 @@
         <input type="hidden" name="is_interim_login" value="1">
     <?php endif; ?>
     <!--CSRF field-->
-    <?= $csrf_field ?>
+    <?= $csrf->asHtml() ?>
     <!--Redirect to-->
     <input type="hidden" name="redirect_to"
            value="<?= esc_attr($redirect_to) ?>">

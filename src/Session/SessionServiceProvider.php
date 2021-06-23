@@ -22,7 +22,7 @@
     use WPEmerge\Session\Middleware\ShareSessionWithView;
     use WPEmerge\Session\Middleware\StartSessionMiddleware;
     use WPEmerge\Support\Arr;
-
+    use WPEmerge\View\GlobalContext;
 
     class SessionServiceProvider extends ServiceProvider
     {
@@ -51,6 +51,7 @@
 
         function bootstrap() : void
         {
+            $this->bindViewContext();
 
         }
 
@@ -263,6 +264,14 @@
 
             });
 
+        }
+
+        private function bindViewContext()
+        {
+            /** @var GlobalContext $global_context */
+            $global_context = $this->container->make(GlobalContext::class);
+
+            $global_context->add('csrf', $this->container->make(CsrfField::class));
         }
 
 

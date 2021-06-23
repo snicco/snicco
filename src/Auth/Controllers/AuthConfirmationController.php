@@ -49,7 +49,7 @@
 
         }
 
-        public function create(CsrfField $csrf_field) : ViewInterface
+        public function create() : ViewInterface
         {
 
             $post_url = $this->url->toRoute('auth.confirm.send', [], true, false);
@@ -58,11 +58,9 @@
                               ->with(
                                   [
                                       'post_url' => $post_url,
-                                      'csrf_field' => $csrf_field->asHtml(),
                                       'jail' => $this->isUserInJail() ? $this->getJailTime() : false,
                                       'last_recipient' => $this->lastRecipient(),
                                       'view' => 'auth-confirm',
-                                      'view_factory' => $this->view_factory
                                   ]
                               );
 

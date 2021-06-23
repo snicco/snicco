@@ -3,8 +3,10 @@
 
     declare(strict_types = 1);
 
-    /** @var \WPEmerge\View\ViewFactory $view_factory */
+    /** @var ViewFactory $view_factory */
     /** @var string $view */
+
+    use WPEmerge\View\ViewFactory;
 
 ?>
 
@@ -85,7 +87,7 @@
                 <div class="columns is-centered">
                     <div class="column is-5-tablet is-4-desktop is-3-widescreen">
 
-                        <?= $view_factory->render($view) ?>
+                        <?= $__view->render($view) ?>
 
                     </div>
 

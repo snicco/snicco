@@ -48,7 +48,7 @@
         </button>
     </div>
 
-    <?= $csrf_field ?>
+    <?= $csrf->asHtml() ?>
 
 </form>
 

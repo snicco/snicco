@@ -42,7 +42,7 @@
             $this->auth_config = $auth_config;
         }
 
-        public function create(Request $request, CsrfField $csrf) : ViewInterface
+        public function create(Request $request) : ViewInterface
         {
 
             if ($request->boolean('reauth')) {
@@ -55,10 +55,8 @@
 
             return $this->view_factory->make('auth-parent')
                                       ->with([
-                                          'csrf_field' => $csrf->asHtml(),
                                           'post_url' => WP::loginUrl(),
                                           'redirect_to' => $request->input('redirect_to', admin_url()),
-                                          'view_factory' => $this->view_factory,
                                           'view' => $view,
                                           'title' => 'Log-in | '.WP::siteName(),
                                           'forgot_password' => $this->url->toRoute('auth.forgot.password'),
