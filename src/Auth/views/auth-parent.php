@@ -26,6 +26,14 @@
         background: #f1f1f1;
     }
 
+    .underlined {
+        text-decoration: underline;
+    }
+
+    .hide {
+        display: none !important;
+    }
+
     .button.submit {
         background: #2271b1;
         border-color: #2271b1;

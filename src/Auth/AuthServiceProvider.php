@@ -6,7 +6,11 @@
 
     namespace WPEmerge\Auth;
 
+    use WPEmerge\Auth\Authenticators\MagicLinkAuthenticator;
     use WPEmerge\Auth\Authenticators\PasswordAuthenticator;
+    use WPEmerge\Auth\Authenticators\RedirectIf2FaAuthenticable;
+    use WPEmerge\Auth\Authenticators\TwoFactorAuthenticator;
+    use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
     use WPEmerge\Auth\Controllers\AuthSessionController;
     use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Auth\Events\GenerateLoginUrl;
@@ -18,10 +22,12 @@
     use WPEmerge\Auth\Middleware\AuthenticateSession;
     use WPEmerge\Auth\Middleware\AuthUnconfirmed;
     use WPEmerge\Auth\Middleware\ConfirmAuth;
+    use WPEmerge\Auth\Responses\Google2FaChallengeResponse;
     use WPEmerge\Auth\Responses\LoginResponse;
     use WPEmerge\Auth\Responses\LoginViewResponse;
     use WPEmerge\Auth\Responses\PasswordLoginView;
     use WPEmerge\Auth\Responses\RedirectToDashboardResponse;
+    use WPEmerge\Auth\Responses\TwoFactorChallengeResponse;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\WpInit;
     use WPEmerge\Http\Psr7\Request;
@@ -57,6 +63,10 @@
             $this->bindLoginViewResponse();
 
             $this->bindLoginResponse();
+
+            $this->bindTwoFactorProvider();
+
+            $this->bindTwoFactorChallengeResponse();
 
         }
 
@@ -164,6 +174,7 @@
             ]);
 
             define('AUTH_ALLOW_PW_RESETS', $this->config->get('auth.features.password-resets', true));
+            define('AUTH_ENABLE_TWO_FACTOR', $this->config->get('auth.features.two-factor-authentication', false));
 
         }
 
@@ -268,11 +279,17 @@
 
             if ( ! count($pipeline) ) {
 
-                $this->config->set('auth.through', [
+                $primary = ( $this->config->get('auth.authenticator', 'password') === 'email' )
+                    ? MagicLinkAuthenticator::class
+                    : PasswordAuthenticator::class;
 
-                    PasswordAuthenticator::class
+                $this->config->set('auth.through', array_filter([
 
-                ]);
+                    AUTH_ENABLE_TWO_FACTOR ? TwoFactorAuthenticator::class : null,
+                    AUTH_ENABLE_TWO_FACTOR ? RedirectIf2FaAuthenticable::class : null,
+                    $primary
+
+                ]));
 
             }
 
@@ -286,6 +303,26 @@
                 return $this->container->make(RedirectToDashboardResponse::class);
 
             });
+        }
+
+        private function bindTwoFactorProvider()
+        {
+            $this->container->singleton(TwoFactorAuthenticationProvider::class, function () {
+
+                return $this->container->make(Google2FaAuthenticationProvider::class);
+
+            });
+        }
+
+        private function bindTwoFactorChallengeResponse()
+        {
+
+            $this->container->singleton(TwoFactorChallengeResponse::class, function () {
+
+                return $this->container->make(Google2FaChallengeResponse::class);
+
+            });
+
         }
 
     }

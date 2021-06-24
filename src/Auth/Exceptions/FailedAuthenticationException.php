@@ -40,7 +40,6 @@
 
         public function redirectToRoute(string $route)
         {
-
             $this->route = $route;
         }
 

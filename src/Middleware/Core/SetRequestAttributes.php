@@ -19,7 +19,7 @@
         {
 
             $request = $request
-                ->withUser(WP::userId())
+                ->withUser(WP::currentUser())
                 ->withAttribute('_wp_admin_folder', WP::wpAdminFolder());
 
             return $next($request);

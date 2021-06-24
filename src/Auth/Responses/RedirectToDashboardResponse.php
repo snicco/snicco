@@ -30,9 +30,7 @@
 
         private function redirectToDashboard() : RedirectResponse
         {
-
             return $this->redirector->intended($this->request);
-
         }
 
     }

@@ -67,7 +67,7 @@
 
                 }
 
-                if ( $id === $request->user() ) {
+                if ( $id === $request->userId() ) {
 
                     continue;
 

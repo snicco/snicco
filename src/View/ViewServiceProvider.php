@@ -10,7 +10,8 @@
     use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewFactoryInterface;
-	use WPEmerge\Factories\ViewComposerFactory;
+    use WPEmerge\Facade\WP;
+    use WPEmerge\Factories\ViewComposerFactory;
 
 
 	class ViewServiceProvider extends ServiceProvider {
