@@ -7,7 +7,10 @@
     use WPEmerge\Auth\Controllers\AuthConfirmationController;
     use WPEmerge\Auth\Controllers\ForgotPasswordController;
     use WPEmerge\Auth\Controllers\LoginMagicLinkController;
+    use WPEmerge\Auth\Controllers\RecoveryCodeController;
     use WPEmerge\Auth\Controllers\ResetPasswordController;
+    use WPEmerge\Auth\Controllers\TwoFactorAuthSessionController;
+    use WPEmerge\Auth\TwoFactorAuthPreferenceController;
     use WPEmerge\Routing\Router;
     use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
 
@@ -75,6 +78,26 @@
                ->middleware(['auth', 'signed:absolute', 'auth.unconfirmed'])
                ->name('confirm.store');
 
+        if ( AUTH_ENABLE_TWO_FACTOR ) {
+
+            $router->post('two-factor/preferences', [TwoFactorAuthPreferenceController::class, 'store'])
+                   ->middleware(['auth', 'auth.confirmed'])
+                   ->name('two-factor.preferences');
+
+            $router->delete('two-factor/preferences', [TwoFactorAuthPreferenceController::class, 'destroy'])
+                   ->middleware(['auth', 'auth.confirmed']);
+
+            $router->get('two-factor/challenge', [TwoFactorAuthSessionController::class, 'create'])->name('2fa.challenge');
+
+            // Does this need csrf protection?
+            $router->get('two-factor/recovery-codes', [RecoveryCodeController::class, 'index'])
+                   ->middleware(['auth', 'auth.confirmed', 'signed'])
+                   ->name('2fa.recovery-codes');
+
+            $router->put('two-factor/recovery-codes', [RecoveryCodeController::class, 'update'])
+                   ->middleware(['auth', 'auth.confirmed', 'csrf:persist']);
+
+        }
 
     });
 

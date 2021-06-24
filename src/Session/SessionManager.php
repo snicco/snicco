@@ -151,7 +151,7 @@
         public function migrateAfterLogin(Request $request, ResponseEmitter $emitter)
         {
 
-            $this->start($request, $request->user());
+            $this->start($request, $request->userId());
 
             $this->session->regenerate();
             $this->session->save();
@@ -176,7 +176,7 @@
         public function invalidateAfterLogout(Request $request, ResponseEmitter $emitter)
         {
 
-            $this->start($request, $request->user());
+            $this->start($request, $request->userId());
 
             $this->session->invalidate();
             $this->session->save();

@@ -6,6 +6,8 @@
 
     namespace WPEmerge\Auth\Traits;
 
+    use WP_User;
+
     trait ResolvesUser
     {
 
@@ -16,6 +18,12 @@
             return $is_email
                 ? get_user_by('email', trim(wp_unslash($login)))
                 : get_user_by('login', trim(wp_unslash($login)));
+
+        }
+
+        public function getUserById(int $id) : WP_User {
+
+            return get_user_by('id', $id);
 
         }
 

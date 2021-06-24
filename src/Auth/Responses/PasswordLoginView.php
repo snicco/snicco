@@ -37,15 +37,17 @@
 
             return $this->view_factory->make($this->view)
                                       ->with(
-                                          [
+                                         array_filter( [
                                               'title' => 'Log-in | '.WP::siteName(),
                                               'view' => 'auth-login-password',
                                               'allow_remember' => $this->allowRememberMe(),
                                               'is_interim_login' => $this->request->boolean('interim-login'),
                                               'allow_password_reset' => AUTH_ALLOW_PW_RESETS,
-                                              'forgot_password_url' => $this->url->toRoute('auth.forgot.password'),
+                                              'forgot_password_url' => AUTH_ALLOW_PW_RESETS ? $this->url->toRoute('auth.forgot.password') : null,
                                               'post_url' => $this->url->toRoute('auth.login'),
-                                          ]
+                                          ] , function ($value) {
+                                             return $value !== null;
+                                         })
                                       );
         }
 

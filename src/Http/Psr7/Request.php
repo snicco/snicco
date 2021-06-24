@@ -8,6 +8,7 @@
 
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Message\UriInterface;
+    use WP_User;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Routing\RoutingResult;
@@ -92,10 +93,10 @@
 
         }
 
-        public function withUser(int $user_id)
+        public function withUser(WP_User $user)
         {
-            return $this->withAttribute('_current_user_id', $user_id);
-
+            $new = $this->withAttribute('_current_user', $user);
+            return $new->withAttribute('_current_user_id', $user->ID);
         }
 
         public function withValidator(Validator $v)
@@ -116,17 +117,15 @@
 
         }
 
-        /**
-         *
-         * @return |int
-         */
-        public function user()
+        public function user() :WP_User {
+
+            return $this->getAttribute('_current_user');
+
+        }
+
+        public function userId() : int
         {
-
-            $user_id = $this->getAttribute('_current_user_id', 0);
-
-            return $user_id;
-
+            return $this->getAttribute('_current_user_id', 0);
         }
 
         public function userAgent() {
