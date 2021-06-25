@@ -26,18 +26,29 @@
 
             $session = $request->session();
 
-
-
             if ( ! $session->hasValidAuthConfirmToken() ) {
 
-                $session->setIntendedUrl($request->fullUrl());
-
+                $this->setIntendedUrl($request, $session);
 
                 return $this->response_factory->redirect()->toRoute('auth.confirm.show');
 
             }
 
             return $next($request);
+
+        }
+
+        private function setIntendedUrl(Request $request, Session $session) {
+
+            if ( $request->isGet() && ! $request->isAjax()) {
+
+                $session->setIntendedUrl($request->fullUrl());
+
+                return;
+
+            }
+
+            $session->setIntendedUrl($session->getPreviousUrl());
 
         }
 

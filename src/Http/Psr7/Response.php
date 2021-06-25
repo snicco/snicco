@@ -88,6 +88,7 @@
 
         public function withoutCookie(string $name, string $path = '/') : Response
         {
+
             if ( ! $this->cookies instanceof Cookies) {
                 $this->cookies = new Cookies();
             }

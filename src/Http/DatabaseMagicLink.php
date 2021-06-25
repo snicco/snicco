@@ -66,6 +66,7 @@
             $hash = md5($signature);
 
             $this->wpdb->delete($this->table, ['signature' => $hash], ['%s']);
+
         }
 
         public function store(string $signature, int $expires) : bool

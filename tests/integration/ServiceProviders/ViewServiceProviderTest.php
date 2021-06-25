@@ -27,14 +27,15 @@
 
             /** @var GlobalContext $context */
             $context = TestApp::resolve(GlobalContext::class);
-
             $this->assertInstanceOf(GlobalContext::class, $context);
 
-            $this->assertSame([], $context->get());
-
+            $this->assertArrayNotHasKey('foo', $context->get());
             TestApp::globals('foo', 'bar');
 
-            $this->assertSame(['foo' => 'bar'], $context->get());
+            $context = TestApp::resolve(GlobalContext::class);
+
+            $this->assertArrayHasKey('foo', $context->get());
+
 
         }
 

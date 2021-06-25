@@ -8,6 +8,7 @@
 
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Message\UriInterface;
+    use WP_User;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Routing\RoutingResult;
@@ -15,6 +16,7 @@
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
     use WPEmerge\Support\VariableBag;
+    use WPEmerge\Traits\ValidatesWordpressNonces;
     use WPEmerge\Validation\Validator;
 
     class Request implements ServerRequestInterface
@@ -23,6 +25,8 @@
         use ImplementsPsr7Request;
         use InspectsRequest;
         use InteractsWithInput;
+        use ValidatesWordpressNonces;
+
 
         public function __construct(ServerRequestInterface $psr_request)
         {
@@ -95,7 +99,6 @@
         public function withUser(int $user_id)
         {
             return $this->withAttribute('_current_user_id', $user_id);
-
         }
 
         public function withValidator(Validator $v)
@@ -116,17 +119,23 @@
 
         }
 
-        /**
-         *
-         * @return |int
-         */
-        public function user()
+        public function user() :WP_User {
+
+            $user = $this->getAttribute('_current_user');
+
+            if ( ! $user instanceof WP_User ) {
+
+                $this->psr_request = $this->psr_request->withAttribute('_current_user', $user = WP::currentUser());
+
+                return $user;
+            }
+
+            return $user;
+        }
+
+        public function userId() : int
         {
-
-            $user_id = $this->getAttribute('_current_user_id', 0);
-
-            return $user_id;
-
+            return $this->getAttribute('_current_user_id', 0);
         }
 
         public function userAgent() {

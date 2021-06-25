@@ -6,8 +6,12 @@
 
     namespace WPEmerge\Auth;
 
-    use WPEmerge\Auth\Contracts\Authenticator;
-    use WPEmerge\Auth\Controllers\AuthController;
+    use WPEmerge\Auth\Authenticators\MagicLinkAuthenticator;
+    use WPEmerge\Auth\Authenticators\PasswordAuthenticator;
+    use WPEmerge\Auth\Authenticators\RedirectIf2FaAuthenticable;
+    use WPEmerge\Auth\Authenticators\TwoFactorAuthenticator;
+    use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use WPEmerge\Auth\Controllers\AuthSessionController;
     use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Auth\Events\GenerateLoginUrl;
     use WPEmerge\Auth\Events\GenerateLogoutUrl;
@@ -18,6 +22,14 @@
     use WPEmerge\Auth\Middleware\AuthenticateSession;
     use WPEmerge\Auth\Middleware\AuthUnconfirmed;
     use WPEmerge\Auth\Middleware\ConfirmAuth;
+    use WPEmerge\Auth\Responses\EmailRegistrationViewResponse;
+    use WPEmerge\Auth\Responses\Google2FaChallengeResponse;
+    use WPEmerge\Auth\Responses\LoginResponse;
+    use WPEmerge\Auth\Responses\LoginViewResponse;
+    use WPEmerge\Auth\Responses\PasswordLoginView;
+    use WPEmerge\Auth\Responses\RedirectToDashboardResponse;
+    use WPEmerge\Auth\Responses\RegistrationViewResponse;
+    use WPEmerge\Auth\Responses\TwoFactorChallengeResponse;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\WpInit;
     use WPEmerge\Http\Psr7\Request;
@@ -34,11 +46,11 @@
 
             $this->bindConfig();
 
+            $this->bindAuthPipeline();
+
             $this->extendRoutes(__DIR__.DIRECTORY_SEPARATOR.'routes');
 
             $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views');
-
-            $this->bindAuthenticator();
 
             $this->bindEvents();
 
@@ -49,6 +61,16 @@
             $this->bindAuthSessionManager();
 
             $this->bindMiddleware();
+
+            $this->bindLoginViewResponse();
+
+            $this->bindLoginResponse();
+
+            $this->bindTwoFactorProvider();
+
+            $this->bindTwoFactorChallengeResponse();
+
+            $this->bindRegistrationViewResponse();
 
         }
 
@@ -88,8 +110,8 @@
                     GenerateNewAuthCookie::class,
                 ],
                 SessionRegenerated::class => [
-                    RefreshAuthCookies::class
-                ]
+                    RefreshAuthCookies::class,
+                ],
             ]);
 
             $this->config->extend('events.mapped', [
@@ -116,17 +138,6 @@
 
         }
 
-        private function bindAuthenticator()
-        {
-
-            $this->container->singleton(Authenticator::class, function () {
-
-                return new PasswordAuthenticator();
-
-            });
-
-        }
-
         private function bindControllers()
         {
 
@@ -138,10 +149,9 @@
 
             });
 
-            $this->container->singleton(AuthController::class, function () {
+            $this->container->singleton(AuthSessionController::class, function () {
 
-                return new AuthController(
-                    $this->container->make(Authenticator::class),
+                return new AuthSessionController(
                     $this->config->get('auth')
                 );
 
@@ -166,6 +176,23 @@
                 'auth' => $this->config->get('auth.endpoint',),
 
             ]);
+
+            if ( ! defined('AUTH_ENABLE_PASSWORD_RESETS')) {
+
+                define('AUTH_ENABLE_PASSWORD_RESETS', $this->config->get('auth.features.password-resets', true));
+            }
+
+            if ( ! defined('AUTH_ENABLE_TWO_FACTOR') ) {
+
+                define('AUTH_ENABLE_TWO_FACTOR', $this->config->get('auth.features.two-factor-authentication', false));
+            }
+
+            if ( ! defined('AUTH_ENABLE_REGISTRATION')) {
+
+                define('AUTH_ENABLE_REGISTRATION', $this->config->get('auth.features.registration', false));
+
+            }
+
 
         }
 
@@ -249,6 +276,80 @@
             $this->config->extend('middleware.groups.global', [
                 AuthenticateSession::class,
             ]);
+        }
+
+        private function bindLoginViewResponse()
+        {
+
+            $this->container->singleton(LoginViewResponse::class, function () {
+
+                $response = $this->config->get('auth.view', PasswordLoginView::class);
+
+                return $this->container->make($response);
+
+            });
+        }
+
+        private function bindAuthPipeline()
+        {
+
+            $pipeline = $this->config->get('auth.through', []);
+
+            if ( ! count($pipeline) ) {
+
+                $primary = ( $this->config->get('auth.authenticator', 'password') === 'email' )
+                    ? MagicLinkAuthenticator::class
+                    : PasswordAuthenticator::class;
+
+                $this->config->set('auth.through', array_values(array_filter([
+
+                    AUTH_ENABLE_TWO_FACTOR ? TwoFactorAuthenticator::class : null,
+                    AUTH_ENABLE_TWO_FACTOR ? RedirectIf2FaAuthenticable::class : null,
+                    $primary
+
+                ])));
+
+            }
+
+
+        }
+
+        private function bindLoginResponse()
+        {
+            $this->container->singleton(LoginResponse::class, function () {
+
+                return $this->container->make(RedirectToDashboardResponse::class);
+
+            });
+        }
+
+        private function bindTwoFactorProvider()
+        {
+            $this->container->singleton(TwoFactorAuthenticationProvider::class, function () {
+
+                return $this->container->make(Google2FaAuthenticationProvider::class);
+
+            });
+        }
+
+        private function bindTwoFactorChallengeResponse()
+        {
+
+            $this->container->singleton(TwoFactorChallengeResponse::class, function () {
+
+                return $this->container->make(Google2FaChallengeResponse::class);
+
+            });
+
+        }
+
+        private function bindRegistrationViewResponse()
+        {
+             $this->container->singleton(RegistrationViewResponse::class, function () {
+
+                return $this->container->make(EmailRegistrationViewResponse::class);
+
+            });
         }
 
     }

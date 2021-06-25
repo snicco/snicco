@@ -51,6 +51,11 @@
 
         function bootstrap() : void
         {
+
+            if ( ! $this->config->get('session.enabled')) {
+                return;
+            }
+
             $this->bindViewContext();
 
         }

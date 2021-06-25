@@ -81,7 +81,6 @@
 
             if ( ! $this->canRequestAnotherEmail() ) {
 
-
                 return $this->response_factory->redirect()->refresh();
 
             }
