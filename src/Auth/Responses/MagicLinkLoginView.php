@@ -14,7 +14,7 @@
     class MagicLinkLoginView extends LoginViewResponse
     {
 
-        private $view = 'auth-login-email';
+        private $view = 'auth-login-via-email';
 
         /**
          * @var UrlGenerator
@@ -36,7 +36,7 @@
         public function toResponsable()
         {
 
-            return $this->view_factory->make('auth-parent')->with(array_filter([
+            return $this->view_factory->make('auth-layout')->with(array_filter([
                 'title' => 'Log in | '. WP::siteName(),
                 'view' => $this->view,
                 'post_to' => $this->url->toRoute('auth.login.create-magic-link'),

@@ -121,7 +121,7 @@
 
                 $request->session()->flash('interim_login_success', true);
 
-                return $this->response_factory->view('auth-parent');
+                return $this->response_factory->view('auth-layout');
 
             }
 

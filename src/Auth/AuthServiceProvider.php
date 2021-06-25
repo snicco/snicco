@@ -15,7 +15,6 @@
     use WPEmerge\Auth\Contracts\AuthConfirmation;
     use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
     use WPEmerge\Auth\Controllers\AuthSessionController;
-    use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Auth\Controllers\ConfirmedAuthSessionController;
     use WPEmerge\Auth\Events\GenerateLoginUrl;
     use WPEmerge\Auth\Events\GenerateLogoutUrl;
@@ -149,15 +148,6 @@
 
         private function bindControllers()
         {
-
-            $this->container->singleton(ConfirmAuthMagicLinkController::class, function () {
-
-                return new ConfirmAuthMagicLinkController(
-                    $this->config->get('auth.confirmation.duration')
-                );
-
-            });
-
 
             $this->container->singleton(ConfirmedAuthSessionController::class, function () {
                 return new ConfirmedAuthSessionController(

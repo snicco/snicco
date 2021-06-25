@@ -471,23 +471,6 @@
         }
 
         /** @test */
-        public function confirm_auth_controller_can_be_resolved()
-        {
-
-            $this->newTestApp([
-                'session' => [
-                    'enabled' => true,
-                ],
-                'providers' => [
-                    SessionServiceProvider::class,
-                ],
-            ]);
-
-            $this->assertInstanceOf(AuthConfirmationController::class, TestApp::resolve(AuthConfirmationController::class));
-
-        }
-
-        /** @test */
         public function middleware_aliases_are_bound()
         {
 

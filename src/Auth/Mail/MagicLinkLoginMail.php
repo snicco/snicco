@@ -47,7 +47,7 @@
 
             return $this
                 ->subject(sprintf(__('[%s] Login Link'), WP::siteName()))
-                ->view('magic-link-login');
+                ->view('magic-link-login-email');
 
         }
 
