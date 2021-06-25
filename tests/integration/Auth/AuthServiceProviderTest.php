@@ -12,14 +12,18 @@
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Auth\Authenticators\PasswordAuthenticator;
     use WPEmerge\Auth\AuthServiceProvider;
     use WPEmerge\Auth\AuthSessionManager;
-    use WPEmerge\Auth\Controllers\AuthController;
+    use WPEmerge\Auth\Controllers\AuthSessionController;
     use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
     use WPEmerge\Auth\Controllers\ForgotPasswordController;
     use WPEmerge\Auth\Controllers\ResetPasswordController;
     use WPEmerge\Auth\Middleware\AuthenticateSession;
-    use WPEmerge\Auth\PasswordAuthenticator;
+    use WPEmerge\Auth\Responses\LoginResponse;
+    use WPEmerge\Auth\Responses\LoginViewResponse;
+    use WPEmerge\Auth\Responses\PasswordLoginView;
+    use WPEmerge\Auth\Responses\RedirectToDashboardResponse;
     use WPEmerge\Auth\WpAuthSessionToken;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\Responses\RedirectResponse;
@@ -28,6 +32,7 @@
     use WPEmerge\Session\Events\NewLogout;
     use WPEmerge\Session\SessionManager;
     use WPEmerge\Session\SessionServiceProvider;
+    use WPEmerge\Support\Arr;
 
     class AuthServiceProviderTest extends IntegrationTest
     {
@@ -136,7 +141,7 @@
             $this->assertInstanceOf(ConfirmAuthMagicLinkController::class, TestApp::resolve(ConfirmAuthMagicLinkController::class));
             $this->assertInstanceOf(ForgotPasswordController::class, TestApp::resolve(ForgotPasswordController::class));
             $this->assertInstanceOf(ResetPasswordController::class, TestApp::resolve(ResetPasswordController::class));
-            $this->assertInstanceOf(AuthController::class, TestApp::resolve(AuthController::class));
+            $this->assertInstanceOf(AuthSessionController::class, TestApp::resolve(AuthSessionController::class));
 
         }
 
@@ -186,7 +191,7 @@
 
             $this->newTestApp($this->config);
 
-            $this->assertInstanceOf(PasswordAuthenticator::class, TestApp::resolve(\WPEmerge\Auth\Contracts\Authenticator::class));
+            $this->assertInstanceOf(PasswordAuthenticator::class, TestApp::resolve(PasswordAuthenticator::class));
 
         }
 
@@ -331,5 +336,57 @@
             $this->assertSame($lifetime, SessionManager::WEEK_IN_SEC);
 
         }
+
+        /** @test */
+        public function by_default_the_password_login_view_response_is_used () {
+
+            $this->newTestApp($this->config);
+
+            $this->assertInstanceOf(PasswordLoginView::class, TestApp::resolve(LoginViewResponse::class));
+
+        }
+
+        /** @test */
+        public function the_login_response_is_bound () {
+
+            $this->newTestApp($this->config);
+
+            $this->assertInstanceOf(RedirectToDashboardResponse::class, TestApp::resolve(LoginResponse::class));
+        }
+
+        /** @test */
+        public function the_auth_pipeline_uses_the_password_authenticator_by_default () {
+
+            $this->newTestApp($this->config);
+
+            $pipeline = TestApp::config('auth.through');
+
+            $this->assertEquals([PasswordAuthenticator::class], $pipeline);
+
+        }
+
+        /** @test */
+        public function a_custom_auth_pipeline_can_be_used () {
+
+            Arr::set($this->config, 'auth.through', ['foo', 'bar']);
+
+            $this->newTestApp($this->config);
+
+            $pipeline = TestApp::config('auth.through');
+
+            $this->assertSame(['foo', 'bar'], $pipeline);
+
+        }
+
+        /** @test */
+        public function password_resets_are_enabled_by_default () {
+
+            $this->newTestApp($this->config);
+
+            $this->assertTrue(AUTH_ENABLE_PASSWORD_RESETS);
+
+        }
+
+
 
     }

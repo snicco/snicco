@@ -32,15 +32,19 @@
         </div>
 
     <?php endif; ?>
+
     <!--Interim login-->
     <?php if ($is_interim_login) : ?>
         <input type="hidden" name="is_interim_login" value="1">
     <?php endif; ?>
+
     <!--CSRF field-->
     <?= $csrf->asHtml() ?>
+
     <!--Redirect to-->
-    <input type="hidden" name="redirect_to"
-           value="<?= esc_attr($redirect_to) ?>">
+<!--    <input type="hidden" name="redirect_to"-->
+<!--           value="--><?//= esc_attr($redirect_to) ?><!--">-->
+
     <!--Username-->
     <div class="field">
         <label for="" class="label">Username or email</label>
@@ -58,6 +62,7 @@
 
         </div>
     </div>
+
     <!--Password-->
     <div class="field">
         <label for="" class="label">Password</label>
@@ -70,6 +75,7 @@
                 </span>
         </div>
     </div>
+
     <!--Remember me-->
     <?php if ($allow_remember) : ?>
         <div class="field">
@@ -80,13 +86,22 @@
             </label>
         </div>
     <?php endif; ?>
+
     <!--    Submit Button -->
     <div class="field">
         <button id="login_button" class="button">
             Login
         </button>
     </div>
-    <a href="<?= esc_url($forgot_password) ?>" class="text-sm-left"> Forgot password?</a>
+    <?php if ($allow_password_reset) : ?>
+
+        <a href="<?= esc_url($forgot_password_url) ?>" class="text-sm-left underlined"> Forgot password?</a>
+
+    <?php endif; ?>
+
+
+    <a href="<?= esc_url($register_url) ?>" class="text-sm-right ml-4 underlined"> Register </a>
+
 </form>
 
 

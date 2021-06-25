@@ -169,6 +169,13 @@
             return $this->redirector;
         }
 
+        public function back() : RedirectResponse
+        {
+
+            return $this->redirect()->back();
+
+        }
+
         /** NOTE: no formatting is performed on the path. */
         public function permanentRedirectTo(string $path) : RedirectResponse
         {

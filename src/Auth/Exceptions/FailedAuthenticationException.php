@@ -7,6 +7,10 @@
     namespace WPEmerge\Auth\Exceptions;
 
     use Throwable;
+    use WP_Error;
+    use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Http\Responses\RedirectResponse;
 
     class FailedAuthenticationException extends \Exception
     {
@@ -16,17 +20,46 @@
          */
         private $old_input;
 
-        public function __construct($message, array $old_input, $code = 0, Throwable $previous = null)
-        {
+        /**
+         * @var string
+         */
+        private $route;
 
+        /**
+         * @var Request
+         */
+        private $request;
+
+
+        public function __construct($message, Request $request, ?array $old_input = null , $code = 0, Throwable $previous = null)
+        {
+            $this->request = $request;
+            $this->old_input = $old_input ?? $this->request->all();
             parent::__construct($message, $code, $previous);
-            $this->old_input = $old_input;
         }
 
-        public function oldInput() : array
+        public function redirectToRoute(string $route)
+        {
+            $this->route = $route;
+        }
+
+        public function render(ResponseFactory $response_factory) : RedirectResponse
         {
 
-            return $this->old_input;
+            $response = $response_factory->redirect();
+
+            if ($this->route) {
+
+                return $response->toRoute($this->route)
+                                ->withErrors(['message' => $this->getMessage()])
+                                ->withInput($this->old_input);
+
+            }
+
+            return $response_factory->redirect()
+                                    ->refresh()
+                                    ->withErrors(['message' => $this->getMessage()])
+                                    ->withInput($this->old_input);
         }
 
     }

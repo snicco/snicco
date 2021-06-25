@@ -7,6 +7,7 @@
     namespace WPEmerge\Auth\Controllers;
 
     use WP_User;
+    use WPEmerge\Auth\Traits\ResolvesUser;
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Auth\Mail\ResetPasswordMail;
     use WPEmerge\Http\Controller;
@@ -19,12 +20,14 @@
     class ForgotPasswordController extends Controller
     {
 
+        use ResolvesUser;
+
         /**
          * @var int
          */
         protected $expiration;
 
-        public function __construct( int $expiration = 3000 )
+        public function __construct( int $expiration = 300 )
         {
             $this->expiration = $expiration;
         }
@@ -46,7 +49,7 @@
 
             $login = $request->input('login');
 
-            $user = $this->getUser($login);
+            $user = $this->getUserByLogin($login);
 
             if ($user instanceof WP_User) {
 
@@ -60,16 +63,6 @@
             return $this->response_factory->redirect()
                                     ->toRoute('auth.forgot.password')
                                     ->with('_password_reset_processed', true);
-
-        }
-
-        private function getUser($login) {
-
-            $is_email = v::email()->validate($login);
-
-            return $is_email
-                ? get_user_by('email', trim(wp_unslash($login)))
-                : get_user_by('login', trim(wp_unslash($login)));
 
         }
 

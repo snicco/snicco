@@ -7,6 +7,7 @@
     namespace WPEmerge\Auth\Controllers;
 
     use WP_User;
+    use WPEmerge\Auth\Traits\ResolvesUser;
     use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Controller;
@@ -18,6 +19,8 @@
 
     class ConfirmAuthMagicLinkController extends Controller
     {
+
+        use ResolvesUser;
 
         /**
          * @var int|mixed
@@ -34,7 +37,7 @@
         public function store(Request $request, string $user_id) : RedirectResponse
         {
 
-            $user = get_user_by('ID', (int) $user_id);
+            $user = $this->getUserById((int)$user_id);
 
             if ( ! $user instanceof WP_User || $user->ID !== WP::currentUser()->ID ) {
 

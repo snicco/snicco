@@ -34,7 +34,7 @@
 
             $this->manager->collectGarbage();
 
-            $session = $this->manager->start($request, $request->user());
+            $session = $this->manager->start($request, $request->userId());
 
             return $this->handleStatefulRequest($request, $session, $next);
 
@@ -71,7 +71,7 @@
 
             }
 
-            if ($request->isGet() && ! $request->isAjax()) {
+            if ( $request->isGet() && ! $request->isAjax()) {
 
                 $session->setPreviousUrl($request->fullUrl());
 

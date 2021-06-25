@@ -37,7 +37,9 @@
     "psr/log": "1.1.4",
     "psr/http-server-middleware": "1.0.1",
     "symfony/finder": "^5.0-stable",
-    "roots/wp-password-bcrypt": "dev-master"
+    "roots/wp-password-bcrypt": "dev-master",
+    "bacon/bacon-qr-code": "^2.0",
+    "pragmarx/google2fa": "8.0.0"
   },
   "require-dev": {
     "opis/closure": "3.6.2",

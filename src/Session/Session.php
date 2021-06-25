@@ -617,5 +617,10 @@
             return $this->get('auth.has_remember_token', false);
         }
 
+        public function challengedUser() : int
+        {
+            return $this->get('2fa.challenged_user', 0);
+        }
+
 
     }
