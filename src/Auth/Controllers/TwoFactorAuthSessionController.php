@@ -21,7 +21,7 @@
 
             }
 
-            return $this->view_factory->make('auth-parent')->with([
+            return $this->view_factory->make('auth-layout')->with([
                 'view' => 'auth-two-factor-challenge',
                 'post_to' => $this->url->toLogin(),
             ]);

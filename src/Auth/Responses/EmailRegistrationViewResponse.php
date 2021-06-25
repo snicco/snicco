@@ -33,8 +33,8 @@
         public function toResponsable()
         {
 
-            return $this->view_factory->make('auth-parent')->with([
-                'view' => 'auth-registration-email',
+            return $this->view_factory->make('auth-layout')->with([
+                'view' => 'auth-registration',
                 'post_to' => $this->request->path()
             ]);
 

@@ -106,7 +106,7 @@
 
             }
 
-            return $this->response_factory->view('auth-parent', [
+            return $this->response_factory->view('auth-layout', [
                 'view' => 'auth-two-factor-challenge',
                 'post_to' => $request->path(),
             ]);

@@ -15,7 +15,7 @@
     class PasswordLoginView extends LoginViewResponse
     {
 
-        private $view = 'auth-parent';
+        private $view = 'auth-layout';
 
         /**
          * @var UrlGenerator
@@ -41,7 +41,7 @@
                                       ->with(
                                           array_filter([
                                               'title' => 'Log-in | '.WP::siteName(),
-                                              'view' => 'auth-login-password',
+                                              'view' => 'auth-login-via-password',
                                               'allow_remember' => $this->allowRememberMe(),
                                               'is_interim_login' => $this->request->boolean('interim-login'),
                                               'allow_password_reset' => AUTH_ENABLE_PASSWORD_RESETS,

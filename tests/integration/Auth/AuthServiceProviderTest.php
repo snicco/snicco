@@ -16,12 +16,13 @@
     use WPEmerge\Auth\AuthServiceProvider;
     use WPEmerge\Auth\AuthSessionManager;
     use WPEmerge\Auth\Controllers\AuthSessionController;
-    use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
+    use WPEmerge\Auth\Controllers\ConfirmedAuthSessionController;
     use WPEmerge\Auth\Controllers\ForgotPasswordController;
     use WPEmerge\Auth\Controllers\ResetPasswordController;
     use WPEmerge\Auth\Middleware\AuthenticateSession;
     use WPEmerge\Auth\Contracts\LoginResponse;
     use WPEmerge\Auth\Contracts\LoginViewResponse;
+    use WPEmerge\Auth\Responses\MagicLinkLoginView;
     use WPEmerge\Auth\Responses\PasswordLoginView;
     use WPEmerge\Auth\Responses\RedirectToDashboardResponse;
     use WPEmerge\Auth\WpAuthSessionToken;
@@ -138,10 +139,10 @@
                 ],
             ]);
 
-            $this->assertInstanceOf(ConfirmAuthMagicLinkController::class, TestApp::resolve(ConfirmAuthMagicLinkController::class));
             $this->assertInstanceOf(ForgotPasswordController::class, TestApp::resolve(ForgotPasswordController::class));
             $this->assertInstanceOf(ResetPasswordController::class, TestApp::resolve(ResetPasswordController::class));
             $this->assertInstanceOf(AuthSessionController::class, TestApp::resolve(AuthSessionController::class));
+            $this->assertInstanceOf(ConfirmedAuthSessionController::class, TestApp::resolve(ConfirmedAuthSessionController::class));
 
         }
 
@@ -352,6 +353,25 @@
             $this->newTestApp($this->config);
 
             $this->assertInstanceOf(RedirectToDashboardResponse::class, TestApp::resolve(LoginResponse::class));
+        }
+
+        /** @test */
+        public function the_login_view_response_is_bound () {
+
+            $this->newTestApp($this->config);
+
+            $this->assertInstanceOf(PasswordLoginView::class, TestApp::resolve(LoginViewResponse::class));
+
+        }
+
+        /** @test */
+        public function the_login_view_response_can_be_swapped_for_an_email_login_screen () {
+
+            Arr::set($this->config, 'auth.view', MagicLinkLoginView::class);
+            $this->newTestApp($this->config);
+
+            $this->assertInstanceOf(MagicLinkLoginView::class, TestApp::resolve(LoginViewResponse::class));
+
         }
 
         /** @test */

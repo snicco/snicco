@@ -101,7 +101,7 @@
         public function viewResponse(Request $request) : Response
         {
 
-            return $this->response->view('auth-parent', [
+            return $this->response->view('auth-layout', [
                 'view' => 'auth-confirm-via-email'
             ]);
 

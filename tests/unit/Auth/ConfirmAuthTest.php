@@ -10,7 +10,6 @@
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\TravelsTime;
     use Tests\MiddlewareTestCase;
-    use WPEmerge\Auth\Exceptions\TooManyFailedAuthConfirmationsException;
     use WPEmerge\Auth\Middleware\ConfirmAuth;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Delegate;
@@ -28,7 +27,7 @@
             parent::setUp();
             $this->backToPresent();
             $route = new Route(['GET'], '/auth/confirm', function () {});
-            $route->name('auth.confirm.show');
+            $route->name('auth.confirm');
             $this->routes->add($route);
         }
 
@@ -113,7 +112,7 @@
             $response = $this->runMiddleware($request);
 
             $this->assertStatusCode(302, $response);
-            $this->assertSame($request->fullUrl(), $s->getIntendedUrl());
+            $this->assertSame($request->fullPath(), $s->getIntendedUrl());
 
         }
 
