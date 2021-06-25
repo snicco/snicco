@@ -10,9 +10,9 @@
     use WP_User;
     use WPEmerge\Auth\Events\Login;
     use WPEmerge\Auth\Events\Logout;
-    use WPEmerge\Auth\Responses\LoginResponse;
+    use WPEmerge\Auth\Contracts\LoginResponse;
     use WPEmerge\Auth\Responses\SuccesfullLoginResponse;
-    use WPEmerge\Auth\Responses\LoginViewResponse;
+    use WPEmerge\Auth\Contracts\LoginViewResponse;
     use WPEmerge\Contracts\ResponsableInterface;
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;

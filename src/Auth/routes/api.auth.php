@@ -12,7 +12,7 @@
     use WPEmerge\Auth\Controllers\RegistrationLinkController;
     use WPEmerge\Auth\Controllers\ResetPasswordController;
     use WPEmerge\Auth\Controllers\TwoFactorAuthSessionController;
-    use WPEmerge\Auth\TwoFactorAuthPreferenceController;
+    use WPEmerge\Auth\Controllers\TwoFactorAuthPreferenceController;
     use WPEmerge\Routing\Router;
     use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
 
