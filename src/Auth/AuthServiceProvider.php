@@ -22,11 +22,13 @@
     use WPEmerge\Auth\Middleware\AuthenticateSession;
     use WPEmerge\Auth\Middleware\AuthUnconfirmed;
     use WPEmerge\Auth\Middleware\ConfirmAuth;
+    use WPEmerge\Auth\Responses\EmailRegistrationViewResponse;
     use WPEmerge\Auth\Responses\Google2FaChallengeResponse;
     use WPEmerge\Auth\Responses\LoginResponse;
     use WPEmerge\Auth\Responses\LoginViewResponse;
     use WPEmerge\Auth\Responses\PasswordLoginView;
     use WPEmerge\Auth\Responses\RedirectToDashboardResponse;
+    use WPEmerge\Auth\Responses\RegistrationViewResponse;
     use WPEmerge\Auth\Responses\TwoFactorChallengeResponse;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\WpInit;
@@ -67,6 +69,8 @@
             $this->bindTwoFactorProvider();
 
             $this->bindTwoFactorChallengeResponse();
+
+            $this->bindRegistrationViewResponse();
 
         }
 
@@ -173,8 +177,22 @@
 
             ]);
 
-            define('AUTH_ALLOW_PW_RESETS', $this->config->get('auth.features.password-resets', true));
-            define('AUTH_ENABLE_TWO_FACTOR', $this->config->get('auth.features.two-factor-authentication', false));
+            if ( ! defined('AUTH_ENABLE_PASSWORD_RESETS')) {
+
+                define('AUTH_ENABLE_PASSWORD_RESETS', $this->config->get('auth.features.password-resets', true));
+            }
+
+            if ( ! defined('AUTH_ENABLE_TWO_FACTOR') ) {
+
+                define('AUTH_ENABLE_TWO_FACTOR', $this->config->get('auth.features.two-factor-authentication', false));
+            }
+
+            if ( ! defined('AUTH_ENABLE_REGISTRATION')) {
+
+                define('AUTH_ENABLE_REGISTRATION', $this->config->get('auth.features.registration', false));
+
+            }
+
 
         }
 
@@ -283,13 +301,13 @@
                     ? MagicLinkAuthenticator::class
                     : PasswordAuthenticator::class;
 
-                $this->config->set('auth.through', array_filter([
+                $this->config->set('auth.through', array_values(array_filter([
 
                     AUTH_ENABLE_TWO_FACTOR ? TwoFactorAuthenticator::class : null,
                     AUTH_ENABLE_TWO_FACTOR ? RedirectIf2FaAuthenticable::class : null,
                     $primary
 
-                ]));
+                ])));
 
             }
 
@@ -323,6 +341,15 @@
 
             });
 
+        }
+
+        private function bindRegistrationViewResponse()
+        {
+             $this->container->singleton(RegistrationViewResponse::class, function () {
+
+                return $this->container->make(EmailRegistrationViewResponse::class);
+
+            });
         }
 
     }

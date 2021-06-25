@@ -169,7 +169,8 @@
             return $this->redirector;
         }
 
-        public function back() {
+        public function back() : RedirectResponse
+        {
 
             return $this->redirect()->back();
 

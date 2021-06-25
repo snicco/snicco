@@ -35,11 +35,12 @@
         public function toResponsable()
         {
 
-            return $this->view_factory->make('auth-parent')->with([
+            return $this->view_factory->make('auth-parent')->with(array_filter([
                 'title' => 'Log in | '. WP::siteName(),
                 'view' => $this->view,
                 'post_to' => $this->url->toRoute('auth.login.create-magic-link'),
-            ]);
+                'register_url' => AUTH_ENABLE_REGISTRATION ? $this->url->toRoute('auth.register') : null,
+            ]));
 
         }
 

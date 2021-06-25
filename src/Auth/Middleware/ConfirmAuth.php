@@ -42,7 +42,7 @@
 
             if ( $request->isGet() && ! $request->isAjax()) {
 
-                $session->setPreviousUrl($request->fullUrl());
+                $session->setIntendedUrl($request->fullUrl());
 
                 return;
 

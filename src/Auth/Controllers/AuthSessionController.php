@@ -22,6 +22,7 @@
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Session\Session;
+    use WPEmerge\Support\Arr;
 
     class AuthSessionController extends Controller
     {
@@ -110,6 +111,7 @@
             $session = $request->session();
             $session->setUserId($user->ID);
             $session->put('auth.has_remember_token', $remember);
+            $session->confirmAuthUntil(Arr::get($this->auth_config, 'confirmation.duration', 0));
             $session->regenerate();
 
             Login::dispatch([$user, $remember]);

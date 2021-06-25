@@ -16,6 +16,7 @@
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
     use WPEmerge\Support\VariableBag;
+    use WPEmerge\Traits\ValidatesWordpressNonces;
     use WPEmerge\Validation\Validator;
 
     class Request implements ServerRequestInterface
@@ -24,6 +25,8 @@
         use ImplementsPsr7Request;
         use InspectsRequest;
         use InteractsWithInput;
+        use ValidatesWordpressNonces;
+
 
         public function __construct(ServerRequestInterface $psr_request)
         {
@@ -93,10 +96,9 @@
 
         }
 
-        public function withUser(WP_User $user)
+        public function withUser(int $user_id)
         {
-            $new = $this->withAttribute('_current_user', $user);
-            return $new->withAttribute('_current_user_id', $user->ID);
+            return $this->withAttribute('_current_user_id', $user_id);
         }
 
         public function withValidator(Validator $v)
@@ -119,8 +121,16 @@
 
         public function user() :WP_User {
 
-            return $this->getAttribute('_current_user');
+            $user = $this->getAttribute('_current_user');
 
+            if ( ! $user instanceof WP_User ) {
+
+                $this->psr_request = $this->psr_request->withAttribute('_current_user', $user = WP::currentUser());
+
+                return $user;
+            }
+
+            return $user;
         }
 
         public function userId() : int

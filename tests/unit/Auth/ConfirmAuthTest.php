@@ -106,7 +106,7 @@
         }
 
         /** @test */
-        public function the_intended_url_is_saved_to_the_session_on_failure () {
+        public function the_current_url_is_saved_as_intended_url_to_the_session_on_get_requests () {
 
             $request = $this->request->withSession($s = $this->newSession());
 
@@ -114,6 +114,21 @@
 
             $this->assertStatusCode(302, $response);
             $this->assertSame($request->fullUrl(), $s->getIntendedUrl());
+
+        }
+
+        /** @test */
+        public function the_previous_url_is_saved_for_post_request_as_the_intended_url () {
+
+            $request = $this->request->withSession($s = $this->newSession());
+
+            $s->setPreviousUrl('/foo/bar');
+
+            $response = $this->runMiddleware($request->withMethod('POST'));
+
+            $this->assertStatusCode(302, $response);
+            $this->assertSame('/foo/bar', $s->getIntendedUrl());
+
 
         }
 

@@ -8,6 +8,7 @@
     use WPEmerge\Auth\Controllers\ForgotPasswordController;
     use WPEmerge\Auth\Controllers\LoginMagicLinkController;
     use WPEmerge\Auth\Controllers\RecoveryCodeController;
+    use WPEmerge\Auth\Controllers\RegistrationLinkController;
     use WPEmerge\Auth\Controllers\ResetPasswordController;
     use WPEmerge\Auth\Controllers\TwoFactorAuthSessionController;
     use WPEmerge\Auth\TwoFactorAuthPreferenceController;
@@ -42,7 +43,7 @@
                ->andNumber('user_id');
 
 
-        if( AUTH_ALLOW_PW_RESETS ) {
+        if( AUTH_ENABLE_PASSWORD_RESETS ) {
 
             // forgot-password
             $router->get('/forgot-password', [ForgotPasswordController::class, 'create'])
@@ -96,6 +97,13 @@
 
             $router->put('two-factor/recovery-codes', [RecoveryCodeController::class, 'update'])
                    ->middleware(['auth', 'auth.confirmed', 'csrf:persist']);
+
+        }
+
+        if ( AUTH_ENABLE_REGISTRATION ) {
+
+            $router->get('register', [RegistrationLinkController::class, 'create'])->middleware('guest')->name('register');
+            $router->post('register', [RegistrationLinkController::class, 'store'])->middleware('guest');
 
         }
 
