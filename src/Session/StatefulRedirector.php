@@ -21,8 +21,9 @@
          */
         private $session;
 
-        public function __construct( Session $session, UrlGenerator $url_generator, Psr17ResponseFactory $response_factory)
+        public function __construct(Session $session, UrlGenerator $url_generator, Psr17ResponseFactory $response_factory)
         {
+
             $this->generator = $url_generator;
             $this->response_factory = $response_factory;
             $this->session = $session;
@@ -57,45 +58,34 @@
             return parent::intended($request, $fallback, $status);
         }
 
-        public function back(  int $status = 302, string $fallback = '') : RedirectResponse
-        {
-
-            $previous_url = $this->generator->back($fallback);
-
-            return $this->createRedirectResponse($previous_url, $status);
-
-        }
-
         public function previous(Request $request, int $status = 302, string $fallback = '') : RedirectResponse
         {
+
             $path = $this->session->getPreviousUrl($fallback);
 
             if ($path !== '') {
                 return $this->createRedirectResponse($path, $status);
             }
 
-            return parent::previous($request, $status, $fallback);
+            return $this->createRedirectResponse($this->generator->back('/'));
+
         }
 
         /**
          * Create a redirect response to the given path and store the intended url in the session.
          */
-        public function guest (string $path, $status = 302, array $query = [],  bool $secure = true, bool $absolute = true ) {
+        public function guest(string $path, $status = 302, array $query = [], bool $secure = true, bool $absolute = true)
+        {
 
             $request = $this->generator->getRequest();
-            $session = $request->session();
 
             $intended = $request->getMethod() === 'GET' && ! $request->isAjax()
-                ? $request->fullUrl()
-                : $this->generator->back('/', $session->getPreviousUrl('/'));
+                ? $request->fullPath()
+                : $this->session->getPreviousUrl('/');
 
-            if ($intended) {
+            $this->session->setIntendedUrl($intended);
 
-                $request->session()->setIntendedUrl($intended);
-
-            }
-
-            return $this->to($path, $status, $query,  $secure, $absolute);
+            return $this->to($path, $status, $query, $secure, $absolute);
 
         }
 

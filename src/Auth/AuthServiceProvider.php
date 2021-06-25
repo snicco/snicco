@@ -10,9 +10,13 @@
     use WPEmerge\Auth\Authenticators\PasswordAuthenticator;
     use WPEmerge\Auth\Authenticators\RedirectIf2FaAuthenticable;
     use WPEmerge\Auth\Authenticators\TwoFactorAuthenticator;
+    use WPEmerge\Auth\Confirmation\EmailAuthConfirmation;
+    use WPEmerge\Auth\Confirmation\TwoFactorAuthConfirmation;
+    use WPEmerge\Auth\Contracts\AuthConfirmation;
     use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
     use WPEmerge\Auth\Controllers\AuthSessionController;
     use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
+    use WPEmerge\Auth\Controllers\ConfirmedAuthSessionController;
     use WPEmerge\Auth\Events\GenerateLoginUrl;
     use WPEmerge\Auth\Events\GenerateLogoutUrl;
     use WPEmerge\Auth\Events\SettingAuthCookie;
@@ -30,9 +34,12 @@
     use WPEmerge\Auth\Responses\RedirectToDashboardResponse;
     use WPEmerge\Auth\Responses\RegistrationViewResponse;
     use WPEmerge\Auth\Responses\TwoFactorChallengeResponse;
+    use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\WpInit;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Session\Events\SessionRegenerated;
     use WPEmerge\Session\Contracts\SessionDriver;
     use WPEmerge\Session\SessionManager;
@@ -55,6 +62,8 @@
             $this->bindEvents();
 
             $this->bindControllers();
+
+            $this->bindAuthConfirmation();
 
             $this->bindWpSessionToken();
 
@@ -147,6 +156,14 @@
                     $this->config->get('auth.confirmation.duration')
                 );
 
+            });
+
+
+            $this->container->singleton(ConfirmedAuthSessionController::class, function () {
+                return new ConfirmedAuthSessionController(
+                    $this->container->make(AuthConfirmation::class),
+                    $this->config->get('auth.confirmation.duration')
+                );
             });
 
             $this->container->singleton(AuthSessionController::class, function () {
@@ -351,5 +368,26 @@
 
             });
         }
+
+        private function bindAuthConfirmation()
+        {
+            $this->container->singleton(AuthConfirmation::class, function () {
+
+                if ( AUTH_ENABLE_TWO_FACTOR ) {
+
+                    return new TwoFactorAuthConfirmation(
+                        $this->container->make(EmailAuthConfirmation::class),
+                        $this->container->make(TwoFactorAuthenticationProvider::class),
+                        $this->container->make(ResponseFactory::class),
+                        $this->container->make(EncryptorInterface::class),
+                        WP::currentUser()
+                    );
+
+                }
+
+                return $this->container->make(EmailAuthConfirmation::class);
+            });
+        }
+
 
     }

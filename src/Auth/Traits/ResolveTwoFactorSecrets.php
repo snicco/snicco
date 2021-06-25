@@ -4,7 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth;
+    namespace WPEmerge\Auth\Traits;
+
+    use function get_user_meta;
+    use function update_user_meta;
 
     trait ResolveTwoFactorSecrets
     {

@@ -15,7 +15,7 @@
         public function create(Request $request)
         {
 
-            if ( ! $request->session()->challengedUser()) {
+            if ( ! $request->session()->challengedUser() ) {
 
                 return $this->response_factory->redirectToLogin();
 

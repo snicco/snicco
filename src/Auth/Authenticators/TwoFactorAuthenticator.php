@@ -10,7 +10,8 @@
     use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
     use WPEmerge\Auth\Exceptions\FailedTwoFactorAuthenticationException;
     use WPEmerge\Auth\RecoveryCode;
-    use WPEmerge\Auth\ResolveTwoFactorSecrets;
+    use WPEmerge\Auth\Traits\PerformsTwoFactorAuthentication;
+    use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
     use WPEmerge\Auth\Traits\ResolvesUser;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Http\Psr7\Request;
@@ -21,6 +22,7 @@
 
         use ResolveTwoFactorSecrets;
         use ResolvesUser;
+        use PerformsTwoFactorAuthentication;
 
         /**
          * @var TwoFactorAuthenticationProvider
@@ -42,6 +44,7 @@
 
         public function __construct(TwoFactorAuthenticationProvider $provider, EncryptorInterface $encryptor)
         {
+
             $this->provider = $provider;
             $this->encryptor = $encryptor;
         }
@@ -51,7 +54,7 @@
 
             $session = $request->session();
 
-            if ( ! $session->challengedUser() ) {
+            if ( ! $session->challengedUser()) {
 
                 return $next($request);
 
@@ -59,12 +62,9 @@
 
             $user_id = $session->challengedUser();
 
-            if ( $code = $this->validRecoveryCode($request, $user_id) ) {
+            $valid = $this->validateTwoFactorAuthentication($request, $user_id);
 
-                $this->replaceRecoveryCode($code,$user_id);
-
-            }
-            elseif ( ! $this->hasValidOneTimeCode($request, $user_id) ) {
+            if ( ! $valid ) {
 
                 throw new FailedTwoFactorAuthenticationException($this->failure_message, $request);
 
@@ -73,41 +73,9 @@
             $remember = $session->get('2fa.remember');
             $session->forget('2fa');
 
-            return $this->login($this->getUserById($user_id),$remember );
+            return $this->login($this->getUserById($user_id), $remember);
 
         }
 
-        private function validRecoveryCode(Request $request, $user_id)
-        {
-
-            $provided_code = $request->input('recovery-code', '');
-
-            $this->recovery_codes = json_decode( $this->encryptor->decrypt($this->recoveryCodes( $user_id )), true );
-
-            return collect( $this->recovery_codes )->first(function ($code) use ($provided_code) {
-                return hash_equals($provided_code, $code) ? $code : null;
-            });
-
-        }
-
-        private function replaceRecoveryCode($code, int $user_id)
-        {
-
-            $new_codes = str_replace($code, RecoveryCode::generate(), $this->recovery_codes);
-
-            $new_codes = $this->encryptor->encrypt(json_encode($new_codes));
-
-            $this->updateRecoveryCodes($user_id, $new_codes);
-
-        }
-
-        private function hasValidOneTimeCode(Request $request, int $user_id) : bool
-        {
-            $token = $request->input('token', '');
-            $user_secret = $this->twoFactorSecret($user_id);
-
-            return $this->provider->verify($user_secret, $token);
-
-        }
 
     }

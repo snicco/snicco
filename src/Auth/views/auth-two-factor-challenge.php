@@ -12,7 +12,6 @@
 
 ?>
 
-
 <form id="one-time-code" method="POST" action="<?= esc_attr($post_to) ?>" class="box">
 
     <div class="notification is-info is-light">

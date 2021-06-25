@@ -8,7 +8,7 @@
 
     use WPEmerge\Auth\Contracts\Authenticator;
     use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPEmerge\Auth\ResolveTwoFactorSecrets;
+    use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
     use WPEmerge\Auth\Responses\SuccesfullLoginResponse;
     use WPEmerge\Auth\Responses\TwoFactorChallengeResponse;
     use WPEmerge\Http\Psr7\Request;
