@@ -21,7 +21,7 @@
 
         }
 
-        public function getUserById(int $id) : WP_User {
+        public function getUserById($id) : WP_User {
 
             return get_user_by('id', $id);
 
