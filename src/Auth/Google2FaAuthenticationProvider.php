@@ -15,6 +15,7 @@
     use PragmaRX\Google2FA\Google2FA;
     use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
     use WPEmerge\Auth\Traits\ResolvesUser;
+    use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Facade\WP;
 

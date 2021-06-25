@@ -5,6 +5,7 @@
 
     use WPEmerge\Auth\Controllers\AuthSessionController;
     use WPEmerge\Auth\Controllers\AuthConfirmationController;
+    use WPEmerge\Auth\Controllers\ConfirmedAuthSessionController;
     use WPEmerge\Auth\Controllers\ForgotPasswordController;
     use WPEmerge\Auth\Controllers\LoginMagicLinkController;
     use WPEmerge\Auth\Controllers\RecoveryCodeController;
@@ -66,18 +67,20 @@
 
         }
 
+
         // Auth Confirmation
-        $router->get('confirm', [AuthConfirmationController::class, 'create'])->middleware([
+        $router->get('confirm', [ConfirmedAuthSessionController::class, 'create'])->middleware([
             'auth', 'auth.unconfirmed',
-        ])->name('confirm.show');
+        ])->name('confirm');
 
-        $router->post('confirm', [AuthConfirmationController::class, 'send'])->middleware([
-            'auth', 'csrf', 'auth.unconfirmed',
-        ])->name('confirm.send');
+        $router->post('confirm', [ConfirmedAuthSessionController::class, 'store'])->middleware(['auth', 'auth.unconfirmed', 'csrf']);
 
-        $router->get('confirm/{user_id}', [ConfirmAuthMagicLinkController::class, 'store'])
-               ->middleware(['auth', 'signed:absolute', 'auth.unconfirmed'])
-               ->name('confirm.store');
+        $router->delete('confirm', [ConfirmedAuthSessionController::class, 'destroy'])->middleware(['auth','auth.confirmed', 'crsf']);
+
+        $router->get('confirm/magic-link', [ConfirmedAuthSessionController::class, 'store'])
+               ->middleware(['auth','auth.unconfirmed'])
+               ->name('confirm.magic-link');
+
 
         if ( AUTH_ENABLE_TWO_FACTOR ) {
 

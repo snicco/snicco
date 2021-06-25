@@ -7,7 +7,7 @@
     namespace WPEmerge\Auth\Controllers;
 
     use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPEmerge\Auth\ResolveTwoFactorSecrets;
+    use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
     use WPEmerge\Auth\Traits\DecryptsRecoveryCodes;
     use WPEmerge\Auth\Traits\GeneratesRecoveryCodes;
     use WPEmerge\Contracts\EncryptorInterface;
