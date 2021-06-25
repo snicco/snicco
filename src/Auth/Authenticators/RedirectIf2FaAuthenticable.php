@@ -10,7 +10,7 @@
     use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
     use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
     use WPEmerge\Auth\Responses\SuccesfullLoginResponse;
-    use WPEmerge\Auth\Responses\TwoFactorChallengeResponse;
+    use WPEmerge\Auth\Contracts\TwoFactorChallengeResponse;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
 
@@ -25,7 +25,7 @@
         private $provider;
 
         /**
-         * @var TwoFactorChallengeResponse
+         * @var \WPEmerge\Auth\Contracts\TwoFactorChallengeResponse
          */
         private $challenge_response;
 

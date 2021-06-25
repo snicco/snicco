@@ -10,6 +10,12 @@
     use Illuminate\Contracts\Foundation\Application;
 
     /**
+     *
+     * Blade is not 100% decoupled from laravel and in some rare cases
+     * relies on an Application instance being present.
+     *
+     * This class fulfills that role.
+     *
      * @codeCoverageIgnore
      */
     class DummyApplication implements Application

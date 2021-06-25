@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Auth\Responses;
 
+    use WPEmerge\Auth\Contracts\RegistrationViewResponse;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\View\ViewFactory;
 

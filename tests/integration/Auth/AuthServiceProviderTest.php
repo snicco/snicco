@@ -20,8 +20,8 @@
     use WPEmerge\Auth\Controllers\ForgotPasswordController;
     use WPEmerge\Auth\Controllers\ResetPasswordController;
     use WPEmerge\Auth\Middleware\AuthenticateSession;
-    use WPEmerge\Auth\Responses\LoginResponse;
-    use WPEmerge\Auth\Responses\LoginViewResponse;
+    use WPEmerge\Auth\Contracts\LoginResponse;
+    use WPEmerge\Auth\Contracts\LoginViewResponse;
     use WPEmerge\Auth\Responses\PasswordLoginView;
     use WPEmerge\Auth\Responses\RedirectToDashboardResponse;
     use WPEmerge\Auth\WpAuthSessionToken;

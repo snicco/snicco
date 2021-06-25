@@ -14,6 +14,7 @@
     use BaconQrCode\Writer;
     use PragmaRX\Google2FA\Google2FA;
     use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use WPEmerge\Auth\Traits\DecryptsRecoveryCodes;
     use WPEmerge\Auth\Traits\ResolvesUser;
     use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
     use WPEmerge\Contracts\EncryptorInterface;
@@ -24,6 +25,7 @@
 
         use ResolveTwoFactorSecrets;
         use ResolvesUser;
+        use DecryptsRecoveryCodes;
 
         /**
          * The underlying library providing two factor authentication helper services.
@@ -81,9 +83,7 @@
 
             $encrypted_codes = $this->recoveryCodes(WP::userId());
 
-            $codes  = json_decode($this->encryptor->decrypt($encrypted_codes), true );
-
-            return $codes;
+            return $this->decrypt($encrypted_codes);
 
         }
 

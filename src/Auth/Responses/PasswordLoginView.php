@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Auth\Responses;
 
+    use WPEmerge\Auth\Contracts\LoginViewResponse;
     use WPEmerge\Facade\WP;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Support\Arr;

@@ -28,12 +28,12 @@
     use WPEmerge\Auth\Middleware\ConfirmAuth;
     use WPEmerge\Auth\Responses\EmailRegistrationViewResponse;
     use WPEmerge\Auth\Responses\Google2FaChallengeResponse;
-    use WPEmerge\Auth\Responses\LoginResponse;
-    use WPEmerge\Auth\Responses\LoginViewResponse;
+    use WPEmerge\Auth\Contracts\LoginResponse;
+    use WPEmerge\Auth\Contracts\LoginViewResponse;
     use WPEmerge\Auth\Responses\PasswordLoginView;
     use WPEmerge\Auth\Responses\RedirectToDashboardResponse;
-    use WPEmerge\Auth\Responses\RegistrationViewResponse;
-    use WPEmerge\Auth\Responses\TwoFactorChallengeResponse;
+    use WPEmerge\Auth\Contracts\RegistrationViewResponse;
+    use WPEmerge\Auth\Contracts\TwoFactorChallengeResponse;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\WpInit;

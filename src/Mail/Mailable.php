@@ -32,12 +32,12 @@
         public $bcc = [];
 
         /**
-         * @var string
+         * @var array
          */
         public $from;
 
         /**
-         * @var string
+         * @var array
          */
         public $reply_to;
 

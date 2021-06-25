@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Auth\Responses;
 
+    use WPEmerge\Auth\Contracts\TwoFactorChallengeResponse;
     use WPEmerge\Http\ResponseFactory;
 
     class Google2FaChallengeResponse extends TwoFactorChallengeResponse
