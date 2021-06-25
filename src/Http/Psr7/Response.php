@@ -93,7 +93,7 @@
                 $this->cookies = new Cookies();
             }
 
-            $cookie = new Cookie($name, 'delete');
+            $cookie = new Cookie($name, 'deleted');
             $cookie->expires(1)->path($path);
 
             $this->cookies->add($cookie);

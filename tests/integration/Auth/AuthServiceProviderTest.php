@@ -361,7 +361,7 @@
 
             $pipeline = TestApp::config('auth.through');
 
-            $this->assertSame([PasswordAuthenticator::class], $pipeline);
+            $this->assertEquals([PasswordAuthenticator::class], $pipeline);
 
         }
 
@@ -383,20 +383,10 @@
 
             $this->newTestApp($this->config);
 
-            $this->assertTrue(AUTH_ALLOW_PW_RESETS);
+            $this->assertTrue(AUTH_ENABLE_PASSWORD_RESETS);
 
         }
 
-        /** @test */
-        public function password_resets_can_be_disabled () {
 
-
-            Arr::set($this->config, 'auth.features.password-resets', false );
-
-            $this->newTestApp($this->config);
-
-            $this->assertFalse(AUTH_ALLOW_PW_RESETS);
-
-        }
 
     }

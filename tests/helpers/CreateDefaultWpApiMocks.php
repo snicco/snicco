@@ -6,6 +6,7 @@
 
     namespace Tests\helpers;
 
+    use WP_User;
     use WPEmerge\Facade\WP;
 
 

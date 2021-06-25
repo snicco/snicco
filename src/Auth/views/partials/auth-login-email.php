@@ -53,11 +53,13 @@
     <?= $csrf->asHtml() ?>
     <button
             type="submit"
-            class="button submit"
+            class="button submit mb-3"
     >
       Send me a login link
 
     </button>
+
+    <a href="<?= esc_url($register_url) ?>" class="text-sm-left underlined"> Register </a>
 
 </form>
 

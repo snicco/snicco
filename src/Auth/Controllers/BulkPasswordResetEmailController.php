@@ -7,6 +7,7 @@
     namespace WPEmerge\Auth\Controllers;
 
     use WPEmerge\Auth\Mail\ResetPasswordMail;
+    use WPEmerge\Auth\Traits\SendsPasswordResetMails;
     use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Controller;
@@ -24,6 +25,8 @@
      */
     class BulkPasswordResetEmailController extends Controller
     {
+
+        use SendsPasswordResetMails;
 
         /**
          * @var MailBuilder
@@ -90,20 +93,7 @@
 
         }
 
-        private function sendResetMail(\WP_User $user)
-        {
 
-            $magic_link = $this->url->signedRoute(
-                'auth.reset.password',
-                ['query' => ['id' => $user->ID]],
-                300,
-                true
-            );
-
-            return $this->mail->to($user)->send(new ResetPasswordMail($user, $magic_link, 300));
-
-
-        }
 
 
     }

@@ -95,9 +95,12 @@
     </div>
     <?php if ($allow_password_reset) : ?>
 
-        <a href="<?= esc_url($forgot_password_url) ?>" class="text-sm-left"> Forgot password?</a>
+        <a href="<?= esc_url($forgot_password_url) ?>" class="text-sm-left underlined"> Forgot password?</a>
 
     <?php endif; ?>
+
+
+    <a href="<?= esc_url($register_url) ?>" class="text-sm-right ml-4 underlined"> Register </a>
 
 </form>
 

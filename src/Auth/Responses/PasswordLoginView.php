@@ -28,6 +28,7 @@
 
         public function __construct(ViewFactory $view, UrlGenerator $url)
         {
+
             $this->view_factory = $view;
             $this->url = $url;
         }
@@ -37,20 +38,20 @@
 
             return $this->view_factory->make($this->view)
                                       ->with(
-                                         array_filter( [
+                                          array_filter([
                                               'title' => 'Log-in | '.WP::siteName(),
                                               'view' => 'auth-login-password',
                                               'allow_remember' => $this->allowRememberMe(),
                                               'is_interim_login' => $this->request->boolean('interim-login'),
-                                              'allow_password_reset' => AUTH_ALLOW_PW_RESETS,
-                                              'forgot_password_url' => AUTH_ALLOW_PW_RESETS ? $this->url->toRoute('auth.forgot.password') : null,
+                                              'allow_password_reset' => AUTH_ENABLE_PASSWORD_RESETS,
+                                              'forgot_password_url' => AUTH_ENABLE_PASSWORD_RESETS ? $this->url->toRoute('auth.forgot.password') : null,
                                               'post_url' => $this->url->toRoute('auth.login'),
-                                          ] , function ($value) {
-                                             return $value !== null;
-                                         })
+                                              'register_url' => AUTH_ENABLE_REGISTRATION ? $this->url->toRoute('auth.register') : null,
+                                          ], function ($value) {
+                                              return $value !== null;
+                                          })
                                       );
         }
-
 
 
     }
