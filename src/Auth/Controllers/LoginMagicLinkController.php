@@ -26,7 +26,7 @@
 
             if ( ! $user instanceof WP_User) {
 
-               return $this->redirectBack();
+                return $this->redirectBack();
 
             }
 
@@ -43,12 +43,12 @@
         private function redirectBack() : RedirectResponse
         {
 
-           return $this->response_factory->redirect()
-                                   ->toLogin()
-                                   ->with('login.link.success', true);
+            return $this->response_factory->redirect()
+                                          ->toLogin()
+                                          ->with('login.link.success', true);
         }
 
-        protected function createMagicLink($user, $expiration = 300 ) : string
+        protected function createMagicLink($user, $expiration = 300) : string
         {
 
             $args = [

@@ -22,7 +22,7 @@
 
             if ( ! $request->has('pwd') || ! $request->has('log') ) {
 
-                throw new FailedAuthenticationException($this->failure_message, $request, null, $request->only([
+                throw new FailedAuthenticationException($this->failure_message, $request, $request->only([
                     'pwd', 'log',
                 ]));
 
@@ -51,7 +51,7 @@
             do_action('wp_login_failed', $username, $error);
 
             throw new FailedAuthenticationException($this->failure_message, $request, [
-                    'username' => $username,
+                    'log' => $username,
                     'remember_me' => $remember,
                 ],
             );

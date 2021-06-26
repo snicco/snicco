@@ -24,6 +24,7 @@
             }
 
             wp_set_auth_cookie($user_id, $session->hasRememberMeToken(), true, $session->getId() );
+
         }
 
     }

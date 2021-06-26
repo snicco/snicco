@@ -9,12 +9,15 @@
     use WP_User;
     use WPEmerge\Auth\Contracts\Authenticator;
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
+    use WPEmerge\Auth\Traits\ResolvesUser;
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
 
     class MagicLinkAuthenticator extends Authenticator
     {
+
+        use ResolvesUser;
 
         /**
          * @var MagicLink
@@ -42,7 +45,7 @@
 
             $this->magic_link->invalidate($request->fullUrl());
 
-            $user = get_user_by('id', $request->query('user_id'));
+            $user = $this->getUserById($request->query('user_id'));
 
             if ( ! $user instanceof WP_User) {
 
@@ -50,6 +53,7 @@
 
             }
 
+            // Whether remember_me will be allowed is decided by the config value in AuthSessionController
             return $this->login($user, true);
 
 
