@@ -47,6 +47,7 @@
                                               'allow_password_reset' => AUTH_ENABLE_PASSWORD_RESETS,
                                               'forgot_password_url' => AUTH_ENABLE_PASSWORD_RESETS ? $this->url->toRoute('auth.forgot.password') : null,
                                               'post_url' => $this->url->toRoute('auth.login'),
+                                              'allow_registration' => AUTH_ENABLE_REGISTRATION,
                                               'register_url' => AUTH_ENABLE_REGISTRATION ? $this->url->toRoute('auth.register') : null,
                                           ], function ($value) {
                                               return $value !== null;

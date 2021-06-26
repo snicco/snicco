@@ -10,7 +10,7 @@
     use WP_User;
     use WPEmerge\Http\Psr7\Response;
 
-    class SuccesfullLoginResponse extends Response
+    class SuccessfulLoginResponse extends Response
     {
 
         /**

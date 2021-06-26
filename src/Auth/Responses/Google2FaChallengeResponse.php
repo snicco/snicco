@@ -19,7 +19,6 @@
 
         public function __construct(ResponseFactory $response_factory)
         {
-
             $this->response_factory = $response_factory;
         }
 

@@ -8,7 +8,7 @@
 
     use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
-    use WPEmerge\Auth\Responses\SuccesfullLoginResponse;
+    use WPEmerge\Auth\Responses\SuccessfulLoginResponse;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
@@ -21,7 +21,7 @@
          * @param  Request  $request
          * @param  Delegate $next This class can be called as a closure. $next($request)
          *
-         * @return SuccesfullLoginResponse If authentication was successful.
+         * @return SuccessfulLoginResponse If authentication was successful.
          *
          * @throws FailedAuthenticationException
          *
@@ -34,10 +34,10 @@
 
         }
 
-        protected function login(\WP_User $user, bool $remember = false ) : SuccesfullLoginResponse
+        protected function login(\WP_User $user, bool $remember = false ) : SuccessfulLoginResponse
         {
 
-            return new SuccesfullLoginResponse( $this->response_factory->createResponse(), $user, $remember);
+            return new SuccessfulLoginResponse( $this->response_factory->createResponse(), $user, $remember);
 
         }
 

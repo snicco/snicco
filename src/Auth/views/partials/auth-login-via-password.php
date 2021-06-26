@@ -13,8 +13,6 @@
 ?>
 
 
-
-
 <?php if ($is_interim_login === true) : ?>
 
     <div class="notification is-info is-light">
@@ -40,11 +38,6 @@
 
     <!--CSRF field-->
     <?= $csrf->asHtml() ?>
-
-    <!--Redirect to-->
-<!--    <input type="hidden" name="redirect_to"-->
-<!--           value="--><?//= esc_attr($redirect_to) ?><!--">-->
-
     <!--Username-->
     <div class="field">
         <label for="" class="label">Username or email</label>
@@ -52,7 +45,7 @@
         <div class="control has-icons-left">
 
             <input name="log" type="text" placeholder="e.g. bobsmith@gmail.com"
-                   value="<?= esc_attr($session->getOldInput('username', '')) ?>"
+                   value="<?= esc_attr($session->getOldInput('log', '')) ?>"
                    class="input <?= $errors->count() ? 'is-danger' : '' ?>" required
                    autocomplete="username">
 
@@ -99,8 +92,9 @@
 
     <?php endif; ?>
 
-
-    <a href="<?= esc_url($register_url) ?>" class="text-sm-right ml-4 underlined"> Register </a>
+    <?php if ($allow_registration) : ?>
+        <a href="<?= esc_url($register_url) ?>" class="text-sm-right ml-4 underlined"> Register </a>
+    <?php endif; ?>
 
 </form>
 

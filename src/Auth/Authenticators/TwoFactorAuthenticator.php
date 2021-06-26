@@ -44,7 +44,6 @@
 
         public function __construct(TwoFactorAuthenticationProvider $provider, EncryptorInterface $encryptor)
         {
-
             $this->provider = $provider;
             $this->encryptor = $encryptor;
         }
@@ -54,13 +53,11 @@
 
             $session = $request->session();
 
-            if ( ! $session->challengedUser()) {
+            if ( ! $user_id = $session->challengedUser() ) {
 
                 return $next($request);
 
             }
-
-            $user_id = $session->challengedUser();
 
             $valid = $this->validateTwoFactorAuthentication($request, $user_id);
 

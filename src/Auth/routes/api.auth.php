@@ -4,7 +4,6 @@
     declare(strict_types = 1);
 
     use WPEmerge\Auth\Controllers\AuthSessionController;
-    use WPEmerge\Auth\Controllers\AuthConfirmationController;
     use WPEmerge\Auth\Controllers\ConfirmedAuthSessionController;
     use WPEmerge\Auth\Controllers\ForgotPasswordController;
     use WPEmerge\Auth\Controllers\LoginMagicLinkController;
@@ -14,7 +13,6 @@
     use WPEmerge\Auth\Controllers\TwoFactorAuthSessionController;
     use WPEmerge\Auth\Controllers\TwoFactorAuthPreferenceController;
     use WPEmerge\Routing\Router;
-    use WPEmerge\Auth\Controllers\ConfirmAuthMagicLinkController;
 
     /** @var Router $router */
 
