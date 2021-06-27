@@ -52,14 +52,15 @@
         {
 
             $session = $request->session();
+            $challenged_user_id = $session->challengedUser();
 
-            if ( ! $user_id = $session->challengedUser() ) {
+            if ( ! $challenged_user_id || ! $this->userHasTwoFactorEnabled($user = $this->getUserById($challenged_user_id)) ) {
 
                 return $next($request);
 
             }
 
-            $valid = $this->validateTwoFactorAuthentication($request, $user_id);
+            $valid = $this->validateTwoFactorAuthentication($request, $challenged_user_id);
 
             if ( ! $valid ) {
 
@@ -70,7 +71,7 @@
             $remember = $session->get('2fa.remember', false );
             $session->forget('2fa');
 
-            return $this->login($this->getUserById($user_id), $remember);
+            return $this->login($user, $remember);
 
         }
 

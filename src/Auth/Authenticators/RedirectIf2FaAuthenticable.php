@@ -54,12 +54,7 @@
 
         }
 
-        private function userHasTwoFactorEnabled(WP_User $user) : bool
-        {
 
-            return $this->twoFactorSecret($user->ID) !== '';
-
-        }
 
         private function challengeUser(Request $request, WP_User $user) : void
         {

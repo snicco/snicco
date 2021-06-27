@@ -43,7 +43,7 @@
             if ( $session->isIdle( $this->manager->idleTimeout() ) ) {
 
                 $session->forget(array_merge(['auth.confirm'], $this->forget_on_idle));
-                $session->forget('admin_counter');
+
 
             }
 

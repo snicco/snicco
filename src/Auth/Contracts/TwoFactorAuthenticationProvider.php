@@ -17,6 +17,5 @@
 
         public function renderQrCode() :string;
 
-        public function getRecoveryCodes() :array;
 
     }
