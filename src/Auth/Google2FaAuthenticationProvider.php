@@ -14,7 +14,9 @@
     use BaconQrCode\Writer;
     use PragmaRX\Google2FA\Google2FA;
     use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use WPEmerge\Auth\Traits\DecryptsRecoveryCodes;
     use WPEmerge\Auth\Traits\ResolvesUser;
+    use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Facade\WP;
 
@@ -31,9 +33,6 @@
          */
         private $engine;
 
-        /**
-         * @var EncryptorInterface
-         */
         private $encryptor;
 
         public function __construct(Google2FA $engine, EncryptorInterface $encryptor)
@@ -76,14 +75,6 @@
 
         }
 
-        public function getRecoveryCodes () :array {
 
-            $encrypted_codes = $this->recoveryCodes(WP::userId());
-
-            $codes  = json_decode($this->encryptor->decrypt($encrypted_codes), true );
-
-            return $codes;
-
-        }
 
     }

@@ -22,7 +22,7 @@
     use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
     use WPEmerge\Session\SessionServiceProvider;
 
-    class AuthControllerLogoutTest extends IntegrationTest
+    class AuthSessionControllerLogoutTest extends IntegrationTest
     {
 
         use CreateDefaultWpApiMocks;
@@ -58,7 +58,6 @@
 
         protected function beforeTearDown()
         {
-
             WP::reset();
             Mockery::close();
         }

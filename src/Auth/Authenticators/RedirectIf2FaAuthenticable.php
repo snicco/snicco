@@ -6,11 +6,12 @@
 
     namespace WPEmerge\Auth\Authenticators;
 
+    use WP_User;
     use WPEmerge\Auth\Contracts\Authenticator;
     use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPEmerge\Auth\ResolveTwoFactorSecrets;
-    use WPEmerge\Auth\Responses\SuccesfullLoginResponse;
-    use WPEmerge\Auth\Responses\TwoFactorChallengeResponse;
+    use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
+    use WPEmerge\Auth\Responses\SuccessfulLoginResponse;
+    use WPEmerge\Auth\Contracts\TwoFactorChallengeResponse;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
 
@@ -19,19 +20,14 @@
 
         use ResolveTwoFactorSecrets;
 
-        /**
-         * @var TwoFactorAuthenticationProvider
-         */
-        private $provider;
 
         /**
          * @var TwoFactorChallengeResponse
          */
         private $challenge_response;
 
-        public function __construct(TwoFactorAuthenticationProvider $provider, TwoFactorChallengeResponse $response)
+        public function __construct(TwoFactorChallengeResponse $response)
         {
-            $this->provider = $provider;
             $this->challenge_response = $response;
         }
 
@@ -40,36 +36,32 @@
 
             $response = $next($request);
 
-            if ( ! $response instanceof SuccesfullLoginResponse ) {
+            if ( ! $response instanceof SuccessfulLoginResponse ) {
 
                 return $response;
 
             }
 
-            if ( ! $this->userHasTwoFactorEnabled($response->authenticatedUser() ) ) {
+            if ( ! $this->userHasTwoFactorEnabled( $user = $response->authenticatedUser() ) ) {
 
                 return $response;
 
             }
 
-            $this->challengeUser($request);
+            $this->challengeUser($request, $user);
 
             return $this->challenge_response->setRequest($request)->toResponsable();
 
         }
 
-        private function userHasTwoFactorEnabled(\WP_User $user) : bool
+
+
+        private function challengeUser(Request $request, WP_User $user) : void
         {
 
-            return $this->twoFactorSecret($user->ID) !== '';
-
-        }
-
-        private function challengeUser(Request $request) : void
-        {
-
-            $request->session()->put('2fa.challenged_user', 1);
+            $request->session()->put('2fa.challenged_user', $user->ID);
             $request->session()->put('2fa.remember', $request->boolean('remember_me'));
+
         }
 
     }

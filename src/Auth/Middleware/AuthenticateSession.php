@@ -42,8 +42,13 @@
             // Instead we just empty out the session which will also trigger every auth confirmation middleware again.
             if ( $session->isIdle( $this->manager->idleTimeout() ) ) {
 
-                $session->forget(array_merge(['auth.confirm'], $this->forget_on_idle));
-                $session->forget('admin_counter');
+                $session->forget('auth.confirm');
+
+                foreach ($this->forget_on_idle as $key ) {
+
+                    $session->forget($key);
+
+                }
 
             }
 

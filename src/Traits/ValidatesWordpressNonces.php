@@ -6,13 +6,11 @@
 
     namespace WPEmerge\Traits;
 
-    use WPEmerge\Http\Psr7\Request;
 
     trait ValidatesWordpressNonces
     {
 
         public function hasValidAjaxNonce( $nonce_action , $query_arg = null ) :bool {
-
 
             $nonce = '';
 

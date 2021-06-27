@@ -27,14 +27,14 @@
             $this->lifetime = $link_lifetime_in_sec;
         }
 
-        public function build(Session $session, UrlGenerator $generator ) : Mailable
+        public function build( UrlGenerator $generator ) : Mailable
         {
 
             return $this
                 ->subject('Your Email Confirmation link.')
                 ->view('auth-confirm-email')
                 ->with([
-                    'magic_link' => $this->generateSignedUrl($session, $generator),
+                    'magic_link' => $this->generateSignedUrl($generator),
                 ]);
 
         }
@@ -44,19 +44,12 @@
             return false;
         }
 
-        private function generateSignedUrl(Session $session, UrlGenerator $generator) : string
+        private function generateSignedUrl(UrlGenerator $generator) : string
         {
 
-            $arguments = [
-                'user_id' => $this->user->ID,
-                'query' => [
-                    'intended' => $session->getIntendedUrl(),
-                ],
-            ];
-
             return $generator->signedRoute(
-                'auth.confirm.store',
-                $arguments,
+                'auth.confirm.magic-link',
+                [],
                 $this->lifetime,
                 true
             );

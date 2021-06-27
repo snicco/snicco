@@ -7,7 +7,7 @@
     namespace WPEmerge\Auth\Controllers;
 
     use WPEmerge\Auth\Mail\ConfirmRegistrationEmail;
-    use WPEmerge\Auth\Responses\RegistrationViewResponse;
+    use WPEmerge\Auth\Contracts\RegistrationViewResponse;
     use WPEmerge\Contracts\ResponsableInterface;
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;

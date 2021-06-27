@@ -4,16 +4,22 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth;
+    namespace WPEmerge\Auth\Controllers;
 
     use Illuminate\Support\Collection;
     use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use WPEmerge\Auth\Traits\GeneratesRecoveryCodes;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
 
+    use function delete_user_meta;
+    use function get_user_meta;
+    use function update_user_meta;
+
     class TwoFactorAuthPreferenceController extends Controller
     {
+        use GeneratesRecoveryCodes;
 
         /**
          * @var TwoFactorAuthenticationProvider
@@ -52,7 +58,7 @@
             }
 
             $secret = $this->provider->generateSecretKey();
-            $backup_codes = $this->generateBackupCodes();
+            $backup_codes = $this->generateNewRecoveryCodes();
 
             update_user_meta($user, 'two_factor_secret', $secret);
             update_user_meta($user, 'two_factor_recovery_codes', $backup_codes);
@@ -93,16 +99,6 @@
                 ])
                 : $this->response_factory->back()
                                          ->with('2fa.status', 'disabled' );
-
-        }
-
-        private function generateBackupCodes() : string
-        {
-
-            return $this->encryptor->encrypt(json_encode(Collection::times(8, function () {
-
-                return RecoveryCode::generate();
-            })->all()));
 
         }
 

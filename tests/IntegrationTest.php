@@ -114,7 +114,7 @@
         {
 
             $this->beforeTearDown();
-
+            HeaderStack::reset();
             parent::tearDown();
             $GLOBALS['wp_filter'] = [];
             $GLOBALS['wp_actions'] = [];
@@ -255,10 +255,30 @@
 
     }
 
+        protected function withSession(Request $request, array $session_data ) {
+
+            $session = TestApp::session();
+            $array_handler = $session->getDriver();
+
+            $data = [];
+
+            foreach ($session_data as $key =>  $value) {
+
+                Arr::set($data, $key, $value);
+
+            }
+
+            $array_handler->write($this->hashedSessionId(), serialize($data));
+
+            return $request->withAddedHeader('Cookie', 'wp_mvc_session='.$this->testSessionId() );
+
+        }
+
         protected function fakeResponseSending(array $events = []) {
 
             ApplicationEvent::fake(array_merge([ResponseSent::class], $events));
 
         }
+
 
     }

@@ -10,9 +10,9 @@
     use WP_User;
     use WPEmerge\Auth\Events\Login;
     use WPEmerge\Auth\Events\Logout;
-    use WPEmerge\Auth\Responses\LoginResponse;
-    use WPEmerge\Auth\Responses\SuccesfullLoginResponse;
-    use WPEmerge\Auth\Responses\LoginViewResponse;
+    use WPEmerge\Auth\Contracts\LoginResponse;
+    use WPEmerge\Auth\Responses\SuccessfulLoginResponse;
+    use WPEmerge\Auth\Contracts\LoginViewResponse;
     use WPEmerge\Contracts\ResponsableInterface;
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
@@ -63,9 +63,9 @@
                                       ->through($this->auth_config['through'])
                                       ->then($this->handleAuthFailure());
 
-            if ($response instanceof SuccesfullLoginResponse) {
+            if ($response instanceof SuccessfulLoginResponse) {
 
-                $remember = $response->rememberUser() && $this->auth_config['remember'] === true;
+                $remember = $response->rememberUser() && $this->auth_config['remember']['enabled'] === true;
                 $user = $response->authenticatedUser();
 
                 return $this->handleLogin($user, $remember, $login_response, $request);
@@ -121,7 +121,7 @@
 
                 $request->session()->flash('interim_login_success', true);
 
-                return $this->response_factory->view('auth-parent');
+                return $this->response_factory->view('auth-layout');
 
             }
 
