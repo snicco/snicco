@@ -7,6 +7,7 @@
     namespace WPEmerge\Auth\Controllers;
 
     use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use WPEmerge\Auth\Traits\ResolvesUser;
     use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
     use WPEmerge\Auth\Traits\DecryptsRecoveryCodes;
     use WPEmerge\Auth\Traits\GeneratesRecoveryCodes;
@@ -21,6 +22,7 @@
         use ResolveTwoFactorSecrets;
         use DecryptsRecoveryCodes;
         use GeneratesRecoveryCodes;
+        use ResolvesUser;
 
         /**
          * @var EncryptorInterface
@@ -37,19 +39,41 @@
         public function index(Request $request) : Response
         {
 
-            $codes = $this->recoveryCodes($request->user()->ID);
+            if ( ! $this->userHasTwoFactorEnabled($this->getUserById($id = $request->userId()))) {
+
+                return $this->response_factory->json([
+                    'success' => false,
+                    'message' => 'Two factor authentication not enabled.'
+                ]);
+
+            }
+
+
+            $codes = $this->recoveryCodes($id);
 
             $codes = $this->decrypt($codes);
 
-            return $this->response_factory->json($codes);
+            return $this->response_factory->json([
+                'success' => true,
+                'codes' => $codes
+            ]);
 
         }
 
         public function update(Request $request)
         {
 
+            if ( ! $this->userHasTwoFactorEnabled($this->getUserById($id = $request->userId()))) {
+
+                return $this->response_factory->json([
+                    'success' => false,
+                    'message' => 'Two factor authentication not enabled.'
+                ]);
+
+            }
+
             $codes = $this->generateNewRecoveryCodes();
-            $this->saveCodes($request->userId(), $codes);
+            $this->saveCodes($id, $codes);
 
             return $request->isExpectingJson()
                 ? $this->response_factory->json([

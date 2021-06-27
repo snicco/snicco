@@ -9,26 +9,26 @@
     trait HashesSessionIds
     {
 
-        private function hash($id) {
+        protected function hash($id) {
 
             return hash( 'sha256', $id );
 
         }
 
-        private function hashedSessionId() {
+        protected function hashedSessionId() {
 
             return $this->hash($this->getSessionId());
 
         }
 
-        private function getSessionId() : string
+        protected function getSessionId() : string
         {
 
             return  str_repeat('a', 64) ;
 
         }
 
-        private function anotherSessionId() : string
+        protected function anotherSessionId() : string
         {
 
             return str_repeat('b', 64);
