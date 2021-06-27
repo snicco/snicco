@@ -116,7 +116,7 @@
 
                 $path = $file->getRealPath();
 
-                $this->loadRouteGroup($name, $path, $preset);
+                $this->loadRouteGroup($name, $path, $preset, $config);
 
                 $seen[$name] = $name;
 
@@ -124,13 +124,14 @@
 
         }
 
-        private function loadRouteGroup(string $name, string $file_path, array $preset)
+        private function loadRouteGroup(string $name, string $file_path, array $preset , ApplicationConfig $config)
         {
 
             $attributes = $this->applyPreset($name, $preset);
 
-            $this->router->group($attributes, function ($router) use ($file_path) {
+            $this->router->group($attributes, function ($router) use ($file_path, $config) {
 
+                extract(['config' => $config]);
                 require $file_path;
 
 

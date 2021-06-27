@@ -34,6 +34,11 @@
                 SessionServiceProvider::class,
                 AuthServiceProvider::class,
             ],
+            'auth' => [
+                'features' => [
+                    'password-resets' => true
+                ]
+            ]
         ];
 
         private function postRequest(array $body, array $csrf)
@@ -101,6 +106,19 @@
 
             $this->assertOutputContains('Request new password', $request);
 
+        }
+
+        /** @test */
+        public function password_resets_can_be_disabled_via_the_config () {
+
+            Arr::set($this->config, 'auth.features.password-resets', false);
+
+            $this->newTestApp($this->config);
+            $this->loadRoutes();
+            $request = TestRequest::from('GET', '/auth/forgot-password');
+            $this->rebindRequest($request);
+            $this->assertOutput('', $request);
+            HeaderStack::assertHasNone();
         }
 
         /** @test */
