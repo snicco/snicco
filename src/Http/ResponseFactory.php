@@ -169,10 +169,10 @@
             return $this->redirector;
         }
 
-        public function back() : RedirectResponse
+        public function back(string $fallback = '/', int $status= 302,  bool $external_referer = false ) : RedirectResponse
         {
 
-            return $this->redirect()->back();
+            return $this->redirect()->back($status, $fallback, $external_referer);
 
         }
 

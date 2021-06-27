@@ -35,7 +35,7 @@
         public function create(CsrfField $csrf) : ViewInterface
         {
 
-            return $this->view_factory->make('auth-parent')->with([
+            return $this->view_factory->make('auth-layout')->with([
                 'view' => 'auth-forgot-password',
                 'view_factory' => $this->view_factory,
                 'csrf_field' => $csrf->asHtml(),

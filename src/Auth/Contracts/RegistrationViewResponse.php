@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Responses;
+    namespace WPEmerge\Auth\Contracts;
 
     use WPEmerge\Contracts\ResponsableInterface;
     use WPEmerge\Http\Psr7\Request;

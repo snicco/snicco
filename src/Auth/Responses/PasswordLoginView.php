@@ -6,6 +6,8 @@
 
     namespace WPEmerge\Auth\Responses;
 
+    use WPEmerge\Application\ApplicationConfig;
+    use WPEmerge\Auth\Contracts\LoginViewResponse;
     use WPEmerge\Facade\WP;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Support\Arr;
@@ -14,7 +16,7 @@
     class PasswordLoginView extends LoginViewResponse
     {
 
-        private $view = 'auth-parent';
+        private $view = 'auth-layout';
 
         /**
          * @var UrlGenerator
@@ -25,12 +27,29 @@
          * @var ViewFactory
          */
         private $view_factory;
+        /**
+         * @var ApplicationConfig
+         */
+        private $config;
 
-        public function __construct(ViewFactory $view, UrlGenerator $url)
+        /**
+         * @var bool
+         */
+        private $pw_resets;
+
+        /**
+         * @var bool
+         */
+        private $registraion;
+
+        public function __construct(ViewFactory $view, UrlGenerator $url, ApplicationConfig $config)
         {
 
             $this->view_factory = $view;
             $this->url = $url;
+            $this->config = $config;
+            $this->pw_resets = $this->config->get('auth.features.password-resets');
+            $this->registraion = $this->config->get('auth.features.registration');
         }
 
         public function toResponsable()
@@ -40,13 +59,14 @@
                                       ->with(
                                           array_filter([
                                               'title' => 'Log-in | '.WP::siteName(),
-                                              'view' => 'auth-login-password',
+                                              'view' => 'auth-login-via-password',
                                               'allow_remember' => $this->allowRememberMe(),
                                               'is_interim_login' => $this->request->boolean('interim-login'),
-                                              'allow_password_reset' => AUTH_ENABLE_PASSWORD_RESETS,
-                                              'forgot_password_url' => AUTH_ENABLE_PASSWORD_RESETS ? $this->url->toRoute('auth.forgot.password') : null,
+                                              'allow_password_reset' => $this->pw_resets,
+                                              'forgot_password_url' => $this->pw_resets ? $this->url->toRoute('auth.forgot.password') : null,
                                               'post_url' => $this->url->toRoute('auth.login'),
-                                              'register_url' => AUTH_ENABLE_REGISTRATION ? $this->url->toRoute('auth.register') : null,
+                                              'allow_registration' =>  $this->registraion,
+                                              'register_url' => $this->registraion ? $this->url->toRoute('auth.register') : null,
                                           ], function ($value) {
                                               return $value !== null;
                                           })

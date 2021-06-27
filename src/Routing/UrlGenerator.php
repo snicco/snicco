@@ -146,16 +146,14 @@
 
         }
 
-        public function back(string $fallback = '', string $session_url = '') : string
+        public function back(string $fallback = '', bool $external_referer = false ) : string
         {
 
             $referrer = $this->getRequest()->getHeaderLine('referer');
 
-            $url = $referrer ? $this->to($referrer) : $session_url;
+            if ($referrer !== '') {
 
-            if ($url !== '') {
-
-                return $this->to($url);
+                return $this->to($referrer, [], true, $external_referer);
 
             } elseif ($fallback !== '') {
 

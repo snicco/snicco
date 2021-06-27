@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Auth\Responses;
 
+    use WPEmerge\Auth\Contracts\LoginResponse;
     use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Session\StatefulRedirector;

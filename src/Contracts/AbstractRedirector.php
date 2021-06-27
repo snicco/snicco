@@ -105,12 +105,6 @@
             return $this->to($path, $status, $query);
         }
 
-        public function guest (string $path, $status = 302, array $query = [], bool $secure = true, bool $absolute = false ) {
-
-            throw new \LogicException('The Redirector::guest method can only be used when sessions are enabled in the config');
-
-        }
-
         public function toLogin(string $redirect_on_login = '', bool $reauth = false , int $status_code = 302) : RedirectResponse
         {
             return $this->createRedirectResponse($this->generator->toLogin($redirect_on_login, $reauth), $status_code);
@@ -134,10 +128,10 @@
             return $this->createRedirectResponse($this->generator->current(), $status);
         }
 
-        public function back(  int $status = 302, string $fallback = '') : RedirectResponse
+        public function back( int $status = 302, string $fallback = '', bool $external_referrer = false ) : RedirectResponse
         {
 
-            $previous_url = $this->generator->back($fallback);
+            $previous_url = $this->generator->back($fallback, $external_referrer);
 
             return $this->createRedirectResponse($previous_url, $status);
 
@@ -164,7 +158,13 @@
 
         public function previous(Request $request, int $status = 302, string $fallback = '') : RedirectResponse
         {
-            return $this->back($status, $fallback);
+            throw new \LogicException('The Redirector::previous method can only be used when sessions are enabled in the config');
+        }
+
+        public function guest (string $path, $status = 302, array $query = [], bool $secure = true, bool $absolute = false ) {
+
+            throw new \LogicException('The Redirector::guest method can only be used when sessions are enabled in the config');
+
         }
 
         protected function validateStatusCode (int $status_code){

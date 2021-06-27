@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Auth\Responses;
 
+    use WPEmerge\Auth\Contracts\TwoFactorChallengeResponse;
     use WPEmerge\Http\ResponseFactory;
 
     class Google2FaChallengeResponse extends TwoFactorChallengeResponse
@@ -18,7 +19,6 @@
 
         public function __construct(ResponseFactory $response_factory)
         {
-
             $this->response_factory = $response_factory;
         }
 

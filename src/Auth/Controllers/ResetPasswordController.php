@@ -43,7 +43,7 @@
         public function create(Request $request, CsrfField $csrf_field)
         {
 
-            $response = $this->response_factory->view('auth-parent', [
+            $response = $this->response_factory->view('auth-layout', [
                 'view' => 'auth-password-reset',
                 'view_factory' => $this->view_factory,
                 'post_to' => $request->fullPath(),
