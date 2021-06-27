@@ -183,22 +183,9 @@
                 'auth' => $this->config->get('auth.endpoint',),
 
             ]);
-
-            if ( ! defined('AUTH_ENABLE_PASSWORD_RESETS')) {
-
-                define('AUTH_ENABLE_PASSWORD_RESETS', $this->config->get('auth.features.password-resets', true));
-            }
-
-            if ( ! defined('AUTH_ENABLE_TWO_FACTOR') ) {
-
-                define('AUTH_ENABLE_TWO_FACTOR', $this->config->get('auth.features.two-factor-authentication', false));
-            }
-
-            if ( ! defined('AUTH_ENABLE_REGISTRATION')) {
-
-                define('AUTH_ENABLE_REGISTRATION', $this->config->get('auth.features.registration', false));
-
-            }
+            $this->config->extend('auth.features.password-resets', false);
+            $this->config->extend('auth.features.two-factor-authentication', false);
+            $this->config->extend('auth.features.registration', false);
 
 
         }
@@ -308,10 +295,12 @@
                     ? MagicLinkAuthenticator::class
                     : PasswordAuthenticator::class;
 
+                $two_factor = $this->config->get('auth.features.two-factor-authentication');
+
                 $this->config->set('auth.through', array_values(array_filter([
 
-                    AUTH_ENABLE_TWO_FACTOR ? TwoFactorAuthenticator::class : null,
-                    AUTH_ENABLE_TWO_FACTOR ? RedirectIf2FaAuthenticable::class : null,
+                    $two_factor ? TwoFactorAuthenticator::class : null,
+                    $two_factor ? RedirectIf2FaAuthenticable::class : null,
                     $primary
 
                 ])));
@@ -363,7 +352,7 @@
         {
             $this->container->singleton(AuthConfirmation::class, function () {
 
-                if ( AUTH_ENABLE_TWO_FACTOR ) {
+                if ( $this->config->get('auth.features.two-factor-authentication') ) {
 
                     return new TwoFactorAuthConfirmation(
                         $this->container->make(EmailAuthConfirmation::class),

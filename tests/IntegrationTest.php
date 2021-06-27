@@ -114,7 +114,7 @@
         {
 
             $this->beforeTearDown();
-
+            HeaderStack::reset();
             parent::tearDown();
             $GLOBALS['wp_filter'] = [];
             $GLOBALS['wp_actions'] = [];

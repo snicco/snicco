@@ -34,6 +34,11 @@
                 AuthServiceProvider::class,
                 ValidationServiceProvider::class,
             ],
+            'auth' => [
+                'features' => [
+                    'password-resets' => true
+                ]
+            ]
         ];
 
         private function postRequest(int $user_id, array $csrf, array $payload = [])

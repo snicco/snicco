@@ -399,11 +399,11 @@
         }
 
         /** @test */
-        public function password_resets_are_enabled_by_default () {
+        public function password_resets_are_disabled_by_default () {
 
             $this->newTestApp($this->config);
 
-            $this->assertTrue(AUTH_ENABLE_PASSWORD_RESETS);
+            $this->assertFalse(TestApp::config('auth.features.password-resets'));
 
         }
 
