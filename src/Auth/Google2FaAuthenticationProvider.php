@@ -25,7 +25,6 @@
 
         use ResolveTwoFactorSecrets;
         use ResolvesUser;
-        use DecryptsRecoveryCodes;
 
         /**
          * The underlying library providing two factor authentication helper services.
@@ -76,12 +75,6 @@
 
         }
 
-        public function getRecoveryCodes () :array {
 
-            $encrypted_codes = $this->recoveryCodes(WP::userId());
-
-            return $this->decrypt($encrypted_codes);
-
-        }
 
     }

@@ -22,7 +22,7 @@
         {
 
             // redirect all request to wp-login.php expect for when the action is confirmation.
-            // No interest in dealing with the personal data confirmation
+            // This deals with the personal data confirmation
             if ($request->loadingScript() === 'wp-login.php' && $request->isGet() && $request->input('action') !== 'confirmation') {
 
                 $response = $redirector->toRoute('auth.login', 301);

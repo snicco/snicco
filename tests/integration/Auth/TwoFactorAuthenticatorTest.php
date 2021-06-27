@@ -33,7 +33,6 @@
 
         use CreateUrlGenerator;
         use CreateRouteCollection;
-        use AssertsResponse;
         use CreatePsr17Factories;
         use CreateRouteMatcher;
         use InteractsWithWordpress;
@@ -91,7 +90,20 @@
 
             $response = $this->newAuthenticator()->attempt($this->request, $this->next);
             $this->assertInstanceOf(Response::class, $response);
-            $this->assertOutput('Login-Test', $response);
+            $this->assertSame('Login-Test', $response->getBody()->__toString());
+
+        }
+
+        /** @test */
+        public function a_challenged_user_without_2fa_enabled_can_bypass_the_authenticator () {
+
+            $calvin = $this->newAdmin();
+            $this->request->session()->put('2fa.challenged_user', $calvin->ID);
+
+            // Calvin is challenged for some reason but he does not have 2Fa enabled.
+            $response = $this->newAuthenticator()->attempt($this->request, $this->next);
+            $this->assertInstanceOf(Response::class, $response);
+            $this->assertSame('Login-Test', $response->getBody()->__toString());
 
         }
 
@@ -101,6 +113,7 @@
 
             $calvin = $this->newAdmin();
             $this->request->session()->put('2fa.challenged_user', $calvin->ID);
+            update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
 
             $request = $this->request->withParsedBody([
                 'token' => '123456',
@@ -118,6 +131,8 @@
 
             $calvin = $this->newAdmin();
             $this->request->session()->put('2fa.challenged_user', $calvin->ID);
+            update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
+
 
             $request = $this->request->withParsedBody([
                 'token' => '123456',
@@ -146,6 +161,8 @@
 
             })->all();
             update_user_meta($calvin->ID, 'two_factor_recovery_codes', $this->encryptor->encrypt(json_encode($codes)));
+            update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
+
 
             $code = $codes[0];
 
@@ -181,6 +198,7 @@
 
             })->all();
             update_user_meta($calvin->ID, 'two_factor_recovery_codes', $this->encryptor->encrypt(json_encode($codes)));
+            update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
 
             $code = $codes[0];
 
@@ -237,9 +255,7 @@
         {
         }
 
-        public function getRecoveryCodes() : array
-        {
-        }
+
 
     }
 
