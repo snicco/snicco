@@ -67,7 +67,7 @@
 
             }
 
-            $remember = $session->get('2fa.remember');
+            $remember = $session->get('2fa.remember', false );
             $session->forget('2fa');
 
             return $this->login($this->getUserById($user_id), $remember);

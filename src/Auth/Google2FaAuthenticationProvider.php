@@ -34,9 +34,6 @@
          */
         private $engine;
 
-        /**
-         * @var EncryptorInterface
-         */
         private $encryptor;
 
         public function __construct(Google2FA $engine, EncryptorInterface $encryptor)
