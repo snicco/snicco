@@ -12,6 +12,7 @@
     trait GeneratesRecoveryCodes
     {
 
+
         private function generateNewRecoveryCodes () :string
         {
             return $this->encryptor->encrypt(json_encode(Collection::times(8, function () {
