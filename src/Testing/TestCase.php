@@ -285,7 +285,7 @@
         private function setProperties()
         {
 
-            if ( in_array(SessionServiceProvider::class, $this->config->get('app.providers'))){
+            if ( in_array(SessionServiceProvider::class, $this->config->get('app.providers')) && $this->config->get('session.enabled')){
 
                 $this->session = $this->app->resolve(Session::class);
 
