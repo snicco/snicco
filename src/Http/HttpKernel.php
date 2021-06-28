@@ -10,6 +10,7 @@
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\ResponseSent;
+    use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\Responses\NullResponse;
     use WPEmerge\Middleware\Core\AppendSpecialPathSuffix;
     use WPEmerge\Middleware\Core\ErrorHandlerMiddleware;
@@ -76,7 +77,6 @@
             $this->pipeline = $pipeline;
             $this->emitter = $emitter ?? new ResponseEmitter();
 
-
         }
 
         public function alwaysWithGlobalMiddleware(array $global_middleware = [])
@@ -92,7 +92,7 @@
             $this->priority_map = array_merge($this->priority_map, $priority);
         }
 
-        public function run(IncomingRequest $request_event) : void
+        public function run(IncomingRequest $request_event) : ResponseInterface
         {
 
             $response = $this->handle($request_event);
@@ -102,7 +102,7 @@
                 // We might have a NullResponse where the headers got modified by middleware.
                 $this->emitter->emitHeaders($response);
 
-                return;
+                return $response;
 
             }
 
@@ -112,6 +112,7 @@
 
             ResponseSent::dispatch([$response, $request_event->request]);
 
+            return $response;
 
         }
 
@@ -165,7 +166,3 @@
 
     }
 
-    // web:
-    // no route matches + ! must_match ==> let wordpress figure out what to do.
-    // no route matches + must_match ==> throw 404 and send response
-    //

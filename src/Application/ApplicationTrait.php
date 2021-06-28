@@ -7,7 +7,9 @@
 	namespace WPEmerge\Application;
 
 	use BadMethodCallException;
-	use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
+    use Contracts\ContainerAdapter;
+    use SniccoAdapter\BaseContainerAdapter;
+    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
 
 	/**
 	 * Provides static access to an Application instance.
@@ -30,11 +32,12 @@
 		 *
 		 * @return Application
 		 */
-		public static function make( $containerAdapter = 'default' ) {
+		public static function make( string $base_path, ContainerAdapter $container = null ) {
 
-			static::setApplication( Application::create( $containerAdapter ) );
+			static::setApplication(Application::create($base_path,  $container ?? new BaseContainerAdapter() ) );
 
 			return static::getApplication();
+
 		}
 
 		/**
