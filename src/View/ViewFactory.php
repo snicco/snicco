@@ -31,11 +31,10 @@
 		 */
 		private $global_context;
 
-		public function __construct(
-			ViewEngineInterface $engine,
-			ViewComposerCollection $composer_collection,
-			GlobalContext $global_context
-		) {
+		/** @var ViewInterface|null */
+		private $rendered_view;
+
+		public function __construct(ViewEngineInterface $engine, ViewComposerCollection $composer_collection, GlobalContext $global_context) {
 			$this->engine = $engine;
 			$this->composer_collection = $composer_collection;
 			$this->global_context = $global_context;
@@ -66,6 +65,10 @@
 			$this->composer_collection->executeUsing($view);
 
 			$view->with( $local_context );
+
+			if ( !isset($this->rendered_view) ) {
+			    $this->rendered_view = $view;
+            }
 
 		}
 
@@ -114,6 +117,10 @@
 
 		    return $this->engine->includeNextView();
 
+        }
+
+        public function renderedView() : ?ViewInterface{
+		    return $this->rendered_view;
         }
 
 	}
