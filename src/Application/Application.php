@@ -57,6 +57,11 @@
          */
         private $running_unit_test = false;
 
+        /**
+         * @var string
+         */
+        private $base_path;
+
         public function __construct(ContainerAdapter $container, ServerRequestInterface $server_request = null)
         {
 
@@ -77,24 +82,16 @@
 
         }
 
-        /**
-         * Make and assign a new application instance.
-         *
-         * @param  string|ContainerAdapter  $container_adapter  ::class or default
-         *
-         * @return static
-         */
-        public static function create($container_adapter) : Application
+        public static function create(string $base_path, ContainerAdapter $container_adapter) : Application
         {
+            $app = new static($container_adapter);
+            $app->setBasePath($base_path);
+            return $app;
 
-            return new static(
-                ($container_adapter !== 'default') ? $container_adapter : new BaseContainerAdapter()
-            );
         }
 
-        public function boot( array $config = []) : void
+        public function boot( bool $load_providers = true ) : void
         {
-
 
             if ($this->bootstrapped) {
 
@@ -102,7 +99,12 @@
 
             }
 
-            $this->bindConfigInstance($config);
+            $this->config = ((new LoadConfiguration))->bootstrap($this);
+            $this->container()->instance(ApplicationConfig::class, $this->config);
+
+            if ( ! $load_providers ) {
+                return;
+            }
 
             $this->loadServiceProviders();
 
@@ -161,16 +163,6 @@
             return $this->running_unit_test;
         }
 
-        private function bindConfigInstance(array $config)
-        {
-
-            $config = new ApplicationConfig($config);
-
-            $this->container()->instance(ApplicationConfig::class, $config);
-            $this->config = $config;
-
-        }
-
         private function captureRequest() : ServerRequestInterface
         {
 
@@ -218,6 +210,21 @@
             $last = end($trace)['class'];
 
             $this->container()->instance(ApplicationTrait::class, $last);
+        }
+
+        private function setBasePath(string $base_path)
+        {
+            $this->base_path = rtrim($base_path, '\/');
+        }
+
+        public function basePath() : string
+        {
+            return $this->base_path;
+        }
+
+        public function configPath($path = '') : string
+        {
+            return $this->base_path.DIRECTORY_SEPARATOR.'config'.($path ? DIRECTORY_SEPARATOR.$path : $path);
         }
 
 

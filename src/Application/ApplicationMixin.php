@@ -116,20 +116,19 @@
         /**
          * Bootstrap the application.
          *
-         * @param  array  $config
-         * @param  boolean  $run
+         * @param  string  $base_path
          *
          * @return void
          * @see Application::boot()
          */
-        public static function bootstrap(array $config = [], $run = true)
+        public static function boot(string $base_path)
         {
         }
 
         /**
          * Get the IoC container instance.
          *
-         * @return \Contracts\ContainerAdapter
+         * @return ContainerAdapter
          */
         public static function container() : ContainerAdapter
         {

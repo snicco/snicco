@@ -31,7 +31,6 @@
 			unset( $this->config );
 		}
 
-
 		/** @test */
 		public function a_value_can_be_a_boolean_false () {
 
