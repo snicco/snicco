@@ -13,4 +13,6 @@
             ],
         ],
 
+        'trailing_slash' => false
+
     ];

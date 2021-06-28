@@ -9,7 +9,10 @@
     use Nyholm\Psr7\Factory\Psr17Factory;
     use Tests\stubs\TestApp;
     use WPEmerge\Application\Application;
+    use WPEmerge\Http\ResponseEmitter;
+    use WPEmerge\Support\Arr;
     use WPEmerge\Testing\TestCase as BaseTestCase;
+    use WPEmerge\Testing\TestResponse;
 
     class TestCase extends BaseTestCase
     {
@@ -39,6 +42,29 @@
             $app->setUriFactory($f);
 
             return $app;
+
+        }
+
+        protected function sendResponse () :TestResponse {
+
+            $r =  $this->app->resolve(ResponseEmitter::class)->response;
+
+            if ( ! $r instanceof TestResponse ) {
+                $this->fail('No response was sent.');
+            }
+
+            return $r;
+
+        }
+
+        protected function withAddedProvider($provider) {
+            $provider = Arr::wrap($provider);
+
+            foreach ($provider as $p) {
+
+                $this->withAddedConfig(['app.providers' => [$p]]);
+
+            }
 
         }
 

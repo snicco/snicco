@@ -14,9 +14,6 @@
 
     class IncomingAdminRequest extends IncomingRequest {
 
-
         use IsAction;
-
-
 
     }

@@ -21,7 +21,7 @@
         public function loadServiceProviders() : void
         {
 
-            $user_providers = $this->config->get('providers', []);
+            $user_providers = $this->config->get('app.providers', []);
 
             $providers = collect(self::CORE_SERVICE_PROVIDERS)->merge($user_providers);
 

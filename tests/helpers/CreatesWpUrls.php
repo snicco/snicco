@@ -39,7 +39,6 @@
 
             $request = TestRequest::withServerParams($request,['SCRIPT_NAME'=> 'wp-admin/admin-ajax.php']);
 
-
             return $request->withParsedBody(['action' => $action]);
 
         }

@@ -21,6 +21,7 @@
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Contracts\ServiceProvider;
+    use WPEmerge\Facade\WP;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Routing\Route;
@@ -163,6 +164,7 @@
             $this->set_up_has_run = false;
 
             if (class_exists(\Mockery::class)) {
+
                 if ($container = Mockery::getContainer()) {
                     $this->addToAssertionCount($container->mockery_getExpectationCount());
                 }
@@ -186,6 +188,7 @@
             }
 
             ApplicationEvent::setInstance(null);
+            WP::reset();
 
             parent::tearDown();
         }
@@ -218,12 +221,6 @@
             }
 
             return $this;
-
-        }
-
-        protected function sendResponse () :TestResponse {
-
-            return $this->app->resolve(ResponseEmitter::class)->response;
 
         }
 
