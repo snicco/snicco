@@ -138,6 +138,7 @@
                 $this->fail('TestCase booted twice');
             }
 
+            $this->app->runningUnitTest();
             $this->app->loadServiceProviders();
 
             $this->setUpTraits();
