@@ -18,6 +18,7 @@
          */
         public $response;
 
+
         public function emit(ResponseInterface $response) : void
         {
             $this->response = new TestResponse($response);

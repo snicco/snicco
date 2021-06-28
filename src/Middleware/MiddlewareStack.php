@@ -31,7 +31,7 @@
         public function createFor(Route $route, Request $request) : array
         {
 
-            $middleware = $route->getMiddleware();
+            $middleware = array_diff($route->getMiddleware(), $this->middleware_groups['global']);
 
             if ( $this->withGlobalMiddleware( $request ) ) {
 
@@ -40,8 +40,6 @@
             }
 
             $middleware = $this->expandMiddleware($middleware);
-
-            /** @todo fix bug when global middleware was already run and is also added to the route. */
             $middleware = $this->uniqueMiddleware($middleware);
 
             return $this->sortMiddleware($middleware);

@@ -7,13 +7,13 @@
     namespace Tests\integration\Http;
 
     use Carbon\Carbon;
-    use Tests\IntegrationTest;
+    use Codeception\TestCase\WPTestCase;
     use Tests\stubs\TestRequest;
     use wpdb;
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Http\DatabaseMagicLink;
 
-    class DatabaseMagicLinkTest extends IntegrationTest
+    class DatabaseMagicLinkTest extends WPTestCase
     {
 
         /**
@@ -41,8 +41,10 @@
          */
         private $table;
 
-        protected function afterSetup()
+        protected function setUp() :void
         {
+            parent::setUp();
+
             global $wpdb;
             $this->db = $wpdb;
             $this->createTables();
@@ -54,9 +56,10 @@
 
         }
 
-        protected function beforeTearDown()
+        protected function tearDown() :void
         {
             $this->dropTables();
+            parent::tearDown();
         }
 
         private function createTables()

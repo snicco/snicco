@@ -13,3 +13,9 @@
         return 'foo-other-route';
 
     });
+
+    $router->get('web-other', function () {
+
+        return 'web-other';
+
+    });

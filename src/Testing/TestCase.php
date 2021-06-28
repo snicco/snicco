@@ -29,6 +29,7 @@
     use WPEmerge\Routing\RouteRegistrar;
     use WPEmerge\Session\Session;
     use WPEmerge\Session\SessionServiceProvider;
+    use WPEmerge\Support\Arr;
 
     abstract class TestCase extends WPTestCase
     {
@@ -214,6 +215,13 @@
 
         }
 
+        protected function withAddedMiddleware(string $group, $middleware) : TestCase
+        {
+
+            $this->config->extend("middleware.groups.$group", Arr::wrap($middleware));
+            return $this;
+        }
+
         protected function withOutConfig(array $keys) : TestCase
         {
 
@@ -236,7 +244,7 @@
             $this->additional_routes[] = $route;
         }
 
-        private function loadRoutes () {
+        protected function loadRoutes () {
 
             /** @var AbstractRouteCollection $routes */
             $routes = $this->app->resolve(AbstractRouteCollection::class);
