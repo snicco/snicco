@@ -13,91 +13,82 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
+    use Tests\TestCase;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\IncomingAdminRequest;
+    use WPEmerge\Events\IncomingAjaxRequest;
+    use WPEmerge\Events\ResponseSent;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Listeners\CreateDynamicHooks;
     use WPEmerge\Support\Arr;
 
-    class RouteRegistrationTest extends IntegrationTest
+    class RouteRegistrationTest extends TestCase
     {
 
         use CreatesWpUrls;
 
+        protected function setUp() : void
+        {
+            $this->defer_boot = true;
+            parent::setUp();
+
+        }
+
+        protected function tearDown() : void
+        {
+            parent::tearDown();
+        }
+
+
         /** @test */
-        public function web_routes_are_loaded () {
+        public function web_routes_are_loaded_on_template_include () {
 
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR,
-                ]
-            ]);
-            $this->rebindRequest(TestRequest::from('GET', '/foo'));
+            $this->instance(Request::class, TestRequest::from('GET', '/foo'));
+            $this->boot();
 
-            ob_start();
-
+            // load routes
             do_action('init');
+
             apply_filters('template_include', 'wp-template.php');
 
-            $this->assertSame('foo', ob_get_clean());
-            HeaderStack::assertHasStatusCode(200);
+            $this->sendResponse()->assertSee('foo')->assertOk();
 
         }
 
         /** @test */
-        public function admin_routes_are_loaded () {
+        public function admin_routes_are_run_on_the_loaded_on_admin_init_hook () {
 
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR,
-                ],
-                'providers' => [
-                    SimulateAdminProvider::class
-                ]
-            ]);
 
-            WP::shouldReceive('pluginPageHook')->andReturn('toplevel_page_foo');
+            // $this->withAddedProvider(SimulateAdminProvider::class);
+            $this->boot();
+            // WP::shouldReceive('pluginPageHook')->andReturn('toplevel_page_foo');
 
-            $this->rebindRequest($request = $this->adminRequestTo('foo'));
-
-            ob_start();
+            $this->instance(Request::class, $request = $this->adminRequestTo('foo'));
 
             do_action('init');
+
+            // Its impossible to use admin_init directly in testing because WP will send headers everywhere.
             IncomingAdminRequest::dispatch([$request]);
 
-            $this->assertSame('FOO_ADMIN', ob_get_clean());
-
-            WP::reset();
-            Mockery::close();
+            $this->sendResponse()->assertOk()->assertSee('FOO_ADMIN');
 
         }
 
         /** @test */
-        public function ajax_routes_are_loaded () {
+        public function ajax_routes_are_loaded_first_on_admin_init () {
 
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR,
-                ],
-                'providers' => [
-                    SimulateAjaxProvider::class
-                ]
-            ]);
+            $this->boot();
 
-            WP::shouldReceive('pluginPageHook')->andReturnNull();
-            $this->rebindRequest($request = $this->ajaxRequest('foo_action'));
-
-            ob_start();
+            $this->instance(Request::class, $request = $this->ajaxRequest('foo_action'));
+            ApplicationEvent::fake([ResponseSent::class]);
 
             do_action('init');
-            do_action('admin_init');
+            IncomingAjaxRequest::dispatch([$request]);
 
-            $this->assertSame('FOO_AJAX_ACTION', ob_get_clean());
-
-            WP::reset();
-            Mockery::close();
+            $this->sendResponse()->assertOk()->assertSee('FOO_AJAX_ACTION');
 
         }
 
@@ -350,7 +341,6 @@
 
         public function register() : void
         {
-
             $this->createDefaultWpApiMocks();
             WP::shouldReceive('isAdminAjax')->andReturnTrue();
             WP::shouldReceive('isAdmin')->andReturnTrue();
