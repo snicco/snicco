@@ -31,7 +31,6 @@
 
         public function loadIntoRouter() : void
         {
-
             $this->router->loadRoutes();
         }
 

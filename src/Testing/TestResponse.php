@@ -6,8 +6,12 @@
 
     namespace WPEmerge\Testing;
 
+    use Closure;
+    use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Http\Psr7\Response;
     use PHPUnit\Framework\Assert as PHPUnit;
+    use WPEmerge\Http\Responses\NullResponse;
+    use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\VariableBag;
     use WPEmerge\Testing\Constraints\SeeInOrder;
@@ -37,6 +41,16 @@
          */
         private $status_code;
 
+        /**
+         * @var ViewInterface|null
+         */
+        private $view;
+
+        /**
+         * @var Session|null
+         */
+        private $session;
+
         public function __construct(Response $response)
         {
             $this->psr_response = $response;
@@ -46,6 +60,31 @@
 
         }
 
+        public function __call($method, $args)
+        {
+            return $this->psr_response->{$method}(...$args);
+        }
+
+        public function setSession(Session $session)
+        {
+            $this->session = $session;
+        }
+
+        public function setRenderedView(ViewInterface $rendered_view)
+        {
+            $this->view = $rendered_view;
+        }
+
+        public function assertNullResponse() : TestResponse
+        {
+            PHPUnit::assertInstanceOf(NullResponse::class, $this->psr_response);
+            return $this;
+        }
+
+        public function assertNotNullResponse() {
+            PHPUnit::assertNotInstanceOf(NullResponse::class, $this->psr_response);
+            return $this;
+        }
 
         /**
          * Assert that the response has a successful status code.
@@ -367,18 +406,17 @@
             return $this;
         }
 
-
         /**
          * Assert that the response view equals the given value.
          *
          * @param  string  $value
          * @return $this
          */
-        public function assertViewIs($value)
+        public function assertViewIs($value) : TestResponse
         {
             $this->ensureResponseHasView();
 
-            PHPUnit::assertEquals($value, $this->original->name());
+            PHPUnit::assertEquals($value, $this->view->name());
 
             return $this;
         }
@@ -390,7 +428,7 @@
          * @param  mixed  $value
          * @return $this
          */
-        public function assertViewHas($key, $value = null)
+        public function assertViewHas($key, $value = null) : TestResponse
         {
             if (is_array($key)) {
                 return $this->assertViewHasAll($key);
@@ -399,13 +437,11 @@
             $this->ensureResponseHasView();
 
             if (is_null($value)) {
-                PHPUnit::assertTrue(Arr::has($this->original->gatherData(), $key));
+                PHPUnit::assertTrue(Arr::has($this->view->context(), $key));
             } elseif ($value instanceof Closure) {
-                PHPUnit::assertTrue($value(Arr::get($this->original->gatherData(), $key)));
-            } elseif ($value instanceof Model) {
-                PHPUnit::assertTrue($value->is(Arr::get($this->original->gatherData(), $key)));
-            } else {
-                PHPUnit::assertEquals($value, Arr::get($this->original->gatherData(), $key));
+                PHPUnit::assertTrue($value(Arr::get($this->view->context(), $key)));
+            }  else {
+                PHPUnit::assertEquals($value, Arr::get($this->view->context(), $key));
             }
 
             return $this;
@@ -417,7 +453,7 @@
          * @param  array  $bindings
          * @return $this
          */
-        public function assertViewHasAll(array $bindings)
+        public function assertViewHasAll(array $bindings) : TestResponse
         {
             foreach ($bindings as $key => $value) {
                 if (is_int($key)) {
@@ -431,29 +467,16 @@
         }
 
         /**
-         * Get a piece of data from the original view.
-         *
-         * @param  string  $key
-         * @return mixed
-         */
-        public function viewData($key)
-        {
-            $this->ensureResponseHasView();
-
-            return $this->original->gatherData()[$key];
-        }
-
-        /**
          * Assert that the response view is missing a piece of bound data.
          *
          * @param  string  $key
          * @return $this
          */
-        public function assertViewMissing($key)
+        public function assertViewMissing(string $key) : TestResponse
         {
             $this->ensureResponseHasView();
 
-            PHPUnit::assertFalse(Arr::has($this->original->gatherData(), $key));
+            PHPUnit::assertFalse(Arr::has($this->view->context(), $key));
 
             return $this;
         }
@@ -463,23 +486,15 @@
          *
          * @return $this
          */
-        protected function ensureResponseHasView()
+        private function ensureResponseHasView() : TestResponse
         {
-            if (! $this->responseHasView()) {
-                return PHPUnit::fail('The response is not a view.');
+            if (! $this->view instanceof ViewInterface) {
+
+                PHPUnit::fail('The response is not a view.');
+
             }
 
             return $this;
-        }
-
-        /**
-         * Determine if the original response is a view.
-         *
-         * @return bool
-         */
-        protected function responseHasView()
-        {
-            return isset($this->original) && $this->original instanceof View;
         }
 
         /**
@@ -489,7 +504,7 @@
          * @param  mixed  $value
          * @return $this
          */
-        public function assertSessionHas($key, $value = null)
+        public function assertSessionHas($key, $value = null) : TestResponse
         {
             if (is_array($key)) {
                 return $this->assertSessionHasAll($key);
@@ -515,7 +530,7 @@
          * @param  array  $bindings
          * @return $this
          */
-        public function assertSessionHasAll(array $bindings)
+        public function assertSessionHasAll(array $bindings) : TestResponse
         {
             foreach ($bindings as $key => $value) {
                 if (is_int($key)) {
@@ -535,7 +550,7 @@
          * @param  mixed  $value
          * @return $this
          */
-        public function assertSessionHasInput($key, $value = null)
+        public function assertSessionHasInput($key, $value = null) : TestResponse
         {
             if (is_array($key)) {
                 foreach ($key as $k => $v) {
@@ -571,7 +586,7 @@
          * @param  string  $errorBag
          * @return $this
          */
-        public function assertSessionHasErrors($keys = [], $format = null, $errorBag = 'default')
+        public function assertSessionHasErrors($keys = [], $format = null, $errorBag = 'default') : TestResponse
         {
             $this->assertSessionHas('errors');
 
@@ -598,7 +613,7 @@
          * @param  string  $errorBag
          * @return $this
          */
-        public function assertSessionDoesntHaveErrors($keys = [], $format = null, $errorBag = 'default')
+        public function assertSessionDoesntHaveErrors($keys = [], $format = null, $errorBag = 'default') : TestResponse
         {
             $keys = (array) $keys;
 
@@ -630,7 +645,7 @@
          *
          * @return $this
          */
-        public function assertSessionHasNoErrors()
+        public function assertSessionHasNoErrors() : TestResponse
         {
             $hasErrors = $this->session()->has('errors');
 
@@ -653,7 +668,7 @@
          * @param  mixed  $format
          * @return $this
          */
-        public function assertSessionHasErrorsIn($errorBag, $keys = [], $format = null)
+        public function assertSessionHasErrorsIn($errorBag, $keys = [], $format = null) : TestResponse
         {
             return $this->assertSessionHasErrors($keys, $format, $errorBag);
         }
@@ -664,7 +679,7 @@
          * @param  string|array  $key
          * @return $this
          */
-        public function assertSessionMissing($key)
+        public function assertSessionMissing($key) : TestResponse
         {
             if (is_array($key)) {
                 foreach ($key as $value) {
@@ -680,165 +695,10 @@
             return $this;
         }
 
-        /**
-         * Get the current session store.
-         *
-         * @return \Illuminate\Session\Store
-         */
-        protected function session()
+        private function session() : ?Session
         {
-            return app('session.store');
+            return $this->session;
         }
-
-        /**
-         * Dump the content from the response.
-         *
-         * @return $this
-         */
-        public function dump()
-        {
-            $content = $this->getContent();
-
-            $json = json_decode($content);
-
-            if (json_last_error() === JSON_ERROR_NONE) {
-                $content = $json;
-            }
-
-            dump($content);
-
-            return $this;
-        }
-
-        /**
-         * Dump the headers from the response.
-         *
-         * @return $this
-         */
-        public function dumpHeaders()
-        {
-            dump($this->headers->all());
-
-            return $this;
-        }
-
-        /**
-         * Dump the session from the response.
-         *
-         * @param  string|array  $keys
-         * @return $this
-         */
-        public function dumpSession($keys = [])
-        {
-            $keys = (array) $keys;
-
-            if (empty($keys)) {
-                dump($this->session()->all());
-            } else {
-                dump($this->session()->only($keys));
-            }
-
-            return $this;
-        }
-
-        /**
-         * Get the streamed content from the response.
-         *
-         * @return string
-         */
-        public function streamedContent()
-        {
-            if (! is_null($this->streamed_content)) {
-                return $this->streamed_content;
-            }
-
-            if (! $this->psr_response instanceof StreamedResponse) {
-                PHPUnit::fail('The response is not a streamed response.');
-            }
-
-            ob_start();
-
-            $this->sendContent();
-
-            return $this->streamed_content = ob_get_clean();
-        }
-
-        /**
-         * Dynamically access base response parameters.
-         *
-         * @param  string  $key
-         * @return mixed
-         */
-        public function __get($key)
-        {
-            return $this->psr_response->{$key};
-        }
-
-        /**
-         * Proxy isset() checks to the underlying base response.
-         *
-         * @param  string  $key
-         * @return mixed
-         */
-        public function __isset($key)
-        {
-            return isset($this->psr_response->{$key});
-        }
-
-        /**
-         * Determine if the given offset exists.
-         *
-         * @param  string  $offset
-         * @return bool
-         */
-        public function offsetExists($offset)
-        {
-            return $this->responseHasView()
-                ? isset($this->original->gatherData()[$offset])
-                : isset($this->json()[$offset]);
-        }
-
-        /**
-         * Get the value for a given offset.
-         *
-         * @param  string  $offset
-         * @return mixed
-         */
-        public function offsetGet($offset)
-        {
-            return $this->responseHasView()
-                ? $this->viewData($offset)
-                : $this->json()[$offset];
-        }
-
-        /**
-         * Set the value at the given offset.
-         *
-         * @param  string  $offset
-         * @param  mixed  $value
-         * @return void
-         *
-         * @throws \LogicException
-         */
-        public function offsetSet($offset, $value)
-        {
-            throw new LogicException('Response data may not be mutated using array access.');
-        }
-
-        /**
-         * Unset the value at the given offset.
-         *
-         * @param  string  $offset
-         * @return void
-         *
-         * @throws \LogicException
-         */
-        public function offsetUnset($offset)
-        {
-            throw new LogicException('Response data may not be mutated using array access.');
-        }
-
-
 
         private function isSuccessful() : bool
         {
@@ -869,6 +729,7 @@
         {
             return $this->psr_response->isRedirect($location);
         }
+
 
 
     }

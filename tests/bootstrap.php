@@ -59,7 +59,7 @@
 
     if ( ! defined('ROUTES_DIR')) {
 
-        define('ROUTES_DIR', TESTS_DIR.DS.'fixtures'.DS.'Routes');
+        define('ROUTES_DIR', TESTS_DIR.DS.'fixtures'.DS.'routes');
 
     }
 

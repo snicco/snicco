@@ -10,9 +10,11 @@
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestFactoryInterface;
     use Psr\Http\Message\ServerRequestInterface;
+    use Psr\Http\Message\UriFactoryInterface;
     use Psr\Http\Message\UriInterface;
     use WPEmerge\Application\Application;
     use WPEmerge\Contracts\Middleware;
+    use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Events\IncomingWebRequest;
@@ -22,6 +24,7 @@
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Session\Session;
+    use WPEmerge\View\ViewFactory;
 
     /**
      * @property Session $session
@@ -212,28 +215,16 @@
         public function get($uri, array $headers = []) : TestResponse
         {
 
+            $uri = $this->createUri($uri);
+
             $server = array_merge(['REQUEST_METHOD' => 'GET', 'SCRIPT_NAME' => 'index.php'], $this->default_server_variables);
             $request = $this->request_factory->createServerRequest('GET', $uri, $server);
 
-            $components = parse_url($uri);
-            $query = $components['query'] ?? [];
-
+            parse_str($uri->getQuery(), $query);
             $request = $request->withQueryParams($query);
 
             return $this->performRequest($request, $headers);
 
-        }
-
-
-        /**
-         * Create the test response instance from the given response.
-         *
-         * @param  \Illuminate\Http\Response  $response
-         * @return \Illuminate\Testing\TestResponse
-         */
-        protected function createTestResponse($response)
-        {
-            return TestResponse::fromBaseResponse($response);
         }
 
         private function addHeaders(ServerRequestInterface $request, array $headers) : ServerRequestInterface
@@ -254,16 +245,32 @@
 
             if ( $type === 'web') {
                 $request = new IncomingWebRequest($request, 'wordpress-template.php');
-            } elseif ( $type === 'admin') {
+            }
+            elseif ( $type === 'admin') {
                 $request = new IncomingAdminRequest($request);
-            }elseif ( $type === 'ajax') {
+            }
+            elseif ( $type === 'ajax') {
                 $request = new IncomingAjaxRequest($request);
             }
+
+            $this->loadRoutes();
 
             /** @var Response $response */
             $response = $this->kernel->run($request);
 
-            return new TestResponse($response);
+            $response = new TestResponse($response);
+
+            $view_factory = $this->app->resolve(ViewFactory::class);
+
+            if ( $view_factory->renderedView() instanceof ViewInterface ) {
+                $response->setRenderedView($view_factory->renderedView());
+            }
+
+            if ( $this->session instanceof Session ) {
+                $response->setSession($this->session);
+            }
+
+            return $response;
 
         }
 
@@ -277,6 +284,27 @@
             }
 
             return $request;
+
+        }
+
+        private function createUri($uri) : UriInterface
+        {
+
+            $uri = $uri instanceof UriInterface
+                ? $uri
+                : $this->app->resolve(UriFactoryInterface::class)->createUri($uri);
+
+            if ( ! $uri->getScheme() ) {
+                $uri = $uri->withScheme('https');
+            }
+
+            if ( ! $uri->getHost() ) {
+
+                $uri = $uri->withHost(parse_url(SITE_URL, PHP_URL_HOST));
+
+            }
+
+            return $uri;
 
         }
 
