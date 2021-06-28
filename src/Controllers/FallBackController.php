@@ -47,17 +47,18 @@
         /** @var Closure */
         private $respond_with;
 
-        public function __construct(Pipeline $pipeline, MiddlewareStack $middleware_stack) {
+        public function __construct(Pipeline $pipeline, MiddlewareStack $middleware_stack)
+        {
 
             $this->pipeline = $pipeline;
             $this->middleware_stack = $middleware_stack;
 
         }
 
-        public function handle(Request $request, Routes $routes) :ResponseInterface
+        public function handle(Request $request, Routes $routes) : ResponseInterface
         {
 
-            $possible_routes = collect($routes->withWildCardUrl( $request->getMethod() ) );
+            $possible_routes = collect($routes->withWildCardUrl($request->getMethod()));
 
             /** @var Route $route */
             $route = $possible_routes->first(function (Route $route) use ($request) {
@@ -68,21 +69,31 @@
 
             });
 
-
-            if ( $route ) {
+            if ($route) {
 
                 $this->respond_with = $this->runRoute($route);
                 $route->instantiateAction();
 
-            } else {
+            }
+            else {
 
                 $this->respond_with = $this->nonMatchingRoute();
 
             }
 
-            $middleware = $route
-                ? $this->middleware_stack->createFor($route, $request)
-                : $this->middleware_stack->onlyGroups($this->fallback_handler ? ['global', 'web'] : ['web'], $request);
+            $middleware = [];
+
+            if ($route) {
+                $middleware = $this->middleware_stack->createFor($route, $request);
+            }
+            else {
+
+                $groups = $this->fallback_handler
+                    ? ['global', 'web',]
+                    : ($this->withWebMiddlewareGlobally($request) ? ['web'] : []);
+
+                $middleware = $this->middleware_stack->onlyGroups($groups, $request);
+            }
 
             return $this->pipeline
                 ->send($request)
@@ -90,6 +101,7 @@
                 ->then(function (Request $request) {
 
                     $response = call_user_func($this->respond_with, $request);
+
                     return $this->response_factory->toResponse($response);
 
                 });
@@ -106,13 +118,14 @@
 
         public function setFallbackHandler(callable $fallback_handler)
         {
+
             $this->fallback_handler = $fallback_handler;
         }
 
-        private function runRoute(Route $route ) : Closure
+        private function runRoute(Route $route) : Closure
         {
 
-            return function ( Request $request ) use ($route) {
+            return function (Request $request) use ($route) {
 
                 $response = $route->run($request);
 
@@ -125,13 +138,22 @@
         private function nonMatchingRoute() : Closure
         {
 
-            return function ( Request $request )  {
+            return function (Request $request) {
 
                 return ($this->fallback_handler)
                     ? call_user_func($this->fallback_handler, $request)
                     : $this->response_factory->null();
 
             };
+
+        }
+
+        private function withWebMiddlewareGlobally(Request $request)
+        {
+
+            // global middleware is always run without matching a route
+            // so we apply the same thing for fallback web routes.
+            return $request->getAttribute('global_middleware_run', false);
 
         }
 

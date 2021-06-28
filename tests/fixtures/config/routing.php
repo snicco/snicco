@@ -3,10 +3,14 @@
 
     declare(strict_types = 1);
 
-return [
+    return [
 
+        'definitions' => ROUTES_DIR,
 
-    'definitions' => ROUTES_DIR
+        'api' => [
+            'endpoints' => [
+                'test' => 'api-prefix/base',
+            ],
+        ],
 
-
-];
+    ];

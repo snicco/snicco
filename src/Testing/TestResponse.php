@@ -281,7 +281,7 @@
         public function assertLocation($uri) : TestResponse
         {
             PHPUnit::assertEquals(
-                $uri, $this->headers->get('Location')
+                $uri, $this->headers->get('Location')[0]
             );
 
             return $this;

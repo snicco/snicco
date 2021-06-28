@@ -24,6 +24,7 @@
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Session\Session;
+    use WPEmerge\Support\Url;
     use WPEmerge\View\ViewFactory;
 
     /**
@@ -206,9 +207,7 @@
          * Visit the given URI with a GET request.
          *
          * @param  string|UriInterface  $uri
-         * @param  array  $_GET
          * @param  array  $headers
-         * @param  array  $serer_params
          *
          * @return TestResponse
          */
@@ -222,6 +221,76 @@
 
             parse_str($uri->getQuery(), $query);
             $request = $request->withQueryParams($query);
+
+            return $this->performRequest($request, $headers);
+
+        }
+
+        /**
+         * Visit the given URI with a POST request.
+         *
+         * @param  string|UriInterface  $uri
+         * @param  array  $data
+         * @param  array  $headers
+         *
+         * @return TestResponse
+         */
+        public function post($uri, array $data = [], array $headers = []) : TestResponse
+        {
+
+            $uri = $this->createUri($uri);
+
+            $server = array_merge(['REQUEST_METHOD' => 'POST', 'SCRIPT_NAME' => 'index.php'], $this->default_server_variables);
+            $request = $this->request_factory->createServerRequest('POST', $uri, $server);
+
+            $request = $request->withParsedBody($data);
+
+            return $this->performRequest($request, $headers);
+
+        }
+
+
+         /**
+         * Visit the given URI with a PATCH request.
+         *
+         * @param  string|UriInterface  $uri
+         * @param  array  $data
+         * @param  array  $headers
+         *
+         * @return TestResponse
+         */
+        public function patch($uri, array $data = [], array $headers = []) : TestResponse
+        {
+
+            $uri = $this->createUri($uri);
+
+            $server = array_merge(['REQUEST_METHOD' => 'PATCH', 'SCRIPT_NAME' => 'index.php'], $this->default_server_variables);
+            $request = $this->request_factory->createServerRequest('PATCH', $uri, $server);
+
+            $request = $request->withParsedBody($data);
+
+            return $this->performRequest($request, $headers);
+
+        }
+
+        /**
+         * Visit the given URI with a POST request.
+         *
+         * @param  string|UriInterface  $uri
+         * @param  array  $data
+         * @param  array  $headers
+         *
+         * @return TestResponse
+         */
+        public function delete($uri, array $data = [], array $headers = []) : TestResponse
+        {
+
+            $uri = $this->createUri($uri);
+
+            $server = array_merge(['REQUEST_METHOD' => 'DELETE', 'SCRIPT_NAME' => 'index.php',], $this->default_server_variables);
+            $request = $this->request_factory->createServerRequest('DELETE', $uri, $server);
+
+            $request = $request->withParsedBody($data);
 
             return $this->performRequest($request, $headers);
 
@@ -251,6 +320,10 @@
             }
             elseif ( $type === 'ajax') {
                 $request = new IncomingAjaxRequest($request);
+            }
+
+            if ( ! $this->set_up_has_run ) {
+                $this->boot();
             }
 
             $this->loadRoutes();
@@ -289,6 +362,10 @@
 
         private function createUri($uri) : UriInterface
         {
+
+            if (is_string($uri) ) {
+                $uri = Url::addLeading($uri);
+            }
 
             $uri = $uri instanceof UriInterface
                 ? $uri

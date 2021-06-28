@@ -170,6 +170,7 @@
         public function createFallbackWebRoute()
         {
 
+
             $this->any('/{path}', [FallBackController::class, 'handle'])
                  ->and('path', '[^.]+')
                  ->where(function () {

@@ -17,6 +17,7 @@
     use Tests\stubs\TestApp;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationConfig;
+    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Contracts\ServiceProvider;
@@ -74,6 +75,11 @@
         private $additional_routes = [];
 
         /**
+         * @var bool
+         */
+        protected $defer_boot = false;
+
+        /**
          * Return an instance of your Application. DONT BOOT THE APPLICATION.
          */
         abstract public function createApplication() : Application;
@@ -114,10 +120,22 @@
             }
 
             $this->app->boot(false);
-
-            $this->app->config()->extend('app.providers', $this->packageProviders());
-
+            $this->config = $this->app->config();
+            $this->config->extend('app.providers', $this->packageProviders());
+            $this->request_factory = $this->app->resolve(ServerRequestFactoryInterface::class);
             $this->replaceBindings();
+
+            if ( ! $this->defer_boot ) {
+                $this->boot();
+            }
+
+        }
+
+        protected function boot() {
+
+            if ( $this->set_up_has_run ) {
+                $this->fail('TestCase booted twice');
+            }
 
             $this->app->loadServiceProviders();
 
@@ -167,6 +185,8 @@
                 CarbonImmutable::setTestNow();
             }
 
+            ApplicationEvent::setInstance(null);
+
             parent::tearDown();
         }
 
@@ -174,7 +194,16 @@
         {
 
             foreach ($items as $key => $value) {
-                $this->config->set($key, $value);
+
+                if ( is_array($this->config->get($key) ) ) {
+
+                    $this->config->extend($key, $value);
+                } else {
+
+                    $this->config->set($key, $value);
+
+                }
+
             }
 
             return $this;
@@ -189,6 +218,12 @@
             }
 
             return $this;
+
+        }
+
+        protected function sendResponse () :TestResponse {
+
+            return $this->app->resolve(ResponseEmitter::class)->response;
 
         }
 
@@ -244,22 +279,18 @@
         private function setProperties()
         {
 
-            $this->config = $this->app->config();
-
             if ( in_array(SessionServiceProvider::class, $this->config->get('app.providers'))){
 
                 $this->session = $this->app->resolve(Session::class);
 
             }
 
-            $this->request_factory = $this->app->resolve(ServerRequestFactoryInterface::class);
             $this->kernel = $this->app->resolve(HttpKernel::class);
 
         }
 
         private function replaceBindings()
         {
-
             $this->swap(ResponseEmitter::class, new TestResponseEmitter());
         }
 

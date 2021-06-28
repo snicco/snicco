@@ -143,7 +143,7 @@
 
             }
 
-            if ( ! $this->withMiddleware()) {
+            if ( ! $this->withMiddleware() ) {
 
                 return $this->core_middleware;
 
