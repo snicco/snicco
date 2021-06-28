@@ -5,6 +5,8 @@
 
     return [
 
+        'key' => TEST_APP_KEY,
+
         'providers' => [
 
         ]

@@ -130,8 +130,29 @@
 
         }
 
-        public function isRedirect(): bool
+        public function isRedirect(string $location = null): bool
         {
-            return in_array($this->getStatusCode(), [201, 301, 302, 303, 307, 308]) && $this->hasHeader('location');
+            return in_array($this->getStatusCode(), [201, 301, 302, 303, 307, 308]) && (null === $location || $location == $this->getHeader('Location'));
         }
+
+        public function isSuccessful() : bool
+        {
+            return $this->getStatusCode() >= 200 && $this->getStatusCode() < 300;
+        }
+
+        public function isOk() : bool
+        {
+            return 200 === $this->getStatusCode();
+        }
+
+        public function isNotFound() : bool
+        {
+            return 404 === $this->getStatusCode();
+        }
+
+        public function isForbidden() : bool
+        {
+            return 403 === $this->getStatusCode();
+        }
+
     }

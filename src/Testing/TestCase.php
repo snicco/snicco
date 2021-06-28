@@ -18,6 +18,7 @@
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Session\Session;
+    use WPEmerge\Session\SessionServiceProvider;
 
     abstract class TestCase extends WPTestCase
     {
@@ -36,8 +37,8 @@
         /** @var ApplicationConfig */
         protected $config;
 
-        /** @var ServerRequestCreator */
-        protected $server_request_creator;
+        /** @var ServerRequestFactoryInterface */
+        protected $request_factory;
 
         /**
          * @var HttpKernel
@@ -47,12 +48,12 @@
         /**
          * @var callable[]
          */
-        private $after_application_created_callbacks;
+        private $after_application_created_callbacks = [];
 
         /**
          * @var callable[]
          */
-        private $before_application_destroy_callbacks;
+        private $before_application_destroy_callbacks = [];
 
         /**
          * @var bool
@@ -85,7 +86,7 @@
 
             parent::setUp();
 
-            if ( ! $this->app ) {
+            if ( ! $this->app) {
                 $this->refreshApplication();
             }
 
@@ -125,8 +126,9 @@
 
                 try {
                     Mockery::close();
-                } catch (InvalidCountException $e) {
-                    if (! Str::contains($e->getMethodName(), ['doWrite', 'askQuestion'])) {
+                }
+                catch (InvalidCountException $e) {
+                    if ( ! Str::contains($e->getMethodName(), ['doWrite', 'askQuestion'])) {
                         throw $e;
                     }
                 }
@@ -143,7 +145,8 @@
             parent::tearDown();
         }
 
-        protected function withAddedConfig(array $items) {
+        protected function withAddedConfig(array $items)
+        {
 
             foreach ($items as $key => $value) {
                 $this->config->set($key, $value);
@@ -179,15 +182,23 @@
 
         protected function setProperties()
         {
-            $this->session = $this->app->resolve(Session::class);
-            $this->server_request_creator = $this->app->serverRequestCreator();
-            $this->kernel = $this->app->resolve(HttpKernel::class);
+
             $this->config = $this->app->config();
+
+            if ( in_array(SessionServiceProvider::class, $this->config->get('app.providers'))){
+
+                $this->session = $this->app->resolve(Session::class);
+
+            }
+
+            $this->request_factory = $this->app->resolve(ServerRequestFactoryInterface::class);
+            $this->kernel = $this->app->resolve(HttpKernel::class);
 
         }
 
         private function replaceBindings()
         {
+
             $this->swap(ResponseEmitter::class, new TestResponseEmitter());
         }
 

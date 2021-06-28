@@ -118,7 +118,7 @@
         protected function appKey()
         {
 
-            return $this->config->get('app_key');
+            return $this->config->get('app.key');
 
         }
 

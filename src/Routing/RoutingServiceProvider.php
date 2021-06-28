@@ -120,9 +120,6 @@
             $this->config->extend('routing.must_match_web_routes', false);
             $this->config->extend('routing.api.endpoints', []);
 
-
-
-
         }
 
         private function bindRouteMatcher() : void
