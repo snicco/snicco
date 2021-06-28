@@ -51,6 +51,7 @@
                 $kernel = new HttpKernel(
 
                     $this->container->make(Pipeline::class),
+                    $this->container->make(ResponseEmitter::class),
 
                 );
 

@@ -23,12 +23,13 @@
             $app->setUploadedFileFactory($f);
             $app->setUriFactory($f);
             return $app;
+
         }
 
         /** @test */
         public function testGet () {
 
-            $response = $this->get('/foo');
+            $this->get('/foo')->assertSee('foo');
 
         }
 

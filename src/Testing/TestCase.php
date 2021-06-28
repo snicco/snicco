@@ -10,13 +10,21 @@
     use Carbon\CarbonImmutable;
     use Codeception\TestCase\WPTestCase;
     use Illuminate\Support\Str;
+    use Mockery;
     use Mockery\Exception\InvalidCountException;
     use Nyholm\Psr7Server\ServerRequestCreator;
     use Psr\Http\Message\ServerRequestFactoryInterface;
+    use Tests\stubs\TestApp;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationConfig;
+    use WPEmerge\Contracts\AbstractRouteCollection;
+    use WPEmerge\Contracts\RouteRegistrarInterface;
+    use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\ResponseEmitter;
+    use WPEmerge\Routing\Route;
+    use WPEmerge\Routing\Router;
+    use WPEmerge\Routing\RouteRegistrar;
     use WPEmerge\Session\Session;
     use WPEmerge\Session\SessionServiceProvider;
 
@@ -61,9 +69,22 @@
         private $set_up_has_run;
 
         /**
+         * @var Route[]
+         */
+        private $additional_routes = [];
+
+        /**
          * Return an instance of your Application. DONT BOOT THE APPLICATION.
          */
         abstract public function createApplication() : Application;
+
+        /**
+         * @return ServiceProvider[]
+         */
+        public function packageProviders () : array
+        {
+            return [];
+        }
 
         protected function afterApplicationCreated(callable $callback)
         {
@@ -87,10 +108,14 @@
             parent::setUp();
 
             if ( ! $this->app) {
+
                 $this->refreshApplication();
+
             }
 
             $this->app->boot(false);
+
+            $this->app->config()->extend('app.providers', $this->packageProviders());
 
             $this->replaceBindings();
 
@@ -119,7 +144,7 @@
 
             $this->set_up_has_run = false;
 
-            if (class_exists('Mockery')) {
+            if (class_exists(\Mockery::class)) {
                 if ($container = Mockery::getContainer()) {
                     $this->addToAssertionCount($container->mockery_getExpectationCount());
                 }
@@ -145,11 +170,22 @@
             parent::tearDown();
         }
 
-        protected function withAddedConfig(array $items)
+        protected function withAddedConfig(array $items) : TestCase
         {
 
             foreach ($items as $key => $value) {
                 $this->config->set($key, $value);
+            }
+
+            return $this;
+
+        }
+
+        protected function withOutConfig(array $keys) : TestCase
+        {
+
+            foreach ($keys as $key ) {
+                $this->config->remove($key);
             }
 
             return $this;
@@ -163,7 +199,32 @@
 
         }
 
-        protected function setUpTraits()
+        protected function addRoute(Route $route) {
+            $this->additional_routes[] = $route;
+        }
+
+        private function loadRoutes () {
+
+            /** @var AbstractRouteCollection $routes */
+            $routes = $this->app->resolve(AbstractRouteCollection::class);
+
+            /** @var RouteRegistrar $registrar */
+            $registrar =$this->app->resolve(RouteRegistrarInterface::class);
+            $registrar->loadApiRoutes($this->config);
+            $registrar->loadStandardRoutes($this->config);
+
+            foreach ($this->additional_routes as $route) {
+
+                $routes->add($route);
+
+            }
+
+            $registrar->loadIntoRouter();
+
+
+        }
+
+        private function setUpTraits()
         {
 
             $traits = array_flip(class_uses_recursive(static::class));
@@ -171,7 +232,7 @@
 
         }
 
-        protected function callBeforeApplicationDestroyedCallbacks()
+        private function callBeforeApplicationDestroyedCallbacks()
         {
 
             foreach ($this->before_application_destroy_callbacks as $callback) {
@@ -180,7 +241,7 @@
             }
         }
 
-        protected function setProperties()
+        private function setProperties()
         {
 
             $this->config = $this->app->config();
