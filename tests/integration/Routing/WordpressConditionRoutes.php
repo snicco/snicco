@@ -11,42 +11,25 @@
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use Tests\helpers\CreatesWpUrls;
+    use Tests\TestCase;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\HttpKernel;
 
-    class WordpressConditionRoutes extends IntegrationTest
+    class WordpressConditionRoutes extends TestCase
     {
 
-        use CreatesWpUrls;
-
-        /**
-         * @var HttpKernel
-         */
-        private $kernel;
-
-        protected function setUp() : void
-        {
-            parent::setUp();
-            $this->newTestApp(TEST_CONFIG);
-            $this->kernel = TestApp::resolve(HttpKernel::class);
-
-        }
-
         /** @test */
-        public function its_possible_to_create_routes_that_dont_match_an_url()
-        {
+        public function its_possible_to_create_a_route_without_url_conditions () {
 
             $GLOBALS['test']['pass_fallback_route_condition'] = true;
-
             ApplicationEvent::fake([ResponseSent::class]);
 
-            do_action('init');
+            $response = $this->get('/post1');
+            $response->assertOk();
+            $response->assertSee('get_fallback');
 
-            $this->seeKernelOutput('get_fallback', TestRequest::from('GET', 'post1'));
-
-            ApplicationEvent::assertDispatchedTimes(ResponseSent::class, 1 );
-
+            ApplicationEvent::assertDispatched(ResponseSent::class);
 
         }
 
@@ -54,18 +37,12 @@
         public function if_no_route_matches_due_to_failed_wp_conditions_a_null_response_is_returned()
         {
 
-            $GLOBALS['test']['pass_fallback_route_condition'] =false;
-
-
+            $GLOBALS['test']['pass_fallback_route_condition'] = false;
             ApplicationEvent::fake([ResponseSent::class]);
 
-            do_action('init');
-
-            $this->seeKernelOutput('', TestRequest::from('POST', 'post1'));
-
+            $this->post('/post1')->assertNullResponse();
 
             ApplicationEvent::assertNotDispatched(ResponseSent::class);
-
 
         }
 
@@ -73,13 +50,10 @@
         public function if_no_route_matches_due_to_different_http_verbs_a_null_response_is_returned()
         {
 
+            $GLOBALS['test']['pass_fallback_route_condition'] = true;
             ApplicationEvent::fake([ResponseSent::class]);
 
-            $GLOBALS['test']['pass_fallback_route_condition'] =true;
-            do_action('init');
-
-            $this->seeKernelOutput('', TestRequest::from('DELETE', 'post1'));
-
+            $this->delete('/post1')->assertNullResponse();
 
             ApplicationEvent::assertNotDispatched(ResponseSent::class);
 
@@ -89,14 +63,12 @@
         public function routes_with_wordpress_conditions_can_have_middleware () {
 
             $GLOBALS['test']['pass_fallback_route_condition'] =true;
-            do_action('init');
-
             $GLOBALS['test'][WebMiddleware::run_times] = 0;
             ApplicationEvent::fake([ResponseSent::class]);
 
-            $this->seeKernelOutput('patch_fallback', TestRequest::from('PATCH', 'post1'));
+            $this->patch('/post1')->assertSee('patch_fallback');
 
-            ApplicationEvent::assertDispatchedTimes(ResponseSent::class, 1 );
+            ApplicationEvent::assertDispatched(ResponseSent::class );
             $this->assertSame(1, $GLOBALS['test'][WebMiddleware::run_times], 'Middleware was not run as expected.');
 
         }
