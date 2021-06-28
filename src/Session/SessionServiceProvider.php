@@ -171,7 +171,7 @@
 
             $this->container->singleton(EncryptorInterface::class, function () {
 
-                return new Encryptor($this->config->get('app_key'));
+                return new Encryptor($this->config->get('app.key'));
 
             });
         }

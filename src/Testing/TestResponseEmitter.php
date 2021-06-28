@@ -18,6 +18,11 @@
          */
         public $response;
 
+        /**
+         * @var Cookies
+         */
+        public $cookies;
+
 
         public function emit(ResponseInterface $response) : void
         {
@@ -26,7 +31,7 @@
 
         public function emitCookies(Cookies $cookies)
         {
-            //
+            $this->cookies = $cookies;
         }
 
         public function emitHeaders(ResponseInterface $response) : void
