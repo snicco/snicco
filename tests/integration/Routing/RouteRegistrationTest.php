@@ -62,16 +62,20 @@
         public function admin_routes_are_run_on_the_loaded_on_admin_init_hook () {
 
 
-            // $this->withAddedProvider(SimulateAdminProvider::class);
-            $this->boot();
-            // WP::shouldReceive('pluginPageHook')->andReturn('toplevel_page_foo');
+            $this->withAddedProvider(SimulateAdminProvider::class)
+                 ->withoutHooks()
+                 ->boot();
+
+            WP::shouldReceive('pluginPageHook')->andReturn('toplevel_page_foo');
 
             $this->instance(Request::class, $request = $this->adminRequestTo('foo'));
 
             do_action('init');
+            do_action('admin_init');
+            $hook = WP::pluginPageHook();
 
-            // Its impossible to use admin_init directly in testing because WP will send headers everywhere.
-            IncomingAdminRequest::dispatch([$request]);
+            do_action("load-$hook");
+
 
             $this->sendResponse()->assertOk()->assertSee('FOO_ADMIN');
 
@@ -80,13 +84,12 @@
         /** @test */
         public function ajax_routes_are_loaded_first_on_admin_init () {
 
-            $this->boot();
+            $this->withoutHooks()->boot();
 
-            $this->instance(Request::class, $request = $this->ajaxRequest('foo_action'));
-            ApplicationEvent::fake([ResponseSent::class]);
+            $this->instance(Request::class, $this->ajaxRequest('foo_action'));
 
             do_action('init');
-            IncomingAjaxRequest::dispatch([$request]);
+            do_action('admin_init');
 
             $this->sendResponse()->assertOk()->assertSee('FOO_AJAX_ACTION');
 

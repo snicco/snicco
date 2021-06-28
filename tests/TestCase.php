@@ -66,6 +66,17 @@
 
             }
 
+            return $this;
+
+        }
+
+        protected function withoutHooks() {
+            $GLOBALS['wp_filter'] = [];
+            $GLOBALS['wp_actions'] = [];
+            $GLOBALS['wp_current_filter'] = [];
+
+            return $this;
+
         }
 
     }
