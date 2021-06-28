@@ -9,10 +9,9 @@
     use Carbon\Carbon;
     use Carbon\CarbonImmutable;
     use Codeception\TestCase\WPTestCase;
-    use Illuminate\Support\Facades\ParallelTesting;
     use Illuminate\Support\Str;
     use Mockery\Exception\InvalidCountException;
-    use Psr\Http\Message\RequestFactoryInterface;
+    use Nyholm\Psr7Server\ServerRequestCreator;
     use Psr\Http\Message\ServerRequestFactoryInterface;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationConfig;
@@ -34,11 +33,11 @@
         /** @var Session */
         protected $session;
 
-        /** @var ServerRequestFactoryInterface */
-        protected $request_factory;
-
         /** @var ApplicationConfig */
         protected $config;
+
+        /** @var ServerRequestCreator */
+        protected $server_request_creator;
 
         /**
          * @var HttpKernel
@@ -65,8 +64,6 @@
          */
         abstract public function createApplication() : Application;
 
-        abstract public function psr17RequestFactory() : ServerRequestFactoryInterface;
-
         protected function afterApplicationCreated(callable $callback)
         {
 
@@ -88,7 +85,7 @@
 
             parent::setUp();
 
-            if ( ! $this->app) {
+            if ( ! $this->app ) {
                 $this->refreshApplication();
             }
 
@@ -183,9 +180,10 @@
         protected function setProperties()
         {
             $this->session = $this->app->resolve(Session::class);
-            $this->request_factory = $this->psr17RequestFactory();
+            $this->server_request_creator = $this->app->serverRequestCreator();
             $this->kernel = $this->app->resolve(HttpKernel::class);
             $this->config = $this->app->config();
+
         }
 
         private function replaceBindings()

@@ -6,15 +6,14 @@
 
     namespace WPEmerge\Testing;
 
+    use Nyholm\Psr7Server\ServerRequestCreator;
     use Psr\Http\Message\ResponseInterface;
-    use Psr\Http\Message\ServerRequestFactoryInterface;
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Message\UriInterface;
     use WPEmerge\Application\Application;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingAjaxRequest;
-    use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Http\Cookie;
     use WPEmerge\Http\Delegate;
@@ -26,8 +25,8 @@
     /**
      * @property Session $session
      * @property Application $app
-     * @property ServerRequestFactoryInterface $request_factory
      * @property HttpKernel $kernel
+     * @property ServerRequestCreator $server_request_creator
      */
     trait MakesHttpRequests
     {
