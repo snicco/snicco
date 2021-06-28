@@ -6,40 +6,34 @@
 
     namespace Tests\integration\Session;
 
-    use BetterWpHooks\Contracts\Dispatcher;
-    use BetterWpHooks\Dispatchers\WordpressDispatcher;
     use Slim\Csrf\Guard;
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
-    use Tests\stubs\TestRequest;
-    use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Http\HttpKernel;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Auth\Controllers\AuthConfirmationController;
+    use Tests\TestCase;
     use WPEmerge\Session\Contracts\SessionManagerInterface;
     use WPEmerge\Session\CsrfField;
     use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Session\EncryptedSession;
     use WPEmerge\Session\Middleware\ShareSessionWithView;
-    use WPEmerge\Session\Contracts\SessionDriver;
     use WPEmerge\Session\SessionManager;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Session\Session;
     use WPEmerge\Session\Middleware\StartSessionMiddleware;
     use WPEmerge\View\GlobalContext;
 
-    class SessionServiceProviderTest extends IntegrationTest
+    class SessionServiceProviderTest extends TestCase
     {
+
+        public function packageProviders() : array
+        {
+            return [
+                SessionServiceProvider::class
+            ];
+        }
 
         /** @test */
         public function sessions_are_disabled_by_default()
         {
-
-            $this->newTestApp([
-                'providers' => [
-                    SessionServiceProvider::class,
-                ],
-            ]);
 
             $this->assertNull(TestApp::config('session.enable'));
 

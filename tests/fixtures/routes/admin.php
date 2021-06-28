@@ -28,6 +28,6 @@
         throw new InvalidCsrfTokenException();
 
     });
-
+    $router->redirect('index.php', '/foo');
 
 

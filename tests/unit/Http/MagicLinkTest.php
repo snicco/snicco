@@ -4,20 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration\Http;
+    namespace Tests\unit\Http;
 
     use Carbon\Carbon;
-    use Tests\IntegrationTest;
     use Tests\stubs\TestMagicLink;
     use Tests\stubs\TestRequest;
     use Tests\unit\Routing\UrlGeneratorTest;
-    use WPEmerge\Contracts\MagicLink;
 
     /**
      * NOTE: The validation test for the MagicLink class are already implemented
      * inside @see UrlGeneratorTest
      */
-    class MagicLinkTest extends IntegrationTest
+    class MagicLinkTest extends \PHPUnit\Framework\TestCase
     {
 
         /**
@@ -33,13 +31,15 @@
         /** @var Carbon */
         private $expires;
 
-        protected function afterSetup()
+        protected function setUp() :void
         {
 
             $this->magic_link = new TestMagicLink();
             $this->magic_link->setLottery([0,100]);
             $this->request = TestRequest::from('GET', 'foo');
             $this->expires = Carbon::now();
+
+            parent::setUp();
 
         }
 

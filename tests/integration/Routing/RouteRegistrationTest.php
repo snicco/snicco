@@ -7,6 +7,7 @@
     namespace Tests\integration\Routing;
 
     use Mockery;
+    use Tests\fixtures\RoutingDefinitionServiceProvider;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreatesWpUrls;
     use Tests\IntegrationTest;
@@ -42,6 +43,11 @@
             parent::tearDown();
         }
 
+        protected function makeFallbackConditionPass () {
+
+            $GLOBALS['test']['pass_fallback_route_condition'] = true;
+
+        }
 
         /** @test */
         public function web_routes_are_loaded_on_template_include () {
@@ -96,86 +102,51 @@
         }
 
         /** @test */
-        public function admin_routes_are_only_run_for_pages_added_with_add_menu_page () {
+        public function admin_routes_are_also_run_for_other_admin_pages () {
 
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR,
-                ],
-                'providers' => [
-                    SimulateAdminProvider::class
-                ]
-            ]);
+            $this->withAddedProvider(SimulateAdminProvider::class)
+                 ->withoutHooks()
+                 ->boot();
 
             WP::shouldReceive('pluginPageHook')->andReturnNull();
 
-            $this->rebindRequest($request = $this->adminRequestTo('foo'));
-
-            ApplicationEvent::fake();
-
-            ob_start();
+            $request = TestRequest::from('GET', '/wp-admin/index.php')->withLoadingScript('wp-admin/index.php');
+            $this->instance(Request::class, $request);
 
             do_action('init');
             do_action('admin_init');
+            global $pagenow;
+            do_action("load-$pagenow");
 
-            ApplicationEvent::assertNotDispatched(CreateDynamicHooks::class);
-
-            $this->assertSame('', ob_get_clean());
-            HeaderStack::assertHasNone();
-
-            WP::reset();
-            Mockery::close();
+            $this->sendResponse()->assertRedirect('/foo');
 
         }
 
         /** @test */
         public function ajax_routes_are_only_run_if_the_request_has_an_action_parameter () {
 
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR,
-                ],
-                'providers' => [
-                    SimulateAjaxProvider::class
-                ]
-            ]);
+            $this->withoutHooks()->boot();
 
-            WP::shouldReceive('pluginPageHook')->andReturnNull();
-
-            $request = $this->ajaxRequest('foo_action');
-
-            $this->rebindRequest($request->withParsedBody([]));
-
-            ob_start();
+            $this->instance(Request::class, $this->ajaxRequest('foo_action')->withParsedBody([]));
 
             do_action('init');
             do_action('admin_init');
 
-            $this->assertSame('', ob_get_clean());
-
-            WP::reset();
-            Mockery::close();
+            $this->assertNoResponse();
 
         }
 
         /** @test */
         public function the_fallback_route_controller_is_registered_for_web_routes()
         {
-
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR,
-                ],
-            ]);
-            $this->rebindRequest(TestRequest::from('GET', 'post1'));
+            $this->instance(Request::class, TestRequest::from('GET', 'post1'));
+            $this->boot();
             $this->makeFallbackConditionPass();
-            $this->registerAndRunApiRoutes();
 
-            ob_start();
-
+            do_action('init');
             apply_filters('template_include', 'wp-template.php');
 
-            $this->assertSame('get_fallback', ob_get_clean());
+            $this->sendResponse()->assertSee('get_fallback')->assertOk();
 
         }
 
@@ -183,28 +154,15 @@
         public function the_fallback_controller_does_not_match_admin_routes()
         {
 
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR,
-                ],
-                'providers' => [
-                    SimulateAdminProvider::class,
-                ],
-            ]);
+            $this->withAddedProvider(SimulateAdminProvider::class)->boot();
 
-            $request = TestRequest::from('GET', $this->adminUrlTo('foo'));
-            $this->rebindRequest($request);
+            $this->instance(Request::class, $request= $this->adminRequestTo('bogus'));
             $this->makeFallbackConditionPass();
-            $this->registerAndRunApiRoutes();
 
-            ob_start();
-
+            do_action('init');
             IncomingAdminRequest::dispatch([$request]);
 
-            $this->assertSame('', ob_get_clean());
-
-            WP::reset();
-            Mockery::close();
+            $this->assertNoResponse();
 
         }
 
@@ -212,29 +170,15 @@
         public function the_fallback_controller_does_not_match_ajax_routes()
         {
 
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR,
-                ],
-                'providers' => [
-                    SimulateAjaxProvider::class,
-                ],
-            ]);
-
-            $request = TestRequest::from('GET', $this->ajaxUrl('foo'));
-            $this->rebindRequest($request);
+            $this->withAddedProvider(SimulateAjaxProvider::class);
+            $this->instance(Request::class,$request = $this->ajaxRequest('bogus'));
+            $this->withoutHooks()->boot();
             $this->makeFallbackConditionPass();
-            $this->registerAndRunApiRoutes();
 
-            ob_start();
+            do_action('init');
+            IncomingAjaxRequest::dispatch([$request]);
 
-            IncomingAdminRequest::dispatch([$request]);
-
-            $this->assertSame('', ob_get_clean());
-
-            WP::reset();
-            Mockery::close();
-
+            $this->assertNoResponse();
 
         }
 
@@ -242,42 +186,24 @@
         public function named_groups_prefixes_are_applied_for_admin_routes()
         {
 
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR,
-                ],
-                'providers' => [
-                    SimulateAdminProvider::class,
-                ],
-            ]);
-            $this->registerAndRunApiRoutes();
+            $this->withAddedProvider(SimulateAdminProvider::class);
+            $this->boot();
+
+            $this->loadRoutes();
 
             $this->assertSame('/wp-admin/admin.php?page=foo', TestApp::routeUrl('admin.foo'));
-
-            Mockery::close();
-            WP::reset();
 
         }
 
         /** @test */
         public function named_groups_are_applied_for_ajax_routes()
         {
-
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR,
-                ],
-                'providers' => [
-                    SimulateAjaxProvider::class,
-                ],
-            ]);
-
-            $this->registerAndRunApiRoutes();
+            $this->withAddedProvider(SimulateAjaxProvider::class);
+            $this->boot();
+            $this->loadRoutes();
 
             $this->assertSame('/wp-admin/admin-ajax.php', TestApp::routeUrl('ajax.foo'));
 
-            Mockery::close();
-            WP::reset();
 
         }
 
@@ -285,50 +211,29 @@
         public function custom_routes_dirs_can_be_provided()
         {
 
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR,
-                ],
-                'providers' => [
-                    \Tests\fixtures\RoutingDefinitionServiceProvider::class,
-                ],
-            ]);
-
+            $this->withAddedProvider(RoutingDefinitionServiceProvider::class)->withoutHooks()->boot();
             $request = TestRequest::from('GET', 'other');
-            $this->rebindRequest($request);
-            $this->registerAndRunApiRoutes();
+            $this->instance(Request::class, $request);
 
-            ob_start();
-
+            do_action('init');
             apply_filters('template_include', 'wordpress.php');
 
-            $this->assertSame('other', ob_get_clean());
-
+            $this->sendResponse()->assertOk()->assertSee('other');
 
         }
 
         /** @test */
         public function a_file_with_the_same_name_will_not_be_loaded_twice_for_standard_routes () {
 
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR,
-                ],
-                'providers' => [
-                    \Tests\fixtures\RoutingDefinitionServiceProvider::class,
-                ],
-            ]);
+            $this->withAddedProvider(RoutingDefinitionServiceProvider::class)->withoutHooks()->boot();
+            $request = TestRequest::from('GET', 'web-other');
+            $this->instance(Request::class, $request);
 
-            $request = TestRequest::from('GET', 'foo');
-            $this->rebindRequest($request);
-            $this->registerAndRunApiRoutes();
-
-            ob_start();
-
+            do_action('init');
             apply_filters('template_include', 'wordpress.php');
 
             // without the filtering of file names the route in /OtherRoutes/web.php would match
-            $this->assertSame('foo', ob_get_clean());
+            $this->assertNoResponse();
 
 
         }

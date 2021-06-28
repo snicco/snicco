@@ -9,6 +9,7 @@
     use Nyholm\Psr7\Factory\Psr17Factory;
     use Tests\stubs\TestApp;
     use WPEmerge\Application\Application;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Support\Arr;
     use WPEmerge\Testing\TestCase as BaseTestCase;
@@ -77,6 +78,17 @@
 
             return $this;
 
+        }
+
+        protected function assertNoResponse(){
+
+            $this->assertNull($this->app->resolve(ResponseEmitter::class)->response);
+
+        }
+
+        protected function bindRequest(Request $request) {
+            $this->instance(Request::class, $request);
+            return $this;
         }
 
     }
