@@ -27,18 +27,10 @@
         use InteractsWithInput;
         use ValidatesWordpressNonces;
 
-
         public function __construct(ServerRequestInterface $psr_request)
         {
 
             $this->psr_request = $psr_request;
-
-        }
-
-        public function withType(string $type)
-        {
-
-            return $this->withAttribute('type', $type);
 
         }
 
@@ -206,7 +198,7 @@
             }
 
             // A request to the admin dashboard. We can catch that within admin_init
-            if (Str::contains($script, $this->getAttribute('_wp_admin_folder'))) {
+            if (Str::contains($script, 'wp-admin')) {
 
                 return true;
 
@@ -219,12 +211,7 @@
 
         }
 
-        public function type() : string
-        {
 
-            return $this->getAttribute('type', '');
-
-        }
 
         public function routingResult() : RoutingResult
         {
@@ -290,7 +277,7 @@
         {
 
             // A request to the admin dashboard. We can catch that within admin_init
-            return Str::contains($this->loadingScript(), $this->getAttribute('_wp_admin_folder')) && ! $this->isWpAjax();
+            return Str::contains($this->loadingScript(), 'wp-admin') && ! $this->isWpAjax();
 
 
         }

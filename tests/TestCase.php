@@ -41,12 +41,13 @@
             $app->setStreamFactory($f);
             $app->setUploadedFileFactory($f);
             $app->setUriFactory($f);
+            $app->setResponseFactory($f);
 
             return $app;
 
         }
 
-        protected function sendResponse () :TestResponse {
+        protected function sentResponse () :TestResponse {
 
             $r =  $this->app->resolve(ResponseEmitter::class)->response;
 

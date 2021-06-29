@@ -6,8 +6,8 @@
 
     namespace Tests\integration\ServiceProviders;
 
-    use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
+    use Tests\TestCase;
     use Tests\unit\View\MethodField;
     use WPEmerge\Contracts\ViewEngineInterface;
     use WPEmerge\Contracts\ViewFactoryInterface;
@@ -16,14 +16,12 @@
     use WPEmerge\View\ViewFactory;
     use WPEmerge\View\ViewComposerCollection;
 
-    class ViewServiceProviderTest extends IntegrationTest
+    class ViewServiceProviderTest extends TestCase
     {
 
         /** @test */
         public function the_global_context_is_a_singleton()
         {
-
-            $this->newTestApp();
 
             /** @var GlobalContext $context */
             $context = TestApp::resolve(GlobalContext::class);
@@ -43,8 +41,6 @@
         public function the_view_service_is_resolved_correctly()
         {
 
-            $this->newTestApp();
-
             $this->assertInstanceOf(ViewFactory::class, TestApp::resolve(ViewFactoryInterface::class));
 
         }
@@ -52,8 +48,6 @@
         /** @test */
         public function the_view_engine_is_resolved_correctly()
         {
-
-            $this->newTestApp();
 
             $this->assertInstanceOf(PhpViewEngine::class, TestApp::resolve(ViewEngineInterface::class));
 
@@ -63,8 +57,6 @@
         public function the_view_composer_collection_is_resolved_correctly()
         {
 
-            $this->newTestApp();
-
             $this->assertInstanceOf(ViewComposerCollection::class, TestApp::resolve(ViewComposerCollection::class));
 
         }
@@ -72,29 +64,16 @@
         /** @test */
         public function the_internal_views_are_included () {
 
-            $this->newTestApp();
 
-            $views = TestApp::config('views');
+            $views = TestApp::config('view.paths');
 
             $this->assertContains(ROOT_DIR . DS.  'resources' . DS . 'views', $views);
 
         }
 
         /** @test */
-        public function the_internal_routes_are_included () {
-
-            $this->newTestApp();
-
-            $routes = TestApp::config('routing.definitions');
-
-            $this->assertContains(ROOT_DIR . DS.  'routes', $routes);
-
-        }
-
-        /** @test */
         public function the_method_field_can_be_resolved () {
 
-            $this->newTestApp();
 
             $this->assertInstanceOf(MethodField::class, TestApp::resolve(MethodField::class));
 

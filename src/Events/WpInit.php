@@ -31,12 +31,6 @@
             $this->config = $config;
             $this->request = $request;
 
-            if ( $endpoints = $config->get('routing.api.endpoints', false) ) {
-
-                $this->request = $this->request->withAttribute('_api.endpoints', $endpoints );
-
-            }
-
         }
 
     }

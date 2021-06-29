@@ -65,14 +65,8 @@
 
             $this->config->extend('middleware.groups', [
 
-                'global' => [
-                    Secure::class,
-                    OpenRedirectProtection::class
-                ],
-                'web' => [
-                    TrailingSlash::class,
-                    Www::class,
-                ],
+                'global' => [],
+                'web' => [],
                 'ajax' => [],
                 'admin' => [],
 
@@ -89,7 +83,7 @@
 
             $this->container->singleton(EvaluateResponseMiddleware::class, function () {
 
-                $is_web = $this->requestType() === IncomingWebRequest::class;
+                $is_web = $this->requestEndpoint() === 'frontend';
 
                 $must_match = $is_web && $this->config->get('routing.must_match_web_routes', false );
 

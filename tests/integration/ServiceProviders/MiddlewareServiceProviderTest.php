@@ -8,6 +8,7 @@
 
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
+    use Tests\TestCase;
     use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
     use WPEmerge\Middleware\Core\OpenRedirectProtection;
     use WPEmerge\Middleware\Core\RouteRunner;
@@ -17,13 +18,12 @@
     use WPEmerge\Middleware\Www;
     use WPEmerge\Routing\Pipeline;
 
-    class MiddlewareServiceProviderTest extends IntegrationTest
+    class MiddlewareServiceProviderTest extends TestCase
     {
 
         /** @test */
         public function middleware_aliases_are_bound () {
 
-            $this->newTestApp();
 
             $aliases = TestApp::config('middleware.aliases');
 
@@ -34,20 +34,21 @@
             $this->assertArrayHasKey('robots', $aliases);
             $this->assertArrayHasKey('secure', $aliases);
             $this->assertArrayHasKey('signed', $aliases);
+            $this->assertArrayHasKey('foo', $aliases);
 
         }
 
         /** @test */
-        public function the_middleware_groups_are_correctly () {
+        public function the_middleware_groups_are_extended_empty() {
 
-            $this->newTestApp();
+
 
             $groups = TestApp::config('middleware.groups');
 
-            $this->assertSame([TrailingSlash::class, Www::class], $groups['web']);
+            $this->assertSame([], $groups['web']);
             $this->assertSame([], $groups['ajax']);
             $this->assertSame([], $groups['admin']);
-            $this->assertSame([Secure::class, OpenRedirectProtection::class], $groups['global']);
+            $this->assertSame([], $groups['global']);
 
 
         }
@@ -55,7 +56,7 @@
         /** @test */
         public function the_middleware_priority_is_extended () {
 
-            $this->newTestApp();
+
 
             $priority = TestApp::config('middleware.priority');
 
@@ -68,7 +69,7 @@
         public function middleware_is_not_run_without_matching_routes_by_default () {
 
 
-            $this->newTestApp();
+
 
             $setting = TestApp::config('middleware.always_run_global', '');
 
@@ -80,7 +81,7 @@
         /** @test */
         public function all_services_are_built_correctly () {
 
-            $this->newTestApp();
+
 
             $this->assertInstanceOf(EvaluateResponseMiddleware::class, TestApp::resolve(EvaluateResponseMiddleware::class));
             $this->assertInstanceOf(RouteRunner::class, TestApp::resolve(RouteRunner::class));
@@ -91,7 +92,6 @@
         /** @test */
         public function the_middleware_pipeline_is_not_a_singleton () {
 
-            $this->newTestApp();
 
             $pipeline1 = TestApp::resolve(Pipeline::class);
             $pipeline2 = TestApp::resolve(Pipeline::class);
@@ -106,7 +106,7 @@
         /** @test */
         public function the_open_redirect_middleware_can_be_resolved () {
 
-            $this->newTestApp();
+
 
             $this->assertInstanceOf(OpenRedirectProtection::class, TestApp::resolve(OpenRedirectProtection::class));
 

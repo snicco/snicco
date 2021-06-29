@@ -98,7 +98,6 @@
          */
         protected $after_config_loaded_callbacks = [];
 
-
         /**
          * Return an instance of your Application. DONT BOOT THE APPLICATION.
          */
@@ -175,13 +174,14 @@
 
             $this->app->runningUnitTest();
 
+            $this->bindRequest();
+
             $this->app->loadServiceProviders();
 
             $this->setUpTraits();
 
             $this->setProperties();
 
-            $this->bindRequest();
 
             foreach ($this->after_application_created_callbacks as $callback) {
                 $callback();
@@ -265,13 +265,6 @@
             }
 
             return $this;
-
-        }
-
-        protected function refreshApplication()
-        {
-
-            $this->app = $this->createApplication();
 
         }
 
@@ -364,4 +357,8 @@
             $this->swap(ResponseEmitter::class, new TestResponseEmitter());
         }
 
+        private function refreshApplication()
+        {
+            $this->app = $this->createApplication();
+        }
     }

@@ -18,9 +18,7 @@
 
 		public function register() : void {
 
-
-		    $this->extendViews($this->config->get('root_dir') . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'views');
-		    $this->extendRoutes($this->config->get('root_dir') . DIRECTORY_SEPARATOR . 'routes');
+		    $this->extendViews($this->config->get('app.package_root') . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'views');
 
 		    $this->bindMethodField();
 
@@ -35,7 +33,6 @@
 			$this->bindViewEngineInterface();
 
 			$this->bindViewComposerCollection();
-
 
 		}
 
@@ -85,7 +82,7 @@
             $this->container->singleton(PhpViewEngine::class, function () {
 
                 return new PhpViewEngine(
-                    new PhpViewFinder($this->config->get('views', []))
+                    new PhpViewFinder($this->config->get('view.paths', []))
                 );
 
             });

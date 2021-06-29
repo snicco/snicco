@@ -51,11 +51,8 @@
 
             ]);
 
-            $site_name = WP::siteName();
-            $admin_email = WP::adminEmail();
-
-            $this->config->extend('mail.from', ['name' => $site_name, 'email' => $admin_email]);
-            $this->config->extend('mail.reply_to', ['name' => $site_name, 'email' => $admin_email]);
+            $this->config->extend('mail.from', ['name' => WP::siteName(), 'email' => WP::adminEmail()]);
+            $this->config->extend('mail.reply_to', ['name' =>WP::siteName(), 'email' => WP::adminEmail()]);
 
         }
 

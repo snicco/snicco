@@ -6,29 +6,29 @@
 
     namespace Tests\integration\ServiceProviders;
 
-    use BetterWpHooks\Contracts\Dispatcher;
-    use BetterWpHooks\Dispatchers\WordpressDispatcher;
-    use Tests\IntegrationTest;
-    use Tests\fixtures\Middleware\FooMiddleware;
+    use Tests\helpers\CreatesWpUrls;
     use Tests\stubs\TestApp;
-    use Tests\unit\Routing\Foo;
+    use Tests\stubs\TestRequest;
+    use Tests\TestCase;
     use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\HttpKernel;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Redirector;
     use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Session\StatefulRedirector;
-    use WPEmerge\Session\SessionServiceProvider;
 
-    class HttpServiceProviderTest extends IntegrationTest
+    class HttpServiceProviderTest extends TestCase
     {
+
+        use CreatesWpUrls;
+
+        protected $defer_boot = true;
 
         /** @test */
         public function the_kernel_can_be_resolved_correctly()
         {
 
-            $this->newTestApp();
-
+            $this->boot();
             $this->assertInstanceOf(HttpKernel::class, TestApp::resolve(HttpKernel::class));
 
 
@@ -38,109 +38,87 @@
         public function the_response_factory_can_be_resolved()
         {
 
-            $this->newTestApp();
+            $this->boot();
 
             $this->assertInstanceOf(ResponseFactory::class, TestApp::resolve(ResponseFactory::class));
 
         }
 
         /** @test */
-        public function middleware_aliases_are_bound()
+        public function the_cookie_instance_can_be_resolved()
         {
 
-            $this->newTestApp([
-                'middleware' => [
-                    'aliases' => [
-                        'foo' => Foo::class,
-                    ],
-                ],
-            ]);
-
-            $aliases = TestApp::config('middleware.aliases', []);
-
-            $this->assertArrayHasKey('auth', $aliases);
-            $this->assertArrayHasKey('guest', $aliases);
-            $this->assertArrayHasKey('can', $aliases);
-            $this->assertArrayHasKey('foo', $aliases);
-
-        }
-
-        /** @test */
-        public function middleware_groups_are_bound()
-        {
-
-            $this->newTestApp([
-                'middleware' => [
-                    'groups' => [
-                        'dashboard' => 'DashBoardMiddleware',
-                    ],
-                ],
-            ]);
-
-            $m_groups = TestApp::config('middleware.groups', []);
-
-            $this->assertArrayHasKey('global', $m_groups);
-            $this->assertArrayHasKey('web', $m_groups);
-            $this->assertArrayHasKey('admin', $m_groups);
-            $this->assertArrayHasKey('ajax', $m_groups);
-            $this->assertArrayHasKey('dashboard', $m_groups);
-
-        }
-
-        /** @test */
-        public function middleware_priority_is_set()
-        {
-
-            $this->newTestApp([
-                'middleware' => [
-                    'priority' => [
-                        FooMiddleware::class,
-                    ],
-                ],
-            ]);
-
-            $priority = TestApp::config('middleware.priority', []);
-
-            $this->assertContains(FooMiddleware::class, $priority);
-
-
-        }
-
-
-
-        /** @test */
-        public function the_cookie_instance_can_be_resolved () {
-
-            $this->newTestApp();
+            $this->boot();
 
             $this->assertInstanceOf(Cookies::class, TestApp::resolve(Cookies::class));
 
         }
 
         /** @test */
-        public function the_redirector_can_be_resolved () {
+        public function the_redirector_can_be_resolved()
+        {
 
-            $this->newTestApp();
+            $this->boot();
 
             $this->assertInstanceOf(Redirector::class, TestApp::resolve(AbstractRedirector::class));
 
         }
 
         /** @test */
-        public function if_sessions_are_enabled_a_stateful_redirector_is_used () {
+        public function the_ajax_request_endpoint_is_detected_correctly()
+        {
 
-            $this->newTestApp([
-                'session' => [
-                    'enabled'=> true
-                ],
-                'providers'=> [
-                    SessionServiceProvider::class
-                ]
-            ]);
+            $this->withRequest($this->ajaxRequest('foo'));
+            $this->boot();
 
-            $this->assertInstanceOf(StatefulRedirector::class, TestApp::resolve(AbstractRedirector::class));
+            $this->assertSame('wp_ajax', TestApp::config('_request_endpoint'));
 
         }
+
+        /** @test */
+        public function the_admin_request_endpoint_is_detected_correctly()
+        {
+
+            $this->withRequest($this->adminRequestTo('foo'));
+            $this->boot();
+
+            $this->assertSame('wp_admin', TestApp::config('_request_endpoint'));
+
+        }
+
+        /** @test */
+        public function an_api_request_endpoint_is_detected_correctly()
+        {
+
+            $this->withRequest(TestRequest::from('GET', '/api-prefix/base/foo'));
+            $this->boot();
+
+            $this->assertSame('api', TestApp::config('_request_endpoint'));
+
+        }
+
+        /** @test */
+        public function the_default_request_type_is_frontend () {
+
+            $this->withRequest(TestRequest::from('GET', 'foo'));
+            $this->boot();
+
+            $this->assertSame('frontend', TestApp::config('_request_endpoint'));
+
+        }
+
+        /** @test */
+        public function the_api_endpoints_are_shared_with_the_request () {
+
+            $this->boot();
+
+            /** @var Request $request */
+            $request = $this->app->resolve(Request::class);
+
+            $this->assertNotEmpty($request->getAttribute('_api.endpoints'));
+
+        }
+
 
     }
 

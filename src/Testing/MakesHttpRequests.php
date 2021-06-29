@@ -227,6 +227,21 @@
 
         }
 
+        public function options($uri, array $headers = []) : TestResponse
+        {
+
+            $uri = $this->createUri($uri);
+
+            $server = array_merge(['REQUEST_METHOD' => 'OPTIONS', 'SCRIPT_NAME' => 'index.php'], $this->default_server_variables);
+            $request = $this->request_factory->createServerRequest('OPTIONS', $uri, $server);
+
+            parse_str($uri->getQuery(), $query);
+            $request = $request->withQueryParams($query);
+
+            return $this->performRequest($request, $headers);
+
+        }
+
         /**
          * Visit the given URI with a POST request.
          *
@@ -263,9 +278,30 @@
         {
 
             $uri = $this->createUri($uri);
-
             $server = array_merge(['REQUEST_METHOD' => 'PATCH', 'SCRIPT_NAME' => 'index.php'], $this->default_server_variables);
             $request = $this->request_factory->createServerRequest('PATCH', $uri, $server);
+
+            $request = $request->withParsedBody($data);
+
+            return $this->performRequest($request, $headers);
+
+        }
+
+        /**
+         * Visit the given URI with a PUT request.
+         *
+         * @param  string|UriInterface  $uri
+         * @param  array  $data
+         * @param  array  $headers
+         *
+         * @return TestResponse
+         */
+        public function put($uri, array $data = [], array $headers = []) : TestResponse
+        {
+
+            $uri = $this->createUri($uri);
+            $server = array_merge(['REQUEST_METHOD' => 'PUT', 'SCRIPT_NAME' => 'index.php'], $this->default_server_variables);
+            $request = $this->request_factory->createServerRequest('PUT', $uri, $server);
 
             $request = $request->withParsedBody($data);
 
