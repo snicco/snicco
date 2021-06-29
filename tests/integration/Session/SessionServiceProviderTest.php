@@ -27,6 +27,16 @@
 
         protected $defer_boot = true;
 
+        protected function setUp() : void
+        {
+            $this->afterLoadingConfig(function () {
+
+                $this->withOutConfig('session');
+
+            });
+            parent::setUp();
+        }
+
         public function packageProviders() : array
         {
             return [
@@ -40,7 +50,7 @@
 
             $this->boot();
 
-            $this->assertNull(TestApp::config('session.enable'));
+            $this->assertFalse(TestApp::config('session.enabled'));
 
         }
 
@@ -57,6 +67,7 @@
         /** @test */
         public function nothing_is_bound_if_session_are_not_enabled()
         {
+
 
             $this->boot();
 

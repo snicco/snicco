@@ -38,7 +38,7 @@
 
             $this->config->extend('views', [ __DIR__ . DIRECTORY_SEPARATOR . 'views']);
 
-            $this->config->extend('exception_handling.global', false);
+            // $this->config->extend('exception_handling.global', false);
 
             // We bind the class name only
             $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);

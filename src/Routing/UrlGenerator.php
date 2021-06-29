@@ -20,7 +20,7 @@
     {
         use InteractsWithTime;
 
-        private $trailing_slash = false;
+        private $trailing_slash;
 
         /**
          * @var RouteUrlGenerator

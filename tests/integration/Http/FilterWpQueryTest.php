@@ -20,7 +20,7 @@
 
             $query_vars = ['foo' => 'bar'];
             $request = TestRequest::from('GET', '/wpquery/foo');
-            $this->bindRequest($request)->boot();
+            $this->withRequest($request)->boot();
             $this->loadRoutes();
 
             $after = apply_filters('request', $query_vars);
@@ -41,7 +41,7 @@
 
             // The route responds to post but the event wont get dispatched.
             $request = TestRequest::from('POST', '/wpquery/post');
-            $this->bindRequest($request)->boot();
+            $this->withRequest($request)->boot();
             $this->loadRoutes();
 
             $after = apply_filters('request', $query_vars);
@@ -59,7 +59,7 @@
             $query_vars = ['foo' => 'bar'];
 
             $request = TestRequest::from('GET', '/wpquery/bogus');
-            $this->bindRequest($request)->boot();
+            $this->withRequest($request)->boot();
             $this->loadRoutes();
 
             $after = apply_filters('request', $query_vars);
@@ -74,7 +74,7 @@
 
             $query_vars = ['spain' => 'barcelona'];
             $request = TestRequest::from('GET', 'wpquery/teams/germany/dortmund');
-            $this->bindRequest($request)->boot();
+            $this->withRequest($request)->boot();
             $this->loadRoutes();
 
             $after = apply_filters('request', $query_vars);
@@ -89,7 +89,7 @@
 
             $query_vars = ['foo' => 'bar'];
             $request = TestRequest::from('GET', '/wpquery/assert-no-handler-run');
-            $this->bindRequest($request)->boot();
+            $this->withRequest($request)->boot();
             $this->loadRoutes();
 
             $after = apply_filters('request', $query_vars);
@@ -106,7 +106,7 @@
 
             $query_vars = ['foo' => 'bar'];
             $request = TestRequest::from('GET', '/wpquery/do-nothing');
-            $this->bindRequest($request);
+            $this->withRequest($request);
             $this->boot();
             $this->loadRoutes();
 

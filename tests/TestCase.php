@@ -9,7 +9,6 @@
     use Nyholm\Psr7\Factory\Psr17Factory;
     use Tests\stubs\TestApp;
     use WPEmerge\Application\Application;
-    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Support\Arr;
     use WPEmerge\Testing\TestCase as BaseTestCase;
@@ -29,6 +28,7 @@
         protected function tearDown() : void
         {
             $GLOBALS['test'] = [];
+            TestApp::setApplication(null);
             parent::tearDown();
         }
 
@@ -58,7 +58,8 @@
 
         }
 
-        protected function withAddedProvider($provider) {
+        protected function withAddedProvider($provider) : TestCase
+        {
             $provider = Arr::wrap($provider);
 
             foreach ($provider as $p) {
@@ -71,7 +72,8 @@
 
         }
 
-        protected function withoutHooks() {
+        protected function withoutHooks() : TestCase
+        {
             $GLOBALS['wp_filter'] = [];
             $GLOBALS['wp_actions'] = [];
             $GLOBALS['wp_current_filter'] = [];
@@ -86,9 +88,5 @@
 
         }
 
-        protected function bindRequest(Request $request) {
-            $this->instance(Request::class, $request);
-            return $this;
-        }
 
     }

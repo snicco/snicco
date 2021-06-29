@@ -13,176 +13,151 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
+    use Tests\TestCase;
     use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Http\Cookies;
+    use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Session\Contracts\SessionDriver;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Events\SessionRegenerated;
     use WPEmerge\Session\Session;
     use WPEmerge\Session\SessionManager;
     use WPEmerge\Session\SessionServiceProvider;
+    use WPEmerge\Testing\TestResponseEmitter;
 
-    class SessionManagerTest extends IntegrationTest
+    class SessionManagerTest extends TestCase
     {
 
-
-        use HashesSessionIds;
         use InteractsWithTime;
-        use TravelsTime;
 
         /**
          * @var SessionManager
          */
         private $manager;
 
-        /**
-         * @var Session
-         */
-        private $session;
 
-        /**
-         * @var TestRequest
-         */
-        private $request;
-
-        /**
-         * @var ArraySessionDriver
-         */
-        private $driver;
-
-        private $rotate = 3600;
-
-        private $lifetime = 7200;
-
-        protected function config () {
-
-            return [
-                'session' => [
-                    'enabled' => true,
-                    'driver' => 'array',
-                    'rotate' => $this->rotate,
-                    'lifetime' => $this->lifetime,
-                ],
-                'providers' => [
-                    SessionServiceProvider::class,
-                ],
-            ];
-
-        }
-
-        protected function afterSetup()
+        public function setUp():void
         {
 
-            $this->newTestApp($this->config());
-            $this->manager = TestApp::resolve(SessionManager::class);
-            $this->driver = TestApp::resolve(SessionDriver::class);
-            $this->session = TestApp::session();
-            $this->request = TestRequest::from('GET', 'foo');
-            $this->driver->write($this->hashedSessionId(), serialize([
-                'foo' => 'bar'
-            ]));
+            $this->afterLoadingConfig(function () {
 
+                $this->withRequest(TestRequest::from('POST', '/wp-login.php'));
+                $this->withSessionCookie();
+
+            });
+
+            $this->afterApplicationCreated(function () {
+
+                $this->manager = $this->app->resolve(SessionManager::class);
+
+            });
+            parent::setUp();
+        }
+
+        public function packageProviders() : array
+        {
+            return [
+                SessionServiceProvider::class
+            ];
+        }
+
+        private function sentCookies() :Cookies {
+            $emitter =  $this->app->resolve(ResponseEmitter::class);
+            return $emitter->cookies;
         }
 
         /** @test */
         public function the_session_id_is_regenerated_on_a_login_event () {
 
+            $this->withDataInSession(['foo' => 'bar']);
 
-            $session = TestApp::session();
-            $array_handler = $session->getDriver();
-            $array_handler->write($this->hashedSessionId(), serialize(['foo' => 'bar']));
+            $id_before_login = $this->testSessionId();
 
-            $this->rebindRequest(TestRequest::from('GET', 'foo')
-                                            ->withAddedHeader('Cookie', 'wp_mvc_session='.$this->getSessionId()));
+            $calvin = $this->createAdmin();
+            do_action('wp_login', $calvin->user_login, $calvin);
 
-            ob_start();
-
-            do_action('wp_login');
-
-            $this->assertSame('', ob_get_clean());
-
-            $id_after_login = $session->getId();
+            $this->assertNoResponse();
 
             // Session Id not the same
-            $this->assertNotSame($this->getSessionId(), $id_after_login);
-            HeaderStack::assertContains('Set-Cookie', $id_after_login);
+            $this->assertNotSame($new_id = $this->session->getId(), $id_before_login);
 
-            // Data is for the new id is in the handler.
-            $data = unserialize($array_handler->read($this->hash($id_after_login)));
-            $this->assertSame('bar', $data['foo']);
+            // Session cookie got sent
+            $cookies = $this->sentCookies()->toHeaders();
+            $this->assertStringContainsString("wp_mvc_session=$new_id", $cookies[0]);
 
-            // The old session is gone.
-            $this->assertSame('', $array_handler->read($this->hashedSessionId()));
+            $this->assertSame($this->session->userId(), $calvin->ID);
+
+            // Driver got updated.
+            $this->assertDriverHas('bar', 'foo', $new_id);
+            $this->assertDriverEmpty($id_before_login);
+
 
         }
 
         /** @test */
         public function session_are_invalidated_on_logout () {
 
-            $session = TestApp::session();
-            $array_handler = $session->getDriver();
-            $array_handler->write($this->hashedSessionId(), serialize(['foo' => 'bar']));
+            $this->withDataInSession(['foo' => 'bar']);
 
-            $this->rebindRequest(TestRequest::from('GET', 'foo')
-                                            ->withAddedHeader('Cookie', 'wp_mvc_session='.$this->getSessionId()));
+            $calvin = $this->createAdmin();
 
-            ob_start();
+            $id_before_logout = $this->testSessionId();
 
-            do_action('wp_logout');
-
-            $this->assertSame('', ob_get_clean());
-
-            $id_after_login = $session->getId();
+            do_action('wp_logout', $calvin->ID);
 
             // Session Id not the same
-            $this->assertNotSame($this->getSessionId(), $id_after_login);
-            HeaderStack::assertContains('Set-Cookie', $id_after_login);
+            $this->assertNotSame($new_id = $this->session->getId(), $id_before_logout);
+
+            // Session cookie got sent
+            $cookies = $this->sentCookies()->toHeaders();
+            $this->assertStringContainsString("wp_mvc_session=$new_id", $cookies[0]);
 
             // Data is for the new id is not in the handler.
-            $data = unserialize($array_handler->read($this->hash($id_after_login)));
-            $this->assertArrayNotHasKey('foo', $data);
+            $this->assertDriverNotHas('bar', $new_id);
+
+            $this->assertSame(0, $this->session->userId());
 
             // The old session is gone.
-            $this->assertSame('', $array_handler->read($this->hashedSessionId()));
+            $this->assertDriverEmpty($id_before_logout);
+
 
         }
 
         /** @test */
         public function the_provided_user_id_is_set_on_the_session () {
 
-            $this->assertSame(0, $this->session->userId());
+            $this->assertSessionUserId(0);
 
-            $this->manager->start(TestRequest::from('GET', 'foo'), 2);
+            $this->manager->start($this->request, 2);
 
-            $this->assertSame(2, $this->session->userId());
-
+            $this->assertSessionUserId(2);
 
         }
 
         /** @test */
         public function initial_session_rotation_is_set () {
 
-            $request = $this->request->withHeader('Cookie', "wp_mvc_session={$this->getSessionId()}");
-            $this->manager->start($request, 1);
+            $this->manager->start($this->request, 1);
 
             $this->assertSame(0, $this->session->rotationDueAt());
 
             $this->manager->save();
 
-            $this->assertSame($this->availableAt($this->rotate), $this->session->rotationDueAt());
+            // 3600 set in fixtures/config/session.php
+            $this->assertSame($this->availableAt(3600), $this->session->rotationDueAt());
 
         }
 
          /** @test */
         public function absolute_session_timeout_is_set () {
 
-            $request = $this->request->withHeader('Cookie', "wp_mvc_session={$this->getSessionId()}");
-            $this->manager->start($request, 1);
+            $this->manager->start($this->request, 1);
 
             $this->assertSame(0, $this->session->absoluteTimeout());
 
             $this->manager->save();
 
-            $this->assertSame($this->availableAt($this->lifetime), $this->session->absoluteTimeout());
+            $this->assertSame($this->availableAt(7200), $this->session->absoluteTimeout());
 
         }
 
@@ -193,29 +168,42 @@
             $this->manager->save();
 
             $cookie = $this->manager->sessionCookie()->properties();
-            $this->assertSame( $this->availableAt($this->lifetime), $cookie['expires']);
+            $this->assertSame( $this->availableAt(7200), $cookie['expires']);
 
         }
 
         /** @test */
         public function sessions_are_not_rotated_before_the_interval_passes () {
 
-            $request = $this->request->withHeader('Cookie', "wp_mvc_session={$this->getSessionId()}");
-            $this->manager->start($request, 1);
-            $this->manager->save();
-            $this->assertSame($this->availableAt($this->rotate), $this->session->rotationDueAt());
+            // Arrange
+            $this->withDataInSession(['foo' => 'bar']);
 
+            // Act
+            $this->manager->start($this->request, 1);
+            $this->manager->save();
+
+            // Assert
+            $this->assertSame($this->availableAt(3600), $this->session->rotationDueAt());
+            $this->assertSame($this->session->getId(), $this->testSessionId());
+
+            // Arrange
             $this->travelIntoFuture(3599);
+
+            // Act
             $this->manager->save();
+
+            // Assert
             $this->backToPresent();
+            $this->assertSame($this->availableAt(3600), $this->session->rotationDueAt());
+            $this->assertSame($this->session->getId(), $this->testSessionId());
 
-            $this->assertSame($this->availableAt($this->rotate), $this->session->rotationDueAt());
-            $this->assertSame($this->session->getId(), $this->getSessionId());
-
+            // Arrange
             $this->travelIntoFuture(3601);
-            $this->manager->save();
-            $this->backToPresent();
 
+            // Act
+            $this->manager->save();
+
+            // Assert
             $this->assertNotSame($this->session->getId(), $this->getSessionId());
 
         }
@@ -225,8 +213,7 @@
 
             ApplicationEvent::fake([SessionRegenerated::class]);
 
-            $request = $this->request->withHeader('Cookie', "wp_mvc_session={$this->getSessionId()}");
-            $this->manager->start($request, 1);
+            $this->manager->start($this->request, 1);
             $this->manager->save();
 
             $this->travelIntoFuture(3601);

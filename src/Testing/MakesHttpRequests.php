@@ -32,6 +32,7 @@
      * @property Application $app
      * @property HttpKernel $kernel
      * @property ServerRequestFactoryInterface $request_factory
+     * @property bool $routes_loaded
      */
     trait MakesHttpRequests
     {
@@ -249,7 +250,6 @@
 
         }
 
-
          /**
          * Visit the given URI with a PATCH request.
          *
@@ -296,11 +296,24 @@
 
         }
 
-        private function addHeaders(ServerRequestInterface $request, array $headers) : ServerRequestInterface
+        protected function addHeaders(ServerRequestInterface $request, array $headers = []) : ServerRequestInterface
+        {
+            $headers = array_merge($headers, $this->default_headers);
+            foreach ($headers as $name => $value ) {
+                $request = $request->withAddedHeader($name, $headers);
+            }
+
+            return $request;
+
+        }
+
+        protected function addCookies(ServerRequestInterface $request) : ServerRequestInterface
         {
 
-            foreach ($headers as $name => $value ) {
-                $request = $request->withAddedHeader($request, $headers);
+            foreach ($this->default_cookies as $name => $value ) {
+
+                $request = $request->withAddedHeader('Cookie', "$name=$value");
+
             }
 
             return $request;
@@ -311,6 +324,8 @@
         {
             $request = $this->addHeaders($request, $headers);
             $request = new Request($this->addCookies($request));
+
+            $this->withRequest($request);
 
             if ( $type === 'web') {
                 $request = new IncomingWebRequest($request, 'wordpress-template.php');
@@ -324,9 +339,16 @@
 
             if ( ! $this->set_up_has_run ) {
                 $this->boot();
+            } else {
+                $this->bindRequest();
             }
 
-            $this->loadRoutes();
+            if ( ! $this->routes_loaded ) {
+
+                $this->loadRoutes();
+
+            }
+
 
             /** @var Response $response */
             $response = $this->kernel->run($request);
@@ -344,19 +366,6 @@
             }
 
             return $response;
-
-        }
-
-        private function addCookies(ServerRequestInterface $request) : ServerRequestInterface
-        {
-
-            foreach ($this->default_cookies as $name => $value ) {
-
-                $request = $request->withAddedHeader('Cookie', "$name=$value");
-
-            }
-
-            return $request;
 
         }
 

@@ -152,23 +152,23 @@
             // If we would always unregister here it would not be possible to handle
             // any errors that happen between this point and the the triggering of the
             // hooks that run the HttpKernel.
-            if ( ! $this->handlesExceptionsGlobally()) {
+            // if ( ! $this->handlesExceptionsGlobally() ) {
+            //
+            //     /** @var ErrorHandlerInterface $error_handler */
+            //     $error_handler = $this->container()->make(ErrorHandlerInterface::class);
+            //     $error_handler->unregister();
+            //
+            // }
 
-                /** @var ErrorHandlerInterface $error_handler */
-                $error_handler = $this->container()->make(ErrorHandlerInterface::class);
-                $error_handler->unregister();
-
-            }
-
-
-        }
-
-        public function handlesExceptionsGlobally()
-        {
-
-            return $this->config->get('exception_handling.global', false);
 
         }
+
+        // public function handlesExceptionsGlobally()
+        // {
+        //
+        //     return $this->config->get('app.exception_handling.global', false);
+        //
+        // }
 
         public function config(?string $key = null, $default = null)
         {
@@ -206,7 +206,7 @@
         private function captureRequest()
         {
 
-            $psr_request =  $this->serverRequestCreator()->fromGlobals();
+            $psr_request = $this->serverRequestCreator()->fromGlobals();
 
             $request = new Request($psr_request);
 

@@ -9,6 +9,13 @@
 
         'providers' => [
 
-        ]
+        ],
+
+        'exception_handling' => [
+
+            'enabled' => true,
+            'debug' => false,
+
+        ],
 
     ];

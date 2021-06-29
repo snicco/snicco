@@ -14,13 +14,14 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
+    use Tests\TestCase;
     use wpdb;
     use WPEmerge\Facade\WP;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Drivers\DatabaseSessionDriver;
 
     /** @todo test for getting all session for a user */
-    class DatabaseSessionDriverTest extends IntegrationTest
+    class DatabaseSessionDriverTest extends TestCase
     {
 
         use TravelsTime;
@@ -35,13 +36,9 @@
 
             parent::setUp();
 
-            TestApp::make();
-            TestApp::boot(TEST_CONFIG);
-
             global $wpdb;
             $this->db = $wpdb;
             $this->createTables();
-            $this->backToPresent();
 
         }
 
@@ -49,7 +46,6 @@
         {
 
             $this->dropTables();
-            $this->backToPresent();
             parent::tearDown();
 
         }
@@ -261,6 +257,7 @@
 
 
         }
+
 
         private function createTables()
         {
