@@ -11,36 +11,12 @@
     use Tests\fixtures\Mail\WeAreClosing;
     use Tests\fixtures\Mail\WelcomeMail;
     use Tests\fixtures\Mail\WelcomePlainText;
-    use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
+    use Tests\TestCase;
     use WPEmerge\Mail\Mailable;
-    use WPEmerge\Auth\Mail\ConfirmAuthMail;
 
-    class SendingMailsTest extends IntegrationTest
+    class SendingMailsTest extends TestCase
     {
-
-        /**
-         * @var array
-         */
-        private $mail_data;
-
-        protected function afterSetup()
-        {
-
-            $this->newTestApp(TEST_CONFIG);
-
-            add_filter('pre_wp_mail', [$this, 'catchWpMail'], 10, 2);
-
-        }
-
-        public function catchWpMail($null, array $wp_mail_input) : bool
-        {
-
-            $this->mail_data[] = $wp_mail_input;
-
-            return true;
-
-        }
 
         /** @test */
         public function a_html_email_can_be_send()

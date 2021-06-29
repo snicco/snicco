@@ -7,8 +7,7 @@
     namespace WPEmerge\Blade;
 
     use Illuminate\Support\Facades\Blade;
-    use Illuminate\Support\HtmlString;
-    use WPEmerge\Application\Application;
+    use Tests\unit\View\MethodField;
     use WPEmerge\Application\ApplicationTrait;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Facade\WP;
@@ -72,17 +71,18 @@
 
                 $html = $csrf_field->asHtml();
 
-                return "<?php declare(strict_types=1); echo '{$html}' ?>";
+                return "<?php echo '{$html}' ?>";
 
 
             });
 
             Blade::directive('method', function ($method) {
 
+                /** @var MethodField $method_field */
+                $method_field = $this->container->make(MethodField::class);
+                $html = $method_field->html($method);
 
-                $html = new HtmlString("<input type='hidden' name='_method' value={$method}>");
-
-                return "<?php declare(strict_types=1); echo \"{$html->toHtml()}\";";
+                return "<?php declare(strict_types=1); echo \"{$html}\";";
 
 
             });

@@ -35,7 +35,7 @@
         public function an_api_endpoint_can_be_created_where_all_routes_are_run_on_init_and_shut_down_the_script_afterwards()
         {
 
-            $this->instance(Request::class, TestRequest::from('GET', 'api-prefix/base/foo'));
+            $this->withRequest(TestRequest::from('GET', 'api-prefix/base/foo'));
             $this->boot();
 
             do_action('init');
@@ -59,7 +59,7 @@
             $GLOBALS['test']['other_api_routes'] = false;
 
             $this->withAddedConfig(['routing.definitions' => [ROUTES_DIR, FIXTURES_DIR.DS.'OtherRoutes']]);
-            $this->instance(Request::class, TestRequest::from('GET', 'api-prefix/base/foo'));
+            $this->withRequest(TestRequest::from('GET', 'api-prefix/base/foo'));
             $this->boot();
 
             do_action('init');
@@ -77,7 +77,7 @@
         {
 
             $this->withAddedConfig(['middleware.groups' => ['api.test' => [TestApiMiddleware::class]]]);
-            $this->instance(Request::class, TestRequest::from('GET', 'api-prefix/base/foo'));
+            $this->withRequest(TestRequest::from('GET', 'api-prefix/base/foo'));
             $this->boot();
 
             do_action('init');
@@ -90,7 +90,7 @@
         public function a_fallback_api_route_can_be_defined_that_matches_all_non_existing_endpoints()
         {
 
-            $this->instance(Request::class, TestRequest::from('GET', 'api-prefix/base/bogus'));
+            $this->withRequest(TestRequest::from('GET', 'api-prefix/base/bogus'));
             $this->boot();
 
             do_action('init');

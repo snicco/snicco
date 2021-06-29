@@ -29,10 +29,8 @@
 
             $container = $this->parseContainer();
 
-            $views = $this->config->get('blade.views', []);
-            $cache_dir = $this->config->get('blade.cache', null);
+            $cache_dir = $this->config->get('view.blade_cache', $this->app->storagePath("framework".DIRECTORY_SEPARATOR.'views'));
 
-            $this->config->set('view.paths', Arr::wrap($views));
             $this->config->set('view.compiled', $cache_dir);
 
             $this->setUpBindings($container);
@@ -67,7 +65,6 @@
                 $view_service = $container->make(ViewFactoryInterface::class);
 
                 $view_service->compose(new BladeView($view));
-
 
             });
 
@@ -131,6 +128,5 @@
 
 
         }
-
 
     }

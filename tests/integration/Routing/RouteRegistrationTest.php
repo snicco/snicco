@@ -52,7 +52,7 @@
         /** @test */
         public function web_routes_are_loaded_on_template_include () {
 
-            $this->instance(Request::class, TestRequest::from('GET', '/foo'));
+            $this->withRequest(TestRequest::from('GET', '/foo'));
             $this->boot();
 
             // load routes
@@ -67,6 +67,7 @@
         /** @test */
         public function admin_routes_are_run_on_the_loaded_on_admin_init_hook () {
 
+            $this->withRequest($this->adminRequestTo('foo'));
 
             $this->withAddedProvider(SimulateAdminProvider::class)
                  ->withoutHooks()
@@ -74,7 +75,6 @@
 
             WP::shouldReceive('pluginPageHook')->andReturn('toplevel_page_foo');
 
-            $this->instance(Request::class, $request = $this->adminRequestTo('foo'));
 
             do_action('init');
             do_action('admin_init');
@@ -90,9 +90,8 @@
         /** @test */
         public function ajax_routes_are_loaded_first_on_admin_init () {
 
+            $this->withRequest($this->ajaxRequest('foo_action'));
             $this->withoutHooks()->boot();
-
-            $this->instance(Request::class, $this->ajaxRequest('foo_action'));
 
             do_action('init');
             do_action('admin_init');
@@ -104,14 +103,14 @@
         /** @test */
         public function admin_routes_are_also_run_for_other_admin_pages () {
 
+            $request = TestRequest::from('GET', '/wp-admin/index.php')->withLoadingScript('wp-admin/index.php');
+            $this->withRequest( $request);
+
             $this->withAddedProvider(SimulateAdminProvider::class)
                  ->withoutHooks()
                  ->boot();
 
             WP::shouldReceive('pluginPageHook')->andReturnNull();
-
-            $request = TestRequest::from('GET', '/wp-admin/index.php')->withLoadingScript('wp-admin/index.php');
-            $this->instance(Request::class, $request);
 
             do_action('init');
             do_action('admin_init');
@@ -125,9 +124,9 @@
         /** @test */
         public function ajax_routes_are_only_run_if_the_request_has_an_action_parameter () {
 
+            $this->withRequest( $this->ajaxRequest('foo_action')->withParsedBody([]));
             $this->withoutHooks()->boot();
 
-            $this->instance(Request::class, $this->ajaxRequest('foo_action')->withParsedBody([]));
 
             do_action('init');
             do_action('admin_init');
@@ -139,7 +138,8 @@
         /** @test */
         public function the_fallback_route_controller_is_registered_for_web_routes()
         {
-            $this->instance(Request::class, TestRequest::from('GET', 'post1'));
+
+            $this->withRequest(TestRequest::from('GET', 'post1'));
             $this->boot();
             $this->makeFallbackConditionPass();
 
@@ -156,7 +156,7 @@
 
             $this->withAddedProvider(SimulateAdminProvider::class)->boot();
 
-            $this->instance(Request::class, $request= $this->adminRequestTo('bogus'));
+            $this->withRequest( $request= $this->adminRequestTo('bogus'));
             $this->makeFallbackConditionPass();
 
             do_action('init');
@@ -171,7 +171,7 @@
         {
 
             $this->withAddedProvider(SimulateAjaxProvider::class);
-            $this->instance(Request::class,$request = $this->ajaxRequest('bogus'));
+            $this->withRequest($request = $this->ajaxRequest('bogus'));
             $this->withoutHooks()->boot();
             $this->makeFallbackConditionPass();
 
@@ -211,9 +211,9 @@
         public function custom_routes_dirs_can_be_provided()
         {
 
-            $this->withAddedProvider(RoutingDefinitionServiceProvider::class)->withoutHooks()->boot();
             $request = TestRequest::from('GET', 'other');
-            $this->instance(Request::class, $request);
+            $this->withRequest( $request);
+            $this->withAddedProvider(RoutingDefinitionServiceProvider::class)->withoutHooks()->boot();
 
             do_action('init');
             apply_filters('template_include', 'wordpress.php');
@@ -225,9 +225,9 @@
         /** @test */
         public function a_file_with_the_same_name_will_not_be_loaded_twice_for_standard_routes () {
 
-            $this->withAddedProvider(RoutingDefinitionServiceProvider::class)->withoutHooks()->boot();
             $request = TestRequest::from('GET', 'web-other');
-            $this->instance(Request::class, $request);
+            $this->withRequest( $request);
+            $this->withAddedProvider(RoutingDefinitionServiceProvider::class)->withoutHooks()->boot();
 
             do_action('init');
             apply_filters('template_include', 'wordpress.php');

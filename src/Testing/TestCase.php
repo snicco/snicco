@@ -41,6 +41,7 @@
         use InteractsWithSession;
         use InteractsWithAuthentication;
         use InteractsWithWordpressUsers;
+        use InteractsWithMail;
         use TravelsTime;
 
         /**
@@ -182,7 +183,6 @@
 
             $this->setProperties();
 
-
             foreach ($this->after_application_created_callbacks as $callback) {
                 $callback();
             }
@@ -314,7 +314,7 @@
                 return;
             }
 
-            $request = $this->request_factory->createServerRequest('GET', $this->createUri('/foo'), $this->default_server_variables);
+            $request = $this->request_factory->createServerRequest('GET', $this->createUri('/test-url'), $this->default_server_variables);
             $request = $this->addCookies($request);
             $request = $this->addHeaders($request);
             $this->instance(Request::class, new Request($request));
