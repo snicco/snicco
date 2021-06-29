@@ -10,10 +10,9 @@
     use ReflectionClass;
     use ReflectionProperty;
     use WP_User;
-    use WPEmerge\Contracts\Mailable as MailableContract;
     use WPEmerge\Support\Arr;
 
-    abstract class Mailable implements MailableContract
+    abstract class Mailable
     {
 
         /**
@@ -108,6 +107,22 @@
 
             return count($this->to) > 1;
 
+        }
+
+        public function buildViewData() : array
+        {
+
+            $data = $this->view_data;
+
+            $properties = (new ReflectionClass($this))->getProperties(ReflectionProperty::IS_PUBLIC);
+
+            foreach ($properties as $property) {
+                if ($property->getDeclaringClass()->getName() !== self::class) {
+                    $data[$property->getName()] = $property->getValue($this);
+                }
+            }
+
+            return $data;
         }
 
         protected function message(string $message) : Mailable
@@ -235,23 +250,5 @@
 
 
         }
-
-        public function buildViewData() : array
-        {
-
-            $data = $this->view_data;
-
-            $properties = (new ReflectionClass($this))->getProperties(ReflectionProperty::IS_PUBLIC);
-
-            foreach ($properties as $property) {
-                if ($property->getDeclaringClass()->getName() !== self::class) {
-                    $data[$property->getName()] = $property->getValue($this);
-                }
-            }
-
-            return $data;
-        }
-
-
 
     }

@@ -36,7 +36,6 @@
         public function make($views) : ViewInterface
         {
 
-
             try {
 
                $view = $this->view_factory->first(
@@ -53,7 +52,6 @@
                 );
 
             }
-
 
 
         }

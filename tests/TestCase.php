@@ -7,8 +7,10 @@
     namespace Tests;
 
     use Nyholm\Psr7\Factory\Psr17Factory;
+    use PHPUnit\Framework\Assert;
     use Tests\stubs\TestApp;
     use WPEmerge\Application\Application;
+    use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Support\Arr;
     use WPEmerge\Testing\TestCase as BaseTestCase;
@@ -17,11 +19,18 @@
     class TestCase extends BaseTestCase
     {
 
+        /**
+         * @var array
+         */
+        protected $mail_data;
+
         protected function setUp() : void
         {
 
             parent::setUp();
             $GLOBALS['test'] = [];
+
+            add_filter('pre_wp_mail', [$this, 'catchWpMail'], 10, 2);
 
         }
 
@@ -44,6 +53,15 @@
             $app->setResponseFactory($f);
 
             return $app;
+
+        }
+
+        public function catchWpMail($null, array $wp_mail_input) : bool
+        {
+
+            $this->mail_data[] = $wp_mail_input;
+
+            return true;
 
         }
 
@@ -89,5 +107,14 @@
 
         }
 
+        protected function assertViewContent(string $expected,  $actual) {
+
+            $actual = ($actual instanceof ViewInterface) ? $actual->toString() :$actual;
+
+            $actual = preg_replace( "/\r|\n|\s{2,}/", "", $actual );
+
+            Assert::assertSame($expected, trim($actual), 'View not rendered correctly.');
+
+        }
 
     }

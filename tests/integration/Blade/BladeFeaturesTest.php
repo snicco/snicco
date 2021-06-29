@@ -6,7 +6,6 @@
 
     namespace Tests\integration\Blade;
 
-    use Illuminate\Support\Facades\Blade;
     use Tests\integration\Blade\traits\AssertBladeView;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
     use Tests\IntegrationTest;
@@ -21,7 +20,6 @@
         /** @test */
         public function xss_protection_works()
         {
-
 
             $view = $this->view('xss');
 
@@ -220,12 +218,9 @@
 
         }
 
-
         private function view(string $view)
         {
-
             return TestApp::view('blade-features.'.$view);
-
         }
 
 

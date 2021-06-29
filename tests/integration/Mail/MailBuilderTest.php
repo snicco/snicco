@@ -9,21 +9,22 @@
     use Tests\integration\Blade\traits\InteractsWithWordpress;
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
+    use Tests\TestCase;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\PendingMail;
     use WPEmerge\Mail\Mailable;
 
-    class MailBuilderTest extends IntegrationTest
+    class MailBuilderTest extends TestCase
     {
 
-        use InteractsWithWordpress;
 
-        protected function afterSetup()
+        protected function setUp() : void
         {
 
-            $this->newTestApp();
-            ApplicationEvent::fake([PendingMail::class]);
-
+            $this->afterApplicationCreated(function () {
+                ApplicationEvent::fake([PendingMail::class]);
+            });
+            parent::setUp();
         }
 
 
@@ -188,13 +189,13 @@
 
             $mail = TestApp::mail();
 
-            $calvin = $this->newAdmin([
+            $calvin = $this->createAdmin([
                 'user_email' => 'c@web.de',
                 'first_name' => 'Calvin',
                 'last_name' => 'Alkan',
             ]);
 
-            $john = $this->newAdmin([
+            $john = $this->createAdmin([
                 'user_email' => 'john@web.de',
                 'first_name' => 'John',
                 'last_name' => 'Doe',

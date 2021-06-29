@@ -38,10 +38,10 @@
 
         const CORE_SERVICE_PROVIDERS = [
 
-            EventServiceProvider::class,
-            ExceptionServiceProvider::class,
-            FactoryServiceProvider::class,
             ApplicationServiceProvider::class,
+            ExceptionServiceProvider::class,
+            EventServiceProvider::class,
+            FactoryServiceProvider::class,
             RoutingServiceProvider::class,
             HttpServiceProvider::class,
             MiddlewareServiceProvider::class,
@@ -226,9 +226,21 @@
             return $this->base_path;
         }
 
-        public function configPath($path = '') : string
+        public function storagePath($path = '') : string
         {
 
+            $storage_dir = $this->config->get('app.storage_dir');
+
+            if ( !$storage_dir) {
+                throw new \RuntimeException('No storage directory was set for the application.');
+            }
+
+            return $storage_dir.($path ? DIRECTORY_SEPARATOR.$path : $path);
+
+        }
+
+        public function configPath($path = '') : string
+        {
             return $this->base_path.DIRECTORY_SEPARATOR.'config'.($path ? DIRECTORY_SEPARATOR.$path : $path);
         }
 
