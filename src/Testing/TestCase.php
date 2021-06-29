@@ -14,6 +14,7 @@
     use Mockery\Exception\InvalidCountException;
     use Nyholm\Psr7Server\ServerRequestCreator;
     use Psr\Http\Message\ServerRequestFactoryInterface;
+    use Tests\helpers\TravelsTime;
     use Tests\stubs\TestApp;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationConfig;
@@ -23,6 +24,7 @@
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\HttpKernel;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\Router;
@@ -36,6 +38,10 @@
 
         use MakesHttpRequests;
         use InteractsWithContainer;
+        use InteractsWithSession;
+        use InteractsWithAuthentication;
+        use InteractsWithWordpressUsers;
+        use TravelsTime;
 
         /**
          * @var Application
@@ -44,6 +50,9 @@
 
         /** @var Session */
         protected $session;
+
+        /** @var Request */
+        protected $request;
 
         /** @var ApplicationConfig */
         protected $config;
@@ -81,6 +90,15 @@
          */
         protected $defer_boot = false;
 
+        /** @var bool */
+        protected $routes_loaded = false;
+
+        /**
+         * @var callable[]
+         */
+        protected $after_config_loaded_callbacks = [];
+
+
         /**
          * Return an instance of your Application. DONT BOOT THE APPLICATION.
          */
@@ -89,8 +107,9 @@
         /**
          * @return ServiceProvider[]
          */
-        public function packageProviders () : array
+        public function packageProviders() : array
         {
+
             return [];
         }
 
@@ -110,19 +129,33 @@
             $this->before_application_destroy_callbacks[] = $callback;
         }
 
+        protected function afterLoadingConfig(callable $callback)
+        {
+
+            $this->after_config_loaded_callbacks[] = $callback;
+        }
+
         protected function setUp() : void
         {
 
             parent::setUp();
 
-            if ( ! $this->app) {
+            $this->backToPresent();
+
+            if ( ! $this->app ) {
 
                 $this->refreshApplication();
 
             }
 
             $this->app->boot(false);
+
             $this->config = $this->app->config();
+
+            foreach ($this->after_config_loaded_callbacks as $callback) {
+                $callback();
+            }
+
             $this->config->extend('app.providers', $this->packageProviders());
             $this->request_factory = $this->app->resolve(ServerRequestFactoryInterface::class);
             $this->replaceBindings();
@@ -133,18 +166,22 @@
 
         }
 
-        protected function boot() {
+        protected function boot()
+        {
 
-            if ( $this->set_up_has_run ) {
+            if ($this->set_up_has_run) {
                 $this->fail('TestCase booted twice');
             }
 
             $this->app->runningUnitTest();
+
             $this->app->loadServiceProviders();
 
             $this->setUpTraits();
 
             $this->setProperties();
+
+            $this->bindRequest();
 
             foreach ($this->after_application_created_callbacks as $callback) {
                 $callback();
@@ -181,13 +218,7 @@
                 }
             }
 
-            if (class_exists(Carbon::class)) {
-                Carbon::setTestNow();
-            }
-
-            if (class_exists(CarbonImmutable::class)) {
-                CarbonImmutable::setTestNow();
-            }
+            $this->backToPresent();
 
             ApplicationEvent::setInstance(null);
             WP::reset();
@@ -195,15 +226,18 @@
             parent::tearDown();
         }
 
-        protected function withAddedConfig(array $items) : TestCase
+        protected function withAddedConfig($items, $value = null) : TestCase
         {
+
+            $items = is_array($items) ? $items : [$items => $value];
 
             foreach ($items as $key => $value) {
 
-                if ( is_array($this->config->get($key) ) ) {
+                if (is_array($this->config->get($key))) {
 
                     $this->config->extend($key, $value);
-                } else {
+                }
+                else {
 
                     $this->config->set($key, $value);
 
@@ -219,13 +253,14 @@
         {
 
             $this->config->extend("middleware.groups.$group", Arr::wrap($middleware));
+
             return $this;
         }
 
-        protected function withOutConfig(array $keys) : TestCase
+        protected function withOutConfig($keys) : TestCase
         {
 
-            foreach ($keys as $key ) {
+            foreach (Arr::wrap($keys) as $key) {
                 $this->config->remove($key);
             }
 
@@ -240,17 +275,20 @@
 
         }
 
-        protected function addRoute(Route $route) {
+        protected function addRoute(Route $route)
+        {
+
             $this->additional_routes[] = $route;
         }
 
-        protected function loadRoutes () {
+        protected function loadRoutes()
+        {
 
             /** @var AbstractRouteCollection $routes */
             $routes = $this->app->resolve(AbstractRouteCollection::class);
 
             /** @var RouteRegistrar $registrar */
-            $registrar =$this->app->resolve(RouteRegistrarInterface::class);
+            $registrar = $this->app->resolve(RouteRegistrarInterface::class);
             $registrar->loadApiRoutes($this->config);
             $registrar->loadStandardRoutes($this->config);
 
@@ -262,7 +300,32 @@
 
             $registrar->loadIntoRouter();
 
+            $this->routes_loaded = true;
 
+        }
+
+        protected function withRequest(Request $request) : TestCase
+        {
+            $this->request = $request;
+            return $this;
+        }
+
+        private function bindRequest()
+        {
+
+            if ($this->request) {
+
+                $this->request = $this->addCookies($this->request);
+                $this->request = $this->addHeaders($this->request);
+                $this->instance(Request::class, $this->request);
+                return;
+            }
+
+            $request = $this->request_factory->createServerRequest('GET', $this->createUri('/foo'), $this->default_server_variables);
+            $request = $this->addCookies($request);
+            $request = $this->addHeaders($request);
+            $this->instance(Request::class, new Request($request));
+            $this->request = $request;
         }
 
         private function setUpTraits()
@@ -285,7 +348,7 @@
         private function setProperties()
         {
 
-            if ( in_array(SessionServiceProvider::class, $this->config->get('app.providers')) && $this->config->get('session.enabled')){
+            if (in_array(SessionServiceProvider::class, $this->config->get('app.providers')) && $this->config->get('session.enabled')) {
 
                 $this->session = $this->app->resolve(Session::class);
 
@@ -297,6 +360,7 @@
 
         private function replaceBindings()
         {
+
             $this->swap(ResponseEmitter::class, new TestResponseEmitter());
         }
 

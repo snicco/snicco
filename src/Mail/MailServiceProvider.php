@@ -25,7 +25,9 @@
 
         public function bootstrap() : void
         {
+            //
         }
+
 
         private function bindMailer()
         {

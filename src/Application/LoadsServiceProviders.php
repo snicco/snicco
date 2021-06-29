@@ -12,7 +12,6 @@
     trait LoadsServiceProviders
     {
 
-
         /**
          *
          * Register and bootstrap all service providers.
@@ -32,7 +31,6 @@
 
 
         }
-
 
         /**
          * @param  string  $provider

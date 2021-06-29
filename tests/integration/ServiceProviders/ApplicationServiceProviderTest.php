@@ -10,6 +10,7 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
+    use Tests\TestCase;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ErrorHandlerInterface;
@@ -27,27 +28,18 @@
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Url;
 
-    class ApplicationServiceProviderTest extends IntegrationTest {
+    class ApplicationServiceProviderTest extends TestCase {
 
-
-        protected function afterSetup() : void
+        protected function setUp() : void
         {
-
-            $this->app = $this->newTestApp(TEST_CONFIG);
-
-            $this->registerAndRunApiRoutes();
+            $this->afterApplicationCreated(function () {
+                $this->loadRoutes();
+            });
+            parent::setUp();
 
         }
 
-        protected function beforeTearDown() : void
-        {
-
-            TestApp::setApplication(null);
-            ApplicationEvent::setInstance(null);
-
-        }
-
-		/** @test */
+        /** @test */
 		public function the_wp_facade_has_the_correct_container() {
 
 			$container = TestApp::container();
@@ -59,49 +51,9 @@
 		/** @test */
 		public function the_facade_can_be_swapped_during_test() {
 
-			WP::shouldReceive( 'isAdmin' )->andReturn( true );
+            WP::shouldReceive( 'isAdmin' )->andReturn( true );
 
 			$this->assertTrue( WP::isAdmin() );
-
-            Mockery::close();
-            WP::reset();
-
-        }
-
-		/** @test */
-		public function the_error_handler_gets_unregistered_by_default_after_booting_the_app () {
-
-		    $this->newTestApp([
-		        'providers'=> [
-		            NoGlobalExceptions::class,
-                ]
-            ]);
-
-		    $this->assertTrue(true);
-
-		    Mockery::close();
-            WP::reset();
-
-
-		}
-
-        /** @test */
-		public function the_error_handler_can_be_registered_globally () {
-
-		    $this->newTestApp([
-		        'providers'=> [
-		            GlobalExceptions::class,
-                ],
-                'exception_handling' => [
-                    'global' => true
-                ]
-            ]);
-
-		    $this->assertTrue(true);
-
-            Mockery::close();
-            WP::reset();
-
 
         }
 
@@ -314,42 +266,3 @@
 
 	}
 
-	class NoGlobalExceptions extends ServiceProvider {
-
-        public function register() : void
-        {
-
-            $mock = Mockery::mock(ErrorHandlerInterface::class);
-
-            $mock->shouldReceive('register')->once();
-            $mock->shouldReceive('unregister')->once();
-
-            $this->container->instance(ErrorHandlerInterface::class, $mock);
-
-        }
-
-        function bootstrap() : void
-        {
-        }
-
-    }
-
-	class GlobalExceptions extends ServiceProvider {
-
-        public function register() : void
-        {
-
-            $mock = Mockery::mock(ErrorHandlerInterface::class);
-
-            $mock->shouldReceive('register')->once();
-            $mock->shouldNotReceive('unregister');
-
-            $this->container->instance(ErrorHandlerInterface::class, $mock);
-
-        }
-
-        function bootstrap() : void
-        {
-        }
-
-    }
