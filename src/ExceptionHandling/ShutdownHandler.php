@@ -14,17 +14,12 @@
 
 
         /**
-         * @var string
-         */
-        private $request_type;
-        /**
          * @var bool
          */
         private $running_unit_tests;
 
-        public function __construct( string $request_type, bool $running_unit_tests = false )
+        public function __construct( bool $running_unit_tests = false )
         {
-            $this->request_type = $request_type;
             $this->running_unit_tests = $running_unit_tests;
         }
 
@@ -36,16 +31,11 @@
 
 		public function handle( ResponseSent $response_sent) {
 
-            if ( $response_sent->request->isApiEndPoint()  ) {
+            $request = $response_sent->request;
+
+            if ( $request->isApiEndPoint() || $request->isWpAjax() ) {
 
                 $this->terminate();
-
-            }
-
-
-		    if ( $this->request_type === IncomingAjaxRequest::class  ) {
-
-		        $this->terminate();
 
             }
 

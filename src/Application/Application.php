@@ -9,6 +9,7 @@
     use Contracts\ContainerAdapter;
     use Nyholm\Psr7\Factory\Psr17Factory;
     use Nyholm\Psr7Server\ServerRequestCreator;
+    use Psr\Http\Message\ResponseFactoryInterface;
     use Psr\Http\Message\ServerRequestFactoryInterface;
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Message\StreamFactoryInterface;
@@ -41,8 +42,8 @@
             ExceptionServiceProvider::class,
             FactoryServiceProvider::class,
             ApplicationServiceProvider::class,
-            HttpServiceProvider::class,
             RoutingServiceProvider::class,
+            HttpServiceProvider::class,
             MiddlewareServiceProvider::class,
             ViewServiceProvider::class,
             MailServiceProvider::class,
@@ -83,7 +84,7 @@
 
         }
 
-        public function setServerRequestFactory(ServerRequestFactoryInterface $server_request_factory)
+        public function setServerRequestFactory(ServerRequestFactoryInterface $server_request_factory) : Application
         {
 
             $this->container()
@@ -92,7 +93,7 @@
             return $this;
         }
 
-        public function setUriFactory(UriFactoryInterface $uri_factory)
+        public function setUriFactory(UriFactoryInterface $uri_factory) : Application
         {
 
             $this->container()->instance(UriFactoryInterface::class, $uri_factory);
@@ -100,7 +101,7 @@
             return $this;
         }
 
-        public function setUploadedFileFactory(UploadedFileFactoryInterface $file_factory)
+        public function setUploadedFileFactory(UploadedFileFactoryInterface $file_factory) : Application
         {
 
             $this->container()->instance(UploadedFileFactoryInterface::class, $file_factory);
@@ -108,11 +109,17 @@
             return $this;
         }
 
-        public function setStreamFactory(StreamFactoryInterface $stream_factory)
+        public function setStreamFactory(StreamFactoryInterface $stream_factory) : Application
         {
 
             $this->container()->instance(StreamFactoryInterface::class, $stream_factory);
 
+            return $this;
+        }
+
+        public function setResponseFactory(ResponseFactoryInterface $response_factory) : Application
+        {
+            $this->container()->instance(ResponseFactoryInterface::class, $response_factory);
             return $this;
         }
 
@@ -162,13 +169,6 @@
 
 
         }
-
-        // public function handlesExceptionsGlobally()
-        // {
-        //
-        //     return $this->config->get('app.exception_handling.global', false);
-        //
-        // }
 
         public function config(?string $key = null, $default = null)
         {
@@ -233,7 +233,6 @@
 
         public function basePath() : string
         {
-
             return $this->base_path;
         }
 

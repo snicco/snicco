@@ -9,6 +9,8 @@
     use Slim\Csrf\Guard;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
+    use WPEmerge\Contracts\AbstractRedirector;
+    use WPEmerge\Http\Redirector;
     use WPEmerge\Session\Contracts\SessionDriver;
     use WPEmerge\Session\Contracts\SessionManagerInterface;
     use WPEmerge\Session\CsrfField;
@@ -20,6 +22,7 @@
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Session\Session;
     use WPEmerge\Session\Middleware\StartSessionMiddleware;
+    use WPEmerge\Session\StatefulRedirector;
     use WPEmerge\View\GlobalContext;
 
     class SessionServiceProviderTest extends TestCase
@@ -387,5 +390,29 @@
 
         }
 
+        /** @test */
+        public function if_sessions_are_enabled_a_stateful_redirector_is_used()
+        {
 
-    }
+            $this->withAddedConfig([
+                'session.enabled' => true,
+            ])->boot();
+
+            $this->assertInstanceOf(StatefulRedirector::class, TestApp::resolve(AbstractRedirector::class));
+
+        }
+
+          /** @test */
+        public function if_sessions_are_not_enabled_a_normal_redirector_is_used()
+        {
+
+            $this->withAddedConfig([
+                'session.enabled' => false,
+            ])->boot();
+
+            $this->assertInstanceOf(Redirector::class, TestApp::resolve(AbstractRedirector::class));
+
+        }
+
+
+   }

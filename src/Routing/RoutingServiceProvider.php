@@ -42,7 +42,7 @@
     {
 
         /**
-         * Key=>Class dictionary of condition types
+         * Alias=>Class dictionary of condition types
          *
          * @var array<string, string>
          */
@@ -55,15 +55,19 @@
             'post_template' => PostTemplateCondition::class,
             'post_type' => PostTypeCondition::class,
             'query_string' => QueryStringCondition::class,
+            'request' => RequestAttributeCondition::class,
+
+            // These two are only used to the url generation functionality
             'admin_page' => AdminPageCondition::class,
             'admin_ajax' => AdminAjaxCondition::class,
-            'request' => RequestAttributeCondition::class,
         ];
 
         public function register() : void
         {
 
             $this->bindConfig();
+
+            $this->extendRoutes($this->config->get('app.package_root') . DIRECTORY_SEPARATOR . 'routes');
 
             $this->bindRouteMatcher();
 
@@ -78,7 +82,6 @@
             $this->bindUrlGenerator();
 
             $this->bindRouteRegistrar();
-
 
         }
 
@@ -124,6 +127,7 @@
 
         private function bindRouteMatcher() : void
         {
+
             $this->container->singleton(RouteMatcher::class, function () {
 
 

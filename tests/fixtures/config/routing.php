@@ -13,6 +13,18 @@
             ],
         ],
 
-        'trailing_slash' => false
+        'trailing_slash' => false,
+
+        'controllers' => [
+
+            'Tests\fixtures\Controllers\Web',
+            'Tests\fixtures\Controllers\Admin',
+            'Tests\fixtures\Controllers\Ajax',
+
+        ],
+
+        'conditions' => [
+            'true' => \Tests\fixtures\Conditions\TrueCondition::class
+        ]
 
     ];

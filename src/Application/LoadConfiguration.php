@@ -13,7 +13,6 @@
     class LoadConfiguration
     {
 
-
         public function bootstrap(Application $app) : ApplicationConfig
         {
 
@@ -40,7 +39,9 @@
         private function getCachedConfigPath(Application $app ) : string
         {
             $base_path = $app->basePath();
-            return $base_path . DIRECTORY_SEPARATOR . 'storage' . DIRECTORY_SEPARATOR . 'cache.php';
+            $ds = DIRECTORY_SEPARATOR;
+
+            return $base_path.$ds.'bootstrap'.$ds.'cache'.$ds.'__generated::config.php';
         }
 
         private function loadConfigurationFromFiles(Application $app, ApplicationConfig $config)

@@ -49,7 +49,7 @@
 
             $this->container->singleton(ShutdownHandler::class, function () {
 
-                return new ShutdownHandler($this->requestType(), $this->app->isRunningUnitTest());
+                return new ShutdownHandler($this->app->isRunningUnitTest());
 
             });
         }
@@ -57,19 +57,9 @@
         private function bindConfig()
         {
 
-            $this->config->set('root_dir', dirname(__FILE__, 3) );
+            $this->config->extend('app.package_root', dirname(__FILE__, 3) );
 
-            $this->container->instance('request.type', $this->requestType());
-
-            $this->config->extend('app_key', '');
-
-            if ( ! defined('WPEMERGE_RUNNING_UNIT_TESTS')) {
-
-                define('WPEMERGE_RUNNING_UNIT_TESTS', false);
-
-            }
-
-            $this->config->set('_siteurl', WP::siteUrl());
+            $this->config->extend('app.url', WP::siteUrl());
 
         }
 
@@ -180,7 +170,6 @@
             $app->alias('methodField', MethodField::class, 'html');
 
         }
-
 
 
     }

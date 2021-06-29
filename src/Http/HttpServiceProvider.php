@@ -6,13 +6,12 @@
 
     namespace WPEmerge\Http;
 
-    use Nyholm\Psr7\Factory\Psr17Factory as NyholmFactoryImplementation;
     use Psr\Http\Message\ResponseFactoryInterface;
-    use Psr\Http\Message\ResponseFactoryInterface as Prs17ResponseFactory;
     use Psr\Http\Message\StreamFactoryInterface;
     use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewFactoryInterface;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\Session;
@@ -26,11 +25,7 @@
 
             $this->bindKernel();
 
-            $this->bindConcretePsr17ResponseFactory();
-
             $this->bindResponseFactory();
-
-            $this->bindPsr17StreamFactory();
 
             $this->bindCookies();
 
@@ -40,7 +35,8 @@
 
         public function bootstrap() : void
         {
-            //
+
+            $this->bindRequestEndpoint();
         }
 
         private function bindKernel()
@@ -57,34 +53,13 @@
 
                 if ($this->config->get('middleware.always_run_global', false)) {
 
-                    $kernel->alwaysWithGlobalMiddleware($this->config->get('middleware.groups.global', [] ) );
+                    $kernel->alwaysWithGlobalMiddleware($this->config->get('middleware.groups.global', []));
 
                 }
 
                 $kernel->withPriority($this->config->get('middleware.priority', []));
 
-
                 return $kernel;
-
-            });
-        }
-
-        private function bindConcretePsr17ResponseFactory() : void
-        {
-
-            $this->container->singleton(Prs17ResponseFactory::class, function () {
-
-                return new NyholmFactoryImplementation();
-
-            });
-        }
-
-        private function bindPsr17StreamFactory() : void
-        {
-
-            $this->container->singleton(StreamFactoryInterface::class, function () {
-
-                return new NyholmFactoryImplementation();
 
             });
         }
@@ -96,7 +71,7 @@
 
                 return new ResponseFactory(
                     $this->container->make(ViewFactoryInterface::class),
-                    $this->container->make(Prs17ResponseFactory::class),
+                    $this->container->make(ResponseFactoryInterface::class),
                     $this->container->make(StreamFactoryInterface::class),
                     $this->container->make(AbstractRedirector::class),
                 );
@@ -120,7 +95,7 @@
                     'expires' => null,
                     'secure' => true,
                     'httponly' => false,
-                    'samesite' => 'lax'
+                    'samesite' => 'lax',
                 ]);
 
                 return $cookies;
@@ -130,23 +105,51 @@
 
         private function bindRedirector()
         {
+
             $this->container->singleton(AbstractRedirector::class, function () {
 
-                $redirector = $this->container->make(Redirector::class);
-
-                if ( $this->sessionEnabled() ) {
-
-                    return new StatefulRedirector(
-                        $this->container->make(Session::class),
-                        $this->container->make(UrlGenerator::class),
-                        $this->container->make(ResponseFactoryInterface::class)
-                    );
-                }
-
-                return $redirector;
+                return $this->container->make(Redirector::class);
 
             });
         }
 
+        private function bindRequestEndpoint()
+        {
+
+            $request = $this->currentRequest();
+
+            if ( $endpoints = $this->config->get('routing.api.endpoints', false) ) {
+
+                $this->current_request = $request->withAttribute('_api.endpoints', $endpoints );
+                $this->container->instance(Request::class, $this->current_request);
+
+            }
+
+            if ($this->current_request->isApiEndPoint()) {
+
+                $this->config->set('_request_endpoint', 'api');
+
+                return;
+            }
+
+            if ($this->current_request->isWpAjax()) {
+
+                $this->config->set('_request_endpoint', 'wp_ajax');
+
+                return;
+
+            }
+
+            if ($this->current_request->isWpAdmin()) {
+
+                $this->config->set('_request_endpoint', 'wp_admin');
+
+                return;
+
+            }
+
+            $this->config->set('_request_endpoint', 'frontend');
+
+        }
 
     }

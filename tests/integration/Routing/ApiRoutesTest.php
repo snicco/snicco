@@ -40,7 +40,7 @@
 
             do_action('init');
 
-            $response = $this->sendResponse();
+            $response = $this->sentResponse();
             $response->assertOk();
             $response->assertSee('foo endpoint');
 
@@ -64,7 +64,7 @@
 
             do_action('init');
 
-            $this->sendResponse()->assertOk()->assertSee('foo endpoint');
+            $this->sentResponse()->assertOk()->assertSee('foo endpoint');
 
             $this->assertTrue($GLOBALS['test']['api_routes']);
             $this->assertFalse($GLOBALS['test']['other_api_routes'], 'Route file with the same name was loaded');
@@ -82,7 +82,7 @@
 
             do_action('init');
 
-            $this->sendResponse()->assertForbidden()->assertSee('you cant access this api endpoint.');
+            $this->sentResponse()->assertForbidden()->assertSee('you cant access this api endpoint.');
 
         }
 
@@ -95,7 +95,7 @@
 
             do_action('init');
 
-            $this->sendResponse()->assertStatus(400)->assertSee('The endpoint: bogus does not exist.');
+            $this->sentResponse()->assertStatus(400)->assertSee('The endpoint: bogus does not exist.');
 
 
         }

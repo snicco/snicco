@@ -60,7 +60,7 @@
 
             apply_filters('template_include', 'wp-template.php');
 
-            $this->sendResponse()->assertSee('foo')->assertOk();
+            $this->sentResponse()->assertSee('foo')->assertOk();
 
         }
 
@@ -83,7 +83,7 @@
             do_action("load-$hook");
 
 
-            $this->sendResponse()->assertOk()->assertSee('FOO_ADMIN');
+            $this->sentResponse()->assertOk()->assertSee('FOO_ADMIN');
 
         }
 
@@ -97,7 +97,7 @@
             do_action('init');
             do_action('admin_init');
 
-            $this->sendResponse()->assertOk()->assertSee('FOO_AJAX_ACTION');
+            $this->sentResponse()->assertOk()->assertSee('FOO_AJAX_ACTION');
 
         }
 
@@ -118,7 +118,7 @@
             global $pagenow;
             do_action("load-$pagenow");
 
-            $this->sendResponse()->assertRedirect('/foo');
+            $this->sentResponse()->assertRedirect('/foo');
 
         }
 
@@ -146,7 +146,7 @@
             do_action('init');
             apply_filters('template_include', 'wp-template.php');
 
-            $this->sendResponse()->assertSee('get_fallback')->assertOk();
+            $this->sentResponse()->assertSee('get_fallback')->assertOk();
 
         }
 
@@ -218,7 +218,7 @@
             do_action('init');
             apply_filters('template_include', 'wordpress.php');
 
-            $this->sendResponse()->assertOk()->assertSee('other');
+            $this->sentResponse()->assertOk()->assertSee('other');
 
         }
 

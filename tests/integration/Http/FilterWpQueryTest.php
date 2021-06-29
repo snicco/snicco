@@ -28,7 +28,7 @@
 
             apply_filters('template_include', 'wordpress.php');
 
-            $this->sendResponse()->assertOk()->assertSee('FOO_QUERY');
+            $this->sentResponse()->assertOk()->assertSee('FOO_QUERY');
 
 
         }
@@ -48,7 +48,7 @@
             $this->assertSame(['foo' => 'bar'], $after);
 
             apply_filters('template_include', 'wordpress.php');
-            $this->sendResponse()->assertOk()->assertSee('FOO_QUERY');
+            $this->sentResponse()->assertOk()->assertSee('FOO_QUERY');
 
         }
 
