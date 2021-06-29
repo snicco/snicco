@@ -104,12 +104,29 @@
         }
 
         /** @test */
+        public function the_caching_setting_defaults_to_only_in_production () {
+
+            $this->boot();
+            $this->assertFalse(TestApp::config('routing.cache'));
+
+        }
+
+        /** @test */
         public function without_caching_a_fast_route_matcher_is_returned()
         {
 
             $this->boot();
-
             $this->assertInstanceOf(FastRouteMatcher::class, TestApp::resolve(RouteMatcher::class));
+
+        }
+
+        /** @test */
+        public function the_default_cache_dir_is_bound () {
+
+
+            $this->boot();
+
+            $this->assertSame(FIXTURES_DIR.DS.'storage'.DS.'framework'.DS.'routes', TestApp::config('routing.cache_dir'));
 
         }
 

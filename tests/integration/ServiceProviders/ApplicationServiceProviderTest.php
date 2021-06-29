@@ -65,9 +65,31 @@
         }
 
         /** @test */
+        public function debug_mode_is_set () {
+
+            $this->assertTrue($this->config->get('app.debug'));
+
+        }
+
+        /** @test */
+        public function exception_handling_is_enabled_by_default () {
+
+            $this->assertTrue($this->config->get('app.exception_handling'));
+
+
+        }
+
+        /** @test */
         public function the_package_root_is_bound () {
 
             $this->assertSame(ROOT_DIR, TestApp::config('app.package_root'));
+
+        }
+
+        /** @test */
+        public function the_storage_dir_is_extended () {
+
+            $this->assertSame(FIXTURES_DIR.DS.'storage', TestApp::config('app.storage_dir'));
 
         }
 

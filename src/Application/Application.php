@@ -156,16 +156,6 @@
 
             $this->bootstrapped = true;
 
-            // If we would always unregister here it would not be possible to handle
-            // any errors that happen between this point and the the triggering of the
-            // hooks that run the HttpKernel.
-            // if ( ! $this->handlesExceptionsGlobally() ) {
-            //
-            //     /** @var ErrorHandlerInterface $error_handler */
-            //     $error_handler = $this->container()->make(ErrorHandlerInterface::class);
-            //     $error_handler->unregister();
-            //
-            // }
 
 
         }

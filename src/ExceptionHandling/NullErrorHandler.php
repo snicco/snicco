@@ -30,7 +30,7 @@
 
         public function unrecoverable(Throwable $exception)
         {
-           $this->transformToResponse($exception);
+            throw $exception;
         }
 
     }
