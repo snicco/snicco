@@ -13,7 +13,7 @@
     use Tests\helpers\HashesSessionIds;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\ExceptionHandling\TestingErrorHandler;
+    use WPEmerge\Testing\TestingErrorHandler;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Delegate;

@@ -15,7 +15,7 @@
     use Tests\UnitTest;
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
-    use WPEmerge\ExceptionHandling\TestingErrorHandler;
+    use WPEmerge\Testing\TestingErrorHandler;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Middleware\Core\ShareCookies;

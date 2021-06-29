@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\ExceptionHandling;
+    namespace WPEmerge\Testing;
 
     use Throwable;
     use WPEmerge\Contracts\ErrorHandlerInterface;
@@ -16,24 +16,31 @@
 
         public function register()
         {
+            //
         }
 
         public function unregister()
         {
+            //
         }
 
         public function transformToResponse(Throwable $exception, Request $request) : ?Response
         {
-           while (ob_get_level() > 1) {
-               ob_end_clean();
-           }
-
-           throw $exception;
-
+            $this->fail($exception);
         }
 
         public function unrecoverable(Throwable $exception)
         {
+            $this->fail($exception);
+        }
+
+        private function fail(Throwable $e) {
+
+            while (ob_get_level() > 1) {
+                ob_end_clean();
+            }
+
+            throw $e;
 
         }
 

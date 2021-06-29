@@ -13,11 +13,11 @@
 
         ],
 
-        'exception_handling' => [
+        'debug' => true,
 
-            'enabled' => true,
-            'debug' => false,
+        'debug_editor' => 'phpstorm',
 
-        ],
+        'exception_handling' => true,
+
 
     ];
