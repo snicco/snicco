@@ -89,12 +89,7 @@
 
             $this->updateSessionLifetime();
 
-            $this->config->set('session.rotate',
-                min(
-                    $this->config->get('session.rotate'),
-                    $this->config->get('auth.timeouts.idle') * 2
-                )
-            );
+
         }
 
         private function bindEvents()
@@ -165,7 +160,7 @@
         {
 
             $this->config->extend('auth.confirmation.duration', SessionManager::HOUR_IN_SEC * 3);
-            $this->config->extend('auth.timeouts.idle', SessionManager::HOUR_IN_SEC / 2);
+            $this->config->extend('auth.idle', SessionManager::HOUR_IN_SEC / 2);
             $this->config->extend('middleware.aliases', [
                 'auth.confirmed' => ConfirmAuth::class,
                 'auth.unconfirmed' => AuthUnconfirmed::class,
@@ -224,8 +219,6 @@
             }
             else {
 
-                $session_lifetime = $this->config->get('session.lifetime');
-                $this->config->set('auth.timeouts.absolute', $session_lifetime);
                 $this->config->set('auth.features.remember_me', 0);
 
             }

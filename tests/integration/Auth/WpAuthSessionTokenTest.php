@@ -6,6 +6,7 @@
 
     namespace Tests\integration\Auth;
 
+    use Tests\AuthTestCase;
     use Tests\stubs\TestApp;
     use WP_Session_Tokens;
     use WP_User;
@@ -22,11 +23,6 @@
          * @var ArraySessionDriver
          */
         private $driver;
-
-        /**
-         * @var AuthSessionManager
-         */
-        private $session_manager;
 
         /** @var WP_User */
         private $user;
@@ -50,23 +46,6 @@
         {
             $this->logout($this->user);
             parent::tearDown();
-        }
-
-        // We have to refresh the session manager because otherwise we would always operate on the same
-        // instance of Session:class
-        private function refreshSessionManager()
-        {
-
-           $this->instance(SessionManagerInterface::class,
-                $m = new AuthSessionManager(
-                    TestApp::resolve(SessionManager::class),
-                    TestApp::resolve(SessionDriver::class),
-                    TestApp::config('auth')
-                )
-            );
-
-            $this->session_manager = $m;
-
         }
 
         public function testGetReturnsWpSessionInformation()
