@@ -23,6 +23,7 @@
 		return strtoupper($request->input('page')). '_ADMIN';
 
 	});
+
     $router->get('admin.php/error', function () {
 
         throw new InvalidCsrfTokenException();
