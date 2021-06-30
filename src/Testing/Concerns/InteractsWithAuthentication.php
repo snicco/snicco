@@ -4,10 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Testing;
+    namespace WPEmerge\Testing\Concerns;
 
     use PHPUnit\Framework\Assert as PHPUnit;
     use WP_User;
+
+    use function wp_delete_user;
+    use function wp_get_current_user;
+    use function wp_logout;
+    use function wp_set_current_user;
 
     trait InteractsWithAuthentication
     {

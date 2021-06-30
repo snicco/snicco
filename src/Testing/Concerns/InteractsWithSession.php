@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Testing;
+    namespace WPEmerge\Testing\Concerns;
 
     use PHPUnit\Framework\Assert as PHPUnit;
     use Tests\helpers\HashesSessionIds;

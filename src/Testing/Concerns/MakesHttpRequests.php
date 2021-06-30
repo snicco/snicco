@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Testing;
+    namespace WPEmerge\Testing\Concerns;
 
     use Nyholm\Psr7Server\ServerRequestCreator;
     use Psr\Http\Message\ResponseInterface;
@@ -27,6 +27,7 @@
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Url;
+    use WPEmerge\Testing\TestResponse;
     use WPEmerge\View\ViewFactory;
 
     /**
@@ -259,8 +260,6 @@
             return $this->performRequest($request, $headers);
 
         }
-
-
 
         public function options($uri, array $headers = []) : TestResponse
         {

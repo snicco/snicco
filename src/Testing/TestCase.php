@@ -32,6 +32,12 @@
     use WPEmerge\Session\Session;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Support\Arr;
+    use WPEmerge\Testing\Concerns\InteractsWithAuthentication;
+    use WPEmerge\Testing\Concerns\InteractsWithContainer;
+    use WPEmerge\Testing\Concerns\InteractsWithMail;
+    use WPEmerge\Testing\Concerns\InteractsWithSession;
+    use WPEmerge\Testing\Concerns\InteractsWithWordpressUsers;
+    use WPEmerge\Testing\Concerns\MakesHttpRequests;
 
     abstract class TestCase extends WPTestCase
     {
