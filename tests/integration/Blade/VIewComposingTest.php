@@ -14,9 +14,9 @@
     use WPEmerge\Blade\BladeView;
     use WPEmerge\Contracts\ViewEngineInterface;
 
-    class VIewComposingTest extends IntegrationTest
+    class VIewComposingTest extends BladeTestCase
     {
-        use AssertBladeView;
+
 
         /**
          * @var BladeEngine
@@ -26,32 +26,15 @@
         protected function setUp() : void
         {
 
+
+            $this->afterApplicationCreated(function () {
+                $this->engine = TestApp::resolve(ViewEngineInterface::class);
+            });
             parent::setUp();
 
-            $this->newApp();
-
-            $this->engine = TestApp::resolve(ViewEngineInterface::class);
 
         }
 
-        private function newApp()
-        {
-
-            $cache_dir = TESTS_DIR.DS.'integration'.DS.'Blade'.DS.'cache';
-
-            $this->rmdir($cache_dir);
-
-            $this->newTestApp([
-                'providers' => [
-                    BladeServiceProvider::class,
-                ],
-                'blade' => [
-                    'cache' => $cache_dir,
-                    'views' => TESTS_DIR.DS.'integration'.DS.'Blade'.DS.'views'
-                ],
-            ]);
-
-        }
 
         private function makeView(string $view) {
 

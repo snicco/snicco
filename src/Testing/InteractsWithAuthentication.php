@@ -41,18 +41,20 @@
 
         }
 
-        protected function assertGuest() {
+        protected function assertGuest()
+        {
 
             PHPUnit::assertSame(0, wp_get_current_user()->ID, 'The user is not a guest.');
 
         }
 
         /**
-         * @param int|WP_User $user
+         * @param  int|WP_User  $user
          */
-        protected function assertAuthenticated($user) {
+        protected function assertAuthenticated($user)
+        {
 
-            if ( $user instanceof WP_User ) {
+            if ($user instanceof WP_User) {
 
                 $user = $user->ID;
 
@@ -62,13 +64,26 @@
 
         }
 
+        /**
+         * @param  int|WP_User  $user
+         */
+        protected function logout($user)
+        {
+
+            $user = $user instanceof WP_User ? $user->ID : $user;
+
+            wp_delete_user($user);
+
+            wp_logout();
+
+        }
+
         private function isAuthenticated(int $user_id) : bool
         {
 
             return wp_get_current_user()->ID === $user_id;
 
         }
-
 
 
     }

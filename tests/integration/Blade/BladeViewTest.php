@@ -14,10 +14,8 @@
     use WPEmerge\Contracts\ViewEngineInterface;
     use WPEmerge\ExceptionHandling\Exceptions\ViewException;
 
-    class BladeViewTest extends IntegrationTest
+    class BladeViewTest extends BladeTestCase
     {
-
-        use AssertBladeView;
 
         /**
          * @var BladeEngine
@@ -27,32 +25,17 @@
         protected function setUp() : void
         {
 
+            $this->afterApplicationCreated(function () {
+
+                $this->engine = TestApp::resolve(ViewEngineInterface::class);
+
+            });
+
             parent::setUp();
 
-            $this->newApp();
-
-            $this->engine = TestApp::resolve(ViewEngineInterface::class);
 
         }
 
-        private function newApp()
-        {
-
-            $cache_dir = TESTS_DIR.DS.'integration'.DS.'Blade'.DS.'cache';
-
-            $this->rmdir($cache_dir);
-
-            $this->newTestApp([
-                'providers' => [
-                    BladeServiceProvider::class,
-                ],
-                'blade' => [
-                    'cache' => $cache_dir,
-                    'views' => TESTS_DIR.DS.'integration'.DS.'Blade'.DS.'views'
-                ],
-            ]);
-
-        }
 
         /** @test */
         public function a_blade_view_can_be_rendered()
@@ -111,11 +94,12 @@
         }
 
         /** @test */
-        public function the_view_service_can_render_the_blade_view () {
+        public function the_view_service_can_render_the_blade_view()
+        {
 
             ob_start();
 
-            TestApp::render('variables', ['name'=>'calvin']);
+            TestApp::render('variables', ['name' => 'calvin']);
 
             $html = ob_get_clean();
 
