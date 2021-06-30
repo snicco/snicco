@@ -287,6 +287,14 @@
             return $this;
         }
 
+        public function assertContentType(string $expected)
+        {
+            PHPUnit::assertSame(
+                $expected, $actual = $this->psr_response->getHeaderLine('Content-Type'),
+                "Expected content type {$expected} but received {$actual}."
+            );
+        }
+
         /**
          * Assert that the given string or array of strings are contained within the response.
          *
@@ -695,6 +703,16 @@
             return $this;
         }
 
+        public function assertIsHtml()
+        {
+            $this->assertContentType('text/html');
+        }
+
+        public function assertIsJson()
+        {
+            $this->assertContentType('application/json');
+        }
+
         private function session() : ?Session
         {
             return $this->session;
@@ -729,7 +747,5 @@
         {
             return $this->psr_response->isRedirect($location);
         }
-
-
 
     }

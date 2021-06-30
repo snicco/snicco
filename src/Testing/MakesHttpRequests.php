@@ -12,7 +12,9 @@
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Message\UriFactoryInterface;
     use Psr\Http\Message\UriInterface;
+    use Tests\helpers\CreatesWpUrls;
     use WPEmerge\Application\Application;
+    use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Events\IncomingAdminRequest;
@@ -33,6 +35,7 @@
      * @property HttpKernel $kernel
      * @property ServerRequestFactoryInterface $request_factory
      * @property bool $routes_loaded
+     * @property ApplicationConfig $config
      */
     trait MakesHttpRequests
     {
@@ -226,6 +229,38 @@
             return $this->performRequest($request, $headers);
 
         }
+
+        public function getJson($uri, array $headers = []) :TestResponse {
+
+            $headers = array_merge($headers, ['Accept' => 'application/json']);
+            return $this->get($uri, $headers);
+
+        }
+
+         /**
+         * Visit the given ADMIN PAGE URI with a GET request.
+         *
+         * @param  string  $admin_page_slug The [page] query parameter for the admin page. May contain additional query parameters.
+         * @param  array  $headers
+         *
+         * @return TestResponse
+         */
+        public function getAdminPage( string $admin_page_slug, array $headers = []) : TestResponse
+        {
+
+            $uri = $this->adminPageUri($admin_page_slug);
+
+            $server = array_merge(['REQUEST_METHOD' => 'GET', 'SCRIPT_NAME' => 'wp-admin/index.php'], $this->default_server_variables);
+            $request = $this->request_factory->createServerRequest('GET', $uri, $server);
+
+            parse_str($uri->getQuery(), $query);
+            $request = $request->withQueryParams($query);
+
+            return $this->performRequest($request, $headers);
+
+        }
+
+
 
         public function options($uri, array $headers = []) : TestResponse
         {
@@ -422,11 +457,21 @@
 
             if ( ! $uri->getHost() ) {
 
-                $uri = $uri->withHost(parse_url(SITE_URL, PHP_URL_HOST));
+                $uri = $uri->withHost(parse_url($this->config->get('app.url'), PHP_URL_HOST));
 
             }
 
             return $uri;
+
+        }
+
+        private function adminPageUri(string $admin_page_slug) : UriInterface
+        {
+
+            $query = urlencode($admin_page_slug);
+            $uri = Url::combineAbsPath($this->config->get('app.url'), "wp-admin/admin.php?page=$query");
+
+            return $this->app->resolve(UriFactoryInterface::class)->createUri($uri);
 
         }
 

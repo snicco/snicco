@@ -90,10 +90,6 @@
 
     }
 
-
-
-
-
     $classLoader = require $root_dir.DS.'vendor'.DS.'autoload.php';
 
     Override::apply($classLoader, [
