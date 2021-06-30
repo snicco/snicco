@@ -24,6 +24,8 @@
         function bootstrap() : void
         {
 
+            $foo = 'bar';
+
             Blade::if('auth', function () {
 
                 return WP::isUserLoggedIn();
@@ -80,13 +82,12 @@
 
                 /** @var MethodField $method_field */
                 $method_field = $this->container->make(MethodField::class);
-                $html = $method_field->html($method);
+                $html = $method_field->html(str_replace("'", "", $method));
 
                 return "<?php declare(strict_types=1); echo \"{$html}\";";
 
 
             });
-
 
 
         }

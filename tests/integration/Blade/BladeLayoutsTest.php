@@ -17,10 +17,9 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
 
-    class BladeLayoutsTest extends IntegrationTest
+    class BladeLayoutsTest extends BladeTestCase
     {
 
-        use AssertBladeView;
 
         /** @test */
         public function layouts_and_extending_work () {

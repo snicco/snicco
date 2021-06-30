@@ -18,19 +18,11 @@
     use WPEmerge\Blade\BladeServiceProvider;
     use WPEmerge\Contracts\ViewEngineInterface;
 
-    class BladeServiceProviderTest extends TestCase
+    class BladeServiceProviderTest extends BladeTestCase
     {
 
         protected $defer_boot = true;
 
-        public function packageProviders() : array
-        {
-
-            return [
-                BladeServiceProvider::class,
-                BladeDirectiveServiceProvider::class,
-            ];
-        }
 
         /** @test */
         public function the_blade_view_factory_is_bound_correctly()

@@ -13,14 +13,10 @@
     use Tests\integration\Blade\Components\HelloWorld;
     use Tests\integration\Blade\Components\InlineComponent;
     use Tests\integration\Blade\Components\ToUppercaseComponent;
-    use Tests\integration\Blade\traits\AssertBladeView;
-    use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
 
-    class BladeComponentsTest extends IntegrationTest
+    class BladeComponentsTest extends BladeTestCase
     {
-
-        use AssertBladeView;
 
         /** @test */
         public function basic_anonymous_components_work()
