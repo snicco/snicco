@@ -6,8 +6,12 @@
 
     namespace WPEmerge\Testing\Concerns;
 
+    use WPEmerge\Http\ResponseEmitter;
+    use WPEmerge\Testing\TestResponseEmitter;
+
     trait InteractsWithContainer
     {
+
 
         /**
          * Register an instance of an object in the container.
@@ -34,5 +38,13 @@
 
             return $instance;
         }
+
+        private function replaceBindings()
+        {
+
+            $this->swap(ResponseEmitter::class, new TestResponseEmitter());
+
+        }
+
 
     }

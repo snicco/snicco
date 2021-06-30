@@ -51,7 +51,11 @@
 
                 );
 
-                if ($this->config->get('middleware.always_run_global', false)) {
+                if ( $this->config->get('middleware.disabled', false ) ) {
+                    return $kernel;
+                }
+
+                if ($this->config->get('middleware.always_run_global', false) ) {
 
                     $kernel->alwaysWithGlobalMiddleware($this->config->get('middleware.groups.global', []));
 

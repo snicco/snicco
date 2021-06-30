@@ -35,8 +35,6 @@
          */
         private $pipeline;
 
-        private $is_test_mode = false;
-
         /**
          * @var bool
          */
@@ -159,7 +157,7 @@
         private function withMiddleware() : bool
         {
 
-            return ! $this->is_test_mode && $this->always_with_global_middleware;
+            return $this->always_with_global_middleware;
 
         }
 

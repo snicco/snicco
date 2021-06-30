@@ -222,7 +222,7 @@
         {
 
 
-            if (in_array(AuthServiceProvider::class, $this->config->get('providers', []))) {
+            if (in_array(AuthServiceProvider::class, $this->config->get('app.providers', []))) {
 
                 return;
 

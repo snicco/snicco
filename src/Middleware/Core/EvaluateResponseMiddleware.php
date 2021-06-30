@@ -48,7 +48,7 @@
             if ($response instanceof InvalidResponse) {
 
                 throw new InvalidResponseException(
-                    'The response returned by the route action is not valid.'
+                    'The response returned by the route is not valid.'
                 );
 
             }

@@ -6,47 +6,22 @@
 
     namespace Tests\integration\Auth;
 
-    use Tests\helpers\HashesSessionIds;
-    use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use WP_Session_Tokens;
     use WP_User;
-    use WPEmerge\Auth\AuthServiceProvider;
     use WPEmerge\Auth\AuthSessionManager;
     use WPEmerge\Session\Contracts\SessionDriver;
     use WPEmerge\Session\Contracts\SessionManagerInterface;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
-    use WPEmerge\Session\Session;
     use WPEmerge\Session\SessionManager;
-    use WPEmerge\Session\SessionServiceProvider;
 
-    class WpAuthSessionTokenTest extends IntegrationTest
+    class WpAuthSessionTokenTest extends AuthTestCase
     {
-
-        use HashesSessionIds;
-        use InteractsWithWordpress;
 
         /**
          * @var ArraySessionDriver
          */
         private $driver;
-
-        private $config = [
-            'session' => [
-                'enabled' => true,
-                'driver' => 'array',
-                'lifetime' => 3600,
-            ],
-            'providers' => [
-                SessionServiceProvider::class,
-                AuthServiceProvider::class,
-            ],
-        ];
-        /**
-         * @var Session
-         */
-        private $session;
 
         /**
          * @var AuthSessionManager
@@ -56,28 +31,33 @@
         /** @var WP_User */
         private $user;
 
-        protected function afterSetup()
+        protected function setUp() : void
         {
+            $this->afterApplicationCreated(function () {
 
-            $user = $this->newAdmin();
-            $this->login($user);
-            $this->user = $user;
+                $user = $this->createAdmin();
+                $this->actingAs($user);
+                $this->user = $user;
+                $this->driver = $this->sessionDriver();
+                $this->session_manager = TestApp::resolve(SessionManagerInterface::class);
 
-            $this->newTestApp($this->config);
-            $this->driver = TestApp::resolve(SessionDriver::class);
-            $this->session = TestApp::session();
-            $this->session_manager = TestApp::resolve(SessionManagerInterface::class);
+            });
+
+            parent::setUp();
         }
 
-        protected function beforeTearDown()
+        protected function tearDown() : void
         {
-            $this->logout();
+            $this->logout($this->user);
+            parent::tearDown();
         }
 
-        private function bindNewSessionManager()
+        // We have to refresh the session manager because otherwise we would always operate on the same
+        // instance of Session:class
+        private function refreshSessionManager()
         {
 
-            TestApp::container()->instance(SessionManagerInterface::class,
+           $this->instance(SessionManagerInterface::class,
                 $m = new AuthSessionManager(
                     TestApp::resolve(SessionManager::class),
                     TestApp::resolve(SessionDriver::class),
@@ -139,7 +119,7 @@
             $instance->create(1000);
             $this->session_manager->save();
 
-            $this->bindNewSessionManager();
+            $this->refreshSessionManager();
 
             $instance = WP_Session_Tokens::get_instance($this->user->ID);
             $instance->create(1000);
@@ -232,7 +212,7 @@
             $this->session_manager->save();
             $first_id = $this->session_manager->activeSession()->getId();
 
-            $this->bindNewSessionManager();
+            $this->refreshSessionManager();
 
             $instance = WP_Session_Tokens::get_instance($this->user->ID);
             $instance->create(1000);
@@ -259,7 +239,7 @@
             $this->session_manager->save();
             $first_id = $this->session_manager->activeSession()->getId();
 
-            $this->bindNewSessionManager();
+            $this->refreshSessionManager();
 
             $instance = WP_Session_Tokens::get_instance($this->user->ID);
             $instance->create(1000);
@@ -287,10 +267,10 @@
             $first_id = $this->session_manager->activeSession()->getId();
             $this->assertTrue($instance->verify($first_id));
 
-            $this->bindNewSessionManager();
+            $this->refreshSessionManager();
 
-            $second_user = $this->newAdmin();
-            $this->login($second_user);
+            $second_user = $this->createAdmin();
+            $this->actingAs($second_user);
             $this->user = $second_user;
 
             $instance = WP_Session_Tokens::get_instance($this->user->ID);
