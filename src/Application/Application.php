@@ -156,8 +156,6 @@
 
             $this->bootstrapped = true;
 
-
-
         }
 
         public function config(?string $key = null, $default = null)

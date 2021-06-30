@@ -122,37 +122,6 @@
         }
 
         /**
-         * Disable middleware for the test.
-         *
-         * @param  string|array|null  $middleware
-         * @return $this
-         */
-        public function withoutMiddleware($middleware = null)
-        {
-            if (is_null($middleware)) {
-
-                $this->app->config()->set('middleware.disabled', true );
-
-                return $this;
-
-            }
-
-            foreach ((array) $middleware as $abstract) {
-
-                $this->app->container()->instance($abstract, new class extends Middleware
-                {
-                    public function handle(Request $request, Delegate $next) :ResponseInterface
-                    {
-                        return $next($request);
-                    }
-                });
-
-            }
-
-            return $this;
-        }
-
-        /**
          * Define additional cookies to be sent with the request.
          *
          * @param  array  $cookies

@@ -15,25 +15,8 @@
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Routing\UrlGenerator;
 
-    class WpLoginRedirectManager
+    class WpLoginLinkGenerator
     {
-
-        public function redirect(Request $request, Redirector $redirector, ResponseEmitter $emitter)
-        {
-
-            // redirect all request to wp-login.php expect for when the action is confirmation.
-            // This deals with the personal data confirmation
-            if ($request->loadingScript() === 'wp-login.php' && $request->isGet() && $request->input('action') !== 'confirmation') {
-
-                $response = $redirector->toRoute('auth.login', 301);
-
-                $emitter->emit($response);
-
-                ResponseSent::dispatch([$response, $request]);
-
-            }
-
-        }
 
         /** NOTE: Wordpress always returns these as absolute urls so lets stay compatible */
         public function loginUrl(GenerateLoginUrl $event, UrlGenerator $url) : string

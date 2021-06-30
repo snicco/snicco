@@ -128,6 +128,10 @@
 
                 $stack = new MiddlewareStack();
 
+                if ( $this->config->get('middleware.disabled', false ) ) {
+                    return $stack;
+                }
+
                 foreach ($this->config->get('middleware.groups') as $name => $middleware) {
 
                     $stack->withMiddlewareGroup($name, $middleware);

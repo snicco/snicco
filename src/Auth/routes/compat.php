@@ -5,6 +5,7 @@
 
     use WPEmerge\Auth\Controllers\BulkPasswordResetEmailController;
     use WPEmerge\Auth\Controllers\PasswordResetEmailController;
+    use WPEmerge\Auth\Controllers\WpLoginRedirectController;
     use WPEmerge\Routing\Router;
 
     /** @var Router $router */
@@ -15,3 +16,4 @@
     $router->post('/wp-admin/admin-ajax.php/send-password-reset', [PasswordResetEmailController::class, 'store'])
            ->middleware(['auth']);
 
+    $router->any('/wp-login.php', [WpLoginRedirectController::class]);

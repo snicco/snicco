@@ -13,18 +13,24 @@
     use Mockery;
     use Mockery\Exception\InvalidCountException;
     use Nyholm\Psr7Server\ServerRequestCreator;
+    use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestFactoryInterface;
     use Tests\helpers\TravelsTime;
     use Tests\stubs\TestApp;
+    use Throwable;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\AbstractRouteCollection;
+    use WPEmerge\Contracts\ErrorHandlerInterface;
+    use WPEmerge\Contracts\Middleware;
     use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Delegate;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\Router;
@@ -148,7 +154,7 @@
 
             $this->backToPresent();
 
-            if ( ! $this->app ) {
+            if ( ! $this->app) {
 
                 $this->refreshApplication();
 
@@ -263,6 +269,58 @@
             return $this;
         }
 
+        /**
+         * Disable all or some middleware for the test.
+         *
+         * @param  string|array|null  $middleware
+         *
+         * @return $this
+         */
+        protected function withoutMiddleware($middleware = null) : TestCase
+        {
+
+            if (is_null($middleware)) {
+
+                $this->app->config()->set('middleware.disabled', true);
+
+                return $this;
+
+            }
+
+            foreach ((array) $middleware as $abstract) {
+
+                $this->app->container()->instance(
+                    $abstract,
+                    new class extends Middleware {
+
+                        public function handle(Request $request, Delegate $next) : ResponseInterface
+                        {
+
+                            return $next($request);
+                        }
+
+                    }
+                );
+
+            }
+
+            return $this;
+        }
+
+        /**
+         *
+         * Disables exception handling. Exceptions will not be converted to HTTP Responses
+         *
+         * @return TestCase
+         */
+        protected function withoutExceptionHandling() :TestCase{
+
+            $this->config->set('app.exception_handling', false );
+
+            return $this;
+
+        }
+
         protected function withOutConfig($keys) : TestCase
         {
 
@@ -305,7 +363,9 @@
 
         protected function withRequest(Request $request) : TestCase
         {
+
             $this->request = $request;
+
             return $this;
         }
 
@@ -317,6 +377,7 @@
                 $this->request = $this->addCookies($this->request);
                 $this->request = $this->addHeaders($this->request);
                 $this->instance(Request::class, $this->request);
+
                 return;
             }
 
@@ -357,14 +418,10 @@
 
         }
 
-        private function replaceBindings()
-        {
-
-            $this->swap(ResponseEmitter::class, new TestResponseEmitter());
-        }
-
         private function refreshApplication()
         {
+
             $this->app = $this->createApplication();
         }
+
     }
