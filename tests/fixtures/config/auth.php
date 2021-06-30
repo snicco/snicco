@@ -12,10 +12,7 @@ return [
 
     ],
 
-    'timeouts' => [
-        // 'idle' => 3600
-        // 'absolute => 10800
-    ],
+    'idle' => 1800,
 
     'endpoint' => 'auth',
 

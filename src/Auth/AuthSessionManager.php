@@ -78,7 +78,6 @@
 
         public function save()
         {
-
             $this->manager->save();
         }
 
@@ -143,7 +142,7 @@
         public function idleTimeout()
         {
 
-            $timeout = Arr::get($this->auth_config, 'timeouts.idle', 0);
+            $timeout = Arr::get($this->auth_config, 'idle', 0);
 
             if (is_callable($this->idle_resolver)) {
 
@@ -167,7 +166,8 @@
         private function allowsPersistentLogin() : bool
         {
 
-            return Arr::get($this->auth_config, 'remember.enabled', true);
+            $remember = Arr::get($this->auth_config, 'features.remember_me', 0);
+            return $remember > 0;
 
         }
 
@@ -190,7 +190,9 @@
             }
 
             if ($this->isIdle($session_payload) && ! $this->allowsPersistentLogin()) {
+
                 return false;
+
             }
 
             return true;

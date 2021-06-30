@@ -6,6 +6,7 @@
 
     namespace Tests\integration\Auth;
 
+    use Tests\AuthTestCase;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
     use Tests\IntegrationTest;
     use Tests\stubs\HeaderStack;
@@ -45,6 +46,24 @@
     {
 
         protected $defer_boot = true;
+
+        /** @test */
+        public function the_config_is_bound()
+        {
+
+            $this->boot();
+
+            $this->assertSame(3600 * 3, TestApp::config('auth.confirmation.duration'));
+            $this->assertSame(1800, TestApp::config('auth.idle'));
+            $this->assertSame('auth', TestApp::config('auth.endpoint'));
+            $this->assertArrayHasKey('auth', TestApp::config('routing.api.endpoints'));
+            $this->assertSame(0, TestApp::config('auth.features.remember_me'));
+            $this->assertFalse(TestApp::config('auth.features.2fa'));
+            $this->assertFalse(TestApp::config('auth.features.password-resets'));
+            $this->assertFalse(TestApp::config('auth.features.registration'));
+
+
+        }
 
         /** @test */
         public function the_auth_views_are_bound_in_the_config()
@@ -126,24 +145,6 @@
         }
 
         /** @test */
-        public function the_config_is_bound()
-        {
-
-            $this->boot();
-
-            $this->assertSame(3600 * 3, TestApp::config('auth.confirmation.duration'));
-            $this->assertSame(1800, TestApp::config('auth.timeouts.idle'));
-            $this->assertSame('auth', TestApp::config('auth.endpoint'));
-            $this->assertArrayHasKey('auth', TestApp::config('routing.api.endpoints'));
-            $this->assertSame(0, TestApp::config('auth.features.remember_me'));
-            $this->assertFalse(TestApp::config('auth.features.2fa'));
-            $this->assertFalse(TestApp::config('auth.features.password-resets'));
-            $this->assertFalse(TestApp::config('auth.features.registration'));
-
-
-        }
-
-        /** @test */
         public function the_authenticator_is_bound()
         {
 
@@ -196,9 +197,11 @@
 
             $this->assertSame(4800, TestApp::config('session.lifetime'));
             $this->assertSame(0, TestApp::config('auth.features.remember_me'));
-            $this->assertSame(4800, TestApp::config('auth.timeouts.absolute'));
+
 
         }
+
+
 
         /** @test */
         public function wp_login_php_is_a_permanent_redirected_for_get_requests()

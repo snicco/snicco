@@ -7,23 +7,14 @@
     namespace Tests\integration\Session;
 
     use Illuminate\Support\InteractsWithTime;
-    use Tests\helpers\HashesSessionIds;
-    use Tests\helpers\TravelsTime;
-    use Tests\IntegrationTest;
-    use Tests\stubs\HeaderStack;
-    use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Session\Contracts\SessionDriver;
-    use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Events\SessionRegenerated;
-    use WPEmerge\Session\Session;
     use WPEmerge\Session\SessionManager;
     use WPEmerge\Session\SessionServiceProvider;
-    use WPEmerge\Testing\TestResponseEmitter;
 
     class SessionManagerTest extends TestCase
     {
