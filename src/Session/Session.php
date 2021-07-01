@@ -21,7 +21,7 @@
     use WPEmerge\Support\Str;
     use stdClass;
     use SessionHandlerInterface;
-
+    use WPEmerge\Support\Url;
 
     class Session
     {

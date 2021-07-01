@@ -66,6 +66,7 @@
         /** @var string */
         public $message = '';
 
+
         abstract public function unique(): bool;
 
         public function to($recipients) : Mailable

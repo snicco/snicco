@@ -6,6 +6,7 @@
 
     namespace Tests\integration\Auth;
 
+    use Tests\AuthTestCase;
     use Tests\helpers\HashesSessionIds;
     use Tests\helpers\TravelsTime;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
@@ -19,81 +20,51 @@
     use WPEmerge\Auth\Contracts\Authenticator;
     use WPEmerge\Auth\Events\Login;
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
-    use WPEmerge\Auth\Responses\SuccessfulLoginResponse;
     use WPEmerge\Auth\Traits\ResolvesUser;
-    use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Support\Arr;
 
-    class AuthSessionControllerTest extends IntegrationTest
+    class AuthSessionControllerTest extends AuthTestCase
     {
 
-        use InteractsWithWordpress;
-        use HashesSessionIds;
-        use TravelsTime;
 
-        private $config = [
-            'session' => [
-                'enabled' => true,
-                'driver' => 'array',
-                'lifetime' => 3600
-            ],
-            'providers' => [
-                SessionServiceProvider::class,
-                AuthServiceProvider::class,
-            ],
-            'auth' => [
+        // private $config = [
+        //     'session' => [
+        //         'enabled' => true,
+        //         'driver' => 'array',
+        //         'lifetime' => 3600
+        //     ],
+        //     'providers' => [
+        //         SessionServiceProvider::class,
+        //         AuthServiceProvider::class,
+        //     ],
+        //     'auth' => [
+        //
+        //         'confirmation' => [
+        //             'duration' => 10
+        //         ],
+        //
+        //         'remember' => [
+        //             'enabled' => false,
+        //         ]
+        //     ]
+        // ];
 
-                'confirmation' => [
-                    'duration' => 10
-                ],
-
-                'remember' => [
-                    'enabled' => false,
-                ]
-            ]
-        ];
-
-        /**
-         * @var TestRequest
-         */
-        private $request;
-
-        protected function afterSetup()
-        {
-
-           $this->request = TestRequest::from('GET', '/auth/login');
-        }
-
-        protected function postLoginRequest(array $body) {
-
-            TestApp::session()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
-
-            $body = array_merge($body, [
-                'csrf_name' => Arr::firstKey($csrf),
-                'csrf_value' => Arr::firstEl($csrf),
-            ]);
-
-            return TestRequest::from('POST', '/auth/login')->withParsedBody($body);
-
-        }
-
-        /** @test */
+          /** @test */
         public function the_login_screen_can_be_rendered () {
 
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
 
-            $this->assertOutputContains('Login', $this->request);
-            HeaderStack::assertHasStatusCode(200);
+            $this->get('/auth/login')
+                 ->assertOk()
+                 ->assertSee('Login');
 
 
         }
 
         /** @test */
-        public function the_login_route_can_not_be_accessed_while_logged_in () {
+        public function _the_login_route_can_not_be_accessed_while_logged_in () {
 
             $this->login($calvin = $this->newAdmin());
 
@@ -108,7 +79,18 @@
         }
 
         /** @test */
-        public function reauth_works_when_present_in_the_query_parameter () {
+        public function the_login_route_can_not_be_accessed_while_logged_in () {
+
+            $this->actingAs($this->createAdmin());
+
+            $this->get('/auth/login')
+                 ->assertRedirectToRoute('dashboard');
+
+        }
+
+
+        /** @test */
+        public function _reauth_works_when_present_in_the_query_parameter () {
 
             $this->newTestApp($this->config);
             $this->loadRoutes();
@@ -128,23 +110,41 @@
         }
 
         /** @test */
+        public function reauth_works_when_present_in_the_query_parameter () {
+
+
+            $this->withDataInSession(['foo' => 'bar']);
+
+            $auth_cookies_cleared = false;
+
+            add_action('clear_auth_cookie', function () use (&$auth_cookies_cleared){
+                $auth_cookies_cleared = true;
+            });
+
+            $response = $this->get('/auth/login?reauth=1');
+            $response->assertOk()->assertSee('Login');
+            $this->assertTrue($auth_cookies_cleared);
+            $response->assertSessionMissing('foo');
+
+        }
+
+
+        /** @test */
         public function the_redirect_to_url_is_saved_to_the_session () {
 
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
 
-            $request = $this->request->withQueryParams(['redirect_to' => '/foo/bar']);
+            $query = urlencode('https://foobar.com/foo/bar?search=foo bar');
+            $response = $this->get("/auth/login?redirect_to=$query");
+            $response->assertOk()->assertSee('Login');
 
-            $this->assertOutputContains('Login', $request);
-            HeaderStack::assertHasStatusCode(200);
-
-            $this->assertSame('/foo/bar', TestApp::session()->getIntendedUrl());
+            $search = urlencode('foo bar');
+            $response->assertSessionHas('_url.intended', "https://foobar.com/foo/bar?search=$search");
 
 
         }
 
         /** @test */
-        public function a_user_can_log_in () {
+        public function _a_user_can_log_in () {
 
             $this->newTestApp($this->config);
             $this->loadRoutes();
@@ -166,7 +166,7 @@
         }
 
         /** @test */
-        public function a_wrong_password_throws_a_generic_exception () {
+        public function _a_wrong_password_throws_a_generic_exception () {
 
             $this->newTestApp($this->config);
             $this->loadRoutes();
@@ -187,7 +187,7 @@
         }
 
         /** @test */
-        public function a_wrong_user_login_throws_a_generic_exception () {
+        public function _a_wrong_user_login_throws_a_generic_exception () {
 
             $this->newTestApp($this->config);
             $this->loadRoutes();
@@ -207,7 +207,7 @@
         }
 
         /** @test */
-        public function the_session_is_updated_on_login () {
+        public function _the_session_is_updated_on_login () {
 
             $this->newTestApp($this->config);
             $this->loadRoutes();
@@ -255,7 +255,7 @@
         }
 
         /** @test */
-        public function a_user_can_be_remembered_if_he_chooses_too () {
+        public function _a_user_can_be_remembered_if_he_chooses_too () {
 
             Arr::set($this->config, 'auth.remember.enabled', true );
             $this->newTestApp($this->config);
@@ -277,7 +277,7 @@
         }
 
         /** @test */
-        public function a_user_will_not_be_remembered_if_disabled_in_the_config () {
+        public function _a_user_will_not_be_remembered_if_disabled_in_the_config () {
 
             Arr::set($this->config, 'auth.remember.enabled', false );
             $this->newTestApp($this->config);
@@ -299,7 +299,7 @@
         }
 
         /** @test */
-        public function if_its_an_interim_login_the_user_is_not_redirected () {
+        public function _if_its_an_interim_login_the_user_is_not_redirected () {
 
 
             $this->newTestApp($this->config);
@@ -324,7 +324,7 @@
         }
 
         /** @test */
-        public function the_user_can_be_logged_in_through_multiple_authenticators () {
+        public function _the_user_can_be_logged_in_through_multiple_authenticators () {
 
             Arr::set($this->config, 'auth.through', [
                 CustomAuthenticator::class,

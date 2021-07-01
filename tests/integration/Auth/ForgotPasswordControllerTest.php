@@ -21,36 +21,6 @@
     {
 
 
-        private function postRequest(array $body, array $csrf)
-        {
-
-            $url = TestApp::url()->signedRoute('auth.forgot.password');
-
-            $request = TestRequest::from('POST', $url);
-
-            TestApp::container()->instance(Request::class, $request);
-
-            $body = array_merge($body, [
-                'csrf_name' => Arr::firstKey($csrf),
-                'csrf_value' => Arr::firstEl($csrf),
-            ]);
-
-            return $request->withParsedBody($body);
-
-        }
-
-        private function getRequest() : TestRequest
-        {
-
-            $url = TestApp::url()->signedRoute('auth.forgot.password');
-
-            $request = TestRequest::from('GET', $url);
-
-            TestApp::container()->instance(Request::class, $request);
-
-            return $request;
-        }
-
         protected function setUp() : void
         {
 
@@ -113,7 +83,6 @@
         public function a_password_reset_link_can_be_requested_by_user_name()
         {
 
-            $this->withoutExceptionHandling();
             $this->mailFake();
             $token = $this->withCsrfToken();
 
@@ -124,105 +93,58 @@
             $response = $this->post($url, $token + ['login' => $calvin->user_login]);
             $response->assertRedirectToRoute('auth.forgot.password');
 
-            $this->assertMailSent(ResetPasswordMail::class);
+            $mail = $this->assertMailSent(ResetPasswordMail::class);
 
-            // ApplicationEvent::assertDispatched(function (PendingMail $event) {
-            //
-            //     return $event->mail instanceof ResetPasswordMail;
-            //
-            // });
+            $expected_link = TestApp::url()->toRoute('auth.reset.password', [], true, true);
+
+            $mail->assertTo($calvin)
+                 ->assertView('password-forgot-email')
+                ->assertSee("$expected_link?expires=");
+
 
 
         }
 
         /** @test */
-        public function a_password_reset_link_can_be_requested_by_email()
+        public function a_password_reset_link_can_be_requested_by_user_email()
         {
 
-            $calvin = $this->newAdmin();
+            $this->mailFake();
+            $token = $this->withCsrfToken();
 
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
+            $url = $this->routeUrl();
 
-            TestApp::session()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
+            $calvin = $this->createAdmin();
 
-            $request = $this->postRequest([
-                'login' => $calvin->user_email,
-            ], $csrf);
+            $response = $this->post($url, $token + ['login' => $calvin->user_email]);
+            $response->assertRedirectToRoute('auth.forgot.password');
 
-            ApplicationEvent::fake();
+            $mail = $this->assertMailSent(ResetPasswordMail::class);
 
-            $this->assertOutputContains('', $request);
-            HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertHas('Location', $request->path());
+            $expected_link = TestApp::url()->toRoute('auth.reset.password', [], true, true);
 
-            ApplicationEvent::assertDispatched(function (PendingMail $event) {
+            $mail->assertTo($calvin)
+                 ->assertView('password-forgot-email')
+                 ->assertSee("$expected_link?expires=");
 
-                return $event->mail instanceof ResetPasswordMail;
-
-            });
 
         }
+
 
         /** @test */
         public function invalid_input_does_not_return_an_error_message_but_doesnt_send_an_email()
         {
 
-            $calvin = $this->newAdmin();
+            $this->mailFake();
+            $token = $this->withCsrfToken();
 
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
+            $response = $this->post($this->routeUrl(), $token + ['login' => 'bogus@web.de']);
 
-            TestApp::session()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
-
-            $request = $this->postRequest([
-                'login' => 'bogus@web.de',
-            ], $csrf);
-
-            ApplicationEvent::fake();
-
-            $this->assertOutputContains('', $request);
-            HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertHas('Location', $request->path());
-
-            ApplicationEvent::assertNotDispatched(PendingMail::class);
+            $response->assertRedirectToRoute('auth.forgot.password');
+            $this->assertMailNotSent(ResetPasswordMail::class);
 
 
         }
 
-        /** @test */
-        public function the_mail_contains_a_magic_link_to_reset_the_password_and_is_sent_to_the_correct_user()
-        {
-
-            $calvin = $this->newAdmin();
-
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
-
-            TestApp::session()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
-
-            $request = $this->postRequest([
-                'login' => $calvin->user_email,
-            ], $csrf);
-
-            ApplicationEvent::fake();
-
-            $this->assertOutputContains('', $request);
-            HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertHas('Location', $request->path());
-
-            ApplicationEvent::assertDispatched(function (PendingMail $event) use ($calvin) {
-
-                $mail = $event->mail;
-
-                $this->assertStringContainsString('https://foo.com/auth/reset-password?expires', $mail->magic_link);
-                $this->assertSame($calvin->user_email, $mail->to[0]->email);
-
-                return $mail instanceof ResetPasswordMail;
-
-            });
-
-
-        }
 
     }
