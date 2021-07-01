@@ -129,6 +129,7 @@
                 $stack = new MiddlewareStack();
 
                 if ( $this->config->get('middleware.disabled', false ) ) {
+                    $stack->disableAllMiddleware();
                     return $stack;
                 }
 

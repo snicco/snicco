@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Auth\Controllers;
 
+    use Respect\Validation\Validator;
     use WP_User;
     use WPEmerge\Auth\Traits\ResolvesUser;
     use WPEmerge\Contracts\ViewInterface;
@@ -47,9 +48,11 @@
         public function store(Request $request, MailBuilder $mail) : RedirectResponse
         {
 
-            $login = $request->input('login');
+            $validated = $request->validate([
+                'login' => v::notEmpty(),
+            ]);
 
-            $user = $this->getUserByLogin($login);
+            $user = $this->getUserByLogin($validated['login']);
 
             if ($user instanceof WP_User) {
 

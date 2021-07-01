@@ -22,7 +22,6 @@
 
         public function __construct(Validator $validator)
         {
-
             $this->validator = $validator;
         }
 

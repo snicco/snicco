@@ -11,6 +11,7 @@
     use WPEmerge\Auth\Events\Login;
     use WPEmerge\Auth\Events\Logout;
     use WPEmerge\Auth\Contracts\LoginResponse;
+    use WPEmerge\Auth\Responses\LogoutResponse;
     use WPEmerge\Auth\Responses\SuccessfulLoginResponse;
     use WPEmerge\Auth\Contracts\LoginViewResponse;
     use WPEmerge\Contracts\ResponsableInterface;
@@ -19,6 +20,7 @@
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Session\Session;
@@ -77,7 +79,7 @@
 
         }
 
-        public function destroy(Request $request, string $user_id) : RedirectResponse
+        public function destroy(Request $request, string $user_id) : Response
         {
 
             if ((int) $user_id !== WP::userId()) {
@@ -86,13 +88,11 @@
 
             }
 
-            Logout::dispatch([$request->session()]);
-
             $redirect_to = $request->query('redirect_to', $this->url->toRoute('home'));
 
-            return $this->response_factory->redirect()->to($redirect_to)
-                                          ->withAddedHeader('Expires', 'Wed, 11 Jan 1984 06:00:00 GMT')
-                                          ->withAddedHeader('Cache-Control', 'no-cache, must-revalidate, max-age=0');
+            $response = $this->response_factory->redirect()->to($redirect_to);
+
+            return new LogoutResponse($response);
 
         }
 

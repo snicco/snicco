@@ -11,6 +11,7 @@
     use Tests\TestCase;
     use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Http\Redirector;
+    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Session\Contracts\SessionDriver;
     use WPEmerge\Session\Contracts\SessionManagerInterface;
     use WPEmerge\Session\CsrfField;
@@ -399,6 +400,21 @@
             ])->boot();
 
             $this->assertInstanceOf(StatefulRedirector::class, TestApp::resolve(AbstractRedirector::class));
+
+        }
+
+        /** @test */
+        public function the_response_factory_uses_a_stateful_redirector_if_enabled () {
+
+            $this->withAddedConfig([
+                'session.enabled' => true,
+            ])->boot();
+
+            $response_factory = TestApp::resolve(ResponseFactory::class);
+
+            $r = $response_factory->redirect();
+            $this->assertInstanceOf(StatefulRedirector::class, $r);
+
 
         }
 

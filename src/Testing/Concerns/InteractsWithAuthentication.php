@@ -72,10 +72,33 @@
         /**
          * @param  int|WP_User  $user
          */
-        protected function logout($user)
+        protected function assertNotAuthenticated($user) {
+
+            if ($user instanceof WP_User) {
+
+                $user = $user->ID;
+
+            }
+
+            PHPUnit::assertFalse($this->isAuthenticated($user), 'The user is authenticated.');
+
+        }
+
+        /**
+         * @param  int|WP_User  $user
+         */
+        protected function logout($user = 0)
         {
 
+            if ( $user === 0 ) {
+                $user = wp_get_current_user();
+            }
+
             $user = $user instanceof WP_User ? $user->ID : $user;
+
+            if ( $user === 0 ) {
+                return;
+            }
 
             wp_delete_user($user);
 

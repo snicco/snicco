@@ -116,7 +116,7 @@
 
             $url = $this->formatTrailing($url);
 
-            $route = new Route ($methods, $url, $action);
+            $route = new Route($methods, $url, $action);
 
             if ($this->hasGroupStack()) {
 

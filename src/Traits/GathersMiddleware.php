@@ -79,8 +79,6 @@
 
 			$global = $this->middleware_groups['global'] ?? [];
 
-			$this->pushGlobalMiddlewarePriority($global);
-
 			return array_merge( $global, $middleware );
 
 		}
@@ -144,22 +142,6 @@
 			}
 
 			throw new ConfigurationException( 'Unknown middleware [' . $middleware . '] used.' );
-		}
-
-		private function pushGlobalMiddlewarePriority (array $global_middleware)  {
-
-
-			$filtered_globals = collect(($this->middleware_priority))
-				->reject(function ($middleware) use ( $global_middleware ) {
-
-					return Arr::isValue($middleware, $global_middleware);
-
-			});
-
-			$this->middleware_priority = collect($global_middleware)
-				->merge($filtered_globals)
-				->all();
-
 		}
 
 		/**

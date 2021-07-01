@@ -35,9 +35,11 @@
     use WPEmerge\Auth\WpAuthSessionToken;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\Responses\RedirectResponse;
+    use WPEmerge\Middleware\Secure;
     use WPEmerge\Session\Contracts\SessionManagerInterface;
     use WPEmerge\Session\Events\NewLogin;
     use WPEmerge\Session\Events\NewLogout;
+    use WPEmerge\Session\Middleware\StartSessionMiddleware;
     use WPEmerge\Session\SessionManager;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Support\Arr;
@@ -99,6 +101,24 @@
             $this->boot();
 
             $this->assertContains(AuthenticateSession::class, TestApp::config('middleware.groups.global'));
+            $this->assertContains(Secure::class, TestApp::config('middleware.groups.global'));
+            $this->assertContains(StartSessionMiddleware::class, TestApp::config('middleware.groups.global'));
+
+
+        }
+
+        /** @test */
+        public function the_start_session_middleware_has_a_higher_priority_then_the_authenticate_session_middleware () {
+
+
+            $this->boot();
+            $priority = TestApp::config('middleware.priority');
+
+            $secure = array_search(Secure::class, $priority);
+            $start_session = array_search(StartSessionMiddleware::class, $priority);
+            $authenticate = array_search(AuthenticateSession::class, $priority);
+
+            $this->assertTrue($secure < $start_session && $start_session < $authenticate);
 
         }
 
@@ -200,7 +220,6 @@
 
 
         }
-
 
 
         /** @test */

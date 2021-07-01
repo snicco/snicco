@@ -26,10 +26,14 @@
 
         private $middleware_priority = [];
 
-        private $run_count = 0;
+        private $middleware_disabled = false;
 
         public function createFor(Route $route, Request $request) : array
         {
+
+            if ( $this->middleware_disabled ) {
+                return [];
+            }
 
             $middleware = array_diff($route->getMiddleware(), $this->middleware_groups['global']);
 
@@ -48,6 +52,10 @@
 
         public function onlyGroups ( array $groups, Request $request) : array
         {
+
+            if ( $this->middleware_disabled ) {
+                return [];
+            }
 
             $middleware = $groups;
 
@@ -83,6 +91,10 @@
 
             $this->route_middleware_aliases = $route_middleware_aliases;
 
+        }
+
+        public function disableAllMiddleware() {
+            $this->middleware_disabled = true;
         }
 
         private function withGlobalMiddleware (Request $request) : bool

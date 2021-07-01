@@ -478,45 +478,6 @@
 
         }
 
-        /** @test */
-        public function if_a_global_middleware_group_is_applied_its_middleware_will_be_excluded_from_the_sorting_and_always_come_first()
-        {
-
-            $this->createRoutes(function () {
-
-                $this->router->get('/foo', function (Request $request) {
-
-                    return $request->body;
-
-                })
-                             ->middleware([FooBarMiddleware::class, BazMiddleware::class]);
-
-
-            });
-
-            $kernel = $this->newKernel([
-                'global' => [
-                    FooMiddleware::class,
-                    BarMiddleware::class,
-                ]
-            ]);
-
-            $this->withMiddlewarePriority([
-
-                BazMiddleware::class,
-                FooBarMiddleware::class,
-                BarMiddleware::class,
-                FooMiddleware::class,
-
-            ]);
-
-
-            $request = $this->webRequest('GET', '/foo');
-            $this->assertSame('foobarbazfoobar', $this->runKernelAndGetOutput($request, $kernel));
-
-
-        }
-
         private function withMiddlewarePriority(array $array)
         {
             $this->middleware_stack->middlewarePriority($array);

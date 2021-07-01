@@ -39,8 +39,10 @@
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Middleware\Secure;
     use WPEmerge\Session\Events\SessionRegenerated;
     use WPEmerge\Session\Contracts\SessionDriver;
+    use WPEmerge\Session\Middleware\StartSessionMiddleware;
     use WPEmerge\Session\SessionManager;
     use WPEmerge\Session\Contracts\SessionManagerInterface;
 
@@ -67,8 +69,6 @@
             $this->bindWpSessionToken();
 
             $this->bindAuthSessionManager();
-
-            $this->bindMiddleware();
 
             $this->bindLoginViewResponse();
 
@@ -161,10 +161,6 @@
 
             $this->config->extend('auth.confirmation.duration', SessionManager::HOUR_IN_SEC * 3);
             $this->config->extend('auth.idle', SessionManager::HOUR_IN_SEC / 2);
-            $this->config->extend('middleware.aliases', [
-                'auth.confirmed' => ConfirmAuth::class,
-                'auth.unconfirmed' => AuthUnconfirmed::class,
-            ]);
             $this->config->extend('auth.endpoint', 'auth');
             $this->config->extend('routing.api.endpoints', [
 
@@ -175,6 +171,21 @@
             $this->config->extend('auth.features.password-resets', false);
             $this->config->extend('auth.features.2fa', false);
             $this->config->extend('auth.features.registration', false);
+
+            $this->config->extend('middleware.aliases', [
+                'auth.confirmed' => ConfirmAuth::class,
+                'auth.unconfirmed' => AuthUnconfirmed::class,
+            ]);
+            $this->config->extend('middleware.groups.global', [
+                Secure::class,
+                StartSessionMiddleware::class,
+                AuthenticateSession::class,
+            ]);
+            $this->config->extend('middleware.priority', [
+                StartSessionMiddleware::class,
+                AuthenticateSession::class,
+            ]);
+
 
         }
 
@@ -248,14 +259,6 @@
                 );
 
             });
-        }
-
-        private function bindMiddleware()
-        {
-
-            $this->config->extend('middleware.groups.global', [
-                AuthenticateSession::class,
-            ]);
         }
 
         private function bindLoginViewResponse()

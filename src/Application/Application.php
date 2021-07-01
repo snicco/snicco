@@ -84,6 +84,16 @@
 
         }
 
+        public static function create(string $base_path, ContainerAdapter $container_adapter) : Application
+        {
+
+            $app = new static($container_adapter);
+            $app->setBasePath($base_path);
+
+            return $app;
+
+        }
+
         public function setServerRequestFactory(ServerRequestFactoryInterface $server_request_factory) : Application
         {
 
@@ -123,16 +133,6 @@
             return $this;
         }
 
-        public static function create(string $base_path, ContainerAdapter $container_adapter) : Application
-        {
-
-            $app = new static($container_adapter);
-            $app->setBasePath($base_path);
-
-            return $app;
-
-        }
-
         public function boot(bool $load = true) : void
         {
 
@@ -149,6 +149,8 @@
             if ( ! $load ) {
                 return;
             }
+
+            $this->registerErrorHandler();
 
             $this->captureRequest();
 
@@ -251,6 +253,11 @@
                 $this->container()->make(UploadedFileFactoryInterface::class),
                 $this->container()->make(StreamFactoryInterface::class)
             );
+
+        }
+
+        private function registerErrorHandler()
+        {
 
         }
 

@@ -7,13 +7,17 @@
     namespace WPEmerge\Testing;
 
     use Closure;
+    use WPEmerge\Application\Application;
     use WPEmerge\Contracts\ViewInterface;
     use WPEmerge\Http\Psr7\Response;
     use PHPUnit\Framework\Assert as PHPUnit;
     use WPEmerge\Http\Responses\NullResponse;
+    use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
+    use WPEmerge\Support\Str;
     use WPEmerge\Support\VariableBag;
+    use WPEmerge\Testing\Assertable\AssertableCookie;
     use WPEmerge\Testing\Constraints\SeeInOrder;
 
     class TestResponse
@@ -51,6 +55,11 @@
          */
         private $session;
 
+        /**
+         * @var Application
+         */
+        private $app;
+
         public function __construct(Response $response)
         {
             $this->psr_response = $response;
@@ -73,6 +82,10 @@
         public function setRenderedView(ViewInterface $rendered_view)
         {
             $this->view = $rendered_view;
+        }
+
+        public function setApp(Application $app ) {
+            $this->app = $app;
         }
 
         public function assertNullResponse() : TestResponse
@@ -232,25 +245,66 @@
             return $this;
         }
 
+        public function assertRedirectToRoute(string $route_name, int $status_code = null )
+        {
+
+            /** @var UrlGenerator $url */
+            $url = $this->app->resolve(UrlGenerator::class);
+
+            $this->assertRedirect();
+
+            PHPUnit::assertSame(
+                $expected = $url->toRoute($route_name),
+                $actual = $this->psr_response->getHeaderLine('Location'),
+                "The url for the route [$route_name] is [$expected]. Redirected to [$actual]. "
+            );
+
+            if( $status_code ) {
+                $this->assertStatus($status_code);
+            }
+
+        }
+
+        public function cookie(string $cookie_name)
+        {
+
+            $this->assertHeader('Set-Cookie');
+
+            $header = $this->psr_response->getHeader('Set-Cookie');
+            $headers = collect($header)->filter(function ($header) use ($cookie_name) {
+
+                return Str::startsWith($header, $cookie_name);
+
+            });
+
+            if ( $headers->count() > 1 ) {
+                PHPUnit::fail("The cookie [$cookie_name] was set [{$headers->count()} times on the response.]");
+            }
+
+            return new AssertableCookie($headers->first());
+
+        }
+
         /**
          * Asserts that the response contains the given header and equals the optional value.
          *
-         * @param  string  $headerName
+         * @param  string  $header_name
          * @param  mixed  $value
+         *
          * @return $this
          */
-        public function assertHeader($headerName, $value = null) : TestResponse
+        public function assertHeader(string $header_name, $value = null) : TestResponse
         {
             PHPUnit::assertTrue(
-                $this->headers->has($headerName), "Header [{$headerName}] not present on response."
+                $this->headers->has($header_name), "Header [{$header_name}] not present on response."
             );
 
-            $actual = $this->headers->get($headerName);
+            $actual = $this->headers->get($header_name)[0];
 
             if (! is_null($value)) {
                 PHPUnit::assertEquals(
-                    $value, $this->headers->get($headerName),
-                    "Header [{$headerName}] was found, but value [{$actual}] does not match [{$value}]."
+                    $value, $this->headers->get($header_name),
+                    "Header [{$header_name}] was found, but value [{$actual}] does not match [{$value}]."
                 );
             }
 
@@ -747,5 +801,12 @@
         {
             return $this->psr_response->isRedirect($location);
         }
+
+        public function assertInstance(string $class) : TestResponse
+        {
+            PHPUnit::assertInstanceOf($class, $this->psr_response);
+            return $this;
+        }
+
 
     }
