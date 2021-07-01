@@ -84,4 +84,13 @@
             return rtrim($path, '/');
         }
 
+        public static function fix(string $url)
+        {
+
+            $encoded_url = preg_replace_callback('#://([^/]+)/([^?]+)#', function ($match) {
+                return '://' . $match[1] . '/' . join('/', array_map('rawurlencode', explode('/', $match[2])));
+            }, $url);
+
+        }
+
     }

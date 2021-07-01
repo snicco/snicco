@@ -33,7 +33,6 @@
 
         public function input($key = null, $default = null)
         {
-
             return data_get($this->all(), $key, $default);
         }
 
@@ -49,7 +48,7 @@
 
             $query = $this->combinedQueryParams();
 
-            if ( ! $key) {
+            if ( ! $key ) {
                 return $query;
             }
 
@@ -196,6 +195,9 @@
 
         private function combinedQueryParams() : array
         {
+
+            /** @todo check if this breaks anything */
+            return $this->getQueryParams();
 
             $query_string = $this->getUri()->getQuery();
 

@@ -71,9 +71,9 @@
                 $data = $mailable->buildViewData();
                 $context = array_merge($data, ['recipient' => $recipient]);
 
-                $mail->message = $this->view_factory->render(
-                    $mailable->view, $context
-                );
+                $mail->message = $mail->view
+                    ? $this->view_factory->render($mailable->view, $context)
+                    : $mail->message;
 
                 $mail->buildSubject($recipient);
 

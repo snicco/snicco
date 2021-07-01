@@ -49,7 +49,7 @@
 
             }
 
-            $redirect_to = $request->input('redirect_to', $this->url->toRoute('dashboard'));
+            $redirect_to = $request->query('redirect_to', $this->url->toRoute('dashboard'));
 
             $request->session()->setIntendedUrl($redirect_to);
 
