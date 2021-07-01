@@ -26,6 +26,7 @@
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Session\Session;
+    use WPEmerge\Support\Str;
     use WPEmerge\Support\Url;
     use WPEmerge\Testing\TestResponse;
     use WPEmerge\View\ViewFactory;
@@ -33,7 +34,6 @@
     /**
      * @property Session $session
      * @property Application $app
-     * @property HttpKernel $kernel
      * @property ServerRequestFactoryInterface $request_factory
      * @property bool $routes_loaded
      * @property ApplicationConfig $config
@@ -361,6 +361,7 @@
 
         private function performRequest(ServerRequestInterface $request, array $headers, string $type = 'web') : TestResponse
         {
+
             $request = $this->addHeaders($request, $headers);
             $request = new Request($this->addCookies($request));
 
@@ -390,7 +391,7 @@
 
 
             /** @var Response $response */
-            $response = $this->kernel->run($request);
+            $response = $this->app->resolve(HttpKernel::class)->run($request);
 
             $response = new TestResponse($response);
 
@@ -404,6 +405,8 @@
                 $response->setSession($this->session);
             }
 
+            $response->setApp($this->app);
+
             return $response;
 
         }
@@ -411,7 +414,7 @@
         private function createUri($uri) : UriInterface
         {
 
-            if (is_string($uri) ) {
+            if (is_string($uri) && ! Str::contains($uri, 'http') ) {
                 $uri = Url::addLeading($uri);
             }
 

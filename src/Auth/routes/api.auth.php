@@ -80,6 +80,7 @@
     // password resets
     if ($config->get('auth.features.password-resets'))
     {
+
         $router->get('/forgot-password', [ForgotPasswordController::class, 'create'])
                ->middleware('guest')
                ->name('forgot.password');

@@ -6,7 +6,6 @@
 
     namespace Tests;
 
-    use Tests\stubs\TestApp;
     use WPEmerge\Auth\AuthServiceProvider;
     use WPEmerge\Auth\AuthSessionManager;
     use WPEmerge\Session\Contracts\SessionDriver;
@@ -46,6 +45,13 @@
             );
 
             $this->session_manager = $m;
+        }
+
+        protected function tearDown() : void
+        {
+
+            $this->logout();
+            parent::tearDown();
         }
 
     }

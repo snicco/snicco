@@ -55,7 +55,6 @@
 
                 return $response;
 
-
             }
 
             throw new InvalidSignatureException();

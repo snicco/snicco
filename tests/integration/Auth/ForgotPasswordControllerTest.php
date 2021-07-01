@@ -6,47 +6,27 @@
 
     namespace Tests\integration\Auth;
 
-    use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\IntegrationTest;
+    use Tests\AuthTestCase;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Auth\AuthServiceProvider;
     use WPEmerge\Auth\Mail\ResetPasswordMail;
     use WPEmerge\Events\PendingMail;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Mail\MailBuilder;
-    use WPEmerge\Session\SessionServiceProvider;
+    use WPEmerge\Session\Middleware\CsrfMiddleware;
     use WPEmerge\Support\Arr;
 
-    class ForgotPasswordControllerTest extends IntegrationTest
+    class ForgotPasswordControllerTest extends AuthTestCase
     {
 
-        use InteractsWithWordpress;
-
-        protected $config = [
-            'session' => [
-                'enabled' => true,
-                'driver' => 'array',
-            ],
-            'providers' => [
-                SessionServiceProvider::class,
-                AuthServiceProvider::class,
-            ],
-            'auth' => [
-                'features' => [
-                    'password-resets' => true
-                ]
-            ]
-        ];
 
         private function postRequest(array $body, array $csrf)
         {
 
             $url = TestApp::url()->signedRoute('auth.forgot.password');
 
-            $request = TestRequest::from('POST', $url );
+            $request = TestRequest::from('POST', $url);
 
             TestApp::container()->instance(Request::class, $request);
 
@@ -59,70 +39,105 @@
 
         }
 
-        private function getRequest( ) : TestRequest
+        private function getRequest() : TestRequest
         {
 
             $url = TestApp::url()->signedRoute('auth.forgot.password');
 
-            $request = TestRequest::from('GET', $url );
+            $request = TestRequest::from('GET', $url);
 
             TestApp::container()->instance(Request::class, $request);
 
             return $request;
         }
 
-        /** @test */
-        public function the_route_cant_be_accessed_while_being_logged_in () {
+        protected function setUp() : void
+        {
 
-            $calvin = $this->newAdmin();
-            $this->login($calvin);
+            $this->afterLoadingConfig(function () {
 
-            $this->newTestApp($this->config);
+                $this->withAddedConfig('auth.features.password-resets', true);
+
+            });
+
+            // $this->afterApplicationCreated(function () {
+            //     $this->withoutMiddleware('csrf');
+            // });
+
+            parent::setUp();
+        }
+
+        private function routeUrl()
+        {
+
             $this->loadRoutes();
 
-            $url = TestApp::url()->signedRoute('auth.forgot.password');
+            return TestApp::url()->signedRoute('auth.forgot.password');
+        }
 
-            $request = TestRequest::from('GET', $url);
-            $this->rebindRequest($request);
+        /** @test */
+        public function the_route_cant_be_accessed_while_being_logged_in()
+        {
 
-            ob_start();
+            $this->actingAs($this->createAdmin());
 
-            do_action('init');
+            $this->get($this->routeUrl())->assertRedirectToRoute('dashboard');
 
-            $this->assertSame('', ob_get_clean() );
-            HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertHas('Location', '/wp-admin');
+        }
+
+        /** @test */
+        public function the_forgot_password_view_can_be_rendered()
+        {
+
+            $this->get($this->routeUrl())
+                 ->assertSee('Request new password')
+                 ->assertOk();
 
 
         }
 
         /** @test */
-        public function the_forgot_password_view_can_be_rendered () {
+        public function the_endpoint_is_not_accessible_when_disabled_in_the_config()
+        {
 
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
+            $this->withOutConfig('auth.features.password-resets');
 
-            $request = $this->getRequest();
+            $url = '/auth/forgot-password';
 
-            $this->assertOutputContains('Request new password', $request);
+            $this->get($url)->assertNullResponse();
+
 
         }
 
         /** @test */
-        public function password_resets_can_be_disabled_via_the_config () {
+        public function a_password_reset_link_can_be_requested_by_user_name()
+        {
 
-            Arr::set($this->config, 'auth.features.password-resets', false);
+            $this->withoutExceptionHandling();
+            $this->mailFake();
+            $token = $this->withCsrfToken();
 
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
-            $request = TestRequest::from('GET', '/auth/forgot-password');
-            $this->rebindRequest($request);
-            $this->assertOutput('', $request);
-            HeaderStack::assertHasNone();
+            $url = $this->routeUrl();
+
+            $calvin = $this->createAdmin();
+
+            $response = $this->post($url, $token + ['login' => $calvin->user_login]);
+            $response->assertRedirectToRoute('auth.forgot.password');
+
+            $this->assertMailSent(ResetPasswordMail::class);
+
+            // ApplicationEvent::assertDispatched(function (PendingMail $event) {
+            //
+            //     return $event->mail instanceof ResetPasswordMail;
+            //
+            // });
+
+
         }
 
         /** @test */
-        public function a_password_reset_link_can_be_requested_by_user_name () {
+        public function a_password_reset_link_can_be_requested_by_email()
+        {
 
             $calvin = $this->newAdmin();
 
@@ -131,8 +146,8 @@
 
             TestApp::session()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
-            $request  = $this->postRequest([
-                'login' => $calvin->user_login
+            $request = $this->postRequest([
+                'login' => $calvin->user_email,
             ], $csrf);
 
             ApplicationEvent::fake();
@@ -147,11 +162,11 @@
 
             });
 
-
         }
 
         /** @test */
-        public function a_password_reset_link_can_be_requested_by_email () {
+        public function invalid_input_does_not_return_an_error_message_but_doesnt_send_an_email()
+        {
 
             $calvin = $this->newAdmin();
 
@@ -160,36 +175,8 @@
 
             TestApp::session()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
-            $request  = $this->postRequest([
-                'login' => $calvin->user_email
-            ], $csrf);
-
-            ApplicationEvent::fake();
-
-            $this->assertOutputContains('', $request);
-            HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertHas('Location', $request->path());
-
-            ApplicationEvent::assertDispatched(function (PendingMail $event) {
-
-                return $event->mail instanceof ResetPasswordMail;
-
-            });
-
-        }
-
-        /** @test */
-        public function invalid_input_does_not_return_an_error_message_but_doesnt_send_an_email () {
-
-            $calvin = $this->newAdmin();
-
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
-
-            TestApp::session()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
-
-            $request  = $this->postRequest([
-                'login' => 'bogus@web.de'
+            $request = $this->postRequest([
+                'login' => 'bogus@web.de',
             ], $csrf);
 
             ApplicationEvent::fake();
@@ -204,7 +191,8 @@
         }
 
         /** @test */
-        public function the_mail_contains_a_magic_link_to_reset_the_password_and_is_sent_to_the_correct_user () {
+        public function the_mail_contains_a_magic_link_to_reset_the_password_and_is_sent_to_the_correct_user()
+        {
 
             $calvin = $this->newAdmin();
 
@@ -213,8 +201,8 @@
 
             TestApp::session()->put('csrf', $csrf = ['csrf_secret_name' => 'csrf_secret_value']);
 
-            $request  = $this->postRequest([
-                'login' => $calvin->user_email
+            $request = $this->postRequest([
+                'login' => $calvin->user_email,
             ], $csrf);
 
             ApplicationEvent::fake();
@@ -223,7 +211,7 @@
             HeaderStack::assertHasStatusCode(302);
             HeaderStack::assertHas('Location', $request->path());
 
-            ApplicationEvent::assertDispatched(function (PendingMail $event) use ( $calvin ) {
+            ApplicationEvent::assertDispatched(function (PendingMail $event) use ($calvin) {
 
                 $mail = $event->mail;
 
@@ -235,9 +223,6 @@
             });
 
 
-
         }
-
-
 
     }

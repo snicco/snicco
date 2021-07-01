@@ -10,6 +10,7 @@
     use Tests\helpers\HashesSessionIds;
     use WPEmerge\Application\Application;
     use WPEmerge\Session\Contracts\SessionDriver;
+    use WPEmerge\Session\CsrfField;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
 
@@ -26,24 +27,50 @@
 
         protected $session_id;
 
+        protected $internal_keys = ['_user', '_url.previous', '_rotate_at', '_expires_at', '_last_activity'];
+
+        private $data_saved_to_driver = false;
+
         /**
          * @param  array  $data Keys are expected to be in dot notation
          */
         protected function withDataInSession(array $data, string $id = null )
         {
 
-            $to_driver = [];
             foreach ($data as $key => $value ) {
 
                 Arr::set($to_driver, $key, $value);
                 $this->session->put($key, $value);
+
+            }
+
+            if ( $id ) {
+                $this->session_id = $id;
             }
 
             $write_to = $id ? $this->hash($id) : $this->hash($this->testSessionId());
 
-            $this->sessionDriver()->write($write_to , serialize($to_driver));
+            // We need to safe at least the session id in the driver so that it does
+            // not get invalidated since the framework does not accept session ids
+            // that are not in the current driver
+            $this->sessionDriver()->write($write_to, serialize([]));
+            $this->withSessionCookie();
 
             return $this;
+
+        }
+
+        protected function withCsrfToken() :array {
+
+            /** @var CsrfField $csrf */
+            $csrf = $this->app->resolve(CsrfField::class);
+            $csrf_token = $csrf->create();
+            $name = $csrf_token['csrf_name'];
+            $value = $csrf_token['csrf_value'];
+
+            $this->withDataInSession(["csrf.$name" => $value]);
+
+            return $csrf_token;
 
         }
 
@@ -89,7 +116,24 @@
 
         protected function assertDriverEmpty(string $id) {
 
-            PHPUnit::assertSame('', $this->sessionDriver()->read($this->hash($id)), "The session driver is not empty.");
+            $data = $this->sessionDriver()->read($this->hash($id));
+
+            if ( $data === '') {
+                return;
+            }
+
+            $data = unserialize($data);
+            Arr::forget($data, $this->internal_keys);
+
+            PHPUnit::assertEmpty($data['_flash']['old'], "The flash key is not empty for id [$id].");
+            PHPUnit::assertEmpty($data['_flash']['new'], "The flash key is not empty for id [$id].");
+            PHPUnit::assertEmpty($data['_url'], "The session driver is not empty for id [$id].");
+
+            Arr::forget($data, '_flash');
+            Arr::forget($data, '_url');
+
+            $keys = implode(',',array_keys($data));
+            PHPUnit::assertEmpty($data,"The session driver is not empty for id [$id]." . PHP_EOL . "Found keys [$keys]");
 
         }
 

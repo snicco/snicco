@@ -22,8 +22,6 @@
     class RouteRunner extends Middleware
     {
 
-
-
         /**
          * @var Pipeline
          */

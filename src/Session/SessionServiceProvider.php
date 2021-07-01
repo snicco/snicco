@@ -49,6 +49,7 @@
             $this->bindAliases();
             $this->bindEncryptor();
             $this->bindEvents();
+            $this->bindStatefulRedirector();
 
         }
 
@@ -60,8 +61,6 @@
             }
 
             $this->bindViewContext();
-
-            $this->bindStatefulRedirector();
 
         }
 

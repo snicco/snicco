@@ -26,6 +26,7 @@
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Contracts\ServiceProvider;
+    use WPEmerge\ExceptionHandling\NullErrorHandler;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\HttpKernel;
@@ -154,7 +155,7 @@
 
             $this->backToPresent();
 
-            if ( ! $this->app) {
+            if ( ! $this->app ) {
 
                 $this->refreshApplication();
 
@@ -289,9 +290,18 @@
 
             foreach ((array) $middleware as $abstract) {
 
-                $this->app->container()->instance(
-                    $abstract,
-                    new class extends Middleware {
+                if ( ! class_exists($abstract ) ) {
+                    $aliases = $this->config->get('middleware.aliases');
+                    $m = $aliases[$abstract] ?? null;
+                    if( $m === null ) {
+                        throw new \RuntimeException("You are trying to disable middleware [$abstract] which does not seem to exist.");
+                    }
+                    $abstract = $m;
+                }
+
+                $this->app->container()->singleton( $abstract, function () {
+
+                    return new class extends Middleware {
 
                         public function handle(Request $request, Delegate $next) : ResponseInterface
                         {
@@ -299,8 +309,8 @@
                             return $next($request);
                         }
 
-                    }
-                );
+                    };
+                });
 
             }
 
@@ -316,7 +326,7 @@
         protected function withoutExceptionHandling() :TestCase{
 
             $this->config->set('app.exception_handling', false );
-
+            $this->instance(ErrorHandlerInterface::class, new NullErrorHandler());
             return $this;
 
         }
@@ -338,7 +348,7 @@
             $this->additional_routes[] = $route;
         }
 
-        protected function loadRoutes()
+        protected function loadRoutes() : TestCase
         {
 
             /** @var AbstractRouteCollection $routes */
@@ -358,6 +368,8 @@
             $registrar->loadIntoRouter();
 
             $this->routes_loaded = true;
+
+            return $this;
 
         }
 
@@ -413,8 +425,6 @@
                 $this->session = $this->app->resolve(Session::class);
 
             }
-
-            $this->kernel = $this->app->resolve(HttpKernel::class);
 
         }
 

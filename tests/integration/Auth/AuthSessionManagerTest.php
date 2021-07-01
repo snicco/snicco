@@ -22,7 +22,6 @@
     class AuthSessionManagerTest extends AuthTestCase
     {
 
-        use HashesSessionIds;
 
         /** @var ArraySessionDriver */
         private $driver;
@@ -54,6 +53,12 @@
 
             }
 
+        }
+
+        private function activeSession() : Session
+        {
+
+            return $this->session_manager->activeSession();
         }
 
         /** @test */
@@ -224,10 +229,5 @@
 
         }
 
-        private function activeSession() : Session
-        {
-
-            return $this->session_manager->activeSession();
-        }
 
     }

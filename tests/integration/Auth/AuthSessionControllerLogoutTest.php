@@ -6,191 +6,139 @@
 
     namespace Tests\integration\Auth;
 
-    use Mockery;
-    use Tests\helpers\CreateDefaultWpApiMocks;
-    use Tests\helpers\HashesSessionIds;
-    use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\IntegrationTest;
+    use Tests\AuthTestCase;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
-    use WPEmerge\Auth\AuthServiceProvider;
-    use WPEmerge\Contracts\RouteRegistrarInterface;
-    use WPEmerge\Facade\WP;
-    use WPEmerge\Routing\RouteRegistrar;
+    use WPEmerge\Auth\Controllers\AuthSessionController;
+    use WPEmerge\Auth\Responses\LogoutResponse;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
-    use WPEmerge\Session\SessionServiceProvider;
 
-    class AuthSessionControllerLogoutTest extends IntegrationTest
+    /** @see AuthSessionController */
+    class AuthSessionControllerLogoutTest extends AuthTestCase
     {
-
-        use CreateDefaultWpApiMocks;
-        use InteractsWithWordpress;
-        use HashesSessionIds;
 
         /**
          * @var UrlGenerator
          */
         private $url;
 
-        protected function afterSetup()
+        protected function setUp() : void
         {
 
-            $this->newTestApp([
-                'session' => [
-                    'enabled' => true,
-                    'driver' => 'array',
-                ],
-                'providers' => [
-                    SessionServiceProvider::class,
-                    AuthServiceProvider::class
-                ],
-            ]);
+            $this->afterApplicationCreated(function () {
 
-            $this->url = TestApp::url();
-            /** @var RouteRegistrar $registrar */
-            $registrar = TestApp::resolve(RouteRegistrarInterface::class);
-            $registrar->loadApiRoutes(TestApp::config());
-            $registrar->loadStandardRoutes(TestApp::config());
-            $registrar->loadIntoRouter();
+                $this->withoutExceptionHandling();
+
+                $this->url = $this->app->resolve(UrlGenerator::class);
+
+                $this->loadRoutes();
+
+            });
+            parent::setUp();
         }
 
-        protected function beforeTearDown()
+        private function logoutUrl(\WP_User $user, string $redirect_to = null)
         {
-            WP::reset();
-            Mockery::close();
+
+
+            if ($redirect_to) {
+                $query = ['user_id' => $user->ID, 'query' => ['redirect_to' => $redirect_to]];
+            }
+            else {
+                $query = ['user_id' => $user->ID];
+            }
+
+            return $this->url->signedRoute('auth.logout', $query, 300, true);
+
         }
 
         /** @test */
-        public function the_route_can_not_be_accessed_without_a_valid_signature() {
+        public function the_route_can_not_be_accessed_without_a_valid_signature()
+        {
 
-
-            $calvin = $this->newAdmin();
-            $this->login($calvin);
-
-
-            $url = $this->url->signedRoute('auth.logout', ['user_id' => $calvin->ID], 300, true  );
-
-            $request = TestRequest::fromFullUrl('GET', $url. 'a');
-            $this->rebindRequest($request);
+            $calvin = $this->createAdmin();
+            $this->actingAs($calvin);
 
             $this->expectException(InvalidSignatureException::class);
 
-            apply_filters('template_include', 'wordpress.php');
-
+            $this->get($this->logoutUrl($calvin).'a');
 
         }
 
         /** @test */
-        public function the_route_can_only_be_accessed_if_the_user_id_slot_is_the_user_id_of_the_logged_in_user() {
+        public function the_route_can_only_be_accessed_if_the_user_id_segment_is_the_user_id_of_the_logged_in_user()
+        {
 
-            $calvin = $this->newAdmin();
-            $this->login($calvin);
 
-            $john = $this->newAdmin();
+            $calvin = $this->createAdmin();
+            $this->actingAs($calvin);
 
-            $url = $this->url->signedRoute('auth.logout', ['user_id' => $john->ID], 300, true  );
-
-            $request = TestRequest::fromFullUrl('GET', $url);
-            $this->rebindRequest($request);
+            $john = $this->createAdmin();
 
             $this->expectException(InvalidSignatureException::class);
 
-            apply_filters('template_include', 'wordpress.php');
+            $this->get($this->logoutUrl($john));
 
-
-            $this->logout($calvin);
 
         }
 
         /** @test */
-        public function the_current_user_is_logged_out () {
+        public function the_current_user_is_logged_out()
+        {
 
-            $calvin = $this->newAdmin();
-            $this->login($calvin);
-            $this->assertUserLoggedIn($calvin);
 
-            $url = $this->url->signedRoute('auth.logout', ['user_id' => $calvin->ID], 300, true  );
+            $this->actingAs($calvin = $this->createAdmin());
+            $this->assertAuthenticated($calvin);
 
-            $request = TestRequest::fromFullUrl('GET', $url);
-            $this->rebindRequest($request);
+            $response = $this->get($this->logoutUrl($calvin));
 
-            ob_start();
-            apply_filters('template_include', 'wordpress.php');
+            $response->assertStatus(302);
+            $response->assertRedirectToRoute('home');
+            $this->assertNotAuthenticated($calvin);
 
-            $this->assertSame('', ob_get_clean());
-            HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertHas('Location');
-
-            $this->assertUserLoggedOut();
-
-            $this->logout($calvin);
 
         }
 
         /** @test */
-        public function a_redirect_response_is_returned_with_the_parameter_of_the_query_string () {
+        public function a_redirect_response_is_returned_with_the_parameter_of_the_query_string()
+        {
 
 
-            $calvin = $this->newAdmin();
-            $this->login($calvin);
-            $this->assertUserLoggedIn($calvin);
+            $this->actingAs($calvin = $this->createAdmin());
 
-            $url = $this->url->signedRoute('auth.logout', ['user_id' => $calvin->ID, 'query' => ['redirect_to' => '/foo']], 300, true );
+            $url = $this->logoutUrl($calvin, '/foo');
 
-            $request = TestRequest::fromFullUrl('GET', $url);
-            $this->rebindRequest($request);
+            $this->get($url)->assertRedirect('/foo');
 
-            ob_start();
-            apply_filters('template_include', 'wordpress.php');
+            $this->assertNotAuthenticated($calvin);
 
-            $this->assertSame('', ob_get_clean());
-            HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertContains('Location', '/foo');
-
-            $this->assertUserLoggedOut();
-
-            $this->logout($calvin);
 
         }
 
         /** @test */
-        public function the_user_session_is_destroyed_on_logout () {
+        public function the_user_session_is_destroyed_on_logout()
+        {
 
-            $calvin = $this->newAdmin();
-            $this->login($calvin);
+            $this->withDataInSession(['foo' => 'bar'], $id_before_logout = $this->testSessionId());
+            $this->withSessionCookie();
+            $this->actingAs($calvin = $this->createAdmin());
 
-            $session = TestApp::session();
-            $array_handler = $session->getDriver();
-            $array_handler->write($this->hashedSessionId(), serialize(['foo' => 'bar']));
+            $response = $this->get($this->logoutUrl($calvin));
 
-            $url = $this->url->signedRoute('auth.logout', ['user_id' => $calvin->ID, 'query' => ['redirect_to' => '/foo']], 300, true);
-            $request = TestRequest::fromFullUrl('GET', $url);
-            $request = $request->withAddedHeader('Cookie', 'wp_mvc_session='.$this->testSessionId() );
-            $this->rebindRequest($request);
+            $response->assertRedirectToRoute('home', 302);
+            $response->assertInstance(LogoutResponse::class);
 
-            ob_start();
-            apply_filters('template_include', 'wordpress.php');
-
-            $this->assertSame('', ob_get_clean());
-            HeaderStack::assertHasStatusCode(302);
-            HeaderStack::assertContains('Location', '/foo');
-
-            $id_after_login = $session->getId();
+            $id_after_logout = $this->session->getId();
 
             // Session Id not the same
-            $this->assertNotSame($this->testSessionId(), $id_after_login);
-            HeaderStack::assertContains('Set-Cookie', $id_after_login);
+            $this->assertNotSame($id_before_logout, $id_after_logout);
 
-            // Data is not in the handler anymore
-            $data = unserialize($array_handler->read($this->hash($id_after_login)));
-            $this->assertNotContains('bar', $data);
+            $response->cookie('wp_mvc_session')->assertValue($id_after_logout);
 
-            // The old session is gone.
-            $this->assertSame('', $array_handler->read($this->testSessionId()));
-
-            $this->logout($calvin);
+            $this->assertDriverEmpty($id_before_logout);
+            $this->assertDriverEmpty($id_after_logout);
 
         }
 
