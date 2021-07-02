@@ -387,10 +387,10 @@
 
         }
 
-        public function setIntendedUrl(string $url)
+        public function setIntendedUrl(string $encoded_url)
         {
 
-            $this->put('_url.intended', $url);
+            $this->put('_url.intended', $encoded_url);
 
         }
 

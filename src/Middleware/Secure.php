@@ -13,6 +13,7 @@
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Support\Url;
 
     class Secure extends Middleware
     {
@@ -88,7 +89,7 @@
             $location['scheme'] = 'https';
             unset($location['port']);
 
-            return $response->withHeader('Location', self::unParseUrl($location));
+            return $response->withHeader('Location', Url::unParse($location));
 
 
         }
@@ -137,25 +138,6 @@
 
             return $response->withHeader(self::HEADER, $header);
 
-        }
-
-        /**
-         * Stringify a url parsed with parse_url()
-         */
-        private function unParseUrl(array $url) : string
-        {
-
-            $scheme = isset($url['scheme']) ? $url['scheme'].'://' : '';
-            $host = $url['host'] ?? '';
-            $port = isset($url['port']) ? ':'.$url['port'] : '';
-            $user = $url['user'] ?? '';
-            $pass = isset($url['pass']) ? ':'.$url['pass'] : '';
-            $pass = ($user || $pass) ? "$pass@" : '';
-            $path = $url['path'] ?? '';
-            $query = isset($url['query']) ? '?'.$url['query'] : '';
-            $fragment = isset($url['fragment']) ? '#'.$url['fragment'] : '';
-
-            return "{$scheme}{$user}{$pass}{$host}{$port}{$path}{$query}{$fragment}";
         }
 
 

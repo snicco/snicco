@@ -383,6 +383,10 @@
                 $this->bindRequest();
             }
 
+            if ( $this->session instanceof Session ) {
+                $this->session->remove('errors');
+            }
+
             if ( ! $this->routes_loaded ) {
 
                 $this->loadRoutes();

@@ -84,13 +84,43 @@
             return rtrim($path, '/');
         }
 
-        public static function fix(string $url)
+        public static function rebuildQuery(string $url) : string
         {
 
-            $encoded_url = preg_replace_callback('#://([^/]+)/([^?]+)#', function ($match) {
-                return '://' . $match[1] . '/' . join('/', array_map('rawurlencode', explode('/', $match[2])));
-            }, $url);
+            $parts = parse_url($url);
+
+            if ( isset($parts['query'] ) ) {
+
+                parse_str($parts['query'], $query);
+
+                $parts['query'] = Arr::query($query);
+
+            }
+
+            return self::unParseUrl($parts);
+
 
         }
+
+
+        /**
+         * Stringify a url parsed with parse_url()
+         */
+        public static function unParseUrl(array $url) : string
+        {
+
+            $scheme = isset($url['scheme']) ? $url['scheme'].'://' : '';
+            $host = $url['host'] ?? '';
+            $port = isset($url['port']) ? ':'.$url['port'] : '';
+            $user = $url['user'] ?? '';
+            $pass = isset($url['pass']) ? ':'.$url['pass'] : '';
+            $pass = ($user || $pass) ? "$pass@" : '';
+            $path = $url['path'] ?? '';
+            $query = isset($url['query']) ? '?'.$url['query'] : '';
+            $fragment = isset($url['fragment']) ? '#'.$url['fragment'] : '';
+
+            return "{$scheme}{$user}{$pass}{$host}{$port}{$path}{$query}{$fragment}";
+        }
+
 
     }
