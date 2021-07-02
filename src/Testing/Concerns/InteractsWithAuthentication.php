@@ -100,8 +100,6 @@
                 return;
             }
 
-            wp_delete_user($user);
-
             wp_logout();
 
         }

@@ -155,7 +155,7 @@
 
             $this->backToPresent();
 
-            if ( ! $this->app ) {
+            if ( ! $this->app) {
 
                 $this->refreshApplication();
 
@@ -173,7 +173,7 @@
             $this->request_factory = $this->app->resolve(ServerRequestFactoryInterface::class);
             $this->replaceBindings();
 
-            if ( ! $this->defer_boot ) {
+            if ( ! $this->defer_boot) {
                 $this->boot();
             }
 
@@ -262,6 +262,21 @@
 
         }
 
+        protected function withReplacedConfig($items, $value) : TestCase
+        {
+
+            $items = is_array($items) ? $items : [$items => $value];
+
+            foreach ($items as $key => $value) {
+
+                $this->config->remove($key);
+
+            }
+
+            return $this->withAddedConfig($items);
+
+        }
+
         protected function withAddedMiddleware(string $group, $middleware) : TestCase
         {
 
@@ -290,16 +305,16 @@
 
             foreach ((array) $middleware as $abstract) {
 
-                if ( ! class_exists($abstract ) ) {
+                if ( ! class_exists($abstract)) {
                     $aliases = $this->config->get('middleware.aliases');
                     $m = $aliases[$abstract] ?? null;
-                    if( $m === null ) {
+                    if ($m === null) {
                         throw new \RuntimeException("You are trying to disable middleware [$abstract] which does not seem to exist.");
                     }
                     $abstract = $m;
                 }
 
-                $this->app->container()->singleton( $abstract, function () {
+                $this->app->container()->singleton($abstract, function () {
 
                     return new class extends Middleware {
 
@@ -323,10 +338,12 @@
          *
          * @return TestCase
          */
-        protected function withoutExceptionHandling() :TestCase{
+        protected function withoutExceptionHandling() : TestCase
+        {
 
-            $this->config->set('app.exception_handling', false );
+            $this->config->set('app.exception_handling', false);
             $this->instance(ErrorHandlerInterface::class, new NullErrorHandler());
+
             return $this;
 
         }

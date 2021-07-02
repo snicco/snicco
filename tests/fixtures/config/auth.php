@@ -8,7 +8,7 @@ return [
 
     'confirmation' => [
 
-        // 'duration' =>
+        'duration' => 10
 
     ],
 

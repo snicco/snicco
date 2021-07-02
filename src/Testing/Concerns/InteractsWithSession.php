@@ -25,7 +25,7 @@
 
         use HashesSessionIds;
 
-        protected $session_id;
+        private $session_id;
 
         protected $internal_keys = ['_user', '_url.previous', '_rotate_at', '_expires_at', '_last_activity'];
 
@@ -44,17 +44,25 @@
 
             }
 
-            if ( $id ) {
+
+
+
+            if ( ! $this->session_id ) {
+
+                $id = $id ?? $this->testSessionId();
+                $write_to = $this->hash($id);
+
+                // We need to safe at least the session id in the driver so that it does
+                // not get invalidated since the framework does not accept session ids
+                // that are not in the current driver
+                $this->sessionDriver()->write($write_to, serialize([]));
+                $this->session->setId($id);
                 $this->session_id = $id;
+                $this->withSessionCookie();
+
             }
 
-            $write_to = $id ? $this->hash($id) : $this->hash($this->testSessionId());
 
-            // We need to safe at least the session id in the driver so that it does
-            // not get invalidated since the framework does not accept session ids
-            // that are not in the current driver
-            $this->sessionDriver()->write($write_to, serialize([]));
-            $this->withSessionCookie();
 
             return $this;
 

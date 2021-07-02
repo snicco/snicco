@@ -25,6 +25,7 @@
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
+    use WPEmerge\Support\Url;
 
     class AuthSessionController extends Controller
     {
@@ -49,9 +50,9 @@
 
             }
 
-            $redirect_to = $request->query('redirect_to', $this->url->toRoute('dashboard'));
-
-            $request->session()->setIntendedUrl($redirect_to);
+            $request->session()->setIntendedUrl(
+                $this->parseRedirect($request)
+            );
 
             return $view_response->withRequest($request)
                                  ->withAuthConfig($this->auth_config);
@@ -67,7 +68,7 @@
 
             if ($response instanceof SuccessfulLoginResponse) {
 
-                $remember = $response->rememberUser() && $this->auth_config['remember']['enabled'] === true;
+                $remember = $response->rememberUser() && $this->auth_config['features']['remember_me'] > 0;
                 $user = $response->authenticatedUser();
 
                 return $this->handleLogin($user, $remember, $login_response, $request);
@@ -119,9 +120,7 @@
             // We are inside an iframe and just need to close it with js.
             if ($request->boolean('is_interim_login')) {
 
-                $request->session()->flash('interim_login_success', true);
-
-                return $this->response_factory->view('auth-layout');
+                return $this->response_factory->view('auth-interim-login-success');
 
             }
 
@@ -140,6 +139,27 @@
                 throw new FailedAuthenticationException('Login failed' , $request, null , [] );
 
             };
+
+        }
+
+        private function parseRedirect(Request $request) : string
+        {
+
+            $redirect_to = $request->query('redirect_to', $this->url->toRoute('dashboard'));
+
+            // redirect_to will be urldecoded which means that we can not be sure that a potential
+            // query string will still be urlencoded correctly.
+            // Since we have no control over where plugins and core call wp_login_url() its best to rebuild the query.
+            $parts = parse_url($redirect_to);
+
+            if ( isset($parts['query'])) {
+
+                return Url::rebuildQuery($redirect_to);
+
+            }
+
+            return $redirect_to;
+
 
         }
 

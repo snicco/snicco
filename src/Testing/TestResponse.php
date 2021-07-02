@@ -372,6 +372,15 @@
         }
 
         /**
+         * @param  string|array  $value
+         */
+        public function assertSeeHtml($value)
+        {
+            return $this->assertSee($value, false);
+        }
+
+
+        /**
          * Assert that the given strings are contained in order within the response.
          *
          * @param  array  $values
@@ -658,9 +667,15 @@
 
             foreach ($keys as $key => $value) {
                 if (is_int($key)) {
+
                     PHPUnit::assertTrue($errors->has($value), "Session missing error: $value");
+
                 } else {
-                    PHPUnit::assertContains(is_bool($value) ? (string) $value : $value, $errors->get($key, $format));
+
+                    PHPUnit::assertContains(
+                        is_bool($value) ? (string) $value : $value,
+                        $errors->get($key, $format),
+                        "Message [$value] not found for key [$key].");
                 }
             }
 
@@ -807,6 +822,8 @@
             PHPUnit::assertInstanceOf($class, $this->psr_response);
             return $this;
         }
+
+
 
 
     }

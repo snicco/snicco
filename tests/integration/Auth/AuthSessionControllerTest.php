@@ -25,35 +25,23 @@
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Support\Arr;
+    use WPEmerge\Support\Str;
+    use WPEmerge\Testing\TestResponse;
 
     class AuthSessionControllerTest extends AuthTestCase
     {
 
+        private function postToLogin(array $data) : TestResponse
+        {
 
-        // private $config = [
-        //     'session' => [
-        //         'enabled' => true,
-        //         'driver' => 'array',
-        //         'lifetime' => 3600
-        //     ],
-        //     'providers' => [
-        //         SessionServiceProvider::class,
-        //         AuthServiceProvider::class,
-        //     ],
-        //     'auth' => [
-        //
-        //         'confirmation' => [
-        //             'duration' => 10
-        //         ],
-        //
-        //         'remember' => [
-        //             'enabled' => false,
-        //         ]
-        //     ]
-        // ];
+            $token = $this->withCsrfToken();
 
-          /** @test */
-        public function the_login_screen_can_be_rendered () {
+            return $this->post('/auth/login', $token + $data);
+        }
+
+        /** @test */
+        public function the_login_screen_can_be_rendered()
+        {
 
 
             $this->get('/auth/login')
@@ -64,22 +52,8 @@
         }
 
         /** @test */
-        public function _the_login_route_can_not_be_accessed_while_logged_in () {
-
-            $this->login($calvin = $this->newAdmin());
-
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
-
-            $this->assertOutput('', $this->request);
-            HeaderStack::assertHasStatusCode(302);
-
-            $this->logout($calvin);
-
-        }
-
-        /** @test */
-        public function the_login_route_can_not_be_accessed_while_logged_in () {
+        public function the_login_route_can_not_be_accessed_while_logged_in()
+        {
 
             $this->actingAs($this->createAdmin());
 
@@ -88,36 +62,16 @@
 
         }
 
-
         /** @test */
-        public function _reauth_works_when_present_in_the_query_parameter () {
-
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
-
-            $request = $this->request->withQueryParams(['reauth' => 1]);
-
-            $GLOBALS['test']['auth_cookies_cleared'] = false;
-
-            add_action('clear_auth_cookie', function () {
-                $GLOBALS['test']['auth_cookies_cleared'] = true;
-            });
-
-            $this->assertOutputContains('Login', $request);
-            HeaderStack::assertHasStatusCode(200);
-            $this->assertTrue($GLOBALS['test']['auth_cookies_cleared']);
-
-        }
-
-        /** @test */
-        public function reauth_works_when_present_in_the_query_parameter () {
+        public function reauth_works_when_present_in_the_query_parameter()
+        {
 
 
             $this->withDataInSession(['foo' => 'bar']);
 
             $auth_cookies_cleared = false;
+            add_action('clear_auth_cookie', function () use (&$auth_cookies_cleared) {
 
-            add_action('clear_auth_cookie', function () use (&$auth_cookies_cleared){
                 $auth_cookies_cleared = true;
             });
 
@@ -128,236 +82,195 @@
 
         }
 
-
         /** @test */
-        public function the_redirect_to_url_is_saved_to_the_session () {
+        public function the_redirect_to_url_is_saved_to_the_session()
+        {
 
+            $this->loadRoutes();
 
-            $query = urlencode('https://foobar.com/foo/bar?search=foo bar');
-            $response = $this->get("/auth/login?redirect_to=$query");
+            $url = wp_login_url('https://foobar.com/foo/bar?search=foo bar');
+
+            $response = $this->get($url);
             $response->assertOk()->assertSee('Login');
 
-            $search = urlencode('foo bar');
-            $response->assertSessionHas('_url.intended', "https://foobar.com/foo/bar?search=$search");
-
+            $response->assertSessionHas('_url.intended', "https://foobar.com/foo/bar?search=foo%20bar");
 
         }
 
         /** @test */
-        public function _a_user_can_log_in () {
+        public function a_user_can_log_in()
+        {
 
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
-            $calvin = $this->newAdmin();
-            $this->assertUserLoggedOut();
+            $calvin = $this->createAdmin();
+            $this->assertNotAuthenticated($calvin);
 
-
-            $request = $this->postLoginRequest([
+            $response = $this->postToLogin([
                 'pwd' => 'password',
-                'log' => $calvin->user_login
+                'log' => $calvin->user_login,
             ]);
 
-            $this->assertOutput('', $request);
-            HeaderStack::assertHasStatusCode(302);
-            $this->assertUserLoggedIn($calvin);
+            $response->assertRedirectToRoute('dashboard', 302);
+            $this->assertAuthenticated($calvin);
 
-            $this->logout($calvin);
 
         }
 
         /** @test */
-        public function _a_wrong_password_throws_a_generic_exception () {
+        public function an_exception_response_is_returned_if_one_authenticator_throwns_an_exception()
+        {
 
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
-            $calvin = $this->newAdmin();
-            $this->assertUserLoggedOut();
+            $calvin = $this->createAdmin();
+            $this->assertNotAuthenticated($calvin);
 
-
-            $request = $this->postLoginRequest([
+            $response = $this->postToLogin([
                 'pwd' => 'wrong_password',
-                'log' => $calvin->user_login
+                'log' => $calvin->user_login,
             ]);
 
-            $this->expectException(FailedAuthenticationException::class);
-            $this->expectExceptionMessage('Your password or username is not correct.');
+            $response->assertRedirect('/auth/login')
+                     ->assertSessionHasErrors(['message' => 'Your password or username is not correct.']);
 
-            $this->runKernel($request);
 
         }
 
         /** @test */
-        public function _a_wrong_user_login_throws_a_generic_exception () {
-
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
-            $calvin = $this->newAdmin();
-            $this->assertUserLoggedOut();
-
-            $request = $this->postLoginRequest([
-                'pwd' => 'password',
-                'log' => 'wrong'
-            ]);
-
-            $this->expectException(FailedAuthenticationException::class);
-            $this->expectExceptionMessage('Your password or username is not correct.');
-
-            $this->runKernel($request);
-
-        }
-
-        /** @test */
-        public function _the_session_is_updated_on_login () {
-
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
-            $calvin = $this->newAdmin();
+        public function the_session_is_updated_on_login()
+        {
 
             ApplicationEvent::fake([Login::class]);
+            $calvin = $this->createAdmin();
+            $this->withDataInSession(['foo' => 'bar']);
+            $session_id_pre_login = $this->session->getId();
 
-            $session = TestApp::session();
-            $array_handler = $session->getDriver();
-            $array_handler->write($this->hashedSessionId(), serialize(['foo' => 'bar']));
-
-            $request = $this->postLoginRequest([
+            $response = $this->postToLogin([
                 'pwd' => 'password',
-                'log' => $calvin->user_login
+                'log' => $calvin->user_login,
             ]);
-            $request = $request->withAddedHeader('Cookie', 'wp_mvc_session='.$this->testSessionId() );
-
-            $this->assertOutput('', $request);
-            HeaderStack::assertHasStatusCode(302);
-            $this->assertUserLoggedIn($calvin);
 
             // Session regenerated
-            $this->assertNotSame($session->getId(), $this->getSessionId());
+            $this->assertNotSame($session_id_pre_login, $this->session->getId());
+            $response->assertSessionHas(['foo' => 'bar']);
 
-            // Auth confirmed
+            // Auth confirmation set
             $this->travelIntoFuture(9);
-            $this->assertTrue($session->hasValidAuthConfirmToken());
+            $this->assertTrue($this->session->hasValidAuthConfirmToken());
             $this->travelIntoFuture(1);
-            $this->assertFalse($session->hasValidAuthConfirmToken());
+            $this->assertFalse($this->session->hasValidAuthConfirmToken());
 
             // User id
-            $this->assertSame($calvin->ID, $session->userId());
+            $this->assertSessionUserId($calvin->ID);
 
             // remember me preference
-            $this->assertFalse($session->hasRememberMeToken());
+            $this->assertFalse($this->session->hasRememberMeToken());
 
-            ApplicationEvent::assertDispatched(function (Login $login ) use ($calvin){
+            // Login event
+            ApplicationEvent::assertDispatched(function (Login $login) use ($calvin) {
 
                 return $login->user->ID === $calvin->ID && $login->remember === false;
 
             });
 
-            $this->logout($calvin);
-
         }
 
         /** @test */
-        public function _a_user_can_be_remembered_if_he_chooses_too () {
+        public function a_user_can_be_remembered_if_he_chooses_too()
+        {
 
-            Arr::set($this->config, 'auth.remember.enabled', true );
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
-            $calvin = $this->newAdmin();
+            $this->withAddedConfig('auth.features.remember_me', 10);
+            $calvin = $this->createAdmin();
 
-            $request = $this->postLoginRequest([
+            $response = $this->postToLogin([
                 'pwd' => 'password',
                 'log' => $calvin->user_login,
-                'remember_me' =>'1'
+                'remember_me' => '1',
             ]);
 
-            $this->assertOutput('', $request);
-            HeaderStack::assertHasStatusCode(302);
-
-            // remember me preference
-            $this->assertTrue(TestApp::session()->hasRememberMeToken());
+            $this->assertTrue($this->session->hasRememberMeToken());
 
         }
 
         /** @test */
-        public function _a_user_will_not_be_remembered_if_disabled_in_the_config () {
+        public function a_user_will_not_be_remembered_if_not_enabled_in_the_config()
+        {
 
-            Arr::set($this->config, 'auth.remember.enabled', false );
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
-            $calvin = $this->newAdmin();
+            $calvin = $this->createAdmin();
 
-            $request = $this->postLoginRequest([
+            $response = $this->postToLogin([
                 'pwd' => 'password',
                 'log' => $calvin->user_login,
-                'remember_me' =>'1'
+                'remember_me' => '1',
             ]);
 
-            $this->assertOutput('', $request);
-            HeaderStack::assertHasStatusCode(302);
-
-            // remember me preference
-            $this->assertFalse(TestApp::session()->hasRememberMeToken());
+            $this->assertFalse($this->session->hasRememberMeToken());
 
         }
 
         /** @test */
-        public function _if_its_an_interim_login_the_user_is_not_redirected () {
+        public function if_its_an_interim_login_the_user_is_not_redirected()
+        {
 
 
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
-            $calvin = $this->newAdmin();
-            $this->assertUserLoggedOut();
+            $calvin = $this->createAdmin();
 
-            $request = $this->postLoginRequest([
+            $response = $this->postToLogin([
                 'pwd' => 'password',
                 'log' => $calvin->user_login,
-                'is_interim_login' =>'1'
+                'is_interim_login' => '1',
             ]);
 
-            $this->runKernel($request);
-            HeaderStack::assertHasStatusCode(200);
-            $this->assertUserLoggedIn($calvin);
-
-            $this->assertTrue(TestApp::session()->has('interim_login_success'));
-
-            $this->logout($calvin);
+            $response->assertViewIs('auth-interim-login-success')
+                     ->assertSeeHtml("jQuery(parent.document).find('.wp-auth-check-close').click();")
+                     ->assertOk();
 
         }
 
         /** @test */
-        public function _the_user_can_be_logged_in_through_multiple_authenticators () {
+        public function the_user_can_be_logged_in_through_multiple_authenticators()
+        {
 
-            Arr::set($this->config, 'auth.through', [
+            // $this->withoutExceptionHandling();
+
+            $calvin = $this->createAdmin();
+            $this->withReplacedConfig('auth.through', [
                 CustomAuthenticator::class,
                 PasswordAuthenticator::class,
-            ]);
+            ]) ;
 
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
-            $calvin = $this->newAdmin();
-            $this->assertUserLoggedOut();
-
-            $request = $this->postLoginRequest([
+            // Authenticate by custom authenticator
+            $this->postToLogin([
                 'pwd' => 'bogus',
                 'log' => $calvin->user_login,
-                'allow_login_for_id' => $calvin->ID
+                'allow_login_for_id' => $calvin->ID,
             ]);
 
-            $this->runKernel($request);
-            HeaderStack::assertHasStatusCode(302);
-            $this->assertUserLoggedIn($calvin);
+            $this->assertAuthenticated($calvin);
 
             $this->logout($calvin);
+            $this->assertNotAuthenticated($calvin);
 
-            $request = $this->postLoginRequest([
+
+            // Auth will fail for both authenticators
+            $response = $this->postToLogin([
+                'pwd' => 'bogus',
+                'log' => $calvin->user_login,
+                'allow_login_for_id' => $calvin->ID + 1,
+            ]);
+
+            $response->assertSessionHasErrors();
+            $this->assertNotAuthenticated($calvin);
+
+
+            $response = $this->postToLogin([
                 'pwd' => 'password',
                 'log' => $calvin->user_login,
+                'allow_login_for_id' => $calvin->ID + 1,
             ]);
 
-            $this->runKernel($request);
-            HeaderStack::assertHasStatusCode(302);
-            $this->assertUserLoggedIn($calvin);
+            $this->assertAuthenticated($calvin);
+            $response->assertSessionDoesntHaveErrors();
 
             $this->logout($calvin);
+            $this->assertNotAuthenticated($calvin);
 
 
 
@@ -365,17 +278,25 @@
 
     }
 
-    class CustomAuthenticator extends Authenticator {
+
+    class CustomAuthenticator extends Authenticator
+    {
 
         use ResolvesUser;
 
         public function attempt(Request $request, $next) : Response
         {
-            if ( $request->has('allow_login_for_id') ) {
+
+            if ($request->has('allow_login_for_id')) {
 
                 $user = $this->getUserById($request->input('allow_login_for_id'));
 
-                return $this->login( $user, false);
+                if ( $user instanceof \WP_User ) {
+
+                    return $this->login($user, false);
+
+                }
+
             }
 
             return $next($request);

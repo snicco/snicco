@@ -7,15 +7,8 @@
     namespace Tests\integration\Auth;
 
     use Tests\AuthTestCase;
-    use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
-    use Tests\stubs\TestRequest;
-    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Auth\Mail\ResetPasswordMail;
-    use WPEmerge\Events\PendingMail;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\Middleware\CsrfMiddleware;
-    use WPEmerge\Support\Arr;
 
     class ForgotPasswordControllerTest extends AuthTestCase
     {
@@ -30,9 +23,6 @@
 
             });
 
-            // $this->afterApplicationCreated(function () {
-            //     $this->withoutMiddleware('csrf');
-            // });
 
             parent::setUp();
         }
@@ -129,7 +119,6 @@
 
 
         }
-
 
         /** @test */
         public function invalid_input_does_not_return_an_error_message_but_doesnt_send_an_email()

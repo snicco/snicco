@@ -10,7 +10,9 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
+    use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Auth\Controllers\AuthSessionController;
+    use WPEmerge\Auth\Events\Logout;
     use WPEmerge\Auth\Responses\LogoutResponse;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
@@ -88,17 +90,27 @@
         public function the_current_user_is_logged_out()
         {
 
-
+            ApplicationEvent::fake([Logout::class]);
             $this->actingAs($calvin = $this->createAdmin());
             $this->assertAuthenticated($calvin);
+
+            $auth_cookie_cleared = false;
+            add_action('clear_auth_cookie', function () use (&$auth_cookie_cleared) {
+
+                $auth_cookie_cleared = true;
+
+            });
 
             $response = $this->get($this->logoutUrl($calvin));
 
             $response->assertStatus(302);
             $response->assertRedirectToRoute('home');
             $this->assertNotAuthenticated($calvin);
-
-
+            $this->assertTrue($auth_cookie_cleared);
+            $this->assertSessionUserId(0);
+            ApplicationEvent::assertDispatched(function (Logout $event ) use ($calvin) {
+                return $event->user_id = $calvin->ID;
+            });
         }
 
         /** @test */
