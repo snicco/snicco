@@ -51,22 +51,6 @@
             parent::setUp();
         }
 
-        private function without2Fa()
-        {
-
-            $this->withReplacedConfig('auth.features.2fa', false);
-
-            return $this;
-        }
-
-        private function with2Fa()
-        {
-
-            $this->withReplacedConfig('auth.features.2fa', true);
-
-            return $this;
-        }
-
         private function createCodes() : array
         {
 

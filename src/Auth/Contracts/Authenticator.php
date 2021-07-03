@@ -10,9 +10,11 @@
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
     use WPEmerge\Auth\Responses\SuccessfulLoginResponse;
     use WPEmerge\Contracts\Middleware;
+    use WPEmerge\Contracts\ResponsableInterface;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
+    use WPEmerge\Http\ResponseFactory;
 
     abstract class Authenticator extends Middleware
     {
@@ -21,16 +23,22 @@
          * @param  Request  $request
          * @param  Delegate $next This class can be called as a closure. $next($request)
          *
-         * @return SuccessfulLoginResponse If authentication was successful.
+         * @return SuccessfulLoginResponse|ResponseInterface|string|array|ResponsableInterface
+         *
+         * SuccessfulLoginResponse if authentication was successful | Anything that can be transformed to a response otherwise
+         * @see ResponseFactory::toResponse()
+         *
          *
          * @throws FailedAuthenticationException
          *
          */
-        abstract public function attempt ( Request $request, $next ) :Response;
+        abstract public function attempt ( Request $request, $next );
 
         public function handle(Request $request, Delegate $next) : ResponseInterface {
 
-            return $this->attempt($request, $next);
+            return $this->response_factory->toResponse(
+                $this->attempt($request, $next)
+            );
 
         }
 
