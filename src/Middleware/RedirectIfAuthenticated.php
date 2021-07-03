@@ -42,7 +42,7 @@
                 if ($request->isExpectingJson()) {
 
                     return $this->response_factory
-                        ->json('Only guests can access this route.')
+                        ->json(['message' =>'Only guests can access this route.'])
                         ->withStatus(403);
 
 

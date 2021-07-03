@@ -23,6 +23,10 @@
             $psr17Factory = new Psr17Factory();
 
             $request = new TestRequest($psr17Factory->createServerRequest($method, $url, ['REQUEST_METHOD' => $method]));
+
+            parse_str($request->getUri()->getQuery(), $query);
+            $request = $request->withQueryParams($query);
+
             return $request->withAttribute('_wp_admin_folder', 'wp-admin');
 
         }
@@ -39,6 +43,9 @@
             $url = trim($host, '/').'/'.$path;
 
             $request = new TestRequest($psr17Factory->createServerRequest($method, $url, ['REQUEST_METHOD' => $method]));
+            parse_str($request->getUri()->getQuery(), $query);
+            $request = $request->withQueryParams($query);
+
             return $request->withAttribute('_wp_admin_folder', 'wp-admin');
 
         }

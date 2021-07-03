@@ -4,27 +4,18 @@
 	declare( strict_types = 1 );
 
 
-	namespace Tests\unit\View;
+	namespace Tests\integration\View;
 
-    use Mockery;
-    use Tests\UnitTest;
+    use Tests\TestCase;
     use Tests\stubs\TestApp;
-    use Tests\helpers\CreateDefaultWpApiMocks;
-    use WPEmerge\Contracts\ViewFactoryInterface;
 	use WPEmerge\ExceptionHandling\Exceptions\ViewException;
 	use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
-    use WPEmerge\Facade\WP;
     use WPEmerge\View\PhpView;
     use WPEmerge\View\ViewFactory;
 
-    use const DS;
-    use const TEST_CONFIG;
-    use const TESTS_DIR;
-    use const VENDOR_DIR;
 
-    class ViewServiceTest extends UnitTest {
+    class ViewFactoryTest extends TestCase {
 
-        use CreateDefaultWpApiMocks;
 
 		/**
 		 * @var ViewFactory
@@ -33,27 +24,13 @@
 
         protected function setUp() : void {
 
-			parent::setUp();
+            $this->afterApplicationCreated(function () {
+                $this->view_service = $this->app->resolve(ViewFactory::class);
+            });
 
-			$this->setUpWp(VENDOR_DIR);
-
-
-			$container = $this->createContainer();
-			TestApp::make($container)->boot(TEST_CONFIG);
-			$this->view_service = TestApp::resolve(ViewFactoryInterface::class );
-
+            parent::setUp();
 
 		}
-
-		protected function tearDown() : void
-        {
-            WP::setFacadeContainer(null);
-            WP::clearResolvedInstances();
-            Mockery::close();
-            TestApp::setApplication(null);
-            parent::tearDown();
-
-        }
 
         /** @test */
 		public function a_basic_view_can_be_created () {
@@ -207,9 +184,9 @@
 
 		    $path = VIEWS_DIR .  DS . 'subdirectory' . DS. 'subview.php';
 
-		    WP::shouldReceive('fileHeaderData')->once()
-              ->with($path, ['Layout'])
-              ->andReturn(['view-with-layout.php']);
+		    // WP::shouldReceive('fileHeaderData')->once()
+            //   ->with($path, ['Layout'])
+            //   ->andReturn(['view-with-layout.php']);
 
 			$view = $this->view_service->make('subview.php');
 

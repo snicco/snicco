@@ -24,7 +24,7 @@
 
             if ( ! $challenged_user || ! $this->userHasTwoFactorEnabled($this->getUserById($challenged_user))) {
 
-                return $this->response_factory->redirectToLogin();
+                return $this->response_factory->redirect()->toRoute('auth.login');
 
             }
 

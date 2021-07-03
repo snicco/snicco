@@ -189,7 +189,7 @@
 
             });
 
-            $this->expectExceptionMessage('The response returned by the route action is not valid.');
+            $this->expectExceptionMessage('The response returned by the route is not valid.');
 
             $this->runKernel($this->webRequest('GET', '/foo'));
 

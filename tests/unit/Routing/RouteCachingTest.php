@@ -69,8 +69,8 @@
         protected function beforeTestRun()
         {
 
-            $this->route_map_file = TESTS_DIR.DS.'_data'.DS.'route.cache.php';
-            $this->route_collection_file = TESTS_DIR.DS.'_data'.DS.'route.collection.php';
+            $this->route_map_file = TESTS_DIR.DS.'codecept'. DS. '_data'.DS .'route.cache.php';
+            $this->route_collection_file = TESTS_DIR.DS.'codecept'.DS.'_data'.DS. 'route.collection.php';
 
             $this->container = $this->createContainer();
             $this->routes = $this->newRouteCollection();

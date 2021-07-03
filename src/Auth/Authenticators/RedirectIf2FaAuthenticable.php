@@ -56,12 +56,11 @@
 
         }
 
-
         private function challengeUser(Request $request, WP_User $user) : void
         {
 
-            $request->session()->put('2fa.challenged_user', $user->ID);
-            $request->session()->put('2fa.remember', $request->boolean('remember_me'));
+            $request->session()->put('auth.2fa.challenged_user', $user->ID);
+            $request->session()->put('auth.2fa.remember', $request->boolean('remember_me'));
 
         }
 

@@ -6,10 +6,13 @@
 
     namespace Tests;
 
+    use Illuminate\Support\Collection;
     use WPEmerge\Auth\AuthServiceProvider;
     use WPEmerge\Auth\AuthSessionManager;
+    use WPEmerge\Auth\RecoveryCode;
     use WPEmerge\Session\Contracts\SessionDriver;
     use WPEmerge\Session\Contracts\SessionManagerInterface;
+    use WPEmerge\Session\Encryptor;
     use WPEmerge\Session\SessionManager;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Validation\ValidationServiceProvider;
@@ -22,6 +25,16 @@
          * @var AuthSessionManager
          */
         protected $session_manager;
+
+        /**
+         * @var array
+         */
+        protected $codes;
+
+        /**
+         * @var Encryptor
+         */
+        protected $encryptor;
 
         public function packageProviders() : array
         {
@@ -69,6 +82,24 @@
             $this->withReplacedConfig('auth.features.2fa', true);
 
             return $this;
+        }
+
+        protected function createCodes() : array
+        {
+
+            return Collection::times(8, function () {
+
+                return RecoveryCode::generate();
+
+            })->all();
+
+        }
+
+        protected function encryptCodes(array $codes) : string
+        {
+
+            return $this->encryptor->encrypt(json_encode($codes));
+
         }
 
     }

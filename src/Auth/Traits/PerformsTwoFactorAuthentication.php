@@ -6,9 +6,13 @@
 
     namespace WPEmerge\Auth\Traits;
 
+    use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
     use WPEmerge\Auth\RecoveryCode;
     use WPEmerge\Http\Psr7\Request;
 
+    /**
+     * @property TwoFactorAuthenticationProvider $provider
+     */
     trait PerformsTwoFactorAuthentication
     {
 
@@ -56,7 +60,7 @@
 
             $user_secret = $this->twoFactorSecret($user_id);
 
-            return $this->provider->verify($user_secret, $token);
+            return $this->provider->verifyOneTimeCode($user_secret, $token);
 
         }
 

@@ -13,6 +13,7 @@
     use Tests\helpers\HashesSessionIds;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
+    use WPEmerge\ExceptionHandling\NullErrorHandler;
     use WPEmerge\Testing\TestingErrorHandler;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Cookies;
@@ -235,7 +236,7 @@
             $response_factory = $this->createResponseFactory();
             $c->instance(ResponseFactory::class, $response_factory);
 
-            $pipeline = new Pipeline($c, new TestingErrorHandler());
+            $pipeline = new Pipeline($c, new NullErrorHandler());
 
             $request = TestRequest::from('GET', 'foo');
 

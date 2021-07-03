@@ -7,8 +7,12 @@
     namespace Tests\unit\Application;
 
     use Contracts\ContainerAdapter;
-    use Mockery;
+    use Mockery as m;
+    use Psr\Http\Message\ServerRequestFactoryInterface;
     use Psr\Http\Message\ServerRequestInterface;
+    use Psr\Http\Message\StreamFactoryInterface;
+    use Psr\Http\Message\UploadedFileFactoryInterface;
+    use Psr\Http\Message\UriFactoryInterface;
     use Tests\UnitTest;
     use Tests\stubs\TestContainer;
     use Tests\helpers\CreateDefaultWpApiMocks;
@@ -18,6 +22,8 @@
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Facade\WP;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Session\Encryptor;
 
     class ApplicationTest extends UnitTest
     {
@@ -29,12 +35,18 @@
          */
         private $container;
 
+        /**
+         * @var string
+         */
+        private $base_path;
+
         protected function beforeTestRun()
         {
 
             $this->container = $this->createContainer();
+            $this->base_path = __DIR__;
             WP::setFacadeContainer($this->container);
-            $this->setUpWp(VENDOR_DIR  );
+            $this->setUpWp(VENDOR_DIR);
 
 
         }
@@ -42,9 +54,8 @@
         protected function beforeTearDown()
         {
 
-            WP::setFacadeContainer(null);
-            WP::clearResolvedInstances();
-            Mockery::close();
+            WP::reset();
+            m::close();
 
         }
 
@@ -54,7 +65,7 @@
 
             $base_container = $this->createContainer();
 
-            $application = Application::create($base_container);
+            $application = Application::create($this->base_path, $base_container);
             $application->runningUnitTest();
 
             $this->assertInstanceOf(Application::class, $application);
@@ -72,7 +83,7 @@
 
             try {
 
-                $app->boot([]);
+                $app->boot();
 
             }
 
@@ -84,7 +95,7 @@
 
             try {
 
-                $app->boot([]);
+                $app->boot();
 
                 $this->fail('Application was bootstrapped two times.');
 
@@ -106,9 +117,9 @@
             $app = $this->newApplication();
             $app->runningUnitTest();
 
-            $app->boot(['foo' => 'bar']);
+            $app->boot();
 
-            $this->assertEquals('bar', $app->config('foo'));
+            $this->assertEquals('bar', $app->config('app.foo'));
 
 
         }
@@ -120,9 +131,7 @@
             $app = $this->newApplication();
             $app->runningUnitTest();
 
-            $app->boot(
-                ['providers' => [UserServiceProvider::class,],],
-            );
+            $app->boot();
 
             $this->assertEquals('bar', $app->container()['foo']);
             $this->assertEquals('bar_bootstrapped', $app->container()['foo_bootstrapped']);
@@ -150,39 +159,17 @@
 
             $app = $this->newApplication();
             $app->runningUnitTest();
-            $app->boot(['foo' => 'bar', 'bar' => ['baz' => 'boo']]);
+
+            $app->boot();
 
             $this->assertInstanceOf(
                 ApplicationConfig::class,
                 $app->resolve(ApplicationConfig::class)
             );
-            $this->assertSame('bar', $app->config('foo'));
-            $this->assertSame('boo', $app->config('bar.baz'));
-            $this->assertSame('bogus_default', $app->config('bogus', 'bogus_default'));
+            $this->assertSame('bar', $app->config('app.foo'));
+            $this->assertSame('boo', $app->config('app.bar.baz'));
+            $this->assertSame('bogus_default', $app->config('app.bogus', 'bogus_default'));
 
-
-        }
-
-        /** @test */
-        public function the_application_run_configuration_can_be_set_from_the_config()
-        {
-
-            $app1 = $this->newApplication();
-            $app1->runningUnitTest();
-            $app1->boot();
-
-
-            $this->assertFalse($app1->handlesExceptionsGlobally());
-
-            $app2 = $this->newApplication();
-            $app2->runningUnitTest();
-            $app2->boot(['exception_handling' => [
-
-                'global'=> true
-
-            ] ]);
-
-            $this->assertTrue($app2->handlesExceptionsGlobally());
 
         }
 
@@ -190,48 +177,87 @@
         public function the_request_is_captured()
         {
 
-            $app1 = $this->newApplication();
+            $app = $this->newApplication();
 
-            $this->assertInstanceOf(Request::class, $app1->resolve(Request::class));
-
-        }
-
-        /** @test */
-        public function a_custom_server_request_can_be_provided()
-        {
-
-            $app = new Application($this->createContainer(), $mock = Mockery::mock(ServerRequestInterface::class));
+            $app->boot();
 
             $this->assertInstanceOf(Request::class, $app->resolve(Request::class));
 
         }
 
+        /** @test */
+        public function settingUnitTest () {
+
+            $app = $this->newApplication();
+            $this->assertFalse($app->isRunningUnitTest());
+
+            $app->runningUnitTest();
+
+            $this->assertTrue($app->isRunningUnitTest());
+
+
+        }
+
+        /** @test */
+        public function testConfigPath () {
+
+            $app = $this->newApplication();
+            $path = $app->configPath();
+
+            $this->assertSame($this->base_path . DS . 'config', $path);
+
+            $path = $app->configPath('auth');
+
+            $this->assertSame($this->base_path.DS.'config'.DS.'auth', $path);
+
+        }
+
+        /** @test */
+        public function testStoragePath () {
+
+            $app = $this->newApplication();
+            $app->boot();
+
+            $path = $app->storagePath();
+
+            $this->assertSame($this->base_path . DS . 'storage', $path);
+
+            $path = $app->storagePath('framework');
+
+            $this->assertSame($this->base_path.DS.'storage'.DS.'framework', $path);
+
+        }
+
+        /** @test */
+        public function generateKey () {
+
+            $key = Application::generateKey();
+
+            $this->assertStringStartsWith('base64:', $key);
+
+            try {
+                $encryptor = new Encryptor($key);
+                $this->assertTrue(true);
+            } catch (\Throwable $e ) {
+                $this->fail('Generated app key is not compatible.' . PHP_EOL . $e->getMessage());
+            }
+
+        }
 
         private function newApplication() : Application
         {
 
-            return new Application($this->container);
-        }
+            $app = Application::create($this->base_path, $this->container);
+            $app->setResponseFactory($this->psrResponseFactory());
+            $app->setUriFactory($this->psrUriFactory());
+            $app->setStreamFactory($this->psrStreamFactory());
+            $app->setUploadedFileFactory($this->psrUploadedFileFactory());
+            $app->setServerRequestFactory($this->psrServerRequestFactory());
 
-    }
-
-
-    class UserServiceProvider extends ServiceProvider
-    {
-
-
-        public function register() : void
-        {
-
-            $this->container->instance('foo', 'bar');
-
-        }
-
-        public function bootstrap() : void
-        {
-
-            $this->container->instance('foo_bootstrapped', 'bar_bootstrapped');
+            return $app;
 
         }
 
     }
+
+

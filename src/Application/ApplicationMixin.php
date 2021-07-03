@@ -24,7 +24,7 @@
 
     /**
      * Can be applied to your App class via a "@mixin" annotation for better IDE support.
-     * This class is not meant to be used in any other capacity.
+     * This class is not meant to be used in any other way.
      *
      * @codeCoverageIgnore
      */
@@ -116,12 +116,10 @@
         /**
          * Bootstrap the application.
          *
-         * @param  string  $base_path
-         *
          * @return void
          * @see Application::boot()
          */
-        public static function boot(string $base_path)
+        public static function boot(bool $load = true )
         {
         }
 
