@@ -42,12 +42,13 @@
             if ( ! $this->userHasTwoFactorEnabled($this->getUserById($id = $request->userId()))) {
 
                 return $this->response_factory->json([
-                    'success' => false,
-                    'message' => 'Two factor authentication not enabled.'
-                ]);
+                    'status' => 'fail',
+                    'data' => [
+                        'message' => 'Two factor authentication is not enabled.'
+                    ]
+                ], 409);
 
             }
-
 
             $codes = $this->recoveryCodes($id);
 
@@ -55,7 +56,7 @@
 
             return $this->response_factory->json([
                 'success' => true,
-                'codes' => $codes
+                'codes' => $codes,
             ]);
 
         }
@@ -67,7 +68,7 @@
 
                 return $this->response_factory->json([
                     'success' => false,
-                    'message' => 'Two factor authentication not enabled.'
+                    'message' => 'Two factor authentication not enabled.',
                 ]);
 
             }
@@ -75,11 +76,11 @@
             $codes = $this->generateNewRecoveryCodes();
             $this->saveCodes($id, $codes);
 
-            return $request->isExpectingJson()
-                ? $this->response_factory->json([
-                    'success' => true, 'message' => 'Recovery codes updated',
-                ])
-                : $this->response_factory->redirect()->back()->with('success.message', 'Recovery codes updated');
+            return $this->response_factory->json([
+                'success' => true,
+                'message' => 'Recovery codes updated.',
+            ]);
+
 
         }
 

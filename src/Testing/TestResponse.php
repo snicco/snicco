@@ -16,6 +16,7 @@
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
+    use WPEmerge\Support\Url;
     use WPEmerge\Support\VariableBag;
     use WPEmerge\Testing\Assertable\AssertableCookie;
     use WPEmerge\Testing\Constraints\SeeInOrder;
@@ -244,6 +245,23 @@
             return $this;
         }
 
+
+        public function assertRedirectPath(string $path, int $status = null)
+        {
+            PHPUnit::assertTrue(
+                $this->isRedirect(), 'Response status code ['.$this->getStatusCode().'] is not a redirect status code.'
+            );
+
+            if ( $status ) {
+                $this->assertStatus($status);
+            }
+
+            $location = $this->psr_response->getHeaderLine('location');
+            $path = Url::addLeading($path);
+            PHPUnit::assertSame($path, parse_url($location, PHP_URL_PATH));
+
+        }
+
         public function assertRedirectToRoute(string $route_name, int $status_code = null ) : TestResponse
         {
 
@@ -265,7 +283,6 @@
             return $this;
 
         }
-
 
         public function cookie(string $cookie_name)
         {
@@ -773,17 +790,35 @@
             return $this;
         }
 
-        public function assertIsHtml()
+        public function assertIsHtml() : TestResponse
         {
             $this->assertContentType('text/html');
+            return $this;
         }
 
-        public function assertIsJson()
+        public function assertIsJson() : TestResponse
         {
             $this->assertContentType('application/json');
+            return $this;
         }
 
-        private function session() : ?Session
+        public function assertExactJson( array $data )
+        {
+
+            $this->assertIsJson();
+            $actual = json_decode($this->streamed_content, true );
+
+            PHPUnit::assertSame($data, $actual, 'Incorrect json response.');
+
+        }
+
+        public function assertInstance(string $class) : TestResponse
+        {
+            PHPUnit::assertInstanceOf($class, $this->psr_response);
+            return $this;
+        }
+
+        public function session() : ?Session
         {
             return $this->session;
         }
@@ -818,11 +853,6 @@
             return $this->psr_response->isRedirect($location);
         }
 
-        public function assertInstance(string $class) : TestResponse
-        {
-            PHPUnit::assertInstanceOf($class, $this->psr_response);
-            return $this;
-        }
 
 
 
