@@ -73,10 +73,12 @@
          * Define additional headers to be sent with the request.
          *
          * @param  array  $headers
+         *
          * @return $this
          */
         public function withHeaders(array $headers)
         {
+
             $this->default_headers = array_merge($this->default_headers, $headers);
 
             return $this;
@@ -87,10 +89,12 @@
          *
          * @param  string  $name
          * @param  string  $value
+         *
          * @return $this
          */
         public function withHeader(string $name, string $value)
         {
+
             $this->default_headers[$name] = $value;
 
             return $this;
@@ -103,6 +107,7 @@
          */
         public function flushHeaders()
         {
+
             $this->default_headers = [];
 
             return $this;
@@ -112,10 +117,12 @@
          * Define a set of server variables to be sent with the requests.
          *
          * @param  array  $server
+         *
          * @return $this
          */
         public function withServerVariables(array $server)
         {
+
             $this->default_server_variables = $server;
 
             return $this;
@@ -125,10 +132,12 @@
          * Define additional cookies to be sent with the request.
          *
          * @param  array  $cookies
+         *
          * @return $this
          */
         public function withCookies(array $cookies)
         {
+
             $this->default_cookies = array_merge($this->default_cookies, $cookies);
 
             return $this;
@@ -141,8 +150,9 @@
          *
          * @return $this
          */
-        public function withCookie(string $name, string $value )
+        public function withCookie(string $name, string $value)
         {
+
             $this->default_cookies[$name] = $value;
 
             return $this;
@@ -155,20 +165,24 @@
          */
         public function followingRedirects()
         {
+
             $this->follow_redirects = true;
 
             return $this;
         }
 
         /**
-         * Set the referer header and previous URL session value in order to simulate a previous request.
+         * Set the referer header and previous URL session value in order to simulate a previous
+         * request.
          *
          * @param  string  $url
+         *
          * @return $this
          */
         public function from(string $url)
         {
-            if ( $this->session ) {
+
+            if ($this->session) {
 
                 $this->session->setPreviousUrl($url);
 
@@ -190,37 +204,41 @@
 
             $uri = $this->createUri($uri);
 
-            $server = array_merge(['REQUEST_METHOD' => 'GET', 'SCRIPT_NAME' => 'index.php'], $this->default_server_variables);
+            $server = array_merge([
+                'REQUEST_METHOD' => 'GET', 'SCRIPT_NAME' => 'index.php',
+            ], $this->default_server_variables);
             $request = $this->request_factory->createServerRequest('GET', $uri, $server);
-
-            parse_str($uri->getQuery(), $query);
-            $request = $request->withQueryParams($query);
 
             return $this->performRequest($request, $headers);
 
         }
 
-        public function getJson($uri, array $headers = []) :TestResponse {
+        public function getJson($uri, array $headers = []) : TestResponse
+        {
 
             $headers = array_merge($headers, ['Accept' => 'application/json']);
+
             return $this->get($uri, $headers);
 
         }
 
-         /**
+        /**
          * Visit the given ADMIN PAGE URI with a GET request.
          *
-         * @param  string  $admin_page_slug The [page] query parameter for the admin page. May contain additional query parameters.
+         * @param  string  $admin_page_slug  The [page] query parameter for the admin page. May
+         *     contain additional query parameters.
          * @param  array  $headers
          *
          * @return TestResponse
          */
-        public function getAdminPage( string $admin_page_slug, array $headers = []) : TestResponse
+        public function getAdminPage(string $admin_page_slug, array $headers = []) : TestResponse
         {
 
             $uri = $this->adminPageUri($admin_page_slug);
 
-            $server = array_merge(['REQUEST_METHOD' => 'GET', 'SCRIPT_NAME' => 'wp-admin/index.php'], $this->default_server_variables);
+            $server = array_merge([
+                'REQUEST_METHOD' => 'GET', 'SCRIPT_NAME' => 'wp-admin/index.php',
+            ], $this->default_server_variables);
             $request = $this->request_factory->createServerRequest('GET', $uri, $server);
 
             parse_str($uri->getQuery(), $query);
@@ -235,7 +253,9 @@
 
             $uri = $this->createUri($uri);
 
-            $server = array_merge(['REQUEST_METHOD' => 'OPTIONS', 'SCRIPT_NAME' => 'index.php'], $this->default_server_variables);
+            $server = array_merge([
+                'REQUEST_METHOD' => 'OPTIONS', 'SCRIPT_NAME' => 'index.php',
+            ], $this->default_server_variables);
             $request = $this->request_factory->createServerRequest('OPTIONS', $uri, $server);
 
             parse_str($uri->getQuery(), $query);
@@ -259,7 +279,9 @@
 
             $uri = $this->createUri($uri);
 
-            $server = array_merge(['REQUEST_METHOD' => 'POST', 'SCRIPT_NAME' => 'index.php'], $this->default_server_variables);
+            $server = array_merge([
+                'REQUEST_METHOD' => 'POST', 'SCRIPT_NAME' => 'index.php',
+            ], $this->default_server_variables);
             $request = $this->request_factory->createServerRequest('POST', $uri, $server);
 
             $request = $request->withParsedBody($data);
@@ -268,7 +290,7 @@
 
         }
 
-         /**
+        /**
          * Visit the given URI with a PATCH request.
          *
          * @param  string|UriInterface  $uri
@@ -281,7 +303,9 @@
         {
 
             $uri = $this->createUri($uri);
-            $server = array_merge(['REQUEST_METHOD' => 'PATCH', 'SCRIPT_NAME' => 'index.php'], $this->default_server_variables);
+            $server = array_merge([
+                'REQUEST_METHOD' => 'PATCH', 'SCRIPT_NAME' => 'index.php',
+            ], $this->default_server_variables);
             $request = $this->request_factory->createServerRequest('PATCH', $uri, $server);
 
             $request = $request->withParsedBody($data);
@@ -303,7 +327,9 @@
         {
 
             $uri = $this->createUri($uri);
-            $server = array_merge(['REQUEST_METHOD' => 'PUT', 'SCRIPT_NAME' => 'index.php'], $this->default_server_variables);
+            $server = array_merge([
+                'REQUEST_METHOD' => 'PUT', 'SCRIPT_NAME' => 'index.php',
+            ], $this->default_server_variables);
             $request = $this->request_factory->createServerRequest('PUT', $uri, $server);
 
             $request = $request->withParsedBody($data);
@@ -326,7 +352,9 @@
 
             $uri = $this->createUri($uri);
 
-            $server = array_merge(['REQUEST_METHOD' => 'DELETE', 'SCRIPT_NAME' => 'index.php',], $this->default_server_variables);
+            $server = array_merge([
+                'REQUEST_METHOD' => 'DELETE', 'SCRIPT_NAME' => 'index.php',
+            ], $this->default_server_variables);
             $request = $this->request_factory->createServerRequest('DELETE', $uri, $server);
 
             $request = $request->withParsedBody($data);
@@ -337,8 +365,9 @@
 
         protected function addHeaders(ServerRequestInterface $request, array $headers = []) : ServerRequestInterface
         {
+
             $headers = array_merge($headers, $this->default_headers);
-            foreach ($headers as $name => $value ) {
+            foreach ($headers as $name => $value) {
                 $request = $request->withAddedHeader($name, $headers);
             }
 
@@ -349,7 +378,7 @@
         protected function addCookies(ServerRequestInterface $request) : ServerRequestInterface
         {
 
-            foreach ($this->default_cookies as $name => $value ) {
+            foreach ($this->default_cookies as $name => $value) {
 
                 $request = $request->withAddedHeader('Cookie', "$name=$value");
 
@@ -365,47 +394,52 @@
             $request = $this->addHeaders($request, $headers);
             $request = new Request($this->addCookies($request));
 
+            parse_str($request->getUri()->getQuery(), $query);
+            $request = $request->withQueryParams($query);
+
             $this->withRequest($request);
 
-            if ( $type === 'web') {
+            if ($type === 'web') {
                 $request = new IncomingWebRequest($request, 'wordpress-template.php');
             }
-            elseif ( $type === 'admin') {
+            elseif ($type === 'admin') {
                 $request = new IncomingAdminRequest($request);
             }
-            elseif ( $type === 'ajax') {
+            elseif ($type === 'ajax') {
                 $request = new IncomingAjaxRequest($request);
             }
 
-            if ( ! $this->set_up_has_run ) {
+            if ( ! $this->set_up_has_run) {
                 $this->boot();
-            } else {
+            }
+            else {
                 $this->bindRequest();
             }
 
-            if ( $this->session instanceof Session ) {
-                $this->session->remove('errors');
-            }
-
-            if ( ! $this->routes_loaded ) {
+            if ( ! $this->routes_loaded) {
 
                 $this->loadRoutes();
 
             }
 
-
             /** @var Response $response */
             $response = $this->app->resolve(HttpKernel::class)->run($request);
+
+            if ($this->follow_redirects) {
+
+                return $this->followRedirects($response);
+
+            }
 
             $response = new TestResponse($response);
 
             $view_factory = $this->app->resolve(ViewFactory::class);
 
-            if ( $view_factory->renderedView() instanceof ViewInterface ) {
+            if ($view_factory->renderedView() instanceof ViewInterface) {
                 $response->setRenderedView($view_factory->renderedView());
             }
 
-            if ( $this->session instanceof Session ) {
+            if ($this->session instanceof Session) {
                 $response->setSession($this->session);
             }
 
@@ -418,7 +452,7 @@
         private function createUri($uri) : UriInterface
         {
 
-            if (is_string($uri) && ! Str::contains($uri, 'http') ) {
+            if (is_string($uri) && ! Str::contains($uri, 'http')) {
                 $uri = Url::addLeading($uri);
             }
 
@@ -426,11 +460,11 @@
                 ? $uri
                 : $this->app->resolve(UriFactoryInterface::class)->createUri($uri);
 
-            if ( ! $uri->getScheme() ) {
+            if ( ! $uri->getScheme()) {
                 $uri = $uri->withScheme('https');
             }
 
-            if ( ! $uri->getHost() ) {
+            if ( ! $uri->getHost()) {
 
                 $uri = $uri->withHost(parse_url($this->config->get('app.url'), PHP_URL_HOST));
 
@@ -447,6 +481,19 @@
             $uri = Url::combineAbsPath($this->config->get('app.url'), "wp-admin/admin.php?page=$query");
 
             return $this->app->resolve(UriFactoryInterface::class)->createUri($uri);
+
+        }
+
+        private function followRedirects(Response $response)
+        {
+
+            $this->follow_redirects = false;
+
+            while ($response->isRedirect()) {
+                $response = $this->get($response->getHeaderLine('Location'));
+            }
+
+            return $response;
 
         }
 

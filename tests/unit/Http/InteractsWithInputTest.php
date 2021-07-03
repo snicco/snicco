@@ -270,6 +270,19 @@
 
         }
 
+        public function testFilled()
+        {
+
+            $request = $this->request->withQueryParams([
+                'dev' => 'calvin',
+                'foo' => ''
+            ]);
+
+            $this->assertTrue($request->filled('dev'));
+            $this->assertFalse($request->filled('foo'));
+
+        }
+
         public function testMissing()
         {
 
@@ -410,5 +423,7 @@
 
 
         }
+
+
 
     }

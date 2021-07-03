@@ -41,9 +41,10 @@
            ->name('logout')
            ->andNumber('user_id');
 
-
     // Auth Confirmation
-    $router->get('confirm', [ConfirmedAuthSessionController::class, 'create'])->middleware(['auth', 'auth.unconfirmed',])->name('confirm');
+    $router->get('confirm', [ConfirmedAuthSessionController::class, 'create'])->middleware([
+        'auth', 'auth.unconfirmed',
+    ])->name('confirm');
 
     $router->post('confirm', [ConfirmedAuthSessionController::class, 'store'])
            ->middleware(['auth', 'auth.unconfirmed', 'csrf']);
@@ -56,13 +57,15 @@
            ->name('confirm.magic-link');
 
     // 2FA
-    if ($config->get('auth.features.two-factor-authentication') ) {
+    if ($config->get('auth.features.two-factor-authentication')) {
 
         $router->post('two-factor/preferences', [TwoFactorAuthPreferenceController::class, 'store'])
                ->middleware(['auth', 'auth.confirmed'])
                ->name('two-factor.preferences');
 
-        $router->delete('two-factor/preferences', [TwoFactorAuthPreferenceController::class, 'destroy'])
+        $router->delete('two-factor/preferences', [
+            TwoFactorAuthPreferenceController::class, 'destroy',
+        ])
                ->middleware(['auth', 'auth.confirmed']);
 
         $router->get('two-factor/challenge', [TwoFactorAuthSessionController::class, 'create'])
@@ -78,12 +81,12 @@
     }
 
     // password resets
-    if ($config->get('auth.features.password-resets'))
-    {
+    if ($config->get('auth.features.password-resets')) {
 
         // forgot-password
         $router->get('/forgot-password', [ForgotPasswordController::class, 'create'])
-               ->middleware('guest');
+               ->middleware('guest')
+               ->name('forgot.password');
 
         $router->post('/forgot-password', [ForgotPasswordController::class, 'store'])
                ->middleware(['csrf', 'guest']);
@@ -99,7 +102,7 @@
     }
 
     // registration
-    if ( $config->get('auth.features.registration') ) {
+    if ($config->get('auth.features.registration')) {
 
         $router->get('register', [RegistrationLinkController::class, 'create'])->middleware('guest')
                ->name('register');

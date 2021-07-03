@@ -59,7 +59,12 @@
 
     </button>
 
-    <a href="<?= esc_url($register_url) ?>" class="text-sm-left underlined"> Register </a>
+    <?php if (isset($register_url)) : ?>
+
+        <a href="<?= esc_url($register_url) ?>" class="text-sm-left underlined"> Register </a>
+
+    <?php endif; ?>
+
 
 </form>
 

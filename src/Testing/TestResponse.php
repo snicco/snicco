@@ -22,7 +22,6 @@
 
     class TestResponse
     {
-
         /**
          * The response to delegate to.
          *
@@ -245,7 +244,7 @@
             return $this;
         }
 
-        public function assertRedirectToRoute(string $route_name, int $status_code = null )
+        public function assertRedirectToRoute(string $route_name, int $status_code = null ) : TestResponse
         {
 
             /** @var UrlGenerator $url */
@@ -263,7 +262,10 @@
                 $this->assertStatus($status_code);
             }
 
+            return $this;
+
         }
+
 
         public function cookie(string $cookie_name)
         {
@@ -378,7 +380,6 @@
         {
             return $this->assertSee($value, false);
         }
-
 
         /**
          * Assert that the given strings are contained in order within the response.
@@ -822,7 +823,6 @@
             PHPUnit::assertInstanceOf($class, $this->psr_response);
             return $this;
         }
-
 
 
 

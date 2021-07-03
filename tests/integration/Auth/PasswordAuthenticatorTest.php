@@ -6,144 +6,124 @@
 
     namespace Tests\integration\Auth;
 
-    use Tests\helpers\CreatePsr17Factories;
-    use Tests\helpers\CreateRouteCollection;
-    use Tests\helpers\CreateRouteMatcher;
-    use Tests\helpers\CreateUrlGenerator;
-    use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\IntegrationTest;
-    use Tests\stubs\TestRequest;
+    use Tests\AuthTestCase;
     use WPEmerge\Auth\Authenticators\PasswordAuthenticator;
-    use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
     use WPEmerge\Auth\Responses\SuccessfulLoginResponse;
-    use WPEmerge\Http\Delegate;
+    use WPEmerge\Routing\UrlGenerator;
 
-
-    class PasswordAuthenticatorTest extends IntegrationTest
+    class PasswordAuthenticatorTest extends AuthTestCase
     {
 
-        use InteractsWithWordpress;
-        use CreatePsr17Factories;
-        use CreateUrlGenerator;
-        use CreateRouteCollection;
-        use CreateRouteMatcher;
-
-        /**
-         * @var PasswordAuthenticator
-         */
-        private $authenticator;
-
-        /**
-         * @var Delegate
-         */
-        private $next;
-
-        /**
-         * @var TestRequest
-         */
-        private $request;
-
-        protected function afterSetup()
+        protected function setUp() : void
         {
 
-            $this->authenticator = new PasswordAuthenticator();
-            $this->authenticator->setResponseFactory($this->createResponseFactory());
-            $this->request = TestRequest::from('POST', '/auth/login');
-            $this->next = new Delegate(function () {
+            $this->afterLoadingConfig(function () {
+
+                $this->withReplacedConfig('auth.through', [
+                    PasswordAuthenticator::class,
+                ]);
             });
 
+            $this->afterApplicationCreated(function () {
+
+                $this->url = $this->app->resolve(UrlGenerator::class);
+                $this->loadRoutes();
+
+            });
+
+            parent::setUp();
         }
 
+
         /** @test */
-        public function missing_password_or_login_throws_an_exception()
+        public function missing_password_or_login_fails()
         {
 
-            try {
+            $token = $this->withCsrfToken();
 
-                $response = $this->authenticator->attempt($this->request, $this->next);
-                $this->fail('Auth did not fail as expected.');
-            }
-            catch (\Throwable $e) {
-
-                $this->assertInstanceOf(FailedAuthenticationException::class, $e);
-
-            }
-
-            try {
-
-                $response = $this->authenticator->attempt($this->request->withParsedBody([
+            $response = $this->post('/auth/login', $token +
+                [
                     'pwd' => 'password',
-                ]), $this->next);
-                $this->fail('Auth did not fail as expected.');
-            }
-            catch (\Throwable $e) {
+                ]);
 
-                $this->assertInstanceOf(FailedAuthenticationException::class, $e);
+            $response->assertRedirectToRoute('auth.login')
+                     ->assertSessionHasErrors(['message' => 'Your password or username is not correct.']);
 
-            }
+            $token = $this->withCsrfToken();
 
-            try {
+            $response = $this->post('/auth/login', $token +
+                [
+                    'log' => 'admin',
+                ]);
 
-                $response = $this->authenticator->attempt($this->request->withParsedBody([
-                    'log' => 'login'
-                ]), $this->next);
-                $this->fail('Auth did not fail as expected.');
-            }
-            catch (FailedAuthenticationException $e) {
+            $response->assertRedirectToRoute('auth.login')
+                     ->assertSessionHasErrors(['message' => 'Your password or username is not correct.']);
 
-                $this->assertInstanceOf(FailedAuthenticationException::class, $e);
+            $token = $this->withCsrfToken();
 
-            }
+            $response = $this->post('/auth/login', $token +
+                [
+                    'log' => '',
+                    'pwd' => '',
+                ]);
+
+            $response->assertRedirectToRoute('auth.login')
+                     ->assertSessionHasErrors(['message' => 'Your password or username is not correct.']);
 
 
         }
 
         /** @test */
-        public function a_non_resolvable_user_throws_an_exception () {
+        public function a_non_resolvable_user_throws_an_exception()
+        {
 
-            $GLOBALS['test']['failed_login'] = false;
+            $login_failed_fired = false;
+            add_action('wp_login_failed', function () use (&$login_failed_fired) {
 
-            add_action('wp_login_failed', function () {
-                $GLOBALS['test']['failed_login'] = true;
+                $login_failed_fired = true;
+
             });
 
-            $request = $this->request->withParsedBody([
-                'log' => 'calvin',
-                'pwd' => 'password'
-            ]);
+            $token = $this->withCsrfToken();
 
-            try {
+            $response = $this->post('/auth/login', $token +
+                [
+                    'log' => 'calvin',
+                    'pwd' => 'password',
+                ]
+            );
 
-                $this->authenticator->attempt($request, $this->next);
+            $response->assertRedirectToRoute('auth.login')
+                     ->assertSessionHasErrors(['message' => 'Your password or username is not correct.'])
+                     ->assertSessionHasInput(['log' => 'calvin']);
 
-
-                $this->fail('Auth did not fail as expected.');
-
-            } catch (FailedAuthenticationException $e ) {
-
-                $this->assertTrue( $GLOBALS['test']['failed_login']);
-
-            }
+            $this->assertTrue($login_failed_fired);
 
         }
 
         /** @test */
-        public function a_user_can_login_with_valid_credentials () {
+        public function a_user_can_login_with_valid_credentials()
+        {
 
-            $calvin = $this->newAdmin();
+            $this->withAddedConfig('auth.features.remember_me', 10);
 
-            $request = $this->request->withParsedBody([
-                'log' => $calvin->user_login,
-                'pwd' => 'password',
-                'remember_me' => '1'
-            ]);
+            $calvin = $this->createAdmin();
 
-            /** @var SuccessfulLoginResponse $response */
-            $response = $this->authenticator->attempt($request, $this->next);
 
-            $this->assertInstanceOf(SuccessfulLoginResponse::class, $response);
-            $this->assertSame($calvin->ID, $response->authenticatedUser()->ID );
-            $this->assertTrue($response->rememberUser());
+            $token = $this->withCsrfToken();
+
+            $response = $this->post('/auth/login', $token +
+                [
+                    'log' => $calvin->user_login,
+                    'pwd' => 'password',
+                    'remember_me' => '1',
+                ]
+            );
+
+            $response->assertRedirectToRoute('dashboard');
+            $this->assertAuthenticated($calvin);
+            $this->assertTrue($this->session->hasRememberMeToken());
+
 
         }
 
