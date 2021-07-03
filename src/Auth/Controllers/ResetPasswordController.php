@@ -34,6 +34,10 @@
 
         protected $min_strength = 3;
 
+        protected $min_length = 12;
+
+        protected $max_length = 64;
+
         public function __construct(string $success_message = null)
         {
 
@@ -43,13 +47,11 @@
 
         public function create(Request $request, MethodField $method_field)
         {
-
             return $this->response_factory->view('auth-layout', [
                 'view' => 'auth-password-reset',
                 'post_to' => $request->fullPath(),
                 'method_field' => $method_field->html('PUT')
             ])->withHeader('Referrer-Policy', 'strict-origin');
-
 
         }
 
@@ -60,16 +62,16 @@
 
             if ( ! $user instanceof WP_User ) {
 
-                return $this->redirectBackFailure($request);
+                return $this->redirectBackFailure();
 
             }
 
-            $rules = array_merge($this->rules, [
-                'password' => v::noWhitespace()->length(12, 64),
+            $rules = array_merge([
+                'password' => v::noWhitespace()->length($this->min_length, $this->max_length),
                 '*password_confirmation' => [
                     v::sameAs('password'), 'The provided passwords do not match',
                 ],
-            ]);
+            ], $this->rules);
 
             $validated = $request->validate($rules);
 
@@ -83,11 +85,11 @@
 
         }
 
-        private function redirectBackFailure(Request $request) : RedirectResponse
+        private function redirectBackFailure() : RedirectResponse
         {
 
             return $this->response_factory->redirect()
-                                          ->to($request->session()->getPreviousUrl(wp_login_url()))
+                                          ->refresh()
                                           ->withErrors(['failure' => 'We could not reset your password.']);
 
         }

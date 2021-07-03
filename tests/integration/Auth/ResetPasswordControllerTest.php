@@ -10,6 +10,7 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
+    use WPEmerge\Support\Url;
 
     class ResetPasswordControllerTest extends AuthTestCase
     {
@@ -24,7 +25,6 @@
 
             });
 
-
             parent::setUp();
 
         }
@@ -34,7 +34,8 @@
 
             $this->loadRoutes();
 
-            return TestApp::url()->signedRoute('auth.reset.password', ['query' => ['id' => $user_id]], 300, true );
+            return TestApp::url()
+                          ->signedRoute('auth.reset.password', ['query' => ['id' => $user_id]], 300, true);
 
         }
 
@@ -82,7 +83,7 @@
         }
 
         /** @test */
-        public function a_non_existing_user_id_cant_be_processed_and_will_delete_access_to_the_route_for_the_user()
+        public function a_non_existing_user_id_cant_be_processed()
         {
 
             $this->withoutExceptionHandling();
@@ -92,17 +93,7 @@
 
             $response = $this->put($url, $token);
 
-            //
-            // $this->newTestApp($this->config);
-            // $this->loadRoutes();
-            //
-            // $request = $this->postRequest(999, ['secret_csrf_name' => 'secret_csrf_value']);
-            //
-            // $this->assertOutput('', $request);
-            // HeaderStack::assertHas('Location', '/auth/login');
-            // HeaderStack::assertHasStatusCode(302);
-            //
-            // $this->assertNotEmpty(TestApp::session()->errors());
+            $response->assertRedirect()->assertSessionHasErrors();
 
         }
 
@@ -110,54 +101,44 @@
         public function passwords_must_be_at_least_12_characters()
         {
 
-            $this->newTestApp($this->config, true);
 
-            $this->loadRoutes();
-            $calvin = $this->newAdmin();
+            $calvin = $this->createAdmin();
+            $token = $this->withCsrfToken();
 
-            $request = $this->postRequest($calvin->ID, ['secret_csrf_name' => 'secret_csrf_value'], [
-                'password' => str_repeat('a', 11),
-                'password_confirmation' => str_repeat('a', 11),
-            ]);
+            $url = $this->routeUrl($calvin->ID);
 
-            TestApp::session()->setPreviousUrl($request->path());
+            $response = $this->put($url, $token +
+                [
+                    'password' => str_repeat('a', 11),
+                    'password_confirmation' => str_repeat('a', 11),
+                ]
+            );
 
-            $this->assertOutput('', $request);
-            HeaderStack::assertHas('Location', $request->path());
-            HeaderStack::assertHasStatusCode(302);
-
-            $errors = TestApp::session()->errors();
-
-            $this->assertTrue($errors->has('password'));
-            $this->assertStringContainsString('password must have a length between 12 and 64.', $errors->first('password'));
-
+            $response->assertRedirect()
+                     ->assertSessionHasErrors(['password' => 'password must have a length between 12 and 64.'])
+                     ->assertSessionDoesntHaveErrors('password_confirmation');
 
         }
 
         /** @test */
-        public function passwords_must_be_more_than_characters()
+        public function passwords_must_be_more_less_than_64_characters()
         {
 
-            $this->newTestApp($this->config, true);
+            $calvin = $this->createAdmin();
+            $token = $this->withCsrfToken();
 
-            $this->loadRoutes();
-            $calvin = $this->newAdmin();
+            $url = $this->routeUrl($calvin->ID);
 
-            $request = $this->postRequest($calvin->ID, ['secret_csrf_name' => 'secret_csrf_value'], [
-                'password' => str_repeat('a', 65),
-                'password_confirmation' => str_repeat('a', 65),
-            ]);
+            $response = $this->put($url, $token +
+                [
+                    'password' => str_repeat('a', 65),
+                    'password_confirmation' => str_repeat('a', 65),
+                ]
+            );
 
-            TestApp::session()->setPreviousUrl($request->path());
-
-            $this->assertOutput('', $request);
-            HeaderStack::assertHas('Location', $request->path());
-            HeaderStack::assertHasStatusCode(302);
-
-            $errors = TestApp::session()->errors();
-
-            $this->assertTrue($errors->has('password'));
-            $this->assertStringContainsString('password must have a length between 12 and 64.', $errors->first('password'));
+            $response->assertRedirect()
+                     ->assertSessionHasErrors(['password' => 'password must have a length between 12 and 64.'])
+                     ->assertSessionDoesntHaveErrors('password_confirmation');
 
 
         }
@@ -166,54 +147,46 @@
         public function passwords_must_be_identical()
         {
 
-            $this->newTestApp($this->config, true);
+            $calvin = $this->createAdmin();
+            $token = $this->withCsrfToken();
 
-            $this->loadRoutes();
-            $calvin = $this->newAdmin();
+            $url = $this->routeUrl($calvin->ID);
 
-            $request = $this->postRequest($calvin->ID, ['secret_csrf_name' => 'secret_csrf_value'], [
-                'password' => str_repeat('a', 12),
-                'password_confirmation' => str_repeat('a', 13),
-            ]);
+            $response = $this->put($url, $token +
+                [
+                    'password' => str_repeat('a', 12),
+                    'password_confirmation' => str_repeat('b', 12),
+                ]
+            );
 
-            TestApp::session()->setPreviousUrl($request->path());
+            $response->assertRedirect()
+                     ->assertSessionDoesntHaveErrors('password')
+                     ->assertSessionHasErrors(['password_confirmation' => 'password_confirmation must be equal to password.']);
 
-            $this->assertOutput('', $request);
-            HeaderStack::assertHas('Location', $request->path());
-            HeaderStack::assertHasStatusCode(302);
-
-            $errors = TestApp::session()->errors();
-
-            $this->assertTrue($errors->has('password_confirmation'));
-            $this->assertStringContainsString('password_confirmation must be equal to password.', $errors->first('password_confirmation'));
 
         }
 
         /** @test */
-        public function weak_passwords_throw_an_exception()
+        public function weak_passwords_are_not_possible()
         {
 
-            $this->newTestApp($this->config, true);
+            $calvin = $this->createAdmin();
+            $token = $this->withCsrfToken();
 
-            $this->loadRoutes();
-            $calvin = $this->newAdmin();
+            $url = $this->routeUrl($calvin->ID);
 
-            $request = $this->postRequest($calvin->ID, ['secret_csrf_name' => 'secret_csrf_value'], [
-                'password' => str_repeat('a', 12),
-                'password_confirmation' => str_repeat('a', 12),
-            ]);
+            $response = $this->put($url, $token +
+                [
+                    'password' => str_repeat('a', 12),
+                    'password_confirmation' => str_repeat('a', 12),
+                ]
+            );
 
-            TestApp::session()->setPreviousUrl($request->path());
-
-            $this->assertOutput('', $request);
-            HeaderStack::assertHas('Location', $request->path());
-            HeaderStack::assertHasStatusCode(302);
-
-            $errors = TestApp::session()->errors();
-
-            $this->assertTrue($errors->has('password'));
-            $this->assertTrue($errors->has('reason'));
-            $this->assertTrue($errors->has('suggestions'));
+            $response->assertRedirect()
+                     ->assertSessionDoesntHaveErrors('password_confirmation')
+                     ->assertSessionHasErrors('password')
+                     ->assertSessionHasErrors('reason')
+                     ->assertSessionHasErrors('suggestions');
 
         }
 
@@ -221,27 +194,30 @@
         public function a_password_can_be_reset()
         {
 
-            $this->newTestApp($this->config, true);
-
-            $this->loadRoutes();
-            $calvin = $this->newAdmin();
+            $calvin = $this->createAdmin();
             $old_pass = $calvin->user_pass;
+            $token = $this->withCsrfToken();
 
-            $request = $this->postRequest($calvin->ID, ['secret_csrf_name' => 'secret_csrf_value'], [
-                'password' => $pw = 'asdasdcvqwe23442as$asd21!',
-                'password_confirmation' => $pw,
-            ]);
+            $url = $this->routeUrl($calvin->ID);
 
-            $this->assertOutput('', $request);
-            HeaderStack::assertHas('Location', $request->path());
-            HeaderStack::assertHasStatusCode(302);
-            $this->assertTrue(TestApp::session()->get('_password_reset.success'));
+            $this->followingRedirects();
+            $response = $this->put($url, $token +
+                [
+                    'password' => $pw = 'asdasdcvqwe23442as$asd21!',
+                    'password_confirmation' => $pw,
+                ]
+            );
+
+            $response->assertOk()->assertSee(' You have successfully reset your password');
 
             $calvin = get_user_by('id', $calvin->ID);
             $new_pass = $calvin->user_pass;
 
             $this->assertNotSame($old_pass, $new_pass);
             $this->assertTrue(wp_check_password($pw, $new_pass));
+
+            // Dont log the user in automatically
+            $this->assertNotAuthenticated($calvin);
 
         }
 

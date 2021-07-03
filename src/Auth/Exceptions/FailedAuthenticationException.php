@@ -36,6 +36,7 @@
             $this->request = $request;
             $this->old_input = $old_input ?? $this->request->all();
             parent::__construct($message, $code, $previous);
+
         }
 
         public function redirectToRoute(string $route)

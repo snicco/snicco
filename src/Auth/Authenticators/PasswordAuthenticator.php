@@ -20,7 +20,7 @@
         public function attempt(Request $request, $next) : Response
         {
 
-            if ( ! $request->has('pwd') || ! $request->has('log') ) {
+            if ( ! $request->filled('pwd') || ! $request->filled('log') ) {
 
                 throw new FailedAuthenticationException($this->failure_message, $request, $request->only([
                     'pwd', 'log',

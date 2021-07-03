@@ -146,7 +146,7 @@
                 return false;
             }
 
-            return Carbon::now()->getTimestamp() > $expires;
+            return Carbon::now()->getTimestamp() > (int) $expires;
 
         }
 
