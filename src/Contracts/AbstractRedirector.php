@@ -158,7 +158,7 @@
 
         public function previous(Request $request, int $status = 302, string $fallback = '') : RedirectResponse
         {
-            throw new \LogicException('The Redirector::previous method can only be used when sessions are enabled in the config');
+           return $this->back($status, $fallback);
         }
 
         public function guest (string $path, $status = 302, array $query = [], bool $secure = true, bool $absolute = false ) {

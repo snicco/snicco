@@ -698,6 +698,42 @@
         }
 
         /**
+         * Assert that the session has the given errors.
+         *
+         * @param  string|array  $keys
+         * @param  string  $errorBag
+         * @param  mixed  $format
+         *
+         * @return $this
+         */
+        public function assertSessionHasErrors($keys = [], $errorBag = 'default', $format = null) : TestResponse
+        {
+
+            $this->assertSessionHas('errors');
+
+            $keys = (array) $keys;
+
+            $errors = $this->session()->get('errors')->getBag($errorBag);
+
+            foreach ($keys as $key => $value) {
+                if (is_int($key)) {
+
+                    PHPUnit::assertTrue($errors->has($value), "Session missing error: $value");
+
+                }
+                else {
+
+                    PHPUnit::assertContains(
+                        is_bool($value) ? (string) $value : $value,
+                        $errors->get($key, $format),
+                        "Message [$value] not found for key [$key].");
+                }
+            }
+
+            return $this;
+        }
+
+        /**
          * Assert that the session has a given value in the flashed input array.
          *
          * @param  string|array  $key
@@ -738,51 +774,15 @@
         }
 
         /**
-         * Assert that the session has the given errors.
-         *
-         * @param  string|array  $keys
-         * @param  mixed  $format
-         * @param  string  $errorBag
-         *
-         * @return $this
-         */
-        public function assertSessionHasErrors($keys = [], $format = null, $errorBag = 'default') : TestResponse
-        {
-
-            $this->assertSessionHas('errors');
-
-            $keys = (array) $keys;
-
-            $errors = $this->session()->get('errors')->getBag($errorBag);
-
-            foreach ($keys as $key => $value) {
-                if (is_int($key)) {
-
-                    PHPUnit::assertTrue($errors->has($value), "Session missing error: $value");
-
-                }
-                else {
-
-                    PHPUnit::assertContains(
-                        is_bool($value) ? (string) $value : $value,
-                        $errors->get($key, $format),
-                        "Message [$value] not found for key [$key].");
-                }
-            }
-
-            return $this;
-        }
-
-        /**
          * Assert that the session is missing the given errors.
          *
          * @param  string|array  $keys
-         * @param  string|null  $format
          * @param  string  $errorBag
+         * @param  string|null  $format
          *
          * @return $this
          */
-        public function assertSessionDoesntHaveErrors($keys = [], $format = null, $errorBag = 'default') : TestResponse
+        public function assertSessionDoesntHaveErrors($keys = [], $errorBag = 'default', $format = null,) : TestResponse
         {
 
             $keys = (array) $keys;

@@ -38,20 +38,26 @@
 
        }
 
-        public static function withMessages(array $messages) : ValidationException
+        public static function withMessages(array $messages, string $message_for_humans = 'We could not process your request.' , int $status = 400) : ValidationException
         {
             $bag = new MessageBag($messages);
-            $e = new static($messages);
+            $e = new static($messages,$message_for_humans, $status);
             $e->setMessageBag($bag);
 
             return $e;
 
         }
 
+        public function setMessageBagName(string $name = 'default') {
+            $this->message_bag_name = $name;
+            return $this;
+        }
+
         public function setMessageBag(MessageBag $message_bag, string $name = 'default') {
 
             $this->messages = $message_bag;
             $this->message_bag_name = $name;
+            return $this;
 
        }
 

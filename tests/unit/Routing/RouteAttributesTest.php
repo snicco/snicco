@@ -525,16 +525,16 @@
             $request = $this->webRequest('GET', '/foo');
             $this->runAndAssertOutput('', $request);
 
-              $request = $this->webRequest('GET', '/bar');
+            $request = $this->webRequest('GET', '/bar');
             $this->runAndAssertOutput('', $request);
-
 
             $this->assertSame(2, $GLOBALS['test'][GlobalMiddleware::run_times]);
 
         }
 
         /** @test */
-        public function a_no_action_group_can_be_overwritten () {
+        public function a_no_action_group_can_be_overwritten()
+        {
 
             $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
 
@@ -548,8 +548,7 @@
 
                     });
 
-                     $this->router->get('bar')->middleware(GlobalMiddleware::class);
-
+                    $this->router->get('bar')->middleware(GlobalMiddleware::class);
 
 
                 });
@@ -571,6 +570,54 @@
 
         }
 
+        /** @test */
+        public function a_route_for_the_same_method_and_url_cant_be_added_twice_and_wont_throw_an_exception()
+        {
+
+            $this->createRoutes(function () {
+
+                $this->router->get('/foo', function () {
+
+                    return 'foo1';
+                });
+
+                $this->router->get('/foo', function () {
+
+                    return 'foo2';
+                });
+
+
+            });
+
+            $request = $this->webRequest('GET', '/foo');
+            $this->runAndAssertOutput('foo1', $request);
+
+        }
+
+        /** @test */
+        public function a_route_with_the_same_name_cant_be_added_twice_even_if_urls_are_different () {
+
+            $this->createRoutes(function () {
+
+                $this->router->get('/foo', function () {
+
+                    return 'foo';
+                })->name('route1');
+
+                $this->router->get('/bar', function () {
+
+                    return 'bar';
+                })->name('route1');
+
+
+            });
+
+            $url = $this->newUrlGenerator()->toRoute('route1');
+
+            $request = $this->webRequest('GET', $url);
+            $this->runAndAssertOutput('foo', $request);
+
+        }
 
     }
 

@@ -8,6 +8,7 @@
 
     use Contracts\ContainerAdapter;
     use Exception;
+    use Respect\Validation\Validator as v;
     use Tests\helpers\AssertsResponse;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateRouteCollection;
@@ -17,7 +18,11 @@
     use Tests\stubs\TestException;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\ExceptionHandling\Exceptions\HttpException;
+    use WPEmerge\Session\Drivers\ArraySessionDriver;
+    use WPEmerge\Session\Session;
+    use WPEmerge\Session\StatefulRedirector;
     use WPEmerge\Support\WP;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Events\UnrecoverableExceptionHandled;
@@ -68,7 +73,6 @@
 
         }
 
-
         /** @test */
         public function inside_the_routing_flow_the_exceptions_get_transformed_into_response_objects()
         {
@@ -105,7 +109,7 @@
         public function the_response_will_be_sent_as_json_if_the_request_expects_json()
         {
 
-            $handler = $this->newErrorHandler(true);
+            $handler = $this->newErrorHandler();
 
             $request = $this->request->withAddedHeader('Accept', 'application/json');
 

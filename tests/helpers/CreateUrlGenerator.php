@@ -29,7 +29,7 @@
 
             $this->routes = $routes;
 
-            if (! isset($this->routes ) ) {
+            if (!isset($this->routes ) ) {
                 $this->routes = $routes;
             }
 

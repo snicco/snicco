@@ -49,7 +49,6 @@
 
             $this->routes = $this->newRouteCollection();
 
-
             $this->router = $this->newRouter($force_trailing);
 
             $routes();
