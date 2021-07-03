@@ -55,6 +55,20 @@
             parent::tearDown();
         }
 
+        protected function without2Fa()
+        {
 
+            $this->withReplacedConfig('auth.features.2fa', false);
+
+            return $this;
+        }
+
+        protected function with2Fa()
+        {
+
+            $this->withReplacedConfig('auth.features.2fa', true);
+
+            return $this;
+        }
 
     }

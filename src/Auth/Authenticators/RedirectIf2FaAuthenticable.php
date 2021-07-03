@@ -20,7 +20,6 @@
 
         use ResolveTwoFactorSecrets;
 
-
         /**
          * @var TwoFactorChallengeResponse
          */
@@ -28,6 +27,7 @@
 
         public function __construct(TwoFactorChallengeResponse $response)
         {
+
             $this->challenge_response = $response;
         }
 
@@ -36,13 +36,13 @@
 
             $response = $next($request);
 
-            if ( ! $response instanceof SuccessfulLoginResponse ) {
+            if ( ! $response instanceof SuccessfulLoginResponse) {
 
                 return $response;
 
             }
 
-            if ( ! $this->userHasTwoFactorEnabled( $user = $response->authenticatedUser() ) ) {
+            if ( ! $this->userHasTwoFactorEnabled($user = $response->authenticatedUser())) {
 
                 return $response;
 
@@ -50,10 +50,11 @@
 
             $this->challengeUser($request, $user);
 
-            return $this->challenge_response->setRequest($request)->toResponsable();
+            return $this->response_factory->toResponse(
+                $this->challenge_response->setRequest($request)->toResponsable()
+            );
 
         }
-
 
 
         private function challengeUser(Request $request, WP_User $user) : void

@@ -32,7 +32,7 @@
             $this->magic_link = $magic_link;
         }
 
-        public function attempt(Request $request, $next) : Response
+        public function attempt(Request $request, $next)
         {
 
             $valid = $this->magic_link->hasValidSignature($request, true );

@@ -34,7 +34,6 @@
             parent::setUp();
         }
 
-
         /** @test */
         public function missing_password_or_login_fails()
         {
