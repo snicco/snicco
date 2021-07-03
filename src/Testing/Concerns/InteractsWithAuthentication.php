@@ -9,11 +9,16 @@
     use PHPUnit\Framework\Assert as PHPUnit;
     use WP_User;
 
+    use WPEmerge\Session\Session;
+
     use function wp_delete_user;
     use function wp_get_current_user;
     use function wp_logout;
     use function wp_set_current_user;
 
+    /**
+     * @property Session $session
+     */
     trait InteractsWithAuthentication
     {
 
@@ -42,7 +47,9 @@
             }
 
             wp_set_current_user($user->ID);
-
+            $this->session->confirmAuthUntil($this->config->get('auth.confirmation.duration', 10 ));
+            $this->session->setLastActivity(time());
+            $this->withSessionCookie();
 
         }
 

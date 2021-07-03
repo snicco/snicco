@@ -57,26 +57,27 @@
            ->name('confirm.magic-link');
 
     // 2FA
-    if ($config->get('auth.features.two-factor-authentication')) {
+    if ($config->get('auth.features.2fa')) {
 
         $router->post('two-factor/preferences', [TwoFactorAuthPreferenceController::class, 'store'])
                ->middleware(['auth', 'auth.confirmed'])
                ->name('two-factor.preferences');
 
-        $router->delete('two-factor/preferences', [
-            TwoFactorAuthPreferenceController::class, 'destroy',
-        ])
+        $router->delete('two-factor/preferences', [TwoFactorAuthPreferenceController::class, 'destroy',])
                ->middleware(['auth', 'auth.confirmed']);
 
         $router->get('two-factor/challenge', [TwoFactorAuthSessionController::class, 'create'])
                ->name('2fa.challenge');
 
-        $router->get('two-factor/recovery-codes', [RecoveryCodeController::class, 'index'])
-               ->middleware(['auth', 'auth.confirmed', 'signed'])
-               ->name('2fa.recovery-codes');
+        // recovery codes.
+        $router->name('2fa.recovery-codes')->middleware(['auth', 'auth.confirmed'])->group(function (Router $router) {
 
-        $router->post('two-factor/recovery-codes', [RecoveryCodeController::class, 'update'])
-               ->middleware(['auth', 'auth.confirmed', 'csrf:persist']);
+            $router->get('two-factor/recovery-codes', [RecoveryCodeController::class, 'index']);
+            $router->put('two-factor/recovery-codes', [RecoveryCodeController::class, 'update'])->middleware('csrf:persist');
+
+
+        });
+
 
     }
 

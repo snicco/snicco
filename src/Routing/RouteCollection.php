@@ -110,6 +110,11 @@
                 return false;
             }
 
+            /**
+             * @todo prevent to routes with the same route name being added to allow easy overwriting of inbuilt routes.
+             */
+
+
             return in_array($route->getUrl(), $this->already_added[$method] );
 
         }

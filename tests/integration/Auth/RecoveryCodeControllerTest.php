@@ -7,6 +7,7 @@
     namespace Tests\integration\Auth;
 
     use Illuminate\Support\Collection;
+    use Tests\AuthTestCase;
     use Tests\helpers\HashesSessionIds;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
     use Tests\IntegrationTest;
@@ -15,46 +16,14 @@
     use Tests\stubs\TestRequest;
     use WPEmerge\Auth\AuthServiceProvider;
     use WPEmerge\Auth\RecoveryCode;
+    use WPEmerge\Auth\Traits\GeneratesRecoveryCodes;
     use WPEmerge\Contracts\EncryptorInterface;
+    use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\Encryptor;
     use WPEmerge\Session\SessionServiceProvider;
 
-    class RecoveryCodeControllerTest extends IntegrationTest
+    class RecoveryCodeControllerTest extends AuthTestCase
     {
-
-        use InteractsWithWordpress;
-        use HashesSessionIds;
-
-        private $config = [
-            'session' => [
-                'enabled' => true,
-                'driver' => 'array',
-                'lifetime' => 3600,
-            ],
-            'providers' => [
-                SessionServiceProvider::class,
-                AuthServiceProvider::class,
-            ],
-            'auth' => [
-
-                'confirmation' => [
-                    'duration' => 10,
-                ],
-
-                'remember' => [
-                    'enabled' => false,
-                ],
-                'features' => [
-                    'two-factor-authentication' => true,
-                ],
-            ],
-            'app_key' => TEST_APP_KEY,
-        ];
-
-        /**
-         * @var string
-         */
-        private $encrypted_codes;
 
         /**
          * @var array
@@ -62,79 +31,135 @@
         private $codes;
 
         /**
-         * @var string
-         */
-        private $route_url;
-
-        /**
          * @var Encryptor
          */
         private $encryptor;
 
-
-        protected function afterSetup()
+        protected function setUp() : void
         {
+            $this->afterLoadingConfig(function () {
 
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
+                $this->with2Fa();
+            });
+            $this->afterApplicationCreated(function () {
 
-            $this->codes = Collection::times(8, function () {
+                $this->codes = $this->createCodes();
+                $this->encryptor = $this->app->resolve(EncryptorInterface::class);
+            });
+
+            parent::setUp();
+        }
+
+        private function without2Fa()
+        {
+            $this->withReplacedConfig('auth.features.2fa', false);
+            return $this;
+        }
+
+        private function with2Fa() {
+            $this->withReplacedConfig('auth.features.2fa', true);
+            return $this;
+        }
+
+        private function createCodes() :array  {
+
+            return Collection::times(8, function () {
 
                 return RecoveryCode::generate();
 
             })->all();
-            $this->encryptor = TestApp::resolve(EncryptorInterface::class);
-            $this->encrypted_codes = $this->encryptor->encrypt(json_encode($this->codes));
-            $this->route_url = TestApp::url()->signedRoute('auth.2fa.recovery-codes');
 
         }
 
-        // /** @test */
+        private function encryptCodes (array $codes) :string {
+
+            return $this->encryptor->encrypt(json_encode($codes));
+
+        }
+
+        private function routePath () {
+            $this->loadRoutes();
+            return $this->app->resolve(UrlGenerator::class)->toRoute('auth.2fa.recovery-codes');
+        }
+
+        /** @test */
+        public function the_endpoint_cant_be_accessed_if_2fa_is_disabled () {
+
+            $this->without2Fa();
+
+            $this->actingAs($calvin = $this->createAdmin());
+
+            $response = $this->get('/auth/two-factor/recovery-codes');
+            $response->assertNullResponse();
+
+        }
+
+        /** @test */
+        public function the_endpoint_cant_be_accessed_if_the_user_is_not_authenticated () {
+
+            $response = $this->get($this->routePath());
+            $response->assertRedirectPath('/auth/login', 302);
+
+        }
+
+        /** @test */
+        public function the_endpoint_cant_be_accessed_if_the_auth_confirmation_expired () {
+
+            $this->actingAs($calvin = $this->createAdmin());
+
+            // confirmation duration is 10 seconds in the test config
+            $this->travelIntoFuture(10);
+
+            $response = $this->get($this->routePath());
+            $response->assertRedirectToRoute('auth.confirm');
+
+        }
+
+        /** @test */
         public function all_recovery_codes_can_be_shown_for_a_user()
         {
 
-            $calvin = $this->newAdmin();
-            $this->login($calvin);
+            $this->actingAs($calvin = $this->createAdmin());
 
-            update_user_meta($calvin->ID, 'two_factor_recovery_codes', $this->encrypted_codes);
+            update_user_meta($calvin->ID, 'two_factor_recovery_codes', $this->encryptCodes($this->codes));
             update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
 
-            $request = TestRequest::from('GET', $this->route_url);
-            $request = $this->withSession($request, [
-                '_last_activity' => time(), 'auth.confirm.until' => time() + 10,
-            ]);
+            $response = $this->getJson($this->routePath());
 
-            $output = $this->runKernel($request);
-            HeaderStack::assertHasStatusCode(200);
-            $this->assertSame($this->codes, json_decode($output, true)['codes']);
+            $response->assertExactJson(['success' => true, 'codes'=> $this->codes] );
+
 
         }
 
-        // /** @test */
+        /** @test */
+        public function recovery_codes_cant_be_retrieved_if_not_enabled_for_the_current_user () {
+
+            $calvin = $this->createAdmin();
+            $john = $this->createAdmin();
+            update_user_meta($calvin->ID, 'two_factor_recovery_codes', $this->encryptCodes($this->codes));
+            update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
+
+            $this->actingAs($john);
+
+            $response = $this->getJson($this->routePath());
+
+            $response->assertExactJson(['success' => false, 'message'=> 'Two factor authentication not enabled.'] );
+
+        }
+
+        /** @test */
         public function recovery_codes_can_be_updated_for_a_user()
         {
 
-            $calvin = $this->newAdmin();
-            $this->login($calvin);
+            $token = $this->withCsrfToken();
+            $calvin = $this->createAdmin();
+            $this->actingAs($calvin);
 
-            update_user_meta($calvin->ID, 'two_factor_recovery_codes', $this->encrypted_codes);
+            update_user_meta($calvin->ID, 'two_factor_recovery_codes', $this->encryptCodes($this->codes));
             update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
 
-            $request = TestRequest::from('PUT', $this->route_url)->withParsedBody([
-                'csrf_name' => 'secret_csrf_name',
-                'csrf_value' => 'secret_csrf_value',
-            ]);
-            $request = $this->withSession($request,
-                [
-                    '_last_activity' => time(),
-                    'auth.confirm.until' => time() + 10,
-                    'csrf.secret_csrf_name' => 'secret_csrf_value',
-                ]
-            )->withHeader('Accept', 'application/json');
-
-            $output = $this->runKernel($request);
-            HeaderStack::assertHasStatusCode(200);
-            $this->assertTrue(json_decode($output, true)['success']);
+            $response = $this->put($this->routePath(), $token, ['Accept' => 'application/json']);
+            $response->assertOk()->assertExactJson(['success' => true, 'message' => 'Recovery codes updated.']);
 
             $codes = get_user_meta($calvin->ID, 'two_factor_recovery_codes',true);
             $codes = json_decode($this->encryptor->decrypt($codes), true);
@@ -143,5 +168,39 @@
 
         }
 
+        /** @test */
+        public function the_csrf_token_is_not_cleared_so_that_no_page_refresh_is_required_for_a_new_action () {
+
+            $token = $this->withCsrfToken();
+            $calvin = $this->createAdmin();
+            $this->actingAs($calvin);
+            update_user_meta($calvin->ID, 'two_factor_recovery_codes', $this->encryptCodes($this->codes));
+            update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
+
+            $response1 = $this->put($this->routePath(), $token, ['Accept' => 'application/json']);
+            $response1->assertOk();
+
+            $response2 = $this->put($this->routePath(), $token, ['Accept' => 'application/json']);
+            $response2->assertOk();
+
+
+        }
+
+        /** @test */
+        public function recovery_codes_cant_be_updated_if_not_enabled_for_the_current_user () {
+
+            $calvin = $this->createAdmin();
+            $john = $this->createAdmin();
+            update_user_meta($calvin->ID, 'two_factor_recovery_codes', $this->encryptCodes($this->codes));
+            update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
+
+            $token = $this->withCsrfToken();
+            $this->actingAs($john);
+
+            $response = $this->put($this->routePath(), $token, ['Accept' => 'application/json']);
+
+            $response->assertExactJson(['success' => false, 'message'=> 'Two factor authentication not enabled.'] );
+
+        }
 
     }
