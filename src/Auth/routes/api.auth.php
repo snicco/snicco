@@ -72,7 +72,7 @@
                ->middleware(['auth', 'auth.confirmed', 'signed'])
                ->name('2fa.recovery-codes');
 
-        $router->put('two-factor/recovery-codes', [RecoveryCodeController::class, 'update'])
+        $router->post('two-factor/recovery-codes', [RecoveryCodeController::class, 'update'])
                ->middleware(['auth', 'auth.confirmed', 'csrf:persist']);
 
     }
@@ -81,23 +81,21 @@
     if ($config->get('auth.features.password-resets'))
     {
 
+        // forgot-password
         $router->get('/forgot-password', [ForgotPasswordController::class, 'create'])
-               ->middleware('guest')
-               ->name('forgot.password');
+               ->middleware('guest');
 
         $router->post('/forgot-password', [ForgotPasswordController::class, 'store'])
-               ->middleware(['csrf', 'guest'])
-               ->name('forgot.password');
+               ->middleware(['csrf', 'guest']);
 
         // reset-password
         $router->get('/reset-password', [ResetPasswordController::class, 'create'])
                ->middleware('signed:absolute')
-               ->name('reset.password')
-               ->andNumber('user_id');
-
-        $router->post('/reset-password', [ResetPasswordController::class, 'update'])
-               ->middleware(['csrf', 'signed:absolute'])
                ->name('reset.password');
+
+        $router->put('/reset-password', [ResetPasswordController::class, 'update'])
+               ->middleware(['csrf', 'signed:absolute']);
+
     }
 
     // registration

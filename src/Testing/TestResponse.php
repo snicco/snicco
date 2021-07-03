@@ -90,7 +90,7 @@
 
         public function assertNullResponse() : TestResponse
         {
-            PHPUnit::assertInstanceOf(NullResponse::class, $this->psr_response);
+            PHPUnit::assertInstanceOf(NullResponse::class, $this->psr_response, "A response was returned unexpectedly.");
             return $this;
         }
 

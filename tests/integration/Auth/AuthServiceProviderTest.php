@@ -50,12 +50,12 @@
         protected $defer_boot = true;
 
         /** @test */
-        public function the_config_is_bound()
+        public function the_config_is_extended()
         {
 
             $this->boot();
 
-            $this->assertSame(3600 * 3, TestApp::config('auth.confirmation.duration'));
+            $this->assertSame(10, TestApp::config('auth.confirmation.duration'));
             $this->assertSame(1800, TestApp::config('auth.idle'));
             $this->assertSame('auth', TestApp::config('auth.endpoint'));
             $this->assertArrayHasKey('auth', TestApp::config('routing.api.endpoints'));
