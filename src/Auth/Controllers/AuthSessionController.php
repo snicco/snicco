@@ -9,7 +9,6 @@
     use Closure;
     use WP_User;
     use WPEmerge\Auth\Events\Login;
-    use WPEmerge\Auth\Events\Logout;
     use WPEmerge\Auth\Contracts\LoginResponse;
     use WPEmerge\Auth\Responses\LogoutResponse;
     use WPEmerge\Auth\Responses\SuccessfulLoginResponse;
@@ -21,7 +20,6 @@
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
@@ -114,6 +112,8 @@
             $session->put('auth.has_remember_token', $remember);
             $session->confirmAuthUntil(Arr::get($this->auth_config, 'confirmation.duration', 0));
             $session->regenerate();
+            wp_set_auth_cookie($user->ID, $remember, true);
+            wp_set_current_user($user->ID);
 
             Login::dispatch([$user, $remember]);
 
@@ -125,7 +125,6 @@
             }
 
             return $login_response->forRequest($request)->forUser($user);
-
 
         }
 

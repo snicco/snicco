@@ -8,6 +8,7 @@
 
     use Carbon\Carbon;
     use Closure;
+    use Tests\unit\View\MethodField;
     use WP_User;
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Http\Controller;
@@ -40,17 +41,14 @@
 
         }
 
-        public function create(Request $request, CsrfField $csrf_field)
+        public function create(Request $request, MethodField $method_field)
         {
 
-            $response = $this->response_factory->view('auth-layout', [
+            return $this->response_factory->view('auth-layout', [
                 'view' => 'auth-password-reset',
-                'view_factory' => $this->view_factory,
                 'post_to' => $request->fullPath(),
-                'csrf_field' => $csrf_field->asHtml(),
+                'method_field' => $method_field->html('PUT')
             ])->withHeader('Referrer-Policy', 'strict-origin');
-
-            return $response;
 
 
         }
@@ -60,7 +58,7 @@
 
             $user = $this->getUser($request);
 
-            if ( ! $user instanceof WP_User) {
+            if ( ! $user instanceof WP_User ) {
 
                 return $this->redirectBackFailure($request);
 

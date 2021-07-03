@@ -6,123 +6,103 @@
 
     namespace Tests\integration\Auth;
 
-    use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\IntegrationTest;
+    use Tests\AuthTestCase;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
-    use Tests\stubs\TestRequest;
-    use WPEmerge\Auth\AuthServiceProvider;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\SessionServiceProvider;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Validation\ValidationServiceProvider;
 
-    class ResetPasswordControllerTest extends IntegrationTest
+    class ResetPasswordControllerTest extends AuthTestCase
     {
 
-        use InteractsWithWordpress;
 
-        protected $config = [
-            'app_key' => TEST_APP_KEY,
-            'session' => [
-                'enabled' => true,
-                'driver' => 'array',
-            ],
-            'providers' => [
-                SessionServiceProvider::class,
-                AuthServiceProvider::class,
-                ValidationServiceProvider::class,
-            ],
-            'auth' => [
-                'features' => [
-                    'password-resets' => true
-                ]
-            ]
-        ];
-
-        private function postRequest(int $user_id, array $csrf, array $payload = [])
+        protected function setUp() : void
         {
 
-            $url = TestApp::url()
-                          ->signedRoute('auth.reset.password', ['query' => ['id' => $user_id]], 300, true);
+            $this->afterLoadingConfig(function () {
 
-            $request = TestRequest::fromFullUrl('POST', $url);
+                $this->withAddedConfig('auth.features.password-resets', true);
 
-            TestApp::session()->put('csrf', $csrf);
+            });
 
-            TestApp::container()->instance(Request::class, $request);
 
-            return $request->withParsedBody([
-                    'csrf_name' => Arr::firstKey($csrf),
-                    'csrf_value' => Arr::firstEl($csrf),
-                ] + $payload);
+            parent::setUp();
 
         }
 
-        private function getRequest(int $user_id) : TestRequest
+        private function routeUrl(int $user_id)
         {
 
-            $url = TestApp::url()
-                          ->signedRoute('auth.reset.password', ['query' => ['id' => $user_id]], 300, true);
+            $this->loadRoutes();
 
-            $request = TestRequest::fromFullUrl('GET', $url);
-
-            TestApp::container()->instance(Request::class, $request);
-
-            return $request;
+            return TestApp::url()->signedRoute('auth.reset.password', ['query' => ['id' => $user_id]], 300, true );
 
         }
 
         /** @test */
-        public function the_reset_password_view_can_be_rendered()
+        public function the_endpoint_is_not_accessible_when_disabled_in_the_config()
         {
 
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
-            $calvin = $this->newAdmin();
+            $this->withOutConfig('auth.features.password-resets');
 
-            $output = $this->runKernel($request = $this->getRequest($calvin->ID));
+            $url = '/auth/reset-password';
 
-            $this->assertStringContainsString('Update password', $output, 'Text [update password] not found in the view.');
-            $this->assertStringContainsString($request->path(), $output, 'Post url not found in the view.');
+            $this->get($url)->assertNullResponse();
 
         }
 
         /** @test */
-        public function its_not_possible_to_tamper_with_the_id_of_the_signature_on_the_post_request()
+        public function the_reset_password_view_can_be_rendered_with_a_valid_signature()
         {
 
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
-            $calvin = $this->newAdmin();
+            $calvin = $this->createAdmin();
 
-            $request = $this->postRequest($calvin->ID, ['secret_csrf_name' => 'secret_csrf_value']);
-
-            $uri = $request->getUri();
-            $tampered_query = str_replace(strval($calvin->ID), '2', $uri->getQuery());
-            $new = $uri->withQuery($tampered_query);
-
-            $this->expectException(InvalidSignatureException::class);
-            $this->runKernel($request->withUri($new));
+            $response = $this->get($this->routeUrl($calvin->ID));
+            $response->assertOk();
+            $response->assertSee('Update password');
+            $response->assertIsHtml();
+            $response->assertSeeHtml(['/auth/reset-password', '_method_overwrite', "value='PUT'"]);
 
 
         }
 
         /** @test */
-        public function a_non_existing_user_id_cant_be_processed()
+        public function its_not_possible_to_tamper_with_the_id_of_the_signature_on_the_update_request()
         {
 
-            $this->newTestApp($this->config);
-            $this->loadRoutes();
 
-            $request = $this->postRequest(999, ['secret_csrf_name' => 'secret_csrf_value']);
+            $token = $this->withCsrfToken();
+            $calvin = $this->createAdmin();
 
-            $this->assertOutput('', $request);
-            HeaderStack::assertHas('Location', '/auth/login');
-            HeaderStack::assertHasStatusCode(302);
+            $valid_url = $this->routeUrl($calvin->ID);
+            $tampered_url = str_replace("id=$calvin->ID", "id=1", $valid_url);
 
-            $this->assertNotEmpty(TestApp::session()->errors());
+            $this->put($tampered_url, $token)->assertForbidden();
+
+
+        }
+
+        /** @test */
+        public function a_non_existing_user_id_cant_be_processed_and_will_delete_access_to_the_route_for_the_user()
+        {
+
+            $this->withoutExceptionHandling();
+
+            $token = $this->withCsrfToken();
+            $url = $this->routeUrl(999);
+
+            $response = $this->put($url, $token);
+
+            //
+            // $this->newTestApp($this->config);
+            // $this->loadRoutes();
+            //
+            // $request = $this->postRequest(999, ['secret_csrf_name' => 'secret_csrf_value']);
+            //
+            // $this->assertOutput('', $request);
+            // HeaderStack::assertHas('Location', '/auth/login');
+            // HeaderStack::assertHasStatusCode(302);
+            //
+            // $this->assertNotEmpty(TestApp::session()->errors());
 
         }
 
@@ -183,7 +163,8 @@
         }
 
         /** @test */
-        public function passwords_must_be_identical () {
+        public function passwords_must_be_identical()
+        {
 
             $this->newTestApp($this->config, true);
 
@@ -209,7 +190,8 @@
         }
 
         /** @test */
-        public function weak_passwords_throw_an_exception () {
+        public function weak_passwords_throw_an_exception()
+        {
 
             $this->newTestApp($this->config, true);
 
@@ -236,7 +218,8 @@
         }
 
         /** @test */
-        public function a_password_can_be_reset () {
+        public function a_password_can_be_reset()
+        {
 
             $this->newTestApp($this->config, true);
 
@@ -261,7 +244,6 @@
             $this->assertTrue(wp_check_password($pw, $new_pass));
 
         }
-
 
 
     }

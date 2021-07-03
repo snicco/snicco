@@ -116,6 +116,40 @@
         }
 
         /** @test */
+        public function login_events_are_dispatched_correctly()
+        {
+
+            $calvin = $this->createAdmin();
+            $this->assertNotAuthenticated($calvin);
+
+            $login_fired = false;
+            add_action('wp_login', function ($user, $id) use (&$login_fired, $calvin) {
+
+                $login_fired = true;
+                $this->assertSame($user->ID, $calvin->ID);
+                $this->assertSame($id, $calvin->ID);
+
+            }, 10, 2);
+
+            $auth_cookies_sent = false;
+            add_action('set_auth_cookie', function () use (&$auth_cookies_sent) {
+
+                $auth_cookies_sent = true;
+
+            }, 10, 5 );
+
+            $this->postToLogin([
+                'pwd' => 'password',
+                'log' => $calvin->user_login,
+            ]);
+
+            $this->assertTrue($login_fired);
+            $this->assertTrue($auth_cookies_sent, 'The WP auth cookies were not sent.');
+
+
+        }
+
+        /** @test */
         public function an_exception_response_is_returned_if_one_authenticator_throwns_an_exception()
         {
 
@@ -234,7 +268,7 @@
             $this->withReplacedConfig('auth.through', [
                 CustomAuthenticator::class,
                 PasswordAuthenticator::class,
-            ]) ;
+            ]);
 
             // Authenticate by custom authenticator
             $this->postToLogin([
@@ -248,7 +282,6 @@
             $this->logout($calvin);
             $this->assertNotAuthenticated($calvin);
 
-
             // Auth will fail for both authenticators
             $response = $this->postToLogin([
                 'pwd' => 'bogus',
@@ -258,7 +291,6 @@
 
             $response->assertSessionHasErrors();
             $this->assertNotAuthenticated($calvin);
-
 
             $response = $this->postToLogin([
                 'pwd' => 'password',
@@ -271,7 +303,6 @@
 
             $this->logout($calvin);
             $this->assertNotAuthenticated($calvin);
-
 
 
         }
@@ -291,7 +322,7 @@
 
                 $user = $this->getUserById($request->input('allow_login_for_id'));
 
-                if ( $user instanceof \WP_User ) {
+                if ($user instanceof \WP_User) {
 
                     return $this->login($user, false);
 

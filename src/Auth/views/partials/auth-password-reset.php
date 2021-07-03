@@ -23,13 +23,14 @@
 <?php else : ?>
     <form id="reset-password" method="POST" action="<?= esc_attr($post_to) ?>" class="box">
 
+        <?= $method_field ?>
         <?php if ($errors->count()): ?>
 
             <div class="notification is-danger is-light">
-                <?= $errors->first('password') ?>
+                <?= esc_html($errors->first('password')) ?>
                 <?php if ($errors->has('reason')) : ?>
                     <br>
-                    Reason: <?= $errors->first('reason') ?>
+                    Reason: <?= esc_html($errors->first('reason')) ?>
                 <?php endif; ?>
             </div>
 

@@ -14,6 +14,7 @@
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Validation\ValidationServiceProvider;
 
+
     class AuthTestCase extends TestCase
     {
 
@@ -53,5 +54,7 @@
             $this->logout();
             parent::tearDown();
         }
+
+
 
     }
