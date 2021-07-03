@@ -619,7 +619,7 @@
 
         public function challengedUser() : int
         {
-            return $this->get('2fa.challenged_user', 0);
+            return $this->get('auth.2fa.challenged_user', 0);
         }
 
 

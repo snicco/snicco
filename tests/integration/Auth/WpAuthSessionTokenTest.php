@@ -19,10 +19,6 @@
     class WpAuthSessionTokenTest extends AuthTestCase
     {
 
-        /**
-         * @var ArraySessionDriver
-         */
-        private $driver;
 
         /** @var WP_User */
         private $user;
@@ -34,7 +30,6 @@
                 $user = $this->createAdmin();
                 $this->actingAs($user);
                 $this->user = $user;
-                $this->driver = $this->sessionDriver();
                 $this->session_manager = TestApp::resolve(SessionManagerInterface::class);
 
             });

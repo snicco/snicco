@@ -224,7 +224,6 @@
             $g = $this->newUrlGenerator($this->app_key);
             $url = $g->signed('/foo');
 
-
             $this->assertTrue($this->magic_link->hasValidSignature(TestRequest::from('GET', $url )));
 
         }

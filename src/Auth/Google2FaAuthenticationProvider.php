@@ -51,7 +51,7 @@
             return $this->engine->getQRCodeUrl($company_name, $user_identifier, $secret);
         }
 
-        public function verify(string $secret, string $code) :bool
+        public function verifyOneTimeCode(string $secret, string $code) :bool
         {
             return $this->engine->verifyKey($secret, $code);
         }

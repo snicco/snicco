@@ -25,18 +25,23 @@
 		 */
 		public static $instance = NULL;
 
-		/**
-		 * Make and assign a new application instance.
-		 *
-		 * @param  string|\Contracts\ContainerAdapter  $containerAdapter  ::class or default
-		 *
-		 * @return Application
-		 */
-		public static function make( string $base_path, ContainerAdapter $container = null ) {
+        /**
+         * Make and assign a new application instance.
+         *
+         * @param  string  $base_path
+         * @param  ContainerAdapter|null  $container
+         *
+         * @return Application
+         */
+		public static function make( string $base_path, ContainerAdapter $container = null ) : Application
+        {
 
 			static::setApplication(Application::create($base_path,  $container ?? new BaseContainerAdapter() ) );
 
-			return static::getApplication();
+			$app = static::getApplication();
+			$app->container()->instance(ApplicationTrait::class, static::class);
+
+			return $app;
 
 		}
 

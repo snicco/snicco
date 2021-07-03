@@ -58,7 +58,15 @@
 
         public function queryString() :string {
 
-            return $this->getUri()->getQuery();
+            $qs = $this->getUri()->getQuery();
+
+            while (Str::endsWith($qs, ['&', '='] ) ) {
+
+                $qs = mb_substr($qs, 0, -1);
+
+            }
+
+            return $qs;
 
         }
 

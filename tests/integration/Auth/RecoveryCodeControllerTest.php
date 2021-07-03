@@ -25,15 +25,7 @@
     class RecoveryCodeControllerTest extends AuthTestCase
     {
 
-        /**
-         * @var array
-         */
-        private $codes;
 
-        /**
-         * @var Encryptor
-         */
-        private $encryptor;
 
         protected function setUp() : void
         {
@@ -49,24 +41,6 @@
             });
 
             parent::setUp();
-        }
-
-        private function createCodes() : array
-        {
-
-            return Collection::times(8, function () {
-
-                return RecoveryCode::generate();
-
-            })->all();
-
-        }
-
-        private function encryptCodes(array $codes) : string
-        {
-
-            return $this->encryptor->encrypt(json_encode($codes));
-
         }
 
         private function routePath()
