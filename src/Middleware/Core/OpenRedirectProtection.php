@@ -8,7 +8,7 @@
 
     use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Responses\RedirectResponse;

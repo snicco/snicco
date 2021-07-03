@@ -8,7 +8,7 @@
 
 	use WPEmerge\Contracts\PhpViewInterface;
 	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Facade\WP;
+	use WPEmerge\Support\WP;
 	use WPEmerge\Support\Arr;
 
 

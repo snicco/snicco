@@ -15,7 +15,7 @@
     use Tests\UnitTest;
     use WPEmerge\ExceptionHandling\NullErrorHandler;
     use WPEmerge\Testing\TestingErrorHandler;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;

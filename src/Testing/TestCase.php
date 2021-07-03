@@ -27,7 +27,7 @@
     use WPEmerge\Contracts\RouteRegistrarInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\ExceptionHandling\NullErrorHandler;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\Psr7\Request;

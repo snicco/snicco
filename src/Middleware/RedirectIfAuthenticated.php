@@ -9,7 +9,7 @@
 	use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\UrlGenerator;
 

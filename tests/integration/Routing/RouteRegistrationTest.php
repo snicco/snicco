@@ -21,7 +21,7 @@
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Events\ResponseSent;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Listeners\CreateDynamicHooks;
     use WPEmerge\Support\Arr;

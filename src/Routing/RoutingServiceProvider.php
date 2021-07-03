@@ -16,7 +16,7 @@
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Http\DatabaseMagicLink;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Conditions\AdminAjaxCondition;

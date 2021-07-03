@@ -16,7 +16,7 @@
 	use Tests\fixtures\Controllers\Web\TeamsController;
 	use Tests\fixtures\TestDependencies\Foo;
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Router;
 

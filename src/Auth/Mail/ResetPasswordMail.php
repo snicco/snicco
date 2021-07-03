@@ -6,7 +6,7 @@
 
     namespace WPEmerge\Auth\Mail;
 
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Mail\Mailable;
     use WPEmerge\Routing\UrlGenerator;
 

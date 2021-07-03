@@ -10,7 +10,7 @@
     use WPEmerge\Auth\Contracts\AuthConfirmation;
     use WPEmerge\Auth\Mail\ConfirmAuthMail;
     use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\ResponseFactory;

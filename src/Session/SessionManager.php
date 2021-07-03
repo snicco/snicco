@@ -9,7 +9,7 @@
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
     use WPEmerge\Auth\WpAuthSessionToken;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Cookie;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Psr7\Request;

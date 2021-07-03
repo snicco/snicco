@@ -16,7 +16,7 @@
     use Tests\fixtures\Middleware\FooBarMiddleware;
     use Tests\fixtures\Middleware\FooMiddleware;
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Middleware\Core\RouteRunner;
     use WPEmerge\Routing\Router;

@@ -10,7 +10,7 @@
     use Tests\unit\View\MethodField;
     use WPEmerge\Application\ApplicationTrait;
     use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Session\CsrfField;
 
     class BladeDirectiveServiceProvider extends ServiceProvider

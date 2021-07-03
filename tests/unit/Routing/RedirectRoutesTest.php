@@ -17,7 +17,7 @@
     use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\AbstractRedirector;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Redirector;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Routing\Router;

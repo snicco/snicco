@@ -20,7 +20,7 @@
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\ExceptionHandling\Exceptions\NotFoundException;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;

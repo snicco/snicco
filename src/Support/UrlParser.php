@@ -6,7 +6,7 @@
 
     namespace WPEmerge\Support;
 
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
 
     use function collect;
 

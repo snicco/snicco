@@ -16,7 +16,7 @@
     use WPEmerge\Contracts\ResponsableInterface;
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;

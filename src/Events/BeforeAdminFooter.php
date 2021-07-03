@@ -9,7 +9,7 @@
     use BetterWpHooks\Traits\DispatchesConditionally;
     use BetterWpHooks\Traits\IsAction;
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
 
     class BeforeAdminFooter extends ApplicationEvent
     {

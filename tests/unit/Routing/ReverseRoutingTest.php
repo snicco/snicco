@@ -14,7 +14,7 @@
     use WPEmerge\Contracts\ConditionInterface;
     use WPEmerge\Contracts\UrlableInterface;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\UrlGenerator;

@@ -9,7 +9,7 @@
     use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Contracts\Mailer;
     use WPEmerge\Events\PendingMail;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Mail\Mailable;
     use WPEmerge\View\ViewFactory;
 

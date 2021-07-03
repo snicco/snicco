@@ -24,7 +24,7 @@
     use WPEmerge\Middleware\MiddlewareServiceProvider;
     use WPEmerge\Routing\RoutingServiceProvider;
     use WPEmerge\View\ViewServiceProvider;
-    use WPEmerge\Facade\WpFacade;
+    use WPEmerge\Support\WpFacade;
 
     class Application
     {

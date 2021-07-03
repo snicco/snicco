@@ -7,7 +7,7 @@
 	namespace WPEmerge\Routing;
 
 	use WPEmerge\Contracts\SetsRouteAttributes;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\UrlParser;
 

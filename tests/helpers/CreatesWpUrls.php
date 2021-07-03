@@ -7,7 +7,7 @@
     namespace Tests\helpers;;
 
     use Tests\stubs\TestRequest;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Support\Url;
 

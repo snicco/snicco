@@ -8,7 +8,7 @@
 
     use Tests\MiddlewareTestCase;
     use WPEmerge\Auth\Middleware\AuthUnconfirmed;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Routing\Route;
     use WPEmerge\Session\Drivers\ArraySessionDriver;

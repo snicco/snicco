@@ -18,7 +18,7 @@
     use WPEmerge\Auth\Traits\ResolvesUser;
     use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
     use WPEmerge\Contracts\EncryptorInterface;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
 
     class Google2FaAuthenticationProvider implements TwoFactorAuthenticationProvider
     {

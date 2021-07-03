@@ -10,7 +10,7 @@
     use Symfony\Component\Finder\SplFileInfo;
     use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Contracts\RouteRegistrarInterface;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
 

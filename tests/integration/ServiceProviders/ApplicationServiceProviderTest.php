@@ -16,8 +16,8 @@
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\Facade\WP;
-	use WPEmerge\Facade\WpFacade;
+    use WPEmerge\Support\WP;
+	use WPEmerge\Support\WpFacade;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Redirector;
     use WPEmerge\Http\ResponseFactory;

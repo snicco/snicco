@@ -4,15 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Facade;
+    namespace WPEmerge\Support;
 
 
     use WP_User;
+    use WPEmerge\Support\WordpressApi;
 
     /**
      * mixin class for ide support.
      *
-     * @see \WPEmerge\Facade\WordpressApi
+     * @see \WPEmerge\Support\WordpressApi
      *
      * @codeCoverageIgnore
      */
@@ -98,7 +99,7 @@
          * Check if we are in the admin dashboard
          *
          * @return bool
-         * @see \WPEmerge\Facade\WordpressApi::isAdmin()
+         * @see \WPEmerge\Support\WordpressApi::isAdmin()
          */
         public static function isAdmin() : bool
         {
@@ -113,7 +114,7 @@
          * @return int|false
          *
          * @see check_admin_referer()
-         * @see \WPEmerge\Facade\WordpressApi::checkAdminReferer()
+         * @see \WPEmerge\Support\WordpressApi::checkAdminReferer()
          *
          */
         public static function checkAdminReferer($action = -1, $query_arg = '_wpnonce')
@@ -124,7 +125,7 @@
          * Check if we are doing a request to admin-ajax.php
          *
          * @return bool
-         * @see \WPEmerge\Facade\WordpressApi::isAdminAjax()
+         * @see \WPEmerge\Support\WordpressApi::isAdminAjax()
          */
         public static function isAdminAjax() : bool
         {
@@ -150,7 +151,7 @@
          *                            'http', 'https', 'relative', 'rest', or null. Default null.
          *
          * @return string
-         * @see \WPEmerge\Facade\WordpressApi::homeUrl()
+         * @see \WPEmerge\Support\WordpressApi::homeUrl()
          */
         public static function homeUrl(string $path = '', string $scheme = null) : string
         {
@@ -177,7 +178,7 @@
          * Get the current user's ID
          *
          * @return int The current user's ID, or 0 if no user is logged in.
-         * @see \WPEmerge\Facade\WordpressApi::userId()
+         * @see \WPEmerge\Support\WordpressApi::userId()
          */
         public static function userId() : int
         {
@@ -226,7 +227,7 @@
          *                             Default false.
          *
          * @return string The login URL. Not HTML-encoded.
-         * @see \WPEmerge\Facade\WordpressApi::loginUrl()
+         * @see \WPEmerge\Support\WordpressApi::loginUrl()
          *
          */
         public static function loginUrl(string $redirect_on_login_to = '', bool $force_auth = false) : string
@@ -247,7 +248,7 @@
          *     ID.
          *
          * @return bool
-         * @see \WPEmerge\Facade\WordpressApi::currentUserCan()
+         * @see \WPEmerge\Support\WordpressApi::currentUserCan()
          * @see \current_user_can()
          *
          *
@@ -265,7 +266,7 @@
          *
          * @return string[]
          * @see \get_file_data()
-         * @see \WPEmerge\Facade\WordpressApi::fileHeaderData();
+         * @see \WPEmerge\Support\WordpressApi::fileHeaderData();
          */
         public static function fileHeaderData(string $file, array $default_headers = [], string $context = '') : array
         {

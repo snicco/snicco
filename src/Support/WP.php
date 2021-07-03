@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Facade;
+	namespace WPEmerge\Support;
 
 
-	/**
+    /**
 	 * @mixin WordpressApiMixin
 	 */
 	class WP extends WpFacade {

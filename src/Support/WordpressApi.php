@@ -4,7 +4,8 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Facade;
+    namespace WPEmerge\Support;
+
 
     use WP_User;
 

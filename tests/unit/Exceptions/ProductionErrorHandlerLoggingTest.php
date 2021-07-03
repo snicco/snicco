@@ -23,9 +23,9 @@
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\ExceptionHandling\ProductionErrorHandler;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Factories\ErrorHandlerFactory;
-    use WPEmerge\Facade\WpFacade;
+    use WPEmerge\Support\WpFacade;
 
     class ProductionErrorHandlerLoggingTest extends UnitTest
     {

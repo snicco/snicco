@@ -10,7 +10,7 @@
     use WPEmerge\Contracts\Mailer;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\PendingMail;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Listeners\SendMail;
 
     class MailServiceProvider extends ServiceProvider

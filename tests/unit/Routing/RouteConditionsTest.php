@@ -14,7 +14,7 @@
     use Tests\UnitTest;
     use Tests\fixtures\Conditions\FalseCondition;
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Router;
 
