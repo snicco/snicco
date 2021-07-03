@@ -8,6 +8,7 @@
 
     use Tests\TestCase;
     use WPEmerge\ExceptionHandling\ProductionErrorHandler;
+    use WPEmerge\Validation\Exceptions\ValidationException;
 
     /** @see ProductionErrorHandler */
     class ProductionErrorHandlingTest extends TestCase
@@ -46,7 +47,6 @@
 
         }
 
-
         /** @test */
         public function an_admin_request_can_have_specific_admin_error_views_that_have_priority_over_non_admin_views()
         {
@@ -80,5 +80,6 @@
             $response->assertIsHtml();
 
         }
+
 
     }

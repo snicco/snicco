@@ -120,6 +120,7 @@
 
             $routes = Arr::wrap($this->config->get('routing.definitions'));
 
+            // new routes have to be added after the user provided routes to allow users to overwrite inbuilt routes.
             $routes = array_merge($routes, Arr::wrap($new_routes));
 
             $this->config->set('routing.definitions', $routes);

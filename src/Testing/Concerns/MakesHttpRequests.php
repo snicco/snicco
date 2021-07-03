@@ -94,7 +94,6 @@
          */
         public function withHeader(string $name, string $value)
         {
-
             $this->default_headers[$name] = $value;
 
             return $this;
@@ -389,6 +388,27 @@
 
         }
 
+        protected function toTestResponse(Response $response ) : TestResponse
+        {
+
+            $response = new TestResponse($response);
+
+            $view_factory = $this->app->resolve(ViewFactory::class);
+
+            if ($view_factory->renderedView() instanceof ViewInterface) {
+                $response->setRenderedView($view_factory->renderedView());
+            }
+
+            if ($this->session instanceof Session) {
+                $response->setSession($this->session);
+            }
+
+            $response->setApp($this->app);
+
+            return $response;
+
+        }
+
         private function performRequest(ServerRequestInterface $request, array $headers, string $type = 'web') : TestResponse
         {
 
@@ -432,21 +452,7 @@
 
             }
 
-            $response = new TestResponse($response);
-
-            $view_factory = $this->app->resolve(ViewFactory::class);
-
-            if ($view_factory->renderedView() instanceof ViewInterface) {
-                $response->setRenderedView($view_factory->renderedView());
-            }
-
-            if ($this->session instanceof Session) {
-                $response->setSession($this->session);
-            }
-
-            $response->setApp($this->app);
-
-            return $response;
+            return $this->toTestResponse($response);
 
         }
 
