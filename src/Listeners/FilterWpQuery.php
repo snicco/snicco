@@ -9,7 +9,7 @@
     use BetterWpHooks\Traits\ListensConditionally;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Events\WpQueryFilterable;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
 
     class FilterWpQuery
     {

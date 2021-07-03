@@ -22,7 +22,7 @@
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Testing\TestingErrorHandler;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\Psr7\Request;
 

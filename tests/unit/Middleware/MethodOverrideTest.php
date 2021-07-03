@@ -12,7 +12,7 @@
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
     use Tests\unit\View\MethodField;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;

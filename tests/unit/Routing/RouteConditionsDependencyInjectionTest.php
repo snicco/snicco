@@ -13,7 +13,7 @@
     use Tests\UnitTest;
     use Tests\fixtures\Conditions\ConditionWithDependency;
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
 
     class RouteConditionsDependencyInjectionTest extends UnitTest
     {

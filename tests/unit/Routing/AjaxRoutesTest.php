@@ -14,7 +14,7 @@
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\ExceptionHandling\Exceptions\RouteLogicException;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
 
     class AjaxRoutesTest extends UnitTest
     {

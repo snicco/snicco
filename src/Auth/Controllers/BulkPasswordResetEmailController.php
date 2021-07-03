@@ -9,7 +9,7 @@
     use WPEmerge\Auth\Mail\ResetPasswordMail;
     use WPEmerge\Auth\Traits\SendsPasswordResetMails;
     use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Mail\MailBuilder;

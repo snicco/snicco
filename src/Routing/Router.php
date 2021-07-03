@@ -12,7 +12,7 @@
     use WPEmerge\Controllers\FallBackController;
     use WPEmerge\Controllers\RedirectController;
     use WPEmerge\Controllers\ViewController;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Support\Str;
     use WPEmerge\Support\Url;
     use WPEmerge\Traits\HoldsRouteBlueprint;

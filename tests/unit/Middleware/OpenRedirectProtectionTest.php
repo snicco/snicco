@@ -15,7 +15,7 @@
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
     use WPEmerge\Controllers\RedirectController;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\ResponseFactory;

@@ -16,7 +16,7 @@
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
     use wpdb;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Drivers\DatabaseSessionDriver;
 

@@ -10,10 +10,8 @@
     use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewFactoryInterface;
-    use WPEmerge\Facade\WP;
-    use WPEmerge\Http\Redirector;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Session\Encryptor;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\ExceptionHandling\ShutdownHandler;
     use WPEmerge\Http\Cookies;

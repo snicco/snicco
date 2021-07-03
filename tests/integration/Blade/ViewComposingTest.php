@@ -14,7 +14,7 @@
     use WPEmerge\Blade\BladeView;
     use WPEmerge\Contracts\ViewEngineInterface;
 
-    class VIewComposingTest extends BladeTestCase
+    class ViewComposingTest extends BladeTestCase
     {
 
 

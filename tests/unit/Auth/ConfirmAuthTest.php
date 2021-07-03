@@ -11,7 +11,7 @@
     use Tests\helpers\TravelsTime;
     use Tests\MiddlewareTestCase;
     use WPEmerge\Auth\Middleware\ConfirmAuth;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Routing\Route;
 

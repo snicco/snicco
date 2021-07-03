@@ -20,7 +20,7 @@
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Contracts\RouteUrlGenerator;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Router;
     use WPEmerge\Routing\UrlGenerator;

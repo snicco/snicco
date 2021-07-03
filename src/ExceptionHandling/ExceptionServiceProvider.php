@@ -45,7 +45,6 @@
 
         private function bindErrorHandlerInterface() : void
         {
-
             $this->container->singleton(ErrorHandlerInterface::class, function () {
 
                 if ( ! $this->config->get('app.exception_handling', false ) ) {

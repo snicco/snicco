@@ -14,7 +14,7 @@
     use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request as Request;
     use WPEmerge\Routing\Conditions\QueryStringCondition;
     use WPEmerge\Routing\Router;

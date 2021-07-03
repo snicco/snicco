@@ -7,7 +7,7 @@
     namespace WPEmerge\Routing\Conditions;
 
     use WPEmerge\Contracts\ConditionInterface;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Support\Str;
 

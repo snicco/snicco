@@ -11,7 +11,7 @@
     use Tests\helpers\TravelsTime;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
 
 	class ArraySessionDriverTest extends UnitTest {
