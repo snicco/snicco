@@ -9,9 +9,21 @@
     use Illuminate\Support\Collection;
     use WPEmerge\Auth\RecoveryCode;
 
-    trait GeneratesRecoveryCodes
+    trait InteractsWithTwoFactorCodes
     {
 
+
+        public function recoveryCodes ( int $user_id ) :array {
+
+            $encrypted_codes = get_user_meta($user_id, 'two_factor_recovery_codes', true);
+
+            if ( $encrypted_codes === "") {
+                return [];
+            }
+
+            return  json_decode($this->encryptor->decrypt($encrypted_codes), true);
+
+        }
 
         private function generateNewRecoveryCodes () :array
         {

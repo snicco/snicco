@@ -95,6 +95,11 @@
             $this->app = $app;
         }
 
+        public function body() : string
+        {
+            return $this->streamed_content;
+        }
+
         public function assertNullResponse() : TestResponse
         {
 
@@ -268,7 +273,6 @@
 
             return $this;
         }
-
 
         public function assertRedirectPath(string $path, int $status = null)
         {

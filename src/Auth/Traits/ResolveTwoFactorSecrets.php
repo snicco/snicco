@@ -40,7 +40,6 @@
 
         public function userHasTwoFactorEnabled(WP_User $user) : bool
         {
-
             return $this->twoFactorSecret($user->ID) !== '';
 
         }

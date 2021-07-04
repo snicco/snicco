@@ -20,7 +20,6 @@
     class TwoFactorAuthenticator extends Authenticator
     {
 
-        use ResolveTwoFactorSecrets;
         use ResolvesUser;
         use PerformsTwoFactorAuthentication;
 

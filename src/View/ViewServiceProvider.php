@@ -6,11 +6,9 @@
 
 	namespace WPEmerge\View;
 
-    use Tests\unit\View\MethodField;
     use WPEmerge\Contracts\ServiceProvider;
 	use WPEmerge\Contracts\ViewEngineInterface;
 	use WPEmerge\Contracts\ViewFactoryInterface;
-    use WPEmerge\Support\WP;
     use WPEmerge\Factories\ViewComposerFactory;
 
 
