@@ -24,6 +24,12 @@
 
         }
 
+        protected function clearSentMails() {
+            $fake_dispatcher = ApplicationEvent::dispatcher();
+            $fake_dispatcher->clearDispatchedEvents();
+            return $this;
+        }
+
         protected function assertMailSent(string $mailable) : AssertableMail
         {
 

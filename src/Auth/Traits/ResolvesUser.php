@@ -21,9 +21,9 @@
 
         }
 
-        public function getUserById(int $id) : ?WP_User {
+        public function getUserById($id) : ?WP_User {
 
-            $user = get_user_by('id', $id);
+            $user = get_user_by('id', (int) $id);
 
             return $user instanceof WP_User ? $user :null;
 

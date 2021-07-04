@@ -12,7 +12,6 @@
     interface AuthConfirmation
     {
 
-        public function prepare(Request $request) : AuthConfirmation;
 
         /**
          * @return true|array Return either true for a successful confirmation or an array of error messages

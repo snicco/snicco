@@ -21,23 +21,11 @@
 
         protected function setUp() : void
         {
-
-            $this->afterApplicationCreated(function () {
-
-                $this->mailFake();
-            });
             $this->afterApplicationCreated(function () {
 
                 $this->instance(AuthConfirmation::class, new TestAuthConfirmation());
             });
             parent::setUp();
-        }
-
-        private function authenticateAndUnconfirm(\WP_User $user)
-        {
-
-            $this->actingAs($user);
-            $this->travelIntoFuture(10);
         }
 
         /** @test */
@@ -72,20 +60,6 @@
 
             $response->assertOk();
             $response->assertSee('[Test] Confirm your authentication.');
-
-        }
-
-        /** @test */
-        public function the_auth_confirmation_can_run_preparation_setup_before_the_view_gets_rendered()
-        {
-
-            $this->authenticateAndUnconfirm($this->createAdmin());
-
-            $GLOBALS['test']['confirmation_prepared'] = false;
-
-            $this->get($this->endpoint)->assertOk();
-
-            $this->assertTrue($GLOBALS['test']['confirmation_prepared']);
 
         }
 
@@ -203,13 +177,6 @@
     class TestAuthConfirmation implements AuthConfirmation
     {
 
-        public function prepare(Request $request) : AuthConfirmation
-        {
-
-            $GLOBALS['test']['confirmation_prepared'] = true;
-
-            return $this;
-        }
 
         public function confirm(Request $request)
         {

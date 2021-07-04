@@ -4,6 +4,7 @@
     declare(strict_types = 1);
 
     use WPEmerge\Application\ApplicationConfig;
+    use WPEmerge\Auth\Controllers\AuthConfirmationEmailController;
     use WPEmerge\Auth\Controllers\AuthSessionController;
     use WPEmerge\Auth\Controllers\ConfirmedAuthSessionController;
     use WPEmerge\Auth\Controllers\ForgotPasswordController;
@@ -51,6 +52,10 @@
 
         $router->get('confirm/magic-link', [ConfirmedAuthSessionController::class, 'store'])
                ->name('confirm.magic-link');
+
+        $router->post('/confirm/email', [AuthConfirmationEmailController::class, 'store'])
+               ->middleware('csrf')
+               ->name('confirm.email');
 
     });
 

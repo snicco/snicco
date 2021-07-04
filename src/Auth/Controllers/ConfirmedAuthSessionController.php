@@ -26,17 +26,15 @@
          */
         private $duration;
 
-        public function __construct(AuthConfirmation $auth_confirmation, int $confirmation_duration)
+        public function __construct(AuthConfirmation $auth_confirmation, int $duration)
         {
-
             $this->auth_confirmation = $auth_confirmation;
-            $this->duration = $confirmation_duration;
+            $this->duration = $duration;
         }
 
         public function create(Request $request)
         {
-
-            return $this->auth_confirmation->prepare($request)->viewResponse($request);
+            return $this->auth_confirmation->viewResponse($request);
         }
 
         public function store(Request $request) : Response
@@ -61,7 +59,6 @@
                                            ->intended($request, $this->url->toRoute('dashboard'));
 
         }
-
 
         private function confirmAuth(Request $request) : void
         {

@@ -19,7 +19,7 @@
         {
 
             $request = $request
-                ->withUser(WP::userId());
+                ->withUserId(WP::userId());
 
             return $next($request);
 

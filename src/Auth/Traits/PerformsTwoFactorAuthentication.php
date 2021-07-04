@@ -10,16 +10,14 @@
     use WPEmerge\Auth\RecoveryCode;
     use WPEmerge\Http\Psr7\Request;
 
-    /**
-     * @property TwoFactorAuthenticationProvider $provider
-     */
     trait PerformsTwoFactorAuthentication
     {
 
         use InteractsWithTwoFactorSecrets;
         use InteractsWithTwoFactorCodes;
 
-        protected function validateTwoFactorAuthentication(Request $request, int $user_id)  :bool {
+        protected function validateTwoFactorAuthentication(TwoFactorAuthenticationProvider $provider,Request $request, int $user_id)  :bool {
+
 
             if ( $code = $this->validRecoveryCode($request, $user_id ) ) {
 
@@ -27,7 +25,7 @@
                 return true;
             }
 
-            if ( $this->hasValidOneTimeCode($request, $user_id) ) {
+            if ( $this->hasValidOneTimeCode($provider, $request, $user_id) ) {
                 return true;
             }
 
@@ -35,7 +33,7 @@
 
         }
 
-        private function validRecoveryCode(Request $request, $user_id)
+        private function validRecoveryCode(Request $request, int $user_id)
         {
 
             $provided_code = $request->input('recovery-code');
@@ -59,13 +57,13 @@
         private function replaceRecoveryCode($code, int $user_id)
         {
 
-            $new_codes = str_replace($code, RecoveryCode::generate(), $this->recovery_codes);
+            $new_codes = str_replace($code, RecoveryCode::generate(), $this->recoveryCodes($user_id));
 
             $this->saveCodes($user_id, $new_codes);
 
         }
 
-        private function hasValidOneTimeCode(Request $request, int $user_id) : bool
+        private function hasValidOneTimeCode(TwoFactorAuthenticationProvider $provider, Request $request, int $user_id) : bool
         {
 
             if ( ! $request->filled('token') ) {
@@ -74,7 +72,7 @@
 
             $user_secret = $this->twoFactorSecret($user_id);
 
-            return $this->provider->verifyOneTimeCode(
+            return $provider->verifyOneTimeCode(
                 $user_secret,
                 $request->input('token')
             );

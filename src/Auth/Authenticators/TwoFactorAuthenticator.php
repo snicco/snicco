@@ -42,7 +42,6 @@
 
         public function __construct(TwoFactorAuthenticationProvider $provider, EncryptorInterface $encryptor)
         {
-
             $this->provider = $provider;
             $this->encryptor = $encryptor;
         }
@@ -59,7 +58,7 @@
 
             }
 
-            $valid = $this->validateTwoFactorAuthentication($request, $challenged_user_id);
+            $valid = $this->validateTwoFactorAuthentication($this->provider, $request, $challenged_user_id);
 
             if ( ! $valid) {
 

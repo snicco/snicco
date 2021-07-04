@@ -36,6 +36,10 @@
          */
         protected $encryptor;
 
+        protected $valid_one_time_code = '123456';
+
+        protected $invalid_one_time_code = '111111';
+
         public function packageProviders() : array
         {
 
@@ -118,6 +122,13 @@
 
             $secret =  get_user_meta($user->ID, 'two_factor_secret', true);
             return $secret;
+        }
+
+        protected function authenticateAndUnconfirm(\WP_User $user)
+        {
+
+            $this->actingAs($user);
+            $this->travelIntoFuture(10);
         }
 
     }

@@ -9,7 +9,9 @@
     use WP_User;
     use WPEmerge\Auth\Contracts\AuthConfirmation;
     use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use WPEmerge\Auth\Traits\InteractsWithTwoFactorSecrets;
     use WPEmerge\Auth\Traits\PerformsTwoFactorAuthentication;
+    use WPEmerge\Auth\Traits\ResolvesUser;
     use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Http\Psr7\Request;
@@ -19,8 +21,8 @@
     class TwoFactorAuthConfirmation implements AuthConfirmation
     {
 
-        use ResolveTwoFactorSecrets;
         use PerformsTwoFactorAuthentication;
+        use InteractsWithTwoFactorSecrets;
 
         /**
          * @var AuthConfirmation
@@ -59,7 +61,6 @@
             WP_User $current_user
         )
         {
-
             $this->fallback = $fallback;
             $this->current_user = $current_user;
             $this->user_secret = $this->twoFactorSecret($this->current_user->ID);
@@ -69,38 +70,27 @@
 
         }
 
-        public function prepare(Request $request) : AuthConfirmation
-        {
-
-            if ( ! $this->userHasTwoFactorAuthEnabled() ) {
-                $this->fallback->prepare($request);
-            }
-
-            return $this;
-
-        }
-
         public function confirm(Request $request)
         {
 
-            if ( ! $this->userHasTwoFactorAuthEnabled() ) {
+            if ( ! $this->userHasTwoFactorEnabled($request->user()) ) {
                 return $this->fallback->confirm($request);
             }
 
-            $valid = $this->validateTwoFactorAuthentication($request, $this->current_user->ID);
+            $valid = $this->validateTwoFactorAuthentication($this->provider, $request, $request->userId());
 
             if ( $valid === true ) {
                 return true;
             }
 
-            return ['message' => 'Invalid code provided'];
+            return ['message' => 'Invalid code provided.'];
 
         }
 
-        public function viewResponse(Request $request) : Response
+        public function viewResponse(Request $request)
         {
 
-            if ( ! $this->userHasTwoFactorAuthEnabled()) {
+            if ( ! $this->userHasTwoFactorEnabled($request->user()) ) {
 
                 return $this->fallback->viewResponse($request);
 
@@ -114,9 +104,5 @@
 
         }
 
-        private function userHasTwoFactorAuthEnabled() :bool
-        {
-            return $this->user_secret !== '';
-        }
 
     }
