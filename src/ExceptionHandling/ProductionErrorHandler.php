@@ -222,7 +222,6 @@
 
         }
 
-        /** @todo needs tests */
         private function renderValidationException(ValidationException $e, Request $request)
         {
 

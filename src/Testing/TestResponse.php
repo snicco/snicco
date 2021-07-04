@@ -782,7 +782,7 @@
          *
          * @return $this
          */
-        public function assertSessionDoesntHaveErrors($keys = [], $errorBag = 'default', $format = null,) : TestResponse
+        public function assertSessionDoesntHaveErrors($keys = [], $errorBag = 'default', $format = null) : TestResponse
         {
 
             $keys = (array) $keys;
