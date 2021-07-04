@@ -67,7 +67,7 @@
          *
          * @var bool
          */
-        protected $follow_redirects = false;
+        private $follow_redirects = false;
 
         /**
          * Define additional headers to be sent with the request.

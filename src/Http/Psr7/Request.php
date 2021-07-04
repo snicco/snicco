@@ -88,7 +88,7 @@
 
         }
 
-        public function withUser(int $user_id)
+        public function withUserId(int $user_id)
         {
             return $this->withAttribute('_current_user_id', $user_id);
         }
@@ -210,8 +210,6 @@
             return false;
 
         }
-
-
 
         public function routingResult() : RoutingResult
         {

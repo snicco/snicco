@@ -243,6 +243,8 @@
         public function assertStatus($status) : TestResponse
         {
 
+            $this->assertNotNullResponse();
+
             $actual = $this->getStatusCode();
 
             PHPUnit::assertSame(

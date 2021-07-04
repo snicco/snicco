@@ -19,7 +19,6 @@
     class PasswordResetEmailController extends Controller
     {
 
-        use ValidatesWordpressNonces;
         use SendsPasswordResetMails;
         use ResolvesUser;
 

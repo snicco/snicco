@@ -3,11 +3,15 @@
 
     declare(strict_types = 1);
 
+    /** @var Illuminate\Support\ViewErrorBag $errors */
+    /** @var WPEmerge\Session\Session $session */
+
 ?>
 
 <div class="box">
 
-    <?php if (! $errors->has('message')) : ?>
+    <!--    Authentication has not been confirmed yet -->
+    <?php if ( ! $session->hasValidAuthConfirmToken()) : ?>
 
         <div class="notification is-info is-light">
             <p class="is-size-5">
@@ -18,43 +22,59 @@
             </p>
         </div>
 
-    <?php else : ?>
+    <?php endif; ?>
+
+    <!--   There have been errors flashed by the auth confirmation -->
+    <?php if ($errors->has('message')) : ?>
+
         <div class="notification is-danger is-light mt-2">
             <p class="is-size-5">
                 We could not confirm your authentication.
             </p>
             <p class="is-size-5 mt-2">
-                Your link was either invalid or expired.
+                <?= esc_html($errors->first('message')) ?>
             </p>
         </div>
 
-        <?php if ( $session->pull('auth.confirm.can_request_another_email', false )) : ?>
+    <?php endif; ?>
 
-            <p> Please request a new link to confirm your authentication.</p>
+    <!--   Check if user can request another email -->
+    <?php if (time() > $session->get('auth.confirm.email.next', 0)) : ?>
 
-            <button class="button submit" onClick="window.location.reload();">Send new confirmation email</button>
+        <form id="send" class="mt-4 box " action="<?= esc_attr($post_to) ?>" method="POST">
 
-        <?php endif; ?>
+            <?= $csrf->asHtml() ?>
+            <button
+                    type="submit"
+                    class="button submit mb-3"
+            >
+                Send me a confirmation link
+
+            </button>
+
+        </form>
+
+
+    <?php else : ?>
+
+        <p class="is-size-5">
+            You can request a new confirmation email
+            in <?= $session->get('auth.confirm.email.period') ?> seconds by refreshing this page.
+        </p>
 
     <?php endif; ?>
 
-    <?php if ($session->pull('auth.confirm.email_sent')) : ?>
+    <!-- Check if we sent an email on the last request-->
+    <?php if ($session->get('auth.confirm.email.sent')) : ?>
 
         <div class="notification is-success is-light">
             <p class="is-size-6">
-                We have sent a confirmation link to the email address linked with this account. <br> <br> By clicking the confirmation link you can continue where you left of.
+                We have sent a confirmation link to the email address linked with this account. <br>
+                <br> By clicking the confirmation link you can continue where you left of.
             </p>
         </div>
 
     <?php endif; ?>
 
-    <?php if ($period = $session->pull('auth.confirm.cool_off_period')) : ?>
-
-        <p class="is-size-5">
-            You can request a new confirmation email in <?= $period ?> seconds by refreshing this page.
-        </p>
-
-
-    <?php endif; ?>
 
 </div>

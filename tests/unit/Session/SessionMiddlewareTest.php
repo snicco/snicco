@@ -292,7 +292,7 @@
         /** @test */
         public function the_user_id_is_set_on_the_session () {
 
-            $response = $this->newMiddleware()->handle($this->request->withUser(99), $this->route_action);
+            $response = $this->newMiddleware()->handle($this->request->withUserId(99), $this->route_action);
 
             $session = $this->getRequestSession($response);
 
