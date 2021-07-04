@@ -96,7 +96,7 @@
                 'foo' => 'foo must have a length between 5 and 10.',
             ], 'login_form');
 
-            $response->assertSessionDoesntHaveErrors()
+            $response->assertSessionDoesntHaveErrors('foo', 'default');
 
 
         }
@@ -138,6 +138,41 @@
 
         }
 
+        /** @test */
+        public function a_message_is_included_with_json_errors () {
 
+            $this->withRequest(TestRequest::from('POST', 'foo'));
+
+            $e = ValidationException::withMessages([
+                'foo' => [
+                    'foo must have a length between 5 and 10.',
+                    'bar can not have whitespace',
+                ],
+                'bar' => [
+                    'bar must have a length between 5 and 10.',
+                    'bar can not have special chars',
+                ],
+            ])->setJsonMessage('This does not work like this.');
+
+            $handler = $this->errorHandler();
+
+            $response = $this->toTestResponse($handler->transformToResponse($e, $this->request->withHeader('accept', 'application/json')));
+            $response->assertStatus(400);
+            $response->assertIsJson();
+            $response->assertExactJson([
+                'message' => 'This does not work like this.',
+                'errors' => [
+                    'foo' => [
+                        'foo must have a length between 5 and 10.',
+                        'bar can not have whitespace',
+                    ],
+                    'bar' => [
+                        'bar must have a length between 5 and 10.',
+                        'bar can not have special chars',
+                    ]
+                ]
+            ]);
+
+        }
 
     }

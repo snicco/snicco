@@ -75,5 +75,11 @@
             return $this->message_bag_name;
         }
 
+        public function setJsonMessage(string $message)
+        {
+            $this->message = $message;
+            return $this;
+        }
+
 
     }
