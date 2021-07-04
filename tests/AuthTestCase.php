@@ -102,4 +102,22 @@
 
         }
 
+        protected function getUserRecoveryCodes(\WP_User $user) {
+
+            $codes = get_user_meta($user->ID, 'two_factor_recovery_codes', true);
+
+            if ( $codes === '') {
+                return $codes;
+            }
+
+            $codes = json_decode($this->encryptor->decrypt($codes), true);
+            return $codes;
+        }
+
+        protected function getUserSecret(\WP_User $user) {
+
+            $secret =  get_user_meta($user->ID, 'two_factor_secret', true);
+            return $secret;
+        }
+
     }

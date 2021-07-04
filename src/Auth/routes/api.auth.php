@@ -27,7 +27,7 @@
            ->middleware(['csrf', 'guest'])
            ->name('login');
 
-    // login magic link creation
+    // Login/Magic-link
     $router->post('login/create-magic-link', [LoginMagicLinkController::class, 'store'])
            ->middleware('guest')->name('login.create-magic-link');
 
@@ -42,19 +42,17 @@
            ->andNumber('user_id');
 
     // Auth Confirmation
-    $router->get('confirm', [ConfirmedAuthSessionController::class, 'create'])->middleware([
-        'auth', 'auth.unconfirmed',
-    ])->name('confirm');
+    $router->middleware(['auth', 'auth.unconfirmed'])->group(function (Router $router) {
 
-    $router->post('confirm', [ConfirmedAuthSessionController::class, 'store'])
-           ->middleware(['auth', 'auth.unconfirmed', 'csrf']);
+        $router->get('confirm', [ConfirmedAuthSessionController::class, 'create'])->name('confirm');
 
-    $router->delete('confirm', [ConfirmedAuthSessionController::class, 'destroy'])
-           ->middleware(['auth', 'auth.confirmed', 'crsf']);
+        $router->post('confirm', [ConfirmedAuthSessionController::class, 'store'])
+               ->middleware('csrf');
 
-    $router->get('confirm/magic-link', [ConfirmedAuthSessionController::class, 'store'])
-           ->middleware(['auth', 'auth.unconfirmed'])
-           ->name('confirm.magic-link');
+        $router->get('confirm/magic-link', [ConfirmedAuthSessionController::class, 'store'])
+               ->name('confirm.magic-link');
+
+    });
 
     // 2FA
     if ($config->get('auth.features.2fa')) {
@@ -63,20 +61,28 @@
                ->middleware(['auth', 'auth.confirmed'])
                ->name('two-factor.preferences');
 
-        $router->delete('two-factor/preferences', [TwoFactorAuthPreferenceController::class, 'destroy',])
+        $router->delete('two-factor/preferences', [
+            TwoFactorAuthPreferenceController::class, 'destroy',
+        ])
                ->middleware(['auth', 'auth.confirmed']);
 
         $router->get('two-factor/challenge', [TwoFactorAuthSessionController::class, 'create'])
                ->name('2fa.challenge');
 
         // recovery codes.
-        $router->name('2fa.recovery-codes')->middleware(['auth', 'auth.confirmed'])->group(function (Router $router) {
+        $router->name('2fa.recovery-codes')->middleware(['auth', 'auth.confirmed'])
+               ->group(function (Router $router) {
 
-            $router->get('two-factor/recovery-codes', [RecoveryCodeController::class, 'index']);
-            $router->put('two-factor/recovery-codes', [RecoveryCodeController::class, 'update'])->middleware('csrf:persist');
+                   $router->get('two-factor/recovery-codes', [
+                       RecoveryCodeController::class, 'index',
+                   ]);
+
+                   $router->put('two-factor/recovery-codes', [
+                       RecoveryCodeController::class, 'update',
+                   ])->middleware('csrf:persist');
 
 
-        });
+               });
 
 
     }
@@ -105,7 +111,8 @@
     // registration
     if ($config->get('auth.features.registration')) {
 
-        $router->get('register', [RegistrationLinkController::class, 'create'])->middleware('guest')
+        $router->get('register', [RegistrationLinkController::class, 'create'])
+               ->middleware('guest')
                ->name('register');
 
         $router->post('register', [RegistrationLinkController::class, 'store'])

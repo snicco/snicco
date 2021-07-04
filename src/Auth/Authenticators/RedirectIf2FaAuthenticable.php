@@ -8,8 +8,7 @@
 
     use WP_User;
     use WPEmerge\Auth\Contracts\Authenticator;
-    use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
+    use WPEmerge\Auth\Traits\InteractsWithTwoFactorSecrets;
     use WPEmerge\Auth\Responses\SuccessfulLoginResponse;
     use WPEmerge\Auth\Contracts\TwoFactorChallengeResponse;
     use WPEmerge\Http\Psr7\Request;
@@ -18,7 +17,7 @@
     class RedirectIf2FaAuthenticable extends Authenticator
     {
 
-        use ResolveTwoFactorSecrets;
+        use InteractsWithTwoFactorSecrets;
 
         /**
          * @var TwoFactorChallengeResponse

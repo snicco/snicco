@@ -6,7 +6,7 @@
     use Tests\stubs\TestApp;
     use WPEmerge\Routing\Router;
 
-    TestApp::route()->prefix('auth-confirm')->name('auth.confirm')->group( function (Router $router)  {
+    TestApp::route()->prefix('auth-confirm')->name('auth.confirm.test')->group( function (Router $router)  {
 
         $router->get('foo', function () {
 

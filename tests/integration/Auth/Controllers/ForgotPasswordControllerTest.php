@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration\Auth;
+    namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
     use Tests\stubs\TestApp;

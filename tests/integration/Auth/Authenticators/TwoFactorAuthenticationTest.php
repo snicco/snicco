@@ -4,9 +4,8 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration\Auth;
+    namespace Tests\integration\Auth\Authenticators;
 
-    use Illuminate\Support\Collection;
     use Tests\AuthTestCase;
     use WPEmerge\Auth\Authenticators\RedirectIf2FaAuthenticable;
     use WPEmerge\Auth\Authenticators\TwoFactorAuthenticator;
@@ -14,12 +13,11 @@
     use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
     use WPEmerge\Auth\Contracts\TwoFactorChallengeResponse;
     use WPEmerge\Auth\Middleware\AuthenticateSession;
-    use WPEmerge\Auth\RecoveryCode;
-    use WPEmerge\Auth\Responses\SuccessfulLoginResponse;
     use WPEmerge\Auth\Traits\ResolvesUser;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
+
 
     class TwoFactorAuthenticationTest extends AuthTestCase
     {
@@ -79,7 +77,7 @@
             $this->assertNotAuthenticated($calvin);
 
             $response = $this->post('/auth/login', [
-                'login' => $calvin->user_login
+                'login' => $calvin->user_login,
             ]);
 
             $response->assertRedirectToRoute('dashboard');
@@ -91,6 +89,7 @@
         /** @test */
         public function a_user_with_2fa_enabled_is_challenged()
         {
+
             $this->withAddedConfig('auth.features.remember_me', 10);
             $this->withoutExceptionHandling();
 
@@ -112,15 +111,16 @@
         }
 
         /** @test */
-        public function a_challenged_user_without_2fa_enabled_does_not_get_the_2fa_challenge_view () {
+        public function a_challenged_user_without_2fa_enabled_does_not_get_the_2fa_challenge_view()
+        {
 
             $calvin = $this->createAdmin();
 
             // For some reason calvin is challenged but does not use 2fa.
-            $this->withDataInSession(['auth.2fa.challenged_user'=> $calvin->ID]);
+            $this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
 
             $response = $this->post('/auth/login', [
-                'login' => $calvin->user_login
+                'login' => $calvin->user_login,
             ]);
 
             $response->assertRedirectToRoute('dashboard');
@@ -129,14 +129,15 @@
         }
 
         /** @test */
-        public function a_user_cant_login_with_an_invalid_one_time_code () {
+        public function a_user_cant_login_with_an_invalid_one_time_code()
+        {
 
             $calvin = $this->createAdmin();
-            $this->withDataInSession(['auth.2fa.challenged_user'=> $calvin->ID]);
+            $this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
             update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
 
             $response = $this->post('/auth/login', [
-                'token' => $this->invalid_one_time_code
+                'token' => $this->invalid_one_time_code,
             ]);
 
             $response->assertRedirectToRoute('auth.2fa.challenge');
@@ -145,16 +146,17 @@
         }
 
         /** @test */
-        public function a_user_can_login_with_a_valid_one_time_code () {
+        public function a_user_can_login_with_a_valid_one_time_code()
+        {
 
             $this->withoutExceptionHandling();
 
             $calvin = $this->createAdmin();
-            $this->withDataInSession(['auth.2fa.challenged_user'=> $calvin->ID]);
+            $this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
             update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
 
             $response = $this->post('/auth/login', [
-                'token' => $this->valid_one_time_code
+                'token' => $this->valid_one_time_code,
             ]);
 
             $response->assertRedirectToRoute('dashboard');
@@ -163,23 +165,24 @@
         }
 
         /** @test */
-        public function the_user_can_log_in_with_a_valid_recovery_codes () {
+        public function the_user_can_log_in_with_a_valid_recovery_codes()
+        {
 
             $calvin = $this->createAdmin();
-            $this->withDataInSession(['auth.2fa.challenged_user'=> $calvin->ID]);
+            $this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
             $codes = $this->createCodes();
             update_user_meta($calvin->ID, 'two_factor_recovery_codes', $this->encryptor->encrypt(json_encode($codes)));
             update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
 
             $response = $this->post('/auth/login', [
-                'recovery-code' => 'bogus'
+                'recovery-code' => 'bogus',
             ]);
 
             $response->assertRedirectToRoute('auth.2fa.challenge');
             $this->assertNotAuthenticated($calvin);
 
             $response = $this->post('/auth/login', [
-                'recovery-code' => $codes[0]
+                'recovery-code' => $codes[0],
             ]);
 
             $response->assertRedirectToRoute('dashboard');
@@ -189,17 +192,18 @@
         }
 
         /** @test */
-        public function the_recovery_code_is_swapped_on_successful_use () {
+        public function the_recovery_code_is_swapped_on_successful_use()
+        {
 
 
             $calvin = $this->createAdmin();
-            $this->withDataInSession(['auth.2fa.challenged_user'=> $calvin->ID]);
+            $this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
             $codes = $this->createCodes();
             update_user_meta($calvin->ID, 'two_factor_recovery_codes', $this->encryptor->encrypt(json_encode($codes)));
             update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
 
             $response = $this->post('/auth/login', [
-                'recovery-code' => $code = $codes[0]
+                'recovery-code' => $code = $codes[0],
             ]);
 
             $response->assertRedirectToRoute('dashboard');
@@ -212,7 +216,6 @@
 
 
         }
-
 
 
     }
@@ -272,4 +275,3 @@
         }
 
     }
-

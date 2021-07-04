@@ -4,18 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration\Auth;
+    namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use Tests\stubs\HeaderStack;
-    use Tests\stubs\TestApp;
-    use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Auth\Controllers\AuthSessionController;
     use WPEmerge\Auth\Events\Logout;
     use WPEmerge\Auth\Responses\LogoutResponse;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
+
 
     /** @see AuthSessionController */
     class AuthSessionControllerLogoutTest extends AuthTestCase

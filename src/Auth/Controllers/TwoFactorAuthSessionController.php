@@ -6,15 +6,15 @@
 
     namespace WPEmerge\Auth\Controllers;
 
+    use WPEmerge\Auth\Traits\InteractsWithTwoFactorSecrets;
     use WPEmerge\Auth\Traits\ResolvesUser;
-    use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
 
     class TwoFactorAuthSessionController extends Controller
     {
 
-        use ResolveTwoFactorSecrets;
+        use InteractsWithTwoFactorSecrets;
         use ResolvesUser;
 
         public function create(Request $request)

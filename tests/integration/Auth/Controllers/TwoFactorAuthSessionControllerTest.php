@@ -4,11 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration\Auth;
+    namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestRequest;
+
+    use function update_user_meta;
 
     class TwoFactorAuthSessionControllerTest extends AuthTestCase
     {

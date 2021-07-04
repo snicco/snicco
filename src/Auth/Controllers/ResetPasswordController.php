@@ -6,20 +6,13 @@
 
     namespace WPEmerge\Auth\Controllers;
 
-    use Carbon\Carbon;
-    use Closure;
-    use Tests\unit\View\MethodField;
     use WP_User;
-    use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Session\CsrfField;
     use WPEmerge\Validation\Exceptions\ValidationException;
-    use WPEmerge\View\ViewFactory;
     use Respect\Validation\Validator as v;
+    use WPEmerge\View\MethodField;
     use ZxcvbnPhp\Zxcvbn;
 
     class ResetPasswordController extends Controller

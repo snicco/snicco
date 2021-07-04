@@ -4,28 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration\Auth;
+    namespace Tests\integration\Auth\Controllers;
 
-    use Illuminate\Support\Collection;
     use Tests\AuthTestCase;
-    use Tests\helpers\HashesSessionIds;
-    use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\IntegrationTest;
-    use Tests\stubs\HeaderStack;
-    use Tests\stubs\TestApp;
-    use Tests\stubs\TestRequest;
-    use WPEmerge\Auth\AuthServiceProvider;
-    use WPEmerge\Auth\RecoveryCode;
-    use WPEmerge\Auth\Traits\GeneratesRecoveryCodes;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Session\Encryptor;
-    use WPEmerge\Session\SessionServiceProvider;
 
     class RecoveryCodeControllerTest extends AuthTestCase
     {
-
-
 
         protected function setUp() : void
         {
@@ -132,11 +118,14 @@
             update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
 
             $response = $this->put($this->routePath(), $token, ['Accept' => 'application/json']);
-            $response->assertNoContent();
+            $response->assertOk();
 
             $codes = get_user_meta($calvin->ID, 'two_factor_recovery_codes', true);
             $codes = json_decode($this->encryptor->decrypt($codes), true);
 
+            $body = json_decode($response->getBody()->__toString(), true);
+
+            $this->assertSame($codes, $body);
             $this->assertNotSame($this->codes, $codes);
 
         }
@@ -152,10 +141,10 @@
             update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
 
             $response1 = $this->put($this->routePath(), $token, ['Accept' => 'application/json']);
-            $response1->assertNoContent();
+            $response1->assertOk();
 
             $response2 = $this->put($this->routePath(), $token, ['Accept' => 'application/json']);
-            $response2->assertNoContent();
+            $response2->assertOk();
 
 
         }

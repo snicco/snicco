@@ -4,13 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration\Auth;
+    namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
     use WPEmerge\Support\Url;
+
+    use function get_user_by;
+    use function wp_check_password;
 
     class ResetPasswordControllerTest extends AuthTestCase
     {
@@ -61,7 +64,7 @@
             $response->assertOk();
             $response->assertSee('Update password');
             $response->assertIsHtml();
-            $response->assertSeeHtml(['/auth/reset-password', '_method_overwrite', "value='PUT'"]);
+            $response->assertSeeHtml(['/auth/reset-password', '_method', "value='PUT|"]);
 
 
         }

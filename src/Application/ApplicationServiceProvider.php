@@ -6,7 +6,7 @@
 
     namespace WPEmerge\Application;
 
-    use Tests\unit\View\MethodField;
+    use WPEmerge\View\MethodField;
     use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewFactoryInterface;

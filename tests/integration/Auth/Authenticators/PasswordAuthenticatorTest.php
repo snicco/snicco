@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration\Auth;
+    namespace Tests\integration\Auth\Authenticators;
 
     use Tests\AuthTestCase;
     use WPEmerge\Auth\Authenticators\PasswordAuthenticator;
-    use WPEmerge\Auth\Responses\SuccessfulLoginResponse;
     use WPEmerge\Routing\UrlGenerator;
+
 
     class PasswordAuthenticatorTest extends AuthTestCase
     {

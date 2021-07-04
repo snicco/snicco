@@ -4,26 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration\Auth;
+    namespace Tests\integration\Auth\Authenticators;
 
-    use Nyholm\Psr7\Uri;
     use Tests\AuthTestCase;
-    use Tests\helpers\CreatePsr17Factories;
-    use Tests\helpers\CreateRouteCollection;
-    use Tests\helpers\CreateRouteMatcher;
-    use Tests\helpers\CreateUrlGenerator;
-    use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\IntegrationTest;
-    use Tests\stubs\TestApp;
-    use Tests\stubs\TestMagicLink;
-    use Tests\stubs\TestRequest;
     use WPEmerge\Auth\Authenticators\MagicLinkAuthenticator;
-    use WPEmerge\Auth\Authenticators\PasswordAuthenticator;
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
     use WPEmerge\Auth\Responses\MagicLinkLoginView;
-    use WPEmerge\Auth\Responses\SuccessfulLoginResponse;
     use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\Http\Delegate;
     use WPEmerge\Routing\UrlGenerator;
 
     class MagicLinkAuthenticatorTest extends AuthTestCase

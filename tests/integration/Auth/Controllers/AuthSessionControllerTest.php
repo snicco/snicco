@@ -4,29 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\integration\Auth;
+    namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use Tests\helpers\HashesSessionIds;
-    use Tests\helpers\TravelsTime;
-    use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\IntegrationTest;
-    use Tests\stubs\HeaderStack;
-    use Tests\stubs\TestApp;
-    use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Auth\Authenticators\PasswordAuthenticator;
-    use WPEmerge\Auth\AuthServiceProvider;
     use WPEmerge\Auth\Contracts\Authenticator;
     use WPEmerge\Auth\Events\Login;
-    use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
     use WPEmerge\Auth\Traits\ResolvesUser;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Session\SessionServiceProvider;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Support\Str;
     use WPEmerge\Testing\TestResponse;
+
 
     class AuthSessionControllerTest extends AuthTestCase
     {
@@ -136,7 +125,7 @@
 
                 $auth_cookies_sent = true;
 
-            }, 10, 5 );
+            }, 10, 5);
 
             $this->postToLogin([
                 'pwd' => 'password',
@@ -308,7 +297,6 @@
         }
 
     }
-
 
     class CustomAuthenticator extends Authenticator
     {

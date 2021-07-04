@@ -8,10 +8,10 @@
 
     use Contracts\ContainerAdapter;
     use Psr\Http\Message\ResponseInterface;
-    use Tests\unit\View\MethodField;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\View\MethodField;
 
     class MethodOverride extends Middleware
     {
@@ -35,15 +35,21 @@
         public function handle(Request $request, Delegate $next) : ResponseInterface
         {
 
-            if ( $request->getMethod() !== 'POST' ) {
+            if ( $request->getMethod() !== 'POST' || ! $request->filled('_method') ) {
                 return $next($request);
             }
 
-            $request = $request->withMethod(
-                $this->method_field->methodOverride($request)
-            );
+            $signature = $request->post('_method');
 
-           $this->container->instance(Request::class, $request);
+            if ( ! $method = $this->method_field->validate($signature) ) {
+
+                return $next($request);
+
+            }
+
+            $request = $request->withMethod($method);
+
+            $this->container->instance(Request::class, $request);
 
             return $next($request);
 

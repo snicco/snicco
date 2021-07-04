@@ -13,11 +13,13 @@
 		return strtoupper($request->input('page')). '_ADMIN';
 
 	});
+
 	$router->get( 'admin.php/foo', function ( Request $request ) {
 
 		return strtoupper($request->input('page')). '_ADMIN';
 
 	})->name('foo');
+
 	$router->post( 'biz', function ( Request $request ) {
 
 		return strtoupper($request->input('page')). '_ADMIN';

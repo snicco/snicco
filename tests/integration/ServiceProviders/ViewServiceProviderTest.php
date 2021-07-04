@@ -8,7 +8,7 @@
 
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use Tests\unit\View\MethodField;
+    use WPEmerge\View\MethodField;
     use WPEmerge\Contracts\ViewEngineInterface;
     use WPEmerge\Contracts\ViewFactoryInterface;
     use WPEmerge\View\GlobalContext;

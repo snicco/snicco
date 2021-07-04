@@ -14,7 +14,6 @@
     use BaconQrCode\Writer;
     use PragmaRX\Google2FA\Google2FA;
     use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPEmerge\Auth\Traits\DecryptsRecoveryCodes;
     use WPEmerge\Auth\Traits\ResolvesUser;
     use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
     use WPEmerge\Contracts\EncryptorInterface;
