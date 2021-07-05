@@ -161,6 +161,7 @@
 
             $this->config->extend('auth.confirmation.duration', SessionManager::HOUR_IN_SEC * 3);
             $this->config->extend('auth.idle', SessionManager::HOUR_IN_SEC / 2);
+            $this->config->extend('auth.authenticator', 'password');
             $this->config->extend('auth.endpoint', 'auth');
             $this->config->extend('routing.api.endpoints', [
 
@@ -280,7 +281,7 @@
 
             if ( ! count($pipeline) ) {
 
-                $primary = ( $this->config->get('auth.authenticator', 'password') === 'email' )
+                $primary = ( $this->config->get('auth.authenticator') === 'email' )
                     ? MagicLinkAuthenticator::class
                     : PasswordAuthenticator::class;
 

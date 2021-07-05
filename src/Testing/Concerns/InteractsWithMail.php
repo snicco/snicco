@@ -6,6 +6,7 @@
 
     namespace WPEmerge\Testing\Concerns;
 
+    use BetterWpHooks\Testing\FakeDispatcher;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Events\PendingMail;
     use PHPUnit\Framework\Assert as PHPUnit;
@@ -35,6 +36,9 @@
 
             $fake_dispatcher = ApplicationEvent::dispatcher();
 
+            $this->checkMailWasFaked($fake_dispatcher);
+
+
             $fake_dispatcher->assertDispatched(PendingMail::class, function (PendingMail $event) use ($mailable) {
 
                 return $event->mail instanceof $mailable;
@@ -54,6 +58,8 @@
 
             $fake_dispatcher = ApplicationEvent::dispatcher();
 
+            $this->checkMailWasFaked($fake_dispatcher);
+
             $fake_dispatcher->assertNotDispatched(PendingMail::class, function (PendingMail $event) use ($mailable) {
 
                 return $event->mail instanceof $mailable;
@@ -61,6 +67,13 @@
             }, "The mail [$mailable] was not supposed to be sent.");
 
 
+        }
+
+        private function checkMailWasFaked($fake_dispatcher)
+        {
+            if ( ! $fake_dispatcher instanceof FakeDispatcher ) {
+                throw new \LogicException('Mails were not faked. Did you forget to call [$this->mailFake()]?');
+            }
         }
 
     }

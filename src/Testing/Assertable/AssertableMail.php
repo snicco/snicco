@@ -86,7 +86,6 @@
                 if ( is_int($key) ) {
                     PHPUnit::assertTrue(Arr::has($this->mail->buildViewData(), $value), "The mail view does not have any context for [$value].");
                 } else {
-
                     PHPUnit::assertTrue(Arr::has($this->mail->buildViewData(), $key), "The mail view does not have any context for [$key].");
                     PHPUnit::assertSame($value, Arr::get($this->mail->buildViewData(), $key));
                 }

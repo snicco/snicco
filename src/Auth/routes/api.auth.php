@@ -4,6 +4,7 @@
     declare(strict_types = 1);
 
     use WPEmerge\Application\ApplicationConfig;
+    use WPEmerge\Auth\Controllers\AccountController;
     use WPEmerge\Auth\Controllers\AuthConfirmationEmailController;
     use WPEmerge\Auth\Controllers\AuthSessionController;
     use WPEmerge\Auth\Controllers\ConfirmedAuthSessionController;
@@ -20,21 +21,29 @@
     /** @var ApplicationConfig $config */
 
     // Login
-    $router->get('/login', [AuthSessionController::class, 'create'])
-           ->middleware('guest')
-           ->name('login');
+    $router->middleware('guest')->group(function (Router $router) use ($config) {
 
-    $router->post('/login', [AuthSessionController::class, 'store'])
-           ->middleware(['csrf', 'guest'])
-           ->name('login');
 
-    // Login/Magic-link
-    $router->post('login/create-magic-link', [LoginMagicLinkController::class, 'store'])
-           ->middleware('guest')->name('login.create-magic-link');
+        $router->get('/login', [AuthSessionController::class, 'create'])
+               ->name('login');
 
-    $router->get('login/magic-link', [AuthSessionController::class, 'store'])
-           ->middleware('guest')
-           ->name('login.magic-link');
+        $router->post('/login', [AuthSessionController::class, 'store'])
+               ->middleware('csrf');
+
+        // Magic-link
+        if ($config->get('auth.authenticator') === 'email') {
+
+            $router->post('login/create-magic-link', [LoginMagicLinkController::class, 'store'])
+                   ->middleware('csrf')
+                   ->name('login.create-magic-link');
+
+            $router->get('login/magic-link', [AuthSessionController::class, 'store'])
+                   ->name('login.magic-link');
+
+        }
+
+
+    });
 
     // Logout
     $router->get('/logout/{user_id}', [AuthSessionController::class, 'destroy'])
@@ -116,18 +125,36 @@
     // registration
     if ($config->get('auth.features.registration')) {
 
-        $router->get('register', [RegistrationLinkController::class, 'create'])
-               ->middleware('guest')
-               ->name('register');
+        $router->middleware('guest')->group(function ($router) {
 
-        $router->post('register', [RegistrationLinkController::class, 'store'])
-               ->middleware('guest');
+            $router->get('register', [RegistrationLinkController::class, 'create'])
+                   ->name('register');
+
+            $router->post('register', [RegistrationLinkController::class, 'store']);
+
+        });
+
+        $router->name('accounts')->group(function (Router $router) {
+
+            $router->get('/accounts/create', [AccountController::class, 'create'])
+                   ->middleware(['guest', 'signed:absolute'])
+                   ->name('create');
+
+            $router->post('/accounts', [AccountController::class, 'store'])
+                   ->middleware(['guest', 'csrf', 'signed'])
+                   ->name('store');
+
+            $router->delete('/accounts/{user_id}', [AccountController::class, 'destroy'])
+                   ->middleware(['auth', 'csrf'])
+                   ->andNumber('user_id');
+
+        });
+
+
+
+
 
     }
-
-
-
-
 
 
 

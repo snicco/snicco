@@ -212,7 +212,7 @@
 
             if ($request->isExpectingJson()) {
 
-                return $this->response->json($http_exception->jsonMessage(), $http_exception->getStatusCode());
+                return $this->response->json(['message' => $http_exception->jsonMessage()], $http_exception->getStatusCode());
 
             }
 

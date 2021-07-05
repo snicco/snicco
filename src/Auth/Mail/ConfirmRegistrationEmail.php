@@ -20,7 +20,6 @@
 
         public function __construct(string $magic_link)
         {
-
             $this->magic_link = $magic_link;
         }
 

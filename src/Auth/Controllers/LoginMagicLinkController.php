@@ -24,7 +24,7 @@
 
             $user = $this->getUserByLogin($request->input('login', ''));
 
-            if ( ! $user instanceof WP_User) {
+            if ( ! $user instanceof WP_User ) {
 
                 return $this->redirectBack();
 
@@ -40,12 +40,12 @@
 
         }
 
+        // Always redirect back with a generic message.
         private function redirectBack() : RedirectResponse
         {
 
-            return $this->response_factory->redirect()
-                                          ->toLogin()
-                                          ->with('login.link.success', true);
+            return $this->response_factory->back($this->url->toRoute('auth.login'))
+                                          ->with('login.link.processed', true);
         }
 
         protected function createMagicLink($user, $expiration = 300) : string

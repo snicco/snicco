@@ -13,7 +13,6 @@
     use WPEmerge\Http\Cookies;
     use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Session\Session;
-    use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
     use WPEmerge\Support\VariableBag;
     use WPEmerge\Traits\ValidatesWordpressNonces;
