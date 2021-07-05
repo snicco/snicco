@@ -64,6 +64,12 @@
             }
 
             UserDeleted::dispatch([$user_id]);
+
+            // Isn't WordPress great?
+            if ( ! function_exists('wp_delete_user') ) {
+                require ABSPATH.'wp-admin/includes/user.php';
+            }
+
             wp_delete_user($user_id, $deletes_users->reassign($user_id));
 
             return $request->isExpectingJson()

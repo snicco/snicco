@@ -78,10 +78,10 @@
 
         }
 
-        public function destroy(Request $request, string $user_id) : Response
+        public function destroy(Request $request, int $user_id) : Response
         {
 
-            if ((int) $user_id !== WP::userId()) {
+            if ($user_id !== WP::userId()) {
 
                 throw new InvalidSignatureException();
 
