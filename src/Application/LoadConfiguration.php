@@ -18,8 +18,9 @@
 
             $config = [];
 
-            if (is_file($cached = $this->getCachedConfigPath($app))) {
-                $config = require $cached;
+            if (is_file($file = $this->getCachedConfigPath($app))) {
+
+                $config = $this->readFromCacheFile($file);
                 $loaded_from_cache = true;
             }
 
@@ -28,6 +29,12 @@
             if ( ! isset($loaded_from_cache) ) {
 
                 $this->loadConfigurationFromFiles($app, $config);
+
+            }
+
+            if ($config->get('app.cache_config')) {
+
+                $this->createCacheFile($app, $config);
 
             }
 
@@ -41,7 +48,7 @@
             $base_path = $app->basePath();
             $ds = DIRECTORY_SEPARATOR;
 
-            return $base_path.$ds.'bootstrap'.$ds.'cache'.$ds.'__generated::config.php';
+            return $base_path.$ds.'bootstrap'.$ds.'cache'.$ds.'__generated::config.json';
         }
 
         private function loadConfigurationFromFiles(Application $app, ApplicationConfig $config)
@@ -74,6 +81,34 @@
             ksort($files, SORT_NATURAL);
 
             return $files;
+        }
+
+        private function createCacheFile(Application $app, ApplicationConfig $config)
+        {
+
+            if ( ! is_dir($dir =$app->basePath(). DIRECTORY_SEPARATOR.'bootstrap'. DIRECTORY_SEPARATOR .'cache') ) {
+
+                wp_mkdir_p($dir);
+
+            }
+
+            $success = file_put_contents(
+                $dir . DIRECTORY_SEPARATOR .'__generated::config.json',
+                json_encode($config->all()
+                )
+            );
+
+            if ( $success === false ) {
+                throw new \RuntimeException('Config could not be written to cache file');
+            }
+
+        }
+
+        private function readFromCacheFile(string $cached)
+        {
+
+            return json_decode(file_get_contents($cached), true);
+
         }
 
 
