@@ -4,13 +4,13 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Events;
+	namespace WPMvc\Events;
 
     use BetterWpHooks\Traits\DispatchesConditionally;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Listeners\ShortCircuit404;
-    use WPEmerge\Support\Str;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Listeners\ShortCircuit404;
+    use WPMvc\Support\Str;
 
     class IncomingWebRequest extends IncomingRequest {
 

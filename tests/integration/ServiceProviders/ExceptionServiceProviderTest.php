@@ -9,11 +9,11 @@
 	use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\ExceptionHandling\DebugErrorHandler;
-	use WPEmerge\ExceptionHandling\NullErrorHandler;
-	use WPEmerge\ExceptionHandling\ProductionErrorHandler;
+    use WPMvc\Contracts\ErrorHandlerInterface;
+    use WPMvc\Contracts\ServiceProvider;
+    use WPMvc\ExceptionHandling\DebugErrorHandler;
+	use WPMvc\ExceptionHandling\NullErrorHandler;
+	use WPMvc\ExceptionHandling\ProductionErrorHandler;
 
     class ExceptionServiceProviderTest extends TestCase {
 

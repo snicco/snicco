@@ -4,19 +4,19 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http\Psr7;
+    namespace WPMvc\Http\Psr7;
 
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Message\UriInterface;
     use WP_User;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Cookies;
-    use WPEmerge\Routing\RoutingResult;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Support\Str;
-    use WPEmerge\Support\VariableBag;
-    use WPEmerge\Traits\ValidatesWordpressNonces;
-    use WPEmerge\Validation\Validator;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Cookies;
+    use WPMvc\Routing\RoutingResult;
+    use WPMvc\Session\Session;
+    use WPMvc\Support\Str;
+    use WPMvc\Support\VariableBag;
+    use WPMvc\Traits\ValidatesWordpressNonces;
+    use WPMvc\Validation\Validator;
 
     class Request implements ServerRequestInterface
     {

@@ -8,7 +8,7 @@
 
     use Tests\AuthTestCase;
     use Tests\stubs\TestApp;
-    use WPEmerge\Auth\Mail\ResetPasswordMail;
+    use WPMvc\Auth\Mail\ResetPasswordMail;
 
     class ForgotPasswordControllerTest extends AuthTestCase
     {

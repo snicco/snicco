@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Controllers;
+    namespace WPMvc\Auth\Controllers;
 
     use Respect\Validation\Validator;
     use WP_User;
-    use WPEmerge\Auth\Traits\ResolvesUser;
-    use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\Auth\Mail\ResetPasswordMail;
-    use WPEmerge\Http\Controller;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Mail\MailBuilder;
-    use WPEmerge\Session\CsrfField;
+    use WPMvc\Auth\Traits\ResolvesUser;
+    use WPMvc\Contracts\ViewInterface;
+    use WPMvc\Auth\Mail\ResetPasswordMail;
+    use WPMvc\Http\Controller;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Responses\RedirectResponse;
+    use WPMvc\Mail\MailBuilder;
+    use WPMvc\Session\CsrfField;
     use Respect\Validation\Validator as v;
 
     class ForgotPasswordController extends Controller

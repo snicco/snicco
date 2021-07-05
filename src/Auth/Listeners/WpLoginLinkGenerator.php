@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Listeners;
+    namespace WPMvc\Auth\Listeners;
 
-    use WPEmerge\Auth\Events\GenerateLoginUrl;
-    use WPEmerge\Auth\Events\GenerateLogoutUrl;
-    use WPEmerge\Events\ResponseSent;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Redirector;
-    use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Routing\UrlGenerator;
+    use WPMvc\Auth\Events\GenerateLoginUrl;
+    use WPMvc\Auth\Events\GenerateLogoutUrl;
+    use WPMvc\Events\ResponseSent;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Redirector;
+    use WPMvc\Http\ResponseEmitter;
+    use WPMvc\Routing\UrlGenerator;
 
     class WpLoginLinkGenerator
     {

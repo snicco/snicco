@@ -4,9 +4,9 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Traits;
+	namespace WPMvc\Traits;
 
-	use WPEmerge\Http\Psr7\Request;
+	use WPMvc\Http\Psr7\Request;
 
     trait HandlesExceptions {
 

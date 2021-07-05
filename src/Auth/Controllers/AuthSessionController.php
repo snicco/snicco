@@ -4,26 +4,26 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Controllers;
+    namespace WPMvc\Auth\Controllers;
 
     use Closure;
     use WP_User;
-    use WPEmerge\Auth\Events\Login;
-    use WPEmerge\Auth\Contracts\LoginResponse;
-    use WPEmerge\Auth\Responses\LogoutResponse;
-    use WPEmerge\Auth\Responses\SuccessfulLoginResponse;
-    use WPEmerge\Auth\Contracts\LoginViewResponse;
-    use WPEmerge\Contracts\ResponsableInterface;
-    use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
-    use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Controller;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Routing\Pipeline;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Support\Url;
+    use WPMvc\Auth\Events\Login;
+    use WPMvc\Auth\Contracts\LoginResponse;
+    use WPMvc\Auth\Responses\LogoutResponse;
+    use WPMvc\Auth\Responses\SuccessfulLoginResponse;
+    use WPMvc\Auth\Contracts\LoginViewResponse;
+    use WPMvc\Contracts\ResponsableInterface;
+    use WPMvc\Auth\Exceptions\FailedAuthenticationException;
+    use WPMvc\ExceptionHandling\Exceptions\InvalidSignatureException;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Controller;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Response;
+    use WPMvc\Routing\Pipeline;
+    use WPMvc\Session\Session;
+    use WPMvc\Support\Arr;
+    use WPMvc\Support\Url;
 
     class AuthSessionController extends Controller
     {

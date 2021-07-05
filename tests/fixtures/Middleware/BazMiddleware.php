@@ -9,8 +9,8 @@
 	use Psr\Http\Message\ResponseInterface;
     use Tests\fixtures\TestDependencies\Bar;
     use Tests\fixtures\TestDependencies\Baz;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Contracts\Middleware;
+    use WPMvc\Http\Psr7\Request;
 
     class BazMiddleware extends Middleware {
 

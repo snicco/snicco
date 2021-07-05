@@ -8,11 +8,11 @@
 
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\ExceptionHandling\ProductionErrorHandler;
-    use WPEmerge\Session\SessionServiceProvider;
-    use WPEmerge\Testing\TestResponse;
-    use WPEmerge\Validation\Exceptions\ValidationException;
+    use WPMvc\Contracts\ErrorHandlerInterface;
+    use WPMvc\ExceptionHandling\ProductionErrorHandler;
+    use WPMvc\Session\SessionServiceProvider;
+    use WPMvc\Testing\TestResponse;
+    use WPMvc\Validation\Exceptions\ValidationException;
 
     class ValidationExceptionTest extends TestCase
     {

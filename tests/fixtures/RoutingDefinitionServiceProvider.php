@@ -6,8 +6,8 @@
 
     namespace Tests\fixtures;
 
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Support\Arr;
+    use WPMvc\Contracts\ServiceProvider;
+    use WPMvc\Support\Arr;
 
     class RoutingDefinitionServiceProvider extends ServiceProvider
     {

@@ -11,13 +11,13 @@
     use Tests\helpers\TravelsTime;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
-    use WPEmerge\Auth\AuthSessionManager;
-    use WPEmerge\Session\Contracts\SessionDriver;
-    use WPEmerge\Session\Contracts\SessionManagerInterface;
-    use WPEmerge\Session\Drivers\ArraySessionDriver;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Session\SessionManager;
-    use WPEmerge\Support\Arr;
+    use WPMvc\Auth\AuthSessionManager;
+    use WPMvc\Session\Contracts\SessionDriver;
+    use WPMvc\Session\Contracts\SessionManagerInterface;
+    use WPMvc\Session\Drivers\ArraySessionDriver;
+    use WPMvc\Session\Session;
+    use WPMvc\Session\SessionManager;
+    use WPMvc\Support\Arr;
 
     class AuthSessionManagerTest extends AuthTestCase
     {

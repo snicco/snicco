@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session\Events;
+    namespace WPMvc\Session\Events;
 
     use BetterWpHooks\Traits\IsAction;
     use WP_User;
-    use WPEmerge\Application\ApplicationEvent;
+    use WPMvc\Application\ApplicationEvent;
 
     class NewLogin extends ApplicationEvent
     {

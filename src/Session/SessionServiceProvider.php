@@ -4,28 +4,28 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace WPMvc\Session;
 
     use Psr\Http\Message\ResponseFactoryInterface;
     use Slim\Csrf\Guard;
-    use WPEmerge\Application\Application;
-    use WPEmerge\Auth\AuthServiceProvider;
-    use WPEmerge\Contracts\AbstractRedirector;
-    use WPEmerge\Contracts\EncryptorInterface;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Session\Contracts\SessionDriver;
-    use WPEmerge\Session\Contracts\SessionManagerInterface;
-    use WPEmerge\Session\Events\NewLogin;
-    use WPEmerge\Session\Events\NewLogout;
-    use WPEmerge\Session\Drivers\ArraySessionDriver;
-    use WPEmerge\Session\Drivers\DatabaseSessionDriver;
-    use WPEmerge\Session\Middleware\CsrfMiddleware;
-    use WPEmerge\Session\Middleware\ShareSessionWithView;
-    use WPEmerge\Session\Middleware\StartSessionMiddleware;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\View\GlobalContext;
+    use WPMvc\Application\Application;
+    use WPMvc\Auth\AuthServiceProvider;
+    use WPMvc\Contracts\AbstractRedirector;
+    use WPMvc\Contracts\EncryptorInterface;
+    use WPMvc\Contracts\ServiceProvider;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Routing\UrlGenerator;
+    use WPMvc\Session\Contracts\SessionDriver;
+    use WPMvc\Session\Contracts\SessionManagerInterface;
+    use WPMvc\Session\Events\NewLogin;
+    use WPMvc\Session\Events\NewLogout;
+    use WPMvc\Session\Drivers\ArraySessionDriver;
+    use WPMvc\Session\Drivers\DatabaseSessionDriver;
+    use WPMvc\Session\Middleware\CsrfMiddleware;
+    use WPMvc\Session\Middleware\ShareSessionWithView;
+    use WPMvc\Session\Middleware\StartSessionMiddleware;
+    use WPMvc\Support\Arr;
+    use WPMvc\View\GlobalContext;
 
     class SessionServiceProvider extends ServiceProvider
     {

@@ -10,8 +10,8 @@
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\UnitTest;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\ResponseFactory;
+    use WPMvc\Http\Psr7\Response;
+    use WPMvc\Http\ResponseFactory;
 
     class ResponseTest extends UnitTest
     {

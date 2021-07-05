@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Traits;
+    namespace WPMvc\Auth\Traits;
 
-    use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPEmerge\Auth\RecoveryCode;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use WPMvc\Auth\RecoveryCode;
+    use WPMvc\Http\Psr7\Request;
 
     trait PerformsTwoFactorAuthentication
     {

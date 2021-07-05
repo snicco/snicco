@@ -10,10 +10,10 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use WPEmerge\Application\Application;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Events\ResponseSent;
-    use WPEmerge\Http\Responses\RedirectResponse;
+    use WPMvc\Application\Application;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Events\ResponseSent;
+    use WPMvc\Http\Responses\RedirectResponse;
 
     class RedirectRoutesTest extends TestCase
     {

@@ -15,14 +15,14 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Contracts\AbstractRedirector;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Redirector;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Routing\Router;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\View\ViewFactory;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Contracts\AbstractRedirector;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Redirector;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Routing\Router;
+    use WPMvc\Routing\UrlGenerator;
+    use WPMvc\View\ViewFactory;
 
     class RedirectRoutesTest extends UnitTest
     {

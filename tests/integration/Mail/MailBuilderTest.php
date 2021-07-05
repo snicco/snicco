@@ -10,9 +10,9 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Events\PendingMail;
-    use WPEmerge\Mail\Mailable;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Events\PendingMail;
+    use WPMvc\Mail\Mailable;
 
     class MailBuilderTest extends TestCase
     {

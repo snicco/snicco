@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Http;
+	namespace WPMvc\Http;
 
 	use Contracts\ContainerAdapter;
 

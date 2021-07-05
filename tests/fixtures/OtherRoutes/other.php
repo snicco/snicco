@@ -3,7 +3,7 @@
 
     declare(strict_types = 1);
 
-    use WPEmerge\Routing\Router;
+    use WPMvc\Routing\Router;
 
     /**
      * @var Router $router

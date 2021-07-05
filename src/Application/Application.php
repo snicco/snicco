@@ -4,27 +4,21 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Application;
+    namespace WPMvc\Application;
 
     use Contracts\ContainerAdapter;
     use Nyholm\Psr7Server\ServerRequestCreator;
-    use Psr\Http\Message\ResponseFactoryInterface;
-    use Psr\Http\Message\ServerRequestFactoryInterface;
-    use Psr\Http\Message\ServerRequestInterface;
-    use Psr\Http\Message\StreamFactoryInterface;
-    use Psr\Http\Message\UploadedFileFactoryInterface;
-    use Psr\Http\Message\UriFactoryInterface;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Events\EventServiceProvider;
-    use WPEmerge\ExceptionHandling\ExceptionServiceProvider;
-    use WPEmerge\Factories\FactoryServiceProvider;
-    use WPEmerge\Http\HttpServiceProvider;
-    use WPEmerge\Mail\MailServiceProvider;
-    use WPEmerge\Middleware\MiddlewareServiceProvider;
-    use WPEmerge\Routing\RoutingServiceProvider;
-    use WPEmerge\View\ViewServiceProvider;
-    use WPEmerge\Support\WpFacade;
+    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Events\EventServiceProvider;
+    use WPMvc\ExceptionHandling\ExceptionServiceProvider;
+    use WPMvc\Factories\FactoryServiceProvider;
+    use WPMvc\Http\HttpServiceProvider;
+    use WPMvc\Mail\MailServiceProvider;
+    use WPMvc\Middleware\MiddlewareServiceProvider;
+    use WPMvc\Routing\RoutingServiceProvider;
+    use WPMvc\View\ViewServiceProvider;
+    use WPMvc\Support\WpFacade;
 
     class Application
     {

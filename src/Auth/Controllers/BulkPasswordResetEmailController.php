@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Controllers;
+    namespace WPMvc\Auth\Controllers;
 
-    use WPEmerge\Auth\Mail\ResetPasswordMail;
-    use WPEmerge\Auth\Traits\SendsPasswordResetMails;
-    use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Controller;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Mail\MailBuilder;
-    use WPEmerge\Support\Arr;
+    use WPMvc\Auth\Mail\ResetPasswordMail;
+    use WPMvc\Auth\Traits\SendsPasswordResetMails;
+    use WPMvc\ExceptionHandling\Exceptions\AuthorizationException;
+    use WPMvc\Http\Responses\RedirectResponse;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Controller;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Mail\MailBuilder;
+    use WPMvc\Support\Arr;
 
     /**
      * This Controller performs the same logic that happens inside user.php

@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session\Middleware;
+    namespace WPMvc\Session\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
     use Slim\Csrf\Guard;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Session\Exceptions\InvalidCsrfTokenException;
+    use WPMvc\Contracts\ErrorHandlerInterface;
+    use WPMvc\Contracts\Middleware;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Session\Exceptions\InvalidCsrfTokenException;
 
     class CsrfMiddleware extends Middleware
     {

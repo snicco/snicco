@@ -4,23 +4,23 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Application;
+    namespace WPMvc\Application;
 
     use Contracts\ContainerAdapter;
     use LogicException;
     use Tests\unit\View\MethodField;
-    use WPEmerge\Contracts\AbstractRedirector;
-    use WPEmerge\Http\Cookies;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Mail\MailBuilder;
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\Router;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\Session\CsrfField;
-    use WPEmerge\Session\Session;
-    use WPEmerge\View\GlobalContext;
+    use WPMvc\Contracts\AbstractRedirector;
+    use WPMvc\Http\Cookies;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Http\Responses\RedirectResponse;
+    use WPMvc\Mail\MailBuilder;
+    use WPMvc\Routing\Route;
+    use WPMvc\Routing\Router;
+    use WPMvc\Routing\UrlGenerator;
+    use WPMvc\Contracts\ViewInterface;
+    use WPMvc\Session\CsrfField;
+    use WPMvc\Session\Session;
+    use WPMvc\View\GlobalContext;
 
     /**
      * Can be applied to your App class via a "@mixin" annotation for better IDE support.
@@ -168,7 +168,7 @@
          * Returns a response factory instance.
          *
          * @return  ResponseFactory
-         * @see \WPEmerge\Http\ResponseFactory
+         * @see \WPMvc\Http\ResponseFactory
          */
         public static function response() : ResponseFactory
         {
@@ -180,7 +180,7 @@
          * @param  string|string[]  $views
          *
          * @return ViewInterface
-         * @see    \WPEmerge\View\ViewFactory::make()
+         * @see    \WPMvc\View\ViewFactory::make()
          */
         public static function view($views) : ViewInterface
         {
@@ -190,7 +190,7 @@
          * Output child layout content.
          *
          * @return void
-         * @see    \WPEmerge\View\PhpViewEngine::includeNextView()
+         * @see    \WPMvc\View\PhpViewEngine::includeNextView()
          */
         public static function includeChildViews() : void
         {
@@ -203,8 +203,8 @@
          * @param  array<string, mixed>  $context
          *
          * @return string
-         * @see    \WPEmerge\Contracts\ViewInterface::toString()
-         * @see    \WPEmerge\View\ViewFactory::make()
+         * @see    \WPMvc\Contracts\ViewInterface::toString()
+         * @see    \WPMvc\View\ViewFactory::make()
          */
         public static function render($views, array $context = []) : string
         {
@@ -218,7 +218,7 @@
          * @param  string|array|callable|\Closure  $callable
          *
          * @return void
-         * @see \WPEmerge\View\ViewComposerCollection::addComposer()
+         * @see \WPMvc\View\ViewComposerCollection::addComposer()
          */
         public static function addComposer($views, $callable) : void
         {

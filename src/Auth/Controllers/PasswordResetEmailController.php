@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Controllers;
+    namespace WPMvc\Auth\Controllers;
 
     use WP_User;
-    use WPEmerge\Auth\Traits\ResolvesUser;
-    use WPEmerge\Auth\Traits\SendsPasswordResetMails;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Controller;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Mail\MailBuilder;
-    use WPEmerge\Traits\ValidatesWordpressNonces;
+    use WPMvc\Auth\Traits\ResolvesUser;
+    use WPMvc\Auth\Traits\SendsPasswordResetMails;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Controller;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Response;
+    use WPMvc\Mail\MailBuilder;
+    use WPMvc\Traits\ValidatesWordpressNonces;
 
     class PasswordResetEmailController extends Controller
     {

@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Listeners;
+    namespace WPMvc\Listeners;
 
-    use WPEmerge\Application\ApplicationConfig;
-    use WPEmerge\Contracts\Mailer;
-    use WPEmerge\Events\PendingMail;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Mail\Mailable;
-    use WPEmerge\View\ViewFactory;
+    use WPMvc\Application\ApplicationConfig;
+    use WPMvc\Contracts\Mailer;
+    use WPMvc\Events\PendingMail;
+    use WPMvc\Support\WP;
+    use WPMvc\Mail\Mailable;
+    use WPMvc\View\ViewFactory;
 
     class SendMail
     {

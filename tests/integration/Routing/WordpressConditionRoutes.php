@@ -12,9 +12,9 @@
     use Tests\stubs\TestRequest;
     use Tests\helpers\CreatesWpUrls;
     use Tests\TestCase;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Events\ResponseSent;
-    use WPEmerge\Http\HttpKernel;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Events\ResponseSent;
+    use WPMvc\Http\HttpKernel;
 
     class WordpressConditionRoutes extends TestCase
     {

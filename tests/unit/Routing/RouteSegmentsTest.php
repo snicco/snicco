@@ -12,12 +12,12 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request as Request;
-    use WPEmerge\Routing\Conditions\QueryStringCondition;
-    use WPEmerge\Routing\Router;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Events\IncomingWebRequest;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Psr7\Request as Request;
+    use WPMvc\Routing\Conditions\QueryStringCondition;
+    use WPMvc\Routing\Router;
 
     class RouteSegmentsTest extends UnitTest
     {

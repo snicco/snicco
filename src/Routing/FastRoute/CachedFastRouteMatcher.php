@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing\FastRoute;
+    namespace WPMvc\Routing\FastRoute;
 
     use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
-    use WPEmerge\Contracts\RouteMatcher;
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RoutingResult;
-    use WPEmerge\Traits\PreparesRouteForExport;
+    use WPMvc\Contracts\RouteMatcher;
+    use WPMvc\Routing\Route;
+    use WPMvc\Routing\RoutingResult;
+    use WPMvc\Traits\PreparesRouteForExport;
 
 
     class CachedFastRouteMatcher implements RouteMatcher

@@ -9,14 +9,14 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
-    use WPEmerge\Middleware\Core\OpenRedirectProtection;
-    use WPEmerge\Middleware\Core\RouteRunner;
-    use WPEmerge\Middleware\MiddlewareStack;
-    use WPEmerge\Middleware\Secure;
-    use WPEmerge\Middleware\TrailingSlash;
-    use WPEmerge\Middleware\Www;
-    use WPEmerge\Routing\Pipeline;
+    use WPMvc\Middleware\Core\EvaluateResponseMiddleware;
+    use WPMvc\Middleware\Core\OpenRedirectProtection;
+    use WPMvc\Middleware\Core\RouteRunner;
+    use WPMvc\Middleware\MiddlewareStack;
+    use WPMvc\Middleware\Secure;
+    use WPMvc\Middleware\TrailingSlash;
+    use WPMvc\Middleware\Www;
+    use WPMvc\Routing\Pipeline;
 
     class MiddlewareServiceProviderTest extends TestCase
     {

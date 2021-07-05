@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\ExceptionHandling;
+	namespace WPMvc\ExceptionHandling;
 
-    use WPEmerge\Events\IncomingAjaxRequest;
-    use WPEmerge\Events\ResponseSent;
-    use WPEmerge\Http\Responses\RedirectResponse;
+    use WPMvc\Events\IncomingAjaxRequest;
+    use WPMvc\Events\ResponseSent;
+    use WPMvc\Http\Responses\RedirectResponse;
 
     class ShutdownHandler {
 

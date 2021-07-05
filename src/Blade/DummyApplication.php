@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Blade;
+    namespace WPMvc\Blade;
 
     use Closure;
     use Illuminate\Contracts\Foundation\Application;

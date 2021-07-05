@@ -8,10 +8,10 @@
 
     use Tests\stubs\TestMagicLink;
     use Tests\stubs\TestRequest;
-    use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
-    use WPEmerge\Routing\UrlGenerator;
+    use WPMvc\Contracts\MagicLink;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Routing\FastRoute\FastRouteUrlGenerator;
+    use WPMvc\Routing\UrlGenerator;
 
     trait CreateUrlGenerator
     {

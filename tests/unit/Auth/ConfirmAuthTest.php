@@ -10,10 +10,10 @@
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\TravelsTime;
     use Tests\MiddlewareTestCase;
-    use WPEmerge\Auth\Middleware\ConfirmAuth;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Routing\Route;
+    use WPMvc\Auth\Middleware\ConfirmAuth;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Routing\Route;
 
     class ConfirmAuthTest extends MiddlewareTestCase
     {

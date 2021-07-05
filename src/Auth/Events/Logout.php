@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Events;
+    namespace WPMvc\Auth\Events;
 
     use BetterWpHooks\Traits\IsAction;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Session\Contracts\SessionDriver;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Session\Session;
+    use WPMvc\Session\Contracts\SessionDriver;
 
     class Logout extends ApplicationEvent
     {

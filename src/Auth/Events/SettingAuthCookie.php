@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Events;
+    namespace WPMvc\Auth\Events;
 
     use WP_User;
-    use WPEmerge\Application\ApplicationEvent;
+    use WPMvc\Application\ApplicationEvent;
 
     class SettingAuthCookie extends ApplicationEvent
     {

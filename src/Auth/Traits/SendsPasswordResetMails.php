@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Traits;
+    namespace WPMvc\Auth\Traits;
 
-    use WPEmerge\Auth\Mail\ResetPasswordMail;
+    use WPMvc\Auth\Mail\ResetPasswordMail;
 
     trait SendsPasswordResetMails
     {

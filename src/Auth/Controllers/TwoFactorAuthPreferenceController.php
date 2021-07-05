@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Controllers;
+    namespace WPMvc\Auth\Controllers;
 
-    use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPEmerge\Auth\Traits\GeneratesRecoveryCodes;
-    use WPEmerge\Auth\Traits\InteractsWithTwoFactorCodes;
-    use WPEmerge\Auth\Traits\InteractsWithTwoFactorSecrets;
-    use WPEmerge\Auth\Traits\ResolvesUser;
-    use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
-    use WPEmerge\Contracts\EncryptorInterface;
-    use WPEmerge\Http\Controller;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use WPMvc\Auth\Traits\GeneratesRecoveryCodes;
+    use WPMvc\Auth\Traits\InteractsWithTwoFactorCodes;
+    use WPMvc\Auth\Traits\InteractsWithTwoFactorSecrets;
+    use WPMvc\Auth\Traits\ResolvesUser;
+    use WPMvc\Auth\Traits\ResolveTwoFactorSecrets;
+    use WPMvc\Contracts\EncryptorInterface;
+    use WPMvc\Http\Controller;
+    use WPMvc\Http\Psr7\Request;
 
     class TwoFactorAuthPreferenceController extends Controller
     {

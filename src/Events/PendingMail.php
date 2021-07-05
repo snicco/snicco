@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Events;
+    namespace WPMvc\Events;
 
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Mail\Mailable;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Mail\Mailable;
 
     class PendingMail extends ApplicationEvent
     {

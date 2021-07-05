@@ -4,22 +4,22 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Application;
+    namespace WPMvc\Application;
 
-    use WPEmerge\View\MethodField;
-    use WPEmerge\Contracts\AbstractRedirector;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Contracts\ViewFactoryInterface;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\ExceptionHandling\ShutdownHandler;
-    use WPEmerge\Http\Cookies;
-    use WPEmerge\Routing\Router;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\View\GlobalContext;
-    use WPEmerge\View\PhpViewEngine;
-    use WPEmerge\View\ViewComposerCollection;
+    use WPMvc\View\MethodField;
+    use WPMvc\Contracts\AbstractRedirector;
+    use WPMvc\Contracts\ServiceProvider;
+    use WPMvc\Contracts\ViewFactoryInterface;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
+    use WPMvc\ExceptionHandling\ShutdownHandler;
+    use WPMvc\Http\Cookies;
+    use WPMvc\Routing\Router;
+    use WPMvc\Routing\UrlGenerator;
+    use WPMvc\View\GlobalContext;
+    use WPMvc\View\PhpViewEngine;
+    use WPMvc\View\ViewComposerCollection;
 
     class ApplicationServiceProvider extends ServiceProvider
     {

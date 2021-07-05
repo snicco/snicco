@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Blade;
+    namespace WPMvc\Blade;
 
     use Illuminate\View\Component as IlluminateComponent;
-    use WPEmerge\Contracts\ViewEngineInterface;
+    use WPMvc\Contracts\ViewEngineInterface;
 
     abstract class BladeComponent extends IlluminateComponent
     {

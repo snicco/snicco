@@ -2,10 +2,10 @@
 
 	declare(strict_types=1);
 
-	namespace WPEmerge\Application;
+	namespace WPMvc\Application;
 
 	use Illuminate\Config\Repository;
-	use WPEmerge\Support\Arr;
+	use WPMvc\Support\Arr;
 
 	class ApplicationConfig extends Repository {
 

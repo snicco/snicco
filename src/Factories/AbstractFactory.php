@@ -4,16 +4,16 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Factories;
+	namespace WPMvc\Factories;
 
 	use Contracts\ContainerAdapter;
 	use Illuminate\Support\Reflector;
-	use WPEmerge\Contracts\Handler;
-	use WPEmerge\Support\Str;
+	use WPMvc\Contracts\Handler;
+	use WPMvc\Support\Str;
 	use Closure;
-	use WPEmerge\ExceptionHandling\Exceptions\Exception;
+	use WPMvc\ExceptionHandling\Exceptions\Exception;
 
-	use WPEmerge\Traits\ReflectsCallable;
+	use WPMvc\Traits\ReflectsCallable;
 
 	use function collect;
 

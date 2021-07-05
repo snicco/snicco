@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth;
+    namespace WPMvc\Auth;
 
     use Illuminate\Support\InteractsWithTime;
-    use WPEmerge\Http\Cookie;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Session\Contracts\SessionDriver;
-    use WPEmerge\Session\SessionManager;
-    use WPEmerge\Session\Contracts\SessionManagerInterface;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Traits\HasLottery;
+    use WPMvc\Http\Cookie;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Session\Session;
+    use WPMvc\Session\Contracts\SessionDriver;
+    use WPMvc\Session\SessionManager;
+    use WPMvc\Session\Contracts\SessionManagerInterface;
+    use WPMvc\Support\Arr;
+    use WPMvc\Traits\HasLottery;
 
     class AuthSessionManager implements SessionManagerInterface
     {

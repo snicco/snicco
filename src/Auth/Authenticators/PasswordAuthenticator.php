@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Authenticators;
+    namespace WPMvc\Auth\Authenticators;
 
     use WP_User;
-    use WPEmerge\Auth\Contracts\Authenticator;
-    use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
+    use WPMvc\Auth\Contracts\Authenticator;
+    use WPMvc\Auth\Exceptions\FailedAuthenticationException;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Response;
 
     class PasswordAuthenticator extends Authenticator
     {

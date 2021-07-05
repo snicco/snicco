@@ -8,11 +8,11 @@
 
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPEmerge\Contracts\Mailer;
-    use WPEmerge\Events\PendingMail;
-    use WPEmerge\Listeners\SendMail;
-    use WPEmerge\Mail\MailBuilder;
-    use WPEmerge\Mail\WordPressMailer;
+    use WPMvc\Contracts\Mailer;
+    use WPMvc\Events\PendingMail;
+    use WPMvc\Listeners\SendMail;
+    use WPMvc\Mail\MailBuilder;
+    use WPMvc\Mail\WordPressMailer;
 
     class MailServiceProviderTest extends TestCase
     {

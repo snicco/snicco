@@ -4,20 +4,20 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Contracts;
+    namespace WPMvc\Contracts;
 
     use Contracts\ContainerAdapter;
-    use WPEmerge\Application\Application;
-    use WPEmerge\Application\ApplicationConfig;
-    use WPEmerge\Events\IncomingAdminRequest;
-    use WPEmerge\Events\IncomingAjaxRequest;
-    use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Session\SessionServiceProvider;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Support\Str;
+    use WPMvc\Application\Application;
+    use WPMvc\Application\ApplicationConfig;
+    use WPMvc\Events\IncomingAdminRequest;
+    use WPMvc\Events\IncomingAjaxRequest;
+    use WPMvc\Events\IncomingWebRequest;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Session\SessionServiceProvider;
+    use WPMvc\Support\Arr;
+    use WPMvc\Support\Str;
 
     abstract class ServiceProvider
     {

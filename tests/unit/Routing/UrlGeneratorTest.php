@@ -12,10 +12,10 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RouteCollection;
-    use WPEmerge\Support\Str;
+    use WPMvc\Support\WP;
+    use WPMvc\Routing\Route;
+    use WPMvc\Routing\RouteCollection;
+    use WPMvc\Support\Str;
 
     class UrlGeneratorTest extends UnitTest
     {

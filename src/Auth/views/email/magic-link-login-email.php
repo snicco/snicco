@@ -3,7 +3,7 @@
 
     declare(strict_types = 1);
 
-    use WPEmerge\Support\WP;
+    use WPMvc\Support\WP;
 
 ?>
 

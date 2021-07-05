@@ -16,23 +16,23 @@
     use Tests\UnitTest;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Events\IncomingAdminRequest;
-    use WPEmerge\Events\IncomingAjaxRequest;
-    use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Events\WpQueryFilterable;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Routing\CachedRouteCollection;
-    use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
-    use WPEmerge\Listeners\FilterWpQuery;
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\Router;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\View\ViewFactory;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Events\IncomingAdminRequest;
+    use WPMvc\Events\IncomingAjaxRequest;
+    use WPMvc\Events\IncomingWebRequest;
+    use WPMvc\Events\WpQueryFilterable;
+    use WPMvc\Support\WP;
+    use WPMvc\Factories\RouteActionFactory;
+    use WPMvc\Factories\ConditionFactory;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Routing\CachedRouteCollection;
+    use WPMvc\Routing\FastRoute\CachedFastRouteMatcher;
+    use WPMvc\Listeners\FilterWpQuery;
+    use WPMvc\Routing\Route;
+    use WPMvc\Routing\Router;
+    use WPMvc\Routing\UrlGenerator;
+    use WPMvc\View\ViewFactory;
 
     class RouteCachingTest extends UnitTest
     {

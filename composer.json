@@ -66,12 +66,12 @@
 
   "autoload": {
     "psr-4": {
-      "WPEmerge\\": "src/"
+      "WPMvc\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "WPEmerge\\": "src/",
+      "WPMvc\\": "src/",
       "Tests\\" : "tests/"
     },
     "files": [

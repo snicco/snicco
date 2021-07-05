@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Listeners;
+    namespace WPMvc\Auth\Listeners;
 
-    use WPEmerge\Session\Events\SessionRegenerated;
+    use WPMvc\Session\Events\SessionRegenerated;
 
     class RefreshAuthCookies
     {

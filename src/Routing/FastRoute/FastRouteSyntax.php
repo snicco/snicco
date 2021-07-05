@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing\FastRoute;
+    namespace WPMvc\Routing\FastRoute;
 
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Support\Str;
-    use WPEmerge\Support\Url;
-    use WPEmerge\Support\UrlParser;
+    use WPMvc\Routing\Route;
+    use WPMvc\Support\Str;
+    use WPMvc\Support\Url;
+    use WPMvc\Support\UrlParser;
 
     class FastRouteSyntax
     {

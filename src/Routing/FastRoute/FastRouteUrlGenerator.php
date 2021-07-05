@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing\FastRoute;
+    namespace WPMvc\Routing\FastRoute;
 
-    use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Contracts\RouteUrlGenerator;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RouteCollection;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Support\Str;
+    use WPMvc\Contracts\AbstractRouteCollection;
+    use WPMvc\Contracts\RouteUrlGenerator;
+    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
+    use WPMvc\Routing\Route;
+    use WPMvc\Routing\RouteCollection;
+    use WPMvc\Support\Arr;
+    use WPMvc\Support\Str;
 
     class FastRouteUrlGenerator implements RouteUrlGenerator
     {

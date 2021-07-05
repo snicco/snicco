@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Validation;
+    namespace WPMvc\Validation;
 
     use Respect\Validation\Factory;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Validation\Middleware\ShareValidatorWithRequest;
+    use WPMvc\Contracts\ServiceProvider;
+    use WPMvc\Validation\Middleware\ShareValidatorWithRequest;
 
     class ValidationServiceProvider extends ServiceProvider
     {
@@ -50,8 +50,8 @@
         {
             Factory::setDefaultInstance(
                 (new Factory())
-                    ->withRuleNamespace('WPEmerge\Validation\Rules')
-                    ->withExceptionNamespace('WPEmerge\Validation\Exceptions')
+                    ->withRuleNamespace('WPMvc\Validation\Rules')
+                    ->withExceptionNamespace('WPMvc\Validation\Exceptions')
             );
         }
 

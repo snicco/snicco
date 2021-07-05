@@ -12,7 +12,7 @@
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use WPEmerge\Routing\Router;
+    use WPMvc\Routing\Router;
 
     class FallbackControllerTest extends TestCase
     {

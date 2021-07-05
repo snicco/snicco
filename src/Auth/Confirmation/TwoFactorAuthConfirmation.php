@@ -4,19 +4,19 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Confirmation;
+    namespace WPMvc\Auth\Confirmation;
 
     use WP_User;
-    use WPEmerge\Auth\Contracts\AuthConfirmation;
-    use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPEmerge\Auth\Traits\InteractsWithTwoFactorSecrets;
-    use WPEmerge\Auth\Traits\PerformsTwoFactorAuthentication;
-    use WPEmerge\Auth\Traits\ResolvesUser;
-    use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
-    use WPEmerge\Contracts\EncryptorInterface;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\ResponseFactory;
+    use WPMvc\Auth\Contracts\AuthConfirmation;
+    use WPMvc\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use WPMvc\Auth\Traits\InteractsWithTwoFactorSecrets;
+    use WPMvc\Auth\Traits\PerformsTwoFactorAuthentication;
+    use WPMvc\Auth\Traits\ResolvesUser;
+    use WPMvc\Auth\Traits\ResolveTwoFactorSecrets;
+    use WPMvc\Contracts\EncryptorInterface;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Response;
+    use WPMvc\Http\ResponseFactory;
 
     class TwoFactorAuthConfirmation implements AuthConfirmation
     {

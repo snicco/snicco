@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Factories;
+	namespace WPMvc\Factories;
 
-	use WPEmerge\Contracts\Handler;
-	use WPEmerge\View\ViewComposer;
+	use WPMvc\Contracts\Handler;
+	use WPMvc\View\ViewComposer;
 
 	class ViewComposerFactory extends AbstractFactory {
 

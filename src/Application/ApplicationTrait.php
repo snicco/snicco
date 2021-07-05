@@ -4,12 +4,12 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Application;
+	namespace WPMvc\Application;
 
 	use BadMethodCallException;
     use Contracts\ContainerAdapter;
     use SniccoAdapter\BaseContainerAdapter;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
+    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
 
 	/**
 	 * Provides static access to an Application instance.

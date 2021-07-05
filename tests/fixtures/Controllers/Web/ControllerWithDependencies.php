@@ -8,7 +8,7 @@
 
 	use Tests\fixtures\TestDependencies\Bar;
 	use Tests\fixtures\TestDependencies\Foo;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Request;
 
 	class ControllerWithDependencies {
 

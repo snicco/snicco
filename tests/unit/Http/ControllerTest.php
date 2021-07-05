@@ -6,7 +6,7 @@
 
 	namespace Tests\unit\Http;
 
-	use WPEmerge\Http\Controller;
+	use WPMvc\Http\Controller;
 	use PHPUnit\Framework\TestCase;
 
 	class ControllerTest extends TestCase {

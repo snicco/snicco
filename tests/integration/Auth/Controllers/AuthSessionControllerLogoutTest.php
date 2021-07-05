@@ -7,12 +7,12 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Auth\Controllers\AuthSessionController;
-    use WPEmerge\Auth\Events\Logout;
-    use WPEmerge\Auth\Responses\LogoutResponse;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Auth\Controllers\AuthSessionController;
+    use WPMvc\Auth\Events\Logout;
+    use WPMvc\Auth\Responses\LogoutResponse;
+    use WPMvc\Routing\UrlGenerator;
+    use WPMvc\ExceptionHandling\Exceptions\InvalidSignatureException;
 
 
     /** @see AuthSessionController */

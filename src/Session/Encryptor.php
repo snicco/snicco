@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace WPMvc\Session;
 
     use Illuminate\Contracts\Encryption\EncryptException as IlluminateEncryptException;
     use Illuminate\Contracts\Encryption\DecryptException as IlluminateDecryptException;
     use Illuminate\Encryption\Encrypter;
-    use WPEmerge\Contracts\EncryptorInterface;
-    use WPEmerge\ExceptionHandling\Exceptions\EncryptException;
-    use WPEmerge\ExceptionHandling\Exceptions\DecryptException;
-    use WPEmerge\Support\Str;
+    use WPMvc\Contracts\EncryptorInterface;
+    use WPMvc\ExceptionHandling\Exceptions\EncryptException;
+    use WPMvc\ExceptionHandling\Exceptions\DecryptException;
+    use WPMvc\Support\Str;
 
     class Encryptor implements EncryptorInterface
     {

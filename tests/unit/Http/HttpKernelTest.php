@@ -15,19 +15,19 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
     use Tests\helpers\CreateDefaultWpApiMocks;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Events\IncomingAjaxRequest;
-    use WPEmerge\Events\ResponseSent;
-    use WPEmerge\ExceptionHandling\Exceptions\NotFoundException;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Cookies;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
-    use WPEmerge\Routing\Router;
-    use WPEmerge\Session\Session;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Contracts\AbstractRouteCollection;
+    use WPMvc\Events\IncomingAjaxRequest;
+    use WPMvc\Events\ResponseSent;
+    use WPMvc\ExceptionHandling\Exceptions\NotFoundException;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Cookies;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Http\Responses\RedirectResponse;
+    use WPMvc\Middleware\Core\EvaluateResponseMiddleware;
+    use WPMvc\Routing\Router;
+    use WPMvc\Session\Session;
 
     class HttpKernelTest extends UnitTest
     {

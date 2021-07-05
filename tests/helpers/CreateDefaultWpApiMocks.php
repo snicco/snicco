@@ -7,7 +7,7 @@
     namespace Tests\helpers;
 
     use WP_User;
-    use WPEmerge\Support\WP;
+    use WPMvc\Support\WP;
 
 
     trait CreateDefaultWpApiMocks

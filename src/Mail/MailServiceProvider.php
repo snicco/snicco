@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Mail;
+    namespace WPMvc\Mail;
 
     use BetterWpHooks\Contracts\Dispatcher;
-    use WPEmerge\Contracts\Mailer;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Events\PendingMail;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Listeners\SendMail;
+    use WPMvc\Contracts\Mailer;
+    use WPMvc\Contracts\ServiceProvider;
+    use WPMvc\Events\PendingMail;
+    use WPMvc\Support\WP;
+    use WPMvc\Listeners\SendMail;
 
     class MailServiceProvider extends ServiceProvider
     {

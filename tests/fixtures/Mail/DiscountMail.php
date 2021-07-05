@@ -6,7 +6,7 @@
 
     namespace Tests\fixtures\Mail;
 
-    use WPEmerge\Mail\Mailable;
+    use WPMvc\Mail\Mailable;
 
     class DiscountMail extends Mailable
     {

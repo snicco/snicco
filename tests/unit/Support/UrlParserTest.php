@@ -6,7 +6,7 @@
 
 	namespace Tests\unit\Support;
 
-	use WPEmerge\Support\UrlParser;
+	use WPMvc\Support\UrlParser;
 	use PHPUnit\Framework\TestCase;
 
 	class UrlParserTest extends TestCase {

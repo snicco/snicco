@@ -6,7 +6,7 @@
 
 	namespace Tests\unit\Support;
 
-	use WPEmerge\Support\VariableBag;
+	use WPMvc\Support\VariableBag;
 	use PHPUnit\Framework\TestCase;
 
 	class VariableBagTest extends TestCase {

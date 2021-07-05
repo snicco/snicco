@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Events;
+    namespace WPMvc\Auth\Events;
 
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Support\WP;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Support\WP;
 
     class GenerateLoginUrl extends ApplicationEvent {
 

@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Testing\Concerns;
+    namespace WPMvc\Testing\Concerns;
 
     use Nyholm\Psr7Server\ServerRequestCreator;
     use Psr\Http\Message\ResponseInterface;
@@ -13,23 +13,23 @@
     use Psr\Http\Message\UriFactoryInterface;
     use Psr\Http\Message\UriInterface;
     use Tests\helpers\CreatesWpUrls;
-    use WPEmerge\Application\Application;
-    use WPEmerge\Application\ApplicationConfig;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\Events\IncomingAdminRequest;
-    use WPEmerge\Events\IncomingAjaxRequest;
-    use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Http\Cookie;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\HttpKernel;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Support\Str;
-    use WPEmerge\Support\Url;
-    use WPEmerge\Testing\TestResponse;
-    use WPEmerge\View\ViewFactory;
+    use WPMvc\Application\Application;
+    use WPMvc\Application\ApplicationConfig;
+    use WPMvc\Contracts\Middleware;
+    use WPMvc\Contracts\ViewInterface;
+    use WPMvc\Events\IncomingAdminRequest;
+    use WPMvc\Events\IncomingAjaxRequest;
+    use WPMvc\Events\IncomingWebRequest;
+    use WPMvc\Http\Cookie;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\HttpKernel;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Response;
+    use WPMvc\Session\Session;
+    use WPMvc\Support\Str;
+    use WPMvc\Support\Url;
+    use WPMvc\Testing\TestResponse;
+    use WPMvc\View\ViewFactory;
 
     /**
      * @property Session $session

@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session\Exceptions;
+    namespace WPMvc\Session\Exceptions;
 
     use Throwable;
-    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
+    use WPMvc\ExceptionHandling\Exceptions\HttpException;
 
     class InvalidCsrfTokenException extends HttpException
     {

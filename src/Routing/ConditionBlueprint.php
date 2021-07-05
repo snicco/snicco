@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing;
+    namespace WPMvc\Routing;
 
     use Opis\Closure\SerializableClosure;
-    use WPEmerge\Routing\Conditions\CustomCondition;
-    use WPEmerge\Support\Str;
-    use WPEmerge\Traits\ReflectsCallable;
+    use WPMvc\Routing\Conditions\CustomCondition;
+    use WPMvc\Support\Str;
+    use WPMvc\Traits\ReflectsCallable;
 
     class ConditionBlueprint
     {

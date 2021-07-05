@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http\Psr7;
+    namespace WPMvc\Http\Psr7;
 
     use stdClass;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Support\Str;
+    use WPMvc\Support\Arr;
+    use WPMvc\Support\Str;
 
     trait InteractsWithInput
     {

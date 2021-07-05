@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Traits;
+    namespace WPMvc\Traits;
 
     use Closure;
     use Opis\Closure\SerializableClosure;
-    use WPEmerge\Routing\ConditionBlueprint;
-    use WPEmerge\Routing\Conditions\CustomCondition;
+    use WPMvc\Routing\ConditionBlueprint;
+    use WPMvc\Routing\Conditions\CustomCondition;
 
     trait PreparesRouteForExport
     {

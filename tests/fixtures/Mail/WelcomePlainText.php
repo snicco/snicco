@@ -6,7 +6,7 @@
 
     namespace Tests\fixtures\Mail;
 
-    use WPEmerge\Mail\Mailable;
+    use WPMvc\Mail\Mailable;
 
     class WelcomePlainText extends Mailable
     {

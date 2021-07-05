@@ -4,38 +4,38 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing;
+    namespace WPMvc\Routing;
 
     use Symfony\Component\Finder\Finder;
     use Tests\stubs\TestMagicLink;
-    use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\Contracts\RouteMatcher;
-    use WPEmerge\Contracts\RouteRegistrarInterface;
-    use WPEmerge\Contracts\RouteUrlGenerator;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Http\DatabaseMagicLink;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\Conditions\AdminAjaxCondition;
-    use WPEmerge\Routing\Conditions\AdminPageCondition;
-    use WPEmerge\Routing\Conditions\QueryStringCondition;
-    use WPEmerge\Routing\Conditions\RequestAttributeCondition;
-    use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
-    use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Routing\Conditions\CustomCondition;
-    use WPEmerge\Routing\Conditions\NegateCondition;
-    use WPEmerge\Routing\Conditions\PostIdCondition;
-    use WPEmerge\Routing\Conditions\PostSlugCondition;
-    use WPEmerge\Routing\Conditions\PostStatusCondition;
-    use WPEmerge\Routing\Conditions\PostTemplateCondition;
-    use WPEmerge\Routing\Conditions\PostTypeCondition;
-    use WPEmerge\Routing\FastRoute\FastRouteMatcher;
-    use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Support\FilePath;
+    use WPMvc\Contracts\AbstractRouteCollection;
+    use WPMvc\Contracts\MagicLink;
+    use WPMvc\Contracts\RouteMatcher;
+    use WPMvc\Contracts\RouteRegistrarInterface;
+    use WPMvc\Contracts\RouteUrlGenerator;
+    use WPMvc\Contracts\ServiceProvider;
+    use WPMvc\Http\DatabaseMagicLink;
+    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
+    use WPMvc\Support\WP;
+    use WPMvc\Factories\RouteActionFactory;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Routing\Conditions\AdminAjaxCondition;
+    use WPMvc\Routing\Conditions\AdminPageCondition;
+    use WPMvc\Routing\Conditions\QueryStringCondition;
+    use WPMvc\Routing\Conditions\RequestAttributeCondition;
+    use WPMvc\Routing\FastRoute\CachedFastRouteMatcher;
+    use WPMvc\Factories\ConditionFactory;
+    use WPMvc\Routing\Conditions\CustomCondition;
+    use WPMvc\Routing\Conditions\NegateCondition;
+    use WPMvc\Routing\Conditions\PostIdCondition;
+    use WPMvc\Routing\Conditions\PostSlugCondition;
+    use WPMvc\Routing\Conditions\PostStatusCondition;
+    use WPMvc\Routing\Conditions\PostTemplateCondition;
+    use WPMvc\Routing\Conditions\PostTypeCondition;
+    use WPMvc\Routing\FastRoute\FastRouteMatcher;
+    use WPMvc\Routing\FastRoute\FastRouteUrlGenerator;
+    use WPMvc\Session\Session;
+    use WPMvc\Support\FilePath;
 
 
     class RoutingServiceProvider extends ServiceProvider

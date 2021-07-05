@@ -4,20 +4,20 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace WPMvc\Session;
 
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
-    use WPEmerge\Auth\WpAuthSessionToken;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Cookie;
-    use WPEmerge\Http\Cookies;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Session\Contracts\SessionManagerInterface;
-    use WPEmerge\Session\Events\NewLogin;
-    use WPEmerge\Session\Events\SessionRegenerated;
-    use WPEmerge\Traits\HasLottery;
+    use WPMvc\Auth\WpAuthSessionToken;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Cookie;
+    use WPMvc\Http\Cookies;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\ResponseEmitter;
+    use WPMvc\Session\Contracts\SessionManagerInterface;
+    use WPMvc\Session\Events\NewLogin;
+    use WPMvc\Session\Events\SessionRegenerated;
+    use WPMvc\Traits\HasLottery;
 
     class SessionManager implements SessionManagerInterface
     {

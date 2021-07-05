@@ -4,19 +4,19 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Events;
+    namespace WPMvc\Events;
 
     use BetterWpHooks\Contracts\Dispatcher;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\ExceptionHandling\ShutdownHandler;
-    use WPEmerge\Http\HttpKernel;
-    use WPEmerge\Listeners\CreateDynamicHooks;
-    use WPEmerge\Listeners\LoadRoutes;
-    use WPEmerge\Listeners\FilterWpQuery;
-    use WPEmerge\Listeners\ShortCircuit404;
-    use WPEmerge\Middleware\Core\OutputBufferMiddleware;
-    use WPEmerge\View\ViewFactory;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Contracts\ServiceProvider;
+    use WPMvc\ExceptionHandling\ShutdownHandler;
+    use WPMvc\Http\HttpKernel;
+    use WPMvc\Listeners\CreateDynamicHooks;
+    use WPMvc\Listeners\LoadRoutes;
+    use WPMvc\Listeners\FilterWpQuery;
+    use WPMvc\Listeners\ShortCircuit404;
+    use WPMvc\Middleware\Core\OutputBufferMiddleware;
+    use WPMvc\View\ViewFactory;
 
     class EventServiceProvider extends ServiceProvider
     {

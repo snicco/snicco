@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Contracts;
+    namespace WPMvc\Contracts;
 
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
     use Tests\stubs\TestApp;
-    use WPEmerge\Application\Application;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Cookie;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Traits\HasLottery;
+    use WPMvc\Application\Application;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Cookie;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Response;
+    use WPMvc\Traits\HasLottery;
 
     abstract class MagicLink
     {

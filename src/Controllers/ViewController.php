@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Controllers;
+	namespace WPMvc\Controllers;
 
 
-    use WPEmerge\Http\Controller;
-    use WPEmerge\Http\Psr7\Response;
+    use WPMvc\Http\Controller;
+    use WPMvc\Http\Psr7\Response;
 
     class ViewController extends Controller {
 

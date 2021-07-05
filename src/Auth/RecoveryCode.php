@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth;
+    namespace WPMvc\Auth;
 
-    use WPEmerge\Support\Str;
+    use WPMvc\Support\Str;
 
     class RecoveryCode
     {

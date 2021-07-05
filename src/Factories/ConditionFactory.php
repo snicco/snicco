@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Factories;
+    namespace WPMvc\Factories;
 
     use Contracts\ContainerAdapter;
-    use WPEmerge\Contracts\ConditionInterface;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Routing\ConditionBlueprint;
-    use WPEmerge\Routing\Conditions\CustomCondition;
-    use WPEmerge\Routing\Conditions\NegateCondition;
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Traits\ReflectsCallable;
+    use WPMvc\Contracts\ConditionInterface;
+    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
+    use WPMvc\Routing\ConditionBlueprint;
+    use WPMvc\Routing\Conditions\CustomCondition;
+    use WPMvc\Routing\Conditions\NegateCondition;
+    use WPMvc\Routing\Route;
+    use WPMvc\Traits\ReflectsCallable;
 
     class ConditionFactory
     {

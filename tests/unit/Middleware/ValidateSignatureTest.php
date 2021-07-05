@@ -13,18 +13,18 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
-    use WPEmerge\ExceptionHandling\NullErrorHandler;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Middleware\Core\ShareCookies;
-    use WPEmerge\Middleware\ValidateSignature;
-    use WPEmerge\Routing\Pipeline;
-    use WPEmerge\Session\Drivers\ArraySessionDriver;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Support\Str;
+    use WPMvc\Contracts\MagicLink;
+    use WPMvc\ExceptionHandling\Exceptions\InvalidSignatureException;
+    use WPMvc\ExceptionHandling\NullErrorHandler;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Middleware\Core\ShareCookies;
+    use WPMvc\Middleware\ValidateSignature;
+    use WPMvc\Routing\Pipeline;
+    use WPMvc\Session\Drivers\ArraySessionDriver;
+    use WPMvc\Session\Session;
+    use WPMvc\Support\Arr;
+    use WPMvc\Support\Str;
 
     class ValidateSignatureTest extends UnitTest
     {

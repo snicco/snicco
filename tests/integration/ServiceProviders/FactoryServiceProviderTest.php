@@ -8,11 +8,11 @@
 
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPEmerge\Factories\ConditionFactory;
-	use WPEmerge\Factories\RouteActionFactory;
-	use WPEmerge\Factories\ViewComposerFactory;
-	use WPEmerge\Routing\ControllerAction;
-	use WPEmerge\View\ViewComposer;
+    use WPMvc\Factories\ConditionFactory;
+	use WPMvc\Factories\RouteActionFactory;
+	use WPMvc\Factories\ViewComposerFactory;
+	use WPMvc\Routing\ControllerAction;
+	use WPMvc\View\ViewComposer;
 
 	class FactoryServiceProviderTest extends TestCase {
 

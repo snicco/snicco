@@ -10,8 +10,8 @@
     use Codeception\TestCase\WPTestCase;
     use Tests\stubs\TestRequest;
     use wpdb;
-    use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\Http\DatabaseMagicLink;
+    use WPMvc\Contracts\MagicLink;
+    use WPMvc\Http\DatabaseMagicLink;
 
     class DatabaseMagicLinkTest extends WPTestCase
     {

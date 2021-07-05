@@ -12,8 +12,8 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
     use Tests\fixtures\Conditions\ConditionWithDependency;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Support\WP;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Support\WP;
 
     class RouteConditionsDependencyInjectionTest extends UnitTest
     {

@@ -6,8 +6,8 @@
 
     namespace Tests\stubs;
 
-    use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Contracts\MagicLink;
+    use WPMvc\Http\Psr7\Request;
 
     class TestMagicLink extends MagicLink
     {

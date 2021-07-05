@@ -6,9 +6,9 @@
 
 	namespace Tests\stubs;
 
-	use WPEmerge\Contracts\PhpViewInterface;
-	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Support\Arr;
+	use WPMvc\Contracts\PhpViewInterface;
+	use WPMvc\Contracts\ViewInterface;
+	use WPMvc\Support\Arr;
 
 	class TestView implements PhpViewInterface {
 

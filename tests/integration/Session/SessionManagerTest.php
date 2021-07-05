@@ -9,12 +9,12 @@
     use Illuminate\Support\InteractsWithTime;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Http\Cookies;
-    use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Session\Events\SessionRegenerated;
-    use WPEmerge\Session\SessionManager;
-    use WPEmerge\Session\SessionServiceProvider;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Http\Cookies;
+    use WPMvc\Http\ResponseEmitter;
+    use WPMvc\Session\Events\SessionRegenerated;
+    use WPMvc\Session\SessionManager;
+    use WPMvc\Session\SessionServiceProvider;
 
     class SessionManagerTest extends TestCase
     {

@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Authenticators;
+    namespace WPMvc\Auth\Authenticators;
 
-    use WPEmerge\Auth\Contracts\Authenticator;
-    use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPEmerge\Auth\Exceptions\FailedTwoFactorAuthenticationException;
-    use WPEmerge\Auth\RecoveryCode;
-    use WPEmerge\Auth\Traits\PerformsTwoFactorAuthentication;
-    use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
-    use WPEmerge\Auth\Traits\ResolvesUser;
-    use WPEmerge\Contracts\EncryptorInterface;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
+    use WPMvc\Auth\Contracts\Authenticator;
+    use WPMvc\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use WPMvc\Auth\Exceptions\FailedTwoFactorAuthenticationException;
+    use WPMvc\Auth\RecoveryCode;
+    use WPMvc\Auth\Traits\PerformsTwoFactorAuthentication;
+    use WPMvc\Auth\Traits\ResolveTwoFactorSecrets;
+    use WPMvc\Auth\Traits\ResolvesUser;
+    use WPMvc\Contracts\EncryptorInterface;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Response;
 
     class TwoFactorAuthenticator extends Authenticator
     {

@@ -5,8 +5,8 @@
 
     /** @var Router $router */
 
-    use WPEmerge\Controllers\RedirectController;
-    use WPEmerge\Routing\Router;
+    use WPMvc\Controllers\RedirectController;
+    use WPMvc\Routing\Router;
 
     $router->get('/')->noAction()->name('home');
 

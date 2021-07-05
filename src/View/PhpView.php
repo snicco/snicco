@@ -4,12 +4,12 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\View;
+	namespace WPMvc\View;
 
-	use WPEmerge\Contracts\PhpViewInterface;
-	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Support\WP;
-	use WPEmerge\Support\Arr;
+	use WPMvc\Contracts\PhpViewInterface;
+	use WPMvc\Contracts\ViewInterface;
+	use WPMvc\Support\WP;
+	use WPMvc\Support\Arr;
 
 
 	class PhpView implements PhpViewInterface {

@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Support;
+    namespace WPMvc\Support;
 
-    use WPEmerge\Support\WP;
+    use WPMvc\Support\WP;
 
     use function collect;
 

@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Events;
+    namespace WPMvc\Events;
 
     use BetterWpHooks\Traits\DispatchesConditionally;
     use BetterWpHooks\Traits\IsAction;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Psr7\Request;
 
     class AdminInit extends ApplicationEvent
     {

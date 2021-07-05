@@ -4,19 +4,19 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\View;
+	namespace WPMvc\View;
 
 	use Exception;
     use Illuminate\Support\Collection;
-	use WPEmerge\Contracts\ViewComposer;
-	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Factories\ViewComposerFactory;
-	use WPEmerge\Support\Arr;
+	use WPMvc\Contracts\ViewComposer;
+	use WPMvc\Contracts\ViewInterface;
+	use WPMvc\Factories\ViewComposerFactory;
+	use WPMvc\Support\Arr;
 
 	class ViewComposerCollection implements ViewComposer {
 
 		/**
-		 * @var \WPEmerge\View\ViewComposer[]
+		 * @var \WPMvc\View\ViewComposer[]
 		 */
 		private $composers;
 

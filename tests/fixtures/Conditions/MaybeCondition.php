@@ -6,9 +6,9 @@
 
 	namespace Tests\fixtures\Conditions;
 
-	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\Contracts\RequestInterface;
-    use WPEmerge\Http\Psr7\Request;
+	use WPMvc\Contracts\ConditionInterface;
+	use WPMvc\Contracts\RequestInterface;
+    use WPMvc\Http\Psr7\Request;
 
     class MaybeCondition implements ConditionInterface {
 

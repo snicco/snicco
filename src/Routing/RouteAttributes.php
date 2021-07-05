@@ -4,12 +4,12 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Routing;
+	namespace WPMvc\Routing;
 
-	use WPEmerge\Contracts\SetsRouteAttributes;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Support\UrlParser;
+	use WPMvc\Contracts\SetsRouteAttributes;
+    use WPMvc\Support\WP;
+    use WPMvc\Support\Arr;
+    use WPMvc\Support\UrlParser;
 
     class RouteAttributes implements SetsRouteAttributes {
 

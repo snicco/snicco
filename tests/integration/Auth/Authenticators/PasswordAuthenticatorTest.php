@@ -7,8 +7,8 @@
     namespace Tests\integration\Auth\Authenticators;
 
     use Tests\AuthTestCase;
-    use WPEmerge\Auth\Authenticators\PasswordAuthenticator;
-    use WPEmerge\Routing\UrlGenerator;
+    use WPMvc\Auth\Authenticators\PasswordAuthenticator;
+    use WPMvc\Routing\UrlGenerator;
 
 
     class PasswordAuthenticatorTest extends AuthTestCase

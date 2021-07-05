@@ -9,10 +9,10 @@
 	use PHPUnit\Framework\TestCase;
     use Tests\stubs\TestView;
     use Tests\helpers\CreateContainer;
-    use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\View\PhpViewFinder;
-	use WPEmerge\View\ViewComposerCollection;
-	use WPEmerge\Factories\ViewComposerFactory;
+    use WPMvc\Contracts\ViewInterface;
+	use WPMvc\View\PhpViewFinder;
+	use WPMvc\View\ViewComposerCollection;
+	use WPMvc\Factories\ViewComposerFactory;
 
     use const DS;
     use const TEST_CONFIG;

@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Events;
+    namespace WPMvc\Auth\Events;
 
-    use WPEmerge\Application\ApplicationEvent;
+    use WPMvc\Application\ApplicationEvent;
 
     class GenerateLogoutUrl extends ApplicationEvent
     {

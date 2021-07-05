@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Events;
+	namespace WPMvc\Events;
 
-	use WPEmerge\Application\ApplicationEvent;
-	use WPEmerge\Contracts\ViewInterface;
+	use WPMvc\Application\ApplicationEvent;
+	use WPMvc\Contracts\ViewInterface;
 
 	class MakingView extends ApplicationEvent {
 

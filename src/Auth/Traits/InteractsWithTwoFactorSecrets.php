@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Traits;
+    namespace WPMvc\Auth\Traits;
 
     use WP_User;
 

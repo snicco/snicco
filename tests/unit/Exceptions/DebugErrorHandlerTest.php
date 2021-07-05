@@ -10,11 +10,11 @@
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
     use Tests\stubs\TestException;
-	use WPEmerge\Application\ApplicationEvent;
-	use WPEmerge\Events\UnrecoverableExceptionHandled;
-	use WPEmerge\ExceptionHandling\DebugErrorHandler;
-	use WPEmerge\Factories\ErrorHandlerFactory;
-    use WPEmerge\Http\Psr7\Request;
+	use WPMvc\Application\ApplicationEvent;
+	use WPMvc\Events\UnrecoverableExceptionHandled;
+	use WPMvc\ExceptionHandling\DebugErrorHandler;
+	use WPMvc\Factories\ErrorHandlerFactory;
+    use WPMvc\Http\Psr7\Request;
 
     class DebugErrorHandlerTest extends UnitTest {
 

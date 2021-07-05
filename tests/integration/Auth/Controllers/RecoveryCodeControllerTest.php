@@ -7,8 +7,8 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use WPEmerge\Contracts\EncryptorInterface;
-    use WPEmerge\Routing\UrlGenerator;
+    use WPMvc\Contracts\EncryptorInterface;
+    use WPMvc\Routing\UrlGenerator;
 
     class RecoveryCodeControllerTest extends AuthTestCase
     {

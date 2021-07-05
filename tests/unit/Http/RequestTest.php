@@ -8,12 +8,12 @@
 
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\RoutingResult;
-    use WPEmerge\Session\Drivers\ArraySessionDriver;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Support\VariableBag;
-    use WPEmerge\Validation\Validator;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Routing\RoutingResult;
+    use WPMvc\Session\Drivers\ArraySessionDriver;
+    use WPMvc\Session\Session;
+    use WPMvc\Support\VariableBag;
+    use WPMvc\Validation\Validator;
 
     class RequestTest extends UnitTest
     {

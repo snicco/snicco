@@ -3,19 +3,19 @@
 
     declare(strict_types = 1);
 
-    use WPEmerge\Application\ApplicationConfig;
-    use WPEmerge\Auth\Controllers\AccountController;
-    use WPEmerge\Auth\Controllers\AuthConfirmationEmailController;
-    use WPEmerge\Auth\Controllers\AuthSessionController;
-    use WPEmerge\Auth\Controllers\ConfirmedAuthSessionController;
-    use WPEmerge\Auth\Controllers\ForgotPasswordController;
-    use WPEmerge\Auth\Controllers\LoginMagicLinkController;
-    use WPEmerge\Auth\Controllers\RecoveryCodeController;
-    use WPEmerge\Auth\Controllers\RegistrationLinkController;
-    use WPEmerge\Auth\Controllers\ResetPasswordController;
-    use WPEmerge\Auth\Controllers\TwoFactorAuthSessionController;
-    use WPEmerge\Auth\Controllers\TwoFactorAuthPreferenceController;
-    use WPEmerge\Routing\Router;
+    use WPMvc\Application\ApplicationConfig;
+    use WPMvc\Auth\Controllers\AccountController;
+    use WPMvc\Auth\Controllers\AuthConfirmationEmailController;
+    use WPMvc\Auth\Controllers\AuthSessionController;
+    use WPMvc\Auth\Controllers\ConfirmedAuthSessionController;
+    use WPMvc\Auth\Controllers\ForgotPasswordController;
+    use WPMvc\Auth\Controllers\LoginMagicLinkController;
+    use WPMvc\Auth\Controllers\RecoveryCodeController;
+    use WPMvc\Auth\Controllers\RegistrationLinkController;
+    use WPMvc\Auth\Controllers\ResetPasswordController;
+    use WPMvc\Auth\Controllers\TwoFactorAuthSessionController;
+    use WPMvc\Auth\Controllers\TwoFactorAuthPreferenceController;
+    use WPMvc\Routing\Router;
 
     /** @var Router $router */
     /** @var ApplicationConfig $config */

@@ -4,14 +4,14 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Middleware;
+	namespace WPMvc\Middleware;
 
 	use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\UrlGenerator;
+    use WPMvc\Contracts\Middleware;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Routing\UrlGenerator;
 
     class RedirectIfAuthenticated extends Middleware {
 

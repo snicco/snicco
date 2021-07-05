@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing\FastRoute;
+    namespace WPMvc\Routing\FastRoute;
 
     use FastRoute\Dispatcher;
-    use WPEmerge\Routing\RoutingResult;
+    use WPMvc\Routing\RoutingResult;
 
     trait TransformFastRoutes
     {

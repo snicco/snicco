@@ -8,9 +8,9 @@
 
     use Tests\AuthTestCase;
     use Tests\integration\Auth\Stubs\TestTwoFactorProvider;
-    use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPEmerge\Contracts\EncryptorInterface;
-    use WPEmerge\Routing\UrlGenerator;
+    use WPMvc\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use WPMvc\Contracts\EncryptorInterface;
+    use WPMvc\Routing\UrlGenerator;
 
     class TwoFactorAuthConfirmationTest extends AuthTestCase
     {

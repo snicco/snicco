@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Testing\Constraints;
+    namespace WPMvc\Testing\Constraints;
 
     use PHPUnit\Framework\Constraint\Constraint;
     use ReflectionClass;

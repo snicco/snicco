@@ -5,7 +5,7 @@
 
     use Tests\fixtures\Middleware\GlobalMiddleware;
     use Tests\stubs\TestApp;
-    use WPEmerge\Routing\Router;
+    use WPMvc\Routing\Router;
 
     TestApp::route()->group(['prefix'=>'middleware'], function (Router $router) {
 

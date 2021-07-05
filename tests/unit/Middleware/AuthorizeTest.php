@@ -12,12 +12,12 @@
     use Tests\UnitTest;
 	use Tests\stubs\TestRequest;
     use Tests\helpers\AssertsResponse;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Middleware\Authenticate;
-	use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
-    use WPEmerge\Middleware\Authorize;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Middleware\Authenticate;
+	use WPMvc\ExceptionHandling\Exceptions\AuthorizationException;
+    use WPMvc\Middleware\Authorize;
 
     class AuthorizeTest extends UnitTest {
 

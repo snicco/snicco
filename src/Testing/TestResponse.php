@@ -4,22 +4,22 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Testing;
+    namespace WPMvc\Testing;
 
     use Closure;
-    use WPEmerge\Application\Application;
-    use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\Http\Psr7\Response;
+    use WPMvc\Application\Application;
+    use WPMvc\Contracts\ViewInterface;
+    use WPMvc\Http\Psr7\Response;
     use PHPUnit\Framework\Assert as PHPUnit;
-    use WPEmerge\Http\Responses\NullResponse;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Support\Str;
-    use WPEmerge\Support\Url;
-    use WPEmerge\Support\VariableBag;
-    use WPEmerge\Testing\Assertable\AssertableCookie;
-    use WPEmerge\Testing\Constraints\SeeInOrder;
+    use WPMvc\Http\Responses\NullResponse;
+    use WPMvc\Routing\UrlGenerator;
+    use WPMvc\Session\Session;
+    use WPMvc\Support\Arr;
+    use WPMvc\Support\Str;
+    use WPMvc\Support\Url;
+    use WPMvc\Support\VariableBag;
+    use WPMvc\Testing\Assertable\AssertableCookie;
+    use WPMvc\Testing\Constraints\SeeInOrder;
 
     class TestResponse
     {

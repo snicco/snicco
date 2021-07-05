@@ -3,7 +3,7 @@
 
     declare(strict_types = 1);
 
-    $site_name = esc_html(\WPEmerge\Support\WP::siteName());
+    $site_name = esc_html(\WPMvc\Support\WP::siteName());
 
     ?>
 

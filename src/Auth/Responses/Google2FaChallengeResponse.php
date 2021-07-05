@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Responses;
+    namespace WPMvc\Auth\Responses;
 
-    use WPEmerge\Auth\Contracts\TwoFactorChallengeResponse;
-    use WPEmerge\Http\ResponseFactory;
+    use WPMvc\Auth\Contracts\TwoFactorChallengeResponse;
+    use WPMvc\Http\ResponseFactory;
 
     class Google2FaChallengeResponse extends TwoFactorChallengeResponse
     {

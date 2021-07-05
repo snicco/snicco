@@ -7,7 +7,7 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use WPEmerge\Auth\Mail\MagicLinkLoginMail;
+    use WPMvc\Auth\Mail\MagicLinkLoginMail;
 
     class LoginMagicLinkControllerTest extends AuthTestCase
     {

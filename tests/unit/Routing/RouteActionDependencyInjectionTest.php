@@ -15,10 +15,10 @@
 	use Tests\fixtures\Controllers\Web\ControllerWithDependencies;
 	use Tests\fixtures\Controllers\Web\TeamsController;
 	use Tests\fixtures\TestDependencies\Foo;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\Router;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Routing\Router;
 
     class RouteActionDependencyInjectionTest extends UnitTest {
 

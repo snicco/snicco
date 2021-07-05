@@ -8,7 +8,7 @@
 
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Request;
 
     class InspectsRequestTest extends UnitTest
     {

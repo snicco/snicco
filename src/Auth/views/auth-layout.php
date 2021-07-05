@@ -7,7 +7,7 @@
 
     /** @var string $view */
 
-    use WPEmerge\View\ViewFactory;
+    use WPMvc\View\ViewFactory;
 
 ?>
 

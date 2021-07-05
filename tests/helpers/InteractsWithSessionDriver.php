@@ -7,8 +7,8 @@
     namespace Tests\helpers;
 
     use Tests\stubs\TestApp;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\Session;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Session\Session;
 
     trait InteractsWithSessionDriver
     {

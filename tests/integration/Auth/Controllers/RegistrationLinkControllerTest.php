@@ -7,8 +7,8 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use WPEmerge\Auth\Contracts\RegistrationViewResponse;
-    use WPEmerge\Auth\Mail\ConfirmRegistrationEmail;
+    use WPMvc\Auth\Contracts\RegistrationViewResponse;
+    use WPMvc\Auth\Mail\ConfirmRegistrationEmail;
 
     class RegistrationLinkControllerTest extends AuthTestCase
     {

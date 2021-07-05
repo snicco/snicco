@@ -13,21 +13,21 @@
     use Tests\helpers\HashesSessionIds;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\ExceptionHandling\NullErrorHandler;
-    use WPEmerge\Testing\TestingErrorHandler;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Cookies;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Middleware\Core\ShareCookies;
-    use WPEmerge\Routing\Pipeline;
-    use WPEmerge\Session\Drivers\ArraySessionDriver;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Session\Middleware\StartSessionMiddleware;
-    use WPEmerge\Session\SessionManager;
-    use WPEmerge\Support\VariableBag;
+    use WPMvc\ExceptionHandling\NullErrorHandler;
+    use WPMvc\Testing\TestingErrorHandler;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Cookies;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Response;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Middleware\Core\ShareCookies;
+    use WPMvc\Routing\Pipeline;
+    use WPMvc\Session\Drivers\ArraySessionDriver;
+    use WPMvc\Session\Session;
+    use WPMvc\Session\Middleware\StartSessionMiddleware;
+    use WPMvc\Session\SessionManager;
+    use WPMvc\Support\VariableBag;
 
     class SessionMiddlewareTest extends UnitTest
     {

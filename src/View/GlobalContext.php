@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\View;
+    namespace WPMvc\View;
 
-    use WPEmerge\Support\VariableBag;
+    use WPMvc\Support\VariableBag;
 
     class GlobalContext
     {

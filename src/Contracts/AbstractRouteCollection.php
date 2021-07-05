@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Contracts;
+    namespace WPMvc\Contracts;
 
-    use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RoutingResult;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Traits\ValidatesRoutes;
+    use WPMvc\Factories\ConditionFactory;
+    use WPMvc\Factories\RouteActionFactory;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Routing\Route;
+    use WPMvc\Routing\RoutingResult;
+    use WPMvc\Support\Arr;
+    use WPMvc\Traits\ValidatesRoutes;
 
     abstract class AbstractRouteCollection
     {

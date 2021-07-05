@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Application;
+	namespace WPMvc\Application;
 
 	use Closure;
 	use BadMethodCallException;
-	use WPEmerge\Support\Arr;
+	use WPMvc\Support\Arr;
 
 	trait ManagesAliases {
 

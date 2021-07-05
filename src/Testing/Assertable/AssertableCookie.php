@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Testing\Assertable;
+    namespace WPMvc\Testing\Assertable;
 
-    use WPEmerge\Support\Str;
+    use WPMvc\Support\Str;
     use PHPUnit\Framework\Assert as PHPUnit;
 
     class AssertableCookie

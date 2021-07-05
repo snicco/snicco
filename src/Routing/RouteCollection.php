@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing;
+    namespace WPMvc\Routing;
 
-    use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Contracts\RouteMatcher;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Support\Arr;
+    use WPMvc\Contracts\AbstractRouteCollection;
+    use WPMvc\Contracts\RouteMatcher;
+    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
+    use WPMvc\Support\WP;
+    use WPMvc\Factories\ConditionFactory;
+    use WPMvc\Factories\RouteActionFactory;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Support\Arr;
 
     class RouteCollection extends AbstractRouteCollection
     {

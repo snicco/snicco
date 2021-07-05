@@ -4,19 +4,19 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware\Core;
+    namespace WPMvc\Middleware\Core;
 
     use Psr\Http\Message\ResponseInterface;
     use WP_Query;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
-    use WPEmerge\ExceptionHandling\Exceptions\InvalidResponseException;
-    use WPEmerge\ExceptionHandling\Exceptions\NotFoundException;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Responses\InvalidResponse;
-    use WPEmerge\Http\Responses\NullResponse;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Responses\WpQueryFilteredResponse;
+    use WPMvc\Contracts\Middleware;
+    use WPMvc\ExceptionHandling\Exceptions\HttpException;
+    use WPMvc\ExceptionHandling\Exceptions\InvalidResponseException;
+    use WPMvc\ExceptionHandling\Exceptions\NotFoundException;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\Responses\InvalidResponse;
+    use WPMvc\Http\Responses\NullResponse;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Responses\WpQueryFilteredResponse;
 
     class EvaluateResponseMiddleware extends Middleware
     {

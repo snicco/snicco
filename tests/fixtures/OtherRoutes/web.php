@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
     use Tests\stubs\TestApp;
-    use WPEmerge\Routing\Router;
+    use WPMvc\Routing\Router;
 
     $router = TestApp::resolve(Router::class);
 

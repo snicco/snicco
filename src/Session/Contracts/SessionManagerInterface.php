@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session\Contracts;
+    namespace WPMvc\Session\Contracts;
 
-    use WPEmerge\Http\Cookie;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\Session;
+    use WPMvc\Http\Cookie;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Session\Session;
 
     interface SessionManagerInterface
     {

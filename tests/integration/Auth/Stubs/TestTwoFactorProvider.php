@@ -6,7 +6,7 @@
 
     namespace Tests\integration\Auth\Stubs;
 
-    use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use WPMvc\Auth\Contracts\TwoFactorAuthenticationProvider;
 
     class TestTwoFactorProvider implements TwoFactorAuthenticationProvider
     {

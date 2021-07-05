@@ -4,20 +4,20 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Confirmation;
+    namespace WPMvc\Auth\Confirmation;
 
     use Illuminate\Support\InteractsWithTime;
-    use WPEmerge\Auth\Contracts\AuthConfirmation;
-    use WPEmerge\Auth\Mail\ConfirmAuthMail;
-    use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Mail\MailBuilder;
-    use WPEmerge\Session\Session;
-    use WPEmerge\View\ViewFactory;
+    use WPMvc\Auth\Contracts\AuthConfirmation;
+    use WPMvc\Auth\Mail\ConfirmAuthMail;
+    use WPMvc\Contracts\MagicLink;
+    use WPMvc\Routing\UrlGenerator;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Response;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Mail\MailBuilder;
+    use WPMvc\Session\Session;
+    use WPMvc\View\ViewFactory;
 
     class EmailAuthConfirmation implements AuthConfirmation
     {

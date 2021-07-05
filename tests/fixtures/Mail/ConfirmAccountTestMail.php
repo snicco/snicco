@@ -6,8 +6,8 @@
 
     namespace Tests\fixtures\Mail;
 
-    use WPEmerge\Mail\Mailable;
-    use WPEmerge\Routing\UrlGenerator;
+    use WPMvc\Mail\Mailable;
+    use WPMvc\Routing\UrlGenerator;
 
     class ConfirmAccountTestMail extends Mailable
     {

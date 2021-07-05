@@ -9,22 +9,22 @@
     use Slim\Csrf\Guard;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPEmerge\Contracts\AbstractRedirector;
-    use WPEmerge\Http\Redirector;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Session\Contracts\SessionDriver;
-    use WPEmerge\Session\Contracts\SessionManagerInterface;
-    use WPEmerge\Session\CsrfField;
-    use WPEmerge\Session\Drivers\DatabaseSessionDriver;
-    use WPEmerge\Session\Middleware\CsrfMiddleware;
-    use WPEmerge\Session\EncryptedSession;
-    use WPEmerge\Session\Middleware\ShareSessionWithView;
-    use WPEmerge\Session\SessionManager;
-    use WPEmerge\Session\SessionServiceProvider;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Session\Middleware\StartSessionMiddleware;
-    use WPEmerge\Session\StatefulRedirector;
-    use WPEmerge\View\GlobalContext;
+    use WPMvc\Contracts\AbstractRedirector;
+    use WPMvc\Http\Redirector;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Session\Contracts\SessionDriver;
+    use WPMvc\Session\Contracts\SessionManagerInterface;
+    use WPMvc\Session\CsrfField;
+    use WPMvc\Session\Drivers\DatabaseSessionDriver;
+    use WPMvc\Session\Middleware\CsrfMiddleware;
+    use WPMvc\Session\EncryptedSession;
+    use WPMvc\Session\Middleware\ShareSessionWithView;
+    use WPMvc\Session\SessionManager;
+    use WPMvc\Session\SessionServiceProvider;
+    use WPMvc\Session\Session;
+    use WPMvc\Session\Middleware\StartSessionMiddleware;
+    use WPMvc\Session\StatefulRedirector;
+    use WPMvc\View\GlobalContext;
 
     class SessionServiceProviderTest extends TestCase
     {

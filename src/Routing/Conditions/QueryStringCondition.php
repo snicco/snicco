@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Routing\Conditions;
+	namespace WPMvc\Routing\Conditions;
 
-	use WPEmerge\Contracts\ConditionInterface;
-    use WPEmerge\Http\Psr7\Request;
+	use WPMvc\Contracts\ConditionInterface;
+    use WPMvc\Http\Psr7\Request;
 
     class QueryStringCondition implements ConditionInterface{
 

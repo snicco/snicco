@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http\Psr7;
+    namespace WPMvc\Http\Psr7;
 
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\StreamInterface;
-    use WPEmerge\Contracts\ResponsableInterface;
-    use WPEmerge\Http\Cookie;
-    use WPEmerge\Http\Cookies;
+    use WPMvc\Contracts\ResponsableInterface;
+    use WPMvc\Http\Cookie;
+    use WPMvc\Http\Cookies;
 
 
     class Response implements ResponseInterface, ResponsableInterface

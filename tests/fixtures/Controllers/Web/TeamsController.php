@@ -8,7 +8,7 @@
 
 	use Tests\fixtures\TestDependencies\Foo;
 	use Tests\fixtures\TestDependencies\Bar;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Request;
 
 	class TeamsController {
 

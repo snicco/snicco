@@ -7,8 +7,8 @@
 	namespace Tests\fixtures\Middleware;
 
 	use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Contracts\Middleware;
+    use WPMvc\Http\Psr7\Request;
 
     class FooMiddleware extends Middleware {
 

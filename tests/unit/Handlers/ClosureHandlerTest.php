@@ -10,8 +10,8 @@
     use Tests\helpers\CreateContainer;
     use Tests\fixtures\TestDependencies\Bar;
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Http\Psr7\Request;
+	use WPMvc\Factories\RouteActionFactory;
+    use WPMvc\Http\Psr7\Request;
 
     class ClosureHandlerTest extends TestCase {
 

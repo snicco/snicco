@@ -6,7 +6,7 @@
 
 	namespace Tests\stubs;
 
-	use WPEmerge\Application\ApplicationTrait;
+	use WPMvc\Application\ApplicationTrait;
 
 	class TestApp {
 

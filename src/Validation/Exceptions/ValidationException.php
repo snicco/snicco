@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Validation\Exceptions;
+    namespace WPMvc\Validation\Exceptions;
 
 
     use Illuminate\Support\MessageBag;
     use Throwable;
-    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
+    use WPMvc\ExceptionHandling\Exceptions\HttpException;
 
     class ValidationException extends HttpException
     {
