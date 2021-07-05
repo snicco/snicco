@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Session\Contracts;
+    namespace BetterWP\Session\Contracts;
 
     use SessionHandlerInterface;
-    use WPMvc\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Request;
 
     /**
      * NOTE: for all methods that return a session or multiple sessions the driver MUST ONLY

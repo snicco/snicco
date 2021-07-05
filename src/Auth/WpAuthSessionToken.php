@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth;
+    namespace BetterWP\Auth;
 
-    use WPMvc\Support\Arr;
+    use BetterWP\Support\Arr;
 
     class WpAuthSessionToken extends \WP_Session_Tokens
     {

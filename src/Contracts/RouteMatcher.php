@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Contracts;
+	namespace BetterWP\Contracts;
 
 
-    use WPMvc\Routing\Route;
-    use WPMvc\Routing\RoutingResult;
+    use BetterWP\Routing\Route;
+    use BetterWP\Routing\RoutingResult;
 
     interface RouteMatcher {
 

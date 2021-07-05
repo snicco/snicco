@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Http\Responses;
+    namespace BetterWP\Http\Responses;
 
 
-    use WPMvc\Http\Psr7\Response;
+    use BetterWP\Http\Psr7\Response;
 
     class NullResponse extends Response
     {

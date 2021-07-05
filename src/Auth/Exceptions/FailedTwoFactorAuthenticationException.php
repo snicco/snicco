@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Exceptions;
+    namespace BetterWP\Auth\Exceptions;
 
     use Throwable;
-    use WPMvc\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Request;
 
     class FailedTwoFactorAuthenticationException extends FailedAuthenticationException
     {

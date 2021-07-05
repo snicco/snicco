@@ -9,9 +9,9 @@
     use PHPUnit\Framework\TestCase;
     use Respect\Validation\Factory;
     use Respect\Validation\Validator as v;
-    use WPMvc\Support\Arr;
-    use WPMvc\Validation\Exceptions\ValidationException;
-    use WPMvc\Validation\Validator;
+    use BetterWP\Support\Arr;
+    use BetterWP\Validation\Exceptions\ValidationException;
+    use BetterWP\Validation\Validator;
 
     class ValidatorTest extends TestCase
     {
@@ -406,8 +406,8 @@
 
             Factory::setDefaultInstance(
                 (new Factory())
-                    ->withRuleNamespace('WPMvc\Validation\Rules')
-                    ->withExceptionNamespace('WPMvc\Validation\Exceptions')
+                    ->withRuleNamespace('BetterWP\Validation\Rules')
+                    ->withExceptionNamespace('BetterWP\Validation\Exceptions')
             );
 
             $_POST = [

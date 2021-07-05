@@ -16,9 +16,9 @@
     use Psr\Http\Message\UploadedFileFactoryInterface;
     use Psr\Http\Message\UriFactoryInterface;
     use Tests\stubs\TestViewFactory;
-    use WPMvc\Http\Redirector;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Routing\UrlGenerator;
+    use BetterWP\Http\Redirector;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Routing\UrlGenerator;
 
     trait CreatePsr17Factories
     {

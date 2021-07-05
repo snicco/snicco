@@ -2,10 +2,10 @@
 
 	declare(strict_types=1);
 
-	namespace WPMvc\Application;
+	namespace BetterWP\Application;
 
 	use Illuminate\Config\Repository;
-	use WPMvc\Support\Arr;
+	use BetterWP\Support\Arr;
 
 	class ApplicationConfig extends Repository {
 

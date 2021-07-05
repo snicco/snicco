@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Http;
+    namespace BetterWP\Http;
 
-    use WPMvc\Contracts\MagicLink;
-    use WPMvc\Http\Psr7\Request;
+    use BetterWP\Contracts\MagicLink;
+    use BetterWP\Http\Psr7\Request;
 
     use function wp_cache_add;
     use function wp_cache_get;

@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Contracts;
+    namespace BetterWP\Auth\Contracts;
 
-    use WPMvc\Contracts\ResponsableInterface;
-    use WPMvc\Http\Psr7\Request;
+    use BetterWP\Contracts\ResponsableInterface;
+    use BetterWP\Http\Psr7\Request;
 
     abstract class RegistrationViewResponse implements ResponsableInterface
     {

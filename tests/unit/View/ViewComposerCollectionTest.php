@@ -9,10 +9,10 @@
 	use PHPUnit\Framework\TestCase;
     use Tests\stubs\TestView;
     use Tests\helpers\CreateContainer;
-    use WPMvc\Contracts\ViewInterface;
-	use WPMvc\View\PhpViewFinder;
-	use WPMvc\View\ViewComposerCollection;
-	use WPMvc\Factories\ViewComposerFactory;
+    use BetterWP\Contracts\ViewInterface;
+	use BetterWP\View\PhpViewFinder;
+	use BetterWP\View\ViewComposerCollection;
+	use BetterWP\Factories\ViewComposerFactory;
 
     use const DS;
     use const TEST_CONFIG;

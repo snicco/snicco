@@ -7,8 +7,8 @@
     namespace Tests\integration\ExceptionHandling;
 
     use Tests\TestCase;
-    use WPMvc\ExceptionHandling\ProductionErrorHandler;
-    use WPMvc\Validation\Exceptions\ValidationException;
+    use BetterWP\ExceptionHandling\ProductionErrorHandler;
+    use BetterWP\Validation\Exceptions\ValidationException;
 
     /** @see ProductionErrorHandler */
     class ProductionErrorHandlingTest extends TestCase

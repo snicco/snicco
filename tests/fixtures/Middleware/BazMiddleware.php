@@ -9,8 +9,8 @@
 	use Psr\Http\Message\ResponseInterface;
     use Tests\fixtures\TestDependencies\Bar;
     use Tests\fixtures\TestDependencies\Baz;
-    use WPMvc\Contracts\Middleware;
-    use WPMvc\Http\Psr7\Request;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Http\Psr7\Request;
 
     class BazMiddleware extends Middleware {
 

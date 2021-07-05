@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Events;
+    namespace BetterWP\Auth\Events;
 
     use BetterWpHooks\Traits\IsAction;
     use WP_User;
-    use WPMvc\Application\ApplicationEvent;
+    use BetterWP\Application\ApplicationEvent;
 
     class Registration extends ApplicationEvent
     {

@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Traits;
+	namespace BetterWP\Traits;
 
 	use Closure;
 	use Illuminate\Support\Arr;

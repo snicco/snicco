@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Middleware;
+    namespace BetterWP\Middleware;
 
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Routing\Route;
-    use WPMvc\Support\Arr;
-    use WPMvc\Traits\GathersMiddleware;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Routing\Route;
+    use BetterWP\Support\Arr;
+    use BetterWP\Traits\GathersMiddleware;
 
     class MiddlewareStack
     {

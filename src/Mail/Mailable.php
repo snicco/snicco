@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Mail;
+    namespace BetterWP\Mail;
 
     use Closure;
     use ReflectionClass;
     use ReflectionProperty;
     use WP_User;
-    use WPMvc\Support\Arr;
+    use BetterWP\Support\Arr;
 
     abstract class Mailable
     {

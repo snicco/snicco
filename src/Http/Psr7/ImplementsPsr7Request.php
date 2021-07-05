@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Http\Psr7;
+    namespace BetterWP\Http\Psr7;
 
     use Psr\Http\Message\MessageInterface;
     use Psr\Http\Message\RequestInterface;

@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Blade;
+    namespace BetterWP\Blade;
 
     use Illuminate\Support\Facades\Blade;
     use Tests\unit\View\MethodField;
-    use WPMvc\Application\ApplicationTrait;
-    use WPMvc\Contracts\ServiceProvider;
-    use WPMvc\Support\WP;
-    use WPMvc\Session\CsrfField;
+    use BetterWP\Application\ApplicationTrait;
+    use BetterWP\Contracts\ServiceProvider;
+    use BetterWP\Support\WP;
+    use BetterWP\Session\CsrfField;
 
     class BladeDirectiveServiceProvider extends ServiceProvider
     {

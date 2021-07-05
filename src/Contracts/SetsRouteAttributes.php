@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Contracts;
+	namespace BetterWP\Contracts;
 
 	/** Interface used to set initial route attributes. Using this interface in the router ensures while
      *  dynamically decorating routes ensures that we will always call the correct methods on the route.

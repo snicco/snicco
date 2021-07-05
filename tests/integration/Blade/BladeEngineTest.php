@@ -8,11 +8,11 @@
 
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
-    use WPMvc\Blade\BladeServiceProvider;
-    use WPMvc\Blade\BladeView;
-    use WPMvc\ExceptionHandling\Exceptions\ViewException;
-    use WPMvc\ExceptionHandling\Exceptions\ViewNotFoundException;
-    use WPMvc\View\ViewFactory;
+    use BetterWP\Blade\BladeServiceProvider;
+    use BetterWP\Blade\BladeView;
+    use BetterWP\ExceptionHandling\Exceptions\ViewException;
+    use BetterWP\ExceptionHandling\Exceptions\ViewNotFoundException;
+    use BetterWP\View\ViewFactory;
 
     class BladeEngineTest extends BladeTestCase
     {

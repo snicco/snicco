@@ -3,10 +3,10 @@
 
     declare(strict_types = 1);
 
-    use WPMvc\Auth\Controllers\BulkPasswordResetEmailController;
-    use WPMvc\Auth\Controllers\PasswordResetEmailController;
-    use WPMvc\Auth\Controllers\WpLoginRedirectController;
-    use WPMvc\Routing\Router;
+    use BetterWP\Auth\Controllers\BulkPasswordResetEmailController;
+    use BetterWP\Auth\Controllers\PasswordResetEmailController;
+    use BetterWP\Auth\Controllers\WpLoginRedirectController;
+    use BetterWP\Routing\Router;
 
     /** @var Router $router */
 

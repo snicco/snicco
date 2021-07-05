@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Traits;
+    namespace BetterWP\Auth\Traits;
 
-    use WPMvc\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Request;
 
     trait UsesCurrentRequest
     {

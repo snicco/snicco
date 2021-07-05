@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Events;
+    namespace BetterWP\Events;
 
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Mail\Mailable;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Mail\Mailable;
 
     class PendingMail extends ApplicationEvent
     {

@@ -4,13 +4,13 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\View;
+	namespace BetterWP\View;
 
-	use WPMvc\Contracts\ViewEngineInterface;
-	use WPMvc\Contracts\ViewInterface;
-	use WPMvc\Contracts\ViewFactoryInterface;
-	use WPMvc\Support\VariableBag;
-	use WPMvc\Support\Arr;
+	use BetterWP\Contracts\ViewEngineInterface;
+	use BetterWP\Contracts\ViewInterface;
+	use BetterWP\Contracts\ViewFactoryInterface;
+	use BetterWP\Support\VariableBag;
+	use BetterWP\Support\Arr;
 
 	class ViewFactory implements ViewFactoryInterface {
 

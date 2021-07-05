@@ -6,9 +6,9 @@
 
 	namespace Tests\stubs;
 
-	use WPMvc\Contracts\PhpViewInterface;
-	use WPMvc\Contracts\ViewInterface;
-	use WPMvc\Support\Arr;
+	use BetterWP\Contracts\PhpViewInterface;
+	use BetterWP\Contracts\ViewInterface;
+	use BetterWP\Support\Arr;
 
 	class TestView implements PhpViewInterface {
 

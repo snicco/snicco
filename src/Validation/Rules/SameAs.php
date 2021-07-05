@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Validation\Rules;
+    namespace BetterWP\Validation\Rules;
 
     use Respect\Validation\Rules\AbstractRule;
-    use WPMvc\Support\Arr;
+    use BetterWP\Support\Arr;
 
     class SameAs extends AbstractRule
     {

@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Listeners;
+    namespace BetterWP\Listeners;
 
     use BetterWpHooks\Traits\ListensConditionally;
-    use WPMvc\Contracts\AbstractRouteCollection;
-    use WPMvc\Events\WpQueryFilterable;
-    use WPMvc\Support\WP;
+    use BetterWP\Contracts\AbstractRouteCollection;
+    use BetterWP\Events\WpQueryFilterable;
+    use BetterWP\Support\WP;
 
     class FilterWpQuery
     {

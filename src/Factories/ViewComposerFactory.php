@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Factories;
+	namespace BetterWP\Factories;
 
-	use WPMvc\Contracts\Handler;
-	use WPMvc\View\ViewComposer;
+	use BetterWP\Contracts\Handler;
+	use BetterWP\View\ViewComposer;
 
 	class ViewComposerFactory extends AbstractFactory {
 

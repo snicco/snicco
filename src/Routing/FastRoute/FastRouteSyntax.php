@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Routing\FastRoute;
+    namespace BetterWP\Routing\FastRoute;
 
-    use WPMvc\Routing\Route;
-    use WPMvc\Support\Str;
-    use WPMvc\Support\Url;
-    use WPMvc\Support\UrlParser;
+    use BetterWP\Routing\Route;
+    use BetterWP\Support\Str;
+    use BetterWP\Support\Url;
+    use BetterWP\Support\UrlParser;
 
     class FastRouteSyntax
     {

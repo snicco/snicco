@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Routing\Conditions;
+    namespace BetterWP\Routing\Conditions;
 
-    use WPMvc\Contracts\ConditionInterface;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Psr7\Request;
+    use BetterWP\Contracts\ConditionInterface;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
 
     class IsAdminCondition implements ConditionInterface
     {

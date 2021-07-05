@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Testing\Concerns;
+    namespace BetterWP\Testing\Concerns;
 
     use PHPUnit\Framework\Assert as PHPUnit;
     use Tests\helpers\HashesSessionIds;
-    use WPMvc\Application\Application;
-    use WPMvc\Session\Contracts\SessionDriver;
-    use WPMvc\Session\CsrfField;
-    use WPMvc\Session\Session;
-    use WPMvc\Support\Arr;
+    use BetterWP\Application\Application;
+    use BetterWP\Session\Contracts\SessionDriver;
+    use BetterWP\Session\CsrfField;
+    use BetterWP\Session\Session;
+    use BetterWP\Support\Arr;
 
     /**
      * @property Session $session

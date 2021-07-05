@@ -4,12 +4,12 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Events;
+	namespace BetterWP\Events;
 
 
     use BetterWpHooks\Traits\DispatchesConditionally;
     use BetterWpHooks\Traits\IsAction;
-    use WPMvc\Support\Arr;
+    use BetterWP\Support\Arr;
 
     class IncomingAjaxRequest extends IncomingRequest {
 

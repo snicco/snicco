@@ -4,9 +4,9 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Traits;
+	namespace BetterWP\Traits;
 
-	use WPMvc\Http\Psr7\Request;
+	use BetterWP\Http\Psr7\Request;
 
     trait HandlesExceptions {
 

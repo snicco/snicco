@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Testing;
+    namespace BetterWP\Testing;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPMvc\Http\Cookies;
-    use WPMvc\Http\ResponseEmitter;
+    use BetterWP\Http\Cookies;
+    use BetterWP\Http\ResponseEmitter;
 
     class TestResponseEmitter extends ResponseEmitter
     {

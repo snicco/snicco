@@ -6,7 +6,7 @@
 
     namespace Tests\stubs;
 
-    use WPMvc\Contracts\ServiceProvider;
+    use BetterWP\Contracts\ServiceProvider;
 
     class UserServiceProvider extends ServiceProvider
     {

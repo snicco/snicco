@@ -7,8 +7,8 @@
     namespace Tests\helpers;
 
     use Tests\stubs\TestApp;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Session\Session;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Session\Session;
 
     trait InteractsWithSessionDriver
     {

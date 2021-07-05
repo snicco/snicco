@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Blade;
+    namespace BetterWP\Blade;
 
     use Illuminate\View\Factory;
     use Illuminate\View\ViewFinderInterface;
     use Illuminate\View\ViewName;
-    use WPMvc\Contracts\ViewEngineInterface;
-    use WPMvc\Contracts\ViewInterface;
-    use WPMvc\ExceptionHandling\Exceptions\ViewNotFoundException;
-    use WPMvc\Support\Arr;
+    use BetterWP\Contracts\ViewEngineInterface;
+    use BetterWP\Contracts\ViewInterface;
+    use BetterWP\ExceptionHandling\Exceptions\ViewNotFoundException;
+    use BetterWP\Support\Arr;
 
     class BladeEngine implements ViewEngineInterface
     {

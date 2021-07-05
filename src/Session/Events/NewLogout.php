@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Session\Events;
+    namespace BetterWP\Session\Events;
 
     use BetterWpHooks\Traits\IsAction;
-    use WPMvc\Application\ApplicationEvent;
+    use BetterWP\Application\ApplicationEvent;
 
     class NewLogout extends ApplicationEvent
     {

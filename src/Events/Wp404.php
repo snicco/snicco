@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Events;
+    namespace BetterWP\Events;
 
-    use WPMvc\Application\ApplicationEvent;
+    use BetterWP\Application\ApplicationEvent;
 
     class Wp404 extends ApplicationEvent
     {

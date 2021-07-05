@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Application;
+    namespace BetterWP\Application;
 
-    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPMvc\Contracts\ServiceProvider;
+    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use BetterWP\Contracts\ServiceProvider;
 
     trait LoadsServiceProviders
     {

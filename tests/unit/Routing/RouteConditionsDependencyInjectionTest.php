@@ -12,8 +12,8 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
     use Tests\fixtures\Conditions\ConditionWithDependency;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Support\WP;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Support\WP;
 
     class RouteConditionsDependencyInjectionTest extends UnitTest
     {

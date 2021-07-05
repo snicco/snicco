@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\ExceptionHandling\Exceptions;
+    namespace BetterWP\ExceptionHandling\Exceptions;
 
     use Throwable;
-    use WPMvc\ExceptionHandling\Exceptions\HttpException;
-    use WPMvc\Http\ResponseFactory;
+    use BetterWP\ExceptionHandling\Exceptions\HttpException;
+    use BetterWP\Http\ResponseFactory;
 
     class InvalidSignatureException extends HttpException
     {

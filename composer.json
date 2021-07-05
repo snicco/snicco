@@ -66,12 +66,12 @@
 
   "autoload": {
     "psr-4": {
-      "WPMvc\\": "src/"
+      "BetterWP\\": "src/"
     }
   },
   "autoload-dev": {
     "psr-4": {
-      "WPMvc\\": "src/",
+      "BetterWP\\": "src/",
       "Tests\\" : "tests/"
     },
     "files": [

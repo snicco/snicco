@@ -4,12 +4,12 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\View;
+	namespace BetterWP\View;
 
-	use WPMvc\Contracts\PhpViewInterface;
-	use WPMvc\Contracts\ViewInterface;
-	use WPMvc\Support\WP;
-	use WPMvc\Support\Arr;
+	use BetterWP\Contracts\PhpViewInterface;
+	use BetterWP\Contracts\ViewInterface;
+	use BetterWP\Support\WP;
+	use BetterWP\Support\Arr;
 
 
 	class PhpView implements PhpViewInterface {

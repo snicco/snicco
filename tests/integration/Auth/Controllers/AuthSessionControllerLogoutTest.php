@@ -7,12 +7,12 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Auth\Controllers\AuthSessionController;
-    use WPMvc\Auth\Events\Logout;
-    use WPMvc\Auth\Responses\LogoutResponse;
-    use WPMvc\Routing\UrlGenerator;
-    use WPMvc\ExceptionHandling\Exceptions\InvalidSignatureException;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Auth\Controllers\AuthSessionController;
+    use BetterWP\Auth\Events\Logout;
+    use BetterWP\Auth\Responses\LogoutResponse;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\ExceptionHandling\Exceptions\InvalidSignatureException;
 
 
     /** @see AuthSessionController */

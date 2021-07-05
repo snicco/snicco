@@ -4,16 +4,16 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Factories;
+	namespace BetterWP\Factories;
 
 	use Contracts\ContainerAdapter;
 	use Illuminate\Support\Reflector;
-	use WPMvc\Contracts\Handler;
-	use WPMvc\Support\Str;
+	use BetterWP\Contracts\Handler;
+	use BetterWP\Support\Str;
 	use Closure;
-	use WPMvc\ExceptionHandling\Exceptions\Exception;
+	use BetterWP\ExceptionHandling\Exceptions\Exception;
 
-	use WPMvc\Traits\ReflectsCallable;
+	use BetterWP\Traits\ReflectsCallable;
 
 	use function collect;
 

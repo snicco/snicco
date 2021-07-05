@@ -6,7 +6,7 @@
 
     namespace Tests\integration\Auth\Stubs;
 
-    use WPMvc\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use BetterWP\Auth\Contracts\TwoFactorAuthenticationProvider;
 
     class TestTwoFactorProvider implements TwoFactorAuthenticationProvider
     {

@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Blade;
+    namespace BetterWP\Blade;
 
     use Illuminate\View\Component as IlluminateComponent;
-    use WPMvc\Contracts\ViewEngineInterface;
+    use BetterWP\Contracts\ViewEngineInterface;
 
     abstract class BladeComponent extends IlluminateComponent
     {

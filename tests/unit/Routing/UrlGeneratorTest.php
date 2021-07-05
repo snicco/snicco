@@ -12,10 +12,10 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPMvc\Support\WP;
-    use WPMvc\Routing\Route;
-    use WPMvc\Routing\RouteCollection;
-    use WPMvc\Support\Str;
+    use BetterWP\Support\WP;
+    use BetterWP\Routing\Route;
+    use BetterWP\Routing\RouteCollection;
+    use BetterWP\Support\Str;
 
     class UrlGeneratorTest extends UnitTest
     {

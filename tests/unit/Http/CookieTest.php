@@ -8,7 +8,7 @@
 
     use Carbon\Carbon;
     use DateTime;
-    use WPMvc\Http\Cookie;
+    use BetterWP\Http\Cookie;
     use PHPUnit\Framework\TestCase;
 
     class CookieTest extends TestCase

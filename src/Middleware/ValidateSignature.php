@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Middleware;
+    namespace BetterWP\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPMvc\Contracts\MagicLink;
-    use WPMvc\Contracts\Middleware;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\ExceptionHandling\Exceptions\InvalidSignatureException;
+    use BetterWP\Contracts\MagicLink;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\ExceptionHandling\Exceptions\InvalidSignatureException;
 
     class ValidateSignature extends Middleware
     {

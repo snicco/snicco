@@ -4,12 +4,12 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Routing;
+	namespace BetterWP\Routing;
 
-	use WPMvc\Contracts\SetsRouteAttributes;
-    use WPMvc\Support\WP;
-    use WPMvc\Support\Arr;
-    use WPMvc\Support\UrlParser;
+	use BetterWP\Contracts\SetsRouteAttributes;
+    use BetterWP\Support\WP;
+    use BetterWP\Support\Arr;
+    use BetterWP\Support\UrlParser;
 
     class RouteAttributes implements SetsRouteAttributes {
 

@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Contracts;
+    namespace BetterWP\Contracts;
 
     use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
     use Respect\Stringifier\Quoters\CodeQuoter;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Responses\RedirectResponse;
-    use WPMvc\Routing\UrlGenerator;
-    use WPMvc\Support\Url;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\Support\Url;
 
     abstract class AbstractRedirector
     {

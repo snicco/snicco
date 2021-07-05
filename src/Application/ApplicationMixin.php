@@ -4,23 +4,23 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Application;
+    namespace BetterWP\Application;
 
     use Contracts\ContainerAdapter;
     use LogicException;
     use Tests\unit\View\MethodField;
-    use WPMvc\Contracts\AbstractRedirector;
-    use WPMvc\Http\Cookies;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Http\Responses\RedirectResponse;
-    use WPMvc\Mail\MailBuilder;
-    use WPMvc\Routing\Route;
-    use WPMvc\Routing\Router;
-    use WPMvc\Routing\UrlGenerator;
-    use WPMvc\Contracts\ViewInterface;
-    use WPMvc\Session\CsrfField;
-    use WPMvc\Session\Session;
-    use WPMvc\View\GlobalContext;
+    use BetterWP\Contracts\AbstractRedirector;
+    use BetterWP\Http\Cookies;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Mail\MailBuilder;
+    use BetterWP\Routing\Route;
+    use BetterWP\Routing\Router;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\Contracts\ViewInterface;
+    use BetterWP\Session\CsrfField;
+    use BetterWP\Session\Session;
+    use BetterWP\View\GlobalContext;
 
     /**
      * Can be applied to your App class via a "@mixin" annotation for better IDE support.
@@ -168,7 +168,7 @@
          * Returns a response factory instance.
          *
          * @return  ResponseFactory
-         * @see \WPMvc\Http\ResponseFactory
+         * @see \BetterWP\Http\ResponseFactory
          */
         public static function response() : ResponseFactory
         {
@@ -180,7 +180,7 @@
          * @param  string|string[]  $views
          *
          * @return ViewInterface
-         * @see    \WPMvc\View\ViewFactory::make()
+         * @see    \BetterWP\View\ViewFactory::make()
          */
         public static function view($views) : ViewInterface
         {
@@ -190,7 +190,7 @@
          * Output child layout content.
          *
          * @return void
-         * @see    \WPMvc\View\PhpViewEngine::includeNextView()
+         * @see    \BetterWP\View\PhpViewEngine::includeNextView()
          */
         public static function includeChildViews() : void
         {
@@ -203,8 +203,8 @@
          * @param  array<string, mixed>  $context
          *
          * @return string
-         * @see    \WPMvc\Contracts\ViewInterface::toString()
-         * @see    \WPMvc\View\ViewFactory::make()
+         * @see    \BetterWP\Contracts\ViewInterface::toString()
+         * @see    \BetterWP\View\ViewFactory::make()
          */
         public static function render($views, array $context = []) : string
         {
@@ -218,7 +218,7 @@
          * @param  string|array|callable|\Closure  $callable
          *
          * @return void
-         * @see \WPMvc\View\ViewComposerCollection::addComposer()
+         * @see \BetterWP\View\ViewComposerCollection::addComposer()
          */
         public static function addComposer($views, $callable) : void
         {

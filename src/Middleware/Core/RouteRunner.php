@@ -4,20 +4,20 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Middleware\Core;
+    namespace BetterWP\Middleware\Core;
 
     use Closure;
     use Contracts\ContainerAdapter;
     use Psr\Http\Message\ResponseInterface;
-    use WPMvc\Contracts\Middleware;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Psr7\Response;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Middleware\MiddlewareStack;
-    use WPMvc\Routing\Pipeline;
-    use WPMvc\Routing\Route;
-    use WPMvc\Routing\RoutingResult;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Middleware\MiddlewareStack;
+    use BetterWP\Routing\Pipeline;
+    use BetterWP\Routing\Route;
+    use BetterWP\Routing\RoutingResult;
 
     class RouteRunner extends Middleware
     {

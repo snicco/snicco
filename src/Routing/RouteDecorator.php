@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Routing;
+	namespace BetterWP\Routing;
 
 	use BadMethodCallException;
-	use WPMvc\Support\Arr;
+	use BetterWP\Support\Arr;
 
 	class RouteDecorator {
 

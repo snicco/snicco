@@ -15,14 +15,14 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Contracts\AbstractRedirector;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Redirector;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Routing\Router;
-    use WPMvc\Routing\UrlGenerator;
-    use WPMvc\View\ViewFactory;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Contracts\AbstractRedirector;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Redirector;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Routing\Router;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\View\ViewFactory;
 
     class RedirectRoutesTest extends UnitTest
     {

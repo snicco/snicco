@@ -11,10 +11,10 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
     use Tests\helpers\CreatesWpUrls;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Events\IncomingAjaxRequest;
-    use WPMvc\ExceptionHandling\Exceptions\RouteLogicException;
-    use WPMvc\Support\WP;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\IncomingAjaxRequest;
+    use BetterWP\ExceptionHandling\Exceptions\RouteLogicException;
+    use BetterWP\Support\WP;
 
     class AjaxRoutesTest extends UnitTest
     {

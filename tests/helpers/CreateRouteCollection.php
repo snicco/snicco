@@ -7,9 +7,9 @@
     namespace Tests\helpers;
 
     use SniccoAdapter\BaseContainerAdapter;
-    use WPMvc\Factories\ConditionFactory;
-    use WPMvc\Factories\RouteActionFactory;
-    use WPMvc\Routing\RouteCollection;
+    use BetterWP\Factories\ConditionFactory;
+    use BetterWP\Factories\RouteActionFactory;
+    use BetterWP\Routing\RouteCollection;
 
     trait CreateRouteCollection
     {

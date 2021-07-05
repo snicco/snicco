@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Routing\Conditions;
+    namespace BetterWP\Routing\Conditions;
 
-    use WPMvc\Contracts\UrlableInterface;
-    use WPMvc\ExceptionHandling\Exceptions\RouteLogicException;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Routing\Route;
-    use WPMvc\Routing\Conditions\RequestAttributeCondition;
-    use WPMvc\Support\Arr;
+    use BetterWP\Contracts\UrlableInterface;
+    use BetterWP\ExceptionHandling\Exceptions\RouteLogicException;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Routing\Route;
+    use BetterWP\Routing\Conditions\RequestAttributeCondition;
+    use BetterWP\Support\Arr;
 
     class AdminAjaxCondition extends RequestAttributeCondition implements UrlableInterface
     {

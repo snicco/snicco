@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Contracts;
+    namespace BetterWP\Auth\Contracts;
 
     interface TwoFactorAuthenticationProvider
     {

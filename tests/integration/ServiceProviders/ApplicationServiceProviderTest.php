@@ -11,22 +11,22 @@
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use WPMvc\Application\Application;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Contracts\ErrorHandlerInterface;
-    use WPMvc\Contracts\ServiceProvider;
-    use WPMvc\Contracts\ViewInterface;
-    use WPMvc\Support\WP;
-	use WPMvc\Support\WpFacade;
-    use WPMvc\Http\Cookies;
-    use WPMvc\Http\Redirector;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Http\Responses\RedirectResponse;
-    use WPMvc\Routing\Router;
-    use WPMvc\Routing\UrlGenerator;
-    use WPMvc\Session\SessionServiceProvider;
-    use WPMvc\Session\Session;
-    use WPMvc\Support\Url;
+    use BetterWP\Application\Application;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Contracts\ErrorHandlerInterface;
+    use BetterWP\Contracts\ServiceProvider;
+    use BetterWP\Contracts\ViewInterface;
+    use BetterWP\Support\WP;
+	use BetterWP\Support\WpFacade;
+    use BetterWP\Http\Cookies;
+    use BetterWP\Http\Redirector;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Routing\Router;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\Session\SessionServiceProvider;
+    use BetterWP\Session\Session;
+    use BetterWP\Support\Url;
 
     class ApplicationServiceProviderTest extends TestCase {
 

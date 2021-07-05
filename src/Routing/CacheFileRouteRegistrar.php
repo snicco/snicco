@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Routing;
+    namespace BetterWP\Routing;
 
     use Symfony\Component\Finder\Finder;
-    use WPMvc\Application\ApplicationConfig;
-    use WPMvc\Contracts\RouteRegistrarInterface;
-    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
+    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Contracts\RouteRegistrarInterface;
+    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
 
     class CacheFileRouteRegistrar implements RouteRegistrarInterface
     {

@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Traits;
+	namespace BetterWP\Traits;
 
-	use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
-	use WPMvc\Support\Arr;
+	use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+	use BetterWP\Support\Arr;
 
 	trait GathersMiddleware {
 

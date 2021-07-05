@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Middleware;
+    namespace BetterWP\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPMvc\Contracts\Middleware;
-    use WPMvc\ExceptionHandling\Exceptions\AuthorizationException;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Psr7\Request;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\ExceptionHandling\Exceptions\AuthorizationException;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
 
     class Authorize extends Middleware
     {

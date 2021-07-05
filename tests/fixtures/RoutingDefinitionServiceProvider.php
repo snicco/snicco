@@ -6,8 +6,8 @@
 
     namespace Tests\fixtures;
 
-    use WPMvc\Contracts\ServiceProvider;
-    use WPMvc\Support\Arr;
+    use BetterWP\Contracts\ServiceProvider;
+    use BetterWP\Support\Arr;
 
     class RoutingDefinitionServiceProvider extends ServiceProvider
     {

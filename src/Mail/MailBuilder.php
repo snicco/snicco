@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Mail;
+    namespace BetterWP\Mail;
 
     use BetterWpHooks\Contracts\Dispatcher;
     use BetterWpHooks\Dispatchers\WordpressDispatcher;
     use Contracts\ContainerAdapter;
-    use WPMvc\Events\PendingMail;
+    use BetterWP\Events\PendingMail;
 
     class MailBuilder
     {

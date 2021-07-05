@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Controllers;
+    namespace BetterWP\Auth\Controllers;
 
     use Illuminate\Support\InteractsWithTime;
     use WP_User;
-    use WPMvc\Auth\Mail\ConfirmAuthMail;
-    use WPMvc\Http\Controller;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Mail\MailBuilder;
-    use WPMvc\Session\Session;
+    use BetterWP\Auth\Mail\ConfirmAuthMail;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Mail\MailBuilder;
+    use BetterWP\Session\Session;
 
     class AuthConfirmationEmailController extends Controller
     {

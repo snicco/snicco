@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Responses;
+    namespace BetterWP\Auth\Responses;
 
-    use WPMvc\Auth\Contracts\RegistrationViewResponse;
-    use WPMvc\Routing\UrlGenerator;
-    use WPMvc\View\ViewFactory;
+    use BetterWP\Auth\Contracts\RegistrationViewResponse;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\View\ViewFactory;
 
     class EmailRegistrationViewResponse extends RegistrationViewResponse
     {

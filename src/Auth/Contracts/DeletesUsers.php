@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Contracts;
+    namespace BetterWP\Auth\Contracts;
 
-    use WPMvc\Contracts\ResponsableInterface;
+    use BetterWP\Contracts\ResponsableInterface;
 
     interface DeletesUsers
     {

@@ -16,9 +16,9 @@
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
     use wpdb;
-    use WPMvc\Support\WP;
-    use WPMvc\Session\Drivers\ArraySessionDriver;
-    use WPMvc\Session\Drivers\DatabaseSessionDriver;
+    use BetterWP\Support\WP;
+    use BetterWP\Session\Drivers\ArraySessionDriver;
+    use BetterWP\Session\Drivers\DatabaseSessionDriver;
 
     /** @todo test for getting all session for a user */
     class DatabaseSessionDriverTest extends TestCase

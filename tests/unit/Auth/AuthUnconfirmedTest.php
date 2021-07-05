@@ -7,12 +7,12 @@
     namespace Tests\unit\Auth;
 
     use Tests\MiddlewareTestCase;
-    use WPMvc\Auth\Middleware\AuthUnconfirmed;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Routing\Route;
-    use WPMvc\Session\Drivers\ArraySessionDriver;
-    use WPMvc\Session\Session;
+    use BetterWP\Auth\Middleware\AuthUnconfirmed;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Routing\Route;
+    use BetterWP\Session\Drivers\ArraySessionDriver;
+    use BetterWP\Session\Session;
 
     class AuthUnconfirmedTest extends MiddlewareTestCase
     {

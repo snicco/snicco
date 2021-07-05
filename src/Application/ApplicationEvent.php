@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Application;
+	namespace BetterWP\Application;
 
 	use BetterWpHooks\Traits\BetterWpHooksFacade;
 

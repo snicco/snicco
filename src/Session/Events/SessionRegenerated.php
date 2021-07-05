@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Session\Events;
+    namespace BetterWP\Session\Events;
 
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Session\Session;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Session\Session;
 
     class SessionRegenerated extends ApplicationEvent
     {

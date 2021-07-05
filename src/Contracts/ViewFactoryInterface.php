@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Contracts;
+	namespace BetterWP\Contracts;
 
 
-	use WPMvc\ExceptionHandling\Exceptions\ViewException;
-    use WPMvc\ExceptionHandling\Exceptions\ViewNotFoundException;
+	use BetterWP\ExceptionHandling\Exceptions\ViewException;
+    use BetterWP\ExceptionHandling\Exceptions\ViewNotFoundException;
 
     interface ViewFactoryInterface {
 

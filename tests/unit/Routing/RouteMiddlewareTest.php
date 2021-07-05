@@ -15,11 +15,11 @@
     use Tests\fixtures\Middleware\BazMiddleware;
     use Tests\fixtures\Middleware\FooBarMiddleware;
     use Tests\fixtures\Middleware\FooMiddleware;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Middleware\Core\RouteRunner;
-    use WPMvc\Routing\Router;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Middleware\Core\RouteRunner;
+    use BetterWP\Routing\Router;
 
     class RouteMiddlewareTest extends UnitTest
     {

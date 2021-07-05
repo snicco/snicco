@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Contracts;
+	namespace BetterWP\Contracts;
 
-	use WPMvc\ExceptionHandling\Exceptions\DecryptException;
-    use WPMvc\ExceptionHandling\Exceptions\EncryptException;
+	use BetterWP\ExceptionHandling\Exceptions\DecryptException;
+    use BetterWP\ExceptionHandling\Exceptions\EncryptException;
 
     interface EncryptorInterface {
 
@@ -54,7 +54,7 @@
 		 *
 		 * @return string
 		 *
-		 * @throws \WPMvc\ExceptionHandling\Exceptions\DecryptException
+		 * @throws \BetterWP\ExceptionHandling\Exceptions\DecryptException
 		 */
 		public function decryptString( string $payload) : string;
 

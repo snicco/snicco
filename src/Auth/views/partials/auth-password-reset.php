@@ -8,7 +8,7 @@
     /** @var Session $session */
 
     use Illuminate\Support\ViewErrorBag;
-    use WPMvc\Session\Session;
+    use BetterWP\Session\Session;
 
 ?>
 

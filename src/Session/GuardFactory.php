@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Session;
+    namespace BetterWP\Session;
 
     use Slim\Csrf\Guard;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Session\Exceptions\InvalidCsrfTokenException;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Session\Exceptions\InvalidCsrfTokenException;
 
     class GuardFactory
     {

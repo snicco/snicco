@@ -9,14 +9,14 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPMvc\Middleware\Core\EvaluateResponseMiddleware;
-    use WPMvc\Middleware\Core\OpenRedirectProtection;
-    use WPMvc\Middleware\Core\RouteRunner;
-    use WPMvc\Middleware\MiddlewareStack;
-    use WPMvc\Middleware\Secure;
-    use WPMvc\Middleware\TrailingSlash;
-    use WPMvc\Middleware\Www;
-    use WPMvc\Routing\Pipeline;
+    use BetterWP\Middleware\Core\EvaluateResponseMiddleware;
+    use BetterWP\Middleware\Core\OpenRedirectProtection;
+    use BetterWP\Middleware\Core\RouteRunner;
+    use BetterWP\Middleware\MiddlewareStack;
+    use BetterWP\Middleware\Secure;
+    use BetterWP\Middleware\TrailingSlash;
+    use BetterWP\Middleware\Www;
+    use BetterWP\Routing\Pipeline;
 
     class MiddlewareServiceProviderTest extends TestCase
     {

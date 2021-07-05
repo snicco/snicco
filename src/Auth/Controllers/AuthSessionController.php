@@ -4,26 +4,26 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Controllers;
+    namespace BetterWP\Auth\Controllers;
 
     use Closure;
     use WP_User;
-    use WPMvc\Auth\Events\Login;
-    use WPMvc\Auth\Contracts\LoginResponse;
-    use WPMvc\Auth\Responses\LogoutResponse;
-    use WPMvc\Auth\Responses\SuccessfulLoginResponse;
-    use WPMvc\Auth\Contracts\LoginViewResponse;
-    use WPMvc\Contracts\ResponsableInterface;
-    use WPMvc\Auth\Exceptions\FailedAuthenticationException;
-    use WPMvc\ExceptionHandling\Exceptions\InvalidSignatureException;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Controller;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Psr7\Response;
-    use WPMvc\Routing\Pipeline;
-    use WPMvc\Session\Session;
-    use WPMvc\Support\Arr;
-    use WPMvc\Support\Url;
+    use BetterWP\Auth\Events\Login;
+    use BetterWP\Auth\Contracts\LoginResponse;
+    use BetterWP\Auth\Responses\LogoutResponse;
+    use BetterWP\Auth\Responses\SuccessfulLoginResponse;
+    use BetterWP\Auth\Contracts\LoginViewResponse;
+    use BetterWP\Contracts\ResponsableInterface;
+    use BetterWP\Auth\Exceptions\FailedAuthenticationException;
+    use BetterWP\ExceptionHandling\Exceptions\InvalidSignatureException;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Routing\Pipeline;
+    use BetterWP\Session\Session;
+    use BetterWP\Support\Arr;
+    use BetterWP\Support\Url;
 
     class AuthSessionController extends Controller
     {

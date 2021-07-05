@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Routing;
+    namespace BetterWP\Routing;
 
     use Closure;
     use Contracts\ContainerAdapter;
-    use WPMvc\Contracts\AbstractRouteCollection;
-    use WPMvc\Controllers\FallBackController;
-    use WPMvc\Controllers\RedirectController;
-    use WPMvc\Controllers\ViewController;
-    use WPMvc\Support\WP;
-    use WPMvc\Support\Str;
-    use WPMvc\Support\Url;
-    use WPMvc\Traits\HoldsRouteBlueprint;
+    use BetterWP\Contracts\AbstractRouteCollection;
+    use BetterWP\Controllers\FallBackController;
+    use BetterWP\Controllers\RedirectController;
+    use BetterWP\Controllers\ViewController;
+    use BetterWP\Support\WP;
+    use BetterWP\Support\Str;
+    use BetterWP\Support\Url;
+    use BetterWP\Traits\HoldsRouteBlueprint;
 
     /**
      * @mixin RouteDecorator

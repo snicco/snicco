@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Contracts;
+    namespace BetterWP\Contracts;
 
 
     interface Mailer
     {
 
         /**
-         * @param  \WPMvc\Mail\Mailable  $mail
+         * @param  \BetterWP\Mail\Mailable  $mail
          *
          * @return bool Whether the mail was processed correctly.
          */
-        public function send ( \WPMvc\Mail\Mailable $mail ) : bool;
+        public function send ( \BetterWP\Mail\Mailable $mail ) : bool;
 
 
     }

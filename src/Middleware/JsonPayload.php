@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Middleware;
+    namespace BetterWP\Middleware;
 
     use Psr\Http\Message\StreamInterface;
 

@@ -12,25 +12,25 @@
     use Tests\fixtures\Middleware\FooBarMiddleware;
     use Tests\fixtures\Middleware\FooMiddleware;
     use Tests\stubs\TestRequest;
-    use WPMvc\View\MethodField;
-    use WPMvc\Contracts\AbstractRouteCollection;
-    use WPMvc\Contracts\ErrorHandlerInterface;
-    use WPMvc\Events\IncomingRequest;
-    use WPMvc\Events\IncomingWebRequest;
-    use WPMvc\ExceptionHandling\NullErrorHandler;
-    use WPMvc\Factories\ConditionFactory;
-    use WPMvc\Factories\RouteActionFactory;
-    use WPMvc\Http\HttpKernel;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Middleware\Core\RouteRunner;
-    use WPMvc\Middleware\MiddlewareStack;
-    use WPMvc\Routing\FastRoute\FastRouteUrlGenerator;
-    use WPMvc\Routing\Pipeline;
-    use WPMvc\Routing\RouteCollection;
-    use WPMvc\Routing\Router;
-    use WPMvc\Routing\UrlGenerator;
-    use WPMvc\Routing\RoutingServiceProvider;
+    use BetterWP\View\MethodField;
+    use BetterWP\Contracts\AbstractRouteCollection;
+    use BetterWP\Contracts\ErrorHandlerInterface;
+    use BetterWP\Events\IncomingRequest;
+    use BetterWP\Events\IncomingWebRequest;
+    use BetterWP\ExceptionHandling\NullErrorHandler;
+    use BetterWP\Factories\ConditionFactory;
+    use BetterWP\Factories\RouteActionFactory;
+    use BetterWP\Http\HttpKernel;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Middleware\Core\RouteRunner;
+    use BetterWP\Middleware\MiddlewareStack;
+    use BetterWP\Routing\FastRoute\FastRouteUrlGenerator;
+    use BetterWP\Routing\Pipeline;
+    use BetterWP\Routing\RouteCollection;
+    use BetterWP\Routing\Router;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\Routing\RoutingServiceProvider;
 
     trait CreateTestSubjects
     {

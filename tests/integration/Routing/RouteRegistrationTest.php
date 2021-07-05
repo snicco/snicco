@@ -15,16 +15,16 @@
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use WPMvc\Application\Application;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Contracts\ServiceProvider;
-    use WPMvc\Events\IncomingAdminRequest;
-    use WPMvc\Events\IncomingAjaxRequest;
-    use WPMvc\Events\ResponseSent;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Listeners\CreateDynamicHooks;
-    use WPMvc\Support\Arr;
+    use BetterWP\Application\Application;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Contracts\ServiceProvider;
+    use BetterWP\Events\IncomingAdminRequest;
+    use BetterWP\Events\IncomingAjaxRequest;
+    use BetterWP\Events\ResponseSent;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Listeners\CreateDynamicHooks;
+    use BetterWP\Support\Arr;
 
     class RouteRegistrationTest extends TestCase
     {

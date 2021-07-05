@@ -13,12 +13,12 @@
     use Tests\integration\Blade\traits\InteractsWithWordpress;
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
-    use WPMvc\Contracts\ViewInterface;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Session\Drivers\ArraySessionDriver;
-    use WPMvc\Session\CsrfField;
-    use WPMvc\Session\Session;
-    use WPMvc\Session\SessionServiceProvider;
+    use BetterWP\Contracts\ViewInterface;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Session\Drivers\ArraySessionDriver;
+    use BetterWP\Session\CsrfField;
+    use BetterWP\Session\Session;
+    use BetterWP\Session\SessionServiceProvider;
 
     class CustomDirectivesTest extends BladeTestCase
     {

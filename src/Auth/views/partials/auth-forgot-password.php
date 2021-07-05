@@ -3,7 +3,7 @@
 
     declare(strict_types = 1);
 
-    use WPMvc\Session\Session;
+    use BetterWP\Session\Session;
     use Illuminate\Support\ViewErrorBag;
     
     /** @var ViewErrorBag $errors */

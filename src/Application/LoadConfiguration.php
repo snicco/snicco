@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Application;
+    namespace BetterWP\Application;
 
     use Exception;
     use Symfony\Component\Finder\Finder;

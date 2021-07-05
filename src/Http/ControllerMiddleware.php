@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Http;
+	namespace BetterWP\Http;
 
-	use WPMvc\ExceptionHandling\Exceptions\Exception;
-	use WPMvc\Support\Arr;
+	use BetterWP\ExceptionHandling\Exceptions\Exception;
+	use BetterWP\Support\Arr;
 
 	class ControllerMiddleware {
 

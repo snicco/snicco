@@ -11,7 +11,7 @@
     use stdClass;
     use Tests\fixtures\TestDependencies\Foo;
     use Tests\helpers\CreateContainer;
-    use WPMvc\Application\ManagesAliases;
+    use BetterWP\Application\ManagesAliases;
 
 	class ManagesAliasesTest extends TestCase {
 

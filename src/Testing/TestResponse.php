@@ -4,22 +4,22 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Testing;
+    namespace BetterWP\Testing;
 
     use Closure;
-    use WPMvc\Application\Application;
-    use WPMvc\Contracts\ViewInterface;
-    use WPMvc\Http\Psr7\Response;
+    use BetterWP\Application\Application;
+    use BetterWP\Contracts\ViewInterface;
+    use BetterWP\Http\Psr7\Response;
     use PHPUnit\Framework\Assert as PHPUnit;
-    use WPMvc\Http\Responses\NullResponse;
-    use WPMvc\Routing\UrlGenerator;
-    use WPMvc\Session\Session;
-    use WPMvc\Support\Arr;
-    use WPMvc\Support\Str;
-    use WPMvc\Support\Url;
-    use WPMvc\Support\VariableBag;
-    use WPMvc\Testing\Assertable\AssertableCookie;
-    use WPMvc\Testing\Constraints\SeeInOrder;
+    use BetterWP\Http\Responses\NullResponse;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\Session\Session;
+    use BetterWP\Support\Arr;
+    use BetterWP\Support\Str;
+    use BetterWP\Support\Url;
+    use BetterWP\Support\VariableBag;
+    use BetterWP\Testing\Assertable\AssertableCookie;
+    use BetterWP\Testing\Constraints\SeeInOrder;
 
     class TestResponse
     {

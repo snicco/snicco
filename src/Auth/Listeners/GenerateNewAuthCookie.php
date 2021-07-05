@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Listeners;
+    namespace BetterWP\Auth\Listeners;
 
-    use WPMvc\Auth\Events\SettingAuthCookie;
-    use WPMvc\Session\Session;
+    use BetterWP\Auth\Events\SettingAuthCookie;
+    use BetterWP\Session\Session;
 
     class GenerateNewAuthCookie
     {

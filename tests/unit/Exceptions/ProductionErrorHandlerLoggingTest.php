@@ -19,13 +19,13 @@
     use Tests\UnitTest;
     use Tests\fixtures\TestDependencies\Foo;
     use Tests\stubs\TestLogger;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\ExceptionHandling\ProductionErrorHandler;
-    use WPMvc\Support\WP;
-    use WPMvc\Factories\ErrorHandlerFactory;
-    use WPMvc\Support\WpFacade;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\ExceptionHandling\ProductionErrorHandler;
+    use BetterWP\Support\WP;
+    use BetterWP\Factories\ErrorHandlerFactory;
+    use BetterWP\Support\WpFacade;
 
     class ProductionErrorHandlerLoggingTest extends UnitTest
     {

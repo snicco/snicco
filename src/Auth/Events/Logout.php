@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Events;
+    namespace BetterWP\Auth\Events;
 
     use BetterWpHooks\Traits\IsAction;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Session\Session;
-    use WPMvc\Session\Contracts\SessionDriver;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Session\Session;
+    use BetterWP\Session\Contracts\SessionDriver;
 
     class Logout extends ApplicationEvent
     {

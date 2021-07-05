@@ -13,13 +13,13 @@
     use Tests\UnitTest;
 	use Tests\stubs\TestRequest;
     use Tests\helpers\AssertsResponse;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Middleware\Authenticate;
-	use WPMvc\Http\Responses\RedirectResponse;
-    use WPMvc\Middleware\RedirectIfAuthenticated;
-    use WPMvc\Routing\Route;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Middleware\Authenticate;
+	use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Middleware\RedirectIfAuthenticated;
+    use BetterWP\Routing\Route;
 
     class RedirectIfAuthenticatedTest extends UnitTest {
 

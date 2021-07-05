@@ -4,12 +4,12 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\View;
+	namespace BetterWP\View;
 
-    use WPMvc\Contracts\ServiceProvider;
-	use WPMvc\Contracts\ViewEngineInterface;
-	use WPMvc\Contracts\ViewFactoryInterface;
-    use WPMvc\Factories\ViewComposerFactory;
+    use BetterWP\Contracts\ServiceProvider;
+	use BetterWP\Contracts\ViewEngineInterface;
+	use BetterWP\Contracts\ViewFactoryInterface;
+    use BetterWP\Factories\ViewComposerFactory;
 
 
 	class ViewServiceProvider extends ServiceProvider {

@@ -4,14 +4,14 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Traits;
+	namespace BetterWP\Traits;
 
 	use Closure;
-    use WPMvc\Controllers\FallBackController;
-    use WPMvc\Routing\ConditionBlueprint;
-    use WPMvc\Routing\Conditions\TrailingSlashCondition;
-    use WPMvc\Routing\Route;
-	use WPMvc\Support\Arr;
+    use BetterWP\Controllers\FallBackController;
+    use BetterWP\Routing\ConditionBlueprint;
+    use BetterWP\Routing\Conditions\TrailingSlashCondition;
+    use BetterWP\Routing\Route;
+	use BetterWP\Support\Arr;
 
 	trait SetRouteAttributes {
 

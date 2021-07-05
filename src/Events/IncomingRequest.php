@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Events;
+	namespace BetterWP\Events;
 
-	use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Support\Str;
+	use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Support\Str;
 
     class IncomingRequest extends ApplicationEvent {
 

@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Listeners;
+    namespace BetterWP\Listeners;
 
 
     class ShortCircuit404

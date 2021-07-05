@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Routing\Conditions;
+    namespace BetterWP\Routing\Conditions;
 
-    use WPMvc\Contracts\ConditionInterface;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Support\Str;
+    use BetterWP\Contracts\ConditionInterface;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Support\Str;
 
     /**
      * This Condition is required for make FastRoute only match trailing slash urls

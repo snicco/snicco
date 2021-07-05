@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Routing\FastRoute;
+    namespace BetterWP\Routing\FastRoute;
 
     use FastRoute\Dispatcher;
-    use WPMvc\Routing\RoutingResult;
+    use BetterWP\Routing\RoutingResult;
 
     trait TransformFastRoutes
     {

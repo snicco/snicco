@@ -11,13 +11,13 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Contracts\Middleware;
-    use WPMvc\Events\IncomingApiRequest;
-    use WPMvc\Events\ResponseSent;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\ResponseFactory;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Events\IncomingApiRequest;
+    use BetterWP\Events\ResponseSent;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseFactory;
 
     class ApiRoutesTest extends TestCase
     {

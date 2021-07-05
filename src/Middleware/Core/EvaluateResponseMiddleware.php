@@ -4,19 +4,19 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Middleware\Core;
+    namespace BetterWP\Middleware\Core;
 
     use Psr\Http\Message\ResponseInterface;
     use WP_Query;
-    use WPMvc\Contracts\Middleware;
-    use WPMvc\ExceptionHandling\Exceptions\HttpException;
-    use WPMvc\ExceptionHandling\Exceptions\InvalidResponseException;
-    use WPMvc\ExceptionHandling\Exceptions\NotFoundException;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Http\Responses\InvalidResponse;
-    use WPMvc\Http\Responses\NullResponse;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Responses\WpQueryFilteredResponse;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\ExceptionHandling\Exceptions\HttpException;
+    use BetterWP\ExceptionHandling\Exceptions\InvalidResponseException;
+    use BetterWP\ExceptionHandling\Exceptions\NotFoundException;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Responses\InvalidResponse;
+    use BetterWP\Http\Responses\NullResponse;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Responses\WpQueryFilteredResponse;
 
     class EvaluateResponseMiddleware extends Middleware
     {

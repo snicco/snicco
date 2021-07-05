@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Testing\Concerns;
+    namespace BetterWP\Testing\Concerns;
 
-    use WPMvc\Http\ResponseEmitter;
-    use WPMvc\Testing\TestResponseEmitter;
+    use BetterWP\Http\ResponseEmitter;
+    use BetterWP\Testing\TestResponseEmitter;
 
     trait InteractsWithContainer
     {

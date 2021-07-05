@@ -16,23 +16,23 @@
     use Tests\UnitTest;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Events\IncomingAdminRequest;
-    use WPMvc\Events\IncomingAjaxRequest;
-    use WPMvc\Events\IncomingWebRequest;
-    use WPMvc\Events\WpQueryFilterable;
-    use WPMvc\Support\WP;
-    use WPMvc\Factories\RouteActionFactory;
-    use WPMvc\Factories\ConditionFactory;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Routing\CachedRouteCollection;
-    use WPMvc\Routing\FastRoute\CachedFastRouteMatcher;
-    use WPMvc\Listeners\FilterWpQuery;
-    use WPMvc\Routing\Route;
-    use WPMvc\Routing\Router;
-    use WPMvc\Routing\UrlGenerator;
-    use WPMvc\View\ViewFactory;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\IncomingAdminRequest;
+    use BetterWP\Events\IncomingAjaxRequest;
+    use BetterWP\Events\IncomingWebRequest;
+    use BetterWP\Events\WpQueryFilterable;
+    use BetterWP\Support\WP;
+    use BetterWP\Factories\RouteActionFactory;
+    use BetterWP\Factories\ConditionFactory;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Routing\CachedRouteCollection;
+    use BetterWP\Routing\FastRoute\CachedFastRouteMatcher;
+    use BetterWP\Listeners\FilterWpQuery;
+    use BetterWP\Routing\Route;
+    use BetterWP\Routing\Router;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\View\ViewFactory;
 
     class RouteCachingTest extends UnitTest
     {

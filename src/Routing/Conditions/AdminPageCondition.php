@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Routing\Conditions;
+    namespace BetterWP\Routing\Conditions;
 
-    use WPMvc\Contracts\UrlableInterface;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Psr7\Request;
+    use BetterWP\Contracts\UrlableInterface;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
 
     class AdminPageCondition extends QueryStringCondition implements UrlableInterface
     {
