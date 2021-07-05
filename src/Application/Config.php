@@ -7,7 +7,7 @@
 	use Illuminate\Config\Repository;
 	use BetterWP\Support\Arr;
 
-	class ApplicationConfig extends Repository {
+	class Config extends Repository {
 
 
 	    public function remove(string $key) {

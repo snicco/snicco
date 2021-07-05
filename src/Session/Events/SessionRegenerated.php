@@ -6,10 +6,10 @@
 
     namespace BetterWP\Session\Events;
 
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Session\Session;
 
-    class SessionRegenerated extends ApplicationEvent
+    class SessionRegenerated extends Event
     {
 
         /**

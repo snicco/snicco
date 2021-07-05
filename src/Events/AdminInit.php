@@ -8,11 +8,11 @@
 
     use BetterWpHooks\Traits\DispatchesConditionally;
     use BetterWpHooks\Traits\IsAction;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Support\WP;
     use BetterWP\Http\Psr7\Request;
 
-    class AdminInit extends ApplicationEvent
+    class AdminInit extends Event
     {
 
         use IsAction;

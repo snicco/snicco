@@ -45,7 +45,7 @@
         private $bootstrapped = false;
 
         /**
-         * @var ApplicationConfig
+         * @var Config
          */
         private $config;
 
@@ -96,7 +96,7 @@
             }
 
             $this->config = ((new LoadConfiguration))->bootstrap($this);
-            $this->container()->instance(ApplicationConfig::class, $this->config);
+            $this->container()->instance(Config::class, $this->config);
             $this->container()->instance(ServerRequestCreator::class, $this->serverRequestCreator());
 
             if ( ! $load ) {

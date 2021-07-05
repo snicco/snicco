@@ -7,7 +7,7 @@
     namespace BetterWP\Testing\Concerns;
 
     use BetterWpHooks\Testing\FakeDispatcher;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Events\PendingMail;
     use PHPUnit\Framework\Assert as PHPUnit;
     use BetterWP\Testing\Assertable\AssertableMail;
@@ -19,14 +19,14 @@
         protected function mailFake()
         {
 
-            ApplicationEvent::fake([PendingMail::class]);
+            Event::fake([PendingMail::class]);
 
             return $this;
 
         }
 
         protected function clearSentMails() {
-            $fake_dispatcher = ApplicationEvent::dispatcher();
+            $fake_dispatcher = Event::dispatcher();
             $fake_dispatcher->clearDispatchedEvents();
             return $this;
         }
@@ -34,7 +34,7 @@
         protected function assertMailSent(string $mailable) : AssertableMail
         {
 
-            $fake_dispatcher = ApplicationEvent::dispatcher();
+            $fake_dispatcher = Event::dispatcher();
 
             $this->checkMailWasFaked($fake_dispatcher);
 
@@ -56,7 +56,7 @@
         protected function assertMailNotSent(string $mailable)
         {
 
-            $fake_dispatcher = ApplicationEvent::dispatcher();
+            $fake_dispatcher = Event::dispatcher();
 
             $this->checkMailWasFaked($fake_dispatcher);
 

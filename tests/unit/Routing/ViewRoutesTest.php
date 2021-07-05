@@ -14,7 +14,7 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Support\WP;
     use BetterWP\Http\ResponseFactory;
     use BetterWP\Routing\Router;
@@ -44,8 +44,8 @@
             $this->container->instance(UrlGenerator::class, $this->newUrlGenerator());
             $this->container->instance(ViewFactory::class, new TestViewFactory());
             $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
-            ApplicationEvent::make($this->container);
-            ApplicationEvent::fake();
+            Event::make($this->container);
+            Event::fake();
             WP::setFacadeContainer($this->container);
             HeaderStack::reset();
             $this->createBindingsForViewController();
@@ -56,7 +56,7 @@
         protected function beforeTearDown()
         {
 
-            ApplicationEvent::setInstance(null);
+            Event::setInstance(null);
             Mockery::close();
             WP::reset();
             HeaderStack::reset();

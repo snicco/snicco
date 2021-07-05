@@ -11,7 +11,7 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Contracts\Middleware;
     use BetterWP\Events\IncomingApiRequest;
     use BetterWP\Events\ResponseSent;
@@ -26,7 +26,7 @@
         {
             $this->defer_boot = true;
             $this->afterApplicationCreated(function () {
-                ApplicationEvent::fake([ResponseSent::class]);
+                Event::fake([ResponseSent::class]);
             });
             parent::setUp();
         }
@@ -45,7 +45,7 @@
             $response->assertSee('foo endpoint');
 
             // This will shut the script down.
-            ApplicationEvent::assertDispatched(function (ResponseSent $event) {
+            Event::assertDispatched(function (ResponseSent $event) {
                 return $event->request->isApiEndPoint();
             });
 

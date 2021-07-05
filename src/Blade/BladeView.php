@@ -7,17 +7,17 @@
     namespace BetterWP\Blade;
 
 
-    use Illuminate\Contracts\View\View as IlluminateViewContracts;
+    use Illuminate\Contracts\View\View as IlluminateViewContract;
     use Illuminate\View\View as IlluminateView;
     use BetterWP\Contracts\ViewInterface;
     use BetterWP\ExceptionHandling\Exceptions\ViewException;
     use BetterWP\Support\Arr;
 
-    class BladeView implements ViewInterface, IlluminateViewContracts
+    class BladeView implements ViewInterface, IlluminateViewContract
     {
 
         /**
-         * @var IlluminateView|IlluminateViewContracts
+         * @var IlluminateView|IlluminateViewContract
          */
         private $illuminate_view;
 

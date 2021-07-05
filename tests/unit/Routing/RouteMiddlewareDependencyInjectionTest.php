@@ -17,7 +17,7 @@
     use Tests\UnitTest;
     use Tests\fixtures\Controllers\Admin\AdminControllerWithMiddleware;
 	use Tests\fixtures\Middleware\MiddlewareWithDependencies;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Contracts\MagicLink;
     use BetterWP\Contracts\RouteUrlGenerator;
     use BetterWP\Support\WP;
@@ -48,8 +48,8 @@
             $this->container->instance(UrlGenerator::class, $this->newUrlGenerator());
             $this->container->instance(MagicLink::class, new TestMagicLink());
             $this->container->instance(ViewFactory::class, new TestViewFactory());
-            ApplicationEvent::make($this->container);
-            ApplicationEvent::fake();
+            Event::make($this->container);
+            Event::fake();
             WP::setFacadeContainer($this->container);
 
         }
@@ -57,7 +57,7 @@
         protected function beforeTearDown()
         {
 
-            ApplicationEvent::setInstance(null);
+            Event::setInstance(null);
             Mockery::close();
             WP::reset();
 

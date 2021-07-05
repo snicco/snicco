@@ -10,7 +10,7 @@
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
     use Tests\stubs\TestException;
-	use BetterWP\Application\ApplicationEvent;
+	use BetterWP\Events\Event;
 	use BetterWP\Events\UnrecoverableExceptionHandled;
 	use BetterWP\ExceptionHandling\DebugErrorHandler;
 	use BetterWP\Factories\ErrorHandlerFactory;
@@ -34,15 +34,15 @@
         {
 
             $this->container = $this->createContainer();
-            ApplicationEvent::make($this->container);
-            ApplicationEvent::fake();
+            Event::make($this->container);
+            Event::fake();
             $this->request = TestRequest::from('GET', 'foo');
 
         }
 
         protected function afterSetup() : void {
 
-		    ApplicationEvent::setInstance(null );
+		    Event::setInstance(null );
 
 		}
 
@@ -59,7 +59,7 @@
 
 			$this->assertStringContainsString('Whoops Exception', $output);
 
-			ApplicationEvent::assertDispatchedTimes(UnrecoverableExceptionHandled::class, 1);
+			Event::assertDispatchedTimes(UnrecoverableExceptionHandled::class, 1);
 
 		}
 
@@ -83,7 +83,7 @@
 			$this->assertArrayHasKey( 'line', $output );
 			$this->assertArrayHasKey( 'trace', $output );
 
-			ApplicationEvent::assertDispatchedTimes(UnrecoverableExceptionHandled::class, 1);
+			Event::assertDispatchedTimes(UnrecoverableExceptionHandled::class, 1);
 
 
 		}
@@ -117,7 +117,7 @@
                 $this->assertArrayHasKey( 'trace', $output );
 
                 $handler->unregister();
-                ApplicationEvent::assertDispatchedTimes(UnrecoverableExceptionHandled::class, 1);
+                Event::assertDispatchedTimes(UnrecoverableExceptionHandled::class, 1);
 
 
             }

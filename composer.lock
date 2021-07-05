@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c25de9ca6f649b51d9200011a95102c1",
+    "content-hash": "c9a6479b62215e7ba8eaf9cea02d7a40",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -3689,16 +3689,16 @@
         },
         {
             "name": "illuminate/view",
-            "version": "dev-feature_view_interface_instead_of_view_implementation",
+            "version": "dev-8.x-view_interface",
             "source": {
                 "type": "git",
                 "url": "https://github.com/calvinalkan/view.git",
-                "reference": "b3e3ea90732f99cdda06dabe8d20be4d1424b16b"
+                "reference": "86e62e2bbfa151f89b4ebc22a467ffb14241f323"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/calvinalkan/view/zipball/b3e3ea90732f99cdda06dabe8d20be4d1424b16b",
-                "reference": "b3e3ea90732f99cdda06dabe8d20be4d1424b16b",
+                "url": "https://api.github.com/repos/calvinalkan/view/zipball/86e62e2bbfa151f89b4ebc22a467ffb14241f323",
+                "reference": "86e62e2bbfa151f89b4ebc22a467ffb14241f323",
                 "shasum": ""
             },
             "require": {
@@ -3738,7 +3738,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2021-04-15T11:59:24+00:00"
+            "time": "2021-07-05T18:29:37+00:00"
         },
         {
             "name": "lucatume/wp-browser",

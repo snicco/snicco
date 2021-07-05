@@ -6,9 +6,9 @@
 
     namespace BetterWP\Events;
 
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
 
-    class Wp404 extends ApplicationEvent
+    class Wp404 extends Event
     {
 
         public function default() :bool {

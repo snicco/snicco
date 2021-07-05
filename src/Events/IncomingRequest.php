@@ -6,11 +6,11 @@
 
 	namespace BetterWP\Events;
 
-	use BetterWP\Application\ApplicationEvent;
+	use BetterWP\Events\Event;
     use BetterWP\Http\Psr7\Request;
     use BetterWP\Support\Str;
 
-    class IncomingRequest extends ApplicationEvent {
+    class IncomingRequest extends Event {
 
 
 		/**

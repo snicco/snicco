@@ -7,7 +7,7 @@
     namespace BetterWP\Events;
 
     use BetterWpHooks\Contracts\Dispatcher;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Contracts\ServiceProvider;
     use BetterWP\ExceptionHandling\ShutdownHandler;
     use BetterWP\Http\HttpKernel;
@@ -143,14 +143,14 @@
         public function bootstrap() : void
         {
 
-            ApplicationEvent::make($this->container)
+            Event::make($this->container)
                             ->map($this->config->get('events.mapped', []))
                             ->ensureFirst($this->config->get('events.first', []))
                             ->ensureLast($this->config->get('events.last', []))
                             ->listeners($this->config->get('events.listeners', []))
                             ->boot();
 
-            $this->container->instance(Dispatcher::class, ApplicationEvent::dispatcher());
+            $this->container->instance(Dispatcher::class, Event::dispatcher());
 
         }
 

@@ -8,7 +8,7 @@
 
     use Contracts\ContainerAdapter;
     use BetterWP\Application\Application;
-    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Application\Config;
     use BetterWP\Events\IncomingAdminRequest;
     use BetterWP\Events\IncomingAjaxRequest;
     use BetterWP\Events\IncomingWebRequest;
@@ -28,7 +28,7 @@
         protected $container;
 
         /**
-         * @var ApplicationConfig
+         * @var Config
          */
         protected $config;
 
@@ -41,7 +41,7 @@
         /** @var Request */
         protected $current_request;
 
-        public function __construct(ContainerAdapter $container_adapter, ApplicationConfig $config)
+        public function __construct(ContainerAdapter $container_adapter, Config $config)
         {
 
             $this->container = $container_adapter;

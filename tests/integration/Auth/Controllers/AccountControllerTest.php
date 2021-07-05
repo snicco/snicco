@@ -10,7 +10,7 @@
     use Tests\AuthTestCase;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestView;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Auth\Contracts\CreatesNewUser;
     use BetterWP\Auth\Contracts\DeletesUsers;
     use BetterWP\Auth\Events\Registration;
@@ -99,7 +99,7 @@
         {
 
             $this->withoutExceptionHandling();
-            ApplicationEvent::fake();
+            Event::fake();
 
             $response = $this->post($this->validStoreLink(), [
                 'user_login' => 'calvin',
@@ -111,7 +111,7 @@
             $user = get_user_by('login', 'calvin');
             $this->assertInstanceOf(\WP_User::class, $user);
 
-            ApplicationEvent::assertDispatched(function (Registration $event) use ($user) {
+            Event::assertDispatched(function (Registration $event) use ($user) {
 
                 return $event->user->user_login === $user->user_login && $event->user->user_login === 'calvin';
             });

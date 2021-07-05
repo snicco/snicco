@@ -13,7 +13,7 @@
     use Tests\stubs\TestApp;
     use Tests\stubs\TestMagicLink;
     use BetterWP\Application\Application;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Contracts\ErrorHandlerInterface;
     use BetterWP\Contracts\MagicLink;
     use BetterWP\Contracts\RouteRegistrarInterface;
@@ -94,7 +94,7 @@
             $GLOBALS['wp_actions'] = [];
             $GLOBALS['wp_current_filter'] = [];
             TestApp::setApplication(null);
-            ApplicationEvent::setInstance(null);
+            Event::setInstance(null);
 
             $this->afterSetup();
 
@@ -276,7 +276,7 @@
 
         protected function fakeResponseSending(array $events = []) {
 
-            ApplicationEvent::fake(array_merge([ResponseSent::class], $events));
+            Event::fake(array_merge([ResponseSent::class], $events));
 
         }
 

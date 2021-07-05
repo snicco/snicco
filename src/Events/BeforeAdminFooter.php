@@ -8,10 +8,10 @@
 
     use BetterWpHooks\Traits\DispatchesConditionally;
     use BetterWpHooks\Traits\IsAction;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Support\WP;
 
-    class BeforeAdminFooter extends ApplicationEvent
+    class BeforeAdminFooter extends Event
     {
 
         use IsAction;

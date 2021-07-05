@@ -42,7 +42,7 @@
          * @param  string  $key
          * @param  mixed  $default
          *
-         * @return mixed|ApplicationConfig
+         * @return mixed|Config
          */
         public static function config(?string $key = null, $default = null)
         {

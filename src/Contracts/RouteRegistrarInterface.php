@@ -6,19 +6,19 @@
 
     namespace BetterWP\Contracts;
 
-    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Application\Config;
 
     interface RouteRegistrarInterface
     {
 
         /**
-         * @param  ApplicationConfig  $config
+         * @param  Config  $config
          *
          * @return bool Indicate whether a global route file was loaded successfully.
          */
-        public function loadApiRoutes( ApplicationConfig $config) :bool;
+        public function loadApiRoutes( Config $config) :bool;
 
-        public function loadStandardRoutes( ApplicationConfig $config);
+        public function loadStandardRoutes( Config $config);
 
         public function loadIntoRouter() :void;
     }

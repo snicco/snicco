@@ -10,7 +10,7 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Events\PendingMail;
     use BetterWP\Mail\Mailable;
 
@@ -22,7 +22,7 @@
         {
 
             $this->afterApplicationCreated(function () {
-                ApplicationEvent::fake([PendingMail::class]);
+                Event::fake([PendingMail::class]);
             });
             parent::setUp();
         }
@@ -37,7 +37,7 @@
             $mail->to('c@web.de')
                  ->send(new MailWithView());
 
-            ApplicationEvent::assertDispatched(PendingMail ::class, function (PendingMail $event) {
+            Event::assertDispatched(PendingMail ::class, function (PendingMail $event) {
 
                 return $event->mail instanceof MailWithView
                     && $event->mail->from === [
@@ -58,7 +58,7 @@
             $mail->to('c@web.de')
                  ->send(new MailWithView());
 
-            ApplicationEvent::assertDispatched(PendingMail ::class, function (PendingMail $event) {
+            Event::assertDispatched(PendingMail ::class, function (PendingMail $event) {
 
                 return $event->mail->reply_to === [
                         'name' => 'Company',
@@ -78,7 +78,7 @@
             $mail->to('c@web.de')
                  ->send(new MailWithView());
 
-            ApplicationEvent::assertDispatched(PendingMail ::class, function (PendingMail $event) {
+            Event::assertDispatched(PendingMail ::class, function (PendingMail $event) {
 
                 return $event->mail->view === 'email.basic' && $event->mail->content_type === 'text/html';
 
@@ -95,7 +95,7 @@
             $mail->to('c@web.de')
                  ->send(new PlainTextMail());
 
-            ApplicationEvent::assertDispatched(PendingMail ::class, function (PendingMail $event) {
+            Event::assertDispatched(PendingMail ::class, function (PendingMail $event) {
 
                 return $event->mail->view === 'email.basic.plain' && $event->mail->content_type === 'text/plain';
 
@@ -112,7 +112,7 @@
             $mail->to('c@web.de')
                  ->send(new MailWithView());
 
-            ApplicationEvent::assertDispatched(PendingMail ::class, function (PendingMail $event) {
+            Event::assertDispatched(PendingMail ::class, function (PendingMail $event) {
 
                 return $event->mail->attachments === ['file1', 'file2'];
 
@@ -129,7 +129,7 @@
             $mail->to('c@web.de')
                  ->send(new MailWithView());
 
-            ApplicationEvent::assertDispatched(PendingMail ::class, function (PendingMail $event) {
+            Event::assertDispatched(PendingMail ::class, function (PendingMail $event) {
 
                 return $event->mail->subject === 'Hello Calvin';
 
@@ -146,7 +146,7 @@
             $mail->to('c@web.de')
                  ->send(new PlainTextMail());
 
-            ApplicationEvent::assertDispatched(PendingMail ::class, function (PendingMail $event) {
+            Event::assertDispatched(PendingMail ::class, function (PendingMail $event) {
 
                  $event->mail->buildSubject( (object) ['name' => 'CALVIN']);
 
@@ -166,7 +166,7 @@
             $mail->to(['c@web.de', ['name'=>'John', 'email' =>'john@web.de']])
                  ->send(new PlainTextMail());
 
-            ApplicationEvent::assertDispatched(PendingMail ::class, function (PendingMail $event) {
+            Event::assertDispatched(PendingMail ::class, function (PendingMail $event) {
 
                 $to = $event->mail->to;
 
@@ -206,7 +206,7 @@
             $mail->to([$calvin, $john])
                  ->send(new PlainTextMail());
 
-            ApplicationEvent::assertDispatched(PendingMail ::class, function (PendingMail $event) {
+            Event::assertDispatched(PendingMail ::class, function (PendingMail $event) {
 
                 $to = $event->mail->to;
 

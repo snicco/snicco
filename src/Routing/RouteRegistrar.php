@@ -8,7 +8,7 @@
 
     use Symfony\Component\Finder\Finder;
     use Symfony\Component\Finder\SplFileInfo;
-    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Application\Config;
     use BetterWP\Contracts\RouteRegistrarInterface;
     use BetterWP\Support\WP;
     use BetterWP\Support\Arr;
@@ -34,7 +34,7 @@
             $this->router->loadRoutes();
         }
 
-        public function apiRoutes(ApplicationConfig $config) : array
+        public function apiRoutes(Config $config) : array
         {
 
             $dirs = Arr::wrap($config->get('routing.definitions', []));
@@ -57,7 +57,7 @@
 
         }
 
-        public function loadApiRoutes(ApplicationConfig $config) : bool
+        public function loadApiRoutes(Config $config) : bool
         {
 
             $files = $this->apiRoutes($config);
@@ -72,7 +72,7 @@
 
         }
 
-        public function loadStandardRoutes(ApplicationConfig $config)
+        public function loadStandardRoutes(Config $config)
         {
 
             $dirs = Arr::wrap($config->get('routing.definitions', []));
@@ -96,9 +96,9 @@
 
         /**
          * @param  SplFileInfo[]  $files
-         * @param  ApplicationConfig  $config
+         * @param  Config  $config
          */
-        private function requireFiles(array $files, ApplicationConfig $config)
+        private function requireFiles(array $files, Config $config)
         {
 
             $seen = [];
@@ -123,7 +123,7 @@
 
         }
 
-        private function loadRouteGroup(string $name, string $file_path, array $preset , ApplicationConfig $config)
+        private function loadRouteGroup(string $name, string $file_path, array $preset , Config $config)
         {
 
             $attributes = $this->applyPreset($name, $preset);

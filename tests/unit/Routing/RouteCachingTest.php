@@ -16,7 +16,7 @@
     use Tests\UnitTest;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Events\IncomingAdminRequest;
     use BetterWP\Events\IncomingAjaxRequest;
     use BetterWP\Events\IncomingWebRequest;
@@ -79,8 +79,8 @@
             $this->container->instance(ViewFactory::class, new TestViewFactory());
             $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
 
-            ApplicationEvent::make($this->container);
-            ApplicationEvent::fake();
+            Event::make($this->container);
+            Event::fake();
             WP::setFacadeContainer($this->container);
 
             $this->assertFalse(file_exists($this->route_map_file));
@@ -103,7 +103,7 @@
 
             }
 
-            ApplicationEvent::setInstance(null);
+            Event::setInstance(null);
             Mockery::close();
             WP::reset();
 

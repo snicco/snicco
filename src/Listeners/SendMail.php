@@ -6,7 +6,7 @@
 
     namespace BetterWP\Listeners;
 
-    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Application\Config;
     use BetterWP\Contracts\Mailer;
     use BetterWP\Events\PendingMail;
     use BetterWP\Support\WP;
@@ -26,11 +26,11 @@
          */
         private $view_factory;
         /**
-         * @var ApplicationConfig
+         * @var Config
          */
         private $config;
 
-        public function __construct(Mailer $mailer, ViewFactory $view_factory, ApplicationConfig $config)
+        public function __construct(Mailer $mailer, ViewFactory $view_factory, Config $config)
         {
 
             $this->mailer = $mailer;

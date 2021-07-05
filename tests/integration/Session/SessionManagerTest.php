@@ -9,7 +9,7 @@
     use Illuminate\Support\InteractsWithTime;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Http\Cookies;
     use BetterWP\Http\ResponseEmitter;
     use BetterWP\Session\Events\SessionRegenerated;
@@ -202,7 +202,7 @@
         /** @test */
         public function the_regenerate_session_event_gets_dispatched () {
 
-            ApplicationEvent::fake([SessionRegenerated::class]);
+            Event::fake([SessionRegenerated::class]);
 
             $this->manager->start($this->request, 1);
             $this->manager->save();
@@ -211,7 +211,7 @@
             $this->manager->save();
             $this->backToPresent();
 
-            ApplicationEvent::assertDispatched(function (SessionRegenerated $event)  {
+            Event::assertDispatched(function (SessionRegenerated $event)  {
 
                 return $event->session === $this->session;
 

@@ -12,7 +12,7 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\UnitTest;
     use Tests\helpers\CreatesWpUrls;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Events\IncomingAdminRequest;
     use BetterWP\Http\Psr7\Request;
     use BetterWP\Support\WP;
@@ -37,8 +37,8 @@
 
             $this->container = $this->createContainer();
             $this->routes = $this->newRouteCollection();
-            ApplicationEvent::make($this->container);
-            ApplicationEvent::fake();
+            Event::make($this->container);
+            Event::fake();
             WP::setFacadeContainer($this->container);
             WP::shouldReceive('isAdmin')->andReturnTrue();
 
@@ -48,7 +48,7 @@
         {
 
             Mockery::close();
-            ApplicationEvent::setInstance(null);
+            Event::setInstance(null);
             WP::reset();
 
         }

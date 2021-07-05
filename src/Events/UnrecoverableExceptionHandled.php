@@ -6,9 +6,9 @@
 
 	namespace BetterWP\Events;
 
-	use BetterWP\Application\ApplicationEvent;
+	use BetterWP\Events\Event;
 
-	class UnrecoverableExceptionHandled extends ApplicationEvent {
+	class UnrecoverableExceptionHandled extends Event {
 
 
 

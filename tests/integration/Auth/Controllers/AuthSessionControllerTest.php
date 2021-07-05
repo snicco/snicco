@@ -7,7 +7,7 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Auth\Authenticators\PasswordAuthenticator;
     use BetterWP\Auth\Contracts\Authenticator;
     use BetterWP\Auth\Events\Login;
@@ -160,7 +160,7 @@
         public function the_session_is_updated_on_login()
         {
 
-            ApplicationEvent::fake([Login::class]);
+            Event::fake([Login::class]);
             $calvin = $this->createAdmin();
             $this->withDataInSession(['foo' => 'bar']);
             $session_id_pre_login = $this->session->getId();
@@ -187,7 +187,7 @@
             $this->assertFalse($this->session->hasRememberMeToken());
 
             // Login event
-            ApplicationEvent::assertDispatched(function (Login $login) use ($calvin) {
+            Event::assertDispatched(function (Login $login) use ($calvin) {
 
                 return $login->user->ID === $calvin->ID && $login->remember === false;
 

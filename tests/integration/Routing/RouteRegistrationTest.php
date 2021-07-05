@@ -16,7 +16,7 @@
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
     use BetterWP\Application\Application;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Contracts\ServiceProvider;
     use BetterWP\Events\IncomingAdminRequest;
     use BetterWP\Events\IncomingAjaxRequest;

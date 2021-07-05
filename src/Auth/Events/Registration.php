@@ -8,9 +8,9 @@
 
     use BetterWpHooks\Traits\IsAction;
     use WP_User;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
 
-    class Registration extends ApplicationEvent
+    class Registration extends Event
     {
         use IsAction;
 

@@ -17,7 +17,7 @@
     use Tests\stubs\TestContainer;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use BetterWP\Application\Application;
-    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Application\Config;
     use BetterWP\Contracts\ServiceProvider;
     use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
     use BetterWP\Support\WP;
@@ -163,8 +163,8 @@
             $app->boot();
 
             $this->assertInstanceOf(
-                ApplicationConfig::class,
-                $app->resolve(ApplicationConfig::class)
+                Config::class,
+                $app->resolve(Config::class)
             );
             $this->assertSame('bar', $app->config('app.foo'));
             $this->assertSame('boo', $app->config('app.bar.baz'));

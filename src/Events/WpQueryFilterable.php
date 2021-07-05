@@ -6,10 +6,10 @@
 
     namespace BetterWP\Events;
 
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Http\Psr7\Request;
 
-    class WpQueryFilterable extends ApplicationEvent
+    class WpQueryFilterable extends Event
     {
 
 

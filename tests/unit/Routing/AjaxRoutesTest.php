@@ -11,7 +11,7 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
     use Tests\helpers\CreatesWpUrls;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Events\IncomingAjaxRequest;
     use BetterWP\ExceptionHandling\Exceptions\RouteLogicException;
     use BetterWP\Support\WP;
@@ -32,8 +32,8 @@
 
             $this->container = $this->createContainer();
             $this->routes = $this->newRouteCollection();
-            ApplicationEvent::make($this->container);
-            ApplicationEvent::fake();
+            Event::make($this->container);
+            Event::fake();
             WP::setFacadeContainer($this->container);
             WP::shouldReceive('isAdmin')->andReturnTrue();
             WP::shouldReceive('isAdminAjax')->andReturnTrue();
@@ -44,7 +44,7 @@
         {
 
             Mockery::close();
-            ApplicationEvent::setInstance(null);
+            Event::setInstance(null);
             WP::reset();
 
         }
