@@ -30,7 +30,7 @@
                     MagicLinkAuthenticator::class,
                 ]);
 
-                $this->withReplacedConfig('auth.authenticator', MagicLinkAuthenticator::class);
+                $this->withReplacedConfig('auth.authenticator', 'email');
                 $this->withReplacedConfig('auth.primary_view', MagicLinkLoginView::class);
 
             });

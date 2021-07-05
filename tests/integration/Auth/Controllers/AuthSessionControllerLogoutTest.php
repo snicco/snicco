@@ -55,6 +55,18 @@
         }
 
         /** @test */
+        public function the_route_can_only_be_accessed_if_logged_in () {
+
+            $calvin = $this->createAdmin();
+
+            $this->expectException(InvalidSignatureException::class);
+
+            $response = $this->get($this->logoutUrl($calvin));
+
+
+        }
+
+        /** @test */
         public function the_route_can_not_be_accessed_without_a_valid_signature()
         {
 

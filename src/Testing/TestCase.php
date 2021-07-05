@@ -368,6 +368,10 @@
         protected function loadRoutes() : TestCase
         {
 
+            if ( $this->routes_loaded ) {
+                return $this;
+            }
+
             /** @var AbstractRouteCollection $routes */
             $routes = $this->app->resolve(AbstractRouteCollection::class);
 

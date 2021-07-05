@@ -213,16 +213,16 @@
         },
         {
             "name": "calvinalkan/reflection-payload",
-            "version": "1.1.2",
+            "version": "1.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/calvinalkan/reflection-payload.git",
-                "reference": "5359b39cba8952af760c677618e4e97ad7f32e5c"
+                "reference": "620ecab5599f7d3d1b19fc85a167d1c2e4ca52be"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/calvinalkan/reflection-payload/zipball/5359b39cba8952af760c677618e4e97ad7f32e5c",
-                "reference": "5359b39cba8952af760c677618e4e97ad7f32e5c",
+                "url": "https://api.github.com/repos/calvinalkan/reflection-payload/zipball/620ecab5599f7d3d1b19fc85a167d1c2e4ca52be",
+                "reference": "620ecab5599f7d3d1b19fc85a167d1c2e4ca52be",
                 "shasum": ""
             },
             "require": {
@@ -255,9 +255,9 @@
             "description": "description",
             "support": {
                 "issues": "https://github.com/calvinalkan/reflection-payload/issues",
-                "source": "https://github.com/calvinalkan/reflection-payload/tree/1.1.2"
+                "source": "https://github.com/calvinalkan/reflection-payload/tree/1.1.3"
             },
-            "time": "2021-06-05T00:57:06+00:00"
+            "time": "2021-07-05T01:34:44+00:00"
         },
         {
             "name": "calvinalkan/wordpress-hook-api-clone",

@@ -33,7 +33,20 @@
 
 		public function capturedUrlSegmentValues() : array {
 
-			return array_map('rawurldecode',$this->payload);
+            $values =  collect($this->payload)->map(function($value) {
+
+                $value = rawurldecode($value);
+
+                if ( is_numeric($value) ) {
+                    $value = intval($value);
+                }
+                return $value;
+
+            });
+
+            return $values->all();
+
+
 		}
 
 
