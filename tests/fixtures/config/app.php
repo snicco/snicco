@@ -19,5 +19,6 @@
 
         'exception_handling' => true,
 
+        // 'cache_config' => true,
 
     ];
