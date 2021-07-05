@@ -9,13 +9,16 @@
     use Respect\Validation\Validator;
     use Tests\AuthTestCase;
     use Tests\stubs\TestApp;
+    use Tests\stubs\TestView;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Auth\Contracts\CreatesNewUser;
     use WPEmerge\Auth\Contracts\DeletesUsers;
     use WPEmerge\Auth\Events\Registration;
     use WPEmerge\Auth\Responses\CreateAccountViewResponse;
     use WPEmerge\Auth\Responses\RegisteredResponse;
+    use WPEmerge\Contracts\ResponsableInterface;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Http\ResponseFactory;
 
     class AccountControllerTest extends AuthTestCase
     {
@@ -32,7 +35,7 @@
                 $this->instance(RegisteredResponse::class, new TestRegisteredResponse());
                 $this->instance(CreatesNewUser::class, new TestCreatesNewUser());
                 $this->instance(CreatesNewUser::class, new TestCreatesNewUser());
-                $this->instance(DeletesUsers::class, new TestDeletesUser());
+                $this->instance(DeletesUsers::class, $this->app->resolve(TestDeletesUser::class));
 
 
             });
@@ -122,22 +125,24 @@
             $calvin = $this->createSubscriber();
             $this->actingAs($calvin);
 
+            $this->withHeader('Accept', 'application/json');
             $response = $this->delete("/auth/accounts/$calvin->ID");
 
             $response->assertStatus(204);
             $this->assertUserDeleted($calvin);
 
 
-
         }
 
         /** @test */
-        public function a_user_can_only_delete_his_own_account () {
+        public function a_user_can_only_delete_his_own_account()
+        {
 
             $calvin = $this->createSubscriber();
             $john = $this->createSubscriber();
             $this->actingAs($calvin);
 
+            $this->withHeader('Accept', 'application/json');
             $response = $this->delete("/auth/accounts/$john->ID");
 
             $response->assertForbidden();
@@ -146,12 +151,30 @@
         }
 
         /** @test */
-        public function admins_can_delete_accounts_for_other_users () {
+        public function only_allowed_user_roles_can_delete_their_own_accounts()
+        {
 
-            $calvin = $this->createAdmin();
-            $john = $this->createSubscriber();
+            // In our test only subscribers can delete their own account
+            $calvin = $this->createAuthor();
             $this->actingAs($calvin);
 
+            $this->withHeader('Accept', 'application/json');
+            $response = $this->delete("/auth/accounts/$calvin->ID");
+
+            $response->assertForbidden();
+            $this->assertUserNotDeleted($calvin);
+
+        }
+
+        /** @test */
+        public function admins_can_delete_accounts_for_other_users_regardless_of_the_whitelist()
+        {
+
+            $calvin = $this->createAdmin();
+            $john = $this->createEditor();
+            $this->actingAs($calvin);
+
+            $this->withHeader('Accept', 'application/json');
             $response = $this->delete("/auth/accounts/$john->ID");
 
             $response->assertNoContent();
@@ -160,11 +183,14 @@
         }
 
         /** @test */
-        public function admins_cant_delete_their_own_accounts_by_accident () {
+        public function admins_cant_delete_their_own_accounts_by_accident()
+        {
 
             $calvin = $this->createAdmin();
             $this->actingAs($calvin);
 
+
+            $this->withHeader('Accept', 'application/json');
             $response = $this->delete("/auth/accounts/$calvin->ID");
 
             $response->assertForbidden();
@@ -172,7 +198,36 @@
 
         }
 
+        /** @test */
+        public function admins_cant_delete_accounts_for_other_admins()
+        {
+
+            $calvin = $this->createAdmin();
+            $john = $this->createAdmin();
+            $this->actingAs($calvin);
+
+            $this->withHeader('Accept', 'application/json');
+            $response = $this->delete("/auth/accounts/$john->ID");
+
+            $response->assertForbidden();
+            $this->assertUserNotDeleted($john);
+
+        }
+
+        /** @test */
+        public function for_non_json_requests_a_custom_response_can_be_provided () {
+
+            $calvin = $this->createSubscriber();
+            $this->actingAs($calvin);
+
+            $response = $this->delete("/auth/accounts/$calvin->ID");
+
+            $this->assertUserDeleted($calvin);
+            $response->assertRedirect('/test/thank-you');
+        }
+
     }
+
 
     class TestCreateAccountViewResponse extends CreateAccountViewResponse
     {
@@ -185,6 +240,7 @@
 
     }
 
+
     class TestRegisteredResponse extends RegisteredResponse
     {
 
@@ -195,6 +251,7 @@
         }
 
     }
+
 
     class TestCreatesNewUser implements CreatesNewUser
     {
@@ -212,11 +269,38 @@
 
     }
 
-    class TestDeletesUser implements DeletesUsers {
+
+    class TestDeletesUser implements DeletesUsers
+    {
+
+        /**
+         * @var ResponseFactory
+         */
+        private $response_factory;
+
+        public function __construct(ResponseFactory $response_factory)
+        {
+            $this->response_factory = $response_factory;
+        }
 
         public function reassign(int $user_to_be_deleted) : ?int
         {
+
             return null;
+        }
+
+        public function allowedUserRoles() : array
+        {
+
+            return [
+                'subscriber',
+                // 'author'
+            ];
+        }
+
+        public function response() : ResponsableInterface
+        {
+            return $this->response_factory->redirect()->to('/test/thank-you');
         }
 
     }
