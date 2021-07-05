@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Contracts;
+    namespace BetterWP\Contracts;
 
-    use WPEmerge\Application\ApplicationConfig;
+    use BetterWP\Application\ApplicationConfig;
 
     interface RouteRegistrarInterface
     {

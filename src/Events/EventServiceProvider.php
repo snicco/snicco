@@ -4,19 +4,19 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Events;
+    namespace BetterWP\Events;
 
     use BetterWpHooks\Contracts\Dispatcher;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\ExceptionHandling\ShutdownHandler;
-    use WPEmerge\Http\HttpKernel;
-    use WPEmerge\Listeners\CreateDynamicHooks;
-    use WPEmerge\Listeners\LoadRoutes;
-    use WPEmerge\Listeners\FilterWpQuery;
-    use WPEmerge\Listeners\ShortCircuit404;
-    use WPEmerge\Middleware\Core\OutputBufferMiddleware;
-    use WPEmerge\View\ViewFactory;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Contracts\ServiceProvider;
+    use BetterWP\ExceptionHandling\ShutdownHandler;
+    use BetterWP\Http\HttpKernel;
+    use BetterWP\Listeners\CreateDynamicHooks;
+    use BetterWP\Listeners\LoadRoutes;
+    use BetterWP\Listeners\FilterWpQuery;
+    use BetterWP\Listeners\ShortCircuit404;
+    use BetterWP\Middleware\Core\OutputBufferMiddleware;
+    use BetterWP\View\ViewFactory;
 
     class EventServiceProvider extends ServiceProvider
     {

@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Authenticators;
+    namespace BetterWP\Auth\Authenticators;
 
     use WP_User;
-    use WPEmerge\Auth\Contracts\Authenticator;
-    use WPEmerge\Auth\Traits\InteractsWithTwoFactorSecrets;
-    use WPEmerge\Auth\Responses\SuccessfulLoginResponse;
-    use WPEmerge\Auth\Contracts\TwoFactorChallengeResponse;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
+    use BetterWP\Auth\Contracts\Authenticator;
+    use BetterWP\Auth\Traits\InteractsWithTwoFactorSecrets;
+    use BetterWP\Auth\Responses\SuccessfulLoginResponse;
+    use BetterWP\Auth\Contracts\TwoFactorChallengeResponse;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
 
     class RedirectIf2FaAuthenticable extends Authenticator
     {

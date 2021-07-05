@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session\Events;
+    namespace BetterWP\Session\Events;
 
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Session\Session;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Session\Session;
 
     class SessionRegenerated extends ApplicationEvent
     {

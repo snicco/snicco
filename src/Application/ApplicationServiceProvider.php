@@ -4,22 +4,22 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Application;
+    namespace BetterWP\Application;
 
-    use WPEmerge\View\MethodField;
-    use WPEmerge\Contracts\AbstractRedirector;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Contracts\ViewFactoryInterface;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\ExceptionHandling\ShutdownHandler;
-    use WPEmerge\Http\Cookies;
-    use WPEmerge\Routing\Router;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\View\GlobalContext;
-    use WPEmerge\View\PhpViewEngine;
-    use WPEmerge\View\ViewComposerCollection;
+    use BetterWP\View\MethodField;
+    use BetterWP\Contracts\AbstractRedirector;
+    use BetterWP\Contracts\ServiceProvider;
+    use BetterWP\Contracts\ViewFactoryInterface;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use BetterWP\ExceptionHandling\ShutdownHandler;
+    use BetterWP\Http\Cookies;
+    use BetterWP\Routing\Router;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\View\GlobalContext;
+    use BetterWP\View\PhpViewEngine;
+    use BetterWP\View\ViewComposerCollection;
 
     class ApplicationServiceProvider extends ServiceProvider
     {

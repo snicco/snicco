@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware;
+    namespace BetterWP\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\UriInterface;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Support\Url;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Support\Url;
 
     class Secure extends Middleware
     {

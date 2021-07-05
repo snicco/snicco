@@ -12,12 +12,12 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\UnitTest;
     use Tests\helpers\CreatesWpUrls;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Events\IncomingAdminRequest;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
-    use WPEmerge\Routing\UrlGenerator;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\IncomingAdminRequest;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Support\WP;
+    use BetterWP\Routing\FastRoute\FastRouteUrlGenerator;
+    use BetterWP\Routing\UrlGenerator;
 
 
     class AdminRoutesTest extends UnitTest

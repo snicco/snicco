@@ -4,26 +4,26 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http;
+    namespace BetterWP\Http;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Events\IncomingAdminRequest;
-    use WPEmerge\Events\IncomingRequest;
-    use WPEmerge\Events\ResponseSent;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\Responses\NullResponse;
-    use WPEmerge\Middleware\Core\AppendSpecialPathSuffix;
-    use WPEmerge\Middleware\Core\ErrorHandlerMiddleware;
-    use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
-    use WPEmerge\Middleware\Core\MethodOverride;
-    use WPEmerge\Middleware\Core\OutputBufferMiddleware;
-    use WPEmerge\Middleware\Core\RoutingMiddleware;
-    use WPEmerge\Middleware\Core\SetRequestAttributes;
-    use WPEmerge\Middleware\Core\ShareCookies;
-    use WPEmerge\Routing\Pipeline;
-    use WPEmerge\Middleware\Core\RouteRunner;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Traits\SortsMiddleware;
+    use BetterWP\Events\IncomingAdminRequest;
+    use BetterWP\Events\IncomingRequest;
+    use BetterWP\Events\ResponseSent;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Http\Responses\NullResponse;
+    use BetterWP\Middleware\Core\AppendSpecialPathSuffix;
+    use BetterWP\Middleware\Core\ErrorHandlerMiddleware;
+    use BetterWP\Middleware\Core\EvaluateResponseMiddleware;
+    use BetterWP\Middleware\Core\MethodOverride;
+    use BetterWP\Middleware\Core\OutputBufferMiddleware;
+    use BetterWP\Middleware\Core\RoutingMiddleware;
+    use BetterWP\Middleware\Core\SetRequestAttributes;
+    use BetterWP\Middleware\Core\ShareCookies;
+    use BetterWP\Routing\Pipeline;
+    use BetterWP\Middleware\Core\RouteRunner;
+    use BetterWP\Support\Arr;
+    use BetterWP\Traits\SortsMiddleware;
 
     class HttpKernel
     {

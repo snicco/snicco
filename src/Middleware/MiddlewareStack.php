@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware;
+    namespace BetterWP\Middleware;
 
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Traits\GathersMiddleware;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Routing\Route;
+    use BetterWP\Support\Arr;
+    use BetterWP\Traits\GathersMiddleware;
 
     class MiddlewareStack
     {

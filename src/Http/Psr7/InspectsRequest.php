@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http\Psr7;
+    namespace BetterWP\Http\Psr7;
 
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Support\Str;
+    use BetterWP\Support\Arr;
+    use BetterWP\Support\Str;
 
     trait InspectsRequest
     {

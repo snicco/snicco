@@ -8,8 +8,8 @@
 
     use Tests\helpers\CreateContainer;
     use Tests\fixtures\Controllers\Web\WebController;
-	use WPEmerge\Routing\ControllerAction;
-	use WPEmerge\Factories\RouteActionFactory;
+	use BetterWP\Routing\ControllerAction;
+	use BetterWP\Factories\RouteActionFactory;
 	use PHPUnit\Framework\TestCase;
 
 	class HandlerFactoryTest extends TestCase {
@@ -41,7 +41,7 @@
 
 			$handler = $this->factory->createUsing($foo);
 
-			$this->assertInstanceOf(\WPEmerge\Routing\ClosureAction::class, $handler);
+			$this->assertInstanceOf(\BetterWP\Routing\ClosureAction::class, $handler);
 
 			$this->assertSame($foo, $handler->raw() );
 
@@ -54,7 +54,7 @@
 
 			$handler = $this->factory->createUsing($controller);
 
-			$this->assertInstanceOf(\WPEmerge\Routing\ControllerAction::class, $handler);
+			$this->assertInstanceOf(\BetterWP\Routing\ControllerAction::class, $handler);
 
 			$this->assertEquals([WebController::class, 'handle'], $handler->raw() );
 
@@ -132,7 +132,7 @@
 
             $handler = $this->factory->createUsing(InvokableController::class);
 
-            $this->assertInstanceOf(\WPEmerge\Routing\ControllerAction::class, $handler);
+            $this->assertInstanceOf(\BetterWP\Routing\ControllerAction::class, $handler);
 
             $this->assertEquals([InvokableController::class, '__invoke'], $handler->raw() );
 

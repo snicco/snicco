@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Events;
+    namespace BetterWP\Events;
 
     use BetterWpHooks\Traits\DispatchesConditionally;
     use BetterWpHooks\Traits\IsAction;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Support\WP;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Support\WP;
 
     class BeforeAdminFooter extends ApplicationEvent
     {

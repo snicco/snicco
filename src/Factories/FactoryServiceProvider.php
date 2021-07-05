@@ -4,14 +4,14 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Factories;
+	namespace BetterWP\Factories;
 
 	use Contracts\ContainerAdapter;
-	use WPEmerge\Contracts\ServiceProvider;
-	use WPEmerge\Factories\AbstractFactory;
-	use WPEmerge\Factories\ConditionFactory;
-	use WPEmerge\Factories\RouteActionFactory;
-	use WPEmerge\Factories\ViewComposerFactory;
+	use BetterWP\Contracts\ServiceProvider;
+	use BetterWP\Factories\AbstractFactory;
+	use BetterWP\Factories\ConditionFactory;
+	use BetterWP\Factories\RouteActionFactory;
+	use BetterWP\Factories\ViewComposerFactory;
 
 	class FactoryServiceProvider extends ServiceProvider {
 

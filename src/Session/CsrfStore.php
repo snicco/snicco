@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace BetterWP\Session;
 
 
     use ArrayAccess;

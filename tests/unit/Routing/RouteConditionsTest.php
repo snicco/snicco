@@ -13,10 +13,10 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
     use Tests\fixtures\Conditions\FalseCondition;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\Router;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Routing\Router;
 
     class RouteConditionsTest extends UnitTest {
 

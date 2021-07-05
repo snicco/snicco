@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Blade;
+    namespace BetterWP\Blade;
 
     use Illuminate\View\Component as IlluminateComponent;
-    use WPEmerge\Contracts\ViewEngineInterface;
+    use BetterWP\Contracts\ViewEngineInterface;
 
     abstract class BladeComponent extends IlluminateComponent
     {

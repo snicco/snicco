@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Listeners;
+    namespace BetterWP\Listeners;
 
-    use WPEmerge\Application\ApplicationConfig;
-    use WPEmerge\Contracts\Mailer;
-    use WPEmerge\Events\PendingMail;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Mail\Mailable;
-    use WPEmerge\View\ViewFactory;
+    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Contracts\Mailer;
+    use BetterWP\Events\PendingMail;
+    use BetterWP\Support\WP;
+    use BetterWP\Mail\Mailable;
+    use BetterWP\View\ViewFactory;
 
     class SendMail
     {

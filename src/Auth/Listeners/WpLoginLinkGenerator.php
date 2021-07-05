@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Listeners;
+    namespace BetterWP\Auth\Listeners;
 
-    use WPEmerge\Auth\Events\GenerateLoginUrl;
-    use WPEmerge\Auth\Events\GenerateLogoutUrl;
-    use WPEmerge\Events\ResponseSent;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Redirector;
-    use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Routing\UrlGenerator;
+    use BetterWP\Auth\Events\GenerateLoginUrl;
+    use BetterWP\Auth\Events\GenerateLogoutUrl;
+    use BetterWP\Events\ResponseSent;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Redirector;
+    use BetterWP\Http\ResponseEmitter;
+    use BetterWP\Routing\UrlGenerator;
 
     class WpLoginLinkGenerator
     {

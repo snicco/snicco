@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Middleware;
+    namespace BetterWP\Auth\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Auth\AuthSessionManager;
-    use WPEmerge\Auth\Events\Logout;
-    use WPEmerge\Auth\Responses\LogoutResponse;
-    use WPEmerge\Auth\WpAuthSessionToken;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\Session;
+    use BetterWP\Auth\AuthSessionManager;
+    use BetterWP\Auth\Events\Logout;
+    use BetterWP\Auth\Responses\LogoutResponse;
+    use BetterWP\Auth\WpAuthSessionToken;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Session\Session;
 
     class AuthenticateSession extends Middleware
     {

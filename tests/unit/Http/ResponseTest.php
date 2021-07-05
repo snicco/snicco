@@ -10,8 +10,8 @@
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\UnitTest;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\ResponseFactory;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Http\ResponseFactory;
 
     class ResponseTest extends UnitTest
     {

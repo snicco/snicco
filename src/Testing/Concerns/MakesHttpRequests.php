@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Testing\Concerns;
+    namespace BetterWP\Testing\Concerns;
 
     use Nyholm\Psr7Server\ServerRequestCreator;
     use Psr\Http\Message\ResponseInterface;
@@ -13,23 +13,23 @@
     use Psr\Http\Message\UriFactoryInterface;
     use Psr\Http\Message\UriInterface;
     use Tests\helpers\CreatesWpUrls;
-    use WPEmerge\Application\Application;
-    use WPEmerge\Application\ApplicationConfig;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\Events\IncomingAdminRequest;
-    use WPEmerge\Events\IncomingAjaxRequest;
-    use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Http\Cookie;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\HttpKernel;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Support\Str;
-    use WPEmerge\Support\Url;
-    use WPEmerge\Testing\TestResponse;
-    use WPEmerge\View\ViewFactory;
+    use BetterWP\Application\Application;
+    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Contracts\ViewInterface;
+    use BetterWP\Events\IncomingAdminRequest;
+    use BetterWP\Events\IncomingAjaxRequest;
+    use BetterWP\Events\IncomingWebRequest;
+    use BetterWP\Http\Cookie;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\HttpKernel;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Session\Session;
+    use BetterWP\Support\Str;
+    use BetterWP\Support\Url;
+    use BetterWP\Testing\TestResponse;
+    use BetterWP\View\ViewFactory;
 
     /**
      * @property Session $session

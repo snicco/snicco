@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Listeners;
+    namespace BetterWP\Listeners;
 
 
-    use WPEmerge\Contracts\RouteRegistrarInterface;
-    use WPEmerge\Events\IncomingApiRequest;
-    use WPEmerge\Events\WpInit;
+    use BetterWP\Contracts\RouteRegistrarInterface;
+    use BetterWP\Events\IncomingApiRequest;
+    use BetterWP\Events\WpInit;
 
     class LoadRoutes
     {

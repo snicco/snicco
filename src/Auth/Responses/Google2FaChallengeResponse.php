@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Responses;
+    namespace BetterWP\Auth\Responses;
 
-    use WPEmerge\Auth\Contracts\TwoFactorChallengeResponse;
-    use WPEmerge\Http\ResponseFactory;
+    use BetterWP\Auth\Contracts\TwoFactorChallengeResponse;
+    use BetterWP\Http\ResponseFactory;
 
     class Google2FaChallengeResponse extends TwoFactorChallengeResponse
     {

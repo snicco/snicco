@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Http;
+	namespace BetterWP\Http;
 
-	use WPEmerge\Contracts\ViewFactoryInterface;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\View\ViewFactory;
+	use BetterWP\Contracts\ViewFactoryInterface;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\View\ViewFactory;
 
     class Controller {
 

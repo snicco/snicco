@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\ExceptionHandling\Exceptions;
+    namespace BetterWP\ExceptionHandling\Exceptions;
 
     class RouteLogicException extends \Exception
     {

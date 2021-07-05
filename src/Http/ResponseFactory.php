@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http;
+    namespace BetterWP\Http;
 
     use Psr\Http\Message\ResponseFactoryInterface;
     use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
@@ -12,17 +12,17 @@
     use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
     use Psr\Http\Message\StreamInterface;
     use Throwable;
-    use WPEmerge\Contracts\AbstractRedirector;
-    use WPEmerge\Contracts\ResponsableInterface;
-    use WPEmerge\Contracts\ViewFactoryInterface as ViewFactory;
-    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
-    use WPEmerge\ExceptionHandling\Exceptions\ViewException;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\Responses\InvalidResponse;
-    use WPEmerge\Http\Responses\NullResponse;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Http\Responses\WpQueryFilteredResponse;
+    use BetterWP\Contracts\AbstractRedirector;
+    use BetterWP\Contracts\ResponsableInterface;
+    use BetterWP\Contracts\ViewFactoryInterface as ViewFactory;
+    use BetterWP\ExceptionHandling\Exceptions\HttpException;
+    use BetterWP\ExceptionHandling\Exceptions\ViewException;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Http\Responses\InvalidResponse;
+    use BetterWP\Http\Responses\NullResponse;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Http\Responses\WpQueryFilteredResponse;
 
     /**
      * @todo either this class or the Response class need a prepare method to fix obvious mistakes.

@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Blade;
+    namespace BetterWP\Blade;
 
 
     use Illuminate\Contracts\View\View as IlluminateViewContracts;
     use Illuminate\View\View as IlluminateView;
-    use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\ExceptionHandling\Exceptions\ViewException;
-    use WPEmerge\Support\Arr;
+    use BetterWP\Contracts\ViewInterface;
+    use BetterWP\ExceptionHandling\Exceptions\ViewException;
+    use BetterWP\Support\Arr;
 
     class BladeView implements ViewInterface, IlluminateViewContracts
     {

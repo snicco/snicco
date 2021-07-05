@@ -11,10 +11,10 @@
 	use Tests\stubs\TestView;
 	use Tests\fixtures\ViewComposers\FooComposer;
     use Tests\helpers\CreateContainer;
-    use WPEmerge\Contracts\PhpViewInterface;
-	use WPEmerge\Contracts\ViewComposer;
-	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Factories\ViewComposerFactory;
+    use BetterWP\Contracts\PhpViewInterface;
+	use BetterWP\Contracts\ViewComposer;
+	use BetterWP\Contracts\ViewInterface;
+	use BetterWP\Factories\ViewComposerFactory;
 
     use const TEST_CONFIG;
 

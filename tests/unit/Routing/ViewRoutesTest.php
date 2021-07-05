@@ -14,12 +14,12 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Routing\Router;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\View\ViewFactory;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Routing\Router;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\View\ViewFactory;
 
     class ViewRoutesTest extends UnitTest
     {

@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Factories;
+	namespace BetterWP\Factories;
 
-	use WPEmerge\Contracts\Handler;
-	use WPEmerge\View\ViewComposer;
+	use BetterWP\Contracts\Handler;
+	use BetterWP\View\ViewComposer;
 
 	class ViewComposerFactory extends AbstractFactory {
 

@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Responses;
+    namespace BetterWP\Auth\Responses;
 
-    use WPEmerge\Application\ApplicationConfig;
-    use WPEmerge\Auth\Contracts\LoginViewResponse;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\View\ViewFactory;
+    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Auth\Contracts\LoginViewResponse;
+    use BetterWP\Support\WP;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\View\ViewFactory;
 
     class MagicLinkLoginView extends LoginViewResponse
     {

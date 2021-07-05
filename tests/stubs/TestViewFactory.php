@@ -6,8 +6,8 @@
 
 	namespace Tests\stubs;
 
-	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Contracts\ViewFactoryInterface;
+	use BetterWP\Contracts\ViewInterface;
+	use BetterWP\Contracts\ViewFactoryInterface;
 
     class TestViewFactory implements ViewFactoryInterface {
 

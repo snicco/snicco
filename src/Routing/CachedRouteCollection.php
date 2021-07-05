@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing;
+    namespace BetterWP\Routing;
 
-    use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Traits\DeserializesRoutes;
-    use WPEmerge\Traits\PreparesRouteForExport;
+    use BetterWP\Contracts\AbstractRouteCollection;
+    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use BetterWP\Factories\ConditionFactory;
+    use BetterWP\Factories\RouteActionFactory;
+    use BetterWP\Routing\FastRoute\CachedFastRouteMatcher;
+    use BetterWP\Support\Arr;
+    use BetterWP\Traits\DeserializesRoutes;
+    use BetterWP\Traits\PreparesRouteForExport;
 
     class CachedRouteCollection extends AbstractRouteCollection
     {

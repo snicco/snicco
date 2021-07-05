@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace BetterWP\Session;
 
     use Slim\Csrf\Guard;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Session\Exceptions\InvalidCsrfTokenException;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Session\Exceptions\InvalidCsrfTokenException;
 
     class GuardFactory
     {

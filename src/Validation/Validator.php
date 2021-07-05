@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Validation;
+    namespace BetterWP\Validation;
 
     use Illuminate\Contracts\Support\MessageProvider;
     use Illuminate\Support\Collection;
@@ -12,8 +12,8 @@
     use Respect\Validation\Exceptions\ValidationException as RespectValidationError;
     use Respect\Validation\Rules\Not;
     use Respect\Validation\Validator as v;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Support\Str;
+    use BetterWP\Support\Arr;
+    use BetterWP\Support\Str;
 
     use function Respect\Stringifier\stringify;
 

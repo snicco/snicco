@@ -10,9 +10,9 @@
     use Tests\fixtures\TestDependencies\Bar;
 	use Tests\fixtures\TestDependencies\Foo;
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Factories\RouteActionFactory;
+	use BetterWP\Factories\RouteActionFactory;
 	use Mockery as m;
-    use WPEmerge\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Request;
 
     class ControllerTest extends TestCase {
 

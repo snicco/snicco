@@ -8,11 +8,11 @@
 
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPEmerge\Factories\ConditionFactory;
-	use WPEmerge\Factories\RouteActionFactory;
-	use WPEmerge\Factories\ViewComposerFactory;
-	use WPEmerge\Routing\ControllerAction;
-	use WPEmerge\View\ViewComposer;
+    use BetterWP\Factories\ConditionFactory;
+	use BetterWP\Factories\RouteActionFactory;
+	use BetterWP\Factories\ViewComposerFactory;
+	use BetterWP\Routing\ControllerAction;
+	use BetterWP\View\ViewComposer;
 
 	class FactoryServiceProviderTest extends TestCase {
 

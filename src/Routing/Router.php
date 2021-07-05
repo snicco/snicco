@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing;
+    namespace BetterWP\Routing;
 
     use Closure;
     use Contracts\ContainerAdapter;
-    use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Controllers\FallBackController;
-    use WPEmerge\Controllers\RedirectController;
-    use WPEmerge\Controllers\ViewController;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Support\Str;
-    use WPEmerge\Support\Url;
-    use WPEmerge\Traits\HoldsRouteBlueprint;
+    use BetterWP\Contracts\AbstractRouteCollection;
+    use BetterWP\Controllers\FallBackController;
+    use BetterWP\Controllers\RedirectController;
+    use BetterWP\Controllers\ViewController;
+    use BetterWP\Support\WP;
+    use BetterWP\Support\Str;
+    use BetterWP\Support\Url;
+    use BetterWP\Traits\HoldsRouteBlueprint;
 
     /**
      * @mixin RouteDecorator

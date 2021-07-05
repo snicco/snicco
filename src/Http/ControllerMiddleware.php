@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Http;
+	namespace BetterWP\Http;
 
-	use WPEmerge\ExceptionHandling\Exceptions\Exception;
-	use WPEmerge\Support\Arr;
+	use BetterWP\ExceptionHandling\Exceptions\Exception;
+	use BetterWP\Support\Arr;
 
 	class ControllerMiddleware {
 

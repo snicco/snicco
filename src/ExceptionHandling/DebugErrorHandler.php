@@ -4,16 +4,16 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\ExceptionHandling;
+	namespace BetterWP\ExceptionHandling;
 
 	use Throwable;
     use Whoops\Handler\JsonResponseHandler;
     use Whoops\RunInterface;
-	use WPEmerge\Contracts\ErrorHandlerInterface;
-	use WPEmerge\Events\UnrecoverableExceptionHandled;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Traits\HandlesExceptions;
+	use BetterWP\Contracts\ErrorHandlerInterface;
+	use BetterWP\Events\UnrecoverableExceptionHandled;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Traits\HandlesExceptions;
 
 	class DebugErrorHandler implements ErrorHandlerInterface {
 

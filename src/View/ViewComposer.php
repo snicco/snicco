@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\View;
+	namespace BetterWP\View;
 
 	use Closure;
-	use WPEmerge\Contracts\ViewComposer as ViewComposerInterface;
-	use WPEmerge\Traits\ReflectsCallable;
+	use BetterWP\Contracts\ViewComposer as ViewComposerInterface;
+	use BetterWP\Traits\ReflectsCallable;
 
 	class ViewComposer implements ViewComposerInterface {
 

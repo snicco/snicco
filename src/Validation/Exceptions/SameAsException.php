@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Validation\Exceptions;
+    namespace BetterWP\Validation\Exceptions;
 
     class SameAsException extends \Respect\Validation\Exceptions\ValidationException
     {

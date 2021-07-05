@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Testing\Concerns;
+    namespace BetterWP\Testing\Concerns;
 
     use PHPUnit\Framework\Assert as PHPUnit;
     use WP_User;

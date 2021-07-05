@@ -4,13 +4,13 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Events;
+	namespace BetterWP\Events;
 
     use BetterWpHooks\Traits\DispatchesConditionally;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Listeners\ShortCircuit404;
-    use WPEmerge\Support\Str;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Listeners\ShortCircuit404;
+    use BetterWP\Support\Str;
 
     class IncomingWebRequest extends IncomingRequest {
 

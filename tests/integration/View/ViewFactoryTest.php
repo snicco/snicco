@@ -8,10 +8,10 @@
 
     use Tests\TestCase;
     use Tests\stubs\TestApp;
-	use WPEmerge\ExceptionHandling\Exceptions\ViewException;
-	use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
-    use WPEmerge\View\PhpView;
-    use WPEmerge\View\ViewFactory;
+	use BetterWP\ExceptionHandling\Exceptions\ViewException;
+	use BetterWP\ExceptionHandling\Exceptions\ViewNotFoundException;
+    use BetterWP\View\PhpView;
+    use BetterWP\View\ViewFactory;
 
 
     class ViewFactoryTest extends TestCase {

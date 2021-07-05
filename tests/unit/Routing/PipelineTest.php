@@ -11,8 +11,8 @@
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\UnitTest;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response as AppResponse;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response as AppResponse;
     use Nyholm\Psr7\Stream;
     use PHPUnit\Framework\TestCase;
     use Psr\Http\Message\ResponseInterface;
@@ -23,10 +23,10 @@
     use Tests\helpers\CreateContainer;
     use Tests\helpers\CreatePsr17Factories;
     use Throwable;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Routing\Pipeline;
+    use BetterWP\Contracts\ErrorHandlerInterface;
+    use BetterWP\ExceptionHandling\Exceptions\HttpException;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Routing\Pipeline;
 
     class PipelineTest extends UnitTest
     {

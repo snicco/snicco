@@ -12,21 +12,21 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestMagicLink;
-    use WPEmerge\Application\Application;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\Contracts\RouteRegistrarInterface;
-    use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\Events\IncomingRequest;
-    use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Events\ResponseSent;
-    use WPEmerge\Testing\TestingErrorHandler;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\HttpKernel;
-    use WPEmerge\Http\Psr7\Request;
+    use BetterWP\Application\Application;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Contracts\ErrorHandlerInterface;
+    use BetterWP\Contracts\MagicLink;
+    use BetterWP\Contracts\RouteRegistrarInterface;
+    use BetterWP\Contracts\ViewInterface;
+    use BetterWP\Events\IncomingRequest;
+    use BetterWP\Events\IncomingWebRequest;
+    use BetterWP\Events\ResponseSent;
+    use BetterWP\Testing\TestingErrorHandler;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\HttpKernel;
+    use BetterWP\Http\Psr7\Request;
 
-    use WPEmerge\Support\Arr;
+    use BetterWP\Support\Arr;
 
     use function do_action;
 

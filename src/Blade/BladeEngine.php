@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Blade;
+    namespace BetterWP\Blade;
 
     use Illuminate\View\Factory;
     use Illuminate\View\ViewFinderInterface;
     use Illuminate\View\ViewName;
-    use WPEmerge\Contracts\ViewEngineInterface;
-    use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
-    use WPEmerge\Support\Arr;
+    use BetterWP\Contracts\ViewEngineInterface;
+    use BetterWP\Contracts\ViewInterface;
+    use BetterWP\ExceptionHandling\Exceptions\ViewNotFoundException;
+    use BetterWP\Support\Arr;
 
     class BladeEngine implements ViewEngineInterface
     {

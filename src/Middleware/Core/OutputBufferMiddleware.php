@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware\Core;
+    namespace BetterWP\Middleware\Core;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Http\Responses\InvalidResponse;
-    use WPEmerge\Http\Responses\NullResponse;
-    use WPEmerge\Http\Responses\RedirectResponse;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Http\ResponseEmitter;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Http\Responses\InvalidResponse;
+    use BetterWP\Http\Responses\NullResponse;
+    use BetterWP\Http\Responses\RedirectResponse;
 
     class OutputBufferMiddleware extends Middleware
     {

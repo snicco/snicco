@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Contracts;
+	namespace BetterWP\Contracts;
 
 
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RoutingResult;
+    use BetterWP\Routing\Route;
+    use BetterWP\Routing\RoutingResult;
 
     interface RouteMatcher {
 

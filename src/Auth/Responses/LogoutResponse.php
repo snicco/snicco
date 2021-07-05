@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Responses;
+    namespace BetterWP\Auth\Responses;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Http\Psr7\Response;
+    use BetterWP\Http\Psr7\Response;
 
     class LogoutResponse extends Response
     {

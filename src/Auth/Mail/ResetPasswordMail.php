@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Mail;
+    namespace BetterWP\Auth\Mail;
 
-    use WPEmerge\Support\WP;
-    use WPEmerge\Mail\Mailable;
-    use WPEmerge\Routing\UrlGenerator;
+    use BetterWP\Support\WP;
+    use BetterWP\Mail\Mailable;
+    use BetterWP\Routing\UrlGenerator;
 
     class ResetPasswordMail extends Mailable
     {

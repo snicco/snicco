@@ -4,9 +4,9 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\ExceptionHandling\Exceptions;
+	namespace BetterWP\ExceptionHandling\Exceptions;
 
-	use WPEmerge\ExceptionHandling\Exceptions\Exception;
+	use BetterWP\ExceptionHandling\Exceptions\Exception;
 
     class DecryptException extends Exception {
 

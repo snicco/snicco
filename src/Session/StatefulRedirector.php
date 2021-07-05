@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace BetterWP\Session;
 
     use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
-    use WPEmerge\Contracts\AbstractRedirector;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Session\Session;
+    use BetterWP\Contracts\AbstractRedirector;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\Session\Session;
 
     class StatefulRedirector extends AbstractRedirector
     {

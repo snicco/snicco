@@ -6,8 +6,8 @@
 
     namespace Tests\fixtures;
 
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Support\Arr;
+    use BetterWP\Contracts\ServiceProvider;
+    use BetterWP\Support\Arr;
 
     class RoutingDefinitionServiceProvider extends ServiceProvider
     {

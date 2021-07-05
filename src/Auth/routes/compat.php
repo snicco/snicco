@@ -3,10 +3,10 @@
 
     declare(strict_types = 1);
 
-    use WPEmerge\Auth\Controllers\BulkPasswordResetEmailController;
-    use WPEmerge\Auth\Controllers\PasswordResetEmailController;
-    use WPEmerge\Auth\Controllers\WpLoginRedirectController;
-    use WPEmerge\Routing\Router;
+    use BetterWP\Auth\Controllers\BulkPasswordResetEmailController;
+    use BetterWP\Auth\Controllers\PasswordResetEmailController;
+    use BetterWP\Auth\Controllers\WpLoginRedirectController;
+    use BetterWP\Routing\Router;
 
     /** @var Router $router */
 

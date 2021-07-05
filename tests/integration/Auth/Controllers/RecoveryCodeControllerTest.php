@@ -7,8 +7,8 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use WPEmerge\Contracts\EncryptorInterface;
-    use WPEmerge\Routing\UrlGenerator;
+    use BetterWP\Contracts\EncryptorInterface;
+    use BetterWP\Routing\UrlGenerator;
 
     class RecoveryCodeControllerTest extends AuthTestCase
     {

@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Controllers;
+    namespace BetterWP\Auth\Controllers;
 
-    use WPEmerge\Auth\Contracts\CreatesNewUser;
-    use WPEmerge\Auth\Contracts\DeletesUsers;
-    use WPEmerge\Auth\Events\Registration;
-    use WPEmerge\Auth\Events\UserDeleted;
-    use WPEmerge\Auth\Responses\CreateAccountViewResponse;
-    use WPEmerge\Auth\Responses\RegisteredResponse;
-    use WPEmerge\Auth\Traits\ResolvesUser;
-    use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
-    use WPEmerge\Http\Controller;
-    use WPEmerge\Http\Psr7\Request;
+    use BetterWP\Auth\Contracts\CreatesNewUser;
+    use BetterWP\Auth\Contracts\DeletesUsers;
+    use BetterWP\Auth\Events\Registration;
+    use BetterWP\Auth\Events\UserDeleted;
+    use BetterWP\Auth\Responses\CreateAccountViewResponse;
+    use BetterWP\Auth\Responses\RegisteredResponse;
+    use BetterWP\Auth\Traits\ResolvesUser;
+    use BetterWP\ExceptionHandling\Exceptions\AuthorizationException;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\Psr7\Request;
 
     class AccountController extends Controller
     {

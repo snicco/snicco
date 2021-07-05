@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace BetterWP\Session;
 
     use Carbon\Carbon;
     use Closure;
@@ -13,15 +13,15 @@
     use Illuminate\Support\InteractsWithTime;
     use Illuminate\Support\ViewErrorBag;
     use Respect\Validation\Rules\DateTime;
-    use WPEmerge\Auth\Events\Logout;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Session\Contracts\SessionDriver;
-    use WPEmerge\Session\Events\SessionRegenerated;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Support\Str;
+    use BetterWP\Auth\Events\Logout;
+    use BetterWP\Support\WP;
+    use BetterWP\Session\Contracts\SessionDriver;
+    use BetterWP\Session\Events\SessionRegenerated;
+    use BetterWP\Support\Arr;
+    use BetterWP\Support\Str;
     use stdClass;
     use SessionHandlerInterface;
-    use WPEmerge\Support\Url;
+    use BetterWP\Support\Url;
 
     class Session
     {

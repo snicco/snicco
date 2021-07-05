@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Support;
+    namespace BetterWP\Support;
 
-    use WPEmerge\Support\WP;
+    use BetterWP\Support\WP;
 
     use function collect;
 

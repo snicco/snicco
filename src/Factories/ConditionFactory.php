@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Factories;
+    namespace BetterWP\Factories;
 
     use Contracts\ContainerAdapter;
-    use WPEmerge\Contracts\ConditionInterface;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Routing\ConditionBlueprint;
-    use WPEmerge\Routing\Conditions\CustomCondition;
-    use WPEmerge\Routing\Conditions\NegateCondition;
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Traits\ReflectsCallable;
+    use BetterWP\Contracts\ConditionInterface;
+    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use BetterWP\Routing\ConditionBlueprint;
+    use BetterWP\Routing\Conditions\CustomCondition;
+    use BetterWP\Routing\Conditions\NegateCondition;
+    use BetterWP\Routing\Route;
+    use BetterWP\Traits\ReflectsCallable;
 
     class ConditionFactory
     {

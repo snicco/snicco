@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http\Responses;
+    namespace BetterWP\Http\Responses;
 
 
     class WpQueryFilteredResponse extends NullResponse

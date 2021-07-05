@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Contracts;
+	namespace BetterWP\Contracts;
 
 
-	use WPEmerge\ExceptionHandling\Exceptions\ViewException;
-    use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
+	use BetterWP\ExceptionHandling\Exceptions\ViewException;
+    use BetterWP\ExceptionHandling\Exceptions\ViewNotFoundException;
 
     interface ViewFactoryInterface {
 

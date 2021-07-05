@@ -4,22 +4,22 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Testing;
+    namespace BetterWP\Testing;
 
     use Closure;
-    use WPEmerge\Application\Application;
-    use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\Http\Psr7\Response;
+    use BetterWP\Application\Application;
+    use BetterWP\Contracts\ViewInterface;
+    use BetterWP\Http\Psr7\Response;
     use PHPUnit\Framework\Assert as PHPUnit;
-    use WPEmerge\Http\Responses\NullResponse;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Support\Str;
-    use WPEmerge\Support\Url;
-    use WPEmerge\Support\VariableBag;
-    use WPEmerge\Testing\Assertable\AssertableCookie;
-    use WPEmerge\Testing\Constraints\SeeInOrder;
+    use BetterWP\Http\Responses\NullResponse;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\Session\Session;
+    use BetterWP\Support\Arr;
+    use BetterWP\Support\Str;
+    use BetterWP\Support\Url;
+    use BetterWP\Support\VariableBag;
+    use BetterWP\Testing\Assertable\AssertableCookie;
+    use BetterWP\Testing\Constraints\SeeInOrder;
 
     class TestResponse
     {

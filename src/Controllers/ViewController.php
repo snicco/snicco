@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Controllers;
+	namespace BetterWP\Controllers;
 
 
-    use WPEmerge\Http\Controller;
-    use WPEmerge\Http\Psr7\Response;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\Psr7\Response;
 
     class ViewController extends Controller {
 

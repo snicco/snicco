@@ -4,28 +4,28 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace BetterWP\Session;
 
     use Psr\Http\Message\ResponseFactoryInterface;
     use Slim\Csrf\Guard;
-    use WPEmerge\Application\Application;
-    use WPEmerge\Auth\AuthServiceProvider;
-    use WPEmerge\Contracts\AbstractRedirector;
-    use WPEmerge\Contracts\EncryptorInterface;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Session\Contracts\SessionDriver;
-    use WPEmerge\Session\Contracts\SessionManagerInterface;
-    use WPEmerge\Session\Events\NewLogin;
-    use WPEmerge\Session\Events\NewLogout;
-    use WPEmerge\Session\Drivers\ArraySessionDriver;
-    use WPEmerge\Session\Drivers\DatabaseSessionDriver;
-    use WPEmerge\Session\Middleware\CsrfMiddleware;
-    use WPEmerge\Session\Middleware\ShareSessionWithView;
-    use WPEmerge\Session\Middleware\StartSessionMiddleware;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\View\GlobalContext;
+    use BetterWP\Application\Application;
+    use BetterWP\Auth\AuthServiceProvider;
+    use BetterWP\Contracts\AbstractRedirector;
+    use BetterWP\Contracts\EncryptorInterface;
+    use BetterWP\Contracts\ServiceProvider;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\Session\Contracts\SessionDriver;
+    use BetterWP\Session\Contracts\SessionManagerInterface;
+    use BetterWP\Session\Events\NewLogin;
+    use BetterWP\Session\Events\NewLogout;
+    use BetterWP\Session\Drivers\ArraySessionDriver;
+    use BetterWP\Session\Drivers\DatabaseSessionDriver;
+    use BetterWP\Session\Middleware\CsrfMiddleware;
+    use BetterWP\Session\Middleware\ShareSessionWithView;
+    use BetterWP\Session\Middleware\StartSessionMiddleware;
+    use BetterWP\Support\Arr;
+    use BetterWP\View\GlobalContext;
 
     class SessionServiceProvider extends ServiceProvider
     {

@@ -8,8 +8,8 @@
 
 	use PHPUnit\Framework\TestCase;
 	use BadMethodCallException;
-	use WPEmerge\Application\ApplicationTrait;
-	use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
+	use BetterWP\Application\ApplicationTrait;
+	use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
 
 	class ApplicationTraitTest extends TestCase {
 

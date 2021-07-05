@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Events;
+    namespace BetterWP\Auth\Events;
 
     use BetterWpHooks\Traits\IsAction;
     use WP_User;
-    use WPEmerge\Application\ApplicationEvent;
+    use BetterWP\Application\ApplicationEvent;
 
     class Login extends ApplicationEvent
     {

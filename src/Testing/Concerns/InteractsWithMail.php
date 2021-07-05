@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Testing\Concerns;
+    namespace BetterWP\Testing\Concerns;
 
     use BetterWpHooks\Testing\FakeDispatcher;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Events\PendingMail;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\PendingMail;
     use PHPUnit\Framework\Assert as PHPUnit;
-    use WPEmerge\Testing\Assertable\AssertableMail;
-    use WPEmerge\View\ViewFactory;
+    use BetterWP\Testing\Assertable\AssertableMail;
+    use BetterWP\View\ViewFactory;
 
     trait InteractsWithMail
     {

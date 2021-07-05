@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
     /** @var Illuminate\Support\ViewErrorBag $errors */
-    /** @var WPEmerge\Session\Session $session */
+    /** @var BetterWP\Session\Session $session */
 
 ?>
 

@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Controllers;
+    namespace BetterWP\Controllers;
 
     use Closure;
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Contracts\AbstractRouteCollection as Routes;
-    use WPEmerge\Http\Controller;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Http\Responses\NullResponse;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Middleware\MiddlewareStack;
-    use WPEmerge\Routing\Pipeline;
-    use WPEmerge\Routing\Route;
+    use BetterWP\Contracts\AbstractRouteCollection as Routes;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Http\Responses\NullResponse;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Middleware\MiddlewareStack;
+    use BetterWP\Routing\Pipeline;
+    use BetterWP\Routing\Route;
 
     /**
      *

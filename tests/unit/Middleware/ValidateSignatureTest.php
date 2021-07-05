@@ -13,18 +13,18 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
-    use WPEmerge\ExceptionHandling\NullErrorHandler;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Middleware\Core\ShareCookies;
-    use WPEmerge\Middleware\ValidateSignature;
-    use WPEmerge\Routing\Pipeline;
-    use WPEmerge\Session\Drivers\ArraySessionDriver;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Support\Str;
+    use BetterWP\Contracts\MagicLink;
+    use BetterWP\ExceptionHandling\Exceptions\InvalidSignatureException;
+    use BetterWP\ExceptionHandling\NullErrorHandler;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Middleware\Core\ShareCookies;
+    use BetterWP\Middleware\ValidateSignature;
+    use BetterWP\Routing\Pipeline;
+    use BetterWP\Session\Drivers\ArraySessionDriver;
+    use BetterWP\Session\Session;
+    use BetterWP\Support\Arr;
+    use BetterWP\Support\Str;
 
     class ValidateSignatureTest extends UnitTest
     {

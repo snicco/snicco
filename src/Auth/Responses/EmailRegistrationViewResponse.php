@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Responses;
+    namespace BetterWP\Auth\Responses;
 
-    use WPEmerge\Auth\Contracts\RegistrationViewResponse;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\View\ViewFactory;
+    use BetterWP\Auth\Contracts\RegistrationViewResponse;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\View\ViewFactory;
 
     class EmailRegistrationViewResponse extends RegistrationViewResponse
     {

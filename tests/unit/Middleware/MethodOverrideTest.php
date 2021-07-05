@@ -11,15 +11,15 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\Support\Str;
-    use WPEmerge\View\MethodField;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Middleware\Authenticate;
-    use WPEmerge\Middleware\Authorize;
-    use WPEmerge\Middleware\Core\MethodOverride;
+    use BetterWP\Support\Str;
+    use BetterWP\View\MethodField;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Middleware\Authenticate;
+    use BetterWP\Middleware\Authorize;
+    use BetterWP\Middleware\Core\MethodOverride;
 
     class MethodOverrideTest extends UnitTest
     {
@@ -49,7 +49,7 @@
         private $response;
 
         /**
-         * @var \WPEmerge\View\MethodField
+         * @var \BetterWP\View\MethodField
          */
         private $method_field;
 

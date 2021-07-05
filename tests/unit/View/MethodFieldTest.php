@@ -6,8 +6,8 @@
 
     namespace Tests\unit\View;
 
-    use WPEmerge\Support\Str;
-    use WPEmerge\View\MethodField;
+    use BetterWP\Support\Str;
+    use BetterWP\View\MethodField;
     use PHPUnit\Framework\TestCase;
 
     class MethodFieldTest extends TestCase

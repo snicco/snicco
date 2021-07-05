@@ -4,20 +4,20 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Confirmation;
+    namespace BetterWP\Auth\Confirmation;
 
     use Illuminate\Support\InteractsWithTime;
-    use WPEmerge\Auth\Contracts\AuthConfirmation;
-    use WPEmerge\Auth\Mail\ConfirmAuthMail;
-    use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Mail\MailBuilder;
-    use WPEmerge\Session\Session;
-    use WPEmerge\View\ViewFactory;
+    use BetterWP\Auth\Contracts\AuthConfirmation;
+    use BetterWP\Auth\Mail\ConfirmAuthMail;
+    use BetterWP\Contracts\MagicLink;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Mail\MailBuilder;
+    use BetterWP\Session\Session;
+    use BetterWP\View\ViewFactory;
 
     class EmailAuthConfirmation implements AuthConfirmation
     {

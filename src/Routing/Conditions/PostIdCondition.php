@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Routing\Conditions;
+	namespace BetterWP\Routing\Conditions;
 
-	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\Contracts\UrlableInterface;
-    use WPEmerge\Http\Psr7\Request;
+	use BetterWP\Contracts\ConditionInterface;
+	use BetterWP\Contracts\UrlableInterface;
+    use BetterWP\Http\Psr7\Request;
 
     class PostIdCondition implements ConditionInterface, UrlableInterface {
 

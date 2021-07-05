@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Blade;
+    namespace BetterWP\Blade;
 
     use Illuminate\Container\Container as IlluminateContainer;
     use Illuminate\Contracts\Container\Container;
@@ -16,10 +16,10 @@
     use Illuminate\View\View;
     use Illuminate\View\ViewServiceProvider;
     use SniccoAdapter\BaseContainerAdapter;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Contracts\ViewEngineInterface;
-    use WPEmerge\Contracts\ViewFactoryInterface;
-    use WPEmerge\Support\Arr;
+    use BetterWP\Contracts\ServiceProvider;
+    use BetterWP\Contracts\ViewEngineInterface;
+    use BetterWP\Contracts\ViewFactoryInterface;
+    use BetterWP\Support\Arr;
 
     class BladeServiceProvider extends ServiceProvider
     {

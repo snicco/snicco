@@ -4,20 +4,20 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace BetterWP\Session;
 
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
-    use WPEmerge\Auth\WpAuthSessionToken;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Cookie;
-    use WPEmerge\Http\Cookies;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Session\Contracts\SessionManagerInterface;
-    use WPEmerge\Session\Events\NewLogin;
-    use WPEmerge\Session\Events\SessionRegenerated;
-    use WPEmerge\Traits\HasLottery;
+    use BetterWP\Auth\WpAuthSessionToken;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Cookie;
+    use BetterWP\Http\Cookies;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseEmitter;
+    use BetterWP\Session\Contracts\SessionManagerInterface;
+    use BetterWP\Session\Events\NewLogin;
+    use BetterWP\Session\Events\SessionRegenerated;
+    use BetterWP\Traits\HasLottery;
 
     class SessionManager implements SessionManagerInterface
     {

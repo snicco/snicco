@@ -7,12 +7,12 @@
     namespace Tests\unit\Auth;
 
     use Tests\MiddlewareTestCase;
-    use WPEmerge\Auth\Middleware\AuthUnconfirmed;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Session\Drivers\ArraySessionDriver;
-    use WPEmerge\Session\Session;
+    use BetterWP\Auth\Middleware\AuthUnconfirmed;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Routing\Route;
+    use BetterWP\Session\Drivers\ArraySessionDriver;
+    use BetterWP\Session\Session;
 
     class AuthUnconfirmedTest extends MiddlewareTestCase
     {

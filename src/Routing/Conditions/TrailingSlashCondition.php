@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing\Conditions;
+    namespace BetterWP\Routing\Conditions;
 
-    use WPEmerge\Contracts\ConditionInterface;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Support\Str;
+    use BetterWP\Contracts\ConditionInterface;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Support\Str;
 
     /**
      * This Condition is required for make FastRoute only match trailing slash urls

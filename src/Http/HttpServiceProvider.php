@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http;
+    namespace BetterWP\Http;
 
     use Psr\Http\Message\ResponseFactoryInterface;
     use Psr\Http\Message\StreamFactoryInterface;
-    use WPEmerge\Contracts\AbstractRedirector;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Contracts\ViewFactoryInterface;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\Pipeline;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Session\StatefulRedirector;
+    use BetterWP\Contracts\AbstractRedirector;
+    use BetterWP\Contracts\ServiceProvider;
+    use BetterWP\Contracts\ViewFactoryInterface;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Routing\Pipeline;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\Session\Session;
+    use BetterWP\Session\StatefulRedirector;
 
     class HttpServiceProvider extends ServiceProvider
     {

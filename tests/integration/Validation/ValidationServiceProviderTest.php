@@ -9,9 +9,9 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPEmerge\Validation\Middleware\ShareValidatorWithRequest;
-    use WPEmerge\Validation\ValidationServiceProvider;
-    use WPEmerge\Validation\Validator;
+    use BetterWP\Validation\Middleware\ShareValidatorWithRequest;
+    use BetterWP\Validation\ValidationServiceProvider;
+    use BetterWP\Validation\Validator;
 
     class ValidationServiceProviderTest extends TestCase
     {

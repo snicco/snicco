@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Events;
+    namespace BetterWP\Auth\Events;
 
     use BetterWpHooks\Traits\IsAction;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Session\Contracts\SessionDriver;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Session\Session;
+    use BetterWP\Session\Contracts\SessionDriver;
 
     class Logout extends ApplicationEvent
     {
