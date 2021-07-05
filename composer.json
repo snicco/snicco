@@ -13,7 +13,6 @@
   "require": {
     "php": "^7.3",
     "ext-json": "*",
-    "ext-openssl": "*",
     "ext-mbstring": "*",
     "calvinalkan/base-container": "0.1.*",
     "calvinalkan/better-wordpress-hooks": "dev-master",
