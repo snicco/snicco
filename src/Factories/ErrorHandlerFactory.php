@@ -9,7 +9,6 @@
 	use Contracts\ContainerAdapter;
 	use Psr\Log\LoggerInterface;
 	use Psr\Log\NullLogger;
-	use Whoops\Handler\JsonResponseHandler;
 	use Whoops\Handler\PrettyPageHandler;
 	use Whoops\Run;
 	use Whoops\RunInterface;
@@ -19,7 +18,6 @@
     use BetterWP\Http\Psr7\Request;
     use BetterWP\Http\ResponseFactory;
 
-    use function PHPUnit\TestFixture\func;
 
     class ErrorHandlerFactory {
 
@@ -41,7 +39,7 @@
 		 */
 		public static function make( ContainerAdapter $container, bool $is_debug,  string $editor = null ) {
 
-			if ( ! $is_debug && class_exists(Run::class ) ) {
+			if ( ! $is_debug || ! class_exists(Run::class ) ) {
 
 				$production_handler = static::createProductionHandler( $container );
 				$production_handler->setRequestResolver(function () use ($container) {
