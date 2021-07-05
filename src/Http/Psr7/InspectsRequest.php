@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Http\Psr7;
+    namespace BetterWP\Http\Psr7;
 
-    use WPMvc\Support\Arr;
-    use WPMvc\Support\Str;
+    use BetterWP\Support\Arr;
+    use BetterWP\Support\Str;
 
     trait InspectsRequest
     {

@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Routing\FastRoute;
+    namespace BetterWP\Routing\FastRoute;
 
     use FastRoute\BadRouteException;
     use FastRoute\DataGenerator\GroupCountBased as DataGenerator;
     use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
     use FastRoute\RouteCollector;
     use FastRoute\RouteParser\Std as RouteParser;
-    use WPMvc\Contracts\RouteMatcher;
-    use WPMvc\Routing\Route;
-    use WPMvc\Routing\RoutingResult;
+    use BetterWP\Contracts\RouteMatcher;
+    use BetterWP\Routing\Route;
+    use BetterWP\Routing\RoutingResult;
 
     class FastRouteMatcher implements RouteMatcher
     {

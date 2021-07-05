@@ -12,9 +12,9 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Middleware\NoRobots;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Middleware\NoRobots;
 
     class NoRobotsTest extends UnitTest
     {

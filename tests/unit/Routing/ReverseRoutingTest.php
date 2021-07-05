@@ -10,15 +10,15 @@
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Contracts\ConditionInterface;
-    use WPMvc\Contracts\UrlableInterface;
-    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Routing\Router;
-    use WPMvc\Routing\UrlGenerator;
-    use WPMvc\Support\Str;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Contracts\ConditionInterface;
+    use BetterWP\Contracts\UrlableInterface;
+    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Routing\Router;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\Support\Str;
 
     class ReverseRoutingTest extends UnitTest
     {

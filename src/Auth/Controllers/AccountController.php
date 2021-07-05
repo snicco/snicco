@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Controllers;
+    namespace BetterWP\Auth\Controllers;
 
-    use WPMvc\Auth\Contracts\CreatesNewUser;
-    use WPMvc\Auth\Contracts\DeletesUsers;
-    use WPMvc\Auth\Events\Registration;
-    use WPMvc\Auth\Events\UserDeleted;
-    use WPMvc\Auth\Responses\CreateAccountViewResponse;
-    use WPMvc\Auth\Responses\RegisteredResponse;
-    use WPMvc\Auth\Traits\ResolvesUser;
-    use WPMvc\ExceptionHandling\Exceptions\AuthorizationException;
-    use WPMvc\Http\Controller;
-    use WPMvc\Http\Psr7\Request;
+    use BetterWP\Auth\Contracts\CreatesNewUser;
+    use BetterWP\Auth\Contracts\DeletesUsers;
+    use BetterWP\Auth\Events\Registration;
+    use BetterWP\Auth\Events\UserDeleted;
+    use BetterWP\Auth\Responses\CreateAccountViewResponse;
+    use BetterWP\Auth\Responses\RegisteredResponse;
+    use BetterWP\Auth\Traits\ResolvesUser;
+    use BetterWP\ExceptionHandling\Exceptions\AuthorizationException;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\Psr7\Request;
 
     class AccountController extends Controller
     {

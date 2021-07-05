@@ -14,14 +14,14 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPMvc\Controllers\RedirectController;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Http\Psr7\Response;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Http\Responses\RedirectResponse;
-    use WPMvc\Middleware\Core\OpenRedirectProtection;
-    use WPMvc\Routing\Route;
+    use BetterWP\Controllers\RedirectController;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Middleware\Core\OpenRedirectProtection;
+    use BetterWP\Routing\Route;
 
     class OpenRedirectProtectionTest extends UnitTest
     {

@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\View;
+    namespace BetterWP\View;
 
     use Symfony\Component\Finder\Finder;
-    use WPMvc\Contracts\ViewFinderInterface;
-    use WPMvc\Support\FilePath;
+    use BetterWP\Contracts\ViewFinderInterface;
+    use BetterWP\Support\FilePath;
 
     class PhpViewFinder implements ViewFinderInterface
     {

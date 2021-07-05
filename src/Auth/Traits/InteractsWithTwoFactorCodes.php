@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Traits;
+    namespace BetterWP\Auth\Traits;
 
     use Illuminate\Support\Collection;
-    use WPMvc\Auth\RecoveryCode;
+    use BetterWP\Auth\RecoveryCode;
 
     trait InteractsWithTwoFactorCodes
     {

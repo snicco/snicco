@@ -6,7 +6,7 @@
 
 	namespace Tests\unit\Application;
 
-	use WPMvc\Application\ApplicationConfig;
+	use BetterWP\Application\ApplicationConfig;
 	use PHPUnit\Framework\TestCase;
 
 	class ApplicationConfigTest extends TestCase {

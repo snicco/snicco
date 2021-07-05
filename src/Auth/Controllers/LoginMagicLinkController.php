@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Controllers;
+    namespace BetterWP\Auth\Controllers;
 
     use WP_User;
-    use WPMvc\Auth\Mail\MagicLinkLoginMail;
-    use WPMvc\Auth\Traits\ResolvesUser;
-    use WPMvc\Http\Controller;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Responses\RedirectResponse;
-    use WPMvc\Mail\MailBuilder;
+    use BetterWP\Auth\Mail\MagicLinkLoginMail;
+    use BetterWP\Auth\Traits\ResolvesUser;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Mail\MailBuilder;
 
     class LoginMagicLinkController extends Controller
     {

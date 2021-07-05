@@ -4,8 +4,8 @@
 	declare( strict_types = 1 );
 
 	use Tests\stubs\TestApp;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Session\Exceptions\InvalidCsrfTokenException;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Session\Exceptions\InvalidCsrfTokenException;
 
     $router = TestApp::route();
 	$router->get( 'admin.php/bar', function ( Request $request ) {

@@ -13,21 +13,21 @@
     use Tests\helpers\HashesSessionIds;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPMvc\ExceptionHandling\NullErrorHandler;
-    use WPMvc\Testing\TestingErrorHandler;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Cookies;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Psr7\Response;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Middleware\Core\ShareCookies;
-    use WPMvc\Routing\Pipeline;
-    use WPMvc\Session\Drivers\ArraySessionDriver;
-    use WPMvc\Session\Session;
-    use WPMvc\Session\Middleware\StartSessionMiddleware;
-    use WPMvc\Session\SessionManager;
-    use WPMvc\Support\VariableBag;
+    use BetterWP\ExceptionHandling\NullErrorHandler;
+    use BetterWP\Testing\TestingErrorHandler;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Cookies;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Middleware\Core\ShareCookies;
+    use BetterWP\Routing\Pipeline;
+    use BetterWP\Session\Drivers\ArraySessionDriver;
+    use BetterWP\Session\Session;
+    use BetterWP\Session\Middleware\StartSessionMiddleware;
+    use BetterWP\Session\SessionManager;
+    use BetterWP\Support\VariableBag;
 
     class SessionMiddlewareTest extends UnitTest
     {

@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Session;
+    namespace BetterWP\Session;
 
     use Slim\Csrf\Guard;
-    use WPMvc\Support\Arr;
+    use BetterWP\Support\Arr;
 
     class CsrfField
     {

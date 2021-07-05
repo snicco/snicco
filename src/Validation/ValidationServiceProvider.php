@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Validation;
+    namespace BetterWP\Validation;
 
     use Respect\Validation\Factory;
-    use WPMvc\Contracts\ServiceProvider;
-    use WPMvc\Validation\Middleware\ShareValidatorWithRequest;
+    use BetterWP\Contracts\ServiceProvider;
+    use BetterWP\Validation\Middleware\ShareValidatorWithRequest;
 
     class ValidationServiceProvider extends ServiceProvider
     {
@@ -50,8 +50,8 @@
         {
             Factory::setDefaultInstance(
                 (new Factory())
-                    ->withRuleNamespace('WPMvc\Validation\Rules')
-                    ->withExceptionNamespace('WPMvc\Validation\Exceptions')
+                    ->withRuleNamespace('BetterWP\Validation\Rules')
+                    ->withExceptionNamespace('BetterWP\Validation\Exceptions')
             );
         }
 

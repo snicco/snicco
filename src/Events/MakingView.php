@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Events;
+	namespace BetterWP\Events;
 
-	use WPMvc\Application\ApplicationEvent;
-	use WPMvc\Contracts\ViewInterface;
+	use BetterWP\Application\ApplicationEvent;
+	use BetterWP\Contracts\ViewInterface;
 
 	class MakingView extends ApplicationEvent {
 

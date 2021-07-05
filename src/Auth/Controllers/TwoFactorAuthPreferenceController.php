@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Controllers;
+    namespace BetterWP\Auth\Controllers;
 
-    use WPMvc\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPMvc\Auth\Traits\GeneratesRecoveryCodes;
-    use WPMvc\Auth\Traits\InteractsWithTwoFactorCodes;
-    use WPMvc\Auth\Traits\InteractsWithTwoFactorSecrets;
-    use WPMvc\Auth\Traits\ResolvesUser;
-    use WPMvc\Auth\Traits\ResolveTwoFactorSecrets;
-    use WPMvc\Contracts\EncryptorInterface;
-    use WPMvc\Http\Controller;
-    use WPMvc\Http\Psr7\Request;
+    use BetterWP\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use BetterWP\Auth\Traits\GeneratesRecoveryCodes;
+    use BetterWP\Auth\Traits\InteractsWithTwoFactorCodes;
+    use BetterWP\Auth\Traits\InteractsWithTwoFactorSecrets;
+    use BetterWP\Auth\Traits\ResolvesUser;
+    use BetterWP\Auth\Traits\ResolveTwoFactorSecrets;
+    use BetterWP\Contracts\EncryptorInterface;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\Psr7\Request;
 
     class TwoFactorAuthPreferenceController extends Controller
     {

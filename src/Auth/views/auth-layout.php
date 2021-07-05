@@ -7,7 +7,7 @@
 
     /** @var string $view */
 
-    use WPMvc\View\ViewFactory;
+    use BetterWP\View\ViewFactory;
 
 ?>
 

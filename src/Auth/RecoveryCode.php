@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth;
+    namespace BetterWP\Auth;
 
-    use WPMvc\Support\Str;
+    use BetterWP\Support\Str;
 
     class RecoveryCode
     {

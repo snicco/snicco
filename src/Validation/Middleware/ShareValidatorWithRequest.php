@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Validation\Middleware;
+    namespace BetterWP\Validation\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPMvc\Contracts\Middleware;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Validation\Validator;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Validation\Validator;
 
     class ShareValidatorWithRequest extends Middleware
     {

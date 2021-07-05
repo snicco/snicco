@@ -6,8 +6,8 @@
 
     namespace Tests\stubs;
 
-    use WPMvc\Contracts\MagicLink;
-    use WPMvc\Http\Psr7\Request;
+    use BetterWP\Contracts\MagicLink;
+    use BetterWP\Http\Psr7\Request;
 
     class TestMagicLink extends MagicLink
     {

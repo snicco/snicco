@@ -8,7 +8,7 @@
 
     use Tests\helpers\CreatePsr17Factories;
     use Throwable;
-    use WPMvc\Contracts\ErrorHandlerInterface;
-    use WPMvc\ExceptionHandling\Exceptions\HttpException;
-    use WPMvc\Http\Psr7\Response;
+    use BetterWP\Contracts\ErrorHandlerInterface;
+    use BetterWP\ExceptionHandling\Exceptions\HttpException;
+    use BetterWP\Http\Psr7\Response;
 

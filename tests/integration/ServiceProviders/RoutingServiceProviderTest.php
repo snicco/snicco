@@ -9,20 +9,20 @@
     use Tests\fixtures\Conditions\TrueCondition;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPMvc\Contracts\AbstractRouteCollection;
-    use WPMvc\Contracts\RouteMatcher;
-    use WPMvc\Contracts\RouteRegistrarInterface;
-    use WPMvc\Contracts\RouteUrlGenerator;
-    use WPMvc\Factories\ConditionFactory;
-    use WPMvc\Routing\CachedRouteCollection;
-    use WPMvc\Routing\CacheFileRouteRegistrar;
-    use WPMvc\Routing\FastRoute\CachedFastRouteMatcher;
-    use WPMvc\Routing\FastRoute\FastRouteMatcher;
-    use WPMvc\Routing\FastRoute\FastRouteUrlGenerator;
-    use WPMvc\Routing\RouteCollection;
-    use WPMvc\Routing\Router;
-    use WPMvc\Routing\RouteRegistrar;
-    use WPMvc\Routing\UrlGenerator;
+    use BetterWP\Contracts\AbstractRouteCollection;
+    use BetterWP\Contracts\RouteMatcher;
+    use BetterWP\Contracts\RouteRegistrarInterface;
+    use BetterWP\Contracts\RouteUrlGenerator;
+    use BetterWP\Factories\ConditionFactory;
+    use BetterWP\Routing\CachedRouteCollection;
+    use BetterWP\Routing\CacheFileRouteRegistrar;
+    use BetterWP\Routing\FastRoute\CachedFastRouteMatcher;
+    use BetterWP\Routing\FastRoute\FastRouteMatcher;
+    use BetterWP\Routing\FastRoute\FastRouteUrlGenerator;
+    use BetterWP\Routing\RouteCollection;
+    use BetterWP\Routing\Router;
+    use BetterWP\Routing\RouteRegistrar;
+    use BetterWP\Routing\UrlGenerator;
 
     class RoutingServiceProviderTest extends TestCase
     {

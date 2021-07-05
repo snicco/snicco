@@ -4,14 +4,14 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Middleware;
+	namespace BetterWP\Middleware;
 
 	use Psr\Http\Message\ResponseInterface;
-    use WPMvc\Contracts\Middleware;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Routing\UrlGenerator;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Routing\UrlGenerator;
 
     class RedirectIfAuthenticated extends Middleware {
 

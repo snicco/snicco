@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Routing\FastRoute;
+    namespace BetterWP\Routing\FastRoute;
 
-    use WPMvc\Routing\Route;
-    use WPMvc\Routing\RoutingResult;
-    use WPMvc\Traits\DeserializesRoutes;
+    use BetterWP\Routing\Route;
+    use BetterWP\Routing\RoutingResult;
+    use BetterWP\Traits\DeserializesRoutes;
 
     trait HydratesFastRoutes
     {

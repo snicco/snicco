@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Routing;
+    namespace BetterWP\Routing;
 
     use Illuminate\Support\Arr;
     use Illuminate\Support\InteractsWithTime;
-    use WPMvc\Contracts\RouteUrlGenerator;
-    use WPMvc\Contracts\MagicLink;
-    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Support\Str;
-    use WPMvc\Support\Url;
+    use BetterWP\Contracts\RouteUrlGenerator;
+    use BetterWP\Contracts\MagicLink;
+    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Support\Str;
+    use BetterWP\Support\Url;
 
     class UrlGenerator
     {

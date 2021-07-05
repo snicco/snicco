@@ -11,13 +11,13 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestView;
     use Tests\UnitTest;
-    use WPMvc\Http\Psr7\Response;
-    use WPMvc\Http\Redirector;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Http\Responses\InvalidResponse;
-    use WPMvc\Http\Responses\NullResponse;
-    use WPMvc\Http\Responses\RedirectResponse;
-    use WPMvc\Http\Responses\WpQueryFilteredResponse;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Http\Redirector;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Http\Responses\InvalidResponse;
+    use BetterWP\Http\Responses\NullResponse;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Http\Responses\WpQueryFilteredResponse;
 
     class ResponseFactoryTest extends UnitTest
     {

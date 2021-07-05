@@ -11,14 +11,14 @@
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
-    use WPMvc\Contracts\Middleware;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Routing\RouteCollection;
-    use WPMvc\Routing\UrlGenerator;
-    use WPMvc\Session\Drivers\ArraySessionDriver;
-    use WPMvc\Session\Session;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Routing\RouteCollection;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\Session\Drivers\ArraySessionDriver;
+    use BetterWP\Session\Session;
 
    abstract class MiddlewareTestCase extends UnitTest
     {

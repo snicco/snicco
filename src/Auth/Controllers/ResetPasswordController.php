@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Controllers;
+    namespace BetterWP\Auth\Controllers;
 
     use WP_User;
-    use WPMvc\Http\Controller;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Responses\RedirectResponse;
-    use WPMvc\Validation\Exceptions\ValidationException;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Validation\Exceptions\ValidationException;
     use Respect\Validation\Validator as v;
-    use WPMvc\View\MethodField;
+    use BetterWP\View\MethodField;
     use ZxcvbnPhp\Zxcvbn;
 
     class ResetPasswordController extends Controller

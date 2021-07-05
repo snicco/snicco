@@ -10,12 +10,12 @@
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use WPMvc\Contracts\AbstractRedirector;
-    use WPMvc\Http\Cookies;
-    use WPMvc\Http\HttpKernel;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Redirector;
-    use WPMvc\Http\ResponseFactory;
+    use BetterWP\Contracts\AbstractRedirector;
+    use BetterWP\Http\Cookies;
+    use BetterWP\Http\HttpKernel;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Redirector;
+    use BetterWP\Http\ResponseFactory;
 
     class HttpServiceProviderTest extends TestCase
     {

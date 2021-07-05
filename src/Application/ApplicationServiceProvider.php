@@ -4,22 +4,22 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Application;
+    namespace BetterWP\Application;
 
-    use WPMvc\View\MethodField;
-    use WPMvc\Contracts\AbstractRedirector;
-    use WPMvc\Contracts\ServiceProvider;
-    use WPMvc\Contracts\ViewFactoryInterface;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPMvc\ExceptionHandling\ShutdownHandler;
-    use WPMvc\Http\Cookies;
-    use WPMvc\Routing\Router;
-    use WPMvc\Routing\UrlGenerator;
-    use WPMvc\View\GlobalContext;
-    use WPMvc\View\PhpViewEngine;
-    use WPMvc\View\ViewComposerCollection;
+    use BetterWP\View\MethodField;
+    use BetterWP\Contracts\AbstractRedirector;
+    use BetterWP\Contracts\ServiceProvider;
+    use BetterWP\Contracts\ViewFactoryInterface;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use BetterWP\ExceptionHandling\ShutdownHandler;
+    use BetterWP\Http\Cookies;
+    use BetterWP\Routing\Router;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\View\GlobalContext;
+    use BetterWP\View\PhpViewEngine;
+    use BetterWP\View\ViewComposerCollection;
 
     class ApplicationServiceProvider extends ServiceProvider
     {

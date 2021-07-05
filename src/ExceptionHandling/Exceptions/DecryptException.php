@@ -4,9 +4,9 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\ExceptionHandling\Exceptions;
+	namespace BetterWP\ExceptionHandling\Exceptions;
 
-	use WPMvc\ExceptionHandling\Exceptions\Exception;
+	use BetterWP\ExceptionHandling\Exceptions\Exception;
 
     class DecryptException extends Exception {
 

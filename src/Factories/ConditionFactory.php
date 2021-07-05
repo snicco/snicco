@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Factories;
+    namespace BetterWP\Factories;
 
     use Contracts\ContainerAdapter;
-    use WPMvc\Contracts\ConditionInterface;
-    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPMvc\Routing\ConditionBlueprint;
-    use WPMvc\Routing\Conditions\CustomCondition;
-    use WPMvc\Routing\Conditions\NegateCondition;
-    use WPMvc\Routing\Route;
-    use WPMvc\Traits\ReflectsCallable;
+    use BetterWP\Contracts\ConditionInterface;
+    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use BetterWP\Routing\ConditionBlueprint;
+    use BetterWP\Routing\Conditions\CustomCondition;
+    use BetterWP\Routing\Conditions\NegateCondition;
+    use BetterWP\Routing\Route;
+    use BetterWP\Traits\ReflectsCallable;
 
     class ConditionFactory
     {

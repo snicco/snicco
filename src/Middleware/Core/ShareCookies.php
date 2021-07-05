@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Middleware\Core;
+    namespace BetterWP\Middleware\Core;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPMvc\Contracts\Middleware;
-    use WPMvc\Http\Cookies;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Psr7\Response;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Http\Cookies;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
 
     class ShareCookies extends Middleware
     {

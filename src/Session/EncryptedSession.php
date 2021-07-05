@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Session;
+    namespace BetterWP\Session;
 
-    use WPMvc\Contracts\EncryptorInterface;
-    use WPMvc\ExceptionHandling\Exceptions\DecryptException;
-    use WPMvc\ExceptionHandling\Exceptions\EncryptException;
-    use WPMvc\Session\Contracts\SessionDriver;
+    use BetterWP\Contracts\EncryptorInterface;
+    use BetterWP\ExceptionHandling\Exceptions\DecryptException;
+    use BetterWP\ExceptionHandling\Exceptions\EncryptException;
+    use BetterWP\Session\Contracts\SessionDriver;
 
     class EncryptedSession extends Session
     {

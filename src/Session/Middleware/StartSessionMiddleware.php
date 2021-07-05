@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Session\Middleware;
+    namespace BetterWP\Session\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPMvc\Contracts\Middleware;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Responses\InvalidResponse;
-    use WPMvc\Http\Responses\NullResponse;
-    use WPMvc\Session\Session;
-    use WPMvc\Session\SessionManager;
-    use WPMvc\Session\Contracts\SessionManagerInterface;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Responses\InvalidResponse;
+    use BetterWP\Http\Responses\NullResponse;
+    use BetterWP\Session\Session;
+    use BetterWP\Session\SessionManager;
+    use BetterWP\Session\Contracts\SessionManagerInterface;
 
     class StartSessionMiddleware extends Middleware
     {

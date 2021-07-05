@@ -7,10 +7,10 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Auth\Contracts\AuthConfirmation;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Session\Events\SessionRegenerated;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Auth\Contracts\AuthConfirmation;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Session\Events\SessionRegenerated;
 
     class ConfirmedAuthSessionControllerTest extends AuthTestCase
     {

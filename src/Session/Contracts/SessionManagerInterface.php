@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Session\Contracts;
+    namespace BetterWP\Session\Contracts;
 
-    use WPMvc\Http\Cookie;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Session\Session;
+    use BetterWP\Http\Cookie;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Session\Session;
 
     interface SessionManagerInterface
     {

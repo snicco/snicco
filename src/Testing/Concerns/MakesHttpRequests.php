@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Testing\Concerns;
+    namespace BetterWP\Testing\Concerns;
 
     use Nyholm\Psr7Server\ServerRequestCreator;
     use Psr\Http\Message\ResponseInterface;
@@ -13,23 +13,23 @@
     use Psr\Http\Message\UriFactoryInterface;
     use Psr\Http\Message\UriInterface;
     use Tests\helpers\CreatesWpUrls;
-    use WPMvc\Application\Application;
-    use WPMvc\Application\ApplicationConfig;
-    use WPMvc\Contracts\Middleware;
-    use WPMvc\Contracts\ViewInterface;
-    use WPMvc\Events\IncomingAdminRequest;
-    use WPMvc\Events\IncomingAjaxRequest;
-    use WPMvc\Events\IncomingWebRequest;
-    use WPMvc\Http\Cookie;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Http\HttpKernel;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Psr7\Response;
-    use WPMvc\Session\Session;
-    use WPMvc\Support\Str;
-    use WPMvc\Support\Url;
-    use WPMvc\Testing\TestResponse;
-    use WPMvc\View\ViewFactory;
+    use BetterWP\Application\Application;
+    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Contracts\ViewInterface;
+    use BetterWP\Events\IncomingAdminRequest;
+    use BetterWP\Events\IncomingAjaxRequest;
+    use BetterWP\Events\IncomingWebRequest;
+    use BetterWP\Http\Cookie;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\HttpKernel;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Session\Session;
+    use BetterWP\Support\Str;
+    use BetterWP\Support\Url;
+    use BetterWP\Testing\TestResponse;
+    use BetterWP\View\ViewFactory;
 
     /**
      * @property Session $session

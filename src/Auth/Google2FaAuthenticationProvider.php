@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth;
+    namespace BetterWP\Auth;
 
     use BaconQrCode\Renderer\Color\Rgb;
     use BaconQrCode\Renderer\Image\SvgImageBackEnd;
@@ -13,11 +13,11 @@
     use BaconQrCode\Renderer\RendererStyle\RendererStyle;
     use BaconQrCode\Writer;
     use PragmaRX\Google2FA\Google2FA;
-    use WPMvc\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPMvc\Auth\Traits\ResolvesUser;
-    use WPMvc\Auth\Traits\ResolveTwoFactorSecrets;
-    use WPMvc\Contracts\EncryptorInterface;
-    use WPMvc\Support\WP;
+    use BetterWP\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use BetterWP\Auth\Traits\ResolvesUser;
+    use BetterWP\Auth\Traits\ResolveTwoFactorSecrets;
+    use BetterWP\Contracts\EncryptorInterface;
+    use BetterWP\Support\WP;
 
     class Google2FaAuthenticationProvider implements TwoFactorAuthenticationProvider
     {

@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Routing;
+	namespace BetterWP\Routing;
 
 	use Closure;
-	use WPMvc\Contracts\RouteAction;
+	use BetterWP\Contracts\RouteAction;
 
 	class ClosureAction implements RouteAction {
 

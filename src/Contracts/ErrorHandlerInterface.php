@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Contracts;
+	namespace BetterWP\Contracts;
 
 
-	use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Psr7\Response;
+	use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
     use Throwable;
 
     interface ErrorHandlerInterface {

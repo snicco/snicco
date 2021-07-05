@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Controllers;
+    namespace BetterWP\Auth\Controllers;
 
-    use WPMvc\Auth\Traits\InteractsWithTwoFactorCodes;
-    use WPMvc\Auth\Traits\InteractsWithTwoFactorSecrets;
-    use WPMvc\Auth\Traits\ResolvesUser;
-    use WPMvc\Contracts\EncryptorInterface;
-    use WPMvc\Http\Controller;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Psr7\Response;
+    use BetterWP\Auth\Traits\InteractsWithTwoFactorCodes;
+    use BetterWP\Auth\Traits\InteractsWithTwoFactorSecrets;
+    use BetterWP\Auth\Traits\ResolvesUser;
+    use BetterWP\Contracts\EncryptorInterface;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
 
     class RecoveryCodeController extends Controller
     {

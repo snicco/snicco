@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Controllers;
+    namespace BetterWP\Auth\Controllers;
 
-    use WPMvc\Http\Controller;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Psr7\Response;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
 
     class WpLoginRedirectController extends Controller
     {

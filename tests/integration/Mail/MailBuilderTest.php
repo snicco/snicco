@@ -10,9 +10,9 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Events\PendingMail;
-    use WPMvc\Mail\Mailable;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\PendingMail;
+    use BetterWP\Mail\Mailable;
 
     class MailBuilderTest extends TestCase
     {

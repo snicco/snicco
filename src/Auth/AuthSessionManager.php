@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth;
+    namespace BetterWP\Auth;
 
     use Illuminate\Support\InteractsWithTime;
-    use WPMvc\Http\Cookie;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Session\Session;
-    use WPMvc\Session\Contracts\SessionDriver;
-    use WPMvc\Session\SessionManager;
-    use WPMvc\Session\Contracts\SessionManagerInterface;
-    use WPMvc\Support\Arr;
-    use WPMvc\Traits\HasLottery;
+    use BetterWP\Http\Cookie;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Session\Session;
+    use BetterWP\Session\Contracts\SessionDriver;
+    use BetterWP\Session\SessionManager;
+    use BetterWP\Session\Contracts\SessionManagerInterface;
+    use BetterWP\Support\Arr;
+    use BetterWP\Traits\HasLottery;
 
     class AuthSessionManager implements SessionManagerInterface
     {

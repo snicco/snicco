@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Middleware;
+    namespace BetterWP\Auth\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPMvc\Contracts\Middleware;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Routing\UrlGenerator;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Routing\UrlGenerator;
 
     class AuthUnconfirmed extends Middleware
     {

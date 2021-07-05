@@ -11,7 +11,7 @@
     namespace Tests\stubs;
 
     use PHPUnit\Framework\Assert;
-    use WPMvc\Support\Str;
+    use BetterWP\Support\Str;
 
     use function explode;
     use function trim;

@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Contracts;
+	namespace BetterWP\Contracts;
 
     /**
      * The most generic type of object that will be resolved from the container

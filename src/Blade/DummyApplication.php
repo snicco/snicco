@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Blade;
+    namespace BetterWP\Blade;
 
     use Closure;
     use Illuminate\Contracts\Foundation\Application;

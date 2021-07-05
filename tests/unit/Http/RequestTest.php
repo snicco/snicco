@@ -8,12 +8,12 @@
 
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Routing\RoutingResult;
-    use WPMvc\Session\Drivers\ArraySessionDriver;
-    use WPMvc\Session\Session;
-    use WPMvc\Support\VariableBag;
-    use WPMvc\Validation\Validator;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Routing\RoutingResult;
+    use BetterWP\Session\Drivers\ArraySessionDriver;
+    use BetterWP\Session\Session;
+    use BetterWP\Support\VariableBag;
+    use BetterWP\Validation\Validator;
 
     class RequestTest extends UnitTest
     {

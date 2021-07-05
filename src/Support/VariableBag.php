@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Support;
+	namespace BetterWP\Support;
 
 	use Illuminate\Config\Repository;
 

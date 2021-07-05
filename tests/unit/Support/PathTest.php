@@ -7,7 +7,7 @@
 	namespace Tests\unit\Support;
 
 	use PHPUnit\Framework\TestCase;
-	use WPMvc\Support\FilePath;
+	use BetterWP\Support\FilePath;
 
 
 	class PathTest extends TestCase {

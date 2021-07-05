@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Http\Psr7;
+    namespace BetterWP\Http\Psr7;
 
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\StreamInterface;
-    use WPMvc\Contracts\ResponsableInterface;
-    use WPMvc\Http\Cookie;
-    use WPMvc\Http\Cookies;
+    use BetterWP\Contracts\ResponsableInterface;
+    use BetterWP\Http\Cookie;
+    use BetterWP\Http\Cookies;
 
 
     class Response implements ResponseInterface, ResponsableInterface

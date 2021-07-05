@@ -8,9 +8,9 @@
 
     use Tests\AuthTestCase;
     use Tests\integration\Auth\Stubs\TestTwoFactorProvider;
-    use WPMvc\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPMvc\Contracts\EncryptorInterface;
-    use WPMvc\Routing\UrlGenerator;
+    use BetterWP\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use BetterWP\Contracts\EncryptorInterface;
+    use BetterWP\Routing\UrlGenerator;
 
     class TwoFactorAuthConfirmationTest extends AuthTestCase
     {

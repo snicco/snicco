@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Controllers;
+    namespace BetterWP\Auth\Controllers;
 
-    use WPMvc\Auth\Traits\InteractsWithTwoFactorSecrets;
-    use WPMvc\Auth\Traits\ResolvesUser;
-    use WPMvc\Http\Controller;
-    use WPMvc\Http\Psr7\Request;
+    use BetterWP\Auth\Traits\InteractsWithTwoFactorSecrets;
+    use BetterWP\Auth\Traits\ResolvesUser;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\Psr7\Request;
 
     class TwoFactorAuthSessionController extends Controller
     {

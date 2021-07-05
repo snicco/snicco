@@ -11,10 +11,10 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Http\Responses\RedirectResponse;
-    use WPMvc\Middleware\TrailingSlash;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Middleware\TrailingSlash;
 
     class TrailingSlashTest extends UnitTest
     {

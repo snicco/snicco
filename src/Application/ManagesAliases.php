@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Application;
+	namespace BetterWP\Application;
 
 	use Closure;
 	use BadMethodCallException;
-	use WPMvc\Support\Arr;
+	use BetterWP\Support\Arr;
 
 	trait ManagesAliases {
 

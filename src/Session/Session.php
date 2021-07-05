@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Session;
+    namespace BetterWP\Session;
 
     use Carbon\Carbon;
     use Closure;
@@ -13,15 +13,15 @@
     use Illuminate\Support\InteractsWithTime;
     use Illuminate\Support\ViewErrorBag;
     use Respect\Validation\Rules\DateTime;
-    use WPMvc\Auth\Events\Logout;
-    use WPMvc\Support\WP;
-    use WPMvc\Session\Contracts\SessionDriver;
-    use WPMvc\Session\Events\SessionRegenerated;
-    use WPMvc\Support\Arr;
-    use WPMvc\Support\Str;
+    use BetterWP\Auth\Events\Logout;
+    use BetterWP\Support\WP;
+    use BetterWP\Session\Contracts\SessionDriver;
+    use BetterWP\Session\Events\SessionRegenerated;
+    use BetterWP\Support\Arr;
+    use BetterWP\Support\Str;
     use stdClass;
     use SessionHandlerInterface;
-    use WPMvc\Support\Url;
+    use BetterWP\Support\Url;
 
     class Session
     {

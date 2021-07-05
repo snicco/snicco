@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Events;
+    namespace BetterWP\Events;
 
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Http\Psr7\Request;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Http\Psr7\Request;
 
     class WpQueryFilterable extends ApplicationEvent
     {

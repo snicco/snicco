@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Session\Drivers;
+    namespace BetterWP\Session\Drivers;
 
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
     use wpdb;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Session\Contracts\SessionDriver;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Session\Contracts\SessionDriver;
 
     class DatabaseSessionDriver implements SessionDriver
     {

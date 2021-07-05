@@ -6,7 +6,7 @@
 
     namespace Tests\helpers;
 
-    use WPMvc\Routing\FastRoute\FastRouteMatcher;
+    use BetterWP\Routing\FastRoute\FastRouteMatcher;
 
     trait CreateRouteMatcher
     {

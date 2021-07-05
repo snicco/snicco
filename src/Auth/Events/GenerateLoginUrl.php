@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Events;
+    namespace BetterWP\Auth\Events;
 
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Support\WP;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Support\WP;
 
     class GenerateLoginUrl extends ApplicationEvent {
 

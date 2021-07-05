@@ -4,19 +4,19 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\View;
+	namespace BetterWP\View;
 
 	use Exception;
     use Illuminate\Support\Collection;
-	use WPMvc\Contracts\ViewComposer;
-	use WPMvc\Contracts\ViewInterface;
-	use WPMvc\Factories\ViewComposerFactory;
-	use WPMvc\Support\Arr;
+	use BetterWP\Contracts\ViewComposer;
+	use BetterWP\Contracts\ViewInterface;
+	use BetterWP\Factories\ViewComposerFactory;
+	use BetterWP\Support\Arr;
 
 	class ViewComposerCollection implements ViewComposer {
 
 		/**
-		 * @var \WPMvc\View\ViewComposer[]
+		 * @var \BetterWP\View\ViewComposer[]
 		 */
 		private $composers;
 

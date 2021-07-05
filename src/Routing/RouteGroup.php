@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Routing;
+	namespace BetterWP\Routing;
 
-	use WPMvc\Support\Url;
-	use WPMvc\Support\Arr;
+	use BetterWP\Support\Url;
+	use BetterWP\Support\Arr;
 
 	class RouteGroup {
 

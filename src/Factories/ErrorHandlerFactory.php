@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Factories;
+	namespace BetterWP\Factories;
 
 	use Contracts\ContainerAdapter;
 	use Psr\Log\LoggerInterface;
@@ -13,11 +13,11 @@
 	use Whoops\Handler\PrettyPageHandler;
 	use Whoops\Run;
 	use Whoops\RunInterface;
-    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
-	use WPMvc\ExceptionHandling\DebugErrorHandler;
-	use WPMvc\ExceptionHandling\ProductionErrorHandler;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\ResponseFactory;
+    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+	use BetterWP\ExceptionHandling\DebugErrorHandler;
+	use BetterWP\ExceptionHandling\ProductionErrorHandler;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseFactory;
 
     use function PHPUnit\TestFixture\func;
 

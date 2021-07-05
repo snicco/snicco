@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Support;
+    namespace BetterWP\Support;
 
-    use WPMvc\Support\WP;
+    use BetterWP\Support\WP;
 
     use function collect;
 

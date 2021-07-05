@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Responses;
+    namespace BetterWP\Auth\Responses;
 
-    use WPMvc\Application\ApplicationConfig;
-    use WPMvc\Auth\Contracts\LoginViewResponse;
-    use WPMvc\Support\WP;
-    use WPMvc\Routing\UrlGenerator;
-    use WPMvc\View\ViewFactory;
+    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Auth\Contracts\LoginViewResponse;
+    use BetterWP\Support\WP;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\View\ViewFactory;
 
     class MagicLinkLoginView extends LoginViewResponse
     {

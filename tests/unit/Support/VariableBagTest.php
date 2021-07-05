@@ -6,7 +6,7 @@
 
 	namespace Tests\unit\Support;
 
-	use WPMvc\Support\VariableBag;
+	use BetterWP\Support\VariableBag;
 	use PHPUnit\Framework\TestCase;
 
 	class VariableBagTest extends TestCase {

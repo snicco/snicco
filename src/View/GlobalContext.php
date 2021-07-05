@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\View;
+    namespace BetterWP\View;
 
-    use WPMvc\Support\VariableBag;
+    use BetterWP\Support\VariableBag;
 
     class GlobalContext
     {

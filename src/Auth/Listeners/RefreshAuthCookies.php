@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Listeners;
+    namespace BetterWP\Auth\Listeners;
 
-    use WPMvc\Session\Events\SessionRegenerated;
+    use BetterWP\Session\Events\SessionRegenerated;
 
     class RefreshAuthCookies
     {

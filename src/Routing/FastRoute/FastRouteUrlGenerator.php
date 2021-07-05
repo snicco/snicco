@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Routing\FastRoute;
+    namespace BetterWP\Routing\FastRoute;
 
-    use WPMvc\Contracts\AbstractRouteCollection;
-    use WPMvc\Contracts\RouteUrlGenerator;
-    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPMvc\Routing\Route;
-    use WPMvc\Routing\RouteCollection;
-    use WPMvc\Support\Arr;
-    use WPMvc\Support\Str;
+    use BetterWP\Contracts\AbstractRouteCollection;
+    use BetterWP\Contracts\RouteUrlGenerator;
+    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use BetterWP\Routing\Route;
+    use BetterWP\Routing\RouteCollection;
+    use BetterWP\Support\Arr;
+    use BetterWP\Support\Str;
 
     class FastRouteUrlGenerator implements RouteUrlGenerator
     {

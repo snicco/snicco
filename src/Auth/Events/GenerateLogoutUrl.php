@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Events;
+    namespace BetterWP\Auth\Events;
 
-    use WPMvc\Application\ApplicationEvent;
+    use BetterWP\Application\ApplicationEvent;
 
     class GenerateLogoutUrl extends ApplicationEvent
     {

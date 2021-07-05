@@ -9,9 +9,9 @@
 	use Psr\Http\Message\ResponseInterface;
     use Tests\fixtures\TestDependencies\Bar;
 	use Tests\fixtures\TestDependencies\Foo;
-    use WPMvc\Contracts\Middleware;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Delegate;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Delegate;
 
     class MiddlewareWithDependencies extends Middleware {
 

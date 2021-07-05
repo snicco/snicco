@@ -16,14 +16,14 @@
     use Tests\UnitTest;
     use Tests\stubs\TestContainer;
     use Tests\helpers\CreateDefaultWpApiMocks;
-    use WPMvc\Application\Application;
-    use WPMvc\Application\ApplicationConfig;
-    use WPMvc\Contracts\ServiceProvider;
-    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Session\Encryptor;
+    use BetterWP\Application\Application;
+    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Contracts\ServiceProvider;
+    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Session\Encryptor;
 
     class ApplicationTest extends UnitTest
     {

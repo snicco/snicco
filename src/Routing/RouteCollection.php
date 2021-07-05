@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Routing;
+    namespace BetterWP\Routing;
 
-    use WPMvc\Contracts\AbstractRouteCollection;
-    use WPMvc\Contracts\RouteMatcher;
-    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPMvc\Support\WP;
-    use WPMvc\Factories\ConditionFactory;
-    use WPMvc\Factories\RouteActionFactory;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Support\Arr;
+    use BetterWP\Contracts\AbstractRouteCollection;
+    use BetterWP\Contracts\RouteMatcher;
+    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use BetterWP\Support\WP;
+    use BetterWP\Factories\ConditionFactory;
+    use BetterWP\Factories\RouteActionFactory;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Support\Arr;
 
     class RouteCollection extends AbstractRouteCollection
     {

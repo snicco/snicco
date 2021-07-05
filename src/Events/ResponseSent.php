@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Events;
+    namespace BetterWP\Events;
 
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Psr7\Response;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
 
     class ResponseSent extends ApplicationEvent
     {

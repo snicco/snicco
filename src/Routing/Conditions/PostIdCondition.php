@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Routing\Conditions;
+	namespace BetterWP\Routing\Conditions;
 
-	use WPMvc\Contracts\ConditionInterface;
-	use WPMvc\Contracts\UrlableInterface;
-    use WPMvc\Http\Psr7\Request;
+	use BetterWP\Contracts\ConditionInterface;
+	use BetterWP\Contracts\UrlableInterface;
+    use BetterWP\Http\Psr7\Request;
 
     class PostIdCondition implements ConditionInterface, UrlableInterface {
 

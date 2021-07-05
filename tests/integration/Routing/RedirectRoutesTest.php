@@ -10,10 +10,10 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use WPMvc\Application\Application;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Events\ResponseSent;
-    use WPMvc\Http\Responses\RedirectResponse;
+    use BetterWP\Application\Application;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\ResponseSent;
+    use BetterWP\Http\Responses\RedirectResponse;
 
     class RedirectRoutesTest extends TestCase
     {

@@ -4,12 +4,12 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\ExceptionHandling;
+	namespace BetterWP\ExceptionHandling;
 
 	use Throwable;
-    use WPMvc\Contracts\ErrorHandlerInterface;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Psr7\Response;
+    use BetterWP\Contracts\ErrorHandlerInterface;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
 
     class NullErrorHandler implements ErrorHandlerInterface {
 

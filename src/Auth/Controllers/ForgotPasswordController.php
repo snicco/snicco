@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Controllers;
+    namespace BetterWP\Auth\Controllers;
 
     use Respect\Validation\Validator;
     use WP_User;
-    use WPMvc\Auth\Traits\ResolvesUser;
-    use WPMvc\Contracts\ViewInterface;
-    use WPMvc\Auth\Mail\ResetPasswordMail;
-    use WPMvc\Http\Controller;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Responses\RedirectResponse;
-    use WPMvc\Mail\MailBuilder;
-    use WPMvc\Session\CsrfField;
+    use BetterWP\Auth\Traits\ResolvesUser;
+    use BetterWP\Contracts\ViewInterface;
+    use BetterWP\Auth\Mail\ResetPasswordMail;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Mail\MailBuilder;
+    use BetterWP\Session\CsrfField;
     use Respect\Validation\Validator as v;
 
     class ForgotPasswordController extends Controller

@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Http;
+    namespace BetterWP\Http;
 
     use Psr\Http\Message\ResponseFactoryInterface;
     use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
@@ -12,17 +12,17 @@
     use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
     use Psr\Http\Message\StreamInterface;
     use Throwable;
-    use WPMvc\Contracts\AbstractRedirector;
-    use WPMvc\Contracts\ResponsableInterface;
-    use WPMvc\Contracts\ViewFactoryInterface as ViewFactory;
-    use WPMvc\ExceptionHandling\Exceptions\HttpException;
-    use WPMvc\ExceptionHandling\Exceptions\ViewException;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Psr7\Response;
-    use WPMvc\Http\Responses\InvalidResponse;
-    use WPMvc\Http\Responses\NullResponse;
-    use WPMvc\Http\Responses\RedirectResponse;
-    use WPMvc\Http\Responses\WpQueryFilteredResponse;
+    use BetterWP\Contracts\AbstractRedirector;
+    use BetterWP\Contracts\ResponsableInterface;
+    use BetterWP\Contracts\ViewFactoryInterface as ViewFactory;
+    use BetterWP\ExceptionHandling\Exceptions\HttpException;
+    use BetterWP\ExceptionHandling\Exceptions\ViewException;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Http\Responses\InvalidResponse;
+    use BetterWP\Http\Responses\NullResponse;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Http\Responses\WpQueryFilteredResponse;
 
     /**
      * @todo either this class or the Response class need a prepare method to fix obvious mistakes.

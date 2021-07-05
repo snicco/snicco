@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Events;
+    namespace BetterWP\Events;
 
     use BetterWpHooks\Traits\IsAction;
-    use WPMvc\Application\ApplicationConfig;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Http\Psr7\Request;
+    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Http\Psr7\Request;
 
     class WpInit extends ApplicationEvent
     {

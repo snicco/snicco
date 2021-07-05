@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Http;
+	namespace BetterWP\Http;
 
 	use Contracts\ContainerAdapter;
 

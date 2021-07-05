@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Events;
+    namespace BetterWP\Auth\Events;
 
     use BetterWpHooks\Traits\IsAction;
-    use WPMvc\Application\ApplicationEvent;
+    use BetterWP\Application\ApplicationEvent;
 
     class UserDeleted extends ApplicationEvent
     {

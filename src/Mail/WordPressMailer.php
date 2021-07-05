@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Mail;
+    namespace BetterWP\Mail;
 
-    use WPMvc\Contracts\Mailer;
-    use WPMvc\Support\WP;
+    use BetterWP\Contracts\Mailer;
+    use BetterWP\Support\WP;
 
     class WordPressMailer implements Mailer
     {

@@ -6,8 +6,8 @@
 
     namespace Tests\fixtures\Mail;
 
-    use WPMvc\Mail\Mailable;
-    use WPMvc\Routing\UrlGenerator;
+    use BetterWP\Mail\Mailable;
+    use BetterWP\Routing\UrlGenerator;
 
     class ConfirmAccountTestMail extends Mailable
     {

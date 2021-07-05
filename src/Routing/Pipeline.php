@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Routing;
+    namespace BetterWP\Routing;
 
     use Closure;
     use Contracts\ContainerAdapter;
@@ -12,12 +12,12 @@
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
-    use WPMvc\Contracts\ErrorHandlerInterface;
-    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Support\Arr;
+    use BetterWP\Contracts\ErrorHandlerInterface;
+    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Support\Arr;
     use ReflectionPayload\ReflectionPayload;
 
     use function collect;

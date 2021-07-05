@@ -12,12 +12,12 @@
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Events\IncomingWebRequest;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Routing\Conditions\QueryStringCondition;
-    use WPMvc\Routing\Router;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\IncomingWebRequest;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Routing\Conditions\QueryStringCondition;
+    use BetterWP\Routing\Router;
 
     class TrailingSlashTest extends UnitTest
     {

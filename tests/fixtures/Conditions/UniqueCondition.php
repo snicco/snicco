@@ -6,8 +6,8 @@
 
 	namespace Tests\fixtures\Conditions;
 
-	use WPMvc\Contracts\ConditionInterface;
-    use WPMvc\Http\Psr7\Request;
+	use BetterWP\Contracts\ConditionInterface;
+    use BetterWP\Http\Psr7\Request;
 
     class UniqueCondition implements ConditionInterface {
 

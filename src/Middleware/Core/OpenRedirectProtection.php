@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Middleware\Core;
+    namespace BetterWP\Middleware\Core;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPMvc\Contracts\Middleware;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Responses\RedirectResponse;
-    use WPMvc\Support\Str;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Support\Str;
 
     class OpenRedirectProtection extends Middleware
     {

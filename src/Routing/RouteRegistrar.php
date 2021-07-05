@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Routing;
+    namespace BetterWP\Routing;
 
     use Symfony\Component\Finder\Finder;
     use Symfony\Component\Finder\SplFileInfo;
-    use WPMvc\Application\ApplicationConfig;
-    use WPMvc\Contracts\RouteRegistrarInterface;
-    use WPMvc\Support\WP;
-    use WPMvc\Support\Arr;
-    use WPMvc\Support\Str;
+    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Contracts\RouteRegistrarInterface;
+    use BetterWP\Support\WP;
+    use BetterWP\Support\Arr;
+    use BetterWP\Support\Str;
 
     class RouteRegistrar implements RouteRegistrarInterface
     {

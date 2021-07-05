@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Responses;
+    namespace BetterWP\Auth\Responses;
 
-    use WPMvc\Auth\Contracts\LoginResponse;
-    use WPMvc\Contracts\AbstractRedirector;
-    use WPMvc\Http\Responses\RedirectResponse;
-    use WPMvc\Session\StatefulRedirector;
+    use BetterWP\Auth\Contracts\LoginResponse;
+    use BetterWP\Contracts\AbstractRedirector;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Session\StatefulRedirector;
 
     class RedirectToDashboardResponse extends LoginResponse
     {

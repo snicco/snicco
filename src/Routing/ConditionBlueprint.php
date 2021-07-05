@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Routing;
+    namespace BetterWP\Routing;
 
     use Opis\Closure\SerializableClosure;
-    use WPMvc\Routing\Conditions\CustomCondition;
-    use WPMvc\Support\Str;
-    use WPMvc\Traits\ReflectsCallable;
+    use BetterWP\Routing\Conditions\CustomCondition;
+    use BetterWP\Support\Str;
+    use BetterWP\Traits\ReflectsCallable;
 
     class ConditionBlueprint
     {

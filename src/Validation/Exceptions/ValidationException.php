@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Validation\Exceptions;
+    namespace BetterWP\Validation\Exceptions;
 
 
     use Illuminate\Support\MessageBag;
     use Throwable;
-    use WPMvc\ExceptionHandling\Exceptions\HttpException;
+    use BetterWP\ExceptionHandling\Exceptions\HttpException;
 
     class ValidationException extends HttpException
     {

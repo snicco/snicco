@@ -4,21 +4,21 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Application;
+    namespace BetterWP\Application;
 
     use Contracts\ContainerAdapter;
     use Nyholm\Psr7Server\ServerRequestCreator;
-    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Events\EventServiceProvider;
-    use WPMvc\ExceptionHandling\ExceptionServiceProvider;
-    use WPMvc\Factories\FactoryServiceProvider;
-    use WPMvc\Http\HttpServiceProvider;
-    use WPMvc\Mail\MailServiceProvider;
-    use WPMvc\Middleware\MiddlewareServiceProvider;
-    use WPMvc\Routing\RoutingServiceProvider;
-    use WPMvc\View\ViewServiceProvider;
-    use WPMvc\Support\WpFacade;
+    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Events\EventServiceProvider;
+    use BetterWP\ExceptionHandling\ExceptionServiceProvider;
+    use BetterWP\Factories\FactoryServiceProvider;
+    use BetterWP\Http\HttpServiceProvider;
+    use BetterWP\Mail\MailServiceProvider;
+    use BetterWP\Middleware\MiddlewareServiceProvider;
+    use BetterWP\Routing\RoutingServiceProvider;
+    use BetterWP\View\ViewServiceProvider;
+    use BetterWP\Support\WpFacade;
 
     class Application
     {

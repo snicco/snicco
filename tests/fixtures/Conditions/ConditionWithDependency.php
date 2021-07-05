@@ -7,8 +7,8 @@
 	namespace Tests\fixtures\Conditions;
 
 	use Tests\fixtures\TestDependencies\Foo;
-	use WPMvc\Contracts\ConditionInterface;
-    use WPMvc\Http\Psr7\Request;
+	use BetterWP\Contracts\ConditionInterface;
+    use BetterWP\Http\Psr7\Request;
 
     class ConditionWithDependency implements ConditionInterface {
 

@@ -8,13 +8,13 @@
 
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPMvc\View\MethodField;
-    use WPMvc\Contracts\ViewEngineInterface;
-    use WPMvc\Contracts\ViewFactoryInterface;
-    use WPMvc\View\GlobalContext;
-    use WPMvc\View\PhpViewEngine;
-    use WPMvc\View\ViewFactory;
-    use WPMvc\View\ViewComposerCollection;
+    use BetterWP\View\MethodField;
+    use BetterWP\Contracts\ViewEngineInterface;
+    use BetterWP\Contracts\ViewFactoryInterface;
+    use BetterWP\View\GlobalContext;
+    use BetterWP\View\PhpViewEngine;
+    use BetterWP\View\ViewFactory;
+    use BetterWP\View\ViewComposerCollection;
 
     class ViewServiceProviderTest extends TestCase
     {

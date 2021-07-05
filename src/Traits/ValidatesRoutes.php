@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Traits;
+    namespace BetterWP\Traits;
 
-    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPMvc\Routing\Route;
+    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use BetterWP\Routing\Route;
 
     trait ValidatesRoutes
     {

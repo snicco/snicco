@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Testing;
+    namespace BetterWP\Testing;
 
     use Carbon\Carbon;
     use Carbon\CarbonImmutable;
@@ -18,33 +18,33 @@
     use Tests\helpers\TravelsTime;
     use Tests\stubs\TestApp;
     use Throwable;
-    use WPMvc\Application\Application;
-    use WPMvc\Application\ApplicationConfig;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Contracts\AbstractRouteCollection;
-    use WPMvc\Contracts\ErrorHandlerInterface;
-    use WPMvc\Contracts\Middleware;
-    use WPMvc\Contracts\RouteRegistrarInterface;
-    use WPMvc\Contracts\ServiceProvider;
-    use WPMvc\ExceptionHandling\NullErrorHandler;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Delegate;
-    use WPMvc\Http\HttpKernel;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Psr7\Response;
-    use WPMvc\Http\ResponseEmitter;
-    use WPMvc\Routing\Route;
-    use WPMvc\Routing\Router;
-    use WPMvc\Routing\RouteRegistrar;
-    use WPMvc\Session\Session;
-    use WPMvc\Session\SessionServiceProvider;
-    use WPMvc\Support\Arr;
-    use WPMvc\Testing\Concerns\InteractsWithAuthentication;
-    use WPMvc\Testing\Concerns\InteractsWithContainer;
-    use WPMvc\Testing\Concerns\InteractsWithMail;
-    use WPMvc\Testing\Concerns\InteractsWithSession;
-    use WPMvc\Testing\Concerns\InteractsWithWordpressUsers;
-    use WPMvc\Testing\Concerns\MakesHttpRequests;
+    use BetterWP\Application\Application;
+    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Contracts\AbstractRouteCollection;
+    use BetterWP\Contracts\ErrorHandlerInterface;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Contracts\RouteRegistrarInterface;
+    use BetterWP\Contracts\ServiceProvider;
+    use BetterWP\ExceptionHandling\NullErrorHandler;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\HttpKernel;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Http\ResponseEmitter;
+    use BetterWP\Routing\Route;
+    use BetterWP\Routing\Router;
+    use BetterWP\Routing\RouteRegistrar;
+    use BetterWP\Session\Session;
+    use BetterWP\Session\SessionServiceProvider;
+    use BetterWP\Support\Arr;
+    use BetterWP\Testing\Concerns\InteractsWithAuthentication;
+    use BetterWP\Testing\Concerns\InteractsWithContainer;
+    use BetterWP\Testing\Concerns\InteractsWithMail;
+    use BetterWP\Testing\Concerns\InteractsWithSession;
+    use BetterWP\Testing\Concerns\InteractsWithWordpressUsers;
+    use BetterWP\Testing\Concerns\MakesHttpRequests;
 
     abstract class TestCase extends WPTestCase
     {

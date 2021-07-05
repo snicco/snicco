@@ -5,9 +5,9 @@
 
 
     /** @var Router $router */
-    use WPMvc\Routing\Router;
-    use WPMvc\ExceptionHandling\Exceptions\HttpException;
-    use WPMvc\Session\Exceptions\InvalidCsrfTokenException;
+    use BetterWP\Routing\Router;
+    use BetterWP\ExceptionHandling\Exceptions\HttpException;
+    use BetterWP\Session\Exceptions\InvalidCsrfTokenException;
 
     $router->get('error/500', function () {
 

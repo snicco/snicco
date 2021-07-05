@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Controllers;
+    namespace BetterWP\Controllers;
 
-    use WPMvc\Contracts\AbstractRedirector;
-    use WPMvc\Contracts\MagicLink;
-    use WPMvc\Http\Controller;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Http\Responses\RedirectResponse;
-    use WPMvc\Routing\UrlGenerator;
-    use WPMvc\View\ViewFactory;
+    use BetterWP\Contracts\AbstractRedirector;
+    use BetterWP\Contracts\MagicLink;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\View\ViewFactory;
 
     class RedirectController extends Controller
     {

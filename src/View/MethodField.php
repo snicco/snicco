@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\View;
+    namespace BetterWP\View;
 
 
     class MethodField

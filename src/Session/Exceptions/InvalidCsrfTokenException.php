@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Session\Exceptions;
+    namespace BetterWP\Session\Exceptions;
 
     use Throwable;
-    use WPMvc\ExceptionHandling\Exceptions\HttpException;
+    use BetterWP\ExceptionHandling\Exceptions\HttpException;
 
     class InvalidCsrfTokenException extends HttpException
     {

@@ -17,21 +17,21 @@
     use Tests\UnitTest;
     use Tests\stubs\TestException;
     use Tests\stubs\TestRequest;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Contracts\AbstractRedirector;
-    use WPMvc\ExceptionHandling\Exceptions\HttpException;
-    use WPMvc\Session\Drivers\ArraySessionDriver;
-    use WPMvc\Session\Session;
-    use WPMvc\Session\StatefulRedirector;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Events\UnrecoverableExceptionHandled;
-    use WPMvc\ExceptionHandling\ProductionErrorHandler;
-    use WPMvc\Factories\ErrorHandlerFactory;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\Psr7\Response;
-    use WPMvc\Validation\Exceptions\ValidationException;
-    use WPMvc\Validation\Validator;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Contracts\AbstractRedirector;
+    use BetterWP\ExceptionHandling\Exceptions\HttpException;
+    use BetterWP\Session\Drivers\ArraySessionDriver;
+    use BetterWP\Session\Session;
+    use BetterWP\Session\StatefulRedirector;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Events\UnrecoverableExceptionHandled;
+    use BetterWP\ExceptionHandling\ProductionErrorHandler;
+    use BetterWP\Factories\ErrorHandlerFactory;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Validation\Exceptions\ValidationException;
+    use BetterWP\Validation\Validator;
 
     class ProductionErrorHandlerTest extends UnitTest
     {

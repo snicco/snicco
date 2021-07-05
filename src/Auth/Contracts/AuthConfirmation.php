@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Contracts;
+    namespace BetterWP\Auth\Contracts;
 
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\ResponseFactory;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseFactory;
 
     interface AuthConfirmation
     {

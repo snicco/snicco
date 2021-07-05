@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Responses;
+    namespace BetterWP\Auth\Responses;
 
-    use WPMvc\Auth\Traits\UsesCurrentRequest;
-    use WPMvc\Contracts\ResponsableInterface;
+    use BetterWP\Auth\Traits\UsesCurrentRequest;
+    use BetterWP\Contracts\ResponsableInterface;
 
     abstract class CreateAccountViewResponse implements ResponsableInterface
     {

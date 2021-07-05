@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Traits;
+	namespace BetterWP\Traits;
 
-	use WPMvc\Routing\Route;
-	use WPMvc\Support\Arr;
+	use BetterWP\Routing\Route;
+	use BetterWP\Support\Arr;
 
 	trait HoldsRouteBlueprint {
 

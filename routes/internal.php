@@ -5,8 +5,8 @@
 
     /** @var Router $router */
 
-    use WPMvc\Controllers\RedirectController;
-    use WPMvc\Routing\Router;
+    use BetterWP\Controllers\RedirectController;
+    use BetterWP\Routing\Router;
 
     $router->get('/')->noAction()->name('home');
 

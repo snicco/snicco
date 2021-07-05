@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Http;
+    namespace BetterWP\Http;
 
     use Psr\Http\Message\ResponseFactoryInterface;
     use Psr\Http\Message\StreamFactoryInterface;
-    use WPMvc\Contracts\AbstractRedirector;
-    use WPMvc\Contracts\ServiceProvider;
-    use WPMvc\Contracts\ViewFactoryInterface;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Routing\Pipeline;
-    use WPMvc\Routing\UrlGenerator;
-    use WPMvc\Session\Session;
-    use WPMvc\Session\StatefulRedirector;
+    use BetterWP\Contracts\AbstractRedirector;
+    use BetterWP\Contracts\ServiceProvider;
+    use BetterWP\Contracts\ViewFactoryInterface;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Routing\Pipeline;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\Session\Session;
+    use BetterWP\Session\StatefulRedirector;
 
     class HttpServiceProvider extends ServiceProvider
     {

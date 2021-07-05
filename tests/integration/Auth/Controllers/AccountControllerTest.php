@@ -10,15 +10,15 @@
     use Tests\AuthTestCase;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestView;
-    use WPMvc\Application\ApplicationEvent;
-    use WPMvc\Auth\Contracts\CreatesNewUser;
-    use WPMvc\Auth\Contracts\DeletesUsers;
-    use WPMvc\Auth\Events\Registration;
-    use WPMvc\Auth\Responses\CreateAccountViewResponse;
-    use WPMvc\Auth\Responses\RegisteredResponse;
-    use WPMvc\Contracts\ResponsableInterface;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\ResponseFactory;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Auth\Contracts\CreatesNewUser;
+    use BetterWP\Auth\Contracts\DeletesUsers;
+    use BetterWP\Auth\Events\Registration;
+    use BetterWP\Auth\Responses\CreateAccountViewResponse;
+    use BetterWP\Auth\Responses\RegisteredResponse;
+    use BetterWP\Contracts\ResponsableInterface;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseFactory;
 
     class AccountControllerTest extends AuthTestCase
     {

@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Routing;
+	namespace BetterWP\Routing;
 
 	use Codeception\Step\Condition;
-	use WPMvc\Support\Arr;
+	use BetterWP\Support\Arr;
 
 	class ConditionBucket {
 

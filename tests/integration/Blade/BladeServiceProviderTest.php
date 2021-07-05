@@ -13,10 +13,10 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPMvc\Blade\BladeDirectiveServiceProvider;
-    use WPMvc\Blade\BladeEngine;
-    use WPMvc\Blade\BladeServiceProvider;
-    use WPMvc\Contracts\ViewEngineInterface;
+    use BetterWP\Blade\BladeDirectiveServiceProvider;
+    use BetterWP\Blade\BladeEngine;
+    use BetterWP\Blade\BladeServiceProvider;
+    use BetterWP\Contracts\ViewEngineInterface;
 
     class BladeServiceProviderTest extends BladeTestCase
     {

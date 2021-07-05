@@ -6,9 +6,9 @@
 
 	namespace Tests\fixtures\Conditions;
 
-	use WPMvc\Contracts\ConditionInterface;
-	use WPMvc\Contracts\RequestInterface;
-    use WPMvc\Http\Psr7\Request;
+	use BetterWP\Contracts\ConditionInterface;
+	use BetterWP\Contracts\RequestInterface;
+    use BetterWP\Http\Psr7\Request;
 
     class MaybeCondition implements ConditionInterface {
 

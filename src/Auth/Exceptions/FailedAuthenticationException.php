@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Auth\Exceptions;
+    namespace BetterWP\Auth\Exceptions;
 
     use Throwable;
     use WP_Error;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Http\Responses\RedirectResponse;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Http\Responses\RedirectResponse;
 
     class FailedAuthenticationException extends \Exception
     {

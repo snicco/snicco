@@ -4,20 +4,20 @@
     declare(strict_types = 1);
 
 
-    namespace WPMvc\Contracts;
+    namespace BetterWP\Contracts;
 
     use Contracts\ContainerAdapter;
-    use WPMvc\Application\Application;
-    use WPMvc\Application\ApplicationConfig;
-    use WPMvc\Events\IncomingAdminRequest;
-    use WPMvc\Events\IncomingAjaxRequest;
-    use WPMvc\Events\IncomingWebRequest;
-    use WPMvc\Support\WP;
-    use WPMvc\Http\Psr7\Request;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\Session\SessionServiceProvider;
-    use WPMvc\Support\Arr;
-    use WPMvc\Support\Str;
+    use BetterWP\Application\Application;
+    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Events\IncomingAdminRequest;
+    use BetterWP\Events\IncomingAjaxRequest;
+    use BetterWP\Events\IncomingWebRequest;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Session\SessionServiceProvider;
+    use BetterWP\Support\Arr;
+    use BetterWP\Support\Str;
 
     abstract class ServiceProvider
     {

@@ -4,16 +4,16 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPMvc\Routing;
+	namespace BetterWP\Routing;
 
 	use Closure;
     use Contracts\ContainerAdapter;
-    use WPMvc\Contracts\ResolveControllerMiddleware;
-	use WPMvc\Contracts\RouteAction;
-    use WPMvc\Http\Controller;
-    use WPMvc\Http\MiddlewareResolver;
-    use WPMvc\Http\ResponseFactory;
-    use WPMvc\View\ViewFactory;
+    use BetterWP\Contracts\ResolveControllerMiddleware;
+	use BetterWP\Contracts\RouteAction;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\MiddlewareResolver;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\View\ViewFactory;
 
     class ControllerAction implements RouteAction, ResolveControllerMiddleware {
 
