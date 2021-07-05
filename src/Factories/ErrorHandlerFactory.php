@@ -41,7 +41,7 @@
 		 */
 		public static function make( ContainerAdapter $container, bool $is_debug,  string $editor = null ) {
 
-			if ( ! $is_debug ) {
+			if ( ! $is_debug && class_exists(Run::class ) ) {
 
 				$production_handler = static::createProductionHandler( $container );
 				$production_handler->setRequestResolver(function () use ($container) {
