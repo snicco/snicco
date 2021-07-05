@@ -8,11 +8,12 @@
 
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\StreamInterface;
+    use WPEmerge\Contracts\ResponsableInterface;
     use WPEmerge\Http\Cookie;
     use WPEmerge\Http\Cookies;
 
 
-    class Response implements ResponseInterface
+    class Response implements ResponseInterface, ResponsableInterface
     {
 
         use ImplementsPsr7Response;
@@ -27,6 +28,11 @@
 
             $this->psr7_response = $psr7_response;
 
+        }
+
+        public function toResponsable()
+        {
+            return $this;
         }
 
         public function noIndex(?string $bot = null)
@@ -154,5 +160,7 @@
         {
             return 403 === $this->getStatusCode();
         }
+
+
 
     }
