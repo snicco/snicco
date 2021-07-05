@@ -6,11 +6,9 @@
 
     namespace WPEmerge\Auth\Controllers;
 
-    use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use WPEmerge\Auth\Traits\InteractsWithTwoFactorCodes;
+    use WPEmerge\Auth\Traits\InteractsWithTwoFactorSecrets;
     use WPEmerge\Auth\Traits\ResolvesUser;
-    use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
-    use WPEmerge\Auth\Traits\DecryptsRecoveryCodes;
-    use WPEmerge\Auth\Traits\GeneratesRecoveryCodes;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
@@ -19,9 +17,8 @@
     class RecoveryCodeController extends Controller
     {
 
-        use ResolveTwoFactorSecrets;
-        use DecryptsRecoveryCodes;
-        use GeneratesRecoveryCodes;
+        use InteractsWithTwoFactorCodes;
+        use InteractsWithTwoFactorSecrets;
         use ResolvesUser;
 
         /**
@@ -29,10 +26,8 @@
          */
         private $encryptor;
 
-
         public function __construct(EncryptorInterface $encryptor)
         {
-
             $this->encryptor = $encryptor;
         }
 
@@ -42,21 +37,12 @@
             if ( ! $this->userHasTwoFactorEnabled($this->getUserById($id = $request->userId()))) {
 
                 return $this->response_factory->json([
-                    'success' => false,
-                    'message' => 'Two factor authentication not enabled.'
-                ]);
+                    'message' => 'Two factor authentication is not enabled.',
+                ], 409);
 
             }
 
-
-            $codes = $this->recoveryCodes($id);
-
-            $codes = $this->decrypt($codes);
-
-            return $this->response_factory->json([
-                'success' => true,
-                'codes' => $codes
-            ]);
+            return $this->response_factory->json($this->recoveryCodes($id));
 
         }
 
@@ -66,20 +52,16 @@
             if ( ! $this->userHasTwoFactorEnabled($this->getUserById($id = $request->userId()))) {
 
                 return $this->response_factory->json([
-                    'success' => false,
-                    'message' => 'Two factor authentication not enabled.'
-                ]);
+                    'message' => 'Two factor authentication is not enabled.',
+                ], 409);
 
             }
 
             $codes = $this->generateNewRecoveryCodes();
             $this->saveCodes($id, $codes);
 
-            return $request->isExpectingJson()
-                ? $this->response_factory->json([
-                    'success' => true, 'message' => 'Recovery codes updated',
-                ])
-                : $this->response_factory->redirect()->back()->with('success.message', 'Recovery codes updated');
+            return $this->response_factory->json($codes);
+
 
         }
 

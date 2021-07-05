@@ -7,7 +7,7 @@
     namespace WPEmerge\Auth\Events;
 
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
 
     class GenerateLoginUrl extends ApplicationEvent {
 

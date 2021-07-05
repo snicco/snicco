@@ -21,7 +21,7 @@
 
         private function clearViewCache() {
 
-            // $this->rmdir(BLADE_CACHE);
+            $this->rmdir(BLADE_CACHE);
 
         }
 
@@ -67,8 +67,6 @@
             ]);
 
         }
-
-
 
 
 

@@ -6,22 +6,16 @@
 
     namespace Tests\integration\Blade;
 
-    use Illuminate\Support\Facades\Blade;
-    use Tests\integration\Blade\traits\AssertBladeView;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
 
-    class BladeFeaturesTest extends IntegrationTest
+    class BladeFeaturesTest extends BladeTestCase
     {
 
-        use AssertBladeView;
-        use InteractsWithWordpress;
 
         /** @test */
         public function xss_protection_works()
         {
-
 
             $view = $this->view('xss');
 
@@ -166,9 +160,9 @@
         /** @test */
         public function each_works () {
 
-            $user1 = $this->newAdmin(['first_name' => 'Calvin']);
-            $user2 = $this->newAdmin(['first_name' => 'John']);
-            $user3 = $this->newAdmin(['first_name' => 'Jane']);
+            $user1 = $this->createAdmin(['first_name' => 'Calvin']);
+            $user2 = $this->createAdmin(['first_name' => 'John']);
+            $user3 = $this->createAdmin(['first_name' => 'Jane']);
 
             $collection = collect([$user1,$user2,$user3]);
 
@@ -220,12 +214,9 @@
 
         }
 
-
         private function view(string $view)
         {
-
             return TestApp::view('blade-features.'.$view);
-
         }
 
 

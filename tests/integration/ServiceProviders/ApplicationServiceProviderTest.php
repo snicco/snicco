@@ -10,13 +10,14 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
+    use Tests\TestCase;
     use WPEmerge\Application\Application;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\Facade\WP;
-	use WPEmerge\Facade\WpFacade;
+    use WPEmerge\Support\WP;
+	use WPEmerge\Support\WpFacade;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Redirector;
     use WPEmerge\Http\ResponseFactory;
@@ -27,27 +28,18 @@
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Url;
 
-    class ApplicationServiceProviderTest extends IntegrationTest {
+    class ApplicationServiceProviderTest extends TestCase {
 
-
-        protected function afterSetup() : void
+        protected function setUp() : void
         {
-
-            $this->app = $this->newTestApp(TEST_CONFIG);
-
-            $this->registerAndRunApiRoutes();
+            $this->afterApplicationCreated(function () {
+                $this->loadRoutes();
+            });
+            parent::setUp();
 
         }
 
-        protected function beforeTearDown() : void
-        {
-
-            TestApp::setApplication(null);
-            ApplicationEvent::setInstance(null);
-
-        }
-
-		/** @test */
+        /** @test */
 		public function the_wp_facade_has_the_correct_container() {
 
 			$container = TestApp::container();
@@ -59,49 +51,45 @@
 		/** @test */
 		public function the_facade_can_be_swapped_during_test() {
 
-			WP::shouldReceive( 'isAdmin' )->andReturn( true );
+            WP::shouldReceive( 'isAdmin' )->andReturn( true );
 
 			$this->assertTrue( WP::isAdmin() );
 
-            Mockery::close();
-            WP::reset();
+        }
+
+        /** @test */
+        public function the_site_url_is_bound () {
+
+            $this->assertSame('https://wpemerge.test', TestApp::config('app.url'));
 
         }
 
-		/** @test */
-		public function the_error_handler_gets_unregistered_by_default_after_booting_the_app () {
+        /** @test */
+        public function debug_mode_is_set () {
 
-		    $this->newTestApp([
-		        'providers'=> [
-		            NoGlobalExceptions::class,
-                ]
-            ]);
+            $this->assertTrue($this->config->get('app.debug'));
 
-		    $this->assertTrue(true);
-
-		    Mockery::close();
-            WP::reset();
-
-
-		}
+        }
 
         /** @test */
-		public function the_error_handler_can_be_registered_globally () {
+        public function exception_handling_is_enabled_by_default () {
 
-		    $this->newTestApp([
-		        'providers'=> [
-		            GlobalExceptions::class,
-                ],
-                'exception_handling' => [
-                    'global' => true
-                ]
-            ]);
+            $this->assertTrue($this->config->get('app.exception_handling'));
 
-		    $this->assertTrue(true);
 
-            Mockery::close();
-            WP::reset();
+        }
 
+        /** @test */
+        public function the_package_root_is_bound () {
+
+            $this->assertSame(ROOT_DIR, TestApp::config('app.package_root'));
+
+        }
+
+        /** @test */
+        public function the_storage_dir_is_extended () {
+
+            $this->assertSame(FIXTURES_DIR.DS.'storage', TestApp::config('app.storage_dir'));
 
         }
 
@@ -136,15 +124,15 @@
         public function a_post_route_can_be_aliased()
         {
 
-            $this->seeKernelOutput('post', TestRequest::from('POST', 'alias/post'));
-
+            $this->post('/alias/post')->assertSee('post');
 
         }
 
         /** @test */
         public function a_get_route_can_be_aliased()
         {
-            $this->seeKernelOutput('get', TestRequest::from('GET', 'alias/get'));
+
+            $this->get('/alias/get')->assertSee('get');
 
         }
 
@@ -152,7 +140,8 @@
         public function a_patch_route_can_be_aliased()
         {
 
-            $this->seeKernelOutput('patch', TestRequest::from('PATCH', 'alias/patch'));
+            $this->patch('/alias/patch')->assertSee('patch');
+
 
         }
 
@@ -160,7 +149,8 @@
         public function a_put_route_can_be_aliased()
         {
 
-            $this->seeKernelOutput('put', TestRequest::from('PUT', 'alias/put'));
+            $this->put('/alias/put')->assertSee('put');
+
 
         }
 
@@ -168,8 +158,7 @@
         public function an_options_route_can_be_aliased()
         {
 
-            $this->seeKernelOutput('options', TestRequest::from('OPTIONS', 'alias/options'));
-
+            $this->options('/alias/options')->assertSee('options');
 
         }
 
@@ -177,8 +166,7 @@
         public function a_delete_route_can_be_aliased()
         {
 
-            $this->seeKernelOutput('delete', TestRequest::from('DELETE', 'alias/delete'));
-
+            $this->delete('/alias/delete')->assertSee('delete');
 
         }
 
@@ -186,11 +174,8 @@
         public function a_match_route_can_be_aliased()
         {
 
-            $this->seeKernelOutput('', TestRequest::from('DELETE', 'alias/match'));
-
-            $this->seeKernelOutput('match', TestRequest::from('POST', 'alias/match'));
-
-
+            $this->delete('/alias/match')->assertNullResponse();
+            $this->post('/alias/match')->assertOk()->assertSee('match');
 
 
         }
@@ -210,13 +195,6 @@
         /** @test */
         public function a_view_can_be_created_as_an_alias()
         {
-
-            $this->newTestApp([
-                'views' => [
-                    VIEWS_DIR,
-                    VIEWS_DIR.DS.'subdirectory',
-                ],
-            ]);
 
             $this->assertInstanceOf(ViewInterface::class, TestApp::view('view'));
 
@@ -245,25 +223,7 @@
         }
 
         /** @test */
-        public function the_session_can_be_aliased () {
-
-            $this->newTestApp([
-                'session' => [
-                    'enabled'=>true,
-                ],
-                'providers' => [
-                    SessionServiceProvider::class
-                ]
-            ]);
-
-            $this->assertInstanceOf(Session::class, TestApp::session());
-
-        }
-
-        /** @test */
         public function the_response_cookies_can_be_aliased () {
-
-            $this->newTestApp();
 
             $this->assertInstanceOf(Cookies::class, TestApp::cookies());
 
@@ -272,7 +232,6 @@
         /** @test */
         public function a_method_override_field_can_be_outputted () {
 
-            $this->newTestApp();
 
             $html = TestApp::methodField('PUT');
 
@@ -284,7 +243,6 @@
         /** @test */
         public function the_url_generator_can_be_aliased () {
 
-            $this->newTestApp();
 
             $this->assertInstanceOf(UrlGenerator::class, TestApp::url());
 
@@ -293,7 +251,6 @@
         /** @test */
         public function the_response_factory_can_be_aliased () {
 
-            $this->newTestApp();
 
             $this->assertInstanceOf(ResponseFactory::class, TestApp::response());
 
@@ -303,7 +260,6 @@
         /** @test */
         public function a_redirect_response_can_be_created_as_an_alias () {
 
-            $this->newTestApp();
 
             $this->assertInstanceOf(RedirectResponse::class, TestApp::redirect('/foo'));
             $this->assertInstanceOf(Redirector::class, TestApp::redirect());
@@ -311,45 +267,5 @@
         }
 
 
-
 	}
 
-	class NoGlobalExceptions extends ServiceProvider {
-
-        public function register() : void
-        {
-
-            $mock = Mockery::mock(ErrorHandlerInterface::class);
-
-            $mock->shouldReceive('register')->once();
-            $mock->shouldReceive('unregister')->once();
-
-            $this->container->instance(ErrorHandlerInterface::class, $mock);
-
-        }
-
-        function bootstrap() : void
-        {
-        }
-
-    }
-
-	class GlobalExceptions extends ServiceProvider {
-
-        public function register() : void
-        {
-
-            $mock = Mockery::mock(ErrorHandlerInterface::class);
-
-            $mock->shouldReceive('register')->once();
-            $mock->shouldNotReceive('unregister');
-
-            $this->container->instance(ErrorHandlerInterface::class, $mock);
-
-        }
-
-        function bootstrap() : void
-        {
-        }
-
-    }

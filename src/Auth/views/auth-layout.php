@@ -4,6 +4,7 @@
     declare(strict_types = 1);
 
     /** @var ViewFactory $view_factory */
+
     /** @var string $view */
 
     use WPEmerge\View\ViewFactory;
@@ -16,7 +17,8 @@
     <meta charset="utf-8">
     <title><?= $title ?? 'Authentication' ?></title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.2/css/bulma.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css">
 </head>
 <body>
 
@@ -83,36 +85,24 @@
 
 </style>
 
+<section class="hero is-fullheight">
+    <div class="hero-body">
+        <div class="container">
 
-<!--Interim Login -->
-<?php if ($session->has('interim_login_success') || false ) : ?>
+            <a href="https://wordpress.org/" id="logo"></a>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" type="text/javascript"></script>
-    <script>
-        jQuery(parent.document).find('.wp-auth-check-close').click();
-    </script>
+            <div class="columns is-centered">
+                <div class="column is-5-tablet is-4-desktop is-3-widescreen">
 
-<?php else : ?>
-
-    <section class="hero is-fullheight">
-        <div class="hero-body">
-            <div class="container">
-
-                <a href="https://wordpress.org/" id="logo"></a>
-
-                <div class="columns is-centered">
-                    <div class="column is-5-tablet is-4-desktop is-3-widescreen">
-
-                        <?= $__view->render($view) ?>
-
-                    </div>
+                    <?= $__view->render($view) ?>
 
                 </div>
 
             </div>
+
         </div>
-    </section>
-<?php endif; ?>
+    </div>
+</section>
 </body>
 </html>
 

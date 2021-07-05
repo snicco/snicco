@@ -17,6 +17,16 @@
     class RegistrationLinkController extends Controller
     {
 
+        /**
+         * @var int
+         */
+        private $lifetime_in_seconds;
+
+        public function __construct($lifetime_in_seconds = 600 )
+        {
+            $this->lifetime_in_seconds = $lifetime_in_seconds;
+        }
+
         public function create(Request $request, RegistrationViewResponse $response) : ResponsableInterface
         {
 
@@ -31,7 +41,7 @@
 
             $valid = filter_var($email, FILTER_VALIDATE_EMAIL);
 
-            if ( ! $valid) {
+            if ( ! $valid ) {
 
                 return $this->response_factory->back()
                                               ->withErrors(['email' => 'That email address does not seem to be valid.']);
@@ -39,15 +49,13 @@
             }
 
             $request->session()->put('registration.email', $email);
-            $link = $this->url->signedRoute('auth.register.confirm', [], 300, true);
+            $link = $this->url->signedRoute('auth.accounts.create', [], $this->lifetime_in_seconds, true);
 
-            $mail_builder->to($email)->send(new ConfirmRegistrationEmail($link));
+            $mail_builder->to($email)->send(new ConfirmRegistrationEmail($link) );
 
             return $this->response_factory->back()
                                           ->with('registration.link.success', true);
 
         }
-
-
 
     }

@@ -7,7 +7,7 @@
     namespace Tests\helpers;;
 
     use Tests\stubs\TestRequest;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Support\Url;
 
@@ -38,7 +38,6 @@
             $request = TestRequest::fromFullUrl($method, $this->ajaxUrl($path));
 
             $request = TestRequest::withServerParams($request,['SCRIPT_NAME'=> 'wp-admin/admin-ajax.php']);
-
 
             return $request->withParsedBody(['action' => $action]);
 

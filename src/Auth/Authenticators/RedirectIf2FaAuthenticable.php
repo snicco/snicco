@@ -8,8 +8,7 @@
 
     use WP_User;
     use WPEmerge\Auth\Contracts\Authenticator;
-    use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
+    use WPEmerge\Auth\Traits\InteractsWithTwoFactorSecrets;
     use WPEmerge\Auth\Responses\SuccessfulLoginResponse;
     use WPEmerge\Auth\Contracts\TwoFactorChallengeResponse;
     use WPEmerge\Http\Psr7\Request;
@@ -18,8 +17,7 @@
     class RedirectIf2FaAuthenticable extends Authenticator
     {
 
-        use ResolveTwoFactorSecrets;
-
+        use InteractsWithTwoFactorSecrets;
 
         /**
          * @var TwoFactorChallengeResponse
@@ -28,6 +26,7 @@
 
         public function __construct(TwoFactorChallengeResponse $response)
         {
+
             $this->challenge_response = $response;
         }
 
@@ -36,13 +35,13 @@
 
             $response = $next($request);
 
-            if ( ! $response instanceof SuccessfulLoginResponse ) {
+            if ( ! $response instanceof SuccessfulLoginResponse) {
 
                 return $response;
 
             }
 
-            if ( ! $this->userHasTwoFactorEnabled( $user = $response->authenticatedUser() ) ) {
+            if ( ! $this->userHasTwoFactorEnabled($user = $response->authenticatedUser())) {
 
                 return $response;
 
@@ -50,17 +49,17 @@
 
             $this->challengeUser($request, $user);
 
-            return $this->challenge_response->setRequest($request)->toResponsable();
+            return $this->response_factory->toResponse(
+                $this->challenge_response->setRequest($request)->toResponsable()
+            );
 
         }
-
-
 
         private function challengeUser(Request $request, WP_User $user) : void
         {
 
-            $request->session()->put('2fa.challenged_user', $user->ID);
-            $request->session()->put('2fa.remember', $request->boolean('remember_me'));
+            $request->session()->put('auth.2fa.challenged_user', $user->ID);
+            $request->session()->put('auth.2fa.remember', $request->boolean('remember_me'));
 
         }
 

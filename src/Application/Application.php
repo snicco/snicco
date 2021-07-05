@@ -7,11 +7,13 @@
     namespace WPEmerge\Application;
 
     use Contracts\ContainerAdapter;
-    use Nyholm\Psr7\Factory\Psr17Factory;
     use Nyholm\Psr7Server\ServerRequestCreator;
+    use Psr\Http\Message\ResponseFactoryInterface;
+    use Psr\Http\Message\ServerRequestFactoryInterface;
     use Psr\Http\Message\ServerRequestInterface;
-    use SniccoAdapter\BaseContainerAdapter;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
+    use Psr\Http\Message\StreamFactoryInterface;
+    use Psr\Http\Message\UploadedFileFactoryInterface;
+    use Psr\Http\Message\UriFactoryInterface;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Events\EventServiceProvider;
@@ -22,7 +24,7 @@
     use WPEmerge\Middleware\MiddlewareServiceProvider;
     use WPEmerge\Routing\RoutingServiceProvider;
     use WPEmerge\View\ViewServiceProvider;
-    use WPEmerge\Facade\WpFacade;
+    use WPEmerge\Support\WpFacade;
 
     class Application
     {
@@ -30,18 +32,19 @@
         use ManagesAliases;
         use LoadsServiceProviders;
         use HasContainer;
+        use SetPsrFactories;
 
         const CORE_SERVICE_PROVIDERS = [
 
-            EventServiceProvider::class,
-            ExceptionServiceProvider::class,
-            FactoryServiceProvider::class,
             ApplicationServiceProvider::class,
-            HttpServiceProvider::class,
+            ExceptionServiceProvider::class,
+            EventServiceProvider::class,
+            FactoryServiceProvider::class,
             RoutingServiceProvider::class,
+            HttpServiceProvider::class,
             MiddlewareServiceProvider::class,
             ViewServiceProvider::class,
-            MailServiceProvider::class
+            MailServiceProvider::class,
 
         ];
 
@@ -57,95 +60,18 @@
          */
         private $running_unit_test = false;
 
-        public function __construct(ContainerAdapter $container, ServerRequestInterface $server_request = null)
-        {
+        /**
+         * @var string
+         */
+        private $base_path;
 
-            $server_request = $server_request ?? $this->captureRequest();
+        public function __construct(ContainerAdapter $container)
+        {
 
             $this->setContainer($container);
             $this->container()->instance(Application::class, $this);
             $this->container()->instance(ContainerAdapter::class, $this->container());
-
-            $request = new Request($server_request);
-
-            $this->bindRequest($request);
-            $this->bindServerRequest($request);
-
             WpFacade::setFacadeContainer($container);
-
-            $this->bindApplicationTrait();
-
-        }
-
-        /**
-         * Make and assign a new application instance.
-         *
-         * @param  string|ContainerAdapter  $container_adapter  ::class or default
-         *
-         * @return static
-         */
-        public static function create($container_adapter) : Application
-        {
-
-            return new static(
-                ($container_adapter !== 'default') ? $container_adapter : new BaseContainerAdapter()
-            );
-        }
-
-        public function boot( array $config = []) : void
-        {
-
-
-            if ($this->bootstrapped) {
-
-                throw new ConfigurationException(static::class.' already bootstrapped.');
-
-            }
-
-            $this->bindConfigInstance($config);
-
-            $this->loadServiceProviders();
-
-            $this->bootstrapped = true;
-
-
-            // If we would always unregister here it would not be possible to handle
-            // any errors that happen between this point and the the triggering of the
-            // hooks that run the HttpKernel.
-            if ( ! $this->handlesExceptionsGlobally() ) {
-
-                /** @var ErrorHandlerInterface $error_handler */
-                $error_handler = $this->container()->make(ErrorHandlerInterface::class);
-                $error_handler->unregister();
-
-            }
-
-
-        }
-
-        public function handlesExceptionsGlobally()
-        {
-
-            return $this->config->get('exception_handling.global', false);
-
-        }
-
-        public function config(?string $key = null, $default = null)
-        {
-
-            if ( ! $key ) {
-
-                return $this->config;
-
-            }
-
-            return $this->config->get($key, $default);
-
-        }
-
-        public function runningUnitTest() {
-
-            $this->running_unit_test = true;
 
         }
 
@@ -156,69 +82,116 @@
 
         }
 
+        public static function create(string $base_path, ContainerAdapter $container_adapter) : Application
+        {
+
+            $app = new static($container_adapter);
+            $app->setBasePath($base_path);
+
+            return $app;
+
+        }
+
+        public function boot(bool $load = true) : void
+        {
+
+            if ($this->bootstrapped) {
+
+                throw new ConfigurationException(static::class.' already bootstrapped.');
+
+            }
+
+            $this->config = ((new LoadConfiguration))->bootstrap($this);
+            $this->container()->instance(ApplicationConfig::class, $this->config);
+            $this->container()->instance(ServerRequestCreator::class, $this->serverRequestCreator());
+
+            if ( ! $load ) {
+                return;
+            }
+
+            $this->registerErrorHandler();
+
+            $this->captureRequest();
+
+            $this->loadServiceProviders();
+
+            $this->bootstrapped = true;
+
+        }
+
+        public function config(?string $key = null, $default = null)
+        {
+
+            if ( ! $key) {
+
+                return $this->config;
+
+            }
+
+            return $this->config->get($key, $default);
+
+        }
+
+        public function basePath() : string
+        {
+            return $this->base_path;
+        }
+
+        public function storagePath($path = '') : string
+        {
+
+            $storage_dir = $this->config->get('app.storage_dir');
+
+            if ( !$storage_dir) {
+                throw new \RuntimeException('No storage directory was set for the application.');
+            }
+
+            return $storage_dir.($path ? DIRECTORY_SEPARATOR.$path : $path);
+
+        }
+
+        public function configPath($path = '') : string
+        {
+            return $this->base_path.DIRECTORY_SEPARATOR.'config'.($path ? DIRECTORY_SEPARATOR.$path : $path);
+        }
+
+        public function runningUnitTest()
+        {
+
+            $this->running_unit_test = true;
+
+        }
+
         public function isRunningUnitTest() : bool
         {
+
             return $this->running_unit_test;
         }
 
-        private function bindConfigInstance(array $config)
+        private function captureRequest()
         {
 
-            $config = new ApplicationConfig($config);
+            $psr_request = $this->serverRequestCreator()->fromGlobals();
 
-            $this->container()->instance(ApplicationConfig::class, $config);
-            $this->config = $config;
+            $request = new Request($psr_request);
+
+            $this->container()->instance(Request::class, $request);
+
 
         }
 
-        private function captureRequest() : ServerRequestInterface
+        private function setBasePath(string $base_path)
         {
 
-            $factory = $factory ?? new Psr17Factory();
-            $creator = new ServerRequestCreator(
-                $factory,
-                $factory,
-                $factory,
-                $factory
-            );
-
-            return $creator->fromGlobals();
-
+            $this->base_path = rtrim($base_path, '\/');
         }
 
-        /**
-         *
-         * This is the request object that all classes in the app rely on.
-         * This object is gets rebound during the request cycle.
-         * I.E before/after running the middleware stack or running the route handler.
-         *
-         * @param  Request  $changing_request
-         */
-        private function bindRequest(Request $changing_request)
+        private function registerErrorHandler()
         {
-            $this->container()->instance(Request::class, $changing_request);
+
+            /** @todo Instead of booting the error handler in the config boot it here but lazy load it from the container */
+
+
         }
-
-        /**
-         *
-         * This request is the one that got created from the PHP Globals.
-         * It should only be used during bootstrapping of the Application.
-         *
-         * @param  Request  $base_request
-         */
-        private function bindServerRequest(Request $base_request)
-        {
-            $this->container()->instance(ServerRequestInterface::class, $base_request);
-        }
-
-        private function bindApplicationTrait()
-        {
-            $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 4);
-
-            $last = end($trace)['class'];
-
-            $this->container()->instance(ApplicationTrait::class, $last);
-        }
-
 
     }

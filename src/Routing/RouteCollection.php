@@ -9,7 +9,7 @@
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\RouteMatcher;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Psr7\Request;

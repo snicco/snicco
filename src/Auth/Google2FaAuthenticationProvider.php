@@ -14,11 +14,10 @@
     use BaconQrCode\Writer;
     use PragmaRX\Google2FA\Google2FA;
     use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPEmerge\Auth\Traits\DecryptsRecoveryCodes;
     use WPEmerge\Auth\Traits\ResolvesUser;
     use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
     use WPEmerge\Contracts\EncryptorInterface;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
 
     class Google2FaAuthenticationProvider implements TwoFactorAuthenticationProvider
     {
@@ -51,7 +50,7 @@
             return $this->engine->getQRCodeUrl($company_name, $user_identifier, $secret);
         }
 
-        public function verify(string $secret, string $code) :bool
+        public function verifyOneTimeCode(string $secret, string $code) :bool
         {
             return $this->engine->verifyKey($secret, $code);
         }

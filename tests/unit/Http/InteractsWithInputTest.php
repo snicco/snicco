@@ -10,7 +10,7 @@
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Session;
@@ -270,6 +270,19 @@
 
         }
 
+        public function testFilled()
+        {
+
+            $request = $this->request->withQueryParams([
+                'dev' => 'calvin',
+                'foo' => ''
+            ]);
+
+            $this->assertTrue($request->filled('dev'));
+            $this->assertFalse($request->filled('foo'));
+
+        }
+
         public function testMissing()
         {
 
@@ -410,5 +423,7 @@
 
 
         }
+
+
 
     }

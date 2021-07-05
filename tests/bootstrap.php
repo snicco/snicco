@@ -59,7 +59,7 @@
 
     if ( ! defined('ROUTES_DIR')) {
 
-        define('ROUTES_DIR', TESTS_DIR.DS.'fixtures'.DS.'Routes');
+        define('ROUTES_DIR', TESTS_DIR.DS.'fixtures'.DS.'routes');
 
     }
 
@@ -89,10 +89,6 @@
         define('TEST_CONFIG', $config);
 
     }
-
-
-
-
 
     $classLoader = require $root_dir.DS.'vendor'.DS.'autoload.php';
 

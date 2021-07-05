@@ -12,7 +12,8 @@
     use WPEmerge\Events\IncomingAdminRequest;
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
+    use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Support\Arr;
@@ -36,6 +37,9 @@
 
         /** @var ResponseFactory */
         protected $response_factory;
+
+        /** @var Request */
+        protected $current_request;
 
         public function __construct(ContainerAdapter $container_adapter, ApplicationConfig $config)
         {
@@ -66,23 +70,10 @@
          */
         abstract function bootstrap() : void;
 
-        protected function requestType() : string
+        /** Only use this function after all providers have been registered. */
+        protected function requestEndpoint() : string
         {
-
-            if ( ! WP::isAdmin()) {
-
-                return IncomingWebRequest::class;
-
-            }
-
-            if (WP::isAdminAjax()) {
-
-                return IncomingAjaxRequest::class;
-
-            }
-
-            return IncomingAdminRequest::class;
-
+            return $this->config->get('_request_endpoint', '');
         }
 
         /** Only use this function after all providers have been registered. */
@@ -90,7 +81,7 @@
         {
 
             return $this->config->get('session.enabled', false)
-                && in_array(SessionServiceProvider::class, $this->config->get('providers', [] ));
+                && in_array(SessionServiceProvider::class, $this->config->get('app.providers', [] ));
 
         }
 
@@ -118,7 +109,7 @@
         protected function appKey()
         {
 
-            return $this->config->get('app_key');
+            return $this->config->get('app.key', '');
 
         }
 
@@ -129,6 +120,7 @@
 
             $routes = Arr::wrap($this->config->get('routing.definitions'));
 
+            // new routes have to be added after the user provided routes to allow users to overwrite inbuilt routes.
             $routes = array_merge($routes, Arr::wrap($new_routes));
 
             $this->config->set('routing.definitions', $routes);
@@ -140,10 +132,9 @@
 
             $views = Arr::wrap($views);
 
-            $dir = __DIR__.DIRECTORY_SEPARATOR.'views';
-            $old_views = $this->config->get('views', []);
+            $old_views = $this->config->get('view.paths', []);
             $views = array_merge($old_views, $views);
-            $this->config->set('views', $views);
+            $this->config->set('view.paths', $views);
 
         }
 
@@ -181,8 +172,19 @@
 
         protected function siteUrl()
         {
+            return $this->config->get('app.url');
+        }
 
-            return $this->config->get('_siteurl');
+        protected function currentRequest() {
+
+            if ( ! $this->current_request instanceof Request ) {
+
+                $this->current_request = $this->container->make(Request::class);
+
+            }
+
+            return $this->current_request;
+
         }
 
     }

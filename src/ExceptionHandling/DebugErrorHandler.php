@@ -42,6 +42,8 @@
 
 			$method = RunInterface::EXCEPTION_HANDLER;
 
+		    $this->whoops->sendHttpCode();
+
 			$this->whoops->{ $method }( $exception );
 
 			UnrecoverableExceptionHandled::dispatch();

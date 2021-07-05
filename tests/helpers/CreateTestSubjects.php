@@ -12,7 +12,7 @@
     use Tests\fixtures\Middleware\FooBarMiddleware;
     use Tests\fixtures\Middleware\FooMiddleware;
     use Tests\stubs\TestRequest;
-    use Tests\unit\View\MethodField;
+    use WPEmerge\View\MethodField;
     use WPEmerge\Contracts\AbstractRouteCollection;
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Events\IncomingRequest;
@@ -48,7 +48,6 @@
         {
 
             $this->routes = $this->newRouteCollection();
-
 
             $this->router = $this->newRouter($force_trailing);
 

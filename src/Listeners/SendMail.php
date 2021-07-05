@@ -9,6 +9,7 @@
     use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Contracts\Mailer;
     use WPEmerge\Events\PendingMail;
+    use WPEmerge\Support\WP;
     use WPEmerge\Mail\Mailable;
     use WPEmerge\View\ViewFactory;
 
@@ -31,21 +32,22 @@
 
         public function __construct(Mailer $mailer, ViewFactory $view_factory, ApplicationConfig $config)
         {
+
             $this->mailer = $mailer;
             $this->view_factory = $view_factory;
             $this->config = $config;
         }
 
-        public function handleEvent( PendingMail $event) : bool
+        public function handleEvent(PendingMail $event) : bool
         {
 
             $mailable = $event->mail;
 
             $this->fillDefaults($mailable);
 
-            if ( $mailable->hasMultipleRecipients() && $mailable->unique() ) {
+            if ($mailable->hasMultipleRecipients() && $mailable->unique()) {
 
-               return $this->sendWithUniqueView($mailable);
+                return $this->sendWithUniqueView($mailable);
 
             }
 
@@ -54,14 +56,14 @@
 
         }
 
-        private function sendWithUniqueView(Mailable $mailable) :bool
+        private function sendWithUniqueView(Mailable $mailable) : bool
         {
 
             $all_sent = true;
 
             $recipients = $mailable->to;
 
-            foreach ( $recipients as $recipient ) {
+            foreach ($recipients as $recipient) {
 
                 $mail = clone $mailable;
 
@@ -69,9 +71,9 @@
                 $data = $mailable->buildViewData();
                 $context = array_merge($data, ['recipient' => $recipient]);
 
-                $mail->message = $this->view_factory->render(
-                    $mailable->view, $context
-                );
+                $mail->message = $mail->view
+                    ? $this->view_factory->render($mailable->view, $context)
+                    : $mail->message;
 
                 $mail->buildSubject($recipient);
 
@@ -84,7 +86,7 @@
 
         }
 
-        private function sendWithSameView(Mailable $mail) :bool
+        private function sendWithSameView(Mailable $mail) : bool
         {
 
             $context = array_merge(['recipient' => $mail->to[0]], $mail->buildViewData());
@@ -99,8 +101,15 @@
         private function fillDefaults(Mailable $mailable)
         {
 
-            $mailable->reply_to = $mailable->reply_to ?? $this->config->get('mail.reply_to');
-            $mailable->from = $mailable->from ?? $this->config->get('mail.from');
+            $mailable->reply_to = $mailable->reply_to ?? [
+                    'name' => $this->config->get('mail.reply_to.name', WP::siteName()),
+                    'email' => $this->config->get('mail.reply_to.email', WP::adminEmail()),
+                ];
+
+            $mailable->from = $mailable->from ?? [
+                    'name' => $this->config->get('mail.from.name', WP::siteName()),
+                    'email' => $this->config->get('mail.from.email', WP::adminEmail()),
+                ];
 
         }
 

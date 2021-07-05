@@ -8,7 +8,7 @@
 
 <form id="send" class="mt-4 box " action="<?= esc_attr($post_to) ?>" method="POST">
 
-    <?php if ($session->has('login.link.success')) : ?>
+    <?php if ($session->has('login.link.processed')) : ?>
 
         <div class="notification is-success is-light">
             We have sent an email to the linked account if it exists!
@@ -59,7 +59,12 @@
 
     </button>
 
-    <a href="<?= esc_url($register_url) ?>" class="text-sm-left underlined"> Register </a>
+    <?php if (isset($register_url)) : ?>
+
+        <a href="<?= esc_url($register_url) ?>" class="text-sm-left underlined"> Register </a>
+
+    <?php endif; ?>
+
 
 </form>
 

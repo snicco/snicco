@@ -6,7 +6,7 @@
 
     namespace WPEmerge\Auth\Mail;
 
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Mail\Mailable;
 
     class ConfirmRegistrationEmail extends Mailable
@@ -20,7 +20,6 @@
 
         public function __construct(string $magic_link)
         {
-
             $this->magic_link = $magic_link;
         }
 

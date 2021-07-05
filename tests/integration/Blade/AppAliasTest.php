@@ -10,10 +10,9 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
 
-    class AppAliasTest extends IntegrationTest
+    class AppAliasTest extends BladeTestCase
     {
 
-        use AssertBladeView;
 
 
         /** @test */

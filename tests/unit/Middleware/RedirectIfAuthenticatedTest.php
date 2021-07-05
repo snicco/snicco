@@ -7,23 +7,26 @@
 	namespace Tests\unit\Middleware;
 
 	use Mockery;
+    use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\UnitTest;
 	use Tests\stubs\TestRequest;
     use Tests\helpers\AssertsResponse;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Middleware\Authenticate;
 	use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Middleware\RedirectIfAuthenticated;
+    use WPEmerge\Routing\Route;
 
     class RedirectIfAuthenticatedTest extends UnitTest {
 
         use AssertsResponse;
         use CreateUrlGenerator;
         use CreateRouteCollection;
+        use CreateDefaultWpApiMocks;
 
         /**
          * @var Authenticate
@@ -65,7 +68,7 @@
         protected function beforeTearDown()
         {
 
-            WP::clearResolvedInstances();
+            WP::reset();
             Mockery::close();
 
         }
@@ -73,7 +76,10 @@
         private function newMiddleware( string $redirect_url = null) : RedirectIfAuthenticated
         {
 
-            return new RedirectIfAuthenticated($this->response, $redirect_url);
+            $m =  new RedirectIfAuthenticated($this->generator, $redirect_url);
+            $m->setResponseFactory($this->response);
+
+            return $m;
 
         }
 
@@ -95,11 +101,15 @@
 			WP::shouldReceive('adminUrl')
 			  ->andReturn('/wp-admin');
 
+			$route = new Route(['GET'], '/dashboard', function () {});
+			$route->name('dashboard');
+			$this->routes->add($route);
+
 			$response = $this->newMiddleware()->handle( $this->request, $this->route_action );
 
 			$this->assertInstanceOf( RedirectResponse::class, $response );
 			$this->assertStatusCode( 302, $response );
-			$this->assertSame( '/wp-admin', $response->getHeaderLine( 'Location' ) );
+			$this->assertSame( '/dashboard', $response->getHeaderLine( 'Location' ) );
 
 		}
 

@@ -9,20 +9,21 @@
     use Closure;
     use WP_User;
     use WPEmerge\Auth\Events\Login;
-    use WPEmerge\Auth\Events\Logout;
     use WPEmerge\Auth\Contracts\LoginResponse;
+    use WPEmerge\Auth\Responses\LogoutResponse;
     use WPEmerge\Auth\Responses\SuccessfulLoginResponse;
     use WPEmerge\Auth\Contracts\LoginViewResponse;
     use WPEmerge\Contracts\ResponsableInterface;
     use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Responses\RedirectResponse;
+    use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Routing\Pipeline;
     use WPEmerge\Session\Session;
     use WPEmerge\Support\Arr;
+    use WPEmerge\Support\Url;
 
     class AuthSessionController extends Controller
     {
@@ -47,9 +48,9 @@
 
             }
 
-            $redirect_to = $request->input('redirect_to', $this->url->toRoute('dashboard'));
-
-            $request->session()->setIntendedUrl($redirect_to);
+            $request->session()->setIntendedUrl(
+                $this->parseRedirect($request)
+            );
 
             return $view_response->withRequest($request)
                                  ->withAuthConfig($this->auth_config);
@@ -65,7 +66,7 @@
 
             if ($response instanceof SuccessfulLoginResponse) {
 
-                $remember = $response->rememberUser() && $this->auth_config['remember']['enabled'] === true;
+                $remember = $response->rememberUser() && $this->auth_config['features']['remember_me'] > 0;
                 $user = $response->authenticatedUser();
 
                 return $this->handleLogin($user, $remember, $login_response, $request);
@@ -77,22 +78,20 @@
 
         }
 
-        public function destroy(Request $request, string $user_id) : RedirectResponse
+        public function destroy(Request $request, int $user_id) : Response
         {
 
-            if ((int) $user_id !== WP::userId()) {
+            if ($user_id !== WP::userId()) {
 
                 throw new InvalidSignatureException();
 
             }
 
-            Logout::dispatch([$request->session()]);
-
             $redirect_to = $request->query('redirect_to', $this->url->toRoute('home'));
 
-            return $this->response_factory->redirect()->to($redirect_to)
-                                          ->withAddedHeader('Expires', 'Wed, 11 Jan 1984 06:00:00 GMT')
-                                          ->withAddedHeader('Cache-Control', 'no-cache, must-revalidate, max-age=0');
+            $response = $this->response_factory->redirect()->to($redirect_to);
+
+            return new LogoutResponse($response);
 
         }
 
@@ -113,20 +112,19 @@
             $session->put('auth.has_remember_token', $remember);
             $session->confirmAuthUntil(Arr::get($this->auth_config, 'confirmation.duration', 0));
             $session->regenerate();
+            wp_set_auth_cookie($user->ID, $remember, true);
+            wp_set_current_user($user->ID);
 
             Login::dispatch([$user, $remember]);
 
             // We are inside an iframe and just need to close it with js.
             if ($request->boolean('is_interim_login')) {
 
-                $request->session()->flash('interim_login_success', true);
-
-                return $this->response_factory->view('auth-layout');
+                return $this->response_factory->view('auth-interim-login-success');
 
             }
 
             return $login_response->forRequest($request)->forUser($user);
-
 
         }
 
@@ -140,6 +138,27 @@
                 throw new FailedAuthenticationException('Login failed' , $request, null , [] );
 
             };
+
+        }
+
+        private function parseRedirect(Request $request) : string
+        {
+
+            $redirect_to = $request->query('redirect_to', $this->url->toRoute('dashboard'));
+
+            // redirect_to will be urldecoded which means that we can not be sure that a potential
+            // query string will still be urlencoded correctly.
+            // Since we have no control over where plugins and core call wp_login_url() its best to rebuild the query.
+            $parts = parse_url($redirect_to);
+
+            if ( isset($parts['query'])) {
+
+                return Url::rebuildQuery($redirect_to);
+
+            }
+
+            return $redirect_to;
+
 
         }
 

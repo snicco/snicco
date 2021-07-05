@@ -9,7 +9,7 @@
     use WP_User;
     use WPEmerge\Auth\Traits\ResolvesUser;
     use WPEmerge\Auth\Traits\SendsPasswordResetMails;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
@@ -19,7 +19,6 @@
     class PasswordResetEmailController extends Controller
     {
 
-        use ValidatesWordpressNonces;
         use SendsPasswordResetMails;
         use ResolvesUser;
 

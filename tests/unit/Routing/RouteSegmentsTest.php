@@ -10,10 +10,13 @@
     use Mockery;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
+    use Tests\stubs\TestRequest;
     use Tests\UnitTest;
     use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Events\IncomingWebRequest;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request as Request;
+    use WPEmerge\Routing\Conditions\QueryStringCondition;
     use WPEmerge\Routing\Router;
 
     class RouteSegmentsTest extends UnitTest
@@ -47,6 +50,77 @@
             ApplicationEvent::setInstance(null);
             Mockery::close();
             WP::reset();
+
+        }
+
+        /** @test */
+        public function url_encoded_routes_work()
+        {
+
+            $this->createRoutes(function () {
+
+                $this->router->get('/german-city/{city}', function (Request $request, string $city) {
+
+                    return ucfirst($city);
+
+                });
+
+            });
+
+            $path = rawurlencode('münchen');
+            $request = TestRequest::fromFullUrl('GET', "https://foobar.com/german-city/$path");
+            $this->runAndAssertOutput('München', new IncomingWebRequest($request, 'wp.php'));
+
+        }
+
+        /** @test */
+        public function url_encoded_query_string_conditions_work()
+        {
+
+            $this->createRoutes(function () {
+
+                $this->router->get('/foo', function () {
+
+                    return 'FOO';
+
+                })->where(QueryStringCondition::class, ['page' => 'bayern münchen']);
+
+            });
+
+            $query = urlencode('bayern münchen');
+            $request = TestRequest::fromFullUrl('GET', "https://foobar.com/foo?page=$query");
+            $request = $request->withQueryParams(['page' => 'bayern münchen']);
+            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
+
+        }
+
+        /** @test */
+        public function route_segments_can_contain_encoded_forward_slashes()
+        {
+
+            $this->createRoutes(function () {
+
+                $this->router->get('/bands/{band}/{song?}', function (string $band, string $song = null) {
+
+                    if ($song) {
+
+                        return "Show song [$song] of band [$band]";
+
+                    }
+
+                    return "List all songs of band [$band]";
+
+                });
+
+            });
+
+            $request = TestRequest::fromFullUrl('GET', 'https://music.com/bands/AC%2fDC/foo_song');
+            $this->runAndAssertOutput('Show song [foo_song] of band [AC/DC]', new IncomingWebRequest($request, 'wp.php'));
+
+            $request = TestRequest::fromFullUrl('GET', 'https://music.com/bands/AC%2fDC');
+            $this->runAndAssertOutput('List all songs of band [AC/DC]', new IncomingWebRequest($request, 'wp.php'));
+
+
 
         }
 

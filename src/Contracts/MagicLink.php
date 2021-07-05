@@ -10,7 +10,7 @@
     use Illuminate\Support\InteractsWithTime;
     use Tests\stubs\TestApp;
     use WPEmerge\Application\Application;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Cookie;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\Psr7\Response;
@@ -146,7 +146,7 @@
                 return false;
             }
 
-            return Carbon::now()->getTimestamp() > $expires;
+            return Carbon::now()->getTimestamp() > (int) $expires;
 
         }
 

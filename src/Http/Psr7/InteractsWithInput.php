@@ -33,7 +33,6 @@
 
         public function input($key = null, $default = null)
         {
-
             return data_get($this->all(), $key, $default);
         }
 
@@ -47,9 +46,9 @@
         public function query(string $key = null, $default = null)
         {
 
-            $query = $this->combinedQueryParams();
+            $query = $this->getQueryParams();
 
-            if ( ! $key) {
+            if ( ! $key ) {
                 return $query;
             }
 
@@ -68,7 +67,6 @@
             }
 
             return $qs;
-
 
         }
 
@@ -164,6 +162,23 @@
         }
 
         /**
+         * Determine if the request contains a non-empty value for an input item.
+         */
+        public function filled(string $key) : bool
+        {
+            $keys = is_array($key) ? $key : func_get_args();
+
+            foreach ($keys as $value) {
+                if ($this->isEmptyString($value)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+
+        /**
          * Will return falls if any of the provided keys is missing.
          */
         public function missing($key) : bool
@@ -187,22 +202,18 @@
         {
 
             $input = in_array($this->realMethod(), ['GET', 'HEAD'])
-                ? $this->combinedQueryParams()
+                ? $this->getQueryParams()
                 : $this->getParsedBody();
 
             return (array) $input;
 
         }
 
-        private function combinedQueryParams() : array
+        private function isEmptyString( string $key) : bool
         {
+            $value = $this->input($key);
 
-            $query_string = $this->getUri()->getQuery();
-
-            parse_str($query_string, $query);
-
-            return array_merge($query, $this->getQueryParams());
-
+            return ! is_bool($value) && ! is_array($value) && trim((string) $value) === '';
         }
 
 

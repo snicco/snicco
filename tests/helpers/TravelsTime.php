@@ -7,12 +7,21 @@
     namespace Tests\helpers;
 
     use Carbon\Carbon;
+    use Carbon\CarbonImmutable;
 
     trait TravelsTime
     {
 
         public function backToPresent() {
-            Carbon::setTestNow();
+
+            if (class_exists(Carbon::class)) {
+                Carbon::setTestNow();
+            }
+
+            if (class_exists(CarbonImmutable::class)) {
+                CarbonImmutable::setTestNow();
+            }
+
         }
 
         /** Time travel is always cumulative */

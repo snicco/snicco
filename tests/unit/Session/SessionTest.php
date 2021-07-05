@@ -13,7 +13,7 @@
     use Tests\helpers\HashesSessionIds;
     use WPEmerge\Application\ApplicationEvent;
     use WPEmerge\Auth\Events\Logout;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\Session;
 

@@ -18,19 +18,24 @@
     use WPEmerge\Session\Drivers\ArraySessionDriver;
     use WPEmerge\Session\CsrfField;
     use WPEmerge\Session\Session;
+    use WPEmerge\Session\SessionServiceProvider;
 
-    class CustomDirectivesTest extends IntegrationTest
+    class CustomDirectivesTest extends BladeTestCase
     {
 
-        use AssertBladeView;
-        use InteractsWithWordpress;
+        public function packageProviders() : array
+        {
+
+            return array_merge([SessionServiceProvider::class], parent::packageProviders());
+
+        }
 
         /** @test */
         public function custom_auth_user_directive_works()
         {
 
-            $calvin = $this->newAdmin();
-            $this->login($calvin);
+            $calvin = $this->createAdmin();
+            $this->actingAs($calvin);
 
             $view = $this->view('auth');
             $content = $view->toString();
@@ -51,8 +56,8 @@
             $content = $view->toString();
             $this->assertViewContent('YOU ARE A GUEST', $content);
 
-            $calvin = $this->newAdmin();
-            $this->login($calvin);
+            $calvin = $this->createAdmin();
+            $this->actingAs($calvin);
 
             $view = $this->view('guest');
             $content = $view->toString();
@@ -64,22 +69,22 @@
         public function custom_wp_role_directives_work()
         {
 
-            $admin = $this->newAdmin();
-            $this->login($admin);
+            $admin = $this->createAdmin();
+            $this->actingAs($admin);
             $view = $this->view('role');
             $content = $view->toString();
             $this->assertViewContent('ADMIN', $content);
 
             $this->logout($admin);
 
-            $editor = $this->newEditor();
-            $this->login($editor);
+            $editor = $this->createEditor();
+            $this->actingAs($editor);
             $view = $this->view('role');
             $content = $view->toString();
             $this->assertViewContent('EDITOR', $content);
 
-            $author = $this->newAuthor();
-            $this->login($author);
+            $author = $this->createAuthor();
+            $this->actingAs($author);
             $view = $this->view('role');
             $content = $view->toString();
             $this->assertViewContent('', $content);
@@ -89,21 +94,6 @@
 
         /** @test */
         public function custom_csrf_directives_work () {
-
-            TestApp::container()->bind(CsrfField::class, function () {
-
-                $storage = [];
-
-                return new CsrfField(
-                    new Session( new ArraySessionDriver(10)),
-                    new Guard(
-                        TestApp::container()->make(ResponseFactory::class),
-                        'csrf', $storage
-                    )
-
-                );
-
-            });
 
             $view = $this->view('csrf');
             $content = $view->toString();
@@ -119,14 +109,14 @@
 
             $view = $this->view('method');
             $content = $view->toString();
-            $this->assertViewContent("<input type='hidden' name='_method' value='PUT'>", $content);
+            $this->assertStringContainsString("<input type='hidden' name='_method_overwrite_", $content);
+            $this->assertStringContainsString("value='PUT'", $content);
 
         }
 
         /** @test */
         public function error_directive_works () {
 
-            /** @todo Decide how to implement with sessions and compatible with the default php engine. */
             $error_bag = new ViewErrorBag();
             $default = new MessageBag();
             $default->add('title', 'ERROR_WITH_YOUR_TITLE');

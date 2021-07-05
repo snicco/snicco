@@ -10,7 +10,7 @@
     use WPEmerge\Contracts\Mailer;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\PendingMail;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Listeners\SendMail;
 
     class MailServiceProvider extends ServiceProvider
@@ -25,7 +25,9 @@
 
         public function bootstrap() : void
         {
+            //
         }
+
 
         private function bindMailer()
         {
@@ -49,11 +51,8 @@
 
             ]);
 
-            $site_name = WP::siteName();
-            $admin_email = WP::adminEmail();
-
-            $this->config->extend('mail.from', ['name' => $site_name, 'email' => $admin_email]);
-            $this->config->extend('mail.reply_to', ['name' => $site_name, 'email' => $admin_email]);
+            $this->config->extend('mail.from', ['name' => WP::siteName(), 'email' => WP::adminEmail()]);
+            $this->config->extend('mail.reply_to', ['name' =>WP::siteName(), 'email' => WP::adminEmail()]);
 
         }
 

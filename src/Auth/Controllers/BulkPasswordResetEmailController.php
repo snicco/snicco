@@ -9,7 +9,8 @@
     use WPEmerge\Auth\Mail\ResetPasswordMail;
     use WPEmerge\Auth\Traits\SendsPasswordResetMails;
     use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Http\Responses\RedirectResponse;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Mail\MailBuilder;
@@ -34,6 +35,7 @@
         private $mail;
 
         protected $lifetime = 300;
+
         protected $error_message = 'Sorry, you are not allowed to perform this action';
 
         public function __construct(MailBuilder $mail)
@@ -41,7 +43,7 @@
             $this->mail = $mail;
         }
 
-        public function store(Request $request)
+        public function store(Request $request) : RedirectResponse
         {
 
             check_admin_referer('bulk-users');
@@ -70,6 +72,7 @@
 
                 }
 
+                // Dont send reset email to user performing the action
                 if ( $id === $request->userId() ) {
 
                     continue;
@@ -92,7 +95,6 @@
 
 
         }
-
 
 
 

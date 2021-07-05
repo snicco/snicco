@@ -12,7 +12,7 @@
     use WPEmerge\Controllers\FallBackController;
     use WPEmerge\Controllers\RedirectController;
     use WPEmerge\Controllers\ViewController;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Support\Str;
     use WPEmerge\Support\Url;
     use WPEmerge\Traits\HoldsRouteBlueprint;
@@ -116,7 +116,7 @@
 
             $url = $this->formatTrailing($url);
 
-            $route = new Route ($methods, $url, $action);
+            $route = new Route($methods, $url, $action);
 
             if ($this->hasGroupStack()) {
 
@@ -169,6 +169,7 @@
 
         public function createFallbackWebRoute()
         {
+
 
             $this->any('/{path}', [FallBackController::class, 'handle'])
                  ->and('path', '[^.]+')

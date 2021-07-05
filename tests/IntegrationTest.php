@@ -21,8 +21,8 @@
     use WPEmerge\Events\IncomingRequest;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Events\ResponseSent;
-    use WPEmerge\ExceptionHandling\TestingErrorHandler;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Testing\TestingErrorHandler;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\HttpKernel;
     use WPEmerge\Http\Psr7\Request;
 

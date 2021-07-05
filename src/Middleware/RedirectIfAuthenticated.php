@@ -9,10 +9,11 @@
 	use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\Middleware;
     use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request;
+    use WPEmerge\Routing\UrlGenerator;
 
-	class RedirectIfAuthenticated extends Middleware {
+    class RedirectIfAuthenticated extends Middleware {
 
 
         /**
@@ -21,32 +22,33 @@
         private $url;
 
         /**
-         * @var ResponseFactory
+         * @var UrlGenerator
          */
-        private $response;
+        private $url_generator;
 
-        public function __construct( ResponseFactory $response, string $url = null )
+        public function __construct( UrlGenerator $url_generator, string $url = null )
         {
             $this->url = $url;
-            $this->response = $response;
+            $this->url_generator = $url_generator;
+
         }
 
         public function handle( Request $request, $next) :ResponseInterface {
 
 			if ( WP::isUserLoggedIn() ) {
 
-				$url = $this->url ?? WP::adminUrl();
+				$url = $this->url ?? $this->url_generator->toRoute('dashboard');
 
                 if ($request->isExpectingJson()) {
 
-                    return $this->response
-                        ->json('Only guests can access this route.')
+                    return $this->response_factory
+                        ->json(['message' =>'Only guests can access this route.'])
                         ->withStatus(403);
 
 
                 }
 
-				return $this->response->redirect()
+				return $this->response_factory->redirect()
                                       ->to($url);
 
 			}

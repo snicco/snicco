@@ -32,7 +32,7 @@
             $this->magic_link = $magic_link;
         }
 
-        public function attempt(Request $request, $next) : Response
+        public function attempt(Request $request, $next)
         {
 
             $valid = $this->magic_link->hasValidSignature($request, true );
@@ -53,7 +53,7 @@
 
             }
 
-            // Whether remember_me will be allowed is decided by the config value in AuthSessionController
+            // Whether remember_me will be allowed is determined by the config value in AuthSessionController
             return $this->login($user, true);
 
 

@@ -14,7 +14,18 @@
 	class ApplicationTraitTest extends TestCase {
 
 
-		protected function tearDown() : void {
+        /**
+         * @var string
+         */
+        private $base_path;
+
+        protected function setUp() : void
+        {
+            $this->base_path = __DIR__;
+            parent::setUp();
+        }
+
+        protected function tearDown() : void {
 
 			FooApp::setApplication( null );
 			BarApp::setApplication( null );
@@ -27,7 +38,7 @@
 		public function a_new_app_instance_can_be_created() {
 
 			$this->assertNull( FooApp::getApplication() );
-			$app = FooApp::make();
+			$app = FooApp::make($this->base_path);
 			$this->assertSame( $app, FooApp::getApplication() );
 
 		}
@@ -38,12 +49,12 @@
 			$this->assertNull( FooApp::getApplication() );
 			$this->assertNull( BarApp::getApplication() );
 
-			$foo = FooApp::make();
+			$foo = FooApp::make($this->base_path);
 
 			$this->assertSame( $foo, FooApp::getApplication() );
 			$this->assertNull( BarApp::getApplication() );
 
-			$bar = BarApp::make();
+			$bar = BarApp::make($this->base_path);
 
 			$this->assertSame( $foo, FooApp::getApplication() );
 			$this->assertSame( $bar, BarApp::getApplication() );
@@ -66,16 +77,15 @@
 			$this->expectExceptionMessage( 'does not exist' );
 			$this->expectException( BadMethodCallException::class );
 
-			FooApp::make();
+			FooApp::make($this->base_path);
 			FooApp::badMethod();
 
 		}
 
-
 		/** @test */
 		public function static_method_calls_get_forwarded_to_the_application_with() {
 
-			FooApp::make();
+			FooApp::make($this->base_path);
 			FooApp::alias( 'application_method', function ( $foo, $bar, $baz ) {
 
 				return $foo . $bar . $baz;
@@ -83,6 +93,15 @@
 
 			$this->assertSame( 'foobarbaz', FooApp::application_method( 'foo', 'bar', 'baz' ) );
 
+
+		}
+
+		/** @test */
+		public function the_application_trait_is_bound () {
+
+            $app = FooApp::make($this->base_path);
+
+            $this->assertSame(FooApp::class, $app->resolve(ApplicationTrait::class));
 
 		}
 

@@ -7,7 +7,7 @@
     namespace WPEmerge\Session\Drivers;
 
     use Illuminate\Support\InteractsWithTime;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Session\Contracts\SessionDriver;
 
