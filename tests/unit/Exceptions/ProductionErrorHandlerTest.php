@@ -118,8 +118,7 @@
             $this->assertInstanceOf(Response::class, $response);
             $this->assertStatusCode(500, $response);
             $this->assertContentType('application/json', $response);
-            $this->assertSame('Internal Server Error', json_decode($response->getBody()
-                                                                            ->__toString()));
+            $this->assertSame(['message' =>'Internal Server Error'], json_decode($response->getBody()->__toString(), true ));
             ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
 
         }
@@ -137,7 +136,7 @@
             ApplicationEvent::assertDispatched(UnrecoverableExceptionHandled::class);
             HeaderStack::assertHasStatusCode(500);
             HeaderStack::assertHas('Content-Type', 'application/json');
-            $this->expectOutputString(json_encode('Internal Server Error'));
+            $this->expectOutputString(json_encode(['message' =>'Internal Server Error']));
 
         }
 
