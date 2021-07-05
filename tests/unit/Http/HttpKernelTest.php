@@ -15,7 +15,7 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
     use Tests\helpers\CreateDefaultWpApiMocks;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Contracts\AbstractRouteCollection;
     use BetterWP\Events\IncomingAjaxRequest;
     use BetterWP\Events\ResponseSent;
@@ -54,8 +54,8 @@
 
             $this->container = $this->createContainer();
             $this->routes = $this->newRouteCollection();
-            ApplicationEvent::make($this->container);
-            ApplicationEvent::fake();
+            Event::make($this->container);
+            Event::fake();
             WP::setFacadeContainer($this->container);
             HeaderStack::reset();
 
@@ -64,7 +64,7 @@
         protected function beforeTearDown()
         {
 
-            ApplicationEvent::setInstance(null);
+            Event::setInstance(null);
             Mockery::close();
             WP::reset();
             HeaderStack::reset();
@@ -132,7 +132,7 @@
             $this->runKernel($request);
 
             $this->expectOutputString('foo');
-            ApplicationEvent::assertDispatched(ResponseSent::class);
+            Event::assertDispatched(ResponseSent::class);
 
         }
 
@@ -238,7 +238,7 @@
 
             $this->runKernel($this->webRequest('GET', '/foo'));
 
-            ApplicationEvent::assertDispatched(ResponseSent::class, function ($event) {
+            Event::assertDispatched(ResponseSent::class, function ($event) {
 
                 return $event->response instanceof RedirectResponse;
 

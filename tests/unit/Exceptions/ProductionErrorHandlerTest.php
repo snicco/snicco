@@ -17,7 +17,7 @@
     use Tests\UnitTest;
     use Tests\stubs\TestException;
     use Tests\stubs\TestRequest;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Contracts\AbstractRedirector;
     use BetterWP\ExceptionHandling\Exceptions\HttpException;
     use BetterWP\Session\Drivers\ArraySessionDriver;
@@ -54,8 +54,8 @@
         protected function beforeTestRun()
         {
 
-            ApplicationEvent::make($this->container = $this->createContainer());
-            ApplicationEvent::fake();
+            Event::make($this->container = $this->createContainer());
+            Event::fake();
             $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
             $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
             WP::setFacadeContainer($this->createContainer());
@@ -67,7 +67,7 @@
         {
 
             WP::reset();
-            ApplicationEvent::setInstance(null);
+            Event::setInstance(null);
             \Mockery::close();
             HeaderStack::reset();
 
@@ -85,7 +85,7 @@
             $this->assertInstanceOf(Response::class, $response);
             $this->assertOutput('VIEW:500,CONTEXT:[status_code=>500,message=>Internal Server Error]', $response);
             $this->assertStatusCode(500, $response);
-            ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
+            Event::assertNotDispatched(UnrecoverableExceptionHandled::class);
 
 
         }
@@ -100,7 +100,7 @@
 
             $handler->handleException(new TestException('Sensitive Info'));
 
-            ApplicationEvent::assertDispatched(UnrecoverableExceptionHandled::class);
+            Event::assertDispatched(UnrecoverableExceptionHandled::class);
             $this->expectOutputString('VIEW:500,CONTEXT:[status_code=>500,message=>Internal Server Error]');
 
         }
@@ -119,7 +119,7 @@
             $this->assertStatusCode(500, $response);
             $this->assertContentType('application/json', $response);
             $this->assertSame(['message' =>'Internal Server Error'], json_decode($response->getBody()->__toString(), true ));
-            ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
+            Event::assertNotDispatched(UnrecoverableExceptionHandled::class);
 
         }
 
@@ -133,7 +133,7 @@
 
             $handler->handleException(new TestException('Sensitive Info'));
 
-            ApplicationEvent::assertDispatched(UnrecoverableExceptionHandled::class);
+            Event::assertDispatched(UnrecoverableExceptionHandled::class);
             HeaderStack::assertHasStatusCode(500);
             HeaderStack::assertHas('Content-Type', 'application/json');
             $this->expectOutputString(json_encode(['message' =>'Internal Server Error']));
@@ -153,7 +153,7 @@
             $this->assertContentType('text/html', $response);
             $this->assertOutput('VIEW:500,CONTEXT:[status_code=>500,message=>Internal Server Error]', $response);
 
-            ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
+            Event::assertNotDispatched(UnrecoverableExceptionHandled::class);
 
         }
 
@@ -170,7 +170,7 @@
             $this->assertContentType('text/html', $response);
             $this->assertOutput('Foo', $response);
 
-            ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
+            Event::assertNotDispatched(UnrecoverableExceptionHandled::class);
 
         }
 
@@ -189,7 +189,7 @@
             // We rethrow the exception.
             $this->assertOutput('VIEW:500,CONTEXT:[status_code=>500,message=>Internal Server Error]', $response);
 
-            ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
+            Event::assertNotDispatched(UnrecoverableExceptionHandled::class);
 
         }
 
@@ -207,7 +207,7 @@
             $this->assertContentType('text/html', $response);
             $this->assertOutput('bar', $response);
 
-            ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
+            Event::assertNotDispatched(UnrecoverableExceptionHandled::class);
 
         }
 
@@ -226,7 +226,7 @@
             $this->assertContentType('text/html', $response);
             $this->assertOutput('VIEW:500,CONTEXT:[status_code=>500,message=>Custom Error Message]', $response);
 
-            ApplicationEvent::assertNotDispatched(UnrecoverableExceptionHandled::class);
+            Event::assertNotDispatched(UnrecoverableExceptionHandled::class);
 
         }
 

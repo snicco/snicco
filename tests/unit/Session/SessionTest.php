@@ -11,7 +11,7 @@
     use SniccoAdapter\BaseContainerAdapter;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\HashesSessionIds;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Auth\Events\Logout;
     use BetterWP\Support\WP;
     use BetterWP\Session\Drivers\ArraySessionDriver;

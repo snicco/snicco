@@ -10,7 +10,7 @@
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Contracts\ConditionInterface;
     use BetterWP\Contracts\UrlableInterface;
     use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
@@ -39,8 +39,8 @@
 
             $this->container = $this->createContainer();
             $this->routes = $this->newRouteCollection();
-            ApplicationEvent::make($this->container);
-            ApplicationEvent::fake();
+            Event::make($this->container);
+            Event::fake();
             WP::setFacadeContainer($this->container);
 
 
@@ -50,7 +50,7 @@
         {
 
             Mockery::close();
-            ApplicationEvent::setInstance(null);
+            Event::setInstance(null);
             WP::reset();
 
         }

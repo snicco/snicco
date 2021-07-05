@@ -15,7 +15,7 @@
 	use Tests\fixtures\Controllers\Web\ControllerWithDependencies;
 	use Tests\fixtures\Controllers\Web\TeamsController;
 	use Tests\fixtures\TestDependencies\Foo;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Support\WP;
     use BetterWP\Http\Psr7\Request;
     use BetterWP\Routing\Router;
@@ -38,8 +38,8 @@
 
             $this->container = $this->createContainer();
             $this->routes = $this->newRouteCollection();
-            ApplicationEvent::make($this->container);
-            ApplicationEvent::fake();
+            Event::make($this->container);
+            Event::fake();
             WP::setFacadeContainer($this->container);
 
         }
@@ -47,7 +47,7 @@
         protected function beforeTearDown()
         {
 
-            ApplicationEvent::setInstance(null);
+            Event::setInstance(null);
             Mockery::close();
             WP::reset();
 

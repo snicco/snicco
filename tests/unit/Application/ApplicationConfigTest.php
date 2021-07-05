@@ -6,13 +6,13 @@
 
 	namespace Tests\unit\Application;
 
-	use BetterWP\Application\ApplicationConfig;
+	use BetterWP\Application\Config;
 	use PHPUnit\Framework\TestCase;
 
 	class ApplicationConfigTest extends TestCase {
 
 		/**
-		 * @var ApplicationConfig
+		 * @var Config
 		 */
 		private $config;
 
@@ -20,7 +20,7 @@
 
 			parent::setUp();
 
-			$this->config = new ApplicationConfig();
+			$this->config = new Config();
 
 		}
 
@@ -90,7 +90,7 @@
 		/** @test */
 		public function user_config_has_precedence_over_default_config_and_gets_merged_recursively() {
 
-			$config = new ApplicationConfig( [
+			$config = new Config( [
 				'foo' => [
 					'foo' => 'foo',
 					'bar' => 'bar',
@@ -129,7 +129,7 @@
 		/** @test */
 		public function everything_works_with_dot_notation_as_well() {
 
-			$config = new ApplicationConfig( [
+			$config = new Config( [
 				'foo' => [
 					'foo' => 'foo',
 					'bar' => 'baz',
@@ -157,7 +157,7 @@
 		/** @test */
 		public function numerically_indexed_arrays_get_replaced() {
 
-			$config = new ApplicationConfig( [
+			$config = new Config( [
 				'first'  => [
 					'foo',
 				],

@@ -6,10 +6,10 @@
 
     namespace BetterWP\Events;
 
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Mail\Mailable;
 
-    class PendingMail extends ApplicationEvent
+    class PendingMail extends Event
     {
 
         /**

@@ -12,7 +12,7 @@
     use Tests\stubs\TestRequest;
     use Tests\helpers\CreatesWpUrls;
     use Tests\TestCase;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Events\ResponseSent;
     use BetterWP\Http\HttpKernel;
 
@@ -23,13 +23,13 @@
         public function its_possible_to_create_a_route_without_url_conditions () {
 
             $GLOBALS['test']['pass_fallback_route_condition'] = true;
-            ApplicationEvent::fake([ResponseSent::class]);
+            Event::fake([ResponseSent::class]);
 
             $response = $this->get('/post1');
             $response->assertOk();
             $response->assertSee('get_fallback');
 
-            ApplicationEvent::assertDispatched(ResponseSent::class);
+            Event::assertDispatched(ResponseSent::class);
 
         }
 
@@ -38,11 +38,11 @@
         {
 
             $GLOBALS['test']['pass_fallback_route_condition'] = false;
-            ApplicationEvent::fake([ResponseSent::class]);
+            Event::fake([ResponseSent::class]);
 
             $this->post('/post1')->assertNullResponse();
 
-            ApplicationEvent::assertNotDispatched(ResponseSent::class);
+            Event::assertNotDispatched(ResponseSent::class);
 
         }
 
@@ -51,11 +51,11 @@
         {
 
             $GLOBALS['test']['pass_fallback_route_condition'] = true;
-            ApplicationEvent::fake([ResponseSent::class]);
+            Event::fake([ResponseSent::class]);
 
             $this->delete('/post1')->assertNullResponse();
 
-            ApplicationEvent::assertNotDispatched(ResponseSent::class);
+            Event::assertNotDispatched(ResponseSent::class);
 
         }
 
@@ -64,11 +64,11 @@
 
             $GLOBALS['test']['pass_fallback_route_condition'] =true;
             $GLOBALS['test'][WebMiddleware::run_times] = 0;
-            ApplicationEvent::fake([ResponseSent::class]);
+            Event::fake([ResponseSent::class]);
 
             $this->patch('/post1')->assertSee('patch_fallback');
 
-            ApplicationEvent::assertDispatched(ResponseSent::class );
+            Event::assertDispatched(ResponseSent::class );
             $this->assertSame(1, $GLOBALS['test'][WebMiddleware::run_times], 'Middleware was not run as expected.');
 
         }

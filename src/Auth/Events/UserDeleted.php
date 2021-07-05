@@ -7,9 +7,9 @@
     namespace BetterWP\Auth\Events;
 
     use BetterWpHooks\Traits\IsAction;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
 
-    class UserDeleted extends ApplicationEvent
+    class UserDeleted extends Event
     {
 
         use IsAction;

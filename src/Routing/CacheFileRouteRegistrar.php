@@ -7,7 +7,7 @@
     namespace BetterWP\Routing;
 
     use Symfony\Component\Finder\Finder;
-    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Application\Config;
     use BetterWP\Contracts\RouteRegistrarInterface;
     use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
 
@@ -24,7 +24,7 @@
             $this->registrar = $registrar;
         }
 
-        public function loadApiRoutes(ApplicationConfig $config) : bool
+        public function loadApiRoutes(Config $config) : bool
         {
             $dir = $config->get('routing.cache_dir', '');
 
@@ -44,7 +44,7 @@
 
         }
 
-        public function loadStandardRoutes(ApplicationConfig $config)
+        public function loadStandardRoutes(Config $config)
         {
 
             $dir = $config->get('routing.cache_dir', '');

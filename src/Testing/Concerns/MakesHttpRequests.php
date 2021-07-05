@@ -14,7 +14,7 @@
     use Psr\Http\Message\UriInterface;
     use Tests\helpers\CreatesWpUrls;
     use BetterWP\Application\Application;
-    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Application\Config;
     use BetterWP\Contracts\Middleware;
     use BetterWP\Contracts\ViewInterface;
     use BetterWP\Events\IncomingAdminRequest;
@@ -36,7 +36,7 @@
      * @property Application $app
      * @property ServerRequestFactoryInterface $request_factory
      * @property bool $routes_loaded
-     * @property ApplicationConfig $config
+     * @property Config $config
      */
     trait MakesHttpRequests
     {

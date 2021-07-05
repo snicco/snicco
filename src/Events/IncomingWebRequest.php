@@ -7,7 +7,7 @@
 	namespace BetterWP\Events;
 
     use BetterWpHooks\Traits\DispatchesConditionally;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Http\Psr7\Request;
     use BetterWP\Listeners\ShortCircuit404;
     use BetterWP\Support\Str;
@@ -77,7 +77,7 @@
 
             }
 
-            ApplicationEvent::forgetOne(Wp404::class, [ShortCircuit404::class, '__invoke']);
+            Event::forgetOne(Wp404::class, [ShortCircuit404::class, '__invoke']);
 
             $wp->handle_404();
 

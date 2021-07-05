@@ -12,7 +12,7 @@
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
     use BetterWP\Application\Application;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Contracts\ErrorHandlerInterface;
     use BetterWP\Contracts\ServiceProvider;
     use BetterWP\Contracts\ViewInterface;

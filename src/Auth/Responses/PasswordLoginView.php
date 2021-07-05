@@ -6,7 +6,7 @@
 
     namespace BetterWP\Auth\Responses;
 
-    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Application\Config;
     use BetterWP\Auth\Contracts\LoginViewResponse;
     use BetterWP\Support\WP;
     use BetterWP\Routing\UrlGenerator;
@@ -28,7 +28,7 @@
          */
         private $view_factory;
         /**
-         * @var ApplicationConfig
+         * @var Config
          */
         private $config;
 
@@ -42,7 +42,7 @@
          */
         private $registraion;
 
-        public function __construct(ViewFactory $view, UrlGenerator $url, ApplicationConfig $config)
+        public function __construct(ViewFactory $view, UrlGenerator $url, Config $config)
         {
 
             $this->view_factory = $view;

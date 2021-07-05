@@ -13,7 +13,7 @@
     class LoadConfiguration
     {
 
-        public function bootstrap(Application $app) : ApplicationConfig
+        public function bootstrap(Application $app) : Config
         {
 
             $config = [];
@@ -24,7 +24,7 @@
                 $loaded_from_cache = true;
             }
 
-            $config = new ApplicationConfig($config);
+            $config = new Config($config);
 
             if ( ! isset($loaded_from_cache) ) {
 
@@ -51,7 +51,7 @@
             return $base_path.$ds.'bootstrap'.$ds.'cache'.$ds.'__generated::config.json';
         }
 
-        private function loadConfigurationFromFiles(Application $app, ApplicationConfig $config)
+        private function loadConfigurationFromFiles(Application $app, Config $config)
         {
 
             $files = $this->getConfigurationFiles($app);
@@ -83,7 +83,7 @@
             return $files;
         }
 
-        private function createCacheFile(Application $app, ApplicationConfig $config)
+        private function createCacheFile(Application $app, Config $config)
         {
 
             if ( ! is_dir($dir =$app->basePath(). DIRECTORY_SEPARATOR.'bootstrap'. DIRECTORY_SEPARATOR .'cache') ) {

@@ -7,7 +7,7 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Auth\Controllers\AuthSessionController;
     use BetterWP\Auth\Events\Logout;
     use BetterWP\Auth\Responses\LogoutResponse;
@@ -100,7 +100,7 @@
         public function the_current_user_is_logged_out()
         {
 
-            ApplicationEvent::fake([Logout::class]);
+            Event::fake([Logout::class]);
             $this->actingAs($calvin = $this->createAdmin());
             $this->assertAuthenticated($calvin);
 
@@ -118,7 +118,7 @@
             $this->assertNotAuthenticated($calvin);
             $this->assertTrue($auth_cookie_cleared);
             $this->assertSessionUserId(0);
-            ApplicationEvent::assertDispatched(function (Logout $event ) use ($calvin) {
+            Event::assertDispatched(function (Logout $event ) use ($calvin) {
                 return $event->user_id = $calvin->ID;
             });
         }

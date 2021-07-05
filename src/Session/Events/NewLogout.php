@@ -7,9 +7,9 @@
     namespace BetterWP\Session\Events;
 
     use BetterWpHooks\Traits\IsAction;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
 
-    class NewLogout extends ApplicationEvent
+    class NewLogout extends Event
     {
 
         use IsAction;

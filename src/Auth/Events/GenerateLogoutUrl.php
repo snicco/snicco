@@ -6,9 +6,9 @@
 
     namespace BetterWP\Auth\Events;
 
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
 
-    class GenerateLogoutUrl extends ApplicationEvent
+    class GenerateLogoutUrl extends Event
     {
 
         /**

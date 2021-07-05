@@ -7,7 +7,7 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Auth\Contracts\AuthConfirmation;
     use BetterWP\Http\Psr7\Request;
     use BetterWP\Session\Events\SessionRegenerated;
@@ -104,7 +104,7 @@
         public function auth_can_be_confirmed()
         {
 
-            ApplicationEvent::fake([SessionRegenerated::class]);
+            Event::fake([SessionRegenerated::class]);
             $this->authenticateAndUnconfirm($this->createAdmin());
             $token = $this->withCsrfToken();
             $id_before_confirmation = $this->testSessionId();
@@ -121,7 +121,7 @@
             $this->assertFalse($this->session->hasValidAuthConfirmToken());
 
             $this->assertNotSame($id_before_confirmation, $response->session()->getId());
-            ApplicationEvent::assertDispatched(SessionRegenerated::class);
+            Event::assertDispatched(SessionRegenerated::class);
 
 
         }

@@ -6,10 +6,10 @@
 
 	namespace BetterWP\Events;
 
-	use BetterWP\Application\ApplicationEvent;
+	use BetterWP\Events\Event;
 	use BetterWP\Contracts\ViewInterface;
 
-	class MakingView extends ApplicationEvent {
+	class MakingView extends Event {
 
 		/**
 		 * @var ViewInterface

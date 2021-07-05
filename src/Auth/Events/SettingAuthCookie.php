@@ -7,9 +7,9 @@
     namespace BetterWP\Auth\Events;
 
     use WP_User;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
 
-    class SettingAuthCookie extends ApplicationEvent
+    class SettingAuthCookie extends Event
     {
 
         private $cookie;

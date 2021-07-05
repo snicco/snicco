@@ -19,8 +19,8 @@
     use Tests\stubs\TestApp;
     use Throwable;
     use BetterWP\Application\Application;
-    use BetterWP\Application\ApplicationConfig;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Application\Config;
+    use BetterWP\Events\Event;
     use BetterWP\Contracts\AbstractRouteCollection;
     use BetterWP\Contracts\ErrorHandlerInterface;
     use BetterWP\Contracts\Middleware;
@@ -68,7 +68,7 @@
         /** @var Request */
         protected $request;
 
-        /** @var ApplicationConfig */
+        /** @var Config */
         protected $config;
 
         /** @var ServerRequestFactoryInterface */
@@ -233,7 +233,7 @@
 
             $this->backToPresent();
 
-            ApplicationEvent::setInstance(null);
+            Event::setInstance(null);
             WP::reset();
 
             parent::tearDown();

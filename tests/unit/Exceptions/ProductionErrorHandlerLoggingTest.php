@@ -19,7 +19,7 @@
     use Tests\UnitTest;
     use Tests\fixtures\TestDependencies\Foo;
     use Tests\stubs\TestLogger;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Http\Psr7\Request;
     use BetterWP\Http\ResponseFactory;
     use BetterWP\ExceptionHandling\ProductionErrorHandler;
@@ -50,8 +50,8 @@
         protected function beforeTestRun()
         {
 
-            ApplicationEvent::make($this->container = $this->createContainer());
-            ApplicationEvent::fake();
+            Event::make($this->container = $this->createContainer());
+            Event::fake();
             $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
             $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
             WpFacade::setFacadeContainer($this->container);
@@ -64,7 +64,7 @@
         protected function beforeTearDown()
         {
 
-            ApplicationEvent::setInstance(null);
+            Event::setInstance(null);
             WP::setFacadeContainer(null);
             WP::clearResolvedInstances();
             Mockery::close();

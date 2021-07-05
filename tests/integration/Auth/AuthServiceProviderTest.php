@@ -12,7 +12,7 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Auth\Authenticators\MagicLinkAuthenticator;
     use BetterWP\Auth\Authenticators\PasswordAuthenticator;
     use BetterWP\Auth\Authenticators\RedirectIf2FaAuthenticable;
@@ -229,7 +229,7 @@
             $this->withoutExceptionHandling();
             $this->boot();
 
-            ApplicationEvent::fake([ResponseSent::class]);
+            Event::fake([ResponseSent::class]);
 
             $response = $this->get('/wp-login.php');
 
@@ -239,7 +239,7 @@
             $response->assertRedirect($expected_redirect)
                      ->assertStatus(301);
 
-            ApplicationEvent::assertDispatched(function (ResponseSent $event) {
+            Event::assertDispatched(function (ResponseSent $event) {
 
                 return $event->response instanceof RedirectResponse;
 

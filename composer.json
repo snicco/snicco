@@ -1,25 +1,14 @@
 {
-  "name": "htmlburger/wpemerge",
-  "description": "A micro framework which modernizes WordPress as a CMS development by providing tools to implement MVC and more.",
+  "name": "calvinalkan/better-wordpress-framework",
   "type": "library",
-  "keywords": ["wordpress", "framework", "controller", "template", "view", "request", "response", "middleware", "wpemerge"],
-  "license": "GPL-2.0-only",
+  "license": "MIT",
   "minimum-stability": "dev",
   "repositories":
   [
-    {
-      "type": "vcs",
-      "url": "https://github.com/calvinalkan/better-wordpress-database"
-    },
-    {
-      "type": "vcs",
-      "url": "https://github.com/calvinalkan/database"
-    },
      {
       "type": "vcs",
       "url": "https://github.com/calvinalkan/view"
     }
-
   ],
   "require": {
     "php": "^7.3",
@@ -29,17 +18,14 @@
     "calvinalkan/base-container": "0.1.*",
     "calvinalkan/better-wordpress-hooks": "dev-master",
     "calvinalkan/reflection-payload": "^1.0",
-    "illuminate/collections": "8.35.1",
     "illuminate/config": "8.35.1",
+    "illumiante/support" : "8.35.1",
     "nikic/fast-route": "1.3.0",
-    "nyholm/psr7": "1.4.0",
     "nyholm/psr7-server": "^1.0-stable",
     "psr/log": "1.1.4",
     "psr/http-server-middleware": "1.0.1",
     "symfony/finder": "^5.0-stable",
-    "roots/wp-password-bcrypt": "dev-master",
-    "bacon/bacon-qr-code": "^2.0",
-    "pragmarx/google2fa": "8.0.0"
+    "nesbot/carbon": "^2.31"
   },
   "require-dev": {
     "opis/closure": "3.6.2",
@@ -47,21 +33,28 @@
     "filp/whoops": "^2.2",
     "mockery/mockery": "^1.4.2",
     "phpunit/phpunit": "^9.0",
-    "calvinalkan/better-wordpress-database": "dev-master",
     "lucatume/wp-browser": "3.0.6",
-    "illuminate/view": "dev-feature_view_interface_instead_of_view_implementation",
+    "illuminate/view": "dev-8.x-view_interface",
     "adriansuter/php-autoload-override": "^1.2",
     "slim/csrf": "1.2.1",
     "respect/validation": "2.2.3",
-    "bjeavons/zxcvbn-php": "^1.0"
+    "bjeavons/zxcvbn-php": "^1.0",
+    "roots/wp-password-bcrypt": "dev-master",
+    "bacon/bacon-qr-code": "^2.0",
+    "pragmarx/google2fa": "8.0.0"
   },
 
   "suggest": {
+    "nyholm/psr7": "A minimal and very fast PSR7 implementation",
     "opis/closure": "Required if you want to cache routes that use closures [3.6.2]",
-    "illuminate/encryption": "Required if you want to use strong session encryption [8.40.0]",
-    "slim/csrf" : "Required if you want to you csrf protection with sessions [1.2.1]",
+    "illuminate/encryption": "Required if you want to use strong encryption [8.40.0]",
+    "slim/csrf" : "Required if you want to you csrf protection middleware with sessions [1.2.1]",
     "flip/whoops" : "Required if you want the pretty page error handler during devolopment",
-    "respect/validation" : "Required if you want to use the validation module"
+    "respect/validation" : "Required if you want to use the validation module",
+    "bjeavons/zxcvbn-php": "A package by Dropbox to enfore validate password entroypy. Required for the auth package.",
+    "roots/wp-password-bcrypt": "Required for the auth package for better wordpress password hashing",
+    "bacon/bacon-qr-code": "Required for the auth package to genereate two-factor qr codes",
+    "pragmarx/google2fa": "Required for the auth package to for 2FA Authentication [8.0.0]"
   },
 
   "autoload": {

@@ -3,7 +3,7 @@
 
     declare(strict_types = 1);
 
-    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Application\Config;
     use BetterWP\Auth\Controllers\AccountController;
     use BetterWP\Auth\Controllers\AuthConfirmationEmailController;
     use BetterWP\Auth\Controllers\AuthSessionController;
@@ -18,7 +18,7 @@
     use BetterWP\Routing\Router;
 
     /** @var Router $router */
-    /** @var ApplicationConfig $config */
+    /** @var Config $config */
 
     // Login
     $router->middleware('guest')->group(function (Router $router) use ($config) {

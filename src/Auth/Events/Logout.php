@@ -7,11 +7,11 @@
     namespace BetterWP\Auth\Events;
 
     use BetterWpHooks\Traits\IsAction;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Session\Session;
     use BetterWP\Session\Contracts\SessionDriver;
 
-    class Logout extends ApplicationEvent
+    class Logout extends Event
     {
 
         use IsAction;

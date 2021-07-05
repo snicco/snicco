@@ -7,17 +7,17 @@
     namespace BetterWP\Events;
 
     use BetterWpHooks\Traits\IsAction;
-    use BetterWP\Application\ApplicationConfig;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Application\Config;
+    use BetterWP\Events\Event;
     use BetterWP\Http\Psr7\Request;
 
-    class WpInit extends ApplicationEvent
+    class WpInit extends Event
     {
 
         use IsAction;
 
         /**
-         * @var ApplicationConfig
+         * @var Config
          */
         public $config;
 
@@ -26,7 +26,7 @@
          */
         public $request;
 
-        public function __construct( ApplicationConfig $config, Request $request)
+        public function __construct( Config $config, Request $request)
         {
             $this->config = $config;
             $this->request = $request;

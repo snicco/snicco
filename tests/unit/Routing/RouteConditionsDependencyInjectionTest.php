@@ -12,7 +12,7 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
     use Tests\fixtures\Conditions\ConditionWithDependency;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Support\WP;
 
     class RouteConditionsDependencyInjectionTest extends UnitTest
@@ -31,8 +31,8 @@
 
             $this->container = $this->createContainer();
             $this->routes = $this->newRouteCollection();
-            ApplicationEvent::make($this->container);
-            ApplicationEvent::fake();
+            Event::make($this->container);
+            Event::fake();
             WP::setFacadeContainer($this->container);
 
         }
@@ -41,7 +41,7 @@
         {
 
             Mockery::close();
-            ApplicationEvent::setInstance(null);
+            Event::setInstance(null);
             WP::reset();
 
         }

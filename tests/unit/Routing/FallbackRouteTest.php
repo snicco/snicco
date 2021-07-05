@@ -16,7 +16,7 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
-    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\Event;
     use BetterWP\Contracts\ViewFactoryInterface;
     use BetterWP\Support\WP;
     use BetterWP\Http\Psr7\Request;
@@ -46,8 +46,8 @@
             $this->container->instance(UrlGenerator::class, $this->newUrlGenerator());
             $this->container->instance(ViewFactory::class, new TestViewFactory());
             $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
-            ApplicationEvent::make($this->container);
-            ApplicationEvent::fake();
+            Event::make($this->container);
+            Event::fake();
             WP::setFacadeContainer($this->container);
 
         }
@@ -56,7 +56,7 @@
         {
 
             Mockery::close();
-            ApplicationEvent::setInstance(null);
+            Event::setInstance(null);
             WP::reset();
 
         }
