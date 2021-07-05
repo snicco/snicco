@@ -11,8 +11,9 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use Tests\unit\View\MethodField;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\Str;
+    use WPEmerge\View\MethodField;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
@@ -48,7 +49,7 @@
         private $response;
 
         /**
-         * @var MethodField
+         * @var \WPEmerge\View\MethodField
          */
         private $method_field;
 
@@ -73,12 +74,18 @@
 
         }
 
+        private function getRealValue(string $html ) {
+            return Str::between($html, "value='", "'>");
+        }
+
         /** @test */
         public function the_method_can_be_overwritten_for_post_requests()
         {
 
+            $value = $this->getRealValue($this->method_field->html('PUT'));
+
             $request = TestRequest::from('POST', '/foo')->withParsedBody([
-                $this->method_field->key() => 'PUT',
+                '_method' => $value,
             ]);
 
             $response = $this->newMiddleware()->handle($request, $this->route_action);
@@ -91,19 +98,35 @@
         public function the_method_cant_be_overwritten_for_anything_but_post_requests()
         {
 
+            $value = $this->getRealValue($this->method_field->html('PUT'));
+
             $request = TestRequest::from('GET', '/foo')->withParsedBody([
-                $this->method_field->key() => 'PUT',
+                '_method' => $value,
             ]);
             $response = $this->newMiddleware()->handle($request, $this->route_action);
             $this->assertOutput('GET', $response);
 
             $request = TestRequest::from('PATCH', '/foo')->withParsedBody([
-                $this->method_field->key() => 'PUT',
+                '_method' => $value,
             ]);
             $response = $this->newMiddleware()->handle($request, $this->route_action);
             $this->assertOutput('PATCH', $response);
 
         }
 
+        /** @test */
+        public function its_not_possible_to_tamper_with_the_value_of_the_method_field_input () {
+
+            $value = $this->getRealValue($this->method_field->html('PUT'));
+            $tampered = Str::replaceFirst('PUT', 'DELETE', $value);
+
+            $request = TestRequest::from('POST', '/foo')->withParsedBody([
+                '_method' => $tampered,
+            ]);
+
+            $response = $this->newMiddleware()->handle($request, $this->route_action);
+            $this->assertOutput('POST', $response);
+
+        }
 
     }

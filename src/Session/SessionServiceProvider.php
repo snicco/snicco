@@ -6,12 +6,15 @@
 
     namespace WPEmerge\Session;
 
+    use Psr\Http\Message\ResponseFactoryInterface;
     use Slim\Csrf\Guard;
     use WPEmerge\Application\Application;
     use WPEmerge\Auth\AuthServiceProvider;
+    use WPEmerge\Contracts\AbstractRedirector;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Session\Contracts\SessionDriver;
     use WPEmerge\Session\Contracts\SessionManagerInterface;
     use WPEmerge\Session\Events\NewLogin;
@@ -46,6 +49,7 @@
             $this->bindAliases();
             $this->bindEncryptor();
             $this->bindEvents();
+            $this->bindStatefulRedirector();
 
         }
 
@@ -81,7 +85,6 @@
             $this->config->extend('session.lifetime', SessionManager::HOUR_IN_SEC * 8);
             $this->config->extend('session.rotate', $this->config->get('session.lifetime') / 2);
 
-
             // middleware
             $this->config->extend('middleware.aliases', [
                 'csrf' => CsrfMiddleware::class,
@@ -97,7 +100,7 @@
         {
 
 
-            $this->container->singleton(Session::class, function ()  {
+            $this->container->singleton(Session::class, function () {
 
                 $store = null;
 
@@ -171,7 +174,7 @@
 
             $this->container->singleton(EncryptorInterface::class, function () {
 
-                return new Encryptor($this->config->get('app_key'));
+                return new Encryptor($this->config->get('app.key'));
 
             });
         }
@@ -218,7 +221,7 @@
         {
 
 
-            if ( in_array(AuthServiceProvider::class, $this->config->get('providers', []))) {
+            if (in_array(AuthServiceProvider::class, $this->config->get('app.providers', []))) {
 
                 return;
 
@@ -228,7 +231,6 @@
                 'wp_login' => NewLogin::class,
                 'wp_logout' => NewLogout::class,
             ]);
-
 
             $this->config->extend('events.listeners', [
 
@@ -243,7 +245,6 @@
                     [SessionManager::class, 'invalidateAfterLogout'],
 
                 ],
-
 
             ]);
 
@@ -273,10 +274,32 @@
 
         private function bindViewContext()
         {
+
             /** @var GlobalContext $global_context */
             $global_context = $this->container->make(GlobalContext::class);
 
             $global_context->add('csrf', $this->container->make(CsrfField::class));
+        }
+
+        private function bindStatefulRedirector()
+        {
+
+            if ( ! $this->sessionEnabled() ) {
+
+                return;
+
+            }
+
+            $this->container->singleton(AbstractRedirector::class, function () {
+
+                return new StatefulRedirector(
+                    $this->container->make(Session::class),
+                    $this->container->make(UrlGenerator::class),
+                    $this->container->make(ResponseFactoryInterface::class)
+                );
+
+            });
+
         }
 
 

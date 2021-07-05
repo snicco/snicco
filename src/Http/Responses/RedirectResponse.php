@@ -27,7 +27,7 @@
 
         public function to( string $url ) : RedirectResponse {
 
-		    return $this->new($this->withHeader('Location', $url));
+            return $this->withHeader('Location', $url);
 
 		}
 

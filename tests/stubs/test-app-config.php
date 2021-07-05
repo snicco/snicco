@@ -25,6 +25,7 @@
 
             'trailing_slash' => false,
             'definitions' => ROUTES_DIR
+
         ],
 
 		'views' => [

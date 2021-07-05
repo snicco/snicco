@@ -21,7 +21,7 @@
     use WPEmerge\Auth\Events\SettingAuthCookie;
     use WPEmerge\Auth\Listeners\GenerateNewAuthCookie;
     use WPEmerge\Auth\Listeners\RefreshAuthCookies;
-    use WPEmerge\Auth\Listeners\WpLoginRedirectManager;
+    use WPEmerge\Auth\Listeners\WpLoginLinkGenerator;
     use WPEmerge\Auth\Middleware\AuthenticateSession;
     use WPEmerge\Auth\Middleware\AuthUnconfirmed;
     use WPEmerge\Auth\Middleware\ConfirmAuth;
@@ -36,11 +36,13 @@
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Events\WpInit;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
+    use WPEmerge\Middleware\Secure;
     use WPEmerge\Session\Events\SessionRegenerated;
     use WPEmerge\Session\Contracts\SessionDriver;
+    use WPEmerge\Session\Middleware\StartSessionMiddleware;
     use WPEmerge\Session\SessionManager;
     use WPEmerge\Session\Contracts\SessionManagerInterface;
 
@@ -68,8 +70,6 @@
 
             $this->bindAuthSessionManager();
 
-            $this->bindMiddleware();
-
             $this->bindLoginViewResponse();
 
             $this->bindLoginResponse();
@@ -89,30 +89,20 @@
 
             $this->updateSessionLifetime();
 
-            $this->config->set('session.rotate',
-                min(
-                    $this->config->get('session.rotate'),
-                    $this->config->get('auth.timeouts.idle') * 2
-                )
-            );
+
         }
 
         private function bindEvents()
         {
 
             $this->config->extend('events.listeners', [
-                WpInit::class => [
-
-                    [WpLoginRedirectManager::class, 'redirect'],
-
-                ],
                 GenerateLoginUrl::class => [
 
-                    [WpLoginRedirectManager::class, 'loginUrl'],
+                    [WpLoginLinkGenerator::class, 'loginUrl'],
 
                 ],
                 GenerateLogoutUrl::class => [
-                    [WpLoginRedirectManager::class, 'logoutUrl'],
+                    [WpLoginLinkGenerator::class, 'logoutUrl'],
                 ],
                 SettingAuthCookie::class => [
                     GenerateNewAuthCookie::class,
@@ -135,11 +125,11 @@
                 'logout_url' => GenerateLogoutUrl::class,
             ]);
 
-            // This filter is very misleading from WordPress. It does not filter expire value in
+            // This filter is very misleading from WordPress. It does not filter the expire value in
             // "setcookie()" function, but filters the expiration fragment in the cookie hash.
             add_filter('auth_cookie_expiration', function () {
 
-                return $this->config->get('auth.remember.lifetime');
+                return $this->config->get('auth.features.remember_me');
 
             }, 10, 3);
 
@@ -170,22 +160,32 @@
         {
 
             $this->config->extend('auth.confirmation.duration', SessionManager::HOUR_IN_SEC * 3);
-            $this->config->extend('auth.remember.enabled', true);
-            $this->config->extend('auth.remember.lifetime', SessionManager::WEEK_IN_SEC);
-            $this->config->extend('auth.timeouts.idle', SessionManager::HOUR_IN_SEC / 2);
-            $this->config->extend('middleware.aliases', [
-                'auth.confirmed' => ConfirmAuth::class,
-                'auth.unconfirmed' => AuthUnconfirmed::class,
-            ]);
+            $this->config->extend('auth.idle', SessionManager::HOUR_IN_SEC / 2);
+            $this->config->extend('auth.authenticator', 'password');
             $this->config->extend('auth.endpoint', 'auth');
             $this->config->extend('routing.api.endpoints', [
 
                 'auth' => $this->config->get('auth.endpoint',),
 
             ]);
+            $this->config->extend('auth.features.remember_me', false);
             $this->config->extend('auth.features.password-resets', false);
-            $this->config->extend('auth.features.two-factor-authentication', false);
+            $this->config->extend('auth.features.2fa', false);
             $this->config->extend('auth.features.registration', false);
+
+            $this->config->extend('middleware.aliases', [
+                'auth.confirmed' => ConfirmAuth::class,
+                'auth.unconfirmed' => AuthUnconfirmed::class,
+            ]);
+            $this->config->extend('middleware.groups.global', [
+                Secure::class,
+                StartSessionMiddleware::class,
+                AuthenticateSession::class,
+            ]);
+            $this->config->extend('middleware.priority', [
+                StartSessionMiddleware::class,
+                AuthenticateSession::class,
+            ]);
 
 
         }
@@ -215,25 +215,23 @@
         private function updateSessionLifetime()
         {
 
-            $remember = $this->config->get('auth.remember.enabled');
+            $remember = $this->config->get('auth.features.remember_me', false);
 
-            if ($remember) {
+            if (is_int($remember) && $remember > 0) {
 
-                $remember_lifetime = $this->config->get('auth.remember.lifetime');
+                $remember_lifetime = $remember;
                 $session_lifetime = $this->config->get('session.lifetime');
 
                 $max = max($remember_lifetime, $session_lifetime);
 
-                $this->config->set('auth.remember.lifetime', $max);
+                $this->config->set('auth.features.remember_me', $max);
                 $this->config->set('session.lifetime', $max);
                 $this->config->set('auth.timeouts.absolute', $max);
 
             }
             else {
 
-                $session_lifetime = $this->config->get('session.lifetime');
-                $this->config->set('auth.timeouts.absolute', $session_lifetime);
-                $this->config->set('auth.remember.lifetime', $session_lifetime);
+                $this->config->set('auth.features.remember_me', 0);
 
             }
 
@@ -264,20 +262,12 @@
             });
         }
 
-        private function bindMiddleware()
-        {
-
-            $this->config->extend('middleware.groups.global', [
-                AuthenticateSession::class,
-            ]);
-        }
-
         private function bindLoginViewResponse()
         {
 
             $this->container->singleton(LoginViewResponse::class, function () {
 
-                $response = $this->config->get('auth.view', PasswordLoginView::class);
+                $response = $this->config->get('auth.primary_view', PasswordLoginView::class);
 
                 return $this->container->make($response);
 
@@ -291,11 +281,11 @@
 
             if ( ! count($pipeline) ) {
 
-                $primary = ( $this->config->get('auth.authenticator', 'password') === 'email' )
+                $primary = ( $this->config->get('auth.authenticator') === 'email' )
                     ? MagicLinkAuthenticator::class
                     : PasswordAuthenticator::class;
 
-                $two_factor = $this->config->get('auth.features.two-factor-authentication');
+                $two_factor = $this->config->get('auth.features.2fa');
 
                 $this->config->set('auth.through', array_values(array_filter([
 
@@ -352,7 +342,7 @@
         {
             $this->container->singleton(AuthConfirmation::class, function () {
 
-                if ( $this->config->get('auth.features.two-factor-authentication') ) {
+                if ( $this->config->get('auth.features.2fa') ) {
 
                     return new TwoFactorAuthConfirmation(
                         $this->container->make(EmailAuthConfirmation::class),
@@ -365,6 +355,7 @@
                 }
 
                 return $this->container->make(EmailAuthConfirmation::class);
+
             });
         }
 

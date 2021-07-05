@@ -7,7 +7,7 @@
     namespace WPEmerge\Routing\Conditions;
 
     use WPEmerge\Contracts\UrlableInterface;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request;
 
     class AdminPageCondition extends QueryStringCondition implements UrlableInterface

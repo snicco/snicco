@@ -32,7 +32,7 @@
         /**
          * @var array|null
          */
-        private $input;
+        private $input = [];
 
         /**
          * @var array
@@ -79,7 +79,7 @@
 
             $input = $input ?? $this->input;
 
-            if ( ! $input) {
+            if ( ! is_array($input) ) {
 
                 throw new \LogicException('No input provided for validation');
 

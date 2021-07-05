@@ -21,7 +21,6 @@
         use PreparesRouteForExport;
         use DeserializesRoutes;
 
-
         /**
          * @var CachedFastRouteMatcher
          */

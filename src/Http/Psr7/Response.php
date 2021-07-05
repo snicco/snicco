@@ -8,11 +8,12 @@
 
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\StreamInterface;
+    use WPEmerge\Contracts\ResponsableInterface;
     use WPEmerge\Http\Cookie;
     use WPEmerge\Http\Cookies;
 
 
-    class Response implements ResponseInterface
+    class Response implements ResponseInterface, ResponsableInterface
     {
 
         use ImplementsPsr7Response;
@@ -27,6 +28,11 @@
 
             $this->psr7_response = $psr7_response;
 
+        }
+
+        public function toResponsable()
+        {
+            return $this;
         }
 
         public function noIndex(?string $bot = null)
@@ -130,8 +136,31 @@
 
         }
 
-        public function isRedirect(): bool
+        public function isRedirect(string $location = null): bool
         {
-            return in_array($this->getStatusCode(), [201, 301, 302, 303, 307, 308]) && $this->hasHeader('location');
+            return in_array($this->getStatusCode(), [201, 301, 302, 303, 307, 308]) && (null === $location || $location == $this->getHeader('Location'));
         }
+
+        public function isSuccessful() : bool
+        {
+            return $this->getStatusCode() >= 200 && $this->getStatusCode() < 300;
+        }
+
+        public function isOk() : bool
+        {
+            return 200 === $this->getStatusCode();
+        }
+
+        public function isNotFound() : bool
+        {
+            return 404 === $this->getStatusCode();
+        }
+
+        public function isForbidden() : bool
+        {
+            return 403 === $this->getStatusCode();
+        }
+
+
+
     }

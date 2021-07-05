@@ -13,19 +13,22 @@
     {
 
 
-        private function generateNewRecoveryCodes () :string
+        private function generateNewRecoveryCodes () :array
         {
-            return $this->encryptor->encrypt(json_encode(Collection::times(8, function () {
+
+            return Collection::times(8, function () {
 
                 return RecoveryCode::generate();
 
-            })->all()));
+            })->all();
 
         }
 
-        public function saveCodes(int $user_id, string $encrypted_codes) {
+        public function saveCodes(int $user_id, array $codes ) {
 
-            update_user_meta($user_id, 'two_factor_recovery_codes', $encrypted_codes);
+            $codes = $this->encryptor->encrypt(json_encode($codes));
+
+            update_user_meta($user_id, 'two_factor_recovery_codes', $codes);
 
         }
 

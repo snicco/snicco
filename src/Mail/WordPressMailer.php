@@ -7,7 +7,7 @@
     namespace WPEmerge\Mail;
 
     use WPEmerge\Contracts\Mailer;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
 
     class WordPressMailer implements Mailer
     {

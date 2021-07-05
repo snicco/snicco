@@ -20,7 +20,7 @@
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\ExceptionHandling\Exceptions\NotFoundException;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
@@ -189,7 +189,7 @@
 
             });
 
-            $this->expectExceptionMessage('The response returned by the route action is not valid.');
+            $this->expectExceptionMessage('The response returned by the route is not valid.');
 
             $this->runKernel($this->webRequest('GET', '/foo'));
 
@@ -244,7 +244,6 @@
 
             });
         }
-
 
         /** @test */
         public function the_request_is_rebound_in_the_container_after_a_global_routes_run () {

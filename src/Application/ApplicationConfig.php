@@ -10,6 +10,12 @@
 	class ApplicationConfig extends Repository {
 
 
+	    public function remove(string $key) {
+
+	        Arr::forget($this->items, $key);
+
+        }
+
 		public function extend( string $key, $app_config ) : void {
 
 			$user_config = $this->get( $key, [] );

@@ -11,7 +11,7 @@
     use WPEmerge\Contracts\RouteUrlGenerator;
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Support\Str;
     use WPEmerge\Support\Url;
@@ -20,7 +20,7 @@
     {
         use InteractsWithTime;
 
-        private $trailing_slash = false;
+        private $trailing_slash;
 
         /**
          * @var RouteUrlGenerator

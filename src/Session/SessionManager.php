@@ -9,12 +9,13 @@
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
     use WPEmerge\Auth\WpAuthSessionToken;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Cookie;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseEmitter;
     use WPEmerge\Session\Contracts\SessionManagerInterface;
+    use WPEmerge\Session\Events\NewLogin;
     use WPEmerge\Session\Events\SessionRegenerated;
     use WPEmerge\Traits\HasLottery;
 
@@ -148,10 +149,10 @@
          * @param  Request  $request
          * @param  ResponseEmitter  $emitter
          */
-        public function migrateAfterLogin(Request $request, ResponseEmitter $emitter)
+        public function migrateAfterLogin(NewLogin $event, Request $request, ResponseEmitter $emitter)
         {
 
-            $this->start($request, $request->userId());
+            $this->start($request, $event->user->ID);
 
             $this->session->regenerate();
             $this->session->save();
@@ -176,7 +177,7 @@
         public function invalidateAfterLogout(Request $request, ResponseEmitter $emitter)
         {
 
-            $this->start($request, $request->userId());
+            $this->start($request, 0);
 
             $this->session->invalidate();
             $this->session->save();

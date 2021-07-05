@@ -11,7 +11,7 @@
     trait ResolvesUser
     {
 
-        public function getUserByLogin(string $login ) {
+        protected function getUserByLogin(string $login ) {
 
             $is_email = filter_var($login, FILTER_VALIDATE_EMAIL);
 
@@ -21,13 +21,26 @@
 
         }
 
-        public function getUserById($id) : ?WP_User {
+        protected function getUserById($id) : ?WP_User {
 
-            $user = get_user_by('id', $id);
+            $user = get_user_by('id', (int) $id);
 
             return $user instanceof WP_User ? $user :null;
 
         }
 
+        protected function userIs (WP_User $user, string $role) : bool
+        {
+
+            $roles = $user->roles;
+
+            return in_array($role, $roles, true);
+
+        }
+
+        protected function isAdmin (WP_User $user) : bool
+        {
+            return $this->userIs($user, 'administrator');
+        }
 
     }

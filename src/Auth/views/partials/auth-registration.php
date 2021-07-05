@@ -17,7 +17,7 @@
     <?php else : ?>
 
         <div class="notification is-info is-light">
-            Provide your favorite email address to register at <?= esc_html(\WPEmerge\Facade\WP::siteName()) ?>.
+            Provide your favorite email address to register at <?= esc_html(\WPEmerge\Support\WP::siteName()) ?>.
             <br>
             We will sent you a confirmation email with a link to finish you registration.
         </div>

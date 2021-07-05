@@ -12,7 +12,7 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Routing\Route;
     use WPEmerge\Routing\RouteCollection;
     use WPEmerge\Support\Str;
@@ -223,7 +223,6 @@
 
             $g = $this->newUrlGenerator($this->app_key);
             $url = $g->signed('/foo');
-
 
             $this->assertTrue($this->magic_link->hasValidSignature(TestRequest::from('GET', $url )));
 

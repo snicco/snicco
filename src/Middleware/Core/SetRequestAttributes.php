@@ -8,7 +8,7 @@
 
     use Psr\Http\Message\ResponseInterface;
     use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
 
@@ -19,8 +19,7 @@
         {
 
             $request = $request
-                ->withUser(WP::userId())
-                ->withAttribute('_wp_admin_folder', WP::wpAdminFolder());
+                ->withUserId(WP::userId());
 
             return $next($request);
 

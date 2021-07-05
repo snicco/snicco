@@ -54,5 +54,13 @@
             return ! static::endsWith($path, $string);
         }
 
+        public static function betweenFirst($subject, $from, $to)
+        {
+            if ($from === '' || $to === '') {
+                return $subject;
+            }
+
+            return static::before(static::after($subject, $from), $to);
+        }
 
     }

@@ -20,7 +20,6 @@
     class TwoFactorAuthenticator extends Authenticator
     {
 
-        use ResolveTwoFactorSecrets;
         use ResolvesUser;
         use PerformsTwoFactorAuthentication;
 
@@ -41,7 +40,6 @@
          */
         private $recovery_codes = [];
 
-
         public function __construct(TwoFactorAuthenticationProvider $provider, EncryptorInterface $encryptor)
         {
             $this->provider = $provider;
@@ -54,22 +52,22 @@
             $session = $request->session();
             $challenged_user_id = $session->challengedUser();
 
-            if ( ! $challenged_user_id || ! $this->userHasTwoFactorEnabled($user = $this->getUserById($challenged_user_id)) ) {
+            if ( ! $challenged_user_id || ! $this->userHasTwoFactorEnabled($user = $this->getUserById($challenged_user_id))) {
 
                 return $next($request);
 
             }
 
-            $valid = $this->validateTwoFactorAuthentication($request, $challenged_user_id);
+            $valid = $this->validateTwoFactorAuthentication($this->provider, $request, $challenged_user_id);
 
-            if ( ! $valid ) {
+            if ( ! $valid) {
 
                 throw new FailedTwoFactorAuthenticationException($this->failure_message, $request);
 
             }
 
-            $remember = $session->get('2fa.remember', false );
-            $session->forget('2fa');
+            $remember = $session->get('auth.2fa.remember', false);
+            $session->forget('auth.2fa');
 
             return $this->login($user, $remember);
 

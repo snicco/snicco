@@ -24,7 +24,7 @@
 
     /**
      * Can be applied to your App class via a "@mixin" annotation for better IDE support.
-     * This class is not meant to be used in any other capacity.
+     * This class is not meant to be used in any other way.
      *
      * @codeCoverageIgnore
      */
@@ -116,20 +116,17 @@
         /**
          * Bootstrap the application.
          *
-         * @param  array  $config
-         * @param  boolean  $run
-         *
          * @return void
          * @see Application::boot()
          */
-        public static function bootstrap(array $config = [], $run = true)
+        public static function boot(bool $load = true )
         {
         }
 
         /**
          * Get the IoC container instance.
          *
-         * @return \Contracts\ContainerAdapter
+         * @return ContainerAdapter
          */
         public static function container() : ContainerAdapter
         {

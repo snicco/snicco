@@ -6,19 +6,13 @@
 
     namespace WPEmerge\Auth\Controllers;
 
-    use Carbon\Carbon;
-    use Closure;
     use WP_User;
-    use WPEmerge\Contracts\MagicLink;
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Session\CsrfField;
     use WPEmerge\Validation\Exceptions\ValidationException;
-    use WPEmerge\View\ViewFactory;
     use Respect\Validation\Validator as v;
+    use WPEmerge\View\MethodField;
     use ZxcvbnPhp\Zxcvbn;
 
     class ResetPasswordController extends Controller
@@ -33,6 +27,10 @@
 
         protected $min_strength = 3;
 
+        protected $min_length = 12;
+
+        protected $max_length = 64;
+
         public function __construct(string $success_message = null)
         {
 
@@ -40,18 +38,13 @@
 
         }
 
-        public function create(Request $request, CsrfField $csrf_field)
+        public function create(Request $request, MethodField $method_field)
         {
-
-            $response = $this->response_factory->view('auth-layout', [
+            return $this->response_factory->view('auth-layout', [
                 'view' => 'auth-password-reset',
-                'view_factory' => $this->view_factory,
                 'post_to' => $request->fullPath(),
-                'csrf_field' => $csrf_field->asHtml(),
+                'method_field' => $method_field->html('PUT')
             ])->withHeader('Referrer-Policy', 'strict-origin');
-
-            return $response;
-
 
         }
 
@@ -60,18 +53,18 @@
 
             $user = $this->getUser($request);
 
-            if ( ! $user instanceof WP_User) {
+            if ( ! $user instanceof WP_User ) {
 
-                return $this->redirectBackFailure($request);
+                return $this->redirectBackFailure();
 
             }
 
-            $rules = array_merge($this->rules, [
-                'password' => v::noWhitespace()->length(12, 64),
+            $rules = array_merge([
+                'password' => v::noWhitespace()->length($this->min_length, $this->max_length),
                 '*password_confirmation' => [
                     v::sameAs('password'), 'The provided passwords do not match',
                 ],
-            ]);
+            ], $this->rules);
 
             $validated = $request->validate($rules);
 
@@ -85,11 +78,11 @@
 
         }
 
-        private function redirectBackFailure(Request $request) : RedirectResponse
+        private function redirectBackFailure() : RedirectResponse
         {
 
             return $this->response_factory->redirect()
-                                          ->to($request->session()->getPreviousUrl(wp_login_url()))
+                                          ->refresh()
                                           ->withErrors(['failure' => 'We could not reset your password.']);
 
         }

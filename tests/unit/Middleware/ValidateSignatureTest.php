@@ -15,7 +15,7 @@
     use Tests\UnitTest;
     use WPEmerge\Contracts\MagicLink;
     use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
-    use WPEmerge\ExceptionHandling\TestingErrorHandler;
+    use WPEmerge\ExceptionHandling\NullErrorHandler;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Middleware\Core\ShareCookies;
@@ -179,7 +179,7 @@
             $c = $this->createContainer();
             $c->instance(ResponseFactory::class, $this->response_factory);
 
-            $pipeline = new Pipeline($c, new TestingErrorHandler());
+            $pipeline = new Pipeline($c, new NullErrorHandler());
             $m = $this->newMiddleware($this->magic_link);
 
             $response = $pipeline->send($request)
@@ -226,7 +226,7 @@
             $c = $this->createContainer();
             $c->instance(ResponseFactory::class, $this->response_factory);
 
-            $pipeline = new Pipeline($c, new TestingErrorHandler());
+            $pipeline = new Pipeline($c, new NullErrorHandler());
             $m = $this->newMiddleware($this->magic_link);
 
             $response = $pipeline->send($request)

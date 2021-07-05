@@ -16,7 +16,7 @@
     use WPEmerge\Contracts\ServiceProvider;
     use WPEmerge\Http\DatabaseMagicLink;
     use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Routing\Conditions\AdminAjaxCondition;
@@ -42,7 +42,7 @@
     {
 
         /**
-         * Key=>Class dictionary of condition types
+         * Alias=>Class dictionary of condition types
          *
          * @var array<string, string>
          */
@@ -55,15 +55,19 @@
             'post_template' => PostTemplateCondition::class,
             'post_type' => PostTypeCondition::class,
             'query_string' => QueryStringCondition::class,
+            'request' => RequestAttributeCondition::class,
+
+            // These two are only used to the url generation functionality
             'admin_page' => AdminPageCondition::class,
             'admin_ajax' => AdminAjaxCondition::class,
-            'request' => RequestAttributeCondition::class,
         ];
 
         public function register() : void
         {
 
             $this->bindConfig();
+
+            $this->extendRoutes($this->config->get('app.package_root') . DIRECTORY_SEPARATOR . 'routes');
 
             $this->bindRouteMatcher();
 
@@ -78,7 +82,6 @@
             $this->bindUrlGenerator();
 
             $this->bindRouteRegistrar();
-
 
         }
 
@@ -119,14 +122,17 @@
             $this->config->extend('routing.conditions', self::CONDITION_TYPES);
             $this->config->extend('routing.must_match_web_routes', false);
             $this->config->extend('routing.api.endpoints', []);
-
-
-
+            $this->config->extend('routing.cache', ! $this->config->get('app.debug') );
+            $this->config->extend(
+                'routing.cache_dir',
+                $this->config->get('app.storage_dir'). DIRECTORY_SEPARATOR . 'framework'. DIRECTORY_SEPARATOR . 'routes'
+            );
 
         }
 
         private function bindRouteMatcher() : void
         {
+
             $this->container->singleton(RouteMatcher::class, function () {
 
 
@@ -222,7 +228,6 @@
                 });
 
 
-
                 return $generator;
 
 
@@ -268,6 +273,5 @@
 
             });
         }
-
 
     }

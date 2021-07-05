@@ -21,12 +21,16 @@
          */
         public $session;
 
-        public function __construct(Session $session)
+        /**
+         * @var int
+         */
+        public $user_id;
+
+        public function __construct(Session $session, int $user_id)
         {
 
             $this->session = $session;
-            $this->session->invalidate();
-            wp_clear_auth_cookie();
+            $this->user_id = $user_id;
 
             /**
              * Fires after a user is logged out.
@@ -38,8 +42,6 @@
              */
             do_action( 'wp_logout', $this->session->userId() );
 
-            $this->session->setUserId(0);
-            wp_set_current_user( 0 );
 
         }
 

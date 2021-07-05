@@ -8,7 +8,7 @@
 
     use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
     use WPEmerge\Contracts\AbstractRedirector;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\Responses\RedirectResponse;
     use WPEmerge\Routing\UrlGenerator;

@@ -17,7 +17,7 @@
     use WPEmerge\Contracts\ViewFactoryInterface as ViewFactory;
     use WPEmerge\ExceptionHandling\Exceptions\HttpException;
     use WPEmerge\ExceptionHandling\Exceptions\ViewException;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Response;
     use WPEmerge\Http\Responses\InvalidResponse;
     use WPEmerge\Http\Responses\NullResponse;

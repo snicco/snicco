@@ -6,43 +6,30 @@
 
     namespace Tests\integration\Http;
 
-    use Psr\Http\Message\ServerRequestInterface;
-    use Tests\IntegrationTest;
-    use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
-    use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Events\WpQueryFilterable;
-    use WPEmerge\Http\HttpKernel;
-    use WPEmerge\Http\Psr7\Request;
+    use Tests\TestCase;
 
-    class FilterWpQueryTest extends IntegrationTest
+    class FilterWpQueryTest extends TestCase
     {
 
-        protected function setUp() : void
-        {
-
-            parent::setUp();
-            $this->newTestApp(TEST_CONFIG);
-
-            $this->registerAndRunApiRoutes();
-
-        }
+        protected $defer_boot = true;
 
         /** @test */
         public function WP_QUERY_vars_can_be_filtered_by_a_route()
         {
 
-
             $query_vars = ['foo' => 'bar'];
             $request = TestRequest::from('GET', '/wpquery/foo');
-
-            $this->rebindRequest($request);
+            $this->withRequest($request)->boot();
+            $this->loadRoutes();
 
             $after = apply_filters('request', $query_vars);
-
             $this->assertSame(['foo' => 'baz'], $after);
 
-            $this->seeKernelOutput('FOO_QUERY', $request);
+            apply_filters('template_include', 'wordpress.php');
+
+            $this->sentResponse()->assertOk()->assertSee('FOO_QUERY');
+
 
         }
 
@@ -52,13 +39,16 @@
 
             $query_vars = ['foo' => 'bar'];
 
-            // The route response to post but the event wont get dispatched.
+            // The route responds to post but the event wont get dispatched.
             $request = TestRequest::from('POST', '/wpquery/post');
-            $this->rebindRequest($request);
-            $after = apply_filters('request', $query_vars);
+            $this->withRequest($request)->boot();
+            $this->loadRoutes();
 
+            $after = apply_filters('request', $query_vars);
             $this->assertSame(['foo' => 'bar'], $after);
-            $this->seeKernelOutput('FOO_QUERY', $request);
+
+            apply_filters('template_include', 'wordpress.php');
+            $this->sentResponse()->assertOk()->assertSee('FOO_QUERY');
 
         }
 
@@ -69,7 +59,9 @@
             $query_vars = ['foo' => 'bar'];
 
             $request = TestRequest::from('GET', '/wpquery/bogus');
-            $this->rebindRequest($request);
+            $this->withRequest($request)->boot();
+            $this->loadRoutes();
+
             $after = apply_filters('request', $query_vars);
 
             $this->assertSame(['foo' => 'bar'], $after);
@@ -82,8 +74,9 @@
 
             $query_vars = ['spain' => 'barcelona'];
             $request = TestRequest::from('GET', 'wpquery/teams/germany/dortmund');
+            $this->withRequest($request)->boot();
+            $this->loadRoutes();
 
-            $this->rebindRequest($request);
             $after = apply_filters('request', $query_vars);
 
             $this->assertSame(['spain' => 'barcelona', 'germany' => 'dortmund'], $after);
@@ -96,12 +89,14 @@
 
             $query_vars = ['foo' => 'bar'];
             $request = TestRequest::from('GET', '/wpquery/assert-no-handler-run');
+            $this->withRequest($request)->boot();
+            $this->loadRoutes();
 
-            $this->rebindRequest($request);
             $after = apply_filters('request', $query_vars);
 
             $this->assertSame(['foo' => 'baz'], $after);
-            $this->expectOutputString('');
+
+            $this->assertNoResponse();
 
         }
 
@@ -111,14 +106,16 @@
 
             $query_vars = ['foo' => 'bar'];
             $request = TestRequest::from('GET', '/wpquery/do-nothing');
-            $this->rebindRequest($request);
+            $this->withRequest($request);
+            $this->boot();
+            $this->loadRoutes();
 
             $filter_WP_QUERY = apply_filters('request', $query_vars);
             $this->assertSame(['foo' => 'baz'], $filter_WP_QUERY);
 
-            $this->expectOutputString('');
             apply_filters('template_include', 'wp.php');
 
+            $this->assertNoResponse();
 
         }
 

@@ -125,7 +125,6 @@
 
 		}
 
-
 		private function newErrorHandler (  ) : DebugErrorHandler {
 
 			return ErrorHandlerFactory::make(

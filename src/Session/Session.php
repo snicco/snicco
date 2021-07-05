@@ -14,14 +14,14 @@
     use Illuminate\Support\ViewErrorBag;
     use Respect\Validation\Rules\DateTime;
     use WPEmerge\Auth\Events\Logout;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Session\Contracts\SessionDriver;
     use WPEmerge\Session\Events\SessionRegenerated;
     use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
     use stdClass;
     use SessionHandlerInterface;
-
+    use WPEmerge\Support\Url;
 
     class Session
     {
@@ -387,10 +387,10 @@
 
         }
 
-        public function setIntendedUrl(string $url)
+        public function setIntendedUrl(string $encoded_url)
         {
 
-            $this->put('_url.intended', $url);
+            $this->put('_url.intended', $encoded_url);
 
         }
 
@@ -619,7 +619,7 @@
 
         public function challengedUser() : int
         {
-            return $this->get('2fa.challenged_user', 0);
+            return $this->get('auth.2fa.challenged_user', 0);
         }
 
 

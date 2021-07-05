@@ -21,7 +21,7 @@
     use WPEmerge\Events\IncomingAjaxRequest;
     use WPEmerge\Events\IncomingWebRequest;
     use WPEmerge\Events\WpQueryFilterable;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Factories\RouteActionFactory;
     use WPEmerge\Factories\ConditionFactory;
     use WPEmerge\Http\Psr7\Request;
@@ -69,8 +69,8 @@
         protected function beforeTestRun()
         {
 
-            $this->route_map_file = TESTS_DIR.DS.'_data'.DS.'route.cache.php';
-            $this->route_collection_file = TESTS_DIR.DS.'_data'.DS.'route.collection.php';
+            $this->route_map_file = TESTS_DIR.DS.'codecept'. DS. '_data'.DS .'route.cache.php';
+            $this->route_collection_file = TESTS_DIR.DS.'codecept'.DS.'_data'.DS. 'route.collection.php';
 
             $this->container = $this->createContainer();
             $this->routes = $this->newRouteCollection();

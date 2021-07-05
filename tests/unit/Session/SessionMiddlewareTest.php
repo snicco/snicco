@@ -13,8 +13,9 @@
     use Tests\helpers\HashesSessionIds;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\ExceptionHandling\TestingErrorHandler;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\ExceptionHandling\NullErrorHandler;
+    use WPEmerge\Testing\TestingErrorHandler;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Http\Delegate;
     use WPEmerge\Http\Psr7\Request;
@@ -235,7 +236,7 @@
             $response_factory = $this->createResponseFactory();
             $c->instance(ResponseFactory::class, $response_factory);
 
-            $pipeline = new Pipeline($c, new TestingErrorHandler());
+            $pipeline = new Pipeline($c, new NullErrorHandler());
 
             $request = TestRequest::from('GET', 'foo');
 
@@ -291,7 +292,7 @@
         /** @test */
         public function the_user_id_is_set_on_the_session () {
 
-            $response = $this->newMiddleware()->handle($this->request->withUser(99), $this->route_action);
+            $response = $this->newMiddleware()->handle($this->request->withUserId(99), $this->route_action);
 
             $session = $this->getRequestSession($response);
 

@@ -13,7 +13,7 @@
     use WPEmerge\Contracts\ErrorHandlerInterface;
     use WPEmerge\Events\UnrecoverableExceptionHandled;
     use WPEmerge\ExceptionHandling\Exceptions\HttpException;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Psr7\Request;
     use WPEmerge\Http\ResponseFactory;
     use WPEmerge\Http\Psr7\Response;
@@ -142,6 +142,8 @@
         private function convertToResponse(Throwable $e, Request $request) : Response
         {
 
+            /** @todo add possibility to define callbacks that can override any exception rendering and reporting including framework exceptions. */
+
             if (method_exists($e, 'render')) {
 
                 return $this->renderableException($e, $request);
@@ -210,7 +212,7 @@
 
             if ($request->isExpectingJson()) {
 
-                return $this->response->json($http_exception->jsonMessage(), $http_exception->getStatusCode());
+                return $this->response->json(['message' => $http_exception->jsonMessage()], $http_exception->getStatusCode());
 
             }
 
@@ -220,7 +222,6 @@
 
         }
 
-        /** @todo needs tests */
         private function renderValidationException(ValidationException $e, Request $request)
         {
 

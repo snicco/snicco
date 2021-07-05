@@ -36,30 +36,29 @@
         private function bindConfig() : void
         {
 
-            $this->config->extend('views', [ __DIR__ . DIRECTORY_SEPARATOR . 'views']);
-
-            $this->config->extend('exception_handling.global', false);
+            $this->config->extend('view.paths', [ __DIR__ . DIRECTORY_SEPARATOR . 'views']);
 
             // We bind the class name only
             $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
+
         }
 
         private function bindErrorHandlerInterface() : void
         {
-
             $this->container->singleton(ErrorHandlerInterface::class, function () {
 
-                if ( ! $this->config->get('exception_handling.enabled', false ) ) {
+                if ( ! $this->config->get('app.exception_handling', false ) ) {
 
                     return new NullErrorHandler();
 
                 }
 
+                $debug = $this->config->get('app.debug') && ! $this->app->isRunningUnitTest();
+
                 return ErrorHandlerFactory::make(
                     $this->container,
-                    $this->config->get('exception_handling.debug', false),
-                    $this->config->get('exception_handling.editor', 'phpstorm')
-
+                    $debug,
+                    $this->config->get('app.debug_editor', 'phpstorm')
                 );
             });
         }

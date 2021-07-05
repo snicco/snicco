@@ -2,7 +2,7 @@
 
     declare(strict_types = 1);
 
-    $site_name  = \WPEmerge\Facade\WP::siteName();
+    $site_name  = \WPEmerge\Support\WP::siteName();
 
 ?>
 

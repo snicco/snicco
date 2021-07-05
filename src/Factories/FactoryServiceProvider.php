@@ -38,7 +38,7 @@
             $this->container->singleton(RouteActionFactory::class, function () {
 
                 return new RouteActionFactory(
-                    $this->config['controllers'] ?? [],
+                    $this->config['routing.controllers'] ?? [],
                     $this->container
                 );
 
@@ -51,7 +51,7 @@
             $this->container->singleton(ViewComposerFactory::class, function () {
 
                 return new ViewComposerFactory(
-                    $this->config['composers'] ?? [],
+                    $this->config['view.composers'] ?? [],
                     $this->container
                 );
 

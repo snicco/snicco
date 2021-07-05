@@ -6,15 +6,22 @@
 
     namespace Tests\integration\Auth;
 
+    use Tests\AuthTestCase;
     use Tests\integration\Blade\traits\InteractsWithWordpress;
     use Tests\IntegrationTest;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use WPEmerge\Application\ApplicationEvent;
+    use WPEmerge\Auth\Authenticators\MagicLinkAuthenticator;
     use WPEmerge\Auth\Authenticators\PasswordAuthenticator;
+    use WPEmerge\Auth\Authenticators\RedirectIf2FaAuthenticable;
+    use WPEmerge\Auth\Authenticators\TwoFactorAuthenticator;
     use WPEmerge\Auth\AuthServiceProvider;
     use WPEmerge\Auth\AuthSessionManager;
+    use WPEmerge\Auth\Confirmation\EmailAuthConfirmation;
+    use WPEmerge\Auth\Confirmation\TwoFactorAuthConfirmation;
+    use WPEmerge\Auth\Contracts\AuthConfirmation;
     use WPEmerge\Auth\Controllers\AuthSessionController;
     use WPEmerge\Auth\Controllers\ConfirmedAuthSessionController;
     use WPEmerge\Auth\Controllers\ForgotPasswordController;
@@ -28,45 +35,45 @@
     use WPEmerge\Auth\WpAuthSessionToken;
     use WPEmerge\Events\ResponseSent;
     use WPEmerge\Http\Responses\RedirectResponse;
+    use WPEmerge\Middleware\Secure;
     use WPEmerge\Session\Contracts\SessionManagerInterface;
     use WPEmerge\Session\Events\NewLogin;
     use WPEmerge\Session\Events\NewLogout;
+    use WPEmerge\Session\Middleware\StartSessionMiddleware;
     use WPEmerge\Session\SessionManager;
     use WPEmerge\Session\SessionServiceProvider;
     use WPEmerge\Support\Arr;
 
-    class AuthServiceProviderTest extends IntegrationTest
+    class AuthServiceProviderTest extends AuthTestCase
     {
 
-        use InteractsWithWordpress;
+        protected $defer_boot = true;
 
-        private $config = [
-            'session' => [
-                'enabled' => true,
-                'driver' => 'array',
-                'lifetime' => 3600
-            ],
-            'providers' => [
-                SessionServiceProvider::class,
-                AuthServiceProvider::class,
-            ],
-        ];
+        /** @test */
+        public function the_config_is_extended()
+        {
+
+            $this->boot();
+
+            $this->assertSame(10, TestApp::config('auth.confirmation.duration'));
+            $this->assertSame(1800, TestApp::config('auth.idle'));
+            $this->assertSame('auth', TestApp::config('auth.endpoint'));
+            $this->assertArrayHasKey('auth', TestApp::config('routing.api.endpoints'));
+            $this->assertSame(0, TestApp::config('auth.features.remember_me'));
+            $this->assertFalse(TestApp::config('auth.features.2fa'));
+            $this->assertFalse(TestApp::config('auth.features.password-resets'));
+            $this->assertFalse(TestApp::config('auth.features.registration'));
+
+
+        }
 
         /** @test */
         public function the_auth_views_are_bound_in_the_config()
         {
 
-            $this->newTestApp([
-                'session' => [
-                    'enabled' => true,
-                ],
-                'providers' => [
-                    AuthServiceProvider::class,
-                    SessionServiceProvider::class,
-                ],
-            ]);
+            $this->boot();
 
-            $views = TestApp::config('views');
+            $views = TestApp::config('view.paths');
             $expected = ROOT_DIR.DS.'src'.DS.'Auth'.DS.'views';
 
             $this->assertContains($expected, $views);
@@ -78,15 +85,7 @@
         public function middleware_aliases_are_bound()
         {
 
-            $this->newTestApp([
-                'session' => [
-                    'enabled' => true,
-                ],
-                'providers' => [
-                    AuthServiceProvider::class,
-                    SessionServiceProvider::class,
-                ],
-            ]);
+            $this->boot();
 
             $middleware_aliases = TestApp::config('middleware.aliases');
 
@@ -99,8 +98,27 @@
         public function global_middleware_is_added()
         {
 
-            $this->newTestApp($this->config);
+            $this->boot();
+
             $this->assertContains(AuthenticateSession::class, TestApp::config('middleware.groups.global'));
+            $this->assertContains(Secure::class, TestApp::config('middleware.groups.global'));
+            $this->assertContains(StartSessionMiddleware::class, TestApp::config('middleware.groups.global'));
+
+
+        }
+
+        /** @test */
+        public function the_start_session_middleware_has_a_higher_priority_then_the_authenticate_session_middleware () {
+
+
+            $this->boot();
+            $priority = TestApp::config('middleware.priority');
+
+            $secure = array_search(Secure::class, $priority);
+            $start_session = array_search(StartSessionMiddleware::class, $priority);
+            $authenticate = array_search(AuthenticateSession::class, $priority);
+
+            $this->assertTrue($secure < $start_session && $start_session < $authenticate);
 
         }
 
@@ -108,15 +126,7 @@
         public function the_auth_routes_are_bound_in_the_config()
         {
 
-            $this->newTestApp([
-                'session' => [
-                    'enabled' => true,
-                ],
-                'providers' => [
-                    SessionServiceProvider::class,
-                    AuthServiceProvider::class,
-                ],
-            ]);
+            $this->boot();
 
             $routes = TestApp::config('routing.definitions');
             $expected = ROOT_DIR.DS.'src'.DS.'Auth'.DS.'routes';
@@ -129,15 +139,7 @@
         public function all_controllers_are_bound()
         {
 
-            $this->newTestApp([
-                'session' => [
-                    'enabled' => true,
-                ],
-                'providers' => [
-                    SessionServiceProvider::class,
-                    AuthServiceProvider::class,
-                ],
-            ]);
+            $this->boot();
 
             $this->assertInstanceOf(ForgotPasswordController::class, TestApp::resolve(ForgotPasswordController::class));
             $this->assertInstanceOf(ResetPasswordController::class, TestApp::resolve(ResetPasswordController::class));
@@ -150,15 +152,7 @@
         public function the_wp_login_logout_events_from_the_session_package_are_unset()
         {
 
-            $this->newTestApp([
-                'session' => [
-                    'enabled' => true,
-                ],
-                'providers' => [
-                    SessionServiceProvider::class,
-                    AuthServiceProvider::class,
-                ],
-            ]);
+            $this->boot();
 
             $listeners = TestApp::config('events.listeners');
 
@@ -171,26 +165,10 @@
         }
 
         /** @test */
-        public function the_config_is_bound()
-        {
-
-            $this->newTestApp($this->config);
-
-            $this->assertSame(3600 * 3, TestApp::config('auth.confirmation.duration'));
-            $this->assertSame(3600 * 24 * 7, TestApp::config('auth.remember.lifetime'));
-            $this->assertSame(1800, TestApp::config('auth.timeouts.idle'));
-            $this->assertSame('auth', TestApp::config('auth.endpoint'));
-            $this->assertArrayHasKey('auth', TestApp::config('routing.api.endpoints'));
-            $this->assertTrue(TestApp::config('auth.remember.enabled'));
-
-
-        }
-
-        /** @test */
         public function the_authenticator_is_bound()
         {
 
-            $this->newTestApp($this->config);
+            $this->boot();
 
             $this->assertInstanceOf(PasswordAuthenticator::class, TestApp::resolve(PasswordAuthenticator::class));
 
@@ -200,7 +178,7 @@
         public function the_WP_Session_Token_class_is_extended()
         {
 
-            $this->newTestApp($this->config);
+            $this->boot();
 
             $instance = \WP_Session_Tokens::get_instance(1);
             $this->assertInstanceOf(WpAuthSessionToken::class, $instance);
@@ -211,7 +189,7 @@
         public function the_session_manager_interface_is_replaced()
         {
 
-            $this->newTestApp($this->config);
+            $this->boot();
 
             $this->assertInstanceOf(AuthSessionManager::class, TestApp::resolve(SessionManagerInterface::class));
 
@@ -221,65 +199,61 @@
         public function testSessionLifetimeRememberEnabled()
         {
 
-            $this->newTestApp(array_merge($this->config, [
-                'auth' => [
-                    'remember' => [
-                        'enabled' => true,
-                        'lifetime' => SessionManager::WEEK_IN_SEC,
-                    ]
-                ],
-            ]));
+            $this->withAddedConfig('auth.features.remember_me', SessionManager::DAY_IN_SEC)
+                 ->boot();
 
-            $this->assertSame(SessionManager::WEEK_IN_SEC, TestApp::config('session.lifetime'));
-            $this->assertSame(SessionManager::WEEK_IN_SEC, TestApp::config('auth.remember.lifetime'));
-            $this->assertSame(SessionManager::WEEK_IN_SEC, TestApp::config('auth.timeouts.absolute'));
-        }
-
-        /** @test */
-        public function testSessionLifetimeRememberFalse () {
-
-            $this->newTestApp(array_merge($this->config, [
-                'auth' => [
-                    'remember' => [
-                        'enabled' => false,
-                        'lifetime' => SessionManager::WEEK_IN_SEC,
-                    ]
-                ],
-            ]));
-
-            $this->assertSame(3600, TestApp::config('session.lifetime'));
-            $this->assertSame(3600, TestApp::config('auth.remember.lifetime'));
-            $this->assertSame(3600, TestApp::config('auth.timeouts.absolute'));
+            $this->assertSame(SessionManager::DAY_IN_SEC, TestApp::config('session.lifetime'));
+            $this->assertSame(SessionManager::DAY_IN_SEC, TestApp::config('auth.features.remember_me'));
+            $this->assertSame(SessionManager::DAY_IN_SEC, TestApp::config('auth.timeouts.absolute'));
 
         }
 
         /** @test */
-        public function wp_login_php_is_redirected () {
+        public function testSessionLifetimeRememberFalse()
+        {
 
-            $this->newTestApp($this->config);
+            $this->withAddedConfig('session.lifetime', 4800)
+                 ->boot();
 
-            $this->rebindRequest(TestRequest::from('GET', 'foo')->withLoadingScript('wp-login.php'));
+            $this->assertSame(4800, TestApp::config('session.lifetime'));
+            $this->assertSame(0, TestApp::config('auth.features.remember_me'));
+
+
+        }
+
+
+        /** @test */
+        public function wp_login_php_is_a_permanent_redirected_for_get_requests()
+        {
+
+            $this->withoutExceptionHandling();
+            $this->boot();
 
             ApplicationEvent::fake([ResponseSent::class]);
 
-            do_action('init');
+            $response = $this->get('/wp-login.php');
 
-            HeaderStack::assertHasStatusCode(301);
-            HeaderStack::assertContains('Location', '/auth/login');
+            $query = urlencode($this->config->get('app.url').'/wp-admin/');
+            $expected_redirect = "/auth/login?redirect_to=$query";
+
+            $response->assertRedirect($expected_redirect)
+                     ->assertStatus(301);
+
             ApplicationEvent::assertDispatched(function (ResponseSent $event) {
 
                 return $event->response instanceof RedirectResponse;
 
             });
 
+
         }
 
         /** @test */
-        public function the_login_url_is_filtered () {
+        public function the_login_url_is_filtered()
+        {
 
-            $this->newTestApp($this->config);
-
-            do_action('init');
+            $this->boot();
+            $this->loadRoutes();
 
             $url = wp_login_url();
 
@@ -289,11 +263,11 @@
         }
 
         /** @test */
-        public function the_logout_url_is_filtered () {
+        public function the_logout_url_is_filtered()
+        {
 
-            $this->newTestApp($this->config);
-
-            do_action('init');
+            $this->boot();
+            $this->loadRoutes();
 
             $url = wp_logout_url();
 
@@ -303,81 +277,94 @@
         }
 
         /** @test */
-        public function the_auth_cookie_is_filtered_and_contains_the_current_session_id () {
+        public function the_auth_cookie_is_filtered_and_contains_the_current_session_id()
+        {
 
-            $this->newTestApp($this->config);
+            $this->boot();
 
-            $calvin = $this->newAdmin();
+            $calvin = $this->createAdmin();
 
-            do_action('init');
-            // create random id.
-            TestApp::session()->setId('bogus');
+            // create random id. This will be overwritten immediately.
+            $this->session->setId('bogus');
 
             $cookie = wp_generate_auth_cookie($calvin->ID, 3600, 'auth', $token = wp_generate_password());
             $elements = wp_parse_auth_cookie($cookie);
 
             $this->assertNotSame($elements['token'], $token);
             $this->assertSame($elements['token'], TestApp::session()->getId());
+
         }
 
         /** @test */
-        public function the_cookie_expiration_is_filtered () {
+        public function the_cookie_expiration_is_set_to_now_when_remember_me_is_disabled()
+        {
 
-            $this->newTestApp(array_merge($this->config, [
-                'auth' => [
-                    'remember' => [
-                        'enabled' => true,
-                        'lifetime' => SessionManager::WEEK_IN_SEC,
-                    ]
-                ],
-            ]));
+            $this->boot();
 
             $lifetime = apply_filters('auth_cookie_expiration', 3600);
 
-            $this->assertSame($lifetime, SessionManager::WEEK_IN_SEC);
+            $this->assertSame(0, $lifetime);
 
         }
 
         /** @test */
-        public function by_default_the_password_login_view_response_is_used () {
+        public function the_cookie_expiration_is_synced_with_the_custom_session_lifetime()
+        {
 
-            $this->newTestApp($this->config);
+            $this->withAddedConfig('auth.features.remember_me', 10800);
+            $this->boot();
+
+            $lifetime = apply_filters('auth_cookie_expiration', 3600);
+
+            $this->assertSame(10800, $lifetime);
+
+        }
+
+        /** @test */
+        public function by_default_the_password_login_view_response_is_used()
+        {
+
+            $this->boot();
 
             $this->assertInstanceOf(PasswordLoginView::class, TestApp::resolve(LoginViewResponse::class));
 
         }
 
         /** @test */
-        public function the_login_response_is_bound () {
+        public function the_login_response_is_bound()
+        {
 
-            $this->newTestApp($this->config);
+            $this->boot();
 
             $this->assertInstanceOf(RedirectToDashboardResponse::class, TestApp::resolve(LoginResponse::class));
         }
 
         /** @test */
-        public function the_login_view_response_is_bound () {
+        public function the_login_view_response_is_bound()
+        {
 
-            $this->newTestApp($this->config);
+            $this->boot();
 
             $this->assertInstanceOf(PasswordLoginView::class, TestApp::resolve(LoginViewResponse::class));
 
         }
 
         /** @test */
-        public function the_login_view_response_can_be_swapped_for_an_email_login_screen () {
+        public function the_login_view_response_can_be_swapped_for_an_email_login_screen()
+        {
 
-            Arr::set($this->config, 'auth.view', MagicLinkLoginView::class);
-            $this->newTestApp($this->config);
+            $this->withAddedConfig('auth.primary_view', MagicLinkLoginView::class);
+            $this->boot();
 
             $this->assertInstanceOf(MagicLinkLoginView::class, TestApp::resolve(LoginViewResponse::class));
 
         }
 
         /** @test */
-        public function the_auth_pipeline_uses_the_password_authenticator_by_default () {
+        public function the_auth_pipeline_uses_the_password_authenticator_by_default()
+        {
 
-            $this->newTestApp($this->config);
+            $this->boot();
 
             $pipeline = TestApp::config('auth.through');
 
@@ -386,11 +373,24 @@
         }
 
         /** @test */
-        public function a_custom_auth_pipeline_can_be_used () {
+        public function email_can_be_used_as_a_primary_authenticator () {
 
-            Arr::set($this->config, 'auth.through', ['foo', 'bar']);
+            $this->withAddedConfig('auth.authenticator', 'email');
+            $this->boot();
 
-            $this->newTestApp($this->config);
+            $pipeline = TestApp::config('auth.through');
+
+            $this->assertEquals([MagicLinkAuthenticator::class], $pipeline);
+
+        }
+
+        /** @test */
+        public function a_custom_auth_pipeline_can_be_used()
+        {
+
+            $this->withAddedConfig('auth.through', ['foo', 'bar']);
+
+            $this->boot();
 
             $pipeline = TestApp::config('auth.through');
 
@@ -399,14 +399,44 @@
         }
 
         /** @test */
-        public function password_resets_are_disabled_by_default () {
+        public function password_resets_are_disabled_by_default()
+        {
 
-            $this->newTestApp($this->config);
+            $this->boot();
 
             $this->assertFalse(TestApp::config('auth.features.password-resets'));
 
         }
 
+        /** @test */
+        public function two_factor_authentication_can_be_enabled () {
 
+            $this->withAddedConfig('auth.features.2fa', true);
+            $this->boot();
+
+            $pipeline = TestApp::config('auth.through');
+
+            $this->assertEquals([TwoFactorAuthenticator::class, RedirectIf2FaAuthenticable::class, PasswordAuthenticator::class], $pipeline);
+
+        }
+
+        /** @test */
+        public function auth_confirmation_uses_email_by_default () {
+
+            $this->boot();
+            $this->assertInstanceOf(EmailAuthConfirmation::class, TestApp::resolve(AuthConfirmation::class));
+
+        }
+
+        /** @test */
+        public function two_factor_auth_confirmation_is_used_if_enabled () {
+
+            $this->withAddedConfig('auth.features.2fa', true);
+            $this->boot();
+
+            $this->assertInstanceOf(TwoFactorAuthConfirmation::class, TestApp::resolve(AuthConfirmation::class));
+
+
+        }
 
     }

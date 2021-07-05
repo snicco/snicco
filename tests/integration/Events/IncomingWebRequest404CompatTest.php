@@ -6,17 +6,20 @@
 
     namespace Tests\integration\Events;
 
-    use Tests\IntegrationTest;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestRequest;
+    use Tests\TestCase;
 
-    class IncomingWebRequest404CompatTest extends IntegrationTest
+    class IncomingWebRequest404CompatTest extends TestCase
     {
+
+        protected $defer_boot = true;
 
         /** @test */
         public function the_wp_query_is_never_set_to_404_during_the_main_wp_function () {
 
-            $this->newTestApp();
+            $this->boot();
+            $this->loadRoutes();
 
             global $wp, $wp_query;
 
@@ -35,7 +38,9 @@
         /** @test */
         public function after_the_template_include_hook_fired_the_wp_query_is_evaluated_for_a_possible_404 () {
 
-            $this->newTestApp();
+
+            $this->boot();
+            $this->loadRoutes();
 
             global $wp, $wp_query;
 
@@ -58,7 +63,10 @@
         /** @test */
         public function the_correct_default_404_template_is_loaded_if_no_route_matched () {
 
-            $this->newTestApp();
+
+            $this->boot();
+            $this->loadRoutes();
+
             global $wp, $wp_query;
 
 
@@ -81,20 +89,17 @@
         }
 
         /** @test */
-        public function null_is_returned_if_a_route_matches () {
+        public function no_template_is_returned_if_a_route_matches () {
 
-            $this->newTestApp(TEST_CONFIG);
-            $this->rebindRequest(TestRequest::from('GET', 'foo'));
-
-            $this->registerAndRunApiRoutes();
-
+            $this->withRequest(TestRequest::from('GET', '/foo'))->boot();
+            $this->loadRoutes();
 
             global $wp, $wp_query;
             $this->assertFalse($wp_query->is_404());
 
-            ob_start();
             $tpl = apply_filters('template_include', 'index.php');
-            $this->assertSame('foo', ob_get_clean());
+
+            $this->sentResponse()->assertSee('foo');
 
             $this->assertFalse($wp_query->is_404());
             $this->assertNull($tpl);
@@ -105,27 +110,19 @@
         public function the_template_WP_tried_to_load_is_returned_when_no_route_was_found()
         {
 
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR,
-                ]
-            ]);
-
-            $this->rebindRequest(TestRequest::from('GET', '/bogus'));
+            $this->withRequest(TestRequest::from('GET', '/bogus'))->boot();
+            $this->loadRoutes();
 
             global $wp_query;
 
             // Simulate that its not a 404 page.
             $wp_query->is_robots = true;
 
-            ob_start();
-
-            do_action('init');
             $tpl = apply_filters('template_include', 'wp-template.php');
 
             $this->assertSame('wp-template.php', $tpl);
-            $this->assertSame('', ob_get_clean());
-            HeaderStack::assertHasNone();
+
+            $this->assertNoResponse();
 
 
         }

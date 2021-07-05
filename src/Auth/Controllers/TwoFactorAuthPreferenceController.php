@@ -6,20 +6,22 @@
 
     namespace WPEmerge\Auth\Controllers;
 
-    use Illuminate\Support\Collection;
     use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
     use WPEmerge\Auth\Traits\GeneratesRecoveryCodes;
+    use WPEmerge\Auth\Traits\InteractsWithTwoFactorCodes;
+    use WPEmerge\Auth\Traits\InteractsWithTwoFactorSecrets;
+    use WPEmerge\Auth\Traits\ResolvesUser;
+    use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
     use WPEmerge\Contracts\EncryptorInterface;
     use WPEmerge\Http\Controller;
     use WPEmerge\Http\Psr7\Request;
 
-    use function delete_user_meta;
-    use function get_user_meta;
-    use function update_user_meta;
-
     class TwoFactorAuthPreferenceController extends Controller
     {
-        use GeneratesRecoveryCodes;
+
+        use ResolvesUser;
+        use InteractsWithTwoFactorSecrets;
+        use InteractsWithTwoFactorCodes;
 
         /**
          * @var TwoFactorAuthenticationProvider
@@ -42,63 +44,44 @@
         public function store(Request $request)
         {
 
-            $user = $request->userId();
+            $id = $request->userId();
 
-            if (get_user_meta($user, 'two_factor_secret', true)) {
+            if ($this->userHasTwoFactorEnabled($user = $this->getUserById($id))) {
 
-                $response = [
-                    'success' => false,
-                    'message' => 'Two-Factor Authentication is already enabled',
-                ];
-
-                return $request->isExpectingJson()
-                    ? $this->response_factory->json($response, 403)
-                    : $this->response_factory->back()->withErrors($response);
+                return $this->response_factory->json(
+                    [
+                        'message' => 'Two-Factor authentication is already enabled.',
+                    ],
+                    409);
 
             }
 
-            $secret = $this->provider->generateSecretKey();
-            $backup_codes = $this->generateNewRecoveryCodes();
 
-            update_user_meta($user, 'two_factor_secret', $secret);
-            update_user_meta($user, 'two_factor_recovery_codes', $backup_codes);
+            $this->saveSecret($user->ID, $this->provider->generateSecretKey());
+            $this->saveCodes($user->ID, $backup_codes = $this->generateNewRecoveryCodes());
 
-            return $request->isExpectingJson()
-                ? $this->response_factory->json([
-                    'success' => true, 'message' => 'Two factory authentication enabled.',
-                ])
-                : $this->response_factory->back()
-                                         ->with('2fa.status', 'enabled');
+            return $this->response_factory->json($backup_codes);
 
         }
 
         public function destroy(Request $request)
         {
 
-            $user = $request->userId();
+            $id = $request->userId();
 
-            if ( ! get_user_meta($user, 'two_factor_secret', true)) {
+            if ( ! $this->userHasTwoFactorEnabled($user = $this->getUserById($id))) {
 
-                $response = [
-                    'success' => false,
-                    'message' => 'Two-Factor Authentication is not enabled',
-                ];
-
-                return $request->isExpectingJson()
-                    ? $this->response_factory->json($response, 403)
-                    : $this->response_factory->back()->withErrors($response);
+                return $this->response_factory->json([
+                    'message' => 'Two-Factor authentication is not enabled.',
+                ], 409);
 
             }
 
-            delete_user_meta($user, 'two_factor_secret');
-            delete_user_meta($user, 'two_factor_recovery_codes');
+            $this->disableTwoFactorAuthentication($user->ID);
 
-            return $request->isExpectingJson()
-                ? $this->response_factory->json([
-                    'success' => true, 'message' => 'Two factory authentication disabled.',
-                ])
-                : $this->response_factory->back()
-                                         ->with('2fa.status', 'disabled' );
+
+            return $this->response_factory->noContent();
+
 
         }
 

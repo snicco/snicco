@@ -17,10 +17,10 @@
 
         protected $failure_message = 'Your password or username is not correct.';
 
-        public function attempt(Request $request, $next) : Response
+        public function attempt(Request $request, $next)
         {
 
-            if ( ! $request->has('pwd') || ! $request->has('log') ) {
+            if ( ! $request->filled('pwd') || ! $request->filled('log') ) {
 
                 throw new FailedAuthenticationException($this->failure_message, $request, $request->only([
                     'pwd', 'log',

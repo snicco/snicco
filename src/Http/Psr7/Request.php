@@ -9,11 +9,10 @@
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Message\UriInterface;
     use WP_User;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Http\Cookies;
     use WPEmerge\Routing\RoutingResult;
     use WPEmerge\Session\Session;
-    use WPEmerge\Support\Arr;
     use WPEmerge\Support\Str;
     use WPEmerge\Support\VariableBag;
     use WPEmerge\Traits\ValidatesWordpressNonces;
@@ -27,18 +26,10 @@
         use InteractsWithInput;
         use ValidatesWordpressNonces;
 
-
         public function __construct(ServerRequestInterface $psr_request)
         {
 
             $this->psr_request = $psr_request;
-
-        }
-
-        public function withType(string $type)
-        {
-
-            return $this->withAttribute('type', $type);
 
         }
 
@@ -96,7 +87,7 @@
 
         }
 
-        public function withUser(int $user_id)
+        public function withUserId(int $user_id)
         {
             return $this->withAttribute('_current_user_id', $user_id);
         }
@@ -206,7 +197,7 @@
             }
 
             // A request to the admin dashboard. We can catch that within admin_init
-            if (Str::contains($script, $this->getAttribute('_wp_admin_folder'))) {
+            if (Str::contains($script, 'wp-admin')) {
 
                 return true;
 
@@ -216,13 +207,6 @@
             // by WordPress. eg /wp-login.php
             // These requests can only be "routed" by using the init hook.
             return false;
-
-        }
-
-        public function type() : string
-        {
-
-            return $this->getAttribute('type', '');
 
         }
 
@@ -290,7 +274,7 @@
         {
 
             // A request to the admin dashboard. We can catch that within admin_init
-            return Str::contains($this->loadingScript(), $this->getAttribute('_wp_admin_folder')) && ! $this->isWpAjax();
+            return Str::contains($this->loadingScript(), 'wp-admin') && ! $this->isWpAjax();
 
 
         }

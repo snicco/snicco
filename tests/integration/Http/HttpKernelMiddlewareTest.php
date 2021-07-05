@@ -6,61 +6,40 @@
 
     namespace Tests\integration\Http;
 
-    use Tests\IntegrationTest;
     use Tests\fixtures\Middleware\GlobalMiddleware;
     use Tests\fixtures\Middleware\WebMiddleware;
     use Tests\stubs\TestRequest;
+    use Tests\TestCase;
 
-    class HttpKernelMiddlewareTest extends IntegrationTest
+    class HttpKernelMiddlewareTest extends TestCase
     {
 
+        protected $defer_boot = true;
+
         /** @test */
-        public function custom_middleware_groups_can_be_defined () {
+        public function custom_middleware_groups_can_be_defined()
+        {
 
             $GLOBALS['test'][WebMiddleware::run_times] = 0;
 
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR
-                ],
-                'middleware' => [
-                    'groups' => [
-                        'custom_group' => [
-                            WebMiddleware::class
-                        ]
-                    ]
-                ]
-            ]);
+            $this->withAddedMiddleware('custom_group', WebMiddleware::class);
 
-            $this->registerAndRunApiRoutes();
+            $this->get('/middleware/foo')->assertSee('foo');
 
-            $this->seeKernelOutput('foo', TestRequest::from('GET', 'middleware/foo'));
             $this->assertSame(1, $GLOBALS['test'][WebMiddleware::run_times]);
 
         }
 
         /** @test */
-        public function global_middleware_is_run_when_a_route_matches () {
+        public function global_middleware_is_run_when_a_route_matches()
+        {
 
             $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
 
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR
-                ],
-                'middleware' => [
-                    'groups' => [
-                        'global' => [
-                            GlobalMiddleware::class
-                        ]
-                    ]
-                ]
-            ]);
+            $this->withAddedMiddleware('global', GlobalMiddleware::class);
 
-            $this->registerAndRunApiRoutes();
+            $this->get('/foo')->assertSee('foo');
 
-
-            $this->seeKernelOutput('foo', TestRequest::from('GET', 'foo'));
             $this->assertSame(
                 1,
                 $GLOBALS['test'][GlobalMiddleware::run_times],
@@ -70,88 +49,46 @@
         }
 
         /** @test */
-        public function global_middleware_is_not_run_by_default_if_no_route_matches () {
+        public function global_middleware_is_not_run_by_default_if_no_route_matches()
+        {
 
             $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
 
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR
-                ],
-                'middleware' => [
-                    'groups' => [
-                      'global' => [
-                          GlobalMiddleware::class
-                      ]
-                    ]
-                ]
-            ]);
+            $this->withAddedMiddleware('global', GlobalMiddleware::class);
 
-            $this->registerAndRunApiRoutes();
+            $this->get('middleware/bogus')->assertNullResponse();
 
-            // there is no put route in Routes/web.php
-            $this->seeKernelOutput('', TestRequest::from('PUT', 'middleware/foo'));
             $this->assertSame(0, $GLOBALS['test'][GlobalMiddleware::run_times], 'Middleware was run unexpectedly.');
 
 
         }
 
         /** @test */
-        public function global_middleware_can_be_enabled_to_run_always_even_without_matching_a_route () {
+        public function global_middleware_can_be_enabled_to_run_always_even_without_matching_a_route()
+        {
 
             $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
 
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR
-                ],
-                'middleware' => [
-                    'groups' => [
-                        'global' => [
-                            GlobalMiddleware::class
-                        ]
-                    ],
-                    'always_run_global' => true,
-                    'unique'=> [
-                        GlobalMiddleware::class
-                    ]
-                ]
-            ]);
+            $this->withAddedMiddleware('global', GlobalMiddleware::class)
+                 ->withAddedConfig(['middleware.always_run_global' => true]);
 
-            $this->registerAndRunApiRoutes();
+            $this->get('middleware/bogus')->assertNullResponse();
 
-            // there is no put route in Routes/web.php
-            $this->seeKernelOutput('', TestRequest::from('PUT', 'middleware/foo'));
             $this->assertSame(1, $GLOBALS['test'][GlobalMiddleware::run_times], 'Middleware was not run as expected');
 
         }
 
         /** @test */
-        public function global_middleware_is_not_run_twice_for_fallback_routes () {
+        public function global_middleware_is_not_run_twice_for_matching_url_routes()
+        {
 
-            $GLOBALS['test']['pass_fallback_route_condition'] =true;
             $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
 
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR
-                ],
-                'middleware' => [
-                    'groups' => [
-                        'global' => [
-                            GlobalMiddleware::class
-                        ]
-                    ],
-                    'always_run_global' => true,
-                    'unique' => [
-                        GlobalMiddleware::class
-                    ]
-                ]
-            ]);
-            $this->registerAndRunApiRoutes();
+            $this->withAddedMiddleware('global', GlobalMiddleware::class)
+                 ->withAddedConfig(['middleware.always_run_global' => true]);
 
+            $this->get('/foo')->assertSee('foo');
 
-            $this->seeKernelOutput('get_fallback', TestRequest::from('GET', 'post1'));
             $this->assertSame(
                 1,
                 $GLOBALS['test'][GlobalMiddleware::run_times],
@@ -161,30 +98,17 @@
         }
 
         /** @test */
-        public function global_middleware_is_not_run_twice_for_matching_url_routes () {
+        public function global_middleware_that_always_runs_that_also_is_route_middleware_is_not_run_twice()
+        {
 
             $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
 
-            $this->newTestApp([
-                'routing' => [
-                    'definitions' => ROUTES_DIR
-                ],
-                'middleware' => [
-                    'groups' => [
-                        'global' => [
-                            GlobalMiddleware::class
-                        ]
-                    ],
-                    'always_run_global' => true,
-                    'unique' => [
-                        GlobalMiddleware::class
-                    ]
-                ]
-            ]);
+            $this->withAddedMiddleware('global', GlobalMiddleware::class)
+                 ->withAddedConfig(['middleware.always_run_global' => true]);
 
-            $this->registerAndRunApiRoutes();
+            $this->get('/middleware/route-with-global')
+                 ->assertSee('route-with-global');
 
-            $this->seeKernelOutput('foo', TestRequest::from('GET', 'foo'));
             $this->assertSame(
                 1,
                 $GLOBALS['test'][GlobalMiddleware::run_times],
@@ -192,5 +116,6 @@
             );
 
         }
+
 
     }

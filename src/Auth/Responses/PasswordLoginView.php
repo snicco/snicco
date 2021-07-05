@@ -8,7 +8,7 @@
 
     use WPEmerge\Application\ApplicationConfig;
     use WPEmerge\Auth\Contracts\LoginViewResponse;
-    use WPEmerge\Facade\WP;
+    use WPEmerge\Support\WP;
     use WPEmerge\Routing\UrlGenerator;
     use WPEmerge\Support\Arr;
     use WPEmerge\View\ViewFactory;
