@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Traits;
+    namespace BetterWP\Traits;
 
     use Closure;
     use Opis\Closure\SerializableClosure;
-    use WPEmerge\Routing\ConditionBlueprint;
-    use WPEmerge\Routing\Conditions\CustomCondition;
+    use BetterWP\Routing\ConditionBlueprint;
+    use BetterWP\Routing\Conditions\CustomCondition;
 
     trait PreparesRouteForExport
     {

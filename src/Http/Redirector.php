@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http;
+    namespace BetterWP\Http;
 
     use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
-    use WPEmerge\Contracts\AbstractRedirector;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Routing\UrlGenerator;
+    use BetterWP\Contracts\AbstractRedirector;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Routing\UrlGenerator;
 
     class Redirector extends AbstractRedirector
     {

@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Traits;
+	namespace BetterWP\Traits;
 
-	use WPEmerge\Routing\Route;
-	use WPEmerge\Support\Arr;
+	use BetterWP\Routing\Route;
+	use BetterWP\Support\Arr;
 
 	trait HoldsRouteBlueprint {
 

@@ -7,7 +7,7 @@
     namespace Tests\integration\Blade\Components;
 
     use Tests\fixtures\TestDependencies\Foo;
-    use WPEmerge\Blade\BladeComponent;
+    use BetterWP\Blade\BladeComponent;
 
     class Dependency extends BladeComponent
     {

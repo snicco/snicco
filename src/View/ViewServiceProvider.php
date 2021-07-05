@@ -4,12 +4,12 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\View;
+	namespace BetterWP\View;
 
-    use WPEmerge\Contracts\ServiceProvider;
-	use WPEmerge\Contracts\ViewEngineInterface;
-	use WPEmerge\Contracts\ViewFactoryInterface;
-    use WPEmerge\Factories\ViewComposerFactory;
+    use BetterWP\Contracts\ServiceProvider;
+	use BetterWP\Contracts\ViewEngineInterface;
+	use BetterWP\Contracts\ViewFactoryInterface;
+    use BetterWP\Factories\ViewComposerFactory;
 
 
 	class ViewServiceProvider extends ServiceProvider {

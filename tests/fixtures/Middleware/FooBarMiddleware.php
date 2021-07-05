@@ -7,8 +7,8 @@
 	namespace Tests\fixtures\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\Psr7\Request;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Http\Psr7\Request;
 
     class FooBarMiddleware extends Middleware {
 

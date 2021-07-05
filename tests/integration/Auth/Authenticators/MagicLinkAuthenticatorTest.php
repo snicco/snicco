@@ -7,11 +7,11 @@
     namespace Tests\integration\Auth\Authenticators;
 
     use Tests\AuthTestCase;
-    use WPEmerge\Auth\Authenticators\MagicLinkAuthenticator;
-    use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
-    use WPEmerge\Auth\Responses\MagicLinkLoginView;
-    use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\Routing\UrlGenerator;
+    use BetterWP\Auth\Authenticators\MagicLinkAuthenticator;
+    use BetterWP\Auth\Exceptions\FailedAuthenticationException;
+    use BetterWP\Auth\Responses\MagicLinkLoginView;
+    use BetterWP\Contracts\MagicLink;
+    use BetterWP\Routing\UrlGenerator;
 
     class MagicLinkAuthenticatorTest extends AuthTestCase
     {

@@ -4,15 +4,15 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Contracts;
+	namespace BetterWP\Contracts;
 
 	use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\ResponseFactory;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\ResponseFactory;
 
     abstract class Middleware implements MiddlewareInterface {
 

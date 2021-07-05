@@ -16,14 +16,14 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Contracts\ViewFactoryInterface;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Routing\Router;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\View\ViewFactory;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Contracts\ViewFactoryInterface;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Routing\Router;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\View\ViewFactory;
 
     class FallbackRouteTest extends UnitTest
     {

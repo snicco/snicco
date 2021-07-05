@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Events;
+	namespace BetterWP\Events;
 
-	use WPEmerge\Application\ApplicationEvent;
-	use WPEmerge\Contracts\ViewInterface;
+	use BetterWP\Application\ApplicationEvent;
+	use BetterWP\Contracts\ViewInterface;
 
 	class MakingView extends ApplicationEvent {
 

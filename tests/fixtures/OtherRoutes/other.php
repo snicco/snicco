@@ -3,7 +3,7 @@
 
     declare(strict_types = 1);
 
-    use WPEmerge\Routing\Router;
+    use BetterWP\Routing\Router;
 
     /**
      * @var Router $router

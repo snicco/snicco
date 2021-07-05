@@ -8,10 +8,10 @@
 
     use Tests\stubs\TestMagicLink;
     use Tests\stubs\TestRequest;
-    use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
-    use WPEmerge\Routing\UrlGenerator;
+    use BetterWP\Contracts\MagicLink;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Routing\FastRoute\FastRouteUrlGenerator;
+    use BetterWP\Routing\UrlGenerator;
 
     trait CreateUrlGenerator
     {

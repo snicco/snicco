@@ -7,8 +7,8 @@
     namespace Tests\integration\Auth\Authenticators;
 
     use Tests\AuthTestCase;
-    use WPEmerge\Auth\Authenticators\PasswordAuthenticator;
-    use WPEmerge\Routing\UrlGenerator;
+    use BetterWP\Auth\Authenticators\PasswordAuthenticator;
+    use BetterWP\Routing\UrlGenerator;
 
 
     class PasswordAuthenticatorTest extends AuthTestCase

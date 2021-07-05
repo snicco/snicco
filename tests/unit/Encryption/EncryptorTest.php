@@ -7,8 +7,8 @@
 	namespace Tests\unit\Encryption;
 
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Contracts\EncryptorInterface;
-	use WPEmerge\Session\Encryptor;
+	use BetterWP\Contracts\EncryptorInterface;
+	use BetterWP\Session\Encryptor;
 
 	class EncryptorTest extends TestCase {
 
@@ -25,7 +25,7 @@
 		public function a_valid_encryptor_instance_can_be_created_with_base64_encoding() {
 
 
-			$encryptor = new \WPEmerge\Session\Encryptor( self::test_key );
+			$encryptor = new \BetterWP\Session\Encryptor( self::test_key );
 
 			$this->assertInstanceOf( EncryptorInterface::class, $encryptor );
 

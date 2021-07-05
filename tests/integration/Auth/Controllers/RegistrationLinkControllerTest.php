@@ -7,8 +7,8 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use WPEmerge\Auth\Contracts\RegistrationViewResponse;
-    use WPEmerge\Auth\Mail\ConfirmRegistrationEmail;
+    use BetterWP\Auth\Contracts\RegistrationViewResponse;
+    use BetterWP\Auth\Mail\ConfirmRegistrationEmail;
 
     class RegistrationLinkControllerTest extends AuthTestCase
     {

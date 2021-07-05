@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing;
+    namespace BetterWP\Routing;
 
     use Opis\Closure\SerializableClosure;
-    use WPEmerge\Routing\Conditions\CustomCondition;
-    use WPEmerge\Support\Str;
-    use WPEmerge\Traits\ReflectsCallable;
+    use BetterWP\Routing\Conditions\CustomCondition;
+    use BetterWP\Support\Str;
+    use BetterWP\Traits\ReflectsCallable;
 
     class ConditionBlueprint
     {

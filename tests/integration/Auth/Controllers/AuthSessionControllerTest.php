@@ -7,14 +7,14 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Auth\Authenticators\PasswordAuthenticator;
-    use WPEmerge\Auth\Contracts\Authenticator;
-    use WPEmerge\Auth\Events\Login;
-    use WPEmerge\Auth\Traits\ResolvesUser;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Testing\TestResponse;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Auth\Authenticators\PasswordAuthenticator;
+    use BetterWP\Auth\Contracts\Authenticator;
+    use BetterWP\Auth\Events\Login;
+    use BetterWP\Auth\Traits\ResolvesUser;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Testing\TestResponse;
 
 
     class AuthSessionControllerTest extends AuthTestCase

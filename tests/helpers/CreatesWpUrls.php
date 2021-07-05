@@ -7,9 +7,9 @@
     namespace Tests\helpers;;
 
     use Tests\stubs\TestRequest;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Support\Url;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Support\Url;
 
     trait CreatesWpUrls
     {

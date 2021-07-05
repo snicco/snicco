@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware\Core;
+    namespace BetterWP\Middleware\Core;
 
     use Psr\Http\Message\ResponseInterface;
     use Throwable;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\Session;
+    use BetterWP\Contracts\ErrorHandlerInterface;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Session\Session;
 
     class ErrorHandlerMiddleware extends Middleware
     {

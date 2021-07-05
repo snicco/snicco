@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Testing;
+    namespace BetterWP\Testing;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Http\Cookies;
-    use WPEmerge\Http\ResponseEmitter;
+    use BetterWP\Http\Cookies;
+    use BetterWP\Http\ResponseEmitter;
 
     class TestResponseEmitter extends ResponseEmitter
     {

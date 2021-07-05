@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Authenticators;
+    namespace BetterWP\Auth\Authenticators;
 
     use WP_User;
-    use WPEmerge\Auth\Contracts\Authenticator;
-    use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
+    use BetterWP\Auth\Contracts\Authenticator;
+    use BetterWP\Auth\Exceptions\FailedAuthenticationException;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
 
     class PasswordAuthenticator extends Authenticator
     {

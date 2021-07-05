@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
     use Illuminate\Support\ViewErrorBag;
-    use WPEmerge\Session\Session;
+    use BetterWP\Session\Session;
 
     /** @var ViewErrorBag $errors */
 

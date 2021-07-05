@@ -10,10 +10,10 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use WPEmerge\Application\Application;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Events\ResponseSent;
-    use WPEmerge\Http\Responses\RedirectResponse;
+    use BetterWP\Application\Application;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Events\ResponseSent;
+    use BetterWP\Http\Responses\RedirectResponse;
 
     class RedirectRoutesTest extends TestCase
     {

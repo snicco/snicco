@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Listeners;
+    namespace BetterWP\Listeners;
 
     use BetterWpHooks\Contracts\Dispatcher;
-    use WPEmerge\Events\AdminInit;
-    use WPEmerge\Events\IncomingAdminRequest;
+    use BetterWP\Events\AdminInit;
+    use BetterWP\Events\IncomingAdminRequest;
 
     class CreateDynamicHooks
     {

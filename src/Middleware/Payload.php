@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware;
+    namespace BetterWP\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\StreamInterface;
     use RuntimeException;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Support\Str;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\ExceptionHandling\Exceptions\HttpException;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Support\Str;
 
     abstract class Payload extends Middleware
     {

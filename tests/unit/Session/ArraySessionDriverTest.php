@@ -11,8 +11,8 @@
     use Tests\helpers\TravelsTime;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Session\Drivers\ArraySessionDriver;
+    use BetterWP\Support\WP;
+    use BetterWP\Session\Drivers\ArraySessionDriver;
 
 	class ArraySessionDriverTest extends UnitTest {
 

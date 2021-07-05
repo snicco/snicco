@@ -12,10 +12,10 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Middleware\JsonPayload;
+    use BetterWP\ExceptionHandling\Exceptions\HttpException;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Middleware\JsonPayload;
 
     class JsonPayloadTest extends UnitTest
     {

@@ -4,38 +4,38 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing;
+    namespace BetterWP\Routing;
 
     use Symfony\Component\Finder\Finder;
     use Tests\stubs\TestMagicLink;
-    use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\Contracts\RouteMatcher;
-    use WPEmerge\Contracts\RouteRegistrarInterface;
-    use WPEmerge\Contracts\RouteUrlGenerator;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Http\DatabaseMagicLink;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\Conditions\AdminAjaxCondition;
-    use WPEmerge\Routing\Conditions\AdminPageCondition;
-    use WPEmerge\Routing\Conditions\QueryStringCondition;
-    use WPEmerge\Routing\Conditions\RequestAttributeCondition;
-    use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
-    use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Routing\Conditions\CustomCondition;
-    use WPEmerge\Routing\Conditions\NegateCondition;
-    use WPEmerge\Routing\Conditions\PostIdCondition;
-    use WPEmerge\Routing\Conditions\PostSlugCondition;
-    use WPEmerge\Routing\Conditions\PostStatusCondition;
-    use WPEmerge\Routing\Conditions\PostTemplateCondition;
-    use WPEmerge\Routing\Conditions\PostTypeCondition;
-    use WPEmerge\Routing\FastRoute\FastRouteMatcher;
-    use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Support\FilePath;
+    use BetterWP\Contracts\AbstractRouteCollection;
+    use BetterWP\Contracts\MagicLink;
+    use BetterWP\Contracts\RouteMatcher;
+    use BetterWP\Contracts\RouteRegistrarInterface;
+    use BetterWP\Contracts\RouteUrlGenerator;
+    use BetterWP\Contracts\ServiceProvider;
+    use BetterWP\Http\DatabaseMagicLink;
+    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use BetterWP\Support\WP;
+    use BetterWP\Factories\RouteActionFactory;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Routing\Conditions\AdminAjaxCondition;
+    use BetterWP\Routing\Conditions\AdminPageCondition;
+    use BetterWP\Routing\Conditions\QueryStringCondition;
+    use BetterWP\Routing\Conditions\RequestAttributeCondition;
+    use BetterWP\Routing\FastRoute\CachedFastRouteMatcher;
+    use BetterWP\Factories\ConditionFactory;
+    use BetterWP\Routing\Conditions\CustomCondition;
+    use BetterWP\Routing\Conditions\NegateCondition;
+    use BetterWP\Routing\Conditions\PostIdCondition;
+    use BetterWP\Routing\Conditions\PostSlugCondition;
+    use BetterWP\Routing\Conditions\PostStatusCondition;
+    use BetterWP\Routing\Conditions\PostTemplateCondition;
+    use BetterWP\Routing\Conditions\PostTypeCondition;
+    use BetterWP\Routing\FastRoute\FastRouteMatcher;
+    use BetterWP\Routing\FastRoute\FastRouteUrlGenerator;
+    use BetterWP\Session\Session;
+    use BetterWP\Support\FilePath;
 
 
     class RoutingServiceProvider extends ServiceProvider

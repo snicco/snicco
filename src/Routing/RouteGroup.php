@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Routing;
+	namespace BetterWP\Routing;
 
-	use WPEmerge\Support\Url;
-	use WPEmerge\Support\Arr;
+	use BetterWP\Support\Url;
+	use BetterWP\Support\Arr;
 
 	class RouteGroup {
 

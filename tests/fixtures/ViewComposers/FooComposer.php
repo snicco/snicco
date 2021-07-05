@@ -8,7 +8,7 @@
 
 	use Tests\fixtures\TestDependencies\Bar;
 	use Tests\fixtures\TestDependencies\Foo;
-	use WPEmerge\Contracts\ViewInterface;
+	use BetterWP\Contracts\ViewInterface;
 
 	class FooComposer {
 

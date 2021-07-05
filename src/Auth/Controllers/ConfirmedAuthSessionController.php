@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Controllers;
+    namespace BetterWP\Auth\Controllers;
 
-    use WPEmerge\Auth\Contracts\AuthConfirmation;
-    use WPEmerge\Http\Controller;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Session\Events\SessionRegenerated;
+    use BetterWP\Auth\Contracts\AuthConfirmation;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Session\Events\SessionRegenerated;
 
     class ConfirmedAuthSessionController extends Controller
     {

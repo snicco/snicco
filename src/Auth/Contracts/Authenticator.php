@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Contracts;
+    namespace BetterWP\Auth\Contracts;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
-    use WPEmerge\Auth\Responses\SuccessfulLoginResponse;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Contracts\ResponsableInterface;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\ResponseFactory;
+    use BetterWP\Auth\Exceptions\FailedAuthenticationException;
+    use BetterWP\Auth\Responses\SuccessfulLoginResponse;
+    use BetterWP\Contracts\Middleware;
+    use BetterWP\Contracts\ResponsableInterface;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Http\ResponseFactory;
 
     abstract class Authenticator extends Middleware
     {

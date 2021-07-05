@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Authenticators;
+    namespace BetterWP\Auth\Authenticators;
 
-    use WPEmerge\Auth\Contracts\Authenticator;
-    use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPEmerge\Auth\Exceptions\FailedTwoFactorAuthenticationException;
-    use WPEmerge\Auth\RecoveryCode;
-    use WPEmerge\Auth\Traits\PerformsTwoFactorAuthentication;
-    use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
-    use WPEmerge\Auth\Traits\ResolvesUser;
-    use WPEmerge\Contracts\EncryptorInterface;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
+    use BetterWP\Auth\Contracts\Authenticator;
+    use BetterWP\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use BetterWP\Auth\Exceptions\FailedTwoFactorAuthenticationException;
+    use BetterWP\Auth\RecoveryCode;
+    use BetterWP\Auth\Traits\PerformsTwoFactorAuthentication;
+    use BetterWP\Auth\Traits\ResolveTwoFactorSecrets;
+    use BetterWP\Auth\Traits\ResolvesUser;
+    use BetterWP\Contracts\EncryptorInterface;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Response;
 
     class TwoFactorAuthenticator extends Authenticator
     {

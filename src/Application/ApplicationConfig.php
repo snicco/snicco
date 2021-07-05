@@ -2,10 +2,10 @@
 
 	declare(strict_types=1);
 
-	namespace WPEmerge\Application;
+	namespace BetterWP\Application;
 
 	use Illuminate\Config\Repository;
-	use WPEmerge\Support\Arr;
+	use BetterWP\Support\Arr;
 
 	class ApplicationConfig extends Repository {
 

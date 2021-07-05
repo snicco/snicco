@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Responses;
+    namespace BetterWP\Auth\Responses;
 
-    use WPEmerge\Auth\Traits\UsesCurrentRequest;
-    use WPEmerge\Contracts\ResponsableInterface;
+    use BetterWP\Auth\Traits\UsesCurrentRequest;
+    use BetterWP\Contracts\ResponsableInterface;
 
     abstract class RegisteredResponse implements ResponsableInterface
     {

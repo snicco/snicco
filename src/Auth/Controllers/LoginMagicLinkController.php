@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Controllers;
+    namespace BetterWP\Auth\Controllers;
 
     use WP_User;
-    use WPEmerge\Auth\Mail\MagicLinkLoginMail;
-    use WPEmerge\Auth\Traits\ResolvesUser;
-    use WPEmerge\Http\Controller;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Mail\MailBuilder;
+    use BetterWP\Auth\Mail\MagicLinkLoginMail;
+    use BetterWP\Auth\Traits\ResolvesUser;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Mail\MailBuilder;
 
     class LoginMagicLinkController extends Controller
     {

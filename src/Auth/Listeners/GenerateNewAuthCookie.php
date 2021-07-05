@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Listeners;
+    namespace BetterWP\Auth\Listeners;
 
-    use WPEmerge\Auth\Events\SettingAuthCookie;
-    use WPEmerge\Session\Session;
+    use BetterWP\Auth\Events\SettingAuthCookie;
+    use BetterWP\Session\Session;
 
     class GenerateNewAuthCookie
     {

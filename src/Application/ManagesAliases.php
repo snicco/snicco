@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Application;
+	namespace BetterWP\Application;
 
 	use Closure;
 	use BadMethodCallException;
-	use WPEmerge\Support\Arr;
+	use BetterWP\Support\Arr;
 
 	trait ManagesAliases {
 

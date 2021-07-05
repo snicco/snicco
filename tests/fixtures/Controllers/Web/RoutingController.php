@@ -6,7 +6,7 @@
 
     namespace Tests\fixtures\Controllers\Web;
 
-    use WPEmerge\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Request;
 
     class RoutingController
     {

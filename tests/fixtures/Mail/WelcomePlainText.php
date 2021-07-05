@@ -6,7 +6,7 @@
 
     namespace Tests\fixtures\Mail;
 
-    use WPEmerge\Mail\Mailable;
+    use BetterWP\Mail\Mailable;
 
     class WelcomePlainText extends Mailable
     {

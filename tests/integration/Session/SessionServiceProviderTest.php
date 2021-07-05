@@ -9,22 +9,22 @@
     use Slim\Csrf\Guard;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPEmerge\Contracts\AbstractRedirector;
-    use WPEmerge\Http\Redirector;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Session\Contracts\SessionDriver;
-    use WPEmerge\Session\Contracts\SessionManagerInterface;
-    use WPEmerge\Session\CsrfField;
-    use WPEmerge\Session\Drivers\DatabaseSessionDriver;
-    use WPEmerge\Session\Middleware\CsrfMiddleware;
-    use WPEmerge\Session\EncryptedSession;
-    use WPEmerge\Session\Middleware\ShareSessionWithView;
-    use WPEmerge\Session\SessionManager;
-    use WPEmerge\Session\SessionServiceProvider;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Session\Middleware\StartSessionMiddleware;
-    use WPEmerge\Session\StatefulRedirector;
-    use WPEmerge\View\GlobalContext;
+    use BetterWP\Contracts\AbstractRedirector;
+    use BetterWP\Http\Redirector;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Session\Contracts\SessionDriver;
+    use BetterWP\Session\Contracts\SessionManagerInterface;
+    use BetterWP\Session\CsrfField;
+    use BetterWP\Session\Drivers\DatabaseSessionDriver;
+    use BetterWP\Session\Middleware\CsrfMiddleware;
+    use BetterWP\Session\EncryptedSession;
+    use BetterWP\Session\Middleware\ShareSessionWithView;
+    use BetterWP\Session\SessionManager;
+    use BetterWP\Session\SessionServiceProvider;
+    use BetterWP\Session\Session;
+    use BetterWP\Session\Middleware\StartSessionMiddleware;
+    use BetterWP\Session\StatefulRedirector;
+    use BetterWP\View\GlobalContext;
 
     class SessionServiceProviderTest extends TestCase
     {

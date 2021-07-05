@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Application;
+    namespace BetterWP\Application;
 
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Contracts\ServiceProvider;
+    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use BetterWP\Contracts\ServiceProvider;
 
     trait LoadsServiceProviders
     {

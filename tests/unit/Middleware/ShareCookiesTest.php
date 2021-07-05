@@ -10,11 +10,11 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\Http\Cookie;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Middleware\Core\ShareCookies;
+    use BetterWP\Http\Cookie;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseEmitter;
+    use BetterWP\Middleware\Core\ShareCookies;
 
     class ShareCookiesTest extends UnitTest
     {

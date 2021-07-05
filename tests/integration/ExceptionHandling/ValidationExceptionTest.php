@@ -8,11 +8,11 @@
 
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\ExceptionHandling\ProductionErrorHandler;
-    use WPEmerge\Session\SessionServiceProvider;
-    use WPEmerge\Testing\TestResponse;
-    use WPEmerge\Validation\Exceptions\ValidationException;
+    use BetterWP\Contracts\ErrorHandlerInterface;
+    use BetterWP\ExceptionHandling\ProductionErrorHandler;
+    use BetterWP\Session\SessionServiceProvider;
+    use BetterWP\Testing\TestResponse;
+    use BetterWP\Validation\Exceptions\ValidationException;
 
     class ValidationExceptionTest extends TestCase
     {

@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware;
+    namespace BetterWP\Middleware;
 
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
-    use WPEmerge\Middleware\Core\OpenRedirectProtection;
-    use WPEmerge\Middleware\Core\OutputBufferMiddleware;
-    use WPEmerge\Middleware\Core\RouteRunner;
-    use WPEmerge\Routing\Pipeline;
+    use BetterWP\Contracts\ErrorHandlerInterface;
+    use BetterWP\Contracts\ServiceProvider;
+    use BetterWP\Events\IncomingWebRequest;
+    use BetterWP\Http\ResponseEmitter;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Middleware\Core\EvaluateResponseMiddleware;
+    use BetterWP\Middleware\Core\OpenRedirectProtection;
+    use BetterWP\Middleware\Core\OutputBufferMiddleware;
+    use BetterWP\Middleware\Core\RouteRunner;
+    use BetterWP\Routing\Pipeline;
 
     class MiddlewareServiceProvider extends ServiceProvider
     {

@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Mail;
+    namespace BetterWP\Mail;
 
-    use WPEmerge\Contracts\Mailer;
-    use WPEmerge\Support\WP;
+    use BetterWP\Contracts\Mailer;
+    use BetterWP\Support\WP;
 
     class WordPressMailer implements Mailer
     {

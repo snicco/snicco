@@ -4,15 +4,15 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Factories;
+	namespace BetterWP\Factories;
 
 	use Closure;
 	use Illuminate\Support\Reflector;
-	use WPEmerge\Contracts\Handler;
-	use WPEmerge\Contracts\RouteAction;
-	use WPEmerge\Routing\ClosureAction;
-	use WPEmerge\Routing\ControllerAction;
-	use WPEmerge\Http\MiddlewareResolver;
+	use BetterWP\Contracts\Handler;
+	use BetterWP\Contracts\RouteAction;
+	use BetterWP\Routing\ClosureAction;
+	use BetterWP\Routing\ControllerAction;
+	use BetterWP\Http\MiddlewareResolver;
 
 	class RouteActionFactory extends AbstractFactory {
 

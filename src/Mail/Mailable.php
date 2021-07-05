@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Mail;
+    namespace BetterWP\Mail;
 
     use Closure;
     use ReflectionClass;
     use ReflectionProperty;
     use WP_User;
-    use WPEmerge\Support\Arr;
+    use BetterWP\Support\Arr;
 
     abstract class Mailable
     {

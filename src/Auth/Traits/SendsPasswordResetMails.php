@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Traits;
+    namespace BetterWP\Auth\Traits;
 
-    use WPEmerge\Auth\Mail\ResetPasswordMail;
+    use BetterWP\Auth\Mail\ResetPasswordMail;
 
     trait SendsPasswordResetMails
     {

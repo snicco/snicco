@@ -10,11 +10,11 @@
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
     use Tests\stubs\TestException;
-	use WPEmerge\Application\ApplicationEvent;
-	use WPEmerge\Events\UnrecoverableExceptionHandled;
-	use WPEmerge\ExceptionHandling\DebugErrorHandler;
-	use WPEmerge\Factories\ErrorHandlerFactory;
-    use WPEmerge\Http\Psr7\Request;
+	use BetterWP\Application\ApplicationEvent;
+	use BetterWP\Events\UnrecoverableExceptionHandled;
+	use BetterWP\ExceptionHandling\DebugErrorHandler;
+	use BetterWP\Factories\ErrorHandlerFactory;
+    use BetterWP\Http\Psr7\Request;
 
     class DebugErrorHandlerTest extends UnitTest {
 

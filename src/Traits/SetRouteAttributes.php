@@ -4,14 +4,14 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Traits;
+	namespace BetterWP\Traits;
 
 	use Closure;
-    use WPEmerge\Controllers\FallBackController;
-    use WPEmerge\Routing\ConditionBlueprint;
-    use WPEmerge\Routing\Conditions\TrailingSlashCondition;
-    use WPEmerge\Routing\Route;
-	use WPEmerge\Support\Arr;
+    use BetterWP\Controllers\FallBackController;
+    use BetterWP\Routing\ConditionBlueprint;
+    use BetterWP\Routing\Conditions\TrailingSlashCondition;
+    use BetterWP\Routing\Route;
+	use BetterWP\Support\Arr;
 
 	trait SetRouteAttributes {
 

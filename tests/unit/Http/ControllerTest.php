@@ -6,7 +6,7 @@
 
 	namespace Tests\unit\Http;
 
-	use WPEmerge\Http\Controller;
+	use BetterWP\Http\Controller;
 	use PHPUnit\Framework\TestCase;
 
 	class ControllerTest extends TestCase {

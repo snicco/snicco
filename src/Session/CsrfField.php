@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace BetterWP\Session;
 
     use Slim\Csrf\Guard;
-    use WPEmerge\Support\Arr;
+    use BetterWP\Support\Arr;
 
     class CsrfField
     {

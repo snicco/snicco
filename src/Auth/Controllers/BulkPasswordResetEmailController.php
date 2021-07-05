@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Controllers;
+    namespace BetterWP\Auth\Controllers;
 
-    use WPEmerge\Auth\Mail\ResetPasswordMail;
-    use WPEmerge\Auth\Traits\SendsPasswordResetMails;
-    use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Controller;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Mail\MailBuilder;
-    use WPEmerge\Support\Arr;
+    use BetterWP\Auth\Mail\ResetPasswordMail;
+    use BetterWP\Auth\Traits\SendsPasswordResetMails;
+    use BetterWP\ExceptionHandling\Exceptions\AuthorizationException;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Mail\MailBuilder;
+    use BetterWP\Support\Arr;
 
     /**
      * This Controller performs the same logic that happens inside user.php

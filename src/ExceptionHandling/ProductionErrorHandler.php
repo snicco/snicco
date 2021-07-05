@@ -4,24 +4,24 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\ExceptionHandling;
+    namespace BetterWP\ExceptionHandling;
 
     use Contracts\ContainerAdapter;
     use Illuminate\Support\Facades\Http;
     use Psr\Log\LoggerInterface;
     use Throwable;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Events\UnrecoverableExceptionHandled;
-    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Traits\HandlesExceptions;
-    use WPEmerge\Validation\Exceptions\ValidationException;
+    use BetterWP\Contracts\ErrorHandlerInterface;
+    use BetterWP\Events\UnrecoverableExceptionHandled;
+    use BetterWP\ExceptionHandling\Exceptions\HttpException;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Http\ResponseEmitter;
+    use BetterWP\Session\Session;
+    use BetterWP\Support\Arr;
+    use BetterWP\Traits\HandlesExceptions;
+    use BetterWP\Validation\Exceptions\ValidationException;
 
     class ProductionErrorHandler implements ErrorHandlerInterface
     {

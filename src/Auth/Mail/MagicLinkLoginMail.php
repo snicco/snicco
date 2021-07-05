@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Mail;
+    namespace BetterWP\Auth\Mail;
 
     use WP_User;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Mail\Mailable;
+    use BetterWP\Support\WP;
+    use BetterWP\Mail\Mailable;
 
     class MagicLinkLoginMail extends Mailable
     {

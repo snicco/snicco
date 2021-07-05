@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Routing;
+	namespace BetterWP\Routing;
 
 	use Codeception\Step\Condition;
-	use WPEmerge\Support\Arr;
+	use BetterWP\Support\Arr;
 
 	class ConditionBucket {
 

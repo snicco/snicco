@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http\Responses;
+    namespace BetterWP\Http\Responses;
 
-    use WPEmerge\Http\Psr7\Response;
+    use BetterWP\Http\Psr7\Response;
 
     class InvalidResponse extends Response
     {

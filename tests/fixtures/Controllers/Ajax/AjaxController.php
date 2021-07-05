@@ -6,7 +6,7 @@
 
 	namespace Tests\fixtures\Controllers\Ajax;
 
-	use WPEmerge\Http\Psr7\Request;
+	use BetterWP\Http\Psr7\Request;
 
 	class AjaxController {
 

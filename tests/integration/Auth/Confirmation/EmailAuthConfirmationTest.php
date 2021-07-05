@@ -8,8 +8,8 @@
 
     use Tests\AuthTestCase;
     use Tests\stubs\TestMagicLink;
-    use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\Routing\UrlGenerator;
+    use BetterWP\Contracts\MagicLink;
+    use BetterWP\Routing\UrlGenerator;
 
     class EmailAuthConfirmationTest extends AuthTestCase
     {

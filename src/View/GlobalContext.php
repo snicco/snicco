@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\View;
+    namespace BetterWP\View;
 
-    use WPEmerge\Support\VariableBag;
+    use BetterWP\Support\VariableBag;
 
     class GlobalContext
     {

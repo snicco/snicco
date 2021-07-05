@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Traits;
+    namespace BetterWP\Auth\Traits;
 
-    use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPEmerge\Auth\RecoveryCode;
-    use WPEmerge\Http\Psr7\Request;
+    use BetterWP\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use BetterWP\Auth\RecoveryCode;
+    use BetterWP\Http\Psr7\Request;
 
     trait PerformsTwoFactorAuthentication
     {

@@ -12,12 +12,12 @@
     use Tests\UnitTest;
     use Tests\stubs\TestRequest;
     use Tests\helpers\AssertsResponse;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Middleware\Authenticate;
-    use WPEmerge\Http\Responses\RedirectResponse;
+    use BetterWP\Support\WP;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Middleware\Authenticate;
+    use BetterWP\Http\Responses\RedirectResponse;
 
     class AuthenticateTest extends UnitTest
     {

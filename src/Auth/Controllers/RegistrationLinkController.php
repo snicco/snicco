@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Controllers;
+    namespace BetterWP\Auth\Controllers;
 
-    use WPEmerge\Auth\Mail\ConfirmRegistrationEmail;
-    use WPEmerge\Auth\Contracts\RegistrationViewResponse;
-    use WPEmerge\Contracts\ResponsableInterface;
-    use WPEmerge\Http\Controller;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Mail\MailBuilder;
+    use BetterWP\Auth\Mail\ConfirmRegistrationEmail;
+    use BetterWP\Auth\Contracts\RegistrationViewResponse;
+    use BetterWP\Contracts\ResponsableInterface;
+    use BetterWP\Http\Controller;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Mail\MailBuilder;
 
     class RegistrationLinkController extends Controller
     {

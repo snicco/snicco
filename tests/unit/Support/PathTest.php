@@ -7,7 +7,7 @@
 	namespace Tests\unit\Support;
 
 	use PHPUnit\Framework\TestCase;
-	use WPEmerge\Support\FilePath;
+	use BetterWP\Support\FilePath;
 
 
 	class PathTest extends TestCase {

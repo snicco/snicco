@@ -7,10 +7,10 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Auth\Contracts\AuthConfirmation;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\Events\SessionRegenerated;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Auth\Contracts\AuthConfirmation;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Session\Events\SessionRegenerated;
 
     class ConfirmedAuthSessionControllerTest extends AuthTestCase
     {

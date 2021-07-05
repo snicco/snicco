@@ -4,21 +4,21 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing;
+    namespace BetterWP\Routing;
 
     use Closure;
-    use WPEmerge\Contracts\ConditionInterface;
-    use WPEmerge\Contracts\RouteAction;
-    use WPEmerge\Contracts\SetsRouteAttributes;
-    use WPEmerge\Contracts\UrlableInterface;
-    use WPEmerge\Controllers\FallBackController;
-    use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Http\Psr7\Request;
+    use BetterWP\Contracts\ConditionInterface;
+    use BetterWP\Contracts\RouteAction;
+    use BetterWP\Contracts\SetsRouteAttributes;
+    use BetterWP\Contracts\UrlableInterface;
+    use BetterWP\Controllers\FallBackController;
+    use BetterWP\Factories\ConditionFactory;
+    use BetterWP\Factories\RouteActionFactory;
+    use BetterWP\Http\Psr7\Request;
     use ReflectionPayload\ReflectionPayload;
-    use WPEmerge\Support\Url;
-    use WPEmerge\Support\UrlParser;
-    use WPEmerge\Traits\SetRouteAttributes;
+    use BetterWP\Support\Url;
+    use BetterWP\Support\UrlParser;
+    use BetterWP\Traits\SetRouteAttributes;
 
     class Route implements SetsRouteAttributes
     {

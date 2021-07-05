@@ -9,8 +9,8 @@
     use Tests\AuthTestCase;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
-    use WPEmerge\ExceptionHandling\Exceptions\InvalidSignatureException;
-    use WPEmerge\Support\Url;
+    use BetterWP\ExceptionHandling\Exceptions\InvalidSignatureException;
+    use BetterWP\Support\Url;
 
     use function get_user_by;
     use function wp_check_password;

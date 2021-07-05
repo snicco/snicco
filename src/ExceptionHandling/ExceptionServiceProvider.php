@@ -4,14 +4,14 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\ExceptionHandling;
+	namespace BetterWP\ExceptionHandling;
 
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-	use WPEmerge\Contracts\ServiceProvider;
-	use WPEmerge\ExceptionHandling\NullErrorHandler;
-	use WPEmerge\ExceptionHandling\ProductionErrorHandler;
-	use WPEmerge\Factories\ErrorHandlerFactory;
-    use WPEmerge\Http\Psr7\Request;
+    use BetterWP\Contracts\ErrorHandlerInterface;
+	use BetterWP\Contracts\ServiceProvider;
+	use BetterWP\ExceptionHandling\NullErrorHandler;
+	use BetterWP\ExceptionHandling\ProductionErrorHandler;
+	use BetterWP\Factories\ErrorHandlerFactory;
+    use BetterWP\Http\Psr7\Request;
 
     class ExceptionServiceProvider extends ServiceProvider {
 

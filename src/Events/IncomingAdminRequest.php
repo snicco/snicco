@@ -4,13 +4,13 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Events;
+	namespace BetterWP\Events;
 
 
 
     use BetterWpHooks\Traits\DispatchesConditionally;
     use BetterWpHooks\Traits\IsAction;
-    use WPEmerge\Support\WP;
+    use BetterWP\Support\WP;
 
     class IncomingAdminRequest extends IncomingRequest {
 

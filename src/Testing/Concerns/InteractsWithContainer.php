@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Testing\Concerns;
+    namespace BetterWP\Testing\Concerns;
 
-    use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Testing\TestResponseEmitter;
+    use BetterWP\Http\ResponseEmitter;
+    use BetterWP\Testing\TestResponseEmitter;
 
     trait InteractsWithContainer
     {

@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session\Contracts;
+    namespace BetterWP\Session\Contracts;
 
-    use WPEmerge\Http\Cookie;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\Session;
+    use BetterWP\Http\Cookie;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Session\Session;
 
     interface SessionManagerInterface
     {

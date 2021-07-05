@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Contracts;
+    namespace BetterWP\Contracts;
 
-    use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RoutingResult;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Traits\ValidatesRoutes;
+    use BetterWP\Factories\ConditionFactory;
+    use BetterWP\Factories\RouteActionFactory;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Routing\Route;
+    use BetterWP\Routing\RoutingResult;
+    use BetterWP\Support\Arr;
+    use BetterWP\Traits\ValidatesRoutes;
 
     abstract class AbstractRouteCollection
     {

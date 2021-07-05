@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth;
+    namespace BetterWP\Auth;
 
-    use WPEmerge\Support\Str;
+    use BetterWP\Support\Str;
 
     class RecoveryCode
     {

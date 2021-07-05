@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing\FastRoute;
+    namespace BetterWP\Routing\FastRoute;
 
     use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
-    use WPEmerge\Contracts\RouteMatcher;
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RoutingResult;
-    use WPEmerge\Traits\PreparesRouteForExport;
+    use BetterWP\Contracts\RouteMatcher;
+    use BetterWP\Routing\Route;
+    use BetterWP\Routing\RoutingResult;
+    use BetterWP\Traits\PreparesRouteForExport;
 
 
     class CachedFastRouteMatcher implements RouteMatcher

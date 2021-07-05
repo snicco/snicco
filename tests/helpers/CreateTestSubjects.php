@@ -12,25 +12,25 @@
     use Tests\fixtures\Middleware\FooBarMiddleware;
     use Tests\fixtures\Middleware\FooMiddleware;
     use Tests\stubs\TestRequest;
-    use WPEmerge\View\MethodField;
-    use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Events\IncomingRequest;
-    use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\ExceptionHandling\NullErrorHandler;
-    use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Http\HttpKernel;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Middleware\Core\RouteRunner;
-    use WPEmerge\Middleware\MiddlewareStack;
-    use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
-    use WPEmerge\Routing\Pipeline;
-    use WPEmerge\Routing\RouteCollection;
-    use WPEmerge\Routing\Router;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Routing\RoutingServiceProvider;
+    use BetterWP\View\MethodField;
+    use BetterWP\Contracts\AbstractRouteCollection;
+    use BetterWP\Contracts\ErrorHandlerInterface;
+    use BetterWP\Events\IncomingRequest;
+    use BetterWP\Events\IncomingWebRequest;
+    use BetterWP\ExceptionHandling\NullErrorHandler;
+    use BetterWP\Factories\ConditionFactory;
+    use BetterWP\Factories\RouteActionFactory;
+    use BetterWP\Http\HttpKernel;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Middleware\Core\RouteRunner;
+    use BetterWP\Middleware\MiddlewareStack;
+    use BetterWP\Routing\FastRoute\FastRouteUrlGenerator;
+    use BetterWP\Routing\Pipeline;
+    use BetterWP\Routing\RouteCollection;
+    use BetterWP\Routing\Router;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\Routing\RoutingServiceProvider;
 
     trait CreateTestSubjects
     {

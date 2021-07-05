@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\ExceptionHandling;
+	namespace BetterWP\ExceptionHandling;
 
-    use WPEmerge\Events\IncomingAjaxRequest;
-    use WPEmerge\Events\ResponseSent;
-    use WPEmerge\Http\Responses\RedirectResponse;
+    use BetterWP\Events\IncomingAjaxRequest;
+    use BetterWP\Events\ResponseSent;
+    use BetterWP\Http\Responses\RedirectResponse;
 
     class ShutdownHandler {
 

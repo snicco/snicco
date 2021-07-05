@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Exceptions;
+    namespace BetterWP\Auth\Exceptions;
 
     use Throwable;
-    use WPEmerge\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Request;
 
     class FailedTwoFactorAuthenticationException extends FailedAuthenticationException
     {

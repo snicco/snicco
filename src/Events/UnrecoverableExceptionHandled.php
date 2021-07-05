@@ -4,9 +4,9 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Events;
+	namespace BetterWP\Events;
 
-	use WPEmerge\Application\ApplicationEvent;
+	use BetterWP\Application\ApplicationEvent;
 
 	class UnrecoverableExceptionHandled extends ApplicationEvent {
 

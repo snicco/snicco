@@ -7,7 +7,7 @@
     namespace Tests\unit\Support;
 
     use PHPUnit\Framework\TestCase;
-    use WPEmerge\Support\Url;
+    use BetterWP\Support\Url;
 
     class UrlTest extends TestCase
     {

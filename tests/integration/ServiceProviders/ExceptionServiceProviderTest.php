@@ -9,11 +9,11 @@
 	use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\ExceptionHandling\DebugErrorHandler;
-	use WPEmerge\ExceptionHandling\NullErrorHandler;
-	use WPEmerge\ExceptionHandling\ProductionErrorHandler;
+    use BetterWP\Contracts\ErrorHandlerInterface;
+    use BetterWP\Contracts\ServiceProvider;
+    use BetterWP\ExceptionHandling\DebugErrorHandler;
+	use BetterWP\ExceptionHandling\NullErrorHandler;
+	use BetterWP\ExceptionHandling\ProductionErrorHandler;
 
     class ExceptionServiceProviderTest extends TestCase {
 

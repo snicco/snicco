@@ -9,10 +9,10 @@
     use Tests\integration\Blade\traits\AssertBladeView;
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
-    use WPEmerge\Blade\BladeEngine;
-    use WPEmerge\Blade\BladeServiceProvider;
-    use WPEmerge\Contracts\ViewEngineInterface;
-    use WPEmerge\ExceptionHandling\Exceptions\ViewException;
+    use BetterWP\Blade\BladeEngine;
+    use BetterWP\Blade\BladeServiceProvider;
+    use BetterWP\Contracts\ViewEngineInterface;
+    use BetterWP\ExceptionHandling\Exceptions\ViewException;
 
     class BladeViewTest extends BladeTestCase
     {

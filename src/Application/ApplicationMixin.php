@@ -4,23 +4,23 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Application;
+    namespace BetterWP\Application;
 
     use Contracts\ContainerAdapter;
     use LogicException;
     use Tests\unit\View\MethodField;
-    use WPEmerge\Contracts\AbstractRedirector;
-    use WPEmerge\Http\Cookies;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Mail\MailBuilder;
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\Router;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\Session\CsrfField;
-    use WPEmerge\Session\Session;
-    use WPEmerge\View\GlobalContext;
+    use BetterWP\Contracts\AbstractRedirector;
+    use BetterWP\Http\Cookies;
+    use BetterWP\Http\ResponseFactory;
+    use BetterWP\Http\Responses\RedirectResponse;
+    use BetterWP\Mail\MailBuilder;
+    use BetterWP\Routing\Route;
+    use BetterWP\Routing\Router;
+    use BetterWP\Routing\UrlGenerator;
+    use BetterWP\Contracts\ViewInterface;
+    use BetterWP\Session\CsrfField;
+    use BetterWP\Session\Session;
+    use BetterWP\View\GlobalContext;
 
     /**
      * Can be applied to your App class via a "@mixin" annotation for better IDE support.
@@ -168,7 +168,7 @@
          * Returns a response factory instance.
          *
          * @return  ResponseFactory
-         * @see \WPEmerge\Http\ResponseFactory
+         * @see \BetterWP\Http\ResponseFactory
          */
         public static function response() : ResponseFactory
         {
@@ -180,7 +180,7 @@
          * @param  string|string[]  $views
          *
          * @return ViewInterface
-         * @see    \WPEmerge\View\ViewFactory::make()
+         * @see    \BetterWP\View\ViewFactory::make()
          */
         public static function view($views) : ViewInterface
         {
@@ -190,7 +190,7 @@
          * Output child layout content.
          *
          * @return void
-         * @see    \WPEmerge\View\PhpViewEngine::includeNextView()
+         * @see    \BetterWP\View\PhpViewEngine::includeNextView()
          */
         public static function includeChildViews() : void
         {
@@ -203,8 +203,8 @@
          * @param  array<string, mixed>  $context
          *
          * @return string
-         * @see    \WPEmerge\Contracts\ViewInterface::toString()
-         * @see    \WPEmerge\View\ViewFactory::make()
+         * @see    \BetterWP\Contracts\ViewInterface::toString()
+         * @see    \BetterWP\View\ViewFactory::make()
          */
         public static function render($views, array $context = []) : string
         {
@@ -218,7 +218,7 @@
          * @param  string|array|callable|\Closure  $callable
          *
          * @return void
-         * @see \WPEmerge\View\ViewComposerCollection::addComposer()
+         * @see \BetterWP\View\ViewComposerCollection::addComposer()
          */
         public static function addComposer($views, $callable) : void
         {

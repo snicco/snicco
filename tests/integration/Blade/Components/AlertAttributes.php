@@ -5,7 +5,7 @@
 
     namespace Tests\integration\Blade\Components;
 
-    use WPEmerge\Blade\BladeComponent;
+    use BetterWP\Blade\BladeComponent;
 
     class AlertAttributes extends BladeComponent
     {

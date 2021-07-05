@@ -4,14 +4,14 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Http\Responses;
+	namespace BetterWP\Http\Responses;
 
 
     use Illuminate\Contracts\Support\MessageProvider;
     use Illuminate\Support\MessageBag;
     use Illuminate\Support\ViewErrorBag;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Session\Session;
+    use BetterWP\Http\Psr7\Response;
+    use BetterWP\Session\Session;
 
     class RedirectResponse extends Response {
 

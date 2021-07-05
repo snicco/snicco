@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Events;
+	namespace BetterWP\Events;
 
-	use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Support\Str;
+	use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Http\Psr7\Request;
+    use BetterWP\Support\Str;
 
     class IncomingRequest extends ApplicationEvent {
 

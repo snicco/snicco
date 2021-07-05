@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\ExceptionHandling\Exceptions;
+    namespace BetterWP\ExceptionHandling\Exceptions;
 
     use RuntimeException;
     use Throwable;
-    use WPEmerge\Http\Psr7\Request;
+    use BetterWP\Http\Psr7\Request;
 
     class HttpException extends RuntimeException
     {

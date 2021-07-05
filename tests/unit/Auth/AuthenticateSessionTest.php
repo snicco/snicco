@@ -9,11 +9,11 @@
     use Mockery as m;
     use Tests\helpers\TravelsTime;
     use Tests\MiddlewareTestCase;
-    use WPEmerge\Auth\AuthSessionManager;
-    use WPEmerge\Auth\Middleware\AuthenticateSession;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Session\Drivers\ArraySessionDriver;
-    use WPEmerge\Session\Session;
+    use BetterWP\Auth\AuthSessionManager;
+    use BetterWP\Auth\Middleware\AuthenticateSession;
+    use BetterWP\Http\Delegate;
+    use BetterWP\Session\Drivers\ArraySessionDriver;
+    use BetterWP\Session\Session;
 
     class AuthenticateSessionTest extends MiddlewareTestCase
     {

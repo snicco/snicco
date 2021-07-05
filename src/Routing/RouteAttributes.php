@@ -4,12 +4,12 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Routing;
+	namespace BetterWP\Routing;
 
-	use WPEmerge\Contracts\SetsRouteAttributes;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Support\UrlParser;
+	use BetterWP\Contracts\SetsRouteAttributes;
+    use BetterWP\Support\WP;
+    use BetterWP\Support\Arr;
+    use BetterWP\Support\UrlParser;
 
     class RouteAttributes implements SetsRouteAttributes {
 

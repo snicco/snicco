@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Contracts;
+	namespace BetterWP\Contracts;
 
 
 	interface PhpEngine extends ViewEngineInterface {

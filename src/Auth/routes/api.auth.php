@@ -3,19 +3,19 @@
 
     declare(strict_types = 1);
 
-    use WPEmerge\Application\ApplicationConfig;
-    use WPEmerge\Auth\Controllers\AccountController;
-    use WPEmerge\Auth\Controllers\AuthConfirmationEmailController;
-    use WPEmerge\Auth\Controllers\AuthSessionController;
-    use WPEmerge\Auth\Controllers\ConfirmedAuthSessionController;
-    use WPEmerge\Auth\Controllers\ForgotPasswordController;
-    use WPEmerge\Auth\Controllers\LoginMagicLinkController;
-    use WPEmerge\Auth\Controllers\RecoveryCodeController;
-    use WPEmerge\Auth\Controllers\RegistrationLinkController;
-    use WPEmerge\Auth\Controllers\ResetPasswordController;
-    use WPEmerge\Auth\Controllers\TwoFactorAuthSessionController;
-    use WPEmerge\Auth\Controllers\TwoFactorAuthPreferenceController;
-    use WPEmerge\Routing\Router;
+    use BetterWP\Application\ApplicationConfig;
+    use BetterWP\Auth\Controllers\AccountController;
+    use BetterWP\Auth\Controllers\AuthConfirmationEmailController;
+    use BetterWP\Auth\Controllers\AuthSessionController;
+    use BetterWP\Auth\Controllers\ConfirmedAuthSessionController;
+    use BetterWP\Auth\Controllers\ForgotPasswordController;
+    use BetterWP\Auth\Controllers\LoginMagicLinkController;
+    use BetterWP\Auth\Controllers\RecoveryCodeController;
+    use BetterWP\Auth\Controllers\RegistrationLinkController;
+    use BetterWP\Auth\Controllers\ResetPasswordController;
+    use BetterWP\Auth\Controllers\TwoFactorAuthSessionController;
+    use BetterWP\Auth\Controllers\TwoFactorAuthPreferenceController;
+    use BetterWP\Routing\Router;
 
     /** @var Router $router */
     /** @var ApplicationConfig $config */

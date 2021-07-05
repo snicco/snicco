@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Events;
+    namespace BetterWP\Auth\Events;
 
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Support\WP;
+    use BetterWP\Application\ApplicationEvent;
+    use BetterWP\Support\WP;
 
     class GenerateLoginUrl extends ApplicationEvent {
 

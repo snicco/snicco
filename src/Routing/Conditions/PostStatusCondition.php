@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Routing\Conditions;
+	namespace BetterWP\Routing\Conditions;
 
-	use WPEmerge\Contracts\ConditionInterface;
-    use WPEmerge\Http\Psr7\Request;
+	use BetterWP\Contracts\ConditionInterface;
+    use BetterWP\Http\Psr7\Request;
 
     class PostStatusCondition implements ConditionInterface {
 
