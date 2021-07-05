@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Traits;
+    namespace WPMvc\Auth\Traits;
 
     use Illuminate\Support\Collection;
-    use WPEmerge\Auth\RecoveryCode;
+    use WPMvc\Auth\RecoveryCode;
 
     trait GeneratesRecoveryCodes
     {

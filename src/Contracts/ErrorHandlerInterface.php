@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Contracts;
+	namespace WPMvc\Contracts;
 
 
-	use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
+	use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Response;
     use Throwable;
 
     interface ErrorHandlerInterface {

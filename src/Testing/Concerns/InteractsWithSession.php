@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Testing\Concerns;
+    namespace WPMvc\Testing\Concerns;
 
     use PHPUnit\Framework\Assert as PHPUnit;
     use Tests\helpers\HashesSessionIds;
-    use WPEmerge\Application\Application;
-    use WPEmerge\Session\Contracts\SessionDriver;
-    use WPEmerge\Session\CsrfField;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Support\Arr;
+    use WPMvc\Application\Application;
+    use WPMvc\Session\Contracts\SessionDriver;
+    use WPMvc\Session\CsrfField;
+    use WPMvc\Session\Session;
+    use WPMvc\Support\Arr;
 
     /**
      * @property Session $session

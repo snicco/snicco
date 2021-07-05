@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Blade;
+    namespace WPMvc\Blade;
 
     use Illuminate\Support\Facades\Blade;
     use Tests\unit\View\MethodField;
-    use WPEmerge\Application\ApplicationTrait;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Session\CsrfField;
+    use WPMvc\Application\ApplicationTrait;
+    use WPMvc\Contracts\ServiceProvider;
+    use WPMvc\Support\WP;
+    use WPMvc\Session\CsrfField;
 
     class BladeDirectiveServiceProvider extends ServiceProvider
     {

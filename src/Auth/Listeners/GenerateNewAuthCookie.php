@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Listeners;
+    namespace WPMvc\Auth\Listeners;
 
-    use WPEmerge\Auth\Events\SettingAuthCookie;
-    use WPEmerge\Session\Session;
+    use WPMvc\Auth\Events\SettingAuthCookie;
+    use WPMvc\Session\Session;
 
     class GenerateNewAuthCookie
     {

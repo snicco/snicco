@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Routing;
+	namespace WPMvc\Routing;
 
 	use Closure;
-	use WPEmerge\Contracts\RouteAction;
+	use WPMvc\Contracts\RouteAction;
 
 	class ClosureAction implements RouteAction {
 

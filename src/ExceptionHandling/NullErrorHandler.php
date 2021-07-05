@@ -4,12 +4,12 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\ExceptionHandling;
+	namespace WPMvc\ExceptionHandling;
 
 	use Throwable;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
+    use WPMvc\Contracts\ErrorHandlerInterface;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Response;
 
     class NullErrorHandler implements ErrorHandlerInterface {
 

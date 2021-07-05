@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Middleware;
+    namespace WPMvc\Auth\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\UrlGenerator;
+    use WPMvc\Contracts\Middleware;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Routing\UrlGenerator;
 
     class AuthUnconfirmed extends Middleware
     {

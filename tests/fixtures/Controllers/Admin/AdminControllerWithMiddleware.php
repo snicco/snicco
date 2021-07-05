@@ -7,9 +7,9 @@
 	namespace Tests\fixtures\Controllers\Admin;
 
     use Tests\fixtures\Middleware\MiddlewareWithDependencies;
-	use WPEmerge\Http\Controller;
+	use WPMvc\Http\Controller;
 	use Tests\fixtures\TestDependencies\Baz;
-	use WPEmerge\Http\Psr7\Request;
+	use WPMvc\Http\Psr7\Request;
 
 	class AdminControllerWithMiddleware extends Controller {
 

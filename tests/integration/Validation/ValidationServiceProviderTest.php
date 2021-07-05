@@ -9,9 +9,9 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPEmerge\Validation\Middleware\ShareValidatorWithRequest;
-    use WPEmerge\Validation\ValidationServiceProvider;
-    use WPEmerge\Validation\Validator;
+    use WPMvc\Validation\Middleware\ShareValidatorWithRequest;
+    use WPMvc\Validation\ValidationServiceProvider;
+    use WPMvc\Validation\Validator;
 
     class ValidationServiceProviderTest extends TestCase
     {

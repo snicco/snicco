@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Contracts;
+    namespace WPMvc\Auth\Contracts;
 
     use WP_User;
-    use WPEmerge\Contracts\ResponsableInterface;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Contracts\ResponsableInterface;
+    use WPMvc\Http\Psr7\Request;
 
     abstract class LoginResponse implements ResponsableInterface
     {

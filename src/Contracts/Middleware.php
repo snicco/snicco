@@ -4,15 +4,15 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Contracts;
+	namespace WPMvc\Contracts;
 
 	use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\ResponseFactory;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\ResponseFactory;
 
     abstract class Middleware implements MiddlewareInterface {
 

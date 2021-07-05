@@ -9,12 +9,12 @@
     use Nyholm\Psr7\Factory\Psr17Factory;
     use PHPUnit\Framework\Assert;
     use Tests\stubs\TestApp;
-    use WPEmerge\Application\Application;
-    use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Testing\TestCase as BaseTestCase;
-    use WPEmerge\Testing\TestResponse;
+    use WPMvc\Application\Application;
+    use WPMvc\Contracts\ViewInterface;
+    use WPMvc\Http\ResponseEmitter;
+    use WPMvc\Support\Arr;
+    use WPMvc\Testing\TestCase as BaseTestCase;
+    use WPMvc\Testing\TestResponse;
 
     class TestCase extends BaseTestCase
     {

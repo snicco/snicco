@@ -6,7 +6,7 @@
 
     namespace Tests\integration\Blade\Components;
 
-    use WPEmerge\Blade\BladeComponent;
+    use WPMvc\Blade\BladeComponent;
 
     class InlineComponent extends BladeComponent
     {

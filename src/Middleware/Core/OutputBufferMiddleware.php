@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware\Core;
+    namespace WPMvc\Middleware\Core;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Http\Responses\InvalidResponse;
-    use WPEmerge\Http\Responses\NullResponse;
-    use WPEmerge\Http\Responses\RedirectResponse;
+    use WPMvc\Contracts\Middleware;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Response;
+    use WPMvc\Http\ResponseEmitter;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Http\Responses\InvalidResponse;
+    use WPMvc\Http\Responses\NullResponse;
+    use WPMvc\Http\Responses\RedirectResponse;
 
     class OutputBufferMiddleware extends Middleware
     {

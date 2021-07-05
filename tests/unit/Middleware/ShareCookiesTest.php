@@ -10,11 +10,11 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\Http\Cookie;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Middleware\Core\ShareCookies;
+    use WPMvc\Http\Cookie;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\ResponseEmitter;
+    use WPMvc\Middleware\Core\ShareCookies;
 
     class ShareCookiesTest extends UnitTest
     {

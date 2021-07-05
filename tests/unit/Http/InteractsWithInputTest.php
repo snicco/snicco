@@ -10,12 +10,12 @@
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\Drivers\ArraySessionDriver;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Validation\Exceptions\ValidationException;
-    use WPEmerge\Validation\Validator;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Session\Drivers\ArraySessionDriver;
+    use WPMvc\Session\Session;
+    use WPMvc\Validation\Exceptions\ValidationException;
+    use WPMvc\Validation\Validator;
 
     class InteractsWithInputTest extends UnitTest
     {

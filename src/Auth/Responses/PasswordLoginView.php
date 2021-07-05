@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Responses;
+    namespace WPMvc\Auth\Responses;
 
-    use WPEmerge\Application\ApplicationConfig;
-    use WPEmerge\Auth\Contracts\LoginViewResponse;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\View\ViewFactory;
+    use WPMvc\Application\ApplicationConfig;
+    use WPMvc\Auth\Contracts\LoginViewResponse;
+    use WPMvc\Support\WP;
+    use WPMvc\Routing\UrlGenerator;
+    use WPMvc\Support\Arr;
+    use WPMvc\View\ViewFactory;
 
     class PasswordLoginView extends LoginViewResponse
     {

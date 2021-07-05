@@ -7,7 +7,7 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use WPEmerge\Contracts\EncryptorInterface;
+    use WPMvc\Contracts\EncryptorInterface;
 
     class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
     {

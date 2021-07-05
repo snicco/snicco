@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware;
+    namespace WPMvc\Middleware;
 
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
-    use WPEmerge\Middleware\Core\OpenRedirectProtection;
-    use WPEmerge\Middleware\Core\OutputBufferMiddleware;
-    use WPEmerge\Middleware\Core\RouteRunner;
-    use WPEmerge\Routing\Pipeline;
+    use WPMvc\Contracts\ErrorHandlerInterface;
+    use WPMvc\Contracts\ServiceProvider;
+    use WPMvc\Events\IncomingWebRequest;
+    use WPMvc\Http\ResponseEmitter;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Middleware\Core\EvaluateResponseMiddleware;
+    use WPMvc\Middleware\Core\OpenRedirectProtection;
+    use WPMvc\Middleware\Core\OutputBufferMiddleware;
+    use WPMvc\Middleware\Core\RouteRunner;
+    use WPMvc\Routing\Pipeline;
 
     class MiddlewareServiceProvider extends ServiceProvider
     {

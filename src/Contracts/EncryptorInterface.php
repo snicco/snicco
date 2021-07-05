@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Contracts;
+	namespace WPMvc\Contracts;
 
-	use WPEmerge\ExceptionHandling\Exceptions\DecryptException;
-    use WPEmerge\ExceptionHandling\Exceptions\EncryptException;
+	use WPMvc\ExceptionHandling\Exceptions\DecryptException;
+    use WPMvc\ExceptionHandling\Exceptions\EncryptException;
 
     interface EncryptorInterface {
 
@@ -54,7 +54,7 @@
 		 *
 		 * @return string
 		 *
-		 * @throws \WPEmerge\ExceptionHandling\Exceptions\DecryptException
+		 * @throws \WPMvc\ExceptionHandling\Exceptions\DecryptException
 		 */
 		public function decryptString( string $payload) : string;
 

@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Support;
+	namespace WPMvc\Support;
 
 	use Contracts\ContainerAdapter;
 	use Mockery;

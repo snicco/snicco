@@ -7,14 +7,14 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Auth\Authenticators\PasswordAuthenticator;
-    use WPEmerge\Auth\Contracts\Authenticator;
-    use WPEmerge\Auth\Events\Login;
-    use WPEmerge\Auth\Traits\ResolvesUser;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Testing\TestResponse;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Auth\Authenticators\PasswordAuthenticator;
+    use WPMvc\Auth\Contracts\Authenticator;
+    use WPMvc\Auth\Events\Login;
+    use WPMvc\Auth\Traits\ResolvesUser;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Response;
+    use WPMvc\Testing\TestResponse;
 
 
     class AuthSessionControllerTest extends AuthTestCase

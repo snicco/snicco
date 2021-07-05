@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth;
+    namespace WPMvc\Auth;
 
-    use WPEmerge\Support\Arr;
+    use WPMvc\Support\Arr;
 
     class WpAuthSessionToken extends \WP_Session_Tokens
     {

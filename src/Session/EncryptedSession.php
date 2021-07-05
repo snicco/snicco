@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace WPMvc\Session;
 
-    use WPEmerge\Contracts\EncryptorInterface;
-    use WPEmerge\ExceptionHandling\Exceptions\DecryptException;
-    use WPEmerge\ExceptionHandling\Exceptions\EncryptException;
-    use WPEmerge\Session\Contracts\SessionDriver;
+    use WPMvc\Contracts\EncryptorInterface;
+    use WPMvc\ExceptionHandling\Exceptions\DecryptException;
+    use WPMvc\ExceptionHandling\Exceptions\EncryptException;
+    use WPMvc\Session\Contracts\SessionDriver;
 
     class EncryptedSession extends Session
     {

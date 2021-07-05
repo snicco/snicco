@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth;
+    namespace WPMvc\Auth;
 
     use BaconQrCode\Renderer\Color\Rgb;
     use BaconQrCode\Renderer\Image\SvgImageBackEnd;
@@ -13,11 +13,11 @@
     use BaconQrCode\Renderer\RendererStyle\RendererStyle;
     use BaconQrCode\Writer;
     use PragmaRX\Google2FA\Google2FA;
-    use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPEmerge\Auth\Traits\ResolvesUser;
-    use WPEmerge\Auth\Traits\ResolveTwoFactorSecrets;
-    use WPEmerge\Contracts\EncryptorInterface;
-    use WPEmerge\Support\WP;
+    use WPMvc\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use WPMvc\Auth\Traits\ResolvesUser;
+    use WPMvc\Auth\Traits\ResolveTwoFactorSecrets;
+    use WPMvc\Contracts\EncryptorInterface;
+    use WPMvc\Support\WP;
 
     class Google2FaAuthenticationProvider implements TwoFactorAuthenticationProvider
     {

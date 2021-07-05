@@ -7,15 +7,15 @@
     namespace Tests;
 
     use Illuminate\Support\Collection;
-    use WPEmerge\Auth\AuthServiceProvider;
-    use WPEmerge\Auth\AuthSessionManager;
-    use WPEmerge\Auth\RecoveryCode;
-    use WPEmerge\Session\Contracts\SessionDriver;
-    use WPEmerge\Session\Contracts\SessionManagerInterface;
-    use WPEmerge\Session\Encryptor;
-    use WPEmerge\Session\SessionManager;
-    use WPEmerge\Session\SessionServiceProvider;
-    use WPEmerge\Validation\ValidationServiceProvider;
+    use WPMvc\Auth\AuthServiceProvider;
+    use WPMvc\Auth\AuthSessionManager;
+    use WPMvc\Auth\RecoveryCode;
+    use WPMvc\Session\Contracts\SessionDriver;
+    use WPMvc\Session\Contracts\SessionManagerInterface;
+    use WPMvc\Session\Encryptor;
+    use WPMvc\Session\SessionManager;
+    use WPMvc\Session\SessionServiceProvider;
+    use WPMvc\Validation\ValidationServiceProvider;
 
 
     class AuthTestCase extends TestCase

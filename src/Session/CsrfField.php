@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace WPMvc\Session;
 
     use Slim\Csrf\Guard;
-    use WPEmerge\Support\Arr;
+    use WPMvc\Support\Arr;
 
     class CsrfField
     {

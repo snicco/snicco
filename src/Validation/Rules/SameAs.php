@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Validation\Rules;
+    namespace WPMvc\Validation\Rules;
 
     use Respect\Validation\Rules\AbstractRule;
-    use WPEmerge\Support\Arr;
+    use WPMvc\Support\Arr;
 
     class SameAs extends AbstractRule
     {

@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware;
+    namespace WPMvc\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\StreamInterface;
     use RuntimeException;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Support\Str;
+    use WPMvc\Contracts\Middleware;
+    use WPMvc\ExceptionHandling\Exceptions\HttpException;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Support\Str;
 
     abstract class Payload extends Middleware
     {

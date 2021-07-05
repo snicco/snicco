@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Contracts;
+    namespace WPMvc\Auth\Contracts;
 
     interface TwoFactorAuthenticationProvider
     {

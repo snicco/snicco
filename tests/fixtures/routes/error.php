@@ -5,9 +5,9 @@
 
 
     /** @var Router $router */
-    use WPEmerge\Routing\Router;
-    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
-    use WPEmerge\Session\Exceptions\InvalidCsrfTokenException;
+    use WPMvc\Routing\Router;
+    use WPMvc\ExceptionHandling\Exceptions\HttpException;
+    use WPMvc\Session\Exceptions\InvalidCsrfTokenException;
 
     $router->get('error/500', function () {
 

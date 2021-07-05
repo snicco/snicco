@@ -16,9 +16,9 @@
     use Psr\Http\Message\UploadedFileFactoryInterface;
     use Psr\Http\Message\UriFactoryInterface;
     use Tests\stubs\TestViewFactory;
-    use WPEmerge\Http\Redirector;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Routing\UrlGenerator;
+    use WPMvc\Http\Redirector;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Routing\UrlGenerator;
 
     trait CreatePsr17Factories
     {

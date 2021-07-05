@@ -9,20 +9,20 @@
     use Tests\fixtures\Conditions\TrueCondition;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Contracts\RouteMatcher;
-    use WPEmerge\Contracts\RouteRegistrarInterface;
-    use WPEmerge\Contracts\RouteUrlGenerator;
-    use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Routing\CachedRouteCollection;
-    use WPEmerge\Routing\CacheFileRouteRegistrar;
-    use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
-    use WPEmerge\Routing\FastRoute\FastRouteMatcher;
-    use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
-    use WPEmerge\Routing\RouteCollection;
-    use WPEmerge\Routing\Router;
-    use WPEmerge\Routing\RouteRegistrar;
-    use WPEmerge\Routing\UrlGenerator;
+    use WPMvc\Contracts\AbstractRouteCollection;
+    use WPMvc\Contracts\RouteMatcher;
+    use WPMvc\Contracts\RouteRegistrarInterface;
+    use WPMvc\Contracts\RouteUrlGenerator;
+    use WPMvc\Factories\ConditionFactory;
+    use WPMvc\Routing\CachedRouteCollection;
+    use WPMvc\Routing\CacheFileRouteRegistrar;
+    use WPMvc\Routing\FastRoute\CachedFastRouteMatcher;
+    use WPMvc\Routing\FastRoute\FastRouteMatcher;
+    use WPMvc\Routing\FastRoute\FastRouteUrlGenerator;
+    use WPMvc\Routing\RouteCollection;
+    use WPMvc\Routing\Router;
+    use WPMvc\Routing\RouteRegistrar;
+    use WPMvc\Routing\UrlGenerator;
 
     class RoutingServiceProviderTest extends TestCase
     {

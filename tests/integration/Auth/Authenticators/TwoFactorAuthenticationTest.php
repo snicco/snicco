@@ -8,16 +8,16 @@
 
     use Tests\AuthTestCase;
     use Tests\integration\Auth\Stubs\TestTwoFactorProvider;
-    use WPEmerge\Auth\Authenticators\RedirectIf2FaAuthenticable;
-    use WPEmerge\Auth\Authenticators\TwoFactorAuthenticator;
-    use WPEmerge\Auth\Contracts\Authenticator;
-    use WPEmerge\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use WPEmerge\Auth\Contracts\TwoFactorChallengeResponse;
-    use WPEmerge\Auth\Middleware\AuthenticateSession;
-    use WPEmerge\Auth\Traits\ResolvesUser;
-    use WPEmerge\Contracts\EncryptorInterface;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
+    use WPMvc\Auth\Authenticators\RedirectIf2FaAuthenticable;
+    use WPMvc\Auth\Authenticators\TwoFactorAuthenticator;
+    use WPMvc\Auth\Contracts\Authenticator;
+    use WPMvc\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use WPMvc\Auth\Contracts\TwoFactorChallengeResponse;
+    use WPMvc\Auth\Middleware\AuthenticateSession;
+    use WPMvc\Auth\Traits\ResolvesUser;
+    use WPMvc\Contracts\EncryptorInterface;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Response;
 
 
     class TwoFactorAuthenticationTest extends AuthTestCase

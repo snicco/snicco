@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Listeners;
+    namespace WPMvc\Listeners;
 
 
-    use WPEmerge\Contracts\RouteRegistrarInterface;
-    use WPEmerge\Events\IncomingApiRequest;
-    use WPEmerge\Events\WpInit;
+    use WPMvc\Contracts\RouteRegistrarInterface;
+    use WPMvc\Events\IncomingApiRequest;
+    use WPMvc\Events\WpInit;
 
     class LoadRoutes
     {

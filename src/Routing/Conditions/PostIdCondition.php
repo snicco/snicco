@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Routing\Conditions;
+	namespace WPMvc\Routing\Conditions;
 
-	use WPEmerge\Contracts\ConditionInterface;
-	use WPEmerge\Contracts\UrlableInterface;
-    use WPEmerge\Http\Psr7\Request;
+	use WPMvc\Contracts\ConditionInterface;
+	use WPMvc\Contracts\UrlableInterface;
+    use WPMvc\Http\Psr7\Request;
 
     class PostIdCondition implements ConditionInterface, UrlableInterface {
 

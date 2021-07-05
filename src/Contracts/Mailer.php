@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Contracts;
+    namespace WPMvc\Contracts;
 
 
     interface Mailer
     {
 
         /**
-         * @param  \WPEmerge\Mail\Mailable  $mail
+         * @param  \WPMvc\Mail\Mailable  $mail
          *
          * @return bool Whether the mail was processed correctly.
          */
-        public function send ( \WPEmerge\Mail\Mailable $mail ) : bool;
+        public function send ( \WPMvc\Mail\Mailable $mail ) : bool;
 
 
     }

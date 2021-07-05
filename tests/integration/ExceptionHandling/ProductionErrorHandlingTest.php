@@ -7,8 +7,8 @@
     namespace Tests\integration\ExceptionHandling;
 
     use Tests\TestCase;
-    use WPEmerge\ExceptionHandling\ProductionErrorHandler;
-    use WPEmerge\Validation\Exceptions\ValidationException;
+    use WPMvc\ExceptionHandling\ProductionErrorHandler;
+    use WPMvc\Validation\Exceptions\ValidationException;
 
     /** @see ProductionErrorHandler */
     class ProductionErrorHandlingTest extends TestCase

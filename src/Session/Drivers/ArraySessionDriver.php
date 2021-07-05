@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session\Drivers;
+    namespace WPMvc\Session\Drivers;
 
     use Illuminate\Support\InteractsWithTime;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\Contracts\SessionDriver;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Session\Contracts\SessionDriver;
 
     class ArraySessionDriver implements SessionDriver
     {

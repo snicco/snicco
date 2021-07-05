@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Events;
+    namespace WPMvc\Events;
 
     use BetterWpHooks\Traits\IsAction;
-    use WPEmerge\Application\ApplicationConfig;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Application\ApplicationConfig;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Http\Psr7\Request;
 
     class WpInit extends ApplicationEvent
     {

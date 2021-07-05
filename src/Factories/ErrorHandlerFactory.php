@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Factories;
+	namespace WPMvc\Factories;
 
 	use Contracts\ContainerAdapter;
 	use Psr\Log\LoggerInterface;
@@ -13,11 +13,11 @@
 	use Whoops\Handler\PrettyPageHandler;
 	use Whoops\Run;
 	use Whoops\RunInterface;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-	use WPEmerge\ExceptionHandling\DebugErrorHandler;
-	use WPEmerge\ExceptionHandling\ProductionErrorHandler;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
+    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
+	use WPMvc\ExceptionHandling\DebugErrorHandler;
+	use WPMvc\ExceptionHandling\ProductionErrorHandler;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\ResponseFactory;
 
     use function PHPUnit\TestFixture\func;
 

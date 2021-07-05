@@ -8,7 +8,7 @@
 
     use Tests\helpers\CreatePsr17Factories;
     use Throwable;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
-    use WPEmerge\Http\Psr7\Response;
+    use WPMvc\Contracts\ErrorHandlerInterface;
+    use WPMvc\ExceptionHandling\Exceptions\HttpException;
+    use WPMvc\Http\Psr7\Response;
 

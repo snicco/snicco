@@ -4,14 +4,14 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Factories;
+	namespace WPMvc\Factories;
 
 	use Contracts\ContainerAdapter;
-	use WPEmerge\Contracts\ServiceProvider;
-	use WPEmerge\Factories\AbstractFactory;
-	use WPEmerge\Factories\ConditionFactory;
-	use WPEmerge\Factories\RouteActionFactory;
-	use WPEmerge\Factories\ViewComposerFactory;
+	use WPMvc\Contracts\ServiceProvider;
+	use WPMvc\Factories\AbstractFactory;
+	use WPMvc\Factories\ConditionFactory;
+	use WPMvc\Factories\RouteActionFactory;
+	use WPMvc\Factories\ViewComposerFactory;
 
 	class FactoryServiceProvider extends ServiceProvider {
 

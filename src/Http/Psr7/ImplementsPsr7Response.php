@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http\Psr7;
+    namespace WPMvc\Http\Psr7;
 
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\StreamInterface;

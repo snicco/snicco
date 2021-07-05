@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Mail;
+    namespace WPMvc\Auth\Mail;
 
     use WP_User;
-    use WPEmerge\Mail\Mailable;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Session\Session;
+    use WPMvc\Mail\Mailable;
+    use WPMvc\Routing\UrlGenerator;
+    use WPMvc\Session\Session;
 
     class ConfirmAuthMail extends Mailable
     {

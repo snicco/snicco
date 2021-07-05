@@ -7,7 +7,7 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use WPEmerge\Auth\Mail\ConfirmAuthMail;
+    use WPMvc\Auth\Mail\ConfirmAuthMail;
 
     class AuthConfirmationEmailControllerTest extends AuthTestCase
     {

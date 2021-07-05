@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Traits;
+	namespace WPMvc\Traits;
 
-	use WPEmerge\Routing\Route;
-	use WPEmerge\Support\Arr;
+	use WPMvc\Routing\Route;
+	use WPMvc\Support\Arr;
 
 	trait HoldsRouteBlueprint {
 

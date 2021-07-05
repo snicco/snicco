@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Http;
+	namespace WPMvc\Http;
 
-	use WPEmerge\Contracts\ViewFactoryInterface;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\View\ViewFactory;
+	use WPMvc\Contracts\ViewFactoryInterface;
+    use WPMvc\Routing\UrlGenerator;
+    use WPMvc\View\ViewFactory;
 
     class Controller {
 

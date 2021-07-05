@@ -4,16 +4,16 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\ExceptionHandling;
+	namespace WPMvc\ExceptionHandling;
 
 	use Throwable;
     use Whoops\Handler\JsonResponseHandler;
     use Whoops\RunInterface;
-	use WPEmerge\Contracts\ErrorHandlerInterface;
-	use WPEmerge\Events\UnrecoverableExceptionHandled;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Traits\HandlesExceptions;
+	use WPMvc\Contracts\ErrorHandlerInterface;
+	use WPMvc\Events\UnrecoverableExceptionHandled;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Response;
+    use WPMvc\Traits\HandlesExceptions;
 
 	class DebugErrorHandler implements ErrorHandlerInterface {
 

@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Contracts;
+	namespace WPMvc\Contracts;
 
 	/**
 	 * Interface signifying that an object can be converted to a URL.

@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
     use Tests\stubs\TestApp;
-    use WPEmerge\Routing\Router;
+    use WPMvc\Routing\Router;
 
     TestApp::route()->prefix('auth-confirm')->name('auth.confirm.test')->group( function (Router $router)  {
 

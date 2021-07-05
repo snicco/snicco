@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace WPMvc\Session;
 
     use Carbon\Carbon;
     use Closure;
@@ -13,15 +13,15 @@
     use Illuminate\Support\InteractsWithTime;
     use Illuminate\Support\ViewErrorBag;
     use Respect\Validation\Rules\DateTime;
-    use WPEmerge\Auth\Events\Logout;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Session\Contracts\SessionDriver;
-    use WPEmerge\Session\Events\SessionRegenerated;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Support\Str;
+    use WPMvc\Auth\Events\Logout;
+    use WPMvc\Support\WP;
+    use WPMvc\Session\Contracts\SessionDriver;
+    use WPMvc\Session\Events\SessionRegenerated;
+    use WPMvc\Support\Arr;
+    use WPMvc\Support\Str;
     use stdClass;
     use SessionHandlerInterface;
-    use WPEmerge\Support\Url;
+    use WPMvc\Support\Url;
 
     class Session
     {

@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing;
+    namespace WPMvc\Routing;
 
     use Symfony\Component\Finder\Finder;
-    use WPEmerge\Application\ApplicationConfig;
-    use WPEmerge\Contracts\RouteRegistrarInterface;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
+    use WPMvc\Application\ApplicationConfig;
+    use WPMvc\Contracts\RouteRegistrarInterface;
+    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
 
     class CacheFileRouteRegistrar implements RouteRegistrarInterface
     {

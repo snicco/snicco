@@ -4,13 +4,13 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\View;
+	namespace WPMvc\View;
 
-	use WPEmerge\Contracts\ViewEngineInterface;
-	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Contracts\ViewFactoryInterface;
-	use WPEmerge\Support\VariableBag;
-	use WPEmerge\Support\Arr;
+	use WPMvc\Contracts\ViewEngineInterface;
+	use WPMvc\Contracts\ViewInterface;
+	use WPMvc\Contracts\ViewFactoryInterface;
+	use WPMvc\Support\VariableBag;
+	use WPMvc\Support\Arr;
 
 	class ViewFactory implements ViewFactoryInterface {
 

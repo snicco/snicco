@@ -3,10 +3,10 @@
 
     declare(strict_types = 1);
 
-    use WPEmerge\Auth\Controllers\BulkPasswordResetEmailController;
-    use WPEmerge\Auth\Controllers\PasswordResetEmailController;
-    use WPEmerge\Auth\Controllers\WpLoginRedirectController;
-    use WPEmerge\Routing\Router;
+    use WPMvc\Auth\Controllers\BulkPasswordResetEmailController;
+    use WPMvc\Auth\Controllers\PasswordResetEmailController;
+    use WPMvc\Auth\Controllers\WpLoginRedirectController;
+    use WPMvc\Routing\Router;
 
     /** @var Router $router */
 

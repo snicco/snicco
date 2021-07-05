@@ -11,10 +11,10 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Middleware\TrailingSlash;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Http\Responses\RedirectResponse;
+    use WPMvc\Middleware\TrailingSlash;
 
     class TrailingSlashTest extends UnitTest
     {

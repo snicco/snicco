@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Responses;
+    namespace WPMvc\Auth\Responses;
 
-    use WPEmerge\Auth\Contracts\RegistrationViewResponse;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\View\ViewFactory;
+    use WPMvc\Auth\Contracts\RegistrationViewResponse;
+    use WPMvc\Routing\UrlGenerator;
+    use WPMvc\View\ViewFactory;
 
     class EmailRegistrationViewResponse extends RegistrationViewResponse
     {

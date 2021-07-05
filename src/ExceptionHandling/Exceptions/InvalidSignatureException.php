@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\ExceptionHandling\Exceptions;
+    namespace WPMvc\ExceptionHandling\Exceptions;
 
     use Throwable;
-    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
-    use WPEmerge\Http\ResponseFactory;
+    use WPMvc\ExceptionHandling\Exceptions\HttpException;
+    use WPMvc\Http\ResponseFactory;
 
     class InvalidSignatureException extends HttpException
     {

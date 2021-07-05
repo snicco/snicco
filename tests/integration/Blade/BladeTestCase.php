@@ -8,8 +8,8 @@
 
     use Illuminate\Support\Facades\Facade;
     use Tests\TestCase;
-    use WPEmerge\Blade\BladeDirectiveServiceProvider;
-    use WPEmerge\Blade\BladeServiceProvider;
+    use WPMvc\Blade\BladeDirectiveServiceProvider;
+    use WPMvc\Blade\BladeServiceProvider;
 
     class BladeTestCase extends TestCase
     {

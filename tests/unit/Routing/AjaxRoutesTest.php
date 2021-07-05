@@ -11,10 +11,10 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
     use Tests\helpers\CreatesWpUrls;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Events\IncomingAjaxRequest;
-    use WPEmerge\ExceptionHandling\Exceptions\RouteLogicException;
-    use WPEmerge\Support\WP;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Events\IncomingAjaxRequest;
+    use WPMvc\ExceptionHandling\Exceptions\RouteLogicException;
+    use WPMvc\Support\WP;
 
     class AjaxRoutesTest extends UnitTest
     {

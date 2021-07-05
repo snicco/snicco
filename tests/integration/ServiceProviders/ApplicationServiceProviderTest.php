@@ -11,22 +11,22 @@
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use WPEmerge\Application\Application;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\Support\WP;
-	use WPEmerge\Support\WpFacade;
-    use WPEmerge\Http\Cookies;
-    use WPEmerge\Http\Redirector;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Routing\Router;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Session\SessionServiceProvider;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Support\Url;
+    use WPMvc\Application\Application;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Contracts\ErrorHandlerInterface;
+    use WPMvc\Contracts\ServiceProvider;
+    use WPMvc\Contracts\ViewInterface;
+    use WPMvc\Support\WP;
+	use WPMvc\Support\WpFacade;
+    use WPMvc\Http\Cookies;
+    use WPMvc\Http\Redirector;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Http\Responses\RedirectResponse;
+    use WPMvc\Routing\Router;
+    use WPMvc\Routing\UrlGenerator;
+    use WPMvc\Session\SessionServiceProvider;
+    use WPMvc\Session\Session;
+    use WPMvc\Support\Url;
 
     class ApplicationServiceProviderTest extends TestCase {
 

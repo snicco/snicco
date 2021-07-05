@@ -4,26 +4,26 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http;
+    namespace WPMvc\Http;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Events\IncomingAdminRequest;
-    use WPEmerge\Events\IncomingRequest;
-    use WPEmerge\Events\ResponseSent;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\Responses\NullResponse;
-    use WPEmerge\Middleware\Core\AppendSpecialPathSuffix;
-    use WPEmerge\Middleware\Core\ErrorHandlerMiddleware;
-    use WPEmerge\Middleware\Core\EvaluateResponseMiddleware;
-    use WPEmerge\Middleware\Core\MethodOverride;
-    use WPEmerge\Middleware\Core\OutputBufferMiddleware;
-    use WPEmerge\Middleware\Core\RoutingMiddleware;
-    use WPEmerge\Middleware\Core\SetRequestAttributes;
-    use WPEmerge\Middleware\Core\ShareCookies;
-    use WPEmerge\Routing\Pipeline;
-    use WPEmerge\Middleware\Core\RouteRunner;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Traits\SortsMiddleware;
+    use WPMvc\Events\IncomingAdminRequest;
+    use WPMvc\Events\IncomingRequest;
+    use WPMvc\Events\ResponseSent;
+    use WPMvc\Http\Psr7\Response;
+    use WPMvc\Http\Responses\NullResponse;
+    use WPMvc\Middleware\Core\AppendSpecialPathSuffix;
+    use WPMvc\Middleware\Core\ErrorHandlerMiddleware;
+    use WPMvc\Middleware\Core\EvaluateResponseMiddleware;
+    use WPMvc\Middleware\Core\MethodOverride;
+    use WPMvc\Middleware\Core\OutputBufferMiddleware;
+    use WPMvc\Middleware\Core\RoutingMiddleware;
+    use WPMvc\Middleware\Core\SetRequestAttributes;
+    use WPMvc\Middleware\Core\ShareCookies;
+    use WPMvc\Routing\Pipeline;
+    use WPMvc\Middleware\Core\RouteRunner;
+    use WPMvc\Support\Arr;
+    use WPMvc\Traits\SortsMiddleware;
 
     class HttpKernel
     {

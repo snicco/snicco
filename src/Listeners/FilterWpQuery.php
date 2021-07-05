@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Listeners;
+    namespace WPMvc\Listeners;
 
     use BetterWpHooks\Traits\ListensConditionally;
-    use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Events\WpQueryFilterable;
-    use WPEmerge\Support\WP;
+    use WPMvc\Contracts\AbstractRouteCollection;
+    use WPMvc\Events\WpQueryFilterable;
+    use WPMvc\Support\WP;
 
     class FilterWpQuery
     {

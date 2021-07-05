@@ -9,10 +9,10 @@
     use Tests\integration\Blade\traits\AssertBladeView;
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
-    use WPEmerge\Blade\BladeEngine;
-    use WPEmerge\Blade\BladeServiceProvider;
-    use WPEmerge\Contracts\ViewEngineInterface;
-    use WPEmerge\ExceptionHandling\Exceptions\ViewException;
+    use WPMvc\Blade\BladeEngine;
+    use WPMvc\Blade\BladeServiceProvider;
+    use WPMvc\Contracts\ViewEngineInterface;
+    use WPMvc\ExceptionHandling\Exceptions\ViewException;
 
     class BladeViewTest extends BladeTestCase
     {

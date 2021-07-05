@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing;
+    namespace WPMvc\Routing;
 
     use Illuminate\Support\Arr;
     use Illuminate\Support\InteractsWithTime;
-    use WPEmerge\Contracts\RouteUrlGenerator;
-    use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Support\Str;
-    use WPEmerge\Support\Url;
+    use WPMvc\Contracts\RouteUrlGenerator;
+    use WPMvc\Contracts\MagicLink;
+    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Support\Str;
+    use WPMvc\Support\Url;
 
     class UrlGenerator
     {

@@ -4,24 +4,24 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\ExceptionHandling;
+    namespace WPMvc\ExceptionHandling;
 
     use Contracts\ContainerAdapter;
     use Illuminate\Support\Facades\Http;
     use Psr\Log\LoggerInterface;
     use Throwable;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Events\UnrecoverableExceptionHandled;
-    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Traits\HandlesExceptions;
-    use WPEmerge\Validation\Exceptions\ValidationException;
+    use WPMvc\Contracts\ErrorHandlerInterface;
+    use WPMvc\Events\UnrecoverableExceptionHandled;
+    use WPMvc\ExceptionHandling\Exceptions\HttpException;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Http\Psr7\Response;
+    use WPMvc\Http\ResponseEmitter;
+    use WPMvc\Session\Session;
+    use WPMvc\Support\Arr;
+    use WPMvc\Traits\HandlesExceptions;
+    use WPMvc\Validation\Exceptions\ValidationException;
 
     class ProductionErrorHandler implements ErrorHandlerInterface
     {

@@ -14,15 +14,15 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Routing\Router;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Routing\Router;
     use Tests\helpers\CreateDefaultWpApiMocks;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\View\ViewFactory;
+    use WPMvc\Routing\UrlGenerator;
+    use WPMvc\View\ViewFactory;
 
     class RouteAttributesTest extends UnitTest
     {

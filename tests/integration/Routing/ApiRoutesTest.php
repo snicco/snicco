@@ -11,13 +11,13 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Events\IncomingApiRequest;
-    use WPEmerge\Events\ResponseSent;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Contracts\Middleware;
+    use WPMvc\Events\IncomingApiRequest;
+    use WPMvc\Events\ResponseSent;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\ResponseFactory;
 
     class ApiRoutesTest extends TestCase
     {

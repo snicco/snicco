@@ -7,10 +7,10 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Auth\Contracts\AuthConfirmation;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\Events\SessionRegenerated;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Auth\Contracts\AuthConfirmation;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Session\Events\SessionRegenerated;
 
     class ConfirmedAuthSessionControllerTest extends AuthTestCase
     {

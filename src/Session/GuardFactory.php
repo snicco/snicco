@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session;
+    namespace WPMvc\Session;
 
     use Slim\Csrf\Guard;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Session\Exceptions\InvalidCsrfTokenException;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Session\Exceptions\InvalidCsrfTokenException;
 
     class GuardFactory
     {

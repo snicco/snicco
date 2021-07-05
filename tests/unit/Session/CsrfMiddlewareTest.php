@@ -12,17 +12,17 @@
     use Tests\helpers\HashesSessionIds;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\Drivers\ArraySessionDriver;
-    use WPEmerge\Session\CsrfField;
-    use WPEmerge\Session\Middleware\CsrfMiddleware;
-    use WPEmerge\Session\CsrfStore;
-    use WPEmerge\Session\GuardFactory;
-    use WPEmerge\Session\Exceptions\InvalidCsrfTokenException;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Support\Arr;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Session\Drivers\ArraySessionDriver;
+    use WPMvc\Session\CsrfField;
+    use WPMvc\Session\Middleware\CsrfMiddleware;
+    use WPMvc\Session\CsrfStore;
+    use WPMvc\Session\GuardFactory;
+    use WPMvc\Session\Exceptions\InvalidCsrfTokenException;
+    use WPMvc\Session\Session;
+    use WPMvc\Support\Arr;
 
     class CsrfMiddlewareTest extends UnitTest
     {

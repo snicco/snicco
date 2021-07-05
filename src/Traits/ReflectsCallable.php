@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Traits;
+	namespace WPMvc\Traits;
 
 	use Closure;
 	use Illuminate\Support\Arr;

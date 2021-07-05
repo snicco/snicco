@@ -13,10 +13,10 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPEmerge\Blade\BladeDirectiveServiceProvider;
-    use WPEmerge\Blade\BladeEngine;
-    use WPEmerge\Blade\BladeServiceProvider;
-    use WPEmerge\Contracts\ViewEngineInterface;
+    use WPMvc\Blade\BladeDirectiveServiceProvider;
+    use WPMvc\Blade\BladeEngine;
+    use WPMvc\Blade\BladeServiceProvider;
+    use WPMvc\Contracts\ViewEngineInterface;
 
     class BladeServiceProviderTest extends BladeTestCase
     {

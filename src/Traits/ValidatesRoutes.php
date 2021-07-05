@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Traits;
+    namespace WPMvc\Traits;
 
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Routing\Route;
+    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
+    use WPMvc\Routing\Route;
 
     trait ValidatesRoutes
     {

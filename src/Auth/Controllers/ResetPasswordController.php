@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Controllers;
+    namespace WPMvc\Auth\Controllers;
 
     use WP_User;
-    use WPEmerge\Http\Controller;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Validation\Exceptions\ValidationException;
+    use WPMvc\Http\Controller;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Responses\RedirectResponse;
+    use WPMvc\Validation\Exceptions\ValidationException;
     use Respect\Validation\Validator as v;
-    use WPEmerge\View\MethodField;
+    use WPMvc\View\MethodField;
     use ZxcvbnPhp\Zxcvbn;
 
     class ResetPasswordController extends Controller

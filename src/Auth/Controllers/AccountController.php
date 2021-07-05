@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Controllers;
+    namespace WPMvc\Auth\Controllers;
 
-    use WPEmerge\Auth\Contracts\CreatesNewUser;
-    use WPEmerge\Auth\Contracts\DeletesUsers;
-    use WPEmerge\Auth\Events\Registration;
-    use WPEmerge\Auth\Events\UserDeleted;
-    use WPEmerge\Auth\Responses\CreateAccountViewResponse;
-    use WPEmerge\Auth\Responses\RegisteredResponse;
-    use WPEmerge\Auth\Traits\ResolvesUser;
-    use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
-    use WPEmerge\Http\Controller;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Auth\Contracts\CreatesNewUser;
+    use WPMvc\Auth\Contracts\DeletesUsers;
+    use WPMvc\Auth\Events\Registration;
+    use WPMvc\Auth\Events\UserDeleted;
+    use WPMvc\Auth\Responses\CreateAccountViewResponse;
+    use WPMvc\Auth\Responses\RegisteredResponse;
+    use WPMvc\Auth\Traits\ResolvesUser;
+    use WPMvc\ExceptionHandling\Exceptions\AuthorizationException;
+    use WPMvc\Http\Controller;
+    use WPMvc\Http\Psr7\Request;
 
     class AccountController extends Controller
     {

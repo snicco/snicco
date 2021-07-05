@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware;
+    namespace WPMvc\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\ExceptionHandling\Exceptions\AuthorizationException;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Contracts\Middleware;
+    use WPMvc\ExceptionHandling\Exceptions\AuthorizationException;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Psr7\Request;
 
     class Authorize extends Middleware
     {

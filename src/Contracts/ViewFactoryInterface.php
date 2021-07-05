@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Contracts;
+	namespace WPMvc\Contracts;
 
 
-	use WPEmerge\ExceptionHandling\Exceptions\ViewException;
-    use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
+	use WPMvc\ExceptionHandling\Exceptions\ViewException;
+    use WPMvc\ExceptionHandling\Exceptions\ViewNotFoundException;
 
     interface ViewFactoryInterface {
 

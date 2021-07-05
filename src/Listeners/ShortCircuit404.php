@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Listeners;
+    namespace WPMvc\Listeners;
 
 
     class ShortCircuit404

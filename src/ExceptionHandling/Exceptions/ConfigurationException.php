@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\ExceptionHandling\Exceptions;
+    namespace WPMvc\ExceptionHandling\Exceptions;
 
 
     class ConfigurationException extends Exception

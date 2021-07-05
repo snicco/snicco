@@ -19,13 +19,13 @@
     use Tests\UnitTest;
     use Tests\fixtures\TestDependencies\Foo;
     use Tests\stubs\TestLogger;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\ExceptionHandling\ProductionErrorHandler;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Factories\ErrorHandlerFactory;
-    use WPEmerge\Support\WpFacade;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\ExceptionHandling\ProductionErrorHandler;
+    use WPMvc\Support\WP;
+    use WPMvc\Factories\ErrorHandlerFactory;
+    use WPMvc\Support\WpFacade;
 
     class ProductionErrorHandlerLoggingTest extends UnitTest
     {

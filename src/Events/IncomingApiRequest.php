@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Events;
+    namespace WPMvc\Events;
 
     class IncomingApiRequest extends IncomingRequest
     {

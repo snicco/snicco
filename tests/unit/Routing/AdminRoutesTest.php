@@ -12,12 +12,12 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\UnitTest;
     use Tests\helpers\CreatesWpUrls;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Events\IncomingAdminRequest;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
-    use WPEmerge\Routing\UrlGenerator;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Events\IncomingAdminRequest;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Support\WP;
+    use WPMvc\Routing\FastRoute\FastRouteUrlGenerator;
+    use WPMvc\Routing\UrlGenerator;
 
 
     class AdminRoutesTest extends UnitTest

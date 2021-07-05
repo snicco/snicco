@@ -4,20 +4,20 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware\Core;
+    namespace WPMvc\Middleware\Core;
 
     use Closure;
     use Contracts\ContainerAdapter;
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Middleware\MiddlewareStack;
-    use WPEmerge\Routing\Pipeline;
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RoutingResult;
+    use WPMvc\Contracts\Middleware;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Response;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Middleware\MiddlewareStack;
+    use WPMvc\Routing\Pipeline;
+    use WPMvc\Routing\Route;
+    use WPMvc\Routing\RoutingResult;
 
     class RouteRunner extends Middleware
     {

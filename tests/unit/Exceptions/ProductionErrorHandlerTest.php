@@ -17,21 +17,21 @@
     use Tests\UnitTest;
     use Tests\stubs\TestException;
     use Tests\stubs\TestRequest;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Contracts\AbstractRedirector;
-    use WPEmerge\ExceptionHandling\Exceptions\HttpException;
-    use WPEmerge\Session\Drivers\ArraySessionDriver;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Session\StatefulRedirector;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Events\UnrecoverableExceptionHandled;
-    use WPEmerge\ExceptionHandling\ProductionErrorHandler;
-    use WPEmerge\Factories\ErrorHandlerFactory;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Validation\Exceptions\ValidationException;
-    use WPEmerge\Validation\Validator;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Contracts\AbstractRedirector;
+    use WPMvc\ExceptionHandling\Exceptions\HttpException;
+    use WPMvc\Session\Drivers\ArraySessionDriver;
+    use WPMvc\Session\Session;
+    use WPMvc\Session\StatefulRedirector;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Events\UnrecoverableExceptionHandled;
+    use WPMvc\ExceptionHandling\ProductionErrorHandler;
+    use WPMvc\Factories\ErrorHandlerFactory;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Response;
+    use WPMvc\Validation\Exceptions\ValidationException;
+    use WPMvc\Validation\Validator;
 
     class ProductionErrorHandlerTest extends UnitTest
     {

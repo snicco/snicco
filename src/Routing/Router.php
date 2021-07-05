@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing;
+    namespace WPMvc\Routing;
 
     use Closure;
     use Contracts\ContainerAdapter;
-    use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Controllers\FallBackController;
-    use WPEmerge\Controllers\RedirectController;
-    use WPEmerge\Controllers\ViewController;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Support\Str;
-    use WPEmerge\Support\Url;
-    use WPEmerge\Traits\HoldsRouteBlueprint;
+    use WPMvc\Contracts\AbstractRouteCollection;
+    use WPMvc\Controllers\FallBackController;
+    use WPMvc\Controllers\RedirectController;
+    use WPMvc\Controllers\ViewController;
+    use WPMvc\Support\WP;
+    use WPMvc\Support\Str;
+    use WPMvc\Support\Url;
+    use WPMvc\Traits\HoldsRouteBlueprint;
 
     /**
      * @mixin RouteDecorator

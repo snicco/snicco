@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Validation\Middleware;
+    namespace WPMvc\Validation\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Validation\Validator;
+    use WPMvc\Contracts\Middleware;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Validation\Validator;
 
     class ShareValidatorWithRequest extends Middleware
     {

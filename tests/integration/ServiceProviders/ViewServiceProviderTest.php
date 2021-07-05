@@ -8,13 +8,13 @@
 
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use WPEmerge\View\MethodField;
-    use WPEmerge\Contracts\ViewEngineInterface;
-    use WPEmerge\Contracts\ViewFactoryInterface;
-    use WPEmerge\View\GlobalContext;
-    use WPEmerge\View\PhpViewEngine;
-    use WPEmerge\View\ViewFactory;
-    use WPEmerge\View\ViewComposerCollection;
+    use WPMvc\View\MethodField;
+    use WPMvc\Contracts\ViewEngineInterface;
+    use WPMvc\Contracts\ViewFactoryInterface;
+    use WPMvc\View\GlobalContext;
+    use WPMvc\View\PhpViewEngine;
+    use WPMvc\View\ViewFactory;
+    use WPMvc\View\ViewComposerCollection;
 
     class ViewServiceProviderTest extends TestCase
     {

@@ -11,7 +11,7 @@
     use stdClass;
     use Tests\fixtures\TestDependencies\Foo;
     use Tests\helpers\CreateContainer;
-    use WPEmerge\Application\ManagesAliases;
+    use WPMvc\Application\ManagesAliases;
 
 	class ManagesAliasesTest extends TestCase {
 

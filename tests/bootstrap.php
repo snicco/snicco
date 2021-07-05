@@ -5,7 +5,7 @@
 
     use AdrianSuter\Autoload\Override\Override;
     use Tests\stubs\HeaderStack;
-    use WPEmerge\Http\ResponseEmitter;
+    use WPMvc\Http\ResponseEmitter;
 
     $root_dir = getenv('ROOT_DIR');
 

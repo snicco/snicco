@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Contracts;
+	namespace WPMvc\Contracts;
 
 
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RoutingResult;
+    use WPMvc\Routing\Route;
+    use WPMvc\Routing\RoutingResult;
 
     interface RouteMatcher {
 

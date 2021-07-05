@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Blade;
+    namespace WPMvc\Blade;
 
     use Illuminate\View\Factory;
     use Illuminate\View\ViewFinderInterface;
     use Illuminate\View\ViewName;
-    use WPEmerge\Contracts\ViewEngineInterface;
-    use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
-    use WPEmerge\Support\Arr;
+    use WPMvc\Contracts\ViewEngineInterface;
+    use WPMvc\Contracts\ViewInterface;
+    use WPMvc\ExceptionHandling\Exceptions\ViewNotFoundException;
+    use WPMvc\Support\Arr;
 
     class BladeEngine implements ViewEngineInterface
     {

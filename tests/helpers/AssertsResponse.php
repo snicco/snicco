@@ -8,7 +8,7 @@
 
     use PHPUnit\Framework\Assert;
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Http\Responses\NullResponse;
+    use WPMvc\Http\Responses\NullResponse;
 
     trait AssertsResponse {
 

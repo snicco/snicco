@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Controllers;
+    namespace WPMvc\Auth\Controllers;
 
-    use WPEmerge\Auth\Mail\ConfirmRegistrationEmail;
-    use WPEmerge\Auth\Contracts\RegistrationViewResponse;
-    use WPEmerge\Contracts\ResponsableInterface;
-    use WPEmerge\Http\Controller;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Mail\MailBuilder;
+    use WPMvc\Auth\Mail\ConfirmRegistrationEmail;
+    use WPMvc\Auth\Contracts\RegistrationViewResponse;
+    use WPMvc\Contracts\ResponsableInterface;
+    use WPMvc\Http\Controller;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Responses\RedirectResponse;
+    use WPMvc\Mail\MailBuilder;
 
     class RegistrationLinkController extends Controller
     {

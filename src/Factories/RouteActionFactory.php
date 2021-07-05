@@ -4,15 +4,15 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Factories;
+	namespace WPMvc\Factories;
 
 	use Closure;
 	use Illuminate\Support\Reflector;
-	use WPEmerge\Contracts\Handler;
-	use WPEmerge\Contracts\RouteAction;
-	use WPEmerge\Routing\ClosureAction;
-	use WPEmerge\Routing\ControllerAction;
-	use WPEmerge\Http\MiddlewareResolver;
+	use WPMvc\Contracts\Handler;
+	use WPMvc\Contracts\RouteAction;
+	use WPMvc\Routing\ClosureAction;
+	use WPMvc\Routing\ControllerAction;
+	use WPMvc\Http\MiddlewareResolver;
 
 	class RouteActionFactory extends AbstractFactory {
 

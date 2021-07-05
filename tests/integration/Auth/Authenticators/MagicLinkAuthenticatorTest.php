@@ -7,11 +7,11 @@
     namespace Tests\integration\Auth\Authenticators;
 
     use Tests\AuthTestCase;
-    use WPEmerge\Auth\Authenticators\MagicLinkAuthenticator;
-    use WPEmerge\Auth\Exceptions\FailedAuthenticationException;
-    use WPEmerge\Auth\Responses\MagicLinkLoginView;
-    use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\Routing\UrlGenerator;
+    use WPMvc\Auth\Authenticators\MagicLinkAuthenticator;
+    use WPMvc\Auth\Exceptions\FailedAuthenticationException;
+    use WPMvc\Auth\Responses\MagicLinkLoginView;
+    use WPMvc\Contracts\MagicLink;
+    use WPMvc\Routing\UrlGenerator;
 
     class MagicLinkAuthenticatorTest extends AuthTestCase
     {

@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing\FastRoute;
+    namespace WPMvc\Routing\FastRoute;
 
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\RoutingResult;
-    use WPEmerge\Traits\DeserializesRoutes;
+    use WPMvc\Routing\Route;
+    use WPMvc\Routing\RoutingResult;
+    use WPMvc\Traits\DeserializesRoutes;
 
     trait HydratesFastRoutes
     {

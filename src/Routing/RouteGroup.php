@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Routing;
+	namespace WPMvc\Routing;
 
-	use WPEmerge\Support\Url;
-	use WPEmerge\Support\Arr;
+	use WPMvc\Support\Url;
+	use WPMvc\Support\Arr;
 
 	class RouteGroup {
 

@@ -7,7 +7,7 @@
     namespace Tests\unit\Support;
 
     use PHPUnit\Framework\TestCase;
-    use WPEmerge\Support\Url;
+    use WPMvc\Support\Url;
 
     class UrlTest extends TestCase
     {

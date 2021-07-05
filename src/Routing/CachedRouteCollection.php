@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing;
+    namespace WPMvc\Routing;
 
-    use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Routing\FastRoute\CachedFastRouteMatcher;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Traits\DeserializesRoutes;
-    use WPEmerge\Traits\PreparesRouteForExport;
+    use WPMvc\Contracts\AbstractRouteCollection;
+    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
+    use WPMvc\Factories\ConditionFactory;
+    use WPMvc\Factories\RouteActionFactory;
+    use WPMvc\Routing\FastRoute\CachedFastRouteMatcher;
+    use WPMvc\Support\Arr;
+    use WPMvc\Traits\DeserializesRoutes;
+    use WPMvc\Traits\PreparesRouteForExport;
 
     class CachedRouteCollection extends AbstractRouteCollection
     {

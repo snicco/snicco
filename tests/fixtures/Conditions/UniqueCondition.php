@@ -6,8 +6,8 @@
 
 	namespace Tests\fixtures\Conditions;
 
-	use WPEmerge\Contracts\ConditionInterface;
-    use WPEmerge\Http\Psr7\Request;
+	use WPMvc\Contracts\ConditionInterface;
+    use WPMvc\Http\Psr7\Request;
 
     class UniqueCondition implements ConditionInterface {
 

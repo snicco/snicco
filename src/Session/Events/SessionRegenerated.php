@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session\Events;
+    namespace WPMvc\Session\Events;
 
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Session\Session;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Session\Session;
 
     class SessionRegenerated extends ApplicationEvent
     {

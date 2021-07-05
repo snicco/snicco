@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Contracts;
+    namespace WPMvc\Contracts;
 
     use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
     use Respect\Stringifier\Quoters\CodeQuoter;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Support\Url;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Responses\RedirectResponse;
+    use WPMvc\Routing\UrlGenerator;
+    use WPMvc\Support\Url;
 
     abstract class AbstractRedirector
     {

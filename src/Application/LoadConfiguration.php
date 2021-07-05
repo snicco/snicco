@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Application;
+    namespace WPMvc\Application;
 
     use Exception;
     use Symfony\Component\Finder\Finder;

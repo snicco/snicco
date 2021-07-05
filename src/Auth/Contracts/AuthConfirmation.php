@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Contracts;
+    namespace WPMvc\Auth\Contracts;
 
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\ResponseFactory;
 
     interface AuthConfirmation
     {

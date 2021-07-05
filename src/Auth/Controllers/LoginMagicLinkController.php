@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Controllers;
+    namespace WPMvc\Auth\Controllers;
 
     use WP_User;
-    use WPEmerge\Auth\Mail\MagicLinkLoginMail;
-    use WPEmerge\Auth\Traits\ResolvesUser;
-    use WPEmerge\Http\Controller;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Responses\RedirectResponse;
-    use WPEmerge\Mail\MailBuilder;
+    use WPMvc\Auth\Mail\MagicLinkLoginMail;
+    use WPMvc\Auth\Traits\ResolvesUser;
+    use WPMvc\Http\Controller;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Responses\RedirectResponse;
+    use WPMvc\Mail\MailBuilder;
 
     class LoginMagicLinkController extends Controller
     {

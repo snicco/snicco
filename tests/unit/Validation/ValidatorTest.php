@@ -9,9 +9,9 @@
     use PHPUnit\Framework\TestCase;
     use Respect\Validation\Factory;
     use Respect\Validation\Validator as v;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Validation\Exceptions\ValidationException;
-    use WPEmerge\Validation\Validator;
+    use WPMvc\Support\Arr;
+    use WPMvc\Validation\Exceptions\ValidationException;
+    use WPMvc\Validation\Validator;
 
     class ValidatorTest extends TestCase
     {
@@ -406,8 +406,8 @@
 
             Factory::setDefaultInstance(
                 (new Factory())
-                    ->withRuleNamespace('WPEmerge\Validation\Rules')
-                    ->withExceptionNamespace('WPEmerge\Validation\Exceptions')
+                    ->withRuleNamespace('WPMvc\Validation\Rules')
+                    ->withExceptionNamespace('WPMvc\Validation\Exceptions')
             );
 
             $_POST = [

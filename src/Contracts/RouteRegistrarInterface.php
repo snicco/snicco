@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Contracts;
+    namespace WPMvc\Contracts;
 
-    use WPEmerge\Application\ApplicationConfig;
+    use WPMvc\Application\ApplicationConfig;
 
     interface RouteRegistrarInterface
     {

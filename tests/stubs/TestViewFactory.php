@@ -6,8 +6,8 @@
 
 	namespace Tests\stubs;
 
-	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Contracts\ViewFactoryInterface;
+	use WPMvc\Contracts\ViewInterface;
+	use WPMvc\Contracts\ViewFactoryInterface;
 
     class TestViewFactory implements ViewFactoryInterface {
 

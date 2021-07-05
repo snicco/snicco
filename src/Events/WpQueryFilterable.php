@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Events;
+    namespace WPMvc\Events;
 
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Http\Psr7\Request;
 
     class WpQueryFilterable extends ApplicationEvent
     {

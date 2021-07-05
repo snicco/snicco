@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\View;
+	namespace WPMvc\View;
 
 	use Closure;
-	use WPEmerge\Contracts\ViewComposer as ViewComposerInterface;
-	use WPEmerge\Traits\ReflectsCallable;
+	use WPMvc\Contracts\ViewComposer as ViewComposerInterface;
+	use WPMvc\Traits\ReflectsCallable;
 
 	class ViewComposer implements ViewComposerInterface {
 

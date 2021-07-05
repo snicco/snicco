@@ -17,14 +17,14 @@
     use Tests\UnitTest;
     use Tests\fixtures\Controllers\Admin\AdminControllerWithMiddleware;
 	use Tests\fixtures\Middleware\MiddlewareWithDependencies;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\Contracts\RouteUrlGenerator;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\Router;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\View\ViewFactory;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Contracts\MagicLink;
+    use WPMvc\Contracts\RouteUrlGenerator;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Routing\Router;
+    use WPMvc\Routing\UrlGenerator;
+    use WPMvc\View\ViewFactory;
 
     class RouteMiddlewareDependencyInjectionTest extends UnitTest {
 

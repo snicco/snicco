@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing;
+    namespace WPMvc\Routing;
 
     use Symfony\Component\Finder\Finder;
     use Symfony\Component\Finder\SplFileInfo;
-    use WPEmerge\Application\ApplicationConfig;
-    use WPEmerge\Contracts\RouteRegistrarInterface;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Support\Str;
+    use WPMvc\Application\ApplicationConfig;
+    use WPMvc\Contracts\RouteRegistrarInterface;
+    use WPMvc\Support\WP;
+    use WPMvc\Support\Arr;
+    use WPMvc\Support\Str;
 
     class RouteRegistrar implements RouteRegistrarInterface
     {

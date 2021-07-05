@@ -4,12 +4,12 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\View;
+	namespace WPMvc\View;
 
-    use WPEmerge\Contracts\ServiceProvider;
-	use WPEmerge\Contracts\ViewEngineInterface;
-	use WPEmerge\Contracts\ViewFactoryInterface;
-    use WPEmerge\Factories\ViewComposerFactory;
+    use WPMvc\Contracts\ServiceProvider;
+	use WPMvc\Contracts\ViewEngineInterface;
+	use WPMvc\Contracts\ViewFactoryInterface;
+    use WPMvc\Factories\ViewComposerFactory;
 
 
 	class ViewServiceProvider extends ServiceProvider {

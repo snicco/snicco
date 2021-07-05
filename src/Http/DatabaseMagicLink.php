@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http;
+    namespace WPMvc\Http;
 
-    use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Contracts\MagicLink;
+    use WPMvc\Http\Psr7\Request;
 
     use function wp_cache_add;
     use function wp_cache_get;

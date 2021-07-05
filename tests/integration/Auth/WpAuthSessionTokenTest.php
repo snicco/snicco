@@ -10,11 +10,11 @@
     use Tests\stubs\TestApp;
     use WP_Session_Tokens;
     use WP_User;
-    use WPEmerge\Auth\AuthSessionManager;
-    use WPEmerge\Session\Contracts\SessionDriver;
-    use WPEmerge\Session\Contracts\SessionManagerInterface;
-    use WPEmerge\Session\Drivers\ArraySessionDriver;
-    use WPEmerge\Session\SessionManager;
+    use WPMvc\Auth\AuthSessionManager;
+    use WPMvc\Session\Contracts\SessionDriver;
+    use WPMvc\Session\Contracts\SessionManagerInterface;
+    use WPMvc\Session\Drivers\ArraySessionDriver;
+    use WPMvc\Session\SessionManager;
 
     class WpAuthSessionTokenTest extends AuthTestCase
     {

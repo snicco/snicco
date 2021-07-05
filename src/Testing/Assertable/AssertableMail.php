@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Testing\Assertable;
+    namespace WPMvc\Testing\Assertable;
 
     use WP_User;
-    use WPEmerge\Events\PendingMail;
+    use WPMvc\Events\PendingMail;
     use PHPUnit\Framework\Assert as PHPUnit;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\View\ViewFactory;
+    use WPMvc\Support\Arr;
+    use WPMvc\View\ViewFactory;
 
     class AssertableMail
     {

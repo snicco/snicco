@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Testing;
+    namespace WPMvc\Testing;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Http\Cookies;
-    use WPEmerge\Http\ResponseEmitter;
+    use WPMvc\Http\Cookies;
+    use WPMvc\Http\ResponseEmitter;
 
     class TestResponseEmitter extends ResponseEmitter
     {

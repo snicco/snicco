@@ -4,14 +4,14 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\ExceptionHandling;
+	namespace WPMvc\ExceptionHandling;
 
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-	use WPEmerge\Contracts\ServiceProvider;
-	use WPEmerge\ExceptionHandling\NullErrorHandler;
-	use WPEmerge\ExceptionHandling\ProductionErrorHandler;
-	use WPEmerge\Factories\ErrorHandlerFactory;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Contracts\ErrorHandlerInterface;
+	use WPMvc\Contracts\ServiceProvider;
+	use WPMvc\ExceptionHandling\NullErrorHandler;
+	use WPMvc\ExceptionHandling\ProductionErrorHandler;
+	use WPMvc\Factories\ErrorHandlerFactory;
+    use WPMvc\Http\Psr7\Request;
 
     class ExceptionServiceProvider extends ServiceProvider {
 

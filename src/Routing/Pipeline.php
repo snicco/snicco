@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing;
+    namespace WPMvc\Routing;
 
     use Closure;
     use Contracts\ContainerAdapter;
@@ -12,12 +12,12 @@
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Support\Arr;
+    use WPMvc\Contracts\ErrorHandlerInterface;
+    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Support\Arr;
     use ReflectionPayload\ReflectionPayload;
 
     use function collect;

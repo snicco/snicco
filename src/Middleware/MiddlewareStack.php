@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware;
+    namespace WPMvc\Middleware;
 
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Traits\GathersMiddleware;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Routing\Route;
+    use WPMvc\Support\Arr;
+    use WPMvc\Traits\GathersMiddleware;
 
     class MiddlewareStack
     {

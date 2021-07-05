@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Responses;
+    namespace WPMvc\Auth\Responses;
 
-    use WPEmerge\Auth\Traits\UsesCurrentRequest;
-    use WPEmerge\Contracts\ResponsableInterface;
+    use WPMvc\Auth\Traits\UsesCurrentRequest;
+    use WPMvc\Contracts\ResponsableInterface;
 
     abstract class CreateAccountViewResponse implements ResponsableInterface
     {

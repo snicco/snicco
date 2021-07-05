@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Application;
+    namespace WPMvc\Application;
 
-    use WPEmerge\ExceptionHandling\Exceptions\ConfigurationException;
-    use WPEmerge\Contracts\ServiceProvider;
+    use WPMvc\ExceptionHandling\Exceptions\ConfigurationException;
+    use WPMvc\Contracts\ServiceProvider;
 
     trait LoadsServiceProviders
     {

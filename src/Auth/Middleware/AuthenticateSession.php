@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Middleware;
+    namespace WPMvc\Auth\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Auth\AuthSessionManager;
-    use WPEmerge\Auth\Events\Logout;
-    use WPEmerge\Auth\Responses\LogoutResponse;
-    use WPEmerge\Auth\WpAuthSessionToken;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\Session;
+    use WPMvc\Auth\AuthSessionManager;
+    use WPMvc\Auth\Events\Logout;
+    use WPMvc\Auth\Responses\LogoutResponse;
+    use WPMvc\Auth\WpAuthSessionToken;
+    use WPMvc\Contracts\Middleware;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Session\Session;
 
     class AuthenticateSession extends Middleware
     {

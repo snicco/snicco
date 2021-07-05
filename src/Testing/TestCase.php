@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Testing;
+    namespace WPMvc\Testing;
 
     use Carbon\Carbon;
     use Carbon\CarbonImmutable;
@@ -18,33 +18,33 @@
     use Tests\helpers\TravelsTime;
     use Tests\stubs\TestApp;
     use Throwable;
-    use WPEmerge\Application\Application;
-    use WPEmerge\Application\ApplicationConfig;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Contracts\RouteRegistrarInterface;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\ExceptionHandling\NullErrorHandler;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\HttpKernel;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\Psr7\Response;
-    use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Routing\Route;
-    use WPEmerge\Routing\Router;
-    use WPEmerge\Routing\RouteRegistrar;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Session\SessionServiceProvider;
-    use WPEmerge\Support\Arr;
-    use WPEmerge\Testing\Concerns\InteractsWithAuthentication;
-    use WPEmerge\Testing\Concerns\InteractsWithContainer;
-    use WPEmerge\Testing\Concerns\InteractsWithMail;
-    use WPEmerge\Testing\Concerns\InteractsWithSession;
-    use WPEmerge\Testing\Concerns\InteractsWithWordpressUsers;
-    use WPEmerge\Testing\Concerns\MakesHttpRequests;
+    use WPMvc\Application\Application;
+    use WPMvc\Application\ApplicationConfig;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Contracts\AbstractRouteCollection;
+    use WPMvc\Contracts\ErrorHandlerInterface;
+    use WPMvc\Contracts\Middleware;
+    use WPMvc\Contracts\RouteRegistrarInterface;
+    use WPMvc\Contracts\ServiceProvider;
+    use WPMvc\ExceptionHandling\NullErrorHandler;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\HttpKernel;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Response;
+    use WPMvc\Http\ResponseEmitter;
+    use WPMvc\Routing\Route;
+    use WPMvc\Routing\Router;
+    use WPMvc\Routing\RouteRegistrar;
+    use WPMvc\Session\Session;
+    use WPMvc\Session\SessionServiceProvider;
+    use WPMvc\Support\Arr;
+    use WPMvc\Testing\Concerns\InteractsWithAuthentication;
+    use WPMvc\Testing\Concerns\InteractsWithContainer;
+    use WPMvc\Testing\Concerns\InteractsWithMail;
+    use WPMvc\Testing\Concerns\InteractsWithSession;
+    use WPMvc\Testing\Concerns\InteractsWithWordpressUsers;
+    use WPMvc\Testing\Concerns\MakesHttpRequests;
 
     abstract class TestCase extends WPTestCase
     {

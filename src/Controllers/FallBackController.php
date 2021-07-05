@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Controllers;
+    namespace WPMvc\Controllers;
 
     use Closure;
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Contracts\AbstractRouteCollection as Routes;
-    use WPEmerge\Http\Controller;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Http\Responses\NullResponse;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Middleware\MiddlewareStack;
-    use WPEmerge\Routing\Pipeline;
-    use WPEmerge\Routing\Route;
+    use WPMvc\Contracts\AbstractRouteCollection as Routes;
+    use WPMvc\Http\Controller;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Http\Responses\NullResponse;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Middleware\MiddlewareStack;
+    use WPMvc\Routing\Pipeline;
+    use WPMvc\Routing\Route;
 
     /**
      *

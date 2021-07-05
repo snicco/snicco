@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Blade;
+    namespace WPMvc\Blade;
 
     use Illuminate\Container\Container as IlluminateContainer;
     use Illuminate\Contracts\Container\Container;
@@ -16,10 +16,10 @@
     use Illuminate\View\View;
     use Illuminate\View\ViewServiceProvider;
     use SniccoAdapter\BaseContainerAdapter;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Contracts\ViewEngineInterface;
-    use WPEmerge\Contracts\ViewFactoryInterface;
-    use WPEmerge\Support\Arr;
+    use WPMvc\Contracts\ServiceProvider;
+    use WPMvc\Contracts\ViewEngineInterface;
+    use WPMvc\Contracts\ViewFactoryInterface;
+    use WPMvc\Support\Arr;
 
     class BladeServiceProvider extends ServiceProvider
     {

@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware\Core;
+    namespace WPMvc\Middleware\Core;
 
     use Psr\Http\Message\ResponseInterface;
-    use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Contracts\AbstractRouteCollection;
+    use WPMvc\Contracts\Middleware;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\Psr7\Request;
 
     class RoutingMiddleware extends Middleware
     {

@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Testing\Concerns;
+    namespace WPMvc\Testing\Concerns;
 
-    use WPEmerge\Http\ResponseEmitter;
-    use WPEmerge\Testing\TestResponseEmitter;
+    use WPMvc\Http\ResponseEmitter;
+    use WPMvc\Testing\TestResponseEmitter;
 
     trait InteractsWithContainer
     {

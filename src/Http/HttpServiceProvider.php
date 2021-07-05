@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Http;
+    namespace WPMvc\Http;
 
     use Psr\Http\Message\ResponseFactoryInterface;
     use Psr\Http\Message\StreamFactoryInterface;
-    use WPEmerge\Contracts\AbstractRedirector;
-    use WPEmerge\Contracts\ServiceProvider;
-    use WPEmerge\Contracts\ViewFactoryInterface;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Routing\Pipeline;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Session\Session;
-    use WPEmerge\Session\StatefulRedirector;
+    use WPMvc\Contracts\AbstractRedirector;
+    use WPMvc\Contracts\ServiceProvider;
+    use WPMvc\Contracts\ViewFactoryInterface;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Routing\Pipeline;
+    use WPMvc\Routing\UrlGenerator;
+    use WPMvc\Session\Session;
+    use WPMvc\Session\StatefulRedirector;
 
     class HttpServiceProvider extends ServiceProvider
     {

@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Auth\Contracts;
+    namespace WPMvc\Auth\Contracts;
 
-    use WPEmerge\Contracts\ResponsableInterface;
+    use WPMvc\Contracts\ResponsableInterface;
 
     interface DeletesUsers
     {

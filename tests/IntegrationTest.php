@@ -12,21 +12,21 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestMagicLink;
-    use WPEmerge\Application\Application;
-    use WPEmerge\Application\ApplicationEvent;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Contracts\MagicLink;
-    use WPEmerge\Contracts\RouteRegistrarInterface;
-    use WPEmerge\Contracts\ViewInterface;
-    use WPEmerge\Events\IncomingRequest;
-    use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\Events\ResponseSent;
-    use WPEmerge\Testing\TestingErrorHandler;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\HttpKernel;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Application\Application;
+    use WPMvc\Application\ApplicationEvent;
+    use WPMvc\Contracts\ErrorHandlerInterface;
+    use WPMvc\Contracts\MagicLink;
+    use WPMvc\Contracts\RouteRegistrarInterface;
+    use WPMvc\Contracts\ViewInterface;
+    use WPMvc\Events\IncomingRequest;
+    use WPMvc\Events\IncomingWebRequest;
+    use WPMvc\Events\ResponseSent;
+    use WPMvc\Testing\TestingErrorHandler;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\HttpKernel;
+    use WPMvc\Http\Psr7\Request;
 
-    use WPEmerge\Support\Arr;
+    use WPMvc\Support\Arr;
 
     use function do_action;
 

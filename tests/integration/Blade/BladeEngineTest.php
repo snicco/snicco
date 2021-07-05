@@ -8,11 +8,11 @@
 
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
-    use WPEmerge\Blade\BladeServiceProvider;
-    use WPEmerge\Blade\BladeView;
-    use WPEmerge\ExceptionHandling\Exceptions\ViewException;
-    use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
-    use WPEmerge\View\ViewFactory;
+    use WPMvc\Blade\BladeServiceProvider;
+    use WPMvc\Blade\BladeView;
+    use WPMvc\ExceptionHandling\Exceptions\ViewException;
+    use WPMvc\ExceptionHandling\Exceptions\ViewNotFoundException;
+    use WPMvc\View\ViewFactory;
 
     class BladeEngineTest extends BladeTestCase
     {

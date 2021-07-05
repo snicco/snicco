@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Http;
+	namespace WPMvc\Http;
 
-	use WPEmerge\ExceptionHandling\Exceptions\Exception;
-	use WPEmerge\Support\Arr;
+	use WPMvc\ExceptionHandling\Exceptions\Exception;
+	use WPMvc\Support\Arr;
 
 	class ControllerMiddleware {
 

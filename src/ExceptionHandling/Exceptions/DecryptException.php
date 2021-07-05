@@ -4,9 +4,9 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\ExceptionHandling\Exceptions;
+	namespace WPMvc\ExceptionHandling\Exceptions;
 
-	use WPEmerge\ExceptionHandling\Exceptions\Exception;
+	use WPMvc\ExceptionHandling\Exceptions\Exception;
 
     class DecryptException extends Exception {
 

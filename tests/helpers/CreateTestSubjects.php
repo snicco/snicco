@@ -12,25 +12,25 @@
     use Tests\fixtures\Middleware\FooBarMiddleware;
     use Tests\fixtures\Middleware\FooMiddleware;
     use Tests\stubs\TestRequest;
-    use WPEmerge\View\MethodField;
-    use WPEmerge\Contracts\AbstractRouteCollection;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Events\IncomingRequest;
-    use WPEmerge\Events\IncomingWebRequest;
-    use WPEmerge\ExceptionHandling\NullErrorHandler;
-    use WPEmerge\Factories\ConditionFactory;
-    use WPEmerge\Factories\RouteActionFactory;
-    use WPEmerge\Http\HttpKernel;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Http\ResponseFactory;
-    use WPEmerge\Middleware\Core\RouteRunner;
-    use WPEmerge\Middleware\MiddlewareStack;
-    use WPEmerge\Routing\FastRoute\FastRouteUrlGenerator;
-    use WPEmerge\Routing\Pipeline;
-    use WPEmerge\Routing\RouteCollection;
-    use WPEmerge\Routing\Router;
-    use WPEmerge\Routing\UrlGenerator;
-    use WPEmerge\Routing\RoutingServiceProvider;
+    use WPMvc\View\MethodField;
+    use WPMvc\Contracts\AbstractRouteCollection;
+    use WPMvc\Contracts\ErrorHandlerInterface;
+    use WPMvc\Events\IncomingRequest;
+    use WPMvc\Events\IncomingWebRequest;
+    use WPMvc\ExceptionHandling\NullErrorHandler;
+    use WPMvc\Factories\ConditionFactory;
+    use WPMvc\Factories\RouteActionFactory;
+    use WPMvc\Http\HttpKernel;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Http\ResponseFactory;
+    use WPMvc\Middleware\Core\RouteRunner;
+    use WPMvc\Middleware\MiddlewareStack;
+    use WPMvc\Routing\FastRoute\FastRouteUrlGenerator;
+    use WPMvc\Routing\Pipeline;
+    use WPMvc\Routing\RouteCollection;
+    use WPMvc\Routing\Router;
+    use WPMvc\Routing\UrlGenerator;
+    use WPMvc\Routing\RoutingServiceProvider;
 
     trait CreateTestSubjects
     {

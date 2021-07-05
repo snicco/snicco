@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Routing\Conditions;
+    namespace WPMvc\Routing\Conditions;
 
-    use WPEmerge\Contracts\ConditionInterface;
-    use WPEmerge\Support\WP;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Contracts\ConditionInterface;
+    use WPMvc\Support\WP;
+    use WPMvc\Http\Psr7\Request;
 
     class IsAdminCondition implements ConditionInterface
     {

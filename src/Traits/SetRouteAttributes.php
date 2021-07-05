@@ -4,14 +4,14 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\Traits;
+	namespace WPMvc\Traits;
 
 	use Closure;
-    use WPEmerge\Controllers\FallBackController;
-    use WPEmerge\Routing\ConditionBlueprint;
-    use WPEmerge\Routing\Conditions\TrailingSlashCondition;
-    use WPEmerge\Routing\Route;
-	use WPEmerge\Support\Arr;
+    use WPMvc\Controllers\FallBackController;
+    use WPMvc\Routing\ConditionBlueprint;
+    use WPMvc\Routing\Conditions\TrailingSlashCondition;
+    use WPMvc\Routing\Route;
+	use WPMvc\Support\Arr;
 
 	trait SetRouteAttributes {
 

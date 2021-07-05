@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Session\Contracts;
+    namespace WPMvc\Session\Contracts;
 
     use SessionHandlerInterface;
-    use WPEmerge\Http\Psr7\Request;
+    use WPMvc\Http\Psr7\Request;
 
     /**
      * NOTE: for all methods that return a session or multiple sessions the driver MUST ONLY

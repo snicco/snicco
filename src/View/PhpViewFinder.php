@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\View;
+    namespace WPMvc\View;
 
     use Symfony\Component\Finder\Finder;
-    use WPEmerge\Contracts\ViewFinderInterface;
-    use WPEmerge\Support\FilePath;
+    use WPMvc\Contracts\ViewFinderInterface;
+    use WPMvc\Support\FilePath;
 
     class PhpViewFinder implements ViewFinderInterface
     {

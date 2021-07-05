@@ -4,17 +4,17 @@
 	declare( strict_types = 1 );
 
 
-	namespace WPEmerge\View;
+	namespace WPMvc\View;
 
 	use BetterWpHooks\Exceptions\ConfigurationException;
     use Throwable;
-	use WPEmerge\Contracts\PhpEngine;
-	use WPEmerge\Contracts\PhpViewInterface;
-	use WPEmerge\Contracts\ViewInterface;
-	use WPEmerge\Events\MakingView;
-	use WPEmerge\ExceptionHandling\Exceptions\ViewException;
-	use WPEmerge\ExceptionHandling\Exceptions\ViewNotFoundException;
-	use WPEmerge\Support\Arr;
+	use WPMvc\Contracts\PhpEngine;
+	use WPMvc\Contracts\PhpViewInterface;
+	use WPMvc\Contracts\ViewInterface;
+	use WPMvc\Events\MakingView;
+	use WPMvc\ExceptionHandling\Exceptions\ViewException;
+	use WPMvc\ExceptionHandling\Exceptions\ViewNotFoundException;
+	use WPMvc\Support\Arr;
 
 	class PhpViewEngine implements PhpEngine {
 

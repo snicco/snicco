@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace WPEmerge\Middleware\Core;
+    namespace WPMvc\Middleware\Core;
 
     use Psr\Http\Message\ResponseInterface;
     use Throwable;
-    use WPEmerge\Contracts\ErrorHandlerInterface;
-    use WPEmerge\Contracts\Middleware;
-    use WPEmerge\Http\Delegate;
-    use WPEmerge\Http\Psr7\Request;
-    use WPEmerge\Session\Session;
+    use WPMvc\Contracts\ErrorHandlerInterface;
+    use WPMvc\Contracts\Middleware;
+    use WPMvc\Http\Delegate;
+    use WPMvc\Http\Psr7\Request;
+    use WPMvc\Session\Session;
 
     class ErrorHandlerMiddleware extends Middleware
     {
