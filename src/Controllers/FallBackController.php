@@ -34,6 +34,7 @@
          * @var callable
          */
         private $fallback_handler;
+
         /**
          * @var Pipeline
          */
@@ -109,10 +110,10 @@
 
         }
 
-        public function blankResponse() : NullResponse
+        public function nullResponse() : NullResponse
         {
 
-            return $this->response_factory->queryFiltered();
+            return $this->response_factory->null();
 
         }
 
