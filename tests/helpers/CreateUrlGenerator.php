@@ -6,7 +6,7 @@
 
     namespace Tests\helpers;
 
-    use Tests\stubs\TestMagicLink;
+    use BetterWP\Testing\TestDoubles\TestMagicLink;
     use Tests\stubs\TestRequest;
     use BetterWP\Contracts\MagicLink;
     use BetterWP\Http\Psr7\Request;

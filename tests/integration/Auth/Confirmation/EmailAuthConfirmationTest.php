@@ -7,7 +7,7 @@
     namespace Tests\integration\Auth\Confirmation;
 
     use Tests\AuthTestCase;
-    use Tests\stubs\TestMagicLink;
+    use BetterWP\Testing\TestDoubles\TestMagicLink;
     use BetterWP\Contracts\MagicLink;
     use BetterWP\Routing\UrlGenerator;
 

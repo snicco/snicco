@@ -6,6 +6,7 @@
 
     namespace BetterWP\Testing\Concerns;
 
+    use BetterWP\Support\WP;
     use Nyholm\Psr7Server\ServerRequestCreator;
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestFactoryInterface;
@@ -220,7 +221,6 @@
             return $this->get($uri, $headers);
 
         }
-
 
         /**
          * Visit the given ADMIN PAGE URI with a GET request.
@@ -471,9 +471,9 @@
                 $uri = $uri->withScheme('https');
             }
 
-            if ( ! $uri->getHost()) {
+            if ( ! $uri->getHost() ) {
 
-                $uri = $uri->withHost(parse_url($this->config->get('app.url'), PHP_URL_HOST));
+                $uri = $uri->withHost(parse_url($this->config->get('app.url') ?? WP::siteUrl(), PHP_URL_HOST));
 
             }
 

@@ -165,7 +165,7 @@
             $this->request_factory = $this->app->resolve(ServerRequestFactoryInterface::class);
             $this->replaceBindings();
 
-            if ( ! $this->defer_boot) {
+            if ( ! $this->defer_boot ) {
                 $this->boot();
             }
 
@@ -406,11 +406,12 @@
                 return;
             }
 
-            $request = $this->request_factory->createServerRequest('GET', $this->createUri('/test-url'), $this->default_server_variables);
+            $request = $this->request_factory->createServerRequest('GET', $this->createUri('http://localhost.com'), $this->default_server_variables);
             $request = $this->addCookies($request);
             $request = $this->addHeaders($request);
             $this->instance(Request::class, new Request($request));
             $this->request = $request;
+
         }
 
         private function setUpTraits()

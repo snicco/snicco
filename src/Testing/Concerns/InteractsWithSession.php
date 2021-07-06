@@ -147,7 +147,7 @@
             PHPUnit::assertSame($id, $this->session->userId());
         }
 
-        private function hash($id) {
+        protected function hash($id) {
 
             return hash( 'sha256', $id );
 

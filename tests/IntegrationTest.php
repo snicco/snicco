@@ -11,7 +11,7 @@
     use Psr\Http\Message\ServerRequestInterface;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
-    use Tests\stubs\TestMagicLink;
+    use BetterWP\Testing\TestDoubles\TestMagicLink;
     use BetterWP\Application\Application;
     use BetterWP\Events\Event;
     use BetterWP\Contracts\ErrorHandlerInterface;

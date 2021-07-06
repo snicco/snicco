@@ -12,7 +12,7 @@
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateTestSubjects;
     use Tests\helpers\CreateUrlGenerator;
-    use Tests\stubs\TestMagicLink;
+    use BetterWP\Testing\TestDoubles\TestMagicLink;
     use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
     use Tests\fixtures\Controllers\Admin\AdminControllerWithMiddleware;
