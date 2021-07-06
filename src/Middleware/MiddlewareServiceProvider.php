@@ -8,7 +8,6 @@
 
     use BetterWP\Contracts\ErrorHandlerInterface;
     use BetterWP\Contracts\ServiceProvider;
-    use BetterWP\Events\IncomingWebRequest;
     use BetterWP\Http\ResponseEmitter;
     use BetterWP\Http\ResponseFactory;
     use BetterWP\Middleware\Core\EvaluateResponseMiddleware;

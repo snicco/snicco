@@ -8,10 +8,7 @@
 
     use BetterWP\Contracts\ErrorHandlerInterface;
 	use BetterWP\Contracts\ServiceProvider;
-	use BetterWP\ExceptionHandling\NullErrorHandler;
-	use BetterWP\ExceptionHandling\ProductionErrorHandler;
 	use BetterWP\Factories\ErrorHandlerFactory;
-    use BetterWP\Http\Psr7\Request;
 
     class ExceptionServiceProvider extends ServiceProvider {
 

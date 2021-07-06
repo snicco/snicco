@@ -6,7 +6,6 @@
 
     namespace BetterWP\Routing;
 
-    use Symfony\Component\Finder\Finder;
     use Tests\stubs\TestMagicLink;
     use BetterWP\Contracts\AbstractRouteCollection;
     use BetterWP\Contracts\MagicLink;
@@ -16,7 +15,6 @@
     use BetterWP\Contracts\ServiceProvider;
     use BetterWP\Http\DatabaseMagicLink;
     use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
-    use BetterWP\Support\WP;
     use BetterWP\Factories\RouteActionFactory;
     use BetterWP\Http\Psr7\Request;
     use BetterWP\Routing\Conditions\AdminAjaxCondition;
@@ -34,7 +32,6 @@
     use BetterWP\Routing\Conditions\PostTypeCondition;
     use BetterWP\Routing\FastRoute\FastRouteMatcher;
     use BetterWP\Routing\FastRoute\FastRouteUrlGenerator;
-    use BetterWP\Session\Session;
     use BetterWP\Support\FilePath;
 
 

@@ -34,7 +34,7 @@
         public function bootstrap() : void
         {
 
-            if ( !  $this->validAppKey() && ! $this->app->isRunningUnitTest() ) {
+            if ( !  $this->validAppKey() && ! $this->app->isRunningUnitTest() && ! $this->config->get('app.debug')) {
 
                 throw new ConfigurationException('Your app_key is either missing or too insecure.');
 

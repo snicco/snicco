@@ -17,7 +17,6 @@ extensions:
     - Codeception\Command\GenerateWPXMLRPC
 params:
   - .env.testing
-bootstrap: bootstrap.php
 coverage:
   enabled: true
   show_uncovered: false
