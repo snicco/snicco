@@ -1,12 +1,12 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace Tests\integration\ServiceProviders;
+    namespace Tests\integration\ServiceProviders;
 
-	use Mockery;
+    use Mockery;
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
@@ -17,7 +17,7 @@
     use BetterWP\Contracts\ServiceProvider;
     use BetterWP\Contracts\ViewInterface;
     use BetterWP\Support\WP;
-	use BetterWP\Support\WpFacade;
+    use BetterWP\Support\WpFacade;
     use BetterWP\Http\Cookies;
     use BetterWP\Http\Redirector;
     use BetterWP\Http\ResponseFactory;
@@ -28,11 +28,14 @@
     use BetterWP\Session\Session;
     use BetterWP\Support\Url;
 
-    class ApplicationServiceProviderTest extends TestCase {
+    class ApplicationServiceProviderTest extends TestCase
+    {
 
         protected function setUp() : void
         {
+
             $this->afterApplicationCreated(function () {
+
                 $this->loadRoutes();
             });
             parent::setUp();
@@ -40,46 +43,64 @@
         }
 
         /** @test */
-		public function the_wp_facade_has_the_correct_container() {
+        public function the_wp_facade_has_the_correct_container()
+        {
 
-			$container = TestApp::container();
+            $container = TestApp::container();
 
-			$this->assertSame( $container, WpFacade::getFacadeContainer() );
-
-		}
-
-		/** @test */
-		public function the_facade_can_be_swapped_during_test() {
-
-            WP::shouldReceive( 'isAdmin' )->andReturn( true );
-
-			$this->assertTrue( WP::isAdmin() );
+            $this->assertSame($container, WpFacade::getFacadeContainer());
 
         }
 
         /** @test */
-        public function the_site_url_is_bound () {
+        public function the_facade_can_be_swapped_during_test()
+        {
+
+            WP::shouldReceive('isAdmin')->andReturn(true);
+
+            $this->assertTrue(WP::isAdmin());
+
+        }
+
+        /** @test */
+        public function the_site_url_is_bound()
+        {
 
             $this->assertSame('https://wpemerge.test', TestApp::config('app.url'));
 
         }
 
         /** @test */
-        public function the_relative_dist_path_is_set () {
+        public function the_relative_dist_path_is_set()
+        {
 
             $this->assertSame('/dist', TestApp::config('app.dist'));
 
         }
 
         /** @test */
-        public function debug_mode_is_set () {
+        public function the_dist_path_can_be_retrieved()
+        {
+
+            $expected = FIXTURES_DIR.DS.'dist';
+            $this->assertSame($expected, TestApp::distPath());
+
+            $expected = FIXTURES_DIR.DS.'dist'.DS.'foo';
+            $this->assertSame($expected, TestApp::distPath('foo'));
+
+        }
+
+        /** @test */
+        public function debug_mode_is_set()
+        {
 
             $this->assertTrue($this->config->get('app.debug'));
 
         }
 
         /** @test */
-        public function exception_handling_is_enabled_by_default () {
+        public function exception_handling_is_enabled_by_default()
+        {
 
             $this->assertTrue($this->config->get('app.exception_handling'));
 
@@ -87,14 +108,16 @@
         }
 
         /** @test */
-        public function the_package_root_is_bound () {
+        public function the_package_root_is_bound()
+        {
 
             $this->assertSame(ROOT_DIR, TestApp::config('app.package_root'));
 
         }
 
         /** @test */
-        public function the_storage_dir_is_extended () {
+        public function the_storage_dir_is_extended()
+        {
 
             $this->assertSame(FIXTURES_DIR.DS.'storage', TestApp::config('app.storage_dir'));
 
@@ -230,14 +253,16 @@
         }
 
         /** @test */
-        public function the_response_cookies_can_be_aliased () {
+        public function the_response_cookies_can_be_aliased()
+        {
 
             $this->assertInstanceOf(Cookies::class, TestApp::cookies());
 
         }
 
         /** @test */
-        public function a_method_override_field_can_be_outputted () {
+        public function a_method_override_field_can_be_outputted()
+        {
 
 
             $html = TestApp::methodField('PUT');
@@ -248,7 +273,8 @@
         }
 
         /** @test */
-        public function the_url_generator_can_be_aliased () {
+        public function the_url_generator_can_be_aliased()
+        {
 
 
             $this->assertInstanceOf(UrlGenerator::class, TestApp::url());
@@ -256,7 +282,8 @@
         }
 
         /** @test */
-        public function the_response_factory_can_be_aliased () {
+        public function the_response_factory_can_be_aliased()
+        {
 
 
             $this->assertInstanceOf(ResponseFactory::class, TestApp::response());
@@ -265,7 +292,8 @@
         }
 
         /** @test */
-        public function a_redirect_response_can_be_created_as_an_alias () {
+        public function a_redirect_response_can_be_created_as_an_alias()
+        {
 
 
             $this->assertInstanceOf(RedirectResponse::class, TestApp::redirect('/foo'));
@@ -274,5 +302,5 @@
         }
 
 
-	}
+    }
 
