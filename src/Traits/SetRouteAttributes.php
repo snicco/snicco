@@ -109,7 +109,7 @@
 
         public function noAction() : Route
         {
-            $this->handle([FallBackController::class, 'blankResponse']);
+            $this->handle([FallBackController::class, 'nullResponse']);
 
             /** @var Route $this */
             return $this;
