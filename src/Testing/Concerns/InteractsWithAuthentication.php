@@ -47,9 +47,14 @@
             }
 
             wp_set_current_user($user->ID);
-            $this->session->confirmAuthUntil($this->config->get('auth.confirmation.duration', 10 ));
-            $this->session->setLastActivity(time());
-            $this->withSessionCookie();
+
+            if ( $this->session instanceof Session) {
+
+                $this->session->confirmAuthUntil($this->config->get('auth.confirmation.duration', 10 ));
+                $this->session->setLastActivity(time());
+                $this->withSessionCookie();
+
+            }
 
         }
 

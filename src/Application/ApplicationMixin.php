@@ -66,11 +66,19 @@
         }
 
         /**
-         * Create a new alias for the application
+         * Register an alias.
+         *
+         * If no method is provided the alias will resolve the target from the container and return it.
+         * If a method is provided the target will be resolved an the method will be called on it.
+         *
+         * @param  string  $alias
+         * @param  string|Closure  $target
+         * @param  string  $method
+         *
          * @see Application::alias()
+         *
          */
-        public static function alias()
-        {
+        public function alias( string $alias, $target, string $method = '' ) {
         }
 
         /**
