@@ -23,8 +23,6 @@
     trait InteractsWithSession
     {
 
-        use HashesSessionIds;
-
         private $session_id;
 
         protected $internal_keys = ['_user', '_url.previous', '_rotate_at', '_expires_at', '_last_activity'];
@@ -147,6 +145,12 @@
 
         protected function assertSessionUserId(int $id) {
             PHPUnit::assertSame($id, $this->session->userId());
+        }
+
+        private function hash($id) {
+
+            return hash( 'sha256', $id );
+
         }
 
     }

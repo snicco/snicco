@@ -7,7 +7,6 @@
     namespace BetterWP\Events;
 
     use BetterWpHooks\Contracts\Dispatcher;
-    use BetterWP\Events\Event;
     use BetterWP\Contracts\ServiceProvider;
     use BetterWP\ExceptionHandling\ShutdownHandler;
     use BetterWP\Http\HttpKernel;
