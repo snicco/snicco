@@ -23,7 +23,7 @@
         "psr/log": "1.1.4",
         "psr/http-server-middleware": "1.0.1",
         "symfony/finder": "^5.0-stable",
-        "nesbot/carbon": "^2.31",
+        "nesbot/carbon": "^2.31"
     },
     "require-dev": {
         "opis/closure": "3.6.2",

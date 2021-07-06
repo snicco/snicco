@@ -7,7 +7,7 @@
     namespace Tests\unit\Http;
 
     use Carbon\Carbon;
-    use Tests\stubs\TestMagicLink;
+    use BetterWP\Testing\TestDoubles\TestMagicLink;
     use Tests\stubs\TestRequest;
     use Tests\unit\Routing\UrlGeneratorTest;
 
@@ -19,7 +19,7 @@
     {
 
         /**
-         * @var TestMagicLink
+         * @var \BetterWP\Testing\TestDoubles\TestMagicLink
          */
         private $magic_link;
 

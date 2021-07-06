@@ -195,7 +195,7 @@
             $this->manager->save();
 
             // Assert
-            $this->assertNotSame($this->session->getId(), $this->getSessionId());
+            $this->assertNotSame($this->session->getId(), $this->testSessionId());
 
         }
 

@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\stubs;
+    namespace BetterWP\Testing\TestDoubles;
 
     use BetterWP\Contracts\MagicLink;
     use BetterWP\Http\Psr7\Request;
@@ -16,7 +16,7 @@
 
         public function __construct()
         {
-            $this->app_key = TEST_APP_KEY;
+            $this->app_key = 'base64:LOK1UydvZ50A9iyTC2KxuP/C6k8TAM4UlGDcjwsKQik=';
         }
 
         public function notUsed(Request $request) : bool

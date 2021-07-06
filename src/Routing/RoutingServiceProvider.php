@@ -6,7 +6,7 @@
 
     namespace BetterWP\Routing;
 
-    use Tests\stubs\TestMagicLink;
+    use BetterWP\Testing\TestDoubles\TestMagicLink;
     use BetterWP\Contracts\AbstractRouteCollection;
     use BetterWP\Contracts\MagicLink;
     use BetterWP\Contracts\RouteMatcher;
