@@ -1,0 +1,1 @@
+<?php echo json_encode($json, 15, 512) ?><?php /**PATH /Users/calvinalkan/valet/wpemerge/wp-mvc/tests/integration/Blade/views/blade-features/json.blade.php ENDPATH**/ ?>

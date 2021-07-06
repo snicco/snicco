@@ -1,0 +1,1 @@
+Content:<?php echo e($content); ?>,SLOT:<?php echo e($slot); ?><?php /**PATH /Users/calvinalkan/valet/wpemerge/wp-mvc/tests/integration/Blade/cache/a3470dc4f94536590b22207e3db52442dc9ec851.blade.php ENDPATH**/ ?>

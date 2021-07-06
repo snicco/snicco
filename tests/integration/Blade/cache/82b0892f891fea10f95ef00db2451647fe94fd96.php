@@ -1,0 +1,1 @@
+<?php echo e('<script type="text/javascript">alert("Hacked!");</script>'); ?><?php /**PATH /Users/calvinalkan/valet/wpemerge/wp-mvc/tests/integration/Blade/views/blade-features/xss.blade.php ENDPATH**/ ?>

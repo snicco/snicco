@@ -6,6 +6,7 @@
 
     namespace BetterWP\Application;
 
+    use App\App;
     use Contracts\ContainerAdapter;
     use Nyholm\Psr7Server\ServerRequestCreator;
     use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
@@ -129,6 +130,17 @@
         public function basePath() : string
         {
             return $this->base_path;
+        }
+
+        public function distPath(string $path = '') : string
+        {
+            $ds = DIRECTORY_SEPARATOR;
+            $dist = $this->config('app.dist');
+            $base = $this->basePath();
+            $folder = rtrim($base, $ds) . $ds . ltrim($dist, $ds);
+
+            return $folder.($path ? $ds.ltrim($path, $ds) : $path);
+
         }
 
         public function storagePath($path = '') : string

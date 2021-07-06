@@ -1,0 +1,1 @@
+FOO<?php /**PATH /Users/calvinalkan/valet/wpemerge/wp-mvc/tests/integration/Blade/views/foo.blade.php ENDPATH**/ ?>

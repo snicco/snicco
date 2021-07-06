@@ -58,6 +58,7 @@
             $this->config->extend('app.package_root', dirname(__FILE__, 3) );
             $this->config->extend('app.storage_dir', $this->app->basePath(). DIRECTORY_SEPARATOR . 'storage');
             $this->config->extend('app.url', WP::siteUrl());
+            $this->config->extend('app.dist', DIRECTORY_SEPARATOR . 'dist');
             $this->config->extend('app.exception_handling', true);
             $this->config->extend('app.debug', true );
 

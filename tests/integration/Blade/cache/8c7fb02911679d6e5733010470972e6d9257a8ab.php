@@ -1,0 +1,1 @@
+<?php echo e($user->first_name); ?>.<?php /**PATH /Users/calvinalkan/valet/wpemerge/wp-mvc/tests/integration/Blade/views/blade-features/user.blade.php ENDPATH**/ ?>
