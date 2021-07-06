@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection PhpInconsistentReturnPointsInspection */
 
 
     declare(strict_types = 1);
@@ -8,7 +8,6 @@
 
     use Contracts\ContainerAdapter;
     use LogicException;
-    use Tests\unit\View\MethodField;
     use BetterWP\Contracts\AbstractRedirector;
     use BetterWP\Http\Cookies;
     use BetterWP\Http\ResponseFactory;
@@ -45,6 +44,32 @@
          * @return mixed|Config
          */
         public static function config(?string $key = null, $default = null)
+        {
+        }
+
+        /**
+         * Returns the local path to the project root
+         */
+        public static function basePath() :string
+        {
+        }
+
+        /**
+         * Returns the local path to the dist folder
+         *
+         * @param  string  $path A path relative to the dist folder
+         *
+         * @return string
+         */
+        public static function distPath(string $path = '') :string
+        {
+        }
+
+        /**
+         * Create a new alias for the application
+         * @see Application::alias()
+         */
+        public static function alias()
         {
         }
 

@@ -65,6 +65,13 @@
         }
 
         /** @test */
+        public function the_relative_dist_path_is_set () {
+
+            $this->assertSame('/dist', TestApp::config('app.dist'));
+
+        }
+
+        /** @test */
         public function debug_mode_is_set () {
 
             $this->assertTrue($this->config->get('app.debug'));

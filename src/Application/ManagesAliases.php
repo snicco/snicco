@@ -62,7 +62,9 @@
 
 		/**
 		 * Register an alias.
-		 * Identical to setAlias but with a more user-friendly interface.
+         *
+         * If no method is provided the alias will resolve the target from the container and return it.
+         * If a method is provided the target will be resolved an the method will be called on it.
 		 *
 		 * @param  string  $alias
 		 * @param  string|Closure  $target
