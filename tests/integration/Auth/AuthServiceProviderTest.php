@@ -227,11 +227,14 @@
         {
 
             $this->withoutExceptionHandling();
+            $this->withRequest(TestRequest::from('GET', '/wp-login.php'));
             $this->boot();
 
             Event::fake([ResponseSent::class]);
 
-            $response = $this->get('/wp-login.php');
+            do_action('init');
+
+            $response = $this->sentResponse();
 
             $query = urlencode($this->config->get('app.url').'/wp-admin/');
             $expected_redirect = "/auth/login?redirect_to=$query";
