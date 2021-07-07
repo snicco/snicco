@@ -39,7 +39,7 @@
          */
         private $force_trailing;
 
-        public function __construct(ContainerAdapter $container, AbstractRouteCollection $routes, bool $force_trailing = false )
+        public function __construct(ContainerAdapter $container, AbstractRouteCollection $routes, bool $force_trailing = false)
         {
 
             $this->container = $container;
@@ -153,10 +153,10 @@
 
         }
 
-        public function loadRoutes(bool $global_routes = false )
+        public function loadRoutes(bool $global_routes = false)
         {
 
-            if ( ! $this->hasGroupStack() ) {
+            if ( ! $this->hasGroupStack()) {
 
 
                 $this->routes->loadIntoDispatcher($global_routes);
@@ -171,8 +171,8 @@
         {
 
 
-            $this->any('/{path}', [FallBackController::class, 'handle'])
-                 ->and('path', '[^.]+')
+            $this->any('/{fallback}', [FallBackController::class, 'handle'])
+                 ->and('fallback', '[^.]+')
                  ->where(function () {
 
                      return ! WP::isAdmin();
@@ -201,9 +201,9 @@
 
             }
 
-            if ( $method === 'noAction') {
+            if ($method === 'noAction') {
 
-                return ((new RouteDecorator($this))->decorate($method, true ));
+                return ((new RouteDecorator($this))->decorate($method, true));
 
             }
 
@@ -327,11 +327,15 @@
         private function formatTrailing(string $url) : string
         {
 
-            if ( Str::contains($url, WP::wpAdminFolder()) ) {
+            if (Str::contains($url, WP::wpAdminFolder())) {
                 return rtrim($url, '/');
             }
 
-            if ( ! $this->force_trailing ) {
+            if ( ! $this->force_trailing) {
+                return $url;
+            }
+
+            if ( $url === '/{fallback}') {
                 return $url;
             }
 
