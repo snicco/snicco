@@ -94,10 +94,9 @@
             <div class="columns is-centered">
                 <div class="column is-5-tablet is-4-desktop is-3-widescreen">
 
-                    <?= $__view->render($view) ?>
+                    <?= $__view->render($view, $__data ?? [] ) ?>
 
                 </div>
-
             </div>
 
         </div>
