@@ -176,7 +176,7 @@
         /** @test */
         public function idle_sessions_are_included_if_persistent_login_is_enabled () {
 
-            $this->withAddedConfig('auth.features.remember_me', 7200);
+            $this->withAddedConfig('auth.features.remember_me', true);
 
             $calvin = $this->createAdmin();
             $this->seedSessions($calvin, 1);
@@ -188,7 +188,7 @@
             $this->travelIntoFuture(1);
 
             // The session is idle but we dont invalidate it.
-            // This happens in another middleware where session content is flushed.
+            // This happens in another middleware where auth confirmation is deleted.
             $this->assertCount(1, $this->session_manager->getAllForUser());
 
         }

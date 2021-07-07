@@ -59,7 +59,7 @@
             $this->assertSame(1800, TestApp::config('auth.idle'));
             $this->assertSame('auth', TestApp::config('auth.endpoint'));
             $this->assertArrayHasKey('auth', TestApp::config('routing.api.endpoints'));
-            $this->assertSame(0, TestApp::config('auth.features.remember_me'));
+            $this->assertSame(false, TestApp::config('auth.features.remember_me'));
             $this->assertFalse(TestApp::config('auth.features.2fa'));
             $this->assertFalse(TestApp::config('auth.features.password-resets'));
             $this->assertFalse(TestApp::config('auth.features.registration'));
@@ -77,6 +77,8 @@
             $expected = ROOT_DIR.DS.'src'.DS.'Auth'.DS.'views';
 
             $this->assertContains($expected, $views);
+            $this->assertContains($expected . '/partials', $views);
+            $this->assertContains($expected . '/email', $views);
 
 
         }
@@ -195,31 +197,6 @@
 
         }
 
-        /** @test */
-        public function testSessionLifetimeRememberEnabled()
-        {
-
-            $this->withAddedConfig('auth.features.remember_me', SessionManager::DAY_IN_SEC)
-                 ->boot();
-
-            $this->assertSame(SessionManager::DAY_IN_SEC, TestApp::config('session.lifetime'));
-            $this->assertSame(SessionManager::DAY_IN_SEC, TestApp::config('auth.features.remember_me'));
-            $this->assertSame(SessionManager::DAY_IN_SEC, TestApp::config('auth.timeouts.absolute'));
-
-        }
-
-        /** @test */
-        public function testSessionLifetimeRememberFalse()
-        {
-
-            $this->withAddedConfig('session.lifetime', 4800)
-                 ->boot();
-
-            $this->assertSame(4800, TestApp::config('session.lifetime'));
-            $this->assertSame(0, TestApp::config('auth.features.remember_me'));
-
-
-        }
 
 
         /** @test */
@@ -306,7 +283,7 @@
 
             $lifetime = apply_filters('auth_cookie_expiration', 3600);
 
-            $this->assertSame(0, $lifetime);
+            $this->assertSame($this->config->get('session.lifetime'), $lifetime);
 
         }
 
@@ -314,12 +291,11 @@
         public function the_cookie_expiration_is_synced_with_the_custom_session_lifetime()
         {
 
-            $this->withAddedConfig('auth.features.remember_me', 10800);
             $this->boot();
 
-            $lifetime = apply_filters('auth_cookie_expiration', 3600);
+            $lifetime = apply_filters('auth_cookie_expiration', 10000);
 
-            $this->assertSame(10800, $lifetime);
+            $this->assertSame($this->config->get('session.lifetime'), $lifetime);
 
         }
 
