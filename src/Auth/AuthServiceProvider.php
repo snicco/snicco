@@ -165,7 +165,9 @@
             $this->config->extend('auth.endpoint', 'auth');
             $this->config->extend('routing.api.endpoints', [
 
-                'auth' => $this->config->get('auth.endpoint',),
+                'auth' => $this->config->get('auth.endpoint'),
+                // Needed so we can respond to request to wp-login.php.
+                'wp-login.php' => '/wp-login.php'
 
             ]);
             $this->config->extend('auth.features.remember_me', false);

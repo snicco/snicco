@@ -23,7 +23,7 @@
             $registrar->loadStandardRoutes($config);
             $registrar->loadIntoRouter();
 
-            if ( $success && $event->request->isApiEndPoint() ) {
+            if ( $success && $event->request->isApiEndPoint()  ) {
 
                 // This will run as the first hook on init.
                 IncomingApiRequest::dispatch([$event->request]);
