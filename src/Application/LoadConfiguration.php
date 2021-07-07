@@ -18,7 +18,7 @@
 
             $config = [];
 
-            if (is_file($file = $this->getCachedConfigPath($app))) {
+            if (is_file($file = $app->configCachePath())) {
 
                 $config = $this->readFromCacheFile($file);
                 $loaded_from_cache = true;
