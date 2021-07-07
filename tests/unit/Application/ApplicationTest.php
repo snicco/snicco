@@ -229,6 +229,30 @@
         }
 
         /** @test */
+        public function testConfigCachePath () {
+
+            $app = $this->newApplication();
+
+            $app->boot();
+
+            $path = $app->configCachePath();
+
+            $this->assertSame($this->base_path . DS . 'bootstrap' . DS . 'cache' . DS . '__generated::config.json', $path);
+
+            $this->assertFalse($app->isConfigurationCached());
+
+            file_put_contents($path, 'foo');
+
+            $this->assertTrue($app->isConfigurationCached());
+
+            unlink($path);
+
+            $this->assertFalse($app->isConfigurationCached());
+
+
+        }
+
+        /** @test */
         public function generateKey () {
 
             $key = Application::generateKey();

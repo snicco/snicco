@@ -6,7 +6,6 @@
 
     namespace BetterWP\Application;
 
-    use App\App;
     use Contracts\ContainerAdapter;
     use Nyholm\Psr7Server\ServerRequestCreator;
     use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
@@ -159,6 +158,16 @@
         public function configPath($path = '') : string
         {
             return $this->base_path.DIRECTORY_SEPARATOR.'config'.($path ? DIRECTORY_SEPARATOR.$path : $path);
+        }
+
+        public function configCachePath() :string {
+
+            return $this->base_path.DIRECTORY_SEPARATOR.'bootstrap'.DIRECTORY_SEPARATOR.'cache'.DIRECTORY_SEPARATOR.'__generated::config.json';
+
+        }
+
+        public function isConfigurationCached () :bool {
+            return is_file($this->configCachePath());
         }
 
         public function runningUnitTest()

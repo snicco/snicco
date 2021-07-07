@@ -23,16 +23,13 @@
 		 */
 		abstract public function resolve( string $key );
 
-
 		/** @var array<string, array> */
 		private $aliases = [];
-
 
 		public function hasAlias( string $alias ) : bool {
 
 			return isset( $this->aliases[ $alias ] );
 		}
-
 
 		public function getAlias( string $alias ) : ?array {
 
@@ -117,7 +114,6 @@
 
 			return $target;
 		}
-
 
 
 	}
