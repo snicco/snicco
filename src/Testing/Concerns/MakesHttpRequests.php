@@ -63,6 +63,10 @@
          */
         protected $default_server_variables = [];
 
+        private $with_trailing_slash = false;
+
+        private $without_trailing_flash = false;
+
         /**
          * Indicates whether redirects should be followed.
          *
@@ -167,6 +171,32 @@
         {
 
             $this->follow_redirects = true;
+
+            return $this;
+        }
+
+        /**
+         * Add trailing slashes to all urls.
+         *
+         * @return $this
+         */
+        public function withTrailingSlash()
+        {
+
+            $this->with_trailing_slash = true;
+
+            return $this;
+        }
+
+        /**
+         * Remove trailing slashes to all urls.
+         *
+         * @return $this
+         */
+        public function removeTrailingSlash()
+        {
+
+            $this->without_trailing_flash = true;
 
             return $this;
         }
@@ -459,8 +489,26 @@
         private function createUri($uri) : UriInterface
         {
 
-            if (is_string($uri) && ! Str::contains($uri, 'http')) {
-                $uri = Url::addLeading($uri);
+            if (is_string($uri) ) {
+
+                if ( ! Str::contains($uri, 'http') ) {
+
+                    $uri = Url::addLeading($uri);
+
+                }
+
+                if ( $this->with_trailing_slash ) {
+
+                    $uri = Url::addTrailing($uri);
+
+                }
+
+                if ( $this->without_trailing_flash ) {
+
+                    $uri = Url::removeTrailing($uri);
+
+                }
+
             }
 
             $uri = $uri instanceof UriInterface
@@ -505,4 +553,6 @@
         }
 
     }
+
+
 

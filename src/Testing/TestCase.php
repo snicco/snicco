@@ -37,6 +37,7 @@
     use BetterWP\Testing\Concerns\InteractsWithWordpressUsers;
     use BetterWP\Testing\Concerns\MakesHttpRequests;
     use BetterWP\Testing\Concerns\TravelsTime;
+    use Tests\FeatureTestCase;
 
     abstract class TestCase extends WPTestCase
     {
@@ -320,6 +321,38 @@
                 });
 
             }
+
+            return $this;
+        }
+
+        /**
+         * Enable the given middleware for the test.
+         * Middleware has to be an object
+         *
+         * @param  object|object[]|null  $middleware
+         * @return $this
+         */
+        protected function withMiddleware($middleware = null) : TestCase
+        {
+            if (is_null($middleware)) {
+
+                $this->app->config()->set('middleware.disabled', false);
+
+                return $this;
+            }
+
+            foreach (Arr::wrap($middleware) as $abstract) {
+
+                if (! $abstract instanceOf Middleware ) {
+                    throw new \RuntimeException(
+                        "You are trying to enable the middleware [$abstract] but it does not implement [BetterWP\Contracts\Middleware]."
+                    );
+                }
+
+                $this->app->container()->instance(get_class($abstract), $abstract);
+
+            }
+
 
             return $this;
         }
