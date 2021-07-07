@@ -92,10 +92,10 @@
         public function includeFile(string $path, $context)
         {
 
-            $context = array_merge($this->last_context, $context);
-            $this->last_context = $context;
+            $__data = array_merge($this->last_context, $context);
+            $this->last_context = $__data;
 
-            extract($context, EXTR_OVERWRITE);
+            extract($__data, EXTR_SKIP);
             include $path;
 
         }
