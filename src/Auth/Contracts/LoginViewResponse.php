@@ -33,7 +33,7 @@
         protected function allowRememberMe() : bool
         {
 
-            return Arr::get($this->auth_config, 'remember.enabled', true);
+            return Arr::get($this->auth_config, 'features.remember_me', false);
 
         }
 

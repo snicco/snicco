@@ -166,8 +166,7 @@
         private function allowsPersistentLogin() : bool
         {
 
-            $remember = Arr::get($this->auth_config, 'features.remember_me', 0);
-            return $remember > 0;
+            return Arr::get($this->auth_config, 'features.remember_me', false) === true;
 
         }
 

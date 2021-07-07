@@ -88,7 +88,7 @@
         public function a_valid_link_will_log_the_user_in()
         {
 
-            $this->withAddedConfig('auth.features.remember_me', 10);
+            $this->withAddedConfig('auth.features.remember_me', true);
 
             $calvin = $this->createAdmin();
             $url = $this->routeUrl($calvin->ID);

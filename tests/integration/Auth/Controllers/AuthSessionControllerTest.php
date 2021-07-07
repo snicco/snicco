@@ -199,7 +199,7 @@
         public function a_user_can_be_remembered_if_he_chooses_too()
         {
 
-            $this->withAddedConfig('auth.features.remember_me', 10);
+            $this->withAddedConfig('auth.features.remember_me', true);
             $calvin = $this->createAdmin();
 
             $response = $this->postToLogin([

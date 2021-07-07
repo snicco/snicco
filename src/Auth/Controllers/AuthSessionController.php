@@ -66,7 +66,7 @@
 
             if ($response instanceof SuccessfulLoginResponse) {
 
-                $remember = $response->rememberUser() && $this->auth_config['features']['remember_me'] > 0;
+                $remember = $response->rememberUser() && $this->allowRememberMe();
                 $user = $response->authenticatedUser();
 
                 return $this->handleLogin($user, $remember, $login_response, $request);
@@ -160,6 +160,11 @@
             return $redirect_to;
 
 
+        }
+
+        private function allowRememberMe() : bool
+        {
+            return  Arr::get($this->auth_config, 'features.remember_me', false ) === true;
         }
 
     }

@@ -59,6 +59,8 @@
             $this->extendRoutes(__DIR__.DIRECTORY_SEPARATOR.'routes');
 
             $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views');
+            $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR .'email');
+            $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR .'partials');
 
             $this->bindEvents();
 
@@ -86,9 +88,6 @@
         {
 
             $this->bindSessionManagerInterface();
-
-            $this->updateSessionLifetime();
-
 
         }
 
@@ -127,9 +126,10 @@
 
             // This filter is very misleading from WordPress. It does not filter the expire value in
             // "setcookie()" function, but filters the expiration fragment in the cookie hash.
+            // The maximum value can only ever be our session absolute timeout.
             add_filter('auth_cookie_expiration', function () {
 
-                return $this->config->get('auth.features.remember_me');
+                return $this->config->get('session.lifetime');
 
             }, 10, 3);
 
@@ -211,31 +211,6 @@
                 return WpAuthSessionToken::class;
 
             });
-
-        }
-
-        private function updateSessionLifetime()
-        {
-
-            $remember = $this->config->get('auth.features.remember_me', false);
-
-            if (is_int($remember) && $remember > 0) {
-
-                $remember_lifetime = $remember;
-                $session_lifetime = $this->config->get('session.lifetime');
-
-                $max = max($remember_lifetime, $session_lifetime);
-
-                $this->config->set('auth.features.remember_me', $max);
-                $this->config->set('session.lifetime', $max);
-                $this->config->set('auth.timeouts.absolute', $max);
-
-            }
-            else {
-
-                $this->config->set('auth.features.remember_me', 0);
-
-            }
 
         }
 
