@@ -439,7 +439,7 @@
                 return;
             }
 
-            $request = $this->request_factory->createServerRequest('GET', $this->createUri('http://localhost.com'), $this->default_server_variables);
+            $request = $this->request_factory->createServerRequest('GET', $this->createUri($this->config->get('app.url')), $this->default_server_variables);
             $request = $this->addCookies($request);
             $request = $this->addHeaders($request);
             $this->instance(Request::class, new Request($request));

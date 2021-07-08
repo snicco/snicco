@@ -335,7 +335,7 @@
                 return $url;
             }
 
-            if ( $url === '/{fallback}') {
+            if ( $url === '/{fallback}' || Str::contains($url, '.php')) {
                 return $url;
             }
 
