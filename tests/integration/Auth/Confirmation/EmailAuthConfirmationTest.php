@@ -45,7 +45,7 @@
             $response->assertSee('You need to confirm your access before you can proceed.');
             $response->assertViewHas('post_to', function ($data) {
 
-                return $data === '/auth/confirm/email';
+                return $data === '/auth/confirm/magic-link';
             });
 
         }

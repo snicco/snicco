@@ -20,28 +20,32 @@
     /** @var Router $router */
     /** @var Config $config */
 
+    // Dynamic endpoints which the developer can configure in the config to his likings.
+    $login = $config->get('auth.endpoints.login');
+    $magic_link = $config->get('auth.endpoints.magic-link');
+    $confirm = $config->get('auth.endpoints.confirm');
+
     // Login
-    $router->middleware('guest')->group(function (Router $router) use ($config) {
+    $router->middleware('guest')->group(function (Router $router) use ($config, $login, $magic_link) {
 
 
-        $router->get('/login', [AuthSessionController::class, 'create'])
+        $router->get("/$login", [AuthSessionController::class, 'create'])
                ->name('login');
 
-        $router->post('/login', [AuthSessionController::class, 'store'])
+        $router->post("/$login", [AuthSessionController::class, 'store'])
                ->middleware('csrf');
 
         // Magic-link
         if ($config->get('auth.authenticator') === 'email') {
 
-            $router->post('login/create-magic-link', [LoginMagicLinkController::class, 'store'])
+            $router->post("$login/$magic_link", [LoginMagicLinkController::class, 'store'])
                    ->middleware('csrf')
                    ->name('login.create-magic-link');
 
-            $router->get('login/magic-link', [AuthSessionController::class, 'store'])
+            $router->get("$login/$magic_link", [AuthSessionController::class, 'store'])
                    ->name('login.magic-link');
 
         }
-
 
     });
 
@@ -52,17 +56,18 @@
            ->andNumber('user_id');
 
     // Auth Confirmation
-    $router->middleware(['auth', 'auth.unconfirmed'])->group(function (Router $router) {
+    $router->middleware(['auth', 'auth.unconfirmed'])->group(function (Router $router) use ($magic_link, $confirm) {
 
-        $router->get('confirm', [ConfirmedAuthSessionController::class, 'create'])->name('confirm');
 
-        $router->post('confirm', [ConfirmedAuthSessionController::class, 'store'])
+        $router->get("$confirm", [ConfirmedAuthSessionController::class, 'create'])->name('confirm');
+
+        $router->post("$confirm", [ConfirmedAuthSessionController::class, 'store'])
                ->middleware('csrf');
 
-        $router->get('confirm/magic-link', [ConfirmedAuthSessionController::class, 'store'])
+        $router->get("$confirm/$magic_link", [ConfirmedAuthSessionController::class, 'store'])
                ->name('confirm.magic-link');
 
-        $router->post('/confirm/email', [AuthConfirmationEmailController::class, 'store'])
+        $router->post("$confirm/$magic_link", [AuthConfirmationEmailController::class, 'store'])
                ->middleware('csrf')
                ->name('confirm.email');
 
@@ -71,16 +76,19 @@
     // 2FA
     if ($config->get('auth.features.2fa')) {
 
-        $router->post('two-factor/preferences', [TwoFactorAuthPreferenceController::class, 'store'])
+        $two_factor = $config->get('auth.endpoints.2fa');
+        $challenge = $config->get('auth.endpoints.challenge');
+
+        $router->post("$two_factor/preferences", [TwoFactorAuthPreferenceController::class, 'store'])
                ->middleware(['auth', 'auth.confirmed'])
                ->name('two-factor.preferences');
 
-        $router->delete('two-factor/preferences', [
+        $router->delete("$two_factor/preferences", [
             TwoFactorAuthPreferenceController::class, 'destroy',
         ])
                ->middleware(['auth', 'auth.confirmed']);
 
-        $router->get('two-factor/challenge', [TwoFactorAuthSessionController::class, 'create'])
+        $router->get("$two_factor/$challenge", [TwoFactorAuthSessionController::class, 'create'])
                ->name('2fa.challenge');
 
         // recovery codes.
@@ -104,20 +112,23 @@
     // password resets
     if ($config->get('auth.features.password-resets')) {
 
+        $forgot = $config->get('auth.endpoints.forgot-password');
+        $reset = $config->get('auth.endpoints.reset-password');
+
         // forgot-password
-        $router->get('/forgot-password', [ForgotPasswordController::class, 'create'])
+        $router->get("/$forgot", [ForgotPasswordController::class, 'create'])
                ->middleware('guest')
                ->name('forgot.password');
 
-        $router->post('/forgot-password', [ForgotPasswordController::class, 'store'])
+        $router->post("/$forgot", [ForgotPasswordController::class, 'store'])
                ->middleware(['csrf', 'guest']);
 
         // reset-password
-        $router->get('/reset-password', [ResetPasswordController::class, 'create'])
+        $router->get("/$reset", [ResetPasswordController::class, 'create'])
                ->middleware('signed:absolute')
                ->name('reset.password');
 
-        $router->put('/reset-password', [ResetPasswordController::class, 'update'])
+        $router->put("/$reset", [ResetPasswordController::class, 'update'])
                ->middleware(['csrf', 'signed:absolute']);
 
     }
@@ -125,26 +136,31 @@
     // registration
     if ($config->get('auth.features.registration')) {
 
-        $router->middleware('guest')->group(function ($router) {
+        $register = $config->get('auth.endpoints.register');
 
-            $router->get('register', [RegistrationLinkController::class, 'create'])
+        $router->middleware('guest')->group(function ($router) use ($register) {
+
+            $router->get("/$register", [RegistrationLinkController::class, 'create'])
                    ->name('register');
 
-            $router->post('register', [RegistrationLinkController::class, 'store']);
+            $router->post("/$register", [RegistrationLinkController::class, 'store']);
 
         });
 
-        $router->name('accounts')->group(function (Router $router) {
+        $router->name('accounts')->group(function (Router $router) use ($config) {
 
-            $router->get('/accounts/create', [AccountController::class, 'create'])
+            $accounts = $config->get('auth.endpoints.accounts');
+            $create = $config->get('auth.endpoints.accounts_create');
+
+            $router->get("/$accounts/$create", [AccountController::class, 'create'])
                    ->middleware(['guest', 'signed:absolute'])
                    ->name('create');
 
-            $router->post('/accounts', [AccountController::class, 'store'])
+            $router->post("/$accounts", [AccountController::class, 'store'])
                    ->middleware(['guest', 'csrf', 'signed'])
                    ->name('store');
 
-            $router->delete('/accounts/{user_id}', [AccountController::class, 'destroy'])
+            $router->delete("/$accounts/{user_id}", [AccountController::class, 'destroy'])
                    ->middleware(['auth', 'csrf'])
                    ->andNumber('user_id');
 

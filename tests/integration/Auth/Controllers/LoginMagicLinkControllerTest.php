@@ -44,7 +44,7 @@
 
             $this->actingAs($this->createAdmin());
 
-            $response = $this->post('/auth/login/create-magic-link')->assertRedirectToRoute('dashboard');
+            $response = $this->post('/auth/login/magic-link')->assertRedirectToRoute('dashboard');
 
 
         }
@@ -55,7 +55,7 @@
             $this->withoutExceptionHandling();
             $this->mailFake();
 
-            $response = $this->post('/auth/login/create-magic-link', ['login' => 'bogus']);
+            $response = $this->post('/auth/login/magic-link', ['login' => 'bogus']);
             $response->assertRedirect('/auth/login');
             $response->assertSessionHas('login.link.processed');
 
@@ -71,7 +71,7 @@
 
             $calvin = $this->createAdmin();
 
-            $response = $this->post('/auth/login/create-magic-link', ['login' => $calvin->user_login]);
+            $response = $this->post('/auth/login/magic-link', ['login' => $calvin->user_login]);
             $response->assertRedirect('/auth/login');
             $response->assertSessionHas('login.link.processed');
 

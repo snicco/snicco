@@ -57,12 +57,32 @@
 
             $this->assertSame(10, TestApp::config('auth.confirmation.duration'));
             $this->assertSame(1800, TestApp::config('auth.idle'));
-            $this->assertSame('auth', TestApp::config('auth.endpoint'));
-            $this->assertArrayHasKey('auth', TestApp::config('routing.api.endpoints'));
             $this->assertSame(false, TestApp::config('auth.features.remember_me'));
             $this->assertFalse(TestApp::config('auth.features.2fa'));
             $this->assertFalse(TestApp::config('auth.features.password-resets'));
             $this->assertFalse(TestApp::config('auth.features.registration'));
+
+
+        }
+
+        /** @test */
+        public function the_auth_endpoints_have_defaults_set () {
+
+            $this->boot();
+
+            $this->assertSame('auth', TestApp::config('auth.endpoints.prefix'));
+            $this->assertArrayHasKey('auth', TestApp::config('routing.api.endpoints'));
+
+            $this->assertSame('login',TestApp::config('auth.endpoints.login'));
+            $this->assertSame('magic-link',TestApp::config('auth.endpoints.magic-link'));
+            $this->assertSame('confirm',TestApp::config('auth.endpoints.confirm'));
+            $this->assertSame('two-factor',TestApp::config('auth.endpoints.2fa'));
+            $this->assertSame('challenge',TestApp::config('auth.endpoints.challenge'));
+            $this->assertSame('register',TestApp::config('auth.endpoints.register'));
+            $this->assertSame('forgot-password',TestApp::config('auth.endpoints.forgot-password'));
+            $this->assertSame('reset-password',TestApp::config('auth.endpoints.reset-password'));
+            $this->assertSame('accounts',TestApp::config('auth.endpoints.accounts'));
+            $this->assertSame('create',TestApp::config('auth.endpoints.accounts_create'));
 
 
         }
@@ -196,8 +216,6 @@
             $this->assertInstanceOf(AuthSessionManager::class, TestApp::resolve(SessionManagerInterface::class));
 
         }
-
-
 
         /** @test */
         public function wp_login_php_is_a_permanent_redirected_for_get_requests()

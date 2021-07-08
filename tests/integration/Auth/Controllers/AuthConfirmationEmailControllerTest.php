@@ -12,7 +12,7 @@
     class AuthConfirmationEmailControllerTest extends AuthTestCase
     {
 
-        private $endpoint = '/auth/confirm/email';
+        private $endpoint = '/auth/confirm/magic-link';
 
         /** @test */
         public function the_endpoint_exists()
