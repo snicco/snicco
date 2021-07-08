@@ -29,7 +29,7 @@
          * Register an instance of an object in the container.
          *
          * @param  string  $abstract
-         * @param  object  $instance
+         * @param  object|string  $instance
          * @return object
          */
         protected function instance($abstract, $instance)

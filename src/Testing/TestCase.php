@@ -37,7 +37,6 @@
     use BetterWP\Testing\Concerns\InteractsWithWordpressUsers;
     use BetterWP\Testing\Concerns\MakesHttpRequests;
     use BetterWP\Testing\Concerns\TravelsTime;
-    use Tests\FeatureTestCase;
 
     abstract class TestCase extends WPTestCase
     {

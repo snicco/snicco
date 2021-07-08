@@ -7,6 +7,10 @@
         {
             "type": "vcs",
             "url": "https://github.com/calvinalkan/view"
+        },
+        {
+            "type": "vcs",
+            "url": "https://github.com/calvinalkan/database"
         }
     ],
     "require": {
@@ -39,7 +43,9 @@
         "bjeavons/zxcvbn-php": "^1.0",
         "roots/wp-password-bcrypt": "dev-master",
         "bacon/bacon-qr-code": "^2.0",
-        "pragmarx/google2fa": "8.0.0"
+        "pragmarx/google2fa": "8.0.0",
+        "illuminate/database": "dev-better-wp-db-8.x",
+        "nyholm/psr7": "^1.0.0-stable"
     },
     "suggest": {
         "nyholm/psr7": "A minimal and very fast PSR7 implementation",
