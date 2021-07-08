@@ -223,6 +223,24 @@
         }
 
         /** @test */
+        public function forced_trailing_slashes_are_not_added_to_file_urls () {
+
+            $this->createRoutes(function () {
+
+                $this->router->get('/wp-login.php', function () {
+
+                    return 'FOO';
+
+                });
+
+            }, true );
+
+            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/wp-login.php');
+            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
+
+        }
+
+        /** @test */
         public function url_encoded_routes_work()
         {
 
