@@ -159,22 +159,16 @@
         private function bindConfig()
         {
 
+            // Authentication
             $this->config->extend('auth.confirmation.duration', SessionManager::HOUR_IN_SEC * 3);
             $this->config->extend('auth.idle', SessionManager::HOUR_IN_SEC / 2);
             $this->config->extend('auth.authenticator', 'password');
-            $this->config->extend('auth.endpoint', 'auth');
-            $this->config->extend('routing.api.endpoints', [
-
-                'auth' => $this->config->get('auth.endpoint'),
-                // Needed so we can respond to request to wp-login.php.
-                'wp-login.php' => '/wp-login.php'
-
-            ]);
             $this->config->extend('auth.features.remember_me', false);
             $this->config->extend('auth.features.password-resets', false);
             $this->config->extend('auth.features.2fa', false);
             $this->config->extend('auth.features.registration', false);
 
+            // Middleware
             $this->config->extend('middleware.aliases', [
                 'auth.confirmed' => ConfirmAuth::class,
                 'auth.unconfirmed' => AuthUnconfirmed::class,
@@ -187,6 +181,26 @@
             $this->config->extend('middleware.priority', [
                 StartSessionMiddleware::class,
                 AuthenticateSession::class,
+            ]);
+
+            // Endpoints
+            $this->config->extend('auth.endpoints.prefix', 'auth');
+            $this->config->extend('auth.endpoints.login', 'login');
+            $this->config->extend('auth.endpoints.magic-link', 'magic-link');
+            $this->config->extend('auth.endpoints.confirm', 'confirm');
+            $this->config->extend('auth.endpoints.2fa', 'two-factor');
+            $this->config->extend('auth.endpoints.challenge', 'challenge');
+            $this->config->extend('auth.endpoints.register', 'register');
+            $this->config->extend('auth.endpoints.forgot-password', 'forgot-password');
+            $this->config->extend('auth.endpoints.reset-password', 'reset-password');
+            $this->config->extend('auth.endpoints.accounts', 'accounts');
+            $this->config->extend('auth.endpoints.accounts_create', 'create');
+            $this->config->extend('routing.api.endpoints', [
+
+                'auth' => $this->config->get('auth.endpoints.prefix'),
+                // Needed so we can respond to request to wp-login.php.
+                'wp-login.php' => '/wp-login.php'
+
             ]);
 
 
