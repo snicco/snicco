@@ -10,11 +10,14 @@
     use BetterWP\Database\Contracts\BetterWPDbInterface;
     use BetterWP\Database\Contracts\WPConnectionInterface;
     use BetterWP\Database\FakeDB;
+    use BetterWP\Database\Illuminate\MySqlSchemaBuilder;
+    use BetterWP\Database\WPConnection;
     use BetterWP\Database\WPConnectionResolver;
     use BetterWP\Database\Contracts\ConnectionResolverInterface;
     use BetterWP\Database\Illuminate\DispatcherAdapter;
     use Illuminate\Contracts\Events\Dispatcher;
     use Illuminate\Database\Eloquent\Model as Eloquent;
+    use Illuminate\Support\Facades\DB;
 
     class DatabaseServiceProviderTest extends DatabaseTestCase
     {
@@ -98,6 +101,15 @@
             $this->instance(BetterWPDbInterface::class, FakeDB::class );
             $this->assertSame(FakeDB::class, $this->app->resolve(BetterWPDbInterface::class));
 
+
+        }
+
+
+        /** @test */
+        public function the_schema_builder_can_be_resolved () {
+
+            $this->boot();
+            $this->assertSame(MySqlSchemaBuilder::class, $this->app->resolve(MySqlSchemaBuilder::class));
 
         }
 

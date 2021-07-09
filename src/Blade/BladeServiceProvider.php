@@ -100,8 +100,18 @@
 
             $container->instance('config', $this->config);
 
-            Facade::setFacadeApplication($container);
-            IlluminateContainer::setInstance($container);
+
+            if( ! Facade::getFacadeApplication() instanceof Container) {
+
+                Facade::setFacadeApplication($container);
+
+            }
+
+            if( ! IlluminateContainer::getInstance() instanceof Container) {
+
+                IlluminateContainer::setInstance($container);
+
+            }
 
         }
 
