@@ -124,7 +124,6 @@
 
             $this->container->singleton('db', function () {
 
-
                 return $this->container->make(ConnectionResolverInterface::class);
 
 

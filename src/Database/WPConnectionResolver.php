@@ -93,6 +93,15 @@
             $this->default_connection = $name;
         }
 
+        /**
+         * Handle calls from the DB Facade and proxy them to the default connection
+         * if the user did not request a specific connection via the DB::connection() method;
+         */
+        public function __call(string $method, array $parameters)
+        {
+            return $this->connection()->$method(...$parameters);
+        }
+
         private function resolveConnection(string $name) : WPConnectionInterface
         {
 
