@@ -17,7 +17,8 @@
     use BetterWP\Database\Illuminate\DispatcherAdapter;
     use Illuminate\Contracts\Events\Dispatcher;
     use Illuminate\Database\Eloquent\Model as Eloquent;
-
+    use Illuminate\Database\Query\Builder;
+    use Illuminate\Support\Facades\DB;
 
     class DatabaseServiceProviderTest extends DatabaseTestCase
     {
@@ -125,5 +126,18 @@
 
         }
 
+        /** @test */
+        public function the_db_facade_works () {
+
+            $this->boot();
+
+            $connection = DB::connection();
+            $this->assertInstanceOf(WPConnection::class, $connection);
+
+            $builder = DB::table('foo');
+            $this->assertInstanceOf(Builder::class, $builder);
+
+
+        }
 
     }
