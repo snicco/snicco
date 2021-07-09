@@ -8,10 +8,12 @@
 
     use BetterWP\Database\Contracts\BetterWPDbInterface;
     use BetterWP\Database\FakeDB;
+    use BetterWP\Database\Illuminate\MySqlSchemaBuilder;
     use BetterWP\Database\WPConnectionResolver;
     use BetterWP\Database\Contracts\ConnectionResolverInterface;
     use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
     use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Schema;
 
     class WPConnectionResolverTest extends DatabaseTestCase
     {
@@ -106,7 +108,6 @@
 
         }
 
-
         /** @test */
         public function testLaravelFacadesWorkWithSecondConnection()
         {
@@ -141,6 +142,20 @@
 
         }
 
+        /** @test */
+        public function via_the_schema_facade_the_schema_builder_can_be_resolved_with_other_connections () {
+
+            $this->withAddedConfig('database.connections', ['second' => $this->secondDatabaseConfig()])
+                 ->boot();
+
+            $builder = Schema::connection('second');
+            $this->assertInstanceOf(MySqlSchemaBuilder::class, $builder);
+
+            $db = $builder->getConnection()->dbInstance();
+            $this->assertNotDefaultConnection($db);
+            $this->assertSame('wp_secondary_testing', $db->dbname);
+
+        }
 
 
     }

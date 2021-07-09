@@ -11,7 +11,6 @@
     use BetterWP\Database\Contracts\ConnectionResolverInterface;
     use BetterWP\Database\Illuminate\DispatcherAdapter;
     use BetterWP\Database\Illuminate\MySqlSchemaBuilder;
-    use BetterWP\Support\Arr;
     use BetterWpHooks\Dispatchers\WordpressDispatcher;
     use Illuminate\Contracts\Container\Container;
     use Illuminate\Contracts\Events\Dispatcher as IlluminateEventDispatcher;
@@ -109,11 +108,10 @@
 
             $this->container->singleton(MySqlSchemaBuilder::class, function () {
 
-                return new MySqlSchemaBuilder();
+                return new MySqlSchemaBuilder($this->resolveConnection());
             });
 
         }
-
 
         private function bindFacades()
         {
@@ -137,11 +135,6 @@
 
                 return $this->container->make(ConnectionResolverInterface::class);
 
-                // $db_name = Arr::firstEl(func_get_arg(1));
-
-                // /** @var ConnectionResolverInterface $r */
-                // $r = $this->container->make(ConnectionResolverInterface::class);
-                // return $r->connection($db_name);
 
             });
 
@@ -155,5 +148,10 @@
 
         }
 
+        private function resolveConnection (string $name = null ) {
+
+            return $this->container->make(ConnectionResolverInterface::class)->connection($name);
+
+        }
 
     }
