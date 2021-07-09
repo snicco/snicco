@@ -11,12 +11,11 @@
     use BetterWP\Database\WPConnection;
     use BetterWP\Database\Contracts\ConnectionResolverInterface;
     use BetterWP\Database\Illuminate\MySqlQueryGrammar;
-    use BetterWpdb\Exceptions\QueryException;
+    use Exception;
     use Illuminate\Database\Query\Builder;
     use Illuminate\Database\Query\Processors\MySqlProcessor;
+    use Illuminate\Database\QueryException;
     use Illuminate\Database\Schema\Grammars\MySqlGrammar as MySqlSchemaGrammar;
-    use Illuminate\Support\LazyCollection;
-    use Mockery as m;
 
     class WPConnectionTest extends DatabaseTestCase
     {
@@ -51,6 +50,7 @@
             $m->prefix = 'wp_';
 
             return $m;
+
         }
 
         /**
@@ -811,7 +811,31 @@
 
         }
 
+        /** @test */
+        public function only_mysqli_exceptions_are_transformed_to_query_exceptions() {
 
+
+            $connection = $this->newWpConnection();
+            $assertable = $this->assertable($connection);
+            $assertable->returnSelect(function () {
+                throw new \Exception();
+            });
+
+            try {
+
+                $connection->select( 'foo' );
+
+                $this->fail( 'Wrong Exception type was handled' );
+
+            }
+
+            catch ( Exception $exception ) {
+
+                $this->assertNotInstanceOf( QueryException::class, $exception );
+
+            }
+
+        }
 
 
     }

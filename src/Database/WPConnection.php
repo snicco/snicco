@@ -68,7 +68,6 @@
 
         private $logging_queries = false;
 
-
         public function __construct(BetterWPDbInterface $wpdb)
         {
 
@@ -562,7 +561,6 @@
         public function runWpDB(string $query, array $bindings, Closure $callback)
         {
 
-
             return $this->runWithoutExceptions(
                 $query,
                 $bindings = $this->prepareBindings($bindings),
@@ -571,7 +569,6 @@
 
 
         }
-
 
         private function runWithoutExceptions(string $query, array $bindings, Closure $callback)
         {
@@ -589,76 +586,6 @@
             return $result;
 
         }
-
-
-        private function isConcurrencyError(Throwable $e) : bool
-        {
-
-            $message = $e->getMessage();
-
-            return Str::contains($message, [
-                'Deadlock found when trying to get lock',
-                'deadlock detected',
-                'The database file is locked',
-                'database is locked',
-                'database table is locked',
-                'A table in the database is locked',
-                'has been chosen as the deadlock victim',
-                'Lock wait timeout exceeded; try restarting transaction',
-                'WSREP detected deadlock/conflict and aborted the transaction. Try restarting the transaction',
-            ]);
-        }
-
-
-        /**
-         * Determine if the given exception was caused by a lost connection.
-         *
-         * @param  Throwable  $e
-         *
-         * @return bool
-         */
-        private function causedByLostConnection(Throwable $e)
-        {
-
-            $message = $e->getMessage();
-
-            return Str::contains($message, [
-                'server has gone away',
-                'no connection to the server',
-                'Lost connection',
-                'is dead or not enabled',
-                'Error while sending',
-                'decryption failed or bad record mac',
-                'server closed the connection unexpectedly',
-                'SSL connection has been closed unexpectedly',
-                'Error writing data to the connection',
-                'Resource deadlock avoided',
-                'Transaction() on null',
-                'child connection forced to terminate due to client_idle_limit',
-                'query_wait_timeout',
-                'reset by peer',
-                'Physical connection is not usable',
-                'TCP Provider: Error code 0x68',
-                'ORA-03114',
-                'Packets out of order. Expected',
-                'Adaptive Server connection failed',
-                'Communication link failure',
-                'connection is no longer usable',
-                'Login timeout expired',
-                'SQLSTATE[HY000] [2002] WordpressConnection refused',
-                'running with the --read-only option so it cannot execute this statement',
-                'The connection is broken and recovery is not possible. The connection is marked by the client driver as unrecoverable. No attempt was made to restore the connection.',
-                'SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo failed: Try again',
-                'SQLSTATE[HY000] [2002] php_network_getaddresses: getaddrinfo failed: Name or service not known',
-                'SQLSTATE[HY000]: General error: 7 SSL SYSCALL error: EOF detected',
-                'SQLSTATE[HY000] [2002] WordpressConnection timed out',
-                'SSL: WordpressConnection timed out',
-                'SQLSTATE[HY000]: General error: 1105 The last transaction was aborted due to Seamless Scaling. Please retry.',
-                'Temporary failure in name resolution',
-                'SSL: Broken pipe',
-            ]);
-        }
-
 
         /*
         |

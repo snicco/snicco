@@ -7,11 +7,15 @@
     namespace Tests\integration\Database;
 
     use BetterWP\Database\BetterWPDb;
+    use BetterWP\Database\Contracts\BetterWPDbInterface;
     use BetterWP\Database\FakeDB;
     use BetterWP\Database\WPConnection;
     use BetterWP\Database\Contracts\ConnectionResolverInterface;
+    use Exception;
+    use Illuminate\Database\QueryException;
     use Mockery as m;
     use mysqli_sql_exception;
+    use Throwable;
 
     class ManagesTransactionsTest extends DatabaseTestCase
     {
@@ -33,22 +37,12 @@
             parent::setUp();
         }
 
-        private function newWpConnection(string $name = null) : WPConnection
-        {
-
-            $this->boot();
-            $resolver = $this->app->resolve(ConnectionResolverInterface::class);
-
-            return $resolver->connection($name);
-
-        }
-
         private function newWpTransactionConnection() : WPConnection
         {
 
-            $this->wpdb         = m::mock( FakeDB::class );
+            $this->wpdb         = m::mock( BetterWPDbInterface::class );
             $this->wpdb->prefix = 'wp_';
-            $this->wpdb->dbname = 'wp_eloquent';
+            $this->wpdb->dbname = 'wp_testing';
             $this->wpdb->shouldReceive( 'check_connection' )->andReturn( true )->byDefault();
 
             return new WpConnection( $this->wpdb );
@@ -80,10 +74,6 @@
             $this->wpdb->shouldReceive( 'startTransaction' )->once()
                        ->andThrow( mysqli_sql_exception::class );
 
-            // $this->error_handler->shouldReceive( 'handle' )
-            //                     ->once()
-            //                     ->with( m::type( QueryException::class ) )
-            //                     ->andThrow( Exception::class, 'Ups' );
 
             try {
 
@@ -91,9 +81,9 @@
 
             }
 
-            catch ( Throwable $e ) {
+            catch ( QueryException $e ) {
 
-                $this->assertSame( 'Ups', $e->getMessage() );
+                $this->assertSame( 'START TRANSACTION', $e->getSql() );
 
                 $this->assertEquals( 0, $connection->transactionLevel() );
 
@@ -103,19 +93,20 @@
         }
 
         /** @test */
-        public function begin_transaction_reconnects_on_lost_connection() {
+        public function begin_transaction_reconnects_on_lost_connection_if_its_the_error_message_indicated_a_lost_connection() {
 
 
             $wp = $this->newWpTransactionConnection();
 
             $this->wpdb->shouldReceive( 'startTransaction' )->once()
                        ->andThrows( new mysqli_sql_exception( 'the server has gone away | TEST ' ) );
+
             $this->wpdb->shouldReceive( 'startTransaction' );
             $this->wpdb->shouldReceive( 'createSavePoint' )->once()->with( 'SAVEPOINT trans1' );
 
             $wp->beginTransaction();
 
-            self::assertSame( 1, $wp->transactionLevel() );
+            $this->assertSame( 1, $wp->transactionLevel() );
 
         }
 
@@ -125,18 +116,15 @@
             $wp = $this->newWpTransactionConnection();
 
             $this->wpdb->shouldReceive( 'startTransaction' )->once()
-                       ->andThrow( mysqli_sql_exception::class, 'Something weird happened | TEST ' );
+                       ->andThrow( mysqli_sql_exception::class, 'Some random error | TEST ' );
 
-            $this->error_handler->shouldReceive( 'handle' )->once()
-                                ->andThrow( Exception::class, 'Ups' );
 
             try {
                 $wp->beginTransaction();
             }
-            catch ( Throwable $e ) {
+            catch ( QueryException $e ) {
 
                 $this->assertEquals( 0, $wp->transactionLevel() );
-                $this->assertSame( 'Ups', $e->getMessage() );
 
             }
         }
@@ -159,7 +147,7 @@
 
 
             }
-            catch ( Exception $e ) {
+            catch ( Throwable $e ) {
 
                 $this->fail( 'Unexpected Exception: ' . $e->getMessage() );
 
@@ -188,7 +176,7 @@
 
 
             }
-            catch ( Exception $e ) {
+            catch ( Throwable $e ) {
 
                 $this->fail( 'Unexpected Exception: ' . $e->getMessage() );
 
@@ -218,7 +206,7 @@
                 $this->assertEquals( 0, $wp->transactionLevel() );
 
             }
-            catch ( Exception $e ) {
+            catch ( Throwable $e ) {
 
                 $this->fail( 'Unexpected Exception: ' . $e->getMessage() );
 
@@ -250,7 +238,7 @@
                 $this->assertEquals( 0, $wp->transactionLevel() );
 
             }
-            catch ( Exception $e ) {
+            catch ( Throwable $e ) {
 
                 $this->fail( 'Unexpected Exception: ' . $e->getMessage() );
 
@@ -280,7 +268,7 @@
 
             $wp->rollBack();
 
-            self::assertEquals( 2, $wp->transactionLevel() );
+            $this->assertEquals( 2, $wp->transactionLevel() );
 
 
         }
@@ -326,7 +314,7 @@
 
             $wp->rollBack( 2 );
 
-            self::assertEquals( 1, $wp->transactionLevel() );
+            $this->assertEquals( 1, $wp->transactionLevel() );
 
         }
 
@@ -351,7 +339,7 @@
 
             $wp->rollBack( 2 );
 
-            self::assertEquals( 1, $wp->transactionLevel() );
+            $this->assertEquals( 1, $wp->transactionLevel() );
 
 
         }
@@ -376,8 +364,6 @@
                        ->andThrow( mysqli_sql_exception::class );
             $this->wpdb->shouldNotReceive( 'doAffectingStatement' );
 
-            $this->error_handler->shouldReceive( 'handle' )->andThrow( Exception::class, 'Ups' );
-
             try {
 
                 $wp->insert( 'foobar', [ 'foo' ] );
@@ -393,11 +379,9 @@
 
             }
 
-            catch ( Exception $e ) {
+            catch ( QueryException $e ) {
 
                 $wp->rollBack();
-
-                $this->assertSame( 'Ups', $e->getMessage() );
 
                 $this->assertSame( 1, $wp->transactionLevel() );
 
@@ -425,9 +409,190 @@
 
             $wp->rollBack( 0 );
 
-            self::assertEquals( 0, $wp->transactionLevel() );
+            $this->assertEquals( 0, $wp->transactionLevel() );
 
         }
+
+        /**
+         *
+         *
+         *
+         *
+         *
+         * TRANSACTION CLOSURES
+         *
+         *
+         *
+         *
+         *
+         *
+         */
+
+        /** @test */
+        public function basic_automated_transactions_work_when_no_error_occurs() {
+
+            $wp = $this->newWpTransactionConnection();
+            $this->wpdb->shouldReceive( 'startTransaction' )->once();
+            $this->wpdb->shouldReceive( 'createSavepoint' )->once()->with( 'SAVEPOINT trans1' );
+            $this->wpdb->shouldReceive( 'commitTransaction' )->once();
+            $this->wpdb->shouldReceive( 'doAffectingStatement' )->once()->with( 'foo', [ 'bar' ] )
+                       ->andReturn( 3 );
+
+            $result = $wp->transaction( function ( WpConnection $wp ) {
+
+                return $wp->update( 'foo', [ 'bar' ] );
+
+            } );
+
+            $this->assertSame( 3, $result );
+
+        }
+
+        /** @test */
+        public function when_an_error_occurs_in_the_actual_query_we_try_again_until_it_works_or_no_attempts_are_left() {
+
+            $wp = $this->newWpTransactionConnection();
+            $this->wpdb->shouldReceive( 'startTransaction' )->times( 4 );
+            $this->wpdb->shouldReceive( 'createSavepoint' )->times( 4 )->with( 'SAVEPOINT trans1' );
+
+            $this->wpdb->shouldReceive( 'rollbackTransaction' )->times( 3 )
+                       ->with( 'ROLLBACK TO SAVEPOINT trans1' );
+
+            $this->wpdb->shouldReceive( 'commitTransaction' )->once();
+
+            $this->wpdb->shouldReceive( 'doAffectingStatement' )->once()->with( 'foo', [ 'bar' ] )
+                       ->andReturn( 3 );
+
+            $result = $wp->transaction( function ( WpConnection $wp ) {
+
+                static $count = 0;
+
+                if ( $count != 3 ) {
+
+                    $count ++;
+
+                    throw new mysqli_sql_exception( 'deadlock detected | TEST' );
+
+                }
+
+                return $wp->update( 'foo', [ 'bar' ] );
+
+            }, 4 );
+
+            $this->assertSame( 3, $result );
+            $this->assertSame( 0, $wp->transactionLevel() );
+
+
+        }
+
+        /** @test */
+        public function if_the_query_is_not_successful_after_the_max_attempt_we_throw_an_exception_all_the_way_out() {
+
+            $wp = $this->newWpTransactionConnection();
+            $this->wpdb->shouldReceive( 'startTransaction' )->times( 3 );
+            $this->wpdb->shouldReceive( 'createSavepoint' )->times( 3 )->with( 'SAVEPOINT trans1' );
+            $this->wpdb->shouldReceive( 'rollbackTransaction' )->times( 3 )
+                       ->with( 'ROLLBACK TO SAVEPOINT trans1' );
+
+            $this->wpdb->shouldNotReceive( 'commitTransaction' );
+
+
+            $this->expectException(QueryException::class);
+
+            $wp->transaction( function () {
+
+                throw new mysqli_sql_exception( 'deadlock detected | TEST ' );
+
+            }, 3 );
+
+            $this->assertSame( 0, $wp->transactionLevel() );
+        }
+
+        /** @test */
+        public function concurrency_errors_during_commits_are_retried() {
+
+            $wp = $this->newWpTransactionConnection();
+
+            $this->wpdb->shouldReceive( 'startTransaction' )->once();
+            $this->wpdb->shouldReceive( 'createSavepoint' );
+
+            $this->wpdb->shouldReceive( 'commitTransaction' )->twice()
+                       ->andThrows( new mysqli_sql_exception( 'deadlock detected' ) );
+            $this->wpdb->shouldReceive( 'commitTransaction' )->once();
+
+            $count = $wp->transaction( function () {
+
+                static $count = 0;
+
+                $count ++;
+
+                return $count;
+
+            }, 3 );
+
+            $this->assertSame( 3, $count );
+            $this->assertSame( 0, $wp->transactionLevel() );
+
+        }
+
+        /** @test */
+        public function commit_errors_due_to_lost_connections_throw_an_exception() {
+
+
+            $wp = $this->newWpTransactionConnection();
+
+            $this->wpdb->shouldReceive( 'startTransaction' )->once();
+            $this->wpdb->shouldReceive( 'createSavepoint' );
+
+            $this->wpdb->shouldReceive( 'commitTransaction' )->once()
+                       ->andThrows( new mysqli_sql_exception( 'server has gone away | TEST' ) );
+
+            $this->expectException(QueryException::class);
+
+
+            $count = $wp->transaction( function () {
+
+                static $count = 0;
+
+                $count ++;
+
+                return $count;
+
+            }, 3 );
+
+            $this->assertNull( $count );
+            $this->assertSame( 0, $wp->transactionLevel() );
+
+
+        }
+
+        /** @test */
+        public function rollback_exceptions_reset_the_transaction_count_if_its_a_lost_connection() {
+
+            $wp = $this->newWpTransactionConnection();
+
+            $this->wpdb->shouldReceive( 'startTransaction' )->once();
+            $this->wpdb->shouldReceive( 'createSavepoint' );
+
+            $this->wpdb->shouldReceive( 'rollbackTransaction' )
+                       ->with( 'ROLLBACK TO SAVEPOINT trans1' )
+                       ->andThrow( new mysqli_sql_exception( 'server has gone away | TEST ' ) );
+
+
+
+            $this->expectException( QueryException::class );
+
+            $wp->transaction( function () {
+
+                throw new Exception();
+
+            }, 3 );
+
+            $this->assertSame( 0, $wp->transactionLevel() );
+
+
+        }
+
 
 
     }
