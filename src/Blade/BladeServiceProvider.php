@@ -81,9 +81,9 @@
 
         private function parseContainer () : Container {
 
-           return  $this->container instanceof BaseContainerAdapter
+           return $this->container instanceof BaseContainerAdapter
                 ? $this->container->implementation()
-                : new IlluminateContainer();
+                : IlluminateContainer::getInstance();
 
         }
 
@@ -100,18 +100,9 @@
 
             $container->instance('config', $this->config);
 
-
-            if( ! Facade::getFacadeApplication() instanceof Container) {
-
-                Facade::setFacadeApplication($container);
-
-            }
-
-            if( ! IlluminateContainer::getInstance() instanceof Container) {
-
-                IlluminateContainer::setInstance($container);
-
-            }
+            $container = $this->parseContainer();
+            Facade::setFacadeApplication($container);
+            IlluminateContainer::setInstance($container);
 
         }
 

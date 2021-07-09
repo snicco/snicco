@@ -7,6 +7,8 @@
     namespace BetterWP\Testing;
 
     use Codeception\TestCase\WPTestCase;
+    use Illuminate\Container\Container;
+    use Illuminate\Support\Facades\Facade;
     use Illuminate\Support\Str;
     use Mockery;
     use Mockery\Exception\InvalidCountException;
@@ -221,6 +223,15 @@
                         throw $e;
                     }
                 }
+            }
+
+            if ( class_exists(Facade::class) ) {
+                Facade::clearResolvedInstances();
+                Facade::setFacadeApplication(null);
+            }
+
+            if ( class_exists(Container::class) ) {
+                Container::setInstance(null);
             }
 
             $this->backToPresent();

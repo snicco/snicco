@@ -7,9 +7,6 @@
     namespace Tests\integration\Auth;
 
     use Tests\AuthTestCase;
-    use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\IntegrationTest;
-    use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use BetterWP\Events\Event;
@@ -17,7 +14,6 @@
     use BetterWP\Auth\Authenticators\PasswordAuthenticator;
     use BetterWP\Auth\Authenticators\RedirectIf2FaAuthenticable;
     use BetterWP\Auth\Authenticators\TwoFactorAuthenticator;
-    use BetterWP\Auth\AuthServiceProvider;
     use BetterWP\Auth\AuthSessionManager;
     use BetterWP\Auth\Confirmation\EmailAuthConfirmation;
     use BetterWP\Auth\Confirmation\TwoFactorAuthConfirmation;
@@ -41,8 +37,6 @@
     use BetterWP\Session\Events\NewLogout;
     use BetterWP\Session\Middleware\StartSessionMiddleware;
     use BetterWP\Session\SessionManager;
-    use BetterWP\Session\SessionServiceProvider;
-    use BetterWP\Support\Arr;
 
     class AuthServiceProviderTest extends AuthTestCase
     {

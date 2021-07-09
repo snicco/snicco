@@ -9,11 +9,17 @@
     use BetterWP\Database\Contracts\BetterWPDbInterface;
     use BetterWP\Database\DatabaseServiceProvider;
     use BetterWP\Database\FakeDB;
+    use BetterWP\Database\Testing\Assertables\AssertableWpDB;
     use BetterWP\Database\WPConnection;
+    use Illuminate\Container\Container;
+    use Illuminate\Support\Facades\Facade;
+    use mysqli;
     use Tests\TestCase;
 
     class DatabaseTestCase extends TestCase
     {
+
+
 
         /**
          * NOTE: THIS DATABASE HAS TO EXISTS ON THE LOCAL MACHINE.
@@ -51,12 +57,92 @@
             return $connection->dbInstance();
         }
 
+        protected function wpdbInsert(string $table, array $data)
+        {
+
+            global $wpdb;
+
+            $format = $this->format($data);
+
+            $success = $wpdb->insert($table, $data, $format) !== false;
+
+            if ( ! $success) {
+                $this->fail('Failed to insert with wpdb for test setup.');
+            }
+
+        }
+
+        protected function wpdbUpdate(string $table, array $data, array $where)
+        {
+
+            global $wpdb;
+
+            $where_format = $this->format($where);
+            $data_format = $this->format($data);
+
+            $success = $wpdb->update($table, $data, $where, $data_format, $where_format) !== false;
+
+            if ( ! $success) {
+                $this->fail('Failed to update with wpdb.');
+            }
+
+        }
+
+        protected function wpdbDelete(string $table, array $wheres) {
+
+            global $wpdb;
+
+            $wpdb->delete($table, $wheres, $this->format($wheres));
+
+        }
+
+        protected function assertDbTable(string $table_name) : AssertableWpDB
+        {
+
+            return new AssertableWpDB($table_name);
+        }
+
+        // WordPress is completely incompatible with mysql strict mode.
+        // But we are not testing $wpdb here and can only test if our tables are created correctly.
+        protected function ensureFailOnErrors()
+        {
+            global $wpdb;
+
+            /** @var mysqli $mysqli */
+            $mysqli = $wpdb->dbh;
+            $mysqli->query("SET SESSION sql_mode='TRADITIONAL'");
+
+        }
+
         public function packageProviders() : array
         {
 
             return [
                 DatabaseServiceProvider::class,
             ];
+        }
+
+        private function format(array $data ) {
+
+            $format = [];
+            foreach ($data as $item) {
+
+                if (is_float($item)) {
+                    $format[] = "%f";
+                }
+
+                if (is_int($item)) {
+                    $format[] = "%d";
+                }
+
+                if (is_string($item)) {
+                    $format[] = "%s";
+                }
+
+            }
+
+            return $format;
+
         }
 
     }

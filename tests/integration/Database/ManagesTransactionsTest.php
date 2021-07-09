@@ -8,9 +8,7 @@
 
     use BetterWP\Database\BetterWPDb;
     use BetterWP\Database\Contracts\BetterWPDbInterface;
-    use BetterWP\Database\FakeDB;
     use BetterWP\Database\WPConnection;
-    use BetterWP\Database\Contracts\ConnectionResolverInterface;
     use Exception;
     use Illuminate\Database\QueryException;
     use Mockery as m;

@@ -24,11 +24,7 @@
             // $this->rmdir(BLADE_CACHE);
         }
 
-        protected function tearDown() : void
-        {
-            Facade::clearResolvedInstances();
-            parent::tearDown();
-        }
+
 
         public function packageProviders() : array
         {
