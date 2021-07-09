@@ -23,7 +23,6 @@
     use Illuminate\Database\Query\Processors\MySqlProcessor;
     use Illuminate\Database\QueryException;
     use Illuminate\Support\Arr;
-    use Illuminate\Support\Str;
     use mysqli_result;
     use mysqli_sql_exception;
 
@@ -36,28 +35,28 @@
         /**
          * @var BetterWPDbInterface
          */
-        private $wpdb;
+        protected $wpdb;
 
         /**
          * @var string
          */
-        private $db_name;
+        protected $db_name;
 
         /**
          * @var string
          */
-        private $table_prefix;
+        protected $table_prefix;
 
         /** @var MySqlQueryGrammar */
-        private $query_grammar;
+        protected $query_grammar;
 
         /** @var MySqlSchemaGrammar */
-        private $schema_grammar;
+        protected $schema_grammar;
 
         /**
          * @var MySqlProcessor
          */
-        private $post_processor;
+        protected $post_processor;
 
         /**
          * Indicates if the connection is in a "dry run".
@@ -66,7 +65,16 @@
          */
         protected $pretending = false;
 
-        private $logging_queries = false;
+        protected $logging_queries = false;
+
+        /**
+         * The database connection configuration options.
+         *
+         * @todo check how this is used.
+         *
+         * @var array
+         */
+        protected $config = [];
 
         public function __construct(BetterWPDbInterface $wpdb)
         {
@@ -611,7 +619,6 @@
          */
         public function getConfig($option = null)
         {
-
             return Arr::get($this->config, $option);
         }
 

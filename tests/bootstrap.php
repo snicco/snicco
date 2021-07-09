@@ -7,6 +7,9 @@
     use Tests\stubs\HeaderStack;
     use BetterWP\Http\ResponseEmitter;
 
+    error_reporting(E_ALL);
+    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
+
     $root_dir = getenv('ROOT_DIR');
 
     if ( ! defined('ROOT_DIR')) {

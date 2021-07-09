@@ -9,6 +9,7 @@
     use BetterWP\Contracts\ServiceProvider;
     use BetterWP\Database\Contracts\BetterWPDbInterface;
     use BetterWP\Database\Contracts\ConnectionResolverInterface;
+    use BetterWP\Database\Contracts\WPConnectionInterface;
     use BetterWP\Database\Illuminate\DispatcherAdapter;
     use BetterWP\Database\Illuminate\MySqlSchemaBuilder;
     use BetterWpHooks\Dispatchers\WordpressDispatcher;
@@ -31,6 +32,7 @@
             $this->bindWPDb();
             $this->bindSchemaBuilder();
             $this->bindFacades();
+            $this->bindWPConnection();
 
         }
 
@@ -117,18 +119,8 @@
         {
 
             $container = $this->parseContainer();
-
-            if ( ! Facade::getFacadeApplication() instanceof Container) {
-
-                Facade::setFacadeApplication($container);
-
-            }
-
-            if ( ! IlluminateContainer::getInstance() instanceof Container) {
-
-                IlluminateContainer::setInstance($container);
-
-            }
+            Facade::setFacadeApplication($container);
+            IlluminateContainer::setInstance($container);
 
             $this->container->singleton('db', function () {
 
@@ -140,18 +132,34 @@
 
         }
 
-        private function parseContainer () : Container {
+        private function parseContainer() : Container
+        {
 
-            return  $this->container instanceof BaseContainerAdapter
+            return $this->container instanceof BaseContainerAdapter
                 ? $this->container->implementation()
-                : new IlluminateContainer();
+                : IlluminateContainer::getInstance();
 
         }
 
-        private function resolveConnection (string $name = null ) {
+        private function resolveConnection(string $name = null)
+        {
 
             return $this->container->make(ConnectionResolverInterface::class)->connection($name);
 
+        }
+
+        private function bindWPConnection()
+        {
+
+            $this->container->singleton(WPConnectionInterface::class, function () {
+
+                return function (string $name = null) {
+
+                    return $this->resolveConnection($name);
+
+                };
+
+            });
         }
 
     }

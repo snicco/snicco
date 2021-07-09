@@ -11,12 +11,13 @@
     use BetterWP\Database\Contracts\WPConnectionInterface;
     use BetterWP\Database\FakeDB;
     use BetterWP\Database\Illuminate\MySqlSchemaBuilder;
+    use BetterWP\Database\WPConnection;
     use BetterWP\Database\WPConnectionResolver;
     use BetterWP\Database\Contracts\ConnectionResolverInterface;
     use BetterWP\Database\Illuminate\DispatcherAdapter;
     use Illuminate\Contracts\Events\Dispatcher;
     use Illuminate\Database\Eloquent\Model as Eloquent;
-    use Illuminate\Support\Facades\Schema;
+
 
     class DatabaseServiceProviderTest extends DatabaseTestCase
     {
@@ -114,6 +115,15 @@
 
         }
 
+        /** @test */
+        public function the_connection_can_be_resolved_as_a_closure () {
+
+            $this->boot();
+
+            $connection = $this->app->resolve(WPConnectionInterface::class)();
+            $this->assertInstanceOf(WPConnection::class, $connection);
+
+        }
 
 
     }
