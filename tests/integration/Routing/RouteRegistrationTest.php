@@ -6,25 +6,16 @@
 
     namespace Tests\integration\Routing;
 
-    use Mockery;
-    use Tests\fixtures\RoutingDefinitionServiceProvider;
+    use BetterWP\Support\Arr;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreatesWpUrls;
-    use Tests\IntegrationTest;
-    use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use BetterWP\Application\Application;
-    use BetterWP\Events\Event;
     use BetterWP\Contracts\ServiceProvider;
     use BetterWP\Events\IncomingAdminRequest;
     use BetterWP\Events\IncomingAjaxRequest;
-    use BetterWP\Events\ResponseSent;
     use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Listeners\CreateDynamicHooks;
-    use BetterWP\Support\Arr;
 
     class RouteRegistrationTest extends TestCase
     {
@@ -285,6 +276,26 @@
         function bootstrap() : void
         {
 
+        }
+
+    }
+
+    class RoutingDefinitionServiceProvider extends ServiceProvider
+    {
+
+        public function register() : void
+        {
+
+            $routes = Arr::wrap($this->config->get('routing.definitions'));
+
+            $routes = array_merge($routes, [TESTS_DIR.DS.'fixtures'.DS.'OtherRoutes']);
+
+            $this->config->set('routing.definitions', $routes);
+
+        }
+
+        function bootstrap() : void
+        {
         }
 
     }

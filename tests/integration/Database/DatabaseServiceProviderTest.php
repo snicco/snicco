@@ -15,6 +15,7 @@
     use BetterWP\Database\WPConnectionResolver;
     use BetterWP\Database\Contracts\ConnectionResolverInterface;
     use BetterWP\Database\Illuminate\DispatcherAdapter;
+    use Faker\Generator;
     use Illuminate\Contracts\Events\Dispatcher;
     use Illuminate\Database\Eloquent\Model as Eloquent;
     use Illuminate\Database\Query\Builder;
@@ -137,6 +138,14 @@
             $builder = DB::table('foo');
             $this->assertInstanceOf(Builder::class, $builder);
 
+
+        }
+
+        /** @test */
+        public function the_faker_instance_is_registered () {
+
+            $this->boot();
+            $this->assertInstanceOf(Generator::class, $this->app->resolve(Generator::class));
 
         }
 

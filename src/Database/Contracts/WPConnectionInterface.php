@@ -77,9 +77,9 @@
 
 
         /**
-         * Get the database connection name.
+         * Get the connection name.
          *
-         * Redundant but required for Eloquent.
+         * This is the value provided in the config. Not the actual database name
          *
          * @return string|null
          */
@@ -108,13 +108,8 @@
 
 
         /**
-         * Method is needed by eloquent.
          *
-         * We return a custom adapter that lets as use wpdb like a
-         * PDO object.
-         *
-         * @return PdoAdapter
          */
-        public function getPdo() : PdoAdapter;
+        public function lastInsertId() :int;
 
     }

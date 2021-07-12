@@ -40,7 +40,6 @@
             $this->mysqli = $mysqli;
             $this->wpdb = $wpdb;
 
-
         }
 
         public function doSelect( $sql, $bindings ) : array {
@@ -146,6 +145,12 @@
             }
 
             return $stmt;
+        }
+
+        public function lastInsertId() :int
+        {
+            return $this->mysqli->insert_id;
+
         }
 
     }

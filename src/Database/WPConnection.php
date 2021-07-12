@@ -10,17 +10,17 @@
     use BetterWP\Database\Concerns\ManagesTransactions;
     use BetterWP\Database\Contracts\WPConnectionInterface;
     use BetterWP\Database\Contracts\BetterWPDbInterface;
+    use BetterWP\Database\Illuminate\MySqlProcessor;
     use BetterWP\Database\Illuminate\MySqlQueryGrammar;
     use BetterWP\Database\Illuminate\MySqlSchemaBuilder;
     use BetterWP\Database\Illuminate\MySqlSchemaGrammar;
-    use BetterWpdb\PdoAdapter;
     use Closure;
     use DateTime;
     use Generator;
     use Illuminate\Database\Grammar;
     use Illuminate\Database\Query\Builder as QueryBuilder;
     use Illuminate\Database\Query\Expression;
-    use Illuminate\Database\Query\Processors\MySqlProcessor;
+    use Illuminate\Database\Query\Processors\MySqlProcessor as IlluminateProcessor;
     use Illuminate\Database\QueryException;
     use Illuminate\Support\Arr;
     use mysqli_result;
@@ -76,7 +76,12 @@
          */
         protected $config = [];
 
-        public function __construct(BetterWPDbInterface $wpdb)
+        /**
+         * @var string
+         */
+        private $name;
+
+        public function __construct(BetterWPDbInterface $wpdb, string $name)
         {
 
             $this->wpdb = $wpdb;
@@ -85,6 +90,7 @@
             $this->query_grammar = $this->withTablePrefix(new MySqlQueryGrammar());
             $this->schema_grammar = $this->withTablePrefix(new MySqlSchemaGrammar());
             $this->post_processor = new MySqlProcessor();
+            $this->name = $name;
 
         }
 
@@ -99,7 +105,7 @@
          * The QueryGrammar is used to "translate" the QueryBuilder instance into raw
          * SQL
          *
-         * @return \BetterWpdb\ExtendsIlluminate\MySqlQueryGrammar;
+         * @return MySqlQueryGrammar ;
          */
         public function getQueryGrammar() : MySqlQueryGrammar
         {
@@ -113,9 +119,8 @@
          *
          * @return MySqlProcessor
          */
-        public function getPostProcessor() : MySqlProcessor
+        public function getPostProcessor() : IlluminateProcessor
         {
-
             return $this->post_processor;
         }
 
@@ -123,7 +128,7 @@
         /**
          * Get the schema grammar used by the connection.
          *
-         * @return \BetterWpdb\ExtendsIlluminate\MySqlSchemaGrammar
+         * @return MySqlSchemaGrammar
          */
         public function getSchemaGrammar() : MySqlSchemaGrammar
         {
@@ -134,7 +139,7 @@
         /**
          * Get a schema builder instance for the connection.
          *
-         * @return \BetterWpdb\ExtendsIlluminate\MySqlSchemaBuilder
+         * @return MySqlSchemaBuilder
          */
         public function getSchemaBuilder() : MySqlSchemaBuilder
         {
@@ -535,7 +540,7 @@
 
                 catch (mysqli_sql_exception $e) {
 
-                    throw new \Illuminate\Database\QueryException($query, $bindings, $e);
+                    throw new QueryException($query, $bindings, $e);
 
                 }
 
@@ -571,7 +576,7 @@
 
             return $this->runWithoutExceptions(
                 $query,
-                $bindings = $this->prepareBindings($bindings),
+                $this->prepareBindings($bindings),
                 $callback
             );
 
@@ -635,18 +640,9 @@
 
         }
 
-        /**
-         * Returns the name of the database connection.
-         *
-         * Redundant but required for Eloquent.
-         *
-         * @return string
-         */
         public function getName() : string
         {
-
-            return $this->getDatabaseName();
-
+            return $this->name;
         }
 
 
@@ -658,12 +654,9 @@
         }
 
 
-        public function getPdo() : PdoAdapter
+        public function lastInsertId() : int
         {
-
-            return $this->wpdb_to_pdo_adapter;
-
+           return $this->wpdb->lastInsertId();
         }
-
 
     }
