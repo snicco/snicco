@@ -32,6 +32,11 @@
          */
         private $return_values = [];
 
+        /**
+         * @var mixed
+         */
+        private $last_id = 0;
+
         public function __construct(wpdb $wpdb)
         {
 
@@ -244,5 +249,11 @@
             return $expectation instanceof \Closure ? $expectation() : $expectation;
         }
 
+
+        public function lastInsertId() : int
+        {
+            $this->last_id++;
+            return $this->last_id;
+        }
 
     }

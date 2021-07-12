@@ -12,6 +12,7 @@
     use BetterWP\Database\Testing\Assertables\AssertableWpDB;
     use BetterWP\Database\WPConnection;
     use Illuminate\Container\Container;
+    use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Facade;
     use mysqli;
     use Tests\TestCase;
@@ -19,7 +20,42 @@
     class DatabaseTestCase extends TestCase
     {
 
+        protected function setUp() : void
+        {
 
+            $traits = class_uses_recursive(static::class);
+
+            if ( in_array(WithTestTables::class, $traits)) {
+
+                $this->afterApplicationCreated(function () {
+
+                    $this->removeWpBrowserTransaction();
+                    $this->withNewTables();
+
+                });
+
+            }
+
+            if ( in_array(WithTestTransactions::class, $traits)) {
+
+                $this->afterApplicationCreated(function () {
+
+                    $this->beginTransaction();
+
+                });
+
+                $this->beforeApplicationDestroyed(function () {
+
+                    $this->rollbackTransaction();
+
+                });
+
+            }
+
+
+            parent::setUp();
+
+        }
 
         /**
          * NOTE: THIS DATABASE HAS TO EXISTS ON THE LOCAL MACHINE.
@@ -114,6 +150,13 @@
 
         }
 
+        protected function removeWpBrowserTransaction()
+        {
+
+            global $wpdb;
+            $wpdb->query('COMMIT');
+        }
+
         public function packageProviders() : array
         {
 
@@ -144,5 +187,6 @@
             return $format;
 
         }
+
 
     }

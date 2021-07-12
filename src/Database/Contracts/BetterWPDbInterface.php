@@ -29,4 +29,6 @@
 
         public function createSavepoint( string $sql );
 
+        public function lastInsertId() :int;
+
     }

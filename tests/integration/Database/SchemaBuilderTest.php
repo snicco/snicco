@@ -2227,7 +2227,6 @@
             $builder2->create('books', function (Blueprint $table) {
 
                 $table->id();
-
                 $table->foreignId('author_id')->unique()
                       ->constrained()
                       ->onUpdate('cascade');

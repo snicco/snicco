@@ -147,6 +147,32 @@
             return [$wheres, $values];
         }
 
+        public function assertTotalCount(int $int)
+        {
+
+            $query = "SELECT COUNT(*) FROM $this->table";
+
+            $result = $this->wpdb->get_var($query);
+
+            PHPUnit::assertSame("$int", $result, "The expected count [$int] does not match the actual count [$result].");
+
+
+        }
+
+        public function assertCountWhere(array $column_conditions, int $count ) {
+
+
+            [$wheres, $values] = $this->compile($column_conditions);
+
+            $query = $this->wpdb->prepare("SELECT COUNT(*) FROM $this->table WHERE $wheres", $values);
+
+            $actual_count = $this->wpdb->get_var($query);
+
+            PHPUnit::assertSame("$count", $actual_count, "The expected count [$count] does not match the actual count [$actual_count].");
+
+        }
+
+
         private function format(array $data ) {
 
             $format = [];

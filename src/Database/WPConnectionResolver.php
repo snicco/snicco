@@ -116,7 +116,7 @@
             $wpdb = $this->createWPDb($this->connections[$name], $name);
             $mysqli = $this->extractMySQLi($wpdb);
 
-            $connection = new WPConnection(new $this->db_class($wpdb, $mysqli));
+            $connection = new WPConnection(new $this->db_class($wpdb, $mysqli), $name);
 
             $this->instantiated_connections[$name] = $connection;
 

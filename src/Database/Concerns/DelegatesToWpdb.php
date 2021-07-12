@@ -46,7 +46,6 @@
         public function __call($method, $arguments)
         {
             return $this->wpdb->{$method}(...$arguments);
-
         }
 
     }

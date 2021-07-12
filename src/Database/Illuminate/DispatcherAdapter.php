@@ -44,9 +44,15 @@
             throw new \RuntimeException('BetterWP does not support event subscribing at the moment.');
         }
 
+        /**
+         * NOTE: Its currently not possible with BetterWpHooks or WordPress in general,
+         * to run a filter with some stop condition.
+         * Because of this we will have to call all listeners for now.
+         *
+         */
         public function until($event, $payload = [])
         {
-            throw new \RuntimeException('BetterWP does not support event subscribing at the moment.');
+            return $this->dispatcher->dispatch($event, $payload);
         }
 
         public function dispatch($event, $payload = [], $halt = false)

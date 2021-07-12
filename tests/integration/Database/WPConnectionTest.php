@@ -13,7 +13,6 @@
     use BetterWP\Database\Illuminate\MySqlQueryGrammar;
     use Exception;
     use Illuminate\Database\Query\Builder;
-    use Illuminate\Database\Query\Processors\MySqlProcessor;
     use Illuminate\Database\QueryException;
     use Illuminate\Database\Schema\Grammars\MySqlGrammar as MySqlSchemaGrammar;
 
@@ -83,7 +82,7 @@
             $this->assertSame('wp_', $schema_grammar->getTablePrefix());
 
             $processor = $connection->getPostProcessor();
-            $this->assertInstanceOf(MySqlProcessor::class, $processor);
+            $this->assertInstanceOf(\BetterWP\Database\Illuminate\MySqlProcessor::class, $processor);
 
 
         }
@@ -177,7 +176,7 @@
         public function selecting_one_result_works_with_a_valid_query()
         {
 
-            $wp = new WPConnection($m = $this->mockDb());
+            $wp = new WPConnection($m = $this->mockDb(), 'wp_connection');
             $m->shouldReceive('doSelect')->once()
               ->with(
                   "select * from `wp_users` where `user_name` = ? and `id` = ? limit 1",

@@ -11,10 +11,14 @@
     use BetterWP\Database\Contracts\ConnectionResolverInterface;
     use BetterWP\Database\Contracts\WPConnectionInterface;
     use BetterWP\Database\Illuminate\DispatcherAdapter;
+    use BetterWP\Database\Illuminate\Model;
     use BetterWP\Database\Illuminate\MySqlSchemaBuilder;
     use BetterWpHooks\Dispatchers\WordpressDispatcher;
+    use Faker\Factory;
+    use Faker\Generator as FakerGenerator;
     use Illuminate\Contracts\Container\Container;
     use Illuminate\Contracts\Events\Dispatcher as IlluminateEventDispatcher;
+    use Illuminate\Database\Eloquent\Factories\Factory as EloquentFactory;
     use Illuminate\Database\Eloquent\Model as Eloquent;
     use Illuminate\Support\Facades\Facade;
     use Illuminate\Container\Container as IlluminateContainer;
@@ -33,6 +37,8 @@
             $this->bindSchemaBuilder();
             $this->bindFacades();
             $this->bindWPConnection();
+            $this->bindDatabaseFactory();
+
 
         }
 
@@ -159,6 +165,37 @@
                 };
 
             });
+        }
+
+        private function bindDatabaseFactory()
+        {
+
+            $this->container->singleton(FakerGenerator::class, function () {
+
+                $locale = $this->config->get('database.faker_locale', 'en_US');
+
+                $faker = Factory::create($locale);
+                $faker->unique(true);
+
+                return $faker;
+
+            });
+
+            EloquentFactory::guessFactoryNamesUsing(function (string $model) {
+
+                $namespace = $this->config->get('database.factory_namespace', 'Database\\Factories\\');
+                $model = class_basename($model);
+                return $namespace.$model.'Factory';
+            });
+
+            EloquentFactory::guessModelNamesUsing(function ( $factory) {
+
+                $namespace = $this->config->get('database.model_namespace', 'App\\Models\\');
+                $model = class_basename($factory);
+                return str_replace('Factory', '',$namespace.$model);
+
+            });
+
         }
 
     }
