@@ -89,7 +89,7 @@
             $location['scheme'] = 'https';
             unset($location['port']);
 
-            return $response->withHeader('Location', Url::unParse($location));
+            return $response->withHeader('Location', Url::unParseUrl($location));
 
 
         }
