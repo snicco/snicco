@@ -166,7 +166,7 @@
 
         public function current() : string
         {
-            return $this->to($this->getRequest()->fullUrl());
+            return $this->getRequest()->fullUrl();
         }
 
         public function toLogin(string $redirect_on_login = '', bool $reauth = false) : string
