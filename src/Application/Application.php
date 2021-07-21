@@ -6,23 +6,20 @@
 
     namespace Snicco\Application;
 
-    use BetterWP\Application\ApplicationServiceProvider;
-    use BetterWP\Application\HasContainer;
-    use BetterWP\Application\LoadsServiceProviders;
-    use BetterWP\Application\SetPsrFactories;
     use Contracts\ContainerAdapter;
     use Nyholm\Psr7Server\ServerRequestCreator;
-    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
-    use Snicco\Http\Psr7\Request;
+    use RuntimeException;
     use Snicco\Events\EventServiceProvider;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
     use Snicco\ExceptionHandling\ExceptionServiceProvider;
     use Snicco\Factories\FactoryServiceProvider;
     use Snicco\Http\HttpServiceProvider;
+    use Snicco\Http\Psr7\Request;
     use Snicco\Mail\MailServiceProvider;
     use Snicco\Middleware\MiddlewareServiceProvider;
     use Snicco\Routing\RoutingServiceProvider;
-    use Snicco\View\ViewServiceProvider;
     use Snicco\Support\WpFacade;
+    use Snicco\View\ViewServiceProvider;
 
     class Application
     {
@@ -152,7 +149,7 @@
             $storage_dir = $this->config->get('app.storage_dir');
 
             if ( !$storage_dir) {
-                throw new \RuntimeException('No storage directory was set for the application.');
+                throw new RuntimeException('No storage directory was set for the application.');
             }
 
             return $storage_dir.($path ? DIRECTORY_SEPARATOR.$path : $path);
