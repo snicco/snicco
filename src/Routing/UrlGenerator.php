@@ -8,13 +8,13 @@
 
     use Illuminate\Support\Arr;
     use Illuminate\Support\InteractsWithTime;
-    use Snicco\Contracts\RouteUrlGenerator;
     use Snicco\Contracts\MagicLink;
+    use Snicco\Contracts\RouteUrlGenerator;
     use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
-    use Snicco\Support\WP;
     use Snicco\Http\Psr7\Request;
     use Snicco\Support\Str;
     use Snicco\Support\Url;
+    use Snicco\Support\WP;
 
     class UrlGenerator
     {
@@ -166,7 +166,8 @@
 
         public function current() : string
         {
-            return $this->getRequest()->fullUrl();
+
+            return $this->getRequest()->fullPath();
         }
 
         public function toLogin(string $redirect_on_login = '', bool $reauth = false) : string

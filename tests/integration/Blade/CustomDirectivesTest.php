@@ -8,17 +8,9 @@
 
     use Illuminate\Support\MessageBag;
     use Illuminate\Support\ViewErrorBag;
-    use Slim\Csrf\Guard;
-    use Tests\integration\Blade\traits\AssertBladeView;
-    use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\IntegrationTest;
-    use Tests\stubs\TestApp;
     use Snicco\Contracts\ViewInterface;
-    use Snicco\Http\ResponseFactory;
-    use Snicco\Session\Drivers\ArraySessionDriver;
-    use Snicco\Session\CsrfField;
-    use Snicco\Session\Session;
     use Snicco\Session\SessionServiceProvider;
+    use Tests\stubs\TestApp;
 
     class CustomDirectivesTest extends BladeTestCase
     {
@@ -105,12 +97,13 @@
         }
 
         /** @test */
-        public function method_directive_works () {
+        public function method_directive_works ()
+        {
 
             $view = $this->view('method');
             $content = $view->toString();
-            $this->assertStringContainsString("<input type='hidden' name='_method_overwrite_", $content);
-            $this->assertStringContainsString("value='PUT'", $content);
+            $this->assertStringContainsString("<input type='hidden' name='_method", $content);
+            $this->assertStringContainsString("value='PUT|", $content);
 
         }
 

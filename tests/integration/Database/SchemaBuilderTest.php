@@ -3,20 +3,25 @@
 
     namespace Tests\integration\Database;
 
+    use Illuminate\Database\Query\Expression;
+    use Illuminate\Database\Schema\Blueprint;
+    use Illuminate\Support\Str;
+    use mysqli_sql_exception;
+    use PHPUnit\Framework\Assert as PHPUnit;
     use Snicco\Database\Contracts\WPConnectionInterface;
     use Snicco\Database\Illuminate\MySqlSchemaBuilder;
     use Snicco\Database\Testing\Assertables\AssertableWpDB;
     use Snicco\Database\WPConnection;
-    use Illuminate\Database\Query\Expression;
-    use Illuminate\Support\Str;
-    use Illuminate\Database\Schema\Blueprint;
-    use PHPUnit\Framework\Assert as PHPUnit;
+    use UnitTester;
 
+    /**
+     * NOTE: This TestClass is expecting a mysql version "^8.0.0".
+     */
     class SchemaBuilderTest extends DatabaseTestCase
     {
 
         /**
-         * @var \UnitTester;
+         * @var UnitTester;
          */
         protected $tester;
 
@@ -130,10 +135,9 @@
         public function all_table_names_can_be_retrieved()
         {
 
-
             $tables = $this->builder->getAllTables();
 
-            self::assertSame([
+            $expected_core_tables = [
                 0 => 'wp_commentmeta',
                 1 => 'wp_comments',
                 2 => 'wp_links',
@@ -146,7 +150,13 @@
                 9 => 'wp_terms',
                 10 => 'wp_usermeta',
                 11 => 'wp_users',
-            ], $tables);
+            ];
+
+            foreach ($expected_core_tables as $expected_core_table) {
+
+                $this->assertContains($expected_core_table, $tables);
+
+            }
 
         }
 
@@ -158,8 +168,9 @@
             self::assertTrue($this->builder->hasColumn('users', 'user_login'));
             self::assertFalse($this->builder->hasColumn('users', 'user_profile_pic'));
 
-            self::assertFalse($this->builder->hasColumns('users',
-                ['user_login', 'user_profile_pic']));
+            self::assertFalse($this->builder->hasColumns('users', [
+                'user_login', 'user_profile_pic',
+            ]));
             self::assertTrue($this->builder->hasColumns('users', ['user_login', 'user_email']));
 
         }
@@ -1339,11 +1350,11 @@
 
             $builder->create('books', function (Blueprint $table) {
 
-                $table->year('birt_year');
+                $table->year('birth_year');
 
             });
 
-            $builder->seeColumnOfType('birt_year', 'year');
+            $builder->seeColumnOfType('birth_year', 'year');
 
 
         }
@@ -1598,7 +1609,7 @@
                 $this->fail('Non-nullable column was created without default value');
 
             }
-            catch (\mysqli_sql_exception $e) {
+            catch (mysqli_sql_exception $e) {
 
                 $this->assertSame("Field 'email' doesn't have a default value",
                     $e->getMessage());
@@ -1738,7 +1749,7 @@
                 $this->fail('[TEST FAILED] Negative value inserted for unsigned integer.');
 
             }
-            catch (\mysqli_sql_exception $e) {
+            catch (mysqli_sql_exception $e) {
 
                 $this->assertSame(
                     "Out of range value for column 'price' at row 1",
@@ -2197,9 +2208,9 @@
                 $table->id();
 
                 $table->foreignId('author_id')->unique()
-                      ->constrained()
-                      ->onUpdate('cascade')
-                      ->onDelete('cascade');
+                    ->constrained()
+                    ->onUpdate('cascade')
+                    ->onDelete('cascade');
 
             });
 
@@ -2228,8 +2239,8 @@
 
                 $table->id();
                 $table->foreignId('author_id')->unique()
-                      ->constrained()
-                      ->onUpdate('cascade');
+                    ->constrained()
+                    ->onUpdate('cascade');
 
             });
 
@@ -2263,8 +2274,8 @@
                 $table->id();
 
                 $table->foreignId('author_id')->unique()
-                      ->constrained()
-                      ->onDelete('cascade');
+                    ->constrained()
+                    ->onDelete('cascade');
 
             });
 
@@ -2300,7 +2311,7 @@
                 $table->id();
 
                 $table->foreignId('author_id')->unique()
-                      ->constrained();
+                    ->constrained();
 
 
             });

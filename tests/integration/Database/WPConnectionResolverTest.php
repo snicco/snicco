@@ -6,14 +6,14 @@
 
     namespace Tests\integration\Database;
 
+    use Illuminate\Support\Facades\DB;
+    use Illuminate\Support\Facades\Schema;
     use Snicco\Database\Contracts\BetterWPDbInterface;
+    use Snicco\Database\Contracts\ConnectionResolverInterface;
     use Snicco\Database\FakeDB;
     use Snicco\Database\Illuminate\MySqlSchemaBuilder;
     use Snicco\Database\WPConnectionResolver;
-    use Snicco\Database\Contracts\ConnectionResolverInterface;
     use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
-    use Illuminate\Support\Facades\DB;
-    use Illuminate\Support\Facades\Schema;
 
     class WPConnectionResolverTest extends DatabaseTestCase
     {
@@ -54,7 +54,7 @@
         {
 
             $wpdb = $this->getResolver(['secondary' => $this->secondDatabaseConfig()])->connection()
-                         ->dbInstance();
+                ->dbInstance();
 
             $this->assertDefaultConnection($wpdb);
 
@@ -79,7 +79,7 @@
                       ->connection('secondary');
 
             $this->assertNotDefaultConnection($c->dbInstance());
-            $this->assertSame('wp_secondary_testing', $c->dbInstance()->dbname);
+            $this->assertSame($_SERVER['SECONDARY_DB_NAME'], $c->dbInstance()->dbname);
 
         }
 
@@ -111,14 +111,15 @@
         /** @test */
         public function testLaravelFacadesWorkWithSecondConnection()
         {
+
             $this->withAddedConfig('database.connections', ['second' => $this->secondDatabaseConfig()])
-                 ->boot();
+                ->boot();
 
             $connection = DB::connection('second');
 
             $this->assertNotDefaultConnection($connection->dbInstance());
 
-            $this->assertSame('wp_secondary_testing', $connection->dbInstance()->dbname);
+            $this->assertSame($_SERVER['SECONDARY_DB_NAME'], $connection->dbInstance()->dbname);
 
         }
 
@@ -131,12 +132,12 @@
             $connection1 = DB::connection('second');
 
             $this->assertNotDefaultConnection($connection1->dbInstance());
-            $this->assertSame('wp_secondary_testing', $connection1->dbInstance()->dbname);
+            $this->assertSame($_SERVER['SECONDARY_DB_NAME'], $connection1->dbInstance()->dbname);
 
             $connection2 = DB::connection('second');
 
             $this->assertNotDefaultConnection($connection2->dbInstance());
-            $this->assertSame('wp_secondary_testing', $connection2->dbInstance()->dbname);
+            $this->assertSame($_SERVER['SECONDARY_DB_NAME'], $connection2->dbInstance()->dbname);
 
             $this->assertSame($connection1, $connection2);
 
@@ -153,7 +154,7 @@
 
             $db = $builder->getConnection()->dbInstance();
             $this->assertNotDefaultConnection($db);
-            $this->assertSame('wp_secondary_testing', $db->dbname);
+            $this->assertSame($_SERVER['SECONDARY_DB_NAME'], $db->dbname);
 
         }
 

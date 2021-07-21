@@ -7497,15 +7497,17 @@
         "calvinalkan/better-wordpress-hooks": 20,
         "illuminate/view": 20,
         "roots/wp-password-bcrypt": 20,
-        "illuminate/database": 20
+      "illuminate/database": 20
     },
-    "prefer-stable": true,
-    "prefer-lowest": false,
-    "platform": {
-        "php": "^7.3",
-        "ext-json": "*",
-        "ext-mbstring": "*"
-    },
-    "platform-dev": [],
-    "plugin-api-version": "2.0.0"
+  "prefer-stable": true,
+  "prefer-lowest": false,
+  "platform": {
+    "php": "^7.3",
+    "ext-json": "*",
+    "ext-mbstring": "*"
+  },
+  "platform-dev": [],
+  "plugin-api-version": "2.0.0",
+  "require": {
+  }
 }
