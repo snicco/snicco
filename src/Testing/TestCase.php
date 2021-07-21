@@ -14,16 +14,16 @@
     use Mockery\Exception\InvalidCountException;
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestFactoryInterface;
+    use RuntimeException;
     use Snicco\Application\Application;
     use Snicco\Application\Config;
-    use Snicco\Events\Event;
     use Snicco\Contracts\AbstractRouteCollection;
     use Snicco\Contracts\ErrorHandlerInterface;
     use Snicco\Contracts\Middleware;
     use Snicco\Contracts\RouteRegistrarInterface;
     use Snicco\Contracts\ServiceProvider;
+    use Snicco\Events\Event;
     use Snicco\ExceptionHandling\NullErrorHandler;
-    use Snicco\Support\WP;
     use Snicco\Http\Delegate;
     use Snicco\Http\HttpKernel;
     use Snicco\Http\Psr7\Request;
@@ -32,6 +32,7 @@
     use Snicco\Session\Session;
     use Snicco\Session\SessionServiceProvider;
     use Snicco\Support\Arr;
+    use Snicco\Support\WP;
     use Snicco\Testing\Concerns\InteractsWithAuthentication;
     use Snicco\Testing\Concerns\InteractsWithContainer;
     use Snicco\Testing\Concerns\InteractsWithMail;
@@ -209,7 +210,7 @@
 
             $this->set_up_has_run = false;
 
-            if (class_exists(\Mockery::class)) {
+            if (class_exists(Mockery::class)) {
 
                 if ($container = Mockery::getContainer()) {
                     $this->addToAssertionCount($container->mockery_getExpectationCount());
@@ -312,7 +313,7 @@
                     $aliases = $this->config->get('middleware.aliases');
                     $m = $aliases[$abstract] ?? null;
                     if ($m === null) {
-                        throw new \RuntimeException("You are trying to disable middleware [$abstract] which does not seem to exist.");
+                        throw new RuntimeException("You are trying to disable middleware [$abstract] which does not seem to exist.");
                     }
                     $abstract = $m;
                 }
@@ -353,13 +354,18 @@
 
             foreach (Arr::wrap($middleware) as $abstract) {
 
-                if (! $abstract instanceOf Middleware ) {
-                    throw new \RuntimeException(
+                if ( ! $abstract instanceof Middleware) {
+                    throw new RuntimeException(
                         "You are trying to enable the middleware [$abstract] but it does not implement [Snicco\Contracts\Middleware]."
                     );
                 }
 
-                $this->app->container()->instance(get_class($abstract), $abstract);
+                $this->app->container()
+                          ->singleton(get_class($abstract), function () use ($abstract) {
+
+                              return $abstract;
+
+                          });
 
             }
 
