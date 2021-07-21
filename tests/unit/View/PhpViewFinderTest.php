@@ -7,7 +7,7 @@
     namespace Tests\unit\View;
 
     use PHPUnit\Framework\TestCase;
-    use BetterWP\View\PhpViewFinder;
+    use Snicco\View\PhpViewFinder;
 
     class PhpViewFinderTest extends TestCase
     {

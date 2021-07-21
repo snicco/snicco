@@ -6,7 +6,7 @@
 
     namespace Tests\integration\Auth\Stubs;
 
-    use BetterWP\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
 
     class TestTwoFactorProvider implements TwoFactorAuthenticationProvider
     {

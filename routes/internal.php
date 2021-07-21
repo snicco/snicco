@@ -5,8 +5,8 @@
 
     /** @var Router $router */
 
-    use BetterWP\Controllers\RedirectController;
-    use BetterWP\Routing\Router;
+    use Snicco\Controllers\RedirectController;
+    use Snicco\Routing\Router;
 
     $router->get('/')->noAction()->name('home');
 

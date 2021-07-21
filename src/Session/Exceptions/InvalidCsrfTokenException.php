@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Session\Exceptions;
+    namespace Snicco\Session\Exceptions;
 
     use Throwable;
-    use BetterWP\ExceptionHandling\Exceptions\HttpException;
+    use Snicco\ExceptionHandling\Exceptions\HttpException;
 
     class InvalidCsrfTokenException extends HttpException
     {

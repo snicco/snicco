@@ -8,7 +8,7 @@
 
     use Tests\AuthTestCase;
     use Tests\stubs\TestApp;
-    use BetterWP\Auth\Mail\ResetPasswordMail;
+    use Snicco\Auth\Mail\ResetPasswordMail;
 
     class ForgotPasswordControllerTest extends AuthTestCase
     {

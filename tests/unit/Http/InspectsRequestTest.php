@@ -8,7 +8,7 @@
 
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use BetterWP\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Request;
 
     class InspectsRequestTest extends UnitTest
     {

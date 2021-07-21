@@ -1,7 +1,7 @@
 <?php
 
 
-    namespace BetterWP\Database\Illuminate;
+    namespace Snicco\Database\Illuminate;
 
 
     use Illuminate\Database\Schema\Grammars\MySqlGrammar as IlluminateSchemaGrammar;

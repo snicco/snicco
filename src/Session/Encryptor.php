@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Session;
+    namespace Snicco\Session;
 
     use Illuminate\Contracts\Encryption\EncryptException as IlluminateEncryptException;
     use Illuminate\Contracts\Encryption\DecryptException as IlluminateDecryptException;
     use Illuminate\Encryption\Encrypter;
-    use BetterWP\Contracts\EncryptorInterface;
-    use BetterWP\ExceptionHandling\Exceptions\EncryptException;
-    use BetterWP\ExceptionHandling\Exceptions\DecryptException;
-    use BetterWP\Support\Str;
+    use Snicco\Contracts\EncryptorInterface;
+    use Snicco\ExceptionHandling\Exceptions\EncryptException;
+    use Snicco\ExceptionHandling\Exceptions\DecryptException;
+    use Snicco\Support\Str;
 
     class Encryptor implements EncryptorInterface
     {

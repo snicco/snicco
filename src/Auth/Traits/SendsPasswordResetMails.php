@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Traits;
+    namespace Snicco\Auth\Traits;
 
-    use BetterWP\Auth\Mail\ResetPasswordMail;
+    use Snicco\Auth\Mail\ResetPasswordMail;
 
     trait SendsPasswordResetMails
     {

@@ -4,26 +4,26 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Http;
+    namespace Snicco\Http;
 
     use Psr\Http\Message\ResponseInterface;
-    use BetterWP\Events\IncomingAdminRequest;
-    use BetterWP\Events\IncomingRequest;
-    use BetterWP\Events\ResponseSent;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Http\Responses\NullResponse;
-    use BetterWP\Middleware\Core\AppendSpecialPathSuffix;
-    use BetterWP\Middleware\Core\ErrorHandlerMiddleware;
-    use BetterWP\Middleware\Core\EvaluateResponseMiddleware;
-    use BetterWP\Middleware\Core\MethodOverride;
-    use BetterWP\Middleware\Core\OutputBufferMiddleware;
-    use BetterWP\Middleware\Core\RoutingMiddleware;
-    use BetterWP\Middleware\Core\SetRequestAttributes;
-    use BetterWP\Middleware\Core\ShareCookies;
-    use BetterWP\Routing\Pipeline;
-    use BetterWP\Middleware\Core\RouteRunner;
-    use BetterWP\Support\Arr;
-    use BetterWP\Traits\SortsMiddleware;
+    use Snicco\Events\IncomingAdminRequest;
+    use Snicco\Events\IncomingRequest;
+    use Snicco\Events\ResponseSent;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Http\Responses\NullResponse;
+    use Snicco\Middleware\Core\AppendSpecialPathSuffix;
+    use Snicco\Middleware\Core\ErrorHandlerMiddleware;
+    use Snicco\Middleware\Core\EvaluateResponseMiddleware;
+    use Snicco\Middleware\Core\MethodOverride;
+    use Snicco\Middleware\Core\OutputBufferMiddleware;
+    use Snicco\Middleware\Core\RoutingMiddleware;
+    use Snicco\Middleware\Core\SetRequestAttributes;
+    use Snicco\Middleware\Core\ShareCookies;
+    use Snicco\Routing\Pipeline;
+    use Snicco\Middleware\Core\RouteRunner;
+    use Snicco\Support\Arr;
+    use Snicco\Traits\SortsMiddleware;
 
     class HttpKernel
     {

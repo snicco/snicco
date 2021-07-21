@@ -2,7 +2,7 @@
 
     declare(strict_types = 1);
 
-    $site_name  = \BetterWP\Support\WP::siteName();
+    $site_name  = \Snicco\Support\WP::siteName();
 
 ?>
 

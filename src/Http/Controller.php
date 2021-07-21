@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Http;
+	namespace Snicco\Http;
 
-	use BetterWP\Contracts\ViewFactoryInterface;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\View\ViewFactory;
+	use Snicco\Contracts\ViewFactoryInterface;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\View\ViewFactory;
 
     class Controller {
 

@@ -4,21 +4,25 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Application;
+    namespace Snicco\Application;
 
+    use BetterWP\Application\ApplicationServiceProvider;
+    use BetterWP\Application\HasContainer;
+    use BetterWP\Application\LoadsServiceProviders;
+    use BetterWP\Application\SetPsrFactories;
     use Contracts\ContainerAdapter;
     use Nyholm\Psr7Server\ServerRequestCreator;
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Events\EventServiceProvider;
-    use BetterWP\ExceptionHandling\ExceptionServiceProvider;
-    use BetterWP\Factories\FactoryServiceProvider;
-    use BetterWP\Http\HttpServiceProvider;
-    use BetterWP\Mail\MailServiceProvider;
-    use BetterWP\Middleware\MiddlewareServiceProvider;
-    use BetterWP\Routing\RoutingServiceProvider;
-    use BetterWP\View\ViewServiceProvider;
-    use BetterWP\Support\WpFacade;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Events\EventServiceProvider;
+    use Snicco\ExceptionHandling\ExceptionServiceProvider;
+    use Snicco\Factories\FactoryServiceProvider;
+    use Snicco\Http\HttpServiceProvider;
+    use Snicco\Mail\MailServiceProvider;
+    use Snicco\Middleware\MiddlewareServiceProvider;
+    use Snicco\Routing\RoutingServiceProvider;
+    use Snicco\View\ViewServiceProvider;
+    use Snicco\Support\WpFacade;
 
     class Application
     {

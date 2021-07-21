@@ -11,10 +11,10 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Http\Responses\RedirectResponse;
-    use BetterWP\Middleware\TrailingSlash;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Middleware\TrailingSlash;
 
     class TrailingSlashTest extends UnitTest
     {

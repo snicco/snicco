@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Testing\Constraints;
+    namespace Snicco\Testing\Constraints;
 
     use PHPUnit\Framework\Constraint\Constraint;
     use ReflectionClass;

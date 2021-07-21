@@ -15,10 +15,10 @@
 	use Tests\fixtures\Controllers\Web\ControllerWithDependencies;
 	use Tests\fixtures\Controllers\Web\TeamsController;
 	use Tests\fixtures\TestDependencies\Foo;
-    use BetterWP\Events\Event;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Routing\Router;
+    use Snicco\Events\Event;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\Router;
 
     class RouteActionDependencyInjectionTest extends UnitTest {
 

@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Database;
+    namespace Snicco\Database;
 
-    use BetterWP\Contracts\ServiceProvider;
-    use BetterWP\Database\Contracts\BetterWPDbInterface;
-    use BetterWP\Database\Contracts\ConnectionResolverInterface;
-    use BetterWP\Database\Contracts\WPConnectionInterface;
-    use BetterWP\Database\Illuminate\DispatcherAdapter;
-    use BetterWP\Database\Illuminate\Model;
-    use BetterWP\Database\Illuminate\MySqlSchemaBuilder;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\Database\Contracts\BetterWPDbInterface;
+    use Snicco\Database\Contracts\ConnectionResolverInterface;
+    use Snicco\Database\Contracts\WPConnectionInterface;
+    use Snicco\Database\Illuminate\DispatcherAdapter;
+    use Snicco\Database\Illuminate\Model;
+    use Snicco\Database\Illuminate\MySqlSchemaBuilder;
     use BetterWpHooks\Dispatchers\WordpressDispatcher;
     use Faker\Factory;
     use Faker\Generator as FakerGenerator;

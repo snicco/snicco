@@ -10,8 +10,8 @@
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\UnitTest;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Http\ResponseFactory;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Http\ResponseFactory;
 
     class ResponseTest extends UnitTest
     {

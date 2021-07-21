@@ -9,11 +9,11 @@
 	use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use BetterWP\Contracts\ErrorHandlerInterface;
-    use BetterWP\Contracts\ServiceProvider;
-    use BetterWP\ExceptionHandling\DebugErrorHandler;
-	use BetterWP\ExceptionHandling\NullErrorHandler;
-	use BetterWP\ExceptionHandling\ProductionErrorHandler;
+    use Snicco\Contracts\ErrorHandlerInterface;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\ExceptionHandling\DebugErrorHandler;
+	use Snicco\ExceptionHandling\NullErrorHandler;
+	use Snicco\ExceptionHandling\ProductionErrorHandler;
 
     class ExceptionServiceProviderTest extends TestCase {
 

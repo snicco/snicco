@@ -4,9 +4,9 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\ExceptionHandling\Exceptions;
+	namespace Snicco\ExceptionHandling\Exceptions;
 
-	use BetterWP\ExceptionHandling\Exceptions\Exception;
+	use Snicco\ExceptionHandling\Exceptions\Exception;
 
     class DecryptException extends Exception {
 

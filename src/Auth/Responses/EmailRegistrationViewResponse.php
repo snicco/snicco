@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Responses;
+    namespace Snicco\Auth\Responses;
 
-    use BetterWP\Auth\Contracts\RegistrationViewResponse;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\View\ViewFactory;
+    use Snicco\Auth\Contracts\RegistrationViewResponse;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\View\ViewFactory;
 
     class EmailRegistrationViewResponse extends RegistrationViewResponse
     {

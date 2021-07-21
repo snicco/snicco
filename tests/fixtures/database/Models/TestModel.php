@@ -6,7 +6,7 @@
 
     namespace Tests\fixtures\database\Models;
 
-    use BetterWP\Database\Illuminate\Model;
+    use Snicco\Database\Illuminate\Model;
     use Illuminate\Database\Eloquent\Factories\HasFactory;
 
     class TestModel extends Model

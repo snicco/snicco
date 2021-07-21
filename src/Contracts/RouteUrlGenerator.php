@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Contracts;
+    namespace Snicco\Contracts;
 
     interface RouteUrlGenerator
     {

@@ -4,12 +4,12 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\View;
+	namespace Snicco\View;
 
-    use BetterWP\Contracts\ServiceProvider;
-	use BetterWP\Contracts\ViewEngineInterface;
-	use BetterWP\Contracts\ViewFactoryInterface;
-    use BetterWP\Factories\ViewComposerFactory;
+    use Snicco\Contracts\ServiceProvider;
+	use Snicco\Contracts\ViewEngineInterface;
+	use Snicco\Contracts\ViewFactoryInterface;
+    use Snicco\Factories\ViewComposerFactory;
 
 
 	class ViewServiceProvider extends ServiceProvider {

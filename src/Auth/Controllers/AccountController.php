@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Controllers;
+    namespace Snicco\Auth\Controllers;
 
-    use BetterWP\Auth\Contracts\CreatesNewUser;
-    use BetterWP\Auth\Contracts\DeletesUsers;
-    use BetterWP\Auth\Events\Registration;
-    use BetterWP\Auth\Events\UserDeleted;
-    use BetterWP\Auth\Responses\CreateAccountViewResponse;
-    use BetterWP\Auth\Responses\RegisteredResponse;
-    use BetterWP\Auth\Traits\ResolvesUser;
-    use BetterWP\ExceptionHandling\Exceptions\AuthorizationException;
-    use BetterWP\Http\Controller;
-    use BetterWP\Http\Psr7\Request;
+    use Snicco\Auth\Contracts\CreatesNewUser;
+    use Snicco\Auth\Contracts\DeletesUsers;
+    use Snicco\Auth\Events\Registration;
+    use Snicco\Auth\Events\UserDeleted;
+    use Snicco\Auth\Responses\CreateAccountViewResponse;
+    use Snicco\Auth\Responses\RegisteredResponse;
+    use Snicco\Auth\Traits\ResolvesUser;
+    use Snicco\ExceptionHandling\Exceptions\AuthorizationException;
+    use Snicco\Http\Controller;
+    use Snicco\Http\Psr7\Request;
 
     class AccountController extends Controller
     {

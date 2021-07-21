@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
     use Tests\stubs\TestApp;
-    use BetterWP\Routing\Router;
+    use Snicco\Routing\Router;
 
     TestApp::route()->prefix('auth-confirm')->name('auth.confirm.test')->group( function (Router $router)  {
 

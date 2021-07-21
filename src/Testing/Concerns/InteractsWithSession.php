@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Testing\Concerns;
+    namespace Snicco\Testing\Concerns;
 
     use PHPUnit\Framework\Assert as PHPUnit;
     use Tests\helpers\HashesSessionIds;
-    use BetterWP\Application\Application;
-    use BetterWP\Session\Contracts\SessionDriver;
-    use BetterWP\Session\CsrfField;
-    use BetterWP\Session\Session;
-    use BetterWP\Support\Arr;
+    use Snicco\Application\Application;
+    use Snicco\Session\Contracts\SessionDriver;
+    use Snicco\Session\CsrfField;
+    use Snicco\Session\Session;
+    use Snicco\Support\Arr;
 
     /**
      * @property Session $session

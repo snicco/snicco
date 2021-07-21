@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\ExceptionHandling\Exceptions;
+    namespace Snicco\ExceptionHandling\Exceptions;
 
     use RuntimeException;
     use Throwable;
-    use BetterWP\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Request;
 
     class HttpException extends RuntimeException
     {

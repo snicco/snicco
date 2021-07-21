@@ -16,9 +16,9 @@
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
     use wpdb;
-    use BetterWP\Support\WP;
-    use BetterWP\Session\Drivers\ArraySessionDriver;
-    use BetterWP\Session\Drivers\DatabaseSessionDriver;
+    use Snicco\Support\WP;
+    use Snicco\Session\Drivers\ArraySessionDriver;
+    use Snicco\Session\Drivers\DatabaseSessionDriver;
 
     /** @todo test for getting all session for a user */
     class DatabaseSessionDriverTest extends TestCase

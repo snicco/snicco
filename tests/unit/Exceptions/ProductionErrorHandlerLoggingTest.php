@@ -19,13 +19,13 @@
     use Tests\UnitTest;
     use Tests\fixtures\TestDependencies\Foo;
     use Tests\stubs\TestLogger;
-    use BetterWP\Events\Event;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\ExceptionHandling\ProductionErrorHandler;
-    use BetterWP\Support\WP;
-    use BetterWP\Factories\ErrorHandlerFactory;
-    use BetterWP\Support\WpFacade;
+    use Snicco\Events\Event;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\ExceptionHandling\ProductionErrorHandler;
+    use Snicco\Support\WP;
+    use Snicco\Factories\ErrorHandlerFactory;
+    use Snicco\Support\WpFacade;
 
     class ProductionErrorHandlerLoggingTest extends UnitTest
     {

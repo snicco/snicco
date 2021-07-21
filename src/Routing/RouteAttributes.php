@@ -4,12 +4,12 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Routing;
+	namespace Snicco\Routing;
 
-	use BetterWP\Contracts\SetsRouteAttributes;
-    use BetterWP\Support\WP;
-    use BetterWP\Support\Arr;
-    use BetterWP\Support\UrlParser;
+	use Snicco\Contracts\SetsRouteAttributes;
+    use Snicco\Support\WP;
+    use Snicco\Support\Arr;
+    use Snicco\Support\UrlParser;
 
     class RouteAttributes implements SetsRouteAttributes {
 

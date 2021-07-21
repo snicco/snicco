@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing\Conditions;
+    namespace Snicco\Routing\Conditions;
 
-    use BetterWP\Contracts\UrlableInterface;
-    use BetterWP\ExceptionHandling\Exceptions\RouteLogicException;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Routing\Route;
-    use BetterWP\Routing\Conditions\RequestAttributeCondition;
-    use BetterWP\Support\Arr;
+    use Snicco\Contracts\UrlableInterface;
+    use Snicco\ExceptionHandling\Exceptions\RouteLogicException;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\Route;
+    use Snicco\Routing\Conditions\RequestAttributeCondition;
+    use Snicco\Support\Arr;
 
     class AdminAjaxCondition extends RequestAttributeCondition implements UrlableInterface
     {

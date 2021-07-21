@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Application;
+    namespace Snicco\Application;
 
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
-    use BetterWP\Contracts\ServiceProvider;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\Contracts\ServiceProvider;
 
     trait LoadsServiceProviders
     {

@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Http\Psr7;
+    namespace Snicco\Http\Psr7;
 
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\StreamInterface;
-    use BetterWP\Contracts\ResponsableInterface;
-    use BetterWP\Http\Cookie;
-    use BetterWP\Http\Cookies;
+    use Snicco\Contracts\ResponsableInterface;
+    use Snicco\Http\Cookie;
+    use Snicco\Http\Cookies;
 
 
     class Response implements ResponseInterface, ResponsableInterface

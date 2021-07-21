@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Session\Middleware;
+    namespace Snicco\Session\Middleware;
 
     use Illuminate\Support\ViewErrorBag;
     use Psr\Http\Message\ResponseInterface;
-    use BetterWP\Contracts\Middleware;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Session\Session;
-    use BetterWP\View\GlobalContext;
+    use Snicco\Contracts\Middleware;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Session\Session;
+    use Snicco\View\GlobalContext;
 
     class ShareSessionWithView extends Middleware
     {

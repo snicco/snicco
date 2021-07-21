@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Middleware;
+    namespace Snicco\Auth\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
-    use BetterWP\Auth\AuthSessionManager;
-    use BetterWP\Auth\Events\Logout;
-    use BetterWP\Auth\Responses\LogoutResponse;
-    use BetterWP\Auth\WpAuthSessionToken;
-    use BetterWP\Contracts\Middleware;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Session\Session;
+    use Snicco\Auth\AuthSessionManager;
+    use Snicco\Auth\Events\Logout;
+    use Snicco\Auth\Responses\LogoutResponse;
+    use Snicco\Auth\WpAuthSessionToken;
+    use Snicco\Contracts\Middleware;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Session\Session;
 
     class AuthenticateSession extends Middleware
     {

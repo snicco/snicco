@@ -7,8 +7,8 @@
     namespace Tests\integration\Auth\Authenticators;
 
     use Tests\AuthTestCase;
-    use BetterWP\Auth\Authenticators\PasswordAuthenticator;
-    use BetterWP\Routing\UrlGenerator;
+    use Snicco\Auth\Authenticators\PasswordAuthenticator;
+    use Snicco\Routing\UrlGenerator;
 
 
     class PasswordAuthenticatorTest extends AuthTestCase

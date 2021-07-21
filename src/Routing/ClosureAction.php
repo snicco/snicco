@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Routing;
+	namespace Snicco\Routing;
 
 	use Closure;
-	use BetterWP\Contracts\RouteAction;
+	use Snicco\Contracts\RouteAction;
 
 	class ClosureAction implements RouteAction {
 

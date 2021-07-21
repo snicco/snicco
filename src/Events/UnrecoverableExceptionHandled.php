@@ -4,9 +4,9 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Events;
+	namespace Snicco\Events;
 
-	use BetterWP\Events\Event;
+	use Snicco\Events\Event;
 
 	class UnrecoverableExceptionHandled extends Event {
 

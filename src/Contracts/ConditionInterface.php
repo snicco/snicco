@@ -4,9 +4,9 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Contracts;
+	namespace Snicco\Contracts;
 
-	use BetterWP\Http\Psr7\Request;
+	use Snicco\Http\Psr7\Request;
 
 
 	interface ConditionInterface {

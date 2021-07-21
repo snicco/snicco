@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Database\Concerns;
+    namespace Snicco\Database\Concerns;
 
     use wpdb;
 

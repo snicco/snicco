@@ -8,16 +8,16 @@
 
     use Tests\AuthTestCase;
     use Tests\integration\Auth\Stubs\TestTwoFactorProvider;
-    use BetterWP\Auth\Authenticators\RedirectIf2FaAuthenticable;
-    use BetterWP\Auth\Authenticators\TwoFactorAuthenticator;
-    use BetterWP\Auth\Contracts\Authenticator;
-    use BetterWP\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use BetterWP\Auth\Contracts\TwoFactorChallengeResponse;
-    use BetterWP\Auth\Middleware\AuthenticateSession;
-    use BetterWP\Auth\Traits\ResolvesUser;
-    use BetterWP\Contracts\EncryptorInterface;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
+    use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
+    use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
+    use Snicco\Auth\Contracts\Authenticator;
+    use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use Snicco\Auth\Contracts\TwoFactorChallengeResponse;
+    use Snicco\Auth\Middleware\AuthenticateSession;
+    use Snicco\Auth\Traits\ResolvesUser;
+    use Snicco\Contracts\EncryptorInterface;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
 
 
     class TwoFactorAuthenticationTest extends AuthTestCase

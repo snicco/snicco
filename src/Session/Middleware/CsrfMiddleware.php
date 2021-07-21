@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Session\Middleware;
+    namespace Snicco\Session\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
     use Slim\Csrf\Guard;
-    use BetterWP\Contracts\ErrorHandlerInterface;
-    use BetterWP\Contracts\Middleware;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Session\Exceptions\InvalidCsrfTokenException;
+    use Snicco\Contracts\ErrorHandlerInterface;
+    use Snicco\Contracts\Middleware;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Session\Exceptions\InvalidCsrfTokenException;
 
     class CsrfMiddleware extends Middleware
     {

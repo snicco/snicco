@@ -4,17 +4,17 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\View;
+	namespace Snicco\View;
 
 	use BetterWpHooks\Exceptions\ConfigurationException;
     use Throwable;
-	use BetterWP\Contracts\PhpEngine;
-	use BetterWP\Contracts\PhpViewInterface;
-	use BetterWP\Contracts\ViewInterface;
-	use BetterWP\Events\MakingView;
-	use BetterWP\ExceptionHandling\Exceptions\ViewException;
-	use BetterWP\ExceptionHandling\Exceptions\ViewNotFoundException;
-	use BetterWP\Support\Arr;
+	use Snicco\Contracts\PhpEngine;
+	use Snicco\Contracts\PhpViewInterface;
+	use Snicco\Contracts\ViewInterface;
+	use Snicco\Events\MakingView;
+	use Snicco\ExceptionHandling\Exceptions\ViewException;
+	use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
+	use Snicco\Support\Arr;
 
 	class PhpViewEngine implements PhpEngine {
 

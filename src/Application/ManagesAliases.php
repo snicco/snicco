@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Application;
+	namespace Snicco\Application;
 
 	use Closure;
 	use BadMethodCallException;
-	use BetterWP\Support\Arr;
+	use Snicco\Support\Arr;
 
 	trait ManagesAliases {
 

@@ -7,8 +7,8 @@
     namespace Tests\helpers;
 
     use Tests\stubs\TestApp;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Session\Session;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Session\Session;
 
     trait InteractsWithSessionDriver
     {

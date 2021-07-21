@@ -4,16 +4,16 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Routing;
+	namespace Snicco\Routing;
 
 	use Closure;
     use Contracts\ContainerAdapter;
-    use BetterWP\Contracts\ResolveControllerMiddleware;
-	use BetterWP\Contracts\RouteAction;
-    use BetterWP\Http\Controller;
-    use BetterWP\Http\MiddlewareResolver;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\View\ViewFactory;
+    use Snicco\Contracts\ResolveControllerMiddleware;
+	use Snicco\Contracts\RouteAction;
+    use Snicco\Http\Controller;
+    use Snicco\Http\MiddlewareResolver;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\View\ViewFactory;
 
     class ControllerAction implements RouteAction, ResolveControllerMiddleware {
 

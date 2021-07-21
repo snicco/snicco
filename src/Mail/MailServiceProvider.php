@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Mail;
+    namespace Snicco\Mail;
 
     use BetterWpHooks\Contracts\Dispatcher;
-    use BetterWP\Contracts\Mailer;
-    use BetterWP\Contracts\ServiceProvider;
-    use BetterWP\Events\PendingMail;
-    use BetterWP\Support\WP;
-    use BetterWP\Listeners\SendMail;
+    use Snicco\Contracts\Mailer;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\Events\PendingMail;
+    use Snicco\Support\WP;
+    use Snicco\Listeners\SendMail;
 
     class MailServiceProvider extends ServiceProvider
     {

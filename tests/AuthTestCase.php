@@ -7,15 +7,15 @@
     namespace Tests;
 
     use Illuminate\Support\Collection;
-    use BetterWP\Auth\AuthServiceProvider;
-    use BetterWP\Auth\AuthSessionManager;
-    use BetterWP\Auth\RecoveryCode;
-    use BetterWP\Session\Contracts\SessionDriver;
-    use BetterWP\Session\Contracts\SessionManagerInterface;
-    use BetterWP\Session\Encryptor;
-    use BetterWP\Session\SessionManager;
-    use BetterWP\Session\SessionServiceProvider;
-    use BetterWP\Validation\ValidationServiceProvider;
+    use Snicco\Auth\AuthServiceProvider;
+    use Snicco\Auth\AuthSessionManager;
+    use Snicco\Auth\RecoveryCode;
+    use Snicco\Session\Contracts\SessionDriver;
+    use Snicco\Session\Contracts\SessionManagerInterface;
+    use Snicco\Session\Encryptor;
+    use Snicco\Session\SessionManager;
+    use Snicco\Session\SessionServiceProvider;
+    use Snicco\Validation\ValidationServiceProvider;
 
 
     class AuthTestCase extends TestCase

@@ -8,12 +8,12 @@
 
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Routing\RoutingResult;
-    use BetterWP\Session\Drivers\ArraySessionDriver;
-    use BetterWP\Session\Session;
-    use BetterWP\Support\VariableBag;
-    use BetterWP\Validation\Validator;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\RoutingResult;
+    use Snicco\Session\Drivers\ArraySessionDriver;
+    use Snicco\Session\Session;
+    use Snicco\Support\VariableBag;
+    use Snicco\Validation\Validator;
 
     class RequestTest extends UnitTest
     {

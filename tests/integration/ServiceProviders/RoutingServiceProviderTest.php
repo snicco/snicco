@@ -9,20 +9,20 @@
     use Tests\fixtures\Conditions\TrueCondition;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use BetterWP\Contracts\AbstractRouteCollection;
-    use BetterWP\Contracts\RouteMatcher;
-    use BetterWP\Contracts\RouteRegistrarInterface;
-    use BetterWP\Contracts\RouteUrlGenerator;
-    use BetterWP\Factories\ConditionFactory;
-    use BetterWP\Routing\CachedRouteCollection;
-    use BetterWP\Routing\CacheFileRouteRegistrar;
-    use BetterWP\Routing\FastRoute\CachedFastRouteMatcher;
-    use BetterWP\Routing\FastRoute\FastRouteMatcher;
-    use BetterWP\Routing\FastRoute\FastRouteUrlGenerator;
-    use BetterWP\Routing\RouteCollection;
-    use BetterWP\Routing\Router;
-    use BetterWP\Routing\RouteRegistrar;
-    use BetterWP\Routing\UrlGenerator;
+    use Snicco\Contracts\AbstractRouteCollection;
+    use Snicco\Contracts\RouteMatcher;
+    use Snicco\Contracts\RouteRegistrarInterface;
+    use Snicco\Contracts\RouteUrlGenerator;
+    use Snicco\Factories\ConditionFactory;
+    use Snicco\Routing\CachedRouteCollection;
+    use Snicco\Routing\CacheFileRouteRegistrar;
+    use Snicco\Routing\FastRoute\CachedFastRouteMatcher;
+    use Snicco\Routing\FastRoute\FastRouteMatcher;
+    use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
+    use Snicco\Routing\RouteCollection;
+    use Snicco\Routing\Router;
+    use Snicco\Routing\RouteRegistrar;
+    use Snicco\Routing\UrlGenerator;
 
     class RoutingServiceProviderTest extends TestCase
     {

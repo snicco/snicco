@@ -5,7 +5,7 @@
 
     use Tests\fixtures\Middleware\GlobalMiddleware;
     use Tests\stubs\TestApp;
-    use BetterWP\Routing\Router;
+    use Snicco\Routing\Router;
 
     TestApp::route()->group(['prefix'=>'middleware'], function (Router $router) {
 

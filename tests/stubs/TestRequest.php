@@ -8,7 +8,7 @@
 
     use Nyholm\Psr7\Factory\Psr17Factory;
     use Tests\helpers\CreatePsr17Factories;
-    use BetterWP\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Request;
 
     class TestRequest extends Request
     {

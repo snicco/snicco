@@ -7,7 +7,7 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use BetterWP\Auth\Mail\MagicLinkLoginMail;
+    use Snicco\Auth\Mail\MagicLinkLoginMail;
 
     class LoginMagicLinkControllerTest extends AuthTestCase
     {

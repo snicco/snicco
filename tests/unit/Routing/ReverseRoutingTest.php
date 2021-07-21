@@ -10,15 +10,15 @@
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
-    use BetterWP\Events\Event;
-    use BetterWP\Contracts\ConditionInterface;
-    use BetterWP\Contracts\UrlableInterface;
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Routing\Router;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\Support\Str;
+    use Snicco\Events\Event;
+    use Snicco\Contracts\ConditionInterface;
+    use Snicco\Contracts\UrlableInterface;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\Router;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\Support\Str;
 
     class ReverseRoutingTest extends UnitTest
     {

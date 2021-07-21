@@ -10,11 +10,11 @@
     use Tests\stubs\TestApp;
     use WP_Session_Tokens;
     use WP_User;
-    use BetterWP\Auth\AuthSessionManager;
-    use BetterWP\Session\Contracts\SessionDriver;
-    use BetterWP\Session\Contracts\SessionManagerInterface;
-    use BetterWP\Session\Drivers\ArraySessionDriver;
-    use BetterWP\Session\SessionManager;
+    use Snicco\Auth\AuthSessionManager;
+    use Snicco\Session\Contracts\SessionDriver;
+    use Snicco\Session\Contracts\SessionManagerInterface;
+    use Snicco\Session\Drivers\ArraySessionDriver;
+    use Snicco\Session\SessionManager;
 
     class WpAuthSessionTokenTest extends AuthTestCase
     {

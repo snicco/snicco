@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Database\Contracts;
+    namespace Snicco\Database\Contracts;
 
-    use BetterWP\Database\Illuminate\MySqlQueryGrammar;
-    use BetterWP\Database\Illuminate\MySqlSchemaBuilder;
-    use BetterWP\Database\Illuminate\MySqlSchemaGrammar;
+    use Snicco\Database\Illuminate\MySqlQueryGrammar;
+    use Snicco\Database\Illuminate\MySqlSchemaBuilder;
+    use Snicco\Database\Illuminate\MySqlSchemaGrammar;
     use BetterWpdb\PdoAdapter;
     use Illuminate\Database\ConnectionInterface as IlluminateConnectionInterface;
     use Illuminate\Database\Query\Builder as QueryBuilder;

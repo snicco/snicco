@@ -9,22 +9,22 @@
     use Slim\Csrf\Guard;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use BetterWP\Contracts\AbstractRedirector;
-    use BetterWP\Http\Redirector;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Session\Contracts\SessionDriver;
-    use BetterWP\Session\Contracts\SessionManagerInterface;
-    use BetterWP\Session\CsrfField;
-    use BetterWP\Session\Drivers\DatabaseSessionDriver;
-    use BetterWP\Session\Middleware\CsrfMiddleware;
-    use BetterWP\Session\EncryptedSession;
-    use BetterWP\Session\Middleware\ShareSessionWithView;
-    use BetterWP\Session\SessionManager;
-    use BetterWP\Session\SessionServiceProvider;
-    use BetterWP\Session\Session;
-    use BetterWP\Session\Middleware\StartSessionMiddleware;
-    use BetterWP\Session\StatefulRedirector;
-    use BetterWP\View\GlobalContext;
+    use Snicco\Contracts\AbstractRedirector;
+    use Snicco\Http\Redirector;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Session\Contracts\SessionDriver;
+    use Snicco\Session\Contracts\SessionManagerInterface;
+    use Snicco\Session\CsrfField;
+    use Snicco\Session\Drivers\DatabaseSessionDriver;
+    use Snicco\Session\Middleware\CsrfMiddleware;
+    use Snicco\Session\EncryptedSession;
+    use Snicco\Session\Middleware\ShareSessionWithView;
+    use Snicco\Session\SessionManager;
+    use Snicco\Session\SessionServiceProvider;
+    use Snicco\Session\Session;
+    use Snicco\Session\Middleware\StartSessionMiddleware;
+    use Snicco\Session\StatefulRedirector;
+    use Snicco\View\GlobalContext;
 
     class SessionServiceProviderTest extends TestCase
     {

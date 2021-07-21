@@ -9,10 +9,10 @@
     use Tests\integration\Blade\traits\AssertBladeView;
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
-    use BetterWP\Blade\BladeEngine;
-    use BetterWP\Blade\BladeServiceProvider;
-    use BetterWP\Blade\BladeView;
-    use BetterWP\Contracts\ViewEngineInterface;
+    use Snicco\Blade\BladeEngine;
+    use Snicco\Blade\BladeServiceProvider;
+    use Snicco\Blade\BladeView;
+    use Snicco\Contracts\ViewEngineInterface;
 
     class ViewComposingTest extends BladeTestCase
     {

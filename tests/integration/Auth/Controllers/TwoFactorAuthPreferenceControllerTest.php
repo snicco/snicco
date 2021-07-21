@@ -7,7 +7,7 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use BetterWP\Contracts\EncryptorInterface;
+    use Snicco\Contracts\EncryptorInterface;
 
     class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
     {

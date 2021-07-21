@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Contracts;
+    namespace Snicco\Auth\Contracts;
 
     use Psr\Http\Message\ResponseInterface;
-    use BetterWP\Auth\Exceptions\FailedAuthenticationException;
-    use BetterWP\Auth\Responses\SuccessfulLoginResponse;
-    use BetterWP\Contracts\Middleware;
-    use BetterWP\Contracts\ResponsableInterface;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Http\ResponseFactory;
+    use Snicco\Auth\Exceptions\FailedAuthenticationException;
+    use Snicco\Auth\Responses\SuccessfulLoginResponse;
+    use Snicco\Contracts\Middleware;
+    use Snicco\Contracts\ResponsableInterface;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Http\ResponseFactory;
 
     abstract class Authenticator extends Middleware
     {

@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Contracts;
+	namespace Snicco\Contracts;
 
 	/**
 	 * Interface signifying that an object can be converted to a URL.

@@ -8,13 +8,13 @@
 
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use BetterWP\View\MethodField;
-    use BetterWP\Contracts\ViewEngineInterface;
-    use BetterWP\Contracts\ViewFactoryInterface;
-    use BetterWP\View\GlobalContext;
-    use BetterWP\View\PhpViewEngine;
-    use BetterWP\View\ViewFactory;
-    use BetterWP\View\ViewComposerCollection;
+    use Snicco\View\MethodField;
+    use Snicco\Contracts\ViewEngineInterface;
+    use Snicco\Contracts\ViewFactoryInterface;
+    use Snicco\View\GlobalContext;
+    use Snicco\View\PhpViewEngine;
+    use Snicco\View\ViewFactory;
+    use Snicco\View\ViewComposerCollection;
 
     class ViewServiceProviderTest extends TestCase
     {

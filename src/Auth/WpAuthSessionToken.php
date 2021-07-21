@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth;
+    namespace Snicco\Auth;
 
-    use BetterWP\Support\Arr;
+    use Snicco\Support\Arr;
 
     class WpAuthSessionToken extends \WP_Session_Tokens
     {

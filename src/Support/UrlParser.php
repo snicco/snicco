@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Support;
+    namespace Snicco\Support;
 
-    use BetterWP\Support\WP;
+    use Snicco\Support\WP;
 
     use function collect;
 

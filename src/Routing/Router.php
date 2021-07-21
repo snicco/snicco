@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing;
+    namespace Snicco\Routing;
 
     use Closure;
     use Contracts\ContainerAdapter;
-    use BetterWP\Contracts\AbstractRouteCollection;
-    use BetterWP\Controllers\FallBackController;
-    use BetterWP\Controllers\RedirectController;
-    use BetterWP\Controllers\ViewController;
-    use BetterWP\Support\WP;
-    use BetterWP\Support\Str;
-    use BetterWP\Support\Url;
-    use BetterWP\Traits\HoldsRouteBlueprint;
+    use Snicco\Contracts\AbstractRouteCollection;
+    use Snicco\Controllers\FallBackController;
+    use Snicco\Controllers\RedirectController;
+    use Snicco\Controllers\ViewController;
+    use Snicco\Support\WP;
+    use Snicco\Support\Str;
+    use Snicco\Support\Url;
+    use Snicco\Traits\HoldsRouteBlueprint;
 
     /**
      * @mixin RouteDecorator

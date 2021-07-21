@@ -4,20 +4,20 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Middleware\Core;
+    namespace Snicco\Middleware\Core;
 
     use Closure;
     use Contracts\ContainerAdapter;
     use Psr\Http\Message\ResponseInterface;
-    use BetterWP\Contracts\Middleware;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Middleware\MiddlewareStack;
-    use BetterWP\Routing\Pipeline;
-    use BetterWP\Routing\Route;
-    use BetterWP\Routing\RoutingResult;
+    use Snicco\Contracts\Middleware;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Middleware\MiddlewareStack;
+    use Snicco\Routing\Pipeline;
+    use Snicco\Routing\Route;
+    use Snicco\Routing\RoutingResult;
 
     class RouteRunner extends Middleware
     {

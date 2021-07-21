@@ -6,9 +6,9 @@
 
     namespace Tests\integration\Database;
 
-    use BetterWP\Database\BetterWPDb;
-    use BetterWP\Database\Contracts\BetterWPDbInterface;
-    use BetterWP\Database\WPConnection;
+    use Snicco\Database\BetterWPDb;
+    use Snicco\Database\Contracts\BetterWPDbInterface;
+    use Snicco\Database\WPConnection;
     use Exception;
     use Illuminate\Database\QueryException;
     use Mockery as m;

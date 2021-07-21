@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Contracts;
+	namespace Snicco\Contracts;
 
 
-    use BetterWP\Routing\Route;
-    use BetterWP\Routing\RoutingResult;
+    use Snicco\Routing\Route;
+    use Snicco\Routing\RoutingResult;
 
     interface RouteMatcher {
 

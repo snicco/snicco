@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Database;
+    namespace Snicco\Database;
 
-    use BetterWP\Database\Concerns\DelegatesToWpdb;
-    use BetterWP\Database\Contracts\BetterWPDbInterface;
+    use Snicco\Database\Concerns\DelegatesToWpdb;
+    use Snicco\Database\Contracts\BetterWPDbInterface;
     use mysqli;
     use mysqli_result;
     use mysqli_stmt;

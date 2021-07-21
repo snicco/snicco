@@ -4,15 +4,15 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Contracts;
+	namespace Snicco\Contracts;
 
 	use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\ResponseFactory;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\ResponseFactory;
 
     abstract class Middleware implements MiddlewareInterface {
 

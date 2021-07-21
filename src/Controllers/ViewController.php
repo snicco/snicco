@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Controllers;
+	namespace Snicco\Controllers;
 
 
-    use BetterWP\Http\Controller;
-    use BetterWP\Http\Psr7\Response;
+    use Snicco\Http\Controller;
+    use Snicco\Http\Psr7\Response;
 
     class ViewController extends Controller {
 

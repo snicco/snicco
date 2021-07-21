@@ -4,15 +4,15 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Factories;
+	namespace Snicco\Factories;
 
 	use Closure;
 	use Illuminate\Support\Reflector;
-	use BetterWP\Contracts\Handler;
-	use BetterWP\Contracts\RouteAction;
-	use BetterWP\Routing\ClosureAction;
-	use BetterWP\Routing\ControllerAction;
-	use BetterWP\Http\MiddlewareResolver;
+	use Snicco\Contracts\Handler;
+	use Snicco\Contracts\RouteAction;
+	use Snicco\Routing\ClosureAction;
+	use Snicco\Routing\ControllerAction;
+	use Snicco\Http\MiddlewareResolver;
 
 	class RouteActionFactory extends AbstractFactory {
 

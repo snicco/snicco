@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Contracts;
+	namespace Snicco\Contracts;
 
 
-	use BetterWP\ExceptionHandling\Exceptions\ViewException;
-    use BetterWP\ExceptionHandling\Exceptions\ViewNotFoundException;
+	use Snicco\ExceptionHandling\Exceptions\ViewException;
+    use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
 
     interface ViewFactoryInterface {
 

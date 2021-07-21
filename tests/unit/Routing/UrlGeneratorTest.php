@@ -12,10 +12,10 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use BetterWP\Support\WP;
-    use BetterWP\Routing\Route;
-    use BetterWP\Routing\RouteCollection;
-    use BetterWP\Support\Str;
+    use Snicco\Support\WP;
+    use Snicco\Routing\Route;
+    use Snicco\Routing\RouteCollection;
+    use Snicco\Support\Str;
 
     class UrlGeneratorTest extends UnitTest
     {

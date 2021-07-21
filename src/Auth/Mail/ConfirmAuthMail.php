@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Mail;
+    namespace Snicco\Auth\Mail;
 
     use WP_User;
-    use BetterWP\Mail\Mailable;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\Session\Session;
+    use Snicco\Mail\Mailable;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\Session\Session;
 
     class ConfirmAuthMail extends Mailable
     {

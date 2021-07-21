@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Session;
+    namespace Snicco\Session;
 
     use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
-    use BetterWP\Contracts\AbstractRedirector;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Responses\RedirectResponse;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\Session\Session;
+    use Snicco\Contracts\AbstractRedirector;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\Session\Session;
 
     class StatefulRedirector extends AbstractRedirector
     {

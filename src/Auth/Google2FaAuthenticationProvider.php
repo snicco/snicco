@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth;
+    namespace Snicco\Auth;
 
     use BaconQrCode\Renderer\Color\Rgb;
     use BaconQrCode\Renderer\Image\SvgImageBackEnd;
@@ -13,11 +13,11 @@
     use BaconQrCode\Renderer\RendererStyle\RendererStyle;
     use BaconQrCode\Writer;
     use PragmaRX\Google2FA\Google2FA;
-    use BetterWP\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use BetterWP\Auth\Traits\ResolvesUser;
-    use BetterWP\Auth\Traits\ResolveTwoFactorSecrets;
-    use BetterWP\Contracts\EncryptorInterface;
-    use BetterWP\Support\WP;
+    use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use Snicco\Auth\Traits\ResolvesUser;
+    use Snicco\Auth\Traits\ResolveTwoFactorSecrets;
+    use Snicco\Contracts\EncryptorInterface;
+    use Snicco\Support\WP;
 
     class Google2FaAuthenticationProvider implements TwoFactorAuthenticationProvider
     {

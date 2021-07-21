@@ -16,9 +16,9 @@
     use Psr\Http\Message\UploadedFileFactoryInterface;
     use Psr\Http\Message\UriFactoryInterface;
     use Tests\stubs\TestViewFactory;
-    use BetterWP\Http\Redirector;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Routing\UrlGenerator;
+    use Snicco\Http\Redirector;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Routing\UrlGenerator;
 
     trait CreatePsr17Factories
     {

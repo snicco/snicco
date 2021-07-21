@@ -7,7 +7,7 @@
     namespace Tests\helpers;
 
     use WP_User;
-    use BetterWP\Support\WP;
+    use Snicco\Support\WP;
 
 
     trait CreateDefaultWpApiMocks

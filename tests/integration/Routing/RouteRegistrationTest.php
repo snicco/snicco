@@ -6,16 +6,16 @@
 
     namespace Tests\integration\Routing;
 
-    use BetterWP\Support\Arr;
+    use Snicco\Support\Arr;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreatesWpUrls;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use BetterWP\Contracts\ServiceProvider;
-    use BetterWP\Events\IncomingAdminRequest;
-    use BetterWP\Events\IncomingAjaxRequest;
-    use BetterWP\Support\WP;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\Events\IncomingAdminRequest;
+    use Snicco\Events\IncomingAjaxRequest;
+    use Snicco\Support\WP;
 
     class RouteRegistrationTest extends TestCase
     {

@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Blade;
+    namespace Snicco\Blade;
 
     use Illuminate\View\Factory;
     use Illuminate\View\ViewFinderInterface;
     use Illuminate\View\ViewName;
-    use BetterWP\Contracts\ViewEngineInterface;
-    use BetterWP\Contracts\ViewInterface;
-    use BetterWP\ExceptionHandling\Exceptions\ViewNotFoundException;
-    use BetterWP\Support\Arr;
+    use Snicco\Contracts\ViewEngineInterface;
+    use Snicco\Contracts\ViewInterface;
+    use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
+    use Snicco\Support\Arr;
 
     class BladeEngine implements ViewEngineInterface
     {

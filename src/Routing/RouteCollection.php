@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing;
+    namespace Snicco\Routing;
 
-    use BetterWP\Contracts\AbstractRouteCollection;
-    use BetterWP\Contracts\RouteMatcher;
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
-    use BetterWP\Support\WP;
-    use BetterWP\Factories\ConditionFactory;
-    use BetterWP\Factories\RouteActionFactory;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Support\Arr;
+    use Snicco\Contracts\AbstractRouteCollection;
+    use Snicco\Contracts\RouteMatcher;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\Support\WP;
+    use Snicco\Factories\ConditionFactory;
+    use Snicco\Factories\RouteActionFactory;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Support\Arr;
 
     class RouteCollection extends AbstractRouteCollection
     {

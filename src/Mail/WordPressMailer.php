@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Mail;
+    namespace Snicco\Mail;
 
-    use BetterWP\Contracts\Mailer;
-    use BetterWP\Support\WP;
+    use Snicco\Contracts\Mailer;
+    use Snicco\Support\WP;
 
     class WordPressMailer implements Mailer
     {

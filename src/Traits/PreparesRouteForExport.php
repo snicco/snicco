@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Traits;
+    namespace Snicco\Traits;
 
     use Closure;
     use Opis\Closure\SerializableClosure;
-    use BetterWP\Routing\ConditionBlueprint;
-    use BetterWP\Routing\Conditions\CustomCondition;
+    use Snicco\Routing\ConditionBlueprint;
+    use Snicco\Routing\Conditions\CustomCondition;
 
     trait PreparesRouteForExport
     {

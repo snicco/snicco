@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing;
+    namespace Snicco\Routing;
 
     use Illuminate\Support\Arr;
     use Illuminate\Support\InteractsWithTime;
-    use BetterWP\Contracts\RouteUrlGenerator;
-    use BetterWP\Contracts\MagicLink;
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Support\Str;
-    use BetterWP\Support\Url;
+    use Snicco\Contracts\RouteUrlGenerator;
+    use Snicco\Contracts\MagicLink;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Support\Str;
+    use Snicco\Support\Url;
 
     class UrlGenerator
     {

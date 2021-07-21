@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Blade;
+    namespace Snicco\Blade;
 
     use Illuminate\Container\Container as IlluminateContainer;
     use Illuminate\Contracts\Container\Container;
@@ -16,10 +16,10 @@
     use Illuminate\View\View;
     use Illuminate\View\ViewServiceProvider;
     use SniccoAdapter\BaseContainerAdapter;
-    use BetterWP\Contracts\ServiceProvider;
-    use BetterWP\Contracts\ViewEngineInterface;
-    use BetterWP\Contracts\ViewFactoryInterface;
-    use BetterWP\Support\Arr;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\Contracts\ViewEngineInterface;
+    use Snicco\Contracts\ViewFactoryInterface;
+    use Snicco\Support\Arr;
 
     class BladeServiceProvider extends ServiceProvider
     {

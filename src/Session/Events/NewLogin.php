@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Session\Events;
+    namespace Snicco\Session\Events;
 
     use BetterWpHooks\Traits\IsAction;
     use WP_User;
-    use BetterWP\Events\Event;
+    use Snicco\Events\Event;
 
     class NewLogin extends Event
     {

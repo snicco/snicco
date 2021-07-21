@@ -1,10 +1,10 @@
 <?php
 
 
-    namespace BetterWP\Database\Illuminate;
+    namespace Snicco\Database\Illuminate;
 
     use Illuminate\Database\Schema\MySqlBuilder as IlluminateSchemaBuilder;
-    use BetterWP\Support\Str;
+    use Snicco\Support\Str;
     use Closure;
 
     class MySqlSchemaBuilder extends IlluminateSchemaBuilder

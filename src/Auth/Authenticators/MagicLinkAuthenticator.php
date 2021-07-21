@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Authenticators;
+    namespace Snicco\Auth\Authenticators;
 
     use WP_User;
-    use BetterWP\Auth\Contracts\Authenticator;
-    use BetterWP\Auth\Exceptions\FailedAuthenticationException;
-    use BetterWP\Auth\Traits\ResolvesUser;
-    use BetterWP\Contracts\MagicLink;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
+    use Snicco\Auth\Contracts\Authenticator;
+    use Snicco\Auth\Exceptions\FailedAuthenticationException;
+    use Snicco\Auth\Traits\ResolvesUser;
+    use Snicco\Contracts\MagicLink;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
 
     class MagicLinkAuthenticator extends Authenticator
     {

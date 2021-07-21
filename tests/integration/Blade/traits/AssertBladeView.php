@@ -8,9 +8,9 @@
 
     use Illuminate\Support\Facades\Facade;
     use PHPUnit\Framework\Assert;
-    use BetterWP\Blade\BladeDirectiveServiceProvider;
-    use BetterWP\Blade\BladeServiceProvider;
-    use BetterWP\Contracts\ViewInterface;
+    use Snicco\Blade\BladeDirectiveServiceProvider;
+    use Snicco\Blade\BladeServiceProvider;
+    use Snicco\Contracts\ViewInterface;
 
     use const BLADE_CACHE;
     use const BLADE_VIEWS;

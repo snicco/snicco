@@ -15,11 +15,11 @@
     use Tests\fixtures\Middleware\BazMiddleware;
     use Tests\fixtures\Middleware\FooBarMiddleware;
     use Tests\fixtures\Middleware\FooMiddleware;
-    use BetterWP\Events\Event;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Middleware\Core\RouteRunner;
-    use BetterWP\Routing\Router;
+    use Snicco\Events\Event;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Middleware\Core\RouteRunner;
+    use Snicco\Routing\Router;
 
     class RouteMiddlewareTest extends UnitTest
     {

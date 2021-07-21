@@ -14,15 +14,15 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
-    use BetterWP\Events\Event;
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Routing\Router;
+    use Snicco\Events\Event;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Routing\Router;
     use Tests\helpers\CreateDefaultWpApiMocks;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\View\ViewFactory;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\View\ViewFactory;
 
     class RouteAttributesTest extends UnitTest
     {

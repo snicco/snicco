@@ -4,14 +4,19 @@
     "license": "MIT",
     "minimum-stability": "dev",
     "prefer-stable": true,
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/calvinalkan/view"
+            "url": "https://github.com/sniccowp/view"
         },
         {
             "type": "vcs",
-            "url": "https://github.com/calvinalkan/database"
+            "url": "https://github.com/sniccowp/database"
         }
     ],
     "require": {
@@ -63,7 +68,7 @@
     },
     "autoload": {
         "psr-4": {
-            "BetterWP\\": "src/"
+            "Snicco\\": "src/"
         },
         "files": [
             "src/Support/functions.php"
@@ -71,7 +76,7 @@
     },
     "autoload-dev": {
         "psr-4": {
-            "BetterWP\\": "src/",
+            "Snicco\\": "src/",
             "Tests\\": "tests/"
         },
         "files": [

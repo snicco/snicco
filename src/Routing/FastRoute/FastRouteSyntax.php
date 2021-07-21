@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing\FastRoute;
+    namespace Snicco\Routing\FastRoute;
 
-    use BetterWP\Routing\Route;
-    use BetterWP\Support\Str;
-    use BetterWP\Support\Url;
-    use BetterWP\Support\UrlParser;
+    use Snicco\Routing\Route;
+    use Snicco\Support\Str;
+    use Snicco\Support\Url;
+    use Snicco\Support\UrlParser;
 
     class FastRouteSyntax
     {

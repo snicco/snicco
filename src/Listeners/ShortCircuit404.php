@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Listeners;
+    namespace Snicco\Listeners;
 
 
     class ShortCircuit404

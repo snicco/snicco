@@ -4,13 +4,13 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Events;
+	namespace Snicco\Events;
 
     use BetterWpHooks\Traits\DispatchesConditionally;
-    use BetterWP\Events\Event;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Listeners\ShortCircuit404;
-    use BetterWP\Support\Str;
+    use Snicco\Events\Event;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Listeners\ShortCircuit404;
+    use Snicco\Support\Str;
 
     class IncomingWebRequest extends IncomingRequest {
 

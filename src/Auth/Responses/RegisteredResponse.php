@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Responses;
+    namespace Snicco\Auth\Responses;
 
-    use BetterWP\Auth\Traits\UsesCurrentRequest;
-    use BetterWP\Contracts\ResponsableInterface;
+    use Snicco\Auth\Traits\UsesCurrentRequest;
+    use Snicco\Contracts\ResponsableInterface;
 
     abstract class RegisteredResponse implements ResponsableInterface
     {

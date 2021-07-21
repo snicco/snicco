@@ -8,7 +8,7 @@
 
 	use Tests\fixtures\TestDependencies\Bar;
 	use Tests\fixtures\TestDependencies\Foo;
-	use BetterWP\Contracts\ViewInterface;
+	use Snicco\Contracts\ViewInterface;
 
 	class FooComposer {
 

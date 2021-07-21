@@ -7,9 +7,9 @@
     namespace Tests\helpers;;
 
     use Tests\stubs\TestRequest;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Support\Url;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Support\Url;
 
     trait CreatesWpUrls
     {

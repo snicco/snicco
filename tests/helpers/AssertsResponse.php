@@ -8,7 +8,7 @@
 
     use PHPUnit\Framework\Assert;
     use Psr\Http\Message\ResponseInterface;
-    use BetterWP\Http\Responses\NullResponse;
+    use Snicco\Http\Responses\NullResponse;
 
     trait AssertsResponse {
 

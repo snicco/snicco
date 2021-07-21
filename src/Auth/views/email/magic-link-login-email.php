@@ -3,7 +3,7 @@
 
     declare(strict_types = 1);
 
-    use BetterWP\Support\WP;
+    use Snicco\Support\WP;
 
 ?>
 

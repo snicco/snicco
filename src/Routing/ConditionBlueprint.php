@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing;
+    namespace Snicco\Routing;
 
     use Opis\Closure\SerializableClosure;
-    use BetterWP\Routing\Conditions\CustomCondition;
-    use BetterWP\Support\Str;
-    use BetterWP\Traits\ReflectsCallable;
+    use Snicco\Routing\Conditions\CustomCondition;
+    use Snicco\Support\Str;
+    use Snicco\Traits\ReflectsCallable;
 
     class ConditionBlueprint
     {

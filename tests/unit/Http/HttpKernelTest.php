@@ -15,19 +15,19 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
     use Tests\helpers\CreateDefaultWpApiMocks;
-    use BetterWP\Events\Event;
-    use BetterWP\Contracts\AbstractRouteCollection;
-    use BetterWP\Events\IncomingAjaxRequest;
-    use BetterWP\Events\ResponseSent;
-    use BetterWP\ExceptionHandling\Exceptions\NotFoundException;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Cookies;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Http\Responses\RedirectResponse;
-    use BetterWP\Middleware\Core\EvaluateResponseMiddleware;
-    use BetterWP\Routing\Router;
-    use BetterWP\Session\Session;
+    use Snicco\Events\Event;
+    use Snicco\Contracts\AbstractRouteCollection;
+    use Snicco\Events\IncomingAjaxRequest;
+    use Snicco\Events\ResponseSent;
+    use Snicco\ExceptionHandling\Exceptions\NotFoundException;
+    use Snicco\Support\WP;
+    use Snicco\Http\Cookies;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Middleware\Core\EvaluateResponseMiddleware;
+    use Snicco\Routing\Router;
+    use Snicco\Session\Session;
 
     class HttpKernelTest extends UnitTest
     {

@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Contracts;
+    namespace Snicco\Contracts;
 
-    use BetterWP\Factories\ConditionFactory;
-    use BetterWP\Factories\RouteActionFactory;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Routing\Route;
-    use BetterWP\Routing\RoutingResult;
-    use BetterWP\Support\Arr;
-    use BetterWP\Traits\ValidatesRoutes;
+    use Snicco\Factories\ConditionFactory;
+    use Snicco\Factories\RouteActionFactory;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\Route;
+    use Snicco\Routing\RoutingResult;
+    use Snicco\Support\Arr;
+    use Snicco\Traits\ValidatesRoutes;
 
     abstract class AbstractRouteCollection
     {

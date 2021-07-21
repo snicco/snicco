@@ -4,12 +4,12 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\View;
+	namespace Snicco\View;
 
-	use BetterWP\Contracts\PhpViewInterface;
-	use BetterWP\Contracts\ViewInterface;
-	use BetterWP\Support\WP;
-	use BetterWP\Support\Arr;
+	use Snicco\Contracts\PhpViewInterface;
+	use Snicco\Contracts\ViewInterface;
+	use Snicco\Support\WP;
+	use Snicco\Support\Arr;
 
 
 	class PhpView implements PhpViewInterface {

@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Controllers;
+    namespace Snicco\Auth\Controllers;
 
-    use BetterWP\Auth\Mail\ResetPasswordMail;
-    use BetterWP\Auth\Traits\SendsPasswordResetMails;
-    use BetterWP\ExceptionHandling\Exceptions\AuthorizationException;
-    use BetterWP\Http\Responses\RedirectResponse;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Controller;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Mail\MailBuilder;
-    use BetterWP\Support\Arr;
+    use Snicco\Auth\Mail\ResetPasswordMail;
+    use Snicco\Auth\Traits\SendsPasswordResetMails;
+    use Snicco\ExceptionHandling\Exceptions\AuthorizationException;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Support\WP;
+    use Snicco\Http\Controller;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Mail\MailBuilder;
+    use Snicco\Support\Arr;
 
     /**
      * This Controller performs the same logic that happens inside user.php

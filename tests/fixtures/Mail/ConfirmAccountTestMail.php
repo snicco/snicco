@@ -6,8 +6,8 @@
 
     namespace Tests\fixtures\Mail;
 
-    use BetterWP\Mail\Mailable;
-    use BetterWP\Routing\UrlGenerator;
+    use Snicco\Mail\Mailable;
+    use Snicco\Routing\UrlGenerator;
 
     class ConfirmAccountTestMail extends Mailable
     {

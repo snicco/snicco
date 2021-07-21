@@ -11,13 +11,13 @@
     use Tests\helpers\TravelsTime;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
-    use BetterWP\Auth\AuthSessionManager;
-    use BetterWP\Session\Contracts\SessionDriver;
-    use BetterWP\Session\Contracts\SessionManagerInterface;
-    use BetterWP\Session\Drivers\ArraySessionDriver;
-    use BetterWP\Session\Session;
-    use BetterWP\Session\SessionManager;
-    use BetterWP\Support\Arr;
+    use Snicco\Auth\AuthSessionManager;
+    use Snicco\Session\Contracts\SessionDriver;
+    use Snicco\Session\Contracts\SessionManagerInterface;
+    use Snicco\Session\Drivers\ArraySessionDriver;
+    use Snicco\Session\Session;
+    use Snicco\Session\SessionManager;
+    use Snicco\Support\Arr;
 
     class AuthSessionManagerTest extends AuthTestCase
     {

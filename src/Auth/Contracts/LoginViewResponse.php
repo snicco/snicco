@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Contracts;
+    namespace Snicco\Auth\Contracts;
 
-    use BetterWP\Contracts\ResponsableInterface;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Support\Arr;
+    use Snicco\Contracts\ResponsableInterface;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Support\Arr;
 
     abstract class LoginViewResponse implements ResponsableInterface
     {

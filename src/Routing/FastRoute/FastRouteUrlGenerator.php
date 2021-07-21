@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing\FastRoute;
+    namespace Snicco\Routing\FastRoute;
 
-    use BetterWP\Contracts\AbstractRouteCollection;
-    use BetterWP\Contracts\RouteUrlGenerator;
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
-    use BetterWP\Routing\Route;
-    use BetterWP\Routing\RouteCollection;
-    use BetterWP\Support\Arr;
-    use BetterWP\Support\Str;
+    use Snicco\Contracts\AbstractRouteCollection;
+    use Snicco\Contracts\RouteUrlGenerator;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\Routing\Route;
+    use Snicco\Routing\RouteCollection;
+    use Snicco\Support\Arr;
+    use Snicco\Support\Str;
 
     class FastRouteUrlGenerator implements RouteUrlGenerator
     {

@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\ExceptionHandling;
+	namespace Snicco\ExceptionHandling;
 
-    use BetterWP\Contracts\ErrorHandlerInterface;
-	use BetterWP\Contracts\ServiceProvider;
-	use BetterWP\Factories\ErrorHandlerFactory;
+    use Snicco\Contracts\ErrorHandlerInterface;
+	use Snicco\Contracts\ServiceProvider;
+	use Snicco\Factories\ErrorHandlerFactory;
 
     class ExceptionServiceProvider extends ServiceProvider {
 

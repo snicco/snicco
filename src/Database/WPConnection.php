@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Database;
+    namespace Snicco\Database;
 
-    use BetterWP\Database\Concerns\LogsQueries;
-    use BetterWP\Database\Concerns\ManagesTransactions;
-    use BetterWP\Database\Contracts\WPConnectionInterface;
-    use BetterWP\Database\Contracts\BetterWPDbInterface;
-    use BetterWP\Database\Illuminate\MySqlProcessor;
-    use BetterWP\Database\Illuminate\MySqlQueryGrammar;
-    use BetterWP\Database\Illuminate\MySqlSchemaBuilder;
-    use BetterWP\Database\Illuminate\MySqlSchemaGrammar;
+    use Snicco\Database\Concerns\LogsQueries;
+    use Snicco\Database\Concerns\ManagesTransactions;
+    use Snicco\Database\Contracts\WPConnectionInterface;
+    use Snicco\Database\Contracts\BetterWPDbInterface;
+    use Snicco\Database\Illuminate\MySqlProcessor;
+    use Snicco\Database\Illuminate\MySqlQueryGrammar;
+    use Snicco\Database\Illuminate\MySqlSchemaBuilder;
+    use Snicco\Database\Illuminate\MySqlSchemaGrammar;
     use Closure;
     use DateTime;
     use Generator;

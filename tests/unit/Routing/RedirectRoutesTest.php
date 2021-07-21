@@ -15,14 +15,14 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
-    use BetterWP\Events\Event;
-    use BetterWP\Contracts\AbstractRedirector;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Redirector;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Routing\Router;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\View\ViewFactory;
+    use Snicco\Events\Event;
+    use Snicco\Contracts\AbstractRedirector;
+    use Snicco\Support\WP;
+    use Snicco\Http\Redirector;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Routing\Router;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\View\ViewFactory;
 
     class RedirectRoutesTest extends UnitTest
     {

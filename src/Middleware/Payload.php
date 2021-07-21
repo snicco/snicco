@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Middleware;
+    namespace Snicco\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\StreamInterface;
     use RuntimeException;
-    use BetterWP\Contracts\Middleware;
-    use BetterWP\ExceptionHandling\Exceptions\HttpException;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Support\Str;
+    use Snicco\Contracts\Middleware;
+    use Snicco\ExceptionHandling\Exceptions\HttpException;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Support\Str;
 
     abstract class Payload extends Middleware
     {

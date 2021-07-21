@@ -8,7 +8,7 @@
 
 	use Tests\fixtures\TestDependencies\Bar;
 	use Tests\fixtures\TestDependencies\Foo;
-    use BetterWP\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Request;
 
 	class ControllerWithDependencies {
 

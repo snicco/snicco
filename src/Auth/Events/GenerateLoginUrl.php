@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Events;
+    namespace Snicco\Auth\Events;
 
-    use BetterWP\Events\Event;
-    use BetterWP\Support\WP;
+    use Snicco\Events\Event;
+    use Snicco\Support\WP;
 
     class GenerateLoginUrl extends Event {
 

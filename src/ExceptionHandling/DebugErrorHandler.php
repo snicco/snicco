@@ -4,16 +4,16 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\ExceptionHandling;
+	namespace Snicco\ExceptionHandling;
 
 	use Throwable;
     use Whoops\Handler\JsonResponseHandler;
     use Whoops\RunInterface;
-	use BetterWP\Contracts\ErrorHandlerInterface;
-	use BetterWP\Events\UnrecoverableExceptionHandled;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Traits\HandlesExceptions;
+	use Snicco\Contracts\ErrorHandlerInterface;
+	use Snicco\Events\UnrecoverableExceptionHandled;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Traits\HandlesExceptions;
 
 	class DebugErrorHandler implements ErrorHandlerInterface {
 

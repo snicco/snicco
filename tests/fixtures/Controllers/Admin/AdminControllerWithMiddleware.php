@@ -7,9 +7,9 @@
 	namespace Tests\fixtures\Controllers\Admin;
 
     use Tests\fixtures\Middleware\MiddlewareWithDependencies;
-	use BetterWP\Http\Controller;
+	use Snicco\Http\Controller;
 	use Tests\fixtures\TestDependencies\Baz;
-	use BetterWP\Http\Psr7\Request;
+	use Snicco\Http\Psr7\Request;
 
 	class AdminControllerWithMiddleware extends Controller {
 

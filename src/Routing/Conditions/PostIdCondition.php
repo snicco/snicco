@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Routing\Conditions;
+	namespace Snicco\Routing\Conditions;
 
-	use BetterWP\Contracts\ConditionInterface;
-	use BetterWP\Contracts\UrlableInterface;
-    use BetterWP\Http\Psr7\Request;
+	use Snicco\Contracts\ConditionInterface;
+	use Snicco\Contracts\UrlableInterface;
+    use Snicco\Http\Psr7\Request;
 
     class PostIdCondition implements ConditionInterface, UrlableInterface {
 

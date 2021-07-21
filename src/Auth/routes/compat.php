@@ -3,10 +3,10 @@
 
     declare(strict_types = 1);
 
-    use BetterWP\Auth\Controllers\BulkPasswordResetEmailController;
-    use BetterWP\Auth\Controllers\PasswordResetEmailController;
-    use BetterWP\Auth\Controllers\WpLoginRedirectController;
-    use BetterWP\Routing\Router;
+    use Snicco\Auth\Controllers\BulkPasswordResetEmailController;
+    use Snicco\Auth\Controllers\PasswordResetEmailController;
+    use Snicco\Auth\Controllers\WpLoginRedirectController;
+    use Snicco\Routing\Router;
 
     /** @var Router $router */
 

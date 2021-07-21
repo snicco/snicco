@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Testing\Assertable;
+    namespace Snicco\Testing\Assertable;
 
-    use BetterWP\Support\Str;
+    use Snicco\Support\Str;
     use PHPUnit\Framework\Assert as PHPUnit;
 
     class AssertableCookie

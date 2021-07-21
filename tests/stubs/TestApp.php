@@ -6,7 +6,7 @@
 
 	namespace Tests\stubs;
 
-	use BetterWP\Application\ApplicationTrait;
+	use Snicco\Application\ApplicationTrait;
 
 	class TestApp {
 

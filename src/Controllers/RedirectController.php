@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Controllers;
+    namespace Snicco\Controllers;
 
-    use BetterWP\Contracts\AbstractRedirector;
-    use BetterWP\Contracts\MagicLink;
-    use BetterWP\Http\Controller;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Http\Responses\RedirectResponse;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\View\ViewFactory;
+    use Snicco\Contracts\AbstractRedirector;
+    use Snicco\Contracts\MagicLink;
+    use Snicco\Http\Controller;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\View\ViewFactory;
 
     class RedirectController extends Controller
     {

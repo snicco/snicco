@@ -4,35 +4,35 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing;
+    namespace Snicco\Routing;
 
-    use BetterWP\Testing\TestDoubles\TestMagicLink;
-    use BetterWP\Contracts\AbstractRouteCollection;
-    use BetterWP\Contracts\MagicLink;
-    use BetterWP\Contracts\RouteMatcher;
-    use BetterWP\Contracts\RouteRegistrarInterface;
-    use BetterWP\Contracts\RouteUrlGenerator;
-    use BetterWP\Contracts\ServiceProvider;
-    use BetterWP\Http\DatabaseMagicLink;
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
-    use BetterWP\Factories\RouteActionFactory;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Routing\Conditions\AdminAjaxCondition;
-    use BetterWP\Routing\Conditions\AdminPageCondition;
-    use BetterWP\Routing\Conditions\QueryStringCondition;
-    use BetterWP\Routing\Conditions\RequestAttributeCondition;
-    use BetterWP\Routing\FastRoute\CachedFastRouteMatcher;
-    use BetterWP\Factories\ConditionFactory;
-    use BetterWP\Routing\Conditions\CustomCondition;
-    use BetterWP\Routing\Conditions\NegateCondition;
-    use BetterWP\Routing\Conditions\PostIdCondition;
-    use BetterWP\Routing\Conditions\PostSlugCondition;
-    use BetterWP\Routing\Conditions\PostStatusCondition;
-    use BetterWP\Routing\Conditions\PostTemplateCondition;
-    use BetterWP\Routing\Conditions\PostTypeCondition;
-    use BetterWP\Routing\FastRoute\FastRouteMatcher;
-    use BetterWP\Routing\FastRoute\FastRouteUrlGenerator;
-    use BetterWP\Support\FilePath;
+    use Snicco\Testing\TestDoubles\TestMagicLink;
+    use Snicco\Contracts\AbstractRouteCollection;
+    use Snicco\Contracts\MagicLink;
+    use Snicco\Contracts\RouteMatcher;
+    use Snicco\Contracts\RouteRegistrarInterface;
+    use Snicco\Contracts\RouteUrlGenerator;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\Http\DatabaseMagicLink;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\Factories\RouteActionFactory;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\Conditions\AdminAjaxCondition;
+    use Snicco\Routing\Conditions\AdminPageCondition;
+    use Snicco\Routing\Conditions\QueryStringCondition;
+    use Snicco\Routing\Conditions\RequestAttributeCondition;
+    use Snicco\Routing\FastRoute\CachedFastRouteMatcher;
+    use Snicco\Factories\ConditionFactory;
+    use Snicco\Routing\Conditions\CustomCondition;
+    use Snicco\Routing\Conditions\NegateCondition;
+    use Snicco\Routing\Conditions\PostIdCondition;
+    use Snicco\Routing\Conditions\PostSlugCondition;
+    use Snicco\Routing\Conditions\PostStatusCondition;
+    use Snicco\Routing\Conditions\PostTemplateCondition;
+    use Snicco\Routing\Conditions\PostTypeCondition;
+    use Snicco\Routing\FastRoute\FastRouteMatcher;
+    use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
+    use Snicco\Support\FilePath;
 
 
     class RoutingServiceProvider extends ServiceProvider

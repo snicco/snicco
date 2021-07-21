@@ -6,7 +6,7 @@
 
     namespace Tests\fixtures\Mail;
 
-    use BetterWP\Mail\Mailable;
+    use Snicco\Mail\Mailable;
 
     class WeAreClosing extends Mailable
     {

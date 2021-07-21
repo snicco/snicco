@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Controllers;
+    namespace Snicco\Auth\Controllers;
 
     use Respect\Validation\Validator;
     use WP_User;
-    use BetterWP\Auth\Traits\ResolvesUser;
-    use BetterWP\Contracts\ViewInterface;
-    use BetterWP\Auth\Mail\ResetPasswordMail;
-    use BetterWP\Http\Controller;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Responses\RedirectResponse;
-    use BetterWP\Mail\MailBuilder;
-    use BetterWP\Session\CsrfField;
+    use Snicco\Auth\Traits\ResolvesUser;
+    use Snicco\Contracts\ViewInterface;
+    use Snicco\Auth\Mail\ResetPasswordMail;
+    use Snicco\Http\Controller;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Mail\MailBuilder;
+    use Snicco\Session\CsrfField;
     use Respect\Validation\Validator as v;
 
     class ForgotPasswordController extends Controller

@@ -9,12 +9,12 @@
     use Nyholm\Psr7\Factory\Psr17Factory;
     use PHPUnit\Framework\Assert;
     use Tests\stubs\TestApp;
-    use BetterWP\Application\Application;
-    use BetterWP\Contracts\ViewInterface;
-    use BetterWP\Http\ResponseEmitter;
-    use BetterWP\Support\Arr;
-    use BetterWP\Testing\TestCase as BaseTestCase;
-    use BetterWP\Testing\TestResponse;
+    use Snicco\Application\Application;
+    use Snicco\Contracts\ViewInterface;
+    use Snicco\Http\ResponseEmitter;
+    use Snicco\Support\Arr;
+    use Snicco\Testing\TestCase as BaseTestCase;
+    use Snicco\Testing\TestResponse;
 
     class TestCase extends BaseTestCase
     {

@@ -4,20 +4,20 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Confirmation;
+    namespace Snicco\Auth\Confirmation;
 
     use Illuminate\Support\InteractsWithTime;
-    use BetterWP\Auth\Contracts\AuthConfirmation;
-    use BetterWP\Auth\Mail\ConfirmAuthMail;
-    use BetterWP\Contracts\MagicLink;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Mail\MailBuilder;
-    use BetterWP\Session\Session;
-    use BetterWP\View\ViewFactory;
+    use Snicco\Auth\Contracts\AuthConfirmation;
+    use Snicco\Auth\Mail\ConfirmAuthMail;
+    use Snicco\Contracts\MagicLink;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Mail\MailBuilder;
+    use Snicco\Session\Session;
+    use Snicco\View\ViewFactory;
 
     class EmailAuthConfirmation implements AuthConfirmation
     {

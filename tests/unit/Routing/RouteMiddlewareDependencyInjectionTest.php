@@ -12,19 +12,19 @@
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateTestSubjects;
     use Tests\helpers\CreateUrlGenerator;
-    use BetterWP\Testing\TestDoubles\TestMagicLink;
+    use Snicco\Testing\TestDoubles\TestMagicLink;
     use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
     use Tests\fixtures\Controllers\Admin\AdminControllerWithMiddleware;
 	use Tests\fixtures\Middleware\MiddlewareWithDependencies;
-    use BetterWP\Events\Event;
-    use BetterWP\Contracts\MagicLink;
-    use BetterWP\Contracts\RouteUrlGenerator;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Routing\Router;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\View\ViewFactory;
+    use Snicco\Events\Event;
+    use Snicco\Contracts\MagicLink;
+    use Snicco\Contracts\RouteUrlGenerator;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\Router;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\View\ViewFactory;
 
     class RouteMiddlewareDependencyInjectionTest extends UnitTest {
 

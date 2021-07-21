@@ -5,7 +5,7 @@
 
     use PHPUnit\Framework\Assert;
     use Tests\stubs\TestApp;
-    use BetterWP\Routing\Router;
+    use Snicco\Routing\Router;
 
     TestApp::route()->prefix('wpquery')->group(function (Router $router) {
 

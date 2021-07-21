@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing\FastRoute;
+    namespace Snicco\Routing\FastRoute;
 
     use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
-    use BetterWP\Contracts\RouteMatcher;
-    use BetterWP\Routing\Route;
-    use BetterWP\Routing\RoutingResult;
-    use BetterWP\Traits\PreparesRouteForExport;
+    use Snicco\Contracts\RouteMatcher;
+    use Snicco\Routing\Route;
+    use Snicco\Routing\RoutingResult;
+    use Snicco\Traits\PreparesRouteForExport;
 
 
     class CachedFastRouteMatcher implements RouteMatcher

@@ -4,20 +4,20 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Session;
+    namespace Snicco\Session;
 
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
-    use BetterWP\Auth\WpAuthSessionToken;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Cookie;
-    use BetterWP\Http\Cookies;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\ResponseEmitter;
-    use BetterWP\Session\Contracts\SessionManagerInterface;
-    use BetterWP\Session\Events\NewLogin;
-    use BetterWP\Session\Events\SessionRegenerated;
-    use BetterWP\Traits\HasLottery;
+    use Snicco\Auth\WpAuthSessionToken;
+    use Snicco\Support\WP;
+    use Snicco\Http\Cookie;
+    use Snicco\Http\Cookies;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseEmitter;
+    use Snicco\Session\Contracts\SessionManagerInterface;
+    use Snicco\Session\Events\NewLogin;
+    use Snicco\Session\Events\SessionRegenerated;
+    use Snicco\Traits\HasLottery;
 
     class SessionManager implements SessionManagerInterface
     {

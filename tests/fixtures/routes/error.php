@@ -5,9 +5,9 @@
 
 
     /** @var Router $router */
-    use BetterWP\Routing\Router;
-    use BetterWP\ExceptionHandling\Exceptions\HttpException;
-    use BetterWP\Session\Exceptions\InvalidCsrfTokenException;
+    use Snicco\Routing\Router;
+    use Snicco\ExceptionHandling\Exceptions\HttpException;
+    use Snicco\Session\Exceptions\InvalidCsrfTokenException;
 
     $router->get('error/500', function () {
 

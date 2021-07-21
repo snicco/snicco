@@ -6,7 +6,7 @@
 
 	namespace Tests\fixtures\Controllers\Web;
 
-	use BetterWP\Http\Psr7\Request;
+	use Snicco\Http\Psr7\Request;
 
 	class WebController {
 

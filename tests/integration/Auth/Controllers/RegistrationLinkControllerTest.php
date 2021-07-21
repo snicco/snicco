@@ -7,8 +7,8 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use BetterWP\Auth\Contracts\RegistrationViewResponse;
-    use BetterWP\Auth\Mail\ConfirmRegistrationEmail;
+    use Snicco\Auth\Contracts\RegistrationViewResponse;
+    use Snicco\Auth\Mail\ConfirmRegistrationEmail;
 
     class RegistrationLinkControllerTest extends AuthTestCase
     {

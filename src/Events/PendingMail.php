@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Events;
+    namespace Snicco\Events;
 
-    use BetterWP\Events\Event;
-    use BetterWP\Mail\Mailable;
+    use Snicco\Events\Event;
+    use Snicco\Mail\Mailable;
 
     class PendingMail extends Event
     {

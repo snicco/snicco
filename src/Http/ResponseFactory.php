@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Http;
+    namespace Snicco\Http;
 
     use Psr\Http\Message\ResponseFactoryInterface;
     use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
@@ -12,17 +12,17 @@
     use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
     use Psr\Http\Message\StreamInterface;
     use Throwable;
-    use BetterWP\Contracts\AbstractRedirector;
-    use BetterWP\Contracts\ResponsableInterface;
-    use BetterWP\Contracts\ViewFactoryInterface as ViewFactory;
-    use BetterWP\ExceptionHandling\Exceptions\HttpException;
-    use BetterWP\ExceptionHandling\Exceptions\ViewException;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Http\Responses\InvalidResponse;
-    use BetterWP\Http\Responses\NullResponse;
-    use BetterWP\Http\Responses\RedirectResponse;
-    use BetterWP\Http\Responses\WpQueryFilteredResponse;
+    use Snicco\Contracts\AbstractRedirector;
+    use Snicco\Contracts\ResponsableInterface;
+    use Snicco\Contracts\ViewFactoryInterface as ViewFactory;
+    use Snicco\ExceptionHandling\Exceptions\HttpException;
+    use Snicco\ExceptionHandling\Exceptions\ViewException;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Http\Responses\InvalidResponse;
+    use Snicco\Http\Responses\NullResponse;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Http\Responses\WpQueryFilteredResponse;
 
     /**
      * @todo either this class or the Response class need a prepare method to fix obvious mistakes.

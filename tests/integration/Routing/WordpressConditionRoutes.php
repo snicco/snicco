@@ -12,9 +12,9 @@
     use Tests\stubs\TestRequest;
     use Tests\helpers\CreatesWpUrls;
     use Tests\TestCase;
-    use BetterWP\Events\Event;
-    use BetterWP\Events\ResponseSent;
-    use BetterWP\Http\HttpKernel;
+    use Snicco\Events\Event;
+    use Snicco\Events\ResponseSent;
+    use Snicco\Http\HttpKernel;
 
     class WordpressConditionRoutes extends TestCase
     {

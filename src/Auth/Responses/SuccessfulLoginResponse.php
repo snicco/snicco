@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Responses;
+    namespace Snicco\Auth\Responses;
 
     use Psr\Http\Message\ResponseInterface;
     use WP_User;
-    use BetterWP\Http\Psr7\Response;
+    use Snicco\Http\Psr7\Response;
 
     class SuccessfulLoginResponse extends Response
     {

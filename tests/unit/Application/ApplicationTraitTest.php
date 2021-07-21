@@ -8,8 +8,8 @@
 
 	use PHPUnit\Framework\TestCase;
 	use BadMethodCallException;
-	use BetterWP\Application\ApplicationTrait;
-	use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+	use Snicco\Application\ApplicationTrait;
+	use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 	class ApplicationTraitTest extends TestCase {
 

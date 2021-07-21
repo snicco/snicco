@@ -6,7 +6,7 @@
 
     namespace Tests\integration\Database;
 
-    use BetterWP\Database\WPConnection;
+    use Snicco\Database\WPConnection;
     use Illuminate\Database\QueryException;
     use Illuminate\Database\Schema\Blueprint;
     use Illuminate\Support\Facades\DB;

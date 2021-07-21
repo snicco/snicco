@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\View;
+	namespace Snicco\View;
 
 	use Closure;
-	use BetterWP\Contracts\ViewComposer as ViewComposerInterface;
-	use BetterWP\Traits\ReflectsCallable;
+	use Snicco\Contracts\ViewComposer as ViewComposerInterface;
+	use Snicco\Traits\ReflectsCallable;
 
 	class ViewComposer implements ViewComposerInterface {
 

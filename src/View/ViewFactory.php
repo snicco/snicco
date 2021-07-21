@@ -4,13 +4,13 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\View;
+	namespace Snicco\View;
 
-	use BetterWP\Contracts\ViewEngineInterface;
-	use BetterWP\Contracts\ViewInterface;
-	use BetterWP\Contracts\ViewFactoryInterface;
-	use BetterWP\Support\VariableBag;
-	use BetterWP\Support\Arr;
+	use Snicco\Contracts\ViewEngineInterface;
+	use Snicco\Contracts\ViewInterface;
+	use Snicco\Contracts\ViewFactoryInterface;
+	use Snicco\Support\VariableBag;
+	use Snicco\Support\Arr;
 
 	class ViewFactory implements ViewFactoryInterface {
 

@@ -4,20 +4,20 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Contracts;
+    namespace Snicco\Contracts;
 
     use Contracts\ContainerAdapter;
-    use BetterWP\Application\Application;
-    use BetterWP\Application\Config;
-    use BetterWP\Events\IncomingAdminRequest;
-    use BetterWP\Events\IncomingAjaxRequest;
-    use BetterWP\Events\IncomingWebRequest;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Session\SessionServiceProvider;
-    use BetterWP\Support\Arr;
-    use BetterWP\Support\Str;
+    use Snicco\Application\Application;
+    use Snicco\Application\Config;
+    use Snicco\Events\IncomingAdminRequest;
+    use Snicco\Events\IncomingAjaxRequest;
+    use Snicco\Events\IncomingWebRequest;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Session\SessionServiceProvider;
+    use Snicco\Support\Arr;
+    use Snicco\Support\Str;
 
     abstract class ServiceProvider
     {

@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Session;
+    namespace Snicco\Session;
 
     use Slim\Csrf\Guard;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Session\Exceptions\InvalidCsrfTokenException;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Session\Exceptions\InvalidCsrfTokenException;
 
     class GuardFactory
     {

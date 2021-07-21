@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\ExceptionHandling;
+	namespace Snicco\ExceptionHandling;
 
-    use BetterWP\Events\IncomingAjaxRequest;
-    use BetterWP\Events\ResponseSent;
-    use BetterWP\Http\Responses\RedirectResponse;
+    use Snicco\Events\IncomingAjaxRequest;
+    use Snicco\Events\ResponseSent;
+    use Snicco\Http\Responses\RedirectResponse;
 
     class ShutdownHandler {
 

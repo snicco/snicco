@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth;
+    namespace Snicco\Auth;
 
-    use BetterWP\Support\Str;
+    use Snicco\Support\Str;
 
     class RecoveryCode
     {

@@ -6,11 +6,11 @@
 
     namespace Tests\integration\Database;
 
-    use BetterWP\Database\Contracts\BetterWPDbInterface;
-    use BetterWP\Database\Illuminate\MySqlSchemaBuilder;
-    use BetterWP\Database\WPConnection;
-    use BetterWP\Database\Contracts\ConnectionResolverInterface;
-    use BetterWP\Database\Illuminate\MySqlQueryGrammar;
+    use Snicco\Database\Contracts\BetterWPDbInterface;
+    use Snicco\Database\Illuminate\MySqlSchemaBuilder;
+    use Snicco\Database\WPConnection;
+    use Snicco\Database\Contracts\ConnectionResolverInterface;
+    use Snicco\Database\Illuminate\MySqlQueryGrammar;
     use Exception;
     use Illuminate\Database\Query\Builder;
     use Illuminate\Database\QueryException;
@@ -82,7 +82,7 @@
             $this->assertSame('wp_', $schema_grammar->getTablePrefix());
 
             $processor = $connection->getPostProcessor();
-            $this->assertInstanceOf(\BetterWP\Database\Illuminate\MySqlProcessor::class, $processor);
+            $this->assertInstanceOf(\Snicco\Database\Illuminate\MySqlProcessor::class, $processor);
 
 
         }

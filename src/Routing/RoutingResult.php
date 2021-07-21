@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Routing;
+	namespace Snicco\Routing;
 
 	class RoutingResult {
 

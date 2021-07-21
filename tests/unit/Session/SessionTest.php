@@ -11,11 +11,11 @@
     use SniccoAdapter\BaseContainerAdapter;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\HashesSessionIds;
-    use BetterWP\Events\Event;
-    use BetterWP\Auth\Events\Logout;
-    use BetterWP\Support\WP;
-    use BetterWP\Session\Drivers\ArraySessionDriver;
-    use BetterWP\Session\Session;
+    use Snicco\Events\Event;
+    use Snicco\Auth\Events\Logout;
+    use Snicco\Support\WP;
+    use Snicco\Session\Drivers\ArraySessionDriver;
+    use Snicco\Session\Session;
 
     use function serialize;
 

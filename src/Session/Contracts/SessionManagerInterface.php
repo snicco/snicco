@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Session\Contracts;
+    namespace Snicco\Session\Contracts;
 
-    use BetterWP\Http\Cookie;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Session\Session;
+    use Snicco\Http\Cookie;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Session\Session;
 
     interface SessionManagerInterface
     {

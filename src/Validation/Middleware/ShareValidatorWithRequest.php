@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Validation\Middleware;
+    namespace Snicco\Validation\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
-    use BetterWP\Contracts\Middleware;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Validation\Validator;
+    use Snicco\Contracts\Middleware;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Validation\Validator;
 
     class ShareValidatorWithRequest extends Middleware
     {

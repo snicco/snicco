@@ -6,7 +6,7 @@
 
 	namespace Tests\unit\Application;
 
-	use BetterWP\Application\Config;
+	use Snicco\Application\Config;
 	use PHPUnit\Framework\TestCase;
 
 	class ApplicationConfigTest extends TestCase {

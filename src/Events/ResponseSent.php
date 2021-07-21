@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Events;
+    namespace Snicco\Events;
 
-    use BetterWP\Events\Event;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
+    use Snicco\Events\Event;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
 
     class ResponseSent extends Event
     {

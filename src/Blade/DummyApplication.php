@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Blade;
+    namespace Snicco\Blade;
 
     use Closure;
     use Illuminate\Contracts\Foundation\Application;

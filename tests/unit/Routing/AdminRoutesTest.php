@@ -12,12 +12,12 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\UnitTest;
     use Tests\helpers\CreatesWpUrls;
-    use BetterWP\Events\Event;
-    use BetterWP\Events\IncomingAdminRequest;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Support\WP;
-    use BetterWP\Routing\FastRoute\FastRouteUrlGenerator;
-    use BetterWP\Routing\UrlGenerator;
+    use Snicco\Events\Event;
+    use Snicco\Events\IncomingAdminRequest;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Support\WP;
+    use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
+    use Snicco\Routing\UrlGenerator;
 
 
     class AdminRoutesTest extends UnitTest

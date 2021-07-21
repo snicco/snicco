@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Middleware;
+    namespace Snicco\Middleware;
 
-    use BetterWP\Contracts\ErrorHandlerInterface;
-    use BetterWP\Contracts\ServiceProvider;
-    use BetterWP\Http\ResponseEmitter;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Middleware\Core\EvaluateResponseMiddleware;
-    use BetterWP\Middleware\Core\OpenRedirectProtection;
-    use BetterWP\Middleware\Core\OutputBufferMiddleware;
-    use BetterWP\Middleware\Core\RouteRunner;
-    use BetterWP\Routing\Pipeline;
+    use Snicco\Contracts\ErrorHandlerInterface;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\Http\ResponseEmitter;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Middleware\Core\EvaluateResponseMiddleware;
+    use Snicco\Middleware\Core\OpenRedirectProtection;
+    use Snicco\Middleware\Core\OutputBufferMiddleware;
+    use Snicco\Middleware\Core\RouteRunner;
+    use Snicco\Routing\Pipeline;
 
     class MiddlewareServiceProvider extends ServiceProvider
     {

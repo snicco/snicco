@@ -4,22 +4,22 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Application;
+    namespace Snicco\Application;
 
-    use BetterWP\View\MethodField;
-    use BetterWP\Contracts\AbstractRedirector;
-    use BetterWP\Contracts\ServiceProvider;
-    use BetterWP\Contracts\ViewFactoryInterface;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
-    use BetterWP\ExceptionHandling\ShutdownHandler;
-    use BetterWP\Http\Cookies;
-    use BetterWP\Routing\Router;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\View\GlobalContext;
-    use BetterWP\View\PhpViewEngine;
-    use BetterWP\View\ViewComposerCollection;
+    use Snicco\View\MethodField;
+    use Snicco\Contracts\AbstractRedirector;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\Contracts\ViewFactoryInterface;
+    use Snicco\Support\WP;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\ExceptionHandling\ShutdownHandler;
+    use Snicco\Http\Cookies;
+    use Snicco\Routing\Router;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\View\GlobalContext;
+    use Snicco\View\PhpViewEngine;
+    use Snicco\View\ViewComposerCollection;
 
     class ApplicationServiceProvider extends ServiceProvider
     {

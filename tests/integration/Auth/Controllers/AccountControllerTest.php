@@ -10,15 +10,15 @@
     use Tests\AuthTestCase;
     use Tests\stubs\TestApp;
     use Tests\stubs\TestView;
-    use BetterWP\Events\Event;
-    use BetterWP\Auth\Contracts\CreatesNewUser;
-    use BetterWP\Auth\Contracts\DeletesUsers;
-    use BetterWP\Auth\Events\Registration;
-    use BetterWP\Auth\Responses\CreateAccountViewResponse;
-    use BetterWP\Auth\Responses\RegisteredResponse;
-    use BetterWP\Contracts\ResponsableInterface;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\ResponseFactory;
+    use Snicco\Events\Event;
+    use Snicco\Auth\Contracts\CreatesNewUser;
+    use Snicco\Auth\Contracts\DeletesUsers;
+    use Snicco\Auth\Events\Registration;
+    use Snicco\Auth\Responses\CreateAccountViewResponse;
+    use Snicco\Auth\Responses\RegisteredResponse;
+    use Snicco\Contracts\ResponsableInterface;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
 
     class AccountControllerTest extends AuthTestCase
     {

@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Blade;
+    namespace Snicco\Blade;
 
     use Illuminate\View\Component as IlluminateComponent;
-    use BetterWP\Contracts\ViewEngineInterface;
+    use Snicco\Contracts\ViewEngineInterface;
 
     abstract class BladeComponent extends IlluminateComponent
     {

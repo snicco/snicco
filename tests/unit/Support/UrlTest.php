@@ -7,7 +7,7 @@
     namespace Tests\unit\Support;
 
     use PHPUnit\Framework\TestCase;
-    use BetterWP\Support\Url;
+    use Snicco\Support\Url;
 
     class UrlTest extends TestCase
     {

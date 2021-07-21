@@ -7,12 +7,12 @@
     namespace Tests\unit\Auth;
 
     use Tests\MiddlewareTestCase;
-    use BetterWP\Auth\Middleware\AuthUnconfirmed;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Routing\Route;
-    use BetterWP\Session\Drivers\ArraySessionDriver;
-    use BetterWP\Session\Session;
+    use Snicco\Auth\Middleware\AuthUnconfirmed;
+    use Snicco\Support\WP;
+    use Snicco\Http\Delegate;
+    use Snicco\Routing\Route;
+    use Snicco\Session\Drivers\ArraySessionDriver;
+    use Snicco\Session\Session;
 
     class AuthUnconfirmedTest extends MiddlewareTestCase
     {

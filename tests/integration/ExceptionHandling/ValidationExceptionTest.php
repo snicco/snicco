@@ -8,11 +8,11 @@
 
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use BetterWP\Contracts\ErrorHandlerInterface;
-    use BetterWP\ExceptionHandling\ProductionErrorHandler;
-    use BetterWP\Session\SessionServiceProvider;
-    use BetterWP\Testing\TestResponse;
-    use BetterWP\Validation\Exceptions\ValidationException;
+    use Snicco\Contracts\ErrorHandlerInterface;
+    use Snicco\ExceptionHandling\ProductionErrorHandler;
+    use Snicco\Session\SessionServiceProvider;
+    use Snicco\Testing\TestResponse;
+    use Snicco\Validation\Exceptions\ValidationException;
 
     class ValidationExceptionTest extends TestCase
     {

@@ -8,11 +8,11 @@
 
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use BetterWP\Factories\ConditionFactory;
-	use BetterWP\Factories\RouteActionFactory;
-	use BetterWP\Factories\ViewComposerFactory;
-	use BetterWP\Routing\ControllerAction;
-	use BetterWP\View\ViewComposer;
+    use Snicco\Factories\ConditionFactory;
+	use Snicco\Factories\RouteActionFactory;
+	use Snicco\Factories\ViewComposerFactory;
+	use Snicco\Routing\ControllerAction;
+	use Snicco\View\ViewComposer;
 
 	class FactoryServiceProviderTest extends TestCase {
 

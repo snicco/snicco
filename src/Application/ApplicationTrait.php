@@ -4,12 +4,12 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Application;
+	namespace Snicco\Application;
 
 	use BadMethodCallException;
     use Contracts\ContainerAdapter;
     use SniccoAdapter\BaseContainerAdapter;
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 	/**
 	 * Provides static access to an Application instance.

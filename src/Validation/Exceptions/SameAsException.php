@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Validation\Exceptions;
+    namespace Snicco\Validation\Exceptions;
 
     class SameAsException extends \Respect\Validation\Exceptions\ValidationException
     {

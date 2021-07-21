@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Testing\TestDoubles;
+    namespace Snicco\Testing\TestDoubles;
 
-    use BetterWP\Contracts\MagicLink;
-    use BetterWP\Http\Psr7\Request;
+    use Snicco\Contracts\MagicLink;
+    use Snicco\Http\Psr7\Request;
 
     class TestMagicLink extends MagicLink
     {

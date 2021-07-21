@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Database\Testing\Assertables;
+    namespace Snicco\Database\Testing\Assertables;
 
-    use BetterWP\Support\Str;
+    use Snicco\Support\Str;
     use PHPUnit\Framework\Assert as PHPUnit;
 
     use function PHPUnit\Framework\isNull;

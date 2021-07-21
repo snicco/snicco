@@ -10,12 +10,12 @@
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Session\Drivers\ArraySessionDriver;
-    use BetterWP\Session\Session;
-    use BetterWP\Validation\Exceptions\ValidationException;
-    use BetterWP\Validation\Validator;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Session\Drivers\ArraySessionDriver;
+    use Snicco\Session\Session;
+    use Snicco\Validation\Exceptions\ValidationException;
+    use Snicco\Validation\Validator;
 
     class InteractsWithInputTest extends UnitTest
     {

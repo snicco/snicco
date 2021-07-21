@@ -4,22 +4,22 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Testing;
+    namespace Snicco\Testing;
 
     use Closure;
-    use BetterWP\Application\Application;
-    use BetterWP\Contracts\ViewInterface;
-    use BetterWP\Http\Psr7\Response;
+    use Snicco\Application\Application;
+    use Snicco\Contracts\ViewInterface;
+    use Snicco\Http\Psr7\Response;
     use PHPUnit\Framework\Assert as PHPUnit;
-    use BetterWP\Http\Responses\NullResponse;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\Session\Session;
-    use BetterWP\Support\Arr;
-    use BetterWP\Support\Str;
-    use BetterWP\Support\Url;
-    use BetterWP\Support\VariableBag;
-    use BetterWP\Testing\Assertable\AssertableCookie;
-    use BetterWP\Testing\Constraints\SeeInOrder;
+    use Snicco\Http\Responses\NullResponse;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\Session\Session;
+    use Snicco\Support\Arr;
+    use Snicco\Support\Str;
+    use Snicco\Support\Url;
+    use Snicco\Support\VariableBag;
+    use Snicco\Testing\Assertable\AssertableCookie;
+    use Snicco\Testing\Constraints\SeeInOrder;
 
     class TestResponse
     {

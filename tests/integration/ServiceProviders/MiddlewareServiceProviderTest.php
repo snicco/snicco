@@ -9,14 +9,14 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use BetterWP\Middleware\Core\EvaluateResponseMiddleware;
-    use BetterWP\Middleware\Core\OpenRedirectProtection;
-    use BetterWP\Middleware\Core\RouteRunner;
-    use BetterWP\Middleware\MiddlewareStack;
-    use BetterWP\Middleware\Secure;
-    use BetterWP\Middleware\TrailingSlash;
-    use BetterWP\Middleware\Www;
-    use BetterWP\Routing\Pipeline;
+    use Snicco\Middleware\Core\EvaluateResponseMiddleware;
+    use Snicco\Middleware\Core\OpenRedirectProtection;
+    use Snicco\Middleware\Core\RouteRunner;
+    use Snicco\Middleware\MiddlewareStack;
+    use Snicco\Middleware\Secure;
+    use Snicco\Middleware\TrailingSlash;
+    use Snicco\Middleware\Www;
+    use Snicco\Routing\Pipeline;
 
     class MiddlewareServiceProviderTest extends TestCase
     {

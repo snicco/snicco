@@ -6,9 +6,9 @@
 
 	namespace Tests\stubs;
 
-	use BetterWP\Contracts\PhpViewInterface;
-	use BetterWP\Contracts\ViewInterface;
-	use BetterWP\Support\Arr;
+	use Snicco\Contracts\PhpViewInterface;
+	use Snicco\Contracts\ViewInterface;
+	use Snicco\Support\Arr;
 
 	class TestView implements PhpViewInterface {
 

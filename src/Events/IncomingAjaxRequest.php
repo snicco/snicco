@@ -4,12 +4,12 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Events;
+	namespace Snicco\Events;
 
 
     use BetterWpHooks\Traits\DispatchesConditionally;
     use BetterWpHooks\Traits\IsAction;
-    use BetterWP\Support\Arr;
+    use Snicco\Support\Arr;
 
     class IncomingAjaxRequest extends IncomingRequest {
 

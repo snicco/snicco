@@ -4,22 +4,22 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Application;
+    namespace Snicco\Application;
 
     use Contracts\ContainerAdapter;
     use LogicException;
-    use BetterWP\Contracts\AbstractRedirector;
-    use BetterWP\Http\Cookies;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Http\Responses\RedirectResponse;
-    use BetterWP\Mail\MailBuilder;
-    use BetterWP\Routing\Route;
-    use BetterWP\Routing\Router;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\Contracts\ViewInterface;
-    use BetterWP\Session\CsrfField;
-    use BetterWP\Session\Session;
-    use BetterWP\View\GlobalContext;
+    use Snicco\Contracts\AbstractRedirector;
+    use Snicco\Http\Cookies;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Mail\MailBuilder;
+    use Snicco\Routing\Route;
+    use Snicco\Routing\Router;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\Contracts\ViewInterface;
+    use Snicco\Session\CsrfField;
+    use Snicco\Session\Session;
+    use Snicco\View\GlobalContext;
 
     /**
      * Can be applied to your App class via a "@mixin" annotation for better IDE support.
@@ -201,7 +201,7 @@
          * Returns a response factory instance.
          *
          * @return  ResponseFactory
-         * @see \BetterWP\Http\ResponseFactory
+         * @see \Snicco\Http\ResponseFactory
          */
         public static function response() : ResponseFactory
         {
@@ -213,7 +213,7 @@
          * @param  string|string[]  $views
          *
          * @return ViewInterface
-         * @see    \BetterWP\View\ViewFactory::make()
+         * @see    \Snicco\View\ViewFactory::make()
          */
         public static function view($views) : ViewInterface
         {
@@ -223,7 +223,7 @@
          * Output child layout content.
          *
          * @return void
-         * @see    \BetterWP\View\PhpViewEngine::includeNextView()
+         * @see    \Snicco\View\PhpViewEngine::includeNextView()
          */
         public static function includeChildViews() : void
         {
@@ -236,8 +236,8 @@
          * @param  array<string, mixed>  $context
          *
          * @return string
-         * @see    \BetterWP\Contracts\ViewInterface::toString()
-         * @see    \BetterWP\View\ViewFactory::make()
+         * @see    \Snicco\Contracts\ViewInterface::toString()
+         * @see    \Snicco\View\ViewFactory::make()
          */
         public static function render($views, array $context = []) : string
         {
@@ -251,7 +251,7 @@
          * @param  string|array|callable|\Closure  $callable
          *
          * @return void
-         * @see \BetterWP\View\ViewComposerCollection::addComposer()
+         * @see \Snicco\View\ViewComposerCollection::addComposer()
          */
         public static function addComposer($views, $callable) : void
         {

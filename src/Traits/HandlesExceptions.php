@@ -4,9 +4,9 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Traits;
+	namespace Snicco\Traits;
 
-	use BetterWP\Http\Psr7\Request;
+	use Snicco\Http\Psr7\Request;
 
     trait HandlesExceptions {
 

@@ -4,24 +4,24 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\ExceptionHandling;
+    namespace Snicco\ExceptionHandling;
 
     use Contracts\ContainerAdapter;
     use Illuminate\Support\Facades\Http;
     use Psr\Log\LoggerInterface;
     use Throwable;
-    use BetterWP\Contracts\ErrorHandlerInterface;
-    use BetterWP\Events\UnrecoverableExceptionHandled;
-    use BetterWP\ExceptionHandling\Exceptions\HttpException;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Http\ResponseEmitter;
-    use BetterWP\Session\Session;
-    use BetterWP\Support\Arr;
-    use BetterWP\Traits\HandlesExceptions;
-    use BetterWP\Validation\Exceptions\ValidationException;
+    use Snicco\Contracts\ErrorHandlerInterface;
+    use Snicco\Events\UnrecoverableExceptionHandled;
+    use Snicco\ExceptionHandling\Exceptions\HttpException;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Http\ResponseEmitter;
+    use Snicco\Session\Session;
+    use Snicco\Support\Arr;
+    use Snicco\Traits\HandlesExceptions;
+    use Snicco\Validation\Exceptions\ValidationException;
 
     class ProductionErrorHandler implements ErrorHandlerInterface
     {

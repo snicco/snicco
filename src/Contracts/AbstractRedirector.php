@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Contracts;
+    namespace Snicco\Contracts;
 
     use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
     use Respect\Stringifier\Quoters\CodeQuoter;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Responses\RedirectResponse;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\Support\Url;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\Support\Url;
 
     abstract class AbstractRedirector
     {

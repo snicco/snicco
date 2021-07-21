@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Application;
+    namespace Snicco\Application;
 
     use Exception;
     use Symfony\Component\Finder\Finder;

@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Contracts;
+    namespace Snicco\Contracts;
 
 
     interface Mailer
     {
 
         /**
-         * @param  \BetterWP\Mail\Mailable  $mail
+         * @param  \Snicco\Mail\Mailable  $mail
          *
          * @return bool Whether the mail was processed correctly.
          */
-        public function send ( \BetterWP\Mail\Mailable $mail ) : bool;
+        public function send ( \Snicco\Mail\Mailable $mail ) : bool;
 
 
     }

@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Session\Events;
+    namespace Snicco\Session\Events;
 
-    use BetterWP\Events\Event;
-    use BetterWP\Session\Session;
+    use Snicco\Events\Event;
+    use Snicco\Session\Session;
 
     class SessionRegenerated extends Event
     {

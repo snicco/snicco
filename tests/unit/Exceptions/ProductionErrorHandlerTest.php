@@ -17,21 +17,21 @@
     use Tests\UnitTest;
     use Tests\stubs\TestException;
     use Tests\stubs\TestRequest;
-    use BetterWP\Events\Event;
-    use BetterWP\Contracts\AbstractRedirector;
-    use BetterWP\ExceptionHandling\Exceptions\HttpException;
-    use BetterWP\Session\Drivers\ArraySessionDriver;
-    use BetterWP\Session\Session;
-    use BetterWP\Session\StatefulRedirector;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Events\UnrecoverableExceptionHandled;
-    use BetterWP\ExceptionHandling\ProductionErrorHandler;
-    use BetterWP\Factories\ErrorHandlerFactory;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Validation\Exceptions\ValidationException;
-    use BetterWP\Validation\Validator;
+    use Snicco\Events\Event;
+    use Snicco\Contracts\AbstractRedirector;
+    use Snicco\ExceptionHandling\Exceptions\HttpException;
+    use Snicco\Session\Drivers\ArraySessionDriver;
+    use Snicco\Session\Session;
+    use Snicco\Session\StatefulRedirector;
+    use Snicco\Support\WP;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Events\UnrecoverableExceptionHandled;
+    use Snicco\ExceptionHandling\ProductionErrorHandler;
+    use Snicco\Factories\ErrorHandlerFactory;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Validation\Exceptions\ValidationException;
+    use Snicco\Validation\Validator;
 
     class ProductionErrorHandlerTest extends UnitTest
     {

@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Routing;
+	namespace Snicco\Routing;
 
 	use Codeception\Step\Condition;
-	use BetterWP\Support\Arr;
+	use Snicco\Support\Arr;
 
 	class ConditionBucket {
 

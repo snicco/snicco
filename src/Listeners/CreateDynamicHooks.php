@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Listeners;
+    namespace Snicco\Listeners;
 
     use BetterWpHooks\Contracts\Dispatcher;
-    use BetterWP\Events\AdminInit;
-    use BetterWP\Events\IncomingAdminRequest;
+    use Snicco\Events\AdminInit;
+    use Snicco\Events\IncomingAdminRequest;
 
     class CreateDynamicHooks
     {

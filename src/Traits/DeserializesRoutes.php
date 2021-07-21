@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Traits;
+    namespace Snicco\Traits;
 
 
-    use BetterWP\Routing\Route;
-    use BetterWP\Support\Str;
+    use Snicco\Routing\Route;
+    use Snicco\Support\Str;
 
     trait DeserializesRoutes
     {
