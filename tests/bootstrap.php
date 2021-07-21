@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
     use AdrianSuter\Autoload\Override\Override;
-    use Tests\stubs\HeaderStack;
     use Snicco\Http\ResponseEmitter;
+    use Tests\stubs\HeaderStack;
 
     error_reporting(E_ALL);
     mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
 
-    $root_dir = getenv('ROOT_DIR');
+    $root_dir = getenv('WP_ROOT_DIR').DIRECTORY_SEPARATOR.'framework';
 
     if ( ! defined('ROOT_DIR')) {
 

@@ -6,15 +6,12 @@
 
     namespace Tests\integration\Database;
 
+    use mysqli;
     use Snicco\Database\Contracts\BetterWPDbInterface;
     use Snicco\Database\DatabaseServiceProvider;
     use Snicco\Database\FakeDB;
     use Snicco\Database\Testing\Assertables\AssertableWpDB;
     use Snicco\Database\WPConnection;
-    use Illuminate\Container\Container;
-    use Illuminate\Support\Facades\DB;
-    use Illuminate\Support\Facades\Facade;
-    use mysqli;
     use Tests\TestCase;
 
     class DatabaseTestCase extends TestCase
@@ -52,7 +49,6 @@
 
             }
 
-
             parent::setUp();
 
         }
@@ -64,15 +60,16 @@
         {
 
             return [
-                'username' => $_SERVER['SECONDARY_DB_USER'],
+                'username' => $_SERVER['SECONDARY_DB_USER'] ?? 'root',
                 'database' => $_SERVER['SECONDARY_DB_NAME'],
-                'password' => $_SERVER['SECONDARY_DB_PASSWORD'],
-                'host' => $_SERVER['SECONDARY_DB_HOST'],
+                'password' => $_SERVER['SECONDARY_DB_PASSWORD'] ?? '',
+                'host' => $_SERVER['SECONDARY_DB_HOST'] ?? '127.0.0.1',
             ];
         }
 
         protected function assertDefaultConnection(BetterWPDbInterface $wpdb) : void
         {
+
             $this->assertSame(DB_NAME, $wpdb->dbname);
         }
 
@@ -85,11 +82,14 @@
 
         protected function withFakeDb() : DatabaseTestCase
         {
+
             $this->instance(BetterWPDbInterface::class, FakeDB::class);
+
             return $this;
         }
 
         protected function assertable(WPConnection $connection) :FakeDB {
+
             return $connection->dbInstance();
         }
 
@@ -142,6 +142,7 @@
         // But we are not testing $wpdb here and can only test if our tables are created correctly.
         protected function ensureFailOnErrors()
         {
+
             global $wpdb;
 
             /** @var mysqli $mysqli */

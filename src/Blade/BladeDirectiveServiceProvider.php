@@ -7,18 +7,18 @@
     namespace Snicco\Blade;
 
     use Illuminate\Support\Facades\Blade;
-    use Tests\unit\View\MethodField;
     use Snicco\Application\ApplicationTrait;
     use Snicco\Contracts\ServiceProvider;
-    use Snicco\Support\WP;
     use Snicco\Session\CsrfField;
+    use Snicco\Support\WP;
+    use Snicco\View\MethodField;
 
     class BladeDirectiveServiceProvider extends ServiceProvider
     {
 
         public function register() : void
         {
-           //
+            //
         }
 
         function bootstrap() : void
@@ -60,7 +60,7 @@
 
                 $app = $this->container->make(ApplicationTrait::class);
 
-                $php = "<?php \${$variable} = {$app}::resolve({$service}::class); ?>";
+                $php = "<?php \${$variable} = {$app}::resolve({$service}::class) ?>";
 
                 return $php;
 

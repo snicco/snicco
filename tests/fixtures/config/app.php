@@ -7,7 +7,7 @@
 
         'key' => TEST_APP_KEY,
 
-        'url' => 'https://wpemerge.test',
+        'url' => SITE_URL,
 
         'providers' => [
 

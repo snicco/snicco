@@ -6,13 +6,13 @@
 
     namespace Tests\integration\Database;
 
-    use Snicco\Database\BetterWPDb;
-    use Snicco\Database\Contracts\BetterWPDbInterface;
-    use Snicco\Database\WPConnection;
     use Exception;
     use Illuminate\Database\QueryException;
     use Mockery as m;
     use mysqli_sql_exception;
+    use Snicco\Database\BetterWPDb;
+    use Snicco\Database\Contracts\BetterWPDbInterface;
+    use Snicco\Database\WPConnection;
     use Throwable;
 
     class ManagesTransactionsTest extends DatabaseTestCase
@@ -43,7 +43,7 @@
             $this->wpdb->dbname = 'wp_testing';
             $this->wpdb->shouldReceive( 'check_connection' )->andReturn( true )->byDefault();
 
-            return new WpConnection( $this->wpdb );
+            return new WpConnection($this->wpdb, 'wp_connection');
 
         }
 

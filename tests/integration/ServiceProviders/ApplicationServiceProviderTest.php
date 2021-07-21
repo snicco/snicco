@@ -6,27 +6,18 @@
 
     namespace Tests\integration\ServiceProviders;
 
-    use Mockery;
-    use Tests\IntegrationTest;
-    use Tests\stubs\TestApp;
-    use Tests\stubs\TestRequest;
-    use Tests\TestCase;
     use Snicco\Application\Application;
-    use Snicco\Events\Event;
-    use Snicco\Contracts\ErrorHandlerInterface;
-    use Snicco\Contracts\ServiceProvider;
     use Snicco\Contracts\ViewInterface;
-    use Snicco\Support\WP;
-    use Snicco\Support\WpFacade;
     use Snicco\Http\Cookies;
     use Snicco\Http\Redirector;
     use Snicco\Http\ResponseFactory;
     use Snicco\Http\Responses\RedirectResponse;
     use Snicco\Routing\Router;
     use Snicco\Routing\UrlGenerator;
-    use Snicco\Session\SessionServiceProvider;
-    use Snicco\Session\Session;
-    use Snicco\Support\Url;
+    use Snicco\Support\WP;
+    use Snicco\Support\WpFacade;
+    use Tests\stubs\TestApp;
+    use Tests\TestCase;
 
     class ApplicationServiceProviderTest extends TestCase
     {
@@ -66,7 +57,7 @@
         public function the_site_url_is_bound()
         {
 
-            $this->assertSame('https://wpemerge.test', TestApp::config('app.url'));
+            $this->assertSame(SITE_URL, TestApp::config('app.url'));
 
         }
 
