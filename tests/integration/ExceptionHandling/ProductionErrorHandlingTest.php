@@ -7,8 +7,8 @@
     namespace Tests\integration\ExceptionHandling;
 
     use Tests\TestCase;
-    use BetterWP\ExceptionHandling\ProductionErrorHandler;
-    use BetterWP\Validation\Exceptions\ValidationException;
+    use Snicco\ExceptionHandling\ProductionErrorHandler;
+    use Snicco\Validation\Exceptions\ValidationException;
 
     /** @see ProductionErrorHandler */
     class ProductionErrorHandlingTest extends TestCase

@@ -6,12 +6,12 @@
 
     namespace Tests\integration\Database;
 
-    use BetterWP\Database\Contracts\BetterWPDbInterface;
-    use BetterWP\Database\FakeDB;
-    use BetterWP\Database\Illuminate\MySqlSchemaBuilder;
-    use BetterWP\Database\WPConnectionResolver;
-    use BetterWP\Database\Contracts\ConnectionResolverInterface;
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\Database\Contracts\BetterWPDbInterface;
+    use Snicco\Database\FakeDB;
+    use Snicco\Database\Illuminate\MySqlSchemaBuilder;
+    use Snicco\Database\WPConnectionResolver;
+    use Snicco\Database\Contracts\ConnectionResolverInterface;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Schema;
 

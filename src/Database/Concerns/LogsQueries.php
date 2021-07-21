@@ -1,7 +1,7 @@
 <?php
 
 
-    namespace BetterWP\Database\Concerns;
+    namespace Snicco\Database\Concerns;
 
     use \Closure;
 

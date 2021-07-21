@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Testing\Concerns;
+    namespace Snicco\Testing\Concerns;
 
-    use BetterWP\Http\ResponseEmitter;
-    use BetterWP\Testing\TestResponseEmitter;
+    use Snicco\Http\ResponseEmitter;
+    use Snicco\Testing\TestResponseEmitter;
 
     trait InteractsWithContainer
     {

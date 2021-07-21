@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Session\Contracts;
+    namespace Snicco\Session\Contracts;
 
     use SessionHandlerInterface;
-    use BetterWP\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Request;
 
     /**
      * NOTE: for all methods that return a session or multiple sessions the driver MUST ONLY

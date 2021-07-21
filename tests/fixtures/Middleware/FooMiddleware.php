@@ -7,8 +7,8 @@
 	namespace Tests\fixtures\Middleware;
 
 	use Psr\Http\Message\ResponseInterface;
-    use BetterWP\Contracts\Middleware;
-    use BetterWP\Http\Psr7\Request;
+    use Snicco\Contracts\Middleware;
+    use Snicco\Http\Psr7\Request;
 
     class FooMiddleware extends Middleware {
 

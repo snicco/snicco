@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Middleware;
+    namespace Snicco\Auth\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
-    use BetterWP\Contracts\Middleware;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Routing\UrlGenerator;
+    use Snicco\Contracts\Middleware;
+    use Snicco\Support\WP;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\UrlGenerator;
 
     class AuthUnconfirmed extends Middleware
     {

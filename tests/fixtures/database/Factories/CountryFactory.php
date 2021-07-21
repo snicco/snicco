@@ -6,7 +6,7 @@
 
     namespace Tests\fixtures\database\Factories;
 
-    use BetterWP\Support\Arr;
+    use Snicco\Support\Arr;
     use Illuminate\Database\Eloquent\Factories\Factory;
 
     class CountryFactory extends Factory

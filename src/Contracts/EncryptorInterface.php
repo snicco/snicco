@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Contracts;
+	namespace Snicco\Contracts;
 
-	use BetterWP\ExceptionHandling\Exceptions\DecryptException;
-    use BetterWP\ExceptionHandling\Exceptions\EncryptException;
+	use Snicco\ExceptionHandling\Exceptions\DecryptException;
+    use Snicco\ExceptionHandling\Exceptions\EncryptException;
 
     interface EncryptorInterface {
 
@@ -54,7 +54,7 @@
 		 *
 		 * @return string
 		 *
-		 * @throws \BetterWP\ExceptionHandling\Exceptions\DecryptException
+		 * @throws \Snicco\ExceptionHandling\Exceptions\DecryptException
 		 */
 		public function decryptString( string $payload) : string;
 

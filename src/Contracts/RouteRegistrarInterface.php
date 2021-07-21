@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Contracts;
+    namespace Snicco\Contracts;
 
-    use BetterWP\Application\Config;
+    use Snicco\Application\Config;
 
     interface RouteRegistrarInterface
     {

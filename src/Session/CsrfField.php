@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Session;
+    namespace Snicco\Session;
 
     use Slim\Csrf\Guard;
-    use BetterWP\Support\Arr;
+    use Snicco\Support\Arr;
 
     class CsrfField
     {

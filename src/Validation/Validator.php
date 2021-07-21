@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Validation;
+    namespace Snicco\Validation;
 
     use Illuminate\Contracts\Support\MessageProvider;
     use Illuminate\Support\Collection;
@@ -12,8 +12,8 @@
     use Respect\Validation\Exceptions\ValidationException as RespectValidationError;
     use Respect\Validation\Rules\Not;
     use Respect\Validation\Validator as v;
-    use BetterWP\Support\Arr;
-    use BetterWP\Support\Str;
+    use Snicco\Support\Arr;
+    use Snicco\Support\Str;
 
     use function Respect\Stringifier\stringify;
 

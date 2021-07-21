@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Responses;
+    namespace Snicco\Auth\Responses;
 
-    use BetterWP\Auth\Contracts\LoginResponse;
-    use BetterWP\Contracts\AbstractRedirector;
-    use BetterWP\Http\Responses\RedirectResponse;
-    use BetterWP\Session\StatefulRedirector;
+    use Snicco\Auth\Contracts\LoginResponse;
+    use Snicco\Contracts\AbstractRedirector;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Session\StatefulRedirector;
 
     class RedirectToDashboardResponse extends LoginResponse
     {

@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Testing\Concerns;
+    namespace Snicco\Testing\Concerns;
 
-    use BetterWP\Support\WP;
+    use Snicco\Support\WP;
     use Nyholm\Psr7Server\ServerRequestCreator;
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestFactoryInterface;
@@ -14,23 +14,23 @@
     use Psr\Http\Message\UriFactoryInterface;
     use Psr\Http\Message\UriInterface;
     use Tests\helpers\CreatesWpUrls;
-    use BetterWP\Application\Application;
-    use BetterWP\Application\Config;
-    use BetterWP\Contracts\Middleware;
-    use BetterWP\Contracts\ViewInterface;
-    use BetterWP\Events\IncomingAdminRequest;
-    use BetterWP\Events\IncomingAjaxRequest;
-    use BetterWP\Events\IncomingWebRequest;
-    use BetterWP\Http\Cookie;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\HttpKernel;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Session\Session;
-    use BetterWP\Support\Str;
-    use BetterWP\Support\Url;
-    use BetterWP\Testing\TestResponse;
-    use BetterWP\View\ViewFactory;
+    use Snicco\Application\Application;
+    use Snicco\Application\Config;
+    use Snicco\Contracts\Middleware;
+    use Snicco\Contracts\ViewInterface;
+    use Snicco\Events\IncomingAdminRequest;
+    use Snicco\Events\IncomingAjaxRequest;
+    use Snicco\Events\IncomingWebRequest;
+    use Snicco\Http\Cookie;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\HttpKernel;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Session\Session;
+    use Snicco\Support\Str;
+    use Snicco\Support\Url;
+    use Snicco\Testing\TestResponse;
+    use Snicco\View\ViewFactory;
 
     /**
      * @property Session $session

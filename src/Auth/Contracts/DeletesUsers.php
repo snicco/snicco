@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Contracts;
+    namespace Snicco\Auth\Contracts;
 
-    use BetterWP\Contracts\ResponsableInterface;
+    use Snicco\Contracts\ResponsableInterface;
 
     interface DeletesUsers
     {

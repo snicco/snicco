@@ -6,7 +6,7 @@
 
 	namespace Tests\unit\Support;
 
-	use BetterWP\Support\UrlParser;
+	use Snicco\Support\UrlParser;
 	use PHPUnit\Framework\TestCase;
 
 	class UrlParserTest extends TestCase {

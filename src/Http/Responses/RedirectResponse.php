@@ -4,14 +4,14 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Http\Responses;
+	namespace Snicco\Http\Responses;
 
 
     use Illuminate\Contracts\Support\MessageProvider;
     use Illuminate\Support\MessageBag;
     use Illuminate\Support\ViewErrorBag;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Session\Session;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Session\Session;
 
     class RedirectResponse extends Response {
 

@@ -17,10 +17,10 @@
     use Tests\fixtures\Middleware\BarMiddleware;
     use Tests\fixtures\Middleware\BazMiddleware;
     use Tests\fixtures\Middleware\FooMiddleware;
-    use BetterWP\Events\Event;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Routing\Router;
+    use Snicco\Events\Event;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\Router;
 
     class RouteGroupsTest extends UnitTest
     {

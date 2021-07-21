@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Listeners;
+    namespace Snicco\Auth\Listeners;
 
-    use BetterWP\Session\Events\SessionRegenerated;
+    use Snicco\Session\Events\SessionRegenerated;
 
     class RefreshAuthCookies
     {

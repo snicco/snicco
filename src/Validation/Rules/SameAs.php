@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Validation\Rules;
+    namespace Snicco\Validation\Rules;
 
     use Respect\Validation\Rules\AbstractRule;
-    use BetterWP\Support\Arr;
+    use Snicco\Support\Arr;
 
     class SameAs extends AbstractRule
     {

@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing\FastRoute;
+    namespace Snicco\Routing\FastRoute;
 
     use FastRoute\BadRouteException;
     use FastRoute\DataGenerator\GroupCountBased as DataGenerator;
     use FastRoute\Dispatcher\GroupCountBased as RouteDispatcher;
     use FastRoute\RouteCollector;
     use FastRoute\RouteParser\Std as RouteParser;
-    use BetterWP\Contracts\RouteMatcher;
-    use BetterWP\Routing\Route;
-    use BetterWP\Routing\RoutingResult;
+    use Snicco\Contracts\RouteMatcher;
+    use Snicco\Routing\Route;
+    use Snicco\Routing\RoutingResult;
 
     class FastRouteMatcher implements RouteMatcher
     {

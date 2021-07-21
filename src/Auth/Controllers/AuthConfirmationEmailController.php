@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Controllers;
+    namespace Snicco\Auth\Controllers;
 
     use Illuminate\Support\InteractsWithTime;
     use WP_User;
-    use BetterWP\Auth\Mail\ConfirmAuthMail;
-    use BetterWP\Http\Controller;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Mail\MailBuilder;
-    use BetterWP\Session\Session;
+    use Snicco\Auth\Mail\ConfirmAuthMail;
+    use Snicco\Http\Controller;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Mail\MailBuilder;
+    use Snicco\Session\Session;
 
     class AuthConfirmationEmailController extends Controller
     {

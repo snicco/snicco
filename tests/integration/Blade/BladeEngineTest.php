@@ -8,11 +8,11 @@
 
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
-    use BetterWP\Blade\BladeServiceProvider;
-    use BetterWP\Blade\BladeView;
-    use BetterWP\ExceptionHandling\Exceptions\ViewException;
-    use BetterWP\ExceptionHandling\Exceptions\ViewNotFoundException;
-    use BetterWP\View\ViewFactory;
+    use Snicco\Blade\BladeServiceProvider;
+    use Snicco\Blade\BladeView;
+    use Snicco\ExceptionHandling\Exceptions\ViewException;
+    use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
+    use Snicco\View\ViewFactory;
 
     class BladeEngineTest extends BladeTestCase
     {

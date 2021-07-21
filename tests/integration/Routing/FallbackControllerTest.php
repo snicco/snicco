@@ -9,7 +9,7 @@
     use Tests\fixtures\Middleware\GlobalMiddleware;
     use Tests\fixtures\Middleware\WebMiddleware;
     use Tests\TestCase;
-    use BetterWP\Routing\Router;
+    use Snicco\Routing\Router;
 
     class FallbackControllerTest extends TestCase
     {

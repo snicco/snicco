@@ -12,25 +12,25 @@
     use Tests\fixtures\Middleware\FooBarMiddleware;
     use Tests\fixtures\Middleware\FooMiddleware;
     use Tests\stubs\TestRequest;
-    use BetterWP\View\MethodField;
-    use BetterWP\Contracts\AbstractRouteCollection;
-    use BetterWP\Contracts\ErrorHandlerInterface;
-    use BetterWP\Events\IncomingRequest;
-    use BetterWP\Events\IncomingWebRequest;
-    use BetterWP\ExceptionHandling\NullErrorHandler;
-    use BetterWP\Factories\ConditionFactory;
-    use BetterWP\Factories\RouteActionFactory;
-    use BetterWP\Http\HttpKernel;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Middleware\Core\RouteRunner;
-    use BetterWP\Middleware\MiddlewareStack;
-    use BetterWP\Routing\FastRoute\FastRouteUrlGenerator;
-    use BetterWP\Routing\Pipeline;
-    use BetterWP\Routing\RouteCollection;
-    use BetterWP\Routing\Router;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\Routing\RoutingServiceProvider;
+    use Snicco\View\MethodField;
+    use Snicco\Contracts\AbstractRouteCollection;
+    use Snicco\Contracts\ErrorHandlerInterface;
+    use Snicco\Events\IncomingRequest;
+    use Snicco\Events\IncomingWebRequest;
+    use Snicco\ExceptionHandling\NullErrorHandler;
+    use Snicco\Factories\ConditionFactory;
+    use Snicco\Factories\RouteActionFactory;
+    use Snicco\Http\HttpKernel;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Middleware\Core\RouteRunner;
+    use Snicco\Middleware\MiddlewareStack;
+    use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
+    use Snicco\Routing\Pipeline;
+    use Snicco\Routing\RouteCollection;
+    use Snicco\Routing\Router;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\Routing\RoutingServiceProvider;
 
     trait CreateTestSubjects
     {

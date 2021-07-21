@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Controllers;
+    namespace Snicco\Auth\Controllers;
 
     use WP_User;
-    use BetterWP\Auth\Traits\ResolvesUser;
-    use BetterWP\Auth\Traits\SendsPasswordResetMails;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Controller;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Mail\MailBuilder;
-    use BetterWP\Traits\ValidatesWordpressNonces;
+    use Snicco\Auth\Traits\ResolvesUser;
+    use Snicco\Auth\Traits\SendsPasswordResetMails;
+    use Snicco\Support\WP;
+    use Snicco\Http\Controller;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Mail\MailBuilder;
+    use Snicco\Traits\ValidatesWordpressNonces;
 
     class PasswordResetEmailController extends Controller
     {

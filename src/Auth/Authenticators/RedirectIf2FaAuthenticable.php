@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Authenticators;
+    namespace Snicco\Auth\Authenticators;
 
     use WP_User;
-    use BetterWP\Auth\Contracts\Authenticator;
-    use BetterWP\Auth\Traits\InteractsWithTwoFactorSecrets;
-    use BetterWP\Auth\Responses\SuccessfulLoginResponse;
-    use BetterWP\Auth\Contracts\TwoFactorChallengeResponse;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
+    use Snicco\Auth\Contracts\Authenticator;
+    use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
+    use Snicco\Auth\Responses\SuccessfulLoginResponse;
+    use Snicco\Auth\Contracts\TwoFactorChallengeResponse;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
 
     class RedirectIf2FaAuthenticable extends Authenticator
     {

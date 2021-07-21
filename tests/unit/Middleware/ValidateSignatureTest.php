@@ -13,18 +13,18 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use BetterWP\Contracts\MagicLink;
-    use BetterWP\ExceptionHandling\Exceptions\InvalidSignatureException;
-    use BetterWP\ExceptionHandling\NullErrorHandler;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Middleware\Core\ShareCookies;
-    use BetterWP\Middleware\ValidateSignature;
-    use BetterWP\Routing\Pipeline;
-    use BetterWP\Session\Drivers\ArraySessionDriver;
-    use BetterWP\Session\Session;
-    use BetterWP\Support\Arr;
-    use BetterWP\Support\Str;
+    use Snicco\Contracts\MagicLink;
+    use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
+    use Snicco\ExceptionHandling\NullErrorHandler;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Middleware\Core\ShareCookies;
+    use Snicco\Middleware\ValidateSignature;
+    use Snicco\Routing\Pipeline;
+    use Snicco\Session\Drivers\ArraySessionDriver;
+    use Snicco\Session\Session;
+    use Snicco\Support\Arr;
+    use Snicco\Support\Str;
 
     class ValidateSignatureTest extends UnitTest
     {

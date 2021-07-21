@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Testing\Concerns;
+    namespace Snicco\Testing\Concerns;
 
     use Carbon\Carbon;
     use Carbon\CarbonImmutable;

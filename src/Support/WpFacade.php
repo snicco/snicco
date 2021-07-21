@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Support;
+	namespace Snicco\Support;
 
 	use Contracts\ContainerAdapter;
 	use Mockery;

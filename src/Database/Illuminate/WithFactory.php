@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Database\Illuminate;
+    namespace Snicco\Database\Illuminate;
 
-    use BetterWP\Support\Str;
+    use Snicco\Support\Str;
     use Illuminate\Database\Eloquent\Factories\Factory;
     use Illuminate\Database\Eloquent\Factories\HasFactory as WithEloquentFactory;
 

@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\ExceptionHandling\Exceptions;
+    namespace Snicco\ExceptionHandling\Exceptions;
 
     use Throwable;
-    use BetterWP\ExceptionHandling\Exceptions\HttpException;
-    use BetterWP\Http\ResponseFactory;
+    use Snicco\ExceptionHandling\Exceptions\HttpException;
+    use Snicco\Http\ResponseFactory;
 
     class InvalidSignatureException extends HttpException
     {

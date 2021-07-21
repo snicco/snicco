@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Session;
+    namespace Snicco\Session;
 
     use Carbon\Carbon;
     use Closure;
@@ -13,15 +13,15 @@
     use Illuminate\Support\InteractsWithTime;
     use Illuminate\Support\ViewErrorBag;
     use Respect\Validation\Rules\DateTime;
-    use BetterWP\Auth\Events\Logout;
-    use BetterWP\Support\WP;
-    use BetterWP\Session\Contracts\SessionDriver;
-    use BetterWP\Session\Events\SessionRegenerated;
-    use BetterWP\Support\Arr;
-    use BetterWP\Support\Str;
+    use Snicco\Auth\Events\Logout;
+    use Snicco\Support\WP;
+    use Snicco\Session\Contracts\SessionDriver;
+    use Snicco\Session\Events\SessionRegenerated;
+    use Snicco\Support\Arr;
+    use Snicco\Support\Str;
     use stdClass;
     use SessionHandlerInterface;
-    use BetterWP\Support\Url;
+    use Snicco\Support\Url;
 
     class Session
     {

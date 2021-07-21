@@ -2,10 +2,10 @@
 
 	declare(strict_types=1);
 
-	namespace BetterWP\Application;
+	namespace Snicco\Application;
 
 	use Illuminate\Config\Repository;
-	use BetterWP\Support\Arr;
+	use Snicco\Support\Arr;
 
 	class Config extends Repository {
 

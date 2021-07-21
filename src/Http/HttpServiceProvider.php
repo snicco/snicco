@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Http;
+    namespace Snicco\Http;
 
     use Psr\Http\Message\ResponseFactoryInterface;
     use Psr\Http\Message\StreamFactoryInterface;
-    use BetterWP\Contracts\AbstractRedirector;
-    use BetterWP\Contracts\ServiceProvider;
-    use BetterWP\Contracts\ViewFactoryInterface;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Routing\Pipeline;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\Session\Session;
-    use BetterWP\Session\StatefulRedirector;
+    use Snicco\Contracts\AbstractRedirector;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\Contracts\ViewFactoryInterface;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\Pipeline;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\Session\Session;
+    use Snicco\Session\StatefulRedirector;
 
     class HttpServiceProvider extends ServiceProvider
     {

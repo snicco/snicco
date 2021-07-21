@@ -4,19 +4,19 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Middleware\Core;
+    namespace Snicco\Middleware\Core;
 
     use Psr\Http\Message\ResponseInterface;
     use WP_Query;
-    use BetterWP\Contracts\Middleware;
-    use BetterWP\ExceptionHandling\Exceptions\HttpException;
-    use BetterWP\ExceptionHandling\Exceptions\InvalidResponseException;
-    use BetterWP\ExceptionHandling\Exceptions\NotFoundException;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\Responses\InvalidResponse;
-    use BetterWP\Http\Responses\NullResponse;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Responses\WpQueryFilteredResponse;
+    use Snicco\Contracts\Middleware;
+    use Snicco\ExceptionHandling\Exceptions\HttpException;
+    use Snicco\ExceptionHandling\Exceptions\InvalidResponseException;
+    use Snicco\ExceptionHandling\Exceptions\NotFoundException;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Responses\InvalidResponse;
+    use Snicco\Http\Responses\NullResponse;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Responses\WpQueryFilteredResponse;
 
     class EvaluateResponseMiddleware extends Middleware
     {

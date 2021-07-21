@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Traits;
+    namespace Snicco\Traits;
 
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
-    use BetterWP\Routing\Route;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\Routing\Route;
 
     trait ValidatesRoutes
     {

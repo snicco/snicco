@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Events;
+    namespace Snicco\Auth\Events;
 
     use BetterWpHooks\Traits\IsAction;
     use WP_User;
-    use BetterWP\Events\Event;
+    use Snicco\Events\Event;
 
     class Login extends Event
     {

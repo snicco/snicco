@@ -6,7 +6,7 @@
 
     namespace Tests\stubs;
 
-    use BetterWP\Contracts\ServiceProvider;
+    use Snicco\Contracts\ServiceProvider;
 
     class UserServiceProvider extends ServiceProvider
     {

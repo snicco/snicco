@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Testing\Concerns;
+    namespace Snicco\Testing\Concerns;
 
     use PHPUnit\Framework\Assert as PHPUnit;
     use WP_User;
 
-    use BetterWP\Session\Session;
+    use Snicco\Session\Session;
 
     use function wp_delete_user;
     use function wp_get_current_user;

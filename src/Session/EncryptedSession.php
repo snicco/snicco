@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Session;
+    namespace Snicco\Session;
 
-    use BetterWP\Contracts\EncryptorInterface;
-    use BetterWP\ExceptionHandling\Exceptions\DecryptException;
-    use BetterWP\ExceptionHandling\Exceptions\EncryptException;
-    use BetterWP\Session\Contracts\SessionDriver;
+    use Snicco\Contracts\EncryptorInterface;
+    use Snicco\ExceptionHandling\Exceptions\DecryptException;
+    use Snicco\ExceptionHandling\Exceptions\EncryptException;
+    use Snicco\Session\Contracts\SessionDriver;
 
     class EncryptedSession extends Session
     {

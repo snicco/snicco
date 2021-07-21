@@ -9,11 +9,11 @@
     use Mockery as m;
     use Tests\helpers\TravelsTime;
     use Tests\MiddlewareTestCase;
-    use BetterWP\Auth\AuthSessionManager;
-    use BetterWP\Auth\Middleware\AuthenticateSession;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Session\Drivers\ArraySessionDriver;
-    use BetterWP\Session\Session;
+    use Snicco\Auth\AuthSessionManager;
+    use Snicco\Auth\Middleware\AuthenticateSession;
+    use Snicco\Http\Delegate;
+    use Snicco\Session\Drivers\ArraySessionDriver;
+    use Snicco\Session\Session;
 
     class AuthenticateSessionTest extends MiddlewareTestCase
     {

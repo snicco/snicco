@@ -12,12 +12,12 @@
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
-    use BetterWP\Events\Event;
-    use BetterWP\Events\IncomingWebRequest;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Routing\Conditions\QueryStringCondition;
-    use BetterWP\Routing\Router;
+    use Snicco\Events\Event;
+    use Snicco\Events\IncomingWebRequest;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\Conditions\QueryStringCondition;
+    use Snicco\Routing\Router;
 
     class TrailingSlashTest extends UnitTest
     {

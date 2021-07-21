@@ -5,7 +5,7 @@
 
     namespace Tests\integration\Blade\Components;
 
-    use BetterWP\Blade\BladeComponent;
+    use Snicco\Blade\BladeComponent;
 
     class AlertAttributes extends BladeComponent
     {

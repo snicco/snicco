@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Validation;
+    namespace Snicco\Validation;
 
     use Respect\Validation\Factory;
-    use BetterWP\Contracts\ServiceProvider;
-    use BetterWP\Validation\Middleware\ShareValidatorWithRequest;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\Validation\Middleware\ShareValidatorWithRequest;
 
     class ValidationServiceProvider extends ServiceProvider
     {
@@ -50,8 +50,8 @@
         {
             Factory::setDefaultInstance(
                 (new Factory())
-                    ->withRuleNamespace('BetterWP\Validation\Rules')
-                    ->withExceptionNamespace('BetterWP\Validation\Exceptions')
+                    ->withRuleNamespace('Snicco\Validation\Rules')
+                    ->withExceptionNamespace('Snicco\Validation\Exceptions')
             );
         }
 

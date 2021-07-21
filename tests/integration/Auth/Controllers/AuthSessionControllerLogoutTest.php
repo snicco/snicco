@@ -7,12 +7,12 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use BetterWP\Events\Event;
-    use BetterWP\Auth\Controllers\AuthSessionController;
-    use BetterWP\Auth\Events\Logout;
-    use BetterWP\Auth\Responses\LogoutResponse;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\ExceptionHandling\Exceptions\InvalidSignatureException;
+    use Snicco\Events\Event;
+    use Snicco\Auth\Controllers\AuthSessionController;
+    use Snicco\Auth\Events\Logout;
+    use Snicco\Auth\Responses\LogoutResponse;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
 
 
     /** @see AuthSessionController */

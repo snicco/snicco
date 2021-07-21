@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Controllers;
+    namespace Snicco\Controllers;
 
     use Closure;
     use Psr\Http\Message\ResponseInterface;
-    use BetterWP\Contracts\AbstractRouteCollection as Routes;
-    use BetterWP\Http\Controller;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Http\Responses\NullResponse;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Middleware\MiddlewareStack;
-    use BetterWP\Routing\Pipeline;
-    use BetterWP\Routing\Route;
+    use Snicco\Contracts\AbstractRouteCollection as Routes;
+    use Snicco\Http\Controller;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Http\Responses\NullResponse;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Middleware\MiddlewareStack;
+    use Snicco\Routing\Pipeline;
+    use Snicco\Routing\Route;
 
     /**
      *

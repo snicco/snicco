@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing;
+    namespace Snicco\Routing;
 
     use Symfony\Component\Finder\Finder;
     use Symfony\Component\Finder\SplFileInfo;
-    use BetterWP\Application\Config;
-    use BetterWP\Contracts\RouteRegistrarInterface;
-    use BetterWP\Support\WP;
-    use BetterWP\Support\Arr;
-    use BetterWP\Support\Str;
+    use Snicco\Application\Config;
+    use Snicco\Contracts\RouteRegistrarInterface;
+    use Snicco\Support\WP;
+    use Snicco\Support\Arr;
+    use Snicco\Support\Str;
 
     class RouteRegistrar implements RouteRegistrarInterface
     {

@@ -13,7 +13,7 @@
     use Tests\fixtures\Mail\WelcomePlainText;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use BetterWP\Mail\Mailable;
+    use Snicco\Mail\Mailable;
 
     class SendingMailsTest extends TestCase
     {

@@ -10,9 +10,9 @@
     use Tests\fixtures\TestDependencies\Bar;
 	use Tests\fixtures\TestDependencies\Foo;
 	use PHPUnit\Framework\TestCase;
-	use BetterWP\Factories\RouteActionFactory;
+	use Snicco\Factories\RouteActionFactory;
 	use Mockery as m;
-    use BetterWP\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Request;
 
     class ControllerTest extends TestCase {
 

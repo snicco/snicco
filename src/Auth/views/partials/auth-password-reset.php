@@ -8,7 +8,7 @@
     /** @var Session $session */
 
     use Illuminate\Support\ViewErrorBag;
-    use BetterWP\Session\Session;
+    use Snicco\Session\Session;
 
 ?>
 

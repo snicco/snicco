@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth;
+    namespace Snicco\Auth;
 
     use Illuminate\Support\InteractsWithTime;
-    use BetterWP\Http\Cookie;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Session\Session;
-    use BetterWP\Session\Contracts\SessionDriver;
-    use BetterWP\Session\SessionManager;
-    use BetterWP\Session\Contracts\SessionManagerInterface;
-    use BetterWP\Support\Arr;
-    use BetterWP\Traits\HasLottery;
+    use Snicco\Http\Cookie;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Session\Session;
+    use Snicco\Session\Contracts\SessionDriver;
+    use Snicco\Session\SessionManager;
+    use Snicco\Session\Contracts\SessionManagerInterface;
+    use Snicco\Support\Arr;
+    use Snicco\Traits\HasLottery;
 
     class AuthSessionManager implements SessionManagerInterface
     {

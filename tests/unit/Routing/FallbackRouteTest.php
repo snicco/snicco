@@ -16,14 +16,14 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
-    use BetterWP\Events\Event;
-    use BetterWP\Contracts\ViewFactoryInterface;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Routing\Router;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\View\ViewFactory;
+    use Snicco\Events\Event;
+    use Snicco\Contracts\ViewFactoryInterface;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Routing\Router;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\View\ViewFactory;
 
     class FallbackRouteTest extends UnitTest
     {

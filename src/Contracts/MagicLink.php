@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Contracts;
+    namespace Snicco\Contracts;
 
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
     use Tests\stubs\TestApp;
-    use BetterWP\Application\Application;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Cookie;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Traits\HasLottery;
+    use Snicco\Application\Application;
+    use Snicco\Support\WP;
+    use Snicco\Http\Cookie;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Traits\HasLottery;
 
     abstract class MagicLink
     {

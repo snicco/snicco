@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Listeners;
+    namespace Snicco\Listeners;
 
     use BetterWpHooks\Traits\ListensConditionally;
-    use BetterWP\Contracts\AbstractRouteCollection;
-    use BetterWP\Events\WpQueryFilterable;
-    use BetterWP\Support\WP;
+    use Snicco\Contracts\AbstractRouteCollection;
+    use Snicco\Events\WpQueryFilterable;
+    use Snicco\Support\WP;
 
     class FilterWpQuery
     {

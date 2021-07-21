@@ -8,7 +8,7 @@
 
 	use PHPUnit\Framework\Assert;
 	use Psr\Log\AbstractLogger;
-	use BetterWP\Support\Arr;
+	use Snicco\Support\Arr;
 
 	class TestLogger extends AbstractLogger {
 

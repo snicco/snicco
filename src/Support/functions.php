@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Support\Functions {
+    namespace Snicco\Support\Functions {
 
         function addMenuPage (string $menu_title, string $capability, string $menu_slug, string $icon_url, int $position = null ) {
 

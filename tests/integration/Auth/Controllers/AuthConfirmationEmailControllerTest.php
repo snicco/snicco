@@ -7,7 +7,7 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use BetterWP\Auth\Mail\ConfirmAuthMail;
+    use Snicco\Auth\Mail\ConfirmAuthMail;
 
     class AuthConfirmationEmailControllerTest extends AuthTestCase
     {

@@ -9,9 +9,9 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use BetterWP\Validation\Middleware\ShareValidatorWithRequest;
-    use BetterWP\Validation\ValidationServiceProvider;
-    use BetterWP\Validation\Validator;
+    use Snicco\Validation\Middleware\ShareValidatorWithRequest;
+    use Snicco\Validation\ValidationServiceProvider;
+    use Snicco\Validation\Validator;
 
     class ValidationServiceProviderTest extends TestCase
     {

@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Traits;
+	namespace Snicco\Traits;
 
-	use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
-	use BetterWP\Support\Arr;
+	use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+	use Snicco\Support\Arr;
 
 	trait GathersMiddleware {
 

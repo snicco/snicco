@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Mail;
+    namespace Snicco\Mail;
 
     use Closure;
     use ReflectionClass;
     use ReflectionProperty;
     use WP_User;
-    use BetterWP\Support\Arr;
+    use Snicco\Support\Arr;
 
     abstract class Mailable
     {

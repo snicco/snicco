@@ -4,11 +4,11 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Contracts;
+	namespace Snicco\Contracts;
 
 
-	use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
+	use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
     use Throwable;
 
     interface ErrorHandlerInterface {

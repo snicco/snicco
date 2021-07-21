@@ -12,12 +12,12 @@
     use Tests\UnitTest;
 	use Tests\stubs\TestRequest;
     use Tests\helpers\AssertsResponse;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Middleware\Authenticate;
-	use BetterWP\ExceptionHandling\Exceptions\AuthorizationException;
-    use BetterWP\Middleware\Authorize;
+    use Snicco\Support\WP;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Middleware\Authenticate;
+	use Snicco\ExceptionHandling\Exceptions\AuthorizationException;
+    use Snicco\Middleware\Authorize;
 
     class AuthorizeTest extends UnitTest {
 

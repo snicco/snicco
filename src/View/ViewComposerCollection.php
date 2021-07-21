@@ -4,19 +4,19 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\View;
+	namespace Snicco\View;
 
 	use Exception;
     use Illuminate\Support\Collection;
-	use BetterWP\Contracts\ViewComposer;
-	use BetterWP\Contracts\ViewInterface;
-	use BetterWP\Factories\ViewComposerFactory;
-	use BetterWP\Support\Arr;
+	use Snicco\Contracts\ViewComposer;
+	use Snicco\Contracts\ViewInterface;
+	use Snicco\Factories\ViewComposerFactory;
+	use Snicco\Support\Arr;
 
 	class ViewComposerCollection implements ViewComposer {
 
 		/**
-		 * @var \BetterWP\View\ViewComposer[]
+		 * @var \Snicco\View\ViewComposer[]
 		 */
 		private $composers;
 

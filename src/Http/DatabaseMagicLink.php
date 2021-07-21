@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Http;
+    namespace Snicco\Http;
 
-    use BetterWP\Contracts\MagicLink;
-    use BetterWP\Http\Psr7\Request;
+    use Snicco\Contracts\MagicLink;
+    use Snicco\Http\Psr7\Request;
 
     use function wp_cache_add;
     use function wp_cache_get;

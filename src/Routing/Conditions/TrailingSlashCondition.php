@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing\Conditions;
+    namespace Snicco\Routing\Conditions;
 
-    use BetterWP\Contracts\ConditionInterface;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Support\Str;
+    use Snicco\Contracts\ConditionInterface;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Support\Str;
 
     /**
      * This Condition is required for make FastRoute only match trailing slash urls

@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Blade;
+    namespace Snicco\Blade;
 
     use Illuminate\Support\Facades\Blade;
     use Tests\unit\View\MethodField;
-    use BetterWP\Application\ApplicationTrait;
-    use BetterWP\Contracts\ServiceProvider;
-    use BetterWP\Support\WP;
-    use BetterWP\Session\CsrfField;
+    use Snicco\Application\ApplicationTrait;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\Support\WP;
+    use Snicco\Session\CsrfField;
 
     class BladeDirectiveServiceProvider extends ServiceProvider
     {

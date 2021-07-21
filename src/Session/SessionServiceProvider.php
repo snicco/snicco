@@ -4,28 +4,28 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Session;
+    namespace Snicco\Session;
 
     use Psr\Http\Message\ResponseFactoryInterface;
     use Slim\Csrf\Guard;
-    use BetterWP\Application\Application;
-    use BetterWP\Auth\AuthServiceProvider;
-    use BetterWP\Contracts\AbstractRedirector;
-    use BetterWP\Contracts\EncryptorInterface;
-    use BetterWP\Contracts\ServiceProvider;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\Session\Contracts\SessionDriver;
-    use BetterWP\Session\Contracts\SessionManagerInterface;
-    use BetterWP\Session\Events\NewLogin;
-    use BetterWP\Session\Events\NewLogout;
-    use BetterWP\Session\Drivers\ArraySessionDriver;
-    use BetterWP\Session\Drivers\DatabaseSessionDriver;
-    use BetterWP\Session\Middleware\CsrfMiddleware;
-    use BetterWP\Session\Middleware\ShareSessionWithView;
-    use BetterWP\Session\Middleware\StartSessionMiddleware;
-    use BetterWP\Support\Arr;
-    use BetterWP\View\GlobalContext;
+    use Snicco\Application\Application;
+    use Snicco\Auth\AuthServiceProvider;
+    use Snicco\Contracts\AbstractRedirector;
+    use Snicco\Contracts\EncryptorInterface;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\Session\Contracts\SessionDriver;
+    use Snicco\Session\Contracts\SessionManagerInterface;
+    use Snicco\Session\Events\NewLogin;
+    use Snicco\Session\Events\NewLogout;
+    use Snicco\Session\Drivers\ArraySessionDriver;
+    use Snicco\Session\Drivers\DatabaseSessionDriver;
+    use Snicco\Session\Middleware\CsrfMiddleware;
+    use Snicco\Session\Middleware\ShareSessionWithView;
+    use Snicco\Session\Middleware\StartSessionMiddleware;
+    use Snicco\Support\Arr;
+    use Snicco\View\GlobalContext;
 
     class SessionServiceProvider extends ServiceProvider
     {

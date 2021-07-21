@@ -7,7 +7,7 @@
 
     /** @var string $view */
 
-    use BetterWP\View\ViewFactory;
+    use Snicco\View\ViewFactory;
 
 ?>
 

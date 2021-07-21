@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing;
+    namespace Snicco\Routing;
 
     use Symfony\Component\Finder\Finder;
-    use BetterWP\Application\Config;
-    use BetterWP\Contracts\RouteRegistrarInterface;
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\Application\Config;
+    use Snicco\Contracts\RouteRegistrarInterface;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
     class CacheFileRouteRegistrar implements RouteRegistrarInterface
     {

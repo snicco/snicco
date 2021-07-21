@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Listeners;
+    namespace Snicco\Auth\Listeners;
 
-    use BetterWP\Auth\Events\SettingAuthCookie;
-    use BetterWP\Session\Session;
+    use Snicco\Auth\Events\SettingAuthCookie;
+    use Snicco\Session\Session;
 
     class GenerateNewAuthCookie
     {

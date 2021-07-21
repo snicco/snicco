@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Events;
+    namespace Snicco\Auth\Events;
 
     use BetterWpHooks\Traits\IsAction;
-    use BetterWP\Events\Event;
-    use BetterWP\Session\Session;
-    use BetterWP\Session\Contracts\SessionDriver;
+    use Snicco\Events\Event;
+    use Snicco\Session\Session;
+    use Snicco\Session\Contracts\SessionDriver;
 
     class Logout extends Event
     {

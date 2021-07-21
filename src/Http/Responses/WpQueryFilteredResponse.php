@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Http\Responses;
+    namespace Snicco\Http\Responses;
 
 
     class WpQueryFilteredResponse extends NullResponse

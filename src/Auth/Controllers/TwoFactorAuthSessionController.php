@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Controllers;
+    namespace Snicco\Auth\Controllers;
 
-    use BetterWP\Auth\Traits\InteractsWithTwoFactorSecrets;
-    use BetterWP\Auth\Traits\ResolvesUser;
-    use BetterWP\Http\Controller;
-    use BetterWP\Http\Psr7\Request;
+    use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
+    use Snicco\Auth\Traits\ResolvesUser;
+    use Snicco\Http\Controller;
+    use Snicco\Http\Psr7\Request;
 
     class TwoFactorAuthSessionController extends Controller
     {

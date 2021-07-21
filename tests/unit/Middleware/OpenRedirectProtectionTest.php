@@ -14,14 +14,14 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use BetterWP\Controllers\RedirectController;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Http\Responses\RedirectResponse;
-    use BetterWP\Middleware\Core\OpenRedirectProtection;
-    use BetterWP\Routing\Route;
+    use Snicco\Controllers\RedirectController;
+    use Snicco\Support\WP;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Middleware\Core\OpenRedirectProtection;
+    use Snicco\Routing\Route;
 
     class OpenRedirectProtectionTest extends UnitTest
     {

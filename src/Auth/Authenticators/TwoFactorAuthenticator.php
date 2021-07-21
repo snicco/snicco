@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Authenticators;
+    namespace Snicco\Auth\Authenticators;
 
-    use BetterWP\Auth\Contracts\Authenticator;
-    use BetterWP\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use BetterWP\Auth\Exceptions\FailedTwoFactorAuthenticationException;
-    use BetterWP\Auth\RecoveryCode;
-    use BetterWP\Auth\Traits\PerformsTwoFactorAuthentication;
-    use BetterWP\Auth\Traits\ResolveTwoFactorSecrets;
-    use BetterWP\Auth\Traits\ResolvesUser;
-    use BetterWP\Contracts\EncryptorInterface;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
+    use Snicco\Auth\Contracts\Authenticator;
+    use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use Snicco\Auth\Exceptions\FailedTwoFactorAuthenticationException;
+    use Snicco\Auth\RecoveryCode;
+    use Snicco\Auth\Traits\PerformsTwoFactorAuthentication;
+    use Snicco\Auth\Traits\ResolveTwoFactorSecrets;
+    use Snicco\Auth\Traits\ResolvesUser;
+    use Snicco\Contracts\EncryptorInterface;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
 
     class TwoFactorAuthenticator extends Authenticator
     {

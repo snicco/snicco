@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Listeners;
+    namespace Snicco\Listeners;
 
-    use BetterWP\Application\Config;
-    use BetterWP\Contracts\Mailer;
-    use BetterWP\Events\PendingMail;
-    use BetterWP\Support\WP;
-    use BetterWP\Mail\Mailable;
-    use BetterWP\View\ViewFactory;
+    use Snicco\Application\Config;
+    use Snicco\Contracts\Mailer;
+    use Snicco\Events\PendingMail;
+    use Snicco\Support\WP;
+    use Snicco\Mail\Mailable;
+    use Snicco\View\ViewFactory;
 
     class SendMail
     {

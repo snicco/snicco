@@ -6,7 +6,7 @@
 
 	namespace Tests\fixtures\Controllers\Admin;
 
-	use BetterWP\Http\Psr7\Request;
+	use Snicco\Http\Psr7\Request;
 
 	class AdminController {
 

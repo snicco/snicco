@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Session\Drivers;
+    namespace Snicco\Session\Drivers;
 
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
     use wpdb;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Session\Contracts\SessionDriver;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Session\Contracts\SessionDriver;
 
     class DatabaseSessionDriver implements SessionDriver
     {

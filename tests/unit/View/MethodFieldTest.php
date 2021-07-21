@@ -6,8 +6,8 @@
 
     namespace Tests\unit\View;
 
-    use BetterWP\Support\Str;
-    use BetterWP\View\MethodField;
+    use Snicco\Support\Str;
+    use Snicco\View\MethodField;
     use PHPUnit\Framework\TestCase;
 
     class MethodFieldTest extends TestCase

@@ -3,19 +3,19 @@
 
     declare(strict_types = 1);
 
-    use BetterWP\Application\Config;
-    use BetterWP\Auth\Controllers\AccountController;
-    use BetterWP\Auth\Controllers\AuthConfirmationEmailController;
-    use BetterWP\Auth\Controllers\AuthSessionController;
-    use BetterWP\Auth\Controllers\ConfirmedAuthSessionController;
-    use BetterWP\Auth\Controllers\ForgotPasswordController;
-    use BetterWP\Auth\Controllers\LoginMagicLinkController;
-    use BetterWP\Auth\Controllers\RecoveryCodeController;
-    use BetterWP\Auth\Controllers\RegistrationLinkController;
-    use BetterWP\Auth\Controllers\ResetPasswordController;
-    use BetterWP\Auth\Controllers\TwoFactorAuthSessionController;
-    use BetterWP\Auth\Controllers\TwoFactorAuthPreferenceController;
-    use BetterWP\Routing\Router;
+    use Snicco\Application\Config;
+    use Snicco\Auth\Controllers\AccountController;
+    use Snicco\Auth\Controllers\AuthConfirmationEmailController;
+    use Snicco\Auth\Controllers\AuthSessionController;
+    use Snicco\Auth\Controllers\ConfirmedAuthSessionController;
+    use Snicco\Auth\Controllers\ForgotPasswordController;
+    use Snicco\Auth\Controllers\LoginMagicLinkController;
+    use Snicco\Auth\Controllers\RecoveryCodeController;
+    use Snicco\Auth\Controllers\RegistrationLinkController;
+    use Snicco\Auth\Controllers\ResetPasswordController;
+    use Snicco\Auth\Controllers\TwoFactorAuthSessionController;
+    use Snicco\Auth\Controllers\TwoFactorAuthPreferenceController;
+    use Snicco\Routing\Router;
 
     /** @var Router $router */
     /** @var Config $config */

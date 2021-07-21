@@ -11,22 +11,22 @@
     use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use BetterWP\Application\Application;
-    use BetterWP\Events\Event;
-    use BetterWP\Contracts\ErrorHandlerInterface;
-    use BetterWP\Contracts\ServiceProvider;
-    use BetterWP\Contracts\ViewInterface;
-    use BetterWP\Support\WP;
-    use BetterWP\Support\WpFacade;
-    use BetterWP\Http\Cookies;
-    use BetterWP\Http\Redirector;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Http\Responses\RedirectResponse;
-    use BetterWP\Routing\Router;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\Session\SessionServiceProvider;
-    use BetterWP\Session\Session;
-    use BetterWP\Support\Url;
+    use Snicco\Application\Application;
+    use Snicco\Events\Event;
+    use Snicco\Contracts\ErrorHandlerInterface;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\Contracts\ViewInterface;
+    use Snicco\Support\WP;
+    use Snicco\Support\WpFacade;
+    use Snicco\Http\Cookies;
+    use Snicco\Http\Redirector;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Routing\Router;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\Session\SessionServiceProvider;
+    use Snicco\Session\Session;
+    use Snicco\Support\Url;
 
     class ApplicationServiceProviderTest extends TestCase
     {

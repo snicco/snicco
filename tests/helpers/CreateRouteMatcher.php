@@ -6,7 +6,7 @@
 
     namespace Tests\helpers;
 
-    use BetterWP\Routing\FastRoute\FastRouteMatcher;
+    use Snicco\Routing\FastRoute\FastRouteMatcher;
 
     trait CreateRouteMatcher
     {

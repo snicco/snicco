@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing;
+    namespace Snicco\Routing;
 
     use Closure;
     use Contracts\ContainerAdapter;
@@ -12,12 +12,12 @@
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
-    use BetterWP\Contracts\ErrorHandlerInterface;
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Support\Arr;
+    use Snicco\Contracts\ErrorHandlerInterface;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Support\Arr;
     use ReflectionPayload\ReflectionPayload;
 
     use function collect;

@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing\Conditions;
+    namespace Snicco\Routing\Conditions;
 
-    use BetterWP\Contracts\UrlableInterface;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
+    use Snicco\Contracts\UrlableInterface;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
 
     class AdminPageCondition extends QueryStringCondition implements UrlableInterface
     {

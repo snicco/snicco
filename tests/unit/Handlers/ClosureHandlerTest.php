@@ -10,8 +10,8 @@
     use Tests\helpers\CreateContainer;
     use Tests\fixtures\TestDependencies\Bar;
 	use PHPUnit\Framework\TestCase;
-	use BetterWP\Factories\RouteActionFactory;
-    use BetterWP\Http\Psr7\Request;
+	use Snicco\Factories\RouteActionFactory;
+    use Snicco\Http\Psr7\Request;
 
     class ClosureHandlerTest extends TestCase {
 

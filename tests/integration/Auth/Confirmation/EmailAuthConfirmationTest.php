@@ -7,9 +7,9 @@
     namespace Tests\integration\Auth\Confirmation;
 
     use Tests\AuthTestCase;
-    use BetterWP\Testing\TestDoubles\TestMagicLink;
-    use BetterWP\Contracts\MagicLink;
-    use BetterWP\Routing\UrlGenerator;
+    use Snicco\Testing\TestDoubles\TestMagicLink;
+    use Snicco\Contracts\MagicLink;
+    use Snicco\Routing\UrlGenerator;
 
     class EmailAuthConfirmationTest extends AuthTestCase
     {

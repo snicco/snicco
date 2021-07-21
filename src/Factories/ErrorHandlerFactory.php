@@ -4,7 +4,7 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Factories;
+	namespace Snicco\Factories;
 
 	use Contracts\ContainerAdapter;
 	use Psr\Log\LoggerInterface;
@@ -12,11 +12,11 @@
 	use Whoops\Handler\PrettyPageHandler;
 	use Whoops\Run;
 	use Whoops\RunInterface;
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
-	use BetterWP\ExceptionHandling\DebugErrorHandler;
-	use BetterWP\ExceptionHandling\ProductionErrorHandler;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\ResponseFactory;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+	use Snicco\ExceptionHandling\DebugErrorHandler;
+	use Snicco\ExceptionHandling\ProductionErrorHandler;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
 
 
     class ErrorHandlerFactory {

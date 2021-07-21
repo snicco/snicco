@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Database\Contracts;
+    namespace Snicco\Database\Contracts;
 
     use mysqli_result;
 

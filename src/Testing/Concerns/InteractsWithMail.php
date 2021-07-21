@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Testing\Concerns;
+    namespace Snicco\Testing\Concerns;
 
     use BetterWpHooks\Testing\FakeDispatcher;
-    use BetterWP\Events\Event;
-    use BetterWP\Events\PendingMail;
+    use Snicco\Events\Event;
+    use Snicco\Events\PendingMail;
     use PHPUnit\Framework\Assert as PHPUnit;
-    use BetterWP\Testing\Assertable\AssertableMail;
-    use BetterWP\View\ViewFactory;
+    use Snicco\Testing\Assertable\AssertableMail;
+    use Snicco\View\ViewFactory;
 
     trait InteractsWithMail
     {

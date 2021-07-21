@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Database\Illuminate;
+    namespace Snicco\Database\Illuminate;
 
     use Illuminate\Database\Query\Builder;
     use Illuminate\Database\Query\Processors\MySqlProcessor as IlluminateMySqlProcessor;

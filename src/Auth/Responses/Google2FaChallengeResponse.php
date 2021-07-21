@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Responses;
+    namespace Snicco\Auth\Responses;
 
-    use BetterWP\Auth\Contracts\TwoFactorChallengeResponse;
-    use BetterWP\Http\ResponseFactory;
+    use Snicco\Auth\Contracts\TwoFactorChallengeResponse;
+    use Snicco\Http\ResponseFactory;
 
     class Google2FaChallengeResponse extends TwoFactorChallengeResponse
     {

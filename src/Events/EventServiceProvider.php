@@ -4,18 +4,18 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Events;
+    namespace Snicco\Events;
 
     use BetterWpHooks\Contracts\Dispatcher;
-    use BetterWP\Contracts\ServiceProvider;
-    use BetterWP\ExceptionHandling\ShutdownHandler;
-    use BetterWP\Http\HttpKernel;
-    use BetterWP\Listeners\CreateDynamicHooks;
-    use BetterWP\Listeners\LoadRoutes;
-    use BetterWP\Listeners\FilterWpQuery;
-    use BetterWP\Listeners\ShortCircuit404;
-    use BetterWP\Middleware\Core\OutputBufferMiddleware;
-    use BetterWP\View\ViewFactory;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\ExceptionHandling\ShutdownHandler;
+    use Snicco\Http\HttpKernel;
+    use Snicco\Listeners\CreateDynamicHooks;
+    use Snicco\Listeners\LoadRoutes;
+    use Snicco\Listeners\FilterWpQuery;
+    use Snicco\Listeners\ShortCircuit404;
+    use Snicco\Middleware\Core\OutputBufferMiddleware;
+    use Snicco\View\ViewFactory;
 
     class EventServiceProvider extends ServiceProvider
     {

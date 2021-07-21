@@ -6,7 +6,7 @@
 
 	namespace Tests\unit\Http;
 
-	use BetterWP\Http\Controller;
+	use Snicco\Http\Controller;
 	use PHPUnit\Framework\TestCase;
 
 	class ControllerTest extends TestCase {

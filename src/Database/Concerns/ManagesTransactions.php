@@ -3,13 +3,13 @@
 
     declare(strict_types = 1);
 
-    namespace BetterWP\Database\Concerns;
+    namespace Snicco\Database\Concerns;
 
-    use BetterWP\Database\Contracts\BetterWPDbInterface;
-    use BetterWP\Database\Illuminate\MySqlSchemaGrammar;
+    use Snicco\Database\Contracts\BetterWPDbInterface;
+    use Snicco\Database\Illuminate\MySqlSchemaGrammar;
     use Closure;
     use Illuminate\Database\Grammar;
-    use BetterWP\Support\Str;
+    use Snicco\Support\Str;
     use Illuminate\Database\QueryException;
     use mysqli_sql_exception;
     use Throwable;

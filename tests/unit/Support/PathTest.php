@@ -7,7 +7,7 @@
 	namespace Tests\unit\Support;
 
 	use PHPUnit\Framework\TestCase;
-	use BetterWP\Support\FilePath;
+	use Snicco\Support\FilePath;
 
 
 	class PathTest extends TestCase {

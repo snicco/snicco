@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Mail;
+    namespace Snicco\Mail;
 
     use BetterWpHooks\Contracts\Dispatcher;
     use BetterWpHooks\Dispatchers\WordpressDispatcher;
     use Contracts\ContainerAdapter;
-    use BetterWP\Events\PendingMail;
+    use Snicco\Events\PendingMail;
 
     class MailBuilder
     {

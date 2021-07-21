@@ -3,7 +3,7 @@
 
     declare(strict_types = 1);
 
-    $site_name = esc_html(\BetterWP\Support\WP::siteName());
+    $site_name = esc_html(\Snicco\Support\WP::siteName());
 
     ?>
 

@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\View;
+    namespace Snicco\View;
 
-    use BetterWP\Support\VariableBag;
+    use Snicco\Support\VariableBag;
 
     class GlobalContext
     {

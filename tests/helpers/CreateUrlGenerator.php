@@ -6,12 +6,12 @@
 
     namespace Tests\helpers;
 
-    use BetterWP\Testing\TestDoubles\TestMagicLink;
+    use Snicco\Testing\TestDoubles\TestMagicLink;
     use Tests\stubs\TestRequest;
-    use BetterWP\Contracts\MagicLink;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Routing\FastRoute\FastRouteUrlGenerator;
-    use BetterWP\Routing\UrlGenerator;
+    use Snicco\Contracts\MagicLink;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
+    use Snicco\Routing\UrlGenerator;
 
     trait CreateUrlGenerator
     {

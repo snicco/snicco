@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Database\Models;
+    namespace Snicco\Database\Models;
 
     use Illuminate\Database\Eloquent\Model as Eloquent;
 

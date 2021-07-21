@@ -16,14 +16,14 @@
     use Tests\UnitTest;
     use Tests\stubs\TestContainer;
     use Tests\helpers\CreateDefaultWpApiMocks;
-    use BetterWP\Application\Application;
-    use BetterWP\Application\Config;
-    use BetterWP\Contracts\ServiceProvider;
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Session\Encryptor;
+    use Snicco\Application\Application;
+    use Snicco\Application\Config;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Session\Encryptor;
 
     class ApplicationTest extends UnitTest
     {

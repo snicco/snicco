@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Exceptions;
+    namespace Snicco\Auth\Exceptions;
 
     use Throwable;
     use WP_Error;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Http\Responses\RedirectResponse;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Http\Responses\RedirectResponse;
 
     class FailedAuthenticationException extends \Exception
     {

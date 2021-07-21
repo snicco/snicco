@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Middleware\Core;
+    namespace Snicco\Middleware\Core;
 
     use Psr\Http\Message\ResponseInterface;
-    use BetterWP\Contracts\Middleware;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Responses\RedirectResponse;
-    use BetterWP\Support\Str;
+    use Snicco\Contracts\Middleware;
+    use Snicco\Support\WP;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Support\Str;
 
     class OpenRedirectProtection extends Middleware
     {

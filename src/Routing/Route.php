@@ -4,21 +4,21 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing;
+    namespace Snicco\Routing;
 
     use Closure;
-    use BetterWP\Contracts\ConditionInterface;
-    use BetterWP\Contracts\RouteAction;
-    use BetterWP\Contracts\SetsRouteAttributes;
-    use BetterWP\Contracts\UrlableInterface;
-    use BetterWP\Controllers\FallBackController;
-    use BetterWP\Factories\ConditionFactory;
-    use BetterWP\Factories\RouteActionFactory;
-    use BetterWP\Http\Psr7\Request;
+    use Snicco\Contracts\ConditionInterface;
+    use Snicco\Contracts\RouteAction;
+    use Snicco\Contracts\SetsRouteAttributes;
+    use Snicco\Contracts\UrlableInterface;
+    use Snicco\Controllers\FallBackController;
+    use Snicco\Factories\ConditionFactory;
+    use Snicco\Factories\RouteActionFactory;
+    use Snicco\Http\Psr7\Request;
     use ReflectionPayload\ReflectionPayload;
-    use BetterWP\Support\Url;
-    use BetterWP\Support\UrlParser;
-    use BetterWP\Traits\SetRouteAttributes;
+    use Snicco\Support\Url;
+    use Snicco\Support\UrlParser;
+    use Snicco\Traits\SetRouteAttributes;
 
     class Route implements SetsRouteAttributes
     {

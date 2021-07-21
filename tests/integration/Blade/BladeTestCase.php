@@ -8,8 +8,8 @@
 
     use Illuminate\Support\Facades\Facade;
     use Tests\TestCase;
-    use BetterWP\Blade\BladeDirectiveServiceProvider;
-    use BetterWP\Blade\BladeServiceProvider;
+    use Snicco\Blade\BladeDirectiveServiceProvider;
+    use Snicco\Blade\BladeServiceProvider;
 
     class BladeTestCase extends TestCase
     {

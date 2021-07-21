@@ -13,21 +13,21 @@
     use Tests\helpers\HashesSessionIds;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use BetterWP\ExceptionHandling\NullErrorHandler;
-    use BetterWP\Testing\TestingErrorHandler;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Cookies;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Middleware\Core\ShareCookies;
-    use BetterWP\Routing\Pipeline;
-    use BetterWP\Session\Drivers\ArraySessionDriver;
-    use BetterWP\Session\Session;
-    use BetterWP\Session\Middleware\StartSessionMiddleware;
-    use BetterWP\Session\SessionManager;
-    use BetterWP\Support\VariableBag;
+    use Snicco\ExceptionHandling\NullErrorHandler;
+    use Snicco\Testing\TestingErrorHandler;
+    use Snicco\Support\WP;
+    use Snicco\Http\Cookies;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Middleware\Core\ShareCookies;
+    use Snicco\Routing\Pipeline;
+    use Snicco\Session\Drivers\ArraySessionDriver;
+    use Snicco\Session\Session;
+    use Snicco\Session\Middleware\StartSessionMiddleware;
+    use Snicco\Session\SessionManager;
+    use Snicco\Support\VariableBag;
 
     class SessionMiddlewareTest extends UnitTest
     {

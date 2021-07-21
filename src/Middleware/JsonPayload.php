@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Middleware;
+    namespace Snicco\Middleware;
 
     use Psr\Http\Message\StreamInterface;
 

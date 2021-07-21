@@ -4,14 +4,14 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Traits;
+	namespace Snicco\Traits;
 
 	use Closure;
-    use BetterWP\Controllers\FallBackController;
-    use BetterWP\Routing\ConditionBlueprint;
-    use BetterWP\Routing\Conditions\TrailingSlashCondition;
-    use BetterWP\Routing\Route;
-	use BetterWP\Support\Arr;
+    use Snicco\Controllers\FallBackController;
+    use Snicco\Routing\ConditionBlueprint;
+    use Snicco\Routing\Conditions\TrailingSlashCondition;
+    use Snicco\Routing\Route;
+	use Snicco\Support\Arr;
 
 	trait SetRouteAttributes {
 

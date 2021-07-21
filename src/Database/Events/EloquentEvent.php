@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Database\Events;
+    namespace Snicco\Database\Events;
 
-    use BetterWP\Events\Event;
+    use Snicco\Events\Event;
 
     class EloquentEvent extends Event
     {

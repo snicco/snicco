@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Testing;
+    namespace Snicco\Testing;
 
     use Psr\Http\Message\ResponseInterface;
-    use BetterWP\Http\Cookies;
-    use BetterWP\Http\ResponseEmitter;
+    use Snicco\Http\Cookies;
+    use Snicco\Http\ResponseEmitter;
 
     class TestResponseEmitter extends ResponseEmitter
     {

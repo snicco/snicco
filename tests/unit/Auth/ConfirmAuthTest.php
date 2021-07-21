@@ -10,10 +10,10 @@
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\TravelsTime;
     use Tests\MiddlewareTestCase;
-    use BetterWP\Auth\Middleware\ConfirmAuth;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Routing\Route;
+    use Snicco\Auth\Middleware\ConfirmAuth;
+    use Snicco\Support\WP;
+    use Snicco\Http\Delegate;
+    use Snicco\Routing\Route;
 
     class ConfirmAuthTest extends MiddlewareTestCase
     {

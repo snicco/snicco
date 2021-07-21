@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Testing;
+    namespace Snicco\Testing;
 
     use Codeception\TestCase\WPTestCase;
     use Illuminate\Container\Container;
@@ -14,31 +14,31 @@
     use Mockery\Exception\InvalidCountException;
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestFactoryInterface;
-    use BetterWP\Application\Application;
-    use BetterWP\Application\Config;
-    use BetterWP\Events\Event;
-    use BetterWP\Contracts\AbstractRouteCollection;
-    use BetterWP\Contracts\ErrorHandlerInterface;
-    use BetterWP\Contracts\Middleware;
-    use BetterWP\Contracts\RouteRegistrarInterface;
-    use BetterWP\Contracts\ServiceProvider;
-    use BetterWP\ExceptionHandling\NullErrorHandler;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\HttpKernel;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Routing\Route;
-    use BetterWP\Routing\RouteRegistrar;
-    use BetterWP\Session\Session;
-    use BetterWP\Session\SessionServiceProvider;
-    use BetterWP\Support\Arr;
-    use BetterWP\Testing\Concerns\InteractsWithAuthentication;
-    use BetterWP\Testing\Concerns\InteractsWithContainer;
-    use BetterWP\Testing\Concerns\InteractsWithMail;
-    use BetterWP\Testing\Concerns\InteractsWithSession;
-    use BetterWP\Testing\Concerns\InteractsWithWordpressUsers;
-    use BetterWP\Testing\Concerns\MakesHttpRequests;
-    use BetterWP\Testing\Concerns\TravelsTime;
+    use Snicco\Application\Application;
+    use Snicco\Application\Config;
+    use Snicco\Events\Event;
+    use Snicco\Contracts\AbstractRouteCollection;
+    use Snicco\Contracts\ErrorHandlerInterface;
+    use Snicco\Contracts\Middleware;
+    use Snicco\Contracts\RouteRegistrarInterface;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\ExceptionHandling\NullErrorHandler;
+    use Snicco\Support\WP;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\HttpKernel;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\Route;
+    use Snicco\Routing\RouteRegistrar;
+    use Snicco\Session\Session;
+    use Snicco\Session\SessionServiceProvider;
+    use Snicco\Support\Arr;
+    use Snicco\Testing\Concerns\InteractsWithAuthentication;
+    use Snicco\Testing\Concerns\InteractsWithContainer;
+    use Snicco\Testing\Concerns\InteractsWithMail;
+    use Snicco\Testing\Concerns\InteractsWithSession;
+    use Snicco\Testing\Concerns\InteractsWithWordpressUsers;
+    use Snicco\Testing\Concerns\MakesHttpRequests;
+    use Snicco\Testing\Concerns\TravelsTime;
 
     abstract class TestCase extends WPTestCase
     {
@@ -355,7 +355,7 @@
 
                 if (! $abstract instanceOf Middleware ) {
                     throw new \RuntimeException(
-                        "You are trying to enable the middleware [$abstract] but it does not implement [BetterWP\Contracts\Middleware]."
+                        "You are trying to enable the middleware [$abstract] but it does not implement [Snicco\Contracts\Middleware]."
                     );
                 }
 

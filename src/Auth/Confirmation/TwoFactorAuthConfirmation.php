@@ -4,19 +4,19 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Confirmation;
+    namespace Snicco\Auth\Confirmation;
 
     use WP_User;
-    use BetterWP\Auth\Contracts\AuthConfirmation;
-    use BetterWP\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use BetterWP\Auth\Traits\InteractsWithTwoFactorSecrets;
-    use BetterWP\Auth\Traits\PerformsTwoFactorAuthentication;
-    use BetterWP\Auth\Traits\ResolvesUser;
-    use BetterWP\Auth\Traits\ResolveTwoFactorSecrets;
-    use BetterWP\Contracts\EncryptorInterface;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Http\ResponseFactory;
+    use Snicco\Auth\Contracts\AuthConfirmation;
+    use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
+    use Snicco\Auth\Traits\PerformsTwoFactorAuthentication;
+    use Snicco\Auth\Traits\ResolvesUser;
+    use Snicco\Auth\Traits\ResolveTwoFactorSecrets;
+    use Snicco\Contracts\EncryptorInterface;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Http\ResponseFactory;
 
     class TwoFactorAuthConfirmation implements AuthConfirmation
     {

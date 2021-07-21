@@ -6,15 +6,15 @@
 
     namespace Tests\integration\Database;
 
-    use BetterWP\Database\BetterWPDb;
-    use BetterWP\Database\Contracts\BetterWPDbInterface;
-    use BetterWP\Database\Contracts\WPConnectionInterface;
-    use BetterWP\Database\FakeDB;
-    use BetterWP\Database\Illuminate\MySqlSchemaBuilder;
-    use BetterWP\Database\WPConnection;
-    use BetterWP\Database\WPConnectionResolver;
-    use BetterWP\Database\Contracts\ConnectionResolverInterface;
-    use BetterWP\Database\Illuminate\DispatcherAdapter;
+    use Snicco\Database\BetterWPDb;
+    use Snicco\Database\Contracts\BetterWPDbInterface;
+    use Snicco\Database\Contracts\WPConnectionInterface;
+    use Snicco\Database\FakeDB;
+    use Snicco\Database\Illuminate\MySqlSchemaBuilder;
+    use Snicco\Database\WPConnection;
+    use Snicco\Database\WPConnectionResolver;
+    use Snicco\Database\Contracts\ConnectionResolverInterface;
+    use Snicco\Database\Illuminate\DispatcherAdapter;
     use Faker\Generator;
     use Illuminate\Contracts\Events\Dispatcher;
     use Illuminate\Database\Eloquent\Model as Eloquent;

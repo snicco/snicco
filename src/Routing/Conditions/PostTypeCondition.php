@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Routing\Conditions;
+	namespace Snicco\Routing\Conditions;
 
-	use BetterWP\Contracts\ConditionInterface;
-    use BetterWP\Http\Psr7\Request;
+	use Snicco\Contracts\ConditionInterface;
+    use Snicco\Http\Psr7\Request;
 
     class PostTypeCondition implements ConditionInterface {
 

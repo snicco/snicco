@@ -7,10 +7,10 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use BetterWP\Events\Event;
-    use BetterWP\Auth\Contracts\AuthConfirmation;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Session\Events\SessionRegenerated;
+    use Snicco\Events\Event;
+    use Snicco\Auth\Contracts\AuthConfirmation;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Session\Events\SessionRegenerated;
 
     class ConfirmedAuthSessionControllerTest extends AuthTestCase
     {

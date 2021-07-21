@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Factories;
+	namespace Snicco\Factories;
 
-	use BetterWP\Contracts\Handler;
-	use BetterWP\View\ViewComposer;
+	use Snicco\Contracts\Handler;
+	use Snicco\View\ViewComposer;
 
 	class ViewComposerFactory extends AbstractFactory {
 

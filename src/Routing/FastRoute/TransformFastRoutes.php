@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing\FastRoute;
+    namespace Snicco\Routing\FastRoute;
 
     use FastRoute\Dispatcher;
-    use BetterWP\Routing\RoutingResult;
+    use Snicco\Routing\RoutingResult;
 
     trait TransformFastRoutes
     {

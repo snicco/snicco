@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Routing;
+	namespace Snicco\Routing;
 
 	use BadMethodCallException;
-	use BetterWP\Support\Arr;
+	use Snicco\Support\Arr;
 
 	class RouteDecorator {
 

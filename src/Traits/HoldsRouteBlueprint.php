@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Traits;
+	namespace Snicco\Traits;
 
-	use BetterWP\Routing\Route;
-	use BetterWP\Support\Arr;
+	use Snicco\Routing\Route;
+	use Snicco\Support\Arr;
 
 	trait HoldsRouteBlueprint {
 

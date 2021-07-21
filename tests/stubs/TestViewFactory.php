@@ -6,8 +6,8 @@
 
 	namespace Tests\stubs;
 
-	use BetterWP\Contracts\ViewInterface;
-	use BetterWP\Contracts\ViewFactoryInterface;
+	use Snicco\Contracts\ViewInterface;
+	use Snicco\Contracts\ViewFactoryInterface;
 
     class TestViewFactory implements ViewFactoryInterface {
 

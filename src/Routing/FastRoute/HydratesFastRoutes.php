@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing\FastRoute;
+    namespace Snicco\Routing\FastRoute;
 
-    use BetterWP\Routing\Route;
-    use BetterWP\Routing\RoutingResult;
-    use BetterWP\Traits\DeserializesRoutes;
+    use Snicco\Routing\Route;
+    use Snicco\Routing\RoutingResult;
+    use Snicco\Traits\DeserializesRoutes;
 
     trait HydratesFastRoutes
     {

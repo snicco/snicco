@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Events;
+    namespace Snicco\Events;
 
     class IncomingApiRequest extends IncomingRequest
     {

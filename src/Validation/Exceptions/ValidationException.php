@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Validation\Exceptions;
+    namespace Snicco\Validation\Exceptions;
 
 
     use Illuminate\Support\MessageBag;
     use Throwable;
-    use BetterWP\ExceptionHandling\Exceptions\HttpException;
+    use Snicco\ExceptionHandling\Exceptions\HttpException;
 
     class ValidationException extends HttpException
     {

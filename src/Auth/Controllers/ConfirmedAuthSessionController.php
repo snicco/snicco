@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Controllers;
+    namespace Snicco\Auth\Controllers;
 
-    use BetterWP\Auth\Contracts\AuthConfirmation;
-    use BetterWP\Http\Controller;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Http\Responses\RedirectResponse;
-    use BetterWP\Session\Events\SessionRegenerated;
+    use Snicco\Auth\Contracts\AuthConfirmation;
+    use Snicco\Http\Controller;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Session\Events\SessionRegenerated;
 
     class ConfirmedAuthSessionController extends Controller
     {

@@ -12,12 +12,12 @@
     use Tests\UnitTest;
     use Tests\stubs\TestRequest;
     use Tests\helpers\AssertsResponse;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Middleware\Authenticate;
-    use BetterWP\Http\Responses\RedirectResponse;
+    use Snicco\Support\WP;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Middleware\Authenticate;
+    use Snicco\Http\Responses\RedirectResponse;
 
     class AuthenticateTest extends UnitTest
     {

@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Routing;
+	namespace Snicco\Routing;
 
-	use BetterWP\Support\Url;
-	use BetterWP\Support\Arr;
+	use Snicco\Support\Url;
+	use Snicco\Support\Arr;
 
 	class RouteGroup {
 

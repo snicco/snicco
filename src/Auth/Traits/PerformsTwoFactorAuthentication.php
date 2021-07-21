@@ -4,11 +4,11 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Traits;
+    namespace Snicco\Auth\Traits;
 
-    use BetterWP\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use BetterWP\Auth\RecoveryCode;
-    use BetterWP\Http\Psr7\Request;
+    use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use Snicco\Auth\RecoveryCode;
+    use Snicco\Http\Psr7\Request;
 
     trait PerformsTwoFactorAuthentication
     {

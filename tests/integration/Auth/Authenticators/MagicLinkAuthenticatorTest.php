@@ -7,11 +7,11 @@
     namespace Tests\integration\Auth\Authenticators;
 
     use Tests\AuthTestCase;
-    use BetterWP\Auth\Authenticators\MagicLinkAuthenticator;
-    use BetterWP\Auth\Exceptions\FailedAuthenticationException;
-    use BetterWP\Auth\Responses\MagicLinkLoginView;
-    use BetterWP\Contracts\MagicLink;
-    use BetterWP\Routing\UrlGenerator;
+    use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
+    use Snicco\Auth\Exceptions\FailedAuthenticationException;
+    use Snicco\Auth\Responses\MagicLinkLoginView;
+    use Snicco\Contracts\MagicLink;
+    use Snicco\Routing\UrlGenerator;
 
     class MagicLinkAuthenticatorTest extends AuthTestCase
     {

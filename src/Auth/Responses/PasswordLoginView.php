@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Responses;
+    namespace Snicco\Auth\Responses;
 
-    use BetterWP\Application\Config;
-    use BetterWP\Auth\Contracts\LoginViewResponse;
-    use BetterWP\Support\WP;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\Support\Arr;
-    use BetterWP\View\ViewFactory;
+    use Snicco\Application\Config;
+    use Snicco\Auth\Contracts\LoginViewResponse;
+    use Snicco\Support\WP;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\Support\Arr;
+    use Snicco\View\ViewFactory;
 
     class PasswordLoginView extends LoginViewResponse
     {

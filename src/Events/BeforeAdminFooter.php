@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Events;
+    namespace Snicco\Events;
 
     use BetterWpHooks\Traits\DispatchesConditionally;
     use BetterWpHooks\Traits\IsAction;
-    use BetterWP\Events\Event;
-    use BetterWP\Support\WP;
+    use Snicco\Events\Event;
+    use Snicco\Support\WP;
 
     class BeforeAdminFooter extends Event
     {

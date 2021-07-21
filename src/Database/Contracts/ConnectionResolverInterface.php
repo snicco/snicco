@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Database\Contracts;
+    namespace Snicco\Database\Contracts;
 
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
     use Illuminate\Database\ConnectionResolverInterface as IlluminateConnectionResolverInterface;
 
     interface ConnectionResolverInterface extends IlluminateConnectionResolverInterface

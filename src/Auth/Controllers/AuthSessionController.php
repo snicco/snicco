@@ -4,26 +4,26 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Controllers;
+    namespace Snicco\Auth\Controllers;
 
     use Closure;
     use WP_User;
-    use BetterWP\Auth\Events\Login;
-    use BetterWP\Auth\Contracts\LoginResponse;
-    use BetterWP\Auth\Responses\LogoutResponse;
-    use BetterWP\Auth\Responses\SuccessfulLoginResponse;
-    use BetterWP\Auth\Contracts\LoginViewResponse;
-    use BetterWP\Contracts\ResponsableInterface;
-    use BetterWP\Auth\Exceptions\FailedAuthenticationException;
-    use BetterWP\ExceptionHandling\Exceptions\InvalidSignatureException;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Controller;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Routing\Pipeline;
-    use BetterWP\Session\Session;
-    use BetterWP\Support\Arr;
-    use BetterWP\Support\Url;
+    use Snicco\Auth\Events\Login;
+    use Snicco\Auth\Contracts\LoginResponse;
+    use Snicco\Auth\Responses\LogoutResponse;
+    use Snicco\Auth\Responses\SuccessfulLoginResponse;
+    use Snicco\Auth\Contracts\LoginViewResponse;
+    use Snicco\Contracts\ResponsableInterface;
+    use Snicco\Auth\Exceptions\FailedAuthenticationException;
+    use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
+    use Snicco\Support\WP;
+    use Snicco\Http\Controller;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Routing\Pipeline;
+    use Snicco\Session\Session;
+    use Snicco\Support\Arr;
+    use Snicco\Support\Url;
 
     class AuthSessionController extends Controller
     {

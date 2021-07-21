@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Session\Events;
+    namespace Snicco\Session\Events;
 
     use BetterWpHooks\Traits\IsAction;
-    use BetterWP\Events\Event;
+    use Snicco\Events\Event;
 
     class NewLogout extends Event
     {

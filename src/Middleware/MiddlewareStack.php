@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Middleware;
+    namespace Snicco\Middleware;
 
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Routing\Route;
-    use BetterWP\Support\Arr;
-    use BetterWP\Traits\GathersMiddleware;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\Route;
+    use Snicco\Support\Arr;
+    use Snicco\Traits\GathersMiddleware;
 
     class MiddlewareStack
     {

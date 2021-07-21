@@ -4,14 +4,14 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Middleware;
+	namespace Snicco\Middleware;
 
 	use Psr\Http\Message\ResponseInterface;
-    use BetterWP\Contracts\Middleware;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Routing\UrlGenerator;
+    use Snicco\Contracts\Middleware;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\UrlGenerator;
 
     class RedirectIfAuthenticated extends Middleware {
 

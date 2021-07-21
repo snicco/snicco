@@ -4,13 +4,13 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Events;
+	namespace Snicco\Events;
 
 
 
     use BetterWpHooks\Traits\DispatchesConditionally;
     use BetterWpHooks\Traits\IsAction;
-    use BetterWP\Support\WP;
+    use Snicco\Support\WP;
 
     class IncomingAdminRequest extends IncomingRequest {
 

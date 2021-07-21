@@ -4,13 +4,13 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Testing\Assertable;
+    namespace Snicco\Testing\Assertable;
 
     use WP_User;
-    use BetterWP\Events\PendingMail;
+    use Snicco\Events\PendingMail;
     use PHPUnit\Framework\Assert as PHPUnit;
-    use BetterWP\Support\Arr;
-    use BetterWP\View\ViewFactory;
+    use Snicco\Support\Arr;
+    use Snicco\View\ViewFactory;
 
     class AssertableMail
     {

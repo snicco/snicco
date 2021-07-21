@@ -10,10 +10,10 @@
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use BetterWP\Application\Application;
-    use BetterWP\Events\Event;
-    use BetterWP\Events\ResponseSent;
-    use BetterWP\Http\Responses\RedirectResponse;
+    use Snicco\Application\Application;
+    use Snicco\Events\Event;
+    use Snicco\Events\ResponseSent;
+    use Snicco\Http\Responses\RedirectResponse;
 
     class RedirectRoutesTest extends TestCase
     {

@@ -7,7 +7,7 @@
     namespace Tests\integration\Blade\Components;
 
     use Tests\fixtures\TestDependencies\Foo;
-    use BetterWP\Blade\BladeComponent;
+    use Snicco\Blade\BladeComponent;
 
     class Dependency extends BladeComponent
     {

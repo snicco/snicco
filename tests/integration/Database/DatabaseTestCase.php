@@ -6,11 +6,11 @@
 
     namespace Tests\integration\Database;
 
-    use BetterWP\Database\Contracts\BetterWPDbInterface;
-    use BetterWP\Database\DatabaseServiceProvider;
-    use BetterWP\Database\FakeDB;
-    use BetterWP\Database\Testing\Assertables\AssertableWpDB;
-    use BetterWP\Database\WPConnection;
+    use Snicco\Database\Contracts\BetterWPDbInterface;
+    use Snicco\Database\DatabaseServiceProvider;
+    use Snicco\Database\FakeDB;
+    use Snicco\Database\Testing\Assertables\AssertableWpDB;
+    use Snicco\Database\WPConnection;
     use Illuminate\Container\Container;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Facade;

@@ -4,16 +4,16 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Factories;
+	namespace Snicco\Factories;
 
 	use Contracts\ContainerAdapter;
 	use Illuminate\Support\Reflector;
-	use BetterWP\Contracts\Handler;
-	use BetterWP\Support\Str;
+	use Snicco\Contracts\Handler;
+	use Snicco\Support\Str;
 	use Closure;
-	use BetterWP\ExceptionHandling\Exceptions\Exception;
+	use Snicco\ExceptionHandling\Exceptions\Exception;
 
-	use BetterWP\Traits\ReflectsCallable;
+	use Snicco\Traits\ReflectsCallable;
 
 	use function collect;
 

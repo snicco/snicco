@@ -10,11 +10,11 @@
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use BetterWP\Http\Cookie;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\ResponseEmitter;
-    use BetterWP\Middleware\Core\ShareCookies;
+    use Snicco\Http\Cookie;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseEmitter;
+    use Snicco\Middleware\Core\ShareCookies;
 
     class ShareCookiesTest extends UnitTest
     {

@@ -7,8 +7,8 @@
 	namespace Tests\unit\Encryption;
 
 	use PHPUnit\Framework\TestCase;
-	use BetterWP\Contracts\EncryptorInterface;
-	use BetterWP\Session\Encryptor;
+	use Snicco\Contracts\EncryptorInterface;
+	use Snicco\Session\Encryptor;
 
 	class EncryptorTest extends TestCase {
 
@@ -25,7 +25,7 @@
 		public function a_valid_encryptor_instance_can_be_created_with_base64_encoding() {
 
 
-			$encryptor = new \BetterWP\Session\Encryptor( self::test_key );
+			$encryptor = new \Snicco\Session\Encryptor( self::test_key );
 
 			$this->assertInstanceOf( EncryptorInterface::class, $encryptor );
 

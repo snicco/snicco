@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Traits;
+    namespace Snicco\Auth\Traits;
 
     use Illuminate\Support\Collection;
-    use BetterWP\Auth\RecoveryCode;
+    use Snicco\Auth\RecoveryCode;
 
     trait InteractsWithTwoFactorCodes
     {

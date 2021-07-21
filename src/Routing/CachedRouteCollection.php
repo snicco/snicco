@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Routing;
+    namespace Snicco\Routing;
 
-    use BetterWP\Contracts\AbstractRouteCollection;
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
-    use BetterWP\Factories\ConditionFactory;
-    use BetterWP\Factories\RouteActionFactory;
-    use BetterWP\Routing\FastRoute\CachedFastRouteMatcher;
-    use BetterWP\Support\Arr;
-    use BetterWP\Traits\DeserializesRoutes;
-    use BetterWP\Traits\PreparesRouteForExport;
+    use Snicco\Contracts\AbstractRouteCollection;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\Factories\ConditionFactory;
+    use Snicco\Factories\RouteActionFactory;
+    use Snicco\Routing\FastRoute\CachedFastRouteMatcher;
+    use Snicco\Support\Arr;
+    use Snicco\Traits\DeserializesRoutes;
+    use Snicco\Traits\PreparesRouteForExport;
 
     class CachedRouteCollection extends AbstractRouteCollection
     {

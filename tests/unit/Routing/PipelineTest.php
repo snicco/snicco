@@ -11,8 +11,8 @@
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\UnitTest;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response as AppResponse;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response as AppResponse;
     use Nyholm\Psr7\Stream;
     use PHPUnit\Framework\TestCase;
     use Psr\Http\Message\ResponseInterface;
@@ -23,10 +23,10 @@
     use Tests\helpers\CreateContainer;
     use Tests\helpers\CreatePsr17Factories;
     use Throwable;
-    use BetterWP\Contracts\ErrorHandlerInterface;
-    use BetterWP\ExceptionHandling\Exceptions\HttpException;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Routing\Pipeline;
+    use Snicco\Contracts\ErrorHandlerInterface;
+    use Snicco\ExceptionHandling\Exceptions\HttpException;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Routing\Pipeline;
 
     class PipelineTest extends UnitTest
     {

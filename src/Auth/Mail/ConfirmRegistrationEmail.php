@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Mail;
+    namespace Snicco\Auth\Mail;
 
-    use BetterWP\Support\WP;
-    use BetterWP\Mail\Mailable;
+    use Snicco\Support\WP;
+    use Snicco\Mail\Mailable;
 
     class ConfirmRegistrationEmail extends Mailable
     {

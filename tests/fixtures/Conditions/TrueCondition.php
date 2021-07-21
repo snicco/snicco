@@ -6,8 +6,8 @@
 
 	namespace Tests\fixtures\Conditions;
 
-	use BetterWP\Contracts\ConditionInterface;
-    use BetterWP\Http\Psr7\Request;
+	use Snicco\Contracts\ConditionInterface;
+    use Snicco\Http\Psr7\Request;
 
     class TrueCondition implements ConditionInterface {
 

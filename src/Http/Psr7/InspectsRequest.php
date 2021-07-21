@@ -4,10 +4,10 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Http\Psr7;
+    namespace Snicco\Http\Psr7;
 
-    use BetterWP\Support\Arr;
-    use BetterWP\Support\Str;
+    use Snicco\Support\Arr;
+    use Snicco\Support\Str;
 
     trait InspectsRequest
     {

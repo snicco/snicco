@@ -11,14 +11,14 @@
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
-    use BetterWP\Contracts\Middleware;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Routing\RouteCollection;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\Session\Drivers\ArraySessionDriver;
-    use BetterWP\Session\Session;
+    use Snicco\Contracts\Middleware;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Routing\RouteCollection;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\Session\Drivers\ArraySessionDriver;
+    use Snicco\Session\Session;
 
    abstract class MiddlewareTestCase extends UnitTest
     {

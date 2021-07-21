@@ -8,11 +8,11 @@
 
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use BetterWP\Contracts\Mailer;
-    use BetterWP\Events\PendingMail;
-    use BetterWP\Listeners\SendMail;
-    use BetterWP\Mail\MailBuilder;
-    use BetterWP\Mail\WordPressMailer;
+    use Snicco\Contracts\Mailer;
+    use Snicco\Events\PendingMail;
+    use Snicco\Listeners\SendMail;
+    use Snicco\Mail\MailBuilder;
+    use Snicco\Mail\WordPressMailer;
 
     class MailServiceProviderTest extends TestCase
     {

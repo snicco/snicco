@@ -13,10 +13,10 @@
     use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use BetterWP\Blade\BladeDirectiveServiceProvider;
-    use BetterWP\Blade\BladeEngine;
-    use BetterWP\Blade\BladeServiceProvider;
-    use BetterWP\Contracts\ViewEngineInterface;
+    use Snicco\Blade\BladeDirectiveServiceProvider;
+    use Snicco\Blade\BladeEngine;
+    use Snicco\Blade\BladeServiceProvider;
+    use Snicco\Contracts\ViewEngineInterface;
 
     class BladeServiceProviderTest extends BladeTestCase
     {

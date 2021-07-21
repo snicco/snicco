@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Session\Middleware;
+    namespace Snicco\Session\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
-    use BetterWP\Contracts\Middleware;
-    use BetterWP\Http\Delegate;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Responses\InvalidResponse;
-    use BetterWP\Http\Responses\NullResponse;
-    use BetterWP\Session\Session;
-    use BetterWP\Session\SessionManager;
-    use BetterWP\Session\Contracts\SessionManagerInterface;
+    use Snicco\Contracts\Middleware;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Responses\InvalidResponse;
+    use Snicco\Http\Responses\NullResponse;
+    use Snicco\Session\Session;
+    use Snicco\Session\SessionManager;
+    use Snicco\Session\Contracts\SessionManagerInterface;
 
     class StartSessionMiddleware extends Middleware
     {

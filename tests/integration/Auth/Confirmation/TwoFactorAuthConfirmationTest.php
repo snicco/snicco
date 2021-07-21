@@ -8,9 +8,9 @@
 
     use Tests\AuthTestCase;
     use Tests\integration\Auth\Stubs\TestTwoFactorProvider;
-    use BetterWP\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use BetterWP\Contracts\EncryptorInterface;
-    use BetterWP\Routing\UrlGenerator;
+    use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use Snicco\Contracts\EncryptorInterface;
+    use Snicco\Routing\UrlGenerator;
 
     class TwoFactorAuthConfirmationTest extends AuthTestCase
     {

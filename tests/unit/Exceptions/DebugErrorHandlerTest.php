@@ -10,11 +10,11 @@
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
     use Tests\stubs\TestException;
-	use BetterWP\Events\Event;
-	use BetterWP\Events\UnrecoverableExceptionHandled;
-	use BetterWP\ExceptionHandling\DebugErrorHandler;
-	use BetterWP\Factories\ErrorHandlerFactory;
-    use BetterWP\Http\Psr7\Request;
+	use Snicco\Events\Event;
+	use Snicco\Events\UnrecoverableExceptionHandled;
+	use Snicco\ExceptionHandling\DebugErrorHandler;
+	use Snicco\Factories\ErrorHandlerFactory;
+    use Snicco\Http\Psr7\Request;
 
     class DebugErrorHandlerTest extends UnitTest {
 

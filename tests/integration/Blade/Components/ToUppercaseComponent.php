@@ -6,7 +6,7 @@
 
     namespace Tests\integration\Blade\Components;
 
-    use BetterWP\Blade\BladeComponent;
+    use Snicco\Blade\BladeComponent;
 
     class ToUppercaseComponent extends BladeComponent
     {

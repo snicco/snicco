@@ -4,10 +4,10 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Http;
+	namespace Snicco\Http;
 
-	use BetterWP\ExceptionHandling\Exceptions\Exception;
-	use BetterWP\Support\Arr;
+	use Snicco\ExceptionHandling\Exceptions\Exception;
+	use Snicco\Support\Arr;
 
 	class ControllerMiddleware {
 

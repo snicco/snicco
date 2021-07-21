@@ -12,8 +12,8 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
     use Tests\fixtures\Conditions\ConditionWithDependency;
-    use BetterWP\Events\Event;
-    use BetterWP\Support\WP;
+    use Snicco\Events\Event;
+    use Snicco\Support\WP;
 
     class RouteConditionsDependencyInjectionTest extends UnitTest
     {

@@ -16,23 +16,23 @@
     use Tests\UnitTest;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\stubs\TestRequest;
-    use BetterWP\Events\Event;
-    use BetterWP\Events\IncomingAdminRequest;
-    use BetterWP\Events\IncomingAjaxRequest;
-    use BetterWP\Events\IncomingWebRequest;
-    use BetterWP\Events\WpQueryFilterable;
-    use BetterWP\Support\WP;
-    use BetterWP\Factories\RouteActionFactory;
-    use BetterWP\Factories\ConditionFactory;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\ResponseFactory;
-    use BetterWP\Routing\CachedRouteCollection;
-    use BetterWP\Routing\FastRoute\CachedFastRouteMatcher;
-    use BetterWP\Listeners\FilterWpQuery;
-    use BetterWP\Routing\Route;
-    use BetterWP\Routing\Router;
-    use BetterWP\Routing\UrlGenerator;
-    use BetterWP\View\ViewFactory;
+    use Snicco\Events\Event;
+    use Snicco\Events\IncomingAdminRequest;
+    use Snicco\Events\IncomingAjaxRequest;
+    use Snicco\Events\IncomingWebRequest;
+    use Snicco\Events\WpQueryFilterable;
+    use Snicco\Support\WP;
+    use Snicco\Factories\RouteActionFactory;
+    use Snicco\Factories\ConditionFactory;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Routing\CachedRouteCollection;
+    use Snicco\Routing\FastRoute\CachedFastRouteMatcher;
+    use Snicco\Listeners\FilterWpQuery;
+    use Snicco\Routing\Route;
+    use Snicco\Routing\Router;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\View\ViewFactory;
 
     class RouteCachingTest extends UnitTest
     {

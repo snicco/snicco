@@ -4,9 +4,9 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Traits;
+    namespace Snicco\Auth\Traits;
 
-    use BetterWP\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Request;
 
     trait UsesCurrentRequest
     {

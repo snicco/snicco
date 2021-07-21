@@ -9,12 +9,12 @@
     use Illuminate\Support\InteractsWithTime;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
-    use BetterWP\Events\Event;
-    use BetterWP\Http\Cookies;
-    use BetterWP\Http\ResponseEmitter;
-    use BetterWP\Session\Events\SessionRegenerated;
-    use BetterWP\Session\SessionManager;
-    use BetterWP\Session\SessionServiceProvider;
+    use Snicco\Events\Event;
+    use Snicco\Http\Cookies;
+    use Snicco\Http\ResponseEmitter;
+    use Snicco\Session\Events\SessionRegenerated;
+    use Snicco\Session\SessionManager;
+    use Snicco\Session\SessionServiceProvider;
 
     class SessionManagerTest extends TestCase
     {

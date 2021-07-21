@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Contracts;
+    namespace Snicco\Auth\Contracts;
 
     interface TwoFactorAuthenticationProvider
     {

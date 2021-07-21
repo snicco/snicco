@@ -3,7 +3,7 @@
 
     declare(strict_types = 1);
 
-    use BetterWP\Routing\Router;
+    use Snicco\Routing\Router;
 
     /**
      * @var Router $router

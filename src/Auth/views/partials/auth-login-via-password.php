@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
     use Illuminate\Support\ViewErrorBag;
-    use BetterWP\Session\Session;
+    use Snicco\Session\Session;
 
     /** @var ViewErrorBag $errors */
 

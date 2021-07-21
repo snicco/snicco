@@ -13,10 +13,10 @@
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
     use Tests\fixtures\Conditions\FalseCondition;
-    use BetterWP\Events\Event;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Routing\Router;
+    use Snicco\Events\Event;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\Router;
 
     class RouteConditionsTest extends UnitTest {
 

@@ -4,17 +4,17 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Controllers;
+    namespace Snicco\Auth\Controllers;
 
-    use BetterWP\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use BetterWP\Auth\Traits\GeneratesRecoveryCodes;
-    use BetterWP\Auth\Traits\InteractsWithTwoFactorCodes;
-    use BetterWP\Auth\Traits\InteractsWithTwoFactorSecrets;
-    use BetterWP\Auth\Traits\ResolvesUser;
-    use BetterWP\Auth\Traits\ResolveTwoFactorSecrets;
-    use BetterWP\Contracts\EncryptorInterface;
-    use BetterWP\Http\Controller;
-    use BetterWP\Http\Psr7\Request;
+    use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use Snicco\Auth\Traits\GeneratesRecoveryCodes;
+    use Snicco\Auth\Traits\InteractsWithTwoFactorCodes;
+    use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
+    use Snicco\Auth\Traits\ResolvesUser;
+    use Snicco\Auth\Traits\ResolveTwoFactorSecrets;
+    use Snicco\Contracts\EncryptorInterface;
+    use Snicco\Http\Controller;
+    use Snicco\Http\Psr7\Request;
 
     class TwoFactorAuthPreferenceController extends Controller
     {

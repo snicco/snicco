@@ -3,10 +3,10 @@
 
     namespace Tests\integration\Database;
 
-    use BetterWP\Database\Contracts\WPConnectionInterface;
-    use BetterWP\Database\Illuminate\MySqlSchemaBuilder;
-    use BetterWP\Database\Testing\Assertables\AssertableWpDB;
-    use BetterWP\Database\WPConnection;
+    use Snicco\Database\Contracts\WPConnectionInterface;
+    use Snicco\Database\Illuminate\MySqlSchemaBuilder;
+    use Snicco\Database\Testing\Assertables\AssertableWpDB;
+    use Snicco\Database\WPConnection;
     use Illuminate\Database\Query\Expression;
     use Illuminate\Support\Str;
     use Illuminate\Database\Schema\Blueprint;

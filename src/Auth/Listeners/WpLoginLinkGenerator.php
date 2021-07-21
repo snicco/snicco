@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Listeners;
+    namespace Snicco\Auth\Listeners;
 
-    use BetterWP\Auth\Events\GenerateLoginUrl;
-    use BetterWP\Auth\Events\GenerateLogoutUrl;
-    use BetterWP\Events\ResponseSent;
-    use BetterWP\Support\WP;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Redirector;
-    use BetterWP\Http\ResponseEmitter;
-    use BetterWP\Routing\UrlGenerator;
+    use Snicco\Auth\Events\GenerateLoginUrl;
+    use Snicco\Auth\Events\GenerateLogoutUrl;
+    use Snicco\Events\ResponseSent;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Redirector;
+    use Snicco\Http\ResponseEmitter;
+    use Snicco\Routing\UrlGenerator;
 
     class WpLoginLinkGenerator
     {

@@ -4,14 +4,14 @@
 	declare( strict_types = 1 );
 
 
-	namespace BetterWP\Factories;
+	namespace Snicco\Factories;
 
 	use Contracts\ContainerAdapter;
-	use BetterWP\Contracts\ServiceProvider;
-	use BetterWP\Factories\AbstractFactory;
-	use BetterWP\Factories\ConditionFactory;
-	use BetterWP\Factories\RouteActionFactory;
-	use BetterWP\Factories\ViewComposerFactory;
+	use Snicco\Contracts\ServiceProvider;
+	use Snicco\Factories\AbstractFactory;
+	use Snicco\Factories\ConditionFactory;
+	use Snicco\Factories\RouteActionFactory;
+	use Snicco\Factories\ViewComposerFactory;
 
 	class FactoryServiceProvider extends ServiceProvider {
 

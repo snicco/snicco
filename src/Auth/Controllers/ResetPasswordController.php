@@ -4,15 +4,15 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Auth\Controllers;
+    namespace Snicco\Auth\Controllers;
 
     use WP_User;
-    use BetterWP\Http\Controller;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Responses\RedirectResponse;
-    use BetterWP\Validation\Exceptions\ValidationException;
+    use Snicco\Http\Controller;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Validation\Exceptions\ValidationException;
     use Respect\Validation\Validator as v;
-    use BetterWP\View\MethodField;
+    use Snicco\View\MethodField;
     use ZxcvbnPhp\Zxcvbn;
 
     class ResetPasswordController extends Controller

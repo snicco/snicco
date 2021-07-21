@@ -4,16 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Factories;
+    namespace Snicco\Factories;
 
     use Contracts\ContainerAdapter;
-    use BetterWP\Contracts\ConditionInterface;
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
-    use BetterWP\Routing\ConditionBlueprint;
-    use BetterWP\Routing\Conditions\CustomCondition;
-    use BetterWP\Routing\Conditions\NegateCondition;
-    use BetterWP\Routing\Route;
-    use BetterWP\Traits\ReflectsCallable;
+    use Snicco\Contracts\ConditionInterface;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\Routing\ConditionBlueprint;
+    use Snicco\Routing\Conditions\CustomCondition;
+    use Snicco\Routing\Conditions\NegateCondition;
+    use Snicco\Routing\Route;
+    use Snicco\Traits\ReflectsCallable;
 
     class ConditionFactory
     {

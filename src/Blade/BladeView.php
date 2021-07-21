@@ -4,14 +4,14 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Blade;
+    namespace Snicco\Blade;
 
 
     use Illuminate\Contracts\View\View as IlluminateViewContract;
     use Illuminate\View\View as IlluminateView;
-    use BetterWP\Contracts\ViewInterface;
-    use BetterWP\ExceptionHandling\Exceptions\ViewException;
-    use BetterWP\Support\Arr;
+    use Snicco\Contracts\ViewInterface;
+    use Snicco\ExceptionHandling\Exceptions\ViewException;
+    use Snicco\Support\Arr;
 
     class BladeView implements ViewInterface, IlluminateViewContract
     {

@@ -4,12 +4,12 @@
     declare(strict_types = 1);
 
 
-    namespace BetterWP\Listeners;
+    namespace Snicco\Listeners;
 
 
-    use BetterWP\Contracts\RouteRegistrarInterface;
-    use BetterWP\Events\IncomingApiRequest;
-    use BetterWP\Events\WpInit;
+    use Snicco\Contracts\RouteRegistrarInterface;
+    use Snicco\Events\IncomingApiRequest;
+    use Snicco\Events\WpInit;
 
     class LoadRoutes
     {

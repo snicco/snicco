@@ -7,14 +7,14 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use BetterWP\Events\Event;
-    use BetterWP\Auth\Authenticators\PasswordAuthenticator;
-    use BetterWP\Auth\Contracts\Authenticator;
-    use BetterWP\Auth\Events\Login;
-    use BetterWP\Auth\Traits\ResolvesUser;
-    use BetterWP\Http\Psr7\Request;
-    use BetterWP\Http\Psr7\Response;
-    use BetterWP\Testing\TestResponse;
+    use Snicco\Events\Event;
+    use Snicco\Auth\Authenticators\PasswordAuthenticator;
+    use Snicco\Auth\Contracts\Authenticator;
+    use Snicco\Auth\Events\Login;
+    use Snicco\Auth\Traits\ResolvesUser;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Testing\TestResponse;
 
 
     class AuthSessionControllerTest extends AuthTestCase

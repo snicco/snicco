@@ -1,13 +1,13 @@
 <?php
 
 
-    namespace BetterWP\Database;
+    namespace Snicco\Database;
 
-    use BetterWP\Database\Contracts\ConnectionResolverInterface;
-    use BetterWP\Database\Contracts\WPConnectionInterface;
-    use BetterWP\ExceptionHandling\Exceptions\ConfigurationException;
-    use BetterWP\ExceptionHandling\Exceptions\Exception;
-    use BetterWP\Support\Arr;
+    use Snicco\Database\Contracts\ConnectionResolverInterface;
+    use Snicco\Database\Contracts\WPConnectionInterface;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\ExceptionHandling\Exceptions\Exception;
+    use Snicco\Support\Arr;
     use wpdb;
 
     class WPConnectionResolver implements ConnectionResolverInterface
