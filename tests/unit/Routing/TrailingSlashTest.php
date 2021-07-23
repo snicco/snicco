@@ -8,16 +8,16 @@
 
     use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\stubs\TestRequest;
-    use Tests\helpers\CreateDefaultWpApiMocks;
-    use Tests\helpers\CreateTestSubjects;
-    use Tests\UnitTest;
     use Snicco\Events\Event;
     use Snicco\Events\IncomingWebRequest;
-    use Snicco\Support\WP;
     use Snicco\Http\Psr7\Request;
     use Snicco\Routing\Conditions\QueryStringCondition;
     use Snicco\Routing\Router;
+    use Snicco\Support\WP;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateTestSubjects;
+    use Tests\stubs\TestRequest;
+    use Tests\UnitTest;
 
     class TrailingSlashTest extends UnitTest
     {
@@ -233,10 +233,56 @@
 
                 });
 
-            }, true );
+            }, true);
 
             $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/wp-login.php');
             $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
+
+        }
+
+        /** @test */
+        public function a_route_to_wp_admin_always_has_the_trailing_slash()
+        {
+
+            $this->createRoutes(function () {
+
+                $this->router->get('/wp-admin', function () {
+
+                    return 'FOO';
+
+                });
+
+            }, true);
+
+            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/wp-admin/');
+            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
+
+            $this->createRoutes(function () {
+
+                $this->router->get('/wp-admin', function () {
+
+                    return 'FOO';
+
+                });
+
+            }, false);
+
+            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/wp-admin/');
+            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
+
+            $this->createRoutes(function () {
+
+                $this->router->get('/wp-admin/', function () {
+
+                    return 'FOO';
+
+                });
+
+            }, false);
+
+            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/wp-admin/');
+            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
+
 
         }
 

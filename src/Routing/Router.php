@@ -6,15 +6,16 @@
 
     namespace Snicco\Routing;
 
+    use BadMethodCallException;
     use Closure;
     use Contracts\ContainerAdapter;
     use Snicco\Contracts\AbstractRouteCollection;
     use Snicco\Controllers\FallBackController;
     use Snicco\Controllers\RedirectController;
     use Snicco\Controllers\ViewController;
-    use Snicco\Support\WP;
     use Snicco\Support\Str;
     use Snicco\Support\Url;
+    use Snicco\Support\WP;
     use Snicco\Traits\HoldsRouteBlueprint;
 
     /**
@@ -172,12 +173,12 @@
 
 
             $this->any('/{fallback}', [FallBackController::class, 'handle'])
-                 ->and('fallback', '[^.]+')
-                 ->where(function () {
+                ->and('fallback', '[^.]+')
+                ->where(function () {
 
-                     return ! WP::isAdmin();
+                    return ! WP::isAdmin();
 
-                 });
+                });
 
         }
 
@@ -186,7 +187,7 @@
 
             if ( ! in_array($method, RouteDecorator::allowed_attributes)) {
 
-                throw new \BadMethodCallException(
+                throw new BadMethodCallException(
                     'Method: '.$method.' does not exists on '.get_class($this)
                 );
 
@@ -327,11 +328,7 @@
         private function formatTrailing(string $url) : string
         {
 
-            if (Str::contains($url, WP::wpAdminFolder())) {
-                return rtrim($url, '/');
-            }
-
-            if ( ! $this->force_trailing) {
+            if ( ! $this->force_trailing && $url !== '/wp-admin') {
                 return $url;
             }
 
