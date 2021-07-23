@@ -12,39 +12,42 @@
     trait InteractsWithWordpressUsers
     {
 
-        protected function createAdmin(array $args = []) : WP_User
+        protected function createUserWithRole(string $user_role, array $args = []) : WP_User
         {
 
             return $this->factory()->user->create_and_get(array_merge([
-                'role' => 'administrator',
+                'role' => $user_role,
             ], $args));
+
+        }
+
+        protected function createAdmin(array $args = []) : WP_User
+        {
+
+            return $this->createUserWithRole('administrator', $args);
 
         }
 
         protected function createEditor(array $args = []) : WP_User
         {
 
-            return $this->factory()->user->create_and_get(array_merge([
-                'role' => 'editor',
-            ], $args));
+            return $this->createUserWithRole('editor', $args);
 
         }
 
         protected function createAuthor(array $args = []) : WP_User
         {
 
-            return $this->factory()->user->create_and_get(array_merge([
-                'role' => 'author',
-            ], $args));
+            return $this->createUserWithRole('author', $args);
+
 
         }
 
         protected function createSubscriber(array $args = []) : WP_User
         {
 
-            return $this->factory()->user->create_and_get(array_merge([
-                'role' => 'subscriber',
-            ], $args));
+            return $this->createUserWithRole('subscriber', $args);
+
 
         }
 
