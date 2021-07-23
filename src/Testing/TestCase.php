@@ -469,7 +469,7 @@
             $traits = array_flip(class_uses_recursive(static::class));
 
             if (in_array(WithDatabaseExceptions::class, $traits)) {
-                $this->withDatabaseExcepptions();
+                $this->withDatabaseExceptions();
             }
 
 
