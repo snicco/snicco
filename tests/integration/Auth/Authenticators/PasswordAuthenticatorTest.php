@@ -6,10 +6,9 @@
 
     namespace Tests\integration\Auth\Authenticators;
 
-    use Tests\AuthTestCase;
     use Snicco\Auth\Authenticators\PasswordAuthenticator;
     use Snicco\Routing\UrlGenerator;
-
+    use Tests\AuthTestCase;
 
     class PasswordAuthenticatorTest extends AuthTestCase
     {
@@ -123,6 +122,30 @@
             $this->assertAuthenticated($calvin);
             $this->assertTrue($this->session->hasRememberMeToken());
 
+
+        }
+
+        /** @test */
+        public function a_user_can_login_with_his_email_address_instead_of_the_username()
+        {
+
+            $this->withAddedConfig('auth.features.remember_me', true);
+
+            $calvin = $this->createAdmin();
+
+            $token = $this->withCsrfToken();
+
+            $response = $this->post('/auth/login', $token +
+                [
+                    'log' => $calvin->user_email,
+                    'pwd' => 'password',
+                    'remember_me' => '1',
+                ]
+            );
+
+            $response->assertRedirectToRoute('dashboard');
+            $this->assertAuthenticated($calvin);
+            $this->assertTrue($this->session->hasRememberMeToken());
 
         }
 
