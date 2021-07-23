@@ -6,29 +6,24 @@
 
     namespace Snicco\Testing\Concerns;
 
-    use Snicco\Support\WP;
-    use Nyholm\Psr7Server\ServerRequestCreator;
-    use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestFactoryInterface;
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Message\UriFactoryInterface;
     use Psr\Http\Message\UriInterface;
-    use Tests\helpers\CreatesWpUrls;
     use Snicco\Application\Application;
     use Snicco\Application\Config;
-    use Snicco\Contracts\Middleware;
     use Snicco\Contracts\ViewInterface;
     use Snicco\Events\IncomingAdminRequest;
     use Snicco\Events\IncomingAjaxRequest;
     use Snicco\Events\IncomingWebRequest;
     use Snicco\Http\Cookie;
-    use Snicco\Http\Delegate;
     use Snicco\Http\HttpKernel;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Psr7\Response;
     use Snicco\Session\Session;
     use Snicco\Support\Str;
     use Snicco\Support\Url;
+    use Snicco\Support\WP;
     use Snicco\Testing\TestResponse;
     use Snicco\View\ViewFactory;
 
@@ -65,7 +60,7 @@
 
         private $with_trailing_slash = false;
 
-        private $without_trailing_flash = false;
+        private $without_trailing_slash = false;
 
         /**
          * Indicates whether redirects should be followed.
@@ -196,7 +191,7 @@
         public function removeTrailingSlash()
         {
 
-            $this->without_trailing_flash = true;
+            $this->without_trailing_slash = true;
 
             return $this;
         }
@@ -497,13 +492,13 @@
 
                 }
 
-                if ( $this->with_trailing_slash ) {
+                if ($this->with_trailing_slash && ! Str::contains($uri, '.php')) {
 
                     $uri = Url::addTrailing($uri);
 
                 }
 
-                if ( $this->without_trailing_flash ) {
+                if ($this->without_trailing_slash) {
 
                     $uri = Url::removeTrailing($uri);
 
