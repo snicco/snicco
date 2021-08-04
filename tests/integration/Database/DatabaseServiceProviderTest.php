@@ -6,20 +6,20 @@
 
     namespace Tests\integration\Database;
 
-    use Snicco\Database\BetterWPDb;
-    use Snicco\Database\Contracts\BetterWPDbInterface;
-    use Snicco\Database\Contracts\WPConnectionInterface;
-    use Snicco\Database\FakeDB;
-    use Snicco\Database\Illuminate\MySqlSchemaBuilder;
-    use Snicco\Database\WPConnection;
-    use Snicco\Database\WPConnectionResolver;
-    use Snicco\Database\Contracts\ConnectionResolverInterface;
-    use Snicco\Database\Illuminate\DispatcherAdapter;
     use Faker\Generator;
     use Illuminate\Contracts\Events\Dispatcher;
     use Illuminate\Database\Eloquent\Model as Eloquent;
     use Illuminate\Database\Query\Builder;
     use Illuminate\Support\Facades\DB;
+    use Snicco\Database\BetterWPDb;
+    use Snicco\Database\Contracts\BetterWPDbInterface;
+    use Snicco\Database\Contracts\ConnectionResolverInterface;
+    use Snicco\Database\Contracts\WPConnectionInterface;
+    use Snicco\Database\FakeDB;
+    use Snicco\Database\Illuminate\IlluminateDispatcherAdapter;
+    use Snicco\Database\Illuminate\MySqlSchemaBuilder;
+    use Snicco\Database\WPConnection;
+    use Snicco\Database\WPConnectionResolver;
 
     class DatabaseServiceProviderTest extends DatabaseTestCase
     {
@@ -32,8 +32,8 @@
 
             $this->boot();
 
-            $this->assertInstanceOf(DispatcherAdapter::class, $this->app->resolve(Dispatcher::class));
-            $this->assertInstanceOf(DispatcherAdapter::class, $this->app->resolve('events'));
+            $this->assertInstanceOf(IlluminateDispatcherAdapter::class, $this->app->resolve(Dispatcher::class));
+            $this->assertInstanceOf(IlluminateDispatcherAdapter::class, $this->app->resolve('events'));
 
         }
 
@@ -44,7 +44,7 @@
             $this->boot();
 
             $events = Eloquent::getEventDispatcher();
-            $this->assertInstanceOf(DispatcherAdapter::class, $events);
+            $this->assertInstanceOf(IlluminateDispatcherAdapter::class, $events);
 
             $resolver = Eloquent::getConnectionResolver();
             $this->assertInstanceOf(WPConnectionResolver::class, $resolver);

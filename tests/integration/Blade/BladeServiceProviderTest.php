@@ -10,19 +10,14 @@
     use Illuminate\View\Engines\EngineResolver;
     use Illuminate\View\Factory;
     use Illuminate\View\FileViewFinder;
-    use Tests\IntegrationTest;
-    use Tests\stubs\TestApp;
-    use Tests\TestCase;
-    use Snicco\Blade\BladeDirectiveServiceProvider;
     use Snicco\Blade\BladeEngine;
-    use Snicco\Blade\BladeServiceProvider;
     use Snicco\Contracts\ViewEngineInterface;
+    use Tests\stubs\TestApp;
 
     class BladeServiceProviderTest extends BladeTestCase
     {
 
         protected $defer_boot = true;
-
 
         /** @test */
         public function the_blade_view_factory_is_bound_correctly()
@@ -82,5 +77,6 @@
             $this->assertSame(__DIR__, TestApp::config('view.compiled'));
 
         }
+
 
     }
