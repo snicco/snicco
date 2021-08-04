@@ -11,8 +11,8 @@
     use Snicco\ExceptionHandling\ShutdownHandler;
     use Snicco\Http\HttpKernel;
     use Snicco\Listeners\CreateDynamicHooks;
-    use Snicco\Listeners\LoadRoutes;
     use Snicco\Listeners\FilterWpQuery;
+    use Snicco\Listeners\LoadRoutes;
     use Snicco\Listeners\ShortCircuit404;
     use Snicco\Middleware\Core\OutputBufferMiddleware;
     use Snicco\View\ViewFactory;
@@ -51,7 +51,7 @@
 
         private $ensure_last = [
 
-            'request' => WpQueryFilterable::class,
+            'do_parse_request' => WpQueryFilterable::class,
             'template_include' => IncomingWebRequest::class,
 
         ];
@@ -97,7 +97,7 @@
 
             WpQueryFilterable::class => [
 
-                [FilterWpQuery::class, 'handle'],
+                [FilterWpQuery::class, 'handleEvent'],
 
             ],
 
@@ -135,7 +135,6 @@
 
         public function register() : void
         {
-
             $this->bindConfig();
         }
 

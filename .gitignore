@@ -3,3 +3,4 @@
 /.phpunit.cache/
 /.phpunit.result.cache
 phpunit.xml
+/tests/integration/Blade/cache/*
