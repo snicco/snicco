@@ -6,26 +6,24 @@
 
     namespace Snicco\Database;
 
+    use BetterWpHooks\Dispatchers\WordpressDispatcher;
+    use Faker\Factory;
+    use Faker\Generator as FakerGenerator;
+    use Illuminate\Contracts\Events\Dispatcher as IlluminateEventDispatcher;
+    use Illuminate\Database\Eloquent\Factories\Factory as EloquentFactory;
+    use Illuminate\Database\Eloquent\Model as Eloquent;
     use Snicco\Contracts\ServiceProvider;
     use Snicco\Database\Contracts\BetterWPDbInterface;
     use Snicco\Database\Contracts\ConnectionResolverInterface;
     use Snicco\Database\Contracts\WPConnectionInterface;
-    use Snicco\Database\Illuminate\DispatcherAdapter;
-    use Snicco\Database\Illuminate\Model;
+    use Snicco\Database\Illuminate\IlluminateDispatcherAdapter;
     use Snicco\Database\Illuminate\MySqlSchemaBuilder;
-    use BetterWpHooks\Dispatchers\WordpressDispatcher;
-    use Faker\Factory;
-    use Faker\Generator as FakerGenerator;
-    use Illuminate\Contracts\Container\Container;
-    use Illuminate\Contracts\Events\Dispatcher as IlluminateEventDispatcher;
-    use Illuminate\Database\Eloquent\Factories\Factory as EloquentFactory;
-    use Illuminate\Database\Eloquent\Model as Eloquent;
-    use Illuminate\Support\Facades\Facade;
-    use Illuminate\Container\Container as IlluminateContainer;
-    use SniccoAdapter\BaseContainerAdapter;
+    use Snicco\Traits\ReliesOnIlluminateContainer;
 
     class DatabaseServiceProvider extends ServiceProvider
     {
+
+        use ReliesOnIlluminateContainer;
 
         public function register() : void
         {
@@ -53,11 +51,14 @@
 
             $this->container->singleton(IlluminateEventDispatcher::class, function () {
 
-                return new DispatcherAdapter($this->container->make(WordpressDispatcher::class));
+                return new IlluminateDispatcherAdapter($this->container->make(WordpressDispatcher::class));
+
             });
+
             $this->container->singleton('events', function () {
 
                 return $this->container->make(IlluminateEventDispatcher::class);
+
             });
 
         }
@@ -124,9 +125,8 @@
         private function bindFacades()
         {
 
-            $container = $this->parseContainer();
-            Facade::setFacadeApplication($container);
-            IlluminateContainer::setInstance($container);
+            $this->setFacadeContainer($c = $this->parseIlluminateContainer());
+            $this->setGlobalContainerInstance($c);
 
             $this->container->singleton('db', function () {
 
@@ -137,14 +137,6 @@
 
         }
 
-        private function parseContainer() : Container
-        {
-
-            return $this->container instanceof BaseContainerAdapter
-                ? $this->container->implementation()
-                : IlluminateContainer::getInstance();
-
-        }
 
         private function resolveConnection(string $name = null)
         {
@@ -185,14 +177,16 @@
 
                 $namespace = $this->config->get('database.factory_namespace', 'Database\\Factories\\');
                 $model = class_basename($model);
+
                 return $namespace.$model.'Factory';
             });
 
-            EloquentFactory::guessModelNamesUsing(function ( $factory) {
+            EloquentFactory::guessModelNamesUsing(function ($factory) {
 
                 $namespace = $this->config->get('database.model_namespace', 'App\\Models\\');
                 $model = class_basename($factory);
-                return str_replace('Factory', '',$namespace.$model);
+
+                return str_replace('Factory', '', $namespace.$model);
 
             });
 

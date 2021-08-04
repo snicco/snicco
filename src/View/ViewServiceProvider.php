@@ -7,24 +7,25 @@
 	namespace Snicco\View;
 
     use Snicco\Contracts\ServiceProvider;
-	use Snicco\Contracts\ViewEngineInterface;
-	use Snicco\Contracts\ViewFactoryInterface;
+    use Snicco\Contracts\ViewEngineInterface;
+    use Snicco\Contracts\ViewFactoryInterface;
     use Snicco\Factories\ViewComposerFactory;
 
+    class ViewServiceProvider extends ServiceProvider
+    {
 
-	class ViewServiceProvider extends ServiceProvider {
+        public function register() : void
+        {
 
-		public function register() : void {
+            $this->extendViews($this->config->get('app.package_root').DIRECTORY_SEPARATOR.'resources'.DIRECTORY_SEPARATOR.'views');
 
-		    $this->extendViews($this->config->get('app.package_root') . DIRECTORY_SEPARATOR . 'resources' . DIRECTORY_SEPARATOR . 'views');
+            $this->bindMethodField();
 
-		    $this->bindMethodField();
-
-		    $this->bindGlobalContext();
+            $this->bindGlobalContext();
 
             $this->bindViewServiceImplementation();
 
-            $this->bindViewServiceInterface();
+            $this->bindViewFactoryInterface();
 
 			$this->bindPhpViewEngine();
 
@@ -49,7 +50,7 @@
 
         }
 
-        private function bindViewServiceInterface() : void
+        private function bindViewFactoryInterface() : void
         {
 
             $this->container->singleton(ViewFactoryInterface::class, function () {
