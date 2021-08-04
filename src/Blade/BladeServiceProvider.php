@@ -9,17 +9,14 @@
     use Illuminate\Container\Container as IlluminateContainer;
     use Illuminate\Contracts\Container\Container;
     use Illuminate\Contracts\Foundation\Application;
+    use Illuminate\Contracts\View\Factory;
     use Illuminate\Events\Dispatcher;
     use Illuminate\Filesystem\Filesystem;
     use Illuminate\Support\Facades\Facade;
-    use Illuminate\Contracts\View\Factory;
-    use Illuminate\View\View;
     use Illuminate\View\ViewServiceProvider;
-    use SniccoAdapter\BaseContainerAdapter;
     use Snicco\Contracts\ServiceProvider;
     use Snicco\Contracts\ViewEngineInterface;
-    use Snicco\Contracts\ViewFactoryInterface;
-    use Snicco\Support\Arr;
+    use SniccoAdapter\BaseContainerAdapter;
 
     class BladeServiceProvider extends ServiceProvider
     {
@@ -50,26 +47,7 @@
 
         function bootstrap() : void
         {
-
-            $container = $this->parseContainer();
-
-            /** @var Dispatcher $dispatcher */
-            $dispatcher = $container->make('events');
-
-            $dispatcher->listen('composing: *', function ( $event_name, $payload ) use ($container) {
-
-                /** @var View $view */
-                $view = Arr::firstEl($payload);
-
-                /** @var ViewFactoryInterface $view_service */
-                $view_service = $container->make(ViewFactoryInterface::class);
-
-                $view_service->compose(new BladeView($view));
-
-            });
-
-
-
+            //
         }
 
         private function registerLaravelProvider (Container $container) {

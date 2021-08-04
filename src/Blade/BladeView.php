@@ -10,8 +10,10 @@
     use Illuminate\Contracts\View\View as IlluminateViewContract;
     use Illuminate\View\View as IlluminateView;
     use Snicco\Contracts\ViewInterface;
+    use Snicco\Events\MakingView;
     use Snicco\ExceptionHandling\Exceptions\ViewException;
     use Snicco\Support\Arr;
+    use Throwable;
 
     class BladeView implements ViewInterface, IlluminateViewContract
     {
@@ -36,13 +38,17 @@
         {
 
             try {
-                return $this->illuminate_view->toHtml();
+
+                MakingView::dispatch([$this]);
+
+                return $this->illuminate_view->render();
+
             }
 
-            catch (\Throwable $e) {
+            catch (Throwable $e) {
 
                 throw new ViewException(
-                    'Error rendering view:['.$this->name().']'.PHP_EOL. $e->getMessage() . PHP_EOL. $e->getTraceAsString()
+                    'Error rendering view:['.$this->name().']'.PHP_EOL.$e->getMessage().PHP_EOL.$e->getTraceAsString()
                 );
 
             }
@@ -78,14 +84,14 @@
 
         public function render() :string
         {
-           return $this->illuminate_view->render();
+
+            return $this->toString();
         }
 
         public function getData() :array
         {
             return $this->context();
         }
-
 
         public function path()
         {
