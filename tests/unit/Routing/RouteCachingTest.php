@@ -6,33 +6,34 @@
 
     namespace Tests\unit\Routing;
 
+    use Closure;
     use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\fixtures\Conditions\IsPost;
-    use Tests\helpers\CreatesWpUrls;
-    use Tests\helpers\CreateTestSubjects;
-    use Tests\helpers\CreateUrlGenerator;
-    use Tests\stubs\TestViewFactory;
-    use Tests\UnitTest;
-    use Tests\helpers\CreateDefaultWpApiMocks;
-    use Tests\stubs\TestRequest;
     use Snicco\Events\Event;
     use Snicco\Events\IncomingAdminRequest;
     use Snicco\Events\IncomingAjaxRequest;
     use Snicco\Events\IncomingWebRequest;
     use Snicco\Events\WpQueryFilterable;
-    use Snicco\Support\WP;
-    use Snicco\Factories\RouteActionFactory;
     use Snicco\Factories\ConditionFactory;
+    use Snicco\Factories\RouteActionFactory;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\ResponseFactory;
+    use Snicco\Listeners\FilterWpQuery;
     use Snicco\Routing\CachedRouteCollection;
     use Snicco\Routing\FastRoute\CachedFastRouteMatcher;
-    use Snicco\Listeners\FilterWpQuery;
     use Snicco\Routing\Route;
     use Snicco\Routing\Router;
     use Snicco\Routing\UrlGenerator;
+    use Snicco\Support\WP;
     use Snicco\View\ViewFactory;
+    use Tests\fixtures\Conditions\IsPost;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreatesWpUrls;
+    use Tests\helpers\CreateTestSubjects;
+    use Tests\helpers\CreateUrlGenerator;
+    use Tests\stubs\TestRequest;
+    use Tests\stubs\TestViewFactory;
+    use Tests\UnitTest;
 
     class RouteCachingTest extends UnitTest
     {
@@ -41,7 +42,6 @@
         use CreateTestSubjects;
         use CreatesWpUrls;
         use CreateUrlGenerator;
-
 
         /**
          * @var Router
@@ -296,17 +296,21 @@
             });
 
             $request = TestRequest::from('GET', 'foo');
-            $event = new WpQueryFilterable($request, ['foo' => 'bar']);
+            $event = new WpQueryFilterable($request, true, $wp = Mockery::mock(\WP::class));
             $listener = new FilterWpQuery($this->routes);
-            $this->assertSame(['foo' => 'baz'], $listener->handle($event));
+            $this->assertSame(false, $listener->handleEvent($event));
+            $this->assertSame(['foo' => 'baz'], $wp->query_vars);
             $this->runAndAssertOutput('foo', new IncomingWebRequest($request, 'wp.php'));
 
             // from cache
             $this->newCachedRouter();
 
-            $event = new WpQueryFilterable(TestRequest::from('GET', 'foo'), ['foo' => 'bar']);
+            $wp->query_vars = ['foo' => 'bar'];
+
+            $event = new WpQueryFilterable(TestRequest::from('GET', 'foo'), true, $wp);
             $listener = new FilterWpQuery($this->routes);
-            $this->assertSame(['foo' => 'baz'], $listener->handle($event));
+            $this->assertFalse($listener->handleEvent($event));
+            $this->assertSame(['foo' => 'baz'], $wp->query_vars);
             $this->runAndAssertOutput('foo', new IncomingWebRequest($request, 'wp.php'));
 
 
@@ -449,11 +453,11 @@
             $this->createRoutes(function () {
 
                 $this->router->get()->where(IsPost::class, true)
-                             ->handle(function () {
+                    ->handle(function () {
 
-                                 return 'FOO';
+                        return 'FOO';
 
-                             });
+                    });
 
                 $this->router->createFallbackWebRoute();
 
@@ -480,15 +484,15 @@
             $this->createRoutes(function () {
 
                 $this->router->get()
-                             ->where(function () {
+                    ->where(function () {
 
-                    return $_SERVER['pass_condition'];
-                })
-                             ->handle(function () {
+                        return $_SERVER['pass_condition'];
+                    })
+                    ->handle(function () {
 
-                                 return 'FOO';
+                        return 'FOO';
 
-                             });
+                    });
 
                 $this->router->createFallbackWebRoute();
 
@@ -526,7 +530,7 @@
 
             $this->assertInstanceOf(Route::class, $route);
 
-            $this->assertInstanceOf(\Closure::class, $route->getAction());
+            $this->assertInstanceOf(Closure::class, $route->getAction());
 
 
         }
@@ -541,11 +545,11 @@
             $this->createRoutes(function () {
 
                 $this->router->get('foo', Controller::class.'@handle')
-                             ->where(function () {
+                    ->where(function () {
 
-                                 return $_SERVER['pass_condition'];
+                        return $_SERVER['pass_condition'];
 
-                             });
+                    });
 
             });
 

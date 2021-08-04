@@ -6,12 +6,10 @@
 
 	namespace Snicco\ExceptionHandling;
 
-    use Snicco\Events\IncomingAjaxRequest;
     use Snicco\Events\ResponseSent;
     use Snicco\Http\Responses\RedirectResponse;
 
     class ShutdownHandler {
-
 
         /**
          * @var bool

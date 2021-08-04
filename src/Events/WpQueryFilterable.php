@@ -6,46 +6,42 @@
 
     namespace Snicco\Events;
 
-    use Snicco\Events\Event;
     use Snicco\Http\Psr7\Request;
+    use WP;
 
     class WpQueryFilterable extends Event
     {
 
-
         /**
-         * @var array
+         * @var bool
          */
-        private $original_query_vars;
+        public $do_request = true;
 
         /**
          * @var  Request
          */
         public $server_request;
 
-        public function __construct( Request $server_request, array $query_vars = [] )
-        {
+        /**
+         * @var  Request
+         */
+        public $wp;
 
-            $this->original_query_vars = $query_vars;
+        public function __construct(Request $server_request, bool $do_request, WP $wp)
+        {
 
             $this->server_request = $server_request->filtersWpQuery(true);
+            $this->do_request = $do_request;
+            $this->wp = $wp;
 
         }
 
-
-        public function default () :array  {
-
-            return $this->original_query_vars;
-
-        }
-
-        public function currentQueryVars () : array
+        public function default() : bool
         {
 
-            return $this->original_query_vars;
+            return $this->do_request;
 
         }
-
 
 
     }

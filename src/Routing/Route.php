@@ -7,6 +7,7 @@
     namespace Snicco\Routing;
 
     use Closure;
+    use ReflectionPayload\ReflectionPayload;
     use Snicco\Contracts\ConditionInterface;
     use Snicco\Contracts\RouteAction;
     use Snicco\Contracts\SetsRouteAttributes;
@@ -15,7 +16,6 @@
     use Snicco\Factories\ConditionFactory;
     use Snicco\Factories\RouteActionFactory;
     use Snicco\Http\Psr7\Request;
-    use ReflectionPayload\ReflectionPayload;
     use Snicco\Support\Url;
     use Snicco\Support\UrlParser;
     use Snicco\Traits\SetRouteAttributes;
@@ -151,19 +151,18 @@
 
         }
 
-        public function filterWpQuery ( array $query_vars,  array $route_payload ) {
+        public function filterWpQuery(array $route_segments) : array
+        {
 
             $callable = $this->wp_query_filter;
 
-            if ( ! $callable ) {
+            if ( ! $callable) {
 
-                return $query_vars;
+                return [];
 
             }
 
-            $combined = [$query_vars] + $route_payload;
-
-            return call_user_func_array($callable, $combined);
+            return call_user_func_array($callable, $route_segments);
 
         }
 
@@ -387,8 +386,6 @@
 
 
         }
-
-
 
 
     }

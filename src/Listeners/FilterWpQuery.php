@@ -9,6 +9,7 @@
     use BetterWpHooks\Traits\ListensConditionally;
     use Snicco\Contracts\AbstractRouteCollection;
     use Snicco\Events\WpQueryFilterable;
+    use Snicco\Routing\Route;
     use Snicco\Support\WP;
 
     class FilterWpQuery
@@ -23,31 +24,31 @@
 
         public function __construct(AbstractRouteCollection $routes)
         {
+
             $this->routes = $routes;
         }
 
-        public function handle (WpQueryFilterable $query_filterable) {
+        public function handleEvent(WpQueryFilterable $event) : bool
+        {
 
-            $request = $query_filterable->server_request;
+            $routing_result = $this->routes->matchForQueryFiltering($event->server_request);
 
-            $match = $this->routes->matchForQueryFiltering($request);
+            $route = $routing_result->route();
 
-            if ( ! $match->route() ) {
+            if ( ! $route instanceof Route || $route->isFallback()) {
 
-                return $query_filterable->currentQueryVars();
+                return $event->do_request;
 
             }
 
-            $this->removeUnneededFilters();
-
-            return $match->route()->filterWpQuery(
-                $query_filterable->currentQueryVars(),
-                $match->capturedUrlSegmentValues()
+            $event->wp->query_vars = $route->filterWpQuery(
+                $routing_result->capturedUrlSegmentValues()
             );
+
+            return false;
 
 
         }
-
 
         public function shouldHandle(WpQueryFilterable $event) : bool
         {
@@ -59,8 +60,6 @@
             WP::removeFilter('template_redirect', 'redirect_canonical');
             WP::removeFilter('template_redirect', 'rest_output_link_header');
             WP::removeFilter('template_redirect', 'wp_old_slug_redirect');
-
         }
-
 
     }
