@@ -13,7 +13,11 @@
     use Snicco\Auth\Confirmation\EmailAuthConfirmation;
     use Snicco\Auth\Confirmation\TwoFactorAuthConfirmation;
     use Snicco\Auth\Contracts\AuthConfirmation;
+    use Snicco\Auth\Contracts\LoginResponse;
+    use Snicco\Auth\Contracts\LoginViewResponse;
+    use Snicco\Auth\Contracts\RegistrationViewResponse;
     use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use Snicco\Auth\Contracts\TwoFactorChallengeResponse;
     use Snicco\Auth\Controllers\AuthSessionController;
     use Snicco\Auth\Controllers\ConfirmedAuthSessionController;
     use Snicco\Auth\Events\GenerateLoginUrl;
@@ -27,23 +31,20 @@
     use Snicco\Auth\Middleware\ConfirmAuth;
     use Snicco\Auth\Responses\EmailRegistrationViewResponse;
     use Snicco\Auth\Responses\Google2FaChallengeResponse;
-    use Snicco\Auth\Contracts\LoginResponse;
-    use Snicco\Auth\Contracts\LoginViewResponse;
     use Snicco\Auth\Responses\PasswordLoginView;
     use Snicco\Auth\Responses\RedirectToDashboardResponse;
-    use Snicco\Auth\Contracts\RegistrationViewResponse;
-    use Snicco\Auth\Contracts\TwoFactorChallengeResponse;
     use Snicco\Contracts\EncryptorInterface;
     use Snicco\Contracts\ServiceProvider;
-    use Snicco\Support\WP;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\ResponseFactory;
     use Snicco\Middleware\Secure;
-    use Snicco\Session\Events\SessionRegenerated;
     use Snicco\Session\Contracts\SessionDriver;
+    use Snicco\Session\Contracts\SessionManagerInterface;
+    use Snicco\Session\Events\SessionRegenerated;
     use Snicco\Session\Middleware\StartSessionMiddleware;
     use Snicco\Session\SessionManager;
-    use Snicco\Session\Contracts\SessionManagerInterface;
+    use Snicco\Support\WP;
 
     class AuthServiceProvider extends ServiceProvider
     {
@@ -87,6 +88,13 @@
         {
 
             $this->bindSessionManagerInterface();
+
+            if ( ! $this->config->get('session.enabled')) {
+
+                throw new ConfigurationException(
+                    'Sessions need to be enabled if you want to use the auth features.'
+                );
+            }
 
         }
 
