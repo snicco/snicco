@@ -6,10 +6,6 @@
 
     namespace Tests\integration\Auth;
 
-    use Tests\AuthTestCase;
-    use Tests\stubs\TestApp;
-    use Tests\stubs\TestRequest;
-    use Snicco\Events\Event;
     use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
     use Snicco\Auth\Authenticators\PasswordAuthenticator;
     use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
@@ -18,18 +14,20 @@
     use Snicco\Auth\Confirmation\EmailAuthConfirmation;
     use Snicco\Auth\Confirmation\TwoFactorAuthConfirmation;
     use Snicco\Auth\Contracts\AuthConfirmation;
+    use Snicco\Auth\Contracts\LoginResponse;
+    use Snicco\Auth\Contracts\LoginViewResponse;
     use Snicco\Auth\Controllers\AuthSessionController;
     use Snicco\Auth\Controllers\ConfirmedAuthSessionController;
     use Snicco\Auth\Controllers\ForgotPasswordController;
     use Snicco\Auth\Controllers\ResetPasswordController;
     use Snicco\Auth\Middleware\AuthenticateSession;
-    use Snicco\Auth\Contracts\LoginResponse;
-    use Snicco\Auth\Contracts\LoginViewResponse;
     use Snicco\Auth\Responses\MagicLinkLoginView;
     use Snicco\Auth\Responses\PasswordLoginView;
     use Snicco\Auth\Responses\RedirectToDashboardResponse;
     use Snicco\Auth\WpAuthSessionToken;
+    use Snicco\Events\Event;
     use Snicco\Events\ResponseSent;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
     use Snicco\Http\Responses\RedirectResponse;
     use Snicco\Middleware\Secure;
     use Snicco\Session\Contracts\SessionManagerInterface;
@@ -37,6 +35,10 @@
     use Snicco\Session\Events\NewLogout;
     use Snicco\Session\Middleware\StartSessionMiddleware;
     use Snicco\Session\SessionManager;
+    use Tests\AuthTestCase;
+    use Tests\stubs\TestApp;
+    use Tests\stubs\TestRequest;
+    use WP_Session_Tokens;
 
     class AuthServiceProviderTest extends AuthTestCase
     {
@@ -60,23 +62,44 @@
         }
 
         /** @test */
-        public function the_auth_endpoints_have_defaults_set () {
+        public function an_exception_is_thrown_if_sessions_are_not_enabled()
+        {
+
+            $this->withReplacedConfig('session.enabled', false);
+
+            try {
+
+                $this->boot();
+                $this->fail('No Configuration exceptions were thrown when they were expected');
+
+            }
+            catch (ConfigurationException $e) {
+
+                $this->assertStringContainsString('Sessions need to be enabled', $e->getMessage());
+
+            }
+
+        }
+
+        /** @test */
+        public function the_auth_endpoints_have_defaults_set()
+        {
 
             $this->boot();
 
             $this->assertSame('auth', TestApp::config('auth.endpoints.prefix'));
             $this->assertArrayHasKey('auth', TestApp::config('routing.api.endpoints'));
 
-            $this->assertSame('login',TestApp::config('auth.endpoints.login'));
-            $this->assertSame('magic-link',TestApp::config('auth.endpoints.magic-link'));
-            $this->assertSame('confirm',TestApp::config('auth.endpoints.confirm'));
-            $this->assertSame('two-factor',TestApp::config('auth.endpoints.2fa'));
-            $this->assertSame('challenge',TestApp::config('auth.endpoints.challenge'));
-            $this->assertSame('register',TestApp::config('auth.endpoints.register'));
-            $this->assertSame('forgot-password',TestApp::config('auth.endpoints.forgot-password'));
-            $this->assertSame('reset-password',TestApp::config('auth.endpoints.reset-password'));
-            $this->assertSame('accounts',TestApp::config('auth.endpoints.accounts'));
-            $this->assertSame('create',TestApp::config('auth.endpoints.accounts_create'));
+            $this->assertSame('login', TestApp::config('auth.endpoints.login'));
+            $this->assertSame('magic-link', TestApp::config('auth.endpoints.magic-link'));
+            $this->assertSame('confirm', TestApp::config('auth.endpoints.confirm'));
+            $this->assertSame('two-factor', TestApp::config('auth.endpoints.2fa'));
+            $this->assertSame('challenge', TestApp::config('auth.endpoints.challenge'));
+            $this->assertSame('register', TestApp::config('auth.endpoints.register'));
+            $this->assertSame('forgot-password', TestApp::config('auth.endpoints.forgot-password'));
+            $this->assertSame('reset-password', TestApp::config('auth.endpoints.reset-password'));
+            $this->assertSame('accounts', TestApp::config('auth.endpoints.accounts'));
+            $this->assertSame('create', TestApp::config('auth.endpoints.accounts_create'));
 
 
         }
@@ -91,8 +114,8 @@
             $expected = ROOT_DIR.DS.'src'.DS.'Auth'.DS.'views';
 
             $this->assertContains($expected, $views);
-            $this->assertContains($expected . '/partials', $views);
-            $this->assertContains($expected . '/email', $views);
+            $this->assertContains($expected.'/partials', $views);
+            $this->assertContains($expected.'/email', $views);
 
 
         }
@@ -124,7 +147,8 @@
         }
 
         /** @test */
-        public function the_start_session_middleware_has_a_higher_priority_then_the_authenticate_session_middleware () {
+        public function the_start_session_middleware_has_a_higher_priority_then_the_authenticate_session_middleware()
+        {
 
 
             $this->boot();
@@ -196,7 +220,7 @@
 
             $this->boot();
 
-            $instance = \WP_Session_Tokens::get_instance(1);
+            $instance = WP_Session_Tokens::get_instance(1);
             $this->assertInstanceOf(WpAuthSessionToken::class, $instance);
 
         }
@@ -364,7 +388,8 @@
         }
 
         /** @test */
-        public function email_can_be_used_as_a_primary_authenticator () {
+        public function email_can_be_used_as_a_primary_authenticator()
+        {
 
             $this->withAddedConfig('auth.authenticator', 'email');
             $this->boot();
@@ -400,19 +425,24 @@
         }
 
         /** @test */
-        public function two_factor_authentication_can_be_enabled () {
+        public function two_factor_authentication_can_be_enabled()
+        {
 
             $this->withAddedConfig('auth.features.2fa', true);
             $this->boot();
 
             $pipeline = TestApp::config('auth.through');
 
-            $this->assertEquals([TwoFactorAuthenticator::class, RedirectIf2FaAuthenticable::class, PasswordAuthenticator::class], $pipeline);
+            $this->assertEquals([
+                TwoFactorAuthenticator::class, RedirectIf2FaAuthenticable::class,
+                PasswordAuthenticator::class,
+            ], $pipeline);
 
         }
 
         /** @test */
-        public function auth_confirmation_uses_email_by_default () {
+        public function auth_confirmation_uses_email_by_default()
+        {
 
             $this->boot();
             $this->assertInstanceOf(EmailAuthConfirmation::class, TestApp::resolve(AuthConfirmation::class));
@@ -420,7 +450,8 @@
         }
 
         /** @test */
-        public function two_factor_auth_confirmation_is_used_if_enabled () {
+        public function two_factor_auth_confirmation_is_used_if_enabled()
+        {
 
             $this->withAddedConfig('auth.features.2fa', true);
             $this->boot();
