@@ -7,15 +7,13 @@
     namespace Snicco\Middleware\Core;
 
     use Psr\Http\Message\ResponseInterface;
-    use WP_Query;
     use Snicco\Contracts\Middleware;
-    use Snicco\ExceptionHandling\Exceptions\HttpException;
     use Snicco\ExceptionHandling\Exceptions\InvalidResponseException;
     use Snicco\ExceptionHandling\Exceptions\NotFoundException;
     use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
     use Snicco\Http\Responses\InvalidResponse;
     use Snicco\Http\Responses\NullResponse;
-    use Snicco\Http\Psr7\Request;
     use Snicco\Http\Responses\WpQueryFilteredResponse;
 
     class EvaluateResponseMiddleware extends Middleware
@@ -69,7 +67,7 @@
             }
 
             // We have a NullResponse, which means no route matched.
-            // But we want WordPress to handle it from here.
+            // But we want WordPress to handleit from here.
             if ( ! $this->must_match_current_request) {
 
                 return $response;

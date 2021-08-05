@@ -6,6 +6,7 @@
 
 	namespace Snicco\ExceptionHandling;
 
+    use Snicco\Events\Event;
     use Snicco\Events\ResponseSent;
     use Snicco\Http\Responses\RedirectResponse;
 
@@ -18,42 +19,47 @@
 
         public function __construct( bool $running_unit_tests = false )
         {
+
             $this->running_unit_tests = $running_unit_tests;
         }
 
-        public function unrecoverableException () {
+        public function unrecoverableException()
+        {
 
-		   $this->terminate();
+            $this->terminate();
 
-		}
+        }
 
-		public function handle( ResponseSent $response_sent) {
+        public function afterResponse(ResponseSent $response_sent)
+        {
 
             $request = $response_sent->request;
 
-            if ( $request->isApiEndPoint() || $request->isWpAjax() ) {
+            if ($response_sent->response instanceof RedirectResponse) {
 
                 $this->terminate();
 
             }
 
-		    if ( $response_sent->response instanceof RedirectResponse ) {
+            if ($request->isApiEndPoint() || $request->isWpAjax() || $request->isWpFrontEnd()) {
 
-		        $this->terminate();
+                $this->terminate();
 
             }
 
-
         }
 
-		private function terminate() {
+        private function terminate()
+        {
 
-            if ( $this->running_unit_tests ) {
+            Event::dispatch('sniccowp.shutdown');
+
+            if ($this->running_unit_tests) {
                 return;
             }
 
-		    exit();
+            exit();
 
         }
 
-	}
+    }

@@ -11,18 +11,17 @@
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
     use Psr\Http\Message\StreamInterface;
-    use Throwable;
     use Snicco\Contracts\AbstractRedirector;
     use Snicco\Contracts\ResponsableInterface;
     use Snicco\Contracts\ViewFactoryInterface as ViewFactory;
     use Snicco\ExceptionHandling\Exceptions\HttpException;
     use Snicco\ExceptionHandling\Exceptions\ViewException;
-    use Snicco\Support\WP;
     use Snicco\Http\Psr7\Response;
     use Snicco\Http\Responses\InvalidResponse;
     use Snicco\Http\Responses\NullResponse;
     use Snicco\Http\Responses\RedirectResponse;
     use Snicco\Http\Responses\WpQueryFilteredResponse;
+    use Throwable;
 
     /**
      * @todo either this class or the Response class need a prepare method to fix obvious mistakes.
@@ -186,7 +185,6 @@
 
         public function redirectToLogin(bool $reauth = false, string $redirect_on_login = '', int $status_code = 302) : RedirectResponse
         {
-
             return $this->redirector->toLogin($redirect_on_login, $reauth, $status_code);
         }
 

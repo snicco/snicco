@@ -5,13 +5,13 @@
 
     namespace Snicco\Database\Concerns;
 
-    use Snicco\Database\Contracts\BetterWPDbInterface;
-    use Snicco\Database\Illuminate\MySqlSchemaGrammar;
     use Closure;
     use Illuminate\Database\Grammar;
-    use Snicco\Support\Str;
     use Illuminate\Database\QueryException;
     use mysqli_sql_exception;
+    use Snicco\Database\Contracts\BetterWPDbInterface;
+    use Snicco\Database\Illuminate\MySqlSchemaGrammar;
+    use Snicco\Support\Str;
     use Throwable;
 
     /**
@@ -27,7 +27,7 @@
         /**
          * Execute a Closure within a transaction.
          *
-         * @param  \Closure  $callback
+         * @param  Closure  $callback
          * @param  int  $attempts
          *
          * @return mixed
@@ -53,12 +53,12 @@
 
                     // If we catch an exception we'll rollback this transaction and try again if we
                     // are not out of attempts. If we are out of attempts we will just throw the
-                    // exception back out and let the developer handle an uncaught exceptions.
+                    // exception back out and let the developer handlean uncaught exceptions.
                 catch ( Throwable $e) {
 
                     $this->handleTransactionException($e, $currentAttempt, $attempts);
 
-                    // We could handle the exception and are ready to try again.
+                    // We could handlethe exception and are ready to try again.
                     continue;
 
                 }

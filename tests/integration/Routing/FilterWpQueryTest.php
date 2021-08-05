@@ -6,11 +6,8 @@
 
     namespace Tests\integration\Routing;
 
-    use Tests\stubs\TestRequest;
     use Tests\TestCase;
     use WP;
-
-    use function apply_filters;
 
     class FilterWpQueryTest extends TestCase
     {
@@ -21,18 +18,15 @@
         public function WP_QUERY_vars_can_be_filtered_by_a_route()
         {
 
-            $request = TestRequest::from('GET', '/wpquery/foo');
-            $this->withRequest($request)->boot();
+            $this->withRequest($this->frontendRequest('GET', '/wpquery/foo'))->boot();
             $this->loadRoutes();
 
             /** @var WP $wp */
             global $wp;
 
-            $wp->parse_request();
+            $wp->main();
 
             $this->assertSame(['foo' => 'baz'], $wp->query_vars);
-
-            apply_filters('template_include', 'wordpress.php');
 
             $this->sentResponse()->assertOk()->assertSee('FOO_QUERY');
 
@@ -44,18 +38,16 @@
         {
 
             // The route responds to post but the event won't get dispatched.
-            $request = TestRequest::from('POST', '/wpquery/post');
-            $this->withRequest($request)->boot();
+            $this->withRequest($this->frontendRequest('POST', '/wpquery/post'))->boot();
             $this->loadRoutes();
 
             /** @var WP $wp */
             global $wp;
 
-            $wp->parse_request();
+            $wp->main();
 
             $this->assertSame([], $wp->query_vars);
 
-            apply_filters('template_include', 'wordpress.php');
             $this->sentResponse()->assertOk()->assertSee('FOO_QUERY');
 
         }
@@ -64,13 +56,13 @@
         public function captured_route_params_get_passed_to_the_query_filter()
         {
 
-            $request = TestRequest::from('GET', 'wpquery/teams/germany/dortmund');
-            $this->withRequest($request)->boot();
+            $this->withRequest($this->frontendRequest('GET', '/wpquery/teams/germany/dortmund'))
+                 ->boot();
             $this->loadRoutes();
 
             /** @var WP $wp */
             global $wp;
-            $wp->parse_request();
+            $wp->main();
 
             $this->assertSame(['germany' => 'dortmund'], $wp->query_vars);
 
@@ -80,8 +72,8 @@
         public function the_route_handler_does_not_get_run_when_filtering_WP_QUERY()
         {
 
-            $request = TestRequest::from('GET', '/wpquery/assert-no-handler-run');
-            $this->withRequest($request)->boot();
+            $this->withRequest($this->frontendRequest('GET', '/wpquery/assert-no-handler-run'))
+                 ->boot();
             $this->loadRoutes();
 
             /** @var WP $wp */
@@ -99,18 +91,14 @@
         public function its_possible_to_create_routes_that_ONLY_CHANGE_WP_QUERY_but_dont_have_a_route_action()
         {
 
-            $request = TestRequest::from('GET', '/wpquery/do-nothing');
-            $this->withRequest($request);
-            $this->boot();
+            $this->withRequest($this->frontendRequest('GET', '/wpquery/do-nothing'))->boot();
             $this->loadRoutes();
 
             /** @var WP $wp */
             global $wp;
-            $wp->parse_request();
+            $wp->main();
 
             $this->assertSame(['foo' => 'baz'], $wp->query_vars);
-
-            apply_filters('template_include', 'wp.php');
 
             $this->assertNoResponse();
 
@@ -120,19 +108,20 @@
         public function the_WP_QUERY_parsing_flow_remains_the_same_if_no_custom_route_matched()
         {
 
-            $request = TestRequest::from('GET', '/wpquery/bogus');
-            $this->withRequest($request)->boot();
+            $this->withRequest($this->frontendRequest('GET', '/wpquery/bogus'))->boot();
             $this->loadRoutes();
 
             $request_parsed = false;
-            add_action('request', function () use (&$request_parsed) {
+            add_action('request', function ($query_vars) use (&$request_parsed) {
 
                 $request_parsed = true;
+
+                return $query_vars;
             });
 
             /** @var WP $wp */
             global $wp;
-            $wp->parse_request();
+            $wp->main();
 
             $this->assertTrue($request_parsed);
 
@@ -142,8 +131,7 @@
         public function the_WP_QUERY_flow_is_short_circuited_if_a_custom_route_matched()
         {
 
-            $request = TestRequest::from('GET', '/wpquery/foo');
-            $this->withRequest($request)->boot();
+            $this->withRequest($this->frontendRequest('GET', '/wpquery/foo'))->boot();
             $this->loadRoutes();
 
             $request_parsed = false;
@@ -154,7 +142,7 @@
 
             /** @var WP $wp */
             global $wp;
-            $wp->parse_request();
+            $wp->main();
 
             $this->assertFalse($request_parsed);
 
