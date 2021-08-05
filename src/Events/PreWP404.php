@@ -6,10 +6,11 @@
 
     namespace Snicco\Events;
 
-    class Wp404 extends Event
+    class PreWP404 extends Event
     {
 
-        public function default() :bool {
+        public function default() : bool
+        {
 
             return false;
 

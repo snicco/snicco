@@ -37,7 +37,6 @@
     use Snicco\Session\SessionManager;
     use Tests\AuthTestCase;
     use Tests\stubs\TestApp;
-    use Tests\stubs\TestRequest;
     use WP_Session_Tokens;
 
     class AuthServiceProviderTest extends AuthTestCase
@@ -236,11 +235,15 @@
         }
 
         /** @test */
-        public function wp_login_php_is_a_permanent_redirected_for_get_requests()
+        public function wp_login_php_is_a_permanent_redirected_for_all_requests_expect_personal_privacy_deletions()
         {
 
             $this->withoutExceptionHandling();
-            $this->withRequest(TestRequest::from('GET', '/wp-login.php'));
+            $this->default_server_variables = [
+                'REQUEST_METHOD' => 'GET',
+                'SCRIPT_NAME' => 'wp-login.php',
+            ];
+            $this->withRequest($this->frontendRequest('GET', 'wp-login.php'));
             $this->boot();
 
             Event::fake([ResponseSent::class]);
@@ -249,7 +252,7 @@
 
             $response = $this->sentResponse();
 
-            $query = urlencode($this->config->get('app.url').'/wp-admin/');
+            $query = urlencode('/wp-admin/index.php');
             $expected_redirect = "/auth/login?redirect_to=$query";
 
             $response->assertRedirect($expected_redirect)

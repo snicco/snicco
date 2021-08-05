@@ -8,17 +8,13 @@
 
     use Snicco\Auth\Events\GenerateLoginUrl;
     use Snicco\Auth\Events\GenerateLogoutUrl;
-    use Snicco\Events\ResponseSent;
-    use Snicco\Support\WP;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Http\Redirector;
-    use Snicco\Http\ResponseEmitter;
     use Snicco\Routing\UrlGenerator;
+    use Snicco\Support\WP;
 
     class WpLoginLinkGenerator
     {
 
-        /** NOTE: Wordpress always returns these as absolute urls so lets stay compatible */
+        /** NOTE: WordPress always returns these as absolute urls so lets stay compatible */
         public function loginUrl(GenerateLoginUrl $event, UrlGenerator $url) : string
         {
 
@@ -38,7 +34,7 @@
 
         }
 
-        /** NOTE: Wordpress always returns these as absolute urls so lets stay compatible */
+        /** NOTE: WordPress always returns these as absolute urls so lets stay compatible */
         public function logoutUrl(GenerateLogoutUrl $event, UrlGenerator $url) : string
         {
 

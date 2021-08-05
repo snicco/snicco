@@ -39,12 +39,10 @@
 
         public function __construct(ResponseFactory $response_factory, ContainerAdapter $container, Pipeline $pipeline, MiddlewareStack $middleware_stack)
         {
-
             $this->response_factory = $response_factory;
             $this->pipeline = $pipeline;
             $this->middleware_stack = $middleware_stack;
             $this->container = $container;
-
         }
 
         public function handle(Request $request, Delegate $next) :ResponseInterface
@@ -68,7 +66,6 @@
             }
 
             $middleware = $this->middleware_stack->createFor($route, $request);
-
 
             return $this->pipeline
                 ->send($request)

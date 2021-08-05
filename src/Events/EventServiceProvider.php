@@ -13,7 +13,7 @@
     use Snicco\Listeners\CreateDynamicHooks;
     use Snicco\Listeners\FilterWpQuery;
     use Snicco\Listeners\LoadRoutes;
-    use Snicco\Listeners\ShortCircuit404;
+    use Snicco\Listeners\Manage404s;
     use Snicco\Middleware\Core\OutputBufferMiddleware;
     use Snicco\View\ViewFactory;
 
@@ -30,15 +30,15 @@
 
             'pre_handle_404' => [
 
-               [ Wp404::class, 999 ]
+                [PreWP404::class, 999],
 
             ],
 
             'all_admin_notices' => [
 
-                BeforeAdminFooter::class
+                BeforeAdminFooter::class,
 
-            ]
+            ],
 
         ];
 
@@ -46,13 +46,13 @@
 
             'init' => WpInit::class,
             'admin_init' => IncomingAjaxRequest::class,
+            'wp' => IncomingWebRequest::class,
 
         ];
 
         private $ensure_last = [
 
             'do_parse_request' => WpQueryFilterable::class,
-            'template_include' => IncomingWebRequest::class,
 
         ];
 
@@ -67,13 +67,14 @@
             AdminInit::class => [
 
                 [OutputBufferMiddleware::class, 'start'],
-                CreateDynamicHooks::class
+                CreateDynamicHooks::class,
 
             ],
 
             IncomingWebRequest::class => [
 
                 [HttpKernel::class, 'run'],
+                [Manage404s::class, 'check404'],
 
             ],
 
@@ -109,13 +110,13 @@
 
             BeforeAdminFooter::class => [
 
-                [OutputBufferMiddleware::class, 'flush']
+                [OutputBufferMiddleware::class, 'flush'],
 
             ],
 
             ResponseSent::class => [
 
-                [ShutdownHandler::class, 'handle'],
+                [ShutdownHandler::class, 'afterResponse'],
 
             ],
 
@@ -125,9 +126,9 @@
 
             ],
 
-            Wp404::class => [
+            PreWP404::class => [
 
-                ShortCircuit404::class,
+                [Manage404s::class, 'shortCircuit'],
 
             ],
 
@@ -135,6 +136,7 @@
 
         public function register() : void
         {
+
             $this->bindConfig();
         }
 
@@ -142,11 +144,11 @@
         {
 
             Event::make($this->container)
-                            ->map($this->config->get('events.mapped', []))
-                            ->ensureFirst($this->config->get('events.first', []))
-                            ->ensureLast($this->config->get('events.last', []))
-                            ->listeners($this->config->get('events.listeners', []))
-                            ->boot();
+                 ->map($this->config->get('events.mapped', []))
+                 ->ensureFirst($this->config->get('events.first', []))
+                 ->ensureLast($this->config->get('events.last', []))
+                 ->listeners($this->config->get('events.listeners', []))
+                 ->boot();
 
             $this->container->instance(Dispatcher::class, Event::dispatcher());
 

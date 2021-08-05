@@ -6,31 +6,31 @@
 
     namespace Tests\helpers;
 
+    use Closure;
     use Contracts\ContainerAdapter;
-    use Tests\fixtures\Middleware\BarMiddleware;
-    use Tests\fixtures\Middleware\BazMiddleware;
-    use Tests\fixtures\Middleware\FooBarMiddleware;
-    use Tests\fixtures\Middleware\FooMiddleware;
-    use Tests\stubs\TestRequest;
-    use Snicco\View\MethodField;
     use Snicco\Contracts\AbstractRouteCollection;
     use Snicco\Contracts\ErrorHandlerInterface;
     use Snicco\Events\IncomingRequest;
     use Snicco\Events\IncomingWebRequest;
     use Snicco\ExceptionHandling\NullErrorHandler;
-    use Snicco\Factories\ConditionFactory;
-    use Snicco\Factories\RouteActionFactory;
     use Snicco\Http\HttpKernel;
-    use Snicco\Http\Psr7\Request;
     use Snicco\Http\ResponseFactory;
     use Snicco\Middleware\Core\RouteRunner;
     use Snicco\Middleware\MiddlewareStack;
-    use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
     use Snicco\Routing\Pipeline;
-    use Snicco\Routing\RouteCollection;
     use Snicco\Routing\Router;
-    use Snicco\Routing\UrlGenerator;
     use Snicco\Routing\RoutingServiceProvider;
+    use Snicco\View\MethodField;
+    use Tests\fixtures\Conditions\ConditionWithDependency;
+    use Tests\fixtures\Conditions\FalseCondition;
+    use Tests\fixtures\Conditions\MaybeCondition;
+    use Tests\fixtures\Conditions\TrueCondition;
+    use Tests\fixtures\Conditions\UniqueCondition;
+    use Tests\fixtures\Middleware\BarMiddleware;
+    use Tests\fixtures\Middleware\BazMiddleware;
+    use Tests\fixtures\Middleware\FooBarMiddleware;
+    use Tests\fixtures\Middleware\FooMiddleware;
+    use Tests\stubs\TestRequest;
 
     trait CreateTestSubjects
     {
@@ -43,8 +43,7 @@
         protected $middleware_stack;
 
 
-
-        protected function createRoutes(\Closure $routes, bool $force_trailing = false)
+        protected function createRoutes(Closure $routes, bool $force_trailing = false)
         {
 
             $this->routes = $this->newRouteCollection();
@@ -73,7 +72,6 @@
             $this->container->instance(ContainerAdapter::class, $this->container);
             $this->container->instance(MethodField::class, new MethodField(TEST_APP_KEY));
 
-
             $middleware_stack = new MiddlewareStack();
             $middleware_stack->middlewareAliases([
                 'foo' => FooMiddleware::class,
@@ -92,7 +90,6 @@
             $this->container->instance(RouteRunner::class, $router_runner);
             $this->container->instance(MiddlewareStack::class, $middleware_stack);
             $this->middleware_stack = $middleware_stack;
-
 
             return new HttpKernel(new Pipeline($this->container, $error_handler));
 
@@ -113,6 +110,7 @@
 
             ob_start();
             $this->runKernel($request, $kernel);
+
             return ob_get_clean();
 
         }
@@ -138,11 +136,11 @@
 
             return array_merge(RoutingServiceProvider::CONDITION_TYPES , [
 
-                'true'                 => \Tests\fixtures\Conditions\TrueCondition::class,
-                'false'                => \Tests\fixtures\Conditions\FalseCondition::class,
-                'maybe'                => \Tests\fixtures\Conditions\MaybeCondition::class,
-                'unique'               => \Tests\fixtures\Conditions\UniqueCondition::class,
-                'dependency_condition' => \Tests\fixtures\Conditions\ConditionWithDependency::class,
+                'true' => TrueCondition::class,
+                'false' => FalseCondition::class,
+                'maybe' => MaybeCondition::class,
+                'unique' => UniqueCondition::class,
+                'dependency_condition' => ConditionWithDependency::class,
 
             ]);
 
@@ -152,7 +150,7 @@
         protected function webRequest($method, $path) : IncomingWebRequest
         {
 
-            return new IncomingWebRequest(TestRequest::from($method, $path), 'wordpress.php');
+            return new IncomingWebRequest(TestRequest::from($method, $path));
 
         }
 
