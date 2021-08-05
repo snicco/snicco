@@ -5,31 +5,32 @@
 
 
     /** @var Router $router */
-    use Snicco\Routing\Router;
+
     use Snicco\ExceptionHandling\Exceptions\HttpException;
+    use Snicco\Routing\Router;
     use Snicco\Session\Exceptions\InvalidCsrfTokenException;
 
     $router->get('error/500', function () {
 
-        throw new HttpException(500, 'Something went wrong here.');
+        throw new HttpException(500, 'Secret logging stuff.');
 
     });
 
     $router->get('error/400', function () {
 
-        throw new HttpException(400, 'Bad Request.');
+        throw new HttpException(400, 'Secret logging stuff.');
 
     });
 
     $router->get('error/419', function () {
 
-        throw new InvalidCsrfTokenException();
+        throw new InvalidCsrfTokenException('Secret logging stuff.');
 
     });
 
     $router->get('error/fatal', function () {
 
-        trigger_error('Sensitive Info', E_USER_ERROR);
+        trigger_error('Secret logging stuff.', E_USER_ERROR);
 
     });
 
