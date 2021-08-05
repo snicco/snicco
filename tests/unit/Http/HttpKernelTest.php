@@ -8,26 +8,22 @@
 
     use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\fixtures\Middleware\GlobalMiddleware;
-    use Tests\fixtures\Middleware\WebMiddleware;
-    use Tests\helpers\CreatesWpUrls;
-    use Tests\stubs\HeaderStack;
-    use Tests\helpers\CreateTestSubjects;
-    use Tests\UnitTest;
-    use Tests\helpers\CreateDefaultWpApiMocks;
-    use Snicco\Events\Event;
     use Snicco\Contracts\AbstractRouteCollection;
+    use Snicco\Events\Event;
     use Snicco\Events\IncomingAjaxRequest;
     use Snicco\Events\ResponseSent;
     use Snicco\ExceptionHandling\Exceptions\NotFoundException;
-    use Snicco\Support\WP;
-    use Snicco\Http\Cookies;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\ResponseFactory;
     use Snicco\Http\Responses\RedirectResponse;
     use Snicco\Middleware\Core\EvaluateResponseMiddleware;
     use Snicco\Routing\Router;
-    use Snicco\Session\Session;
+    use Snicco\Support\WP;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreatesWpUrls;
+    use Tests\helpers\CreateTestSubjects;
+    use Tests\stubs\HeaderStack;
+    use Tests\UnitTest;
 
     class HttpKernelTest extends UnitTest
     {
@@ -36,18 +32,11 @@
         use CreateDefaultWpApiMocks;
         use CreatesWpUrls;
 
-        /**
-         * @var ContainerAdapter
-         */
-        private $container;
+        private ContainerAdapter $container;
 
-        /** @var Router */
-        private $router;
+        private Router $router;
 
-        /**
-         * @var AbstractRouteCollection
-         */
-        private $routes;
+        private AbstractRouteCollection $routes;
 
         protected function beforeTestRun()
         {
@@ -81,7 +70,9 @@
                 $this->router->get('foo')->handle(function () {
 
                     return 'foo';
+
                 });
+
             });
 
             $request = $this->webRequest('GET', '/bar');
@@ -133,45 +124,6 @@
 
             $this->expectOutputString('foo');
             Event::assertDispatched(ResponseSent::class);
-
-        }
-
-        /** @test */
-        public function when_a_route_matches_null_is_returned_to_WP_and_the_current_template_is_not_included()
-        {
-
-            $this->createRoutes(function () {
-
-                $this->router->get('/foo', function () {
-
-                    return 'foo';
-
-                });
-
-            });
-
-            $this->runAndAssertOutput('foo', $request_event = $this->webRequest('GET', '/foo'));
-            $this->assertNull($request_event->default());
-
-        }
-
-        /** @test */
-        public function the_kernel_will_return_the_template_WP_tried_to_load_when_no_route_was_found()
-        {
-
-            $this->createRoutes(function () {
-
-                $this->router->get('/foo', function () {
-
-                    return 'foo';
-
-                });
-
-            });
-
-            $this->runAndAssertEmptyOutput($request_event = $this->webRequest('GET', '/bar'));
-            $this->assertSame('wordpress.php', $request_event->default());
-
 
         }
 
@@ -246,9 +198,10 @@
         }
 
         /** @test */
-        public function the_request_is_rebound_in_the_container_after_a_global_routes_run () {
+        public function the_request_is_rebound_in_the_container_after_a_global_routes_run()
+        {
 
-            $this->createRoutes( function () {
+            $this->createRoutes(function () {
 
                 //
 
@@ -260,7 +213,7 @@
 
             $this->container->instance(Request::class, $request);
 
-            $this->runAndAssertOutput('', new IncomingAjaxRequest($request) );
+            $this->runAndAssertOutput('', new IncomingAjaxRequest($request));
 
             /** @var Request $request */
             $request = $this->container->make(Request::class);

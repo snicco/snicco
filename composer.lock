@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3bbebc3cf9007ddcef2403c6f487a2c4",
+    "content-hash": "4f1be0b7fd8954e89adda266c5a810c6",
     "packages": [
         {
             "name": "calvinalkan/base-container",
@@ -55,12 +55,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/calvinalkan/better-wordpress-hooks.git",
-                "reference": "7de7b869ec712da3ed0b456c867a3d00d772bae2"
+                "reference": "75e85101d1e51bfc41c18253a589a2479bca95c8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/calvinalkan/better-wordpress-hooks/zipball/7de7b869ec712da3ed0b456c867a3d00d772bae2",
-                "reference": "7de7b869ec712da3ed0b456c867a3d00d772bae2",
+                "url": "https://api.github.com/repos/calvinalkan/better-wordpress-hooks/zipball/75e85101d1e51bfc41c18253a589a2479bca95c8",
+                "reference": "75e85101d1e51bfc41c18253a589a2479bca95c8",
                 "shasum": ""
             },
             "require": {
@@ -112,7 +112,7 @@
                 "issues": "https://github.com/calvinalkan/better-wordpress-hooks/issues",
                 "source": "https://github.com/calvinalkan/better-wordpress-hooks/tree/master"
             },
-            "time": "2021-07-08T16:40:48+00:00"
+            "time": "2021-08-05T11:20:51+00:00"
         },
         {
             "name": "calvinalkan/interfaces",
@@ -7497,17 +7497,16 @@
         "calvinalkan/better-wordpress-hooks": 20,
         "illuminate/view": 20,
         "roots/wp-password-bcrypt": 20,
-      "illuminate/database": 20
+        "illuminate/database": 20
     },
-  "prefer-stable": true,
-  "prefer-lowest": false,
-  "platform": {
-    "php": "^7.3",
-    "ext-json": "*",
-    "ext-mbstring": "*"
-  },
-  "platform-dev": [],
-  "plugin-api-version": "2.0.0",
-  "require": {
-  }
+    "prefer-stable": true,
+    "prefer-lowest": false,
+    "platform": {
+        "php": "^7.4",
+        "ext-json": "*",
+        "ext-mbstring": "*",
+        "ext-mysqli": "*"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "2.1.0"
 }

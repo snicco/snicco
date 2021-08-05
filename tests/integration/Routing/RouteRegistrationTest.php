@@ -6,24 +6,22 @@
 
     namespace Tests\integration\Routing;
 
-    use Snicco\Support\Arr;
-    use Tests\helpers\CreateDefaultWpApiMocks;
-    use Tests\helpers\CreatesWpUrls;
-    use Tests\stubs\TestApp;
-    use Tests\stubs\TestRequest;
-    use Tests\TestCase;
     use Snicco\Contracts\ServiceProvider;
     use Snicco\Events\IncomingAdminRequest;
     use Snicco\Events\IncomingAjaxRequest;
+    use Snicco\Support\Arr;
     use Snicco\Support\WP;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreatesWpUrls;
+    use Tests\stubs\TestApp;
+    use Tests\TestCase;
 
     class RouteRegistrationTest extends TestCase
     {
 
-        use CreatesWpUrls;
-
         protected function setUp() : void
         {
+
             $this->defer_boot = true;
             parent::setUp();
 
@@ -31,25 +29,28 @@
 
         protected function tearDown() : void
         {
+
             parent::tearDown();
         }
 
-        protected function makeFallbackConditionPass () {
+        protected function makeFallbackConditionPass()
+        {
 
             $GLOBALS['test']['pass_fallback_route_condition'] = true;
 
         }
 
         /** @test */
-        public function web_routes_are_loaded_on_template_include () {
+        public function web_routes_are_loaded_in_the_main_wp_function()
+        {
 
-            $this->withRequest(TestRequest::from('GET', '/foo'));
+            $this->withRequest($this->frontendRequest('GET', '/foo'));
             $this->boot();
 
-            // load routes
+            global $wp;
+            // init loads the routes.
             do_action('init');
-
-            apply_filters('template_include', 'wp-template.php');
+            $wp->main();
 
             $this->sentResponse()->assertSee('foo')->assertOk();
 
@@ -58,7 +59,7 @@
         /** @test */
         public function admin_routes_are_run_on_the_loaded_on_admin_init_hook () {
 
-            $this->withRequest($this->adminRequestTo('foo'));
+            $this->withRequest($this->adminRequest('GET', 'foo'));
 
             $this->withAddedProvider(SimulateAdminProvider::class)
                  ->withoutHooks()
@@ -66,23 +67,22 @@
 
             WP::shouldReceive('pluginPageHook')->andReturn('toplevel_page_foo');
 
-
             do_action('init');
             do_action('admin_init');
             $hook = WP::pluginPageHook();
-
             do_action("load-$hook");
-
 
             $this->sentResponse()->assertOk()->assertSee('FOO_ADMIN');
 
         }
 
         /** @test */
-        public function ajax_routes_are_loaded_first_on_admin_init () {
+        public function ajax_routes_are_loaded_first_on_admin_init()
+        {
 
-            $this->withRequest($this->ajaxRequest('foo_action'));
-            $this->withoutHooks()->boot();
+            $this->withRequest($this->adminAjaxRequest('POST', 'foo_action'));
+            $this->withoutHooks();
+            $this->boot();
 
             do_action('init');
             do_action('admin_init');
@@ -94,8 +94,7 @@
         /** @test */
         public function admin_routes_are_also_run_for_other_admin_pages () {
 
-            $request = TestRequest::from('GET', '/wp-admin/index.php')->withLoadingScript('wp-admin/index.php');
-            $this->withRequest( $request);
+            $this->withRequest($this->adminRequest('GET', '', 'index.php'));
 
             $this->withAddedProvider(SimulateAdminProvider::class)
                  ->withoutHooks()
@@ -113,11 +112,13 @@
         }
 
         /** @test */
-        public function ajax_routes_are_only_run_if_the_request_has_an_action_parameter () {
+        public function ajax_routes_are_only_run_if_the_request_has_an_action_parameter()
+        {
 
-            $this->withRequest( $this->ajaxRequest('foo_action')->withParsedBody([]));
+
+            $request = $this->adminAjaxRequest('POST', 'foo_action')->withParsedBody([]);
+            $this->withRequest($request);
             $this->withoutHooks()->boot();
-
 
             do_action('init');
             do_action('admin_init');
@@ -130,12 +131,14 @@
         public function the_fallback_route_controller_is_registered_for_web_routes()
         {
 
-            $this->withRequest(TestRequest::from('GET', 'post1'));
+            $this->withRequest($this->frontendRequest('GET', '/post1'));
             $this->boot();
             $this->makeFallbackConditionPass();
 
+            global $wp;
+            // init loads the routes.
             do_action('init');
-            apply_filters('template_include', 'wp-template.php');
+            $wp->main();
 
             $this->sentResponse()->assertSee('get_fallback')->assertOk();
 
@@ -145,9 +148,11 @@
         public function the_fallback_controller_does_not_match_admin_routes()
         {
 
-            $this->withAddedProvider(SimulateAdminProvider::class)->boot();
+            $this->withAddedProvider(SimulateAdminProvider::class)
+                 ->withoutHooks()
+                 ->boot();
 
-            $this->withRequest( $request= $this->adminRequestTo('bogus'));
+            $this->withRequest($request = $this->adminAjaxRequest('GET', 'bogus'));
             $this->makeFallbackConditionPass();
 
             do_action('init');
@@ -161,9 +166,11 @@
         public function the_fallback_controller_does_not_match_ajax_routes()
         {
 
-            $this->withAddedProvider(SimulateAjaxProvider::class);
-            $this->withRequest($request = $this->ajaxRequest('bogus'));
-            $this->withoutHooks()->boot();
+            $this->withAddedProvider(SimulateAjaxProvider::class)
+                 ->withoutHooks()
+                 ->boot();
+
+            $this->withRequest($request = $this->adminAjaxRequest('POST', 'bogus'));
             $this->makeFallbackConditionPass();
 
             do_action('init');
@@ -189,6 +196,7 @@
         /** @test */
         public function named_groups_are_applied_for_ajax_routes()
         {
+
             $this->withAddedProvider(SimulateAjaxProvider::class);
             $this->boot();
             $this->loadRoutes();
@@ -202,26 +210,34 @@
         public function custom_routes_dirs_can_be_provided()
         {
 
-            $request = TestRequest::from('GET', 'other');
-            $this->withRequest( $request);
-            $this->withAddedProvider(RoutingDefinitionServiceProvider::class)->withoutHooks()->boot();
+            $request = $this->frontendRequest('GET', '/other');
+            $this->withRequest($request);
+            $this->withAddedProvider(RoutingDefinitionServiceProvider::class)->withoutHooks()
+                 ->boot();
 
+            global $wp;
+            // init loads the routes.
             do_action('init');
-            apply_filters('template_include', 'wordpress.php');
+            $wp->main();
 
             $this->sentResponse()->assertOk()->assertSee('other');
 
         }
 
         /** @test */
-        public function a_file_with_the_same_name_will_not_be_loaded_twice_for_standard_routes () {
+        public function a_file_with_the_same_name_will_not_be_loaded_twice_for_standard_routes()
+        {
 
-            $request = TestRequest::from('GET', 'web-other');
-            $this->withRequest( $request);
-            $this->withAddedProvider(RoutingDefinitionServiceProvider::class)->withoutHooks()->boot();
+            $request = $this->frontendRequest('GET', '/web-other');
 
+            $this->withRequest($request);
+            $this->withAddedProvider(RoutingDefinitionServiceProvider::class)->withoutHooks()
+                 ->boot();
+
+            global $wp;
+            // init loads the routes.
             do_action('init');
-            apply_filters('template_include', 'wordpress.php');
+            $wp->main();
 
             // without the filtering of file names the route in /OtherRoutes/web.php would match
             $this->assertNoResponse();
@@ -229,9 +245,8 @@
 
         }
 
-
-
     }
+
 
     class SimulateAjaxProvider extends ServiceProvider
     {
@@ -240,6 +255,7 @@
 
         public function register() : void
         {
+
             $this->createDefaultWpApiMocks();
             WP::shouldReceive('isAdminAjax')->andReturnTrue();
             WP::shouldReceive('isAdmin')->andReturnTrue();
@@ -252,6 +268,7 @@
         }
 
     }
+
 
     class SimulateAdminProvider extends ServiceProvider
     {
@@ -279,6 +296,7 @@
         }
 
     }
+
 
     class RoutingDefinitionServiceProvider extends ServiceProvider
     {

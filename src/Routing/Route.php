@@ -184,12 +184,12 @@
                 } );
         }
 
-        public function run(Request $request, array $route_url_args = [])
+        public function run(Request $request, array $route_segments = [])
         {
 
             $condition_args = $this->conditionArgs($request);
 
-            $payload = array_merge([$request], $route_url_args, $condition_args);
+            $payload = array_merge([$request], $route_segments, $condition_args);
 
             $reflection_payload = new ReflectionPayload(
                 $this->instantiated_action->raw(),
