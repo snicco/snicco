@@ -6,9 +6,8 @@
 
     namespace Tests\integration\ExceptionHandling;
 
-    use Tests\TestCase;
     use Snicco\ExceptionHandling\ProductionErrorHandler;
-    use Snicco\Validation\Exceptions\ValidationException;
+    use Tests\TestCase;
 
     /** @see ProductionErrorHandler */
     class ProductionErrorHandlingTest extends TestCase
@@ -50,7 +49,6 @@
         /** @test */
         public function an_admin_request_can_have_specific_admin_error_views_that_have_priority_over_non_admin_views()
         {
-
 
             $response = $this->getAdminPage('error');
             $response->assertSee('VIEW:419-admin.php,STATUS:419,MESSAGE:The Link you followed expired.')

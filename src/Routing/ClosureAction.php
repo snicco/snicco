@@ -7,27 +7,29 @@
 	namespace Snicco\Routing;
 
 	use Closure;
-	use Snicco\Contracts\RouteAction;
+    use Snicco\Contracts\RouteAction;
 
-	class ClosureAction implements RouteAction {
+    class ClosureAction implements RouteAction
+    {
 
-		/**
-		 * @var Closure
-		 */
-		private $resolves_to;
-		/**
-		 * @var Closure
-		 */
-		private $executable_closure;
+        /**
+         * @var Closure
+         */
+        private $resolves_to;
+        /**
+         * @var Closure
+         */
+        private $executable_closure;
 
-		/**
-		 * @param  Closure  $raw_closure
-		 * @param  Closure  $executable_closure
-		 */
-		public function __construct( Closure $raw_closure, Closure $executable_closure) {
+        /**
+         * @param  Closure  $raw_closure
+         * @param  Closure  $executable_closure
+         */
+        public function __construct(Closure $raw_closure, Closure $executable_closure)
+        {
 
-			$this->resolves_to = $raw_closure;
-			$this->executable_closure = $executable_closure;
+            $this->resolves_to = $raw_closure;
+            $this->executable_closure = $executable_closure;
 
 		}
 
@@ -36,7 +38,6 @@
 			$closure = $this->executable_closure;
 
 			return $closure(...$args);
-
 
 		}
 

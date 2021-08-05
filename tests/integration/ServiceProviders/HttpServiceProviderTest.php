@@ -6,21 +6,18 @@
 
     namespace Tests\integration\ServiceProviders;
 
-    use Tests\helpers\CreatesWpUrls;
-    use Tests\stubs\TestApp;
-    use Tests\stubs\TestRequest;
-    use Tests\TestCase;
     use Snicco\Contracts\AbstractRedirector;
     use Snicco\Http\Cookies;
     use Snicco\Http\HttpKernel;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Redirector;
     use Snicco\Http\ResponseFactory;
+    use Tests\stubs\TestApp;
+    use Tests\stubs\TestRequest;
+    use Tests\TestCase;
 
     class HttpServiceProviderTest extends TestCase
     {
-
-        use CreatesWpUrls;
 
         protected $defer_boot = true;
 
@@ -68,7 +65,7 @@
         public function the_ajax_request_endpoint_is_detected_correctly()
         {
 
-            $this->withRequest($this->ajaxRequest('foo'));
+            $this->withRequest($this->adminAjaxRequest('GET', 'foo'));
             $this->boot();
 
             $this->assertSame('wp_ajax', TestApp::config('_request_endpoint'));
@@ -79,7 +76,7 @@
         public function the_admin_request_endpoint_is_detected_correctly()
         {
 
-            $this->withRequest($this->adminRequestTo('foo'));
+            $this->withRequest($this->adminRequest('GET', 'foo'));
             $this->boot();
 
             $this->assertSame('wp_admin', TestApp::config('_request_endpoint'));
