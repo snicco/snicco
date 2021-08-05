@@ -231,7 +231,15 @@
         private function formatTrailing(string $path) : string
         {
 
-            return ($this->trailing_slash) ? rtrim($path, '/') .'/' : $path;
+            $parts = parse_url($path);
+
+            $parts['path'] = $this->trailing_slash ? rtrim($parts['path'], '/').'/' : $parts['path'];
+
+            if (strpos($parts['path'], '.php')) {
+                $parts['path'] = rtrim($parts['path'], '/');
+            }
+
+            return Url::unParseUrl($parts);
 
         }
 

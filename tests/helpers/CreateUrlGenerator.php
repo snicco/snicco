@@ -6,30 +6,28 @@
 
     namespace Tests\helpers;
 
-    use Snicco\Testing\TestDoubles\TestMagicLink;
-    use Tests\stubs\TestRequest;
     use Snicco\Contracts\MagicLink;
     use Snicco\Http\Psr7\Request;
     use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
     use Snicco\Routing\UrlGenerator;
+    use Snicco\Testing\TestDoubles\TestMagicLink;
+    use Tests\stubs\TestRequest;
 
     trait CreateUrlGenerator
     {
 
-        /** @var MagicLink */
-        protected $magic_link;
+        protected MagicLink $magic_link;
 
-        /** @var UrlGenerator */
-        protected $generator;
+        protected UrlGenerator $generator;
 
-        protected function newUrlGenerator(string $app_key = null, Request $request = null) : UrlGenerator
+        protected function newUrlGenerator(string $app_key = null, Request $request = null, bool $trailing_slash = false) : UrlGenerator
         {
 
             $routes = $this->routes ?? $this->newRouteCollection();
 
             $this->routes = $routes;
 
-            if (!isset($this->routes ) ) {
+            if ( ! isset($this->routes)) {
                 $this->routes = $routes;
             }
 
@@ -37,7 +35,7 @@
 
             $this->magic_link = $magic_link;
 
-            $generator = new UrlGenerator(new FastRouteUrlGenerator($this->routes), $magic_link);
+            $generator = new UrlGenerator(new FastRouteUrlGenerator($this->routes), $magic_link, $trailing_slash);
 
             $this->generator = $generator;
 
