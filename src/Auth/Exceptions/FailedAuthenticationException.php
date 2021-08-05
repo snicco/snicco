@@ -6,33 +6,23 @@
 
     namespace Snicco\Auth\Exceptions;
 
-    use Throwable;
-    use WP_Error;
+    use Exception;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\ResponseFactory;
     use Snicco\Http\Responses\RedirectResponse;
+    use Throwable;
 
-    class FailedAuthenticationException extends \Exception
+    class FailedAuthenticationException extends Exception
     {
 
-        /**
-         * @var array
-         */
-        private $old_input;
-
-        /**
-         * @var string
-         */
-        private $route;
-
-        /**
-         * @var Request
-         */
-        private $request;
+        private array   $old_input;
+        private ?string $route = null;
+        private Request $request;
 
 
-        public function __construct($message, Request $request, ?array $old_input = null , $code = 0, Throwable $previous = null)
+        public function __construct($message, Request $request, ?array $old_input = null, $code = 0, Throwable $previous = null)
         {
+
             $this->request = $request;
             $this->old_input = $old_input ?? $this->request->all();
             parent::__construct($message, $code, $previous);
@@ -41,6 +31,7 @@
 
         public function redirectToRoute(string $route)
         {
+
             $this->route = $route;
         }
 

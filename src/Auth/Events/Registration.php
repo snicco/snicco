@@ -7,21 +7,17 @@
     namespace Snicco\Auth\Events;
 
     use BetterWpHooks\Traits\IsAction;
-    use WP_User;
     use Snicco\Events\Event;
+    use WP_User;
 
     class Registration extends Event
     {
         use IsAction;
 
-        /**
-         * @var WP_User
-         */
-        public $user;
+        public WP_User $user;
 
         public function __construct(WP_User $user)
         {
-
             $this->user = $user;
         }
 

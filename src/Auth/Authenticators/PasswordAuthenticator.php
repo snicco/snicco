@@ -18,7 +18,7 @@
 
         use ResolvesUser;
 
-        protected $failure_message = 'Your password or username is not correct.';
+        protected string $failure_message = 'Your password or username is not correct.';
 
         public function attempt(Request $request, $next)
         {
@@ -55,6 +55,9 @@
 
         }
 
+        /**
+         * @throws FailedAuthenticationException
+         */
         private function fail($username, $remember, WP_Error $error, Request $request)
         {
 

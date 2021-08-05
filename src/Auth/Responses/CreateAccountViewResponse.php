@@ -13,10 +13,7 @@
     {
         use UsesCurrentRequest;
 
-        /**
-         * @var string
-         */
-        protected $post_to;
+        protected string $post_to;
 
         public function postTo(string $path) {
             $this->post_to = $path;

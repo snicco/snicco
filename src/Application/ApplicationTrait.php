@@ -8,31 +8,16 @@
 
 	use BadMethodCallException;
     use Contracts\ContainerAdapter;
-    use SniccoAdapter\BaseContainerAdapter;
     use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use SniccoAdapter\BaseContainerAdapter;
 
-	/**
-	 * Provides static access to an Application instance.
-	 *
+    /**
 	 * @mixin ApplicationMixin
 	 */
 	trait ApplicationTrait {
 
-		/**
-		 * Application instance.
-		 *
-		 * @var Application|null
-		 */
-		public static $instance = NULL;
+		public static ?Application $instance = NULL;
 
-        /**
-         * Make and assign a new application instance.
-         *
-         * @param  string  $base_path
-         * @param  ContainerAdapter|null  $container
-         *
-         * @return Application
-         */
 		public static function make( string $base_path, ContainerAdapter $container = null ) : Application
         {
 
@@ -45,23 +30,10 @@
 
 		}
 
-		/**
-		 * Get the Application instance.
-		 *
-		 * @return Application|null
-		 */
 		public static function getApplication() : ?Application {
 			return static::$instance;
 		}
 
-		/**
-		 * Set the Application instance.
-		 *
-		 *
-		 * @param  Application|null  $application
-		 *
-		 * @return void
-		 */
 		public static function setApplication( ?Application $application ) {
 			static::$instance = $application;
 		}

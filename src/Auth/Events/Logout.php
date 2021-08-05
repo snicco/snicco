@@ -9,22 +9,14 @@
     use BetterWpHooks\Traits\IsAction;
     use Snicco\Events\Event;
     use Snicco\Session\Session;
-    use Snicco\Session\Contracts\SessionDriver;
 
     class Logout extends Event
     {
 
         use IsAction;
 
-        /**
-         * @var Session
-         */
-        public $session;
-
-        /**
-         * @var int
-         */
-        public $user_id;
+        public Session $session;
+        public int $user_id;
 
         public function __construct(Session $session, int $user_id)
         {

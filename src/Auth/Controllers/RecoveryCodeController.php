@@ -21,10 +21,7 @@
         use InteractsWithTwoFactorSecrets;
         use ResolvesUser;
 
-        /**
-         * @var EncryptorInterface
-         */
-        private $encryptor;
+        private EncryptorInterface $encryptor;
 
         public function __construct(EncryptorInterface $encryptor)
         {

@@ -6,23 +6,19 @@
 
     namespace Snicco\Auth\Contracts;
 
+    use Snicco\Auth\Traits\UsesCurrentRequest;
     use Snicco\Contracts\ResponsableInterface;
     use Snicco\Http\Psr7\Request;
     use Snicco\Support\Arr;
 
     abstract class LoginViewResponse implements ResponsableInterface
     {
-        /** @var Request */
-        protected $request;
 
-        /** @var array */
-        protected $auth_config;
+        use UsesCurrentRequest;
 
-        public function withRequest(Request $request) : LoginViewResponse
-        {
-            $this->request = $request;
-            return $this;
-        }
+        protected Request $request;
+
+        protected array $auth_config;
 
         public function withAuthConfig(array $config) : LoginViewResponse
         {

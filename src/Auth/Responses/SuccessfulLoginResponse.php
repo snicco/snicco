@@ -7,18 +7,14 @@
     namespace Snicco\Auth\Responses;
 
     use Psr\Http\Message\ResponseInterface;
-    use WP_User;
     use Snicco\Http\Psr7\Response;
+    use WP_User;
 
     class SuccessfulLoginResponse extends Response
     {
 
-        /**
-         * @var WP_User
-         */
-        private $user;
-
-        private $remember;
+        private WP_User $user;
+        private bool $remember;
 
         public function __construct(ResponseInterface $psr7_response, WP_User $user, bool $remember)
         {

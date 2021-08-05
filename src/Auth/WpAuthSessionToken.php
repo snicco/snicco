@@ -7,19 +7,14 @@
     namespace Snicco\Auth;
 
     use Snicco\Support\Arr;
+    use WP_Session_Tokens;
 
-    class WpAuthSessionToken extends \WP_Session_Tokens
+    class WpAuthSessionToken extends WP_Session_Tokens
     {
 
-        /** @var AuthSessionManager */
-        private $session_manager;
-
         public const wp_auth_key = '_wp_auth_session_content';
-
-        /**
-         * @var array
-         */
-        private $all_sessions_for_user;
+        private AuthSessionManager $session_manager;
+        private array              $all_sessions_for_user = [];
 
         protected function __construct($user_id)
         {
@@ -29,7 +24,7 @@
             global $session_manager;
             global $__request;
             $this->session_manager = $session_manager;
-            $this->session_manager->start( $__request, $user_id );
+            $this->session_manager->start($__request, $user_id);
             unset ($GLOBALS['session_manager']);
             unset ($GLOBALS['__request']);
 
@@ -45,18 +40,13 @@
         protected function get_sessions() : array
         {
 
-            if ( is_array($this->all_sessions_for_user ) ) {
+            if ( ! empty($this->all_sessions_for_user)) {
                 return $this->all_sessions_for_user;
             }
 
             $sessions = collect($this->session_manager->getAllForUser());
-            $sessions = $sessions
-                ->map(function (array $payload) {
-
-                    return Arr::get($payload, static::wp_auth_key, []);
-
-                })
-                ->all();
+            $sessions = $sessions->map(fn(array $payload) => Arr::get($payload, static::wp_auth_key, []))
+                                 ->all();
 
             $this->all_sessions_for_user = is_array($sessions) ? $sessions : [];
 
@@ -76,8 +66,7 @@
         protected function get_session($verifier) : ?array
         {
 
-            $session = $this->get_sessions()[$verifier] ?? null;
-            return $session;
+            return $this->get_sessions()[$verifier] ?? null;
 
         }
 
@@ -87,11 +76,12 @@
          * Omitting the second argument destroys the session.
          *
          * We can discard the $verifier here. The only way to get a valid session token
-         * programmatically is to use @see wp_get_session_token() which parses the current logged in
-         * user cookie which will always(?) be equal to the current active Session.
+         * programmatically is to use @param  string  $verifier  Verifier for the session to update.
          *
-         * @param  string  $verifier  Verifier for the session to update.
          * @param  array  $session  Optional. Session. Omitting this argument destroys the session.
+         *
+         * @see wp_get_session_token() which parses the current logged in
+         * user cookie which will always(?) be equal to the current active Session.
          *
          * @since 4.0.0
          *
@@ -99,7 +89,7 @@
         protected function update_session($verifier, $session = null) : void
         {
 
-            if ( ! $session ) {
+            if ( ! $session) {
 
                 $this->session_manager->activeSession()->invalidate();
 

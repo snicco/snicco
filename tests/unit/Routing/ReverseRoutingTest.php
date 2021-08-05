@@ -7,18 +7,17 @@
     namespace Tests\unit\Routing;
 
     use Mockery;
-    use Tests\helpers\CreateDefaultWpApiMocks;
-    use Tests\helpers\CreateTestSubjects;
-    use Tests\UnitTest;
-    use Snicco\Events\Event;
     use Snicco\Contracts\ConditionInterface;
     use Snicco\Contracts\UrlableInterface;
+    use Snicco\Events\Event;
     use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
-    use Snicco\Support\WP;
     use Snicco\Http\Psr7\Request;
     use Snicco\Routing\Router;
     use Snicco\Routing\UrlGenerator;
-    use Snicco\Support\Str;
+    use Snicco\Support\WP;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateTestSubjects;
+    use Tests\UnitTest;
 
     class ReverseRoutingTest extends UnitTest
     {
@@ -96,7 +95,7 @@
         }
 
         /** @test */
-        public function route_names_are_merged_on_multiple_levels()
+        public function routes_are_merged_on_multiple_levels()
         {
 
             $this->createRoutes(function () {

@@ -6,23 +6,20 @@
 
     namespace Snicco\Auth\Authenticators;
 
-    use WP_User;
     use Snicco\Auth\Contracts\Authenticator;
-    use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
-    use Snicco\Auth\Responses\SuccessfulLoginResponse;
     use Snicco\Auth\Contracts\TwoFactorChallengeResponse;
+    use Snicco\Auth\Responses\SuccessfulLoginResponse;
+    use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Psr7\Response;
+    use WP_User;
 
     class RedirectIf2FaAuthenticable extends Authenticator
     {
 
         use InteractsWithTwoFactorSecrets;
 
-        /**
-         * @var TwoFactorChallengeResponse
-         */
-        private $challenge_response;
+        private TwoFactorChallengeResponse $challenge_response;
 
         public function __construct(TwoFactorChallengeResponse $response)
         {
@@ -50,7 +47,7 @@
             $this->challengeUser($request, $user);
 
             return $this->response_factory->toResponse(
-                $this->challenge_response->setRequest($request)->toResponsable()
+                $this->challenge_response->forRequest($request)->toResponsable()
             );
 
         }

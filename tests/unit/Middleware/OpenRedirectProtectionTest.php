@@ -7,21 +7,22 @@
     namespace Tests\unit\Middleware;
 
     use Carbon\Carbon;
+    use Mockery;
     use Psr\Http\Message\ResponseInterface;
-    use Tests\helpers\AssertsResponse;
-    use Tests\helpers\CreateDefaultWpApiMocks;
-    use Tests\helpers\CreateRouteCollection;
-    use Tests\helpers\CreateUrlGenerator;
-    use Tests\stubs\TestRequest;
-    use Tests\UnitTest;
     use Snicco\Controllers\RedirectController;
-    use Snicco\Support\WP;
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Response;
     use Snicco\Http\ResponseFactory;
     use Snicco\Http\Responses\RedirectResponse;
     use Snicco\Middleware\Core\OpenRedirectProtection;
     use Snicco\Routing\Route;
+    use Snicco\Support\WP;
+    use Tests\helpers\AssertsResponse;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateRouteCollection;
+    use Tests\helpers\CreateUrlGenerator;
+    use Tests\stubs\TestRequest;
+    use Tests\UnitTest;
 
     class OpenRedirectProtectionTest extends UnitTest
     {
@@ -54,7 +55,7 @@
             parent::tearDown();
 
             WP::reset();
-            \Mockery::close();
+            Mockery::close();
         }
 
         private function newMiddleware($whitelist = []) : OpenRedirectProtection
@@ -144,11 +145,11 @@
             $request = TestRequest::fromFullUrl('GET', SITE_URL . '/foo');
             $response = $this->newMiddleware()->handle($request, new Delegate(function () {
 
-                return $this->response_factory->redirect()->absoluteRedirect('//bar');
+                return $this->response_factory->redirect()->absoluteRedirect('//foo.com:80/path/info');
 
             }));
 
-            $this->assertForbiddenRedirect($response, '//bar');
+            $this->assertForbiddenRedirect($response, 'foo.com:80/path/info');
 
         }
 

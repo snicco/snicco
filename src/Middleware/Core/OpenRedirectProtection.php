@@ -8,7 +8,6 @@
 
     use Psr\Http\Message\ResponseInterface;
     use Snicco\Contracts\Middleware;
-    use Snicco\Support\WP;
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Responses\RedirectResponse;
@@ -17,7 +16,7 @@
     class OpenRedirectProtection extends Middleware
     {
 
-        private $route_name;
+        private $route;
 
         /**
          * @var array
@@ -28,10 +27,10 @@
          */
         private $site_url;
 
-        public function __construct(string $site_url, $whitelist = [], $route_name = 'redirect.protection')
+        public function __construct(string $site_url, $whitelist = [], $route = 'redirect.protection')
         {
 
-            $this->route_name = $route_name;
+            $this->route = $route;
             $this->whitelist = $this->formatWhiteList($whitelist);
             $this->site_url = $site_url;
             $this->whitelist[] = $this->allSubdomainsOfApplicationUrl();
@@ -124,7 +123,7 @@
         {
 
             return $this->response_factory->redirect()
-                                          ->toTemporarySignedRoute($this->route_name, 10, ['query' => ['intended_redirect' => $location]]);
+                                          ->toTemporarySignedRoute($this->route, 10, ['query' => ['intended_redirect' => $location]]);
 
         }
 

@@ -13,7 +13,7 @@
 
         /**
          *
-         * Return a non null value to reassign the users posts to the returned user id
+         * Return a non-null value to reassign the users posts to the returned user id
          *
          * @param  int  $user_to_be_deleted
          *

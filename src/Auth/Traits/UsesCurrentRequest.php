@@ -7,15 +7,20 @@
     namespace Snicco\Auth\Traits;
 
     use Snicco\Http\Psr7\Request;
+    use WP_User;
 
     trait UsesCurrentRequest
     {
 
-        /** @var Request */
-        protected $request;
+        protected Request $request;
 
-        public function setRequest(Request $request) {
+        public function forRequest(Request $request) :self {
             $this->request = $request;
+            return $this;
+        }
+
+        public function forUser (WP_User $user) :self  {
+            $this->user = $user;
             return $this;
         }
 

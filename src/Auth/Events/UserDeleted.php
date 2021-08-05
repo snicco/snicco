@@ -14,10 +14,7 @@
 
         use IsAction;
 
-        /**
-         * @var int
-         */
-        public $deleted_user_id;
+        public int $deleted_user_id;
 
         public function __construct(int $deleted_user_id)
         {

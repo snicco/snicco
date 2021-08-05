@@ -10,21 +10,13 @@
     use Snicco\Http\Controller;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Psr7\Response;
-    use Snicco\Http\Responses\RedirectResponse;
     use Snicco\Session\Events\SessionRegenerated;
 
     class ConfirmedAuthSessionController extends Controller
     {
 
-        /**
-         * @var AuthConfirmation
-         */
-        private $auth_confirmation;
-
-        /**
-         * @var int
-         */
-        private $duration;
+        private AuthConfirmation $auth_confirmation;
+        private int $duration;
 
         public function __construct(AuthConfirmation $auth_confirmation, int $duration)
         {
@@ -54,7 +46,7 @@
             $this->confirmAuth($request);
 
             return $request->isExpectingJson()
-                ? $this->response_factory->make(200)
+                ? $this->response_factory->make()->withStatus(200)
                 : $this->response_factory->redirect()
                                            ->intended($request, $this->url->toRoute('dashboard'));
 

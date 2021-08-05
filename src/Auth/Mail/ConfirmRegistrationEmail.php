@@ -6,17 +6,13 @@
 
     namespace Snicco\Auth\Mail;
 
-    use Snicco\Support\WP;
     use Snicco\Mail\Mailable;
+    use Snicco\Support\WP;
 
     class ConfirmRegistrationEmail extends Mailable
     {
 
-
-        /**
-         * @var string
-         */
-        public $magic_link;
+        public string $magic_link;
 
         public function __construct(string $magic_link)
         {

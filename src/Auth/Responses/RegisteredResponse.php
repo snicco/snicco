@@ -14,13 +14,4 @@
 
         use UsesCurrentRequest;
 
-        /**
-         * @var \WP_User
-         */
-        protected $user;
-
-        public function setUser(\WP_User $user) {
-            $this->user = $user;
-            return $this;
-        }
     }

@@ -16,16 +16,14 @@
     use Snicco\ExceptionHandling\Exceptions\AuthorizationException;
     use Snicco\Http\Controller;
     use Snicco\Http\Psr7\Request;
+    use WP_User;
 
     class AccountController extends Controller
     {
 
         use ResolvesUser;
 
-        /**
-         * @var int
-         */
-        private $lifetime_in_seconds;
+        private int $lifetime_in_seconds;
 
         public function __construct($lifetime_in_seconds = 900)
         {
@@ -36,7 +34,7 @@
         public function create(Request $request, CreateAccountViewResponse $view_response)
         {
 
-            return $view_response->setRequest($request)->postTo(
+            return $view_response->forRequest($request)->postTo(
                 $this->url->signedRoute('auth.accounts.store', [], $this->lifetime_in_seconds)
             );
         }
@@ -48,7 +46,7 @@
 
             Registration::dispatch([$user]);
 
-            return $response->setRequest($request)->setUser($user);
+            return $response->forRequest($request)->forUser($user);
 
         }
 
@@ -63,8 +61,6 @@
 
             }
 
-            UserDeleted::dispatch([$user_id]);
-
             // Isn't WordPress great?
             if ( ! function_exists('wp_delete_user') ) {
                 require ABSPATH.'wp-admin/includes/user.php';
@@ -72,13 +68,15 @@
 
             wp_delete_user($user_id, $deletes_users->reassign($user_id));
 
+            UserDeleted::dispatch([$user_id]);
+
             return $request->isExpectingJson()
                 ? $this->response_factory->noContent()
                 : $deletes_users->response();
 
         }
 
-        private function canUserPerformDelete(array $allowed_roles, \WP_User $auth_user, int $delete_id) : bool
+        private function canUserPerformDelete(array $allowed_roles, WP_User $auth_user, int $delete_id) : bool
         {
 
             $user_to_be_delete = $this->getUserById($delete_id);
@@ -94,7 +92,7 @@
                 return false;
             }
 
-            // Dont allow deletion of accounts that are not the users own account
+            // Don't allow deletion of accounts that are not the users own account
             if ($auth_user->ID !== $delete_id && ! $current_user_is_admin) {
                 return false;
             }

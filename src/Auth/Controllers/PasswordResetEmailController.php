@@ -6,15 +6,14 @@
 
     namespace Snicco\Auth\Controllers;
 
-    use WP_User;
     use Snicco\Auth\Traits\ResolvesUser;
     use Snicco\Auth\Traits\SendsPasswordResetMails;
-    use Snicco\Support\WP;
     use Snicco\Http\Controller;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Psr7\Response;
     use Snicco\Mail\MailBuilder;
-    use Snicco\Traits\ValidatesWordpressNonces;
+    use Snicco\Support\WP;
+    use WP_User;
 
     class PasswordResetEmailController extends Controller
     {
@@ -22,10 +21,7 @@
         use SendsPasswordResetMails;
         use ResolvesUser;
 
-        /**
-         * @var MailBuilder
-         */
-        private $mail;
+        private MailBuilder $mail;
 
         public function __construct(MailBuilder $mail)
         {

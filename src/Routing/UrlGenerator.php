@@ -104,13 +104,13 @@
 
         }
 
-        public function signedRoute(string $route_name, array $arguments = [], $expiration = 300, bool $absolute = false ) : string
+        public function signedRoute(string $route, array $arguments = [], $expiration = 300, bool $absolute = false ) : string
         {
 
             $query = Arr::pull($arguments, 'query', []);
 
             // signed() needs a path, so dont use absolute urls here.
-            $route_path = $this->toRoute($route_name, $arguments, true ,false);
+            $route_path = $this->toRoute($route, $arguments, true ,false);
 
             return $this->signed($route_path, $expiration, $absolute, $query);
 
@@ -233,7 +233,7 @@
 
             $parts = parse_url($path);
 
-            $parts['path'] = $this->trailing_slash ? rtrim($parts['path'], '/').'/' : $parts['path'];
+            $parts['path'] = $this->trailing_slash ? rtrim($parts['path'] ?? '/', '/').'/' : $parts['path'] ?? '/';
 
             if (strpos($parts['path'], '.php')) {
                 $parts['path'] = rtrim($parts['path'], '/');

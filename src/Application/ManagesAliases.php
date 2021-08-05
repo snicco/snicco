@@ -6,25 +6,15 @@
 
 	namespace Snicco\Application;
 
-	use Closure;
 	use BadMethodCallException;
-	use Snicco\Support\Arr;
+    use Closure;
+    use Snicco\Support\Arr;
 
-	trait ManagesAliases {
+    trait ManagesAliases {
 
-
-		/**
-		 * Resolve a dependency from the IoC container while taking
-		 * aliases into account.
-		 *
-		 * @param  string  $key
-		 *
-		 * @return mixed|null
-		 */
-		abstract public function resolve( string $key );
 
 		/** @var array<string, array> */
-		private $aliases = [];
+		private array $aliases = [];
 
 		public function hasAlias( string $alias ) : bool {
 
@@ -38,23 +28,6 @@
 			}
 
 			return $this->aliases[ $alias ];
-		}
-
-		/**
-		 * Register an alias.
-		 *
-		 * @param  array<string, mixed>  $alias
-		 *
-		 */
-		private function setAlias( array $alias ) :void {
-
-			$name = Arr::get( $alias, 'name' );
-
-			$this->aliases[ $name ] = [
-				'name'   => $name,
-				'target' => Arr::get( $alias, 'target' ),
-				'method' => Arr::get( $alias, 'method', '' ),
-			];
 		}
 
 		/**
@@ -114,6 +87,17 @@
 
 			return $target;
 		}
+
+        private function setAlias( array $alias ) :void {
+
+            $name = Arr::get( $alias, 'name' );
+
+            $this->aliases[ $name ] = [
+                'name'   => $name,
+                'target' => Arr::get( $alias, 'target' ),
+                'method' => Arr::get( $alias, 'method', '' ),
+            ];
+        }
 
 
 	}

@@ -6,30 +6,26 @@
 
     namespace Snicco\Auth\Controllers;
 
-    use WP_User;
+    use Respect\Validation\Validator as v;
+    use Snicco\Auth\Traits\ResolvesUser;
     use Snicco\Http\Controller;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Responses\RedirectResponse;
     use Snicco\Validation\Exceptions\ValidationException;
-    use Respect\Validation\Validator as v;
     use Snicco\View\MethodField;
+    use WP_User;
     use ZxcvbnPhp\Zxcvbn;
 
     class ResetPasswordController extends Controller
     {
 
-        /**
-         * @var string|null
-         */
-        protected $success_message;
+        use ResolvesUser;
 
-        protected $rules = [];
-
-        protected $min_strength = 3;
-
-        protected $min_length = 12;
-
-        protected $max_length = 64;
+        protected ?string $success_message;
+        protected array $rules = [];
+        protected int $min_strength = 3;
+        protected int$min_length = 12;
+        protected int$max_length = 64;
 
         public function __construct(string $success_message = null)
         {
@@ -51,9 +47,9 @@
         public function update(Request $request) : RedirectResponse
         {
 
-            $user = $this->getUser($request);
+            $user = $this->getUserById($request->query('id', 0));
 
-            if ( ! $user instanceof WP_User ) {
+            if ( ! $user || $user->ID === 0) {
 
                 return $this->redirectBackFailure();
 
@@ -84,16 +80,6 @@
             return $this->response_factory->redirect()
                                           ->refresh()
                                           ->withErrors(['failure' => 'We could not reset your password.']);
-
-        }
-
-        private function getUser(Request $request) : ?WP_User
-        {
-
-            $user = get_user_by('id', (int) $request->query('id', 0));
-
-            return ( ! $user || $user->ID === 0) ? null : $user;
-
 
         }
 

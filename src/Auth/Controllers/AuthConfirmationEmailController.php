@@ -7,30 +7,21 @@
     namespace Snicco\Auth\Controllers;
 
     use Illuminate\Support\InteractsWithTime;
-    use WP_User;
     use Snicco\Auth\Mail\ConfirmAuthMail;
     use Snicco\Http\Controller;
     use Snicco\Http\Psr7\Request;
     use Snicco\Mail\MailBuilder;
     use Snicco\Session\Session;
+    use WP_User;
 
     class AuthConfirmationEmailController extends Controller
     {
 
         use InteractsWithTime;
 
-        /**
-         * @var int
-         */
-        private $cool_of_period;
-        /**
-         * @var int
-         */
-        private $link_lifetime_in_seconds;
-        /**
-         * @var MailBuilder
-         */
-        private $mail_builder;
+        private int         $cool_of_period;
+        private int         $link_lifetime_in_seconds;
+        private MailBuilder $mail_builder;
 
         public function __construct(MailBuilder $mail_builder, int $cool_of_period = 15, $link_lifetime_in_seconds = 300)
         {
@@ -83,7 +74,7 @@
 
             }
 
-            return true ;
+            return true;
 
 
         }

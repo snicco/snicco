@@ -6,8 +6,8 @@
 
     namespace Snicco\Auth\Controllers;
 
-    use Snicco\Auth\Mail\ConfirmRegistrationEmail;
     use Snicco\Auth\Contracts\RegistrationViewResponse;
+    use Snicco\Auth\Mail\ConfirmRegistrationEmail;
     use Snicco\Contracts\ResponsableInterface;
     use Snicco\Http\Controller;
     use Snicco\Http\Psr7\Request;
@@ -17,10 +17,7 @@
     class RegistrationLinkController extends Controller
     {
 
-        /**
-         * @var int
-         */
-        private $lifetime_in_seconds;
+        private int $lifetime_in_seconds;
 
         public function __construct($lifetime_in_seconds = 600 )
         {
@@ -30,7 +27,7 @@
         public function create(Request $request, RegistrationViewResponse $response) : ResponsableInterface
         {
 
-            return $response->setRequest($request);
+            return $response->forRequest($request);
 
         }
 

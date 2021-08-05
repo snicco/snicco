@@ -6,25 +6,21 @@
 
     namespace Snicco\Auth\Authenticators;
 
-    use WP_User;
     use Snicco\Auth\Contracts\Authenticator;
     use Snicco\Auth\Exceptions\FailedAuthenticationException;
     use Snicco\Auth\Traits\ResolvesUser;
     use Snicco\Contracts\MagicLink;
     use Snicco\Http\Psr7\Request;
-    use Snicco\Http\Psr7\Response;
+    use WP_User;
 
     class MagicLinkAuthenticator extends Authenticator
     {
 
         use ResolvesUser;
 
-        /**
-         * @var MagicLink
-         */
-        private $magic_link;
+        private MagicLink $magic_link;
 
-        protected $failure_message = 'Your login link either expired or is invalid. Please request a new one.';
+        protected string $failure_message = 'Your login link either expired or is invalid. Please request a new one.';
 
         public function __construct(MagicLink $magic_link)
         {
@@ -59,6 +55,9 @@
 
         }
 
+        /**
+         * @throws FailedAuthenticationException
+         */
         private function fail(Request $request)
         {
 

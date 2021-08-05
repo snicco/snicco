@@ -7,23 +7,16 @@
     namespace Snicco\Auth\Events;
 
     use BetterWpHooks\Traits\IsAction;
-    use WP_User;
     use Snicco\Events\Event;
+    use WP_User;
 
     class Login extends Event
     {
 
         use IsAction;
 
-        /**
-         * @var WP_User
-         */
-        public $user;
-
-        /**
-         * @var bool
-         */
-        public $remember;
+        public WP_User $user;
+        public bool    $remember;
 
         public function __construct(WP_User $user, bool $remember)
         {

@@ -9,9 +9,7 @@
     use Snicco\Auth\Contracts\Authenticator;
     use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
     use Snicco\Auth\Exceptions\FailedTwoFactorAuthenticationException;
-    use Snicco\Auth\RecoveryCode;
     use Snicco\Auth\Traits\PerformsTwoFactorAuthentication;
-    use Snicco\Auth\Traits\ResolveTwoFactorSecrets;
     use Snicco\Auth\Traits\ResolvesUser;
     use Snicco\Contracts\EncryptorInterface;
     use Snicco\Http\Psr7\Request;
@@ -23,22 +21,13 @@
         use ResolvesUser;
         use PerformsTwoFactorAuthentication;
 
-        /**
-         * @var TwoFactorAuthenticationProvider
-         */
-        private $provider;
+        private TwoFactorAuthenticationProvider $provider;
 
-        /**
-         * @var EncryptorInterface
-         */
-        private $encryptor;
+        private EncryptorInterface $encryptor;
 
-        protected $failure_message = 'Invalid Code provided.';
+        protected string $failure_message = 'Invalid Code provided.';
 
-        /**
-         * @var array
-         */
-        private $recovery_codes = [];
+        private array $recovery_codes = [];
 
         public function __construct(TwoFactorAuthenticationProvider $provider, EncryptorInterface $encryptor)
         {

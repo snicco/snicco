@@ -6,15 +6,14 @@
 
     namespace Snicco\Auth\Controllers;
 
-    use Snicco\Auth\Mail\ResetPasswordMail;
     use Snicco\Auth\Traits\SendsPasswordResetMails;
     use Snicco\ExceptionHandling\Exceptions\AuthorizationException;
-    use Snicco\Http\Responses\RedirectResponse;
-    use Snicco\Support\WP;
     use Snicco\Http\Controller;
     use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Responses\RedirectResponse;
     use Snicco\Mail\MailBuilder;
     use Snicco\Support\Arr;
+    use Snicco\Support\WP;
 
     /**
      * This Controller performs the same logic that happens inside user.php
@@ -29,14 +28,9 @@
 
         use SendsPasswordResetMails;
 
-        /**
-         * @var MailBuilder
-         */
-        private $mail;
-
-        protected $lifetime = 300;
-
-        protected $error_message = 'Sorry, you are not allowed to perform this action';
+        private MailBuilder $mail;
+        protected int $lifetime = 300;
+        protected string $error_message = 'Sorry, you are not allowed to perform this action';
 
         public function __construct(MailBuilder $mail)
         {
@@ -72,7 +66,7 @@
 
                 }
 
-                // Dont send reset email to user performing the action
+                // Don't send reset email to user performing the action
                 if ( $id === $request->userId() ) {
 
                     continue;
