@@ -9,51 +9,31 @@
     use Contracts\ContainerAdapter;
     use Snicco\Application\Application;
     use Snicco\Application\Config;
-    use Snicco\Events\IncomingAdminRequest;
-    use Snicco\Events\IncomingAjaxRequest;
-    use Snicco\Events\IncomingWebRequest;
-    use Snicco\Support\WP;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\ResponseFactory;
     use Snicco\Session\SessionServiceProvider;
     use Snicco\Support\Arr;
     use Snicco\Support\Str;
+    use Snicco\Support\WP;
 
     abstract class ServiceProvider
     {
 
-        /**
-         * @var ContainerAdapter
-         */
-        protected $container;
-
-        /**
-         * @var Config
-         */
-        protected $config;
-
-        /** @var Application */
-        protected $app;
-
-        /** @var ResponseFactory */
-        protected $response_factory;
-
-        /** @var Request */
-        protected $current_request;
+        protected ContainerAdapter $container;
+        protected Config $config;
+        protected Application $app;
+        protected ResponseFactory $response_factory;
+        protected ?Request $current_request = null;
 
         public function __construct(ContainerAdapter $container_adapter, Config $config)
         {
-
             $this->container = $container_adapter;
             $this->config = $config;
-
         }
 
         public function setApp(Application $app)
         {
-
             $this->app = $app;
-
         }
 
         /**

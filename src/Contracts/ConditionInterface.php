@@ -8,8 +8,7 @@
 
 	use Snicco\Http\Psr7\Request;
 
-
-	interface ConditionInterface {
+    interface ConditionInterface {
 
 		/**
 		 * Get whether the condition is satisfied

@@ -57,7 +57,7 @@
 
             if ( ! $this->canUserPerformDelete($allowed_roles, $request->user(), $user_id)) {
 
-                throw new AuthorizationException('You are not allowed to perform this action.');
+                throw new AuthorizationException('Account deletion attempt with insufficient permissions.');
 
             }
 

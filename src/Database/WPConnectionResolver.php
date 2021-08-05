@@ -6,8 +6,7 @@
     use Snicco\Database\Contracts\ConnectionResolverInterface;
     use Snicco\Database\Contracts\WPConnectionInterface;
     use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
-    use Snicco\ExceptionHandling\Exceptions\Exception;
-    use Snicco\Support\Arr;
+    use Throwable;
     use wpdb;
 
     class WPConnectionResolver implements ConnectionResolverInterface
@@ -144,7 +143,7 @@
 
                 return $wpdb;
 
-            } catch ( \Throwable $e) {
+            } catch ( Throwable $e) {
 
                 throw new ConfigurationException("Unable to create a wpdb connection with the config for connection [$name].", $e->getCode() , $e);
 
@@ -162,7 +161,7 @@
 
             }
 
-            catch (\Throwable $e) {
+            catch (Throwable $e) {
 
                 // This will work for sure if Wordpress where ever
                 // to delete magic method accessors, which tbh will probably never happen. Lol.

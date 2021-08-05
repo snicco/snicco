@@ -7,62 +7,40 @@
     namespace Snicco\ExceptionHandling;
 
     use Contracts\ContainerAdapter;
-    use Illuminate\Support\Facades\Http;
     use Psr\Log\LoggerInterface;
-    use Throwable;
     use Snicco\Contracts\ErrorHandlerInterface;
     use Snicco\Events\UnrecoverableExceptionHandled;
     use Snicco\ExceptionHandling\Exceptions\HttpException;
-    use Snicco\Support\WP;
     use Snicco\Http\Psr7\Request;
-    use Snicco\Http\ResponseFactory;
     use Snicco\Http\Psr7\Response;
     use Snicco\Http\ResponseEmitter;
-    use Snicco\Session\Session;
+    use Snicco\Http\ResponseFactory;
     use Snicco\Support\Arr;
+    use Snicco\Support\WP;
     use Snicco\Traits\HandlesExceptions;
     use Snicco\Validation\Exceptions\ValidationException;
+    use Throwable;
 
     class ProductionErrorHandler implements ErrorHandlerInterface
     {
 
         use HandlesExceptions;
-
-        /**
-         * @var ContainerAdapter
-         */
-        protected $container;
-
-        /**
-         * @var LoggerInterface
-         */
-        protected $logger;
-
-        /**
-         * @var array
-         */
-        protected $dont_report = [
+        protected ContainerAdapter $container;
+        protected LoggerInterface $logger;
+        protected array $dont_report = [
             ValidationException::class,
         ];
-
-        protected $dont_flash = [
+        protected array $dont_flash = [
 
         ];
-
-        /**
-         * @var ResponseFactory
-         */
-        protected $response;
-
-        protected $fallback_error_message = 'Internal Server Error';
+        protected ResponseFactory $response;
+        protected string $fallback_error_message = 'Internal Server Error';
 
         public function __construct(ContainerAdapter $container, LoggerInterface $logger, ResponseFactory $response_factory)
         {
-
             $this->container = $container;
             $this->logger = $logger;
             $this->response = $response_factory;
-
         }
 
         public function handleException($e, $in_routing_flow = false, ?Request $request = null)
@@ -133,8 +111,8 @@
         protected function toHttpException(Throwable $e, Request $request) : HttpException
         {
 
-            $e = new HttpException(500, $this->fallback_error_message);
-
+            $e = new HttpException(500, $e->getMessage(), $e);
+            $e->withMessageForUsers($this->fallback_error_message);
             return $e;
 
         }
@@ -143,7 +121,6 @@
         {
 
             /** @todo add possibility to define callbacks that can override any exception rendering and reporting including framework exceptions. */
-
             if (method_exists($e, 'render')) {
 
                 return $this->renderableException($e, $request);
@@ -186,6 +163,7 @@
 
             }
 
+            /** @todo This is (?not) a correct implementation of the Psr3 standard. */
             $this->logger->error(
                 $exception->getMessage(),
                 array_merge(
@@ -212,7 +190,7 @@
 
             if ($request->isExpectingJson()) {
 
-                return $this->response->json(['message' => $http_exception->jsonMessage()], $http_exception->getStatusCode());
+                return $this->response->json(['message' => $http_exception->getJsonMessage()], $http_exception->getStatusCode());
 
             }
 
@@ -229,14 +207,14 @@
 
                 return $this->response->json([
 
-                    'message' => $e->jsonMessage(),
+                    'message' => $e->getJsonMessage(),
                     'errors' => $e->errorsAsArray(),
 
                 ], $e->getStatusCode());
 
             }
 
-            $response = $this->response->redirect()->previous($request);
+            $response = $this->response->redirect()->previous();
 
             if ( ! $response->hasSession() ) {
 
@@ -259,7 +237,7 @@
             if ( ! $response instanceof Response) {
 
                 return $this->renderHttpException(
-                    new HttpException(500, $this->fallback_error_message),
+                    new HttpException(500, $e->getMessage()),
                     $request
                 );
 

@@ -6,18 +6,18 @@
 
 	namespace Snicco\Factories;
 
-	use Contracts\ContainerAdapter;
-	use Illuminate\Support\Reflector;
-	use Snicco\Contracts\Handler;
-	use Snicco\Support\Str;
 	use Closure;
-	use Snicco\ExceptionHandling\Exceptions\Exception;
+    use Contracts\ContainerAdapter;
+    use Exception;
+    use Illuminate\Support\Reflector;
+    use RuntimeException;
+    use Snicco\Contracts\Handler;
+    use Snicco\Support\Str;
+    use Snicco\Traits\ReflectsCallable;
 
-	use Snicco\Traits\ReflectsCallable;
+    use function collect;
 
-	use function collect;
-
-	abstract class AbstractFactory {
+    abstract class AbstractFactory {
 
 		use ReflectsCallable;
 
@@ -45,7 +45,7 @@
 		 * @param  string|array|callable  $raw_handler
 		 *
 		 * @return Handler
-		 * @throws \Exception
+		 * @throws Exception
 		 */
 		abstract public function createUsing($raw_handler) : Handler;
 
@@ -114,7 +114,7 @@
 
 			$method = Str::replaceFirst( '@', '', $method );
 
-			throw new Exception(
+			throw new RuntimeException(
 				"[" . $class . ", '" . $method . "'] is not a valid callable."
 			);
 

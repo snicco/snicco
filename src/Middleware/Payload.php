@@ -67,7 +67,7 @@
             }
             catch (RuntimeException $exception) {
 
-                throw new HttpException(400, $exception->getMessage());
+                throw new HttpException(500, 'Failed to convert the request payload to JSON.' , $exception);
 
             }
 

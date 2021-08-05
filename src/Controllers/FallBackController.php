@@ -28,31 +28,18 @@
     class FallBackController extends Controller
     {
 
-
         /**
          * @var callable
          */
         private $fallback_handler;
-
-        /**
-         * @var Pipeline
-         */
-        private $pipeline;
-
-        /**
-         * @var MiddlewareStack
-         */
-        private $middleware_stack;
-
-        /** @var Closure */
-        private $respond_with;
+        private Pipeline $pipeline;
+        private MiddlewareStack $middleware_stack;
+        private Closure $respond_with;
 
         public function __construct(Pipeline $pipeline, MiddlewareStack $middleware_stack)
         {
-
             $this->pipeline = $pipeline;
             $this->middleware_stack = $middleware_stack;
-
         }
 
         public function handle(Request $request, Routes $routes) : ResponseInterface
@@ -81,7 +68,6 @@
 
             }
 
-            $middleware = [];
 
             if ($route) {
                 $middleware = $this->middleware_stack->createFor($route, $request);

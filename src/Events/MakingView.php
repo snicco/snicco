@@ -6,15 +6,11 @@
 
 	namespace Snicco\Events;
 
-	use Snicco\Events\Event;
 	use Snicco\Contracts\ViewInterface;
 
-	class MakingView extends Event {
+    class MakingView extends Event {
 
-		/**
-		 * @var ViewInterface
-		 */
-		private $view;
+		private ViewInterface $view;
 
 		public function __construct(ViewInterface $view) {
 

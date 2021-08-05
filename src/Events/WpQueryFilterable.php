@@ -12,20 +12,9 @@
     class WpQueryFilterable extends Event
     {
 
-        /**
-         * @var bool
-         */
-        public $do_request = true;
-
-        /**
-         * @var  Request
-         */
-        public $server_request;
-
-        /**
-         * @var  Request
-         */
-        public $wp;
+        public bool $do_request = true;
+        public Request $server_request;
+        public WP $wp;
 
         public function __construct(Request $server_request, bool $do_request, WP $wp)
         {

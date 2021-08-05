@@ -7,20 +7,17 @@
     namespace Snicco\Blade;
 
     use Illuminate\View\Factory;
-    use Illuminate\View\ViewFinderInterface;
     use Illuminate\View\ViewName;
     use Snicco\Contracts\ViewEngineInterface;
     use Snicco\Contracts\ViewInterface;
     use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
     use Snicco\Support\Arr;
+    use Throwable;
 
     class BladeEngine implements ViewEngineInterface
     {
 
-        /**
-         * @var Factory
-         */
-        private $view_factory;
+        private Factory $view_factory;
 
         public function __construct(Factory $view_factory)
         {
@@ -45,10 +42,11 @@
                 return new BladeView($view);
 
             }
-            catch (\Throwable $e ) {
+            catch (Throwable $e ) {
 
                 throw new ViewNotFoundException(
-                    'It was not possible to create a view from: [' . implode(',', Arr::wrap($views)) . '] with the blade engine.' . PHP_EOL . $e->getMessage()
+                    'Could not render any of the views: [' . implode(',', Arr::wrap($views)) . '] with the blade engine.' ,
+                    $e
                 );
 
             }
@@ -66,10 +64,7 @@
         private function normalizeNames( $names ) :array
         {
 
-            return collect($names)->map(function ($name) {
-
-                return ViewName::normalize($name);
-            })->all();
+            return collect($names)->map(fn($name) => ViewName::normalize($name))->all();
 
         }
 

@@ -8,30 +8,25 @@
 
     use Contracts\ContainerAdapter;
     use Exception;
-    use Respect\Validation\Validator as v;
+    use Mockery;
+    use Snicco\Events\Event;
+    use Snicco\Events\UnrecoverableExceptionHandled;
+    use Snicco\ExceptionHandling\Exceptions\HttpException;
+    use Snicco\ExceptionHandling\ProductionErrorHandler;
+    use Snicco\Factories\ErrorHandlerFactory;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Support\WP;
     use Tests\helpers\AssertsResponse;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\HeaderStack;
-    use Tests\UnitTest;
     use Tests\stubs\TestException;
     use Tests\stubs\TestRequest;
-    use Snicco\Events\Event;
-    use Snicco\Contracts\AbstractRedirector;
-    use Snicco\ExceptionHandling\Exceptions\HttpException;
-    use Snicco\Session\Drivers\ArraySessionDriver;
-    use Snicco\Session\Session;
-    use Snicco\Session\StatefulRedirector;
-    use Snicco\Support\WP;
-    use Snicco\Http\ResponseFactory;
-    use Snicco\Events\UnrecoverableExceptionHandled;
-    use Snicco\ExceptionHandling\ProductionErrorHandler;
-    use Snicco\Factories\ErrorHandlerFactory;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Http\Psr7\Response;
-    use Snicco\Validation\Exceptions\ValidationException;
-    use Snicco\Validation\Validator;
+    use Tests\UnitTest;
+    use Throwable;
 
     class ProductionErrorHandlerTest extends UnitTest
     {
@@ -68,7 +63,7 @@
 
             WP::reset();
             Event::setInstance(null);
-            \Mockery::close();
+            Mockery::close();
             HeaderStack::reset();
 
         }
@@ -187,7 +182,7 @@
             $this->assertContentType('text/html', $response);
 
             // We rethrow the exception.
-            $this->assertOutput('VIEW:500,CONTEXT:[status_code=>500,message=>Internal Server Error]', $response);
+            $this->assertOutput('VIEW:500,CONTEXT:[status_code=>500,message=>Something went wrong.]', $response);
 
             Event::assertNotDispatched(UnrecoverableExceptionHandled::class);
 
@@ -288,10 +283,10 @@
     {
 
 
-        protected function toHttpException(\Throwable $e, Request $request) : HttpException
+        protected function toHttpException(Throwable $e, Request $request) : HttpException
         {
 
-            return new HttpException(500, 'Custom Error Message');
+            return (new HttpException(500, 'Custom Error Message'))->withMessageForUsers('Custom Error Message');
 
         }
 

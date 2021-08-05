@@ -6,13 +6,12 @@
 
     namespace Tests\integration\ExceptionHandling;
 
-    use Tests\stubs\TestRequest;
-    use Tests\TestCase;
     use Snicco\Contracts\ErrorHandlerInterface;
     use Snicco\ExceptionHandling\ProductionErrorHandler;
     use Snicco\Session\SessionServiceProvider;
-    use Snicco\Testing\TestResponse;
     use Snicco\Validation\Exceptions\ValidationException;
+    use Tests\stubs\TestRequest;
+    use Tests\TestCase;
 
     class ValidationExceptionTest extends TestCase
     {
@@ -123,7 +122,7 @@
             $response->assertStatus(400);
             $response->assertIsJson();
             $response->assertExactJson([
-                'message' => 'We could not process your request.',
+                'message' => 'Something went wrong.',
                 'errors' => [
                     'foo' => [
                         'foo must have a length between 5 and 10.',

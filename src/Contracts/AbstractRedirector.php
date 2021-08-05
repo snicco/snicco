@@ -6,26 +6,17 @@
 
     namespace Snicco\Contracts;
 
+    use LogicException;
     use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
-    use Respect\Stringifier\Quoters\CodeQuoter;
-    use Snicco\Support\WP;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Responses\RedirectResponse;
     use Snicco\Routing\UrlGenerator;
-    use Snicco\Support\Url;
 
     abstract class AbstractRedirector
     {
 
-        /**
-         * @var UrlGenerator
-         */
-        protected $generator;
-
-        /**
-         * @var Psr17ResponseFactory
-         */
-        protected $response_factory;
+        protected UrlGenerator $generator;
+        protected Psr17ResponseFactory $response_factory;
 
         public function __construct(UrlGenerator $url_generator, Psr17ResponseFactory $response_factory)
         {
@@ -156,14 +147,14 @@
 
         }
 
-        public function previous(Request $request, int $status = 302, string $fallback = '') : RedirectResponse
+        public function previous(int $status = 302, string $fallback = '') : RedirectResponse
         {
            return $this->back($status, $fallback);
         }
 
         public function guest (string $path, $status = 302, array $query = [], bool $secure = true, bool $absolute = false ) {
 
-            throw new \LogicException('The Redirector::guest method can only be used when sessions are enabled in the config');
+            throw new LogicException('The Redirector::guest method can only be used when sessions are enabled in the config');
 
         }
 
@@ -172,7 +163,7 @@
             $valid = in_array($status_code, [201, 301, 302, 303, 304,  307, 308]);
 
             if ( ! $valid ) {
-                throw new \LogicException("Status code [{$status_code} is not valid for redirects.]");
+                throw new LogicException("Status code [{$status_code} is not valid for redirects.]");
             }
 
         }

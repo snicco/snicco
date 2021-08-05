@@ -7,16 +7,16 @@
 	namespace Snicco\View;
 
 	use BetterWpHooks\Exceptions\ConfigurationException;
+    use Snicco\Contracts\PhpEngine;
+    use Snicco\Contracts\PhpViewInterface;
+    use Snicco\Contracts\ViewInterface;
+    use Snicco\Events\MakingView;
+    use Snicco\ExceptionHandling\Exceptions\ViewException;
+    use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
+    use Snicco\Support\Arr;
     use Throwable;
-	use Snicco\Contracts\PhpEngine;
-	use Snicco\Contracts\PhpViewInterface;
-	use Snicco\Contracts\ViewInterface;
-	use Snicco\Events\MakingView;
-	use Snicco\ExceptionHandling\Exceptions\ViewException;
-	use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
-	use Snicco\Support\Arr;
 
-	class PhpViewEngine implements PhpEngine {
+    class PhpViewEngine implements PhpEngine {
 
 		/**
 		 * View finder.
@@ -74,7 +74,7 @@
 				} )
 				->whenEmpty( function () use ( $views ) {
 
-					throw new ViewNotFoundException( 'View not found for [' . implode( ', ', $views ) . ']' );
+					throw new ViewNotFoundException( 'Views not found. Tried [' . implode( ', ', $views ) . ']' );
 
 
 				} )
@@ -126,8 +126,7 @@
 			}
 
 			throw new ViewException(
-				'Error rendering view: [' . $view->name() . '].' .
-				PHP_EOL . $e->getMessage()
+				'Error rendering view: [' . $view->name() . '].', $e
 			);
 
 		}

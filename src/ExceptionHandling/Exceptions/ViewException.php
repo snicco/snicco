@@ -7,7 +7,14 @@
     namespace Snicco\ExceptionHandling\Exceptions;
 
 
-    class ViewException extends Exception
+    use Throwable;
+
+    class ViewException extends HttpException
     {
+
+        public function __construct(string $message_for_logging, Throwable $previous = null )
+        {
+            parent::__construct(500, $message_for_logging, $previous);
+        }
 
     }

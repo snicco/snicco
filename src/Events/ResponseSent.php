@@ -6,22 +6,14 @@
 
     namespace Snicco\Events;
 
-    use Snicco\Events\Event;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Psr7\Response;
 
     class ResponseSent extends Event
     {
 
-        /**
-         * @var Response
-         */
-        public $response;
-
-        /**
-         * @var IncomingRequest
-         */
-        public $request;
+        public Response $response;
+        public Request $request;
 
         public function __construct( Response $response, Request $request)
         {

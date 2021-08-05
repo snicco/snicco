@@ -6,10 +6,10 @@
 
 	namespace Snicco\Http;
 
-	use Snicco\ExceptionHandling\Exceptions\Exception;
-	use Snicco\Support\Arr;
+    use LogicException;
+    use Snicco\Support\Arr;
 
-	class ControllerMiddleware {
+    class ControllerMiddleware {
 
 		/**
 		 * Middleware.
@@ -52,7 +52,7 @@
 
 			if ( ! empty($this->blacklist) ) {
 
-				throw new Exception(
+				throw new LogicException(
 					'The only() method cant be combined with the except() method for one middleware'
 				);
 
@@ -76,8 +76,8 @@
 
 			if ( ! empty($this->whitelist) ) {
 
-				throw new Exception(
-					'The only() method cant be combined with the except() method for one middleware'
+				throw new LogicException(
+                    'The only() method cant be combined with the except() method for one middleware'
 				);
 
 			}

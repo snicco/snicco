@@ -11,9 +11,7 @@
 
         public function default() : bool
         {
-
             return false;
-
         }
 
     }

@@ -80,7 +80,7 @@
 
             if ($user_id !== WP::userId()) {
 
-                throw new InvalidSignatureException();
+                throw new InvalidSignatureException("Suspicious logging attempt with query-id-mismatch.");
 
             }
 

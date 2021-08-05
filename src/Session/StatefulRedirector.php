@@ -11,7 +11,6 @@
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Responses\RedirectResponse;
     use Snicco\Routing\UrlGenerator;
-    use Snicco\Session\Session;
 
     class StatefulRedirector extends AbstractRedirector
     {
@@ -58,7 +57,7 @@
             return parent::intended($request, $fallback, $status);
         }
 
-        public function previous(Request $request, int $status = 302, string $fallback = '') : RedirectResponse
+        public function previous( int $status = 302, string $fallback = '') : RedirectResponse
         {
 
             $path = $this->session->getPreviousUrl($fallback);

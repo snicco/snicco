@@ -8,7 +8,5 @@
 
     interface RouteUrlGenerator
     {
-
         public function to(string $name, array $arguments ) : string;
-
     }

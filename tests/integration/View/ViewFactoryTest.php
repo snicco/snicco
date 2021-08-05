@@ -6,13 +6,12 @@
 
 	namespace Tests\integration\View;
 
-    use Tests\TestCase;
-    use Tests\stubs\TestApp;
-	use Snicco\ExceptionHandling\Exceptions\ViewException;
-	use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
+    use Snicco\ExceptionHandling\Exceptions\ViewException;
+    use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
     use Snicco\View\PhpView;
     use Snicco\View\ViewFactory;
-
+    use Tests\stubs\TestApp;
+    use Tests\TestCase;
 
     class ViewFactoryTest extends TestCase {
 
@@ -44,7 +43,7 @@
 		/** @test */
 		public function non_existing_views_throw_an_exception () {
 
-			$this->expectExceptionMessage('View not found for [bogus.php]');
+			$this->expectExceptionMessage('Views not found. Tried [bogus.php]');
 			$this->expectException(ViewNotFoundException::class);
 
 			$this->view_service->make('bogus.php');
@@ -163,7 +162,7 @@
 		/** @test */
 		public function exception_gets_thrown_for_non_existing_views () {
 
-			$this->expectExceptionMessage('View not found');
+			$this->expectExceptionMessage('Views not found. Tried [viewss.php]');
 
 			$this->view_service->make('viewss.php');
 

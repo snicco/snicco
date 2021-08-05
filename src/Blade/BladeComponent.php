@@ -12,10 +12,7 @@
     abstract class BladeComponent extends IlluminateComponent
     {
 
-        /**
-         * @var ViewEngineInterface
-         */
-        protected $engine;
+        protected ViewEngineInterface $engine;
 
         public function setEngine(BladeEngine $engine)
         {

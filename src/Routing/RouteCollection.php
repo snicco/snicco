@@ -9,21 +9,11 @@
     use Snicco\Contracts\AbstractRouteCollection;
     use Snicco\Contracts\RouteMatcher;
     use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
-    use Snicco\Support\WP;
     use Snicco\Factories\ConditionFactory;
     use Snicco\Factories\RouteActionFactory;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Support\Arr;
 
     class RouteCollection extends AbstractRouteCollection
     {
-
-        /**
-         * An array of the routes keyed by method.
-         *
-         * @var array
-         */
-        protected $routes = [];
 
         /**
          * A look-up table of routes by their names.

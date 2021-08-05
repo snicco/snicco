@@ -256,11 +256,7 @@
             if ($is_admin) {
 
                 $views = collect($views)
-                    ->map(function ($view) {
-
-                        return $view.'-admin';
-
-                    })
+                    ->map(fn($view) => $view.'-admin')
                     ->merge($views)->all();
 
             }
@@ -269,7 +265,7 @@
 
                 $view = $this->view_factory->make($views)->with([
                     'status_code' => $e->getStatusCode(),
-                    'message' => $e->getMessage(),
+                    'message' => $e->messageForUsers(),
                 ]);
 
                 return $this->toResponse($view)

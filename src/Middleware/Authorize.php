@@ -9,8 +9,8 @@
     use Psr\Http\Message\ResponseInterface;
     use Snicco\Contracts\Middleware;
     use Snicco\ExceptionHandling\Exceptions\AuthorizationException;
-    use Snicco\Support\WP;
     use Snicco\Http\Psr7\Request;
+    use Snicco\Support\WP;
 
     class Authorize extends Middleware
     {
@@ -57,7 +57,7 @@
 
             }
 
-            throw new AuthorizationException('You do not have permission to perform this action');
+            throw new AuthorizationException("Authorization failed for required capability $this->capability");
 
         }
 

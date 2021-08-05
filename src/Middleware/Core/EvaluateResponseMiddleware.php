@@ -42,11 +42,11 @@
         private function passOnIfValid(ResponseInterface $response, Request $request) : ResponseInterface
         {
 
-            // We had a route action return something but it was not transformable to a Psr7 Response.
+            // We had a route action return something, but it was not transformable to a Psr7 Response.
             if ($response instanceof InvalidResponse) {
 
                 throw new InvalidResponseException(
-                    'The response returned by the route is not valid.'
+                    "Invalid response returned by the route for path [{$request->fullPath()}]."
                 );
 
             }
@@ -67,14 +67,14 @@
             }
 
             // We have a NullResponse, which means no route matched.
-            // But we want WordPress to handleit from here.
+            // But we want WordPress to handle it from here.
             if ( ! $this->must_match_current_request) {
 
                 return $response;
 
             }
 
-            throw new NotFoundException('This page could not be found');
+            throw new NotFoundException("404 for request path [{$request->fullPath()}]");
 
         }
 

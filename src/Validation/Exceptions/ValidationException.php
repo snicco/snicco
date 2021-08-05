@@ -8,8 +8,8 @@
 
 
     use Illuminate\Support\MessageBag;
-    use Throwable;
     use Snicco\ExceptionHandling\Exceptions\HttpException;
+    use Throwable;
 
     class ValidationException extends HttpException
     {
@@ -73,12 +73,6 @@
 
         public function namedBag () {
             return $this->message_bag_name;
-        }
-
-        public function setJsonMessage(string $message)
-        {
-            $this->message = $message;
-            return $this;
         }
 
 

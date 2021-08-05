@@ -37,8 +37,14 @@
          */
         public function context( string $key = null, $default = null );
 
+        /**
+         * @return string The name of the view
+         */
         public function name();
 
+        /**
+         * @return string The full local path of the view
+         */
         public function path();
 
 	}

@@ -14,15 +14,15 @@
     use BaconQrCode\Writer;
     use PragmaRX\Google2FA\Google2FA;
     use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
     use Snicco\Auth\Traits\ResolvesUser;
-    use Snicco\Auth\Traits\ResolveTwoFactorSecrets;
     use Snicco\Contracts\EncryptorInterface;
     use Snicco\Support\WP;
 
     class Google2FaAuthenticationProvider implements TwoFactorAuthenticationProvider
     {
 
-        use ResolveTwoFactorSecrets;
+        use InteractsWithTwoFactorSecrets;
         use ResolvesUser;
 
         /**

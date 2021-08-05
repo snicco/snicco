@@ -13,6 +13,7 @@
     {
 
         protected Request $request;
+        protected WP_User $user;
 
         public function forRequest(Request $request) :self {
             $this->request = $request;

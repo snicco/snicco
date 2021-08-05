@@ -11,10 +11,12 @@
     class TooManyRequestsException extends HttpException
     {
 
-        public function __construct(?string $message_for_humans = 'Too many requests. Slow down,', Throwable $previous = null, ?int $code = 0)
+        protected string $message_for_users = 'Too many requests. Slow down.';
+
+        public function __construct( $log_message , Throwable $previous = null)
         {
 
-            parent::__construct(429, $message_for_humans, $previous, $code);
+            parent::__construct(429, $log_message, $previous);
 
         }
 

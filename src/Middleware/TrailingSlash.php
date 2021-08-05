@@ -20,7 +20,7 @@
         /**
          * @var ResponseFactory
          */
-        protected $response_factory;
+        protected ResponseFactory $response_factory;
 
         /**
          * @var bool

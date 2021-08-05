@@ -6,17 +6,14 @@
 
 	namespace Snicco\Routing;
 
-	use Closure;
     use Contracts\ContainerAdapter;
-    use Snicco\Contracts\ResolveControllerMiddleware;
-	use Snicco\Contracts\RouteAction;
+    use Snicco\Contracts\RouteAction;
     use Snicco\Http\Controller;
     use Snicco\Http\MiddlewareResolver;
     use Snicco\Http\ResponseFactory;
     use Snicco\View\ViewFactory;
 
-    class ControllerAction implements RouteAction, ResolveControllerMiddleware {
-
+    class ControllerAction implements RouteAction {
 
 		/**
 		 * @var array
@@ -66,9 +63,7 @@
 
 		public function resolveControllerMiddleware() : array {
 
-
 			return $this->middleware_resolver->resolveFor($this->raw_callable);
-
 
 		}
 
