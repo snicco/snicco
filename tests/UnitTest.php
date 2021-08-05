@@ -10,7 +10,6 @@
     use Tests\helpers\CreateContainer;
     use Tests\helpers\CreatePsr17Factories;
     use Tests\helpers\CreateRouteMatcher;
-    use Tests\helpers\CreateUrlGenerator;
 
     class UnitTest extends BetterWpHooksTestCase
     {
@@ -18,7 +17,6 @@
         use CreatePsr17Factories;
         use CreateContainer;
         use CreateRouteMatcher;
-
 
         protected function setUp() : void
         {
