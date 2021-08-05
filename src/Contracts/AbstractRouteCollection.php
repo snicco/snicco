@@ -19,18 +19,10 @@
 
         use ValidatesRoutes;
 
-        /**
-         * @var ConditionFactory
-         */
-        protected $condition_factory;
-
-        /**
-         * @var RouteActionFactory
-         */
-        protected $action_factory;
-
-        /** @var RoutingResult|null */
-        private $query_filter_routing_result;
+        protected ConditionFactory   $condition_factory;
+        protected RouteActionFactory $action_factory;
+        private ?RoutingResult       $query_filter_routing_result = null;
+        protected array              $routes                      = [];
 
         abstract public function add(Route $route) : Route;
 
@@ -38,9 +30,10 @@
 
         abstract public function withWildCardUrl(string $method) : array;
 
-        abstract public function loadIntoDispatcher(bool $global_routes ) :void;
+        abstract public function loadIntoDispatcher(bool $global_routes) : void;
 
-        public function matchForQueryFiltering (Request $request) :RoutingResult {
+        public function matchForQueryFiltering(Request $request) : RoutingResult
+        {
 
             $result = $this->match($request);
 
@@ -53,7 +46,7 @@
         public function match(Request $request) : RoutingResult
         {
 
-            if (  $this->query_filter_routing_result ) {
+            if ($this->query_filter_routing_result) {
 
                 return $this->query_filter_routing_result;
 
@@ -64,7 +57,7 @@
                 $request->routingPath()
             );
 
-            if ( ! $route = $result->route() ) {
+            if ( ! $route = $result->route()) {
 
                 return new RoutingResult(null);
 
@@ -72,7 +65,7 @@
 
             $route = $this->giveFactories($route)->instantiateConditions();
 
-            if ( ! $route->satisfiedBy($request) ) {
+            if ( ! $route->satisfiedBy($request)) {
 
                 return new RoutingResult(null);
 
@@ -87,7 +80,7 @@
         protected function addToCollection(Route $route)
         {
 
-            foreach ( $route->getMethods() as $method ) {
+            foreach ($route->getMethods() as $method) {
 
                 $this->routes[$method][] = $route;
 
@@ -107,6 +100,7 @@
 
             $route->setActionFactory($this->action_factory);
             $route->setConditionFactory($this->condition_factory);
+
             return $route;
         }
 
@@ -115,11 +109,7 @@
 
             return collect($this->routes)
                 ->flatten()
-                ->first(function (Route $route) use ($name) {
-
-                    return $route->getName() === $name;
-
-                });
+                ->first(fn(Route $route) => $route->getName() === $name);
 
         }
 
@@ -127,24 +117,17 @@
         {
 
             return collect($this->routes[$method] ?? [])
-                ->filter(function (Route $route) {
-
-                    return trim($route->getUrl(), '/') === ROUTE::ROUTE_WILDCARD;
-
-                })
+                ->filter(fn(Route $route) => trim($route->getUrl(), '/') === ROUTE::ROUTE_WILDCARD)
                 ->all();
 
         }
 
-        protected function prepareOutgoingRoute( $routes ) :void
+        protected function prepareOutgoingRoute($routes) : void
         {
-             $routes = Arr::wrap($routes);
 
-             collect($routes)->each(function (Route $route)  {
+            $routes = Arr::wrap($routes);
 
-                $this->giveFactories($route);
-
-            });
+            collect($routes)->each(fn(Route $route) => $this->giveFactories($route));
 
 
         }

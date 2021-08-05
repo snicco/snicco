@@ -8,6 +8,4 @@
 
 	class UnrecoverableExceptionHandled extends Event {
 
-
-
 	}

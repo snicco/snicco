@@ -6,21 +6,20 @@
 
 	namespace Snicco\ExceptionHandling;
 
-	use Throwable;
-    use Whoops\Handler\JsonResponseHandler;
-    use Whoops\RunInterface;
 	use Snicco\Contracts\ErrorHandlerInterface;
-	use Snicco\Events\UnrecoverableExceptionHandled;
+    use Snicco\Events\UnrecoverableExceptionHandled;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Psr7\Response;
     use Snicco\Traits\HandlesExceptions;
+    use Throwable;
+    use Whoops\Handler\JsonResponseHandler;
+    use Whoops\RunInterface;
 
-	class DebugErrorHandler implements ErrorHandlerInterface {
+    class DebugErrorHandler implements ErrorHandlerInterface {
 
 		use HandlesExceptions;
 
-		/** @var RunInterface */
-		private $whoops;
+		private RunInterface $whoops;
 
 		public function __construct( RunInterface $whoops) {
 

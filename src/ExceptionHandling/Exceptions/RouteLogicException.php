@@ -6,9 +6,14 @@
 
     namespace Snicco\ExceptionHandling\Exceptions;
 
-    class RouteLogicException extends \Exception
+    use Throwable;
+
+    class RouteLogicException extends HttpException
     {
 
-
+        public function __construct( string $message_for_logging, Throwable $previous = null)
+        {
+            parent::__construct(500, $message_for_logging, $previous);
+        }
 
     }

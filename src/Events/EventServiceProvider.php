@@ -20,7 +20,7 @@
     class EventServiceProvider extends ServiceProvider
     {
 
-        private $mapped_events = [
+        private array $mapped_events = [
 
             'admin_init' => [
 
@@ -41,22 +41,19 @@
             ],
 
         ];
-
-        private $ensure_first = [
+        private array $ensure_first = [
 
             'init' => WpInit::class,
             'admin_init' => IncomingAjaxRequest::class,
             'wp' => IncomingWebRequest::class,
 
         ];
-
-        private $ensure_last = [
+        private array  $ensure_last = [
 
             'do_parse_request' => WpQueryFilterable::class,
 
         ];
-
-        private $event_listeners = [
+        private array $event_listeners = [
 
             WpInit::class => [
 

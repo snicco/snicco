@@ -8,7 +8,6 @@
 
 
     use Illuminate\Contracts\View\View as IlluminateViewContract;
-    use Illuminate\View\View as IlluminateView;
     use Snicco\Contracts\ViewInterface;
     use Snicco\Events\MakingView;
     use Snicco\ExceptionHandling\Exceptions\ViewException;
@@ -18,10 +17,7 @@
     class BladeView implements ViewInterface, IlluminateViewContract
     {
 
-        /**
-         * @var IlluminateView|IlluminateViewContract
-         */
-        private $illuminate_view;
+        private IlluminateViewContract $illuminate_view;
 
         public function __construct($illuminate_view)
         {
@@ -48,7 +44,7 @@
             catch (Throwable $e) {
 
                 throw new ViewException(
-                    'Error rendering view:['.$this->name().']'.PHP_EOL.$e->getMessage().PHP_EOL.$e->getTraceAsString()
+                    'Error rendering view:['.$this->name().']', $e
                 );
 
             }

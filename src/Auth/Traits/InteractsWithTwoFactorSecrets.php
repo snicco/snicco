@@ -11,6 +11,9 @@
     trait InteractsWithTwoFactorSecrets
     {
 
+        /**
+         * @todo Two-factor secret encryption
+         */
         private function twoFactorSecret(int $user_id ) :string {
 
             $secret = get_user_meta($user_id, 'two_factor_secret', true);

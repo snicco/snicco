@@ -29,7 +29,7 @@
 
         /**
          * Get a response representing the specified exception if possible.
-         * If outside of the routing flow send error message and abort.
+         * If outside the routing flow send error message and abort.
          *
          * @param  Throwable  $exception
          * @param  Request  $request

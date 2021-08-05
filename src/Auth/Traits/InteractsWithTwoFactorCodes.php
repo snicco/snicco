@@ -12,7 +12,6 @@
     trait InteractsWithTwoFactorCodes
     {
 
-
         public function recoveryCodes(int $user_id) : array
         {
 
@@ -26,6 +25,15 @@
 
         }
 
+        public function saveCodes(int $user_id, array $codes)
+        {
+
+            $codes = $this->encryptor->encrypt(json_encode($codes));
+
+            update_user_meta($user_id, 'two_factor_recovery_codes', $codes);
+
+        }
+
         private function generateNewRecoveryCodes() : array
         {
 
@@ -34,15 +42,6 @@
                 return RecoveryCode::generate();
 
             })->all();
-
-        }
-
-        public function saveCodes(int $user_id, array $codes)
-        {
-
-            $codes = $this->encryptor->encrypt(json_encode($codes));
-
-            update_user_meta($user_id, 'two_factor_recovery_codes', $codes);
 
         }
 

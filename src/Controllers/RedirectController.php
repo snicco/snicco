@@ -6,18 +6,13 @@
 
     namespace Snicco\Controllers;
 
-    use Snicco\Contracts\AbstractRedirector;
     use Snicco\Contracts\MagicLink;
     use Snicco\Http\Controller;
     use Snicco\Http\Psr7\Request;
-    use Snicco\Http\ResponseFactory;
     use Snicco\Http\Responses\RedirectResponse;
-    use Snicco\Routing\UrlGenerator;
-    use Snicco\View\ViewFactory;
 
     class RedirectController extends Controller
     {
-
 
         public function to(...$args) : RedirectResponse
         {

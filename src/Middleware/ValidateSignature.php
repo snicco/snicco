@@ -9,9 +9,9 @@
     use Psr\Http\Message\ResponseInterface;
     use Snicco\Contracts\MagicLink;
     use Snicco\Contracts\Middleware;
+    use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Request;
-    use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
 
     class ValidateSignature extends Middleware
     {
@@ -57,7 +57,7 @@
 
             }
 
-            throw new InvalidSignatureException();
+            throw new InvalidSignatureException("Failed signature check for path: [{$request->fullPath()}]");
 
         }
 

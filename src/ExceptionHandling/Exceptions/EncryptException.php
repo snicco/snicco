@@ -6,8 +6,14 @@
 
 	namespace Snicco\ExceptionHandling\Exceptions;
 
-	use Snicco\ExceptionHandling\Exceptions\Exception;
+    use RuntimeException;
+    use Throwable;
 
-    class EncryptException extends Exception {
+    class EncryptException extends RuntimeException {
+
+        public function __construct(string $message = 'Encryption failure', Throwable $previous = null)
+        {
+            parent::__construct(500, $message, $previous);
+        }
 
 	}

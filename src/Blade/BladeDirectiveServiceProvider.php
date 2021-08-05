@@ -24,19 +24,9 @@
         function bootstrap() : void
         {
 
-            $foo = 'bar';
+            Blade::if('auth', fn() => WP::isUserLoggedIn());
 
-            Blade::if('auth', function () {
-
-                return WP::isUserLoggedIn();
-
-            });
-
-            Blade::if('guest', function () {
-
-                return ! WP::isUserLoggedIn();
-
-            });
+            Blade::if('guest', fn() => ! WP::isUserLoggedIn());
 
             Blade::if('role', function ($expression) {
 

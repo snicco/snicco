@@ -7,11 +7,16 @@
     namespace Snicco\Auth\Traits;
 
     use Snicco\Auth\Mail\ResetPasswordMail;
+    use Snicco\Mail\MailBuilder;
+    use WP_User;
 
+    /**
+     * @property MailBuilder $mail
+     */
     trait SendsPasswordResetMails
     {
 
-        private function sendResetMail(\WP_User $user)
+        private function sendResetMail(WP_User $user)
         {
 
             $magic_link = $this->url->signedRoute(

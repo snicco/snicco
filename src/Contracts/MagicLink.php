@@ -8,12 +8,12 @@
 
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
-    use Tests\stubs\TestApp;
-    use Snicco\Application\Application;
-    use Snicco\Support\WP;
+    use InvalidArgumentException;
+    use RuntimeException;
     use Snicco\Http\Cookie;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Psr7\Response;
+    use Snicco\Support\WP;
     use Snicco\Traits\HasLottery;
 
     abstract class MagicLink
@@ -24,12 +24,9 @@
 
         public const QUERY_STRING_ID = 'signature';
 
-        protected $app_key;
-
-        /** @var Request */
-        protected $request;
-
-        protected $lottery = [4, 100];
+        protected string $app_key;
+        protected Request $request;
+        protected array $lottery = [4, 100];
 
         public function setAppKey(string $app_key)
         {
@@ -40,7 +37,7 @@
 
             if ( ! is_int($lottery[0]) || ! is_int($lottery[1]) ) {
 
-                throw new \InvalidArgumentException('Invalid lottery provided');
+                throw new InvalidArgumentException('Invalid lottery provided');
 
             }
 
@@ -80,7 +77,7 @@
             $stored = $this->store($signature, $expires_at);
 
             if ( ! $stored ) {
-                throw new \RuntimeException('Magic link could not be stored');
+                throw new RuntimeException('Magic link could not be stored');
             }
 
             return $signature;
@@ -174,7 +171,7 @@
         {
 
             if ( ! $this->app_key ) {
-                throw new \RuntimeException('App key not set.');
+                throw new RuntimeException('App key not set.');
             }
 
             $salt = $this->app_key.$request->userAgent();

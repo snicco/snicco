@@ -7,18 +7,15 @@
     namespace Snicco\ExceptionHandling\Exceptions;
 
     use Throwable;
-    use Snicco\ExceptionHandling\Exceptions\HttpException;
-    use Snicco\Http\ResponseFactory;
 
     class InvalidSignatureException extends HttpException
     {
 
-        public function __construct(?string $message_for_humans = 'You cant access this page.', Throwable $previous = null, ?int $code = 0)
+        protected string $message_for_users = 'You cant access this page.';
+
+        public function __construct(string $message_for_logging = 'Failed signature check detected,', Throwable $previous = null)
         {
-            parent::__construct(403, $message_for_humans, $previous, $code);
+            parent::__construct(403, $message_for_logging, $previous);
         }
-
-
-
 
     }

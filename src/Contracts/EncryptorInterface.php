@@ -54,7 +54,7 @@
 		 *
 		 * @return string
 		 *
-		 * @throws \Snicco\ExceptionHandling\Exceptions\DecryptException
+		 * @throws DecryptException
 		 */
 		public function decryptString( string $payload) : string;
 

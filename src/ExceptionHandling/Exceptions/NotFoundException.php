@@ -11,10 +11,12 @@
     class NotFoundException extends HttpException
     {
 
-        public function __construct(?string $message_for_humans = 'We could not find what you are looking for.', Throwable $previous = null, ?int $code = 0)
+        protected string $message_for_users = 'We could not find the resource you are looking for.';
+
+        public function __construct($log_message, Throwable $previous = null)
         {
 
-            parent::__construct(404, $message_for_humans, $previous, $code);
+            parent::__construct(404, $log_message, $previous);
 
         }
 

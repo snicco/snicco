@@ -6,16 +6,12 @@
 
     namespace Snicco\Events;
 
-    use Snicco\Events\Event;
     use Snicco\Mail\Mailable;
 
     class PendingMail extends Event
     {
 
-        /**
-         * @var Mailable
-         */
-        public $mail;
+        public Mailable $mail;
 
         public function __construct( Mailable $mail )
         {

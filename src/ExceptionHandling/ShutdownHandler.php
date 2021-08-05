@@ -12,10 +12,7 @@
 
     class ShutdownHandler {
 
-        /**
-         * @var bool
-         */
-        private $running_unit_tests;
+        private bool $running_unit_tests;
 
         public function __construct( bool $running_unit_tests = false )
         {

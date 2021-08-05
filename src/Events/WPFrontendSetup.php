@@ -7,6 +7,5 @@
 
     class WPFrontendSetup extends Event
     {
-
         use IsAction;
     }

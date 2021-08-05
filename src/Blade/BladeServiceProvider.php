@@ -54,17 +54,8 @@
         private function setIlluminateBindings(IlluminateContainerInterface $container)
         {
 
-            $container->bindIf('files', function () {
-
-                return new Filesystem();
-
-            }, true);
-
-            $container->bindIf('events', function () {
-
-                return new Dispatcher();
-
-            }, true);
+            $container->bindIf('files', fn() => new Filesystem(), true);
+            $container->bindIf('events', fn() => new Dispatcher(), true);
 
             $container->instance('config', $this->config);
 
@@ -76,17 +67,8 @@
         private function setBladeComponentBindings(IlluminateContainerInterface $container)
         {
 
-            $container->bindIf(Factory::class, function (IlluminateContainerInterface $c) {
-
-                return $c->make('view');
-
-            });
-
-            $container->bindIf(Application::class, function () use ($container) {
-
-                return new DummyApplication();
-
-            });
+            $container->bindIf(Factory::class, fn(IlluminateContainerInterface $c) => $c->make('view'));
+            $container->bindIf(Application::class, fn() => new DummyApplication());
 
             $container->resolving(BladeComponent::class, function (BladeComponent $component, IlluminateContainerInterface $container) {
 
@@ -99,13 +81,10 @@
         private function registerBladeViewEngine() : void
         {
 
-            $this->container->singleton(ViewEngineInterface::class, function () {
-
-                return new BladeEngine(
-                    $this->container->make('view'),
-                );
-
-            });
+            $this->container->singleton(
+                ViewEngineInterface::class,
+                fn() => new BladeEngine($this->container->make('view'))
+            );
         }
 
     }

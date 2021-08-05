@@ -10,22 +10,22 @@
     use Mockery;
     use Psr\Log\LoggerInterface;
     use Psr\Log\LogLevel;
+    use Snicco\Events\Event;
+    use Snicco\ExceptionHandling\ProductionErrorHandler;
+    use Snicco\Factories\ErrorHandlerFactory;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Support\WP;
+    use Snicco\Support\WpFacade;
     use SniccoAdapter\BaseContainerAdapter;
+    use Tests\fixtures\TestDependencies\Foo;
     use Tests\helpers\AssertsResponse;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
+    use Tests\stubs\TestLogger;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use Tests\fixtures\TestDependencies\Foo;
-    use Tests\stubs\TestLogger;
-    use Snicco\Events\Event;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Http\ResponseFactory;
-    use Snicco\ExceptionHandling\ProductionErrorHandler;
-    use Snicco\Support\WP;
-    use Snicco\Factories\ErrorHandlerFactory;
-    use Snicco\Support\WpFacade;
 
     class ProductionErrorHandlerLoggingTest extends UnitTest
     {
@@ -312,7 +312,7 @@
     class CustomProductionErrorHandler extends ProductionErrorHandler
     {
 
-        protected $dont_report = [
+        protected array $dont_report = [
             ReportableException::class,
         ];
 

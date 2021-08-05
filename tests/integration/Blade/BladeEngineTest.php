@@ -6,13 +6,10 @@
 
     namespace Tests\integration\Blade;
 
-    use Tests\IntegrationTest;
-    use Tests\stubs\TestApp;
-    use Snicco\Blade\BladeServiceProvider;
     use Snicco\Blade\BladeView;
-    use Snicco\ExceptionHandling\Exceptions\ViewException;
     use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
     use Snicco\View\ViewFactory;
+    use Tests\stubs\TestApp;
 
     class BladeEngineTest extends BladeTestCase
     {

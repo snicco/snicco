@@ -10,15 +10,14 @@
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
-    use Snicco\Http\Psr7\Request;
     use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
     use Snicco\Http\ResponseFactory;
 
     abstract class Middleware implements MiddlewareInterface {
 
 
-        /** @var ResponseFactory */
-        protected $response_factory;
+        protected ResponseFactory $response_factory;
 
         public function setResponseFactory(ResponseFactory $response_factory) {
             $this->response_factory = $response_factory;

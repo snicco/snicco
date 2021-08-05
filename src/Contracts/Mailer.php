@@ -7,15 +7,17 @@
     namespace Snicco\Contracts;
 
 
+    use Snicco\Mail\Mailable;
+
     interface Mailer
     {
 
         /**
-         * @param  \Snicco\Mail\Mailable  $mail
+         * @param  Mailable  $mail
          *
          * @return bool Whether the mail was processed correctly.
          */
-        public function send ( \Snicco\Mail\Mailable $mail ) : bool;
+        public function send ( Mailable $mail ) : bool;
 
 
     }

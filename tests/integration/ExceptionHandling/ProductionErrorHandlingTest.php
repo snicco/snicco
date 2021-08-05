@@ -18,7 +18,7 @@
         {
 
             $response = $this->get('/error/500');
-            $response->assertSee('VIEW:error.php,STATUS:500,MESSAGE:Something went wrong here.');
+            $response->assertSee('VIEW:error.php,STATUS:500,MESSAGE:Something went wrong.');
             $response->assertStatus(500);
             $response->assertIsHtml();
 
@@ -29,7 +29,7 @@
         {
 
             $response = $this->get('/error/419');
-            $response->assertSee('VIEW:419.php,STATUS:419,MESSAGE:The Link you followed expired.');
+            $response->assertSee('VIEW:419.php,STATUS:419,MESSAGE:The link you followed expired.');
             $response->assertStatus(419);
             $response->assertIsHtml();
 
@@ -41,7 +41,7 @@
 
             $this->get('/error/400')
                  ->assertStatus(400)
-                 ->assertSee('VIEW:error.php,STATUS:400,MESSAGE:Bad Request.')
+                 ->assertSee('VIEW:error.php,STATUS:400,MESSAGE:Something went wrong.')
                  ->assertIsHtml();
 
         }
@@ -51,7 +51,7 @@
         {
 
             $response = $this->getAdminPage('error');
-            $response->assertSee('VIEW:419-admin.php,STATUS:419,MESSAGE:The Link you followed expired.')
+            $response->assertSee('VIEW:419-admin.php,STATUS:419,MESSAGE:The link you followed expired.')
                      ->assertStatus(419)
                      ->assertIsHtml();
 
@@ -63,7 +63,7 @@
         {
 
             $this->getJson('/error/500')
-                 ->assertSee(json_encode('Something went wrong here.' ), false )
+                 ->assertSee(json_encode('Something went wrong.' ), false )
                  ->assertStatus(500)->assertIsJson();
 
         }

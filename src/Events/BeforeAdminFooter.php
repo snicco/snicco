@@ -8,7 +8,6 @@
 
     use BetterWpHooks\Traits\DispatchesConditionally;
     use BetterWpHooks\Traits\IsAction;
-    use Snicco\Events\Event;
     use Snicco\Support\WP;
 
     class BeforeAdminFooter extends Event

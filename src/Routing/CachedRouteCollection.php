@@ -26,8 +26,6 @@
          */
         protected $route_matcher;
 
-        protected $routes = [];
-
         protected $name_list = [];
 
         /**
