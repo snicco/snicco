@@ -6,27 +6,23 @@
 
     namespace Snicco\Auth\Controllers;
 
-    use Respect\Validation\Validator;
-    use WP_User;
+    use Respect\Validation\Validator as v;
+    use Snicco\Auth\Mail\ResetPasswordMail;
     use Snicco\Auth\Traits\ResolvesUser;
     use Snicco\Contracts\ViewInterface;
-    use Snicco\Auth\Mail\ResetPasswordMail;
     use Snicco\Http\Controller;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Responses\RedirectResponse;
     use Snicco\Mail\MailBuilder;
     use Snicco\Session\CsrfField;
-    use Respect\Validation\Validator as v;
+    use WP_User;
 
     class ForgotPasswordController extends Controller
     {
 
         use ResolvesUser;
 
-        /**
-         * @var int
-         */
-        protected $expiration;
+        protected int $expiration;
 
         public function __construct( int $expiration = 300 )
         {

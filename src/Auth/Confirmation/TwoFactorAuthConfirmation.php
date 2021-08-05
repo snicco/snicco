@@ -6,17 +6,14 @@
 
     namespace Snicco\Auth\Confirmation;
 
-    use WP_User;
     use Snicco\Auth\Contracts\AuthConfirmation;
     use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
     use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
     use Snicco\Auth\Traits\PerformsTwoFactorAuthentication;
-    use Snicco\Auth\Traits\ResolvesUser;
-    use Snicco\Auth\Traits\ResolveTwoFactorSecrets;
     use Snicco\Contracts\EncryptorInterface;
     use Snicco\Http\Psr7\Request;
-    use Snicco\Http\Psr7\Response;
     use Snicco\Http\ResponseFactory;
+    use WP_User;
 
     class TwoFactorAuthConfirmation implements AuthConfirmation
     {
@@ -24,34 +21,17 @@
         use PerformsTwoFactorAuthentication;
         use InteractsWithTwoFactorSecrets;
 
-        /**
-         * @var AuthConfirmation
-         */
-        private $fallback;
+        private AuthConfirmation $fallback;
 
-        /**
-         * @var WP_User
-         */
-        private $current_user;
+        private WP_User $current_user;
 
-        /**
-         * @var string
-         */
-        private $user_secret;
+        private TwoFactorAuthenticationProvider $provider;
 
-        /**
-         * @var TwoFactorAuthenticationProvider
-         */
-        private $provider;
+        private ResponseFactory $response_factory;
 
-        /**
-         * @var ResponseFactory
-         */
-        private $response_factory;
-        /**
-         * @var EncryptorInterface
-         */
-        private $encryptor;
+        private EncryptorInterface $encryptor;
+
+        private string $user_secret;
 
         public function __construct(
             AuthConfirmation $fallback,

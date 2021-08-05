@@ -13,21 +13,11 @@
     class EmailRegistrationViewResponse extends RegistrationViewResponse
     {
 
-        /**
-         * @var ViewFactory
-         */
-        private $view_factory;
-
-        /**
-         * @var UrlGenerator
-         */
-        private $url;
+        private ViewFactory $view_factory;
 
         public function __construct(ViewFactory $view_factory, UrlGenerator $url)
         {
-
             $this->view_factory = $view_factory;
-            $this->url = $url;
         }
 
         public function toResponsable()

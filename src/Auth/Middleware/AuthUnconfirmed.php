@@ -8,7 +8,6 @@
 
     use Psr\Http\Message\ResponseInterface;
     use Snicco\Contracts\Middleware;
-    use Snicco\Support\WP;
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Request;
     use Snicco\Routing\UrlGenerator;
@@ -16,11 +15,7 @@
     class AuthUnconfirmed extends Middleware
     {
 
-
-        /**
-         * @var UrlGenerator
-         */
-        private $url;
+        private UrlGenerator $url;
 
         public function __construct( UrlGenerator $url)
         {

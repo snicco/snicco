@@ -6,16 +6,16 @@
 
     namespace Tests\integration\Auth\Controllers;
 
-    use Tests\AuthTestCase;
-    use Snicco\Events\Event;
     use Snicco\Auth\Authenticators\PasswordAuthenticator;
     use Snicco\Auth\Contracts\Authenticator;
     use Snicco\Auth\Events\Login;
     use Snicco\Auth\Traits\ResolvesUser;
+    use Snicco\Events\Event;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Psr7\Response;
     use Snicco\Testing\TestResponse;
-
+    use Tests\AuthTestCase;
+    use WP_User;
 
     class AuthSessionControllerTest extends AuthTestCase
     {
@@ -251,7 +251,6 @@
         public function the_user_can_be_logged_in_through_multiple_authenticators()
         {
 
-            // $this->withoutExceptionHandling();
 
             $calvin = $this->createAdmin();
             $this->withReplacedConfig('auth.through', [
@@ -310,7 +309,7 @@
 
                 $user = $this->getUserById($request->input('allow_login_for_id'));
 
-                if ($user instanceof \WP_User) {
+                if ($user instanceof WP_User) {
 
                     return $this->login($user, false);
 

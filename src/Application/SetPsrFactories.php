@@ -15,6 +15,7 @@
 
     trait SetPsrFactories
     {
+
         public function setServerRequestFactory(ServerRequestFactoryInterface $server_request_factory) : self
         {
 
@@ -50,7 +51,9 @@
 
         public function setResponseFactory(ResponseFactoryInterface $response_factory) : self
         {
+
             $this->container()->instance(ResponseFactoryInterface::class, $response_factory);
+
             return $this;
         }
 

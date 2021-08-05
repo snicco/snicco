@@ -59,8 +59,8 @@
             $this->extendRoutes(__DIR__.DIRECTORY_SEPARATOR.'routes');
 
             $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views');
-            $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR .'email');
-            $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR .'partials');
+            $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'email');
+            $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'partials');
 
             $this->bindEvents();
 
@@ -131,14 +131,10 @@
                 'logout_url' => GenerateLogoutUrl::class,
             ]);
 
-            // This filter is very misleading from WordPress. It does not filter the expire value in
+            // This filter is very misleading from WordPress. It does not filter the expiry value in
             // "setcookie()" function, but filters the expiration fragment in the cookie hash.
             // The maximum value can only ever be our session absolute timeout.
-            add_filter('auth_cookie_expiration', function () {
-
-                return $this->config->get('session.lifetime');
-
-            }, 10, 3);
+            add_filter('auth_cookie_expiration', fn() => $this->config->get('session.lifetime'), 10, 3);
 
 
         }
@@ -147,19 +143,17 @@
         {
 
             $this->container->singleton(ConfirmedAuthSessionController::class, function () {
+
                 return new ConfirmedAuthSessionController(
                     $this->container->make(AuthConfirmation::class),
                     $this->config->get('auth.confirmation.duration')
                 );
             });
 
-            $this->container->singleton(AuthSessionController::class, function () {
-
-                return new AuthSessionController(
-                    $this->config->get('auth')
-                );
-
-            });
+            $this->container->singleton(
+                AuthSessionController::class,
+                fn() => new AuthSessionController($this->config->get('auth'))
+            );
 
         }
 
@@ -206,7 +200,7 @@
 
                 'auth' => $this->config->get('auth.endpoints.prefix'),
                 // Needed so we can respond to request to wp-login.php.
-                'wp-login.php' => '/wp-login.php'
+                'wp-login.php' => '/wp-login.php',
 
             ]);
 
@@ -221,7 +215,7 @@
                 $manager = $this->container->make(SessionManagerInterface::class);
 
                 // Ugly hack. But there is no other way to get this instance to the class that
-                // extends WP_SESSION_TOKENS because of Wordpress not using interfaces or DI:
+                // extends WP_SESSION_TOKENS because of WordPress not using interfaces or DI:
                 // These globals are immediately unset and can not be used anywhere else.
                 global $session_manager;
                 $session_manager = $manager;
@@ -238,26 +232,23 @@
         private function bindSessionManagerInterface()
         {
 
-            $this->container->singleton(SessionManagerInterface::class, function () {
-
-                return $this->container->make(AuthSessionManager::class);
-
-            });
+            $this->container->singleton(
+                SessionManagerInterface::class,
+                fn() => $this->container->make(AuthSessionManager::class)
+            );
 
         }
 
         private function bindAuthSessionManager()
         {
 
-            $this->container->singleton(AuthSessionManager::class, function () {
-
-                return new AuthSessionManager(
+            $this->container->singleton(
+                AuthSessionManager::class,
+                fn() => new AuthSessionManager(
                     $this->container->make(SessionManager::class),
                     $this->container->make(SessionDriver::class),
                     $this->config->get('auth')
-                );
-
-            });
+                ));
         }
 
         private function bindLoginViewResponse()
@@ -277,9 +268,9 @@
 
             $pipeline = $this->config->get('auth.through', []);
 
-            if ( ! count($pipeline) ) {
+            if ( ! count($pipeline)) {
 
-                $primary = ( $this->config->get('auth.authenticator') === 'email' )
+                $primary = ($this->config->get('auth.authenticator') === 'email')
                     ? MagicLinkAuthenticator::class
                     : PasswordAuthenticator::class;
 
@@ -289,7 +280,7 @@
 
                     $two_factor ? TwoFactorAuthenticator::class : null,
                     $two_factor ? RedirectIf2FaAuthenticable::class : null,
-                    $primary
+                    $primary,
 
                 ])));
 
@@ -300,36 +291,35 @@
 
         private function bindLoginResponse()
         {
-            $this->container->singleton(LoginResponse::class, function () {
 
-                return $this->container->make(RedirectToDashboardResponse::class);
-
-            });
+            $this->container->singleton(
+                LoginResponse::class,
+                fn() => $this->container->make(RedirectToDashboardResponse::class)
+            );
         }
 
         private function bindTwoFactorProvider()
         {
-            $this->container->singleton(TwoFactorAuthenticationProvider::class, function () {
 
-                return $this->container->make(Google2FaAuthenticationProvider::class);
-
-            });
+            $this->container->singleton(
+                TwoFactorAuthenticationProvider::class,
+                fn() => $this->container->make(Google2FaAuthenticationProvider::class)
+            );
         }
 
         private function bindTwoFactorChallengeResponse()
         {
 
-            $this->container->singleton(TwoFactorChallengeResponse::class, function () {
-
-                return $this->container->make(Google2FaChallengeResponse::class);
-
-            });
+            $this->container->singleton(TwoFactorChallengeResponse::class,
+                fn() => $this->container->make(Google2FaChallengeResponse::class)
+            );
 
         }
 
         private function bindRegistrationViewResponse()
         {
-             $this->container->singleton(RegistrationViewResponse::class, function () {
+
+            $this->container->singleton(RegistrationViewResponse::class, function () {
 
                 return $this->container->make(EmailRegistrationViewResponse::class);
 
@@ -338,9 +328,10 @@
 
         private function bindAuthConfirmation()
         {
+
             $this->container->singleton(AuthConfirmation::class, function () {
 
-                if ( $this->config->get('auth.features.2fa') ) {
+                if ($this->config->get('auth.features.2fa')) {
 
                     return new TwoFactorAuthConfirmation(
                         $this->container->make(EmailAuthConfirmation::class),

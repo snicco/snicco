@@ -8,12 +8,10 @@
 
 	use Contracts\ContainerAdapter;
 
+    trait HasContainer {
 
-	trait HasContainer {
 
-
-		/** @var ContainerAdapter|null */
-		private $container_adapter;
+		private ?ContainerAdapter $container_adapter;
 
 
 		public function container() : ?ContainerAdapter {
@@ -30,6 +28,7 @@
 
 		/**
 		 * Resolve a dependency from the IoC container.
+         * Keys can be registered aliases.
 		 *
 		 * @param  string  $key
 		 *
@@ -40,7 +39,6 @@
 			return $this->container_adapter[ $key ];
 
 		}
-
 
 
 	}

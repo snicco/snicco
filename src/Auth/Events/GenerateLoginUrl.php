@@ -12,15 +12,9 @@
     class GenerateLoginUrl extends Event {
 
 
-        /**
-         * @var string
-         */
-        public $redirect_to;
+        public string $redirect_to;
 
-        /**
-         * @var bool
-         */
-        public $force_reauth;
+        public bool $force_reauth;
 
         public function __construct(string $url, string $redirect_to = null, bool $force_reauth = false  )
         {

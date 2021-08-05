@@ -7,10 +7,10 @@
     namespace Snicco\Testing;
 
     use Closure;
+    use PHPUnit\Framework\Assert as PHPUnit;
     use Snicco\Application\Application;
     use Snicco\Contracts\ViewInterface;
     use Snicco\Http\Psr7\Response;
-    use PHPUnit\Framework\Assert as PHPUnit;
     use Snicco\Http\Responses\NullResponse;
     use Snicco\Routing\UrlGenerator;
     use Snicco\Session\Session;
@@ -293,7 +293,7 @@
 
         }
 
-        public function assertRedirectToRoute(string $route_name, int $status_code = null) : TestResponse
+        public function assertRedirectToRoute(string $route, int $status_code = null) : TestResponse
         {
 
             /** @var UrlGenerator $url */
@@ -302,9 +302,9 @@
             $this->assertRedirect();
 
             PHPUnit::assertSame(
-                $expected = $url->toRoute($route_name),
+                $expected = $url->toRoute($route),
                 $actual = $this->psr_response->getHeaderLine('Location'),
-                "The url for the route [$route_name] is [$expected]. Redirected to [$actual]. "
+                "The url for the route [$route] is [$expected]. Redirected to [$actual]. "
             );
 
             if ($status_code) {

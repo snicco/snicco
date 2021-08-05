@@ -9,15 +9,11 @@
     use Snicco\Auth\Contracts\LoginResponse;
     use Snicco\Contracts\AbstractRedirector;
     use Snicco\Http\Responses\RedirectResponse;
-    use Snicco\Session\StatefulRedirector;
 
     class RedirectToDashboardResponse extends LoginResponse
     {
 
-        /**
-         * @var StatefulRedirector
-         */
-        private $redirector;
+        private AbstractRedirector $redirector;
 
         public function __construct(AbstractRedirector $redirector)
         {

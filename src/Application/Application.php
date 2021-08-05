@@ -43,22 +43,13 @@
 
         ];
 
-        private $bootstrapped = false;
+        private bool $bootstrapped = false;
 
-        /**
-         * @var Config
-         */
-        private $config;
+        private Config $config;
 
-        /**
-         * @var bool
-         */
-        private $running_unit_test = false;
+        private bool $running_unit_test = false;
 
-        /**
-         * @var string
-         */
-        private $base_path;
+        private string $base_path;
 
         public function __construct(ContainerAdapter $container)
         {
@@ -72,9 +63,7 @@
 
         public static function generateKey() : string
         {
-
             return 'base64:'.base64_encode(random_bytes(32));
-
         }
 
         public static function create(string $base_path, ContainerAdapter $container_adapter) : Application
@@ -134,6 +123,7 @@
 
         public function distPath(string $path = '') : string
         {
+
             $ds = DIRECTORY_SEPARATOR;
             $dist = $this->config('app.dist');
             $base = $this->basePath();

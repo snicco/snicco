@@ -18,7 +18,7 @@
     class RouteActionFactory extends AbstractFactory
     {
 
-        public function create($raw_handler, $route_namespace)
+        public function create($raw_handler, $routespace)
         {
 
             if ($this->isClosure($raw_handler)) {
@@ -27,10 +27,10 @@
 
             }
 
-            if ( ! Reflector::isCallable($raw_handler) && ! empty($route_namespace)) {
+            if ( ! Reflector::isCallable($raw_handler) && ! empty($routespace)) {
 
                 return $this->createUsing(
-                    $route_namespace.'\\'.$raw_handler
+                    $routespace.'\\'.$raw_handler
                 );
 
             }

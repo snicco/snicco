@@ -7,10 +7,6 @@
     namespace Tests;
 
     use Psr\Http\Message\ResponseInterface;
-    use Tests\helpers\AssertsResponse;
-    use Tests\helpers\CreateRouteCollection;
-    use Tests\helpers\CreateUrlGenerator;
-    use Tests\stubs\TestRequest;
     use Snicco\Contracts\Middleware;
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Request;
@@ -19,8 +15,12 @@
     use Snicco\Routing\UrlGenerator;
     use Snicco\Session\Drivers\ArraySessionDriver;
     use Snicco\Session\Session;
+    use Tests\helpers\AssertsResponse;
+    use Tests\helpers\CreateRouteCollection;
+    use Tests\helpers\CreateUrlGenerator;
+    use Tests\stubs\TestRequest;
 
-   abstract class MiddlewareTestCase extends UnitTest
+    abstract class MiddlewareTestCase extends UnitTest
     {
 
         use AssertsResponse;
@@ -43,11 +43,9 @@
          */
         protected $response_factory;
 
-        /** @var UrlGenerator */
-        protected $generator;
+        protected UrlGenerator $generator;
 
-        /** @var RouteCollection */
-        protected $routes;
+        protected RouteCollection $routes;
 
         /** @return Middleware */
         abstract public function newMiddleware ();

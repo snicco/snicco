@@ -6,17 +6,12 @@
 
     namespace Snicco\Application;
 
-    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
     use Snicco\Contracts\ServiceProvider;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
     trait LoadsServiceProviders
     {
 
-        /**
-         *
-         * Register and bootstrap all service providers.
-         *
-         */
         public function loadServiceProviders() : void
         {
 
@@ -24,17 +19,15 @@
 
             $providers = collect(self::CORE_SERVICE_PROVIDERS)->merge($user_providers);
 
-            $providers->each([$this, 'isValid'])
-                      ->map([$this, 'instantiate'])
-                      ->each([$this, 'register'])
-                      ->each([$this, 'bootstrap']);
+            $providers->each(fn($provider) => $this->isValid($provider))
+                      ->map(fn($provider) => $this->instantiate($provider))
+                      ->each(fn($provider) => $this->register($provider))
+                      ->each(fn($provider) => $this->bootstrap($provider));
 
 
         }
 
         /**
-         * @param  string  $provider
-         *
          * @throws ConfigurationException
          */
         private function isValid(string $provider)
@@ -49,11 +42,6 @@
 
         }
 
-        /**
-         * @param  string  $provider
-         *
-         * @return ServiceProvider
-         */
         private function instantiate(string $provider) : ServiceProvider
         {
 

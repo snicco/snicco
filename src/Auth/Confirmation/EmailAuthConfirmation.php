@@ -6,40 +6,23 @@
 
     namespace Snicco\Auth\Confirmation;
 
-    use Illuminate\Support\InteractsWithTime;
     use Snicco\Auth\Contracts\AuthConfirmation;
-    use Snicco\Auth\Mail\ConfirmAuthMail;
     use Snicco\Contracts\MagicLink;
-    use Snicco\Routing\UrlGenerator;
-    use Snicco\Support\WP;
     use Snicco\Http\Psr7\Request;
-    use Snicco\Http\Psr7\Response;
-    use Snicco\Http\ResponseFactory;
-    use Snicco\Mail\MailBuilder;
-    use Snicco\Session\Session;
+    use Snicco\Routing\UrlGenerator;
     use Snicco\View\ViewFactory;
 
     class EmailAuthConfirmation implements AuthConfirmation
     {
 
-        /**
-         * @var ViewFactory
-         */
-        private $view_factory;
+        private ViewFactory $view_factory;
 
-        /**
-         * @var MagicLink
-         */
-        private $magic_link;
+        private MagicLink $magic_link;
 
-        /**
-         * @var UrlGenerator
-         */
-        private $url;
+        private UrlGenerator $url;
 
         public function __construct(MagicLink $magic_link, ViewFactory $view_factory, UrlGenerator $url)
         {
-
             $this->magic_link = $magic_link;
             $this->view_factory = $view_factory;
             $this->url = $url;

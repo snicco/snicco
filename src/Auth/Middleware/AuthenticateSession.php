@@ -10,7 +10,6 @@
     use Snicco\Auth\AuthSessionManager;
     use Snicco\Auth\Events\Logout;
     use Snicco\Auth\Responses\LogoutResponse;
-    use Snicco\Auth\WpAuthSessionToken;
     use Snicco\Contracts\Middleware;
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Request;
@@ -19,19 +18,11 @@
     class AuthenticateSession extends Middleware
     {
 
-        /**
-         * @var AuthSessionManager
-         */
-        private $manager;
-
-        /**
-         * @var array
-         */
-        private $forget_keys_on_idle;
+        private AuthSessionManager $manager;
+        protected $forget_keys_on_idle;
 
         public function __construct(AuthSessionManager $manager, $forget_on_idle = [])
         {
-
             $this->manager = $manager;
             $this->forget_keys_on_idle = $forget_on_idle;
         }
@@ -41,9 +32,9 @@
 
             $session = $request->session();
 
-            // If persistent login via cookies is enabled a we cant invalidate an idle session
+            // If persistent login via cookies is enabled we can't invalidate an idle session
             // because this would log the user out.
-            // Instead we just empty out the session which will also trigger every auth confirmation middleware again.
+            // Instead, we just empty out the session which will also trigger every auth confirmation middleware again.
             if ($session->isIdle($this->manager->idleTimeout())) {
 
                 $session->forget('auth.confirm');

@@ -6,9 +6,11 @@
 
     namespace Snicco\Application;
 
+    use Closure;
     use Contracts\ContainerAdapter;
     use LogicException;
     use Snicco\Contracts\AbstractRedirector;
+    use Snicco\Contracts\ViewInterface;
     use Snicco\Http\Cookies;
     use Snicco\Http\ResponseFactory;
     use Snicco\Http\Responses\RedirectResponse;
@@ -16,7 +18,6 @@
     use Snicco\Routing\Route;
     use Snicco\Routing\Router;
     use Snicco\Routing\UrlGenerator;
-    use Snicco\Contracts\ViewInterface;
     use Snicco\Session\CsrfField;
     use Snicco\Session\Session;
     use Snicco\View\GlobalContext;
@@ -38,7 +39,7 @@
          *
          * Resolve an item from the applications config.
          *
-         * @param  string  $key
+         * @param  string|null  $key
          * @param  mixed  $default
          *
          * @return mixed|Config
@@ -248,7 +249,7 @@
          * Add a new view composer to the given views
          *
          * @param  string|string[]  $views
-         * @param  string|array|callable|\Closure  $callable
+         * @param  string|array|callable|Closure  $callable
          *
          * @return void
          * @see \Snicco\View\ViewComposerCollection::addComposer()
@@ -294,7 +295,7 @@
          *
          * @see UrlGenerator::toRoute()
          */
-        public static function routeUrl(string $route_name, array $arguments = [], bool $secure = true, bool $absolute = true) : string
+        public static function routeUrl(string $route, array $arguments = [], bool $secure = true, bool $absolute = true) : string
         {
         }
 

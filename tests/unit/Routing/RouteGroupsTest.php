@@ -8,19 +8,16 @@
 
     use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\helpers\CreateDefaultWpApiMocks;
-    use Tests\helpers\CreateTestSubjects;
-    use Tests\UnitTest;
+    use Snicco\Events\Event;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\Router;
+    use Snicco\Support\WP;
     use Tests\fixtures\Conditions\FalseCondition;
     use Tests\fixtures\Conditions\TrueCondition;
     use Tests\fixtures\Conditions\UniqueCondition;
-    use Tests\fixtures\Middleware\BarMiddleware;
-    use Tests\fixtures\Middleware\BazMiddleware;
-    use Tests\fixtures\Middleware\FooMiddleware;
-    use Snicco\Events\Event;
-    use Snicco\Support\WP;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Routing\Router;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateTestSubjects;
+    use Tests\UnitTest;
 
     class RouteGroupsTest extends UnitTest
     {
@@ -419,7 +416,7 @@
         }
 
         /** @test */
-        public function the_route_namespace_is_always_overwritten_by_child_routes()
+        public function the_routespace_is_always_overwritten_by_child_routes()
         {
 
             /** @todo decide if its desired to overwritte the route namespace. */

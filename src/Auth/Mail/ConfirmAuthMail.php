@@ -6,20 +6,16 @@
 
     namespace Snicco\Auth\Mail;
 
-    use WP_User;
     use Snicco\Mail\Mailable;
     use Snicco\Routing\UrlGenerator;
-    use Snicco\Session\Session;
+    use WP_User;
 
     class ConfirmAuthMail extends Mailable
     {
 
-        /**
-         * @var WP_User
-         */
-        public $user;
+        public WP_User $user;
 
-        public $lifetime;
+        public int $lifetime;
 
         public function __construct(WP_User $user, int $link_lifetime_in_sec )
         {

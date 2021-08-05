@@ -8,28 +8,17 @@
 
     use Snicco\Application\Config;
     use Snicco\Auth\Contracts\LoginViewResponse;
-    use Snicco\Support\WP;
     use Snicco\Routing\UrlGenerator;
+    use Snicco\Support\WP;
     use Snicco\View\ViewFactory;
 
     class MagicLinkLoginView extends LoginViewResponse
     {
 
-        private $view = 'auth-login-via-email';
-
-        /**
-         * @var UrlGenerator
-         */
-        private $url;
-
-        /**
-         * @var ViewFactory
-         */
-        private $view_factory;
-        /**
-         * @var Config
-         */
-        private $config;
+        private string $view = 'auth-login-via-email';
+        private UrlGenerator $url;
+        private ViewFactory $view_factory;
+        private Config $config;
 
         public function __construct(ViewFactory $view, UrlGenerator $url, Config $config)
         {

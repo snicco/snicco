@@ -6,26 +6,18 @@
 
     namespace Snicco\Auth\Mail;
 
-    use WP_User;
-    use Snicco\Support\WP;
     use Snicco\Mail\Mailable;
+    use Snicco\Support\WP;
+    use WP_User;
 
     class MagicLinkLoginMail extends Mailable
     {
 
-        /** @var WP_User */
-        public $user;
-
-        public $site_name;
-
-        public $magic_link;
-
-        public $expires;
-
-        /**
-         * @var int
-         */
-        public $expiration;
+        public WP_User $user;
+        public string  $site_name;
+        public string $magic_link;
+        // public int $expires;
+        public int $expiration;
 
         public function __construct(WP_User $user, string $magic_link, int $expiration)
         {
@@ -33,7 +25,6 @@
             $this->expiration = $expiration;
             $this->user = $user;
             $this->site_name = WP::siteName();
-
         }
 
         public function unique() : bool

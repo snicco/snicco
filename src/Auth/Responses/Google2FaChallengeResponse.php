@@ -12,10 +12,7 @@
     class Google2FaChallengeResponse extends TwoFactorChallengeResponse
     {
 
-        /**
-         * @var ResponseFactory
-         */
-        private $response_factory;
+        private ResponseFactory $response_factory;
 
         public function __construct(ResponseFactory $response_factory)
         {

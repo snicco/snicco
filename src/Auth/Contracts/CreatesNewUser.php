@@ -18,7 +18,7 @@
          *
          * @param  Request  $request
          *
-         * @return int The new users id.
+         * @return int The new users' id.
          */
         public function create(Request $request) :int;
 

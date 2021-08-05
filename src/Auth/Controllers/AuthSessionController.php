@@ -7,16 +7,14 @@
     namespace Snicco\Auth\Controllers;
 
     use Closure;
-    use WP_User;
-    use Snicco\Auth\Events\Login;
     use Snicco\Auth\Contracts\LoginResponse;
+    use Snicco\Auth\Contracts\LoginViewResponse;
+    use Snicco\Auth\Events\Login;
+    use Snicco\Auth\Exceptions\FailedAuthenticationException;
     use Snicco\Auth\Responses\LogoutResponse;
     use Snicco\Auth\Responses\SuccessfulLoginResponse;
-    use Snicco\Auth\Contracts\LoginViewResponse;
     use Snicco\Contracts\ResponsableInterface;
-    use Snicco\Auth\Exceptions\FailedAuthenticationException;
     use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
-    use Snicco\Support\WP;
     use Snicco\Http\Controller;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Psr7\Response;
@@ -24,14 +22,13 @@
     use Snicco\Session\Session;
     use Snicco\Support\Arr;
     use Snicco\Support\Url;
+    use Snicco\Support\WP;
+    use WP_User;
 
     class AuthSessionController extends Controller
     {
 
-        /**
-         * @var array
-         */
-        private $auth_config;
+        private array $auth_config;
 
         public function __construct(array $auth_config)
         {
@@ -52,7 +49,7 @@
                 $this->parseRedirect($request)
             );
 
-            return $view_response->withRequest($request)
+            return $view_response->forRequest($request)
                                  ->withAuthConfig($this->auth_config);
 
         }
@@ -148,7 +145,7 @@
 
             // redirect_to will be urldecoded which means that we can not be sure that a potential
             // query string will still be urlencoded correctly.
-            // Since we have no control over where plugins and core call wp_login_url() its best to rebuild the query.
+            // Since we have no control over where plugins and core call wp_login_url() it's best to rebuild the query.
             $parts = parse_url($redirect_to);
 
             if ( isset($parts['query'])) {

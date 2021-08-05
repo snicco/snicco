@@ -9,36 +9,21 @@
     use Illuminate\Support\InteractsWithTime;
     use Snicco\Http\Cookie;
     use Snicco\Http\Psr7\Request;
-    use Snicco\Session\Session;
     use Snicco\Session\Contracts\SessionDriver;
-    use Snicco\Session\SessionManager;
     use Snicco\Session\Contracts\SessionManagerInterface;
+    use Snicco\Session\Session;
+    use Snicco\Session\SessionManager;
     use Snicco\Support\Arr;
-    use Snicco\Traits\HasLottery;
 
     class AuthSessionManager implements SessionManagerInterface
     {
 
         use InteractsWithTime;
 
-        /**
-         * @var SessionManager
-         */
-        private $manager;
-
-        /** @var Session|null */
-        private $active_session;
-
-        /**
-         * @var  SessionDriver
-         */
-        private $driver;
-
-        /**
-         * @var array
-         */
-        private $auth_config;
-
+        private SessionManager $manager;
+        private ?Session       $active_session = null;
+        private SessionDriver  $driver;
+        private array          $auth_config;
         /** @var callable|null */
         private $idle_resolver;
 
@@ -78,6 +63,7 @@
 
         public function save()
         {
+
             $this->manager->save();
         }
 
@@ -93,16 +79,8 @@
             $sessions = $this->active_session->getAllForUser();
 
             return collect($sessions)
-                ->flatMap(function (object $session) {
-
-                    return [$session->id => $session->payload];
-
-                })
-                ->filter(function (array $payload) {
-
-                    return $this->valid($payload);
-
-                })
+                ->flatMap(fn(object $session) => [$session->id => $session->payload])
+                ->filter(fn(array $payload) => $this->valid($payload))
                 ->all();
 
         }

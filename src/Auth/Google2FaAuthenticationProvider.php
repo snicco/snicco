@@ -26,13 +26,10 @@
         use ResolvesUser;
 
         /**
-         * The underlying library providing two factor authentication helper services.
-         *
-         * @var Google2FA
+         * The underlying library providing two-factor authentication helper services.
          */
-        private $engine;
-
-        private $encryptor;
+        private Google2FA $engine;
+        private EncryptorInterface $encryptor;
 
         public function __construct(Google2FA $engine, EncryptorInterface $encryptor)
         {

@@ -6,29 +6,21 @@
 
     namespace Snicco\Auth\Mail;
 
-    use Snicco\Support\WP;
     use Snicco\Mail\Mailable;
-    use Snicco\Routing\UrlGenerator;
+    use Snicco\Support\WP;
+    use WP_User;
 
     class ResetPasswordMail extends Mailable
     {
 
-        /**
-         * @var \WP_User
-         */
-        public $user;
+        public WP_User $user;
+        public string  $site_name;
+        public string  $magic_link;
+        public int $expires;
 
-        public $site_name;
-
-        /**
-         * @var string
-         */
-        public  $magic_link;
-
-        public $expires;
-
-        public function __construct(\WP_User $user, string $magic_link, $expires)
+        public function __construct(WP_User $user, string $magic_link, $expires)
         {
+
             $this->user = $user;
             $this->site_name = WP::siteName();
             $this->magic_link = $magic_link;
@@ -37,6 +29,7 @@
 
         public function unique() : bool
         {
+
             return true;
         }
 
@@ -44,11 +37,10 @@
         {
 
             return $this
-                ->subject($title = sprintf( __( '[%s] Password Reset' ), WP::siteName() ) )
+                ->subject($title = sprintf(__('[%s] Password Reset'), WP::siteName()))
                 ->view('password-forgot-email');
 
         }
-
 
 
     }

@@ -11,10 +11,7 @@
     class GenerateLogoutUrl extends Event
     {
 
-        /**
-         * @var string
-         */
-        public $redirect_to;
+        public string $redirect_to;
 
         public function __construct(string $url, string $redirect_to = '/')
         {
