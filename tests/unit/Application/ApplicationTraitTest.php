@@ -6,18 +6,15 @@
 
 	namespace Tests\unit\Application;
 
-	use PHPUnit\Framework\TestCase;
 	use BadMethodCallException;
-	use Snicco\Application\ApplicationTrait;
-	use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use PHPUnit\Framework\TestCase;
+    use Snicco\Application\ApplicationTrait;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
-	class ApplicationTraitTest extends TestCase {
+    class ApplicationTraitTest extends TestCase {
 
 
-        /**
-         * @var string
-         */
-        private $base_path;
+        private string $base_path;
 
         protected function setUp() : void
         {
@@ -86,10 +83,7 @@
 		public function static_method_calls_get_forwarded_to_the_application_with() {
 
 			FooApp::make($this->base_path);
-			FooApp::alias( 'application_method', function ( $foo, $bar, $baz ) {
-
-				return $foo . $bar . $baz;
-			} );
+			FooApp::alias( 'application_method', fn( $foo, $bar, $baz ) => $foo . $bar . $baz);
 
 			$this->assertSame( 'foobarbaz', FooApp::application_method( 'foo', 'bar', 'baz' ) );
 

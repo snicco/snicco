@@ -38,15 +38,8 @@
         use CreateRouteCollection;
         use CreateDefaultWpApiMocks;
 
-        /**
-         * @var ContainerAdapter
-         */
-        private $container;
-
-        /**
-         * @var Request
-         */
-        private $request;
+        private ContainerAdapter $container;
+        private Request $request;
 
         protected function beforeTestRun()
         {

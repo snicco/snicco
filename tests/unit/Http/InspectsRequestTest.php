@@ -8,7 +8,6 @@
 
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use Snicco\Http\Psr7\Request;
 
     class InspectsRequestTest extends UnitTest
     {

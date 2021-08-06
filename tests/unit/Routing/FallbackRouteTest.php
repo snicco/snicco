@@ -6,24 +6,22 @@
 
     namespace Tests\unit\Routing;
 
+    use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\fixtures\Conditions\IsPost;
-    use Tests\helpers\CreateRouteCollection;
-    use Tests\helpers\CreateUrlGenerator;
-    use Tests\stubs\HeaderStack;
-    use Tests\stubs\TestRequest;
-    use Tests\helpers\CreateDefaultWpApiMocks;
-    use Tests\helpers\CreateTestSubjects;
-    use Tests\stubs\TestViewFactory;
-    use Tests\UnitTest;
     use Snicco\Events\Event;
-    use Snicco\Contracts\ViewFactoryInterface;
-    use Snicco\Support\WP;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\ResponseFactory;
     use Snicco\Routing\Router;
     use Snicco\Routing\UrlGenerator;
+    use Snicco\Support\WP;
     use Snicco\View\ViewFactory;
+    use Tests\fixtures\Conditions\IsPost;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateRouteCollection;
+    use Tests\helpers\CreateTestSubjects;
+    use Tests\helpers\CreateUrlGenerator;
+    use Tests\stubs\TestViewFactory;
+    use Tests\UnitTest;
 
     class FallbackRouteTest extends UnitTest
     {
@@ -33,10 +31,8 @@
         use CreateUrlGenerator;
         use CreateRouteCollection;
 
-        /** @var Router */
-        private $router;
-
-        private $container;
+        private Router $router;
+        private ContainerAdapter $container;
 
         protected function beforeTestRun()
         {

@@ -67,11 +67,7 @@
 
             $this->createRoutes(function () {
 
-                $this->router->get('foo')->handle(function () {
-
-                    return 'foo';
-
-                });
+                $this->router->get('foo')->handle(fn() => 'foo');
 
             });
 
@@ -89,11 +85,7 @@
 
             $this->createRoutes(function () {
 
-                $this->router->get('/foo', function () {
-
-                    return 'foo';
-
-                });
+                $this->router->get('/foo', fn() => 'foo');
 
             });
 
@@ -110,11 +102,7 @@
 
             $this->createRoutes(function () {
 
-                $this->router->get('/foo', function () {
-
-                    return 'foo';
-
-                });
+                $this->router->get('/foo', fn() => 'foo');
 
             });
 
@@ -133,11 +121,7 @@
 
             $this->createRoutes(function () {
 
-                $this->router->get('/foo', function () {
-
-                    return 1;
-
-                });
+                $this->router->get('/foo', fn() => 1);
 
             });
 
@@ -154,11 +138,7 @@
 
             $this->createRoutes(function () {
 
-                $this->router->get('/bar', function () {
-
-                    return 'bar';
-
-                });
+                $this->router->get('/bar', fn() => 'bar');
 
             });
 

@@ -17,11 +17,7 @@
 
 	    use CreateContainer;
 
-		/**
-		 * @var RouteActionFactory
-		 */
-		private $factory;
-
+		private RouteActionFactory $factory;
 
 		protected function setUp() : void {
 

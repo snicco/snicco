@@ -6,15 +6,15 @@
 
     namespace Tests\unit\Middleware;
 
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Middleware\NoRobots;
     use Tests\helpers\AssertsResponse;
     use Tests\helpers\CreatePsr17Factories;
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use Snicco\Http\Delegate;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Middleware\NoRobots;
 
     class NoRobotsTest extends UnitTest
     {
@@ -24,15 +24,8 @@
         use CreateRouteCollection;
         use AssertsResponse;
 
-        /**
-         * @var Request
-         */
-        private $request;
-
-        /**
-         * @var Delegate
-         */
-        private $route_action;
+        private Request $request;
+        private Delegate $route_action;
 
         protected function setUp() : void
         {
@@ -40,13 +33,7 @@
             parent::setUp();
             $this->request = TestRequest::from('GET', 'foo');
             $f = $this->createResponseFactory();
-            $this->route_action = new Delegate(function () use ($f) {
-
-                return $f->make();
-
-
-            });
-
+            $this->route_action = new Delegate(fn() => $f->make());
 
         }
 

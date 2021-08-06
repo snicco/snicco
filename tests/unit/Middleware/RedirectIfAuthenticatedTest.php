@@ -7,19 +7,18 @@
 	namespace Tests\unit\Middleware;
 
 	use Mockery;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Middleware\RedirectIfAuthenticated;
+    use Snicco\Routing\Route;
+    use Snicco\Support\WP;
+    use Tests\helpers\AssertsResponse;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
+    use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-	use Tests\stubs\TestRequest;
-    use Tests\helpers\AssertsResponse;
-    use Snicco\Support\WP;
-    use Snicco\Http\Delegate;
-    use Snicco\Http\ResponseFactory;
-    use Snicco\Middleware\Authenticate;
-	use Snicco\Http\Responses\RedirectResponse;
-    use Snicco\Middleware\RedirectIfAuthenticated;
-    use Snicco\Routing\Route;
 
     class RedirectIfAuthenticatedTest extends UnitTest {
 
@@ -28,36 +27,17 @@
         use CreateRouteCollection;
         use CreateDefaultWpApiMocks;
 
-        /**
-         * @var Authenticate
-         */
-        private $middleware;
-
-        /**
-         * @var Delegate
-         */
-        private $route_action;
-
-        /**
-         * @var TestRequest
-         */
-        private $request;
-
-        /**
-         * @var ResponseFactory
-         */
-        private $response;
+        private RedirectIfAuthenticated $middleware;
+        private Delegate $route_action;
+        private TestRequest $request;
+        private ResponseFactory $response;
 
 
         protected function beforeTestRun()
         {
 
             $response = $this->createResponseFactory();
-            $this->route_action = new Delegate(function () use ($response) {
-
-                return $response->html('FOO');
-
-            });
+            $this->route_action = new Delegate(fn() => $response->html('FOO'));
             $this->response = $response;
             $this->request = TestRequest::from('GET', '/foo');
             WP::shouldReceive('homeUrl')->andReturn('https://foobar.com')->byDefault();

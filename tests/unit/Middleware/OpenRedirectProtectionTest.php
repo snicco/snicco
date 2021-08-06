@@ -32,15 +32,8 @@
         use AssertsResponse;
         use CreateDefaultWpApiMocks;
 
-        /**
-         * @var ResponseFactory
-         */
-        private $response_factory;
-
-        /**
-         * @var Delegate
-         */
-        private $delegate;
+        private ResponseFactory $response_factory;
+        private Delegate $delegate;
 
         protected function setUp() : void
         {
@@ -68,11 +61,7 @@
             $this->routes->add($route);
 
             $this->response_factory = $this->createResponseFactory();
-
-            $this->delegate = new Delegate(function () {
-
-                return $this->response_factory->make(200);
-            });
+            $this->delegate = new Delegate(fn() => $this->response_factory->make(200));
 
             $m = new OpenRedirectProtection(SITE_URL, $whitelist);
             $m->setResponseFactory($this->response_factory);

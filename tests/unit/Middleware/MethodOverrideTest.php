@@ -6,20 +6,18 @@
 
     namespace Tests\unit\Middleware;
 
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Middleware\Authenticate;
+    use Snicco\Middleware\Core\MethodOverride;
+    use Snicco\Support\Str;
+    use Snicco\View\MethodField;
     use Tests\helpers\AssertsResponse;
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use Snicco\Support\Str;
-    use Snicco\View\MethodField;
-    use Snicco\Support\WP;
-    use Snicco\Http\Delegate;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Http\ResponseFactory;
-    use Snicco\Middleware\Authenticate;
-    use Snicco\Middleware\Authorize;
-    use Snicco\Middleware\Core\MethodOverride;
 
     class MethodOverrideTest extends UnitTest
     {
@@ -28,40 +26,17 @@
         use CreateUrlGenerator;
         use CreateRouteCollection;
 
-        /**
-         * @var Authenticate
-         */
-        private $middleware;
-
-        /**
-         * @var Delegate
-         */
-        private $route_action;
-
-        /**
-         * @var TestRequest
-         */
-        private $request;
-
-        /**
-         * @var ResponseFactory
-         */
-        private $response;
-
-        /**
-         * @var \Snicco\View\MethodField
-         */
-        private $method_field;
+        private Authenticate $middleware;
+        private Delegate $route_action;
+        private TestRequest $request;
+        private ResponseFactory $response;
+        private MethodField $method_field;
 
         protected function beforeTestRun()
         {
 
             $response = $this->createResponseFactory();
-            $this->route_action = new Delegate(function (Request $request) use ($response) {
-
-                return $response->html($request->getMethod());
-
-            });
+            $this->route_action = new Delegate(fn(Request $request) => $response->html($request->getMethod()));
 
             $this->method_field = new MethodField(TEST_APP_KEY);
 
@@ -74,7 +49,8 @@
 
         }
 
-        private function getRealValue(string $html ) {
+        private function getRealValue(string $html ) : string
+        {
             return Str::between($html, "value='", "'>");
         }
 

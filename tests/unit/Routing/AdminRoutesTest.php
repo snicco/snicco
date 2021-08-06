@@ -6,19 +6,18 @@
 
     namespace Tests\unit\Routing;
 
+    use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\helpers\CreateDefaultWpApiMocks;
-    use Tests\helpers\CreateTestSubjects;
-    use Tests\helpers\CreateUrlGenerator;
-    use Tests\UnitTest;
-    use Tests\helpers\CreatesWpUrls;
     use Snicco\Events\Event;
     use Snicco\Events\IncomingAdminRequest;
     use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\Router;
     use Snicco\Support\WP;
-    use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
-    use Snicco\Routing\UrlGenerator;
-
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreatesWpUrls;
+    use Tests\helpers\CreateTestSubjects;
+    use Tests\helpers\CreateUrlGenerator;
+    use Tests\UnitTest;
 
     class AdminRoutesTest extends UnitTest
     {
@@ -28,9 +27,8 @@
         use CreateDefaultWpApiMocks;
         use CreateUrlGenerator;
 
-        private $router;
-
-        private $container;
+        private Router $router;
+        private ContainerAdapter $container;
 
         protected function beforeTestRun()
         {
@@ -52,7 +50,6 @@
             WP::reset();
 
         }
-
 
         /** @test */
         public function routes_in_an_admin_group_match_without_needing_to_specify_the_full_path()

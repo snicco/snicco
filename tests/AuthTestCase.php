@@ -16,29 +16,16 @@
     use Snicco\Session\SessionManager;
     use Snicco\Session\SessionServiceProvider;
     use Snicco\Validation\ValidationServiceProvider;
-
+    use WP_User;
 
     class AuthTestCase extends TestCase
     {
 
-        /**
-         * @var AuthSessionManager
-         */
-        protected $session_manager;
-
-        /**
-         * @var array
-         */
-        protected $codes;
-
-        /**
-         * @var Encryptor
-         */
-        protected $encryptor;
-
-        protected $valid_one_time_code = '123456';
-
-        protected $invalid_one_time_code = '111111';
+        protected AuthSessionManager $session_manager;
+        protected array $codes;
+        protected Encryptor $encryptor;
+        protected string $valid_one_time_code = '123456';
+        protected string $invalid_one_time_code = '111111';
 
         public function packageProviders() : array
         {
@@ -67,12 +54,11 @@
 
         protected function tearDown() : void
         {
-
             $this->logout();
             parent::tearDown();
         }
 
-        protected function without2Fa()
+        protected function without2Fa() :self
         {
 
             $this->withReplacedConfig('auth.features.2fa', false);
@@ -80,7 +66,7 @@
             return $this;
         }
 
-        protected function with2Fa()
+        protected function with2Fa() :self
         {
 
             $this->withReplacedConfig('auth.features.2fa', true);
@@ -106,7 +92,7 @@
 
         }
 
-        protected function getUserRecoveryCodes(\WP_User $user) {
+        protected function getUserRecoveryCodes(WP_User $user) {
 
             $codes = get_user_meta($user->ID, 'two_factor_recovery_codes', true);
 
@@ -114,19 +100,16 @@
                 return $codes;
             }
 
-            $codes = json_decode($this->encryptor->decrypt($codes), true);
-            return $codes;
+            return json_decode($this->encryptor->decrypt($codes), true);
         }
 
-        protected function getUserSecret(\WP_User $user) {
+        protected function getUserSecret(WP_User $user) {
 
-            $secret =  get_user_meta($user->ID, 'two_factor_secret', true);
-            return $secret;
+            return get_user_meta($user->ID, 'two_factor_secret', true);
         }
 
-        protected function authenticateAndUnconfirm(\WP_User $user)
+        protected function authenticateAndUnconfirm(WP_User $user)
         {
-
             $this->actingAs($user);
             $this->travelIntoFuture(10);
         }
