@@ -7,33 +7,18 @@
     namespace Snicco\Session\Drivers;
 
     use Illuminate\Support\InteractsWithTime;
-    use Snicco\Support\WP;
     use Snicco\Http\Psr7\Request;
     use Snicco\Session\Contracts\SessionDriver;
+    use Snicco\Support\WP;
 
     class ArraySessionDriver implements SessionDriver
     {
 
         use InteractsWithTime;
 
-        /**
-         * The array of stored values.
-         *
-         * @var array
-         */
-        private $storage = [];
-
-        /**
-         * The number of minutes the session should be valid.
-         *
-         * @var int
-         */
-        private $lifetime_in_seconds;
-
-        /**
-         * @var Request
-         */
-        private $request;
+        private array   $storage = [];
+        private int     $lifetime_in_seconds;
+        private Request $request;
 
         public function __construct(int $lifetime_in_seconds)
         {
@@ -96,7 +81,6 @@
             $this->storage[$sessionId] = [
                 'payload' => $data,
                 'time' => $this->currentTime(),
-                // 'user_id' => $this->request ? $this->request->user() : 0,
                 'user_id' => WP::userId(),
             ];
 

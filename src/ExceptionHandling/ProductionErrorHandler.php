@@ -101,7 +101,7 @@
          *
          * Override this method from a child class to create
          * your own default response for fatal errors that can not be transformed by this error
-         * handler.
+         * driver.
          *
          * @param  Throwable  $e
          * @param  Request  $request

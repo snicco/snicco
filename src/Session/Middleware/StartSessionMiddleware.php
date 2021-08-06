@@ -12,17 +12,13 @@
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Responses\InvalidResponse;
     use Snicco\Http\Responses\NullResponse;
-    use Snicco\Session\Session;
-    use Snicco\Session\SessionManager;
     use Snicco\Session\Contracts\SessionManagerInterface;
+    use Snicco\Session\Session;
 
     class StartSessionMiddleware extends Middleware
     {
 
-        /**
-         * @var SessionManager
-         */
-        private $manager;
+        private SessionManagerInterface $manager;
 
         public function __construct(SessionManagerInterface $manager)
         {

@@ -11,26 +11,25 @@
     use Snicco\Routing\ConditionBlueprint;
     use Snicco\Routing\Conditions\TrailingSlashCondition;
     use Snicco\Routing\Route;
-	use Snicco\Support\Arr;
+    use Snicco\Support\Arr;
 
-	trait SetRouteAttributes {
+    trait SetRouteAttributes
+    {
 
+        public function handle($action) : Route
+        {
 
+            $this->action = $action;
 
-        public function handle( $action ) : Route {
+            return $this;
 
-			$this->action = $action;
+        }
 
-			/** @var Route $this */
-			return $this;
-
-		}
-
-		public function namespace( string $namespace ) : Route {
+        public function namespace(string $namespace) : Route
+        {
 
 			$this->namespace = $namespace;
 
-			/** @var Route $this */
 			return $this;
 
 		}
@@ -41,8 +40,7 @@
 
 			$this->middleware = array_merge( $this->middleware ?? [], $middleware );
 
-			/** @var Route $this */
-			return $this;
+            return $this;
 
 		}
 
@@ -53,8 +51,7 @@
 
 			$this->name = isset( $this->name ) ? $this->name . '.' . $name : $name;
 
-			/** @var Route $this */
-			return $this;
+            return $this;
 
 
 		}
@@ -66,8 +63,7 @@
 				array_map( 'strtoupper', Arr::wrap( $methods ) )
 			);
 
-			/** @var Route $this */
-			return $this;
+            return $this;
 
 		}
 
@@ -77,8 +73,7 @@
 
 			$this->condition_blueprints[] = new ConditionBlueprint( $args );
 
-			/** @var Route $this */
-			return $this;
+            return $this;
 
 		}
 
@@ -86,8 +81,7 @@
 
 			$this->defaults = $defaults;
 
-			/** @var Route $this */
-			return $this;
+            return $this;
 
 		}
 
@@ -102,7 +96,6 @@
 
             $this->wp_query_filter = $callback;
 
-            /** @var Route $this */
             return $this;
 
         }
@@ -111,7 +104,6 @@
         {
             $this->handle([FallBackController::class, 'nullResponse']);
 
-            /** @var Route $this */
             return $this;
         }
 
@@ -132,7 +124,6 @@
 
             $this->regex[] = $regex_array;
 
-            /** @var Route $this */
             return $this;
 
         }
@@ -171,7 +162,6 @@
 
             $this->trailing_slash = true;
 
-            /** @var Route $this */
             return $this;
 
         }
@@ -196,13 +186,8 @@
 
             collect($segments)
                 ->flatten()
-                ->each(function ($segment) use ($pattern) {
+                ->each(fn($segment) => $this->and($segment, $pattern));
 
-                    $this->and($segment, $pattern);
-
-                });
-
-            /** @var Route $this */
             return $this;
 
         }

@@ -6,19 +6,19 @@
 
 	namespace Snicco\Routing\Conditions;
 
-	use Snicco\Contracts\ConditionInterface;
+    use Illuminate\Support\Collection;
+    use Snicco\Contracts\ConditionInterface;
     use Snicco\Http\Psr7\Request;
 
-    class QueryStringCondition implements ConditionInterface{
+    class QueryStringCondition implements ConditionInterface
+    {
 
-		/**
-		 * @var array
-		 */
-		protected $query_string_arguments;
+        protected Collection $query_string_arguments;
 
-		public function __construct($query_string_arguments) {
+        public function __construct($query_string_arguments)
+        {
 
-			$this->query_string_arguments = collect($query_string_arguments);
+            $this->query_string_arguments = collect($query_string_arguments);
 
 		}
 
@@ -40,11 +40,7 @@
 
             }
 
-            $failed_value = $this->query_string_arguments->first(function ($value, $key) use ($query_args) {
-
-                return $value !== $query_args[$key];
-
-            });
+            $failed_value = $this->query_string_arguments->first(fn($value, $key) => $value !== $query_args[$key]);
 
             return $failed_value === null;
 

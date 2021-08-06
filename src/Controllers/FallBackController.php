@@ -18,7 +18,7 @@
 
     /**
      *
-     * This class is the default route handler for ALL routes that
+     * This class is the default route driver for ALL routes that
      * do not have a URL-Constraint specified but instead rely on WordPress conditional tags.
      *
      * We can't match these routes with FastRoute so this Controller will figure out if we

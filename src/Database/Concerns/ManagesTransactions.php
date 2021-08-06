@@ -248,7 +248,7 @@
 
 
             // If we can reconnect with wpdb or if we cant start the transaction a second time,
-            // throw out the exception to the error handler.
+            // throw out the exception to the error driver.
             throw new QueryException('START TRANSACTION', [] , $e);
 
 

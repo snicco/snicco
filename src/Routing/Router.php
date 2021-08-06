@@ -27,18 +27,11 @@
         use HoldsRouteBlueprint;
 
         /** @var RouteGroup[] */
-        private $group_stack = [];
+        private array $group_stack = [];
 
-        /** @var ContainerAdapter */
-        private $container;
-
-        /** @var AbstractRouteCollection */
-        private $routes;
-
-        /**
-         * @var bool
-         */
-        private $force_trailing;
+        private ContainerAdapter        $container;
+        private AbstractRouteCollection $routes;
+        private bool                    $force_trailing;
 
         public function __construct(ContainerAdapter $container, AbstractRouteCollection $routes, bool $force_trailing = false)
         {

@@ -11,8 +11,7 @@
 		/** @var Route|array|null */
 		private $route;
 
-		/** @var array */
-		private $payload;
+		private array $payload;
 
         /**
          *

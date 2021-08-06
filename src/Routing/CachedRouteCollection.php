@@ -21,19 +21,10 @@
         use PreparesRouteForExport;
         use DeserializesRoutes;
 
-        /**
-         * @var CachedFastRouteMatcher
-         */
-        protected $route_matcher;
-
-        protected $name_list = [];
-
-        /**
-         * @var string
-         */
-        private $cache_file;
-
-        private $cached_routes = [];
+        protected CachedFastRouteMatcher $route_matcher;
+        protected array                  $name_list     = [];
+        private string                   $cache_file;
+        private array                    $cached_routes = [];
 
         public function __construct(
             CachedFastRouteMatcher $route_matcher,
@@ -154,15 +145,8 @@
         {
 
             $routes = collect($this->cached_routes[$method] ?? [])
-                ->filter(function (array $route) {
-
-                    return trim($route['url'], '/') === ROUTE::ROUTE_WILDCARD;
-
-                })
-                ->map(function (array $route) {
-
-                    return Route::hydrate($route);
-                });
+                ->filter(fn(array $route) => trim($route['url'], '/') === ROUTE::ROUTE_WILDCARD)
+                ->map(fn(array $route) => Route::hydrate($route));
 
             return $routes->all();
 
@@ -194,11 +178,7 @@
 
             $lookups = collect($this->routes)
                 ->flatten()
-                ->filter(function (Route $route) {
-
-                    return $route->getName() !== null && $route->getName() !== '';
-
-                })
+                ->filter(fn(Route $route) => $route->getName() !== null && $route->getName() !== '')
                 ->flatMap(function (Route $route) {
 
                     return [

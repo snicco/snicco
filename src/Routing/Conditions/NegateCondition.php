@@ -11,13 +11,7 @@
 
     class NegateCondition implements ConditionInterface {
 
-		/**
-		 * Condition to negate.
-		 *
-		 * @var ConditionInterface
-		 */
-		private $condition;
-
+		private ConditionInterface $condition;
 
 		public function __construct( ConditionInterface $condition ) {
 

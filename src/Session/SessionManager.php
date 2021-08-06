@@ -6,10 +6,7 @@
 
     namespace Snicco\Session;
 
-    use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
-    use Snicco\Auth\WpAuthSessionToken;
-    use Snicco\Support\WP;
     use Snicco\Http\Cookie;
     use Snicco\Http\Cookies;
     use Snicco\Http\Psr7\Request;
@@ -29,16 +26,8 @@
         public const HOUR_IN_SEC       = 3600;
         public const THIRTY_MIN_IN_SEC = 1800;
         public const WEEK_IN_SEC       = self::DAY_IN_SEC * 7;
-
-        /**
-         * @var array
-         */
-        private $config;
-
-        /**
-         * @var Session
-         */
-        private $session;
+        private array   $config;
+        private Session $session;
 
         public function __construct(array $session_config, Session $session)
         {

@@ -7,14 +7,14 @@
     namespace Tests\integration\Session;
 
     use Illuminate\Support\InteractsWithTime;
-    use Tests\stubs\TestRequest;
-    use Tests\TestCase;
     use Snicco\Events\Event;
     use Snicco\Http\Cookies;
     use Snicco\Http\ResponseEmitter;
     use Snicco\Session\Events\SessionRegenerated;
     use Snicco\Session\SessionManager;
     use Snicco\Session\SessionServiceProvider;
+    use Tests\stubs\TestRequest;
+    use Tests\TestCase;
 
     class SessionManagerTest extends TestCase
     {
@@ -103,7 +103,7 @@
             $cookies = $this->sentCookies()->toHeaders();
             $this->assertStringContainsString("wp_mvc_session=$new_id", $cookies[0]);
 
-            // Data is for the new id is not in the handler.
+            // Data is for the new id is not in the driver.
             $this->assertDriverNotHas('bar', $new_id);
 
             $this->assertSame(0, $this->session->userId());

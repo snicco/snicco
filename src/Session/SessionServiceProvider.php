@@ -17,10 +17,10 @@
     use Snicco\Routing\UrlGenerator;
     use Snicco\Session\Contracts\SessionDriver;
     use Snicco\Session\Contracts\SessionManagerInterface;
-    use Snicco\Session\Events\NewLogin;
-    use Snicco\Session\Events\NewLogout;
     use Snicco\Session\Drivers\ArraySessionDriver;
     use Snicco\Session\Drivers\DatabaseSessionDriver;
+    use Snicco\Session\Events\NewLogin;
+    use Snicco\Session\Events\NewLogout;
     use Snicco\Session\Middleware\CsrfMiddleware;
     use Snicco\Session\Middleware\ShareSessionWithView;
     use Snicco\Session\Middleware\StartSessionMiddleware;
@@ -101,8 +101,6 @@
 
 
             $this->container->singleton(Session::class, function () {
-
-                $store = null;
 
                 if ($this->config->get('session.encrypt')) {
 

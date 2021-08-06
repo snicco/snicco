@@ -7,25 +7,25 @@
 	namespace Snicco\Routing;
 
 	use BadMethodCallException;
-	use Snicco\Support\Arr;
+    use Snicco\Support\Arr;
 
-	class RouteDecorator {
+    class RouteDecorator
+    {
 
 
-		/** @var Router */
-		private $router;
-
-		public const allowed_attributes = [
-			'middleware',
-			'name',
-			'namespace',
-			'prefix',
-			'where',
-			'methods',
-            'noAction'
-		];
-
-		private const pass_back_to_router = [
+        private Router          $router;
+        private array           $attributes = [];
+        private ConditionBucket $conditions;
+        public const  allowed_attributes  = [
+            'middleware',
+            'name',
+            'namespace',
+            'prefix',
+            'where',
+            'methods',
+            'noAction',
+        ];
+        private const pass_back_to_router = [
 			'get',
 			'post',
 			'put',
@@ -35,13 +35,6 @@
 			'any',
 			'match'
 		];
-
-		private $attributes = [];
-
-		/**
-		 * @var ConditionBucket
-		 */
-		private $conditions;
 
 		public function __construct( Router $router ) {
 

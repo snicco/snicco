@@ -27,72 +27,39 @@
 
         const ROUTE_WILDCARD = '*';
 
-        /**
-         * @var array
-         */
-        private $methods;
-
-        /**
-         * @var string
-         */
-        private $url;
+        private array  $methods;
+        private string $url;
 
         /** @var string|Closure|array */
         private $action;
 
         /** @var ConditionBlueprint[] */
-        private $condition_blueprints = [];
+        private array $condition_blueprints = [];
 
-        /**
-         * @var array
-         */
-        private $middleware;
-
-        /** @var string */
-        private $namespace;
-
-        /** @var string */
-        private $name;
-
-        /** @var array */
-        private $regex = [];
-
-        /** @var array */
-        private $defaults = [];
+        private array   $middleware;
+        private string  $namespace;
+        private ?string $name;
+        private array   $regex    = [];
+        private array   $defaults = [];
 
         /**
          * @var Closure|string|null
          */
         private $wp_query_filter = null;
 
-        /** @var array */
-        private $segment_names = [];
+        private array $segment_names = [];
 
-        /**
-         * @var array
-         */
-        private $segments = [];
-
-        /**
-         * @var bool
-         */
-        private $trailing_slash = false;
+        private array $segments       = [];
+        private bool  $trailing_slash = false;
 
         /**
          * @var ConditionInterface[]
          */
-        private $instantiated_conditions = [];
+        private array $instantiated_conditions = [];
 
-        /**
-         * @var RouteAction
-         */
-        private $instantiated_action;
-
-        /** @var RouteActionFactory|null */
-        private $action_factory = null;
-
-        /** @var ConditionFactory|null */
-        private $condition_factory = null;
+        private RouteAction         $instantiated_action;
+        private ?RouteActionFactory $action_factory    = null;
+        private ?ConditionFactory   $condition_factory = null;
 
         public function __construct(array $methods, string $url, $action, array $attributes = [])
         {
@@ -176,12 +143,9 @@
 
         public function hasUrlableCondition() :?UrlableInterface
         {
-            return collect( $this->instantiated_conditions )
-                ->first( function ( ConditionInterface $condition ) {
 
-                    return $condition instanceof UrlableInterface;
-
-                } );
+            return collect($this->instantiated_conditions)
+                ->first(fn(ConditionInterface $condition) => $condition instanceof UrlableInterface);
         }
 
         public function run(Request $request, array $route_segments = [])
@@ -241,7 +205,7 @@
         public function getName() : ?string
         {
 
-            return $this->name;
+            return $this->name ?? null;
 
         }
 
@@ -286,11 +250,7 @@
         {
 
             $failed_condition = collect($this->instantiated_conditions)
-                ->first(function ($condition) use ($request) {
-
-                    return ! $condition->isSatisfied($request);
-
-                });
+                ->first(fn($condition) => ! $condition->isSatisfied($request));
 
             return $failed_condition === null;
 

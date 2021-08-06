@@ -6,6 +6,7 @@
 
     namespace Snicco\Routing\Conditions;
 
+    use Illuminate\Support\Collection;
     use Snicco\Contracts\ConditionInterface;
     use Snicco\Http\Psr7\Request;
 
@@ -14,12 +15,9 @@
     class RequestAttributeCondition implements ConditionInterface
     {
 
-        /**
-         * @var array
-         */
-        protected $request_arguments;
+        protected Collection $request_arguments;
 
-        public function __construct($arguments_to_match_against)
+        public function __construct(array $arguments_to_match_against)
         {
 
             $this->request_arguments = collect($arguments_to_match_against);
@@ -32,7 +30,7 @@
 
             $request = $request->post();
 
-            foreach ( $this->request_arguments as $key => $value ) {
+            foreach ($this->request_arguments as $key => $value ) {
 
                 if ( ! in_array($key, array_keys($request), true ) ) {
 
@@ -42,11 +40,7 @@
 
             }
 
-            $failed_value = $this->request_arguments->first(function ($value, $key) use ($request) {
-
-                return $value !== $request[$key];
-
-            });
+            $failed_value = $this->request_arguments->first(fn($value, $key) => $value !== $request[$key]);
 
             return $failed_value === null;
 
@@ -55,6 +49,7 @@
 
         public function getArguments(Request $request) : array
         {
+
             return collect($request->getParsedBody())->only($this->request_arguments->keys())->all();
         }
 

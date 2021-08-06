@@ -7,7 +7,7 @@
     namespace Snicco\Session\Contracts;
 
     use SessionHandlerInterface;
-    use Snicco\Http\Psr7\Request;
+    use stdClass;
 
     /**
      * NOTE: for all methods that return a session or multiple sessions the driver MUST ONLY
@@ -39,7 +39,7 @@
         /**
          * @param  int  $user_id
          *
-         * @return array<\stdClass> An array of serialized session data as plain objects.
+         * @return array<stdClass> An array of serialized session data as plain objects.
          *
          * The objects MUST contain a "payload" property and an "id" property
          *

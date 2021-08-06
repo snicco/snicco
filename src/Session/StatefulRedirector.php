@@ -15,10 +15,7 @@
     class StatefulRedirector extends AbstractRedirector
     {
 
-        /**
-         * @var Session
-         */
-        private $session;
+        private Session $session;
 
         public function __construct(Session $session, UrlGenerator $url_generator, Psr17ResponseFactory $response_factory)
         {

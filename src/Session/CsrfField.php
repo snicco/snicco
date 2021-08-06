@@ -12,15 +12,8 @@
     class CsrfField
     {
 
-        /**
-         * @var Session
-         */
-        private $session;
-
-        /**
-         * @var Guard
-         */
-        private $guard;
+        private Session $session;
+        private Guard   $guard;
 
         public function __construct(Session $session, Guard $guard)
         {

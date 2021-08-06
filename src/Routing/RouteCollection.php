@@ -20,14 +20,9 @@
          *
          * @var Route[]
          */
-        protected $name_list = [];
-
-        /**
-         * @var RouteMatcher
-         */
-        protected $route_matcher;
-
-        protected $already_added = [];
+        protected array        $name_list     = [];
+        protected RouteMatcher $route_matcher;
+        protected array        $already_added = [];
 
         public function __construct(
             RouteMatcher $route_matcher,

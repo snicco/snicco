@@ -7,17 +7,14 @@
 	namespace Snicco\Routing;
 
 	use Snicco\Contracts\SetsRouteAttributes;
-    use Snicco\Support\WP;
     use Snicco\Support\Arr;
     use Snicco\Support\UrlParser;
+    use Snicco\Support\WP;
 
     class RouteAttributes implements SetsRouteAttributes {
 
 
-		/**
-		 * @var Route
-		 */
-		private $route;
+        private Route $route;
 
 		public function __construct(Route $route ) {
 

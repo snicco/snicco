@@ -14,13 +14,9 @@
     class CsrfStore implements ArrayAccess, Countable, Iterator
     {
 
-        /**
-         * @var Session
-         */
-        private $session_store;
+        private Session $session_store;
 
-        private $csrf_iteration;
-
+        private array $csrf_iteration = [];
 
         public function __construct(Session $session_store)
         {
@@ -38,9 +34,7 @@
 
         private function csrf()
         {
-
             return $this->session_store->get('csrf', []);
-
         }
 
         public function offsetExists($offset) : bool
