@@ -7,24 +7,23 @@
 	namespace Snicco\View;
 
 	use Closure;
-	use Snicco\Contracts\ViewComposer as ViewComposerInterface;
-	use Snicco\Traits\ReflectsCallable;
+    use Snicco\Contracts\ViewComposer as ViewComposerInterface;
+    use Snicco\Traits\ReflectsCallable;
 
-	class ViewComposer implements ViewComposerInterface {
+    class ViewComposer implements ViewComposerInterface
+    {
 
-		use ReflectsCallable;
+        use ReflectsCallable;
 
-		/**
-		 *
-		 * A closures that wraps the actual view composer
-		 * registered by the user.
-		 *
-		 * All view composers are resolved from the
-		 * service container.
-		 *
-		 * @var \Closure
+        /**
+         *
+         * A closures that wraps the actual view composer
+         * registered by the user.
+         *
+         * All view composers are resolved from the
+         * service container.
 		 */
-		private $executable_composer;
+        private Closure $executable_composer;
 
 		public function __construct( Closure $executable_closure  ) {
 

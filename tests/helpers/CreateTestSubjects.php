@@ -85,7 +85,7 @@
 
             }
 
-            $router_runner = new RouteRunner($factory, $this->container, new Pipeline($this->container, $error_handler), $middleware_stack);
+            $router_runner = new RouteRunner($this->container, new Pipeline($this->container, $error_handler), $middleware_stack);
 
             $this->container->instance(RouteRunner::class, $router_runner);
             $this->container->instance(MiddlewareStack::class, $middleware_stack);

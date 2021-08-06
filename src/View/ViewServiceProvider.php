@@ -38,9 +38,7 @@
 		public function bootstrap() : void {
 
 		    $context = $this->container->make(GlobalContext::class);
-		    $context->add('__view', function () {
-		        return $this->container->make(ViewFactory::class);
-            });
+            $context->add('__view', fn() => $this->container->make(ViewFactory::class));
 
 		}
 
@@ -53,11 +51,10 @@
         private function bindViewFactoryInterface() : void
         {
 
-            $this->container->singleton(ViewFactoryInterface::class, function () {
-
-                return $this->container->make(ViewFactory::class);
-
-            });
+            $this->container->singleton(
+                ViewFactoryInterface::class,
+                fn() => $this->container->make(ViewFactory::class)
+            );
         }
 
         private function bindViewServiceImplementation() : void
@@ -111,9 +108,8 @@
 
         private function bindMethodField()
         {
-            $this->container->singleton(MethodField::class, function () {
-                return new MethodField($this->appKey());
-            });
+
+            $this->container->singleton(MethodField::class, fn() => new MethodField($this->appKey()));
         }
 
     }

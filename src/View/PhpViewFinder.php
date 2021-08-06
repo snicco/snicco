@@ -6,9 +6,9 @@
 
     namespace Snicco\View;
 
-    use Symfony\Component\Finder\Finder;
     use Snicco\Contracts\ViewFinderInterface;
     use Snicco\Support\FilePath;
+    use Symfony\Component\Finder\Finder;
 
     class PhpViewFinder implements ViewFinderInterface
     {
@@ -18,16 +18,11 @@
          *
          * @param  string[]  $directories
          */
-        private $directories;
+        private array  $directories;
+        private string $search_depth;
+        private array  $last_context = [];
 
-        /**
-         * @var string
-         */
-        private $search_depth;
-
-        private $last_context = [];
-
-        public function __construct(array $directories , int $depth = 2)
+        public function __construct(array $directories, int $depth = 2)
         {
 
             $this->search_depth = strval($depth + 1);

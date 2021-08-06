@@ -7,38 +7,26 @@
 	namespace Snicco\View;
 
 	use Snicco\Contracts\ViewEngineInterface;
-	use Snicco\Contracts\ViewInterface;
-	use Snicco\Contracts\ViewFactoryInterface;
-	use Snicco\Support\VariableBag;
-	use Snicco\Support\Arr;
+    use Snicco\Contracts\ViewFactoryInterface;
+    use Snicco\Contracts\ViewInterface;
+    use Snicco\Support\Arr;
 
-	class ViewFactory implements ViewFactoryInterface {
+    class ViewFactory implements ViewFactoryInterface
+    {
 
-		/**
-		 * View engine.
-		 *
-		 * @var ViewEngineInterface
-		 */
-		private $engine;
+        private ViewEngineInterface    $engine;
+        private ViewComposerCollection $composer_collection;
+        private GlobalContext          $global_context;
+        private ?ViewInterface         $rendered_view;
 
-		/**
-		 * @var ViewComposerCollection
-		 */
-		private $composer_collection;
+        public function __construct(ViewEngineInterface $engine, ViewComposerCollection $composer_collection, GlobalContext $global_context)
+        {
 
-		/**
-		 * @var VariableBag
-		 */
-		private $global_context;
+            $this->engine = $engine;
+            $this->composer_collection = $composer_collection;
+            $this->global_context = $global_context;
 
-		/** @var ViewInterface|null */
-		private $rendered_view;
-
-		public function __construct(ViewEngineInterface $engine, ViewComposerCollection $composer_collection, GlobalContext $global_context) {
-			$this->engine = $engine;
-			$this->composer_collection = $composer_collection;
-			$this->global_context = $global_context;
-		}
+        }
 
 
 		/**
@@ -101,14 +89,6 @@
 
 		}
 
-		public function pathForView ( string $view_name ) :string {
-
-		    $view = $this->make($view_name);
-
-		    return $view->path();
-
-        }
-
         public function includeChild () {
 
 		    if ( ! $this->engine instanceof PhpViewEngine ) {
@@ -119,8 +99,11 @@
 
         }
 
-        public function renderedView() : ?ViewInterface{
-		    return $this->rendered_view;
+        public function renderedView() : ?ViewInterface
+        {
+
+            return $this->rendered_view ?? null;
+
         }
 
 	}

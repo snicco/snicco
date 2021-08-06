@@ -8,30 +8,23 @@
 
 	use Exception;
     use Illuminate\Support\Collection;
-	use Snicco\Contracts\ViewComposer;
-	use Snicco\Contracts\ViewInterface;
-	use Snicco\Factories\ViewComposerFactory;
-	use Snicco\Support\Arr;
+    use Snicco\Contracts\ViewComposer;
+    use Snicco\Contracts\ViewInterface;
+    use Snicco\Factories\ViewComposerFactory;
+    use Snicco\Support\Arr;
 
-	class ViewComposerCollection implements ViewComposer {
+    class ViewComposerCollection implements ViewComposer
+    {
 
-		/**
-		 * @var \Snicco\View\ViewComposer[]
-		 */
-		private $composers;
+        private Collection $composers;
 
-		/**
-		 * @var ViewComposerFactory
-		 */
-		private $composer_factory;
+        private ViewComposerFactory $composer_factory;
 
+        public function __construct(ViewComposerFactory $composer_factory)
+        {
 
-
-
-		public function __construct( ViewComposerFactory $composer_factory ) {
-
-			$this->composers        = new Collection();
-			$this->composer_factory = $composer_factory;
+            $this->composers = new Collection();
+            $this->composer_factory = $composer_factory;
 
 		}
 
@@ -41,11 +34,7 @@
 
 			$composers = $this->matchingComposers( $view );
 
-			array_walk( $composers, function ( ViewComposer $composer ) use ( $view ) {
-
-				$composer->executeUsing( $view );
-
-			} );
+            array_walk($composers, fn(ViewComposer $composer) => $composer->executeUsing($view));
 
 		}
 
@@ -57,27 +46,23 @@
 		 */
 		public function addComposer( $views, $callable ) {
 
-			$this->composers->push( [
+            $this->composers->push([
 
-				'views'    => Arr::wrap($views),
-				'composer' => $this->composer_factory->createUsing( $callable ),
+                'views' => Arr::wrap($views),
+                'composer' => $this->composer_factory->createUsing($callable),
 
+            ]);
 
-			] );
+        }
 
-		}
+        private function matchingComposers(ViewInterface $view) : array
+        {
 
-		private function matchingComposers( ViewInterface $view ) {
+            return $this->composers
+                ->filter(fn($value) => in_array($view->name(), $value['views']))
+                ->pluck('composer')
+                ->all();
 
-			return $this->composers
-				->filter( function ( $value ) use ( $view ) {
+        }
 
-					return in_array( $view->name() , $value['views'] );
-
-				})
-				->pluck('composer')
-				->all();
-
-		}
-
-	}
+    }

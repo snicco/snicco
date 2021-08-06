@@ -6,56 +6,30 @@
 
     namespace Snicco\Validation;
 
-    use Illuminate\Contracts\Support\MessageProvider;
     use Illuminate\Support\Collection;
     use Illuminate\Support\MessageBag;
+    use LogicException;
     use Respect\Validation\Exceptions\ValidationException as RespectValidationError;
     use Respect\Validation\Rules\Not;
     use Respect\Validation\Validator as v;
     use Snicco\Support\Arr;
     use Snicco\Support\Str;
 
-    use function Respect\Stringifier\stringify;
-
     class Validator
     {
 
-        private $errors_as_array = [];
-
-        private $custom_messages = [];
-
-        /**
-         * @var array
-         */
-        private $rules;
-
-        /**
-         * @var array|null
-         */
-        private $input = [];
-
-        /**
-         * @var array
-         */
-        private $replace_attributes = [];
-
-        /**
-         * @var array
-         */
-        private $global_message_replacements = [];
-
-        /**
-         * @var MessageBag
-         */
-        private $message_bag;
-
-        /**
-         * @var string
-         */
-        private $message_bag_name = 'default';
+        private array      $errors_as_array             = [];
+        private array      $custom_messages             = [];
+        private array      $rules                       = [];
+        private ?array     $input;
+        private array      $replace_attributes          = [];
+        private array      $global_message_replacements = [];
+        private MessageBag $message_bag;
+        private string     $message_bag_name            = 'default';
 
         public function __construct(?array $input = null)
         {
+
             $this->input = $input;
             $this->message_bag = new MessageBag();
         }
@@ -71,7 +45,6 @@
             $this->rules = $this->normalizeRules($rules);
 
             return $this;
-
         }
 
         public function validate(?array $input = null) : array
@@ -79,9 +52,9 @@
 
             $input = $input ?? $this->input;
 
-            if ( ! is_array($input) ) {
+            if ( ! is_array($input)) {
 
-                throw new \LogicException('No input provided for validation');
+                throw new LogicException('No input provided for validation');
 
             }
 
@@ -101,7 +74,6 @@
                         $validator->assert($input);
 
                     }
-
 
 
                 }
@@ -128,7 +100,7 @@
 
         }
 
-        public function validateWithBag( string $named_bag, ?array $input = null) : array
+        public function validateWithBag(string $named_bag, ?array $input = null) : array
         {
 
             $this->message_bag_name = $named_bag;
@@ -165,11 +137,11 @@
 
             $messages = $this->reformatMessages($e, $key, $input);
 
-            Arr::set($this->errors_as_array, $key,  $messages );
+            Arr::set($this->errors_as_array, $key, $messages);
 
             foreach ($messages as $message) {
 
-                $this->message_bag->add(ltrim($key,'*'), $message);
+                $this->message_bag->add(ltrim($key, '*'), $message);
 
             }
 
@@ -185,31 +157,19 @@
 
             $rule_id = null;
 
-            $messages = $messages
+            return $messages
                 ->map(function (RespectValidationError $e) use ($name, &$rule_id) {
 
                     $rule_id = $e->getId();
+
                     return $this->replaceWithCustomMessage($e, $name);
 
                 })
-                ->map(function ($message) use ($name, $input) {
-
-                    return $this->replaceRawInputWithAttributeName($input, $name, $message);
-
-                })
-                ->map(function ($message) use ($name, $input, $rule_id) {
-
-                    return $this->swapOutPlaceHolders($message, $name, $input, $rule_id);
-                })
-                ->map(function ($message)  {
-
-                    return $this->addTrailingPoint($message);
-
-            })
+                ->map(fn($message) => $this->replaceRawInputWithAttributeName($input, $name, $message))
+                ->map(fn($message) => $this->swapOutPlaceHolders($message, $name, $input, $rule_id))
+                ->map(fn($message) => $this->addTrailingPoint($message))
                 ->values()
                 ->all();
-
-            return $messages;
 
 
         }
@@ -217,41 +177,34 @@
         private function addTrailingPoint($message)
         {
 
-            if ( ! Str::endsWith($message, '.') ) {
+            if ( ! Str::endsWith($message, '.')) {
 
                 $message .= '.';
 
             }
 
-            return str_replace('"', '',$message);
+            return str_replace('"', '', $message);
 
         }
 
         private function swapOutPlaceHolders($message, $name, $input, $rule_id)
         {
 
-            $message = $this->replaceCustomAttributeNames($message, $name, $rule_id);
-
-            return $message;
-
+            return $this->replaceCustomAttributeNames($message, $name, $rule_id);
         }
 
         private function replaceWithCustomMessage($e, $attribute_name)
         {
-
             return $this->custom_messages[$attribute_name] ?? $e->getMessage();
-
         }
 
         private function replaceRawInputWithAttributeName($input, $name, $message)
         {
-
             if ( ! is_scalar($input)) {
 
                 return $message;
 
             }
-
 
             return str_replace('"'.$input.'"', $name, $message);
         }
@@ -260,26 +213,23 @@
         {
 
             return collect($rules)
-                ->map(function ($rule) {
-
-                    return Arr::wrap($rule);
-
-                })
+                ->map(fn($rule) => Arr::wrap($rule))
                 ->map(function (array $rule, $key) {
 
                     $optional = false;
 
-                    if( ! isset($rule[2] ) ) {
+                    if ( ! isset($rule[2])) {
 
                         $optional = ($rule[1] ?? 'required') === 'optional';
 
-                    } else {
+                    }
+                    else {
 
                         $optional = ($rule[2] ?? 'required') === 'optional';
 
                     }
 
-                    if (isset($rule[1] ) && ! Str::contains($rule[1], ['optional', 'required'])) {
+                    if (isset($rule[1]) && ! Str::contains($rule[1], ['optional', 'required'])) {
 
                         $this->custom_messages[trim($key, '*')] = $rule[1];
 
@@ -381,7 +331,6 @@
             return Arr::get($complete_input, $key);
 
         }
-
 
 
     }

@@ -8,7 +8,6 @@
 
 
     use WP_User;
-    use Snicco\Support\WordpressApi;
 
     /**
      * mixin class for ide support.

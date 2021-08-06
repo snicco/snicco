@@ -14,64 +14,63 @@
     class ValidationException extends HttpException
     {
 
-        /**
-         * @var MessageBag
-         */
-        private $messages;
+        private MessageBag $messages;
+        private array      $errors;
+        private string     $message_bag_name;
+        protected string   $message_for_users = 'We could not process your request.';
 
-        /**
-         * @var array
-         */
-        private $errors;
-
-        /**
-         * @var string
-         */
-        private $message_bag_name;
-
-        public function __construct(array $errors, ?string $message_for_humans = 'We could not process your request.', int $status = 400, Throwable $previous = null, ?int $code = 0)
-       {
-
-           parent::__construct($status, $message_for_humans, $previous, $code);
-
-           $this->errors = $errors;
-
-       }
-
-        public static function withMessages(array $messages, string $message_for_humans = 'We could not process your request.' , int $status = 400) : ValidationException
+        public function __construct(array $errors, ?string $log_message = 'Failed Validation', int $status = 400, Throwable $previous = null)
         {
+
+            parent::__construct($status, $log_message, $previous);
+            $this->errors = $errors;
+
+        }
+
+        public static function withMessages(array $messages, string $message_for_humans = 'We could not process your request.', int $status = 400) : ValidationException
+        {
+
             $bag = new MessageBag($messages);
-            $e = new static($messages,$message_for_humans, $status);
+            $e = new static($messages, $message_for_humans, $status);
             $e->setMessageBag($bag);
 
             return $e;
 
         }
 
-        public function setMessageBagName(string $name = 'default') {
+        public function setMessageBagName(string $name = 'default') : ValidationException
+        {
+
             $this->message_bag_name = $name;
+
             return $this;
         }
 
-        public function setMessageBag(MessageBag $message_bag, string $name = 'default') {
+        public function setMessageBag(MessageBag $message_bag, string $name = 'default') : ValidationException
+        {
 
             $this->messages = $message_bag;
             $this->message_bag_name = $name;
+
             return $this;
 
-       }
+        }
 
         public function errorsAsArray() : array
         {
+
             return $this->errors;
         }
 
         public function messages() : MessageBag
         {
+
             return $this->messages;
         }
 
-        public function namedBag () {
+        public function namedBag() : string
+        {
+
             return $this->message_bag_name;
         }
 
