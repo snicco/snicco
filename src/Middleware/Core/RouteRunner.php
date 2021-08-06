@@ -13,7 +13,6 @@
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Psr7\Response;
-    use Snicco\Http\ResponseFactory;
     use Snicco\Middleware\MiddlewareStack;
     use Snicco\Routing\Pipeline;
     use Snicco\Routing\Route;
@@ -22,24 +21,12 @@
     class RouteRunner extends Middleware
     {
 
-        /**
-         * @var Pipeline
-         */
-        private $pipeline;
+        private Pipeline $pipeline;
+        private MiddlewareStack $middleware_stack;
+        private ContainerAdapter $container;
 
-        /**
-         * @var MiddlewareStack
-         */
-        private $middleware_stack;
-
-        /**
-         * @var ContainerAdapter
-         */
-        private $container;
-
-        public function __construct(ResponseFactory $response_factory, ContainerAdapter $container, Pipeline $pipeline, MiddlewareStack $middleware_stack)
+        public function __construct(ContainerAdapter $container, Pipeline $pipeline, MiddlewareStack $middleware_stack)
         {
-            $this->response_factory = $response_factory;
             $this->pipeline = $pipeline;
             $this->middleware_stack = $middleware_stack;
             $this->container = $container;

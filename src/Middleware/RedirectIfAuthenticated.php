@@ -8,23 +8,15 @@
 
 	use Psr\Http\Message\ResponseInterface;
     use Snicco\Contracts\Middleware;
-    use Snicco\Http\ResponseFactory;
-    use Snicco\Support\WP;
     use Snicco\Http\Psr7\Request;
     use Snicco\Routing\UrlGenerator;
+    use Snicco\Support\WP;
 
     class RedirectIfAuthenticated extends Middleware {
 
 
-        /**
-         * @var string|null
-         */
-        private $url;
-
-        /**
-         * @var UrlGenerator
-         */
-        private $url_generator;
+        private ?string $url;
+        private UrlGenerator $url_generator;
 
         public function __construct( UrlGenerator $url_generator, string $url = null )
         {

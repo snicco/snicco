@@ -7,16 +7,13 @@
     namespace Snicco\Http;
 
     use DateTimeInterface;
+    use InvalidArgumentException;
+    use LogicException;
 
     class Cookie
     {
 
-        /**
-         * Default cookie properties
-         *
-         * @var array
-         */
-        private $defaults = [
+        private array $defaults = [
             'value' => '',
             'domain' => null,
             'hostonly' => true,
@@ -26,13 +23,8 @@
             'httponly' => true,
             'samesite' => 'Lax',
         ];
-
-        private $properties;
-
-        /**
-         * @var string
-         */
-        private $name;
+        private array $properties;
+        private string $name;
 
         public function __construct(string $name, string $value)
         {
@@ -114,7 +106,7 @@
 
             if ( ! in_array($same_site, ['Lax', 'Strict', 'None'] ) ) {
 
-                throw new \LogicException("The value [$same_site] is not supported for the SameSite cookie.");
+                throw new LogicException("The value [$same_site] is not supported for the SameSite cookie.");
 
             }
 
@@ -139,7 +131,7 @@
 
             if ( ! is_int($timestamp) && ! $timestamp instanceof  DateTimeInterface ) {
 
-                throw new \InvalidArgumentException('timestamp must be an integer or DataTimeInterface');
+                throw new InvalidArgumentException('timestamp must be an integer or DataTimeInterface');
 
             }
 

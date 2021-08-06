@@ -16,25 +16,16 @@
     class OpenRedirectProtection extends Middleware
     {
 
-        private $route;
-
-        /**
-         * @var array
-         */
-        private $whitelist;
-        /**
-         * @var string
-         */
-        private $site_url;
+        private string $route;
+        private array $whitelist;
+        private string $site_url;
 
         public function __construct(string $site_url, $whitelist = [], $route = 'redirect.protection')
         {
-
             $this->route = $route;
             $this->whitelist = $this->formatWhiteList($whitelist);
             $this->site_url = $site_url;
             $this->whitelist[] = $this->allSubdomainsOfApplicationUrl();
-
         }
 
         public function handle(Request $request, Delegate $next) : ResponseInterface

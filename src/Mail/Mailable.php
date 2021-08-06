@@ -9,8 +9,8 @@
     use Closure;
     use ReflectionClass;
     use ReflectionProperty;
-    use WP_User;
     use Snicco\Support\Arr;
+    use WP_User;
 
     abstract class Mailable
     {
@@ -18,37 +18,37 @@
         /**
          * @var object[]
          */
-        public $to = [];
+        public array $to = [];
 
         /**
          * @var object[]
          */
-        public $cc = [];
+        public array $cc = [];
 
         /**
          * @var object[]
          */
-        public $bcc = [];
+        public array $bcc = [];
 
         /**
          * @var array
          */
-        public $from;
+        public array $from;
 
         /**
          * @var array
          */
-        public $reply_to;
+        public array $reply_to;
 
         /**
          * @var string[]
          */
-        public $attachments = [];
+        public array $attachments = [];
 
         /**
          * @var string
          */
-        public $view;
+        public string $view;
 
         /** @var string|Closure */
         public $subject;
@@ -56,15 +56,15 @@
         /**
          * @var string
          */
-        public $content_type;
+        public string $content_type = 'text/html';
 
         /**
          * @var array
          */
-        public $view_data = [];
+        public array $view_data = [];
 
         /** @var string */
-        public $message = '';
+        public string $message = '';
 
 
         abstract public function unique(): bool;
@@ -226,11 +226,7 @@
                     }
 
                 })
-                ->filter(function (object $recipient) {
-
-                    return filter_var($recipient->email, FILTER_VALIDATE_EMAIL);
-
-                });
+                ->filter(fn($recipient) => filter_var($recipient->email, FILTER_VALIDATE_EMAIL));
 
             return $recipients->all();
 

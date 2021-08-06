@@ -4,14 +4,14 @@
 	declare( strict_types = 1 );
 
 
-	namespace Tests\unit\Handlers;
+	namespace Tests\unit\Factories;
 
 	use Mockery as m;
-    use Tests\helpers\CreateContainer;
-    use Tests\fixtures\TestDependencies\Bar;
-	use PHPUnit\Framework\TestCase;
-	use Snicco\Factories\RouteActionFactory;
+    use PHPUnit\Framework\TestCase;
+    use Snicco\Factories\RouteActionFactory;
     use Snicco\Http\Psr7\Request;
+    use Tests\fixtures\TestDependencies\Bar;
+    use Tests\helpers\CreateContainer;
 
     class ClosureHandlerTest extends TestCase {
 

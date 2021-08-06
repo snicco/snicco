@@ -15,10 +15,7 @@
     class RoutingMiddleware extends Middleware
     {
 
-        /**
-         * @var AbstractRouteCollection
-         */
-        private $routes;
+        private AbstractRouteCollection $routes;
 
         public function __construct(AbstractRouteCollection $routes)
         {

@@ -16,15 +16,8 @@
     class ValidateSignature extends Middleware
     {
 
-        /**
-         * @var string
-         */
-        private $type;
-
-        /**
-         * @var MagicLink
-         */
-        private $magic_link;
+        private string $type;
+        private MagicLink $magic_link;
 
         public function __construct(MagicLink $magic_link, string $type = 'relative')
         {

@@ -8,15 +8,16 @@
 
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Message\UriInterface;
-    use WP_User;
-    use Snicco\Support\WP;
+    use RuntimeException;
     use Snicco\Http\Cookies;
     use Snicco\Routing\RoutingResult;
     use Snicco\Session\Session;
     use Snicco\Support\Str;
     use Snicco\Support\VariableBag;
+    use Snicco\Support\WP;
     use Snicco\Traits\ValidatesWordpressNonces;
     use Snicco\Validation\Validator;
+    use WP_User;
 
     class Request implements ServerRequestInterface
     {
@@ -28,9 +29,7 @@
 
         public function __construct(ServerRequestInterface $psr_request)
         {
-
             $this->psr_request = $psr_request;
-
         }
 
         /**
@@ -103,7 +102,7 @@
             $v = $this->getAttribute('_validator');
 
             if ( ! $v instanceof Validator) {
-                throw new \RuntimeException('A validator instance has not been set on the request.');
+                throw new RuntimeException('A validator instance has not been set on the request.');
             }
 
             return $v;
@@ -240,7 +239,7 @@
         {
 
             if ( ! $this->hasSession() ) {
-                throw new \RuntimeException('A session has not been set on the request.');
+                throw new RuntimeException('A session has not been set on the request.');
             }
 
             return $this->getAttribute('session');

@@ -1,75 +1,60 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace Snicco\Http;
+    namespace Snicco\Http;
 
-	use Snicco\Contracts\ViewFactoryInterface;
+    use Snicco\Contracts\ViewFactoryInterface;
     use Snicco\Routing\UrlGenerator;
-    use Snicco\View\ViewFactory;
 
-    class Controller {
+    class Controller
+    {
 
-
-		/**
-		 * Middleware.
-		 *
-		 * @var ControllerMiddleware[]
-		 */
-		private $middleware = [];
 
         /**
-         * @var ViewFactory
+         * @var ControllerMiddleware[]
          */
-        protected $view_factory;
+        private array                  $middleware = [];
+        protected ViewFactoryInterface $view_factory;
+        protected ResponseFactory      $response_factory;
+        protected UrlGenerator         $url;
 
-        /** @var ResponseFactory */
-        protected $response_factory;
+        public function getMiddleware(string $method = null) : array
+        {
 
-        /**
-         * @var UrlGenerator
-         */
-        protected $url;
-
-        public function getMiddleware( string $method = null ) : array {
-
-			return collect( $this->middleware )
-				->filter( function ( ControllerMiddleware $middleware ) use ( $method ) {
-
-					return $middleware->appliesTo( $method );
-
-				} )
-				->map( function ( ControllerMiddleware $middleware ) {
-
-					return $middleware->name();
-
-				} )
-				->values()
-				->all();
+            return collect($this->middleware)
+                ->filter(fn(ControllerMiddleware $middleware) => $middleware->appliesTo($method))
+                ->map(fn(ControllerMiddleware $middleware) => $middleware->name())
+                ->values()
+                ->all();
 
 
-		}
-
-		protected function middleware( string $middleware_name ) : ControllerMiddleware {
-
-			return $this->middleware[] = new ControllerMiddleware( $middleware_name );
-
-
-		}
-
-		public function giveViewFactory(ViewFactoryInterface $view_factory ) {
-		    $this->view_factory = $view_factory;
         }
 
-        public function giveResponseFactory(ResponseFactory $response_factory ) {
-		    $this->response_factory = $response_factory;
+        protected function middleware(string $middleware_name) : ControllerMiddleware
+        {
+
+            return $this->middleware[] = new ControllerMiddleware($middleware_name);
+
+
         }
 
-        public function giveUrlGenerator ( UrlGenerator $url) {
+        public function giveViewFactory(ViewFactoryInterface $view_factory)
+        {
+            $this->view_factory = $view_factory;
+        }
+
+        public function giveResponseFactory(ResponseFactory $response_factory)
+        {
+            $this->response_factory = $response_factory;
+        }
+
+        public function giveUrlGenerator(UrlGenerator $url)
+        {
             $this->url = $url;
         }
 
 
-	}
+    }

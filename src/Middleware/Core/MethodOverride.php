@@ -16,15 +16,8 @@
     class MethodOverride extends Middleware
     {
 
-        /**
-         * @var MethodField
-         */
-        private $method_field;
-
-        /**
-         * @var ContainerAdapter
-         */
-        private $container;
+        private MethodField $method_field;
+        private ContainerAdapter $container;
 
         public function __construct(MethodField $method_field, ContainerAdapter $container)
         {

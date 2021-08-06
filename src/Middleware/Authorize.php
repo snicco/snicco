@@ -15,29 +15,15 @@
     class Authorize extends Middleware
     {
 
-        /**
-         * @var string
-         */
-        private $capability;
-
-
-        /**
-         * @var null
-         */
-        private $object_id;
-
-        /**
-         * @var null
-         */
-        private $key;
+        private string $capability;
+        private ?int $object_id;
+        private ?string $key;
 
         public function __construct(  string $capability = 'manage_options', string $object_id = null, string $key = null)
         {
-
             $this->capability = $capability;
             $this->object_id = (int) $object_id;
             $this->key = $key;
-
         }
 
         public function handle(Request $request, $next):ResponseInterface

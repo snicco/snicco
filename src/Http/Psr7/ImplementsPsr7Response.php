@@ -12,10 +12,7 @@
     trait ImplementsPsr7Response
     {
 
-        /**
-         * @var ResponseInterface
-         */
-        protected $psr7_response;
+        protected ResponseInterface $psr7_response;
 
         public function withProtocolVersion($version)
         {

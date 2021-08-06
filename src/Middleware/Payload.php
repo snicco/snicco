@@ -18,12 +18,9 @@
     abstract class Payload extends Middleware
     {
 
-        /**
-         * @var array
-         */
-        protected $content_types;
+        protected array $content_types;
 
-        protected $methods = ['POST', 'PUT', 'PATCH', 'DELETE'];
+        protected array $methods = ['POST', 'PUT', 'PATCH', 'DELETE'];
 
         /**
          * @param  StreamInterface  $stream

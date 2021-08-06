@@ -15,18 +15,16 @@
     {
         use GathersMiddleware;
 
-        private $middleware_groups = [
+        private array $middleware_groups = [
             'web' => [],
             'admin' => [],
             'ajax' => [],
             'global'=> []
         ];
 
-        private $route_middleware_aliases = [];
-
-        private $middleware_priority = [];
-
-        private $middleware_disabled = false;
+        private array $route_middleware_aliases = [];
+        private array $middleware_priority = [];
+        private bool $middleware_disabled = false;
 
         public function createFor(Route $route, Request $request) : array
         {

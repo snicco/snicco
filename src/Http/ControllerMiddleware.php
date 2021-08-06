@@ -11,30 +11,22 @@
 
     class ControllerMiddleware {
 
-		/**
-		 * Middleware.
-		 *
-		 * @var string
-		 */
-		private $middleware;
+		private string $middleware;
 
 		/**
 		 * Methods the middleware applies to.
 		 *
 		 * @var string[]
 		 */
-		private $whitelist = [];
+		private array $whitelist = [];
 
 		/**
 		 * Methods the middleware does not apply to.
 		 *
 		 * @var string[]
 		 */
-		private $blacklist = [];
+		private array $blacklist = [];
 
-		/**
-		 * @param string $middleware
-		 */
 		public function __construct( string $middleware ) {
 
 			$this->middleware = $middleware;
@@ -46,7 +38,7 @@
          *
          * @param  string|string[]  $methods
          *
-         * @throws Exception
+         * @throws LogicException
          */
 		public function only( $methods ) : ControllerMiddleware {
 
@@ -70,7 +62,7 @@
          *
          * @param  string|string[]  $methods
          *
-         * @throws Exception
+         * @throws LogicException
          */
 		public function except( $methods ) : ControllerMiddleware {
 

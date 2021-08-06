@@ -1,12 +1,12 @@
 <?php
 
 
-	declare( strict_types = 1 );
+    declare(strict_types = 1);
 
 
-	namespace Snicco\Factories;
+    namespace Snicco\Factories;
 
-	use Closure;
+    use Closure;
     use Contracts\ContainerAdapter;
     use Exception;
     use Illuminate\Support\Reflector;
@@ -17,130 +17,108 @@
 
     use function collect;
 
-    abstract class AbstractFactory {
+    abstract class AbstractFactory
+    {
 
-		use ReflectsCallable;
+        use ReflectsCallable;
 
-		/**
-		 * Array of FQN from where we look for the class
-		 * being built
-		 *
-		 * @var array
-		 */
-		protected $namespaces;
+        /**
+         * Array of FQN from where we look for the class
+         * being built
+         */
+        protected array            $namespaces;
+        protected ContainerAdapter $container;
 
-		/**
-		 * @var ContainerAdapter
-		 */
-		protected $container;
+        public function __construct(array $namespaces, ContainerAdapter $container)
+        {
 
-		public function __construct( array $namespaces, ContainerAdapter $container ) {
+            $this->namespaces = $namespaces;
+            $this->container = $container;
 
-			$this->namespaces = $namespaces;
-			$this->container  = $container;
+        }
 
-		}
+        /**
+         * @param  string|array|callable  $raw_handler
+         *
+         * @return Handler
+         * @throws Exception
+         */
+        abstract public function createUsing($raw_handler) : Handler;
 
-		/**
-		 * @param  string|array|callable  $raw_handler
-		 *
-		 * @return Handler
-		 * @throws Exception
-		 */
-		abstract public function createUsing($raw_handler) : Handler;
+        protected function normalizeInput($raw_handler) : array
+        {
 
-		protected function normalizeInput( $raw_handler ) : array {
+            return collect($raw_handler)
+                ->flatMap(function ($value) {
 
-			return collect( $raw_handler )
-				->flatMap( function ( $value ) {
+                    if ($value instanceof Closure || ! Str::contains($value, '@')) {
 
-					if ( $value instanceof Closure || ! Str::contains( $value, '@' ) ) {
+                        return [$value];
 
-						return [ $value ];
+                    }
 
-					}
+                    return [Str::before($value, '@'), Str::after($value, '@')];
 
-					return [ Str::before( $value, '@' ), Str::after( $value, '@' ) ];
+                })
+                ->filter(fn($value) => ! empty($value))
+                ->values()
+                ->all();
 
-				} )
-				->filter( function ( $value ) {
+        }
 
-					return ! empty( $value );
+        protected function checkIsCallable(array $handler) : ?array
+        {
 
-				} )
-				->values()
-				->all();
+            if (Reflector::isCallable($handler)) {
 
-		}
-
-		protected function checkIsCallable( array $handler ) : ?array {
-
-			if ( Reflector::isCallable( $handler ) ) {
-
-				return $handler;
-
-			}
-
-			if ( count($handler) === 1 && method_exists($handler[0], '__invoke') ) {
-
-			    return [$handler[0], '__invoke'];
+                return $handler;
 
             }
 
-			[ $class, $method ] = $handler;
+            if (count($handler) === 1 && method_exists($handler[0], '__invoke')) {
 
-			$matched = collect( $this->namespaces )
-				->map( function ( $namespace ) use ( $class, $method ) {
+                return [$handler[0], '__invoke'];
 
-					if ( Reflector::isCallable( [ $namespace . '\\' . $class, $method ] ) ) {
+            }
 
-						return [ $namespace . '\\' . $class , $method ] ;
+            [$class, $method] = $handler;
 
-					}
+            $matched = collect($this->namespaces)
+                ->map(function ($namespace) use ($class, $method) {
 
-				} )
-				->filter( function ( $value ) {
+                    if (Reflector::isCallable([$namespace.'\\'.$class, $method])) {
 
-					return $value !== null;
+                        return [$namespace.'\\'.$class, $method];
 
-				} );
+                    }
 
-			return $matched->isNotEmpty() ? $matched->first()  : null ;
+                })
+                ->filter(fn($value) => $value !== null);
 
-
-		}
-
-		protected function fail( $class, $method ) {
-
-			$method = Str::replaceFirst( '@', '', $method );
-
-			throw new RuntimeException(
-				"[" . $class . ", '" . $method . "'] is not a valid callable."
-			);
-
-		}
-
-		protected function wrapClosure( Closure $closure ) : Closure {
-
-			return function ( $args ) use ( $closure ) {
-
-				return $this->container->call( $closure, $args );
-
-			};
+            return $matched->isNotEmpty() ? $matched->first() : null;
 
 
-		}
+        }
 
-		protected function wrapClass( array $controller ) : Closure {
+        protected function fail($class, $method)
+        {
+            $method = Str::replaceFirst('@', '', $method);
 
-			return function ( $args ) use ( $controller ) {
+            throw new RuntimeException(
+                "[".$class.", '".$method."'] is not a valid callable."
+            );
+
+        }
+
+        protected function wrapClosure(Closure $closure) : Closure
+        {
+            return fn($args) => $this->container->call($closure, $args);
+        }
+
+        protected function wrapClass(array $controller) : Closure
+        {
+            return fn($args) => $this->container->call(implode('@', $controller), $args);
+        }
 
 
-				return $this->container->call( implode( '@', $controller ), $args );
-
-			};
-
-		}
-
-
-	}
+    }

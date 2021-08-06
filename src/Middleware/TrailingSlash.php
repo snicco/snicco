@@ -10,22 +10,13 @@
     use Snicco\Contracts\Middleware;
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Request;
-    use Snicco\Http\ResponseFactory;
     use Snicco\Support\Str;
     use Snicco\Support\Url;
 
     class TrailingSlash extends Middleware
     {
 
-        /**
-         * @var ResponseFactory
-         */
-        protected ResponseFactory $response_factory;
-
-        /**
-         * @var bool
-         */
-        private $trailing_slash;
+        private bool $trailing_slash;
 
         public function __construct(bool $trailing_slash = true)
         {

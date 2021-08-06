@@ -10,8 +10,8 @@
     use Snicco\Contracts\Mailer;
     use Snicco\Contracts\ServiceProvider;
     use Snicco\Events\PendingMail;
-    use Snicco\Support\WP;
     use Snicco\Listeners\SendMail;
+    use Snicco\Support\WP;
 
     class MailServiceProvider extends ServiceProvider
     {
@@ -32,11 +32,7 @@
         private function bindMailer()
         {
 
-            $this->container->singleton(Mailer::class, function () {
-
-                return new WordPressMailer();
-
-            });
+            $this->container->singleton(Mailer::class, fn() => new WordPressMailer());
         }
 
         private function bindConfig()

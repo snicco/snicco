@@ -10,17 +10,13 @@
     use Snicco\Contracts\AbstractRouteCollection;
     use Snicco\Events\WpQueryFilterable;
     use Snicco\Routing\Route;
-    use Snicco\Support\WP;
 
     class FilterWpQuery
     {
 
         use ListensConditionally;
 
-        /**
-         * @var AbstractRouteCollection
-         */
-        private $routes;
+        private AbstractRouteCollection $routes;
 
         public function __construct(AbstractRouteCollection $routes)
         {
@@ -55,11 +51,5 @@
            return $event->server_request->isReadVerb();
         }
 
-        private function removeUnneededFilters()
-        {
-            WP::removeFilter('template_redirect', 'redirect_canonical');
-            WP::removeFilter('template_redirect', 'rest_output_link_header');
-            WP::removeFilter('template_redirect', 'wp_old_slug_redirect');
-        }
 
     }
