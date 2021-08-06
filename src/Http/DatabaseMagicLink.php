@@ -8,6 +8,7 @@
 
     use Snicco\Contracts\MagicLink;
     use Snicco\Http\Psr7\Request;
+    use wpdb;
 
     use function wp_cache_add;
     use function wp_cache_get;
@@ -15,21 +16,13 @@
     class DatabaseMagicLink extends MagicLink
     {
 
-        /**
-         * @var string
-         */
-        private $table;
-
-        /**
-         * @var \wpdb
-         */
-        private $wpdb;
+        private string $table;
+        private wpdb $wpdb;
 
         public function __construct(string $table, array $lottery = [4, 100])
         {
 
             global $wpdb;
-
             $this->wpdb = $wpdb;
             $this->table = $this->wpdb->prefix.$table;
             $this->lottery = $lottery;

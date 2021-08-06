@@ -12,8 +12,8 @@
     use Snicco\Routing\ConditionBlueprint;
     use Snicco\Routing\Conditions\CustomCondition;
     use Snicco\Routing\Conditions\NegateCondition;
-    use Snicco\Routing\Route;
     use Snicco\Traits\ReflectsCallable;
+    use Throwable;
 
     class ConditionFactory
     {
@@ -25,12 +25,8 @@
          *
          * @var array<string, string>
          */
-        private $condition_types;
-
-        /**
-         * @var ContainerAdapter
-         */
-        private $container;
+        private array $condition_types;
+        private ContainerAdapter $container;
 
 
         public function __construct(array $condition_types, ContainerAdapter $container)
@@ -85,7 +81,7 @@
 
                 return $blueprint->instance() ?? $this->container->make($type, $args);
             }
-            catch (\Throwable $e) {
+            catch (Throwable $e) {
 
                 throw new ConfigurationException(
                     "Condition could not be created.".PHP_EOL.$e->getMessage()

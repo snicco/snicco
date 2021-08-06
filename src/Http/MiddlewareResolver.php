@@ -8,13 +8,9 @@
 
 	use Contracts\ContainerAdapter;
 
+    class MiddlewareResolver {
 
-	class MiddlewareResolver {
-
-		/**
-		 * @var ContainerAdapter
-		 */
-		private $container;
+		private ContainerAdapter $container;
 
 		public function __construct( ContainerAdapter $container ) {
 
@@ -32,7 +28,7 @@
 			/** @var Controller $controller_instance */
 			$controller_instance = $this->container->make( $class );
 
-			// Dont resolve this controller again when we hit the route.
+			// Don't resolve this controller again when we hit the route.
 			$this->container->instance( $class, $controller_instance );
 
 			return $controller_instance->getMiddleware( $method );

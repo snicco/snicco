@@ -12,14 +12,13 @@
     use function header;
     use function headers_sent;
 
-
     /**
      *
      * Modified Version of Slims Response Emitter.
      *
      * @link https://github.com/slimphp/Slim/blob/4.x/Slim/ResponseEmitter.php
      *
-     * Changed method visibility to accommodate Wordpress needs.
+     * Changed method visibility to accommodate WordPress needs.
      *
      *
      */
@@ -29,14 +28,11 @@
         /**
          * @var int
          */
-        private $responseChunkSize;
+        private int $response_chunk_size;
 
-        /**
-         * @param  int  $responseChunkSize
-         */
-        public function __construct(int $responseChunkSize = 4096)
+        public function __construct(int $response_chunk_size = 4096)
         {
-            $this->responseChunkSize = $responseChunkSize;
+            $this->response_chunk_size = $response_chunk_size;
         }
 
         /**
@@ -147,7 +143,7 @@
             if ($amountToRead) {
 
                 while ($amountToRead > 0 && ! $body->eof()) {
-                    $length = min($this->responseChunkSize, $amountToRead);
+                    $length = min($this->response_chunk_size, $amountToRead);
                     $data = $body->read($length);
                     echo $data;
 
@@ -160,7 +156,7 @@
             }
             else {
                 while ( ! $body->eof()) {
-                    echo $body->read($this->responseChunkSize);
+                    echo $body->read($this->response_chunk_size);
                     if (connection_status() !== CONNECTION_NORMAL) {
                         break;
                     }

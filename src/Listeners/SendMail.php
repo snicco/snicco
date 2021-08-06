@@ -9,26 +9,16 @@
     use Snicco\Application\Config;
     use Snicco\Contracts\Mailer;
     use Snicco\Events\PendingMail;
-    use Snicco\Support\WP;
     use Snicco\Mail\Mailable;
+    use Snicco\Support\WP;
     use Snicco\View\ViewFactory;
 
     class SendMail
     {
 
-        /**
-         * @var Mailer
-         */
-        private $mailer;
-
-        /**
-         * @var ViewFactory
-         */
-        private $view_factory;
-        /**
-         * @var Config
-         */
-        private $config;
+        private Mailer $mailer;
+        private ViewFactory $view_factory;
+        private Config $config;
 
         public function __construct(Mailer $mailer, ViewFactory $view_factory, Config $config)
         {
@@ -91,7 +81,7 @@
 
             $context = array_merge(['recipient' => $mail->to[0]], $mail->buildViewData());
 
-            $mail->message = $mail->view
+            $mail->message = isset($mail->view)
                 ? $this->view_factory->render($mail->view, $context)
                 : $mail->message;
 

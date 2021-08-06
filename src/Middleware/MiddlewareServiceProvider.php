@@ -9,7 +9,6 @@
     use Snicco\Contracts\ErrorHandlerInterface;
     use Snicco\Contracts\ServiceProvider;
     use Snicco\Http\ResponseEmitter;
-    use Snicco\Http\ResponseFactory;
     use Snicco\Middleware\Core\EvaluateResponseMiddleware;
     use Snicco\Middleware\Core\OpenRedirectProtection;
     use Snicco\Middleware\Core\OutputBufferMiddleware;
@@ -98,7 +97,6 @@
             $this->container->singleton(RouteRunner::class, function () {
 
                 return new RouteRunner(
-                    $this->container->make(ResponseFactory::class),
                     $this->container,
                     $this->container->make(Pipeline::class),
                     $this->container->make(MiddlewareStack::class)
@@ -153,7 +151,6 @@
 
                 $middleware = new OutputBufferMiddleware(
                     $this->container->make(ResponseEmitter::class),
-                    $this->container->make(ResponseFactory::class),
                 );
 
                 $this->container->instance(OutputBufferMiddleware::class, $middleware);
@@ -167,38 +164,26 @@
         private function bindTrailingSlash()
         {
 
-            $this->container->singleton(TrailingSlash::class, function () {
-
-                    return new TrailingSlash(
-                        $this->withSlashes()
-                    );
-
-            });
+            $this->container->singleton(TrailingSlash::class, fn() => new TrailingSlash(
+                $this->withSlashes()
+            ));
 
         }
 
         private function bindWww()
         {
 
-             $this->container->singleton(Www::class, function () {
-
-                 return new Www(
-                     $this->siteUrl()
-                 );
-
-            });
+             $this->container->singleton(Www::class, fn() => new Www(
+                 $this->siteUrl()
+             ));
 
         }
 
         private function bindOpenRedirectProtection()
         {
-            $this->container->singleton(OpenRedirectProtection::class, function () {
-
-                return new OpenRedirectProtection(
-                    $this->siteUrl()
-                );
-
-            });
+            $this->container->singleton(OpenRedirectProtection::class, fn() => new OpenRedirectProtection(
+                $this->siteUrl()
+            ));
         }
 
 

@@ -34,26 +34,11 @@
     class Cookies
     {
 
-        /**
-         * Cookies from HTTP request
-         *
-         * @var array
-         */
-        protected $requestCookies = [];
+        protected array $request_cookies = [];
 
-        /**
-         * Cookies for HTTP response
-         *
-         * @var array
-         */
-        protected $responseCookies = [];
+        protected array $response_cookies = [];
 
-        /**
-         * Default cookie properties
-         *
-         * @var array
-         */
-        protected $defaults = [
+        protected array $defaults = [
             'value' => '',
             'domain' => null,
             'hostonly' => true,
@@ -64,12 +49,9 @@
             'samesite' => 'Lax'
         ];
 
-        /**
-         * @param array $cookies
-         */
         public function __construct(array $cookies = [])
         {
-            $this->requestCookies = $cookies;
+            $this->request_cookies = $cookies;
         }
 
         /**
@@ -95,7 +77,7 @@
          */
         public function get(string $name, $default = null)
         {
-            return array_key_exists($name, $this->requestCookies) ? $this->requestCookies[$name] : $default;
+            return array_key_exists($name, $this->request_cookies) ? $this->request_cookies[$name] : $default;
         }
 
         /**
@@ -111,14 +93,14 @@
                 $value = ['value' => $value];
             }
 
-            $this->responseCookies[$name] = array_replace($this->defaults, $value);
+            $this->response_cookies[$name] = array_replace($this->defaults, $value);
 
             return $this;
         }
 
         public function add ( Cookie $cookie ) {
 
-            $this->responseCookies[$cookie->name()] = $cookie->properties();
+            $this->response_cookies[$cookie->name()] = $cookie->properties();
             return $this;
 
         }
@@ -132,7 +114,7 @@
         {
             $headers = [];
 
-            foreach ($this->responseCookies as $name => $properties) {
+            foreach ($this->response_cookies as $name => $properties) {
                 $headers[] = $this->toHeader($name, $properties);
             }
 

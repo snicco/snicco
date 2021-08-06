@@ -12,7 +12,6 @@
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Psr7\Response;
     use Snicco\Http\ResponseEmitter;
-    use Snicco\Http\ResponseFactory;
     use Snicco\Http\Responses\InvalidResponse;
     use Snicco\Http\Responses\NullResponse;
     use Snicco\Http\Responses\RedirectResponse;
@@ -20,25 +19,12 @@
     class OutputBufferMiddleware extends Middleware
     {
 
-        /**
-         * @var ResponseEmitter
-         */
-        private $emitter;
+        private ResponseEmitter $emitter;
+        private Response $retained_response;
 
-        /**
-         * @var ResponseFactory
-         */
-        private $factory;
-
-        /**
-         * @var Response
-         */
-        private $retained_response;
-
-        public function __construct(ResponseEmitter $emitter, ResponseFactory $factory)
+        public function __construct(ResponseEmitter $emitter)
         {
             $this->emitter = $emitter;
-            $this->factory = $factory;
         }
 
         public function handle(Request $request, Delegate $next) :ResponseInterface
@@ -50,7 +36,7 @@
 
                 $this->retained_response = $response;
 
-                return $this->factory->null();
+                return $this->response_factory->null();
 
             }
 
@@ -104,7 +90,7 @@
 
                 return true;
 
-            };
+            }
 
             if ( $response instanceof InvalidResponse ) {
                 return true;

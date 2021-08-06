@@ -19,14 +19,10 @@
     class EvaluateResponseMiddleware extends Middleware
     {
 
-        /**
-         * @var bool
-         */
-        private $must_match_current_request;
+        private bool $must_match_current_request;
 
         public function __construct(bool $must_match_current_request = false)
         {
-
             $this->must_match_current_request = $must_match_current_request;
         }
 

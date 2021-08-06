@@ -7,83 +7,78 @@
     namespace Snicco\Mail;
 
     use BetterWpHooks\Contracts\Dispatcher;
-    use BetterWpHooks\Dispatchers\WordpressDispatcher;
     use Contracts\ContainerAdapter;
     use Snicco\Events\PendingMail;
+    use Snicco\Support\Arr;
 
     class MailBuilder
     {
 
-        /**
-         * @var WordpressDispatcher
-         */
-        private $dispatcher;
+        private Dispatcher       $dispatcher;
+        private ContainerAdapter $container;
 
         /**
          * @var object[]
          */
-        private $to;
+        private array $to = [];
 
         /**
          * @var object[]
          */
-        private $cc;
+        private array $cc = [];
 
         /**
          * @var object[]
          */
-        private $bcc;
-
-        /**
-         * @var ContainerAdapter
-         */
-        private $container;
+        private array $bcc = [];
 
         /**
          * @var <string, callable>
          */
         private $override = [];
 
-        public function __construct( Dispatcher $dispatcher, ContainerAdapter $container )
+        public function __construct(Dispatcher $dispatcher, ContainerAdapter $container)
         {
 
             $this->dispatcher = $dispatcher;
             $this->container = $container;
         }
 
-        public function setOverrides (array $override) {
+        public function setOverrides(array $override)
+        {
 
             $this->override = $override;
 
         }
 
-        public function send( Mailable $mail )
+        public function send(Mailable $mail)
         {
-            return $this->dispatcher->dispatch( new PendingMail($this->fillAttributes($mail)) );
+
+            return $this->dispatcher->dispatch(new PendingMail($this->fillAttributes($mail)));
         }
 
-        public function to ( $recipients ) : MailBuilder
+        public function to($recipients) : MailBuilder
         {
 
-            $this->to = $recipients;
-            return $this;
+            $this->to = Arr::wrap($recipients);
 
+            return $this;
         }
 
-        public function cc ( $recipients ) : MailBuilder
+        public function cc($recipients) : MailBuilder
         {
 
-            $this->cc = $recipients;
-            return $this;
+            $this->cc = Arr::wrap($recipients);
 
+            return $this;
         }
 
-        public function bcc ( $recipients ) : MailBuilder
+        public function bcc($recipients) : MailBuilder
         {
 
-            $this->bcc = $recipients;
-            return $this;
+            $this->bcc = Arr::wrap($recipients);
 
+            return $this;
         }
 
         private function fillAttributes(Mailable $mail) : Mailable
@@ -102,6 +97,7 @@
 
         private function hasOverride(Mailable $mail) : bool
         {
+
             return isset($this->override[get_class($mail)]);
         }
 
@@ -112,7 +108,7 @@
 
             $new_mailable = call_user_func($func, $mail);
 
-            if ( get_class($new_mailable) !== $original_class) {
+            if (get_class($new_mailable) !== $original_class) {
 
                 $new_mailable = $this->container->call([$new_mailable, 'build']);
 

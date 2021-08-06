@@ -6,8 +6,6 @@
 
     namespace Snicco\Http\Psr7;
 
-    use Psr\Http\Message\MessageInterface;
-    use Psr\Http\Message\RequestInterface;
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Message\StreamInterface;
     use Psr\Http\Message\UriInterface;
@@ -15,10 +13,7 @@
     trait ImplementsPsr7Request
     {
 
-        /**
-         * @var RequestInterface|MessageInterface|ServerRequestInterface
-         */
-        private $psr_request;
+        private ServerRequestInterface $psr_request;
 
         public function new(ServerRequestInterface $new_psr_request)
         {

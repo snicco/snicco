@@ -7,7 +7,6 @@
     namespace Snicco\Middleware;
 
     use Psr\Http\Message\ResponseInterface;
-    use Psr\Http\Message\UriInterface;
     use Snicco\Contracts\Middleware;
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Request;
@@ -20,26 +19,12 @@
 
         const HEADER = 'Strict-Transport-Security';
 
-
-        /**
-         * @var bool Whether add the preload directive or not
-         */
-        private $preload;
-
-
-        /**
-         * @var int
-         */
-        private $max_age;
-
-        /**
-         * @var false
-         */
-        private $subdomains;
+        protected bool $preload;
+        protected int $max_age;
+        protected bool $subdomains;
 
         public function __construct(ResponseFactory $response_factory, int $max_age = 31536000, $preload = false, $subdomains = false)
         {
-
             $this->response_factory = $response_factory;
             $this->max_age = $max_age;
             $this->preload = $preload;

@@ -10,18 +10,17 @@
     use Snicco\Events\IncomingAdminRequest;
     use Snicco\Events\IncomingRequest;
     use Snicco\Events\ResponseSent;
-    use Snicco\Http\Psr7\Response;
     use Snicco\Http\Responses\NullResponse;
     use Snicco\Middleware\Core\AppendSpecialPathSuffix;
     use Snicco\Middleware\Core\ErrorHandlerMiddleware;
     use Snicco\Middleware\Core\EvaluateResponseMiddleware;
     use Snicco\Middleware\Core\MethodOverride;
     use Snicco\Middleware\Core\OutputBufferMiddleware;
+    use Snicco\Middleware\Core\RouteRunner;
     use Snicco\Middleware\Core\RoutingMiddleware;
     use Snicco\Middleware\Core\SetRequestAttributes;
     use Snicco\Middleware\Core\ShareCookies;
     use Snicco\Routing\Pipeline;
-    use Snicco\Middleware\Core\RouteRunner;
     use Snicco\Support\Arr;
     use Snicco\Traits\SortsMiddleware;
 
@@ -30,17 +29,9 @@
 
         use SortsMiddleware;
 
-        /**
-         * @var Pipeline
-         */
-        private $pipeline;
-
-        /**
-         * @var bool
-         */
-        private $always_with_global_middleware = false;
-
-        private $core_middleware = [
+        private Pipeline $pipeline;
+        private bool $always_with_global_middleware = false;
+        private array $core_middleware = [
             ErrorHandlerMiddleware::class,
             SetRequestAttributes::class,
             MethodOverride::class,
@@ -54,20 +45,15 @@
 
         // Only these get a priority, because they always need to run before any global middleware
         // that a user might provide.
-        private $priority_map = [
+        private array $priority_map = [
             ErrorHandlerMiddleware::class,
             SetRequestAttributes::class,
             EvaluateResponseMiddleware::class,
             ShareCookies::class,
             AppendSpecialPathSuffix::class,
         ];
-
-        private $global_middleware = [];
-
-        /**
-         * @var ResponseEmitter
-         */
-        private $emitter;
+        private array $global_middleware = [];
+        private ResponseEmitter $emitter;
 
         public function __construct(Pipeline $pipeline, ResponseEmitter $emitter = null)
         {

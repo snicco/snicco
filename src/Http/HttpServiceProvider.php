@@ -13,16 +13,12 @@
     use Snicco\Contracts\ViewFactoryInterface;
     use Snicco\Http\Psr7\Request;
     use Snicco\Routing\Pipeline;
-    use Snicco\Routing\UrlGenerator;
-    use Snicco\Session\Session;
-    use Snicco\Session\StatefulRedirector;
 
     class HttpServiceProvider extends ServiceProvider
     {
 
         public function register() : void
         {
-
             $this->bindKernel();
 
             $this->bindResponseFactory();
@@ -110,11 +106,7 @@
         private function bindRedirector()
         {
 
-            $this->container->singleton(AbstractRedirector::class, function () {
-
-                return $this->container->make(Redirector::class);
-
-            });
+            $this->container->singleton(AbstractRedirector::class, fn() => $this->container->make(Redirector::class));
         }
 
         private function bindRequestEndpoint()

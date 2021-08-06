@@ -8,7 +8,6 @@
 
     use Psr\Http\Message\ResponseInterface;
     use Snicco\Contracts\Middleware;
-    use Snicco\Http\Cookies;
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Psr7\Response;

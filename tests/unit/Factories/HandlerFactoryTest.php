@@ -4,15 +4,16 @@
 	declare( strict_types = 1 );
 
 
-	namespace Tests\unit\Handlers;
+	namespace Tests\unit\Factories;
 
-    use Tests\helpers\CreateContainer;
+    use PHPUnit\Framework\TestCase;
+    use Snicco\Factories\RouteActionFactory;
+    use Snicco\Routing\ClosureAction;
+    use Snicco\Routing\ControllerAction;
     use Tests\fixtures\Controllers\Web\WebController;
-	use Snicco\Routing\ControllerAction;
-	use Snicco\Factories\RouteActionFactory;
-	use PHPUnit\Framework\TestCase;
+    use Tests\helpers\CreateContainer;
 
-	class HandlerFactoryTest extends TestCase {
+    class HandlerFactoryTest extends TestCase {
 
 	    use CreateContainer;
 
@@ -41,7 +42,7 @@
 
 			$handler = $this->factory->createUsing($foo);
 
-			$this->assertInstanceOf(\Snicco\Routing\ClosureAction::class, $handler);
+			$this->assertInstanceOf(ClosureAction::class, $handler);
 
 			$this->assertSame($foo, $handler->raw() );
 
@@ -54,7 +55,7 @@
 
 			$handler = $this->factory->createUsing($controller);
 
-			$this->assertInstanceOf(\Snicco\Routing\ControllerAction::class, $handler);
+			$this->assertInstanceOf(ControllerAction::class, $handler);
 
 			$this->assertEquals([WebController::class, 'handle'], $handler->raw() );
 
@@ -132,7 +133,7 @@
 
             $handler = $this->factory->createUsing(InvokableController::class);
 
-            $this->assertInstanceOf(\Snicco\Routing\ControllerAction::class, $handler);
+            $this->assertInstanceOf(ControllerAction::class, $handler);
 
             $this->assertEquals([InvokableController::class, '__invoke'], $handler->raw() );
 

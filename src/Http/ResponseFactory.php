@@ -30,26 +30,11 @@
     class ResponseFactory implements ResponseFactoryInterface
     {
 
-        /**
-         * @var ViewFactory
-         */
-        private $view_factory;
-        /**
-         * @var Psr17ResponseFactory
-         */
-        private $response_factory;
-
-        /**
-         * @var Psr17StreamFactory
-         */
-        private $stream_factory;
-
-        /**
-         * @var AbstractRedirector
-         */
-        private $redirector;
-
-        private $unrecoverable_error_message = 'Something has gone completely wrong.';
+        private ViewFactory $view_factory;
+        private Psr17ResponseFactory $response_factory;
+        private Psr17StreamFactory $stream_factory;
+        private AbstractRedirector $redirector;
+        private string $unrecoverable_error_message = 'Something has gone completely wrong.';
 
         public function __construct(ViewFactory $view, Psr17ResponseFactory $response, Psr17StreamFactory $stream, AbstractRedirector $redirector)
         {
@@ -178,9 +163,7 @@
         /** NOTE: no formatting is performed on the path. */
         public function permanentRedirectTo(string $path) : RedirectResponse
         {
-
             return $this->redirector->createRedirectResponse($path, 301);
-
         }
 
         public function redirectToLogin(bool $reauth = false, string $redirect_on_login = '', int $status_code = 302) : RedirectResponse

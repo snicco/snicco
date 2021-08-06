@@ -4,15 +4,15 @@
 	declare( strict_types = 1 );
 
 
-	namespace Tests\unit\Handlers;
+	namespace Tests\unit\Factories;
 
-    use Tests\helpers\CreateContainer;
-    use Tests\fixtures\TestDependencies\Bar;
-	use Tests\fixtures\TestDependencies\Foo;
-	use PHPUnit\Framework\TestCase;
-	use Snicco\Factories\RouteActionFactory;
-	use Mockery as m;
+    use Mockery as m;
+    use PHPUnit\Framework\TestCase;
+    use Snicco\Factories\RouteActionFactory;
     use Snicco\Http\Psr7\Request;
+    use Tests\fixtures\TestDependencies\Bar;
+    use Tests\fixtures\TestDependencies\Foo;
+    use Tests\helpers\CreateContainer;
 
     class ControllerTest extends TestCase {
 

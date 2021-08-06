@@ -8,7 +8,6 @@
 
     use Snicco\Events\Event;
     use Snicco\Events\PreWP404;
-    use WP;
 
     /**
      * This event listener will prevent that WordPress handles any 404s before we had a chance
@@ -26,7 +25,6 @@
         public function check404()
         {
 
-            /** @var WP $wp */
             global $wp;
 
             Event::forget(PreWP404::class);

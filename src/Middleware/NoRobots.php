@@ -15,24 +15,12 @@
     class NoRobots extends Middleware
     {
 
-        /**
-         * @var bool
-         */
-        private $archive;
-
-        /**
-         * @var bool
-         */
-        private $follow;
-
-        /**
-         * @var bool
-         */
-        private $index;
+        private bool $archive;
+        private bool $follow;
+        private bool $index;
 
         public function __construct($noindex = 'noindex', $nofollow = 'nofollow', $noarchive = 'noarchive')
         {
-
             $this->index = strtolower($noindex) !== 'noindex';
             $this->follow = strtolower($nofollow) !== 'nofollow';
             $this->archive = strtolower($noarchive) !== 'noarchive';

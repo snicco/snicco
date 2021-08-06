@@ -10,22 +10,17 @@
     use Snicco\Contracts\Middleware;
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Request;
-    use Snicco\Http\ResponseFactory;
     use Snicco\Support\Str;
 
     class Www extends Middleware
     {
 
-
-        /**
-         * @var bool
-         */
-        private $with_www;
+        protected $with_www;
 
         public function __construct( string $site_url)
         {
 
-            $this->with_www = strpos($site_url, 'www.');;
+            $this->with_www = strpos($site_url, 'www.');
 
         }
 
