@@ -7,6 +7,7 @@
     namespace Tests\unit\Http;
 
     use Carbon\Carbon;
+    use PHPUnit\Framework\TestCase;
     use Snicco\Testing\TestDoubles\TestMagicLink;
     use Tests\stubs\TestRequest;
     use Tests\unit\Routing\UrlGeneratorTest;
@@ -15,21 +16,12 @@
      * NOTE: The validation test for the MagicLink class are already implemented
      * inside @see UrlGeneratorTest
      */
-    class MagicLinkTest extends \PHPUnit\Framework\TestCase
+    class MagicLinkTest extends TestCase
     {
 
-        /**
-         * @var \Snicco\Testing\TestDoubles\TestMagicLink
-         */
-        private $magic_link;
-
-        /**
-         * @var TestRequest
-         */
-        private $request;
-
-        /** @var Carbon */
-        private $expires;
+        private TestMagicLink $magic_link;
+        private TestRequest $request;
+        private Carbon $expires;
 
         protected function setUp() :void
         {

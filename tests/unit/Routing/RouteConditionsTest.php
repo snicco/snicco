@@ -8,28 +8,23 @@
 
 	use Contracts\ContainerAdapter;
     use Mockery;
+    use Snicco\Events\Event;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\Router;
+    use Snicco\Support\WP;
+    use Tests\fixtures\Conditions\FalseCondition;
     use Tests\fixtures\Conditions\TrueCondition;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
-    use Tests\fixtures\Conditions\FalseCondition;
-    use Snicco\Events\Event;
-    use Snicco\Support\WP;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Routing\Router;
 
     class RouteConditionsTest extends UnitTest {
 
         use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
 
-        /**
-         * @var ContainerAdapter
-         */
-        private $container;
-
-        /** @var Router */
-        private $router;
+        private ContainerAdapter $container;
+        private Router $router;
 
         protected function beforeTestRun()
         {

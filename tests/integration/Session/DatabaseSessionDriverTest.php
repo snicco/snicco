@@ -6,19 +6,13 @@
 
     namespace Tests\integration\Session;
 
-    use Illuminate\Support\Carbon;
     use Mockery;
-    use Tests\helpers\CreatePsr17Factories;
+    use Snicco\Session\Drivers\DatabaseSessionDriver;
+    use Snicco\Support\WP;
     use Tests\helpers\TravelsTime;
-    use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\IntegrationTest;
-    use Tests\stubs\TestApp;
     use Tests\stubs\TestRequest;
     use Tests\TestCase;
     use wpdb;
-    use Snicco\Support\WP;
-    use Snicco\Session\Drivers\ArraySessionDriver;
-    use Snicco\Session\Drivers\DatabaseSessionDriver;
 
     /** @todo test for getting all session for a user */
     class DatabaseSessionDriverTest extends TestCase
@@ -26,10 +20,7 @@
 
         use TravelsTime;
 
-        /**
-         * @var wpdb
-         */
-        private $db;
+        private wpdb $db;
 
         protected function setUp() : void
         {
@@ -258,7 +249,6 @@
 
         }
 
-
         private function createTables()
         {
 
@@ -297,7 +287,5 @@
         {
             return (string) $this->db->get_var("SELECT user_agent FROM wp_sessions WHERE id = '{$id}'");
         }
-
-
 
     }

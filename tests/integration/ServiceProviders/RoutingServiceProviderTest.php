@@ -6,9 +6,6 @@
 
     namespace Tests\integration\ServiceProviders;
 
-    use Tests\fixtures\Conditions\TrueCondition;
-    use Tests\stubs\TestApp;
-    use Tests\TestCase;
     use Snicco\Contracts\AbstractRouteCollection;
     use Snicco\Contracts\RouteMatcher;
     use Snicco\Contracts\RouteRegistrarInterface;
@@ -23,11 +20,13 @@
     use Snicco\Routing\Router;
     use Snicco\Routing\RouteRegistrar;
     use Snicco\Routing\UrlGenerator;
+    use Tests\stubs\TestApp;
+    use Tests\TestCase;
 
     class RoutingServiceProviderTest extends TestCase
     {
 
-        protected $defer_boot = true;
+        protected bool $defer_boot = true;
 
         protected function tearDown() : void
         {

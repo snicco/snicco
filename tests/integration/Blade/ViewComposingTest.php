@@ -6,22 +6,15 @@
 
     namespace Tests\integration\Blade;
 
-    use Tests\integration\Blade\traits\AssertBladeView;
-    use Tests\IntegrationTest;
-    use Tests\stubs\TestApp;
     use Snicco\Blade\BladeEngine;
-    use Snicco\Blade\BladeServiceProvider;
     use Snicco\Blade\BladeView;
     use Snicco\Contracts\ViewEngineInterface;
+    use Tests\stubs\TestApp;
 
     class ViewComposingTest extends BladeTestCase
     {
 
-
-        /**
-         * @var BladeEngine
-         */
-        private $engine;
+        private BladeEngine $engine;
 
         protected function setUp() : void
         {
@@ -34,7 +27,6 @@
 
 
         }
-
 
         private function makeView(string $view) {
 
@@ -65,7 +57,5 @@
             $this->assertViewContent('calvin', $this->makeView('view-composer'));
 
         }
-
-
 
     }

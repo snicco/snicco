@@ -12,8 +12,7 @@
     class PhpViewFinderTest extends TestCase
     {
 
-        /** @var PhpViewFinder */
-        private $finder;
+        private PhpViewFinder $finder;
 
         public function setUp() : void
         {

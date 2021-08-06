@@ -8,23 +8,21 @@
 
 	use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\helpers\CreateDefaultWpApiMocks;
-    use Tests\helpers\CreateRouteCollection;
-    use Tests\helpers\CreateTestSubjects;
-    use Tests\helpers\CreateUrlGenerator;
-    use Snicco\Testing\TestDoubles\TestMagicLink;
-    use Tests\stubs\TestViewFactory;
-    use Tests\UnitTest;
-    use Tests\fixtures\Controllers\Admin\AdminControllerWithMiddleware;
-	use Tests\fixtures\Middleware\MiddlewareWithDependencies;
-    use Snicco\Events\Event;
     use Snicco\Contracts\MagicLink;
-    use Snicco\Contracts\RouteUrlGenerator;
-    use Snicco\Support\WP;
+    use Snicco\Events\Event;
     use Snicco\Http\Psr7\Request;
     use Snicco\Routing\Router;
     use Snicco\Routing\UrlGenerator;
+    use Snicco\Support\WP;
+    use Snicco\Testing\TestDoubles\TestMagicLink;
     use Snicco\View\ViewFactory;
+    use Tests\fixtures\Controllers\Admin\AdminControllerWithMiddleware;
+    use Tests\fixtures\Middleware\MiddlewareWithDependencies;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateTestSubjects;
+    use Tests\helpers\CreateUrlGenerator;
+    use Tests\stubs\TestViewFactory;
+    use Tests\UnitTest;
 
     class RouteMiddlewareDependencyInjectionTest extends UnitTest {
 
@@ -32,13 +30,8 @@
         use CreateDefaultWpApiMocks;
         use CreateUrlGenerator;
 
-        /**
-         * @var ContainerAdapter
-         */
-        private $container;
-
-        /** @var Router */
-        private $router;
+        private ContainerAdapter $container;
+        private Router $router;
 
         protected function beforeTestRun()
         {

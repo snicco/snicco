@@ -35,15 +35,8 @@
         use CreateUrlGenerator;
         use CreateRouteCollection;
 
-        /**
-         * @var Pipeline
-         */
-        private $pipeline;
-
-        /**
-         * @var ServerRequestInterface
-         */
-        private $request;
+        private Pipeline $pipeline;
+        private Request $request;
 
         protected function setUp() : void
         {
@@ -203,12 +196,7 @@
             $response = $this->pipeline
                 ->send($this->request)
                 ->through([
-
-                    function () {
-
-                        return new Response(201);
-
-                    },
+                    fn() => new Response(201),
                 ])
                 ->then(function (ServerRequestInterface $request) {
 
@@ -281,12 +269,10 @@
 
         public function register()
         {
-            // TODO: Implement register() method.
         }
 
         public function unregister()
         {
-            // TODO: Implement unregister() method.
         }
 
         public function transformToResponse(Throwable $e, Request $request) : AppResponse
@@ -305,7 +291,6 @@
 
         public function unrecoverable(Throwable $exception)
         {
-            // TODO: Implement unrecoverable() method.
         }
 
     }

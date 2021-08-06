@@ -7,17 +7,14 @@
     namespace Tests\integration\Routing;
 
     use Psr\Http\Message\ResponseInterface;
-    use Tests\IntegrationTest;
-    use Tests\stubs\HeaderStack;
-    use Tests\stubs\TestRequest;
-    use Tests\TestCase;
-    use Snicco\Events\Event;
     use Snicco\Contracts\Middleware;
-    use Snicco\Events\IncomingApiRequest;
+    use Snicco\Events\Event;
     use Snicco\Events\ResponseSent;
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\ResponseFactory;
+    use Tests\stubs\TestRequest;
+    use Tests\TestCase;
 
     class ApiRoutesTest extends TestCase
     {

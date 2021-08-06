@@ -7,15 +7,8 @@
     namespace Tests\unit\Session;
 
     use Illuminate\Support\Carbon;
-    use Tests\helpers\AssertsResponse;
-    use Tests\helpers\CreateRouteCollection;
-    use Tests\helpers\CreateUrlGenerator;
-    use Tests\helpers\HashesSessionIds;
-    use Tests\stubs\TestRequest;
-    use Tests\UnitTest;
+    use Mockery;
     use Snicco\ExceptionHandling\NullErrorHandler;
-    use Snicco\Testing\TestingErrorHandler;
-    use Snicco\Support\WP;
     use Snicco\Http\Cookies;
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Request;
@@ -24,10 +17,17 @@
     use Snicco\Middleware\Core\ShareCookies;
     use Snicco\Routing\Pipeline;
     use Snicco\Session\Drivers\ArraySessionDriver;
-    use Snicco\Session\Session;
     use Snicco\Session\Middleware\StartSessionMiddleware;
+    use Snicco\Session\Session;
     use Snicco\Session\SessionManager;
     use Snicco\Support\VariableBag;
+    use Snicco\Support\WP;
+    use Tests\helpers\AssertsResponse;
+    use Tests\helpers\CreateRouteCollection;
+    use Tests\helpers\CreateUrlGenerator;
+    use Tests\helpers\HashesSessionIds;
+    use Tests\stubs\TestRequest;
+    use Tests\UnitTest;
 
     class SessionMiddlewareTest extends UnitTest
     {
@@ -37,22 +37,10 @@
         use CreateUrlGenerator;
         use HashesSessionIds;
 
-        /**
-         * @var Request
-         */
-        private $request;
-
-        /**
-         * @var Delegate
-         */
-        private $route_action;
-
-        /**
-         * @var Cookies
-         */
-        private $cookies;
-
-        private $config = [
+        private Request $request;
+        private Delegate $route_action;
+        private Cookies $cookies;
+        private array $config = [
             'lifetime' => 1,
             'lottery' => [0,100],
             'cookie' => 'test_session',
@@ -93,9 +81,8 @@
 
         protected function beforeTearDown()
         {
-
            WP::reset();
-           \Mockery::close();
+           Mockery::close();
         }
 
         private function newMiddleware(Session $session = null, $gc_collection = [0,100]) : StartSessionMiddleware

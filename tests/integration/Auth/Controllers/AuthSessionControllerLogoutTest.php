@@ -6,23 +6,20 @@
 
     namespace Tests\integration\Auth\Controllers;
 
-    use Tests\AuthTestCase;
-    use Snicco\Events\Event;
     use Snicco\Auth\Controllers\AuthSessionController;
     use Snicco\Auth\Events\Logout;
     use Snicco\Auth\Responses\LogoutResponse;
-    use Snicco\Routing\UrlGenerator;
+    use Snicco\Events\Event;
     use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
-
+    use Snicco\Routing\UrlGenerator;
+    use Tests\AuthTestCase;
+    use WP_User;
 
     /** @see AuthSessionController */
     class AuthSessionControllerLogoutTest extends AuthTestCase
     {
 
-        /**
-         * @var UrlGenerator
-         */
-        private $url;
+        private UrlGenerator $url;
 
         protected function setUp() : void
         {
@@ -39,7 +36,7 @@
             parent::setUp();
         }
 
-        private function logoutUrl(\WP_User $user, string $redirect_to = null)
+        private function logoutUrl(WP_User $user, string $redirect_to = null)
         {
 
 
@@ -157,7 +154,7 @@
             // Session Id not the same
             $this->assertNotSame($id_before_logout, $id_after_logout);
 
-            $response->cookie('wp_mvc_session')->assertValue($id_after_logout);
+            $response->cookie('snicco_test_session')->assertValue($id_after_logout);
 
             $this->assertDriverEmpty($id_before_logout);
             $this->assertDriverEmpty($id_after_logout);

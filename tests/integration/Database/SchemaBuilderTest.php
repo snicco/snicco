@@ -12,7 +12,6 @@
     use Snicco\Database\Illuminate\MySqlSchemaBuilder;
     use Snicco\Database\Testing\Assertables\AssertableWpDB;
     use Snicco\Database\WPConnection;
-    use UnitTester;
 
     /**
      * NOTE: This TestClass is expecting a mysql version "^8.0.0".
@@ -20,20 +19,8 @@
     class SchemaBuilderTest extends DatabaseTestCase
     {
 
-        /**
-         * @var UnitTester;
-         */
-        protected $tester;
-
-        /**
-         * @var MySqlSchemaBuilder
-         */
-        private $builder;
-
-        /**
-         * @var WPConnection
-         */
-        private $wp_conn;
+        private MySqlSchemaBuilder $builder;
+        private WPConnection $wp_conn;
 
         protected function setUp() : void
         {

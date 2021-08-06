@@ -6,14 +6,10 @@
 
     namespace Tests\integration\Routing;
 
-    use Tests\IntegrationTest;
-    use Tests\stubs\HeaderStack;
-    use Tests\stubs\TestRequest;
-    use Tests\TestCase;
-    use Snicco\Application\Application;
     use Snicco\Events\Event;
     use Snicco\Events\ResponseSent;
     use Snicco\Http\Responses\RedirectResponse;
+    use Tests\TestCase;
 
     class RedirectRoutesTest extends TestCase
     {

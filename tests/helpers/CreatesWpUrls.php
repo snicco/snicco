@@ -4,13 +4,16 @@
     declare(strict_types = 1);
 
 
-    namespace Tests\helpers;;
+    namespace Tests\helpers;
 
-    use Tests\stubs\TestRequest;
-    use Snicco\Support\WP;
     use Snicco\Http\Psr7\Request;
     use Snicco\Support\Url;
+    use Snicco\Support\WP;
+    use Tests\stubs\TestRequest;
 
+    /**
+     * @internal
+     */
     trait CreatesWpUrls
     {
 

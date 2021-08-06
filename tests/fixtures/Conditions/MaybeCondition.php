@@ -7,14 +7,11 @@
 	namespace Tests\fixtures\Conditions;
 
 	use Snicco\Contracts\ConditionInterface;
-	use Snicco\Contracts\RequestInterface;
     use Snicco\Http\Psr7\Request;
 
     class MaybeCondition implements ConditionInterface {
 
-		/**
-		 * @var bool
-		 */
+        /** @var string|bool */
 		private $make_it_pass;
 
 		public function __construct( $make_it_pass ) {

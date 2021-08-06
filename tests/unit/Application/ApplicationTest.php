@@ -8,37 +8,23 @@
 
     use Contracts\ContainerAdapter;
     use Mockery as m;
-    use Psr\Http\Message\ServerRequestFactoryInterface;
-    use Psr\Http\Message\ServerRequestInterface;
-    use Psr\Http\Message\StreamFactoryInterface;
-    use Psr\Http\Message\UploadedFileFactoryInterface;
-    use Psr\Http\Message\UriFactoryInterface;
-    use Tests\UnitTest;
-    use Tests\stubs\TestContainer;
-    use Tests\helpers\CreateDefaultWpApiMocks;
     use Snicco\Application\Application;
     use Snicco\Application\Config;
-    use Snicco\Contracts\ServiceProvider;
     use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
-    use Snicco\Support\WP;
     use Snicco\Http\Psr7\Request;
-    use Snicco\Http\ResponseFactory;
-    use Snicco\Session\Encryptor;
+    use Snicco\Support\WP;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\stubs\TestContainer;
+    use Tests\UnitTest;
+    use Throwable;
 
     class ApplicationTest extends UnitTest
     {
 
         use CreateDefaultWpApiMocks;
 
-        /**
-         * @var ContainerAdapter
-         */
-        private $container;
-
-        /**
-         * @var string
-         */
-        private $base_path;
+        private ContainerAdapter $container;
+        private string $base_path;
 
         protected function beforeTestRun()
         {
@@ -87,7 +73,7 @@
 
             }
 
-            catch (\Throwable $e) {
+            catch (Throwable $e) {
 
                 $this->fail('Application could not be bootstrapped.'.PHP_EOL.$e->getMessage());
 
@@ -260,9 +246,8 @@
             $this->assertStringStartsWith('base64:', $key);
 
             try {
-                $encryptor = new Encryptor($key);
                 $this->assertTrue(true);
-            } catch (\Throwable $e ) {
+            } catch (Throwable $e ) {
                 $this->fail('Generated app key is not compatible.' . PHP_EOL . $e->getMessage());
             }
 

@@ -11,10 +11,9 @@
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
 
-	class GlobalMiddleware implements MiddlewareInterface {
+    class GlobalMiddleware implements MiddlewareInterface {
 
 		const run_times = 'global_middleware';
-
 
         public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) : ResponseInterface
         {

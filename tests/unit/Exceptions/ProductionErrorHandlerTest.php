@@ -9,6 +9,8 @@
     use Contracts\ContainerAdapter;
     use Exception;
     use Mockery;
+    use Psr\Log\LoggerInterface;
+    use Psr\Log\NullLogger;
     use Snicco\Events\Event;
     use Snicco\Events\UnrecoverableExceptionHandled;
     use Snicco\ExceptionHandling\Exceptions\HttpException;
@@ -36,15 +38,8 @@
         use CreateRouteCollection;
         use CreateDefaultWpApiMocks;
 
-        /**
-         * @var ContainerAdapter
-         */
-        private $container;
-
-        /**
-         * @var Request
-         */
-        private $request;
+        private ContainerAdapter $container;
+        private Request $request;
 
         protected function beforeTestRun()
         {
@@ -55,6 +50,7 @@
             $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
             WP::setFacadeContainer($this->createContainer());
             $this->request = TestRequest::from('GET', 'foo');
+            $this->container->instance(LoggerInterface::class, new NullLogger());
 
         }
 

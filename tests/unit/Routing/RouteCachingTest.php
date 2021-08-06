@@ -43,27 +43,11 @@
         use CreatesWpUrls;
         use CreateUrlGenerator;
 
-        /**
-         * @var Router
-         */
-        private $router;
-
-        private $route_map_file;
-
-        /**
-         * @var string
-         */
-        private $route_collection_file;
-
-        /**
-         * @var CachedRouteCollection
-         */
-        private $routes;
-
-        /**
-         * @var ContainerAdapter
-         */
-        private $container;
+        private Router $router;
+        private string $route_map_file;
+        private string $route_collection_file;
+        private CachedRouteCollection $routes;
+        private ContainerAdapter $container;
 
 
         protected function beforeTestRun()

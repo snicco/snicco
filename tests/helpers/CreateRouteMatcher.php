@@ -8,6 +8,9 @@
 
     use Snicco\Routing\FastRoute\FastRouteMatcher;
 
+    /**
+     * @internal
+     */
     trait CreateRouteMatcher
     {
 

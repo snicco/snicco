@@ -8,21 +8,17 @@
 
     use Nyholm\Psr7\Factory\Psr17Factory;
     use PHPUnit\Framework\Assert;
-    use Tests\stubs\TestApp;
     use Snicco\Application\Application;
     use Snicco\Contracts\ViewInterface;
     use Snicco\Http\ResponseEmitter;
     use Snicco\Support\Arr;
     use Snicco\Testing\TestCase as BaseTestCase;
     use Snicco\Testing\TestResponse;
+    use Tests\stubs\TestApp;
 
     class TestCase extends BaseTestCase
     {
-
-        /**
-         * @var array
-         */
-        protected $mail_data;
+        protected array $mail_data;
 
         protected function setUp() : void
         {

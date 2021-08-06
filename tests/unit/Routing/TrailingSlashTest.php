@@ -25,13 +25,8 @@
         use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
 
-        /**
-         * @var ContainerAdapter
-         */
-        private $container;
-
-        /** @var Router */
-        private $router;
+        private ContainerAdapter $container;
+        private Router $router;
 
         protected function beforeTestRun()
         {

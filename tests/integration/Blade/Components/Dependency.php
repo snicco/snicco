@@ -6,18 +6,14 @@
 
     namespace Tests\integration\Blade\Components;
 
-    use Tests\fixtures\TestDependencies\Foo;
     use Snicco\Blade\BladeComponent;
+    use Tests\fixtures\TestDependencies\Foo;
 
     class Dependency extends BladeComponent
     {
 
-        /**
-         * @var Foo
-         */
-        public $foo;
-
-        public $message;
+        public Foo $foo;
+        public string $message;
 
         protected $except = ['foo'];
 

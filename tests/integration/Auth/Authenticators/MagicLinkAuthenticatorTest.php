@@ -6,20 +6,17 @@
 
     namespace Tests\integration\Auth\Authenticators;
 
-    use Tests\AuthTestCase;
     use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
     use Snicco\Auth\Exceptions\FailedAuthenticationException;
     use Snicco\Auth\Responses\MagicLinkLoginView;
     use Snicco\Contracts\MagicLink;
     use Snicco\Routing\UrlGenerator;
+    use Tests\AuthTestCase;
 
     class MagicLinkAuthenticatorTest extends AuthTestCase
     {
 
-        /**
-         * @var UrlGenerator
-         */
-        private $url;
+        private UrlGenerator $url;
 
         protected function setUp() : void
         {

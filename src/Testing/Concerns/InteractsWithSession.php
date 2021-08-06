@@ -7,7 +7,6 @@
     namespace Snicco\Testing\Concerns;
 
     use PHPUnit\Framework\Assert as PHPUnit;
-    use Tests\helpers\HashesSessionIds;
     use Snicco\Application\Application;
     use Snicco\Session\Contracts\SessionDriver;
     use Snicco\Session\CsrfField;
@@ -15,7 +14,7 @@
     use Snicco\Support\Arr;
 
     /**
-     * @property Session $session
+     * @property Session|null $session
      * @property Application $app
      * @property array $default_headers
      * @property array $default_cookies
@@ -23,11 +22,13 @@
     trait InteractsWithSession
     {
 
-        private $session_id;
+        private ?string $session_id = null;
 
-        protected $internal_keys = ['_user', '_url.previous', '_rotate_at', '_expires_at', '_last_activity'];
+        protected array $internal_keys = [
+            '_user', '_url.previous', '_rotate_at', '_expires_at', '_last_activity',
+        ];
 
-        private $data_saved_to_driver = false;
+        private bool $data_saved_to_driver = false;
 
         /**
          * @param  array  $data Keys are expected to be in dot notation
@@ -41,9 +42,6 @@
                 $this->session->put($key, $value);
 
             }
-
-
-
 
             if ( ! $this->session_id ) {
 
@@ -59,8 +57,6 @@
                 $this->withSessionCookie();
 
             }
-
-
 
             return $this;
 
@@ -80,26 +76,32 @@
 
         }
 
-        protected function withSessionId( string $id ) {
+        protected function withSessionId(string $id) : self
+        {
 
             $this->session_id = $id;
+
             return $this;
 
         }
 
-        protected function sessionDriver() :SessionDriver {
+        protected function sessionDriver() : SessionDriver
+        {
+
             return $this->app->resolve(SessionDriver::class);
         }
 
-        protected function testSessionId () {
+        protected function testSessionId() : string
+        {
 
             return $this->session_id ?? str_repeat('a', 64);
-
         }
 
-        protected function withSessionCookie(string $name = 'wp_mvc_session') {
+        protected function withSessionCookie(string $name = 'snicco_test_session') : self
+        {
 
             $this->default_cookies[$name] = $this->testSessionId();
+
             return $this;
 
         }

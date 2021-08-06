@@ -24,7 +24,6 @@
         use CreateTestSubjects;
 
         protected string $app_key = 'base64:m6DiSxvR82mTQOV6G+JcEOV9jjXH1AkHeMfEQ38uxu4=';
-
         protected RouteCollection $routes;
 
         protected function beforeTestRun()

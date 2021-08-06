@@ -8,6 +8,7 @@
 
     use BetterWpHooks\Traits\DispatchesConditionally;
     use BetterWpHooks\Traits\IsAction;
+    use Snicco\Support\Str;
 
     class IncomingWebRequest extends IncomingRequest
     {
@@ -18,8 +19,7 @@
         public function shouldDispatch() : bool
         {
 
-            return $this->request->isWpFrontEnd();
-
+            return $this->request->isWpFrontEnd() && ! Str::contains($this->request->path(), '/wp-json');
         }
 
     }

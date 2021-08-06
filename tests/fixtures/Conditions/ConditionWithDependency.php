@@ -6,22 +6,14 @@
 
 	namespace Tests\fixtures\Conditions;
 
-	use Tests\fixtures\TestDependencies\Foo;
 	use Snicco\Contracts\ConditionInterface;
     use Snicco\Http\Psr7\Request;
+    use Tests\fixtures\TestDependencies\Foo;
 
     class ConditionWithDependency implements ConditionInterface {
 
-
-		/**
-		 * @var bool
-		 */
-		private $make_it_pass;
-
-		/**
-		 * @var Foo
-		 */
-		private $foo;
+		private bool $make_it_pass;
+		private Foo $foo;
 
 		public function __construct( $make_it_pass, Foo $foo ) {
 

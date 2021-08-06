@@ -27,28 +27,13 @@
         use CreateUrlGenerator;
         use CreateRouteCollection;
 
-
-        /**
-         * @var Delegate
-         */
-        protected $route_action;
-
-        /**
-         * @var TestRequest
-         */
-        protected $request;
-
-        /**
-         * @var ResponseFactory
-         */
-        protected $response_factory;
-
+        protected Delegate $route_action;
+        protected TestRequest $request;
+        protected ResponseFactory $response_factory;
         protected UrlGenerator $generator;
-
         protected RouteCollection $routes;
 
-        /** @return Middleware */
-        abstract public function newMiddleware ();
+        abstract public function newMiddleware () : Middleware;
 
         protected function runMiddleware(Request $request = null, Delegate $delegate = null ) : ResponseInterface
         {
@@ -70,11 +55,9 @@
 
         protected function setUp() : void
         {
-
             parent::setUp();
             $this->response_factory = $this->createResponseFactory();
             $this->request = TestRequest::from('GET', '/foo');
-
 
         }
 

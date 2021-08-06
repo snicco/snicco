@@ -7,11 +7,11 @@
     namespace Tests\unit\Http;
 
     use Psr\Http\Message\ResponseInterface;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Http\ResponseFactory;
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\UnitTest;
-    use Snicco\Http\Psr7\Response;
-    use Snicco\Http\ResponseFactory;
 
     class ResponseTest extends UnitTest
     {
@@ -19,15 +19,8 @@
         use CreateUrlGenerator;
         use CreateRouteCollection;
 
-        /**
-         * @var ResponseFactory
-         */
-        private $factory;
-
-        /**
-         * @var Response
-         */
-        private $response;
+        private ResponseFactory $factory;
+        private Response $response;
 
         protected function setUp() : void
         {

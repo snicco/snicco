@@ -6,23 +6,24 @@
 
     namespace Tests\unit\Session;
 
+    use Mockery;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Session\CsrfField;
+    use Snicco\Session\CsrfStore;
+    use Snicco\Session\Drivers\ArraySessionDriver;
+    use Snicco\Session\Exceptions\InvalidCsrfTokenException;
+    use Snicco\Session\GuardFactory;
+    use Snicco\Session\Middleware\CsrfMiddleware;
+    use Snicco\Session\Session;
+    use Snicco\Support\Arr;
+    use Snicco\Support\WP;
     use Tests\helpers\AssertsResponse;
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\helpers\HashesSessionIds;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use Snicco\Support\WP;
-    use Snicco\Http\Delegate;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Session\Drivers\ArraySessionDriver;
-    use Snicco\Session\CsrfField;
-    use Snicco\Session\Middleware\CsrfMiddleware;
-    use Snicco\Session\CsrfStore;
-    use Snicco\Session\GuardFactory;
-    use Snicco\Session\Exceptions\InvalidCsrfTokenException;
-    use Snicco\Session\Session;
-    use Snicco\Support\Arr;
 
     class CsrfMiddlewareTest extends UnitTest
     {
@@ -32,20 +33,9 @@
         use CreateRouteCollection;
         use HashesSessionIds;
 
-        /**
-         * @var Request
-         */
-        private $request;
-
-        /**
-         * @var Delegate
-         */
-        private $route_action;
-
-        /**
-         * @var ArraySessionDriver
-         */
-        private $handler;
+        private Request $request;
+        private Delegate $route_action;
+        private ArraySessionDriver $handler;
 
         protected function beforeTestRun()
         {
@@ -80,7 +70,7 @@
         protected function beforeTearDown()
         {
             WP::reset();
-            \Mockery::close();
+            Mockery::close();
         }
 
         private function sessionId() : string

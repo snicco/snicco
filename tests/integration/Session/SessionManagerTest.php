@@ -21,10 +21,7 @@
 
         use InteractsWithTime;
 
-        /**
-         * @var SessionManager
-         */
-        private $manager;
+        private SessionManager $manager;
 
 
         public function setUp():void
@@ -74,7 +71,7 @@
 
             // Session cookie got sent
             $cookies = $this->sentCookies()->toHeaders();
-            $this->assertStringContainsString("wp_mvc_session=$new_id", $cookies[0]);
+            $this->assertStringContainsString("snicco_test_session=$new_id", $cookies[0]);
 
             $this->assertSame($this->session->userId(), $calvin->ID);
 
@@ -101,7 +98,7 @@
 
             // Session cookie got sent
             $cookies = $this->sentCookies()->toHeaders();
-            $this->assertStringContainsString("wp_mvc_session=$new_id", $cookies[0]);
+            $this->assertStringContainsString("snicco_test_session=$new_id", $cookies[0]);
 
             // Data is for the new id is not in the driver.
             $this->assertDriverNotHas('bar', $new_id);
@@ -211,11 +208,7 @@
             $this->manager->save();
             $this->backToPresent();
 
-            Event::assertDispatched(function (SessionRegenerated $event)  {
-
-                return $event->session === $this->session;
-
-            });
+            Event::assertDispatched(fn(SessionRegenerated $event) => $event->session === $this->session);
 
         }
 

@@ -7,14 +7,14 @@
 	namespace Tests\unit\View;
 
 	use PHPUnit\Framework\TestCase;
-    use Tests\fixtures\TestDependencies\Foo;
-	use Tests\stubs\TestView;
-	use Tests\fixtures\ViewComposers\FooComposer;
-    use Tests\helpers\CreateContainer;
     use Snicco\Contracts\PhpViewInterface;
-	use Snicco\Contracts\ViewComposer;
-	use Snicco\Contracts\ViewInterface;
-	use Snicco\Factories\ViewComposerFactory;
+    use Snicco\Contracts\ViewComposer;
+    use Snicco\Contracts\ViewInterface;
+    use Snicco\Factories\ViewComposerFactory;
+    use Tests\fixtures\TestDependencies\Foo;
+    use Tests\fixtures\ViewComposers\FooComposer;
+    use Tests\helpers\CreateContainer;
+    use Tests\stubs\TestView;
 
     use const TEST_CONFIG;
 
@@ -23,11 +23,7 @@
 
 	    use CreateContainer;
 
-		/**
-		 * @var ViewComposerFactory;
-		 */
-		private $factory;
-
+		private ViewComposerFactory $factory;
 
 		protected function setUp() : void {
 

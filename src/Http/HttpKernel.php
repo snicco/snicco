@@ -90,8 +90,6 @@
 
             }
 
-            $request_event->matchedRoute();
-
             $this->emitter->emit($response);
 
             ResponseSent::dispatch([$response, $request_event->request]);

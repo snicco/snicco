@@ -6,21 +6,15 @@
 
     namespace Tests\integration\Blade;
 
-    use Tests\integration\Blade\traits\AssertBladeView;
-    use Tests\IntegrationTest;
-    use Tests\stubs\TestApp;
     use Snicco\Blade\BladeEngine;
-    use Snicco\Blade\BladeServiceProvider;
     use Snicco\Contracts\ViewEngineInterface;
     use Snicco\ExceptionHandling\Exceptions\ViewException;
+    use Tests\stubs\TestApp;
 
     class BladeViewTest extends BladeTestCase
     {
 
-        /**
-         * @var BladeEngine
-         */
-        private $engine;
+        private BladeEngine $engine;
 
         protected function setUp() : void
         {

@@ -12,26 +12,23 @@
 
         /**
          * The alert type.
-         *
-         * @var string
          */
-        public $type;
+        public string $type;
 
         /**
          * The alert message.
-         *
-         * @var string
          */
-        public $message;
+        public string $message;
 
         /**
          * Create the component instance.
          *
          * @param  string  $type
          * @param  string  $message
+         *
          * @return void
          */
-        public function __construct( $type, $message)
+        public function __construct( string $type, string $message)
         {
             $this->type = $type;
             $this->message = $message;
@@ -44,9 +41,7 @@
 
         public function isUppercaseFoo($foo) : bool
         {
-
             return $foo === 'FOO';
-
         }
 
     }

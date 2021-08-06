@@ -6,17 +6,17 @@
 
     namespace Tests\unit\Auth;
 
-    use Tests\MiddlewareTestCase;
+    use Mockery;
     use Snicco\Auth\Middleware\AuthUnconfirmed;
-    use Snicco\Support\WP;
     use Snicco\Http\Delegate;
     use Snicco\Routing\Route;
     use Snicco\Session\Drivers\ArraySessionDriver;
     use Snicco\Session\Session;
+    use Snicco\Support\WP;
+    use Tests\MiddlewareTestCase;
 
     class AuthUnconfirmedTest extends MiddlewareTestCase
     {
-
 
         protected function setUp() : void
         {
@@ -24,10 +24,7 @@
             parent::setUp();
             WP::shouldReceive('wpAdminFolder')->andReturn('wp-admin');
 
-            $this->route_action = new Delegate(function () {
-
-                return $this->response_factory->make(200);
-            });
+            $this->route_action = new Delegate(fn() => $this->response_factory->make());
             $route = new Route(['GET'], '/dashboard', function () {
             });
             $route->name('dashboard');
@@ -38,7 +35,7 @@
         protected function tearDown() : void
         {
 
-            \Mockery::close();
+            Mockery::close();
             WP::reset();
             parent::tearDown();
 
@@ -72,10 +69,7 @@
             $request = $this->request->withSession($session)
                                      ->withHeader('referer', 'https://foobar.com/foo/bar');
 
-            $this->generator->setRequestResolver(function () use ($request) {
-
-                return $request;
-            });
+            $this->generator->setRequestResolver(fn() => $request);
 
             $response = $this->runMiddleware($request);
 
@@ -92,10 +86,7 @@
             $session->confirmAuthUntil(300);
             $request = $this->request->withSession($session);
 
-            $this->generator->setRequestResolver(function () use ($request) {
-
-                return $request;
-            });
+            $this->generator->setRequestResolver(fn() => $request);
 
             $response = $this->runMiddleware($request);
 

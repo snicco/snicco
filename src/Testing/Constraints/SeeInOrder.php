@@ -14,17 +14,13 @@
 
         /**
          * The string under validation.
-         *
-         * @var string
          */
-        protected $content;
+        protected string $content;
 
         /**
          * The last value that failed to pass validation.
-         *
-         * @var string
          */
-        protected $failedValue;
+        protected string $failed_value;
 
         /**
          * Create a new constraint instance.
@@ -55,7 +51,7 @@
                 $valuePosition = mb_strpos($this->content, $value, $position);
 
                 if ($valuePosition === false || $valuePosition < $position) {
-                    $this->failedValue = $value;
+                    $this->failed_value = $value;
 
                     return false;
                 }
@@ -77,7 +73,7 @@
             return sprintf(
                 'Failed asserting that \'%s\' contains "%s" in specified order.',
                 $this->content,
-                $this->failedValue
+                $this->failed_value
             );
         }
 

@@ -6,15 +6,14 @@
 
     namespace Tests\unit\Middleware;
 
+    use Snicco\Http\Cookie;
+    use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Middleware\Core\ShareCookies;
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use Snicco\Http\Cookie;
-    use Snicco\Http\Delegate;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Http\ResponseEmitter;
-    use Snicco\Middleware\Core\ShareCookies;
 
     class ShareCookiesTest extends UnitTest
     {
@@ -22,11 +21,7 @@
         use CreateUrlGenerator;
         use CreateRouteCollection;
 
-        /**
-         *
-         * @var Request
-         */
-        private $request;
+        private Request $request;
 
         protected function beforeTestRun()
         {
