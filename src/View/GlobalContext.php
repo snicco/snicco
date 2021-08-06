@@ -11,12 +11,12 @@
     class GlobalContext
     {
 
-        /** @var array */
-        private $context = [];
+        private array $context = [];
 
-        public function add(string $name, $context) {
+        public function add(string $name, $context)
+        {
 
-            if ( is_array($context) ) {
+            if (is_array($context)) {
 
                 $context = new VariableBag($context);
 
@@ -25,7 +25,9 @@
             $this->context[$name] = $context;
         }
 
-        public function get() {
+        public function get() : array
+        {
+
             return $this->context;
         }
 

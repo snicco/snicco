@@ -18,21 +18,14 @@
 
     class PhpViewEngine implements PhpEngine {
 
-		/**
-		 * View finder.
-		 *
-		 * @var PhpViewFinder
-		 */
-		private $finder;
+		private PhpViewFinder $finder;
 
 		/**
 		 * Stack of views ready to be rendered.
 		 *
 		 * @var PhpView[]
 		 */
-		private $view_stack = [];
-
-
+        private array $view_stack = [];
 
 		public function __construct( PhpViewFinder $finder ) {
 
@@ -66,16 +59,11 @@
 
 			$views = Arr::wrap($views);
 
-			$view_name = collect( $views )
-				->reject( function ( string $view_name ) {
-
-					return ! $this->finder->exists( $view_name );
-
-				} )
+			$view_name = collect($views)
+                ->reject(fn(string $view_name) => ! $this->finder->exists($view_name))
 				->whenEmpty( function () use ( $views ) {
 
 					throw new ViewNotFoundException( 'Views not found. Tried [' . implode( ', ', $views ) . ']' );
-
 
 				} )
 				->first();

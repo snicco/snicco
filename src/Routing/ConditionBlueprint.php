@@ -6,6 +6,7 @@
 
     namespace Snicco\Routing;
 
+    use Snicco\Contracts\ConditionInterface;
     use Snicco\Routing\Conditions\CustomCondition;
     use Snicco\Support\Str;
     use Snicco\Traits\ReflectsCallable;
@@ -20,8 +21,10 @@
 
         protected       $type;
         protected       $args;
-        private ?object $instance;
-        private string  $negates;
+        private ?object $instance = null;
+
+        /** @var null|string|ConditionInterface */
+        private $negates = null;
 
         public function __construct(array $arguments = [])
         {
@@ -69,11 +72,13 @@
 
         public function instance() : ?object
         {
+
             return $this->instance;
         }
 
         public function negates() : ?string
         {
+
             return $this->negates;
         }
 
@@ -142,8 +147,6 @@
             ];
 
         }
-
-
 
 
     }

@@ -7,17 +7,17 @@
     namespace Tests\unit\Middleware;
 
     use Mockery;
-    use Tests\helpers\CreateRouteCollection;
-    use Tests\helpers\CreateUrlGenerator;
-    use Tests\UnitTest;
-    use Tests\stubs\TestRequest;
-    use Tests\helpers\AssertsResponse;
-    use Snicco\Support\WP;
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Response;
     use Snicco\Http\ResponseFactory;
-    use Snicco\Middleware\Authenticate;
     use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Middleware\Authenticate;
+    use Snicco\Support\WP;
+    use Tests\helpers\AssertsResponse;
+    use Tests\helpers\CreateRouteCollection;
+    use Tests\helpers\CreateUrlGenerator;
+    use Tests\stubs\TestRequest;
+    use Tests\UnitTest;
 
     class AuthenticateTest extends UnitTest
     {
@@ -66,7 +66,10 @@
         private function newMiddleware(string $url = null)
         {
 
-            return new Authenticate($this->response, $url);
+            $m = new Authenticate($url);
+            $m->setResponseFactory($this->response);
+
+            return $m;
 
         }
 

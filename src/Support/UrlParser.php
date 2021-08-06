@@ -6,8 +6,6 @@
 
     namespace Snicco\Support;
 
-    use Snicco\Support\WP;
-
     use function collect;
 
     class UrlParser
@@ -90,16 +88,6 @@
             preg_match_all('/[^{]+(?=})/', $url_pattern, $matches);
 
             return collect($matches)->flatten()->all();
-
-        }
-
-        public static function optionalSegments(string $url_pattern)
-        {
-
-            preg_match_all('/[^\/{]+[?]/', $url_pattern, $matches);
-
-            return collect($matches)->flatten()->all();
-
 
         }
 

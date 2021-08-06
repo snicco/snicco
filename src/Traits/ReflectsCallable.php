@@ -7,33 +7,36 @@
 	namespace Snicco\Traits;
 
 	use Closure;
-	use Illuminate\Support\Arr;
-	use Illuminate\Support\Str;
-	use ReflectionClass;
-	use ReflectionFunction;
-	use ReflectionMethod;
+    use Illuminate\Support\Arr;
+    use Illuminate\Support\Str;
+    use ReflectionClass;
+    use ReflectionException;
+    use ReflectionFunction;
+    use ReflectionMethod;
 
-	trait ReflectsCallable {
+    trait ReflectsCallable
+    {
 
 
-		private function unwrap(Closure $closure) {
+        private function unwrap(Closure $closure)
+        {
 
-			$reflection =  new \ReflectionFunction($closure);
+            $reflection = new ReflectionFunction($closure);
 
-			$static_vars = $reflection->getStaticVariables();
+            $static_vars = $reflection->getStaticVariables();
 
-			return $static_vars['closure'] ?? Arr::first( $static_vars );
+            return $static_vars['closure'] ?? Arr::first($static_vars);
 
 		}
 
 
-		/**
-		 * @param array|Closure $callback
-		 * @param string $default_method
-		 *
-		 * @return \ReflectionFunction|\ReflectionMethod
-		 * @throws \ReflectionException
-		 */
+        /**
+         * @param  array|Closure  $callback
+         * @param  string  $default_method
+         *
+         * @return ReflectionFunction|ReflectionMethod
+         * @throws ReflectionException
+         */
 		private function getCallReflector( $callback, string $default_method = '' ) {
 
 			if ( $this->isClosure( $callback ) ) {
@@ -49,13 +52,13 @@
 		}
 
 
-		/**
-		 * @param string|array|Closure $callable
-		 * @param $payload
-		 *
-		 * @return array
-		 * @throws \ReflectionException
-		 */
+        /**
+         * @param  string|array|Closure  $callable
+         * @param $payload
+         *
+         * @return array
+         * @throws ReflectionException
+         */
 		private function buildNamedParameters( $callable , $payload ) : array {
 
 
@@ -128,7 +131,7 @@
 		}
 
         /**
-         * @throws \ReflectionException
+         * @throws ReflectionException
          */
         private function buildNamedConstructorArgs( string $class , $arguments) {
 

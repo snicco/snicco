@@ -6,17 +6,16 @@
 
     namespace Snicco\View;
 
+    use LogicException;
 
     class MethodField
     {
 
-        /**
-         * @var string
-         */
-        private $app_key;
+        private string $app_key;
 
         public function __construct(string $app_key)
         {
+
             $this->app_key = $app_key;
         }
 
@@ -26,7 +25,7 @@
             $method = strtoupper($method);
 
             if ( ! $this->allowedMethod($method) ) {
-                throw new \LogicException("Unsupported HTTP method [$method] used.");
+                throw new LogicException("Unsupported HTTP method [$method] used.");
             }
 
             $signature = $this->sign($method);
@@ -38,10 +37,11 @@
 
         public function string(string $method ) : string
         {
+
             $method = strtoupper($method);
 
             if ( ! $this->allowedMethod($method) ) {
-                throw new \LogicException("Unsupported HTTP method [$method] used.");
+                throw new LogicException("Unsupported HTTP method [$method] used.");
             }
 
             $signature = $this->sign($method);
@@ -52,6 +52,7 @@
 
         private function allowedMethod(string $method ) : bool
         {
+
             $valid = ['PUT', 'PATCH', 'DELETE'];
 
             $method = strtoupper($method);
@@ -67,6 +68,7 @@
 
         public function validate(string $signature)
         {
+
             [$method, $signature] = explode('|', $signature);
 
             if ( ! $this->allowedMethod($method) ) {

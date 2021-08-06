@@ -7,53 +7,35 @@
 	namespace Snicco\View;
 
 	use Snicco\Contracts\PhpViewInterface;
-	use Snicco\Contracts\ViewInterface;
-	use Snicco\Support\WP;
-	use Snicco\Support\Arr;
+    use Snicco\Contracts\ViewInterface;
+    use Snicco\Support\Arr;
+    use Snicco\Support\WP;
 
+    class PhpView implements PhpViewInterface
+    {
 
-	class PhpView implements PhpViewInterface {
+        /**
+         * Name of view file header based on which to resolve parent views.
+         *
+         * @var string
+         */
+        public const PARENT_FILE_INDICATOR = 'Layout';
 
-		/**
-		 * Name of view file header based on which to resolve parent views.
-		 *
-		 * @var string
-		 */
-		public const PARENT_FILE_INDICATOR = 'Layout';
+        private PhpViewEngine $engine;
+        private string        $filepath;
+        private ?PhpView      $parent_view;
+        private array         $context = [];
+        private string        $name;
 
-		/**
-		 * @var PhpViewEngine
-		 */
-		private $engine;
+        public function __construct(PhpViewEngine $engine, string $name, string $path)
+        {
 
-		/**
-		 * @var string
-		 */
-		private $filepath;
+            $this->engine = $engine;
+            $this->name = $name;
+            $this->filepath = $path;
+            $this->parent_view = $this->parseParentView();
 
-		/**
-		 * @var PhpView|null
-		 */
-		private $parent_view;
-
-		/**
-		 * @var array
-		 */
-		private $context = [];
-
-		/**
-		 * @var string
-		 */
-		private $name;
-
-		public function __construct( PhpViewEngine $engine, string $name , string $path ) {
-
-			$this->engine = $engine;
-			$this->name = $name;
-			$this->filepath = $path;
-			$this->parent_view = $this->parseParentView();
-
-		}
+        }
 
 		public function path() : string {
 

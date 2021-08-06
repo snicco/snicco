@@ -52,12 +52,12 @@
         public function find(string $method, string $path) : RoutingResult
         {
 
-            if ( $this->route_cache ) {
+            if (isset($this->route_cache)) {
 
                 $dispatcher = new RouteDispatcher($this->route_cache);
 
                 return $this->hydrateRoutingResult(
-                   $this->toRoutingResult( $dispatcher->dispatch($method, $path) )
+                    $this->toRoutingResult($dispatcher->dispatch($method, $path))
                 );
 
             }

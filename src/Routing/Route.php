@@ -102,7 +102,7 @@
 
             return [
                 'action' => $this->action,
-                'name' => $this->name,
+                'name' => $this->name ?? '',
                 'middleware' => $this->middleware ?? [],
                 'conditions' => $this->condition_blueprints,
                 'namespace' => $this->namespace ?? '',

@@ -122,7 +122,7 @@
             $response->assertStatus(400);
             $response->assertIsJson();
             $response->assertExactJson([
-                'message' => 'Something went wrong.',
+                'message' => 'We could not process your request.',
                 'errors' => [
                     'foo' => [
                         'foo must have a length between 5 and 10.',
@@ -131,8 +131,8 @@
                     'bar' => [
                         'bar must have a length between 5 and 10.',
                         'bar can not have special chars',
-                    ]
-                ]
+                    ],
+                ],
             ]);
 
         }

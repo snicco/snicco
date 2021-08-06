@@ -7,24 +7,23 @@
 	namespace Snicco\Support;
 
 	use Contracts\ContainerAdapter;
-	use Mockery;
-	use Mockery\MockInterface;
-	use RuntimeException;
+    use Mockery;
+    use Mockery\Expectation;
+    use Mockery\MockInterface;
+    use RuntimeException;
 
-	abstract class WpFacade {
+    abstract class WpFacade
+    {
 
 
-		/** @var ContainerAdapter */
-		private static $container;
+        private static ?ContainerAdapter $container;
 
-		/**
-		 * The resolved object instances.
-		 *
-		 * @var array
-		 */
-		private static $resolvedInstance;
+        /**
+         * The resolved object instances.
+         */
+        private static array $resolvedInstance;
 
-		/**
+        /**
 		 * Get the root object behind the facade.
 		 *
 		 * @return mixed
@@ -35,13 +34,13 @@
 
 		}
 
-		/**
-		 * Get the registered name of the component.
-		 *
-		 * @return string
-		 *
-		 * @throws \RuntimeException
-		 */
+        /**
+         * Get the registered name of the component.
+         *
+         * @return string
+         *
+         * @throws RuntimeException
+         */
 		protected static function getFacadeAccessor() {
 
 			throw new RuntimeException( 'Facade does not implement getFacadeAccessor method.' );
@@ -84,11 +83,11 @@
 			unset( static::$resolvedInstance[ $name ] );
 		}
 
-		/**
-		 * Clear all of the resolved instances.
-		 *
-		 * @return void
-		 */
+        /**
+         * Clear all the resolved instances.
+         *
+         * @return void
+         */
 		public static function clearResolvedInstances() {
 
 			static::$resolvedInstance = [];
@@ -129,11 +128,11 @@
 
 		}
 
-		/**
-		 * Convert the facade into a Mockery spy.
-		 *
-		 * @return \Mockery\MockInterface
-		 */
+        /**
+         * Convert the facade into a Mockery spy.
+         *
+         * @return MockInterface
+         */
 		public static function spy() {
 
 			if ( ! static::isMock() ) {
@@ -148,11 +147,11 @@
 			}
 		}
 
-		/**
-		 * Initiate a partial mock on the facade.
-		 *
-		 * @return \Mockery\MockInterface
-		 */
+        /**
+         * Initiate a partial mock on the facade.
+         *
+         * @return MockInterface
+         */
 		public static function partialMock() {
 
 			$name = static::getFacadeAccessor();
@@ -164,11 +163,11 @@
 			return $mock->makePartial();
 		}
 
-		/**
-		 * Initiate a mock expectation on the facade.
-		 *
-		 * @return \Mockery\Expectation
-		 */
+        /**
+         * Initiate a mock expectation on the facade.
+         *
+         * @return Expectation
+         */
 		public static function shouldReceive() {
 
 			$name = static::getFacadeAccessor();
@@ -181,11 +180,11 @@
 			return $mock->shouldReceive( ...func_get_args() );
 		}
 
-		/**
-		 * Create a fresh mock instance for the given class.
-		 *
-		 * @return \Mockery\MockInterface
-		 */
+        /**
+         * Create a fresh mock instance for the given class.
+         *
+         * @return MockInterface
+         */
 		public static function createFreshMockInstance() {
 
 			$mock = static::createMock();
@@ -197,11 +196,11 @@
 
 		}
 
-		/**
-		 * Create a fresh mock instance for the given class.
-		 *
-		 * @return \Mockery\MockInterface
-		 */
+        /**
+         * Create a fresh mock instance for the given class.
+         *
+         * @return MockInterface
+         */
 		protected static function createMock() {
 
 			$class = static::getMockableClass();

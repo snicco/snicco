@@ -116,23 +116,6 @@
 
         }
 
-        public static function pullByValueReturnKey($value, &$array)
-        {
-
-            $index = array_search($value, $array, true);
-
-            if ( ! $index) {
-
-                return null;
-
-            }
-
-            Arr::pull($array, $index);
-
-            return $index;
-
-        }
-
         public static function mergeAfterValue(string $value, array $array_to_merge_into, array $array_to_merge) : array
         {
 
