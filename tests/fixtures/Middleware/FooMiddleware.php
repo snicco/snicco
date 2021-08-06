@@ -12,10 +12,7 @@
 
     class FooMiddleware extends Middleware {
 
-        /**
-         * @var mixed|string
-         */
-        private $foo;
+        private string $foo;
 
         public function __construct( $foo = 'foo')
         {

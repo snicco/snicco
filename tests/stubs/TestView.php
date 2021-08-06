@@ -7,14 +7,13 @@
 	namespace Tests\stubs;
 
 	use Snicco\Contracts\PhpViewInterface;
-	use Snicco\Contracts\ViewInterface;
-	use Snicco\Support\Arr;
+    use Snicco\Contracts\ViewInterface;
+    use Snicco\Support\Arr;
 
-	class TestView implements PhpViewInterface {
+    class TestView implements PhpViewInterface {
 
-		private $context = [];
-
-		private $name;
+		private array $context = [];
+		private string $name;
 
 		public function __construct(string $name) {
 

@@ -6,25 +6,19 @@
 
     namespace Tests\integration\Auth;
 
-    use Tests\AuthTestCase;
-    use Tests\helpers\HashesSessionIds;
-    use Tests\helpers\TravelsTime;
-    use Tests\stubs\TestApp;
-    use Tests\stubs\TestRequest;
-    use Snicco\Auth\AuthSessionManager;
     use Snicco\Session\Contracts\SessionDriver;
     use Snicco\Session\Contracts\SessionManagerInterface;
     use Snicco\Session\Drivers\ArraySessionDriver;
     use Snicco\Session\Session;
-    use Snicco\Session\SessionManager;
-    use Snicco\Support\Arr;
+    use Tests\AuthTestCase;
+    use Tests\stubs\TestApp;
+    use Tests\stubs\TestRequest;
+    use WP_User;
 
     class AuthSessionManagerTest extends AuthTestCase
     {
 
-
-        /** @var ArraySessionDriver */
-        private $driver;
+        private ArraySessionDriver $driver;
 
         protected function setUp() : void
         {
@@ -36,7 +30,7 @@
             parent::setUp();
         }
 
-        private function seedSessions(\WP_User $user, int $count ) {
+        private function seedSessions(WP_User $user, int $count ) {
 
             $created = 0;
 

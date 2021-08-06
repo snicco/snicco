@@ -12,11 +12,7 @@
     class IsPost implements ConditionInterface
     {
 
-
-        /**
-         * @var bool
-         */
-        private $pass;
+        private bool $pass;
 
         public function __construct(bool $pass = true)
         {

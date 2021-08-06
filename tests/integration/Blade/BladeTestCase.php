@@ -6,10 +6,9 @@
 
     namespace Tests\integration\Blade;
 
-    use Illuminate\Support\Facades\Facade;
-    use Tests\TestCase;
     use Snicco\Blade\BladeDirectiveServiceProvider;
     use Snicco\Blade\BladeServiceProvider;
+    use Tests\TestCase;
 
     class BladeTestCase extends TestCase
     {
@@ -21,7 +20,6 @@
 
             parent::setUp();
 
-            // $this->rmdir(BLADE_CACHE);
         }
 
 

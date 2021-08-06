@@ -17,9 +17,7 @@
 
         public function packageProviders() : array
         {
-
             return array_merge([SessionServiceProvider::class], parent::packageProviders());
-
         }
 
         /** @test */

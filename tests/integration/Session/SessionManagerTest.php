@@ -21,10 +21,7 @@
 
         use InteractsWithTime;
 
-        /**
-         * @var SessionManager
-         */
-        private $manager;
+        private SessionManager $manager;
 
 
         public function setUp():void
@@ -211,11 +208,7 @@
             $this->manager->save();
             $this->backToPresent();
 
-            Event::assertDispatched(function (SessionRegenerated $event)  {
-
-                return $event->session === $this->session;
-
-            });
+            Event::assertDispatched(fn(SessionRegenerated $event) => $event->session === $this->session);
 
         }
 

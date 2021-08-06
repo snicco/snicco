@@ -13,6 +13,9 @@
     use Snicco\Testing\TestDoubles\TestMagicLink;
     use Tests\stubs\TestRequest;
 
+    /**
+     * @internal
+     */
     trait CreateUrlGenerator
     {
 

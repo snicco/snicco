@@ -12,14 +12,10 @@
 
     class BarMiddleware extends Middleware {
 
-        /**
-         * @var string
-         */
-        private $bar;
+        private string $bar;
 
         public function __construct( $bar = 'bar')
         {
-
             $this->bar = $bar;
         }
 

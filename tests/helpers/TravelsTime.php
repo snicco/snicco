@@ -9,6 +9,9 @@
     use Carbon\Carbon;
     use Carbon\CarbonImmutable;
 
+    /**
+     * @internal
+     */
     trait TravelsTime
     {
 

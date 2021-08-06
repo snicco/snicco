@@ -8,7 +8,7 @@
 
 	class Bar {
 
-		public $bar = 'bar';
+		public string $bar = 'bar';
 
 		public function __toString() {
 

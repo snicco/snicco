@@ -8,38 +8,18 @@
 
     use Carbon\Carbon;
     use Codeception\TestCase\WPTestCase;
+    use Snicco\Http\DatabaseMagicLink;
     use Tests\stubs\TestRequest;
     use wpdb;
-    use Snicco\Contracts\MagicLink;
-    use Snicco\Http\DatabaseMagicLink;
 
     class DatabaseMagicLinkTest extends WPTestCase
     {
 
-        /**
-         * @var wpdb;
-         */
-        private $db;
-        /**
-         * @var MagicLink
-         */
-
-        private $magic_link;
-
-        /**
-         * @var Carbon
-         */
-        private $expires;
-
-        /**
-         * @var TestRequest
-         */
-        private $request;
-
-        /**
-         * @var string
-         */
-        private $table;
+        private wpdb $db;
+        private DatabaseMagicLink $magic_link;
+        private Carbon $expires;
+        private TestRequest $request;
+        private string $table;
 
         protected function setUp() :void
         {

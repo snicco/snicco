@@ -20,10 +20,7 @@
 
         use TravelsTime;
 
-        /**
-         * @var wpdb
-         */
-        private $db;
+        private wpdb $db;
 
         protected function setUp() : void
         {
@@ -252,7 +249,6 @@
 
         }
 
-
         private function createTables()
         {
 
@@ -291,7 +287,5 @@
         {
             return (string) $this->db->get_var("SELECT user_agent FROM wp_sessions WHERE id = '{$id}'");
         }
-
-
 
     }

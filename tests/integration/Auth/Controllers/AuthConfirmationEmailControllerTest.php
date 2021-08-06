@@ -6,13 +6,13 @@
 
     namespace Tests\integration\Auth\Controllers;
 
-    use Tests\AuthTestCase;
     use Snicco\Auth\Mail\ConfirmAuthMail;
+    use Tests\AuthTestCase;
 
     class AuthConfirmationEmailControllerTest extends AuthTestCase
     {
 
-        private $endpoint = '/auth/confirm/magic-link';
+        private string $endpoint = '/auth/confirm/magic-link';
 
         /** @test */
         public function the_endpoint_exists()

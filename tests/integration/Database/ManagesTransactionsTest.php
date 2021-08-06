@@ -10,7 +10,6 @@
     use Illuminate\Database\QueryException;
     use Mockery as m;
     use mysqli_sql_exception;
-    use Snicco\Database\BetterWPDb;
     use Snicco\Database\Contracts\BetterWPDbInterface;
     use Snicco\Database\WPConnection;
     use Throwable;
@@ -19,11 +18,7 @@
     {
 
         protected bool $defer_boot = true;
-
-        /**
-         * @var BetterWPDb
-         */
-        private $wpdb;
+        private BetterWPDbInterface $wpdb;
 
         protected function setUp() : void
         {

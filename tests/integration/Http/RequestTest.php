@@ -12,10 +12,7 @@
     class RequestTest extends WPTestCase
     {
 
-        /**
-         * @var TestRequest
-         */
-        private $request;
+        private TestRequest $request;
 
         protected function setUp() : void
         {

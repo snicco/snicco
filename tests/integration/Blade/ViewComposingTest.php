@@ -14,11 +14,7 @@
     class ViewComposingTest extends BladeTestCase
     {
 
-
-        /**
-         * @var BladeEngine
-         */
-        private $engine;
+        private BladeEngine $engine;
 
         protected function setUp() : void
         {
@@ -31,7 +27,6 @@
 
 
         }
-
 
         private function makeView(string $view) {
 
@@ -62,7 +57,5 @@
             $this->assertViewContent('calvin', $this->makeView('view-composer'));
 
         }
-
-
 
     }

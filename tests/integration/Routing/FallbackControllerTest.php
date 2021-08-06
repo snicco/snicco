@@ -6,26 +6,21 @@
 
     namespace Tests\integration\Routing;
 
+    use Snicco\Routing\Router;
     use Tests\fixtures\Middleware\GlobalMiddleware;
     use Tests\fixtures\Middleware\WebMiddleware;
     use Tests\TestCase;
-    use Snicco\Routing\Router;
 
     class FallbackControllerTest extends TestCase
     {
 
-
-        /**
-         * @var Router
-         */
-        private $router;
+        private Router $router;
 
         protected function setUp() : void
         {
 
             $this->defer_boot = true;
             $this->afterApplicationCreated(function () {
-
                 $this->router = $this->app->resolve(Router::class);
             });
 
@@ -39,10 +34,7 @@
 
             $this->withAddedConfig('routing.trailing_slash', true);
             $this->boot();
-            $this->router->fallback(function () {
-
-                return 'fallback';
-            });
+            $this->router->fallback(fn() => 'fallback');
 
             $response = $this->get('/bogus');
             $response->assertNotNullResponse();
@@ -56,10 +48,7 @@
 
             $this->withAddedConfig('routing.trailing_slash', false);
             $this->boot();
-            $this->router->fallback(function () {
-
-                return 'fallback';
-            });
+            $this->router->fallback(fn() => 'fallback');
 
             $response = $this->get('/bogus/');
             $response->assertNotNullResponse();
@@ -72,10 +61,7 @@
         {
 
             $this->boot();
-            $this->router->fallback(function () {
-
-                return 'foo_fallback';
-            });
+            $this->router->fallback(fn() => 'foo_fallback');
             $response = $this->get('robots.txt');
             $response->assertNullResponse();
 
@@ -86,10 +72,7 @@
         {
 
             $this->boot();
-            $this->router->fallback(function () {
-
-                return 'foo_fallback';
-            });
+            $this->router->fallback(fn() => 'foo_fallback');
             $response = $this->get('robots.txt');
             $response->assertNullResponse();
 
@@ -118,10 +101,7 @@
             $this->withAddedConfig(['middleware.groups.global' => [GlobalMiddleware::class]])
                  ->boot();
 
-            $this->router->fallback(function () {
-
-                return 'FOO_FALLBACK';
-            });
+            $this->router->fallback(fn() => 'FOO_FALLBACK');
 
             $this->get('/bogus')->assertOk()->assertSee('FOO_FALLBACK');
 
@@ -158,10 +138,7 @@
                 'middleware.always_run_global' => true,
             ])->boot();
 
-            $this->router->fallback(function () {
-
-                return 'FOO_FALLBACK';
-            });
+            $this->router->fallback(fn() => 'FOO_FALLBACK');
 
             $this->get('bogus')->assertOk()->assertSee('FOO_FALLBACK');
 

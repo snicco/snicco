@@ -13,7 +13,6 @@
 
         public function generateSecretKey($length = 16, $prefix = '') : string
         {
-
             return 'secret';
         }
 
@@ -23,13 +22,11 @@
 
         public function verifyOneTimeCode(string $secret, string $code) : bool
         {
-
             return $code === '123456';
         }
 
         public function renderQrCode() : string
         {
-
             return 'code';
         }
 
