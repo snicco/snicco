@@ -10,6 +10,7 @@
     use Mockery;
     use Psr\Log\LoggerInterface;
     use Psr\Log\LogLevel;
+    use Psr\Log\NullLogger;
     use Snicco\Events\Event;
     use Snicco\ExceptionHandling\ProductionErrorHandler;
     use Snicco\Factories\ErrorHandlerFactory;
@@ -58,6 +59,7 @@
             WP::shouldReceive('userId')->andReturn(10)->byDefault();
             $GLOBALS['test']['log'] = [];
             $this->request = TestRequest::from('GET', 'foo');
+            $this->container->instance(LoggerInterface::class, new NullLogger());
 
         }
 
@@ -245,9 +247,7 @@
 
         private function newErrorHandler() : ProductionErrorHandler
         {
-
             return ErrorHandlerFactory::make($this->container, false);
-
         }
 
 

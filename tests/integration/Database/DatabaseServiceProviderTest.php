@@ -24,7 +24,7 @@
     class DatabaseServiceProviderTest extends DatabaseTestCase
     {
 
-        protected $defer_boot = true;
+        protected bool $defer_boot = true;
 
         /** @test */
         public function the_illuminate_event_dispatcher_adapter_is_bound()

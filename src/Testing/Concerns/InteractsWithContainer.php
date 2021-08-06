@@ -11,17 +11,17 @@
 
     trait InteractsWithContainer
     {
-
-
         /**
-         * Register an instance of an object in the container.
+         * Swap an instance of an object in the container.
          *
          * @param  string  $abstract
-         * @param  object  $instance
-         * @return object
+         * @param  mixed  $instance
+         *
+         * @return mixed
          */
-        protected function swap($abstract, $instance)
+        protected function swap(string $abstract, $instance)
         {
+
             return $this->instance($abstract, $instance);
         }
 
@@ -29,11 +29,12 @@
          * Register an instance of an object in the container.
          *
          * @param  string  $abstract
-         * @param  object|string  $instance
-         * @return object
+         * @param  mixed  $instance
+         * @return mixed
          */
-        protected function instance($abstract, $instance)
+        protected function instance(string $abstract, $instance)
         {
+
             $this->app->container()->instance($abstract, $instance);
 
             return $instance;
@@ -41,9 +42,7 @@
 
         private function replaceBindings()
         {
-
             $this->swap(ResponseEmitter::class, new TestResponseEmitter());
-
         }
 
 

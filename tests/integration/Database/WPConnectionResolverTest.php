@@ -18,7 +18,7 @@
     class WPConnectionResolverTest extends DatabaseTestCase
     {
 
-        protected $defer_boot = true;
+        protected bool $defer_boot = true;
 
         private function getResolver(array $extra_connections = []) : WPConnectionResolver
         {

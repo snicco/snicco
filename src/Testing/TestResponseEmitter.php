@@ -13,32 +13,25 @@
     class TestResponseEmitter extends ResponseEmitter
     {
 
-        /**
-         * @var ResponseInterface
-         */
-        public $response;
-
-        /**
-         * @var Cookies
-         */
-        public $cookies;
+        public ?TestResponse $response = null;
+        public Cookies       $cookies;
 
 
         public function emit(ResponseInterface $response) : void
         {
+
             $this->response = new TestResponse($response);
         }
 
         public function emitCookies(Cookies $cookies)
         {
+
             $this->cookies = $cookies;
         }
 
         public function emitHeaders(ResponseInterface $response) : void
         {
-
             //
-
         }
 
     }

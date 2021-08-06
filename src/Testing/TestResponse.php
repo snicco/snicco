@@ -24,42 +24,13 @@
     class TestResponse
     {
 
-        /**
-         * The response to delegate to.
-         *
-         * @var Response
-         */
-        public $psr_response;
-
-        /**
-         * @var string
-         */
-        protected $streamed_content;
-
-        /**
-         * @var VariableBag
-         */
-        private $headers;
-
-        /**
-         * @var mixed
-         */
-        private $status_code;
-
-        /**
-         * @var ViewInterface|null
-         */
-        private $view;
-
-        /**
-         * @var Session|null
-         */
-        private $session;
-
-        /**
-         * @var Application
-         */
-        private $app;
+        public Response        $psr_response;
+        protected string       $streamed_content;
+        private VariableBag    $headers;
+        private int            $status_code;
+        private ?ViewInterface $view    = null;
+        private ?Session       $session = null;
+        private Application    $app;
 
         public function __construct(Response $response)
         {
@@ -73,25 +44,21 @@
 
         public function __call($method, $args)
         {
-
             return $this->psr_response->{$method}(...$args);
         }
 
         public function setSession(Session $session)
         {
-
             $this->session = $session;
         }
 
         public function setRenderedView(ViewInterface $rendered_view)
         {
-
             $this->view = $rendered_view;
         }
 
         public function setApp(Application $app)
         {
-
             $this->app = $app;
         }
 
@@ -321,11 +288,7 @@
             $this->assertHeader('Set-Cookie');
 
             $header = $this->psr_response->getHeader('Set-Cookie');
-            $headers = collect($header)->filter(function ($header) use ($cookie_name) {
-
-                return Str::startsWith($header, $cookie_name);
-
-            });
+            $headers = collect($header)->filter(fn($header) => Str::startsWith($header, $cookie_name));
 
             if ($headers->count() > 1) {
                 PHPUnit::fail("The cookie [$cookie_name] was set [{$headers->count()} times on the response.]");

@@ -12,23 +12,14 @@
     class WPConnectionResolver implements ConnectionResolverInterface
     {
 
-
-        /** @var string */
-        private $default_connection;
-
-        /**
-         * @var array
-         */
-        private $connections;
+        private string $default_connection;
+        private array  $connections;
+        private string $db_class;
 
         /**
          * @var WPConnectionInterface[]
          */
-        private $instantiated_connections;
-        /**
-         * @var string
-         */
-        private $db_class;
+        private array $instantiated_connections;
 
         /**
          *
@@ -163,7 +154,7 @@
 
             catch (Throwable $e) {
 
-                // This will work for sure if Wordpress where ever
+                // This will work for sure if WordPress where ever
                 // to delete magic method accessors, which tbh will probably never happen. Lol.
                 return (function () {
 

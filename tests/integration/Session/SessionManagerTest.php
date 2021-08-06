@@ -74,7 +74,7 @@
 
             // Session cookie got sent
             $cookies = $this->sentCookies()->toHeaders();
-            $this->assertStringContainsString("wp_mvc_session=$new_id", $cookies[0]);
+            $this->assertStringContainsString("snicco_test_session=$new_id", $cookies[0]);
 
             $this->assertSame($this->session->userId(), $calvin->ID);
 
@@ -101,7 +101,7 @@
 
             // Session cookie got sent
             $cookies = $this->sentCookies()->toHeaders();
-            $this->assertStringContainsString("wp_mvc_session=$new_id", $cookies[0]);
+            $this->assertStringContainsString("snicco_test_session=$new_id", $cookies[0]);
 
             // Data is for the new id is not in the driver.
             $this->assertDriverNotHas('bar', $new_id);

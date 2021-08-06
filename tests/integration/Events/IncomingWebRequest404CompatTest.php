@@ -12,7 +12,7 @@
     class IncomingWebRequest404CompatTest extends TestCase
     {
 
-        protected $defer_boot = true;
+        protected bool $defer_boot = true;
 
         protected function setUp() : void
         {

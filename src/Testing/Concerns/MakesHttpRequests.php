@@ -7,7 +7,6 @@
     namespace Snicco\Testing\Concerns;
 
     use Psr\Http\Message\ServerRequestFactoryInterface;
-    use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Message\UriFactoryInterface;
     use Psr\Http\Message\UriInterface;
     use Snicco\Application\Application;
@@ -27,7 +26,7 @@
     use Snicco\View\ViewFactory;
 
     /**
-     * @property Session $session
+     * @property Session|null $session
      * @property Application $app
      * @property ServerRequestFactoryInterface $request_factory
      * @property bool $routes_loaded
@@ -38,26 +37,12 @@
 
         use BuildsWordPressUrls;
 
-        /**
-         * Additional headers for the request.
-         */
-        protected array $default_headers = [];
-
-        /**
-         * Additional cookies for the request.
-         */
-        protected array $default_cookies = [];
-
-        /**
-         * Additional server variables for the request.
-         */
+        protected array $default_headers          = [];
+        protected array $default_cookies          = [];
         protected array $default_server_variables = [];
-
-        private bool $with_trailing_slash = false;
-
-        private bool $without_trailing_slash = false;
-
-        private bool $follow_redirects = false;
+        private bool    $with_trailing_slash      = false;
+        private bool    $without_trailing_slash   = false;
+        private bool    $follow_redirects         = false;
 
         public function frontendRequest(string $method, $uri) : Request
         {
@@ -65,18 +50,12 @@
             $method = strtoupper($method);
             $uri = $this->createUri($uri);
 
-            if ( ! isset($this->default_server_variables['REQUEST_METHOD'])) {
+            $this->default_server_variables['REQUEST_METHOD'] ??= $method;
+            $this->default_server_variables['SCRIPT_NAME'] ??= 'index.php';
 
-                $this->default_server_variables['REQUEST_METHOD'] = $method;
-
-            }
-            if ( ! isset($this->default_server_variables['SCRIPT_NAME'])) {
-
-                $this->default_server_variables['SCRIPT_NAME'] = 'index.php';
-
-            }
-
-            $request = new Request($this->request_factory->createServerRequest($method, $uri, $this->default_server_variables));
+            $request = new Request(
+                $this->request_factory->createServerRequest($method, $uri, $this->default_server_variables)
+            );
 
             parse_str($request->getUri()->getQuery(), $query);
 
@@ -91,18 +70,12 @@
             $url = $this->adminUrlTo($menu_slug, $parent);
             $uri = $this->createUri($url);
 
-            if ( ! isset($this->default_server_variables['REQUEST_METHOD'])) {
+            $this->default_server_variables['REQUEST_METHOD'] ??= $method;
+            $this->default_server_variables['SCRIPT_NAME'] ??= WP::wpAdminFolder().DIRECTORY_SEPARATOR.$parent;
 
-                $this->default_server_variables['REQUEST_METHOD'] = $method;
-
-            }
-            if ( ! isset($this->default_server_variables['SCRIPT_NAME'])) {
-
-                $this->default_server_variables['SCRIPT_NAME'] = WP::wpAdminFolder().DIRECTORY_SEPARATOR.$parent;
-
-            }
-
-            $request = new Request($this->request_factory->createServerRequest($method, $uri, $this->default_server_variables));
+            $request = new Request(
+                $this->request_factory->createServerRequest($method, $uri, $this->default_server_variables)
+            );
 
             return $request->withQueryParams(['page' => $menu_slug]);
 
@@ -114,16 +87,8 @@
             $method = strtoupper($method);
             $uri = $this->createUri($this->ajaxUrl($action));
 
-            if ( ! isset($this->default_server_variables['REQUEST_METHOD'])) {
-
-                $this->default_server_variables['REQUEST_METHOD'] = $method;
-
-            }
-            if ( ! isset($this->default_server_variables['SCRIPT_NAME'])) {
-
-                $this->default_server_variables['SCRIPT_NAME'] = WP::wpAdminFolder().DIRECTORY_SEPARATOR.'admin-ajax.php';
-
-            }
+            $this->default_server_variables['REQUEST_METHOD'] ??= $method;
+            $this->default_server_variables['SCRIPT_NAME'] ??= WP::wpAdminFolder().DIRECTORY_SEPARATOR.'admin-ajax.php';
 
             $request = new Request($this->request_factory->createServerRequest($method, $uri, $this->default_server_variables));
 
@@ -135,14 +100,7 @@
 
         }
 
-        /**
-         * Define additional headers to be sent with the request.
-         *
-         * @param  array  $headers
-         *
-         * @return $this
-         */
-        public function withHeaders(array $headers)
+        public function withHeaders(array $headers) : self
         {
 
             $this->default_headers = array_merge($this->default_headers, $headers);
@@ -150,15 +108,7 @@
             return $this;
         }
 
-        /**
-         * Add a header to be sent with the request.
-         *
-         * @param  string  $name
-         * @param  string  $value
-         *
-         * @return $this
-         */
-        public function withHeader(string $name, string $value)
+        public function withHeader(string $name, string $value) : self
         {
 
             $this->default_headers[$name] = $value;
@@ -166,12 +116,7 @@
             return $this;
         }
 
-        /**
-         * Flush all the configured headers.
-         *
-         * @return $this
-         */
-        public function flushHeaders()
+        public function flushHeaders() : self
         {
 
             $this->default_headers = [];
@@ -179,14 +124,7 @@
             return $this;
         }
 
-        /**
-         * Define a set of server variables to be sent with the requests.
-         *
-         * @param  array  $server
-         *
-         * @return $this
-         */
-        public function withServerVariables(array $server)
+        public function withServerVariables(array $server) : self
         {
 
             $this->default_server_variables = $server;
@@ -195,13 +133,9 @@
         }
 
         /**
-         * Define additional cookies to be sent with the request.
-         *
-         * @param  array  $cookies
-         *
-         * @return $this
+         * @param  array<string, string>  $cookies
          */
-        public function withCookies(array $cookies)
+        public function withCookies(array $cookies) : self
         {
 
             $this->default_cookies = array_merge($this->default_cookies, $cookies);
@@ -209,15 +143,7 @@
             return $this;
         }
 
-        /**
-         * Add a cookie to be sent with the request.
-         *
-         * @param  string  $name
-         * @param  string  $value
-         *
-         * @return $this
-         */
-        public function withCookie(string $name, string $value)
+        public function withCookie(string $name, string $value) : self
         {
 
             $this->default_cookies[$name] = $value;
@@ -225,12 +151,7 @@
             return $this;
         }
 
-        /**
-         * Automatically follow any redirects returned from the response.
-         *
-         * @return $this
-         */
-        public function followingRedirects()
+        public function followingRedirects() : self
         {
 
             $this->follow_redirects = true;
@@ -240,10 +161,8 @@
 
         /**
          * Add trailing slashes to all urls.
-         *
-         * @return $this
          */
-        public function withTrailingSlash()
+        public function withTrailingSlash() : self
         {
 
             $this->with_trailing_slash = true;
@@ -253,10 +172,8 @@
 
         /**
          * Remove trailing slashes to all urls.
-         *
-         * @return $this
          */
-        public function removeTrailingSlash()
+        public function removeTrailingSlash() : self
         {
 
             $this->without_trailing_slash = true;
@@ -267,15 +184,11 @@
         /**
          * Set the referer header and previous URL session value in order to simulate a previous
          * request.
-         *
-         * @param  string  $url
-         *
-         * @return $this
          */
-        public function from(string $url)
+        public function from(string $url) : self
         {
 
-            if ($this->session) {
+            if (isset($this->session)) {
 
                 $this->session->setPreviousUrl($url);
 
@@ -288,13 +201,12 @@
          * Visit the given URI with a GET request.
          *
          * @param  string|UriInterface  $uri
-         * @param  array  $headers
+         * @param  array<string, string>  $headers
          *
          * @return TestResponse
          */
         public function get($uri, array $headers = []) : TestResponse
         {
-
             return $this->performRequest($this->frontendRequest('GET', $uri), $headers);
         }
 
@@ -302,7 +214,7 @@
          * Visit the given URI with a GET request accepting json.
          *
          * @param  string|UriInterface  $uri
-         * @param  array  $headers
+         * @param  array<string, string>  $headers
          *
          * @return TestResponse
          */
@@ -321,7 +233,7 @@
          * @param  string  $admin_page_slug  The [page] query parameter for the admin page.
          * May contain additional query parameters.
          *
-         * @param  array  $headers
+         * @param  array<string, string>  $headers
          * @param  string  $parent
          *
          * @return TestResponse
@@ -339,7 +251,7 @@
          * Visit the given URI with a OPTIONS request.
          *
          * @param  string|UriInterface  $uri
-         * @param  array  $headers
+         * @param  array<string, string>  $headers
          *
          * @return TestResponse
          */
@@ -355,8 +267,8 @@
          * Visit the given URI with a POST request.
          *
          * @param  string|UriInterface  $uri
-         * @param  array  $data
-         * @param  array  $headers
+         * @param  array<string, mixed>  $data
+         * @param  array<string, string>  $headers
          *
          * @return TestResponse
          */
@@ -373,8 +285,8 @@
          * Visit the given URI with a PATCH request.
          *
          * @param  string|UriInterface  $uri
-         * @param  array  $data
-         * @param  array  $headers
+         * @param  array<string, mixed>  $data
+         * @param  array<string, string>  $headers
          *
          * @return TestResponse
          */
@@ -391,8 +303,8 @@
          * Visit the given URI with a PUT request.
          *
          * @param  string|UriInterface  $uri
-         * @param  array  $data
-         * @param  array  $headers
+         * @param  array<string, mixed>  $data
+         * @param  array<string, string>  $headers
          *
          * @return TestResponse
          */
@@ -409,8 +321,8 @@
          * Visit the given URI with a POST request.
          *
          * @param  string|UriInterface  $uri
-         * @param  array  $data
-         * @param  array  $headers
+         * @param  array<string, mixed>  $data
+         * @param  array<string, string>  $headers
          *
          * @return TestResponse
          */
@@ -423,7 +335,7 @@
 
         }
 
-        protected function addHeaders(ServerRequestInterface $request, array $headers = []) : ServerRequestInterface
+        protected function addHeaders(Request $request, array $headers = []) : Request
         {
 
             $headers = array_merge($headers, $this->default_headers);
@@ -435,7 +347,7 @@
 
         }
 
-        protected function addCookies(ServerRequestInterface $request) : ServerRequestInterface
+        protected function addCookies(Request $request) : Request
         {
 
             foreach ($this->default_cookies as $name => $value) {

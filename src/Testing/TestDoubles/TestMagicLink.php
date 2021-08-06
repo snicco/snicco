@@ -12,7 +12,7 @@
     class TestMagicLink extends MagicLink
     {
 
-        private $links = [];
+        private array $links = [];
 
         public function __construct()
         {

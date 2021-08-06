@@ -18,7 +18,7 @@
     class ManagesTransactionsTest extends DatabaseTestCase
     {
 
-        protected $defer_boot = true;
+        protected bool $defer_boot = true;
 
         /**
          * @var BetterWPDb

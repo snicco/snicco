@@ -40,7 +40,6 @@
 
         protected function resetGlobalState()
         {
-
             $GLOBALS['test'] = [];
         }
 
@@ -56,9 +55,7 @@
 
         protected function beforeTearDown()
         {
-
             //
-
         }
 
     }

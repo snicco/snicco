@@ -7,17 +7,15 @@
     namespace Snicco\Testing\Concerns;
 
     use PHPUnit\Framework\Assert as PHPUnit;
+    use Snicco\Session\Session;
     use WP_User;
 
-    use Snicco\Session\Session;
-
-    use function wp_delete_user;
     use function wp_get_current_user;
     use function wp_logout;
     use function wp_set_current_user;
 
     /**
-     * @property Session $session
+     * @property Session|null $session
      */
     trait InteractsWithAuthentication
     {
@@ -48,9 +46,9 @@
 
             wp_set_current_user($user->ID);
 
-            if ( $this->session instanceof Session) {
+            if ($this->session instanceof Session) {
 
-                $this->session->confirmAuthUntil($this->config->get('auth.confirmation.duration', 10 ));
+                $this->session->confirmAuthUntil($this->config->get('auth.confirmation.duration', 10));
                 $this->session->setLastActivity(time());
                 $this->withSessionCookie();
 
@@ -84,7 +82,8 @@
         /**
          * @param  int|WP_User  $user
          */
-        protected function assertNotAuthenticated($user) {
+        protected function assertNotAuthenticated($user)
+        {
 
             if ($user instanceof WP_User) {
 
@@ -102,13 +101,13 @@
         protected function logout($user = 0)
         {
 
-            if ( $user === 0 ) {
+            if ($user === 0) {
                 $user = wp_get_current_user();
             }
 
             $user = $user instanceof WP_User ? $user->ID : $user;
 
-            if ( $user === 0 ) {
+            if ($user === 0) {
                 return;
             }
 
