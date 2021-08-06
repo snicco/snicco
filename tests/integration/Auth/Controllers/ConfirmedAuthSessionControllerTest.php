@@ -6,18 +6,17 @@
 
     namespace Tests\integration\Auth\Controllers;
 
-    use Tests\AuthTestCase;
-    use Snicco\Events\Event;
     use Snicco\Auth\Contracts\AuthConfirmation;
+    use Snicco\Events\Event;
     use Snicco\Http\Psr7\Request;
     use Snicco\Session\Events\SessionRegenerated;
+    use Tests\AuthTestCase;
 
     class ConfirmedAuthSessionControllerTest extends AuthTestCase
     {
 
-        private $endpoint = '/auth/confirm';
-
-        private $valid_secret_to_confirm = 'bypass';
+        private string $endpoint = '/auth/confirm';
+        private string $valid_secret_to_confirm = 'bypass';
 
         protected function setUp() : void
         {

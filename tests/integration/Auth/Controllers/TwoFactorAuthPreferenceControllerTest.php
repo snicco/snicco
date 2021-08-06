@@ -6,13 +6,13 @@
 
     namespace Tests\integration\Auth\Controllers;
 
-    use Tests\AuthTestCase;
     use Snicco\Contracts\EncryptorInterface;
+    use Tests\AuthTestCase;
 
     class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
     {
 
-        private $endpoint = '/auth/two-factor/preferences';
+        private string $endpoint = '/auth/two-factor/preferences';
 
         protected function setUp() : void
         {

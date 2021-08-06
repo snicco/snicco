@@ -12,14 +12,8 @@
 
     class FooBarMiddleware extends Middleware {
 
-        /**
-         * @var string
-         */
-        private $foo;
-        /**
-         * @var string
-         */
-        private $bar;
+        private string $foo;
+        private string $bar;
 
         public function __construct($foo = 'foo', $bar = 'bar')
         {

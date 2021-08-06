@@ -16,10 +16,7 @@
     class ViewFactoryTest extends TestCase {
 
 
-		/**
-		 * @var ViewFactory
-		 */
-		private $view_service;
+		private ViewFactory $view_service;
 
         protected function setUp() : void {
 
@@ -180,12 +177,6 @@
 
 		/** @test */
 		public function views_can_be_included_in_parent_views () {
-
-		    $path = VIEWS_DIR .  DS . 'subdirectory' . DS. 'subview.php';
-
-		    // WP::shouldReceive('fileHeaderData')->once()
-            //   ->with($path, ['Layout'])
-            //   ->andReturn(['view-with-layout.php']);
 
 			$view = $this->view_service->make('subview.php');
 

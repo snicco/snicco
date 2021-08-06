@@ -8,7 +8,7 @@
 
 	class Foo {
 
-		public $foo = 'foo';
+		public string $foo = 'foo';
 
 		public function __toString() {
 

@@ -11,8 +11,6 @@
     class AppAliasTest extends BladeTestCase
     {
 
-
-
         /** @test */
         public function nested_views_can_be_rendered_relative_to_the_views_directory()
         {
@@ -31,10 +29,7 @@
 
             $this->assertViewContent('FOO', $first);
 
-
         }
-
-
 
 
     }

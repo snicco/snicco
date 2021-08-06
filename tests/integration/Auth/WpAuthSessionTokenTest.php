@@ -6,22 +6,16 @@
 
     namespace Tests\integration\Auth;
 
+    use Snicco\Session\Contracts\SessionManagerInterface;
     use Tests\AuthTestCase;
     use Tests\stubs\TestApp;
     use WP_Session_Tokens;
     use WP_User;
-    use Snicco\Auth\AuthSessionManager;
-    use Snicco\Session\Contracts\SessionDriver;
-    use Snicco\Session\Contracts\SessionManagerInterface;
-    use Snicco\Session\Drivers\ArraySessionDriver;
-    use Snicco\Session\SessionManager;
 
     class WpAuthSessionTokenTest extends AuthTestCase
     {
 
-
-        /** @var WP_User */
-        private $user;
+        private WP_User $user;
 
         protected function setUp() : void
         {

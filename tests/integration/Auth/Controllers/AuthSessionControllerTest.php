@@ -22,7 +22,6 @@
 
         private function postToLogin(array $data) : TestResponse
         {
-
             $token = $this->withCsrfToken();
 
             return $this->post('/auth/login', $token + $data);

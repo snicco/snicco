@@ -6,12 +6,13 @@
 
     namespace Tests\integration\Database;
 
-    use Snicco\Database\WPConnection;
+    use Exception;
     use Illuminate\Database\QueryException;
     use Illuminate\Database\Schema\Blueprint;
     use Illuminate\Support\Facades\DB;
     use Illuminate\Support\Facades\Schema;
     use mysqli;
+    use Snicco\Database\WPConnection;
 
     class TransactionsTest extends DatabaseTestCase
     {
@@ -20,10 +21,8 @@
          *
          * We use a separate mysqli connection to verify that our transactions indeed work as
          * expected.
-         *
-         * @var mysqli
          */
-        private $verification_connection;
+        private mysqli $verification_connection;
 
         protected function setUp() : void
         {
@@ -258,7 +257,7 @@
                         ['name' => 'Arsenal', 'country' => 'england'],
                     ]);
 
-                    throw new \Exception('Validation failed | TEST');
+                    throw new Exception('Validation failed | TEST');
 
 
                 });
@@ -266,7 +265,7 @@
                 $this->fail('Exception was not handled thrown');
 
             }
-            catch (\Exception $e) {
+            catch (Exception $e) {
 
                 $this->assertStringContainsString(
                     "Validation failed | TEST",

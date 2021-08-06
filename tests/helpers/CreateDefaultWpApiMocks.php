@@ -6,16 +6,16 @@
 
     namespace Tests\helpers;
 
-    use WP_User;
     use Snicco\Support\WP;
 
-
+    /**
+     * @internal
+     */
     trait CreateDefaultWpApiMocks
     {
 
         protected function createDefaultWpApiMocks()
         {
-
             WP::shouldReceive('isAdmin')->andReturnFalse()->byDefault();
             WP::shouldReceive('isAdminAjax')->andReturnFalse()->byDefault();
             WP::shouldReceive('fileHeaderData')->andReturn([])->byDefault();

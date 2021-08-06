@@ -7,20 +7,16 @@
 	namespace Tests\fixtures\Middleware;
 
 	use Psr\Http\Message\ResponseInterface;
-    use Tests\fixtures\TestDependencies\Bar;
-	use Tests\fixtures\TestDependencies\Foo;
     use Snicco\Contracts\Middleware;
-    use Snicco\Http\Psr7\Request;
     use Snicco\Http\Delegate;
+    use Snicco\Http\Psr7\Request;
+    use Tests\fixtures\TestDependencies\Bar;
+    use Tests\fixtures\TestDependencies\Foo;
 
     class MiddlewareWithDependencies extends Middleware {
 
-		/** @var Foo */
-		private $foo;
-		/** @var Bar */
-		private $bar;
-
-
+		private Foo $foo;
+		private Bar $bar;
 		public function __construct( Foo $foo, Bar $bar ) {
 
 			$this->foo = $foo;

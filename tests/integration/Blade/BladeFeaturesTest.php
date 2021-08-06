@@ -6,7 +6,6 @@
 
     namespace Tests\integration\Blade;
 
-    use Tests\integration\Blade\traits\InteractsWithWordpress;
     use Tests\stubs\TestApp;
 
     class BladeFeaturesTest extends BladeTestCase

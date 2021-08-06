@@ -19,10 +19,7 @@
     class AuthSessionControllerLogoutTest extends AuthTestCase
     {
 
-        /**
-         * @var UrlGenerator
-         */
-        private $url;
+        private UrlGenerator $url;
 
         protected function setUp() : void
         {

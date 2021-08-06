@@ -14,10 +14,7 @@
     class BladeViewTest extends BladeTestCase
     {
 
-        /**
-         * @var BladeEngine
-         */
-        private $engine;
+        private BladeEngine $engine;
 
         protected function setUp() : void
         {

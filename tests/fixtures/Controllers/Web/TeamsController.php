@@ -6,16 +6,15 @@
 
 	namespace Tests\fixtures\Controllers\Web;
 
-	use Tests\fixtures\TestDependencies\Foo;
-	use Tests\fixtures\TestDependencies\Bar;
-    use Snicco\Http\Psr7\Request;
+	use Snicco\Http\Psr7\Request;
+    use Tests\fixtures\TestDependencies\Bar;
+    use Tests\fixtures\TestDependencies\Foo;
 
-	class TeamsController {
+    class TeamsController {
 
 		public function handle( Request $request, string $team, string $player )  {
 
 			return $team . ':' . $player;
-
 
 		}
 
@@ -23,16 +22,12 @@
 
 			return $team . ':' . $player . ':' . $foo->foo . ':' . $bar->bar;
 
-
 		}
 
 		public function withConditions( Request $request, $team, $player, $baz, $biz ,Foo $foo, Bar $bar)  {
 
 			return $team . ':' . $player . ':' .  $baz . ':' . $biz  . ':' . $foo->foo . ':' . $bar->bar;
 
-
 		}
-
-
 
 	}

@@ -21,7 +21,6 @@
             $this->withRequest($this->frontendRequest('GET', '/wpquery/foo'))->boot();
             $this->loadRoutes();
 
-            /** @var WP $wp */
             global $wp;
 
             $wp->main();
@@ -76,7 +75,6 @@
                  ->boot();
             $this->loadRoutes();
 
-            /** @var WP $wp */
             global $wp;
             $wp->parse_request();
 
@@ -94,7 +92,6 @@
             $this->withRequest($this->frontendRequest('GET', '/wpquery/do-nothing'))->boot();
             $this->loadRoutes();
 
-            /** @var WP $wp */
             global $wp;
             $wp->main();
 
@@ -119,7 +116,6 @@
                 return $query_vars;
             });
 
-            /** @var WP $wp */
             global $wp;
             $wp->main();
 
@@ -136,11 +132,9 @@
 
             $request_parsed = false;
             add_action('request', function () use (&$request_parsed) {
-
                 $request_parsed = true;
             });
 
-            /** @var WP $wp */
             global $wp;
             $wp->main();
 

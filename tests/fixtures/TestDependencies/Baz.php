@@ -8,7 +8,7 @@
 
 	class Baz {
 
-		public $baz = 'baz';
+		public string $baz = 'baz';
 
 		public function __toString() {
 

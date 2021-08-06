@@ -11,7 +11,7 @@
     class DiscountMail extends Mailable
     {
 
-        public $product;
+        public string $product;
 
         public function __construct($product)
         {
