@@ -6,26 +6,19 @@
 
     namespace Snicco\Database\Testing\Assertables;
 
-    use Snicco\Support\Str;
     use PHPUnit\Framework\Assert as PHPUnit;
-
-    use function PHPUnit\Framework\isNull;
+    use Snicco\Support\Str;
+    use wpdb;
 
     class AssertableWpDB
     {
 
-        /**
-         * @var string
-         */
-        private $table;
-
-        /**
-         * @var \wpdb
-         */
-        private $wpdb;
+        private string $table;
+        private wpdb   $wpdb;
 
         public function __construct(string $table)
         {
+
             $this->table = $table;
 
             global $wpdb;

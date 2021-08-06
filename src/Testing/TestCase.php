@@ -52,63 +52,38 @@
         use InteractsWithMail;
         use TravelsTime;
 
-        /**
-         * @var Application
-         */
-        protected $app;
-
-        /** @var Session */
-        protected $session;
-
-        /** @var Request */
-        protected $request;
-
-        /** @var Config */
-        protected $config;
-
-        /** @var ServerRequestFactoryInterface */
-        protected $request_factory;
-
-        /**
-         * @var HttpKernel
-         */
-        protected $kernel;
-
-        /**
-         * @var callable[]
-         */
-        private $after_application_created_callbacks = [];
-
-        /**
-         * @var callable[]
-         */
-        private $before_application_destroy_callbacks = [];
-
-        /**
-         * @var bool
-         */
-        private $set_up_has_run;
+        protected Application                   $app;
+        protected ?Session                      $session        = null;
+        protected Request                       $request;
+        protected Config                        $config;
+        protected ServerRequestFactoryInterface $request_factory;
+        protected HttpKernel                    $kernel;
+        private bool                            $set_up_has_run = false;
+        protected bool                          $defer_boot     = false;
+        protected bool                          $routes_loaded  = false;
 
         /**
          * @var Route[]
          */
-        private $additional_routes = [];
-
-        /**
-         * @var bool
-         */
-        protected $defer_boot = false;
-
-        /** @var bool */
-        protected $routes_loaded = false;
+        private array $additional_routes = [];
 
         /**
          * @var callable[]
          */
-        protected $after_config_loaded_callbacks = [];
+        private array $after_application_created_callbacks = [];
 
         /**
-         * Return an instance of your Application. DONT BOOT THE APPLICATION.
+         * @var callable[]
+         */
+        private array $before_application_destroy_callbacks = [];
+
+        /**
+         * @var callable[]
+         */
+        protected array $after_config_loaded_callbacks = [];
+
+        /**
+         * Return an instance of your Application. DON'T BOOT THE APPLICATION.
          */
         abstract public function createApplication() : Application;
 
@@ -150,7 +125,7 @@
 
             $this->backToPresent();
 
-            if ( ! $this->app) {
+            if ( ! isset($this->app)) {
 
                 $this->refreshApplication();
 
@@ -168,7 +143,7 @@
             $this->request_factory = $this->app->resolve(ServerRequestFactoryInterface::class);
             $this->replaceBindings();
 
-            if ( ! $this->defer_boot ) {
+            if ( ! $this->defer_boot) {
                 $this->boot();
             }
 
@@ -204,8 +179,7 @@
 
             if ($this->app) {
                 $this->callBeforeApplicationDestroyedCallbacks();
-
-                $this->app = null;
+                unset($this->app);
             }
 
             $this->set_up_has_run = false;
@@ -226,12 +200,12 @@
                 }
             }
 
-            if ( class_exists(Facade::class) ) {
+            if (class_exists(Facade::class)) {
                 Facade::clearResolvedInstances();
                 Facade::setFacadeApplication(null);
             }
 
-            if ( class_exists(Container::class) ) {
+            if (class_exists(Container::class)) {
                 Container::setInstance(null);
             }
 
@@ -341,10 +315,12 @@
          * Middleware has to be an object
          *
          * @param  object|object[]|null  $middleware
+         *
          * @return $this
          */
         protected function withMiddleware($middleware = null) : TestCase
         {
+
             if (is_null($middleware)) {
 
                 $this->app->config()->set('middleware.disabled', false);
@@ -361,14 +337,9 @@
                 }
 
                 $this->app->container()
-                          ->singleton(get_class($abstract), function () use ($abstract) {
-
-                              return $abstract;
-
-                          });
+                          ->singleton(get_class($abstract), fn() => $abstract);
 
             }
-
 
             return $this;
         }
@@ -409,7 +380,7 @@
         protected function loadRoutes() : TestCase
         {
 
-            if ( $this->routes_loaded ) {
+            if ($this->routes_loaded) {
                 return $this;
             }
 
@@ -446,7 +417,7 @@
         private function bindRequest()
         {
 
-            if ($this->request) {
+            if (isset($this->request)) {
 
                 $this->request = $this->addCookies($this->request);
                 $this->request = $this->addHeaders($this->request);
@@ -455,10 +426,16 @@
                 return;
             }
 
-            $request = $this->request_factory->createServerRequest('GET', $this->createUri($this->config->get('app.url')), $this->default_server_variables);
+            $request = new Request(
+                $this->request_factory->createServerRequest(
+                    'GET',
+                    $this->createUri($this->config->get('app.url')),
+                    $this->default_server_variables
+                )
+            );
             $request = $this->addCookies($request);
             $request = $this->addHeaders($request);
-            $this->instance(Request::class, new Request($request));
+            $this->instance(Request::class, $request);
             $this->request = $request;
 
         }

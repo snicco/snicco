@@ -7,16 +7,17 @@
     namespace Snicco\Testing\Concerns;
 
     use BetterWpHooks\Testing\FakeDispatcher;
+    use LogicException;
+    use PHPUnit\Framework\Assert as PHPUnit;
     use Snicco\Events\Event;
     use Snicco\Events\PendingMail;
-    use PHPUnit\Framework\Assert as PHPUnit;
     use Snicco\Testing\Assertable\AssertableMail;
     use Snicco\View\ViewFactory;
 
     trait InteractsWithMail
     {
 
-        protected function mailFake()
+        protected function mailFake() : self
         {
 
             Event::fake([PendingMail::class]);
@@ -25,9 +26,12 @@
 
         }
 
-        protected function clearSentMails() {
+        protected function clearSentMails() : self
+        {
+
             $fake_dispatcher = Event::dispatcher();
             $fake_dispatcher->clearDispatchedEvents();
+
             return $this;
         }
 
@@ -72,7 +76,7 @@
         private function checkMailWasFaked($fake_dispatcher)
         {
             if ( ! $fake_dispatcher instanceof FakeDispatcher ) {
-                throw new \LogicException('Mails were not faked. Did you forget to call [$this->mailFake()]?');
+                throw new LogicException('Mails were not faked. Did you forget to call [$this->mailFake()]?');
             }
         }
 

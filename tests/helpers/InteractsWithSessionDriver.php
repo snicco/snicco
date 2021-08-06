@@ -6,9 +6,10 @@
 
     namespace Tests\helpers;
 
-    use Tests\stubs\TestApp;
+    use Carbon\Carbon;
     use Snicco\Http\Psr7\Request;
     use Snicco\Session\Session;
+    use Tests\stubs\TestApp;
 
     trait InteractsWithSessionDriver
     {
@@ -25,7 +26,7 @@
 
         }
 
-        private function writeTokenToSessionDriver(\Carbon\Carbon $carbon)
+        private function writeTokenToSessionDriver(Carbon $carbon)
         {
 
             $driver = $this->getSession()->getDriver();
@@ -58,7 +59,7 @@
 
         private function withSessionCookie( Request $request) {
 
-            $cookie = 'wp_mvc_session='.$this->getSessionId();
+            $cookie = 'snicco_test_session='.$this->getSessionId();
 
             return $request->withAddedHeader('Cookie', $cookie);
 

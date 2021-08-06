@@ -74,7 +74,7 @@
             $this->config->extend('session.encrypt', false);
 
             // cookie
-            $this->config->extend('session.cookie', 'wp_mvc_session');
+            $this->config->extend('session.cookie', 'snicco_test_session');
             $this->config->extend('session.path', '/');
             $this->config->extend('session.domain', null);
             $this->config->extend('session.secure', true);

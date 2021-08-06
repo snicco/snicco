@@ -6,14 +6,6 @@
 
     namespace Snicco\Database;
 
-    use Snicco\Database\Concerns\LogsQueries;
-    use Snicco\Database\Concerns\ManagesTransactions;
-    use Snicco\Database\Contracts\WPConnectionInterface;
-    use Snicco\Database\Contracts\BetterWPDbInterface;
-    use Snicco\Database\Illuminate\MySqlProcessor;
-    use Snicco\Database\Illuminate\MySqlQueryGrammar;
-    use Snicco\Database\Illuminate\MySqlSchemaBuilder;
-    use Snicco\Database\Illuminate\MySqlSchemaGrammar;
     use Closure;
     use DateTime;
     use Generator;
@@ -25,6 +17,14 @@
     use Illuminate\Support\Arr;
     use mysqli_result;
     use mysqli_sql_exception;
+    use Snicco\Database\Concerns\LogsQueries;
+    use Snicco\Database\Concerns\ManagesTransactions;
+    use Snicco\Database\Contracts\BetterWPDbInterface;
+    use Snicco\Database\Contracts\WPConnectionInterface;
+    use Snicco\Database\Illuminate\MySqlProcessor;
+    use Snicco\Database\Illuminate\MySqlQueryGrammar;
+    use Snicco\Database\Illuminate\MySqlSchemaBuilder;
+    use Snicco\Database\Illuminate\MySqlSchemaGrammar;
 
     class WPConnection implements WPConnectionInterface
     {
@@ -32,40 +32,15 @@
         use ManagesTransactions;
         use LogsQueries;
 
-        /**
-         * @var BetterWPDbInterface
-         */
-        protected $wpdb;
-
-        /**
-         * @var string
-         */
-        protected $db_name;
-
-        /**
-         * @var string
-         */
-        protected $table_prefix;
-
-        /** @var MySqlQueryGrammar */
-        protected $query_grammar;
-
-        /** @var MySqlSchemaGrammar */
-        protected $schema_grammar;
-
-        /**
-         * @var MySqlProcessor
-         */
-        protected $post_processor;
-
-        /**
-         * Indicates if the connection is in a "dry run".
-         *
-         * @var bool
-         */
-        protected $pretending = false;
-
-        protected $logging_queries = false;
+        protected BetterWPDbInterface $wpdb;
+        protected string              $db_name;
+        protected string              $table_prefix;
+        protected MySqlQueryGrammar   $query_grammar;
+        protected MySqlSchemaGrammar  $schema_grammar;
+        protected MySqlProcessor      $post_processor;
+        protected bool                $pretending      = false;
+        protected bool                $logging_queries = false;
+        private string                $name;
 
         /**
          * The database connection configuration options.
@@ -74,16 +49,10 @@
          *
          * @var array
          */
-        protected $config = [];
-
-        /**
-         * @var string
-         */
-        private $name;
+        protected array $config = [];
 
         public function __construct(BetterWPDbInterface $wpdb, string $name)
         {
-
             $this->wpdb = $wpdb;
             $this->db_name = $wpdb->dbname;
             $this->table_prefix = $wpdb->prefix;
@@ -91,7 +60,6 @@
             $this->schema_grammar = $this->withTablePrefix(new MySqlSchemaGrammar());
             $this->post_processor = new MySqlProcessor();
             $this->name = $name;
-
         }
 
         public function dbInstance() : BetterWPDbInterface
@@ -159,11 +127,9 @@
          */
         private function withTablePrefix(Grammar $grammar) : Grammar
         {
-
             $grammar->setTablePrefix($this->table_prefix);
 
             return $grammar;
-
         }
 
 
@@ -467,7 +433,6 @@
          */
         public function raw($value) : Expression
         {
-
             return new Expression($value);
         }
 

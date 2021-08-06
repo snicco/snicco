@@ -17,10 +17,7 @@
     class IlluminateDispatcherAdapter implements Dispatcher
     {
 
-        /**
-         * @var WordpressDispatcher
-         */
-        private $dispatcher;
+        private WordpressDispatcher $dispatcher;
 
         public function __construct(WordpressDispatcher $dispatcher)
         {

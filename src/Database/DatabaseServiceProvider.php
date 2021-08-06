@@ -49,23 +49,17 @@
         private function bindIlluminateDispatcher()
         {
 
-            $this->container->singleton(IlluminateEventDispatcher::class, function () {
+            $this->container->singleton(
+                IlluminateEventDispatcher::class,
+                fn() => new IlluminateDispatcherAdapter($this->container->make(WordpressDispatcher::class))
+            );
 
-                return new IlluminateDispatcherAdapter($this->container->make(WordpressDispatcher::class));
-
-            });
-
-            $this->container->singleton('events', function () {
-
-                return $this->container->make(IlluminateEventDispatcher::class);
-
-            });
+            $this->container->singleton('events', fn() => $this->container->make(IlluminateEventDispatcher::class));
 
         }
 
         private function bootEloquent()
         {
-
             Eloquent::setEventDispatcher($this->container->make(IlluminateEventDispatcher::class));
             Eloquent::setConnectionResolver($this->container->make(ConnectionResolverInterface::class));
         }
@@ -115,10 +109,10 @@
         private function bindSchemaBuilder()
         {
 
-            $this->container->singleton(MySqlSchemaBuilder::class, function () {
-
-                return new MySqlSchemaBuilder($this->resolveConnection());
-            });
+            $this->container->singleton(
+                MySqlSchemaBuilder::class,
+                fn() => new MySqlSchemaBuilder($this->resolveConnection())
+            );
 
         }
 
@@ -128,12 +122,10 @@
             $this->setFacadeContainer($c = $this->parseIlluminateContainer());
             $this->setGlobalContainerInstance($c);
 
-            $this->container->singleton('db', function () {
-
-                return $this->container->make(ConnectionResolverInterface::class);
-
-
-            });
+            $this->container->singleton(
+                'db',
+                fn() => $this->container->make(ConnectionResolverInterface::class)
+            );
 
         }
 
@@ -150,11 +142,7 @@
 
             $this->container->singleton(WPConnectionInterface::class, function () {
 
-                return function (string $name = null) {
-
-                    return $this->resolveConnection($name);
-
-                };
+                return fn(string $name = null) => $this->resolveConnection($name);
 
             });
         }

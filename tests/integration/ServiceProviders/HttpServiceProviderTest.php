@@ -19,7 +19,7 @@
     class HttpServiceProviderTest extends TestCase
     {
 
-        protected $defer_boot = true;
+        protected bool $defer_boot = true;
 
         /** @test */
         public function the_kernel_can_be_resolved_correctly()

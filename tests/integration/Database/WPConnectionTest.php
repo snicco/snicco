@@ -6,20 +6,25 @@
 
     namespace Tests\integration\Database;
 
-    use Snicco\Database\Contracts\BetterWPDbInterface;
-    use Snicco\Database\Illuminate\MySqlSchemaBuilder;
-    use Snicco\Database\WPConnection;
-    use Snicco\Database\Contracts\ConnectionResolverInterface;
-    use Snicco\Database\Illuminate\MySqlQueryGrammar;
+    use DateTime;
     use Exception;
     use Illuminate\Database\Query\Builder;
     use Illuminate\Database\QueryException;
     use Illuminate\Database\Schema\Grammars\MySqlGrammar as MySqlSchemaGrammar;
+    use Mockery;
+    use mysqli_result;
+    use mysqli_sql_exception;
+    use Snicco\Database\Contracts\BetterWPDbInterface;
+    use Snicco\Database\Contracts\ConnectionResolverInterface;
+    use Snicco\Database\Illuminate\MySqlProcessor;
+    use Snicco\Database\Illuminate\MySqlQueryGrammar;
+    use Snicco\Database\Illuminate\MySqlSchemaBuilder;
+    use Snicco\Database\WPConnection;
 
     class WPConnectionTest extends DatabaseTestCase
     {
 
-        protected $defer_boot = true;
+        protected bool $defer_boot = true;
 
         protected function setUp() : void
         {
@@ -44,7 +49,7 @@
         private function mockDb()
         {
 
-            $m = \Mockery::mock(BetterWPDbInterface::class);
+            $m = Mockery::mock(BetterWPDbInterface::class);
             $m->dbname = 'testing';
             $m->prefix = 'wp_';
 
@@ -82,7 +87,7 @@
             $this->assertSame('wp_', $schema_grammar->getTablePrefix());
 
             $processor = $connection->getPostProcessor();
-            $this->assertInstanceOf(\Snicco\Database\Illuminate\MySqlProcessor::class, $processor);
+            $this->assertInstanceOf(MySqlProcessor::class, $processor);
 
 
         }
@@ -141,7 +146,7 @@
                 false,
                 'string',
                 10,
-                new \DateTime('07.04.2021 15:00'),
+                new DateTime('07.04.2021 15:00'),
 
             ]);
 
@@ -395,7 +400,7 @@
             $this->withFakeDb();
             $connection = $this->newWpConnection();
             $assertable = $this->assertable($connection);
-            $assertable->returnCursor($m = \Mockery::mock(\mysqli_result::class));
+            $assertable->returnCursor($m = Mockery::mock(mysqli_result::class));
 
             $m->shouldReceive('fetch_assoc')->once()->andReturn(['foo' => 'bar']);
             $m->shouldReceive('fetch_assoc')->once()->andReturn(['bar' => 'baz']);
@@ -663,7 +668,8 @@
             $connection = $this->newWpConnection();
             $assertable = $this->assertable($connection);
             $assertable->returnSelect(function () {
-                throw new \mysqli_sql_exception();
+
+                throw new mysqli_sql_exception();
             });
 
             try {
@@ -671,10 +677,11 @@
                 $connection->select('foobar', ['foo' => 'bar']);
                 $this->fail('No query exception thrown');
 
-            } catch (\Illuminate\Database\QueryException $e ) {
+            }
+            catch (QueryException $e) {
 
-                $this->assertSame( 'foobar', $e->getSql() );
-                $this->assertSame( ['foo' => 'bar'], $e->getBindings() );
+                $this->assertSame('foobar', $e->getSql());
+                $this->assertSame(['foo' => 'bar'], $e->getBindings());
 
             }
 
@@ -687,7 +694,8 @@
             $connection = $this->newWpConnection();
             $assertable = $this->assertable($connection);
             $assertable->returnInsert(function () {
-                throw new \mysqli_sql_exception();
+
+                throw new mysqli_sql_exception();
             });
 
             try {
@@ -695,10 +703,11 @@
                 $connection->insert('foobar', ['foo' => 'bar']);
                 $this->fail('No query exception thrown');
 
-            } catch (\Illuminate\Database\QueryException $e ) {
+            }
+            catch (QueryException $e) {
 
-                $this->assertSame( 'foobar', $e->getSql() );
-                $this->assertSame( ['foo' => 'bar'], $e->getBindings() );
+                $this->assertSame('foobar', $e->getSql());
+                $this->assertSame(['foo' => 'bar'], $e->getBindings());
 
             }
 
@@ -711,7 +720,8 @@
             $connection = $this->newWpConnection();
             $assertable = $this->assertable($connection);
             $assertable->returnUpdate(function () {
-                throw new \mysqli_sql_exception();
+
+                throw new mysqli_sql_exception();
             });
 
             try {
@@ -719,10 +729,11 @@
                 $connection->update('foobar', ['foo' => 'bar']);
                 $this->fail('No query exception thrown');
 
-            } catch (\Illuminate\Database\QueryException $e ) {
+            }
+            catch (QueryException $e) {
 
-                $this->assertSame( 'foobar', $e->getSql() );
-                $this->assertSame( ['foo' => 'bar'], $e->getBindings() );
+                $this->assertSame('foobar', $e->getSql());
+                $this->assertSame(['foo' => 'bar'], $e->getBindings());
 
             }
 
@@ -735,7 +746,8 @@
             $connection = $this->newWpConnection();
             $assertable = $this->assertable($connection);
             $assertable->returnDelete(function () {
-                throw new \mysqli_sql_exception();
+
+                throw new mysqli_sql_exception();
             });
 
             try {
@@ -743,10 +755,11 @@
                 $connection->delete('foobar', ['foo' => 'bar']);
                 $this->fail('No query exception thrown');
 
-            } catch (\Illuminate\Database\QueryException $e ) {
+            }
+            catch (QueryException $e) {
 
-                $this->assertSame( 'foobar', $e->getSql() );
-                $this->assertSame( ['foo' => 'bar'], $e->getBindings() );
+                $this->assertSame('foobar', $e->getSql());
+                $this->assertSame(['foo' => 'bar'], $e->getBindings());
 
             }
 
@@ -760,7 +773,8 @@
             $connection = $this->newWpConnection();
             $assertable = $this->assertable($connection);
             $assertable->returnUnprepared(function () {
-                throw new \mysqli_sql_exception();
+
+                throw new mysqli_sql_exception();
             });
 
             try {
@@ -768,10 +782,11 @@
                 $connection->unprepared('foobar');
                 $this->fail('No query exception thrown');
 
-            } catch (\Illuminate\Database\QueryException $e ) {
+            }
+            catch (QueryException $e) {
 
-                $this->assertSame( 'foobar', $e->getSql() );
-                $this->assertSame( [], $e->getBindings() );
+                $this->assertSame('foobar', $e->getSql());
+                $this->assertSame([], $e->getBindings());
 
             }
 
@@ -787,23 +802,25 @@
             $connection = $this->newWpConnection();
             $assertable = $this->assertable($connection);
             $assertable->returnCursor(function () {
-                throw new \mysqli_sql_exception();
+
+                throw new mysqli_sql_exception();
             });
 
             try {
 
-                $generator = $connection->cursor( 'foobar', ['foo' => 'bar'] );
+                $generator = $connection->cursor('foobar', ['foo' => 'bar']);
 
-                foreach ( $generator as $foo ) {
+                foreach ($generator as $foo) {
 
-                    $this->fail( 'No Exception thrown' );
+                    $this->fail('No Exception thrown');
 
                 }
 
-            } catch (\Illuminate\Database\QueryException $e ) {
+            }
+            catch (QueryException $e) {
 
-                $this->assertSame( 'foobar', $e->getSql() );
-                $this->assertSame(  ['foo' => 'bar'], $e->getBindings() );
+                $this->assertSame('foobar', $e->getSql());
+                $this->assertSame(['foo' => 'bar'], $e->getBindings());
 
             }
 
@@ -817,7 +834,8 @@
             $connection = $this->newWpConnection();
             $assertable = $this->assertable($connection);
             $assertable->returnSelect(function () {
-                throw new \Exception();
+
+                throw new Exception();
             });
 
             try {

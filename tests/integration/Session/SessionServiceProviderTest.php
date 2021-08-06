@@ -7,8 +7,6 @@
     namespace Tests\integration\Session;
 
     use Slim\Csrf\Guard;
-    use Tests\stubs\TestApp;
-    use Tests\TestCase;
     use Snicco\Contracts\AbstractRedirector;
     use Snicco\Http\Redirector;
     use Snicco\Http\ResponseFactory;
@@ -16,23 +14,26 @@
     use Snicco\Session\Contracts\SessionManagerInterface;
     use Snicco\Session\CsrfField;
     use Snicco\Session\Drivers\DatabaseSessionDriver;
-    use Snicco\Session\Middleware\CsrfMiddleware;
     use Snicco\Session\EncryptedSession;
+    use Snicco\Session\Middleware\CsrfMiddleware;
     use Snicco\Session\Middleware\ShareSessionWithView;
+    use Snicco\Session\Middleware\StartSessionMiddleware;
+    use Snicco\Session\Session;
     use Snicco\Session\SessionManager;
     use Snicco\Session\SessionServiceProvider;
-    use Snicco\Session\Session;
-    use Snicco\Session\Middleware\StartSessionMiddleware;
     use Snicco\Session\StatefulRedirector;
     use Snicco\View\GlobalContext;
+    use Tests\stubs\TestApp;
+    use Tests\TestCase;
 
     class SessionServiceProviderTest extends TestCase
     {
 
-        protected $defer_boot = true;
+        protected bool $defer_boot = true;
 
         protected function setUp() : void
         {
+
             $this->afterLoadingConfig(function () {
 
                 $this->withOutConfig('session');
@@ -88,7 +89,7 @@
 
             $this->withAddedConfig(['session.enabled' => true])->boot();
 
-            $this->assertSame('wp_mvc_session', TestApp::config('session.cookie'));
+            $this->assertSame('snicco_test_session', TestApp::config('session.cookie'));
 
         }
 

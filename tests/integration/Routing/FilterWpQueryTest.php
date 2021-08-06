@@ -12,7 +12,7 @@
     class FilterWpQueryTest extends TestCase
     {
 
-        protected $defer_boot = true;
+        protected bool $defer_boot = true;
 
         /** @test */
         public function WP_QUERY_vars_can_be_filtered_by_a_route()

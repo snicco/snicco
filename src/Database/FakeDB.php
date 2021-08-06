@@ -6,36 +6,22 @@
 
     namespace Snicco\Database;
 
+    use Closure;
+    use mysqli_result;
+    use PHPUnit\Framework\Assert as PHPUnit;
     use Snicco\Database\Concerns\DelegatesToWpdb;
     use Snicco\Database\Contracts\BetterWPDbInterface;
-    use mysqli_result;
     use wpdb;
-    use PHPUnit\Framework\Assert as PHPUnit;
 
     class FakeDB implements BetterWPDbInterface
     {
 
         use DelegatesToWpdb;
 
-        /**
-         * @var wpdb
-         */
-        private $wpdb;
-
-        /**
-         * @var mixed
-         */
-        private $queries = [];
-
-        /**
-         * @var mixed
-         */
-        private $return_values = [];
-
-        /**
-         * @var mixed
-         */
-        private $last_id = 0;
+        private wpdb  $wpdb;
+        private array $queries       = [];
+        private array $return_values = [];
+        private int   $last_id       = 0;
 
         public function __construct(wpdb $wpdb)
         {
@@ -169,22 +155,22 @@
 
         public function startTransaction()
         {
-            // TODO: Implement startTransaction() method.
+            //
         }
 
         public function commitTransaction()
         {
-            // TODO: Implement commitTransaction() method.
+            //
         }
 
         public function rollbackTransaction(string $sql)
         {
-            // TODO: Implement rollbackTransaction() method.
+            //
         }
 
         public function createSavepoint(string $sql)
         {
-            // TODO: Implement createSavepoint() method.
+            //
         }
 
         private function addToQueries(string $sql, array $bindings, string $called_method)
@@ -230,7 +216,6 @@
         {
 
             $this->return_values['doCursorSelect'] = $result;
-
         }
 
         private function doQuery(string $sql, array $bindings)
@@ -246,13 +231,15 @@
                 PHPUnit::fail("No return value expectation set for method [$called_method]");
             }
 
-            return $expectation instanceof \Closure ? $expectation() : $expectation;
+            return $expectation instanceof Closure ? $expectation() : $expectation;
         }
 
 
         public function lastInsertId() : int
         {
+
             $this->last_id++;
+
             return $this->last_id;
         }
 

@@ -9,24 +9,21 @@
     use Codeception\TestCase\WPTestCase;
     use PHPUnit\Framework\Assert;
     use Psr\Http\Message\ServerRequestInterface;
-    use Tests\stubs\HeaderStack;
-    use Tests\stubs\TestApp;
-    use Snicco\Testing\TestDoubles\TestMagicLink;
     use Snicco\Application\Application;
-    use Snicco\Events\Event;
     use Snicco\Contracts\ErrorHandlerInterface;
-    use Snicco\Contracts\MagicLink;
     use Snicco\Contracts\RouteRegistrarInterface;
     use Snicco\Contracts\ViewInterface;
+    use Snicco\Events\Event;
     use Snicco\Events\IncomingRequest;
     use Snicco\Events\IncomingWebRequest;
     use Snicco\Events\ResponseSent;
-    use Snicco\Testing\TestingErrorHandler;
-    use Snicco\Support\WP;
     use Snicco\Http\HttpKernel;
     use Snicco\Http\Psr7\Request;
-
     use Snicco\Support\Arr;
+    use Snicco\Support\WP;
+    use Snicco\Testing\TestingErrorHandler;
+    use Tests\stubs\HeaderStack;
+    use Tests\stubs\TestApp;
 
     use function do_action;
 
@@ -35,7 +32,8 @@
 
         protected $send_emails = [];
 
-        protected function catchMail () {
+        protected function catchMail()
+        {
 
             add_filter('pre_wp_mail', [$this, 'emailContents'], 10, 3);
 
@@ -270,7 +268,7 @@
 
             $array_handler->write($this->hashedSessionId(), serialize($data));
 
-            return $request->withAddedHeader('Cookie', 'wp_mvc_session='.$this->testSessionId() );
+            return $request->withAddedHeader('Cookie', 'snicco_test_session='.$this->testSessionId());
 
         }
 
