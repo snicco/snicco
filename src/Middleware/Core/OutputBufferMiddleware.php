@@ -20,7 +20,7 @@
     {
 
         private ResponseEmitter $emitter;
-        private Response $retained_response;
+        private ?Response       $retained_response = null;
 
         public function __construct(ResponseEmitter $emitter)
         {
@@ -34,6 +34,9 @@
 
             if ( ! $this->passToKernel($response) ) {
 
+                // We need to keep this response in memory and only send it after WordPress
+                // has loaded the admin header, navbar etc.
+                // Otherwise, our content would not be in the correct dom element.
                 $this->retained_response = $response;
 
                 return $this->response_factory->null();
