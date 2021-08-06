@@ -6,9 +6,6 @@
 
     namespace Tests\integration\ServiceProviders;
 
-    use Tests\IntegrationTest;
-    use Tests\stubs\TestApp;
-    use Tests\TestCase;
     use Snicco\Middleware\Core\EvaluateResponseMiddleware;
     use Snicco\Middleware\Core\OpenRedirectProtection;
     use Snicco\Middleware\Core\RouteRunner;
@@ -17,6 +14,8 @@
     use Snicco\Middleware\TrailingSlash;
     use Snicco\Middleware\Www;
     use Snicco\Routing\Pipeline;
+    use Tests\stubs\TestApp;
+    use Tests\TestCase;
 
     class MiddlewareServiceProviderTest extends TestCase
     {

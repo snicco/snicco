@@ -6,15 +6,12 @@
 
 	namespace Tests\unit\Application;
 
-	use Snicco\Application\Config;
 	use PHPUnit\Framework\TestCase;
+    use Snicco\Application\Config;
 
-	class ApplicationConfigTest extends TestCase {
+    class ApplicationConfigTest extends TestCase {
 
-		/**
-		 * @var Config
-		 */
-		private $config;
+		private Config $config;
 
 		public function setUp() : void {
 

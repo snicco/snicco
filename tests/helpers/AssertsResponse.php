@@ -10,6 +10,9 @@
     use Psr\Http\Message\ResponseInterface;
     use Snicco\Http\Responses\NullResponse;
 
+    /**
+     * @internal
+     */
     trait AssertsResponse {
 
 

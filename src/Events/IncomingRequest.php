@@ -20,12 +20,4 @@
 
 		}
 
-        public function matchedRoute()
-        {
-
-            $this->has_matching_route = true;
-
-        }
-
-
     }

@@ -6,15 +6,10 @@
 
     namespace Tests\integration\Routing;
 
-    use Tests\IntegrationTest;
-    use Tests\fixtures\Middleware\WebMiddleware;
-    use Tests\stubs\TestApp;
-    use Tests\stubs\TestRequest;
-    use Tests\helpers\CreatesWpUrls;
-    use Tests\TestCase;
     use Snicco\Events\Event;
     use Snicco\Events\ResponseSent;
-    use Snicco\Http\HttpKernel;
+    use Tests\fixtures\Middleware\WebMiddleware;
+    use Tests\TestCase;
 
     class WordpressConditionRoutes extends TestCase
     {

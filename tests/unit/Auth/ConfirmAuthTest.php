@@ -7,13 +7,13 @@
     namespace Tests\unit\Auth;
 
     use Mockery;
+    use Snicco\Auth\Middleware\ConfirmAuth;
+    use Snicco\Http\Delegate;
+    use Snicco\Routing\Route;
+    use Snicco\Support\WP;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\TravelsTime;
     use Tests\MiddlewareTestCase;
-    use Snicco\Auth\Middleware\ConfirmAuth;
-    use Snicco\Support\WP;
-    use Snicco\Http\Delegate;
-    use Snicco\Routing\Route;
 
     class ConfirmAuthTest extends MiddlewareTestCase
     {
@@ -44,9 +44,7 @@
 
         public function newMiddleware() :ConfirmAuth {
 
-            $this->route_action = new Delegate(function ()  {
-                return $this->response_factory->html('Access granted,');
-            });
+            $this->route_action = new Delegate(fn() => $this->response_factory->html('Access granted,'));
 
             return new ConfirmAuth();
         }

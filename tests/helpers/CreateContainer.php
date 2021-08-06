@@ -9,6 +9,9 @@
     use Contracts\ContainerAdapter;
     use SniccoAdapter\BaseContainerAdapter;
 
+    /**
+     * @internal
+     */
     trait CreateContainer
     {
 

@@ -25,16 +25,8 @@
         use CreateRouteCollection;
         use AssertsResponse;
 
-        /**
-         * @var Request
-         */
-        private $request;
-
-        /**
-         *
-         * @var Delegate
-         */
-        private $route_action;
+        private Request $request;
+        private Delegate $route_action;
 
         protected function setUp() : void
         {

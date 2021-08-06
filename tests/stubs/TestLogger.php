@@ -7,16 +7,14 @@
 	namespace Tests\stubs;
 
 	use PHPUnit\Framework\Assert;
-	use Psr\Log\AbstractLogger;
-	use Snicco\Support\Arr;
+    use Psr\Log\AbstractLogger;
+    use Snicco\Support\Arr;
 
-	class TestLogger extends AbstractLogger {
+    class TestLogger extends AbstractLogger {
 
-		private $records = [];
-
-		private $messages = [];
-
-		private $context = [];
+		private array $records = [];
+		private array $messages = [];
+		private array $context = [];
 
 		public function log( $level, $message, array $context = [] ) {
 

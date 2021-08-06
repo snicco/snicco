@@ -8,21 +8,21 @@
 
     use Contracts\ContainerAdapter;
     use Mockery;
+    use Snicco\Events\Event;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Routing\Router;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\Support\WP;
+    use Snicco\View\ViewFactory;
     use Tests\fixtures\Middleware\GlobalMiddleware;
+    use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
-    use Snicco\Events\Event;
-    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
-    use Snicco\Support\WP;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Http\ResponseFactory;
-    use Snicco\Routing\Router;
-    use Tests\helpers\CreateDefaultWpApiMocks;
-    use Snicco\Routing\UrlGenerator;
-    use Snicco\View\ViewFactory;
 
     class RouteAttributesTest extends UnitTest
     {
@@ -33,13 +33,8 @@
 
         const controller_namespace = 'Tests\fixtures\Controllers\Web';
 
-        /**
-         * @var ContainerAdapter
-         */
-        private $container;
-
-        /** @var Router */
-        private $router;
+        private ContainerAdapter $container;
+        private Router $router;
 
         protected function beforeTestRun()
         {

@@ -7,9 +7,12 @@
     namespace Tests\stubs;
 
     use Nyholm\Psr7\Factory\Psr17Factory;
-    use Tests\helpers\CreatePsr17Factories;
     use Snicco\Http\Psr7\Request;
+    use Tests\helpers\CreatePsr17Factories;
 
+    /**
+     * @internal
+     */
     class TestRequest extends Request
     {
 

@@ -6,22 +6,22 @@
 
 	namespace Tests\integration\ServiceProviders;
 
-	use Tests\IntegrationTest;
+	use Snicco\Contracts\ErrorHandlerInterface;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\ExceptionHandling\NullErrorHandler;
+    use Snicco\ExceptionHandling\ProductionErrorHandler;
     use Tests\stubs\TestApp;
     use Tests\TestCase;
-    use Snicco\Contracts\ErrorHandlerInterface;
-    use Snicco\Contracts\ServiceProvider;
-    use Snicco\ExceptionHandling\DebugErrorHandler;
-	use Snicco\ExceptionHandling\NullErrorHandler;
-	use Snicco\ExceptionHandling\ProductionErrorHandler;
 
-    class ExceptionServiceProviderTest extends TestCase {
+    class ExceptionServiceProviderTest extends TestCase
+    {
 
 
-        protected $defer_boot = true;
+        protected bool $defer_boot = true;
 
         /** @test */
-		public function by_default_the_production_error_handler_is_used() {
+        public function by_default_the_production_error_handler_is_used()
+        {
 
             $this->boot();
 

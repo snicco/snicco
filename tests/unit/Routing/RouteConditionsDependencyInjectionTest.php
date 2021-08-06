@@ -6,14 +6,16 @@
 
     namespace Tests\unit\Routing;
 
+    use Contracts\ContainerAdapter;
     use Mockery;
+    use Snicco\Events\Event;
+    use Snicco\Routing\Router;
+    use Snicco\Support\WP;
+    use Tests\fixtures\Conditions\ConditionWithDependency;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreatesWpUrls;
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
-    use Tests\fixtures\Conditions\ConditionWithDependency;
-    use Snicco\Events\Event;
-    use Snicco\Support\WP;
 
     class RouteConditionsDependencyInjectionTest extends UnitTest
     {
@@ -22,9 +24,8 @@
         use CreatesWpUrls;
         use CreateDefaultWpApiMocks;
 
-        private $router;
-
-        private $container;
+        private Router $router;
+        private ContainerAdapter $container;
 
         protected function beforeTestRun()
         {

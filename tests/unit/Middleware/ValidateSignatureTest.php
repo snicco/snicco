@@ -7,12 +7,6 @@
     namespace Tests\unit\Middleware;
 
     use Carbon\Carbon;
-    use Tests\helpers\AssertsResponse;
-    use Tests\helpers\CreateDefaultWpApiMocks;
-    use Tests\helpers\CreateRouteCollection;
-    use Tests\helpers\CreateUrlGenerator;
-    use Tests\stubs\TestRequest;
-    use Tests\UnitTest;
     use Snicco\Contracts\MagicLink;
     use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
     use Snicco\ExceptionHandling\NullErrorHandler;
@@ -25,6 +19,12 @@
     use Snicco\Session\Session;
     use Snicco\Support\Arr;
     use Snicco\Support\Str;
+    use Tests\helpers\AssertsResponse;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateRouteCollection;
+    use Tests\helpers\CreateUrlGenerator;
+    use Tests\stubs\TestRequest;
+    use Tests\UnitTest;
 
     class ValidateSignatureTest extends UnitTest
     {
@@ -34,25 +34,14 @@
         use AssertsResponse;
         use CreateDefaultWpApiMocks;
 
-        /**
-         * @var ResponseFactory
-         */
-        private $response_factory;
-
-        /**
-         * @var Delegate
-         */
-        private $delegate;
+        private ResponseFactory $response_factory;
+        private Delegate $delegate;
 
 
         protected function beforeTestRun()
         {
-
             $this->response_factory = $this->createResponseFactory();
-            $this->delegate = new Delegate(function () {
-
-                return $this->response_factory->make(200);
-            });
+            $this->delegate = new Delegate(fn() => $this->response_factory->make(200));
         }
 
         private function newMiddleware(MagicLink $magic_link, string $type = 'relative') : ValidateSignature
@@ -62,7 +51,6 @@
             $m->setResponseFactory($this->response_factory);
 
             return $m;
-
 
         }
 
@@ -184,10 +172,7 @@
 
             $response = $pipeline->send($request)
                                  ->through([ShareCookies::class, $m])
-                                 ->then(function () {
-
-                                     return $this->response_factory->make();
-                                 });
+                                 ->then(fn() => $this->response_factory->make());
 
 
             $cookies = $response->getHeaderLine('Set-Cookie');
@@ -231,10 +216,7 @@
 
             $response = $pipeline->send($request)
                                  ->through([ShareCookies::class, $m])
-                                 ->then(function () {
-
-                                     return $this->response_factory->make();
-                                 });
+                                 ->then(fn() => $this->response_factory->make());
 
 
             $cookie = $response->getHeaderLine('Set-Cookie');
@@ -247,10 +229,7 @@
 
             $pipeline->send($request_with_access_cookie)
                                  ->through([ShareCookies::class, $m])
-                                 ->then(function () {
-
-                                     return $this->response_factory->make();
-                                 });
+                                 ->then(fn() => $this->response_factory->make());
 
             Carbon::setTestNow();
 

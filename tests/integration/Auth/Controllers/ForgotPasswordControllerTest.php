@@ -6,14 +6,12 @@
 
     namespace Tests\integration\Auth\Controllers;
 
+    use Snicco\Auth\Mail\ResetPasswordMail;
     use Tests\AuthTestCase;
     use Tests\stubs\TestApp;
-    use Snicco\Auth\Mail\ResetPasswordMail;
 
     class ForgotPasswordControllerTest extends AuthTestCase
     {
-
-
         protected function setUp() : void
         {
 

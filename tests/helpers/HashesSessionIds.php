@@ -6,6 +6,9 @@
 
     namespace Tests\helpers;
 
+    /**
+     * @internal
+     */
     trait HashesSessionIds
     {
 

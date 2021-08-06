@@ -6,13 +6,11 @@
 
     namespace Tests\integration\Mail;
 
-    use Tests\integration\Blade\traits\InteractsWithWordpress;
-    use Tests\IntegrationTest;
-    use Tests\stubs\TestApp;
-    use Tests\TestCase;
     use Snicco\Events\Event;
     use Snicco\Events\PendingMail;
     use Snicco\Mail\Mailable;
+    use Tests\stubs\TestApp;
+    use Tests\TestCase;
 
     class MailBuilderTest extends TestCase
     {

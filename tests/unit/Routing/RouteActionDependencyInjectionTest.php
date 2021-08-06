@@ -8,30 +8,25 @@
 
 	use Contracts\ContainerAdapter;
     use Mockery;
+    use Snicco\Events\Event;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Routing\Router;
+    use Snicco\Support\WP;
+    use Tests\fixtures\Controllers\Web\ControllerWithDependencies;
+    use Tests\fixtures\Controllers\Web\TeamsController;
+    use Tests\fixtures\TestDependencies\Bar;
+    use Tests\fixtures\TestDependencies\Foo;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\CreateTestSubjects;
     use Tests\UnitTest;
-    use Tests\fixtures\TestDependencies\Bar;
-	use Tests\fixtures\Controllers\Web\ControllerWithDependencies;
-	use Tests\fixtures\Controllers\Web\TeamsController;
-	use Tests\fixtures\TestDependencies\Foo;
-    use Snicco\Events\Event;
-    use Snicco\Support\WP;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Routing\Router;
 
     class RouteActionDependencyInjectionTest extends UnitTest {
 
         use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
 
-        /**
-         * @var ContainerAdapter
-         */
-        private $container;
-
-        /** @var Router */
-        private $router;
+        private ContainerAdapter $container;
+        private Router $router;
 
         protected function beforeTestRun()
         {

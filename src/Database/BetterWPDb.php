@@ -6,11 +6,11 @@
 
     namespace Snicco\Database;
 
-    use Snicco\Database\Concerns\DelegatesToWpdb;
-    use Snicco\Database\Contracts\BetterWPDbInterface;
     use mysqli;
     use mysqli_result;
     use mysqli_stmt;
+    use Snicco\Database\Concerns\DelegatesToWpdb;
+    use Snicco\Database\Contracts\BetterWPDbInterface;
     use wpdb;
 
     /**
@@ -25,24 +25,19 @@
 
         use DelegatesToWpdb;
 
-        /**
-         * @var mysqli
-         */
-        private $mysqli;
-
-        /**
-         * @var wpdb
-         */
-        private $wpdb;
+        private mysqli $mysqli;
+        private wpdb   $wpdb;
 
         public function __construct(wpdb $wpdb, mysqli $mysqli)
         {
+
             $this->mysqli = $mysqli;
             $this->wpdb = $wpdb;
 
         }
 
-        public function doSelect( $sql, $bindings ) : array {
+        public function doSelect($sql, $bindings) : array
+        {
 
             $stmt = $this->preparedStatement( $sql, $bindings );
 

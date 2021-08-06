@@ -6,12 +6,11 @@
 
     namespace Tests\integration\Validation;
 
-    use Tests\IntegrationTest;
-    use Tests\stubs\TestApp;
-    use Tests\TestCase;
     use Snicco\Validation\Middleware\ShareValidatorWithRequest;
     use Snicco\Validation\ValidationServiceProvider;
     use Snicco\Validation\Validator;
+    use Tests\stubs\TestApp;
+    use Tests\TestCase;
 
     class ValidationServiceProviderTest extends TestCase
     {

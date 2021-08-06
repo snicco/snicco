@@ -32,16 +32,16 @@
     use Tests\fixtures\Middleware\FooMiddleware;
     use Tests\stubs\TestRequest;
 
+    /**
+     * @internal
+     */
     trait CreateTestSubjects
     {
 
         use CreateUrlGenerator;
         use CreateRouteCollection;
         use CreateRouteCollection;
-
-        /** @var MiddlewareStack */
-        protected $middleware_stack;
-
+        protected MiddlewareStack $middleware_stack;
 
         protected function createRoutes(Closure $routes, bool $force_trailing = false)
         {

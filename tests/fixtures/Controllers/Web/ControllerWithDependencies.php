@@ -6,16 +6,13 @@
 
 	namespace Tests\fixtures\Controllers\Web;
 
-	use Tests\fixtures\TestDependencies\Bar;
-	use Tests\fixtures\TestDependencies\Foo;
-    use Snicco\Http\Psr7\Request;
+	use Snicco\Http\Psr7\Request;
+    use Tests\fixtures\TestDependencies\Bar;
+    use Tests\fixtures\TestDependencies\Foo;
 
-	class ControllerWithDependencies {
+    class ControllerWithDependencies {
 
-		/**
-		 * @var Foo
-		 */
-		private $foo;
+		private Foo $foo;
 
 		public function __construct( Foo $foo ) {
 
@@ -33,7 +30,6 @@
 		public function withMethodDependency( Request $request, Bar $bar )  {
 
 			return $this->foo->foo . $bar->bar . '_controller';
-
 
 		}
 

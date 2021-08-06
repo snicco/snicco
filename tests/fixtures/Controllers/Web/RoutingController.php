@@ -11,13 +11,10 @@
     class RoutingController
     {
 
-
         public function foo(Request $request)
         {
-
             return 'foo';
 
         }
-
 
     }

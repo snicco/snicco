@@ -6,23 +6,19 @@
 
     namespace Tests\unit\Http;
 
-    use Tests\stubs\TestRequest;
-    use Tests\UnitTest;
+    use RuntimeException;
     use Snicco\Http\Psr7\Request;
     use Snicco\Routing\RoutingResult;
     use Snicco\Session\Drivers\ArraySessionDriver;
     use Snicco\Session\Session;
     use Snicco\Support\VariableBag;
     use Snicco\Validation\Validator;
+    use Tests\stubs\TestRequest;
+    use Tests\UnitTest;
 
     class RequestTest extends UnitTest
     {
-
-
-        /**
-         * @var Request
-         */
-        private $request;
+        private Request $request;
 
         protected function setUp() : void
         {
@@ -155,7 +151,7 @@
                 $this->fail('Missing session did not throw an exception');
 
             }
-            catch (\RuntimeException $e) {
+            catch (RuntimeException $e) {
 
                 $this->assertSame('A session has not been set on the request.', $e->getMessage());
 
@@ -281,7 +277,7 @@
                 $this->fail('Missing validator did not throw an exception');
 
             }
-            catch (\RuntimeException $e) {
+            catch (RuntimeException $e) {
 
                 $this->assertSame('A validator instance has not been set on the request.', $e->getMessage());
 

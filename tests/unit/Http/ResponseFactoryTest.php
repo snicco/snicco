@@ -6,18 +6,17 @@
 
     namespace Tests\unit\Http;
 
-    use Tests\helpers\AssertsResponse;
-    use Tests\helpers\CreateRouteCollection;
-    use Tests\helpers\CreateUrlGenerator;
-    use Tests\stubs\TestView;
-    use Tests\UnitTest;
     use Snicco\Http\Psr7\Response;
     use Snicco\Http\Redirector;
     use Snicco\Http\ResponseFactory;
     use Snicco\Http\Responses\InvalidResponse;
     use Snicco\Http\Responses\NullResponse;
-    use Snicco\Http\Responses\RedirectResponse;
     use Snicco\Http\Responses\WpQueryFilteredResponse;
+    use Tests\helpers\AssertsResponse;
+    use Tests\helpers\CreateRouteCollection;
+    use Tests\helpers\CreateUrlGenerator;
+    use Tests\stubs\TestView;
+    use Tests\UnitTest;
 
     class ResponseFactoryTest extends UnitTest
     {
@@ -26,10 +25,7 @@
         use CreateUrlGenerator;
         use CreateRouteCollection;
 
-        /**
-         * @var ResponseFactory
-         */
-        private $factory;
+        private ResponseFactory $factory;
 
         protected function setUp() : void
         {

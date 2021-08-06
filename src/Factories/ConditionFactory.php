@@ -84,8 +84,7 @@
             catch (Throwable $e) {
 
                 throw new ConfigurationException(
-                    "Condition could not be created.".PHP_EOL.$e->getMessage()
-
+                    "Condition could not be created.".PHP_EOL.$e->getMessage(), $e
                 );
             }
 

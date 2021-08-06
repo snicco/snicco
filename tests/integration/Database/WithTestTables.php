@@ -12,7 +12,7 @@
     trait WithTestTables
     {
 
-        private $tables = [
+        private array $tables = [
             'cities',
             'countries',
             'activities',

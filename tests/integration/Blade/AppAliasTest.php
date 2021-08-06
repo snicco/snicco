@@ -6,14 +6,10 @@
 
     namespace Tests\integration\Blade;
 
-    use Tests\integration\Blade\traits\AssertBladeView;
-    use Tests\IntegrationTest;
     use Tests\stubs\TestApp;
 
     class AppAliasTest extends BladeTestCase
     {
-
-
 
         /** @test */
         public function nested_views_can_be_rendered_relative_to_the_views_directory()
@@ -33,10 +29,7 @@
 
             $this->assertViewContent('FOO', $first);
 
-
         }
-
-
 
 
     }

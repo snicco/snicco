@@ -6,17 +6,14 @@
 
 	namespace Tests\fixtures\ViewComposers;
 
-	use Tests\fixtures\TestDependencies\Bar;
-	use Tests\fixtures\TestDependencies\Foo;
 	use Snicco\Contracts\ViewInterface;
+    use Tests\fixtures\TestDependencies\Bar;
+    use Tests\fixtures\TestDependencies\Foo;
 
-	class FooComposer {
+    class FooComposer {
 
 
-		/**
-		 * @var Bar
-		 */
-		private $bar;
+		private Bar $bar;
 
 		public function __construct( Bar $bar ) {
 

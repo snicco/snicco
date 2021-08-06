@@ -6,11 +6,14 @@
 
     namespace Tests\helpers;
 
-    use SniccoAdapter\BaseContainerAdapter;
     use Snicco\Factories\ConditionFactory;
     use Snicco\Factories\RouteActionFactory;
     use Snicco\Routing\RouteCollection;
+    use SniccoAdapter\BaseContainerAdapter;
 
+    /**
+     * @internal
+     */
     trait CreateRouteCollection
     {
 

@@ -8,13 +8,12 @@
 
     use Tests\fixtures\Middleware\GlobalMiddleware;
     use Tests\fixtures\Middleware\WebMiddleware;
-    use Tests\stubs\TestRequest;
     use Tests\TestCase;
 
     class HttpKernelMiddlewareTest extends TestCase
     {
 
-        protected $defer_boot = true;
+        protected bool $defer_boot = true;
 
         /** @test */
         public function custom_middleware_groups_can_be_defined()

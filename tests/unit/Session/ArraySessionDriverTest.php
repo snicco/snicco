@@ -7,14 +7,15 @@
 	namespace Tests\unit\Session;
 
 	use Mockery;
+    use Snicco\Session\Drivers\ArraySessionDriver;
+    use Snicco\Support\WP;
+    use stdClass;
     use Tests\helpers\CreateDefaultWpApiMocks;
     use Tests\helpers\TravelsTime;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use Snicco\Support\WP;
-    use Snicco\Session\Drivers\ArraySessionDriver;
 
-	class ArraySessionDriverTest extends UnitTest {
+    class ArraySessionDriverTest extends UnitTest {
 
 	    use TravelsTime;
         use CreateDefaultWpApiMocks;
@@ -159,7 +160,7 @@
 
             $sessions = $handler->getAllByUserId(1);
 
-            $this->assertContainsOnlyInstancesOf(\stdClass::class, $sessions);
+            $this->assertContainsOnlyInstancesOf(stdClass::class, $sessions);
             $this->assertCount(2, $sessions);
             $this->assertSame(1, $sessions[0]->user_id);
             $this->assertSame(1, $sessions[1]->user_id);
@@ -242,9 +243,8 @@
         }
 
 		private function newRequest() {
-		    $request = TestRequest::from('GET', 'foo');
 
-		    return $request;
+            return TestRequest::from('GET', 'foo');
         }
 
 	}
