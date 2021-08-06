@@ -18,24 +18,18 @@
 
     class UrlGenerator
     {
+
         use InteractsWithTime;
 
-        private $trailing_slash;
-
-        /**
-         * @var RouteUrlGenerator
-         */
-        private $route_url;
+        private bool              $trailing_slash;
+        private RouteUrlGenerator $route_url;
+        private MagicLink         $magic_link;
 
         /**
          * @var callable
          */
         private $request_resolver;
 
-        /**
-         * @var MagicLink
-         */
-        private $magic_link;
 
         public function __construct(RouteUrlGenerator $route_url, MagicLink $magic_link, bool $trailing_slash = false)
         {
@@ -43,7 +37,6 @@
             $this->route_url = $route_url;
             $this->magic_link = $magic_link;
             $this->trailing_slash = $trailing_slash;
-
         }
 
         public function setRequestResolver(callable $request_resolver)

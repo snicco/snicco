@@ -72,7 +72,7 @@
         public function the_route_handler_does_not_get_run_when_filtering_WP_QUERY()
         {
 
-            $this->withRequest($this->frontendRequest('GET', '/wpquery/assert-no-handler-run'))
+            $this->withRequest($this->frontendRequest('GET', '/wpquery/assert-no-driver-run'))
                  ->boot();
             $this->loadRoutes();
 

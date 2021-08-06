@@ -6,27 +6,22 @@
 
     namespace Snicco\Session;
 
-    use Illuminate\Contracts\Encryption\EncryptException as IlluminateEncryptException;
     use Illuminate\Contracts\Encryption\DecryptException as IlluminateDecryptException;
+    use Illuminate\Contracts\Encryption\EncryptException as IlluminateEncryptException;
     use Illuminate\Encryption\Encrypter;
     use Snicco\Contracts\EncryptorInterface;
-    use Snicco\ExceptionHandling\Exceptions\EncryptException;
     use Snicco\ExceptionHandling\Exceptions\DecryptException;
+    use Snicco\ExceptionHandling\Exceptions\EncryptException;
     use Snicco\Support\Str;
 
     class Encryptor implements EncryptorInterface
     {
 
-        /**
-         * @var Encrypter
-         */
-        private $encryptor;
+        private Encrypter $encryptor;
 
         public function __construct(string $key)
         {
-
             $this->encryptor = new Encrypter($this->parseKey($key), 'AES-256-CBC');
-
         }
 
         public function encrypt($value, bool $serialize = true) : string

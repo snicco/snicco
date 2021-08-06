@@ -11,12 +11,7 @@
 
     class PostSlugCondition implements ConditionInterface {
 
-		/**
-		 * Post slug to check against
-		 *
-		 * @var string
-		 */
-		private $post_slug;
+		private string $post_slug;
 
 		public function __construct( string $post_slug ) {
 

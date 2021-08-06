@@ -7,15 +7,12 @@
 	namespace Snicco\Routing\Conditions;
 
 	use Snicco\Contracts\ConditionInterface;
-	use Snicco\Contracts\UrlableInterface;
+    use Snicco\Contracts\UrlableInterface;
     use Snicco\Http\Psr7\Request;
 
     class PostIdCondition implements ConditionInterface, UrlableInterface {
 
-		/**
-		 * @var integer
-		 */
-		private $post_id;
+        private int $post_id;
 
 		public function __construct( int $post_id ) {
 

@@ -6,7 +6,6 @@
 
     namespace Snicco\Routing;
 
-    use Opis\Closure\SerializableClosure;
     use Snicco\Routing\Conditions\CustomCondition;
     use Snicco\Support\Str;
     use Snicco\Traits\ReflectsCallable;
@@ -19,24 +18,10 @@
         const NEGATES_SIGN = '!';
         const NEGATES_WORD = 'negate';
 
-
-        /** @var string */
-        private $type;
-
-        /**
-         * @var array
-         */
-        private $args;
-
-        /**
-         * @var object|null
-         */
-        private $instance;
-
-        /**
-         * @var string
-         */
-        private $negates;
+        protected       $type;
+        protected       $args;
+        private ?object $instance;
+        private string  $negates;
 
         public function __construct(array $arguments = [])
         {
@@ -84,16 +69,12 @@
 
         public function instance() : ?object
         {
-
             return $this->instance;
-
         }
 
         public function negates() : ?string
         {
-
             return $this->negates;
-
         }
 
         private function parseTypeAndArgs(array $args) : array

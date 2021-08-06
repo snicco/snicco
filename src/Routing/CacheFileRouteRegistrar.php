@@ -6,18 +6,15 @@
 
     namespace Snicco\Routing;
 
-    use Symfony\Component\Finder\Finder;
     use Snicco\Application\Config;
     use Snicco\Contracts\RouteRegistrarInterface;
     use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+    use Symfony\Component\Finder\Finder;
 
     class CacheFileRouteRegistrar implements RouteRegistrarInterface
     {
 
-        /**
-         * @var RouteRegistrar
-         */
-        private $registrar;
+        private RouteRegistrar $registrar;
 
         public function __construct(RouteRegistrar $registrar)
         {

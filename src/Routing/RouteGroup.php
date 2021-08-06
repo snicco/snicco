@@ -6,33 +6,29 @@
 
 	namespace Snicco\Routing;
 
-	use Snicco\Support\Url;
 	use Snicco\Support\Arr;
+    use Snicco\Support\Url;
 
-	class RouteGroup {
+    class RouteGroup
+    {
 
 
-		private $namespace;
+        private string          $namespace;
+        private string          $url_prefix;
+        private string          $name;
+        private array           $middleware;
+        private ConditionBucket $conditions;
+        private array           $methods;
 
-		private $url_prefix;
+        public function __construct(array $attributes = [])
+        {
 
-		private $name;
+            $this->namespace = Arr::get($attributes, 'namespace', '');
+            $this->url_prefix = Arr::get($attributes, 'prefix', '');
+            $this->name = Arr::get($attributes, 'name', '');
+            $this->middleware = Arr::get($attributes, 'middleware', []);
 
-		private $middleware;
-
-		/** @var ConditionBucket */
-		private $conditions;
-
-		private $methods;
-
-		public function __construct( array $attributes = [] ) {
-
-			$this->namespace  = Arr::get( $attributes, 'namespace', '' );
-			$this->url_prefix = Arr::get( $attributes, 'prefix', '' );
-			$this->name       = Arr::get( $attributes, 'name', '' );
-			$this->middleware = Arr::get( $attributes, 'middleware', [] );
-
-			$this->conditions = Arr::get( $attributes, 'where', ConditionBucket::createEmpty() );
+            $this->conditions = Arr::get($attributes, 'where', ConditionBucket::createEmpty());
 
 			$this->conditions = $this->conditions instanceof ConditionBucket
                 ? $this->conditions

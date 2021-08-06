@@ -13,32 +13,24 @@
     use Snicco\Http\ResponseFactory;
     use Snicco\View\ViewFactory;
 
-    class ControllerAction implements RouteAction {
+    class ControllerAction implements RouteAction
+    {
 
-		/**
-		 * @var array
-		 */
-		private $raw_callable;
+        private array              $raw_callable;
+        private MiddlewareResolver $middleware_resolver;
+        private ContainerAdapter   $container;
 
-		/**
-		 * @var MiddlewareResolver
-		 */
-		private $middleware_resolver;
+        public function __construct(array $raw_callable, MiddlewareResolver $resolver, ContainerAdapter $container)
+        {
 
-        /**
-         * @var ContainerAdapter
-         */
-        private $container;
-
-		public function __construct(array $raw_callable,  MiddlewareResolver $resolver, ContainerAdapter $container) {
-
-			$this->raw_callable        = $raw_callable;
-			$this->middleware_resolver = $resolver;
+            $this->raw_callable = $raw_callable;
+            $this->middleware_resolver = $resolver;
             $this->container = $container;
 
         }
 
-		public function executeUsing(...$args) {
+        public function executeUsing(...$args)
+        {
 
             $controller = $this->container->make($this->raw_callable[0]);
 

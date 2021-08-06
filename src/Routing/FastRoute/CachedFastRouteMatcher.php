@@ -12,7 +12,6 @@
     use Snicco\Routing\RoutingResult;
     use Snicco\Traits\PreparesRouteForExport;
 
-
     class CachedFastRouteMatcher implements RouteMatcher
     {
 
@@ -20,20 +19,9 @@
         use TransformFastRoutes;
         use PreparesRouteForExport;
 
-        /**
-         * @var FastRouteMatcher
-         */
-        private $uncached_matcher;
-
-        /**
-         * @var array
-         */
-        private $route_cache;
-
-        /**
-         * @var string
-         */
-        private $route_cache_file;
+        private FastRouteMatcher $uncached_matcher;
+        private array            $route_cache;
+        private string           $route_cache_file;
 
         public function __construct(FastRouteMatcher $uncached_matcher, string $route_cache_file)
         {
@@ -97,16 +85,12 @@ declare(strict_types=1); return '.var_export($route_data, true).';'
 
         public function isCached() : bool
         {
-
             return is_array($this->route_cache);
-
         }
 
         private function serializeRoute(Route $route) : array
         {
-
             return $this->prepareForVarExport($route->asArray());
-
 
         }
 

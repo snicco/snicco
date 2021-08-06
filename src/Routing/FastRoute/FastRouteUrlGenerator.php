@@ -10,17 +10,13 @@
     use Snicco\Contracts\RouteUrlGenerator;
     use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
     use Snicco\Routing\Route;
-    use Snicco\Routing\RouteCollection;
     use Snicco\Support\Arr;
     use Snicco\Support\Str;
 
     class FastRouteUrlGenerator implements RouteUrlGenerator
     {
 
-        /**
-         * @var RouteCollection
-         */
-        private $routes;
+        private AbstractRouteCollection $routes;
 
         /** @see https://regexr.com/5s536 */
         public const matching_pattern = '/(?<optional>(?:\[\/)?(?<required>{{.+?}}+)(?:\]+)?)/i';

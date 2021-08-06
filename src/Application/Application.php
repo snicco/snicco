@@ -195,7 +195,7 @@
         private function registerErrorHandler()
         {
 
-            /** @todo Instead of booting the error handler in the config boot it here but lazy load it from the container */
+            /** @todo Instead of booting the error driver in the config boot it here but lazy load it from the container */
 
 
         }

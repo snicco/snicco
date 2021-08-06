@@ -41,9 +41,9 @@
 
                });
 
-        $router->get('assert-no-handler-run', function () {
+        $router->get('assert-no-driver-run', function () {
 
-            Assert::fail('Route handler was run.');
+            Assert::fail('Route driver was run.');
         })
                ->wpquery(function () {
 

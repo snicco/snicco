@@ -6,20 +6,22 @@
 
 	namespace Snicco\Routing;
 
-	use Codeception\Step\Condition;
 	use Snicco\Support\Arr;
 
-	class ConditionBucket {
+    class ConditionBucket
+    {
 
 
-		private $conditions = [];
+        private array $conditions;
 
-		public function __construct(array $conditions = [])
+        public function __construct(array $conditions = [])
         {
+
             $this->conditions = $conditions;
         }
 
-        public static function createEmpty() : ConditionBucket {
+        public static function createEmpty() : ConditionBucket
+        {
 
 			return new static([]);
 

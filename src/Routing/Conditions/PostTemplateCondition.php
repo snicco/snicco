@@ -9,27 +9,23 @@
 	use Snicco\Contracts\ConditionInterface;
     use Snicco\Http\Psr7\Request;
 
-    class PostTemplateCondition implements ConditionInterface {
-
-		/**
-		 * @var string
-		 */
-		private $post_template;
-
-		/**
-		 * @var string[]
-		 */
-		private $post_types;
+    class PostTemplateCondition implements ConditionInterface
+    {
 
 
-		public function __construct( string $post_template, $post_types = [] ) {
+        private string $post_template;
+        private array  $post_types;
 
-			$this->post_template = $post_template;
-			$this->post_types    = is_array( $post_types ) ? $post_types : [ $post_types ];
-		}
+        public function __construct(string $post_template, $post_types = [])
+        {
+
+            $this->post_template = $post_template;
+            $this->post_types = is_array($post_types) ? $post_types : [$post_types];
+        }
 
 
-		public function isSatisfied( Request $request ) : bool {
+        public function isSatisfied(Request $request) : bool
+        {
 
 			$template = get_post_meta( (int) get_the_ID(), '_wp_page_template', true );
 			$template = $template ? : 'default';

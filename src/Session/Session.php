@@ -12,71 +12,32 @@
     use DateTimeInterface;
     use Illuminate\Support\InteractsWithTime;
     use Illuminate\Support\ViewErrorBag;
-    use Respect\Validation\Rules\DateTime;
-    use Snicco\Auth\Events\Logout;
-    use Snicco\Support\WP;
     use Snicco\Session\Contracts\SessionDriver;
-    use Snicco\Session\Events\SessionRegenerated;
     use Snicco\Support\Arr;
-    use Snicco\Support\Str;
     use stdClass;
-    use SessionHandlerInterface;
-    use Snicco\Support\Url;
 
     class Session
     {
 
         use InteractsWithTime;
 
-        /**
-         * @var string
-         */
-        private $id;
+        private string        $id;
+        private array         $attributes               = [];
+        private SessionDriver $driver;
+        private bool          $started                  = false;
+        private array         $initial_attributes       = [];
+        private array         $loaded_data_from_handler = [];
+        private int           $token_strength_in_bytes;
 
-        /**
-         * @var string
-         */
-        private $name;
-
-        /**
-         * @var array
-         */
-        private $attributes = [];
-
-        /**
-         * @var SessionHandlerInterface
-         */
-        private $handler;
-
-        /**
-         * @var bool
-         */
-        private $started = false;
-
-        /**
-         * @var array
-         */
-        private $initial_attributes;
-
-        /**
-         * @var array
-         */
-        private $loaded_data_from_handler = [];
-
-        /**
-         * @var int
-         */
-        private $token_strength_in_bytes;
-
-        public function __construct( SessionDriver $handler, int $token_strength_in_bytes = 32)
+        public function __construct(SessionDriver $handler, int $token_strength_in_bytes = 32)
         {
 
-            $this->handler = $handler;
+            $this->driver = $handler;
             $this->token_strength_in_bytes = $token_strength_in_bytes;
 
         }
 
-        public function start(string $session_id ='') : bool
+        public function start(string $session_id = '') : bool
         {
 
             $this->setId($session_id);
@@ -97,7 +58,7 @@
 
             $this->setLastActivity($this->currentTime());
 
-            $this->handler->write(
+            $this->driver->write(
                 $this->hash($this->getId()),
                 $this->prepareForStorage(serialize($this->attributes))
             );
@@ -107,6 +68,7 @@
 
         public function wasChanged() : bool
         {
+
             return $this->initial_attributes !== $this->attributes;
         }
 
@@ -271,6 +233,7 @@
 
         public function flashInput(array $value) : void
         {
+
             $this->flash('_old_input', $value);
         }
 
@@ -282,11 +245,13 @@
 
         public function forget($keys) : void
         {
+
             Arr::forget($this->attributes, $keys);
         }
 
         public function flush() : void
         {
+
             $this->attributes = [];
         }
 
@@ -294,12 +259,14 @@
         {
 
             $this->flush();
+
             return $this->migrate();
 
         }
 
         public function regenerate(bool $destroy_old = true) : bool
         {
+
             return $this->migrate($destroy_old);
         }
 
@@ -307,7 +274,7 @@
         {
 
             if ($destroy_old) {
-                $this->handler->destroy($this->hash($this->getId()));
+                $this->driver->destroy($this->hash($this->getId()));
             }
 
             $this->setId($this->generateSessionId());
@@ -317,6 +284,7 @@
 
         public function isStarted() : bool
         {
+
             return $this->started;
         }
 
@@ -335,7 +303,8 @@
 
         }
 
-        public function setUserId(int $user_id) {
+        public function setUserId(int $user_id)
+        {
 
             $this->put('_user.id', $user_id);
 
@@ -344,14 +313,15 @@
         public function isValidId(string $id) : bool
         {
 
-            return ( strlen($id) === 2 * $this->token_strength_in_bytes)
+            return (strlen($id) === 2 * $this->token_strength_in_bytes)
                 && ctype_alnum($id)
                 && $this->getDriver()->isValid($this->hash($id));
 
         }
 
-        public function getPreviousUrl( ?string $fallback = '/') : ?string
+        public function getPreviousUrl(?string $fallback = '/') : ?string
         {
+
             return $this->get('_url.previous', $fallback);
         }
 
@@ -370,13 +340,14 @@
         }
 
         /**
-         * @param DateTimeInterface|DateInterval|int  $delay
+         * @param  DateTimeInterface|DateInterval|int  $delay
          */
         public function confirmAuthUntil($delay)
         {
+
             $ts = $this->availableAt($delay);
 
-            $this->put('auth.confirm.until', $ts );
+            $this->put('auth.confirm.until', $ts);
 
         }
 
@@ -397,7 +368,7 @@
         public function getDriver() : SessionDriver
         {
 
-            return $this->handler;
+            return $this->driver;
         }
 
         public function errors() : ViewErrorBag
@@ -414,6 +385,7 @@
 
         public function allowAccessToRoute(string $path, $expires)
         {
+
             $allowed = $this->allowedRoutes();
 
             $allowed[$path] = (int) $expires;
@@ -426,13 +398,14 @@
 
             $expires = $this->allowedRoutes()[$path] ?? null;
 
-            if ( ! $expires ) {
+            if ( ! $expires) {
                 return false;
             }
 
-            if ( $expires < $this->currentTime() ) {
+            if ($expires < $this->currentTime()) {
 
-                $this->remove('_allow_routes.' .$path);
+                $this->remove('_allow_routes.'.$path);
+
                 return false;
 
             }
@@ -441,7 +414,8 @@
 
         }
 
-        private function allowedRoutes () :array {
+        private function allowedRoutes() : array
+        {
 
             return $this->get('_allow_routes', []);
 
@@ -456,6 +430,7 @@
 
         protected function prepareForStorage(string $data) : string
         {
+
             return $data;
         }
 
@@ -481,9 +456,9 @@
         private function readFromDriver() : array
         {
 
-            if ($data = $this->handler->read( $this->hash($this->getId() ) ) ) {
+            if ($data = $this->driver->read($this->hash($this->getId()))) {
 
-                $data = @unserialize($this->prepareForUnserialize($data) );
+                $data = @unserialize($this->prepareForUnserialize($data));
 
                 if ($data !== false && ! is_null($data) && is_array($data)) {
                     return $data;
@@ -518,13 +493,14 @@
 
         }
 
-        public function setLastActivity(int $timestamp) {
+        public function setLastActivity(int $timestamp)
+        {
 
             $this->put('_last_activity', $timestamp);
 
         }
 
-        public function lastActivity() :int
+        public function lastActivity() : int
         {
 
             return $this->get('_last_activity', 0);
@@ -532,39 +508,44 @@
         }
 
         /**
-         * @param  DateTimeInterface|DateInterval|int $delay
+         * @param  DateTimeInterface|DateInterval|int  $delay
          */
-        public function setNextRotation($delay) {
+        public function setNextRotation($delay)
+        {
 
             $ts = $this->availableAt($delay);
             $this->put('_rotate_at', $ts);
 
         }
 
-        public function rotationDueAt() :int {
+        public function rotationDueAt() : int
+        {
 
-            return $this->get('_rotate_at', 0 );
+            return $this->get('_rotate_at', 0);
 
 
         }
 
         /**
-         * @param  DateTimeInterface|DateInterval|int $delay
+         * @param  DateTimeInterface|DateInterval|int  $delay
          */
-        public function setAbsoluteTimeout($delay) {
+        public function setAbsoluteTimeout($delay)
+        {
 
             $ts = $this->availableAt($delay);
             $this->put('_expires_at', $ts);
 
         }
 
-        public function absoluteTimeout() :int  {
+        public function absoluteTimeout() : int
+        {
 
             return $this->get('_expires_at', 0);
 
         }
 
-        public function userId() {
+        public function userId()
+        {
 
             return $this->get('_user.id', 0);
 
@@ -572,10 +553,12 @@
 
         private function hash(string $id)
         {
-            if ( function_exists( 'hash' ) ) {
-                return hash( 'sha256', $id );
-            } else {
-                return sha1( $id );
+
+            if (function_exists('hash')) {
+                return hash('sha256', $id);
+            }
+            else {
+                return sha1($id);
             }
         }
 
@@ -594,7 +577,8 @@
 
                     $session->payload = $payload;
 
-                } else{
+                }
+                else {
 
                     $session->payload = [];
                 }
@@ -609,16 +593,19 @@
 
         public function isIdle(int $idle_timeout) : bool
         {
-            return ($this->currentTime() - $this->lastActivity() ) > $idle_timeout;
+
+            return ($this->currentTime() - $this->lastActivity()) > $idle_timeout;
         }
 
-        public function hasRememberMeToken() :bool
+        public function hasRememberMeToken() : bool
         {
+
             return $this->get('auth.has_remember_token', false);
         }
 
         public function challengedUser() : int
         {
+
             return $this->get('auth.2fa.challenged_user', 0);
         }
 

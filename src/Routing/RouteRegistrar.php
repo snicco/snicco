@@ -6,21 +6,18 @@
 
     namespace Snicco\Routing;
 
-    use Symfony\Component\Finder\Finder;
-    use Symfony\Component\Finder\SplFileInfo;
     use Snicco\Application\Config;
     use Snicco\Contracts\RouteRegistrarInterface;
-    use Snicco\Support\WP;
     use Snicco\Support\Arr;
     use Snicco\Support\Str;
+    use Snicco\Support\WP;
+    use Symfony\Component\Finder\Finder;
+    use Symfony\Component\Finder\SplFileInfo;
 
     class RouteRegistrar implements RouteRegistrarInterface
     {
 
-        /**
-         * @var Router
-         */
-        private $router;
+        private Router $router;
 
         public function __construct(Router $router)
         {

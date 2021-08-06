@@ -8,40 +8,21 @@
 
     use Carbon\Carbon;
     use Illuminate\Support\InteractsWithTime;
-    use wpdb;
-    use Snicco\Support\WP;
     use Snicco\Http\Psr7\Request;
     use Snicco\Session\Contracts\SessionDriver;
+    use Snicco\Support\WP;
+    use wpdb;
 
     class DatabaseSessionDriver implements SessionDriver
     {
 
         use InteractsWithTime;
 
-        /**
-         * @var wpdb
-         */
-        private $db;
-
-        /**
-         * @var int
-         */
-        private $absolute_lifetime_in_seconds;
-
-        /**
-         * @var Request
-         */
-        private $request;
-
-        /**
-         * @var string
-         */
-        private $table;
-
-        /**
-         * @var object
-         */
-        private $session;
+        private wpdb    $db;
+        private int     $absolute_lifetime_in_seconds;
+        private Request $request;
+        private string  $table;
+        private object  $session;
 
         public function __construct(wpdb $db, string $table, int $lifetime_in_sec)
         {
@@ -53,7 +34,6 @@
 
         public function close() : bool
         {
-
             return true;
         }
 
@@ -198,7 +178,7 @@ WHERE
             return [
                 'id' => $session_id,
                 'user_id' => WP::userId(),
-                'ip_address' => $this->request ? $this->request->getAttribute('ip_address') : '',
+                'ip_address' => isset($this->request) ? $this->request->getAttribute('ip_address') : '',
                 'user_agent' => $this->userAgent(),
                 'payload' => base64_encode($payload),
                 'last_activity' => $this->currentTime(),
@@ -236,7 +216,7 @@ WHERE
         private function userAgent() : string
         {
 
-            if ( ! $this->request) {
+            if ( ! isset($this->request)) {
                 return '';
             }
 

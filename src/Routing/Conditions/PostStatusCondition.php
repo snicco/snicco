@@ -11,11 +11,7 @@
 
     class PostStatusCondition implements ConditionInterface {
 
-		/**
-		 * @var string
-		 */
-		private $post_status;
-
+		private string $post_status;
 
 		public function __construct( string $post_status ) {
 

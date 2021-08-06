@@ -6,21 +6,16 @@
 
     namespace Snicco\Session\Middleware;
 
-    use Illuminate\Support\ViewErrorBag;
     use Psr\Http\Message\ResponseInterface;
     use Snicco\Contracts\Middleware;
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Request;
-    use Snicco\Session\Session;
     use Snicco\View\GlobalContext;
 
     class ShareSessionWithView extends Middleware
     {
 
-        /**
-         * @var GlobalContext
-         */
-        private $global_context;
+        private GlobalContext $global_context;
 
 
         public function __construct(GlobalContext $global_context)

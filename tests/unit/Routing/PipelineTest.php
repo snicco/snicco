@@ -8,25 +8,24 @@
 
     use Nyholm\Psr7\Factory\Psr17Factory;
     use Nyholm\Psr7\Response;
-    use Tests\helpers\CreateRouteCollection;
-    use Tests\helpers\CreateUrlGenerator;
-    use Tests\UnitTest;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Http\Psr7\Response as AppResponse;
     use Nyholm\Psr7\Stream;
-    use PHPUnit\Framework\TestCase;
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Message\ServerRequestInterface;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
+    use Snicco\Contracts\ErrorHandlerInterface;
+    use Snicco\ExceptionHandling\Exceptions\HttpException;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response as AppResponse;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Routing\Pipeline;
     use Tests\helpers\AssertsResponse;
     use Tests\helpers\CreateContainer;
     use Tests\helpers\CreatePsr17Factories;
+    use Tests\helpers\CreateRouteCollection;
+    use Tests\helpers\CreateUrlGenerator;
+    use Tests\UnitTest;
     use Throwable;
-    use Snicco\Contracts\ErrorHandlerInterface;
-    use Snicco\ExceptionHandling\Exceptions\HttpException;
-    use Snicco\Http\ResponseFactory;
-    use Snicco\Routing\Pipeline;
 
     class PipelineTest extends UnitTest
     {
@@ -261,7 +260,7 @@
                 )
                 ->then(function (ServerRequestInterface $request) {
 
-                    $this->fail('The route handler should have never be called if we have an exception.');
+                    $this->fail('The route driver should have never be called if we have an exception.');
 
                 });
 

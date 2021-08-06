@@ -12,10 +12,7 @@
     class SessionRegenerated extends Event
     {
 
-        /**
-         * @var Session
-         */
-        public $session;
+        public Session $session;
 
         public function __construct(Session $session)
         {

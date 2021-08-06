@@ -13,11 +13,8 @@
 
     class EncryptedSession extends Session
     {
-        /**
-         * @var EncryptorInterface
-         */
-        protected $encryptor;
 
+        protected EncryptorInterface $encryptor;
 
         public function __construct( SessionDriver $handler, EncryptorInterface $encryptor, int $strength = 32)
         {

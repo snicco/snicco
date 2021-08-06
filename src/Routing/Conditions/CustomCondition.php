@@ -15,7 +15,7 @@
 		/** @var callable|string  */
 		private $callable;
 
-		private $arguments;
+		private array $arguments;
 
 		public function __construct( callable $callable, ...$args  ) {
 
