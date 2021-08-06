@@ -6,6 +6,7 @@
 
     namespace Tests\unit\Exceptions;
 
+    use Contracts\ContainerAdapter;
     use Exception;
     use Mockery;
     use Psr\Log\LoggerInterface;
@@ -18,7 +19,6 @@
     use Snicco\Http\ResponseFactory;
     use Snicco\Support\WP;
     use Snicco\Support\WpFacade;
-    use SniccoAdapter\BaseContainerAdapter;
     use Tests\fixtures\TestDependencies\Foo;
     use Tests\helpers\AssertsResponse;
     use Tests\helpers\CreateDefaultWpApiMocks;
@@ -36,16 +36,8 @@
         use CreateRouteCollection;
         use CreateDefaultWpApiMocks;
 
-
-        /**
-         * @var BaseContainerAdapter
-         */
-        private $container;
-
-        /**
-         * @var Request
-         */
-        private $request;
+        private ContainerAdapter $container;
+        private Request $request;
 
 
         protected function beforeTestRun()
@@ -90,8 +82,6 @@
         /** @test */
         public function the_current_user_id_is_included_in_the_exception_context()
         {
-
-
             $this->container->instance(LoggerInterface::class, $logger = new TestLogger());
 
             $handler = $this->newErrorHandler();

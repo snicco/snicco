@@ -7,26 +7,20 @@
     namespace Tests\unit\Auth;
 
     use Mockery as m;
-    use Tests\helpers\TravelsTime;
-    use Tests\MiddlewareTestCase;
     use Snicco\Auth\AuthSessionManager;
     use Snicco\Auth\Middleware\AuthenticateSession;
+    use Snicco\Contracts\Middleware;
     use Snicco\Http\Delegate;
-    use Snicco\Session\Drivers\ArraySessionDriver;
-    use Snicco\Session\Session;
+    use Tests\helpers\TravelsTime;
+    use Tests\MiddlewareTestCase;
 
     class AuthenticateSessionTest extends MiddlewareTestCase
     {
 
         use TravelsTime;
 
-        /**
-         * @var AuthSessionManager
-         */
-        private $session_manager;
-
-        /** @var AuthenticateSession */
-        private $middleware;
+        private AuthSessionManager $session_manager;
+        private AuthenticateSession $middleware;
 
         protected function setUp() : void
         {
@@ -34,9 +28,7 @@
             parent::setUp();
             $this->backToPresent();
             $this->session_manager = m::mock(AuthSessionManager::class);
-            $this->route_action = new Delegate(function () {
-                return $this->response_factory->make(200);
-            });
+            $this->route_action = new Delegate(fn() => $this->response_factory->make(200));
 
         }
 
@@ -46,15 +38,16 @@
             parent::tearDown();
         }
 
-        public function newMiddleware()
+        public function newMiddleware() : Middleware
         {
             return $this->middleware;
         }
 
         /** @test */
-        public function auth_confirmation_session_data_is_forgotten_for_idle_sessions () {
+        public function auth_confirmation_session_data_is_forgotten_for_idle_sessions()
+        {
 
-            $session = new Session(new ArraySessionDriver(10));
+            $session = $this->newSession();
             $session->put('auth.confirm.foo', 'bar');
 
             $this->middleware = new AuthenticateSession($this->session_manager);
@@ -70,10 +63,11 @@
 
         }
 
-          /** @test */
-        public function auth_confirmation_session_data_is_not_forgotten_for_active_sessions () {
+        /** @test */
+        public function auth_confirmation_session_data_is_not_forgotten_for_active_sessions()
+        {
 
-            $session = new Session(new ArraySessionDriver(10));
+            $session = $this->newSession();
             $session->put('auth.confirm.foo', 'bar');
             $session->setLastActivity(time());
 
@@ -90,15 +84,16 @@
         }
 
         /** @test */
-        public function custom_keys_can_be_removed_from_the_session_on_idle_timeout () {
+        public function custom_keys_can_be_removed_from_the_session_on_idle_timeout()
+        {
 
-            $session = new Session(new ArraySessionDriver(10));
+            $session = $this->newSession();
             $session->put('auth.confirm.foo', 'bar');
             $session->put('foo.bar.baz', 'biz');
             $session->put('foo.biz.bam', 'boo');
             $session->put('biz', 'boo');
 
-            $this->middleware = new AuthenticateSession($this->session_manager, ['foo.bar', 'biz'] );
+            $this->middleware = new AuthenticateSession($this->session_manager, ['foo.bar', 'biz']);
 
             $this->session_manager->shouldReceive('idleTimeout')->andReturn(300);
 

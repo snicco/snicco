@@ -12,54 +12,31 @@
     use Psr\Http\Message\ResponseInterface;
     use Psr\Http\Server\MiddlewareInterface;
     use Psr\Http\Server\RequestHandlerInterface;
+    use ReflectionPayload\ReflectionPayload;
     use Snicco\Contracts\ErrorHandlerInterface;
     use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\ResponseFactory;
     use Snicco\Support\Arr;
-    use ReflectionPayload\ReflectionPayload;
+    use Throwable;
 
     use function collect;
 
     class Pipeline
     {
 
-        /**
-         * @var ErrorHandlerInterface
-         */
-        private $error_handler;
-
-        /**
-         * The container implementation.
-         *
-         * @var ContainerAdapter
-         */
-        private $container;
-
-        /**
-         *
-         * @var Request
-         */
-        private $request;
-
-        /**
-         * @var array
-         */
-        private $middleware = [];
-
-        /**
-         * @var mixed
-         */
-        private $response_factory;
+        private ErrorHandlerInterface $error_handler;
+        private ContainerAdapter $container;
+        private Request $request;
+        private array $middleware = [];
+        private ResponseFactory $response_factory;
 
         public function __construct(ContainerAdapter $container, ErrorHandlerInterface $error_handler)
         {
-
             $this->container = $container;
             $this->error_handler = $error_handler;
             $this->response_factory = $this->container->make(ResponseFactory::class);
-
         }
 
         public function send(Request $request) : Pipeline
@@ -173,7 +150,7 @@
 
                     return $this->resolveNextMiddleware($request);
                 }
-                catch (\Throwable $e) {
+                catch (Throwable $e) {
 
                     return $this->error_handler->transformToResponse($e, $request);
 

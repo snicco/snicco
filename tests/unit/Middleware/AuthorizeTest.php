@@ -7,17 +7,17 @@
 	namespace Tests\unit\Middleware;
 
     use Mockery;
-    use Tests\helpers\CreateRouteCollection;
-    use Tests\helpers\CreateUrlGenerator;
-    use Tests\UnitTest;
-	use Tests\stubs\TestRequest;
-    use Tests\helpers\AssertsResponse;
-    use Snicco\Support\WP;
+    use Snicco\ExceptionHandling\Exceptions\AuthorizationException;
     use Snicco\Http\Delegate;
     use Snicco\Http\ResponseFactory;
     use Snicco\Middleware\Authenticate;
-	use Snicco\ExceptionHandling\Exceptions\AuthorizationException;
     use Snicco\Middleware\Authorize;
+    use Snicco\Support\WP;
+    use Tests\helpers\AssertsResponse;
+    use Tests\helpers\CreateRouteCollection;
+    use Tests\helpers\CreateUrlGenerator;
+    use Tests\stubs\TestRequest;
+    use Tests\UnitTest;
 
     class AuthorizeTest extends UnitTest {
 
@@ -25,37 +25,16 @@
         use CreateUrlGenerator;
         use CreateRouteCollection;
 
-
-        /**
-         * @var Authenticate
-         */
-        private $middleware;
-
-        /**
-         * @var Delegate
-         */
-        private $route_action;
-
-        /**
-         * @var TestRequest
-         */
-        private $request;
-
-        /**
-         * @var ResponseFactory
-         */
-        private $response;
-
+        private Authenticate $middleware;
+        private Delegate $route_action;
+        private TestRequest $request;
+        private ResponseFactory $response;
 
         protected function beforeTestRun()
         {
 
             $response = $this->createResponseFactory();
-            $this->route_action = new Delegate(function () use ($response) {
-
-                return $response->html('FOO');
-
-            });
+            $this->route_action = new Delegate(fn() => $response->html('FOO'));
             $this->request = TestRequest::from('GET', '/foo');
             WP::shouldReceive('loginUrl')->andReturn('foobar.com')->byDefault();
 
@@ -132,7 +111,6 @@
 			);
 
 		}
-
 
         /** @test */
 		public function several_wordpress_specific_arguments_can_be_passed() {

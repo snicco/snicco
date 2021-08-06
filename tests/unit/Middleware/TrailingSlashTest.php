@@ -6,15 +6,15 @@
 
     namespace Tests\unit\Middleware;
 
+    use Snicco\Http\Delegate;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Middleware\TrailingSlash;
     use Tests\helpers\AssertsResponse;
     use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\TestRequest;
     use Tests\UnitTest;
-    use Snicco\Http\Delegate;
-    use Snicco\Http\ResponseFactory;
-    use Snicco\Http\Responses\RedirectResponse;
-    use Snicco\Middleware\TrailingSlash;
 
     class TrailingSlashTest extends UnitTest
     {
@@ -23,24 +23,15 @@
         use CreateRouteCollection;
         use AssertsResponse;
 
-        /**
-         * @var ResponseFactory
-         */
-        private $response_factory;
-
-        /**
-         * @var Delegate
-         */
-        private $delegate;
+        private ResponseFactory $response_factory;
+        private Delegate $delegate;
 
         private function newMiddleware($trailing_slash) : TrailingSlash
         {
 
             $this->response_factory = $this->createResponseFactory();
 
-            $this->delegate = new Delegate(function () {
-                return $this->response_factory->make(200);
-            });
+            $this->delegate = new Delegate(fn() => $this->response_factory->make(200));
 
             $m = new TrailingSlash( $trailing_slash);
             $m->setResponseFactory($this->response_factory);

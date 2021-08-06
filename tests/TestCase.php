@@ -18,7 +18,6 @@
 
     class TestCase extends BaseTestCase
     {
-
         protected array $mail_data;
 
         protected function setUp() : void

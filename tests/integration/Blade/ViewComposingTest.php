@@ -6,13 +6,10 @@
 
     namespace Tests\integration\Blade;
 
-    use Tests\integration\Blade\traits\AssertBladeView;
-    use Tests\IntegrationTest;
-    use Tests\stubs\TestApp;
     use Snicco\Blade\BladeEngine;
-    use Snicco\Blade\BladeServiceProvider;
     use Snicco\Blade\BladeView;
     use Snicco\Contracts\ViewEngineInterface;
+    use Tests\stubs\TestApp;
 
     class ViewComposingTest extends BladeTestCase
     {

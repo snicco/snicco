@@ -6,15 +6,17 @@
 
     namespace Tests\unit\Routing;
 
+    use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\helpers\CreateDefaultWpApiMocks;
-    use Tests\helpers\CreateTestSubjects;
-    use Tests\UnitTest;
-    use Tests\helpers\CreatesWpUrls;
     use Snicco\Events\Event;
     use Snicco\Events\IncomingAjaxRequest;
     use Snicco\ExceptionHandling\Exceptions\RouteLogicException;
+    use Snicco\Routing\Router;
     use Snicco\Support\WP;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreatesWpUrls;
+    use Tests\helpers\CreateTestSubjects;
+    use Tests\UnitTest;
 
     class AjaxRoutesTest extends UnitTest
     {
@@ -23,9 +25,8 @@
         use CreatesWpUrls;
         use CreateDefaultWpApiMocks;
 
-        private $router;
-
-        private $container;
+        private Router $router;
+        private ContainerAdapter $container;
 
         protected function beforeTestRun()
         {

@@ -6,6 +6,7 @@
 
     namespace Tests\unit\Routing;
 
+    use Contracts\ContainerAdapter;
     use Mockery;
     use Snicco\Contracts\ConditionInterface;
     use Snicco\Contracts\UrlableInterface;
@@ -25,13 +26,9 @@
         use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
 
-        /** @var Router */
-        private $router;
-
-        private $container;
-
-        /** @var UrlGenerator */
-        private $url_generator;
+        private Router $router;
+        private ContainerAdapter $container;
+        private UrlGenerator $url_generator;
 
         protected function beforeTestRun()
         {

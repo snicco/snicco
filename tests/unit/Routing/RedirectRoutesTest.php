@@ -8,21 +8,20 @@
 
     use Contracts\ContainerAdapter;
     use Mockery;
+    use Snicco\Contracts\AbstractRedirector;
+    use Snicco\Events\Event;
+    use Snicco\Http\Redirector;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Routing\Router;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\Support\WP;
+    use Snicco\View\ViewFactory;
     use Tests\helpers\CreateDefaultWpApiMocks;
-    use Tests\helpers\CreateRouteCollection;
     use Tests\helpers\CreateTestSubjects;
     use Tests\helpers\CreateUrlGenerator;
     use Tests\stubs\HeaderStack;
     use Tests\stubs\TestViewFactory;
     use Tests\UnitTest;
-    use Snicco\Events\Event;
-    use Snicco\Contracts\AbstractRedirector;
-    use Snicco\Support\WP;
-    use Snicco\Http\Redirector;
-    use Snicco\Http\ResponseFactory;
-    use Snicco\Routing\Router;
-    use Snicco\Routing\UrlGenerator;
-    use Snicco\View\ViewFactory;
 
     class RedirectRoutesTest extends UnitTest
     {
@@ -31,13 +30,8 @@
         use CreateDefaultWpApiMocks;
         use CreateUrlGenerator;
 
-        /**
-         * @var ContainerAdapter
-         */
-        private $container;
-
-        /** @var Router */
-        private $router;
+        private ContainerAdapter $container;
+        private Router $router;
 
         protected function beforeTestRun()
         {

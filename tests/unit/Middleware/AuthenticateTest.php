@@ -7,70 +7,30 @@
     namespace Tests\unit\Middleware;
 
     use Mockery;
+    use Snicco\Contracts\Middleware;
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Response;
-    use Snicco\Http\ResponseFactory;
     use Snicco\Http\Responses\RedirectResponse;
     use Snicco\Middleware\Authenticate;
     use Snicco\Support\WP;
-    use Tests\helpers\AssertsResponse;
-    use Tests\helpers\CreateRouteCollection;
-    use Tests\helpers\CreateUrlGenerator;
+    use Tests\MiddlewareTestCase;
     use Tests\stubs\TestRequest;
-    use Tests\UnitTest;
 
-    class AuthenticateTest extends UnitTest
+    class AuthenticateTest extends MiddlewareTestCase
     {
-
-        use AssertsResponse;
-        use CreateUrlGenerator;
-        use CreateRouteCollection;
-
-        /**
-         * @var Authenticate
-         */
-        private $middleware;
-
-        /**
-         * @var Delegate
-         */
-        private $route_action;
-
-        /**
-         * @var TestRequest
-         */
-        private $request;
-
-        /**
-         * @var ResponseFactory
-         */
-        private $response;
-
 
         protected function beforeTestRun()
         {
 
-            $response = $this->createResponseFactory();
-            $this->route_action = new Delegate(function () use ($response) {
-
-                return $response->html('FOO');
-
-            });
-            $this->response = $response;
-            $this->request = TestRequest::from('GET', '/foo');
+            $this->route_action = new Delegate(fn() => $this->response_factory->html('FOO'));
             WP::shouldReceive('loginUrl')->andReturn('foobar.com')->byDefault();
-
 
         }
 
-        private function newMiddleware(string $url = null)
+        public function newMiddleware(string $url = null) : Middleware
         {
 
-            $m = new Authenticate($url);
-            $m->setResponseFactory($this->response);
-
-            return $m;
-
+            return $this->middleware ?? new Authenticate($url);
         }
 
         protected function beforeTearDown()
@@ -78,7 +38,6 @@
 
             WP::clearResolvedInstances();
             Mockery::close();
-
         }
 
         /** @test */
@@ -87,7 +46,7 @@
 
             WP::shouldReceive('isUserLoggedIn')->andReturnTrue();
 
-            $response = $this->newMiddleware()->handle($this->request, $this->route_action);
+            $response = $this->runMiddleware();
 
             $this->assertOutput('FOO', $response);
 
@@ -99,7 +58,7 @@
 
             WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
 
-            $response = $this->newMiddleware()->handle($this->request, $this->route_action);
+            $response = $this->runMiddleware();
 
             $this->assertInstanceOf(RedirectResponse::class, $response);
             $this->assertStatusCode(302, $response);
@@ -111,16 +70,13 @@
         {
 
             WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
-            WP::shouldReceive('loginUrl')->andReturnUsing(function ($redirect_to) {
-
-                return 'https://foo.com/login?redirect_to='.$redirect_to;
-
-            });
+            WP::shouldReceive('loginUrl')
+              ->andReturnUsing(fn($redirect_to) => 'https://foo.com/login?redirect_to='.$redirect_to);
 
             $enc = urlencode('üäö');
             $request = TestRequest::fromFullUrl('GET', 'https://foo.com/'.$enc.'?param=1');
 
-            $response = $this->newMiddleware()->handle($request, $this->route_action);
+            $response = $this->runMiddleware($request);
 
             $expected = '/login?redirect_to=/'.$enc.'?param=1';
 
@@ -134,16 +90,13 @@
         {
 
             WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
-            WP::shouldReceive('loginUrl')->andReturnUsing(function ($redirect_to) {
-
-                return 'https://foo.com/login?redirect_to='.$redirect_to;
-
-            });
+            WP::shouldReceive('loginUrl')
+              ->andReturnUsing(fn($redirect_to) => 'https://foo.com/login?redirect_to='.$redirect_to);
 
             $expected = '/login?redirect_to=/my-custom-login';
+            $this->middleware = new Authenticate('/my-custom-login');
 
-            $response = $this->newMiddleware('/my-custom-login')
-                             ->handle($this->request, $this->route_action);
+            $response = $this->runMiddleware();
 
             $this->assertSame($expected, $response->getHeaderLine('Location'));
 
@@ -154,12 +107,10 @@
         {
 
             WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
+            $request = $this->request->withAddedHeader('X-Requested-With', 'XMLHttpRequest')
+                                     ->withAddedHeader('Accept', 'application/json');
 
-            $response = $this->newMiddleware()->handle(
-                $this->request->withAddedHeader('X-Requested-With', 'XMLHttpRequest')
-                              ->withAddedHeader('Accept', 'application/json'),
-                $this->route_action
-            );
+            $response = $this->runMiddleware($request);
 
             $this->assertInstanceOf(Response::class, $response);
             $this->assertStatusCode(401, $response);

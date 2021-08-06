@@ -7,25 +7,17 @@
 	namespace Tests\unit\Encryption;
 
 	use PHPUnit\Framework\TestCase;
-	use Snicco\Contracts\EncryptorInterface;
-	use Snicco\Session\Encryptor;
+    use Snicco\Contracts\EncryptorInterface;
+    use Snicco\Session\Encryptor;
 
-	class EncryptorTest extends TestCase {
+    class EncryptorTest extends TestCase {
 
 		const test_key = 'base64:yRYtcDAkaEYSR2T3qaYunXW+rxD6OgIWOdSVc34Hxdw=';
-
-		protected function setUp() : void {
-
-			parent::setUp();
-
-		}
-
 
 		/** @test */
 		public function a_valid_encryptor_instance_can_be_created_with_base64_encoding() {
 
-
-			$encryptor = new \Snicco\Session\Encryptor( self::test_key );
+			$encryptor = new Encryptor( self::test_key );
 
 			$this->assertInstanceOf( EncryptorInterface::class, $encryptor );
 

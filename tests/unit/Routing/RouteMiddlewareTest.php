@@ -8,18 +8,18 @@
 
     use Contracts\ContainerAdapter;
     use Mockery;
-    use Tests\helpers\CreateDefaultWpApiMocks;
-    use Tests\helpers\CreateTestSubjects;
-    use Tests\UnitTest;
+    use Snicco\Events\Event;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Middleware\Core\RouteRunner;
+    use Snicco\Routing\Router;
+    use Snicco\Support\WP;
     use Tests\fixtures\Middleware\BarMiddleware;
     use Tests\fixtures\Middleware\BazMiddleware;
     use Tests\fixtures\Middleware\FooBarMiddleware;
     use Tests\fixtures\Middleware\FooMiddleware;
-    use Snicco\Events\Event;
-    use Snicco\Support\WP;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Middleware\Core\RouteRunner;
-    use Snicco\Routing\Router;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Tests\helpers\CreateTestSubjects;
+    use Tests\UnitTest;
 
     class RouteMiddlewareTest extends UnitTest
     {
@@ -27,16 +27,9 @@
         use CreateTestSubjects;
         use CreateDefaultWpApiMocks;
 
-        /**
-         * @var ContainerAdapter
-         */
-        private $container;
-
-        /** @var Router */
-        private $router;
-
-        /** @var RouteRunner */
-        private $route_runner;
+        private ContainerAdapter $container;
+        private Router $router;
+        private RouteRunner $route_runner;
 
         protected function beforeTestRun()
         {

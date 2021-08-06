@@ -6,25 +6,21 @@
 
     namespace Tests\unit\Http;
 
+    use Mockery;
     use Respect\Validation\Validator as v;
-    use Tests\helpers\CreateDefaultWpApiMocks;
-    use Tests\stubs\TestRequest;
-    use Tests\UnitTest;
-    use Snicco\Support\WP;
+    use RuntimeException;
     use Snicco\Http\Psr7\Request;
     use Snicco\Session\Drivers\ArraySessionDriver;
     use Snicco\Session\Session;
+    use Snicco\Support\WP;
     use Snicco\Validation\Exceptions\ValidationException;
     use Snicco\Validation\Validator;
+    use Tests\stubs\TestRequest;
+    use Tests\UnitTest;
 
     class InteractsWithInputTest extends UnitTest
     {
-
-
-        /**
-         * @var Request
-         */
-        private $request;
+        private Request $request;
 
         protected function setUp() : void
         {
@@ -321,7 +317,7 @@
             $this->assertSame('default', $request->old('bogus', 'default'));
 
             WP::reset();
-            \Mockery::close();
+            Mockery::close();
 
 
         }
@@ -329,7 +325,7 @@
         public function testOldWithoutSessionSet()
         {
 
-            $this->expectException(\RuntimeException::class);
+            $this->expectException(RuntimeException::class);
 
             $this->request->old();
 
