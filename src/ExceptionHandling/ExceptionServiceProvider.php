@@ -6,29 +6,35 @@
 
 	namespace Snicco\ExceptionHandling;
 
+    use Psr\Log\LoggerInterface;
+    use Psr\Log\NullLogger;
     use Snicco\Contracts\ErrorHandlerInterface;
-	use Snicco\Contracts\ServiceProvider;
-	use Snicco\Factories\ErrorHandlerFactory;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\Factories\ErrorHandlerFactory;
 
-    class ExceptionServiceProvider extends ServiceProvider {
+    class ExceptionServiceProvider extends ServiceProvider
+    {
 
-		public function register() : void {
+        public function register() : void
+        {
 
             $this->bindConfig();
 
             $this->bindErrorHandlerInterface();
 
-		}
+            $this->bindPsr3Logger();
 
-		public function bootstrap() : void {
+        }
 
-			$error_handler = $this->container->make( ErrorHandlerInterface::class );
+        public function bootstrap() : void {
 
-			$error_handler->register();
+            $error_handler = $this->container->make( ErrorHandlerInterface::class );
 
-			$this->container->instance( ErrorHandlerInterface::class, $error_handler );
+            $error_handler->register();
 
-		}
+            $this->container->instance( ErrorHandlerInterface::class, $error_handler );
+
+        }
 
         private function bindConfig() : void
         {
@@ -42,6 +48,7 @@
 
         private function bindErrorHandlerInterface() : void
         {
+
             $this->container->singleton(ErrorHandlerInterface::class, function () {
 
                 if ( ! $this->config->get('app.exception_handling', false ) ) {
@@ -57,6 +64,18 @@
                     $debug,
                     $this->config->get('app.debug_editor', 'phpstorm')
                 );
+            });
+        }
+
+        private function bindPsr3Logger()
+        {
+
+            $this->container->singleton(LoggerInterface::class, function () {
+
+                return $this->app->isRunningUnitTest()
+                    ? new NullLogger()
+                    : new NativeErrorLogger();
+
             });
         }
 
