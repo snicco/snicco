@@ -6,9 +6,9 @@
 
     namespace Snicco\Auth\Traits;
 
-    use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
     use Snicco\Auth\RecoveryCode;
     use Snicco\Http\Psr7\Request;
+    use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
 
     trait PerformsTwoFactorAuthentication
     {
@@ -37,21 +37,21 @@
         {
 
             $provided_code = $request->input('recovery-code');
-
-            if ( ! $provided_code ) {
-                return false;
-            }
-
-            $codes = $this->recoveryCodes( $user_id );
-
-            if ( ! count($codes) ) {
-                return false;
-            }
-
-            return collect( $codes )->first(function ($code) use ($provided_code) {
-                return hash_equals($provided_code, $code) ? $code : null;
-            });
-
+	
+	        if( ! $provided_code ) {
+		        return false;
+	        }
+	
+	        $codes = $this->recoveryCodes($user_id);
+	
+	        if( ! count($codes) ) {
+		        return false;
+	        }
+	
+	        return collect($codes)->first(
+		        fn($code) => hash_equals($provided_code, $code) ? $code : null
+	        );
+	
         }
 
         private function replaceRecoveryCode($code, int $user_id)
@@ -65,16 +65,16 @@
 
         private function hasValidOneTimeCode(TwoFactorAuthenticationProvider $provider, Request $request, int $user_id) : bool
         {
-
-            if ( ! $request->filled('token') ) {
-                return false;
-            }
+	
+	        if( ! $request->filled('one-time-code') ) {
+		        return false;
+	        }
 
             $user_secret = $this->twoFactorSecret($user_id);
 
             return $provider->verifyOneTimeCode(
-                $user_secret,
-                $request->input('token')
+	            $user_secret,
+	            $request->input('one-time-code')
             );
 
         }

@@ -72,17 +72,18 @@
         /** @test */
         public function the_2fa_challenge_screen_can_be_rendered()
         {
-
-            $calvin = $this->createAdmin();
+	
+	        $calvin = $this->createAdmin();
 	        $this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
 	        $this->generateTestSecret($calvin);
-
-            $response = $this->get('/auth/two-factor/challenge');
-
-            $response->assertOk();
-            $response->assertSee('Code');
-            $response->assertSeeHtml('/auth/login');
-
+	        $this->enable2Fa($calvin);
+	
+	        $response = $this->get('/auth/two-factor/challenge');
+	
+	        $response->assertOk();
+	        $response->assertSee('Code');
+	        $response->assertSeeHtml('/auth/login');
+	
         }
 
     }

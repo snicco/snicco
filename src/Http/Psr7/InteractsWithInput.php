@@ -72,27 +72,30 @@
 
         public function post(string $name = null, $default = null)
         {
-
-            if ( ! $name) {
-
-                return $this->getParsedBody() ?? [];
-
-            }
-
-            return Arr::get($this->getParsedBody(), $name, $default);
-
+	
+	        if( ! $name ) {
+		
+		        return $this->getParsedBody() ?? [];
+		
+	        }
+	
+	        return Arr::get($this->getParsedBody(), $name, $default);
+	
         }
-
-        public function boolean($key = null, $default = false)
-        {
-            return filter_var($this->input($key, $default), FILTER_VALIDATE_BOOLEAN);
-        }
-
-        /**
-         *
-         * This method does not support * WILDCARDS
-         *
-         */
+	
+	    public function body(string $name = null, $default = null)
+	    {
+		    return $this->post($name, $default);
+	    }
+	
+	    public function boolean($key = null, $default = false)
+	    {
+		    return filter_var($this->input($key, $default), FILTER_VALIDATE_BOOLEAN);
+	    }
+	
+	    /**
+	     * This method does not support * WILDCARDS
+	     */
         public function only($keys) : array
         {
 

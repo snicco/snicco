@@ -24,6 +24,10 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
 		$this->afterApplicationCreated(function() {
 			$this->withHeader('Accept', 'application/json');
 			$this->encryptor = $this->app->resolve(EncryptorInterface::class);
+			$this->swap(
+				TwoFactorAuthenticationProvider::class,
+				new TestTwoFactorProvider($this->encryptor)
+			);
 		});
 		
 		parent::setUp();
@@ -70,12 +74,28 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
 	}
 	
 	/** @test */
+	public function two_factor_authentication_can_not_be_confirmed_if_not_pending()
+	{
+		
+		$this->withoutMiddleware('csrf');
+		$this->actingAs($calvin = $this->createAdmin());
+		$response = $this->post($this->endpoint, ['Accept' => 'application/json']);
+		
+		$response->assertStatus(409)
+		         ->assertIsJson()
+		         ->assertExactJson([
+			                           'message' => 'Two-Factor authentication is not set-up.',
+		                           ]);
+		
+	}
+	
+	/** @test */
 	public function an_error_is_returned_if_2fa_is_already_enabled_for_the_user()
 	{
 		
 		$this->withoutMiddleware('csrf');
 		$this->actingAs($calvin = $this->createAdmin());
-		$this->generateTestSecret($calvin);
+		$this->enable2Fa($calvin);
 		
 		$response = $this->post($this->endpoint, [], ['Accept' => 'application/json']);
 		
@@ -88,74 +108,77 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
 	}
 	
 	/** @test */
-	public function two_factor_authentication_can_be_enabled()
+	public function two_factor_authentication_cant_be_enabled_without_a_valid_one_time_code()
 	{
 		$this->withoutMiddleware('csrf');
 		
 		$this->actingAs($calvin = $this->createAdmin());
+		$this->generateTestSecret($calvin);
+		$this->mark2FaAsPending($calvin);
 		
-		$response = $this->post($this->endpoint);
+		$response = $this->post($this->endpoint, []);
+		$response->assertStatus(400)
+		         ->assertExactJson([
+			                           'message' => 'Invalid or missing code provided.',
+		                           ]);
+		
+		$response = $this->post($this->endpoint, [
+			'one-time-code' => $this->invalid_one_time_code,
+		]);
+		
+		$response->assertStatus(400)
+		         ->assertExactJson([
+			                           'message' => 'Invalid or missing code provided.',
+		                           ]);
+		
+	}
+	
+	/** @test */
+	public function two_factor_authentication_can_be_enabled()
+	{
+		$this->withoutMiddleware('csrf');
+		$this->actingAs($calvin = $this->createAdmin());
+		$this->generateTestSecret($calvin)
+		     ->mark2FaAsPending($calvin);
+		
+		$this->assertSame('', get_user_meta($calvin->ID, 'two_factor_active', true));
+		$this->assertSame('1', get_user_meta($calvin->ID, 'two_factor_pending', true));
+		
+		$response = $this->post($this->endpoint, ['one-time-code' => $this->valid_one_time_code]);
 		$response->assertOk();
 		
-		$body = $response->body();
-		
-		$response = json_decode($body, true);
-		$this->assertCount(8, $response['recovery-codes']);
+		$body = json_decode($response->body(), true);
+		$this->assertCount(8, $body);
 		$codes_in_db = $this->getUserRecoveryCodes($calvin);
-		$this->assertSame($codes_in_db, $response['recovery-codes']);
-		$this->assertStringStartsWith('<svg', $response['qrcode']);
+		$this->assertSame($codes_in_db, $body);
 		
-		$this->assertIsString($this->getUserSecret($calvin));
+		$this->assertSame('', get_user_meta($calvin->ID, 'two_factor_pending', true));
+		$this->assertSame('1', get_user_meta($calvin->ID, 'two_factor_active', true));
 		
 	}
 	
 	/** @test */
 	public function recovery_codes_are_encrypted()
 	{
+		
 		$this->withoutMiddleware('csrf');
-		
 		$this->actingAs($calvin = $this->createAdmin());
+		$this->generateTestSecret($calvin)
+		     ->mark2FaAsPending($calvin);
 		
-		$response = $this->post($this->endpoint);
+		$response = $this->post($this->endpoint, ['one-time-code' => $this->valid_one_time_code]);
 		$response->assertOk();
 		
-		$body = $response->body();
-		
-		$codes_in_body = json_decode($body, true);
-		$this->assertCount(8, $codes_in_body['recovery-codes']);
+		$codes_in_body = json_decode($response->body(), true);
+		$this->assertCount(8, $codes_in_body);
 		
 		$codes_in_db = get_user_meta($calvin->ID, 'two_factor_recovery_codes', true);
 		$this->assertNotSame($codes_in_db, $codes_in_body);
 		
 		$this->assertSame(
-			$codes_in_body['recovery-codes'],
+			$codes_in_body,
 			json_decode($this->encryptor->decrypt($codes_in_db), true)
 		);
-		
-	}
-	
-	/** @test */
-	public function the_user_secret_is_stored_encrypted()
-	{
-		$this->withoutMiddleware('csrf');
-		
-		// Arrange
-		$this->actingAs($calvin = $this->createAdmin());
-		$this->swap(
-			TwoFactorAuthenticationProvider::class,
-			new TestTwoFactorProvider($this->encryptor)
-		);
-		
-		// Act
-		$this->post($this->endpoint);
-		
-		// Assert
-		$this->assertNotSame(
-			'secret',
-			$key = get_user_meta($calvin->ID, 'two_factor_secret', true),
-			'Two factor secret stored as plain text.'
-		);
-		$this->assertSame('secret', $this->encryptor->decryptString($key));
 		
 	}
 	
@@ -167,8 +190,8 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
 		$this->actingAs($calvin = $this->createAdmin());
 		
 		$response = $this->delete($this->endpoint);
-		$response->assertStatus(409)->assertExactJson([
-			                                              'message' => 'Two-Factor authentication is not enabled.',
+		$response->assertStatus(403)->assertExactJson([
+			                                              'message' => 'Two-Factor-Authentication needs to be enabled for your account to perform this action.',
 		                                              ]);
 		
 	}
@@ -185,12 +208,14 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
 			'two_factor_recovery_codes',
 			$this->encryptCodes($this->generateTestRecoveryCodes())
 		);
+		update_user_meta($calvin->ID, 'two_factor_active', true);
 		
 		$response = $this->delete($this->endpoint);
 		$response->assertNoContent();
 		
 		$this->assertEmpty($this->getUserSecret($calvin));
 		$this->assertEmpty($this->getUserRecoveryCodes($calvin));
+		$this->assertEmpty(get_user_meta($calvin->ID, 'two_factor_active', true));
 		
 	}
 	

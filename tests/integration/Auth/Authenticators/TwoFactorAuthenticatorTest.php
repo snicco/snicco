@@ -87,10 +87,10 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
 	{
 		
 		$this->withAddedConfig('auth.features.remember_me', 10);
-		$this->withoutExceptionHandling();
 		
 		$calvin = $this->createAdmin();
 		$this->generateTestSecret($calvin);
+		$this->enable2Fa($calvin);
 		$this->assertNotAuthenticated($calvin);
 		
 		$response = $this->post('/auth/login', [
@@ -130,9 +130,10 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
 		$calvin = $this->createAdmin();
 		$this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
 		$this->generateTestSecret($calvin);
+		$this->enable2Fa($calvin);
 		
 		$response = $this->post('/auth/login', [
-			'token' => $this->invalid_one_time_code,
+			'one-time-code' => $this->invalid_one_time_code,
 		]);
 		
 		$response->assertRedirectToRoute('auth.2fa.challenge');
@@ -147,9 +148,10 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
 		$calvin = $this->createAdmin();
 		$this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
 		$this->generateTestSecret($calvin);
+		$this->enable2Fa($calvin);
 		
 		$response = $this->post('/auth/login', [
-			'token' => $this->valid_one_time_code,
+			'one-time-code' => $this->valid_one_time_code,
 		]);
 		
 		$response->assertRedirectToRoute('dashboard');
@@ -163,6 +165,8 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
 		
 		$calvin = $this->createAdmin();
 		$this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
+		$this->enable2Fa($calvin);
+		
 		$codes = $this->generateTestRecoveryCodes();
 		update_user_meta(
 			$calvin->ID,
@@ -194,7 +198,10 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
 		
 		$calvin = $this->createAdmin();
 		$this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
+		$this->enable2Fa($calvin);
+		
 		$codes = $this->generateTestRecoveryCodes();
+		
 		update_user_meta(
 			$calvin->ID,
 			'two_factor_recovery_codes',

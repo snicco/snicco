@@ -22,6 +22,11 @@
 	     */
 	    public function verifyOneTimeCode(string $secret, string $code) :bool;
 	
+	    /**
+	     * Render a setup qr code for the authenticated user.
+	     *
+	     * @return string
+	     */
 	    public function renderQrCode() :string;
 	
     }

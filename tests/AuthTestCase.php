@@ -104,10 +104,10 @@ class AuthTestCase extends TestCase
 		$this->travelIntoFuture(10);
 	}
 	
-	protected function generateTestSecret(WP_User $user)
+	protected function generateTestSecret(WP_User $user) :self
 	{
 		update_user_meta($user->ID, 'two_factor_secret', $this->encryptor->encryptString('secret'));
-		
+		return $this;
 	}
 	
 	protected function generateTestRecoveryCodes() :array
@@ -119,6 +119,18 @@ class AuthTestCase extends TestCase
 			
 		})->all();
 		
+	}
+	
+	protected function enable2Fa(WP_User $user) :self
+	{
+		update_user_meta($user->ID, 'two_factor_active', true);
+		return $this;
+	}
+	
+	protected function mark2FaAsPending(WP_User $user) :self
+	{
+		update_user_meta($user->ID, 'two_factor_pending', true);
+		return $this;
 	}
 	
 }

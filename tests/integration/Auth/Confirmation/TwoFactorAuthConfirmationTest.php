@@ -63,6 +63,7 @@ class TwoFactorAuthConfirmationTest extends AuthTestCase
 		
 		$this->authenticateAndUnconfirm($calvin = $this->createAdmin());
 		$this->generateTestSecret($calvin);
+		$this->enable2Fa($calvin);
 		
 		$response = $this->get('/auth/confirm');
 		
@@ -96,6 +97,7 @@ class TwoFactorAuthConfirmationTest extends AuthTestCase
 		
 		$this->authenticateAndUnconfirm($calvin = $this->createAdmin());
 		$this->generateTestSecret($calvin);
+		$this->enable2Fa($calvin);
 		
 		$response = $this->get($this->validEmailConfirmMagicLink());
 		
@@ -112,9 +114,10 @@ class TwoFactorAuthConfirmationTest extends AuthTestCase
 		
 		$this->authenticateAndUnconfirm($calvin = $this->createAdmin());
 		$this->generateTestSecret($calvin);
+		$this->enable2Fa($calvin);
 		
 		$response = $this->post('/auth/confirm', [
-			'token' => $this->invalid_one_time_code,
+			'one-time-code' => $this->invalid_one_time_code,
 		]);
 		
 		$response->assertRedirectToRoute('auth.confirm');
@@ -129,9 +132,10 @@ class TwoFactorAuthConfirmationTest extends AuthTestCase
 		
 		$this->authenticateAndUnconfirm($calvin = $this->createAdmin());
 		$this->generateTestSecret($calvin);
+		$this->enable2Fa($calvin);
 		
 		$response = $this->post('/auth/confirm', [
-			'token' => $this->valid_one_time_code,
+			'one-time-code' => $this->valid_one_time_code,
 		]);
 		
 		$response->assertRedirectToRoute('dashboard');
@@ -152,6 +156,7 @@ class TwoFactorAuthConfirmationTest extends AuthTestCase
 			$this->encryptor->encrypt(json_encode($codes))
 		);
 		$this->generateTestSecret($calvin);
+		$this->enable2Fa($calvin);
 		
 		$response = $this->post('/auth/confirm', [
 			'recovery-code' => 'bogus',
@@ -183,6 +188,7 @@ class TwoFactorAuthConfirmationTest extends AuthTestCase
 			$this->encryptor->encrypt(json_encode($codes))
 		);
 		$this->generateTestSecret($calvin);
+		$this->enable2Fa($calvin);
 		
 		$response = $this->post('/auth/confirm', [
 			'recovery-code' => $code = $codes[0],
@@ -206,9 +212,10 @@ class TwoFactorAuthConfirmationTest extends AuthTestCase
 		$this->followingRedirects();
 		$this->authenticateAndUnconfirm($calvin = $this->createAdmin());
 		$this->generateTestSecret($calvin);
+		$this->enable2Fa($calvin);
 		
 		$response = $this->post('/auth/confirm', [
-			'token' => $this->invalid_one_time_code,
+			'one-time-code' => $this->invalid_one_time_code,
 		]);
 		
 		$response->assertOk()->assertSee('Invalid code provided.');

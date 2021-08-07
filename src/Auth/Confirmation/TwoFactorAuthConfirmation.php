@@ -22,13 +22,9 @@
 	    use InteractsWithTwoFactorSecrets;
 	
 	    private AuthConfirmation $fallback;
-	
 	    private WP_User $current_user;
-	
 	    private TwoFactorAuthenticationProvider $provider;
-	
 	    private ResponseFactory $response_factory;
-	
 	    private EncryptorInterface $encryptor;
 	
 	    private string $user_secret;
