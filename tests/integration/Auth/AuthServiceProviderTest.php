@@ -6,47 +6,47 @@
 
     namespace Tests\integration\Auth;
 
-    use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
-    use Snicco\Auth\Authenticators\PasswordAuthenticator;
-    use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
-    use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
-    use Snicco\Auth\AuthSessionManager;
-    use Snicco\Auth\Confirmation\EmailAuthConfirmation;
-    use Snicco\Auth\Confirmation\TwoFactorAuthConfirmation;
-    use Snicco\Auth\Contracts\AuthConfirmation;
-    use Snicco\Auth\Contracts\LoginResponse;
-    use Snicco\Auth\Contracts\LoginViewResponse;
-    use Snicco\Auth\Controllers\AuthSessionController;
-    use Snicco\Auth\Controllers\ConfirmedAuthSessionController;
-    use Snicco\Auth\Controllers\ForgotPasswordController;
-    use Snicco\Auth\Controllers\ResetPasswordController;
-    use Snicco\Auth\Middleware\AuthenticateSession;
-    use Snicco\Auth\Responses\MagicLinkLoginView;
-    use Snicco\Auth\Responses\PasswordLoginView;
-    use Snicco\Auth\Responses\RedirectToDashboardResponse;
-    use Snicco\Auth\WpAuthSessionToken;
+    use WP_Session_Tokens;
+    use Tests\AuthTestCase;
     use Snicco\Events\Event;
-    use Snicco\Events\ResponseSent;
-    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
-    use Snicco\Http\Responses\RedirectResponse;
+    use Tests\stubs\TestApp;
     use Snicco\Middleware\Secure;
-    use Snicco\Session\Contracts\SessionManagerInterface;
+    use Snicco\Events\ResponseSent;
+    use Snicco\Session\SessionManager;
+    use Snicco\Auth\AuthSessionManager;
+    use Snicco\Auth\WpAuthSessionToken;
     use Snicco\Session\Events\NewLogin;
     use Snicco\Session\Events\NewLogout;
+    use Snicco\Auth\Contracts\LoginResponse;
+    use Snicco\Auth\Contracts\AuthConfirmation;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Snicco\Auth\Contracts\LoginViewResponse;
+    use Snicco\Auth\Responses\PasswordLoginView;
+    use Snicco\Auth\Responses\MagicLinkLoginView;
+    use Snicco\Auth\Middleware\AuthenticateSession;
+    use Snicco\Auth\Controllers\AuthSessionController;
+    use Snicco\Auth\Confirmation\EmailAuthConfirmation;
+    use Snicco\Auth\Controllers\ResetPasswordController;
+    use Snicco\Auth\Authenticators\PasswordAuthenticator;
+    use Snicco\Auth\Controllers\ForgotPasswordController;
+    use Snicco\Session\Contracts\SessionManagerInterface;
     use Snicco\Session\Middleware\StartSessionMiddleware;
-    use Snicco\Session\SessionManager;
-    use Tests\AuthTestCase;
-    use Tests\stubs\TestApp;
-    use WP_Session_Tokens;
+    use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
+    use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
+    use Snicco\Auth\Responses\RedirectToDashboardResponse;
+    use Snicco\Auth\Confirmation\TwoFactorAuthConfirmation;
+    use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
+    use Snicco\Auth\Controllers\ConfirmedAuthSessionController;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
     class AuthServiceProviderTest extends AuthTestCase
     {
-
-        protected bool $defer_boot = true;
-
-        /** @test */
-        public function the_config_is_extended()
-        {
+	
+	    protected bool $defer_boot = true;
+	
+	    /** @test */
+	    public function the_config_is_extended()
+	    {
 
             $this->boot();
 
@@ -122,14 +122,16 @@
         /** @test */
         public function middleware_aliases_are_bound()
         {
-
-            $this->boot();
-
-            $middleware_aliases = TestApp::config('middleware.aliases');
-
-            $this->assertArrayHasKey('auth.confirmed', $middleware_aliases);
-            $this->assertArrayHasKey('auth.unconfirmed', $middleware_aliases);
-
+	
+	        $this->boot();
+	
+	        $middleware_aliases = TestApp::config('middleware.aliases');
+	
+	        $this->assertArrayHasKey('auth.confirmed', $middleware_aliases);
+	        $this->assertArrayHasKey('auth.unconfirmed', $middleware_aliases);
+	        $this->assertArrayHasKey('2fa.disabled', $middleware_aliases);
+	        $this->assertArrayHasKey('2fa.enabled', $middleware_aliases);
+	
         }
 
         /** @test */

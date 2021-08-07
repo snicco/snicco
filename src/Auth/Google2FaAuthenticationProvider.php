@@ -6,7 +6,6 @@
 
     namespace Snicco\Auth;
 
-    use RuntimeException;
     use Snicco\Support\WP;
     use BaconQrCode\Writer;
     use PragmaRX\Google2FA\Google2FA;
@@ -57,12 +56,6 @@
 	    {
 		
 		    $user = WP::currentUser();
-		
-		    if( ! $this->userHasTwoFactorEnabled($user) ) {
-			    throw new RuntimeException(
-				    "Two-Factor Authentication is not enabled for user [$user->user_login]"
-			    );
-		    }
 		
 		    $url = $this->qrCodeUrl(
 			    WP::siteName(),

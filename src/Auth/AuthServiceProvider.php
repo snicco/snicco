@@ -6,53 +6,55 @@
 
     namespace Snicco\Auth;
 
-    use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
-    use Snicco\Auth\Authenticators\PasswordAuthenticator;
-    use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
-    use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
-    use Snicco\Auth\Confirmation\EmailAuthConfirmation;
-    use Snicco\Auth\Confirmation\TwoFactorAuthConfirmation;
-    use Snicco\Auth\Contracts\AuthConfirmation;
+    use Snicco\Support\WP;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Middleware\Secure;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Session\SessionManager;
+    use Snicco\Contracts\ServiceProvider;
+    use Snicco\Auth\Middleware\ConfirmAuth;
     use Snicco\Auth\Contracts\LoginResponse;
-    use Snicco\Auth\Contracts\LoginViewResponse;
-    use Snicco\Auth\Contracts\RegistrationViewResponse;
-    use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use Snicco\Auth\Contracts\TwoFactorChallengeResponse;
-    use Snicco\Auth\Controllers\AuthSessionController;
-    use Snicco\Auth\Controllers\ConfirmedAuthSessionController;
     use Snicco\Auth\Events\GenerateLoginUrl;
+    use Snicco\Contracts\EncryptorInterface;
     use Snicco\Auth\Events\GenerateLogoutUrl;
     use Snicco\Auth\Events\SettingAuthCookie;
-    use Snicco\Auth\Listeners\GenerateNewAuthCookie;
+    use Snicco\Auth\Contracts\AuthConfirmation;
+    use Snicco\Auth\Middleware\AuthUnconfirmed;
+    use Snicco\Session\Contracts\SessionDriver;
+    use Snicco\Auth\Middleware\TwoFactorEnabled;
+    use Snicco\Auth\Contracts\LoginViewResponse;
+    use Snicco\Auth\Responses\PasswordLoginView;
+    use Snicco\Auth\Middleware\TwoFactorDisbaled;
     use Snicco\Auth\Listeners\RefreshAuthCookies;
+    use Snicco\Session\Events\SessionRegenerated;
     use Snicco\Auth\Listeners\WpLoginLinkGenerator;
     use Snicco\Auth\Middleware\AuthenticateSession;
-    use Snicco\Auth\Middleware\AuthUnconfirmed;
-    use Snicco\Auth\Middleware\ConfirmAuth;
-    use Snicco\Auth\Responses\EmailRegistrationViewResponse;
+    use Snicco\Auth\Listeners\GenerateNewAuthCookie;
+    use Snicco\Auth\Controllers\AuthSessionController;
+    use Snicco\Auth\Confirmation\EmailAuthConfirmation;
+    use Snicco\Auth\Contracts\RegistrationViewResponse;
+    use Snicco\Auth\Authenticators\PasswordAuthenticator;
+    use Snicco\Auth\Contracts\TwoFactorChallengeResponse;
     use Snicco\Auth\Responses\Google2FaChallengeResponse;
-    use Snicco\Auth\Responses\PasswordLoginView;
-    use Snicco\Auth\Responses\RedirectToDashboardResponse;
-    use Snicco\Contracts\EncryptorInterface;
-    use Snicco\Contracts\ServiceProvider;
-    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Http\ResponseFactory;
-    use Snicco\Middleware\Secure;
-    use Snicco\Session\Contracts\SessionDriver;
     use Snicco\Session\Contracts\SessionManagerInterface;
-    use Snicco\Session\Events\SessionRegenerated;
     use Snicco\Session\Middleware\StartSessionMiddleware;
-    use Snicco\Session\SessionManager;
-    use Snicco\Support\WP;
+    use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
+    use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
+    use Snicco\Auth\Responses\RedirectToDashboardResponse;
+    use Snicco\Auth\Confirmation\TwoFactorAuthConfirmation;
+    use Snicco\Auth\Responses\EmailRegistrationViewResponse;
+    use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
+    use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
+    use Snicco\Auth\Controllers\ConfirmedAuthSessionController;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
     class AuthServiceProvider extends ServiceProvider
     {
-
-        public function register() : void
-        {
-
-            $this->bindConfig();
+	
+	    public function register() :void
+	    {
+		
+		    $this->bindConfig();
 
             $this->bindAuthPipeline();
 
@@ -171,8 +173,10 @@
 
             // Middleware
             $this->config->extend('middleware.aliases', [
-                'auth.confirmed' => ConfirmAuth::class,
-                'auth.unconfirmed' => AuthUnconfirmed::class,
+	            'auth.confirmed' => ConfirmAuth::class,
+	            'auth.unconfirmed' => AuthUnconfirmed::class,
+	            '2fa.disabled' => TwoFactorDisbaled::class,
+	            '2fa.enabled' => TwoFactorEnabled::class,
             ]);
             $this->config->extend('middleware.groups.global', [
                 Secure::class,

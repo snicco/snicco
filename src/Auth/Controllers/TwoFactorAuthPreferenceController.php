@@ -33,43 +33,45 @@ class TwoFactorAuthPreferenceController extends Controller
 	public function store(Request $request)
 	{
 		
-		$id = $request->userId();
+		$user = $request->user();
 		
-		if( $this->userHasTwoFactorEnabled($user = $this->getUserById($id)) ) {
+		if( ! $this->userHasPending2FaSetup($user) ) {
+			return $this->response_factory->json(
+				[
+					'message' => 'Two-Factor authentication is not set-up.',
+				],
+				409
+			);
+		}
+		
+		$code = $request->body('one-time-code');
+		
+		if( ! $code
+		    || ! $this->provider->verifyOneTimeCode(
+				$this->twoFactorSecret($user),
+				$code
+			) ) {
 			
 			return $this->response_factory->json(
 				[
-					'message' => 'Two-Factor authentication is already enabled.',
+					'message' => 'Invalid or missing code provided.',
 				],
-				409
+				400
 			);
 			
 		}
 		
-		$this->saveSecret($user->ID, $this->provider->generateSecretKey());
 		$this->saveCodes($user->ID, $backup_codes = $this->generateNewRecoveryCodes());
+		$this->activate2Fa($user->ID);
 		
-		return $this->response_factory->json([
-			                                     'recovery-codes' => $backup_codes,
-			                                     'qrcode' => $this->provider->renderQrCode(),
-		                                     ]);
+		return $this->response_factory->json($backup_codes);
 		
 	}
 	
 	public function destroy(Request $request)
 	{
 		
-		$id = $request->userId();
-		
-		if( ! $this->userHasTwoFactorEnabled($user = $this->getUserById($id)) ) {
-			
-			return $this->response_factory->json([
-				                                     'message' => 'Two-Factor authentication is not enabled.',
-			                                     ], 409);
-			
-		}
-		
-		$this->disableTwoFactorAuthentication($user->ID);
+		$this->disableTwoFactorAuthentication($request->userId());
 		
 		return $this->response_factory->noContent();
 		

@@ -11,6 +11,7 @@ use Snicco\Auth\Controllers\ResetPasswordController;
 use Snicco\Auth\Controllers\ForgotPasswordController;
 use Snicco\Auth\Controllers\LoginMagicLinkController;
 use Snicco\Auth\Controllers\RegistrationLinkController;
+use Snicco\Auth\Controllers\TwoFactorAuthSetupController;
 use Snicco\Auth\Controllers\ConfirmedAuthSessionController;
 use Snicco\Auth\Controllers\TwoFactorAuthSessionController;
 use Snicco\Auth\Controllers\AuthConfirmationEmailController;
@@ -80,21 +81,26 @@ if( $config->get('auth.features.2fa') ) {
 	$two_factor = $config->get('auth.endpoints.2fa');
 	$challenge = $config->get('auth.endpoints.challenge');
 	
+	$router->post("$two_factor/setup", [TwoFactorAuthSetupController::class, 'store'])
+	       ->middleware(['auth', 'auth.confirmed', 'csrf', '2fa.disabled']);
+	
 	$router->post("$two_factor/preferences", [TwoFactorAuthPreferenceController::class, 'store'])
-	       ->middleware(['auth', 'auth.confirmed', 'csrf'])
+	       ->middleware(['auth', 'auth.confirmed', 'csrf', '2fa.disabled'])
 	       ->name('2fa.preferences.store');
 	
 	$router->delete("$two_factor/preferences", [
 		TwoFactorAuthPreferenceController::class,
 		'destroy',
 	])
-	       ->middleware(['auth', 'auth.confirmed', 'csrf'])->name('2fa.preferences.destroy');
+	       ->middleware(['auth', 'auth.confirmed', 'csrf', '2fa.enabled'])->name(
+			'2fa.preferences.destroy'
+		);
 	
 	$router->get("$two_factor/$challenge", [TwoFactorAuthSessionController::class, 'create'])
 	       ->name('2fa.challenge');
 	
 	// recovery codes.
-	$router->name('2fa.recovery-codes')->middleware(['auth', 'auth.confirmed'])
+	$router->name('2fa.recovery-codes')->middleware(['auth', 'auth.confirmed', '2fa.enabled'])
 	       ->group(function(Router $router) {
 		
 		       $router->get('two-factor/recovery-codes', [
