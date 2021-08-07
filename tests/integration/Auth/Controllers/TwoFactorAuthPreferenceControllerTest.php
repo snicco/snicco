@@ -82,18 +82,19 @@
 
         /** @test */
         public function two_factor_authentication_can_be_enabled () {
-
-            $this->actingAs($calvin = $this->createAdmin());
-
-            $response = $this->post($this->endpoint);
-            $response->assertOk();
-
-            $body = $response->body();
 	
-	        $codes_in_body = json_decode($body, true);
-	        $this->assertCount(8, $codes_in_body);
+	        $this->actingAs($calvin = $this->createAdmin());
+	
+	        $response = $this->post($this->endpoint);
+	        $response->assertOk();
+	
+	        $body = $response->body();
+	
+	        $response = json_decode($body, true);
+	        $this->assertCount(8, $response['recovery-codes']);
 	        $codes_in_db = $this->getUserRecoveryCodes($calvin);
-	        $this->assertSame($codes_in_db, $codes_in_body);
+	        $this->assertSame($codes_in_db, $response['recovery-codes']);
+	        $this->assertStringStartsWith('<svg', $response['qrcode']);
 	
 	        $this->assertIsString($this->getUserSecret($calvin));
 	
@@ -111,13 +112,13 @@
 		    $body = $response->body();
 		
 		    $codes_in_body = json_decode($body, true);
-		    $this->assertCount(8, $codes_in_body);
+		    $this->assertCount(8, $codes_in_body['recovery-codes']);
 		
 		    $codes_in_db = get_user_meta($calvin->ID, 'two_factor_recovery_codes', true);
 		    $this->assertNotSame($codes_in_db, $codes_in_body);
 		
 		    $this->assertSame(
-			    $codes_in_body,
+			    $codes_in_body['recovery-codes'],
 			    json_decode($this->encryptor->decrypt($codes_in_db), true)
 		    );
 		
