@@ -1,1 +1,0 @@
-<?php declare(strict_types=1); echo "<input type='hidden' name='_method_overwrite_74ee42ecf694f718d9d69508a2abbb7e27a375dab752717976499f486e1ef08e' value='PUT'>"; ?><?php /**PATH /Users/calvinalkan/valet/wpemerge/wp-mvc/tests/integration/Blade/views/blade-features/method.blade.php ENDPATH**/ ?>

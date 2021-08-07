@@ -1,1 +1,0 @@
-<?php echo e($globals['foo'] ?? 'failed'); ?><?php /**PATH /Users/calvinalkan/valet/wpemerge/wp-mvc/tests/integration/Blade/views/globals.blade.php ENDPATH**/ ?>
