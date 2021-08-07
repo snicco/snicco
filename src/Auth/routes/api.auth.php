@@ -81,14 +81,14 @@ if( $config->get('auth.features.2fa') ) {
 	$challenge = $config->get('auth.endpoints.challenge');
 	
 	$router->post("$two_factor/preferences", [TwoFactorAuthPreferenceController::class, 'store'])
-	       ->middleware(['auth', 'auth.confirmed'])
+	       ->middleware(['auth', 'auth.confirmed', 'csrf'])
 	       ->name('2fa.preferences.store');
 	
 	$router->delete("$two_factor/preferences", [
 		TwoFactorAuthPreferenceController::class,
 		'destroy',
 	])
-	       ->middleware(['auth', 'auth.confirmed'])->name('2fa.preferences.destroy');
+	       ->middleware(['auth', 'auth.confirmed', 'csrf'])->name('2fa.preferences.destroy');
 	
 	$router->get("$two_factor/$challenge", [TwoFactorAuthSessionController::class, 'create'])
 	       ->name('2fa.challenge');
@@ -145,7 +145,9 @@ if( $config->get('auth.features.registration') ) {
 		$router->get("/$register", [RegistrationLinkController::class, 'create'])
 		       ->name('register');
 		
-		$router->post("/$register", [RegistrationLinkController::class, 'store']);
+		$router->post("/$register", [RegistrationLinkController::class, 'store'])->middleware(
+			'csrf'
+		);
 		
 	});
 	
