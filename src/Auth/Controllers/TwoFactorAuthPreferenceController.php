@@ -6,23 +6,23 @@
 
     namespace Snicco\Auth\Controllers;
 
-    use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
-    use Snicco\Auth\Traits\InteractsWithTwoFactorCodes;
-    use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
-    use Snicco\Auth\Traits\ResolvesUser;
-    use Snicco\Contracts\EncryptorInterface;
     use Snicco\Http\Controller;
     use Snicco\Http\Psr7\Request;
+    use Snicco\Auth\Traits\ResolvesUser;
+    use Snicco\Contracts\EncryptorInterface;
+    use Snicco\Auth\Traits\InteractsWithTwoFactorCodes;
+    use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
+    use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
 
     class TwoFactorAuthPreferenceController extends Controller
     {
-
-        use ResolvesUser;
-        use InteractsWithTwoFactorSecrets;
-        use InteractsWithTwoFactorCodes;
-
-        private TwoFactorAuthenticationProvider $provider;
-        private EncryptorInterface $encryptor;
+	
+	    use ResolvesUser;
+	    use InteractsWithTwoFactorSecrets;
+	    use InteractsWithTwoFactorCodes;
+	
+	    private TwoFactorAuthenticationProvider $provider;
+	    private EncryptorInterface              $encryptor;
 
         public function __construct(TwoFactorAuthenticationProvider $provider, EncryptorInterface $encryptor)
         {
@@ -46,7 +46,6 @@
                     409);
 
             }
-
 
             $this->saveSecret($user->ID, $this->provider->generateSecretKey());
             $this->saveCodes($user->ID, $backup_codes = $this->generateNewRecoveryCodes());

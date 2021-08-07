@@ -21,7 +21,6 @@
          */
         protected function swap(string $abstract, $instance)
         {
-
             return $this->instance($abstract, $instance);
         }
 
