@@ -7,8 +7,7 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use Tests\stubs\HeaderStack;
-    use Tests\stubs\TestRequest;
+    use Snicco\Contracts\EncryptorInterface;
 
     use function update_user_meta;
 
@@ -17,13 +16,17 @@
 
         protected function setUp() : void
         {
-
-            $this->afterLoadingConfig(function () {
-
-                $this->with2Fa();
-            });
-            parent::setUp();
-
+	
+	        $this->afterLoadingConfig(function() {
+		
+		        $this->with2Fa();
+	        });
+	        $this->afterApplicationCreated(function() {
+		        $this->encryptor = $this->app->resolve(EncryptorInterface::class);
+	        });
+	
+	        parent::setUp();
+	
         }
 
         /** @test */
@@ -71,8 +74,8 @@
         {
 
             $calvin = $this->createAdmin();
-            $this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
-            update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
+	        $this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
+	        $this->generateTestSecret($calvin);
 
             $response = $this->get('/auth/two-factor/challenge');
 

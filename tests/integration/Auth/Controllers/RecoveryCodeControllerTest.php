@@ -7,8 +7,8 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use Snicco\Contracts\EncryptorInterface;
     use Snicco\Routing\UrlGenerator;
+    use Snicco\Contracts\EncryptorInterface;
 
     class RecoveryCodeControllerTest extends AuthTestCase
     {
@@ -21,9 +21,9 @@
                 $this->with2Fa();
             });
             $this->afterApplicationCreated(function () {
-
-                $this->codes = $this->createCodes();
-                $this->encryptor = $this->app->resolve(EncryptorInterface::class);
+	
+	            $this->codes = $this->generateTestRecoveryCodes();
+	            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
             });
 
             parent::setUp();
@@ -78,9 +78,13 @@
         {
 
             $this->actingAs($calvin = $this->createAdmin());
-
-            update_user_meta($calvin->ID, 'two_factor_recovery_codes', $this->encryptCodes($this->codes));
-            update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
+	
+	        update_user_meta(
+		        $calvin->ID,
+		        'two_factor_recovery_codes',
+		        $this->encryptCodes($this->codes)
+	        );
+	        $this->generateTestSecret($calvin);
 
             $response = $this->getJson($this->routePath());
 
@@ -113,9 +117,13 @@
             $token = $this->withCsrfToken();
             $calvin = $this->createAdmin();
             $this->actingAs($calvin);
-
-            update_user_meta($calvin->ID, 'two_factor_recovery_codes', $this->encryptCodes($this->codes));
-            update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
+	
+	        update_user_meta(
+		        $calvin->ID,
+		        'two_factor_recovery_codes',
+		        $this->encryptCodes($this->codes)
+	        );
+	        $this->generateTestSecret($calvin);
 
             $response = $this->put($this->routePath(), $token, ['Accept' => 'application/json']);
             $response->assertOk();
@@ -133,20 +141,23 @@
         /** @test */
         public function the_csrf_token_is_not_cleared_so_that_no_page_refresh_is_required_for_a_new_action()
         {
-
-            $token = $this->withCsrfToken();
-            $calvin = $this->createAdmin();
-            $this->actingAs($calvin);
-            update_user_meta($calvin->ID, 'two_factor_recovery_codes', $this->encryptCodes($this->codes));
-            update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
-
-            $response1 = $this->put($this->routePath(), $token, ['Accept' => 'application/json']);
-            $response1->assertOk();
-
-            $response2 = $this->put($this->routePath(), $token, ['Accept' => 'application/json']);
-            $response2->assertOk();
-
-
+	
+	        $token = $this->withCsrfToken();
+	        $calvin = $this->createAdmin();
+	        $this->actingAs($calvin);
+	        update_user_meta(
+		        $calvin->ID,
+		        'two_factor_recovery_codes',
+		        $this->encryptCodes($this->codes)
+	        );
+	        $this->generateTestSecret($calvin);
+	
+	        $response1 = $this->put($this->routePath(), $token, ['Accept' => 'application/json']);
+	        $response1->assertOk();
+	
+	        $response2 = $this->put($this->routePath(), $token, ['Accept' => 'application/json']);
+	        $response2->assertOk();
+	
         }
 
         /** @test */
