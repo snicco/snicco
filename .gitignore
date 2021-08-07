@@ -4,3 +4,4 @@
 /.phpunit.result.cache
 phpunit.xml
 /tests/integration/Blade/cache/*
+!/tests/integration/Blade/cache/.gitkeep

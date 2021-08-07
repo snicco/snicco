@@ -1,1 +1,0 @@
-hello <?php echo e($name); ?><?php /**PATH /Users/calvinalkan/valet/wpemerge/wp-mvc/tests/integration/Blade/views/variables.blade.php ENDPATH**/ ?>
