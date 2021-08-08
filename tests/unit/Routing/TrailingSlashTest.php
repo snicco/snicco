@@ -6,35 +6,38 @@
 
     namespace Tests\unit\Routing;
 
-    use Contracts\ContainerAdapter;
     use Mockery;
-    use Snicco\Events\Event;
-    use Snicco\Events\IncomingWebRequest;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Routing\Conditions\QueryStringCondition;
-    use Snicco\Routing\Router;
-    use Snicco\Support\WP;
-    use Tests\helpers\CreateDefaultWpApiMocks;
-    use Tests\helpers\CreateTestSubjects;
-    use Tests\stubs\TestRequest;
     use Tests\UnitTest;
+    use Snicco\Support\WP;
+    use Snicco\Events\Event;
+    use Snicco\Routing\Router;
+    use Tests\stubs\TestRequest;
+    use Snicco\Http\Psr7\Request;
+    use Contracts\ContainerAdapter;
+    use Tests\helpers\CreatesWpUrls;
+    use Snicco\Events\IncomingWebRequest;
+    use Tests\helpers\CreateTestSubjects;
+    use Snicco\Events\IncomingAdminRequest;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Snicco\Routing\Conditions\QueryStringCondition;
 
     class TrailingSlashTest extends UnitTest
     {
-
-        use CreateTestSubjects;
-        use CreateDefaultWpApiMocks;
-
-        private ContainerAdapter $container;
-        private Router $router;
-
-        protected function beforeTestRun()
-        {
-
-            $this->container = $this->createContainer();
-            $this->routes = $this->newRouteCollection();
-            Event::make($this->container);
-            Event::fake();
+	
+	    use CreateTestSubjects;
+	    use CreateDefaultWpApiMocks;
+	    use CreatesWpUrls;
+	
+	    private ContainerAdapter $container;
+	    private Router           $router;
+	
+	    protected function beforeTestRun()
+	    {
+		
+		    $this->container = $this->createContainer();
+		    $this->routes = $this->newRouteCollection();
+		    Event::make($this->container);
+		    Event::fake();
             WP::setFacadeContainer($this->container);
 
         }
@@ -62,9 +65,10 @@
 
 
             });
-
-            $request = new IncomingWebRequest(TestRequest::fromFullUrl('GET', 'https://foobar.com/foo'), 'wp.php');
-            $this->runAndAssertOutput('FOO', $request);
+	
+	        $request =
+		        new IncomingWebRequest(TestRequest::fromFullUrl('GET', 'https://foobar.com/foo'));
+	        $this->runAndAssertOutput('FOO', $request);
 
         }
 
@@ -81,9 +85,9 @@
                 });
 
             });
-
-            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
-            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
+	
+	        $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
+	        $this->runAndAssertOutput('FOO', new IncomingWebRequest($request));
 
         }
 
@@ -100,34 +104,34 @@
                 });
 
             });
-
-            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
-            $this->runAndAssertEmptyOutput(new IncomingWebRequest($request, 'wp.php'));
-
-            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
-            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
+	
+	        $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
+	        $this->runAndAssertEmptyOutput(new IncomingWebRequest($request));
+	
+	        $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
+	        $this->runAndAssertOutput('FOO', new IncomingWebRequest($request));
 
         }
 
         /** @test */
         public function routes_with_trailing_slash_match_request_with_trailing_slash()
         {
-
-            $this->createRoutes(function () {
-
-                $this->router->get('/foo/', function () {
-
-                    return 'FOO';
-
-                });
-
-            });
-
-            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
-            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
-
-            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
-            $this->runAndAssertEmptyOutput(new IncomingWebRequest($request, 'wp.php'));
+	
+	        $this->createRoutes(function() {
+		
+		        $this->router->get('/foo', function() {
+			
+			        return 'FOO';
+			
+		        });
+		
+	        }, true);
+	
+	        $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
+	        $this->runAndAssertOutput('FOO', new IncomingWebRequest($request));
+	
+	        $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
+	        $this->runAndAssertEmptyOutput(new IncomingWebRequest($request));
 
         }
 
@@ -146,52 +150,52 @@
                     });
 
                     $this->router->prefix('bar')->group(function () {
-
-                        $this->router->post('/foo/', function () {
-
-                            return 'FOO';
-
-                        });
-
+	
+	                    $this->router->post('/foo/', function() {
+		
+		                    return 'FOO';
+		
+	                    });
+	
                     });
-
+	
                 });
-
-            });
-
-            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
-            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
-
-            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
-            $this->runAndAssertEmptyOutput(new IncomingWebRequest($request, 'wp.php'));
-
-            $request = TestRequest::fromFullUrl('POST', 'https://foobar.com/bar/foo/');
-            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
-
-            $request = TestRequest::fromFullUrl('POST', 'https://foobar.com/bar/foo');
-            $this->runAndAssertEmptyOutput(new IncomingWebRequest($request, 'wp.php'));
+	
+            }, true);
+	
+	        $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
+	        $this->runAndAssertOutput('FOO', new IncomingWebRequest($request));
+	
+	        $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
+	        $this->runAndAssertEmptyOutput(new IncomingWebRequest($request));
+	
+	        $request = TestRequest::fromFullUrl('POST', 'https://foobar.com/bar/foo/');
+	        $this->runAndAssertOutput('FOO', new IncomingWebRequest($request));
+	
+	        $request = TestRequest::fromFullUrl('POST', 'https://foobar.com/bar/foo');
+	        $this->runAndAssertEmptyOutput(new IncomingWebRequest($request));
 
 
         }
 
         /** @test */
         public function routes_with_segments_can_only_match_trailing_slashes () {
-
-            $this->createRoutes(function () {
-
-                $this->router->get('/foo/{bar}/', function (string $bar) {
-
-                    return strtoupper($bar);
-
-                });
-
-            });
-
-            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/bar/');
-            $this->runAndAssertOutput('BAR', new IncomingWebRequest($request, 'wp.php'));
-
-            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/bar');
-            $this->runAndAssertEmptyOutput(new IncomingWebRequest($request, 'wp.php'));
+	
+	        $this->createRoutes(function() {
+		
+		        $this->router->get('/foo/{bar}', function(string $bar) {
+			
+			        return strtoupper($bar);
+			
+		        });
+		
+	        }, true);
+	
+	        $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/bar/');
+	        $this->runAndAssertOutput('BAR', new IncomingWebRequest($request));
+	
+	        $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/bar');
+	        $this->runAndAssertEmptyOutput(new IncomingWebRequest($request));
 
         }
 
@@ -208,12 +212,12 @@
                 });
 
             }, true );
-
-            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
-            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
-
-            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
-            $this->runAndAssertEmptyOutput(new IncomingWebRequest($request, 'wp.php'));
+	
+	        $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
+	        $this->runAndAssertOutput('FOO', new IncomingWebRequest($request));
+	
+	        $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
+	        $this->runAndAssertEmptyOutput(new IncomingWebRequest($request));
 
         }
 
@@ -229,28 +233,28 @@
                 });
 
             }, true);
-
-            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/wp-login.php');
-            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
+	
+	        $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/wp-login.php');
+	        $this->runAndAssertOutput('FOO', new IncomingWebRequest($request));
 
         }
 
         /** @test */
-        public function a_route_to_wp_admin_always_has_the_trailing_slash()
-        {
-
-            $this->createRoutes(function () {
-
-                $this->router->get('/wp-admin', function () {
-
-                    return 'FOO';
-
-                });
+	    public function a_route_to_exactly_wp_admin_always_has_the_trailing_slash()
+	    {
+		
+		    $this->createRoutes(function() {
+			
+			    $this->router->get('/wp-admin', function() {
+				
+				    return 'FOO';
+				
+			    });
 
             }, true);
-
-            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/wp-admin/');
-            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
+		
+		    $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/wp-admin/');
+		    $this->runAndAssertOutput('FOO', new IncomingAdminRequest($request));
 
             $this->createRoutes(function () {
 
@@ -261,42 +265,73 @@
                 });
 
             }, false);
-
-            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/wp-admin/');
-            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
+		
+		    $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/wp-admin/');
+		    $this->runAndAssertOutput('FOO', new IncomingAdminRequest($request));
 
             $this->createRoutes(function () {
-
-                $this->router->get('/wp-admin/', function () {
-
-                    return 'FOO';
-
-                });
-
+	
+	            $this->router->get('/wp-admin/', function() {
+		
+		            return 'FOO';
+		
+	            });
+	
             }, false);
-
-            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/wp-admin/');
-            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
-
-
-        }
-
-        /** @test */
-        public function url_encoded_routes_work()
-        {
-
-            $this->createRoutes(function () {
-
-                $this->router->get('/german-city/{city}', function (Request $request, string $city) {
+		
+		    $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/wp-admin/');
+		    $this->runAndAssertOutput('FOO', new IncomingAdminRequest($request));
+		
+	    }
+	
+	    /** @test */
+	    public function routes_inside_wp_admin_never_have_trailing_slashes_appended()
+	    {
+		
+		    // forcing trailing and defined with trailing
+		    $this->createRoutes(function() {
+			
+			    $this->router->get('/wp-admin/admin/foo', function() {
+				
+				    return 'FOO';
+				
+			    });
+			
+		    }, true);
+		    $request = $this->adminRequestTo('foo');
+		    $this->runAndAssertOutput('FOO', new IncomingAdminRequest($request));
+		
+		    // not-forcing trailing and defined with trailing
+		    $this->createRoutes(function() {
+			
+			    $this->router->get('/wp-admin/admin/foo/', function() {
+				
+				    return 'FOO';
+				
+			    });
+			
+		    });
+		    $request = $this->adminRequestTo('foo');
+		    $this->runAndAssertOutput('FOO', new IncomingAdminRequest($request));
+		
+	    }
+	
+	    /** @test */
+	    public function url_encoded_routes_work()
+	    {
+		
+		    $this->createRoutes(function() {
+			
+			    $this->router->get('/german-city/{city}', function(Request $request, string $city) {
 
                     return ucfirst($city);
 
                 });
 
             });
-
-            $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/german-city/münchen');
-            $this->runAndAssertOutput('München', new IncomingWebRequest($request, 'wp.php'));
+		
+		    $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/german-city/münchen');
+		    $this->runAndAssertOutput('München', new IncomingWebRequest($request));
 
         }
 
@@ -315,8 +350,8 @@
             });
 
             $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo?page=bayern münchen');
-            $request = $request->withQueryParams(['page' => 'bayern münchen']);
-            $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
+	        $request = $request->withQueryParams(['page' => 'bayern münchen']);
+	        $this->runAndAssertOutput('FOO', new IncomingWebRequest($request));
 
         }
 
