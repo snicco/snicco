@@ -1,14 +1,13 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+use Snicco\Session\Session;
+use Illuminate\Support\ViewErrorBag;
 
-    use Illuminate\Support\ViewErrorBag;
-    use Snicco\Session\Session;
+/** @var ViewErrorBag $errors */
 
-    /** @var ViewErrorBag $errors */
-
-    /** @var Session $session */
+/** @var Session $session */
 
 ?>
 
@@ -36,13 +35,13 @@
         <div class="control has-icons-left">
 
             <input
-                    type="text"
-                    name="token"
-                    id="token"
-                    inputmode="numeric"
-                    pattern="[0-9]*"
-                    autocomplete="one-time-code"
-                    class="input <?= $errors->count() ? 'is-danger' : '' ?>"
+		            type="text"
+		            name="one-time-code"
+		            id="one-time-code"
+		            inputmode="numeric"
+		            pattern="[0-9]*"
+		            autocomplete="one-time-code"
+		            class="input <?= $errors->count() ? 'is-danger' : '' ?>"
             />
 
             <span class="icon is-small is-left">
