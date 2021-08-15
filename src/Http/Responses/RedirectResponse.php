@@ -7,21 +7,22 @@
 	namespace Snicco\Http\Responses;
 
 
-    use Illuminate\Contracts\Support\MessageProvider;
-    use Illuminate\Support\MessageBag;
-    use Illuminate\Support\ViewErrorBag;
-    use Snicco\Http\Psr7\Response;
+    use LogicException;
     use Snicco\Session\Session;
+    use Snicco\Http\Psr7\Response;
+    use Illuminate\Support\MessageBag;
+    use Illuminate\Contracts\Support\MessageProvider;
 
-    class RedirectResponse extends Response {
-
-        /**
-         * @var Session|null
-         */
-        private $session;
-
-        /**
-         * @var bool
+    class RedirectResponse extends Response
+    {
+	
+	    /**
+	     * @var Session|null
+	     */
+	    private $session;
+	
+	    /**
+	     * @var bool
          */
         private $bypass_validation = false;
 
@@ -71,21 +72,16 @@
          * @param  string  $key
          * @return $this
          */
-        public function withErrors( $provider , string $key = 'default' ) : RedirectResponse
-        {
-
-            $this->checkSession();
-
-            $value = $this->toMessageBag($provider);
-
-            $errors = $this->session->errors();
-
-            $this->session->flash(
-                'errors', $errors->put($key, $value)
-            );
-
-            return $this;
-        }
+	    public function withErrors($provider, string $bag = 'default') :RedirectResponse
+	    {
+		
+		    $this->checkSession();
+		
+		    $this->session->withErrors($provider, $bag);
+		
+		    return $this;
+		
+	    }
 
         private function toMessageBag($provider) : MessageBag
         {
@@ -109,8 +105,10 @@
             if ( ! $this->hasSession() ) {
 
                 $called_method = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'];
-
-                throw new \LogicException("The method: [RedirectResponse::{$called_method}] can only be used if session are enabled in the config.");
+	
+	            throw new LogicException(
+		            "The method: [RedirectResponse::{$called_method}] can only be used if session are enabled in the config."
+	            );
             }
 
         }

@@ -91,11 +91,11 @@
 
             $this->bindSessionManagerInterface();
 
-            if ( ! $this->config->get('session.enabled')) {
-
-                throw new ConfigurationException(
-                    'Sessions need to be enabled if you want to use the auth features.'
-                );
+            if( ! $this->config->get('session.enabled') ) {
+	
+	            throw new ConfigurationException(
+		            'Sessions need to be enabled if you want to use the auth features.'
+	            );
             }
 
         }
@@ -203,7 +203,7 @@
             $this->config->extend('routing.api.endpoints', [
 
                 'auth' => $this->config->get('auth.endpoints.prefix'),
-                // Needed so we can respond to request to wp-login.php.
+	            // Needed so we can respond to requests to wp-login.php and redirect them appropriately
                 'wp-login.php' => '/wp-login.php',
 
             ]);

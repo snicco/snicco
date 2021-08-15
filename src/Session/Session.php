@@ -6,22 +6,24 @@
 
     namespace Snicco\Session;
 
-    use Carbon\Carbon;
     use Closure;
-    use DateInterval;
-    use DateTimeInterface;
-    use Illuminate\Support\InteractsWithTime;
-    use Illuminate\Support\ViewErrorBag;
-    use Snicco\Session\Contracts\SessionDriver;
-    use Snicco\Support\Arr;
     use stdClass;
+    use DateInterval;
+    use Carbon\Carbon;
+    use DateTimeInterface;
+    use Snicco\Support\Arr;
+    use Illuminate\Support\MessageBag;
+    use Illuminate\Support\ViewErrorBag;
+    use Illuminate\Support\InteractsWithTime;
+    use Snicco\Session\Contracts\SessionDriver;
+    use Illuminate\Contracts\Support\MessageProvider;
 
     class Session
     {
-
-        use InteractsWithTime;
-
-        private string        $id;
+	
+	    use InteractsWithTime;
+	
+	    private string        $id;
         private array         $attributes               = [];
         private SessionDriver $driver;
         private bool          $started                  = false;
@@ -373,25 +375,55 @@
 
         public function errors() : ViewErrorBag
         {
-
-            $errors = $this->get('errors', new ViewErrorBag);
-
-            if ( ! $errors instanceof ViewErrorBag) {
-                $errors = new ViewErrorBag;
-            }
-
-            return $errors;
+	
+	        $errors = $this->get('errors', new ViewErrorBag);
+	
+	        if( ! $errors instanceof ViewErrorBag ) {
+		        $errors = new ViewErrorBag;
+	        }
+	
+	        return $errors;
         }
-
-        public function allowAccessToRoute(string $path, $expires)
-        {
-
-            $allowed = $this->allowedRoutes();
-
-            $allowed[$path] = (int) $expires;
-
-            $this->put('_allow_routes', $allowed);
-        }
+	
+	    /**
+	     * Flash a container of errors to the session.
+	     *
+	     * @param MessageProvider|array $provider
+	     * @param string                $bag
+	     *
+	     * @return $this
+	     */
+	    public function withErrors($provider, string $bag = 'default') :Session
+	    {
+		
+		    $value = $this->toMessageBag($provider);
+		
+		    $this->flash(
+			    'errors',
+			    $this->errors()->put($bag, $value)
+		    );
+		
+		    return $this;
+	    }
+	
+	    private function toMessageBag($provider) :MessageBag
+	    {
+		    if( $provider instanceof MessageProvider ) {
+			    return $provider->getMessageBag();
+		    }
+		
+		    return new MessageBag((array)$provider);
+	    }
+	
+	    public function allowAccessToRoute(string $path, $expires)
+	    {
+		
+		    $allowed = $this->allowedRoutes();
+		
+		    $allowed[$path] = (int)$expires;
+		
+		    $this->put('_allow_routes', $allowed);
+	    }
 
         public function canAccessRoute(string $path) : bool
         {
