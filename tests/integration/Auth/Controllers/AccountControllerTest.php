@@ -6,28 +6,27 @@
 
     namespace Tests\integration\Auth\Controllers;
 
-    use Respect\Validation\Validator;
+    use WP_User;
     use Tests\AuthTestCase;
     use Tests\stubs\TestApp;
-    use Tests\stubs\TestView;
     use Snicco\Events\Event;
-    use Snicco\Auth\Contracts\CreatesNewUser;
-    use Snicco\Auth\Contracts\DeletesUsers;
-    use Snicco\Auth\Events\Registration;
-    use Snicco\Auth\Responses\CreateAccountViewResponse;
-    use Snicco\Auth\Responses\RegisteredResponse;
-    use Snicco\Contracts\ResponsableInterface;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\ResponseFactory;
+    use Snicco\Auth\Events\Registration;
+    use Snicco\Auth\Contracts\DeletesUsers;
+    use Snicco\Auth\Contracts\CreatesNewUser;
+    use Snicco\Contracts\ResponseableInterface;
+    use Snicco\Auth\Responses\RegisteredResponse;
+    use Snicco\Auth\Responses\CreateAccountViewResponse;
 
     class AccountControllerTest extends AuthTestCase
     {
-
-        protected function setUp() : void
+    
+        protected function setUp() :void
         {
-
+        
             $this->afterApplicationCreated(function () {
-
+            
                 $this->withAddedConfig('auth.features.registration', true);
                 $this->withoutMiddleware('csrf');
 
@@ -107,9 +106,9 @@
             ]);
 
             $response->assertOk()->assertSee('[Test] New User: calvin');
-
+    
             $user = get_user_by('login', 'calvin');
-            $this->assertInstanceOf(\WP_User::class, $user);
+            $this->assertInstanceOf(WP_User::class, $user);
 
             Event::assertDispatched(function (Registration $event) use ($user) {
 
@@ -297,8 +296,8 @@
                 // 'author'
             ];
         }
-
-        public function response() : ResponsableInterface
+    
+        public function response() :ResponseableInterface
         {
             return $this->response_factory->redirect()->to('/test/thank-you');
         }

@@ -6,7 +6,7 @@
 
     namespace Snicco\Auth\Contracts;
 
-    use Snicco\Contracts\ResponsableInterface;
+    use Snicco\Contracts\ResponseableInterface;
 
     interface DeletesUsers
     {
@@ -30,14 +30,13 @@
          *
          */
         public function allowedUserRoles() :array;
-
+    
         /**
-         *
          * This function will be called if the request was not an ajax request and can
          * be used to redirect the user to a survey or thank you page.
          *
-         * @return ResponsableInterface
+         * @return ResponseableInterface
          */
-        public function response() : ResponsableInterface;
-
+        public function response() :ResponseableInterface;
+    
     }

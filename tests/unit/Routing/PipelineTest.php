@@ -6,35 +6,35 @@
 
     namespace Tests\unit\Routing;
 
-    use Nyholm\Psr7\Factory\Psr17Factory;
-    use Nyholm\Psr7\Response;
+    use Throwable;
+    use Tests\UnitTest;
     use Nyholm\Psr7\Stream;
-    use Psr\Http\Message\ResponseInterface;
-    use Psr\Http\Message\ServerRequestInterface;
-    use Psr\Http\Server\MiddlewareInterface;
-    use Psr\Http\Server\RequestHandlerInterface;
-    use Snicco\Contracts\ErrorHandlerInterface;
-    use Snicco\ExceptionHandling\Exceptions\HttpException;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Http\Psr7\Response as AppResponse;
-    use Snicco\Http\ResponseFactory;
+    use Nyholm\Psr7\Response;
     use Snicco\Routing\Pipeline;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\ResponseFactory;
     use Tests\helpers\AssertsResponse;
     use Tests\helpers\CreateContainer;
-    use Tests\helpers\CreatePsr17Factories;
-    use Tests\helpers\CreateRouteCollection;
+    use Nyholm\Psr7\Factory\Psr17Factory;
     use Tests\helpers\CreateUrlGenerator;
-    use Tests\UnitTest;
-    use Throwable;
+    use Psr\Http\Message\ResponseInterface;
+    use Tests\helpers\CreatePsr17Factories;
+    use Psr\Http\Server\MiddlewareInterface;
+    use Tests\helpers\CreateRouteCollection;
+    use Snicco\Contracts\ErrorHandlerInterface;
+    use Psr\Http\Message\ServerRequestInterface;
+    use Psr\Http\Server\RequestHandlerInterface;
+    use Snicco\Http\Psr7\Response as AppResponse;
+    use Snicco\ExceptionHandling\Exceptions\HttpException;
 
     class PipelineTest extends UnitTest
     {
-
+    
         use CreateContainer;
         use AssertsResponse;
         use CreateUrlGenerator;
         use CreateRouteCollection;
-
+    
         private Pipeline $pipeline;
         private Request $request;
 
@@ -277,8 +277,8 @@
 
         public function transformToResponse(Throwable $e, Request $request) : AppResponse
         {
-
-            $code = $e instanceof HttpException ? $e->getStatusCode() : 500;
+    
+            $code = $e instanceof HttpException ? $e->httpStatusCode() : 500;
             $body = $e instanceof HttpException ? $e->getMessage() : 'Internal Server Error';
             $body = $this->psrStreamFactory()->createStream($body);
 

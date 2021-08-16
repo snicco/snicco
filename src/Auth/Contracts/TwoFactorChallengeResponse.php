@@ -7,9 +7,10 @@
     namespace Snicco\Auth\Contracts;
 
     use Snicco\Auth\Traits\UsesCurrentRequest;
-    use Snicco\Contracts\ResponsableInterface;
+    use Snicco\Contracts\ResponseableInterface;
 
-    abstract class TwoFactorChallengeResponse implements ResponsableInterface
+    abstract class TwoFactorChallengeResponse implements ResponseableInterface
     {
+    
         use UsesCurrentRequest;
     }

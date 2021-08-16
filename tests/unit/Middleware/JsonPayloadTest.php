@@ -6,16 +6,16 @@
 
     namespace Tests\unit\Middleware;
 
-    use Snicco\ExceptionHandling\Exceptions\HttpException;
+    use Tests\UnitTest;
     use Snicco\Http\Delegate;
+    use Tests\stubs\TestRequest;
     use Snicco\Http\Psr7\Request;
     use Snicco\Middleware\JsonPayload;
     use Tests\helpers\AssertsResponse;
+    use Tests\helpers\CreateUrlGenerator;
     use Tests\helpers\CreatePsr17Factories;
     use Tests\helpers\CreateRouteCollection;
-    use Tests\helpers\CreateUrlGenerator;
-    use Tests\stubs\TestRequest;
-    use Tests\UnitTest;
+    use Snicco\ExceptionHandling\Exceptions\HttpException;
 
     class JsonPayloadTest extends UnitTest
     {
@@ -146,9 +146,12 @@
                 $this->fail('Invalid Json did not throw exception');
 
             } catch (HttpException $e ) {
-
-                $this->assertSame(500, $e->getStatusCode());
-                $this->assertSame('Failed to convert the request payload to JSON.', $e->getMessage());
+    
+                $this->assertSame(500, $e->httpStatusCode());
+                $this->assertSame(
+                    'Failed to convert the request payload to JSON.',
+                    $e->getMessage()
+                );
 
             }
 
