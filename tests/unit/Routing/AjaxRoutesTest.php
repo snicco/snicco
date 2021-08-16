@@ -6,26 +6,26 @@
 
     namespace Tests\unit\Routing;
 
-    use Contracts\ContainerAdapter;
     use Mockery;
-    use Snicco\Events\Event;
-    use Snicco\Events\IncomingAjaxRequest;
-    use Snicco\ExceptionHandling\Exceptions\RouteLogicException;
-    use Snicco\Routing\Router;
+    use Tests\UnitTest;
     use Snicco\Support\WP;
-    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Snicco\Events\Event;
+    use Snicco\Routing\Router;
+    use Contracts\ContainerAdapter;
     use Tests\helpers\CreatesWpUrls;
     use Tests\helpers\CreateTestSubjects;
-    use Tests\UnitTest;
+    use Snicco\Events\IncomingAjaxRequest;
+    use Tests\helpers\CreateDefaultWpApiMocks;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
     class AjaxRoutesTest extends UnitTest
     {
-
+    
         use CreateTestSubjects;
         use CreatesWpUrls;
         use CreateDefaultWpApiMocks;
-
-        private Router $router;
+    
+        private Router           $router;
         private ContainerAdapter $container;
 
         protected function beforeTestRun()
@@ -233,17 +233,17 @@
         /** @test */
         public function an_exception_gets_thrown_when_the_route_doesnt_support_get_requests()
         {
-
-            $this->expectException('Route: ajax.foo does not respond to GET requests.');
-            $this->expectException(RouteLogicException::class);
-
+    
+            $this->expectException('Route [ajax.foo] does not respond to GET requests.');
+            $this->expectException(ConfigurationException::class);
+    
             $this->createRoutes(function () {
-
-
+        
                 $this->router->group([
-                    'prefix' => 'wp-admin/admin-ajax.php', 'name' => 'ajax',
+                    'prefix' => 'wp-admin/admin-ajax.php',
+                    'name' => 'ajax',
                 ], function () {
-
+            
                     $this->router->post('foo_action')->handle(function () {
 
                         //

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\ExceptionHandling\Exceptions;
 
 use Throwable;
-use RuntimeException;
+use Exception;
 
-class HttpException extends RuntimeException
+class HttpException extends Exception
 {
     
     protected int     $status_code;

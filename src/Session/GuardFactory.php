@@ -8,6 +8,7 @@
 
     use Slim\Csrf\Guard;
     use Snicco\Http\ResponseFactory;
+    use Psr\Http\Message\ServerRequestInterface;
     use Snicco\Session\Exceptions\InvalidCsrfTokenException;
 
     class GuardFactory
@@ -20,10 +21,10 @@
                 $response_factory,
                 'csrf',
                 $storage,
-                function () {
-
+                function (ServerRequestInterface $request) {
+        
                     throw new InvalidCsrfTokenException(
-                        'The Link you followed expired.',
+                        "Failed CSRF Check for path [{$request->getRequestTarget()}]",
                     );
                 },
                 1,
