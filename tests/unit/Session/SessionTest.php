@@ -584,27 +584,44 @@
 		    $session->start($this->getSessionId());
 		    $session->now('foo', 'bar');
 		    $session->now('bar', 0);
-		
-		    $this->assertTrue($session->has('foo'));
-		    $this->assertSame('bar', $session->get('foo'));
-		    $this->assertEquals(0, $session->get('bar'));
-		
-		    $session->save();
-		
-		    $this->assertFalse($session->has('foo'));
-		    $this->assertNull($session->get('foo'));
-		
-	    }
-	
-	    /** @test */
-	    public function session_data_can_be_reflashed()
-	    {
-		
-		    $session = $this->newSessionStore();
-		    $session->flash('foo', 'bar');
-		    $session->put('_flash.old', ['foo']);
-		    $session->reflash();
-		    $this->assertNotFalse(array_search('foo', $session->get('_flash.new')));
+        
+            $this->assertTrue($session->has('foo'));
+            $this->assertSame('bar', $session->get('foo'));
+            $this->assertEquals(0, $session->get('bar'));
+        
+            $session->save();
+        
+            $this->assertFalse($session->has('foo'));
+            $this->assertNull($session->get('foo'));
+        
+        }
+    
+        /** @test */
+        public function input_can_be_flashed_to_the_current_request()
+        {
+        
+            $session = $this->newSessionStore();
+            $session->start($this->getSessionId());
+            $session->flashInputNow(['foo' => 'bar']);
+        
+            $this->assertTrue($session->hasOldInput('foo'));
+            $this->assertSame('bar', $session->getOldInput('foo'));
+        
+            $session->save();
+        
+            $this->assertFalse($session->hasOldInput('foo'));
+        
+        }
+    
+        /** @test */
+        public function session_data_can_be_reflashed()
+        {
+        
+            $session = $this->newSessionStore();
+            $session->flash('foo', 'bar');
+            $session->put('_flash.old', ['foo']);
+            $session->reflash();
+            $this->assertNotFalse(array_search('foo', $session->get('_flash.new')));
 		    $this->assertFalse(array_search('foo', $session->get('_flash.old')));
 		
 	    }
