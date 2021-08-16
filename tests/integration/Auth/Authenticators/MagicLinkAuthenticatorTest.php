@@ -6,21 +6,21 @@
 
     namespace Tests\integration\Auth\Authenticators;
 
-    use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
-    use Snicco\Auth\Exceptions\FailedAuthenticationException;
-    use Snicco\Auth\Responses\MagicLinkLoginView;
+    use Tests\AuthTestCase;
     use Snicco\Contracts\MagicLink;
     use Snicco\Routing\UrlGenerator;
-    use Tests\AuthTestCase;
+    use Snicco\Auth\Responses\MagicLinkLoginView;
+    use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
+    use Snicco\Auth\Exceptions\FailedAuthenticationException;
 
     class MagicLinkAuthenticatorTest extends AuthTestCase
     {
-
+    
         private UrlGenerator $url;
-
-        protected function setUp() : void
+    
+        protected function setUp() :void
         {
-
+        
             $this->afterLoadingConfig(function () {
 
                 $this->withReplacedConfig('auth.through', [
@@ -100,23 +100,25 @@
             $this->assertSame([], $this->app->resolve(MagicLink::class)
                                             ->getStored(), 'Auth magic link not deleted.');
 
-
         }
 
         /** @test */
-        public function failed_attempts_are_redirected_to_the_login_route()
+        public function failed_attempts_return_a_302_redirect_to_the_login_view()
         {
-
-            $calvin = $this->createAdmin();
-
-            $url = $this->routeUrl($calvin->ID);
-
+        
             $this->followingRedirects();
+            $calvin = $this->createAdmin();
+        
+            $url = $this->routeUrl($calvin->ID);
+        
             $response = $this->get($url.'a');
-
-            $response->assertOk()
-                     ->assertSee('Your login link either expired or is invalid. Please request a new one.');
-
+        
+            $response->assertSee(
+                'Your magic link is either invalid or expired. Please request a new one.'
+            );
+        
+            $this->assertGuest();
+        
         }
 
 

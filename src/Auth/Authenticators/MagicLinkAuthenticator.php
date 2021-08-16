@@ -1,70 +1,63 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Snicco\Auth\Authenticators;
 
+use WP_User;
+use Snicco\Http\Psr7\Request;
+use Snicco\Contracts\MagicLink;
+use Snicco\Auth\Traits\ResolvesUser;
+use Snicco\Auth\Contracts\Authenticator;
+use Snicco\Auth\Exceptions\FailedAuthenticationException;
 
-    namespace Snicco\Auth\Authenticators;
-
-    use Snicco\Auth\Contracts\Authenticator;
-    use Snicco\Auth\Exceptions\FailedAuthenticationException;
-    use Snicco\Auth\Traits\ResolvesUser;
-    use Snicco\Contracts\MagicLink;
-    use Snicco\Http\Psr7\Request;
-    use WP_User;
-
-    class MagicLinkAuthenticator extends Authenticator
+class MagicLinkAuthenticator extends Authenticator
+{
+    
+    use ResolvesUser;
+    
+    private MagicLink $magic_link;
+    
+    public function __construct(MagicLink $magic_link)
     {
-
-        use ResolvesUser;
-
-        private MagicLink $magic_link;
-
-        protected string $failure_message = 'Your login link either expired or is invalid. Please request a new one.';
-
-        public function __construct(MagicLink $magic_link)
-        {
-
-            $this->magic_link = $magic_link;
-        }
-
-        public function attempt(Request $request, $next)
-        {
-
-            $valid = $this->magic_link->hasValidSignature($request, true );
-
-            if ( ! $valid  ) {
-
-                $this->fail($request);
-
-            }
-
-            $this->magic_link->invalidate($request->fullUrl());
-
-            $user = $this->getUserById($request->query('user_id'));
-
-            if ( ! $user instanceof WP_User) {
-
-                $this->fail($request);
-
-            }
-
-            // Whether remember_me will be allowed is determined by the config value in AuthSessionController
-            return $this->login($user, true);
-
-
-        }
-
-        /**
-         * @throws FailedAuthenticationException
-         */
-        private function fail(Request $request)
-        {
-
-            $e = new FailedAuthenticationException($this->failure_message, $request, []);
-            $e->redirectToRoute('auth.login');
-            throw $e;
-
-        }
-
+        $this->magic_link = $magic_link;
     }
+    
+    public function attempt(Request $request, $next)
+    {
+        
+        if ( ! $request->filled('user_id')) {
+            
+            throw new FailedAuthenticationException(
+                "Failed Authentication with missing user_id param in magic link",
+            );
+            
+        }
+        
+        $valid = $this->magic_link->hasValidSignature($request, true);
+        
+        if ( ! $valid) {
+            
+            throw new FailedAuthenticationException(
+                "Failed Authentication with invalid magic-link for user [{{$request->query('user_id')}]",
+            );
+            
+        }
+        
+        $this->magic_link->invalidate($request->fullUrl());
+        $user = $this->getUserById($request->query('user_id'));
+        
+        if ( ! $user instanceof WP_User) {
+            
+            throw new FailedAuthenticationException(
+                "Failed Authentication with magic-link for unresolvable user_id [{{$request->query('user_id')}]",
+            );
+            
+        }
+        
+        // Whether remember_me will be allowed is determined by the config value in AuthSessionController
+        return $this->login($user, true);
+        
+    }
+    
+}
