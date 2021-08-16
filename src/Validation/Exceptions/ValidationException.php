@@ -30,13 +30,15 @@ class ValidationException extends HttpException
     
     public static function withMessages(
         array $messages,
-        string $message_for_humans = 'We could not process your request.',
+        string $message_for_users = 'We could not process your request.',
+        string $log_message = 'Failed Validation',
         int $status = 400
     ) :ValidationException {
-        
+    
         $bag = new MessageBag($messages);
-        $e = new static($messages, $message_for_humans, $status);
+        $e = new static($messages, $log_message, $status);
         $e->setMessageBag($bag);
+        $e->withMessageForUsers($message_for_users);
         
         return $e;
         

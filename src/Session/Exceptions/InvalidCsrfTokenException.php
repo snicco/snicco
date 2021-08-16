@@ -6,17 +6,17 @@
 
     namespace Snicco\Session\Exceptions;
 
-    use Snicco\ExceptionHandling\Exceptions\HttpException;
     use Throwable;
+    use Snicco\ExceptionHandling\Exceptions\HttpException;
 
     class InvalidCsrfTokenException extends HttpException
     {
 
         protected string $message_for_users = 'The link you followed expired.';
-
-        public function __construct(string $message = 'Failed CSRF Check', Throwable $previous = null)
+    
+        public function __construct(string $log_message = 'Failed CSRF Check', Throwable $previous = null)
         {
-            parent::__construct(419, $message, $previous);
+            parent::__construct(419, $log_message, $previous);
         }
 
     }

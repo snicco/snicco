@@ -12,9 +12,9 @@
     class ViewException extends HttpException
     {
 
-        public function __construct(string $message_for_logging, Throwable $previous = null )
+        public function __construct(string $log_message = 'Error rendering view', Throwable $previous = null)
         {
-            parent::__construct(500, $message_for_logging, $previous);
+            parent::__construct(500, $log_message, $previous);
         }
 
     }

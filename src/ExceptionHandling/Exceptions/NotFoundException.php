@@ -15,7 +15,6 @@
 
         public function __construct($log_message, Throwable $previous = null)
         {
-
             parent::__construct(404, $log_message, $previous);
 
         }

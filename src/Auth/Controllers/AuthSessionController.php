@@ -76,7 +76,7 @@ class AuthSessionController extends Controller
         if ($user_id !== WP::userId()) {
             
             throw new InvalidSignatureException(
-                "Suspicious logging attempt with query-id-mismatch."
+                "Suspicious logout attempt with query-id-mismatch."
             );
             
         }
