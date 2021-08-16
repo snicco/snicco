@@ -6,7 +6,6 @@ use Snicco\Session\Session;
 use Illuminate\Support\ViewErrorBag;
 
 /** @var ViewErrorBag $errors */
-
 /** @var Session $session */
 
 ?>
@@ -17,17 +16,17 @@ use Illuminate\Support\ViewErrorBag;
         Please confirm access to your account by entering the authentication code provided by your
         phone's authenticator application.
     </div>
-
-    <?php if ($errors->has('message')) : ?>
-
-        <div class="notification is-danger is-light">
-            <?= $errors->first('message') ?>
+	
+	<?php if ($errors->has('login')) : ?>
+		
+		<div class="notification is-danger is-light">
+            Invalid one-time-code provided.
         </div>
-
-    <?php endif; ?>
-
-    <!--CSRF field-->
-    <?= $csrf->asHtml() ?>
+	
+	<?php endif; ?>
+	
+	<!--CSRF field-->
+	<?= $csrf->asHtml() ?>
 
     <!--One time password-->
     <div class="field">
