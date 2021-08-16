@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\ExceptionHandling;
 
+use Closure;
 use Throwable;
 use Snicco\Support\WP;
 use Snicco\Support\Arr;
@@ -15,6 +16,7 @@ use Snicco\Http\ResponseEmitter;
 use Snicco\Http\ResponseFactory;
 use Snicco\Traits\HandlesExceptions;
 use Snicco\Contracts\ErrorHandlerInterface;
+use Illuminate\Support\Traits\ReflectsClosures;
 use Snicco\Events\UnrecoverableExceptionHandled;
 use Snicco\Validation\Exceptions\ValidationException;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
@@ -22,18 +24,25 @@ use Snicco\ExceptionHandling\Exceptions\HttpException;
 class ProductionErrorHandler implements ErrorHandlerInterface
 {
     
+    use ReflectsClosures;
     use HandlesExceptions;
     
     protected ContainerAdapter $container;
     protected LoggerInterface  $logger;
     protected ResponseFactory  $response;
-    protected array            $dont_report            = [
-        ValidationException::class,
-    ];
-    protected array            $dont_flash             = [
-    
-    ];
+    protected array            $dont_report = [];
+    protected array            $dont_flash = [];
     protected string           $fallback_error_message = 'Internal Server Error';
+    
+    /**
+     * @var Closure[]
+     */
+    private array $custom_renderers = [];
+    
+    /**
+     * @var Closure[]
+     */
+    private array $custom_reporters = [];
     
     public function __construct(
         ContainerAdapter $container,
@@ -43,12 +52,44 @@ class ProductionErrorHandler implements ErrorHandlerInterface
         $this->container = $container;
         $this->logger = $logger;
         $this->response = $response_factory;
+        
+        $this->registerCallbacks();
+        
+    }
+    
+    protected function registerCallbacks()
+    {
+        //
+    }
+    
+    public function renderable(callable $render_using) :ProductionErrorHandler
+    {
+        if ( ! $render_using instanceof Closure) {
+            $render_using = Closure::fromCallable($render_using);
+        }
+        
+        $this->custom_renderers[] = $render_using;
+        
+        return $this;
+        
+    }
+    
+    public function reportable(callable $report_using) :ProductionErrorHandler
+    {
+        if ( ! $report_using instanceof Closure) {
+            $report_using = Closure::fromCallable($report_using);
+        }
+        
+        $this->custom_reporters[] = $report_using;
+        
+        return $this;
+        
     }
     
     public function handleException($e, $in_routing_flow = false, ?Request $request = null)
     {
         
-        $this->logException($e);
+        $this->logException($e, $request);
         
         $response = $this->convertToResponse($e, $request ?? $this->resolveRequestFromContainer());
         
@@ -72,7 +113,6 @@ class ProductionErrorHandler implements ErrorHandlerInterface
     
     public function unrecoverable(Throwable $exception)
     {
-        
         $this->handleException($exception);
     }
     
@@ -98,7 +138,7 @@ class ProductionErrorHandler implements ErrorHandlerInterface
     /**
      * Override this method from a child class to create
      * your own default response for fatal errors that can not be transformed by this error
-     * driver.
+     * handler.
      *
      * @param  Throwable  $e
      * @param  Request  $request
@@ -117,7 +157,22 @@ class ProductionErrorHandler implements ErrorHandlerInterface
     private function convertToResponse(Throwable $e, Request $request) :Response
     {
         
-        /** @todo add possibility to define callbacks that can override any exception rendering and reporting including framework exceptions. */
+        foreach ($this->custom_renderers as $custom_renderer) {
+            
+            $exception_type = $this->firstClosureParameterType($custom_renderer);
+            
+            if ( ! $e instanceof $exception_type) {
+                continue;
+            }
+            
+            $response = $custom_renderer($e, $request, $this->response);
+            
+            if ($response instanceof Response) {
+                return $response;
+            }
+            
+        }
+        
         if (method_exists($e, 'render')) {
             
             return $this->renderableException($e, $request);
@@ -140,12 +195,29 @@ class ProductionErrorHandler implements ErrorHandlerInterface
         
     }
     
-    private function logException(Throwable $exception)
+    private function logException(Throwable $exception, Request $request)
     {
         
         if (in_array(get_class($exception), $this->dont_report)) {
-            
             return;
+        }
+        
+        foreach ($this->custom_reporters as $custom_reporter) {
+            
+            $handles_exception = $this->firstClosureParameterType($custom_reporter);
+            
+            if ( ! $exception instanceof $handles_exception) {
+                continue;
+            }
+            
+            $keep_reporting = $this->container->call(
+                $custom_reporter,
+                ['request' => $request, 'exception' => $exception, 'e' => $exception]
+            );
+            
+            if ($keep_reporting === false) {
+                return;
+            }
             
         }
         
@@ -159,7 +231,6 @@ class ProductionErrorHandler implements ErrorHandlerInterface
             
         }
         
-        /** @todo This is (?not) a correct implementation of the Psr3 standard. */
         $this->logger->error(
             $exception->getMessage(),
             array_merge(
@@ -221,7 +292,7 @@ class ProductionErrorHandler implements ErrorHandlerInterface
         }
         
         return $response->withErrors($e->messages(), $e->namedBag())
-                        ->withInput(Arr::except($request->input(), $this->dont_flash));
+            ->withInput(Arr::except($request->input(), $this->dont_flash));
         
     }
     
