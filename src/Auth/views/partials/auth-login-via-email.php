@@ -1,32 +1,30 @@
 <?php
 
-
-    declare(strict_types = 1);
+declare(strict_types=1);
 
 ?>
-
 
 <form id="send" class="mt-4 box " action="<?= esc_attr($post_to) ?>" method="POST">
 
     <?php if ($session->has('login.link.processed')) : ?>
-
-        <div class="notification is-success is-light">
+	
+	    <div class="notification is-success is-light">
             We have sent an email to the linked account if it exists!
             <br>
             If you did not receive your email feel free to request a new one.
         </div>
 
-    <?php elseif ($errors->has('message')): ?>
-
-        <div class="notification is-danger is-light">
-
-            <?= esc_html($errors->first('message')) ?>
+    <?php elseif ($errors->has('login')): ?>
+	
+	    <div class="notification is-danger is-light">
+	        
+	        Your magic link is either invalid or expired. Please request a new one.
 
         </div>
 
     <?php else : ?>
-
-        <div class="notification is-info is-light">
+	
+	    <div class="notification is-info is-light">
             Our Application works without passwords!
             <br>
             Enter your username or account email and you will receive a secure, one-time link to log in.

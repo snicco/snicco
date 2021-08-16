@@ -7,16 +7,15 @@
 	namespace Snicco\Contracts;
 
 
-    interface ResponsableInterface {
-
-		/**
-		 * Convert an object to a data type
+    interface ResponseableInterface
+    {
+    
+        /**
+         * Convert an object to a data type
          * that can be processed be the response factory
          *
          * @return mixed
-         *
          * @see HttpResponseFactory::toResponse()
-		 *
          */
 		public function toResponsable() ;
 

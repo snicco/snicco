@@ -6,22 +6,23 @@
 
     namespace Snicco\Http;
 
-    use Psr\Http\Message\ResponseFactoryInterface;
-    use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
-    use Psr\Http\Message\ResponseInterface;
-    use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
+    use Throwable;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Http\Psr7\Response;
     use Psr\Http\Message\StreamInterface;
+    use Psr\Http\Message\ResponseInterface;
+    use Snicco\Http\Responses\NullResponse;
     use Snicco\Contracts\AbstractRedirector;
-    use Snicco\Contracts\ResponsableInterface;
-    use Snicco\Contracts\ViewFactoryInterface as ViewFactory;
+    use Snicco\Http\Responses\InvalidResponse;
+    use Snicco\Contracts\ResponseableInterface;
+    use Snicco\Http\Responses\RedirectResponse;
+    use Psr\Http\Message\ResponseFactoryInterface;
+    use Snicco\Http\Responses\WpQueryFilteredResponse;
     use Snicco\ExceptionHandling\Exceptions\HttpException;
     use Snicco\ExceptionHandling\Exceptions\ViewException;
-    use Snicco\Http\Psr7\Response;
-    use Snicco\Http\Responses\InvalidResponse;
-    use Snicco\Http\Responses\NullResponse;
-    use Snicco\Http\Responses\RedirectResponse;
-    use Snicco\Http\Responses\WpQueryFilteredResponse;
-    use Throwable;
+    use Snicco\Contracts\ViewFactoryInterface as ViewFactory;
+    use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
+    use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
     /**
      * @todo either this class or the Response class need a prepare method to fix obvious mistakes.
@@ -29,8 +30,8 @@
      */
     class ResponseFactory implements ResponseFactoryInterface
     {
-
-        private ViewFactory $view_factory;
+    
+        private ViewFactory          $view_factory;
         private Psr17ResponseFactory $response_factory;
         private Psr17StreamFactory $stream_factory;
         private AbstractRedirector $redirector;
@@ -134,13 +135,13 @@
                 return $this->json($response);
 
             }
-
-            if ($response instanceof ResponsableInterface) {
-
+    
+            if ($response instanceof ResponseableInterface) {
+        
                 return $this->toResponse(
                     $response->toResponsable()
                 );
-
+        
             }
 
             return $this->invalidResponse();
@@ -180,7 +181,6 @@
 
         public function invalidResponse() : InvalidResponse
         {
-
             return new InvalidResponse($this->response_factory->createResponse(500));
         }
 
@@ -229,30 +229,30 @@
          *
          * @access internal.
          */
-        public function error(HttpException $e) : Response
+        public function error(HttpException $e, Request $request) :Response
         {
-
-            $views = [(string) $e->getStatusCode(), 'error', 'index'];
-
-            $is_admin = $e->inAdminArea();
-
+        
+            $views = [(string) $e->httpStatusCode(), 'error', 'index'];
+        
+            $is_admin = $request->isWpAdmin();
+        
             if ($is_admin) {
-
+            
                 $views = collect($views)
                     ->map(fn($view) => $view.'-admin')
                     ->merge($views)->all();
-
+            
             }
-
+        
             try {
 
                 $view = $this->view_factory->make($views)->with([
-                    'status_code' => $e->getStatusCode(),
+                    'status_code' => $e->httpStatusCode(),
                     'message' => $e->messageForUsers(),
                 ]);
-
+            
                 return $this->toResponse($view)
-                            ->withStatus($e->getStatusCode());
+                            ->withStatus($e->httpStatusCode());
 
             }
             catch (ViewException $e) {

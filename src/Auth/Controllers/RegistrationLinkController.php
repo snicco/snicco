@@ -6,29 +6,29 @@
 
     namespace Snicco\Auth\Controllers;
 
-    use Snicco\Auth\Contracts\RegistrationViewResponse;
-    use Snicco\Auth\Mail\ConfirmRegistrationEmail;
-    use Snicco\Contracts\ResponsableInterface;
     use Snicco\Http\Controller;
+    use Snicco\Mail\MailBuilder;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Responses\RedirectResponse;
-    use Snicco\Mail\MailBuilder;
+    use Snicco\Contracts\ResponseableInterface;
+    use Snicco\Auth\Mail\ConfirmRegistrationEmail;
+    use Snicco\Auth\Contracts\RegistrationViewResponse;
 
     class RegistrationLinkController extends Controller
     {
-
+    
         private int $lifetime_in_seconds;
-
-        public function __construct($lifetime_in_seconds = 600 )
+    
+        public function __construct($lifetime_in_seconds = 600)
         {
             $this->lifetime_in_seconds = $lifetime_in_seconds;
         }
-
-        public function create(Request $request, RegistrationViewResponse $response) : ResponsableInterface
+    
+        public function create(Request $request, RegistrationViewResponse $response) :ResponseableInterface
         {
-
+        
             return $response->forRequest($request);
-
+        
         }
 
         public function store(Request $request, MailBuilder $mail_builder) : RedirectResponse

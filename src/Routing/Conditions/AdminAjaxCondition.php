@@ -6,22 +6,21 @@
 
     namespace Snicco\Routing\Conditions;
 
-    use Snicco\Contracts\UrlableInterface;
-    use Snicco\ExceptionHandling\Exceptions\RouteLogicException;
     use Snicco\Support\WP;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Routing\Route;
-    use Snicco\Routing\Conditions\RequestAttributeCondition;
     use Snicco\Support\Arr;
+    use Snicco\Routing\Route;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Contracts\UrlableInterface;
+    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
     class AdminAjaxCondition extends RequestAttributeCondition implements UrlableInterface
     {
-
-        public function isSatisfied(Request $request) : bool
+    
+        public function isSatisfied(Request $request) :bool
         {
-
+        
             return true;
-
+        
         }
 
         public function getArguments(Request $request) : array
@@ -55,11 +54,11 @@
             $route = $arguments['route'];
 
             if ( ! in_array('GET', $route->getMethods() ) ) {
-
-                throw new RouteLogicException(
-                    'Route: '.$route->getName().'does not respond to GET requests'
+    
+                throw new ConfigurationException(
+                    "Route [{$route->getName()}] does not respond to GET requests"
                 );
-
+    
             }
 
             return WP::addQueryArg('action', $this->expectedAction(), $base_url);

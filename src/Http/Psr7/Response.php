@@ -6,23 +6,22 @@
 
     namespace Snicco\Http\Psr7;
 
-    use Psr\Http\Message\ResponseInterface;
-    use Psr\Http\Message\StreamInterface;
-    use Snicco\Contracts\ResponsableInterface;
     use Snicco\Http\Cookie;
     use Snicco\Http\Cookies;
+    use Psr\Http\Message\StreamInterface;
+    use Psr\Http\Message\ResponseInterface;
+    use Snicco\Contracts\ResponseableInterface;
 
-
-    class Response implements ResponseInterface, ResponsableInterface
+    class Response implements ResponseInterface, ResponseableInterface
     {
-
+    
         use ImplementsPsr7Response;
-
+    
         /**
          * @var Cookies
          */
         protected $cookies;
-
+    
         public function __construct(ResponseInterface $psr7_response)
         {
 

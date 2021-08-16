@@ -6,22 +6,22 @@
 
     namespace Snicco\Middleware;
 
-    use Psr\Http\Message\ResponseInterface;
-    use Psr\Http\Message\StreamInterface;
     use RuntimeException;
-    use Snicco\Contracts\Middleware;
-    use Snicco\ExceptionHandling\Exceptions\HttpException;
+    use Snicco\Support\Str;
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Request;
-    use Snicco\Support\Str;
+    use Snicco\Contracts\Middleware;
+    use Psr\Http\Message\StreamInterface;
+    use Psr\Http\Message\ResponseInterface;
+    use Snicco\ExceptionHandling\Exceptions\HttpException;
 
     abstract class Payload extends Middleware
     {
-
+    
         protected array $content_types;
-
+    
         protected array $methods = ['POST', 'PUT', 'PATCH', 'DELETE'];
-
+    
         /**
          * @param  StreamInterface  $stream
          *
@@ -63,9 +63,12 @@
 
             }
             catch (RuntimeException $exception) {
-
-                throw new HttpException(500, 'Failed to convert the request payload to JSON.' , $exception);
-
+    
+                throw new HttpException(
+                    500, 'Failed to convert the request payload to JSON.',
+                    $exception
+                );
+    
             }
 
 
