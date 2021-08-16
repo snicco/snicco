@@ -1,57 +1,34 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Snicco\Auth\Exceptions;
 
+use Throwable;
+use Snicco\Http\Psr7\Response;
+use Snicco\Http\ResponseFactory;
+use Snicco\ExceptionHandling\Exceptions\HttpException;
 
-    namespace Snicco\Auth\Exceptions;
-
-    use Exception;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Http\ResponseFactory;
-    use Snicco\Http\Responses\RedirectResponse;
-    use Throwable;
-
-    class FailedAuthenticationException extends Exception
+class FailedAuthenticationException extends HttpException
+{
+    
+    private array    $old_input;
+    protected string $message_for_users = 'We could not authenticate your credentials.';
+    private string   $redirect_to;
+    
+    public function __construct(string $log_message, array $old_input = [], string $redirect_to = 'auth.login', Throwable $previous = null)
     {
-
-        private array   $old_input;
-        private ?string $route = null;
-        private Request $request;
-
-
-        public function __construct($message, Request $request, ?array $old_input = null, $code = 0, Throwable $previous = null)
-        {
-
-            $this->request = $request;
-            $this->old_input = $old_input ?? $this->request->all();
-            parent::__construct($message, $code, $previous);
-
-        }
-
-        public function redirectToRoute(string $route)
-        {
-
-            $this->route = $route;
-        }
-
-        public function render(ResponseFactory $response_factory) : RedirectResponse
-        {
-
-            $response = $response_factory->redirect();
-
-            if ($this->route) {
-
-                return $response->toRoute($this->route)
-                                ->withErrors(['message' => $this->getMessage()])
-                                ->withInput($this->old_input);
-
-            }
-
-            return $response_factory->redirect()
-                                    ->refresh()
-                                    ->withErrors(['message' => $this->getMessage()])
-                                    ->withInput($this->old_input);
-        }
-
+        $this->old_input = $old_input;
+        $this->redirect_to = $redirect_to;
+        parent::__construct(302, $log_message, $previous);
     }
+    
+    public function render(ResponseFactory $response_factory) :Response
+    {
+        return $response_factory->redirect()
+                                ->toRoute($this->redirect_to)
+                                ->withErrors(['login' => $this->message_for_users])
+                                ->withInput($this->old_input);
+    }
+    
+}
