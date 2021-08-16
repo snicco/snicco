@@ -153,8 +153,13 @@
             });
 
             $this->container->singleton(
-                AuthSessionController::class,
-                fn() => new AuthSessionController($this->config->get('auth'))
+                AuthSessionController::class, function () {
+    
+                return new AuthSessionController(
+                    $this->config->get('auth')
+                );
+    
+            }
             );
 
         }

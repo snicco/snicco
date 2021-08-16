@@ -1,73 +1,60 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Snicco\ExceptionHandling\Exceptions;
 
+use Throwable;
+use RuntimeException;
 
-    namespace Snicco\ExceptionHandling\Exceptions;
-
-    use RuntimeException;
-    use Snicco\Http\Psr7\Request;
-    use Throwable;
-
-    class HttpException extends RuntimeException
-    {
-
-        protected int     $status_code       = 500;
-        protected Request $request;
-        protected string  $message_for_users = 'Something went wrong.';
-        protected ?string $json_message = null;
-
-        public function __construct(int $status_code, string $message_for_logging, Throwable $previous = null)
-        {
-
-            $this->status_code = $status_code;
-            parent::__construct($message_for_logging, 0, $previous);
-        }
-
-        public function getStatusCode() : int
-        {
-
-            return $this->status_code;
-        }
-
-        public function causedBy(Request $request) : HttpException
-        {
-
-            $this->request = $request;
-
-            return $this;
-        }
-
-        public function inAdminArea() : bool
-        {
-
-            return $this->request->isWpAdmin();
-        }
-
-        public function messageForUsers() : string
-        {
-            return $this->message_for_users;
-        }
-
-        public function withMessageForUsers(string $fallback_error_message) : HttpException
-        {
-            $this->message_for_users = $fallback_error_message;
-            return $this;
-        }
-
-        // The message that should be displayed for json requests while in production mode.
-        public function setJsonMessage(string $json_message) : HttpException
-        {
-            $this->json_message = $json_message;
-            return $this;
-        }
-
-        public function getJsonMessage () {
-
-            return $this->json_message ?? $this->messageForUsers();
-
-        }
-
-
+class HttpException extends RuntimeException
+{
+    
+    protected int     $status_code;
+    protected string  $message_for_users = 'Something went wrong.';
+    protected ?string $json_message      = null;
+    
+    public function __construct(
+        int $status_code,
+        string $log_message,
+        Throwable $previous = null
+    ) {
+        $this->status_code = $status_code;
+        parent::__construct($log_message, 0, $previous);
     }
+    
+    public function httpStatusCode() :int
+    {
+        return $this->status_code;
+    }
+    
+    public function messageForUsers() :string
+    {
+        return $this->message_for_users;
+    }
+    
+    public function withMessageForUsers(string $message_for_users) :HttpException
+    {
+        $this->message_for_users = $message_for_users;
+        return $this;
+    }
+    
+    // The message that should be displayed for json requests while in production mode.
+    public function withJsonMessageForUsers(string $json_message) :HttpException
+    {
+        $this->json_message = $json_message;
+        return $this;
+    }
+    
+    public function getJsonMessage() :string
+    {
+        return $this->json_message ?? $this->messageForUsers();
+    }
+    
+    public function withStatusCode(int $http_status_code) :HttpException
+    {
+        $this->status_code = $http_status_code;
+        return $this;
+    }
+    
+}

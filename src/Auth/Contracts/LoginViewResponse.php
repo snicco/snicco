@@ -6,28 +6,11 @@
 
     namespace Snicco\Auth\Contracts;
 
-    use Snicco\Support\Arr;
-    use Snicco\Contracts\ResponsableInterface;
     use Snicco\Auth\Traits\UsesCurrentRequest;
+    use Snicco\Contracts\ResponseableInterface;
 
-    abstract class LoginViewResponse implements ResponsableInterface
+    abstract class LoginViewResponse implements ResponseableInterface
     {
-	
-	    use UsesCurrentRequest;
-	
-	    protected array $auth_config;
-	
-	    public function withAuthConfig(array $config) :LoginViewResponse
-	    {
-            $this->auth_config = $config;
-            return $this;
-        }
-
-        protected function allowRememberMe() : bool
-        {
-
-            return Arr::get($this->auth_config, 'features.remember_me', false);
-
-        }
-
+    
+        use UsesCurrentRequest;
     }

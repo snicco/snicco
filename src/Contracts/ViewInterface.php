@@ -7,17 +7,17 @@
 	namespace Snicco\Contracts;
 
 
-	interface ViewInterface extends ResponsableInterface {
-
-		/**
-		 * Render the view to a string.
-		 *
-		 * @return string
-		 */
-		public function toString() :string;
-
-
-		/**
+	interface ViewInterface extends ResponseableInterface
+    {
+        
+        /**
+         * Render the view to a string.
+         *
+         * @return string
+         */
+        public function toString() :string;
+        
+        /**
 		 * Add context values.
 		 *
 		 * @param  string|array<string, mixed>  $key

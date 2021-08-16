@@ -7,15 +7,17 @@
     namespace Snicco\Auth\Responses;
 
     use Snicco\Auth\Traits\UsesCurrentRequest;
-    use Snicco\Contracts\ResponsableInterface;
+    use Snicco\Contracts\ResponseableInterface;
 
-    abstract class CreateAccountViewResponse implements ResponsableInterface
+    abstract class CreateAccountViewResponse implements ResponseableInterface
     {
+    
         use UsesCurrentRequest;
-
+    
         protected string $post_to;
-
-        public function postTo(string $path) {
+    
+        public function postTo(string $path)
+        {
             $this->post_to = $path;
             return $this;
         }
