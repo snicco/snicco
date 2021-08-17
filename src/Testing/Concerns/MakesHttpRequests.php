@@ -490,15 +490,17 @@ trait MakesHttpRequests
     
     private function followRedirects(Response $response)
     {
-        
+    
         $this->follow_redirects = false;
-        
+    
+        /** @todo transform to test response if no redirect here. */
+    
         while ($response->isRedirect()) {
             $response = $this->get($response->getHeaderLine('Location'));
         }
-        
+    
         return $response;
-        
+    
     }
     
 }

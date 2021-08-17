@@ -6,7 +6,6 @@
 
     namespace Snicco\Auth;
 
-    use Snicco\Support\WP;
     use Snicco\Http\Psr7\Request;
     use Snicco\Middleware\Secure;
     use Snicco\Http\ResponseFactory;
@@ -347,7 +346,6 @@
                         $this->container->make(TwoFactorAuthenticationProvider::class),
                         $this->container->make(ResponseFactory::class),
                         $this->container->make(EncryptorInterface::class),
-                        WP::currentUser()
                     );
 
                 }

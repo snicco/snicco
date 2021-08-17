@@ -23,10 +23,10 @@ class FailedTwoFactorAuthenticationException extends FailedAuthenticationExcepti
     public function fail2BanMessage()
     {
         
-        if ( ! Str::startsWith($this->getMessage(), 'Failed Two-factor Authentication')) {
-            
-            return 'Failed Two-factor Authentication '.$this->getMessage();
-            
+        if ( ! Str::startsWith($this->getMessage(), 'Failed two-factor authentication')) {
+    
+            return 'Failed two-factor authentication '.$this->getMessage();
+    
         }
         
         return $this->getMessage();
