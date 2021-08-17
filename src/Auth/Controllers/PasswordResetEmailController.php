@@ -6,23 +6,27 @@
 
     namespace Snicco\Auth\Controllers;
 
-    use Snicco\Auth\Traits\ResolvesUser;
-    use Snicco\Auth\Traits\SendsPasswordResetMails;
+    use WP_User;
+    use Snicco\Support\WP;
     use Snicco\Http\Controller;
+    use Snicco\Mail\MailBuilder;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Psr7\Response;
-    use Snicco\Mail\MailBuilder;
-    use Snicco\Support\WP;
-    use WP_User;
+    use Snicco\Auth\Traits\ResolvesUser;
+    use Snicco\Auth\Traits\SendsPasswordResetMails;
 
+    /**
+     * This controller is duplicated the logic when an admin user is sending
+     * a password reset email to a user and takes over the default behaviour.
+     */
     class PasswordResetEmailController extends Controller
     {
-
+    
         use SendsPasswordResetMails;
         use ResolvesUser;
-
+    
         private MailBuilder $mail;
-
+    
         public function __construct(MailBuilder $mail)
         {
             $this->mail = $mail;

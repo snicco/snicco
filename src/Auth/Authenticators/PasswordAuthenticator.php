@@ -21,7 +21,7 @@ class PasswordAuthenticator extends Authenticator
         if ( ! $request->filled('pwd') || ! $request->filled('log')) {
             
             throw new FailedAuthenticationException(
-                'Failed Authentication with missing password or username',
+                'Failed authentication with missing password or username',
             );
             
         }
@@ -36,7 +36,7 @@ class PasswordAuthenticator extends Authenticator
         if ( ! (wp_check_password($password, $user->user_pass, $user->ID))) {
             
             throw new FailedAuthenticationException(
-                "Failed Authentication for user [$user->ID] with wrong password [$password]",
+                "Failed authentication for user [$user->ID] with wrong password [$password]",
                 $request->only(['pwd', 'log', 'remember_me'])
             );
             
@@ -53,7 +53,7 @@ class PasswordAuthenticator extends Authenticator
         if ( ! $user instanceof WP_User) {
             
             throw new FailedAuthenticationException(
-                'Failed Authentication for invalid username',
+                'Failed authentication for invalid username',
                 $request->only(['pwd', 'log', 'remember_me'])
             );
             

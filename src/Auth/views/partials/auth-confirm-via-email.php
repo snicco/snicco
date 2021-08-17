@@ -25,18 +25,18 @@
     <?php endif; ?>
 
     <!--   There have been errors flashed by the auth confirmation -->
-    <?php if ($errors->has('message')) : ?>
-
-        <div class="notification is-danger is-light mt-2">
+	<?php if ($errors->has('auth.confirmation')) : ?>
+		
+		<div class="notification is-danger is-light mt-2">
             <p class="is-size-5">
-                We could not confirm your authentication.
+                Authentication failed.
             </p>
             <p class="is-size-5 mt-2">
-                <?= esc_html($errors->first('message')) ?>
+                <?= esc_html($errors->first('auth.confirmation')) ?>
             </p>
         </div>
-
-    <?php endif; ?>
+	
+	<?php endif; ?>
 
     <!--   Check if user can request another email -->
     <?php if (time() > $session->get('auth.confirm.email.next', 0)) : ?>
