@@ -110,16 +110,41 @@
             $calvin = $this->createAdmin();
         
             $url = $this->routeUrl($calvin->ID);
-        
+    
             $response = $this->get($url.'a');
-        
+    
             $response->assertSee(
                 'Your magic link is either invalid or expired. Please request a new one.'
             );
-        
+    
             $this->assertGuest();
+    
+        }
+    
+        /** @test */
+        public function invalid_magic_link_attempts_throw_an_failed_authentication_exception()
+        {
+        
+            $this->withoutExceptionHandling();
+        
+            $calvin = $this->createAdmin();
+        
+            $url = $this->routeUrl($calvin->ID + 1000);
+        
+            $exception_caught = false;
+        
+            try {
+            
+                $this->get($url);
+            } catch (FailedAuthenticationException $e) {
+            
+                $this->assertStringStartsWith('Failed authentication', $e->fail2BanMessage());
+                $exception_caught = true;
+            
+            }
+        
+            $this->assertTrue($exception_caught);
         
         }
-
-
+    
     }

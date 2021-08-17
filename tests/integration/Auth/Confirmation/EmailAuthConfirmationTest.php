@@ -103,10 +103,7 @@
                     "Failed auth confirmation for user [$admin->ID]",
                     $e->fail2BanMessage()
                 );
-                $this->assertStringStartsWith(
-                    "Your confirmation link was invalid or expired. Please request a new one.",
-                    $e->messageForUsers()
-                );
+    
                 $exception_caught = true;
             }
         

@@ -66,19 +66,10 @@ use Illuminate\Support\ViewErrorBag;
         Enter one of your recovery codes that you received on activating two factor authentication.
     </div>
 	
-	<?php if ($errors->has('message')) : ?>
+	<?php if ($errors->count()): ?>
 		
 		<div class="notification is-danger is-light">
-            <?= $errors->first('message') ?>
-        </div>
-	
-	<?php endif; ?>
-	
-	
-	<?php if ($errors->first('auth.confirmation')) : ?>
-		
-		<div class="notification is-danger is-light">
-            <?= $errors->first('auth.confirmation') ?>
+           Invalid code provided.
         </div>
 	
 	<?php endif; ?>

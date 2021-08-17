@@ -6,6 +6,7 @@ namespace Snicco\Auth\Exceptions;
 
 use Throwable;
 use Snicco\Support\Str;
+use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Contracts\Bannable;
 use Snicco\Http\ResponseFactory;
@@ -25,8 +26,15 @@ class FailedAuthenticationException extends HttpException implements Bannable
         parent::__construct(302, $log_message, $previous);
     }
     
-    public function render(ResponseFactory $response_factory) :Response
+    public function render(Request $request, ResponseFactory $response_factory) :Response
     {
+        
+        if ($request->isExpectingJson()) {
+            
+            return $response_factory->json(['message' => $this->message_for_users]);
+            
+        }
+        
         return $response_factory->redirect()
                                 ->toRoute($this->redirect_to)
                                 ->withErrors(['login' => $this->message_for_users])

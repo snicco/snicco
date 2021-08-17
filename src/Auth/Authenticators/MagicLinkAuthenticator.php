@@ -29,7 +29,7 @@ class MagicLinkAuthenticator extends Authenticator
         if ( ! $request->filled('user_id')) {
             
             throw new FailedAuthenticationException(
-                "Failed Authentication with missing user_id param in magic link",
+                "Failed authentication with missing user_id param in magic link",
             );
             
         }
@@ -39,7 +39,7 @@ class MagicLinkAuthenticator extends Authenticator
         if ( ! $valid) {
             
             throw new FailedAuthenticationException(
-                "Failed Authentication with invalid magic-link for user [{{$request->query('user_id')}]",
+                "Failed authentication with invalid magic-link for user [{{$request->query('user_id')}]",
             );
             
         }
@@ -50,7 +50,7 @@ class MagicLinkAuthenticator extends Authenticator
         if ( ! $user instanceof WP_User) {
             
             throw new FailedAuthenticationException(
-                "Failed Authentication with magic-link for unresolvable user_id [{{$request->query('user_id')}]",
+                "Failed authentication with magic-link for unresolvable user_id [{{$request->query('user_id')}]",
             );
             
         }

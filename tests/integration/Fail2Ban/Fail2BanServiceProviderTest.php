@@ -96,7 +96,7 @@ class Fail2BanServiceProviderTest extends TestCase
         $this->loadRoutes();
         
         $handler = $this->resolveErrorHandler();
-        $e = new FailedAuthenticationException('Failed Authentication');
+        $e = new FailedAuthenticationException('Failed authentication');
         
         $handler->transformToResponse($e, $this->request->withAttribute('ip_address', '127.0.0.1'));
         
@@ -104,8 +104,8 @@ class Fail2BanServiceProviderTest extends TestCase
         $logger->assertLogOpenedWithPrefix('sniccowp');
         $logger->assertLogOpenedWithFlags(LOG_NDELAY | LOG_PID);
         $logger->assertLogOpenedForFacility(LOG_AUTH);
-        
-        $logger->assertLogEntry(LOG_WARNING, 'Failed Authentication from 127.0.0.1');
+    
+        $logger->assertLogEntry(LOG_WARNING, 'Failed authentication from 127.0.0.1');
     }
     
     private function resolveErrorHandler() :ProductionErrorHandler

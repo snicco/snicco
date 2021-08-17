@@ -28,6 +28,9 @@ class ConfirmedAuthSessionController extends Controller
         return $this->auth_confirmation->viewResponse($request);
     }
     
+    /**
+     * @throws FailedAuthConfirmationException
+     */
     public function store(Request $request) :Response
     {
         
