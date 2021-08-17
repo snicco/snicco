@@ -10,6 +10,7 @@
     use Tests\stubs\TestRequest;
     use Snicco\Session\SessionServiceProvider;
     use Snicco\Contracts\ErrorHandlerInterface;
+    use Snicco\Validation\ValidationServiceProvider;
     use Snicco\ExceptionHandling\ProductionErrorHandler;
     use Snicco\Validation\Exceptions\ValidationException;
 
@@ -21,6 +22,7 @@
         
             return [
                 SessionServiceProvider::class,
+                ValidationServiceProvider::class,
             ];
         }
     
