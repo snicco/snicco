@@ -4,49 +4,49 @@ declare(strict_types=1);
 
 namespace Snicco\Testing;
 
-use Codeception\TestCase\WPTestCase;
-use Illuminate\Container\Container;
-use Illuminate\Support\Facades\Facade;
-use Illuminate\Support\Str;
 use Mockery;
-use Mockery\Exception\InvalidCountException;
-use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestFactoryInterface;
 use RuntimeException;
-use Snicco\Application\Application;
-use Snicco\Application\Config;
-use Snicco\Contracts\AbstractRouteCollection;
-use Snicco\Contracts\ErrorHandlerInterface;
-use Snicco\Contracts\Middleware;
-use Snicco\Contracts\RouteRegistrarInterface;
-use Snicco\Contracts\ServiceProvider;
-use Snicco\Events\Event;
-use Snicco\ExceptionHandling\NullErrorHandler;
-use Snicco\Http\Delegate;
-use Snicco\Http\HttpKernel;
-use Snicco\Http\Psr7\Request;
-use Snicco\Routing\Route;
-use Snicco\Routing\RouteRegistrar;
-use Snicco\Session\Session;
-use Snicco\Session\SessionServiceProvider;
-use Snicco\Support\Arr;
 use Snicco\Support\WP;
-use Snicco\Testing\Concerns\InteractsWithAuthentication;
-use Snicco\Testing\Concerns\InteractsWithContainer;
-use Snicco\Testing\Concerns\InteractsWithMail;
-use Snicco\Testing\Concerns\InteractsWithSession;
-use Snicco\Testing\Concerns\InteractsWithWordpressUsers;
-use Snicco\Testing\Concerns\MakesHttpRequests;
+use Snicco\Support\Arr;
+use Snicco\Events\Event;
+use Snicco\Http\Delegate;
+use Snicco\Routing\Route;
+use Illuminate\Support\Str;
+use Snicco\Http\HttpKernel;
+use Snicco\Session\Session;
+use Snicco\Http\Psr7\Request;
+use Snicco\Application\Config;
+use Snicco\Contracts\Middleware;
+use Snicco\Routing\RouteRegistrar;
+use Illuminate\Container\Container;
+use Snicco\Application\Application;
+use Codeception\TestCase\WPTestCase;
+use Snicco\Contracts\ServiceProvider;
+use Illuminate\Support\Facades\Facade;
+use Psr\Http\Message\ResponseInterface;
 use Snicco\Testing\Concerns\TravelsTime;
+use Snicco\Session\SessionServiceProvider;
+use Snicco\Contracts\ErrorHandlerInterface;
+use Mockery\Exception\InvalidCountException;
+use Snicco\Contracts\AbstractRouteCollection;
+use Snicco\Contracts\RouteRegistrarInterface;
+use Snicco\ExceptionHandling\NullErrorHandler;
+use Snicco\Testing\Concerns\InteractsWithMail;
+use Snicco\Testing\Concerns\MakesHttpRequests;
+use Snicco\Testing\Concerns\InteractsWithSession;
+use Psr\Http\Message\ServerRequestFactoryInterface;
+use Snicco\Testing\Concerns\InteractsWithContainer;
+use Snicco\Testing\Concerns\InteractsWithAuthentication;
+use Snicco\Testing\Concerns\InteractsWithWordpressUsers;
 
 abstract class TestCase extends WPTestCase
 {
-	
-	use MakesHttpRequests;
-	use InteractsWithContainer;
-	use InteractsWithSession;
-	use InteractsWithAuthentication;
-	use InteractsWithWordpressUsers;
+    
+    use MakesHttpRequests;
+    use InteractsWithContainer;
+    use InteractsWithSession;
+    use InteractsWithAuthentication;
+    use InteractsWithWordpressUsers;
 	use InteractsWithMail;
 	use TravelsTime;
 	
@@ -419,7 +419,6 @@ abstract class TestCase extends WPTestCase
 	
 	protected function withRequest(Request $request) :TestCase
 	{
-		
 		$this->request = $request;
 		
 		return $this;
