@@ -73,7 +73,7 @@ class ProductionErrorHandlerTest extends UnitTest
         
         $this->assertInstanceOf(Response::class, $response);
         $this->assertOutput(
-            'VIEW:500,CONTEXT:[status_code=>500,message=>Internal Server Error]',
+            'VIEW:500,CONTEXT:[status_code=>500,message=>Something went wrong.]',
             $response
         );
         $this->assertStatusCode(500, $response);
@@ -93,7 +93,7 @@ class ProductionErrorHandlerTest extends UnitTest
         
         Event::assertDispatched(UnrecoverableExceptionHandled::class);
         $this->expectOutputString(
-            'VIEW:500,CONTEXT:[status_code=>500,message=>Internal Server Error]'
+            'VIEW:500,CONTEXT:[status_code=>500,message=>Something went wrong.]'
         );
         
     }
@@ -112,7 +112,7 @@ class ProductionErrorHandlerTest extends UnitTest
         $this->assertStatusCode(500, $response);
         $this->assertContentType('application/json', $response);
         $this->assertSame(
-            ['message' => 'Internal Server Error'],
+            ['message' => 'Something went wrong.'],
             json_decode($response->getBody()->__toString(), true)
         );
         Event::assertNotDispatched(UnrecoverableExceptionHandled::class);
@@ -135,7 +135,7 @@ class ProductionErrorHandlerTest extends UnitTest
         Event::assertDispatched(UnrecoverableExceptionHandled::class);
         HeaderStack::assertHasStatusCode(500);
         HeaderStack::assertHas('Content-Type', 'application/json');
-        $this->expectOutputString(json_encode(['message' => 'Internal Server Error']));
+        $this->expectOutputString(json_encode(['message' => 'Something went wrong.']));
         
     }
     
@@ -152,7 +152,7 @@ class ProductionErrorHandlerTest extends UnitTest
         $this->assertStatusCode(500, $response);
         $this->assertContentType('text/html', $response);
         $this->assertOutput(
-            'VIEW:500,CONTEXT:[status_code=>500,message=>Internal Server Error]',
+            'VIEW:500,CONTEXT:[status_code=>500,message=>Something went wrong.]',
             $response
         );
         
@@ -264,7 +264,7 @@ class ProductionErrorHandlerTest extends UnitTest
         $this->assertStatusCode(500, $response);
         $this->assertContentType('text/html', $response);
         $this->assertOutput(
-            'VIEW:500,CONTEXT:[status_code=>500,message=>Internal Server Error]',
+            'VIEW:500,CONTEXT:[status_code=>500,message=>Something went wrong.]',
             $response
         );
         

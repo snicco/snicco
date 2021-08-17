@@ -7,8 +7,6 @@ namespace Snicco\ExceptionHandling;
 use Closure;
 use Throwable;
 use Snicco\Support\WP;
-use Snicco\Support\Arr;
-use Psr\Log\LoggerInterface;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Contracts\ContainerAdapter;
@@ -18,7 +16,7 @@ use Snicco\Traits\HandlesExceptions;
 use Snicco\Contracts\ErrorHandlerInterface;
 use Illuminate\Support\Traits\ReflectsClosures;
 use Snicco\Events\UnrecoverableExceptionHandled;
-use Snicco\Validation\Exceptions\ValidationException;
+use Psr\Log\LoggerInterface as Psr3LoggerInterface;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
 
 class ProductionErrorHandler implements ErrorHandlerInterface
@@ -27,12 +25,11 @@ class ProductionErrorHandler implements ErrorHandlerInterface
     use ReflectsClosures;
     use HandlesExceptions;
     
-    protected ContainerAdapter $container;
-    protected LoggerInterface  $logger;
-    protected ResponseFactory  $response;
-    protected array            $dont_report = [];
-    protected array            $dont_flash = [];
-    protected string           $fallback_error_message = 'Internal Server Error';
+    protected ContainerAdapter    $container;
+    protected Psr3LoggerInterface $logger;
+    protected ResponseFactory     $response_factory;
+    protected array               $dont_report = [];
+    protected array               $dont_flash  = [];
     
     /**
      * @var Closure[]
@@ -46,12 +43,12 @@ class ProductionErrorHandler implements ErrorHandlerInterface
     
     public function __construct(
         ContainerAdapter $container,
-        LoggerInterface $logger,
+        Psr3LoggerInterface $logger,
         ResponseFactory $response_factory
     ) {
         $this->container = $container;
         $this->logger = $logger;
-        $this->response = $response_factory;
+        $this->response_factory = $response_factory;
         
         $this->registerCallbacks();
         
@@ -88,18 +85,20 @@ class ProductionErrorHandler implements ErrorHandlerInterface
     
     public function handleException($e, $in_routing_flow = false, ?Request $request = null)
     {
-        
+    
+        $request ??= $this->resolveRequestFromContainer();
+    
         $this->logException($e, $request);
-        
-        $response = $this->convertToResponse($e, $request ?? $this->resolveRequestFromContainer());
-        
+    
+        $response_factory = $this->convertToResponse($e, $request);
+    
         if ($in_routing_flow) {
-            
-            return $response;
-            
-        }
         
-        (new ResponseEmitter())->emit($response);
+            return $response_factory;
+        
+        }
+    
+        (new ResponseEmitter())->emit($response_factory);
         
         // Shuts down the script if not running unit tests.
         UnrecoverableExceptionHandled::dispatch();
@@ -117,10 +116,8 @@ class ProductionErrorHandler implements ErrorHandlerInterface
     }
     
     /**
-     * Override this method from a child class to create
-     * your own globalContext.
-     *
-     * @return array
+     * Override this method from a child class to create global context
+     * that should be added to every log entry.
      */
     protected function globalContext() :array
     {
@@ -147,41 +144,31 @@ class ProductionErrorHandler implements ErrorHandlerInterface
      */
     protected function toHttpException(Throwable $e, Request $request) :HttpException
     {
-        
-        $e = new HttpException(500, $e->getMessage(), $e);
-        $e->withMessageForUsers($this->fallback_error_message);
-        return $e;
-        
+        return new HttpException(500, $e->getMessage(), $e);
     }
     
     private function convertToResponse(Throwable $e, Request $request) :Response
     {
         
         foreach ($this->custom_renderers as $custom_renderer) {
-            
+    
             $exception_type = $this->firstClosureParameterType($custom_renderer);
-            
+    
             if ( ! $e instanceof $exception_type) {
                 continue;
             }
-            
-            $response = $custom_renderer($e, $request, $this->response);
-            
-            if ($response instanceof Response) {
-                return $response;
+    
+            $response_factory = $custom_renderer($e, $request, $this->response_factory);
+    
+            if ($response_factory instanceof Response) {
+                return $response_factory;
             }
-            
+    
         }
         
         if (method_exists($e, 'render')) {
             
             return $this->renderableException($e, $request);
-            
-        }
-        
-        if ($e instanceof ValidationException) {
-            
-            return $this->renderValidationException($e, $request);
             
         }
         
@@ -256,60 +243,32 @@ class ProductionErrorHandler implements ErrorHandlerInterface
     {
         
         if ($request->isExpectingJson()) {
-            
-            return $this->response->json(
+    
+            return $this->response_factory->json(
                 ['message' => $http_exception->getJsonMessage()],
                 $http_exception->httpStatusCode()
             );
             
         }
-        
-        return $this->response->error($http_exception, $request);
-        
-    }
     
-    private function renderValidationException(ValidationException $e, Request $request)
-    {
-        
-        if ($request->isExpectingJson()) {
-            
-            return $this->response->json([
-                
-                'message' => $e->getJsonMessage(),
-                'errors' => $e->errorsAsArray(),
-            
-            ], $e->httpStatusCode());
-            
-        }
-        
-        $response = $this->response->redirect()->previous();
-        
-        // It's possible to use the validation extension without the session extension.
-        if ( ! $response->hasSession()) {
-            
-            return $response;
-            
-        }
-        
-        return $response->withErrors($e->messages(), $e->namedBag())
-            ->withInput(Arr::except($request->input(), $this->dont_flash));
+        return $this->response_factory->error($http_exception, $request);
         
     }
     
     private function renderableException(Throwable $e, Request $request) :Response
     {
-        
-        /** @var Response $response */
-        $response = $this->container->call([$e, 'render'], ['request' => $request]);
-        
+    
+        /** @var Response $response_factory */
+        $response_factory = $this->container->call([$e, 'render'], ['request' => $request]);
+    
         // User did not provide a valid response from the callback.
-        if ( ! $response instanceof Response) {
-            
-            return $this->renderHttpException(new HttpException(500, $e->getMessage()), $request);
-            
-        }
+        if ( ! $response_factory instanceof Response) {
         
-        return $response;
+            return $this->renderHttpException(new HttpException(500, $e->getMessage()), $request);
+        
+        }
+    
+        return $response_factory;
     }
     
 }
