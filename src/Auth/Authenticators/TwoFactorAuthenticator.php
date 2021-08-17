@@ -48,7 +48,7 @@ class TwoFactorAuthenticator extends Authenticator
         
         if ( ! $valid) {
             throw new FailedTwoFactorAuthenticationException(
-                "Failed Two-factor Authentication with invalid code for user [$user_id]",
+                "Failed two-factor authentication with invalid code for user [$user_id]",
             );
         }
         

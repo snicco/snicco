@@ -118,7 +118,7 @@ class TwoFactorAuthConfirmationTest extends AuthTestCase
         ]);
         
         $response->assertRedirectToRoute('auth.confirm');
-        $response->assertSessionHasErrors(['auth.confirmation' => 'Invalid code provided.']);
+        $response->assertSessionHasErrors('auth.confirmation');
         $this->assertFalse($response->session()->hasValidAuthConfirmToken());
         
     }
@@ -205,7 +205,6 @@ class TwoFactorAuthConfirmationTest extends AuthTestCase
     /** @test */
     public function errors_are_rendered_in_the_view()
     {
-        
         $this->followingRedirects();
         $this->authenticateAndUnconfirm($calvin = $this->createAdmin());
         $this->generateTestSecret($calvin);

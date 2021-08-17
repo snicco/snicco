@@ -8,7 +8,6 @@ use WP_User;
 use Snicco\Http\Delegate;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\Middleware;
-use Snicco\Http\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Contracts\ResponseableInterface;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
@@ -22,10 +21,7 @@ abstract class Authenticator extends Middleware
      * @param  Delegate  $next  This class can be called as a closure. $next($request)
      *
      * @return SuccessfulLoginResponse|ResponseInterface|string|array|ResponseableInterface
-     * SuccessfulLoginResponse if authentication was successful | Anything that can be transformed
-     *     to a response otherwise
      * @throws FailedAuthenticationException
-     * @see ResponseFactory::toResponse()
      */
     abstract public function attempt(Request $request, $next);
     

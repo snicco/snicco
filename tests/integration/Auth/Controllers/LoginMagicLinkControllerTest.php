@@ -74,7 +74,7 @@
             } catch (FailedAuthenticationException $exception) {
             
                 $this->assertStringStartsWith(
-                    'Failed Authentication attempt generating a logic link for invalid user_login [bogus]',
+                    'Failed authentication attempt generating a logic link for invalid user_login [bogus]',
                     $exception->fail2BanMessage()
                 );
             

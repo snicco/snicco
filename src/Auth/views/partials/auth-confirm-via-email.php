@@ -32,7 +32,7 @@
                 Authentication failed.
             </p>
             <p class="is-size-5 mt-2">
-                <?= esc_html($errors->first('auth.confirmation')) ?>
+                Your confirmation link was invalid or expired. Please request a new one.
             </p>
         </div>
 	

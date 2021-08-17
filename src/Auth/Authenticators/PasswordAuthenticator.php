@@ -12,7 +12,6 @@ use Snicco\Auth\Exceptions\FailedAuthenticationException;
 
 class PasswordAuthenticator extends Authenticator
 {
-    
     use ResolvesUser;
     
     public function attempt(Request $request, $next)

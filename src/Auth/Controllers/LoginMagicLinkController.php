@@ -28,7 +28,7 @@ class LoginMagicLinkController extends Controller
             $request->session()->flash('login.link.processed', true);
             
             throw new FailedAuthenticationException(
-                "Failed Authentication attempt generating a logic link for invalid user_login [$login]",
+                "Failed authentication attempt generating a logic link for invalid user_login [$login]",
                 [],
                 'auth.login'
             );

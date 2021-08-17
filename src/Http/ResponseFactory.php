@@ -184,9 +184,8 @@
             return new InvalidResponse($this->response_factory->createResponse(500));
         }
 
-        public function noContent() : ResponseInterface
+        public function noContent() :Response
         {
-
             return $this->make(204);
         }
 

@@ -6,11 +6,12 @@
 
     namespace Tests\integration\Auth\Controllers;
 
-    use Snicco\Auth\Contracts\AuthConfirmation;
+    use Tests\AuthTestCase;
     use Snicco\Events\Event;
     use Snicco\Http\Psr7\Request;
+    use Snicco\Auth\Contracts\AuthConfirmation;
     use Snicco\Session\Events\SessionRegenerated;
-    use Tests\AuthTestCase;
+    use Snicco\Auth\Exceptions\FailedAuthConfirmationException;
 
     class ConfirmedAuthSessionControllerTest extends AuthTestCase
     {
@@ -65,44 +66,86 @@
         /** @test */
         public function invalid_auth_confirmation_does_not_work()
         {
-
+    
             $this->authenticateAndUnconfirm($this->createAdmin());
             $token = $this->withCsrfToken();
-
-            $response = $this->post($this->endpoint, $token + [
+    
+            $response = $this->post(
+                $this->endpoint,
+                $token + [
                     'secret' => 'bogus',
-                ]);
-
+                ]
+            );
+    
             $response->assertRedirectToRoute('auth.confirm');
-            $response->assertSessionHasErrors([
-                'message' => '[Test] Invalid auth confirmation',
-            ]);
-
-
+            $response->assertSessionHasErrors('auth.confirmation');
+            $this->assertFalse($response->session()->hasValidAuthConfirmToken());
+    
         }
 
         /** @test */
         public function invalid_auth_confirmation_does_not_work_json()
         {
-
+        
             $this->authenticateAndUnconfirm($this->createAdmin());
             $token = $this->withCsrfToken();
-
-            $response = $this->post($this->endpoint, $token + [
+        
+            $response = $this->post(
+                $this->endpoint,
+                $token + [
                     'secret' => 'bogus',
-                ], ['Accept' => 'application/json']);
-
-            $response->assertStatus(401)->assertExactJson([
-                'message' => 'Confirmation failed.',
-            ]);
-
-
+                ],
+                ['Accept' => 'application/json']
+            );
+        
+            $response->assertStatus(200)
+                     ->assertExactJson(
+                         ['message' => 'We could not authenticate you with the provided credentials.']
+                     );
+        
+            $this->assertFalse($response->session()->hasValidAuthConfirmToken());
+        
         }
-
+    
+        /** @test */
+        public function the_appropriate_exception_is_thrown_on_failure()
+        {
+        
+            $this->withoutExceptionHandling();
+            $this->authenticateAndUnconfirm($this->createAdmin());
+            $token = $this->withCsrfToken();
+        
+            $exception_caught = false;
+        
+            try {
+            
+                $response = $this->post(
+                    $this->endpoint,
+                    $token + [
+                        'secret' => 'bogus',
+                    ]
+                );
+            
+            } catch (FailedAuthConfirmationException $exception) {
+            
+                $exception_caught = true;
+            
+                $this->assertStringStartsWith(
+                    'Failed auth confirmation',
+                    $exception->fail2BanMessage()
+                );
+            
+            }
+        
+            $this->assertTrue($exception_caught);
+            $this->assertFalse($this->session->hasValidAuthConfirmToken());
+        
+        }
+    
         /** @test */
         public function auth_can_be_confirmed()
         {
-
+        
             Event::fake([SessionRegenerated::class]);
             $this->authenticateAndUnconfirm($this->createAdmin());
             $token = $this->withCsrfToken();
@@ -175,20 +218,17 @@
 
     class TestAuthConfirmation implements AuthConfirmation
     {
-
-
-        public function confirm(Request $request)
+    
+        public function confirm(Request $request) :bool
         {
-
+        
             if ($request->input('secret') === 'bypass') {
-
+            
                 return true;
-
+            
             }
-
-            return [
-                'message' => '[Test] Invalid auth confirmation',
-            ];
+        
+            return false;
 
         }
 
