@@ -38,11 +38,12 @@ trait MakesHttpRequests
     protected array $default_headers          = [];
     protected array $default_cookies          = [];
     protected array $default_server_variables = [];
+    protected array $default_attributes       = [];
     private bool    $with_trailing_slash      = false;
     private bool    $without_trailing_slash   = false;
     private bool    $follow_redirects         = false;
     
-    public function frontendRequest(string $method, $uri) :Request
+    public function frontendRequest(string $method = 'GET', $uri = '/') :Request
     {
         
         $method = strtoupper($method);
@@ -173,6 +174,17 @@ trait MakesHttpRequests
         $this->follow_redirects = true;
         
         return $this;
+    }
+    
+    public function fromIpAddress(string $ip) :self
+    {
+        $this->default_attributes['ip_address'] = $ip;
+        return $this;
+    }
+    
+    public function fromLocalhost() :self
+    {
+        return $this->fromIpAddress('127.0.0.1');
     }
     
     /**
@@ -364,10 +376,23 @@ trait MakesHttpRequests
     
     protected function addCookies(Request $request) :Request
     {
-        
+    
         foreach ($this->default_cookies as $name => $value) {
-            
+        
             $request = $request->withAddedHeader('Cookie', "$name=$value");
+        
+        }
+    
+        return $request;
+    
+    }
+    
+    protected function addAttributes(Request $request) :Request
+    {
+        
+        foreach ($this->default_attributes as $attribute => $value) {
+            
+            $request = $request->withAttribute($attribute, $value);
             
         }
         
@@ -401,6 +426,7 @@ trait MakesHttpRequests
         
         $request = $this->addHeaders($request, $headers);
         $request = $this->addCookies($request);
+        $request = $this->addAttributes($request);
         
         $this->withRequest($request);
         
@@ -490,15 +516,17 @@ trait MakesHttpRequests
     
     private function followRedirects(Response $response)
     {
-        
+    
         $this->follow_redirects = false;
-        
+    
+        /** @todo transform to test response if no redirect here. */
+    
         while ($response->isRedirect()) {
             $response = $this->get($response->getHeaderLine('Location'));
         }
-        
+    
         return $response;
-        
+    
     }
     
 }

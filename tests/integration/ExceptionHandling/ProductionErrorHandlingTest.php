@@ -6,8 +6,8 @@
 
     namespace Tests\integration\ExceptionHandling;
 
-    use Snicco\ExceptionHandling\ProductionErrorHandler;
     use Tests\TestCase;
+    use Snicco\ExceptionHandling\ProductionErrorHandler;
 
     /** @see ProductionErrorHandler */
     class ProductionErrorHandlingTest extends TestCase
@@ -71,9 +71,9 @@
         /** @test */
         public function errors_that_can_not_be_converted_to_any_at_all_are_rendered_with_the_default_error_view()
         {
-
+    
             $response = $this->get('/error/fatal');
-            $response->assertSee('VIEW:error.php,STATUS:500,MESSAGE:Internal Server Error');
+            $response->assertSee('VIEW:error.php,STATUS:500,MESSAGE:Something went wrong.');
             $response->assertStatus(500);
             $response->assertIsHtml();
 

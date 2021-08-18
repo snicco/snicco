@@ -6,24 +6,24 @@
 
     namespace Snicco\Contracts;
 
-    use Contracts\ContainerAdapter;
-    use Snicco\Application\Application;
-    use Snicco\Application\Config;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Http\ResponseFactory;
-    use Snicco\Session\SessionServiceProvider;
-    use Snicco\Support\Arr;
-    use Snicco\Support\Str;
     use Snicco\Support\WP;
+    use Snicco\Support\Str;
+    use Snicco\Support\Arr;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Application\Config;
+    use Contracts\ContainerAdapter;
+    use Snicco\Http\ResponseFactory;
+    use Snicco\Application\Application;
+    use Snicco\Session\SessionServiceProvider;
 
     abstract class ServiceProvider
     {
-
+    
         protected ContainerAdapter $container;
-        protected Config $config;
-        protected Application $app;
-        protected ResponseFactory $response_factory;
-        protected ?Request $current_request = null;
+        protected Config           $config;
+        protected Application      $app;
+        protected ?ResponseFactory $response_factory = null;
+        protected ?Request         $current_request  = null;
 
         public function __construct(ContainerAdapter $container_adapter, Config $config)
         {

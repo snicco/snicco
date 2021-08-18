@@ -7,10 +7,7 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use Tests\stubs\HeaderStack;
     use Tests\stubs\TestApp;
-    use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
-    use Snicco\Support\Url;
 
     use function get_user_by;
     use function wp_check_password;
@@ -103,8 +100,7 @@
         /** @test */
         public function passwords_must_be_at_least_12_characters()
         {
-
-
+    
             $calvin = $this->createAdmin();
             $token = $this->withCsrfToken();
 

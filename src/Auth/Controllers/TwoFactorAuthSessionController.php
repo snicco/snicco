@@ -18,7 +18,6 @@ class TwoFactorAuthSessionController extends Controller
     
     public function __construct(EncryptorInterface $encryptor)
     {
-        
         $this->encryptor = $encryptor;
     }
     

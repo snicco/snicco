@@ -5,13 +5,17 @@ declare(strict_types=1);
 namespace Tests\integration\Auth\Authenticators;
 
 use Tests\AuthTestCase;
+use Snicco\Events\Event;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
+use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Auth\Traits\ResolvesUser;
+use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Snicco\Auth\Contracts\Authenticator;
 use Snicco\Contracts\EncryptorInterface;
 use Snicco\Auth\Middleware\AuthenticateSession;
 use Snicco\Auth\Contracts\TwoFactorChallengeResponse;
+use Snicco\Auth\Events\FailedTwoFactorAuthentication;
 use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
 use Tests\integration\Auth\Stubs\TestTwoFactorProvider;
 use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
@@ -24,18 +28,20 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
 	{
 		
 		$this->afterLoadingConfig(function() {
-			
-			$this->with2Fa();
-			
-			$this->withReplacedConfig('auth.through',
-			                          [
-				                          TwoFactorAuthenticator::class,
-				                          RedirectIf2FaAuthenticable::class,
-				                          TestAuthenticator::class,
-			                          ]
-			);
-			
-		});
+            
+            $this->with2Fa();
+            
+            $this->withReplacedConfig('auth.through',
+                [
+                    TwoFactorAuthenticator::class,
+                    RedirectIf2FaAuthenticable::class,
+                    TestAuthenticator::class,
+                ]
+            );
+            
+            $this->withAddedConfig('auth.fail2ban.enabled', true);
+            
+        });
 		
 		$this->afterApplicationCreated(function() {
 			
@@ -126,29 +132,61 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
 	/** @test */
 	public function a_user_cant_login_with_an_invalid_one_time_code()
 	{
-		
-		$calvin = $this->createAdmin();
+        
+        Event::fake();
+        $calvin = $this->createAdmin();
 		$this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
-		$this->generateTestSecret($calvin);
-		$this->enable2Fa($calvin);
-		
-		$response = $this->post('/auth/login', [
-			'one-time-code' => $this->invalid_one_time_code,
-		]);
-		
-		$response->assertRedirectToRoute('auth.2fa.challenge');
-		$this->assertNotAuthenticated($calvin);
-		
-	}
-	
-	/** @test */
-	public function a_user_can_login_with_a_valid_one_time_code()
-	{
-		
-		$calvin = $this->createAdmin();
-		$this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
-		$this->generateTestSecret($calvin);
-		$this->enable2Fa($calvin);
+        $this->generateTestSecret($calvin);
+        $this->enable2Fa($calvin);
+        
+        $response = $this->post('/auth/login', [
+            'one-time-code' => $this->invalid_one_time_code,
+        ]);
+        
+        $response->assertRedirectToRoute('auth.2fa.challenge');
+        $response->assertSessionHasErrors('login');
+        $this->assertNotAuthenticated($calvin);
+        Event::assertDispatched(
+            fn(FailedTwoFactorAuthentication $event) => $event->userId() === $calvin->ID
+        );
+        
+    }
+    
+    /** @test */
+    public function a_failed_login_will_be_recorded_with_fail2ban()
+    {
+        
+        $this->swap(Syslogger::class, $logger = new TestSysLogger());
+        
+        $this->default_attributes = ['ip_address' => '127.0.0.1'];
+        $calvin = $this->createAdmin();
+        $this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
+        $this->generateTestSecret($calvin);
+        $this->enable2Fa($calvin);
+        
+        $response = $this->post('/auth/login', [
+            'one-time-code' => $this->invalid_one_time_code,
+        ]);
+        
+        $response->assertRedirectToRoute('auth.2fa.challenge');
+        $response->assertSessionHasErrors('login');
+        $this->assertNotAuthenticated($calvin);
+        
+        $logger->assertLogEntry(
+            E_WARNING,
+            "Failed two-factor authentication for user [$calvin->ID] from 127.0.0.1"
+        );
+        
+    }
+    
+    /** @test */
+    public function a_user_can_login_with_a_valid_one_time_code()
+    {
+        
+        $calvin = $this->createAdmin();
+        $this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
+        $this->generateTestSecret($calvin);
+        $this->enable2Fa($calvin);
 		
 		$response = $this->post('/auth/login', [
 			'one-time-code' => $this->valid_one_time_code,
@@ -161,18 +199,20 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
 	
 	/** @test */
 	public function the_user_can_log_in_with_a_valid_recovery_codes()
-	{
-		
-		$calvin = $this->createAdmin();
-		$this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
-		$this->enable2Fa($calvin);
-		
-		$codes = $this->generateTestRecoveryCodes();
-		update_user_meta(
-			$calvin->ID,
-			'two_factor_recovery_codes',
-			$this->encryptor->encrypt(json_encode($codes))
-		);
+    {
+        
+        $this->withoutExceptionHandling();
+        
+        $calvin = $this->createAdmin();
+        $this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
+        $this->enable2Fa($calvin);
+        
+        $codes = $this->generateTestRecoveryCodes();
+        update_user_meta(
+            $calvin->ID,
+            'two_factor_recovery_codes',
+            $this->encryptor->encrypt(json_encode($codes))
+        );
 		$this->generateTestSecret($calvin);
 		
 		$response = $this->post('/auth/login', [

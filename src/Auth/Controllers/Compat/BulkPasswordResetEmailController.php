@@ -4,24 +4,25 @@
     declare(strict_types = 1);
 
 
-    namespace Snicco\Auth\Controllers;
+    namespace Snicco\Auth\Controllers\Compat;
 
-    use Snicco\Auth\Traits\SendsPasswordResetMails;
-    use Snicco\ExceptionHandling\Exceptions\AuthorizationException;
+    use Snicco\Support\WP;
+    use Snicco\Support\Arr;
     use Snicco\Http\Controller;
+    use Snicco\Mail\MailBuilder;
     use Snicco\Http\Psr7\Request;
     use Snicco\Http\Responses\RedirectResponse;
-    use Snicco\Mail\MailBuilder;
-    use Snicco\Support\Arr;
-    use Snicco\Support\WP;
+    use Snicco\Auth\Traits\SendsPasswordResetMails;
+    use Snicco\ExceptionHandling\Exceptions\AuthorizationException;
+
+    use function get_userdata;
+    use function check_admin_referer;
 
     /**
      * This Controller performs the same logic that happens inside user.php
      * when password reset emails ar sent from the admin interface.
-     *
      * This Controller sends password reset emails that are compatible with the Auth Package by
      * creating a signed link to the password reset route.
-     *
      */
     class BulkPasswordResetEmailController extends Controller
     {
@@ -78,7 +79,6 @@
                 if ($success) {
                     $reset_count++;
                 }
-
 
             }
 
