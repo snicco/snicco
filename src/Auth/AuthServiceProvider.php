@@ -366,21 +366,27 @@ class AuthServiceProvider extends ServiceProvider
         $this->config->extend('auth.fail2ban.facility', LOG_AUTH);
         $this->config->extend('auth.fail2ban.flags', LOG_NDELAY | LOG_PID);
         $this->config->extend('events.listeners', [
+    
             FailedPasswordResetLinkRequest::class => [
                 [Fail2Ban::class, 'report'],
             ],
+    
             FailedMagicLinkAuthentication::class => [
                 [Fail2Ban::class, 'report'],
             ],
+    
             FailedPasswordAuthentication::class => [
                 [Fail2Ban::class, 'report'],
             ],
+    
             FailedTwoFactorAuthentication::class => [
                 [Fail2Ban::class, 'report'],
             ],
+    
             FailedLoginLinkCreationRequest::class => [
                 [Fail2Ban::class, 'report'],
             ],
+    
             FailedAuthConfirmation::class => [
                 [Fail2Ban::class, 'report'],
             ],
