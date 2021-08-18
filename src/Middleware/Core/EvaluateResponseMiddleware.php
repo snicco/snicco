@@ -6,21 +6,20 @@
 
     namespace Snicco\Middleware\Core;
 
-    use Psr\Http\Message\ResponseInterface;
-    use Snicco\Contracts\Middleware;
-    use Snicco\ExceptionHandling\Exceptions\InvalidResponseException;
-    use Snicco\ExceptionHandling\Exceptions\NotFoundException;
     use Snicco\Http\Delegate;
     use Snicco\Http\Psr7\Request;
-    use Snicco\Http\Responses\InvalidResponse;
+    use Snicco\Contracts\Middleware;
+    use Psr\Http\Message\ResponseInterface;
     use Snicco\Http\Responses\NullResponse;
-    use Snicco\Http\Responses\WpQueryFilteredResponse;
+    use Snicco\Http\Responses\InvalidResponse;
+    use Snicco\ExceptionHandling\Exceptions\NotFoundException;
+    use Snicco\ExceptionHandling\Exceptions\InvalidResponseException;
 
     class EvaluateResponseMiddleware extends Middleware
     {
-
+    
         private bool $must_match_current_request;
-
+    
         public function __construct(bool $must_match_current_request = false)
         {
             $this->must_match_current_request = $must_match_current_request;
@@ -44,14 +43,6 @@
                 throw new InvalidResponseException(
                     "Invalid response returned by the route for path [{$request->fullPath()}]."
                 );
-
-            }
-
-            // A route matched but the developer decided that he just wants to alter the main
-            // wp query and let the WP template engine figure out what to load.
-            if ($response instanceof WpQueryFilteredResponse) {
-
-                return $response;
 
             }
 

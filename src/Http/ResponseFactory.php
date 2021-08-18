@@ -15,7 +15,6 @@ use Snicco\Http\Responses\InvalidResponse;
 use Snicco\Contracts\ResponseableInterface;
 use Snicco\Http\Responses\RedirectResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Snicco\Http\Responses\WpQueryFilteredResponse;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
 use Snicco\ExceptionHandling\Exceptions\ViewException;
 use Snicco\Contracts\ViewFactoryInterface as ViewFactory;
@@ -95,16 +94,7 @@ class ResponseFactory implements ResponseFactoryInterface
     
     public function null() :NullResponse
     {
-        
         return new NullResponse($this->response_factory->createResponse(204));
-        
-    }
-    
-    public function queryFiltered() :WpQueryFilteredResponse
-    {
-        
-        return new WpQueryFilteredResponse($this->response_factory->createResponse(200));
-        
     }
     
     public function toResponse($response) :Response
@@ -163,7 +153,9 @@ class ResponseFactory implements ResponseFactoryInterface
         
     }
     
-    /** NOTE: no formatting is performed on the path. */
+    /**
+     * @note no formatting is performed on the path.
+     */
     public function permanentRedirectTo(string $path) :RedirectResponse
     {
         return $this->redirector->createRedirectResponse($path, 301);
@@ -219,9 +211,7 @@ class ResponseFactory implements ResponseFactoryInterface
     
     public function setFallbackErrorMessage(string $message)
     {
-        
         $this->unrecoverable_error_message = $message;
-        
     }
     
     /**
