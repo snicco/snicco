@@ -1,6 +1,6 @@
 <?php
 
-namespace Snicco\Fail2Ban\Contracts;
+namespace Snicco\Auth\Fail2Ban;
 
 interface Syslogger
 {

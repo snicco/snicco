@@ -7,8 +7,8 @@
     namespace Tests\integration\Auth\Controllers;
 
     use Tests\AuthTestCase;
-    use Snicco\Auth\Contracts\RegistrationViewResponse;
     use Snicco\Auth\Mail\ConfirmRegistrationEmail;
+    use Snicco\Auth\Contracts\RegistrationViewResponse;
 
     class RegistrationLinkControllerTest extends AuthTestCase
     {
@@ -69,9 +69,8 @@
         /** @test */
         public function a_link_cant_be_requested_with_invalid_email()
         {
-
+    
             $response = $this->post('/auth/register', ['email' => 'bogus.de'], ['referer' => '/auth/register']);
-
             $response->assertRedirect('/auth/register')->assertSessionHasErrors('email');
 
         }

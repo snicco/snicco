@@ -56,7 +56,7 @@ class AccountController extends Controller
         if ( ! $this->canUserPerformDelete($allowed_roles, $request->user(), $user_id)) {
             
             throw new AuthorizationException(
-                'Account deletion attempt with insufficient permissions.'
+                "Account deletion attempt with insufficient permissions for user_id [$user_id]"
             );
             
         }

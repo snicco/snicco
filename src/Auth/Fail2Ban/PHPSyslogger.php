@@ -1,8 +1,6 @@
 <?php
 
-namespace Snicco\Fail2Ban;
-
-use Snicco\Fail2Ban\Contracts\Syslogger;
+namespace Snicco\Auth\Fail2Ban;
 
 class PHPSyslogger implements Syslogger
 {

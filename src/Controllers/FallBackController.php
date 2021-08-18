@@ -7,23 +7,20 @@
     namespace Snicco\Controllers;
 
     use Closure;
+    use Snicco\Routing\Route;
+    use Snicco\Http\Controller;
+    use Snicco\Routing\Pipeline;
+    use Snicco\Http\Psr7\Request;
+    use Snicco\Middleware\MiddlewareStack;
+    use Snicco\Http\Responses\NullResponse;
     use Psr\Http\Message\ResponseInterface;
     use Snicco\Contracts\AbstractRouteCollection as Routes;
-    use Snicco\Http\Controller;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Http\Responses\NullResponse;
-    use Snicco\Middleware\MiddlewareStack;
-    use Snicco\Routing\Pipeline;
-    use Snicco\Routing\Route;
 
     /**
-     *
-     * This class is the default route driver for ALL routes that
+     * This class is the default route handler for ALL routes that
      * do not have a URL-Constraint specified but instead rely on WordPress conditional tags.
-     *
      * We can't match these routes with FastRoute so this Controller will figure out if we
      * have a matching route.
-     *
      */
     class FallBackController extends Controller
     {
@@ -50,8 +47,8 @@
             /** @var Route $route */
             $route = $possible_routes->first(function (Route $route) use ($request) {
 
-                $route->instantiateConditions();
-
+                $route->instantiateConditions()->satisfiedBy($request);
+    
                 return $route->satisfiedBy($request);
 
             });

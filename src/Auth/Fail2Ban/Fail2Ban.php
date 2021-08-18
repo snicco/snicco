@@ -1,11 +1,10 @@
 <?php
 
-namespace Snicco\Fail2Ban;
+namespace Snicco\Auth\Fail2Ban;
 
 use RuntimeException;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\Bannable;
-use Snicco\Fail2Ban\Contracts\Syslogger;
+
+use function apply_filters;
 
 class Fail2Ban
 {
@@ -19,7 +18,7 @@ class Fail2Ban
         $this->config = $config;
     }
     
-    public function report(Bannable $bannable, Request $request)
+    public function report(Bannable $event)
     {
         $opened = $this->syslogger->open(
             $this->config['daemon'],
@@ -31,18 +30,17 @@ class Fail2Ban
             throw new RuntimeException("Failed to open syslog");
         }
         
-        $this->syslogger->log($bannable->priority(), $this->formatMessage($bannable, $request));
+        $this->syslogger->log($event->priority(), $this->formatMessage($event));
     }
     
-    private function formatMessage(Bannable $bannable, Request $request)
+    private function formatMessage(Bannable $event)
     {
         $message = apply_filters(
             'sniccowp_fail2ban_message',
-            $bannable->fail2BanMessage(),
-            $bannable,
-            $request
+            $event->fail2BanMessage(),
+            $event,
         );
-        return "{$message} from {$request->getAttribute('ip_address')}";
+        return "{$message} from {$event->request()->getAttribute('ip_address')}";
         
     }
     

@@ -9,20 +9,13 @@
     use Tests\AuthTestCase;
     use Snicco\Events\Event;
     use Tests\stubs\TestApp;
+    use Snicco\Auth\Fail2Ban\Syslogger;
     use Snicco\Auth\Mail\ResetPasswordMail;
-    use Snicco\Fail2Ban\Contracts\Syslogger;
-    use Snicco\Auth\Events\FailedPasswordReset;
-    use Snicco\Fail2Ban\Fail2BanServiceProvider;
-    use Tests\integration\Fail2Ban\TestSysLogger;
+    use Snicco\Auth\Fail2Ban\TestSysLogger;
+    use Snicco\Auth\Events\FailedPasswordResetLinkRequest;
 
     class ForgotPasswordControllerTest extends AuthTestCase
     {
-    
-        public function packageProviders() :array
-        {
-            $parent = parent::packageProviders();
-            return array_merge($parent, [Fail2BanServiceProvider::class]);
-        }
     
         protected function setUp() :void
         {
@@ -77,7 +70,6 @@
 
             $this->get($url)->assertNullResponse();
 
-
         }
 
         /** @test */
@@ -119,6 +111,7 @@
 
             $response = $this->post($url, $token + ['login' => $calvin->user_email]);
             $response->assertRedirectToRoute('auth.forgot.password');
+            $response->assertSessionHas('password.reset.processed', true);
 
             $mail = $this->assertMailSent(ResetPasswordMail::class);
 
@@ -156,11 +149,11 @@
         
             $response->assertRedirectToRoute('auth.forgot.password');
             Event::assertDispatched(
-                FailedPasswordReset::class,
-                function (FailedPasswordReset $event) {
-                
+                FailedPasswordResetLinkRequest::class,
+                function (FailedPasswordResetLinkRequest $event) {
+            
                     return $event->request()->post('login') === 'bogus@web.de';
-                
+            
                 }
             );
         
@@ -169,18 +162,18 @@
         /** @test */
         public function an_invalid_user_login_will_log_to_fail2ban()
         {
-        
+    
             $this->swap(Syslogger::class, $logger = new TestSysLogger());
-        
+    
             $token = $this->withCsrfToken();
-        
+            $this->default_attributes = ['ip_address' => '127.0.0.1'];
             $response = $this->post($this->routeUrl(), $token + ['login' => 'bogus@web.de']);
-        
+    
             $response->assertRedirectToRoute('auth.forgot.password');
-        
+            $response->assertSessionHas('password.reset.processed', true);
             $logger->assertLogEntry(
                 E_NOTICE,
-                'Blocked username enumeration while trying to request a password reset email with login [bogus@web.de]'
+                'User enumeration trying to request a new password for user login [bogus@web.de] from 127.0.0.1'
             );
         
         }

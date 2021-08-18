@@ -8,8 +8,8 @@ use Throwable;
 use Snicco\Support\Str;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
-use Snicco\Contracts\Bannable;
 use Snicco\Http\ResponseFactory;
+use Snicco\Auth\Fail2ban\Bannable;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
 
 class FailedAuthenticationException extends HttpException implements Bannable
@@ -46,17 +46,22 @@ class FailedAuthenticationException extends HttpException implements Bannable
         return LOG_WARNING;
     }
     
-    public function fail2BanMessage()
+    public function fail2BanMessage() :string
     {
         
         if ( ! Str::startsWith($this->getMessage(), 'Failed authentication')) {
-    
+            
             return 'Failed authentication '.$this->getMessage();
-    
+            
         }
         
         return $this->getMessage();
         
+    }
+    
+    public function request() :Request
+    {
+        // TODO: Implement request() method.
     }
     
 }
