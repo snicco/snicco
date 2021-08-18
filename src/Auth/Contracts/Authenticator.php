@@ -15,15 +15,6 @@ use Snicco\Auth\Responses\SuccessfulLoginResponse;
 abstract class Authenticator extends Middleware
 {
     
-    /**
-     * @param  Request  $request
-     * @param  Delegate  $next
-     * $next can be called as a closure $next($request) to delegate to the next authenticator
-     *
-     * @return SuccessfulLoginResponse|NullResponse
-     */
-    abstract public function attempt(Request $request, $next);
-    
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
         
@@ -32,6 +23,15 @@ abstract class Authenticator extends Middleware
         );
         
     }
+    
+    /**
+     * @param  Request  $request
+     * @param  Delegate  $next
+     * $next can be called as a closure $next($request) to delegate to the next authenticator
+     *
+     * @return SuccessfulLoginResponse|NullResponse
+     */
+    abstract public function attempt(Request $request, $next);
     
     protected function login(WP_User $user, bool $remember = false) :SuccessfulLoginResponse
     {

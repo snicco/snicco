@@ -1,10 +1,10 @@
 <?php
 
+declare(strict_types=1);
 
-	declare( strict_types = 1 );
+use Codeception\Actor;
 
-
-	/**
+/**
  * Inherited Methods
  * @method void wantToTest($text)
  * @method void wantTo($text)
@@ -16,13 +16,13 @@
  * @method void lookForwardTo($achieveValue)
  * @method void comment($description)
  * @method void pause()
- *
  * @SuppressWarnings(PHPMD)
-*/
-class WpunitTester extends \Codeception\Actor
+ */
+class WpunitTester extends Actor
 {
+    
     use _generated\WpunitTesterActions;
-
+    
     /**
      * Define custom actions here
      */

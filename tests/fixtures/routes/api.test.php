@@ -1,22 +1,21 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+use Tests\stubs\TestApp;
 
-    use Tests\stubs\TestApp;
+$GLOBALS['test']['api_routes'] = true;
 
-    $GLOBALS['test']['api_routes'] = true;
+TestApp::get('foo', function () {
+    
+    return 'foo endpoint';
+    
+});
 
-    TestApp::get('foo', function () {
-
-        return 'foo endpoint';
-
-    });
-
-    TestApp::get('/{badendpoint}', function (string $badendpoint) {
-
-        return TestApp::response()->make(400)->withBody(
-            TestApp::response()->createStream('The endpoint: ' . $badendpoint . ' does not exist.')
-        );
-
-    });
+TestApp::get('/{badendpoint}', function (string $badendpoint) {
+    
+    return TestApp::response()->make(400)->withBody(
+        TestApp::response()->createStream('The endpoint: '.$badendpoint.' does not exist.')
+    );
+    
+});

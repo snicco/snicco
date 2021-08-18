@@ -22,24 +22,24 @@ class LoginMagicLinkController extends Controller
     {
         
         $user = $this->getUserByLogin($login = $request->post('login', ''));
-    
+        
         if ( ! $user instanceof WP_User) {
-        
+            
             FailedLoginLinkCreationRequest::dispatch([$request, $login]);
-        
+            
         }
         else {
-        
+            
             $magic_link = $this->createMagicLink($user, $expiration = 300);
-        
+            
             $mail_builder->to($user)
                          ->send(new MagicLinkLoginMail($user, $magic_link, $expiration));
-        
+            
         }
-    
+        
         return $this->response_factory->back($this->url->toRoute('auth.login'))
                                       ->with('login.link.processed', true);
-    
+        
     }
     
     protected function createMagicLink($user, $expiration = 300) :string

@@ -1,24 +1,23 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Snicco\Auth\Events;
 
+use WP_User;
+use Snicco\Events\Event;
+use BetterWpHooks\Traits\IsAction;
 
-    namespace Snicco\Auth\Events;
-
-    use BetterWpHooks\Traits\IsAction;
-    use Snicco\Events\Event;
-    use WP_User;
-
-    class Registration extends Event
+class Registration extends Event
+{
+    
+    use IsAction;
+    
+    public WP_User $user;
+    
+    public function __construct(WP_User $user)
     {
-        use IsAction;
-
-        public WP_User $user;
-
-        public function __construct(WP_User $user)
-        {
-            $this->user = $user;
-        }
-
+        $this->user = $user;
     }
+    
+}

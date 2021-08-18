@@ -9,5 +9,6 @@ use Snicco\Contracts\ResponseableInterface;
 
 abstract class LoginResponse implements ResponseableInterface
 {
+    
     use UsesCurrentRequest;
 }

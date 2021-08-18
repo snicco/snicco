@@ -1,7 +1,6 @@
 <?php
 
-
-    declare(strict_types = 1);
+declare(strict_types=1);
 
 ?>
 <h3>Hello <?= $user->first_name ?? '' ?>,</h3>

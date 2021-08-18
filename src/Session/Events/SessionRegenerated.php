@@ -1,22 +1,20 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Snicco\Session\Events;
 
+use Snicco\Events\Event;
+use Snicco\Session\Session;
 
-    namespace Snicco\Session\Events;
-
-    use Snicco\Events\Event;
-    use Snicco\Session\Session;
-
-    class SessionRegenerated extends Event
+class SessionRegenerated extends Event
+{
+    
+    public Session $session;
+    
+    public function __construct(Session $session)
     {
-
-        public Session $session;
-
-        public function __construct(Session $session)
-        {
-            $this->session = $session;
-        }
-
+        $this->session = $session;
     }
+    
+}

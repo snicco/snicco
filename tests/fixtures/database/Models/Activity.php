@@ -1,19 +1,17 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Tests\fixtures\database\Models;
 
-
-    namespace Tests\fixtures\database\Models;
-
-    class Activity extends TestModel
+class Activity extends TestModel
+{
+    
+    public function cities()
     {
-
-        public function cities()
-        {
-
-            return $this->belongsToMany(City::class);
-
-        }
-
+        
+        return $this->belongsToMany(City::class);
+        
     }
+    
+}

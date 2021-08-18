@@ -27,8 +27,8 @@ use Illuminate\Support\ViewErrorBag;
 	
 	<!--CSRF field-->
 	<?= $csrf->asHtml() ?>
-
-    <!--One time password-->
+	
+	<!--One time password-->
     <div class="field">
         <label for="" class="label">Code</label>
         <div class="control has-icons-left">
@@ -49,9 +49,10 @@ use Illuminate\Support\ViewErrorBag;
         </div>
     </div>
 
-    <p onclick="useRecoveryCode()" id="use-recovery-code" class="has-text-dark is-clickable underlined has-text-weight-light mb-4"> Use Recovery Code</p>
-
-    <!--    Submit Button -->
+    <p onclick="useRecoveryCode()" id="use-recovery-code"
+       class="has-text-dark is-clickable underlined has-text-weight-light mb-4"> Use Recovery Code</p>
+	
+	<!--    Submit Button -->
     <div class="field">
         <button class="button submit">
             Login
@@ -83,11 +84,11 @@ use Illuminate\Support\ViewErrorBag;
         <div class="control has-icons-left">
 
             <input
-                    type="text"
-                    name="recovery-code"
-                    id="recovery-code"
-                    class="input <?= $errors->count() ? 'is-danger' : '' ?>"
-                    placeholder="eg. 1234563-123234"
+		            type="text"
+		            name="recovery-code"
+		            id="recovery-code"
+		            class="input <?= $errors->count() ? 'is-danger' : '' ?>"
+		            placeholder="eg. 1234563-123234"
             />
 
             <span class="icon is-small is-left">
@@ -96,9 +97,10 @@ use Illuminate\Support\ViewErrorBag;
         </div>
     </div>
 
-    <p onclick="useAuthCode()" id="use-auth-code" class="has-text-dark is-clickable underlined has-text-weight-light mb-4"> Use Authentication Code</p>
-
-    <!--    Submit Button -->
+    <p onclick="useAuthCode()" id="use-auth-code"
+       class="has-text-dark is-clickable underlined has-text-weight-light mb-4"> Use Authentication Code</p>
+	
+	<!--    Submit Button -->
     <div class="field">
         <button class="button submit">
             Login
@@ -110,23 +112,23 @@ use Illuminate\Support\ViewErrorBag;
 <script>
 
     function useRecoveryCode() {
-
-        let one_time_form = document.getElementById('one-time-code');
-        one_time_form.classList.add('hide');
-
-        let recover_code_form = document.getElementById('recovery-code');
-        recover_code_form.classList.remove('hide');
-
+	
+	    let one_time_form = document.getElementById('one-time-code');
+	    one_time_form.classList.add('hide');
+	
+	    let recover_code_form = document.getElementById('recovery-code');
+	    recover_code_form.classList.remove('hide');
+	
     }
 
-    function useAuthCode () {
-
-        let one_time_form = document.getElementById('one-time-code');
-        let recover_code_form = document.getElementById('recovery-code');
-
-        recover_code_form.classList.add('hide');
-        one_time_form.classList.remove('hide');
-
+    function useAuthCode() {
+	
+	    let one_time_form = document.getElementById('one-time-code');
+	    let recover_code_form = document.getElementById('recovery-code');
+	
+	    recover_code_form.classList.add('hide');
+	    one_time_form.classList.remove('hide');
+	
     }
 
 </script>
