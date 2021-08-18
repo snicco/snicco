@@ -15,7 +15,6 @@ use Snicco\Http\Responses\InvalidResponse;
 use Snicco\Contracts\ResponseableInterface;
 use Snicco\Http\Responses\RedirectResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
-use Snicco\Http\Responses\WpQueryFilteredResponse;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
 use Snicco\ExceptionHandling\Exceptions\ViewException;
 use Snicco\Contracts\ViewFactoryInterface as ViewFactory;
@@ -74,86 +73,27 @@ class ResponseFactory implements ResponseFactoryInterface
         
     }
     
-    public function html(string $html, int $status_code = 200) :Response
+    /**
+     * @return Response
+     */
+    public function createResponse(int $code = 200, string $reasonPhrase = '') :ResponseInterface
     {
-        
-        return $this->make($status_code)
-                    ->html($this->stream_factory->createStream($html));
-        
-    }
-    
-    public function json($content, int $status = 200) :Response
-    {
-        
-        /** @todo This needs more parsing or a dedicated JsonResponseClass */
-        return $this->make($status)
-                    ->json(
-                        $this->createStream(json_encode($content))
-                    );
-        
+        return $this->make($code, $reasonPhrase);
     }
     
     public function null() :NullResponse
     {
-        
         return new NullResponse($this->response_factory->createResponse(204));
-        
-    }
-    
-    public function queryFiltered() :WpQueryFilteredResponse
-    {
-        
-        return new WpQueryFilteredResponse($this->response_factory->createResponse(200));
-        
-    }
-    
-    public function toResponse($response) :Response
-    {
-        
-        if ($response instanceof Response) {
-            
-            return $response;
-            
-        }
-        
-        if ($response instanceof ResponseInterface) {
-            
-            return new Response($response);
-            
-        }
-        
-        if (is_string($response)) {
-            
-            return $this->html($response);
-            
-        }
-        
-        if (is_array($response)) {
-            
-            return $this->json($response);
-            
-        }
-        
-        if ($response instanceof ResponseableInterface) {
-            
-            return $this->toResponse(
-                $response->toResponsable()
-            );
-            
-        }
-    
-        return $this->invalidResponse();
-    
-    }
-    
-    public function redirect() :AbstractRedirector
-    {
-        return $this->redirector;
     }
     
     public function redirectToRoute(string $route, $args = [], int $status = 302, $secure = true, $absolute = false) :RedirectResponse
     {
         return $this->redirect()->toRoute($route, $status, $args, $secure, $absolute);
+    }
+    
+    public function redirect() :AbstractRedirector
+    {
+        return $this->redirector;
     }
     
     public function back(string $fallback = '/', int $status = 302, bool $external_referer = false) :RedirectResponse
@@ -163,7 +103,9 @@ class ResponseFactory implements ResponseFactoryInterface
         
     }
     
-    /** NOTE: no formatting is performed on the path. */
+    /**
+     * @note no formatting is performed on the path.
+     */
     public function permanentRedirectTo(string $path) :RedirectResponse
     {
         return $this->redirector->createRedirectResponse($path, 301);
@@ -181,28 +123,9 @@ class ResponseFactory implements ResponseFactoryInterface
         
     }
     
-    public function invalidResponse() :InvalidResponse
-    {
-        return new InvalidResponse($this->response_factory->createResponse(500));
-    }
-    
     public function noContent() :Response
     {
         return $this->make(204);
-    }
-    
-    /**
-     * @return Response
-     */
-    public function createResponse(int $code = 200, string $reasonPhrase = '') :ResponseInterface
-    {
-        return $this->make($code, $reasonPhrase);
-    }
-    
-    public function createStream(string $content = '') :StreamInterface
-    {
-        
-        return $this->stream_factory->createStream($content);
     }
     
     public function createStreamFromFile(string $filename, string $mode = 'r') :StreamInterface
@@ -219,9 +142,7 @@ class ResponseFactory implements ResponseFactoryInterface
     
     public function setFallbackErrorMessage(string $message)
     {
-        
         $this->unrecoverable_error_message = $message;
-        
     }
     
     /**
@@ -279,6 +200,75 @@ class ResponseFactory implements ResponseFactoryInterface
             
         }
         
+    }
+    
+    public function toResponse($response) :Response
+    {
+        
+        if ($response instanceof Response) {
+            
+            return $response;
+            
+        }
+        
+        if ($response instanceof ResponseInterface) {
+            
+            return new Response($response);
+            
+        }
+        
+        if (is_string($response)) {
+            
+            return $this->html($response);
+            
+        }
+        
+        if (is_array($response)) {
+            
+            return $this->json($response);
+            
+        }
+        
+        if ($response instanceof ResponseableInterface) {
+            
+            return $this->toResponse(
+                $response->toResponsable()
+            );
+            
+        }
+        
+        return $this->invalidResponse();
+        
+    }
+    
+    public function html(string $html, int $status_code = 200) :Response
+    {
+        
+        return $this->make($status_code)
+                    ->html($this->stream_factory->createStream($html));
+        
+    }
+    
+    public function json($content, int $status = 200) :Response
+    {
+        
+        /** @todo This needs more parsing or a dedicated JsonResponseClass */
+        return $this->make($status)
+                    ->json(
+                        $this->createStream(json_encode($content))
+                    );
+        
+    }
+    
+    public function createStream(string $content = '') :StreamInterface
+    {
+        
+        return $this->stream_factory->createStream($content);
+    }
+    
+    public function invalidResponse() :InvalidResponse
+    {
+        return new InvalidResponse($this->response_factory->createResponse(500));
     }
     
 }

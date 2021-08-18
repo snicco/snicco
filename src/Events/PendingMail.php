@@ -1,22 +1,19 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Snicco\Events;
 
+use Snicco\Mail\Mailable;
 
-    namespace Snicco\Events;
-
-    use Snicco\Mail\Mailable;
-
-    class PendingMail extends Event
+class PendingMail extends Event
+{
+    
+    public Mailable $mail;
+    
+    public function __construct(Mailable $mail)
     {
-
-        public Mailable $mail;
-
-        public function __construct( Mailable $mail )
-        {
-            $this->mail = $mail;
-        }
-
-
+        $this->mail = $mail;
     }
+    
+}

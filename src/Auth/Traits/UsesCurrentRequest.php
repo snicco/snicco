@@ -1,30 +1,28 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Snicco\Auth\Traits;
 
+use WP_User;
+use Snicco\Http\Psr7\Request;
 
-    namespace Snicco\Auth\Traits;
-
-    use WP_User;
-    use Snicco\Http\Psr7\Request;
-
-    trait UsesCurrentRequest
+trait UsesCurrentRequest
+{
+    
+    protected ?Request $request = null;
+    protected ?WP_User $user    = null;
+    
+    public function forRequest(Request $request) :self
     {
-    
-        protected ?Request $request = null;
-        protected ?WP_User $user    = null;
-    
-        public function forRequest(Request $request) :self
-        {
-            $this->request = $request;
-            return $this;
-        }
-    
-        public function forUser(WP_User $user) :self
-        {
-            $this->user = $user;
-            return $this;
-        }
-
+        $this->request = $request;
+        return $this;
     }
+    
+    public function forUser(WP_User $user) :self
+    {
+        $this->user = $user;
+        return $this;
+    }
+    
+}

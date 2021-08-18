@@ -1,21 +1,19 @@
 <?php
 
+declare(strict_types=1);
 
-	declare( strict_types = 1 );
+namespace Snicco\Support;
 
+use Illuminate\Config\Repository;
 
-	namespace Snicco\Support;
-
-	use Illuminate\Config\Repository;
-
-	class VariableBag extends Repository {
-
-
-		public function add(array $globals) {
-
-			$this->set($globals);
-
-		}
-
-
-	}
+class VariableBag extends Repository
+{
+    
+    public function add(array $globals)
+    {
+        
+        $this->set($globals);
+        
+    }
+    
+}

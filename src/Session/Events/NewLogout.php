@@ -1,17 +1,14 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Snicco\Session\Events;
 
+use Snicco\Events\Event;
+use BetterWpHooks\Traits\IsAction;
 
-    namespace Snicco\Session\Events;
-
-    use BetterWpHooks\Traits\IsAction;
-    use Snicco\Events\Event;
-
-    class NewLogout extends Event
-    {
-
-        use IsAction;
-
-    }
+class NewLogout extends Event
+{
+    
+    use IsAction;
+}

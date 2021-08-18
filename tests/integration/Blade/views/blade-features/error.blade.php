@@ -1,5 +1,5 @@
 @error('title')
-    {{$message}}
+{{$message}}
 @else
-    NO ERRORS WITH YOUR VIEW
-@enderror
+	NO ERRORS WITH YOUR VIEW
+	@enderror

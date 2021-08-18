@@ -1,20 +1,19 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Snicco\Database\Illuminate;
 
+use Illuminate\Database\Query\Grammars\MySqlGrammar as IlluminateQueryGrammar;
 
-    namespace Snicco\Database\Illuminate;
-
-    use Illuminate\Database\Query\Grammars\MySqlGrammar as IlluminateQueryGrammar;
-
-    class MySqlQueryGrammar extends IlluminateQueryGrammar
+class MySqlQueryGrammar extends IlluminateQueryGrammar
+{
+    
+    public function compileRollback() :string
     {
-
-        public function compileRollback() : string {
-
-            return "ROLLBACK";
-
-        }
-
+        
+        return "ROLLBACK";
+        
     }
+    
+}

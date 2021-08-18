@@ -31,8 +31,8 @@ declare(strict_types=1);
         </div>
 
     <?php endif; ?>
-
-    <div class="field">
+	
+	<div class="field">
         <label for="" class="label">Username or email</label>
 
         <div class="control has-icons-left">
@@ -47,21 +47,21 @@ declare(strict_types=1);
 
         </div>
     </div>
-
-    <?= $csrf->asHtml() ?>
-    <button
-            type="submit"
-            class="button submit mb-3"
-    >
+	
+	<?= $csrf->asHtml() ?>
+	<button
+			type="submit"
+			class="button submit mb-3"
+	>
       Send me a login link
 
     </button>
-
-    <?php if (isset($register_url)) : ?>
-
-        <a href="<?= esc_url($register_url) ?>" class="text-sm-left underlined"> Register </a>
-
-    <?php endif; ?>
+	
+	<?php if (isset($register_url)) : ?>
+		
+		<a href="<?= esc_url($register_url) ?>" class="text-sm-left underlined"> Register </a>
+	
+	<?php endif; ?>
 
 
 </form>

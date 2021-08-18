@@ -48,13 +48,13 @@ class TwoFactorAuthenticator extends Authenticator
         );
         
         if ( ! $valid) {
-    
+            
             FailedTwoFactorAuthentication::dispatch([$request, $user_id]);
-    
+            
             return $this->response_factory->redirect()
                                           ->toRoute('auth.2fa.challenge')
                                           ->withErrors(['login' => 'Invalid code provided']);
-    
+            
         }
         
         $remember = $session->get('auth.2fa.remember', false);

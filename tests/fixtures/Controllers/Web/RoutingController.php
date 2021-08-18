@@ -1,20 +1,18 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Tests\fixtures\Controllers\Web;
 
+use Snicco\Http\Psr7\Request;
 
-    namespace Tests\fixtures\Controllers\Web;
-
-    use Snicco\Http\Psr7\Request;
-
-    class RoutingController
+class RoutingController
+{
+    
+    public function foo(Request $request)
     {
-
-        public function foo(Request $request)
-        {
-            return 'foo';
-
-        }
-
+        return 'foo';
+        
     }
+    
+}

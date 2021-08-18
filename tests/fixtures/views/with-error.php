@@ -1,7 +1,6 @@
 <?php
 
-
-	declare( strict_types = 1 );
+declare(strict_types=1);
 
 ?>
 
@@ -9,6 +8,6 @@
 
 <?php
 
-	non_existing_function();
+non_existing_function();
 
 ?>

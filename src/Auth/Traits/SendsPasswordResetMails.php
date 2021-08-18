@@ -1,34 +1,31 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Snicco\Auth\Traits;
 
+use WP_User;
+use Snicco\Mail\MailBuilder;
+use Snicco\Auth\Mail\ResetPasswordMail;
 
-    namespace Snicco\Auth\Traits;
-
-    use Snicco\Auth\Mail\ResetPasswordMail;
-    use Snicco\Mail\MailBuilder;
-    use WP_User;
-
-    /**
-     * @property MailBuilder $mail
-     */
-    trait SendsPasswordResetMails
+/**
+ * @property MailBuilder $mail
+ */
+trait SendsPasswordResetMails
+{
+    
+    private function sendResetMail(WP_User $user)
     {
-
-        private function sendResetMail(WP_User $user)
-        {
-
-            $magic_link = $this->url->signedRoute(
-                'auth.reset.password',
-                ['query' => ['id' => $user->ID]],
-                300,
-                true
-            );
-
-            return $this->mail->to($user)->send(new ResetPasswordMail($user, $magic_link, 300));
-
-
-        }
-
+        
+        $magic_link = $this->url->signedRoute(
+            'auth.reset.password',
+            ['query' => ['id' => $user->ID]],
+            300,
+            true
+        );
+        
+        return $this->mail->to($user)->send(new ResetPasswordMail($user, $magic_link, 300));
+        
     }
+    
+}

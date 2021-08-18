@@ -21,41 +21,6 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
     
     private UrlGenerator $url;
     
-    protected function setUp() :void
-    {
-        
-        $this->afterLoadingConfig(function () {
-            
-            $this->withReplacedConfig('auth.through', [
-                MagicLinkAuthenticator::class,
-            ]);
-            $this->withReplacedConfig('auth.authenticator', 'email');
-            $this->withReplacedConfig('auth.primary_view', MagicLinkLoginView::class);
-            $this->withReplacedConfig('auth.fail2ban.enabled', true);
-            
-        });
-        
-        $this->afterApplicationCreated(function () {
-            
-            $this->url = $this->app->resolve(UrlGenerator::class);
-            $this->loadRoutes();
-            
-        });
-        
-        parent::setUp();
-    }
-    
-    private function routeUrl(int $user_id) :string
-    {
-        
-        return $this->url->signedRoute(
-            'auth.login.magic-link',
-            ['query' => ['user_id' => $user_id]],
-            300,
-            true
-        );
-    }
-    
     /** @test */
     public function an_invalid_magic_link_will_fail()
     {
@@ -71,6 +36,17 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
         $this->assertGuest();
         $response->assertRedirectPath('/auth/login');
         
+    }
+    
+    private function routeUrl(int $user_id) :string
+    {
+        
+        return $this->url->signedRoute(
+            'auth.login.magic-link',
+            ['query' => ['user_id' => $user_id]],
+            300,
+            true
+        );
     }
     
     /** @test */
@@ -193,6 +169,30 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
         $response->assertRedirectToRoute('dashboard');
         $this->assertAuthenticated($calvin);
         
+    }
+    
+    protected function setUp() :void
+    {
+        
+        $this->afterLoadingConfig(function () {
+            
+            $this->withReplacedConfig('auth.through', [
+                MagicLinkAuthenticator::class,
+            ]);
+            $this->withReplacedConfig('auth.authenticator', 'email');
+            $this->withReplacedConfig('auth.primary_view', MagicLinkLoginView::class);
+            $this->withReplacedConfig('auth.fail2ban.enabled', true);
+            
+        });
+        
+        $this->afterApplicationCreated(function () {
+            
+            $this->url = $this->app->resolve(UrlGenerator::class);
+            $this->loadRoutes();
+            
+        });
+        
+        parent::setUp();
     }
     
 }

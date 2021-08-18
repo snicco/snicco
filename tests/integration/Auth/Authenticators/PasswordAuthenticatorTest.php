@@ -15,28 +15,6 @@ use Snicco\Auth\Authenticators\PasswordAuthenticator;
 class PasswordAuthenticatorTest extends AuthTestCase
 {
     
-    protected function setUp() :void
-    {
-        
-        $this->afterLoadingConfig(function () {
-            
-            $this->withReplacedConfig('auth.through', [
-                PasswordAuthenticator::class,
-            ]);
-            $this->withAddedConfig('auth.fail2ban.enabled', true);
-            
-        });
-        
-        $this->afterApplicationCreated(function () {
-            
-            $this->url = $this->app->resolve(UrlGenerator::class);
-            $this->loadRoutes();
-            
-        });
-        
-        parent::setUp();
-    }
-    
     /** @test */
     public function missing_password_or_login_delegates_to_the_next_authenticator()
     {
@@ -155,7 +133,7 @@ class PasswordAuthenticatorTest extends AuthTestCase
     /** @test */
     public function a_user_can_login_with_his_email_address_instead_of_the_username()
     {
-    
+        
         Event::fake([FailedPasswordAuthentication::class]);
         $this->withAddedConfig('auth.features.remember_me', true);
         
@@ -172,12 +150,12 @@ class PasswordAuthenticatorTest extends AuthTestCase
                 'remember_me' => '1',
             ]
         );
-    
+        
         $response->assertRedirectToRoute('dashboard');
         $this->assertAuthenticated($calvin);
         $this->assertTrue($this->session->hasRememberMeToken());
         Event::assertNotDispatched(FailedPasswordAuthentication::class);
-    
+        
     }
     
     /** @test */
@@ -208,6 +186,28 @@ class PasswordAuthenticatorTest extends AuthTestCase
             "Failed authentication attempt for user [$calvin->ID] with invalid password [bogus] from 127.0.0.1"
         );
         
+    }
+    
+    protected function setUp() :void
+    {
+        
+        $this->afterLoadingConfig(function () {
+            
+            $this->withReplacedConfig('auth.through', [
+                PasswordAuthenticator::class,
+            ]);
+            $this->withAddedConfig('auth.fail2ban.enabled', true);
+            
+        });
+        
+        $this->afterApplicationCreated(function () {
+            
+            $this->url = $this->app->resolve(UrlGenerator::class);
+            $this->loadRoutes();
+            
+        });
+        
+        parent::setUp();
     }
     
 }

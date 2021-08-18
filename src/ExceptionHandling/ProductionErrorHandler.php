@@ -25,11 +25,11 @@ class ProductionErrorHandler implements ErrorHandlerInterface
     use ReflectsClosures;
     use HandlesExceptions;
     
-    protected ContainerAdapter    $container;
+    protected ContainerAdapter $container;
     protected Psr3LoggerInterface $logger;
-    protected ResponseFactory     $response_factory;
-    protected array               $dont_report = [];
-    protected array               $dont_flash  = [];
+    protected ResponseFactory $response_factory;
+    protected array $dont_report = [];
+    protected array $dont_flash  = [];
     
     /**
      * @var Closure[]
@@ -83,102 +83,30 @@ class ProductionErrorHandler implements ErrorHandlerInterface
         
     }
     
-    public function handleException($e, $in_routing_flow = false, ?Request $request = null)
-    {
-    
-        $request ??= $this->resolveRequestFromContainer();
-    
-        $this->logException($e, $request);
-    
-        $response_factory = $this->convertToResponse($e, $request);
-    
-        if ($in_routing_flow) {
-        
-            return $response_factory;
-        
-        }
-    
-        (new ResponseEmitter())->emit($response_factory);
-        
-        // Shuts down the script if not running unit tests.
-        UnrecoverableExceptionHandled::dispatch();
-        
-    }
-    
     public function transformToResponse(Throwable $exception, Request $request) :?Response
     {
         return $this->handleException($exception, true, $request);
     }
     
-    public function unrecoverable(Throwable $exception)
-    {
-        $this->handleException($exception);
-    }
-    
-    /**
-     * Override this method from a child class to create global context
-     * that should be added to every log entry.
-     */
-    protected function globalContext() :array
+    public function handleException($e, $in_routing_flow = false, ?Request $request = null)
     {
         
-        try {
-            return array_filter([
-                'user_id' => WP::userId(),
-            ]);
-        } catch (Throwable $e) {
-            return [];
-        }
+        $request ??= $this->resolveRequestFromContainer();
         
-    }
-    
-    /**
-     * Override this method from a child class to create
-     * your own default response for fatal errors that can not be transformed by this error
-     * handler.
-     *
-     * @param  Throwable  $e
-     * @param  Request  $request
-     *
-     * @return HttpException
-     */
-    protected function toHttpException(Throwable $e, Request $request) :HttpException
-    {
-        return new HttpException(500, $e->getMessage(), $e);
-    }
-    
-    private function convertToResponse(Throwable $e, Request $request) :Response
-    {
+        $this->logException($e, $request);
         
-        foreach ($this->custom_renderers as $custom_renderer) {
-    
-            $exception_type = $this->firstClosureParameterType($custom_renderer);
-    
-            if ( ! $e instanceof $exception_type) {
-                continue;
-            }
-    
-            $response_factory = $custom_renderer($e, $request, $this->response_factory);
-    
-            if ($response_factory instanceof Response) {
-                return $response_factory;
-            }
-    
-        }
+        $response_factory = $this->convertToResponse($e, $request);
         
-        if (method_exists($e, 'render')) {
+        if ($in_routing_flow) {
             
-            return $this->renderableException($e, $request);
+            return $response_factory;
             
         }
         
-        if ( ! $e instanceof HttpException) {
-            
-            $e = $this->toHttpException($e, $request);
-            
-        }
+        (new ResponseEmitter())->emit($response_factory);
         
-        return $this->renderHttpException($e, $request);
+        // Shuts down the script if not running unit tests.
+        UnrecoverableExceptionHandled::dispatch();
         
     }
     
@@ -229,6 +157,23 @@ class ProductionErrorHandler implements ErrorHandlerInterface
         
     }
     
+    /**
+     * Override this method from a child class to create global context
+     * that should be added to every log entry.
+     */
+    protected function globalContext() :array
+    {
+        
+        try {
+            return array_filter([
+                'user_id' => WP::userId(),
+            ]);
+        } catch (Throwable $e) {
+            return [];
+        }
+        
+    }
+    
     private function exceptionContext(Throwable $e)
     {
         
@@ -239,36 +184,91 @@ class ProductionErrorHandler implements ErrorHandlerInterface
         return [];
     }
     
+    private function convertToResponse(Throwable $e, Request $request) :Response
+    {
+        
+        foreach ($this->custom_renderers as $custom_renderer) {
+            
+            $exception_type = $this->firstClosureParameterType($custom_renderer);
+            
+            if ( ! $e instanceof $exception_type) {
+                continue;
+            }
+            
+            $response_factory = $custom_renderer($e, $request, $this->response_factory);
+            
+            if ($response_factory instanceof Response) {
+                return $response_factory;
+            }
+            
+        }
+        
+        if (method_exists($e, 'render')) {
+            
+            return $this->renderableException($e, $request);
+            
+        }
+        
+        if ( ! $e instanceof HttpException) {
+            
+            $e = $this->toHttpException($e, $request);
+            
+        }
+        
+        return $this->renderHttpException($e, $request);
+        
+    }
+    
+    private function renderableException(Throwable $e, Request $request) :Response
+    {
+        
+        /** @var Response $response_factory */
+        $response_factory = $this->container->call([$e, 'render'], ['request' => $request]);
+        
+        // User did not provide a valid response from the callback.
+        if ( ! $response_factory instanceof Response) {
+            
+            return $this->renderHttpException(new HttpException(500, $e->getMessage()), $request);
+            
+        }
+        
+        return $response_factory;
+    }
+    
     private function renderHttpException(HttpException $http_exception, Request $request) :Response
     {
         
         if ($request->isExpectingJson()) {
-    
+            
             return $this->response_factory->json(
                 ['message' => $http_exception->getJsonMessage()],
                 $http_exception->httpStatusCode()
             );
             
         }
-    
+        
         return $this->response_factory->error($http_exception, $request);
         
     }
     
-    private function renderableException(Throwable $e, Request $request) :Response
+    /**
+     * Override this method from a child class to create
+     * your own default response for fatal errors that can not be transformed by this error
+     * handler.
+     *
+     * @param  Throwable  $e
+     * @param  Request  $request
+     *
+     * @return HttpException
+     */
+    protected function toHttpException(Throwable $e, Request $request) :HttpException
     {
+        return new HttpException(500, $e->getMessage(), $e);
+    }
     
-        /** @var Response $response_factory */
-        $response_factory = $this->container->call([$e, 'render'], ['request' => $request]);
-    
-        // User did not provide a valid response from the callback.
-        if ( ! $response_factory instanceof Response) {
-        
-            return $this->renderHttpException(new HttpException(500, $e->getMessage()), $request);
-        
-        }
-    
-        return $response_factory;
+    public function unrecoverable(Throwable $exception)
+    {
+        $this->handleException($exception);
     }
     
 }

@@ -14,22 +14,6 @@ use Snicco\Auth\Events\FailedLoginLinkCreationRequest;
 class LoginMagicLinkControllerTest extends AuthTestCase
 {
     
-    protected function setUp() :void
-    {
-        $this->afterLoadingConfig(function () {
-            
-            $this->withReplacedConfig('auth.authenticator', 'email');
-            $this->withAddedConfig('auth.fail2ban.enabled', true);
-            
-        });
-        
-        $this->afterApplicationCreated(function () {
-            $this->withoutMiddleware('csrf');
-        });
-        parent::setUp();
-        
-    }
-    
     /** @test */
     public function the_route_cant_be_accessed_if_the_authenticator_is_not_email()
     {
@@ -113,6 +97,22 @@ class LoginMagicLinkControllerTest extends AuthTestCase
         $mail->assertSee('/auth/login/magic-link?expires=');
         $mail->assertSee('/auth/login/magic-link?expires=');
         $mail->assertSee("user_id=$calvin->ID");
+        
+    }
+    
+    protected function setUp() :void
+    {
+        $this->afterLoadingConfig(function () {
+            
+            $this->withReplacedConfig('auth.authenticator', 'email');
+            $this->withAddedConfig('auth.fail2ban.enabled', true);
+            
+        });
+        
+        $this->afterApplicationCreated(function () {
+            $this->withoutMiddleware('csrf');
+        });
+        parent::setUp();
         
     }
     

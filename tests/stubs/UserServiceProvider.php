@@ -1,27 +1,25 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Tests\stubs;
 
+use Snicco\Contracts\ServiceProvider;
 
-    namespace Tests\stubs;
-
-    use Snicco\Contracts\ServiceProvider;
-
-    class UserServiceProvider extends ServiceProvider
+class UserServiceProvider extends ServiceProvider
+{
+    
+    public function register() :void
     {
-
-        public function register() : void
-        {
-
-            $this->container->instance('foo', 'bar');
-
-        }
-
-        public function bootstrap() : void
-        {
-
-            $this->container->instance('foo_bootstrapped', 'bar_bootstrapped');
-        }
-
+        
+        $this->container->instance('foo', 'bar');
+        
     }
+    
+    public function bootstrap() :void
+    {
+        
+        $this->container->instance('foo_bootstrapped', 'bar_bootstrapped');
+    }
+    
+}

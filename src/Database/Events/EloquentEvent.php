@@ -1,14 +1,12 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Snicco\Database\Events;
 
+use Snicco\Events\Event;
 
-    namespace Snicco\Database\Events;
+class EloquentEvent extends Event
+{
 
-    use Snicco\Events\Event;
-
-    class EloquentEvent extends Event
-    {
-
-    }
+}
