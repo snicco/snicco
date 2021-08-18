@@ -7,16 +7,16 @@
 	namespace Snicco\Traits;
 
 	use Closure;
-    use Snicco\Controllers\FallBackController;
-    use Snicco\Routing\ConditionBlueprint;
-    use Snicco\Routing\Conditions\TrailingSlashCondition;
-    use Snicco\Routing\Route;
     use Snicco\Support\Arr;
-
+    use Snicco\Routing\Route;
+    use Snicco\Routing\ConditionBlueprint;
+    use Snicco\Controllers\FallBackController;
+    use Snicco\Routing\Conditions\TrailingSlashCondition;
+    
     trait SetRouteAttributes
     {
-
-        public function handle($action) : Route
+        
+        public function handle($action) :Route
         {
 
             $this->action = $action;
@@ -102,8 +102,7 @@
 
         public function noAction() : Route
         {
-            $this->handle([FallBackController::class, 'nullResponse']);
-
+            $this->handle([FallBackController::class, 'delegateToWordPress']);
             return $this;
         }
 
