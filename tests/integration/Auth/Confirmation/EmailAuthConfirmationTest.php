@@ -7,18 +7,17 @@
     namespace Tests\integration\Auth\Confirmation;
 
     use Tests\AuthTestCase;
-    use Snicco\Testing\TestDoubles\TestMagicLink;
     use Snicco\Contracts\MagicLink;
     use Snicco\Routing\UrlGenerator;
+    use Snicco\Testing\TestDoubles\TestMagicLink;
 
     class EmailAuthConfirmationTest extends AuthTestCase
     {
-
-        protected function setUp() : void
+    
+        protected function setUp() :void
         {
-
             $this->afterApplicationCreated(function () {
-
+            
                 $this->loadRoutes();
             });
             parent::setUp();
@@ -70,31 +69,33 @@
         }
 
         /** @test */
-        public function auth_can_not_confirmed_with_a_tampered_magic_link()
+        public function auth_can_not_be_confirmed_with_a_tampered_magic_link()
         {
-
+    
             $this->authenticateAndUnconfirm($this->createAdmin());
-
+    
             $response = $this->get($this->validMagicLink().'a');
-
+    
             $response->assertRedirect('/auth/confirm');
-            $response->assertSessionHasErrors('message');
+            $response->assertSessionHasErrors('auth.confirmation');
             $this->assertFalse($response->session()->hasValidAuthConfirmToken());
-
-
+    
         }
-
+    
         /** @test */
-        public function errors_are_displayed_in_the_view () {
-
+        public function errors_are_displayed_in_the_view()
+        {
+        
             $this->followingRedirects();
-
+        
             $this->authenticateAndUnconfirm($this->createAdmin());
-
+        
             $response = $this->get($this->validMagicLink().'a');
-
+        
             $response->assertOk();
-            $response->assertSee('Confirmation link invalid or expired.');
+            $response->assertSee(
+                'Your confirmation link was invalid or expired. Please request a new one.'
+            );
 
         }
 

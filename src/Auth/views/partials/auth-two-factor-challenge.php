@@ -65,19 +65,19 @@ use Illuminate\Support\ViewErrorBag;
     <div class="notification is-info is-light">
         Enter one of your recovery codes that you received on activating two factor authentication.
     </div>
-
-    <?php if ($errors->has('message')) : ?>
-
-        <div class="notification is-danger is-light">
-            <?= $errors->first('message') ?>
+	
+	<?php if ($errors->count()): ?>
+		
+		<div class="notification is-danger is-light">
+           Invalid code provided.
         </div>
-
-    <?php endif; ?>
-
-    <!--CSRF field-->
-    <?= $csrf->asHtml() ?>
-
-    <!--Recovery code-->
+	
+	<?php endif; ?>
+	
+	<!--CSRF field-->
+	<?= $csrf->asHtml() ?>
+	
+	<!--Recovery code-->
     <div class="field">
         <label for="" class="label">Recovery Code</label>
         <div class="control has-icons-left">
@@ -108,7 +108,6 @@ use Illuminate\Support\ViewErrorBag;
 </form>
 
 <script>
-
 
     function useRecoveryCode() {
 

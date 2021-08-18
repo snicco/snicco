@@ -36,7 +36,7 @@
         private function validRecoveryCode(Request $request, int $user_id)
         {
 
-            $provided_code = $request->input('recovery-code');
+            $provided_code = $request->post('recovery-code');
 	
 	        if( ! $provided_code ) {
 		        return false;
@@ -74,7 +74,7 @@
 
             return $provider->verifyOneTimeCode(
 	            $user_secret,
-	            $request->input('one-time-code')
+                $request->post('one-time-code')
             );
 
         }

@@ -6,7 +6,6 @@ namespace Snicco\Auth\Controllers;
 
 use Closure;
 use WP_User;
-use Snicco\Support\WP;
 use Snicco\Support\Arr;
 use Snicco\Support\Url;
 use Snicco\Http\Controller;
@@ -15,12 +14,12 @@ use Snicco\Routing\Pipeline;
 use Snicco\Auth\Events\Login;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
+use Snicco\Http\Responses\NullResponse;
 use Snicco\Auth\Contracts\LoginResponse;
 use Snicco\Auth\Responses\LogoutResponse;
 use Snicco\Contracts\ResponseableInterface;
 use Snicco\Auth\Contracts\LoginViewResponse;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
-use Snicco\Auth\Exceptions\FailedAuthenticationException;
 use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
 
 class AuthSessionController extends Controller
@@ -52,33 +51,45 @@ class AuthSessionController extends Controller
     
     public function store(Request $request, Pipeline $auth_pipeline, LoginResponse $login_response)
     {
-        
+    
         $response = $auth_pipeline->send($request)
                                   ->through($this->auth_config['through'])
-                                  ->then($this->handleAuthFailure());
-        
+                                  ->then($this->unauthenticated());
+    
         if ($response instanceof SuccessfulLoginResponse) {
-            
+        
             $remember = $response->rememberUser() && $this->allowRememberMe();
             $user = $response->authenticatedUser();
-            
+        
             return $this->handleLogin($user, $remember, $login_response, $request);
-            
+        
         }
+    
+        // one authenticator has decided to return a custom failure response.
+        if ( ! $response instanceof NullResponse) {
         
-        return $response;
+            return $response;
         
+        }
+    
+        return $request->isExpectingJson()
+            ? $this->response_factory->json(['message' => 'Invalid credentials.'], 422)
+            : $this->response_factory->redirectToLogin()
+                                     ->withErrors(
+                                         ['login' => 'We could not authenticate you with the provided credentials']
+                                     );
+    
     }
     
     public function destroy(Request $request, int $user_id) :Response
     {
+    
+        if ($user_id !== $request->userId()) {
         
-        if ($user_id !== WP::userId()) {
-            
             throw new InvalidSignatureException(
-                "Suspicious logout attempt with query-id-mismatch."
+                "Suspicious logout attempt with query arg mismatch for logged in user [{$request->userId()}]. Query arg id [$user_id]"
             );
-            
+        
         }
         
         $redirect_to = $request->query('redirect_to', $this->url->toRoute('home'));
@@ -97,7 +108,7 @@ class AuthSessionController extends Controller
     
     private function handleLogin(WP_User $user, bool $remember, LoginResponse $login_response, Request $request)
     {
-        
+    
         $session = $request->session();
         $session->setUserId($user->ID);
         $session->put('auth.has_remember_token', $remember);
@@ -121,13 +132,9 @@ class AuthSessionController extends Controller
     
     // None of our authenticators where able to authenticate the user.
     // Time to bail.
-    private function handleAuthFailure() :Closure
+    private function unauthenticated() :Closure
     {
-        return function () {
-            
-            throw new FailedAuthenticationException('Failed Authentication');
-            
-        };
+        return fn() => new NullResponse($this->response_factory->createResponse());
     }
     
     private function parseRedirect(Request $request) :string

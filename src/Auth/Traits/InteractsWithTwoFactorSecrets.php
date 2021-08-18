@@ -6,6 +6,7 @@ namespace Snicco\Auth\Traits;
 
 use WP_User;
 use Snicco\Contracts\EncryptorInterface;
+use Snicco\ExceptionHandling\Exceptions\DecryptException;
 
 /**
  * @property EncryptorInterface $encryptor
@@ -17,6 +18,7 @@ trait InteractsWithTwoFactorSecrets
      * @param  WP_User|int  $user
      *
      * @return string
+     * @throws DecryptException
      */
     private function twoFactorSecret($user) :string
     {
