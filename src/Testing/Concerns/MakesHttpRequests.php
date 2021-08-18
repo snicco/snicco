@@ -38,11 +38,12 @@ trait MakesHttpRequests
     protected array $default_headers          = [];
     protected array $default_cookies          = [];
     protected array $default_server_variables = [];
+    protected array $default_attributes       = [];
     private bool    $with_trailing_slash      = false;
     private bool    $without_trailing_slash   = false;
     private bool    $follow_redirects         = false;
     
-    public function frontendRequest(string $method, $uri) :Request
+    public function frontendRequest(string $method = 'GET', $uri = '/') :Request
     {
         
         $method = strtoupper($method);
@@ -364,10 +365,23 @@ trait MakesHttpRequests
     
     protected function addCookies(Request $request) :Request
     {
-        
+    
         foreach ($this->default_cookies as $name => $value) {
-            
+        
             $request = $request->withAddedHeader('Cookie', "$name=$value");
+        
+        }
+    
+        return $request;
+    
+    }
+    
+    protected function addAttributes(Request $request) :Request
+    {
+        
+        foreach ($this->default_attributes as $attribute => $value) {
+            
+            $request = $request->withAttribute($attribute, $value);
             
         }
         
@@ -401,6 +415,7 @@ trait MakesHttpRequests
         
         $request = $this->addHeaders($request, $headers);
         $request = $this->addCookies($request);
+        $request = $this->addAttributes($request);
         
         $this->withRequest($request);
         

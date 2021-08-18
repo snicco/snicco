@@ -9,8 +9,11 @@
     use Snicco\Http\Psr7\Request;
     use Snicco\Middleware\Secure;
     use Snicco\Http\ResponseFactory;
+    use Snicco\Auth\Fail2Ban\Fail2Ban;
     use Snicco\Session\SessionManager;
+    use Snicco\Auth\Fail2Ban\Syslogger;
     use Snicco\Contracts\ServiceProvider;
+    use Snicco\Auth\Fail2Ban\PHPSyslogger;
     use Snicco\Auth\Middleware\ConfirmAuth;
     use Snicco\Auth\Contracts\LoginResponse;
     use Snicco\Auth\Events\GenerateLoginUrl;
@@ -40,6 +43,7 @@
     use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
     use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
     use Snicco\Auth\Responses\RedirectToDashboardResponse;
+    use Snicco\Auth\Events\FailedPasswordResetLinkRequest;
     use Snicco\Auth\Confirmation\TwoFactorAuthConfirmation;
     use Snicco\Auth\Responses\EmailRegistrationViewResponse;
     use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
@@ -54,9 +58,7 @@
 	    {
 		
 		    $this->bindConfig();
-
             $this->bindAuthPipeline();
-
             $this->extendRoutes(__DIR__.DIRECTORY_SEPARATOR.'routes');
 
             $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views');
@@ -64,25 +66,18 @@
             $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'partials');
 
             $this->bindEvents();
-
             $this->bindControllers();
-
             $this->bindAuthConfirmation();
-
             $this->bindWpSessionToken();
-
             $this->bindAuthSessionManager();
-
             $this->bindLoginViewResponse();
-
             $this->bindLoginResponse();
-
             $this->bindTwoFactorProvider();
-
             $this->bindTwoFactorChallengeResponse();
-
             $this->bindRegistrationViewResponse();
-
+        
+            $this->bindFail2Ban();
+        
         }
 
         public function bootstrap() : void
@@ -347,13 +342,39 @@
                         $this->container->make(ResponseFactory::class),
                         $this->container->make(EncryptorInterface::class),
                     );
-
+    
                 }
-
+    
                 return $this->container->make(EmailAuthConfirmation::class);
-
+    
             });
         }
-
-
+    
+        private function bindFail2Ban()
+        {
+            if ( ! $this->config->get('auth.fail2ban.enabled')) {
+                return;
+            }
+        
+            $this->config->extend('auth.fail2ban.daemon', 'sniccowp');
+            $this->config->extend('auth.fail2ban.facility', LOG_AUTH);
+            $this->config->extend('auth.fail2ban.flags', LOG_NDELAY | LOG_PID);
+            $this->config->extend('events.listeners', [
+                FailedPasswordResetLinkRequest::class => [
+                    [Fail2Ban::class, 'report'],
+                ],
+            ]);
+        
+            $this->container->singleton(Syslogger::class, fn() => new PHPSyslogger());
+            $this->container->singleton(Fail2Ban::class, function () {
+            
+                return new Fail2Ban(
+                    $this->container->make(Syslogger::class),
+                    $this->config->get('auth.fail2ban')
+                );
+            
+            });
+        
+        }
+    
     }

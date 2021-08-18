@@ -1,6 +1,8 @@
 <?php
 
-namespace Snicco\Contracts;
+namespace Snicco\Auth\Fail2Ban;
+
+use Snicco\Http\Psr7\Request;
 
 interface Bannable
 {
@@ -15,8 +17,10 @@ interface Bannable
     /**
      * The message that should be logged with fail2ban.*
      *
-     * @return int
+     * @return string
      */
-    public function fail2BanMessage();
+    public function fail2BanMessage() :string;
+    
+    public function request() :Request;
     
 }

@@ -1,17 +1,15 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+use Snicco\Session\Session;
+use Illuminate\Support\ViewErrorBag;
 
-    use Snicco\Session\Session;
-    use Illuminate\Support\ViewErrorBag;
-    
-    /** @var ViewErrorBag $errors */
+/** @var ViewErrorBag $errors */
 
-    /** @var Session $session */
+/** @var Session $session */
 
-
-    $processed = $session->get('_password_reset_processed', false);
+$processed = $session->get('password.reset.processed', false);
 
 ?>
 

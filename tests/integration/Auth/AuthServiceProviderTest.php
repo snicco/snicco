@@ -13,10 +13,13 @@
     use Snicco\Middleware\Secure;
     use Snicco\Events\ResponseSent;
     use Snicco\Session\SessionManager;
+    use Snicco\Auth\Fail2Ban\Fail2Ban;
     use Snicco\Auth\AuthSessionManager;
     use Snicco\Auth\WpAuthSessionToken;
     use Snicco\Session\Events\NewLogin;
+    use Snicco\Auth\Fail2Ban\Syslogger;
     use Snicco\Session\Events\NewLogout;
+    use Snicco\Auth\Fail2Ban\PHPSyslogger;
     use Snicco\Auth\Contracts\LoginResponse;
     use Snicco\Auth\Contracts\AuthConfirmation;
     use Snicco\Http\Responses\RedirectResponse;
@@ -457,13 +460,76 @@
         /** @test */
         public function two_factor_auth_confirmation_is_used_if_enabled()
         {
-
+    
             $this->withAddedConfig('auth.features.2fa', true);
             $this->boot();
-
-            $this->assertInstanceOf(TwoFactorAuthConfirmation::class, TestApp::resolve(AuthConfirmation::class));
-
-
+    
+            $this->assertInstanceOf(
+                TwoFactorAuthConfirmation::class,
+                TestApp::resolve(AuthConfirmation::class)
+            );
+    
         }
-
+    
+        /**
+         * FAIL2BAN
+         */
+    
+        /** @test */
+        public function fail2ban_is_disabled_by_default()
+        {
+        
+            $this->withOutConfig('auth.fail2ban.enabled')->boot();
+            $this->assertNull(TestApp::config('auth.fail2ban.enabled'));
+        
+        }
+    
+        /** @test */
+        public function the_daemon_is_set()
+        {
+        
+            $this->withAddedConfig('auth.fail2ban.enabled', true);
+            $this->boot();
+            $this->assertSame('sniccowp', TestApp::config('auth.fail2ban.daemon'));
+        
+        }
+    
+        /** @test */
+        public function the_default_facility_is_set_to_LOG_AUTH()
+        {
+            $this->withAddedConfig('auth.fail2ban.enabled', true);
+            $this->boot();
+            $this->assertSame(LOG_AUTH, TestApp::config('auth.fail2ban.facility'));
+        
+        }
+    
+        /** @test */
+        public function the_default_flags_are_set()
+        {
+            $this->withAddedConfig('auth.fail2ban.enabled', true);
+            $this->boot();
+            $this->assertSame(LOG_NDELAY | LOG_PID, TestApp::config('auth.fail2ban.flags'));
+        }
+    
+        /** @test */
+        public function the_fail2ban_class_is_bound()
+        {
+        
+            $this->withAddedConfig('auth.fail2ban.enabled', true);
+            $this->boot();
+            $this->assertInstanceOf(
+                Fail2Ban::class,
+                $this->app->container()->make(Fail2Ban::class)
+            );
+        
+        }
+    
+        /** @test */
+        public function the_php_syslog_is_used_by_default()
+        {
+            $this->withAddedConfig('auth.fail2ban.enabled', true);
+            $this->boot();
+            $this->assertInstanceOf(PHPSyslogger::class, TestApp::resolve(Syslogger::class));
+        }
+    
     }

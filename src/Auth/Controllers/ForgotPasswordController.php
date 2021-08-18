@@ -14,7 +14,7 @@ use Snicco\Auth\Traits\ResolvesUser;
 use Respect\Validation\Validator as v;
 use Snicco\Auth\Mail\ResetPasswordMail;
 use Snicco\Http\Responses\RedirectResponse;
-use Snicco\Auth\Events\FailedPasswordReset;
+use Snicco\Auth\Events\FailedPasswordResetLinkRequest;
 
 class ForgotPasswordController extends Controller
 {
@@ -58,14 +58,14 @@ class ForgotPasswordController extends Controller
         
         }
         else {
-        
-            FailedPasswordReset::dispatch([$request]);
+    
+            FailedPasswordResetLinkRequest::dispatch([$request, $validated['login']]);
         
         }
-        
+    
         return $this->response_factory->redirect()
                                       ->toRoute('auth.forgot.password')
-                                      ->with('_password_reset_processed', true);
+                                      ->with('password.reset.processed', true);
         
     }
     

@@ -1,9 +1,8 @@
 <?php
 
-namespace Tests\integration\Fail2Ban;
+namespace Snicco\Auth\Fail2Ban;
 
 use PHPUnit\Framework\Assert;
-use Snicco\Fail2Ban\Contracts\Syslogger;
 
 class TestSysLogger implements Syslogger
 {

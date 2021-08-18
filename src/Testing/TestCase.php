@@ -69,27 +69,27 @@ abstract class TestCase extends WPTestCase
 	 * @var callable[]
 	 */
 	private array $after_application_created_callbacks = [];
-	
-	/**
-	 * @var callable[]
-	 */
-	private array $before_application_destroy_callbacks = [];
-	
-	/**
-	 * @var callable[]
-	 */
-	protected array $after_config_loaded_callbacks = [];
-	
-	/**
-	 * Return an instance of your Application. DON'T BOOT THE APPLICATION.
-	 */
-	abstract public function createApplication() :Application;
-	
-	/**
-	 * @return ServiceProvider[]
-	 */
-	public function packageProviders() :array
-	{
+    
+    /**
+     * @var callable[]
+     */
+    private array $before_application_destroy_callbacks = [];
+    
+    /**
+     * @var callable[]
+     */
+    protected array $after_config_loaded_callbacks = [];
+    
+    /**
+     * Return an instance of your Application. DON'T BOOT THE APPLICATION.
+     */
+    abstract public function createApplication() :Application;
+    
+    /**
+     * @return ServiceProvider[]
+     */
+    public function packageProviders() :array
+    {
 		
 		return [];
 	}
