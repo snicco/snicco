@@ -7,6 +7,8 @@ namespace Tests\integration\Auth\Authenticators;
 use Tests\AuthTestCase;
 use Snicco\Events\Event;
 use Snicco\Routing\UrlGenerator;
+use Snicco\Auth\Fail2Ban\Syslogger;
+use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Snicco\Auth\Events\FailedPasswordAuthentication;
 use Snicco\Auth\Authenticators\PasswordAuthenticator;
 
@@ -21,6 +23,8 @@ class PasswordAuthenticatorTest extends AuthTestCase
             $this->withReplacedConfig('auth.through', [
                 PasswordAuthenticator::class,
             ]);
+            $this->withAddedConfig('auth.fail2ban.enabled', true);
+            
         });
         
         $this->afterApplicationCreated(function () {
@@ -168,11 +172,41 @@ class PasswordAuthenticatorTest extends AuthTestCase
                 'remember_me' => '1',
             ]
         );
-        
+    
         $response->assertRedirectToRoute('dashboard');
         $this->assertAuthenticated($calvin);
         $this->assertTrue($this->session->hasRememberMeToken());
         Event::assertNotDispatched(FailedPasswordAuthentication::class);
+    
+    }
+    
+    /** @test */
+    public function a_failed_login_is_logged_with_fail2ban()
+    {
+        
+        $this->swap(Syslogger::class, $logger = new TestSysLogger());
+        
+        $this->default_attributes = ['ip_address' => '127.0.0.1'];
+        $calvin = $this->createAdmin();
+        $token = $this->withCsrfToken();
+        
+        $response = $this->post(
+            '/auth/login',
+            $token +
+            [
+                'log' => $calvin->user_login,
+                'pwd' => 'bogus',
+            ]
+        );
+        
+        $this->assertGuest();
+        $response->assertRedirectPath('/auth/login')
+                 ->assertSessionHasErrors('login');
+        
+        $logger->assertLogEntry(
+            E_WARNING,
+            "Failed authentication attempt for user [$calvin->ID] with invalid password [bogus] from 127.0.0.1"
+        );
         
     }
     

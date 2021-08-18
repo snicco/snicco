@@ -10,7 +10,6 @@
     use Snicco\Contracts\MagicLink;
     use Snicco\Routing\UrlGenerator;
     use Snicco\Testing\TestDoubles\TestMagicLink;
-    use Snicco\Auth\Exceptions\FailedAuthConfirmationException;
 
     class EmailAuthConfirmationTest extends AuthTestCase
     {
@@ -70,9 +69,9 @@
         }
 
         /** @test */
-        public function auth_can_not_confirmed_with_a_tampered_magic_link()
+        public function auth_can_not_be_confirmed_with_a_tampered_magic_link()
         {
-
+    
             $this->authenticateAndUnconfirm($this->createAdmin());
     
             $response = $this->get($this->validMagicLink().'a');
@@ -81,34 +80,6 @@
             $response->assertSessionHasErrors('auth.confirmation');
             $this->assertFalse($response->session()->hasValidAuthConfirmToken());
     
-        }
-    
-        /** @test */
-        public function an_exception_gets_thrown_if_an_invalid_magic_link_is_detected()
-        {
-        
-            $this->withoutExceptionHandling();
-        
-            $this->authenticateAndUnconfirm($admin = $this->createAdmin());
-        
-            $exception_caught = false;
-        
-            try {
-            
-                $this->get($this->validMagicLink().'a');
-            
-            } catch (FailedAuthConfirmationException $e) {
-            
-                $this->assertStringStartsWith(
-                    "Failed auth confirmation for user [$admin->ID]",
-                    $e->fail2BanMessage()
-                );
-    
-                $exception_caught = true;
-            }
-        
-            $this->assertTrue($exception_caught);
-        
         }
     
         /** @test */

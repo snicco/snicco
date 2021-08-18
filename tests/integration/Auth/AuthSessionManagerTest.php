@@ -6,21 +6,21 @@
 
     namespace Tests\integration\Auth;
 
-    use Snicco\Session\Contracts\SessionDriver;
-    use Snicco\Session\Contracts\SessionManagerInterface;
-    use Snicco\Session\Drivers\ArraySessionDriver;
-    use Snicco\Session\Session;
+    use WP_User;
     use Tests\AuthTestCase;
     use Tests\stubs\TestApp;
+    use Snicco\Session\Session;
     use Tests\stubs\TestRequest;
-    use WP_User;
+    use Snicco\Session\Contracts\SessionDriver;
+    use Snicco\Session\Drivers\ArraySessionDriver;
+    use Snicco\Session\Contracts\SessionManagerInterface;
 
     class AuthSessionManagerTest extends AuthTestCase
     {
-
+    
         private ArraySessionDriver $driver;
-
-        protected function setUp() : void
+    
+        protected function setUp() :void
         {
             $this->afterApplicationCreated(function () {
                 $this->driver = TestApp::resolve(SessionDriver::class);
@@ -186,7 +186,7 @@
             $this->assertCount(1, $this->session_manager->getAllForUser());
 
         }
-
+    
         /** @test */
         public function idle_sessions_are_not_included_if_remember_me_is_disabled () {
 
@@ -202,7 +202,7 @@
             $this->assertCount(0, $this->session_manager->getAllForUser());
 
         }
-
+    
         /** @test */
         public function the_idle_timeout_can_be_customized_at_runtime () {
 

@@ -9,7 +9,7 @@ use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Session\Events\SessionRegenerated;
-use Snicco\Auth\Exceptions\FailedAuthConfirmationException;
+use Snicco\Auth\Events\FailedAuthConfirmation;
 
 class ConfirmedAuthSessionController extends Controller
 {
@@ -28,21 +28,22 @@ class ConfirmedAuthSessionController extends Controller
         return $this->auth_confirmation->viewResponse($request);
     }
     
-    /**
-     * @throws FailedAuthConfirmationException
-     */
     public function store(Request $request) :Response
     {
         
         $confirmed = $this->auth_confirmation->confirm($request);
         
         if ($confirmed !== true) {
-            
-            throw new FailedAuthConfirmationException(
-                "Failed auth confirmation for user [{$request->userId()}]",
-                'auth.confirm'
-            );
-            
+    
+            FailedAuthConfirmation::dispatch([$request, $request->userId()]);
+    
+            return $request->isExpectingJson()
+                ? $this->response_factory->json(['message' => 'Invalid credentials.'], 422)
+                : $this->response_factory->redirectToRoute('auth.confirm')
+                                         ->withErrors(
+                                             ['auth.confirmation' => 'We could not authenticate you.']
+                                         );
+    
         }
         
         $this->confirmAuth($request);

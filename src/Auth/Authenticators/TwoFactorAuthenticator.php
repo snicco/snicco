@@ -9,6 +9,7 @@ use Snicco\Http\Psr7\Response;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Contracts\Authenticator;
 use Snicco\Contracts\EncryptorInterface;
+use Snicco\Auth\Events\FailedTwoFactorAuthentication;
 use Snicco\Auth\Traits\PerformsTwoFactorAuthentication;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
 use Snicco\Auth\Exceptions\FailedTwoFactorAuthenticationException;
@@ -47,9 +48,13 @@ class TwoFactorAuthenticator extends Authenticator
         );
         
         if ( ! $valid) {
-            throw new FailedTwoFactorAuthenticationException(
-                "Failed two-factor authentication with invalid code for user [$user_id]",
-            );
+    
+            FailedTwoFactorAuthentication::dispatch([$request, $user_id]);
+    
+            return $this->response_factory->redirect()
+                                          ->toRoute('auth.2fa.challenge')
+                                          ->withErrors(['login' => 'Invalid code provided']);
+    
         }
         
         $remember = $session->get('auth.2fa.remember', false);

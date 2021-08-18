@@ -27,11 +27,9 @@ class ResetPasswordController extends Controller
     
     public function __construct(string $success_message = null)
     {
-        
         $this->success_message = $success_message
                                  ??
                                  'You have successfully reset your password. You can now log-in with your new credentials';
-        
     }
     
     public function create(Request $request, MethodField $method_field)
@@ -41,7 +39,6 @@ class ResetPasswordController extends Controller
             'post_to' => $request->fullPath(),
             'method_field' => $method_field->html('PUT'),
         ])->withHeader('Referrer-Policy', 'strict-origin');
-        
     }
     
     public function update(Request $request) :RedirectResponse

@@ -9,6 +9,7 @@ use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\MagicLink;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Contracts\Authenticator;
+use Snicco\Auth\Events\FailedMagicLinkAuthentication;
 use Snicco\Auth\Exceptions\FailedAuthenticationException;
 
 class MagicLinkAuthenticator extends Authenticator
@@ -25,39 +26,29 @@ class MagicLinkAuthenticator extends Authenticator
     
     public function attempt(Request $request, $next)
     {
+    
+        if ( ! $request->isGet() || ! $request->filled('signature')) {
         
-        if ( ! $request->filled('user_id')) {
-            
-            throw new FailedAuthenticationException(
-                "Failed authentication with missing user_id param in magic link",
-            );
-            
+            return $next($request);
+        
         }
-        
+    
         $valid = $this->magic_link->hasValidSignature($request, true);
+        $user_id = $request->query('user_id');
+    
+        if ( ! $valid || ! ($user = $this->getUserById($user_id)) instanceof WP_User) {
         
-        if ( ! $valid) {
-            
-            throw new FailedAuthenticationException(
-                "Failed authentication with invalid magic-link for user [{{$request->query('user_id')}]",
-            );
-            
+            FailedMagicLinkAuthentication::dispatch([$request, $user_id]);
+        
+            return $this->unauthenticated();
+        
         }
-        
+    
         $this->magic_link->invalidate($request->fullUrl());
-        $user = $this->getUserById($request->query('user_id'));
-        
-        if ( ! $user instanceof WP_User) {
-            
-            throw new FailedAuthenticationException(
-                "Failed authentication with magic-link for unresolvable user_id [{{$request->query('user_id')}]",
-            );
-            
-        }
-        
+    
         // Whether remember_me will be allowed is determined by the config value in AuthSessionController
         return $this->login($user, true);
-        
+    
     }
     
 }
