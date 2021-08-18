@@ -6,25 +6,24 @@
 
     namespace Tests\unit\Http;
 
-    use Snicco\Http\Psr7\Response;
-    use Snicco\Http\Redirector;
-    use Snicco\Http\ResponseFactory;
-    use Snicco\Http\Responses\InvalidResponse;
-    use Snicco\Http\Responses\NullResponse;
-    use Snicco\Http\Responses\WpQueryFilteredResponse;
-    use Tests\helpers\AssertsResponse;
-    use Tests\helpers\CreateRouteCollection;
-    use Tests\helpers\CreateUrlGenerator;
-    use Tests\stubs\TestView;
     use Tests\UnitTest;
+    use Tests\stubs\TestView;
+    use Snicco\Http\Redirector;
+    use Snicco\Http\Psr7\Response;
+    use Snicco\Http\ResponseFactory;
+    use Tests\helpers\AssertsResponse;
+    use Tests\helpers\CreateUrlGenerator;
+    use Snicco\Http\Responses\NullResponse;
+    use Tests\helpers\CreateRouteCollection;
+    use Snicco\Http\Responses\InvalidResponse;
 
     class ResponseFactoryTest extends UnitTest
     {
-
+    
         use AssertsResponse;
         use CreateUrlGenerator;
         use CreateRouteCollection;
-
+    
         private ResponseFactory $factory;
 
         protected function setUp() : void
@@ -81,15 +80,6 @@
 
         }
 
-        /** @test */
-        public function testQueryFiltered () {
-
-            $response = $this->factory->queryFiltered();
-
-            $this->assertInstanceOf(NullResponse::class, $response);
-            $this->assertInstanceOf(WpQueryFilteredResponse::class, $response);
-
-        }
 
         /** @test */
         public function testToResponse_already_response () {
@@ -97,8 +87,6 @@
             $response = $this->factory->make();
             $result = $this->factory->toResponse($response);
             $this->assertSame($result, $response);
-
-
 
         }
 
