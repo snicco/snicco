@@ -8,59 +8,51 @@ use WP_User;
 use Snicco\Http\Psr7\Request;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Contracts\Authenticator;
-use Snicco\Auth\Exceptions\FailedAuthenticationException;
+use Snicco\Auth\Events\FailedPasswordAuthentication;
 
 class PasswordAuthenticator extends Authenticator
 {
+    
     use ResolvesUser;
     
     public function attempt(Request $request, $next)
     {
-        
-        if ( ! $request->filled('pwd') || ! $request->filled('log')) {
-            
-            throw new FailedAuthenticationException(
-                'Failed authentication with missing password or username',
-            );
-            
+    
+        if ( ! $this->shouldHandle($request)) {
+            return $next($request);
         }
-        
-        $this->findUser($request);
-        
+    
+        $login = $request->post('log');
         $password = $request->post('pwd');
-        $remember = $request->boolean('remember_me');
+    
+        if ( ! ($user = $this->getUserByLogin($login)) instanceof WP_User) {
         
-        $user = $this->findUser($request);
+            FailedPasswordAuthentication::dispatch([$request, $login, $password, $user_id = null]);
         
-        if ( ! (wp_check_password($password, $user->user_pass, $user->ID))) {
-            
-            throw new FailedAuthenticationException(
-                "Failed authentication for user [$user->ID] with wrong password [$password]",
-                $request->only(['pwd', 'log', 'remember_me'])
-            );
-            
+            return $this->unauthenticated();
+        
         }
+    
+        if ( ! $this->isValidPassword($password, $user)) {
         
-        return $this->login($user, $remember);
+            FailedPasswordAuthentication::dispatch([$request, $login, $password, $user->ID]);
         
+            return $this->unauthenticated();
+        
+        }
+    
+        return $this->login($user, $request->boolean('remember_me'));
+    
     }
     
-    private function findUser(Request $request) :WP_User
+    private function isValidPassword(string $password, WP_User $user) :bool
     {
+        return wp_check_password($password, $user->user_pass, $user->ID);
+    }
     
-        $user = $this->getUserByLogin($request->post('log'));
-        
-        if ( ! $user instanceof WP_User) {
-            
-            throw new FailedAuthenticationException(
-                'Failed authentication for invalid username',
-                $request->only(['pwd', 'log', 'remember_me'])
-            );
-            
-        }
-        
-        return $user;
-        
+    private function shouldHandle(Request $request) :bool
+    {
+        return $request->filled('pwd') && $request->filled('log');
     }
     
 }

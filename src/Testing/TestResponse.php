@@ -7,23 +7,23 @@
     namespace Snicco\Testing;
 
     use Closure;
-    use PHPUnit\Framework\Assert as PHPUnit;
-    use Snicco\Application\Application;
-    use Snicco\Contracts\ViewInterface;
-    use Snicco\Http\Psr7\Response;
-    use Snicco\Http\Responses\NullResponse;
-    use Snicco\Routing\UrlGenerator;
-    use Snicco\Session\Session;
     use Snicco\Support\Arr;
     use Snicco\Support\Str;
     use Snicco\Support\Url;
+    use Snicco\Session\Session;
+    use Snicco\Http\Psr7\Response;
     use Snicco\Support\VariableBag;
-    use Snicco\Testing\Assertable\AssertableCookie;
+    use Snicco\Routing\UrlGenerator;
+    use Snicco\Application\Application;
+    use Snicco\Contracts\ViewInterface;
+    use PHPUnit\Framework\Assert as PHPUnit;
+    use Snicco\Http\Responses\NullResponse;
     use Snicco\Testing\Constraints\SeeInOrder;
+    use Snicco\Testing\Assertable\AssertableCookie;
 
     class TestResponse
     {
-
+    
         public Response        $psr_response;
         protected string       $streamed_content;
         private VariableBag    $headers;
@@ -242,22 +242,25 @@
 
             return $this;
         }
-
-        public function assertRedirectPath(string $path, int $status = null)
+    
+        public function assertRedirectPath(string $path, int $status = null) :TestResponse
         {
-
+        
             PHPUnit::assertTrue(
-                $this->isRedirect(), 'Response status code ['.$this->getStatusCode().'] is not a redirect status code.'
+                $this->isRedirect(),
+                'Response status code ['.$this->getStatusCode().'] is not a redirect status code.'
             );
-
+        
             if ($status) {
                 $this->assertStatus($status);
             }
-
+        
             $location = $this->psr_response->getHeaderLine('location');
             $path = Url::addLeading($path);
             PHPUnit::assertSame($path, parse_url($location, PHP_URL_PATH));
-
+        
+            return $this;
+        
         }
 
         public function assertRedirectToRoute(string $route, int $status_code = null) : TestResponse

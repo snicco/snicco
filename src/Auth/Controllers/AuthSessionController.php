@@ -15,12 +15,12 @@ use Snicco\Routing\Pipeline;
 use Snicco\Auth\Events\Login;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
+use Snicco\Http\Responses\NullResponse;
 use Snicco\Auth\Contracts\LoginResponse;
 use Snicco\Auth\Responses\LogoutResponse;
 use Snicco\Contracts\ResponseableInterface;
 use Snicco\Auth\Contracts\LoginViewResponse;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
-use Snicco\Auth\Exceptions\FailedAuthenticationException;
 use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
 
 class AuthSessionController extends Controller
@@ -52,22 +52,34 @@ class AuthSessionController extends Controller
     
     public function store(Request $request, Pipeline $auth_pipeline, LoginResponse $login_response)
     {
-        
+    
         $response = $auth_pipeline->send($request)
                                   ->through($this->auth_config['through'])
-                                  ->then($this->handleAuthFailure());
-        
+                                  ->then($this->unauthenticated());
+    
         if ($response instanceof SuccessfulLoginResponse) {
-            
+        
             $remember = $response->rememberUser() && $this->allowRememberMe();
             $user = $response->authenticatedUser();
-            
+        
             return $this->handleLogin($user, $remember, $login_response, $request);
-            
+        
         }
+    
+        // one authenticator has decided to return a custom failure response.
+        if ( ! $response instanceof NullResponse) {
         
-        return $response;
+            return $response;
         
+        }
+    
+        return $request->isExpectingJson()
+            ? $this->response_factory->json(['message' => 'Authentication failed.'])
+            : $this->response_factory->redirectToLogin()
+                                     ->withErrors(
+                                         ['login' => 'We could not authenticate you with the provided credentials']
+                                     );
+    
     }
     
     public function destroy(Request $request, int $user_id) :Response
@@ -97,9 +109,9 @@ class AuthSessionController extends Controller
     
     private function handleLogin(WP_User $user, bool $remember, LoginResponse $login_response, Request $request)
     {
-        
+    
         $session = $request->session();
-        //$session->setUserId($user->ID);
+        $session->setUserId($user->ID);
         $session->put('auth.has_remember_token', $remember);
         $session->confirmAuthUntil(Arr::get($this->auth_config, 'confirmation.duration', 0));
         $session->regenerate();
@@ -121,13 +133,9 @@ class AuthSessionController extends Controller
     
     // None of our authenticators where able to authenticate the user.
     // Time to bail.
-    private function handleAuthFailure() :Closure
+    private function unauthenticated() :Closure
     {
-        return function () {
-            
-            throw new FailedAuthenticationException('Failed Authentication');
-            
-        };
+        return fn() => new NullResponse($this->response_factory->createResponse());
     }
     
     private function parseRedirect(Request $request) :string

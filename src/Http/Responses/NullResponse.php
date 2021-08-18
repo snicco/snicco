@@ -12,6 +12,4 @@
     class NullResponse extends Response
     {
 
-
-
     }
