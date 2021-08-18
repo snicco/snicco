@@ -1,38 +1,35 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Tests\integration\Blade;
 
+use Tests\stubs\TestApp;
 
-    namespace Tests\integration\Blade;
-
-
-    use Tests\stubs\TestApp;
-
-    class BladeLayoutsTest extends BladeTestCase
+class BladeLayoutsTest extends BladeTestCase
+{
+    
+    /** @test */
+    public function layouts_and_extending_work()
     {
-
-
-        /** @test */
-        public function layouts_and_extending_work () {
-
-            $view = TestApp::view('layouts.child');
-
-            $this->assertViewContent(
-                'Name:foo,SIDEBAR:parent_sidebar.appended,BODY:foobar,FOOTER:default_footer',
-                $view->toString()
-            );
-
-        }
-
-
-        /** @test */
-        public function stacks_work () {
-
-            $view = TestApp::view('stack-child');
-            $content = $view->toString();
-            $this->assertViewContent('FOOBAZBAR', $content);
-
-        }
-
+        
+        $view = TestApp::view('layouts.child');
+        
+        $this->assertViewContent(
+            'Name:foo,SIDEBAR:parent_sidebar.appended,BODY:foobar,FOOTER:default_footer',
+            $view->toString()
+        );
+        
     }
+    
+    /** @test */
+    public function stacks_work()
+    {
+        
+        $view = TestApp::view('stack-child');
+        $content = $view->toString();
+        $this->assertViewContent('FOOBAZBAR', $content);
+        
+    }
+    
+}

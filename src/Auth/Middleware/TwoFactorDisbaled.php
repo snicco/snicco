@@ -10,25 +10,25 @@ use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
 
 class TwoFactorDisbaled extends Middleware
 {
-	
-	use InteractsWithTwoFactorSecrets;
-	
-	public function handle(Request $request, Delegate $next) :ResponseInterface
-	{
-		
-		if( $this->userHasTwoFactorEnabled($request->user()) ) {
-			
-			return $this->response_factory->json(
-				[
-					'message' => 'Two-Factor authentication is already enabled.',
-				],
-				409
-			);
-			
-		}
-		
-		return $next($request);
-		
-	}
-	
+    
+    use InteractsWithTwoFactorSecrets;
+    
+    public function handle(Request $request, Delegate $next) :ResponseInterface
+    {
+        
+        if ($this->userHasTwoFactorEnabled($request->user())) {
+            
+            return $this->response_factory->json(
+                [
+                    'message' => 'Two-Factor authentication is already enabled.',
+                ],
+                409
+            );
+            
+        }
+        
+        return $next($request);
+        
+    }
+    
 }

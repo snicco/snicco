@@ -1,63 +1,62 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+/** @var ViewErrorBag $errors */
 
-    /** @var ViewErrorBag $errors */
+/** @var Session $session */
 
-    /** @var Session $session */
-
-    use Illuminate\Support\ViewErrorBag;
-    use Snicco\Session\Session;
+use Snicco\Session\Session;
+use Illuminate\Support\ViewErrorBag;
 
 ?>
 
 <?php if ($session->get('_password_reset.success', false)) : ?>
-
-    <div class="box">
+	
+	<div class="box">
         <div class="notification is-success is-light">
             You have successfully reset your password. You can now log-in with your new credentials.
         </div>
         <a href="<?= wp_login_url() ?>" class="is-link"> Proceed to login</a>
     </div>
 <?php else : ?>
-    <form id="reset-password" method="POST" action="<?= esc_attr($post_to) ?>" class="box">
+	<form id="reset-password" method="POST" action="<?= esc_attr($post_to) ?>" class="box">
 
         <?= $method_field ?>
-        <?php if ($errors->count()): ?>
-
-            <div class="notification is-danger is-light">
+		<?php if ($errors->count()): ?>
+			
+			<div class="notification is-danger is-light">
                 <?= esc_html($errors->first('password')) ?>
-                <?php if ($errors->has('reason')) : ?>
-                    <br>
-                    Reason: <?= esc_html($errors->first('reason')) ?>
-                <?php endif; ?>
+				<?php if ($errors->has('reason')) : ?>
+					<br>
+					Reason: <?= esc_html($errors->first('reason')) ?>
+				<?php endif; ?>
             </div>
-
-            <div class="notification is-info is-light">
-            <?php if ($errors->has('suggestions')) : ?>
-                Suggestions:
-                <ul style="list-style: inherit">
+			
+			<div class="notification is-info is-light">
+			<?php if ($errors->has('suggestions')) : ?>
+				Suggestions:
+				<ul style="list-style: inherit">
                     <?php foreach ($errors->get('suggestions') as $error): ?>
-
-                        <li> <?= esc_html($error) ?></li>
+	
+	                    <li> <?= esc_html($error) ?></li>
 
                     <?php endforeach; ?>
                 </ul>
-
-                </div>
-            <?php endif; ?>
-
-        <?php else : ?>
-
-            <div class="notification is-info is-light">
+				
+				</div>
+			<?php endif; ?>
+		
+		<?php else : ?>
+			
+			<div class="notification is-info is-light">
                 <p> Choose and confirm your new password. </p>
             </div>
-        <?php endif; ?>
-
-        <?= $csrf->asHtml() ?>
-
-        <div class="field">
+		<?php endif; ?>
+		
+		<?= $csrf->asHtml() ?>
+		
+		<div class="field">
             <label for="" class="label">Password</label>
             <div class="control has-icons-left">
 
@@ -85,13 +84,13 @@
             <label for="" class="label">Confirmation</label>
             <div class="control has-icons-left">
                 <input
-
-                        name="password_confirmation"
-                        type="password"
-                        placeholder="Confirm your password"
-                        class="input <?= $errors->count() ? 'is-danger' : '' ?>"
-                        required
-                        autocomplete="new-password"
+		
+		                name="password_confirmation"
+		                type="password"
+		                placeholder="Confirm your password"
+		                class="input <?= $errors->count() ? 'is-danger' : '' ?>"
+		                required
+		                autocomplete="new-password"
 
                 >
                 <span class="icon is-small is-left">
@@ -111,23 +110,23 @@
 <script>
 
     function togglePassword() {
-        let el = document.getElementById("password");
-        let toggle = document.getElementById("toggle");
-        if (el.type === 'password') {
-            document.getElementById("password").type = "text";
-            toggle.innerText = 'Hide password'
-        } else {
-            document.getElementById("password").type = "password";
-            toggle.innerText = 'Show password'
-        }
+	    let el = document.getElementById("password");
+	    let toggle = document.getElementById("toggle");
+	    if (el.type === 'password') {
+		    document.getElementById("password").type = "text";
+		    toggle.innerText = 'Hide password'
+	    } else {
+		    document.getElementById("password").type = "password";
+		    toggle.innerText = 'Show password'
+	    }
     }
 
     let btn = document.querySelector('.button');
     btn.addEventListener('click', function (e) {
-
-        let el = document.getElementById("password");
-        el.type = "password";
-
+	
+	    let el = document.getElementById("password");
+	    el.type = "password";
+	
     });
 
 

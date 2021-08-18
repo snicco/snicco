@@ -34,16 +34,16 @@ class ConfirmedAuthSessionController extends Controller
         $confirmed = $this->auth_confirmation->confirm($request);
         
         if ($confirmed !== true) {
-    
+            
             FailedAuthConfirmation::dispatch([$request, $request->userId()]);
-    
+            
             return $request->isExpectingJson()
                 ? $this->response_factory->json(['message' => 'Invalid credentials.'], 422)
                 : $this->response_factory->redirectToRoute('auth.confirm')
                                          ->withErrors(
                                              ['auth.confirmation' => 'We could not authenticate you.']
                                          );
-    
+            
         }
         
         $this->confirmAuth($request);

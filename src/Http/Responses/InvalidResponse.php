@@ -1,14 +1,12 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Snicco\Http\Responses;
 
+use Snicco\Http\Psr7\Response;
 
-    namespace Snicco\Http\Responses;
+class InvalidResponse extends Response
+{
 
-    use Snicco\Http\Psr7\Response;
-
-    class InvalidResponse extends Response
-    {
-
-    }
+}

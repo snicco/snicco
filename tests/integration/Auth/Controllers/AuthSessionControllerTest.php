@@ -18,13 +18,6 @@ use Snicco\Auth\Authenticators\PasswordAuthenticator;
 class AuthSessionControllerTest extends AuthTestCase
 {
     
-    private function postToLogin(array $data) :TestResponse
-    {
-        $token = $this->withCsrfToken();
-        
-        return $this->post('/auth/login', $token + $data);
-    }
-    
     /** @test */
     public function the_login_screen_can_be_rendered()
     {
@@ -132,18 +125,18 @@ class AuthSessionControllerTest extends AuthTestCase
     {
         $calvin = $this->createAdmin();
         $this->assertNotAuthenticated($calvin);
-    
+        
         $this->followingRedirects();
-    
+        
         $response = $this->postToLogin([
             'pwd' => 'wrong_password',
             'log' => $calvin->user_login,
         ]);
-    
+        
         $response->assertSee('Either your username or password is not correct.');
-    
+        
         $this->assertGuest();
-    
+        
     }
     
     /** @test */
@@ -308,7 +301,7 @@ class AuthSessionControllerTest extends AuthTestCase
         
         $response->assertSessionHasErrors();
         $this->assertNotAuthenticated($calvin);
-    
+        
         // Auth will be ok for second authenticator
         $response = $this->postToLogin([
             'pwd' => 'password',
@@ -322,6 +315,13 @@ class AuthSessionControllerTest extends AuthTestCase
         $this->logout($calvin);
         $this->assertNotAuthenticated($calvin);
         
+    }
+    
+    private function postToLogin(array $data) :TestResponse
+    {
+        $token = $this->withCsrfToken();
+        
+        return $this->post('/auth/login', $token + $data);
     }
     
 }
@@ -341,13 +341,13 @@ class CustomAuthenticator extends Authenticator
             if ($user instanceof WP_User) {
                 
                 return $this->login($user, false);
-    
+                
             }
-    
+            
         }
-    
+        
         return $next($request);
-    
+        
     }
     
 }

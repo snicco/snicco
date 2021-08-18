@@ -1,13 +1,10 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Tests\fixtures\database\Models;
 
+class FootballTeam extends TestModel
+{
 
-    namespace Tests\fixtures\database\Models;
-
-
-    class FootballTeam extends TestModel
-    {
-
-    }
+}

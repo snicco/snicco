@@ -1,14 +1,13 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+use Tests\stubs\TestApp;
 
-    use Tests\stubs\TestApp;
+$GLOBALS['test']['other_api_routes'] = true;
 
-    $GLOBALS['test']['other_api_routes'] = true;
-
-    TestApp::get('foo', function () {
-
-        return 'foo other endpoint';
-
-    });
+TestApp::get('foo', function () {
+    
+    return 'foo other endpoint';
+    
+});

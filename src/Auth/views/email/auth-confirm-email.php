@@ -1,9 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
-
-    use Snicco\Support\WP;
+use Snicco\Support\WP;
 
 ?>
 
@@ -13,4 +12,4 @@
     Someone requested a confirmation link to access the secure area of: <?= WP::siteName() ?>
 </p>
 <p> Click <a href="<?= esc_url($magic_link) ?>"> here </a> to access the secure area.</p>
-<p> This link will expire in <?= $lifetime/60 ?> minutes from now.</p>
+<p> This link will expire in <?= $lifetime / 60 ?> minutes from now.</p>

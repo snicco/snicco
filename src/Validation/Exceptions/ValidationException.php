@@ -11,10 +11,10 @@ use Snicco\ExceptionHandling\Exceptions\HttpException;
 class ValidationException extends HttpException
 {
     
+    protected string   $message_for_users = 'We could not process your request.';
     private MessageBag $messages;
     private array      $errors;
     private string     $message_bag_name;
-    protected string   $message_for_users = 'We could not process your request.';
     
     public function __construct(
         array $errors,
@@ -41,13 +41,7 @@ class ValidationException extends HttpException
         $e->withMessageForUsers($message_for_users);
         
         return $e;
-        
-    }
     
-    public function setMessageBagName(string $name = 'default') :ValidationException
-    {
-        $this->message_bag_name = $name;
-        return $this;
     }
     
     public function setMessageBag(
@@ -60,6 +54,12 @@ class ValidationException extends HttpException
         
         return $this;
         
+    }
+    
+    public function setMessageBagName(string $name = 'default') :ValidationException
+    {
+        $this->message_bag_name = $name;
+        return $this;
     }
     
     public function errorsAsArray() :array

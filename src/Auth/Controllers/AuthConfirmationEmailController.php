@@ -31,11 +31,6 @@ class AuthConfirmationEmailController extends Controller
         $this->mail_builder = $mail_builder;
     }
     
-    protected function errorMessage() :string
-    {
-        return "You have requested too many emails. You can request your next email in $this->cool_of_period seconds.";
-    }
-    
     public function store(Request $request)
     {
         $user = $request->user();
@@ -55,6 +50,11 @@ class AuthConfirmationEmailController extends Controller
         return $request->isExpectingJson()
             ? $this->response_factory->make(204)
             : $this->response_factory->redirect()->back();
+    }
+    
+    protected function errorMessage() :string
+    {
+        return "You have requested too many emails. You can request your next email in $this->cool_of_period seconds.";
     }
     
     private function canRequestAnotherEmail(Session $session) :bool

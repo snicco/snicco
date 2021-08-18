@@ -1,25 +1,23 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Snicco\Auth\Events;
 
+use Snicco\Events\Event;
+use BetterWpHooks\Traits\IsAction;
 
-    namespace Snicco\Auth\Events;
-
-    use BetterWpHooks\Traits\IsAction;
-    use Snicco\Events\Event;
-
-    class UserDeleted extends Event
+class UserDeleted extends Event
+{
+    
+    use IsAction;
+    
+    public int $deleted_user_id;
+    
+    public function __construct(int $deleted_user_id)
     {
-
-        use IsAction;
-
-        public int $deleted_user_id;
-
-        public function __construct(int $deleted_user_id)
-        {
-
-            $this->deleted_user_id = $deleted_user_id;
-        }
-
+        
+        $this->deleted_user_id = $deleted_user_id;
     }
+    
+}

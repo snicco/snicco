@@ -1,34 +1,34 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Snicco\Testing\Concerns;
 
+use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 
-    namespace Snicco\Testing\Concerns;
-
-    use Carbon\Carbon;
-    use Carbon\CarbonImmutable;
-
-    trait TravelsTime
+trait TravelsTime
+{
+    
+    protected function backToPresent()
     {
-
-        protected function backToPresent() {
-
-            if (class_exists(Carbon::class)) {
-                Carbon::setTestNow();
-            }
-
-            if (class_exists(CarbonImmutable::class)) {
-                CarbonImmutable::setTestNow();
-            }
-
+        
+        if (class_exists(Carbon::class)) {
+            Carbon::setTestNow();
         }
-
-        /** Time travel is always cumulative */
-        protected function travelIntoFuture(int $seconds) {
-
-            Carbon::setTestNow(Carbon::now()->addSeconds($seconds));
-
+        
+        if (class_exists(CarbonImmutable::class)) {
+            CarbonImmutable::setTestNow();
         }
-
+        
     }
+    
+    /** Time travel is always cumulative */
+    protected function travelIntoFuture(int $seconds)
+    {
+        
+        Carbon::setTestNow(Carbon::now()->addSeconds($seconds));
+        
+    }
+    
+}

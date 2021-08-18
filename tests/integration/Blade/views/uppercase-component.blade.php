@@ -1,12 +1,12 @@
 <x-uppercase>
     <x-slot name="title">CALVIN</x-slot>
-    {{$content}}
+	{{$content}}
 
-    @if(isset($scoped))
-    <x-slot name="scoped">
+	@if(isset($scoped))
+		<x-slot name="scoped">
         {{$component->toUpper($scoped)}}
     </x-slot>
-    @endif
+	@endif
 
 </x-uppercase>
 
