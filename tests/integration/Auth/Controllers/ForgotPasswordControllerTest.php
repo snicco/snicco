@@ -6,19 +6,32 @@
 
     namespace Tests\integration\Auth\Controllers;
 
-    use Snicco\Auth\Mail\ResetPasswordMail;
     use Tests\AuthTestCase;
+    use Snicco\Events\Event;
     use Tests\stubs\TestApp;
+    use Snicco\Auth\Mail\ResetPasswordMail;
+    use Snicco\Fail2Ban\Contracts\Syslogger;
+    use Snicco\Auth\Events\FailedPasswordReset;
+    use Snicco\Fail2Ban\Fail2BanServiceProvider;
+    use Tests\integration\Fail2Ban\TestSysLogger;
 
     class ForgotPasswordControllerTest extends AuthTestCase
     {
-        protected function setUp() : void
+    
+        public function packageProviders() :array
         {
-
+            $parent = parent::packageProviders();
+            return array_merge($parent, [Fail2BanServiceProvider::class]);
+        }
+    
+        protected function setUp() :void
+        {
+        
             $this->afterLoadingConfig(function () {
-
+            
                 $this->withAddedConfig('auth.features.password-resets', true);
-
+                $this->withAddedConfig('auth.fail2ban.enabled', true);
+            
             });
 
 
@@ -124,14 +137,52 @@
 
             $this->mailFake();
             $token = $this->withCsrfToken();
-
+    
             $response = $this->post($this->routeUrl(), $token + ['login' => 'bogus@web.de']);
-
+    
             $response->assertRedirectToRoute('auth.forgot.password');
             $this->assertMailNotSent(ResetPasswordMail::class);
-
-
+    
         }
-
-
+    
+        /** @test */
+        public function failure_to_retrieve_a_user_by_login_will_dispatch_an_event()
+        {
+        
+            Event::fake();
+            $token = $this->withCsrfToken();
+        
+            $response = $this->post($this->routeUrl(), $token + ['login' => 'bogus@web.de']);
+        
+            $response->assertRedirectToRoute('auth.forgot.password');
+            Event::assertDispatched(
+                FailedPasswordReset::class,
+                function (FailedPasswordReset $event) {
+                
+                    return $event->request()->post('login') === 'bogus@web.de';
+                
+                }
+            );
+        
+        }
+    
+        /** @test */
+        public function an_invalid_user_login_will_log_to_fail2ban()
+        {
+        
+            $this->swap(Syslogger::class, $logger = new TestSysLogger());
+        
+            $token = $this->withCsrfToken();
+        
+            $response = $this->post($this->routeUrl(), $token + ['login' => 'bogus@web.de']);
+        
+            $response->assertRedirectToRoute('auth.forgot.password');
+        
+            $logger->assertLogEntry(
+                E_NOTICE,
+                'Blocked username enumeration while trying to request a password reset email with login [bogus@web.de]'
+            );
+        
+        }
+    
     }
