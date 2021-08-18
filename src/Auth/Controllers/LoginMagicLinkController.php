@@ -11,7 +11,7 @@ use Snicco\Http\Psr7\Request;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Mail\MagicLinkLoginMail;
 use Snicco\Http\Responses\RedirectResponse;
-use Snicco\Auth\Exceptions\FailedAuthenticationException;
+use Snicco\Auth\Events\FailedLoginLinkCreationRequest;
 
 class LoginMagicLinkController extends Controller
 {
@@ -22,33 +22,24 @@ class LoginMagicLinkController extends Controller
     {
         
         $user = $this->getUserByLogin($login = $request->post('login', ''));
-        
-        if ( ! $user instanceof WP_User) {
-            
-            $request->session()->flash('login.link.processed', true);
-            
-            throw new FailedAuthenticationException(
-                "Failed authentication attempt generating a logic link for invalid user_login [$login]",
-                [],
-                'auth.login'
-            );
-            
-        }
-        
-        $magic_link = $this->createMagicLink($user, $expiration = 300);
-        
-        $mail_builder->to($user)
-                     ->send(new MagicLinkLoginMail($user, $magic_link, $expiration));
-        
-        return $this->redirectBack();
-        
-    }
     
-    // Always redirect back with a generic message.
-    private function redirectBack() :RedirectResponse
-    {
+        if ( ! $user instanceof WP_User) {
+        
+            FailedLoginLinkCreationRequest::dispatch([$request, $login]);
+        
+        }
+        else {
+        
+            $magic_link = $this->createMagicLink($user, $expiration = 300);
+        
+            $mail_builder->to($user)
+                         ->send(new MagicLinkLoginMail($user, $magic_link, $expiration));
+        
+        }
+    
         return $this->response_factory->back($this->url->toRoute('auth.login'))
                                       ->with('login.link.processed', true);
+    
     }
     
     protected function createMagicLink($user, $expiration = 300) :string

@@ -6,7 +6,6 @@ namespace Snicco\Auth\Controllers;
 
 use Closure;
 use WP_User;
-use Snicco\Support\WP;
 use Snicco\Support\Arr;
 use Snicco\Support\Url;
 use Snicco\Http\Controller;
@@ -74,7 +73,7 @@ class AuthSessionController extends Controller
         }
     
         return $request->isExpectingJson()
-            ? $this->response_factory->json(['message' => 'Authentication failed.'])
+            ? $this->response_factory->json(['message' => 'Invalid credentials.'], 422)
             : $this->response_factory->redirectToLogin()
                                      ->withErrors(
                                          ['login' => 'We could not authenticate you with the provided credentials']
@@ -84,13 +83,13 @@ class AuthSessionController extends Controller
     
     public function destroy(Request $request, int $user_id) :Response
     {
+    
+        if ($user_id !== $request->userId()) {
         
-        if ($user_id !== WP::userId()) {
-            
             throw new InvalidSignatureException(
-                "Suspicious logout attempt with query-id-mismatch."
+                "Suspicious logout attempt with query arg mismatch for logged in user [{$request->userId()}]. Query arg id [$user_id]"
             );
-            
+        
         }
         
         $redirect_to = $request->query('redirect_to', $this->url->toRoute('home'));

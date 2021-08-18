@@ -4,7 +4,7 @@
     declare(strict_types = 1);
 
 
-    namespace Snicco\Auth\Controllers;
+    namespace Snicco\Auth\Controllers\Compat;
 
     use WP_User;
     use Snicco\Support\WP;

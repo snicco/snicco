@@ -120,7 +120,6 @@
 
         public function acceptableContentTypes(bool $as_array = true)
         {
-
             return $as_array ? $this->getHeader('Accept') : $this->getHeaderLine('Accept');
         }
 

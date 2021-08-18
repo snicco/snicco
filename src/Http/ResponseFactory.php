@@ -141,14 +141,19 @@ class ResponseFactory implements ResponseFactoryInterface
             );
             
         }
-        
+    
         return $this->invalidResponse();
-        
+    
     }
     
     public function redirect() :AbstractRedirector
     {
         return $this->redirector;
+    }
+    
+    public function redirectToRoute(string $route, $args = [], int $status = 302, $secure = true, $absolute = false) :RedirectResponse
+    {
+        return $this->redirect()->toRoute($route, $status, $args, $secure, $absolute);
     }
     
     public function back(string $fallback = '/', int $status = 302, bool $external_referer = false) :RedirectResponse

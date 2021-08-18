@@ -176,6 +176,17 @@ trait MakesHttpRequests
         return $this;
     }
     
+    public function fromIpAddress(string $ip) :self
+    {
+        $this->default_attributes['ip_address'] = $ip;
+        return $this;
+    }
+    
+    public function fromLocalhost() :self
+    {
+        return $this->fromIpAddress('127.0.0.1');
+    }
+    
     /**
      * Add trailing slashes to all urls.
      */

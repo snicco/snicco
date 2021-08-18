@@ -147,6 +147,26 @@ class AuthSessionControllerTest extends AuthTestCase
     }
     
     /** @test */
+    public function json_requests_fail_with_422_for_failed_login_attempts()
+    {
+        
+        $calvin = $this->createAdmin();
+        $this->assertNotAuthenticated($calvin);
+        
+        $this->withHeaders(['accept' => 'application/json']);
+        
+        $response = $this->postToLogin([
+            'pwd' => 'wrong_password',
+            'log' => $calvin->user_login,
+        ]);
+        
+        $response->assertExactJson(['message' => 'Invalid credentials.'])->assertStatus(422);
+        
+        $this->assertGuest();
+        
+    }
+    
+    /** @test */
     public function authenticators_can_return_custom_failure_responses()
     {
         $calvin = $this->createAdmin();
