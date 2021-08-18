@@ -9,19 +9,18 @@ use Snicco\Http\Delegate;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Contracts\ResponseableInterface;
+use Snicco\Http\Responses\NullResponse;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
-use Snicco\Auth\Exceptions\FailedAuthenticationException;
 
 abstract class Authenticator extends Middleware
 {
     
     /**
      * @param  Request  $request
-     * @param  Delegate  $next  This class can be called as a closure. $next($request)
+     * @param  Delegate  $next
+     * $next can be called as a closure $next($request) to delegate to the next authenticator
      *
-     * @return SuccessfulLoginResponse|ResponseInterface|string|array|ResponseableInterface
-     * @throws FailedAuthenticationException
+     * @return SuccessfulLoginResponse|NullResponse
      */
     abstract public function attempt(Request $request, $next);
     
@@ -41,6 +40,11 @@ abstract class Authenticator extends Middleware
             $user,
             $remember
         );
+    }
+    
+    protected function unauthenticated() :NullResponse
+    {
+        return new NullResponse($this->response_factory->createResponse());
     }
     
 }

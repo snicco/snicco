@@ -128,19 +128,40 @@ class AuthSessionControllerTest extends AuthTestCase
     }
     
     /** @test */
-    public function an_exception_response_is_returned_if_one_authenticator_throws_an_exception()
+    public function the_user_is_redirect_back_to_login_if_no_authenticator_can_authenticate_the_user()
     {
         $calvin = $this->createAdmin();
         $this->assertNotAuthenticated($calvin);
-        
+    
         $this->followingRedirects();
+    
+        $response = $this->postToLogin([
+            'pwd' => 'wrong_password',
+            'log' => $calvin->user_login,
+        ]);
+    
+        $response->assertSee('Either your username or password is not correct.');
+    
+        $this->assertGuest();
+    
+    }
+    
+    /** @test */
+    public function authenticators_can_return_custom_failure_responses()
+    {
+        $calvin = $this->createAdmin();
+        $this->withReplacedConfig('auth.through', [
+            CustomResponseAuthenticator::class,
+        ]);
+        
+        $this->assertNotAuthenticated($calvin);
         
         $response = $this->postToLogin([
             'pwd' => 'wrong_password',
             'log' => $calvin->user_login,
         ]);
         
-        $response->assertSee('Either your username or password is not correct.');
+        $response->assertRedirect('/foo');
         
         $this->assertGuest();
         
@@ -267,8 +288,8 @@ class AuthSessionControllerTest extends AuthTestCase
         
         $response->assertSessionHasErrors();
         $this->assertNotAuthenticated($calvin);
-        
-        // Auth will be ok for first authenticator
+    
+        // Auth will be ok for second authenticator
         $response = $this->postToLogin([
             'pwd' => 'password',
             'log' => $calvin->user_login,
@@ -300,13 +321,23 @@ class CustomAuthenticator extends Authenticator
             if ($user instanceof WP_User) {
                 
                 return $this->login($user, false);
-                
+    
             }
-            
+    
         }
-        
+    
         return $next($request);
-        
+    
+    }
+    
+}
+
+class CustomResponseAuthenticator extends Authenticator
+{
+    
+    public function attempt(Request $request, $next)
+    {
+        return $this->response_factory->redirect()->to('/foo');
     }
     
 }
