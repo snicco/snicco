@@ -1,114 +1,118 @@
 <?php
 
+declare(strict_types=1);
 
-	declare( strict_types = 1 );
+namespace Tests\unit\Application;
 
+use BadMethodCallException;
+use PHPUnit\Framework\TestCase;
+use Snicco\Application\ApplicationTrait;
+use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
-	namespace Tests\unit\Application;
+class ApplicationTraitTest extends TestCase
+{
+    
+    private string $base_path;
+    
+    /** @test */
+    public function a_new_app_instance_can_be_created()
+    {
+        
+        $this->assertNull(FooApp::getApplication());
+        $app = FooApp::make($this->base_path);
+        $this->assertSame($app, FooApp::getApplication());
+        
+    }
+    
+    /** @test */
+    public function multiple_app_instances_can_exists_independently()
+    {
+        
+        $this->assertNull(FooApp::getApplication());
+        $this->assertNull(BarApp::getApplication());
+        
+        $foo = FooApp::make($this->base_path);
+        
+        $this->assertSame($foo, FooApp::getApplication());
+        $this->assertNull(BarApp::getApplication());
+        
+        $bar = BarApp::make($this->base_path);
+        
+        $this->assertSame($foo, FooApp::getApplication());
+        $this->assertSame($bar, BarApp::getApplication());
+        $this->assertNotSame(FooApp::getApplication(), BarApp::getApplication());
+        
+    }
+    
+    /** @test */
+    public function exceptions_get_thrown_when_trying_to_call_a_method_on_a_non_instantiated_application_instance()
+    {
+        
+        $this->expectExceptionMessage('Application instance not created');
+        $this->expectException(ConfigurationException::class);
+        
+        FooApp::foo();
+    }
+    
+    /** @test */
+    public function exceptions_get_thrown_when_trying_to_call_a_non_callable_method()
+    {
+        
+        $this->expectExceptionMessage('does not exist');
+        $this->expectException(BadMethodCallException::class);
+        
+        FooApp::make($this->base_path);
+        FooApp::badMethod();
+        
+    }
+    
+    /** @test */
+    public function static_method_calls_get_forwarded_to_the_application_with()
+    {
+        
+        FooApp::make($this->base_path);
+        FooApp::alias('application_method', fn($foo, $bar, $baz) => $foo.$bar.$baz);
+        
+        $this->assertSame('foobarbaz', FooApp::application_method('foo', 'bar', 'baz'));
+        
+    }
+    
+    /** @test */
+    public function the_application_trait_is_bound()
+    {
+        
+        $app = FooApp::make($this->base_path);
+        
+        $this->assertSame(FooApp::class, $app->resolve(ApplicationTrait::class));
+        
+    }
+    
+    protected function setUp() :void
+    {
+        $this->base_path = __DIR__;
+        parent::setUp();
+    }
+    
+    protected function tearDown() :void
+    {
+        
+        FooApp::setApplication(null);
+        BarApp::setApplication(null);
+        
+        parent::tearDown();
+        
+    }
+    
+}
 
-	use BadMethodCallException;
-    use PHPUnit\Framework\TestCase;
-    use Snicco\Application\ApplicationTrait;
-    use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
+class FooApp
+{
+    
+    use ApplicationTrait;
+}
 
-    class ApplicationTraitTest extends TestCase {
-
-
-        private string $base_path;
-
-        protected function setUp() : void
-        {
-            $this->base_path = __DIR__;
-            parent::setUp();
-        }
-
-        protected function tearDown() : void {
-
-			FooApp::setApplication( null );
-			BarApp::setApplication( null );
-
-			parent::tearDown();
-
-		}
-
-		/** @test */
-		public function a_new_app_instance_can_be_created() {
-
-			$this->assertNull( FooApp::getApplication() );
-			$app = FooApp::make($this->base_path);
-			$this->assertSame( $app, FooApp::getApplication() );
-
-		}
-
-		/** @test */
-		public function multiple_app_instances_can_exists_independently() {
-
-			$this->assertNull( FooApp::getApplication() );
-			$this->assertNull( BarApp::getApplication() );
-
-			$foo = FooApp::make($this->base_path);
-
-			$this->assertSame( $foo, FooApp::getApplication() );
-			$this->assertNull( BarApp::getApplication() );
-
-			$bar = BarApp::make($this->base_path);
-
-			$this->assertSame( $foo, FooApp::getApplication() );
-			$this->assertSame( $bar, BarApp::getApplication() );
-			$this->assertNotSame( FooApp::getApplication(), BarApp::getApplication() );
-
-		}
-
-		/** @test */
-		public function exceptions_get_thrown_when_trying_to_call_a_method_on_a_non_instantiated_application_instance() {
-
-			$this->expectExceptionMessage( 'Application instance not created' );
-			$this->expectException( ConfigurationException::class );
-
-			FooApp::foo();
-		}
-
-		/** @test */
-		public function exceptions_get_thrown_when_trying_to_call_a_non_callable_method() {
-
-			$this->expectExceptionMessage( 'does not exist' );
-			$this->expectException( BadMethodCallException::class );
-
-			FooApp::make($this->base_path);
-			FooApp::badMethod();
-
-		}
-
-		/** @test */
-		public function static_method_calls_get_forwarded_to_the_application_with() {
-
-			FooApp::make($this->base_path);
-			FooApp::alias( 'application_method', fn( $foo, $bar, $baz ) => $foo . $bar . $baz);
-
-			$this->assertSame( 'foobarbaz', FooApp::application_method( 'foo', 'bar', 'baz' ) );
-
-
-		}
-
-		/** @test */
-		public function the_application_trait_is_bound () {
-
-            $app = FooApp::make($this->base_path);
-
-            $this->assertSame(FooApp::class, $app->resolve(ApplicationTrait::class));
-
-		}
-
-
-	}
-
-	class FooApp {
-
-		use ApplicationTrait;
-	}
-
-
-	class BarApp {
-
-		use ApplicationTrait;
-	}
+class BarApp
+{
+    
+    use ApplicationTrait;
+}

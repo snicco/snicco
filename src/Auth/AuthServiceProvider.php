@@ -97,6 +97,87 @@ class AuthServiceProvider extends ServiceProvider
         
     }
     
+    private function bindConfig()
+    {
+        
+        // Authentication
+        $this->config->extend('auth.confirmation.duration', SessionManager::HOUR_IN_SEC * 3);
+        $this->config->extend('auth.idle', SessionManager::HOUR_IN_SEC / 2);
+        $this->config->extend('auth.authenticator', 'password');
+        $this->config->extend('auth.features.remember_me', false);
+        $this->config->extend('auth.features.password-resets', false);
+        $this->config->extend('auth.features.2fa', false);
+        $this->config->extend('auth.features.registration', false);
+        
+        // Middleware
+        $this->config->extend('middleware.aliases', [
+            'auth.confirmed' => ConfirmAuth::class,
+            'auth.unconfirmed' => AuthUnconfirmed::class,
+            '2fa.disabled' => TwoFactorDisbaled::class,
+            '2fa.enabled' => TwoFactorEnabled::class,
+        ]);
+        $this->config->extend('middleware.groups.global', [
+            Secure::class,
+            StartSessionMiddleware::class,
+            AuthenticateSession::class,
+        ]);
+        $this->config->extend('middleware.priority', [
+            StartSessionMiddleware::class,
+            AuthenticateSession::class,
+        ]);
+        
+        // Endpoints
+        $this->config->extend('auth.endpoints.prefix', 'auth');
+        $this->config->extend('auth.endpoints.login', 'login');
+        $this->config->extend('auth.endpoints.magic-link', 'magic-link');
+        $this->config->extend('auth.endpoints.confirm', 'confirm');
+        $this->config->extend('auth.endpoints.2fa', 'two-factor');
+        $this->config->extend('auth.endpoints.challenge', 'challenge');
+        $this->config->extend('auth.endpoints.register', 'register');
+        $this->config->extend('auth.endpoints.forgot-password', 'forgot-password');
+        $this->config->extend('auth.endpoints.reset-password', 'reset-password');
+        $this->config->extend('auth.endpoints.accounts', 'accounts');
+        $this->config->extend('auth.endpoints.accounts_create', 'create');
+        $this->config->extend('routing.api.endpoints', [
+            
+            'auth' => $this->config->get('auth.endpoints.prefix'),
+            // Needed so we can respond to requests to wp-login.php and redirect them appropriately
+            'wp-login.php' => '/wp-login.php',
+        
+        ]);
+        
+    }
+    
+    private function bindAuthPipeline()
+    {
+        
+        $pipeline = $this->config->get('auth.through', []);
+        
+        if ( ! count($pipeline)) {
+            
+            $primary = ($this->config->get('auth.authenticator') === 'email')
+                ? MagicLinkAuthenticator::class
+                : PasswordAuthenticator::class;
+            
+            $two_factor = $this->config->get('auth.features.2fa');
+            
+            $this->config->set(
+                'auth.through',
+                array_values(
+                    array_filter([
+                        
+                        $two_factor ? TwoFactorAuthenticator::class : null,
+                        $two_factor ? RedirectIf2FaAuthenticable::class : null,
+                        $primary,
+                    
+                    ])
+                )
+            );
+            
+        }
+        
+    }
+    
     private function bindEvents()
     {
         
@@ -160,55 +241,25 @@ class AuthServiceProvider extends ServiceProvider
         
     }
     
-    private function bindConfig()
+    private function bindAuthConfirmation()
     {
         
-        // Authentication
-        $this->config->extend('auth.confirmation.duration', SessionManager::HOUR_IN_SEC * 3);
-        $this->config->extend('auth.idle', SessionManager::HOUR_IN_SEC / 2);
-        $this->config->extend('auth.authenticator', 'password');
-        $this->config->extend('auth.features.remember_me', false);
-        $this->config->extend('auth.features.password-resets', false);
-        $this->config->extend('auth.features.2fa', false);
-        $this->config->extend('auth.features.registration', false);
-        
-        // Middleware
-        $this->config->extend('middleware.aliases', [
-            'auth.confirmed' => ConfirmAuth::class,
-            'auth.unconfirmed' => AuthUnconfirmed::class,
-            '2fa.disabled' => TwoFactorDisbaled::class,
-            '2fa.enabled' => TwoFactorEnabled::class,
-        ]);
-        $this->config->extend('middleware.groups.global', [
-            Secure::class,
-            StartSessionMiddleware::class,
-            AuthenticateSession::class,
-        ]);
-        $this->config->extend('middleware.priority', [
-            StartSessionMiddleware::class,
-            AuthenticateSession::class,
-        ]);
-        
-        // Endpoints
-        $this->config->extend('auth.endpoints.prefix', 'auth');
-        $this->config->extend('auth.endpoints.login', 'login');
-        $this->config->extend('auth.endpoints.magic-link', 'magic-link');
-        $this->config->extend('auth.endpoints.confirm', 'confirm');
-        $this->config->extend('auth.endpoints.2fa', 'two-factor');
-        $this->config->extend('auth.endpoints.challenge', 'challenge');
-        $this->config->extend('auth.endpoints.register', 'register');
-        $this->config->extend('auth.endpoints.forgot-password', 'forgot-password');
-        $this->config->extend('auth.endpoints.reset-password', 'reset-password');
-        $this->config->extend('auth.endpoints.accounts', 'accounts');
-        $this->config->extend('auth.endpoints.accounts_create', 'create');
-        $this->config->extend('routing.api.endpoints', [
+        $this->container->singleton(AuthConfirmation::class, function () {
             
-            'auth' => $this->config->get('auth.endpoints.prefix'),
-            // Needed so we can respond to requests to wp-login.php and redirect them appropriately
-            'wp-login.php' => '/wp-login.php',
-        
-        ]);
-        
+            if ($this->config->get('auth.features.2fa')) {
+                
+                return new TwoFactorAuthConfirmation(
+                    $this->container->make(EmailAuthConfirmation::class),
+                    $this->container->make(TwoFactorAuthenticationProvider::class),
+                    $this->container->make(ResponseFactory::class),
+                    $this->container->make(EncryptorInterface::class),
+                );
+                
+            }
+            
+            return $this->container->make(EmailAuthConfirmation::class);
+            
+        });
     }
     
     private function bindWpSessionToken()
@@ -230,16 +281,6 @@ class AuthServiceProvider extends ServiceProvider
             return WpAuthSessionToken::class;
             
         });
-        
-    }
-    
-    private function bindSessionManagerInterface()
-    {
-        
-        $this->container->singleton(
-            SessionManagerInterface::class,
-            fn() => $this->container->make(AuthSessionManager::class)
-        );
         
     }
     
@@ -266,36 +307,6 @@ class AuthServiceProvider extends ServiceProvider
             return $this->container->make($response);
             
         });
-    }
-    
-    private function bindAuthPipeline()
-    {
-        
-        $pipeline = $this->config->get('auth.through', []);
-        
-        if ( ! count($pipeline)) {
-            
-            $primary = ($this->config->get('auth.authenticator') === 'email')
-                ? MagicLinkAuthenticator::class
-                : PasswordAuthenticator::class;
-            
-            $two_factor = $this->config->get('auth.features.2fa');
-            
-            $this->config->set(
-                'auth.through',
-                array_values(
-                    array_filter([
-                        
-                        $two_factor ? TwoFactorAuthenticator::class : null,
-                        $two_factor ? RedirectIf2FaAuthenticable::class : null,
-                        $primary,
-                    
-                    ])
-                )
-            );
-            
-        }
-        
     }
     
     private function bindLoginResponse()
@@ -335,27 +346,6 @@ class AuthServiceProvider extends ServiceProvider
         });
     }
     
-    private function bindAuthConfirmation()
-    {
-        
-        $this->container->singleton(AuthConfirmation::class, function () {
-            
-            if ($this->config->get('auth.features.2fa')) {
-                
-                return new TwoFactorAuthConfirmation(
-                    $this->container->make(EmailAuthConfirmation::class),
-                    $this->container->make(TwoFactorAuthenticationProvider::class),
-                    $this->container->make(ResponseFactory::class),
-                    $this->container->make(EncryptorInterface::class),
-                );
-                
-            }
-            
-            return $this->container->make(EmailAuthConfirmation::class);
-            
-        });
-    }
-    
     private function bindFail2Ban()
     {
         if ( ! $this->config->get('auth.fail2ban.enabled')) {
@@ -366,27 +356,27 @@ class AuthServiceProvider extends ServiceProvider
         $this->config->extend('auth.fail2ban.facility', LOG_AUTH);
         $this->config->extend('auth.fail2ban.flags', LOG_NDELAY | LOG_PID);
         $this->config->extend('events.listeners', [
-    
+            
             FailedPasswordResetLinkRequest::class => [
                 [Fail2Ban::class, 'report'],
             ],
-    
+            
             FailedMagicLinkAuthentication::class => [
                 [Fail2Ban::class, 'report'],
             ],
-    
+            
             FailedPasswordAuthentication::class => [
                 [Fail2Ban::class, 'report'],
             ],
-    
+            
             FailedTwoFactorAuthentication::class => [
                 [Fail2Ban::class, 'report'],
             ],
-    
+            
             FailedLoginLinkCreationRequest::class => [
                 [Fail2Ban::class, 'report'],
             ],
-    
+            
             FailedAuthConfirmation::class => [
                 [Fail2Ban::class, 'report'],
             ],
@@ -401,6 +391,16 @@ class AuthServiceProvider extends ServiceProvider
             );
             
         });
+        
+    }
+    
+    private function bindSessionManagerInterface()
+    {
+        
+        $this->container->singleton(
+            SessionManagerInterface::class,
+            fn() => $this->container->make(AuthSessionManager::class)
+        );
         
     }
     

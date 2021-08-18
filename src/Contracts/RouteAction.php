@@ -1,13 +1,12 @@
 <?php
 
+declare(strict_types=1);
 
-	declare( strict_types = 1 );
+namespace Snicco\Contracts;
 
-
-	namespace Snicco\Contracts;
-
-	interface RouteAction extends Handler {
-
-		public function raw();
-
-	}
+interface RouteAction extends Handler
+{
+    
+    public function raw();
+    
+}

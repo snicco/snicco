@@ -1,7 +1,7 @@
 @role('admin')
-   ADMIN
+ADMIN
 @endrole
 
 @role('editor')
-   EDITOR
+EDITOR
 @endrole

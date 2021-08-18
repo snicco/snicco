@@ -1,11 +1,11 @@
 <?php
 
+namespace Snicco\Events;
 
-    namespace Snicco\Events;
+use BetterWpHooks\Traits\IsAction;
 
-    use BetterWpHooks\Traits\IsAction;
-
-    class WPFrontendSetup extends Event
-    {
-        use IsAction;
-    }
+class WPFrontendSetup extends Event
+{
+    
+    use IsAction;
+}
