@@ -1,22 +1,19 @@
 <?php
 
+declare(strict_types=1);
 
-	declare( strict_types = 1 );
+namespace Snicco\Contracts;
 
-
-	namespace Snicco\Contracts;
-
-
-    interface ResponseableInterface
-    {
+interface ResponseableInterface
+{
     
-        /**
-         * Convert an object to a data type
-         * that can be processed be the response factory
-         *
-         * @return mixed
-         * @see HttpResponseFactory::toResponse()
-         */
-		public function toResponsable() ;
-
-	}
+    /**
+     * Convert an object to a data type
+     * that can be processed be the response factory
+     *
+     * @return mixed
+     * @see HttpResponseFactory::toResponse()
+     */
+    public function toResponsable();
+    
+}

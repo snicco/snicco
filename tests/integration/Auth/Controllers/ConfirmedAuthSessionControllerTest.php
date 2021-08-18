@@ -19,21 +19,6 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
     private string $endpoint = '/auth/confirm';
     private string $valid_secret_to_confirm = 'bypass';
     
-    protected function setUp() :void
-    {
-        
-        $this->afterLoadingConfig(function () {
-            $this->withAddedConfig('auth.fail2ban.enabled', true);
-        });
-        
-        $this->afterApplicationCreated(function () {
-            
-            $this->instance(AuthConfirmation::class, new TestAuthConfirmation());
-            
-        });
-        parent::setUp();
-    }
-    
     /** @test */
     public function the_route_cant_be_accessed_as_a_guest()
     {
@@ -240,6 +225,21 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
         
         $response->assertRedirect('/foo/bar');
         
+    }
+    
+    protected function setUp() :void
+    {
+        
+        $this->afterLoadingConfig(function () {
+            $this->withAddedConfig('auth.fail2ban.enabled', true);
+        });
+        
+        $this->afterApplicationCreated(function () {
+            
+            $this->instance(AuthConfirmation::class, new TestAuthConfirmation());
+            
+        });
+        parent::setUp();
     }
     
 }

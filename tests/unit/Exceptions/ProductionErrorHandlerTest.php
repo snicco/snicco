@@ -39,29 +39,6 @@ class ProductionErrorHandlerTest extends UnitTest
     private ContainerAdapter $container;
     private Request          $request;
     
-    protected function beforeTestRun()
-    {
-        
-        Event::make($this->container = $this->createContainer());
-        Event::fake();
-        $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
-        $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
-        WP::setFacadeContainer($this->createContainer());
-        $this->request = TestRequest::from('GET', 'foo');
-        $this->container->instance(LoggerInterface::class, new NullLogger());
-        
-    }
-    
-    protected function beforeTearDown()
-    {
-        
-        WP::reset();
-        Event::setInstance(null);
-        Mockery::close();
-        HeaderStack::reset();
-        
-    }
-    
     /** @test */
     public function inside_the_routing_flow_the_exceptions_get_transformed_into_response_objects()
     {
@@ -78,6 +55,13 @@ class ProductionErrorHandlerTest extends UnitTest
         );
         $this->assertStatusCode(500, $response);
         Event::assertNotDispatched(UnrecoverableExceptionHandled::class);
+        
+    }
+    
+    private function newErrorHandler() :ProductionErrorHandler
+    {
+        
+        return ErrorHandlerFactory::make($this->container, false);
         
     }
     
@@ -276,10 +260,26 @@ class ProductionErrorHandlerTest extends UnitTest
         
     }
     
-    private function newErrorHandler() :ProductionErrorHandler
+    protected function beforeTestRun()
     {
         
-        return ErrorHandlerFactory::make($this->container, false);
+        Event::make($this->container = $this->createContainer());
+        Event::fake();
+        $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
+        $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
+        WP::setFacadeContainer($this->createContainer());
+        $this->request = TestRequest::from('GET', 'foo');
+        $this->container->instance(LoggerInterface::class, new NullLogger());
+        
+    }
+    
+    protected function beforeTearDown()
+    {
+        
+        WP::reset();
+        Event::setInstance(null);
+        Mockery::close();
+        HeaderStack::reset();
         
     }
     

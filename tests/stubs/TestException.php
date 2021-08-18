@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Tests\stubs;
 
+use Exception;
 
-    namespace Tests\stubs;
+class TestException extends Exception
+{
 
-	class TestException extends \Exception {
-
-	}
+}

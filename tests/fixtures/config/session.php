@@ -1,13 +1,12 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+return [
+    
+    'enabled' => true,
+    'driver' => 'array',
+    'rotate' => 3600,
+    'lifetime' => 7200,
 
-    return [
-
-        'enabled' => true,
-        'driver' => 'array',
-        'rotate' => 3600,
-        'lifetime' => 7200,
-
-    ];
+];

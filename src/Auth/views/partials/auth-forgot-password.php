@@ -19,9 +19,9 @@ $processed = $session->get('password.reset.processed', false);
     <div class="notification <?= $processed ? 'is-success' : 'is-info' ?> is-light">
 
         <?php if ($processed) : ?>
-            We sent an email to the provided account if it exists.
+	        We sent an email to the provided account if it exists.
         <?php else : ?>
-            Enter your username or account email and we will sent you an email with instructions to reset your password.
+	        Enter your username or account email and we will sent you an email with instructions to reset your password.
         <?php endif; ?>
     </div>
 
@@ -45,8 +45,8 @@ $processed = $session->get('password.reset.processed', false);
             Request new password
         </button>
     </div>
-
-    <?= $csrf->asHtml() ?>
+	
+	<?= $csrf->asHtml() ?>
 
 </form>
 

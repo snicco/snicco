@@ -22,11 +22,11 @@ class ValidationServiceProvider extends ServiceProvider
         $this->addRuleNamespace();
     }
     
-    function bootstrap() :void
+    private function bindConfig()
     {
-        
-        $this->renderValidationExceptions();
-        
+        $this->config->extend('validation.messages', []);
+        $this->config->extend('middleware.groups.global', [ShareValidatorWithRequest::class]);
+        $this->config->extend('middleware.unique', [ShareValidatorWithRequest::class]);
     }
     
     private function bindValidator()
@@ -43,13 +43,6 @@ class ValidationServiceProvider extends ServiceProvider
         
     }
     
-    private function bindConfig()
-    {
-        $this->config->extend('validation.messages', []);
-        $this->config->extend('middleware.groups.global', [ShareValidatorWithRequest::class]);
-        $this->config->extend('middleware.unique', [ShareValidatorWithRequest::class]);
-    }
-    
     private function addRuleNamespace()
     {
         Factory::setDefaultInstance(
@@ -57,6 +50,13 @@ class ValidationServiceProvider extends ServiceProvider
                 ->withRuleNamespace('Snicco\Validation\Rules')
                 ->withExceptionNamespace('Snicco\Validation\Exceptions')
         );
+    }
+    
+    function bootstrap() :void
+    {
+        
+        $this->renderValidationExceptions();
+        
     }
     
     private function renderValidationExceptions()

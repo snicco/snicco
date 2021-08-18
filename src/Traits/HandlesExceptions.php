@@ -1,69 +1,73 @@
 <?php
 
+declare(strict_types=1);
 
-	declare( strict_types = 1 );
+namespace Snicco\Traits;
 
+use Closure;
+use ErrorException;
+use Snicco\Http\Psr7\Request;
 
-	namespace Snicco\Traits;
-
-	use Snicco\Http\Psr7\Request;
-
-    trait HandlesExceptions {
-
-		private $registered = false;
-
-		private $request_resolver;
-
-		public function register() {
-
-			if ( $this->registered ) {
-
-				return;
-
-			}
-
-			set_exception_handler( [ $this, 'handleException' ] );
-			set_error_handler( [ $this, 'handleError' ] );
-
-
-			$this->registered = true;
-
-		}
-
-		public function unregister() {
-
-			if ( ! $this->registered ) {
-				return;
-			}
-
-			restore_exception_handler();
-			restore_error_handler();
-
-			$this->registered = false;
-
-		}
-
-		public function handleError( $errno, $errstr, $errfile, $errline ) {
-
-			if ( error_reporting() ) {
-
-                throw new \ErrorException( $errstr, 0, $errno, $errfile, $errline );
-
-			}
-
-
-		}
-
-		public function setRequestResolver ( \Closure $closure) {
-
-		    $this->request_resolver = $closure;
-
+trait HandlesExceptions
+{
+    
+    private $registered = false;
+    
+    private $request_resolver;
+    
+    public function register()
+    {
+        
+        if ($this->registered) {
+            
+            return;
+            
         }
-
-        public function resolveRequestFromContainer() :Request {
-
-		    return call_user_func($this->request_resolver);
-
+        
+        set_exception_handler([$this, 'handleException']);
+        set_error_handler([$this, 'handleError']);
+        
+        $this->registered = true;
+        
+    }
+    
+    public function unregister()
+    {
+        
+        if ( ! $this->registered) {
+            return;
         }
-
-	}
+        
+        restore_exception_handler();
+        restore_error_handler();
+        
+        $this->registered = false;
+        
+    }
+    
+    public function handleError($errno, $errstr, $errfile, $errline)
+    {
+        
+        if (error_reporting()) {
+            
+            throw new ErrorException($errstr, 0, $errno, $errfile, $errline);
+            
+        }
+        
+    }
+    
+    public function setRequestResolver(Closure $closure)
+    {
+        
+        $this->request_resolver = $closure;
+        
+    }
+    
+    public function resolveRequestFromContainer() :Request
+    {
+        
+        return call_user_func($this->request_resolver);
+        
+    }
+    
+}

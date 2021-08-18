@@ -1,7 +1,7 @@
 @isset($isset)
- ISSET
+	ISSET
 @endisset
 @empty($empty)
-    EMPTY
+	EMPTY
 @endempty
 

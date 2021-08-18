@@ -28,27 +28,28 @@ class HttpException extends Exception
         return $this->status_code;
     }
     
-    public function messageForUsers() :string
-    {
-        return $this->message_for_users;
-    }
-    
     public function withMessageForUsers(string $message_for_users) :HttpException
     {
         $this->message_for_users = $message_for_users;
         return $this;
     }
     
-    // The message that should be displayed for json requests while in production mode.
     public function withJsonMessageForUsers(string $json_message) :HttpException
     {
         $this->json_message = $json_message;
         return $this;
     }
     
+    // The message that should be displayed for json requests while in production mode.
+    
     public function getJsonMessage() :string
     {
         return $this->json_message ?? $this->messageForUsers();
+    }
+    
+    public function messageForUsers() :string
+    {
+        return $this->message_for_users;
     }
     
     public function withStatusCode(int $http_status_code) :HttpException

@@ -1,24 +1,22 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Tests\helpers;
 
+use Snicco\Routing\FastRoute\FastRouteMatcher;
 
-    namespace Tests\helpers;
-
-    use Snicco\Routing\FastRoute\FastRouteMatcher;
-
-    /**
-     * @internal
-     */
-    trait CreateRouteMatcher
+/**
+ * @internal
+ */
+trait CreateRouteMatcher
+{
+    
+    public function createRouteMatcher() :FastRouteMatcher
     {
-
-        public function createRouteMatcher() : FastRouteMatcher
-        {
-
-            return new FastRouteMatcher();
-
-        }
-
+        
+        return new FastRouteMatcher();
+        
     }
+    
+}

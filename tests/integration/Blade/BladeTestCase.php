@@ -10,23 +10,23 @@ use Snicco\Blade\BladeDirectiveServiceProvider;
 
 class BladeTestCase extends TestCase
 {
-	
-	protected static $ignore_files = [];
-	
-	protected function setUp() :void
-	{
-		
-		parent::setUp();
-		$this->rmdir(BLADE_CACHE);
-	}
-	
-	public function packageProviders() :array
-	{
-		
-		return [
-			BladeServiceProvider::class,
-			BladeDirectiveServiceProvider::class,
-		];
-	}
-	
+    
+    protected static $ignore_files = [];
+    
+    public function packageProviders() :array
+    {
+        
+        return [
+            BladeServiceProvider::class,
+            BladeDirectiveServiceProvider::class,
+        ];
+    }
+    
+    protected function setUp() :void
+    {
+        
+        parent::setUp();
+        $this->rmdir(BLADE_CACHE);
+    }
+    
 }
