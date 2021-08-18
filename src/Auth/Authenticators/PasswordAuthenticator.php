@@ -47,6 +47,7 @@ class PasswordAuthenticator extends Authenticator
     
     private function findUser(Request $request) :WP_User
     {
+    
         $user = $this->getUserByLogin($request->post('log'));
         
         if ( ! $user instanceof WP_User) {

@@ -7,6 +7,7 @@ use Snicco\Contracts\Bannable;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Fail2Ban\Contracts\Syslogger;
 use Snicco\Contracts\ErrorHandlerInterface;
+use Snicco\Auth\Events\FailedPasswordReset;
 use Snicco\ExceptionHandling\ProductionErrorHandler;
 
 class Fail2BanServiceProvider extends ServiceProvider
@@ -21,6 +22,7 @@ class Fail2BanServiceProvider extends ServiceProvider
         $this->bindConfig();
         $this->bindFail2Ban();
         $this->bindSyslogger();
+        $this->bindEvents();
         
     }
     
@@ -62,13 +64,22 @@ class Fail2BanServiceProvider extends ServiceProvider
         if ( ! $error_handler instanceof ProductionErrorHandler) {
             return;
         }
-        
+    
         $error_handler->reportable(function (Bannable $exception, Request $request) {
-            
-            $this->container->make(Fail2Ban::class)->report($exception, $request);
-            
-        });
         
+            $this->container->make(Fail2Ban::class)->report($exception, $request);
+        
+        });
+    
+    }
+    
+    private function bindEvents()
+    {
+        $this->config->extend('events.listeners', [
+            FailedPasswordReset::class => [
+                [Fail2Ban::class, 'report'],
+            ],
+        ]);
     }
     
 }

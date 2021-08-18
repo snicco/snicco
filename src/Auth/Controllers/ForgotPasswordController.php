@@ -14,6 +14,7 @@ use Snicco\Auth\Traits\ResolvesUser;
 use Respect\Validation\Validator as v;
 use Snicco\Auth\Mail\ResetPasswordMail;
 use Snicco\Http\Responses\RedirectResponse;
+use Snicco\Auth\Events\FailedPasswordReset;
 
 class ForgotPasswordController extends Controller
 {
@@ -47,14 +48,19 @@ class ForgotPasswordController extends Controller
         ]);
         
         $user = $this->getUserByLogin($validated['login']);
-        
+    
         if ($user instanceof WP_User) {
-            
+        
             $magic_link = $this->generateSignedUrl($user);
-            
+        
             $mail->to($user->user_email)
                  ->send(new ResetPasswordMail($user, $magic_link, $this->expiration));
-            
+        
+        }
+        else {
+        
+            FailedPasswordReset::dispatch([$request]);
+        
         }
         
         return $this->response_factory->redirect()
