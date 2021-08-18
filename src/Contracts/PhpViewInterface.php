@@ -1,18 +1,16 @@
 <?php
 
+declare(strict_types=1);
 
-	declare( strict_types = 1 );
+namespace Snicco\Contracts;
 
-
-	namespace Snicco\Contracts;
-
-
-	interface PhpViewInterface extends ViewInterface {
-
-		public function path() : string;
-
-		public function parent() : ?PhpViewInterface;
-
-		public function name() : string;
-
-	}
+interface PhpViewInterface extends ViewInterface
+{
+    
+    public function path() :string;
+    
+    public function parent() :?PhpViewInterface;
+    
+    public function name() :string;
+    
+}

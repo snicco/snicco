@@ -1,37 +1,37 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Tests\helpers;
 
+use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 
-    namespace Tests\helpers;
-
-    use Carbon\Carbon;
-    use Carbon\CarbonImmutable;
-
-    /**
-     * @internal
-     */
-    trait TravelsTime
+/**
+ * @internal
+ */
+trait TravelsTime
+{
+    
+    public function backToPresent()
     {
-
-        public function backToPresent() {
-
-            if (class_exists(Carbon::class)) {
-                Carbon::setTestNow();
-            }
-
-            if (class_exists(CarbonImmutable::class)) {
-                CarbonImmutable::setTestNow();
-            }
-
+        
+        if (class_exists(Carbon::class)) {
+            Carbon::setTestNow();
         }
-
-        /** Time travel is always cumulative */
-        public function travelIntoFuture(int $seconds) {
-
-            Carbon::setTestNow(Carbon::now()->addSeconds($seconds));
-
+        
+        if (class_exists(CarbonImmutable::class)) {
+            CarbonImmutable::setTestNow();
         }
-
+        
     }
+    
+    /** Time travel is always cumulative */
+    public function travelIntoFuture(int $seconds)
+    {
+        
+        Carbon::setTestNow(Carbon::now()->addSeconds($seconds));
+        
+    }
+    
+}

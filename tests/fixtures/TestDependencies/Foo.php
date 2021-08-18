@@ -1,19 +1,19 @@
 <?php
 
+declare(strict_types=1);
 
-	declare( strict_types = 1 );
+namespace Tests\fixtures\TestDependencies;
 
-
-	namespace Tests\fixtures\TestDependencies;
-
-	class Foo {
-
-		public string $foo = 'foo';
-
-		public function __toString() {
-
-			return $this->foo;
-
-		}
-
-	}
+class Foo
+{
+    
+    public string $foo = 'foo';
+    
+    public function __toString()
+    {
+        
+        return $this->foo;
+        
+    }
+    
+}

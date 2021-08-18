@@ -1,10 +1,10 @@
 @extends('layouts.parent')
 @section('title', 'foo')
 @section('sidebar')
-    @parent
-    appended
+	@parent
+	appended
 @endsection
 @section('body')
-    foobar
+	foobar
 @endsection
 

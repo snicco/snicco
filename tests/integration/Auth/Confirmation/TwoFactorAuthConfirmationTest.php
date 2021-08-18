@@ -13,31 +13,6 @@ use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
 class TwoFactorAuthConfirmationTest extends AuthTestCase
 {
     
-    protected function setUp() :void
-    {
-        $this->afterApplicationCreated(function () {
-            
-            $this->with2Fa();
-            $this->loadRoutes();
-            $this->withoutMiddleware('csrf');
-            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
-            $this->instance(
-                TwoFactorAuthenticationProvider::class,
-                new TestTwoFactorProvider($this->encryptor)
-            );
-            
-        });
-        parent::setUp();
-    }
-    
-    private function validEmailConfirmMagicLink() :string
-    {
-        /** @var UrlGenerator $url */
-        $url = $this->app->resolve(UrlGenerator::class);
-        
-        return $url->signedRoute('auth.confirm.magic-link', [], true, true);
-    }
-    
     /** @test */
     public function the_email_confirmation_view_is_used_if_the_current_user_doesnt_have_2fa_enabled()
     {
@@ -86,6 +61,14 @@ class TwoFactorAuthConfirmationTest extends AuthTestCase
         
         $this->assertTrue($response->session()->hasValidAuthConfirmToken());
         
+    }
+    
+    private function validEmailConfirmMagicLink() :string
+    {
+        /** @var UrlGenerator $url */
+        $url = $this->app->resolve(UrlGenerator::class);
+        
+        return $url->signedRoute('auth.confirm.magic-link', [], true, true);
     }
     
     /** @test */
@@ -216,6 +199,23 @@ class TwoFactorAuthConfirmationTest extends AuthTestCase
         
         $response->assertOk()->assertSee('Invalid code provided.');
         
+    }
+    
+    protected function setUp() :void
+    {
+        $this->afterApplicationCreated(function () {
+            
+            $this->with2Fa();
+            $this->loadRoutes();
+            $this->withoutMiddleware('csrf');
+            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
+            $this->instance(
+                TwoFactorAuthenticationProvider::class,
+                new TestTwoFactorProvider($this->encryptor)
+            );
+            
+        });
+        parent::setUp();
     }
     
 }

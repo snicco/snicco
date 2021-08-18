@@ -1,15 +1,15 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+use Tests\unit\Routing\Foo;
 
+return [
+    
+    'aliases' => [
+        
+        'foo' => Foo::class,
+    
+    ],
 
-    return [
-
-        'aliases' => [
-
-            'foo' => \Tests\unit\Routing\Foo::class
-
-        ],
-
-    ];
+];

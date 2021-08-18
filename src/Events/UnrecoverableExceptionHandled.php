@@ -1,11 +1,10 @@
 <?php
 
+declare(strict_types=1);
 
-	declare( strict_types = 1 );
+namespace Snicco\Events;
 
+class UnrecoverableExceptionHandled extends Event
+{
 
-	namespace Snicco\Events;
-
-	class UnrecoverableExceptionHandled extends Event {
-
-	}
+}

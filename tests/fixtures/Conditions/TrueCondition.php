@@ -1,26 +1,26 @@
 <?php
 
+declare(strict_types=1);
 
-	declare( strict_types = 1 );
+namespace Tests\fixtures\Conditions;
 
+use Snicco\Http\Psr7\Request;
+use Snicco\Contracts\ConditionInterface;
 
-	namespace Tests\fixtures\Conditions;
-
-	use Snicco\Contracts\ConditionInterface;
-    use Snicco\Http\Psr7\Request;
-
-    class TrueCondition implements ConditionInterface {
-
-
-		public function isSatisfied( Request $request ) :bool {
-
-			return true;
-		}
-
-		public function getArguments( Request $request ) :array {
-
-			return [];
-
-		}
-
-	}
+class TrueCondition implements ConditionInterface
+{
+    
+    public function isSatisfied(Request $request) :bool
+    {
+        
+        return true;
+    }
+    
+    public function getArguments(Request $request) :array
+    {
+        
+        return [];
+        
+    }
+    
+}

@@ -1,48 +1,44 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Snicco\Middleware\Core;
 
+use Snicco\Http\Delegate;
+use Snicco\Http\Psr7\Request;
+use Snicco\Http\Psr7\Response;
+use Snicco\Contracts\Middleware;
+use Psr\Http\Message\ResponseInterface;
 
-    namespace Snicco\Middleware\Core;
-
-    use Psr\Http\Message\ResponseInterface;
-    use Snicco\Contracts\Middleware;
-    use Snicco\Http\Delegate;
-    use Snicco\Http\Psr7\Request;
-    use Snicco\Http\Psr7\Response;
-
-    class ShareCookies extends Middleware
+class ShareCookies extends Middleware
+{
+    
+    public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-
-        public function handle(Request $request, Delegate $next) :ResponseInterface
-        {
-
-            $response = $next($request);
-
-            return $this->addCookiesToResponse($response);
-
-
-        }
-
-        private function addCookiesToResponse(Response $response) : ResponseInterface
-        {
-
-            if ( ( $headers = $response->cookies()->toHeaders() ) === [] ) {
-
-                return $response;
-
-            }
-
-            foreach ($headers as $header) {
-
-                $response = $response->withAddedHeader('Set-Cookie', $header);
-
-            }
-
-            return $response;
-
-        }
-
-
+        
+        $response = $next($request);
+        
+        return $this->addCookiesToResponse($response);
+        
     }
+    
+    private function addCookiesToResponse(Response $response) :ResponseInterface
+    {
+        
+        if (($headers = $response->cookies()->toHeaders()) === []) {
+            
+            return $response;
+            
+        }
+        
+        foreach ($headers as $header) {
+            
+            $response = $response->withAddedHeader('Set-Cookie', $header);
+            
+        }
+        
+        return $response;
+        
+    }
+    
+}

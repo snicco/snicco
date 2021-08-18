@@ -1,5 +1,4 @@
 <?php
 
-
-	declare( strict_types = 1 );
-	echo $variable['foo'];
+declare(strict_types=1);
+echo $variable['foo'];

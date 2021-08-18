@@ -1,24 +1,23 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Tests\helpers;
 
+use Contracts\ContainerAdapter;
+use SniccoAdapter\BaseContainerAdapter;
 
-    namespace Tests\helpers;
-
-    use Contracts\ContainerAdapter;
-    use SniccoAdapter\BaseContainerAdapter;
-
-    /**
-     * @internal
-     */
-    trait CreateContainer
+/**
+ * @internal
+ */
+trait CreateContainer
+{
+    
+    public function createContainer() :ContainerAdapter
     {
-
-        public function createContainer() :ContainerAdapter {
-
-            return new BaseContainerAdapter();
-
-        }
-
+        
+        return new BaseContainerAdapter();
+        
     }
+    
+}

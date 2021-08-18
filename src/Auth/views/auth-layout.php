@@ -1,13 +1,12 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+/** @var ViewFactory $view_factory */
 
-    /** @var ViewFactory $view_factory */
+/** @var string $view */
 
-    /** @var string $view */
-
-    use Snicco\View\ViewFactory;
+use Snicco\View\ViewFactory;
 
 ?>
 
@@ -25,61 +24,61 @@
 <style>
 
     body {
-        background: #f1f1f1;
+	    background: #f1f1f1;
     }
 
     .underlined {
-        text-decoration: underline;
+	    text-decoration: underline;
     }
 
     .hide {
-        display: none !important;
+	    display: none !important;
     }
 
     .button.submit {
-        background: #2271b1;
-        border-color: #2271b1;
-        display: inline-block;
-        width: 100%;
-        color: white;
+	    background: #2271b1;
+	    border-color: #2271b1;
+	    display: inline-block;
+	    width: 100%;
+	    color: white;
     }
 
     #login_button {
-
-        background: #2271b1;
-        border-color: #2271b1;
-        display: inline-block;
-        width: 100%;
-        color: white;
+	
+	    background: #2271b1;
+	    border-color: #2271b1;
+	    display: inline-block;
+	    width: 100%;
+	    color: white;
     }
 
     #logo {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-        text-align: center;
-        transition-property: border, background, color;
-        transition-duration: .05s;
-        transition-timing-function: ease-in-out;
-        background-image: none, url(/wp-admin/images/wordpress-logo.svg);
-        background-size: 84px;
-        background-position: center top;
-        background-repeat: no-repeat;
-        color: #3c434a;
-        height: 84px;
-        font-size: 20px;
-        font-weight: 400;
-        line-height: 1.3;
-        margin: 0 auto 25px;
-        padding: 0;
-        text-decoration: none;
-        width: 84px;
-        text-indent: -9999px;
-        outline: 0;
-        overflow: hidden;
-        display: block;
+	    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	    text-align: center;
+	    transition-property: border, background, color;
+	    transition-duration: .05s;
+	    transition-timing-function: ease-in-out;
+	    background-image: none, url(/wp-admin/images/wordpress-logo.svg);
+	    background-size: 84px;
+	    background-position: center top;
+	    background-repeat: no-repeat;
+	    color: #3c434a;
+	    height: 84px;
+	    font-size: 20px;
+	    font-weight: 400;
+	    line-height: 1.3;
+	    margin: 0 auto 25px;
+	    padding: 0;
+	    text-decoration: none;
+	    width: 84px;
+	    text-indent: -9999px;
+	    outline: 0;
+	    overflow: hidden;
+	    display: block;
     }
 
     .hero-body .label {
-        font-weight: 400;
+	    font-weight: 400;
     }
 
 
@@ -94,7 +93,7 @@
             <div class="columns is-centered">
                 <div class="column is-5-tablet is-4-desktop is-3-widescreen">
 
-                    <?= $__view->render($view, $__data ?? [] ) ?>
+                    <?= $__view->render($view, $__data ?? []) ?>
 
                 </div>
             </div>

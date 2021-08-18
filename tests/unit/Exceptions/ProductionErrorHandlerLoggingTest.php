@@ -37,31 +37,6 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
     private Request          $request;
     private TestLogger       $test_logger;
     
-    protected function beforeTestRun()
-    {
-        
-        Event::make($this->container = $this->createContainer());
-        Event::fake();
-        $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
-        $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
-        WpFacade::setFacadeContainer($this->container);
-        WP::shouldReceive('userId')->andReturn(10)->byDefault();
-        $GLOBALS['test']['log'] = [];
-        $this->request = TestRequest::from('GET', 'foo');
-        $this->container->instance(LoggerInterface::class, $this->test_logger = new TestLogger());
-        
-    }
-    
-    protected function beforeTearDown()
-    {
-        
-        Event::setInstance(null);
-        WP::setFacadeContainer(null);
-        WP::clearResolvedInstances();
-        Mockery::close();
-        
-    }
-    
     /** @test */
     public function exceptions_are_logged_with_the_default_logger_if_the_exception_doesnt_have_a_report_method()
     {
@@ -72,6 +47,11 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
         
         $this->test_logger->assertHasLogLevelEntry(LogLevel::ERROR, 'Foobar');
         
+    }
+    
+    private function newErrorHandler() :ProductionErrorHandler
+    {
+        return ErrorHandlerFactory::make($this->container, false);
     }
     
     /** @test */
@@ -282,9 +262,29 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
         
     }
     
-    private function newErrorHandler() :ProductionErrorHandler
+    protected function beforeTestRun()
     {
-        return ErrorHandlerFactory::make($this->container, false);
+        
+        Event::make($this->container = $this->createContainer());
+        Event::fake();
+        $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
+        $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
+        WpFacade::setFacadeContainer($this->container);
+        WP::shouldReceive('userId')->andReturn(10)->byDefault();
+        $GLOBALS['test']['log'] = [];
+        $this->request = TestRequest::from('GET', 'foo');
+        $this->container->instance(LoggerInterface::class, $this->test_logger = new TestLogger());
+        
+    }
+    
+    protected function beforeTearDown()
+    {
+        
+        Event::setInstance(null);
+        WP::setFacadeContainer(null);
+        WP::clearResolvedInstances();
+        Mockery::close();
+        
     }
     
 }

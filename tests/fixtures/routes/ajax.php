@@ -1,13 +1,13 @@
 <?php
 
-	declare( strict_types = 1 );
+declare(strict_types=1);
 
-    use Tests\stubs\TestApp;
+use Tests\stubs\TestApp;
 
-    $router = TestApp::route();
+$router = TestApp::route();
 
-	$router->post('foo_action')->handle( function () {
-
-        return 'FOO_AJAX_ACTION';
-
-    })->name('foo');
+$router->post('foo_action')->handle(function () {
+    
+    return 'FOO_AJAX_ACTION';
+    
+})->name('foo');

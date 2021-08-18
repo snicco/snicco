@@ -1,25 +1,22 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Tests\fixtures\database\Factories;
 
+use Tests\fixtures\database\Models\Country;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
-    namespace Tests\fixtures\database\Factories;
-
-    use Illuminate\Database\Eloquent\Factories\Factory;
-    use Tests\fixtures\database\Models\Country;
-
-    class CityFactory extends Factory
+class CityFactory extends Factory
+{
+    
+    public function definition()
     {
-
-        public function definition()
-        {
-           return [
-               'name' => $this->faker->city(),
-               'country_id' => Country::factory(),
-               'population' => $this->faker->numberBetween(100000, 1000000)
-           ];
-        }
-
-
+        return [
+            'name' => $this->faker->city(),
+            'country_id' => Country::factory(),
+            'population' => $this->faker->numberBetween(100000, 1000000),
+        ];
     }
+    
+}

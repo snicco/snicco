@@ -1,5 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
-	declare( strict_types = 1 );
-	echo 'Hello '; \Tests\stubs\TestApp::render('included-subview.php');
+use Tests\stubs\TestApp;
+
+echo 'Hello ';
+TestApp::render('included-subview.php');

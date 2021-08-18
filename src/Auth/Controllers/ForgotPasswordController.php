@@ -48,21 +48,21 @@ class ForgotPasswordController extends Controller
         ]);
         
         $user = $this->getUserByLogin($validated['login']);
-    
+        
         if ($user instanceof WP_User) {
-        
+            
             $magic_link = $this->generateSignedUrl($user);
-        
+            
             $mail->to($user->user_email)
                  ->send(new ResetPasswordMail($user, $magic_link, $this->expiration));
-        
+            
         }
         else {
-    
+            
             FailedPasswordResetLinkRequest::dispatch([$request, $validated['login']]);
-        
+            
         }
-    
+        
         return $this->response_factory->redirect()
                                       ->toRoute('auth.forgot.password')
                                       ->with('password.reset.processed', true);

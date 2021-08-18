@@ -1,36 +1,33 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+namespace Snicco\Events;
 
+use Snicco\Http\Psr7\Request;
+use Snicco\Application\Config;
+use BetterWpHooks\Traits\IsAction;
 
-    namespace Snicco\Events;
-
-    use BetterWpHooks\Traits\IsAction;
-    use Snicco\Application\Config;
-    use Snicco\Events\Event;
-    use Snicco\Http\Psr7\Request;
-
-    class WpInit extends Event
+class WpInit extends Event
+{
+    
+    use IsAction;
+    
+    /**
+     * @var Config
+     */
+    public $config;
+    
+    /**
+     * @var Request
+     */
+    public $request;
+    
+    public function __construct(Config $config, Request $request)
     {
-
-        use IsAction;
-
-        /**
-         * @var Config
-         */
-        public $config;
-
-        /**
-         * @var Request
-         */
-        public $request;
-
-        public function __construct( Config $config, Request $request)
-        {
-            $this->config = $config;
-            $this->request = $request;
-
-        }
-
+        $this->config = $config;
+        $this->request = $request;
+        
     }
+    
+}

@@ -1,9 +1,8 @@
 <?php
 
+declare(strict_types=1);
 
-	declare( strict_types = 1 );
-
-	use Tests\stubs\TestApp;
+use Tests\stubs\TestApp;
 
 ?>
 
@@ -11,7 +10,7 @@
 
 <?php
 
-	TestApp::includeChildViews();
+TestApp::includeChildViews();
 
 ?>
 

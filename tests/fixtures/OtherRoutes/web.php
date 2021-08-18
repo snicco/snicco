@@ -1,21 +1,20 @@
 <?php
 
+declare(strict_types=1);
 
-    declare(strict_types = 1);
+use Tests\stubs\TestApp;
+use Snicco\Routing\Router;
 
-    use Tests\stubs\TestApp;
-    use Snicco\Routing\Router;
+$router = TestApp::resolve(Router::class);
 
-    $router = TestApp::resolve(Router::class);
+$router->get('foo', function () {
+    
+    return 'foo-other-route';
+    
+});
 
-    $router->get('foo', function () {
-
-        return 'foo-other-route';
-
-    });
-
-    $router->get('web-other', function () {
-
-        return 'web-other';
-
-    });
+$router->get('web-other', function () {
+    
+    return 'web-other';
+    
+});

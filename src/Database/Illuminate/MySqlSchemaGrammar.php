@@ -1,27 +1,24 @@
 <?php
 
+namespace Snicco\Database\Illuminate;
 
-    namespace Snicco\Database\Illuminate;
+use Illuminate\Database\Schema\Grammars\MySqlGrammar as IlluminateSchemaGrammar;
 
-
-    use Illuminate\Database\Schema\Grammars\MySqlGrammar as IlluminateSchemaGrammar;
-
-    class MySqlSchemaGrammar extends IlluminateSchemaGrammar
+class MySqlSchemaGrammar extends IlluminateSchemaGrammar
+{
+    
+    public function compileGetTableCollation() :string
     {
-
-        public function compileGetTableCollation() : string
-        {
-
-            return "show table status where name like ?";
-
-        }
-
-        public function compileGetFullColumnInfo() : string
-        {
-
-            return "show full columns from ?";
-
-        }
-
-
+        
+        return "show table status where name like ?";
+        
     }
+    
+    public function compileGetFullColumnInfo() :string
+    {
+        
+        return "show full columns from ?";
+        
+    }
+    
+}

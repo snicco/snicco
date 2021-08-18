@@ -1,15 +1,13 @@
 <?php
 
+declare(strict_types=1);
 
-	declare( strict_types = 1 );
+namespace Snicco\Events;
 
+use BetterWpHooks\Traits\BetterWpHooksFacade;
 
-	namespace Snicco\Events;
-
-	use BetterWpHooks\Traits\BetterWpHooksFacade;
-
-	class Event {
-
-		use BetterWpHooksFacade;
-
-	}
+class Event
+{
+    
+    use BetterWpHooksFacade;
+}
