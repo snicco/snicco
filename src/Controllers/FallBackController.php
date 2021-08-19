@@ -10,8 +10,8 @@ use Snicco\Http\Controller;
 use Snicco\Routing\Pipeline;
 use Snicco\Http\Psr7\Request;
 use Snicco\Middleware\MiddlewareStack;
-use Snicco\Http\Responses\NullResponse;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Http\Responses\DelegatedResponse;
 use Snicco\Contracts\AbstractRouteCollection as Routes;
 
 /**
@@ -74,16 +74,6 @@ class FallBackController extends Controller
         
     }
     
-    public function delegateToWordPress() :NullResponse
-    {
-        return $this->response_factory->null();
-    }
-    
-    public function setFallbackHandler(callable $fallback_handler)
-    {
-        $this->fallback_handler = $fallback_handler;
-    }
-    
     private function runRoute(Route $route) :Closure
     {
         return fn(Request $request) => $route->run($request);
@@ -95,16 +85,9 @@ class FallBackController extends Controller
             
             return ($this->fallback_handler)
                 ? call_user_func($this->fallback_handler, $request)
-                : $this->response_factory->null();
+                : $this->response_factory->delegateToWP();
             
         };
-    }
-    
-    private function withWebMiddlewareGlobally(Request $request)
-    {
-        // If this request attribute is true we know that global middleware has already
-        // been run in the kernel which means "always_run_global" has been set to true in the config.
-        return $request->getAttribute('global_middleware_run', false);
     }
     
     private function middlewareForRequestWithoutRoute(Request $request) :array
@@ -114,6 +97,23 @@ class FallBackController extends Controller
             : ($this->withWebMiddlewareGlobally($request) ? ['web'] : []);
         
         return $this->middleware_stack->onlyGroups($groups, $request);
+    }
+    
+    private function withWebMiddlewareGlobally(Request $request)
+    {
+        // If this request attribute is true we know that global middleware has already
+        // been run in the kernel which means "always_run_global" has been set to true in the config.
+        return $request->getAttribute('global_middleware_run', false);
+    }
+    
+    public function delegateToWordPress() :DelegatedResponse
+    {
+        return $this->response_factory->delegateToWP();
+    }
+    
+    public function setFallbackHandler(callable $fallback_handler)
+    {
+        $this->fallback_handler = $fallback_handler;
     }
     
 }

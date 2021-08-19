@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Tests\stubs\TestApp;
+use Snicco\Http\ResponseFactory;
 use Tests\fixtures\Conditions\IsPost;
 use Tests\fixtures\Middleware\WebMiddleware;
 use Tests\fixtures\Middleware\FooMiddleware;
@@ -50,5 +51,17 @@ $router->patch()
        })
        ->middleware(WebMiddleware::class);
 
+$router->get('/null', function (ResponseFactory $response_factory) {
+    
+    return $response_factory->null()->withHeader('foo', 'bar');
+    
+});
+
+$router->get('/delegate', function (ResponseFactory $response_factory) {
+    
+    return $response_factory->delegateToWP()->withHeader('foo', 'bar')
+                            ->withBody($response_factory->createStream('foo'));
+    
+});
 
 

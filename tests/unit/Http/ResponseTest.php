@@ -26,7 +26,7 @@ class ResponseTest extends UnitTest
         $response = $this->factory->createResponse();
         
         $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertInstanceOf(Response::class, $response);
+        $this->assertNotInstanceOf(Response::class, $response);
         
     }
     
@@ -64,7 +64,7 @@ class ResponseTest extends UnitTest
         
         $stream = $this->factory->createStream('foo');
         
-        $response = $this->factory->createResponse()->html($stream);
+        $response = $this->factory->make()->html($stream);
         
         $this->assertSame('text/html', $response->getHeaderLine('content-type'));
         $this->assertSame('foo', $response->getBody()->__toString());
@@ -76,7 +76,7 @@ class ResponseTest extends UnitTest
         
         $stream = $this->factory->createStream(json_encode(['foo' => 'bar']));
         
-        $response = $this->factory->createResponse()->json($stream);
+        $response = $this->factory->make()->json($stream);
         
         $this->assertSame('application/json', $response->getHeaderLine('content-type'));
         $this->assertSame(['foo' => 'bar'], json_decode($response->getBody()->__toString(), true));

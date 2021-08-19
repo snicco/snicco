@@ -93,7 +93,7 @@ class FilterWpQueryTest extends TestCase
         
         $this->assertSame(['foo' => 'baz'], $wp->query_vars);
         
-        $this->assertNoResponse();
+        $this->sentResponse()->assertDelegatedToWordPress();
         
     }
     

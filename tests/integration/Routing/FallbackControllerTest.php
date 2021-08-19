@@ -14,18 +14,6 @@ class FallbackControllerTest extends TestCase
     
     private Router $router;
     
-    protected function setUp() :void
-    {
-        
-        $this->defer_boot = true;
-        $this->afterApplicationCreated(function () {
-            $this->router = $this->app->resolve(Router::class);
-        });
-        
-        parent::setUp();
-        
-    }
-    
     /** @test */
     public function the_fallback_route_will_match_urls_without_trailing_slashes_if_trailing_slashes_are_enforced()
     {
@@ -61,7 +49,7 @@ class FallbackControllerTest extends TestCase
         $this->boot();
         $this->router->fallback(fn() => 'foo_fallback');
         $response = $this->get('robots.txt');
-        $response->assertNullResponse();
+        $response->assertDelegatedToWordPress();
         
     }
     
@@ -72,7 +60,7 @@ class FallbackControllerTest extends TestCase
         $this->boot();
         $this->router->fallback(fn() => 'foo_fallback');
         $response = $this->get('robots.txt');
-        $response->assertNullResponse();
+        $response->assertDelegatedToWordPress();
         
     }
     
@@ -83,7 +71,7 @@ class FallbackControllerTest extends TestCase
         $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
         $this->withAddedConfig(['middleware.groups.global' => [GlobalMiddleware::class]]);
         
-        $this->get('/bogus')->assertNullResponse();
+        $this->get('/bogus')->assertDelegatedToWordPress();
         
         $this->assertSame(
             0,
@@ -124,7 +112,7 @@ class FallbackControllerTest extends TestCase
             'middleware.always_run_global' => true,
         ]);
         
-        $this->get('bogus')->assertNullResponse();
+        $this->get('bogus')->assertDelegatedToWordPress();
         
         $this->assertSame(
             1,
@@ -168,7 +156,7 @@ class FallbackControllerTest extends TestCase
             'middleware.always_run_global' => true,
         ])->boot();
         
-        $this->get('/bogus')->assertNullResponse();
+        $this->get('/bogus')->assertDelegatedToWordPress();
         
         $this->assertSame(
             1,
@@ -189,13 +177,25 @@ class FallbackControllerTest extends TestCase
             'middleware.always_run_global' => false,
         ])->boot();
         
-        $this->get('/bogus')->assertNullResponse();
+        $this->get('/bogus')->assertDelegatedToWordPress();
         
         $this->assertSame(
             0,
             $GLOBALS['test'][WebMiddleware::run_times],
             'web middleware run when it was not expected.'
         );
+        
+    }
+    
+    protected function setUp() :void
+    {
+        
+        $this->defer_boot = true;
+        $this->afterApplicationCreated(function () {
+            $this->router = $this->app->resolve(Router::class);
+        });
+        
+        parent::setUp();
         
     }
     

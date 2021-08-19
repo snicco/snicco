@@ -17,6 +17,7 @@ use Snicco\Contracts\ViewInterface;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\Http\Responses\NullResponse;
 use Snicco\Testing\Constraints\SeeInOrder;
+use Snicco\Http\Responses\DelegatedResponse;
 use Snicco\Testing\Assertable\AssertableCookie;
 
 class TestResponse
@@ -73,6 +74,19 @@ class TestResponse
             $this->psr_response,
             "A response was returned unexpectedly."
         );
+        
+        return $this;
+    }
+    
+    public function assertDelegatedToWordPress()
+    {
+        return $this->assertInstance(DelegatedResponse::class);
+    }
+    
+    public function assertInstance(string $class) :TestResponse
+    {
+        
+        PHPUnit::assertInstanceOf($class, $this->psr_response);
         
         return $this;
     }
@@ -929,14 +943,6 @@ class TestResponse
     {
         
         $this->assertContentType('application/json');
-        
-        return $this;
-    }
-    
-    public function assertInstance(string $class) :TestResponse
-    {
-        
-        PHPUnit::assertInstanceOf($class, $this->psr_response);
         
         return $this;
     }

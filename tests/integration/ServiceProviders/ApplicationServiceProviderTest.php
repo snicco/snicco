@@ -178,7 +178,7 @@ class ApplicationServiceProviderTest extends TestCase
     public function a_match_route_can_be_aliased()
     {
         
-        $this->delete('/alias/match')->assertNullResponse();
+        $this->delete('/alias/match')->assertDelegatedToWordPress();
         $this->post('/alias/match')->assertOk()->assertSee('match');
         
     }

@@ -15,6 +15,7 @@ use Snicco\Http\Responses\NullResponse;
 use Snicco\Middleware\Core\RouteRunner;
 use Snicco\Middleware\Core\ShareCookies;
 use Snicco\Middleware\Core\MethodOverride;
+use Snicco\Http\Responses\DelegatedResponse;
 use Snicco\Middleware\Core\RoutingMiddleware;
 use Snicco\Middleware\Core\SetRequestAttributes;
 use Snicco\Middleware\Core\ErrorHandlerMiddleware;
@@ -79,10 +80,14 @@ class HttpKernel
         
         $response = $this->handle($request_event);
         
-        if ($response instanceof NullResponse) {
+        if ($response instanceof DelegatedResponse) {
             
-            // We might have a NullResponse where the headers got modified by middleware.
             $this->emitter->emitHeaders($response);
+            return $response;
+            
+        }
+        
+        if ($response instanceof NullResponse) {
             
             return $response;
             
