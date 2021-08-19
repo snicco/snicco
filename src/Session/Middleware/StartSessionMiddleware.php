@@ -43,15 +43,7 @@ class StartSessionMiddleware extends Middleware
         
         $this->saveSession($session, $request, $response);
         
-        $response = $response->withCookie($this->manager->sessionCookie());
-        
-        if ( ! $response->hasHeader('Cache-Control')) {
-            
-            $response = $response->withAddedHeader('Cache-Control', 'private, no-cache');
-            
-        }
-        
-        return $response;
+        return $response->withCookie($this->manager->sessionCookie());
         
     }
     

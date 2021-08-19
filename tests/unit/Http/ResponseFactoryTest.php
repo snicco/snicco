@@ -13,7 +13,7 @@ use Tests\helpers\AssertsResponse;
 use Tests\helpers\CreateUrlGenerator;
 use Snicco\Http\Responses\NullResponse;
 use Tests\helpers\CreateRouteCollection;
-use Snicco\Http\Responses\InvalidResponse;
+use Snicco\ExceptionHandling\Exceptions\HttpException;
 
 class ResponseFactoryTest extends UnitTest
 {
@@ -135,9 +135,8 @@ class ResponseFactoryTest extends UnitTest
     public function testToResponse_is_invalid()
     {
         
-        $response = $this->factory->toResponse(1);
-        
-        $this->assertInstanceOf(InvalidResponse::class, $response);
+        $this->expectException(HttpException::class);
+        $this->factory->toResponse(1);
         
     }
     
@@ -146,17 +145,6 @@ class ResponseFactoryTest extends UnitTest
     {
         
         $this->assertInstanceOf(Redirector::class, $this->factory->redirect());
-        
-    }
-    
-    /** @test */
-    public function testInvalidResponse()
-    {
-        
-        $response = $this->factory->invalidResponse();
-        
-        $this->assertInstanceOf(InvalidResponse::class, $response);
-        $this->assertStatusCode(500, $response);
         
     }
     

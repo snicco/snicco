@@ -23,17 +23,14 @@ class SuccessfulLoginResponse extends Response
         
     }
     
-    public function authenticatedUser() :WP_User
+    public function authenticateUser() :WP_User
     {
-        
         return $this->user;
     }
     
     public function rememberUser() :bool
     {
-        
         return $this->remember;
-        
     }
     
 }

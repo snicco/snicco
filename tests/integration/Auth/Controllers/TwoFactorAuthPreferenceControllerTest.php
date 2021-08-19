@@ -19,7 +19,7 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
     {
         
         $this->without2Fa();
-        $this->post($this->endpoint)->assertNullResponse();
+        $this->post($this->endpoint)->assertDelegatedToWordPress();
         
     }
     

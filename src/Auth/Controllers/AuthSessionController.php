@@ -49,57 +49,6 @@ class AuthSessionController extends Controller
         
     }
     
-    public function store(Request $request, Pipeline $auth_pipeline, LoginResponse $login_response)
-    {
-        
-        $response = $auth_pipeline->send($request)
-                                  ->through($this->auth_config['through'])
-                                  ->then($this->unauthenticated());
-        
-        if ($response instanceof SuccessfulLoginResponse) {
-            
-            $remember = $response->rememberUser() && $this->allowRememberMe();
-            $user = $response->authenticatedUser();
-            
-            return $this->handleLogin($user, $remember, $login_response, $request);
-            
-        }
-        
-        // one authenticator has decided to return a custom failure response.
-        if ( ! $response instanceof NullResponse) {
-            
-            return $response;
-            
-        }
-        
-        return $request->isExpectingJson()
-            ? $this->response_factory->json(['message' => 'Invalid credentials.'], 422)
-            : $this->response_factory->redirectToLogin()
-                                     ->withErrors(
-                                         ['login' => 'We could not authenticate you with the provided credentials']
-                                     );
-        
-    }
-    
-    public function destroy(Request $request, int $user_id) :Response
-    {
-        
-        if ($user_id !== $request->userId()) {
-            
-            throw new InvalidSignatureException(
-                "Suspicious logout attempt with query arg mismatch for logged in user [{$request->userId()}]. Query arg id [$user_id]"
-            );
-            
-        }
-        
-        $redirect_to = $request->query('redirect_to', $this->url->toRoute('home'));
-        
-        $response = $this->response_factory->redirect()->to($redirect_to);
-        
-        return new LogoutResponse($response);
-        
-    }
-    
     private function resetAuthSession(Session $session)
     {
         $session->invalidate();
@@ -126,13 +75,45 @@ class AuthSessionController extends Controller
         
     }
     
-    // None of our authenticators where able to authenticate the user.
-    // Time to bail.
+    public function store(Request $request, Pipeline $auth_pipeline, LoginResponse $login_response)
+    {
+        
+        $response = $auth_pipeline->send($request)
+                                  ->through($this->auth_config['through'])
+                                  ->then($this->unauthenticated());
+        
+        if ($response instanceof SuccessfulLoginResponse) {
+            
+            $remember = $response->rememberUser() && $this->allowRememberMe();
+            $user = $response->authenticateUser();
+            
+            return $this->handleLogin($user, $remember, $login_response, $request);
+            
+        }
+        
+        // one authenticator has decided to return a custom failure response.
+        if ( ! $response instanceof NullResponse) {
+            
+            return $response;
+            
+        }
+        
+        return $request->isExpectingJson()
+            ? $this->response_factory->json(['message' => 'Invalid credentials.'], 422)
+            : $this->response_factory->redirectToLogin()
+                                     ->withErrors(
+                                         ['login' => 'We could not authenticate you with the provided credentials']
+                                     );
+        
+    }
     
     private function unauthenticated() :Closure
     {
-        return fn() => new NullResponse($this->response_factory->createResponse());
+        return fn() => $this->response_factory->null();
     }
+    
+    // None of our authenticators where able to authenticate the user.
+    // Time to bail.
     
     private function allowRememberMe() :bool
     {
@@ -160,6 +141,25 @@ class AuthSessionController extends Controller
         }
         
         return $login_response->forRequest($request)->forUser($user);
+        
+    }
+    
+    public function destroy(Request $request, int $user_id) :Response
+    {
+        
+        if ($user_id !== $request->userId()) {
+            
+            throw new InvalidSignatureException(
+                "Suspicious logout attempt with query arg mismatch for logged in user [{$request->userId()}]. Query arg id [$user_id]"
+            );
+            
+        }
+        
+        $redirect_to = $request->query('redirect_to', $this->url->toRoute('home'));
+        
+        $response = $this->response_factory->redirect()->to($redirect_to);
+        
+        return new LogoutResponse($response);
         
     }
     

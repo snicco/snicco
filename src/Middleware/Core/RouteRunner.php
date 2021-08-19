@@ -39,7 +39,7 @@ class RouteRunner extends Middleware
         
         if ( ! $route = $route_result->route()) {
             
-            return $this->response_factory->null();
+            return $this->response_factory->delegateToWP();
             
         }
         

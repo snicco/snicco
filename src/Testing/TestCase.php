@@ -129,7 +129,7 @@ abstract class TestCase extends WPTestCase
         
     }
     
-    private function refreshApplication()
+    protected function refreshApplication()
     {
         $this->app = $this->createApplication();
     }
