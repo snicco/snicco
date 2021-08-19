@@ -8,6 +8,7 @@ use Snicco\Http\Controller;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\MagicLink;
 use Snicco\Http\Responses\RedirectResponse;
+use Snicco\ExceptionHandling\Exceptions\AuthorizationException;
 
 class RedirectController extends Controller
 {
@@ -49,9 +50,8 @@ class RedirectController extends Controller
         
         if ( ! $valid) {
             
-            return $this->response_factory->redirect()->home()->withHeader(
-                'Cache-Control',
-                'no-cache'
+            throw new AuthorizationException(
+                "Attempted access to the exit route without valid signature"
             );
             
         }
@@ -60,8 +60,7 @@ class RedirectController extends Controller
             ->view('redirect-protection', [
                 'untrusted_url' => $request->query('intended_redirect'),
                 'home_url' => $this->url->toRoute('home'),
-            ])
-            ->withHeader('Cache-Control', 'no-cache');
+            ]);
         
     }
     
