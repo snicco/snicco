@@ -34,7 +34,7 @@ class ShareCookiesTest extends UnitTest
                 
                      $this->assertTrue($request->cookies()->has('foo'));
                 
-                     return $this->createResponseFactory()->createResponse();
+                     return $this->createResponseFactory()->make();
                 
                  }
             

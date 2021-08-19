@@ -11,7 +11,6 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Http\Responses\NullResponse;
 use Snicco\Contracts\AbstractRedirector;
-use Snicco\Http\Responses\InvalidResponse;
 use Snicco\Contracts\ResponseableInterface;
 use Snicco\Http\Responses\RedirectResponse;
 use Snicco\Http\Responses\DelegatedResponse;
@@ -74,17 +73,14 @@ class ResponseFactory implements ResponseFactoryInterface
         
     }
     
-    /**
-     * @return Response
-     */
     public function createResponse(int $code = 200, string $reasonPhrase = '') :ResponseInterface
     {
-        return $this->make($code, $reasonPhrase);
+        return $this->response_factory->createResponse($code, $reasonPhrase);
     }
     
     public function null() :NullResponse
     {
-        return new NullResponse($this->response_factory->createResponse(204));
+        return new NullResponse($this->response_factory->createResponse());
     }
     
     public function delegateToWP() :DelegatedResponse
@@ -273,11 +269,6 @@ class ResponseFactory implements ResponseFactoryInterface
     {
         
         return $this->stream_factory->createStream($content);
-    }
-    
-    public function invalidResponse() :InvalidResponse
-    {
-        return new InvalidResponse($this->response_factory->createResponse(500));
     }
     
 }
