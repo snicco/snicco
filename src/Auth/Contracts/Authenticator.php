@@ -36,7 +36,7 @@ abstract class Authenticator extends Middleware
     protected function login(WP_User $user, bool $remember = false) :SuccessfulLoginResponse
     {
         return new SuccessfulLoginResponse(
-            $this->response_factory->createResponse(),
+            $this->response_factory->make(),
             $user,
             $remember
         );
