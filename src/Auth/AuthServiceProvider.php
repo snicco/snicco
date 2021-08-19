@@ -83,20 +83,6 @@ class AuthServiceProvider extends ServiceProvider
         
     }
     
-    public function bootstrap() :void
-    {
-        
-        $this->bindSessionManagerInterface();
-        
-        if ( ! $this->config->get('session.enabled')) {
-            
-            throw new ConfigurationException(
-                'Sessions need to be enabled if you want to use the auth features.'
-            );
-        }
-        
-    }
-    
     private function bindConfig()
     {
         
@@ -391,6 +377,20 @@ class AuthServiceProvider extends ServiceProvider
             );
             
         });
+        
+    }
+    
+    public function bootstrap() :void
+    {
+        
+        $this->bindSessionManagerInterface();
+        
+        if ( ! $this->config->get('session.enabled')) {
+            
+            throw new ConfigurationException(
+                'Sessions need to be enabled if you want to use the auth features.'
+            );
+        }
         
     }
     

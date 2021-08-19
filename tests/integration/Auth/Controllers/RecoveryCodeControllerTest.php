@@ -20,7 +20,7 @@ class RecoveryCodeControllerTest extends AuthTestCase
         $this->actingAs($calvin = $this->createAdmin());
         
         $response = $this->get('/auth/two-factor/recovery-codes');
-        $response->assertNullResponse();
+        $response->assertDelegatedToWordPress();
         
     }
     

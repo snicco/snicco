@@ -16,11 +16,10 @@ class IncomingWebRequest extends IncomingRequest
     
     public function shouldDispatch() :bool
     {
-        
         return $this->request->isWpFrontEnd()
                && ! Str::contains(
                 $this->request->path(),
-                '/wp-json'
+                rest_get_url_prefix()
             );
     }
     

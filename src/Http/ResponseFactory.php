@@ -14,6 +14,7 @@ use Snicco\Contracts\AbstractRedirector;
 use Snicco\Http\Responses\InvalidResponse;
 use Snicco\Contracts\ResponseableInterface;
 use Snicco\Http\Responses\RedirectResponse;
+use Snicco\Http\Responses\DelegatedResponse;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
 use Snicco\ExceptionHandling\Exceptions\ViewException;
@@ -84,6 +85,11 @@ class ResponseFactory implements ResponseFactoryInterface
     public function null() :NullResponse
     {
         return new NullResponse($this->response_factory->createResponse(204));
+    }
+    
+    public function delegateToWP() :DelegatedResponse
+    {
+        return new DelegatedResponse($this->createResponse());
     }
     
     public function redirectToRoute(string $route, $args = [], int $status = 302, $secure = true, $absolute = false) :RedirectResponse
@@ -202,6 +208,9 @@ class ResponseFactory implements ResponseFactoryInterface
         
     }
     
+    /**
+     * @throws HttpException
+     */
     public function toResponse($response) :Response
     {
         
@@ -237,7 +246,7 @@ class ResponseFactory implements ResponseFactoryInterface
             
         }
         
-        return $this->invalidResponse();
+        throw new HttpException(500, "Invalid response returned by a route.");
         
     }
     

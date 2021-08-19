@@ -143,7 +143,7 @@ class RouteRegistrationTest extends TestCase
         do_action('init');
         IncomingAdminRequest::dispatch([$request]);
         
-        $this->assertNoResponse();
+        $this->sentResponse()->assertDelegatedToWordPress();
         
     }
     
@@ -161,7 +161,7 @@ class RouteRegistrationTest extends TestCase
         do_action('init');
         IncomingAjaxRequest::dispatch([$request]);
         
-        $this->assertNoResponse();
+        $this->sentResponse()->assertDelegatedToWordPress();
         
     }
     
@@ -224,7 +224,7 @@ class RouteRegistrationTest extends TestCase
         $wp->main();
         
         // without the filtering of file names the route in /OtherRoutes/web.php would match
-        $this->assertNoResponse();
+        $this->sentResponse()->assertDelegatedToWordPress();
         
     }
     

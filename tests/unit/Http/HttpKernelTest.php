@@ -99,7 +99,7 @@ class HttpKernelTest extends UnitTest
             
         });
         
-        $this->expectExceptionMessage('Invalid response returned by the route for path [/foo].');
+        $this->expectExceptionMessage('Invalid response returned by a route.');
         
         $this->runKernel($this->webRequest('GET', '/foo'));
         
@@ -118,8 +118,7 @@ class HttpKernelTest extends UnitTest
         $this->container->singleton(EvaluateResponseMiddleware::class, function () {
             
             return new EvaluateResponseMiddleware(true);
-        }
-        );
+        });
         
         $this->expectException(NotFoundException::class);
         

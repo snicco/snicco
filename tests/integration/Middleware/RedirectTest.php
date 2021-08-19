@@ -61,7 +61,7 @@ class RedirectTest extends TestCase
         );
         
         $response = $this->get('/bogus/');
-        $response->assertNullResponse();
+        $response->assertDelegatedToWordPress();
     }
     
     /** @test */

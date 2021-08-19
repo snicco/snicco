@@ -44,7 +44,7 @@ abstract class Authenticator extends Middleware
     
     protected function unauthenticated() :NullResponse
     {
-        return new NullResponse($this->response_factory->createResponse());
+        return $this->response_factory->null();
     }
     
 }

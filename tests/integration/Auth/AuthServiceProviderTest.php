@@ -259,7 +259,6 @@ class AuthServiceProviderTest extends AuthTestCase
     public function wp_login_php_is_a_permanent_redirected_for_all_requests_expect_personal_privacy_deletions()
     {
         
-        $this->withoutExceptionHandling();
         $this->default_server_variables = [
             'REQUEST_METHOD' => 'GET',
             'SCRIPT_NAME' => 'wp-login.php',
@@ -284,6 +283,26 @@ class AuthServiceProviderTest extends AuthTestCase
             return $event->response instanceof RedirectResponse;
             
         });
+        
+    }
+    
+    /** @test */
+    public function wp_login_php_is_not_redirected_for_personal_privacy_deletion()
+    {
+        
+        $this->withServerVariables(['SCRIPT_NAME' => 'wp-login.php']);
+        $this->withRequest($this->frontendRequest('GET', '/wp-login.php?action=confirmation'));
+        $this->boot();
+        
+        Event::fake([ResponseSent::class]);
+        
+        do_action('init');
+        
+        $response = $this->sentResponse();
+        
+        $response->assertDelegatedToWordPress();
+        
+        Event::assertNotDispatched(ResponseSent::class);
         
     }
     
