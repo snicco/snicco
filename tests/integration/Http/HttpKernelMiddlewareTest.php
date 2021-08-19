@@ -53,7 +53,7 @@ class HttpKernelMiddlewareTest extends TestCase
         
         $this->withAddedMiddleware('global', GlobalMiddleware::class);
         
-        $this->get('middleware/bogus')->assertNullResponse();
+        $this->get('middleware/bogus')->assertDelegatedToWordPress();
         
         $this->assertSame(
             0,
@@ -72,7 +72,7 @@ class HttpKernelMiddlewareTest extends TestCase
         $this->withAddedMiddleware('global', GlobalMiddleware::class)
              ->withAddedConfig(['middleware.always_run_global' => true]);
         
-        $this->get('middleware/bogus')->assertNullResponse();
+        $this->get('middleware/bogus')->assertDelegatedToWordPress();
         
         $this->assertSame(
             1,

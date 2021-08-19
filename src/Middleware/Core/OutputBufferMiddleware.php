@@ -10,9 +10,6 @@ use Snicco\Http\Psr7\Response;
 use Snicco\Contracts\Middleware;
 use Snicco\Http\ResponseEmitter;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Http\Responses\NullResponse;
-use Snicco\Http\Responses\InvalidResponse;
-use Snicco\Http\Responses\RedirectResponse;
 
 class OutputBufferMiddleware extends Middleware
 {
@@ -30,14 +27,16 @@ class OutputBufferMiddleware extends Middleware
         
         $response = $next($request);
         
-        if ( ! $this->passToKernel($response)) {
+        // We delay every response that that has a body.
+        // We need to keep this response in memory and only send it after WordPress
+        // has loaded the admin header, navbar etc.
+        // Otherwise, our content will not be inside the correct dom element in the wp-admin area.
+        if ($this->shouldDelayResponse($response)) {
             
-            // We need to keep this response in memory and only send it after WordPress
-            // has loaded the admin header, navbar etc.
-            // Otherwise, our content would not be in the correct dom element.
             $this->retained_response = $response;
             
-            return $this->response_factory->null();
+            // Don't use a NullResponse here as we do want to send headers for redirect responses etc.
+            return $this->response_factory->delegateToWP();
             
         }
         
@@ -45,25 +44,17 @@ class OutputBufferMiddleware extends Middleware
         
     }
     
-    private function passToKernel(Response $response) :bool
+    private function shouldDelayResponse(Response $response) :bool
     {
         
         if (php_sapi_name() === 'cli') {
-            return true;
+            return false;
         }
         
-        if ($response instanceof NullResponse) {
+        if ($response->getBody()->getSize()) {
             
             return true;
             
-        }
-        
-        if ($response instanceof InvalidResponse) {
-            return true;
-        }
-        
-        if ($response instanceof RedirectResponse) {
-            return true;
         }
         
         return false;
@@ -72,16 +63,13 @@ class OutputBufferMiddleware extends Middleware
     
     public function start()
     {
-        
         $this->cleanPhpOutputBuffer();
-        
         ob_start();
         
     }
     
     private function cleanPhpOutputBuffer()
     {
-        
         while (ob_get_level() > 0) {
             ob_end_clean();
         }

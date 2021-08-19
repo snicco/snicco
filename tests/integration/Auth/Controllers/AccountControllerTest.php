@@ -27,7 +27,7 @@ class AccountControllerTest extends AuthTestCase
         $this->withOutConfig('auth.features.registration');
         
         $response = $this->get('/auth/accounts/create');
-        $response->assertNullResponse();
+        $response->assertDelegatedToWordPress();
         
     }
     

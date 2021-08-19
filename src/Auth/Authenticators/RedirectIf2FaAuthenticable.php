@@ -37,7 +37,7 @@ class RedirectIf2FaAuthenticable extends Authenticator
             
         }
         
-        if ( ! $this->userHasTwoFactorEnabled($user = $response->authenticatedUser())) {
+        if ( ! $this->userHasTwoFactorEnabled($user = $response->authenticateUser())) {
             
             return $response;
             
