@@ -25,9 +25,7 @@ class RedirectResponse extends Response
     
     public function to(string $url) :RedirectResponse
     {
-        
         return $this->withHeader('Location', $url);
-        
     }
     
     public function withSession(Session $session) :RedirectResponse

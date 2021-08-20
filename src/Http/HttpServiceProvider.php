@@ -29,7 +29,6 @@ class HttpServiceProvider extends ServiceProvider
     
     private function bindKernel()
     {
-        
         $this->container->singleton(HttpKernel::class, function () {
             
             $kernel = new HttpKernel(
@@ -60,7 +59,6 @@ class HttpServiceProvider extends ServiceProvider
     
     private function bindResponseFactory() :void
     {
-        
         $this->container->singleton(ResponseFactory::class, function () {
             
             return new ResponseFactory(
@@ -76,7 +74,6 @@ class HttpServiceProvider extends ServiceProvider
     
     private function bindCookies()
     {
-        
         $this->container->singleton(Cookies::class, function () {
             
             $cookies = new Cookies();
@@ -98,7 +95,6 @@ class HttpServiceProvider extends ServiceProvider
     
     private function bindRedirector()
     {
-        
         $this->container->singleton(
             AbstractRedirector::class,
             fn() => $this->container->make(Redirector::class)
@@ -107,7 +103,6 @@ class HttpServiceProvider extends ServiceProvider
     
     public function bootstrap() :void
     {
-        
         $this->bindRequestEndpoint();
     }
     

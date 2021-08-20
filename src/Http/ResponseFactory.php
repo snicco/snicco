@@ -6,6 +6,7 @@ namespace Snicco\Http;
 
 use Throwable;
 use Snicco\Http\Psr7\Request;
+use InvalidArgumentException;
 use Snicco\Http\Psr7\Response;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -21,10 +22,6 @@ use Snicco\Contracts\ViewFactoryInterface as ViewFactory;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
-/**
- * @todo either this class or the Response class need a prepare method to fix obvious mistakes.
- * See implementation in Symfony Response.
- */
 class ResponseFactory implements ResponseFactoryInterface
 {
     
@@ -36,11 +33,9 @@ class ResponseFactory implements ResponseFactoryInterface
     
     public function __construct(ViewFactory $view, Psr17ResponseFactory $response, Psr17StreamFactory $stream, AbstractRedirector $redirector)
     {
-        
         $this->view_factory = $view;
         $this->response_factory = $response;
         $this->stream_factory = $stream;
-        
         $this->redirector = $redirector;
     }
     
@@ -67,10 +62,21 @@ class ResponseFactory implements ResponseFactoryInterface
     public function make(int $status_code = 200, $reason_phrase = '') :Response
     {
         
+        if ( ! $this->isValidStatus($status_code)) {
+            throw new InvalidArgumentException(
+                "The HTTP status code [$status_code] is not valid."
+            );
+        }
+        
         $psr_response = $this->response_factory->createResponse($status_code, $reason_phrase);
         
-        return new Response($psr_response);
+        return (new Response($psr_response))->withStreamFactory($this->stream_factory);
         
+    }
+    
+    private function isValidStatus(int $status_code) :bool
+    {
+        return 100 <= $status_code && $status_code < 600;
     }
     
     public function createResponse(int $code = 200, string $reasonPhrase = '') :ResponseInterface
@@ -267,7 +273,6 @@ class ResponseFactory implements ResponseFactoryInterface
     
     public function createStream(string $content = '') :StreamInterface
     {
-        
         return $this->stream_factory->createStream($content);
     }
     

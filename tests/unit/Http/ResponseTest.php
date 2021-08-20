@@ -33,7 +33,7 @@ class ResponseTest extends UnitTest
     public function testIsImmutable()
     {
         
-        $response1 = $this->factory->createResponse();
+        $response1 = $this->factory->make();
         $response2 = $response1->withHeader('foo', 'bar');
         
         $this->assertNotSame($response1, $response2);
@@ -42,7 +42,7 @@ class ResponseTest extends UnitTest
         
     }
     
-    public function testNotPsrAttributesAreCopiedForNewInstances()
+    public function testNonPsrAttributesAreCopiedForNewInstances()
     {
         
         $response1 = $this->factory->createResponse();
@@ -125,6 +125,51 @@ class ResponseTest extends UnitTest
         $response = $this->response->noArchive('googlebot');
         $this->assertSame('googlebot: noarchive', $response->getHeaderLine('x-robots-tag'));
         
+    }
+    
+    public function testIsInformational()
+    {
+        
+        $response = $this->response->withStatus(100);
+        $this->assertTrue($response->isInformational());
+        $this->assertTrue($response->withStatus(199)->isInformational());
+        $this->assertFalse($response->withStatus(200)->isInformational());
+        
+    }
+    
+    public function testIsEmpty()
+    {
+        
+        $response = $this->response->withStatus(204);
+        $this->assertTrue($response->isEmpty());
+        $this->assertTrue($response->withStatus(304)->isEmpty());
+        $this->assertTrue($this->factory->html('foo')->withStatus(204)->isEmpty());
+        $this->assertTrue($this->factory->html('foo')->withStatus(304)->isEmpty());
+        
+    }
+    
+    public function testWithContentType()
+    {
+        
+        $response = $this->factory->make()->withContentType('text/html');
+        $this->assertSame('text/html', $response->getHeaderLine('content-type'));
+        
+    }
+    
+    public function testWithEmptyBodyTest()
+    {
+        
+        $response1 = $this->factory->html('foo');
+        $this->assertSame(3, $response1->getBody()->getSize());
+        
+        $response2 = $response1->withEmptyBody();
+        $this->assertSame(0, $response2->getBody()->getSize());
+        $this->assertSame(3, $response1->getBody()->getSize());
+        
+        // alias
+        $response3 = $response1->withoutBody();
+        $this->assertSame(0, $response3->getBody()->getSize());
+        $this->assertSame(3, $response1->getBody()->getSize());
     }
     
     protected function setUp() :void

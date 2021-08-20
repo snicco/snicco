@@ -43,7 +43,7 @@ class ViewRoutesTest extends UnitTest
         
         $this->runAndAssertOutput('VIEW:welcome.wordpress,CONTEXT:[]', $request);
         
-        HeaderStack::assertHas('Content-Type', 'text/html');
+        HeaderStack::assertHas('Content-Type', 'text/html; charset=UTF-8');
         HeaderStack::assertHasStatusCode(200);
         
     }
