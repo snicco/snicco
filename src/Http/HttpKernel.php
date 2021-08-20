@@ -6,7 +6,6 @@ namespace Snicco\Http;
 
 use Snicco\Support\Arr;
 use Snicco\Routing\Pipeline;
-use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Events\ResponseSent;
 use Snicco\Events\IncomingRequest;
@@ -50,7 +49,7 @@ class HttpKernel
     
     // Only these get a priority, because they always need to run before any global middleware
     // that a user might provide.
-    private array               $priority_map      = [
+    private array           $priority_map      = [
         ErrorHandlerMiddleware::class,
         PrepareResponseMiddleware::class,
         SetRequestAttributes::class,
@@ -59,17 +58,14 @@ class HttpKernel
         AppendSpecialPathSuffix::class,
     ];
     
-    private array               $global_middleware = [];
+    private array           $global_middleware = [];
     
-    private ResponseEmitter     $emitter;
+    private ResponseEmitter $emitter;
     
-    private ResponsePreparation $preparation;
-    
-    public function __construct(Pipeline $pipeline, ResponseEmitter $emitter, ResponsePreparation $preparation)
+    public function __construct(Pipeline $pipeline, ResponseEmitter $emitter)
     {
         $this->pipeline = $pipeline;
         $this->emitter = $emitter;
-        $this->preparation = $preparation;
     }
     
     public function alwaysWithGlobalMiddleware(array $global_middleware = [])
@@ -91,10 +87,10 @@ class HttpKernel
             return $response;
         }
         
-        $response = $this->prepare($response, $request_event->request);
+        $response = $this->emitter->prepare($response, $request_event->request);
         
         if ($response instanceof DelegatedResponse) {
-            $this->emitter->emitHeaders($response);
+            $this->emitter->emitHeaders($response,);
             return $response;
         }
         
@@ -105,7 +101,7 @@ class HttpKernel
         return $response;
     }
     
-    private function handle(IncomingRequest $request_event) :ResponseInterface
+    private function handle(IncomingRequest $request_event) :Response
     {
         $request = $request_event->request;
         
@@ -136,11 +132,6 @@ class HttpKernel
         $merged = array_merge($this->global_middleware, $this->core_middleware);
         
         return $this->sortMiddleware($merged, $this->priority_map);
-    }
-    
-    private function prepare(Response $response, Request $request) :Response
-    {
-        return $this->preparation->prepare($response, $request);
     }
     
 }

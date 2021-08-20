@@ -6,7 +6,6 @@ namespace Tests\integration\ServiceProviders;
 
 use Tests\TestCase;
 use Snicco\Support\WP;
-use Snicco\Http\Cookies;
 use Tests\stubs\TestApp;
 use Snicco\Routing\Router;
 use Snicco\Http\Redirector;
@@ -221,14 +220,6 @@ class ApplicationServiceProviderTest extends TestCase
         $view = TestApp::view('subview.php');
         
         $this->assertSame('Hello World', $view->toString());
-        
-    }
-    
-    /** @test */
-    public function the_response_cookies_can_be_aliased()
-    {
-        
-        $this->assertInstanceOf(Cookies::class, TestApp::cookies());
         
     }
     

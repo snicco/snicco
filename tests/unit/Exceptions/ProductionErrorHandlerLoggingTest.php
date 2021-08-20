@@ -23,6 +23,7 @@ use Tests\fixtures\TestDependencies\Foo;
 use Tests\helpers\CreateRouteCollection;
 use Snicco\Factories\ErrorHandlerFactory;
 use Tests\helpers\CreateDefaultWpApiMocks;
+use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\ExceptionHandling\ProductionErrorHandler;
 
 class ProductionErrorHandlerLoggingTest extends UnitTest
@@ -34,7 +35,9 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
     use CreateDefaultWpApiMocks;
     
     private ContainerAdapter $container;
+    
     private Request          $request;
+    
     private TestLogger       $test_logger;
     
     /** @test */
@@ -267,6 +270,7 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
         
         Event::make($this->container = $this->createContainer());
         Event::fake();
+        $this->container->instance(StreamFactoryInterface::class, $this->psrStreamFactory());
         $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
         $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
         WpFacade::setFacadeContainer($this->container);

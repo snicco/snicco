@@ -6,7 +6,6 @@ namespace Snicco\Application;
 
 use Closure;
 use LogicException;
-use Snicco\Http\Cookies;
 use Snicco\Routing\Route;
 use Snicco\Routing\Router;
 use Snicco\Session\Session;
@@ -34,7 +33,7 @@ final class ApplicationMixin
     }
     
     /**
-     * Resolve an item from the applications config.
+     * Resolve an item from the applications' config.
      *
      * @param  string|null  $key
      * @param  mixed  $default
@@ -64,7 +63,7 @@ final class ApplicationMixin
     }
     
     /**
-     * Return the application session store.
+     * Return the currently active session instance
      *
      * @return Session
      */
@@ -94,7 +93,6 @@ final class ApplicationMixin
      */
     public static function redirect(?string $path = null, int $status = 302)
     {
-    
     }
     
     /**
@@ -102,7 +100,6 @@ final class ApplicationMixin
      */
     public static function mail() :MailBuilder
     {
-    
     }
     
     /**
@@ -242,16 +239,6 @@ final class ApplicationMixin
      */
     public static function globals(string $name, $context)
     {
-    }
-    
-    /**
-     * Return the response cookies instance
-     *
-     * @return Cookies
-     */
-    public static function cookies() :Cookies
-    {
-    
     }
     
     /**

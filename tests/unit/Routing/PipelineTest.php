@@ -33,8 +33,11 @@ class PipelineTest extends UnitTest
     use CreateUrlGenerator;
     use CreateRouteCollection;
     
-    private Pipeline $pipeline;
-    private Request  $request;
+    private Pipeline        $pipeline;
+    
+    private Request         $request;
+    
+    private ResponseFactory $factory;
     
     /** @test */
     public function middleware_can_be_run()
@@ -48,7 +51,7 @@ class PipelineTest extends UnitTest
                 $foo = $request->getAttribute('test');
                 $foo .= 'biz';
                 
-                return new Response(200, [], $foo);
+                return $this->factory->html($foo);
                 
             });
         
@@ -69,7 +72,7 @@ class PipelineTest extends UnitTest
                 $foo = $request->getAttribute('test');
                 $foo .= 'biz';
                 
-                return new Response(200, [], $foo);
+                return $this->factory->html($foo);
                 
             });
         
@@ -82,7 +85,6 @@ class PipelineTest extends UnitTest
     public function middleware_can_break_out_of_the_middleware_stack()
     {
         
-        /** @var ResponseInterface $response */
         $response = $this->pipeline
             ->send($this->request)
             ->through([Foo::class, StopMiddleware::class, Bar::class])
@@ -101,7 +103,6 @@ class PipelineTest extends UnitTest
     public function middleware_responses_can_be_manipulated_by_middleware_higher_in_the_stack()
     {
         
-        /** @var ResponseInterface $response */
         $response = $this->pipeline
             ->send($this->request)
             ->through([
@@ -125,7 +126,6 @@ class PipelineTest extends UnitTest
     public function middleware_can_be_resolved_from_the_container()
     {
         
-        /** @var ResponseInterface $response */
         $response = $this->pipeline
             ->send($this->request)
             ->through([MiddlewareDependency::class])
@@ -144,7 +144,6 @@ class PipelineTest extends UnitTest
     public function middleware_can_receive_config_arguments()
     {
         
-        /** @var ResponseInterface $response */
         $response = $this->pipeline
             ->send($this->request)
             ->through([[MiddlewareWithConfig::class, false]])
@@ -157,13 +156,12 @@ class PipelineTest extends UnitTest
         $this->assertInstanceOf(ResponseInterface::class, $response);
         $this->assertSame(404, $response->getStatusCode());
         
-        /** @var ResponseInterface $response */
         $response = $this->pipeline
             ->send($this->request)
             ->through([[MiddlewareWithConfig::class, true]])
             ->then(function (ServerRequestInterface $request) {
                 
-                return new Response(200);
+                return $this->factory->make();
                 
             });
         
@@ -176,18 +174,17 @@ class PipelineTest extends UnitTest
     public function an_anonymous_closure_can_be_middleware()
     {
         
-        /** @var ResponseInterface $response */
         $response = $this->pipeline
             ->send($this->request)
             ->through([
-                fn() => new Response(201),
+                fn() => new AppResponse(new Response(201)),
             ])
             ->then(function (ServerRequestInterface $request) {
                 
                 $foo = $request->getAttribute('test');
                 $foo .= 'biz';
                 
-                return new Response(200, [], $foo);
+                return $this->factory->html($foo);
                 
             });
         
@@ -249,11 +246,10 @@ class PipelineTest extends UnitTest
         parent::setUp();
         
         $c = $this->createContainer();
-        $c->instance(ResponseFactory::class, $this->createResponseFactory());
+        $c->instance(ResponseFactory::class, $this->factory = $this->createResponseFactory());
         $this->pipeline = new Pipeline($c, new PipelineTestErrorHandler());
         
         $factory = new Psr17Factory();
-        
         $this->request = new Request($factory->createServerRequest('GET', 'https://foobar.com'));
         
     }
@@ -344,7 +340,7 @@ class StopMiddleware implements MiddlewareInterface
         
         $test = $request->getAttribute('test', '');
         
-        return new Response(200, [], $test.'STOP');
+        return new AppResponse(new Response(200, [], $test.'STOP'));
         
     }
     
@@ -383,7 +379,9 @@ class MiddlewareDependency implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) :ResponseInterface
     {
         
-        return (new Response ())->withBody(Stream::create(strtoupper($this->bar->bar)));
+        return (new AppResponse(new Response ()))->withBody(
+            Stream::create(strtoupper($this->bar->bar))
+        );
         
     }
     
@@ -408,7 +406,7 @@ class MiddlewareWithConfig implements MiddlewareInterface
         
         if ( ! $this->delegate) {
             
-            return new Response(404);
+            return new AppResponse(new Response(404));
             
         }
         
@@ -424,7 +422,7 @@ class WrongMiddleware
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) :ResponseInterface
     {
         
-        return new Response();
+        return new AppResponse(new Response());
         
     }
     

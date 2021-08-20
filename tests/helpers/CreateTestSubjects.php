@@ -14,7 +14,6 @@ use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Snicco\Http\ResponseEmitter;
 use Snicco\Events\IncomingRequest;
-use Snicco\Http\ResponsePreparation;
 use Snicco\Events\IncomingWebRequest;
 use Snicco\Middleware\MiddlewareStack;
 use Snicco\Middleware\Core\RouteRunner;
@@ -24,6 +23,7 @@ use Tests\fixtures\Conditions\TrueCondition;
 use Tests\fixtures\Middleware\BarMiddleware;
 use Tests\fixtures\Middleware\BazMiddleware;
 use Tests\fixtures\Middleware\FooMiddleware;
+use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Contracts\AbstractRouteCollection;
 use Tests\fixtures\Conditions\FalseCondition;
 use Tests\fixtures\Conditions\MaybeCondition;
@@ -117,12 +117,12 @@ trait CreateTestSubjects
         
         $this->container->instance(RouteRunner::class, $router_runner);
         $this->container->instance(MiddlewareStack::class, $middleware_stack);
+        $this->container->instance(StreamFactoryInterface::class, $this->psrStreamFactory());
         $this->middleware_stack = $middleware_stack;
         
         return new HttpKernel(
             new Pipeline($this->container, $error_handler),
-            new ResponseEmitter(),
-            new ResponsePreparation($this->psrStreamFactory())
+            $this->container->make(ResponseEmitter::class)
         );
     }
     

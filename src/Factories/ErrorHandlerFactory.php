@@ -10,6 +10,7 @@ use Psr\Log\LoggerInterface;
 use Snicco\Http\Psr7\Request;
 use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
+use Snicco\Http\ResponseEmitter;
 use Whoops\Handler\PrettyPageHandler;
 use Snicco\ExceptionHandling\DebugErrorHandler;
 use Snicco\ExceptionHandling\ProductionErrorHandler;
@@ -77,7 +78,12 @@ class ErrorHandlerFactory
         
         $class = $container->make(ProductionErrorHandler::class);
         
-        return new $class($container, $logger, $response_factory);
+        return new $class(
+            $container,
+            $logger,
+            $response_factory,
+            $container->make(ResponseEmitter::class)
+        );
         
     }
     

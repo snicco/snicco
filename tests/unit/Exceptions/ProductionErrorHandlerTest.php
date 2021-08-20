@@ -24,6 +24,7 @@ use Tests\helpers\CreateUrlGenerator;
 use Tests\helpers\CreateRouteCollection;
 use Snicco\Factories\ErrorHandlerFactory;
 use Tests\helpers\CreateDefaultWpApiMocks;
+use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Events\UnrecoverableExceptionHandled;
 use Snicco\ExceptionHandling\ProductionErrorHandler;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
@@ -37,6 +38,7 @@ class ProductionErrorHandlerTest extends UnitTest
     use CreateDefaultWpApiMocks;
     
     private ContainerAdapter $container;
+    
     private Request          $request;
     
     /** @test */
@@ -265,6 +267,7 @@ class ProductionErrorHandlerTest extends UnitTest
         
         Event::make($this->container = $this->createContainer());
         Event::fake();
+        $this->container->instance(StreamFactoryInterface::class, $this->psrStreamFactory());
         $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
         $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
         WP::setFacadeContainer($this->createContainer());
