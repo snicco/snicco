@@ -6,6 +6,7 @@ use Snicco\Support\Str;
 use Snicco\Support\Arr;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
+use Psr\Http\Message\StreamFactoryInterface;
 
 use function headers_list;
 
@@ -26,7 +27,14 @@ use function headers_list;
 class ResponsePreparation
 {
     
-    private string $charset = 'UTF-8';
+    private string                 $charset = 'UTF-8';
+    
+    private StreamFactoryInterface $stream_factory;
+    
+    public function __construct(StreamFactoryInterface $stream_factory)
+    {
+        $this->stream_factory = $stream_factory;
+    }
     
     public function setCharset(string $charset)
     {
@@ -35,7 +43,6 @@ class ResponsePreparation
     
     public function prepare(Psr7\Response $response, Psr7\Request $request) :Psr7\Response
     {
-        
         return collect([$response])
             ->map(fn($response) => $this->fixDate($response))
             ->map(fn($response) => $this->fixCacheControl($response))
@@ -60,17 +67,13 @@ class ResponsePreparation
         $header = $this->getCacheControlHeader($response);
         
         if ($header === '') {
-            
             if ($response->hasHeader('Last-Modified') || $response->hasHeader('Expires')) {
-                
                 // allows for heuristic expiration (RFC 7234 Section 4.2.2) in the case of "Last-Modified"
                 return $response->withHeader('Cache-Control', 'private, must-revalidate');
-                
             }
             
             // conservative by default
             return $response->withHeader('Cache-Control', 'no-cache, private');
-            
         }
         
         if (Str::contains($header, ['public', 'private'])) {
@@ -79,9 +82,7 @@ class ResponsePreparation
         
         // public if s-maxage is defined, private otherwise
         if ( ! Str::contains($header, 's-maxage')) {
-            
             return $response->withHeader('Cache-Control', $header.', private');
-            
         }
         
         return $response;
@@ -89,35 +90,26 @@ class ResponsePreparation
     
     private function getCacheControlHeader(Response $response)
     {
-        
         if ($response->hasHeader('cache-control')) {
-            
             return strtolower($response->getHeaderLine('cache-control'));
-            
         }
         
         $header = Arr::first(headers_list(), function ($header) {
-            
             return Str::startsWith(strtolower($header), 'cache-control');
-            
         }, '');
         
         return str_replace('cache-control: ', '', strtolower($header));
-        
     }
     
     private function fixContent(Response $response, Request $request) :Response
     {
-        
         if ($response->isInformational() || $response->isEmpty()) {
-            
             // prevent PHP from sending the Content-Type header based on default_mimetype
             ini_set('default_mimetype', '');
             
-            return $response->withEmptyBody()
+            return $response->withBody($this->stream_factory->createStream(''))
                             ->withoutHeader('content-type')
                             ->withoutHeader('content-length');
-            
         }
         
         // Fix content type
@@ -128,19 +120,15 @@ class ResponsePreparation
         }
         elseif (Str::startsWith($content_type, 'text/')
                 && ! Str::contains($content_type, 'charset')) {
-            
             $content_type = trim($content_type, ';');
             $response = $response->withContentType("$content_type; charset=$this->charset");
-            
         }
         
         // Fix Content-Length
         if ( ! $response->hasHeader('content-length')
              && ($size = $response->getBody()->getSize())
                 !== null) {
-            
             $response = $response->withHeader('content-length', strval($size));
-            
         }
         
         // Remove content-length if transfer-encoding
@@ -150,13 +138,10 @@ class ResponsePreparation
         
         // Fix HEAD method if body: RFC2616 14.13
         if ($request->isHead()) {
-            
-            $response = $response->withEmptyBody();
-            
+            $response = $response->withBody($this->stream_factory->createStream());
         }
         
         return $response;
-        
     }
     
     private function fixProtocol(Response $response, Request $request) :Response
