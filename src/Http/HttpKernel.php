@@ -6,12 +6,10 @@ namespace Snicco\Http;
 
 use Snicco\Support\Arr;
 use Snicco\Routing\Pipeline;
+use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Events\ResponseSent;
-use Snicco\Events\IncomingRequest;
 use Snicco\Traits\SortsMiddleware;
-use Psr\Http\Message\ResponseInterface;
-use Snicco\Events\IncomingAdminRequest;
 use Snicco\Http\Responses\NullResponse;
 use Snicco\Middleware\Core\RouteRunner;
 use Snicco\Middleware\Core\ShareCookies;
@@ -79,15 +77,15 @@ class HttpKernel
         $this->priority_map = array_merge($this->priority_map, $priority);
     }
     
-    public function run(IncomingRequest $request_event) :ResponseInterface
+    public function run(Request $request) :Response
     {
-        $response = $this->handle($request_event);
+        $response = $this->handle($request);
         
         if ($response instanceof NullResponse) {
             return $response;
         }
         
-        $response = $this->emitter->prepare($response, $request_event->request);
+        $response = $this->emitter->prepare($response, $request);
         
         if ($response instanceof DelegatedResponse) {
             $this->emitter->emitHeaders($response,);
@@ -96,21 +94,20 @@ class HttpKernel
         
         $this->emitter->emit($response);
         
-        ResponseSent::dispatch([$response, $request_event->request]);
+        ResponseSent::dispatch([$response, $request]);
         
         return $response;
     }
     
-    private function handle(IncomingRequest $request_event) :Response
+    private function handle(Request $request) :Response
     {
-        $request = $request_event->request;
         
         if ($this->withMiddleware()) {
             $request = $request->withAttribute('global_middleware_run', true);
         }
         
         return $this->pipeline->send($request)
-                              ->through($this->gatherMiddleware($request_event))
+                              ->through($this->gatherMiddleware($request))
                               ->run();
     }
     
@@ -119,9 +116,9 @@ class HttpKernel
         return $this->always_with_global_middleware;
     }
     
-    private function gatherMiddleware(IncomingRequest $event) :array
+    private function gatherMiddleware(Request $request) :array
     {
-        if ( ! $event instanceof IncomingAdminRequest) {
+        if ( ! $request->isWpAdmin()) {
             Arr::pullByValue(OutputBufferMiddleware::class, $this->core_middleware);
         }
         

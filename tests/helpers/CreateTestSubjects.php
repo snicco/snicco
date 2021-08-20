@@ -10,11 +10,10 @@ use Snicco\Http\HttpKernel;
 use Snicco\Routing\Pipeline;
 use Snicco\View\MethodField;
 use Tests\stubs\TestRequest;
+use Snicco\Http\Psr7\Request;
 use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Snicco\Http\ResponseEmitter;
-use Snicco\Events\IncomingRequest;
-use Snicco\Events\IncomingWebRequest;
 use Snicco\Middleware\MiddlewareStack;
 use Snicco\Middleware\Core\RouteRunner;
 use Snicco\Routing\RoutingServiceProvider;
@@ -60,12 +59,12 @@ trait CreateTestSubjects
         return new Router($this->container, $this->routes, $force_trailing);
     }
     
-    protected function runAndAssertEmptyOutput(IncomingRequest $request)
+    protected function runAndAssertEmptyOutput(Request $request)
     {
         $this->runAndAssertOutput('', $request);
     }
     
-    protected function runAndAssertOutput($expected, IncomingRequest $request)
+    protected function runAndAssertOutput($expected, Request $request)
     {
         $this->assertSame(
             $expected,
@@ -74,7 +73,7 @@ trait CreateTestSubjects
         );
     }
     
-    protected function runKernelAndGetOutput(IncomingRequest $request, HttpKernel $kernel = null)
+    protected function runKernelAndGetOutput(Request $request, HttpKernel $kernel = null)
     {
         $kernel = $kernel ?? $this->newKernel();
         
@@ -126,7 +125,7 @@ trait CreateTestSubjects
         );
     }
     
-    protected function runKernel(IncomingRequest $request, HttpKernel $kernel = null)
+    protected function runKernel(Request $request, HttpKernel $kernel = null)
     {
         $kernel = $kernel ?? $this->newKernel();
         $kernel->run($request);
@@ -145,9 +144,9 @@ trait CreateTestSubjects
         ]);
     }
     
-    protected function webRequest($method, $path) :IncomingWebRequest
+    protected function webRequest($method, $path) :Request
     {
-        return new IncomingWebRequest(TestRequest::from($method, $path));
+        return TestRequest::from($method, $path);
     }
     
 }

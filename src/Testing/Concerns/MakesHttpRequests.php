@@ -17,9 +17,6 @@ use Snicco\Testing\TestResponse;
 use Psr\Http\Message\UriInterface;
 use Snicco\Application\Application;
 use Snicco\Contracts\ViewInterface;
-use Snicco\Events\IncomingWebRequest;
-use Snicco\Events\IncomingAjaxRequest;
-use Snicco\Events\IncomingAdminRequest;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 
@@ -36,11 +33,17 @@ trait MakesHttpRequests
     use BuildsWordPressUrls;
     
     protected array $default_headers          = [];
+    
     protected array $default_cookies          = [];
+    
     protected array $default_server_variables = [];
+    
     protected array $default_attributes       = [];
+    
     private bool    $with_trailing_slash      = false;
+    
     private bool    $without_trailing_slash   = false;
+    
     private bool    $follow_redirects         = false;
     
     public function adminAjaxRequest(string $method, string $action) :Request
@@ -264,16 +267,6 @@ trait MakesHttpRequests
         $request = $this->addAttributes($request);
         
         $this->withRequest($request);
-        
-        if ($type === 'web') {
-            $request = new IncomingWebRequest($request);
-        }
-        elseif ($type === 'admin') {
-            $request = new IncomingAdminRequest($request);
-        }
-        elseif ($type === 'ajax') {
-            $request = new IncomingAjaxRequest($request);
-        }
         
         if ( ! $this->set_up_has_run) {
             $this->boot();

@@ -11,7 +11,6 @@ use Snicco\Events\Event;
 use Snicco\Routing\Router;
 use Tests\stubs\TestRequest;
 use Contracts\ContainerAdapter;
-use Snicco\Events\IncomingWebRequest;
 use Tests\helpers\CreateTestSubjects;
 use Snicco\Http\Psr7\Request as Request;
 use Tests\helpers\CreateDefaultWpApiMocks;
@@ -24,6 +23,7 @@ class RouteSegmentsTest extends UnitTest
     use CreateDefaultWpApiMocks;
     
     private ContainerAdapter $container;
+    
     private Router           $router;
     
     /** @test */
@@ -42,7 +42,7 @@ class RouteSegmentsTest extends UnitTest
         
         $path = rawurlencode('münchen');
         $request = TestRequest::fromFullUrl('GET', "https://foobar.com/german-city/$path");
-        $this->runAndAssertOutput('München', new IncomingWebRequest($request, 'wp.php'));
+        $this->runAndAssertOutput('München', $request);
         
     }
     
@@ -63,7 +63,7 @@ class RouteSegmentsTest extends UnitTest
         $query = urlencode('bayern münchen');
         $request = TestRequest::fromFullUrl('GET', "https://foobar.com/foo?page=$query");
         $request = $request->withQueryParams(['page' => 'bayern münchen']);
-        $this->runAndAssertOutput('FOO', new IncomingWebRequest($request, 'wp.php'));
+        $this->runAndAssertOutput('FOO', $request);
         
     }
     
@@ -93,13 +93,13 @@ class RouteSegmentsTest extends UnitTest
         $request = TestRequest::fromFullUrl('GET', 'https://music.com/bands/AC%2fDC/foo_song');
         $this->runAndAssertOutput(
             'Show song [foo_song] of band [AC/DC]',
-            new IncomingWebRequest($request, 'wp.php')
+            $request
         );
         
         $request = TestRequest::fromFullUrl('GET', 'https://music.com/bands/AC%2fDC');
         $this->runAndAssertOutput(
             'List all songs of band [AC/DC]',
-            new IncomingWebRequest($request, 'wp.php')
+            $request
         );
         
     }

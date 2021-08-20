@@ -46,7 +46,11 @@ class TestRequest extends Request
         $url = trim($host, '/').'/'.$path;
         
         $request = new TestRequest(
-            $psr17Factory->createServerRequest($method, $url, ['REQUEST_METHOD' => $method])
+            $psr17Factory->createServerRequest(
+                $method,
+                $url,
+                ['REQUEST_METHOD' => $method, 'SCRIPT_NAME' => 'index.php']
+            )
         );
         parse_str($request->getUri()->getQuery(), $query);
         $request = $request->withQueryParams($query);
