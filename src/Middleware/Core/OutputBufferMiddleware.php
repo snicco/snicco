@@ -18,6 +18,8 @@ class OutputBufferMiddleware extends Middleware
     
     private ?Response       $retained_response = null;
     
+    private ?Request        $request;
+    
     public function __construct(ResponseEmitter $emitter)
     {
         $this->emitter = $emitter;
@@ -35,6 +37,7 @@ class OutputBufferMiddleware extends Middleware
         if ($this->shouldDelayResponse($response)) {
             
             $this->retained_response = $response;
+            $this->request = $request;
             
             // Don't use a NullResponse here as we do want to send headers for redirect responses etc.
             return $this->response_factory->delegateToWP();
@@ -81,7 +84,8 @@ class OutputBufferMiddleware extends Middleware
         
         if ($this->retained_response instanceof Response) {
             
-            $this->emitter->emit($this->retained_response);
+            $this->emitter->emit($this->emitter->prepare($this->retained_response, $this->request));
+            
         }
         
         // We made sure that our admin content sends headers and body at the correct time.
