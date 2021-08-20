@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Http;
 
-use Psr\Http\Message\ResponseInterface;
+use Snicco\Http\Psr7\Request;
+use Snicco\Http\Psr7\Response;
 
 use function header;
 use function headers_sent;
@@ -14,26 +15,21 @@ use function connection_status;
  * Modified Version of Slims Response Emitter.
  *
  * @link https://github.com/slimphp/Slim/blob/4.x/Slim/ResponseEmitter.php
- * Changed method visibility to accommodate WordPress needs.
  */
 class ResponseEmitter
 {
     
-    private int $response_chunk_size;
+    protected ResponsePreparation $preparation;
     
-    public function __construct(int $response_chunk_size = 4096)
+    private int                   $response_chunk_size;
+    
+    public function __construct(ResponsePreparation $preparation, int $response_chunk_size = 4096)
     {
         $this->response_chunk_size = $response_chunk_size;
+        $this->preparation = $preparation;
     }
     
-    /**
-     * Send the response the client
-     *
-     * @param  ResponseInterface  $response
-     *
-     * @return void
-     */
-    public function emit(ResponseInterface $response) :void
+    public function emit(Response $response) :void
     {
         
         $isEmpty = $this->isResponseEmpty($response);
@@ -50,17 +46,10 @@ class ResponseEmitter
         }
     }
     
-    /**
-     * Asserts response body is empty or status code is 204, 205 or 304
-     *
-     * @param  ResponseInterface  $response
-     *
-     * @return bool
-     */
-    protected function isResponseEmpty(ResponseInterface $response) :bool
+    protected function isResponseEmpty(Response $response) :bool
     {
         
-        if (in_array($response->getStatusCode(), [204, 205, 304], true)) {
+        if ($response->isEmpty()) {
             return true;
         }
         $stream = $response->getBody();
@@ -72,14 +61,8 @@ class ResponseEmitter
         return $seekable ? $stream->read(1) === '' : $stream->eof();
     }
     
-    /**
-     * Emit Status Line
-     *
-     * @param  ResponseInterface  $response
-     */
-    protected function emitStatusLine(ResponseInterface $response) :void
+    protected function emitStatusLine(Response $response) :void
     {
-        
         $statusLine = sprintf(
             'HTTP/%s %s %s',
             $response->getProtocolVersion(),
@@ -89,18 +72,11 @@ class ResponseEmitter
         header($statusLine, true, $response->getStatusCode());
     }
     
-    /**
-     * Emit Response Headers
-     *
-     * @param  ResponseInterface  $response
-     */
-    public function emitHeaders(ResponseInterface $response) :void
+    public function emitHeaders(Response $response) :void
     {
         
         if (headers_sent()) {
-            
             return;
-            
         }
         
         foreach ($response->getHeaders() as $name => $values) {
@@ -114,12 +90,7 @@ class ResponseEmitter
         
     }
     
-    /**
-     * Emit Body
-     *
-     * @param  ResponseInterface  $response
-     */
-    protected function emitBody(ResponseInterface $response) :void
+    protected function emitBody(Response $response) :void
     {
         
         $body = $response->getBody();
@@ -158,7 +129,12 @@ class ResponseEmitter
         
     }
     
-    public function emitCookies(Cookies $cookies)
+    public function prepare(Response $response, Request $request) :Response
+    {
+        return $this->preparation->prepare($response, $request);
+    }
+    
+    public function emitCookies(Cookies $cookies) :void
     {
         
         if (headers_sent()) {

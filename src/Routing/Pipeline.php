@@ -10,13 +10,13 @@ use LogicException;
 use Snicco\Support\Arr;
 use Snicco\Http\Delegate;
 use Snicco\Http\Psr7\Request;
+use Snicco\Http\Psr7\Response;
 use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use ReflectionPayload\ReflectionPayload;
 use Snicco\Contracts\ErrorHandlerInterface;
-use Psr\Http\Server\RequestHandlerInterface;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 use function collect;
@@ -25,9 +25,13 @@ class Pipeline
 {
     
     private ErrorHandlerInterface $error_handler;
+    
     private ContainerAdapter      $container;
+    
     private Request               $request;
+    
     private array                 $middleware = [];
+    
     private ResponseFactory       $response_factory;
     
     public function __construct(ContainerAdapter $container, ErrorHandlerInterface $error_handler)
@@ -135,7 +139,7 @@ class Pipeline
         
     }
     
-    public function run($stack = null) :ResponseInterface
+    public function run($stack = null) :Response
     {
         
         $stack = $stack ?? $this->buildMiddlewareStack();
@@ -144,11 +148,9 @@ class Pipeline
         
     }
     
-    private function buildMiddlewareStack() :RequestHandlerInterface
+    private function buildMiddlewareStack() :Delegate
     {
-        
         return $this->nextMiddleware();
-        
     }
     
     private function nextMiddleware() :Delegate
@@ -181,7 +183,7 @@ class Pipeline
         
     }
     
-    private function resolveNextMiddleware(Request $request) :ResponseInterface
+    private function resolveNextMiddleware(Request $request) :Response
     {
         
         [$middleware, $constructor_args] = array_shift($this->middleware);

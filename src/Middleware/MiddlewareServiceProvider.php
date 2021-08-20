@@ -5,12 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Middleware;
 
 use Snicco\Routing\Pipeline;
-use Snicco\Http\ResponseEmitter;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Middleware\Core\RouteRunner;
 use Snicco\Contracts\ErrorHandlerInterface;
 use Snicco\Middleware\Core\OpenRedirectProtection;
-use Snicco\Middleware\Core\OutputBufferMiddleware;
 use Snicco\Middleware\Core\EvaluateResponseMiddleware;
 
 class MiddlewareServiceProvider extends ServiceProvider
@@ -28,8 +26,6 @@ class MiddlewareServiceProvider extends ServiceProvider
         $this->bindRouteRunnerMiddleware();
         
         $this->bindMiddlewarePipeline();
-        
-        $this->bindOutputBufferMiddleware();
         
         $this->bindTrailingSlash();
         
@@ -73,7 +69,6 @@ class MiddlewareServiceProvider extends ServiceProvider
     
     private function bindMiddlewareStack()
     {
-        
         $this->container->singleton(MiddlewareStack::class, function () {
             
             $stack = new MiddlewareStack();
@@ -99,7 +94,6 @@ class MiddlewareServiceProvider extends ServiceProvider
     
     private function bindEvaluateResponseMiddleware()
     {
-        
         $this->container->singleton(EvaluateResponseMiddleware::class, function () {
             
             $is_web = $this->requestEndpoint() === 'frontend';
@@ -109,12 +103,10 @@ class MiddlewareServiceProvider extends ServiceProvider
             return new EvaluateResponseMiddleware($must_match);
             
         });
-        
     }
     
     private function bindRouteRunnerMiddleware()
     {
-        
         $this->container->singleton(RouteRunner::class, function () {
             
             return new RouteRunner(
@@ -124,11 +116,11 @@ class MiddlewareServiceProvider extends ServiceProvider
             );
             
         });
-        
     }
     
     private function bindMiddlewarePipeline()
     {
+        // This can not be a singleton!
         $this->container->bind(Pipeline::class, function () {
             
             return new Pipeline(
@@ -137,23 +129,6 @@ class MiddlewareServiceProvider extends ServiceProvider
             );
             
         });
-    }
-    
-    private function bindOutputBufferMiddleware()
-    {
-        
-        $this->container->singleton(OutputBufferMiddleware::class, function () {
-            
-            $middleware = new OutputBufferMiddleware(
-                $this->container->make(ResponseEmitter::class),
-            );
-            
-            $this->container->instance(OutputBufferMiddleware::class, $middleware);
-            
-            return $middleware;
-            
-        });
-        
     }
     
     private function bindTrailingSlash()

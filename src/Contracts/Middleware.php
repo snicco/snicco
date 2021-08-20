@@ -30,9 +30,7 @@ abstract class Middleware implements MiddlewareInterface
      */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler) :ResponseInterface
     {
-        
         return $this->handle($request, $handler);
-        
     }
     
     /**

@@ -24,7 +24,9 @@ class SessionManager implements SessionManagerInterface
     public const HOUR_IN_SEC = 3600;
     public const THIRTY_MIN_IN_SEC = 1800;
     public const WEEK_IN_SEC = self::DAY_IN_SEC * 7;
+    
     private array   $config;
+    
     private Session $session;
     
     public function __construct(array $session_config, Session $session)
@@ -100,7 +102,7 @@ class SessionManager implements SessionManagerInterface
     }
     
     /**
-     * NOTE: We are not in a routing flow. This method gets called on the wp_login
+     * @note We are not in a routing flow. This method gets called on the wp_login
      * event.
      * The Event Listener for this method gets unhooked when using the AUTH-Extension
      *
@@ -151,7 +153,7 @@ class SessionManager implements SessionManagerInterface
     }
     
     /**
-     * NOTE: We are not in a routing flow. This method gets called on the wp_login/logout
+     * @note We are not in a routing flow. This method gets called on the wp_login/logout
      * event.
      * The Event Listener for this method gets unhooked when using the AUTH-Extension
      *

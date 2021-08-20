@@ -6,7 +6,6 @@ namespace Tests\integration\ServiceProviders;
 
 use Tests\TestCase;
 use Tests\stubs\TestApp;
-use Snicco\Http\Cookies;
 use Snicco\Http\HttpKernel;
 use Snicco\Http\Redirector;
 use Tests\stubs\TestRequest;
@@ -35,16 +34,6 @@ class HttpServiceProviderTest extends TestCase
         $this->boot();
         
         $this->assertInstanceOf(ResponseFactory::class, TestApp::resolve(ResponseFactory::class));
-        
-    }
-    
-    /** @test */
-    public function the_cookie_instance_can_be_resolved()
-    {
-        
-        $this->boot();
-        
-        $this->assertInstanceOf(Cookies::class, TestApp::resolve(Cookies::class));
         
     }
     

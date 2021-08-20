@@ -130,7 +130,7 @@ class Response implements ResponseInterface, ResponseableInterface
     
     public function isEmpty() :bool
     {
-        return in_array($this->getStatusCode(), [204, 304]);
+        return in_array($this->getStatusCode(), [204, 205, 304]);
     }
     
     public function withContentType(string $content_type) :self

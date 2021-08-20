@@ -25,11 +25,15 @@ class ProductionErrorHandler implements ErrorHandlerInterface
     use ReflectsClosures;
     use HandlesExceptions;
     
-    protected ContainerAdapter $container;
+    protected ContainerAdapter    $container;
+    
     protected Psr3LoggerInterface $logger;
-    protected ResponseFactory $response_factory;
-    protected array $dont_report = [];
-    protected array $dont_flash  = [];
+    
+    protected ResponseFactory     $response_factory;
+    
+    protected array               $dont_report = [];
+    
+    protected array               $dont_flash  = [];
     
     /**
      * @var Closure[]
@@ -39,17 +43,21 @@ class ProductionErrorHandler implements ErrorHandlerInterface
     /**
      * @var Closure[]
      */
-    private array $custom_reporters = [];
+    private array           $custom_reporters = [];
+    
+    private ResponseEmitter $emitter;
     
     public function __construct(
         ContainerAdapter $container,
         Psr3LoggerInterface $logger,
-        ResponseFactory $response_factory
+        ResponseFactory $response_factory,
+        ResponseEmitter $emitter
     ) {
         
         $this->container = $container;
         $this->logger = $logger;
         $this->response_factory = $response_factory;
+        $this->emitter = $emitter;
         
         $this->registerCallbacks();
         
@@ -104,7 +112,7 @@ class ProductionErrorHandler implements ErrorHandlerInterface
             
         }
         
-        (new ResponseEmitter())->emit($response);
+        $this->emitter->emit($this->emitter->prepare($response, $request));
         
         // Shuts down the script if not running unit tests.
         UnrecoverableExceptionHandled::dispatch();

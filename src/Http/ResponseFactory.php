@@ -80,9 +80,9 @@ class ResponseFactory implements ResponseFactoryInterface, StreamFactoryInterfac
         return 100 <= $status_code && $status_code < 600;
     }
     
-    public function createResponse(int $code = 200, string $reasonPhrase = '') :ResponseInterface
+    public function createResponse(int $code = 200, string $reasonPhrase = '') :Response
     {
-        return $this->response_factory->createResponse($code, $reasonPhrase);
+        return $this->make($code, $reasonPhrase);
     }
     
     public function createStream(string $content = '') :StreamInterface

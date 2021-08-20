@@ -24,9 +24,8 @@ class ResponseTest extends UnitTest
     public function testIsPsrResponse()
     {
         $response = $this->factory->createResponse();
-        
         $this->assertInstanceOf(ResponseInterface::class, $response);
-        $this->assertNotInstanceOf(Response::class, $response);
+        $this->assertInstanceOf(Response::class, $response);
     }
     
     public function testIsImmutable()

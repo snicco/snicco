@@ -8,9 +8,6 @@ use Snicco\Routing\Pipeline;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Contracts\AbstractRedirector;
-use Snicco\Contracts\ViewFactoryInterface;
-use Psr\Http\Message\StreamFactoryInterface;
-use Psr\Http\Message\ResponseFactoryInterface;
 
 class HttpServiceProvider extends ServiceProvider
 {
@@ -19,22 +16,16 @@ class HttpServiceProvider extends ServiceProvider
     {
         $this->bindKernel();
         
-        $this->bindResponseFactory();
-        
-        $this->bindCookies();
-        
         $this->bindRedirector();
+        
     }
     
     private function bindKernel()
     {
         $this->container->singleton(HttpKernel::class, function () {
             $kernel = new HttpKernel(
-                
                 $this->container->make(Pipeline::class),
                 $this->container->make(ResponseEmitter::class),
-                $this->container->make(ResponsePreparation::class)
-            
             );
             
             if ($this->config->get('middleware.disabled', false)) {
@@ -50,37 +41,6 @@ class HttpServiceProvider extends ServiceProvider
             $kernel->withPriority($this->config->get('middleware.priority', []));
             
             return $kernel;
-        });
-    }
-    
-    private function bindResponseFactory() :void
-    {
-        $this->container->singleton(ResponseFactory::class, function () {
-            return new ResponseFactory(
-                $this->container->make(ViewFactoryInterface::class),
-                $this->container->make(ResponseFactoryInterface::class),
-                $this->container->make(StreamFactoryInterface::class),
-                $this->container->make(AbstractRedirector::class),
-            );
-        });
-    }
-    
-    private function bindCookies()
-    {
-        $this->container->singleton(Cookies::class, function () {
-            $cookies = new Cookies();
-            $cookies->setDefaults([
-                'value' => '',
-                'domain' => null,
-                'hostonly' => true,
-                'path' => null,
-                'expires' => null,
-                'secure' => true,
-                'httponly' => false,
-                'samesite' => 'lax',
-            ]);
-            
-            return $cookies;
         });
     }
     

@@ -47,8 +47,8 @@ class ViewServiceProvider extends ServiceProvider
     
     private function bindGlobalContext()
     {
+        // This has to be a singleton.
         $this->container->instance(GlobalContext::class, new GlobalContext());
-        
     }
     
     private function bindViewServiceImplementation() :void
@@ -77,7 +77,6 @@ class ViewServiceProvider extends ServiceProvider
     
     private function bindPhpViewEngine() :void
     {
-        
         $this->container->singleton(PhpViewEngine::class, function () {
             
             return new PhpViewEngine(
@@ -89,7 +88,6 @@ class ViewServiceProvider extends ServiceProvider
     
     private function bindViewEngineInterface() :void
     {
-        
         $this->container->singleton(ViewEngineInterface::class, function () {
             
             return $this->container->make(PhpViewEngine::class);
@@ -99,7 +97,6 @@ class ViewServiceProvider extends ServiceProvider
     
     private function bindViewComposerCollection() :void
     {
-        
         $this->container->singleton(ViewComposerCollection::class, function () {
             
             return new ViewComposerCollection(
@@ -111,10 +108,8 @@ class ViewServiceProvider extends ServiceProvider
     
     public function bootstrap() :void
     {
-        
         $context = $this->container->make(GlobalContext::class);
         $context->add('__view', fn() => $this->container->make(ViewFactory::class));
-        
     }
     
 }

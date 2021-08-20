@@ -15,6 +15,7 @@ class OutputBufferMiddleware extends Middleware
 {
     
     private ResponseEmitter $emitter;
+    
     private ?Response       $retained_response = null;
     
     public function __construct(ResponseEmitter $emitter)
