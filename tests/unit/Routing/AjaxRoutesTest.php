@@ -12,7 +12,6 @@ use Snicco\Routing\Router;
 use Contracts\ContainerAdapter;
 use Tests\helpers\CreatesWpUrls;
 use Tests\helpers\CreateTestSubjects;
-use Snicco\Events\IncomingAjaxRequest;
 use Tests\helpers\CreateDefaultWpApiMocks;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
@@ -24,6 +23,7 @@ class AjaxRoutesTest extends UnitTest
     use CreateDefaultWpApiMocks;
     
     private Router $router;
+    
     private ContainerAdapter $container;
     
     /** @test */
@@ -44,7 +44,7 @@ class AjaxRoutesTest extends UnitTest
             
         });
         
-        $ajax_request = new IncomingAjaxRequest($this->ajaxRequest('foo_action'));
+        $ajax_request = $this->ajaxRequest('foo_action');
         $this->runAndAssertOutput('FOO_ACTION', $ajax_request);
         
     }
@@ -67,7 +67,7 @@ class AjaxRoutesTest extends UnitTest
             
         });
         
-        $ajax_request = new IncomingAjaxRequest($this->ajaxRequest('foo_action'));
+        $ajax_request = $this->ajaxRequest('foo_action');
         $this->runAndAssertOutput('FOO_ACTION', $ajax_request);
         
     }
@@ -90,7 +90,7 @@ class AjaxRoutesTest extends UnitTest
             
         });
         
-        $ajax_request = new IncomingAjaxRequest($this->ajaxRequest('bar_action'));
+        $ajax_request = $this->ajaxRequest('bar_action');
         $this->runAndAssertEmptyOutput($ajax_request);
         
     }
@@ -117,11 +117,9 @@ class AjaxRoutesTest extends UnitTest
                              ->withParsedBody([])
                              ->withQueryParams(['action' => 'foo_action']);
         
-        $this->runAndAssertOutput('FOO_ACTION', new IncomingAjaxRequest($ajax_request));
+        $this->runAndAssertOutput('FOO_ACTION', $ajax_request);
         
-        $this->runAndAssertEmptyOutput(
-            new IncomingAjaxRequest($ajax_request->withQueryParams(['action' => 'bar_action']))
-        );
+        $this->runAndAssertEmptyOutput($ajax_request->withQueryParams(['action' => 'bar_action']));
         
     }
     
@@ -146,7 +144,7 @@ class AjaxRoutesTest extends UnitTest
         $ajax_request = $this->ajaxRequest('foo_action', 'GET', 'admin-ajax.php/foo_action')
                              ->withParsedBody(['action' => 'bogus']);
         
-        $this->runAndAssertEmptyOutput(new IncomingAjaxRequest($ajax_request));
+        $this->runAndAssertEmptyOutput($ajax_request);
         
     }
     

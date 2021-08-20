@@ -16,7 +16,6 @@ use Snicco\Events\ResponseSent;
 use Snicco\Http\ResponseFactory;
 use Tests\helpers\CreatesWpUrls;
 use Tests\helpers\CreateTestSubjects;
-use Snicco\Events\IncomingAjaxRequest;
 use Tests\helpers\CreateDefaultWpApiMocks;
 use Snicco\Http\Responses\RedirectResponse;
 use Snicco\Contracts\AbstractRouteCollection;
@@ -30,9 +29,9 @@ class HttpKernelTest extends UnitTest
     use CreateDefaultWpApiMocks;
     use CreatesWpUrls;
     
-    private ContainerAdapter $container;
+    private ContainerAdapter        $container;
     
-    private Router $router;
+    private Router                  $router;
     
     private AbstractRouteCollection $routes;
     
@@ -165,7 +164,7 @@ class HttpKernelTest extends UnitTest
         
         $this->container->instance(Request::class, $request);
         
-        $this->runAndAssertOutput('', new IncomingAjaxRequest($request));
+        $this->runAndAssertOutput('', $request);
         
         /** @var Request $request */
         $request = $this->container->make(Request::class);

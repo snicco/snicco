@@ -14,7 +14,6 @@ use Contracts\ContainerAdapter;
 use Tests\helpers\CreatesWpUrls;
 use Tests\helpers\CreateTestSubjects;
 use Tests\helpers\CreateUrlGenerator;
-use Snicco\Events\IncomingAdminRequest;
 use Tests\helpers\CreateDefaultWpApiMocks;
 
 class AdminRoutesTest extends UnitTest
@@ -26,6 +25,7 @@ class AdminRoutesTest extends UnitTest
     use CreateUrlGenerator;
     
     private Router           $router;
+    
     private ContainerAdapter $container;
     
     /** @test */
@@ -46,7 +46,7 @@ class AdminRoutesTest extends UnitTest
             
         });
         
-        $request = new IncomingAdminRequest($this->adminRequestTo('foo'));
+        $request = $this->adminRequestTo('foo');
         $this->runAndAssertOutput('foo', $request);
         
     }
@@ -69,7 +69,7 @@ class AdminRoutesTest extends UnitTest
             
         });
         
-        $request = new IncomingAdminRequest($this->adminRequestTo('bar'));
+        $request = $this->adminRequestTo('bar');
         $this->runAndAssertOutput('', $request);
         
     }
@@ -96,7 +96,7 @@ class AdminRoutesTest extends UnitTest
             
         });
         
-        $request = new IncomingAdminRequest($this->adminRequestTo('foo'));
+        $request = $this->adminRequestTo('foo');
         $this->runAndAssertOutput('foo', $request);
         
     }
@@ -125,13 +125,13 @@ class AdminRoutesTest extends UnitTest
             
         });
         
-        $request = new IncomingAdminRequest($this->adminRequestTo('foo'));
+        $request = $this->adminRequestTo('foo');
         $this->runAndAssertOutput('foo', $request);
         
-        $request = new IncomingAdminRequest($this->adminRequestTo('bar'));
+        $request = $this->adminRequestTo('bar');
         $this->runAndAssertOutput('bar', $request);
         
-        $request = new IncomingAdminRequest($this->adminRequestTo('baz'));
+        $request = $this->adminRequestTo('baz');
         $this->runAndAssertOutput('', $request);
         
     }
@@ -154,7 +154,7 @@ class AdminRoutesTest extends UnitTest
             
         });
         
-        $request = new IncomingAdminRequest($this->adminRequestTo('foo', 'GET', 'users.php'));
+        $request = $this->adminRequestTo('foo', 'GET', 'users.php');
         $this->runAndAssertOutput('foo', $request);
         
     }
@@ -177,7 +177,7 @@ class AdminRoutesTest extends UnitTest
             
         });
         
-        $request = new IncomingAdminRequest($this->adminRequestTo('foo', 'GET', 'admin.php'));
+        $request = $this->adminRequestTo('foo', 'GET', 'admin.php');
         $this->runAndAssertOutput('', $request);
         
     }
@@ -230,7 +230,7 @@ class AdminRoutesTest extends UnitTest
             
         });
         
-        $request = new IncomingAdminRequest($this->adminRequestTo('foo'));
+        $request = $this->adminRequestTo('foo');
         $this->runAndAssertOutput('foo', $request);
         
     }
@@ -253,7 +253,7 @@ class AdminRoutesTest extends UnitTest
             
         });
         
-        $request = new IncomingAdminRequest($this->adminRequestTo('foo'));
+        $request = $this->adminRequestTo('foo');
         $this->runAndAssertOutput('foo', $request);
         
     }
@@ -277,7 +277,7 @@ class AdminRoutesTest extends UnitTest
         });
         
         $request =
-            new IncomingAdminRequest($this->adminRequestTo('foo', 'GET', 'options-general.php'));
+            $this->adminRequestTo('foo', 'GET', 'options-general.php');
         $this->runAndAssertOutput('foo', $request);
         
     }
@@ -304,7 +304,7 @@ class AdminRoutesTest extends UnitTest
             
         });
         
-        $request = new IncomingAdminRequest($this->adminRequestTo('foo', 'GET', 'tools.php'));
+        $request = $this->adminRequestTo('foo', 'GET', 'tools.php');
         $this->runAndAssertOutput('foo', $request);
         
     }
@@ -327,7 +327,7 @@ class AdminRoutesTest extends UnitTest
             
         });
         
-        $request = new IncomingAdminRequest($this->adminRequestTo('foo', 'GET', 'users.php'));
+        $request = $this->adminRequestTo('foo', 'GET', 'users.php');
         $this->runAndAssertOutput('foo', $request);
         
     }
@@ -350,7 +350,7 @@ class AdminRoutesTest extends UnitTest
             
         });
         
-        $request = new IncomingAdminRequest($this->adminRequestTo('foo', 'GET', 'plugins.php'));
+        $request = $this->adminRequestTo('foo', 'GET', 'plugins.php');
         $this->runAndAssertOutput('foo', $request);
         
     }
@@ -373,7 +373,7 @@ class AdminRoutesTest extends UnitTest
             
         });
         
-        $request = new IncomingAdminRequest($this->adminRequestTo('foo', 'GET', 'themes.php'));
+        $request = $this->adminRequestTo('foo', 'GET', 'themes.php');
         $this->runAndAssertOutput('foo', $request);
         
     }
@@ -397,7 +397,7 @@ class AdminRoutesTest extends UnitTest
         });
         
         $request =
-            new IncomingAdminRequest($this->adminRequestTo('foo', 'GET', 'edit-comments.php'));
+            $this->adminRequestTo('foo', 'GET', 'edit-comments.php');
         $this->runAndAssertOutput('foo', $request);
         
     }
@@ -420,7 +420,7 @@ class AdminRoutesTest extends UnitTest
             
         });
         
-        $request = new IncomingAdminRequest($this->adminRequestTo('foo', 'GET', 'upload.php'));
+        $request = $this->adminRequestTo('foo', 'GET', 'upload.php');
         $this->runAndAssertOutput('foo', $request);
         
     }
@@ -443,7 +443,7 @@ class AdminRoutesTest extends UnitTest
             
         });
         
-        $request = new IncomingAdminRequest($this->adminRequestTo('foo', 'GET', 'edit.php'));
+        $request = $this->adminRequestTo('foo', 'GET', 'edit.php');
         $this->runAndAssertOutput('foo', $request);
         
     }
@@ -466,7 +466,7 @@ class AdminRoutesTest extends UnitTest
             
         });
         
-        $request = new IncomingAdminRequest($this->adminRequestTo('foo', 'GET', 'index.php'));
+        $request = $this->adminRequestTo('foo', 'GET', 'index.php');
         $this->runAndAssertOutput('foo', $request);
         
     }

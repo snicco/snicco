@@ -13,9 +13,7 @@ use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
 use Contracts\ContainerAdapter;
 use Tests\helpers\CreatesWpUrls;
-use Snicco\Events\IncomingWebRequest;
 use Tests\helpers\CreateTestSubjects;
-use Snicco\Events\IncomingAdminRequest;
 use Tests\helpers\CreateDefaultWpApiMocks;
 use Snicco\Routing\Conditions\QueryStringCondition;
 
@@ -27,6 +25,7 @@ class TrailingSlashTest extends UnitTest
     use CreatesWpUrls;
     
     private ContainerAdapter $container;
+    
     private Router           $router;
     
     /** @test */
@@ -43,8 +42,7 @@ class TrailingSlashTest extends UnitTest
             
         });
         
-        $request =
-            new IncomingWebRequest(TestRequest::fromFullUrl('GET', 'https://foobar.com/foo'));
+        $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
         $this->runAndAssertOutput('FOO', $request);
         
     }
@@ -64,7 +62,7 @@ class TrailingSlashTest extends UnitTest
         });
         
         $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
-        $this->runAndAssertOutput('FOO', new IncomingWebRequest($request));
+        $this->runAndAssertOutput('FOO', $request);
         
     }
     
@@ -83,10 +81,10 @@ class TrailingSlashTest extends UnitTest
         });
         
         $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
-        $this->runAndAssertEmptyOutput(new IncomingWebRequest($request));
+        $this->runAndAssertEmptyOutput($request);
         
         $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
-        $this->runAndAssertOutput('FOO', new IncomingWebRequest($request));
+        $this->runAndAssertOutput('FOO', $request);
         
     }
     
@@ -105,10 +103,10 @@ class TrailingSlashTest extends UnitTest
         }, true);
         
         $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
-        $this->runAndAssertOutput('FOO', new IncomingWebRequest($request));
+        $this->runAndAssertOutput('FOO', $request);
         
         $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
-        $this->runAndAssertEmptyOutput(new IncomingWebRequest($request));
+        $this->runAndAssertEmptyOutput($request);
         
     }
     
@@ -141,16 +139,16 @@ class TrailingSlashTest extends UnitTest
         }, true);
         
         $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
-        $this->runAndAssertOutput('FOO', new IncomingWebRequest($request));
+        $this->runAndAssertOutput('FOO', $request);
         
         $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
-        $this->runAndAssertEmptyOutput(new IncomingWebRequest($request));
+        $this->runAndAssertEmptyOutput($request);
         
         $request = TestRequest::fromFullUrl('POST', 'https://foobar.com/bar/foo/');
-        $this->runAndAssertOutput('FOO', new IncomingWebRequest($request));
+        $this->runAndAssertOutput('FOO', $request);
         
         $request = TestRequest::fromFullUrl('POST', 'https://foobar.com/bar/foo');
-        $this->runAndAssertEmptyOutput(new IncomingWebRequest($request));
+        $this->runAndAssertEmptyOutput($request);
         
     }
     
@@ -169,10 +167,10 @@ class TrailingSlashTest extends UnitTest
         }, true);
         
         $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/bar/');
-        $this->runAndAssertOutput('BAR', new IncomingWebRequest($request));
+        $this->runAndAssertOutput('BAR', $request);
         
         $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/bar');
-        $this->runAndAssertEmptyOutput(new IncomingWebRequest($request));
+        $this->runAndAssertEmptyOutput($request);
         
     }
     
@@ -191,10 +189,10 @@ class TrailingSlashTest extends UnitTest
         }, true);
         
         $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo/');
-        $this->runAndAssertOutput('FOO', new IncomingWebRequest($request));
+        $this->runAndAssertOutput('FOO', $request);
         
         $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo');
-        $this->runAndAssertEmptyOutput(new IncomingWebRequest($request));
+        $this->runAndAssertEmptyOutput($request);
         
     }
     
@@ -213,7 +211,7 @@ class TrailingSlashTest extends UnitTest
         }, true);
         
         $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/wp-login.php');
-        $this->runAndAssertOutput('FOO', new IncomingWebRequest($request));
+        $this->runAndAssertOutput('FOO', $request);
         
     }
     
@@ -232,7 +230,7 @@ class TrailingSlashTest extends UnitTest
         }, true);
         
         $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/wp-admin/');
-        $this->runAndAssertOutput('FOO', new IncomingAdminRequest($request));
+        $this->runAndAssertOutput('FOO', $request);
         
         $this->createRoutes(function () {
             
@@ -245,7 +243,7 @@ class TrailingSlashTest extends UnitTest
         }, false);
         
         $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/wp-admin/');
-        $this->runAndAssertOutput('FOO', new IncomingAdminRequest($request));
+        $this->runAndAssertOutput('FOO', $request);
         
         $this->createRoutes(function () {
             
@@ -258,7 +256,7 @@ class TrailingSlashTest extends UnitTest
         }, false);
         
         $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/wp-admin/');
-        $this->runAndAssertOutput('FOO', new IncomingAdminRequest($request));
+        $this->runAndAssertOutput('FOO', $request);
         
     }
     
@@ -277,7 +275,7 @@ class TrailingSlashTest extends UnitTest
             
         }, true);
         $request = $this->adminRequestTo('foo');
-        $this->runAndAssertOutput('FOO', new IncomingAdminRequest($request));
+        $this->runAndAssertOutput('FOO', $request);
         
         // not-forcing trailing and defined with trailing
         $this->createRoutes(function () {
@@ -290,7 +288,7 @@ class TrailingSlashTest extends UnitTest
             
         });
         $request = $this->adminRequestTo('foo');
-        $this->runAndAssertOutput('FOO', new IncomingAdminRequest($request));
+        $this->runAndAssertOutput('FOO', $request);
         
     }
     
@@ -309,7 +307,7 @@ class TrailingSlashTest extends UnitTest
         });
         
         $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/german-city/münchen');
-        $this->runAndAssertOutput('München', new IncomingWebRequest($request));
+        $this->runAndAssertOutput('München', $request);
         
     }
     
@@ -329,7 +327,7 @@ class TrailingSlashTest extends UnitTest
         
         $request = TestRequest::fromFullUrl('GET', 'https://foobar.com/foo?page=bayern münchen');
         $request = $request->withQueryParams(['page' => 'bayern münchen']);
-        $this->runAndAssertOutput('FOO', new IncomingWebRequest($request));
+        $this->runAndAssertOutput('FOO', $request);
         
     }
     

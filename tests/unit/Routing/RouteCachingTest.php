@@ -21,13 +21,10 @@ use Tests\helpers\CreatesWpUrls;
 use Tests\stubs\TestViewFactory;
 use Snicco\Listeners\FilterWpQuery;
 use Snicco\Events\WpQueryFilterable;
-use Snicco\Events\IncomingWebRequest;
 use Tests\fixtures\Conditions\IsPost;
 use Tests\helpers\CreateTestSubjects;
 use Tests\helpers\CreateUrlGenerator;
-use Snicco\Events\IncomingAjaxRequest;
 use Snicco\Factories\ConditionFactory;
-use Snicco\Events\IncomingAdminRequest;
 use Snicco\Factories\RouteActionFactory;
 use Snicco\Routing\CachedRouteCollection;
 use Tests\helpers\CreateDefaultWpApiMocks;
@@ -42,9 +39,13 @@ class RouteCachingTest extends UnitTest
     use CreateUrlGenerator;
     
     private Router                $router;
+    
     private string                $route_map_file;
+    
     private string                $route_collection_file;
+    
     private CachedRouteCollection $routes;
+    
     private ContainerAdapter      $container;
     
     /** @test */
@@ -234,7 +235,7 @@ class RouteCachingTest extends UnitTest
         $listener = new FilterWpQuery($this->routes);
         $this->assertSame(false, $listener->handleEvent($event));
         $this->assertSame(['foo' => 'baz'], $wp->query_vars);
-        $this->runAndAssertOutput('foo', new IncomingWebRequest($request, 'wp.php'));
+        $this->runAndAssertOutput('foo', $request);
         
         // from cache
         $this->newCachedRouter();
@@ -245,7 +246,7 @@ class RouteCachingTest extends UnitTest
         $listener = new FilterWpQuery($this->routes);
         $this->assertFalse($listener->handleEvent($event));
         $this->assertSame(['foo' => 'baz'], $wp->query_vars);
-        $this->runAndAssertOutput('foo', new IncomingWebRequest($request, 'wp.php'));
+        $this->runAndAssertOutput('foo', $request);
         
     }
     
@@ -336,11 +337,11 @@ class RouteCachingTest extends UnitTest
         });
         
         $request = $this->adminRequestTo('foo');
-        $this->runAndAssertOutput('foo', new IncomingAdminRequest($request));
+        $this->runAndAssertOutput('foo', $request);
         
         $this->newCachedRouter();
         $request = $this->adminRequestTo('foo');
-        $this->runAndAssertOutput('foo', new IncomingAdminRequest($request));
+        $this->runAndAssertOutput('foo', $request);
         
     }
     
@@ -366,12 +367,12 @@ class RouteCachingTest extends UnitTest
         });
         
         $ajax_request = $this->ajaxRequest('foo_action');
-        $this->runAndAssertOutput('FOO_ACTION', new IncomingAjaxRequest($ajax_request));
+        $this->runAndAssertOutput('FOO_ACTION', $ajax_request);
         
         $this->newCachedRouter();
         
         $ajax_request = $this->ajaxRequest('foo_action');
-        $this->runAndAssertOutput('FOO_ACTION', new IncomingAjaxRequest($ajax_request));
+        $this->runAndAssertOutput('FOO_ACTION', $ajax_request);
         
     }
     
