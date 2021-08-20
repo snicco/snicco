@@ -7,6 +7,7 @@ namespace Tests\unit\Http;
 use Tests\UnitTest;
 use Tests\stubs\TestView;
 use Snicco\Http\Redirector;
+use InvalidArgumentException;
 use Snicco\Http\Psr7\Response;
 use Snicco\Http\ResponseFactory;
 use Tests\helpers\AssertsResponse;
@@ -159,13 +160,29 @@ class ResponseFactoryTest extends UnitTest
         
     }
     
-    protected function setUp() :void
+    /** @test */
+    public function testExceptionForInvalidStatusCodeTooLow()
     {
         
+        $this->assertInstanceOf(Response::class, $this->factory->make(100));
+        $this->expectException(InvalidArgumentException::class);
+        $this->factory->make(99);
+        
+    }
+    
+    /** @test */
+    public function testExceptionForInvalidStatusCodeTooHigh()
+    {
+        $this->assertInstanceOf(Response::class, $this->factory->make(599));
+        $this->expectException(InvalidArgumentException::class);
+        $this->factory->make(600);
+        
+    }
+    
+    protected function setUp() :void
+    {
         parent::setUp();
-        
         $this->factory = $this->createResponseFactory();
-        
     }
     
 }

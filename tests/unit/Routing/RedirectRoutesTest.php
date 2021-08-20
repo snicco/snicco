@@ -180,7 +180,7 @@ class RedirectRoutesTest extends UnitTest
         
         $request = $this->webRequest('GET', 'base/baz');
         $this->runAndAssertOutput('', $request);
-        HeaderStack::assertHasNone();
+        HeaderStack::assertNoStatusCodeSent();
         HeaderStack::reset();
         
         $request = $this->webRequest('GET', 'base/biz');

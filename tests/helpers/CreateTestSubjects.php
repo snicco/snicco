@@ -12,7 +12,9 @@ use Snicco\View\MethodField;
 use Tests\stubs\TestRequest;
 use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
+use Snicco\Http\ResponseEmitter;
 use Snicco\Events\IncomingRequest;
+use Snicco\Http\ResponsePreparation;
 use Snicco\Events\IncomingWebRequest;
 use Snicco\Middleware\MiddlewareStack;
 use Snicco\Middleware\Core\RouteRunner;
@@ -44,7 +46,6 @@ trait CreateTestSubjects
     
     protected function createRoutes(Closure $routes, bool $force_trailing = false)
     {
-        
         $this->routes = $this->newRouteCollection();
         
         $this->router = $this->newRouter($force_trailing);
@@ -52,49 +53,39 @@ trait CreateTestSubjects
         $routes();
         
         $this->router->loadRoutes();
-        
     }
     
     protected function newRouter(bool $force_trailing = false) :Router
     {
-        
         return new Router($this->container, $this->routes, $force_trailing);
-        
     }
     
     protected function runAndAssertEmptyOutput(IncomingRequest $request)
     {
-        
         $this->runAndAssertOutput('', $request);
-        
     }
     
     protected function runAndAssertOutput($expected, IncomingRequest $request)
     {
-        
         $this->assertSame(
             $expected,
             $actual = $this->runKernelAndGetOutput($request),
             "Expected output:[{$expected}] Received:['{$actual}']."
         );
-        
     }
     
     protected function runKernelAndGetOutput(IncomingRequest $request, HttpKernel $kernel = null)
     {
-        
         $kernel = $kernel ?? $this->newKernel();
         
         ob_start();
         $this->runKernel($request, $kernel);
         
         return ob_get_clean();
-        
     }
     
     protected function newKernel(array $with_middleware = []) :HttpKernel
     {
-        
         $this->container->instance(
             ErrorHandlerInterface::class,
             $error_handler = new NullErrorHandler()
@@ -115,9 +106,7 @@ trait CreateTestSubjects
             'foobar' => FooBarMiddleware::class,
         ]);
         foreach ($with_middleware as $group_name => $middlewares) {
-            
             $middleware_stack->withMiddlewareGroup($group_name, $middlewares);
-            
         }
         
         $router_runner = new RouteRunner(
@@ -130,21 +119,21 @@ trait CreateTestSubjects
         $this->container->instance(MiddlewareStack::class, $middleware_stack);
         $this->middleware_stack = $middleware_stack;
         
-        return new HttpKernel(new Pipeline($this->container, $error_handler));
-        
+        return new HttpKernel(
+            new Pipeline($this->container, $error_handler),
+            new ResponseEmitter(),
+            new ResponsePreparation($this->psrStreamFactory())
+        );
     }
     
     protected function runKernel(IncomingRequest $request, HttpKernel $kernel = null)
     {
-        
         $kernel = $kernel ?? $this->newKernel();
         $kernel->run($request);
-        
     }
     
     protected function conditions() :array
     {
-        
         return array_merge(RoutingServiceProvider::CONDITION_TYPES, [
             
             'true' => TrueCondition::class,
@@ -154,14 +143,11 @@ trait CreateTestSubjects
             'dependency_condition' => ConditionWithDependency::class,
         
         ]);
-        
     }
     
     protected function webRequest($method, $path) :IncomingWebRequest
     {
-        
         return new IncomingWebRequest(TestRequest::from($method, $path));
-        
     }
     
 }

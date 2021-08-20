@@ -49,7 +49,7 @@ class HttpKernelTest extends UnitTest
         $request = $this->webRequest('GET', '/bar');
         
         $this->runAndAssertEmptyOutput($request);
-        $this->assertTrue(HeaderStack::isEmpty());
+        HeaderStack::assertNoStatusCodeSent();
         
     }
     
@@ -66,7 +66,7 @@ class HttpKernelTest extends UnitTest
         $request = $this->webRequest('GET', '/foo');
         
         $this->runAndAssertOutput('foo', $request);
-        HeaderStack::assertHas('Content-Type');
+        HeaderStack::assertHasStatusCode(200);
         
     }
     

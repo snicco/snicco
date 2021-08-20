@@ -14,6 +14,7 @@ abstract class AbstractRedirector
 {
     
     protected UrlGenerator         $generator;
+    
     protected Psr17ResponseFactory $response_factory;
     
     public function __construct(UrlGenerator $url_generator, Psr17ResponseFactory $response_factory)
@@ -29,51 +30,41 @@ abstract class AbstractRedirector
     
     public function to(string $path, int $status = 302, array $query = [], bool $secure = true, bool $absolute = false) :RedirectResponse
     {
-        
         return $this->createRedirectResponse(
             $this->generator->to($path, $query, $secure, $absolute),
             $status
         );
-        
     }
     
     abstract public function createRedirectResponse(string $path, int $status_code = 302) :RedirectResponse;
     
     public function absoluteRedirect(string $path, int $status = 302, array $query = [], bool $secure = true) :RedirectResponse
     {
-        
         return $this->to($path, $status, $query, $secure, true);
-        
     }
     
     public function toRoute(string $name, int $status = 302, array $arguments = [], bool $secure = true, bool $absolute = false) :RedirectResponse
     {
-        
         return $this->createRedirectResponse(
             $this->generator->toRoute($name, $arguments, $secure, $absolute),
             $status
         );
-        
     }
     
     public function signed(string $path, int $status = 302, int $expiration = 300, array $query = [], $absolute = false) :RedirectResponse
     {
-        
         return $this->createRedirectResponse(
             $this->generator->signed($path, $expiration, $absolute, $query),
             $status
         );
-        
     }
     
     public function signedLogout(int $user_id, string $redirect_on_logout = '/', int $status = 302, int $expiration = 3600) :RedirectResponse
     {
-        
         return $this->createRedirectResponse(
             $this->generator->signedLogout($user_id, $redirect_on_logout, $expiration),
             $status
         );
-        
     }
     
     public function toTemporarySignedRoute(string $name, int $expiration = 300, $arguments = [], $status = 302, bool $absolute = false) :RedirectResponse
@@ -87,7 +78,6 @@ abstract class AbstractRedirector
             $this->generator->signedRoute($name, $arguments, $expiration, $absolute),
             $status
         );
-        
     }
     
     public function secure(string $path, int $status = 302, array $query = []) :RedirectResponse
@@ -121,13 +111,10 @@ abstract class AbstractRedirector
     
     public function intended(Request $request, string $fallback = '', int $status = 302) :RedirectResponse
     {
-        
         $from_query = rawurldecode($request->query('intended', ''));
         
         if ($from_query !== '') {
-            
             return $this->to($from_query, $status);
-            
         }
         
         if ($fallback !== '') {
@@ -135,7 +122,6 @@ abstract class AbstractRedirector
         }
         
         return $this->to('/', $status);
-        
     }
     
     public function previous(int $status = 302, string $fallback = '') :RedirectResponse
@@ -145,31 +131,25 @@ abstract class AbstractRedirector
     
     public function back(int $status = 302, string $fallback = '', bool $external_referrer = false) :RedirectResponse
     {
-        
         $previous_url = $this->generator->back($fallback, $external_referrer);
         
         return $this->createRedirectResponse($previous_url, $status);
-        
     }
     
     public function guest(string $path, $status = 302, array $query = [], bool $secure = true, bool $absolute = false)
     {
-        
         throw new LogicException(
             'The Redirector::guest method can only be used when sessions are enabled in the config'
         );
-        
     }
     
     protected function validateStatusCode(int $status_code)
     {
-        
         $valid = in_array($status_code, [201, 301, 302, 303, 304, 307, 308]);
         
         if ( ! $valid) {
             throw new LogicException("Status code [{$status_code} is not valid for redirects.]");
         }
-        
     }
     
 }

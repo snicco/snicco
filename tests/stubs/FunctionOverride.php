@@ -55,3 +55,25 @@ function connection_status() :int
     
     return \connection_status();
 }
+
+function headers_list()
+{
+    
+    $headers = [];
+    
+    foreach (HeaderStack::stack() as $header) {
+        
+        $headers[] = $header;
+        
+    }
+    
+    return $header;
+    
+    //return [
+    //    0 => 'X-Powered-By: PHP/7.4.21',
+    //    1 => 'Expires: Wed, 11 Jan 1984 05:00:00 GMT',
+    //    2 => 'Cache-Control: no-cache, must-revalidate, max-age=0',
+    //    3 => 'X-Frame-Options: SAMEORIGIN',
+    //    4 => 'Referrer-Policy: strict-origin-when-cross-origin',
+    //];
+}

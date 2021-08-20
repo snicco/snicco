@@ -46,6 +46,7 @@ class ProductionErrorHandler implements ErrorHandlerInterface
         Psr3LoggerInterface $logger,
         ResponseFactory $response_factory
     ) {
+        
         $this->container = $container;
         $this->logger = $logger;
         $this->response_factory = $response_factory;
@@ -95,15 +96,15 @@ class ProductionErrorHandler implements ErrorHandlerInterface
         
         $this->logException($e, $request);
         
-        $response_factory = $this->convertToResponse($e, $request);
+        $response = $this->convertToResponse($e, $request);
         
         if ($in_routing_flow) {
             
-            return $response_factory;
+            return $response;
             
         }
         
-        (new ResponseEmitter())->emit($response_factory);
+        (new ResponseEmitter())->emit($response);
         
         // Shuts down the script if not running unit tests.
         UnrecoverableExceptionHandled::dispatch();
@@ -195,10 +196,10 @@ class ProductionErrorHandler implements ErrorHandlerInterface
                 continue;
             }
             
-            $response_factory = $custom_renderer($e, $request, $this->response_factory);
+            $response = $custom_renderer($e, $request, $this->response_factory);
             
-            if ($response_factory instanceof Response) {
-                return $response_factory;
+            if ($response instanceof Response) {
+                return $response;
             }
             
         }

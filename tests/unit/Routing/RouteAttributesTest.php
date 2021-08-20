@@ -37,11 +37,13 @@ class RouteAttributesTest extends UnitTest
     /** @test */
     public function basic_get_routing_works()
     {
+        $count = 0;
         
-        $this->createRoutes(function () {
+        $this->createRoutes(function () use (&$count) {
             
-            $this->router->get('/foo', function () {
+            $this->router->get('/foo', function () use (&$count) {
                 
+                $count++;
                 return 'foo';
                 
             });
@@ -51,8 +53,12 @@ class RouteAttributesTest extends UnitTest
         $request = $this->webRequest('GET', '/foo');
         $this->runAndAssertOutput('foo', $request);
         
+        $this->assertSame(1, $count);
+        
         $request = $this->webRequest('HEAD', '/foo');
-        $this->runAndAssertOutput('foo', $request);
+        $this->runAndAssertOutput('', $request);
+        // Also runs for HEAD methods but without output.
+        $this->assertSame(2, $count);
         
     }
     
@@ -515,7 +521,7 @@ class RouteAttributesTest extends UnitTest
         $request = $this->webRequest('GET', '/bar');
         $this->runAndAssertOutput('', $request);
         $this->assertSame(1, $GLOBALS['test'][GlobalMiddleware::run_times]);
-        HeaderStack::assertHasNone();
+        HeaderStack::assertNoStatusCodeSent();
         HeaderStack::reset();
         
     }

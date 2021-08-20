@@ -17,13 +17,8 @@ class StatefulRedirector extends AbstractRedirector
     
     public function __construct(Session $session, UrlGenerator $url_generator, Psr17ResponseFactory $response_factory)
     {
-        
-        $this->generator = $url_generator;
-        $this->response_factory = $response_factory;
-        $this->session = $session;
-        
         parent::__construct($url_generator, $response_factory);
-        
+        $this->session = $session;
     }
     
     public function intended(Request $request, string $fallback = '', int $status = 302) :RedirectResponse

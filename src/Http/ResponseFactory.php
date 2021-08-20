@@ -6,6 +6,7 @@ namespace Snicco\Http;
 
 use Throwable;
 use Snicco\Http\Psr7\Request;
+use InvalidArgumentException;
 use Snicco\Http\Psr7\Response;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
@@ -14,6 +15,7 @@ use Snicco\Contracts\AbstractRedirector;
 use Snicco\Contracts\ResponseableInterface;
 use Snicco\Http\Responses\RedirectResponse;
 use Snicco\Http\Responses\DelegatedResponse;
+use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
 use Snicco\ExceptionHandling\Exceptions\ViewException;
@@ -21,61 +23,71 @@ use Snicco\Contracts\ViewFactoryInterface as ViewFactory;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
-/**
- * @todo either this class or the Response class need a prepare method to fix obvious mistakes.
- * See implementation in Symfony Response.
- */
-class ResponseFactory implements ResponseFactoryInterface
+class ResponseFactory implements ResponseFactoryInterface, StreamFactoryInterface
 {
     
     private ViewFactory          $view_factory;
+    
     private Psr17ResponseFactory $response_factory;
+    
     private Psr17StreamFactory   $stream_factory;
+    
     private AbstractRedirector   $redirector;
+    
     private string               $unrecoverable_error_message = 'Something has gone completely wrong.';
     
     public function __construct(ViewFactory $view, Psr17ResponseFactory $response, Psr17StreamFactory $stream, AbstractRedirector $redirector)
     {
-        
         $this->view_factory = $view;
         $this->response_factory = $response;
         $this->stream_factory = $stream;
-        
         $this->redirector = $redirector;
     }
     
     public function view(string $view, array $data = [], $status = 200, array $headers = []) :Response
     {
-        
         $content = $this->view_factory->make($view)->with($data)->toString();
-        
-        $psr_response = $this->make($status)
-                             ->html($this->stream_factory->createStream($content));
-        
-        $response = new Response($psr_response);
+        $response = $this->html($content, $status);
         
         foreach ($headers as $name => $value) {
-            
             $response = $response->withHeader($name, $value);
-            
         }
         
         return $response;
-        
+    }
+    
+    public function html(string $html, int $status_code = 200) :Response
+    {
+        return $this->make($status_code)
+                    ->html($this->stream_factory->createStream($html));
     }
     
     public function make(int $status_code = 200, $reason_phrase = '') :Response
     {
+        if ( ! $this->isValidStatus($status_code)) {
+            throw new InvalidArgumentException(
+                "The HTTP status code [$status_code] is not valid."
+            );
+        }
         
         $psr_response = $this->response_factory->createResponse($status_code, $reason_phrase);
         
         return new Response($psr_response);
-        
+    }
+    
+    private function isValidStatus(int $status_code) :bool
+    {
+        return 100 <= $status_code && $status_code < 600;
     }
     
     public function createResponse(int $code = 200, string $reasonPhrase = '') :ResponseInterface
     {
         return $this->response_factory->createResponse($code, $reasonPhrase);
+    }
+    
+    public function createStream(string $content = '') :StreamInterface
+    {
+        return $this->stream_factory->createStream($content);
     }
     
     public function null() :NullResponse
@@ -100,9 +112,7 @@ class ResponseFactory implements ResponseFactoryInterface
     
     public function back(string $fallback = '/', int $status = 302, bool $external_referer = false) :RedirectResponse
     {
-        
         return $this->redirect()->back($status, $fallback, $external_referer);
-        
     }
     
     /**
@@ -120,9 +130,7 @@ class ResponseFactory implements ResponseFactoryInterface
     
     public function signedLogout(int $user_id, string $redirect_on_logout = '/', $status = 302, int $expiration = 3600) :RedirectResponse
     {
-        
         return $this->redirector->signedLogout($user_id, $redirect_on_logout, $status, $expiration);
-        
     }
     
     public function noContent() :Response
@@ -132,13 +140,11 @@ class ResponseFactory implements ResponseFactoryInterface
     
     public function createStreamFromFile(string $filename, string $mode = 'r') :StreamInterface
     {
-        
         return $this->stream_factory->createStreamFromFile($filename, $mode);
     }
     
     public function createStreamFromResource($resource) :StreamInterface
     {
-        
         return $this->stream_factory->createStreamFromResource($resource);
     }
     
@@ -155,21 +161,17 @@ class ResponseFactory implements ResponseFactoryInterface
      */
     public function error(HttpException $e, Request $request) :Response
     {
-        
         $views = [(string) $e->httpStatusCode(), 'error', 'index'];
         
         $is_admin = $request->isWpAdmin();
         
         if ($is_admin) {
-            
             $views = collect($views)
                 ->map(fn($view) => $view.'-admin')
                 ->merge($views)->all();
-            
         }
         
         try {
-            
             $view = $this->view_factory->make($views)->with([
                 'status_code' => $e->httpStatusCode(),
                 'message' => $e->messageForUsers(),
@@ -177,13 +179,10 @@ class ResponseFactory implements ResponseFactoryInterface
             
             return $this->toResponse($view)
                         ->withStatus($e->httpStatusCode());
-            
         } catch (ViewException $e) {
-            
             $view = $is_admin ? 'error-admin' : 'error';
             
             try {
-                
                 return $this->toResponse(
                     
                     $this->view_factory
@@ -195,13 +194,9 @@ class ResponseFactory implements ResponseFactoryInterface
                 
                 )->withStatus(500);
             } catch (Throwable $e) {
-                
                 return $this->html("<h1>$this->unrecoverable_error_message</h1>", 500);
-                
             }
-            
         }
-        
     }
     
     /**
@@ -209,66 +204,36 @@ class ResponseFactory implements ResponseFactoryInterface
      */
     public function toResponse($response) :Response
     {
-        
         if ($response instanceof Response) {
-            
             return $response;
-            
         }
         
         if ($response instanceof ResponseInterface) {
-            
             return new Response($response);
-            
         }
         
         if (is_string($response)) {
-            
             return $this->html($response);
-            
         }
         
         if (is_array($response)) {
-            
             return $this->json($response);
-            
         }
         
         if ($response instanceof ResponseableInterface) {
-            
             return $this->toResponse(
                 $response->toResponsable()
             );
-            
         }
         
         throw new HttpException(500, "Invalid response returned by a route.");
-        
-    }
-    
-    public function html(string $html, int $status_code = 200) :Response
-    {
-        
-        return $this->make($status_code)
-                    ->html($this->stream_factory->createStream($html));
-        
     }
     
     public function json($content, int $status = 200) :Response
     {
-        
         /** @todo This needs more parsing or a dedicated JsonResponseClass */
         return $this->make($status)
-                    ->json(
-                        $this->createStream(json_encode($content))
-                    );
-        
-    }
-    
-    public function createStream(string $content = '') :StreamInterface
-    {
-        
-        return $this->stream_factory->createStream($content);
+                    ->json($this->createStream(json_encode($content)));
     }
     
 }
