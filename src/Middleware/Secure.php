@@ -75,6 +75,7 @@ class Secure extends Middleware
         
     }
     
+    /** @todo Move this to the request class as soon as we have support for trusted proxies. */
     private function isSecure(Request $request) :bool
     {
         

@@ -19,9 +19,6 @@ use function connection_status;
 class ResponseEmitter
 {
     
-    /**
-     * @var int
-     */
     private int $response_chunk_size;
     
     public function __construct(int $response_chunk_size = 4096)

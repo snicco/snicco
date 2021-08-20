@@ -12,6 +12,7 @@ use Snicco\View\MethodField;
 use Tests\stubs\TestRequest;
 use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
+use Snicco\Http\ResponseEmitter;
 use Snicco\Events\IncomingRequest;
 use Snicco\Events\IncomingWebRequest;
 use Snicco\Middleware\MiddlewareStack;
@@ -130,7 +131,10 @@ trait CreateTestSubjects
         $this->container->instance(MiddlewareStack::class, $middleware_stack);
         $this->middleware_stack = $middleware_stack;
         
-        return new HttpKernel(new Pipeline($this->container, $error_handler));
+        return new HttpKernel(
+            new Pipeline($this->container, $error_handler),
+            new ResponseEmitter()
+        );
         
     }
     

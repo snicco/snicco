@@ -28,9 +28,7 @@ trait ImplementsPsr7Response
     
     public function withAddedHeader($name, $value)
     {
-        
         return $this->new($this->psr7_response->withAddedHeader($name, $value));
-        
     }
     
     public function withoutHeader($name)
@@ -87,7 +85,6 @@ trait ImplementsPsr7Response
     
     public function getBody()
     {
-        
         return $this->psr7_response->getBody();
     }
     

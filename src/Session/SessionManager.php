@@ -104,6 +104,7 @@ class SessionManager implements SessionManagerInterface
      * event.
      * The Event Listener for this method gets unhooked when using the AUTH-Extension
      *
+     * @param  NewLogin  $event
      * @param  Request  $request
      * @param  ResponseEmitter  $emitter
      */

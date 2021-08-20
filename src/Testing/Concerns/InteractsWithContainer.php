@@ -10,11 +10,6 @@ use Snicco\Testing\TestResponseEmitter;
 trait InteractsWithContainer
 {
     
-    private function replaceBindings()
-    {
-        $this->swap(ResponseEmitter::class, new TestResponseEmitter());
-    }
-    
     /**
      * Swap an instance of an object in the container.
      *
@@ -42,6 +37,16 @@ trait InteractsWithContainer
         $this->app->container()->instance($abstract, $instance);
         
         return $instance;
+    }
+    
+    private function replaceBindings()
+    {
+        $this->app->container()->singleton(ResponseEmitter::class, function () {
+            
+            return $this->app->resolve(TestResponseEmitter::class);
+            
+        });
+        
     }
     
 }

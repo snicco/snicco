@@ -21,6 +21,7 @@ use Snicco\Middleware\Core\SetRequestAttributes;
 use Snicco\Middleware\Core\ErrorHandlerMiddleware;
 use Snicco\Middleware\Core\OutputBufferMiddleware;
 use Snicco\Middleware\Core\AppendSpecialPathSuffix;
+use Snicco\Middleware\Core\PrepareResponseMiddleware;
 use Snicco\Middleware\Core\EvaluateResponseMiddleware;
 
 class HttpKernel
@@ -32,6 +33,7 @@ class HttpKernel
     private bool     $always_with_global_middleware = false;
     private array    $core_middleware               = [
         ErrorHandlerMiddleware::class,
+        //PrepareResponseMiddleware::class,
         SetRequestAttributes::class,
         MethodOverride::class,
         EvaluateResponseMiddleware::class,
@@ -46,6 +48,7 @@ class HttpKernel
     // that a user might provide.
     private array           $priority_map      = [
         ErrorHandlerMiddleware::class,
+        PrepareResponseMiddleware::class,
         SetRequestAttributes::class,
         EvaluateResponseMiddleware::class,
         ShareCookies::class,
@@ -56,10 +59,8 @@ class HttpKernel
     
     public function __construct(Pipeline $pipeline, ResponseEmitter $emitter = null)
     {
-        
         $this->pipeline = $pipeline;
         $this->emitter = $emitter ?? new ResponseEmitter();
-        
     }
     
     public function alwaysWithGlobalMiddleware(array $global_middleware = [])
@@ -80,15 +81,17 @@ class HttpKernel
         
         $response = $this->handle($request_event);
         
-        if ($response instanceof DelegatedResponse) {
+        if ($response instanceof NullResponse) {
             
-            $this->emitter->emitHeaders($response);
             return $response;
             
         }
         
-        if ($response instanceof NullResponse) {
+        $response = (new ResponsePreparation())->prepare($response, $request_event->request);
+        
+        if ($response instanceof DelegatedResponse) {
             
+            $this->emitter->emitHeaders($response);
             return $response;
             
         }
