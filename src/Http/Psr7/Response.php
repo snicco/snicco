@@ -17,6 +17,7 @@ class Response implements ResponseInterface, ResponseableInterface
     use ImplementsPsr7Response;
     
     protected Cookies                $cookies;
+    
     protected StreamFactoryInterface $response_factory;
     
     public function __construct(ResponseInterface $psr7_response)
@@ -74,12 +75,6 @@ class Response implements ResponseInterface, ResponseableInterface
         return $this;
     }
     
-    public function withStreamFactory(StreamFactoryInterface $response_factory) :self
-    {
-        $this->response_factory = $response_factory;
-        return $this;
-    }
-    
     public function cookies() :Cookies
     {
         return $this->cookies;
@@ -87,18 +82,14 @@ class Response implements ResponseInterface, ResponseableInterface
     
     public function html(StreamInterface $html) :Response
     {
-        
         return $this->withHeader('Content-Type', 'text/html')
                     ->withBody($html);
-        
     }
     
     public function json(StreamInterface $json) :Response
     {
-        
         return $this->withHeader('Content-Type', 'application/json')
                     ->withBody($json);
-        
     }
     
     public function isRedirect(string $location = null) :bool
@@ -145,16 +136,6 @@ class Response implements ResponseInterface, ResponseableInterface
     public function withContentType(string $content_type) :self
     {
         return $this->withHeader('content-type', $content_type);
-    }
-    
-    public function withEmptyBody() :self
-    {
-        return $this->withoutBody();
-    }
-    
-    public function withoutBody() :self
-    {
-        return $this->withBody($this->response_factory->createStream(''));
     }
     
     protected function new(ResponseInterface $new_psr_response) :self
