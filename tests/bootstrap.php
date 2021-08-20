@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use Tests\stubs\HeaderStack;
 use Snicco\Http\ResponseEmitter;
+use Snicco\Http\ResponsePreparation;
 use AdrianSuter\Autoload\Override\Override;
 
 error_reporting(E_ALL);
@@ -124,6 +125,25 @@ Override::apply($classLoader, [
         },
     
     ],
+    
+    ResponsePreparation::class => [
+        
+        'headers_list' => function () {
+            
+            $headers = [];
+            
+            foreach (HeaderStack::stack() as $header) {
+                
+                $headers[] = $header['header'] ?? null;
+                
+            }
+            
+            return array_filter($headers);
+            
+        },
+    
+    ],
+
 ]);
 
 

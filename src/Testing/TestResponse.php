@@ -917,8 +917,14 @@ class TestResponse
         return $this;
     }
     
-    public function assertContentType(string $expected)
+    public function assertContentType(string $expected, string $charset = 'UTF-8')
     {
+        
+        if (Str::startsWith($expected, 'text')) {
+            
+            $expected = trim($expected, ';').'; charset='.$charset;
+            
+        }
         
         PHPUnit::assertSame(
             $expected,
