@@ -17,10 +17,10 @@ trait LoadsServiceProviders
         
         $providers = collect(self::CORE_SERVICE_PROVIDERS)->merge($user_providers);
         
-        $providers->each(fn($provider) => $this->isValid($provider))
-                  ->map(fn($provider) => $this->instantiate($provider))
-                  ->each(fn($provider) => $this->register($provider))
-                  ->each(fn($provider) => $this->bootstrap($provider));
+        $providers->each(fn(string $provider) => $this->isValid($provider))
+                  ->map(fn(string $provider) => $this->instantiate($provider))
+                  ->each(fn(ServiceProvider $provider) => $provider->register())
+                  ->each(fn(ServiceProvider $provider) => $provider->bootstrap());
         
     }
     
@@ -41,27 +41,11 @@ trait LoadsServiceProviders
     
     private function instantiate(string $provider) :ServiceProvider
     {
-        
         /** @var ServiceProvider $provider */
         $provider = new $provider($this->container(), $this->config);
         $provider->setApp($this);
         
         return $provider;
-        
-    }
-    
-    private function register(ServiceProvider $provider)
-    {
-        
-        $provider->register();
-        
-    }
-    
-    private function bootstrap(ServiceProvider $provider)
-    {
-        
-        $provider->bootstrap();
-        
     }
     
 }

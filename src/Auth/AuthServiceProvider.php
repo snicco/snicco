@@ -78,7 +78,6 @@ class AuthServiceProvider extends ServiceProvider
         $this->bindTwoFactorProvider();
         $this->bindTwoFactorChallengeResponse();
         $this->bindRegistrationViewResponse();
-        
         $this->bindFail2Ban();
         
     }

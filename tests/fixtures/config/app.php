@@ -6,6 +6,8 @@ return [
     
     'key' => TEST_APP_KEY,
     
+    'env' => 'testing',
+    
     'url' => SITE_URL,
     
     'providers' => [

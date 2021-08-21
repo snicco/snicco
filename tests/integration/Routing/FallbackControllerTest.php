@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\integration\Routing;
 
-use Tests\TestCase;
 use Snicco\Routing\Router;
+use Tests\FrameworkTestCase;
 use Tests\fixtures\Middleware\WebMiddleware;
 use Tests\fixtures\Middleware\GlobalMiddleware;
 
-class FallbackControllerTest extends TestCase
+class FallbackControllerTest extends FrameworkTestCase
 {
     
     private Router $router;

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\integration\Blade;
 
-use Tests\TestCase;
+use Tests\FrameworkTestCase;
 use Snicco\Blade\BladeServiceProvider;
 use Snicco\Blade\BladeDirectiveServiceProvider;
 
-class BladeTestCase extends TestCase
+class BladeTestCase extends FrameworkTestCase
 {
     
     protected static $ignore_files = [];

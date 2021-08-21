@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\integration\ServiceProviders;
 
-use Tests\TestCase;
 use Tests\stubs\TestApp;
 use Snicco\Routing\Router;
+use Tests\FrameworkTestCase;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Contracts\RouteMatcher;
 use Snicco\Routing\RouteRegistrar;
@@ -21,16 +21,14 @@ use Snicco\Routing\FastRoute\FastRouteMatcher;
 use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
 use Snicco\Routing\FastRoute\CachedFastRouteMatcher;
 
-class RoutingServiceProviderTest extends TestCase
+class RoutingServiceProviderTest extends FrameworkTestCase
 {
-    
-    protected bool $defer_boot = true;
     
     /** @test */
     public function all_conditions_are_loaded()
     {
         
-        $this->boot();
+        $this->bootApp();
         
         $conditions = TestApp::config('routing.conditions');
         
@@ -57,8 +55,7 @@ class RoutingServiceProviderTest extends TestCase
     {
         
         $this->withAddedConfig('routing.must_match_web_routes', true);
-        
-        $this->boot();
+        $this->bootApp();
         
         $this->assertTrue(TestApp::config('routing.must_match_web_routes'));
         
@@ -68,7 +65,7 @@ class RoutingServiceProviderTest extends TestCase
     public function api_endpoints_are_bound_in_the_config()
     {
         
-        $this->boot();
+        $this->bootApp();
         $endpoints = TestApp::config('routing.api.endpoints');
         $this->assertSame(['test' => 'api-prefix/base'], $endpoints);
         
@@ -81,6 +78,7 @@ class RoutingServiceProviderTest extends TestCase
         
         $middleware = TestApp::config('middleware.groups');
         
+        // middleware groups are created but are emtpy.
         $this->assertSame([], $middleware['api.test']);
         
     }
@@ -88,32 +86,26 @@ class RoutingServiceProviderTest extends TestCase
     /** @test */
     public function the_caching_setting_defaults_to_only_in_production()
     {
-        
-        $this->boot();
+        $this->bootApp();
         $this->assertFalse(TestApp::config('routing.cache'));
-        
     }
     
     /** @test */
     public function without_caching_a_fast_route_matcher_is_returned()
     {
-        
-        $this->boot();
+        $this->bootApp();
         $this->assertInstanceOf(FastRouteMatcher::class, TestApp::resolve(RouteMatcher::class));
-        
     }
     
     /** @test */
     public function the_default_cache_dir_is_bound()
     {
-        
-        $this->boot();
+        $this->bootApp();
         
         $this->assertSame(
             FIXTURES_DIR.DS.'storage'.DS.'framework'.DS.'routes',
             TestApp::config('routing.cache_dir')
         );
-        
     }
     
     /** @test */
@@ -122,7 +114,7 @@ class RoutingServiceProviderTest extends TestCase
         
         $this->withAddedConfig('routing.cache', true);
         $this->withAddedConfig('routing.cache_dir', TESTS_DIR.DS.'_data'.DS);
-        $this->boot();
+        $this->bootApp();
         
         $matcher = TestApp::resolve(RouteMatcher::class);
         
@@ -133,18 +125,15 @@ class RoutingServiceProviderTest extends TestCase
     /** @test */
     public function the_router_is_loaded_correctly()
     {
-        
-        $this->boot();
-        
+        $this->bootApp();
         $this->assertInstanceOf(Router::class, TestApp::resolve(Router::class));
-        
     }
     
     /** @test */
     public function by_default_a_normal_uncached_route_collection_is_used()
     {
         
-        $this->boot();
+        $this->bootApp();
         
         $this->assertInstanceOf(
             RouteCollection::class,
@@ -159,7 +148,7 @@ class RoutingServiceProviderTest extends TestCase
         
         $this->withAddedConfig('routing.cache', true);
         $this->withAddedConfig('routing.cache_dir', TESTS_DIR.DS.'_data'.DS);
-        $this->boot();
+        $this->bootApp();
         
         $routes = TestApp::resolve(AbstractRouteCollection::class);
         
@@ -173,7 +162,7 @@ class RoutingServiceProviderTest extends TestCase
         
         $this->withAddedConfig('routing.cache', true);
         $this->withAddedConfig('routing.cache_dir', TESTS_DIR.DS.'_data'.DS);
-        $this->boot();
+        $this->bootApp();
         
         $registrar = TestApp::resolve(RouteRegistrarInterface::class);
         
@@ -185,7 +174,7 @@ class RoutingServiceProviderTest extends TestCase
     public function the_condition_factory_can_be_loaded()
     {
         
-        $this->boot();
+        $this->bootApp();
         
         $this->assertInstanceOf(ConditionFactory::class, TestApp::resolve(ConditionFactory::class));
         
@@ -195,7 +184,7 @@ class RoutingServiceProviderTest extends TestCase
     public function the_default_route_registrar_is_used_by_default()
     {
         
-        $this->boot();
+        $this->bootApp();
         
         $registrar = TestApp::resolve(RouteRegistrarInterface::class);
         
@@ -206,7 +195,7 @@ class RoutingServiceProviderTest extends TestCase
     public function the_url_generator_can_be_resolved()
     {
         
-        $this->boot();
+        $this->bootApp();
         
         $url_g = TestApp::resolve(UrlGenerator::class);
         
@@ -218,7 +207,7 @@ class RoutingServiceProviderTest extends TestCase
     public function the_route_url_generator_can_be_resolved()
     {
         
-        $this->boot();
+        $this->bootApp();
         
         $route_g = TestApp::resolve(RouteUrlGenerator::class);
         
@@ -230,7 +219,7 @@ class RoutingServiceProviderTest extends TestCase
     public function the_internal_routes_are_included()
     {
         
-        $this->boot();
+        $this->bootApp();
         
         $routes = TestApp::config('routing.definitions');
         

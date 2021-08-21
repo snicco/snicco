@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\integration\ServiceProviders;
 
-use Tests\TestCase;
 use Tests\stubs\TestApp;
+use Tests\FrameworkTestCase;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Contracts\ErrorHandlerInterface;
 use Snicco\ExceptionHandling\NullErrorHandler;
 use Snicco\ExceptionHandling\ProductionErrorHandler;
 
-class ExceptionServiceProviderTest extends TestCase
+class ExceptionServiceProviderTest extends FrameworkTestCase
 {
     
     protected bool $defer_boot = true;

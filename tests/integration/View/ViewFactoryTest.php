@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\integration\View;
 
-use Tests\TestCase;
 use Tests\stubs\TestApp;
 use Snicco\View\PhpView;
+use Tests\FrameworkTestCase;
 use Snicco\View\ViewFactory;
 use Snicco\ExceptionHandling\Exceptions\ViewException;
 use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
 
-class ViewFactoryTest extends TestCase
+class ViewFactoryTest extends FrameworkTestCase
 {
     
     private ViewFactory $view_service;

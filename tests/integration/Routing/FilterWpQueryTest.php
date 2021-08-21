@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\integration\Routing;
 
 use WP;
-use Tests\TestCase;
+use Tests\FrameworkTestCase;
 
-class FilterWpQueryTest extends TestCase
+class FilterWpQueryTest extends FrameworkTestCase
 {
     
     protected bool $defer_boot = true;

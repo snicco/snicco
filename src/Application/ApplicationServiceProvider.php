@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Application;
 
 use Snicco\Support\WP;
-use Snicco\Http\Cookies;
 use Snicco\Routing\Router;
 use Snicco\View\MethodField;
 use Snicco\View\GlobalContext;
@@ -31,29 +30,27 @@ class ApplicationServiceProvider extends ServiceProvider
     
     public function bootstrap() :void
     {
-        if ( ! $this->validAppKey() && ! $this->app->isRunningUnitTest()
-             && ! $this->config->get(
-                'app.debug'
-            )) {
+        if ( ! $this->validAppKey()) {
             
-            throw new ConfigurationException('Your app_key is either missing or too insecure.');
+            $info = Application::class.'::generateKey';
+            throw new ConfigurationException(
+                "Your app.key config value is either missing or too insecure. Please generate a new one using $info()"
+            );
             
         }
     }
     
     private function bindConfig()
     {
-        
         $this->config->extend('app.package_root', dirname(__FILE__, 3));
         $this->config->extend(
             'app.storage_dir',
             $this->app->basePath().DIRECTORY_SEPARATOR.'storage'
         );
-        $this->config->extend('app.url', WP::siteUrl());
+        $this->config->extendIfEmpty('app.url', fn() => WP::siteUrl());
         $this->config->extend('app.dist', DIRECTORY_SEPARATOR.'dist');
         $this->config->extend('app.exception_handling', true);
         $this->config->extend('app.debug', true);
-        
     }
     
     private function bindShutDownHandler()
@@ -84,7 +81,6 @@ class ApplicationServiceProvider extends ServiceProvider
     
     private function responseAliases(Application $app)
     {
-        $app->alias('cookies', Cookies::class);
         $app->alias('response', ResponseFactory::class);
         $app->alias('redirect', function (?string $path = null, int $status = 302) use ($app) {
             
@@ -92,9 +88,7 @@ class ApplicationServiceProvider extends ServiceProvider
             $redirector = $app->resolve(AbstractRedirector::class);
             
             if ($path) {
-                
                 return $redirector->to($path, $status);
-                
             }
             
             return $redirector;
@@ -123,7 +117,14 @@ class ApplicationServiceProvider extends ServiceProvider
             /** @var GlobalContext $globals */
             $globals = $app->resolve(GlobalContext::class);
             
+            $args = func_get_args();
+            if (empty($args) || (is_null($args[0] && is_null($args[1])))) {
+                return $globals;
+            }
+            
             $globals->add(...array_values(func_get_args()));
+            
+            return $globals;
             
         });
         $app->alias('addComposer', function () use ($app) {

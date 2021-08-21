@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\integration\ServiceProviders;
 
-use Tests\TestCase;
 use Tests\stubs\TestApp;
+use Tests\FrameworkTestCase;
 use Snicco\View\ViewComposer;
 use Snicco\Routing\ControllerAction;
 use Snicco\Factories\ConditionFactory;
 use Snicco\Factories\RouteActionFactory;
 use Snicco\Factories\ViewComposerFactory;
 
-class FactoryServiceProviderTest extends TestCase
+class FactoryServiceProviderTest extends FrameworkTestCase
 {
     
     /** @test */
@@ -62,6 +62,14 @@ class FactoryServiceProviderTest extends TestCase
         
         $this->assertInstanceOf(ViewComposer::class, $factory->createUsing('FooComposer@compose'));
         
+    }
+    
+    protected function setUp() :void
+    {
+        $this->afterApplicationCreated(function () {
+            $this->app->boot();
+        });
+        parent::setUp();
     }
     
 }

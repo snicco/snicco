@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\integration\Events;
 
-use Tests\TestCase;
 use Snicco\Events\Event;
+use Tests\FrameworkTestCase;
 
-class IncomingWebRequest404CompatTest extends TestCase
+class IncomingWebRequest404CompatTest extends FrameworkTestCase
 {
     
     protected bool $defer_boot = true;

@@ -89,11 +89,6 @@ abstract class TestCase extends WPTestCase
     private array $before_application_destroy_callbacks = [];
     
     /**
-     * Return an instance of your Application. DON'T BOOT THE APPLICATION.
-     */
-    abstract public function createApplication() :Application;
-    
-    /**
      * @return ServiceProvider[]
      */
     public function packageProviders() :array
@@ -102,11 +97,14 @@ abstract class TestCase extends WPTestCase
         return [];
     }
     
+    /**
+     * Return an instance of your Application. DON'T BOOT THE APPLICATION.
+     */
+    abstract protected function createApplication() :Application;
+    
     protected function afterApplicationCreated(callable $callback)
     {
-        
         $this->after_application_created_callbacks[] = $callback;
-        
         if ($this->set_up_has_run) {
             $callback();
         }
@@ -132,12 +130,8 @@ abstract class TestCase extends WPTestCase
         $this->backToPresent();
         
         if ( ! isset($this->app)) {
-            
             $this->refreshApplication();
-            
         }
-        
-        $this->app->boot(false);
         
         $this->config = $this->app->config();
         
@@ -149,9 +143,19 @@ abstract class TestCase extends WPTestCase
         $this->request_factory = $this->app->resolve(ServerRequestFactoryInterface::class);
         $this->replaceBindings();
         
-        if ( ! $this->defer_boot) {
-            $this->boot();
+        if ($this->set_up_has_run) {
+            $this->fail('TestCase booted twice');
         }
+        
+        $this->bindRequest();
+        $this->setUpTraits();
+        $this->setProperties();
+        
+        foreach ($this->after_application_created_callbacks as $callback) {
+            $callback();
+        }
+        
+        $this->set_up_has_run = true;
         
     }
     
@@ -162,23 +166,6 @@ abstract class TestCase extends WPTestCase
     
     protected function boot()
     {
-        
-        if ($this->set_up_has_run) {
-            $this->fail('TestCase booted twice');
-        }
-        
-        $this->app->runningUnitTest();
-        $this->bindRequest();
-        $this->app->loadServiceProviders();
-        $this->setUpTraits();
-        $this->setProperties();
-        
-        foreach ($this->after_application_created_callbacks as $callback) {
-            $callback();
-        }
-        
-        $this->set_up_has_run = true;
-        
     }
     
     protected function tearDown() :void
@@ -432,10 +419,10 @@ abstract class TestCase extends WPTestCase
     protected function withRequest(Request $request) :TestCase
     {
         $this->request = $request;
-        
         return $this;
     }
     
+    // bind a base request for the test so that we don't get possible errors inside CaptureRequest::bootstrap()
     private function bindRequest()
     {
         

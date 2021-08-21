@@ -11,9 +11,13 @@ class SettingAuthCookie extends Event
 {
     
     public WP_User $user;
+    
     public int     $user_id;
+    
     public int     $expiration;
+    
     public string  $scheme;
+    
     private string $cookie;
     
     public function __construct($cookie, $user_id, $expiration, $scheme)
@@ -27,9 +31,7 @@ class SettingAuthCookie extends Event
     
     public function default() :string
     {
-        
         return $this->cookie;
-        
     }
     
 }

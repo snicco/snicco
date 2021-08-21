@@ -14,12 +14,12 @@ use Snicco\Contracts\ViewInterface;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Snicco\Testing\TestCase as BaseTestCase;
 
-class TestCase extends BaseTestCase
+class FrameworkTestCase extends BaseTestCase
 {
     
     protected array $mail_data;
     
-    public function createApplication() :Application
+    protected function createApplication() :Application
     {
         
         $app = TestApp::make(FIXTURES_DIR);
@@ -34,11 +34,15 @@ class TestCase extends BaseTestCase
         
     }
     
-    public function catchWpMail($null, array $wp_mail_input) :bool
+    protected function bootApp() :self
     {
-        
+        $this->app->boot();
+        return $this;
+    }
+    
+    protected function catchWpMail($null, array $wp_mail_input) :bool
+    {
         $this->mail_data[] = $wp_mail_input;
-        
         return true;
         
     }
@@ -73,7 +77,7 @@ class TestCase extends BaseTestCase
         
     }
     
-    protected function withAddedProvider($provider) :TestCase
+    protected function withAddedProvider($provider) :FrameworkTestCase
     {
         $provider = Arr::wrap($provider);
         
@@ -87,7 +91,7 @@ class TestCase extends BaseTestCase
         
     }
     
-    protected function withoutHooks() :TestCase
+    protected function withoutHooks() :FrameworkTestCase
     {
         $GLOBALS['wp_filter'] = [];
         $GLOBALS['wp_actions'] = [];
@@ -99,9 +103,7 @@ class TestCase extends BaseTestCase
     
     protected function assertNoResponse()
     {
-        
         $this->assertNull($this->app->resolve(ResponseEmitter::class)->response);
-        
     }
     
     protected function assertViewContent(string $expected, $actual)
@@ -113,6 +115,13 @@ class TestCase extends BaseTestCase
         
         Assert::assertSame($expected, trim($actual), 'View not rendered correctly.');
         
+    }
+    
+    protected function bootAfterCreation()
+    {
+        $this->afterApplicationCreated(function () {
+            $this->bootApp();
+        });
     }
     
 }

@@ -8,6 +8,7 @@ use Snicco\Support\WP;
 use Snicco\Contracts\Mailer;
 use Snicco\Listeners\SendMail;
 use Snicco\Events\PendingMail;
+use Snicco\Application\Config;
 use Snicco\Contracts\ServiceProvider;
 use BetterWpHooks\Contracts\Dispatcher;
 
@@ -55,10 +56,11 @@ class MailServiceProvider extends ServiceProvider
         
         ]);
         
-        $name = WP::siteName();
-        $email = WP::adminEmail();
-        $this->config->extend('mail.from', ['name' => $name, 'email' => $email]);
-        $this->config->extend('mail.reply_to', ['name' => $name, 'email' => $email]);
+        $this->config->extendIfEmpty(
+            'mail.from',
+            fn() => ['name' => WP::siteName(), 'email' => WP::adminEmail()]
+        );
+        $this->config->extend('mail.reply_to', fn(Config $config) => $config['mail.from']);
         
     }
     

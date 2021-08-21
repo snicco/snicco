@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\integration\Http;
 
-use Tests\TestCase;
+use Tests\FrameworkTestCase;
 use Tests\fixtures\Middleware\WebMiddleware;
 use Tests\fixtures\Middleware\GlobalMiddleware;
 
-class HttpKernelMiddlewareTest extends TestCase
+class HttpKernelMiddlewareTest extends FrameworkTestCase
 {
     
     protected bool $defer_boot = true;

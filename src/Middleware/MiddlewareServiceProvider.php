@@ -7,7 +7,6 @@ namespace Snicco\Middleware;
 use Snicco\Routing\Pipeline;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Middleware\Core\RouteRunner;
-use Snicco\Contracts\ErrorHandlerInterface;
 use Snicco\Middleware\Core\OpenRedirectProtection;
 use Snicco\Middleware\Core\EvaluateResponseMiddleware;
 
@@ -24,8 +23,6 @@ class MiddlewareServiceProvider extends ServiceProvider
         $this->bindEvaluateResponseMiddleware();
         
         $this->bindRouteRunnerMiddleware();
-        
-        $this->bindMiddlewarePipeline();
         
         $this->bindTrailingSlash();
         
@@ -114,19 +111,6 @@ class MiddlewareServiceProvider extends ServiceProvider
                 $this->container,
                 $this->container->make(Pipeline::class),
                 $this->container->make(MiddlewareStack::class)
-            );
-            
-        });
-    }
-    
-    private function bindMiddlewarePipeline()
-    {
-        // This can not be a singleton!
-        $this->container->bind(Pipeline::class, function () {
-            
-            return new Pipeline(
-                $this->container,
-                $this->container->make(ErrorHandlerInterface::class)
             );
             
         });

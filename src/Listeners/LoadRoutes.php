@@ -18,11 +18,11 @@ class LoadRoutes
     {
         
         $config = $event->config;
-        $success = $registrar->loadApiRoutes($config);
+        $registrar->loadApiRoutes($config);
         $registrar->loadStandardRoutes($config);
         $registrar->loadIntoRouter();
         
-        if ($success && $this->isApiEndpoint($event->request, $event->config)) {
+        if ($this->isApiEndpoint($event->request, $event->config)) {
             
             // This will run as the first hook on init.
             IncomingApiRequest::dispatch([$event->request]);

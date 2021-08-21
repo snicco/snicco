@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\integration\Session;
 
-use Tests\TestCase;
 use Slim\Csrf\Guard;
 use Tests\stubs\TestApp;
 use Snicco\Http\Redirector;
 use Snicco\Session\Session;
+use Tests\FrameworkTestCase;
 use Snicco\Session\CsrfField;
 use Snicco\View\GlobalContext;
 use Snicco\Http\ResponseFactory;
@@ -24,7 +24,7 @@ use Snicco\Session\Middleware\ShareSessionWithView;
 use Snicco\Session\Contracts\SessionManagerInterface;
 use Snicco\Session\Middleware\StartSessionMiddleware;
 
-class SessionServiceProviderTest extends TestCase
+class SessionServiceProviderTest extends FrameworkTestCase
 {
     
     protected bool $defer_boot = true;
