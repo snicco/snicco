@@ -8,8 +8,6 @@ use Tests\TestCase;
 use Tests\stubs\TestApp;
 use Snicco\Http\HttpKernel;
 use Snicco\Http\Redirector;
-use Tests\stubs\TestRequest;
-use Snicco\Http\Psr7\Request;
 use Snicco\Http\ResponseFactory;
 use Snicco\Contracts\AbstractRedirector;
 
@@ -47,62 +45,62 @@ class HttpServiceProviderTest extends TestCase
         
     }
     
-    /** @test */
-    public function the_ajax_request_endpoint_is_detected_correctly()
-    {
-        
-        $this->withRequest($this->adminAjaxRequest('GET', 'foo'));
-        $this->boot();
-        
-        $this->assertSame('wp_ajax', TestApp::config('_request_endpoint'));
-        
-    }
+    ///** @test */
+    //public function the_ajax_request_endpoint_is_detected_correctly()
+    //{
+    //
+    //    $this->withRequest($this->adminAjaxRequest('GET', 'foo'));
+    //    $this->boot();
+    //
+    //    $this->assertSame('wp_ajax', TestApp::config('_request_endpoint'));
+    //
+    //}
     
-    /** @test */
-    public function the_admin_request_endpoint_is_detected_correctly()
-    {
-        
-        $this->withRequest($this->adminRequest('GET', 'foo'));
-        $this->boot();
-        
-        $this->assertSame('wp_admin', TestApp::config('_request_endpoint'));
-        
-    }
+    ///** @test */
+    //public function the_admin_request_endpoint_is_detected_correctly()
+    //{
+    //
+    //    $this->withRequest($this->adminRequest('GET', 'foo'));
+    //    $this->boot();
+    //
+    //    $this->assertSame('wp_admin', TestApp::config('_request_endpoint'));
+    //
+    //}
     
-    /** @test */
-    public function an_api_request_endpoint_is_detected_correctly()
-    {
-        
-        $this->withRequest(TestRequest::from('GET', '/api-prefix/base/foo'));
-        $this->boot();
-        
-        $this->assertSame('api', TestApp::config('_request_endpoint'));
-        
-    }
+    ///** @test */
+    //public function an_api_request_endpoint_is_detected_correctly()
+    //{
+    //
+    //    $this->withRequest(TestRequest::from('GET', '/api-prefix/base/foo'));
+    //    $this->boot();
+    //
+    //    $this->assertSame('api', TestApp::config('_request_endpoint'));
+    //
+    //}
     
-    /** @test */
-    public function the_default_request_type_is_frontend()
-    {
-        
-        $this->withRequest(TestRequest::from('GET', 'foo'));
-        $this->boot();
-        
-        $this->assertSame('frontend', TestApp::config('_request_endpoint'));
-        
-    }
+    ///** @test */
+    //public function the_default_request_type_is_frontend()
+    //{
+    //
+    //    $this->withRequest(TestRequest::from('GET', 'foo'));
+    //    $this->boot();
+    //
+    //    $this->assertSame('frontend', TestApp::config('_request_endpoint'));
+    //
+    //}
     
-    /** @test */
-    public function the_api_endpoints_are_shared_with_the_request()
-    {
-        
-        $this->boot();
-        
-        /** @var Request $request */
-        $request = $this->app->resolve(Request::class);
-        
-        $this->assertNotEmpty($request->getAttribute('_api.endpoints'));
-        
-    }
+    ///** @test */
+    //public function the_api_endpoints_are_shared_with_the_request()
+    //{
+    //
+    //    $this->boot();
+    //
+    //    /** @var Request $request */
+    //    $request = $this->app->resolve(Request::class);
+    //
+    //    $this->assertNotEmpty($request->getAttribute('_api.endpoints'));
+    //
+    //}
     
 }
 

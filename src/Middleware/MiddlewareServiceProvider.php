@@ -35,9 +35,13 @@ class MiddlewareServiceProvider extends ServiceProvider
         
     }
     
+    function bootstrap() :void
+    {
+        //
+    }
+    
     private function bindConfig()
     {
-        
         $this->config->extend('middleware.aliases', [
             
             'auth' => Authenticate::class,
@@ -64,7 +68,6 @@ class MiddlewareServiceProvider extends ServiceProvider
             [Secure::class, Www::class, TrailingSlash::class,]
         );
         $this->config->extend('middleware.always_run_global', false);
-        
     }
     
     private function bindMiddlewareStack()
@@ -96,11 +99,9 @@ class MiddlewareServiceProvider extends ServiceProvider
     {
         $this->container->singleton(EvaluateResponseMiddleware::class, function () {
             
-            $is_web = $this->requestEndpoint() === 'frontend';
-            
-            $must_match = $is_web && $this->config->get('routing.must_match_web_routes', false);
-            
-            return new EvaluateResponseMiddleware($must_match);
+            return new EvaluateResponseMiddleware(
+                $this->config->get('routing.must_match_web_routes', false)
+            );
             
         });
     }
@@ -133,20 +134,16 @@ class MiddlewareServiceProvider extends ServiceProvider
     
     private function bindTrailingSlash()
     {
-        
         $this->container->singleton(TrailingSlash::class, fn() => new TrailingSlash(
             $this->withSlashes()
         ));
-        
     }
     
     private function bindWww()
     {
-        
         $this->container->singleton(Www::class, fn() => new Www(
             $this->siteUrl()
         ));
-        
     }
     
     private function bindOpenRedirectProtection()
@@ -157,11 +154,6 @@ class MiddlewareServiceProvider extends ServiceProvider
                 $this->siteUrl()
             )
         );
-    }
-    
-    function bootstrap() :void
-    {
-        //
     }
     
 }

@@ -51,6 +51,15 @@ class SessionServiceProvider extends ServiceProvider
         
     }
     
+    function bootstrap() :void
+    {
+        if ( ! $this->config->get('session.enabled')) {
+            return;
+        }
+        
+        $this->bindViewContext();
+    }
+    
     private function bindConfig()
     {
         
@@ -266,17 +275,6 @@ class SessionServiceProvider extends ServiceProvider
             );
             
         });
-        
-    }
-    
-    function bootstrap() :void
-    {
-        
-        if ( ! $this->config->get('session.enabled')) {
-            return;
-        }
-        
-        $this->bindViewContext();
         
     }
     

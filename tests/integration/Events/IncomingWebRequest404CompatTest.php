@@ -37,20 +37,6 @@ class IncomingWebRequest404CompatTest extends TestCase
         
     }
     
-    private function simulate404()
-    {
-        
-        add_filter('request', function () {
-            
-            return [
-                'post_type' => 'post',
-                'name' => 'bogus-post',
-            ];
-            
-        });
-        
-    }
-    
     /** @test */
     public function if_no_route_matched_the_wp_query_is_evaluated_for_a_404()
     {
@@ -75,6 +61,20 @@ class IncomingWebRequest404CompatTest extends TestCase
         
         remove_filter('template_redirect', 'redirect_canonical');
         remove_filter('template_redirect', 'remove_old_slug');
+        
+    }
+    
+    private function simulate404()
+    {
+        
+        add_filter('request', function () {
+            
+            return [
+                'post_type' => 'post',
+                'name' => 'bogus-post',
+            ];
+            
+        });
         
     }
     

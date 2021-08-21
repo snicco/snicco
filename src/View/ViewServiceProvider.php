@@ -39,9 +39,14 @@ class ViewServiceProvider extends ServiceProvider
         
     }
     
+    public function bootstrap() :void
+    {
+        $context = $this->container->make(GlobalContext::class);
+        $context->add('__view', fn() => $this->container->make(ViewFactory::class));
+    }
+    
     private function bindMethodField()
     {
-        
         $this->container->singleton(MethodField::class, fn() => new MethodField($this->appKey()));
     }
     
@@ -53,7 +58,6 @@ class ViewServiceProvider extends ServiceProvider
     
     private function bindViewServiceImplementation() :void
     {
-        
         $this->container->singleton(ViewFactory::class, function () {
             
             return new ViewFactory(
@@ -68,7 +72,6 @@ class ViewServiceProvider extends ServiceProvider
     
     private function bindViewFactoryInterface() :void
     {
-        
         $this->container->singleton(
             ViewFactoryInterface::class,
             fn() => $this->container->make(ViewFactory::class)
@@ -104,12 +107,6 @@ class ViewServiceProvider extends ServiceProvider
             );
             
         });
-    }
-    
-    public function bootstrap() :void
-    {
-        $context = $this->container->make(GlobalContext::class);
-        $context->add('__view', fn() => $this->container->make(ViewFactory::class));
     }
     
 }

@@ -21,15 +21,18 @@ class MailServiceProvider extends ServiceProvider
         $this->bindConfig();
     }
     
+    public function bootstrap() :void
+    {
+        //
+    }
+    
     private function bindMailer()
     {
-        
         $this->container->singleton(Mailer::class, fn() => new WordPressMailer());
     }
     
     private function bindMailBuilder()
     {
-        
         $this->container->singleton(MailBuilder::class, function () {
             
             return new MailBuilder(
@@ -38,7 +41,6 @@ class MailServiceProvider extends ServiceProvider
             );
             
         });
-        
     }
     
     private function bindConfig()
@@ -53,17 +55,11 @@ class MailServiceProvider extends ServiceProvider
         
         ]);
         
-        $this->config->extend('mail.from', ['name' => WP::siteName(), 'email' => WP::adminEmail()]);
-        $this->config->extend(
-            'mail.reply_to',
-            ['name' => WP::siteName(), 'email' => WP::adminEmail()]
-        );
+        $name = WP::siteName();
+        $email = WP::adminEmail();
+        $this->config->extend('mail.from', ['name' => $name, 'email' => $email]);
+        $this->config->extend('mail.reply_to', ['name' => $name, 'email' => $email]);
         
-    }
-    
-    public function bootstrap() :void
-    {
-        //
     }
     
 }
