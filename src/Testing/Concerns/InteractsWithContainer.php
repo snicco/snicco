@@ -33,9 +33,7 @@ trait InteractsWithContainer
      */
     protected function instance(string $abstract, $instance)
     {
-        
         $this->app->container()->instance($abstract, $instance);
-        
         return $instance;
     }
     
@@ -46,7 +44,6 @@ trait InteractsWithContainer
             return $this->app->resolve(TestResponseEmitter::class);
             
         });
-        
     }
     
 }

@@ -27,7 +27,9 @@ trait InteractsWithSession
         '_expires_at',
         '_last_activity',
     ];
+    
     private ?string $session_id           = null;
+    
     private bool    $data_saved_to_driver = false;
     
     protected function withCsrfToken() :array
@@ -48,7 +50,7 @@ trait InteractsWithSession
     /**
      * @param  array  $data  Keys are expected to be in dot notation
      */
-    protected function withDataInSession(array $data, string $id = null)
+    protected function withDataInSession(array $data, string $id = null) :self
     {
         
         foreach ($data as $key => $value) {
@@ -79,39 +81,31 @@ trait InteractsWithSession
     
     protected function testSessionId() :string
     {
-        
         return $this->session_id ?? str_repeat('a', 64);
     }
     
     protected function hash($id)
     {
-        
         return hash('sha256', $id);
-        
     }
     
     protected function sessionDriver() :SessionDriver
     {
-        
         return $this->app->resolve(SessionDriver::class);
     }
     
     protected function withSessionCookie(string $name = 'snicco_test_session') :self
     {
-        
         $this->default_cookies[$name] = $this->testSessionId();
         
         return $this;
-        
     }
     
     protected function withSessionId(string $id) :self
     {
-        
         $this->session_id = $id;
         
         return $this;
-        
     }
     
     protected function assertDriverHas($expected, string $key, $id = null)

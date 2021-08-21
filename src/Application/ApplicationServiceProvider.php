@@ -29,6 +29,18 @@ class ApplicationServiceProvider extends ServiceProvider
         $this->bindAliases();
     }
     
+    public function bootstrap() :void
+    {
+        if ( ! $this->validAppKey() && ! $this->app->isRunningUnitTest()
+             && ! $this->config->get(
+                'app.debug'
+            )) {
+            
+            throw new ConfigurationException('Your app_key is either missing or too insecure.');
+            
+        }
+    }
+    
     private function bindConfig()
     {
         
@@ -46,7 +58,6 @@ class ApplicationServiceProvider extends ServiceProvider
     
     private function bindShutDownHandler()
     {
-        
         $this->container->singleton(ShutdownHandler::class, function () {
             
             return new ShutdownHandler($this->app->isRunningUnitTest());
@@ -68,14 +79,11 @@ class ApplicationServiceProvider extends ServiceProvider
     
     private function applicationAliases(Application $app)
     {
-        
         $app->alias('app', Application::class);
-        
     }
     
     private function responseAliases(Application $app)
     {
-        
         $app->alias('cookies', Cookies::class);
         $app->alias('response', ResponseFactory::class);
         $app->alias('redirect', function (?string $path = null, int $status = 302) use ($app) {
@@ -92,12 +100,10 @@ class ApplicationServiceProvider extends ServiceProvider
             return $redirector;
             
         });
-        
     }
     
     private function routingAliases(Application $app)
     {
-        
         $app->alias('route', Router::class);
         $app->alias('url', UrlGenerator::class);
         $app->alias('routeUrl', UrlGenerator::class, 'toRoute');
@@ -108,12 +114,10 @@ class ApplicationServiceProvider extends ServiceProvider
         $app->alias('options', Router::class, 'options');
         $app->alias('delete', Router::class, 'delete');
         $app->alias('match', Router::class, 'match');
-        
     }
     
     private function viewAliases(Application $app)
     {
-        
         $app->alias('globals', function () use ($app) {
             
             /** @var GlobalContext $globals */
@@ -158,21 +162,6 @@ class ApplicationServiceProvider extends ServiceProvider
             
         });
         $app->alias('methodField', MethodField::class, 'html');
-        
-    }
-    
-    public function bootstrap() :void
-    {
-        
-        if ( ! $this->validAppKey() && ! $this->app->isRunningUnitTest()
-             && ! $this->config->get(
-                'app.debug'
-            )) {
-            
-            throw new ConfigurationException('Your app_key is either missing or too insecure.');
-            
-        }
-        
     }
     
 }
