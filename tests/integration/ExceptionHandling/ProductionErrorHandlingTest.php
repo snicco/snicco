@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Tests\integration\ExceptionHandling;
 
-use Tests\TestCase;
+use Tests\FrameworkTestCase;
 use Snicco\ExceptionHandling\ProductionErrorHandler;
 
 /** @see ProductionErrorHandler */
-class ProductionErrorHandlingTest extends TestCase
+class ProductionErrorHandlingTest extends FrameworkTestCase
 {
     
     /** @test */

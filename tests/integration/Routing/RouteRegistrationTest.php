@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\integration\Routing;
 
-use Tests\TestCase;
 use Snicco\Support\WP;
 use Snicco\Support\Arr;
 use Tests\stubs\TestApp;
+use Tests\FrameworkTestCase;
 use Tests\helpers\CreatesWpUrls;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Events\IncomingAjaxRequest;
 use Snicco\Events\IncomingAdminRequest;
 use Tests\helpers\CreateDefaultWpApiMocks;
 
-class RouteRegistrationTest extends TestCase
+class RouteRegistrationTest extends FrameworkTestCase
 {
     
     /** @test */
@@ -122,13 +122,6 @@ class RouteRegistrationTest extends TestCase
         
     }
     
-    protected function makeFallbackConditionPass()
-    {
-        
-        $GLOBALS['test']['pass_fallback_route_condition'] = true;
-        
-    }
-    
     /** @test */
     public function the_fallback_controller_does_not_match_admin_routes()
     {
@@ -225,6 +218,13 @@ class RouteRegistrationTest extends TestCase
         
         // without the filtering of file names the route in /OtherRoutes/web.php would match
         $this->sentResponse()->assertDelegatedToWordPress();
+        
+    }
+    
+    protected function makeFallbackConditionPass()
+    {
+        
+        $GLOBALS['test']['pass_fallback_route_condition'] = true;
         
     }
     

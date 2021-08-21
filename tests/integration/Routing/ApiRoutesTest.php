@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\integration\Routing;
 
-use Tests\TestCase;
 use Snicco\Events\Event;
 use Snicco\Http\Delegate;
+use Tests\FrameworkTestCase;
 use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
 use Snicco\Events\ResponseSent;
@@ -14,7 +14,7 @@ use Snicco\Contracts\Middleware;
 use Snicco\Http\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 
-class ApiRoutesTest extends TestCase
+class ApiRoutesTest extends FrameworkTestCase
 {
     
     /** @test */

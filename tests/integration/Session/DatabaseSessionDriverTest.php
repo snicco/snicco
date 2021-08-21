@@ -6,14 +6,14 @@ namespace Tests\integration\Session;
 
 use wpdb;
 use Mockery;
-use Tests\TestCase;
 use Snicco\Support\WP;
+use Tests\FrameworkTestCase;
 use Tests\stubs\TestRequest;
 use Tests\helpers\TravelsTime;
 use Snicco\Session\Drivers\DatabaseSessionDriver;
 
 /** @todo test for getting all session for a user */
-class DatabaseSessionDriverTest extends TestCase
+class DatabaseSessionDriverTest extends FrameworkTestCase
 {
     
     use TravelsTime;
@@ -27,12 +27,6 @@ class DatabaseSessionDriverTest extends TestCase
         $handler = $this->newDataBaseSessionHandler();
         
         $this->assertTrue($handler->open('', ''));
-        
-    }
-    
-    private function newDataBaseSessionHandler(int $lifetime = 10) :DatabaseSessionDriver
-    {
-        return new DatabaseSessionDriver($this->db, 'sessions', $lifetime);
         
     }
     
@@ -146,11 +140,6 @@ class DatabaseSessionDriverTest extends TestCase
         
     }
     
-    private function getUserId(string $id)
-    {
-        return (int) $this->db->get_var("SELECT user_id FROM wp_sessions WHERE id = '{$id}'");
-    }
-    
     /**
      * @test
      * NOTE: Requires a Psr15 Middleware that sets the ip_address attribute.
@@ -171,11 +160,6 @@ class DatabaseSessionDriverTest extends TestCase
         
     }
     
-    private function getIp(string $id)
-    {
-        return (string) $this->db->get_var("SELECT ip_address FROM wp_sessions WHERE id = '{$id}'");
-    }
-    
     /** @test */
     public function the_user_agent_is_included_in_the_session_record()
     {
@@ -190,11 +174,6 @@ class DatabaseSessionDriverTest extends TestCase
         
         $this->assertSame('calvin', $this->getUserAgent('foo'));
         
-    }
-    
-    private function getUserAgent(string $id)
-    {
-        return (string) $this->db->get_var("SELECT user_agent FROM wp_sessions WHERE id = '{$id}'");
     }
     
     /** @test */
@@ -251,6 +230,35 @@ class DatabaseSessionDriverTest extends TestCase
         
     }
     
+    protected function tearDown() :void
+    {
+        
+        $this->dropTables();
+        parent::tearDown();
+        
+    }
+    
+    private function newDataBaseSessionHandler(int $lifetime = 10) :DatabaseSessionDriver
+    {
+        return new DatabaseSessionDriver($this->db, 'sessions', $lifetime);
+        
+    }
+    
+    private function getUserId(string $id)
+    {
+        return (int) $this->db->get_var("SELECT user_id FROM wp_sessions WHERE id = '{$id}'");
+    }
+    
+    private function getIp(string $id)
+    {
+        return (string) $this->db->get_var("SELECT ip_address FROM wp_sessions WHERE id = '{$id}'");
+    }
+    
+    private function getUserAgent(string $id)
+    {
+        return (string) $this->db->get_var("SELECT user_agent FROM wp_sessions WHERE id = '{$id}'");
+    }
+    
     private function createTables()
     {
         
@@ -267,14 +275,6 @@ class DatabaseSessionDriverTest extends TestCase
   KEY `sessions_last_activity_index` (`last_activity`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8; "
         );
-        
-    }
-    
-    protected function tearDown() :void
-    {
-        
-        $this->dropTables();
-        parent::tearDown();
         
     }
     

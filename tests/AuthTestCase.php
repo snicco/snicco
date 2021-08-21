@@ -16,13 +16,17 @@ use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Validation\ValidationServiceProvider;
 use Snicco\Session\Contracts\SessionManagerInterface;
 
-class AuthTestCase extends TestCase
+class AuthTestCase extends FrameworkTestCase
 {
     
     protected AuthSessionManager $session_manager;
+    
     protected array              $codes;
+    
     protected Encryptor          $encryptor;
+    
     protected string             $valid_one_time_code   = '123456';
+    
     protected string             $invalid_one_time_code = '111111';
     
     public function packageProviders() :array

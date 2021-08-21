@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Tests\integration\Database;
 
 use mysqli;
-use Tests\TestCase;
 use Snicco\Database\FakeDB;
+use Tests\FrameworkTestCase;
 use Snicco\Database\WPConnection;
 use Snicco\Database\DatabaseServiceProvider;
 use Snicco\Database\Contracts\BetterWPDbInterface;
 use Snicco\Database\Testing\Assertables\AssertableWpDB;
 
-class DatabaseTestCase extends TestCase
+class DatabaseTestCase extends FrameworkTestCase
 {
     
     public function packageProviders() :array

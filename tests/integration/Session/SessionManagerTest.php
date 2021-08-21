@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\integration\Session;
 
-use Tests\TestCase;
 use Snicco\Http\Cookies;
 use Snicco\Events\Event;
+use Tests\FrameworkTestCase;
 use Tests\stubs\TestRequest;
 use Snicco\Http\ResponseEmitter;
 use Snicco\Session\SessionManager;
@@ -14,7 +14,7 @@ use Illuminate\Support\InteractsWithTime;
 use Snicco\Session\SessionServiceProvider;
 use Snicco\Session\Events\SessionRegenerated;
 
-class SessionManagerTest extends TestCase
+class SessionManagerTest extends FrameworkTestCase
 {
     
     use InteractsWithTime;
@@ -72,12 +72,6 @@ class SessionManagerTest extends TestCase
         $this->assertDriverHas('bar', 'foo', $new_id);
         $this->assertDriverEmpty($id_before_login);
         
-    }
-    
-    private function sentCookies() :Cookies
-    {
-        $emitter = $this->app->resolve(ResponseEmitter::class);
-        return $emitter->cookies;
     }
     
     /** @test */
@@ -215,6 +209,12 @@ class SessionManagerTest extends TestCase
         Event::assertDispatched(fn(SessionRegenerated $event) => $event->session === $this->session
         );
         
+    }
+    
+    private function sentCookies() :Cookies
+    {
+        $emitter = $this->app->resolve(ResponseEmitter::class);
+        return $emitter->cookies;
     }
     
 }

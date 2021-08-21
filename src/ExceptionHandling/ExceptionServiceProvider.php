@@ -22,11 +22,11 @@ class ExceptionServiceProvider extends ServiceProvider
     
     public function bootstrap() :void
     {
-        $error_handler = $this->container->make(ErrorHandlerInterface::class);
-        
-        $error_handler->register();
-        
-        $this->container->instance(ErrorHandlerInterface::class, $error_handler);
+        //$error_handler = $this->container->make(ErrorHandlerInterface::class);
+        //
+        //$error_handler->register();
+        //
+        //$this->container->instance(ErrorHandlerInterface::class, $error_handler);
     }
     
     private function bindConfig() :void

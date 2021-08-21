@@ -94,7 +94,6 @@ class SessionServiceProvider extends ServiceProvider
     
     private function bindSessionDriver()
     {
-        
         $this->container->singleton(SessionDriver::class, function () {
             
             $name = $this->config->get('session.driver', 'database');
@@ -115,12 +114,10 @@ class SessionServiceProvider extends ServiceProvider
             }
             
         });
-        
     }
     
     private function bindSessionManager()
     {
-        
         $this->container->singleton(SessionManager::class, function () {
             
             return new SessionManager(
@@ -135,12 +132,10 @@ class SessionServiceProvider extends ServiceProvider
             return $this->container->make(SessionManager::class);
             
         });
-        
     }
     
     private function bindSession()
     {
-        
         $this->container->singleton(Session::class, function () {
             
             if ($this->config->get('session.encrypt')) {
@@ -162,12 +157,10 @@ class SessionServiceProvider extends ServiceProvider
             return $store;
             
         });
-        
     }
     
     private function bindCsrfMiddleware()
     {
-        
         $this->container->singleton(CsrfMiddleware::class, function ($c, $args) {
             
             return new CsrfMiddleware(
@@ -190,7 +183,6 @@ class SessionServiceProvider extends ServiceProvider
     
     private function bindSlimGuard()
     {
-        
         $this->container->singleton(Guard::class, function () {
             
             $storage = $this->container->make(CsrfStore::class);
@@ -217,7 +209,6 @@ class SessionServiceProvider extends ServiceProvider
     
     private function bindEncryptor()
     {
-        
         $this->container->singleton(EncryptorInterface::class, function () {
             
             return new Encryptor($this->config->get('app.key'));
@@ -227,11 +218,8 @@ class SessionServiceProvider extends ServiceProvider
     
     private function bindEvents()
     {
-        
         if (in_array(AuthServiceProvider::class, $this->config->get('app.providers', []))) {
-            
             return;
-            
         }
         
         $this->config->extend('events.mapped', [

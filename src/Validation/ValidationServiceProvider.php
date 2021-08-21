@@ -22,6 +22,11 @@ class ValidationServiceProvider extends ServiceProvider
         $this->addRuleNamespace();
     }
     
+    function bootstrap() :void
+    {
+        $this->renderValidationExceptions();
+    }
+    
     private function bindConfig()
     {
         $this->config->extend('validation.messages', []);
@@ -50,13 +55,6 @@ class ValidationServiceProvider extends ServiceProvider
                 ->withRuleNamespace('Snicco\Validation\Rules')
                 ->withExceptionNamespace('Snicco\Validation\Exceptions')
         );
-    }
-    
-    function bootstrap() :void
-    {
-        
-        $this->renderValidationExceptions();
-        
     }
     
     private function renderValidationExceptions()

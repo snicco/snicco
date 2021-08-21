@@ -84,9 +84,7 @@ abstract class ServiceProvider
     
     protected function appKey()
     {
-        
         return $this->config->get('app.key', '');
-        
     }
     
     protected function extendRoutes($routes)
@@ -121,7 +119,7 @@ abstract class ServiceProvider
         
         if ($slashes === null) {
             
-            $slashes = WP::usesTrailingSlashes();
+            $this->config->set('routing.trailing_slash', $slashes = WP::usesTrailingSlashes());
             
         }
         

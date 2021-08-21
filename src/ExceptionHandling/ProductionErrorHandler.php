@@ -63,9 +63,16 @@ class ProductionErrorHandler implements ErrorHandlerInterface
         
     }
     
-    protected function registerCallbacks()
+    public function report(Throwable $e, Request $request)
     {
         //
+    }
+    
+    public function render(Throwable $e, Request $request)
+    {
+        
+        return $this->transformToResponse($e, $request);
+        
     }
     
     public function renderable(callable $render_using) :ProductionErrorHandler
@@ -119,6 +126,48 @@ class ProductionErrorHandler implements ErrorHandlerInterface
         
     }
     
+    public function unrecoverable(Throwable $exception)
+    {
+        $this->handleException($exception);
+    }
+    
+    protected function registerCallbacks()
+    {
+        //
+    }
+    
+    /**
+     * Override this method from a child class to create global context
+     * that should be added to every log entry.
+     */
+    protected function globalContext() :array
+    {
+        
+        try {
+            return array_filter([
+                'user_id' => WP::userId(),
+            ]);
+        } catch (Throwable $e) {
+            return [];
+        }
+        
+    }
+    
+    /**
+     * Override this method from a child class to create
+     * your own default response for fatal errors that can not be transformed by this error
+     * handler.
+     *
+     * @param  Throwable  $e
+     * @param  Request  $request
+     *
+     * @return HttpException
+     */
+    protected function toHttpException(Throwable $e, Request $request) :HttpException
+    {
+        return new HttpException(500, $e->getMessage(), $e);
+    }
+    
     private function logException(Throwable $exception, Request $request)
     {
         
@@ -163,23 +212,6 @@ class ProductionErrorHandler implements ErrorHandlerInterface
                 ['exception' => $exception]
             )
         );
-        
-    }
-    
-    /**
-     * Override this method from a child class to create global context
-     * that should be added to every log entry.
-     */
-    protected function globalContext() :array
-    {
-        
-        try {
-            return array_filter([
-                'user_id' => WP::userId(),
-            ]);
-        } catch (Throwable $e) {
-            return [];
-        }
         
     }
     
@@ -258,26 +290,6 @@ class ProductionErrorHandler implements ErrorHandlerInterface
         
         return $this->response_factory->error($http_exception, $request);
         
-    }
-    
-    /**
-     * Override this method from a child class to create
-     * your own default response for fatal errors that can not be transformed by this error
-     * handler.
-     *
-     * @param  Throwable  $e
-     * @param  Request  $request
-     *
-     * @return HttpException
-     */
-    protected function toHttpException(Throwable $e, Request $request) :HttpException
-    {
-        return new HttpException(500, $e->getMessage(), $e);
-    }
-    
-    public function unrecoverable(Throwable $exception)
-    {
-        $this->handleException($exception);
     }
     
 }

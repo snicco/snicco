@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\integration\ExceptionHandling;
 
-use Tests\TestCase;
+use Tests\FrameworkTestCase;
 use Tests\stubs\TestRequest;
 use Snicco\Session\SessionServiceProvider;
 use Snicco\Contracts\ErrorHandlerInterface;
@@ -12,7 +12,7 @@ use Snicco\Validation\ValidationServiceProvider;
 use Snicco\ExceptionHandling\ProductionErrorHandler;
 use Snicco\Validation\Exceptions\ValidationException;
 
-class ValidationExceptionTest extends TestCase
+class ValidationExceptionTest extends FrameworkTestCase
 {
     
     public function packageProviders() :array
@@ -69,12 +69,6 @@ class ValidationExceptionTest extends TestCase
         $response->assertSessionHasInput(['foo' => 'abcd']);
         $response->assertSessionHasInput(['bar' => 'ab cd']);
         
-    }
-    
-    private function errorHandler() :ProductionErrorHandler
-    {
-        
-        return $this->app->resolve(ErrorHandlerInterface::class);
     }
     
     /** @test */
@@ -194,6 +188,12 @@ class ValidationExceptionTest extends TestCase
             ],
         ]);
         
+    }
+    
+    private function errorHandler() :ProductionErrorHandler
+    {
+        
+        return $this->app->resolve(ErrorHandlerInterface::class);
     }
     
 }

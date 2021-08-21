@@ -35,8 +35,6 @@ class RoutingServiceProvider extends ServiceProvider
 {
     
     /**
-     * Alias=>Class dictionary of condition types
-     *
      * @var array<string, string>
      */
     public const CONDITION_TYPES = [
@@ -115,6 +113,7 @@ class RoutingServiceProvider extends ServiceProvider
     private function bindRouteMatcher() :void
     {
         $this->container->singleton(RouteMatcher::class, function () {
+            
             if ( ! $this->config->get('routing.cache', false)) {
                 return new FastRouteMatcher();
             }
@@ -131,6 +130,7 @@ class RoutingServiceProvider extends ServiceProvider
     private function bindRouteCollection() :void
     {
         $this->container->singleton(AbstractRouteCollection::class, function () {
+            
             if ( ! $this->config->get('routing.cache', false)) {
                 return new RouteCollection(
                     $this->container->make(RouteMatcher::class),
@@ -190,6 +190,7 @@ class RoutingServiceProvider extends ServiceProvider
     private function bindUrlGenerator() :void
     {
         $this->container->singleton(UrlGenerator::class, function () {
+            
             $generator = new UrlGenerator(
                 $this->container->make(RouteUrlGenerator::class),
                 $this->container->make(MagicLink::class),

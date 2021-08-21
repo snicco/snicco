@@ -4,21 +4,21 @@ declare(strict_types=1);
 
 namespace Tests\integration\ServiceProviders;
 
-use Tests\TestCase;
 use Tests\stubs\TestApp;
+use Tests\FrameworkTestCase;
 use Snicco\Contracts\Mailer;
 use Snicco\Mail\MailBuilder;
 use Snicco\Listeners\SendMail;
 use Snicco\Events\PendingMail;
 use Snicco\Mail\WordPressMailer;
 
-class MailServiceProviderTest extends TestCase
+class MailServiceProviderTest extends FrameworkTestCase
 {
     
     /** @test */
     public function the_mailer_can_be_resolved_correctly()
     {
-        
+        $this->bootApp();
         $this->assertInstanceOf(WordPressMailer::class, TestApp::resolve(Mailer::class));
         
     }
@@ -26,19 +26,25 @@ class MailServiceProviderTest extends TestCase
     /** @test */
     public function a_pending_mail_can_be_resolved_correctly()
     {
-        
+        $this->bootApp();
         $this->assertInstanceOf(MailBuilder::class, TestApp::mail());
-        
     }
     
     /** @test */
     public function the_mail_event_is_bound()
     {
-        
+        $this->bootApp();
         $listeners = TestApp::config('events.listeners');
         
         $this->assertSame([SendMail::class], $listeners[PendingMail::class]);
         
+    }
+    
+    /** @test */
+    public function the_mail_alias_is_bound()
+    {
+        
+        $this->bootApp();
         $this->assertInstanceOf(MailBuilder::class, TestApp::mail());
         
     }
@@ -46,6 +52,8 @@ class MailServiceProviderTest extends TestCase
     /** @test */
     public function the_from_email_setting_defaults_to_the_site_name_and_admin_email()
     {
+        
+        $this->bootApp();
         
         $from = TestApp::config('mail.from');
         

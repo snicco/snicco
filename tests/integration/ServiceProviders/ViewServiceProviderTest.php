@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\integration\ServiceProviders;
 
-use Tests\TestCase;
 use Tests\stubs\TestApp;
+use Tests\FrameworkTestCase;
 use Snicco\View\MethodField;
 use Snicco\View\ViewFactory;
 use Snicco\View\PhpViewEngine;
@@ -14,7 +14,7 @@ use Snicco\View\ViewComposerCollection;
 use Snicco\Contracts\ViewEngineInterface;
 use Snicco\Contracts\ViewFactoryInterface;
 
-class ViewServiceProviderTest extends TestCase
+class ViewServiceProviderTest extends FrameworkTestCase
 {
     
     /** @test */
@@ -74,9 +74,20 @@ class ViewServiceProviderTest extends TestCase
     /** @test */
     public function the_method_field_can_be_resolved()
     {
-        
         $this->assertInstanceOf(MethodField::class, TestApp::resolve(MethodField::class));
-        
+    }
+    
+    /** @test */
+    public function the_view_factory_is_added_to_the_global_context()
+    {
+        $context = TestApp::globals();
+        $this->assertInstanceOf(ViewFactory::class, $context->get()['__view']());
+    }
+    
+    protected function setUp() :void
+    {
+        $this->bootAfterCreation();
+        parent::setUp();
     }
     
 }

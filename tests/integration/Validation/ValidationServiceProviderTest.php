@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\integration\Validation;
 
-use Tests\TestCase;
 use Tests\stubs\TestApp;
+use Tests\FrameworkTestCase;
 use Snicco\Validation\Validator;
 use Snicco\Validation\ValidationServiceProvider;
 use Snicco\Validation\Middleware\ShareValidatorWithRequest;
 
-class ValidationServiceProviderTest extends TestCase
+class ValidationServiceProviderTest extends FrameworkTestCase
 {
     
     public function packageProviders() :array
