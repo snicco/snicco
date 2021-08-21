@@ -30,7 +30,6 @@ use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
 use Snicco\Routing\FastRoute\CachedFastRouteMatcher;
 use Snicco\Routing\Conditions\PostTemplateCondition;
 use Snicco\Routing\Conditions\RequestAttributeCondition;
-use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 class RoutingServiceProvider extends ServiceProvider
 {
@@ -75,6 +74,26 @@ class RoutingServiceProvider extends ServiceProvider
         $this->bindUrlGenerator();
         
         $this->bindRouteRegistrar();
+    }
+    
+    public function bootstrap() :void
+    {
+        $endpoints = $this->config->get('routing.api.endpoints');
+        
+        foreach ($endpoints as $id => $prefix) {
+            $name = 'api.'.$id;
+            $this->config->extend(
+                'routing.presets.'.$name,
+                [
+                    'prefix' => $prefix,
+                    'name' => $id,
+                    'middleware' => [$name],
+                ]
+            );
+            $this->config->extend('middleware.groups', [
+                $name => [],
+            ]);
+        }
     }
     
     private function bindConfig() :void
@@ -197,33 +216,6 @@ class RoutingServiceProvider extends ServiceProvider
             
             return new CacheFileRouteRegistrar($registrar);
         });
-    }
-    
-    /**
-     * @throws ConfigurationException
-     */
-    public function bootstrap() :void
-    {
-        $endpoints = $this->config->get('routing.api.endpoints');
-        
-        foreach ($endpoints as $id => $prefix) {
-            $name = 'api.'.$id;
-            
-            $this->config->extend(
-                'routing.presets.'.$name,
-                [
-                    'prefix' => $prefix,
-                    'name' => $id,
-                    'middleware' => [$name],
-                ]
-            );
-            
-            $this->config->extend('middleware.groups', [
-                
-                $name => [],
-            
-            ]);
-        }
     }
     
 }

@@ -42,8 +42,11 @@ class Application
     ];
     
     private bool   $bootstrapped      = false;
+    
     private Config $config;
+    
     private bool   $running_unit_test = false;
+    
     private string $base_path;
     
     public function __construct(ContainerAdapter $container)
@@ -58,26 +61,15 @@ class Application
     
     public static function generateKey() :string
     {
-        
         return 'base64:'.base64_encode(random_bytes(32));
     }
     
-    public static function create(
-        string $base_path,
-        ContainerAdapter $container_adapter
-    ) :Application {
-        
+    public static function create(string $base_path, ContainerAdapter $container_adapter) :Application
+    {
         $app = new static($container_adapter);
         $app->setBasePath($base_path);
         
         return $app;
-        
-    }
-    
-    private function setBasePath(string $base_path)
-    {
-        
-        $this->base_path = rtrim($base_path, '\/');
     }
     
     public function boot(bool $load = true) :void
@@ -104,24 +96,6 @@ class Application
         $this->loadServiceProviders();
         
         $this->bootstrapped = true;
-        
-    }
-    
-    private function registerErrorHandler()
-    {
-        
-        /** @todo Instead of booting the error driver in the config boot it here but lazy load it from the container */
-        
-    }
-    
-    private function captureRequest()
-    {
-        
-        $psr_request = $this->serverRequestCreator()->fromGlobals();
-        
-        $request = new Request($psr_request);
-        
-        $this->container()->instance(Request::class, $request);
         
     }
     
@@ -205,6 +179,30 @@ class Application
     {
         
         return $this->running_unit_test;
+    }
+    
+    private function setBasePath(string $base_path)
+    {
+        
+        $this->base_path = rtrim($base_path, '\/');
+    }
+    
+    private function registerErrorHandler()
+    {
+        
+        /** @todo Instead of booting the error driver in the config boot it here but lazy load it from the container */
+        
+    }
+    
+    private function captureRequest()
+    {
+        
+        $psr_request = $this->serverRequestCreator()->fromGlobals();
+        
+        $request = new Request($psr_request);
+        
+        $this->container()->instance(Request::class, $request);
+        
     }
     
 }

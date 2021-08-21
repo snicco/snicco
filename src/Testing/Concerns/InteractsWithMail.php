@@ -17,16 +17,13 @@ trait InteractsWithMail
     
     protected function mailFake() :self
     {
-        
         Event::fake([PendingMail::class]);
         
         return $this;
-        
     }
     
     protected function clearSentMails() :self
     {
-        
         $fake_dispatcher = Event::dispatcher();
         $fake_dispatcher->clearDispatchedEvents();
         
@@ -35,7 +32,6 @@ trait InteractsWithMail
     
     protected function assertMailSent(string $mailable) :AssertableMail
     {
-        
         $fake_dispatcher = Event::dispatcher();
         
         $this->checkMailWasFaked($fake_dispatcher);
@@ -59,21 +55,10 @@ trait InteractsWithMail
         );
         
         return new AssertableMail($events[0], $this->app->resolve(ViewFactory::class));
-        
-    }
-    
-    private function checkMailWasFaked($fake_dispatcher)
-    {
-        if ( ! $fake_dispatcher instanceof FakeDispatcher) {
-            throw new LogicException(
-                'Mails were not faked. Did you forget to call [$this->mailFake()]?'
-            );
-        }
     }
     
     protected function assertMailNotSent(string $mailable)
     {
-        
         $fake_dispatcher = Event::dispatcher();
         
         $this->checkMailWasFaked($fake_dispatcher);
@@ -87,7 +72,15 @@ trait InteractsWithMail
             },
             "The mail [$mailable] was not supposed to be sent."
         );
-        
+    }
+    
+    private function checkMailWasFaked($fake_dispatcher)
+    {
+        if ( ! $fake_dispatcher instanceof FakeDispatcher) {
+            throw new LogicException(
+                'Mails were not faked. Did you forget to call [$this->mailFake()]?'
+            );
+        }
     }
     
 }

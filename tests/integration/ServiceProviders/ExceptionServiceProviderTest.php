@@ -38,7 +38,6 @@ class ExceptionServiceProviderTest extends TestCase
     /** @test */
     public function the_null_error_handler_can_be_used()
     {
-        
         $this->withAddedConfig('app.exception_handling', false)->boot();
         
         $this->assertInstanceOf(

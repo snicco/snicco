@@ -58,9 +58,7 @@ trait InteractsWithAuthentication
     
     protected function assertGuest()
     {
-        
         PHPUnit::assertSame(0, wp_get_current_user()->ID, 'The user is not a guest.');
-        
     }
     
     /**
@@ -68,7 +66,6 @@ trait InteractsWithAuthentication
      */
     protected function assertAuthenticated($user)
     {
-        
         if ($user instanceof WP_User) {
             
             $user = $user->ID;
@@ -76,14 +73,6 @@ trait InteractsWithAuthentication
         }
         
         PHPUnit::assertTrue($this->isAuthenticated($user), 'The user is not authenticated.');
-        
-    }
-    
-    private function isAuthenticated(int $user_id) :bool
-    {
-        
-        return wp_get_current_user()->ID === $user_id;
-        
     }
     
     /**
@@ -91,7 +80,6 @@ trait InteractsWithAuthentication
      */
     protected function assertNotAuthenticated($user)
     {
-        
         if ($user instanceof WP_User) {
             
             $user = $user->ID;
@@ -99,7 +87,6 @@ trait InteractsWithAuthentication
         }
         
         PHPUnit::assertFalse($this->isAuthenticated($user), 'The user is authenticated.');
-        
     }
     
     /**
@@ -107,7 +94,6 @@ trait InteractsWithAuthentication
      */
     protected function logout($user = 0)
     {
-        
         if ($user === 0) {
             $user = wp_get_current_user();
         }
@@ -119,7 +105,11 @@ trait InteractsWithAuthentication
         }
         
         wp_logout();
-        
+    }
+    
+    private function isAuthenticated(int $user_id) :bool
+    {
+        return wp_get_current_user()->ID === $user_id;
     }
     
 }

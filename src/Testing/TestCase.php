@@ -51,30 +51,56 @@ abstract class TestCase extends WPTestCase
     use TravelsTime;
     
     protected Application                   $app;
+    
     protected ?Session                      $session       = null;
+    
     protected Request                       $request;
+    
     protected Config                        $config;
+    
     protected ServerRequestFactoryInterface $request_factory;
+    
     protected HttpKernel                    $kernel;
+    
     protected bool                          $defer_boot    = false;
+    
     protected bool                          $routes_loaded = false;
+    
     /**
      * @var callable[]
      */
     protected array $after_config_loaded_callbacks = [];
+    
     private bool    $set_up_has_run                = false;
+    
     /**
      * @var Route[]
      */
     private array $additional_routes = [];
+    
     /**
      * @var callable[]
      */
     private array $after_application_created_callbacks = [];
+    
     /**
      * @var callable[]
      */
     private array $before_application_destroy_callbacks = [];
+    
+    /**
+     * Return an instance of your Application. DON'T BOOT THE APPLICATION.
+     */
+    abstract public function createApplication() :Application;
+    
+    /**
+     * @return ServiceProvider[]
+     */
+    public function packageProviders() :array
+    {
+        
+        return [];
+    }
     
     protected function afterApplicationCreated(callable $callback)
     {
@@ -134,20 +160,6 @@ abstract class TestCase extends WPTestCase
         $this->app = $this->createApplication();
     }
     
-    /**
-     * Return an instance of your Application. DON'T BOOT THE APPLICATION.
-     */
-    abstract public function createApplication() :Application;
-    
-    /**
-     * @return ServiceProvider[]
-     */
-    public function packageProviders() :array
-    {
-        
-        return [];
-    }
-    
     protected function boot()
     {
         
@@ -166,55 +178,6 @@ abstract class TestCase extends WPTestCase
         }
         
         $this->set_up_has_run = true;
-        
-    }
-    
-    private function bindRequest()
-    {
-        
-        if (isset($this->request)) {
-            
-            $this->request = $this->addCookies($this->request);
-            $this->request = $this->addHeaders($this->request);
-            $this->instance(Request::class, $this->request);
-            
-            return;
-        }
-        
-        $request = new Request(
-            $this->request_factory->createServerRequest(
-                'GET',
-                $this->createUri($this->config->get('app.url')),
-                $this->default_server_variables
-            )
-        );
-        $request = $this->addCookies($request);
-        $request = $this->addHeaders($request);
-        $this->instance(Request::class, $request);
-        $this->request = $request;
-        
-    }
-    
-    private function setUpTraits()
-    {
-        
-        $traits = array_flip(class_uses_recursive(static::class));
-        
-        if (in_array(WithDatabaseExceptions::class, $traits)) {
-            $this->withDatabaseExceptions();
-        }
-        
-    }
-    
-    private function setProperties()
-    {
-        
-        if (in_array(SessionServiceProvider::class, $this->config->get('app.providers'))
-            && $this->config->get('session.enabled')) {
-            
-            $this->session = $this->app->resolve(Session::class);
-            
-        }
         
     }
     
@@ -269,15 +232,6 @@ abstract class TestCase extends WPTestCase
         
         parent::tearDown();
         
-    }
-    
-    private function callBeforeApplicationDestroyedCallbacks()
-    {
-        
-        foreach ($this->before_application_destroy_callbacks as $callback) {
-            $callback();
-            
-        }
     }
     
     protected function withReplacedConfig($items, $value) :TestCase
@@ -480,6 +434,64 @@ abstract class TestCase extends WPTestCase
         $this->request = $request;
         
         return $this;
+    }
+    
+    private function bindRequest()
+    {
+        
+        if (isset($this->request)) {
+            
+            $this->request = $this->addCookies($this->request);
+            $this->request = $this->addHeaders($this->request);
+            $this->instance(Request::class, $this->request);
+            
+            return;
+        }
+        
+        $request = new Request(
+            $this->request_factory->createServerRequest(
+                'GET',
+                $this->createUri($this->config->get('app.url')),
+                $this->default_server_variables
+            )
+        );
+        $request = $this->addCookies($request);
+        $request = $this->addHeaders($request);
+        $this->instance(Request::class, $request);
+        $this->request = $request;
+        
+    }
+    
+    private function setUpTraits()
+    {
+        
+        $traits = array_flip(class_uses_recursive(static::class));
+        
+        if (in_array(WithDatabaseExceptions::class, $traits)) {
+            $this->withDatabaseExceptions();
+        }
+        
+    }
+    
+    private function setProperties()
+    {
+        
+        if (in_array(SessionServiceProvider::class, $this->config->get('app.providers'))
+            && $this->config->get('session.enabled')) {
+            
+            $this->session = $this->app->resolve(Session::class);
+            
+        }
+        
+    }
+    
+    private function callBeforeApplicationDestroyedCallbacks()
+    {
+        
+        foreach ($this->before_application_destroy_callbacks as $callback) {
+            $callback();
+            
+        }
     }
     
 }
