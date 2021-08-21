@@ -37,6 +37,11 @@ class DatabaseServiceProvider extends ServiceProvider
         
     }
     
+    function bootstrap() :void
+    {
+        $this->bootEloquent();
+    }
+    
     private function bindConfig()
     {
         
@@ -170,12 +175,6 @@ class DatabaseServiceProvider extends ServiceProvider
             
         });
         
-    }
-    
-    function bootstrap() :void
-    {
-        
-        $this->bootEloquent();
     }
     
     private function bootEloquent()

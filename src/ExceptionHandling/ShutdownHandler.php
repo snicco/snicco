@@ -26,19 +26,6 @@ class ShutdownHandler
         
     }
     
-    private function terminate()
-    {
-        
-        Event::dispatch('sniccowp.shutdown');
-        
-        if ($this->running_unit_tests) {
-            return;
-        }
-        
-        exit();
-        
-    }
-    
     public function afterResponse(ResponseSent $response_sent)
     {
         
@@ -50,11 +37,26 @@ class ShutdownHandler
             
         }
         
-        if ($request->isApiEndPoint() || $request->isWpAjax() || $request->isWpFrontEnd()) {
+        // API endpoint requests are always loaded through index.php and thus are
+        // also frontend requests.
+        if ($request->isWpFrontEnd() || $request->isWpAjax()) {
             
             $this->terminate();
             
         }
+        
+    }
+    
+    private function terminate()
+    {
+        
+        Event::dispatch('sniccowp.shutdown');
+        
+        if ($this->running_unit_tests) {
+            return;
+        }
+        
+        exit();
         
     }
     

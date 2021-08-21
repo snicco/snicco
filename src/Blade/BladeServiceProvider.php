@@ -40,6 +40,11 @@ class BladeServiceProvider extends ServiceProvider
         
     }
     
+    public function bootstrap() :void
+    {
+        //
+    }
+    
     private function setIlluminateBindings(IlluminateContainerInterface $container)
     {
         
@@ -84,11 +89,6 @@ class BladeServiceProvider extends ServiceProvider
             }
         );
         
-    }
-    
-    function bootstrap() :void
-    {
-        //
     }
     
 }

@@ -18,9 +18,13 @@ abstract class ServiceProvider
 {
     
     protected ContainerAdapter $container;
+    
     protected Config           $config;
+    
     protected Application      $app;
+    
     protected ?ResponseFactory $response_factory = null;
+    
     protected ?Request         $current_request  = null;
     
     public function __construct(ContainerAdapter $container_adapter, Config $config)
@@ -47,12 +51,6 @@ abstract class ServiceProvider
      * @return void
      */
     abstract function bootstrap() :void;
-    
-    /** Only use this function after all providers have been registered. */
-    protected function requestEndpoint() :string
-    {
-        return $this->config->get('_request_endpoint', '');
-    }
     
     /** Only use this function after all providers have been registered. */
     protected function sessionEnabled() :bool

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Http;
 
 use Snicco\Routing\Pipeline;
-use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Contracts\AbstractRedirector;
 
@@ -18,6 +17,11 @@ class HttpServiceProvider extends ServiceProvider
         
         $this->bindRedirector();
         
+    }
+    
+    public function bootstrap() :void
+    {
+        //
     }
     
     private function bindKernel()
@@ -50,41 +54,6 @@ class HttpServiceProvider extends ServiceProvider
             AbstractRedirector::class,
             fn() => $this->container->make(Redirector::class)
         );
-    }
-    
-    public function bootstrap() :void
-    {
-        $this->bindRequestEndpoint();
-    }
-    
-    private function bindRequestEndpoint()
-    {
-        $request = $this->currentRequest();
-        
-        if ($endpoints = $this->config->get('routing.api.endpoints', false)) {
-            $this->current_request = $request->withAttribute('_api.endpoints', $endpoints);
-            $this->container->instance(Request::class, $this->current_request);
-        }
-        
-        if ($this->current_request->isApiEndPoint()) {
-            $this->config->set('_request_endpoint', 'api');
-            
-            return;
-        }
-        
-        if ($this->current_request->isWpAjax()) {
-            $this->config->set('_request_endpoint', 'wp_ajax');
-            
-            return;
-        }
-        
-        if ($this->current_request->isWpAdmin()) {
-            $this->config->set('_request_endpoint', 'wp_admin');
-            
-            return;
-        }
-        
-        $this->config->set('_request_endpoint', 'frontend');
     }
     
 }

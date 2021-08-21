@@ -32,7 +32,7 @@ class ApiRoutesTest extends TestCase
         
         // This will shut the script down.
         Event::assertDispatched(function (ResponseSent $event) {
-            return $event->request->isApiEndPoint();
+            return $event->request->isWpFrontEnd();
         });
         
     }
