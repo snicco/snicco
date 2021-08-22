@@ -19,13 +19,6 @@ class ShutdownHandler
         $this->running_unit_tests = $running_unit_tests;
     }
     
-    public function unrecoverableException()
-    {
-        
-        $this->terminate();
-        
-    }
-    
     public function afterResponse(ResponseSent $response_sent)
     {
         

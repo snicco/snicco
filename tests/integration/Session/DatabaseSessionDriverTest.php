@@ -23,7 +23,6 @@ class DatabaseSessionDriverTest extends FrameworkTestCase
     /** @test */
     public function a_session_can_be_opened()
     {
-        
         $handler = $this->newDataBaseSessionHandler();
         
         $this->assertTrue($handler->open('', ''));
@@ -232,16 +231,13 @@ class DatabaseSessionDriverTest extends FrameworkTestCase
     
     protected function tearDown() :void
     {
-        
         $this->dropTables();
         parent::tearDown();
-        
     }
     
     private function newDataBaseSessionHandler(int $lifetime = 10) :DatabaseSessionDriver
     {
         return new DatabaseSessionDriver($this->db, 'sessions', $lifetime);
-        
     }
     
     private function getUserId(string $id)
@@ -280,9 +276,7 @@ class DatabaseSessionDriverTest extends FrameworkTestCase
     
     private function dropTables()
     {
-        
         $this->db->query("DROP TABLE wp_sessions");
-        
     }
     
 }

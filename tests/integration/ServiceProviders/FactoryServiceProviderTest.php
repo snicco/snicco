@@ -67,7 +67,7 @@ class FactoryServiceProviderTest extends FrameworkTestCase
     protected function setUp() :void
     {
         $this->afterApplicationCreated(function () {
-            $this->app->boot();
+            $this->bootApp();
         });
         parent::setUp();
     }

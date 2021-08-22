@@ -21,13 +21,19 @@ class Session
     
     use InteractsWithTime;
     
-    private string        $id;
-    private array         $attributes               = [];
+    private string $id;
+    
+    private array $attributes = [];
+    
     private SessionDriver $driver;
-    private bool          $started                  = false;
-    private array         $initial_attributes       = [];
-    private array         $loaded_data_from_handler = [];
-    private int           $token_strength_in_bytes;
+    
+    private bool $started = false;
+    
+    private array $initial_attributes = [];
+    
+    private array $loaded_data_from_handler = [];
+    
+    private int $token_strength_in_bytes;
     
     public function __construct(SessionDriver $handler, int $token_strength_in_bytes = 32)
     {
@@ -51,43 +57,6 @@ class Session
         
     }
     
-    private function loadDataFromDriver()
-    {
-        
-        $data = $this->readFromDriver();
-        
-        $this->loaded_data_from_handler = $data;
-        
-        $this->attributes = Arr::mergeRecursive($this->attributes, $data);
-        
-    }
-    
-    private function readFromDriver() :array
-    {
-        
-        if ($data = $this->driver->read($this->hash($this->getId()))) {
-            
-            $data = @unserialize($this->prepareForUnserialize($data));
-            
-            if ($data !== false && ! is_null($data) && is_array($data)) {
-                return $data;
-            }
-        }
-        
-        return [];
-    }
-    
-    private function hash(string $id)
-    {
-        
-        if (function_exists('hash')) {
-            return hash('sha256', $id);
-        }
-        else {
-            return sha1($id);
-        }
-    }
-    
     public function getId() :string
     {
         
@@ -105,13 +74,6 @@ class Session
         
     }
     
-    protected function prepareForUnserialize(string $data) :string
-    {
-        
-        return $data;
-        
-    }
-    
     public function save() :void
     {
         
@@ -123,17 +85,6 @@ class Session
             $this->hash($this->getId()),
             $this->prepareForStorage(serialize($this->attributes))
         );
-        
-    }
-    
-    private function ageFlashData() :void
-    {
-        
-        $this->forget($this->get('_flash.old', []));
-        
-        $this->put('_flash.old', $this->get('_flash.new', []));
-        
-        $this->put('_flash.new', []);
         
     }
     
@@ -166,12 +117,6 @@ class Session
         
         $this->put('_last_activity', $timestamp);
         
-    }
-    
-    protected function prepareForStorage(string $data) :string
-    {
-        
-        return $data;
     }
     
     public function wasChanged() :bool
@@ -309,14 +254,6 @@ class Session
         $this->put('_flash.old', []);
     }
     
-    private function mergeNewFlashes(array $keys) :void
-    {
-        
-        $values = array_unique(array_merge($this->get('_flash.new', []), $keys));
-        
-        $this->put('_flash.new', $values);
-    }
-    
     public function keep($keys = null) :void
     {
         
@@ -327,12 +264,6 @@ class Session
         );
         
         $this->removeFromOldFlashData($keys);
-    }
-    
-    private function removeFromOldFlashData(array $keys) :void
-    {
-        
-        $this->put('_flash.old', array_diff($this->get('_flash.old', []), $keys));
     }
     
     public function flashInput(array $value) :void
@@ -362,25 +293,6 @@ class Session
     {
         
         $this->attributes = [];
-    }
-    
-    private function migrate(bool $destroy_old = true) :bool
-    {
-        
-        if ($destroy_old) {
-            $this->driver->destroy($this->hash($this->getId()));
-        }
-        
-        $this->setId($this->generateSessionId());
-        
-        return true;
-    }
-    
-    private function generateSessionId() :string
-    {
-        
-        return bin2hex(random_bytes($this->token_strength_in_bytes));
-        
     }
     
     public function regenerate(bool $destroy_old = true) :bool
@@ -479,15 +391,6 @@ class Session
         return $this;
     }
     
-    private function toMessageBag($provider) :MessageBag
-    {
-        if ($provider instanceof MessageProvider) {
-            return $provider->getMessageBag();
-        }
-        
-        return new MessageBag((array) $provider);
-    }
-    
     public function errors() :ViewErrorBag
     {
         $errors = $this->get('errors', new ViewErrorBag());
@@ -507,13 +410,6 @@ class Session
         $allowed[$path] = (int) $expires;
         
         $this->put('_allow_routes', $allowed);
-    }
-    
-    private function allowedRoutes() :array
-    {
-        
-        return $this->get('_allow_routes', []);
-        
     }
     
     public function canAccessRoute(string $path) :bool
@@ -643,6 +539,115 @@ class Session
     {
         
         return $this->get('auth.2fa.challenged_user', 0);
+    }
+    
+    protected function prepareForUnserialize(string $data) :string
+    {
+        
+        return $data;
+        
+    }
+    
+    protected function prepareForStorage(string $data) :string
+    {
+        return $data;
+    }
+    
+    private function loadDataFromDriver()
+    {
+        
+        $data = $this->readFromDriver();
+        
+        $this->loaded_data_from_handler = $data;
+        
+        $this->attributes = Arr::mergeRecursive($this->attributes, $data);
+        
+    }
+    
+    private function readFromDriver() :array
+    {
+        
+        if ($data = $this->driver->read($this->hash($this->getId()))) {
+            
+            $data = @unserialize($this->prepareForUnserialize($data));
+            
+            if ($data !== false && ! is_null($data) && is_array($data)) {
+                return $data;
+            }
+        }
+        
+        return [];
+    }
+    
+    private function hash(string $id)
+    {
+        
+        if (function_exists('hash')) {
+            return hash('sha256', $id);
+        }
+        else {
+            return sha1($id);
+        }
+    }
+    
+    private function ageFlashData() :void
+    {
+        
+        $this->forget($this->get('_flash.old', []));
+        
+        $this->put('_flash.old', $this->get('_flash.new', []));
+        
+        $this->put('_flash.new', []);
+        
+    }
+    
+    private function mergeNewFlashes(array $keys) :void
+    {
+        
+        $values = array_unique(array_merge($this->get('_flash.new', []), $keys));
+        
+        $this->put('_flash.new', $values);
+    }
+    
+    private function removeFromOldFlashData(array $keys) :void
+    {
+        
+        $this->put('_flash.old', array_diff($this->get('_flash.old', []), $keys));
+    }
+    
+    private function migrate(bool $destroy_old = true) :bool
+    {
+        
+        if ($destroy_old) {
+            $this->driver->destroy($this->hash($this->getId()));
+        }
+        
+        $this->setId($this->generateSessionId());
+        
+        return true;
+    }
+    
+    private function generateSessionId() :string
+    {
+        
+        return bin2hex(random_bytes($this->token_strength_in_bytes));
+        
+    }
+    
+    private function toMessageBag($provider) :MessageBag
+    {
+        if ($provider instanceof MessageProvider) {
+            return $provider->getMessageBag();
+        }
+        
+        return new MessageBag((array) $provider);
+    }
+    
+    private function allowedRoutes() :array
+    {
+        
+        return $this->get('_allow_routes', []);
+        
     }
     
 }

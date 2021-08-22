@@ -21,15 +21,15 @@ class AuthTestCase extends FrameworkTestCase
     
     protected AuthSessionManager $session_manager;
     
-    protected array              $codes;
+    protected array $codes;
     
-    protected Encryptor          $encryptor;
+    protected Encryptor $encryptor;
     
-    protected string             $valid_one_time_code   = '123456';
+    protected string $valid_one_time_code = '123456';
     
-    protected string             $invalid_one_time_code = '111111';
+    protected string $invalid_one_time_code = '111111';
     
-    public function packageProviders() :array
+    protected function packageProviders() :array
     {
         
         return [

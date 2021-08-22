@@ -206,12 +206,13 @@ class ViewFactoryTest extends FrameworkTestCase
     protected function setUp() :void
     {
         
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationBooted(function () {
             $this->view_service = $this->app->resolve(ViewFactory::class);
         });
         
         parent::setUp();
         
+        $this->bootApp();
     }
     
 }

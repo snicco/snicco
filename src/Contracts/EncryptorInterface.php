@@ -19,7 +19,7 @@ interface EncryptorInterface
      * @return string
      * @throws EncryptException
      */
-    public function encrypt($value, bool $serialize = true) :string;
+    public function encrypt($value, bool $serialize = false) :string;
     
     /**
      * Decrypt the given value.
@@ -30,7 +30,7 @@ interface EncryptorInterface
      * @return mixed
      * @throws DecryptException
      */
-    public function decrypt(string $payload, bool $unserialize = true);
+    public function decrypt(string $payload, bool $unserialize = false);
     
     /**
      * Encrypt a string without serialization.

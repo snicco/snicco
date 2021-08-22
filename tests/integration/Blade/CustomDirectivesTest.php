@@ -13,11 +13,6 @@ use Snicco\Session\SessionServiceProvider;
 class CustomDirectivesTest extends BladeTestCase
 {
     
-    public function packageProviders() :array
-    {
-        return array_merge([SessionServiceProvider::class], parent::packageProviders());
-    }
-    
     /** @test */
     public function custom_auth_user_directive_works()
     {
@@ -33,13 +28,6 @@ class CustomDirectivesTest extends BladeTestCase
         $view = $this->view('auth');
         $content = $view->toString();
         $this->assertViewContent('', $content);
-        
-    }
-    
-    private function view(string $view) :ViewInterface
-    {
-        
-        return TestApp::view('blade-features.'.$view);
         
     }
     
@@ -156,6 +144,18 @@ class CustomDirectivesTest extends BladeTestCase
         $view->with('errors', $error_bag);
         
         $this->assertViewContent('NO ERRORS IN CUSTOM BAG', $view);
+        
+    }
+    
+    protected function packageProviders() :array
+    {
+        return array_merge([SessionServiceProvider::class], parent::packageProviders());
+    }
+    
+    private function view(string $view) :ViewInterface
+    {
+        
+        return TestApp::view('blade-features.'.$view);
         
     }
     
