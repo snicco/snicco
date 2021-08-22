@@ -26,8 +26,8 @@ use Snicco\Factories\ErrorHandlerFactory;
 use Tests\helpers\CreateDefaultWpApiMocks;
 use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Events\UnrecoverableExceptionHandled;
-use Snicco\ExceptionHandling\ProductionErrorHandler;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
+use Snicco\ExceptionHandling\ProductionExceptionHandler;
 
 class ProductionErrorHandlerTest extends UnitTest
 {
@@ -57,13 +57,6 @@ class ProductionErrorHandlerTest extends UnitTest
         );
         $this->assertStatusCode(500, $response);
         Event::assertNotDispatched(UnrecoverableExceptionHandled::class);
-        
-    }
-    
-    private function newErrorHandler() :ProductionErrorHandler
-    {
-        
-        return ErrorHandlerFactory::make($this->container, false);
         
     }
     
@@ -209,7 +202,7 @@ class ProductionErrorHandlerTest extends UnitTest
     public function a_custom_error_handler_can_replace_the_default_response_object()
     {
         
-        $this->container->instance(ProductionErrorHandler::class, CustomErrorHandler::class);
+        $this->container->instance(ProductionExceptionHandler::class, CustomErrorHandler::class);
         
         $handler = $this->newErrorHandler();
         
@@ -268,7 +261,10 @@ class ProductionErrorHandlerTest extends UnitTest
         Event::make($this->container = $this->createContainer());
         Event::fake();
         $this->container->instance(StreamFactoryInterface::class, $this->psrStreamFactory());
-        $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
+        $this->container->instance(
+            ProductionExceptionHandler::class,
+            ProductionExceptionHandler::class
+        );
         $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
         WP::setFacadeContainer($this->createContainer());
         $this->request = TestRequest::from('GET', 'foo');
@@ -283,6 +279,13 @@ class ProductionErrorHandlerTest extends UnitTest
         Event::setInstance(null);
         Mockery::close();
         HeaderStack::reset();
+        
+    }
+    
+    private function newErrorHandler() :ProductionExceptionHandler
+    {
+        
+        return ErrorHandlerFactory::make($this->container, false);
         
     }
     
@@ -326,7 +329,7 @@ class ExceptionWithDependencyInjection extends Exception
     
 }
 
-class CustomErrorHandler extends ProductionErrorHandler
+class CustomErrorHandler extends ProductionExceptionHandler
 {
     
     protected function toHttpException(Throwable $e, Request $request) :HttpException

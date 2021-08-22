@@ -7,33 +7,31 @@ namespace Snicco\ExceptionHandling;
 use Closure;
 use Throwable;
 use Snicco\Support\WP;
+use Whoops\Run as Whoops;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Contracts\ContainerAdapter;
-use Snicco\Http\ResponseEmitter;
 use Snicco\Http\ResponseFactory;
-use Snicco\Traits\HandlesExceptions;
-use Snicco\Contracts\ErrorHandlerInterface;
+use Snicco\Contracts\ExceptionHandler;
+use Psr\Log\LoggerInterface as Psr3Logger;
 use Illuminate\Support\Traits\ReflectsClosures;
 use Snicco\Events\UnrecoverableExceptionHandled;
-use Psr\Log\LoggerInterface as Psr3LoggerInterface;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
 
-class ProductionErrorHandler implements ErrorHandlerInterface
+class ProductionExceptionHandler implements ExceptionHandler
 {
     
     use ReflectsClosures;
-    use HandlesExceptions;
     
-    protected ContainerAdapter    $container;
+    protected ContainerAdapter $container;
     
-    protected Psr3LoggerInterface $logger;
+    protected Psr3Logger       $logger;
     
-    protected ResponseFactory     $response_factory;
+    protected array            $dont_report = [];
     
-    protected array               $dont_report = [];
+    protected array            $dont_flash  = [];
     
-    protected array               $dont_flash  = [];
+    protected bool             $is_debug;
     
     /**
      * @var Closure[]
@@ -43,22 +41,26 @@ class ProductionErrorHandler implements ErrorHandlerInterface
     /**
      * @var Closure[]
      */
-    private array           $custom_reporters = [];
+    private array $custom_reporters = [];
     
-    private ResponseEmitter $emitter;
+    private ResponseFactory $response_factory;
     
-    public function __construct(
-        ContainerAdapter $container,
-        Psr3LoggerInterface $logger,
-        ResponseFactory $response_factory,
-        ResponseEmitter $emitter
-    ) {
+    /** @var Whoops|null */
+    private $whoops;
+    
+    /**
+     * @param  ContainerAdapter  $container
+     * @param  Psr3Logger  $logger
+     * @param  ResponseFactory  $response_factory
+     * @param  null|Whoops  $whoops
+     */
+    public function __construct(ContainerAdapter $container, Psr3Logger $logger, ResponseFactory $response_factory, $whoops = null)
+    {
         
         $this->container = $container;
         $this->logger = $logger;
         $this->response_factory = $response_factory;
-        $this->emitter = $emitter;
-        
+        $this->whoops = $whoops;
         $this->registerCallbacks();
         
     }
@@ -70,12 +72,10 @@ class ProductionErrorHandler implements ErrorHandlerInterface
     
     public function render(Throwable $e, Request $request)
     {
-        
         return $this->transformToResponse($e, $request);
-        
     }
     
-    public function renderable(callable $render_using) :ProductionErrorHandler
+    public function renderable(callable $render_using) :ProductionExceptionHandler
     {
         if ( ! $render_using instanceof Closure) {
             $render_using = Closure::fromCallable($render_using);
@@ -87,7 +87,7 @@ class ProductionErrorHandler implements ErrorHandlerInterface
         
     }
     
-    public function reportable(callable $report_using) :ProductionErrorHandler
+    public function reportable(callable $report_using) :ProductionExceptionHandler
     {
         if ( ! $report_using instanceof Closure) {
             $report_using = Closure::fromCallable($report_using);

@@ -109,10 +109,9 @@ class Application implements ArrayAccess
         
     }
     
-    public function basePath() :string
+    public function basePath(string $path = '') :string
     {
-        
-        return $this->base_path;
+        return $this->base_path.($path ? DIRECTORY_SEPARATOR.$path : $path);
     }
     
     public function storagePath($path = '') :string

@@ -15,9 +15,9 @@ use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Snicco\Http\ResponseEmitter;
 use Snicco\Middleware\MiddlewareStack;
+use Snicco\Contracts\ExceptionHandler;
 use Snicco\Middleware\Core\RouteRunner;
 use Snicco\Routing\RoutingServiceProvider;
-use Snicco\Contracts\ErrorHandlerInterface;
 use Tests\fixtures\Conditions\TrueCondition;
 use Tests\fixtures\Middleware\BarMiddleware;
 use Tests\fixtures\Middleware\BazMiddleware;
@@ -26,9 +26,9 @@ use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Contracts\AbstractRouteCollection;
 use Tests\fixtures\Conditions\FalseCondition;
 use Tests\fixtures\Conditions\MaybeCondition;
-use Snicco\ExceptionHandling\NullErrorHandler;
 use Tests\fixtures\Conditions\UniqueCondition;
 use Tests\fixtures\Middleware\FooBarMiddleware;
+use Snicco\ExceptionHandling\NullExceptionHandler;
 use Tests\fixtures\Conditions\ConditionWithDependency;
 
 /**
@@ -86,8 +86,8 @@ trait CreateTestSubjects
     protected function newKernel(array $with_middleware = []) :HttpKernel
     {
         $this->container->instance(
-            ErrorHandlerInterface::class,
-            $error_handler = new NullErrorHandler()
+            ExceptionHandler::class,
+            $error_handler = new NullExceptionHandler()
         );
         $this->container->instance(AbstractRouteCollection::class, $this->routes);
         $this->container->instance(

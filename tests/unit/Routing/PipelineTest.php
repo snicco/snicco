@@ -15,11 +15,11 @@ use Tests\helpers\AssertsResponse;
 use Tests\helpers\CreateContainer;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Tests\helpers\CreateUrlGenerator;
+use Snicco\Contracts\ExceptionHandler;
 use Psr\Http\Message\ResponseInterface;
 use Tests\helpers\CreatePsr17Factories;
 use Psr\Http\Server\MiddlewareInterface;
 use Tests\helpers\CreateRouteCollection;
-use Snicco\Contracts\ErrorHandlerInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Snicco\Http\Psr7\Response as AppResponse;
@@ -247,7 +247,7 @@ class PipelineTest extends UnitTest
         
         $c = $this->createContainer();
         $c->instance(ResponseFactory::class, $this->factory = $this->createResponseFactory());
-        $this->pipeline = new Pipeline($c, new PipelineTestErrorHandler());
+        $this->pipeline = new Pipeline($c, new PipelineTestExceptionHandler());
         
         $factory = new Psr17Factory();
         $this->request = new Request($factory->createServerRequest('GET', 'https://foobar.com'));
@@ -256,7 +256,7 @@ class PipelineTest extends UnitTest
     
 }
 
-class PipelineTestErrorHandler implements ErrorHandlerInterface
+class PipelineTestExceptionHandler implements ExceptionHandler
 {
     
     use CreatePsr17Factories;

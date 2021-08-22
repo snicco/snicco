@@ -12,8 +12,8 @@ use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Snicco\Http\ResponseEmitter;
 use Whoops\Handler\PrettyPageHandler;
-use Snicco\ExceptionHandling\DebugErrorHandler;
-use Snicco\ExceptionHandling\ProductionErrorHandler;
+use Snicco\ExceptionHandling\DebugExceptionHandler;
+use Snicco\ExceptionHandling\ProductionExceptionHandler;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 class ErrorHandlerFactory
@@ -58,7 +58,7 @@ class ErrorHandlerFactory
             
         }
         
-        $debug_handler = new DebugErrorHandler($whoops);
+        $debug_handler = new DebugExceptionHandler($whoops);
         
         $debug_handler->setRequestResolver(function () use ($container) {
             
@@ -69,14 +69,14 @@ class ErrorHandlerFactory
         
     }
     
-    private static function createProductionHandler(ContainerAdapter $container) :ProductionErrorHandler
+    private static function createProductionHandler(ContainerAdapter $container) :ProductionExceptionHandler
     {
         
         $logger = $container->make(LoggerInterface::class);
         
         $response_factory = $container->make(ResponseFactory::class);
         
-        $class = $container->make(ProductionErrorHandler::class);
+        $class = $container->make(ProductionExceptionHandler::class);
         
         return new $class(
             $container,
