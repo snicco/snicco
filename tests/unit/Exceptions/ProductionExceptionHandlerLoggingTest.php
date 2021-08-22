@@ -4,29 +4,25 @@ declare(strict_types=1);
 
 namespace Tests\unit\Exceptions;
 
-use Mockery;
 use Exception;
 use Tests\UnitTest;
 use Psr\Log\LogLevel;
 use Snicco\Support\WP;
-use Snicco\Events\Event;
 use Tests\stubs\TestLogger;
-use Psr\Log\LoggerInterface;
-use Snicco\Support\WpFacade;
 use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
 use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
+use Tests\stubs\TestViewFactory;
 use Tests\helpers\AssertsResponse;
 use Tests\helpers\CreateUrlGenerator;
 use Tests\fixtures\TestDependencies\Foo;
 use Tests\helpers\CreateRouteCollection;
-use Snicco\Factories\ErrorHandlerFactory;
 use Tests\helpers\CreateDefaultWpApiMocks;
-use Psr\Http\Message\StreamFactoryInterface;
+use Snicco\Contracts\ViewFactoryInterface;
 use Snicco\ExceptionHandling\ProductionExceptionHandler;
 
-class ProductionErrorHandlerLoggingTest extends UnitTest
+class ProductionExceptionHandlerLoggingTest extends UnitTest
 {
     
     use AssertsResponse;
@@ -36,9 +32,9 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
     
     private ContainerAdapter $container;
     
-    private Request          $request;
+    private Request $request;
     
-    private TestLogger       $test_logger;
+    private TestLogger $test_logger;
     
     /** @test */
     public function exceptions_are_logged_with_the_default_logger_if_the_exception_doesnt_have_a_report_method()
@@ -46,21 +42,24 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
         
         $handler = $this->newErrorHandler();
         
-        $handler->transformToResponse(new Exception('Foobar'), $this->request);
+        $handler->report(new Exception('Foobar'), $this->request);
         
         $this->test_logger->assertHasLogLevelEntry(LogLevel::ERROR, 'Foobar');
         
     }
     
     /** @test */
-    public function the_current_user_id_is_included_in_the_exception_context()
+    public function the_current_user_id_and_email_is_included_in_the_exception_context()
     {
         
         $handler = $this->newErrorHandler();
         
-        $handler->transformToResponse($e = new Exception('Foobar'), $this->request);
+        $handler->report($e = new Exception('Foobar'), $this->request);
         
-        $this->test_logger->assertHasLogEntry('Foobar', ['user_id' => 10, 'exception' => $e]);
+        $this->test_logger->assertHasLogEntry(
+            'Foobar',
+            ['user_id' => 10, 'user_email' => 'c@web.de', 'exception' => $e]
+        );
         
     }
     
@@ -68,11 +67,11 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
     public function the_user_id_is_not_included_if_there_is_nobody_logged_in()
     {
         
-        WP::shouldReceive('userId')->andReturn(0);
+        WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
         
         $handler = $this->newErrorHandler();
         
-        $handler->transformToResponse($e = new Exception('Foobar'), $this->request);
+        $handler->report($e = new Exception('Foobar'), $this->request);
         
         $this->test_logger->assertHasLogEntry('Foobar', ['exception' => $e]);
         
@@ -82,12 +81,12 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
     public function exception_context_is_included_in_the_error_log_message_if_the_exception_has_a_context_method()
     {
         
+        WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
         $handler = $this->newErrorHandler();
         
-        $handler->transformToResponse($e = new ContextException('TestMessage'), $this->request);
+        $handler->report($e = new ContextException('TestMessage'), $this->request);
         
         $this->test_logger->assertHasLogEntry('TestMessage', [
-            'user_id' => 10,
             'foo' => 'bar',
             'exception' => $e,
         ]);
@@ -97,12 +96,13 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
     /** @test */
     public function the_exception_object_is_included_in_the_log_context()
     {
+        WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
         
         $handler = $this->newErrorHandler();
         
-        $handler->transformToResponse($e = new Exception('Foobar'), $this->request);
+        $handler->report($e = new Exception('Foobar'), $this->request);
         
-        $this->test_logger->assertHasLogEntry('Foobar', ['user_id' => 10, 'exception' => $e]);
+        $this->test_logger->assertHasLogEntry('Foobar', ['exception' => $e]);
         
     }
     
@@ -114,7 +114,7 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
         
         $handler = $this->newErrorHandler();
         
-        $handler->transformToResponse(new ReportableException('foobarlog'), $this->request);
+        $handler->report(new ReportableException('foobarlog'), $this->request);
         
         $this->assertContains('foobarlog', $GLOBALS['test']['log']);
         
@@ -123,12 +123,13 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
     /** @test */
     public function exceptions_are_still_written_to_the_default_logger_after_custom_exceptions()
     {
+        WP::shouldReceive('isUserLoggedIn')->andReturnFalse();
         
         $handler = $this->newErrorHandler();
         
-        $handler->transformToResponse($e = new ReportableException('TestMessage'), $this->request);
+        $handler->report($e = new ReportableException('TestMessage'), $this->request);
         
-        $this->test_logger->assertHasLogEntry('TestMessage', ['user_id' => 10, 'exception' => $e]);
+        $this->test_logger->assertHasLogEntry('TestMessage', ['exception' => $e]);
         $this->assertContains('TestMessage', $GLOBALS['test']['log']);
         
     }
@@ -154,7 +155,7 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
             
         });
         
-        $handler->transformToResponse(
+        $handler->report(
             new ReportableException('Error Message'),
             $this->request->withAttribute('foo', 'REQUEST')
         );
@@ -182,7 +183,7 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
             
         });
         
-        $handler->transformToResponse(
+        $handler->report(
             new ReportableException('Error Message'),
             $this->request->withAttribute('foo', 'REQUEST')
         );
@@ -199,7 +200,7 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
         
         $handler = $this->newErrorHandler();
         
-        $handler->transformToResponse(new StopPropagationException('TestMessage'), $this->request);
+        $handler->report(new StopPropagationException('TestMessage'), $this->request);
         
         $this->test_logger->assertHasNoLogEntries();
         $this->assertContains('TestMessage', $GLOBALS['test']['log']);
@@ -214,7 +215,7 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
         
         $handler = $this->newErrorHandler();
         
-        $handler->transformToResponse(
+        $handler->report(
             new LogExceptionWithFooDependency('TestMessage'),
             $this->request
         );
@@ -227,16 +228,15 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
     public function exceptions_can_be_ignored_for_reporting_from_a_child_class()
     {
         
-        $this->container->instance(
-            ProductionExceptionHandler::class,
-            CustomProductionErrorHandler::class
+        $handler = new CustomProductionErrorHandler(
+            $this->container,
+            $this->test_logger = new TestLogger(),
+            $this->container[ResponseFactory::class]
         );
         
         $this->assertEmpty($GLOBALS['test']['log']);
         
-        $handler = $this->newErrorHandler();
-        
-        $handler->transformToResponse(new ReportableException('foo'), $this->request);
+        $handler->report(new ReportableException('foo'), $this->request);
         
         $this->test_logger->assertHasNoLogEntries();
         $this->assertEmpty($GLOBALS['test']['log']);
@@ -247,14 +247,13 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
     public function the_global_context_can_be_overwritten_from_a_child_class()
     {
         
-        $this->container->instance(
-            ProductionExceptionHandler::class,
-            CustomProductionErrorHandler::class
+        $handler = new CustomProductionErrorHandler(
+            $this->container,
+            $this->test_logger = new TestLogger(),
+            $this->container[ResponseFactory::class]
         );
         
-        $handler = $this->newErrorHandler();
-        
-        $handler->transformToResponse($e = new Exception('Foobar'), $this->request);
+        $handler->report($e = new Exception('Foobar'), $this->request);
         
         $this->test_logger->assertHasLogEntry('Foobar', ['foo' => 'bar', 'exception' => $e]);
         
@@ -262,36 +261,39 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
     
     protected function beforeTestRun()
     {
-        
-        Event::make($this->container = $this->createContainer());
-        Event::fake();
-        $this->container->instance(StreamFactoryInterface::class, $this->psrStreamFactory());
-        $this->container->instance(
-            ProductionExceptionHandler::class,
-            ProductionExceptionHandler::class
-        );
-        $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
-        WpFacade::setFacadeContainer($this->container);
-        WP::shouldReceive('userId')->andReturn(10)->byDefault();
-        $GLOBALS['test']['log'] = [];
+        $this->container = $this->createContainer();
         $this->request = TestRequest::from('GET', 'foo');
-        $this->container->instance(LoggerInterface::class, $this->test_logger = new TestLogger());
+        $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
+        $this->container->instance(ViewFactoryInterface::class, new TestViewFactory());
+        WP::shouldReceive('userId')->andReturn(10);
+        WP::shouldReceive('isUserLoggedIn')->andReturnTrue()->byDefault();
+        WP::shouldReceive('currentUser')->andReturnUsing(function () {
+            
+            $user = \Mockery::mock(\WP_User::class);
+            $user->user_email = 'c@web.de';
+            return $user;
+        });
+        $GLOBALS['test']['log'] = [];
         
     }
     
-    protected function beforeTearDown()
+    protected function tearDown() :void
     {
-        
-        Event::setInstance(null);
-        WP::setFacadeContainer(null);
-        WP::clearResolvedInstances();
-        Mockery::close();
-        
+        \Mockery::close();
+        WP::reset();
+        parent::tearDown();
     }
     
     private function newErrorHandler() :ProductionExceptionHandler
     {
-        return ErrorHandlerFactory::make($this->container, false);
+        
+        return new ProductionExceptionHandler(
+            $this->container,
+            $this->test_logger = new TestLogger(),
+            $this->container[ResponseFactory::class],
+            null
+        );
+        
     }
     
 }
@@ -328,7 +330,7 @@ class StopPropagationException extends Exception
         
         $GLOBALS['test']['log'][] = $this->getMessage();
         
-        return false;
+        return ProductionExceptionHandler::STOP_REPORTING;
         
     }
     
@@ -353,11 +355,9 @@ class CustomProductionErrorHandler extends ProductionExceptionHandler
         ReportableException::class,
     ];
     
-    protected function globalContext() :array
+    protected function globalContext(Request $request) :array
     {
-        
         return ['foo' => 'bar'];
-        
     }
     
 }

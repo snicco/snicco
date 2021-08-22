@@ -116,13 +116,6 @@ class FrameworkTestCase extends BaseTestCase
         Assert::assertSame($expected, trim($actual), 'View not rendered correctly.');
     }
     
-    protected function bootAfterCreation()
-    {
-        $this->afterApplicationCreated(function () {
-            $this->bootApp();
-        });
-    }
-    
     protected function withSessionsEnabled() :self
     {
         $this->withAddedConfig('sessions.enabled', true);

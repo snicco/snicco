@@ -9,6 +9,7 @@ use Throwable;
 use RuntimeException;
 use Snicco\Support\WP;
 use Whoops\Run as Whoops;
+use Illuminate\Support\Arr;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Contracts\ContainerAdapter;
@@ -23,14 +24,15 @@ class ProductionExceptionHandler implements ExceptionHandler
     
     use ReflectsClosures;
     
+    public const STOP_REPORTING = false;
+    
     protected ContainerAdapter $container;
-    
-    protected Psr3Logger $logger;
-    
-    protected array $dont_report = [];
-    
-    protected array $dont_flash = [];
-    
+    protected Psr3Logger       $logger;
+    protected array            $dont_report = [];
+    protected array            $dont_flash  = [];
+    private ResponseFactory    $response_factory;
+    /** @var Whoops|null */
+    private $whoops;
     /**
      * @var Closure[]
      */
@@ -41,11 +43,6 @@ class ProductionExceptionHandler implements ExceptionHandler
      */
     private array $custom_reporters = [];
     
-    private ResponseFactory $response_factory;
-    
-    /** @var Whoops|null */
-    private $whoops;
-    
     /**
      * @param  ContainerAdapter  $container
      * @param  Psr3Logger  $logger
@@ -54,23 +51,86 @@ class ProductionExceptionHandler implements ExceptionHandler
      */
     public function __construct(ContainerAdapter $container, Psr3Logger $logger, ResponseFactory $response_factory, $whoops = null)
     {
-        
         $this->container = $container;
         $this->logger = $logger;
         $this->response_factory = $response_factory;
         $this->whoops = $whoops;
         $this->registerCallbacks();
-        
     }
     
     public function report(Throwable $e, Request $request)
     {
-        $this->logException($e, $request);
+        
+        if (in_array(get_class($e), $this->dont_report)) {
+            return;
+        }
+        
+        foreach ($this->custom_reporters as $custom_reporter) {
+            
+            $handles_exception = $this->firstClosureParameterType($custom_reporter);
+            
+            if ( ! $e instanceof $handles_exception) {
+                continue;
+            }
+            
+            $result = $this->container->call(
+                $custom_reporter,
+                ['request' => $request, 'exception' => $e, 'e' => $e]
+            );
+            
+            if ($result === self::STOP_REPORTING) {
+                return;
+            }
+            
+        }
+        
+        if (method_exists($e, 'report')) {
+            
+            if ($this->container->call([$e, 'report']) === self::STOP_REPORTING) {
+                
+                return;
+                
+            }
+            
+        }
+        
+        $this->logger->error(
+            $e->getMessage(),
+            array_merge(
+                $this->globalContext($request),
+                $this->exceptionContext($e),
+                ['exception' => $e]
+            )
+        );
+        
     }
     
     public function toHttpResponse(Throwable $e, Request $request) :Response
     {
-        return $this->convertToResponse($e, $request);
+        foreach ($this->custom_renderers as $custom_renderer) {
+            
+            $exception_type = $this->firstClosureParameterType($custom_renderer);
+            
+            if ( ! $e instanceof $exception_type) {
+                continue;
+            }
+            
+            return $custom_renderer($e, $request, $this->response_factory);
+            
+        }
+        
+        if (method_exists($e, 'render')) {
+            return $this->renderableException($e, $request);
+        }
+        
+        if ( ! $e instanceof HttpException) {
+            $e = $this->toHttpException($e, $request);
+        }
+        
+        return $request->isExpectingJson()
+            ? $this->renderJson($e, $request)
+            : $this->renderHtml($e, $request);
+        
     }
     
     public function renderable(callable $render_using) :ProductionExceptionHandler
@@ -106,16 +166,15 @@ class ProductionExceptionHandler implements ExceptionHandler
      * Override this method from a child class to create global context
      * that should be added to every log entry.
      */
-    protected function globalContext() :array
+    protected function globalContext(Request $request) :array
     {
         
-        try {
-            return array_filter([
-                'user_id' => WP::userId(),
-            ]);
-        } catch (Throwable $e) {
-            return [];
-        }
+        $auth = $request->authenticated();
+        
+        return array_filter([
+            'user_id' => $auth ? WP::userId() : null,
+            'user_email' => $auth ? WP::currentUser()->user_email : null,
+        ]);
         
     }
     
@@ -134,53 +193,6 @@ class ProductionExceptionHandler implements ExceptionHandler
         return new HttpException(500, $e->getMessage(), $e);
     }
     
-    private function logException(Throwable $exception, Request $request)
-    {
-        
-        if (in_array(get_class($exception), $this->dont_report)) {
-            return;
-        }
-        
-        foreach ($this->custom_reporters as $custom_reporter) {
-            
-            $handles_exception = $this->firstClosureParameterType($custom_reporter);
-            
-            if ( ! $exception instanceof $handles_exception) {
-                continue;
-            }
-            
-            $keep_reporting = $this->container->call(
-                $custom_reporter,
-                ['request' => $request, 'exception' => $exception, 'e' => $exception]
-            );
-            
-            if ($keep_reporting === false) {
-                return;
-            }
-            
-        }
-        
-        if (method_exists($exception, 'report')) {
-            
-            if ($this->container->call([$exception, 'report']) === false) {
-                
-                return;
-                
-            }
-            
-        }
-        
-        $this->logger->error(
-            $exception->getMessage(),
-            array_merge(
-                $this->globalContext(),
-                $this->exceptionContext($exception),
-                ['exception' => $exception]
-            )
-        );
-        
-    }
-    
     private function exceptionContext(Throwable $e)
     {
         
@@ -191,75 +203,84 @@ class ProductionExceptionHandler implements ExceptionHandler
         return [];
     }
     
-    private function convertToResponse(Throwable $e, Request $request) :Response
-    {
-        
-        foreach ($this->custom_renderers as $custom_renderer) {
-            
-            $exception_type = $this->firstClosureParameterType($custom_renderer);
-            
-            if ( ! $e instanceof $exception_type) {
-                continue;
-            }
-            
-            $response = $custom_renderer($e, $request, $this->response_factory);
-            
-            if ($response instanceof Response) {
-                return $response;
-            }
-            
-        }
-        
-        if (method_exists($e, 'render')) {
-            
-            return $this->renderableException($e, $request);
-            
-        }
-        
-        if ( ! $e instanceof HttpException) {
-            
-            $e = $this->toHttpException($e, $request);
-            
-        }
-        
-        return $this->renderHttpException($e, $request);
-        
-    }
-    
     private function renderableException(Throwable $e, Request $request) :Response
     {
         
         /** @var Response $response */
         $response = $this->container->call([$e, 'render'], ['request' => $request]);
         
-        try {
-            return $this->response_factory->toResponse($response);
-        } catch (\HttpException $response_exception) {
-            
-            $class = get_class($e);
-            throw new RuntimeException(
-                "Return value of $class::render() could not be transformed to a Response object",
-                0,
-                $e
-            );
-            
+        if ($response instanceof Response) {
+            return $response;
         }
+        
+        $class = get_class($e);
+        $expected = Response::class;
+        
+        throw new RuntimeException(
+            "Return value of $class::render() has to be an instance of [$expected]",
+            $e->getCode(),
+            $e
+        );
         
     }
     
-    private function renderHttpException(HttpException $http_exception, Request $request) :Response
+    private function renderJson(HttpException $e, Request $request)
     {
         
-        if ($request->isExpectingJson()) {
+        if ($this->isDebug()) {
             
             return $this->response_factory->json(
-                ['message' => $http_exception->getJsonMessage()],
-                $http_exception->httpStatusCode()
+                $this->convertExceptionToArray($e),
+                $e->httpStatusCode()
             );
             
         }
         
-        return $this->response_factory->error($http_exception, $request);
+        return $this->response_factory->json(
+            ['message' => $e->getJsonMessage()],
+            $e->httpStatusCode()
+        );
+        
+    }
+    
+    private function isDebug() :bool
+    {
+        return $this->whoops instanceof Whoops;
+    }
+    
+    private function convertExceptionToArray(HttpException $e) :array
+    {
+        
+        return [
+            'message' => $e->getMessage(),
+            'exception' => get_class($e),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => collect($e->getTrace())->map(function ($trace) {
+                return Arr::except($trace, ['args']);
+            })->all(),
+        ];
+        
+    }
+    
+    private function renderHtml(HttpException $e, Request $request) :Response
+    {
+        
+        if ($this->isDebug()) {
+            
+            $method = $this->whoops::EXCEPTION_HANDLER;
+            
+            return $this->response_factory->html($this->whoops->{$method}($e))
+                                          ->withStatus($e->httpStatusCode());
+            
+        }
+        
+        $content = $this->container->call(
+            [new HtmlErrorRenderer(), 'render'],
+            ['e' => $e, 'request' => $request]
+        );
+        
+        return $this->response_factory->html($content)->withStatus($e->httpStatusCode());
         
     }
     

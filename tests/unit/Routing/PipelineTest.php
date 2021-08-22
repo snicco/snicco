@@ -33,9 +33,9 @@ class PipelineTest extends UnitTest
     use CreateUrlGenerator;
     use CreateRouteCollection;
     
-    private Pipeline        $pipeline;
+    private Pipeline $pipeline;
     
-    private Request         $request;
+    private Request $request;
     
     private ResponseFactory $factory;
     
@@ -261,17 +261,12 @@ class PipelineTestExceptionHandler implements ExceptionHandler
     
     use CreatePsr17Factories;
     
-    public function register()
-    {
-    }
-    
-    public function unregister()
-    {
-    }
-    
     public function transformToResponse(Throwable $e, Request $request) :AppResponse
     {
-        
+    }
+    
+    public function toHttpResponse(Throwable $e, Request $request) :AppResponse
+    {
         $code = $e instanceof HttpException ? $e->httpStatusCode() : 500;
         $body = $e instanceof HttpException ? $e->getMessage() : 'Internal Server Error';
         $body = $this->psrStreamFactory()->createStream($body);
@@ -280,10 +275,9 @@ class PipelineTestExceptionHandler implements ExceptionHandler
             $this->psrResponseFactory()->createResponse((int) $code)
                  ->withBody($body)
         );
-        
     }
     
-    public function unrecoverable(Throwable $exception)
+    public function report(Throwable $e, Request $request)
     {
     }
     

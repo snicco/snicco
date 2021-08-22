@@ -24,24 +24,17 @@ class Application implements ArrayAccess
     use HasContainer;
     use SetPsrFactories;
     
-    private bool $bootstrapped = false;
-    
+    private bool   $bootstrapped = false;
     private Config $config;
-    
-    private bool $running_unit_test = false;
-    
-    private bool $running_in_console;
-    
+    private bool   $is_running_in_console;
     private string $base_path;
     
     private function __construct(ContainerAdapter $container)
     {
-        
         $this->setContainer($container);
         $this->container()->instance(Application::class, $this);
         $this->container()->instance(ContainerAdapter::class, $this->container());
         WpFacade::setFacadeContainer($container);
-        
     }
     
     public static function generateKey() :string
@@ -138,7 +131,6 @@ class Application implements ArrayAccess
     
     public function isConfigurationCached() :bool
     {
-        
         return is_file($this->configCachePath());
     }
     
@@ -160,19 +152,31 @@ class Application implements ArrayAccess
         
     }
     
-    public function runningUnitTest() :bool
-    {
-        return $this->isRunningUnitTest();
-    }
-    
     public function isRunningUnitTest() :bool
     {
-        return $this['env'] === 'testing';
+        return $this->environment() === 'testing';
     }
     
     public function environment() :string
     {
-        return $this['env'];
+        
+        if ( ! isset($this['env'])) {
+            throw new RuntimeException(
+                "App environment not set."
+            );
+        }
+        
+        $env = $this['env'];
+        
+        if ( ! in_array($env, ['local', 'production', 'testing'])) {
+            
+            throw new RuntimeException(
+                "Allowed values for the environment are ['local','production','testing']"
+            );
+            
+        }
+        
+        return $env;
     }
     
     public function isLocal() :bool
@@ -182,12 +186,12 @@ class Application implements ArrayAccess
     
     public function isProduction() :bool
     {
-        return $this->environment() === 'local';
+        return $this->environment() === 'production';
     }
     
     public function isRunningInConsole() :bool
     {
-        if ($this->is_running_in_console === null) {
+        if ( ! isset($this->is_running_in_console)) {
             $this->is_running_in_console = (PHP_SAPI === 'cli' || PHP_SAPI === 'phpdbg');
         }
         
@@ -196,7 +200,6 @@ class Application implements ArrayAccess
     
     private function setBasePath(string $base_path)
     {
-        
         $this->base_path = rtrim($base_path, '\/');
     }
     

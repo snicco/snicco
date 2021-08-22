@@ -86,8 +86,8 @@ class ViewServiceProviderTest extends FrameworkTestCase
     
     protected function setUp() :void
     {
-        $this->bootAfterCreation();
         parent::setUp();
+        $this->bootApp();
     }
     
 }

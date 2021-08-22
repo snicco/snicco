@@ -17,7 +17,7 @@ class CaptureRequest implements Bootstrapper
     public function bootstrap(Application $app) :void
     {
         
-        if ($app[Request::class] && $app->isRunningUnitTest()) {
+        if (isset($app[Request::class]) && $app->isRunningUnitTest()) {
             return;
         }
         
