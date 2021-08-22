@@ -6,13 +6,15 @@ return [
     
     'key' => TEST_APP_KEY,
     
+    'env' => 'testing',
+    
     'url' => SITE_URL,
     
     'providers' => [
     
     ],
     
-    'debug' => true,
+    'debug' => false,
     
     'debug_editor' => 'phpstorm',
     

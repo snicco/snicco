@@ -16,6 +16,8 @@ class BladeEngineTest extends BladeTestCase
     public function the_blade_factory_can_create_a_blade_view()
     {
         
+        $this->bootApp();
+        
         /** @var ViewFactory $view_service */
         $view_service = TestApp::resolve(ViewFactory::class);
         
@@ -26,6 +28,8 @@ class BladeEngineTest extends BladeTestCase
     /** @test */
     public function exceptions_get_caught_and_translated()
     {
+        
+        $this->bootApp();
         
         /** @var ViewFactory $view_service */
         $view_service = TestApp::resolve(ViewFactory::class);

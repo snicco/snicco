@@ -232,12 +232,13 @@ final class ApplicationMixin
     }
     
     /**
-     * Returns the global variable bag used by view composers.
-     * Arrays are converted to instances of VariableBag.
+     * Returns the global variable bag available to all views.
+     * Arrays are converted to an instance of VariableBag.
+     * Returns the global context if no args are passed
      *
      * @see GlobalContext::add()
      */
-    public static function globals(string $name, $context)
+    public static function globals(?string $name = null, $context = null) :GlobalContext
     {
     }
     

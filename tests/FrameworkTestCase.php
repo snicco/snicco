@@ -14,14 +14,13 @@ use Snicco\Contracts\ViewInterface;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Snicco\Testing\TestCase as BaseTestCase;
 
-class TestCase extends BaseTestCase
+class FrameworkTestCase extends BaseTestCase
 {
     
     protected array $mail_data;
     
-    public function createApplication() :Application
+    protected function createApplication() :Application
     {
-        
         $app = TestApp::make(FIXTURES_DIR);
         $f = new Psr17Factory();
         $app->setServerRequestFactory($f);
@@ -31,26 +30,16 @@ class TestCase extends BaseTestCase
         $app->setResponseFactory($f);
         
         return $app;
-        
-    }
-    
-    public function catchWpMail($null, array $wp_mail_input) :bool
-    {
-        
-        $this->mail_data[] = $wp_mail_input;
-        
-        return true;
-        
     }
     
     protected function setUp() :void
     {
-        
         parent::setUp();
         $GLOBALS['test'] = [];
-        
-        add_filter('pre_wp_mail', [$this, 'catchWpMail'], 10, 2);
-        
+        add_filter('pre_wp_mail', function ($null, array $wp_mail_input) {
+            $this->mail_data[] = $wp_mail_input;
+            return true;
+        }, 10, 2);
     }
     
     protected function tearDown() :void
@@ -73,7 +62,7 @@ class TestCase extends BaseTestCase
         
     }
     
-    protected function withAddedProvider($provider) :TestCase
+    protected function withAddedProvider($provider) :self
     {
         $provider = Arr::wrap($provider);
         
@@ -84,35 +73,53 @@ class TestCase extends BaseTestCase
         }
         
         return $this;
-        
     }
     
-    protected function withoutHooks() :TestCase
+    protected function withRemovedProvider($provider) :self
+    {
+        
+        $provider = Arr::wrap($provider);
+        
+        $providers = $this->app->config('app.providers');
+        
+        foreach ($provider as $p) {
+            
+            Arr::pullByValue($p, $providers);
+            
+        }
+        
+        $this->withReplacedConfig('app.providers', $providers);
+        
+        return $this;
+    }
+    
+    protected function withoutHooks() :self
     {
         $GLOBALS['wp_filter'] = [];
         $GLOBALS['wp_actions'] = [];
         $GLOBALS['wp_current_filter'] = [];
         
         return $this;
-        
     }
     
     protected function assertNoResponse()
     {
-        
         $this->assertNull($this->app->resolve(ResponseEmitter::class)->response);
-        
     }
     
     protected function assertViewContent(string $expected, $actual)
     {
-        
         $actual = ($actual instanceof ViewInterface) ? $actual->toString() : $actual;
         
         $actual = preg_replace("/\r|\n|\t|\s{2,}/", "", $actual);
         
         Assert::assertSame($expected, trim($actual), 'View not rendered correctly.');
-        
+    }
+    
+    protected function withSessionsEnabled() :self
+    {
+        $this->withAddedConfig('sessions.enabled', true);
+        return $this;
     }
     
 }

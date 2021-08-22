@@ -2,10 +2,10 @@
 
 namespace Tests\integration\Middleware;
 
-use Tests\TestCase;
+use Tests\FrameworkTestCase;
 use Snicco\Middleware\Redirect;
 
-class RedirectTest extends TestCase
+class RedirectTest extends FrameworkTestCase
 {
     
     /** @test */
@@ -24,12 +24,6 @@ class RedirectTest extends TestCase
         $response->assertNotNullResponse();
         $response->assertRedirect('/bar')->assertStatus(301);
         
-    }
-    
-    private function getMiddleware(array $redirects = [], string $cache_file = null) :Redirect
-    {
-        
-        return new Redirect($redirects, $cache_file);
     }
     
     /** @test */
@@ -198,7 +192,7 @@ class RedirectTest extends TestCase
     protected function setUp() :void
     {
         
-        $this->afterLoadingConfig(function () {
+        $this->afterApplicationBooted(function () {
             
             $this->withAddedMiddleware('global', Redirect::class);
             $this->withAddedConfig('middleware.always_run_global', true);
@@ -217,6 +211,12 @@ class RedirectTest extends TestCase
             $this->unlink(__DIR__.DIRECTORY_SEPARATOR.'/redirects.json');
         }
         
+    }
+    
+    private function getMiddleware(array $redirects = [], string $cache_file = null) :Redirect
+    {
+        
+        return new Redirect($redirects, $cache_file);
     }
     
 }

@@ -4,18 +4,17 @@ declare(strict_types=1);
 
 namespace Tests\integration\Blade;
 
-use Tests\TestCase;
+use Tests\FrameworkTestCase;
 use Snicco\Blade\BladeServiceProvider;
 use Snicco\Blade\BladeDirectiveServiceProvider;
 
-class BladeTestCase extends TestCase
+class BladeTestCase extends FrameworkTestCase
 {
     
     protected static $ignore_files = [];
     
-    public function packageProviders() :array
+    protected function packageProviders() :array
     {
-        
         return [
             BladeServiceProvider::class,
             BladeDirectiveServiceProvider::class,
@@ -24,7 +23,6 @@ class BladeTestCase extends TestCase
     
     protected function setUp() :void
     {
-        
         parent::setUp();
         $this->rmdir(BLADE_CACHE);
     }

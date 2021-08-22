@@ -2,34 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Tests\integration\ExceptionHandling;
+namespace Tests\integration\Validation;
 
-use Tests\TestCase;
-use Tests\stubs\TestRequest;
+use Tests\FrameworkTestCase;
+use Snicco\Contracts\ExceptionHandler;
 use Snicco\Session\SessionServiceProvider;
-use Snicco\Contracts\ErrorHandlerInterface;
 use Snicco\Validation\ValidationServiceProvider;
-use Snicco\ExceptionHandling\ProductionErrorHandler;
 use Snicco\Validation\Exceptions\ValidationException;
+use Snicco\ExceptionHandling\ProductionExceptionHandler;
 
-class ValidationExceptionTest extends TestCase
+class ValidationExceptionTest extends FrameworkTestCase
 {
-    
-    public function packageProviders() :array
-    {
-        
-        return [
-            SessionServiceProvider::class,
-            ValidationServiceProvider::class,
-        ];
-    }
     
     /** @test */
     public function render_validation_exception_html()
     {
-        
-        $this->withRequest(TestRequest::from('POST', 'foo'));
-        
+        $this->bootApp();
+        $this->withRequest(
+            $this->frontendRequest('POST', '/foobar')->withHeader('referer', '/foobar')
+        );
         $e = ValidationException::withMessages([
             'foo' => [
                 'foo must have a length between 5 and 10.',
@@ -44,7 +35,7 @@ class ValidationExceptionTest extends TestCase
         $handler = $this->errorHandler();
         
         $response = $this->toTestResponse(
-            $handler->transformToResponse(
+            $handler->toHttpResponse(
                 $e,
                 $this->request->withParsedBody([
                     'foo' => 'abcd',
@@ -52,7 +43,7 @@ class ValidationExceptionTest extends TestCase
                 ])
             )
         );
-        $response->assertRedirect();
+        $response->assertRedirect()->assertLocation('/foobar');
         
         $response->assertSessionHasErrors([
             'foo' => 'foo must have a length between 5 and 10.',
@@ -71,17 +62,14 @@ class ValidationExceptionTest extends TestCase
         
     }
     
-    private function errorHandler() :ProductionErrorHandler
-    {
-        
-        return $this->app->resolve(ErrorHandlerInterface::class);
-    }
-    
     /** @test */
     public function a_named_error_bag_can_be_used()
     {
         
-        $this->withRequest(TestRequest::from('POST', 'foo'));
+        $this->bootApp();
+        $this->withRequest(
+            $this->frontendRequest('POST', '/foobar')->withHeader('referer', '/foobar')
+        );
         
         $e = ValidationException::withMessages([
             'foo' => [
@@ -92,7 +80,7 @@ class ValidationExceptionTest extends TestCase
         $handler = $this->errorHandler();
         
         $response = $this->toTestResponse(
-            $handler->transformToResponse(
+            $handler->toHttpResponse(
                 $e,
                 $this->request->withParsedBody([
                     'foo' => 'abcd',
@@ -113,8 +101,10 @@ class ValidationExceptionTest extends TestCase
     /** @test */
     public function render_validation_exception_json()
     {
-        
-        $this->withRequest(TestRequest::from('POST', 'foo'));
+        $this->bootApp();
+        $this->withRequest(
+            $this->frontendRequest('POST', '/foobar')->withHeader('referer', '/foobar')
+        );
         
         $e = ValidationException::withMessages([
             'foo' => [
@@ -130,7 +120,7 @@ class ValidationExceptionTest extends TestCase
         $handler = $this->errorHandler();
         
         $response = $this->toTestResponse(
-            $handler->transformToResponse(
+            $handler->toHttpResponse(
                 $e,
                 $this->request->withHeader('accept', 'application/json')
             )
@@ -157,7 +147,10 @@ class ValidationExceptionTest extends TestCase
     public function a_message_is_included_with_json_errors()
     {
         
-        $this->withRequest(TestRequest::from('POST', 'foo'));
+        $this->bootApp();
+        $this->withRequest(
+            $this->frontendRequest('POST', '/foobar')->withHeader('referer', '/foobar')
+        );
         
         $e = ValidationException::withMessages([
             'foo' => [
@@ -173,7 +166,7 @@ class ValidationExceptionTest extends TestCase
         $handler = $this->errorHandler();
         
         $response = $this->toTestResponse(
-            $handler->transformToResponse(
+            $handler->toHttpResponse(
                 $e,
                 $this->request->withHeader('accept', 'application/json')
             )
@@ -194,6 +187,56 @@ class ValidationExceptionTest extends TestCase
             ],
         ]);
         
+    }
+    
+    /** @test */
+    public function can_be_used_without_sessions()
+    {
+        
+        $this->withRemovedProvider(SessionServiceProvider::class)->bootApp();
+        
+        $this->withRequest(
+            $this->frontendRequest('POST', '/foobar')->withHeader('referer', '/foobar')
+        );
+        $e = ValidationException::withMessages([
+            'foo' => [
+                'foo must have a length between 5 and 10.',
+                'bar can not have whitespace',
+            ],
+            'bar' => [
+                'bar must have a length between 5 and 10.',
+                'bar can not have special chars',
+            ],
+        ]);
+        
+        $handler = $this->errorHandler();
+        
+        $response = $this->toTestResponse(
+            $handler->toHttpResponse(
+                $e,
+                $this->request->withParsedBody([
+                    'foo' => 'abcd',
+                    'bar' => 'ab cd',
+                ])
+            )
+        );
+        $response->assertRedirect()->assertLocation('/foobar');
+        
+        $this->assertNull($response->session());
+        
+    }
+    
+    protected function packageProviders() :array
+    {
+        return [
+            SessionServiceProvider::class,
+            ValidationServiceProvider::class,
+        ];
+    }
+    
+    private function errorHandler() :ProductionExceptionHandler
+    {
+        return $this->app->resolve(ExceptionHandler::class);
     }
     
 }

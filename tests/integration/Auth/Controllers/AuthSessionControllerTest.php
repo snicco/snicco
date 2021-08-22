@@ -317,6 +317,12 @@ class AuthSessionControllerTest extends AuthTestCase
         
     }
     
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bootApp();
+    }
+    
     private function postToLogin(array $data) :TestResponse
     {
         $token = $this->withCsrfToken();

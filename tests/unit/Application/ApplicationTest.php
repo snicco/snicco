@@ -13,6 +13,7 @@ use Snicco\Application\Config;
 use Tests\stubs\TestContainer;
 use Contracts\ContainerAdapter;
 use Snicco\Application\Application;
+use SniccoAdapter\BaseContainerAdapter;
 use Tests\helpers\CreateDefaultWpApiMocks;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
@@ -31,7 +32,6 @@ class ApplicationTest extends UnitTest
         $base_container = $this->createContainer();
         
         $application = Application::create($this->base_path, $base_container);
-        $application->runningUnitTest();
         
         $this->assertInstanceOf(Application::class, $application);
         
@@ -40,21 +40,52 @@ class ApplicationTest extends UnitTest
     }
     
     /** @test */
+    public function an_app_can_not_be_instantiated_without_the_static_constructor()
+    {
+        $this->expectError();
+        $app = new Application(new BaseContainerAdapter());
+    }
+    
+    /** @test */
+    public function a_valid_app_key_can_be_created()
+    {
+        
+        $app = $this->newApplication();
+        try {
+            
+            $app->config()->set('app.key', 'foobar');
+            $app->boot();
+            $this->fail('booted with invalid key');
+        } catch (ConfigurationException $exception) {
+            
+            $this->assertStringStartsWith('Your app.key config value is', $exception->getMessage());
+            
+        }
+        
+        $app->config()->set('app.key', $key = Application::generateKey());
+        $app->boot();
+        
+        $this->assertStringStartsWith('base64:', $key);
+        
+    }
+    
+    /** @test */
+    public function testHasBeenBootstrapped()
+    {
+        
+        $app = $this->newApplication();
+        $this->assertFalse($app->hasBeenBootstrapped());
+        $app->boot();
+        $this->assertTrue($app->hasBeenBootstrapped());
+    }
+    
+    /** @test */
     public function the_application_cant_be_bootstrapped_twice()
     {
         
         $app = $this->newApplication();
-        $app->runningUnitTest();
         
-        try {
-            
-            $app->boot();
-            
-        } catch (Throwable $e) {
-            
-            $this->fail('Application could not be bootstrapped.'.PHP_EOL.$e->getMessage());
-            
-        }
+        $app->boot();
         
         try {
             
@@ -70,26 +101,11 @@ class ApplicationTest extends UnitTest
         
     }
     
-    private function newApplication() :Application
-    {
-        
-        $app = Application::create($this->base_path, $this->container);
-        $app->setResponseFactory($this->psrResponseFactory());
-        $app->setUriFactory($this->psrUriFactory());
-        $app->setStreamFactory($this->psrStreamFactory());
-        $app->setUploadedFileFactory($this->psrUploadedFileFactory());
-        $app->setServerRequestFactory($this->psrServerRequestFactory());
-        
-        return $app;
-        
-    }
-    
     /** @test */
     public function user_provided_config_gets_bound_into_the_di_container()
     {
         
         $app = $this->newApplication();
-        $app->runningUnitTest();
         
         $app->boot();
         
@@ -102,7 +118,6 @@ class ApplicationTest extends UnitTest
     {
         
         $app = $this->newApplication();
-        $app->runningUnitTest();
         
         $app->boot();
         
@@ -117,7 +132,7 @@ class ApplicationTest extends UnitTest
         
         $container = new TestContainer();
         
-        $app = new Application($container);
+        $app = Application::create(__DIR__, $container);
         
         $this->assertSame($container, $app->container());
         $this->assertInstanceOf(TestContainer::class, $app->container());
@@ -129,18 +144,17 @@ class ApplicationTest extends UnitTest
     {
         
         $app = $this->newApplication();
-        $app->runningUnitTest();
         
         $app->boot();
         
         $this->assertInstanceOf(
             Config::class,
-            $app->resolve(Config::class)
+            $config = $app->resolve(Config::class)
         );
         $this->assertSame('bar', $app->config('app.foo'));
         $this->assertSame('boo', $app->config('app.bar.baz'));
         $this->assertSame('bogus_default', $app->config('app.bogus', 'bogus_default'));
-        
+        $this->assertSame($config, $app->config());
     }
     
     /** @test */
@@ -152,19 +166,6 @@ class ApplicationTest extends UnitTest
         $app->boot();
         
         $this->assertInstanceOf(Request::class, $app->resolve(Request::class));
-        
-    }
-    
-    /** @test */
-    public function settingUnitTest()
-    {
-        
-        $app = $this->newApplication();
-        $this->assertFalse($app->isRunningUnitTest());
-        
-        $app->runningUnitTest();
-        
-        $this->assertTrue($app->isRunningUnitTest());
         
     }
     
@@ -228,6 +229,35 @@ class ApplicationTest extends UnitTest
     }
     
     /** @test */
+    public function testDistPath()
+    {
+        
+        $app = $this->newApplication();
+        $app->boot();
+        
+        $path = $app->distPath();
+        $this->assertSame($this->base_path.DS.'dist', $path);
+        $path = $app->distPath('js');
+        $this->assertSame($this->base_path.DS.'dist'.DS.'js', $path);
+        
+        $app->config()->set('app.dist', 'custom-dist');
+        $this->assertSame($this->base_path.DS.'custom-dist', $app->distPath());
+        
+    }
+    
+    /** @test */
+    public function testBasePath()
+    {
+        
+        $app = $this->newApplication();
+        $app->boot();
+        
+        $this->assertSame($this->base_path, $app->basePath());
+        $this->assertSame($this->base_path.DIRECTORY_SEPARATOR.'foo', $app->basePath('foo'));
+        
+    }
+    
+    /** @test */
     public function generateKey()
     {
         
@@ -240,6 +270,81 @@ class ApplicationTest extends UnitTest
         } catch (Throwable $e) {
             $this->fail('Generated app key is not compatible.'.PHP_EOL.$e->getMessage());
         }
+        
+    }
+    
+    /** @test */
+    public function testEnvironment()
+    {
+        
+        $app = $this->newApplication();
+        $app['env'] = 'testing';
+        
+        $this->assertSame('testing', $app->environment());
+        
+    }
+    
+    /** @test */
+    public function testIsLocal()
+    {
+        $app = $this->newApplication();
+        $app['env'] = 'local';
+        
+        $this->assertTrue($app->isLocal());
+        
+        $app['env'] = 'production';
+        $this->assertFalse($app->isLocal());
+    }
+    
+    /** @test */
+    public function testIsProduction()
+    {
+        
+        $app = $this->newApplication();
+        $app['env'] = 'production';
+        
+        $this->assertTrue($app->isProduction());
+        
+        $app['env'] = 'local';
+        $this->assertFalse($app->isProduction());
+        
+    }
+    
+    /** @test */
+    public function testIsRunningUnitTests()
+    {
+        
+        $app = $this->newApplication();
+        $app['env'] = 'production';
+        
+        $this->assertFalse($app->isRunningUnitTest());
+        
+        $app['env'] = 'testing';
+        $this->assertTrue($app->isRunningUnitTest());
+        
+    }
+    
+    /** @test */
+    public function testIsRunningInConsole()
+    {
+        
+        $app = $this->newApplication();
+        
+        $this->assertTrue($app->isRunningInConsole());
+        
+    }
+    
+    /** @test */
+    public function test_exception_for_missing_env_value()
+    {
+        
+        $app = $this->newApplication();
+        $this->expectException(\RuntimeException::class);
+        $app->boot();
+        
+        $app['env'] = 'foo';
+        
+        $app->environment();
         
     }
     
@@ -258,6 +363,20 @@ class ApplicationTest extends UnitTest
         
         WP::reset();
         m::close();
+        
+    }
+    
+    private function newApplication() :Application
+    {
+        
+        $app = Application::create($this->base_path, $this->container);
+        $app->setResponseFactory($this->psrResponseFactory());
+        $app->setUriFactory($this->psrUriFactory());
+        $app->setStreamFactory($this->psrStreamFactory());
+        $app->setUploadedFileFactory($this->psrUploadedFileFactory());
+        $app->setServerRequestFactory($this->psrServerRequestFactory());
+        
+        return $app;
         
     }
     

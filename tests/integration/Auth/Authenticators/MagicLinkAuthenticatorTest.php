@@ -38,17 +38,6 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
         
     }
     
-    private function routeUrl(int $user_id) :string
-    {
-        
-        return $this->url->signedRoute(
-            'auth.login.magic-link',
-            ['query' => ['user_id' => $user_id]],
-            300,
-            true
-        );
-    }
-    
     /** @test */
     public function a_magic_link_for_a_non_resolvable_user_will_fail()
     {
@@ -174,7 +163,7 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
     protected function setUp() :void
     {
         
-        $this->afterLoadingConfig(function () {
+        $this->afterApplicationCreated(function () {
             
             $this->withReplacedConfig('auth.through', [
                 MagicLinkAuthenticator::class,
@@ -185,14 +174,25 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
             
         });
         
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationBooted(function () {
             
             $this->url = $this->app->resolve(UrlGenerator::class);
             $this->loadRoutes();
             
         });
-        
         parent::setUp();
+        $this->bootApp();
+    }
+    
+    private function routeUrl(int $user_id) :string
+    {
+        
+        return $this->url->signedRoute(
+            'auth.login.magic-link',
+            ['query' => ['user_id' => $user_id]],
+            300,
+            true
+        );
     }
     
 }

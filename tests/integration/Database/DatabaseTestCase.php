@@ -4,20 +4,21 @@ declare(strict_types=1);
 
 namespace Tests\integration\Database;
 
-use mysqli;
-use Tests\TestCase;
 use Snicco\Database\FakeDB;
+use Tests\FrameworkTestCase;
 use Snicco\Database\WPConnection;
+use Snicco\Testing\WithDatabaseExceptions;
 use Snicco\Database\DatabaseServiceProvider;
 use Snicco\Database\Contracts\BetterWPDbInterface;
 use Snicco\Database\Testing\Assertables\AssertableWpDB;
 
-class DatabaseTestCase extends TestCase
+class DatabaseTestCase extends FrameworkTestCase
 {
     
-    public function packageProviders() :array
+    use WithDatabaseExceptions;
+    
+    protected function packageProviders() :array
     {
-        
         return [
             DatabaseServiceProvider::class,
         ];
@@ -30,7 +31,7 @@ class DatabaseTestCase extends TestCase
         
         if (in_array(WithTestTables::class, $traits)) {
             
-            $this->afterApplicationCreated(function () {
+            $this->afterApplicationBooted(function () {
                 
                 $this->removeWpBrowserTransaction();
                 $this->withNewTables();
@@ -41,7 +42,7 @@ class DatabaseTestCase extends TestCase
         
         if (in_array(WithTestTransactions::class, $traits)) {
             
-            $this->afterApplicationCreated(function () {
+            $this->afterApplicationBooted(function () {
                 
                 $this->beginTransaction();
                 
@@ -61,17 +62,15 @@ class DatabaseTestCase extends TestCase
     
     protected function removeWpBrowserTransaction()
     {
-        
         global $wpdb;
         $wpdb->query('COMMIT');
     }
     
     /**
-     * NOTE: THIS DATABASE HAS TO EXISTS ON THE LOCAL MACHINE.
+     * NOTE: THIS DATABASE HAS TO EXIST ON THE LOCAL MACHINE.
      */
     protected function secondDatabaseConfig() :array
     {
-        
         return [
             'username' => $_SERVER['SECONDARY_DB_USER'] ?? 'root',
             'database' => $_SERVER['SECONDARY_DB_NAME'],
@@ -82,34 +81,28 @@ class DatabaseTestCase extends TestCase
     
     protected function assertDefaultConnection(BetterWPDbInterface $wpdb) :void
     {
-        
         $this->assertSame(DB_NAME, $wpdb->dbname);
     }
     
     protected function assertNotDefaultConnection(BetterWPDbInterface $wpdb) :void
     {
-        
         $this->assertNotSame(DB_NAME, $wpdb->dbname);
         
     }
     
     protected function withFakeDb() :DatabaseTestCase
     {
-        
         $this->instance(BetterWPDbInterface::class, FakeDB::class);
-        
         return $this;
     }
     
     protected function assertable(WPConnection $connection) :FakeDB
     {
-        
         return $connection->dbInstance();
     }
     
     protected function wpdbInsert(string $table, array $data)
     {
-        
         global $wpdb;
         
         $format = $this->format($data);
@@ -138,33 +131,16 @@ class DatabaseTestCase extends TestCase
         
     }
     
-    // WordPress is completely incompatible with mysql strict mode.
-    // But we are not testing $wpdb here and can only test if our tables are created correctly.
-    
     protected function wpdbDelete(string $table, array $wheres)
     {
-        
         global $wpdb;
         
         $wpdb->delete($table, $wheres, $this->format($wheres));
-        
     }
     
     protected function assertDbTable(string $table_name) :AssertableWpDB
     {
-        
         return new AssertableWpDB($table_name);
-    }
-    
-    protected function ensureFailOnErrors()
-    {
-        
-        global $wpdb;
-        
-        /** @var mysqli $mysqli */
-        $mysqli = $wpdb->dbh;
-        $mysqli->query("SET SESSION sql_mode='TRADITIONAL'");
-        
     }
     
     private function format(array $data)

@@ -32,4 +32,10 @@ class BladeLayoutsTest extends BladeTestCase
         
     }
     
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bootApp();
+    }
+    
 }

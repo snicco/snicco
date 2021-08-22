@@ -56,9 +56,7 @@ trait ReliesOnIlluminateContainer
     // Not having one container instance globally available will lead to unexpected bugs.
     private function setGlobalContainerInstance(IlluminateContainerInterface $container)
     {
-        
         Container::setInstance($container);
-        
     }
     
 }

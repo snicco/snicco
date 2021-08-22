@@ -2,17 +2,22 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Application;
+namespace Snicco\Bootstrap;
 
 use Exception;
 use RuntimeException;
+use Snicco\Application\Config;
+use Snicco\Contracts\Bootstrapper;
+use Snicco\Application\Application;
 use Symfony\Component\Finder\Finder;
 use Symfony\Component\Finder\SplFileInfo;
 
-class LoadConfiguration
+use function wp_mkdir_p;
+
+class LoadConfiguration implements Bootstrapper
 {
     
-    public function bootstrap(Application $app) :Config
+    public function bootstrap(Application $app) :void
     {
         
         $config = [];
@@ -37,15 +42,13 @@ class LoadConfiguration
             
         }
         
-        return $config;
+        $app->container()->instance(Config::class, $config);
         
     }
     
     private function readFromCacheFile(string $cached)
     {
-        
         return json_decode(file_get_contents($cached), true);
-        
     }
     
     private function loadConfigurationFromFiles(Application $app, Config $config)
@@ -99,7 +102,7 @@ class LoadConfiguration
         );
         
         if ($success === false) {
-            throw new RuntimeException('Config could not be written to cache file');
+            throw new RuntimeException('Config could not be written to cache file.');
         }
         
     }

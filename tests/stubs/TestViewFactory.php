@@ -26,7 +26,9 @@ class TestViewFactory implements ViewFactoryInterface
     
     public function render($views, array $context = []) :string
     {
-        //
+        $view = $this->make($views);
+        $view->with($context);
+        return $view->toString();
     }
     
 }

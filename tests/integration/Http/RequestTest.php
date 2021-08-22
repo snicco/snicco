@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\integration\Http;
 
-use Tests\stubs\TestRequest;
-use Codeception\TestCase\WPTestCase;
+use Tests\FrameworkTestCase;
 
-class RequestTest extends WPTestCase
+class RequestTest extends FrameworkTestCase
 {
-    
-    private TestRequest $request;
     
     public function testValidateAjaxNonce()
     {
@@ -51,12 +48,22 @@ class RequestTest extends WPTestCase
         
     }
     
+    /** @test */
+    public function testAuthenticated()
+    {
+        
+        $this->assertFalse($this->request->authenticated());
+        $this->actingAs($calvin = $this->createAdmin());
+        $this->assertTrue($this->request->authenticated());
+        
+    }
+    
     protected function setUp() :void
     {
         
         parent::setUp();
         
-        $this->request = TestRequest::from('POST', 'foo');
+        $this->request = $this->frontendRequest('POST', '/foo');
         
     }
     

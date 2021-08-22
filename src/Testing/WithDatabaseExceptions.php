@@ -13,7 +13,6 @@ trait WithDatabaseExceptions
         global $wpdb;
         
         /** @var mysqli $mysqli */
-        
         $mysqli = $wpdb->dbh;
         
         error_reporting(E_ALL);

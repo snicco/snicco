@@ -78,8 +78,20 @@ class AuthServiceProvider extends ServiceProvider
         $this->bindTwoFactorProvider();
         $this->bindTwoFactorChallengeResponse();
         $this->bindRegistrationViewResponse();
-        
         $this->bindFail2Ban();
+        
+    }
+    
+    public function bootstrap() :void
+    {
+        if ( ! $this->config->get('session.enabled')) {
+            
+            throw new ConfigurationException(
+                'Sessions need to be enabled if you want to use the auth features.'
+            );
+        }
+        
+        $this->bindSessionManagerInterface();
         
     }
     
@@ -380,28 +392,12 @@ class AuthServiceProvider extends ServiceProvider
         
     }
     
-    public function bootstrap() :void
-    {
-        
-        $this->bindSessionManagerInterface();
-        
-        if ( ! $this->config->get('session.enabled')) {
-            
-            throw new ConfigurationException(
-                'Sessions need to be enabled if you want to use the auth features.'
-            );
-        }
-        
-    }
-    
     private function bindSessionManagerInterface()
     {
-        
         $this->container->singleton(
             SessionManagerInterface::class,
             fn() => $this->container->make(AuthSessionManager::class)
         );
-        
     }
     
 }

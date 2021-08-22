@@ -8,6 +8,7 @@ use Snicco\Support\WP;
 use Snicco\Contracts\Mailer;
 use Snicco\Listeners\SendMail;
 use Snicco\Events\PendingMail;
+use Snicco\Application\Config;
 use Snicco\Contracts\ServiceProvider;
 use BetterWpHooks\Contracts\Dispatcher;
 
@@ -21,15 +22,18 @@ class MailServiceProvider extends ServiceProvider
         $this->bindConfig();
     }
     
+    public function bootstrap() :void
+    {
+        //
+    }
+    
     private function bindMailer()
     {
-        
         $this->container->singleton(Mailer::class, fn() => new WordPressMailer());
     }
     
     private function bindMailBuilder()
     {
-        
         $this->container->singleton(MailBuilder::class, function () {
             
             return new MailBuilder(
@@ -38,7 +42,6 @@ class MailServiceProvider extends ServiceProvider
             );
             
         });
-        
     }
     
     private function bindConfig()
@@ -53,17 +56,12 @@ class MailServiceProvider extends ServiceProvider
         
         ]);
         
-        $this->config->extend('mail.from', ['name' => WP::siteName(), 'email' => WP::adminEmail()]);
-        $this->config->extend(
-            'mail.reply_to',
-            ['name' => WP::siteName(), 'email' => WP::adminEmail()]
+        $this->config->extendIfEmpty(
+            'mail.from',
+            fn() => ['name' => WP::siteName(), 'email' => WP::adminEmail()]
         );
+        $this->config->extend('mail.reply_to', fn(Config $config) => $config['mail.from']);
         
-    }
-    
-    public function bootstrap() :void
-    {
-        //
     }
     
 }

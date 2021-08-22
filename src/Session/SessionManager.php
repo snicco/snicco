@@ -25,7 +25,7 @@ class SessionManager implements SessionManagerInterface
     public const THIRTY_MIN_IN_SEC = 1800;
     public const WEEK_IN_SEC = self::DAY_IN_SEC * 7;
     
-    private array   $config;
+    private array $config;
     
     private Session $session;
     
@@ -61,32 +61,6 @@ class SessionManager implements SessionManagerInterface
         }
         
         $this->session->save();
-        
-    }
-    
-    private function rotationInterval() :int
-    {
-        
-        return $this->config['rotate'];
-    }
-    
-    private function maxSessionLifetime()
-    {
-        
-        return $this->config['lifetime'];
-        
-    }
-    
-    private function needsRotation() :bool
-    {
-        
-        if ( ! isset($this->config['rotate']) || ! is_int($this->config['rotate'])) {
-            return false;
-        }
-        
-        $rotation = $this->session->rotationDueAt();
-        
-        return $this->currentTime() - $rotation > 0;
         
     }
     
@@ -172,6 +146,32 @@ class SessionManager implements SessionManagerInterface
         $cookies->add($this->sessionCookie());
         
         $emitter->emitCookies($cookies);
+        
+    }
+    
+    private function rotationInterval() :int
+    {
+        
+        return $this->config['rotate'];
+    }
+    
+    private function maxSessionLifetime()
+    {
+        
+        return $this->config['lifetime'];
+        
+    }
+    
+    private function needsRotation() :bool
+    {
+        
+        if ( ! isset($this->config['rotate']) || ! is_int($this->config['rotate'])) {
+            return false;
+        }
+        
+        $rotation = $this->session->rotationDueAt();
+        
+        return $this->currentTime() - $rotation > 0;
         
     }
     

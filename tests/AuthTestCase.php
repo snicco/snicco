@@ -16,16 +16,20 @@ use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Validation\ValidationServiceProvider;
 use Snicco\Session\Contracts\SessionManagerInterface;
 
-class AuthTestCase extends TestCase
+class AuthTestCase extends FrameworkTestCase
 {
     
     protected AuthSessionManager $session_manager;
-    protected array              $codes;
-    protected Encryptor          $encryptor;
-    protected string             $valid_one_time_code   = '123456';
-    protected string             $invalid_one_time_code = '111111';
     
-    public function packageProviders() :array
+    protected array $codes;
+    
+    protected Encryptor $encryptor;
+    
+    protected string $valid_one_time_code = '123456';
+    
+    protected string $invalid_one_time_code = '111111';
+    
+    protected function packageProviders() :array
     {
         
         return [
@@ -51,38 +55,25 @@ class AuthTestCase extends TestCase
         $this->session_manager = $m;
     }
     
-    protected function tearDown() :void
-    {
-        $this->logout();
-        parent::tearDown();
-    }
-    
     protected function without2Fa() :self
     {
-        
         $this->withReplacedConfig('auth.features.2fa', false);
-        
         return $this;
     }
     
     protected function with2Fa() :self
     {
-        
         $this->withReplacedConfig('auth.features.2fa', true);
-        
         return $this;
     }
     
     protected function encryptCodes(array $codes) :string
     {
-        
         return $this->encryptor->encrypt(json_encode($codes));
-        
     }
     
     protected function getUserRecoveryCodes(WP_User $user)
     {
-        
         $codes = get_user_meta($user->ID, 'two_factor_recovery_codes', true);
         
         if ($codes === '') {
@@ -94,7 +85,6 @@ class AuthTestCase extends TestCase
     
     protected function getUserSecret(WP_User $user)
     {
-        
         return get_user_meta($user->ID, 'two_factor_secret', true);
     }
     
@@ -112,13 +102,11 @@ class AuthTestCase extends TestCase
     
     protected function generateTestRecoveryCodes() :array
     {
-        
         return Collection::times(8, function () {
             
             return RecoveryCode::generate();
             
         })->all();
-        
     }
     
     protected function enable2Fa(WP_User $user) :self

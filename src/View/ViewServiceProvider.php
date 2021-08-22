@@ -15,13 +15,8 @@ class ViewServiceProvider extends ServiceProvider
     public function register() :void
     {
         
-        $this->extendViews(
-            $this->config->get('app.package_root')
-            .DIRECTORY_SEPARATOR
-            .'resources'
-            .DIRECTORY_SEPARATOR
-            .'views'
-        );
+        $ds = DIRECTORY_SEPARATOR;
+        $this->extendViews($this->config->get('app.package_root').$ds.'resources'.$ds.'views');
         
         $this->bindMethodField();
         
@@ -39,9 +34,14 @@ class ViewServiceProvider extends ServiceProvider
         
     }
     
+    public function bootstrap() :void
+    {
+        $context = $this->container->make(GlobalContext::class);
+        $context->add('__view', fn() => $this->container->make(ViewFactory::class));
+    }
+    
     private function bindMethodField()
     {
-        
         $this->container->singleton(MethodField::class, fn() => new MethodField($this->appKey()));
     }
     
@@ -53,7 +53,6 @@ class ViewServiceProvider extends ServiceProvider
     
     private function bindViewServiceImplementation() :void
     {
-        
         $this->container->singleton(ViewFactory::class, function () {
             
             return new ViewFactory(
@@ -68,7 +67,6 @@ class ViewServiceProvider extends ServiceProvider
     
     private function bindViewFactoryInterface() :void
     {
-        
         $this->container->singleton(
             ViewFactoryInterface::class,
             fn() => $this->container->make(ViewFactory::class)
@@ -104,12 +102,6 @@ class ViewServiceProvider extends ServiceProvider
             );
             
         });
-    }
-    
-    public function bootstrap() :void
-    {
-        $context = $this->container->make(GlobalContext::class);
-        $context->add('__view', fn() => $this->container->make(ViewFactory::class));
     }
     
 }

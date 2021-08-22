@@ -2,11 +2,11 @@
 
 namespace Tests\integration\Http;
 
-use Tests\TestCase;
+use Tests\FrameworkTestCase;
 use Snicco\Http\ResponseEmitter;
 use Snicco\Testing\TestResponseEmitter;
 
-class HttpKernelResponsesTest extends TestCase
+class HttpKernelResponsesTest extends FrameworkTestCase
 {
     
     /** @test */

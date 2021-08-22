@@ -64,6 +64,12 @@ class Fail2BanTest extends AuthTestCase
         
     }
     
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bootApp();
+    }
+    
 }
 
 class TestBannable implements Bannable

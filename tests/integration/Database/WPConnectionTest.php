@@ -22,8 +22,6 @@ use Illuminate\Database\Schema\Grammars\MySqlGrammar as MySqlSchemaGrammar;
 class WPConnectionTest extends DatabaseTestCase
 {
     
-    protected bool $defer_boot = true;
-    
     /** @test */
     public function constructing_the_wp_connection_correctly_sets_up_all_collaborators()
     {
@@ -43,16 +41,6 @@ class WPConnectionTest extends DatabaseTestCase
         
     }
     
-    private function newWpConnection(string $name = null) :WPConnection
-    {
-        
-        $this->boot();
-        $resolver = $this->app->resolve(ConnectionResolverInterface::class);
-        
-        return $resolver->connection($name);
-        
-    }
-    
     /** @test */
     public function the_query_builder_uses_the_correct_grammar_and_processor()
     {
@@ -68,10 +56,6 @@ class WPConnectionTest extends DatabaseTestCase
         
     }
     
-    /**
-     * INSTANCE SETUP
-     */
-    
     /** @test */
     public function the_schema_builder_uses_the_correct_grammar_and_processor()
     {
@@ -83,6 +67,10 @@ class WPConnectionTest extends DatabaseTestCase
         self::assertInstanceOf(MySqlSchemaBuilder::class, $schema_builder);
         
     }
+    
+    /**
+     * INSTANCE SETUP
+     */
     
     /** @test */
     public function the_connection_can_begin_a_query_against_a_query_builder_table()
@@ -149,21 +137,6 @@ class WPConnectionTest extends DatabaseTestCase
         
     }
     
-    private function mockDb()
-    {
-        
-        $m = Mockery::mock(BetterWPDbInterface::class);
-        $m->dbname = 'testing';
-        $m->prefix = 'wp_';
-        
-        return $m;
-        
-    }
-    
-    /**
-     * QUERIES
-     */
-    
     /** @test */
     public function selecting_a_set_of_records_works_with_a_valid_query()
     {
@@ -214,6 +187,10 @@ class WPConnectionTest extends DatabaseTestCase
         );
         
     }
+    
+    /**
+     * QUERIES
+     */
     
     /** @test */
     public function successful_inserts_return_true()
@@ -425,10 +402,6 @@ class WPConnectionTest extends DatabaseTestCase
         
     }
     
-    /**
-     * PRETEND MODE
-     */
-    
     /** @test */
     public function nothing_gets_executed_for_select_one()
     {
@@ -484,6 +457,10 @@ class WPConnectionTest extends DatabaseTestCase
         $this->assertable($wp)->assertDidNotDoStatement();
         
     }
+    
+    /**
+     * PRETEND MODE
+     */
     
     /** @test */
     public function nothing_gets_executed_for_updates()
@@ -629,10 +606,6 @@ class WPConnectionTest extends DatabaseTestCase
         
     }
     
-    /**
-     * EXCEPTION HANDLING
-     */
-    
     /** @test */
     public function errors_get_handled_for_inserts()
     {
@@ -682,6 +655,10 @@ class WPConnectionTest extends DatabaseTestCase
         }
         
     }
+    
+    /**
+     * EXCEPTION HANDLING
+     */
     
     /** @test */
     public function errors_get_handled_for_deletes()
@@ -790,12 +767,32 @@ class WPConnectionTest extends DatabaseTestCase
     
     protected function setUp() :void
     {
-        
-        $this->afterLoadingConfig(function () {
-            
+        // needs to be before the booting, or we can't overwrite the connection in the container.
+        $this->afterApplicationCreated(function () {
             $this->withFakeDb();
         });
         parent::setUp();
+    }
+    
+    private function newWpConnection(string $name = null) :WPConnection
+    {
+        
+        $this->bootApp();
+        $resolver = $this->app->resolve(ConnectionResolverInterface::class);
+        
+        return $resolver->connection($name);
+        
+    }
+    
+    private function mockDb()
+    {
+        
+        $m = Mockery::mock(BetterWPDbInterface::class);
+        $m->dbname = 'testing';
+        $m->prefix = 'wp_';
+        
+        return $m;
+        
     }
     
 }

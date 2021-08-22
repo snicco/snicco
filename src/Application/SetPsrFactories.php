@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Application;
 
 use Psr\Http\Message\UriFactoryInterface;
-use Nyholm\Psr7Server\ServerRequestCreator;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Psr\Http\Message\UploadedFileFactoryInterface;
@@ -53,18 +52,6 @@ trait SetPsrFactories
         $this->container()->instance(ResponseFactoryInterface::class, $response_factory);
         
         return $this;
-    }
-    
-    private function serverRequestCreator() :ServerRequestCreator
-    {
-        
-        return new ServerRequestCreator(
-            $this->container()->make(ServerRequestFactoryInterface::class),
-            $this->container()->make(UriFactoryInterface::class),
-            $this->container()->make(UploadedFileFactoryInterface::class),
-            $this->container()->make(StreamFactoryInterface::class)
-        );
-        
     }
     
 }

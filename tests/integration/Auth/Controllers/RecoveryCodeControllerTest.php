@@ -33,14 +33,6 @@ class RecoveryCodeControllerTest extends AuthTestCase
         
     }
     
-    private function routePath()
-    {
-        
-        $this->loadRoutes();
-        
-        return $this->app->resolve(UrlGenerator::class)->toRoute('auth.2fa.recovery-codes');
-    }
-    
     /** @test */
     public function the_endpoint_cant_be_accessed_if_the_auth_confirmation_expired()
     {
@@ -160,12 +152,12 @@ class RecoveryCodeControllerTest extends AuthTestCase
     protected function setUp() :void
     {
         
-        $this->afterLoadingConfig(function () {
+        $this->afterApplicationCreated(function () {
             
             $this->with2Fa();
             
         });
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationBooted(function () {
             
             $this->codes = $this->generateTestRecoveryCodes();
             $this->encryptor = $this->app->resolve(EncryptorInterface::class);
@@ -173,6 +165,15 @@ class RecoveryCodeControllerTest extends AuthTestCase
         });
         
         parent::setUp();
+        $this->bootApp();
+    }
+    
+    private function routePath()
+    {
+        
+        $this->loadRoutes();
+        
+        return $this->app->resolve(UrlGenerator::class)->toRoute('auth.2fa.recovery-codes');
     }
     
 }

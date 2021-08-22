@@ -13,10 +13,10 @@ use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
+use Snicco\Contracts\ExceptionHandler;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use ReflectionPayload\ReflectionPayload;
-use Snicco\Contracts\ErrorHandlerInterface;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 use function collect;
@@ -24,17 +24,17 @@ use function collect;
 class Pipeline
 {
     
-    private ErrorHandlerInterface $error_handler;
+    private ExceptionHandler $error_handler;
     
-    private ContainerAdapter      $container;
+    private ContainerAdapter $container;
     
-    private Request               $request;
+    private Request $request;
     
-    private array                 $middleware = [];
+    private array $middleware = [];
     
-    private ResponseFactory       $response_factory;
+    private ResponseFactory $response_factory;
     
-    public function __construct(ContainerAdapter $container, ErrorHandlerInterface $error_handler)
+    public function __construct(ContainerAdapter $container, ExceptionHandler $error_handler)
     {
         $this->container = $container;
         $this->error_handler = $error_handler;
@@ -61,6 +61,24 @@ class Pipeline
         $this->middleware = $this->normalizeMiddleware($middleware);
         
         return $this;
+        
+    }
+    
+    public function then(Closure $request_handler) :ResponseInterface
+    {
+        
+        $this->middleware[] = [new Delegate($request_handler), []];
+        
+        return $this->run($this->buildMiddlewareStack());
+        
+    }
+    
+    public function run($stack = null) :Response
+    {
+        
+        $stack = $stack ?? $this->buildMiddlewareStack();
+        
+        return $stack->handle($this->request);
         
     }
     
@@ -130,24 +148,6 @@ class Pipeline
         
     }
     
-    public function then(Closure $request_handler) :ResponseInterface
-    {
-        
-        $this->middleware[] = [new Delegate($request_handler), []];
-        
-        return $this->run($this->buildMiddlewareStack());
-        
-    }
-    
-    public function run($stack = null) :Response
-    {
-        
-        $stack = $stack ?? $this->buildMiddlewareStack();
-        
-        return $stack->handle($this->request);
-        
-    }
-    
     private function buildMiddlewareStack() :Delegate
     {
         return $this->nextMiddleware();
@@ -175,7 +175,7 @@ class Pipeline
                 return $this->resolveNextMiddleware($request);
             } catch (Throwable $e) {
                 
-                return $this->error_handler->transformToResponse($e, $request);
+                return $this->error_handler->toHttpResponse($e, $request);
                 
             }
             

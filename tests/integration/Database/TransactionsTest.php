@@ -17,7 +17,8 @@ class TransactionsTest extends DatabaseTestCase
     
     /**
      * We use a separate mysqli connection to verify that our transactions indeed work as
-     * expected.
+     * expected since the same mysqli instance will always have access to the data inside the
+     * transaction.
      */
     private mysqli $verification_connection;
     
@@ -39,30 +40,6 @@ class TransactionsTest extends DatabaseTestCase
         DB::commit();
         
         $this->assertTeamExists('FC Barcelona');
-        
-    }
-    
-    private function assertTeamNotExists(string $team_name)
-    {
-        
-        $result = $this->verification_connection->query(
-            "select count(*) as `count` from `wp_football_teams` where `name` = '$team_name'"
-        );
-        $count = $result->fetch_object()->count;
-        
-        $this->assertSame('0', $count, 'The team: '.$team_name.' was not found.');
-        
-    }
-    
-    private function assertTeamExists(string $team_name)
-    {
-        
-        $result = $this->verification_connection->query(
-            "select count(*) as `count` from `wp_football_teams` where `name` = '$team_name'"
-        );
-        $count = $result->fetch_object()->count;
-        
-        $this->assertSame('1', $count, "The team [$team_name] was not found.");
         
     }
     
@@ -234,15 +211,48 @@ class TransactionsTest extends DatabaseTestCase
     protected function setUp() :void
     {
         
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationBooted(function () {
             
             $this->createInitialTable();
             $this->removeWpBrowserTransaction();
             
         });
         parent::setUp();
+        $this->bootApp();
         
         $this->verification_connection = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+        
+    }
+    
+    protected function tearDown() :void
+    {
+        
+        $this->dropInitialTable();
+        
+        parent::tearDown();
+    }
+    
+    private function assertTeamNotExists(string $team_name)
+    {
+        
+        $result = $this->verification_connection->query(
+            "select count(*) as `count` from `wp_football_teams` where `name` = '$team_name'"
+        );
+        $count = $result->fetch_object()->count;
+        
+        $this->assertSame('0', $count, 'The team: '.$team_name.' was not found.');
+        
+    }
+    
+    private function assertTeamExists(string $team_name)
+    {
+        
+        $result = $this->verification_connection->query(
+            "select count(*) as `count` from `wp_football_teams` where `name` = '$team_name'"
+        );
+        $count = $result->fetch_object()->count;
+        
+        $this->assertSame('1', $count, "The team [$team_name] was not found.");
         
     }
     
@@ -267,14 +277,6 @@ class TransactionsTest extends DatabaseTestCase
             
         }
         
-    }
-    
-    protected function tearDown() :void
-    {
-        
-        $this->dropInitialTable();
-        
-        parent::tearDown();
     }
     
     private function dropInitialTable()

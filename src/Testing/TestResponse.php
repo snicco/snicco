@@ -107,18 +107,6 @@ class TestResponse
         return $this;
     }
     
-    private function isSuccessful() :bool
-    {
-        
-        return $this->psr_response->isSuccessful();
-    }
-    
-    private function getStatusCode()
-    {
-        
-        return $this->status_code;
-    }
-    
     /**
      * Assert that the response has a 200 status code.
      *
@@ -135,12 +123,6 @@ class TestResponse
         );
         
         return $this;
-    }
-    
-    private function isOk() :bool
-    {
-        
-        return $this->psr_response->isOk();
     }
     
     /**
@@ -226,12 +208,6 @@ class TestResponse
         return $this;
     }
     
-    private function isNotFound() :bool
-    {
-        
-        return $this->psr_response->isNotFound();
-    }
-    
     /**
      * Assert that the response has a forbidden status code.
      *
@@ -246,12 +222,6 @@ class TestResponse
         );
         
         return $this;
-    }
-    
-    private function isForbidden() :bool
-    {
-        
-        return $this->psr_response->isForbidden();
     }
     
     /**
@@ -291,12 +261,6 @@ class TestResponse
         
         return $this;
         
-    }
-    
-    private function isRedirect(string $location = null) :bool
-    {
-        
-        return $this->psr_response->isRedirect($location);
     }
     
     public function assertRedirectToRoute(string $route, int $status_code = null) :TestResponse
@@ -391,16 +355,16 @@ class TestResponse
     {
         
         PHPUnit::assertTrue(
-            $this->headers->has($header_name),
+            $this->psr_response->hasHeader($header_name),
             "Header [{$header_name}] not present on response."
         );
         
-        $actual = $this->headers->get($header_name)[0];
+        $actual = $this->psr_response->getHeaderLine($header_name);
         
         if ( ! is_null($value)) {
             PHPUnit::assertEquals(
                 $value,
-                $this->headers->get($header_name),
+                $actual,
                 "Header [{$header_name}] was found, but value [{$actual}] does not match [{$value}]."
             );
         }
@@ -429,10 +393,17 @@ class TestResponse
     /**
      * @param  string|array  $value
      */
-    public function assertSeeHtml($value)
+    public function assertSeeHtml($value) :TestResponse
     {
-        
         return $this->assertSee($value, false);
+    }
+    
+    /**
+     * @param  string|array  $value
+     */
+    public function assertDontSeeHtml($value) :TestResponse
+    {
+        return $this->assertDontSee($value, false);
     }
     
     /**
@@ -448,7 +419,9 @@ class TestResponse
         
         $value = Arr::wrap($value);
         
-        $values = $escape ? array_map('esc_html', ($value)) : $value;
+        $values = $escape
+            ? array_map(fn($val) => htmlspecialchars($val, ENT_QUOTES, 'UTF-8'), $value)
+            : $value;
         
         foreach ($values as $value) {
             
@@ -470,7 +443,9 @@ class TestResponse
     public function assertSeeInOrder(array $values, $escape = true)
     {
         
-        $values = $escape ? array_map('esc_html', ($values)) : $values;
+        $values = $escape
+            ? array_map(fn($val) => htmlspecialchars($val, ENT_QUOTES), $values)
+            : $values;
         
         PHPUnit::assertThat($values, new SeeInOrder($this->streamed_content));
         
@@ -490,7 +465,9 @@ class TestResponse
         
         $value = Arr::wrap($value);
         
-        $values = $escape ? array_map('esc_html', ($value)) : $value;
+        $values = $escape
+            ? array_map(fn($val) => htmlspecialchars($val, ENT_QUOTES,), $value)
+            : $value;
         
         tap(strip_tags($this->streamed_content), function ($content) use ($values) {
             
@@ -513,7 +490,9 @@ class TestResponse
     public function assertSeeTextInOrder(array $values, $escape = true) :TestResponse
     {
         
-        $values = $escape ? array_map('esc_html', ($values)) : $values;
+        $values = $escape
+            ? array_map(fn($val) => htmlspecialchars($val, ENT_QUOTES,), $values)
+            : $values;
         
         PHPUnit::assertThat($values, new SeeInOrder(strip_tags($this->streamed_content)));
         
@@ -533,7 +512,9 @@ class TestResponse
         
         $value = Arr::wrap($value);
         
-        $values = $escape ? array_map('esc_html', ($value)) : $value;
+        $values = $escape
+            ? array_map(fn($val) => htmlspecialchars($val, ENT_QUOTES,), $value)
+            : $value;
         
         foreach ($values as $value) {
             PHPUnit::assertStringNotContainsString((string) $value, $this->streamed_content);
@@ -556,7 +537,9 @@ class TestResponse
         
         $value = Arr::wrap($value);
         
-        $values = $escape ? array_map('esc_html', ($value)) : $value;
+        $values = $escape
+            ? array_map(fn($val) => htmlspecialchars($val, ENT_QUOTES,), $value)
+            : $value;
         
         tap(strip_tags($this->streamed_content), function ($content) use ($values) {
             
@@ -581,23 +564,6 @@ class TestResponse
         $this->ensureResponseHasView();
         
         PHPUnit::assertEquals($value, $this->view->name());
-        
-        return $this;
-    }
-    
-    /**
-     * Ensure that the response has a view as its original content.
-     *
-     * @return $this
-     */
-    private function ensureResponseHasView() :TestResponse
-    {
-        
-        if ( ! $this->view instanceof ViewInterface) {
-            
-            PHPUnit::fail('The response is not a view.');
-            
-        }
         
         return $this;
     }
@@ -713,7 +679,6 @@ class TestResponse
     
     public function session() :?Session
     {
-        
         return $this->session;
     }
     
@@ -949,6 +914,59 @@ class TestResponse
     {
         
         $this->assertContentType('application/json');
+        
+        return $this;
+    }
+    
+    private function isSuccessful() :bool
+    {
+        
+        return $this->psr_response->isSuccessful();
+    }
+    
+    private function getStatusCode()
+    {
+        
+        return $this->status_code;
+    }
+    
+    private function isOk() :bool
+    {
+        
+        return $this->psr_response->isOk();
+    }
+    
+    private function isNotFound() :bool
+    {
+        
+        return $this->psr_response->isNotFound();
+    }
+    
+    private function isForbidden() :bool
+    {
+        
+        return $this->psr_response->isForbidden();
+    }
+    
+    private function isRedirect(string $location = null) :bool
+    {
+        
+        return $this->psr_response->isRedirect($location);
+    }
+    
+    /**
+     * Ensure that the response has a view as its original content.
+     *
+     * @return $this
+     */
+    private function ensureResponseHasView() :TestResponse
+    {
+        
+        if ( ! $this->view instanceof ViewInterface) {
+            
+            PHPUnit::fail('The response is not a view.');
+            
+        }
         
         return $this;
     }

@@ -20,8 +20,8 @@ use Snicco\Middleware\Core\ShareCookies;
 use Snicco\Middleware\ValidateSignature;
 use Tests\helpers\CreateRouteCollection;
 use Tests\helpers\CreateDefaultWpApiMocks;
-use Snicco\ExceptionHandling\NullErrorHandler;
 use Snicco\Session\Drivers\ArraySessionDriver;
+use Snicco\ExceptionHandling\NullExceptionHandler;
 use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
 
 class ValidateSignatureTest extends UnitTest
@@ -33,6 +33,7 @@ class ValidateSignatureTest extends UnitTest
     use CreateDefaultWpApiMocks;
     
     private ResponseFactory $response_factory;
+    
     private Delegate        $delegate;
     
     /** @test */
@@ -47,16 +48,6 @@ class ValidateSignatureTest extends UnitTest
         $response = $m->handle($request, $this->delegate);
         
         $this->assertStatusCode(200, $response);
-        
-    }
-    
-    private function newMiddleware(MagicLink $magic_link, string $type = 'relative') :ValidateSignature
-    {
-        
-        $m = new ValidateSignature($magic_link, $type);
-        $m->setResponseFactory($this->response_factory);
-        
-        return $m;
         
     }
     
@@ -157,7 +148,7 @@ class ValidateSignatureTest extends UnitTest
         $c = $this->createContainer();
         $c->instance(ResponseFactory::class, $this->response_factory);
         
-        $pipeline = new Pipeline($c, new NullErrorHandler());
+        $pipeline = new Pipeline($c, new NullExceptionHandler());
         $m = $this->newMiddleware($this->magic_link);
         
         $response = $pipeline->send($request)
@@ -200,7 +191,7 @@ class ValidateSignatureTest extends UnitTest
         $c = $this->createContainer();
         $c->instance(ResponseFactory::class, $this->response_factory);
         
-        $pipeline = new Pipeline($c, new NullErrorHandler());
+        $pipeline = new Pipeline($c, new NullExceptionHandler());
         $m = $this->newMiddleware($this->magic_link);
         
         $response = $pipeline->send($request)
@@ -239,6 +230,16 @@ class ValidateSignatureTest extends UnitTest
     {
         $this->response_factory = $this->createResponseFactory();
         $this->delegate = new Delegate(fn() => $this->response_factory->make(200));
+    }
+    
+    private function newMiddleware(MagicLink $magic_link, string $type = 'relative') :ValidateSignature
+    {
+        
+        $m = new ValidateSignature($magic_link, $type);
+        $m->setResponseFactory($this->response_factory);
+        
+        return $m;
+        
     }
     
 }

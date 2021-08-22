@@ -134,4 +134,10 @@ class BladeComponentsTest extends BladeTestCase
         
     }
     
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bootApp();
+    }
+    
 }

@@ -24,14 +24,6 @@ class ViewComposingTest extends BladeTestCase
         
     }
     
-    private function makeView(string $view)
-    {
-        
-        $view = $this->engine->make($view);
-        return $view->toString();
-        
-    }
-    
     /** @test */
     public function a_view_composer_can_be_added_to_a_view()
     {
@@ -49,10 +41,19 @@ class ViewComposingTest extends BladeTestCase
     protected function setUp() :void
     {
         
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationBooted(function () {
             $this->engine = TestApp::resolve(ViewEngineInterface::class);
         });
         parent::setUp();
+        $this->bootApp();
+        
+    }
+    
+    private function makeView(string $view)
+    {
+        
+        $view = $this->engine->make($view);
+        return $view->toString();
         
     }
     

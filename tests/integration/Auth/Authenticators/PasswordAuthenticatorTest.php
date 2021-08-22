@@ -191,7 +191,7 @@ class PasswordAuthenticatorTest extends AuthTestCase
     protected function setUp() :void
     {
         
-        $this->afterLoadingConfig(function () {
+        $this->afterApplicationCreated(function () {
             
             $this->withReplacedConfig('auth.through', [
                 PasswordAuthenticator::class,
@@ -200,7 +200,7 @@ class PasswordAuthenticatorTest extends AuthTestCase
             
         });
         
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationBooted(function () {
             
             $this->url = $this->app->resolve(UrlGenerator::class);
             $this->loadRoutes();
@@ -208,6 +208,7 @@ class PasswordAuthenticatorTest extends AuthTestCase
         });
         
         parent::setUp();
+        $this->bootApp();
     }
     
 }

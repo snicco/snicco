@@ -166,11 +166,11 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
     protected function setUp() :void
     {
         
-        $this->afterLoadingConfig(function () {
+        $this->afterApplicationCreated(function () {
             $this->with2Fa();
         });
         
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationBooted(function () {
             $this->withHeader('Accept', 'application/json');
             $this->encryptor = $this->app->resolve(EncryptorInterface::class);
             $this->swap(
@@ -180,6 +180,8 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
         });
         
         parent::setUp();
+        
+        $this->bootApp();
     }
     
 }

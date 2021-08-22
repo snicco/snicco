@@ -16,24 +16,12 @@ use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 class WPConnectionResolverTest extends DatabaseTestCase
 {
     
-    protected bool $defer_boot = true;
-    
     /** @test */
     public function testWithoutExtraConfigTheDefaultConnectionIsUsed()
     {
-        
         $wpdb = $this->getResolver()->connection()->dbInstance();
         
         $this->assertDefaultConnection($wpdb);
-        
-    }
-    
-    private function getResolver(array $extra_connections = []) :WPConnectionResolver
-    {
-        
-        $this->withAddedConfig('database.connections', $extra_connections)->boot();
-        
-        return $this->app->resolve(ConnectionResolverInterface::class);
         
     }
     
@@ -98,7 +86,7 @@ class WPConnectionResolverTest extends DatabaseTestCase
     public function testLaravelFacadesWork()
     {
         
-        $this->boot();
+        $this->bootApp();
         
         $connection = DB::connection();
         
@@ -111,7 +99,7 @@ class WPConnectionResolverTest extends DatabaseTestCase
     {
         
         $this->withAddedConfig('database.connections', ['second' => $this->secondDatabaseConfig()])
-             ->boot();
+             ->bootApp();
         
         $connection = DB::connection('second');
         
@@ -126,7 +114,7 @@ class WPConnectionResolverTest extends DatabaseTestCase
     {
         
         $this->withAddedConfig('database.connections', ['second' => $this->secondDatabaseConfig()])
-             ->boot();
+             ->bootApp();
         
         $connection1 = DB::connection('second');
         
@@ -147,7 +135,7 @@ class WPConnectionResolverTest extends DatabaseTestCase
     {
         
         $this->withAddedConfig('database.connections', ['second' => $this->secondDatabaseConfig()])
-             ->boot();
+             ->bootApp();
         
         $builder = Schema::connection('second');
         $this->assertInstanceOf(MySqlSchemaBuilder::class, $builder);
@@ -155,6 +143,15 @@ class WPConnectionResolverTest extends DatabaseTestCase
         $db = $builder->getConnection()->dbInstance();
         $this->assertNotDefaultConnection($db);
         $this->assertSame($_SERVER['SECONDARY_DB_NAME'], $db->dbname);
+        
+    }
+    
+    private function getResolver(array $extra_connections = []) :WPConnectionResolver
+    {
+        
+        $this->withAddedConfig('database.connections', $extra_connections)->bootApp();
+        
+        return $this->app->resolve(ConnectionResolverInterface::class);
         
     }
     

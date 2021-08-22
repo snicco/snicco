@@ -22,19 +22,7 @@ class Encryptor implements EncryptorInterface
         $this->encryptor = new Encrypter($this->parseKey($key), 'AES-256-CBC');
     }
     
-    private function parseKey(string $key) :string
-    {
-        
-        if (Str::startsWith($key, $prefix = 'base64:')) {
-            
-            $key = base64_decode(Str::after($key, $prefix));
-            
-        }
-        
-        return $key;
-    }
-    
-    public function encrypt($value, bool $serialize = true) :string
+    public function encrypt($value, bool $serialize = false) :string
     {
         
         try {
@@ -43,13 +31,13 @@ class Encryptor implements EncryptorInterface
             
         } catch (IlluminateEncryptException $e) {
             
-            throw new EncryptException($e->getMessage());
+            throw new EncryptException($e->getMessage(), $e);
             
         }
         
     }
     
-    public function decrypt(string $payload, bool $unserialize = true)
+    public function decrypt(string $payload, bool $unserialize = false)
     {
         
         try {
@@ -58,7 +46,7 @@ class Encryptor implements EncryptorInterface
             
         } catch (IlluminateDecryptException $e) {
             
-            throw new DecryptException($e->getMessage());
+            throw new DecryptException($e->getMessage(), $e);
             
         }
         
@@ -92,6 +80,18 @@ class Encryptor implements EncryptorInterface
             
         }
         
+    }
+    
+    private function parseKey(string $key) :string
+    {
+        
+        if (Str::startsWith($key, $prefix = 'base64:')) {
+            
+            $key = base64_decode(Str::after($key, $prefix));
+            
+        }
+        
+        return $key;
     }
     
 }
