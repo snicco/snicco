@@ -23,7 +23,7 @@ class NativeErrorLogger extends AbstractLogger
             $file = $e->getFile();
             $file = str_replace(ABSPATH, '/', $file);
             
-            $message .= ", File: [$file], Line: [{$e->getLine()}]]";
+            $message .= ", File: [$file], \nLine: [{$e->getLine()}] \n Trace: [{$e->getTraceAsString()}]]";
             
         }
         
