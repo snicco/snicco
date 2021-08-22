@@ -43,13 +43,11 @@ use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 class AuthServiceProviderTest extends AuthTestCase
 {
     
-    protected bool $defer_boot = true;
-    
     /** @test */
     public function the_config_is_extended()
     {
         
-        $this->boot();
+        $this->bootApp();
         
         $this->assertSame(10, TestApp::config('auth.confirmation.duration'));
         $this->assertSame(1800, TestApp::config('auth.idle'));
@@ -67,8 +65,8 @@ class AuthServiceProviderTest extends AuthTestCase
         $this->withReplacedConfig('session.enabled', false);
         
         try {
-            
-            $this->boot();
+    
+            $this->bootApp();
             $this->fail('No Configuration exceptions were thrown when they were expected');
             
         } catch (ConfigurationException $e) {
@@ -82,8 +80,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_auth_endpoints_have_defaults_set()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $this->assertSame('auth', TestApp::config('auth.endpoints.prefix'));
         $this->assertArrayHasKey('auth', TestApp::config('routing.api.endpoints'));
@@ -104,8 +102,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_auth_views_are_bound_in_the_config()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $views = TestApp::config('view.paths');
         $expected = ROOT_DIR.DS.'src'.DS.'Auth'.DS.'views';
@@ -119,8 +117,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function middleware_aliases_are_bound()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $middleware_aliases = TestApp::config('middleware.aliases');
         
@@ -134,8 +132,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function global_middleware_is_added()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $this->assertContains(
             AuthenticateSession::class,
@@ -152,8 +150,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_start_session_middleware_has_a_higher_priority_then_the_authenticate_session_middleware()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         $priority = TestApp::config('middleware.priority');
         
         $secure = array_search(Secure::class, $priority);
@@ -167,8 +165,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_auth_routes_are_bound_in_the_config()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $routes = TestApp::config('routing.definitions');
         $expected = ROOT_DIR.DS.'src'.DS.'Auth'.DS.'routes';
@@ -180,8 +178,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function all_controllers_are_bound()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $this->assertInstanceOf(
             ForgotPasswordController::class,
@@ -205,8 +203,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_wp_login_logout_events_from_the_session_package_are_unset()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $listeners = TestApp::config('events.listeners');
         
@@ -221,8 +219,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_authenticator_is_bound()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $this->assertInstanceOf(
             PasswordAuthenticator::class,
@@ -234,8 +232,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_WP_Session_Token_class_is_extended()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $instance = WP_Session_Tokens::get_instance(1);
         $this->assertInstanceOf(WpAuthSessionToken::class, $instance);
@@ -245,8 +243,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_session_manager_interface_is_replaced()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $this->assertInstanceOf(
             AuthSessionManager::class,
@@ -264,7 +262,7 @@ class AuthServiceProviderTest extends AuthTestCase
             'SCRIPT_NAME' => 'wp-login.php',
         ];
         $this->withRequest($this->frontendRequest('GET', 'wp-login.php'));
-        $this->boot();
+        $this->bootApp();
         
         Event::fake([ResponseSent::class]);
         
@@ -292,7 +290,7 @@ class AuthServiceProviderTest extends AuthTestCase
         
         $this->withServerVariables(['SCRIPT_NAME' => 'wp-login.php']);
         $this->withRequest($this->frontendRequest('GET', '/wp-login.php?action=confirmation'));
-        $this->boot();
+        $this->bootApp();
         
         Event::fake([ResponseSent::class]);
         
@@ -309,8 +307,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_login_url_is_filtered()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         $this->loadRoutes();
         
         $url = wp_login_url();
@@ -323,8 +321,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_logout_url_is_filtered()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         $this->loadRoutes();
         
         $url = wp_logout_url();
@@ -337,8 +335,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_auth_cookie_is_filtered_and_contains_the_current_session_id()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $calvin = $this->createAdmin();
         
@@ -357,8 +355,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_cookie_expiration_is_set_to_now_when_remember_me_is_disabled()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $lifetime = apply_filters('auth_cookie_expiration', 3600);
         
@@ -369,8 +367,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_cookie_expiration_is_synced_with_the_custom_session_lifetime()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $lifetime = apply_filters('auth_cookie_expiration', 10000);
         
@@ -381,8 +379,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function by_default_the_password_login_view_response_is_used()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $this->assertInstanceOf(
             PasswordLoginView::class,
@@ -394,8 +392,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_login_response_is_bound()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $this->assertInstanceOf(
             RedirectToDashboardResponse::class,
@@ -406,8 +404,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_login_view_response_is_bound()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $this->assertInstanceOf(
             PasswordLoginView::class,
@@ -419,9 +417,9 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_login_view_response_can_be_swapped_for_an_email_login_screen()
     {
-        
+    
         $this->withAddedConfig('auth.primary_view', MagicLinkLoginView::class);
-        $this->boot();
+        $this->bootApp();
         
         $this->assertInstanceOf(
             MagicLinkLoginView::class,
@@ -433,8 +431,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_auth_pipeline_uses_the_password_authenticator_by_default()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $pipeline = TestApp::config('auth.through');
         
@@ -445,9 +443,9 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function email_can_be_used_as_a_primary_authenticator()
     {
-        
+    
         $this->withAddedConfig('auth.authenticator', 'email');
-        $this->boot();
+        $this->bootApp();
         
         $pipeline = TestApp::config('auth.through');
         
@@ -460,8 +458,8 @@ class AuthServiceProviderTest extends AuthTestCase
     {
         
         $this->withAddedConfig('auth.through', ['foo', 'bar']);
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $pipeline = TestApp::config('auth.through');
         
@@ -472,8 +470,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function password_resets_are_disabled_by_default()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $this->assertFalse(TestApp::config('auth.features.password-resets'));
         
@@ -482,9 +480,9 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function two_factor_authentication_can_be_enabled()
     {
-        
+    
         $this->withAddedConfig('auth.features.2fa', true);
-        $this->boot();
+        $this->bootApp();
         
         $pipeline = TestApp::config('auth.through');
         
@@ -499,8 +497,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function auth_confirmation_uses_email_by_default()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         $this->assertInstanceOf(
             EmailAuthConfirmation::class,
             TestApp::resolve(AuthConfirmation::class)
@@ -511,9 +509,9 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function two_factor_auth_confirmation_is_used_if_enabled()
     {
-        
+    
         $this->withAddedConfig('auth.features.2fa', true);
-        $this->boot();
+        $this->bootApp();
         
         $this->assertInstanceOf(
             TwoFactorAuthConfirmation::class,
@@ -529,8 +527,8 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function fail2ban_is_disabled_by_default()
     {
-        
-        $this->withOutConfig('auth.fail2ban.enabled')->boot();
+    
+        $this->withOutConfig('auth.fail2ban.enabled')->bootApp();
         $this->assertNull(TestApp::config('auth.fail2ban.enabled'));
         
     }
@@ -538,9 +536,9 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_daemon_is_set()
     {
-        
+    
         $this->withAddedConfig('auth.fail2ban.enabled', true);
-        $this->boot();
+        $this->bootApp();
         $this->assertSame('sniccowp', TestApp::config('auth.fail2ban.daemon'));
         
     }
@@ -549,7 +547,7 @@ class AuthServiceProviderTest extends AuthTestCase
     public function the_default_facility_is_set_to_LOG_AUTH()
     {
         $this->withAddedConfig('auth.fail2ban.enabled', true);
-        $this->boot();
+        $this->bootApp();
         $this->assertSame(LOG_AUTH, TestApp::config('auth.fail2ban.facility'));
         
     }
@@ -558,16 +556,16 @@ class AuthServiceProviderTest extends AuthTestCase
     public function the_default_flags_are_set()
     {
         $this->withAddedConfig('auth.fail2ban.enabled', true);
-        $this->boot();
+        $this->bootApp();
         $this->assertSame(LOG_NDELAY | LOG_PID, TestApp::config('auth.fail2ban.flags'));
     }
     
     /** @test */
     public function the_fail2ban_class_is_bound()
     {
-        
+    
         $this->withAddedConfig('auth.fail2ban.enabled', true);
-        $this->boot();
+        $this->bootApp();
         $this->assertInstanceOf(
             Fail2Ban::class,
             $this->app->container()->make(Fail2Ban::class)
@@ -579,7 +577,7 @@ class AuthServiceProviderTest extends AuthTestCase
     public function the_php_syslog_is_used_by_default()
     {
         $this->withAddedConfig('auth.fail2ban.enabled', true);
-        $this->boot();
+        $this->bootApp();
         $this->assertInstanceOf(PHPSyslogger::class, TestApp::resolve(Syslogger::class));
     }
     

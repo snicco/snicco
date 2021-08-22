@@ -2,10 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Tests\integration\ExceptionHandling;
+namespace Tests\integration\Validation;
 
 use Tests\FrameworkTestCase;
-use Tests\stubs\TestRequest;
 use Snicco\Contracts\ExceptionHandler;
 use Snicco\Session\SessionServiceProvider;
 use Snicco\Validation\ValidationServiceProvider;
@@ -18,9 +17,10 @@ class ValidationExceptionTest extends FrameworkTestCase
     /** @test */
     public function render_validation_exception_html()
     {
-        
-        $this->withRequest(TestRequest::from('POST', 'foo'));
-        
+        $this->bootApp();
+        $this->withRequest(
+            $this->frontendRequest('POST', '/foobar')->withHeader('referer', '/foobar')
+        );
         $e = ValidationException::withMessages([
             'foo' => [
                 'foo must have a length between 5 and 10.',
@@ -33,9 +33,9 @@ class ValidationExceptionTest extends FrameworkTestCase
         ]);
         
         $handler = $this->errorHandler();
-        
+    
         $response = $this->toTestResponse(
-            $handler->transformToResponse(
+            $handler->toHttpResponse(
                 $e,
                 $this->request->withParsedBody([
                     'foo' => 'abcd',
@@ -43,7 +43,7 @@ class ValidationExceptionTest extends FrameworkTestCase
                 ])
             )
         );
-        $response->assertRedirect();
+        $response->assertRedirect()->assertLocation('/foobar');
         
         $response->assertSessionHasErrors([
             'foo' => 'foo must have a length between 5 and 10.',
@@ -65,19 +65,22 @@ class ValidationExceptionTest extends FrameworkTestCase
     /** @test */
     public function a_named_error_bag_can_be_used()
     {
-        
-        $this->withRequest(TestRequest::from('POST', 'foo'));
-        
+    
+        $this->bootApp();
+        $this->withRequest(
+            $this->frontendRequest('POST', '/foobar')->withHeader('referer', '/foobar')
+        );
+    
         $e = ValidationException::withMessages([
             'foo' => [
                 'foo must have a length between 5 and 10.',
             ],
         ])->setMessageBagName('login_form');
-        
+    
         $handler = $this->errorHandler();
-        
+    
         $response = $this->toTestResponse(
-            $handler->transformToResponse(
+            $handler->toHttpResponse(
                 $e,
                 $this->request->withParsedBody([
                     'foo' => 'abcd',
@@ -98,9 +101,11 @@ class ValidationExceptionTest extends FrameworkTestCase
     /** @test */
     public function render_validation_exception_json()
     {
-        
-        $this->withRequest(TestRequest::from('POST', 'foo'));
-        
+        $this->bootApp();
+        $this->withRequest(
+            $this->frontendRequest('POST', '/foobar')->withHeader('referer', '/foobar')
+        );
+    
         $e = ValidationException::withMessages([
             'foo' => [
                 'foo must have a length between 5 and 10.',
@@ -115,7 +120,7 @@ class ValidationExceptionTest extends FrameworkTestCase
         $handler = $this->errorHandler();
         
         $response = $this->toTestResponse(
-            $handler->transformToResponse(
+            $handler->toHttpResponse(
                 $e,
                 $this->request->withHeader('accept', 'application/json')
             )
@@ -141,9 +146,12 @@ class ValidationExceptionTest extends FrameworkTestCase
     /** @test */
     public function a_message_is_included_with_json_errors()
     {
-        
-        $this->withRequest(TestRequest::from('POST', 'foo'));
-        
+    
+        $this->bootApp();
+        $this->withRequest(
+            $this->frontendRequest('POST', '/foobar')->withHeader('referer', '/foobar')
+        );
+    
         $e = ValidationException::withMessages([
             'foo' => [
                 'foo must have a length between 5 and 10.',
@@ -158,7 +166,7 @@ class ValidationExceptionTest extends FrameworkTestCase
         $handler = $this->errorHandler();
         
         $response = $this->toTestResponse(
-            $handler->transformToResponse(
+            $handler->toHttpResponse(
                 $e,
                 $this->request->withHeader('accept', 'application/json')
             )
@@ -178,12 +186,48 @@ class ValidationExceptionTest extends FrameworkTestCase
                 ],
             ],
         ]);
+    
+    }
+    
+    /** @test */
+    public function can_be_used_without_sessions()
+    {
+        
+        $this->withRemovedProvider(SessionServiceProvider::class)->bootApp();
+        
+        $this->withRequest(
+            $this->frontendRequest('POST', '/foobar')->withHeader('referer', '/foobar')
+        );
+        $e = ValidationException::withMessages([
+            'foo' => [
+                'foo must have a length between 5 and 10.',
+                'bar can not have whitespace',
+            ],
+            'bar' => [
+                'bar must have a length between 5 and 10.',
+                'bar can not have special chars',
+            ],
+        ]);
+        
+        $handler = $this->errorHandler();
+        
+        $response = $this->toTestResponse(
+            $handler->toHttpResponse(
+                $e,
+                $this->request->withParsedBody([
+                    'foo' => 'abcd',
+                    'bar' => 'ab cd',
+                ])
+            )
+        );
+        $response->assertRedirect()->assertLocation('/foobar');
+        
+        $this->assertNull($response->session());
         
     }
     
     protected function packageProviders() :array
     {
-        
         return [
             SessionServiceProvider::class,
             ValidationServiceProvider::class,
@@ -192,7 +236,6 @@ class ValidationExceptionTest extends FrameworkTestCase
     
     private function errorHandler() :ProductionExceptionHandler
     {
-        
         return $this->app->resolve(ExceptionHandler::class);
     }
     

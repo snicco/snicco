@@ -125,15 +125,29 @@ abstract class TestCase extends WPTestCase
     
     protected function setUp() :void
     {
+    
+        if (class_exists(Facade::class)) {
         
+            Facade::clearResolvedInstances();
+            Facade::setFacadeApplication(null);
+        
+        }
+    
+        if (class_exists(Container::class)) {
+            Container::setInstance();
+        }
+    
+        Event::setInstance(null);
+        WP::reset();
+    
         parent::setUp();
-        
+    
         $this->backToPresent();
-        
+    
         if ( ! isset($this->app)) {
             $this->refreshApplication();
         }
-        
+    
         $this->mergeServiceProviders();
         $this->bindBaseRequest();
         $this->setUpTraits();
@@ -148,13 +162,28 @@ abstract class TestCase extends WPTestCase
         foreach ($this->after_application_created_callbacks as $callback) {
             $callback();
         }
-        
+    
     }
     
     protected function refreshApplication()
     {
         $this->app = $this->createApplication();
         $this->config = $this->app->config();
+    }
+    
+    protected function bootApp() :self
+    {
+        if ($this->app->hasBeenBootstrapped()) {
+            $this->fail('Application bootstrapped twice in one test.');
+        }
+        
+        $this->app->boot();
+        
+        foreach ($this->after_application_booted as $callback) {
+            $callback();
+        }
+        
+        return $this;
     }
     
     protected function boot()
@@ -192,20 +221,18 @@ abstract class TestCase extends WPTestCase
         }
         
         if (class_exists(Facade::class)) {
-            
             Facade::clearResolvedInstances();
             Facade::setFacadeApplication(null);
-            
         }
         
         if (class_exists(Container::class)) {
-            
             Container::setInstance();
-            
         }
         
         $this->backToPresent();
         
+        // WpTestCase will take care of resetting the user.
+        //$this->logout();
         Event::setInstance(null);
         WP::reset();
         
@@ -285,8 +312,8 @@ abstract class TestCase extends WPTestCase
                 $m = $aliases[$abstract] ?? null;
                 
                 if ($m === null) {
-                    throw new RuntimeException(
-                        "You are trying to disable middleware [$abstract] which does not seem to exist."
+                    $this->fail(
+                        "You are trying to disable the middleware [$abstract] which does not seem to exist."
                     );
                 }
                 
@@ -475,14 +502,6 @@ abstract class TestCase extends WPTestCase
             $callback();
             
         }
-    }
-    
-    private function addRequestDefaults(Request $request) :Request
-    {
-        $request = $this->addCookies($request);
-        $request = $this->addHeaders($request);
-        $this->instance(Request::class, $request);
-        return $request;
     }
     
 }

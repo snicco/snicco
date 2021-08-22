@@ -8,6 +8,7 @@ use Exception;
 use Throwable;
 use Mockery as m;
 use mysqli_sql_exception;
+use Mockery\MockInterface;
 use Snicco\Database\WPConnection;
 use Illuminate\Database\QueryException;
 use Snicco\Database\Contracts\BetterWPDbInterface;
@@ -15,8 +16,7 @@ use Snicco\Database\Contracts\BetterWPDbInterface;
 class ManagesTransactionsTest extends DatabaseTestCase
 {
     
-    protected bool              $defer_boot = true;
-    private BetterWPDbInterface $wpdb;
+    private MockInterface $wpdb;
     
     /** @test */
     public function the_transaction_level_does_not_increment_when_an_exception_is_thrown()
@@ -43,22 +43,6 @@ class ManagesTransactionsTest extends DatabaseTestCase
         
     }
     
-    private function newWpTransactionConnection() :WPConnection
-    {
-        
-        $this->wpdb = m::mock(BetterWPDbInterface::class);
-        $this->wpdb->prefix = 'wp_';
-        $this->wpdb->dbname = 'wp_testing';
-        $this->wpdb->shouldReceive('check_connection')->andReturn(true)->byDefault();
-        
-        return new WpConnection($this->wpdb, 'wp_connection');
-        
-    }
-    
-    /**
-     * MANUAL TRANSACTIONS
-     */
-    
     /** @test */
     public function begin_transaction_reconnects_on_lost_connection_if_its_the_error_message_indicated_a_lost_connection()
     {
@@ -67,15 +51,19 @@ class ManagesTransactionsTest extends DatabaseTestCase
         
         $this->wpdb->shouldReceive('startTransaction')->once()
                    ->andThrows(new mysqli_sql_exception('the server has gone away | TEST '));
-        
+    
         $this->wpdb->shouldReceive('startTransaction');
         $this->wpdb->shouldReceive('createSavePoint')->once()->with('SAVEPOINT trans1');
-        
+    
         $wp->beginTransaction();
-        
+    
         $this->assertSame(1, $wp->transactionLevel());
-        
+    
     }
+    
+    /**
+     * MANUAL TRANSACTIONS
+     */
     
     /** @test */
     public function if_an_exception_occurs_during_the_beginning_of_a_transaction_we_try_again_only_for_connection_errors()
@@ -390,10 +378,6 @@ class ManagesTransactionsTest extends DatabaseTestCase
         
     }
     
-    /**
-     * TRANSACTION CLOSURES
-     */
-    
     /** @test */
     public function when_an_error_occurs_in_the_actual_query_we_try_again_until_it_works_or_no_attempts_are_left()
     {
@@ -421,15 +405,19 @@ class ManagesTransactionsTest extends DatabaseTestCase
                 throw new mysqli_sql_exception('deadlock detected | TEST');
                 
             }
-            
+    
             return $wp->update('foo', ['bar']);
-            
+    
         }, 4);
-        
+    
         $this->assertSame(3, $result);
         $this->assertSame(0, $wp->transactionLevel());
-        
+    
     }
+    
+    /**
+     * TRANSACTION CLOSURES
+     */
     
     /** @test */
     public function if_the_query_is_not_successful_after_the_max_attempt_we_throw_an_exception_all_the_way_out()
@@ -539,11 +527,25 @@ class ManagesTransactionsTest extends DatabaseTestCase
     protected function setUp() :void
     {
         
-        $this->afterLoadingConfig(function () {
+        $this->afterApplicationBooted(function () {
             
             $this->withFakeDb();
+            
         });
         parent::setUp();
+        $this->bootApp();
+    }
+    
+    private function newWpTransactionConnection() :WPConnection
+    {
+        
+        $this->wpdb = m::mock(BetterWPDbInterface::class);
+        $this->wpdb->prefix = 'wp_';
+        $this->wpdb->dbname = 'wp_testing';
+        $this->wpdb->shouldReceive('check_connection')->andReturn(true)->byDefault();
+        
+        return new WpConnection($this->wpdb, 'wp_connection');
+        
     }
     
 }

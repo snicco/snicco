@@ -22,13 +22,11 @@ use Snicco\Database\Illuminate\IlluminateDispatcherAdapter;
 class DatabaseServiceProviderTest extends DatabaseTestCase
 {
     
-    protected bool $defer_boot = true;
-    
     /** @test */
     public function the_illuminate_event_dispatcher_adapter_is_bound()
     {
         
-        $this->boot();
+        $this->bootApp();
         
         $this->assertInstanceOf(
             IlluminateDispatcherAdapter::class,
@@ -41,8 +39,8 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
     /** @test */
     public function eloquent_is_booted()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $events = Eloquent::getEventDispatcher();
         $this->assertInstanceOf(IlluminateDispatcherAdapter::class, $events);
@@ -55,8 +53,8 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
     /** @test */
     public function the_connection_resolver_is_bound_correctly()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $this->assertInstanceOf(
             WPConnectionResolver::class,
@@ -68,8 +66,8 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
     /** @test */
     public function the_default_connection_is_set()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         /** @var ConnectionResolverInterface $resolver */
         $resolver = $this->app->resolve(ConnectionResolverInterface::class);
@@ -81,8 +79,8 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
     /** @test */
     public function by_default_the_current_wpdb_instance_is_used()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         /** @var ConnectionResolverInterface $resolver */
         $resolver = $this->app->resolve(ConnectionResolverInterface::class);
@@ -100,8 +98,8 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
     /** @test */
     public function the_wpdb_abstraction_can_be_changed()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         $this->assertSame(BetterWPDb::class, $this->app->resolve(BetterWPDbInterface::class));
         
         $this->instance(BetterWPDbInterface::class, FakeDB::class);
@@ -112,8 +110,8 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
     /** @test */
     public function the_schema_builder_can_be_resolved_for_the_default_connection()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $b = $this->app->resolve(MySqlSchemaBuilder::class);
         $this->assertInstanceOf(MySqlSchemaBuilder::class, $b);
@@ -123,8 +121,8 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
     /** @test */
     public function the_connection_can_be_resolved_as_a_closure()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $connection = $this->app->resolve(WPConnectionInterface::class)();
         $this->assertInstanceOf(WPConnection::class, $connection);
@@ -134,8 +132,8 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
     /** @test */
     public function the_db_facade_works()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $connection = DB::connection();
         $this->assertInstanceOf(WPConnection::class, $connection);
@@ -148,8 +146,8 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
     /** @test */
     public function the_faker_instance_is_registered()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         $this->assertInstanceOf(Generator::class, $this->app->resolve(Generator::class));
         
     }

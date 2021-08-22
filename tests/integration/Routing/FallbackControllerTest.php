@@ -19,7 +19,7 @@ class FallbackControllerTest extends FrameworkTestCase
     {
         
         $this->withAddedConfig('routing.trailing_slash', true);
-        $this->boot();
+        $this->bootApp();
         $this->router->fallback(fn() => 'fallback');
         
         $response = $this->get('/bogus');
@@ -31,9 +31,9 @@ class FallbackControllerTest extends FrameworkTestCase
     /** @test */
     public function the_fallback_route_will_match_urls_with_trailing_slashes_if_trailing_are_not_used()
     {
-        
+    
         $this->withAddedConfig('routing.trailing_slash', false);
-        $this->boot();
+        $this->bootApp();
         $this->router->fallback(fn() => 'fallback');
         
         $response = $this->get('/bogus/');
@@ -45,8 +45,8 @@ class FallbackControllerTest extends FrameworkTestCase
     /** @test */
     public function the_fallback_route_is_not_run_for_robots_text()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         $this->router->fallback(fn() => 'foo_fallback');
         $response = $this->get('robots.txt');
         $response->assertDelegatedToWordPress();
@@ -56,8 +56,8 @@ class FallbackControllerTest extends FrameworkTestCase
     /** @test */
     public function the_fallback_route_is_not_run_for_sitemap_xml()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         $this->router->fallback(fn() => 'foo_fallback');
         $response = $this->get('robots.txt');
         $response->assertDelegatedToWordPress();
@@ -84,10 +84,10 @@ class FallbackControllerTest extends FrameworkTestCase
     /** @test */
     public function global_middleware_is_run_if_the_fallback_controller_has_a_fallback_route()
     {
-        
+    
         $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
         $this->withAddedConfig(['middleware.groups.global' => [GlobalMiddleware::class]])
-             ->boot();
+             ->bootApp();
         
         $this->router->fallback(fn() => 'FOO_FALLBACK');
         
@@ -127,11 +127,11 @@ class FallbackControllerTest extends FrameworkTestCase
     {
         
         $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
-        
+    
         $this->withAddedConfig([
             'middleware.groups.global' => [GlobalMiddleware::class],
             'middleware.always_run_global' => true,
-        ])->boot();
+        ])->bootApp();
         
         $this->router->fallback(fn() => 'FOO_FALLBACK');
         
@@ -150,11 +150,11 @@ class FallbackControllerTest extends FrameworkTestCase
     {
         
         $GLOBALS['test'][WebMiddleware::run_times] = 0;
-        
+    
         $this->withAddedConfig([
             'middleware.groups.web' => [WebMiddleware::class],
             'middleware.always_run_global' => true,
-        ])->boot();
+        ])->bootApp();
         
         $this->get('/bogus')->assertDelegatedToWordPress();
         
@@ -171,11 +171,11 @@ class FallbackControllerTest extends FrameworkTestCase
     {
         
         $GLOBALS['test'][WebMiddleware::run_times] = 0;
-        
+    
         $this->withAddedConfig([
             'middleware.groups.web' => [WebMiddleware::class],
             'middleware.always_run_global' => false,
-        ])->boot();
+        ])->bootApp();
         
         $this->get('/bogus')->assertDelegatedToWordPress();
         
@@ -189,9 +189,8 @@ class FallbackControllerTest extends FrameworkTestCase
     
     protected function setUp() :void
     {
-        
-        $this->defer_boot = true;
-        $this->afterApplicationCreated(function () {
+    
+        $this->afterApplicationBooted(function () {
             $this->router = $this->app->resolve(Router::class);
         });
         

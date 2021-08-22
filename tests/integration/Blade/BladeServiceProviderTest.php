@@ -15,13 +15,11 @@ use Illuminate\View\Compilers\BladeCompiler;
 class BladeServiceProviderTest extends BladeTestCase
 {
     
-    protected bool $defer_boot = true;
-    
     /** @test */
     public function the_blade_view_factory_is_bound_correctly()
     {
         
-        $this->boot();
+        $this->bootApp();
         $this->assertInstanceOf(Factory::class, TestApp::resolve('view'));
         
     }
@@ -29,8 +27,8 @@ class BladeServiceProviderTest extends BladeTestCase
     /** @test */
     public function the_blade_view_finder_is_bound_correctly()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $this->assertInstanceOf(FileViewFinder::class, TestApp::resolve('view.finder'));
         
@@ -39,8 +37,8 @@ class BladeServiceProviderTest extends BladeTestCase
     /** @test */
     public function the_blade_compiler_is_bound_correctly()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $this->assertInstanceOf(BladeCompiler::class, TestApp::resolve('blade.compiler'));
         
@@ -49,8 +47,8 @@ class BladeServiceProviderTest extends BladeTestCase
     /** @test */
     public function the_engine_resolver_is_bound_correctly()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $this->assertInstanceOf(EngineResolver::class, TestApp::resolve('view.engine.resolver'));
         
@@ -59,8 +57,8 @@ class BladeServiceProviderTest extends BladeTestCase
     /** @test */
     public function the_view_service_now_uses_the_blade_engine()
     {
-        
-        $this->boot();
+    
+        $this->bootApp();
         
         $this->assertInstanceOf(BladeEngine::class, TestApp::resolve(ViewEngineInterface::class));
         
@@ -69,8 +67,8 @@ class BladeServiceProviderTest extends BladeTestCase
     /** @test */
     public function a_custom_view_cache_path_can_be_provided()
     {
-        
-        $this->withAddedConfig('view.blade_cache', __DIR__)->boot();
+    
+        $this->withAddedConfig('view.blade_cache', __DIR__)->bootApp();
         
         $this->assertSame(__DIR__, TestApp::config('view.compiled'));
         

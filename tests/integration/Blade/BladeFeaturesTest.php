@@ -19,11 +19,6 @@ class BladeFeaturesTest extends BladeTestCase
         
     }
     
-    private function view(string $view)
-    {
-        return TestApp::view('blade-features.'.$view);
-    }
-    
     /** @test */
     public function xss_encoding_can_be_disabled()
     {
@@ -211,6 +206,17 @@ class BladeFeaturesTest extends BladeTestCase
         $content = $view->toString();
         $this->assertViewContent('PHPONLYFILE', $content);
         
+    }
+    
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bootApp();
+    }
+    
+    private function view(string $view)
+    {
+        return TestApp::view('blade-features.'.$view);
     }
     
 }

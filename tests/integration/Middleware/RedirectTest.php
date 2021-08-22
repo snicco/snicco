@@ -192,11 +192,11 @@ class RedirectTest extends FrameworkTestCase
     protected function setUp() :void
     {
         
-        $this->afterLoadingConfig(function () {
-            
+        $this->afterApplicationBooted(function () {
+    
             $this->withAddedMiddleware('global', Redirect::class);
             $this->withAddedConfig('middleware.always_run_global', true);
-            
+    
         });
         parent::setUp();
         

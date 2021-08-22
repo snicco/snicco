@@ -39,21 +39,6 @@ class ResetPasswordControllerTest extends AuthTestCase
         
     }
     
-    private function routeUrl(int $user_id)
-    {
-        
-        $this->loadRoutes();
-        
-        return TestApp::url()
-                      ->signedRoute(
-                          'auth.reset.password',
-                          ['query' => ['id' => $user_id]],
-                          300,
-                          true
-                      );
-        
-    }
-    
     /** @test */
     public function its_not_possible_to_tamper_with_the_id_of_the_signature_on_the_update_request()
     {
@@ -222,14 +207,31 @@ class ResetPasswordControllerTest extends AuthTestCase
     
     protected function setUp() :void
     {
+    
+        $this->afterApplicationCreated(function () {
         
-        $this->afterLoadingConfig(function () {
-            
             $this->withAddedConfig('auth.features.password-resets', true);
-            
-        });
         
+        });
+    
         parent::setUp();
+    
+        $this->bootApp();
+    
+    }
+    
+    private function routeUrl(int $user_id)
+    {
+        
+        $this->loadRoutes();
+        
+        return TestApp::url()
+                      ->signedRoute(
+                          'auth.reset.password',
+                          ['query' => ['id' => $user_id]],
+                          300,
+                          true
+                      );
         
     }
     

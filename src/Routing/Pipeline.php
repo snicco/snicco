@@ -28,11 +28,11 @@ class Pipeline
     
     private ContainerAdapter $container;
     
-    private Request          $request;
+    private Request $request;
     
-    private array            $middleware = [];
+    private array $middleware = [];
     
-    private ResponseFactory  $response_factory;
+    private ResponseFactory $response_factory;
     
     public function __construct(ContainerAdapter $container, ExceptionHandler $error_handler)
     {
@@ -174,8 +174,8 @@ class Pipeline
                 
                 return $this->resolveNextMiddleware($request);
             } catch (Throwable $e) {
-                
-                return $this->error_handler->transformToResponse($e, $request);
+    
+                return $this->error_handler->toHttpResponse($e, $request);
                 
             }
             

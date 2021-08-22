@@ -340,13 +340,19 @@ class DatabaseFactoryTest extends DatabaseTestCase
         
         $table = $this->assertDbTable('wp_cities');
         $table->assertCountWhere(['country_id' => $city->country->id], 1);
-        
+    
         $table = $this->assertDbTable('wp_activities');
         $table->assertTotalCount(3);
-        
+    
         $table = $this->assertDbTable('wp_activity_city');
         $table->assertCountWhere(['city_id' => $city->id], 3);
-        
+    
+    }
+    
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bootApp();
     }
     
 }

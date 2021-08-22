@@ -240,13 +240,6 @@ class SchemaBuilderTest extends DatabaseTestCase
         
     }
     
-    private function newTestBuilder(string $table) :TestSchemaBuilder
-    {
-        
-        return new TestSchemaBuilder($this->wp_conn, $table);
-        
-    }
-    
     /** @test */
     public function big_integer_works()
     {
@@ -279,25 +272,25 @@ class SchemaBuilderTest extends DatabaseTestCase
         
     }
     
-    /**
-     * Creating column types
-     */
-    
     /** @test */
     public function boolean_works()
     {
         
         $builder = $this->newTestBuilder('books');
-        
+    
         $builder->create('books', function (Blueprint $table) {
-            
+        
             $table->boolean('confirmed');
-            
+        
         });
-        
+    
         $builder->seeColumnOfType('confirmed', 'tinyint(1)');
-        
+    
     }
+    
+    /**
+     * Creating column types
+     */
     
     /** @test */
     public function char_works()
@@ -1337,10 +1330,6 @@ class SchemaBuilderTest extends DatabaseTestCase
         
     }
     
-    /**
-     * TEST FOR MODIFYING COLUMNS
-     */
-    
     /** @test */
     public function collation_can_be_set_for_table_and_column()
     {
@@ -1352,16 +1341,20 @@ class SchemaBuilderTest extends DatabaseTestCase
             $table->collation = 'utf8mb4_unicode_ci';
             $table->id();
             $table->string('name')->collation('latin1_german1_ci');
-            
+    
         });
-        
+    
         $this->assertSame('utf8mb4_unicode_ci', $builder->getTableCollation('books'));
-        
+    
         $columns = $builder->getFullColumnInfo('books');
-        
+    
         $this->assertSame('latin1_german1_ci', $columns['name']['Collation']);
-        
+    
     }
+    
+    /**
+     * TEST FOR MODIFYING COLUMNS
+     */
     
     /** @test */
     public function comments_can_be_added()
@@ -1408,12 +1401,6 @@ class SchemaBuilderTest extends DatabaseTestCase
         
         $this->assertDbTable()->assertRecordEquals(['id' => 1], $expected);
         
-    }
-    
-    protected function assertDbTable(string $table_name = 'wp_books') :AssertableWpDB
-    {
-        
-        return new AssertableWpDB($table_name);
     }
     
     /** @test */
@@ -1699,10 +1686,6 @@ class SchemaBuilderTest extends DatabaseTestCase
         
     }
     
-    /**
-     * TESTS FOR DROPPING COLUMNS WITH ALIASES
-     */
-    
     /** @test */
     public function test_drop_soft_deletes_works()
     {
@@ -1742,16 +1725,20 @@ class SchemaBuilderTest extends DatabaseTestCase
         });
         
         $this->assertSame(['id', 'deleted_at'], $builder->getColumnsByOrdinalPosition('books'));
-        
+    
         $builder->modify('books', function (Blueprint $table) {
-            
+        
             $table->dropSoftDeletesTz();
-            
+        
         });
-        
+    
         $this->assertSame(['id'], $builder->getColumnListing('books'));
-        
+    
     }
+    
+    /**
+     * TESTS FOR DROPPING COLUMNS WITH ALIASES
+     */
     
     /** @test */
     public function test_drop_timestamps_works()
@@ -1862,11 +1849,6 @@ class SchemaBuilderTest extends DatabaseTestCase
         
     }
     
-    
-    /**
-     * Creating indexes
-     */
-    
     /** @test */
     public function a_composite_index_can_be_added()
     {
@@ -1899,15 +1881,20 @@ class SchemaBuilderTest extends DatabaseTestCase
         $builder = $this->newTestBuilder('books');
         
         $builder->create('books', function (Blueprint $table) {
-            
+    
             $table->string('email');
             $table->string('name')->primary();
-            
+    
         });
-        
+    
         $builder->seePrimaryKey('name');
-        
+    
     }
+    
+    
+    /**
+     * Creating indexes
+     */
     
     /** @test */
     public function an_index_can_be_renamed()
@@ -2007,10 +1994,6 @@ class SchemaBuilderTest extends DatabaseTestCase
         
     }
     
-    /**
-     * Dropping Indexes.
-     */
-    
     /** @test */
     public function foreign_keys_cascade_correctly_on_update()
     {
@@ -2044,11 +2027,6 @@ class SchemaBuilderTest extends DatabaseTestCase
         
     }
     
-    
-    /**
-     * Foreign Key Constraints
-     */
-    
     /** @test */
     public function foreign_keys_cascade_correctly_on_delete()
     {
@@ -2076,14 +2054,18 @@ class SchemaBuilderTest extends DatabaseTestCase
         
         $this->wpdbInsert('wp_authors', ['author_name' => 'calvin alkan']);
         $this->wpdbInsert('wp_books', ['id' => 1, 'author_id' => 1]);
-        
+    
         $this->assertDbTable('wp_books')->assertRecordExists(['id' => 1, 'author_id' => 1]);
-        
+    
         $this->wpdbDelete('wp_authors', ['id' => 1]);
-        
+    
         $this->assertDbTable('wp_books')->assertRecordNotExists(['id' => 1, 'author_id' => 1]);
-        
+    
     }
+    
+    /**
+     * Dropping Indexes.
+     */
     
     /** @test */
     public function foreign_keys_can_be_dropped()
@@ -2115,7 +2097,7 @@ class SchemaBuilderTest extends DatabaseTestCase
         $builder2->modify('books', function (Blueprint $table) {
             
             $table->dropForeign(['author_id']);
-            
+    
         });
         
         $this->wpdbDelete('wp_authors', ['id' => 1]);
@@ -2125,10 +2107,20 @@ class SchemaBuilderTest extends DatabaseTestCase
         
     }
     
+    /**
+     * Foreign Key Constraints
+     */
+    
+    protected function assertDbTable(string $table_name = 'wp_books') :AssertableWpDB
+    {
+        
+        return new AssertableWpDB($table_name);
+    }
+    
     protected function setUp() :void
     {
         
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationBooted(function () {
             
             $this->wp_conn = $this->app->resolve(WPConnectionInterface::class)();
             $this->builder = new MySqlSchemaBuilder($this->wp_conn);
@@ -2136,6 +2128,8 @@ class SchemaBuilderTest extends DatabaseTestCase
         });
         
         parent::setUp();
+        
+        $this->bootApp();
         
         if ($this->builder->hasTable('books')) {
             
@@ -2149,15 +2143,11 @@ class SchemaBuilderTest extends DatabaseTestCase
             
         }
         
-        $this->ensureFailOnErrors();
-        
     }
     
-    protected function tearDown() :void
+    private function newTestBuilder(string $table) :TestSchemaBuilder
     {
-        
-        parent::tearDown();
-        
+        return new TestSchemaBuilder($this->wp_conn, $table);
     }
     
 }

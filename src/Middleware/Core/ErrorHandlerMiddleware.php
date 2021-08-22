@@ -30,7 +30,7 @@ class ErrorHandlerMiddleware extends Middleware
             
         } catch (Throwable $e) {
             
-            return $this->error_handler->transformToResponse($e, $request);
+            return $this->error_handler->toHttpResponse($e, $request);
             
         }
         

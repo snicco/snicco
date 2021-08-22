@@ -25,14 +25,6 @@ class ForgotPasswordControllerTest extends AuthTestCase
         
     }
     
-    private function routeUrl()
-    {
-        
-        $this->loadRoutes();
-        
-        return TestApp::url()->signedRoute('auth.forgot.password');
-    }
-    
     /** @test */
     public function the_forgot_password_view_can_be_rendered()
     {
@@ -160,15 +152,25 @@ class ForgotPasswordControllerTest extends AuthTestCase
     
     protected function setUp() :void
     {
+    
+        $this->afterApplicationCreated(function () {
         
-        $this->afterLoadingConfig(function () {
-            
             $this->withAddedConfig('auth.features.password-resets', true);
             $this->withAddedConfig('auth.fail2ban.enabled', true);
-            
-        });
         
+        });
+    
         parent::setUp();
+    
+        $this->bootApp();
+    }
+    
+    private function routeUrl()
+    {
+        
+        $this->loadRoutes();
+        
+        return TestApp::url()->signedRoute('auth.forgot.password');
     }
     
 }

@@ -63,14 +63,6 @@ class TwoFactorAuthConfirmationTest extends AuthTestCase
         
     }
     
-    private function validEmailConfirmMagicLink() :string
-    {
-        /** @var UrlGenerator $url */
-        $url = $this->app->resolve(UrlGenerator::class);
-        
-        return $url->signedRoute('auth.confirm.magic-link', [], true, true);
-    }
-    
     /** @test */
     public function the_fall_back_authenticator_cant_be_used_if_the_user_doesnt_have_2fa_enabled()
     {
@@ -203,9 +195,13 @@ class TwoFactorAuthConfirmationTest extends AuthTestCase
     
     protected function setUp() :void
     {
+    
         $this->afterApplicationCreated(function () {
-            
             $this->with2Fa();
+        });
+    
+        $this->afterApplicationBooted(function () {
+        
             $this->loadRoutes();
             $this->withoutMiddleware('csrf');
             $this->encryptor = $this->app->resolve(EncryptorInterface::class);
@@ -213,9 +209,18 @@ class TwoFactorAuthConfirmationTest extends AuthTestCase
                 TwoFactorAuthenticationProvider::class,
                 new TestTwoFactorProvider($this->encryptor)
             );
-            
+        
         });
         parent::setUp();
+        $this->bootApp();
+    }
+    
+    private function validEmailConfirmMagicLink() :string
+    {
+        /** @var UrlGenerator $url */
+        $url = $this->app->resolve(UrlGenerator::class);
+        
+        return $url->signedRoute('auth.confirm.magic-link', [], true, true);
     }
     
 }

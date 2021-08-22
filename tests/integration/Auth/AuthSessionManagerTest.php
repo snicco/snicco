@@ -8,7 +8,6 @@ use WP_User;
 use Tests\AuthTestCase;
 use Tests\stubs\TestApp;
 use Snicco\Session\Session;
-use Tests\stubs\TestRequest;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Snicco\Session\Contracts\SessionManagerInterface;
@@ -45,26 +44,6 @@ class AuthSessionManagerTest extends AuthTestCase
         
         // Sessions from calvin are not included.
         $this->assertCount(1, $sessions);
-        
-    }
-    
-    private function seedSessions(WP_User $user, int $count)
-    {
-        
-        $created = 0;
-        
-        $this->actingAs($user);
-        
-        while ($created < $count) {
-            
-            $this->refreshSessionManager();
-            
-            $this->session_manager->start($this->request, $user->ID);
-            $this->session_manager->save();
-            
-            $created++;
-            
-        }
         
     }
     
@@ -111,12 +90,6 @@ class AuthSessionManagerTest extends AuthTestCase
         
         $this->assertCount(1, $this->session_manager->getAllForUser());
         
-    }
-    
-    private function activeSession() :Session
-    {
-        
-        return $this->session_manager->activeSession();
     }
     
     /** @test */
@@ -215,17 +188,43 @@ class AuthSessionManagerTest extends AuthTestCase
         $this->travelIntoFuture(1800);
         
         $this->assertCount(0, $this->session_manager->getAllForUser());
-        
+    
     }
     
     protected function setUp() :void
     {
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationBooted(function () {
             $this->driver = TestApp::resolve(SessionDriver::class);
             $this->session_manager = TestApp::resolve(SessionManagerInterface::class);
-            $this->withRequest(TestRequest::from('GET', '/foo'));
+            $this->withRequest($this->frontendRequest('GET', '/foo'));
         });
         parent::setUp();
+        $this->bootApp();
+    }
+    
+    private function seedSessions(WP_User $user, int $count)
+    {
+        
+        $created = 0;
+        
+        $this->actingAs($user);
+        
+        while ($created < $count) {
+            
+            $this->refreshSessionManager();
+            
+            $this->session_manager->start($this->request, $user->ID);
+            $this->session_manager->save();
+            
+            $created++;
+            
+        }
+        
+    }
+    
+    private function activeSession() :Session
+    {
+        return $this->session_manager->activeSession();
     }
     
 }

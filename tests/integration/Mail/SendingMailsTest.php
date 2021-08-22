@@ -192,13 +192,19 @@ class SendingMailsTest extends FrameworkTestCase
                 
             },
         ]);
-        
+    
         $mail->to('c@web.de')
              ->send(new ConfirmAccountTestMail());
-        
+    
         $mail = $this->mail_data[0];
         $this->assertViewContent('New Message', $mail['message']);
-        
+    
+    }
+    
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bootApp();
     }
     
     private function clearAllMails()

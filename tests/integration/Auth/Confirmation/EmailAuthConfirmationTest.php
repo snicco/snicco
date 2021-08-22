@@ -48,15 +48,6 @@ class EmailAuthConfirmationTest extends AuthTestCase
         
     }
     
-    private function validMagicLink() :string
-    {
-        
-        /** @var UrlGenerator $url */
-        $url = $this->app->resolve(UrlGenerator::class);
-        
-        return $url->signedRoute('auth.confirm.magic-link', [], true, true);
-    }
-    
     /** @test */
     public function auth_can_not_be_confirmed_with_a_tampered_magic_link()
     {
@@ -85,16 +76,25 @@ class EmailAuthConfirmationTest extends AuthTestCase
         $response->assertSee(
             'Your confirmation link was invalid or expired. Please request a new one.'
         );
-        
+    
     }
     
     protected function setUp() :void
     {
-        $this->afterApplicationCreated(function () {
-            
+        $this->afterApplicationBooted(function () {
             $this->loadRoutes();
         });
         parent::setUp();
+        $this->bootApp();
+    }
+    
+    private function validMagicLink() :string
+    {
+        
+        /** @var UrlGenerator $url */
+        $url = $this->app->resolve(UrlGenerator::class);
+        
+        return $url->signedRoute('auth.confirm.magic-link', [], true, true);
     }
     
 }

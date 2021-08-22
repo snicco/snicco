@@ -229,17 +229,18 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
     
     protected function setUp() :void
     {
-        
-        $this->afterLoadingConfig(function () {
+    
+        $this->afterApplicationCreated(function () {
             $this->withAddedConfig('auth.fail2ban.enabled', true);
         });
+    
+        $this->afterApplicationBooted(function () {
         
-        $this->afterApplicationCreated(function () {
-            
             $this->instance(AuthConfirmation::class, new TestAuthConfirmation());
-            
+        
         });
         parent::setUp();
+        $this->bootApp();
     }
     
 }

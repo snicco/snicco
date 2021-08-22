@@ -15,7 +15,7 @@ class RedirectRoutesTest extends FrameworkTestCase
     /** @test */
     public function the_script_will_be_shut_down_if_a_redirect_route_matches()
     {
-        
+        $this->bootApp();
         Event::fake([ResponseSent::class]);
         
         $this->get('/location-a')->assertRedirect('/location-b');
