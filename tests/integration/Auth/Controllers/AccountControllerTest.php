@@ -178,12 +178,12 @@ class AccountControllerTest extends AuthTestCase
     /** @test */
     public function for_non_json_requests_a_custom_response_can_be_provided()
     {
-    
+        
         $calvin = $this->createSubscriber();
         $this->actingAs($calvin);
-    
+        
         $response = $this->delete("/auth/accounts/$calvin->ID");
-    
+        
         $this->assertUserDeleted($calvin);
         $response->assertRedirect('/test/thank-you');
     }

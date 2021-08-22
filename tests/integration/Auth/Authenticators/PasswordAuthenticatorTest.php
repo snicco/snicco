@@ -192,21 +192,21 @@ class PasswordAuthenticatorTest extends AuthTestCase
     {
         
         $this->afterApplicationCreated(function () {
-    
+            
             $this->withReplacedConfig('auth.through', [
                 PasswordAuthenticator::class,
             ]);
             $this->withAddedConfig('auth.fail2ban.enabled', true);
-    
+            
         });
-    
-        $this->afterApplicationBooted(function () {
         
+        $this->afterApplicationBooted(function () {
+            
             $this->url = $this->app->resolve(UrlGenerator::class);
             $this->loadRoutes();
-        
+            
         });
-    
+        
         parent::setUp();
         $this->bootApp();
     }

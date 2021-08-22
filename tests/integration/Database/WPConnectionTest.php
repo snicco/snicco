@@ -59,13 +59,13 @@ class WPConnectionTest extends DatabaseTestCase
     /** @test */
     public function the_schema_builder_uses_the_correct_grammar_and_processor()
     {
-    
+        
         $wp_connection = $this->newWpConnection();
-    
+        
         $schema_builder = $wp_connection->getSchemaBuilder();
-    
+        
         self::assertInstanceOf(MySqlSchemaBuilder::class, $schema_builder);
-    
+        
     }
     
     /**
@@ -178,14 +178,14 @@ class WPConnectionTest extends DatabaseTestCase
                               ])
                               ->where('first_name', 'MARY')
                               ->where('last_name', 'JONES');
-    
+        
         $connection->selectFromWriteConnection($builder->toSql(), $builder->getBindings());
-    
+        
         $assertable->assertDidSelect(
             "select `customer_id`, `first_name`, `last_name` from `wp_customer` where `first_name` = ? and `last_name` = ?",
             ['MARY', 'JONES']
         );
-    
+        
     }
     
     /**
@@ -449,13 +449,13 @@ class WPConnectionTest extends DatabaseTestCase
         $this->assertSame('foo bar', $queries[0]['query']);
         $this->assertEquals(['baz', 1], $queries[0]['bindings']);
         $this->assertTrue(is_float($queries[0]['time']));
-    
+        
         $this->assertSame('biz baz', $queries[1]['query']);
         $this->assertEquals(['boo', 0], $queries[1]['bindings']);
         $this->assertTrue(is_float($queries[1]['time']));
-    
+        
         $this->assertable($wp)->assertDidNotDoStatement();
-    
+        
     }
     
     /**
@@ -646,14 +646,14 @@ class WPConnectionTest extends DatabaseTestCase
             
             $connection->update('foobar', ['foo' => 'bar']);
             $this->fail('No query exception thrown');
-    
+            
         } catch (QueryException $e) {
-    
+            
             $this->assertSame('foobar', $e->getSql());
             $this->assertSame(['foo' => 'bar'], $e->getBindings());
-    
+            
         }
-    
+        
     }
     
     /**

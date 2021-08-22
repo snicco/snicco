@@ -39,7 +39,7 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
     /** @test */
     public function eloquent_is_booted()
     {
-    
+        
         $this->bootApp();
         
         $events = Eloquent::getEventDispatcher();
@@ -53,7 +53,7 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
     /** @test */
     public function the_connection_resolver_is_bound_correctly()
     {
-    
+        
         $this->bootApp();
         
         $this->assertInstanceOf(
@@ -66,7 +66,7 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
     /** @test */
     public function the_default_connection_is_set()
     {
-    
+        
         $this->bootApp();
         
         /** @var ConnectionResolverInterface $resolver */
@@ -79,7 +79,7 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
     /** @test */
     public function by_default_the_current_wpdb_instance_is_used()
     {
-    
+        
         $this->bootApp();
         
         /** @var ConnectionResolverInterface $resolver */
@@ -98,7 +98,7 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
     /** @test */
     public function the_wpdb_abstraction_can_be_changed()
     {
-    
+        
         $this->bootApp();
         $this->assertSame(BetterWPDb::class, $this->app->resolve(BetterWPDbInterface::class));
         
@@ -110,7 +110,7 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
     /** @test */
     public function the_schema_builder_can_be_resolved_for_the_default_connection()
     {
-    
+        
         $this->bootApp();
         
         $b = $this->app->resolve(MySqlSchemaBuilder::class);
@@ -121,7 +121,7 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
     /** @test */
     public function the_connection_can_be_resolved_as_a_closure()
     {
-    
+        
         $this->bootApp();
         
         $connection = $this->app->resolve(WPConnectionInterface::class)();
@@ -132,7 +132,7 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
     /** @test */
     public function the_db_facade_works()
     {
-    
+        
         $this->bootApp();
         
         $connection = DB::connection();
@@ -146,7 +146,7 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
     /** @test */
     public function the_faker_instance_is_registered()
     {
-    
+        
         $this->bootApp();
         $this->assertInstanceOf(Generator::class, $this->app->resolve(Generator::class));
         

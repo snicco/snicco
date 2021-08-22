@@ -38,7 +38,7 @@ class RouteRegistrationTest extends FrameworkTestCase
     {
         
         $this->withRequest($this->adminRequest('GET', 'foo'));
-    
+        
         $this->withAddedProvider(SimulateAdminProvider::class)
              ->withoutHooks()
              ->bootApp();
@@ -74,7 +74,7 @@ class RouteRegistrationTest extends FrameworkTestCase
     {
         
         $this->withRequest($this->adminRequest('GET', '', 'index.php'));
-    
+        
         $this->withAddedProvider(SimulateAdminProvider::class)
              ->withoutHooks()
              ->bootApp();
@@ -108,7 +108,7 @@ class RouteRegistrationTest extends FrameworkTestCase
     /** @test */
     public function the_fallback_route_controller_is_registered_for_web_routes()
     {
-    
+        
         $this->withRequest($this->frontendRequest('GET', '/post1'));
         $this->bootApp();
         $this->makeFallbackConditionPass();
@@ -125,7 +125,7 @@ class RouteRegistrationTest extends FrameworkTestCase
     /** @test */
     public function the_fallback_controller_does_not_match_admin_routes()
     {
-    
+        
         $this->withAddedProvider(SimulateAdminProvider::class)
              ->withoutHooks()
              ->bootApp();
@@ -143,7 +143,7 @@ class RouteRegistrationTest extends FrameworkTestCase
     /** @test */
     public function the_fallback_controller_does_not_match_ajax_routes()
     {
-    
+        
         $this->withAddedProvider(SimulateAjaxProvider::class)
              ->withoutHooks()
              ->bootApp();
@@ -161,7 +161,7 @@ class RouteRegistrationTest extends FrameworkTestCase
     /** @test */
     public function named_groups_prefixes_are_applied_for_admin_routes()
     {
-    
+        
         $this->withAddedProvider(SimulateAdminProvider::class);
         $this->bootApp();
         
@@ -174,7 +174,7 @@ class RouteRegistrationTest extends FrameworkTestCase
     /** @test */
     public function named_groups_are_applied_for_ajax_routes()
     {
-    
+        
         $this->withAddedProvider(SimulateAjaxProvider::class);
         $this->bootApp();
         $this->loadRoutes();
@@ -206,7 +206,7 @@ class RouteRegistrationTest extends FrameworkTestCase
     {
         
         $request = $this->frontendRequest('GET', '/web-other');
-    
+        
         $this->withRequest($request);
         $this->withAddedProvider(RoutingDefinitionServiceProvider::class)->withoutHooks()
              ->bootApp();

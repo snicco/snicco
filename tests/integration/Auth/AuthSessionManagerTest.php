@@ -188,7 +188,7 @@ class AuthSessionManagerTest extends AuthTestCase
         $this->travelIntoFuture(1800);
         
         $this->assertCount(0, $this->session_manager->getAllForUser());
-    
+        
     }
     
     protected function setUp() :void

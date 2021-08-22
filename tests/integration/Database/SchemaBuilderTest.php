@@ -277,15 +277,15 @@ class SchemaBuilderTest extends DatabaseTestCase
     {
         
         $builder = $this->newTestBuilder('books');
-    
+        
         $builder->create('books', function (Blueprint $table) {
-        
+            
             $table->boolean('confirmed');
-        
+            
         });
-    
+        
         $builder->seeColumnOfType('confirmed', 'tinyint(1)');
-    
+        
     }
     
     /**
@@ -1341,15 +1341,15 @@ class SchemaBuilderTest extends DatabaseTestCase
             $table->collation = 'utf8mb4_unicode_ci';
             $table->id();
             $table->string('name')->collation('latin1_german1_ci');
-    
+            
         });
-    
+        
         $this->assertSame('utf8mb4_unicode_ci', $builder->getTableCollation('books'));
-    
+        
         $columns = $builder->getFullColumnInfo('books');
-    
+        
         $this->assertSame('latin1_german1_ci', $columns['name']['Collation']);
-    
+        
     }
     
     /**
@@ -1725,15 +1725,15 @@ class SchemaBuilderTest extends DatabaseTestCase
         });
         
         $this->assertSame(['id', 'deleted_at'], $builder->getColumnsByOrdinalPosition('books'));
-    
+        
         $builder->modify('books', function (Blueprint $table) {
-        
+            
             $table->dropSoftDeletesTz();
-        
+            
         });
-    
+        
         $this->assertSame(['id'], $builder->getColumnListing('books'));
-    
+        
     }
     
     /**
@@ -1881,14 +1881,14 @@ class SchemaBuilderTest extends DatabaseTestCase
         $builder = $this->newTestBuilder('books');
         
         $builder->create('books', function (Blueprint $table) {
-    
+            
             $table->string('email');
             $table->string('name')->primary();
-    
+            
         });
-    
+        
         $builder->seePrimaryKey('name');
-    
+        
     }
     
     
@@ -2054,13 +2054,13 @@ class SchemaBuilderTest extends DatabaseTestCase
         
         $this->wpdbInsert('wp_authors', ['author_name' => 'calvin alkan']);
         $this->wpdbInsert('wp_books', ['id' => 1, 'author_id' => 1]);
-    
+        
         $this->assertDbTable('wp_books')->assertRecordExists(['id' => 1, 'author_id' => 1]);
-    
+        
         $this->wpdbDelete('wp_authors', ['id' => 1]);
-    
+        
         $this->assertDbTable('wp_books')->assertRecordNotExists(['id' => 1, 'author_id' => 1]);
-    
+        
     }
     
     /**
@@ -2097,7 +2097,7 @@ class SchemaBuilderTest extends DatabaseTestCase
         $builder2->modify('books', function (Blueprint $table) {
             
             $table->dropForeign(['author_id']);
-    
+            
         });
         
         $this->wpdbDelete('wp_authors', ['id' => 1]);

@@ -164,21 +164,21 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
     {
         
         $this->afterApplicationCreated(function () {
-    
+            
             $this->withReplacedConfig('auth.through', [
                 MagicLinkAuthenticator::class,
             ]);
             $this->withReplacedConfig('auth.authenticator', 'email');
             $this->withReplacedConfig('auth.primary_view', MagicLinkLoginView::class);
             $this->withReplacedConfig('auth.fail2ban.enabled', true);
-    
+            
         });
-    
-        $this->afterApplicationBooted(function () {
         
+        $this->afterApplicationBooted(function () {
+            
             $this->url = $this->app->resolve(UrlGenerator::class);
             $this->loadRoutes();
-        
+            
         });
         parent::setUp();
         $this->bootApp();

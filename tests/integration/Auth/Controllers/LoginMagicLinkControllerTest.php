@@ -103,12 +103,12 @@ class LoginMagicLinkControllerTest extends AuthTestCase
     protected function setUp() :void
     {
         $this->afterApplicationCreated(function () {
-    
+            
             $this->withReplacedConfig('auth.authenticator', 'email');
             $this->withAddedConfig('auth.fail2ban.enabled', true);
-    
+            
         });
-    
+        
         $this->afterApplicationBooted(function () {
             $this->withoutMiddleware('csrf');
         });

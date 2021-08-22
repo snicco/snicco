@@ -123,15 +123,15 @@ class BladeComponentsTest extends BladeTestCase
     /** @test */
     public function dynamic_components_work()
     {
-    
+        
         $view = TestApp::view('dynamic-component')->with('componentName', 'hello');
         $content = $view->toString();
         $this->assertViewContent('Hello World', $content);
-    
+        
         $view = TestApp::view('dynamic-component')->with('componentName', 'hello-calvin');
         $content = $view->toString();
         $this->assertViewContent('Hello Calvin', $content);
-    
+        
     }
     
     protected function setUp() :void

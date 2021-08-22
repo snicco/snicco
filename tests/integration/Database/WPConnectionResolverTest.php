@@ -97,7 +97,7 @@ class WPConnectionResolverTest extends DatabaseTestCase
     /** @test */
     public function testLaravelFacadesWorkWithSecondConnection()
     {
-    
+        
         $this->withAddedConfig('database.connections', ['second' => $this->secondDatabaseConfig()])
              ->bootApp();
         
@@ -112,7 +112,7 @@ class WPConnectionResolverTest extends DatabaseTestCase
     /** @test */
     public function once_a_connection_has_been_resolved_it_will_never_be_created_again()
     {
-    
+        
         $this->withAddedConfig('database.connections', ['second' => $this->secondDatabaseConfig()])
              ->bootApp();
         
@@ -133,17 +133,17 @@ class WPConnectionResolverTest extends DatabaseTestCase
     /** @test */
     public function via_the_schema_facade_the_schema_builder_can_be_resolved_with_other_connections()
     {
-    
+        
         $this->withAddedConfig('database.connections', ['second' => $this->secondDatabaseConfig()])
              ->bootApp();
-    
+        
         $builder = Schema::connection('second');
         $this->assertInstanceOf(MySqlSchemaBuilder::class, $builder);
-    
+        
         $db = $builder->getConnection()->dbInstance();
         $this->assertNotDefaultConnection($db);
         $this->assertSame($_SERVER['SECONDARY_DB_NAME'], $db->dbname);
-    
+        
     }
     
     private function getResolver(array $extra_connections = []) :WPConnectionResolver

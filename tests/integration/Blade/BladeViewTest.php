@@ -88,7 +88,7 @@ class BladeViewTest extends BladeTestCase
         $this->afterApplicationBooted(function () {
             $this->engine = TestApp::resolve(ViewEngineInterface::class);
         });
-    
+        
         parent::setUp();
         $this->bootApp();
         

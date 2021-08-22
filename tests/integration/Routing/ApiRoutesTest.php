@@ -19,16 +19,16 @@ class ApiRoutesTest extends FrameworkTestCase
     /** @test */
     public function an_api_endpoint_can_be_created_where_all_routes_are_run_on_init_and_shut_down_the_script_afterwards()
     {
-    
+        
         $this->withRequest($this->frontendRequest('GET', 'api-prefix/base/foo'));
         $this->bootApp();
-    
+        
         do_action('init');
-    
+        
         $response = $this->sentResponse();
         $response->assertOk();
         $response->assertSee('foo endpoint');
-    
+        
         // This will shut the script down.
         Event::assertDispatched(function (ResponseSent $event) {
             return $event->request->isWpFrontEnd();
@@ -39,20 +39,20 @@ class ApiRoutesTest extends FrameworkTestCase
     /** @test */
     public function api_routes_are_not_loaded_twice_if_the_same_name_is_present()
     {
-    
+        
         $GLOBALS['test']['api_routes'] = false;
         $GLOBALS['test']['other_api_routes'] = false;
-    
+        
         $this->withAddedConfig(
             ['routing.definitions' => [ROUTES_DIR, FIXTURES_DIR.DS.'OtherRoutes']]
         );
         $this->withRequest($this->frontendRequest('GET', 'api-prefix/base/foo'));
         $this->bootApp();
-    
+        
         do_action('init');
-    
+        
         $this->sentResponse()->assertOk()->assertSee('foo endpoint');
-    
+        
         $this->assertTrue($GLOBALS['test']['api_routes']);
         $this->assertFalse(
             $GLOBALS['test']['other_api_routes'],
@@ -78,14 +78,14 @@ class ApiRoutesTest extends FrameworkTestCase
     /** @test */
     public function a_fallback_api_route_can_be_defined_that_matches_all_non_existing_endpoints()
     {
-    
+        
         $this->withRequest($this->frontendRequest('GET', 'api-prefix/base/bogus'));
         $this->bootApp();
-    
+        
         do_action('init');
-    
+        
         $this->sentResponse()->assertStatus(400)->assertSee('The endpoint: bogus does not exist.');
-    
+        
     }
     
     protected function setUp() :void

@@ -239,7 +239,7 @@ class WpAuthSessionTokenTest extends AuthTestCase
             $this->user = $user;
             $this->session_manager = TestApp::resolve(SessionManagerInterface::class);
         });
-    
+        
         parent::setUp();
         $this->bootApp();
     }

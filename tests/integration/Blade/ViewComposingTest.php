@@ -35,7 +35,7 @@ class ViewComposingTest extends BladeTestCase
         });
         
         $this->assertViewContent('calvin', $this->makeView('view-composer'));
-    
+        
     }
     
     protected function setUp() :void

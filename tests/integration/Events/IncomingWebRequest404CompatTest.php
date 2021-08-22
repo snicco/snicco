@@ -40,7 +40,7 @@ class IncomingWebRequest404CompatTest extends FrameworkTestCase
     /** @test */
     public function if_no_route_matched_the_wp_query_is_evaluated_for_a_404()
     {
-    
+        
         $this->withRequest($this->frontendRequest('GET', '/bogus'));
         $this->bootApp();
         $this->loadRoutes();

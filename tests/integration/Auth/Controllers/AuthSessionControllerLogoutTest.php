@@ -47,7 +47,7 @@ class AuthSessionControllerLogoutTest extends AuthTestCase
     /** @test */
     public function the_route_can_only_be_accessed_if_the_user_id_segment_is_the_user_id_of_the_logged_in_user()
     {
-    
+        
         $this->withoutExceptionHandling();
         $calvin = $this->createAdmin();
         $this->actingAs($calvin);
@@ -128,17 +128,17 @@ class AuthSessionControllerLogoutTest extends AuthTestCase
     
     protected function setUp() :void
     {
-    
+        
         $this->afterApplicationBooted(function () {
-        
+            
             $this->url = $this->app->resolve(UrlGenerator::class);
-        
+            
             $this->loadRoutes();
-        
+            
         });
         parent::setUp();
         $this->bootApp();
-    
+        
     }
     
     private function logoutUrl(WP_User $user, string $redirect_to = null)

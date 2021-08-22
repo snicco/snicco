@@ -59,9 +59,9 @@ class Fail2BanTest extends AuthTestCase
         );
         $request = $this->frontendRequest()->withAttribute('ip_address', '127.0.0.1');
         $fail2ban->report(new TestBannable($request));
-    
+        
         $logger->assertLogEntry(E_WARNING, 'filtered message from 127.0.0.1');
-    
+        
     }
     
     protected function setUp() :void

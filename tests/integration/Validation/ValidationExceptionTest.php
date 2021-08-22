@@ -33,7 +33,7 @@ class ValidationExceptionTest extends FrameworkTestCase
         ]);
         
         $handler = $this->errorHandler();
-    
+        
         $response = $this->toTestResponse(
             $handler->toHttpResponse(
                 $e,
@@ -65,20 +65,20 @@ class ValidationExceptionTest extends FrameworkTestCase
     /** @test */
     public function a_named_error_bag_can_be_used()
     {
-    
+        
         $this->bootApp();
         $this->withRequest(
             $this->frontendRequest('POST', '/foobar')->withHeader('referer', '/foobar')
         );
-    
+        
         $e = ValidationException::withMessages([
             'foo' => [
                 'foo must have a length between 5 and 10.',
             ],
         ])->setMessageBagName('login_form');
-    
+        
         $handler = $this->errorHandler();
-    
+        
         $response = $this->toTestResponse(
             $handler->toHttpResponse(
                 $e,
@@ -105,7 +105,7 @@ class ValidationExceptionTest extends FrameworkTestCase
         $this->withRequest(
             $this->frontendRequest('POST', '/foobar')->withHeader('referer', '/foobar')
         );
-    
+        
         $e = ValidationException::withMessages([
             'foo' => [
                 'foo must have a length between 5 and 10.',
@@ -146,12 +146,12 @@ class ValidationExceptionTest extends FrameworkTestCase
     /** @test */
     public function a_message_is_included_with_json_errors()
     {
-    
+        
         $this->bootApp();
         $this->withRequest(
             $this->frontendRequest('POST', '/foobar')->withHeader('referer', '/foobar')
         );
-    
+        
         $e = ValidationException::withMessages([
             'foo' => [
                 'foo must have a length between 5 and 10.',
@@ -186,7 +186,7 @@ class ValidationExceptionTest extends FrameworkTestCase
                 ],
             ],
         ]);
-    
+        
     }
     
     /** @test */

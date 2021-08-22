@@ -207,17 +207,17 @@ class ResetPasswordControllerTest extends AuthTestCase
     
     protected function setUp() :void
     {
-    
+        
         $this->afterApplicationCreated(function () {
-        
+            
             $this->withAddedConfig('auth.features.password-resets', true);
-        
+            
         });
-    
+        
         parent::setUp();
-    
+        
         $this->bootApp();
-    
+        
     }
     
     private function routeUrl(int $user_id)

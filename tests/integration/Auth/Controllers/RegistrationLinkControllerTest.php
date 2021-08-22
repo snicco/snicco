@@ -76,23 +76,23 @@ class RegistrationLinkControllerTest extends AuthTestCase
     
     protected function setUp() :void
     {
-    
+        
         $this->afterApplicationCreated(function () {
-        
+            
             $this->withAddedConfig('auth.features.registration', true);
-        
+            
         });
-    
-        $this->afterApplicationBooted(function () {
         
+        $this->afterApplicationBooted(function () {
+            
             $this->withoutMiddleware('csrf');
             $this->instance(RegistrationViewResponse::class, new TestRegistrationView());
         });
-    
+        
         parent::setUp();
-    
+        
         $this->bootApp();
-    
+        
     }
     
 }

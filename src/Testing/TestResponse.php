@@ -886,9 +886,9 @@ class TestResponse
         $actual = json_decode($this->streamed_content, true);
         
         PHPUnit::assertSame($data, $actual, 'Incorrect json response.');
-    
+        
         return $this;
-    
+        
     }
     
     public function assertIsJson() :TestResponse

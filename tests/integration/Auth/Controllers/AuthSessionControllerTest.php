@@ -308,13 +308,13 @@ class AuthSessionControllerTest extends AuthTestCase
             'log' => $calvin->user_login,
             'allow_login_for_id' => $calvin->ID + 1,
         ]);
-    
+        
         $this->assertAuthenticated($calvin);
         $response->assertSessionDoesntHaveErrors();
-    
+        
         $this->logout($calvin);
         $this->assertNotAuthenticated($calvin);
-    
+        
     }
     
     protected function setUp() :void

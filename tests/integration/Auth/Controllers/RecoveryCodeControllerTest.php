@@ -151,19 +151,19 @@ class RecoveryCodeControllerTest extends AuthTestCase
     
     protected function setUp() :void
     {
-    
+        
         $this->afterApplicationCreated(function () {
-        
+            
             $this->with2Fa();
-        
+            
         });
         $this->afterApplicationBooted(function () {
-    
+            
             $this->codes = $this->generateTestRecoveryCodes();
             $this->encryptor = $this->app->resolve(EncryptorInterface::class);
-    
+            
         });
-    
+        
         parent::setUp();
         $this->bootApp();
     }
