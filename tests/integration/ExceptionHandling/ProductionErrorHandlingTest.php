@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\integration\ExceptionHandling;
 
 use Tests\FrameworkTestCase;
-use Snicco\ExceptionHandling\ProductionErrorHandler;
+use Snicco\ExceptionHandling\ProductionExceptionHandler;
 
-/** @see ProductionErrorHandler */
+/** @see ProductionExceptionHandler */
 class ProductionErrorHandlingTest extends FrameworkTestCase
 {
     

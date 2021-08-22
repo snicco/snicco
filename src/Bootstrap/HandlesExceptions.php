@@ -9,8 +9,8 @@ use Snicco\Http\Psr7\Request;
 use Snicco\Http\ResponseEmitter;
 use Snicco\Contracts\Bootstrapper;
 use Snicco\Application\Application;
+use Snicco\Contracts\ExceptionHandler;
 use Snicco\ExceptionHandling\FatalError;
-use Snicco\Contracts\ErrorHandlerInterface;
 
 class HandlesExceptions implements Bootstrapper
 {
@@ -121,9 +121,9 @@ class HandlesExceptions implements Bootstrapper
         return new FatalError($error['message'], 0, $error, $traceOffset);
     }
     
-    private function getExceptionHandler() :ErrorHandlerInterface
+    private function getExceptionHandler() :ExceptionHandler
     {
-        return $this->app->resolve(ErrorHandlerInterface::class);
+        return $this->app->resolve(ExceptionHandler::class);
     }
     
     private function isFatal(int $type) :bool

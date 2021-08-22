@@ -23,17 +23,17 @@ use Snicco\Application\Application;
 use Codeception\TestCase\WPTestCase;
 use Snicco\Contracts\ServiceProvider;
 use Illuminate\Support\Facades\Facade;
+use Snicco\Contracts\ExceptionHandler;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Testing\Concerns\TravelsTime;
 use Snicco\Session\SessionServiceProvider;
-use Snicco\Contracts\ErrorHandlerInterface;
 use Mockery\Exception\InvalidCountException;
 use Snicco\Contracts\AbstractRouteCollection;
 use Snicco\Contracts\RouteRegistrarInterface;
-use Snicco\ExceptionHandling\NullErrorHandler;
 use Snicco\Testing\Concerns\InteractsWithMail;
 use Snicco\Testing\Concerns\MakesHttpRequests;
 use Snicco\Testing\Concerns\InteractsWithSession;
+use Snicco\ExceptionHandling\NullExceptionHandler;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Snicco\Testing\Concerns\InteractsWithContainer;
 use Snicco\Testing\Concerns\InteractsWithAuthentication;
@@ -364,7 +364,7 @@ abstract class TestCase extends WPTestCase
     {
         
         $this->config->set('app.exception_handling', false);
-        $this->instance(ErrorHandlerInterface::class, new NullErrorHandler());
+        $this->instance(ExceptionHandler::class, new NullExceptionHandler());
         
         return $this;
         

@@ -9,11 +9,11 @@ use Whoops\RunInterface;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Traits\HandlesExceptions;
+use Snicco\Contracts\ExceptionHandler;
 use Whoops\Handler\JsonResponseHandler;
-use Snicco\Contracts\ErrorHandlerInterface;
 use Snicco\Events\UnrecoverableExceptionHandled;
 
-class DebugErrorHandler implements ErrorHandlerInterface
+class DebugExceptionHandler implements ExceptionHandler
 {
     
     use HandlesExceptions;

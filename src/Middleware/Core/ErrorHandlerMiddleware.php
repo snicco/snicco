@@ -8,15 +8,15 @@ use Throwable;
 use Snicco\Http\Delegate;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\Middleware;
+use Snicco\Contracts\ExceptionHandler;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Contracts\ErrorHandlerInterface;
 
 class ErrorHandlerMiddleware extends Middleware
 {
     
-    private ErrorHandlerInterface $error_handler;
+    private ExceptionHandler $error_handler;
     
-    public function __construct(ErrorHandlerInterface $error_handler)
+    public function __construct(ExceptionHandler $error_handler)
     {
         $this->error_handler = $error_handler;
     }

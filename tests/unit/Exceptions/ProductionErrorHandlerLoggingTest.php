@@ -24,7 +24,7 @@ use Tests\helpers\CreateRouteCollection;
 use Snicco\Factories\ErrorHandlerFactory;
 use Tests\helpers\CreateDefaultWpApiMocks;
 use Psr\Http\Message\StreamFactoryInterface;
-use Snicco\ExceptionHandling\ProductionErrorHandler;
+use Snicco\ExceptionHandling\ProductionExceptionHandler;
 
 class ProductionErrorHandlerLoggingTest extends UnitTest
 {
@@ -50,11 +50,6 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
         
         $this->test_logger->assertHasLogLevelEntry(LogLevel::ERROR, 'Foobar');
         
-    }
-    
-    private function newErrorHandler() :ProductionErrorHandler
-    {
-        return ErrorHandlerFactory::make($this->container, false);
     }
     
     /** @test */
@@ -233,7 +228,7 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
     {
         
         $this->container->instance(
-            ProductionErrorHandler::class,
+            ProductionExceptionHandler::class,
             CustomProductionErrorHandler::class
         );
         
@@ -253,7 +248,7 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
     {
         
         $this->container->instance(
-            ProductionErrorHandler::class,
+            ProductionExceptionHandler::class,
             CustomProductionErrorHandler::class
         );
         
@@ -271,7 +266,10 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
         Event::make($this->container = $this->createContainer());
         Event::fake();
         $this->container->instance(StreamFactoryInterface::class, $this->psrStreamFactory());
-        $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
+        $this->container->instance(
+            ProductionExceptionHandler::class,
+            ProductionExceptionHandler::class
+        );
         $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
         WpFacade::setFacadeContainer($this->container);
         WP::shouldReceive('userId')->andReturn(10)->byDefault();
@@ -289,6 +287,11 @@ class ProductionErrorHandlerLoggingTest extends UnitTest
         WP::clearResolvedInstances();
         Mockery::close();
         
+    }
+    
+    private function newErrorHandler() :ProductionExceptionHandler
+    {
+        return ErrorHandlerFactory::make($this->container, false);
     }
     
 }
@@ -343,7 +346,7 @@ class LogExceptionWithFooDependency extends Exception
     
 }
 
-class CustomProductionErrorHandler extends ProductionErrorHandler
+class CustomProductionErrorHandler extends ProductionExceptionHandler
 {
     
     protected array $dont_report = [

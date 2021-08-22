@@ -35,4 +35,20 @@ namespace Snicco\Support\Functions
         
     }
     
+    /**
+     * Call the given Closure with the given value then return the value.
+     * don't use the non-namespace illuminate function.
+     *
+     * @param  mixed  $value
+     * @param  callable|null  $callback
+     *
+     * @return mixed
+     */
+    function tap($value, ?callable $callback = null)
+    {
+        $callback($value);
+        
+        return $value;
+    }
+    
 }

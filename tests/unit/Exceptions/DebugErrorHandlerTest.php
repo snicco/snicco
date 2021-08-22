@@ -12,8 +12,8 @@ use Tests\stubs\TestException;
 use Contracts\ContainerAdapter;
 use Tests\helpers\AssertsResponse;
 use Snicco\Factories\ErrorHandlerFactory;
-use Snicco\ExceptionHandling\DebugErrorHandler;
 use Snicco\Events\UnrecoverableExceptionHandled;
+use Snicco\ExceptionHandling\DebugExceptionHandler;
 
 class DebugErrorHandlerTest extends UnitTest
 {
@@ -21,6 +21,7 @@ class DebugErrorHandlerTest extends UnitTest
     use AssertsResponse;
     
     private Request          $request;
+    
     private ContainerAdapter $container;
     
     /** @test */
@@ -125,7 +126,7 @@ class DebugErrorHandlerTest extends UnitTest
         
     }
     
-    private function newErrorHandler() :DebugErrorHandler
+    private function newErrorHandler() :DebugExceptionHandler
     {
         
         return ErrorHandlerFactory::make(

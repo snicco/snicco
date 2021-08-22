@@ -6,11 +6,11 @@ namespace Tests\integration\ExceptionHandling;
 
 use Tests\FrameworkTestCase;
 use Tests\stubs\TestRequest;
+use Snicco\Contracts\ExceptionHandler;
 use Snicco\Session\SessionServiceProvider;
-use Snicco\Contracts\ErrorHandlerInterface;
 use Snicco\Validation\ValidationServiceProvider;
-use Snicco\ExceptionHandling\ProductionErrorHandler;
 use Snicco\Validation\Exceptions\ValidationException;
+use Snicco\ExceptionHandling\ProductionExceptionHandler;
 
 class ValidationExceptionTest extends FrameworkTestCase
 {
@@ -190,10 +190,10 @@ class ValidationExceptionTest extends FrameworkTestCase
         
     }
     
-    private function errorHandler() :ProductionErrorHandler
+    private function errorHandler() :ProductionExceptionHandler
     {
         
-        return $this->app->resolve(ErrorHandlerInterface::class);
+        return $this->app->resolve(ExceptionHandler::class);
     }
     
 }
