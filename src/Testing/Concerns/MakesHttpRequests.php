@@ -132,6 +132,7 @@ trait MakesHttpRequests
     public function fromIpAddress(string $ip) :self
     {
         $this->default_attributes['ip_address'] = $ip;
+        $this->default_server_variables['REMOTE_ADDR'] = $ip;
         return $this;
     }
     
@@ -472,30 +473,21 @@ trait MakesHttpRequests
         
     }
     
-    private function performRequest(Request $request, array $headers, string $type = 'web') :TestResponse
+    private function performRequest(Request $request, array $headers) :TestResponse
     {
         
-        $request = $this->addHeaders($request, $headers);
-        $request = $this->addCookies($request);
-        $request = $this->addAttributes($request);
+        $this->request = $this->addRequestDefaults($request, $headers);
         
-        $this->withRequest($request);
-        
-        if ( ! $this->set_up_has_run) {
-            $this->boot();
-        }
-        else {
-            $this->bindBaseRequest();
+        if ( ! $this->app->hasBeenBootstrapped()) {
+            $this->bootApp();
         }
         
         if ( ! $this->routes_loaded) {
-            
             $this->loadRoutes();
-            
         }
         
         /** @var Response $response */
-        $response = $this->app->resolve(HttpKernel::class)->run($request);
+        $response = $this->app->resolve(HttpKernel::class)->run($this->request);
         
         if ($this->follow_redirects) {
             
@@ -511,15 +503,23 @@ trait MakesHttpRequests
     {
         
         $this->follow_redirects = false;
-        
+    
         /** @todo transform to test response if no redirect here. */
-        
         while ($response->isRedirect()) {
             $response = $this->get($response->getHeaderLine('Location'));
         }
-        
+    
         return $response;
-        
+    
+    }
+    
+    private function addRequestDefaults(Request $request, array $headers = []) :Request
+    {
+        $request = $this->addCookies($request);
+        $request = $this->addHeaders($request, $headers);
+        $request = $this->addAttributes($request);
+        $this->instance(Request::class, $request);
+        return $request;
     }
     
 }

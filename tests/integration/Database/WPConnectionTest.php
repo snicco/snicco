@@ -22,8 +22,6 @@ use Illuminate\Database\Schema\Grammars\MySqlGrammar as MySqlSchemaGrammar;
 class WPConnectionTest extends DatabaseTestCase
 {
     
-    protected bool $defer_boot = true;
-    
     /** @test */
     public function constructing_the_wp_connection_correctly_sets_up_all_collaborators()
     {
@@ -43,16 +41,6 @@ class WPConnectionTest extends DatabaseTestCase
         
     }
     
-    private function newWpConnection(string $name = null) :WPConnection
-    {
-        
-        $this->boot();
-        $resolver = $this->app->resolve(ConnectionResolverInterface::class);
-        
-        return $resolver->connection($name);
-        
-    }
-    
     /** @test */
     public function the_query_builder_uses_the_correct_grammar_and_processor()
     {
@@ -68,21 +56,21 @@ class WPConnectionTest extends DatabaseTestCase
         
     }
     
-    /**
-     * INSTANCE SETUP
-     */
-    
     /** @test */
     public function the_schema_builder_uses_the_correct_grammar_and_processor()
     {
-        
+    
         $wp_connection = $this->newWpConnection();
-        
+    
         $schema_builder = $wp_connection->getSchemaBuilder();
-        
+    
         self::assertInstanceOf(MySqlSchemaBuilder::class, $schema_builder);
-        
+    
     }
+    
+    /**
+     * INSTANCE SETUP
+     */
     
     /** @test */
     public function the_connection_can_begin_a_query_against_a_query_builder_table()
@@ -149,21 +137,6 @@ class WPConnectionTest extends DatabaseTestCase
         
     }
     
-    private function mockDb()
-    {
-        
-        $m = Mockery::mock(BetterWPDbInterface::class);
-        $m->dbname = 'testing';
-        $m->prefix = 'wp_';
-        
-        return $m;
-        
-    }
-    
-    /**
-     * QUERIES
-     */
-    
     /** @test */
     public function selecting_a_set_of_records_works_with_a_valid_query()
     {
@@ -205,15 +178,19 @@ class WPConnectionTest extends DatabaseTestCase
                               ])
                               ->where('first_name', 'MARY')
                               ->where('last_name', 'JONES');
-        
+    
         $connection->selectFromWriteConnection($builder->toSql(), $builder->getBindings());
-        
+    
         $assertable->assertDidSelect(
             "select `customer_id`, `first_name`, `last_name` from `wp_customer` where `first_name` = ? and `last_name` = ?",
             ['MARY', 'JONES']
         );
-        
+    
     }
+    
+    /**
+     * QUERIES
+     */
     
     /** @test */
     public function successful_inserts_return_true()
@@ -425,10 +402,6 @@ class WPConnectionTest extends DatabaseTestCase
         
     }
     
-    /**
-     * PRETEND MODE
-     */
-    
     /** @test */
     public function nothing_gets_executed_for_select_one()
     {
@@ -476,14 +449,18 @@ class WPConnectionTest extends DatabaseTestCase
         $this->assertSame('foo bar', $queries[0]['query']);
         $this->assertEquals(['baz', 1], $queries[0]['bindings']);
         $this->assertTrue(is_float($queries[0]['time']));
-        
+    
         $this->assertSame('biz baz', $queries[1]['query']);
         $this->assertEquals(['boo', 0], $queries[1]['bindings']);
         $this->assertTrue(is_float($queries[1]['time']));
-        
+    
         $this->assertable($wp)->assertDidNotDoStatement();
-        
+    
     }
+    
+    /**
+     * PRETEND MODE
+     */
     
     /** @test */
     public function nothing_gets_executed_for_updates()
@@ -629,10 +606,6 @@ class WPConnectionTest extends DatabaseTestCase
         
     }
     
-    /**
-     * EXCEPTION HANDLING
-     */
-    
     /** @test */
     public function errors_get_handled_for_inserts()
     {
@@ -673,15 +646,19 @@ class WPConnectionTest extends DatabaseTestCase
             
             $connection->update('foobar', ['foo' => 'bar']);
             $this->fail('No query exception thrown');
-            
+    
         } catch (QueryException $e) {
-            
+    
             $this->assertSame('foobar', $e->getSql());
             $this->assertSame(['foo' => 'bar'], $e->getBindings());
-            
+    
         }
-        
+    
     }
+    
+    /**
+     * EXCEPTION HANDLING
+     */
     
     /** @test */
     public function errors_get_handled_for_deletes()
@@ -790,12 +767,32 @@ class WPConnectionTest extends DatabaseTestCase
     
     protected function setUp() :void
     {
-        
-        $this->afterLoadingConfig(function () {
-            
+        // needs to be before the booting, or we can't overwrite the connection in the container.
+        $this->afterApplicationCreated(function () {
             $this->withFakeDb();
         });
         parent::setUp();
+    }
+    
+    private function newWpConnection(string $name = null) :WPConnection
+    {
+        
+        $this->bootApp();
+        $resolver = $this->app->resolve(ConnectionResolverInterface::class);
+        
+        return $resolver->connection($name);
+        
+    }
+    
+    private function mockDb()
+    {
+        
+        $m = Mockery::mock(BetterWPDbInterface::class);
+        $m->dbname = 'testing';
+        $m->prefix = 'wp_';
+        
+        return $m;
+        
     }
     
 }

@@ -17,7 +17,7 @@ class IncomingWebRequest404CompatTest extends FrameworkTestCase
     {
         
         $this->withRequest($this->frontendRequest('GET', '/foo'));
-        $this->boot();
+        $this->bootApp();
         $this->loadRoutes();
         $this->simulate404();
         global $wp, $wp_query;
@@ -40,9 +40,9 @@ class IncomingWebRequest404CompatTest extends FrameworkTestCase
     /** @test */
     public function if_no_route_matched_the_wp_query_is_evaluated_for_a_404()
     {
-        
+    
         $this->withRequest($this->frontendRequest('GET', '/bogus'));
-        $this->boot();
+        $this->bootApp();
         $this->loadRoutes();
         $this->simulate404();
         
@@ -56,17 +56,13 @@ class IncomingWebRequest404CompatTest extends FrameworkTestCase
     
     protected function setUp() :void
     {
-        
         parent::setUp();
-        
         remove_filter('template_redirect', 'redirect_canonical');
         remove_filter('template_redirect', 'remove_old_slug');
-        
     }
     
     private function simulate404()
     {
-        
         add_filter('request', function () {
             
             return [
@@ -75,7 +71,6 @@ class IncomingWebRequest404CompatTest extends FrameworkTestCase
             ];
             
         });
-        
     }
     
 }

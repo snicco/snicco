@@ -107,18 +107,6 @@ class TestResponse
         return $this;
     }
     
-    private function isSuccessful() :bool
-    {
-        
-        return $this->psr_response->isSuccessful();
-    }
-    
-    private function getStatusCode()
-    {
-        
-        return $this->status_code;
-    }
-    
     /**
      * Assert that the response has a 200 status code.
      *
@@ -135,12 +123,6 @@ class TestResponse
         );
         
         return $this;
-    }
-    
-    private function isOk() :bool
-    {
-        
-        return $this->psr_response->isOk();
     }
     
     /**
@@ -226,12 +208,6 @@ class TestResponse
         return $this;
     }
     
-    private function isNotFound() :bool
-    {
-        
-        return $this->psr_response->isNotFound();
-    }
-    
     /**
      * Assert that the response has a forbidden status code.
      *
@@ -246,12 +222,6 @@ class TestResponse
         );
         
         return $this;
-    }
-    
-    private function isForbidden() :bool
-    {
-        
-        return $this->psr_response->isForbidden();
     }
     
     /**
@@ -291,12 +261,6 @@ class TestResponse
         
         return $this;
         
-    }
-    
-    private function isRedirect(string $location = null) :bool
-    {
-        
-        return $this->psr_response->isRedirect($location);
     }
     
     public function assertRedirectToRoute(string $route, int $status_code = null) :TestResponse
@@ -586,23 +550,6 @@ class TestResponse
     }
     
     /**
-     * Ensure that the response has a view as its original content.
-     *
-     * @return $this
-     */
-    private function ensureResponseHasView() :TestResponse
-    {
-        
-        if ( ! $this->view instanceof ViewInterface) {
-            
-            PHPUnit::fail('The response is not a view.');
-            
-        }
-        
-        return $this;
-    }
-    
-    /**
      * Assert that the response view has a given piece of bound data.
      *
      * @param  string|array  $key
@@ -713,7 +660,6 @@ class TestResponse
     
     public function session() :?Session
     {
-        
         return $this->session;
     }
     
@@ -940,15 +886,68 @@ class TestResponse
         $actual = json_decode($this->streamed_content, true);
         
         PHPUnit::assertSame($data, $actual, 'Incorrect json response.');
-        
+    
         return $this;
-        
+    
     }
     
     public function assertIsJson() :TestResponse
     {
         
         $this->assertContentType('application/json');
+        
+        return $this;
+    }
+    
+    private function isSuccessful() :bool
+    {
+        
+        return $this->psr_response->isSuccessful();
+    }
+    
+    private function getStatusCode()
+    {
+        
+        return $this->status_code;
+    }
+    
+    private function isOk() :bool
+    {
+        
+        return $this->psr_response->isOk();
+    }
+    
+    private function isNotFound() :bool
+    {
+        
+        return $this->psr_response->isNotFound();
+    }
+    
+    private function isForbidden() :bool
+    {
+        
+        return $this->psr_response->isForbidden();
+    }
+    
+    private function isRedirect(string $location = null) :bool
+    {
+        
+        return $this->psr_response->isRedirect($location);
+    }
+    
+    /**
+     * Ensure that the response has a view as its original content.
+     *
+     * @return $this
+     */
+    private function ensureResponseHasView() :TestResponse
+    {
+        
+        if ( ! $this->view instanceof ViewInterface) {
+            
+            PHPUnit::fail('The response is not a view.');
+            
+        }
         
         return $this;
     }

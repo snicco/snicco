@@ -22,7 +22,7 @@ class AuthSessionControllerLogoutTest extends AuthTestCase
     /** @test */
     public function the_route_can_only_be_accessed_if_logged_in()
     {
-        
+        $this->withoutExceptionHandling();
         $calvin = $this->createAdmin();
         
         $this->expectException(InvalidSignatureException::class);
@@ -31,24 +31,10 @@ class AuthSessionControllerLogoutTest extends AuthTestCase
         
     }
     
-    private function logoutUrl(WP_User $user, string $redirect_to = null)
-    {
-        
-        if ($redirect_to) {
-            $query = ['user_id' => $user->ID, 'query' => ['redirect_to' => $redirect_to]];
-        }
-        else {
-            $query = ['user_id' => $user->ID];
-        }
-        
-        return $this->url->signedRoute('auth.logout', $query, 300, true);
-        
-    }
-    
     /** @test */
     public function the_route_can_not_be_accessed_without_a_valid_signature()
     {
-        
+        $this->withoutExceptionHandling();
         $calvin = $this->createAdmin();
         $this->actingAs($calvin);
         
@@ -61,7 +47,8 @@ class AuthSessionControllerLogoutTest extends AuthTestCase
     /** @test */
     public function the_route_can_only_be_accessed_if_the_user_id_segment_is_the_user_id_of_the_logged_in_user()
     {
-        
+    
+        $this->withoutExceptionHandling();
         $calvin = $this->createAdmin();
         $this->actingAs($calvin);
         
@@ -141,17 +128,31 @@ class AuthSessionControllerLogoutTest extends AuthTestCase
     
     protected function setUp() :void
     {
+    
+        $this->afterApplicationBooted(function () {
         
-        $this->afterApplicationCreated(function () {
-            
-            $this->withoutExceptionHandling();
-            
             $this->url = $this->app->resolve(UrlGenerator::class);
-            
+        
             $this->loadRoutes();
-            
+        
         });
         parent::setUp();
+        $this->bootApp();
+    
+    }
+    
+    private function logoutUrl(WP_User $user, string $redirect_to = null)
+    {
+        
+        if ($redirect_to) {
+            $query = ['user_id' => $user->ID, 'query' => ['redirect_to' => $redirect_to]];
+        }
+        else {
+            $query = ['user_id' => $user->ID];
+        }
+        
+        return $this->url->signedRoute('auth.logout', $query, 300, true);
+        
     }
     
 }

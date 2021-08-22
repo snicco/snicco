@@ -55,23 +55,6 @@ class AccountControllerTest extends AuthTestCase
         
     }
     
-    protected function validCreateLink() :string
-    {
-        
-        $this->loadRoutes();
-        
-        return TestApp::url()->signedRoute('auth.accounts.create', [], 300, true);
-        
-    }
-    
-    protected function validStoreLink() :string
-    {
-        
-        $this->loadRoutes();
-        
-        return TestApp::url()->signedRoute('auth.accounts.store', [], 900);
-    }
-    
     /** @test */
     public function an_account_can_be_created()
     {
@@ -195,14 +178,31 @@ class AccountControllerTest extends AuthTestCase
     /** @test */
     public function for_non_json_requests_a_custom_response_can_be_provided()
     {
-        
+    
         $calvin = $this->createSubscriber();
         $this->actingAs($calvin);
-        
+    
         $response = $this->delete("/auth/accounts/$calvin->ID");
-        
+    
         $this->assertUserDeleted($calvin);
         $response->assertRedirect('/test/thank-you');
+    }
+    
+    protected function validCreateLink() :string
+    {
+        
+        $this->loadRoutes();
+        
+        return TestApp::url()->signedRoute('auth.accounts.create', [], 300, true);
+        
+    }
+    
+    protected function validStoreLink() :string
+    {
+        
+        $this->loadRoutes();
+        
+        return TestApp::url()->signedRoute('auth.accounts.store', [], 900);
     }
     
     protected function setUp() :void
@@ -211,8 +211,12 @@ class AccountControllerTest extends AuthTestCase
         $this->afterApplicationCreated(function () {
             
             $this->withAddedConfig('auth.features.registration', true);
-            $this->withoutMiddleware('csrf');
             
+        });
+        
+        $this->afterApplicationBooted(function () {
+            
+            $this->withoutMiddleware('csrf');
             $this->instance(CreateAccountViewResponse::class, new TestCreateAccountViewResponse());
             $this->instance(RegisteredResponse::class, new TestRegisteredResponse());
             $this->instance(CreatesNewUser::class, new TestCreatesNewUser());
@@ -220,7 +224,11 @@ class AccountControllerTest extends AuthTestCase
             $this->instance(DeletesUsers::class, $this->app->resolve(TestDeletesUser::class));
             
         });
+        
         parent::setUp();
+        
+        $this->bootApp();
+        
     }
     
 }

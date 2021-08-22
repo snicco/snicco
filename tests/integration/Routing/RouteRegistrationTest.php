@@ -22,7 +22,7 @@ class RouteRegistrationTest extends FrameworkTestCase
     {
         
         $this->withRequest($this->frontendRequest('GET', '/foo'));
-        $this->boot();
+        $this->bootApp();
         
         global $wp;
         // init loads the routes.
@@ -38,10 +38,10 @@ class RouteRegistrationTest extends FrameworkTestCase
     {
         
         $this->withRequest($this->adminRequest('GET', 'foo'));
-        
+    
         $this->withAddedProvider(SimulateAdminProvider::class)
              ->withoutHooks()
-             ->boot();
+             ->bootApp();
         
         WP::shouldReceive('pluginPageHook')->andReturn('toplevel_page_foo');
         
@@ -60,7 +60,7 @@ class RouteRegistrationTest extends FrameworkTestCase
         
         $this->withRequest($this->adminAjaxRequest('POST', 'foo_action'));
         $this->withoutHooks();
-        $this->boot();
+        $this->bootApp();
         
         do_action('init');
         do_action('admin_init');
@@ -74,10 +74,10 @@ class RouteRegistrationTest extends FrameworkTestCase
     {
         
         $this->withRequest($this->adminRequest('GET', '', 'index.php'));
-        
+    
         $this->withAddedProvider(SimulateAdminProvider::class)
              ->withoutHooks()
-             ->boot();
+             ->bootApp();
         
         WP::shouldReceive('pluginPageHook')->andReturnNull();
         
@@ -96,7 +96,7 @@ class RouteRegistrationTest extends FrameworkTestCase
         
         $request = $this->adminAjaxRequest('POST', 'foo_action')->withParsedBody([]);
         $this->withRequest($request);
-        $this->withoutHooks()->boot();
+        $this->withoutHooks()->bootApp();
         
         do_action('init');
         do_action('admin_init');
@@ -108,9 +108,9 @@ class RouteRegistrationTest extends FrameworkTestCase
     /** @test */
     public function the_fallback_route_controller_is_registered_for_web_routes()
     {
-        
+    
         $this->withRequest($this->frontendRequest('GET', '/post1'));
-        $this->boot();
+        $this->bootApp();
         $this->makeFallbackConditionPass();
         
         global $wp;
@@ -125,10 +125,10 @@ class RouteRegistrationTest extends FrameworkTestCase
     /** @test */
     public function the_fallback_controller_does_not_match_admin_routes()
     {
-        
+    
         $this->withAddedProvider(SimulateAdminProvider::class)
              ->withoutHooks()
-             ->boot();
+             ->bootApp();
         
         $this->withRequest($request = $this->adminAjaxRequest('GET', 'bogus'));
         $this->makeFallbackConditionPass();
@@ -143,10 +143,10 @@ class RouteRegistrationTest extends FrameworkTestCase
     /** @test */
     public function the_fallback_controller_does_not_match_ajax_routes()
     {
-        
+    
         $this->withAddedProvider(SimulateAjaxProvider::class)
              ->withoutHooks()
-             ->boot();
+             ->bootApp();
         
         $this->withRequest($request = $this->adminAjaxRequest('POST', 'bogus'));
         $this->makeFallbackConditionPass();
@@ -161,9 +161,9 @@ class RouteRegistrationTest extends FrameworkTestCase
     /** @test */
     public function named_groups_prefixes_are_applied_for_admin_routes()
     {
-        
+    
         $this->withAddedProvider(SimulateAdminProvider::class);
-        $this->boot();
+        $this->bootApp();
         
         $this->loadRoutes();
         
@@ -174,9 +174,9 @@ class RouteRegistrationTest extends FrameworkTestCase
     /** @test */
     public function named_groups_are_applied_for_ajax_routes()
     {
-        
+    
         $this->withAddedProvider(SimulateAjaxProvider::class);
-        $this->boot();
+        $this->bootApp();
         $this->loadRoutes();
         
         $this->assertSame('/wp-admin/admin-ajax.php', TestApp::routeUrl('ajax.foo'));
@@ -190,7 +190,7 @@ class RouteRegistrationTest extends FrameworkTestCase
         $request = $this->frontendRequest('GET', '/other');
         $this->withRequest($request);
         $this->withAddedProvider(RoutingDefinitionServiceProvider::class)->withoutHooks()
-             ->boot();
+             ->bootApp();
         
         global $wp;
         // init loads the routes.
@@ -206,10 +206,10 @@ class RouteRegistrationTest extends FrameworkTestCase
     {
         
         $request = $this->frontendRequest('GET', '/web-other');
-        
+    
         $this->withRequest($request);
         $this->withAddedProvider(RoutingDefinitionServiceProvider::class)->withoutHooks()
-             ->boot();
+             ->bootApp();
         
         global $wp;
         // init loads the routes.
@@ -223,23 +223,7 @@ class RouteRegistrationTest extends FrameworkTestCase
     
     protected function makeFallbackConditionPass()
     {
-        
         $GLOBALS['test']['pass_fallback_route_condition'] = true;
-        
-    }
-    
-    protected function setUp() :void
-    {
-        
-        $this->defer_boot = true;
-        parent::setUp();
-        
-    }
-    
-    protected function tearDown() :void
-    {
-        
-        parent::tearDown();
     }
     
 }

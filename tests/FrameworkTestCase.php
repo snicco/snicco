@@ -32,32 +32,14 @@ class FrameworkTestCase extends BaseTestCase
         return $app;
     }
     
-    protected function bootApp() :self
-    {
-        if ($this->app->hasBeenBootstrapped()) {
-            $this->fail('Application bootstrapped twice in one test.');
-        }
-        
-        $this->app->boot();
-        
-        foreach ($this->after_application_booted as $callback) {
-            $callback();
-        }
-        
-        return $this;
-    }
-    
-    protected function catchWpMail($null, array $wp_mail_input) :bool
-    {
-        $this->mail_data[] = $wp_mail_input;
-        return true;
-    }
-    
     protected function setUp() :void
     {
         parent::setUp();
         $GLOBALS['test'] = [];
-        add_filter('pre_wp_mail', [$this, 'catchWpMail'], 10, 2);
+        add_filter('pre_wp_mail', function ($null, array $wp_mail_input) {
+            $this->mail_data[] = $wp_mail_input;
+            return true;
+        }, 10, 2);
     }
     
     protected function tearDown() :void
@@ -80,7 +62,7 @@ class FrameworkTestCase extends BaseTestCase
         
     }
     
-    protected function withAddedProvider($provider) :FrameworkTestCase
+    protected function withAddedProvider($provider) :self
     {
         $provider = Arr::wrap($provider);
         
@@ -93,7 +75,25 @@ class FrameworkTestCase extends BaseTestCase
         return $this;
     }
     
-    protected function withoutHooks() :FrameworkTestCase
+    protected function withRemovedProvider($provider) :self
+    {
+        
+        $provider = Arr::wrap($provider);
+        
+        $providers = $this->app->config('app.providers');
+        
+        foreach ($provider as $p) {
+            
+            Arr::pullByValue($p, $providers);
+            
+        }
+        
+        $this->withReplacedConfig('app.providers', $providers);
+        
+        return $this;
+    }
+    
+    protected function withoutHooks() :self
     {
         $GLOBALS['wp_filter'] = [];
         $GLOBALS['wp_actions'] = [];

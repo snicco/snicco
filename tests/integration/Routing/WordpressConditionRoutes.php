@@ -28,26 +28,26 @@ class WordpressConditionRoutes extends FrameworkTestCase
     }
     
     /** @test */
-    public function if_no_route_matches_due_to_failed_wp_conditions_a_null_response_is_returned()
+    public function if_no_route_matches_due_to_failed_wp_conditions_a_delegated_response_is_returned()
     {
-        
+    
         $GLOBALS['test']['pass_fallback_route_condition'] = false;
         Event::fake([ResponseSent::class]);
-        
-        $this->post('/post1')->assertNullResponse();
-        
+    
+        $this->post('/post1')->assertDelegatedToWordPress();
+    
         Event::assertNotDispatched(ResponseSent::class);
-        
+    
     }
     
     /** @test */
-    public function if_no_route_matches_due_to_different_http_verbs_a_null_response_is_returned()
+    public function if_no_route_matches_due_to_different_http_verbs_a_delegated_response_is_returned()
     {
         
         $GLOBALS['test']['pass_fallback_route_condition'] = true;
         Event::fake([ResponseSent::class]);
         
-        $this->delete('/post1')->assertNullResponse();
+        $this->delete('/post1')->assertDelegatedToWordPress();
         
         Event::assertNotDispatched(ResponseSent::class);
         
@@ -62,14 +62,20 @@ class WordpressConditionRoutes extends FrameworkTestCase
         Event::fake([ResponseSent::class]);
         
         $this->patch('/post1')->assertSee('patch_fallback');
-        
+    
         Event::assertDispatched(ResponseSent::class);
         $this->assertSame(
             1,
             $GLOBALS['test'][WebMiddleware::run_times],
             'Middleware was not run as expected.'
         );
-        
+    
+    }
+    
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bootApp();
     }
     
 }
