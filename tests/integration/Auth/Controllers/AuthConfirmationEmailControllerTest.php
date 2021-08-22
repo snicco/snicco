@@ -118,10 +118,10 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
             $this->post($this->endpoint, $token, ['referer' => 'https://foobar.com/auth/confirm']);
         $response->assertRedirect('/auth/confirm')
                  ->assertSessionHasNoErrors();
-    
+        
         $this->assertMailSent(ConfirmAuthMail::class)
              ->assertTo($calvin);
-    
+        
     }
     
     protected function setUp() :void

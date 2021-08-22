@@ -210,18 +210,18 @@ class TransactionsTest extends DatabaseTestCase
     
     protected function setUp() :void
     {
-    
-        $this->afterApplicationBooted(function () {
         
+        $this->afterApplicationBooted(function () {
+            
             $this->createInitialTable();
             $this->removeWpBrowserTransaction();
-        
+            
         });
         parent::setUp();
         $this->bootApp();
-    
+        
         $this->verification_connection = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
-    
+        
     }
     
     protected function tearDown() :void

@@ -142,9 +142,9 @@ class CustomDirectivesTest extends BladeTestCase
         $error_bag->put('bogus', $bogus);
         $view = $this->view('error-custom-bag');
         $view->with('errors', $error_bag);
-    
+        
         $this->assertViewContent('NO ERRORS IN CUSTOM BAG', $view);
-    
+        
     }
     
     protected function setUp() :void

@@ -125,29 +125,29 @@ abstract class TestCase extends WPTestCase
     
     protected function setUp() :void
     {
-    
-        if (class_exists(Facade::class)) {
         
+        if (class_exists(Facade::class)) {
+            
             Facade::clearResolvedInstances();
             Facade::setFacadeApplication(null);
-        
+            
         }
-    
+        
         if (class_exists(Container::class)) {
             Container::setInstance();
         }
-    
+        
         Event::setInstance(null);
         WP::reset();
-    
+        
         parent::setUp();
-    
+        
         $this->backToPresent();
-    
+        
         if ( ! isset($this->app)) {
             $this->refreshApplication();
         }
-    
+        
         $this->mergeServiceProviders();
         $this->bindBaseRequest();
         $this->setUpTraits();
@@ -162,7 +162,7 @@ abstract class TestCase extends WPTestCase
         foreach ($this->after_application_created_callbacks as $callback) {
             $callback();
         }
-    
+        
     }
     
     protected function refreshApplication()

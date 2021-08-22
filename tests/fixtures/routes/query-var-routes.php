@@ -21,15 +21,15 @@ TestApp::route()->prefix('wpquery')->group(function (Router $router) {
            });
     
     $router->post('post', function () {
-    
+        
         return 'FOO_QUERY';
     })
            ->wpquery(function () {
-    
+        
                return [
                    'foo' => 'baz',
                ];
-    
+        
            });
     
     $router->get('teams/{county}/{name}', function (string $country, string $name) {

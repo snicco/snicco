@@ -503,14 +503,14 @@ trait MakesHttpRequests
     {
         
         $this->follow_redirects = false;
-    
+        
         /** @todo transform to test response if no redirect here. */
         while ($response->isRedirect()) {
             $response = $this->get($response->getHeaderLine('Location'));
         }
-    
+        
         return $response;
-    
+        
     }
     
     private function addRequestDefaults(Request $request, array $headers = []) :Request

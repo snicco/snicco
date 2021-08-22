@@ -209,13 +209,13 @@ class MailBuilderTest extends FrameworkTestCase
     
     protected function setUp() :void
     {
-    
+        
         $this->afterApplicationBooted(function () {
             Event::fake([PendingMail::class]);
         });
         parent::setUp();
         $this->bootApp();
-    
+        
     }
     
 }

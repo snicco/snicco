@@ -30,22 +30,22 @@ class DatabaseTestCase extends FrameworkTestCase
         $traits = class_uses_recursive(static::class);
         
         if (in_array(WithTestTables::class, $traits)) {
-    
+            
             $this->afterApplicationBooted(function () {
-        
+                
                 $this->removeWpBrowserTransaction();
                 $this->withNewTables();
-        
+                
             });
             
         }
         
         if (in_array(WithTestTransactions::class, $traits)) {
-    
+            
             $this->afterApplicationBooted(function () {
-        
+                
                 $this->beginTransaction();
-        
+                
             });
             
             $this->beforeApplicationDestroyed(function () {

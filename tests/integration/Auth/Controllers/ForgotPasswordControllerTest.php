@@ -152,16 +152,16 @@ class ForgotPasswordControllerTest extends AuthTestCase
     
     protected function setUp() :void
     {
-    
-        $this->afterApplicationCreated(function () {
         
+        $this->afterApplicationCreated(function () {
+            
             $this->withAddedConfig('auth.features.password-resets', true);
             $this->withAddedConfig('auth.fail2ban.enabled', true);
-        
+            
         });
-    
+        
         parent::setUp();
-    
+        
         $this->bootApp();
     }
     

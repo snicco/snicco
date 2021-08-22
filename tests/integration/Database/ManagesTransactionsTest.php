@@ -51,14 +51,14 @@ class ManagesTransactionsTest extends DatabaseTestCase
         
         $this->wpdb->shouldReceive('startTransaction')->once()
                    ->andThrows(new mysqli_sql_exception('the server has gone away | TEST '));
-    
+        
         $this->wpdb->shouldReceive('startTransaction');
         $this->wpdb->shouldReceive('createSavePoint')->once()->with('SAVEPOINT trans1');
-    
+        
         $wp->beginTransaction();
-    
+        
         $this->assertSame(1, $wp->transactionLevel());
-    
+        
     }
     
     /**
@@ -405,14 +405,14 @@ class ManagesTransactionsTest extends DatabaseTestCase
                 throw new mysqli_sql_exception('deadlock detected | TEST');
                 
             }
-    
+            
             return $wp->update('foo', ['bar']);
-    
+            
         }, 4);
-    
+        
         $this->assertSame(3, $result);
         $this->assertSame(0, $wp->transactionLevel());
-    
+        
     }
     
     /**

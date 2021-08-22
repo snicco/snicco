@@ -52,7 +52,7 @@ class RequestTest extends FrameworkTestCase
     {
         
         parent::setUp();
-    
+        
         $this->request = $this->frontendRequest('POST', '/foo');
         
     }

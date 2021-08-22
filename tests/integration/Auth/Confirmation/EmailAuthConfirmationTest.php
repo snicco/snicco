@@ -76,7 +76,7 @@ class EmailAuthConfirmationTest extends AuthTestCase
         $response->assertSee(
             'Your confirmation link was invalid or expired. Please request a new one.'
         );
-    
+        
     }
     
     protected function setUp() :void

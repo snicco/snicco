@@ -230,9 +230,9 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
     {
         
         $this->afterApplicationCreated(function () {
-    
+            
             $this->with2Fa();
-    
+            
             $this->withReplacedConfig('auth.through',
                 [
                     TwoFactorAuthenticator::class,
@@ -244,9 +244,9 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
             $this->withAddedConfig('auth.fail2ban.enabled', true);
             
         });
-    
-        $this->afterApplicationBooted(function () {
         
+        $this->afterApplicationBooted(function () {
+            
             $this->withoutMiddleware('csrf');
             $this->withoutMiddleware(AuthenticateSession::class);
             $this->instance(
@@ -259,7 +259,7 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
                 new TestTwoFactorProvider($this->encryptor)
             );
         });
-    
+        
         parent::setUp();
         $this->bootApp();
     }
