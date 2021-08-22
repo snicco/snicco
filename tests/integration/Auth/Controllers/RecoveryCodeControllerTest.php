@@ -158,10 +158,10 @@ class RecoveryCodeControllerTest extends AuthTestCase
         
         });
         $this->afterApplicationBooted(function () {
-        
+    
             $this->codes = $this->generateTestRecoveryCodes();
             $this->encryptor = $this->app->resolve(EncryptorInterface::class);
-        
+    
         });
     
         parent::setUp();
