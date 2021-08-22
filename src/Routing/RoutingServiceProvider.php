@@ -99,7 +99,7 @@ class RoutingServiceProvider extends ServiceProvider
         $this->config->extend('routing.conditions', self::CONDITION_TYPES);
         $this->config->extend('routing.must_match_web_routes', false);
         $this->config->extend('routing.api.endpoints', []);
-        $this->config->extend('routing.cache', ! $this->config->get('app.debug'));
+        $this->config->extend('routing.cache', false);
         $this->config->extend(
             'routing.cache_dir',
             $this->config->get('app.storage_dir')

@@ -103,6 +103,9 @@ class Request implements ServerRequestInterface
         
     }
     
+    /**
+     * @todo Figure out how psr7 immutability will affect this.
+     */
     public function user() :WP_User
     {
         
@@ -122,6 +125,11 @@ class Request implements ServerRequestInterface
     public function userId() :int
     {
         return $this->getAttribute('_current_user_id', 0);
+    }
+    
+    public function authenticated() :bool
+    {
+        return WP::isUserLoggedIn();
     }
     
     public function userAgent()

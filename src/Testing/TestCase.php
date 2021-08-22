@@ -61,8 +61,6 @@ abstract class TestCase extends WPTestCase
     /** @var callable[] */
     protected array $after_application_booted = [];
     
-    private bool $set_up_has_run = false;
-    
     /**
      * @var Route[]
      */
@@ -71,12 +69,12 @@ abstract class TestCase extends WPTestCase
     /**
      * @var callable[]
      */
-    private array $after_application_created_callbacks = [];
+    private array $after_application_created = [];
     
     /**
      * @var callable[]
      */
-    private array $before_application_destroy_callbacks = [];
+    private array $before_application_destroyed = [];
     
     /**
      * @return ServiceProvider[]
@@ -99,12 +97,12 @@ abstract class TestCase extends WPTestCase
         if (isset($this->app) && $this->app->hasBeenBootstrapped()) {
             $this->fail('Application had already been bootstrapped before adding callable.');
         }
-        $this->after_application_created_callbacks[] = $callback;
+        $this->after_application_created[] = $callback;
     }
     
     protected function beforeApplicationDestroyed(callable $callback)
     {
-        $this->before_application_destroy_callbacks[] = $callback;
+        $this->before_application_destroyed[] = $callback;
     }
     
     /**
@@ -159,7 +157,7 @@ abstract class TestCase extends WPTestCase
             
         });
         
-        foreach ($this->after_application_created_callbacks as $callback) {
+        foreach ($this->after_application_created as $callback) {
             $callback();
         }
         
@@ -186,16 +184,16 @@ abstract class TestCase extends WPTestCase
         return $this;
     }
     
-    protected function boot()
-    {
-        //
-    }
-    
     protected function tearDown() :void
     {
         
-        if ($this->app) {
-            $this->callBeforeApplicationDestroyedCallbacks();
+        if (isset($this->app)) {
+            
+            foreach ($this->before_application_destroyed as $callback) {
+                $callback();
+                
+            }
+            
             unset($this->app);
         }
         
@@ -440,7 +438,7 @@ abstract class TestCase extends WPTestCase
         return $this;
     }
     
-    protected function mergeServiceProviders() :void
+    private function mergeServiceProviders() :void
     {
         $this->config->extend('app.providers', $this->packageProviders());
     }
@@ -492,14 +490,6 @@ abstract class TestCase extends WPTestCase
             && $this->config->get('session.enabled')) {
             
             $this->session = $this->app->resolve(Session::class);
-            
-        }
-    }
-    
-    private function callBeforeApplicationDestroyedCallbacks()
-    {
-        foreach ($this->before_application_destroy_callbacks as $callback) {
-            $callback();
             
         }
     }

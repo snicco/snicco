@@ -60,7 +60,6 @@ trait ImplementsPsr7Response
     
     public function getHeaders()
     {
-        
         return $this->psr7_response->getHeaders();
     }
     

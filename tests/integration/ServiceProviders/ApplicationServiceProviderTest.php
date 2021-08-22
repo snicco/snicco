@@ -68,8 +68,8 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function debug_mode_is_set()
     {
+        $this->withAddedConfig('app.debug', true);
         $this->bootApp();
-        
         $this->assertTrue($this->config->get('app.debug'));
     }
     

@@ -41,7 +41,6 @@ class HttpException extends Exception
     }
     
     // The message that should be displayed for json requests while in production mode.
-    
     public function getJsonMessage() :string
     {
         return $this->json_message ?? $this->messageForUsers();

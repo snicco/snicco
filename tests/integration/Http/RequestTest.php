@@ -48,6 +48,16 @@ class RequestTest extends FrameworkTestCase
         
     }
     
+    /** @test */
+    public function testAuthenticated()
+    {
+        
+        $this->assertFalse($this->request->authenticated());
+        $this->actingAs($calvin = $this->createAdmin());
+        $this->assertTrue($this->request->authenticated());
+        
+    }
+    
     protected function setUp() :void
     {
         

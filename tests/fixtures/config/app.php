@@ -14,7 +14,7 @@ return [
     
     ],
     
-    'debug' => true,
+    'debug' => false,
     
     'debug_editor' => 'phpstorm',
     
