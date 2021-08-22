@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\integration\Mail;
 
-use Tests\TestCase;
 use Tests\stubs\TestApp;
 use Snicco\Events\Event;
 use Snicco\Mail\Mailable;
+use Tests\FrameworkTestCase;
 use Snicco\Events\PendingMail;
 
-class MailBuilderTest extends TestCase
+class MailBuilderTest extends FrameworkTestCase
 {
     
     /** @test */
@@ -210,10 +210,12 @@ class MailBuilderTest extends TestCase
     protected function setUp() :void
     {
         
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationBooted(function () {
             Event::fake([PendingMail::class]);
         });
         parent::setUp();
+        $this->bootApp();
+        
     }
     
 }

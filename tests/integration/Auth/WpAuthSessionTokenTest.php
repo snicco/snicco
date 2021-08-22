@@ -233,22 +233,15 @@ class WpAuthSessionTokenTest extends AuthTestCase
     
     protected function setUp() :void
     {
-        $this->afterApplicationCreated(function () {
-            
+        $this->afterApplicationBooted(function () {
             $user = $this->createAdmin();
             $this->actingAs($user);
             $this->user = $user;
             $this->session_manager = TestApp::resolve(SessionManagerInterface::class);
-            
         });
         
         parent::setUp();
-    }
-    
-    protected function tearDown() :void
-    {
-        $this->logout($this->user);
-        parent::tearDown();
+        $this->bootApp();
     }
     
 }

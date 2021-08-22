@@ -7,16 +7,15 @@ namespace Tests\integration\Http;
 use wpdb;
 use Carbon\Carbon;
 use Tests\stubs\TestRequest;
+use Tests\FrameworkTestCase;
 use Snicco\Http\DatabaseMagicLink;
-use Codeception\TestCase\WPTestCase;
 
-class DatabaseMagicLinkTest extends WPTestCase
+class DatabaseMagicLinkTest extends FrameworkTestCase
 {
     
     private wpdb              $db;
     private DatabaseMagicLink $magic_link;
     private Carbon            $expires;
-    private TestRequest       $request;
     private string            $table;
     
     /** @test */
@@ -115,7 +114,7 @@ class DatabaseMagicLinkTest extends WPTestCase
     protected function setUp() :void
     {
         parent::setUp();
-        
+        $this->bootApp();
         global $wpdb;
         $this->db = $wpdb;
         $this->createTables();
@@ -123,7 +122,6 @@ class DatabaseMagicLinkTest extends WPTestCase
         $this->magic_link = new DatabaseMagicLink('magic_links', [0, 100]);
         $this->magic_link->setAppKey(TEST_APP_KEY);
         $this->expires = Carbon::now();
-        $this->request = TestRequest::from('GET', 'foo');
         
     }
     

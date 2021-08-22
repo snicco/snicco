@@ -32,7 +32,8 @@ TestApp::route()->prefix('wpquery')->group(function (Router $router) {
         
            });
     
-    $router->get('teams/{county}/{name}', function () {
+    $router->get('teams/{county}/{name}', function (string $country, string $name) {
+        return $country.'.'.$name;
     })
            ->wpquery(function ($country, $name) {
         

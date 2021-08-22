@@ -5,10 +5,15 @@ declare(strict_types=1);
 namespace Snicco\ExceptionHandling;
 
 use Psr\Log\NullLogger;
+use Whoops\Run as Whoops;
+use Whoops\RunInterface;
 use Psr\Log\LoggerInterface;
+use Snicco\Http\ResponseFactory;
+use Whoops\Handler\HandlerInterface;
 use Snicco\Contracts\ServiceProvider;
-use Snicco\Factories\ErrorHandlerFactory;
-use Snicco\Contracts\ErrorHandlerInterface;
+use Snicco\Contracts\ExceptionHandler;
+
+use function Snicco\Support\Functions\tap;
 
 class ExceptionServiceProvider extends ServiceProvider
 {
@@ -16,43 +21,37 @@ class ExceptionServiceProvider extends ServiceProvider
     public function register() :void
     {
         $this->bindConfig();
-        $this->bindErrorHandlerInterface();
+        $this->bindErrorHandler();
         $this->bindPsr3Logger();
+        $this->bindWhoops();
     }
     
     public function bootstrap() :void
     {
-        $error_handler = $this->container->make(ErrorHandlerInterface::class);
-        
-        $error_handler->register();
-        
-        $this->container->instance(ErrorHandlerInterface::class, $error_handler);
+        //
     }
     
     private function bindConfig() :void
     {
-        
         $this->config->extend('view.paths', [__DIR__.DIRECTORY_SEPARATOR.'views']);
-        
-        // We bind the class name only
-        $this->container->instance(ProductionErrorHandler::class, ProductionErrorHandler::class);
-        
     }
     
-    private function bindErrorHandlerInterface() :void
+    private function bindErrorHandler() :void
     {
-        $this->container->singleton(ErrorHandlerInterface::class, function () {
+        $this->container->singleton(ExceptionHandler::class, function () {
             
             if ( ! $this->config->get('app.exception_handling', false)) {
-                return new NullErrorHandler();
+                return new NullExceptionHandler();
             }
             
-            $debug = $this->config->get('app.debug') && ! $this->app->isRunningUnitTest();
+            $with_whoops =
+                $this->config->get('app.debug') && isset($this->container[RunInterface::class]);
             
-            return ErrorHandlerFactory::make(
+            return new ProductionExceptionHandler(
                 $this->container,
-                $debug,
-                $this->config->get('app.debug_editor', 'phpstorm')
+                $this->container->make(LoggerInterface::class),
+                $this->container->make(ResponseFactory::class),
+                $with_whoops ? $this->container[RunInterface::class] : null
             );
             
         });
@@ -67,6 +66,35 @@ class ExceptionServiceProvider extends ServiceProvider
                 : new NativeErrorLogger();
             
         });
+    }
+    
+    private function bindWhoops()
+    {
+        
+        if ($this->config->get('app.debug') === true && class_exists(Whoops::class)) {
+            
+            $this->container->singleton(RunInterface::class, function () {
+                
+                return tap(new Whoops(), function (Whoops $whoops) {
+                    
+                    $whoops->appendHandler($this->whoopsHandler());
+                    $whoops->writeToOutput(false);
+                    $whoops->allowQuit(false);
+                    
+                });
+                
+            });
+        }
+        
+    }
+    
+    private function whoopsHandler()
+    {
+        if (isset($this->container[HandlerInterface::class])) {
+            return $this->container[HandlerInterface::class];
+        }
+        
+        return $this->app[HandlerInterface::class] = WhoopsHandler::get($this->app);
     }
     
 }

@@ -103,6 +103,9 @@ class Request implements ServerRequestInterface
         
     }
     
+    /**
+     * @todo Figure out how psr7 immutability will affect this.
+     */
     public function user() :WP_User
     {
         
@@ -122,6 +125,11 @@ class Request implements ServerRequestInterface
     public function userId() :int
     {
         return $this->getAttribute('_current_user_id', 0);
+    }
+    
+    public function authenticated() :bool
+    {
+        return WP::isUserLoggedIn();
     }
     
     public function userAgent()
@@ -202,9 +210,7 @@ class Request implements ServerRequestInterface
     
     public function loadingScript() :string
     {
-        
         return trim($this->getServerParams()['SCRIPT_NAME'] ?? '', DIRECTORY_SEPARATOR);
-        
     }
     
     public function routingResult() :RoutingResult
@@ -276,28 +282,7 @@ class Request implements ServerRequestInterface
     
     public function isWpFrontEnd() :bool
     {
-        
         return $this->loadingScript() === 'index.php';
-        
-    }
-    
-    public function isApiEndPoint() :bool
-    {
-        
-        $endpoints = $this->getAttribute('_api.endpoints', []);
-        
-        foreach ($endpoints as $endpoint) {
-            
-            if (Str::startsWith(trim($this->path(), '/'), trim($endpoint, '/'))) {
-                
-                return true;
-                
-            }
-            
-        }
-        
-        return false;
-        
     }
     
     public function path() :string

@@ -37,6 +37,11 @@ class DatabaseServiceProvider extends ServiceProvider
         
     }
     
+    function bootstrap() :void
+    {
+        $this->bootEloquent();
+    }
+    
     private function bindConfig()
     {
         
@@ -71,7 +76,6 @@ class DatabaseServiceProvider extends ServiceProvider
     
     private function bindConnectionResolver()
     {
-        
         $this->container->singleton(ConnectionResolverInterface::class, function () {
             
             $connections = $this->config->get('database.connections');
@@ -89,7 +93,7 @@ class DatabaseServiceProvider extends ServiceProvider
     
     private function bindWPDb()
     {
-        
+        // allow overwriting in tests since this gets resolved when eloquent boots in the bootstrap method.
         if ( ! isset($this->container[BetterWPDbInterface::class])) {
             
             // Class names only.
@@ -170,12 +174,6 @@ class DatabaseServiceProvider extends ServiceProvider
             
         });
         
-    }
-    
-    function bootstrap() :void
-    {
-        
-        $this->bootEloquent();
     }
     
     private function bootEloquent()

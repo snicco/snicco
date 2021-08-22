@@ -70,15 +70,16 @@ class TwoFactorAuthSessionControllerTest extends AuthTestCase
     protected function setUp() :void
     {
         
-        $this->afterLoadingConfig(function () {
-            
+        $this->afterApplicationCreated(function () {
             $this->with2Fa();
         });
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationBooted(function () {
             $this->encryptor = $this->app->resolve(EncryptorInterface::class);
         });
         
         parent::setUp();
+        
+        $this->bootApp();
         
     }
     

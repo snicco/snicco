@@ -10,7 +10,7 @@ class AuthenticateSessionTest extends AuthTestCase
     /** @test */
     public function idle_sessions_auth_confirmation_namespace_is_cleared()
     {
-        
+        $this->bootApp();
         $this->actingAs($calvin = $this->createAdmin());
         $this->session->put('auth.confirm.foo', 'bar');
         

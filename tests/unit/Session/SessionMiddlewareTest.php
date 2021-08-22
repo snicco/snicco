@@ -23,8 +23,8 @@ use Tests\helpers\HashesSessionIds;
 use Tests\helpers\CreateUrlGenerator;
 use Snicco\Middleware\Core\ShareCookies;
 use Tests\helpers\CreateRouteCollection;
-use Snicco\ExceptionHandling\NullErrorHandler;
 use Snicco\Session\Drivers\ArraySessionDriver;
+use Snicco\ExceptionHandling\NullExceptionHandler;
 use Snicco\Session\Middleware\StartSessionMiddleware;
 
 class SessionMiddlewareTest extends UnitTest
@@ -36,8 +36,11 @@ class SessionMiddlewareTest extends UnitTest
     use HashesSessionIds;
     
     private Request  $request;
+    
     private Delegate $route_action;
+    
     private Cookies  $cookies;
+    
     private array    $config = [
         'lifetime' => 1,
         'lottery' => [0, 100],
@@ -58,39 +61,6 @@ class SessionMiddlewareTest extends UnitTest
         
         $this->assertInstanceOf(Response::class, $response);
         $this->assertInstanceOf(Session::class, $this->getRequestSession($response));
-        
-    }
-    
-    private function newMiddleware(
-        Session $session = null, $gc_collection = [
-        0,
-        100,
-    ]
-    ) :StartSessionMiddleware {
-        
-        $session = $session ?? $this->newSession();
-        
-        $config = $this->config;
-        
-        $config['lottery'] = $gc_collection;
-        
-        return new StartSessionMiddleware(new SessionManager($config, $session));
-        
-    }
-    
-    private function newSession($handler = null) :Session
-    {
-        
-        $handler = $handler ?? new ArraySessionDriver(10);
-        
-        return new Session($handler);
-        
-    }
-    
-    private function getRequestSession($response) :Session
-    {
-        
-        return $response->request->getAttribute('session');
         
     }
     
@@ -193,7 +163,7 @@ class SessionMiddlewareTest extends UnitTest
         $response_factory = $this->createResponseFactory();
         $c->instance(ResponseFactory::class, $response_factory);
         
-        $pipeline = new Pipeline($c, new NullErrorHandler());
+        $pipeline = new Pipeline($c, new NullExceptionHandler());
         
         $request = TestRequest::from('GET', 'foo');
         
@@ -291,6 +261,39 @@ class SessionMiddlewareTest extends UnitTest
     {
         WP::reset();
         Mockery::close();
+    }
+    
+    private function newMiddleware(
+        Session $session = null, $gc_collection = [
+        0,
+        100,
+    ]
+    ) :StartSessionMiddleware {
+        
+        $session = $session ?? $this->newSession();
+        
+        $config = $this->config;
+        
+        $config['lottery'] = $gc_collection;
+        
+        return new StartSessionMiddleware(new SessionManager($config, $session));
+        
+    }
+    
+    private function newSession($handler = null) :Session
+    {
+        
+        $handler = $handler ?? new ArraySessionDriver(10);
+        
+        return new Session($handler);
+        
+    }
+    
+    private function getRequestSession($response) :Session
+    {
+        
+        return $response->request->getAttribute('session');
+        
     }
     
 }

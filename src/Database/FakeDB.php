@@ -130,31 +130,6 @@ class FakeDB implements BetterWPDbInterface
         return $this->doQuery($sql, $bindings);
     }
     
-    private function doQuery(string $sql, array $bindings)
-    {
-        
-        $called_method = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'];
-        
-        $this->addToQueries($sql, $bindings, $called_method);
-        
-        $expectation = $this->return_values[$called_method] ?? null;
-        
-        if (is_null($expectation)) {
-            PHPUnit::fail("No return value expectation set for method [$called_method]");
-        }
-        
-        return $expectation instanceof Closure ? $expectation() : $expectation;
-    }
-    
-    private function addToQueries(string $sql, array $bindings, string $called_method)
-    {
-        
-        $this->queries[$called_method] = [
-            'sql' => $sql,
-            'bindings' => $bindings,
-        ];
-    }
-    
     public function doStatement(string $sql, array $bindings) :bool
     {
         
@@ -202,7 +177,6 @@ class FakeDB implements BetterWPDbInterface
     
     public function returnInsert($value)
     {
-        
         $this->return_values['doStatement'] = $value;
     }
     
@@ -242,6 +216,31 @@ class FakeDB implements BetterWPDbInterface
         $this->last_id++;
         
         return $this->last_id;
+    }
+    
+    private function doQuery(string $sql, array $bindings)
+    {
+        
+        $called_method = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'];
+        
+        $this->addToQueries($sql, $bindings, $called_method);
+        
+        $expectation = $this->return_values[$called_method] ?? null;
+        
+        if (is_null($expectation)) {
+            PHPUnit::fail("No return value expectation set for method [$called_method]");
+        }
+        
+        return $expectation instanceof Closure ? $expectation() : $expectation;
+    }
+    
+    private function addToQueries(string $sql, array $bindings, string $called_method)
+    {
+        
+        $this->queries[$called_method] = [
+            'sql' => $sql,
+            'bindings' => $bindings,
+        ];
     }
     
 }

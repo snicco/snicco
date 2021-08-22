@@ -19,10 +19,24 @@ class ShutdownHandler
         $this->running_unit_tests = $running_unit_tests;
     }
     
-    public function unrecoverableException()
+    public function afterResponse(ResponseSent $response_sent)
     {
         
-        $this->terminate();
+        $request = $response_sent->request;
+        
+        if ($response_sent->response instanceof RedirectResponse) {
+            
+            $this->terminate();
+            
+        }
+        
+        // API endpoint requests are always loaded through index.php and thus are
+        // also frontend requests.
+        if ($request->isWpFrontEnd() || $request->isWpAjax()) {
+            
+            $this->terminate();
+            
+        }
         
     }
     
@@ -36,25 +50,6 @@ class ShutdownHandler
         }
         
         exit();
-        
-    }
-    
-    public function afterResponse(ResponseSent $response_sent)
-    {
-        
-        $request = $response_sent->request;
-        
-        if ($response_sent->response instanceof RedirectResponse) {
-            
-            $this->terminate();
-            
-        }
-        
-        if ($request->isApiEndPoint() || $request->isWpAjax() || $request->isWpFrontEnd()) {
-            
-            $this->terminate();
-            
-        }
         
     }
     

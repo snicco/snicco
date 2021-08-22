@@ -7,14 +7,13 @@ namespace Tests\unit\Application;
 use Snicco\Application\Config;
 use PHPUnit\Framework\TestCase;
 
-class ApplicationConfigTest extends TestCase
+class ConfigTest extends TestCase
 {
     
     private Config $config;
     
     public function setUp() :void
     {
-        
         parent::setUp();
         
         $this->config = new Config();
@@ -173,6 +172,60 @@ class ApplicationConfigTest extends TestCase
         
     }
     
+    /** @test */
+    public function test_extend_with_closure()
+    {
+        
+        $config = new Config([
+            'first' => [
+                'foo' => 'foo',
+                'bar' => false,
+                'baz' => null,
+            ],
+            'second' => [
+                'foo' => [
+                    'bar',
+                    'baz',
+                
+                ],
+                'empty' => '',
+                'spaces' => '     ',
+            ],
+            'third' => [
+            
+            ],
+        
+        ]);
+        
+        $config->extendIfEmpty('first', fn() => 'bar');
+        $this->assertSame('foo', $config->get('first.foo'));
+        
+        // boolean false should be kept
+        $config->extendIfEmpty('first.bar', fn() => true);
+        $this->assertSame(false, $config->get('first.bar'));
+        
+        // null should be replaced.
+        $config->extendIfEmpty('first.baz', fn() => true);
+        $this->assertSame(true, $config->get('first.baz'));
+        
+        // empty array will be replaced
+        $config->extendIfEmpty('third', fn() => true);
+        $this->assertSame(true, $config->get('third'));
+        
+        // empty strings will be replaced
+        $config->extendIfEmpty('second.empty', fn() => 'not-empty');
+        $this->assertSame('not-empty', $config->get('second.empty'));
+        
+        // empty string with spaces will be replaced
+        $config->extendIfEmpty('second.spaces', fn() => 'not-empty');
+        $this->assertSame('not-empty', $config->get('second.spaces'));
+        
+        // test replace with config value
+        $config->extendIfEmpty('second.foo.baz', fn($config) => $config->get('first.foo'));
+        $this->assertSame('foo', $config->get('second.foo.baz'));
+        
+    }
+    
     protected function tearDown() :void
     {
         
@@ -182,3 +235,4 @@ class ApplicationConfigTest extends TestCase
     }
     
 }
+

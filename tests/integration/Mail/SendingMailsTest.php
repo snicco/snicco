@@ -4,16 +4,16 @@ declare(strict_types=1);
 
 namespace Tests\integration\Mail;
 
-use Tests\TestCase;
 use Tests\stubs\TestApp;
 use Snicco\Mail\Mailable;
+use Tests\FrameworkTestCase;
 use Tests\fixtures\Mail\WelcomeMail;
 use Tests\fixtures\Mail\DiscountMail;
 use Tests\fixtures\Mail\WeAreClosing;
 use Tests\fixtures\Mail\WelcomePlainText;
 use Tests\fixtures\Mail\ConfirmAccountTestMail;
 
-class SendingMailsTest extends TestCase
+class SendingMailsTest extends FrameworkTestCase
 {
     
     /** @test */
@@ -161,12 +161,6 @@ class SendingMailsTest extends TestCase
         
     }
     
-    private function clearAllMails()
-    {
-        
-        $this->mail_data = [];
-    }
-    
     /** @test */
     public function the_build_method_is_resolved_from_the_service_container()
     {
@@ -205,6 +199,18 @@ class SendingMailsTest extends TestCase
         $mail = $this->mail_data[0];
         $this->assertViewContent('New Message', $mail['message']);
         
+    }
+    
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bootApp();
+    }
+    
+    private function clearAllMails()
+    {
+        
+        $this->mail_data = [];
     }
     
 }

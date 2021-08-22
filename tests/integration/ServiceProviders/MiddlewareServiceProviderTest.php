@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\integration\ServiceProviders;
 
-use Tests\TestCase;
 use Tests\stubs\TestApp;
 use Snicco\Middleware\Www;
+use Tests\FrameworkTestCase;
 use Snicco\Routing\Pipeline;
 use Snicco\Middleware\Secure;
 use Snicco\Middleware\TrailingSlash;
@@ -15,11 +15,11 @@ use Snicco\Middleware\Core\RouteRunner;
 use Snicco\Middleware\Core\OpenRedirectProtection;
 use Snicco\Middleware\Core\EvaluateResponseMiddleware;
 
-class MiddlewareServiceProviderTest extends TestCase
+class MiddlewareServiceProviderTest extends FrameworkTestCase
 {
     
     /** @test */
-    public function middleware_aliases_are_bound()
+    public function core_middleware_aliases_are_bound_and_merged_with_user_aliases()
     {
         
         $aliases = TestApp::config('middleware.aliases');
@@ -31,6 +31,8 @@ class MiddlewareServiceProviderTest extends TestCase
         $this->assertArrayHasKey('robots', $aliases);
         $this->assertArrayHasKey('secure', $aliases);
         $this->assertArrayHasKey('signed', $aliases);
+        
+        // from test config
         $this->assertArrayHasKey('foo', $aliases);
         
     }
@@ -104,6 +106,12 @@ class MiddlewareServiceProviderTest extends TestCase
             TestApp::resolve(OpenRedirectProtection::class)
         );
         
+    }
+    
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bootApp();
     }
     
 }

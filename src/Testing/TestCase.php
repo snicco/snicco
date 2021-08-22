@@ -10,7 +10,6 @@ use Snicco\Support\WP;
 use Snicco\Support\Arr;
 use Snicco\Events\Event;
 use Snicco\Http\Delegate;
-use Snicco\Routing\Route;
 use Illuminate\Support\Str;
 use Snicco\Http\HttpKernel;
 use Snicco\Session\Session;
@@ -23,17 +22,16 @@ use Snicco\Application\Application;
 use Codeception\TestCase\WPTestCase;
 use Snicco\Contracts\ServiceProvider;
 use Illuminate\Support\Facades\Facade;
+use Snicco\Contracts\ExceptionHandler;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Testing\Concerns\TravelsTime;
 use Snicco\Session\SessionServiceProvider;
-use Snicco\Contracts\ErrorHandlerInterface;
 use Mockery\Exception\InvalidCountException;
-use Snicco\Contracts\AbstractRouteCollection;
 use Snicco\Contracts\RouteRegistrarInterface;
-use Snicco\ExceptionHandling\NullErrorHandler;
 use Snicco\Testing\Concerns\InteractsWithMail;
 use Snicco\Testing\Concerns\MakesHttpRequests;
 use Snicco\Testing\Concerns\InteractsWithSession;
+use Snicco\ExceptionHandling\NullExceptionHandler;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Snicco\Testing\Concerns\InteractsWithContainer;
 use Snicco\Testing\Concerns\InteractsWithAuthentication;
@@ -51,106 +49,109 @@ abstract class TestCase extends WPTestCase
     use TravelsTime;
     
     protected Application                   $app;
-    
     protected ?Session                      $session       = null;
-    
     protected Request                       $request;
-    
     protected Config                        $config;
-    
     protected ServerRequestFactoryInterface $request_factory;
-    
     protected HttpKernel                    $kernel;
-    
-    protected bool                          $defer_boot    = false;
-    
     protected bool                          $routes_loaded = false;
     
-    /**
-     * @var callable[]
-     */
-    protected array $after_config_loaded_callbacks = [];
-    
-    private bool    $set_up_has_run                = false;
-    
-    /**
-     * @var Route[]
-     */
-    private array $additional_routes = [];
+    /** @var callable[] */
+    protected array $after_application_booted = [];
     
     /**
      * @var callable[]
      */
-    private array $after_application_created_callbacks = [];
+    private array $after_application_created = [];
     
     /**
      * @var callable[]
      */
-    private array $before_application_destroy_callbacks = [];
-    
-    /**
-     * Return an instance of your Application. DON'T BOOT THE APPLICATION.
-     */
-    abstract public function createApplication() :Application;
+    private array $before_application_destroyed = [];
     
     /**
      * @return ServiceProvider[]
      */
-    public function packageProviders() :array
+    protected function packageProviders() :array
     {
-        
         return [];
     }
     
+    abstract protected function createApplication() :Application;
+    
+    /**
+     * Register callbacks that will be run after the application has been initialized.
+     * The config will be loaded at this point but ServiceProviders are not booted yet.
+     *
+     * @param  callable  $callback
+     */
     protected function afterApplicationCreated(callable $callback)
     {
-        
-        $this->after_application_created_callbacks[] = $callback;
-        
-        if ($this->set_up_has_run) {
-            $callback();
+        if (isset($this->app) && $this->app->hasBeenBootstrapped()) {
+            $this->fail('Application had already been bootstrapped before adding callable.');
         }
+        $this->after_application_created[] = $callback;
     }
     
     protected function beforeApplicationDestroyed(callable $callback)
     {
-        
-        $this->before_application_destroy_callbacks[] = $callback;
+        $this->before_application_destroyed[] = $callback;
     }
     
-    protected function afterLoadingConfig(callable $callback)
+    /**
+     * Register callbacks that will be run after the application has fully been bootstrapped.
+     * All ServiceProviders are already registered and booted at this point.
+     *
+     * @param  callable  $callback
+     */
+    protected function afterApplicationBooted(callable $callback)
     {
         
-        $this->after_config_loaded_callbacks[] = $callback;
+        if (isset($this->app) && $this->app->hasBeenBootstrapped()) {
+            $this->fail('Application had already been bootstrapped before adding callable.');
+        }
+        
+        $this->after_application_booted[] = $callback;
     }
     
     protected function setUp() :void
     {
+        
+        if (class_exists(Facade::class)) {
+            
+            Facade::clearResolvedInstances();
+            Facade::setFacadeApplication(null);
+            
+        }
+        
+        if (class_exists(Container::class)) {
+            Container::setInstance();
+        }
+        
+        Event::setInstance(null);
+        WP::reset();
         
         parent::setUp();
         
         $this->backToPresent();
         
         if ( ! isset($this->app)) {
-            
             $this->refreshApplication();
+        }
+        
+        $this->mergeServiceProviders();
+        $this->bindBaseRequest();
+        $this->setUpTraits();
+        
+        $this->afterApplicationBooted(function () {
             
-        }
+            $this->replaceBindings();
+            $this->setProperties();
+            
+        });
         
-        $this->app->boot(false);
-        
-        $this->config = $this->app->config();
-        
-        foreach ($this->after_config_loaded_callbacks as $callback) {
+        foreach ($this->after_application_created as $callback) {
             $callback();
-        }
-        
-        $this->config->extend('app.providers', $this->packageProviders());
-        $this->request_factory = $this->app->resolve(ServerRequestFactoryInterface::class);
-        $this->replaceBindings();
-        
-        if ( ! $this->defer_boot) {
-            $this->boot();
         }
         
     }
@@ -158,38 +159,36 @@ abstract class TestCase extends WPTestCase
     protected function refreshApplication()
     {
         $this->app = $this->createApplication();
+        $this->config = $this->app->config();
     }
     
-    protected function boot()
+    protected function bootApp() :self
     {
-        
-        if ($this->set_up_has_run) {
-            $this->fail('TestCase booted twice');
+        if ($this->app->hasBeenBootstrapped()) {
+            $this->fail('Application bootstrapped twice in one test.');
         }
         
-        $this->app->runningUnitTest();
-        $this->bindRequest();
-        $this->app->loadServiceProviders();
-        $this->setUpTraits();
-        $this->setProperties();
+        $this->app->boot();
         
-        foreach ($this->after_application_created_callbacks as $callback) {
+        foreach ($this->after_application_booted as $callback) {
             $callback();
         }
         
-        $this->set_up_has_run = true;
-        
+        return $this;
     }
     
     protected function tearDown() :void
     {
         
-        if ($this->app) {
-            $this->callBeforeApplicationDestroyedCallbacks();
+        if (isset($this->app)) {
+            
+            foreach ($this->before_application_destroyed as $callback) {
+                $callback();
+                
+            }
+            
             unset($this->app);
         }
-        
-        $this->set_up_has_run = false;
         
         if (class_exists(Mockery::class)) {
             
@@ -213,20 +212,18 @@ abstract class TestCase extends WPTestCase
         }
         
         if (class_exists(Facade::class)) {
-            
             Facade::clearResolvedInstances();
             Facade::setFacadeApplication(null);
-            
         }
         
         if (class_exists(Container::class)) {
-            
             Container::setInstance();
-            
         }
         
         $this->backToPresent();
         
+        // WpTestCase will take care of resetting the user.
+        //$this->logout();
         Event::setInstance(null);
         WP::reset();
         
@@ -306,8 +303,8 @@ abstract class TestCase extends WPTestCase
                 $m = $aliases[$abstract] ?? null;
                 
                 if ($m === null) {
-                    throw new RuntimeException(
-                        "You are trying to disable middleware [$abstract] which does not seem to exist."
+                    $this->fail(
+                        "You are trying to disable the middleware [$abstract] which does not seem to exist."
                     );
                 }
                 
@@ -377,7 +374,7 @@ abstract class TestCase extends WPTestCase
     {
         
         $this->config->set('app.exception_handling', false);
-        $this->instance(ErrorHandlerInterface::class, new NullErrorHandler());
+        $this->instance(ExceptionHandler::class, new NullExceptionHandler());
         
         return $this;
         
@@ -394,12 +391,6 @@ abstract class TestCase extends WPTestCase
         
     }
     
-    protected function addRoute(Route $route)
-    {
-        
-        $this->additional_routes[] = $route;
-    }
-    
     protected function loadRoutes() :TestCase
     {
         
@@ -407,20 +398,10 @@ abstract class TestCase extends WPTestCase
             return $this;
         }
         
-        /** @var AbstractRouteCollection $routes */
-        $routes = $this->app->resolve(AbstractRouteCollection::class);
-        
         /** @var RouteRegistrar $registrar */
         $registrar = $this->app->resolve(RouteRegistrarInterface::class);
         $registrar->loadApiRoutes($this->config);
         $registrar->loadStandardRoutes($this->config);
-        
-        foreach ($this->additional_routes as $route) {
-            
-            $routes->add($route);
-            
-        }
-        
         $registrar->loadIntoRouter();
         
         $this->routes_loaded = true;
@@ -431,19 +412,28 @@ abstract class TestCase extends WPTestCase
     
     protected function withRequest(Request $request) :TestCase
     {
-        $this->request = $request;
-        
+        $this->request = $this->addRequestDefaults($request);
         return $this;
     }
     
-    private function bindRequest()
+    private function mergeServiceProviders() :void
     {
+        $this->config->extend('app.providers', $this->packageProviders());
+    }
+    
+    // bind a base request for the test so that we don't get possible errors inside CaptureRequest::bootstrap()
+    private function bindBaseRequest()
+    {
+        
+        if ( ! isset($this->request_factory)) {
+            
+            $this->request_factory = $this->app->resolve(ServerRequestFactoryInterface::class);
+            
+        }
         
         if (isset($this->request)) {
             
-            $this->request = $this->addCookies($this->request);
-            $this->request = $this->addHeaders($this->request);
-            $this->instance(Request::class, $this->request);
+            $this->addRequestDefaults($this->request);
             
             return;
         }
@@ -455,9 +445,8 @@ abstract class TestCase extends WPTestCase
                 $this->default_server_variables
             )
         );
-        $request = $this->addCookies($request);
-        $request = $this->addHeaders($request);
-        $this->instance(Request::class, $request);
+        
+        $this->addRequestDefaults($request);
         $this->request = $request;
         
     }
@@ -475,21 +464,10 @@ abstract class TestCase extends WPTestCase
     
     private function setProperties()
     {
-        
         if (in_array(SessionServiceProvider::class, $this->config->get('app.providers'))
             && $this->config->get('session.enabled')) {
             
             $this->session = $this->app->resolve(Session::class);
-            
-        }
-        
-    }
-    
-    private function callBeforeApplicationDestroyedCallbacks()
-    {
-        
-        foreach ($this->before_application_destroy_callbacks as $callback) {
-            $callback();
             
         }
     }

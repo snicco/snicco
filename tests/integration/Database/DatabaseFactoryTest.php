@@ -349,6 +349,12 @@ class DatabaseFactoryTest extends DatabaseTestCase
         
     }
     
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bootApp();
+    }
+    
 }
 
 

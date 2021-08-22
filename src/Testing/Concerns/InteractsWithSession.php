@@ -20,7 +20,7 @@ use Snicco\Session\Contracts\SessionDriver;
 trait InteractsWithSession
 {
     
-    protected array $internal_keys        = [
+    protected array $internal_keys = [
         '_user',
         '_url.previous',
         '_rotate_at',
@@ -28,9 +28,9 @@ trait InteractsWithSession
         '_last_activity',
     ];
     
-    private ?string $session_id           = null;
+    private ?string $session_id = null;
     
-    private bool    $data_saved_to_driver = false;
+    private bool $data_saved_to_driver = false;
     
     protected function withCsrfToken() :array
     {
@@ -97,7 +97,6 @@ trait InteractsWithSession
     protected function withSessionCookie(string $name = 'snicco_test_session') :self
     {
         $this->default_cookies[$name] = $this->testSessionId();
-        
         return $this;
     }
     

@@ -15,11 +15,11 @@ use Snicco\ExceptionHandling\Exceptions\NotFoundException;
 class EvaluateResponseMiddleware extends Middleware
 {
     
-    private bool $must_match_current_request;
+    private bool $must_match_web_routes;
     
-    public function __construct(bool $must_match_current_request = false)
+    public function __construct(bool $must_match_web_routes = false)
     {
-        $this->must_match_current_request = $must_match_current_request;
+        $this->must_match_web_routes = $must_match_web_routes;
     }
     
     /**
@@ -30,7 +30,7 @@ class EvaluateResponseMiddleware extends Middleware
         
         $response = $next($request);
         
-        if ($this->must_match_current_request) {
+        if ($this->must_match_web_routes && $request->isWpFrontEnd()) {
             
             if ($response instanceof NullResponse || $response instanceof DelegatedResponse) {
                 

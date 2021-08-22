@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Application;
 
+use Closure;
 use Snicco\Support\Arr;
 use Illuminate\Config\Repository;
 
@@ -25,6 +26,16 @@ class Config extends Repository
         $value = $this->replaceConfig($app_config, $user_config);
         
         $this->set($key, $value);
+        
+    }
+    
+    public function extendIfEmpty(string $key, Closure $default)
+    {
+        $user_config = $this->get($key, []);
+        
+        if ($user_config !== false && empty(str_replace(' ', '', $user_config))) {
+            $this->set($key, $default($this));
+        }
         
     }
     

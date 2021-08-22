@@ -15,8 +15,6 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
     /** @test */
     public function the_endpoint_exists()
     {
-        
-        $this->withoutExceptionHandling();
         $this->post($this->endpoint)->assertNotNullResponse();
         
     }
@@ -89,8 +87,6 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
     public function users_cant_request_unlimited_emails()
     {
         
-        $this->withoutExceptionHandling();
-        
         $this->mailFake();
         
         $this->authenticateAndUnconfirm($calvin = $this->createAdmin());
@@ -126,6 +122,12 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
         $this->assertMailSent(ConfirmAuthMail::class)
              ->assertTo($calvin);
         
+    }
+    
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bootApp();
     }
     
 }

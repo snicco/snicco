@@ -16,7 +16,6 @@ class TestView implements PhpViewInterface
     
     public function __construct(string $name)
     {
-        
         $this->name = $name;
     }
     

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Http;
 
-use Throwable;
-use Snicco\Http\Psr7\Request;
 use InvalidArgumentException;
 use Snicco\Http\Psr7\Response;
 use Psr\Http\Message\StreamInterface;
@@ -18,7 +16,6 @@ use Snicco\Http\Responses\DelegatedResponse;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
-use Snicco\ExceptionHandling\Exceptions\ViewException;
 use Snicco\Contracts\ViewFactoryInterface as ViewFactory;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
@@ -26,15 +23,15 @@ use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 class ResponseFactory implements ResponseFactoryInterface, StreamFactoryInterface
 {
     
-    private ViewFactory          $view_factory;
+    private ViewFactory $view_factory;
     
     private Psr17ResponseFactory $response_factory;
     
-    private Psr17StreamFactory   $stream_factory;
+    private Psr17StreamFactory $stream_factory;
     
-    private AbstractRedirector   $redirector;
+    private AbstractRedirector $redirector;
     
-    private string               $unrecoverable_error_message = 'Something has gone completely wrong.';
+    private string $unrecoverable_error_message = 'Something has gone completely wrong.';
     
     public function __construct(ViewFactory $view, Psr17ResponseFactory $response, Psr17StreamFactory $stream, AbstractRedirector $redirector)
     {
@@ -73,11 +70,6 @@ class ResponseFactory implements ResponseFactoryInterface, StreamFactoryInterfac
         $psr_response = $this->response_factory->createResponse($status_code, $reason_phrase);
         
         return new Response($psr_response);
-    }
-    
-    private function isValidStatus(int $status_code) :bool
-    {
-        return 100 <= $status_code && $status_code < 600;
     }
     
     public function createResponse(int $code = 200, string $reasonPhrase = '') :Response
@@ -154,52 +146,6 @@ class ResponseFactory implements ResponseFactoryInterface, StreamFactoryInterfac
     }
     
     /**
-     * Render the most appropriate error view for the given Exception.
-     * This method DOES ONLY RETURN text/html responses.
-     *
-     * @access internal.
-     */
-    public function error(HttpException $e, Request $request) :Response
-    {
-        $views = [(string) $e->httpStatusCode(), 'error', 'index'];
-        
-        $is_admin = $request->isWpAdmin();
-        
-        if ($is_admin) {
-            $views = collect($views)
-                ->map(fn($view) => $view.'-admin')
-                ->merge($views)->all();
-        }
-        
-        try {
-            $view = $this->view_factory->make($views)->with([
-                'status_code' => $e->httpStatusCode(),
-                'message' => $e->messageForUsers(),
-            ]);
-            
-            return $this->toResponse($view)
-                        ->withStatus($e->httpStatusCode());
-        } catch (ViewException $e) {
-            $view = $is_admin ? 'error-admin' : 'error';
-            
-            try {
-                return $this->toResponse(
-                    
-                    $this->view_factory
-                        ->make($view)
-                        ->with([
-                            'status_code' => 500,
-                            'message' => $this->unrecoverable_error_message,
-                        ])
-                
-                )->withStatus(500);
-            } catch (Throwable $e) {
-                return $this->html("<h1>$this->unrecoverable_error_message</h1>", 500);
-            }
-        }
-    }
-    
-    /**
      * @throws HttpException
      */
     public function toResponse($response) :Response
@@ -234,6 +180,11 @@ class ResponseFactory implements ResponseFactoryInterface, StreamFactoryInterfac
         /** @todo This needs more parsing or a dedicated JsonResponseClass */
         return $this->make($status)
                     ->json($this->createStream(json_encode($content)));
+    }
+    
+    private function isValidStatus(int $status_code) :bool
+    {
+        return 100 <= $status_code && $status_code < 600;
     }
     
 }

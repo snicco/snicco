@@ -4,25 +4,24 @@ declare(strict_types=1);
 
 namespace Tests\integration\Routing;
 
-use Tests\TestCase;
 use Snicco\Events\Event;
 use Snicco\Http\Delegate;
-use Tests\stubs\TestRequest;
+use Tests\FrameworkTestCase;
 use Snicco\Http\Psr7\Request;
 use Snicco\Events\ResponseSent;
 use Snicco\Contracts\Middleware;
 use Snicco\Http\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
 
-class ApiRoutesTest extends TestCase
+class ApiRoutesTest extends FrameworkTestCase
 {
     
     /** @test */
     public function an_api_endpoint_can_be_created_where_all_routes_are_run_on_init_and_shut_down_the_script_afterwards()
     {
         
-        $this->withRequest(TestRequest::from('GET', 'api-prefix/base/foo'));
-        $this->boot();
+        $this->withRequest($this->frontendRequest('GET', 'api-prefix/base/foo'));
+        $this->bootApp();
         
         do_action('init');
         
@@ -32,7 +31,7 @@ class ApiRoutesTest extends TestCase
         
         // This will shut the script down.
         Event::assertDispatched(function (ResponseSent $event) {
-            return $event->request->isApiEndPoint();
+            return $event->request->isWpFrontEnd();
         });
         
     }
@@ -47,8 +46,8 @@ class ApiRoutesTest extends TestCase
         $this->withAddedConfig(
             ['routing.definitions' => [ROUTES_DIR, FIXTURES_DIR.DS.'OtherRoutes']]
         );
-        $this->withRequest(TestRequest::from('GET', 'api-prefix/base/foo'));
-        $this->boot();
+        $this->withRequest($this->frontendRequest('GET', 'api-prefix/base/foo'));
+        $this->bootApp();
         
         do_action('init');
         
@@ -63,12 +62,12 @@ class ApiRoutesTest extends TestCase
     }
     
     /** @test */
-    public function a_middleware_group_is_automatically_added()
+    public function a_middleware_group_is_automatically_created()
     {
         
         $this->withAddedConfig(['middleware.groups' => ['api.test' => [TestApiMiddleware::class]]]);
-        $this->withRequest(TestRequest::from('GET', 'api-prefix/base/foo'));
-        $this->boot();
+        $this->withRequest($this->frontendRequest('GET', 'api-prefix/base/foo'));
+        $this->bootApp();
         
         do_action('init');
         
@@ -80,8 +79,8 @@ class ApiRoutesTest extends TestCase
     public function a_fallback_api_route_can_be_defined_that_matches_all_non_existing_endpoints()
     {
         
-        $this->withRequest(TestRequest::from('GET', 'api-prefix/base/bogus'));
-        $this->boot();
+        $this->withRequest($this->frontendRequest('GET', 'api-prefix/base/bogus'));
+        $this->bootApp();
         
         do_action('init');
         
@@ -91,8 +90,7 @@ class ApiRoutesTest extends TestCase
     
     protected function setUp() :void
     {
-        $this->defer_boot = true;
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationBooted(function () {
             Event::fake([ResponseSent::class]);
         });
         parent::setUp();

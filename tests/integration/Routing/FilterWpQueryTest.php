@@ -5,18 +5,17 @@ declare(strict_types=1);
 namespace Tests\integration\Routing;
 
 use WP;
-use Tests\TestCase;
+use Tests\FrameworkTestCase;
 
-class FilterWpQueryTest extends TestCase
+class FilterWpQueryTest extends FrameworkTestCase
 {
-    
-    protected bool $defer_boot = true;
     
     /** @test */
     public function WP_QUERY_vars_can_be_filtered_by_a_route()
     {
         
-        $this->withRequest($this->frontendRequest('GET', '/wpquery/foo'))->boot();
+        $this->withRequest($this->frontendRequest('GET', '/wpquery/foo'));
+        $this->bootApp();
         $this->loadRoutes();
         
         global $wp;
@@ -34,7 +33,7 @@ class FilterWpQueryTest extends TestCase
     {
         
         // The route responds to post but the event won't get dispatched.
-        $this->withRequest($this->frontendRequest('POST', '/wpquery/post'))->boot();
+        $this->withRequest($this->frontendRequest('POST', '/wpquery/post'))->bootApp();
         $this->loadRoutes();
         
         /** @var WP $wp */
@@ -53,7 +52,7 @@ class FilterWpQueryTest extends TestCase
     {
         
         $this->withRequest($this->frontendRequest('GET', '/wpquery/teams/germany/dortmund'))
-             ->boot();
+             ->bootApp();
         $this->loadRoutes();
         
         /** @var WP $wp */
@@ -61,7 +60,7 @@ class FilterWpQueryTest extends TestCase
         $wp->main();
         
         $this->assertSame(['germany' => 'dortmund'], $wp->query_vars);
-        
+        $this->sentResponse()->assertSee('germany.dortmund')->assertOk();
     }
     
     /** @test */
@@ -69,7 +68,7 @@ class FilterWpQueryTest extends TestCase
     {
         
         $this->withRequest($this->frontendRequest('GET', '/wpquery/assert-no-driver-run'))
-             ->boot();
+             ->bootApp();
         $this->loadRoutes();
         
         global $wp;
@@ -85,7 +84,7 @@ class FilterWpQueryTest extends TestCase
     public function its_possible_to_create_routes_that_ONLY_CHANGE_WP_QUERY_but_dont_have_a_route_action()
     {
         
-        $this->withRequest($this->frontendRequest('GET', '/wpquery/do-nothing'))->boot();
+        $this->withRequest($this->frontendRequest('GET', '/wpquery/do-nothing'))->bootApp();
         $this->loadRoutes();
         
         global $wp;
@@ -101,7 +100,7 @@ class FilterWpQueryTest extends TestCase
     public function the_WP_QUERY_parsing_flow_remains_the_same_if_no_custom_route_matched()
     {
         
-        $this->withRequest($this->frontendRequest('GET', '/wpquery/bogus'))->boot();
+        $this->withRequest($this->frontendRequest('GET', '/wpquery/bogus'))->bootApp();
         $this->loadRoutes();
         
         $request_parsed = false;
@@ -123,7 +122,7 @@ class FilterWpQueryTest extends TestCase
     public function the_WP_QUERY_flow_is_short_circuited_if_a_custom_route_matched()
     {
         
-        $this->withRequest($this->frontendRequest('GET', '/wpquery/foo'))->boot();
+        $this->withRequest($this->frontendRequest('GET', '/wpquery/foo'))->bootApp();
         $this->loadRoutes();
         
         $request_parsed = false;

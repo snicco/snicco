@@ -85,13 +85,12 @@ class BladeViewTest extends BladeTestCase
     protected function setUp() :void
     {
         
-        $this->afterApplicationCreated(function () {
-            
+        $this->afterApplicationBooted(function () {
             $this->engine = TestApp::resolve(ViewEngineInterface::class);
-            
         });
         
         parent::setUp();
+        $this->bootApp();
         
     }
     

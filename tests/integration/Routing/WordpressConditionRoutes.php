@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\integration\Routing;
 
-use Tests\TestCase;
 use Snicco\Events\Event;
+use Tests\FrameworkTestCase;
 use Snicco\Events\ResponseSent;
 use Tests\fixtures\Middleware\WebMiddleware;
 
-class WordpressConditionRoutes extends TestCase
+class WordpressConditionRoutes extends FrameworkTestCase
 {
     
     /** @test */
@@ -28,26 +28,26 @@ class WordpressConditionRoutes extends TestCase
     }
     
     /** @test */
-    public function if_no_route_matches_due_to_failed_wp_conditions_a_null_response_is_returned()
+    public function if_no_route_matches_due_to_failed_wp_conditions_a_delegated_response_is_returned()
     {
         
         $GLOBALS['test']['pass_fallback_route_condition'] = false;
         Event::fake([ResponseSent::class]);
         
-        $this->post('/post1')->assertNullResponse();
+        $this->post('/post1')->assertDelegatedToWordPress();
         
         Event::assertNotDispatched(ResponseSent::class);
         
     }
     
     /** @test */
-    public function if_no_route_matches_due_to_different_http_verbs_a_null_response_is_returned()
+    public function if_no_route_matches_due_to_different_http_verbs_a_delegated_response_is_returned()
     {
         
         $GLOBALS['test']['pass_fallback_route_condition'] = true;
         Event::fake([ResponseSent::class]);
         
-        $this->delete('/post1')->assertNullResponse();
+        $this->delete('/post1')->assertDelegatedToWordPress();
         
         Event::assertNotDispatched(ResponseSent::class);
         
@@ -70,6 +70,12 @@ class WordpressConditionRoutes extends TestCase
             'Middleware was not run as expected.'
         );
         
+    }
+    
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bootApp();
     }
     
 }

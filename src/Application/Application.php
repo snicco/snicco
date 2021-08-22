@@ -4,59 +4,37 @@ declare(strict_types=1);
 
 namespace Snicco\Application;
 
+use ArrayAccess;
 use RuntimeException;
 use Snicco\Support\WpFacade;
-use Snicco\Http\Psr7\Request;
 use Contracts\ContainerAdapter;
-use Snicco\Http\HttpServiceProvider;
-use Snicco\Mail\MailServiceProvider;
-use Snicco\View\ViewServiceProvider;
-use Snicco\Events\EventServiceProvider;
-use Snicco\Routing\RoutingServiceProvider;
-use Nyholm\Psr7Server\ServerRequestCreator;
-use Snicco\Factories\FactoryServiceProvider;
-use Snicco\Middleware\MiddlewareServiceProvider;
-use Snicco\ExceptionHandling\ExceptionServiceProvider;
+use Snicco\Bootstrap\CaptureRequest;
+use Snicco\Bootstrap\DetectEnvironment;
+use Snicco\Bootstrap\LoadConfiguration;
+use Snicco\Bootstrap\HandlesExceptions;
+use Snicco\Bootstrap\LoadServiceProviders;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
-class Application
+use const PHP_SAPI;
+
+class Application implements ArrayAccess
 {
     
     use ManagesAliases;
-    use LoadsServiceProviders;
     use HasContainer;
     use SetPsrFactories;
     
-    const CORE_SERVICE_PROVIDERS = [
-        
-        ApplicationServiceProvider::class,
-        ExceptionServiceProvider::class,
-        EventServiceProvider::class,
-        FactoryServiceProvider::class,
-        RoutingServiceProvider::class,
-        HttpServiceProvider::class,
-        MiddlewareServiceProvider::class,
-        ViewServiceProvider::class,
-        MailServiceProvider::class,
-    
-    ];
-    
-    private bool   $bootstrapped      = false;
-    
+    private bool   $bootstrapped = false;
     private Config $config;
-    
-    private bool   $running_unit_test = false;
-    
+    private bool   $is_running_in_console;
     private string $base_path;
     
-    public function __construct(ContainerAdapter $container)
+    private function __construct(ContainerAdapter $container)
     {
-        
         $this->setContainer($container);
         $this->container()->instance(Application::class, $this);
         $this->container()->instance(ContainerAdapter::class, $this->container());
         WpFacade::setFacadeContainer($container);
-        
     }
     
     public static function generateKey() :string
@@ -69,31 +47,29 @@ class Application
         $app = new static($container_adapter);
         $app->setBasePath($base_path);
         
+        (new LoadConfiguration())->bootstrap($app);
+        (new DetectEnvironment())->bootstrap($app);
+        (new HandlesExceptions())->bootstrap($app);
+        
         return $app;
     }
     
-    public function boot(bool $load = true) :void
+    /**
+     * @throws ConfigurationException
+     */
+    public function boot() :void
     {
         
-        if ($this->bootstrapped) {
+        if ($this->hasBeenBootstrapped()) {
             
-            throw new ConfigurationException(static::class.' already bootstrapped.');
+            throw new ConfigurationException(
+                static::class.' already bootstrapped.'
+            );
             
         }
         
-        $this->config = ((new LoadConfiguration))->bootstrap($this);
-        $this->container()->instance(Config::class, $this->config);
-        $this->container()->instance(ServerRequestCreator::class, $this->serverRequestCreator());
-        
-        if ( ! $load) {
-            return;
-        }
-        
-        $this->registerErrorHandler();
-        
-        $this->captureRequest();
-        
-        $this->loadServiceProviders();
+        (new CaptureRequest())->bootstrap($this);
+        (new LoadServiceProviders())->bootstrap($this);
         
         $this->bootstrapped = true;
         
@@ -113,6 +89,10 @@ class Application
     
     public function config(?string $key = null, $default = null)
     {
+        // Don't resolve the config from the container on every call.
+        if ( ! isset($this->config)) {
+            $this->config = $this[Config::class];
+        }
         
         if ( ! $key) {
             
@@ -124,10 +104,9 @@ class Application
         
     }
     
-    public function basePath() :string
+    public function basePath(string $path = '') :string
     {
-        
-        return $this->base_path;
+        return $this->base_path.($path ? DIRECTORY_SEPARATOR.$path : $path);
     }
     
     public function storagePath($path = '') :string
@@ -152,8 +131,12 @@ class Application
     
     public function isConfigurationCached() :bool
     {
-        
         return is_file($this->configCachePath());
+    }
+    
+    public function hasBeenBootstrapped() :bool
+    {
+        return $this->bootstrapped;
     }
     
     public function configCachePath() :string
@@ -169,40 +152,55 @@ class Application
         
     }
     
-    public function runningUnitTest()
-    {
-        
-        $this->running_unit_test = true;
-    }
-    
     public function isRunningUnitTest() :bool
     {
+        return $this->environment() === 'testing';
+    }
+    
+    public function environment() :string
+    {
         
-        return $this->running_unit_test;
+        if ( ! isset($this['env'])) {
+            throw new RuntimeException(
+                "App environment not set."
+            );
+        }
+        
+        $env = $this['env'];
+        
+        if ( ! in_array($env, ['local', 'production', 'testing'])) {
+            
+            throw new RuntimeException(
+                "Allowed values for the environment are ['local','production','testing']"
+            );
+            
+        }
+        
+        return $env;
+    }
+    
+    public function isLocal() :bool
+    {
+        return $this->environment() === 'local';
+    }
+    
+    public function isProduction() :bool
+    {
+        return $this->environment() === 'production';
+    }
+    
+    public function isRunningInConsole() :bool
+    {
+        if ( ! isset($this->is_running_in_console)) {
+            $this->is_running_in_console = (PHP_SAPI === 'cli' || PHP_SAPI === 'phpdbg');
+        }
+        
+        return $this->is_running_in_console;
     }
     
     private function setBasePath(string $base_path)
     {
-        
         $this->base_path = rtrim($base_path, '\/');
-    }
-    
-    private function registerErrorHandler()
-    {
-        
-        /** @todo Instead of booting the error driver in the config boot it here but lazy load it from the container */
-        
-    }
-    
-    private function captureRequest()
-    {
-        
-        $psr_request = $this->serverRequestCreator()->fromGlobals();
-        
-        $request = new Request($psr_request);
-        
-        $this->container()->instance(Request::class, $request);
-        
     }
     
 }

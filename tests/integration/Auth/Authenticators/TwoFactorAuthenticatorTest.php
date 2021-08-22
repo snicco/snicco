@@ -229,7 +229,7 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
     protected function setUp() :void
     {
         
-        $this->afterLoadingConfig(function () {
+        $this->afterApplicationCreated(function () {
             
             $this->with2Fa();
             
@@ -245,7 +245,7 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
             
         });
         
-        $this->afterApplicationCreated(function () {
+        $this->afterApplicationBooted(function () {
             
             $this->withoutMiddleware('csrf');
             $this->withoutMiddleware(AuthenticateSession::class);
@@ -261,6 +261,7 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
         });
         
         parent::setUp();
+        $this->bootApp();
     }
     
 }
