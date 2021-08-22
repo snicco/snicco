@@ -10,7 +10,6 @@ use Snicco\Support\WP;
 use Snicco\Support\Arr;
 use Snicco\Events\Event;
 use Snicco\Http\Delegate;
-use Snicco\Routing\Route;
 use Illuminate\Support\Str;
 use Snicco\Http\HttpKernel;
 use Snicco\Session\Session;
@@ -28,7 +27,6 @@ use Psr\Http\Message\ResponseInterface;
 use Snicco\Testing\Concerns\TravelsTime;
 use Snicco\Session\SessionServiceProvider;
 use Mockery\Exception\InvalidCountException;
-use Snicco\Contracts\AbstractRouteCollection;
 use Snicco\Contracts\RouteRegistrarInterface;
 use Snicco\Testing\Concerns\InteractsWithMail;
 use Snicco\Testing\Concerns\MakesHttpRequests;
@@ -60,11 +58,6 @@ abstract class TestCase extends WPTestCase
     
     /** @var callable[] */
     protected array $after_application_booted = [];
-    
-    /**
-     * @var Route[]
-     */
-    private array $additional_routes = [];
     
     /**
      * @var callable[]
@@ -398,11 +391,6 @@ abstract class TestCase extends WPTestCase
         
     }
     
-    protected function addRoute(Route $route)
-    {
-        $this->additional_routes[] = $route;
-    }
-    
     protected function loadRoutes() :TestCase
     {
         
@@ -410,20 +398,10 @@ abstract class TestCase extends WPTestCase
             return $this;
         }
         
-        /** @var AbstractRouteCollection $routes */
-        $routes = $this->app->resolve(AbstractRouteCollection::class);
-        
         /** @var RouteRegistrar $registrar */
         $registrar = $this->app->resolve(RouteRegistrarInterface::class);
         $registrar->loadApiRoutes($this->config);
         $registrar->loadStandardRoutes($this->config);
-        
-        foreach ($this->additional_routes as $route) {
-            
-            $routes->add($route);
-            
-        }
-        
         $registrar->loadIntoRouter();
         
         $this->routes_loaded = true;
