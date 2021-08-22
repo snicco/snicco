@@ -13,7 +13,7 @@ class BladeTestCase extends FrameworkTestCase
     
     protected static $ignore_files = [];
     
-    public function packageProviders() :array
+    protected function packageProviders() :array
     {
         
         return [

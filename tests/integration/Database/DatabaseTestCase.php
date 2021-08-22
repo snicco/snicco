@@ -15,7 +15,7 @@ use Snicco\Database\Testing\Assertables\AssertableWpDB;
 class DatabaseTestCase extends FrameworkTestCase
 {
     
-    public function packageProviders() :array
+    protected function packageProviders() :array
     {
         
         return [

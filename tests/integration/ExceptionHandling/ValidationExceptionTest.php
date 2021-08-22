@@ -15,15 +15,6 @@ use Snicco\ExceptionHandling\ProductionExceptionHandler;
 class ValidationExceptionTest extends FrameworkTestCase
 {
     
-    public function packageProviders() :array
-    {
-        
-        return [
-            SessionServiceProvider::class,
-            ValidationServiceProvider::class,
-        ];
-    }
-    
     /** @test */
     public function render_validation_exception_html()
     {
@@ -188,6 +179,15 @@ class ValidationExceptionTest extends FrameworkTestCase
             ],
         ]);
         
+    }
+    
+    protected function packageProviders() :array
+    {
+        
+        return [
+            SessionServiceProvider::class,
+            ValidationServiceProvider::class,
+        ];
     }
     
     private function errorHandler() :ProductionExceptionHandler

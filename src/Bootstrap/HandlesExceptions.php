@@ -18,7 +18,7 @@ class HandlesExceptions implements Bootstrapper
     /**
      * Reserved memory so that errors can be displayed properly on memory exhaustion.
      */
-    public static       $reserved_memory;
+    public static $reserved_memory;
     
     private Application $app;
     
@@ -33,28 +33,12 @@ class HandlesExceptions implements Bootstrapper
         $this->app = $app;
         
         error_reporting(E_ALL);
-        
         set_error_handler([$this, 'handleError']);
-        
         set_exception_handler([$this, 'handleException']);
-        
         register_shutdown_function([$this, 'handleShutdown']);
         
-        if ($app->config('logging.disable_native_log', false)) {
-            
-            ini_set('log_errors', 'Off');
-            
-        }
-        else {
-            ini_set('log_errors', 'On');
-        }
-        
-        if ($app->isRunningUnitTest()) {
-            ini_set('display_errors', 'On');
-        }
-        else {
-            ini_set('display_errors', 'Off');
-        }
+        $this->configureErrorLog($app);
+        $this->configureErrorDisplay($app);
         
     }
     
@@ -142,10 +126,42 @@ class HandlesExceptions implements Bootstrapper
         $emitter = $this->app->resolve(ResponseEmitter::class);
         $request = $this->getRequest();
         
-        $response = $this->getExceptionHandler()->render($e, $request);
+        $response = $this->getExceptionHandler()->toHttpResponse($e, $request);
         $response = $emitter->prepare($response, $request);
         $emitter->emit($response);
         
+    }
+    
+    private function configureErrorLog(Application $app)
+    {
+        
+        if ($app->config('logging.disable_native_log', false)) {
+            
+            ini_set('log_errors', 'Off');
+            
+        }
+        else {
+            
+            ini_set('log_errors', 'On');
+            
+            if ($log_path = $app->config('app.error_log_path')) {
+                
+                ini_set('error_log', $app->basePath($log_path));
+                
+            }
+        }
+        
+    }
+    
+    private function configureErrorDisplay(Application $app)
+    {
+        if ($app->isRunningUnitTest()) {
+            ini_set('display_errors', 'On');
+        }
+        
+        else {
+            ini_set('display_errors', 'Off');
+        }
     }
     
 }

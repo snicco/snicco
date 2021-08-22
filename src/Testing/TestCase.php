@@ -51,27 +51,17 @@ abstract class TestCase extends WPTestCase
     use TravelsTime;
     
     protected Application                   $app;
-    
     protected ?Session                      $session       = null;
-    
     protected Request                       $request;
-    
     protected Config                        $config;
-    
     protected ServerRequestFactoryInterface $request_factory;
-    
     protected HttpKernel                    $kernel;
-    
-    protected bool                          $defer_boot    = false;
-    
     protected bool                          $routes_loaded = false;
     
-    /**
-     * @var callable[]
-     */
-    protected array $after_config_loaded_callbacks = [];
+    /** @var callable[] */
+    protected array $after_application_booted = [];
     
-    private bool    $set_up_has_run                = false;
+    private bool $set_up_has_run = false;
     
     /**
      * @var Route[]
@@ -91,35 +81,46 @@ abstract class TestCase extends WPTestCase
     /**
      * @return ServiceProvider[]
      */
-    public function packageProviders() :array
+    protected function packageProviders() :array
     {
-        
         return [];
     }
     
-    /**
-     * Return an instance of your Application. DON'T BOOT THE APPLICATION.
-     */
     abstract protected function createApplication() :Application;
     
+    /**
+     * Register callbacks that will be run after the application has been initialized.
+     * The config will be loaded at this point but ServiceProviders are not booted yet.
+     *
+     * @param  callable  $callback
+     */
     protected function afterApplicationCreated(callable $callback)
     {
-        $this->after_application_created_callbacks[] = $callback;
-        if ($this->set_up_has_run) {
-            $callback();
+        if (isset($this->app) && $this->app->hasBeenBootstrapped()) {
+            $this->fail('Application had already been bootstrapped before adding callable.');
         }
+        $this->after_application_created_callbacks[] = $callback;
     }
     
     protected function beforeApplicationDestroyed(callable $callback)
     {
-        
         $this->before_application_destroy_callbacks[] = $callback;
     }
     
-    protected function afterLoadingConfig(callable $callback)
+    /**
+     * Register callbacks that will be run after the application has fully been bootstrapped.
+     * All ServiceProviders are already registered and booted at this point.
+     *
+     * @param  callable  $callback
+     */
+    protected function afterApplicationBooted(callable $callback)
     {
         
-        $this->after_config_loaded_callbacks[] = $callback;
+        if (isset($this->app) && $this->app->hasBeenBootstrapped()) {
+            $this->fail('Application had already been bootstrapped before adding callable.');
+        }
+        
+        $this->after_application_booted[] = $callback;
     }
     
     protected function setUp() :void
@@ -133,39 +134,32 @@ abstract class TestCase extends WPTestCase
             $this->refreshApplication();
         }
         
-        $this->config = $this->app->config();
-        
-        foreach ($this->after_config_loaded_callbacks as $callback) {
-            $callback();
-        }
-        
-        $this->config->extend('app.providers', $this->packageProviders());
-        $this->request_factory = $this->app->resolve(ServerRequestFactoryInterface::class);
-        $this->replaceBindings();
-        
-        if ($this->set_up_has_run) {
-            $this->fail('TestCase booted twice');
-        }
-        
-        $this->bindRequest();
+        $this->mergeServiceProviders();
+        $this->bindBaseRequest();
         $this->setUpTraits();
-        $this->setProperties();
+        
+        $this->afterApplicationBooted(function () {
+            
+            $this->replaceBindings();
+            $this->setProperties();
+            
+        });
         
         foreach ($this->after_application_created_callbacks as $callback) {
             $callback();
         }
-        
-        $this->set_up_has_run = true;
         
     }
     
     protected function refreshApplication()
     {
         $this->app = $this->createApplication();
+        $this->config = $this->app->config();
     }
     
     protected function boot()
     {
+        //
     }
     
     protected function tearDown() :void
@@ -175,8 +169,6 @@ abstract class TestCase extends WPTestCase
             $this->callBeforeApplicationDestroyedCallbacks();
             unset($this->app);
         }
-        
-        $this->set_up_has_run = false;
         
         if (class_exists(Mockery::class)) {
             
@@ -383,7 +375,6 @@ abstract class TestCase extends WPTestCase
     
     protected function addRoute(Route $route)
     {
-        
         $this->additional_routes[] = $route;
     }
     
@@ -418,19 +409,28 @@ abstract class TestCase extends WPTestCase
     
     protected function withRequest(Request $request) :TestCase
     {
-        $this->request = $request;
+        $this->request = $this->addRequestDefaults($request);
         return $this;
     }
     
-    // bind a base request for the test so that we don't get possible errors inside CaptureRequest::bootstrap()
-    private function bindRequest()
+    protected function mergeServiceProviders() :void
     {
+        $this->config->extend('app.providers', $this->packageProviders());
+    }
+    
+    // bind a base request for the test so that we don't get possible errors inside CaptureRequest::bootstrap()
+    private function bindBaseRequest()
+    {
+        
+        if ( ! isset($this->request_factory)) {
+            
+            $this->request_factory = $this->app->resolve(ServerRequestFactoryInterface::class);
+            
+        }
         
         if (isset($this->request)) {
             
-            $this->request = $this->addCookies($this->request);
-            $this->request = $this->addHeaders($this->request);
-            $this->instance(Request::class, $this->request);
+            $this->addRequestDefaults($this->request);
             
             return;
         }
@@ -442,9 +442,8 @@ abstract class TestCase extends WPTestCase
                 $this->default_server_variables
             )
         );
-        $request = $this->addCookies($request);
-        $request = $this->addHeaders($request);
-        $this->instance(Request::class, $request);
+        
+        $this->addRequestDefaults($request);
         $this->request = $request;
         
     }
@@ -462,23 +461,28 @@ abstract class TestCase extends WPTestCase
     
     private function setProperties()
     {
-        
         if (in_array(SessionServiceProvider::class, $this->config->get('app.providers'))
             && $this->config->get('session.enabled')) {
             
             $this->session = $this->app->resolve(Session::class);
             
         }
-        
     }
     
     private function callBeforeApplicationDestroyedCallbacks()
     {
-        
         foreach ($this->before_application_destroy_callbacks as $callback) {
             $callback();
             
         }
+    }
+    
+    private function addRequestDefaults(Request $request) :Request
+    {
+        $request = $this->addCookies($request);
+        $request = $this->addHeaders($request);
+        $this->instance(Request::class, $request);
+        return $request;
     }
     
 }

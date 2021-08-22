@@ -18,7 +18,7 @@ use Snicco\Middleware\Core\OutputBufferMiddleware;
 class EventServiceProvider extends ServiceProvider
 {
     
-    private array $mapped_events   = [
+    private array $mapped_events = [
         'admin_init' => [
             [AdminInit::class],
         ],
@@ -32,13 +32,13 @@ class EventServiceProvider extends ServiceProvider
         ],
     ];
     
-    private array $ensure_first    = [
+    private array $ensure_first = [
         'init' => WpInit::class,
         'admin_init' => IncomingAjaxRequest::class,
         'wp' => IncomingWebRequest::class,
     ];
     
-    private array $ensure_last     = [
+    private array $ensure_last = [
         'do_parse_request' => WpQueryFilterable::class,
     ];
     
@@ -72,10 +72,6 @@ class EventServiceProvider extends ServiceProvider
         
         WpQueryFilterable::class => [
             [FilterWpQuery::class, 'handleEvent'],
-        ],
-        
-        UnrecoverableExceptionHandled::class => [
-            [ShutdownHandler::class, 'unrecoverableException'],
         ],
         
         BeforeAdminFooter::class => [

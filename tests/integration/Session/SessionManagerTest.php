@@ -7,7 +7,6 @@ namespace Tests\integration\Session;
 use Snicco\Http\Cookies;
 use Snicco\Events\Event;
 use Tests\FrameworkTestCase;
-use Tests\stubs\TestRequest;
 use Snicco\Http\ResponseEmitter;
 use Snicco\Session\SessionManager;
 use Illuminate\Support\InteractsWithTime;
@@ -24,26 +23,18 @@ class SessionManagerTest extends FrameworkTestCase
     public function setUp() :void
     {
         
-        $this->afterLoadingConfig(function () {
-            
-            $this->withRequest(TestRequest::from('POST', '/wp-login.php'));
-            $this->withSessionCookie();
-            
-        });
-        
         $this->afterApplicationCreated(function () {
             
-            $this->manager = $this->app->resolve(SessionManager::class);
+            $this->withSessionCookie();
+            $this->withRequest($this->frontendRequest('POST', '/wp-login.php'));
+            $this->bootApp();
             
         });
+        $this->afterApplicationBooted(function () {
+            $this->manager = $this->app->resolve(SessionManager::class);
+        });
+        
         parent::setUp();
-    }
-    
-    public function packageProviders() :array
-    {
-        return [
-            SessionServiceProvider::class,
-        ];
     }
     
     /** @test */
@@ -209,6 +200,13 @@ class SessionManagerTest extends FrameworkTestCase
         Event::assertDispatched(fn(SessionRegenerated $event) => $event->session === $this->session
         );
         
+    }
+    
+    protected function packageProviders() :array
+    {
+        return [
+            SessionServiceProvider::class,
+        ];
     }
     
     private function sentCookies() :Cookies

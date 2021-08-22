@@ -23,7 +23,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function the_wp_facade_has_the_correct_container()
     {
-        $this->app->boot();
+        $this->bootApp();
         $container = TestApp::container();
         $this->assertSame($container, WpFacade::getFacadeContainer());
     }
@@ -32,7 +32,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     public function the_facade_can_be_swapped_during_test()
     {
         
-        $this->app->boot();
+        $this->bootApp();
         WP::shouldReceive('isAdmin')->andReturn(true);
         $this->assertTrue(WP::isAdmin());
         
@@ -41,21 +41,21 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function the_site_url_is_bound()
     {
-        $this->app->boot();
+        $this->bootApp();
         $this->assertSame(SITE_URL, TestApp::config('app.url'));
     }
     
     /** @test */
     public function the_relative_dist_path_is_set()
     {
-        $this->app->boot();
+        $this->bootApp();
         $this->assertSame('/dist', TestApp::config('app.dist'));
     }
     
     /** @test */
     public function the_dist_path_can_be_retrieved()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $expected = FIXTURES_DIR.DS.'dist';
         $this->assertSame($expected, TestApp::distPath());
@@ -68,7 +68,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function debug_mode_is_set()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $this->assertTrue($this->config->get('app.debug'));
     }
@@ -76,7 +76,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function exception_handling_is_enabled_by_default()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $this->assertTrue($this->config->get('app.exception_handling'));
     }
@@ -84,7 +84,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function the_package_root_is_bound()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $this->assertSame(ROOT_DIR, TestApp::config('app.package_root'));
     }
@@ -92,7 +92,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function the_storage_dir_is_extended()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $this->assertSame(FIXTURES_DIR.DS.'storage', TestApp::config('app.storage_dir'));
     }
@@ -100,7 +100,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function the_application_instance_can_be_aliased()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $this->assertInstanceOf(Application::class, TestApp::app());
         $this->assertSame($this->app, TestApp::app());
@@ -109,7 +109,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function the_router_can_be_aliased()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $this->assertInstanceOf(Router::class, TestApp::route());
     }
@@ -117,7 +117,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function a_named_route_url_can_be_aliased()
     {
-        $this->app->boot();
+        $this->bootApp();
         $this->loadRoutes();
         $expected = '/alias/get';
         $this->assertSame($expected, TestApp::routeUrl('alias.get'));
@@ -126,7 +126,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function a_post_route_can_be_aliased()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $this->post('/alias/post')->assertSee('post');
     }
@@ -134,7 +134,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function a_get_route_can_be_aliased()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $this->get('/alias/get')->assertSee('get');
     }
@@ -142,7 +142,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function a_patch_route_can_be_aliased()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $this->patch('/alias/patch')->assertSee('patch');
     }
@@ -150,7 +150,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function a_put_route_can_be_aliased()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $this->put('/alias/put')->assertSee('put');
     }
@@ -158,7 +158,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function an_options_route_can_be_aliased()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $this->options('/alias/options')->assertSee('options');
     }
@@ -166,7 +166,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function a_delete_route_can_be_aliased()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $this->delete('/alias/delete')->assertSee('delete');
     }
@@ -174,7 +174,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function a_match_route_can_be_aliased()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $this->delete('/alias/match')->assertDelegatedToWordPress();
         $this->post('/alias/match')->assertOk()->assertSee('match');
@@ -183,7 +183,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function a_composer_can_be_added_as_an_alias()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         TestApp::addComposer('foo', function () {
             // Assert no exception.
@@ -195,7 +195,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function a_view_can_be_created_as_an_alias()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $this->assertInstanceOf(ViewInterface::class, TestApp::view('view'));
     }
@@ -203,7 +203,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function a_view_can_be_rendered_and_echoed()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         ob_start();
         TestApp::render('view');
@@ -214,7 +214,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function a_nested_view_can_be_included()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $view = TestApp::view('subview.php');
         
@@ -224,7 +224,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function a_method_override_field_can_be_outputted()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $html = TestApp::methodField('PUT');
         
@@ -235,7 +235,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function the_url_generator_can_be_aliased()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $this->assertInstanceOf(UrlGenerator::class, TestApp::url());
     }
@@ -243,7 +243,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function the_response_factory_can_be_aliased()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $this->assertInstanceOf(ResponseFactory::class, TestApp::response());
     }
@@ -251,7 +251,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function a_redirect_response_can_be_created_as_an_alias()
     {
-        $this->app->boot();
+        $this->bootApp();
         
         $this->assertInstanceOf(RedirectResponse::class, TestApp::redirect('/foo'));
         $this->assertInstanceOf(Redirector::class, TestApp::redirect());
@@ -266,7 +266,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
         $this->expectExceptionMessage(
             "Your app.key config value is either missing or too insecure. Please generate a new one using Snicco\Application\Application::generateKey()"
         );
-        $this->app->boot();
+        $this->bootApp();
         
     }
     

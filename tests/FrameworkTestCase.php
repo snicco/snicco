@@ -21,7 +21,6 @@ class FrameworkTestCase extends BaseTestCase
     
     protected function createApplication() :Application
     {
-        
         $app = TestApp::make(FIXTURES_DIR);
         $f = new Psr17Factory();
         $app->setServerRequestFactory($f);
@@ -31,12 +30,20 @@ class FrameworkTestCase extends BaseTestCase
         $app->setResponseFactory($f);
         
         return $app;
-        
     }
     
     protected function bootApp() :self
     {
+        if ($this->app->hasBeenBootstrapped()) {
+            $this->fail('Application bootstrapped twice in one test.');
+        }
+        
         $this->app->boot();
+        
+        foreach ($this->after_application_booted as $callback) {
+            $callback();
+        }
+        
         return $this;
     }
     
@@ -44,17 +51,13 @@ class FrameworkTestCase extends BaseTestCase
     {
         $this->mail_data[] = $wp_mail_input;
         return true;
-        
     }
     
     protected function setUp() :void
     {
-        
         parent::setUp();
         $GLOBALS['test'] = [];
-        
         add_filter('pre_wp_mail', [$this, 'catchWpMail'], 10, 2);
-        
     }
     
     protected function tearDown() :void
@@ -88,7 +91,6 @@ class FrameworkTestCase extends BaseTestCase
         }
         
         return $this;
-        
     }
     
     protected function withoutHooks() :FrameworkTestCase
@@ -98,7 +100,6 @@ class FrameworkTestCase extends BaseTestCase
         $GLOBALS['wp_current_filter'] = [];
         
         return $this;
-        
     }
     
     protected function assertNoResponse()
@@ -108,13 +109,11 @@ class FrameworkTestCase extends BaseTestCase
     
     protected function assertViewContent(string $expected, $actual)
     {
-        
         $actual = ($actual instanceof ViewInterface) ? $actual->toString() : $actual;
         
         $actual = preg_replace("/\r|\n|\t|\s{2,}/", "", $actual);
         
         Assert::assertSame($expected, trim($actual), 'View not rendered correctly.');
-        
     }
     
     protected function bootAfterCreation()
@@ -122,6 +121,12 @@ class FrameworkTestCase extends BaseTestCase
         $this->afterApplicationCreated(function () {
             $this->bootApp();
         });
+    }
+    
+    protected function withSessionsEnabled() :self
+    {
+        $this->withAddedConfig('sessions.enabled', true);
+        return $this;
     }
     
 }

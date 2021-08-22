@@ -27,20 +27,11 @@ use Snicco\Session\Middleware\StartSessionMiddleware;
 class SessionServiceProviderTest extends FrameworkTestCase
 {
     
-    protected bool $defer_boot = true;
-    
-    public function packageProviders() :array
-    {
-        return [
-            SessionServiceProvider::class,
-        ];
-    }
-    
     /** @test */
     public function sessions_are_disabled_by_default()
     {
         
-        $this->boot();
+        $this->bootApp();
         
         $this->assertFalse(TestApp::config('session.enabled'));
         
@@ -50,7 +41,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function sessions_can_be_enabled_in_the_config()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->boot();
+        $this->withAddedConfig(['session.enabled' => true])->bootApp();
         
         $this->assertTrue(TestApp::config('session.enabled'));
         
@@ -60,7 +51,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function nothing_is_bound_if_session_are_not_enabled()
     {
         
-        $this->boot();
+        $this->bootApp();
         
         $global = TestApp::config('middleware.groups.global');
         
@@ -72,7 +63,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function the_cookie_name_has_a_default_value()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->boot();
+        $this->withAddedConfig(['session.enabled' => true])->bootApp();
         
         $this->assertSame('snicco_test_session', TestApp::config('session.cookie'));
         
@@ -85,7 +76,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
         $this->withAddedConfig([
             'session.enabled' => true,
             'session.cookie' => 'test_cookie',
-        ])->boot();
+        ])->bootApp();
         
         $this->assertSame('test_cookie', TestApp::config('session.cookie'));
         
@@ -95,7 +86,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function the_session_table_has_a_default_value()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->boot();
+        $this->withAddedConfig(['session.enabled' => true])->bootApp();
         
         $this->assertSame('sessions', TestApp::config('session.table'));
         
@@ -105,7 +96,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function the_default_absolute_timeout_is_eight_hours()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->boot();
+        $this->withAddedConfig(['session.enabled' => true])->bootApp();
         
         $this->assertSame(28800, TestApp::config('session.lifetime'));
         
@@ -115,7 +106,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function the_rotation_timeout_is_half_of_the_absolute_timeout_by_default()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->boot();
+        $this->withAddedConfig(['session.enabled' => true])->bootApp();
         
         $this->assertSame(14400, TestApp::config('session.rotate'));
         
@@ -125,7 +116,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function the_default_lottery_chance_is_2_percent()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->boot();
+        $this->withAddedConfig(['session.enabled' => true])->bootApp();
         
         $this->assertSame([2, 100], TestApp::config('session.lottery'));
         
@@ -135,7 +126,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function the_session_cookie_path_is_root_by_default()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->boot();
+        $this->withAddedConfig(['session.enabled' => true])->bootApp();
         
         $this->assertSame('/', TestApp::config('session.path'));
         
@@ -145,7 +136,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function the_session_cookie_domain_is_null_by_default()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->boot();
+        $this->withAddedConfig(['session.enabled' => true])->bootApp();
         
         $this->assertNull(TestApp::config('session.domain', ''));
         
@@ -155,7 +146,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function the_session_cookie_is_set_to_only_secure()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->boot();
+        $this->withAddedConfig(['session.enabled' => true])->bootApp();
         
         $this->assertTrue(TestApp::config('session.secure'));
         
@@ -165,7 +156,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function the_session_cookie_is_set_to_http_only()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->boot();
+        $this->withAddedConfig(['session.enabled' => true])->bootApp();
         
         $this->assertTrue(TestApp::config('session.http_only'));
         
@@ -175,7 +166,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function same_site_is_set_to_lax()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->boot();
+        $this->withAddedConfig(['session.enabled' => true])->bootApp();
         
         $this->assertSame('lax', TestApp::config('session.same_site'));
         
@@ -185,7 +176,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function session_lifetime_is_set()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->boot();
+        $this->withAddedConfig(['session.enabled' => true])->bootApp();
         
         $this->assertSame(SessionManager::HOUR_IN_SEC * 8, TestApp::config('session.lifetime'));
         
@@ -195,7 +186,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function the_session_store_can_be_resolved()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->boot();
+        $this->withAddedConfig(['session.enabled' => true])->bootApp();
         
         $store = TestApp::resolve(Session::class);
         
@@ -207,7 +198,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function the_database_driver_is_used_by_default()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->boot();
+        $this->withAddedConfig(['session.enabled' => true])->bootApp();
         
         $driver = TestApp::resolve(SessionDriver::class);
         
@@ -219,7 +210,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function the_session_store_is_not_encrypted_by_default()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->boot();
+        $this->withAddedConfig(['session.enabled' => true])->bootApp();
         
         $this->assertFalse(TestApp::config('session.encrypt', ''));
         
@@ -232,7 +223,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
         $this->withAddedConfig([
             'session.enabled' => true,
             'session.encrypt' => true,
-        ])->boot();
+        ])->bootApp();
         
         $driver = TestApp::resolve(Session::class);
         
@@ -246,7 +237,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
         
         $this->withAddedConfig([
             'session.enabled' => true,
-        ])->boot();
+        ])->bootApp();
         
         $this->assertContains(
             StartSessionMiddleware::class,
@@ -261,7 +252,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
         
         $this->withAddedConfig([
             'session.enabled' => true,
-        ])->boot();
+        ])->bootApp();
         
         $this->assertInstanceOf(CsrfMiddleware::class, TestApp::resolve(CsrfMiddleware::class));
         
@@ -273,7 +264,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
         
         $this->withAddedConfig([
             'session.enabled' => true,
-        ])->boot();
+        ])->bootApp();
         
         $this->assertInstanceOf(Guard::class, TestApp::resolve(Guard::class));
         
@@ -285,7 +276,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
         
         $this->withAddedConfig([
             'session.enabled' => true,
-        ])->boot();
+        ])->bootApp();
         
         $this->assertInstanceOf(Session::class, TestApp::session());
         
@@ -297,7 +288,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
         
         $this->withAddedConfig([
             'session.enabled' => true,
-        ])->boot();
+        ])->bootApp();
         
         $html = TestApp::csrfField();
         $this->assertStringContainsString('csrf', $html);
@@ -311,7 +302,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
         
         $this->withAddedConfig([
             'session.enabled' => true,
-        ])->boot();
+        ])->bootApp();
         
         $token = TestApp::csrf()->asStringToken();
         
@@ -326,7 +317,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
         
         $this->withAddedConfig([
             'session.enabled' => true,
-        ])->boot();
+        ])->bootApp();
         
         $middleware_aliases = TestApp::config('middleware.aliases');
         
@@ -340,7 +331,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
         
         $this->withAddedConfig([
             'session.enabled' => true,
-        ])->boot();
+        ])->bootApp();
         
         $global_middleware = TestApp::config('middleware.groups.global');
         
@@ -355,7 +346,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
         
         $this->withAddedConfig([
             'session.enabled' => true,
-        ])->boot();
+        ])->bootApp();
         
         $this->assertInstanceOf(SessionManager::class, TestApp::resolve(SessionManager::class));
         $this->assertInstanceOf(
@@ -371,7 +362,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
         
         $this->withAddedConfig([
             'session.enabled' => true,
-        ])->boot();
+        ])->bootApp();
         
         $context = TestApp::resolve(GlobalContext::class)->get();
         
@@ -385,7 +376,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
         
         $this->withAddedConfig([
             'session.enabled' => true,
-        ])->boot();
+        ])->bootApp();
         
         $this->assertInstanceOf(
             StatefulRedirector::class,
@@ -400,7 +391,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
         
         $this->withAddedConfig([
             'session.enabled' => true,
-        ])->boot();
+        ])->bootApp();
         
         $response_factory = TestApp::resolve(ResponseFactory::class);
         
@@ -415,19 +406,23 @@ class SessionServiceProviderTest extends FrameworkTestCase
         
         $this->withAddedConfig([
             'session.enabled' => false,
-        ])->boot();
+        ])->bootApp();
         
         $this->assertInstanceOf(Redirector::class, TestApp::resolve(AbstractRedirector::class));
         
     }
     
+    protected function packageProviders() :array
+    {
+        return [
+            SessionServiceProvider::class,
+        ];
+    }
+    
     protected function setUp() :void
     {
-        
-        $this->afterLoadingConfig(function () {
-            
+        $this->afterApplicationCreated(function () {
             $this->withOutConfig('session');
-            
         });
         parent::setUp();
     }

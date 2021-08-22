@@ -6,6 +6,7 @@ namespace Snicco\ExceptionHandling;
 
 use Closure;
 use Throwable;
+use RuntimeException;
 use Snicco\Support\WP;
 use Whoops\Run as Whoops;
 use Snicco\Http\Psr7\Request;
@@ -15,7 +16,6 @@ use Snicco\Http\ResponseFactory;
 use Snicco\Contracts\ExceptionHandler;
 use Psr\Log\LoggerInterface as Psr3Logger;
 use Illuminate\Support\Traits\ReflectsClosures;
-use Snicco\Events\UnrecoverableExceptionHandled;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
 
 class ProductionExceptionHandler implements ExceptionHandler
@@ -25,13 +25,11 @@ class ProductionExceptionHandler implements ExceptionHandler
     
     protected ContainerAdapter $container;
     
-    protected Psr3Logger       $logger;
+    protected Psr3Logger $logger;
     
-    protected array            $dont_report = [];
+    protected array $dont_report = [];
     
-    protected array            $dont_flash  = [];
-    
-    protected bool             $is_debug;
+    protected array $dont_flash = [];
     
     /**
      * @var Closure[]
@@ -67,12 +65,12 @@ class ProductionExceptionHandler implements ExceptionHandler
     
     public function report(Throwable $e, Request $request)
     {
-        //
+        $this->logException($e, $request);
     }
     
-    public function render(Throwable $e, Request $request)
+    public function toHttpResponse(Throwable $e, Request $request) :Response
     {
-        return $this->transformToResponse($e, $request);
+        return $this->convertToResponse($e, $request);
     }
     
     public function renderable(callable $render_using) :ProductionExceptionHandler
@@ -97,38 +95,6 @@ class ProductionExceptionHandler implements ExceptionHandler
         
         return $this;
         
-    }
-    
-    public function transformToResponse(Throwable $exception, Request $request) :?Response
-    {
-        return $this->handleException($exception, true, $request);
-    }
-    
-    public function handleException($e, $in_routing_flow = false, ?Request $request = null)
-    {
-        
-        $request ??= $this->resolveRequestFromContainer();
-        
-        $this->logException($e, $request);
-        
-        $response = $this->convertToResponse($e, $request);
-        
-        if ($in_routing_flow) {
-            
-            return $response;
-            
-        }
-        
-        $this->emitter->emit($this->emitter->prepare($response, $request));
-        
-        // Shuts down the script if not running unit tests.
-        UnrecoverableExceptionHandled::dispatch();
-        
-    }
-    
-    public function unrecoverable(Throwable $exception)
-    {
-        $this->handleException($exception);
     }
     
     protected function registerCallbacks()
@@ -263,17 +229,22 @@ class ProductionExceptionHandler implements ExceptionHandler
     private function renderableException(Throwable $e, Request $request) :Response
     {
         
-        /** @var Response $response_factory */
-        $response_factory = $this->container->call([$e, 'render'], ['request' => $request]);
+        /** @var Response $response */
+        $response = $this->container->call([$e, 'render'], ['request' => $request]);
         
-        // User did not provide a valid response from the callback.
-        if ( ! $response_factory instanceof Response) {
+        try {
+            return $this->response_factory->toResponse($response);
+        } catch (\HttpException $response_exception) {
             
-            return $this->renderHttpException(new HttpException(500, $e->getMessage()), $request);
+            $class = get_class($e);
+            throw new RuntimeException(
+                "Return value of $class::render() could not be transformed to a Response object",
+                0,
+                $e
+            );
             
         }
         
-        return $response_factory;
     }
     
     private function renderHttpException(HttpException $http_exception, Request $request) :Response

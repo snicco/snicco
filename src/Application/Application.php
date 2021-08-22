@@ -24,13 +24,13 @@ class Application implements ArrayAccess
     use HasContainer;
     use SetPsrFactories;
     
-    private bool   $bootstrapped      = false;
+    private bool $bootstrapped = false;
     
     private Config $config;
     
-    private bool   $running_unit_test = false;
+    private bool $running_unit_test = false;
     
-    private bool   $running_in_console;
+    private bool $running_in_console;
     
     private string $base_path;
     
@@ -67,10 +67,12 @@ class Application implements ArrayAccess
     public function boot() :void
     {
         
-        if ($this->bootstrapped) {
+        if ($this->hasBeenBootstrapped()) {
+            
             throw new ConfigurationException(
                 static::class.' already bootstrapped.'
             );
+            
         }
         
         (new CaptureRequest())->bootstrap($this);
@@ -138,6 +140,11 @@ class Application implements ArrayAccess
     {
         
         return is_file($this->configCachePath());
+    }
+    
+    public function hasBeenBootstrapped() :bool
+    {
+        return $this->bootstrapped;
     }
     
     public function configCachePath() :string
