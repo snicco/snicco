@@ -19,7 +19,6 @@ class HandlesExceptions implements Bootstrapper
      * Reserved memory so that errors can be displayed properly on memory exhaustion.
      */
     public static string $reserved_memory;
-    
     private Application $app;
     
     public function bootstrap(Application $app) :void
@@ -155,6 +154,10 @@ class HandlesExceptions implements Bootstrapper
                 
                 ini_set('error_log', $app->basePath($log_path));
                 
+            } else {
+    
+                ini_set('error_log', WP_CONTENT_DIR . DIRECTORY_SEPARATOR . 'debug.log');
+                
             }
         }
         
@@ -162,7 +165,7 @@ class HandlesExceptions implements Bootstrapper
     
     private function configureErrorDisplay(Application $app)
     {
-        if ($app->isRunningUnitTest()) {
+        if ($app->isRunningUnitTest() || $app->isLocal()) {
             ini_set('display_errors', 'On');
         }
         
