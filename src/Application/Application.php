@@ -9,8 +9,8 @@ use RuntimeException;
 use Snicco\Support\WpFacade;
 use Contracts\ContainerAdapter;
 use Snicco\Bootstrap\CaptureRequest;
-use Snicco\Bootstrap\DetectEnvironment;
 use Snicco\Bootstrap\LoadConfiguration;
+use Snicco\Bootstrap\DetectEnvironment;
 use Snicco\Bootstrap\HandlesExceptions;
 use Snicco\Bootstrap\LoadServiceProviders;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
@@ -24,17 +24,23 @@ class Application implements ArrayAccess
     use HasContainer;
     use SetPsrFactories;
     
+    private array $bootstrappers = [
+        LoadConfiguration::class,
+        DetectEnvironment::class,
+        HandlesExceptions::class,
+        CaptureRequest::class,
+        LoadServiceProviders::class,
+    ];
+    
     private bool   $bootstrapped = false;
     private Config $config;
     private bool   $is_running_in_console;
     private string $base_path;
     
-    private function __construct(ContainerAdapter $container)
+    private function __construct(ContainerAdapter $container, string $base_path)
     {
-        $this->setContainer($container);
-        $this->container()->instance(Application::class, $this);
-        $this->container()->instance(ContainerAdapter::class, $this->container());
-        WpFacade::setFacadeContainer($container);
+        $this->createImportantBindings($container);
+        $this->setBasePath($base_path);
     }
     
     public static function generateKey() :string
@@ -44,14 +50,7 @@ class Application implements ArrayAccess
     
     public static function create(string $base_path, ContainerAdapter $container_adapter) :Application
     {
-        $app = new static($container_adapter);
-        $app->setBasePath($base_path);
-        
-        (new LoadConfiguration())->bootstrap($app);
-        (new DetectEnvironment())->bootstrap($app);
-        (new HandlesExceptions())->bootstrap($app);
-        
-        return $app;
+        return new static($container_adapter, $base_path);
     }
     
     /**
@@ -68,8 +67,9 @@ class Application implements ArrayAccess
             
         }
         
-        (new CaptureRequest())->bootstrap($this);
-        (new LoadServiceProviders())->bootstrap($this);
+        array_walk($this->bootstrappers, function ($class) {
+            (new $class())->bootstrap($this);
+        });
         
         $this->bootstrapped = true;
         
@@ -201,6 +201,15 @@ class Application implements ArrayAccess
     private function setBasePath(string $base_path)
     {
         $this->base_path = rtrim($base_path, '\/');
+    }
+    
+    private function createImportantBindings(ContainerAdapter $container) :void
+    {
+        $this->container_adapter = $container;
+        $this->container()->instance(Application::class, $this);
+        $this->container()->instance(ContainerAdapter::class, $this->container());
+        WpFacade::setFacadeContainer($container);
+        $this->container()->instance(Config::class, $this->config = new Config());
     }
     
 }

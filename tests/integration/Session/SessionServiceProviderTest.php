@@ -28,8 +28,11 @@ class SessionServiceProviderTest extends FrameworkTestCase
 {
     
     /** @test */
-    public function sessions_are_disabled_by_default()
+    public function sessions_are_disabled_by_default_if_not_provided_in_the_config()
     {
+        $customize = $this->customizeConfigProvider();
+        $customize->remove('session');
+        $this->pushProvider($customize);
         
         $this->bootApp();
         
@@ -40,9 +43,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function sessions_can_be_enabled_in_the_config()
     {
-        
-        $this->withAddedConfig(['session.enabled' => true])->bootApp();
-        
+        $this->bootApp();
         $this->assertTrue(TestApp::config('session.enabled'));
         
     }
@@ -51,7 +52,9 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function nothing_is_bound_if_session_are_not_enabled()
     {
         
-        $this->bootApp();
+        $customize = $this->customizeConfigProvider();
+        $customize->remove('session');
+        $this->pushProvider($customize)->bootApp();
         
         $global = TestApp::config('middleware.groups.global');
         
@@ -96,7 +99,10 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function the_default_absolute_timeout_is_eight_hours()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->bootApp();
+        $customize = $this->customizeConfigProvider();
+        $customize->remove('session');
+        $customize->add('session.enabled', true);
+        $this->pushProvider($customize)->bootApp();
         
         $this->assertSame(28800, TestApp::config('session.lifetime'));
         
@@ -106,7 +112,10 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function the_rotation_timeout_is_half_of_the_absolute_timeout_by_default()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->bootApp();
+        $customize = $this->customizeConfigProvider();
+        $customize->remove('session');
+        $customize->add('session.enabled', true);
+        $this->pushProvider($customize)->bootApp();
         
         $this->assertSame(14400, TestApp::config('session.rotate'));
         
@@ -176,7 +185,10 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function session_lifetime_is_set()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->bootApp();
+        $customize = $this->customizeConfigProvider();
+        $customize->remove('session');
+        $customize->add('session.enabled', true);
+        $this->pushProvider($customize)->bootApp();
         
         $this->assertSame(SessionManager::HOUR_IN_SEC * 8, TestApp::config('session.lifetime'));
         
@@ -198,7 +210,10 @@ class SessionServiceProviderTest extends FrameworkTestCase
     public function the_database_driver_is_used_by_default()
     {
         
-        $this->withAddedConfig(['session.enabled' => true])->bootApp();
+        $customize = $this->customizeConfigProvider();
+        $customize->remove('session');
+        $customize->add('session.enabled', true);
+        $this->pushProvider($customize)->bootApp();
         
         $driver = TestApp::resolve(SessionDriver::class);
         
@@ -417,14 +432,6 @@ class SessionServiceProviderTest extends FrameworkTestCase
         return [
             SessionServiceProvider::class,
         ];
-    }
-    
-    protected function setUp() :void
-    {
-        $this->afterApplicationCreated(function () {
-            $this->withOutConfig('session');
-        });
-        parent::setUp();
     }
     
 }
