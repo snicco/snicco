@@ -226,6 +226,34 @@ class ConfigTest extends TestCase
         
     }
     
+    /** @test */
+    public function testFromArray()
+    {
+        
+        $config = new Config(['first' => ['foo' => 'bar']]);
+        
+        $this->assertSame('bar', $config->get('first.foo'));
+        $this->assertNull($config->get('second.foo'));
+        
+        $config->seedFromCache([
+            'first' => [
+                'foo' => 'baz',
+            ],
+            'second' => [
+                'foo' => [
+                    'bar',
+                    'baz',
+                
+                ],
+            ],
+        ]);
+        
+        // will be overwritten.
+        $this->assertSame('baz', $config->get('first.foo'));
+        $this->assertSame(['bar', 'baz'], $config->get('second.foo'));
+        
+    }
+    
     protected function tearDown() :void
     {
         

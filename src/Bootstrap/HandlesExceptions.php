@@ -3,7 +3,6 @@
 namespace Snicco\Bootstrap;
 
 use Throwable;
-use Exception;
 use ErrorException;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\ResponseEmitter;
@@ -47,7 +46,7 @@ class HandlesExceptions implements Bootstrapper
         try {
             self::$reserved_memory = null;
             $this->getExceptionHandler()->report($e, $this->getRequest());
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             //
         }
         

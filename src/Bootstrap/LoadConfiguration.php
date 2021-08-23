@@ -6,7 +6,6 @@ namespace Snicco\Bootstrap;
 
 use Exception;
 use RuntimeException;
-use Snicco\Application\Config;
 use Snicco\Contracts\Bootstrapper;
 use Snicco\Application\Application;
 use Symfony\Component\Finder\Finder;
@@ -20,29 +19,25 @@ class LoadConfiguration implements Bootstrapper
     public function bootstrap(Application $app) :void
     {
         
-        $config = [];
-        
         if (is_file($file = $app->configCachePath())) {
             
-            $config = $this->readFromCacheFile($file);
-            $loaded_from_cache = true;
+            $items = $this->readFromCacheFile($file);
+            $app->config()->seedFromCache($items);
+            return;
+            
         }
-        
-        $config = new Config($config);
         
         if ( ! isset($loaded_from_cache)) {
             
-            $this->loadConfigurationFromFiles($app, $config);
+            $this->loadConfigurationFromFiles($app);
             
         }
         
-        if ($config->get('app.cache_config')) {
+        if ($app->config('app.cache_config')) {
             
-            $this->createCacheFile($app, $config);
+            $this->createCacheFile($app);
             
         }
-        
-        $app->container()->instance(Config::class, $config);
         
     }
     
@@ -51,7 +46,7 @@ class LoadConfiguration implements Bootstrapper
         return json_decode(file_get_contents($cached), true);
     }
     
-    private function loadConfigurationFromFiles(Application $app, Config $config)
+    private function loadConfigurationFromFiles(Application $app)
     {
         
         $files = $this->getConfigurationFiles($app);
@@ -61,7 +56,7 @@ class LoadConfiguration implements Bootstrapper
         }
         
         foreach ($files as $key => $path) {
-            $config->set($key, require $path);
+            $app->config()->extend($key, require $path);
         }
     }
     
@@ -83,7 +78,7 @@ class LoadConfiguration implements Bootstrapper
         return $files;
     }
     
-    private function createCacheFile(Application $app, Config $config)
+    private function createCacheFile(Application $app)
     {
         
         if ( ! is_dir(
@@ -97,7 +92,7 @@ class LoadConfiguration implements Bootstrapper
         $success = file_put_contents(
             $dir.DIRECTORY_SEPARATOR.'__generated::config.json',
             json_encode(
-                $config->all()
+                $app->config()->all()
             )
         );
         

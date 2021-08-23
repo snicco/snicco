@@ -8,6 +8,7 @@ use Throwable;
 use Mockery as m;
 use Tests\UnitTest;
 use Snicco\Support\WP;
+use Snicco\Support\WpFacade;
 use Snicco\Http\Psr7\Request;
 use Snicco\Application\Config;
 use Tests\stubs\TestContainer;
@@ -47,6 +48,19 @@ class ApplicationTest extends UnitTest
     }
     
     /** @test */
+    public function booting_the_app_created_initial_important_classes_in_the_container()
+    {
+        
+        $app = $this->newApplication();
+        
+        $this->assertSame($app, $app->container()[Application::class]);
+        $this->assertSame($app->container(), $app->container()[ContainerAdapter::class]);
+        $this->assertSame($app->container(), WpFacade::getFacadeContainer());
+        $this->assertSame($app->config(), $app->container()[Config::class]);
+        $this->assertInstanceOf(Config::class, $app->config());
+    }
+    
+    /** @test */
     public function a_valid_app_key_can_be_created()
     {
         
@@ -61,7 +75,8 @@ class ApplicationTest extends UnitTest
             $this->assertStringStartsWith('Your app.key config value is', $exception->getMessage());
             
         }
-        
+        // set this to disable undefined constant WP_CONTENT_DIR;
+        $app->config()->set('app.exception_handling', false);
         $app->config()->set('app.key', $key = Application::generateKey());
         $app->boot();
         

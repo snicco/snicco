@@ -38,8 +38,8 @@ class LoadServiceProviders implements Bootstrapper
         $user_providers = $app->config('app.providers', []);
         $providers = collect($this->providers)->merge($user_providers);
         
-        $providers->each(fn(string $provider) => $this->isValid($provider))
-                  ->map(fn(string $provider) => $this->instantiate($provider, $app))
+        $providers->each(fn($provider) => $this->isValid($provider))
+                  ->map(fn($provider) => $this->instantiate($provider, $app))
                   ->each(fn(ServiceProvider $provider) => $provider->register())
                   ->each(fn(ServiceProvider $provider) => $provider->bootstrap());
         
@@ -48,7 +48,7 @@ class LoadServiceProviders implements Bootstrapper
     /**
      * @throws ConfigurationException
      */
-    private function isValid(string $provider)
+    private function isValid($provider)
     {
         
         if ( ! is_subclass_of($provider, ServiceProvider::class)) {
@@ -60,8 +60,15 @@ class LoadServiceProviders implements Bootstrapper
         
     }
     
-    private function instantiate(string $provider, Application $app) :ServiceProvider
+    private function instantiate($provider, Application $app) :ServiceProvider
     {
+        // We also allow already instantiated service providers.
+        // This is useful for testing where we might want to push a
+        // custom provider to customize the config at runtime.
+        if ($provider instanceof ServiceProvider) {
+            return $provider;
+        }
+        
         /** @var ServiceProvider $provider */
         $provider = new $provider($app->container(), $app[Config::class]);
         $provider->setApp($app);
