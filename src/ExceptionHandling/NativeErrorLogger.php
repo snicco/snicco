@@ -19,15 +19,20 @@ class NativeErrorLogger extends AbstractLogger
         
         if ($e = $this->getException($context)) {
             
-            $message .= ', '.get_class($e);
-            $file = $e->getFile();
-            $file = str_replace(ABSPATH, '/', $file);
-            
-            $message .= ", File: [$file], \nLine: [{$e->getLine()}] \n Trace: [{$e->getTraceAsString()}]]";
+            $entry = vsprintf(
+                PHP_EOL.'[%s]: %s'.PHP_EOL.'File: [%s]'.PHP_EOL.'Line: [%s]'.PHP_EOL.'Trace:[%s]',
+                [
+                    $level,
+                    $message.', '.get_class($e),
+                    $e->getFile(),
+                    $e->getLine(),
+                    $e->getTraceAsString(),
+                ]
+            );
             
         }
         
-        error_log("[$level]: $message");
+        error_log($entry);
         
     }
     

@@ -169,12 +169,18 @@ class ProductionExceptionHandler implements ExceptionHandler
     protected function globalContext(Request $request) :array
     {
         
-        $auth = $request->authenticated();
-        
-        return array_filter([
-            'user_id' => $auth ? WP::userId() : null,
-            'user_email' => $auth ? WP::currentUser()->user_email : null,
-        ]);
+        try {
+            
+            $auth = $request->authenticated();
+            
+            return array_filter([
+                'user_id' => $auth ? WP::userId() : null,
+                'user_email' => $auth ? WP::currentUser()->user_email : null,
+            ]);
+        } catch (Throwable $e) {
+            // If we have a fatal error WordPress might not be fully booted yet.
+            return [];
+        }
         
     }
     
