@@ -65,7 +65,6 @@ trait ImplementsPsr7Response
     
     public function hasHeader($name)
     {
-        
         return $this->psr7_response->hasHeader($name);
     }
     

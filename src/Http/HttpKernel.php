@@ -79,22 +79,8 @@ class HttpKernel
         
         $response = $this->handle($request);
         
-        if ($response instanceof NullResponse) {
-            return $response;
-        }
+        return $this->sendResponse($response, $request);
         
-        $response = $this->emitter->prepare($response, $request);
-        
-        if ($response instanceof DelegatedResponse) {
-            $this->emitter->emitHeaders($response,);
-            return $response;
-        }
-        
-        $this->emitter->emit($response);
-        
-        ResponseSent::dispatch([$response, $request]);
-        
-        return $response;
     }
     
     private function handle(Request $request) :Response
@@ -127,6 +113,26 @@ class HttpKernel
         $merged = array_merge($this->global_middleware, $this->core_middleware);
         
         return $this->sortMiddleware($merged, $this->priority_map);
+    }
+    
+    private function sendResponse(Response $response, Request $request) :Response
+    {
+        if ($response instanceof NullResponse) {
+            return $response;
+        }
+        
+        $response = $this->emitter->prepare($response, $request);
+        
+        if ($response instanceof DelegatedResponse) {
+            $this->emitter->emitHeaders($response,);
+            return $response;
+        }
+        
+        $this->emitter->emit($response);
+        
+        ResponseSent::dispatch([$response, $request]);
+        
+        return $response;
     }
     
 }
