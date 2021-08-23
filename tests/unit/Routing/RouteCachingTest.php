@@ -10,15 +10,18 @@ use Tests\UnitTest;
 use Snicco\Support\WP;
 use Snicco\Events\Event;
 use Snicco\Routing\Route;
+use Snicco\Http\Delegate;
 use Snicco\Routing\Router;
 use Snicco\View\ViewFactory;
 use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
+use Snicco\Http\Psr7\Response;
 use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
 use Tests\helpers\CreatesWpUrls;
 use Tests\stubs\TestViewFactory;
+use Snicco\Contracts\Middleware;
 use Snicco\Listeners\FilterWpQuery;
 use Snicco\Events\WpQueryFilterable;
 use Tests\fixtures\Conditions\IsPost;
@@ -28,6 +31,7 @@ use Snicco\Factories\ConditionFactory;
 use Snicco\Factories\RouteActionFactory;
 use Snicco\Routing\CachedRouteCollection;
 use Tests\helpers\CreateDefaultWpApiMocks;
+use Snicco\Middleware\Core\OutputBufferMiddleware;
 use Snicco\Routing\FastRoute\CachedFastRouteMatcher;
 
 class RouteCachingTest extends UnitTest
@@ -38,15 +42,15 @@ class RouteCachingTest extends UnitTest
     use CreatesWpUrls;
     use CreateUrlGenerator;
     
-    private Router                $router;
+    private Router $router;
     
-    private string                $route_map_file;
+    private string $route_map_file;
     
-    private string                $route_collection_file;
+    private string $route_collection_file;
     
     private CachedRouteCollection $routes;
     
-    private ContainerAdapter      $container;
+    private ContainerAdapter $container;
     
     /** @test */
     public function a_route_can_be_run_when_no_cache_files_exist_yet()
@@ -122,32 +126,6 @@ class RouteCachingTest extends UnitTest
         
         $request = $this->webRequest('GET', '/teams/dortmund');
         $this->runAndAssertOutput('foo', $request);
-        
-    }
-    
-    private function newCachedRouter()
-    {
-        
-        $this->routes = $this->newRouteCollection();
-        
-        $this->router = $this->newRouter();
-        
-    }
-    
-    protected function newRouteCollection()
-    {
-        
-        $condition_factory = new ConditionFactory($this->conditions(), $this->container);
-        $handler_factory = new RouteActionFactory([], $this->container);
-        
-        $routes = new CachedRouteCollection(
-            new CachedFastRouteMatcher($this->createRouteMatcher(), $this->route_map_file),
-            $condition_factory,
-            $handler_factory,
-            $this->route_collection_file
-        );
-        
-        return $routes;
         
     }
     
@@ -317,6 +295,8 @@ class RouteCachingTest extends UnitTest
     /** @test */
     public function cached_routes_work_with_admin_routes()
     {
+        
+        $this->withoutOutputBufferMiddleware();
         
         WP::shouldReceive('isAdmin')->andReturnTrue();
         WP::shouldReceive('isAdminAjax')->andReturnFalse();
@@ -491,6 +471,23 @@ class RouteCachingTest extends UnitTest
         
     }
     
+    protected function newRouteCollection()
+    {
+        
+        $condition_factory = new ConditionFactory($this->conditions(), $this->container);
+        $handler_factory = new RouteActionFactory([], $this->container);
+        
+        $routes = new CachedRouteCollection(
+            new CachedFastRouteMatcher($this->createRouteMatcher(), $this->route_map_file),
+            $condition_factory,
+            $handler_factory,
+            $this->route_collection_file
+        );
+        
+        return $routes;
+        
+    }
+    
     /** @test */
     
     protected function beforeTestRun()
@@ -534,6 +531,31 @@ class RouteCachingTest extends UnitTest
         Mockery::close();
         WP::reset();
         
+    }
+    
+    private function newCachedRouter()
+    {
+        
+        $this->routes = $this->newRouteCollection();
+        
+        $this->router = $this->newRouter();
+        
+    }
+    
+    private function withoutOutputBufferMiddleware() :void
+    {
+        $this->container->instance(
+            OutputBufferMiddleware::class,
+            new class extends Middleware
+            {
+                
+                public function handle(Request $request, Delegate $next) :Response
+                {
+                    return $next($request);
+                }
+                
+            }
+        );
     }
     
 }

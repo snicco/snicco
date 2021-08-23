@@ -8,13 +8,17 @@ use Mockery;
 use Tests\UnitTest;
 use Snicco\Support\WP;
 use Snicco\Events\Event;
+use Snicco\Http\Delegate;
 use Snicco\Routing\Router;
 use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
 use Contracts\ContainerAdapter;
 use Tests\helpers\CreatesWpUrls;
+use Snicco\Contracts\Middleware;
 use Tests\helpers\CreateTestSubjects;
+use Psr\Http\Message\ResponseInterface;
 use Tests\helpers\CreateDefaultWpApiMocks;
+use Snicco\Middleware\Core\OutputBufferMiddleware;
 use Snicco\Routing\Conditions\QueryStringCondition;
 
 class TrailingSlashTest extends UnitTest
@@ -26,7 +30,7 @@ class TrailingSlashTest extends UnitTest
     
     private ContainerAdapter $container;
     
-    private Router           $router;
+    private Router $router;
     
     /** @test */
     public function routes_can_be_defined_without_leading_slash()
@@ -275,6 +279,7 @@ class TrailingSlashTest extends UnitTest
             
         }, true);
         $request = $this->adminRequestTo('foo');
+        $this->withoutOutputBufferMiddleware();
         $this->runAndAssertOutput('FOO', $request);
         
         // not-forcing trailing and defined with trailing
@@ -349,6 +354,22 @@ class TrailingSlashTest extends UnitTest
         Mockery::close();
         WP::reset();
         
+    }
+    
+    private function withoutOutputBufferMiddleware() :void
+    {
+        $this->container->instance(
+            OutputBufferMiddleware::class,
+            new class extends Middleware
+            {
+                
+                public function handle(Request $request, Delegate $next) :ResponseInterface
+                {
+                    return $next($request);
+                }
+                
+            }
+        );
     }
     
 }
