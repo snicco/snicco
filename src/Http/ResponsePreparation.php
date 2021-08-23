@@ -27,7 +27,7 @@ use function headers_list;
 class ResponsePreparation
 {
     
-    private string                 $charset = 'UTF-8';
+    private string $charset = 'UTF-8';
     
     private StreamFactoryInterface $stream_factory;
     
@@ -124,10 +124,11 @@ class ResponsePreparation
             $response = $response->withContentType("$content_type; charset=$this->charset");
         }
         
-        // Fix Content-Length
+        // Fix Content-Length, don't add if anything is buffered since we will mess up plugins that use it.
         if ( ! $response->hasHeader('content-length')
-             && ($size = $response->getBody()->getSize())
-                !== null) {
+             && ($size = $response->getBody()->getSize()) !== null
+             && ! ob_get_length()) {
+            
             $response = $response->withHeader('content-length', strval($size));
         }
         

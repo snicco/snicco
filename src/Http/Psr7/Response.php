@@ -16,7 +16,7 @@ class Response implements ResponseInterface, ResponseableInterface
     
     use ImplementsPsr7Response;
     
-    protected Cookies                $cookies;
+    protected Cookies $cookies;
     
     protected StreamFactoryInterface $response_factory;
     
@@ -126,6 +126,24 @@ class Response implements ResponseInterface, ResponseableInterface
     public function isInformational() :bool
     {
         return $this->getStatusCode() >= 100 && $this->getStatusCode() < 200;
+    }
+    
+    public function isRedirection() :bool
+    {
+        $status = $this->getStatusCode();
+        return $status >= 300 && $status < 400;
+    }
+    
+    public function isClientError() :bool
+    {
+        $status = $this->getStatusCode();
+        return $status >= 400 && $status < 500;
+    }
+    
+    public function isServerError() :bool
+    {
+        $status = $this->getStatusCode();
+        return $status >= 500 && $status < 600;
     }
     
     public function isEmpty() :bool
