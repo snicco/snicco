@@ -44,8 +44,8 @@ class ExceptionServiceProvider extends ServiceProvider
                 return new NullExceptionHandler();
             }
             
-            $with_whoops =
-                $this->config->get('app.debug') && isset($this->container[RunInterface::class]);
+            $with_whoops = ! $this->app->isProduction()
+                           && isset($this->container[RunInterface::class]);
             
             return new ProductionExceptionHandler(
                 $this->container,
