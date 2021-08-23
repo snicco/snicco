@@ -76,22 +76,10 @@ class RoutingServiceProvider extends ServiceProvider
     
     public function bootstrap() :void
     {
-        $endpoints = $this->config->get('routing.api.endpoints');
         
-        foreach ($endpoints as $id => $prefix) {
-            $name = 'api.'.$id;
-            $this->config->extend(
-                'routing.presets.'.$name,
-                [
-                    'prefix' => $prefix,
-                    'name' => $id,
-                    'middleware' => [$name],
-                ]
-            );
-            $this->config->extend('middleware.groups', [
-                $name => [],
-            ]);
-        }
+        $this->bindApiEndpoints();
+        $this->loadRoutes();
+        
     }
     
     private function bindConfig() :void
@@ -217,6 +205,40 @@ class RoutingServiceProvider extends ServiceProvider
             
             return new CacheFileRouteRegistrar($registrar);
         });
+    }
+    
+    private function loadRoutes()
+    {
+        /** @var RouteRegistrarInterface $registrar */
+        $registrar = $this->app->resolve(RouteRegistrarInterface::class);
+        $registrar->loadApiRoutes($this->config);
+        $registrar->loadStandardRoutes($this->config);
+        $registrar->loadIntoRouter();
+        
+    }
+    
+    /**
+     * This need to run inside a bootstrap method so that other providers
+     * get the chance to register their own endpoints in their respective register() method.
+     */
+    private function bindApiEndpoints() :void
+    {
+        $endpoints = $this->config->get('routing.api.endpoints');
+        
+        foreach ($endpoints as $id => $prefix) {
+            $name = 'api.'.$id;
+            $this->config->extend(
+                'routing.presets.'.$name,
+                [
+                    'prefix' => $prefix,
+                    'name' => $id,
+                    'middleware' => [$name],
+                ]
+            );
+            $this->config->extend('middleware.groups', [
+                $name => [],
+            ]);
+        }
     }
     
 }

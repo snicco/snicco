@@ -16,7 +16,7 @@ class TwoFactorAuthSessionControllerTest extends AuthTestCase
     public function the_controller_cant_be_accessed_if_2fa_is_disabled()
     {
         
-        $this->without2Fa();
+        $this->without2Fa()->bootApp();
         
         $response = $this->get('/auth/two-factor/challenge');
         
@@ -28,6 +28,7 @@ class TwoFactorAuthSessionControllerTest extends AuthTestCase
     public function the_auth_challenge_is_not_rendered_if_a_user_is_not_challenged()
     {
         
+        $this->bootApp();
         $calvin = $this->createAdmin();
         update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
         
@@ -40,6 +41,7 @@ class TwoFactorAuthSessionControllerTest extends AuthTestCase
     /** @test */
     public function the_auth_challenge_is_not_rendered_if_a_user_is_not_using_2fa()
     {
+        $this->bootApp();
         
         $calvin = $this->createAdmin();
         $this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
@@ -53,6 +55,7 @@ class TwoFactorAuthSessionControllerTest extends AuthTestCase
     /** @test */
     public function the_2fa_challenge_screen_can_be_rendered()
     {
+        $this->bootApp();
         
         $calvin = $this->createAdmin();
         $this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
@@ -78,8 +81,6 @@ class TwoFactorAuthSessionControllerTest extends AuthTestCase
         });
         
         parent::setUp();
-        
-        $this->bootApp();
         
     }
     

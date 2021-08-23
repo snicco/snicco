@@ -24,7 +24,7 @@ class AccountControllerTest extends AuthTestCase
     public function the_endpoint_cant_be_accessed_if_registration_is_disabled()
     {
         
-        $this->withOutConfig('auth.features.registration');
+        $this->withOutConfig('auth.features.registration')->bootApp();
         
         $response = $this->get('/auth/accounts/create');
         $response->assertDelegatedToWordPress();
@@ -35,7 +35,7 @@ class AccountControllerTest extends AuthTestCase
     public function the_endpoint_cant_be_accessed_authenticated()
     {
         
-        $this->actingAs($this->createAdmin());
+        $this->actingAs($this->createAdmin())->bootApp();
         
         $response = $this->get('/auth/accounts/create');
         $response->assertRedirectToRoute('dashboard');
@@ -45,6 +45,8 @@ class AccountControllerTest extends AuthTestCase
     /** @test */
     public function the_create_account_view_can_be_rendered()
     {
+        
+        $this->bootApp();
         
         $response = $this->get($this->validCreateLink());
         
@@ -59,7 +61,8 @@ class AccountControllerTest extends AuthTestCase
     public function an_account_can_be_created()
     {
         
-        $this->withoutExceptionHandling();
+        $this->bootApp();
+        
         Event::fake();
         
         $response = $this->post($this->validStoreLink(), [
@@ -85,6 +88,8 @@ class AccountControllerTest extends AuthTestCase
     public function an_account_can_be_deleted_from_the_same_user()
     {
         
+        $this->bootApp();
+        
         $calvin = $this->createSubscriber();
         $this->actingAs($calvin);
         
@@ -99,6 +104,8 @@ class AccountControllerTest extends AuthTestCase
     /** @test */
     public function a_user_can_only_delete_his_own_account()
     {
+        
+        $this->bootApp();
         
         $calvin = $this->createSubscriber();
         $john = $this->createSubscriber();
@@ -116,6 +123,8 @@ class AccountControllerTest extends AuthTestCase
     public function only_allowed_user_roles_can_delete_their_own_accounts()
     {
         
+        $this->bootApp();
+        
         // In our test only subscribers can delete their own account
         $calvin = $this->createAuthor();
         $this->actingAs($calvin);
@@ -131,6 +140,8 @@ class AccountControllerTest extends AuthTestCase
     /** @test */
     public function admins_can_delete_accounts_for_other_users_regardless_of_the_whitelist()
     {
+        
+        $this->bootApp();
         
         $calvin = $this->createAdmin();
         $john = $this->createEditor();
@@ -148,6 +159,8 @@ class AccountControllerTest extends AuthTestCase
     public function admins_cant_delete_their_own_accounts_by_accident()
     {
         
+        $this->bootApp();
+        
         $calvin = $this->createAdmin();
         $this->actingAs($calvin);
         
@@ -162,6 +175,8 @@ class AccountControllerTest extends AuthTestCase
     /** @test */
     public function admins_cant_delete_accounts_for_other_admins()
     {
+        
+        $this->bootApp();
         
         $calvin = $this->createAdmin();
         $john = $this->createAdmin();
@@ -179,6 +194,8 @@ class AccountControllerTest extends AuthTestCase
     public function for_non_json_requests_a_custom_response_can_be_provided()
     {
         
+        $this->bootApp();
+        
         $calvin = $this->createSubscriber();
         $this->actingAs($calvin);
         
@@ -191,7 +208,7 @@ class AccountControllerTest extends AuthTestCase
     protected function validCreateLink() :string
     {
         
-        $this->loadRoutes();
+        ;
         
         return TestApp::url()->signedRoute('auth.accounts.create', [], 300, true);
         
@@ -200,7 +217,7 @@ class AccountControllerTest extends AuthTestCase
     protected function validStoreLink() :string
     {
         
-        $this->loadRoutes();
+        ;
         
         return TestApp::url()->signedRoute('auth.accounts.store', [], 900);
     }
@@ -226,8 +243,6 @@ class AccountControllerTest extends AuthTestCase
         });
         
         parent::setUp();
-        
-        $this->bootApp();
         
     }
     

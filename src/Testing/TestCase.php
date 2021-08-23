@@ -16,7 +16,6 @@ use Snicco\Session\Session;
 use Snicco\Http\Psr7\Request;
 use Snicco\Application\Config;
 use Snicco\Contracts\Middleware;
-use Snicco\Routing\RouteRegistrar;
 use Illuminate\Container\Container;
 use Snicco\Application\Application;
 use Codeception\TestCase\WPTestCase;
@@ -27,7 +26,6 @@ use Psr\Http\Message\ResponseInterface;
 use Snicco\Testing\Concerns\TravelsTime;
 use Snicco\Session\SessionServiceProvider;
 use Mockery\Exception\InvalidCountException;
-use Snicco\Contracts\RouteRegistrarInterface;
 use Snicco\Testing\Concerns\InteractsWithMail;
 use Snicco\Testing\Concerns\MakesHttpRequests;
 use Snicco\Testing\Concerns\InteractsWithSession;
@@ -386,25 +384,6 @@ abstract class TestCase extends WPTestCase
         foreach (Arr::wrap($keys) as $key) {
             $this->config->remove($key);
         }
-        
-        return $this;
-        
-    }
-    
-    protected function loadRoutes() :TestCase
-    {
-        
-        if ($this->routes_loaded) {
-            return $this;
-        }
-        
-        /** @var RouteRegistrar $registrar */
-        $registrar = $this->app->resolve(RouteRegistrarInterface::class);
-        $registrar->loadApiRoutes($this->config);
-        $registrar->loadStandardRoutes($this->config);
-        $registrar->loadIntoRouter();
-        
-        $this->routes_loaded = true;
         
         return $this;
         

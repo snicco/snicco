@@ -37,6 +37,22 @@ class ApiRoutesTest extends FrameworkTestCase
     }
     
     /** @test */
+    public function api_routes_only_run_if_the_request_is_an_api_prefix()
+    {
+        
+        $this->withRequest($this->frontendRequest('GET', 'bogus/base/foo'));
+        $this->bootApp();
+        
+        do_action('init');
+        
+        $this->assertNoResponse();
+        
+        // This will shut the script down.
+        Event::assertNotDispatched(ResponseSent::class);
+        
+    }
+    
+    /** @test */
     public function api_routes_are_not_loaded_twice_if_the_same_name_is_present()
     {
         
