@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Http;
 
 use Snicco\Routing\Pipeline;
+use RKA\Middleware\IpAddress;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Contracts\AbstractRedirector;
 
@@ -13,10 +14,10 @@ class HttpServiceProvider extends ServiceProvider
     
     public function register() :void
     {
+        $this->bindConfig();
         $this->bindKernel();
-        
         $this->bindRedirector();
-        
+        $this->bindIpAddressMiddleware();
     }
     
     public function bootstrap() :void
@@ -54,6 +55,41 @@ class HttpServiceProvider extends ServiceProvider
             AbstractRedirector::class,
             fn() => $this->container->make(Redirector::class)
         );
+    }
+    
+    private function bindConfig()
+    {
+        
+        if ( ! class_exists(IpAddress::class)) {
+            return;
+        }
+        
+        $this->config->extend('proxies.check', false);
+        $this->config->extend('proxies.trust', []);
+        $this->config->extend('proxies.headers', []);
+        
+    }
+    
+    private function bindIpAddressMiddleware()
+    {
+        $this->container->singleton(IpAddress::class, function () {
+            
+            $check = $this->config->get('proxies.check');
+            $proxies = $this->config->get('proxies.trust');
+            $headers = $this->config->get('proxies.headers');
+            
+            if ($check && empty($proxies)) {
+                throw new \RuntimeException('You have to configure trusted proxies.');
+            }
+            if ($check && empty($headers)) {
+                throw new \RuntimeException(
+                    'You have to configure headers to extract the remote ip.'
+                );
+            }
+            
+            return new IpAddress($check, $proxies, 'ip_address', $headers);
+            
+        });
     }
     
 }
