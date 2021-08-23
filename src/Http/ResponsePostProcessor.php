@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\ExceptionHandling;
+namespace Snicco\Http;
 
 use Snicco\Events\DoShutdown;
 use Snicco\Events\ResponseSent;
-use Snicco\Http\Responses\RedirectResponse;
 
 class ResponsePostProcessor
 {
@@ -22,10 +21,11 @@ class ResponsePostProcessor
     {
         
         $request = $response_sent->request;
+        $response = $response_sent->response;
         
-        if ($response_sent->response instanceof RedirectResponse) {
+        if ($response->isRedirect()) {
             
-            $this->terminate($response_sent);
+            $this->exit($response_sent);
             
         }
         
@@ -33,13 +33,17 @@ class ResponsePostProcessor
         // also frontend requests.
         if ($request->isWpFrontEnd() || $request->isWpAjax()) {
             
-            $this->terminate($response_sent);
+            $this->exit($response_sent);
             
+        }
+        
+        if ($request->isWpAdmin() && ($response->isClientError() || $response->isServerError())) {
+            $this->exit($response_sent);
         }
         
     }
     
-    private function terminate(ResponseSent $response_sent)
+    private function exit(ResponseSent $response_sent)
     {
         
         $terminate = DoShutdown::dispatch([$response_sent->request, $response_sent->response]);

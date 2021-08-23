@@ -9,9 +9,9 @@ use Snicco\View\ViewFactory;
 use Snicco\Listeners\Manage404s;
 use Snicco\Listeners\FilterWpQuery;
 use Snicco\Contracts\ServiceProvider;
+use Snicco\Http\ResponsePostProcessor;
 use BetterWpHooks\Contracts\Dispatcher;
 use Snicco\Listeners\CreateDynamicHooks;
-use Snicco\ExceptionHandling\ResponsePostProcessor;
 
 class EventServiceProvider extends ServiceProvider
 {

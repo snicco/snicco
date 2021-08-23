@@ -95,12 +95,7 @@ class Response implements ResponseInterface, ResponseableInterface
     public function isRedirect(string $location = null) :bool
     {
         return in_array($this->getStatusCode(), [201, 301, 302, 303, 307, 308])
-               && (null
-                   === $location
-                   || $location
-                      == $this->getHeader(
-                    'Location'
-                ));
+               && (null === $location || $location == $this->getHeader('Location'));
     }
     
     public function isSuccessful() :bool
