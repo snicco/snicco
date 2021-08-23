@@ -65,8 +65,8 @@ class HandlesExceptions implements Bootstrapper
         }
         
         $dont_abort_on_error_levels = $this->app->isLocal()
-            ? $this->app->config('app.allow_local_error_levels', [])
-            : $this->app->config('app.allow_production_error_levels', []);
+            ? $this->app->config('app.error_levels.local', [])
+            : $this->app->config('app.error_levels.production', []);
         
         if (in_array($level, $dont_abort_on_error_levels)) {
             
