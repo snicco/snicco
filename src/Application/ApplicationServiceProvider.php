@@ -15,7 +15,7 @@ use Snicco\Contracts\ServiceProvider;
 use Snicco\View\ViewComposerCollection;
 use Snicco\Contracts\AbstractRedirector;
 use Snicco\Contracts\ViewFactoryInterface;
-use Snicco\ExceptionHandling\ShutdownHandler;
+use Snicco\ExceptionHandling\ResponsePostProcessor;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 class ApplicationServiceProvider extends ServiceProvider
@@ -55,9 +55,9 @@ class ApplicationServiceProvider extends ServiceProvider
     
     private function bindShutDownHandler()
     {
-        $this->container->singleton(ShutdownHandler::class, function () {
+        $this->container->singleton(ResponsePostProcessor::class, function () {
             
-            return new ShutdownHandler($this->app->isRunningUnitTest());
+            return new ResponsePostProcessor($this->app->isRunningUnitTest());
             
         });
     }

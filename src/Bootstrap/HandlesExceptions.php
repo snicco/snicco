@@ -18,7 +18,7 @@ class HandlesExceptions implements Bootstrapper
     /**
      * Reserved memory so that errors can be displayed properly on memory exhaustion.
      */
-    public static $reserved_memory;
+    public static string $reserved_memory;
     
     private Application $app;
     
@@ -39,6 +39,7 @@ class HandlesExceptions implements Bootstrapper
         
         $this->configureErrorLog($app);
         $this->configureErrorDisplay($app);
+        $this->disableWPFatalErrorHandler();
         
     }
     
@@ -122,13 +123,19 @@ class HandlesExceptions implements Bootstrapper
     
     private function renderHttpResponse(Throwable $e)
     {
-        /** @var ResponseEmitter $emitter */
-        $emitter = $this->app->resolve(ResponseEmitter::class);
-        $request = $this->getRequest();
         
-        $response = $this->getExceptionHandler()->toHttpResponse($e, $request);
-        $response = $emitter->prepare($response, $request);
-        $emitter->emit($response);
+        try {
+            /** @var ResponseEmitter $emitter */
+            $emitter = $this->app->resolve(ResponseEmitter::class);
+            $request = $this->getRequest();
+            
+            $response = $this->getExceptionHandler()->toHttpResponse($e, $request);
+            $response = $emitter->prepare($response, $request);
+            $emitter->emit($response);
+            
+        } catch (Throwable $e) {
+            // Nothing we can do.
+        }
         
     }
     
@@ -162,6 +169,27 @@ class HandlesExceptions implements Bootstrapper
         else {
             ini_set('display_errors', 'Off');
         }
+    }
+    
+    private function disableWPFatalErrorHandler(Application $app)
+    {
+        
+        $disabled_in_config = defined('WP_DISABLE_FATAL_ERROR_HANDLER')
+                              && WP_DISABLE_FATAL_ERROR_HANDLER === true;
+        
+        if ($disabled_in_config) {
+            return;
+        }
+        
+        if ( ! is_file(WP_CONTENT_DIR.'/php-error.php')) {
+            
+            file_put_contents(
+                WP_CONTENT_DIR.'/php-error.php',
+                '<?php // generated to stop WP_Fatal_Error_Handler output.'
+            );
+            
+        }
+        
     }
     
 }
