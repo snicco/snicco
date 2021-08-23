@@ -6,6 +6,7 @@ namespace Tests\integration\Events;
 
 use Snicco\Events\Event;
 use Tests\FrameworkTestCase;
+use Snicco\Events\DoShutdown;
 
 class IncomingWebRequest404CompatTest extends FrameworkTestCase
 {
@@ -23,7 +24,7 @@ class IncomingWebRequest404CompatTest extends FrameworkTestCase
         
         // In production this will call exit() and no 404 will be processed.
         $did_shutdown = false;
-        Event::listen('sniccowp.shutdown', function () use (&$did_shutdown, $wp_query) {
+        Event::listen(DoShutdown::class, function () use (&$did_shutdown, $wp_query) {
             
             $this->assertFalse($wp_query->is_404());
             $did_shutdown = true;
