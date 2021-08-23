@@ -20,7 +20,6 @@ use Snicco\Middleware\Core\SetRequestAttributes;
 use Snicco\Middleware\Core\ErrorHandlerMiddleware;
 use Snicco\Middleware\Core\OutputBufferMiddleware;
 use Snicco\Middleware\Core\AppendSpecialPathSuffix;
-use Snicco\Middleware\Core\PrepareResponseMiddleware;
 use Snicco\Middleware\Core\EvaluateResponseMiddleware;
 
 class HttpKernel
@@ -30,11 +29,10 @@ class HttpKernel
     
     private Pipeline $pipeline;
     
-    private bool     $always_with_global_middleware = false;
+    private bool $always_with_global_middleware = false;
     
-    private array    $core_middleware               = [
+    private array $core_middleware = [
         ErrorHandlerMiddleware::class,
-        //PrepareResponseMiddleware::class,
         SetRequestAttributes::class,
         MethodOverride::class,
         EvaluateResponseMiddleware::class,
@@ -47,16 +45,15 @@ class HttpKernel
     
     // Only these get a priority, because they always need to run before any global middleware
     // that a user might provide.
-    private array           $priority_map      = [
+    private array $priority_map = [
         ErrorHandlerMiddleware::class,
-        PrepareResponseMiddleware::class,
         SetRequestAttributes::class,
         EvaluateResponseMiddleware::class,
         ShareCookies::class,
         AppendSpecialPathSuffix::class,
     ];
     
-    private array           $global_middleware = [];
+    private array $global_middleware = [];
     
     private ResponseEmitter $emitter;
     
@@ -79,6 +76,7 @@ class HttpKernel
     
     public function run(Request $request) :Response
     {
+        
         $response = $this->handle($request);
         
         if ($response instanceof NullResponse) {

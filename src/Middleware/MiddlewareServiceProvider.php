@@ -5,9 +5,12 @@ declare(strict_types=1);
 namespace Snicco\Middleware;
 
 use Snicco\Routing\Pipeline;
+use Snicco\Http\ResponseEmitter;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Middleware\Core\RouteRunner;
+use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Middleware\Core\OpenRedirectProtection;
+use Snicco\Middleware\Core\OutputBufferMiddleware;
 use Snicco\Middleware\Core\EvaluateResponseMiddleware;
 
 class MiddlewareServiceProvider extends ServiceProvider
@@ -29,6 +32,8 @@ class MiddlewareServiceProvider extends ServiceProvider
         $this->bindWww();
         
         $this->bindOpenRedirectProtection();
+        
+        $this->bindOutputBufferMiddleware();
         
     }
     
@@ -138,6 +143,18 @@ class MiddlewareServiceProvider extends ServiceProvider
                 $this->siteUrl()
             )
         );
+    }
+    
+    private function bindOutputBufferMiddleware()
+    {
+        $this->container->singleton(OutputBufferMiddleware::class, function () {
+            
+            return new OutputBufferMiddleware(
+                $this->container->make(ResponseEmitter::class),
+                $this->container->make(StreamFactoryInterface::class)
+            );
+            
+        });
     }
     
 }

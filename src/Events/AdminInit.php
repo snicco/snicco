@@ -36,7 +36,7 @@ class AdminInit extends Event
     
     public function shouldDispatch() :bool
     {
-        return WP::isAdmin() && ! WP::isAdminAjax();
+        return $this->request->isWpAdmin();
     }
     
 }

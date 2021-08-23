@@ -274,6 +274,8 @@ trait MakesHttpRequests
             )
         );
         
+        $this->gotToPluginPage($menu_slug, $parent);
+        
         return $request->withQueryParams(['page' => $menu_slug]);
         
     }
@@ -423,6 +425,15 @@ trait MakesHttpRequests
         
         return $response;
         
+    }
+    
+    private function gotToPluginPage($menu_slug, $parent)
+    {
+        global $pagenow, $plugin_page, $admin_page_hooks;
+        $pagenow = $parent;
+        $plugin_page = $menu_slug;
+        $admin_page_hooks[$menu_slug] = Str::studly($menu_slug);
+        add_action("toplevel_page_$menu_slug", function () { });
     }
     
     private function createUri($uri) :UriInterface

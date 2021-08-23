@@ -13,6 +13,7 @@ use Snicco\Middleware\TrailingSlash;
 use Snicco\Middleware\MiddlewareStack;
 use Snicco\Middleware\Core\RouteRunner;
 use Snicco\Middleware\Core\OpenRedirectProtection;
+use Snicco\Middleware\Core\OutputBufferMiddleware;
 use Snicco\Middleware\Core\EvaluateResponseMiddleware;
 
 class MiddlewareServiceProviderTest extends FrameworkTestCase
@@ -105,6 +106,18 @@ class MiddlewareServiceProviderTest extends FrameworkTestCase
             OpenRedirectProtection::class,
             TestApp::resolve(OpenRedirectProtection::class)
         );
+        
+    }
+    
+    /** @test */
+    public function output_buffering_middleware_is_a_singleton()
+    {
+        
+        $m1 = $this->app->resolve(OutputBufferMiddleware::class);
+        $m2 = $this->app->resolve(OutputBufferMiddleware::class);
+        
+        $this->assertSame($m1, $m2);
+        $this->assertInstanceOf(OutputBufferMiddleware::class, $m1);
         
     }
     

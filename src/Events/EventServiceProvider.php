@@ -11,7 +11,6 @@ use Snicco\Listeners\FilterWpQuery;
 use Snicco\Contracts\ServiceProvider;
 use BetterWpHooks\Contracts\Dispatcher;
 use Snicco\Listeners\CreateDynamicHooks;
-use Snicco\Middleware\Core\OutputBufferMiddleware;
 use Snicco\ExceptionHandling\ResponsePostProcessor;
 
 class EventServiceProvider extends ServiceProvider
@@ -24,10 +23,6 @@ class EventServiceProvider extends ServiceProvider
         
         'pre_handle_404' => [
             [PreWP404::class, 999],
-        ],
-        
-        'all_admin_notices' => [
-            BeforeAdminFooter::class,
         ],
     ];
     
@@ -44,7 +39,6 @@ class EventServiceProvider extends ServiceProvider
     private array $event_listeners = [
         
         AdminInit::class => [
-            [OutputBufferMiddleware::class, 'start'],
             CreateDynamicHooks::class,
         ],
         
@@ -67,10 +61,6 @@ class EventServiceProvider extends ServiceProvider
         
         WpQueryFilterable::class => [
             [FilterWpQuery::class, 'handleEvent'],
-        ],
-        
-        BeforeAdminFooter::class => [
-            [OutputBufferMiddleware::class, 'flush'],
         ],
         
         ResponseSent::class => [

@@ -19,7 +19,7 @@ class ResponseTest extends UnitTest
     
     private ResponseFactory $factory;
     
-    private Response        $response;
+    private Response $response;
     
     public function testIsPsrResponse()
     {
@@ -115,6 +115,39 @@ class ResponseTest extends UnitTest
         $this->assertTrue($response->isInformational());
         $this->assertTrue($response->withStatus(199)->isInformational());
         $this->assertFalse($response->withStatus(200)->isInformational());
+    }
+    
+    /** @test */
+    public function testIsRedirection()
+    {
+        
+        $response = $this->response->withStatus(299);
+        $this->assertFalse($response->isRedirection());
+        $this->assertTrue($response->withStatus(300)->isRedirection());
+        $this->assertFalse($response->withStatus(400)->isRedirection());
+        
+    }
+    
+    /** @test */
+    public function testIsClientError()
+    {
+        
+        $response = $this->response->withStatus(399);
+        $this->assertFalse($response->isClientError());
+        $this->assertTrue($response->withStatus(400)->isClientError());
+        $this->assertFalse($response->withStatus(500)->isClientError());
+        
+    }
+    
+    /** @test */
+    public function testIsServerError()
+    {
+        
+        $response = $this->response->withStatus(499);
+        $this->assertFalse($response->isServerError());
+        $this->assertTrue($response->withStatus(500)->isServerError());
+        $this->assertTrue($response->withStatus(599)->isServerError());
+        
     }
     
     public function testIsEmpty()

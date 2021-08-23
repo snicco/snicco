@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Tests\stubs\TestApp;
 use Snicco\Http\Psr7\Request;
 use Snicco\Session\Exceptions\InvalidCsrfTokenException;
+use Snicco\ExceptionHandling\Exceptions\AuthorizationException;
 
 $router = TestApp::route();
 $router->get('admin.php/bar', function (Request $request) {
@@ -32,4 +33,17 @@ $router->get('admin.php/error', function () {
 });
 $router->redirect('profile.php', '/foo');
 
+$router->redirect('admin.php/redirect', '/foobar');
+
+$router->get('admin.php/client-error', function () {
+    
+    throw new AuthorizationException();
+    
+});
+
+$router->get('admin.php/server-error', function () {
+    
+    throw new \Snicco\ExceptionHandling\Exceptions\HttpException(500, 'sensitive info');
+    
+});
 

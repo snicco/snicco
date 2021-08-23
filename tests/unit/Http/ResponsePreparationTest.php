@@ -20,9 +20,7 @@ class ResponsePreparationTest extends UnitTest
     use CreateRouteCollection;
     
     private ResponseFactory     $factory;
-    
     private ResponsePreparation $preparation;
-    
     private Request             $request;
     
     /** @test */
@@ -153,6 +151,20 @@ class ResponsePreparationTest extends UnitTest
         $prepared = $this->preparation->prepare($response, $this->request);
         
         $this->assertSame('40', $prepared->getHeaderLine('content-length'));
+    }
+    
+    /** @test */
+    public function no_content_length_if_output_buffering_is_on_and_has_content()
+    {
+        
+        $response = $this->factory->html(str_repeat('a', 40));
+        ob_start();
+        echo 'foo';
+        
+        $prepared = $this->preparation->prepare($response, $this->request);
+        
+        $this->assertFalse($prepared->hasHeader('content-length'));
+        ob_end_clean();
     }
     
     protected function setUp() :void
