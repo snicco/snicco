@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Middleware\Core;
 
-use Snicco\Events\Event;
 use Snicco\Http\Delegate;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
@@ -42,7 +41,7 @@ class OutputBufferMiddleware extends Middleware
         if ($this->shouldDelayResponse($response)) {
             
             $this->startOutputBuffer();
-            Event::listen('all_admin_notices', [$this, 'flush']);
+            \add_action('all_admin_notices', [$this, 'flush']);
             $this->retained_response = $response;
             $this->request = $request;
             

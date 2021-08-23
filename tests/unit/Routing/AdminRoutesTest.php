@@ -8,13 +8,17 @@ use Mockery;
 use Tests\UnitTest;
 use Snicco\Support\WP;
 use Snicco\Events\Event;
+use Snicco\Http\Delegate;
 use Snicco\Routing\Router;
 use Snicco\Http\Psr7\Request;
+use Snicco\Http\Psr7\Response;
 use Contracts\ContainerAdapter;
 use Tests\helpers\CreatesWpUrls;
+use Snicco\Contracts\Middleware;
 use Tests\helpers\CreateTestSubjects;
 use Tests\helpers\CreateUrlGenerator;
 use Tests\helpers\CreateDefaultWpApiMocks;
+use Snicco\Middleware\Core\OutputBufferMiddleware;
 
 class AdminRoutesTest extends UnitTest
 {
@@ -24,7 +28,7 @@ class AdminRoutesTest extends UnitTest
     use CreateDefaultWpApiMocks;
     use CreateUrlGenerator;
     
-    private Router           $router;
+    private Router $router;
     
     private ContainerAdapter $container;
     
@@ -480,6 +484,7 @@ class AdminRoutesTest extends UnitTest
         Event::fake();
         WP::setFacadeContainer($this->container);
         WP::shouldReceive('isAdmin')->andReturnTrue();
+        $this->withoutOutputBufferMiddleware();
         
     }
     
@@ -490,6 +495,22 @@ class AdminRoutesTest extends UnitTest
         Event::setInstance(null);
         WP::reset();
         
+    }
+    
+    private function withoutOutputBufferMiddleware() :void
+    {
+        $this->container->instance(
+            OutputBufferMiddleware::class,
+            new class extends Middleware
+            {
+                
+                public function handle(Request $request, Delegate $next) :Response
+                {
+                    return $next($request);
+                }
+                
+            }
+        );
     }
     
 }
