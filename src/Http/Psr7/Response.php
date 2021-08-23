@@ -146,6 +146,11 @@ class Response implements ResponseInterface, ResponseableInterface
         return in_array($this->getStatusCode(), [204, 205, 304]);
     }
     
+    public function hasEmptyBody() :bool
+    {
+        return (intval($this->getBody()->getSize())) === 0;
+    }
+    
     public function withContentType(string $content_type) :self
     {
         return $this->withHeader('content-type', $content_type);

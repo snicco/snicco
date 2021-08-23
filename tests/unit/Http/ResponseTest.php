@@ -150,6 +150,21 @@ class ResponseTest extends UnitTest
         
     }
     
+    /** @test */
+    public function testHasEmptyBody()
+    {
+        
+        $response = $this->factory->make();
+        $this->assertTrue($response->hasEmptyBody());
+        
+        $response->getBody()->detach();
+        $this->assertTrue($response->hasEmptyBody());
+        
+        $html_response = $this->factory->html('foobar');
+        $this->assertFalse($html_response->hasEmptyBody());
+        
+    }
+    
     public function testIsEmpty()
     {
         $response = $this->response->withStatus(204);
