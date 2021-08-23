@@ -21,7 +21,7 @@ trait InteractsWithAuthentication
     /**
      * @param  array|WP_User|int  $user
      */
-    protected function actingAs($user)
+    protected function actingAs($user) :self
     {
         
         wp_logout();
@@ -30,7 +30,7 @@ trait InteractsWithAuthentication
             
             wp_set_current_user($user);
             
-            return;
+            return $this;
             
         }
         
@@ -53,6 +53,8 @@ trait InteractsWithAuthentication
             $this->withSessionCookie();
             
         }
+        
+        return $this;
         
     }
     

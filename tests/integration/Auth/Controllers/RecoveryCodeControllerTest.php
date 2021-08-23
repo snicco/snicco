@@ -16,6 +16,7 @@ class RecoveryCodeControllerTest extends AuthTestCase
     {
         
         $this->without2Fa();
+        $this->bootApp();
         
         $this->actingAs($calvin = $this->createAdmin());
         
@@ -27,6 +28,7 @@ class RecoveryCodeControllerTest extends AuthTestCase
     /** @test */
     public function the_endpoint_cant_be_accessed_if_the_user_is_not_authenticated()
     {
+        $this->bootApp();
         
         $response = $this->get($this->routePath());
         $response->assertRedirectPath('/auth/login', 302);
@@ -36,6 +38,7 @@ class RecoveryCodeControllerTest extends AuthTestCase
     /** @test */
     public function the_endpoint_cant_be_accessed_if_the_auth_confirmation_expired()
     {
+        $this->bootApp();
         
         $this->actingAs($calvin = $this->createAdmin());
         
@@ -50,6 +53,7 @@ class RecoveryCodeControllerTest extends AuthTestCase
     /** @test */
     public function all_recovery_codes_can_be_shown_for_a_user()
     {
+        $this->bootApp();
         
         $this->actingAs($calvin = $this->createAdmin());
         
@@ -70,6 +74,7 @@ class RecoveryCodeControllerTest extends AuthTestCase
     /** @test */
     public function recovery_codes_cant_be_retrieved_if_not_enabled_for_the_current_user()
     {
+        $this->bootApp();
         
         $john = $this->createAdmin();
         $this->actingAs($john);
@@ -83,7 +88,7 @@ class RecoveryCodeControllerTest extends AuthTestCase
     /** @test */
     public function recovery_codes_can_be_updated_for_a_user()
     {
-        
+        $this->bootApp();
         $token = $this->withCsrfToken();
         $calvin = $this->createAdmin();
         $this->actingAs($calvin);
@@ -112,7 +117,7 @@ class RecoveryCodeControllerTest extends AuthTestCase
     /** @test */
     public function the_csrf_token_is_not_cleared_so_that_no_page_refresh_is_required_for_a_new_action()
     {
-        
+        $this->bootApp();
         $token = $this->withCsrfToken();
         $calvin = $this->createAdmin();
         $this->actingAs($calvin);
@@ -135,6 +140,7 @@ class RecoveryCodeControllerTest extends AuthTestCase
     /** @test */
     public function recovery_codes_cant_be_updated_if_not_enabled_for_the_current_user()
     {
+        $this->bootApp();
         
         $john = $this->createAdmin();
         
@@ -165,13 +171,12 @@ class RecoveryCodeControllerTest extends AuthTestCase
         });
         
         parent::setUp();
-        $this->bootApp();
     }
     
     private function routePath()
     {
         
-        $this->loadRoutes();
+        ;
         
         return $this->app->resolve(UrlGenerator::class)->toRoute('auth.2fa.recovery-codes');
     }

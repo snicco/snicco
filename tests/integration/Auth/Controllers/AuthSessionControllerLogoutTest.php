@@ -131,9 +131,7 @@ class AuthSessionControllerLogoutTest extends AuthTestCase
         
         $this->afterApplicationBooted(function () {
             
-            $this->url = $this->app->resolve(UrlGenerator::class);
-            
-            $this->loadRoutes();
+            $this->url = $this->app->resolve(UrlGenerator::class);;
             
         });
         parent::setUp();

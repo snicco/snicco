@@ -39,6 +39,27 @@ class CacheFileRouteRegistrar implements RouteRegistrarInterface
         
     }
     
+    public function loadStandardRoutes(Config $config)
+    {
+        
+        $dir = $config->get('routing.cache_dir', '');
+        
+        if ($this->cacheFilesCreated($dir)) {
+            return;
+        }
+        
+        $this->createCacheDirIfNotExists($dir);
+        $this->registrar->loadStandardRoutes($config);
+        
+    }
+    
+    public function loadIntoRouter() :void
+    {
+        // This will do nothing for the CachedRouteCollection if the cache file exists.
+        $this->registrar->loadIntoRouter();
+        
+    }
+    
     private function cacheFilesCreated($dir) :bool
     {
         
@@ -61,6 +82,7 @@ class CacheFileRouteRegistrar implements RouteRegistrarInterface
         
         if (iterator_count($finder) === 0) {
             rmdir($dir);
+            return;
         }
         
         foreach ($finder as $file) {
@@ -88,27 +110,6 @@ class CacheFileRouteRegistrar implements RouteRegistrarInterface
             wp_mkdir_p($dir);
             
         }
-        
-    }
-    
-    public function loadStandardRoutes(Config $config)
-    {
-        
-        $dir = $config->get('routing.cache_dir', '');
-        
-        if ($this->cacheFilesCreated($dir)) {
-            return;
-        }
-        
-        $this->createCacheDirIfNotExists($dir);
-        $this->registrar->loadStandardRoutes($config);
-        
-    }
-    
-    public function loadIntoRouter() :void
-    {
-        // This will do nothing for the CachedRouteCollection if the cache file exists.
-        $this->registrar->loadIntoRouter();
         
     }
     

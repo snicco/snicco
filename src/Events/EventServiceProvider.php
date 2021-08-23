@@ -6,7 +6,6 @@ namespace Snicco\Events;
 
 use Snicco\Http\HttpKernel;
 use Snicco\View\ViewFactory;
-use Snicco\Listeners\LoadRoutes;
 use Snicco\Listeners\Manage404s;
 use Snicco\Listeners\FilterWpQuery;
 use Snicco\Contracts\ServiceProvider;
@@ -33,7 +32,7 @@ class EventServiceProvider extends ServiceProvider
     ];
     
     private array $ensure_first = [
-        'init' => WpInit::class,
+        'init' => IncomingApiRequest::class,
         'admin_init' => IncomingAjaxRequest::class,
         'wp' => IncomingWebRequest::class,
     ];
@@ -43,10 +42,6 @@ class EventServiceProvider extends ServiceProvider
     ];
     
     private array $event_listeners = [
-        
-        WpInit::class => [
-            LoadRoutes::class,
-        ],
         
         AdminInit::class => [
             [OutputBufferMiddleware::class, 'start'],

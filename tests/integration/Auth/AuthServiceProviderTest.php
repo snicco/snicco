@@ -308,8 +308,7 @@ class AuthServiceProviderTest extends AuthTestCase
     public function the_login_url_is_filtered()
     {
         
-        $this->bootApp();
-        $this->loadRoutes();
+        $this->bootApp();;
         
         $url = wp_login_url();
         
@@ -322,8 +321,7 @@ class AuthServiceProviderTest extends AuthTestCase
     public function the_logout_url_is_filtered()
     {
         
-        $this->bootApp();
-        $this->loadRoutes();
+        $this->bootApp();;
         
         $url = wp_logout_url();
         

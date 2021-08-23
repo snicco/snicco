@@ -19,6 +19,8 @@ class ForgotPasswordControllerTest extends AuthTestCase
     public function the_route_cant_be_accessed_while_being_logged_in()
     {
         
+        $this->bootApp();
+        
         $this->actingAs($this->createAdmin());
         
         $this->get($this->routeUrl())->assertRedirectToRoute('dashboard');
@@ -28,7 +30,7 @@ class ForgotPasswordControllerTest extends AuthTestCase
     /** @test */
     public function the_forgot_password_view_can_be_rendered()
     {
-        
+        $this->bootApp();
         $this->get($this->routeUrl())
              ->assertSee('Request new password')
              ->assertOk();
@@ -40,6 +42,7 @@ class ForgotPasswordControllerTest extends AuthTestCase
     {
         
         $this->withOutConfig('auth.features.password-resets');
+        $this->bootApp();
         
         $url = '/auth/forgot-password';
         
@@ -50,6 +53,7 @@ class ForgotPasswordControllerTest extends AuthTestCase
     /** @test */
     public function a_password_reset_link_can_be_requested_by_user_name()
     {
+        $this->bootApp();
         
         $this->mailFake();
         $token = $this->withCsrfToken();
@@ -74,6 +78,7 @@ class ForgotPasswordControllerTest extends AuthTestCase
     /** @test */
     public function a_password_reset_link_can_be_requested_by_user_email()
     {
+        $this->bootApp();
         
         $this->mailFake();
         $token = $this->withCsrfToken();
@@ -99,6 +104,7 @@ class ForgotPasswordControllerTest extends AuthTestCase
     /** @test */
     public function invalid_input_does_not_return_an_error_message_but_doesnt_send_an_email()
     {
+        $this->bootApp();
         
         $this->mailFake();
         $token = $this->withCsrfToken();
@@ -113,6 +119,7 @@ class ForgotPasswordControllerTest extends AuthTestCase
     /** @test */
     public function failure_to_retrieve_a_user_by_login_will_dispatch_an_event()
     {
+        $this->bootApp();
         
         Event::fake();
         $token = $this->withCsrfToken();
@@ -134,6 +141,7 @@ class ForgotPasswordControllerTest extends AuthTestCase
     /** @test */
     public function an_invalid_user_login_will_log_to_fail2ban()
     {
+        $this->bootApp();
         
         $this->swap(Syslogger::class, $logger = new TestSysLogger());
         
@@ -162,13 +170,12 @@ class ForgotPasswordControllerTest extends AuthTestCase
         
         parent::setUp();
         
-        $this->bootApp();
     }
     
     private function routeUrl()
     {
         
-        $this->loadRoutes();
+        ;
         
         return TestApp::url()->signedRoute('auth.forgot.password');
     }

@@ -18,7 +18,7 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
     public function the_endpoint_is_not_accessible_with_2fa_disabled()
     {
         
-        $this->without2Fa();
+        $this->without2Fa()->bootApp();
         $this->post($this->endpoint)->assertDelegatedToWordPress();
         
     }
@@ -26,7 +26,7 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
     /** @test */
     public function the_endpoint_is_not_accessible_if_not_authenticated()
     {
-        
+        $this->bootApp();
         $this->post($this->endpoint)
              ->assertStatus(401);
         
@@ -47,7 +47,7 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
     /** @test */
     public function the_endpoint_is_not_accessible_without_csrf_tokens()
     {
-        
+        $this->bootApp();
         $this->actingAs($calvin = $this->createAdmin());
         
         $this->post($this->endpoint, [])->assertStatus(419);
@@ -58,6 +58,7 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
     public function two_factor_authentication_can_not_be_confirmed_if_not_pending()
     {
         
+        $this->bootApp();
         $this->withoutMiddleware('csrf');
         $this->actingAs($calvin = $this->createAdmin());
         $response = $this->post($this->endpoint, ['Accept' => 'application/json']);
@@ -74,6 +75,7 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
     public function an_error_is_returned_if_2fa_is_already_enabled_for_the_user()
     {
         
+        $this->bootApp();
         $this->withoutMiddleware('csrf');
         $this->actingAs($calvin = $this->createAdmin());
         $this->enable2Fa($calvin);
@@ -91,6 +93,7 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
     /** @test */
     public function two_factor_authentication_cant_be_enabled_without_a_valid_one_time_code()
     {
+        $this->bootApp();
         $this->withoutMiddleware('csrf');
         
         $this->actingAs($calvin = $this->createAdmin());
@@ -117,6 +120,7 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
     /** @test */
     public function two_factor_authentication_can_be_enabled()
     {
+        $this->bootApp();
         $this->withoutMiddleware('csrf');
         $this->actingAs($calvin = $this->createAdmin());
         $this->generateTestSecret($calvin)
@@ -142,6 +146,7 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
     public function recovery_codes_are_encrypted()
     {
         
+        $this->bootApp();
         $this->withoutMiddleware('csrf');
         $this->actingAs($calvin = $this->createAdmin());
         $this->generateTestSecret($calvin)
@@ -166,6 +171,7 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
     /** @test */
     public function two_factor_authentication_can_not_be_disabled_for_user_who_dont_have_it_enabled()
     {
+        $this->bootApp();
         $this->withoutMiddleware('csrf');
         
         $this->actingAs($calvin = $this->createAdmin());
@@ -180,6 +186,7 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
     /** @test */
     public function two_factor_authentication_can_be_disabled()
     {
+        $this->bootApp();
         $this->withoutMiddleware('csrf');
         
         $this->actingAs($calvin = $this->createAdmin());
@@ -217,8 +224,6 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
         });
         
         parent::setUp();
-        
-        $this->bootApp();
         
     }
     
