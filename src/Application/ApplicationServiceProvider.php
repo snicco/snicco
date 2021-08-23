@@ -12,10 +12,10 @@ use Snicco\View\PhpViewEngine;
 use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Contracts\ServiceProvider;
+use Snicco\Http\ResponsePostProcessor;
 use Snicco\View\ViewComposerCollection;
 use Snicco\Contracts\AbstractRedirector;
 use Snicco\Contracts\ViewFactoryInterface;
-use Snicco\ExceptionHandling\ResponsePostProcessor;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 class ApplicationServiceProvider extends ServiceProvider

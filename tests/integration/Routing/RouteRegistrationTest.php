@@ -50,6 +50,8 @@ class RouteRegistrationTest extends FrameworkTestCase
         $hook = WP::pluginPageHook();
         do_action("load-$hook");
         
+        do_action('all_admin_notices');
+        
         $this->sentResponse()->assertOk()->assertSee('FOO_ADMIN');
         
     }
