@@ -55,6 +55,12 @@ class TestLogger extends AbstractLogger
     public function assertHasLogLevelEntry(string $level, $message, array $context = [])
     {
         
+        Assert::assertArrayHasKey(
+            $level,
+            $this->records,
+            "The were no records logged for level [$level]."
+        );
+        
         $record = Arr::flattenOnePreserveKeys($this->records[$level]);
         
         Assert::assertSame($message, $record['message']);

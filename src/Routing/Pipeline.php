@@ -173,7 +173,10 @@ class Pipeline
             try {
                 
                 return $this->resolveNextMiddleware($request);
+                
             } catch (Throwable $e) {
+                
+                $this->error_handler->report($e, $request);
                 
                 return $this->error_handler->toHttpResponse($e, $request);
                 
