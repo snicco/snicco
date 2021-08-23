@@ -17,7 +17,6 @@ use Snicco\Middleware\Core\MethodOverride;
 use Snicco\Http\Responses\DelegatedResponse;
 use Snicco\Middleware\Core\RoutingMiddleware;
 use Snicco\Middleware\Core\SetRequestAttributes;
-use Snicco\Middleware\Core\ErrorHandlerMiddleware;
 use Snicco\Middleware\Core\OutputBufferMiddleware;
 use Snicco\Middleware\Core\AppendSpecialPathSuffix;
 use Snicco\Middleware\Core\EvaluateResponseMiddleware;
@@ -32,7 +31,6 @@ class HttpKernel
     private bool $always_with_global_middleware = false;
     
     private array $core_middleware = [
-        ErrorHandlerMiddleware::class,
         SetRequestAttributes::class,
         MethodOverride::class,
         EvaluateResponseMiddleware::class,
@@ -46,7 +44,6 @@ class HttpKernel
     // Only these get a priority, because they always need to run before any global middleware
     // that a user might provide.
     private array $priority_map = [
-        ErrorHandlerMiddleware::class,
         SetRequestAttributes::class,
         EvaluateResponseMiddleware::class,
         ShareCookies::class,

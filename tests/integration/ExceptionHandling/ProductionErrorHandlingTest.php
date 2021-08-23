@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\integration\ExceptionHandling;
 
+use Psr\Log\LogLevel;
+use Tests\stubs\TestLogger;
 use Tests\FrameworkTestCase;
+use Psr\Log\LoggerInterface;
 use Snicco\ExceptionHandling\ProductionExceptionHandler;
 
 /** @see ProductionExceptionHandler */
@@ -19,6 +22,18 @@ class ProductionErrorHandlingTest extends FrameworkTestCase
         $response->assertSee('VIEW:error.php,STATUS:500,MESSAGE:Something went wrong.');
         $response->assertStatus(500);
         $response->assertIsHtml();
+        
+    }
+    
+    /** @test */
+    public function an_exception_in_the_routing_flow_is_logged()
+    {
+        
+        $this->bootApp();
+        $this->instance(LoggerInterface::class, $logger = new TestLogger());
+        
+        $this->get('/error/500')->assertStatus(500);
+        $logger->assertHasLogLevelEntry(LogLevel::ERROR, 'Secret logging stuff.');
         
     }
     
