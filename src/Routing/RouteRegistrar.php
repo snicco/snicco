@@ -19,9 +19,7 @@ class RouteRegistrar implements RouteRegistrarInterface
     
     public function __construct(Router $router)
     {
-        
         $this->router = $router;
-        
     }
     
     public function loadIntoRouter() :void
@@ -63,6 +61,27 @@ class RouteRegistrar implements RouteRegistrarInterface
                 
             })
             ->all();
+        
+    }
+    
+    public function loadStandardRoutes(Config $config)
+    {
+        
+        $dirs = Arr::wrap($config->get('routing.definitions', []));
+        
+        $finder = new Finder();
+        $finder->in($dirs)->files()
+               ->name('/^(?!api\.).+(?=\.php)/');
+        
+        $files = iterator_to_array($finder);
+        
+        if ( ! count($files)) {
+            return;
+        }
+        
+        $this->requireFiles($files, $config);
+        
+        $this->router->createFallbackWebRoute();
         
     }
     
@@ -141,27 +160,6 @@ class RouteRegistrar implements RouteRegistrarInterface
         }
         
         return $preset;
-        
-    }
-    
-    public function loadStandardRoutes(Config $config)
-    {
-        
-        $dirs = Arr::wrap($config->get('routing.definitions', []));
-        
-        $finder = new Finder();
-        $finder->in($dirs)->files()
-               ->name('/^(?!api\.).+(?=\.php)/');
-        
-        $files = iterator_to_array($finder);
-        
-        if ( ! count($files)) {
-            return;
-        }
-        
-        $this->requireFiles($files, $config);
-        
-        $this->router->createFallbackWebRoute();
         
     }
     

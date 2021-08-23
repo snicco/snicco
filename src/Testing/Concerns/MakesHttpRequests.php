@@ -482,10 +482,6 @@ trait MakesHttpRequests
             $this->bootApp();
         }
         
-        if ( ! $this->routes_loaded) {
-            $this->loadRoutes();
-        }
-        
         /** @var Response $response */
         $response = $this->app->resolve(HttpKernel::class)->run($this->request);
         

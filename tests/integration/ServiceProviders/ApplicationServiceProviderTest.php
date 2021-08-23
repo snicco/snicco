@@ -117,8 +117,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function a_named_route_url_can_be_aliased()
     {
-        $this->bootApp();
-        $this->loadRoutes();
+        $this->bootApp();;
         $expected = '/alias/get';
         $this->assertSame($expected, TestApp::routeUrl('alias.get'));
     }

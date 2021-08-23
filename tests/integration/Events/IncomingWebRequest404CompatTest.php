@@ -17,8 +17,7 @@ class IncomingWebRequest404CompatTest extends FrameworkTestCase
     {
         
         $this->withRequest($this->frontendRequest('GET', '/foo'));
-        $this->bootApp();
-        $this->loadRoutes();
+        $this->bootApp();;
         $this->simulate404();
         global $wp, $wp_query;
         
@@ -42,8 +41,7 @@ class IncomingWebRequest404CompatTest extends FrameworkTestCase
     {
         
         $this->withRequest($this->frontendRequest('GET', '/bogus'));
-        $this->bootApp();
-        $this->loadRoutes();
+        $this->bootApp();;
         $this->simulate404();
         
         global $wp, $wp_query;
