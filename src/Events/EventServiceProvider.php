@@ -11,8 +11,8 @@ use Snicco\Listeners\FilterWpQuery;
 use Snicco\Contracts\ServiceProvider;
 use BetterWpHooks\Contracts\Dispatcher;
 use Snicco\Listeners\CreateDynamicHooks;
-use Snicco\ExceptionHandling\ShutdownHandler;
 use Snicco\Middleware\Core\OutputBufferMiddleware;
+use Snicco\ExceptionHandling\ResponsePostProcessor;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -74,7 +74,7 @@ class EventServiceProvider extends ServiceProvider
         ],
         
         ResponseSent::class => [
-            [ShutdownHandler::class, 'afterResponse'],
+            [ResponsePostProcessor::class, 'maybeExit'],
         ],
         
         MakingView::class => [

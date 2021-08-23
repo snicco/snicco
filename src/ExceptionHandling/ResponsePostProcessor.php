@@ -8,7 +8,7 @@ use Snicco\Events\DoShutdown;
 use Snicco\Events\ResponseSent;
 use Snicco\Http\Responses\RedirectResponse;
 
-class ShutdownHandler
+class ResponsePostProcessor
 {
     
     private bool $running_unit_tests;
@@ -18,7 +18,7 @@ class ShutdownHandler
         $this->running_unit_tests = $running_unit_tests;
     }
     
-    public function afterResponse(ResponseSent $response_sent)
+    public function maybeExit(ResponseSent $response_sent)
     {
         
         $request = $response_sent->request;
