@@ -109,7 +109,7 @@ class SessionServiceProvider extends ServiceProvider
                 
             }
             
-            if ($name === 'array') {
+            if ($name === 'array' || $this->app->isRunningUnitTest()) {
                 return new ArraySessionDriver($lifetime);
             }
             
