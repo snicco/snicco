@@ -6,6 +6,7 @@ namespace Tests\unit\Routing;
 
 use Throwable;
 use Tests\UnitTest;
+use Psr\Log\LogLevel;
 use Nyholm\Psr7\Stream;
 use Nyholm\Psr7\Response;
 use Snicco\Routing\Pipeline;
@@ -277,7 +278,7 @@ class PipelineTestExceptionHandler implements ExceptionHandler
         );
     }
     
-    public function report(Throwable $e, Request $request)
+    public function report(Throwable $e, Request $request, string $psr3_log_level = LogLevel::ERROR)
     {
     }
     
