@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\ExceptionHandling;
 
-use Snicco\Events\Event;
+use Snicco\Events\DoShutdown;
 use Snicco\Events\ResponseSent;
 use Snicco\Http\Responses\RedirectResponse;
 
@@ -15,7 +15,6 @@ class ShutdownHandler
     
     public function __construct(bool $running_unit_tests = false)
     {
-        
         $this->running_unit_tests = $running_unit_tests;
     }
     
@@ -26,7 +25,7 @@ class ShutdownHandler
         
         if ($response_sent->response instanceof RedirectResponse) {
             
-            $this->terminate();
+            $this->terminate($response_sent);
             
         }
         
@@ -34,18 +33,22 @@ class ShutdownHandler
         // also frontend requests.
         if ($request->isWpFrontEnd() || $request->isWpAjax()) {
             
-            $this->terminate();
+            $this->terminate($response_sent);
             
         }
         
     }
     
-    private function terminate()
+    private function terminate(ResponseSent $response_sent)
     {
         
-        Event::dispatch('sniccowp.shutdown');
+        $terminate = DoShutdown::dispatch([$response_sent->request, $response_sent->response]);
         
         if ($this->running_unit_tests) {
+            return;
+        }
+        
+        if (is_bool($terminate) && $terminate !== true) {
             return;
         }
         
