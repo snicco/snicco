@@ -10,6 +10,7 @@ use Snicco\Contracts\Bootstrapper;
 use Snicco\Application\Application;
 use Snicco\Contracts\ExceptionHandler;
 use Snicco\ExceptionHandling\FatalError;
+use Snicco\ExceptionHandling\PhpErrorLevel;
 
 class HandlesExceptions implements Bootstrapper
 {
@@ -72,7 +73,8 @@ class HandlesExceptions implements Bootstrapper
             
             $this->getExceptionHandler()->report(
                 new ErrorException($message, 0, $level, $file, $line),
-                $this->getRequest()
+                $this->getRequest(),
+                PHPErrorLevel::toPsr3($level)
             );
             
         }

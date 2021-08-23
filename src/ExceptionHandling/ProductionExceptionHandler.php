@@ -58,7 +58,7 @@ class ProductionExceptionHandler implements ExceptionHandler
         $this->registerCallbacks();
     }
     
-    public function report(Throwable $e, Request $request)
+    public function report(Throwable $e, Request $request, string $psr3_log_level = 'error')
     {
         
         if (in_array(get_class($e), $this->dont_report)) {
@@ -94,7 +94,7 @@ class ProductionExceptionHandler implements ExceptionHandler
             
         }
         
-        $this->logger->error(
+        $this->logger->{$psr3_log_level}(
             $e->getMessage(),
             array_merge(
                 $this->globalContext($request),

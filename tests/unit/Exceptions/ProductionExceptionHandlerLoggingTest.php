@@ -49,6 +49,18 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
     }
     
     /** @test */
+    public function custom_log_levels_can_be_provided_to_the_report_function_at_runtime()
+    {
+        
+        $handler = $this->newErrorHandler();
+        
+        $handler->report(new Exception('Foobar'), $this->request, LogLevel::CRITICAL);
+        
+        $this->test_logger->assertHasLogLevelEntry(LogLevel::CRITICAL, 'Foobar');
+        
+    }
+    
+    /** @test */
     public function the_current_user_id_and_email_is_included_in_the_exception_context()
     {
         
