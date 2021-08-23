@@ -12,10 +12,10 @@ class ApplicationTest extends FrameworkTestCase
     {
         
         $app = $this->app;
-        $app->config()->set('app.debug_editor', 'vsc');
+        $app->config()->set('app.editor', 'vsc');
         $app->boot();
         
-        $this->assertSame('vsc', $app->config('app.debug_editor'));
+        $this->assertSame('vsc', $app->config('app.editor'));
         
     }
     
