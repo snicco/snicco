@@ -275,14 +275,13 @@ class Request implements ServerRequestInterface
     
     public function isWpAjax() :bool
     {
-        
-        return $this->loadingScript() === 'wp-admin/admin-ajax.php';
-        
+        return Str::contains($this->loadingScript(), 'wp-admin/admin-ajax.php');
     }
     
     public function isWpFrontEnd() :bool
     {
-        return $this->loadingScript() === 'index.php';
+        return ! ($this->isWpAjax() || $this->isWpAdmin())
+               && Str::contains($this->loadingScript(), 'index.php');
     }
     
     public function path() :string
