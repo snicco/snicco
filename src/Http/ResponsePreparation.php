@@ -126,10 +126,12 @@ class ResponsePreparation
         
         // Fix Content-Length, don't add if anything is buffered since we will mess up plugins that use it.
         if ( ! $response->hasHeader('content-length')
-             && ($size = $response->getBody()->getSize()) !== null
+             && ! $response->hasEmptyBody()
              && ! ob_get_length()) {
             
-            $response = $response->withHeader('content-length', strval($size));
+            $size = strval($response->getBody()->getSize());
+            $response = $response->withHeader('content-length', $size);
+            
         }
         
         // Remove content-length if transfer-encoding

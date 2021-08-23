@@ -78,6 +78,27 @@ class AdminRoutesTest extends FrameworkTestCase
     }
     
     /** @test */
+    public function no_content_length_header_is_added_if_no_route_matches()
+    {
+        
+        $this->withRequest($this->adminRequest('GET', 'bogus'));
+        $this->bootApp();
+        
+        AdminInit::dispatch([$this->request]);
+        
+        // On a normal WordPress installation no output should ever be sent before the load-xxx hook.
+        do_action('load-toplevel_page_bogus');
+        
+        // Here is our response released.
+        do_action('all_admin_notices');
+        
+        $this->sentResponse()
+             ->assertDelegatedToWordPress()
+             ->assertHeaderMissing('content-length');
+        
+    }
+    
+    /** @test */
     public function no_output_buffers_are_started_if_we_dont_have_a_matching_admin_route()
     {
         
@@ -97,6 +118,9 @@ class AdminRoutesTest extends FrameworkTestCase
         do_action('load-toplevel_page_bogus');
         echo 'Topmenu';
         echo 'Sidebar';
+        
+        // Here responses would be released.
+        do_action('all_admin_notices');
         
         $this->assertSame(
             $level_before,
