@@ -73,7 +73,7 @@ class RouteRegistrationTest extends FrameworkTestCase
     public function admin_routes_are_also_run_for_other_admin_pages()
     {
         
-        $this->withRequest($this->adminRequest('GET', '', 'index.php'));
+        $this->withRequest($this->adminRequest('GET', '', 'profile.php'));
         
         $this->withAddedProvider(SimulateAdminProvider::class)
              ->withoutHooks()
@@ -110,8 +110,8 @@ class RouteRegistrationTest extends FrameworkTestCase
     {
         
         $this->withRequest($this->frontendRequest('GET', '/post1'));
-        $this->bootApp();
         $this->makeFallbackConditionPass();
+        $this->bootApp();
         
         global $wp;
         // init loads the routes.
@@ -163,9 +163,7 @@ class RouteRegistrationTest extends FrameworkTestCase
     {
         
         $this->withAddedProvider(SimulateAdminProvider::class);
-        $this->bootApp();
-        
-        $this->loadRoutes();
+        $this->bootApp();;
         
         $this->assertSame('/wp-admin/admin.php?page=foo', TestApp::routeUrl('admin.foo'));
         
@@ -176,8 +174,7 @@ class RouteRegistrationTest extends FrameworkTestCase
     {
         
         $this->withAddedProvider(SimulateAjaxProvider::class);
-        $this->bootApp();
-        $this->loadRoutes();
+        $this->bootApp();;
         
         $this->assertSame('/wp-admin/admin-ajax.php', TestApp::routeUrl('ajax.foo'));
         

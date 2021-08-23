@@ -59,7 +59,7 @@ class AuthSessionControllerTest extends AuthTestCase
     public function the_redirect_to_url_is_saved_to_the_session()
     {
         
-        $this->loadRoutes();
+        ;
         
         $url = wp_login_url('https://foobar.com/foo/bar?search=foo bar');
         

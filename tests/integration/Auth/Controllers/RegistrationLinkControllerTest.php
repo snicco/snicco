@@ -15,7 +15,7 @@ class RegistrationLinkControllerTest extends AuthTestCase
     public function the_route_cant_be_accessed_if_registration_is_not_enabled()
     {
         
-        $this->withOutConfig('auth.features.registration');
+        $this->withOutConfig('auth.features.registration')->bootApp();
         
         $response = $this->get('/auth/register');
         
@@ -27,7 +27,7 @@ class RegistrationLinkControllerTest extends AuthTestCase
     public function the_route_cant_be_accessed_authenticated()
     {
         
-        $this->actingAs($this->createAdmin());
+        $this->actingAs($this->createAdmin())->bootApp();
         
         $response = $this->get('/auth/register');
         
@@ -59,6 +59,7 @@ class RegistrationLinkControllerTest extends AuthTestCase
     public function a_link_can_be_requested_for_a_valid_email()
     {
         
+        $this->bootApp();
         $this->mailFake();
         
         $response =
@@ -90,8 +91,6 @@ class RegistrationLinkControllerTest extends AuthTestCase
         });
         
         parent::setUp();
-        
-        $this->bootApp();
         
     }
     

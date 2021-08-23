@@ -17,15 +17,16 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
     /** @test */
     public function the_endpoint_is_not_accessible_with_2fa_disabled()
     {
+        $this->without2Fa()->bootApp();
         
-        $this->without2Fa();
         $this->post($this->endpoint)->assertDelegatedToWordPress();
-        
     }
     
     /** @test */
     public function the_endpoint_is_not_accessible_if_not_authenticated()
     {
+        
+        $this->bootApp();
         
         $this->post($this->endpoint)
              ->assertStatus(401);
@@ -35,6 +36,8 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
     /** @test */
     public function the_endpoint_is_not_accessible_if_auth_confirmation_is_expired()
     {
+        
+        $this->bootApp();
         
         $this->actingAs($calvin = $this->createAdmin());
         
@@ -48,6 +51,8 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
     public function the_endpoint_is_not_accessible_without_csrf_tokens()
     {
         
+        $this->bootApp();
+        
         $this->actingAs($calvin = $this->createAdmin());
         
         $this->post($this->endpoint, [])->assertStatus(419);
@@ -58,6 +63,7 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
     public function the_initial_setup_qr_code_can_be_rendered()
     {
         
+        $this->bootApp();
         $this->actingAs($calvin = $this->createAdmin());
         $token = $this->withCsrfToken();
         $response = $this->post($this->endpoint, $token)->assertStatus(200);
@@ -79,6 +85,7 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
     public function an_error_is_returned_if_2fa_is_already_enabled_for_the_user()
     {
         
+        $this->bootApp();
         $this->withoutMiddleware('csrf');
         $this->actingAs($calvin = $this->createAdmin());
         $this->generateTestSecret($calvin);
@@ -99,6 +106,7 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
     public function the_auth_set_up_is_marked_as_pending()
     {
         
+        $this->bootApp();
         $this->withoutMiddleware('csrf');
         $this->actingAs($calvin = $this->createAdmin());
         $token = $this->withCsrfToken();
@@ -114,7 +122,7 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
     /** @test */
     public function the_user_secret_is_stored_encrypted()
     {
-        
+        $this->bootApp();
         $this->withoutMiddleware('csrf');
         $this->actingAs($calvin = $this->createAdmin());
         $token = $this->withCsrfToken();
@@ -137,7 +145,8 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
     public function the_setup_qr_code_and_secret_can_be_generated_any_amount_of_times()
     {
         
-        $this->withoutExceptionHandling();
+        $this->bootApp();
+        
         $this->swap(
             TwoFactorAuthenticationProvider::class,
             new Google2FaAuthenticationProvider(new Google2FA(), $this->encryptor)
@@ -181,7 +190,6 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
         
         parent::setUp();
         
-        $this->bootApp();
     }
     
 }

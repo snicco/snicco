@@ -17,7 +17,7 @@ class ResetPasswordControllerTest extends AuthTestCase
     public function the_endpoint_is_not_accessible_when_disabled_in_the_config()
     {
         
-        $this->withOutConfig('auth.features.password-resets');
+        $this->withOutConfig('auth.features.password-resets')->bootApp();
         
         $url = '/auth/reset-password';
         
@@ -29,6 +29,7 @@ class ResetPasswordControllerTest extends AuthTestCase
     public function the_reset_password_view_can_be_rendered_with_a_valid_signature()
     {
         
+        $this->bootApp();
         $calvin = $this->createAdmin();
         
         $response = $this->get($this->routeUrl($calvin->ID));
@@ -42,7 +43,7 @@ class ResetPasswordControllerTest extends AuthTestCase
     /** @test */
     public function its_not_possible_to_tamper_with_the_id_of_the_signature_on_the_update_request()
     {
-        
+        $this->bootApp();
         $token = $this->withCsrfToken();
         $calvin = $this->createAdmin();
         
@@ -57,8 +58,7 @@ class ResetPasswordControllerTest extends AuthTestCase
     public function a_non_existing_user_id_cant_be_processed()
     {
         
-        $this->withoutExceptionHandling();
-        
+        $this->bootApp();
         $token = $this->withCsrfToken();
         $url = $this->routeUrl(999);
         
@@ -71,7 +71,7 @@ class ResetPasswordControllerTest extends AuthTestCase
     /** @test */
     public function passwords_must_be_at_least_12_characters()
     {
-        
+        $this->bootApp();
         $calvin = $this->createAdmin();
         $token = $this->withCsrfToken();
         
@@ -97,7 +97,7 @@ class ResetPasswordControllerTest extends AuthTestCase
     /** @test */
     public function passwords_must_be_more_less_than_64_characters()
     {
-        
+        $this->bootApp();
         $calvin = $this->createAdmin();
         $token = $this->withCsrfToken();
         
@@ -123,7 +123,7 @@ class ResetPasswordControllerTest extends AuthTestCase
     /** @test */
     public function passwords_must_be_identical()
     {
-        
+        $this->bootApp();
         $calvin = $this->createAdmin();
         $token = $this->withCsrfToken();
         
@@ -150,6 +150,7 @@ class ResetPasswordControllerTest extends AuthTestCase
     public function weak_passwords_are_not_possible()
     {
         
+        $this->bootApp();
         $calvin = $this->createAdmin();
         $token = $this->withCsrfToken();
         
@@ -176,6 +177,7 @@ class ResetPasswordControllerTest extends AuthTestCase
     public function a_password_can_be_reset()
     {
         
+        $this->bootApp();
         $calvin = $this->createAdmin();
         $old_pass = $calvin->user_pass;
         $token = $this->withCsrfToken();
@@ -216,14 +218,12 @@ class ResetPasswordControllerTest extends AuthTestCase
         
         parent::setUp();
         
-        $this->bootApp();
-        
     }
     
     private function routeUrl(int $user_id)
     {
         
-        $this->loadRoutes();
+        ;
         
         return TestApp::url()
                       ->signedRoute(

@@ -30,6 +30,6 @@ $router->get('admin.php/error', function () {
     throw new InvalidCsrfTokenException();
     
 });
-$router->redirect('index.php', '/foo');
+$router->redirect('profile.php', '/foo');
 
 

@@ -16,7 +16,6 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
     public function the_endpoint_exists()
     {
         $this->post($this->endpoint)->assertNotNullResponse();
-        
     }
     
     /** @test */
