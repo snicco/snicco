@@ -39,6 +39,11 @@ class Config extends Repository
         
     }
     
+    public function seedFromCache(array $items)
+    {
+        $this->items = $items;
+    }
+    
     /**
      * Recursively replace default values with the passed config.
      * - If either value is not an array, the config value will be used.
@@ -87,9 +92,7 @@ class Config extends Repository
     
     private function isEmptyArray($value) :bool
     {
-        
         return $value === [];
-        
     }
     
 }
