@@ -39,7 +39,7 @@ class HandlesExceptions implements Bootstrapper
         
         $this->configureErrorLog($app);
         $this->configureErrorDisplay($app);
-        $this->disableWPFatalErrorHandler();
+        $this->disableWPFatalErrorHandler($app);
         
     }
     

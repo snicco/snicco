@@ -199,7 +199,6 @@ WHERE
     
     private function getPayloadData(string $session_id, string $payload) :array
     {
-        
         return [
             'id' => $session_id,
             'user_id' => WP::userId(),
