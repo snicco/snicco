@@ -167,6 +167,18 @@ class ResponsePreparationTest extends UnitTest
         ob_end_clean();
     }
     
+    /** @test */
+    public function no_content_length_if_empty_response_stream()
+    {
+        
+        $response = $this->factory->html('');
+        
+        $prepared = $this->preparation->prepare($response, $this->request);
+        
+        $this->assertFalse($prepared->hasHeader('content-length'));
+        
+    }
+    
     protected function setUp() :void
     {
         parent::setUp();
