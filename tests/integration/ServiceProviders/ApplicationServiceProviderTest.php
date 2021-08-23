@@ -260,7 +260,9 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     public function an_exception_is_thrown_if_no_app_key_is_provided_in_the_config()
     {
         
-        $this->withOutConfig('app.key');
+        $provider = $this->customizeConfigProvider();
+        $provider->remove('app.key');
+        $this->withAddedProvider($provider);
         $this->expectException(ConfigurationException::class);
         $this->expectExceptionMessage(
             "Your app.key config value is either missing or too insecure. Please generate a new one using Snicco\Application\Application::generateKey()"
