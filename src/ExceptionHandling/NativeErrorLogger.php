@@ -19,17 +19,20 @@ class NativeErrorLogger extends AbstractLogger
         
         if ($e = $this->getException($context)) {
             
-            $entry = vsprintf(
-                PHP_EOL.'[%s]: %s'.PHP_EOL.'File: [%s]'.PHP_EOL.'Line: [%s]'.PHP_EOL.'Trace:[%s]',
-                [
-                    $level,
-                    $message.', '.get_class($e),
-                    $e->getFile(),
-                    $e->getLine(),
-                    $e->getTraceAsString(),
-                ]
-            );
+            $prev = $e->getPrevious() instanceof Throwable;
             
+            if ($prev) {
+                
+                $entry = $this->formatPrevious($e->getPrevious(), $e, $level, $message);
+                
+            }
+            else {
+                $entry = $this->formatWithoutPrevious($e, $level, $message);
+            }
+            
+        }
+        else {
+            $entry = "[$level]: $message";
         }
         
         error_log($entry);
@@ -45,9 +48,59 @@ class NativeErrorLogger extends AbstractLogger
             return null;
         }
         
-        return $e->getPrevious() instanceof Throwable
-            ? $e->getPrevious()
-            : $e;
+        return $e;
+        
+    }
+    
+    private function formatPrevious(Throwable $previous, Throwable $original, string $level, string $log_message) :string
+    {
+        
+        $entry = vsprintf(
+            PHP_EOL
+            .'[%s]: %s'
+            .PHP_EOL
+            ."\tCaused by: [%s] %s"
+            .PHP_EOL
+            ."\tFile: [%s]"
+            .PHP_EOL
+            ."\tLine: [%s]"
+            .PHP_EOL
+            .'File: [%s]'
+            .PHP_EOL
+            .'Line: [%s]'
+            .PHP_EOL
+            .'Trace:[%s]',
+            [
+                $level,
+                $log_message.', '.get_class($original),
+                get_class($previous),
+                $previous->getMessage(),
+                $previous->getFile(),
+                $previous->getLine(),
+                $original->getFile(),
+                $original->getLine(),
+                $original->getTraceAsString(),
+            ]
+        );
+        
+        return $entry;
+        
+    }
+    
+    private function formatWithoutPrevious(Throwable $e, string $level, string $log_message) :string
+    {
+        
+        $entry = vsprintf('[%s]: %s'.PHP_EOL.'File: [%s]'.PHP_EOL.'Line: [%s]'.PHP_EOL.'Trace:[%s]',
+            [
+                $level,
+                $log_message.', '.get_class($e),
+                $e->getFile(),
+                $e->getLine(),
+                $e->getTraceAsString(),
+            ]
+        );
+        
+        return $entry;
         
     }
     

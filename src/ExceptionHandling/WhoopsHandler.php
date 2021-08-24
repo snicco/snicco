@@ -14,7 +14,10 @@ class WhoopsHandler
     
     public static function get(Application $app)
     {
-        return tap(new PrettyPageHandler(), function (PrettyPageHandler $handler) use ($app) {
+    
+        $hide_frames = $app->config('app.hide_whoops_frames', []);
+    
+        return tap(new FilterablePrettyPageHandler($hide_frames), function (PrettyPageHandler $handler) use ($app) {
             
             $handler->handleUnconditionally(true);
             
