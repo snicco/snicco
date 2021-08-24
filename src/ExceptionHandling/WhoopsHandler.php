@@ -14,31 +14,34 @@ class WhoopsHandler
     
     public static function get(Application $app)
     {
-    
+        
         $hide_frames = $app->config('app.hide_whoops_frames', []);
-    
-        return tap(new FilterablePrettyPageHandler($hide_frames), function (PrettyPageHandler $handler) use ($app) {
-            
-            $handler->handleUnconditionally(true);
-            
-            if ($editor = $app->config('app.editor')) {
+        
+        return tap(
+            new FilterablePrettyPageHandler($hide_frames),
+            function (PrettyPageHandler $handler) use ($app) {
                 
-                $handler->setEditor($editor);
-                $handler->setApplicationRootPath($app->basePath());
-                $handler->setApplicationPaths(self::allDirsExpectVendor($app));
+                $handler->handleUnconditionally(true);
                 
-            }
-            
-            foreach ($app->config('app.debug_blacklist', []) as $key => $secrets) {
-                
-                foreach ($secrets as $secret) {
+                if ($editor = $app->config('app.editor')) {
                     
-                    $handler->blacklist($key, $secret);
+                    $handler->setEditor($editor);
+                    $handler->setApplicationRootPath($app->basePath());
+                    $handler->setApplicationPaths(self::allDirsExpectVendor($app));
                     
                 }
                 
+                foreach ($app->config('app.debug_blacklist', []) as $key => $secrets) {
+                    
+                    foreach ($secrets as $secret) {
+                        
+                        $handler->blacklist($key, $secret);
+                        
+                    }
+                    
+                }
             }
-        });
+        );
     }
     
     public static function allDirsExpectVendor(Application $app) :array
