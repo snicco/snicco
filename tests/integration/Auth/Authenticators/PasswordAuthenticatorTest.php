@@ -182,7 +182,7 @@ class PasswordAuthenticatorTest extends AuthTestCase
                  ->assertSessionHasErrors('login');
         
         $logger->assertLogEntry(
-            E_WARNING,
+            LOG_WARNING,
             "Failed authentication attempt for user [$calvin->ID] with invalid password [bogus] from 127.0.0.1"
         );
         

@@ -136,7 +136,7 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
         );
         
         $syslog->assertLogEntry(
-            E_WARNING,
+            LOG_WARNING,
             "Failed auth confirmation for user [$calvin->ID] from 127.0.0.1"
         );
         

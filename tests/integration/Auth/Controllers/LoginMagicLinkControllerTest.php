@@ -74,7 +74,7 @@ class LoginMagicLinkControllerTest extends AuthTestCase
         $this->post('/auth/login/magic-link', ['login' => 'bogus']);
         
         $logger->assertLogEntry(
-            E_WARNING,
+            LOG_WARNING,
             "User enumeration trying to request a new magic link for user login [bogus] from 127.0.0.1"
         );
         
