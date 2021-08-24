@@ -152,7 +152,7 @@ class ForgotPasswordControllerTest extends AuthTestCase
         $response->assertRedirectToRoute('auth.forgot.password');
         $response->assertSessionHas('password.reset.processed', true);
         $logger->assertLogEntry(
-            E_NOTICE,
+            LOG_NOTICE,
             'User enumeration trying to request a new password for user login [bogus@web.de] from 127.0.0.1'
         );
         

@@ -136,7 +136,7 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
         $this->assertNotAuthenticated($calvin);
         
         $logger->assertLogEntry(
-            E_WARNING,
+            LOG_WARNING,
             "Failed two-factor authentication for user [$calvin->ID] from 127.0.0.1"
         );
         

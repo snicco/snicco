@@ -17,7 +17,7 @@ class FailedPasswordResetLinkRequest extends BannableEvent
     
     public function priority() :int
     {
-        return E_NOTICE;
+        return LOG_NOTICE;
     }
     
     public function fail2BanMessage() :string

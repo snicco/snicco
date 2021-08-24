@@ -16,7 +16,7 @@ abstract class BannableEvent extends Event implements Bannable
     
     public function priority() :int
     {
-        return E_WARNING;
+        return LOG_WARNING;
     }
     
     abstract public function fail2BanMessage() :string;

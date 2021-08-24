@@ -122,7 +122,7 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
         $this->assertGuest();
         
         $syslogger->assertLogEntry(
-            E_WARNING,
+            LOG_WARNING,
             "Failed authentication with magic link for user [$calvin->ID] from 127.0.0.1"
         );
         
