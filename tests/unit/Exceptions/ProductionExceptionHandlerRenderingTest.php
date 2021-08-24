@@ -363,6 +363,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
             __DIR__.DIRECTORY_SEPARATOR.'vendor'
         );
         $app->shouldReceive('config')->once()->with('app.debug_blacklist', [])->andReturn([]);
+        $app->shouldReceive('config')->once()->with('app.hide_debug_traces', [])->andReturn([]);
         
         return \Snicco\Support\Functions\tap(new Run(), function (Run $whoops) use ($app) {
             

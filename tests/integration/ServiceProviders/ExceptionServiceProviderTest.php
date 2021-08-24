@@ -9,6 +9,7 @@ use ReflectionClass;
 use Tests\stubs\TestApp;
 use Whoops\RunInterface;
 use Tests\FrameworkTestCase;
+use Snicco\Routing\Pipeline;
 use Whoops\Handler\HandlerInterface;
 use Whoops\Handler\PrettyPageHandler;
 use Snicco\Contracts\ExceptionHandler;
@@ -88,6 +89,29 @@ class ExceptionServiceProviderTest extends FrameworkTestCase
         $whoops = $prop->getValue($exception_handler);
         
         $this->assertInstanceOf(Run::class, $whoops);
+        
+    }
+    
+    /** @test */
+    public function filtered_frames_are_extended_if_empty()
+    {
+        
+        $this->bootApp();
+        $filtered = $this->app->config('app.hide_debug_traces');
+        $this->assertNotEmpty($filtered);
+        $this->assertContains(Pipeline::class, $filtered);
+        
+    }
+    
+    /** @test */
+    public function filtered_frames_are_not_extended_if_the_user_already_provided_some()
+    {
+        
+        $this->withAddedConfig('app.hide_debug_traces', ['foobar']);
+        $this->bootApp();
+        $filtered = $this->app->config('app.hide_debug_traces');
+        $this->assertNotEmpty($filtered);
+        $this->assertSame(['foobar'], $filtered);
         
     }
     

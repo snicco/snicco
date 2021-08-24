@@ -7,8 +7,12 @@ namespace Snicco\ExceptionHandling;
 use Psr\Log\NullLogger;
 use Whoops\Run as Whoops;
 use Whoops\RunInterface;
+use Snicco\Http\Delegate;
 use Psr\Log\LoggerInterface;
+use Snicco\Routing\Pipeline;
 use Snicco\Http\ResponseFactory;
+use Snicco\Contracts\Middleware;
+use Illuminate\Container\Container;
 use Whoops\Handler\HandlerInterface;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Contracts\ExceptionHandler;
@@ -34,6 +38,15 @@ class ExceptionServiceProvider extends ServiceProvider
     private function bindConfig() :void
     {
         $this->config->extend('view.paths', [__DIR__.DIRECTORY_SEPARATOR.'views']);
+        $this->config->extendIfEmpty(
+            'app.hide_debug_traces',
+            fn() => [
+                Pipeline::class,
+                Container::class,
+                Delegate::class,
+                Middleware::class,
+            ]
+        );
     }
     
     private function bindErrorHandler() :void
@@ -61,9 +74,11 @@ class ExceptionServiceProvider extends ServiceProvider
     {
         $this->container->singleton(LoggerInterface::class, function () {
             
+            $filter_frames = $this->config->get('app.hide_debug_traces', []);
+            
             return $this->app->isRunningUnitTest()
                 ? new NullLogger()
-                : new NativeErrorLogger();
+                : new NativeErrorLogger($filter_frames);
             
         });
     }

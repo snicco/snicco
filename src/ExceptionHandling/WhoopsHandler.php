@@ -15,7 +15,7 @@ class WhoopsHandler
     public static function get(Application $app)
     {
         
-        $hide_frames = $app->config('app.hide_whoops_frames', []);
+        $hide_frames = $app->config('app.hide_debug_traces', []);
         
         return tap(
             new FilterablePrettyPageHandler($hide_frames),
