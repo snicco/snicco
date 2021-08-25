@@ -10,7 +10,7 @@ use Snicco\Contracts\Bootstrapper;
 use Snicco\Application\Application;
 use Snicco\Contracts\ExceptionHandler;
 use Snicco\ExceptionHandling\FatalError;
-use Snicco\ExceptionHandling\PhpErrorLevel;
+use Snicco\ExceptionHandling\PHPErrorLevel;
 
 class HandlesExceptions implements Bootstrapper
 {
