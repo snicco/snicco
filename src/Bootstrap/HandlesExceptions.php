@@ -11,6 +11,7 @@ use Snicco\Application\Application;
 use Snicco\Contracts\ExceptionHandler;
 use Snicco\ExceptionHandling\FatalError;
 use Snicco\ExceptionHandling\PHPErrorLevel;
+use Snicco\ExceptionHandling\NativeErrorLogger;
 
 class HandlesExceptions implements Bootstrapper
 {
@@ -23,7 +24,7 @@ class HandlesExceptions implements Bootstrapper
     
     public function bootstrap(Application $app) :void
     {
-        // This always to not use the global exception handling offered by the framework.
+        // This allows to not use the global exception handling offered by the framework.
         if ($app->config('app.exception_handling') !== true) {
             return;
         }
@@ -48,7 +49,15 @@ class HandlesExceptions implements Bootstrapper
             self::$reserved_memory = null;
             $this->getExceptionHandler()->report($e, $this->getRequest());
         } catch (Throwable $fatal) {
-            // nothing we can do here really.
+            
+            $class = get_class($e);
+            $php_error_log = new NativeErrorLogger();
+            $php_error_log->critical(
+                "Error while logging exception of type [$class]",
+                ['exception' => $fatal]
+            );
+            $php_error_log->error($e->getMessage(), ['exception' => $e]);
+            
         }
         
         $this->renderHttpResponse($e);
@@ -133,8 +142,8 @@ class HandlesExceptions implements Bootstrapper
             $response = $emitter->prepare($response, $request);
             $emitter->emit($response);
             
-        } catch (Throwable $e) {
-            // Nothing we can do.
+        } catch (Throwable $fatal) {
+            // Nothing we can do. Remain silent.
         }
         
     }
@@ -142,29 +151,21 @@ class HandlesExceptions implements Bootstrapper
     private function configureErrorLog(Application $app)
     {
         
-        if ($app->config('logging.disable_native_log', false)) {
+        ini_set('log_errors', 'On');
+        
+        if ($log_path = $app->config('app.error_log_dir')) {
             
-            ini_set('log_errors', 'Off');
+            if ( ! is_dir($path = $app->basePath($log_path))) {
+                wp_mkdir_p($path);
+            }
+            
+            ini_set('error_log', $path.DIRECTORY_SEPARATOR.'debug.log');
             
         }
         else {
             
-            ini_set('log_errors', 'On');
+            ini_set('error_log', WP_CONTENT_DIR.DIRECTORY_SEPARATOR.'debug.log');
             
-            if ($log_path = $app->config('app.error_log_dir')) {
-                
-                if ( ! is_dir($path = $app->basePath($log_path))) {
-                    wp_mkdir_p($path);
-                }
-                
-                ini_set('error_log', $path.DIRECTORY_SEPARATOR.'debug.log');
-                
-            }
-            else {
-                
-                ini_set('error_log', WP_CONTENT_DIR.DIRECTORY_SEPARATOR.'debug.log');
-                
-            }
         }
         
     }
