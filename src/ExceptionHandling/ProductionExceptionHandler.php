@@ -178,7 +178,8 @@ class ProductionExceptionHandler implements ExceptionHandler
                 'user_email' => $auth ? WP::currentUser()->user_email : null,
             ]);
         } catch (Throwable $e) {
-            // If we have a fatal error WordPress might not be fully booted yet.
+            // If we have a fatal error WordPress might not be fully booted yet,
+            // and we don't have access to auth functions.
             return [];
         }
         
@@ -276,8 +277,11 @@ class ProductionExceptionHandler implements ExceptionHandler
             
             $method = $this->whoops::EXCEPTION_HANDLER;
             
+            $status = $e->httpStatusCode();
+            $e = $e->getPrevious() instanceof Throwable ? $e->getPrevious() : $e;
+            
             return $this->response_factory->html($this->whoops->{$method}($e))
-                                          ->withStatus($e->httpStatusCode());
+                                          ->withStatus($status);
             
         }
         

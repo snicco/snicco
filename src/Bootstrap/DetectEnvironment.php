@@ -12,7 +12,9 @@ class DetectEnvironment implements Bootstrapper
     
     public function bootstrap(Application $app) :void
     {
-        $app['env'] = $this->detectEnvironment(fn() => $app->config('app.env', 'production'));
+        $env = $this->detectEnvironment(fn() => $app->config('app.env', 'production'));
+        $app['env'] = $env;
+        $app->config()->set('app.env', $env);
     }
     
     protected function detectWebEnvironment(Closure $callback) :string

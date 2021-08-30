@@ -19,4 +19,24 @@ class ApplicationTest extends FrameworkTestCase
         
     }
     
+    /** @test */
+    public function testEnvironmentUpdatedInConfig()
+    {
+        
+        $_SERVER['argv'][] = '--env';
+        $_SERVER['argv'][] = 'production';
+        
+        $this->bootApp();
+        
+        $this->assertSame('production', $this->app->environment());
+        $this->assertSame('production', $this->app->config('app.env'));
+        
+        array_pop($_SERVER['argv']);
+        array_pop($_SERVER['argv']);
+        
+        $this->assertNotContains('--env', $_SERVER['argv']);
+        $this->assertNotContains('production', $_SERVER['argv']);
+        
+    }
+    
 }

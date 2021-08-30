@@ -19,6 +19,7 @@ class HtmlErrorRenderer
      * @param  Request  $request
      *
      * @return string|void
+     * @throws ErrorViewException
      */
     public function render(ViewFactoryInterface $view_factory, HttpException $e, Request $request)
     {
