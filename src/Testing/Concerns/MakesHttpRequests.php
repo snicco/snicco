@@ -447,7 +447,7 @@ trait MakesHttpRequests
                 
             }
             
-            if ($this->with_trailing_slash && ! Str::contains($uri, '.php')) {
+            if ($this->with_trailing_slash && ! Str::contains($uri, ['.php', '?'])) {
                 
                 $uri = Url::addTrailing($uri);
                 
