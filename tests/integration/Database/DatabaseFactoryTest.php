@@ -15,7 +15,6 @@ class DatabaseFactoryTest extends DatabaseTestCase
 {
     
     use WithTestTables;
-    use WithTestTransactions;
     
     /** @test */
     public function a_factory_can_be_created()
