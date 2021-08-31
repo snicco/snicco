@@ -178,6 +178,8 @@ abstract class TestCase extends WPTestCase
     protected function tearDown() :void
     {
         
+        parent::tearDown();
+        
         if (isset($this->app)) {
             
             foreach ($this->before_application_destroyed as $callback) {
@@ -224,8 +226,6 @@ abstract class TestCase extends WPTestCase
         //$this->logout();
         Event::setInstance(null);
         WP::reset();
-        
-        parent::tearDown();
         
     }
     
