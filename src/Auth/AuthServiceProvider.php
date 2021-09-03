@@ -138,11 +138,20 @@ class AuthServiceProvider extends ServiceProvider
         $this->config->extend('auth.endpoints.accounts_create', 'create');
         $this->config->extend('routing.api.endpoints', [
             
-            'auth' => $this->config->get('auth.endpoints.prefix'),
-            // Needed so we can respond to requests to wp-login.php and redirect them appropriately
+            // Needed so we can respond to requests to wp-login.php and redirect them appropriately.
+            // Having /wp-login.php marked as an endpoint will ensure that we boot the Kernel
+            // and route pipeline on the init hook which is the only way to intercept and redirect.
             'wp-login.php' => '/wp-login.php',
         
         ]);
+        
+        $this->config->extend(
+            'routing.presets.auth',
+            [
+                'prefix' => $this->config->get('auth.endpoints.prefix'),
+                'name' => 'auth',
+            ]
+        );
         
     }
     

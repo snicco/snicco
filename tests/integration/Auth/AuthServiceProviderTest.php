@@ -84,7 +84,6 @@ class AuthServiceProviderTest extends AuthTestCase
         $this->bootApp();
         
         $this->assertSame('auth', TestApp::config('auth.endpoints.prefix'));
-        $this->assertArrayHasKey('auth', TestApp::config('routing.api.endpoints'));
         
         $this->assertSame('login', TestApp::config('auth.endpoints.login'));
         $this->assertSame('magic-link', TestApp::config('auth.endpoints.magic-link'));

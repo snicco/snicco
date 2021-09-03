@@ -88,6 +88,39 @@ class AuthSessionControllerTest extends AuthTestCase
     }
     
     /** @test */
+    public function auth_routes_are_run_AFTER_the_init_hook()
+    {
+        
+        $this->default_server_variables = [
+            'REQUEST_METHOD' => 'POST',
+            'SCRIPT_NAME' => 'index.php',
+        ];
+        $this->withRequest($this->frontendRequest('POST', '/auth/login'));
+        
+        $hook_run = false;
+        add_action('wp_login', function () use (&$hook_run) {
+            $hook_run = true;
+        });
+        
+        do_action('init');
+        $this->assertNoResponse();
+        
+        $calvin = $this->createAdmin();
+        $this->assertNotAuthenticated($calvin);
+        
+        $response = $this->postToLogin([
+            'pwd' => 'password',
+            'log' => $calvin->user_login,
+        ]);
+        
+        $response->assertRedirectToRoute('dashboard', 302);
+        $this->assertAuthenticated($calvin);
+        
+        $this->assertTrue($hook_run);
+        
+    }
+    
+    /** @test */
     public function login_events_are_dispatched_correctly()
     {
         
