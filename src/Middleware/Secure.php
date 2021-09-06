@@ -8,10 +8,12 @@ use Snicco\Support\Url;
 use Snicco\Http\Delegate;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
-use Snicco\Http\ResponseFactory;
 use Snicco\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * @todo tests.
+ */
 class Secure extends Middleware
 {
     
@@ -20,17 +22,23 @@ class Secure extends Middleware
     protected bool $preload;
     protected int  $max_age;
     protected bool $subdomains;
+    private bool   $is_local;
     
-    public function __construct(ResponseFactory $response_factory, int $max_age = 31536000, $preload = false, $subdomains = false)
+    public function __construct(bool $is_local = false, int $max_age = 31536000, $preload = false, $subdomains = false)
     {
-        $this->response_factory = $response_factory;
         $this->max_age = $max_age;
         $this->preload = $preload;
         $this->subdomains = $subdomains;
+        $this->is_local = $is_local;
     }
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
+        
+        // Don't enforce https in local development mode to allow either CI/CD testing.
+        if ($this->is_local) {
+            return $next($request);
+        }
         
         $uri = $request->getUri();
         
@@ -38,7 +46,6 @@ class Secure extends Middleware
             
             // transport security header is ignored for http access.
             // @link https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Strict-Transport-Security#description
-            
             $location = $uri->withScheme('https')->__toString();
             
             return $this->response_factory->redirect()
