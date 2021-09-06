@@ -31,6 +31,8 @@ class MiddlewareServiceProvider extends ServiceProvider
         
         $this->bindWww();
         
+        $this->bindSecureMiddleware();
+        
         $this->bindOpenRedirectProtection();
         
         $this->bindOutputBufferMiddleware();
@@ -133,6 +135,15 @@ class MiddlewareServiceProvider extends ServiceProvider
         $this->container->singleton(Www::class, fn() => new Www(
             $this->siteUrl()
         ));
+    }
+    
+    private function bindSecureMiddleware()
+    {
+        
+        $this->container->singleton(Secure::class, fn() => new Secure(
+            ($this->app->isLocal() || $this->app->isRunningUnitTest())
+        ));
+        
     }
     
     private function bindOpenRedirectProtection()
