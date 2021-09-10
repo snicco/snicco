@@ -9,7 +9,7 @@ use Throwable;
 use Snicco\Support\Str;
 use mysqli_sql_exception;
 use Illuminate\Database\Grammar;
-use Illuminate\Database\QueryException;
+use Snicco\Database\Exceptions\SqlException;
 use Snicco\Database\Contracts\BetterWPDbInterface;
 use Snicco\Database\Illuminate\MySqlSchemaGrammar;
 
@@ -105,12 +105,100 @@ trait ManagesTransactions
     }
     
     /**
+     * Get the active transaction_count.
+     *
+     * @return int
+     */
+    public function transactionLevel() :int
+    {
+        
+        return $this->transaction_count;
+    }
+    
+    /**
+     * Rollback the active database transaction.
+     *
+     * @param  null  $to_level
+     *
+     * @return void
+     * @throws Throwable
+     */
+    public function rollBack($to_level = null)
+    {
+        
+        $to_level = $to_level ?? $this->transaction_count;
+        
+        if ($to_level < 0 || $to_level > $this->transaction_count) {
+            
+            return;
+            
+        }
+        
+        try {
+            
+            if ($to_level === 0) {
+                
+                $this->wpdb->rollbackTransaction($this->query_grammar->compileRollback());
+                
+            }
+            
+            if ($to_level > 0) {
+                
+                $this->wpdb->rollbackTransaction(
+                    $this->query_grammar->compileSavepointRollBack('trans'.($to_level))
+                );
+                
+            }
+            
+        } catch (Throwable $e) {
+            
+            $this->handleRollBackException($e);
+            
+        }
+        
+        $this->decreaseTransactionCount($to_level - 1 ?? null);
+        
+    }
+    
+    /**
+     * Commit the active database transaction.
+     *
+     * @return void
+     * @throws Throwable
+     */
+    public function commit()
+    {
+        
+        $this->wpdb->commitTransaction();
+        
+        // If successfully reset the transaction count.
+        $this->transaction_count = 0;
+        
+    }
+    
+    /**
+     * Start a new database transaction.
+     *
+     * @return void
+     * @throws Throwable
+     */
+    public function beginTransaction()
+    {
+        
+        // In case we have some global state left, because WordPress...
+        $this->transaction_count = 0;
+        
+        $this->savepoint();
+        
+    }
+    
+    /**
      * Handle an exception from a transaction beginning.
      *
      * @param  mysqli_sql_exception  $e
      *
      * @return void
-     * @throws QueryException
+     * @throws SqlException()
      */
     private function handleBeginTransactionException(mysqli_sql_exception $e)
     {
@@ -127,7 +215,7 @@ trait ManagesTransactions
         
         // If we can reconnect with wpdb or if we cant start the transaction a second time,
         // throw out the exception to the error driver.
-        throw new QueryException('START TRANSACTION', [], $e);
+        throw new SqlException('START TRANSACTION', [], $e);
         
     }
     
@@ -221,7 +309,7 @@ trait ManagesTransactions
         }
         
         $this->transaction_count = 0;
-        throw new QueryException('', [], $e);
+        throw new SqlException('', [], $e);
         
     }
     
@@ -244,62 +332,6 @@ trait ManagesTransactions
     }
     
     /**
-     * Get the active transaction_count.
-     *
-     * @return int
-     */
-    public function transactionLevel() :int
-    {
-        
-        return $this->transaction_count;
-    }
-    
-    /**
-     * Rollback the active database transaction.
-     *
-     * @param  null  $to_level
-     *
-     * @return void
-     * @throws Throwable
-     */
-    public function rollBack($to_level = null)
-    {
-        
-        $to_level = $to_level ?? $this->transaction_count;
-        
-        if ($to_level < 0 || $to_level > $this->transaction_count) {
-            
-            return;
-            
-        }
-        
-        try {
-            
-            if ($to_level === 0) {
-                
-                $this->wpdb->rollbackTransaction($this->query_grammar->compileRollback());
-                
-            }
-            
-            if ($to_level > 0) {
-                
-                $this->wpdb->rollbackTransaction(
-                    $this->query_grammar->compileSavepointRollBack('trans'.($to_level))
-                );
-                
-            }
-            
-        } catch (Throwable $e) {
-            
-            $this->handleRollBackException($e);
-            
-        }
-        
-        $this->decreaseTransactionCount($to_level - 1 ?? null);
-        
-    }
-    
-    /**
      * Handle an exception from a rollback.
      *
      * @param  Throwable|mysqli_sql_exception  $e
@@ -316,7 +348,7 @@ trait ManagesTransactions
             
         }
         
-        throw new QueryException('ROLLBACK', [], $e);
+        throw new SqlException('ROLLBACK', [], $e);
         
     }
     
@@ -336,22 +368,6 @@ trait ManagesTransactions
             $this->transaction_count = 0;
             
         }
-        
-    }
-    
-    /**
-     * Commit the active database transaction.
-     *
-     * @return void
-     * @throws Throwable
-     */
-    public function commit()
-    {
-        
-        $this->wpdb->commitTransaction();
-        
-        // If successfully reset the transaction count.
-        $this->transaction_count = 0;
         
     }
     
@@ -381,23 +397,7 @@ trait ManagesTransactions
             
         }
         
-        throw new QueryException('COMMIT', [], $e);
-    }
-    
-    /**
-     * Start a new database transaction.
-     *
-     * @return void
-     * @throws Throwable
-     */
-    public function beginTransaction()
-    {
-        
-        // In case we have some global state left, because Wordpress...
-        $this->transaction_count = 0;
-        
-        $this->savepoint();
-        
+        throw new SqlException('COMMIT', [], $e);
     }
     
 }

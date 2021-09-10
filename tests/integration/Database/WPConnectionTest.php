@@ -11,7 +11,7 @@ use mysqli_result;
 use mysqli_sql_exception;
 use Snicco\Database\WPConnection;
 use Illuminate\Database\Query\Builder;
-use Illuminate\Database\QueryException;
+use Snicco\Database\Exceptions\SqlException;
 use Snicco\Database\Illuminate\MySqlProcessor;
 use Snicco\Database\Illuminate\MySqlQueryGrammar;
 use Snicco\Database\Contracts\BetterWPDbInterface;
@@ -597,7 +597,7 @@ class WPConnectionTest extends DatabaseTestCase
             $connection->select('foobar', ['foo' => 'bar']);
             $this->fail('No query exception thrown');
             
-        } catch (QueryException $e) {
+        } catch (SqlException $e) {
             
             $this->assertSame('foobar', $e->getSql());
             $this->assertSame(['foo' => 'bar'], $e->getBindings());
@@ -622,7 +622,7 @@ class WPConnectionTest extends DatabaseTestCase
             $connection->insert('foobar', ['foo' => 'bar']);
             $this->fail('No query exception thrown');
             
-        } catch (QueryException $e) {
+        } catch (SqlException $e) {
             
             $this->assertSame('foobar', $e->getSql());
             $this->assertSame(['foo' => 'bar'], $e->getBindings());
@@ -647,7 +647,7 @@ class WPConnectionTest extends DatabaseTestCase
             $connection->update('foobar', ['foo' => 'bar']);
             $this->fail('No query exception thrown');
             
-        } catch (QueryException $e) {
+        } catch (SqlException $e) {
             
             $this->assertSame('foobar', $e->getSql());
             $this->assertSame(['foo' => 'bar'], $e->getBindings());
@@ -676,7 +676,7 @@ class WPConnectionTest extends DatabaseTestCase
             $connection->delete('foobar', ['foo' => 'bar']);
             $this->fail('No query exception thrown');
             
-        } catch (QueryException $e) {
+        } catch (SqlException $e) {
             
             $this->assertSame('foobar', $e->getSql());
             $this->assertSame(['foo' => 'bar'], $e->getBindings());
@@ -701,7 +701,7 @@ class WPConnectionTest extends DatabaseTestCase
             $connection->unprepared('foobar');
             $this->fail('No query exception thrown');
             
-        } catch (QueryException $e) {
+        } catch (SqlException $e) {
             
             $this->assertSame('foobar', $e->getSql());
             $this->assertSame([], $e->getBindings());
@@ -731,7 +731,7 @@ class WPConnectionTest extends DatabaseTestCase
                 
             }
             
-        } catch (QueryException $e) {
+        } catch (SqlException $e) {
             
             $this->assertSame('foobar', $e->getSql());
             $this->assertSame(['foo' => 'bar'], $e->getBindings());
@@ -759,7 +759,7 @@ class WPConnectionTest extends DatabaseTestCase
             
         } catch (Exception $exception) {
             
-            $this->assertNotInstanceOf(QueryException::class, $exception);
+            $this->assertNotInstanceOf(SqlException::class, $exception);
             
         }
         
