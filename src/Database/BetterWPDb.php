@@ -45,28 +45,6 @@ class BetterWPDb implements BetterWPDbInterface
         
     }
     
-    /**
-     * @param $sql
-     * @param $bindings
-     * @param  string  $types
-     *
-     * @return false|mysqli_stmt
-     */
-    private function preparedStatement($sql, $bindings, string $types = "")
-    {
-        
-        $types = $types ? : str_repeat("s", count($bindings));
-        $stmt = $this->mysqli->prepare($sql);
-        
-        if ( ! empty($bindings)) {
-            
-            $stmt->bind_param($types, ...$bindings);
-            
-        }
-        
-        return $stmt;
-    }
-    
     public function doStatement(string $sql, array $bindings) :bool
     {
         
@@ -123,34 +101,49 @@ class BetterWPDb implements BetterWPDbInterface
     
     public function startTransaction()
     {
-        
         $this->mysqli->begin_transaction();
     }
     
     public function commitTransaction()
     {
-        
         $this->mysqli->commit();
     }
     
     public function rollbackTransaction(string $sql)
     {
-        
         $this->mysqli->query($sql);
-        
     }
     
     public function createSavepoint(string $sql)
     {
-        
         $this->mysqli->query($sql);
-        
     }
     
     public function lastInsertId() :int
     {
         return $this->mysqli->insert_id;
+    }
+    
+    /**
+     * @param $sql
+     * @param $bindings
+     * @param  string  $types
+     *
+     * @return false|mysqli_stmt
+     */
+    private function preparedStatement($sql, $bindings, string $types = "")
+    {
         
+        $types = $types ? : str_repeat("s", count($bindings));
+        $stmt = $this->mysqli->prepare($sql);
+        
+        if ( ! empty($bindings)) {
+            
+            $stmt->bind_param($types, ...$bindings);
+            
+        }
+        
+        return $stmt;
     }
     
 }

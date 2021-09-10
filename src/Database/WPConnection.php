@@ -11,9 +11,9 @@ use mysqli_result;
 use mysqli_sql_exception;
 use Illuminate\Support\Arr;
 use Illuminate\Database\Grammar;
-use Illuminate\Database\QueryException;
 use Illuminate\Database\Query\Expression;
 use Snicco\Database\Concerns\LogsQueries;
+use Snicco\Database\Exceptions\SqlException;
 use Snicco\Database\Illuminate\MySqlProcessor;
 use Snicco\Database\Concerns\ManagesTransactions;
 use Snicco\Database\Illuminate\MySqlQueryGrammar;
@@ -56,21 +56,6 @@ class WPConnection implements WPConnectionInterface
         $this->schema_grammar = $this->withTablePrefix(new MySqlSchemaGrammar());
         $this->post_processor = new MySqlProcessor();
         $this->name = $name;
-    }
-    
-    /**
-     * Set the table prefix and return the grammar for
-     * a QueryBuilder or SchemaBuilder
-     *
-     * @param  Grammar  $grammar
-     *
-     * @return Grammar
-     */
-    private function withTablePrefix(Grammar $grammar) :Grammar
-    {
-        $grammar->setTablePrefix($this->table_prefix);
-        
-        return $grammar;
     }
     
     public function dbInstance() :BetterWPDbInterface
@@ -131,23 +116,6 @@ class WPConnection implements WPConnectionInterface
         
     }
     
-    
-    
-    /*
-    |
-    |
-    |--------------------------------------------------------------------------
-    | Sanitizing and preparing the data to be passed into wpdb
-    |--------------------------------------------------------------------------
-    |
-    |
-    | We have to do all the sanitization ourselves and cant rely on the wpdb
-    | class.
-    |
-    |
-    |
-    */
-    
     /**
      * Get the query grammar used by the connection.
      * The QueryGrammar is used to "translate" the QueryBuilder instance into raw
@@ -167,13 +135,13 @@ class WPConnection implements WPConnectionInterface
     |
     |
     |--------------------------------------------------------------------------
-    | Query methods defined in the ConnectionInterface
+    | Sanitizing and preparing the data to be passed into wpdb
     |--------------------------------------------------------------------------
     |
     |
-    | Here is where we have to do most of the work since we need to
-    | process all queries through the active wpdb instance in order to not
-    | open a new db connection.
+    | We have to do all the sanitization ourselves and cant rely on the wpdb
+    | class.
+    |
     |
     |
     */
@@ -187,6 +155,23 @@ class WPConnection implements WPConnectionInterface
     {
         return $this->post_processor;
     }
+    
+    
+    
+    /*
+    |
+    |
+    |--------------------------------------------------------------------------
+    | Query methods defined in the ConnectionInterface
+    |--------------------------------------------------------------------------
+    |
+    |
+    | Here is where we have to do most of the work since we need to
+    | process all queries through the active wpdb instance in order to not
+    | open a new db connection.
+    |
+    |
+    */
     
     /**
      * Run a select statement and return a single result.
@@ -224,7 +209,7 @@ class WPConnection implements WPConnectionInterface
      * @param  Closure  $callback
      *
      * @return mixed
-     * @throws QueryException
+     * @throws SqlException()
      */
     public function runWpDB(string $query, array $bindings, Closure $callback)
     {
@@ -236,25 +221,6 @@ class WPConnection implements WPConnectionInterface
         );
         
     }
-    
-    private function runWithoutExceptions(string $query, array $bindings, Closure $callback)
-    {
-        
-        $start = microtime(true);
-        
-        $result = $callback($query, $bindings);
-        
-        if ($this->logging_queries) {
-            
-            $this->logQuery($query, $bindings, $this->getElapsedTime($start));
-            
-        }
-        
-        return $result;
-        
-    }
-    
-    // Method is used by eloquent for pdo calls.
     
     /**
      * Prepare the query bindings for execution.
@@ -309,7 +275,7 @@ class WPConnection implements WPConnectionInterface
      * @param  bool  $useReadPdo
      *
      * @return array
-     * @throws QueryException
+     * @throws SqlException()
      */
     public function select($query, $bindings = [], $useReadPdo = true)
     {
@@ -326,7 +292,7 @@ class WPConnection implements WPConnectionInterface
                 
             } catch (mysqli_sql_exception $e) {
                 
-                throw new QueryException($query, $bindings, $e);
+                throw new SqlException($query, $bindings, $e);
                 
             }
             
@@ -341,7 +307,7 @@ class WPConnection implements WPConnectionInterface
      * @param  array  $bindings
      *
      * @return bool
-     * @throws QueryException
+     * @throws SqlException()
      */
     public function insert($query, $bindings = [])
     {
@@ -357,7 +323,7 @@ class WPConnection implements WPConnectionInterface
      * @param  array  $bindings
      *
      * @return bool
-     * @throws QueryException
+     * @throws SqlException()
      */
     public function statement($query, $bindings = [])
     {
@@ -374,7 +340,7 @@ class WPConnection implements WPConnectionInterface
                 
             } catch (mysqli_sql_exception $e) {
                 
-                throw new QueryException($query, $bindings, $e);
+                throw new SqlException($query, $bindings, $e);
                 
             }
             
@@ -389,7 +355,7 @@ class WPConnection implements WPConnectionInterface
      * @param  array  $bindings
      *
      * @return int
-     * @throws QueryException
+     * @throws SqlException()
      */
     public function update($query, $bindings = [])
     {
@@ -404,7 +370,7 @@ class WPConnection implements WPConnectionInterface
      * @param  array  $bindings
      *
      * @return int
-     * @throws QueryException
+     * @throws SqlException()
      */
     public function affectingStatement($query, $bindings = [])
     {
@@ -421,7 +387,7 @@ class WPConnection implements WPConnectionInterface
                 
             } catch (mysqli_sql_exception $e) {
                 
-                throw new QueryException($query, $bindings, $e);
+                throw new SqlException($query, $bindings, $e);
                 
             }
             
@@ -436,7 +402,7 @@ class WPConnection implements WPConnectionInterface
      * @param  array  $bindings
      *
      * @return int
-     * @throws QueryException
+     * @throws SqlException()
      */
     public function delete($query, $bindings = [])
     {
@@ -463,7 +429,7 @@ class WPConnection implements WPConnectionInterface
      * @param  string  $query
      *
      * @return bool
-     * @throws QueryException
+     * @throws SqlException()
      */
     public function unprepared($query)
     {
@@ -480,7 +446,7 @@ class WPConnection implements WPConnectionInterface
                 
             } catch (mysqli_sql_exception $e) {
                 
-                throw new QueryException($query, [], $e);
+                throw new SqlException($query, [], $e);
                 
             }
             
@@ -517,7 +483,7 @@ class WPConnection implements WPConnectionInterface
                 
             } catch (mysqli_sql_exception $e) {
                 
-                throw new QueryException($query, $bindings, $e);
+                throw new SqlException($query, $bindings, $e);
                 
             }
             
@@ -535,21 +501,6 @@ class WPConnection implements WPConnectionInterface
         }
         
     }
-    
-    /*
-    |
-    |
-    |--------------------------------------------------------------------------
-    | MISC getters and setters
-    |--------------------------------------------------------------------------
-    |
-    |
-    |
-    |
-    |
-    |
-    |
-    */
     
     /**
      * Get an option from the configuration options.
@@ -575,6 +526,21 @@ class WPConnection implements WPConnectionInterface
         
     }
     
+    /*
+    |
+    |
+    |--------------------------------------------------------------------------
+    | MISC getters and setters
+    |--------------------------------------------------------------------------
+    |
+    |
+    |
+    |
+    |
+    |
+    |
+    */
+    
     public function getName() :string
     {
         return $this->name;
@@ -590,6 +556,38 @@ class WPConnection implements WPConnectionInterface
     public function lastInsertId() :int
     {
         return $this->wpdb->lastInsertId();
+    }
+    
+    /**
+     * Set the table prefix and return the grammar for
+     * a QueryBuilder or SchemaBuilder
+     *
+     * @param  Grammar  $grammar
+     *
+     * @return Grammar
+     */
+    private function withTablePrefix(Grammar $grammar) :Grammar
+    {
+        $grammar->setTablePrefix($this->table_prefix);
+        
+        return $grammar;
+    }
+    
+    private function runWithoutExceptions(string $query, array $bindings, Closure $callback)
+    {
+        
+        $start = microtime(true);
+        
+        $result = $callback($query, $bindings);
+        
+        if ($this->logging_queries) {
+            
+            $this->logQuery($query, $bindings, $this->getElapsedTime($start));
+            
+        }
+        
+        return $result;
+        
     }
     
 }
