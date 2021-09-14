@@ -16,6 +16,7 @@ use Snicco\Auth\Middleware\ConfirmAuth;
 use Snicco\Auth\Contracts\LoginResponse;
 use Snicco\Auth\Events\GenerateLoginUrl;
 use Snicco\Contracts\EncryptorInterface;
+use Snicco\Auth\Responses\ChallengeView;
 use Snicco\Auth\Events\GenerateLogoutUrl;
 use Snicco\Auth\Events\SettingAuthCookie;
 use Snicco\Auth\Contracts\AuthConfirmation;
@@ -34,7 +35,9 @@ use Snicco\Auth\Listeners\GenerateNewAuthCookie;
 use Snicco\Auth\Controllers\AuthSessionController;
 use Snicco\Auth\Confirmation\EmailAuthConfirmation;
 use Snicco\Auth\Contracts\RegistrationViewResponse;
+use Snicco\Auth\Contracts\Abstract2FAChallengeView;
 use Snicco\Auth\Events\FailedPasswordAuthentication;
+use Snicco\Auth\Responses\TwoFactorConfirmationView;
 use Snicco\Auth\Authenticators\PasswordAuthenticator;
 use Snicco\Auth\Contracts\TwoFactorChallengeResponse;
 use Snicco\Auth\Responses\Google2FaChallengeResponse;
@@ -49,6 +52,7 @@ use Snicco\Auth\Events\FailedPasswordResetLinkRequest;
 use Snicco\Auth\Events\FailedLoginLinkCreationRequest;
 use Snicco\Auth\Confirmation\TwoFactorAuthConfirmation;
 use Snicco\Auth\Responses\EmailRegistrationViewResponse;
+use Snicco\Auth\Contracts\Abstract2FAuthConfirmationView;
 use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
 use Snicco\Auth\Controllers\ConfirmedAuthSessionController;
@@ -77,6 +81,8 @@ class AuthServiceProvider extends ServiceProvider
         $this->bindLoginResponse();
         $this->bindTwoFactorProvider();
         $this->bindTwoFactorChallengeResponse();
+        $this->bindTwoFactorView();
+        $this->bindAuthConfirmationView();
         $this->bindRegistrationViewResponse();
         $this->bindFail2Ban();
         
@@ -250,7 +256,6 @@ class AuthServiceProvider extends ServiceProvider
     
     private function bindAuthConfirmation()
     {
-        
         $this->container->singleton(AuthConfirmation::class, function () {
             
             if ($this->config->get('auth.features.2fa')) {
@@ -260,6 +265,7 @@ class AuthServiceProvider extends ServiceProvider
                     $this->container->make(TwoFactorAuthenticationProvider::class),
                     $this->container->make(ResponseFactory::class),
                     $this->container->make(EncryptorInterface::class),
+                    $this->container->make(Abstract2FAuthConfirmationView::class)
                 );
                 
             }
@@ -406,6 +412,21 @@ class AuthServiceProvider extends ServiceProvider
         $this->container->singleton(
             SessionManagerInterface::class,
             fn() => $this->container->make(AuthSessionManager::class)
+        );
+    }
+    
+    private function bindTwoFactorView()
+    {
+        $this->container->singleton(Abstract2FaChallengeView::class,
+            fn() => $this->container->make(ChallengeView::class)
+        );
+    }
+    
+    private function bindAuthConfirmationView()
+    {
+        $this->container->singleton(
+            Abstract2FAuthConfirmationView::class,
+            fn() => $this->container->make(TwoFactorConfirmationView::class)
         );
     }
     

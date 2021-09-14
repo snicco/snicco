@@ -12,7 +12,6 @@ use Snicco\Contracts\EncryptorInterface;
 use Snicco\Auth\Events\FailedTwoFactorAuthentication;
 use Snicco\Auth\Traits\PerformsTwoFactorAuthentication;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
-use Snicco\Auth\Exceptions\FailedTwoFactorAuthenticationException;
 
 class TwoFactorAuthenticator extends Authenticator
 {
