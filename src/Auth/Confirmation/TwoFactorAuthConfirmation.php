@@ -9,6 +9,7 @@ use Snicco\Http\ResponseFactory;
 use Snicco\Contracts\EncryptorInterface;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Auth\Traits\PerformsTwoFactorAuthentication;
+use Snicco\Auth\Contracts\Abstract2FAuthConfirmationView;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
 
 class TwoFactorAuthConfirmation implements AuthConfirmation
@@ -21,17 +22,20 @@ class TwoFactorAuthConfirmation implements AuthConfirmation
     private ResponseFactory                 $response_factory;
     private EncryptorInterface              $encryptor;
     private string                          $user_secret;
+    private Abstract2FAuthConfirmationView  $response;
     
     public function __construct(
         AuthConfirmation $fallback,
         TwoFactorAuthenticationProvider $provider,
         ResponseFactory $response_factory,
-        EncryptorInterface $encryptor
+        EncryptorInterface $encryptor,
+        Abstract2FAuthConfirmationView $response
     ) {
         $this->fallback = $fallback;
         $this->encryptor = $encryptor;
         $this->provider = $provider;
         $this->response_factory = $response_factory;
+        $this->response = $response;
     }
     
     public function confirm(Request $request) :bool
@@ -58,10 +62,7 @@ class TwoFactorAuthConfirmation implements AuthConfirmation
             
         }
         
-        return $this->response_factory->view('auth-layout', [
-            'view' => 'auth-two-factor-challenge',
-            'post_to' => $request->path(),
-        ]);
+        return $this->response->toView($request);
         
     }
     

@@ -8,6 +8,7 @@ use Snicco\Http\Controller;
 use Snicco\Http\Psr7\Request;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Contracts\EncryptorInterface;
+use Snicco\Auth\Contracts\Abstract2FAChallengeView;
 use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
 
 class TwoFactorAuthSessionController extends Controller
@@ -21,7 +22,7 @@ class TwoFactorAuthSessionController extends Controller
         $this->encryptor = $encryptor;
     }
     
-    public function create(Request $request)
+    public function create(Request $request, Abstract2FAChallengeView $view_response)
     {
         
         $challenged_user = $request->session()->challengedUser();
@@ -35,10 +36,7 @@ class TwoFactorAuthSessionController extends Controller
             
         }
         
-        return $this->view_factory->make('auth-layout')->with([
-            'view' => 'auth-two-factor-challenge',
-            'post_to' => $this->url->toLogin(),
-        ]);
+        return $view_response;
         
     }
     
