@@ -86,7 +86,7 @@ if ($config->get('auth.features.2fa')) {
            ->name('2fa.setup.store');
     
     $router->post("$two_factor/preferences", [TwoFactorAuthPreferenceController::class, 'store'])
-           ->middleware(['auth', 'auth.confirmed', 'json', 'csrf', '2fa.disabled'])
+           ->middleware(['auth', 'auth.confirmed', 'json', 'csrf:persist', '2fa.disabled'])
            ->name('2fa.preferences.store');
     
     $router->delete("$two_factor/preferences", [
