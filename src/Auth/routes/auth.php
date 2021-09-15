@@ -82,18 +82,18 @@ if ($config->get('auth.features.2fa')) {
     $challenge = $config->get('auth.endpoints.challenge');
     
     $router->post("$two_factor/setup", [TwoFactorAuthSetupController::class, 'store'])
-           ->middleware(['auth', 'auth.confirmed', 'csrf:persist', '2fa.disabled'])
+           ->middleware(['auth', 'auth.confirmed', 'json', 'csrf:persist', '2fa.disabled'])
            ->name('2fa.setup.store');
     
     $router->post("$two_factor/preferences", [TwoFactorAuthPreferenceController::class, 'store'])
-           ->middleware(['auth', 'auth.confirmed', 'csrf', '2fa.disabled'])
+           ->middleware(['auth', 'auth.confirmed', 'json', 'csrf', '2fa.disabled'])
            ->name('2fa.preferences.store');
     
     $router->delete("$two_factor/preferences", [
         TwoFactorAuthPreferenceController::class,
         'destroy',
     ])
-           ->middleware(['auth', 'auth.confirmed', 'csrf', '2fa.enabled'])->name(
+           ->middleware(['auth', 'auth.confirmed', 'json', 'csrf', '2fa.enabled'])->name(
             '2fa.preferences.destroy'
         );
     
@@ -112,7 +112,7 @@ if ($config->get('auth.features.2fa')) {
                $router->put('two-factor/recovery-codes', [
                    RecoveryCodeController::class,
                    'update',
-               ])->middleware('csrf:persist');
+               ])->middleware(['json', 'csrf:persist']);
         
            });
     
