@@ -30,7 +30,13 @@ class LoginMagicLinkController extends Controller
         }
         else {
             
-            $magic_link = $this->createMagicLink($user, $expiration = 300);
+            $redirect_to = $request->post('redirect_to');
+            
+            $magic_link = $this->createMagicLink(
+                $user,
+                $expiration = 300,
+                $redirect_to
+            );
             
             $mail_builder->to($user)
                          ->send(new MagicLinkLoginMail($user, $magic_link, $expiration));
@@ -42,10 +48,10 @@ class LoginMagicLinkController extends Controller
         
     }
     
-    protected function createMagicLink($user, $expiration = 300) :string
+    protected function createMagicLink($user, $expiration = 300, string $redirect_to = null) :string
     {
         $args = [
-            'query' => ['user_id' => $user->ID],
+            'query' => array_filter(['user_id' => $user->ID, 'redirect_to' => $redirect_to]),
         ];
         
         return $this->url->signedRoute('auth.login.magic-link', $args, $expiration, true);

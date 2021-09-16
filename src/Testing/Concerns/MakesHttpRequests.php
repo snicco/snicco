@@ -296,15 +296,15 @@ trait MakesHttpRequests
      * Visit the given URI with a POST request.
      *
      * @param  string|UriInterface  $uri
-     * @param  array<string, mixed>  $data
+     * @param  array<string, mixed>  $parsed_data
      * @param  array<string, string>  $headers
      *
      * @return TestResponse
      */
-    public function post($uri, array $data = [], array $headers = []) :TestResponse
+    public function post($uri, array $parsed_data = [], array $headers = []) :TestResponse
     {
         
-        $request = $this->frontendRequest('POST', $uri)->withParsedBody($data);
+        $request = $this->frontendRequest('POST', $uri)->withParsedBody($parsed_data);
         
         return $this->performRequest($request, $headers);
         
@@ -314,15 +314,15 @@ trait MakesHttpRequests
      * Visit the given URI with a PATCH request.
      *
      * @param  string|UriInterface  $uri
-     * @param  array<string, mixed>  $data
+     * @param  array<string, mixed>  $parsed_data
      * @param  array<string, string>  $headers
      *
      * @return TestResponse
      */
-    public function patch($uri, array $data = [], array $headers = []) :TestResponse
+    public function patch($uri, array $parsed_data = [], array $headers = []) :TestResponse
     {
         
-        $request = $this->frontendRequest('PATCH', $uri)->withParsedBody($data);
+        $request = $this->frontendRequest('PATCH', $uri)->withParsedBody($parsed_data);
         
         return $this->performRequest($request, $headers);
         
@@ -332,15 +332,15 @@ trait MakesHttpRequests
      * Visit the given URI with a PUT request.
      *
      * @param  string|UriInterface  $uri
-     * @param  array<string, mixed>  $data
+     * @param  array<string, mixed>  $parsed_data
      * @param  array<string, string>  $headers
      *
      * @return TestResponse
      */
-    public function put($uri, array $data = [], array $headers = []) :TestResponse
+    public function put($uri, array $parsed_data = [], array $headers = []) :TestResponse
     {
         
-        $request = $this->frontendRequest('PUT', $uri)->withParsedBody($data);
+        $request = $this->frontendRequest('PUT', $uri)->withParsedBody($parsed_data);
         
         return $this->performRequest($request, $headers);
         
@@ -350,15 +350,15 @@ trait MakesHttpRequests
      * Visit the given URI with a POST request.
      *
      * @param  string|UriInterface  $uri
-     * @param  array<string, mixed>  $data
+     * @param  array<string, mixed>  $parsed_data
      * @param  array<string, string>  $headers
      *
      * @return TestResponse
      */
-    public function delete($uri, array $data = [], array $headers = []) :TestResponse
+    public function delete($uri, array $parsed_data = [], array $headers = []) :TestResponse
     {
         
-        $request = $this->frontendRequest('DELETE', $uri)->withParsedBody($data);
+        $request = $this->frontendRequest('DELETE', $uri)->withParsedBody($parsed_data);
         
         return $this->performRequest($request, $headers);
         

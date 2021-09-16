@@ -88,7 +88,14 @@ class LoginMagicLinkControllerTest extends AuthTestCase
         
         $calvin = $this->createAdmin();
         
-        $response = $this->post('/auth/login/magic-link', ['login' => $calvin->user_login]);
+        $response =
+            $this->post(
+                '/auth/login/magic-link',
+                [
+                    'login' => $calvin->user_login,
+                    'redirect_to' => '/foo/bar/?baz=foo bar',
+                ]
+            );
         $response->assertRedirect('/auth/login');
         $response->assertSessionHas('login.link.processed');
         
@@ -97,6 +104,7 @@ class LoginMagicLinkControllerTest extends AuthTestCase
         $mail->assertSee('/auth/login/magic-link?expires=');
         $mail->assertSee('/auth/login/magic-link?expires=');
         $mail->assertSee("user_id=$calvin->ID");
+        $mail->assertSee(htmlentities('redirect_to='.rawurlencode('/foo/bar/?baz=foo bar')));
         
     }
     

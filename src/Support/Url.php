@@ -54,17 +54,21 @@ class Url
         return rtrim($path, '/');
     }
     
-    public static function rebuildQuery(string $url) :string
+    /**
+     * Rebuilds an url from scratch and fixes encoding mistakes in the query and path.
+     *
+     * @param  string  $url
+     *
+     * @return string
+     */
+    public static function rebuild(string $url) :string
     {
         
         $parts = parse_url($url);
         
         if (isset($parts['query'])) {
-            
             parse_str($parts['query'], $query);
-            
             $parts['query'] = Arr::query($query);
-            
         }
         
         return self::unParseUrl($parts);

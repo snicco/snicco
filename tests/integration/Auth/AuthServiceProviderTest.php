@@ -18,6 +18,7 @@ use Snicco\Session\Events\NewLogin;
 use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Session\Events\NewLogout;
 use Snicco\Auth\Fail2Ban\PHPSyslogger;
+use Snicco\Auth\Responses\LoginRedirect;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Http\Responses\RedirectResponse;
 use Snicco\Auth\Contracts\AbstractLoginView;
@@ -34,7 +35,6 @@ use Snicco\Session\Contracts\SessionManagerInterface;
 use Snicco\Session\Middleware\StartSessionMiddleware;
 use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
 use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
-use Snicco\Auth\Responses\RedirectToDashboardResponse;
 use Snicco\Auth\Confirmation\TwoFactorAuthConfirmation;
 use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
 use Snicco\Auth\Controllers\ConfirmedAuthSessionController;
@@ -393,7 +393,7 @@ class AuthServiceProviderTest extends AuthTestCase
         $this->bootApp();
         
         $this->assertInstanceOf(
-            RedirectToDashboardResponse::class,
+            LoginRedirect::class,
             TestApp::resolve(AbstractLoginResponse::class)
         );
     }

@@ -15,7 +15,7 @@ class UrlTest extends TestCase
     {
         
         $search = rawurlencode('foo bar');
-        $result = Url::rebuildQuery("https://foobar.com/foo/bar?search=$search");
+        $result = Url::rebuild("https://foobar.com/foo/bar?search=$search");
         $this->assertSame("https://foobar.com/foo/bar?search=foo%20bar", $result);
         
     }
@@ -25,7 +25,7 @@ class UrlTest extends TestCase
     {
         
         $search = 'foo bar';
-        $result = Url::rebuildQuery("https://foobar.com/foo/bar?search=$search");
+        $result = Url::rebuild("https://foobar.com/foo/bar?search=$search");
         $this->assertSame("https://foobar.com/foo/bar?search=foo%20bar", $result);
         
     }
