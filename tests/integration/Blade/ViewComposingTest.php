@@ -25,6 +25,19 @@ class ViewComposingTest extends BladeTestCase
     }
     
     /** @test */
+    public function data_is_shared_with_nested_views()
+    {
+        
+        TestApp::globals('globals', ['surname' => 'alkan']);
+        TestApp::addComposer('view-composer-parent', function (BladeView $view) {
+            $view->with(['name' => 'calvin']);
+        });
+        
+        $this->assertSame('calvinalkan', $this->makeView('nested-view-composer'));
+        
+    }
+    
+    /** @test */
     public function a_view_composer_can_be_added_to_a_view()
     {
         

@@ -6,7 +6,6 @@ namespace Snicco\Blade;
 
 use Throwable;
 use Snicco\Support\Arr;
-use Snicco\Events\MakingView;
 use Snicco\Contracts\ViewInterface;
 use Snicco\ExceptionHandling\Exceptions\ViewException;
 use Illuminate\Contracts\View\View as IlluminateViewContract;
@@ -31,8 +30,6 @@ class BladeView implements ViewInterface, IlluminateViewContract
     {
         
         try {
-            
-            MakingView::dispatch([$this]);
             
             return $this->illuminate_view->render();
             

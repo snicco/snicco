@@ -81,7 +81,7 @@ class ViewServiceProviderTest extends FrameworkTestCase
     public function the_view_factory_is_added_to_the_global_context()
     {
         $context = TestApp::globals();
-        $this->assertInstanceOf(ViewFactory::class, $context->get()['__view']());
+        $this->assertInstanceOf(ViewFactory::class, $context->get()['__view']);
     }
     
     protected function setUp() :void

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Blade;
 
+use Snicco\Events\MakingView;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Snicco\Contracts\ServiceProvider;
@@ -37,6 +38,8 @@ class BladeServiceProvider extends ServiceProvider
         $this->registerBladeViewEngine();
         
         $this->setBladeComponentBindings($container);
+        
+        $this->registerBladeEvents();
         
     }
     
@@ -88,6 +91,19 @@ class BladeServiceProvider extends ServiceProvider
                 
             }
         );
+        
+    }
+    
+    private function registerBladeEvents()
+    {
+        
+        /** @var Dispatcher $laravel_dispatcher */
+        $laravel_dispatcher = $this->container->make('events');
+        $laravel_dispatcher->listen('composing:*', function ($event_name, $payload) {
+            
+            MakingView::dispatch([new BladeView($payload[0])]);
+            
+        });
         
     }
     

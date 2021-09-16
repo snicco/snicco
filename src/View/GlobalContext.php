@@ -25,8 +25,13 @@ class GlobalContext
     
     public function get() :array
     {
-        
-        return $this->context;
+        return array_map(function ($context) {
+            
+            return is_callable($context)
+                ? call_user_func($context)
+                : $context;
+            
+        }, $this->context);
     }
     
 }
