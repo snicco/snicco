@@ -54,7 +54,7 @@
   "suggest": {
     "nyholm/psr7": "A minimal and very fast PSR7 implementation",
     "opis/closure": "Required if you want to cache routes that use closures [3.6.2]",
-    "illuminate/encryption": "Required if you want to use strong encryption [8.40.0]"
+    "illuminate/encryption": "Required if you want to use strong encryption [8.40.0]",
     "filp/whoops": "Required if you want the pretty page error handler during devolopment",
     "respect/validation": "Required if you want to use the validation module",
     "bjeavons/zxcvbn-php": "A package by Dropbox to enfore validate password entroypy. Required for the auth package.",
