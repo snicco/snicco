@@ -8,9 +8,9 @@ use Snicco\Support\WP;
 use Snicco\View\ViewFactory;
 use Snicco\Application\Config;
 use Snicco\Routing\UrlGenerator;
-use Snicco\Auth\Contracts\LoginViewResponse;
+use Snicco\Auth\Contracts\AbstractLoginView;
 
-class MagicLinkLoginView extends LoginViewResponse
+class MagicLinkLoginView extends AbstractLoginView
 {
     
     private string       $view = 'auth-login-via-email';

@@ -4,11 +4,11 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Responses;
 
-use Snicco\Auth\Contracts\LoginResponse;
 use Snicco\Contracts\AbstractRedirector;
 use Snicco\Http\Responses\RedirectResponse;
+use Snicco\Auth\Contracts\AbstractLoginResponse;
 
-class RedirectToDashboardResponse extends LoginResponse
+class RedirectToDashboardResponse extends AbstractLoginResponse
 {
     
     private AbstractRedirector $redirector;
@@ -19,11 +19,6 @@ class RedirectToDashboardResponse extends LoginResponse
     }
     
     public function toResponsable() :RedirectResponse
-    {
-        return $this->redirectToDashboard();
-    }
-    
-    private function redirectToDashboard() :RedirectResponse
     {
         return $this->redirector->toRoute('dashboard');
     }

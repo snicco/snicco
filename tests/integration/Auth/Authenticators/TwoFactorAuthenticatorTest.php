@@ -13,8 +13,7 @@ use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Snicco\Auth\Contracts\Authenticator;
 use Snicco\Contracts\EncryptorInterface;
-use Snicco\Auth\Middleware\AuthenticateSession;
-use Snicco\Auth\Contracts\TwoFactorChallengeResponse;
+use Snicco\Auth\Contracts\AbstractTwoFactorChallengeResponse;
 use Snicco\Auth\Events\FailedTwoFactorAuthentication;
 use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
 use Tests\integration\Auth\Stubs\TestTwoFactorProvider;
@@ -248,9 +247,8 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
         $this->afterApplicationBooted(function () {
             
             $this->withoutMiddleware('csrf');
-            $this->withoutMiddleware(AuthenticateSession::class);
             $this->instance(
-                TwoFactorChallengeResponse::class,
+                AbstractTwoFactorChallengeResponse::class,
                 $this->app->resolve(TestChallengeResponse::class)
             );
             $this->encryptor = $this->app->resolve(EncryptorInterface::class);
@@ -287,7 +285,7 @@ class TestAuthenticator extends Authenticator
     
 }
 
-class TestChallengeResponse extends TwoFactorChallengeResponse
+class TestChallengeResponse extends AbstractTwoFactorChallengeResponse
 {
     
     public function toResponsable()

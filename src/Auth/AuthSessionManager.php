@@ -94,6 +94,54 @@ class AuthSessionManager implements SessionManagerInterface
         
     }
     
+    public function idleTimeout()
+    {
+        
+        $timeout = Arr::get($this->auth_config, 'idle', 0);
+        
+        if (is_callable($this->idle_resolver)) {
+            
+            return call_user_func($this->idle_resolver, $timeout);
+            
+        }
+        
+        return $timeout;
+        
+    }
+    
+    public function confirmationDuration() :int
+    {
+        return Arr::get($this->auth_config, 'confirmation.duration', 0);
+    }
+    
+    public function allowsPersistentLogin() :bool
+    {
+        
+        return Arr::get($this->auth_config, 'features.remember_me', false) === true;
+        
+    }
+    
+    public function destroyOthersForUser(string $hashed_token, int $user_id)
+    {
+        
+        $this->driver->destroyOthersForUser($hashed_token, $user_id);
+        
+    }
+    
+    public function destroyAllForUser(int $user_id)
+    {
+        
+        $this->driver->destroyAllForUser($user_id);
+        
+    }
+    
+    public function destroyAll()
+    {
+        
+        $this->driver->destroyAll();
+        
+    }
+    
     private function valid(array $session_payload) :bool
     {
         
@@ -128,49 +176,6 @@ class AuthSessionManager implements SessionManagerInterface
         $last_activity = $session_payload['_last_activity'] ?? 0;
         
         return ($this->currentTime() - $last_activity) > $this->idleTimeout();
-        
-    }
-    
-    public function idleTimeout()
-    {
-        
-        $timeout = Arr::get($this->auth_config, 'idle', 0);
-        
-        if (is_callable($this->idle_resolver)) {
-            
-            return call_user_func($this->idle_resolver, $timeout);
-            
-        }
-        
-        return $timeout;
-        
-    }
-    
-    private function allowsPersistentLogin() :bool
-    {
-        
-        return Arr::get($this->auth_config, 'features.remember_me', false) === true;
-        
-    }
-    
-    public function destroyOthersForUser(string $hashed_token, int $user_id)
-    {
-        
-        $this->driver->destroyOthersForUser($hashed_token, $user_id);
-        
-    }
-    
-    public function destroyAllForUser(int $user_id)
-    {
-        
-        $this->driver->destroyAllForUser($user_id);
-        
-    }
-    
-    public function destroyAll()
-    {
-        
-        $this->driver->destroyAll();
         
     }
     

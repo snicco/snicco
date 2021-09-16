@@ -8,6 +8,9 @@ use WP_User;
 use Snicco\Http\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 
+/**
+ * @internal
+ */
 class SuccessfulLoginResponse extends Response
 {
     

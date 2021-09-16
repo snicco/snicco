@@ -11,16 +11,16 @@ use Snicco\Contracts\EncryptorInterface;
 use Snicco\Auth\Contracts\Authenticator;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
 use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
-use Snicco\Auth\Contracts\TwoFactorChallengeResponse;
+use Snicco\Auth\Contracts\AbstractTwoFactorChallengeResponse;
 
 class RedirectIf2FaAuthenticable extends Authenticator
 {
     
     use InteractsWithTwoFactorSecrets;
     
-    private TwoFactorChallengeResponse $challenge_response;
+    private AbstractTwoFactorChallengeResponse $challenge_response;
     
-    public function __construct(TwoFactorChallengeResponse $response, EncryptorInterface $encryptor)
+    public function __construct(AbstractTwoFactorChallengeResponse $response, EncryptorInterface $encryptor)
     {
         $this->challenge_response = $response;
         $this->encryptor = $encryptor;

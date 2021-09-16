@@ -12,8 +12,8 @@ use Snicco\Auth\Events\Registration;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Contracts\DeletesUsers;
 use Snicco\Auth\Contracts\CreatesNewUser;
-use Snicco\Auth\Responses\RegisteredResponse;
-use Snicco\Auth\Responses\CreateAccountViewResponse;
+use Snicco\Auth\Contracts\CreateAccountView;
+use Snicco\Auth\Contracts\AbstractRegistrationResponse;
 use Snicco\ExceptionHandling\Exceptions\AuthorizationException;
 
 class AccountController extends Controller
@@ -29,7 +29,7 @@ class AccountController extends Controller
         $this->lifetime_in_seconds = $lifetime_in_seconds;
     }
     
-    public function create(Request $request, CreateAccountViewResponse $view_response)
+    public function create(Request $request, CreateAccountView $view_response)
     {
         
         return $view_response->forRequest($request)->postTo(
@@ -37,7 +37,7 @@ class AccountController extends Controller
         );
     }
     
-    public function store(Request $request, CreatesNewUser $creates_new_user, RegisteredResponse $response)
+    public function store(Request $request, CreatesNewUser $creates_new_user, AbstractRegistrationResponse $response)
     {
         
         $user = $this->getUserById($creates_new_user->create($request));

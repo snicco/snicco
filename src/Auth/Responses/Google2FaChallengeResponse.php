@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Auth\Responses;
 
 use Snicco\Http\ResponseFactory;
-use Snicco\Auth\Contracts\TwoFactorChallengeResponse;
+use Snicco\Auth\Contracts\AbstractTwoFactorChallengeResponse;
 
-class Google2FaChallengeResponse extends TwoFactorChallengeResponse
+class Google2FaChallengeResponse extends AbstractTwoFactorChallengeResponse
 {
     
     private ResponseFactory $response_factory;
