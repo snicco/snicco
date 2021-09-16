@@ -51,6 +51,14 @@ class ViewComposingTest extends BladeTestCase
         
     }
     
+    /** @test */
+    public function blade_views_have_access_to_the_framework_globals()
+    {
+        
+        $this->assertViewContent('view has session', $this->makeView('session'));
+        
+    }
+    
     protected function setUp() :void
     {
         

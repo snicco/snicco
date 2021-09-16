@@ -18,7 +18,6 @@ use Psr\Http\Message\ResponseFactoryInterface;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Snicco\Session\Middleware\VerifyCsrfToken;
 use Snicco\Session\Drivers\DatabaseSessionDriver;
-use Snicco\Session\Middleware\ShareSessionWithView;
 use Snicco\Session\Contracts\SessionManagerInterface;
 use Snicco\Session\Middleware\StartSessionMiddleware;
 
@@ -81,7 +80,6 @@ class SessionServiceProvider extends ServiceProvider
         ]);
         $this->config->extend('middleware.groups.global', [
             StartSessionMiddleware::class,
-            ShareSessionWithView::class,
         ]);
         
     }
@@ -230,7 +228,10 @@ class SessionServiceProvider extends ServiceProvider
         /** @var GlobalContext $global_context */
         $global_context = $this->container->make(GlobalContext::class);
         
-        $global_context->add('csrf', $this->container->make(CsrfField::class));
+        $global_context->add('csrf', fn() => $this->container->make(CsrfField::class));
+        $global_context->add('session', fn() => $this->container->make(Session::class));
+        $global_context->add('errors', fn() => $this->container->make(Session::class)->errors());
+        
     }
     
 }
