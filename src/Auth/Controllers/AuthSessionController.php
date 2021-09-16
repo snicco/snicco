@@ -120,7 +120,7 @@ class AuthSessionController extends Controller
         }
         else {
             
-            if ( $request->hasHeader('referer')) {
+            if (! $request->hasHeader('referer')) {
                 $redirect_url = $this->url->toRoute('dashboard');
             }
             else {
