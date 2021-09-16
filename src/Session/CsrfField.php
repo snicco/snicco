@@ -4,91 +4,60 @@ declare(strict_types=1);
 
 namespace Snicco\Session;
 
-use Slim\Csrf\Guard;
-use Snicco\Support\Arr;
+use Snicco\Session\Middleware\VerifyCsrfToken;
 
 class CsrfField
 {
 	
 	private Session $session;
-	private Guard   $guard;
 	
-	public function __construct(Session $session, Guard $guard)
+	public function __construct(Session $session)
 	{
-		
 		$this->session = $session;
-		$this->guard = $guard;
 	}
 	
 	public function asStringToken() :string
 	{
-		$csrf = $this->create();
-		$name = Arr::pullNextPair($csrf);
-		$token = Arr::pullNextPair($csrf);
-		
-		return Arr::firstKey($name)
-		       .'='
-		       .Arr::firstEl($name)
-		       .'&'
-		       .Arr::firstKey($token)
-		       .'='
-		       .Arr::firstEl($token);
+		return VerifyCsrfToken::TOKEN_KEY.'='.$this->getToken();
 	}
 	
-	public function create() :array
+	public function asMeta() :string
 	{
-		
-		$name_key = $this->guard->getTokenNameKey();
-		$token_key = $this->guard->getTokenValueKey();
-		
-		$csrf = $this->session->get('csrf', []);
-		
-		if ($csrf !== []) {
-			
-			[$name_key_value, $token_value] = [Arr::firstKey($csrf), Arr::firstEl($csrf)];
-			
-		}
-		else {
-			[$name_key_value, $token_value] = $this->persistNewKeyPairInSession();
-		}
-		
-		return [
-				$name_key => $name_key_value,
-				$token_key => $token_value,
-		];
-		
-	}
-	
-	private function persistNewKeyPairInSession() :array
-	{
-		
-		return array_values($this->guard->generateToken());
-	}
-	
-	public function asHtml()
-	{
-		
-		$field = $this->create();
-		
-		$name = Arr::pullNextPair($field);
-		$token = Arr::pullNextPair($field);
 		
 		ob_start();
 		
-		?><input type="hidden" name="<?= esc_attr(Arr::firstKey($name)); ?>"
-		         value="<?= esc_attr(Arr::firstEl($name)); ?>">
-		<input type="hidden" name="<?= esc_attr(Arr::firstKey($token)); ?>"
-		       value="<?= esc_attr(Arr::firstEl($token)); ?>"><?php
+		?>
+		<meta name="<?= esc_attr(VerifyCsrfToken::TOKEN_KEY); ?>"
+		      content="<?= esc_attr($this->getToken()); ?>">
+		<?php
 		
 		return ob_get_clean();
 		
 	}
 	
-	public function refreshToken()
+	public function asHtml() :string
 	{
 		
-		$this->session->forget('csrf');
-		$this->persistNewKeyPairInSession();
+		ob_start();
+		
+		?><input type="hidden" name="<?= esc_attr(VerifyCsrfToken::TOKEN_KEY); ?>"
+		         value="<?= esc_attr($this->getToken()); ?>">
+		<?php
+		
+		return ob_get_clean();
+		
+	}
+	
+	private function getToken()
+	{
+		
+		if ( ! $this->session->has(VerifyCsrfToken::TOKEN_KEY)) {
+			throw new \RuntimeException("The user session has no csrf token.");
+		}
+		
+		return $this->session->csrfToken();
+		
 	}
 	
 }
+

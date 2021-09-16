@@ -4,10 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\integration\Session;
 
-use Slim\Csrf\Guard;
 use Tests\stubs\TestApp;
-use Snicco\Http\Redirector;
 use Snicco\Session\Session;
+use Snicco\Http\Redirector;
 use Tests\FrameworkTestCase;
 use Snicco\Session\CsrfField;
 use Snicco\View\GlobalContext;
@@ -18,11 +17,10 @@ use Snicco\Session\StatefulRedirector;
 use Snicco\Contracts\AbstractRedirector;
 use Snicco\Session\SessionServiceProvider;
 use Snicco\Session\Contracts\SessionDriver;
-use Snicco\Session\Middleware\CsrfMiddleware;
 use Snicco\Session\Drivers\DatabaseSessionDriver;
 use Snicco\Session\Middleware\ShareSessionWithView;
-use Snicco\Session\Contracts\SessionManagerInterface;
 use Snicco\Session\Middleware\StartSessionMiddleware;
+use Snicco\Session\Contracts\SessionManagerInterface;
 
 class SessionServiceProviderTest extends FrameworkTestCase
 {
@@ -262,30 +260,6 @@ class SessionServiceProviderTest extends FrameworkTestCase
     }
     
     /** @test */
-    public function the_csrf_middleware_is_bound()
-    {
-        
-        $this->withAddedConfig([
-            'session.enabled' => true,
-        ])->bootApp();
-        
-        $this->assertInstanceOf(CsrfMiddleware::class, TestApp::resolve(CsrfMiddleware::class));
-        
-    }
-    
-    /** @test */
-    public function the_slim_guard_is_bound()
-    {
-        
-        $this->withAddedConfig([
-            'session.enabled' => true,
-        ])->bootApp();
-        
-        $this->assertInstanceOf(Guard::class, TestApp::resolve(Guard::class));
-        
-    }
-    
-    /** @test */
     public function the_session_can_be_resolved_as_an_alias()
     {
         
@@ -305,8 +279,11 @@ class SessionServiceProviderTest extends FrameworkTestCase
             'session.enabled' => true,
         ])->bootApp();
         
+        $this->session->start();
+        
         $html = TestApp::csrfField();
-        $this->assertStringContainsString('csrf', $html);
+        $this->assertStringContainsString('_token', $html);
+        $this->assertStringContainsString($this->session->csrfToken(), $html);
         $this->assertStringStartsWith('<input', $html);
         
     }
@@ -319,10 +296,28 @@ class SessionServiceProviderTest extends FrameworkTestCase
             'session.enabled' => true,
         ])->bootApp();
         
+        $this->session->start();
         $token = TestApp::csrf()->asStringToken();
         
-        $this->assertStringContainsString('csrf_name', $token);
-        $this->assertStringContainsString('csrf_value', $token);
+        $this->assertSame('_token='.$this->session->csrfToken(), $token);
+        
+    }
+    
+    /** @test */
+    public function a_csrf_token_can_be_generated_as_meta_content()
+    {
+        
+        $this->withAddedConfig([
+            'session.enabled' => true,
+        ])->bootApp();
+        
+        $this->session->start();
+        $token = TestApp::csrf()->asMeta();
+        
+        $this->assertViewContent(
+            '<meta name="_token"content="'.$this->session->csrfToken().'">',
+            $token
+        );
         
     }
     

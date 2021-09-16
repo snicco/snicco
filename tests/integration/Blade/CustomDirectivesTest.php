@@ -78,12 +78,13 @@ class CustomDirectivesTest extends BladeTestCase
     public function custom_csrf_directives_work()
     {
         
+        $this->session->start();
         $view = $this->view('csrf');
         $content = $view->toString();
         
+        $this->assertStringContainsString('_token', $content);
+        $this->assertStringContainsString($this->session->csrfToken(), $content);
         $this->assertStringStartsWith('<input', $content);
-        $this->assertStringContainsString('csrf_name', $content);
-        $this->assertStringContainsString('csrf_value', $content);
         
     }
     

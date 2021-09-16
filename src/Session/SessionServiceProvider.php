@@ -7,7 +7,6 @@ namespace Snicco\Session;
 use Slim\Csrf\Guard;
 use Snicco\Support\Arr;
 use Snicco\View\GlobalContext;
-use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Application\Application;
 use Snicco\Session\Events\NewLogin;
@@ -20,6 +19,7 @@ use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Session\Middleware\CsrfMiddleware;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Snicco\Session\Drivers\ArraySessionDriver;
+use Snicco\Session\Middleware\VerifyCsrfToken;
 use Snicco\Session\Drivers\DatabaseSessionDriver;
 use Snicco\Session\Middleware\ShareSessionWithView;
 use Snicco\Session\Contracts\SessionManagerInterface;
@@ -42,8 +42,6 @@ class SessionServiceProvider extends ServiceProvider
         $this->bindSessionManager();
         $this->bindSession();
         $this->bindCsrfMiddleware();
-        $this->bindCsrfStore();
-        $this->bindSlimGuard();
         $this->bindAliases();
         $this->bindEncryptor();
         $this->bindEvents();
@@ -83,7 +81,7 @@ class SessionServiceProvider extends ServiceProvider
         
         // middleware
         $this->config->extend('middleware.aliases', [
-            'csrf' => CsrfMiddleware::class,
+            'csrf' => VerifyCsrfToken::class,
         ]);
         $this->config->extend('middleware.groups.global', [
             StartSessionMiddleware::class,
@@ -166,30 +164,6 @@ class SessionServiceProvider extends ServiceProvider
             return new CsrfMiddleware(
                 $this->container->make(Guard::class),
                 empty($args) ? '' : Arr::firstEl($args),
-            );
-            
-        });
-    }
-    
-    private function bindCsrfStore()
-    {
-        
-        $this->container->singleton(CsrfStore::class, function () {
-            
-            return new CsrfStore($this->container->make(Session::class));
-            
-        });
-    }
-    
-    private function bindSlimGuard()
-    {
-        $this->container->singleton(Guard::class, function () {
-            
-            $storage = $this->container->make(CsrfStore::class);
-            
-            return GuardFactory::create(
-                $this->container->make(ResponseFactory::class),
-                $storage
             );
             
         });

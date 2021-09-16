@@ -64,4 +64,7 @@ $router->get('/delegate', function (ResponseFactory $response_factory) {
     
 });
 
+$router->match(['GET', 'POST'], '/csrf', function () {
+    return 'CSRF_CHECK_PASSED';
+});
 
