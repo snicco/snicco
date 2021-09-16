@@ -8,17 +8,14 @@ use Faker\Factory;
 use Illuminate\Events\Dispatcher;
 use Faker\Generator as FakerGenerator;
 use Snicco\Contracts\ServiceProvider;
-use Illuminate\Contracts\Container\Container as IlluminateContainerContract;
 use Snicco\Traits\ReliesOnIlluminateContainer;
-use BetterWpHooks\Dispatchers\WordpressDispatcher;
 use Illuminate\Database\Eloquent\Model as Eloquent;
 use Snicco\Database\Contracts\BetterWPDbInterface;
 use Snicco\Database\Illuminate\MySqlSchemaBuilder;
 use Snicco\Database\Contracts\WPConnectionInterface;
 use Snicco\Database\Contracts\ConnectionResolverInterface;
-use Snicco\Database\Illuminate\IlluminateDispatcherAdapter;
 use Illuminate\Database\Eloquent\Factories\Factory as EloquentFactory;
-use Illuminate\Contracts\Events\Dispatcher as IlluminateEventDispatcher;
+use Illuminate\Contracts\Container\Container as IlluminateContainerContract;
 
 class DatabaseServiceProvider extends ServiceProvider
 {
@@ -63,8 +60,8 @@ class DatabaseServiceProvider extends ServiceProvider
     
     private function bindIlluminateDispatcher(IlluminateContainerContract $illuminate_container)
     {
-
-        $illuminate_container->bindIf('events', new Dispatcher());
+        
+        $illuminate_container->bindIf('events', fn() => new Dispatcher(), true );
         
     }
     

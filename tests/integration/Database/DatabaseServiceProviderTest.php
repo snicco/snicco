@@ -17,7 +17,6 @@ use Snicco\Database\Contracts\BetterWPDbInterface;
 use Snicco\Database\Illuminate\MySqlSchemaBuilder;
 use Snicco\Database\Contracts\WPConnectionInterface;
 use Snicco\Database\Contracts\ConnectionResolverInterface;
-use Snicco\Database\Illuminate\IlluminateDispatcherAdapter;
 
 class DatabaseServiceProviderTest extends DatabaseTestCase
 {
@@ -28,11 +27,7 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
         
         $this->bootApp();
         
-        $this->assertInstanceOf(
-            IlluminateDispatcherAdapter::class,
-            $this->app->resolve(Dispatcher::class)
-        );
-        $this->assertInstanceOf(IlluminateDispatcherAdapter::class, $this->app->resolve('events'));
+        $this->assertInstanceOf(Dispatcher::class, $this->app->resolve('events'));
         
     }
     
@@ -43,7 +38,7 @@ class DatabaseServiceProviderTest extends DatabaseTestCase
         $this->bootApp();
         
         $events = Eloquent::getEventDispatcher();
-        $this->assertInstanceOf(IlluminateDispatcherAdapter::class, $events);
+        $this->assertInstanceOf(Dispatcher::class, $events);
         
         $resolver = Eloquent::getConnectionResolver();
         $this->assertInstanceOf(WPConnectionResolver::class, $resolver);
