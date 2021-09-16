@@ -6,6 +6,8 @@ namespace Tests\unit\Http;
 
 use Tests\UnitTest;
 use RuntimeException;
+use Snicco\Support\WP;
+use Snicco\Routing\Route;
 use Snicco\Session\Session;
 use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
@@ -164,30 +166,6 @@ class RequestTest extends UnitTest
         
     }
     
-    public function testIsRouteable()
-    {
-        
-        $request = TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'index.php']);
-        $this->assertTrue($request->isRouteable());
-        
-        $request =
-            TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'wp-admin/wp-login.php']
-            );
-        $request = $request->withAttribute('_wp_admin_folder', 'wp-admin');
-        $this->assertTrue($request->isRouteable());
-        
-        $request = TestRequest::withServerParams(
-            $this->request,
-            ['SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
-        );
-        $request = $request->withAttribute('_wp_admin_folder', 'wp-admin');
-        $this->assertTrue($request->isRouteable());
-        
-        $request = TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'wp-login.php']);
-        $this->assertFalse($request->isRouteable());
-        
-    }
-    
     public function testGetLoadingScript()
     {
         
@@ -294,6 +272,56 @@ class RequestTest extends UnitTest
         $request = $request->withMethod('POST');
         
         $this->assertSame($v, $request->validator());
+        
+    }
+    
+    public function testRouteIs()
+    {
+        
+        WP::setFacadeContainer($this->createContainer());
+        WP::shouldReceive('wpAdminFolder')->andReturn('wp-admin');
+        $route = new Route(['GET'], '/foo', function () { });
+        $route->name('foobar');
+        
+        $request = $this->request->withRoutingResult(new RoutingResult($route));
+        
+        $this->assertFalse($request->routeIs('bar'));
+        $this->assertTrue($request->routeIs('foobar'));
+        $this->assertTrue($request->routeIs('bar', 'foobar'));
+        $this->assertTrue($request->routeIs(['bar', 'foobar']));
+        
+        $this->assertTrue($request->routeIs('foo*'));
+        
+        WP::reset();
+        
+    }
+    
+    public function testFullUrlIs()
+    {
+        
+        $request = TestRequest::fromFullUrl('GET', 'https://example.com/foo/bar');
+        
+        $this->assertFalse($request->fullUrlIs('https://example.com/foo/'));
+        $this->assertFalse($request->fullUrlIs('https://example.com/foo/bar/'));
+        $this->assertTrue($request->fullUrlIs('https://example.com/foo/bar'));
+        $this->assertTrue($request->fullUrlIs('https://example.com/foo/*'));
+        
+    }
+    
+    public function testPathIs()
+    {
+        
+        $request = TestRequest::fromFullUrl('GET', 'https://example.com/foo/bar');
+        
+        $this->assertFalse($request->pathIs('/foo'));
+        $this->assertFalse($request->pathIs('foo'));
+        
+        $this->assertTrue($request->pathIs('foo/bar'));
+        $this->assertTrue($request->pathIs('/foo/bar'));
+        
+        $this->assertFalse($request->pathIs('/foo/bar/'));
+        
+        $this->assertTrue($request->pathIs('/foo/*'));
         
     }
     

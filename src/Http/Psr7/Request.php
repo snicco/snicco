@@ -8,7 +8,9 @@ use WP_User;
 use RuntimeException;
 use Snicco\Support\WP;
 use Snicco\Support\Str;
+use Snicco\Support\Url;
 use Snicco\Http\Cookies;
+use Snicco\Routing\Route;
 use Snicco\Session\Session;
 use Snicco\Support\VariableBag;
 use Snicco\Validation\Validator;
@@ -179,35 +181,6 @@ class Request implements ServerRequestInterface
         
     }
     
-    /**
-     * @internal
-     */
-    public function isRouteable() :bool
-    {
-        
-        $script = $this->loadingScript();
-        
-        // All public web requests
-        if ($script === 'index.php') {
-            
-            return true;
-            
-        }
-        
-        // A request to the admin dashboard. We can catch that within admin_init
-        if (Str::contains($script, 'wp-admin')) {
-            
-            return true;
-            
-        }
-        
-        // Not routeable for web/ajax/admin routes because the correct hooks wont be triggered
-        // by WordPress. eg /wp-login.php
-        // These requests can only be "routed" by using the init hook.
-        return false;
-        
-    }
-    
     public function loadingScript() :string
     {
         return trim($this->getServerParams()['SCRIPT_NAME'] ?? '', DIRECTORY_SEPARATOR);
@@ -287,6 +260,63 @@ class Request implements ServerRequestInterface
     public function path() :string
     {
         return $this->getUri()->getPath();
+    }
+    
+    public function decodedPath() :string
+    {
+        return rawurldecode($this->path());
+    }
+    
+    public function routeIs(...$patterns) :bool
+    {
+        
+        $route = $this->routingResult()->route();
+        
+        if ( ! $route instanceof Route) {
+            return false;
+        }
+        
+        if (is_null($name = $route->getName())) {
+            return false;
+        }
+        
+        foreach ($patterns as $pattern) {
+            if (Str::is($pattern, $name)) {
+                return true;
+            }
+        }
+        
+        return false;
+        
+    }
+    
+    public function fullUrlIs(...$patterns) :bool
+    {
+        $url = $this->fullUrl();
+        
+        foreach ($patterns as $pattern) {
+            if (Str::is($pattern, $url)) {
+                return true;
+            }
+        }
+        
+        return false;
+        
+    }
+    
+    public function pathIs(...$patterns) :bool
+    {
+        
+        $path = Url::addLeading($this->decodedPath());
+        
+        foreach ($patterns as $pattern) {
+            if (Str::is(Url::addLeading($pattern), $path)) {
+                return true;
+            }
+        }
+        
+        return false;
+        
     }
     
 }
