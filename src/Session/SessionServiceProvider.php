@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Session;
 
-use Slim\Csrf\Guard;
 use Snicco\Support\Arr;
 use Snicco\View\GlobalContext;
 use Snicco\Routing\UrlGenerator;
@@ -16,7 +15,6 @@ use Snicco\Contracts\ServiceProvider;
 use Snicco\Contracts\AbstractRedirector;
 use Snicco\Contracts\EncryptorInterface;
 use Snicco\Session\Contracts\SessionDriver;
-use Snicco\Session\Middleware\CsrfMiddleware;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Snicco\Session\Middleware\VerifyCsrfToken;
@@ -157,17 +155,6 @@ class SessionServiceProvider extends ServiceProvider
         });
     }
     
-    private function bindCsrfMiddleware()
-    {
-        $this->container->singleton(CsrfMiddleware::class, function ($c, $args) {
-            
-            return new CsrfMiddleware(
-                $this->container->make(Guard::class),
-                empty($args) ? '' : Arr::firstEl($args),
-            );
-            
-        });
-    }
     
     private function bindAliases()
     {
