@@ -7,7 +7,7 @@ namespace Snicco\Auth\Contracts;
 use Snicco\Auth\Traits\UsesCurrentRequest;
 use Snicco\Contracts\ResponseableInterface;
 
-abstract class LoginViewResponse implements ResponseableInterface
+abstract class AbstractTwoFactorChallengeResponse implements ResponseableInterface
 {
     
     use UsesCurrentRequest;

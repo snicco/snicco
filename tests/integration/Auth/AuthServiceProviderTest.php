@@ -18,13 +18,13 @@ use Snicco\Session\Events\NewLogin;
 use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Session\Events\NewLogout;
 use Snicco\Auth\Fail2Ban\PHPSyslogger;
-use Snicco\Auth\Contracts\LoginResponse;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Http\Responses\RedirectResponse;
-use Snicco\Auth\Contracts\LoginViewResponse;
+use Snicco\Auth\Contracts\AbstractLoginView;
 use Snicco\Auth\Responses\PasswordLoginView;
 use Snicco\Auth\Responses\MagicLinkLoginView;
 use Snicco\Auth\Middleware\AuthenticateSession;
+use Snicco\Auth\Contracts\AbstractLoginResponse;
 use Snicco\Auth\Controllers\AuthSessionController;
 use Snicco\Auth\Confirmation\EmailAuthConfirmation;
 use Snicco\Auth\Controllers\ResetPasswordController;
@@ -381,7 +381,7 @@ class AuthServiceProviderTest extends AuthTestCase
         
         $this->assertInstanceOf(
             PasswordLoginView::class,
-            TestApp::resolve(LoginViewResponse::class)
+            TestApp::resolve(AbstractLoginView::class)
         );
         
     }
@@ -394,7 +394,7 @@ class AuthServiceProviderTest extends AuthTestCase
         
         $this->assertInstanceOf(
             RedirectToDashboardResponse::class,
-            TestApp::resolve(LoginResponse::class)
+            TestApp::resolve(AbstractLoginResponse::class)
         );
     }
     
@@ -406,7 +406,7 @@ class AuthServiceProviderTest extends AuthTestCase
         
         $this->assertInstanceOf(
             PasswordLoginView::class,
-            TestApp::resolve(LoginViewResponse::class)
+            TestApp::resolve(AbstractLoginView::class)
         );
         
     }
@@ -420,7 +420,7 @@ class AuthServiceProviderTest extends AuthTestCase
         
         $this->assertInstanceOf(
             MagicLinkLoginView::class,
-            TestApp::resolve(LoginViewResponse::class)
+            TestApp::resolve(AbstractLoginView::class)
         );
         
     }

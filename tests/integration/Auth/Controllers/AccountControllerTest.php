@@ -14,8 +14,8 @@ use Snicco\Auth\Events\Registration;
 use Snicco\Auth\Contracts\DeletesUsers;
 use Snicco\Auth\Contracts\CreatesNewUser;
 use Snicco\Contracts\ResponseableInterface;
-use Snicco\Auth\Responses\RegisteredResponse;
-use Snicco\Auth\Responses\CreateAccountViewResponse;
+use Snicco\Auth\Contracts\CreateAccountView;
+use Snicco\Auth\Contracts\AbstractRegistrationResponse;
 
 class AccountControllerTest extends AuthTestCase
 {
@@ -234,8 +234,8 @@ class AccountControllerTest extends AuthTestCase
         $this->afterApplicationBooted(function () {
             
             $this->withoutMiddleware('csrf');
-            $this->instance(CreateAccountViewResponse::class, new TestCreateAccountViewResponse());
-            $this->instance(RegisteredResponse::class, new TestRegisteredResponse());
+            $this->instance(CreateAccountView::class, new TestCreateAccountView());
+            $this->instance(AbstractRegistrationResponse::class, new TestRegisteredResponse());
             $this->instance(CreatesNewUser::class, new TestCreatesNewUser());
             $this->instance(CreatesNewUser::class, new TestCreatesNewUser());
             $this->instance(DeletesUsers::class, $this->app->resolve(TestDeletesUser::class));
@@ -248,7 +248,7 @@ class AccountControllerTest extends AuthTestCase
     
 }
 
-class TestCreateAccountViewResponse extends CreateAccountViewResponse
+class TestCreateAccountView extends CreateAccountView
 {
     
     public function toResponsable() :string
@@ -259,7 +259,7 @@ class TestCreateAccountViewResponse extends CreateAccountViewResponse
     
 }
 
-class TestRegisteredResponse extends RegisteredResponse
+class TestRegisteredResponse extends AbstractRegistrationResponse
 {
     
     public function toResponsable()

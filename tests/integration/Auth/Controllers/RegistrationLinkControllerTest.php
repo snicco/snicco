@@ -6,7 +6,7 @@ namespace Tests\integration\Auth\Controllers;
 
 use Tests\AuthTestCase;
 use Snicco\Auth\Mail\ConfirmRegistrationEmail;
-use Snicco\Auth\Contracts\RegistrationViewResponse;
+use Snicco\Auth\Contracts\AbstractRegistrationView;
 
 class RegistrationLinkControllerTest extends AuthTestCase
 {
@@ -87,7 +87,7 @@ class RegistrationLinkControllerTest extends AuthTestCase
         $this->afterApplicationBooted(function () {
             
             $this->withoutMiddleware('csrf');
-            $this->instance(RegistrationViewResponse::class, new TestRegistrationView());
+            $this->instance(AbstractRegistrationView::class, new TestRegistrationViewView());
         });
         
         parent::setUp();
@@ -96,7 +96,7 @@ class RegistrationLinkControllerTest extends AuthTestCase
     
 }
 
-class TestRegistrationView extends RegistrationViewResponse
+class TestRegistrationViewView extends AbstractRegistrationView
 {
     
     public function toResponsable() :string

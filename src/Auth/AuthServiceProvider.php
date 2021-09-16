@@ -13,17 +13,16 @@ use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Auth\Fail2Ban\PHPSyslogger;
 use Snicco\Auth\Middleware\ConfirmAuth;
-use Snicco\Auth\Contracts\LoginResponse;
 use Snicco\Auth\Events\GenerateLoginUrl;
 use Snicco\Contracts\EncryptorInterface;
-use Snicco\Auth\Responses\ChallengeView;
+use Snicco\Auth\Responses\TwoFactorChallengeView;
 use Snicco\Auth\Events\GenerateLogoutUrl;
 use Snicco\Auth\Events\SettingAuthCookie;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Auth\Middleware\AuthUnconfirmed;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Auth\Middleware\TwoFactorEnabled;
-use Snicco\Auth\Contracts\LoginViewResponse;
+use Snicco\Auth\Contracts\AbstractLoginView;
 use Snicco\Auth\Responses\PasswordLoginView;
 use Snicco\Auth\Middleware\TwoFactorDisbaled;
 use Snicco\Auth\Listeners\RefreshAuthCookies;
@@ -31,15 +30,16 @@ use Snicco\Session\Events\SessionRegenerated;
 use Snicco\Auth\Events\FailedAuthConfirmation;
 use Snicco\Auth\Listeners\WpLoginLinkGenerator;
 use Snicco\Auth\Middleware\AuthenticateSession;
+use Snicco\Auth\Contracts\AbstractLoginResponse;
 use Snicco\Auth\Listeners\GenerateNewAuthCookie;
 use Snicco\Auth\Controllers\AuthSessionController;
 use Snicco\Auth\Confirmation\EmailAuthConfirmation;
-use Snicco\Auth\Contracts\RegistrationViewResponse;
+use Snicco\Auth\Contracts\AbstractRegistrationView;
 use Snicco\Auth\Contracts\Abstract2FAChallengeView;
 use Snicco\Auth\Events\FailedPasswordAuthentication;
 use Snicco\Auth\Responses\TwoFactorConfirmationView;
 use Snicco\Auth\Authenticators\PasswordAuthenticator;
-use Snicco\Auth\Contracts\TwoFactorChallengeResponse;
+use Snicco\Auth\Contracts\AbstractTwoFactorChallengeResponse;
 use Snicco\Auth\Responses\Google2FaChallengeResponse;
 use Snicco\Session\Contracts\SessionManagerInterface;
 use Snicco\Session\Middleware\StartSessionMiddleware;
@@ -51,7 +51,7 @@ use Snicco\Auth\Responses\RedirectToDashboardResponse;
 use Snicco\Auth\Events\FailedPasswordResetLinkRequest;
 use Snicco\Auth\Events\FailedLoginLinkCreationRequest;
 use Snicco\Auth\Confirmation\TwoFactorAuthConfirmation;
-use Snicco\Auth\Responses\EmailRegistrationViewResponse;
+use Snicco\Auth\Responses\EmailRegistrationViewView;
 use Snicco\Auth\Contracts\Abstract2FAuthConfirmationView;
 use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
@@ -313,7 +313,7 @@ class AuthServiceProvider extends ServiceProvider
     private function bindLoginViewResponse()
     {
         
-        $this->container->singleton(LoginViewResponse::class, function () {
+        $this->container->singleton(AbstractLoginView::class, function () {
             
             $response = $this->config->get('auth.primary_view', PasswordLoginView::class);
             
@@ -326,7 +326,7 @@ class AuthServiceProvider extends ServiceProvider
     {
         
         $this->container->singleton(
-            LoginResponse::class,
+            AbstractLoginResponse::class,
             fn() => $this->container->make(RedirectToDashboardResponse::class)
         );
     }
@@ -343,7 +343,7 @@ class AuthServiceProvider extends ServiceProvider
     private function bindTwoFactorChallengeResponse()
     {
         
-        $this->container->singleton(TwoFactorChallengeResponse::class,
+        $this->container->singleton(AbstractTwoFactorChallengeResponse::class,
             fn() => $this->container->make(Google2FaChallengeResponse::class)
         );
         
@@ -352,9 +352,9 @@ class AuthServiceProvider extends ServiceProvider
     private function bindRegistrationViewResponse()
     {
         
-        $this->container->singleton(RegistrationViewResponse::class, function () {
+        $this->container->singleton(AbstractRegistrationView::class, function () {
             
-            return $this->container->make(EmailRegistrationViewResponse::class);
+            return $this->container->make(EmailRegistrationViewView::class);
             
         });
     }
@@ -418,7 +418,7 @@ class AuthServiceProvider extends ServiceProvider
     private function bindTwoFactorView()
     {
         $this->container->singleton(Abstract2FaChallengeView::class,
-            fn() => $this->container->make(ChallengeView::class)
+            fn() => $this->container->make(TwoFactorChallengeView::class)
         );
     }
     

@@ -5,20 +5,18 @@ declare(strict_types=1);
 namespace Snicco\Auth\Controllers;
 
 use Closure;
-use WP_User;
-use Snicco\Support\Arr;
 use Snicco\Support\Url;
 use Snicco\Http\Controller;
 use Snicco\Session\Session;
 use Snicco\Routing\Pipeline;
-use Snicco\Auth\Events\Login;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Http\Responses\NullResponse;
-use Snicco\Auth\Contracts\LoginResponse;
+use Snicco\Auth\Responses\LoginResponse;
 use Snicco\Auth\Responses\LogoutResponse;
 use Snicco\Contracts\ResponseableInterface;
-use Snicco\Auth\Contracts\LoginViewResponse;
+use Snicco\Auth\Contracts\AbstractLoginView;
+use Snicco\Auth\Contracts\AbstractLoginResponse;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
 use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
 
@@ -32,7 +30,7 @@ class AuthSessionController extends Controller
         $this->auth_config = $auth_config;
     }
     
-    public function create(Request $request, LoginViewResponse $view_response) :ResponseableInterface
+    public function create(Request $request, AbstractLoginView $view_response) :ResponseableInterface
     {
         
         if ($request->boolean('reauth')) {
@@ -49,19 +47,28 @@ class AuthSessionController extends Controller
         
     }
     
-    public function store(Request $request, Pipeline $auth_pipeline, LoginResponse $login_response)
+    public function store(Request $request, Pipeline $auth_pipeline, AbstractLoginResponse $responsable)
     {
         
+        /**
+         * @todo replace with generic pipeline instead of middleware.
+         */
         $response = $auth_pipeline->send($request)
                                   ->through($this->auth_config['through'])
                                   ->then($this->unauthenticated());
         
         if ($response instanceof SuccessfulLoginResponse) {
             
-            $remember = $response->rememberUser() && $this->allowRememberMe();
+            $remember = $response->rememberUser();
             $user = $response->authenticateUser();
             
-            return $this->handleLogin($user, $remember, $login_response, $request);
+            return new LoginResponse(
+                $this->response_factory->toResponse(
+                    $responsable->forRequest($request)->forUser($user)
+                ),
+                $user,
+                $remember
+            );
             
         }
         
@@ -131,35 +138,6 @@ class AuthSessionController extends Controller
     private function unauthenticated() :Closure
     {
         return fn() => $this->response_factory->null();
-    }
-    
-    private function allowRememberMe() :bool
-    {
-        return Arr::get($this->auth_config, 'features.remember_me', false) === true;
-    }
-    
-    private function handleLogin(WP_User $user, bool $remember, LoginResponse $login_response, Request $request)
-    {
-        
-        $session = $request->session();
-        $session->setUserId($user->ID);
-        $session->put('auth.has_remember_token', $remember);
-        $session->confirmAuthUntil(Arr::get($this->auth_config, 'confirmation.duration', 0));
-        $session->regenerate();
-        wp_set_auth_cookie($user->ID, $remember, true);
-        wp_set_current_user($user->ID);
-        
-        Login::dispatch([$user, $remember]);
-        
-        // We are inside an iframe and just need to close it with js.
-        if ($request->boolean('is_interim_login')) {
-            
-            return $this->response_factory->view('auth-interim-login-success');
-            
-        }
-        
-        return $login_response->forRequest($request)->forUser($user);
-        
     }
     
 }
