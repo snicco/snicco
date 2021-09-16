@@ -10,7 +10,6 @@ use Snicco\Contracts\MagicLink;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Contracts\Authenticator;
 use Snicco\Auth\Events\FailedMagicLinkAuthentication;
-use Snicco\Auth\Exceptions\FailedAuthenticationException;
 
 class MagicLinkAuthenticator extends Authenticator
 {

@@ -80,6 +80,25 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
     }
     
     /** @test */
+    public function the_intended_url_from_the_query_string_param_of_the_magic_link_is_saved_to_the_session()
+    {
+        
+        $calvin = $this->createAdmin();
+        
+        // We would submit the redirect value as an urlencoded form parameter.
+        // This means that in the controller where we create the magic link the value would be url decoded again.
+        $url = $this->routeUrl($calvin->ID, '/foo/bar?baz=foo bar');
+        
+        $this->get($url);
+        
+        $this->assertSame(
+            $this->session->getIntendedUrl(),
+            '/foo/bar?baz='.rawurlencode('foo bar')
+        );
+        
+    }
+    
+    /** @test */
     public function failed_attempts_will_dispatch_and_event_and_redirect_to_login()
     {
         
@@ -183,12 +202,11 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
         $this->bootApp();
     }
     
-    private function routeUrl(int $user_id) :string
+    private function routeUrl(int $user_id, string $redirect_to = null) :string
     {
-        
         return $this->url->signedRoute(
             'auth.login.magic-link',
-            ['query' => ['user_id' => $user_id]],
+            ['query' => array_filter(['user_id' => $user_id, 'redirect_to' => $redirect_to])],
             300,
             true
         );

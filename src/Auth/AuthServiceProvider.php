@@ -15,7 +15,7 @@ use Snicco\Auth\Fail2Ban\PHPSyslogger;
 use Snicco\Auth\Middleware\ConfirmAuth;
 use Snicco\Auth\Events\GenerateLoginUrl;
 use Snicco\Contracts\EncryptorInterface;
-use Snicco\Auth\Responses\TwoFactorChallengeView;
+use Snicco\Auth\Responses\LoginRedirect;
 use Snicco\Auth\Events\GenerateLogoutUrl;
 use Snicco\Auth\Events\SettingAuthCookie;
 use Snicco\Auth\Contracts\AuthConfirmation;
@@ -32,14 +32,15 @@ use Snicco\Auth\Listeners\WpLoginLinkGenerator;
 use Snicco\Auth\Middleware\AuthenticateSession;
 use Snicco\Auth\Contracts\AbstractLoginResponse;
 use Snicco\Auth\Listeners\GenerateNewAuthCookie;
+use Snicco\Auth\Responses\TwoFactorChallengeView;
 use Snicco\Auth\Controllers\AuthSessionController;
 use Snicco\Auth\Confirmation\EmailAuthConfirmation;
 use Snicco\Auth\Contracts\AbstractRegistrationView;
 use Snicco\Auth\Contracts\Abstract2FAChallengeView;
 use Snicco\Auth\Events\FailedPasswordAuthentication;
 use Snicco\Auth\Responses\TwoFactorConfirmationView;
+use Snicco\Auth\Responses\EmailRegistrationViewView;
 use Snicco\Auth\Authenticators\PasswordAuthenticator;
-use Snicco\Auth\Contracts\AbstractTwoFactorChallengeResponse;
 use Snicco\Auth\Responses\Google2FaChallengeResponse;
 use Snicco\Session\Contracts\SessionManagerInterface;
 use Snicco\Session\Middleware\StartSessionMiddleware;
@@ -47,15 +48,14 @@ use Snicco\Auth\Events\FailedTwoFactorAuthentication;
 use Snicco\Auth\Events\FailedMagicLinkAuthentication;
 use Snicco\Auth\Authenticators\MagicLinkAuthenticator;
 use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
-use Snicco\Auth\Responses\RedirectToDashboardResponse;
 use Snicco\Auth\Events\FailedPasswordResetLinkRequest;
 use Snicco\Auth\Events\FailedLoginLinkCreationRequest;
 use Snicco\Auth\Confirmation\TwoFactorAuthConfirmation;
-use Snicco\Auth\Responses\EmailRegistrationViewView;
 use Snicco\Auth\Contracts\Abstract2FAuthConfirmationView;
 use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
 use Snicco\Auth\Controllers\ConfirmedAuthSessionController;
+use Snicco\Auth\Contracts\AbstractTwoFactorChallengeResponse;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 class AuthServiceProvider extends ServiceProvider
@@ -327,7 +327,7 @@ class AuthServiceProvider extends ServiceProvider
         
         $this->container->singleton(
             AbstractLoginResponse::class,
-            fn() => $this->container->make(RedirectToDashboardResponse::class)
+            fn() => $this->container->make(LoginRedirect::class)
         );
     }
     

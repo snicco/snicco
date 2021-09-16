@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Auth\Controllers;
 
 use Closure;
+use Snicco\Support\Arr;
 use Snicco\Support\Url;
 use Snicco\Http\Controller;
 use Snicco\Session\Session;
@@ -39,10 +40,6 @@ class AuthSessionController extends Controller
             
         }
         
-        $request->session()->setIntendedUrl(
-            $this->parseRedirect($request)
-        );
-        
         return $view_response->forRequest($request);
         
     }
@@ -58,6 +55,8 @@ class AuthSessionController extends Controller
                                   ->then($this->unauthenticated());
         
         if ($response instanceof SuccessfulLoginResponse) {
+            
+            $this->parseRedirect($request);
             
             $remember = $response->rememberUser();
             $user = $response->authenticateUser();
@@ -113,23 +112,33 @@ class AuthSessionController extends Controller
         wp_clear_auth_cookie();
     }
     
-    private function parseRedirect(Request $request) :string
+    private function parseRedirect(Request $request)
     {
         
-        $redirect_to = $request->query('redirect_to', $this->url->toRoute('dashboard'));
-        
-        // redirect_to will be urldecoded which means that we can not be sure that a potential
-        // query string will still be urlencoded correctly.
-        // Since we have no control over where plugins and core call wp_login_url() it's best to rebuild the query.
-        $parts = parse_url($redirect_to);
-        
-        if (isset($parts['query'])) {
+        if ($from_query_string = $request->query('redirect_to')) {
+            $redirect_url = Url::rebuild($from_query_string);
+        }
+        else {
             
-            return Url::rebuildQuery($redirect_to);
+            if ( ! $referer = $request->getHeaderLine('referer')) {
+                $redirect_url = $this->url->toRoute('dashboard');
+            }
+            else {
+                
+                parse_str(parse_url($referer, PHP_URL_QUERY), $query);
+                $redirect_url = Url::rebuild(
+                    Arr::get(
+                        $query,
+                        'redirect_to',
+                        $this->url->toRoute('dashboard')
+                    )
+                );
+                
+            }
             
         }
         
-        return $redirect_to;
+        $request->session()->setIntendedUrl($redirect_url);
         
     }
     

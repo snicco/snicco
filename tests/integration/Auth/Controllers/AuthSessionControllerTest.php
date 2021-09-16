@@ -57,21 +57,6 @@ class AuthSessionControllerTest extends AuthTestCase
     }
     
     /** @test */
-    public function the_redirect_to_url_is_saved_to_the_session()
-    {
-        
-        ;
-        
-        $url = wp_login_url('https://foobar.com/foo/bar?search=foo bar');
-        
-        $response = $this->get($url);
-        $response->assertOk()->assertSee('Login');
-        
-        $response->assertSessionHas('_url.intended', "https://foobar.com/foo/bar?search=foo%20bar");
-        
-    }
-    
-    /** @test */
     public function a_user_can_log_in()
     {
         
@@ -85,6 +70,28 @@ class AuthSessionControllerTest extends AuthTestCase
         
         $response->assertRedirectToRoute('dashboard', 302);
         $this->assertAuthenticated($calvin);
+        
+    }
+    
+    /** @test */
+    public function the_intended_url_is_set_in_the_session_from_the_referer_query_string()
+    {
+        
+        $referer = wp_login_url('/foo/bar?baz=foo bar');
+        
+        $calvin = $this->createAdmin();
+        
+        $this->postToLogin([
+            'pwd' => 'password',
+            'log' => $calvin->user_login,
+        ], [
+            'referer' => $referer,
+        ]);
+        
+        $this->assertSame(
+            "/foo/bar?baz=".rawurlencode('foo bar'),
+            $this->session->getIntendedUrl()
+        );
         
     }
     
@@ -357,11 +364,11 @@ class AuthSessionControllerTest extends AuthTestCase
         $this->bootApp();
     }
     
-    private function postToLogin(array $data) :TestResponse
+    private function postToLogin(array $data, array $headers = []) :TestResponse
     {
         $token = $this->withCsrfToken();
         
-        return $this->post('/auth/login', $token + $data);
+        return $this->post('/auth/login', $token + $data, $headers);
     }
     
 }
