@@ -81,17 +81,14 @@ class AuthSessionControllerTest extends AuthTestCase
         
         $calvin = $this->createAdmin();
         
-        $this->postToLogin([
+        $response = $this->postToLogin([
             'pwd' => 'password',
             'log' => $calvin->user_login,
         ], [
             'referer' => $referer,
         ]);
         
-        $this->assertSame(
-            "/foo/bar?baz=".rawurlencode('foo bar'),
-            $this->session->getIntendedUrl()
-        );
+        $response->assertLocation('/foo/bar?baz='.rawurlencode('foo bar'));
         
     }
     
