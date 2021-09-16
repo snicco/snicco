@@ -89,12 +89,9 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
         // This means that in the controller where we create the magic link the value would be url decoded again.
         $url = $this->routeUrl($calvin->ID, '/foo/bar?baz=foo bar');
         
-        $this->get($url);
+        $response = $this->get($url);
         
-        $this->assertSame(
-            $this->session->getIntendedUrl(),
-            '/foo/bar?baz='.rawurlencode('foo bar')
-        );
+        $response->assertLocation('/foo/bar?baz='.rawurlencode('foo bar'));
         
     }
     
