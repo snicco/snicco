@@ -18,7 +18,6 @@ use Snicco\Contracts\AbstractRedirector;
 use Snicco\Session\SessionServiceProvider;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Session\Drivers\DatabaseSessionDriver;
-use Snicco\Session\Middleware\ShareSessionWithView;
 use Snicco\Session\Middleware\StartSessionMiddleware;
 use Snicco\Session\Contracts\SessionManagerInterface;
 
@@ -346,7 +345,6 @@ class SessionServiceProviderTest extends FrameworkTestCase
         $global_middleware = TestApp::config('middleware.groups.global');
         
         $this->assertContains(StartSessionMiddleware::class, $global_middleware);
-        $this->assertContains(ShareSessionWithView::class, $global_middleware);
         
     }
     

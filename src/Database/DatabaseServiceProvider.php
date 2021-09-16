@@ -5,8 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Database;
 
 use Faker\Factory;
+use Illuminate\Events\Dispatcher;
 use Faker\Generator as FakerGenerator;
 use Snicco\Contracts\ServiceProvider;
+use Illuminate\Contracts\Container\Container as IlluminateContainerContract;
 use Snicco\Traits\ReliesOnIlluminateContainer;
 use BetterWpHooks\Dispatchers\WordpressDispatcher;
 use Illuminate\Database\Eloquent\Model as Eloquent;
@@ -26,14 +28,16 @@ class DatabaseServiceProvider extends ServiceProvider
     public function register() :void
     {
         
+        $illuminate_container = $this->parseIlluminateContainer();
+        
         $this->bindConfig();
-        $this->bindIlluminateDispatcher();
         $this->bindConnectionResolver();
         $this->bindWPDb();
         $this->bindSchemaBuilder();
-        $this->bindFacades();
         $this->bindWPConnection();
         $this->bindDatabaseFactory();
+        $this->bindIlluminateDispatcher($illuminate_container);
+        $this->setIlluminateBindings($illuminate_container);
         
     }
     
@@ -57,20 +61,10 @@ class DatabaseServiceProvider extends ServiceProvider
         ]);
     }
     
-    private function bindIlluminateDispatcher()
+    private function bindIlluminateDispatcher(IlluminateContainerContract $illuminate_container)
     {
-        
-        $this->container->singleton(
-            IlluminateEventDispatcher::class,
-            fn() => new IlluminateDispatcherAdapter(
-                $this->container->make(WordpressDispatcher::class)
-            )
-        );
-        
-        $this->container->singleton(
-            'events',
-            fn() => $this->container->make(IlluminateEventDispatcher::class)
-        );
+
+        $illuminate_container->bindIf('events', new Dispatcher());
         
     }
     
@@ -120,19 +114,6 @@ class DatabaseServiceProvider extends ServiceProvider
         
     }
     
-    private function bindFacades()
-    {
-        
-        $this->setFacadeContainer($c = $this->parseIlluminateContainer());
-        $this->setGlobalContainerInstance($c);
-        
-        $this->container->singleton(
-            'db',
-            fn() => $this->container->make(ConnectionResolverInterface::class)
-        );
-        
-    }
-    
     private function bindWPConnection()
     {
         
@@ -178,8 +159,18 @@ class DatabaseServiceProvider extends ServiceProvider
     
     private function bootEloquent()
     {
-        Eloquent::setEventDispatcher($this->container->make(IlluminateEventDispatcher::class));
+        Eloquent::setEventDispatcher($this->container->make('events'));
         Eloquent::setConnectionResolver($this->container->make(ConnectionResolverInterface::class));
+    }
+    
+    private function setIlluminateBindings(IlluminateContainerContract $illuminate_container)
+    {
+        $this->setFacadeContainer($illuminate_container);
+        $this->setGlobalContainerInstance($illuminate_container);
+        $illuminate_container->singleton(
+            'db',
+            fn() => $this->container->make(ConnectionResolverInterface::class)
+        );
     }
     
 }
