@@ -109,7 +109,7 @@ class Application implements ArrayAccess
         return $this->base_path.($path ? DIRECTORY_SEPARATOR.$path : $path);
     }
     
-    public function storagePath($path = '') :string
+    public function storagePath(string $path = '') :string
     {
         
         $storage_dir = $this->config->get('app.storage_dir');
@@ -122,7 +122,7 @@ class Application implements ArrayAccess
         
     }
     
-    public function configPath($path = '') :string
+    public function configPath(string $path = '') :string
     {
         
         return $this->base_path.DIRECTORY_SEPARATOR.'config'.($path ? DIRECTORY_SEPARATOR.$path

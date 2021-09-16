@@ -10,10 +10,12 @@ use DateInterval;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Snicco\Support\Arr;
+use Snicco\Support\Str;
 use Illuminate\Support\MessageBag;
 use Illuminate\Support\ViewErrorBag;
 use Illuminate\Support\InteractsWithTime;
 use Snicco\Session\Contracts\SessionDriver;
+use Snicco\Session\Middleware\VerifyCsrfToken;
 use Illuminate\Contracts\Support\MessageProvider;
 
 class Session
@@ -50,6 +52,10 @@ class Session
         $this->loadDataFromDriver();
         
         $this->started = true;
+        
+        if ( ! $this->has(VerifyCsrfToken::TOKEN_KEY)) {
+            $this->regenerateCsrfToken();
+        }
         
         $this->initial_attributes = $this->attributes;
         
@@ -214,7 +220,6 @@ class Session
     
     public function has($key) :bool
     {
-        
         return ! collect(
             is_array($key)
                 ? $key
@@ -223,6 +228,11 @@ class Session
             
             return is_null($this->get($key));
         });
+    }
+    
+    public function boolean(string $key, bool $default = false) :bool
+    {
+        return filter_var($this->get($key, $default), FILTER_VALIDATE_BOOLEAN);
     }
     
     public function flashInputNow(array $input)
@@ -282,11 +292,9 @@ class Session
     
     public function invalidate() :bool
     {
-        
         $this->flush();
-        
+        $this->regenerateCsrfToken();
         return $this->migrate();
-        
     }
     
     public function flush() :void
@@ -297,8 +305,9 @@ class Session
     
     public function regenerate(bool $destroy_old = true) :bool
     {
-        
-        return $this->migrate($destroy_old);
+        $success = $this->migrate($destroy_old);
+        $this->regenerateCsrfToken();
+        return $success;
     }
     
     public function isStarted() :bool
@@ -541,11 +550,19 @@ class Session
         return $this->get('auth.2fa.challenged_user', 0);
     }
     
+    public function csrfToken()
+    {
+        return $this->get(VerifyCsrfToken::TOKEN_KEY);
+    }
+    
+    public function regenerateCsrfToken()
+    {
+        $this->put(VerifyCsrfToken::TOKEN_KEY, Str::random(40));
+    }
+    
     protected function prepareForUnserialize(string $data) :string
     {
-        
         return $data;
-        
     }
     
     protected function prepareForStorage(string $data) :string
@@ -645,9 +662,7 @@ class Session
     
     private function allowedRoutes() :array
     {
-        
         return $this->get('_allow_routes', []);
-        
     }
     
 }
