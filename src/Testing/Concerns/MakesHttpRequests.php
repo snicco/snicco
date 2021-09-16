@@ -118,9 +118,7 @@ trait MakesHttpRequests
     
     public function followingRedirects() :self
     {
-        
         $this->follow_redirects = true;
-        
         return $this;
     }
     
@@ -262,9 +260,7 @@ trait MakesHttpRequests
         $uri = $this->createUri($url);
         
         $this->default_server_variables['REQUEST_METHOD'] ??= $method;
-        $this->default_server_variables['SCRIPT_NAME'] ??= WP::wpAdminFolder()
-                                                           .DIRECTORY_SEPARATOR
-                                                           .$parent;
+        $this->default_server_variables['SCRIPT_NAME'] ??= $this->adminScriptName($parent);
         
         $request = new Request(
             $this->request_factory->createServerRequest(
@@ -489,6 +485,8 @@ trait MakesHttpRequests
         
         $this->request = $this->addRequestDefaults($request, $headers);
         
+        unset($this->default_server_variables['SCRIPT_NAME']);
+        
         if ( ! $this->app->hasBeenBootstrapped()) {
             $this->bootApp();
         }
@@ -511,8 +509,20 @@ trait MakesHttpRequests
         
         $this->follow_redirects = false;
         
-        /** @todo transform to test response if no redirect here. */
+        if ( ! $response->isRedirect()) {
+            return $this->toTestResponse($response);
+        }
+        
         while ($response->isRedirect()) {
+            
+            $location = $response->getHeaderLine('Location');
+            $parts = parse_url($location);
+            
+            if (Str::contains($parts['path'], WP::wpAdminFolder())) {
+                $this->default_server_variables['SCRIPT_NAME'] = $this->adminScriptName();
+                $response = $this->get($location);
+            }
+            
             $response = $this->get($response->getHeaderLine('Location'));
         }
         
@@ -527,6 +537,15 @@ trait MakesHttpRequests
         $request = $this->addAttributes($request);
         $this->instance(Request::class, $request);
         return $request;
+    }
+    
+    private function adminScriptName($parent = 'admin.php') :string
+    {
+        
+        return WP::wpAdminFolder()
+               .DIRECTORY_SEPARATOR
+               .$parent;
+        
     }
     
 }
