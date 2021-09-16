@@ -40,6 +40,7 @@ class AuthSessionControllerTest extends AuthTestCase
     public function reauth_works_when_present_in_the_query_parameter()
     {
         
+        //$this->withCsrfToken();
         $this->withDataInSession(['foo' => 'bar']);
         
         $auth_cookies_cleared = false;

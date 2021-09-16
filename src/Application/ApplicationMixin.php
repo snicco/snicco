@@ -63,6 +63,44 @@ final class ApplicationMixin
     }
     
     /**
+     * Returns the local path to the storage folder
+     *
+     * @param  string  $path  A path relative to the storage folder
+     *
+     * @return string
+     */
+    public static function storagePath(string $path = '') :string
+    {
+    }
+    
+    /**
+     * Returns the local path to the config folder
+     *
+     * @param  string  $path  A path relative to the config folder
+     *
+     * @return string
+     */
+    public static function configPath(string $path = '') :string
+    {
+    }
+    
+    public static function environment() :bool
+    {
+    }
+    
+    public static function isLocal() :bool
+    {
+    }
+    
+    public static function isProduction() :bool
+    {
+    }
+    
+    public static function isRunningInConsole() :bool
+    {
+    }
+    
+    /**
      * Return the currently active session instance
      *
      * @return Session
