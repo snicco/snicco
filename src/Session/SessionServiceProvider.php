@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Session;
 
-use Snicco\Support\Arr;
 use Snicco\View\GlobalContext;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Application\Application;
@@ -39,7 +38,6 @@ class SessionServiceProvider extends ServiceProvider
         $this->bindSessionDriver();
         $this->bindSessionManager();
         $this->bindSession();
-        $this->bindCsrfMiddleware();
         $this->bindAliases();
         $this->bindEncryptor();
         $this->bindEvents();
@@ -154,7 +152,6 @@ class SessionServiceProvider extends ServiceProvider
             
         });
     }
-    
     
     private function bindAliases()
     {
