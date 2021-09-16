@@ -5,11 +5,12 @@ declare(strict_types=1);
 namespace Snicco\Testing\Concerns;
 
 use Snicco\Support\Arr;
+use Snicco\Support\Str;
 use Snicco\Session\Session;
-use Snicco\Session\CsrfField;
 use Snicco\Application\Application;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\Session\Contracts\SessionDriver;
+use Snicco\Session\Middleware\VerifyCsrfToken;
 
 /**
  * @property Session|null $session
@@ -26,6 +27,7 @@ trait InteractsWithSession
         '_rotate_at',
         '_expires_at',
         '_last_activity',
+        VerifyCsrfToken::TOKEN_KEY,
     ];
     
     private ?string $session_id = null;
@@ -35,15 +37,9 @@ trait InteractsWithSession
     protected function withCsrfToken() :array
     {
         
-        /** @var CsrfField $csrf */
-        $csrf = $this->app->resolve(CsrfField::class);
-        $csrf_token = $csrf->create();
-        $name = $csrf_token['csrf_name'];
-        $value = $csrf_token['csrf_value'];
+        $this->withDataInSession($data = [VerifyCsrfToken::TOKEN_KEY => Str::random(40)]);
         
-        $this->withDataInSession(["csrf.$name" => $value]);
-        
-        return $csrf_token;
+        return $data;
         
     }
     

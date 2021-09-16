@@ -38,22 +38,6 @@ class SessionTest extends TestCase
         
     }
     
-    private function newArrayHandler(int $minutes = 10) :ArraySessionDriver
-    {
-        
-        return new ArraySessionDriver($minutes);
-        
-    }
-    
-    private function newSessionStore(SessionHandlerInterface $handler = null) :Session
-    {
-        
-        return new Session(
-            $handler ?? new ArraySessionDriver(10),
-        );
-        
-    }
-    
     /** @test */
     public function provided_a_semanticly_correct_session_id_that_does_not_exist_in_the_driver_regenerates_the_id()
     {
@@ -129,6 +113,8 @@ class SessionTest extends TestCase
         $session->put('foo.biz', 'boom');
         $session->start($this->getSessionId());
         
+        $session->forget('_token');
+        
         $this->assertEquals([
             
             'foo' => [
@@ -151,6 +137,8 @@ class SessionTest extends TestCase
         $handler->write($this->getSessionId(), serialize([]));
         $session = $this->newSessionStore($handler);
         $session->start($this->getSessionId());
+        
+        $session->forget('_token');
         
         $this->assertSame([], $session->all());
         
@@ -247,6 +235,8 @@ class SessionTest extends TestCase
         
         $this->assertEmpty($session->getDriver()->read($this->hash($session->getId())));
         
+        $session->forget('_token');
+        
         $session->save();
         
         $this->assertEmpty($session->get('_flash.new'));
@@ -280,6 +270,8 @@ class SessionTest extends TestCase
         $session->regenerate();
         $new_id = $session->getId();
         
+        $session->forget('_token');
+        
         $session->save();
         
         $this->assertEquals([
@@ -303,6 +295,7 @@ class SessionTest extends TestCase
         $session = $this->newSessionStore($handler);
         $session->start($this->getSessionId());
         
+        $session->forget('_token');
         $this->assertSame(['foo' => 'bar',], $session->all());
         
     }
@@ -402,6 +395,8 @@ class SessionTest extends TestCase
         $session = $this->newSessionStore($handler);
         
         $session->start($this->getSessionId());
+        
+        $session->forget('_token');
         
         $this->assertSame(['foo' => 'bar', 'baz' => 'biz'], $session->all());
         $this->assertSame('biz', $session->pull('baz'));
@@ -759,6 +754,7 @@ class SessionTest extends TestCase
         $this->assertTrue($session->invalidate());
         
         $this->assertNotEquals($old_id, $session->getId());
+        $session->forget('_token');
         $this->assertCount(0, $session->all());
         $this->assertEquals('', $session->getDriver()->read($this->hash($old_id)));
         
@@ -860,6 +856,66 @@ class SessionTest extends TestCase
         
     }
     
+    /** @test */
+    public function new_sessions_will_have_a_csrf_token()
+    {
+        
+        $session = $this->newSessionStore();
+        
+        $this->assertFalse($session->has('_token'));
+        
+        $session->start();
+        
+        $this->assertTrue($session->has('_token'));
+        $this->assertEquals(40, strlen($session->csrfToken()));
+        
+    }
+    
+    /** @test */
+    public function csrf_tokens_can_be_regenerated()
+    {
+        
+        $session = $this->newSessionStore();
+        $session->start();
+        
+        $old = $session->csrfToken();
+        $session->regenerateCsrfToken();
+        
+        $this->assertNotSame($old, $session->csrfToken());
+        
+    }
+    
+    /** @test */
+    public function testBoolean()
+    {
+        
+        $session = $this->newSessionStore();
+        $session->put('foo', 1);
+        $session->put('bar', '1');
+        $session->put('baz', 'on');
+        $session->put('biz', 'yes');
+        $session->put('boo', true);
+        $session->put('bam', 'true');
+        $session->put('bogus', 'bogus');
+        $session->put('false_word', 'false');
+        $session->put('off', 'off');
+        $session->put('no', 'no');
+        $session->put('false_bool', false);
+        
+        $this->assertTrue($session->boolean('foo'));
+        $this->assertTrue($session->boolean('bar'));
+        $this->assertTrue($session->boolean('baz'));
+        $this->assertTrue($session->boolean('biz'));
+        $this->assertTrue($session->boolean('boo'));
+        $this->assertTrue($session->boolean('bam'));
+        $this->assertFalse($session->boolean('bogus'));
+        $this->assertFalse($session->boolean('false_word'));
+        $this->assertFalse($session->boolean('off'));
+        $this->assertFalse($session->boolean('no'));
+        $this->assertFalse($session->boolean('false_bool'));
+        
+    }
+    
     protected function setUp() :void
     {
         
@@ -876,6 +932,22 @@ class SessionTest extends TestCase
         WP::reset();
         Mockery::close();
         parent::tearDown();
+    }
+    
+    private function newArrayHandler(int $minutes = 10) :ArraySessionDriver
+    {
+        
+        return new ArraySessionDriver($minutes);
+        
+    }
+    
+    private function newSessionStore(SessionHandlerInterface $handler = null) :Session
+    {
+        
+        return new Session(
+            $handler ?? new ArraySessionDriver(10),
+        );
+        
     }
     
 }
