@@ -8,6 +8,7 @@ use wpdb;
 use mysqli;
 use mysqli_stmt;
 use mysqli_result;
+use Snicco\Database\Exceptions\SqlException;
 use Snicco\Database\Concerns\DelegatesToWpdb;
 use Snicco\Database\Contracts\BetterWPDbInterface;
 
@@ -129,17 +130,28 @@ class BetterWPDb implements BetterWPDbInterface
      * @param $bindings
      * @param  string  $types
      *
-     * @return false|mysqli_stmt
+     * @return mysqli_stmt
+     * @throws SqlException
      */
-    private function preparedStatement($sql, $bindings, string $types = "")
+    private function preparedStatement($sql, $bindings, string $types = "") :mysqli_stmt
     {
         
         $types = $types ? : str_repeat("s", count($bindings));
         $stmt = $this->mysqli->prepare($sql);
         
+        if ( ! $stmt instanceof mysqli_stmt) {
+            throw new SqlException($sql, $bindings, new \RuntimeException($this->mysqli->error));
+        }
+        
         if ( ! empty($bindings)) {
             
-            $stmt->bind_param($types, ...$bindings);
+            $success = $stmt->bind_param($types, ...$bindings);
+            
+            if ( ! $success) {
+                throw new SqlException(
+                    $sql, $bindings, new \RuntimeException($this->mysqli->error)
+                );
+            }
             
         }
         
