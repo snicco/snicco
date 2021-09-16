@@ -93,7 +93,7 @@ class LoginMagicLinkControllerTest extends AuthTestCase
                 '/auth/login/magic-link',
                 [
                     'login' => $calvin->user_login,
-                    'redirect_to' => '/foo/bar/?baz=foo bar',
+                    'redirect_to' => '/foo/bar/?baz=foo%20bar',
                 ]
             );
         $response->assertRedirect('/auth/login');
@@ -104,7 +104,7 @@ class LoginMagicLinkControllerTest extends AuthTestCase
         $mail->assertSee('/auth/login/magic-link?expires=');
         $mail->assertSee('/auth/login/magic-link?expires=');
         $mail->assertSee("user_id=$calvin->ID");
-        $mail->assertSee(htmlentities('redirect_to='.rawurlencode('/foo/bar/?baz=foo bar')));
+        $mail->assertSee(htmlentities('redirect_to='.rawurlencode('/foo/bar/?baz=foo%20bar')));
         
     }
     
