@@ -120,12 +120,12 @@ class AuthSessionController extends Controller
         }
         else {
             
-            if ( ! $referer = $request->getHeaderLine('referer')) {
+            if ( $request->hasHeader('referer')) {
                 $redirect_url = $this->url->toRoute('dashboard');
             }
             else {
                 
-                parse_str(parse_url($referer, PHP_URL_QUERY), $query);
+                parse_str(parse_url($request->getHeaderLine('referer'), PHP_URL_QUERY), $query);
                 $redirect_url = Url::rebuild(
                     Arr::get(
                         $query,
