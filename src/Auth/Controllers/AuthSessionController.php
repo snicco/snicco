@@ -125,7 +125,10 @@ class AuthSessionController extends Controller
             }
             else {
                 
-                parse_str(parse_url($request->getHeaderLine('referer'), PHP_URL_QUERY) ?? '', $query);
+                parse_str(
+                    parse_url($request->getHeaderLine('referer'), PHP_URL_QUERY) ?? '',
+                    $query
+                );
                 $redirect_url = Url::rebuild(
                     Arr::get(
                         $query,
