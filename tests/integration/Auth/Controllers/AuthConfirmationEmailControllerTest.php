@@ -50,7 +50,7 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
         
         $response =
             $this->post($this->endpoint, $token, ['referer' => 'https://foobar.com/auth/confirm']);
-        $response->assertRedirect('/auth/confirm');
+        $response->assertRedirectPath('/auth/confirm');
         $response->assertSessionHas('auth.confirm.email.sent', function ($value) {
             return $value === true;
         });
@@ -93,7 +93,7 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
         
         $response =
             $this->post($this->endpoint, $token, ['referer' => 'https://foobar.com/auth/confirm']);
-        $response->assertRedirect('/auth/confirm');
+        $response->assertRedirectPath('/auth/confirm');
         
         $this->assertMailSent(ConfirmAuthMail::class)
              ->assertTo($calvin);
@@ -103,7 +103,7 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
         $token = $this->withCsrfToken();
         $response =
             $this->post($this->endpoint, $token, ['referer' => 'https://foobar.com/auth/confirm']);
-        $response->assertRedirect('/auth/confirm')
+        $response->assertRedirectPath('/auth/confirm')
                  ->assertSessionHasErrors('auth.confirm.email.message')
                  ->assertSessionHas('auth.confirm.email.next');
         
@@ -115,7 +115,7 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
         $token = $this->withCsrfToken();
         $response =
             $this->post($this->endpoint, $token, ['referer' => 'https://foobar.com/auth/confirm']);
-        $response->assertRedirect('/auth/confirm')
+        $response->assertRedirectPath('/auth/confirm')
                  ->assertSessionHasNoErrors();
         
         $this->assertMailSent(ConfirmAuthMail::class)

@@ -51,7 +51,7 @@ class TwoFactorAuthenticator extends Authenticator
             FailedTwoFactorAuthentication::dispatch([$request, $user_id]);
             
             return $this->response_factory->redirect()
-                                          ->toRoute('auth.2fa.challenge')
+                                          ->back()
                                           ->withErrors(['login' => 'Invalid code provided']);
             
         }
