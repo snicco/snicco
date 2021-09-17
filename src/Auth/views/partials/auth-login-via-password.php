@@ -11,7 +11,7 @@ use Illuminate\Support\ViewErrorBag;
 ?>
 
 <?php
-if ($is_interim_login === true) : ?>
+if ($session->boolean('is_interim_login') === true) : ?>
 	
 	<div class="notification is-info is-light">
         Your session has expired. Please log back in to continue.
@@ -31,13 +31,6 @@ endif; ?>
 
     <?php
     endif; ?>
-	
-	<!--Interim login-->
-	<?php
-	if ($is_interim_login) : ?>
-		<input type="hidden" name="is_interim_login" value="1">
-	<?php
-	endif; ?>
 	
 	<!--CSRF field-->
 	<?= $csrf->asHtml() ?>

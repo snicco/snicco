@@ -36,7 +36,7 @@ class TwoFactorAuthSessionController extends Controller
             
         }
         
-        return $view_response;
+        return $view_response->forRequest($request)->forUser($this->getUserById($challenged_user));
         
     }
     

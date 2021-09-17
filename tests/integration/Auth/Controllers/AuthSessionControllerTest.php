@@ -40,7 +40,6 @@ class AuthSessionControllerTest extends AuthTestCase
     public function reauth_works_when_present_in_the_query_parameter()
     {
         
-        //$this->withCsrfToken();
         $this->withDataInSession(['foo' => 'bar']);
         
         $auth_cookies_cleared = false;
@@ -53,6 +52,17 @@ class AuthSessionControllerTest extends AuthTestCase
         $response->assertOk()->assertSee('Login');
         $this->assertTrue($auth_cookies_cleared);
         $response->assertSessionMissing('foo');
+        
+    }
+    
+    /** @test */
+    public function interim_login_is_saved_to_the_session()
+    {
+        
+        $response = $this->get('/auth/login?interim-login=1');
+        $response->assertOk();
+        
+        $response->assertSessionHas('is_interim_login', true);
         
     }
     
@@ -291,20 +301,23 @@ class AuthSessionControllerTest extends AuthTestCase
     }
     
     /** @test */
-    public function if_its_an_interim_login_the_user_is_not_redirected()
+    public function if_its_an_interim_login_the_user_is_not_redirected_and_interim_login_is_clear_from_the_session()
     {
         
         $calvin = $this->createAdmin();
         
+        $this->withDataInSession(['is_interim_login' => true]);
+        
         $response = $this->postToLogin([
             'pwd' => 'password',
             'log' => $calvin->user_login,
-            'is_interim_login' => '1',
         ]);
         
         $response->assertViewIs('auth-interim-login-success')->assertSeeHtml(
             "jQuery(parent.document).find('.wp-auth-check-close').click();"
         )->assertOk();
+        
+        $response->assertSessionMissing('is_interim_login');
         
     }
     

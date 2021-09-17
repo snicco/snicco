@@ -37,7 +37,6 @@ class PasswordLoginView extends AbstractLoginView
                 'title' => 'Log-in | '.WP::siteName(),
                 'view' => 'auth-login-via-password',
                 'allow_remember' => $this->config->get('auth.features.remember_me'),
-                'is_interim_login' => $this->request && $this->request->boolean('interim-login'),
                 'allow_password_reset' => $this->pw_resets,
                 'forgot_password_url' => $this->pw_resets
                     ? $this->url->toRoute('auth.forgot.password')

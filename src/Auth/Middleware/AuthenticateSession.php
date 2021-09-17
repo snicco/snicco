@@ -58,8 +58,9 @@ class AuthenticateSession extends Middleware
             $this->doLogin($response, $request);
             
             // We are inside an iframe and just need to close it with js.
-            if ($request->boolean('is_interim_login')) {
+            if ($request->session()->boolean('is_interim_login')) {
                 
+                $request->session()->forget('is_interim_login');
                 return $this->response_factory->view('auth-interim-login-success');
                 
             }
