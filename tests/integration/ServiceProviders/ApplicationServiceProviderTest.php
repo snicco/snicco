@@ -10,6 +10,8 @@ use Snicco\Routing\Router;
 use Snicco\Http\Redirector;
 use Tests\FrameworkTestCase;
 use Snicco\Support\WpFacade;
+use Tests\stubs\TestRequest;
+use Snicco\Http\Psr7\Request;
 use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Application\Application;
@@ -268,6 +270,19 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
             "Your app.key config value is either missing or too insecure. Please generate a new one using Snicco\Application\Application::generateKey()"
         );
         $this->bootApp();
+        
+    }
+    
+    /** @test */
+    public function the_request_can_be_resolved_as_an_alias()
+    {
+        
+        $this->withRequest(TestRequest::from('GET', '/foo'));
+        $this->bootApp();
+        
+        $this->assertInstanceOf(Request::class, $request = TestApp::request());
+        
+        $this->assertSame('/foo', $request->path());
         
     }
     

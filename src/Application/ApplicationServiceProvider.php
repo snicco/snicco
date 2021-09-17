@@ -7,6 +7,7 @@ namespace Snicco\Application;
 use Snicco\Support\WP;
 use Snicco\Routing\Router;
 use Snicco\View\MethodField;
+use Snicco\Http\Psr7\Request;
 use Snicco\View\GlobalContext;
 use Snicco\View\PhpViewEngine;
 use Snicco\Http\ResponseFactory;
@@ -71,6 +72,7 @@ class ApplicationServiceProvider extends ServiceProvider
         $this->responseAliases($app);
         $this->routingAliases($app);
         $this->viewAliases($app);
+        $this->bindRequestAlias($app);
         
     }
     
@@ -163,6 +165,13 @@ class ApplicationServiceProvider extends ServiceProvider
             
         });
         $app->alias('methodField', MethodField::class, 'html');
+    }
+    
+    private function bindRequestAlias(Application $app)
+    {
+        $app->alias('request', function () use ($app) {
+            return $app->resolve(Request::class);
+        });
     }
     
 }
