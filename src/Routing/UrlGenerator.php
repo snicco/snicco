@@ -104,6 +104,76 @@ class UrlGenerator
         
     }
     
+    public function getRequest() :Request
+    {
+        
+        return call_user_func($this->request_resolver);
+        
+    }
+    
+    public function signed(string $path, $expiration = 300, $absolute = false, $query = []) :string
+    {
+        
+        if (Url::isValidAbsolute($path)) {
+            throw new ConfigurationException('Signed urls do not work with absolute urls.');
+        }
+        
+        $expires = $this->availableAt($expiration);
+        
+        $query = array_merge(['expires' => $expires], $query);
+        
+        $url_with_expired_query_string = $this->to($path, $query, true, $absolute);
+        
+        $signature = $this->magic_link->create(
+            $url_with_expired_query_string,
+            $expires,
+            $this->getRequest()
+        );
+        
+        return $this->to(
+            $path,
+            array_merge($query, [MagicLink::QUERY_STRING_ID => $signature]),
+            true,
+            $absolute
+        );
+        
+    }
+    
+    public function secure(string $path, array $query = []) :string
+    {
+        return $this->to($path, $query, true, true);
+    }
+    
+    public function back(string $fallback = '') :string
+    {
+        
+        $referrer = $this->getRequest()->getHeaderLine('referer');
+        
+        if ($referrer !== '') {
+            
+            return $this->to($referrer, [], true, Url::isValidAbsolute($referrer));
+            
+        }
+        elseif ($fallback !== '') {
+            
+            return $this->to($fallback);
+            
+        }
+        
+        return $this->to('/');
+    }
+    
+    public function current() :string
+    {
+        
+        return $this->getRequest()->fullPath();
+    }
+    
+    public function toLogin(string $redirect_on_login = '', bool $reauth = false) :string
+    {
+        return $this->to(WP::loginUrl($redirect_on_login, $reauth));
+    }
+    
     private function formatAbsolute(string $url, $absolute) :string
     {
         
@@ -151,13 +221,6 @@ class UrlGenerator
         $start = Str::startsWith($root, 'http://') ? 'http://' : 'https://';
         
         return rtrim(preg_replace('~'.$start.'~', $scheme, $root, 1), '/');
-    }
-    
-    public function getRequest() :Request
-    {
-        
-        return call_user_func($this->request_resolver);
-        
     }
     
     private function formatScheme($secure) :string
@@ -218,69 +281,6 @@ class UrlGenerator
     {
         
         return array_filter($parameters, 'is_string', ARRAY_FILTER_USE_KEY);
-    }
-    
-    public function signed(string $path, $expiration = 300, $absolute = false, $query = []) :string
-    {
-        
-        if (Url::isValidAbsolute($path)) {
-            throw new ConfigurationException('Signed urls do not work with absolute urls.');
-        }
-        
-        $expires = $this->availableAt($expiration);
-        
-        $query = array_merge(['expires' => $expires], $query);
-        
-        $url_with_expired_query_string = $this->to($path, $query, true, $absolute);
-        
-        $signature = $this->magic_link->create(
-            $url_with_expired_query_string,
-            $expires,
-            $this->getRequest()
-        );
-        
-        return $this->to(
-            $path,
-            array_merge($query, [MagicLink::QUERY_STRING_ID => $signature]),
-            true,
-            $absolute
-        );
-        
-    }
-    
-    public function secure(string $path, array $query = []) :string
-    {
-        return $this->to($path, $query, true, true);
-    }
-    
-    public function back(string $fallback = '', bool $external_referer = false) :string
-    {
-        
-        $referrer = $this->getRequest()->getHeaderLine('referer');
-        
-        if ($referrer !== '') {
-            
-            return $this->to($referrer, [], true, $external_referer);
-            
-        }
-        elseif ($fallback !== '') {
-            
-            return $this->to($fallback);
-            
-        }
-        
-        return $this->to('/');
-    }
-    
-    public function current() :string
-    {
-        
-        return $this->getRequest()->fullPath();
-    }
-    
-    public function toLogin(string $redirect_on_login = '', bool $reauth = false) :string
-    {
-        return $this->to(WP::loginUrl($redirect_on_login, $reauth));
     }
     
 }

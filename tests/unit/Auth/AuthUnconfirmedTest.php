@@ -49,7 +49,7 @@ class AuthUnconfirmedTest extends MiddlewareTestCase
         $response = $this->runMiddleware($request);
         
         $this->assertStatusCode(302, $response);
-        $this->assertHeader('Location', '/foo/bar', $response);
+        $this->assertHeader('Location', 'https://foobar.com/foo/bar', $response);
         
     }
     

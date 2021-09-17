@@ -13,12 +13,12 @@ use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Snicco\Auth\Contracts\Authenticator;
 use Snicco\Contracts\EncryptorInterface;
-use Snicco\Auth\Contracts\AbstractTwoFactorChallengeResponse;
 use Snicco\Auth\Events\FailedTwoFactorAuthentication;
 use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
 use Tests\integration\Auth\Stubs\TestTwoFactorProvider;
 use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
+use Snicco\Auth\Contracts\AbstractTwoFactorChallengeResponse;
 
 class TwoFactorAuthenticatorTest extends AuthTestCase
 {
@@ -103,7 +103,7 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
         
         $response = $this->post('/auth/login', [
             'one-time-code' => $this->invalid_one_time_code,
-        ]);
+        ], ['referer' => '/auth/two-factor/challenge']);
         
         $response->assertRedirectToRoute('auth.2fa.challenge');
         $response->assertSessionHasErrors('login');
@@ -128,7 +128,7 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
         
         $response = $this->post('/auth/login', [
             'one-time-code' => $this->invalid_one_time_code,
-        ]);
+        ], ['referer' => '/auth/two-factor/challenge']);
         
         $response->assertRedirectToRoute('auth.2fa.challenge');
         $response->assertSessionHasErrors('login');
@@ -179,7 +179,7 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
         
         $response = $this->post('/auth/login', [
             'recovery-code' => 'bogus',
-        ]);
+        ], ['referer' => '/auth/two-factor/challenge']);
         
         $response->assertRedirectToRoute('auth.2fa.challenge');
         $this->assertNotAuthenticated($calvin);

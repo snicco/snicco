@@ -102,9 +102,9 @@ class ResponseFactory implements ResponseFactoryInterface, StreamFactoryInterfac
         return $this->redirector;
     }
     
-    public function back(string $fallback = '/', int $status = 302, bool $external_referer = false) :RedirectResponse
+    public function back(string $fallback = '/', int $status = 302) :RedirectResponse
     {
-        return $this->redirect()->back($status, $fallback, $external_referer);
+        return $this->redirect()->back($status, $fallback);
     }
     
     /**

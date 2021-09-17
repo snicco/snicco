@@ -13,7 +13,7 @@ use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 abstract class AbstractRedirector
 {
     
-    protected UrlGenerator         $generator;
+    protected UrlGenerator $generator;
     
     protected Psr17ResponseFactory $response_factory;
     
@@ -129,9 +129,9 @@ abstract class AbstractRedirector
         return $this->back($status, $fallback);
     }
     
-    public function back(int $status = 302, string $fallback = '', bool $external_referrer = false) :RedirectResponse
+    public function back(int $status = 302, string $fallback = '') :RedirectResponse
     {
-        $previous_url = $this->generator->back($fallback, $external_referrer);
+        $previous_url = $this->generator->back($fallback);
         
         return $this->createRedirectResponse($previous_url, $status);
     }
