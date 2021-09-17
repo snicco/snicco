@@ -19,7 +19,18 @@ class Google2FaChallengeResponse extends AbstractTwoFactorChallengeResponse
     
     public function toResponsable()
     {
-        return $this->response_factory->redirect()->toRoute('auth.2fa.challenge');
+        
+        $query = [];
+        
+        if ($this->request->boolean('interim-login')) {
+            $query['is_interim_login'] = '1';
+        }
+        
+        return $this->response_factory->redirect()->toRoute(
+            'auth.2fa.challenge',
+            302,
+            ['query' => $query]
+        );
     }
     
 }

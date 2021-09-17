@@ -40,6 +40,10 @@ class AuthSessionController extends Controller
             
         }
         
+        if ($request->boolean('interim-login')) {
+            $request->session()->put('is_interim_login', true);
+        }
+        
         return $view_response->forRequest($request);
         
     }
