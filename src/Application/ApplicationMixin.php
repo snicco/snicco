@@ -11,6 +11,7 @@ use Snicco\Routing\Router;
 use Snicco\Session\Session;
 use Snicco\Mail\MailBuilder;
 use Snicco\Session\CsrfField;
+use Snicco\Http\Psr7\Request;
 use Snicco\View\GlobalContext;
 use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
@@ -107,6 +108,18 @@ final class ApplicationMixin
      */
     public static function session() :Session
     {
+    }
+    
+    /**
+     * Returns the current request going through the application.
+     *
+     * @note DO NOT USE THIS FUNCTION ANYWHERE BESIDES INSIDE YOUR CONTROLLERS OR VIEWS.
+     * MAKE SURE YOU ARE FAMILIAR WITH HOW PSR7 REQUEST IMMUTABILITY WORKS.
+     * @return Request
+     */
+    public static function request() :Request
+    {
+    
     }
     
     /**
