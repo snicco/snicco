@@ -10,8 +10,10 @@ use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Http\Responses\NullResponse;
 use Snicco\Contracts\AbstractRedirector;
+use Illuminate\Contracts\Support\Jsonable;
 use Snicco\Contracts\ResponseableInterface;
 use Snicco\Http\Responses\RedirectResponse;
+use Illuminate\Contracts\Support\Arrayable;
 use Snicco\Http\Responses\DelegatedResponse;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
@@ -162,8 +164,20 @@ class ResponseFactory implements ResponseFactoryInterface, StreamFactoryInterfac
             return $this->html($response);
         }
         
-        if (is_array($response)) {
+        if (is_array($response) || $response instanceof \JsonSerializable
+            || $response
+               instanceof
+               \stdClass) {
             return $this->json($response);
+        }
+        
+        if ($response instanceof Arrayable) {
+            return $this->json($response->toArray());
+        }
+        
+        if ($response instanceof Jsonable) {
+            $stream = $this->createStream($response->toJson());
+            return $this->make(200)->json($stream);
         }
         
         if ($response instanceof ResponseableInterface) {
@@ -177,7 +191,7 @@ class ResponseFactory implements ResponseFactoryInterface, StreamFactoryInterfac
     
     public function json($content, int $status = 200) :Response
     {
-        /** @todo This needs more parsing or a dedicated JsonResponseClass */
+        /** @todo This needs more parsing or a dedicated JsonResponseClass. See symfony/illuminate */
         return $this->make($status)
                     ->json($this->createStream(json_encode($content)));
     }
