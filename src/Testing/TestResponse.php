@@ -78,9 +78,14 @@ class TestResponse
         return $this;
     }
     
-    public function assertDelegatedToWordPress()
+    public function assertDelegatedToWordPress() :TestResponse
     {
         return $this->assertInstance(DelegatedResponse::class);
+    }
+    
+    public function assertNotDelegatedToWordPress() :TestResponse
+    {
+        return $this->assertNotInstance(DelegatedResponse::class);
     }
     
     public function assertInstance(string $class) :TestResponse
@@ -99,6 +104,8 @@ class TestResponse
     public function assertSuccessful() :TestResponse
     {
         
+        $this->assertNotDelegatedToWordPress();
+        
         PHPUnit::assertTrue(
             $this->isSuccessful(),
             'Response status code ['.$this->getStatusCode().'] is not a successful status code.'
@@ -114,6 +121,8 @@ class TestResponse
      */
     public function assertOk() :TestResponse
     {
+        
+        $this->assertNotDelegatedToWordPress();
         
         PHPUnit::assertTrue(
             $this->isOk(),
@@ -968,6 +977,12 @@ class TestResponse
             
         }
         
+        return $this;
+    }
+    
+    private function assertNotInstance(string $class) :TestResponse
+    {
+        PHPUnit::assertNotInstanceOf($class, $this->psr_response);
         return $this;
     }
     
