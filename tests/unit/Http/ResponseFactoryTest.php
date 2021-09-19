@@ -14,6 +14,8 @@ use Tests\helpers\AssertsResponse;
 use Tests\helpers\CreateUrlGenerator;
 use Snicco\Http\Responses\NullResponse;
 use Tests\helpers\CreateRouteCollection;
+use Illuminate\Contracts\Support\Jsonable;
+use Illuminate\Contracts\Support\Arrayable;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
 
 class ResponseFactoryTest extends UnitTest
@@ -115,6 +117,62 @@ class ResponseFactoryTest extends UnitTest
         $this->assertInstanceOf(Response::class, $response);
         $this->assertContentType('application/json', $response);
         $this->assertOutput(json_encode($input), $response);
+        
+    }
+    
+    /** @test */
+    public function testToResponseWithArrayable()
+    {
+        
+        $input = new class implements Arrayable
+        {
+            
+            public function toArray()
+            {
+                return ['foo', 'bar'];
+            }
+            
+        };
+        
+        $response = $this->factory->toResponse($input);
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertContentType('application/json', $response);
+        $this->assertOutput(json_encode(['foo', 'bar']), $response);
+        
+    }
+    
+    /** @test */
+    public function testToResponseWithJsonAble()
+    {
+        
+        $input = new class implements Jsonable
+        {
+            
+            public function toJson($options = 0)
+            {
+                return json_encode(['foo', 'bar']);
+            }
+            
+        };
+        
+        $response = $this->factory->toResponse($input);
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertContentType('application/json', $response);
+        $this->assertOutput(json_encode(['foo', 'bar']), $response);
+        
+    }
+    
+    /** @test */
+    public function testToResponseStdClass()
+    {
+        
+        $input = new \stdClass();
+        $input->foo = 'bar';
+        
+        $response = $this->factory->toResponse($input);
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertContentType('application/json', $response);
+        $this->assertOutput(json_encode(['foo' => 'bar']), $response);
         
     }
     
