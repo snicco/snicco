@@ -158,26 +158,30 @@ if ($config->get('auth.features.registration')) {
         
     });
     
-    $router->name('accounts')->group(function (Router $router) use ($config) {
-        
-        $accounts = $config->get('auth.endpoints.accounts');
-        $create = $config->get('auth.endpoints.accounts_create');
-        
-        $router->get("/$accounts/$create", [AccountController::class, 'create'])
-               ->middleware(['guest', 'signed:absolute'])
-               ->name('create');
-        
-        $router->post("/$accounts", [AccountController::class, 'store'])
-               ->middleware(['guest', 'csrf', 'signed'])
-               ->name('store');
-        
-        $router->delete("/$accounts/{user_id}", [AccountController::class, 'destroy'])
-               ->middleware(['auth', 'csrf'])
-               ->andNumber('user_id');
-        
-    });
-    
 }
+
+// accounts
+$router->name('accounts')->group(function (Router $router) use ($config) {
+    
+    $accounts = $config->get('auth.endpoints.accounts');
+    $create = $config->get('auth.endpoints.accounts_create');
+    
+    $router->get("/$accounts/$create", [AccountController::class, 'create'])
+           ->middleware(['guest', 'signed:absolute'])
+           ->name('create');
+    
+    $router->post("/$accounts", [AccountController::class, 'store'])
+           ->middleware(['guest', 'csrf', 'signed'])
+           ->name('store');
+    
+    $router->delete("/$accounts/{user_id}", [AccountController::class, 'destroy'])
+           ->middleware(['auth', 'csrf'])
+           ->name('delete')
+           ->andNumber('user_id');
+    
+});
+
+
 
 
 
