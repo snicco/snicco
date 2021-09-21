@@ -34,4 +34,18 @@ interface DeletesUsers
      */
     public function response() :ResponseableInterface;
     
+    /**
+     * Perform actions before the user is deleted.
+     *
+     * @param  int  $user_id
+     */
+    public function preDelete(int $user_id) :void;
+    
+    /**
+     * Perform actions after the user is deleted.
+     *
+     * @param  int  $user_id
+     */
+    public function postDelete(int $user_id) :void;
+    
 }

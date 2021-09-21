@@ -66,7 +66,11 @@ class AccountController extends Controller
             require ABSPATH.'wp-admin/includes/user.php';
         }
         
+        $deletes_users->preDelete($user_id);
+        
         wp_delete_user($user_id, $deletes_users->reassign($user_id));
+        
+        $deletes_users->postDelete($user_id);
         
         UserDeleted::dispatch([$user_id]);
         

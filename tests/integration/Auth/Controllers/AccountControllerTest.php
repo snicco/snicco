@@ -307,4 +307,12 @@ class TestDeletesUser implements DeletesUsers
         return $this->response_factory->redirect()->to('/test/thank-you');
     }
     
+    public function preDelete(int $user_id) :void
+    {
+    }
+    
+    public function postDelete(int $user_id) :void
+    {
+    }
+    
 }
