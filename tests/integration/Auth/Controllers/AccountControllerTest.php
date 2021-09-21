@@ -21,17 +21,6 @@ class AccountControllerTest extends AuthTestCase
 {
     
     /** @test */
-    public function the_endpoint_cant_be_accessed_if_registration_is_disabled()
-    {
-        
-        $this->withOutConfig('auth.features.registration')->bootApp();
-        
-        $response = $this->get('/auth/accounts/create');
-        $response->assertDelegatedToWordPress();
-        
-    }
-    
-    /** @test */
     public function the_endpoint_cant_be_accessed_authenticated()
     {
         
