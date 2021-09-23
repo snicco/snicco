@@ -181,6 +181,7 @@ class TestResponse
     {
         
         $this->assertNotNullResponse();
+        $this->assertNotDelegatedToWordPress();
         
         $actual = $this->getStatusCode();
         
