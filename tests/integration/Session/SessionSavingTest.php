@@ -20,7 +20,7 @@ class SessionSavingTest extends FrameworkTestCase
             
             $this->withSessionCookie();
             $this->bootApp();
-            $this->withRequest($this->frontendRequest());
+            $this->withRequest($this->frontendRequest('GET', '/delegate'));
             
         });
         $this->afterApplicationBooted(function () {
@@ -34,14 +34,14 @@ class SessionSavingTest extends FrameworkTestCase
     }
     
     /** @test */
-    public function a_session_is_saved_on_the_shutdown_hook_if_it_was_not_saved_in_the_request_cycle()
+    public function a_session_is_saved_on_the_shutdown_hook_for_delegated_responses()
     {
         
-        $this->manager->start($this->request, 1);
+        $this->withSessionCookie();
+        $this->get('delegate');
+        $this->assertDriverNotHas('foo');
         
         $this->session->put('foo', 'bar');
-        
-        $this->assertDriverNotHas('foo');
         
         do_action('shutdown');
         
@@ -53,20 +53,19 @@ class SessionSavingTest extends FrameworkTestCase
     public function a_session_is_not_saved_on_shutdown_if_already_saved()
     {
         
-        $this->manager->start($this->request, 1);
+        $this->withSessionCookie();
+        
+        $this->assertDriverNotHas('foo');
         
         $this->session->put('foo', 'bar');
-        
-        $this->manager->save();
+        $response = $this->get('/foo');
+        $response->assertOk();
         
         $this->assertDriverHas('bar', 'foo', $this->session->getId());
-        
         $this->assertSame(time(), $this->session->lastActivity());
         
         $this->travelIntoFuture(10);
-        
         do_action('shutdown');
-        
         $this->assertSame(time(), $this->session->lastActivity());
         
     }
