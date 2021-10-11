@@ -38,8 +38,9 @@ use Snicco\Auth\Confirmation\EmailAuthConfirmation;
 use Snicco\Auth\Contracts\AbstractRegistrationView;
 use Snicco\Auth\Contracts\Abstract2FAChallengeView;
 use Snicco\Auth\Events\FailedPasswordAuthentication;
-use Snicco\Auth\Responses\TwoFactorConfirmationView;
+use Snicco\Auth\Responses\EmailAuthConfirmationVIew;
 use Snicco\Auth\Responses\EmailRegistrationViewView;
+use Snicco\Auth\Responses\TwoFactorConfirmationView;
 use Snicco\Auth\Authenticators\PasswordAuthenticator;
 use Snicco\Auth\Responses\Google2FaChallengeResponse;
 use Snicco\Session\Contracts\SessionManagerInterface;
@@ -55,6 +56,7 @@ use Snicco\Auth\Contracts\Abstract2FAuthConfirmationView;
 use Snicco\Auth\Authenticators\RedirectIf2FaAuthenticable;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
 use Snicco\Auth\Controllers\ConfirmedAuthSessionController;
+use Snicco\Auth\Contracts\AbstractEmailAuthConfirmationView;
 use Snicco\Auth\Contracts\AbstractTwoFactorChallengeResponse;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
@@ -427,6 +429,10 @@ class AuthServiceProvider extends ServiceProvider
         $this->container->singleton(
             Abstract2FAuthConfirmationView::class,
             fn() => $this->container->make(TwoFactorConfirmationView::class)
+        );
+        
+        $this->container->singleton(AbstractEmailAuthConfirmationView::class,
+            fn() => $this->container->make(EmailAuthConfirmationView::class)
         );
     }
     

@@ -6,6 +6,7 @@ namespace Snicco\Auth\Confirmation;
 
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\ResponseFactory;
+use Snicco\Contracts\ViewInterface;
 use Snicco\Contracts\EncryptorInterface;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Auth\Traits\PerformsTwoFactorAuthentication;
@@ -53,7 +54,7 @@ class TwoFactorAuthConfirmation implements AuthConfirmation
         
     }
     
-    public function viewResponse(Request $request)
+    public function viewResponse(Request $request) :ViewInterface
     {
         
         if ( ! $this->userHasTwoFactorEnabled($request->user())) {

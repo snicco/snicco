@@ -4,23 +4,24 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Confirmation;
 
-use Snicco\View\ViewFactory;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\MagicLink;
 use Snicco\Routing\UrlGenerator;
+use Snicco\Contracts\ViewInterface;
 use Snicco\Auth\Contracts\AuthConfirmation;
+use Snicco\Auth\Contracts\AbstractEmailAuthConfirmationView;
 
 class EmailAuthConfirmation implements AuthConfirmation
 {
     
-    private ViewFactory  $view_factory;
-    private MagicLink    $magic_link;
+    private MagicLink $magic_link;
+    private AbstractEmailAuthConfirmationView $response;
     private UrlGenerator $url;
     
-    public function __construct(MagicLink $magic_link, ViewFactory $view_factory, UrlGenerator $url)
+    public function __construct(MagicLink $magic_link, AbstractEmailAuthConfirmationView $response, UrlGenerator $url)
     {
         $this->magic_link = $magic_link;
-        $this->view_factory = $view_factory;
+        $this->response = $response;
         $this->url = $url;
     }
     
@@ -41,15 +42,12 @@ class EmailAuthConfirmation implements AuthConfirmation
         
     }
     
-    public function viewResponse(Request $request)
+    public function viewResponse(Request $request) :ViewInterface
     {
-        
-        return $this->view_factory->make('auth-layout')
-                                  ->with([
-                                      'view' => 'auth-confirm-via-email',
-                                      'post_to' => $this->url->toRoute('auth.confirm.email'),
-                                  ]);
-        
+        return $this->response->toView($request)->with(
+            'send_email_route',
+            $this->url->toRoute('auth.confirm.email')
+        );
     }
     
 }
