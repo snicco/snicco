@@ -136,6 +136,24 @@ class SessionManagerTest extends FrameworkTestCase
     }
     
     /** @test */
+    public function absolute_session_timeout_can_be_customized_at_runtime()
+    {
+        
+        $this->manager->start($this->request, 1);
+        $this->manager->setAbsoluteTimeoutResolver(function ($timout) {
+            return $timout * 2;
+        });
+        
+        $this->assertSame(0, $this->session->absoluteTimeout());
+        
+        $this->manager->save();
+        
+        // 7200 is the default in our test config fixture
+        $this->assertSame($this->availableAt(7200 * 2), $this->session->absoluteTimeout());
+        
+    }
+    
+    /** @test */
     public function the_cookie_expiration_is_equal_to_the_max_lifetime()
     {
         

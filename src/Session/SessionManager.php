@@ -29,6 +29,11 @@ class SessionManager implements SessionManagerInterface
     
     private Session $session;
     
+    /**
+     * @var callable
+     */
+    private $absolute_timout_resolver;
+    
     public function __construct(array $session_config, Session $session)
     {
         
@@ -149,6 +154,11 @@ class SessionManager implements SessionManagerInterface
         
     }
     
+    public function setAbsoluteTimeoutResolver(callable $resolver)
+    {
+        $this->absolute_timout_resolver = $resolver;
+    }
+    
     private function rotationInterval() :int
     {
         
@@ -158,7 +168,18 @@ class SessionManager implements SessionManagerInterface
     private function maxSessionLifetime()
     {
         
-        return $this->config['lifetime'];
+        $timeout = $this->config['lifetime'];
+        
+        if (isset($this->absolute_timout_resolver)
+            && is_callable(
+                $this->absolute_timout_resolver
+            )) {
+            
+            return call_user_func($this->absolute_timout_resolver, $timeout);
+            
+        }
+        
+        return $timeout;
         
     }
     
