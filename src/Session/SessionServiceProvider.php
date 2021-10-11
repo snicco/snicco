@@ -175,19 +175,6 @@ class SessionServiceProvider extends ServiceProvider
     private function bindEvents()
     {
         
-        add_action('shutdown', function () {
-            
-            /** @var Session $session */
-            $session = $this->app->resolve(Session::class);
-            
-            if ($session->wasSaved() || ! $session->wasChanged()) {
-                return;
-            }
-            
-            $session->save();
-            
-        });
-        
         if (in_array(AuthServiceProvider::class, $this->config->get('app.providers', []))) {
             return;
         }

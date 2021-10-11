@@ -11,6 +11,7 @@ use Snicco\Contracts\Middleware;
 use Snicco\Http\Responses\NullResponse;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Http\Responses\InvalidResponse;
+use Snicco\Http\Responses\DelegatedResponse;
 use Snicco\Session\Contracts\SessionManagerInterface;
 
 class StartSessionMiddleware extends Middleware
@@ -41,17 +42,28 @@ class StartSessionMiddleware extends Middleware
         
         $response = $next($request);
         
-        $this->saveSession($session, $request, $response);
+        $this->storePreviousUrl($response, $request, $session);
+        $this->saveSession($response);
         
         return $response->withCookie($this->manager->sessionCookie());
         
     }
     
-    private function saveSession(Session $session, Request $request, ResponseInterface $response) :void
+    private function saveSession(ResponseInterface $response) :void
     {
         
-        $this->storePreviousUrl($response, $request, $session);
-        $this->manager->save();
+        if ( ! $response instanceof DelegatedResponse) {
+            
+            $this->manager->save();
+            
+        }
+        else {
+            
+            add_action('shutdown', function () {
+                $this->manager->save();
+            });
+            
+        }
         
     }
     
@@ -59,15 +71,11 @@ class StartSessionMiddleware extends Middleware
     {
         
         if ($response instanceof NullResponse || $response instanceof InvalidResponse) {
-            
             return;
-            
         }
         
         if ($request->isGet() && ! $request->isAjax()) {
-            
             $session->setPreviousUrl($request->fullUrl());
-            
         }
         
     }
