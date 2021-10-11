@@ -916,6 +916,21 @@ class SessionTest extends TestCase
         
     }
     
+    /** @test */
+    public function test_was_saved()
+    {
+        
+        $session = $this->newSessionStore();
+        $session->start();
+        
+        $this->assertFalse($session->wasSaved());
+        
+        $session->save();
+        
+        $this->assertTrue($session->wasSaved());
+        
+    }
+    
     protected function setUp() :void
     {
         

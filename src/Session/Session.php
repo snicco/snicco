@@ -31,6 +31,8 @@ class Session
     
     private bool $started = false;
     
+    private bool $saved = false;
+    
     private array $initial_attributes = [];
     
     private array $loaded_data_from_handler = [];
@@ -92,6 +94,7 @@ class Session
             $this->prepareForStorage(serialize($this->attributes))
         );
         
+        $this->saved = true;
     }
     
     public function forget($keys) :void
@@ -127,8 +130,12 @@ class Session
     
     public function wasChanged() :bool
     {
-        
         return $this->initial_attributes !== $this->attributes;
+    }
+    
+    public function wasSaved() :bool
+    {
+        return $this->saved;
     }
     
     public function all() :array
