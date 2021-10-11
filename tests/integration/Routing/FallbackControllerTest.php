@@ -59,7 +59,18 @@ class FallbackControllerTest extends FrameworkTestCase
         
         $this->bootApp();
         $this->router->fallback(fn() => 'foo_fallback');
-        $response = $this->get('robots.txt');
+        $response = $this->get('sitemap.xml');
+        $response->assertDelegatedToWordPress();
+        
+    }
+    
+    /** @test */
+    public function the_fallback_route_is_not_run_for_favicon_ico()
+    {
+        
+        $this->bootApp();
+        $this->router->fallback(fn() => 'foo_fallback');
+        $response = $this->get('favicon.ico');
         $response->assertDelegatedToWordPress();
         
     }
