@@ -19,9 +19,9 @@ class ResponsePreparationTest extends UnitTest
     use CreateUrlGenerator;
     use CreateRouteCollection;
     
-    private ResponseFactory     $factory;
+    private ResponseFactory $factory;
     private ResponsePreparation $preparation;
-    private Request             $request;
+    private Request $request;
     
     /** @test */
     public function testDateIsSetIfNotSetAlready()
@@ -179,13 +179,33 @@ class ResponsePreparationTest extends UnitTest
         
     }
     
+    /** @test */
+    public function no_content_length_for_wp_admin_page_requests()
+    {
+        
+        $response = $this->factory->html('foobar');
+        
+        $request = new Request(
+            $this->psrServerRequestFactory()->createServerRequest(
+                'GET',
+                ' /wp-admin/admin.php?page=test',
+                ['SCRIPT_NAME' => 'wp-admin/admin.php']
+            )
+        );
+        
+        $prepared = $this->preparation->prepare($response, $request);
+        
+        $this->assertFalse($prepared->hasHeader('content-length'));
+        
+    }
+    
     protected function setUp() :void
     {
         parent::setUp();
         $this->factory = $this->createResponseFactory();
         $this->preparation = new ResponsePreparation($this->psrStreamFactory());
         $this->request =
-            new Request($this->psrServerRequestFactory()->createServerRequest('GET', ' / foo'));
+            new Request($this->psrServerRequestFactory()->createServerRequest('GET', ' /foo'));
     }
     
     protected function tearDown() :void

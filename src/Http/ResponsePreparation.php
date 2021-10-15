@@ -127,7 +127,9 @@ class ResponsePreparation
         // Fix Content-Length, don't add if anything is buffered since we will mess up plugins that use it.
         if ( ! $response->hasHeader('content-length')
              && ! $response->hasEmptyBody()
-             && ! ob_get_length()) {
+             && ! ob_get_length()
+             && ! $request->isWpAdmin()
+        ) {
             
             $size = strval($response->getBody()->getSize());
             $response = $response->withHeader('content-length', $size);
