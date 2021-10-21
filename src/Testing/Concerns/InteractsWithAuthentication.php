@@ -26,10 +26,17 @@ trait InteractsWithAuthentication
         
         wp_logout();
         
+        if ($this->session instanceof Session) {
+            
+            $this->session->confirmAuthUntil($this->config->get('auth.confirmation.duration', 10));
+            $this->session->setLastActivity(time());
+            $this->withSessionCookie();
+            
+        }
+        
         if (is_int($user)) {
             
             wp_set_current_user($user);
-            
             return $this;
             
         }
@@ -45,14 +52,6 @@ trait InteractsWithAuthentication
         }
         
         wp_set_current_user($user->ID);
-        
-        if ($this->session instanceof Session) {
-            
-            $this->session->confirmAuthUntil($this->config->get('auth.confirmation.duration', 10));
-            $this->session->setLastActivity(time());
-            $this->withSessionCookie();
-            
-        }
         
         return $this;
         
