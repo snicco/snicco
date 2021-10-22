@@ -32,13 +32,13 @@ $router->middleware('guest')->group(function (Router $router) use ($config, $log
            ->name('login');
     
     $router->post("/$login", [AuthSessionController::class, 'store'])
-           ->middleware('csrf');
+           ->middleware(['csrf', 'json']);
     
     // Magic-link
     if ($config->get('auth.authenticator') === 'email') {
         
         $router->post("$login/$magic_link", [LoginMagicLinkController::class, 'store'])
-               ->middleware('csrf')
+               ->middleware(['csrf', 'json'])
                ->name('login.create-magic-link');
         
         $router->get("$login/$magic_link", [AuthSessionController::class, 'store'])
