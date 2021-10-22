@@ -108,6 +108,34 @@ class LoginMagicLinkControllerTest extends AuthTestCase
         
     }
     
+    /** @test */
+    public function a_login_email_can_be_request_with_ajax()
+    {
+        
+        $this->mailFake();
+        
+        $calvin = $this->createAdmin();
+        
+        $response = $this->post(
+            '/auth/login/magic-link',
+            [
+                'login' => $calvin->user_login,
+                'redirect_to' => '/foo/bar/?baz=foo%20bar',
+            ]
+            , ['accept' => 'application/json']
+        );
+        
+        $response->assertIsJson()->assertOk();
+        
+        $mail = $this->assertMailSent(MagicLinkLoginMail::class);
+        $mail->assertTo($calvin);
+        $mail->assertSee('/auth/login/magic-link?expires=');
+        $mail->assertSee('/auth/login/magic-link?expires=');
+        $mail->assertSee("user_id=$calvin->ID");
+        $mail->assertSee(htmlentities('redirect_to='.rawurlencode('/foo/bar/?baz=foo%20bar')));
+        
+    }
+    
     protected function setUp() :void
     {
         $this->afterApplicationCreated(function () {
