@@ -12,6 +12,8 @@ class RoutingResult
     
     private array $payload;
     
+    private array $compiled_segments;
+    
     /**
      * @param  Route|array|null  $route
      * @param  array  $payload
@@ -33,18 +35,22 @@ class RoutingResult
     public function capturedUrlSegmentValues() :array
     {
         
-        $values = collect($this->payload)->map(function ($value) {
+        if ( ! isset($this->compiled_segments)) {
+            $values = collect($this->payload)->map(function ($value) {
+                
+                $value = ( ! is_int($value)) ? rawurldecode($value) : $value;
+                
+                if (is_numeric($value)) {
+                    $value = intval($value);
+                }
+                return $value;
+                
+            });
             
-            $value = rawurldecode($value);
-            
-            if (is_numeric($value)) {
-                $value = intval($value);
-            }
-            return $value;
-            
-        });
+            $this->compiled_segments = $values->all();
+        }
         
-        return $values->all();
+        return $this->compiled_segments;
         
     }
     
