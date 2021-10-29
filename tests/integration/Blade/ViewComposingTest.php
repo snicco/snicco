@@ -29,7 +29,7 @@ class ViewComposingTest extends BladeTestCase
     {
         
         TestApp::globals('globals', ['surname' => 'alkan']);
-        TestApp::addComposer('view-composer-parent', function (BladeView $view) {
+        TestApp::addComposer('components.view-composer-parent', function (BladeView $view) {
             $view->with(['name' => 'calvin']);
         });
         

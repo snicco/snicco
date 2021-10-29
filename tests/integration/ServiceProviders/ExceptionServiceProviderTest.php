@@ -41,16 +41,6 @@ class ExceptionServiceProviderTest extends FrameworkTestCase
     }
     
     /** @test */
-    public function the_error_views_are_registered()
-    {
-        $this->bootApp();
-        $views = TestApp::config('view.paths');
-        $expected = ROOT_DIR.DS.'src'.DS.'ExceptionHandling'.DS.'views';
-        
-        $this->assertContains($expected, $views);
-    }
-    
-    /** @test */
     public function whoops_is_not_bound_in_non_debug_mode()
     {
         

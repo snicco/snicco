@@ -4,27 +4,68 @@ declare(strict_types=1);
 
 namespace Snicco\View;
 
+use Snicco\Support\Str;
 use Snicco\Support\FilePath;
-use Symfony\Component\Finder\Finder;
 use Snicco\Contracts\ViewFinderInterface;
 
 class PhpViewFinder implements ViewFinderInterface
 {
     
     /**
-     * Custom views to search in. Will be searched recursively
+     * Root directory roots in which we search for views.
      *
      * @param  string[]  $directories
      */
-    private array  $directories;
-    private string $search_depth;
-    private array  $last_context = [];
+    private array $directories;
     
-    public function __construct(array $directories, int $depth = 2)
+    private array $last_context = [];
+    
+    public function __construct(array $directories)
+    {
+        $this->directories = $this->normalize($directories);
+    }
+    
+    public function exists(string $view_name) :bool
+    {
+        return file_exists($this->filePath($view_name));
+    }
+    
+    public function filePath(string $view_name) :string
     {
         
-        $this->search_depth = strval($depth + 1);
-        $this->directories = $this->normalize($directories);
+        if (is_file($view_name)) {
+            return $view_name;
+        }
+        
+        $view_name = (string) Str::of($view_name)
+                                 ->before('.php')
+                                 ->trim('/')
+                                 ->replace('.', '/');
+        
+        foreach ($this->directories as $directory) {
+            
+            $path = rtrim($directory, '/').'/'.$view_name.'.php';
+            
+            $exists = file_exists($path);
+            
+            if ($exists) {
+                return $path;
+            }
+            
+        }
+        
+        return '';
+        
+    }
+    
+    public function includeFile(string $path, $context)
+    {
+        
+        $__data = array_merge($this->last_context, $context);
+        $this->last_context = $__data;
+        
+        extract($__data, EXTR_SKIP);
+        include $path;
         
     }
     
@@ -37,71 +78,6 @@ class PhpViewFinder implements ViewFinderInterface
                 'removeTrailingSlash',
             ], $directories)
         );
-        
-    }
-    
-    public function exists(string $view_name) :bool
-    {
-        
-        if (is_file($view_name)) {
-            
-            return true;
-            
-        }
-        
-        $finder = new Finder();
-        $finder
-            ->in($this->directories)
-            ->files()
-            ->depth('< '.$this->search_depth)
-            ->ignoreUnreadableDirs()
-            ->name(FilePath::ending($view_name, 'php'));
-        
-        return $finder->hasResults();
-        
-    }
-    
-    public function filePath(string $view_path) :string
-    {
-        
-        if (is_file($view_path)) {
-            
-            return $view_path;
-            
-        }
-        
-        $view_path = trim($view_path, '/');
-        
-        $finder = new Finder();
-        $finder
-            ->in($this->directories)
-            ->files()
-            ->depth('< '.$this->search_depth)
-            ->ignoreUnreadableDirs()
-            ->name(FilePath::ending($view_path, 'php'));
-        
-        if ( ! $finder->hasResults()) {
-            
-            return '';
-            
-        }
-        
-        foreach ($finder as $file) {
-            break;
-        }
-        
-        return $file->getRealPath();
-        
-    }
-    
-    public function includeFile(string $path, $context)
-    {
-        
-        $__data = array_merge($this->last_context, $context);
-        $this->last_context = $__data;
-        
-        extract($__data, EXTR_SKIP);
-        include $path;
         
     }
     

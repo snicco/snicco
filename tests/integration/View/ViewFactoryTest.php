@@ -27,6 +27,16 @@ class ViewFactoryTest extends FrameworkTestCase
     }
     
     /** @test */
+    public function a_nested_view_can_be_rendered_with_dot_notation()
+    {
+        
+        $view = $this->view_service->make('subdirectory.nested-view');
+        
+        $this->assertSame('Nested View', $view->toString());
+        
+    }
+    
+    /** @test */
     public function non_existing_views_throw_an_exception()
     {
         
@@ -203,6 +213,21 @@ class ViewFactoryTest extends FrameworkTestCase
         
     }
     
+    /** @test */
+    public function views_in_the_application_with_the_same_path_as_the_framework_have_priority_over_framework_views()
+    {
+        
+        file_put_contents(
+            VIEWS_DIR.'/framework/redirect-protection.php',
+            "<?php echo 'Redirecting';"
+        );
+        
+        $content = TestApp::view('framework.redirect-protection')->toString();
+        
+        $this->assertSame('Redirecting', $content);
+        
+    }
+    
     protected function setUp() :void
     {
         
@@ -213,6 +238,16 @@ class ViewFactoryTest extends FrameworkTestCase
         parent::setUp();
         
         $this->bootApp();
+    }
+    
+    protected function tearDown() :void
+    {
+        parent::tearDown();
+        
+        if (is_file(VIEWS_DIR.'/framework/redirect-protection.php')) {
+            unlink(VIEWS_DIR.'/framework/redirect-protection.php');
+        }
+        
     }
     
 }

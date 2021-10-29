@@ -22,10 +22,10 @@ interface ViewFinderInterface
     /**
      * Return a canonical string representation of the view name.
      *
-     * @param  string  $view_path
+     * @param  string  $view_name
      *
      * @return string
      */
-    public function filePath(string $view_path) :string;
+    public function filePath(string $view_name) :string;
     
 }
