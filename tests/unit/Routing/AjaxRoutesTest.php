@@ -32,7 +32,7 @@ class AjaxRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
+            $this->router->prefix('wp-admin/admin-ajax.php')->group(function () {
                 
                 $this->router->post('foo_action')->handle(function () {
                     
@@ -55,7 +55,7 @@ class AjaxRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => '/wp-admin/admin-ajax.php/'], function () {
+            $this->router->prefix('wp-admin/admin-ajax.php')->group(function () {
                 
                 $this->router->post('/foo_action/')->handle(function () {
                     
@@ -78,7 +78,7 @@ class AjaxRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
+            $this->router->prefix('wp-admin/admin-ajax.php')->group(function () {
                 
                 $this->router->post('foo_action')->handle(function () {
                     
@@ -101,7 +101,7 @@ class AjaxRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
+            $this->router->prefix('wp-admin/admin-ajax.php')->group(function () {
                 
                 $this->router->get('foo_action')->handle(function () {
                     
@@ -129,7 +129,7 @@ class AjaxRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
+            $this->router->prefix('wp-admin/admin-ajax.php')->group(function () {
                 
                 $this->router->get('foo_action')->handle(function () {
                     
@@ -154,10 +154,7 @@ class AjaxRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group([
-                'prefix' => 'wp-admin/admin-ajax.php',
-                'name' => 'ajax',
-            ], function () {
+            $this->router->prefix('wp-admin/admin-ajax.php')->name('ajax')->group(function () {
                 
                 $this->router->post('foo_action')->handle(function () {
                     
@@ -185,16 +182,14 @@ class AjaxRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(
-                ['prefix' => 'wp-admin/admin-ajax.php', 'name' => 'ajax'],
-                function () {
-                    
-                    $this->router->get('foo_action', function () {
-                        //
-                    })->name('foo');
-                    
-                }
-            );
+            $this->router->prefix('wp-admin/admin-ajax.php')->name('ajax')
+                         ->group(function () {
+                
+                             $this->router->get('foo_action', function () {
+                                 //
+                             })->name('foo');
+                
+                         });
             
         });
         
@@ -217,10 +212,7 @@ class AjaxRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group([
-                'prefix' => 'wp-admin/admin-ajax.php',
-                'name' => 'ajax',
-            ], function () {
+            $this->router->prefix('wp-admin/admin-ajax.php')->name('ajax')->group(function () {
                 
                 $this->router->post('foo_action')->handle(function () {
                     

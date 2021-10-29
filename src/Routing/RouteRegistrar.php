@@ -119,12 +119,12 @@ class RouteRegistrar implements RouteRegistrarInterface
         
         $attributes = $this->applyPreset($name, $preset);
         
-        $this->router->group($attributes, function ($router) use ($file_path, $config) {
+        $this->router->group(function ($router) use ($file_path, $config) {
             
-            extract(['config' => $config]);
+            extract(['config' => $config, 'router' => $router]);
             require $file_path;
             
-        });
+        }, $attributes,);
         
     }
     

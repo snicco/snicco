@@ -304,7 +304,7 @@ class RouteCachingTest extends UnitTest
         // No cache created
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->router->prefix('wp-admin')->group(function () {
                 
                 $this->router->get('admin/foo', function (Request $request) {
                     
@@ -334,7 +334,7 @@ class RouteCachingTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin/admin-ajax.php'], function () {
+            $this->router->prefix('wp-admin/admin-ajax.php')->group(function () {
                 
                 $this->router->post('foo_action')->handle(function () {
                     

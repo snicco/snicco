@@ -16,7 +16,6 @@ class RouteAttributes implements SetsRouteAttributes
     
     public function __construct(Route $route)
     {
-        
         $this->route = $route;
     }
     
@@ -176,7 +175,7 @@ class RouteAttributes implements SetsRouteAttributes
             
         }
         
-        if ($group->no_action === true) {
+        if ($group->noAction() === true) {
             
             $this->noAction();
             

@@ -16,6 +16,7 @@ class RouteGroup
     private array           $middleware;
     private ConditionBucket $conditions;
     private array           $methods;
+    private ?bool           $no_action;
     
     public function __construct(array $attributes = [])
     {
@@ -53,6 +54,50 @@ class RouteGroup
         
         return $this;
         
+    }
+    
+    public function prefix()
+    {
+        
+        return $this->url_prefix;
+        
+    }
+    
+    public function namespace() :string
+    {
+        
+        return $this->namespace;
+    }
+    
+    public function name() :string
+    {
+        
+        return $this->name;
+    }
+    
+    public function middleware() :array
+    {
+        
+        return $this->middleware;
+    }
+    
+    public function conditions() :ConditionBucket
+    {
+        
+        return $this->conditions;
+        
+    }
+    
+    public function methods() :array
+    {
+        
+        return $this->methods;
+        
+    }
+    
+    public function noAction()
+    {
+        return $this->no_action;
     }
     
     private function mergeMethods(array $old_methods) :array
@@ -103,45 +148,6 @@ class RouteGroup
         }
         
         return $old_group_no_action;
-    }
-    
-    public function prefix()
-    {
-        
-        return $this->url_prefix;
-        
-    }
-    
-    public function namespace() :string
-    {
-        
-        return $this->namespace;
-    }
-    
-    public function name() :string
-    {
-        
-        return $this->name;
-    }
-    
-    public function middleware() :array
-    {
-        
-        return $this->middleware;
-    }
-    
-    public function conditions() :ConditionBucket
-    {
-        
-        return $this->conditions;
-        
-    }
-    
-    public function methods() :array
-    {
-        
-        return $this->methods;
-        
     }
     
 }
