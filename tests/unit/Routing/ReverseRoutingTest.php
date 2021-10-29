@@ -463,6 +463,89 @@ class ReverseRoutingTest extends UnitTest
         
     }
     
+    /** @test */
+    public function a_named_route_is_not_added_twice_if_the_name_attribute_is_added_after_the_http_verb()
+    {
+        
+        $this->createRoutes(function () {
+            
+            $this->router->get('foo')->name('route1')->noAction();
+            $this->router->get('bar')->name('route1')->noAction();
+            
+        });
+        
+        $url_generator = $this->newUrlGenerator();
+        
+        $url = $url_generator->toRoute('route1');
+        $this->assertSame('/foo', $url);
+        
+    }
+    
+    /** @test */
+    public function a_named_route_is_not_added_twice_if_the_name_attribute_is_added_before_the_http_verb()
+    {
+        
+        $this->createRoutes(function () {
+            
+            $this->router->name('route1')->get('foo')->noAction();
+            $this->router->name('route1')->get('bar')->noAction();
+            
+        });
+        
+        $url_generator = $this->newUrlGenerator();
+        
+        $url = $url_generator->toRoute('route1');
+        $this->assertSame('/foo', $url);
+        
+    }
+    
+    /** @test */
+    public function a_named_route_is_not_added_twice_if_the_first_route_name_is_added_after_the_http_verb()
+    {
+        
+        $this->createRoutes(function () {
+            
+            $this->router->get('foo')->name('route1')->noAction();
+            $this->router->name('route1')->get('bar')->noAction();
+            
+        });
+        
+        $url_generator = $this->newUrlGenerator();
+        
+        $url = $url_generator->toRoute('route1');
+        $this->assertSame('/foo', $url);
+        
+    }
+    
+    /** @test */
+    public function generated_urls_are_cached_if_no_route_arguments_are_required()
+    {
+        
+        $this->createRoutes(function () {
+            
+            $this->router->get('/static')->name('static')->noAction();
+            $this->router->get('/foo/{required}')->name('foo')->noAction();
+            
+        });
+        
+        $url_generator = $this->newUrlGenerator();
+        
+        $url = $url_generator->toRoute('static');
+        $this->assertSame('/static', $url);
+        
+        $url = $url_generator->toRoute('static');
+        $this->assertSame('/static', $url);
+        
+        $url = $url_generator->toRoute('foo', ['required' => 'bar']);
+        $this->assertSame('/foo/bar', $url);
+        
+        $url = $url_generator->toRoute('foo', ['required' => 'baz']);
+        $this->assertSame('/foo/baz', $url);
+        
+    }
+    
+    
+    
     /**
      * EDGE CASES
      */
