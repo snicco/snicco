@@ -30,6 +30,8 @@ class ForgotPasswordControllerTest extends AuthTestCase
     /** @test */
     public function the_forgot_password_view_can_be_rendered()
     {
+        $this->withoutExceptionHandling();
+        
         $this->bootApp();
         $this->get($this->routeUrl())
              ->assertSee('Request new password')
@@ -70,7 +72,7 @@ class ForgotPasswordControllerTest extends AuthTestCase
         $expected_link = TestApp::url()->toRoute('auth.reset.password', [], true, true);
         
         $mail->assertTo($calvin)
-             ->assertView('password-forgot-email')
+             ->assertView('framework.mail.password-reset')
              ->assertSee("$expected_link?expires=");
         
     }
@@ -96,7 +98,7 @@ class ForgotPasswordControllerTest extends AuthTestCase
         $expected_link = TestApp::url()->toRoute('auth.reset.password', [], true, true);
         
         $mail->assertTo($calvin)
-             ->assertView('password-forgot-email')
+             ->assertView('framework.mail.password-reset')
              ->assertSee("$expected_link?expires=");
         
     }

@@ -313,7 +313,7 @@ class AuthSessionControllerTest extends AuthTestCase
             'log' => $calvin->user_login,
         ]);
         
-        $response->assertViewIs('auth-interim-login-success')->assertSeeHtml(
+        $response->assertSeeHtml(
             "jQuery(parent.document).find('.wp-auth-check-close').click();"
         )->assertOk();
         

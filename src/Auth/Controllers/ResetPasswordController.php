@@ -34,8 +34,8 @@ class ResetPasswordController extends Controller
     
     public function create(Request $request, MethodField $method_field)
     {
-        return $this->response_factory->view('auth-layout', [
-            'view' => 'auth-password-reset',
+        return $this->response_factory->view('framework.auth.layout', [
+            'view' => 'framework.auth.reset-password',
             'post_to' => $request->fullPath(),
             'method_field' => $method_field->html('PUT'),
         ])->withHeader('Referrer-Policy', 'strict-origin');
@@ -70,6 +70,29 @@ class ResetPasswordController extends Controller
         
     }
     
+    protected function provideMessages(array $result) :array
+    {
+        
+        $messages = [
+            'password' => [
+                'Your password is too weak and can be easily guessed by a computer.',
+            ],
+        ];
+        
+        if (isset($result['feedback']['warning'])) {
+            
+            $messages['reason'][] = trim($result['feedback']['warning'], '.').'.';
+            
+        }
+        
+        foreach ($result['feedback']['suggestions'] ?? [] as $suggestion) {
+            $messages['suggestions'][] = $suggestion;
+        }
+        
+        return $messages;
+        
+    }
+    
     private function redirectBackFailure() :RedirectResponse
     {
         
@@ -99,29 +122,6 @@ class ResetPasswordController extends Controller
             throw ValidationException::withMessages($messages);
             
         }
-        
-    }
-    
-    protected function provideMessages(array $result) :array
-    {
-        
-        $messages = [
-            'password' => [
-                'Your password is too weak and can be easily guessed by a computer.',
-            ],
-        ];
-        
-        if (isset($result['feedback']['warning'])) {
-            
-            $messages['reason'][] = trim($result['feedback']['warning'], '.').'.';
-            
-        }
-        
-        foreach ($result['feedback']['suggestions'] ?? [] as $suggestion) {
-            $messages['suggestions'][] = $suggestion;
-        }
-        
-        return $messages;
         
     }
     

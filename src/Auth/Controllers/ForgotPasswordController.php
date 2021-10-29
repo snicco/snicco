@@ -31,8 +31,8 @@ class ForgotPasswordController extends Controller
     public function create(CsrfField $csrf) :ViewInterface
     {
         
-        return $this->view_factory->make('auth-layout')->with([
-            'view' => 'auth-forgot-password',
+        return $this->view_factory->make('framework.auth.layout')->with([
+            'view' => 'framework.auth.forgot-password',
             'view_factory' => $this->view_factory,
             'csrf_field' => $csrf->asHtml(),
             'post' => $this->url->toRoute('auth.forgot.password'),
