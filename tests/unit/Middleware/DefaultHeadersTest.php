@@ -57,4 +57,25 @@ class DefaultHeadersTest extends UnitTest
         
     }
     
+    /** @test */
+    public function header_values_are_not_overwritten()
+    {
+        
+        $next = new Delegate(function () {
+            return $this->createResponseFactory()->make()->withHeader('foo', 'bar');
+        });
+        
+        $response = (new DefaultHeaders(['foo' => 'baz',]))->handle(
+            TestRequest::from('GET', 'foo'),
+            $next
+        );
+        
+        $this->assertSame(
+            'bar',
+            $response->getHeaderLine('foo'),
+            "Default header had prority over route header."
+        );
+        
+    }
+    
 }
