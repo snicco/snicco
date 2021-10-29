@@ -34,11 +34,7 @@ class RouteConditionsTest extends UnitTest
             $this->router
                 ->get('/foo')
                 ->where('false')
-                ->handle(function (Request $request) {
-                    
-                    return 'foo';
-                    
-                });
+                ->handle(fn() => 'foo');
             
         });
         
@@ -68,6 +64,16 @@ class RouteConditionsTest extends UnitTest
         $this->runAndAssertEmptyOutput($request);
         
     }
+    
+    /*
+     * $route->where('post_type', 'post');
+     * $router->where('!post_type', ['post']);
+     * $router->where('is_singular');
+     * $router->where(IsPost::class);
+     * $router->where('negate', IsPost::class);
+     * $router->where(new ConditionInterface());
+     * $router->where(function() {});
+     */
     
     /** @test */
     public function custom_conditions_can_be_added_before_the_http_verb()

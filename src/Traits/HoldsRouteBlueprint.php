@@ -6,9 +6,14 @@ namespace Snicco\Traits;
 
 use Snicco\Support\Arr;
 use Snicco\Routing\Route;
+use Snicco\Routing\Router;
+use Snicco\Routing\ConditionBucket;
+use Snicco\Contracts\ConditionInterface;
 
 trait HoldsRouteBlueprint
 {
+    
+    private array $delegate_attributes = [];
     
     public function get(string $url = '*', $action = null) :Route
     {
@@ -69,6 +74,71 @@ trait HoldsRouteBlueprint
         
         return $this->addRoute(array_map('strtoupper', $verbs), $url, $action);
         
+    }
+    
+    /**
+     * @param  string|array  $middleware
+     */
+    public function middleware($middleware) :self
+    {
+        $this->delegate_attributes['middleware'] = Arr::wrap($middleware);
+        return $this;
+    }
+    
+    public function name(string $name) :self
+    {
+        $this->delegate_attributes['name'] = $name;
+        return $this;
+    }
+    
+    public function prefix(string $prefix) :self
+    {
+        $this->delegate_attributes['prefix'] = $prefix;
+        return $this;
+    }
+    
+    /**
+     * @param  string|ConditionInterface|Closure|callable  $condition
+     * @param  mixed  $args,...  Arguments that will be passed into the condition (if any).
+     * If the condition equals (string)'negate', the second argument will be used as the Condition.
+     *
+     * @return Router
+     */
+    public function where($condition, ...$args) :self
+    {
+        
+        if ( ! isset($this->delegate_attributes['where'])) {
+            $this->delegate_attributes['where'] = ConditionBucket::createEmpty();
+        }
+        
+        /** @var ConditionBucket $conditions */
+        $conditions = $this->delegate_attributes['where'];
+        $conditions->add(array_merge([$condition], $args));
+        
+        return $this;
+    }
+    
+    public function noAction() :self
+    {
+        $this->delegate_attributes['noAction'] = true;
+        return $this;
+    }
+    
+    public function namespace(string $namespace) :self
+    {
+        $this->delegate_attributes['namespace'] = $namespace;
+        return $this;
+    }
+    
+    /**
+     * @param  array|string  $methods
+     *
+     * @return $this
+     */
+    public function methods($methods) :self
+    {
+        $this->delegate_attributes['methods'] = Arr::wrap($methods);
+        return $this;
     }
     
 }

@@ -8,7 +8,7 @@ use Closure;
 use Snicco\Support\WP;
 use Snicco\Support\Str;
 use Snicco\Support\Url;
-use BadMethodCallException;
+use Snicco\Support\Arr;
 use Contracts\ContainerAdapter;
 use Snicco\Controllers\ViewController;
 use Snicco\Traits\HoldsRouteBlueprint;
@@ -16,9 +16,6 @@ use Snicco\Controllers\FallBackController;
 use Snicco\Controllers\RedirectController;
 use Snicco\Contracts\AbstractRouteCollection;
 
-/**
- * @mixin RouteDecorator
- */
 class Router
 {
     
@@ -101,7 +98,7 @@ class Router
         ]);
     }
     
-    public function addRoute(array $methods, string $path, $action = null, $attributes = []) :Route
+    public function addRoute(array $methods, string $path, $action = null) :Route
     {
         
         $url = $this->applyPrefix($path);
@@ -116,13 +113,67 @@ class Router
             
         }
         
-        if ( ! empty($attributes)) {
+        if ( ! empty($this->delegate_attributes)) {
             
-            $this->populateInitialAttributes($route, $attributes);
+            $this->populateInitialAttributes($route, $this->delegate_attributes);
             
         }
         
         return $this->routes->add($route);
+        
+    }
+    
+    public function group(Closure $routes, array $attributes = [])
+    {
+        
+        $attributes = Arr::mergeRecursive($this->delegate_attributes, $attributes);
+        $this->delegate_attributes = [];
+        
+        $this->updateGroupStack(new RouteGroup($attributes));
+        
+        $this->registerRoutes($routes);
+        
+        $this->deleteLastRouteGroup();
+        
+    }
+    
+    /**
+     * @internal
+     */
+    public function loadRoutes(bool $global_routes = false)
+    {
+        
+        if ( ! $this->hasGroupStack()) {
+            
+            $this->routes->loadIntoDispatcher($global_routes);
+            
+        }
+        
+    }
+    
+    /**
+     * @internal
+     */
+    public function createFallbackWebRoute()
+    {
+        
+        $this->any('/{fallback}', [FallBackController::class, 'handle'])
+             ->and('fallback', '[^.]+')
+             ->where(function () {
+            
+                 return ! WP::isAdmin();
+            
+             });
+        
+    }
+    
+    public function fallback(callable $fallback_handler)
+    {
+        
+        /** @var FallBackController $controller */
+        $controller = $this->container->make(FallBackController::class);
+        $controller->setFallbackHandler($fallback_handler);
+        $this->container->instance(FallBackController::class, $controller);
         
     }
     
@@ -222,25 +273,14 @@ class Router
     
     private function mergeGroupIntoRoute(Route $route)
     {
-        
-        (new RouteAttributes($route))->mergeGroup($this->lastGroup());
-        
+        $this->lastGroup()->mergeIntoRoute($route);
     }
     
     private function populateInitialAttributes(Route $route, array $attributes)
     {
         
-        ((new RouteAttributes($route)))->populateInitial($attributes);
-    }
-    
-    public function group(array $attributes, Closure $routes)
-    {
-        
-        $this->updateGroupStack(new RouteGroup($attributes));
-        
-        $this->registerRoutes($routes);
-        
-        $this->deleteLastRouteGroup();
+        (new RouteGroup($attributes))->mergeIntoRoute($route);
+        $this->delegate_attributes = [];
         
     }
     
@@ -273,74 +313,7 @@ class Router
     
     private function deleteLastRouteGroup()
     {
-        
         array_pop($this->group_stack);
-        
-    }
-    
-    public function loadRoutes(bool $global_routes = false)
-    {
-        
-        if ( ! $this->hasGroupStack()) {
-            
-            $this->routes->loadIntoDispatcher($global_routes);
-            
-        }
-        
-    }
-    
-    public function createFallbackWebRoute()
-    {
-        
-        $this->any('/{fallback}', [FallBackController::class, 'handle'])
-             ->and('fallback', '[^.]+')
-             ->where(function () {
-            
-                 return ! WP::isAdmin();
-            
-             });
-        
-    }
-    
-    public function __call($method, $parameters)
-    {
-        
-        if ( ! in_array($method, RouteDecorator::allowed_attributes)) {
-            
-            throw new BadMethodCallException(
-                'Method: '.$method.' does not exists on '.get_class($this)
-            );
-            
-        }
-        
-        if ($method === 'where' || $method === 'middleware') {
-            
-            return ((new RouteDecorator($this))->decorate(
-                $method,
-                is_array($parameters[0]) ? $parameters[0] : $parameters
-            )
-            );
-            
-        }
-        
-        if ($method === 'noAction') {
-            
-            return ((new RouteDecorator($this))->decorate($method, true));
-            
-        }
-        
-        return ((new RouteDecorator($this))->decorate($method, $parameters[0]));
-        
-    }
-    
-    public function fallback(callable $fallback_handler)
-    {
-        
-        /** @var FallBackController $controller */
-        $controller = $this->container->make(FallBackController::class);
-        $controller->setFallbackHandler($fallback_handler);
-        $this->container->instance(FallBackController::class, $controller);
-        
     }
     
 }
