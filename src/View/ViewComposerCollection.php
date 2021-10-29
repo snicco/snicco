@@ -6,7 +6,6 @@ namespace Snicco\View;
 
 use Exception;
 use Snicco\Support\Arr;
-use Snicco\Support\Str;
 use Snicco\Contracts\ViewComposer;
 use Illuminate\Support\Collection;
 use Snicco\Contracts\ViewInterface;
@@ -62,10 +61,7 @@ class ViewComposerCollection implements ViewComposer
         return $this->composers
             ->filter(function ($value) use ($view) {
                 
-                // Needed since we reference views by file name only while blade keeps the "dot" nesting.
-                $name = Str::afterLast($view->name(), '.');
-                
-                return in_array($name, $value['views']);
+                return in_array($view->name(), $value['views']);
                 
             }
             )

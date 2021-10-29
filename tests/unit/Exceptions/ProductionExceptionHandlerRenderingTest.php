@@ -51,7 +51,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         
         $this->assertInstanceOf(Response::class, $response->psr_response);
         $response->assertSeeHtml(
-            'VIEW:500,CONTEXT:[status_code=>500,message=>Something went wrong.]'
+            'VIEW:framework.errors.500,CONTEXT:[status_code=>500,message=>Something went wrong.]'
         );
         $response->assertDontSee('Sensitive Info');
         $response->assertStatus(500);
@@ -108,7 +108,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         
         $this->assertInstanceOf(Response::class, $response->psr_response);
         $response->assertSeeHtml(
-            'VIEW:500,CONTEXT:[status_code=>500,message=>Something went wrong.]'
+            'VIEW:framework.errors.500,CONTEXT:[status_code=>500,message=>Something went wrong.]'
         );
         $response->assertDontSee('Sensitive Info');
         $response->assertStatus(500);
@@ -190,7 +190,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         
         $response->assertStatus(500);
         $response->assertSeeHtml(
-            'VIEW:500,CONTEXT:[status_code=>500,message=>Custom Error Message]'
+            'VIEW:framework.errors.500,CONTEXT:[status_code=>500,message=>Custom Error Message]'
         );
         
     }
@@ -214,7 +214,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
             new TestResponse($handler->toHttpResponse(new Exception('Error'), $this->request));
         $response->assertStatus(500);
         $response->assertSeeHtml(
-            'VIEW:500,CONTEXT:[status_code=>500,message=>Something went wrong.]'
+            'VIEW:framework.errors.500,CONTEXT:[status_code=>500,message=>Something went wrong.]'
         );
         
         $response = new TestResponse(
