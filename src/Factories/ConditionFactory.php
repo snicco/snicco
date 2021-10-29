@@ -9,8 +9,8 @@ use Contracts\ContainerAdapter;
 use Snicco\Traits\ReflectsCallable;
 use Snicco\Routing\ConditionBlueprint;
 use Snicco\Contracts\ConditionInterface;
-use Snicco\Routing\Conditions\CustomCondition;
 use Snicco\Routing\Conditions\NegateCondition;
+use Snicco\Routing\Conditions\CustomCondition;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 class ConditionFactory
@@ -33,6 +33,11 @@ class ConditionFactory
         $this->container = $container;
     }
     
+    /**
+     * @param  ConditionBlueprint[]  $raw_conditions
+     *
+     * @return array
+     */
     public function buildConditions(array $raw_conditions) :array
     {
         
@@ -118,13 +123,13 @@ class ConditionFactory
         
         if (is_callable($instance)) {
             
-            return new NegateCondition(new CustomCondition($instance, ...$args));
+            return new NegateCondition(new CustomCondition($instance, $args));
             
         }
         
         if (is_callable($negates = $blueprint->negates())) {
             
-            return new NegateCondition(new CustomCondition($negates, ...$args));
+            return new NegateCondition(new CustomCondition($negates, $args));
             
         }
         

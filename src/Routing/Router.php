@@ -116,7 +116,6 @@ class Router
         if ( ! empty($this->delegate_attributes)) {
             
             $this->populateInitialAttributes($route, $this->delegate_attributes);
-            $this->delegate_attributes = [];
             
         }
         
@@ -274,14 +273,15 @@ class Router
     
     private function mergeGroupIntoRoute(Route $route)
     {
-        
-        (new RouteAttributes($route))->mergeGroup($this->lastGroup());
-        
+        $this->lastGroup()->mergeIntoRoute($route);
     }
     
     private function populateInitialAttributes(Route $route, array $attributes)
     {
-        ((new RouteAttributes($route)))->populateInitial($attributes);
+        
+        (new RouteGroup($attributes))->mergeIntoRoute($route);
+        $this->delegate_attributes = [];
+        
     }
     
     private function updateGroupStack(RouteGroup $group)
@@ -313,9 +313,7 @@ class Router
     
     private function deleteLastRouteGroup()
     {
-        
         array_pop($this->group_stack);
-        
     }
     
 }

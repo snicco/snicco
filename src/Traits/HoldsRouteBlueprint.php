@@ -6,7 +6,9 @@ namespace Snicco\Traits;
 
 use Snicco\Support\Arr;
 use Snicco\Routing\Route;
+use Snicco\Routing\Router;
 use Snicco\Routing\ConditionBucket;
+use Snicco\Contracts\ConditionInterface;
 
 trait HoldsRouteBlueprint
 {
@@ -96,19 +98,22 @@ trait HoldsRouteBlueprint
     }
     
     /**
-     * @param  mixed  $args,...
+     * @param  string|ConditionInterface|Closure|callable  $condition
+     * @param  mixed  $args,...  Arguments that will be passed into the condition (if any).
+     * If the condition equals (string)'negate', the second argument will be used as the Condition.
+     *
+     * @return Router
      */
-    public function where(...$args) :self
+    public function where($condition, ...$args) :self
     {
         
-        // NOTE: $args === func_get_args()
         if ( ! isset($this->delegate_attributes['where'])) {
             $this->delegate_attributes['where'] = ConditionBucket::createEmpty();
         }
         
         /** @var ConditionBucket $conditions */
         $conditions = $this->delegate_attributes['where'];
-        $conditions->add($args);
+        $conditions->add(array_merge([$condition], $args));
         
         return $this;
     }
