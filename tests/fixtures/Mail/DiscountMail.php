@@ -19,7 +19,7 @@ class DiscountMail extends Mailable
     public function build() :Mailable
     {
         return $this
-            ->text('new_discount')
+            ->text('mails.new_discount')
             ->subject('We have a new discount');
         
     }

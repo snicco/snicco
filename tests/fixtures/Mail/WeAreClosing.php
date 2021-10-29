@@ -12,7 +12,7 @@ class WeAreClosing extends Mailable
     public function build() :Mailable
     {
         return $this
-            ->text('we_are_closing.php')
+            ->text('mails.we_are_closing.php')
             ->subject('We have to close soon.');
     }
     
