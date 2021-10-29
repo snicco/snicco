@@ -57,7 +57,7 @@ class RedirectController extends Controller
         }
         
         return $this->response_factory
-            ->view('redirect-protection', [
+            ->view('framework.redirect-protection', [
                 'untrusted_url' => $request->query('intended_redirect'),
                 'home_url' => $this->url->toRoute('home'),
             ]);

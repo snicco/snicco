@@ -37,7 +37,7 @@ class ExceptionServiceProvider extends ServiceProvider
     
     private function bindConfig() :void
     {
-        $this->config->extend('view.paths', [__DIR__.DIRECTORY_SEPARATOR.'views']);
+        
         $this->config->extendIfEmpty(
             'app.hide_debug_traces',
             fn() => [

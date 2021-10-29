@@ -44,7 +44,7 @@ class HtmlErrorRenderer
     private function getPossibleViews(HttpException $e, Request $request) :array
     {
         
-        $views = [(string) $e->httpStatusCode(), 'error', 'index'];
+        $views = ['framework.errors.'.$e->httpStatusCode(), 'framework.errors.500'];
         
         if ( ! $request->isWpAdmin()) {
             

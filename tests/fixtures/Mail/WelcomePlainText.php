@@ -11,7 +11,7 @@ class WelcomePlainText extends Mailable
     
     public function build() :Mailable
     {
-        return $this->text('welcome_plain.php')
+        return $this->text('mails.welcome_plain')
                     ->from('c@web.de', 'Calvin INC')
                     ->reply_to('office@web.de', 'Front Office')
                     ->subject('welcome to our site')

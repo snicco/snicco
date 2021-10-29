@@ -67,6 +67,11 @@ class FilePath
         
     }
     
+    public static function removeExtensions($file_name) :string
+    {
+        return Str::beforeLast($file_name, '.');
+    }
+    
     public static function name($file_path, string $ending = '')
     {
         $name = pathinfo($file_path, PATHINFO_BASENAME);

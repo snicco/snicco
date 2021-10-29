@@ -37,39 +37,29 @@ class PhpViewFinderTest extends TestCase
     public function file_existence_can_be_checked_if_we_are_in_a_subdirectory()
     {
         
-        $this->assertTrue($this->finder->exists('subview.php'));
-        $this->assertFalse($this->finder->exists('bogus.php'));
+        $this->assertTrue($this->finder->exists('subdirectory.subview.php'));
+        $this->assertFalse($this->finder->exists('subdirectory.bogus.php'));
         
     }
     
     /** @test */
-    public function nested_files_can_be_found_if_we_adjust_the_search_depth()
+    public function nested_files_can_be_found_by_dot_notation()
     {
         
         // only direct child files
-        $finder = new PhpViewFinder([VIEWS_DIR], 0);
+        $finder = new PhpViewFinder([VIEWS_DIR]);
         $this->assertTrue($finder->exists('view.php'));
         $this->assertFalse($finder->exists('first.php'));
         
         // one child dir
-        $finder = new PhpViewFinder([VIEWS_DIR], 1);
-        $this->assertTrue($finder->exists('view.php'));
-        $this->assertTrue($finder->exists('first.php'));
-        $this->assertFalse($finder->exists('second.php'));
+        $finder = new PhpViewFinder([VIEWS_DIR]);
+        $this->assertTrue($finder->exists('view'));
+        $this->assertTrue($finder->exists('level-one.first'));
+        $this->assertTrue($finder->exists('level-one.level-two.second'));
         
-        // two child dirs
-        $finder = new PhpViewFinder([VIEWS_DIR], 2);
-        $this->assertTrue($finder->exists('view.php'));
-        $this->assertTrue($finder->exists('first.php'));
-        $this->assertTrue($finder->exists('second.php'));
-        $this->assertFalse($finder->exists('third.php'));
+        $this->assertFalse($finder->exists('level-one.level-two.third'));
         
-        // two child, but work if we give it also the subdirectory
-        $finder = new PhpViewFinder([VIEWS_DIR, VIEWS_DIR.DS.'level-one'], 2);
-        $this->assertTrue($finder->exists('view.php'));
-        $this->assertTrue($finder->exists('first.php'));
-        $this->assertTrue($finder->exists('second.php'));
-        $this->assertTrue($finder->exists('third.php'));
+        $this->assertTrue($finder->exists('level-one.level-two.level-three.third'));
         
     }
     

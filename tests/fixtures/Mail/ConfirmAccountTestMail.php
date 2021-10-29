@@ -13,7 +13,7 @@ class ConfirmAccountTestMail extends Mailable
     public function build(UrlGenerator $g) :Mailable
     {
         return $this->subject('Confirm your account')
-                    ->text('confirm-account-email')
+                    ->text('mails.confirm-account-email')
                     ->with([
                         'confirm_url' => $g->to('/foo'),
                     ]);

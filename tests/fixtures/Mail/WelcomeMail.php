@@ -11,7 +11,7 @@ class WelcomeMail extends Mailable
     
     public function build() :Mailable
     {
-        return $this->view('welcome_html.php')
+        return $this->view('mails.welcome_html.php')
                     ->from('c@web.de', 'Calvin INC')
                     ->reply_to('office@web.de', 'Front Office')
                     ->subject('welcome to our site')
