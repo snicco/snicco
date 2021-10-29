@@ -26,7 +26,11 @@ class DefaultHeaders extends Middleware
         
         foreach ($this->default_headers as $name => $value) {
             
-            $response = $response->withHeader($name, $value);
+            if ( ! $response->hasHeader($name)) {
+                
+                $response = $response->withHeader($name, $value);
+                
+            }
             
         }
         
