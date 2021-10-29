@@ -18,7 +18,10 @@ class FastRouteUrlGenerator implements RouteUrlGenerator
     public const matching_pattern = '/(?<optional>(?:\[\/)?(?<required>{{.+?}}+)(?:\]+)?)/i';
     /** @see https://regexr.com/5s533 */
     public const double_curly_brackets = '/(?<=\/)(?<opening_bracket>\{)|(?<closing_bracket>\}(?=(\/|\[\/|\]|$)))/';
+    
     private AbstractRouteCollection $routes;
+    
+    private array $url_cache = [];
     
     public function __construct(AbstractRouteCollection $routes)
     {
@@ -30,6 +33,10 @@ class FastRouteUrlGenerator implements RouteUrlGenerator
      */
     public function to(string $name, array $arguments) :string
     {
+        
+        if (isset($this->url_cache[$name])) {
+            return $this->url_cache[$name];
+        }
         
         $route = $this->findRoute($name);
         
@@ -47,7 +54,13 @@ class FastRouteUrlGenerator implements RouteUrlGenerator
         
         $url = $this->convertToDoubleCurlyBrackets($url);
         
-        return $this->replaceRouteSegmentsWithValues($url, $regex, $arguments);
+        $url = $this->replaceRouteSegmentsWithValues($url, $regex, $arguments);
+        
+        if ($arguments === []) {
+            $this->url_cache[$name] = $url;
+        }
+        
+        return $url;
         
     }
     
