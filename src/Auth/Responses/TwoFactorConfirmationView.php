@@ -22,8 +22,8 @@ class TwoFactorConfirmationView extends Abstract2FAuthConfirmationView
     
     public function toView(Request $request) :ViewInterface
     {
-        return $this->view_factory->make('auth-layout')->with([
-            'view' => 'auth-two-factor-challenge',
+        return $this->view_factory->make('framework.auth.layout')->with([
+            'view' => 'framework.auth.two-factor-challenge',
             'post_to' => $request->path(),
         ]);
     }

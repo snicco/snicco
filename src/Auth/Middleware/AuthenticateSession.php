@@ -61,7 +61,7 @@ class AuthenticateSession extends Middleware
             if ($request->session()->boolean('is_interim_login')) {
                 
                 $request->session()->forget('is_interim_login');
-                return $this->response_factory->view('auth-interim-login-success');
+                return $this->response_factory->view('framework.auth.interim-login-success');
                 
             }
             

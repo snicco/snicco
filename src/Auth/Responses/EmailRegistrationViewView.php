@@ -21,8 +21,8 @@ class EmailRegistrationViewView extends AbstractRegistrationView
     public function toResponsable()
     {
         
-        return $this->view_factory->make('auth-layout')->with([
-            'view' => 'auth-registration',
+        return $this->view_factory->make('framework.auth.layout')->with([
+            'view' => 'framework.auth.registration',
             'post_to' => $this->request->path(),
         ]);
         
