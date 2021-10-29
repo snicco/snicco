@@ -17,85 +17,33 @@ class ConditionBlueprint
     const NEGATES_SIGN = '!';
     const NEGATES_WORD = 'negate';
     
-    protected       $type;
-    protected       $args;
-    private ?object $instance = null;
+    protected                   $type;
+    protected                   $args;
+    private ?ConditionInterface $instance;
     
     /** @var null|string|ConditionInterface */
     private $negates = null;
     
-    public function __construct(array $arguments = [])
+    public function __construct($condition = null, array $arguments = [])
     {
         
-        if ($arguments === []) {
+        if (is_null($condition)) {
             return;
         }
         
-        [$type, $args] = $this->parseTypeAndArgs($arguments);
+        [$type, $args] = $this->parseTypeAndArgs($condition, $arguments);
         
         $this->type = $type;
         $this->args = $args;
-        $this->instance = $this->parseInstance($arguments);
         
-    }
-    
-    private function parseTypeAndArgs(array $args) :array
-    {
-        
-        $copy = $args;
-        
-        $type = array_shift($copy);
-        
-        $type = $this->getClass($type) ?? $type;
-        
-        if (Str::contains($type, self::NEGATES_SIGN)) {
-            
-            $this->negates = Str::after($type, self::NEGATES_SIGN);
-            
-            $type = self::NEGATES_WORD;
-            
-            return [$type, $copy];
-            
-        }
-        
-        if ($type === self::NEGATES_WORD) {
-            
-            $this->negates = array_shift($copy);
-            
-            return [$type, $copy];
-            
-        }
-        
-        if (is_callable($type)) {
-            
-            return [CustomCondition::class, $copy];
-            
-        }
-        
-        return [$type, $copy];
-        
-    }
-    
-    private function parseInstance(array $original_args) :?object
-    {
-        
-        $candidate =
-            ($original_args[0] == self::NEGATES_WORD) ? $original_args[1] : $original_args[0];
-        
-        if (is_callable($candidate)) {
-            
-            return new CustomCondition($candidate, ...$this->args);
-            
-        }
-        
-        return (is_object($candidate)) ? $candidate : null;
+        $this->instance = $this->parseInstance($condition, $arguments);
         
     }
     
     public static function hydrate(array $attributes) :ConditionBlueprint
     {
         
-        $blueprint = new ConditionBlueprint([]);
+        $blueprint = new ConditionBlueprint();
         
         $blueprint->type = $attributes['type'];
         $blueprint->args = $attributes['args'];
@@ -108,27 +56,21 @@ class ConditionBlueprint
     
     public function args() :array
     {
-        
         return $this->args;
-        
     }
     
     public function type() :string
     {
-        
         return $this->type;
-        
     }
     
     public function instance() :?object
     {
-        
         return $this->instance;
     }
     
     public function negates() :?string
     {
-        
         return $this->negates;
     }
     
@@ -143,6 +85,72 @@ class ConditionBlueprint
             'negates' => $this->negates,
         
         ];
+        
+    }
+    
+    private function parseTypeAndArgs($condition, array $args) :array
+    {
+        
+        if (is_callable($condition)) {
+            
+            return [CustomCondition::class, $args];
+            
+        }
+        
+        if ($condition === self::NEGATES_WORD) {
+            
+            $copy = $args;
+            
+            [$type, $args] = $this->parseTypeAndArgs(array_shift($copy), $copy);
+            
+            $this->negates = $type;
+            
+            return [self::NEGATES_WORD, $args];
+            
+        }
+        
+        if (is_string($condition)) {
+            
+            if (Str::startsWith($condition, self::NEGATES_SIGN)) {
+                
+                $this->negates = Str::after($condition, self::NEGATES_SIGN);
+                
+                $type = self::NEGATES_WORD;
+                
+                return [$type, $args];
+                
+            }
+            
+            return [$condition, $args];
+            
+        }
+        
+        if ($condition instanceof ConditionInterface) {
+            
+            return [get_class($condition), $args];
+            
+        }
+        
+        throw new \InvalidArgumentException("An invalid condition was provided for a route.");
+        
+    }
+    
+    private function parseInstance($condition, $arguments = []) :?ConditionInterface
+    {
+        
+        if ($this->type === self::NEGATES_WORD && is_object($arguments[0] ?? '')) {
+            
+            return $this->parseInstance($arguments[0]);
+            
+        }
+        
+        if (is_callable($condition)) {
+            
+            return new CustomCondition($condition, $this->args);
+            
+        }
+        
+        return ($condition instanceof ConditionInterface) ? $condition : null;
         
     }
     

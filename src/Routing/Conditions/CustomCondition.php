@@ -15,7 +15,7 @@ class CustomCondition implements ConditionInterface
     
     private array $arguments;
     
-    public function __construct(callable $callable, ...$args)
+    public function __construct(callable $callable, $args = [])
     {
         
         $this->callable = $callable;

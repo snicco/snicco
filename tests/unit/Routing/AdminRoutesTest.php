@@ -38,7 +38,7 @@ class AdminRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->router->prefix('wp-admin')->group(function () {
                 
                 $this->router->get('admin.php/foo', function (Request $request) {
                     
@@ -61,7 +61,7 @@ class AdminRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->router->prefix('wp-admin')->group(function () {
                 
                 $this->router->get('admin.php/foo', function (Request $request) {
                     
@@ -84,9 +84,9 @@ class AdminRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->router->prefix('wp-admin')->group(function () {
                 
-                $this->router->group(['name' => 'foo_group'], function () {
+                $this->router->name('foo_group')->group(function () {
                     
                     $this->router->get('admin.php/foo', function (Request $request) {
                         
@@ -111,7 +111,7 @@ class AdminRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->router->prefix('wp-admin')->group(function () {
                 
                 $this->router->get('admin.php/foo', function (Request $request) {
                     
@@ -146,7 +146,7 @@ class AdminRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->router->prefix('wp-admin')->group(function () {
                 
                 $this->router->get('users.php/foo', function (Request $request) {
                     
@@ -169,7 +169,7 @@ class AdminRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->router->prefix('wp-admin')->group(function () {
                 
                 $this->router->get('users.php/foo', function (Request $request) {
                     
@@ -198,7 +198,7 @@ class AdminRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin', 'name' => 'admin'], function () {
+            $this->router->prefix('wp-admin')->name('admin')->group(function () {
                 
                 $this->router->name('foo')
                              ->get('admin.php/foo', function (Request $request) {
@@ -222,7 +222,7 @@ class AdminRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->router->prefix('wp-admin')->group(function () {
                 
                 $this->router->get('admin.php/foo/', function (Request $request) {
                     
@@ -245,7 +245,7 @@ class AdminRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->router->prefix('wp-admin')->group(function () {
                 
                 $this->router->get('admin/foo', function (Request $request) {
                     
@@ -268,7 +268,7 @@ class AdminRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->router->prefix('wp-admin')->group(function () {
                 
                 $this->router->get('options/foo', function (Request $request) {
                     
@@ -296,7 +296,7 @@ class AdminRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->router->prefix('wp-admin')->group(function () {
                 
                 $this->router->get('tools/foo', function (Request $request) {
                     
@@ -319,7 +319,7 @@ class AdminRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->router->prefix('wp-admin')->group(function () {
                 
                 $this->router->get('users/foo', function (Request $request) {
                     
@@ -342,7 +342,7 @@ class AdminRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->router->prefix('wp-admin')->group(function () {
                 
                 $this->router->get('plugins/foo', function (Request $request) {
                     
@@ -365,7 +365,7 @@ class AdminRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->router->prefix('wp-admin')->group(function () {
                 
                 $this->router->get('themes/foo', function (Request $request) {
                     
@@ -388,7 +388,7 @@ class AdminRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->router->prefix('wp-admin')->group(function () {
                 
                 $this->router->get('comments/foo', function (Request $request) {
                     
@@ -412,7 +412,7 @@ class AdminRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->router->prefix('wp-admin')->group(function () {
                 
                 $this->router->get('upload/foo', function (Request $request) {
                     
@@ -435,7 +435,7 @@ class AdminRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->router->prefix('wp-admin')->group(function () {
                 
                 $this->router->get('posts/foo', function (Request $request) {
                     
@@ -458,7 +458,7 @@ class AdminRoutesTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->group(['prefix' => 'wp-admin'], function () {
+            $this->router->prefix('wp-admin')->group(function () {
                 
                 $this->router->get('dashboard/foo', function (Request $request) {
                     

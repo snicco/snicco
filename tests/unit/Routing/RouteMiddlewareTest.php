@@ -156,7 +156,7 @@ class RouteMiddlewareTest extends UnitTest
         
         $this->createRoutes(function () {
             
-            $this->router->middleware('foo', 'bar')
+            $this->router->middleware(['foo', 'bar'])
                          ->get('/foo', function (Request $request) {
                 
                              return $request->body;
@@ -387,15 +387,6 @@ class RouteMiddlewareTest extends UnitTest
         
     }
     
-    private function withMiddlewarePriority(array $array)
-    {
-        $this->middleware_stack->middlewarePriority($array);
-    }
-    
-    /**
-     * SORTING
-     */
-    
     /** @test */
     public function middleware_keeps_its_relative_position_if_its_has_no_priority_defined()
     {
@@ -431,6 +422,10 @@ class RouteMiddlewareTest extends UnitTest
         
     }
     
+    /**
+     * SORTING
+     */
+    
     protected function beforeTestRun()
     {
         
@@ -449,6 +444,11 @@ class RouteMiddlewareTest extends UnitTest
         Mockery::close();
         WP::reset();
         
+    }
+    
+    private function withMiddlewarePriority(array $array)
+    {
+        $this->middleware_stack->middlewarePriority($array);
     }
     
 }

@@ -15,10 +15,9 @@ use Snicco\Factories\ConditionFactory;
 use ReflectionPayload\ReflectionPayload;
 use Snicco\Contracts\ConditionInterface;
 use Snicco\Factories\RouteActionFactory;
-use Snicco\Contracts\SetsRouteAttributes;
 use Snicco\Controllers\FallBackController;
 
-class Route implements SetsRouteAttributes
+class Route
 {
     
     use SetRouteAttributes;
@@ -27,28 +26,24 @@ class Route implements SetsRouteAttributes
     
     private array  $methods;
     private string $url;
+    private array  $middleware = [];
+    private string $namespace  = '';
+    private string $name       = '';
+    private array  $regex      = [];
+    private array  $defaults   = [];
     
-    /** @var string|Closure|array */
+    /** @var Closure|null|string A serialized closure if it's a string */
+    private $wp_query_filter = null;
+    
+    private array $segment_names  = [];
+    private array $segments       = [];
+    private bool  $trailing_slash = false;
+    
+    /** @var string|Closure|array|null */
     private $action;
     
     /** @var ConditionBlueprint[] */
     private array $condition_blueprints = [];
-    
-    private array   $middleware;
-    private string  $namespace;
-    private ?string $name;
-    private array   $regex    = [];
-    private array   $defaults = [];
-    
-    /**
-     * @var Closure|string|null
-     */
-    private $wp_query_filter = null;
-    
-    private array $segment_names = [];
-    
-    private array $segments       = [];
-    private bool  $trailing_slash = false;
     
     /**
      * @var ConditionInterface[]
@@ -59,29 +54,12 @@ class Route implements SetsRouteAttributes
     private ?RouteActionFactory $action_factory    = null;
     private ?ConditionFactory   $condition_factory = null;
     
-    public function __construct(array $methods, string $url, $action, array $attributes = [])
+    public function __construct(array $methods, string $url, $action = null)
     {
         
         $this->methods = $methods;
         $this->url = $this->parseUrl($url);
         $this->action = $action;
-        $this->namespace = $attributes['namespace'] ?? '';
-        $this->middleware = $attributes['middleware'] ?? [];
-        
-    }
-    
-    private function parseUrl(string $url) :string
-    {
-        
-        $url = UrlParser::replaceAdminAliases($url);
-        
-        $url = Url::addLeading($url);
-        
-        $this->segments = UrlParser::segments($url);
-        
-        $this->segment_names = UrlParser::segmentNames($url);
-        
-        return $url;
         
     }
     
@@ -108,22 +86,6 @@ class Route implements SetsRouteAttributes
         $route->methods = $attributes['methods'] ?? [];
         
         return $route;
-        
-    }
-    
-    private function hydrateConditionBlueprints(array $blueprints) :array
-    {
-        
-        return array_map(function (array $blueprint) {
-            
-            if (is_string($blueprint['instance']) && function_exists('\Opis\Closure\unserialize')) {
-                
-                $blueprint['instance'] = \Opis\Closure\unserialize($blueprint['instance']);
-            }
-            
-            return ConditionBlueprint::hydrate($blueprint);
-            
-        }, $blueprints);
         
     }
     
@@ -195,28 +157,6 @@ class Route implements SetsRouteAttributes
         return $this->instantiated_action->executeUsing(
             $this->mergeDefaults($reflection_payload->build())
         );
-        
-    }
-    
-    private function conditionArgs(Request $request) :array
-    {
-        
-        $args = [];
-        
-        foreach ($this->instantiated_conditions as $condition) {
-            
-            $args = array_merge($args, $condition->getArguments($request));
-            
-        }
-        
-        return $args;
-        
-    }
-    
-    private function mergeDefaults(array $route_payload) :array
-    {
-        
-        return array_merge($route_payload, $this->defaults);
         
     }
     
@@ -305,7 +245,7 @@ class Route implements SetsRouteAttributes
     {
         
         $failed_condition = collect($this->instantiated_conditions)
-            ->first(fn($condition) => ! $condition->isSatisfied($request));
+            ->first(fn(ConditionInterface $condition) => ! $condition->isSatisfied($request));
         
         return $failed_condition === null;
         
@@ -324,6 +264,59 @@ class Route implements SetsRouteAttributes
             $this->controllerMiddleware()
         
         );
+        
+    }
+    
+    private function parseUrl(string $url) :string
+    {
+        
+        $url = UrlParser::replaceAdminAliases($url);
+        
+        $url = Url::addLeading($url);
+        
+        $this->segments = UrlParser::segments($url);
+        
+        $this->segment_names = UrlParser::segmentNames($url);
+        
+        return $url;
+        
+    }
+    
+    private function hydrateConditionBlueprints(array $blueprints) :array
+    {
+        
+        return array_map(function (array $blueprint) {
+            
+            if (is_string($blueprint['instance']) && function_exists('\Opis\Closure\unserialize')) {
+                
+                $blueprint['instance'] = \Opis\Closure\unserialize($blueprint['instance']);
+            }
+            
+            return ConditionBlueprint::hydrate($blueprint);
+            
+        }, $blueprints);
+        
+    }
+    
+    private function conditionArgs(Request $request) :array
+    {
+        
+        $args = [];
+        
+        foreach ($this->instantiated_conditions as $condition) {
+            
+            $args = array_merge($args, $condition->getArguments($request));
+            
+        }
+        
+        return $args;
+        
+    }
+    
+    private function mergeDefaults(array $route_payload) :array
+    {
+        
+        return array_merge($route_payload, $this->defaults);
         
     }
     

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Tests\stubs\TestApp;
 
-TestApp::route()->group(['prefix' => 'alias', 'name' => 'alias'], function () {
+TestApp::route()->group(function () {
     
     TestApp::get('get', function () {
         
@@ -41,5 +41,5 @@ TestApp::route()->group(['prefix' => 'alias', 'name' => 'alias'], function () {
         
         return 'match';
     });
-});
+}, ['prefix' => 'alias', 'name' => 'alias']);
 
