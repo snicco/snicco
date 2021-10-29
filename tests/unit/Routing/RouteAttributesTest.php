@@ -585,6 +585,7 @@ class RouteAttributesTest extends UnitTest
         Event::make($this->container);
         Event::fake();
         WP::setFacadeContainer($this->container);
+        HeaderStack::reset();
         
     }
     
