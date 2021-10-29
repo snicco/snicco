@@ -20,6 +20,7 @@ abstract class AbstractRouteCollection
     protected ConditionFactory   $condition_factory;
     protected RouteActionFactory $action_factory;
     protected array              $routes                      = [];
+    protected array              $name_list                   = [];
     private ?RoutingResult       $query_filter_routing_result = null;
     
     abstract public function add(Route $route) :Route;
@@ -95,6 +96,11 @@ abstract class AbstractRouteCollection
         
     }
     
+    /**
+     * @param  string  $name
+     *
+     * @return array|Route
+     */
     protected function findInLookUps(string $name)
     {
         
