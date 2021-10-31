@@ -77,19 +77,6 @@ abstract class MagicLink
         
     }
     
-    protected function hash(string $url, Request $request) :string
-    {
-        
-        if ( ! $this->app_key) {
-            throw new RuntimeException('App key not set.');
-        }
-        
-        $salt = $this->app_key.$request->userAgent();
-        
-        return hash_hmac('sha256', $url, $salt);
-        
-    }
-    
     abstract public function gc() :bool;
     
     abstract public function store(string $signature, int $expires) :bool;
@@ -107,17 +94,6 @@ abstract class MagicLink
         
         return $cookie === $this->hash($request->fullPath(), $request)
                && $request->expires() > $this->currentTime();
-        
-    }
-    
-    private function accessCookieName(Request $request)
-    {
-        
-        $id = WP::userId();
-        $path = $request->fullPath();
-        $agent = $request->userAgent();
-        
-        return hash_hmac('sha256', $id.$path.$agent, $this->app_key);
         
     }
     
@@ -140,20 +116,6 @@ abstract class MagicLink
         
     }
     
-    private function addAccessCookie(Response $response, Request $request) :Response
-    {
-        
-        $value = $this->hash($request->fullPath(), $request);
-        
-        $cookie = new Cookie($this->accessCookieName($request), $value);
-        $cookie->expires($request->expires())
-               ->path($request->path())
-               ->onlyHttp();
-        
-        return $response->withCookie($cookie);
-        
-    }
-    
     public function hasValidRelativeSignature(Request $request) :bool
     {
         
@@ -166,6 +128,46 @@ abstract class MagicLink
         return $this->hasCorrectSignature($request, $absolute)
                && ! $this->signatureHasExpired($request)
                && $this->notUsed($request);
+        
+    }
+    
+    abstract public function notUsed(Request $request) :bool;
+    
+    protected function hash(string $url, Request $request) :string
+    {
+        
+        if ( ! $this->app_key) {
+            throw new RuntimeException('App key not set.');
+        }
+        
+        $salt = $this->app_key;
+        
+        return hash_hmac('sha256', $url, $salt);
+        
+    }
+    
+    private function accessCookieName(Request $request)
+    {
+        
+        $id = WP::userId();
+        $path = $request->fullPath();
+        $agent = $request->userAgent();
+        
+        return hash_hmac('sha256', $id.$path.$agent, $this->app_key);
+        
+    }
+    
+    private function addAccessCookie(Response $response, Request $request) :Response
+    {
+        
+        $value = $this->hash($request->fullPath(), $request);
+        
+        $cookie = new Cookie($this->accessCookieName($request), $value);
+        $cookie->expires($request->expires())
+               ->path($request->path())
+               ->onlyHttp();
+        
+        return $response->withCookie($cookie);
         
     }
     
@@ -202,7 +204,5 @@ abstract class MagicLink
         return Carbon::now()->getTimestamp() > (int) $expires;
         
     }
-    
-    abstract public function notUsed(Request $request) :bool;
     
 }
