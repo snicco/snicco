@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\unit\Http;
 
 use Tests\UnitTest;
+use Snicco\Http\Cookie;
 use Snicco\Http\Psr7\Response;
 use Snicco\Http\ResponseFactory;
 use Tests\helpers\CreateUrlGenerator;
@@ -165,6 +166,7 @@ class ResponseTest extends UnitTest
         
     }
     
+    /** @test */
     public function testIsEmpty()
     {
         $response = $this->response->withStatus(204);
@@ -172,6 +174,26 @@ class ResponseTest extends UnitTest
         $this->assertTrue($response->withStatus(304)->isEmpty());
         $this->assertTrue($this->factory->html('foo')->withStatus(204)->isEmpty());
         $this->assertTrue($this->factory->html('foo')->withStatus(304)->isEmpty());
+    }
+    
+    /** @test */
+    public function testCookiesAreNotResetInNestedResponses()
+    {
+        
+        $redirect_response = $this->factory->createResponse()->withCookie(new Cookie('foo', 'bar'));
+        
+        $response = new Response($redirect_response);
+        
+        $response = $response->withCookie(new Cookie('bar', 'baz'));
+        
+        $cookies = $response->cookies();
+        
+        $headers = $cookies->toHeaders();
+        
+        $this->assertCount(2, $headers);
+        $this->assertStringStartsWith('foo=bar', $headers[0]);
+        $this->assertStringStartsWith('bar=baz', $headers[1]);
+        
     }
     
     protected function setUp() :void
