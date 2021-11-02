@@ -13,7 +13,7 @@ use Snicco\Auth\Contracts\AbstractLoginView;
 class PasswordLoginView extends AbstractLoginView
 {
     
-    private string       $view = 'auth-layout';
+    private string       $view = 'framework.auth.layout';
     private UrlGenerator $url;
     private ViewFactory  $view_factory;
     private Config       $config;
@@ -35,7 +35,7 @@ class PasswordLoginView extends AbstractLoginView
         return $this->view_factory->make($this->view)->with(
             array_filter([
                 'title' => 'Log-in | '.WP::siteName(),
-                'view' => 'auth-login-via-password',
+                'view' => 'framework.auth.login-with-password',
                 'allow_remember' => $this->config->get('auth.features.remember_me'),
                 'allow_password_reset' => $this->pw_resets,
                 'forgot_password_url' => $this->pw_resets

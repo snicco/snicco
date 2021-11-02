@@ -36,7 +36,7 @@ class MagicLinkLoginMail extends Mailable
         
         return $this
             ->subject(sprintf(__('[%s] Login Link'), WP::siteName()))
-            ->view('magic-link-login-email');
+            ->view('framework.mail.magic-link-login');
         
     }
     

@@ -46,7 +46,6 @@ class TwoFactorAuthConfirmationTest extends AuthTestCase
             
             return $data === '/auth/confirm';
         });
-        $response->assertViewHas('view', 'auth-two-factor-challenge');
         
     }
     

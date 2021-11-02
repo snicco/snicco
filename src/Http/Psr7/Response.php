@@ -16,14 +16,15 @@ class Response implements ResponseInterface, ResponseableInterface
     
     use ImplementsPsr7Response;
     
-    protected Cookies $cookies;
+    protected ?Cookies $cookies = null;
     
     protected StreamFactoryInterface $response_factory;
     
     public function __construct(ResponseInterface $psr7_response)
     {
         $this->psr7_response = $psr7_response;
-        $this->cookies = new Cookies();
+        $this->cookies =
+            ($psr7_response instanceof Response) ? $psr7_response->cookies() : new Cookies();
     }
     
     public function toResponsable()
@@ -77,7 +78,12 @@ class Response implements ResponseInterface, ResponseableInterface
     
     public function cookies() :Cookies
     {
+        if ( ! $this->cookies) {
+            $this->cookies = new Cookies();
+        }
+        
         return $this->cookies;
+        
     }
     
     public function html(StreamInterface $html) :Response

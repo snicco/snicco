@@ -24,9 +24,9 @@ class EmailAuthConfirmationView extends AbstractEmailAuthConfirmationView
     
     public function toView(Request $request) :ViewInterface
     {
-        return $this->view_factory->make('auth-layout')
+        return $this->view_factory->make('framework.auth.layout')
                                   ->with([
-                                      'view' => 'auth-confirm-via-email',
+                                      'view' => 'framework.auth.confirm-with-email',
                                       'post_to' => $this->url->toRoute('auth.confirm.email'),
                                   ]);
     }

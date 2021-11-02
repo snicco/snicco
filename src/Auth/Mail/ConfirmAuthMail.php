@@ -26,11 +26,16 @@ class ConfirmAuthMail extends Mailable
         
         return $this
             ->subject('Your Email Confirmation link.')
-            ->view('auth-confirm-email')
+            ->view('framework.mail.confirm-auth')
             ->with([
                 'magic_link' => $this->generateSignedUrl($generator),
             ]);
         
+    }
+    
+    public function unique() :bool
+    {
+        return false;
     }
     
     private function generateSignedUrl(UrlGenerator $generator) :string
@@ -43,11 +48,6 @@ class ConfirmAuthMail extends Mailable
             true
         );
         
-    }
-    
-    public function unique() :bool
-    {
-        return false;
     }
     
 }
