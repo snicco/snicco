@@ -36,7 +36,7 @@ class ResetPasswordMail extends Mailable
         
         return $this
             ->subject($title = sprintf(__('[%s] Password Reset'), WP::siteName()))
-            ->view('password-forgot-email');
+            ->view('framework.mail.password-reset');
         
     }
     

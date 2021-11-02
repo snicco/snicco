@@ -108,8 +108,6 @@ class AuthServiceProviderTest extends AuthTestCase
         $expected = ROOT_DIR.DS.'src'.DS.'Auth'.DS.'views';
         
         $this->assertContains($expected, $views);
-        $this->assertContains($expected.'/partials', $views);
-        $this->assertContains($expected.'/email', $views);
         
     }
     

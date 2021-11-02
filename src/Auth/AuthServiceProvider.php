@@ -71,8 +71,6 @@ class AuthServiceProvider extends ServiceProvider
         $this->extendRoutes(__DIR__.DIRECTORY_SEPARATOR.'routes');
         
         $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views');
-        $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'email');
-        $this->extendViews(__DIR__.DIRECTORY_SEPARATOR.'views'.DIRECTORY_SEPARATOR.'partials');
         
         $this->bindEvents();
         $this->bindControllers();

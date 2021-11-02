@@ -21,7 +21,7 @@ class ConfirmRegistrationEmail extends Mailable
     {
         
         return $this->subject(sprintf("Confirm your registration at %s", WP::siteName()))
-                    ->view('confirm-registration-email');
+                    ->view('framework.mail.confirm-registration');
         
     }
     
