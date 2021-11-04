@@ -13,7 +13,6 @@ use Snicco\Auth\Contracts\AbstractLoginView;
 class MagicLinkLoginView extends AbstractLoginView
 {
     
-    private string       $view = 'framework.auth.login-with-email';
     private UrlGenerator $url;
     private ViewFactory  $view_factory;
     private Config       $config;
@@ -28,10 +27,9 @@ class MagicLinkLoginView extends AbstractLoginView
     public function toResponsable()
     {
         
-        return $this->view_factory->make('framework.auth.layout')->with(
+        return $this->view_factory->make('framework.auth.login-with-email')->with(
             array_filter([
                 'title' => 'Log in | '.WP::siteName(),
-                'view' => $this->view,
                 'post_to' => $this->url->toRoute('auth.login.create-magic-link'),
                 'register_url' => $this->config->get('auth.features.registration')
                     ? $this->url->toRoute('auth.register') : null,

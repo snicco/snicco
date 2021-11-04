@@ -80,27 +80,12 @@ class ViewFactory implements ViewFactoryInterface
      */
     public function make($views) :ViewInterface
     {
-        
         return $this->engine->make(Arr::wrap($views));
-        
-    }
-    
-    public function includeChild()
-    {
-        
-        if ( ! $this->engine instanceof PhpViewEngine) {
-            return;
-        }
-        
-        return $this->engine->includeNextView();
-        
     }
     
     public function renderedView() :?ViewInterface
     {
-        
         return $this->rendered_view ?? null;
-        
     }
     
 }

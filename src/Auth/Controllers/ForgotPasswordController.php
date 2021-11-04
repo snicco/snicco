@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Auth\Controllers;
 
 use WP_User;
+use Snicco\Support\WP;
 use Snicco\Http\Controller;
 use Snicco\Mail\MailBuilder;
 use Snicco\Http\Psr7\Request;
-use Snicco\Session\CsrfField;
 use Snicco\Contracts\ViewInterface;
 use Snicco\Auth\Traits\ResolvesUser;
 use Respect\Validation\Validator as v;
@@ -23,19 +23,17 @@ class ForgotPasswordController extends Controller
     
     protected int $expiration;
     
-    public function __construct(int $expiration = 300)
+    public function __construct(int $expiration = 600)
     {
         $this->expiration = $expiration;
     }
     
-    public function create(CsrfField $csrf) :ViewInterface
+    public function create() :ViewInterface
     {
         
-        return $this->view_factory->make('framework.auth.layout')->with([
-            'view' => 'framework.auth.forgot-password',
-            'view_factory' => $this->view_factory,
-            'csrf_field' => $csrf->asHtml(),
-            'post' => $this->url->toRoute('auth.forgot.password'),
+        return $this->view_factory->make('framework.auth.forgot-password')->with([
+            'post_to' => $this->url->toRoute('auth.forgot.password'),
+            'title' => 'Forgot Password | '.WP::siteName(),
         ]);
         
     }

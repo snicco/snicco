@@ -17,7 +17,7 @@ class PhpView implements PhpViewInterface
      *
      * @var string
      */
-    public const PARENT_FILE_INDICATOR = 'Layout';
+    public const PARENT_FILE_INDICATOR = 'Extends';
     
     private PhpViewEngine $engine;
     private string        $filepath;
@@ -33,35 +33,6 @@ class PhpView implements PhpViewInterface
         $this->filepath = $path;
         $this->parent_view = $this->parseParentView();
         
-    }
-    
-    /**
-     * Create a view instance for the given view's layout header, if any.
-     *
-     * @return ViewInterface|PhpView|null
-     */
-    private function parseParentView() :?PhpView
-    {
-        
-        if (empty($file_headers = $this->parseFileHeaders())) {
-            return null;
-        }
-        
-        $parent_view_name = trim($file_headers[0]);
-        
-        return $this->engine->make($parent_view_name);
-        
-    }
-    
-    private function parseFileHeaders() :array
-    {
-        
-        return array_filter(
-            WP::fileHeaderData(
-                $this->filepath,
-                [self::PARENT_FILE_INDICATOR]
-            )
-        );
     }
     
     public function path() :string
@@ -129,6 +100,35 @@ class PhpView implements PhpViewInterface
         }
         
         return Arr::get($this->context, $key, $default);
+    }
+    
+    /**
+     * Create a view instance for the given view's layout header, if any.
+     *
+     * @return ViewInterface|PhpView|null
+     */
+    private function parseParentView() :?PhpView
+    {
+        
+        if (empty($file_headers = $this->parseFileHeaders())) {
+            return null;
+        }
+        
+        $parent_view_name = trim($file_headers[0]);
+        
+        return $this->engine->make($parent_view_name);
+        
+    }
+    
+    private function parseFileHeaders() :array
+    {
+        
+        return array_filter(
+            WP::fileHeaderData(
+                $this->filepath,
+                [self::PARENT_FILE_INDICATOR]
+            )
+        );
     }
     
 }

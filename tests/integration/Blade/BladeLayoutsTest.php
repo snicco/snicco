@@ -26,7 +26,7 @@ class BladeLayoutsTest extends BladeTestCase
     public function stacks_work()
     {
         
-        $view = TestApp::view('stack-child');
+        $view = TestApp::view('layouts.stack-child');
         $content = $view->toString();
         $this->assertViewContent('FOOBAZBAR', $content);
         

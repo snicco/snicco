@@ -123,6 +123,7 @@ class ResetPasswordControllerTest extends AuthTestCase
     /** @test */
     public function passwords_must_be_identical()
     {
+        
         $this->bootApp();
         $calvin = $this->createAdmin();
         $token = $this->withCsrfToken();
@@ -141,7 +142,7 @@ class ResetPasswordControllerTest extends AuthTestCase
         $response->assertRedirect()
                  ->assertSessionDoesntHaveErrors('password')
                  ->assertSessionHasErrors(
-                     ['password_confirmation' => 'password_confirmation must be equal to password.']
+                     ['password_confirmation' => 'The provided passwords do not match.']
                  );
         
     }
@@ -194,7 +195,7 @@ class ResetPasswordControllerTest extends AuthTestCase
             ]
         );
         
-        $response->assertOk()->assertSee(' You have successfully reset your password');
+        $response->assertOk()->assertSee('You have successfully reset your password');
         
         $calvin = get_user_by('id', $calvin->ID);
         $new_pass = $calvin->user_pass;
@@ -202,7 +203,7 @@ class ResetPasswordControllerTest extends AuthTestCase
         $this->assertNotSame($old_pass, $new_pass);
         $this->assertTrue(wp_check_password($pw, $new_pass));
         
-        // Dont log the user in automatically
+        // Don't log the user in automatically
         $this->assertNotAuthenticated($calvin);
         
     }
