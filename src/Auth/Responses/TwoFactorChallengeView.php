@@ -22,8 +22,7 @@ class TwoFactorChallengeView extends Abstract2FaChallengeView
     
     public function toResponsable()
     {
-        return $this->view_factory->make('framework.auth.layout')->with([
-            'view' => 'framework.auth.two-factor-challenge',
+        return $this->view_factory->make('framework.auth.two-factor-challenge')->with([
             'post_to' => $this->url->toLogin(),
         ]);
     }

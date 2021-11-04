@@ -30,7 +30,6 @@ class ForgotPasswordControllerTest extends AuthTestCase
     /** @test */
     public function the_forgot_password_view_can_be_rendered()
     {
-        $this->withoutExceptionHandling();
         
         $this->bootApp();
         $this->get($this->routeUrl())

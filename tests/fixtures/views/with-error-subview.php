@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Layout: includes-child-with-error.php
+ * Extends: includes-child-with-error.php
  */
 
 declare(strict_types=1);
