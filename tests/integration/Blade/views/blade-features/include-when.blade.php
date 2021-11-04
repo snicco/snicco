@@ -1,1 +1,1 @@
-@includeWhen($foo === 'foo', 'child', ['name' => 'calvin', 'greeting' => $greeting])
+@includeWhen($foo === 'foo', 'blade-features.child', ['name' => 'calvin', 'greeting' => $greeting])
