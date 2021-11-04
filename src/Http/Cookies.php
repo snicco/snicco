@@ -175,7 +175,7 @@ class Cookies
      */
     protected function toHeader(string $name, array $properties) :string
     {
-        $result = urlencode($name).'='.urlencode($properties['value']);
+        $result = urlencode($name).'='.$properties['value'];
         
         if (isset($properties['domain'])) {
             $result .= '; domain='.$properties['domain'];
