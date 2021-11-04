@@ -9,7 +9,6 @@ use Snicco\Routing\Router;
 use Snicco\View\MethodField;
 use Snicco\Http\Psr7\Request;
 use Snicco\View\GlobalContext;
-use Snicco\View\PhpViewEngine;
 use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Contracts\ServiceProvider;
@@ -154,14 +153,6 @@ class ApplicationServiceProvider extends ServiceProvider
             $view_as_string = call_user_func_array([$view_service, 'render',], func_get_args());
             
             echo $view_as_string;
-            
-        });
-        $app->alias('includeChildViews', function () use ($app) {
-            
-            /** @var PhpViewEngine $engine */
-            $engine = $app->resolve(PhpViewEngine::class);
-            
-            $engine->includeNextView();
             
         });
         $app->alias('methodField', MethodField::class, 'html');

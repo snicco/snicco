@@ -246,16 +246,6 @@ final class ApplicationMixin
     }
     
     /**
-     * Output child layout content.
-     *
-     * @return void
-     * @see    \Snicco\View\PhpViewEngine::includeNextView()
-     */
-    public static function includeChildViews() :void
-    {
-    }
-    
-    /**
      * Output the specified view.
      *
      * @param  string|string[]  $views

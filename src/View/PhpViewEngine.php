@@ -10,7 +10,6 @@ use Snicco\Events\MakingView;
 use Snicco\Contracts\PhpEngine;
 use Snicco\Contracts\ViewInterface;
 use Snicco\Contracts\PhpViewInterface;
-use BetterWpHooks\Exceptions\ConfigurationException;
 use Snicco\ExceptionHandling\Exceptions\ViewException;
 use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
 
@@ -18,13 +17,6 @@ class PhpViewEngine implements PhpEngine
 {
     
     private PhpViewFinder $finder;
-    
-    /**
-     * Stack of views ready to be rendered.
-     *
-     * @var PhpView[]
-     */
-    private array $view_stack = [];
     
     public function __construct(PhpViewFinder $finder)
     {
@@ -62,7 +54,7 @@ class PhpViewEngine implements PhpEngine
         
         try {
             
-            $this->requirePhpView($view);
+            $this->render($view);
             
         } catch (Throwable $e) {
             
@@ -70,60 +62,44 @@ class PhpViewEngine implements PhpEngine
             
         }
         
-        $html = ob_get_clean();
-        
-        return $html;
+        return ltrim(ob_get_clean());
         
     }
     
-    private function requirePhpView(PhpViewInterface $view)
+    private function render(PhpViewInterface $view)
     {
-        
-        $this->addToViewStack($view);
         
         if ($view->parent() !== null) {
             
-            $this->requirePhpView($view->parent());
+            $shared = array_diff($view->context(), $view->parent()->context());
             
-        }
-        
-        $this->includeNextView();
-        
-    }
-    
-    private function addToViewStack(PhpViewInterface $view) :void
-    {
-        
-        $this->view_stack[] = $view;
-    }
-    
-    /**
-     * @throws ConfigurationException
-     */
-    public function includeNextView() :void
-    {
-        
-        if ( ! $view = $this->getNextViewFromStack()) {
+            $view->parent()
+                 ->with(Arr::except($shared, '__content'))
+                 ->with(
+                     '__content',
+                     new ChildContent(fn() => $this->requireView($view))
+                 );
+            
+            $this->render($view->parent());
             
             return;
             
         }
         
-        $clone = clone $view;
-        
-        MakingView::dispatch([$clone]);
-        
-        $this->finder->includeFile(
-            $clone->path(),
-            $clone->context()
-        );
+        $this->requireView($view);
         
     }
     
-    private function getNextViewFromStack() :?PhpViewInterface
+    private function requireView(PhpViewInterface $view)
     {
         
-        return array_pop($this->view_stack);
+        MakingView::dispatch([$view]);
+        
+        $this->finder->includeFile(
+            $view->path(),
+            $view->context()
+        );
+        
     }
     
     private function handleViewException(Throwable $e, $ob_level, PhpViewInterface $view)

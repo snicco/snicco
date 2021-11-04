@@ -217,7 +217,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     {
         $this->bootApp();
         
-        $view = TestApp::view('subview.php');
+        $view = TestApp::view('subdirectory.subview.php');
         
         $this->assertSame('Hello World', $view->toString());
     }
