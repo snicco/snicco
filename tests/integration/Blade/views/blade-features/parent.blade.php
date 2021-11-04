@@ -1,2 +1,2 @@
-@include('child', ['name'=>'calvin', 'greeting', $greeting ])
+@include('blade-features.child', ['name'=>'calvin', 'greeting', $greeting ])
 

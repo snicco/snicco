@@ -1,1 +1,1 @@
-@includeIf('child', ['name'=>'calvin', 'greeting', $greeting ])
+@includeIf('blade-features.child', ['name'=>'calvin', 'greeting', $greeting ])
