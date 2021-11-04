@@ -24,12 +24,12 @@ class Cookie
     private array  $properties;
     private string $name;
     
-    public function __construct(string $name, string $value)
+    public function __construct(string $name, string $value, bool $url_encode = true)
     {
         
         $this->name = $name;
         
-        $value = ['value' => $value];
+        $value = ['value' => $url_encode ? urlencode($value) : $value];
         
         $this->properties = array_merge($this->defaults, $value);
         

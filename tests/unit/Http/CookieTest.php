@@ -210,4 +210,17 @@ class CookieTest extends TestCase
         $cookie->expires('1000');
     }
     
+    public function testValueIsUrlEncoded()
+    {
+        
+        $cookie = new Cookie('foo_cookie', 'foo bar');
+        
+        $this->assertSame(urlencode('foo bar'), $cookie->properties()['value']);
+        
+        $cookie = new Cookie('foo_cookie', 'foo bar', false);
+        
+        $this->assertSame('foo bar', $cookie->properties()['value']);
+        
+    }
+    
 }
