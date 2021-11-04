@@ -34,8 +34,7 @@ class ResetPasswordController extends Controller
     
     public function create(Request $request, MethodField $method_field)
     {
-        return $this->response_factory->view('framework.auth.layout', [
-            'view' => 'framework.auth.reset-password',
+        return $this->response_factory->view('framework.auth.reset-password', [
             'post_to' => $request->fullPath(),
             'method_field' => $method_field->html('PUT'),
         ])->withHeader('Referrer-Policy', 'strict-origin');
@@ -54,7 +53,7 @@ class ResetPasswordController extends Controller
             'password' => v::noWhitespace()->length($this->min_length, $this->max_length),
             '*password_confirmation' => [
                 v::sameAs('password'),
-                'The provided passwords do not match',
+                'The provided passwords do not match.',
             ],
         ], $this->rules);
         

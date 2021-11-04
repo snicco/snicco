@@ -18,8 +18,6 @@ class PhpViewFinder implements ViewFinderInterface
      */
     private array $directories;
     
-    private array $last_context = [];
-    
     public function __construct(array $directories)
     {
         $this->directories = $this->normalize($directories);
@@ -58,14 +56,18 @@ class PhpViewFinder implements ViewFinderInterface
         
     }
     
-    public function includeFile(string $path, $context)
+    public function includeFile(string $path, array $context)
     {
         
-        $__data = array_merge($this->last_context, $context);
-        $this->last_context = $__data;
-        
-        extract($__data, EXTR_SKIP);
-        include $path;
+        return (static function () use ($path, $context) {
+            
+            extract($context, EXTR_SKIP);
+            
+            unset($context);
+            
+            return require $path;
+            
+        })();
         
     }
     

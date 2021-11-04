@@ -27,6 +27,7 @@ use Snicco\Auth\Responses\PasswordLoginView;
 use Snicco\Auth\Middleware\TwoFactorDisbaled;
 use Snicco\Auth\Listeners\RefreshAuthCookies;
 use Snicco\Session\Events\SessionRegenerated;
+use Snicco\Auth\Responses\MagicLinkLoginView;
 use Snicco\Auth\Events\FailedAuthConfirmation;
 use Snicco\Auth\Listeners\WpLoginLinkGenerator;
 use Snicco\Auth\Middleware\AuthenticateSession;
@@ -315,7 +316,16 @@ class AuthServiceProvider extends ServiceProvider
         
         $this->container->singleton(AbstractLoginView::class, function () {
             
-            $response = $this->config->get('auth.primary_view', PasswordLoginView::class);
+            $response = $this->config->get('auth.primary_view');
+            
+            if ( ! $response) {
+                
+                $response =
+                    $this->config->get('auth.authenticator') === 'email'
+                        ? MagicLinkLoginView::class
+                        : PasswordLoginView::class;
+                
+            }
             
             return $this->container->make($response);
             

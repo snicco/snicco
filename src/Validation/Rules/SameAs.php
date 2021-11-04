@@ -7,6 +7,9 @@ namespace Snicco\Validation\Rules;
 use Snicco\Support\Arr;
 use Respect\Validation\Rules\AbstractRule;
 
+/**
+ * @todo tests
+ */
 class SameAs extends AbstractRule
 {
     

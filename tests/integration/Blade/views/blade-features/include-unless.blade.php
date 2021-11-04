@@ -2,4 +2,4 @@
 	$match = $foo === 'foo'
 @endphp
 
-@includeUnless($match, 'child', ['name' => 'Calvin', 'greeting' => $greeting])
+@includeUnless($match, 'blade-features.child', ['name' => 'Calvin', 'greeting' => $greeting])

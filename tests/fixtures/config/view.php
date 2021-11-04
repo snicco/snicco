@@ -7,10 +7,7 @@ return [
     'paths' => [
         
         VIEWS_DIR,
-        VIEWS_DIR.DS.'subdirectory',
         BLADE_VIEWS,
-        BLADE_VIEWS.DS.'blade-features',
-        BLADE_VIEWS.DS.'layouts',
     
     ],
     

@@ -178,16 +178,6 @@ class ViewFactoryTest extends FrameworkTestCase
     }
     
     /** @test */
-    public function views_can_be_included_in_parent_views()
-    {
-        
-        $view = $this->view_service->make('subview.php');
-        
-        $this->assertSame('Hello World', $view->toString());
-        
-    }
-    
-    /** @test */
     public function views_with_errors_dont_print_output_to_the_client()
     {
         
@@ -225,6 +215,36 @@ class ViewFactoryTest extends FrameworkTestCase
         $content = TestApp::view('framework.redirect-protection')->toString();
         
         $this->assertSame('Redirecting', $content);
+        
+    }
+    
+    /** @test */
+    public function views_can_extend_parent_views()
+    {
+        
+        $view = $this->view_service->make('subdirectory.subview');
+        
+        $this->assertSame('Hello World', $view->toString());
+        
+    }
+    
+    /** @test */
+    public function child_view_content_is_rendered_into_a_content_variable()
+    {
+        
+        $view = $this->view_service->make('subdirectory.child');
+        
+        $this->assertSame('World Hello', $view->toString());
+        
+    }
+    
+    /** @test */
+    public function child_view_content_is_can_be_extended_multiple_times()
+    {
+        
+        $view = $this->view_service->make('subdirectory.nested-child');
+        
+        $this->assertSame('foo bar Hello', $view->toString());
         
     }
     

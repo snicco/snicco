@@ -45,45 +45,6 @@ class Validator
         return $this;
     }
     
-    private function normalizeRules(array $rules) :array
-    {
-        
-        return collect($rules)
-            ->map(fn($rule) => Arr::wrap($rule))
-            ->map(function (array $rule, $key) {
-                
-                $optional = false;
-                
-                if ( ! isset($rule[2])) {
-                    
-                    $optional = ($rule[1] ?? 'required') === 'optional';
-                    
-                }
-                else {
-                    
-                    $optional = ($rule[2] ?? 'required') === 'optional';
-                    
-                }
-                
-                if (isset($rule[1]) && ! Str::contains($rule[1], ['optional', 'required'])) {
-                    
-                    $this->custom_messages[trim($key, '*')] = $rule[1];
-                    
-                }
-                
-                if ($optional) {
-                    
-                    return v::nullable($rule[0]);
-                    
-                }
-                
-                return $rule[0];
-                
-            })
-            ->all();
-        
-    }
-    
     public function validateWithBag(string $named_bag, ?array $input = null) :array
     {
         
@@ -140,6 +101,68 @@ class Validator
         }
         
         return $complete_input;
+        
+    }
+    
+    public function messages(array $messages) :Validator
+    {
+        
+        $this->custom_messages = array_merge($this->custom_messages, $messages);
+        
+        return $this;
+        
+    }
+    
+    public function attributes(array $attributes) :Validator
+    {
+        
+        $this->replace_attributes = array_merge($this->replace_attributes, $attributes);
+        
+        return $this;
+    }
+    
+    public function globalMessages(array $messages)
+    {
+        
+        $this->global_message_replacements = $messages;
+    }
+    
+    private function normalizeRules(array $rules) :array
+    {
+        
+        return collect($rules)
+            ->map(fn($rule) => Arr::wrap($rule))
+            ->map(function (array $rule, $key) {
+                
+                $optional = false;
+                
+                if ( ! isset($rule[2])) {
+                    
+                    $optional = ($rule[1] ?? 'required') === 'optional';
+                    
+                }
+                else {
+                    
+                    $optional = ($rule[2] ?? 'required') === 'optional';
+                    
+                }
+                
+                if (isset($rule[1]) && ! Str::contains($rule[1], ['optional', 'required'])) {
+                    
+                    $this->custom_messages[trim($key, '*')] = $rule[1];
+                    
+                }
+                
+                if ($optional) {
+                    
+                    return v::nullable($rule[0]);
+                    
+                }
+                
+                return $rule[0];
+                
+            })
+            ->all();
         
     }
     
@@ -254,7 +277,7 @@ class Validator
     
     private function replaceWithCustomMessage($e, $attribute_name)
     {
-        return $this->custom_messages[$attribute_name] ?? $e->getMessage();
+        return $this->custom_messages[Str::after($attribute_name, '*')] ?? $e->getMessage();
     }
     
     private function replaceRawInputWithAttributeName($input, $name, $message)
@@ -300,29 +323,6 @@ class Validator
         
         return str_replace('"', '', $message);
         
-    }
-    
-    public function messages(array $messages) :Validator
-    {
-        
-        $this->custom_messages = array_merge($this->custom_messages, $messages);
-        
-        return $this;
-        
-    }
-    
-    public function attributes(array $attributes) :Validator
-    {
-        
-        $this->replace_attributes = array_merge($this->replace_attributes, $attributes);
-        
-        return $this;
-    }
-    
-    public function globalMessages(array $messages)
-    {
-        
-        $this->global_message_replacements = $messages;
     }
     
 }
