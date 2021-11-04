@@ -22,7 +22,9 @@ class AuthSessionControllerTest extends AuthTestCase
     public function the_login_screen_can_be_rendered()
     {
         
-        $this->get('/auth/login')->assertOk()->assertSee('Login');
+        $this->get('/auth/login')->assertOk()
+             ->assertSeeHtml('Login')
+             ->assertSeeHtml('Password');
         
     }
     
