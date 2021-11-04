@@ -47,9 +47,9 @@ class BulkPasswordResetEmailController extends Controller
             
         }
         
-        if ( ! $request->has('users') || ! is_array($request->input('users'))) {
+        if ( ! $request->has('users')) {
             
-            $this->response_factory->redirect()->back();
+            return $this->response_factory->redirect()->back();
             
         }
         

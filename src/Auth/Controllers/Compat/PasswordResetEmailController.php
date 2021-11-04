@@ -16,6 +16,8 @@ use Snicco\Auth\Traits\SendsPasswordResetMails;
 /**
  * This controller is duplicated the logic when an admin user is sending
  * a password reset email to a user and takes over the default behaviour.
+ * This controller is replicating the logic that sends a password reset email to a user via his
+ * profile page in the admin area.
  */
 class PasswordResetEmailController extends Controller
 {
