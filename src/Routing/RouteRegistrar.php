@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Routing;
 
-use Snicco\Support\WP;
 use Snicco\Support\Str;
 use Snicco\Support\Arr;
 use Snicco\Application\Config;
@@ -15,6 +14,10 @@ use Snicco\Contracts\RouteRegistrarInterface;
 class RouteRegistrar implements RouteRegistrarInterface
 {
     
+    // Match all files that end with ".php" and don't start with an underscore.
+    // https://regexr.com/691di
+    const SEARCH_PATTERN = '/^[^_].+\.php$/';
+    
     private Router $router;
     
     public function __construct(Router $router)
@@ -22,67 +25,11 @@ class RouteRegistrar implements RouteRegistrarInterface
         $this->router = $router;
     }
     
-    public function loadIntoRouter() :void
+    public function registerRoutes(Config $config) :void
     {
-        $this->router->loadRoutes();
-    }
-    
-    public function loadApiRoutes(Config $config) :bool
-    {
-        
-        $files = $this->apiRoutes($config);
-        
-        if ( ! count($files)) {
-            return false;
-        }
-        
-        $this->requireFiles($files, $config);
-        
-        return true;
-        
-    }
-    
-    public function apiRoutes(Config $config) :array
-    {
-        
-        $dirs = Arr::wrap($config->get('routing.definitions', []));
-        $endpoints = Arr::wrap($config->get('routing.api.endpoints', []));
-        
-        $finder = new Finder();
-        $finder->in($dirs)->files()
-               ->name('/api\..+(?=\.php)/');
-        
-        return collect(iterator_to_array($finder))
-            ->reject(function (SplFileInfo $file) use ($endpoints) {
-                
-                $name = Str::between($file->getRelativePathname(), '.', '.');
-                
-                return ! isset($endpoints[$name]);
-                
-            })
-            ->all();
-        
-    }
-    
-    public function loadStandardRoutes(Config $config)
-    {
-        
-        $dirs = Arr::wrap($config->get('routing.definitions', []));
-        
-        $finder = new Finder();
-        $finder->in($dirs)->files()
-               ->name('/^(?!api\.).+(?=\.php)/');
-        
-        $files = iterator_to_array($finder);
-        
-        if ( ! count($files)) {
-            return;
-        }
-        
-        $this->requireFiles($files, $config);
-        
+        $this->registerAPIRoutes($config);
+        $this->registerNormalRoutes($config);
         $this->router->createFallbackWebRoute();
-        
     }
     
     /**
@@ -106,7 +53,7 @@ class RouteRegistrar implements RouteRegistrarInterface
             
             $path = $file->getRealPath();
             
-            $this->loadRouteGroup($name, $path, $preset, $config);
+            $this->requireFile($path, $preset, $config);
             
             $seen[$name] = $name;
             
@@ -114,52 +61,71 @@ class RouteRegistrar implements RouteRegistrarInterface
         
     }
     
-    private function loadRouteGroup(string $name, string $file_path, array $preset, Config $config)
+    private function requireFile(string $file_path, array $attributes, Config $config)
     {
-        
-        $attributes = $this->applyPreset($name, $preset);
-        
         $this->router->group(function ($router) use ($file_path, $config) {
             
             extract(['config' => $config, 'router' => $router]);
             require $file_path;
             
-        }, $attributes,);
+        }, $attributes);
+    }
+    
+    private function registerNormalRoutes(Config $config)
+    {
+        
+        $dirs = Arr::wrap($config->get('routing.definitions', []));
+        
+        $finder = new Finder();
+        $finder->in($dirs)
+               ->depth(0)
+               ->files()
+               ->name(static::SEARCH_PATTERN);
+        
+        $files = iterator_to_array($finder);
+        
+        if ( ! count($files)) {
+            return;
+        }
+        
+        $this->requireFiles($files, $config);
         
     }
     
-    private function applyPreset(string $group, array $preset) :array
+    private function registerAPIRoutes(Config $config)
+    {
+        $this->requireFiles($this->apiRoutes($config), $config);
+    }
+    
+    private function apiRoutes(Config $config) :array
     {
         
-        if ($group === 'web') {
-            
-            return array_merge([
-                'middleware' => ['web'],
-            ], $preset);
-            
+        $api_dirs = collect($config->get('routing.definitions', []))
+            ->map(fn($dir) => rtrim($dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.'api')
+            ->filter(fn($dir) => is_dir($dir))
+            ->all();
+        
+        $endpoints = Arr::wrap($config->get('routing.api.endpoints', []));
+        
+        if ( ! count($endpoints) || ! count($api_dirs)) {
+            return [];
         }
         
-        if ($group === 'admin') {
-            
-            return array_merge([
-                'middleware' => ['admin'],
-                'prefix' => WP::wpAdminFolder(),
-                'name' => 'admin',
-            ], $preset);
-            
-        }
+        $finder = new Finder();
+        $finder->in($api_dirs)
+               ->files()
+               ->depth(0)
+               ->name(static::SEARCH_PATTERN);
         
-        if ($group === 'ajax') {
-            
-            return array_merge([
-                'middleware' => ['ajax'],
-                'prefix' => WP::wpAdminFolder().DIRECTORY_SEPARATOR.'admin-ajax.php',
-                'name' => 'ajax',
-            ], $preset);
-            
-        }
-        
-        return $preset;
+        return collect(iterator_to_array($finder))
+            ->reject(function (SplFileInfo $file) use ($endpoints) {
+                
+                $name = Str::before($file->getRelativePathname(), '.');
+                
+                return ! isset($endpoints[$name]);
+                
+            })
+            ->all();
         
     }
     

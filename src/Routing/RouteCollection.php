@@ -5,8 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Routing;
 
 use Snicco\Contracts\RouteMatcher;
-use Snicco\Factories\ConditionFactory;
-use Snicco\Factories\RouteActionFactory;
 use Snicco\Contracts\AbstractRouteCollection;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
@@ -21,18 +19,6 @@ class RouteCollection extends AbstractRouteCollection
     protected array        $name_list     = [];
     protected RouteMatcher $route_matcher;
     protected array        $already_added = [];
-    
-    public function __construct(
-        RouteMatcher $route_matcher,
-        ConditionFactory $condition_factory,
-        RouteActionFactory $action_factory
-    ) {
-        
-        $this->route_matcher = $route_matcher;
-        $this->condition_factory = $condition_factory;
-        $this->action_factory = $action_factory;
-        
-    }
     
     public function add(Route $route) :Route
     {

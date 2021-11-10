@@ -24,7 +24,7 @@ trait HydratesFastRoutes
             
         }
         
-        if ( ! $route instanceof Route) {
+        if (is_array($route)) {
             
             $route = $this->hydrateRoute($route);
             

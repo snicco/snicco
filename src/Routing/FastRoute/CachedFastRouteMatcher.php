@@ -40,17 +40,9 @@ class CachedFastRouteMatcher implements RouteMatcher
         
     }
     
-    private function serializeRoute(Route $route) :array
-    {
-        return $this->prepareForVarExport($route->asArray());
-        
-    }
-    
     public function add(Route $route, $methods)
     {
-        
         $this->uncached_matcher->add($route, $methods);
-        
     }
     
     public function find(string $method, string $path) :RoutingResult
@@ -66,30 +58,25 @@ class CachedFastRouteMatcher implements RouteMatcher
             
         }
         
-        $this->createCache(
-            $this->uncached_matcher->getRouteMap()
-        );
-        
         $routing_result = $this->uncached_matcher->find($method, $path);
         
         return $this->hydrateRoutingResult($routing_result);
         
     }
     
-    private function createCache(array $route_data)
+    public function createCache()
     {
-        
         file_put_contents(
             $this->route_cache_file,
             '<?php
-declare(strict_types=1); return '.var_export($route_data, true).';'
+declare(strict_types=1); return '.var_export($this->uncached_matcher->getRouteMap(), true).';'
         );
-        
     }
     
-    public function isCached() :bool
+    private function serializeRoute(Route $route) :array
     {
-        return is_array($this->route_cache);
+        return $this->prepareForVarExport($route->asArray());
+        
     }
     
 }

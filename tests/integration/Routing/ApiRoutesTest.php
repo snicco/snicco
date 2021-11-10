@@ -78,16 +78,27 @@ class ApiRoutesTest extends FrameworkTestCase
     }
     
     /** @test */
-    public function a_middleware_group_is_automatically_created()
+    public function an_api_middleware_group_is_automatically_created()
     {
         
-        $this->withAddedConfig(['middleware.groups' => ['api.test' => [TestApiMiddleware::class]]]);
+        $GLOBALS['test']['api_middleware_run'] = false;
+        $GLOBALS['test']['api_endpoint_middleware_run'] = false;
+        
+        $this->withAddedConfig(
+            [
+                'middleware.groups' => [
+                    'api' => [TestApiMiddleware::class],
+                ],
+            ]
+        );
         $this->withRequest($this->frontendRequest('GET', 'api-prefix/base/foo'));
         $this->bootApp();
         
         do_action('init');
         
-        $this->sentResponse()->assertForbidden()->assertSee('you cant access this api endpoint.');
+        $this->sentResponse()->assertSee('foo endpoint');
+        
+        $this->assertTrue($GLOBALS['test']['api_middleware_run']);
         
     }
     
@@ -104,6 +115,20 @@ class ApiRoutesTest extends FrameworkTestCase
         
     }
     
+    /** @test */
+    public function route_files_starting_with_an_underscore_are_not_loaded()
+    {
+        
+        $this->withRequest($this->frontendRequest('GET', 'api-prefix/base/underscore-api'));
+        $this->bootApp();
+        
+        do_action('init');
+        
+        $response = $this->sentResponse();
+        $response->assertSee('The endpoint: underscore-api does not exist.');
+        
+    }
+    
     protected function setUp() :void
     {
         $this->afterApplicationBooted(function () {
@@ -117,11 +142,6 @@ class ApiRoutesTest extends FrameworkTestCase
 class TestApiMiddleware extends Middleware
 {
     
-    /**
-     * @var ResponseFactory
-     */
-    private $factory;
-    
     public function __construct(ResponseFactory $factory)
     {
         
@@ -130,11 +150,9 @@ class TestApiMiddleware extends Middleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        
-        return $this->factory->make(403)
-                             ->html(
-                                 $this->factory->createStream('you cant access this api endpoint.')
-                             );
+        $GLOBALS['test']['api_middleware_run'] = true;
+        return $next($request);
     }
     
 }
+

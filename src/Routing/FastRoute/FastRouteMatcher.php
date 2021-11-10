@@ -42,22 +42,6 @@ class FastRouteMatcher implements RouteMatcher
         
     }
     
-    private function convertUrl(Route $route) :string
-    {
-        return $this->route_regex->convert($route);
-    }
-    
-    private function prepareForStorage(Route $route)
-    {
-        
-        if ( ! is_callable($this->route_storage_preparation)) {
-            return $route;
-        }
-        
-        return call_user_func($this->route_storage_preparation, $route);
-        
-    }
-    
     public function find(string $method, string $path) :RoutingResult
     {
         $dispatcher = new RouteDispatcher($this->collector->getData());
@@ -72,14 +56,25 @@ class FastRouteMatcher implements RouteMatcher
         return $this->collector->getData() ?? [];
     }
     
-    public function isCached() :bool
-    {
-        return false;
-    }
-    
     public function setRouteStoragePreparation(callable $callable)
     {
         $this->route_storage_preparation = $callable;
+    }
+    
+    private function convertUrl(Route $route) :string
+    {
+        return $this->route_regex->convert($route);
+    }
+    
+    private function prepareForStorage(Route $route)
+    {
+        
+        if ( ! is_callable($this->route_storage_preparation)) {
+            return $route;
+        }
+        
+        return call_user_func($this->route_storage_preparation, $route);
+        
     }
     
 }

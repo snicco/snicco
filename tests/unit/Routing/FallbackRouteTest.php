@@ -125,7 +125,7 @@ class FallbackRouteTest extends UnitTest
     {
         
         $this->container = $this->createContainer();
-        $this->routes = $this->newRouteCollection();
+        $this->routes = $this->newCachedRouteCollection();
         $this->container->instance(UrlGenerator::class, $this->newUrlGenerator());
         $this->container->instance(ViewFactory::class, new TestViewFactory());
         $this->container->instance(ResponseFactory::class, $this->createResponseFactory());

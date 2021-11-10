@@ -21,11 +21,10 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
     /** @test */
     public function the_endpoint_cant_be_accessed_if_not_authenticated()
     {
-        
+        $this->withoutExceptionHandling();
         $token = $this->withCsrfToken();
         $response = $this->post($this->endpoint, $token);
         $response->assertRedirectPath('/auth/login');
-        
     }
     
     /** @test */

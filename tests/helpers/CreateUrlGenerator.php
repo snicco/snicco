@@ -24,7 +24,7 @@ trait CreateUrlGenerator
     protected function newUrlGenerator(string $app_key = null, Request $request = null, bool $trailing_slash = false) :UrlGenerator
     {
         
-        $routes = $this->routes ?? $this->newRouteCollection();
+        $routes = $this->routes ?? $this->newCachedRouteCollection();
         
         $this->routes = $routes;
         
