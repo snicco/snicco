@@ -14,9 +14,9 @@ use Snicco\Auth\Contracts\AbstractEmailAuthConfirmationView;
 class EmailAuthConfirmation implements AuthConfirmation
 {
     
-    private MagicLink $magic_link;
+    private MagicLink                         $magic_link;
     private AbstractEmailAuthConfirmationView $response;
-    private UrlGenerator $url;
+    private UrlGenerator                      $url;
     
     public function __construct(MagicLink $magic_link, AbstractEmailAuthConfirmationView $response, UrlGenerator $url)
     {

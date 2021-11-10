@@ -12,13 +12,13 @@ use Snicco\Http\ResponseEmitter;
 class TestResponseEmitter extends ResponseEmitter
 {
     
-    public ?TestResponse $response     = null;
+    public ?TestResponse $response = null;
     
-    public Cookies       $cookies;
+    public Cookies $cookies;
     
-    public bool          $sent_headers = false;
+    public bool $sent_headers = false;
     
-    public bool          $sent_body    = false;
+    public bool $sent_body = false;
     
     public function emit(Response $response) :void
     {

@@ -21,7 +21,7 @@ class ResponseEmitter
     
     protected ResponsePreparation $preparation;
     
-    private int                   $response_chunk_size;
+    private int $response_chunk_size;
     
     public function __construct(ResponsePreparation $preparation, int $response_chunk_size = 4096)
     {
@@ -44,6 +44,47 @@ class ResponseEmitter
             $this->emitBody($response);
             
         }
+    }
+    
+    public function emitHeaders(Response $response) :void
+    {
+        
+        if (headers_sent()) {
+            return;
+        }
+        
+        foreach ($response->getHeaders() as $name => $values) {
+            $replace = strtolower($name) !== 'set-cookie';
+            foreach ($values as $value) {
+                $header = sprintf('%s: %s', $name, $value);
+                header($header, $replace);
+                $replace = false;
+            }
+        }
+        
+    }
+    
+    public function prepare(Response $response, Request $request) :Response
+    {
+        return $this->preparation->prepare($response, $request);
+    }
+    
+    public function emitCookies(Cookies $cookies) :void
+    {
+        
+        if (headers_sent()) {
+            return;
+        }
+        
+        $cookies = $cookies->toHeaders();
+        
+        foreach ($cookies as $cookie) {
+            
+            $header = sprintf('%s: %s', 'Set-Cookie', $cookie);
+            header($header, false);
+            
+        }
+        
     }
     
     protected function isResponseEmpty(Response $response) :bool
@@ -70,24 +111,6 @@ class ResponseEmitter
             $response->getReasonPhrase()
         );
         header($statusLine, true, $response->getStatusCode());
-    }
-    
-    public function emitHeaders(Response $response) :void
-    {
-        
-        if (headers_sent()) {
-            return;
-        }
-        
-        foreach ($response->getHeaders() as $name => $values) {
-            $replace = strtolower($name) !== 'set-cookie';
-            foreach ($values as $value) {
-                $header = sprintf('%s: %s', $name, $value);
-                header($header, $replace);
-                $replace = false;
-            }
-        }
-        
     }
     
     protected function emitBody(Response $response) :void
@@ -125,29 +148,6 @@ class ResponseEmitter
                     break;
                 }
             }
-        }
-        
-    }
-    
-    public function prepare(Response $response, Request $request) :Response
-    {
-        return $this->preparation->prepare($response, $request);
-    }
-    
-    public function emitCookies(Cookies $cookies) :void
-    {
-        
-        if (headers_sent()) {
-            return;
-        }
-        
-        $cookies = $cookies->toHeaders();
-        
-        foreach ($cookies as $cookie) {
-            
-            $header = sprintf('%s: %s', 'Set-Cookie', $cookie);
-            header($header, false);
-            
         }
         
     }

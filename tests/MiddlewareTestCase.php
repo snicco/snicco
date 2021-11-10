@@ -31,6 +31,8 @@ abstract class MiddlewareTestCase extends UnitTest
     protected UrlGenerator    $generator;
     protected RouteCollection $routes;
     
+    abstract public function newMiddleware() :Middleware;
+    
     protected function runMiddleware(Request $request = null, Delegate $delegate = null) :ResponseInterface
     {
         
@@ -43,8 +45,6 @@ abstract class MiddlewareTestCase extends UnitTest
         return $m->handle($r, $d);
         
     }
-    
-    abstract public function newMiddleware() :Middleware;
     
     protected function newSession(int $lifetime = 10) :Session
     {

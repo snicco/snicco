@@ -38,19 +38,6 @@ class TrailingSlashTest extends UnitTest
         
     }
     
-    private function newMiddleware($trailing_slash) :TrailingSlash
-    {
-        
-        $this->response_factory = $this->createResponseFactory();
-        
-        $this->delegate = new Delegate(fn() => $this->response_factory->make(200));
-        
-        $m = new TrailingSlash($trailing_slash);
-        $m->setResponseFactory($this->response_factory);
-        return $m;
-        
-    }
-    
     /** @test */
     public function testRedirectSlashToNoSlash()
     {
@@ -79,6 +66,19 @@ class TrailingSlashTest extends UnitTest
         $response = $this->newMiddleware(true)->handle($request, $this->delegate);
         $this->assertNotInstanceOf(RedirectResponse::class, $response);
         $this->assertStatusCode(200, $response);
+        
+    }
+    
+    private function newMiddleware($trailing_slash) :TrailingSlash
+    {
+        
+        $this->response_factory = $this->createResponseFactory();
+        
+        $this->delegate = new Delegate(fn() => $this->response_factory->make(200));
+        
+        $m = new TrailingSlash($trailing_slash);
+        $m->setResponseFactory($this->response_factory);
+        return $m;
         
     }
     

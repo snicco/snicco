@@ -75,44 +75,6 @@ abstract class WpFacade
     }
     
     /**
-     * Resolve the facade root instance from the container.
-     *
-     * @param  object|string  $name
-     *
-     * @return mixed
-     */
-    protected static function resolveFacadeInstance($name)
-    {
-        
-        if (is_object($name)) {
-            return $name;
-        }
-        
-        if (isset(static::$resolvedInstance[$name])) {
-            return static::$resolvedInstance[$name];
-        }
-        
-        if (static::$container) {
-            
-            return static::$resolvedInstance[$name] = static::$container->make($name);
-            
-        }
-        
-    }
-    
-    /**
-     * Get the registered name of the component.
-     *
-     * @return string
-     * @throws RuntimeException
-     */
-    protected static function getFacadeAccessor()
-    {
-        
-        throw new RuntimeException('Facade does not implement getFacadeAccessor method.');
-    }
-    
-    /**
      * Convert the facade into a Mockery spy.
      *
      * @return MockInterface
@@ -129,33 +91,6 @@ abstract class WpFacade
             
             return $spy;
             
-        }
-    }
-    
-    /**
-     * Determines whether a mock is set as the instance of the facade.
-     *
-     * @return bool
-     */
-    protected static function isMock()
-    {
-        
-        $name = static::getFacadeAccessor();
-        
-        return isset(static::$resolvedInstance[$name])
-               && static::$resolvedInstance[$name] instanceof MockInterface;
-    }
-    
-    /**
-     * Get the mockable class for the bound instance.
-     *
-     * @return string|null
-     */
-    protected static function getMockableClass()
-    {
-        
-        if ($root = static::getFacadeAccessor()) {
-            return $root;
         }
     }
     
@@ -211,19 +146,6 @@ abstract class WpFacade
     }
     
     /**
-     * Create a fresh mock instance for the given class.
-     *
-     * @return MockInterface
-     */
-    protected static function createMock()
-    {
-        
-        $class = static::getMockableClass();
-        
-        return $class ? Mockery::mock($class) : Mockery::mock();
-    }
-    
-    /**
      * Initiate a mock expectation on the facade.
      *
      * @return Expectation
@@ -265,6 +187,84 @@ abstract class WpFacade
         
         static::$container = $container;
         
+    }
+    
+    /**
+     * Resolve the facade root instance from the container.
+     *
+     * @param  object|string  $name
+     *
+     * @return mixed
+     */
+    protected static function resolveFacadeInstance($name)
+    {
+        
+        if (is_object($name)) {
+            return $name;
+        }
+        
+        if (isset(static::$resolvedInstance[$name])) {
+            return static::$resolvedInstance[$name];
+        }
+        
+        if (static::$container) {
+            
+            return static::$resolvedInstance[$name] = static::$container->make($name);
+            
+        }
+        
+    }
+    
+    /**
+     * Get the registered name of the component.
+     *
+     * @return string
+     * @throws RuntimeException
+     */
+    protected static function getFacadeAccessor()
+    {
+        
+        throw new RuntimeException('Facade does not implement getFacadeAccessor method.');
+    }
+    
+    /**
+     * Determines whether a mock is set as the instance of the facade.
+     *
+     * @return bool
+     */
+    protected static function isMock()
+    {
+        
+        $name = static::getFacadeAccessor();
+        
+        return isset(static::$resolvedInstance[$name])
+               && static::$resolvedInstance[$name] instanceof MockInterface;
+    }
+    
+    /**
+     * Get the mockable class for the bound instance.
+     *
+     * @return string|null
+     */
+    protected static function getMockableClass()
+    {
+        
+        if ($root = static::getFacadeAccessor()) {
+            return $root;
+        }
+    }
+    
+    /**
+     * Create a fresh mock instance for the given class.
+     *
+     * @return MockInterface
+     */
+    protected static function createMock()
+    {
+        
+        $class = static::getMockableClass();
+        
+        return $class ? Mockery::mock($class) : Mockery::mock();
     }
     
 }

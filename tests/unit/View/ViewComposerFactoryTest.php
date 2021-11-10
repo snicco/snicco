@@ -43,13 +43,6 @@ class ViewComposerFactoryTest extends TestCase
         
     }
     
-    private function newPhpView() :PhpViewInterface
-    {
-        
-        return new TestView('foo');
-        
-    }
-    
     /** @test */
     public function a_fully_qualified_namespaced_class_can_be_a_composer()
     {
@@ -163,6 +156,13 @@ class ViewComposerFactoryTest extends TestCase
         
         $this->factory =
             new ViewComposerFactory(TEST_CONFIG['composers'], $this->createContainer());
+        
+    }
+    
+    private function newPhpView() :PhpViewInterface
+    {
+        
+        return new TestView('foo');
         
     }
     

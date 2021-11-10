@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Contracts;
 
+use WP_User;
 use Snicco\Auth\Traits\UsesCurrentRequest;
 use Snicco\Contracts\ResponseableInterface;
 
@@ -25,7 +26,7 @@ abstract class AbstractLoginResponse implements ResponseableInterface
         return $this->remember_user;
     }
     
-    public function user() :\WP_User
+    public function user() :WP_User
     {
         return $this->user;
     }

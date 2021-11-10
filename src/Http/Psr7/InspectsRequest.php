@@ -24,13 +24,6 @@ trait InspectsRequest
         
     }
     
-    private function isMethod(string $method) :bool
-    {
-        
-        return strtoupper($this->getMethod()) === strtoupper($method);
-        
-    }
-    
     public function isHead() :bool
     {
         
@@ -137,6 +130,30 @@ trait InspectsRequest
         
     }
     
+    public function acceptsOneOf(array $content_types) :bool
+    {
+        
+        $accepts = $this->acceptableContentTypes();
+        
+        foreach ($content_types as $content_type) {
+            
+            if ($this->matchesType($content_type, $accepts)) {
+                return true;
+            }
+            
+        }
+        
+        return false;
+        
+    }
+    
+    private function isMethod(string $method) :bool
+    {
+        
+        return strtoupper($this->getMethod()) === strtoupper($method);
+        
+    }
+    
     private function matchesType(string $match_against, array $content_types) :bool
     {
         
@@ -159,23 +176,6 @@ trait InspectsRequest
         }
         
         return in_array($match_against, $content_types);
-        
-    }
-    
-    public function acceptsOneOf(array $content_types) :bool
-    {
-        
-        $accepts = $this->acceptableContentTypes();
-        
-        foreach ($content_types as $content_type) {
-            
-            if ($this->matchesType($content_type, $accepts)) {
-                return true;
-            }
-            
-        }
-        
-        return false;
         
     }
     

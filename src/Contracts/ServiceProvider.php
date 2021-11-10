@@ -19,13 +19,13 @@ abstract class ServiceProvider
     
     protected ContainerAdapter $container;
     
-    protected Config           $config;
+    protected Config $config;
     
-    protected Application      $app;
+    protected Application $app;
     
     protected ?ResponseFactory $response_factory = null;
     
-    protected ?Request         $current_request  = null;
+    protected ?Request $current_request = null;
     
     public function __construct(ContainerAdapter $container_adapter, Config $config)
     {

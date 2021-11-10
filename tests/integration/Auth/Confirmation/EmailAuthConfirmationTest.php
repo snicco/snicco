@@ -82,7 +82,6 @@ class EmailAuthConfirmationTest extends AuthTestCase
     protected function setUp() :void
     {
         $this->afterApplicationBooted(function () {
-            ;
         });
         parent::setUp();
         $this->bootApp();

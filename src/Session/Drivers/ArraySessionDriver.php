@@ -54,12 +54,6 @@ class ArraySessionDriver implements SessionDriver
         return '';
     }
     
-    private function calculateExpiration(int $seconds) :int
-    {
-        
-        return $this->currentTime() - $seconds;
-    }
-    
     public function isValid(string $id) :bool
     {
         
@@ -185,6 +179,12 @@ class ArraySessionDriver implements SessionDriver
     public function all() :array
     {
         return $this->storage;
+    }
+    
+    private function calculateExpiration(int $seconds) :int
+    {
+        
+        return $this->currentTime() - $seconds;
     }
     
 }

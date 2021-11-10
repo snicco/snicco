@@ -2,6 +2,7 @@
 
 namespace Snicco\ExceptionHandling;
 
+use Throwable;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\ViewFactoryInterface;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
@@ -33,7 +34,7 @@ class HtmlErrorRenderer
                 'message' => $e->messageForUsers(),
             ]);
             
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             
             throw new ErrorViewException('Critical error while rendering an error view.', $e);
             

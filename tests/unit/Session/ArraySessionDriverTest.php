@@ -157,12 +157,6 @@ class ArraySessionDriverTest extends UnitTest
         
     }
     
-    private function newRequest()
-    {
-        
-        return TestRequest::from('GET', 'foo');
-    }
-    
     /** @test */
     public function all_sessions_but_the_one_with_the_provided_token_can_be_destroyed_for_the_user()
     {
@@ -248,6 +242,12 @@ class ArraySessionDriverTest extends UnitTest
         $this->backToPresent();
         WP::reset();
         Mockery::close();
+    }
+    
+    private function newRequest()
+    {
+        
+        return TestRequest::from('GET', 'foo');
     }
     
 }

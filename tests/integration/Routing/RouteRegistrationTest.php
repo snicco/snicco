@@ -165,8 +165,8 @@ class RouteRegistrationTest extends FrameworkTestCase
     {
         
         $this->withAddedProvider(SimulateAdminProvider::class);
-        $this->bootApp();;
-        
+        $this->bootApp();
+    
         $this->assertSame('/wp-admin/admin.php?page=foo', TestApp::routeUrl('admin.foo'));
         
     }
@@ -176,8 +176,8 @@ class RouteRegistrationTest extends FrameworkTestCase
     {
         
         $this->withAddedProvider(SimulateAjaxProvider::class);
-        $this->bootApp();;
-        
+        $this->bootApp();
+    
         $this->assertSame('/wp-admin/admin-ajax.php', TestApp::routeUrl('ajax.foo'));
         
     }

@@ -14,6 +14,8 @@ use Snicco\Http\Responses\NullResponse;
 use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Http\Responses\DelegatedResponse;
 
+use function add_action;
+
 class OutputBufferMiddleware extends Middleware
 {
     
@@ -41,7 +43,7 @@ class OutputBufferMiddleware extends Middleware
         if ($this->shouldDelayResponse($response)) {
             
             $this->startOutputBuffer();
-            \add_action('all_admin_notices', [$this, 'flush']);
+            add_action('all_admin_notices', [$this, 'flush']);
             $this->retained_response = $response;
             $this->request = $request;
             

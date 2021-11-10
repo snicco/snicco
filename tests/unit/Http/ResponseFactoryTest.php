@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\unit\Http;
 
+use stdClass;
 use Tests\UnitTest;
 use Tests\stubs\TestView;
 use Snicco\Http\Redirector;
@@ -166,7 +167,7 @@ class ResponseFactoryTest extends UnitTest
     public function testToResponseStdClass()
     {
         
-        $input = new \stdClass();
+        $input = new stdClass();
         $input->foo = 'bar';
         
         $response = $this->factory->toResponse($input);

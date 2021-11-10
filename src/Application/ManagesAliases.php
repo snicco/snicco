@@ -51,18 +51,6 @@ trait ManagesAliases
         ]);
     }
     
-    private function setAlias(array $alias) :void
-    {
-        
-        $name = Arr::get($alias, 'name');
-        
-        $this->aliases[$name] = [
-            'name' => $name,
-            'target' => Arr::get($alias, 'target'),
-            'method' => Arr::get($alias, 'method', ''),
-        ];
-    }
-    
     /**
      * Call alias if registered.
      *
@@ -102,6 +90,18 @@ trait ManagesAliases
         }
         
         return $target;
+    }
+    
+    private function setAlias(array $alias) :void
+    {
+        
+        $name = Arr::get($alias, 'name');
+        
+        $this->aliases[$name] = [
+            'name' => $name,
+            'target' => Arr::get($alias, 'target'),
+            'method' => Arr::get($alias, 'method', ''),
+        ];
     }
     
 }

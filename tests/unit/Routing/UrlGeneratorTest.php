@@ -34,23 +34,6 @@ class UrlGeneratorTest extends UnitTest
         
     }
     
-    private function seeUrl($route_path, $url, bool $secure = true)
-    {
-        
-        $expected = rtrim(SITE_URL, '/').'/'.ltrim($route_path, '/');
-        
-        // Strip https/http since we dont know the scheme of SITE_URL is.
-        $expected = Str::after($expected, '://');
-        $result = Str::after($url, '://');
-        
-        $this->assertSame($expected, $result);
-        
-        $scheme = $secure ? 'https://' : 'http://';
-        
-        $this->assertStringStartsWith($scheme, $url);
-        
-    }
-    
     /** @test */
     public function a_relative_url_can_be_created_from_a_path()
     {
@@ -206,11 +189,6 @@ class UrlGeneratorTest extends UnitTest
         
     }
     
-    
-    /**
-     * SIGNED URLS.
-     */
-    
     /** @test */
     public function the_expiration_time_can_be_set()
     {
@@ -227,6 +205,11 @@ class UrlGeneratorTest extends UnitTest
         $this->assertStringContainsString('signature', $query[1]);
         
     }
+    
+    
+    /**
+     * SIGNED URLS.
+     */
     
     /** @test */
     public function urls_with_the_correct_signature_can_be_validated()
@@ -410,6 +393,23 @@ class UrlGeneratorTest extends UnitTest
         
         Mockery::close();
         WP::reset();
+    }
+    
+    private function seeUrl($route_path, $url, bool $secure = true)
+    {
+        
+        $expected = rtrim(SITE_URL, '/').'/'.ltrim($route_path, '/');
+        
+        // Strip https/http since we dont know the scheme of SITE_URL is.
+        $expected = Str::after($expected, '://');
+        $result = Str::after($url, '://');
+        
+        $this->assertSame($expected, $result);
+        
+        $scheme = $secure ? 'https://' : 'http://';
+        
+        $this->assertStringStartsWith($scheme, $url);
+        
     }
     
 }

@@ -35,13 +35,13 @@ class SessionMiddlewareTest extends UnitTest
     use CreateUrlGenerator;
     use HashesSessionIds;
     
-    private Request  $request;
+    private Request $request;
     
     private Delegate $route_action;
     
-    private Cookies  $cookies;
+    private Cookies $cookies;
     
-    private array    $config = [
+    private array $config = [
         'lifetime' => 1,
         'lottery' => [0, 100],
         'cookie' => 'test_session',

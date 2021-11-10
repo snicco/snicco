@@ -61,7 +61,7 @@ class DatabaseServiceProvider extends ServiceProvider
     private function bindIlluminateDispatcher(IlluminateContainerContract $illuminate_container)
     {
         
-        $illuminate_container->bindIf('events', fn() => new Dispatcher(), true );
+        $illuminate_container->bindIf('events', fn() => new Dispatcher(), true);
         
     }
     

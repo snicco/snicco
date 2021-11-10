@@ -46,18 +46,6 @@ class MethodOverrideTest extends UnitTest
         
     }
     
-    private function getRealValue(string $html) :string
-    {
-        return Str::between($html, "value='", "'>");
-    }
-    
-    private function newMiddleware() :MethodOverride
-    {
-        
-        return new MethodOverride($this->method_field, $this->createContainer());
-        
-    }
-    
     /** @test */
     public function the_method_cant_be_overwritten_for_anything_but_post_requests()
     {
@@ -102,6 +90,18 @@ class MethodOverrideTest extends UnitTest
             new Delegate(fn(Request $request) => $response->html($request->getMethod()));
         
         $this->method_field = new MethodField(TEST_APP_KEY);
+        
+    }
+    
+    private function getRealValue(string $html) :string
+    {
+        return Str::between($html, "value='", "'>");
+    }
+    
+    private function newMiddleware() :MethodOverride
+    {
+        
+        return new MethodOverride($this->method_field, $this->createContainer());
         
     }
     

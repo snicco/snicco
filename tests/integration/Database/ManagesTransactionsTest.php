@@ -10,6 +10,7 @@ use Mockery as m;
 use mysqli_sql_exception;
 use Mockery\MockInterface;
 use Snicco\Database\WPConnection;
+use Snicco\Database\Exceptions\SqlException;
 use Snicco\Database\Contracts\BetterWPDbInterface;
 
 class ManagesTransactionsTest extends DatabaseTestCase
@@ -32,7 +33,7 @@ class ManagesTransactionsTest extends DatabaseTestCase
             
             $connection->beginTransaction();
             
-        } catch (\Snicco\Database\Exceptions\SqlException $e) {
+        } catch (SqlException $e) {
             
             $this->assertSame('START TRANSACTION', $e->getSql());
             
@@ -75,7 +76,7 @@ class ManagesTransactionsTest extends DatabaseTestCase
         
         try {
             $wp->beginTransaction();
-        } catch (\Snicco\Database\Exceptions\SqlException $e) {
+        } catch (SqlException $e) {
             
             $this->assertEquals(0, $wp->transactionLevel());
             
@@ -322,7 +323,7 @@ class ManagesTransactionsTest extends DatabaseTestCase
             
             $wp->update('foobar', ['biz']);
             
-        } catch (\Snicco\Database\Exceptions\SqlException $e) {
+        } catch (SqlException $e) {
             
             $wp->rollBack();
             
@@ -430,7 +431,7 @@ class ManagesTransactionsTest extends DatabaseTestCase
         
         $this->wpdb->shouldNotReceive('commitTransaction');
         
-        $this->expectException(\Snicco\Database\Exceptions\SqlException::class);
+        $this->expectException(SqlException::class);
         
         $wp->transaction(function () {
             
@@ -481,7 +482,7 @@ class ManagesTransactionsTest extends DatabaseTestCase
         $this->wpdb->shouldReceive('commitTransaction')->once()
                    ->andThrows(new mysqli_sql_exception('server has gone away | TEST'));
         
-        $this->expectException(\Snicco\Database\Exceptions\SqlException::class);
+        $this->expectException(SqlException::class);
         
         $count = $wp->transaction(function () {
             
@@ -511,7 +512,7 @@ class ManagesTransactionsTest extends DatabaseTestCase
                    ->with('ROLLBACK TO SAVEPOINT trans1')
                    ->andThrow(new mysqli_sql_exception('server has gone away | TEST '));
         
-        $this->expectException(\Snicco\Database\Exceptions\SqlException::class);
+        $this->expectException(SqlException::class);
         
         $wp->transaction(function () {
             

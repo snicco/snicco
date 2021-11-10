@@ -23,11 +23,6 @@ class MethodFieldTest extends TestCase
         
     }
     
-    private function newMethodField() :MethodField
-    {
-        return new MethodField(TEST_APP_KEY);
-    }
-    
     /** @test */
     public function testCreateHtml()
     {
@@ -81,6 +76,11 @@ class MethodFieldTest extends TestCase
         
         $this->assertSame(false, $field->validate($tampered));
         
+    }
+    
+    private function newMethodField() :MethodField
+    {
+        return new MethodField(TEST_APP_KEY);
     }
     
 }

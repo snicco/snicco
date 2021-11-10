@@ -4,12 +4,14 @@ declare(strict_types=1);
 
 namespace Snicco\View;
 
+use Closure;
+
 class ChildContent
 {
     
-    private \Closure $content;
+    private Closure $content;
     
-    public function __construct(\Closure $content)
+    public function __construct(Closure $content)
     {
         
         $this->content = $content;

@@ -15,6 +15,20 @@ use Illuminate\Support\Str;
 trait ReflectsCallable
 {
     
+    /**
+     * Accepts a string that contains and @ and returns the part before the @.
+     *
+     * @param $object
+     *
+     * @return bool
+     */
+    protected function isClosure($object) :bool
+    {
+        
+        return $object instanceof Closure;
+        
+    }
+    
     private function unwrap(Closure $closure)
     {
         
@@ -87,20 +101,6 @@ trait ReflectsCallable
             : Str::parseCallback($callback[0], $default_method);
         
         return new ReflectionMethod($class, $method);
-        
-    }
-    
-    /**
-     * Accepts a string that contains and @ and returns the part before the @.
-     *
-     * @param $object
-     *
-     * @return bool
-     */
-    protected function isClosure($object) :bool
-    {
-        
-        return $object instanceof Closure;
         
     }
     

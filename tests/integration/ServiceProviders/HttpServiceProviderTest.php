@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\integration\ServiceProviders;
 
+use ReflectionClass;
 use Tests\stubs\TestApp;
 use Snicco\Http\HttpKernel;
 use Snicco\Http\Redirector;
@@ -56,7 +57,7 @@ class HttpServiceProviderTest extends FrameworkTestCase
         /** @var IpAddress $middleware */
         $middleware = $this->app->resolve(IpAddress::class);
         
-        $class = new \ReflectionClass($middleware);
+        $class = new ReflectionClass($middleware);
         $property = $class->getProperty('checkProxyHeaders');
         $property->setAccessible(true);
         $value = $property->getValue($middleware);
@@ -76,7 +77,7 @@ class HttpServiceProviderTest extends FrameworkTestCase
         /** @var IpAddress $middleware */
         $middleware = $this->app->resolve(IpAddress::class);
         
-        $class = new \ReflectionClass($middleware);
+        $class = new ReflectionClass($middleware);
         $property = $class->getProperty('checkProxyHeaders');
         $property->setAccessible(true);
         $value = $property->getValue($middleware);

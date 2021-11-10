@@ -51,6 +51,16 @@ class AssertableCookie
         $this->name = Str::before($set_cookie_header, '=');
     }
     
+    public function assertValue(string $value) :AssertableCookie
+    {
+        PHPUnit::assertSame(
+            $value,
+            $this->value,
+            "The [$this->name] cookie value [$value] does not match the actual value [$this->value]"
+        );
+        return $this;
+    }
+    
     private function parseHeader(string $set_cookie_header)
     {
         
@@ -61,16 +71,6 @@ class AssertableCookie
         $this->http_only = Str::contains($set_cookie_header, 'HttpOnly');
         $this->same_site = Str::betweenFirst($set_cookie_header, 'SameSite=', ';');
         
-    }
-    
-    public function assertValue(string $value) :AssertableCookie
-    {
-        PHPUnit::assertSame(
-            $value,
-            $this->value,
-            "The [$this->name] cookie value [$value] does not match the actual value [$this->value]"
-        );
-        return $this;
     }
     
 }

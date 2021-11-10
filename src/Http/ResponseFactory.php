@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Http;
 
+use stdClass;
+use JsonSerializable;
 use InvalidArgumentException;
 use Snicco\Http\Psr7\Response;
 use Psr\Http\Message\StreamInterface;
@@ -164,10 +166,10 @@ class ResponseFactory implements ResponseFactoryInterface, StreamFactoryInterfac
             return $this->html($response);
         }
         
-        if (is_array($response) || $response instanceof \JsonSerializable
+        if (is_array($response) || $response instanceof JsonSerializable
             || $response
                instanceof
-               \stdClass) {
+               stdClass) {
             return $this->json($response);
         }
         

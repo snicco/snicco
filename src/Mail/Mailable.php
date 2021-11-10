@@ -74,61 +74,6 @@ abstract class Mailable
         return $this;
     }
     
-    private function normalizeAddress($recipients) :array
-    {
-        
-        $recipients = Arr::wrap($recipients);
-        
-        $recipients = collect($recipients)
-            ->map(function ($recipient) {
-                
-                if ($recipient instanceof WP_User) {
-                    
-                    return (object) [
-                        'name' => $this->userFullName($recipient),
-                        'email' => $recipient->user_email,
-                    ];
-                    
-                }
-                
-                if (is_string($recipient)) {
-                    
-                    return (object) [
-                        'name' => '',
-                        'email' => $recipient,
-                    ];
-                    
-                }
-                
-                if (is_array($recipient)) {
-                    
-                    return (object) [
-                        'name' => $recipient['name'] ?? '',
-                        'email' => $recipient['email'],
-                    ];
-                    
-                }
-                
-            })
-            ->filter(fn($recipient) => filter_var($recipient->email, FILTER_VALIDATE_EMAIL));
-        
-        return $recipients->all();
-        
-    }
-    
-    private function userFullName(WP_User $user) :string
-    {
-        
-        if ($user->first_name) {
-            
-            return ucwords($user->first_name).' '.ucwords($user->last_name ?? '');
-            
-        }
-        
-        return $user->display_name;
-        
-    }
-    
     public function cc($recipients) :Mailable
     {
         
@@ -245,6 +190,61 @@ abstract class Mailable
         }
         
         return $this;
+    }
+    
+    private function normalizeAddress($recipients) :array
+    {
+        
+        $recipients = Arr::wrap($recipients);
+        
+        $recipients = collect($recipients)
+            ->map(function ($recipient) {
+                
+                if ($recipient instanceof WP_User) {
+                    
+                    return (object) [
+                        'name' => $this->userFullName($recipient),
+                        'email' => $recipient->user_email,
+                    ];
+                    
+                }
+                
+                if (is_string($recipient)) {
+                    
+                    return (object) [
+                        'name' => '',
+                        'email' => $recipient,
+                    ];
+                    
+                }
+                
+                if (is_array($recipient)) {
+                    
+                    return (object) [
+                        'name' => $recipient['name'] ?? '',
+                        'email' => $recipient['email'],
+                    ];
+                    
+                }
+                
+            })
+            ->filter(fn($recipient) => filter_var($recipient->email, FILTER_VALIDATE_EMAIL));
+        
+        return $recipients->all();
+        
+    }
+    
+    private function userFullName(WP_User $user) :string
+    {
+        
+        if ($user->first_name) {
+            
+            return ucwords($user->first_name).' '.ucwords($user->last_name ?? '');
+            
+        }
+        
+        return $user->display_name;
+        
     }
     
 }

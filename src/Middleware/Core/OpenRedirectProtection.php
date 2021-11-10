@@ -26,43 +26,6 @@ class OpenRedirectProtection extends Middleware
         $this->whitelist[] = $this->allSubdomainsOfApplicationUrl();
     }
     
-    private function formatWhiteList(array $whitelist) :array
-    {
-        
-        return array_map(function ($pattern) {
-            
-            if (Str::startsWith($pattern, '*.')) {
-                
-                return $this->allSubdomains(Str::after($pattern, '*.'));
-                
-            }
-            
-            return '/'.preg_quote($pattern, '/').'/';
-            
-        }, $whitelist);
-        
-    }
-    
-    private function allSubdomains(string $host) :string
-    {
-        
-        return '/^(.+\.)?'.preg_quote($host, '/').'$/';
-        
-    }
-    
-    private function allSubdomainsOfApplicationUrl() :?string
-    {
-        
-        if ($host = parse_url($this->site_url, PHP_URL_HOST)) {
-            
-            return $this->allSubdomains($host);
-            
-        }
-        
-        return null;
-        
-    }
-    
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
         
@@ -106,6 +69,43 @@ class OpenRedirectProtection extends Middleware
         }
         
         return $this->forbiddenRedirect($target);
+        
+    }
+    
+    private function formatWhiteList(array $whitelist) :array
+    {
+        
+        return array_map(function ($pattern) {
+            
+            if (Str::startsWith($pattern, '*.')) {
+                
+                return $this->allSubdomains(Str::after($pattern, '*.'));
+                
+            }
+            
+            return '/'.preg_quote($pattern, '/').'/';
+            
+        }, $whitelist);
+        
+    }
+    
+    private function allSubdomains(string $host) :string
+    {
+        
+        return '/^(.+\.)?'.preg_quote($host, '/').'$/';
+        
+    }
+    
+    private function allSubdomainsOfApplicationUrl() :?string
+    {
+        
+        if ($host = parse_url($this->site_url, PHP_URL_HOST)) {
+            
+            return $this->allSubdomains($host);
+            
+        }
+        
+        return null;
         
     }
     

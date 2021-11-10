@@ -200,8 +200,7 @@ class TwoFactorAuthConfirmationTest extends AuthTestCase
         });
         
         $this->afterApplicationBooted(function () {
-            
-            ;
+    
             $this->withoutMiddleware('csrf');
             $this->encryptor = $this->app->resolve(EncryptorInterface::class);
             $this->instance(

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Routing;
 
 use Snicco\Support\Str;
+use InvalidArgumentException;
 use Snicco\Traits\ReflectsCallable;
 use Snicco\Contracts\ConditionInterface;
 use Snicco\Routing\Conditions\CustomCondition;
@@ -131,7 +132,7 @@ class ConditionBlueprint
             
         }
         
-        throw new \InvalidArgumentException("An invalid condition was provided for a route.");
+        throw new InvalidArgumentException("An invalid condition was provided for a route.");
         
     }
     

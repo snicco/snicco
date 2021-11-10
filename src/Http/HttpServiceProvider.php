@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Http;
 
+use RuntimeException;
 use Snicco\Routing\Pipeline;
 use RKA\Middleware\IpAddress;
 use Snicco\Contracts\ServiceProvider;
@@ -79,10 +80,10 @@ class HttpServiceProvider extends ServiceProvider
             $headers = $this->config->get('proxies.headers');
             
             if ($check && empty($proxies)) {
-                throw new \RuntimeException('You have to configure trusted proxies.');
+                throw new RuntimeException('You have to configure trusted proxies.');
             }
             if ($check && empty($headers)) {
-                throw new \RuntimeException(
+                throw new RuntimeException(
                     'You have to configure headers to extract the remote ip.'
                 );
             }

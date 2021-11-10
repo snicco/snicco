@@ -192,8 +192,8 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
         
         $this->afterApplicationBooted(function () {
             
-            $this->url = $this->app->resolve(UrlGenerator::class);;
-            
+            $this->url = $this->app->resolve(UrlGenerator::class);
+    
         });
         parent::setUp();
         $this->bootApp();
