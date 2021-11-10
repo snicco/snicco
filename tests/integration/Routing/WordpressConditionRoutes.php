@@ -17,6 +17,7 @@ class WordpressConditionRoutes extends FrameworkTestCase
     {
         
         $GLOBALS['test']['pass_fallback_route_condition'] = true;
+        $this->bootApp();
         Event::fake([ResponseSent::class]);
         
         $response = $this->get('/post1');
@@ -32,6 +33,7 @@ class WordpressConditionRoutes extends FrameworkTestCase
     {
         
         $GLOBALS['test']['pass_fallback_route_condition'] = false;
+        $this->bootApp();
         Event::fake([ResponseSent::class]);
         
         $this->post('/post1')->assertDelegatedToWordPress();
@@ -45,6 +47,7 @@ class WordpressConditionRoutes extends FrameworkTestCase
     {
         
         $GLOBALS['test']['pass_fallback_route_condition'] = true;
+        $this->bootApp();
         Event::fake([ResponseSent::class]);
         
         $this->delete('/post1')->assertDelegatedToWordPress();
@@ -59,6 +62,7 @@ class WordpressConditionRoutes extends FrameworkTestCase
         
         $GLOBALS['test']['pass_fallback_route_condition'] = true;
         $GLOBALS['test'][WebMiddleware::run_times] = 0;
+        $this->bootApp();
         Event::fake([ResponseSent::class]);
         
         $this->patch('/post1')->assertSee('patch_fallback');
@@ -70,12 +74,6 @@ class WordpressConditionRoutes extends FrameworkTestCase
             'Middleware was not run as expected.'
         );
         
-    }
-    
-    protected function setUp() :void
-    {
-        parent::setUp();
-        $this->bootApp();
     }
     
 }
