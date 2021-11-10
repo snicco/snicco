@@ -9,7 +9,7 @@ use Snicco\Routing\Pipeline;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Events\ResponseSent;
-use Snicco\Traits\SortsMiddleware;
+use Snicco\Traits\GathersMiddleware;
 use Snicco\Http\Responses\NullResponse;
 use Snicco\Middleware\Core\RouteRunner;
 use Snicco\Middleware\Core\ShareCookies;
@@ -24,7 +24,7 @@ use Snicco\Middleware\Core\EvaluateResponseMiddleware;
 class HttpKernel
 {
     
-    use SortsMiddleware;
+    use GathersMiddleware;
     
     private Pipeline $pipeline;
     

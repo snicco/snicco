@@ -43,7 +43,7 @@ class MiddlewareStack
         $middleware = $this->expandMiddleware($middleware);
         $middleware = $this->uniqueMiddleware($middleware);
         
-        return $this->sortMiddleware($middleware);
+        return $this->sortMiddleware($middleware, $this->middleware_priority);
         
     }
     
@@ -65,7 +65,7 @@ class MiddlewareStack
         $middleware = $this->expandMiddleware($middleware);
         $middleware = $this->uniqueMiddleware($middleware);
         
-        return $this->sortMiddleware($middleware);
+        return $this->sortMiddleware($middleware, $this->middleware_priority);
         
     }
     

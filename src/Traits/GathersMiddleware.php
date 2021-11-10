@@ -13,18 +13,19 @@ trait GathersMiddleware
      * Sort array of fully qualified middleware class names by priority in ascending order.
      *
      * @param  string[]  $middleware
+     * @param  array  $priority_map
      *
      * @return array
      */
-    private function sortMiddleware(array $middleware) :array
+    private function sortMiddleware(array $middleware, array $priority_map) :array
     {
         
         $sorted = $middleware;
         
-        usort($sorted, function ($a, $b) use ($middleware) {
+        usort($sorted, function ($a, $b) use ($middleware, $priority_map) {
             
-            $a_priority = $this->getMiddlewarePriorityForMiddleware($a);
-            $b_priority = $this->getMiddlewarePriorityForMiddleware($b);
+            $a_priority = $this->getMiddlewarePriorityForMiddleware($a, $priority_map);
+            $b_priority = $this->getMiddlewarePriorityForMiddleware($b, $priority_map);
             $priority = $b_priority - $a_priority;
             
             if ($priority !== 0) {
@@ -44,17 +45,18 @@ trait GathersMiddleware
      * Middleware with unspecified priority will yield -1.
      *
      * @param  string|array  $middleware
+     * @param $middleware_priority
      *
      * @return integer
      */
-    private function getMiddlewarePriorityForMiddleware($middleware) :int
+    private function getMiddlewarePriorityForMiddleware($middleware, $middleware_priority) :int
     {
         
         if (is_array($middleware)) {
             $middleware = $middleware[0];
         }
         
-        $increasing_priority = array_reverse($this->middleware_priority);
+        $increasing_priority = array_reverse($middleware_priority);
         $priority = array_search($middleware, $increasing_priority);
         
         return $priority !== false ? (int) $priority : -1;
