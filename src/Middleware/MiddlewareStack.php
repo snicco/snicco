@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Snicco\Middleware;
 
-use Snicco\Support\Arr;
 use Snicco\Routing\Route;
 use Snicco\Http\Psr7\Request;
 use Snicco\Traits\GathersMiddleware;
@@ -24,21 +23,23 @@ class MiddlewareStack
     private array $route_middleware_aliases = [];
     private array $middleware_priority      = [];
     private bool  $middleware_disabled      = false;
+    private bool  $always_with_core_middleware;
     
-    public function createFor(Route $route, Request $request) :array
+    public function __construct(bool $always_with_core_middleware = false)
+    {
+        $this->always_with_core_middleware = $always_with_core_middleware;
+    }
+    
+    public function createForRoute(Route $route) :array
     {
         
         if ($this->middleware_disabled) {
             return [];
         }
         
-        $middleware = array_diff($route->getMiddleware(), $this->middleware_groups['global']);
-        
-        if ($this->withGlobalMiddleware($request)) {
-            
-            $middleware = $this->mergeGlobalMiddleware($middleware);
-            
-        }
+        $middleware = $route->getMiddleware();
+        $middleware[] = 'global';
+        $middleware = array_diff($middleware, $this->middleware_groups['global']);
         
         $middleware = $this->expandMiddleware($middleware);
         $middleware = $this->uniqueMiddleware($middleware);
@@ -47,22 +48,11 @@ class MiddlewareStack
         
     }
     
-    public function onlyGroups(array $groups, Request $request) :array
+    public function createForRequestWithoutRoute(Request $request, bool $force_include_global = false) :array
     {
         
-        if ($this->middleware_disabled) {
-            return [];
-        }
-        
-        $middleware = $groups;
-        
-        if ($this->globalMiddlewareRun($request)) {
-            
-            Arr::pullByValue('global', $middleware);
-            
-        }
-        
-        $middleware = $this->expandMiddleware($middleware);
+        $middleware =
+            $this->expandMiddleware($this->coreMiddleware($request, $force_include_global));
         $middleware = $this->uniqueMiddleware($middleware);
         
         return $this->sortMiddleware($middleware, $this->middleware_priority);
@@ -95,17 +85,30 @@ class MiddlewareStack
         $this->middleware_disabled = true;
     }
     
-    private function withGlobalMiddleware(Request $request) :bool
+    private function coreMiddleware(Request $request, bool $force_include_global = false) :array
     {
         
-        return ! $request->getAttribute('global_middleware_run', false);
+        if ($this->middleware_disabled) {
+            return [];
+        }
         
-    }
-    
-    private function globalMiddlewareRun(Request $request) :bool
-    {
+        if ( ! $this->always_with_core_middleware) {
+            return $force_include_global ? ['global'] : [];
+        }
         
-        return $request->getAttribute('global_middleware_run', false);
+        $middleware = ['global'];
+        
+        if ($request->isWpFrontEnd()) {
+            $middleware[] = 'web';
+        }
+        elseif ($request->isWpAdmin()) {
+            $middleware[] = 'admin';
+        }
+        elseif ($request->isWpAjax()) {
+            $middleware[] = 'ajax';
+        }
+        
+        return $middleware;
         
     }
     

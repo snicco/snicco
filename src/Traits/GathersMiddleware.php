@@ -71,18 +71,7 @@ trait GathersMiddleware
      */
     private function uniqueMiddleware(array $middleware) :array
     {
-        
         return array_values(array_unique($middleware, SORT_REGULAR));
-        
-    }
-    
-    private function mergeGlobalMiddleware(array $middleware) :array
-    {
-        
-        $global = $this->middleware_groups['global'] ?? [];
-        
-        return array_merge($global, $middleware);
-        
     }
     
     /**
