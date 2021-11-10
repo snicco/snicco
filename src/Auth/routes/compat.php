@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Snicco\Routing\Router;
-use Snicco\Auth\Controllers\WpLoginRedirectController;
+use Snicco\Auth\Controllers\WPLoginRedirectController;
 use Snicco\Auth\Controllers\Compat\PasswordResetEmailController;
 use Snicco\Auth\Controllers\Compat\BulkPasswordResetEmailController;
 
@@ -15,7 +15,6 @@ $router->get('/wp-admin/users.php', [BulkPasswordResetEmailController::class, 's
 $router->post(
     '/wp-admin/admin-ajax.php/send-password-reset',
     [PasswordResetEmailController::class, 'store']
-)
-       ->middleware(['auth']);
+)->middleware(['auth']);
 
-$router->any('/wp-login.php', [WpLoginRedirectController::class]);
+$router->any('/wp-login.php', [WPLoginRedirectController::class]);

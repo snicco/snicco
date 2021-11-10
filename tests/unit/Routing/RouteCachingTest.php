@@ -29,8 +29,8 @@ use Tests\helpers\CreateTestSubjects;
 use Tests\helpers\CreateUrlGenerator;
 use Snicco\Factories\ConditionFactory;
 use Snicco\Factories\RouteActionFactory;
-use Snicco\Routing\CachedRouteCollection;
 use Tests\helpers\CreateDefaultWpApiMocks;
+use Snicco\Routing\CachedFastRouteCollection;
 use Snicco\Middleware\Core\OutputBufferMiddleware;
 use Snicco\Routing\FastRoute\CachedFastRouteMatcher;
 
@@ -48,7 +48,7 @@ class RouteCachingTest extends UnitTest
     
     private string $route_collection_file;
     
-    private CachedRouteCollection $routes;
+    private CachedFastRouteCollection $routes;
     
     private ContainerAdapter $container;
     
@@ -67,7 +67,7 @@ class RouteCachingTest extends UnitTest
     }
     
     /** @test */
-    public function running_routes_the_first_time_creates_cache_files()
+    public function a_cache_file_is_created_after_the_routes_are_loaded_for_the_first_time()
     {
         
         $this->assertFalse(file_exists($this->route_collection_file));
@@ -102,9 +102,6 @@ class RouteCachingTest extends UnitTest
             $this->router->get('teams/{team}', Controller::class.'@handle');
             
         });
-        
-        $request = $this->webRequest('GET', 'foo');
-        $this->runAndAssertOutput('foo', $request);
         
         // New route collection from cache;
         $this->newCachedRouter();
@@ -148,9 +145,6 @@ class RouteCachingTest extends UnitTest
             
         });
         
-        $request = $this->webRequest('GET', 'foo');
-        $this->runAndAssertOutput('foo', $request);
-        
         $this->assertTrue(file_exists($this->route_map_file));
         $this->assertTrue(file_exists($this->route_collection_file));
         
@@ -172,13 +166,10 @@ class RouteCachingTest extends UnitTest
             
         });
         
-        $request = $this->webRequest('GET', 'foo');
-        $this->runAndAssertOutput('foo', $request);
+        $this->newCachedRouter();
         
         $request = $this->webRequest('GET', 'bar');
         $this->runAndAssertEmptyOutput($request);
-        
-        $this->newCachedRouter();
         
         $request = $this->webRequest('GET', 'foo');
         $this->runAndAssertOutput('foo', $request);
@@ -208,19 +199,14 @@ class RouteCachingTest extends UnitTest
             
         });
         
-        $request = TestRequest::from('GET', 'foo');
-        $event = new WpQueryFilterable($request, true, $wp = Mockery::mock(\WP::class));
-        $listener = new FilterWpQuery($this->routes);
-        $this->assertSame(false, $listener->handleEvent($event));
-        $this->assertSame(['foo' => 'baz'], $wp->query_vars);
-        $this->runAndAssertOutput('foo', $request);
+        $wp = Mockery::mock(\WP::class);
         
         // from cache
         $this->newCachedRouter();
         
         $wp->query_vars = ['foo' => 'bar'];
         
-        $event = new WpQueryFilterable(TestRequest::from('GET', 'foo'), true, $wp);
+        $event = new WpQueryFilterable($request = TestRequest::from('GET', 'foo'), true, $wp);
         $listener = new FilterWpQuery($this->routes);
         $this->assertFalse($listener->handleEvent($event));
         $this->assertSame(['foo' => 'baz'], $wp->query_vars);
@@ -277,8 +263,6 @@ class RouteCachingTest extends UnitTest
             
         });
         
-        $this->runAndAssertOutput('foo', $this->webRequest('GET', 'foo'));
-        
         // Cache is loaded into this router instance
         $this->newCachedRouter();
         
@@ -316,9 +300,6 @@ class RouteCachingTest extends UnitTest
             
         });
         
-        $request = $this->adminRequestTo('foo');
-        $this->runAndAssertOutput('foo', $request);
-        
         $this->newCachedRouter();
         $request = $this->adminRequestTo('foo');
         $this->runAndAssertOutput('foo', $request);
@@ -346,9 +327,6 @@ class RouteCachingTest extends UnitTest
             
         });
         
-        $ajax_request = $this->ajaxRequest('foo_action');
-        $this->runAndAssertOutput('FOO_ACTION', $ajax_request);
-        
         $this->newCachedRouter();
         
         $ajax_request = $this->ajaxRequest('foo_action');
@@ -372,9 +350,6 @@ class RouteCachingTest extends UnitTest
             $this->router->createFallbackWebRoute();
             
         });
-        
-        $request = $this->webRequest('GET', 'post1');
-        $this->runAndAssertOutput('FOO', $request);
         
         $this->newCachedRouter();
         
@@ -405,9 +380,6 @@ class RouteCachingTest extends UnitTest
             $this->router->createFallbackWebRoute();
             
         });
-        
-        $request = $this->webRequest('GET', 'post1');
-        $this->runAndAssertOutput('FOO', $request);
         
         $this->newCachedRouter();
         
@@ -459,9 +431,6 @@ class RouteCachingTest extends UnitTest
             
         });
         
-        $request = $this->webRequest('GET', 'foo');
-        $this->runAndAssertOutput('foo', $request);
-        
         $this->newCachedRouter();
         
         $request = $this->webRequest('GET', 'foo');
@@ -471,24 +440,20 @@ class RouteCachingTest extends UnitTest
         
     }
     
-    protected function newRouteCollection()
+    protected function newCachedRouteCollection() :CachedFastRouteCollection
     {
         
         $condition_factory = new ConditionFactory($this->conditions(), $this->container);
         $handler_factory = new RouteActionFactory([], $this->container);
         
-        $routes = new CachedRouteCollection(
+        return new CachedFastRouteCollection(
             new CachedFastRouteMatcher($this->createRouteMatcher(), $this->route_map_file),
             $condition_factory,
             $handler_factory,
             $this->route_collection_file
         );
         
-        return $routes;
-        
     }
-    
-    /** @test */
     
     protected function beforeTestRun()
     {
@@ -497,7 +462,7 @@ class RouteCachingTest extends UnitTest
         $this->route_collection_file = TESTS_DIR.DS.'codecept'.DS.'_data'.DS.'route.collection.php';
         
         $this->container = $this->createContainer();
-        $this->routes = $this->newRouteCollection();
+        $this->routes = $this->newCachedRouteCollection();
         
         $this->container->instance(UrlGenerator::class, $this->newUrlGenerator());
         $this->container->instance(ViewFactory::class, new TestViewFactory());
@@ -536,7 +501,7 @@ class RouteCachingTest extends UnitTest
     private function newCachedRouter()
     {
         
-        $this->routes = $this->newRouteCollection();
+        $this->routes = $this->newCachedRouteCollection();
         
         $this->router = $this->newRouter();
         

@@ -100,6 +100,15 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     }
     
     /** @test */
+    public function the_base_path_is_set()
+    {
+        
+        $this->bootApp();
+        
+        $this->assertSame(FIXTURES_DIR, TestApp::config('app.base_path'));
+    }
+    
+    /** @test */
     public function the_application_instance_can_be_aliased()
     {
         $this->bootApp();

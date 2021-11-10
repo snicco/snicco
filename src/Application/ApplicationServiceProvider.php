@@ -42,6 +42,7 @@ class ApplicationServiceProvider extends ServiceProvider
     
     private function bindConfig()
     {
+        $this->config->extend('app.base_path', $this->app->basePath());
         $this->config->extend('app.package_root', dirname(__FILE__, 3));
         $this->config->extend(
             'app.storage_dir',

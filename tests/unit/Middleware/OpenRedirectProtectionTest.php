@@ -44,24 +44,6 @@ class OpenRedirectProtectionTest extends UnitTest
         
     }
     
-    private function newMiddleware($whitelist = []) :OpenRedirectProtection
-    {
-        
-        $this->routes = $this->newRouteCollection();
-        
-        $route = new Route(['GET'], '/redirect/exit', [RedirectController::class, 'exit']);
-        $route->name('redirect.protection');
-        $this->routes->add($route);
-        
-        $this->response_factory = $this->createResponseFactory();
-        $this->delegate = new Delegate(fn() => $this->response_factory->make(200));
-        
-        $m = new OpenRedirectProtection(SITE_URL, $whitelist);
-        $m->setResponseFactory($this->response_factory);
-        return $m;
-        
-    }
-    
     /** @test */
     public function a_redirect_response_is_allowed_if_its_relative()
     {
@@ -117,23 +99,6 @@ class OpenRedirectProtectionTest extends UnitTest
         );
         
         $this->assertForbiddenRedirect($response, 'https://paypal.com');
-        
-    }
-    
-    private function assertForbiddenRedirect(ResponseInterface $response, string $intended)
-    {
-        
-        $intended = urlencode($intended);
-        
-        $this->assertStringStartsWith('/redirect/exit', $response->getHeaderLine('Location'));
-        $this->assertStringContainsString(
-            '&intended_redirect='.$intended,
-            $response->getHeaderLine('Location')
-        );
-        $this->assertStringContainsString(
-            '?expires='.Carbon::now()->addSeconds(10)->getTimestamp(),
-            $response->getHeaderLine('Location')
-        );
         
     }
     
@@ -373,6 +338,41 @@ class OpenRedirectProtectionTest extends UnitTest
         
         WP::reset();
         Mockery::close();
+    }
+    
+    private function newMiddleware($whitelist = []) :OpenRedirectProtection
+    {
+        
+        $this->routes = $this->newCachedRouteCollection();
+        
+        $route = new Route(['GET'], '/redirect/exit', [RedirectController::class, 'exit']);
+        $route->name('redirect.protection');
+        $this->routes->add($route);
+        
+        $this->response_factory = $this->createResponseFactory();
+        $this->delegate = new Delegate(fn() => $this->response_factory->make(200));
+        
+        $m = new OpenRedirectProtection(SITE_URL, $whitelist);
+        $m->setResponseFactory($this->response_factory);
+        return $m;
+        
+    }
+    
+    private function assertForbiddenRedirect(ResponseInterface $response, string $intended)
+    {
+        
+        $intended = urlencode($intended);
+        
+        $this->assertStringStartsWith('/redirect/exit', $response->getHeaderLine('Location'));
+        $this->assertStringContainsString(
+            '&intended_redirect='.$intended,
+            $response->getHeaderLine('Location')
+        );
+        $this->assertStringContainsString(
+            '?expires='.Carbon::now()->addSeconds(10)->getTimestamp(),
+            $response->getHeaderLine('Location')
+        );
+        
     }
     
 }

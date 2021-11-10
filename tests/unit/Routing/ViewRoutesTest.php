@@ -74,7 +74,7 @@ class ViewRoutesTest extends UnitTest
     {
         
         $this->container = $this->createContainer();
-        $this->routes = $this->newRouteCollection();
+        $this->routes = $this->newCachedRouteCollection();
         $this->container->instance(UrlGenerator::class, $this->newUrlGenerator());
         $this->container->instance(ViewFactory::class, new TestViewFactory());
         $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
@@ -86,13 +86,6 @@ class ViewRoutesTest extends UnitTest
         
     }
     
-    private function createBindingsForViewController()
-    {
-        
-        $this->container->instance(HttpResponseFactory::class, $this->createResponseFactory());
-        
-    }
-    
     protected function beforeTearDown()
     {
         
@@ -100,6 +93,13 @@ class ViewRoutesTest extends UnitTest
         Mockery::close();
         WP::reset();
         HeaderStack::reset();
+        
+    }
+    
+    private function createBindingsForViewController()
+    {
+        
+        $this->container->instance(HttpResponseFactory::class, $this->createResponseFactory());
         
     }
     

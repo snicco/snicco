@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Routing;
 
+use Snicco\Support\Str;
 use Snicco\Application\Config;
-use Symfony\Component\Finder\Finder;
 use Snicco\Contracts\RouteRegistrarInterface;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
@@ -19,44 +19,20 @@ class CacheFileRouteRegistrar implements RouteRegistrarInterface
         $this->registrar = $registrar;
     }
     
-    public function loadApiRoutes(Config $config) :bool
+    public function registerRoutes(Config $config) :void
     {
-        $dir = $config->get('routing.cache_dir', '');
-        
-        if ($this->cacheFilesCreated($dir) && count($this->registrar->apiRoutes($config))) {
-            
-            return true;
-            
-        }
-        else {
-            
-            $this->clearRouteCache($dir);
-        }
-        
-        $this->createCacheDirIfNotExists($dir);
-        
-        return $this->registrar->loadApiRoutes($config);
-        
-    }
-    
-    public function loadStandardRoutes(Config $config)
-    {
-        
         $dir = $config->get('routing.cache_dir', '');
         
         if ($this->cacheFilesCreated($dir)) {
             return;
         }
         
-        $this->createCacheDirIfNotExists($dir);
-        $this->registrar->loadStandardRoutes($config);
+        if ( ! is_dir($dir)) {
+            $this->createCacheDirectory($dir, $config);
+            
+        }
         
-    }
-    
-    public function loadIntoRouter() :void
-    {
-        // This will do nothing for the CachedRouteCollection if the cache file exists.
-        $this->registrar->loadIntoRouter();
+        $this->registrar->registerRoutes($config);
         
     }
     
@@ -70,45 +46,23 @@ class CacheFileRouteRegistrar implements RouteRegistrarInterface
         
     }
     
-    private function clearRouteCache(string $dir)
+    private function createCacheDirectory(string $dir, Config $config)
     {
         
-        if ( ! is_dir($dir)) {
-            return;
-        }
-        
-        $finder = new Finder();
-        $finder->in($dir);
-        
-        if (iterator_count($finder) === 0) {
-            rmdir($dir);
-            return;
-        }
-        
-        foreach ($finder as $file) {
+        if ( ! Str::contains($dir, $config['app.base_path'])) {
             
-            $path = $file->getRealPath();
-            unlink($path);
-            
-        }
-        
-        rmdir($dir);
-        
-    }
-    
-    private function createCacheDirIfNotExists(string $dir)
-    {
-        
-        if ($dir === '') {
             throw new ConfigurationException(
-                "Route caching is enabled but no cache dir was provided."
+                "The provided cache directory [$dir] has to be a child directory of the application base path."
             );
+            
         }
         
-        if ( ! is_dir($dir)) {
-            
-            wp_mkdir_p($dir);
-            
+        $created = mkdir($dir, 0755, true);
+        
+        if ( ! $created) {
+            throw new ConfigurationException(
+                "Route caching is enabled but the cache directory [$dir] could not be created."
+            );
         }
         
     }

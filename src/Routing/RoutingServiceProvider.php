@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Routing;
 
+use Snicco\Support\WP;
 use Snicco\Support\FilePath;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\MagicLink;
@@ -76,10 +77,8 @@ class RoutingServiceProvider extends ServiceProvider
     
     public function bootstrap() :void
     {
-        
-        $this->bindApiEndpoints();
+        $this->bindRoutePresets();
         $this->loadRoutes();
-        
     }
     
     private function bindConfig() :void
@@ -129,7 +128,7 @@ class RoutingServiceProvider extends ServiceProvider
             
             $cache_dir = $this->config->get('routing.cache_dir', '');
             
-            return new CachedRouteCollection(
+            return new CachedFastRouteCollection(
                 $this->container->make(RouteMatcher::class),
                 $this->container->make(ConditionFactory::class),
                 $this->container->make(RouteActionFactory::class),
@@ -211,34 +210,47 @@ class RoutingServiceProvider extends ServiceProvider
     {
         /** @var RouteRegistrarInterface $registrar */
         $registrar = $this->app->resolve(RouteRegistrarInterface::class);
-        $registrar->loadApiRoutes($this->config);
-        $registrar->loadStandardRoutes($this->config);
-        $registrar->loadIntoRouter();
-        
+        $registrar->registerRoutes($this->config);
+        $this->app[Router::class]->loadRoutes();
     }
     
     /**
+     * @note
      * This need to run inside a bootstrap method so that other providers
-     * get the chance to register their own endpoints in their respective register() method.
+     * get the chance to register their own api endpoints in their respective register() method.
      */
-    private function bindApiEndpoints() :void
+    private function bindRoutePresets()
     {
-        $endpoints = $this->config->get('routing.api.endpoints');
         
-        foreach ($endpoints as $id => $prefix) {
-            $name = 'api.'.$id;
+        $this->config->extend('routing.presets.web', [
+            'middleware' => ['web'],
+        ]);
+        
+        $this->config->extend('routing.presets.admin', [
+            'middleware' => ['admin'],
+            'prefix' => WP::wpAdminFolder(),
+            'name' => 'admin',
+        ]);
+        
+        $this->config->extend('routing.presets.ajax', [
+            'middleware' => ['ajax'],
+            'prefix' => WP::wpAdminFolder().DIRECTORY_SEPARATOR.'admin-ajax.php',
+            'name' => 'ajax',
+        ]);
+        
+        foreach ($this->config->get('routing.api.endpoints', []) as $name => $prefix) {
+            
             $this->config->extend(
                 'routing.presets.'.$name,
                 [
                     'prefix' => $prefix,
-                    'name' => $id,
-                    'middleware' => [$name],
+                    'name' => $name,
+                    'middleware' => ['api'],
                 ]
             );
-            $this->config->extend('middleware.groups', [
-                $name => [],
-            ]);
+            
         }
+        
     }
     
 }

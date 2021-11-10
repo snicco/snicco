@@ -16,4 +16,4 @@ TestApp::route()->group(function (Router $router) {
         return 'route-with-global';
     })->middleware(GlobalMiddleware::class);
     
-}, ['prefix' => 'middleware'],);
+}, ['prefix' => 'middleware']);

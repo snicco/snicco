@@ -15,7 +15,7 @@ use Snicco\Factories\RouteActionFactory;
 trait CreateRouteCollection
 {
     
-    protected function newRouteCollection() :RouteCollection
+    protected function newCachedRouteCollection() :RouteCollection
     {
         
         $conditions = is_callable([$this, 'conditions']) ? $this->conditions() : [];
