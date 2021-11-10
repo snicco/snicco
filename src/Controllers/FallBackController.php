@@ -74,6 +74,16 @@ class FallBackController extends Controller
         
     }
     
+    public function delegateToWordPress() :DelegatedResponse
+    {
+        return $this->response_factory->delegateToWP();
+    }
+    
+    public function setFallbackHandler(callable $fallback_handler)
+    {
+        $this->fallback_handler = $fallback_handler;
+    }
+    
     private function runRoute(Route $route) :Closure
     {
         return fn(Request $request) => $route->run($request);
@@ -104,16 +114,6 @@ class FallBackController extends Controller
         // If this request attribute is true we know that global middleware has already
         // been run in the kernel which means "always_run_global" has been set to true in the config.
         return $request->getAttribute('global_middleware_run', false);
-    }
-    
-    public function delegateToWordPress() :DelegatedResponse
-    {
-        return $this->response_factory->delegateToWP();
-    }
-    
-    public function setFallbackHandler(callable $fallback_handler)
-    {
-        $this->fallback_handler = $fallback_handler;
     }
     
 }

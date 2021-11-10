@@ -38,6 +38,23 @@ class Redirect extends Middleware
         
     }
     
+    public function handle(Request $request, Delegate $next) :ResponseInterface
+    {
+        
+        $path = $request->fullPath();
+        
+        if ($redirect = Arr::get($this->redirects, trim($path, '/'))) {
+            
+            $location = $this->formatLocation($redirect['to'], $path);
+            
+            return $this->response_factory->redirect()->to($location, $redirect['status']);
+            
+        }
+        
+        return $next($request);
+        
+    }
+    
     private function normalize(array $redirects) :array
     {
         
@@ -57,23 +74,6 @@ class Redirect extends Middleware
         }
         
         return $r;
-        
-    }
-    
-    public function handle(Request $request, Delegate $next) :ResponseInterface
-    {
-        
-        $path = $request->fullPath();
-        
-        if ($redirect = Arr::get($this->redirects, trim($path, '/'))) {
-            
-            $location = $this->formatLocation($redirect['to'], $path);
-            
-            return $this->response_factory->redirect()->to($location, $redirect['status']);
-            
-        }
-        
-        return $next($request);
         
     }
     

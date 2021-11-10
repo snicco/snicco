@@ -7,6 +7,7 @@ namespace Tests\unit\Application;
 use Throwable;
 use Mockery as m;
 use Tests\UnitTest;
+use RuntimeException;
 use Snicco\Support\WP;
 use Snicco\Support\WpFacade;
 use Snicco\Http\Psr7\Request;
@@ -354,7 +355,7 @@ class ApplicationTest extends UnitTest
     {
         
         $app = $this->newApplication();
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $app->boot();
         
         $app['env'] = 'foo';

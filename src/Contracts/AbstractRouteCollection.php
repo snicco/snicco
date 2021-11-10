@@ -75,8 +75,8 @@ abstract class AbstractRouteCollection
     /**
      * For frontend requests we have to check on the "do_parse_request" hook
      * if the developer wants to filter the current WP_QUERY instance dynamically.
-     * If we do find a result we store it as a property so that we don't have to match against the request
-     * later on the template_redirect hook.
+     * If we do find a result we store it as a property so that we don't have to match against the
+     * request later on the template_redirect hook.
      *
      * @param  Request  $request
      *

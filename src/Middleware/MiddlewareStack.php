@@ -47,13 +47,6 @@ class MiddlewareStack
         
     }
     
-    private function withGlobalMiddleware(Request $request) :bool
-    {
-        
-        return ! $request->getAttribute('global_middleware_run', false);
-        
-    }
-    
     public function onlyGroups(array $groups, Request $request) :array
     {
         
@@ -73,13 +66,6 @@ class MiddlewareStack
         $middleware = $this->uniqueMiddleware($middleware);
         
         return $this->sortMiddleware($middleware);
-        
-    }
-    
-    private function globalMiddlewareRun(Request $request) :bool
-    {
-        
-        return $request->getAttribute('global_middleware_run', false);
         
     }
     
@@ -107,6 +93,20 @@ class MiddlewareStack
     public function disableAllMiddleware()
     {
         $this->middleware_disabled = true;
+    }
+    
+    private function withGlobalMiddleware(Request $request) :bool
+    {
+        
+        return ! $request->getAttribute('global_middleware_run', false);
+        
+    }
+    
+    private function globalMiddlewareRun(Request $request) :bool
+    {
+        
+        return $request->getAttribute('global_middleware_run', false);
+        
     }
     
 }

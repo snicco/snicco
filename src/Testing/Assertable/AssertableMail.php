@@ -116,17 +116,6 @@ class AssertableMail
         return $this;
     }
     
-    private function renderMailContent()
-    {
-        
-        $context = array_merge(['recipient' => $this->mail->to[0]], $this->mail->buildViewData());
-        
-        $this->mail->message = $this->mail->view
-            ? $this->view_factory->render($this->mail->view, $context)
-            : $this->mail->message;
-        
-    }
-    
     public function assertNotSeeText(string $content) :AssertableMail
     {
         
@@ -155,6 +144,17 @@ class AssertableMail
         PHPUnit::assertStringNotContainsString($content, $this->mail->message);
         
         return $this;
+    }
+    
+    private function renderMailContent()
+    {
+        
+        $context = array_merge(['recipient' => $this->mail->to[0]], $this->mail->buildViewData());
+        
+        $this->mail->message = $this->mail->view
+            ? $this->view_factory->render($this->mail->view, $context)
+            : $this->mail->message;
+        
     }
     
 }

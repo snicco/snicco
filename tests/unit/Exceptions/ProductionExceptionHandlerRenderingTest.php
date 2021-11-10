@@ -9,6 +9,7 @@ use Exception;
 use Throwable;
 use Whoops\Run;
 use Tests\UnitTest;
+use RuntimeException;
 use Snicco\Support\WP;
 use Psr\Log\NullLogger;
 use Illuminate\Support\Arr;
@@ -103,7 +104,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         $handler = $this->newErrorHandler();
         
         $response = new TestResponse(
-            $handler->toHttpResponse(new \RuntimeException('Sensitive Info'), $this->request)
+            $handler->toHttpResponse(new RuntimeException('Sensitive Info'), $this->request)
         );
         
         $this->assertInstanceOf(Response::class, $response->psr_response);
@@ -140,7 +141,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         
         $handler = $this->newErrorHandler();
         
-        $this->expectException(\RuntimeException::class);
+        $this->expectException(RuntimeException::class);
         $this->expectExceptionMessage(
             sprintf(
                 "Return value of %s::render() has to be an instance of [Snicco\Http\Psr7\Response]",

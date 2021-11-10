@@ -40,11 +40,6 @@ trait UnitTesterActions
     }
     
     /**
-     * @return Scenario
-     */
-    abstract protected function getScenario();
-    
-    /**
      * [!] Method is generated. Documentation taken from corresponding module.
      * Accessor method to get the object storing the factories for things.
      * This methods gives access to the same factories provided by the
@@ -242,5 +237,10 @@ trait UnitTesterActions
             new Action('debugWpActionFinal', func_get_args())
         );
     }
+    
+    /**
+     * @return Scenario
+     */
+    abstract protected function getScenario();
     
 }

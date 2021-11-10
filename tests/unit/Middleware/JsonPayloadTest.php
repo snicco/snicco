@@ -56,28 +56,6 @@ class JsonPayloadTest extends UnitTest
         
     }
     
-    private function middleware() :JsonPayload
-    {
-        
-        return new JsonPayload();
-        
-    }
-    
-    private function assertParsedBody($expected)
-    {
-        
-        $this->assertSame($expected, $GLOBALS['test']['parsed_json']);
-        
-    }
-    
-    private function jsonRequest()
-    {
-        
-        return TestRequest::from('GET', 'foo')
-                          ->withAddedHeader('Content-Type', 'application/json');
-        
-    }
-    
     /** @test */
     public function nothing_is_processed_with_missing_content_type_header()
     {
@@ -149,6 +127,28 @@ class JsonPayloadTest extends UnitTest
             return $response->createResponse();
             
         });
+        
+    }
+    
+    private function middleware() :JsonPayload
+    {
+        
+        return new JsonPayload();
+        
+    }
+    
+    private function assertParsedBody($expected)
+    {
+        
+        $this->assertSame($expected, $GLOBALS['test']['parsed_json']);
+        
+    }
+    
+    private function jsonRequest()
+    {
+        
+        return TestRequest::from('GET', 'foo')
+                          ->withAddedHeader('Content-Type', 'application/json');
         
     }
     

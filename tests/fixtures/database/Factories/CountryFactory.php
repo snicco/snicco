@@ -18,6 +18,15 @@ class CountryFactory extends Factory
         ];
     }
     
+    public function narnia()
+    {
+        return $this->state(function (array $attributes) {
+            return [
+                'continent' => 'Narnia',
+            ];
+        });
+    }
+    
     private function continent()
     {
         
@@ -33,15 +42,6 @@ class CountryFactory extends Factory
         
         return Arr::random($continents);
         
-    }
-    
-    public function narnia()
-    {
-        return $this->state(function (array $attributes) {
-            return [
-                'continent' => 'Narnia',
-            ];
-        });
     }
     
 }

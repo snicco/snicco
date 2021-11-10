@@ -60,13 +60,6 @@ trait InteractsWithWordpressUsers
         
     }
     
-    private function normalizeUser($user) :int
-    {
-        
-        return $user instanceof WP_User ? $user->ID : $user;
-        
-    }
-    
     protected function assertUserNotDeleted($user)
     {
         
@@ -75,6 +68,13 @@ trait InteractsWithWordpressUsers
         $user = get_user_by('id', $user_id);
         
         PHPUnit::assertInstanceOf(WP_User::class, $user, "The user [$user_id] does not exists.");
+        
+    }
+    
+    private function normalizeUser($user) :int
+    {
+        
+        return $user instanceof WP_User ? $user->ID : $user;
         
     }
     

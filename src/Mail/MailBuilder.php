@@ -55,6 +55,30 @@ class MailBuilder
         return $this->dispatcher->dispatch(new PendingMail($this->fillAttributes($mail)));
     }
     
+    public function to($recipients) :MailBuilder
+    {
+        
+        $this->to = Arr::wrap($recipients);
+        
+        return $this;
+    }
+    
+    public function cc($recipients) :MailBuilder
+    {
+        
+        $this->cc = Arr::wrap($recipients);
+        
+        return $this;
+    }
+    
+    public function bcc($recipients) :MailBuilder
+    {
+        
+        $this->bcc = Arr::wrap($recipients);
+        
+        return $this;
+    }
+    
     private function fillAttributes(Mailable $mail) :Mailable
     {
         
@@ -90,30 +114,6 @@ class MailBuilder
         
         return $new_mailable;
         
-    }
-    
-    public function to($recipients) :MailBuilder
-    {
-        
-        $this->to = Arr::wrap($recipients);
-        
-        return $this;
-    }
-    
-    public function cc($recipients) :MailBuilder
-    {
-        
-        $this->cc = Arr::wrap($recipients);
-        
-        return $this;
-    }
-    
-    public function bcc($recipients) :MailBuilder
-    {
-        
-        $this->bcc = Arr::wrap($recipients);
-        
-        return $this;
     }
     
 }

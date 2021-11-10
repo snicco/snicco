@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\unit\Exceptions;
 
+use Mockery;
+use WP_User;
 use Exception;
 use Tests\UnitTest;
 use Psr\Log\LogLevel;
@@ -281,7 +283,7 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
         WP::shouldReceive('isUserLoggedIn')->andReturnTrue()->byDefault();
         WP::shouldReceive('currentUser')->andReturnUsing(function () {
             
-            $user = \Mockery::mock(\WP_User::class);
+            $user = Mockery::mock(WP_User::class);
             $user->user_email = 'c@web.de';
             return $user;
         });
@@ -291,7 +293,7 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
     
     protected function tearDown() :void
     {
-        \Mockery::close();
+        Mockery::close();
         WP::reset();
         parent::tearDown();
     }

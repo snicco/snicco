@@ -12,11 +12,11 @@ class SettingAuthCookie extends Event
     
     public WP_User $user;
     
-    public int     $user_id;
+    public int $user_id;
     
-    public int     $expiration;
+    public int $expiration;
     
-    public string  $scheme;
+    public string $scheme;
     
     private string $cookie;
     

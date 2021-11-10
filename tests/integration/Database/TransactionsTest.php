@@ -10,6 +10,7 @@ use Snicco\Database\WPConnection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
+use Snicco\Database\Exceptions\SqlException;
 
 class TransactionsTest extends DatabaseTestCase
 {
@@ -59,7 +60,7 @@ class TransactionsTest extends DatabaseTestCase
                 ['name' => 'Real Madrid', 'country' => 'spain'],
             ]);
             
-        } catch (\Snicco\Database\Exceptions\SqlException $e) {
+        } catch (SqlException $e) {
             
             DB::rollback();
             $this->assertTeamNotExists('Liverpool');
@@ -99,7 +100,7 @@ class TransactionsTest extends DatabaseTestCase
                 ['name' => 'Real Madrid', 'country' => 'spain'],
             ]);
             
-        } catch (\Snicco\Database\Exceptions\SqlException $e) {
+        } catch (SqlException $e) {
             
             DB::rollback(3);
             
@@ -153,7 +154,7 @@ class TransactionsTest extends DatabaseTestCase
             
             $this->fail('Expected query exception was not thrown.');
             
-        } catch (\Snicco\Database\Exceptions\SqlException $e) {
+        } catch (SqlException $e) {
             
             $this->assertStringContainsString(
                 "Duplicate entry 'Real Madrid' for key 'wp_football_teams.football_teams_name_unique",

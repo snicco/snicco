@@ -33,22 +33,6 @@ class MethodField
         
     }
     
-    private function allowedMethod(string $method) :bool
-    {
-        
-        $valid = ['PUT', 'PATCH', 'DELETE'];
-        
-        $method = strtoupper($method);
-        
-        return in_array($method, $valid);
-    }
-    
-    private function sign(string $method)
-    {
-        
-        return hash_hmac('sha256', "method_override_$method", $this->app_key);
-    }
-    
     public function string(string $method) :string
     {
         
@@ -83,6 +67,22 @@ class MethodField
         
         return $method;
         
+    }
+    
+    private function allowedMethod(string $method) :bool
+    {
+        
+        $valid = ['PUT', 'PATCH', 'DELETE'];
+        
+        $method = strtoupper($method);
+        
+        return in_array($method, $valid);
+    }
+    
+    private function sign(string $method)
+    {
+        
+        return hash_hmac('sha256', "method_override_$method", $this->app_key);
     }
     
 }

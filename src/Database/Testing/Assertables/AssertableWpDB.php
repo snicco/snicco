@@ -108,37 +108,6 @@ class AssertableWpDB
         
     }
     
-    private function compile($conditions) :array
-    {
-        
-        $wheres = '';
-        $values = [];
-        
-        foreach ($conditions as $column => $value) {
-            
-            if (Str::endsWith($wheres, ['%f', '%d', '%s'])) {
-                $wheres .= " AND ";
-            }
-            
-            if (is_float($value)) {
-                $wheres .= "`$column`".' = %f';
-            }
-            
-            if (is_int($value)) {
-                $wheres .= "`$column`".' = %d';
-            }
-            
-            if (is_string($value)) {
-                $wheres .= "`$column`".' = %s';
-            }
-            
-            $values[] = $value;
-            
-        }
-        
-        return [$wheres, $values];
-    }
-    
     public function assertRecordEquals($conditions, array $expected)
     {
         [$wheres, $values] = $this->compile($conditions);
@@ -182,6 +151,37 @@ class AssertableWpDB
             "The expected count [$count] does not match the actual count [$actual_count]."
         );
         
+    }
+    
+    private function compile($conditions) :array
+    {
+        
+        $wheres = '';
+        $values = [];
+        
+        foreach ($conditions as $column => $value) {
+            
+            if (Str::endsWith($wheres, ['%f', '%d', '%s'])) {
+                $wheres .= " AND ";
+            }
+            
+            if (is_float($value)) {
+                $wheres .= "`$column`".' = %f';
+            }
+            
+            if (is_int($value)) {
+                $wheres .= "`$column`".' = %d';
+            }
+            
+            if (is_string($value)) {
+                $wheres .= "`$column`".' = %s';
+            }
+            
+            $values[] = $value;
+            
+        }
+        
+        return [$wheres, $values];
     }
     
     private function format(array $data)

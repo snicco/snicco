@@ -43,16 +43,6 @@ class RedirectIfAuthenticatedTest extends UnitTest
         
     }
     
-    private function newMiddleware(string $redirect_url = null) :RedirectIfAuthenticated
-    {
-        
-        $m = new RedirectIfAuthenticated($this->generator, $redirect_url);
-        $m->setResponseFactory($this->response);
-        
-        return $m;
-        
-    }
-    
     /** @test */
     public function logged_in_users_are_redirected_to_the_home_url()
     {
@@ -105,6 +95,16 @@ class RedirectIfAuthenticatedTest extends UnitTest
         
         WP::reset();
         Mockery::close();
+        
+    }
+    
+    private function newMiddleware(string $redirect_url = null) :RedirectIfAuthenticated
+    {
+        
+        $m = new RedirectIfAuthenticated($this->generator, $redirect_url);
+        $m->setResponseFactory($this->response);
+        
+        return $m;
         
     }
     

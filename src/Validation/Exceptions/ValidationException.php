@@ -34,14 +34,14 @@ class ValidationException extends HttpException
         string $log_message = 'Failed Validation',
         int $status = 400
     ) :ValidationException {
-    
+        
         $bag = new MessageBag($messages);
         $e = new static($messages, $log_message, $status);
         $e->setMessageBag($bag);
         $e->withMessageForUsers($message_for_users);
         
         return $e;
-    
+        
     }
     
     public function setMessageBag(

@@ -223,9 +223,7 @@ class ResetPasswordControllerTest extends AuthTestCase
     
     private function routeUrl(int $user_id)
     {
-        
-        ;
-        
+    
         return TestApp::url()
                       ->signedRoute(
                           'auth.reset.password',

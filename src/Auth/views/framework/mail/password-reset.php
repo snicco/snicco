@@ -13,4 +13,4 @@ declare(strict_types=1);
 <p> To reset your password, click the link below and follow the instructions. The link will expire
     in <?= esc_html($expires / 60) ?> minutes. </p>
 
-<a href="<?= esc_url($magic_link) ?>"> Reset my password. </a>
+<a href="<?= esc_url($magic_link) ?>"> Reset my password.</a>

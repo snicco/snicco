@@ -45,13 +45,6 @@ class UrlParser
         
     }
     
-    private static function containsDot($string) :bool
-    {
-        
-        return Str::contains($string, ':');
-        
-    }
-    
     public static function normalize(string $url) :string
     {
         
@@ -141,6 +134,13 @@ class UrlParser
         preg_match_all('/[^{]+(?=})/', $url_pattern, $matches);
         
         return collect($matches)->flatten()->all();
+        
+    }
+    
+    private static function containsDot($string) :bool
+    {
+        
+        return Str::contains($string, ':');
         
     }
     

@@ -175,9 +175,7 @@ class ForgotPasswordControllerTest extends AuthTestCase
     
     private function routeUrl()
     {
-        
-        ;
-        
+    
         return TestApp::url()->signedRoute('auth.forgot.password');
     }
     

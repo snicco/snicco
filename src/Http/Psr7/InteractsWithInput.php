@@ -30,17 +30,6 @@ trait InteractsWithInput
         
     }
     
-    private function inputSource() :array
-    {
-        
-        $input = in_array($this->realMethod(), ['GET', 'HEAD'])
-            ? $this->getQueryParams()
-            : $this->getParsedBody();
-        
-        return (array) $input;
-        
-    }
-    
     public function server(string $key, $default = null)
     {
         
@@ -172,13 +161,6 @@ trait InteractsWithInput
         return true;
     }
     
-    private function isEmptyString(string $key) :bool
-    {
-        $value = $this->input($key);
-        
-        return ! is_bool($value) && ! is_array($value) && trim((string) $value) === '';
-    }
-    
     /**
      * Will return falls if any of the provided keys is missing.
      */
@@ -213,6 +195,24 @@ trait InteractsWithInput
         
         return $key ? Arr::get($old, $key, $default) : $old;
         
+    }
+    
+    private function inputSource() :array
+    {
+        
+        $input = in_array($this->realMethod(), ['GET', 'HEAD'])
+            ? $this->getQueryParams()
+            : $this->getParsedBody();
+        
+        return (array) $input;
+        
+    }
+    
+    private function isEmptyString(string $key) :bool
+    {
+        $value = $this->input($key);
+        
+        return ! is_bool($value) && ! is_array($value) && trim((string) $value) === '';
     }
     
 }

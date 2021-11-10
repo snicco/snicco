@@ -196,18 +196,14 @@ class AccountControllerTest extends AuthTestCase
     
     protected function validCreateLink() :string
     {
-        
-        ;
-        
+    
         return TestApp::url()->signedRoute('auth.accounts.create', [], 300, true);
         
     }
     
     protected function validStoreLink() :string
     {
-        
-        ;
-        
+    
         return TestApp::url()->signedRoute('auth.accounts.store', [], 900);
     }
     

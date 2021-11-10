@@ -42,15 +42,6 @@ class ViewComposerCollectionTest extends TestCase
         
     }
     
-    private function newViewComposerCollection() :ViewComposerCollection
-    {
-        
-        $dir = getenv('ROOT_DIR').DS.'tests'.DS.'views';
-        
-        return new ViewComposerCollection($this->factory);
-        
-    }
-    
     /** @test */
     public function the_view_is_not_changed_if_no_composer_matches()
     {
@@ -152,6 +143,15 @@ class ViewComposerCollectionTest extends TestCase
             TEST_CONFIG['composers'],
             $this->createContainer()
         );
+        
+    }
+    
+    private function newViewComposerCollection() :ViewComposerCollection
+    {
+        
+        $dir = getenv('ROOT_DIR').DS.'tests'.DS.'views';
+        
+        return new ViewComposerCollection($this->factory);
         
     }
     

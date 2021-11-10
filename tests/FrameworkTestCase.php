@@ -148,8 +148,8 @@ class FrameworkTestCase extends BaseTestCase
 class CustomizeConfigProvider extends ServiceProvider
 {
     
-    private array  $remove = [];
-    private array  $extend = [];
+    private array  $remove  = [];
+    private array  $extend  = [];
     private array  $replace = [];
     private string $config_namespace;
     

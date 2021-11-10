@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\unit\Routing;
 
+use Mockery;
 use Snicco\Routing\Route;
 use PHPUnit\Framework\TestCase;
 use Snicco\Routing\RoutingResult;
@@ -44,13 +45,13 @@ class RoutingResultTest extends TestCase
     
     protected function tearDown() :void
     {
-        \Mockery::close();
+        Mockery::close();
         parent::tearDown();
     }
     
     private function route()
     {
-        return \Mockery::mock(Route::class);
+        return Mockery::mock(Route::class);
     }
     
 }

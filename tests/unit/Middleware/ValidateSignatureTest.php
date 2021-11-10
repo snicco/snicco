@@ -34,7 +34,7 @@ class ValidateSignatureTest extends UnitTest
     
     private ResponseFactory $response_factory;
     
-    private Delegate        $delegate;
+    private Delegate $delegate;
     
     /** @test */
     public function a_valid_signature_grants_access_to_the_route()

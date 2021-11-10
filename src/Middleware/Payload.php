@@ -62,6 +62,14 @@ abstract class Payload extends Middleware
         
     }
     
+    /**
+     * @param  StreamInterface  $stream
+     *
+     * @return array
+     * @throws RuntimeException
+     */
+    abstract protected function parse(StreamInterface $stream) :array;
+    
     private function shouldParseRequest(Request $request) :bool
     {
         
@@ -74,13 +82,5 @@ abstract class Payload extends Middleware
         return Str::contains($request->getHeaderLine('Content-Type'), $this->content_types);
         
     }
-    
-    /**
-     * @param  StreamInterface  $stream
-     *
-     * @return array
-     * @throws RuntimeException
-     */
-    abstract protected function parse(StreamInterface $stream) :array;
     
 }

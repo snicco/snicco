@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Responses;
 
+use WP_User;
 use Snicco\Http\Psr7\Response;
 use Psr\Http\Message\ResponseInterface;
 
 class LoginResponse extends Response
 {
     
-    private \WP_User $user;
+    private WP_User $user;
     private bool     $remember;
     
-    public function __construct(ResponseInterface $psr7_response, \WP_User $user, bool $remember = false)
+    public function __construct(ResponseInterface $psr7_response, WP_User $user, bool $remember = false)
     {
         parent::__construct(
             $psr7_response
@@ -22,7 +23,7 @@ class LoginResponse extends Response
         $this->remember = $remember;
     }
     
-    public function user() :\WP_User
+    public function user() :WP_User
     {
         return $this->user;
     }

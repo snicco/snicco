@@ -18,7 +18,7 @@ $site_name = esc_html(\Snicco\Support\WP::siteName());
     To confirm your account click the following link:
 </p>
 <p>
-    <a href="<?= esc_url($magic_link) ?>"> Confirm your account </a>
+    <a href="<?= esc_url($magic_link) ?>"> Confirm your account</a>
 </p>
 Sincerely,
 <br>

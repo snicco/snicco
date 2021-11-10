@@ -40,17 +40,17 @@ class ConditionBucket
         
     }
     
-    private function mergePrevious(array $previous_group_conditions)
-    {
-        
-        $this->conditions = array_merge($previous_group_conditions, $this->conditions);
-        
-    }
-    
     public function all() :array
     {
         
         return $this->conditions;
+        
+    }
+    
+    private function mergePrevious(array $previous_group_conditions)
+    {
+        
+        $this->conditions = array_merge($previous_group_conditions, $this->conditions);
         
     }
     

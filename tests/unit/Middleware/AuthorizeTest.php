@@ -46,13 +46,6 @@ class AuthorizeTest extends UnitTest
         
     }
     
-    private function newMiddleware(string $capability = 'manage_options', ...$args)
-    {
-        
-        return new Authorize($capability, ...$args);
-        
-    }
-    
     /** @test */
     public function a_user_without_authorisation_to_the_route_will_throw_an_exception()
     {
@@ -136,6 +129,13 @@ class AuthorizeTest extends UnitTest
         
         WP::clearResolvedInstances();
         Mockery::close();
+        
+    }
+    
+    private function newMiddleware(string $capability = 'manage_options', ...$args)
+    {
+        
+        return new Authorize($capability, ...$args);
         
     }
     

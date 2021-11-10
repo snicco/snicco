@@ -43,13 +43,6 @@ class ShareCookiesTest extends UnitTest
         
     }
     
-    private function newMiddleware() :ShareCookies
-    {
-        
-        return new ShareCookies();
-        
-    }
-    
     /** @test */
     public function response_cookies_can_be_added()
     {
@@ -144,6 +137,13 @@ class ShareCookiesTest extends UnitTest
     {
         
         $this->request = TestRequest::from('GET', '/foo');
+        
+    }
+    
+    private function newMiddleware() :ShareCookies
+    {
+        
+        return new ShareCookies();
         
     }
     

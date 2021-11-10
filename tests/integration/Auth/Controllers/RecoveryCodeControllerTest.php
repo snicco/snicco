@@ -175,9 +175,7 @@ class RecoveryCodeControllerTest extends AuthTestCase
     
     private function routePath()
     {
-        
-        ;
-        
+    
         return $this->app->resolve(UrlGenerator::class)->toRoute('auth.2fa.recovery-codes');
     }
     
