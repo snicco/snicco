@@ -13,8 +13,8 @@ use Snicco\Routing\RouteRegistrar;
 use Snicco\Routing\RouteCollection;
 use Snicco\Factories\ConditionFactory;
 use Snicco\Contracts\RouteUrlGenerator;
-use Snicco\Routing\CachedRouteCollection;
 use Snicco\Routing\CacheFileRouteRegistrar;
+use Snicco\Routing\CachedFastRouteCollection;
 use Snicco\Contracts\AbstractRouteCollection;
 use Snicco\Contracts\RouteRegistrarInterface;
 use Snicco\Routing\FastRoute\FastRouteMatcher;
@@ -69,17 +69,17 @@ class RoutingServiceProviderTest extends FrameworkTestCase
         $endpoints = TestApp::config('routing.api.endpoints');
         $this->assertSame(['test' => 'api-prefix/base'], $endpoints);
         
-        $preset = TestApp::config('routing.presets.api.test');
+        $preset = TestApp::config('routing.presets.test');
         $this->assertSame([
             'prefix' => 'api-prefix/base',
             'name' => 'test',
-            'middleware' => ['api.test'],
+            'middleware' => ['api'],
         ], $preset);
         
         $middleware = TestApp::config('middleware.groups');
         
-        // middleware groups are created but are emtpy.
-        $this->assertSame([], $middleware['api.test']);
+        // middleware groups are created but are empty.
+        $this->assertSame([], $middleware['api']);
         
     }
     
@@ -152,7 +152,7 @@ class RoutingServiceProviderTest extends FrameworkTestCase
         
         $routes = TestApp::resolve(AbstractRouteCollection::class);
         
-        $this->assertInstanceOf(CachedRouteCollection::class, $routes);
+        $this->assertInstanceOf(CachedFastRouteCollection::class, $routes);
         
     }
     

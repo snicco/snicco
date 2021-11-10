@@ -85,29 +85,11 @@ class RouteMiddlewareDependencyInjectionTest extends UnitTest
         
     }
     
-    private function assertRouteActionConstructedTimes(int $times, $class)
-    {
-        
-        $actual = $GLOBALS['test'][$class::constructed_times] ?? 0;
-        
-        $this->assertSame(
-            $times,
-            $actual,
-            'RouteAction ['
-            .$class
-            .'] was supposed to run: '
-            .$times
-            .' times. Actual: '
-            .$GLOBALS['test'][$class::constructed_times]
-        );
-        
-    }
-    
     protected function beforeTestRun()
     {
         
         $this->container = $this->createContainer();
-        $this->routes = $this->newRouteCollection();
+        $this->routes = $this->newCachedRouteCollection();
         $this->container->instance(UrlGenerator::class, $this->newUrlGenerator());
         $this->container->instance(MagicLink::class, new TestMagicLink());
         $this->container->instance(ViewFactory::class, new TestViewFactory());
@@ -123,6 +105,24 @@ class RouteMiddlewareDependencyInjectionTest extends UnitTest
         Event::setInstance(null);
         Mockery::close();
         WP::reset();
+        
+    }
+    
+    private function assertRouteActionConstructedTimes(int $times, $class)
+    {
+        
+        $actual = $GLOBALS['test'][$class::constructed_times] ?? 0;
+        
+        $this->assertSame(
+            $times,
+            $actual,
+            'RouteAction ['
+            .$class
+            .'] was supposed to run: '
+            .$times
+            .' times. Actual: '
+            .$GLOBALS['test'][$class::constructed_times]
+        );
         
     }
     

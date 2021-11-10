@@ -14,6 +14,4 @@ interface RouteMatcher
     
     public function find(string $method, string $path) :RoutingResult;
     
-    public function isCached() :bool;
-    
 }

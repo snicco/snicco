@@ -220,6 +220,23 @@ class RouteRegistrationTest extends FrameworkTestCase
         
     }
     
+    /** @test */
+    public function route_files_starting_with_an_underscore_will_not_be_required_automatically()
+    {
+        
+        $this->withoutExceptionHandling();
+        $this->withRequest($this->frontendRequest('GET', '/underscore-route'));
+        $this->bootApp();
+        
+        global $wp;
+        // init loads the routes.
+        do_action('init');
+        $wp->main();
+        
+        $this->sentResponse()->assertDelegatedToWordPress();
+        
+    }
+    
     protected function makeFallbackConditionPass()
     {
         $GLOBALS['test']['pass_fallback_route_condition'] = true;
@@ -294,3 +311,4 @@ class RoutingDefinitionServiceProvider extends ServiceProvider
     }
     
 }
+

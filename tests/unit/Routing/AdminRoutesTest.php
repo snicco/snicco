@@ -479,7 +479,7 @@ class AdminRoutesTest extends UnitTest
     {
         
         $this->container = $this->createContainer();
-        $this->routes = $this->newRouteCollection();
+        $this->routes = $this->newCachedRouteCollection();
         Event::make($this->container);
         Event::fake();
         WP::setFacadeContainer($this->container);
