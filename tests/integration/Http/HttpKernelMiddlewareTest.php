@@ -68,7 +68,7 @@ class HttpKernelMiddlewareTest extends FrameworkTestCase
         $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
         
         $this->withAddedMiddleware('global', GlobalMiddleware::class)
-             ->withAddedConfig(['middleware.always_run_global' => true]);
+             ->withAddedConfig(['middleware.always_run_core_groups' => true]);
         
         $this->get('middleware/bogus')->assertDelegatedToWordPress();
         
@@ -87,7 +87,7 @@ class HttpKernelMiddlewareTest extends FrameworkTestCase
         $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
         
         $this->withAddedMiddleware('global', GlobalMiddleware::class)
-             ->withAddedConfig(['middleware.always_run_global' => true]);
+             ->withAddedConfig(['middleware.always_run_core_groups' => true]);
         
         $this->get('/foo')->assertSee('foo');
         
@@ -106,7 +106,7 @@ class HttpKernelMiddlewareTest extends FrameworkTestCase
         $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
         
         $this->withAddedMiddleware('global', GlobalMiddleware::class)
-             ->withAddedConfig(['middleware.always_run_global' => true]);
+             ->withAddedConfig(['middleware.always_run_core_groups' => true]);
         
         $this->get('/middleware/route-with-global')
              ->assertSee('route-with-global');

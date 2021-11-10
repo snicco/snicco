@@ -72,14 +72,16 @@ class MiddlewareServiceProvider extends ServiceProvider
             'middleware.priority',
             [Secure::class, Www::class, TrailingSlash::class,]
         );
-        $this->config->extend('middleware.always_run_global', false);
+        $this->config->extend('middleware.always_run_core_groups', false);
     }
     
     private function bindMiddlewareStack()
     {
         $this->container->singleton(MiddlewareStack::class, function () {
             
-            $stack = new MiddlewareStack();
+            $stack = new MiddlewareStack(
+                $this->config->get('middleware.always_run_core_groups', false)
+            );
             
             if ($this->config->get('middleware.disabled', false)) {
                 $stack->disableAllMiddleware();

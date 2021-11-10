@@ -29,7 +29,6 @@ class FallBackController extends Controller
     private                 $fallback_handler;
     private Pipeline        $pipeline;
     private MiddlewareStack $middleware_stack;
-    private Closure         $respond_with;
     
     public function __construct(Pipeline $pipeline, MiddlewareStack $middleware_stack)
     {
@@ -49,26 +48,29 @@ class FallBackController extends Controller
         
         if ($route) {
             
-            $this->respond_with = $this->runRoute($route);
             $route->instantiateAction();
-            $middleware = $this->middleware_stack->createFor($route, $request);
+            $handler = $this->runRoute($route);
+            $middleware = $this->middleware_stack->createForRoute($route);
             
         }
         else {
             
-            $this->respond_with = $this->nonMatchingRoute();
-            $middleware = $this->middlewareForRequestWithoutRoute($request);
+            $handler = $this->nonMatchingRoute();
+            $middleware = $this->middleware_stack->createForRequestWithoutRoute(
+                $request,
+                is_callable($this->fallback_handler)
+            );
             
         }
         
         return $this->pipeline
             ->send($request)
             ->through($middleware)
-            ->then(function (Request $request) {
+            ->then(function (Request $request) use ($handler) {
                 
-                $response = call_user_func($this->respond_with, $request);
-                
-                return $this->response_factory->toResponse($response);
+                return $this->response_factory->toResponse(
+                    call_user_func($handler, $request)
+                );
                 
             });
         
@@ -98,22 +100,6 @@ class FallBackController extends Controller
                 : $this->response_factory->delegateToWP();
             
         };
-    }
-    
-    private function middlewareForRequestWithoutRoute(Request $request) :array
-    {
-        $groups = is_callable($this->fallback_handler)
-            ? ['global', 'web',]
-            : ($this->withWebMiddlewareGlobally($request) ? ['web'] : []);
-        
-        return $this->middleware_stack->onlyGroups($groups, $request);
-    }
-    
-    private function withWebMiddlewareGlobally(Request $request)
-    {
-        // If this request attribute is true we know that global middleware has already
-        // been run in the kernel which means "always_run_global" has been set to true in the config.
-        return $request->getAttribute('global_middleware_run', false);
     }
     
 }

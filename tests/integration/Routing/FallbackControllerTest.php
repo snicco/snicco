@@ -120,7 +120,7 @@ class FallbackControllerTest extends FrameworkTestCase
         
         $this->withAddedConfig([
             'middleware.groups.global' => [GlobalMiddleware::class],
-            'middleware.always_run_global' => true,
+            'middleware.always_run_core_groups' => true,
         ]);
         
         $this->get('bogus')->assertDelegatedToWordPress();
@@ -141,7 +141,7 @@ class FallbackControllerTest extends FrameworkTestCase
         
         $this->withAddedConfig([
             'middleware.groups.global' => [GlobalMiddleware::class],
-            'middleware.always_run_global' => true,
+            'middleware.always_run_core_groups' => true,
         ])->bootApp();
         
         $this->router->fallback(fn() => 'FOO_FALLBACK');
@@ -164,7 +164,7 @@ class FallbackControllerTest extends FrameworkTestCase
         
         $this->withAddedConfig([
             'middleware.groups.web' => [WebMiddleware::class],
-            'middleware.always_run_global' => true,
+            'middleware.always_run_core_groups' => true,
         ])->bootApp();
         
         $this->get('/bogus')->assertDelegatedToWordPress();
@@ -185,7 +185,7 @@ class FallbackControllerTest extends FrameworkTestCase
         
         $this->withAddedConfig([
             'middleware.groups.web' => [WebMiddleware::class],
-            'middleware.always_run_global' => false,
+            'middleware.always_run_core_groups' => false,
         ])->bootApp();
         
         $this->get('/bogus')->assertDelegatedToWordPress();
