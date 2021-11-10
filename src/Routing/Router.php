@@ -142,13 +142,7 @@ class Router
      */
     public function loadRoutes(bool $global_routes = false)
     {
-        
-        if ( ! $this->hasGroupStack()) {
-            
-            $this->routes->loadIntoDispatcher($global_routes);
-            
-        }
-        
+        $this->routes->loadIntoDispatcher($global_routes);
     }
     
     /**

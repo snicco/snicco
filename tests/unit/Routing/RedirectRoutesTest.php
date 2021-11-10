@@ -50,15 +50,6 @@ class RedirectRoutesTest extends UnitTest
         
     }
     
-    private function newRedirector()
-    {
-        
-        $this->container->instance(
-            AbstractRedirector::class,
-            new Redirector($this->newUrlGenerator(), $this->psrResponseFactory())
-        );
-    }
-    
     /** @test */
     public function a_permanent_redirect_can_be_created()
     {
@@ -204,7 +195,7 @@ class RedirectRoutesTest extends UnitTest
     {
         
         $this->container = $this->createContainer();
-        $this->routes = $this->newRouteCollection();
+        $this->routes = $this->newCachedRouteCollection();
         $this->container->instance(UrlGenerator::class, $this->newUrlGenerator());
         $this->container->instance(ViewFactory::class, new TestViewFactory());
         $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
@@ -223,6 +214,15 @@ class RedirectRoutesTest extends UnitTest
         WP::reset();
         HeaderStack::reset();
         
+    }
+    
+    private function newRedirector()
+    {
+        
+        $this->container->instance(
+            AbstractRedirector::class,
+            new Redirector($this->newUrlGenerator(), $this->psrResponseFactory())
+        );
     }
     
 }

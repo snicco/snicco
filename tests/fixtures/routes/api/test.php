@@ -13,9 +13,9 @@ TestApp::get('foo', function () {
 });
 
 TestApp::get('/{badendpoint}', function (string $badendpoint) {
-    
+
     return TestApp::response()->make(400)->withBody(
         TestApp::response()->createStream('The endpoint: '.$badendpoint.' does not exist.')
     );
-    
+
 });

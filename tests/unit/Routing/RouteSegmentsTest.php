@@ -24,7 +24,7 @@ class RouteSegmentsTest extends UnitTest
     
     private ContainerAdapter $container;
     
-    private Router           $router;
+    private Router $router;
     
     /** @test */
     public function url_encoded_routes_work()
@@ -524,7 +524,7 @@ class RouteSegmentsTest extends UnitTest
     {
         
         $this->container = $this->createContainer();
-        $this->routes = $this->newRouteCollection();
+        $this->routes = $this->newCachedRouteCollection();
         Event::make($this->container);
         Event::fake();
         WP::setFacadeContainer($this->container);

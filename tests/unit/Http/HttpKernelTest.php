@@ -29,9 +29,9 @@ class HttpKernelTest extends UnitTest
     use CreateDefaultWpApiMocks;
     use CreatesWpUrls;
     
-    private ContainerAdapter        $container;
+    private ContainerAdapter $container;
     
-    private Router                  $router;
+    private Router $router;
     
     private AbstractRouteCollection $routes;
     
@@ -177,7 +177,7 @@ class HttpKernelTest extends UnitTest
     {
         
         $this->container = $this->createContainer();
-        $this->routes = $this->newRouteCollection();
+        $this->routes = $this->newCachedRouteCollection();
         Event::make($this->container);
         Event::fake();
         WP::setFacadeContainer($this->container);

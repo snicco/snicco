@@ -19,18 +19,69 @@ abstract class AbstractRouteCollection
     
     protected ConditionFactory   $condition_factory;
     protected RouteActionFactory $action_factory;
+    protected RouteMatcher       $route_matcher;
     protected array              $routes                      = [];
     protected array              $name_list                   = [];
     private ?RoutingResult       $query_filter_routing_result = null;
     
+    public function __construct(
+        RouteMatcher $route_matcher,
+        ConditionFactory $condition_factory,
+        RouteActionFactory $action_factory
+    ) {
+        
+        $this->route_matcher = $route_matcher;
+        $this->condition_factory = $condition_factory;
+        $this->action_factory = $action_factory;
+        
+    }
+    
+    /**
+     * Add a route to the collection.
+     *
+     * @param  Route  $route
+     *
+     * @return Route
+     */
     abstract public function add(Route $route) :Route;
     
+    /**
+     * Find a named route in the collection.
+     *
+     * @param  string  $name
+     *
+     * @return Route|null
+     */
     abstract public function findByName(string $name) :?Route;
     
+    /**
+     * Find all routes that don't have an url but a custom condition.
+     *
+     * @param  string  $method
+     *
+     * @return array
+     */
     abstract public function withWildCardUrl(string $method) :array;
     
+    /**
+     * Load all added routes into the route dispatcher.
+     * The dispatcher will later perform the actual matching of all routes
+     * against a given request.
+     *
+     * @param  bool  $global_routes
+     */
     abstract public function loadIntoDispatcher(bool $global_routes) :void;
     
+    /**
+     * For frontend requests we have to check on the "do_parse_request" hook
+     * if the developer wants to filter the current WP_QUERY instance dynamically.
+     * If we do find a result we store it as a property so that we don't have to match against the request
+     * later on the template_redirect hook.
+     *
+     * @param  Request  $request
+     *
+     * @return RoutingResult
+     */
     public function matchForQueryFiltering(Request $request) :RoutingResult
     {
         
@@ -42,6 +93,13 @@ abstract class AbstractRouteCollection
         
     }
     
+    /**
+     * Match the current request against the registered routes.
+     *
+     * @param  Request  $request
+     *
+     * @return RoutingResult
+     */
     public function match(Request $request) :RoutingResult
     {
         

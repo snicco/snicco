@@ -45,7 +45,7 @@ trait CreateTestSubjects
     
     protected function createRoutes(Closure $routes, bool $force_trailing = false)
     {
-        $this->routes = $this->newRouteCollection();
+        $this->routes = $this->newCachedRouteCollection();
         
         $this->router = $this->newRouter($force_trailing);
         

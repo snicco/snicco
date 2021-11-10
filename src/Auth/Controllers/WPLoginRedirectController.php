@@ -8,7 +8,7 @@ use Snicco\Http\Controller;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 
-class WpLoginRedirectController extends Controller
+class WPLoginRedirectController extends Controller
 {
     
     public function __invoke(Request $request) :Response

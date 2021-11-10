@@ -64,6 +64,7 @@ class MiddlewareServiceProvider extends ServiceProvider
             'web' => [],
             'ajax' => [],
             'admin' => [],
+            'api' => [],
         
         ]);
         
