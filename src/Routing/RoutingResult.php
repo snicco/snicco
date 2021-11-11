@@ -28,7 +28,6 @@ class RoutingResult
     
     public function route()
     {
-        
         return $this->route;
     }
     
@@ -52,6 +51,11 @@ class RoutingResult
         
         return $this->compiled_segments;
         
+    }
+    
+    public function hasRoute() :bool
+    {
+        return $this->route instanceof Route || is_array($this->route);
     }
     
 }

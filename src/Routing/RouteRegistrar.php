@@ -29,7 +29,6 @@ class RouteRegistrar implements RouteRegistrarInterface
     {
         $this->registerAPIRoutes($config);
         $this->registerNormalRoutes($config);
-        $this->router->createFallbackWebRoute();
     }
     
     /**
@@ -41,11 +40,19 @@ class RouteRegistrar implements RouteRegistrarInterface
         
         $seen = [];
         
+        $web_routes = null;
+        
         foreach ($files as $file) {
             
             $name = Str::before($file->getFilename(), '.php');
             
             if (isset($seen[$name])) {
+                continue;
+            }
+            
+            if ($name === 'web') {
+                $seen['web'] = 'web';
+                $web_routes = $file->getRealPath();
                 continue;
             }
             
@@ -56,6 +63,14 @@ class RouteRegistrar implements RouteRegistrarInterface
             $this->requireFile($path, $preset, $config);
             
             $seen[$name] = $name;
+            
+        }
+        
+        if ($web_routes) {
+            
+            $preset = $config->get('routing.presets.web', []);
+            
+            $this->requireFile($web_routes, $preset, $config);
             
         }
         

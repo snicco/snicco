@@ -59,7 +59,7 @@ abstract class AbstractRouteCollection
      *
      * @param  string  $method
      *
-     * @return array
+     * @return Route[]
      */
     abstract public function withWildCardUrl(string $method) :array;
     
@@ -95,6 +95,9 @@ abstract class AbstractRouteCollection
     
     /**
      * Match the current request against the registered routes.
+     * We can't evaluate routes based on custom conditions here because this method might be
+     * called before WordPress has even parsed the main query. So all conditions based on
+     * conditional tags would possibly be a false negative.
      *
      * @param  Request  $request
      *

@@ -335,7 +335,7 @@ class RouteCachingTest extends UnitTest
     }
     
     /** @test */
-    public function the_fallback_controller_works_with_cached_routes()
+    public function routes_with_conditions_can_be_cached()
     {
         
         $this->createRoutes(function () {
@@ -347,8 +347,6 @@ class RouteCachingTest extends UnitTest
                 
                          });
             
-            $this->router->createFallbackWebRoute();
-            
         });
         
         $this->newCachedRouter();
@@ -359,7 +357,7 @@ class RouteCachingTest extends UnitTest
     }
     
     /** @test */
-    public function the_fallback_controller_works_with_cached_routes_and_closure_conditions()
+    public function routes_with_closure_conditions_can_be_cached()
     {
         
         $_SERVER['pass_condition'] = true;
@@ -376,8 +374,6 @@ class RouteCachingTest extends UnitTest
                              return 'FOO';
                 
                          });
-            
-            $this->router->createFallbackWebRoute();
             
         });
         

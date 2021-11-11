@@ -82,6 +82,10 @@ class SessionServiceProvider extends ServiceProvider
             StartSessionMiddleware::class,
         ]);
         
+        $this->config->extend('middleware.priority', [
+            StartSessionMiddleware::class,
+        ]);
+        
     }
     
     private function bindSessionDriver()

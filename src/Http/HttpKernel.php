@@ -9,7 +9,6 @@ use Snicco\Routing\Pipeline;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Events\ResponseSent;
-use Snicco\Traits\GathersMiddleware;
 use Snicco\Http\Responses\NullResponse;
 use Snicco\Middleware\Core\RouteRunner;
 use Snicco\Middleware\Core\ShareCookies;
@@ -24,11 +23,7 @@ use Snicco\Middleware\Core\EvaluateResponseMiddleware;
 class HttpKernel
 {
     
-    use GathersMiddleware;
-    
     private Pipeline $pipeline;
-    
-    private bool $always_with_global_middleware = false;
     
     private array $core_middleware = [
         SetRequestAttributes::class,
@@ -41,34 +36,12 @@ class HttpKernel
         RouteRunner::class,
     ];
     
-    // Only these get a priority, because they always need to run before any global middleware
-    // that a user might provide.
-    private array $priority_map = [
-        SetRequestAttributes::class,
-        EvaluateResponseMiddleware::class,
-        ShareCookies::class,
-        AppendSpecialPathSuffix::class,
-    ];
-    
-    private array $global_middleware = [];
-    
     private ResponseEmitter $emitter;
     
     public function __construct(Pipeline $pipeline, ResponseEmitter $emitter)
     {
         $this->pipeline = $pipeline;
         $this->emitter = $emitter;
-    }
-    
-    public function alwaysWithGlobalMiddleware(array $global_middleware = [])
-    {
-        $this->global_middleware = $global_middleware;
-        $this->always_with_global_middleware = true;
-    }
-    
-    public function withPriority(array $priority)
-    {
-        $this->priority_map = array_merge($this->priority_map, $priority);
     }
     
     public function run(Request $request) :Response
@@ -83,33 +56,20 @@ class HttpKernel
     private function handle(Request $request) :Response
     {
         
-        if ($this->withMiddleware()) {
-            $request = $request->withAttribute('global_middleware_run', true);
-        }
-        
         return $this->pipeline->send($request)
                               ->through($this->gatherMiddleware($request))
                               ->run();
     }
     
-    private function withMiddleware() :bool
-    {
-        return $this->always_with_global_middleware;
-    }
-    
     private function gatherMiddleware(Request $request) :array
     {
+        
         if ( ! $request->isWpAdmin()) {
             Arr::pullByValue(OutputBufferMiddleware::class, $this->core_middleware);
         }
         
-        if ( ! $this->withMiddleware()) {
-            return $this->core_middleware;
-        }
+        return $this->core_middleware;
         
-        $merged = array_merge($this->global_middleware, $this->core_middleware);
-        
-        return $this->sortMiddleware($merged, $this->priority_map);
     }
     
     private function sendResponse(Response $response, Request $request) :Response

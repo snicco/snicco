@@ -14,7 +14,6 @@ use Snicco\Http\Psr7\Response;
 use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Snicco\Contracts\ExceptionHandler;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use ReflectionPayload\ReflectionPayload;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
@@ -64,7 +63,7 @@ class Pipeline
         
     }
     
-    public function then(Closure $request_handler) :ResponseInterface
+    public function then(Closure $request_handler) :Response
     {
         
         $this->middleware[] = [new Delegate($request_handler), []];

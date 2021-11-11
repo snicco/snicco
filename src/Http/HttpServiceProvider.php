@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Snicco\Http;
 
 use RuntimeException;
-use Snicco\Routing\Pipeline;
 use RKA\Middleware\IpAddress;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Contracts\AbstractRedirector;
@@ -16,7 +15,6 @@ class HttpServiceProvider extends ServiceProvider
     public function register() :void
     {
         $this->bindConfig();
-        $this->bindKernel();
         $this->bindRedirector();
         $this->bindIpAddressMiddleware();
     }
@@ -24,30 +22,6 @@ class HttpServiceProvider extends ServiceProvider
     public function bootstrap() :void
     {
         //
-    }
-    
-    private function bindKernel()
-    {
-        $this->container->singleton(HttpKernel::class, function () {
-            $kernel = new HttpKernel(
-                $this->container->make(Pipeline::class),
-                $this->container->make(ResponseEmitter::class),
-            );
-            
-            if ($this->config->get('middleware.disabled', false)) {
-                return $kernel;
-            }
-            
-            if ($this->config->get('middleware.always_run_global', false)) {
-                $kernel->alwaysWithGlobalMiddleware(
-                    $this->config->get('middleware.groups.global', [])
-                );
-            }
-            
-            $kernel->withPriority($this->config->get('middleware.priority', []));
-            
-            return $kernel;
-        });
     }
     
     private function bindRedirector()

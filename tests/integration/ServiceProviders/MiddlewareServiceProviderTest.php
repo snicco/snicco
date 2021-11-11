@@ -65,7 +65,7 @@ class MiddlewareServiceProviderTest extends FrameworkTestCase
     public function middleware_is_not_run_without_matching_routes_by_default()
     {
         
-        $setting = TestApp::config('middleware.always_run_global', '');
+        $setting = TestApp::config('middleware.always_run_core_groups', '');
         
         $this->assertFalse($setting);
         
