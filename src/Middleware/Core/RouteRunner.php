@@ -6,7 +6,6 @@ namespace Snicco\Middleware\Core;
 
 use Closure;
 use Snicco\Http\Delegate;
-use Snicco\Routing\Route;
 use Snicco\Routing\Pipeline;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
@@ -39,18 +38,11 @@ class RouteRunner extends Middleware
         
         if ( ! $route = $route_result->route()) {
             
-            return $this->response_factory->delegateToWP();
+            return $this->delegateToWordPress($request);
             
         }
         
-        // The Middleware Pipeline is created within the FallbackController::class
-        if ($route->isFallback()) {
-            
-            return $this->runFallbackRouteController($route, $request);
-            
-        }
-        
-        $middleware = $this->middleware_stack->createFor($route, $request);
+        $middleware = $this->middleware_stack->createForRoute($route);
         
         return $this->pipeline
             ->send($request)
@@ -62,13 +54,6 @@ class RouteRunner extends Middleware
     private function rebindRequest(Request $request)
     {
         $this->container->instance(Request::class, $request);
-    }
-    
-    private function runFallbackRouteController(Route $route, Request $request) :Response
-    {
-        
-        return $this->response_factory->toResponse($route->run($request));
-        
     }
     
     private function runRoute(RoutingResult $routing_result) :Closure
@@ -84,6 +69,22 @@ class RouteRunner extends Middleware
             return $this->response_factory->toResponse($response);
             
         };
+        
+    }
+    
+    private function delegateToWordPress(Request $request) :Response
+    {
+        
+        $middleware = $this->middleware_stack->createForRequestWithoutRoute($request);
+        
+        if ( ! count($middleware)) {
+            return $this->response_factory->delegateToWP();
+        }
+        
+        return $this->pipeline
+            ->send($request)
+            ->through($middleware)
+            ->then(fn() => $this->response_factory->delegateToWP());
         
     }
     

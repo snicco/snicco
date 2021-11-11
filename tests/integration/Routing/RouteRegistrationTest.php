@@ -72,7 +72,7 @@ class RouteRegistrationTest extends FrameworkTestCase
     }
     
     /** @test */
-    public function admin_routes_are_also_run_for_other_admin_pages()
+    public function admin_routes_are_also_run_for_other_admin_pages_besides_admin_php()
     {
         
         $this->withRequest($this->adminRequest('GET', '', 'profile.php'));
@@ -120,7 +120,7 @@ class RouteRegistrationTest extends FrameworkTestCase
         do_action('init');
         $wp->main();
         
-        $this->sentResponse()->assertSee('get_fallback')->assertOk();
+        $this->sentResponse()->assertSee('get_condition')->assertOk();
         
     }
     
@@ -166,7 +166,7 @@ class RouteRegistrationTest extends FrameworkTestCase
         
         $this->withAddedProvider(SimulateAdminProvider::class);
         $this->bootApp();
-    
+        
         $this->assertSame('/wp-admin/admin.php?page=foo', TestApp::routeUrl('admin.foo'));
         
     }
@@ -177,7 +177,7 @@ class RouteRegistrationTest extends FrameworkTestCase
         
         $this->withAddedProvider(SimulateAjaxProvider::class);
         $this->bootApp();
-    
+        
         $this->assertSame('/wp-admin/admin-ajax.php', TestApp::routeUrl('ajax.foo'));
         
     }

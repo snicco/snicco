@@ -12,7 +12,6 @@ use Snicco\Support\Arr;
 use Contracts\ContainerAdapter;
 use Snicco\Controllers\ViewController;
 use Snicco\Traits\HoldsRouteBlueprint;
-use Snicco\Controllers\FallBackController;
 use Snicco\Controllers\RedirectController;
 use Snicco\Contracts\AbstractRouteCollection;
 
@@ -145,29 +144,16 @@ class Router
         $this->routes->loadIntoDispatcher($global_routes);
     }
     
-    /**
-     * @internal
-     */
-    public function createFallbackWebRoute()
+    public function fallback($fallback_action) :Route
     {
         
-        $this->any('/{fallback}', [FallBackController::class, 'handle'])
-             ->and('fallback', '[^.]+')
-             ->where(function () {
-            
-                 return ! WP::isAdmin();
-            
-             });
+        $pattern = $this->force_trailing
+            ? '(?!\/'.WP::wpAdminFolder().')[^.\s]+?\/'
+            : '(?!\/'.WP::wpAdminFolder().')[^.\s]+?[^\/]';
         
-    }
-    
-    public function fallback(callable $fallback_handler)
-    {
-        
-        /** @var FallBackController $controller */
-        $controller = $this->container->make(FallBackController::class);
-        $controller->setFallbackHandler($fallback_handler);
-        $this->container->instance(FallBackController::class, $controller);
+        return $this->any('/{'.Route::ROUTE_FALLBACK_NAME.'}', $fallback_action)
+                    ->middleware('web')
+                    ->and(Route::ROUTE_FALLBACK_NAME, $pattern);
         
     }
     
@@ -251,9 +237,9 @@ class Router
             
         }
         
-        // Never add a trailing slash the fallback controller route nor any route that
-        // goes to an actual file on the filesystem. (mostly wp-admin/*)
-        if ($url === '/{fallback}'
+        // Never add a trailing slash the fallback route nor any route that
+        // goes to a file on the filesystem. (mostly wp-admin/*)
+        if (Str::contains($url, Route::ROUTE_FALLBACK_NAME)
             || Str::contains($url, '.php')
             || Str::contains($url, $admin_dir)) {
             

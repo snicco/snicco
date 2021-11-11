@@ -6,6 +6,7 @@ namespace Snicco\Routing;
 
 use Closure;
 use Snicco\Support\Url;
+use Snicco\Support\Str;
 use Snicco\Http\Psr7\Request;
 use Snicco\Support\UrlParser;
 use Snicco\Contracts\RouteAction;
@@ -15,7 +16,6 @@ use Snicco\Factories\ConditionFactory;
 use ReflectionPayload\ReflectionPayload;
 use Snicco\Contracts\ConditionInterface;
 use Snicco\Factories\RouteActionFactory;
-use Snicco\Controllers\FallBackController;
 
 class Route
 {
@@ -23,6 +23,7 @@ class Route
     use SetRouteAttributes;
     
     const ROUTE_WILDCARD = '*';
+    const ROUTE_FALLBACK_NAME = 'sniccowp_fallback_route';
     
     private array  $methods;
     private string $url;
@@ -253,7 +254,7 @@ class Route
     
     public function isFallback() :bool
     {
-        return $this->action === [FallBackController::class, 'handle'];
+        return Str::contains($this->url, Route::ROUTE_FALLBACK_NAME);
     }
     
     public function getMiddleware() :array
