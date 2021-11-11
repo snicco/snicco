@@ -22,7 +22,24 @@ class WordpressConditionRoutes extends FrameworkTestCase
         
         $response = $this->get('/post1');
         $response->assertOk();
-        $response->assertSee('get_fallback');
+        $response->assertSee('get_condition');
+        
+        Event::assertDispatched(ResponseSent::class);
+        
+    }
+    
+    /** @test */
+    public function routes_with_conditions_have_priority_over_a_user_defined_fallback_routes()
+    {
+        
+        $GLOBALS['test']['pass_fallback_route_condition'] = true;
+        $GLOBALS['test']['include_fallback_route'] = true;
+        $this->bootApp();
+        Event::fake([ResponseSent::class]);
+        
+        $response = $this->get('/post1');
+        $response->assertOk();
+        $response->assertSee('get_condition');
         
         Event::assertDispatched(ResponseSent::class);
         
@@ -65,7 +82,7 @@ class WordpressConditionRoutes extends FrameworkTestCase
         $this->bootApp();
         Event::fake([ResponseSent::class]);
         
-        $this->patch('/post1')->assertSee('patch_fallback');
+        $this->patch('/post1')->assertSee('patch_condition');
         
         Event::assertDispatched(ResponseSent::class);
         $this->assertSame(

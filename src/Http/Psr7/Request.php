@@ -42,17 +42,14 @@ class Request implements ServerRequestInterface
      * This is stored in an additional attribute to not tamper with the "real" requested URL.
      * This URI shall not be used anymore BESIDES FOR MATCHING A ROUTE.
      */
-    public function withRoutingUri(UriInterface $uri)
+    public function withRoutingUri(UriInterface $uri) :Request
     {
-        
         return $this->withAttribute('routing.uri', $uri);
     }
     
-    public function withRoutingResult(RoutingResult $routing_result)
+    public function withRoutingResult(RoutingResult $routing_result) :Request
     {
-        
         return $this->withAttribute('routing.result', $routing_result);
-        
     }
     
     public function filtersWpQuery(?bool $set = null)
