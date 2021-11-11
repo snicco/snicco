@@ -110,7 +110,7 @@ trait SetRouteAttributes
     
     public function noAction() :Route
     {
-        $this->handle([FallBackController::class, 'delegateToWordPress']);
+        $this->handle([FallBackController::class, 'delegate']);
         return $this;
     }
     

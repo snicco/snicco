@@ -7,6 +7,7 @@ namespace Snicco\Testing\Concerns;
 use Snicco\Support\WP;
 use Snicco\Support\Str;
 use Snicco\Support\Url;
+use Snicco\Support\Arr;
 use Snicco\Http\HttpKernel;
 use Snicco\Session\Session;
 use Snicco\View\ViewFactory;
@@ -45,33 +46,6 @@ trait MakesHttpRequests
     private bool $without_trailing_slash = false;
     
     private bool $follow_redirects = false;
-    
-    public function adminAjaxRequest(string $method, string $action) :Request
-    {
-        
-        $method = strtoupper($method);
-        $uri = $this->createUri($this->ajaxUrl($action));
-        
-        $this->default_server_variables['REQUEST_METHOD'] ??= $method;
-        $this->default_server_variables['SCRIPT_NAME'] ??= WP::wpAdminFolder()
-                                                           .DIRECTORY_SEPARATOR
-                                                           .'admin-ajax.php';
-        
-        $request = new Request(
-            $this->request_factory->createServerRequest(
-                $method,
-                $uri,
-                $this->default_server_variables
-            )
-        );
-        
-        if ($request->isGet()) {
-            return $request->withQueryParams(['action' => $action]);
-        }
-        
-        return $request->withParsedBody(['action' => $action]);
-        
-    }
     
     public function withHeaders(array $headers) :self
     {
@@ -273,6 +247,44 @@ trait MakesHttpRequests
         $this->gotToPluginPage($menu_slug, $parent);
         
         return $request->withQueryParams(['page' => $menu_slug]);
+        
+    }
+    
+    public function getAdminAjax(array $query, array $headers = []) :TestResponse
+    {
+        
+        if ( ! isset($query['action'])) {
+            throw new \InvalidArgumentException('Action parameters is missing');
+        }
+        
+        $request = $this->adminAjaxRequest('GET', $query['action'], Arr::except($query, 'action'));
+        
+        return $this->performRequest($request, $headers);
+        
+    }
+    
+    public function adminAjaxRequest(string $method, string $action, array $data = []) :Request
+    {
+        
+        $method = strtoupper($method);
+        $uri = $this->createUri($this->ajaxUrl($action));
+        
+        $this->default_server_variables['REQUEST_METHOD'] ??= $method;
+        $this->default_server_variables['SCRIPT_NAME'] ??= $this->ajaxScriptName();
+        
+        $request = new Request(
+            $this->request_factory->createServerRequest(
+                $method,
+                $uri,
+                $this->default_server_variables
+            )
+        );
+        
+        if ($request->isGet()) {
+            return $request->withQueryParams(array_merge(['action' => $action], $data));
+        }
+        
+        return $request->withParsedBody(array_merge(['action' => $action], $data));
         
     }
     
@@ -546,6 +558,11 @@ trait MakesHttpRequests
                .DIRECTORY_SEPARATOR
                .$parent;
         
+    }
+    
+    private function ajaxScriptName() :string
+    {
+        return $this->adminScriptName('admin-ajax.php');
     }
     
 }

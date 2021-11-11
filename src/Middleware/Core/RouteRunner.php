@@ -6,7 +6,6 @@ namespace Snicco\Middleware\Core;
 
 use Closure;
 use Snicco\Http\Delegate;
-use Snicco\Routing\Route;
 use Snicco\Routing\Pipeline;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
@@ -43,14 +42,6 @@ class RouteRunner extends Middleware
             
         }
         
-        // The Middleware Pipeline is created within the FallbackController::class
-        // because we might have actually matched a route via WordPress conditional tags.
-        if ($route->isFallback()) {
-            
-            return $this->runFallbackRouteController($route, $request);
-            
-        }
-        
         $middleware = $this->middleware_stack->createForRoute($route);
         
         return $this->pipeline
@@ -63,11 +54,6 @@ class RouteRunner extends Middleware
     private function rebindRequest(Request $request)
     {
         $this->container->instance(Request::class, $request);
-    }
-    
-    private function runFallbackRouteController(Route $route, Request $request) :Response
-    {
-        return $this->response_factory->toResponse($route->run($request));
     }
     
     private function runRoute(RoutingResult $routing_result) :Closure
