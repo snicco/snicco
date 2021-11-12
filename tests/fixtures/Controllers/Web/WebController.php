@@ -4,17 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\fixtures\Controllers\Web;
 
-use Snicco\Http\Psr7\Request;
-
 class WebController
 {
     
-    public function handle(Request $request)
+    public function handle()
     {
-        
-        // This controller is never run.
-        // we only assert that is can be created without a FQN.
-        
+        return 'web_controller';
     }
     
 }

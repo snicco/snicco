@@ -6,7 +6,6 @@ namespace Tests\stubs;
 
 use Snicco\Http\Psr7\Request;
 use Nyholm\Psr7\Factory\Psr17Factory;
-use Tests\helpers\CreatePsr17Factories;
 
 /**
  * @internal
@@ -14,13 +13,10 @@ use Tests\helpers\CreatePsr17Factories;
 class TestRequest extends Request
 {
     
-    use CreatePsr17Factories;
-    
     public $body;
     
     public static function fromFullUrl(string $method, string $url) :TestRequest
     {
-        
         $psr17Factory = new Psr17Factory();
         
         $request = new TestRequest(
@@ -31,12 +27,10 @@ class TestRequest extends Request
         $request = $request->withQueryParams($query);
         
         return $request->withAttribute('_wp_admin_folder', 'wp-admin');
-        
     }
     
     public static function from(string $method, $path, $host = null) :TestRequest
     {
-        
         $psr17Factory = new Psr17Factory();
         
         $path = ltrim($path, '/');
@@ -56,12 +50,10 @@ class TestRequest extends Request
         $request = $request->withQueryParams($query);
         
         return $request->withAttribute('_wp_admin_folder', 'wp-admin');
-        
     }
     
     public static function withServerParams(Request $request, array $params) :TestRequest
     {
-        
         $psr17Factory = new Psr17Factory();
         
         $request = new TestRequest(
@@ -69,24 +61,6 @@ class TestRequest extends Request
         );
         
         return $request->withAttribute('_wp_admin_folder', 'wp-admin');
-        
-    }
-    
-    public function withLoadingScript(string $script)
-    {
-        
-        $psr17Factory = new Psr17Factory();
-        
-        $request = new TestRequest(
-            $psr17Factory->createServerRequest(
-                $this->getMethod(),
-                $this->getUri(),
-                ['SCRIPT_NAME' => $script]
-            )
-        );
-        
-        return $request;
-        
     }
     
 }

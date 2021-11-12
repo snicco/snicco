@@ -22,19 +22,6 @@ class FrameworkTestCase extends BaseTestCase
     
     protected array $mail_data;
     
-    protected function createApplication() :Application
-    {
-        $app = TestApp::make(FIXTURES_DIR);
-        $f = new Psr17Factory();
-        $app->setServerRequestFactory($f);
-        $app->setStreamFactory($f);
-        $app->setUploadedFileFactory($f);
-        $app->setUriFactory($f);
-        $app->setResponseFactory($f);
-        
-        return $app;
-    }
-    
     protected function setUp() :void
     {
         parent::setUp();
@@ -47,14 +34,25 @@ class FrameworkTestCase extends BaseTestCase
     
     protected function tearDown() :void
     {
-        $GLOBALS['test'] = [];
         TestApp::setApplication(null);
         parent::tearDown();
     }
     
+    protected function createApplication() :Application
+    {
+        $app = TestApp::make(__DIR__.'/fixtures');
+        $f = new Psr17Factory();
+        $app->setServerRequestFactory($f);
+        $app->setStreamFactory($f);
+        $app->setUploadedFileFactory($f);
+        $app->setUriFactory($f);
+        $app->setResponseFactory($f);
+        
+        return $app;
+    }
+    
     protected function sentResponse() :TestResponse
     {
-        
         $r = $this->app->resolve(ResponseEmitter::class)->response;
         
         if ( ! $r instanceof TestResponse) {
@@ -62,16 +60,13 @@ class FrameworkTestCase extends BaseTestCase
         }
         
         return $r;
-        
     }
     
     protected function pushProvider($provider) :self
     {
-        
         $this->config->prepend('app.providers', $provider);
         
         return $this;
-        
     }
     
     protected function withAddedProvider($provider) :self
@@ -79,9 +74,7 @@ class FrameworkTestCase extends BaseTestCase
         $provider = Arr::wrap($provider);
         
         foreach ($provider as $p) {
-            
             $this->withAddedConfig(['app.providers' => [$p]]);
-            
         }
         
         return $this;
@@ -89,15 +82,12 @@ class FrameworkTestCase extends BaseTestCase
     
     protected function withRemovedProvider($provider) :self
     {
-        
         $provider = Arr::wrap($provider);
         
         $providers = $this->app->config('app.providers');
         
         foreach ($provider as $p) {
-            
             Arr::pullByValue($p, $providers);
-            
         }
         
         $this->withReplacedConfig('app.providers', $providers);
@@ -197,7 +187,6 @@ class CustomizeConfigProvider extends ServiceProvider
         foreach ($this->replace as $key => $value) {
             $this->config->set($key, $value);
         }
-        
     }
     
     function bootstrap() :void

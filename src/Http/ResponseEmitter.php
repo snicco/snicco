@@ -31,7 +31,6 @@ class ResponseEmitter
     
     public function emit(Response $response) :void
     {
-        
         $isEmpty = $this->isResponseEmpty($response);
         
         if ($headers_not_sent = headers_sent() === false) {
@@ -40,15 +39,12 @@ class ResponseEmitter
         }
         
         if ( ! $isEmpty && $headers_not_sent) {
-            
             $this->emitBody($response);
-            
         }
     }
     
     public function emitHeaders(Response $response) :void
     {
-        
         if (headers_sent()) {
             return;
         }
@@ -61,7 +57,6 @@ class ResponseEmitter
                 $replace = false;
             }
         }
-        
     }
     
     public function prepare(Response $response, Request $request) :Response
@@ -71,7 +66,6 @@ class ResponseEmitter
     
     public function emitCookies(Cookies $cookies) :void
     {
-        
         if (headers_sent()) {
             return;
         }
@@ -79,17 +73,13 @@ class ResponseEmitter
         $cookies = $cookies->toHeaders();
         
         foreach ($cookies as $cookie) {
-            
             $header = sprintf('%s: %s', 'Set-Cookie', $cookie);
             header($header, false);
-            
         }
-        
     }
     
     protected function isResponseEmpty(Response $response) :bool
     {
-        
         if ($response->isEmpty()) {
             return true;
         }
@@ -115,7 +105,6 @@ class ResponseEmitter
     
     protected function emitBody(Response $response) :void
     {
-        
         $body = $response->getBody();
         
         if ($body->isSeekable()) {
@@ -128,7 +117,6 @@ class ResponseEmitter
         }
         
         if ($amountToRead) {
-            
             while ($amountToRead > 0 && ! $body->eof()) {
                 $length = min($this->response_chunk_size, $amountToRead);
                 $data = $body->read($length);
@@ -149,7 +137,6 @@ class ResponseEmitter
                 }
             }
         }
-        
     }
     
 }

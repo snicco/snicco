@@ -22,30 +22,22 @@ class BladeView implements ViewInterface, IlluminateViewContract
     
     public function toResponsable() :string
     {
-        
         return $this->toString();
     }
     
     public function toString() :string
     {
-        
         try {
-            
             return $this->illuminate_view->render();
-            
         } catch (Throwable $e) {
-            
             throw new ViewException(
                 'Error rendering view:['.$this->name().']', $e
             );
-            
         }
-        
     }
     
     public function render() :string
     {
-        
         return $this->toString();
     }
     

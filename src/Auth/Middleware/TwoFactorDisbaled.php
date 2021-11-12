@@ -15,20 +15,16 @@ class TwoFactorDisbaled extends Middleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        
         if ($this->userHasTwoFactorEnabled($request->user())) {
-            
             return $this->response_factory->json(
                 [
                     'message' => 'Two-Factor authentication is already enabled.',
                 ],
                 409
             );
-            
         }
         
         return $next($request);
-        
     }
     
 }

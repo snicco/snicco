@@ -9,9 +9,15 @@ use Tests\FrameworkTestCase;
 class RequestTest extends FrameworkTestCase
 {
     
+    protected function setUp() :void
+    {
+        parent::setUp();
+        
+        $this->request = $this->frontendRequest('POST', '/foo');
+    }
+    
     public function testValidateAjaxNonce()
     {
-        
         $nonce = wp_create_nonce('test_nonce');
         
         $request = $this->request->withParsedBody([
@@ -45,26 +51,14 @@ class RequestTest extends FrameworkTestCase
         ]);
         
         $this->assertTrue($request->hasValidAjaxNonce('test_nonce'));
-        
     }
     
     /** @test */
     public function testAuthenticated()
     {
-        
         $this->assertFalse($this->request->authenticated());
         $this->actingAs($calvin = $this->createAdmin());
         $this->assertTrue($this->request->authenticated());
-        
-    }
-    
-    protected function setUp() :void
-    {
-        
-        parent::setUp();
-        
-        $this->request = $this->frontendRequest('POST', '/foo');
-        
     }
     
 }

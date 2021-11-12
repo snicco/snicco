@@ -17,10 +17,8 @@ class CustomCondition implements ConditionInterface
     
     public function __construct(callable $callable, $args = [])
     {
-        
         $this->callable = $callable;
         $this->arguments = $args;
-        
     }
     
     public function getCallable()
@@ -35,16 +33,12 @@ class CustomCondition implements ConditionInterface
     
     public function isSatisfied(Request $request) :bool
     {
-        
         return call_user_func_array($this->callable, $this->arguments);
-        
     }
     
     public function getArguments(Request $request) :array
     {
-        
         return $this->arguments;
-        
     }
     
 }

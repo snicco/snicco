@@ -58,13 +58,10 @@ class Application implements ArrayAccess
      */
     public function boot() :void
     {
-        
         if ($this->hasBeenBootstrapped()) {
-            
             throw new ConfigurationException(
                 static::class.' already bootstrapped.'
             );
-            
         }
         
         array_walk($this->bootstrappers, function ($class) {
@@ -72,19 +69,16 @@ class Application implements ArrayAccess
         });
         
         $this->bootstrapped = true;
-        
     }
     
     public function distPath(string $path = '') :string
     {
-        
         $ds = DIRECTORY_SEPARATOR;
         $dist = $this->config('app.dist');
         $base = $this->basePath();
         $folder = rtrim($base, $ds).$ds.ltrim($dist, $ds);
         
         return $folder.($path ? $ds.ltrim($path, $ds) : $path);
-        
     }
     
     public function config(?string $key = null, $default = null)
@@ -95,13 +89,10 @@ class Application implements ArrayAccess
         }
         
         if ( ! $key) {
-            
             return $this->config;
-            
         }
         
         return $this->config->get($key, $default);
-        
     }
     
     public function basePath(string $path = '') :string
@@ -111,7 +102,6 @@ class Application implements ArrayAccess
     
     public function storagePath(string $path = '') :string
     {
-        
         $storage_dir = $this->config->get('app.storage_dir');
         
         if ( ! $storage_dir) {
@@ -119,12 +109,10 @@ class Application implements ArrayAccess
         }
         
         return $storage_dir.($path ? DIRECTORY_SEPARATOR.$path : $path);
-        
     }
     
     public function configPath(string $path = '') :string
     {
-        
         return $this->base_path.DIRECTORY_SEPARATOR.'config'.($path ? DIRECTORY_SEPARATOR.$path
                 : $path);
     }
@@ -141,7 +129,6 @@ class Application implements ArrayAccess
     
     public function configCachePath() :string
     {
-        
         return $this->base_path
                .DIRECTORY_SEPARATOR
                .'bootstrap'
@@ -149,7 +136,6 @@ class Application implements ArrayAccess
                .'cache'
                .DIRECTORY_SEPARATOR
                .'__generated::config.json';
-        
     }
     
     public function isRunningUnitTest() :bool
@@ -159,7 +145,6 @@ class Application implements ArrayAccess
     
     public function environment() :string
     {
-        
         if ( ! isset($this['env'])) {
             throw new RuntimeException(
                 "App environment not set."
@@ -169,11 +154,9 @@ class Application implements ArrayAccess
         $env = $this['env'];
         
         if ( ! in_array($env, ['local', 'production', 'testing'])) {
-            
             throw new RuntimeException(
                 "Allowed values for the environment are ['local','production','testing']"
             );
-            
         }
         
         return $env;

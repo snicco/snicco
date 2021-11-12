@@ -34,7 +34,6 @@ class LoadServiceProviders implements Bootstrapper
     
     public function bootstrap(Application $app) :void
     {
-        
         $user_providers = $app->config('app.providers', []);
         $providers = collect($this->providers)->merge($user_providers);
         
@@ -42,7 +41,6 @@ class LoadServiceProviders implements Bootstrapper
                   ->map(fn($provider) => $this->instantiate($provider, $app))
                   ->each(fn(ServiceProvider $provider) => $provider->register())
                   ->each(fn(ServiceProvider $provider) => $provider->bootstrap());
-        
     }
     
     /**
@@ -50,14 +48,12 @@ class LoadServiceProviders implements Bootstrapper
      */
     private function isValid($provider)
     {
-        
         if ( ! is_subclass_of($provider, ServiceProvider::class)) {
             throw new ConfigurationException(
                 'The following class does not implement '.
                 ServiceProvider::class.': '.$provider
             );
         }
-        
     }
     
     private function instantiate($provider, Application $app) :ServiceProvider

@@ -15,12 +15,10 @@ class SetRequestAttributes extends Middleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        
         $request = $request
             ->withUserId(WP::userId());
         
         return $next($request);
-        
     }
     
 }

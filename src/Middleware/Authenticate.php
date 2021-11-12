@@ -21,25 +21,19 @@ class Authenticate extends Middleware
     
     public function handle(Request $request, $next) :ResponseInterface
     {
-        
         if (WP::isUserLoggedIn()) {
-            
             return $next($request);
-            
         }
         
         if ($request->isExpectingJson()) {
-            
             return $this->response_factory
                 ->json('Authentication Required')
                 ->withStatus(401);
-            
         }
         
         $redirect_after_login = $this->url ?? $request->fullPath();
         
         return $this->response_factory->redirectToLogin(true, $redirect_after_login);
-        
     }
     
 }

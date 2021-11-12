@@ -21,31 +21,33 @@ class InteractsWithInputTest extends UnitTest
     
     private Request $request;
     
+    protected function setUp() :void
+    {
+        parent::setUp();
+        
+        $this->request = TestRequest::from('GET', 'foo');
+    }
+    
     public function testGetFromServer()
     {
-        
         $request = TestRequest::withServerParams($this->request, ['foo' => 'bar']);
         
         $this->assertSame('bar', $request->server('foo'));
         
         $this->assertSame('default', $request->server('bogus', 'default'));
-        
     }
     
     public function testInputDoesNotDependOnVerb()
     {
-        
         $request = $this->request->withQueryParams(['foo' => 'bar']);
         $this->assertSame(['foo' => 'bar'], $request->all());
         
         $request = TestRequest::from('POST', '/foo')->withParsedBody(['foo' => 'bar']);
         $this->assertSame(['foo' => 'bar'], $request->all());
-        
     }
     
     public function testInputWithKey()
     {
-        
         $request = $this->request->withQueryParams(
             [
                 'foo' => 'bar',
@@ -59,12 +61,10 @@ class InteractsWithInputTest extends UnitTest
         $this->assertSame('bar', $request->input('foo'));
         $this->assertSame('default', $request->input('bogus', 'default'));
         $this->assertSame('calvin', $request->input('team.player'));
-        
     }
     
     public function testInputNested()
     {
-        
         $request = $this->request->withQueryParams([
             'products' => [
                 [
@@ -83,12 +83,10 @@ class InteractsWithInputTest extends UnitTest
         
         $names = $request->input('products.*.name');
         $this->assertSame(['shoe', 'shirt'], $names);
-        
     }
     
     public function testInputIsAliasForAll()
     {
-        
         $request = $this->request->withQueryParams(
             [
                 'foo' => 'bar',
@@ -107,12 +105,10 @@ class InteractsWithInputTest extends UnitTest
                 'player' => 'calvin',
             ],
         ], $request->input());
-        
     }
     
     public function testQuery()
     {
-        
         $request = $this->request->withQueryParams(['foo' => 'bar']);
         $this->assertSame(['foo' => 'bar'], $request->query());
         $this->assertSame('bar', $request->query('foo'));
@@ -120,21 +116,17 @@ class InteractsWithInputTest extends UnitTest
         
         $request = TestRequest::from('POST', '/foo')->withParsedBody(['foo' => 'bar']);
         $this->assertSame(null, $request->query('foo'));
-        
     }
     
     public function testQueryString()
     {
-        
         $request = TestRequest::fromFullUrl('GET', 'https://foobar.com?foo=bar&baz=biz&=');
         
         $this->assertSame('foo=bar&baz=biz', $request->queryString());
-        
     }
     
     public function testBoolean()
     {
-        
         $request = $this->request->withQueryParams([
             'foo' => 1,
             'bar' => '1',
@@ -152,12 +144,10 @@ class InteractsWithInputTest extends UnitTest
         $this->assertTrue($request->boolean('boo'));
         $this->assertTrue($request->boolean('bam'));
         $this->assertFalse($request->boolean('bogus'));
-        
     }
     
     public function testOnly()
     {
-        
         $request = $this->request->withQueryParams([
             'product' => [
                 'name' => 'shoe',
@@ -178,12 +168,10 @@ class InteractsWithInputTest extends UnitTest
         $only = $request->only('product.description');
         $expected = [];
         $this->assertSame($expected, $only);
-        
     }
     
     public function testExcept()
     {
-        
         $request = $this->request->withQueryParams([
             'product' => [
                 'name' => 'shoe',
@@ -204,12 +192,10 @@ class InteractsWithInputTest extends UnitTest
         ];
         
         $this->assertSame($expected, $input);
-        
     }
     
     public function testHas()
     {
-        
         $request = $this->request->withQueryParams([
             'products' => [
                 [
@@ -231,12 +217,10 @@ class InteractsWithInputTest extends UnitTest
         $this->assertFalse(
             $request->has('products.0.name', 'products.0.price', 'products.0.label')
         );
-        
     }
     
     public function testHasAny()
     {
-        
         $request =
             $this->request->withQueryParams(['name' => 'calvin', 'age' => '', 'city' => null]);
         $this->assertTrue($request->hasAny('name'));
@@ -256,12 +240,10 @@ class InteractsWithInputTest extends UnitTest
         $this->assertTrue($request->hasAny('foo.baz'));
         $this->assertFalse($request->hasAny('foo.bax'));
         $this->assertTrue($request->hasAny(['foo.bax', 'foo.baz']));
-        
     }
     
     public function testFilled()
     {
-        
         $request = $this->request->withQueryParams([
             'dev' => 'calvin',
             'foo' => '',
@@ -269,12 +251,10 @@ class InteractsWithInputTest extends UnitTest
         
         $this->assertTrue($request->filled('dev'));
         $this->assertFalse($request->filled('foo'));
-        
     }
     
     public function testMissing()
     {
-        
         $request =
             $this->request->withQueryParams(['name' => 'calvin', 'age' => '', 'city' => null]);
         $this->assertFalse($request->missing('name'));
@@ -293,12 +273,10 @@ class InteractsWithInputTest extends UnitTest
         $this->assertFalse($request->missing('foo.baz'));
         $this->assertTrue($request->missing('foo.bax'));
         $this->assertTrue($request->missing(['foo.bax', 'foo.baz']));
-        
     }
     
     public function testOld()
     {
-        
         $session = new Session(new ArraySessionDriver(10));
         WP::shouldReceive('userId')->andReturn(1)->byDefault();
         $session->start('a');
@@ -312,21 +290,17 @@ class InteractsWithInputTest extends UnitTest
         
         WP::reset();
         Mockery::close();
-        
     }
     
     public function testOldWithoutSessionSet()
     {
-        
         $this->expectException(RuntimeException::class);
         
         $this->request->old();
-        
     }
     
     public function testValidate()
     {
-        
         $request = $this->request->withQueryParams(
             [
                 'foo' => 'bar',
@@ -368,12 +342,10 @@ class InteractsWithInputTest extends UnitTest
             'team.player' => v::equals('calvin'),
             'team' => v::contains('jeff'),
         ]);
-        
     }
     
     public function testValidateWithCustomMessages()
     {
-        
         $request = $this->request->withQueryParams(
             [
                 'team' => [
@@ -387,7 +359,6 @@ class InteractsWithInputTest extends UnitTest
         $request = $request->withValidator(new Validator());
         
         try {
-            
             $rules = [
                 'team.player' => [
                     v::equals('john'),
@@ -400,9 +371,7 @@ class InteractsWithInputTest extends UnitTest
             ]);
             
             $this->fail('Failed validation did not throw exception');
-            
         } catch (ValidationException $e) {
-            
             $errors = $e->errorsAsArray()['team']['player'][0];
             
             $messages = $e->messages();
@@ -413,17 +382,7 @@ class InteractsWithInputTest extends UnitTest
             );
             
             $this->assertSame('This is not valid for The player. Must be equal to john.', $errors);
-            
         }
-        
-    }
-    
-    protected function setUp() :void
-    {
-        
-        parent::setUp();
-        
-        $this->request = TestRequest::from('GET', 'foo');
     }
     
 }

@@ -6,7 +6,7 @@ declare(strict_types=1);
 <h3>Hello <?= $user->first_name ?? '' ?>,</h3>
 
 <p>
-    Someone has requested a password reset for your account at: <?= esc_html($site_name) ?>
+	Someone has requested a password reset for your account at: <?= esc_html($site_name) ?>
 </p>
 <p> If this was a mistake, ignore this email and nothing will happen. </p>
 

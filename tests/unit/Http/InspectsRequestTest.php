@@ -12,62 +12,51 @@ class InspectsRequestTest extends UnitTest
     
     public function testIsGet()
     {
-        
         $request = TestRequest::from('GET', '/foo');
         $this->assertTrue($request->isGet());
         
         $request = TestRequest::from('POST', '/foo');
         $this->assertFalse($request->isGet());
-        
     }
     
     public function testIsPost()
     {
-        
         $request = TestRequest::from('POST', '/foo');
         $this->assertTrue($request->isPost());
         
         $request = TestRequest::from('GET', '/foo');
         $this->assertFalse($request->isPost());
-        
     }
     
     public function testIsPut()
     {
-        
         $request = TestRequest::from('PUT', '/foo');
         $this->assertTrue($request->isPut());
         
         $request = TestRequest::from('GET', '/foo');
         $this->assertFalse($request->isPut());
-        
     }
     
     public function testIsPatch()
     {
-        
         $request = TestRequest::from('PATCH', '/foo');
         $this->assertTrue($request->isPatch());
         
         $request = TestRequest::from('GET', '/foo');
         $this->assertFalse($request->isPatch());
-        
     }
     
     public function testIsOptions()
     {
-        
         $request = TestRequest::from('OPTIONS', '/foo');
         $this->assertTrue($request->isOptions());
         
         $request = TestRequest::from('GET', '/foo');
         $this->assertFalse($request->isOptions());
-        
     }
     
     public function testIsDelete()
     {
-        
         $request = TestRequest::from('DELETE', '/foo');
         $this->assertTrue($request->isDelete());
         
@@ -77,7 +66,6 @@ class InspectsRequestTest extends UnitTest
     
     public function testIsHead()
     {
-        
         $request = TestRequest::from('HEAD', '/foo');
         $this->assertTrue($request->isHead());
         
@@ -87,7 +75,6 @@ class InspectsRequestTest extends UnitTest
     
     public function testIsSafe()
     {
-        
         $request = TestRequest::from('HEAD', '/foo');
         $this->assertTrue($request->isMethodSafe());
         
@@ -115,7 +102,6 @@ class InspectsRequestTest extends UnitTest
     
     public function testIsReadVerb()
     {
-        
         $request = TestRequest::from('HEAD', '/foo');
         $this->assertTrue($request->isReadVerb());
         
@@ -143,7 +129,6 @@ class InspectsRequestTest extends UnitTest
     
     public function testIsAjax()
     {
-        
         $request = TestRequest::from('POST', '/foo')
                               ->withAddedHeader('X-Requested-With', 'XMLHttpRequest');
         
@@ -154,12 +139,10 @@ class InspectsRequestTest extends UnitTest
         
         $this->assertFalse($request->isAjax());
         $this->assertFalse($request->isXmlHttpRequest());
-        
     }
     
     public function testIsSendingJson()
     {
-        
         $request = TestRequest::from('POST', 'foo')
                               ->withAddedHeader('Content-Type', 'application/json');
         $this->assertTrue($request->isSendingJson());
@@ -170,12 +153,10 @@ class InspectsRequestTest extends UnitTest
                                   'application/x-www-form-urlencoded'
                               );
         $this->assertFalse($request->isSendingJson());
-        
     }
     
     public function testWantsJson()
     {
-        
         $request = TestRequest::from('POST', 'foo')
                               ->withAddedHeader('Content-Type', 'application/json')
                               ->withAddedHeader('Accept', 'application/json');
@@ -187,12 +168,10 @@ class InspectsRequestTest extends UnitTest
                               ->withAddedHeader('Accept', 'text/html');
         
         $this->assertFalse($request->isExpectingJson());
-        
     }
     
     public function testAccepts()
     {
-        
         $request = TestRequest::from('POST', 'foo')
                               ->withAddedHeader('Accept', 'application/json');
         
@@ -211,35 +190,29 @@ class InspectsRequestTest extends UnitTest
         $this->assertTrue($request->accepts('application/json'));
         $this->assertTrue($request->accepts('application/json+ld'));
         $this->assertFalse($request->accepts('text/html'));
-        
     }
     
     public function testAcceptsOneOf()
     {
-        
         $request = TestRequest::from('POST', 'foo')
                               ->withAddedHeader('Accept', 'application/json');
         
         $this->assertTrue($request->acceptsOneOf(['application/json', 'application/json+ld']));
         $this->assertFalse($request->acceptsOneOf(['text/html', 'application/json+ld']));
-        
     }
     
     public function testAcceptsHtml()
     {
-        
         $request = TestRequest::from('GET', 'foo')->withAddedHeader('Accept', 'text/html');
         
         $this->assertTrue($request->acceptsHtml());
         
         $request = $request->withHeader('Accept', 'text/plain');
         $this->assertFalse($request->acceptsHtml());
-        
     }
     
     public function testGetRealMethod()
     {
-        
         $request = TestRequest::from('GET', 'foo');
         $request = TestRequest::withServerParams($request, ['REQUEST_METHOD' => 'GET']);
         
@@ -248,7 +221,6 @@ class InspectsRequestTest extends UnitTest
         $request = $request->withMethod('POST');
         
         $this->assertSame('GET', $request->realMethod());
-        
     }
     
 }

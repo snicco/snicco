@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Tests\unit\Application;
 
+use Tests\UnitTest;
 use Snicco\Application\Config;
-use PHPUnit\Framework\TestCase;
 
-class ConfigTest extends TestCase
+class ConfigTest extends UnitTest
 {
     
     private Config $config;
@@ -17,57 +17,54 @@ class ConfigTest extends TestCase
         parent::setUp();
         
         $this->config = new Config();
+    }
+    
+    protected function tearDown() :void
+    {
+        parent::tearDown();
         
+        unset($this->config);
     }
     
     /** @test */
     public function a_value_can_be_a_boolean_false()
     {
-        
         $this->config->extend('foo', false);
         
         $this->assertSame(false, $this->config->get('foo'));
-        
     }
     
     /** @test */
     public function a_value_can_be_null()
     {
-        
         $this->config->extend('foo', null);
         
         $this->assertSame(null, $this->config->get('foo'));
-        
     }
     
     /** @test */
     public function a_value_can_be_string_int_zero()
     {
-        
         $this->config->extend('foo', '0');
         $this->config->extend('bar', 0);
         
         $this->assertSame('0', $this->config->get('foo'));
         $this->assertSame(0, $this->config->get('bar'));
-        
     }
     
     /** @test */
     public function the_default_gets_set_if_the_key_is_not_present_in_the_user_config()
     {
-        
         $this->assertSame(null, $this->config->get('foo'));
         
         $this->config->extend('foo', 'bar');
         
         $this->assertEquals('bar', $this->config->get('foo'));
-        
     }
     
     /** @test */
     public function user_config_has_precedence_over_default_config()
     {
-        
         $this->assertSame(null, $this->config->get('foo'));
         
         $this->config->set('foo', 'bar');
@@ -77,13 +74,11 @@ class ConfigTest extends TestCase
         $this->config->extend('foo', 'baz');
         
         $this->assertSame('bar', $this->config->get('foo'));
-        
     }
     
     /** @test */
     public function user_config_has_precedence_over_default_config_and_gets_merged_recursively()
     {
-        
         $config = new Config([
             'foo' => [
                 'foo' => 'foo',
@@ -117,13 +112,11 @@ class ConfigTest extends TestCase
         ];
         
         $this->assertSame($expected, $config->get('foo'));
-        
     }
     
     /** @test */
     public function everything_works_with_dot_notation_as_well()
     {
-        
         $config = new Config([
             'foo' => [
                 'foo' => 'foo',
@@ -145,13 +138,11 @@ class ConfigTest extends TestCase
         
         $config->extend('foo.baz.biz', 'bogus');
         $this->assertEquals('boo', $config->get('foo.baz.biz'));
-        
     }
     
     /** @test */
     public function numerically_indexed_arrays_get_replaced()
     {
-        
         $config = new Config([
             'first' => [
                 'foo',
@@ -169,13 +160,11 @@ class ConfigTest extends TestCase
         $config->extend('first', ['foo', 'bar', 'baz']);
         
         $this->assertEquals(['foo', 'bar', 'baz'], $config->get('first'));
-        
     }
     
     /** @test */
     public function test_extend_with_closure()
     {
-        
         $config = new Config([
             'first' => [
                 'foo' => 'foo',
@@ -223,13 +212,11 @@ class ConfigTest extends TestCase
         // test replace with config value
         $config->extendIfEmpty('second.foo.baz', fn($config) => $config->get('first.foo'));
         $this->assertSame('foo', $config->get('second.foo.baz'));
-        
     }
     
     /** @test */
     public function testFromArray()
     {
-        
         $config = new Config(['first' => ['foo' => 'bar']]);
         
         $this->assertSame('bar', $config->get('first.foo'));
@@ -251,15 +238,6 @@ class ConfigTest extends TestCase
         // will be overwritten.
         $this->assertSame('baz', $config->get('first.foo'));
         $this->assertSame(['bar', 'baz'], $config->get('second.foo'));
-        
-    }
-    
-    protected function tearDown() :void
-    {
-        
-        parent::tearDown();
-        
-        unset($this->config);
     }
     
 }

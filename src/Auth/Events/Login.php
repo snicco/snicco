@@ -18,12 +18,10 @@ class Login extends Event
     
     public function __construct(WP_User $user, bool $remember)
     {
-        
         do_action('wp_login', $user->user_login, $user);
         
         $this->user = $user;
         $this->remember = $remember;
-        
     }
     
 }

@@ -13,10 +13,15 @@ use Snicco\Session\SessionServiceProvider;
 class CustomDirectivesTest extends BladeTestCase
 {
     
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bootApp();
+    }
+    
     /** @test */
     public function custom_auth_user_directive_works()
     {
-        
         $calvin = $this->createAdmin();
         $this->actingAs($calvin);
         
@@ -28,13 +33,11 @@ class CustomDirectivesTest extends BladeTestCase
         $view = $this->view('auth');
         $content = $view->toString();
         $this->assertViewContent('', $content);
-        
     }
     
     /** @test */
     public function custom_guest_user_directive_works()
     {
-        
         $view = $this->view('guest');
         $content = $view->toString();
         $this->assertViewContent('YOU ARE A GUEST', $content);
@@ -45,13 +48,11 @@ class CustomDirectivesTest extends BladeTestCase
         $view = $this->view('guest');
         $content = $view->toString();
         $this->assertViewContent('', $content);
-        
     }
     
     /** @test */
     public function custom_wp_role_directives_work()
     {
-        
         $admin = $this->createAdmin();
         $this->actingAs($admin);
         $view = $this->view('role');
@@ -71,13 +72,11 @@ class CustomDirectivesTest extends BladeTestCase
         $view = $this->view('role');
         $content = $view->toString();
         $this->assertViewContent('', $content);
-        
     }
     
     /** @test */
     public function custom_csrf_directives_work()
     {
-        
         $this->session->start();
         $view = $this->view('csrf');
         $content = $view->toString();
@@ -85,24 +84,20 @@ class CustomDirectivesTest extends BladeTestCase
         $this->assertStringContainsString('_token', $content);
         $this->assertStringContainsString($this->session->csrfToken(), $content);
         $this->assertStringStartsWith('<input', $content);
-        
     }
     
     /** @test */
     public function method_directive_works()
     {
-        
         $view = $this->view('method');
         $content = $view->toString();
         $this->assertStringContainsString("<input type='hidden' name='_method", $content);
         $this->assertStringContainsString("value='PUT|", $content);
-        
     }
     
     /** @test */
     public function error_directive_works()
     {
-        
         $error_bag = new ViewErrorBag();
         $default = new MessageBag();
         $default->add('title', 'ERROR_WITH_YOUR_TITLE');
@@ -119,13 +114,11 @@ class CustomDirectivesTest extends BladeTestCase
         $view->with('errors', $error_bag);
         
         $this->assertViewContent('NO ERRORS WITH YOUR VIEW', $view);
-        
     }
     
     /** @test */
     public function errors_work_with_custom_error_bags()
     {
-        
         // Named error bag.
         $error_bag = new ViewErrorBag();
         $custom = new MessageBag();
@@ -145,13 +138,6 @@ class CustomDirectivesTest extends BladeTestCase
         $view->with('errors', $error_bag);
         
         $this->assertViewContent('NO ERRORS IN CUSTOM BAG', $view);
-        
-    }
-    
-    protected function setUp() :void
-    {
-        parent::setUp();
-        $this->bootApp();
     }
     
     protected function packageProviders() :array

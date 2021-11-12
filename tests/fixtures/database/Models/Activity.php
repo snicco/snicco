@@ -9,9 +9,7 @@ class Activity extends TestModel
     
     public function cities()
     {
-        
         return $this->belongsToMany(City::class);
-        
     }
     
 }

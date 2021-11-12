@@ -20,11 +20,10 @@ class MailServiceProviderTest extends FrameworkTestCase
     {
         $this->bootApp();
         $this->assertInstanceOf(WordPressMailer::class, TestApp::resolve(Mailer::class));
-        
     }
     
     /** @test */
-    public function a_pending_mail_can_be_resolved_correctly()
+    public function the_mail_builder_can_be_resolved_correctly()
     {
         $this->bootApp();
         $this->assertInstanceOf(MailBuilder::class, TestApp::mail());
@@ -37,22 +36,18 @@ class MailServiceProviderTest extends FrameworkTestCase
         $listeners = TestApp::config('events.listeners');
         
         $this->assertSame([SendMail::class], $listeners[PendingMail::class]);
-        
     }
     
     /** @test */
     public function the_mail_alias_is_bound()
     {
-        
         $this->bootApp();
         $this->assertInstanceOf(MailBuilder::class, TestApp::mail());
-        
     }
     
     /** @test */
     public function the_from_email_setting_defaults_to_the_site_name_and_admin_email()
     {
-        
         $this->bootApp();
         
         $from = TestApp::config('mail.from');
@@ -64,7 +59,6 @@ class MailServiceProviderTest extends FrameworkTestCase
         
         $this->assertSame('Calvin Alkan', $reply_to['name']);
         $this->assertSame('c@web.de', $reply_to['email']);
-        
     }
     
 }

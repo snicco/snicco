@@ -35,18 +35,15 @@ class MailServiceProvider extends ServiceProvider
     private function bindMailBuilder()
     {
         $this->container->singleton(MailBuilder::class, function () {
-            
             return new MailBuilder(
                 $this->container->make(Dispatcher::class),
                 $this->container
             );
-            
         });
     }
     
     private function bindConfig()
     {
-        
         $this->app->alias('mail', MailBuilder::class);
         $this->config->extend('events.listeners', [
             
@@ -61,7 +58,6 @@ class MailServiceProvider extends ServiceProvider
             fn() => ['name' => WP::siteName(), 'email' => WP::adminEmail()]
         );
         $this->config->extend('mail.reply_to', fn(Config $config) => $config['mail.from']);
-        
     }
     
 }

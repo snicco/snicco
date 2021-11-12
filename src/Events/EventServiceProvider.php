@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Snicco\Events;
 
 use Snicco\Http\HttpKernel;
-use Snicco\View\ViewFactory;
 use Snicco\Listeners\Manage404s;
+use Snicco\Listeners\ComposeView;
 use Snicco\Listeners\FilterWpQuery;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Http\ResponsePostProcessor;
@@ -67,12 +67,12 @@ class EventServiceProvider extends ServiceProvider
             [ResponsePostProcessor::class, 'maybeExit'],
         ],
         
-        MakingView::class => [
-            [ViewFactory::class, 'compose'],
-        ],
-        
         PreWP404::class => [
             [Manage404s::class, 'shortCircuit'],
+        ],
+        
+        MakingView::class => [
+            ComposeView::class,
         ],
     
     ];
@@ -90,6 +90,10 @@ class EventServiceProvider extends ServiceProvider
              ->ensureLast($this->config->get('events.last', []))
              ->listeners($this->config->get('events.listeners', []))
              ->boot();
+        
+        //Event::listen(MakingView::class, function (ViewInterface $view) {
+        //    $this->container[ViewFactoryInterface::class]->compose($view);
+        //});
         
         $this->container->instance(Dispatcher::class, Event::dispatcher());
     }

@@ -29,7 +29,6 @@ class CountryFactory extends Factory
     
     private function continent()
     {
-        
         $continents = [
             'Asia',
             'Africa',
@@ -41,7 +40,6 @@ class CountryFactory extends Factory
         ];
         
         return Arr::random($continents);
-        
     }
     
 }

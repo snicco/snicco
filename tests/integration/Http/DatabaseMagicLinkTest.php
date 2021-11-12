@@ -18,20 +18,36 @@ class DatabaseMagicLinkTest extends FrameworkTestCase
     private Carbon            $expires;
     private string            $table;
     
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bootApp();
+        global $wpdb;
+        $this->db = $wpdb;
+        $this->createTables();
+        $this->table = 'wp_magic_links';
+        $this->magic_link = new DatabaseMagicLink('magic_links', [0, 100]);
+        $this->magic_link->setAppKey(TEST_APP_KEY);
+        $this->expires = Carbon::now();
+    }
+    
+    protected function tearDown() :void
+    {
+        $this->dropTables();
+        parent::tearDown();
+    }
+    
     /** @test */
     public function a_magic_link_gets_stored()
     {
-        
         $signature = $this->magic_link->create('/foo', $this->expires->timestamp, $this->request);
         
         $this->assertSeeLink(md5($signature));
-        
     }
     
     /** @test */
     public function magic_link_signatures_are_not_stored_as_plain_text()
     {
-        
         $signature = $this->magic_link->create('/foo', $this->expires->timestamp, $this->request);
         
         $this->assertNotSeeLink($signature);
@@ -40,7 +56,6 @@ class DatabaseMagicLinkTest extends FrameworkTestCase
     /** @test */
     public function a_magic_link_can_be_invalidated()
     {
-        
         $signature = $this->magic_link->create('/foo', $this->expires->timestamp, $this->request);
         
         $this->assertSeeLink(md5($signature));
@@ -48,13 +63,11 @@ class DatabaseMagicLinkTest extends FrameworkTestCase
         $this->magic_link->invalidate('/foo?signature='.$signature);
         
         $this->assertNotSeeLink(md5($signature));
-        
     }
     
     /** @test */
     public function magic_link_usage_can_be_checked()
     {
-        
         $expires = $this->expires->timestamp;
         $signature = $this->magic_link->create('/foo', $expires, $this->request);
         
@@ -68,13 +81,11 @@ class DatabaseMagicLinkTest extends FrameworkTestCase
         $this->magic_link->invalidate($request->fullUrl());
         
         $this->assertFalse($this->magic_link->notUsed($request));
-        
     }
     
     /** @test */
     public function garbage_collection_works()
     {
-        
         $signature1 = $this->magic_link->create('/foo', $this->expires->timestamp, $this->request);
         $signature2 = $this->magic_link->create(
             '/bar',
@@ -89,13 +100,11 @@ class DatabaseMagicLinkTest extends FrameworkTestCase
         $this->assertSeeLink(md5($signature2));
         
         Carbon::setTestNow();
-        
     }
     
     /** @test */
     public function a_magic_link_with_the_same_signature_is_not_stored_twice()
     {
-        
         $signature = $this->magic_link->create('/foo', $this->expires->timestamp, $this->request);
         $signature = $this->magic_link->create('/foo', $this->expires->timestamp, $this->request);
         
@@ -108,32 +117,10 @@ class DatabaseMagicLinkTest extends FrameworkTestCase
         $count = $this->db->get_var($query);
         
         $this->assertSame('1', $count, 'An identical magic link got created twice.');
-        
-    }
-    
-    protected function setUp() :void
-    {
-        parent::setUp();
-        $this->bootApp();
-        global $wpdb;
-        $this->db = $wpdb;
-        $this->createTables();
-        $this->table = 'wp_magic_links';
-        $this->magic_link = new DatabaseMagicLink('magic_links', [0, 100]);
-        $this->magic_link->setAppKey(TEST_APP_KEY);
-        $this->expires = Carbon::now();
-        
-    }
-    
-    protected function tearDown() :void
-    {
-        $this->dropTables();
-        parent::tearDown();
     }
     
     private function assertSeeLink(string $signature)
     {
-        
         $query = $this->db->prepare(
             "SELECT EXISTS(SELECT 1 FROM $this->table WHERE signature = %s LIMIT 1)",
             $signature
@@ -144,7 +131,6 @@ class DatabaseMagicLinkTest extends FrameworkTestCase
         $result = (is_string($exists) && $exists === '1');
         
         $this->assertTrue($result);
-        
     }
     
     private function assertNotSeeLink(string $signature)
@@ -159,12 +145,10 @@ class DatabaseMagicLinkTest extends FrameworkTestCase
         $result = (is_string($exists) && $exists === '1');
         
         $this->assertFalse($result);
-        
     }
     
     private function createTables()
     {
-        
         $this->db->query(
             "CREATE TABLE `wp_magic_links` (
   `id` int NOT NULL AUTO_INCREMENT,
@@ -174,14 +158,11 @@ class DatabaseMagicLinkTest extends FrameworkTestCase
   KEY `sessions_last_activity_index` (`expires`)
 ) ENGINE=InnoDB AUTO_INCREMENT=128 DEFAULT CHARSET=utf8;"
         );
-        
     }
     
     private function dropTables()
     {
-        
         $this->db->query("DROP TABLE wp_magic_links");
-        
     }
     
 }

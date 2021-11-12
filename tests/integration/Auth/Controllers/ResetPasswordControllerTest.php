@@ -13,22 +13,28 @@ use function wp_check_password;
 class ResetPasswordControllerTest extends AuthTestCase
 {
     
+    protected function setUp() :void
+    {
+        $this->afterApplicationCreated(function () {
+            $this->withAddedConfig('auth.features.password-resets', true);
+        });
+        
+        parent::setUp();
+    }
+    
     /** @test */
     public function the_endpoint_is_not_accessible_when_disabled_in_the_config()
     {
-        
         $this->withOutConfig('auth.features.password-resets')->bootApp();
         
         $url = '/auth/reset-password';
         
         $this->get($url)->assertDelegatedToWordPress();
-        
     }
     
     /** @test */
     public function the_reset_password_view_can_be_rendered_with_a_valid_signature()
     {
-        
         $this->bootApp();
         $calvin = $this->createAdmin();
         
@@ -37,7 +43,6 @@ class ResetPasswordControllerTest extends AuthTestCase
         $response->assertSee('Update password');
         $response->assertIsHtml();
         $response->assertSeeHtml(['/auth/reset-password', '_method', "value='PUT|"]);
-        
     }
     
     /** @test */
@@ -51,13 +56,11 @@ class ResetPasswordControllerTest extends AuthTestCase
         $tampered_url = str_replace("id=$calvin->ID", "id=1", $valid_url);
         
         $this->put($tampered_url, $token)->assertForbidden();
-        
     }
     
     /** @test */
     public function a_non_existing_user_id_cant_be_processed()
     {
-        
         $this->bootApp();
         $token = $this->withCsrfToken();
         $url = $this->routeUrl(999);
@@ -65,7 +68,6 @@ class ResetPasswordControllerTest extends AuthTestCase
         $response = $this->put($url, $token);
         
         $response->assertRedirect()->assertSessionHasErrors();
-        
     }
     
     /** @test */
@@ -91,7 +93,6 @@ class ResetPasswordControllerTest extends AuthTestCase
                      ['password' => 'password must have a length between 12 and 64.']
                  )
                  ->assertSessionDoesntHaveErrors('password_confirmation');
-        
     }
     
     /** @test */
@@ -117,13 +118,11 @@ class ResetPasswordControllerTest extends AuthTestCase
                      ['password' => 'password must have a length between 12 and 64.']
                  )
                  ->assertSessionDoesntHaveErrors('password_confirmation');
-        
     }
     
     /** @test */
     public function passwords_must_be_identical()
     {
-        
         $this->bootApp();
         $calvin = $this->createAdmin();
         $token = $this->withCsrfToken();
@@ -144,13 +143,11 @@ class ResetPasswordControllerTest extends AuthTestCase
                  ->assertSessionHasErrors(
                      ['password_confirmation' => 'The provided passwords do not match.']
                  );
-        
     }
     
     /** @test */
     public function weak_passwords_are_not_possible()
     {
-        
         $this->bootApp();
         $calvin = $this->createAdmin();
         $token = $this->withCsrfToken();
@@ -171,13 +168,11 @@ class ResetPasswordControllerTest extends AuthTestCase
                  ->assertSessionHasErrors('password')
                  ->assertSessionHasErrors('reason')
                  ->assertSessionHasErrors('suggestions');
-        
     }
     
     /** @test */
     public function a_password_can_be_reset()
     {
-        
         $this->bootApp();
         $calvin = $this->createAdmin();
         $old_pass = $calvin->user_pass;
@@ -205,25 +200,10 @@ class ResetPasswordControllerTest extends AuthTestCase
         
         // Don't log the user in automatically
         $this->assertNotAuthenticated($calvin);
-        
-    }
-    
-    protected function setUp() :void
-    {
-        
-        $this->afterApplicationCreated(function () {
-            
-            $this->withAddedConfig('auth.features.password-resets', true);
-            
-        });
-        
-        parent::setUp();
-        
     }
     
     private function routeUrl(int $user_id)
     {
-    
         return TestApp::url()
                       ->signedRoute(
                           'auth.reset.password',
@@ -231,7 +211,6 @@ class ResetPasswordControllerTest extends AuthTestCase
                           300,
                           true
                       );
-        
     }
     
 }

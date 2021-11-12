@@ -15,14 +15,12 @@ class PostTemplateCondition implements ConditionInterface
     
     public function __construct(string $post_template, $post_types = [])
     {
-        
         $this->post_template = $post_template;
         $this->post_types = is_array($post_types) ? $post_types : [$post_types];
     }
     
     public function isSatisfied(Request $request) :bool
     {
-        
         $template = get_post_meta((int) get_the_ID(), '_wp_page_template', true);
         $template = $template ? : 'default';
         
@@ -31,7 +29,6 @@ class PostTemplateCondition implements ConditionInterface
     
     public function getArguments(Request $request) :array
     {
-        
         return ['post_template' => $this->post_template, 'post_types' => $this->post_types];
     }
     

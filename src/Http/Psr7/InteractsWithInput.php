@@ -13,33 +13,26 @@ trait InteractsWithInput
     
     public function validate(array $rules, array $attributes = [], array $messages = [])
     {
-        
         $v = $this->validator();
         $v->rules($rules)
           ->messages($messages)
           ->attributes($attributes);
         
         return $v->validate($this->all());
-        
     }
     
     public function all() :array
     {
-        
         return $this->inputSource();
-        
     }
     
     public function server(string $key, $default = null)
     {
-        
         return Arr::get($this->getServerParams(), $key, $default);
-        
     }
     
     public function query(string $key = null, $default = null)
     {
-        
         $query = $this->getQueryParams();
         
         if ( ! $key) {
@@ -47,22 +40,17 @@ trait InteractsWithInput
         }
         
         return Arr::get($query, $key, $default);
-        
     }
     
     public function queryString() :string
     {
-        
         $qs = $this->getUri()->getQuery();
         
         while (Str::endsWith($qs, ['&', '='])) {
-            
             $qs = mb_substr($qs, 0, -1);
-            
         }
         
         return $qs;
-        
     }
     
     public function body(string $name = null, $default = null)
@@ -72,15 +60,11 @@ trait InteractsWithInput
     
     public function post(string $name = null, $default = null)
     {
-        
         if ( ! $name) {
-            
             return $this->getParsedBody() ?? [];
-            
         }
         
         return Arr::get($this->getParsedBody(), $name, $default);
-        
     }
     
     public function boolean($key = null, $default = false)
@@ -98,7 +82,6 @@ trait InteractsWithInput
      */
     public function only($keys) :array
     {
-        
         $results = [];
         
         $input = $this->all();
@@ -106,18 +89,14 @@ trait InteractsWithInput
         $placeholder = new stdClass;
         
         foreach (is_array($keys) ? $keys : func_get_args() as $key) {
-            
             $value = data_get($input, $key, $placeholder);
             
             if ($value !== $placeholder) {
-                
                 Arr::set($results, $key, $value);
-                
             }
         }
         
         return $results;
-        
     }
     
     /**
@@ -125,7 +104,6 @@ trait InteractsWithInput
      */
     public function except($keys) :array
     {
-        
         $keys = is_array($keys) ? $keys : func_get_args();
         
         $results = $this->all();
@@ -137,7 +115,6 @@ trait InteractsWithInput
     
     public function hasAny($keys) :bool
     {
-        
         $keys = is_array($keys) ? $keys : func_get_args();
         
         $input = $this->all();
@@ -166,7 +143,6 @@ trait InteractsWithInput
      */
     public function missing($key) :bool
     {
-        
         $keys = is_array($key) ? $key : func_get_args();
         
         return ! $this->has($keys);
@@ -174,7 +150,6 @@ trait InteractsWithInput
     
     public function has($key) :bool
     {
-        
         $keys = is_array($key) ? $key : func_get_args();
         
         $input = $this->all();
@@ -190,22 +165,18 @@ trait InteractsWithInput
     
     public function old($key = null, $default = null)
     {
-        
         $old = $this->session()->getOldInput();
         
         return $key ? Arr::get($old, $key, $default) : $old;
-        
     }
     
     private function inputSource() :array
     {
-        
         $input = in_array($this->realMethod(), ['GET', 'HEAD'])
             ? $this->getQueryParams()
             : $this->getParsedBody();
         
         return (array) $input;
-        
     }
     
     private function isEmptyString(string $key) :bool

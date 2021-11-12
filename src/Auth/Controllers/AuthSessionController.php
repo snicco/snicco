@@ -33,11 +33,8 @@ class AuthSessionController extends Controller
     
     public function create(Request $request, AbstractLoginView $view_response) :ResponseableInterface
     {
-        
         if ($request->boolean('reauth')) {
-            
             $this->resetAuthSession($request->session());
-            
         }
         
         if ($request->boolean('interim-login')) {
@@ -45,12 +42,10 @@ class AuthSessionController extends Controller
         }
         
         return $view_response->forRequest($request);
-        
     }
     
     public function store(Request $request, Pipeline $auth_pipeline, AbstractLoginResponse $responsable)
     {
-        
         /**
          * @todo replace with generic pipeline instead of middleware.
          */
@@ -59,7 +54,6 @@ class AuthSessionController extends Controller
                                   ->then($this->unauthenticated());
         
         if ($response instanceof SuccessfulLoginResponse) {
-            
             $this->parseRedirect($request);
             
             $remember = $response->rememberUser();
@@ -72,14 +66,11 @@ class AuthSessionController extends Controller
                 $user,
                 $remember
             );
-            
         }
         
         // one authenticator has decided to return a custom failure response.
         if ( ! $response instanceof NullResponse) {
-            
             return $response;
-            
         }
         
         return $request->isExpectingJson()
@@ -88,18 +79,14 @@ class AuthSessionController extends Controller
                                      ->withErrors(
                                          ['login' => 'We could not authenticate you with the provided credentials']
                                      );
-        
     }
     
     public function destroy(Request $request, int $user_id) :Response
     {
-        
         if ($user_id !== $request->userId()) {
-            
             throw new InvalidSignatureException(
                 "Suspicious logout attempt with query arg mismatch for logged in user [{$request->userId()}]. Query arg id [$user_id]"
             );
-            
         }
         
         $redirect_to = $request->query('redirect_to', $this->url->toRoute('home'));
@@ -107,7 +94,6 @@ class AuthSessionController extends Controller
         $response = $this->response_factory->redirect()->to($redirect_to);
         
         return new LogoutResponse($response);
-        
     }
     
     private function resetAuthSession(Session $session)
@@ -118,17 +104,14 @@ class AuthSessionController extends Controller
     
     private function parseRedirect(Request $request)
     {
-        
         if ($from_query_string = $request->query('redirect_to')) {
             $redirect_url = Url::rebuild($from_query_string);
         }
         else {
-            
             if ( ! $request->hasHeader('referer')) {
                 $redirect_url = $this->url->toRoute('dashboard');
             }
             else {
-                
                 parse_str(
                     parse_url($request->getHeaderLine('referer'), PHP_URL_QUERY) ?? '',
                     $query
@@ -140,13 +123,10 @@ class AuthSessionController extends Controller
                         $this->url->toRoute('dashboard')
                     )
                 );
-                
             }
-            
         }
         
         $request->session()->setIntendedUrl($redirect_url);
-        
     }
     
     // None of our authenticators where able to authenticate the user.

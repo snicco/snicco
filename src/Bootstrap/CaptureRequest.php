@@ -16,7 +16,6 @@ class CaptureRequest implements Bootstrapper
     
     public function bootstrap(Application $app) :void
     {
-        
         if (isset($app[Request::class]) && $app->isRunningUnitTest()) {
             return;
         }
@@ -27,14 +26,12 @@ class CaptureRequest implements Bootstrapper
     
     private function serverRequestCreator(Application $app) :ServerRequestCreator
     {
-        
         return new ServerRequestCreator(
             $app->resolve(ServerRequestFactoryInterface::class),
             $app->resolve(UriFactoryInterface::class),
             $app->resolve(UploadedFileFactoryInterface::class),
             $app->resolve(StreamFactoryInterface::class)
         );
-        
     }
     
 }

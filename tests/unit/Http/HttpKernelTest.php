@@ -4,195 +4,159 @@ declare(strict_types=1);
 
 namespace Tests\unit\Http;
 
-use Mockery;
-use Tests\UnitTest;
-use Snicco\Support\WP;
 use Snicco\Events\Event;
-use Snicco\Routing\Router;
+use Snicco\Http\Delegate;
+use Tests\RoutingTestCase;
 use Tests\stubs\HeaderStack;
 use Snicco\Http\Psr7\Request;
-use Contracts\ContainerAdapter;
 use Snicco\Events\ResponseSent;
 use Snicco\Http\ResponseFactory;
-use Tests\helpers\CreatesWpUrls;
-use Tests\helpers\CreateTestSubjects;
-use Tests\helpers\CreateDefaultWpApiMocks;
+use Snicco\Contracts\Middleware;
+use Psr\Http\Message\ResponseInterface;
 use Snicco\Http\Responses\RedirectResponse;
-use Snicco\Contracts\AbstractRouteCollection;
 use Snicco\Middleware\Core\EvaluateResponseMiddleware;
 use Snicco\ExceptionHandling\Exceptions\NotFoundException;
 
-class HttpKernelTest extends UnitTest
+class HttpKernelTest extends RoutingTestCase
 {
-    
-    use CreateTestSubjects;
-    use CreateDefaultWpApiMocks;
-    use CreatesWpUrls;
-    
-    private ContainerAdapter $container;
-    
-    private Router $router;
-    
-    private AbstractRouteCollection $routes;
     
     /** @test */
     public function no_response_gets_send_when_no_route_matched()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('foo')->handle(fn() => 'foo');
-            
         });
         
-        $request = $this->webRequest('GET', '/bar');
+        $request = $this->frontendRequest('GET', '/bar');
         
-        $this->runAndAssertEmptyOutput($request);
+        $this->assertEmptyResponse($request);
         HeaderStack::assertNoStatusCodeSent();
-        
     }
     
     /** @test */
     public function for_matching_request_headers_and_body_get_send()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('/foo', fn() => 'foo');
-            
         });
         
-        $request = $this->webRequest('GET', '/foo');
+        $request = $this->frontendRequest('GET', '/foo');
         
-        $this->runAndAssertOutput('foo', $request);
+        $this->assertResponse('foo', $request);
         HeaderStack::assertHasStatusCode(200);
-        
     }
     
     /** @test */
     public function an_event_gets_dispatched_when_a_response_got_send()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('/foo', fn() => 'foo');
-            
         });
         
-        $request = $this->webRequest('GET', '/foo');
+        $request = $this->frontendRequest('GET', '/foo');
         
-        $this->runKernel($request);
-        
-        $this->expectOutputString('foo');
+        $this->assertResponse('foo', $request);
         Event::assertDispatched(ResponseSent::class);
-        
     }
     
     /** @test */
     public function an_invalid_response_returned_from_the_handler_will_lead_to_an_exception()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('/foo', fn() => 1);
-            
         });
         
         $this->expectExceptionMessage('Invalid response returned by a route.');
         
-        $this->runKernel($this->webRequest('GET', '/foo'));
-        
+        $this->runKernel($this->frontendRequest('GET', '/foo'));
     }
     
     /** @test */
     public function an_exception_is_thrown_when_the_kernel_must_match_web_routes_and_no_route_matched()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('/bar', fn() => 'bar');
-            
         });
         
         $this->container->singleton(EvaluateResponseMiddleware::class, function () {
-            
             return new EvaluateResponseMiddleware(true);
         });
         
         $this->expectException(NotFoundException::class);
         
-        $this->runKernel($this->webRequest('GET', '/foo'));
-        
+        $this->runKernel($this->frontendRequest('GET', '/foo'));
     }
     
     /** @test */
     public function a_redirect_response_will_shut_down_the_script_by_dispatching_an_event()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('/foo', function (ResponseFactory $factory) {
-                
                 return $factory->redirect()->to('bar');
-                
             });
-            
         });
         
-        $this->runKernel($this->webRequest('GET', '/foo'));
+        $this->runKernel($this->frontendRequest('GET', '/foo'));
         
         Event::assertDispatched(ResponseSent::class, function ($event) {
-            
             return $event->response instanceof RedirectResponse;
-            
         });
     }
     
     /** @test */
-    public function the_request_is_rebound_in_the_container_after_a_global_routes_run()
+    public function the_request_is_rebound_in_the_container_before_any_application_middleware_is_run()
     {
-        
         $this->createRoutes(function () {
-            
             //
             
         });
         
-        $request = $this->ajaxRequest('test_form');
+        $request = $this->adminAjaxRequest('GET', 'test_form');
         
         $this->assertSame('/wp-admin/admin-ajax.php', $request->routingPath());
         
         $this->container->instance(Request::class, $request);
         
-        $this->runAndAssertOutput('', $request);
+        $this->assertResponse('', $request);
         
         /** @var Request $request */
         $request = $this->container->make(Request::class);
         
         $this->assertSame('/wp-admin/admin-ajax.php/test_form', $request->routingPath());
-        
     }
     
-    protected function beforeTestRun()
+    /** @test */
+    public function the_request_is_rebound_in_the_container_before_the_route_is_run()
     {
+        $this->createRoutes(function () {
+            $this->router->get('/foo', function (Request $request) {
+                return 'foo';
+            })->middleware('foobar');
+        });
         
-        $this->container = $this->createContainer();
-        $this->routes = $this->newCachedRouteCollection();
-        Event::make($this->container);
-        Event::fake();
-        WP::setFacadeContainer($this->container);
-        HeaderStack::reset();
+        $this->withMiddlewareGroups([
+            'foobar' => [
+                ChangeRequestMiddleware::class,
+            ],
+        ]);
         
+        $request = $this->frontendRequest('GET', '/foo');
+        
+        $this->assertResponse('foo', $request);
+        
+        /** @var Request $request */
+        $request = $this->container->make(Request::class);
+        $this->assertSame('bar', $request->getAttribute('foo'));
     }
     
-    protected function beforeTearDown()
+}
+
+class ChangeRequestMiddleware extends Middleware
+{
+    
+    public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        
-        Event::setInstance(null);
-        Mockery::close();
-        WP::reset();
-        HeaderStack::reset();
-        
+        return $next($request->withAttribute('foo', 'bar'));
     }
     
 }

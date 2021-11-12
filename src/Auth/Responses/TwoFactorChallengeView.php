@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Responses;
 
-use Snicco\View\ViewFactory;
 use Snicco\Routing\UrlGenerator;
+use Snicco\Contracts\ViewFactoryInterface;
 use Snicco\Auth\Contracts\Abstract2FAChallengeView;
 
 class TwoFactorChallengeView extends Abstract2FaChallengeView
 {
     
-    private ViewFactory  $view_factory;
-    private UrlGenerator $url;
+    private ViewFactoryInterface $view_factory;
+    private UrlGenerator         $url;
     
-    public function __construct(ViewFactory $view_factory, UrlGenerator $url)
+    public function __construct(ViewFactoryInterface $view_factory, UrlGenerator $url)
     {
         $this->view_factory = $view_factory;
         $this->url = $url;

@@ -21,11 +21,9 @@ class ErrorViewException extends HttpException
     
     public function render(ResponseFactory $response_factory, Request $request) :Response
     {
-        
         return $request->isExpectingJson()
             ? $response_factory->json(['message' => 'Server Error'], 500)
             : $response_factory->html('<h1> Server Error </h1>')->withStatus(500);
-        
     }
     
 }

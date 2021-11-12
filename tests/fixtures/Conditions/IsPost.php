@@ -14,19 +14,16 @@ class IsPost implements ConditionInterface
     
     public function __construct(bool $pass = true)
     {
-        
         $this->pass = $pass;
     }
     
     public function isSatisfied(Request $request) :bool
     {
-        
         return $this->pass;
     }
     
     public function getArguments(Request $request) :array
     {
-        
         return [];
     }
     

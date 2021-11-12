@@ -19,33 +19,26 @@ class ResponsePostProcessor
     
     public function maybeExit(ResponseSent $response_sent)
     {
-        
         $request = $response_sent->request;
         $response = $response_sent->response;
         
         if ($response->isRedirect()) {
-            
             $this->exit($response_sent);
-            
         }
         
         // API endpoint requests are always loaded through index.php and thus are
         // also frontend requests.
         if ($request->isWpFrontEnd() || $request->isWpAjax()) {
-            
             $this->exit($response_sent);
-            
         }
         
         if ($request->isWpAdmin() && ($response->isClientError() || $response->isServerError())) {
             $this->exit($response_sent);
         }
-        
     }
     
     private function exit(ResponseSent $response_sent)
     {
-        
         $terminate = DoShutdown::dispatch([$response_sent->request, $response_sent->response]);
         
         if ($this->running_unit_tests) {
@@ -57,7 +50,6 @@ class ResponsePostProcessor
         }
         
         exit();
-        
     }
     
 }

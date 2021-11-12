@@ -25,9 +25,7 @@ class WelcomePlainText extends Mailable
     
     public function subjectLine($recipient) :string
     {
-        
         return 'welcome to our site '.$recipient->name;
-        
     }
     
 }

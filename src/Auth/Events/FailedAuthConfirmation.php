@@ -11,7 +11,6 @@ class FailedAuthConfirmation extends BannableEvent
     
     public function __construct(Request $request, int $for_user)
     {
-        
         $this->request = $request;
         $this->for_user = $for_user;
     }

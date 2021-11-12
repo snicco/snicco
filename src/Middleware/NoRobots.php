@@ -22,35 +22,26 @@ class NoRobots extends Middleware
         $this->index = strtolower($noindex) !== 'noindex';
         $this->follow = strtolower($nofollow) !== 'nofollow';
         $this->archive = strtolower($noarchive) !== 'noarchive';
-        
     }
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        
         /** @var Response $response */
         $response = $next($request);
         
         if ( ! $this->archive) {
-            
             $response = $response->noArchive();
-            
         }
         
         if ( ! $this->index) {
-            
             $response = $response->noIndex();
-            
         }
         
         if ( ! $this->follow) {
-            
             $response = $response->noFollow();
-            
         }
         
         return $response;
-        
     }
     
 }

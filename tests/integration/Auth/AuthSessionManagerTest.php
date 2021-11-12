@@ -17,10 +17,20 @@ class AuthSessionManagerTest extends AuthTestCase
     
     private ArraySessionDriver $driver;
     
+    protected function setUp() :void
+    {
+        $this->afterApplicationBooted(function () {
+            $this->driver = TestApp::resolve(SessionDriver::class);
+            $this->session_manager = TestApp::resolve(SessionManagerInterface::class);
+            $this->withRequest($this->frontendRequest('GET', '/foo'));
+        });
+        parent::setUp();
+        $this->bootApp();
+    }
+    
     /** @test */
     public function all_sessions_for_the_current_user_can_be_retrieved()
     {
-        
         $calvin = $this->createAdmin();
         $this->seedSessions($calvin, 2);
         
@@ -44,13 +54,11 @@ class AuthSessionManagerTest extends AuthTestCase
         
         // Sessions from calvin are not included.
         $this->assertCount(1, $sessions);
-        
     }
     
     /** @test */
     public function all_sessions_for_the_current_user_can_be_destroyed()
     {
-        
         $calvin = $this->createAdmin();
         $this->seedSessions($calvin, 2);
         
@@ -72,13 +80,11 @@ class AuthSessionManagerTest extends AuthTestCase
         
         // Johns session still there.
         $this->assertCount(2, $this->session_manager->getAllForUser());
-        
     }
     
     /** @test */
     public function all_other_sessions_for_the_current_user_can_be_destroyed()
     {
-        
         $calvin = $this->createAdmin();
         $this->seedSessions($calvin, 3);
         
@@ -89,13 +95,11 @@ class AuthSessionManagerTest extends AuthTestCase
         $this->session_manager->destroyOthersForUser($token, $calvin->ID);
         
         $this->assertCount(1, $this->session_manager->getAllForUser());
-        
     }
     
     /** @test */
     public function all_sessions_can_be_destroyed()
     {
-        
         $calvin = $this->createAdmin();
         $john = $this->createAdmin();
         
@@ -107,13 +111,11 @@ class AuthSessionManagerTest extends AuthTestCase
         $this->session_manager->destroyAll();
         
         $this->assertCount(0, $this->driver->all());
-        
     }
     
     /** @test */
     public function expired_sessions_are_not_included()
     {
-        
         // Ensure this test does not fail because of the session being idle.
         $this->withAddedConfig('auth.idle', 1000000);
         
@@ -131,13 +133,11 @@ class AuthSessionManagerTest extends AuthTestCase
         $this->travelIntoFuture(1);
         
         $this->assertCount(0, $this->session_manager->getAllForUser());
-        
     }
     
     /** @test */
     public function idle_sessions_are_included_if_persistent_login_is_enabled()
     {
-        
         $this->withAddedConfig('auth.features.remember_me', true);
         
         $calvin = $this->createAdmin();
@@ -152,13 +152,11 @@ class AuthSessionManagerTest extends AuthTestCase
         // The session is idle but we dont invalidate it.
         // This happens in another middleware where auth confirmation is deleted.
         $this->assertCount(1, $this->session_manager->getAllForUser());
-        
     }
     
     /** @test */
     public function idle_sessions_are_not_included_if_remember_me_is_disabled()
     {
-        
         $calvin = $this->createAdmin();
         $this->seedSessions($calvin, 1);
         
@@ -169,57 +167,37 @@ class AuthSessionManagerTest extends AuthTestCase
         $this->travelIntoFuture(1);
         
         $this->assertCount(0, $this->session_manager->getAllForUser());
-        
     }
     
     /** @test */
     public function the_idle_timeout_can_be_customized_at_runtime()
     {
-        
         $calvin = $this->createAdmin();
         $this->seedSessions($calvin, 1);
         
         $this->session_manager->setIdleResolver(function ($idle) {
-            
             return $idle - 1;
-            
         });
         
         $this->travelIntoFuture(1800);
         
         $this->assertCount(0, $this->session_manager->getAllForUser());
-        
-    }
-    
-    protected function setUp() :void
-    {
-        $this->afterApplicationBooted(function () {
-            $this->driver = TestApp::resolve(SessionDriver::class);
-            $this->session_manager = TestApp::resolve(SessionManagerInterface::class);
-            $this->withRequest($this->frontendRequest('GET', '/foo'));
-        });
-        parent::setUp();
-        $this->bootApp();
     }
     
     private function seedSessions(WP_User $user, int $count)
     {
-        
         $created = 0;
         
         $this->actingAs($user);
         
         while ($created < $count) {
-            
             $this->refreshSessionManager();
             
             $this->session_manager->start($this->request, $user->ID);
             $this->session_manager->save();
             
             $created++;
-            
         }
-        
     }
     
     private function activeSession() :Session

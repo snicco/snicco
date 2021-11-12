@@ -19,7 +19,6 @@ class Str extends \Illuminate\Support\Str
      */
     public static function firstBetweenDot(string $subject, string $from, string $to) :string
     {
-        
         if ($from === '' || $to === '') {
             return $subject;
         }
@@ -27,9 +26,7 @@ class Str extends \Illuminate\Support\Str
         $result = static::before(static::after($subject, $from), $to);
         
         if (static::contains($result, ':')) {
-            
             return $result;
-            
         }
         
         $search = $from.$result.$to;
@@ -37,16 +34,13 @@ class Str extends \Illuminate\Support\Str
         $new_subject = static::after($subject, $search);
         
         return static::firstBetweenDot($new_subject, $from, $to);
-        
     }
     
     public static function splitToKeyValuePair(string $subject, $at)
     {
-        
         [$key, $value] = explode($at, $subject);
         
         return [$key => $value];
-        
     }
     
     public static function doesNotEndWith(string $path, string $string) :bool

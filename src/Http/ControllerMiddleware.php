@@ -28,9 +28,7 @@ class ControllerMiddleware
     
     public function __construct(string $middleware)
     {
-        
         $this->middleware = $middleware;
-        
     }
     
     /**
@@ -42,19 +40,15 @@ class ControllerMiddleware
      */
     public function only($methods) :ControllerMiddleware
     {
-        
         if ( ! empty($this->blacklist)) {
-            
             throw new LogicException(
                 'The only() method cant be combined with the except() method for one middleware'
             );
-            
         }
         
         $this->whitelist = Arr::wrap($methods);
         
         return $this;
-        
     }
     
     /**
@@ -66,45 +60,33 @@ class ControllerMiddleware
      */
     public function except($methods) :ControllerMiddleware
     {
-        
         if ( ! empty($this->whitelist)) {
-            
             throw new LogicException(
                 'The only() method cant be combined with the except() method for one middleware'
             );
-            
         }
         
         $this->blacklist = Arr::wrap($methods);
         
         return $this;
-        
     }
     
     public function appliesTo(string $method = null) :bool
     {
-        
         if (Arr::isValue($method, $this->blacklist)) {
-            
             return false;
-            
         }
         
         if (empty($this->whitelist)) {
-            
             return true;
-            
         }
         
         return Arr::isValue($method, $this->whitelist);
-        
     }
     
     public function name()
     {
-        
         return $this->middleware;
-        
     }
     
 }

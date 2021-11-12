@@ -21,21 +21,15 @@ class DefaultHeaders extends Middleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        
         $response = $next($request);
         
         foreach ($this->default_headers as $name => $value) {
-            
             if ( ! $response->hasHeader($name)) {
-                
                 $response = $response->withHeader($name, $value);
-                
             }
-            
         }
         
         return $response;
-        
     }
     
 }

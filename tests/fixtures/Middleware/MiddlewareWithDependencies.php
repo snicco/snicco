@@ -19,19 +19,15 @@ class MiddlewareWithDependencies extends Middleware
     
     public function __construct(Foo $foo, Bar $bar)
     {
-        
         $this->foo = $foo;
         $this->bar = $bar;
-        
     }
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        
         $request->body = $this->foo->foo.$this->bar->bar;
         
         return $next($request);
-        
     }
     
 }

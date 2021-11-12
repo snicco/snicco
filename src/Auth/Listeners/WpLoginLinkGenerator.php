@@ -15,7 +15,6 @@ class WpLoginLinkGenerator
     /** NOTE: WordPress always returns these as absolute urls so lets stay compatible */
     public function loginUrl(GenerateLoginUrl $event, UrlGenerator $url) :string
     {
-        
         $query = [];
         
         $query['redirect_to'] = $event->redirect_to !== ''
@@ -29,19 +28,16 @@ class WpLoginLinkGenerator
         return $url->toRoute('auth.login', [
             'query' => $query,
         ], true, true);
-        
     }
     
     /** NOTE: WordPress always returns these as absolute urls so lets stay compatible */
     public function logoutUrl(GenerateLogoutUrl $event, UrlGenerator $url) :string
     {
-        
         $redirect = $event->redirect_to;
         
         $url = $url->signedLogout(WP::userId(), $redirect, 3600, true);
         
         return esc_html($url);
-        
     }
     
 }

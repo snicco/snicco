@@ -4,82 +4,41 @@ declare(strict_types=1);
 
 namespace Tests\unit\Middleware;
 
-use Tests\UnitTest;
-use Snicco\Http\Delegate;
-use Tests\stubs\TestRequest;
-use Snicco\Http\ResponseFactory;
-use Tests\helpers\AssertsResponse;
+use Tests\MiddlewareTestCase;
 use Snicco\Middleware\TrailingSlash;
-use Tests\helpers\CreateUrlGenerator;
-use Tests\helpers\CreateRouteCollection;
-use Snicco\Http\Responses\RedirectResponse;
 
-class TrailingSlashTest extends UnitTest
+class TrailingSlashTest extends MiddlewareTestCase
 {
-    
-    use CreateUrlGenerator;
-    use CreateRouteCollection;
-    use AssertsResponse;
-    
-    private ResponseFactory $response_factory;
-    private Delegate        $delegate;
     
     public function testRedirectNoSlashToTrailingSlash()
     {
+        $request = $this->frontendRequest('GET', 'https://foo.com/bar');
         
-        $request =
-            TestRequest::fromFullUrl('GET', 'https://foo.com/bar')->withLoadingScript('index.php');
+        $response = $this->runMiddleware(new TrailingSlash(true), $request);
         
-        $response = $this->newMiddleware(true)->handle($request, $this->delegate);
-        
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertHeader('Location', '/bar/', $response);
-        $this->assertStatusCode(301, $response);
-        
+        $response->assertNextMiddlewareNotCalled();
+        $response->assertRedirect('/bar/', 301);
     }
     
     /** @test */
     public function testRedirectSlashToNoSlash()
     {
+        $request = $this->frontendRequest('GET', 'https://foo.com/bar/');
         
-        $request = TestRequest::fromFullUrl('GET', 'https://foo.com/bar/');
-        $request = $request->withLoadingScript('index.php');
+        $response = $this->runMiddleware(new TrailingSlash(false), $request);
         
-        $response = $this->newMiddleware(false)->handle($request, $this->delegate);
-        
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertHeader('Location', '/bar', $response);
-        $this->assertStatusCode(301, $response);
-        
+        $response->assertNextMiddlewareNotCalled();
+        $response->assertRedirect('/bar', 301);
     }
     
-    public function testNoRedirectIfMatches()
+    public function testNoRedirectIfSlashesAreCorrect()
     {
+        $request = $this->frontendRequest('GET', 'https://foo.com/bar');
         
-        $request =
-            TestRequest::fromFullUrl('GET', 'https://foo.com/bar')->withLoadingScript('index.php');
-        $response = $this->newMiddleware(false)->handle($request, $this->delegate);
-        $this->assertNotInstanceOf(RedirectResponse::class, $response);
-        $this->assertStatusCode(200, $response);
+        $response = $this->runMiddleware(new TrailingSlash(false), $request);
         
-        $request = TestRequest::fromFullUrl('GET', 'https://foo.com/bar/');
-        $response = $this->newMiddleware(true)->handle($request, $this->delegate);
-        $this->assertNotInstanceOf(RedirectResponse::class, $response);
-        $this->assertStatusCode(200, $response);
-        
-    }
-    
-    private function newMiddleware($trailing_slash) :TrailingSlash
-    {
-        
-        $this->response_factory = $this->createResponseFactory();
-        
-        $this->delegate = new Delegate(fn() => $this->response_factory->make(200));
-        
-        $m = new TrailingSlash($trailing_slash);
-        $m->setResponseFactory($this->response_factory);
-        return $m;
-        
+        $response->assertNextMiddlewareCalled();
+        $response->assertOk();
     }
     
 }

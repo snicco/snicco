@@ -27,7 +27,6 @@ class AuthSessionManager implements SessionManagerInterface
     
     public function __construct(SessionManager $manager, SessionDriver $driver, array $auth_config)
     {
-        
         $this->manager = $manager;
         $this->driver = $driver;
         $this->auth_config = $auth_config;
@@ -35,7 +34,6 @@ class AuthSessionManager implements SessionManagerInterface
     
     public function start(Request $request, int $user_id) :Session
     {
-        
         if ($session = $this->activeSession()) {
             return $session;
         }
@@ -43,70 +41,56 @@ class AuthSessionManager implements SessionManagerInterface
         $this->active_session = $this->manager->start($request, $user_id);
         
         return $this->active_session;
-        
     }
     
     public function activeSession() :?Session
     {
-        
         if ($this->active_session instanceof Session) {
             return $this->active_session;
         }
         
         return null;
-        
     }
     
     public function setIdleResolver(callable $idle_resolver)
     {
-        
         $this->idle_resolver = $idle_resolver;
-        
     }
     
     public function sessionCookie() :Cookie
     {
-        
         return $this->manager->sessionCookie();
     }
     
     public function save()
     {
-        
         $this->manager->save();
     }
     
     public function collectGarbage()
     {
-        
         $this->manager->collectGarbage();
     }
     
     public function getAllForUser() :array
     {
-        
         $sessions = $this->active_session->getAllForUser();
         
         return collect($sessions)
             ->flatMap(fn(object $session) => [$session->id => $session->payload])
             ->filter(fn(array $payload) => $this->valid($payload))
             ->all();
-        
     }
     
     public function idleTimeout()
     {
-        
         $timeout = Arr::get($this->auth_config, 'idle', 0);
         
         if (is_callable($this->idle_resolver)) {
-            
             return call_user_func($this->idle_resolver, $timeout);
-            
         }
         
         return $timeout;
-        
     }
     
     public function confirmationDuration() :int
@@ -116,67 +100,49 @@ class AuthSessionManager implements SessionManagerInterface
     
     public function allowsPersistentLogin() :bool
     {
-        
         return Arr::get($this->auth_config, 'features.remember_me', false) === true;
-        
     }
     
     public function destroyOthersForUser(string $hashed_token, int $user_id)
     {
-        
         $this->driver->destroyOthersForUser($hashed_token, $user_id);
-        
     }
     
     public function destroyAllForUser(int $user_id)
     {
-        
         $this->driver->destroyAllForUser($user_id);
-        
     }
     
     public function destroyAll()
     {
-        
         $this->driver->destroyAll();
-        
     }
     
     private function valid(array $session_payload) :bool
     {
-        
         if ($this->isExpired($session_payload)) {
-            
             return false;
-            
         }
         
         if ($this->isIdle($session_payload) && ! $this->allowsPersistentLogin()) {
-            
             return false;
-            
         }
         
         return true;
-        
     }
     
     private function isExpired(array $session_payload) :bool
     {
-        
         $expires = $session_payload['_expires_at'] ?? 0;
         
         return $expires < $this->currentTime();
-        
     }
     
     private function isIdle(array $session_payload) :bool
     {
-        
         $last_activity = $session_payload['_last_activity'] ?? 0;
         
         return ($this->currentTime() - $last_activity) > $this->idleTimeout();
-        
     }
     
 }

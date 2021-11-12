@@ -13,12 +13,9 @@ class WPLoginRedirectController extends Controller
     
     public function __invoke(Request $request) :Response
     {
-        
         // We don't want to handle the personal privacy deletion request.
         if ($request->input('action') === 'confirmation') {
-            
             return $this->response_factory->delegateToWP();
-            
         }
         
         return $this->response_factory->redirectToLogin(
@@ -26,7 +23,6 @@ class WPLoginRedirectController extends Controller
             $request->query('redirect_to', ''),
             301
         );
-        
     }
     
 }

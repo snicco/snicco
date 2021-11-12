@@ -19,11 +19,9 @@ class ViewFactory implements ViewFactoryInterface
     
     public function __construct(ViewEngineInterface $engine, ViewComposerCollection $composer_collection, GlobalContext $global_context)
     {
-        
         $this->engine = $engine;
         $this->composer_collection = $composer_collection;
         $this->global_context = $global_context;
-        
     }
     
     /**
@@ -35,23 +33,15 @@ class ViewFactory implements ViewFactoryInterface
      */
     public function compose(ViewInterface $view)
     {
-        
         $local_context = $view->context();
         
         foreach ($this->global_context->get() as $name => $context) {
-            
             $view->with($name, $context);
-            
         }
         
-        $this->composer_collection->executeUsing($view);
+        $this->composer_collection->compose($view);
         
         $view->with($local_context);
-        
-        if ( ! isset($this->rendered_view)) {
-            $this->rendered_view = $view;
-        }
-        
     }
     
     /**
@@ -64,11 +54,9 @@ class ViewFactory implements ViewFactoryInterface
      */
     public function render($views, array $context = []) :string
     {
-        
         $view = $this->make($views)->with($context);
         
         return $view->toString();
-        
     }
     
     /**
@@ -80,7 +68,12 @@ class ViewFactory implements ViewFactoryInterface
      */
     public function make($views) :ViewInterface
     {
-        return $this->engine->make(Arr::wrap($views));
+        $view = $this->engine->make(Arr::wrap($views));
+        if ( ! isset($this->rendered_view)) {
+            $this->rendered_view = $view;
+        }
+        
+        return $view;
     }
     
     public function renderedView() :?ViewInterface

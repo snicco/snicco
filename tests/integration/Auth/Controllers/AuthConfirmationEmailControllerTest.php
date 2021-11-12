@@ -12,6 +12,12 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
     
     private string $endpoint = '/auth/confirm/magic-link';
     
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bootApp();
+    }
+    
     /** @test */
     public function the_endpoint_exists()
     {
@@ -30,18 +36,15 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
     /** @test */
     public function the_endpoint_cant_be_accessed_if_auth_is_confirmed()
     {
-        
         $this->actingAs($this->createAdmin());
         $token = $this->withCsrfToken();
         $response = $this->post($this->endpoint, $token);
         $response->assertRedirectToRoute('dashboard');
-        
     }
     
     /** @test */
     public function a_confirmation_email_can_be_requested()
     {
-        
         $this->mailFake();
         
         $this->authenticateAndUnconfirm($calvin = $this->createAdmin());
@@ -61,13 +64,11 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
         $mail->assertTo($calvin);
         $mail->assertViewHas(['magic_link']);
         $mail->assertSee('/auth/confirm/magic-link?expires=');
-        
     }
     
     /** @test */
     public function a_confirmation_email_can_be_requested_JSON()
     {
-        
         $this->mailFake();
         
         $this->authenticateAndUnconfirm($calvin = $this->createAdmin());
@@ -78,13 +79,11 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
         
         $mail = $this->assertMailSent(ConfirmAuthMail::class);
         $mail->assertTo($calvin);
-        
     }
     
     /** @test */
     public function users_cant_request_unlimited_emails()
     {
-        
         $this->mailFake();
         
         $this->authenticateAndUnconfirm($calvin = $this->createAdmin());
@@ -119,13 +118,6 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
         
         $this->assertMailSent(ConfirmAuthMail::class)
              ->assertTo($calvin);
-        
-    }
-    
-    protected function setUp() :void
-    {
-        parent::setUp();
-        $this->bootApp();
     }
     
 }

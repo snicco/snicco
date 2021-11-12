@@ -16,11 +16,8 @@ class TwoFactorEnabled extends Middleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        
         if ($this->userHasTwoFactorEnabled($request->user())) {
-            
             return $next($request);
-            
         }
         
         $e = new AuthorizationException(
@@ -31,7 +28,6 @@ class TwoFactorEnabled extends Middleware
         );
         
         throw $e;
-        
     }
     
 }

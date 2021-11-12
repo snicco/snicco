@@ -37,7 +37,6 @@ class AuthConfirmationEmailController extends Controller
         $session = $request->session();
         
         if ( ! $this->canRequestAnotherEmail($session)) {
-            
             return $request->isExpectingJson()
                 ? $this->response_factory->json(['message' => $this->errorMessage()], 429)
                 : $this->response_factory->back()->withErrors([

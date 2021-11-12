@@ -27,17 +27,14 @@ class MagicLinkLoginMail extends Mailable
     
     public function unique() :bool
     {
-        
         return true;
     }
     
     public function build() :MagicLinkLoginMail
     {
-        
         return $this
             ->subject(sprintf(__('[%s] Login Link'), WP::siteName()))
             ->view('framework.mail.magic-link-login');
-        
     }
     
 }

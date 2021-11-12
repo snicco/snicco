@@ -7,9 +7,9 @@ namespace Snicco\Validation;
 use Snicco\Http\Psr7\Request;
 use Respect\Validation\Factory;
 use Snicco\Contracts\ServiceProvider;
-use Snicco\Contracts\ExceptionHandler;
+use Snicco\ExceptionHandling\ExceptionHandler;
+use Snicco\Contracts\ExceptionHandlerInterface;
 use Snicco\Validation\Exceptions\ValidationException;
-use Snicco\ExceptionHandling\ProductionExceptionHandler;
 use Snicco\Validation\Middleware\ShareValidatorWithRequest;
 
 class ValidationServiceProvider extends ServiceProvider
@@ -36,16 +36,12 @@ class ValidationServiceProvider extends ServiceProvider
     
     private function bindValidator()
     {
-        
         $this->container->singleton(Validator::class, function () {
-            
             $validator = new Validator();
             $validator->globalMessages($this->config->get('validation.messages'));
             
             return $validator;
-            
         });
-        
     }
     
     private function addRuleNamespace()
@@ -59,29 +55,24 @@ class ValidationServiceProvider extends ServiceProvider
     
     private function renderValidationExceptions()
     {
-        $error_handler = $this->container->make(ExceptionHandler::class);
+        $error_handler = $this->container->make(ExceptionHandlerInterface::class);
         
-        if ( ! $error_handler instanceof ProductionExceptionHandler) {
-            
+        if ( ! $error_handler instanceof ExceptionHandler) {
             return;
-            
         }
         
         $callback = function (ValidationException $e, Request $request) {
-            
             return (new ValidationExceptionRenderer(
                 
                 $this->response_factory,
                 $this->dont_flash
             
             ))->render($e, $request);
-            
         };
         
         $error_handler->renderable(
-            $callback->bindTo($error_handler, ProductionExceptionHandler::class)
+            $callback->bindTo($error_handler, ExceptionHandler::class)
         );
-        
     }
     
 }

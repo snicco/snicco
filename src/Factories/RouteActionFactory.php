@@ -5,67 +5,52 @@ declare(strict_types=1);
 namespace Snicco\Factories;
 
 use Closure;
-use Exception;
-use Snicco\Contracts\Handler;
+use RuntimeException;
 use Illuminate\Support\Reflector;
-use Snicco\Contracts\RouteAction;
 use Snicco\Routing\ClosureAction;
-use Snicco\Http\MiddlewareResolver;
+use Snicco\Contracts\RouteAction;
 use Snicco\Routing\ControllerAction;
+use Snicco\Support\ReflectionDependencies;
 
 class RouteActionFactory extends AbstractFactory
 {
     
-    public function create($raw_handler, $routespace)
+    public function create($raw_action, $namespace = '') :RouteAction
     {
-        
-        if ($this->isClosure($raw_handler)) {
-            
-            return $this->createUsing($raw_handler);
-            
-        }
-        
-        if ( ! Reflector::isCallable($raw_handler) && ! empty($routespace)) {
-            
-            return $this->createUsing(
-                $routespace.'\\'.$raw_handler
+        if ($raw_action instanceof Closure) {
+            return new ClosureAction(
+                $raw_action,
+                new ReflectionDependencies($this->container)
             );
-            
         }
         
-        return $this->createUsing($raw_handler);
+        if ( ! Reflector::isCallable($raw_action) && ! empty($namespace)) {
+            return $this->createControllerAction(
+                $namespace.'\\'.$raw_action,
+            );
+        }
         
+        return $this->createControllerAction($raw_action);
     }
     
     /**
-     * @param  string|array|callable  $raw_handler
+     * @param  string|array  $handler
      *
-     * @return RouteAction
-     * @throws Exception
+     * @throws RuntimeException
      */
-    public function createUsing($raw_handler) :Handler
+    private function createControllerAction($handler) :ControllerAction
     {
+        $handler = $this->normalizeInput($handler);
         
-        $handler = $this->normalizeInput($raw_handler);
-        
-        if ($handler[0] instanceof Closure) {
-            
-            return new ClosureAction($handler[0], $this->wrapClosure($handler[0]));
-            
-        }
-        
-        if ($namespaced_handler = $this->checkIsCallable($handler)) {
-            
+        if ($namespaced_handler = $this->checkIfCallable($handler)) {
             return new ControllerAction(
                 $namespaced_handler,
-                new MiddlewareResolver($this->container),
-                $this->container
+                $this->container,
+                new ReflectionDependencies($this->container)
             );
-            
         }
         
         $this->fail($handler[0], $handler[1]);
-        
     }
     
 }

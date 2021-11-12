@@ -11,9 +11,7 @@ class MySqlQueryGrammar extends IlluminateQueryGrammar
     
     public function compileRollback() :string
     {
-        
         return "ROLLBACK";
-        
     }
     
 }

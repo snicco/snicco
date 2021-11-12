@@ -6,35 +6,31 @@ namespace Snicco\Routing;
 
 use Closure;
 use Snicco\Contracts\RouteAction;
+use Snicco\Support\ReflectionDependencies;
 
 class ClosureAction implements RouteAction
 {
     
-    private Closure $resolves_to;
-    private Closure $executable_closure;
+    private Closure                $resolves_to;
+    private ReflectionDependencies $route_action_dependencies;
     
-    public function __construct(Closure $raw_closure, Closure $executable_closure)
+    public function __construct(Closure $closure, ReflectionDependencies $route_action_dependencies)
     {
-        
-        $this->resolves_to = $raw_closure;
-        $this->executable_closure = $executable_closure;
-        
+        $this->resolves_to = $closure;
+        $this->route_action_dependencies = $route_action_dependencies;
     }
     
-    public function executeUsing(...$args)
+    public function execute(array $args)
     {
-        
-        $closure = $this->executable_closure;
-        
-        return $closure(...$args);
-        
+        return call_user_func_array(
+            $this->resolves_to,
+            $this->route_action_dependencies->build($this->resolves_to, $args)
+        );
     }
     
-    public function raw()
+    public function getMiddleware() :array
     {
-        
-        return $this->resolves_to;
-        
+        return [];
     }
     
 }

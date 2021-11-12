@@ -14,7 +14,6 @@ use Snicco\Routing\Route;
 use Snicco\Session\Session;
 use Snicco\Support\VariableBag;
 use Snicco\Validation\Validator;
-use Snicco\Routing\RoutingResult;
 use Psr\Http\Message\UriInterface;
 use Snicco\Traits\ValidatesWordpressNonces;
 use Psr\Http\Message\ServerRequestInterface;
@@ -47,46 +46,28 @@ class Request implements ServerRequestInterface
         return $this->withAttribute('routing.uri', $uri);
     }
     
-    public function withRoutingResult(RoutingResult $routing_result) :Request
+    public function withRoute(Route $route) :Request
     {
-        return $this->withAttribute('routing.result', $routing_result);
+        return $this->withAttribute('_route', $route);
     }
     
-    public function filtersWpQuery(?bool $set = null)
+    public function withCookies(array $cookies) :Request
     {
-        
-        if ($set) {
-            
-            return $this->withAttribute('filtered_wp_query', true);
-            
-        }
-        
-        return $this->getAttribute('filtered_wp_query', false);
-        
-    }
-    
-    public function withCookies(array $cookies)
-    {
-        
         return $this->withAttribute('cookies', new VariableBag($cookies));
-        
     }
     
-    public function withSession(Session $session_store)
+    public function withSession(Session $session_store) :Request
     {
-        
         return $this->withAttribute('session', $session_store);
-        
     }
     
-    public function withUserId(int $user_id)
+    public function withUserId(int $user_id) :Request
     {
         return $this->withAttribute('_current_user_id', $user_id);
     }
     
-    public function withValidator(Validator $v)
+    public function withValidator(Validator $v) :Request
     {
-        
         return $this->withAttribute('_validator', $v);
     }
     
@@ -99,7 +80,6 @@ class Request implements ServerRequestInterface
         }
         
         return $v;
-        
     }
     
     /**
@@ -107,11 +87,9 @@ class Request implements ServerRequestInterface
      */
     public function user() :WP_User
     {
-        
         $user = $this->getAttribute('_current_user');
         
         if ( ! $user instanceof WP_User) {
-            
             $this->psr_request =
                 $this->psr_request->withAttribute('_current_user', $user = WP::currentUser());
             
@@ -133,34 +111,26 @@ class Request implements ServerRequestInterface
     
     public function userAgent()
     {
-        
         return substr($this->getHeaderLine('User-Agent'), 0, 500);
-        
     }
     
     public function fullPath() :string
     {
-        
         $fragment = $this->getUri()->getFragment();
         
         return ($fragment !== '')
             ? $this->getRequestTarget().'#'.$fragment
             : $this->getRequestTarget();
-        
     }
     
     public function url() :string
     {
-        
         return preg_replace('/\?.*/', '', $this->getUri());
-        
     }
     
     public function fullUrl() :string
     {
-        
         return $this->getUri()->__toString();
-        
     }
     
     /**
@@ -168,14 +138,12 @@ class Request implements ServerRequestInterface
      */
     public function routingPath() :string
     {
-        
         $uri = $this->getAttribute('routing.uri');
         
         /** @var UriInterface $uri */
         $uri = $uri ?? $this->getUri();
         
         return $uri->getPath();
-        
     }
     
     public function loadingScript() :string
@@ -183,64 +151,50 @@ class Request implements ServerRequestInterface
         return trim($this->getServerParams()['SCRIPT_NAME'] ?? '', DIRECTORY_SEPARATOR);
     }
     
-    public function routingResult() :RoutingResult
-    {
-        
-        return $this->getAttribute('routing.result', new RoutingResult(null, []));
-        
-    }
-    
     public function cookies() :VariableBag
     {
-        
         /** @var VariableBag $bag */
         $bag = $this->getAttribute('cookies', new VariableBag());
         
         if ($bag->all() === []) {
-            
             $cookies = Cookies::parseHeader($this->getHeader('Cookie'));
             
             $bag->add($cookies);
-            
         }
         
         return $bag;
-        
     }
     
     public function session() :Session
     {
-        
         if ( ! $this->hasSession()) {
             throw new RuntimeException('A session has not been set on the request.');
         }
         
         return $this->getAttribute('session');
-        
+    }
+    
+    public function route() :?Route
+    {
+        return $this->getAttribute('_route');
     }
     
     public function hasSession() :bool
     {
-        
         $session = $this->getAttribute('session');
         
         return $session instanceof Session;
-        
     }
     
     public function expires(int $default = 0) :int
     {
-        
         return (int) $this->query('expires', $default);
-        
     }
     
     public function isWpAdmin() :bool
     {
-        
         // A request to the admin dashboard. We can catch that within admin_init
         return Str::contains($this->loadingScript(), 'wp-admin') && ! $this->isWpAjax();
-        
     }
     
     public function isWpAjax() :bool
@@ -266,8 +220,7 @@ class Request implements ServerRequestInterface
     
     public function routeIs(...$patterns) :bool
     {
-        
-        $route = $this->routingResult()->route();
+        $route = $this->route();
         
         if ( ! $route instanceof Route) {
             return false;
@@ -284,7 +237,6 @@ class Request implements ServerRequestInterface
         }
         
         return false;
-        
     }
     
     public function fullUrlIs(...$patterns) :bool
@@ -298,12 +250,10 @@ class Request implements ServerRequestInterface
         }
         
         return false;
-        
     }
     
     public function pathIs(...$patterns) :bool
     {
-        
         $path = Url::addLeading($this->decodedPath());
         
         foreach ($patterns as $pattern) {
@@ -313,7 +263,6 @@ class Request implements ServerRequestInterface
         }
         
         return false;
-        
     }
     
 }

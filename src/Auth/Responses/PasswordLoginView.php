@@ -5,23 +5,22 @@ declare(strict_types=1);
 namespace Snicco\Auth\Responses;
 
 use Snicco\Support\WP;
-use Snicco\View\ViewFactory;
 use Snicco\Application\Config;
 use Snicco\Routing\UrlGenerator;
+use Snicco\Contracts\ViewFactoryInterface;
 use Snicco\Auth\Contracts\AbstractLoginView;
 
 class PasswordLoginView extends AbstractLoginView
 {
     
-    private string       $view = 'framework.auth.layout';
-    private UrlGenerator $url;
-    private ViewFactory  $view_factory;
-    private Config       $config;
-    private bool         $pw_resets;
-    private bool         $registration;
-    private bool         $allow_remember;
+    private UrlGenerator         $url;
+    private ViewFactoryInterface $view_factory;
+    private Config               $config;
+    private bool                 $pw_resets;
+    private bool                 $registration;
+    private bool                 $allow_remember;
     
-    public function __construct(ViewFactory $view, UrlGenerator $url, Config $config)
+    public function __construct(ViewFactoryInterface $view, UrlGenerator $url, Config $config)
     {
         $this->view_factory = $view;
         $this->url = $url;
@@ -33,7 +32,6 @@ class PasswordLoginView extends AbstractLoginView
     
     public function toResponsable()
     {
-        
         return $this->view_factory->make('framework.auth.login-with-password')
                                   ->with(
                                       array_filter([
@@ -50,7 +48,6 @@ class PasswordLoginView extends AbstractLoginView
                                               : null,
                                       ], fn($value) => $value !== null),
                                   );
-        
     }
     
 }

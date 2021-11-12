@@ -11,6 +11,7 @@ use Snicco\Http\Redirector;
 use Tests\FrameworkTestCase;
 use RKA\Middleware\IpAddress;
 use Snicco\Http\ResponseFactory;
+use Snicco\Http\ResponsePostProcessor;
 use Snicco\Contracts\AbstractRedirector;
 use Psr\Http\Server\MiddlewareInterface;
 
@@ -46,13 +47,11 @@ class HttpServiceProviderTest extends FrameworkTestCase
         $middleware = $this->app->resolve(IpAddress::class);
         $this->assertInstanceOf(IpAddress::class, $middleware);
         $this->assertInstanceOf(MiddlewareInterface::class, $middleware);
-        
     }
     
     /** @test */
     public function checking_for_proxies_is_disabled_by_default()
     {
-        
         $this->bootApp();
         /** @var IpAddress $middleware */
         $middleware = $this->app->resolve(IpAddress::class);
@@ -63,13 +62,11 @@ class HttpServiceProviderTest extends FrameworkTestCase
         $value = $property->getValue($middleware);
         
         $this->assertFalse($value);
-        
     }
     
     /** @test */
     public function checking_for_proxies_can_be_enabled()
     {
-        
         $this->withAddedConfig('proxies.check', true);
         $this->withAddedConfig('proxies.trust', ['127.0.0.1']);
         $this->withAddedConfig('proxies.headers', ['foobar']);
@@ -83,7 +80,17 @@ class HttpServiceProviderTest extends FrameworkTestCase
         $value = $property->getValue($middleware);
         
         $this->assertTrue($value);
+    }
+    
+    /** @test */
+    public function the_response_post_processor_is_bound()
+    {
+        $this->bootApp();
         
+        $this->assertInstanceOf(
+            ResponsePostProcessor::class,
+            $this->app[ResponsePostProcessor::class]
+        );
     }
     
 }

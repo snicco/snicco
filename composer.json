@@ -74,9 +74,6 @@
     "psr-4": {
       "Snicco\\": "src/",
       "Tests\\": "tests/"
-    },
-    "files": [
-      "tests/stubs/FunctionOverride.php"
-    ]
+    }
   }
 }

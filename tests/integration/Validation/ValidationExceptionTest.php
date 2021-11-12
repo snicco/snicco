@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Tests\integration\Validation;
 
 use Tests\FrameworkTestCase;
-use Snicco\Contracts\ExceptionHandler;
 use Snicco\Session\SessionServiceProvider;
+use Snicco\ExceptionHandling\ExceptionHandler;
+use Snicco\Contracts\ExceptionHandlerInterface;
 use Snicco\Validation\ValidationServiceProvider;
 use Snicco\Validation\Exceptions\ValidationException;
-use Snicco\ExceptionHandling\ProductionExceptionHandler;
 
 class ValidationExceptionTest extends FrameworkTestCase
 {
@@ -59,13 +59,11 @@ class ValidationExceptionTest extends FrameworkTestCase
         ]);
         $response->assertSessionHasInput(['foo' => 'abcd']);
         $response->assertSessionHasInput(['bar' => 'ab cd']);
-        
     }
     
     /** @test */
     public function a_named_error_bag_can_be_used()
     {
-        
         $this->bootApp();
         $this->withRequest(
             $this->frontendRequest('POST', '/foobar')->withHeader('referer', '/foobar')
@@ -95,7 +93,6 @@ class ValidationExceptionTest extends FrameworkTestCase
         ], 'login_form');
         
         $response->assertSessionDoesntHaveErrors('foo', 'default');
-        
     }
     
     /** @test */
@@ -140,13 +137,11 @@ class ValidationExceptionTest extends FrameworkTestCase
                 ],
             ],
         ]);
-        
     }
     
     /** @test */
     public function a_message_is_included_with_json_errors()
     {
-        
         $this->bootApp();
         $this->withRequest(
             $this->frontendRequest('POST', '/foobar')->withHeader('referer', '/foobar')
@@ -186,13 +181,11 @@ class ValidationExceptionTest extends FrameworkTestCase
                 ],
             ],
         ]);
-        
     }
     
     /** @test */
     public function can_be_used_without_sessions()
     {
-        
         $this->withRemovedProvider(SessionServiceProvider::class)->bootApp();
         
         $this->withRequest(
@@ -223,7 +216,6 @@ class ValidationExceptionTest extends FrameworkTestCase
         $response->assertRedirect()->assertLocation('/foobar');
         
         $this->assertNull($response->session());
-        
     }
     
     protected function packageProviders() :array
@@ -234,9 +226,9 @@ class ValidationExceptionTest extends FrameworkTestCase
         ];
     }
     
-    private function errorHandler() :ProductionExceptionHandler
+    private function errorHandler() :ExceptionHandler
     {
-        return $this->app->resolve(ExceptionHandler::class);
+        return $this->app->resolve(ExceptionHandlerInterface::class);
     }
     
 }

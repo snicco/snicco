@@ -42,7 +42,6 @@ class ResetPasswordController extends Controller
     
     public function update(Request $request) :RedirectResponse
     {
-        
         $user = $this->getUserById($request->query('id', 0));
         
         if ( ! $user || $user->ID === 0) {
@@ -66,12 +65,10 @@ class ResetPasswordController extends Controller
         return $this->response_factory->redirect()
                                       ->refresh()
                                       ->with('_password_reset.success', true);
-        
     }
     
     protected function provideMessages(array $result) :array
     {
-        
         $messages = [
             'password' => [
                 'Your password is too weak and can be easily guessed by a computer.',
@@ -79,9 +76,7 @@ class ResetPasswordController extends Controller
         ];
         
         if (isset($result['feedback']['warning'])) {
-            
             $messages['reason'][] = trim($result['feedback']['warning'], '.').'.';
-            
         }
         
         foreach ($result['feedback']['suggestions'] ?? [] as $suggestion) {
@@ -89,23 +84,19 @@ class ResetPasswordController extends Controller
         }
         
         return $messages;
-        
     }
     
     private function redirectBackFailure() :RedirectResponse
     {
-        
         return $this->response_factory->redirect()
                                       ->refresh()
                                       ->withErrors(
                                           ['failure' => 'We could not reset your password.']
                                       );
-        
     }
     
     private function checkPasswordStrength(array $validated, WP_User $user)
     {
-        
         $user_data = [
             $user->user_login,
             $user->user_email,
@@ -115,13 +106,10 @@ class ResetPasswordController extends Controller
         $result = $password_evaluator->passwordStrength($validated['password'], $user_data);
         
         if ($result['score'] < $this->min_strength) {
-            
             $messages = $this->provideMessages($result);
             
             throw ValidationException::withMessages($messages);
-            
         }
-        
     }
     
 }

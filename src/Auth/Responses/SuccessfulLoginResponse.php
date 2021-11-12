@@ -19,11 +19,9 @@ class SuccessfulLoginResponse extends Response
     
     public function __construct(ResponseInterface $psr7_response, WP_User $user, bool $remember)
     {
-        
         parent::__construct($psr7_response);
         $this->user = $user;
         $this->remember = $remember;
-        
     }
     
     public function authenticateUser() :WP_User

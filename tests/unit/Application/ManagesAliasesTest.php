@@ -5,18 +5,25 @@ declare(strict_types=1);
 namespace Tests\unit\Application;
 
 use stdClass;
-use PHPUnit\Framework\TestCase;
-use Tests\helpers\CreateContainer;
+use Tests\UnitTest;
+use Tests\concerns\CreateContainer;
 use Snicco\Application\ManagesAliases;
 use SniccoAdapter\BaseContainerAdapter;
 use Tests\fixtures\TestDependencies\Foo;
 
-class ManagesAliasesTest extends TestCase
+class ManagesAliasesTest extends UnitTest
 {
     
     use CreateContainer;
     
     private ManagesAliasImplementation $subject;
+    
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->subject = new ManagesAliasImplementation();
+        $this->subject->container = $this->createContainer();
+    }
     
     public function tearDown() :void
     {
@@ -49,24 +56,20 @@ class ManagesAliasesTest extends TestCase
         $this->expectExceptionMessage('Method: foo does not exist.');
         
         $this->subject->foo();
-        
     }
     
     /** @test */
     public function closures_are_resolved_and_are_bound_to_the_current_class_instance()
     {
-        
         $expected = 'foo';
         $this->subject->alias('test', fn() => $expected);
         
         $this->assertEquals($expected, $this->subject->test());
-        
     }
     
     /** @test */
     public function aliases_can_be_used_to_resolve_objects_from_the_ioc_container()
     {
-        
         $container = $this->createContainer();
         $container->bind('foobar', fn() => new stdClass());
         
@@ -75,13 +78,11 @@ class ManagesAliasesTest extends TestCase
         $this->subject->alias('foo', 'foobar');
         
         $this->assertInstanceOf(stdClass::class, $this->subject->foo());
-        
     }
     
     /** @test */
     public function methods_can_be_called_on_objects_in_the_ioc_container()
     {
-        
         $container = $this->createContainer();
         $container->bind('foobar', fn() => new Foobar());
         
@@ -90,20 +91,12 @@ class ManagesAliasesTest extends TestCase
         $this->subject->alias('foo', 'foobar', 'baz');
         
         $this->assertSame('BAZ', $this->subject->foo('baz'));
-        
     }
     
     /** @test */
     public function services_can_be_resolved_from_the_container()
     {
         $this->assertInstanceOf(Foo::class, $this->subject->resolve(Foo::class));
-    }
-    
-    protected function setUp() :void
-    {
-        parent::setUp();
-        $this->subject = new ManagesAliasImplementation();
-        $this->subject->container = $this->createContainer();
     }
     
 }

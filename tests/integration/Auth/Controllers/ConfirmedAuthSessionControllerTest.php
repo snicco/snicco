@@ -19,45 +19,51 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
     private string $endpoint = '/auth/confirm';
     private string $valid_secret_to_confirm = 'bypass';
     
+    protected function setUp() :void
+    {
+        $this->afterApplicationCreated(function () {
+            $this->withAddedConfig('auth.fail2ban.enabled', true);
+        });
+        
+        $this->afterApplicationBooted(function () {
+            $this->instance(AuthConfirmation::class, new TestAuthConfirmation());
+        });
+        parent::setUp();
+        $this->bootApp();
+    }
+    
     /** @test */
     public function the_route_cant_be_accessed_as_a_guest()
     {
-        
         $response = $this->get($this->endpoint);
         
         $response->assertRedirectPath('/auth/login');
-        
     }
     
     /** @test */
     public function the_route_cant_be_accessed_with_auth_already_confirmed()
     {
-        
         $this->actingAs($this->createAdmin());
         
         $response = $this->get($this->endpoint);
         
         $response->assertRedirectToRoute('dashboard');
-        
     }
     
     /** @test */
     public function the_confirmation_view_can_be_rendered()
     {
-        
         $this->authenticateAndUnconfirm($this->createAdmin());
         
         $response = $this->get($this->endpoint);
         
         $response->assertOk();
         $response->assertSee('[Test] Confirm your authentication.');
-        
     }
     
     /** @test */
     public function invalid_auth_confirmation_does_not_work()
     {
-        
         $this->authenticateAndUnconfirm($this->createAdmin());
         $token = $this->withCsrfToken();
         
@@ -71,13 +77,11 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
         $response->assertRedirectToRoute('auth.confirm');
         $response->assertSessionHasErrors('auth.confirmation');
         $this->assertFalse($response->session()->hasValidAuthConfirmToken());
-        
     }
     
     /** @test */
     public function invalid_auth_confirmation_does_not_work_json()
     {
-        
         $this->authenticateAndUnconfirm($this->createAdmin());
         $token = $this->withCsrfToken();
         
@@ -93,13 +97,11 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
                  ->assertExactJson(['message' => 'Invalid credentials.']);
         
         $this->assertFalse($response->session()->hasValidAuthConfirmToken());
-        
     }
     
     /** @test */
     public function invalid_auth_confirmations_throw_an_event()
     {
-        
         Event::fake([FailedAuthConfirmation::class]);
         $this->authenticateAndUnconfirm($calvin = $this->createAdmin());
         $token = $this->withCsrfToken();
@@ -117,7 +119,6 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
         Event::assertDispatched(
             fn(FailedAuthConfirmation $event) => $event->forUser() === $calvin->ID
         );
-        
     }
     
     /** @test */
@@ -139,13 +140,11 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
             LOG_WARNING,
             "Failed auth confirmation for user [$calvin->ID] from 127.0.0.1"
         );
-        
     }
     
     /** @test */
     public function auth_can_be_confirmed()
     {
-        
         Event::fake([SessionRegenerated::class]);
         $this->authenticateAndUnconfirm($this->createAdmin());
         $token = $this->withCsrfToken();
@@ -166,13 +165,11 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
         
         $this->assertNotSame($id_before_confirmation, $response->session()->getId());
         Event::assertDispatched(SessionRegenerated::class);
-        
     }
     
     /** @test */
     public function auth_confirmation_for_json_requests_just_returns_a_200_code()
     {
-        
         $this->authenticateAndUnconfirm($this->createAdmin());
         $token = $this->withCsrfToken();
         
@@ -185,13 +182,11 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
         );
         
         $response->assertStatus(200);
-        
     }
     
     /** @test */
     public function the_auth_confirm_space_in_the_session_is_cleared_before_confirmation()
     {
-        
         $this->authenticateAndUnconfirm($this->createAdmin());
         $this->withDataInSession(['auth.confirm.foo' => 'bar']);
         $token = $this->withCsrfToken();
@@ -205,13 +200,11 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
         
         $response->assertRedirectToRoute('dashboard');
         $response->assertSessionMissing('auth.confirm.foo');
-        
     }
     
     /** @test */
     public function the_user_is_redirected_to_the_intended_url_if_present()
     {
-        
         $this->authenticateAndUnconfirm($this->createAdmin());
         $this->session->setIntendedUrl('/foo/bar');
         $token = $this->withCsrfToken();
@@ -224,23 +217,6 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
         );
         
         $response->assertRedirect('/foo/bar');
-        
-    }
-    
-    protected function setUp() :void
-    {
-        
-        $this->afterApplicationCreated(function () {
-            $this->withAddedConfig('auth.fail2ban.enabled', true);
-        });
-        
-        $this->afterApplicationBooted(function () {
-            
-            $this->instance(AuthConfirmation::class, new TestAuthConfirmation());
-            
-        });
-        parent::setUp();
-        $this->bootApp();
     }
     
 }
@@ -250,20 +226,15 @@ class TestAuthConfirmation implements AuthConfirmation
     
     public function confirm(Request $request) :bool
     {
-        
         if ($request->input('secret') === 'bypass') {
-            
             return true;
-            
         }
         
         return false;
-        
     }
     
     public function viewResponse(Request $request)
     {
-        
         return '[Test] Confirm your authentication.';
     }
     

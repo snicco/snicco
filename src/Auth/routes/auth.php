@@ -27,7 +27,6 @@ $confirm = $config->get('auth.endpoints.confirm');
 
 // Login
 $router->middleware('guest')->group(function (Router $router) use ($config, $login, $magic_link) {
-    
     $router->get("/$login", [AuthSessionController::class, 'create'])
            ->name('login');
     
@@ -36,16 +35,13 @@ $router->middleware('guest')->group(function (Router $router) use ($config, $log
     
     // Magic-link
     if ($config->get('auth.authenticator') === 'email') {
-        
         $router->post("$login/$magic_link", [LoginMagicLinkController::class, 'store'])
                ->middleware(['csrf', 'json'])
                ->name('login.create-magic-link');
         
         $router->get("$login/$magic_link", [AuthSessionController::class, 'store'])
                ->name('login.magic-link');
-        
     }
-    
 });
 
 // Logout
@@ -57,7 +53,6 @@ $router->get('/logout/{user_id}', [AuthSessionController::class, 'destroy'])
 // Auth Confirmation
 $router->middleware(['auth', 'auth.unconfirmed'])->group(
     function (Router $router) use ($magic_link, $confirm) {
-        
         $router->get("$confirm", [ConfirmedAuthSessionController::class, 'create'])->name(
             'confirm'
         );
@@ -71,13 +66,11 @@ $router->middleware(['auth', 'auth.unconfirmed'])->group(
         $router->post("$confirm/$magic_link", [AuthConfirmationEmailController::class, 'store'])
                ->middleware('csrf')
                ->name('confirm.email');
-        
     }
 );
 
 // 2FA
 if ($config->get('auth.features.2fa')) {
-    
     $two_factor = $config->get('auth.endpoints.2fa');
     $challenge = $config->get('auth.endpoints.challenge');
     
@@ -103,7 +96,6 @@ if ($config->get('auth.features.2fa')) {
     // recovery codes.
     $router->name('2fa.recovery-codes')->middleware(['auth', 'auth.confirmed', '2fa.enabled'])
            ->group(function (Router $router) {
-        
                $router->get('two-factor/recovery-codes', [
                    RecoveryCodeController::class,
                    'index',
@@ -113,14 +105,11 @@ if ($config->get('auth.features.2fa')) {
                    RecoveryCodeController::class,
                    'update',
                ])->middleware(['json', 'csrf']);
-        
            });
-    
 }
 
 // password resets
 if ($config->get('auth.features.password-resets')) {
-    
     $forgot = $config->get('auth.endpoints.forgot-password');
     $reset = $config->get('auth.endpoints.reset-password');
     
@@ -139,30 +128,24 @@ if ($config->get('auth.features.password-resets')) {
     
     $router->put("/$reset", [ResetPasswordController::class, 'update'])
            ->middleware(['csrf', 'signed:absolute']);
-    
 }
 
 // registration
 if ($config->get('auth.features.registration')) {
-    
     $register = $config->get('auth.endpoints.register');
     
     $router->middleware('guest')->group(function ($router) use ($register) {
-        
         $router->get("/$register", [RegistrationLinkController::class, 'create'])
                ->name('register');
         
         $router->post("/$register", [RegistrationLinkController::class, 'store'])->middleware(
             'csrf'
         );
-        
     });
-    
 }
 
 // accounts
 $router->name('accounts')->group(function (Router $router) use ($config) {
-    
     $accounts = $config->get('auth.endpoints.accounts');
     $create = $config->get('auth.endpoints.accounts_create');
     
@@ -178,7 +161,6 @@ $router->name('accounts')->group(function (Router $router) use ($config) {
            ->middleware(['auth', 'csrf'])
            ->name('delete')
            ->andNumber('user_id');
-    
 });
 
 

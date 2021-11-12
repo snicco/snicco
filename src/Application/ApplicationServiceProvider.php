@@ -12,7 +12,6 @@ use Snicco\View\GlobalContext;
 use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Contracts\ServiceProvider;
-use Snicco\Http\ResponsePostProcessor;
 use Snicco\View\ViewComposerCollection;
 use Snicco\Contracts\AbstractRedirector;
 use Snicco\Contracts\ViewFactoryInterface;
@@ -24,19 +23,16 @@ class ApplicationServiceProvider extends ServiceProvider
     public function register() :void
     {
         $this->bindConfig();
-        $this->bindShutDownHandler();
         $this->bindAliases();
     }
     
     public function bootstrap() :void
     {
         if ( ! $this->validAppKey()) {
-            
             $info = Application::class.'::generateKey';
             throw new ConfigurationException(
                 "Your app.key config value is either missing or too insecure. Please generate a new one using $info()"
             );
-            
         }
     }
     
@@ -54,18 +50,8 @@ class ApplicationServiceProvider extends ServiceProvider
         $this->config->extend('app.debug', true);
     }
     
-    private function bindShutDownHandler()
-    {
-        $this->container->singleton(ResponsePostProcessor::class, function () {
-            
-            return new ResponsePostProcessor($this->app->isRunningUnitTest());
-            
-        });
-    }
-    
     private function bindAliases()
     {
-        
         $app = $this->container->make(Application::class);
         
         $this->applicationAliases($app);
@@ -73,7 +59,6 @@ class ApplicationServiceProvider extends ServiceProvider
         $this->routingAliases($app);
         $this->viewAliases($app);
         $this->bindRequestAlias($app);
-        
     }
     
     private function applicationAliases(Application $app)
@@ -85,7 +70,6 @@ class ApplicationServiceProvider extends ServiceProvider
     {
         $app->alias('response', ResponseFactory::class);
         $app->alias('redirect', function (?string $path = null, int $status = 302) use ($app) {
-            
             /** @var AbstractRedirector $redirector */
             $redirector = $app->resolve(AbstractRedirector::class);
             
@@ -94,7 +78,6 @@ class ApplicationServiceProvider extends ServiceProvider
             }
             
             return $redirector;
-            
         });
     }
     
@@ -115,7 +98,6 @@ class ApplicationServiceProvider extends ServiceProvider
     private function viewAliases(Application $app)
     {
         $app->alias('globals', function () use ($app) {
-            
             /** @var GlobalContext $globals */
             $globals = $app->resolve(GlobalContext::class);
             
@@ -127,34 +109,27 @@ class ApplicationServiceProvider extends ServiceProvider
             $globals->add(...array_values(func_get_args()));
             
             return $globals;
-            
         });
         $app->alias('addComposer', function () use ($app) {
-            
             $composer_collection = $app->resolve(ViewComposerCollection::class);
             
             $args = func_get_args();
             
             $composer_collection->addComposer(...$args);
-            
         });
         $app->alias('view', function () use ($app) {
-            
             /** @var ViewFactoryInterface $view_service */
             $view_service = $app->container()->make(ViewFactoryInterface::class);
             
             return call_user_func_array([$view_service, 'make'], func_get_args());
-            
         });
         $app->alias('render', function () use ($app) {
-            
             /** @var ViewFactoryInterface $view_service */
             $view_service = $app->container()->make(ViewFactoryInterface::class);
             
             $view_as_string = call_user_func_array([$view_service, 'render',], func_get_args());
             
             echo $view_as_string;
-            
         });
         $app->alias('methodField', MethodField::class, 'html');
     }

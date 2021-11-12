@@ -39,4 +39,11 @@ interface ViewFactoryInterface
      */
     public function render($views, array $context = []) :string;
     
+    /**
+     * Returns the root view that was rendered.
+     *
+     * @return ViewInterface|null
+     */
+    public function renderedView() :?ViewInterface;
+    
 }

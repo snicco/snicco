@@ -35,13 +35,10 @@ class TestMagicLink extends MagicLink
     
     public function gc() :bool
     {
-        
         foreach ($this->links as $signature => $expires) {
-            
             if ($expires < $this->currentTime()) {
                 unset($this->links[$signature]);
             }
-            
         }
         
         return true;

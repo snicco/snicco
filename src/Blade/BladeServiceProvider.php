@@ -22,7 +22,6 @@ class BladeServiceProvider extends ServiceProvider
     
     public function register() :void
     {
-        
         $container = $this->parseIlluminateContainer();
         
         $cache_dir = $this->config->get(
@@ -40,7 +39,6 @@ class BladeServiceProvider extends ServiceProvider
         $this->setBladeComponentBindings($container);
         
         $this->registerBladeEvents();
-        
     }
     
     public function bootstrap() :void
@@ -50,7 +48,6 @@ class BladeServiceProvider extends ServiceProvider
     
     private function setIlluminateBindings(IlluminateContainerInterface $container)
     {
-        
         $container->bindIf('files', fn() => new Filesystem(), true);
         $container->bindIf('events', fn() => new Dispatcher(), true);
         
@@ -58,19 +55,15 @@ class BladeServiceProvider extends ServiceProvider
         
         $this->setFacadeContainer($container);
         $this->setGlobalContainerInstance($container);
-        
     }
     
     private function registerLaravelProvider(IlluminateContainerInterface $container)
     {
-        
         ((new ViewServiceProvider($container)))->register();
-        
     }
     
     private function registerBladeViewEngine() :void
     {
-        
         $this->container->singleton(
             ViewEngineInterface::class,
             fn() => new BladeEngine($this->container->make('view'))
@@ -79,32 +72,24 @@ class BladeServiceProvider extends ServiceProvider
     
     private function setBladeComponentBindings(IlluminateContainerInterface $container)
     {
-        
         $container->bindIf(Factory::class, fn(IlluminateContainerInterface $c) => $c->make('view'));
         $container->bindIf(Application::class, fn() => new DummyApplication());
         
         $container->resolving(
             BladeComponent::class,
             function (BladeComponent $component, IlluminateContainerInterface $container) {
-                
                 $component->setEngine($container->make(ViewEngineInterface::class));
-                
             }
         );
-        
     }
     
     private function registerBladeEvents()
     {
-        
         /** @var Dispatcher $laravel_dispatcher */
         $laravel_dispatcher = $this->container->make('events');
         $laravel_dispatcher->listen('composing:*', function ($event_name, $payload) {
-            
             MakingView::dispatch([new BladeView($payload[0])]);
-            
         });
-        
     }
     
 }
