@@ -11,10 +11,22 @@ use Snicco\Contracts\EncryptorInterface;
 class RecoveryCodeControllerTest extends AuthTestCase
 {
     
+    protected function setUp() :void
+    {
+        $this->afterApplicationCreated(function () {
+            $this->with2Fa();
+        });
+        $this->afterApplicationBooted(function () {
+            $this->codes = $this->generateTestRecoveryCodes();
+            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
+        });
+        
+        parent::setUp();
+    }
+    
     /** @test */
     public function the_endpoint_cant_be_accessed_if_2fa_is_disabled()
     {
-        
         $this->without2Fa();
         $this->bootApp();
         
@@ -22,7 +34,6 @@ class RecoveryCodeControllerTest extends AuthTestCase
         
         $response = $this->get('/auth/two-factor/recovery-codes');
         $response->assertDelegatedToWordPress();
-        
     }
     
     /** @test */
@@ -32,7 +43,6 @@ class RecoveryCodeControllerTest extends AuthTestCase
         
         $response = $this->get($this->routePath());
         $response->assertRedirectPath('/auth/login', 302);
-        
     }
     
     /** @test */
@@ -47,7 +57,6 @@ class RecoveryCodeControllerTest extends AuthTestCase
         
         $response = $this->get($this->routePath());
         $response->assertRedirectToRoute('auth.confirm');
-        
     }
     
     /** @test */
@@ -68,7 +77,6 @@ class RecoveryCodeControllerTest extends AuthTestCase
         $response = $this->getJson($this->routePath());
         
         $response->assertExactJson($this->codes);
-        
     }
     
     /** @test */
@@ -82,7 +90,6 @@ class RecoveryCodeControllerTest extends AuthTestCase
         $response = $this->getJson($this->routePath());
         
         $response->assertStatus(403);
-        
     }
     
     /** @test */
@@ -111,7 +118,6 @@ class RecoveryCodeControllerTest extends AuthTestCase
         
         $this->assertSame($codes, $body);
         $this->assertNotSame($this->codes, $codes);
-        
     }
     
     /** @test */
@@ -134,7 +140,6 @@ class RecoveryCodeControllerTest extends AuthTestCase
         
         $response2 = $this->put($this->routePath(), $token, ['Accept' => 'application/json']);
         $response2->assertOk();
-        
     }
     
     /** @test */
@@ -152,30 +157,10 @@ class RecoveryCodeControllerTest extends AuthTestCase
         $response->assertExactJson([
             'message' => 'Two-Factor-Authentication needs to be enabled for your account to perform this action.',
         ])->assertStatus(403);
-        
-    }
-    
-    protected function setUp() :void
-    {
-        
-        $this->afterApplicationCreated(function () {
-            
-            $this->with2Fa();
-            
-        });
-        $this->afterApplicationBooted(function () {
-            
-            $this->codes = $this->generateTestRecoveryCodes();
-            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
-            
-        });
-        
-        parent::setUp();
     }
     
     private function routePath()
     {
-    
         return $this->app->resolve(UrlGenerator::class)->toRoute('auth.2fa.recovery-codes');
     }
     

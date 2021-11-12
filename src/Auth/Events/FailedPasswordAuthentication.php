@@ -13,12 +13,10 @@ class FailedPasswordAuthentication extends BannableEvent
     
     public function __construct(Request $request, string $login, string $password = '', int $user_id = null)
     {
-        
         $this->request = $request;
         $this->login = $login;
         $this->password = $password;
         $this->user_id = $user_id;
-        
     }
     
     public function fail2BanMessage() :string
@@ -28,7 +26,6 @@ class FailedPasswordAuthentication extends BannableEvent
         }
         
         return "Failed authentication attempt for user [$this->user_id] with invalid password [$this->password]";
-        
     }
     
     public function user_id() :?int

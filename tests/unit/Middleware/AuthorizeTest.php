@@ -5,74 +5,68 @@ declare(strict_types=1);
 namespace Tests\unit\Middleware;
 
 use Mockery;
-use Tests\UnitTest;
 use Snicco\Support\WP;
-use Snicco\Http\Delegate;
-use Tests\stubs\TestRequest;
-use Snicco\Http\ResponseFactory;
+use Tests\MiddlewareTestCase;
+use Snicco\Http\Psr7\Request;
 use Snicco\Middleware\Authorize;
-use Tests\helpers\AssertsResponse;
-use Snicco\Middleware\Authenticate;
-use Tests\helpers\CreateUrlGenerator;
-use Tests\helpers\CreateRouteCollection;
 use Snicco\ExceptionHandling\Exceptions\AuthorizationException;
 
-class AuthorizeTest extends UnitTest
+class AuthorizeTest extends MiddlewareTestCase
 {
     
-    use AssertsResponse;
-    use CreateUrlGenerator;
-    use CreateRouteCollection;
+    private Request $request;
     
-    private Authenticate    $middleware;
-    private Delegate        $route_action;
-    private TestRequest     $request;
-    private ResponseFactory $response;
+    protected function setUp() :void
+    {
+        parent::setUp();
+        WP::shouldReceive('loginUrl')->andReturn('foobar.com')->byDefault();
+        $this->request = $this->frontendRequest('GET', 'foo');
+    }
+    
+    protected function tearDown() :void
+    {
+        parent::tearDown();
+        WP::reset();
+        Mockery::close();
+    }
     
     /** @test */
     public function a_user_with_given_capabilities_can_access_the_route()
     {
-        
         WP::shouldReceive('currentUserCan')
           ->with('manage_options')
           ->andReturnTrue();
         
-        $response = $this->newMiddleware()->handle(
-            $this->request,
-            $this->route_action
-        );
+        $response = $this->runMiddleware($this->newMiddleware(), $this->request);
         
-        $this->assertOutput('FOO', $response);
-        
+        $response->assertNextMiddlewareCalled();
     }
     
     /** @test */
     public function a_user_without_authorisation_to_the_route_will_throw_an_exception()
     {
-        
         WP::shouldReceive('currentUserCan')
           ->with('manage_options')
           ->andReturnFalse();
         
         $this->expectException(AuthorizationException::class);
-        
-        $this->newMiddleware()->handle($this->request, $this->route_action);
-        
+        $response = $this->runMiddleware($this->newMiddleware(), $this->request);
     }
     
     /** @test */
     public function the_user_can_be_authorized_against_a_resource()
     {
-        
         WP::shouldReceive('currentUserCan')
           ->with('edit_post', '10')
           ->once()
           ->andReturnTrue();
         
-        $response = $this->newMiddleware('edit_post', '10')
-                         ->handle($this->request, $this->route_action,);
+        $response = $this->runMiddleware(
+            $this->newMiddleware('edit_post', '10'),
+            $this->request,
+        );
         
-        $this->assertOutput('FOO', $response);
+        $response->assertNextMiddlewareCalled();
         
         WP::shouldReceive('currentUserCan')
           ->with('edit_post', '10')
@@ -80,27 +74,26 @@ class AuthorizeTest extends UnitTest
           ->andReturnFalse();
         
         $this->expectException(AuthorizationException::class);
-        
-        $this->newMiddleware('edit_post', '10')->handle(
+        $this->runMiddleware(
+            $this->newMiddleware('edit_post', '10'),
             $this->request,
-            $this->route_action,
         );
-        
     }
     
     /** @test */
     public function several_wordpress_specific_arguments_can_be_passed()
     {
-        
         WP::shouldReceive('currentUserCan')
           ->with('edit_post_meta', '10', 'test_key')
           ->once()
           ->andReturnTrue();
         
-        $response = $this->newMiddleware('edit_post_meta', '10', 'test_key')
-                         ->handle($this->request, $this->route_action,);
+        $response = $this->runMiddleware(
+            $this->newMiddleware('edit_post_meta', '10', 'test_key'),
+            $this->request,
+        );
         
-        $this->assertOutput('FOO', $response);
+        $response->assertNextMiddlewareCalled();
         
         WP::shouldReceive('currentUserCan')
           ->with('edit_post_meta', '10', 'test_key')
@@ -109,34 +102,15 @@ class AuthorizeTest extends UnitTest
         
         $this->expectException(AuthorizationException::class);
         
-        $this->newMiddleware('edit_post_meta', '10', 'test_key')
-             ->handle($this->request, $this->route_action,);
-        
+        $response = $this->runMiddleware(
+            $this->newMiddleware('edit_post_meta', '10', 'test_key'),
+            $this->request,
+        );
     }
     
-    protected function beforeTestRun()
+    private function newMiddleware(string $capability = 'manage_options', ...$args) :Authorize
     {
-        
-        $response = $this->createResponseFactory();
-        $this->route_action = new Delegate(fn() => $response->html('FOO'));
-        $this->request = TestRequest::from('GET', '/foo');
-        WP::shouldReceive('loginUrl')->andReturn('foobar.com')->byDefault();
-        
-    }
-    
-    protected function beforeTearDown()
-    {
-        
-        WP::clearResolvedInstances();
-        Mockery::close();
-        
-    }
-    
-    private function newMiddleware(string $capability = 'manage_options', ...$args)
-    {
-        
         return new Authorize($capability, ...$args);
-        
     }
     
 }

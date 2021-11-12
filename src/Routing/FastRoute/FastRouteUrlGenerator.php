@@ -7,8 +7,9 @@ namespace Snicco\Routing\FastRoute;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
 use Snicco\Routing\Route;
+use Snicco\Contracts\UrlableInterface;
 use Snicco\Contracts\RouteUrlGenerator;
-use Snicco\Contracts\AbstractRouteCollection;
+use Snicco\Contracts\RouteCollectionInterface;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 class FastRouteUrlGenerator implements RouteUrlGenerator
@@ -19,11 +20,11 @@ class FastRouteUrlGenerator implements RouteUrlGenerator
     /** @see https://regexr.com/5s533 */
     public const double_curly_brackets = '/(?<=\/)(?<opening_bracket>\{)|(?<closing_bracket>\}(?=(\/|\[\/|\]|$)))/';
     
-    private AbstractRouteCollection $routes;
-    
     private array $url_cache = [];
     
-    public function __construct(AbstractRouteCollection $routes)
+    private RouteCollectionInterface $routes;
+    
+    public function __construct(RouteCollectionInterface $routes)
     {
         $this->routes = $routes;
     }
@@ -33,19 +34,14 @@ class FastRouteUrlGenerator implements RouteUrlGenerator
      */
     public function to(string $name, array $arguments) :string
     {
-        
         if (isset($this->url_cache[$name])) {
             return $this->url_cache[$name];
         }
         
         $route = $this->findRoute($name);
         
-        $route->instantiateConditions();
-        
-        if ($condition = $route->hasUrlableCondition()) {
-            
-            return $condition->toUrl(array_merge(['route' => $route], $arguments));
-            
+        if ($route instanceof UrlableInterface) {
+            return $route->toUrl($arguments);
         }
         
         $regex = $this->routeRegex($route);
@@ -61,60 +57,43 @@ class FastRouteUrlGenerator implements RouteUrlGenerator
         }
         
         return $url;
-        
     }
     
     private function findRoute(string $name) :Route
     {
-        
         $route = $this->routes->findByName($name);
         
         if ( ! $route) {
-            
             throw new ConfigurationException(
                 'There is no named route with the name: '.$name.' registered.'
             );
-            
         }
         
         return $route;
-        
     }
     
     private function routeRegex(Route $route) :array
     {
-        
         return Arr::flattenOnePreserveKeys($route->getRegex() ?? []);
-        
     }
     
     private function convertToDoubleCurlyBrackets(string $url)
     {
-        
         return preg_replace_callback(self::double_curly_brackets, function ($matches) {
-            
             if ($open = $matches['opening_bracket'] ?? null) {
-                
                 return $open.$open;
-                
             }
             if ($closing = $matches['closing_bracket'] ?? null) {
-                
                 return $closing.$closing;
-                
             }
-            
         }, $url);
-        
     }
     
     private function replaceRouteSegmentsWithValues(string $url, array $route_regex, array $values)
     {
-        
         return preg_replace_callback(
             self::matching_pattern,
             function ($matches) use ($values, $route_regex) {
-                
                 $required = $this->stripBrackets($matches['required']);
                 $optional = $this->isOptional($matches['optional']);
                 $value = Arr::get($values, $required, '');
@@ -122,50 +101,38 @@ class FastRouteUrlGenerator implements RouteUrlGenerator
                 $value = is_int($value) ? strval($value) : $value;
                 
                 if ($value === '' && ! $optional) {
-                    
                     throw new ConfigurationException(
                         'Required route segment: {'.$required.'} missing.'
                     );
-                    
                 }
                 
                 if ($constraint = Arr::get($route_regex, $required)) {
-                    
                     $this->satisfiesSegmentRegex($constraint, $value, $required);
-                    
                 }
                 
                 return ($optional) ? '/'.$value : $value;
-                
             },
             $url
         );
-        
     }
     
     private function stripBrackets(string $pattern) :string
     {
-        
         $pattern = Str::of($pattern)->between('{{', '}}')->before(':');
         
         return $pattern->__toString();
-        
     }
     
     private function isOptional(string $pattern) :bool
     {
-        
         return Str::startsWith($pattern, '[/{') && Str::endsWith($pattern, [']', '}']);
-        
     }
     
     private function satisfiesSegmentRegex($pattern, $value, $segment)
     {
-        
         $regex_constraint = '/'.$pattern.'/';
         
         if ( ! preg_match($regex_constraint, $value)) {
-            
             throw new ConfigurationException(
                 'The provided value ['
                 .$value
@@ -178,9 +145,7 @@ class FastRouteUrlGenerator implements RouteUrlGenerator
                 .$pattern
                 .'.'
             );
-            
         }
-        
     }
     
 }

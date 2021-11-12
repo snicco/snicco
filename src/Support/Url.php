@@ -10,28 +10,22 @@ class Url
     // Trailing slashes are kept if present for the last segment
     public static function combineRelativePath($before, $new) :string
     {
-        
         $before = ($before === '') ? '/' : '/'.trim($before, '/').'/';
         
         return $before.ltrim($new, '/');
-        
     }
     
     public static function combineAbsPath($host, $path) :string
     {
-        
         $host = rtrim($host, '/');
         $path = ltrim($path, '/');
         
         return $host.'/'.$path;
-        
     }
     
     public static function addTrailing(string $url) :string
     {
-        
         return rtrim($url, '/').'/';
-        
     }
     
     public static function addLeading(string $url) :string
@@ -46,7 +40,6 @@ class Url
         }
         
         return true;
-        
     }
     
     public static function removeTrailing(string $path) :string
@@ -63,7 +56,6 @@ class Url
      */
     public static function rebuild(string $url) :string
     {
-        
         $parts = parse_url($url);
         
         if (isset($parts['query'])) {
@@ -72,7 +64,6 @@ class Url
         }
         
         return self::unParseUrl($parts);
-        
     }
     
     /**
@@ -80,7 +71,6 @@ class Url
      */
     public static function unParseUrl(array $url) :string
     {
-        
         $scheme = isset($url['scheme']) ? $url['scheme'].'://' : '';
         $host = $url['host'] ?? '';
         $port = isset($url['port']) ? ':'.$url['port'] : '';
@@ -92,6 +82,11 @@ class Url
         $fragment = isset($url['fragment']) ? '#'.$url['fragment'] : '';
         
         return "{$scheme}{$user}{$pass}{$host}{$port}{$path}{$query}{$fragment}";
+    }
+    
+    public static function isFileURL(string $url) :bool
+    {
+        return Str::contains($url, '.php');
     }
     
 }

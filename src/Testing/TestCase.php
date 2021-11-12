@@ -21,13 +21,13 @@ use Snicco\Application\Application;
 use Codeception\TestCase\WPTestCase;
 use Snicco\Contracts\ServiceProvider;
 use Illuminate\Support\Facades\Facade;
-use Snicco\Contracts\ExceptionHandler;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Testing\Concerns\TravelsTime;
 use Snicco\Session\SessionServiceProvider;
 use Mockery\Exception\InvalidCountException;
 use Snicco\Testing\Concerns\InteractsWithMail;
 use Snicco\Testing\Concerns\MakesHttpRequests;
+use Snicco\Contracts\ExceptionHandlerInterface;
 use Snicco\Testing\Concerns\InteractsWithSession;
 use Snicco\ExceptionHandling\NullExceptionHandler;
 use Psr\Http\Message\ServerRequestFactoryInterface;
@@ -67,6 +67,92 @@ abstract class TestCase extends WPTestCase
      */
     private array $before_application_destroyed = [];
     
+    protected function setUp() :void
+    {
+        if (class_exists(Facade::class)) {
+            Facade::clearResolvedInstances();
+            Facade::setFacadeApplication(null);
+        }
+        
+        if (class_exists(Container::class)) {
+            Container::setInstance();
+        }
+        
+        Event::setInstance(null);
+        WP::reset();
+        
+        parent::setUp();
+        
+        $this->backToPresent();
+        
+        if ( ! isset($this->app)) {
+            $this->refreshApplication();
+        }
+        
+        $this->mergeServiceProviders();
+        $this->bindBaseRequest();
+        $this->setUpTraits();
+        
+        $this->afterApplicationBooted(function () {
+            $this->replaceBindings();
+            $this->setProperties();
+        });
+        
+        foreach ($this->after_application_created as $callback) {
+            $callback();
+        }
+    }
+    
+    protected function tearDown() :void
+    {
+        parent::tearDown();
+        
+        if (isset($this->app)) {
+            foreach ($this->before_application_destroyed as $callback) {
+                $callback();
+            }
+            
+            unset($this->app);
+        }
+        
+        if (class_exists(Mockery::class)) {
+            if ($container = Mockery::getContainer()) {
+                $this->addToAssertionCount($container->mockery_getExpectationCount());
+            }
+            
+            try {
+                Mockery::close();
+            } catch (InvalidCountException $e) {
+                if ( ! Str::contains($e->getMethodName(), ['doWrite', 'askQuestion'])) {
+                    throw $e;
+                }
+            }
+        }
+        
+        if (class_exists(Facade::class)) {
+            Facade::clearResolvedInstances();
+            Facade::setFacadeApplication(null);
+        }
+        
+        if (class_exists(Container::class)) {
+            Container::setInstance();
+        }
+        
+        $this->backToPresent();
+        
+        // WpTestCase will take care of resetting the user.
+        //$this->logout();
+        Event::setInstance(null);
+        WP::reset();
+    }
+    
+    abstract protected function createApplication() :Application;
+    
+    protected function baseUrl() :string
+    {
+        return $this->app->config('app.url');
+    }
+    
     /**
      * @return ServiceProvider[]
      */
@@ -74,8 +160,6 @@ abstract class TestCase extends WPTestCase
     {
         return [];
     }
-    
-    abstract protected function createApplication() :Application;
     
     /**
      * Register callbacks that will be run after the application has been initialized.
@@ -104,54 +188,11 @@ abstract class TestCase extends WPTestCase
      */
     protected function afterApplicationBooted(callable $callback)
     {
-        
         if (isset($this->app) && $this->app->hasBeenBootstrapped()) {
             $this->fail('Application had already been bootstrapped before adding callable.');
         }
         
         $this->after_application_booted[] = $callback;
-    }
-    
-    protected function setUp() :void
-    {
-        
-        if (class_exists(Facade::class)) {
-            
-            Facade::clearResolvedInstances();
-            Facade::setFacadeApplication(null);
-            
-        }
-        
-        if (class_exists(Container::class)) {
-            Container::setInstance();
-        }
-        
-        Event::setInstance(null);
-        WP::reset();
-        
-        parent::setUp();
-        
-        $this->backToPresent();
-        
-        if ( ! isset($this->app)) {
-            $this->refreshApplication();
-        }
-        
-        $this->mergeServiceProviders();
-        $this->bindBaseRequest();
-        $this->setUpTraits();
-        
-        $this->afterApplicationBooted(function () {
-            
-            $this->replaceBindings();
-            $this->setProperties();
-            
-        });
-        
-        foreach ($this->after_application_created as $callback) {
-            $callback();
-        }
-        
     }
     
     protected function refreshApplication()
@@ -175,101 +216,35 @@ abstract class TestCase extends WPTestCase
         return $this;
     }
     
-    protected function tearDown() :void
-    {
-        
-        parent::tearDown();
-        
-        if (isset($this->app)) {
-            
-            foreach ($this->before_application_destroyed as $callback) {
-                $callback();
-                
-            }
-            
-            unset($this->app);
-        }
-        
-        if (class_exists(Mockery::class)) {
-            
-            if ($container = Mockery::getContainer()) {
-                
-                $this->addToAssertionCount($container->mockery_getExpectationCount());
-                
-            }
-            
-            try {
-                
-                Mockery::close();
-                
-            } catch (InvalidCountException $e) {
-                
-                if ( ! Str::contains($e->getMethodName(), ['doWrite', 'askQuestion'])) {
-                    throw $e;
-                }
-                
-            }
-        }
-        
-        if (class_exists(Facade::class)) {
-            Facade::clearResolvedInstances();
-            Facade::setFacadeApplication(null);
-        }
-        
-        if (class_exists(Container::class)) {
-            Container::setInstance();
-        }
-        
-        $this->backToPresent();
-        
-        // WpTestCase will take care of resetting the user.
-        //$this->logout();
-        Event::setInstance(null);
-        WP::reset();
-        
-    }
-    
     protected function withReplacedConfig($items, $value) :TestCase
     {
-        
         $items = is_array($items) ? $items : [$items => $value];
         
         foreach ($items as $key => $value) {
-            
             $this->config->remove($key);
-            
         }
         
         return $this->withAddedConfig($items);
-        
     }
     
     protected function withAddedConfig($items, $value = null) :TestCase
     {
-        
         $items = is_array($items) ? $items : [$items => $value];
         
         foreach ($items as $key => $value) {
-            
             if (is_array($this->config->get($key))) {
-                
                 $this->config->extend($key, $value);
             }
             else {
-                
                 $this->config->set($key, $value);
-                
             }
-            
         }
         
         return $this;
-        
     }
     
     protected function withAddedMiddleware(string $group, $middleware) :TestCase
     {
-        
         $this->config->extend("middleware.groups.$group", Arr::wrap($middleware));
         
         return $this;
@@ -284,19 +259,14 @@ abstract class TestCase extends WPTestCase
      */
     protected function withoutMiddleware($middleware = null) :TestCase
     {
-        
         if (is_null($middleware)) {
-            
             $this->app->config()->set('middleware.disabled', true);
             
             return $this;
-            
         }
         
         foreach ((array) $middleware as $abstract) {
-            
             if ( ! class_exists($abstract)) {
-                
                 $aliases = $this->config->get('middleware.aliases');
                 $m = $aliases[$abstract] ?? null;
                 
@@ -307,23 +277,19 @@ abstract class TestCase extends WPTestCase
                 }
                 
                 $abstract = $m;
-                
             }
             
             $this->app->container()->singleton($abstract, function () {
-                
                 return new class extends Middleware
                 {
                     
                     public function handle(Request $request, Delegate $next) :ResponseInterface
                     {
-                        
                         return $next($request);
                     }
                     
                 };
             });
-            
         }
         
         return $this;
@@ -339,16 +305,13 @@ abstract class TestCase extends WPTestCase
      */
     protected function withMiddleware($middleware = null) :TestCase
     {
-        
         if (is_null($middleware)) {
-            
             $this->app->config()->set('middleware.disabled', false);
             
             return $this;
         }
         
         foreach (Arr::wrap($middleware) as $abstract) {
-            
             if ( ! $abstract instanceof Middleware) {
                 throw new RuntimeException(
                     "You are trying to enable the middleware [$abstract] but it does not implement [Snicco\Contracts\Middleware]."
@@ -357,7 +320,6 @@ abstract class TestCase extends WPTestCase
             
             $this->app->container()
                       ->singleton(get_class($abstract), fn() => $abstract);
-            
         }
         
         return $this;
@@ -370,23 +332,19 @@ abstract class TestCase extends WPTestCase
      */
     protected function withoutExceptionHandling() :TestCase
     {
-        
         $this->config->set('app.exception_handling', false);
-        $this->instance(ExceptionHandler::class, new NullExceptionHandler());
+        $this->instance(ExceptionHandlerInterface::class, new NullExceptionHandler());
         
         return $this;
-        
     }
     
     protected function withOutConfig($keys) :TestCase
     {
-        
         foreach (Arr::wrap($keys) as $key) {
             $this->config->remove($key);
         }
         
         return $this;
-        
     }
     
     protected function withRequest(Request $request) :TestCase
@@ -403,54 +361,45 @@ abstract class TestCase extends WPTestCase
     // bind a base request for the test so that we don't get possible errors inside CaptureRequest::bootstrap()
     private function bindBaseRequest()
     {
-        
         if ( ! isset($this->request_factory)) {
-            
             $this->request_factory = $this->app->resolve(ServerRequestFactoryInterface::class);
-            
         }
         
         if (isset($this->request)) {
-            
             $this->addRequestDefaults($this->request);
             
             return;
         }
         
-        $url = $_ENV['APP_URL'] ?? 'https://localhost.test';
+        $url = $_ENV['APP_URL'] ?? ($_SERVER['FLUSHABLE_SITE_WP_URL'] ?? 'https://localhost.test');
         $this->config->set('app.url', $url);
         
         $request = new Request(
             $this->request_factory->createServerRequest(
                 'GET',
-                $this->createUri($_SERVER['FLUSHABLE_SITE_WP_URL'] ?? 'https://localhost.test'),
+                $this->createUri($url),
                 $this->default_server_variables
             )
         );
         
         $this->addRequestDefaults($request);
         $this->request = $request;
-        
     }
     
     private function setUpTraits()
     {
-        
         $traits = array_flip(class_uses_recursive(static::class));
         
         if (in_array(WithDatabaseExceptions::class, $traits)) {
             $this->withDatabaseExceptions();
         }
-        
     }
     
     private function setProperties()
     {
         if (in_array(SessionServiceProvider::class, $this->config->get('app.providers'))
             && $this->config->get('session.enabled')) {
-            
             $this->session = $this->app->resolve(Session::class);
-            
         }
     }
     

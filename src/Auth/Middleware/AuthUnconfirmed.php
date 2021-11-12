@@ -22,17 +22,13 @@ class AuthUnconfirmed extends Middleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        
         $session = $request->session();
         
         if ($session->hasValidAuthConfirmToken()) {
-            
             return $this->response_factory->back($this->url->toRoute('dashboard'));
-            
         }
         
         return $next($request);
-        
     }
     
 }

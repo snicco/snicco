@@ -25,13 +25,11 @@ class AccountController extends Controller
     
     public function __construct($lifetime_in_seconds = 900)
     {
-        
         $this->lifetime_in_seconds = $lifetime_in_seconds;
     }
     
     public function create(Request $request, CreateAccountView $view_response)
     {
-        
         return $view_response->forRequest($request)->postTo(
             $this->url->signedRoute('auth.accounts.store', [], $this->lifetime_in_seconds)
         );
@@ -39,26 +37,21 @@ class AccountController extends Controller
     
     public function store(Request $request, CreatesNewUser $creates_new_user, AbstractRegistrationResponse $response)
     {
-        
         $user = $this->getUserById($creates_new_user->create($request));
         
         Registration::dispatch([$user]);
         
         return $response->forRequest($request)->forUser($user);
-        
     }
     
-    public function destroy(Request $request, int $user_id, DeletesUsers $deletes_users)
+    public function destroy(Request $request, DeletesUsers $deletes_users, int $user_id)
     {
-        
         $allowed_roles = array_merge(['administrator'], $deletes_users->allowedUserRoles());
         
         if ( ! $this->canUserPerformDelete($allowed_roles, $request->user(), $user_id)) {
-            
             throw new AuthorizationException(
                 "Account deletion attempt with insufficient permissions for user_id [$user_id]"
             );
-            
         }
         
         // Isn't WordPress great?
@@ -77,12 +70,10 @@ class AccountController extends Controller
         return $request->isExpectingJson()
             ? $this->response_factory->noContent()
             : $deletes_users->response();
-        
     }
     
     private function canUserPerformDelete(array $allowed_roles, WP_User $auth_user, int $delete_id) :bool
     {
-        
         $user_to_be_delete = $this->getUserById($delete_id);
         $current_user_is_admin = $this->isAdmin($auth_user);
         
@@ -105,7 +96,6 @@ class AccountController extends Controller
         }
         
         return true;
-        
     }
     
 }

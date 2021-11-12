@@ -14,13 +14,29 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
     
     private string $endpoint = '/auth/two-factor/preferences';
     
+    protected function setUp() :void
+    {
+        $this->afterApplicationCreated(function () {
+            $this->with2Fa();
+        });
+        
+        $this->afterApplicationBooted(function () {
+            $this->withHeader('Accept', 'application/json');
+            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
+            $this->swap(
+                TwoFactorAuthenticationProvider::class,
+                new TestTwoFactorProvider($this->encryptor)
+            );
+        });
+        
+        parent::setUp();
+    }
+    
     /** @test */
     public function the_endpoint_is_not_accessible_with_2fa_disabled()
     {
-        
         $this->without2Fa()->bootApp();
         $this->post($this->endpoint)->assertDelegatedToWordPress();
-        
     }
     
     /** @test */
@@ -29,19 +45,16 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
         $this->bootApp();
         $this->post($this->endpoint)
              ->assertStatus(401);
-        
     }
     
     /** @test */
     public function the_endpoint_is_not_accessible_if_auth_confirmation_is_expired()
     {
-        
         $this->actingAs($calvin = $this->createAdmin());
         
         $this->travelIntoFuture(10);
         
         $this->post($this->endpoint)->assertRedirectToRoute('auth.confirm');
-        
     }
     
     /** @test */
@@ -51,13 +64,11 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
         $this->actingAs($calvin = $this->createAdmin());
         
         $this->post($this->endpoint, [])->assertStatus(419);
-        
     }
     
     /** @test */
     public function two_factor_authentication_can_not_be_confirmed_if_not_pending()
     {
-        
         $this->bootApp();
         $this->withoutMiddleware('csrf');
         $this->actingAs($calvin = $this->createAdmin());
@@ -68,13 +79,11 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
                  ->assertExactJson([
                      'message' => 'Two-Factor authentication is not set-up.',
                  ]);
-        
     }
     
     /** @test */
     public function an_error_is_returned_if_2fa_is_already_enabled_for_the_user()
     {
-        
         $this->bootApp();
         $this->withoutMiddleware('csrf');
         $this->actingAs($calvin = $this->createAdmin());
@@ -87,7 +96,6 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
                  ->assertExactJson([
                      'message' => 'Two-Factor authentication is already enabled.',
                  ]);
-        
     }
     
     /** @test */
@@ -114,7 +122,6 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
                  ->assertExactJson([
                      'message' => 'Invalid or missing code provided.',
                  ]);
-        
     }
     
     /** @test */
@@ -139,13 +146,11 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
         
         $this->assertSame('', get_user_meta($calvin->ID, 'two_factor_pending', true));
         $this->assertSame('1', get_user_meta($calvin->ID, 'two_factor_active', true));
-        
     }
     
     /** @test */
     public function recovery_codes_are_encrypted()
     {
-        
         $this->bootApp();
         $this->withoutMiddleware('csrf');
         $this->actingAs($calvin = $this->createAdmin());
@@ -165,7 +170,6 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
             $codes_in_body,
             json_decode($this->encryptor->decrypt($codes_in_db), true)
         );
-        
     }
     
     /** @test */
@@ -180,7 +184,6 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
         $response->assertStatus(403)->assertExactJson([
             'message' => 'Two-Factor-Authentication needs to be enabled for your account to perform this action.',
         ]);
-        
     }
     
     /** @test */
@@ -204,27 +207,6 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
         $this->assertEmpty($this->getUserSecret($calvin));
         $this->assertEmpty($this->getUserRecoveryCodes($calvin));
         $this->assertEmpty(get_user_meta($calvin->ID, 'two_factor_active', true));
-        
-    }
-    
-    protected function setUp() :void
-    {
-        
-        $this->afterApplicationCreated(function () {
-            $this->with2Fa();
-        });
-        
-        $this->afterApplicationBooted(function () {
-            $this->withHeader('Accept', 'application/json');
-            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
-            $this->swap(
-                TwoFactorAuthenticationProvider::class,
-                new TestTwoFactorProvider($this->encryptor)
-            );
-        });
-        
-        parent::setUp();
-        
     }
     
 }

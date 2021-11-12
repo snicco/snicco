@@ -4,162 +4,182 @@ declare(strict_types=1);
 
 namespace Tests\unit\Middleware;
 
+use Mockery;
 use Carbon\Carbon;
-use Tests\UnitTest;
-use Snicco\Support\Arr;
+use Snicco\Support\WP;
 use Snicco\Support\Str;
-use Snicco\Http\Delegate;
+use Snicco\Support\Arr;
 use Snicco\Session\Session;
 use Snicco\Routing\Pipeline;
-use Tests\stubs\TestRequest;
+use Tests\MiddlewareTestCase;
 use Snicco\Contracts\MagicLink;
-use Snicco\Http\ResponseFactory;
-use Tests\helpers\AssertsResponse;
-use Tests\helpers\CreateUrlGenerator;
+use Snicco\Routing\UrlGenerator;
+use Tests\concerns\CreateContainer;
+use Snicco\Factories\MiddlewareFactory;
 use Snicco\Middleware\Core\ShareCookies;
 use Snicco\Middleware\ValidateSignature;
-use Tests\helpers\CreateRouteCollection;
-use Tests\helpers\CreateDefaultWpApiMocks;
+use Tests\concerns\CreateDefaultWpApiMocks;
+use Snicco\Testing\TestDoubles\TestMagicLink;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Snicco\ExceptionHandling\NullExceptionHandler;
 use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
 
-class ValidateSignatureTest extends UnitTest
+class ValidateSignatureTest extends MiddlewareTestCase
 {
     
-    use CreateUrlGenerator;
-    use CreateRouteCollection;
-    use AssertsResponse;
     use CreateDefaultWpApiMocks;
+    use CreateContainer;
     
-    private ResponseFactory $response_factory;
+    private UrlGenerator  $url;
+    private TestMagicLink $magic_link;
     
-    private Delegate $delegate;
+    protected function setUp() :void
+    {
+        WP::shouldReceive('userId')->andReturn(0)->byDefault();
+        WP::setFacadeContainer($this->createContainer());
+        parent::setUp();
+    }
+    
+    protected function tearDown() :void
+    {
+        parent::tearDown();
+        WP::reset();
+        Mockery::close();
+        Carbon::setTestNow();
+    }
     
     /** @test */
     public function a_valid_signature_grants_access_to_the_route()
     {
+        $url = $this->url->signed('foo');
+        $request = $this->frontendRequest('GET', $url);
         
-        $url = $this->generator->signed('foo');
-        $request = TestRequest::from('GET', $url);
+        $response = $this->runMiddleware($this->newMiddleware($this->magic_link), $request);
         
-        $m = $this->newMiddleware($this->magic_link);
-        
-        $response = $m->handle($request, $this->delegate);
-        
-        $this->assertStatusCode(200, $response);
-        
+        $response->assertNextMiddlewareCalled();
+        $response->assertOk();
     }
     
     /** @test */
     public function signatures_that_were_created_from_absolute_urls_can_be_validated()
     {
+        $url = $this->url->signed('foo', 10, true);
+        $request = $this->frontendRequest('GET', $url);
         
-        $url = $this->generator->signed('foo', 300, true);
-        $request = TestRequest::fromFullUrl('GET', $url);
+        $response = $this->runMiddleware(
+            $this->newMiddleware($this->magic_link, 'absolute'),
+            $request
+        );
         
-        $m = $this->newMiddleware($this->magic_link, 'absolute');
-        
-        $response = $m->handle($request, $this->delegate);
-        
-        $this->assertStatusCode(200, $response);
-        
+        $response->assertNextMiddlewareCalled();
+        $response->assertOk();
     }
     
     /** @test */
     public function an_exception_is_thrown_for_invalid_signatures()
     {
-        
-        $url = $this->generator->signed('foo');
-        $request = TestRequest::from('GET', $url.'changed');
-        
-        $m = $this->newMiddleware($this->magic_link);
+        $url = $this->url->signed('foo', 10, true);
+        $request = $this->frontendRequest('GET', $url.'changed');
         
         $this->expectException(InvalidSignatureException::class);
         
-        $response = $m->handle($request, $this->delegate);
-        
+        $response = $this->runMiddleware(
+            $this->newMiddleware($this->magic_link, 'absolute'),
+            $request
+        );
     }
     
     /** @test */
     public function the_magic_links_is_invalidated_after_the_first_access()
     {
-        
-        $url = $this->generator->signed('foo');
-        $request = TestRequest::from('GET', $url);
+        $url = $this->url->signed('foo');
+        $request = $this->frontendRequest('GET', $url);
         
         $this->assertArrayHasKey($request->query('signature'), $this->magic_link->getStored());
         
-        $m = $this->newMiddleware($this->magic_link);
+        $response = $this->runMiddleware(
+            $this->newMiddleware($this->magic_link),
+            $request
+        );
         
-        $response = $m->handle($request, $this->delegate);
+        $response->assertNextMiddlewareCalled();
+        $response->assertOk();
         
         $this->assertArrayNotHasKey($request->query('signature'), $this->magic_link->getStored());
-        
-        $this->assertStatusCode(200, $response);
-        
     }
     
     /** @test */
     public function if_sessions_are_used_the_user_with_the_session_can_access_the_route_several_times()
     {
+        $url = $this->url->signed('foo');
+        $request = $this->frontendRequest('GET', $url)
+                        ->withSession($session = new Session(new ArraySessionDriver(10)));
         
-        $url = $this->generator->signed('foo');
-        $request = TestRequest::from('GET', $url)
-                              ->withSession($session = new Session(new ArraySessionDriver(10)));
+        $this->assertArrayHasKey($request->query('signature'), $this->magic_link->getStored());
         
-        $m = $this->newMiddleware($this->magic_link);
-        $response = $m->handle($request, $this->delegate);
-        $this->assertStatusCode(200, $response);
+        $response = $this->runMiddleware(
+            $this->newMiddleware($this->magic_link),
+            $request
+        );
         
-        $response = $m->handle($request, $this->delegate);
-        $this->assertStatusCode(200, $response);
+        $this->assertArrayNotHasKey($request->query('signature'), $this->magic_link->getStored());
+        $response->assertNextMiddlewareCalled()->assertOk();
         
+        $response = $this->runMiddleware(
+            $this->newMiddleware($this->magic_link),
+            $request
+        );
+        $response->assertNextMiddlewareCalled()->assertOk();
     }
     
     /** @test */
     public function session_based_access_is_not_possible_after_expiration_time()
     {
+        $url = $this->url->signed('foo', 500);
+        $request = $this->frontendRequest('GET', $url)
+                        ->withSession($session = new Session(new ArraySessionDriver(10)));
         
-        $url = $this->generator->signed('foo', 500);
-        $request = TestRequest::from('GET', $url)
-                              ->withSession($session = new Session(new ArraySessionDriver(10)));
+        $this->assertArrayHasKey($request->query('signature'), $this->magic_link->getStored());
         
-        $m = $this->newMiddleware($this->magic_link);
-        $response = $m->handle($request, $this->delegate);
-        $this->assertStatusCode(200, $response);
+        $response = $this->runMiddleware(
+            $this->newMiddleware($this->magic_link),
+            $request
+        );
         
-        $this->expectException(InvalidSignatureException::class);
+        $this->assertArrayNotHasKey($request->query('signature'), $this->magic_link->getStored());
+        $response->assertNextMiddlewareCalled()->assertOk();
         
         Carbon::setTestNow(Carbon::now()->addSeconds(501));
         
-        $m->handle($request, $this->delegate);
-        
-        Carbon::setTestNow();
-        
+        $this->expectException(InvalidSignatureException::class);
+        $this->runMiddleware(
+            $this->newMiddleware($this->magic_link),
+            $request
+        );
     }
     
     /** @test */
     public function if_sessions_are_not_used_a_cookie_is_used_to_allow_access_to_the_route()
     {
-        
-        $url = $this->generator->signed('foo');
-        $request = TestRequest::from('GET', $url);
+        $url = $this->url->signed('foo');
+        $request = $this->frontendRequest('GET', $url);
         $c = $this->createContainer();
-        $c->instance(ResponseFactory::class, $this->response_factory);
         
-        $pipeline = new Pipeline($c, new NullExceptionHandler());
-        $m = $this->newMiddleware($this->magic_link);
-        
+        $pipeline = new Pipeline(
+            new MiddlewareFactory($c),
+            new NullExceptionHandler(),
+            $this->response_factory
+        );
         $response = $pipeline->send($request)
-                             ->through([ShareCookies::class, $m])
+                             ->through([
+                                 ShareCookies::class,
+                                 $this->newMiddleware($this->magic_link),
+                             ])
                              ->then(fn() => $this->response_factory->make());
         
         $cookies = $response->getHeaderLine('Set-Cookie');
         $cookie = collect(explode(';', $cookies))->flatMap(function ($value) {
-            
             return [trim(Str::before($value, '=')) => trim(Str::after($value, '='))];
-            
         })->all();
         
         $this->assertSame('/foo', $cookie['path']);
@@ -172,74 +192,82 @@ class ValidateSignatureTest extends UnitTest
         $request_with_access_cookie = $request->withAddedHeader('Cookie', $c);
         
         $response = $pipeline->send($request_with_access_cookie)
-                             ->through([ShareCookies::class, $m])
+                             ->through([
+                                 ShareCookies::class,
+                                 $this->newMiddleware($this->magic_link),
+                             ])
                              ->then(function () {
-            
                                  return $this->response_factory->make();
                              });
         
-        $this->assertStatusCode(200, $response);
-        
+        $this->assertSame(200, $response->getStatusCode());
     }
     
     /** @test */
     public function cookie_based_route_access_is_not_possible_after_the_expiration_time()
     {
-        
-        $url = $this->generator->signed('foo', 500);
-        $request = TestRequest::from('GET', $url);
+        $url = $this->url->signed('foo', 500);
+        $request = $this->frontendRequest('GET', $url);
         $c = $this->createContainer();
-        $c->instance(ResponseFactory::class, $this->response_factory);
         
-        $pipeline = new Pipeline($c, new NullExceptionHandler());
-        $m = $this->newMiddleware($this->magic_link);
-        
+        $pipeline = new Pipeline(
+            new MiddlewareFactory($c),
+            new NullExceptionHandler(),
+            $this->response_factory
+        );
         $response = $pipeline->send($request)
-                             ->through([ShareCookies::class, $m])
+                             ->through([
+                                 ShareCookies::class,
+                                 $this->newMiddleware($this->magic_link),
+                             ])
                              ->then(fn() => $this->response_factory->make());
         
-        $cookie = $response->getHeaderLine('Set-Cookie');
+        $cookies = $response->getHeaderLine('Set-Cookie');
+        $cookie = collect(explode(';', $cookies))->flatMap(function ($value) {
+            return [trim(Str::before($value, '=')) => trim(Str::after($value, '='))];
+        })->all();
         
-        $request_with_access_cookie = $request->withAddedHeader('Cookie', $cookie);
+        $this->assertSame('/foo', $cookie['path']);
+        $this->assertSame('secure', $cookie['secure']);
+        $this->assertSame('HostOnly', $cookie['HostOnly']);
+        $this->assertSame('HttpOnly', $cookie['HttpOnly']);
+        $this->assertSame('Lax', $cookie['SameSite']);
         
-        $this->expectException(InvalidSignatureException::class);
+        $c = Arr::firstKey($cookie).'='.Arr::firstEl($cookie).';';
+        $request_with_access_cookie = $request->withAddedHeader('Cookie', $c);
         
         Carbon::setTestNow(Carbon::now()->addSeconds(501));
         
+        $this->expectException(InvalidSignatureException::class);
+        
         $pipeline->send($request_with_access_cookie)
-                 ->through([ShareCookies::class, $m])
-                 ->then(fn() => $this->response_factory->make());
-        
-        Carbon::setTestNow();
-        
+                 ->through([
+                     ShareCookies::class,
+                     $this->newMiddleware($this->magic_link),
+                 ])
+                 ->then(function () {
+                     return $this->response_factory->make();
+                 });
     }
     
-    /** @test */
-    public function the_same_user_can_access_the_route_multiple_times()
+    protected function urlGenerator() :UrlGenerator
     {
+        $this->url = new UrlGenerator(
+            $this->routeUrlGenerator(),
+            $this->magic_link = new TestMagicLink(),
+            false
+        );
         
-        $url = $this->generator->signed('foo');
-        $request = TestRequest::from('GET', $url);
-        $m = $this->newMiddleware($this->magic_link);
-        $response = $m->handle($request, $this->delegate);
-        $this->assertStatusCode(200, $response);
+        $this->url->setRequestResolver(function () {
+            return $this->frontendRequest('GET', 'https://example.com');
+        });
         
-    }
-    
-    protected function beforeTestRun()
-    {
-        $this->response_factory = $this->createResponseFactory();
-        $this->delegate = new Delegate(fn() => $this->response_factory->make(200));
+        return $this->url;
     }
     
     private function newMiddleware(MagicLink $magic_link, string $type = 'relative') :ValidateSignature
     {
-        
-        $m = new ValidateSignature($magic_link, $type);
-        $m->setResponseFactory($this->response_factory);
-        
-        return $m;
-        
+        return new ValidateSignature($magic_link, $type);
     }
     
 }

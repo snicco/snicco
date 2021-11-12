@@ -14,32 +14,41 @@ use Snicco\Auth\Events\FailedLoginLinkCreationRequest;
 class LoginMagicLinkControllerTest extends AuthTestCase
 {
     
+    protected function setUp() :void
+    {
+        $this->afterApplicationCreated(function () {
+            $this->withReplacedConfig('auth.authenticator', 'email');
+            $this->withAddedConfig('auth.fail2ban.enabled', true);
+        });
+        
+        $this->afterApplicationBooted(function () {
+            $this->withoutMiddleware('csrf');
+        });
+        parent::setUp();
+        $this->bootApp();
+    }
+    
     /** @test */
     public function the_route_cant_be_accessed_if_the_authenticator_is_not_email()
     {
-        
         $this->withReplacedConfig('auth.authenticator', 'password');
         
         $response = $this->post('/auth/login/create-magic-link');
         
         $response->assertDelegatedToWordPress();
-        
     }
     
     /** @test */
     public function the_route_cant_be_accessed_if_already_authenticated()
     {
-        
         $this->actingAs($this->createAdmin());
         
         $response = $this->post('/auth/login/magic-link')->assertRedirectToRoute('dashboard');
-        
     }
     
     /** @test */
     public function no_email_is_sent_for_invalid_user_login()
     {
-        
         $this->mailFake();
         
         $response = $this->post('/auth/login/magic-link', ['login' => 'bogus']);
@@ -47,13 +56,11 @@ class LoginMagicLinkControllerTest extends AuthTestCase
         $response->assertSessionHas('login.link.processed');
         
         $this->assertMailNotSent(MagicLinkLoginMail::class);
-        
     }
     
     /** @test */
     public function an_event_is_dispatched_for_invalid_logins()
     {
-        
         Event::fake([FailedLoginLinkCreationRequest::class]);
         
         $this->post('/auth/login/magic-link', ['login' => 'bogus']);
@@ -61,13 +68,11 @@ class LoginMagicLinkControllerTest extends AuthTestCase
         Event::assertDispatched(
             fn(FailedLoginLinkCreationRequest $event) => $event->login() === 'bogus'
         );
-        
     }
     
     /** @test */
     public function invalid_attempts_to_generate_a_link_are_recorded_with_fail2ban()
     {
-        
         $this->swap(Syslogger::class, $logger = new TestSysLogger());
         
         $this->fromLocalhost();
@@ -77,13 +82,11 @@ class LoginMagicLinkControllerTest extends AuthTestCase
             LOG_WARNING,
             "User enumeration trying to request a new magic link for user login [bogus] from 127.0.0.1"
         );
-        
     }
     
     /** @test */
     public function a_login_email_is_sent_for_valid_user_login()
     {
-        
         $this->mailFake();
         
         $calvin = $this->createAdmin();
@@ -105,13 +108,11 @@ class LoginMagicLinkControllerTest extends AuthTestCase
         $mail->assertSee('/auth/login/magic-link?expires=');
         $mail->assertSee("user_id=$calvin->ID");
         $mail->assertSee(htmlentities('redirect_to='.rawurlencode('/foo/bar/?baz=foo%20bar')));
-        
     }
     
     /** @test */
     public function a_login_email_can_be_request_with_ajax()
     {
-        
         $this->mailFake();
         
         $calvin = $this->createAdmin();
@@ -133,24 +134,6 @@ class LoginMagicLinkControllerTest extends AuthTestCase
         $mail->assertSee('/auth/login/magic-link?expires=');
         $mail->assertSee("user_id=$calvin->ID");
         $mail->assertSee(htmlentities('redirect_to='.rawurlencode('/foo/bar/?baz=foo%20bar')));
-        
-    }
-    
-    protected function setUp() :void
-    {
-        $this->afterApplicationCreated(function () {
-            
-            $this->withReplacedConfig('auth.authenticator', 'email');
-            $this->withAddedConfig('auth.fail2ban.enabled', true);
-            
-        });
-        
-        $this->afterApplicationBooted(function () {
-            $this->withoutMiddleware('csrf');
-        });
-        parent::setUp();
-        $this->bootApp();
-        
     }
     
 }

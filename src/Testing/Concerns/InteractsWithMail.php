@@ -6,10 +6,10 @@ namespace Snicco\Testing\Concerns;
 
 use LogicException;
 use Snicco\Events\Event;
-use Snicco\View\ViewFactory;
 use Snicco\Events\PendingMail;
 use PHPUnit\Framework\Assert as PHPUnit;
 use BetterWpHooks\Testing\FakeDispatcher;
+use Snicco\Contracts\ViewFactoryInterface;
 use Snicco\Testing\Assertable\AssertableMail;
 
 trait InteractsWithMail
@@ -39,9 +39,7 @@ trait InteractsWithMail
         $fake_dispatcher->assertDispatched(
             PendingMail::class,
             function (PendingMail $event) use ($mailable) {
-                
                 return $event->mail instanceof $mailable;
-                
             },
             "The mail [$mailable] was not sent."
         );
@@ -54,7 +52,7 @@ trait InteractsWithMail
             "The mail [$mailable] was sent [$actual] times."
         );
         
-        return new AssertableMail($events[0], $this->app->resolve(ViewFactory::class));
+        return new AssertableMail($events[0], $this->app->resolve(ViewFactoryInterface::class));
     }
     
     protected function assertMailNotSent(string $mailable)
@@ -66,9 +64,7 @@ trait InteractsWithMail
         $fake_dispatcher->assertNotDispatched(
             PendingMail::class,
             function (PendingMail $event) use ($mailable) {
-                
                 return $event->mail instanceof $mailable;
-                
             },
             "The mail [$mailable] was not supposed to be sent."
         );

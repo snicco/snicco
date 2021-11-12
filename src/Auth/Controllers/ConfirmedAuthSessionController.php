@@ -30,11 +30,9 @@ class ConfirmedAuthSessionController extends Controller
     
     public function store(Request $request) :Response
     {
-        
         $confirmed = $this->auth_confirmation->confirm($request);
         
         if ($confirmed !== true) {
-            
             FailedAuthConfirmation::dispatch([$request, $request->userId()]);
             
             return $request->isExpectingJson()
@@ -43,7 +41,6 @@ class ConfirmedAuthSessionController extends Controller
                                          ->withErrors(
                                              ['auth.confirmation' => 'We could not authenticate you.']
                                          );
-            
         }
         
         $this->confirmAuth($request);
@@ -52,18 +49,15 @@ class ConfirmedAuthSessionController extends Controller
             ? $this->response_factory->make()->withStatus(200)
             : $this->response_factory->redirect()
                                      ->intended($request, $this->url->toRoute('dashboard'));
-        
     }
     
     private function confirmAuth(Request $request) :void
     {
-        
         $session = $request->session();
         $session->forget('auth.confirm');
         $session->confirmAuthUntil($this->duration);
         $session->regenerate();
         SessionRegenerated::dispatch([$session]);
-        
     }
     
 }

@@ -13,49 +13,42 @@ class FactoryServiceProvider extends ServiceProvider
     {
         $this->bindRouteActionFactory();
         $this->bindViewComposerFactory();
-        $this->bindConditionFactory();
     }
     
     public function bootstrap() :void
     {
-        //
+        $this->bindConditionFactory();
     }
     
     private function bindRouteActionFactory() :void
     {
         $this->container->singleton(RouteActionFactory::class, function () {
-            
             return new RouteActionFactory(
                 $this->config['routing.controllers'] ?? [],
                 $this->container
             );
-            
         });
     }
     
     private function bindViewComposerFactory() :void
     {
         $this->container->singleton(ViewComposerFactory::class, function () {
-            
             return new ViewComposerFactory(
-                $this->config['view.composers'] ?? [],
-                $this->container
+                $this->container,
+                $this->config['view.composers'] ?? []
             );
-            
         });
     }
     
     private function bindConditionFactory() :void
     {
-        $this->container->singleton(ConditionFactory::class, function () {
-            
-            return new ConditionFactory(
+        $this->container->singleton(RouteConditionFactory::class, function () {
+            return new RouteConditionFactory(
                 
                 $this->config->get('routing.conditions', []),
                 $this->container,
             
             );
-            
         });
     }
     

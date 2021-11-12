@@ -4,509 +4,357 @@ declare(strict_types=1);
 
 namespace Tests\unit\Routing;
 
-use Mockery;
-use Tests\UnitTest;
-use Snicco\Support\WP;
-use Snicco\Events\Event;
-use Snicco\Routing\Router;
+use Tests\RoutingTestCase;
 use Snicco\Http\Psr7\Request;
-use Contracts\ContainerAdapter;
-use Tests\helpers\CreateTestSubjects;
-use Tests\helpers\CreateDefaultWpApiMocks;
 use Tests\fixtures\Conditions\TrueCondition;
 use Tests\fixtures\Conditions\FalseCondition;
 
-class RouteConditionsTest extends UnitTest
+class RouteConditionsTest extends RoutingTestCase
 {
-    
-    use CreateTestSubjects;
-    use CreateDefaultWpApiMocks;
-    
-    private ContainerAdapter $container;
-    private Router           $router;
     
     /** @test */
     public function custom_conditions_can_be_added_as_strings()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router
-                ->get('/foo')
+                ->get()
                 ->where('false')
                 ->handle(fn() => 'foo');
-            
         });
         
-        $request = $this->webRequest('GET', 'foo');
-        $this->runAndAssertEmptyOutput($request);
-        
+        $request = $this->frontendRequest('GET', 'foo');
+        $this->assertEmptyResponse($request);
     }
     
     /** @test */
     public function custom_conditions_can_be_added_as_objects()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router
-                ->get('/foo')
+                ->get()
                 ->where(new FalseCondition())
                 ->handle(function (Request $request) {
-                    
                     return 'foo';
-                    
                 });
-            
         });
         
-        $request = $this->webRequest('GET', 'foo');
-        $this->runAndAssertEmptyOutput($request);
-        
+        $request = $this->frontendRequest('GET', 'foo');
+        $this->assertEmptyResponse($request);
     }
-    
-    /*
-     * $route->where('post_type', 'post');
-     * $router->where('!post_type', ['post']);
-     * $router->where('is_singular');
-     * $router->where(IsPost::class);
-     * $router->where('negate', IsPost::class);
-     * $router->where(new ConditionInterface());
-     * $router->where(function() {});
-     */
     
     /** @test */
     public function custom_conditions_can_be_added_before_the_http_verb()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router
                 ->where(new TrueCondition())
-                ->get('/foo')
+                ->get()
                 ->handle(function (Request $request) {
-                    
                     return 'foo';
-                    
                 });
-            
-            $this->router
-                ->where('false')
-                ->post('/bar')
-                ->handle(function (Request $request) {
-                    
-                    return 'foo';
-                    
-                });
-            
         });
         
-        $this->runAndAssertOutput('foo', $this->webRequest('GET', 'foo'));
+        $this->assertResponse('foo', $this->frontendRequest('GET', 'foo'));
+    }
+    
+    /** @test */
+    public function a_failing_condition_will_not_match_the_route()
+    {
+        $this->createRoutes(function () {
+            $this->router
+                ->where(new FalseCondition())
+                ->get()
+                ->handle(function (Request $request) {
+                    return 'foo';
+                });
+        });
         
-        $this->runAndAssertEmptyOutput($this->webRequest('GET', 'bar'));
-        
+        $this->assertEmptyResponse($this->frontendRequest('GET', 'foo'));
     }
     
     /** @test */
     public function a_condition_stack_can_be_added_before_the_http_verb()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router
                 ->where(function ($foo) {
-                    
                     $GLOBALS['test']['cond1'] = $foo;
                     
                     return $foo === 'foo';
-                    
                 }, 'foo')
                 ->where(function ($bar) {
-                    
                     $GLOBALS['test']['cond2'] = $bar;
                     
                     return $bar === 'bar';
-                    
                 }, 'bar')
-                ->get('/baz')
+                ->get()
                 ->handle(function (Request $request) {
-                    
                     return 'foo';
-                    
                 });
-            
         });
         
-        $this->runAndAssertOutput('foo', $this->webRequest('GET', '/baz'));
+        $this->assertResponse('foo', $this->frontendRequest('GET', '/baz'));
         $this->assertSame('bar', $GLOBALS['test']['cond2']);
         $this->assertSame(
             'foo',
             $GLOBALS['test']['cond1'] ?? null,
             'First condition did not execute'
         );
-        
     }
     
     /** @test */
     public function a_closure_can_be_a_condition()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router
-                ->get('/foo')
+                ->get()
                 ->where(function () {
-                    
                     return true;
-                    
                 })
                 ->where(
                     function ($foo, $bar) {
-                        
                         return $foo === 'foo' && $bar === 'bar';
-                        
                     },
                     'foo',
                     'bar'
                 )
                 ->handle(
-                    function ($request, $foo, $bar) {
-                        
+                    function (Request $request, $foo, $bar) {
                         return $foo.$bar;
-                        
                     }
                 );
             
             $this->router
-                ->post('/will-fail')
+                ->post()
                 ->where(
                     function ($foo, $bar) {
-                        
                         return $foo === 'foo' && $bar === 'bar';
-                        
                     },
                     'foo',
                     'baz'
                 )
                 ->handle(
-                    function ($request, $foo, $bar) {
-                        
+                    function (Request $request, $foo, $bar) {
                         return $foo.$bar;
-                        
                     }
                 );
             
             $this->router
                 ->where(
                     function ($foo, $bar) {
-                        
                         return $foo === 'foo' && $bar === 'bar';
-                        
                     },
                     'foo',
                     'bar'
                 )
-                ->put('/foo-before')
+                ->put()
                 ->handle(
-                    function ($request, $foo, $bar) {
-                        
+                    function (Request $request, $foo, $bar) {
                         return $foo.$bar;
-                        
                     }
                 );
-            
         });
         
-        $this->runAndAssertOutput('foobar', $this->webRequest('GET', '/foo'));
-        $this->runAndAssertOutput('foobar', $this->webRequest('PUT', '/foo-before'));
+        $this->assertResponse('foobar', $this->frontendRequest('GET', '/foo'));
+        $this->assertResponse('foobar', $this->frontendRequest('PUT', '/foo'));
         
-        $this->runAndAssertEmptyOutput($this->webRequest('POST', '/will-fail'));
-        
+        $this->assertEmptyResponse($this->frontendRequest('POST', 'foo'));
     }
     
     /** @test */
     public function multiple_conditions_can_be_combined_and_all_conditions_have_to_pass()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router
-                ->get('/foo')
+                ->get()
                 ->where('true')
                 ->where('false')
                 ->handle(function (Request $request) {
-                    
                     return 'foo';
-                    
                 });
-            
         });
         
-        $this->runAndAssertEmptyOutput($this->webRequest('GET', '/foo'));
-        
+        $this->assertEmptyResponse($this->frontendRequest('GET', '/foo'));
     }
     
     /** @test */
     public function a_condition_can_be_negated()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router
-                ->get('/foo')
+                ->get()
                 ->where('!false')
                 ->handle(function (Request $request) {
-                    
                     return 'foo';
-                    
                 });
             
             $this->router
-                ->post('/bar')
+                ->post()
                 ->where('negate', 'false')
                 ->handle(function (Request $request) {
-                    
                     return 'foo';
-                    
                 });
             
             $this->router
-                ->put('/baz')
+                ->put()
                 ->where('negate', function ($foo) {
-                    
                     return $foo !== 'foo';
-                    
                 }, 'foo')
                 ->handle(function (Request $request) {
-                    
                     return 'foo';
-                    
                 });
-            
         });
         
-        $this->runAndAssertOutput('foo', $this->webRequest('GET', '/foo'));
-        $this->runAndAssertOutput('foo', $this->webRequest('POST', '/bar'));
-        $this->runAndAssertOutput('foo', $this->webRequest('PUT', '/baz'));
-        
+        $this->assertResponse('foo', $this->frontendRequest('GET', '/foo'));
+        $this->assertResponse('foo', $this->frontendRequest('POST', '/foo'));
+        $this->assertResponse('foo', $this->frontendRequest('PUT', '/foo'));
     }
     
     /** @test */
     public function a_condition_can_be_negated_while_passing_arguments()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router
-                ->get('/foo')
+                ->get()
                 ->where('maybe', true)
                 ->handle(function (Request $request) {
-                    
                     return 'foo';
-                    
                 });
             
             $this->router
-                ->post('/bar')
+                ->post()
                 ->where('maybe', false)
                 ->handle(function (Request $request) {
-                    
                     return 'foo';
-                    
                 });
             
             $this->router
-                ->put('/baz')
+                ->put()
                 ->where('!maybe', false)
                 ->handle(function (Request $request) {
-                    
                     return 'foo';
-                    
                 });
             
             $this->router
-                ->delete('/baz')
+                ->delete()
                 ->where('!maybe', false)
                 ->handle(function (Request $request) {
-                    
                     return 'foo';
-                    
                 });
             
             $this->router
-                ->patch('/foobar')
+                ->patch()
                 ->where('!maybe', 'foobar')
                 ->handle(function (Request $request) {
-                    
                     return 'foo';
-                    
                 });
-            
         });
         
-        $this->runAndAssertOutput('foo', $this->webRequest('GET', '/foo'));
-        $this->runAndAssertOutput('foo', $this->webRequest('PUT', '/baz'));
-        $this->runAndAssertOutput('foo', $this->webRequest('DELETE', '/baz'));
+        $this->assertResponse('foo', $this->frontendRequest('GET', '/foo'));
+        $this->assertResponse('foo', $this->frontendRequest('PUT', '/foo'));
+        $this->assertResponse('foo', $this->frontendRequest('DELETE', '/foo'));
         
-        $this->runAndAssertEmptyOutput($this->webRequest('PATCH', '/foobar'));
-        $this->runAndAssertEmptyOutput($this->webRequest('POST', '/bar'));
-        
+        $this->assertEmptyResponse($this->frontendRequest('PATCH', '/foo'));
+        $this->assertEmptyResponse($this->frontendRequest('POST', '/foo'));
     }
     
     /** @test */
     public function matching_url_conditions_will_fail_if_custom_conditions_are_not_met()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router
-                ->get('/foo')
+                ->get()
                 ->where('maybe', false)
                 ->handle(function (Request $request) {
-                    
                     return 'foo';
-                    
                 });
-            
         });
         
-        $this->runAndAssertEmptyOutput($this->webRequest('GET', '/foo'));
+        $this->assertEmptyResponse($this->frontendRequest('GET', '/foo'));
         $this->assertTrue($GLOBALS['test']['maybe_condition_run']);
-        
     }
     
     /** @test */
     public function a_condition_object_can_be_negated()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router
-                ->get('/foo')
+                ->get()
                 ->where('negate', new FalseCondition())
                 ->handle(function (Request $request) {
-                    
                     return 'foo';
-                    
                 });
-            
         });
         
-        $this->runAndAssertOutput('foo', $this->webRequest('GET', '/foo'));
-        
+        $this->assertResponse('foo', $this->frontendRequest('GET', '/foo'));
     }
     
     /** @test */
     public function failure_of_only_one_condition_leads_to_immediate_rejection_of_the_route()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router
-                ->get('/foo')
+                ->get()
                 ->where('false')
                 ->where(function () {
-                    
                     $this->fail('This condition should not have been called.');
-                    
                 })
                 ->handle(function (Request $request) {
-                    
                     $this->fail('This should never be called.');
-                    
                 });
-            
         });
         
-        $this->runAndAssertEmptyOutput($this->webRequest('GET', '/foo'));
-        
+        $this->assertEmptyResponse($this->frontendRequest('GET', '/foo'));
     }
     
     /** @test */
     public function conditions_can_be_resolved_using_the_service_container()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router
                 ->where('dependency_condition', true)
-                ->get('foo', function () {
-                    
+                ->get('*', function () {
                     return 'foo';
-                    
                 });
             
             $this->router
                 ->where('dependency_condition', false)
-                ->post('foo', function () {
-                    
+                ->post('*', function () {
                     return 'foo';
-                    
                 });
-            
         });
         
-        $this->runAndAssertOutput('foo', $this->webRequest('GET', '/foo'));
-        $this->runAndAssertEmptyOutput($this->webRequest('POST', '/foo'));
-        
+        $this->assertResponse('foo', $this->frontendRequest('GET', '/foo'));
+        $this->assertEmptyResponse($this->frontendRequest('POST', '/foo'));
     }
     
     /** @test */
     public function global_functions_can_be_used_as_custom_conditions()
     {
-        
         $this->createRoutes(function () {
-            
-            $this->router->where('is_string', 'foo')->get('foo', function () {
-                
-                return 'foo';
-                
-            });
+            $this->router->where('is_string', 'foo')
+                         ->get('*', function () {
+                             return 'foo';
+                         });
             
             $this->router
                 ->where('is_string', 1)
-                ->post('foo', function () {
-                    
+                ->post('*', function () {
                     return 'foo';
-                    
                 });
             
             $this->router
                 ->where('!is_string', 1)
-                ->put('foo', function () {
-                    
+                ->put('*', function () {
                     return 'foo';
-                    
                 });
-            
         });
         
-        $this->runAndAssertOutput('foo', $this->webRequest('GET', '/foo'));
+        $this->assertResponse('foo', $this->frontendRequest('GET', '/foo'));
         
-        $this->runAndAssertOutput('foo', $this->webRequest('PUT', '/foo'));
+        $this->assertResponse('foo', $this->frontendRequest('PUT', '/foo'));
         
-        $this->runAndAssertEmptyOutput($this->webRequest('POST', '/foo'));
-        
-    }
-    
-    protected function beforeTestRun()
-    {
-        
-        $this->container = $this->createContainer();
-        $this->routes = $this->newCachedRouteCollection();
-        Event::make($this->container);
-        Event::fake();
-        WP::setFacadeContainer($this->container);
-        
-    }
-    
-    protected function beforeTearDown()
-    {
-        
-        Event::setInstance(null);
-        Mockery::close();
-        WP::reset();
-        
+        $this->assertEmptyResponse($this->frontendRequest('POST', '/foo'));
     }
     
 }

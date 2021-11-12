@@ -12,22 +12,31 @@ use function update_user_meta;
 class TwoFactorAuthSessionControllerTest extends AuthTestCase
 {
     
+    protected function setUp() :void
+    {
+        $this->afterApplicationCreated(function () {
+            $this->with2Fa();
+        });
+        $this->afterApplicationBooted(function () {
+            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
+        });
+        
+        parent::setUp();
+    }
+    
     /** @test */
     public function the_controller_cant_be_accessed_if_2fa_is_disabled()
     {
-        
         $this->without2Fa()->bootApp();
         
         $response = $this->get('/auth/two-factor/challenge');
         
         $response->assertDelegatedToWordPress();
-        
     }
     
     /** @test */
     public function the_auth_challenge_is_not_rendered_if_a_user_is_not_challenged()
     {
-        
         $this->bootApp();
         $calvin = $this->createAdmin();
         update_user_meta($calvin->ID, 'two_factor_secret', 'secret');
@@ -35,7 +44,6 @@ class TwoFactorAuthSessionControllerTest extends AuthTestCase
         $response = $this->get('/auth/two-factor/challenge');
         
         $response->assertRedirectToRoute('auth.login');
-        
     }
     
     /** @test */
@@ -49,7 +57,6 @@ class TwoFactorAuthSessionControllerTest extends AuthTestCase
         $response = $this->get('/auth/two-factor/challenge');
         
         $response->assertRedirectToRoute('auth.login');
-        
     }
     
     /** @test */
@@ -67,21 +74,6 @@ class TwoFactorAuthSessionControllerTest extends AuthTestCase
         $response->assertOk();
         $response->assertSee('Code');
         $response->assertSeeHtml('/auth/login');
-        
-    }
-    
-    protected function setUp() :void
-    {
-        
-        $this->afterApplicationCreated(function () {
-            $this->with2Fa();
-        });
-        $this->afterApplicationBooted(function () {
-            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
-        });
-        
-        parent::setUp();
-        
     }
     
 }

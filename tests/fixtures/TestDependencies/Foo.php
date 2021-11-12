@@ -11,9 +11,7 @@ class Foo
     
     public function __toString()
     {
-        
         return $this->foo;
-        
     }
     
 }

@@ -119,7 +119,6 @@ final class ApplicationMixin
      */
     public static function request() :Request
     {
-    
     }
     
     /**
@@ -129,7 +128,6 @@ final class ApplicationMixin
      */
     public static function url() :UrlGenerator
     {
-    
     }
     
     /**
@@ -164,12 +162,10 @@ final class ApplicationMixin
      */
     public static function csrfField() :string
     {
-    
     }
     
     public static function csrf() :CsrfField
     {
-    
     }
     
     /**
@@ -239,7 +235,6 @@ final class ApplicationMixin
      * @param  string|string[]  $views
      *
      * @return ViewInterface
-     * @see    \Snicco\View\ViewFactory::make()
      */
     public static function view($views) :ViewInterface
     {
@@ -253,7 +248,6 @@ final class ApplicationMixin
      *
      * @return string
      * @see    \Snicco\Contracts\ViewInterface::toString()
-     * @see    \Snicco\View\ViewFactory::make()
      */
     public static function render($views, array $context = []) :string
     {
@@ -308,7 +302,6 @@ final class ApplicationMixin
      */
     public static function post(string $url = '*', $action = null) :Route
     {
-    
     }
     
     /**
@@ -318,7 +311,6 @@ final class ApplicationMixin
      */
     public static function get(string $url = '*', $action = null) :Route
     {
-    
     }
     
     /**
@@ -328,7 +320,6 @@ final class ApplicationMixin
      */
     public static function patch(string $url = '*', $action = null) :Route
     {
-    
     }
     
     /** Create a new put route
@@ -369,7 +360,6 @@ final class ApplicationMixin
      */
     public static function methodField(string $method) :string
     {
-    
     }
     
     /**

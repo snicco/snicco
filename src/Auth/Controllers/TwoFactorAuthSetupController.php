@@ -27,7 +27,6 @@ class TwoFactorAuthSetupController extends Controller
     
     public function store(Request $request)
     {
-        
         $user = $request->user();
         
         $this->saveSecret($user->ID, $secret = $this->provider->generateSecretKey());
@@ -37,7 +36,6 @@ class TwoFactorAuthSetupController extends Controller
             'secret' => $secret,
             'qr_code' => $this->provider->renderQrCode(),
         ]);
-        
     }
     
 }

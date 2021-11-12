@@ -16,19 +16,16 @@ class Manage404s
     
     public function shortCircuit() :bool
     {
-        
         return true;
     }
     
     public function check404()
     {
-        
         global $wp;
         
         Event::forget(PreWP404::class);
         
         $wp->handle_404();
-        
     }
     
 }

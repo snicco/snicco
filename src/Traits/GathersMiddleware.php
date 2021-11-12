@@ -19,11 +19,9 @@ trait GathersMiddleware
      */
     private function sortMiddleware(array $middleware, array $priority_map) :array
     {
-        
         $sorted = $middleware;
         
         usort($sorted, function ($a, $b) use ($middleware, $priority_map) {
-            
             $a_priority = $this->getMiddlewarePriorityForMiddleware($a, $priority_map);
             $b_priority = $this->getMiddlewarePriorityForMiddleware($b, $priority_map);
             $priority = $b_priority - $a_priority;
@@ -51,7 +49,6 @@ trait GathersMiddleware
      */
     private function getMiddlewarePriorityForMiddleware($middleware, $middleware_priority) :int
     {
-        
         if (is_array($middleware)) {
             $middleware = $middleware[0];
         }
@@ -84,11 +81,9 @@ trait GathersMiddleware
      */
     private function expandMiddlewareGroup(string $group) :array
     {
-        
         $middleware_in_group = $this->middleware_groups[$group];
         
         return $this->expandMiddleware($middleware_in_group);
-        
     }
     
     /**
@@ -101,7 +96,6 @@ trait GathersMiddleware
      */
     private function expandMiddleware(array $middleware) :array
     {
-        
         $classes = [];
         
         foreach ($middleware as $item) {
@@ -125,7 +119,6 @@ trait GathersMiddleware
      */
     private function expandMiddlewareMolecule(string $middleware) :array
     {
-        
         $pieces = explode(':', $middleware, 2);
         
         if (count($pieces) > 1) {
@@ -154,7 +147,6 @@ trait GathersMiddleware
      */
     private function expandMiddlewareAtom(string $middleware) :string
     {
-        
         if (isset($this->route_middleware_aliases[$middleware])) {
             return $this->route_middleware_aliases[$middleware];
         }

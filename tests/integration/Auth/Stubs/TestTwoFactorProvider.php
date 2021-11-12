@@ -14,7 +14,6 @@ class TestTwoFactorProvider implements TwoFactorAuthenticationProvider
     
     public function __construct(EncryptorInterface $encryptor)
     {
-        
         $this->encryptor = $encryptor;
     }
     

@@ -6,19 +6,26 @@ namespace Tests\integration\ServiceProviders;
 
 use Tests\stubs\TestApp;
 use Tests\FrameworkTestCase;
-use Snicco\View\ViewComposer;
 use Snicco\Routing\ControllerAction;
-use Snicco\Factories\ConditionFactory;
 use Snicco\Factories\RouteActionFactory;
 use Snicco\Factories\ViewComposerFactory;
+use Snicco\Factories\RouteConditionFactory;
+use Tests\fixtures\ViewComposers\FooComposer;
 
 class FactoryServiceProviderTest extends FrameworkTestCase
 {
     
+    protected function setUp() :void
+    {
+        $this->afterApplicationCreated(function () {
+            $this->bootApp();
+        });
+        parent::setUp();
+    }
+    
     /** @test */
     public function the_factory_service_provider_is_set_up_correctly()
     {
-        
         $this->assertInstanceOf(
             RouteActionFactory::class,
             TestApp::resolve(RouteActionFactory::class)
@@ -27,49 +34,41 @@ class FactoryServiceProviderTest extends FrameworkTestCase
             ViewComposerFactory::class,
             TestApp::resolve(ViewComposerFactory::class)
         );
-        $this->assertInstanceOf(ConditionFactory::class, TestApp::resolve(ConditionFactory::class));
-        
+        $this->assertInstanceOf(
+            RouteConditionFactory::class,
+            TestApp::resolve(RouteConditionFactory::class)
+        );
     }
     
     /** @test */
     public function the_controller_namespace_can_be_configured_correctly()
     {
-        
         /** @var RouteActionFactory $factory */
         $factory = TestApp::resolve(RouteActionFactory::class);
         
         $this->assertInstanceOf(
             ControllerAction::class,
-            $factory->createUsing('AdminController@handle')
+            $factory->create('AdminController@handle')
         );
         $this->assertInstanceOf(
             ControllerAction::class,
-            $factory->createUsing('WebController@handle')
+            $factory->create('WebController@handle')
         );
         $this->assertInstanceOf(
             ControllerAction::class,
-            $factory->createUsing('AjaxController@handle')
+            $factory->create('AjaxController@handle')
         );
-        
     }
     
     /** @test */
     public function the_view_composer_namespace_can_be_configured_correctly()
     {
-        
         /** @var ViewComposerFactory $factory */
         $factory = TestApp::resolve(ViewComposerFactory::class);
         
-        $this->assertInstanceOf(ViewComposer::class, $factory->createUsing('FooComposer@compose'));
+        $composer = $factory->create('FooComposer');
         
-    }
-    
-    protected function setUp() :void
-    {
-        $this->afterApplicationCreated(function () {
-            $this->bootApp();
-        });
-        parent::setUp();
+        $this->assertInstanceOf(FooComposer::class, $composer);
     }
     
 }

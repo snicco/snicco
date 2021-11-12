@@ -130,10 +130,8 @@ class ResponsePreparation
              && ! ob_get_length()
              && ! $request->isWpAdmin()
         ) {
-            
             $size = strval($response->getBody()->getSize());
             $response = $response->withHeader('content-length', $size);
-            
         }
         
         // Remove content-length if transfer-encoding

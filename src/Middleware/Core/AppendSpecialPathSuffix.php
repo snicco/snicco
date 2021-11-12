@@ -27,7 +27,6 @@ class AppendSpecialPathSuffix extends Middleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        
         $uri = $request->getUri();
         
         $new_path = $this->appendToPath($request);
@@ -35,16 +34,13 @@ class AppendSpecialPathSuffix extends Middleware
         $new_uri = $uri->withPath($new_path);
         
         return $next($request->withRoutingUri($new_uri));
-        
     }
     
     private function appendToPath(Request $request) :string
     {
-        
         $path = $request->path();
         
         if ($request->isWpAdmin()) {
-            
             $page = $request->query('page');
             
             if ( ! $page) {
@@ -52,11 +48,9 @@ class AppendSpecialPathSuffix extends Middleware
             }
             
             $path = rtrim($path, '/').'/'.$page;
-            
         }
         
         if ($request->isWpAjax()) {
-            
             $action = $request->post('action', $request->query('action'));
             
             if ( ! $action) {
@@ -64,7 +58,6 @@ class AppendSpecialPathSuffix extends Middleware
             }
             
             $path = rtrim($path, '/').'/'.$action;
-            
         }
         
         return $path;

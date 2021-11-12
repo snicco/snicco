@@ -15,40 +15,44 @@ use Snicco\Auth\Events\FailedPasswordResetLinkRequest;
 class ForgotPasswordControllerTest extends AuthTestCase
 {
     
+    protected function setUp() :void
+    {
+        $this->afterApplicationCreated(function () {
+            $this->withAddedConfig('auth.features.password-resets', true);
+            $this->withAddedConfig('auth.fail2ban.enabled', true);
+        });
+        
+        parent::setUp();
+    }
+    
     /** @test */
     public function the_route_cant_be_accessed_while_being_logged_in()
     {
-        
         $this->bootApp();
         
         $this->actingAs($this->createAdmin());
         
         $this->get($this->routeUrl())->assertRedirectToRoute('dashboard');
-        
     }
     
     /** @test */
     public function the_forgot_password_view_can_be_rendered()
     {
-        
         $this->bootApp();
         $this->get($this->routeUrl())
              ->assertSee('Request new password')
              ->assertOk();
-        
     }
     
     /** @test */
     public function the_endpoint_is_not_accessible_when_disabled_in_the_config()
     {
-        
         $this->withOutConfig('auth.features.password-resets');
         $this->bootApp();
         
         $url = '/auth/forgot-password';
         
         $this->get($url)->assertDelegatedToWordPress();
-        
     }
     
     /** @test */
@@ -73,7 +77,6 @@ class ForgotPasswordControllerTest extends AuthTestCase
         $mail->assertTo($calvin)
              ->assertView('framework.mail.password-reset')
              ->assertSee("$expected_link?expires=");
-        
     }
     
     /** @test */
@@ -99,7 +102,6 @@ class ForgotPasswordControllerTest extends AuthTestCase
         $mail->assertTo($calvin)
              ->assertView('framework.mail.password-reset')
              ->assertSee("$expected_link?expires=");
-        
     }
     
     /** @test */
@@ -114,7 +116,6 @@ class ForgotPasswordControllerTest extends AuthTestCase
         
         $response->assertRedirectToRoute('auth.forgot.password');
         $this->assertMailNotSent(ResetPasswordMail::class);
-        
     }
     
     /** @test */
@@ -131,12 +132,9 @@ class ForgotPasswordControllerTest extends AuthTestCase
         Event::assertDispatched(
             FailedPasswordResetLinkRequest::class,
             function (FailedPasswordResetLinkRequest $event) {
-                
                 return $event->request()->post('login') === 'bogus@web.de';
-                
             }
         );
-        
     }
     
     /** @test */
@@ -156,26 +154,10 @@ class ForgotPasswordControllerTest extends AuthTestCase
             LOG_NOTICE,
             'User enumeration trying to request a new password for user login [bogus@web.de] from 127.0.0.1'
         );
-        
-    }
-    
-    protected function setUp() :void
-    {
-        
-        $this->afterApplicationCreated(function () {
-            
-            $this->withAddedConfig('auth.features.password-resets', true);
-            $this->withAddedConfig('auth.fail2ban.enabled', true);
-            
-        });
-        
-        parent::setUp();
-        
     }
     
     private function routeUrl()
     {
-    
         return TestApp::url()->signedRoute('auth.forgot.password');
     }
     

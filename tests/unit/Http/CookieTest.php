@@ -7,16 +7,15 @@ namespace Tests\unit\Http;
 use DateTime;
 use Carbon\Carbon;
 use LogicException;
+use Tests\UnitTest;
 use Snicco\Http\Cookie;
 use InvalidArgumentException;
-use PHPUnit\Framework\TestCase;
 
-class CookieTest extends TestCase
+class CookieTest extends UnitTest
 {
     
     public function testDefault()
     {
-        
         $cookie = new Cookie('foo', 'bar');
         
         $this->assertSame([
@@ -29,12 +28,10 @@ class CookieTest extends TestCase
             'httponly' => true,
             'samesite' => 'Lax',
         ], $cookie->properties());
-        
     }
     
     public function testSetProperties()
     {
-        
         $cookie = new Cookie('foo', 'bar');
         
         $cookie->setProperties([
@@ -53,12 +50,10 @@ class CookieTest extends TestCase
             'httponly' => false,
             'samesite' => 'Strict',
         ], $cookie->properties());
-        
     }
     
     public function testAllowJs()
     {
-        
         $cookie = new Cookie('foo', 'bar');
         $cookie->allowJs();
         
@@ -72,12 +67,10 @@ class CookieTest extends TestCase
             'httponly' => false,
             'samesite' => 'Lax',
         ], $cookie->properties());
-        
     }
     
     public function testAllowUnsecure()
     {
-        
         $cookie = new Cookie('foo', 'bar');
         $cookie->allowUnsecure();
         
@@ -91,12 +84,10 @@ class CookieTest extends TestCase
             'httponly' => true,
             'samesite' => 'Lax',
         ], $cookie->properties());
-        
     }
     
     public function testSameSite()
     {
-        
         $cookie = new Cookie('foo', 'bar');
         $cookie->sameSite('strict');
         $this->assertSame([
@@ -137,12 +128,10 @@ class CookieTest extends TestCase
         $this->expectException(LogicException::class);
         
         $cookie->sameSite('bogus');
-        
     }
     
     public function testExpiresInteger()
     {
-        
         $cookie = new Cookie('foo', 'bar');
         $cookie->expires(1000);
         $this->assertSame([
@@ -155,12 +144,10 @@ class CookieTest extends TestCase
             'httponly' => true,
             'samesite' => 'Lax',
         ], $cookie->properties());
-        
     }
     
     public function testExpiresDatetimeInterface()
     {
-        
         $cookie = new Cookie('foo', 'bar');
         
         $date = new DateTime('2000-01-01');
@@ -177,12 +164,10 @@ class CookieTest extends TestCase
             'httponly' => true,
             'samesite' => 'Lax',
         ], $cookie->properties());
-        
     }
     
     public function testExpiresCarbon()
     {
-        
         $cookie = new Cookie('foo', 'bar');
         
         $date = Carbon::createFromDate('2000', '01', '01');
@@ -199,12 +184,10 @@ class CookieTest extends TestCase
             'httponly' => true,
             'samesite' => 'Lax',
         ], $cookie->properties());
-        
     }
     
     public function testExpiresInvalidArgumentThrowsException()
     {
-        
         $this->expectException(InvalidArgumentException::class);
         $cookie = new Cookie('foo', 'bar');
         $cookie->expires('1000');
@@ -212,7 +195,6 @@ class CookieTest extends TestCase
     
     public function testValueIsUrlEncoded()
     {
-        
         $cookie = new Cookie('foo_cookie', 'foo bar');
         
         $this->assertSame(urlencode('foo bar'), $cookie->properties()['value']);
@@ -220,7 +202,6 @@ class CookieTest extends TestCase
         $cookie = new Cookie('foo_cookie', 'foo bar', false);
         
         $this->assertSame('foo bar', $cookie->properties()['value']);
-        
     }
     
 }

@@ -19,12 +19,10 @@ class DummyApplication implements Application
     
     public function version()
     {
-    
     }
     
     public function basePath($path = '')
     {
-    
     }
     
     public function bootstrapPath($path = '')
@@ -101,9 +99,7 @@ class DummyApplication implements Application
     
     public function getNamespace()
     {
-        
         return '';
-        
     }
     
     public function getProviders($provider)

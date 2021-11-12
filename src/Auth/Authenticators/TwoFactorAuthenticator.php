@@ -35,9 +35,7 @@ class TwoFactorAuthenticator extends Authenticator
         $user_id = $session->challengedUser();
         
         if ( ! $user_id || ! $this->userHasTwoFactorEnabled($user = $this->getUserById($user_id))) {
-            
             return $next($request);
-            
         }
         
         $valid = $this->validateTwoFactorAuthentication(
@@ -47,13 +45,11 @@ class TwoFactorAuthenticator extends Authenticator
         );
         
         if ( ! $valid) {
-            
             FailedTwoFactorAuthentication::dispatch([$request, $user_id]);
             
             return $this->response_factory->redirect()
                                           ->back()
                                           ->withErrors(['login' => 'Invalid code provided']);
-            
         }
         
         $remember = $session->get('auth.2fa.remember', false);

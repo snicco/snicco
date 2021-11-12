@@ -48,14 +48,11 @@ class HeaderStack
     
     public static function assertContains(string $header_name, $value)
     {
-        
         self::assertHas($header_name);
         
         $header =
             collect(self::$data)->pluck('header')->first(function ($header) use ($header_name) {
-                
                 return Str::startsWith($header, $header_name);
-                
             });
         
         Assert::assertStringContainsString(
@@ -63,7 +60,6 @@ class HeaderStack
             $header,
             "the header {$header_name} does not contain {$value}"
         );
-        
     }
     
     /**
@@ -74,34 +70,26 @@ class HeaderStack
      */
     public static function assertHas(string $header, string $value = null)
     {
-        
         $header_found = false;
         
         foreach (self::$data as $item) {
-            
             $components = explode(':', $item['header']);
             
             if (trim(strtolower($components[0])) === strtolower($header)) {
-                
                 if ($value) {
-                    
                     Assert::assertStringContainsString(
                         $value,
                         $actual = trim(Str::after($item['header'], ':')),
                         "The value for header [{$header}] is: [{$actual}]. Expected: [{$value}]"
                     );
-                    
                 }
                 
                 $header_found = true;
                 break;
-                
             }
-            
         }
         
         Assert::assertTrue($header_found, "Header {$header} was expected but not found.");
-        
     }
     
     public static function assertHasNone()
@@ -117,9 +105,7 @@ class HeaderStack
     public static function assertHasStatusCode(int $code)
     {
         if ( ! isset(self::$data[0]['status_code'])) {
-            
             Assert::fail('Status code header not sent.');
-            
         }
         
         Assert::assertSame(
@@ -127,7 +113,6 @@ class HeaderStack
             $code,
             "Actual status code: {$actual}. Expected: {$code}"
         );
-        
     }
     
     public static function assertNoStatusCodeSent()

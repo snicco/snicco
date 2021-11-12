@@ -34,40 +34,31 @@ trait ManagesTransactions
      */
     public function transaction(Closure $callback, $attempts = 1)
     {
-        
         $this->transaction_count = 0;
         
         for ($currentAttempt = 1; $currentAttempt <= $attempts; $currentAttempt++) {
-            
             $this->savepoint();
             
             // We'll simply execute the given callback within a try / catch block and if we
             // catch any exception we can rollback this transaction so that none of this
             // gets actually persisted to a database or stored in a permanent fashion.
             try {
-                
                 $callbackResult = $callback($this);
-                
             }
                 
                 // If we catch an exception we'll rollback this transaction and try again if we
                 // are not out of attempts. If we are out of attempts we will just throw the
                 // exception back out and let the developer handlean uncaught exceptions.
             catch (Throwable $e) {
-                
                 $this->handleTransactionException($e, $currentAttempt, $attempts);
                 
                 // We could handlethe exception and are ready to try again.
                 continue;
-                
             }
             
             try {
-                
                 $this->commit();
-                
             } catch (Throwable $e) {
-                
                 $this->handleCommitException($e, $currentAttempt, $attempts);
                 
                 continue;
@@ -79,19 +70,12 @@ trait ManagesTransactions
     
     public function savepoint()
     {
-        
         if ($this->transaction_count === 0) {
-            
             try {
-                
                 $this->wpdb->startTransaction();
-                
             } catch (mysqli_sql_exception $e) {
-                
                 $this->handleBeginTransactionException($e);
-                
             }
-            
         }
         
         $this->wpdb->createSavepoint(
@@ -101,7 +85,6 @@ trait ManagesTransactions
         );
         
         $this->transaction_count++;
-        
     }
     
     /**
@@ -111,7 +94,6 @@ trait ManagesTransactions
      */
     public function transactionLevel() :int
     {
-        
         return $this->transaction_count;
     }
     
@@ -125,39 +107,27 @@ trait ManagesTransactions
      */
     public function rollBack($to_level = null)
     {
-        
         $to_level = $to_level ?? $this->transaction_count;
         
         if ($to_level < 0 || $to_level > $this->transaction_count) {
-            
             return;
-            
         }
         
         try {
-            
             if ($to_level === 0) {
-                
                 $this->wpdb->rollbackTransaction($this->query_grammar->compileRollback());
-                
             }
             
             if ($to_level > 0) {
-                
                 $this->wpdb->rollbackTransaction(
                     $this->query_grammar->compileSavepointRollBack('trans'.($to_level))
                 );
-                
             }
-            
         } catch (Throwable $e) {
-            
             $this->handleRollBackException($e);
-            
         }
         
         $this->decreaseTransactionCount($to_level - 1 ?? null);
-        
     }
     
     /**
@@ -168,12 +138,10 @@ trait ManagesTransactions
      */
     public function commit()
     {
-        
         $this->wpdb->commitTransaction();
         
         // If successfully reset the transaction count.
         $this->transaction_count = 0;
-        
     }
     
     /**
@@ -184,12 +152,10 @@ trait ManagesTransactions
      */
     public function beginTransaction()
     {
-        
         // In case we have some global state left, because WordPress...
         $this->transaction_count = 0;
         
         $this->savepoint();
-        
     }
     
     /**
@@ -202,21 +168,17 @@ trait ManagesTransactions
      */
     private function handleBeginTransactionException(mysqli_sql_exception $e)
     {
-        
         // If the caused by lost connection, reconnect again and redo transaction
         // wpdb automatically tries to reconnect if we lost the connection.
         if ($this->causedByLostConnection($e) && $this->tryReconnect()) {
-            
             $this->wpdb->startTransaction();
             
             return;
-            
         }
         
         // If we can reconnect with wpdb or if we cant start the transaction a second time,
         // throw out the exception to the error driver.
         throw new SqlException('START TRANSACTION', [], $e);
-        
     }
     
     /**
@@ -228,7 +190,6 @@ trait ManagesTransactions
      */
     private function causedByLostConnection(Throwable $e)
     {
-        
         $message = $e->getMessage();
         
         return Str::contains($message, [
@@ -270,10 +231,8 @@ trait ManagesTransactions
     
     private function tryReconnect()
     {
-        
         /** @see \wpdb::check_connection() */
         return $this->wpdb->check_connection(false);
-        
     }
     
     /**
@@ -288,34 +247,27 @@ trait ManagesTransactions
      */
     private function handleTransactionException(Throwable $e, $currentAttempt, $maxAttempts)
     {
-        
         // deadlock and already transaction started.
         // MySql rolls everything back.
         if ($this->isConcurrencyError($e) && $this->transactionLevel() > 1) {
-            
             $this->transaction_count = 0;
             
             throw $e;
-            
         }
         
         $this->rollBack(max(1, $this->transaction_count));
         
         // deadlock, attempts left
         if ($this->isConcurrencyError($e) && $currentAttempt < $maxAttempts) {
-            
             return;
-            
         }
         
         $this->transaction_count = 0;
         throw new SqlException('', [], $e);
-        
     }
     
     private function isConcurrencyError(Throwable $e) :bool
     {
-        
         $message = $e->getMessage();
         
         return Str::contains($message, [
@@ -341,34 +293,24 @@ trait ManagesTransactions
      */
     private function handleRollBackException(Throwable $e)
     {
-        
         if ($this->causedByLostConnection($e)) {
-            
             $this->transaction_count = 0;
-            
         }
         
         throw new SqlException('ROLLBACK', [], $e);
-        
     }
     
     private function decreaseTransactionCount($to_level = null)
     {
-        
         $this->transaction_count--;
         
         if ($to_level) {
-            
             $this->transaction_count = $to_level;
-            
         }
         
         if ($this->transaction_count < 0) {
-            
             $this->transaction_count = 0;
-            
         }
-        
     }
     
     /**
@@ -383,18 +325,13 @@ trait ManagesTransactions
      */
     private function handleCommitException(Throwable $e, $currentAttempt, $maxAttempts)
     {
-        
         if ($this->isConcurrencyError($e) && $currentAttempt < $maxAttempts) {
-            
             return;
-            
         }
         
         // Reset transaction count if we lost the connection
         if ($this->causedByLostConnection($e)) {
-            
             $this->transaction_count = 0;
-            
         }
         
         throw new SqlException('COMMIT', [], $e);

@@ -32,9 +32,7 @@ trait LogsQueries
      */
     public function pretend(Closure $callback)
     {
-        
         return $this->withFreshQueryLog(function () use ($callback) {
-            
             $this->pretending = true;
             
             // Basically to make the database connection "pretend", we will just return
@@ -45,7 +43,6 @@ trait LogsQueries
             $this->pretending = false;
             
             return $this->query_log;
-            
         });
     }
     
@@ -58,7 +55,6 @@ trait LogsQueries
      */
     private function withFreshQueryLog(Closure $callback) :array
     {
-        
         $loggingQueries = $this->logging_queries;
         
         // First we will back up the value of the logging queries property and then
@@ -76,7 +72,6 @@ trait LogsQueries
         $this->logging_queries = $loggingQueries;
         
         return $result;
-        
     }
     
     /**
@@ -88,9 +83,7 @@ trait LogsQueries
      */
     private function logQuery(string $query, array $bindings, float $time)
     {
-        
         $this->query_log[] = compact('query', 'bindings', 'time');
-        
     }
     
     /**
@@ -102,7 +95,6 @@ trait LogsQueries
      */
     private function getElapsedTime($start) :float
     {
-        
         return round((microtime(true) - $start) * 1000, 2);
     }
     

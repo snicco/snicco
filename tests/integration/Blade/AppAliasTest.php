@@ -16,19 +16,16 @@ class AppAliasTest extends BladeTestCase
         $view = TestApp::view('nested.view');
         
         $this->assertViewContent('FOO', $view);
-        
     }
     
     /** @test */
     public function the_first_available_view_can_be_created()
     {
-        
         $this->bootApp();
         
         $first = TestApp::view(['bogus1', 'bogus2', 'foo']);
         
         $this->assertViewContent('FOO', $first);
-        
     }
     
 }

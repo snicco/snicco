@@ -19,7 +19,6 @@ class IlluminateDispatcherAdapter implements Dispatcher
     
     public function __construct(WordpressDispatcher $dispatcher)
     {
-        
         $this->dispatcher = $dispatcher;
     }
     
@@ -33,7 +32,6 @@ class IlluminateDispatcherAdapter implements Dispatcher
         }
         
         $this->dispatcher->listen($events, $listener);
-        
     }
     
     public function hasListeners($eventName)
@@ -43,7 +41,6 @@ class IlluminateDispatcherAdapter implements Dispatcher
     
     public function subscribe($subscriber)
     {
-        
         throw new RuntimeException('BetterWP does not support event subscribing at the moment.');
     }
     
@@ -64,14 +61,11 @@ class IlluminateDispatcherAdapter implements Dispatcher
     
     public function push($event, $payload = [])
     {
-        
         throw new RuntimeException('BetterWP does not support event subscribing at the moment.');
-        
     }
     
     public function flush($event)
     {
-        
         throw new RuntimeException('BetterWP does not support event subscribing at the moment.');
     }
     
@@ -82,7 +76,6 @@ class IlluminateDispatcherAdapter implements Dispatcher
     
     public function forgetPushed()
     {
-        
         throw new RuntimeException('BetterWP does not support event subscribing at the moment.');
     }
     

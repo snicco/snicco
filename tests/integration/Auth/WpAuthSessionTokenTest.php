@@ -15,9 +15,21 @@ class WpAuthSessionTokenTest extends AuthTestCase
     
     private WP_User $user;
     
+    protected function setUp() :void
+    {
+        $this->afterApplicationBooted(function () {
+            $user = $this->createAdmin();
+            $this->actingAs($user);
+            $this->user = $user;
+            $this->session_manager = TestApp::resolve(SessionManagerInterface::class);
+        });
+        
+        parent::setUp();
+        $this->bootApp();
+    }
+    
     public function testGetReturnsWpSessionInformation()
     {
-        
         $instance = WP_Session_Tokens::get_instance($this->user->ID);
         $instance->create(1000);
         
@@ -30,16 +42,12 @@ class WpAuthSessionTokenTest extends AuthTestCase
             'ip' => '127.0.0.1',
             'login' => time(),
         ], $session);
-        
     }
     
     public function testSessionInformationCanBeAddedWithFilter()
     {
-        
         add_filter('attach_session_information', function () {
-            
             return ['foo' => 'bar'];
-            
         });
         
         $instance = WP_Session_Tokens::get_instance($this->user->ID);
@@ -55,12 +63,10 @@ class WpAuthSessionTokenTest extends AuthTestCase
             'login' => time(),
             'foo' => 'bar',
         ], $session);
-        
     }
     
     public function testGetAllReturnsArrayOfSessions()
     {
-        
         $instance = WP_Session_Tokens::get_instance($this->user->ID);
         $instance->create(1000);
         $this->session_manager->save();
@@ -85,12 +91,10 @@ class WpAuthSessionTokenTest extends AuthTestCase
         ];
         
         $this->assertEquals($expected, $instance->get_all());
-        
     }
     
     public function testVerify()
     {
-        
         $instance = WP_Session_Tokens::get_instance($this->user->ID);
         $instance->create(1000);
         $this->session_manager->save();
@@ -98,12 +102,10 @@ class WpAuthSessionTokenTest extends AuthTestCase
         $token = $this->session_manager->activeSession()->getId();
         
         $this->assertTrue($instance->verify($token));
-        
     }
     
     public function testUpdate()
     {
-        
         $instance = WP_Session_Tokens::get_instance($this->user->ID);
         $instance->create(1000);
         $this->session_manager->save();
@@ -125,12 +127,10 @@ class WpAuthSessionTokenTest extends AuthTestCase
         $this->assertSame([
             'foo' => 'bar',
         ], $session);
-        
     }
     
     public function testDestroy()
     {
-        
         $instance = WP_Session_Tokens::get_instance($this->user->ID);
         $instance->create(1000);
         $this->session_manager->save();
@@ -144,12 +144,10 @@ class WpAuthSessionTokenTest extends AuthTestCase
         $instance = WP_Session_Tokens::get_instance($this->user->ID);
         
         $this->assertFalse($instance->verify($id));
-        
     }
     
     public function testDestroyOthers()
     {
-        
         $instance = WP_Session_Tokens::get_instance($this->user->ID);
         $instance->create(1000);
         $this->session_manager->save();
@@ -171,12 +169,10 @@ class WpAuthSessionTokenTest extends AuthTestCase
         
         $this->assertTrue($instance->verify($first_id));
         $this->assertFalse($instance->verify($second_id));
-        
     }
     
     public function testDestroyAllForUser()
     {
-        
         $instance = WP_Session_Tokens::get_instance($this->user->ID);
         $instance->create(1000);
         $this->session_manager->save();
@@ -197,12 +193,10 @@ class WpAuthSessionTokenTest extends AuthTestCase
         
         $this->assertFalse($instance->verify($first_id));
         $this->assertFalse($instance->verify($second_id));
-        
     }
     
     public function testDestroyAll()
     {
-        
         $instance = WP_Session_Tokens::get_instance($first_user_id = $this->user->ID);
         $instance->create(1000);
         $this->session_manager->save();
@@ -228,20 +222,6 @@ class WpAuthSessionTokenTest extends AuthTestCase
         
         $instance = WP_Session_Tokens::get_instance($this->user->ID);
         $this->assertFalse($instance->verify($second_id));
-        
-    }
-    
-    protected function setUp() :void
-    {
-        $this->afterApplicationBooted(function () {
-            $user = $this->createAdmin();
-            $this->actingAs($user);
-            $this->user = $user;
-            $this->session_manager = TestApp::resolve(SessionManagerInterface::class);
-        });
-        
-        parent::setUp();
-        $this->bootApp();
     }
     
 }

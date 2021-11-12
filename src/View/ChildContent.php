@@ -13,9 +13,7 @@ class ChildContent
     
     public function __construct(Closure $content)
     {
-        
         $this->content = $content;
-        
     }
     
     public function __toString()

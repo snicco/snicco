@@ -13,17 +13,25 @@ use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
 use Snicco\Support\VariableBag;
 use Snicco\Validation\Validator;
-use Snicco\Routing\RoutingResult;
+use Tests\concerns\CreateContainer;
 use Snicco\Session\Drivers\ArraySessionDriver;
 
 class RequestTest extends UnitTest
 {
     
+    use CreateContainer;
+    
     private Request $request;
+    
+    protected function setUp() :void
+    {
+        parent::setUp();
+        
+        $this->request = TestRequest::from('GET', 'foo');
+    }
     
     public function testIsImmutable()
     {
-        
         $request = TestRequest::from('GET', 'foo');
         
         $next = $request->withMethod('POST');
@@ -35,12 +43,10 @@ class RequestTest extends UnitTest
         
         $this->assertSame('GET', $request->getMethod());
         $this->assertSame('POST', $next->getMethod());
-        
     }
     
     public function testGetPath()
     {
-        
         $request = TestRequest::from('GET', '/foo/bar');
         $this->assertSame('/foo/bar', $request->path());
         
@@ -55,12 +61,10 @@ class RequestTest extends UnitTest
         
         $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar/?baz=biz');
         $this->assertSame('/foo/bar/', $request->path());
-        
     }
     
     public function testGetFullPath()
     {
-        
         $request = TestRequest::from('GET', '/foo/bar');
         $this->assertSame('/foo/bar', $request->fullPath());
         
@@ -78,12 +82,10 @@ class RequestTest extends UnitTest
         
         $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar?baz=biz#section');
         $this->assertSame('/foo/bar?baz=biz#section', $request->fullPath());
-        
     }
     
     public function testGetUrl()
     {
-        
         $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar');
         $this->assertSame('https://foo.com/foo/bar', $request->url());
         
@@ -95,12 +97,10 @@ class RequestTest extends UnitTest
         
         $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar/?baz=biz');
         $this->assertSame('https://foo.com/foo/bar/', $request->url());
-        
     }
     
     public function testGetFullUrl()
     {
-        
         $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar');
         $this->assertSame('https://foo.com/foo/bar', $request->fullUrl());
         
@@ -115,12 +115,10 @@ class RequestTest extends UnitTest
         
         $request = TestRequest::fromFullUrl('GET', 'https://foo.com/foo/bar?baz=biz#section');
         $this->assertSame('https://foo.com/foo/bar?baz=biz#section', $request->fullUrl());
-        
     }
     
     public function testCookies()
     {
-        
         $cookies = $this->request->cookies();
         $this->assertInstanceOf(VariableBag::class, $cookies);
         $this->assertSame([], $cookies->all());
@@ -129,22 +127,16 @@ class RequestTest extends UnitTest
         $cookies = $request->cookies();
         $this->assertInstanceOf(VariableBag::class, $cookies);
         $this->assertSame(['foo' => 'bar'], $cookies->all());
-        
     }
     
     public function testSession()
     {
-        
         try {
-            
             $this->request->session();
             
             $this->fail('Missing session did not throw an exception');
-            
         } catch (RuntimeException $e) {
-            
             $this->assertSame('A session has not been set on the request.', $e->getMessage());
-            
         }
         
         $request = $this->request->withSession($session = new Session(new ArraySessionDriver(10)));
@@ -152,35 +144,29 @@ class RequestTest extends UnitTest
         $request = $request->withMethod('POST');
         
         $this->assertSame($session, $request->session());
-        
     }
     
     public function testHasSession()
     {
-        
         $this->assertFalse($this->request->hasSession());
         
         $request = $this->request->withSession(new Session(new ArraySessionDriver(10)));
         
         $this->assertTrue($request->hasSession());
-        
     }
     
     public function testGetLoadingScript()
     {
-        
         $request = TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'index.php']);
         $this->assertSame('index.php', $request->loadingScript());
         
         $request =
             TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'wp-admin/edit.php']);
         $this->assertSame('wp-admin/edit.php', $request->loadingScript());
-        
     }
     
     public function testIsWpAdmin()
     {
-        
         $request = TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'index.php']);
         $this->assertFalse($request->isWpAdmin());
         
@@ -193,12 +179,10 @@ class RequestTest extends UnitTest
             ['SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
         );
         $this->assertFalse($request->isWpAdmin());
-        
     }
     
     public function testIsWpAjax()
     {
-        
         $request = TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'index.php']);
         $this->assertFalse($request->isWpAjax());
         
@@ -211,12 +195,10 @@ class RequestTest extends UnitTest
             ['SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
         );
         $this->assertTrue($request->isWpAjax());
-        
     }
     
     public function testisWpFrontEnd()
     {
-        
         $request = TestRequest::withServerParams($this->request, ['SCRIPT_NAME' => 'index.php']);
         $this->assertTrue($request->isWpFrontend());
         
@@ -229,42 +211,19 @@ class RequestTest extends UnitTest
             ['SCRIPT_NAME' => 'wp-admin/admin-ajax.php']
         );
         $this->assertFalse($request->isWpFrontend());
-        
-    }
-    
-    public function testGetRoutingResult()
-    {
-        
-        $result = $this->request->routingResult();
-        $this->assertInstanceOf(RoutingResult::class, $result);
-        $this->assertNull($result->route());
-        $this->assertSame([], $result->capturedUrlSegmentValues());
-        
-        $request =
-            $this->request->withRoutingResult(new RoutingResult(['route'], ['foo' => 'bar']));
-        $result = $request->routingResult();
-        $this->assertInstanceOf(RoutingResult::class, $result);
-        $this->assertNotNull($result);
-        $this->assertSame(['foo' => 'bar'], $result->capturedUrlSegmentValues());
-        
     }
     
     public function testValidator()
     {
-        
         try {
-            
             $this->request->validator();
             
             $this->fail('Missing validator did not throw an exception');
-            
         } catch (RuntimeException $e) {
-            
             $this->assertSame(
                 'A validator instance has not been set on the request.',
                 $e->getMessage()
             );
-            
         }
         
         $request = $this->request->withValidator($v = new Validator());
@@ -272,18 +231,16 @@ class RequestTest extends UnitTest
         $request = $request->withMethod('POST');
         
         $this->assertSame($v, $request->validator());
-        
     }
     
     public function testRouteIs()
     {
-        
         WP::setFacadeContainer($this->createContainer());
         WP::shouldReceive('wpAdminFolder')->andReturn('wp-admin');
         $route = new Route(['GET'], '/foo', function () { });
         $route->name('foobar');
         
-        $request = $this->request->withRoutingResult(new RoutingResult($route));
+        $request = $this->request->withRoute($route);
         
         $this->assertFalse($request->routeIs('bar'));
         $this->assertTrue($request->routeIs('foobar'));
@@ -293,24 +250,20 @@ class RequestTest extends UnitTest
         $this->assertTrue($request->routeIs('foo*'));
         
         WP::reset();
-        
     }
     
     public function testFullUrlIs()
     {
-        
         $request = TestRequest::fromFullUrl('GET', 'https://example.com/foo/bar');
         
         $this->assertFalse($request->fullUrlIs('https://example.com/foo/'));
         $this->assertFalse($request->fullUrlIs('https://example.com/foo/bar/'));
         $this->assertTrue($request->fullUrlIs('https://example.com/foo/bar'));
         $this->assertTrue($request->fullUrlIs('https://example.com/foo/*'));
-        
     }
     
     public function testPathIs()
     {
-        
         $request = TestRequest::fromFullUrl('GET', 'https://example.com/foo/bar');
         
         $this->assertFalse($request->pathIs('/foo'));
@@ -322,15 +275,6 @@ class RequestTest extends UnitTest
         $this->assertFalse($request->pathIs('/foo/bar/'));
         
         $this->assertTrue($request->pathIs('/foo/*'));
-        
-    }
-    
-    protected function setUp() :void
-    {
-        
-        parent::setUp();
-        
-        $this->request = TestRequest::from('GET', 'foo');
     }
     
 }

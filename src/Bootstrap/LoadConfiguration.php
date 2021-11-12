@@ -18,27 +18,19 @@ class LoadConfiguration implements Bootstrapper
     
     public function bootstrap(Application $app) :void
     {
-        
         if (is_file($file = $app->configCachePath())) {
-            
             $items = $this->readFromCacheFile($file);
             $app->config()->seedFromCache($items);
             return;
-            
         }
         
         if ( ! isset($loaded_from_cache)) {
-            
             $this->loadConfigurationFromFiles($app);
-            
         }
         
         if ($app->config('app.cache_config')) {
-            
             $this->createCacheFile($app);
-            
         }
-        
     }
     
     private function readFromCacheFile(string $cached)
@@ -48,7 +40,6 @@ class LoadConfiguration implements Bootstrapper
     
     private function loadConfigurationFromFiles(Application $app)
     {
-        
         $files = $this->getConfigurationFiles($app);
         
         if ( ! isset($files['app'])) {
@@ -67,10 +58,8 @@ class LoadConfiguration implements Bootstrapper
         $config_path = realpath($app->configPath());
         
         foreach (Finder::create()->files()->name('*.php')->in($config_path) as $file) {
-            
             /** @var SplFileInfo $file */
             $files[$file->getFilenameWithoutExtension()] = $file->getRealPath();
-            
         }
         
         ksort($files, SORT_NATURAL);
@@ -80,13 +69,10 @@ class LoadConfiguration implements Bootstrapper
     
     private function createCacheFile(Application $app)
     {
-        
         if ( ! is_dir(
             $dir = $app->basePath().DIRECTORY_SEPARATOR.'bootstrap'.DIRECTORY_SEPARATOR.'cache'
         )) {
-            
             wp_mkdir_p($dir);
-            
         }
         
         $success = file_put_contents(
@@ -99,7 +85,6 @@ class LoadConfiguration implements Bootstrapper
         if ($success === false) {
             throw new RuntimeException('Config could not be written to cache file.');
         }
-        
     }
     
     private function getCachedConfigPath(Application $app) :string

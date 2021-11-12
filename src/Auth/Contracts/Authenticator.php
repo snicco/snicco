@@ -17,11 +17,9 @@ abstract class Authenticator extends Middleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        
         return $this->response_factory->toResponse(
             $this->attempt($request, $next)
         );
-        
     }
     
     /**

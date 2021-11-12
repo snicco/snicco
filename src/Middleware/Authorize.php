@@ -26,7 +26,6 @@ class Authorize extends Middleware
     
     public function handle(Request $request, $next) :ResponseInterface
     {
-        
         $args = [];
         if ($this->object_id) {
             $args[] = intval($this->object_id);
@@ -36,15 +35,12 @@ class Authorize extends Middleware
         }
         
         if (WP::currentUserCan($this->capability, ...$args)) {
-            
             return $next($request);
-            
         }
         
         throw new AuthorizationException(
             "Authorization failed for required capability $this->capability"
         );
-        
     }
     
 }

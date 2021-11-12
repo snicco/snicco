@@ -19,25 +19,19 @@ class ValidateSignature extends Middleware
     
     public function __construct(MagicLink $magic_link, string $type = 'relative')
     {
-        
         $this->type = $type;
         $this->magic_link = $magic_link;
-        
     }
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        
         if ($this->magic_link->hasAccessToRoute($request)) {
-            
             return $next($request);
-            
         }
         
         $valid = $this->magic_link->hasValidSignature($request, $this->type === 'absolute');
         
         if ($valid) {
-            
             $response = $next($request);
             
             $response = $this->magic_link->withPersistentAccessToRoute($response, $request);
@@ -45,13 +39,11 @@ class ValidateSignature extends Middleware
             $this->magic_link->invalidate($request->fullUrl());
             
             return $response;
-            
         }
         
         throw new InvalidSignatureException(
             "Failed signature check for path: [{$request->fullPath()}]"
         );
-        
     }
     
 }

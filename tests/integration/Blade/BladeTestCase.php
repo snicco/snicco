@@ -12,6 +12,13 @@ use Snicco\Blade\BladeDirectiveServiceProvider;
 class BladeTestCase extends FrameworkTestCase
 {
     
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->rmdir(BLADE_CACHE);
+        $this->withSessionsEnabled();
+    }
+    
     protected function packageProviders() :array
     {
         return [
@@ -19,13 +26,6 @@ class BladeTestCase extends FrameworkTestCase
             BladeDirectiveServiceProvider::class,
             SessionServiceProvider::class,
         ];
-    }
-    
-    protected function setUp() :void
-    {
-        parent::setUp();
-        $this->rmdir(BLADE_CACHE);
-        $this->withSessionsEnabled();
     }
     
 }

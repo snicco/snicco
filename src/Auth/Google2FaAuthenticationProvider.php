@@ -47,7 +47,6 @@ class Google2FaAuthenticationProvider implements TwoFactorAuthenticationProvider
     
     public function renderQrCode() :string
     {
-        
         $user = WP::currentUser();
         
         $url = $this->qrCodeUrl(
@@ -73,7 +72,6 @@ class Google2FaAuthenticationProvider implements TwoFactorAuthenticationProvider
         ))->writeString($url);
         
         return trim(substr($svg, strpos($svg, "\n") + 1));
-        
     }
     
     public function qrCodeUrl(string $company_name, string $user_identifier, string $secret) :string

@@ -23,7 +23,6 @@ class StatefulRedirector extends AbstractRedirector
     
     public function intended(Request $request, string $fallback = '', int $status = 302) :RedirectResponse
     {
-        
         $path = $this->session->getIntendedUrl();
         
         if ($path) {
@@ -35,7 +34,6 @@ class StatefulRedirector extends AbstractRedirector
     
     public function createRedirectResponse(string $path, int $status_code = 302) :RedirectResponse
     {
-        
         $this->validateStatusCode($status_code);
         
         $psr_response = $this->response_factory->createResponse($status_code);
@@ -43,12 +41,10 @@ class StatefulRedirector extends AbstractRedirector
         return (new RedirectResponse($psr_response))
             ->to($path)
             ->withSession($this->session);
-        
     }
     
     public function previous(int $status = 302, string $fallback = '') :RedirectResponse
     {
-        
         $path = $this->session->getPreviousUrl($fallback);
         
         if ($path !== '') {
@@ -56,7 +52,6 @@ class StatefulRedirector extends AbstractRedirector
         }
         
         return $this->createRedirectResponse($this->generator->back('/'));
-        
     }
     
     /**
@@ -64,7 +59,6 @@ class StatefulRedirector extends AbstractRedirector
      */
     public function guest(string $path, $status = 302, array $query = [], bool $secure = true, bool $absolute = true)
     {
-        
         $request = $this->generator->getRequest();
         
         $intended = $request->getMethod() === 'GET' && ! $request->isAjax()
@@ -74,7 +68,6 @@ class StatefulRedirector extends AbstractRedirector
         $this->session->setIntendedUrl($intended);
         
         return $this->to($path, $status, $query, $secure, $absolute);
-        
     }
     
 }

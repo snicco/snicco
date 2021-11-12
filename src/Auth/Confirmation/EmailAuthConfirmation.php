@@ -27,19 +27,15 @@ class EmailAuthConfirmation implements AuthConfirmation
     
     public function confirm(Request $request) :bool
     {
-        
         $valid = $this->magic_link->hasValidSignature($request, true);
         
         if ( ! $valid) {
-            
             return false;
-            
         }
         
         $this->magic_link->invalidate($request->fullUrl());
         
         return true;
-        
     }
     
     public function viewResponse(Request $request) :ViewInterface

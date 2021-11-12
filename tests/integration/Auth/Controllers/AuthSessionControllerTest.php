@@ -18,35 +18,35 @@ use Snicco\Auth\Authenticators\PasswordAuthenticator;
 class AuthSessionControllerTest extends AuthTestCase
 {
     
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bootApp();
+    }
+    
     /** @test */
     public function the_login_screen_can_be_rendered()
     {
-        
         $this->get('/auth/login')->assertOk()
              ->assertSeeHtml('Login')
              ->assertSeeHtml('Password');
-        
     }
     
     /** @test */
     public function the_login_route_can_not_be_accessed_while_logged_in()
     {
-        
         $this->actingAs($this->createAdmin());
         
         $this->get('/auth/login')->assertRedirectToRoute('dashboard');
-        
     }
     
     /** @test */
     public function reauth_works_when_present_in_the_query_parameter()
     {
-        
         $this->withDataInSession(['foo' => 'bar']);
         
         $auth_cookies_cleared = false;
         add_action('clear_auth_cookie', function () use (&$auth_cookies_cleared) {
-            
             $auth_cookies_cleared = true;
         });
         
@@ -54,24 +54,20 @@ class AuthSessionControllerTest extends AuthTestCase
         $response->assertOk()->assertSee('Login');
         $this->assertTrue($auth_cookies_cleared);
         $response->assertSessionMissing('foo');
-        
     }
     
     /** @test */
     public function interim_login_is_saved_to_the_session()
     {
-        
         $response = $this->get('/auth/login?interim-login=1');
         $response->assertOk();
         
         $response->assertSessionHas('is_interim_login', true);
-        
     }
     
     /** @test */
     public function a_user_can_log_in()
     {
-        
         $calvin = $this->createAdmin();
         $this->assertNotAuthenticated($calvin);
         
@@ -82,13 +78,11 @@ class AuthSessionControllerTest extends AuthTestCase
         
         $response->assertRedirectToRoute('dashboard', 302);
         $this->assertAuthenticated($calvin);
-        
     }
     
     /** @test */
     public function the_intended_url_is_set_in_the_session_from_the_referer_query_string()
     {
-        
         $referer = wp_login_url('/foo/bar?baz=foo bar');
         
         $calvin = $this->createAdmin();
@@ -101,13 +95,11 @@ class AuthSessionControllerTest extends AuthTestCase
         ]);
         
         $response->assertLocation('/foo/bar?baz='.rawurlencode('foo bar'));
-        
     }
     
     /** @test */
     public function auth_routes_are_run_AFTER_the_init_hook()
     {
-        
         $this->default_server_variables = [
             'REQUEST_METHOD' => 'POST',
             'SCRIPT_NAME' => 'index.php',
@@ -134,30 +126,24 @@ class AuthSessionControllerTest extends AuthTestCase
         $this->assertAuthenticated($calvin);
         
         $this->assertTrue($hook_run);
-        
     }
     
     /** @test */
     public function login_events_are_dispatched_correctly()
     {
-        
         $calvin = $this->createAdmin();
         $this->assertNotAuthenticated($calvin);
         
         $login_fired = false;
         add_action('wp_login', function ($user, $id) use (&$login_fired, $calvin) {
-            
             $login_fired = true;
             $this->assertSame($user->ID, $calvin->ID);
             $this->assertSame($id, $calvin->ID);
-            
         }, 10, 2);
         
         $auth_cookies_sent = false;
         add_action('set_auth_cookie', function () use (&$auth_cookies_sent) {
-            
             $auth_cookies_sent = true;
-            
         }, 10, 5);
         
         $this->postToLogin([
@@ -167,7 +153,6 @@ class AuthSessionControllerTest extends AuthTestCase
         
         $this->assertTrue($login_fired);
         $this->assertTrue($auth_cookies_sent, 'The WP auth cookies were not sent.');
-        
     }
     
     /** @test */
@@ -186,13 +171,11 @@ class AuthSessionControllerTest extends AuthTestCase
         $response->assertSee('Either your username or password is not correct.');
         
         $this->assertGuest();
-        
     }
     
     /** @test */
     public function json_requests_fail_with_422_for_failed_login_attempts()
     {
-        
         $calvin = $this->createAdmin();
         $this->assertNotAuthenticated($calvin);
         
@@ -206,7 +189,6 @@ class AuthSessionControllerTest extends AuthTestCase
         $response->assertExactJson(['message' => 'Invalid credentials.'])->assertStatus(422);
         
         $this->assertGuest();
-        
     }
     
     /** @test */
@@ -227,13 +209,11 @@ class AuthSessionControllerTest extends AuthTestCase
         $response->assertRedirect('/foo');
         
         $this->assertGuest();
-        
     }
     
     /** @test */
     public function the_session_is_updated_on_login()
     {
-        
         Event::fake([Login::class]);
         $calvin = $this->createAdmin();
         $this->withDataInSession(['foo' => 'bar']);
@@ -262,17 +242,13 @@ class AuthSessionControllerTest extends AuthTestCase
         
         // Login event
         Event::assertDispatched(function (Login $login) use ($calvin) {
-            
             return $login->user->ID === $calvin->ID && $login->remember === false;
-            
         });
-        
     }
     
     /** @test */
     public function a_user_can_be_remembered_if_he_chooses_too()
     {
-        
         $this->withAddedConfig('auth.features.remember_me', true);
         $calvin = $this->createAdmin();
         
@@ -283,13 +259,11 @@ class AuthSessionControllerTest extends AuthTestCase
         ]);
         
         $this->assertTrue($this->session->hasRememberMeToken());
-        
     }
     
     /** @test */
     public function a_user_will_not_be_remembered_if_not_enabled_in_the_config()
     {
-        
         $calvin = $this->createAdmin();
         
         $response = $this->postToLogin([
@@ -299,13 +273,11 @@ class AuthSessionControllerTest extends AuthTestCase
         ]);
         
         $this->assertFalse($this->session->hasRememberMeToken());
-        
     }
     
     /** @test */
     public function if_its_an_interim_login_the_user_is_not_redirected_and_interim_login_is_clear_from_the_session()
     {
-        
         $calvin = $this->createAdmin();
         
         $this->withDataInSession(['is_interim_login' => true]);
@@ -320,13 +292,11 @@ class AuthSessionControllerTest extends AuthTestCase
         )->assertOk();
         
         $response->assertSessionMissing('is_interim_login');
-        
     }
     
     /** @test */
     public function the_user_can_be_logged_in_through_multiple_authenticators()
     {
-        
         $calvin = $this->createAdmin();
         $this->withReplacedConfig('auth.through', [
             CustomAuthenticator::class,
@@ -367,13 +337,6 @@ class AuthSessionControllerTest extends AuthTestCase
         
         $this->logout($calvin);
         $this->assertNotAuthenticated($calvin);
-        
-    }
-    
-    protected function setUp() :void
-    {
-        parent::setUp();
-        $this->bootApp();
     }
     
     private function postToLogin(array $data, array $headers = []) :TestResponse
@@ -392,21 +355,15 @@ class CustomAuthenticator extends Authenticator
     
     public function attempt(Request $request, $next) :Response
     {
-        
         if ($request->has('allow_login_for_id')) {
-            
             $user = $this->getUserById($request->input('allow_login_for_id'));
             
             if ($user instanceof WP_User) {
-                
                 return $this->login($user, false);
-                
             }
-            
         }
         
         return $next($request);
-        
     }
     
 }

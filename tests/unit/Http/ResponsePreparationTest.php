@@ -2,26 +2,40 @@
 
 namespace Tests\unit\Http;
 
+use Mockery;
 use Tests\UnitTest;
 use Snicco\Support\Carbon;
 use Tests\stubs\HeaderStack;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\ResponseFactory;
-use Tests\helpers\AssertsResponse;
+use Snicco\Routing\UrlGenerator;
 use Snicco\Http\ResponsePreparation;
-use Tests\helpers\CreateUrlGenerator;
-use Tests\helpers\CreateRouteCollection;
+use Tests\concerns\CreatePsr17Factories;
 
 class ResponsePreparationTest extends UnitTest
 {
     
-    use AssertsResponse;
-    use CreateUrlGenerator;
-    use CreateRouteCollection;
+    use CreatePsr17Factories;
     
     private ResponseFactory $factory;
     private ResponsePreparation $preparation;
     private Request $request;
+    
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->factory = $this->createResponseFactory();
+        $this->preparation = new ResponsePreparation($this->psrStreamFactory());
+        $this->request =
+            new Request($this->psrServerRequestFactory()->createServerRequest('GET', ' /foo'));
+        HeaderStack::reset();
+    }
+    
+    protected function tearDown() :void
+    {
+        parent::tearDown();
+        Mockery::close();
+    }
     
     /** @test */
     public function testDateIsSetIfNotSetAlready()
@@ -62,13 +76,20 @@ class ResponsePreparationTest extends UnitTest
         $response = $this->preparation->prepare($response, $this->request);
         $this->assertSame('public', $response->getHeaderLine('cache-control'));
         
-        \Tests\header('Cache-Control: no-cache, must-revalidate, max-age=0');
+        HeaderStack::push([
+            'header' => 'Cache-Control: no-cache, must-revalidate, max-age=0',
+            'replace' => false,
+            'status_code' => null,
+        ]);
+        
         $response = $this->factory->make();
         $response = $this->preparation->prepare($response, $this->request);
         $this->assertSame(
             'no-cache, must-revalidate, max-age=0, private',
             $response->getHeaderLine('cache-control')
         );
+        
+        HeaderStack::reset();
     }
     
     /** @test */
@@ -156,7 +177,6 @@ class ResponsePreparationTest extends UnitTest
     /** @test */
     public function no_content_length_if_output_buffering_is_on_and_has_content()
     {
-        
         $response = $this->factory->html(str_repeat('a', 40));
         ob_start();
         echo 'foo';
@@ -170,19 +190,16 @@ class ResponsePreparationTest extends UnitTest
     /** @test */
     public function no_content_length_if_empty_response_stream()
     {
-        
         $response = $this->factory->html('');
         
         $prepared = $this->preparation->prepare($response, $this->request);
         
         $this->assertFalse($prepared->hasHeader('content-length'));
-        
     }
     
     /** @test */
     public function no_content_length_for_wp_admin_page_requests()
     {
-        
         $response = $this->factory->html('foobar');
         
         $request = new Request(
@@ -196,22 +213,11 @@ class ResponsePreparationTest extends UnitTest
         $prepared = $this->preparation->prepare($response, $request);
         
         $this->assertFalse($prepared->hasHeader('content-length'));
-        
     }
     
-    protected function setUp() :void
+    protected function newUrlGenerator(Request $request = null, bool $trailing_slash = false) :UrlGenerator
     {
-        parent::setUp();
-        $this->factory = $this->createResponseFactory();
-        $this->preparation = new ResponsePreparation($this->psrStreamFactory());
-        $this->request =
-            new Request($this->psrServerRequestFactory()->createServerRequest('GET', ' /foo'));
-    }
-    
-    protected function tearDown() :void
-    {
-        HeaderStack::reset();
-        parent::tearDown();
+        return Mockery::mock(UrlGenerator::class);
     }
     
 }

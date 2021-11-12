@@ -33,12 +33,10 @@ class TestResponse
     
     public function __construct(Response $response)
     {
-        
         $this->psr_response = $response;
         $this->headers = new VariableBag($this->psr_response->getHeaders());
         $this->streamed_content = (string) $this->psr_response->getBody();
         $this->status_code = $this->psr_response->getStatusCode();
-        
     }
     
     public function __call($method, $args)
@@ -68,7 +66,6 @@ class TestResponse
     
     public function assertNullResponse() :TestResponse
     {
-        
         PHPUnit::assertInstanceOf(
             NullResponse::class,
             $this->psr_response,
@@ -90,7 +87,6 @@ class TestResponse
     
     public function assertInstance(string $class) :TestResponse
     {
-        
         PHPUnit::assertInstanceOf($class, $this->psr_response);
         
         return $this;
@@ -103,7 +99,6 @@ class TestResponse
      */
     public function assertSuccessful() :TestResponse
     {
-        
         $this->assertNotDelegatedToWordPress();
         
         PHPUnit::assertTrue(
@@ -121,7 +116,6 @@ class TestResponse
      */
     public function assertOk() :TestResponse
     {
-        
         $this->assertNotDelegatedToWordPress();
         
         PHPUnit::assertTrue(
@@ -141,7 +135,6 @@ class TestResponse
      */
     public function assertCreated() :TestResponse
     {
-        
         $actual = $this->getStatusCode();
         
         PHPUnit::assertSame(
@@ -162,7 +155,6 @@ class TestResponse
      */
     public function assertNoContent($status = 204) :TestResponse
     {
-        
         $this->assertStatus($status);
         
         PHPUnit::assertEmpty($this->streamed_content, 'Response content is not empty.');
@@ -179,7 +171,6 @@ class TestResponse
      */
     public function assertStatus($status) :TestResponse
     {
-        
         $this->assertNotNullResponse();
         $this->assertNotDelegatedToWordPress();
         
@@ -196,7 +187,6 @@ class TestResponse
     
     public function assertNotNullResponse()
     {
-        
         PHPUnit::assertNotInstanceOf(NullResponse::class, $this->psr_response);
         
         return $this;
@@ -209,7 +199,6 @@ class TestResponse
      */
     public function assertNotFound() :TestResponse
     {
-        
         PHPUnit::assertTrue(
             $this->isNotFound(),
             'Response status code ['.$this->getStatusCode().'] is not a not found status code.'
@@ -225,7 +214,6 @@ class TestResponse
      */
     public function assertForbidden() :TestResponse
     {
-        
         PHPUnit::assertTrue(
             $this->isForbidden(),
             'Response status code ['.$this->getStatusCode().'] is not a forbidden status code.'
@@ -241,7 +229,6 @@ class TestResponse
      */
     public function assertUnauthorized() :TestResponse
     {
-        
         $actual = $this->getStatusCode();
         
         PHPUnit::assertSame(
@@ -255,7 +242,6 @@ class TestResponse
     
     public function assertRedirectPath(string $path, int $status = null) :TestResponse
     {
-        
         PHPUnit::assertTrue(
             $this->isRedirect(),
             'Response status code ['.$this->getStatusCode().'] is not a redirect status code.'
@@ -270,12 +256,10 @@ class TestResponse
         PHPUnit::assertSame($path, parse_url($location, PHP_URL_PATH));
         
         return $this;
-        
     }
     
     public function assertRedirectToRoute(string $route, int $status_code = null) :TestResponse
     {
-        
         /** @var UrlGenerator $url */
         $url = $this->app->resolve(UrlGenerator::class);
         
@@ -292,19 +276,18 @@ class TestResponse
         }
         
         return $this;
-        
     }
     
     /**
      * Assert whether the response is redirecting to a given URI.
      *
      * @param  string|null  $uri
+     * @param  int|null  $status
      *
      * @return $this
      */
-    public function assertRedirect($uri = null) :TestResponse
+    public function assertRedirect(string $uri = null, int $status = null) :TestResponse
     {
-        
         PHPUnit::assertTrue(
             $this->isRedirect(),
             'Response status code ['.$this->getStatusCode().'] is not a redirect status code.'
@@ -312,6 +295,10 @@ class TestResponse
         
         if ( ! is_null($uri)) {
             $this->assertLocation($uri);
+        }
+        
+        if ( ! is_null($status)) {
+            $this->assertStatus($status);
         }
         
         return $this;
@@ -326,7 +313,6 @@ class TestResponse
      */
     public function assertLocation($uri) :TestResponse
     {
-        
         PHPUnit::assertEquals(
             $uri,
             $this->headers->get('Location')[0]
@@ -337,7 +323,6 @@ class TestResponse
     
     public function cookie(string $cookie_name)
     {
-        
         $this->assertHeader('Set-Cookie');
         
         $header = $this->psr_response->getHeader('Set-Cookie');
@@ -350,7 +335,6 @@ class TestResponse
         }
         
         return new AssertableCookie($headers->first());
-        
     }
     
     /**
@@ -363,7 +347,6 @@ class TestResponse
      */
     public function assertHeader(string $header_name, $value = null) :TestResponse
     {
-        
         PHPUnit::assertTrue(
             $this->psr_response->hasHeader($header_name),
             "Header [{$header_name}] not present on response."
@@ -391,7 +374,6 @@ class TestResponse
      */
     public function assertHeaderMissing($headerName) :TestResponse
     {
-        
         PHPUnit::assertFalse(
             $this->headers->has($headerName),
             "Unexpected header [{$headerName}] is present on response."
@@ -426,7 +408,6 @@ class TestResponse
      */
     public function assertSee($value, $escape = true) :TestResponse
     {
-        
         $value = Arr::wrap($value);
         
         $values = $escape
@@ -434,9 +415,7 @@ class TestResponse
             : $value;
         
         foreach ($values as $value) {
-            
             PHPUnit::assertStringContainsString((string) $value, $this->streamed_content);
-            
         }
         
         return $this;
@@ -452,7 +431,6 @@ class TestResponse
      */
     public function assertSeeInOrder(array $values, $escape = true)
     {
-        
         $values = $escape
             ? array_map(fn($val) => htmlspecialchars($val, ENT_QUOTES), $values)
             : $values;
@@ -472,7 +450,6 @@ class TestResponse
      */
     public function assertSeeText($value, bool $escape = true) :TestResponse
     {
-        
         $value = Arr::wrap($value);
         
         $values = $escape
@@ -480,7 +457,6 @@ class TestResponse
             : $value;
         
         tap(strip_tags($this->streamed_content), function ($content) use ($values) {
-            
             foreach ($values as $value) {
                 PHPUnit::assertStringContainsString((string) $value, $content);
             }
@@ -499,7 +475,6 @@ class TestResponse
      */
     public function assertSeeTextInOrder(array $values, $escape = true) :TestResponse
     {
-        
         $values = $escape
             ? array_map(fn($val) => htmlspecialchars($val, ENT_QUOTES,), $values)
             : $values;
@@ -519,7 +494,6 @@ class TestResponse
      */
     public function assertDontSee($value, $escape = true) :TestResponse
     {
-        
         $value = Arr::wrap($value);
         
         $values = $escape
@@ -544,7 +518,6 @@ class TestResponse
      */
     public function assertDontSeeText($value, $escape = true) :TestResponse
     {
-        
         $value = Arr::wrap($value);
         
         $values = $escape
@@ -552,7 +525,6 @@ class TestResponse
             : $value;
         
         tap(strip_tags($this->streamed_content), function ($content) use ($values) {
-            
             foreach ($values as $value) {
                 PHPUnit::assertStringNotContainsString((string) $value, $content);
             }
@@ -570,7 +542,6 @@ class TestResponse
      */
     public function assertViewIs($value) :TestResponse
     {
-        
         $this->ensureResponseHasView();
         
         PHPUnit::assertEquals($value, $this->view->name());
@@ -588,7 +559,6 @@ class TestResponse
      */
     public function assertViewHas($key, $value = null) :TestResponse
     {
-        
         if (is_array($key)) {
             return $this->assertViewHasAll($key);
         }
@@ -617,7 +587,6 @@ class TestResponse
      */
     public function assertViewHasAll(array $bindings) :TestResponse
     {
-        
         foreach ($bindings as $key => $value) {
             if (is_int($key)) {
                 $this->assertViewHas($value);
@@ -639,7 +608,6 @@ class TestResponse
      */
     public function assertViewMissing(string $key) :TestResponse
     {
-        
         $this->ensureResponseHasView();
         
         PHPUnit::assertFalse(Arr::has($this->view->context(), $key));
@@ -657,7 +625,6 @@ class TestResponse
      */
     public function assertSessionHasInput($key, $value = null) :TestResponse
     {
-        
         if (is_array($key)) {
             foreach ($key as $k => $v) {
                 if (is_int($k)) {
@@ -703,7 +670,6 @@ class TestResponse
      */
     public function assertSessionDoesntHaveErrors($keys = [], $errorBag = 'default', $format = null) :TestResponse
     {
-        
         $keys = (array) $keys;
         
         if (empty($keys)) {
@@ -737,7 +703,6 @@ class TestResponse
      */
     public function assertSessionHasNoErrors() :TestResponse
     {
-        
         $hasErrors = $this->session()->has('errors');
         
         $errors = $hasErrors ? $this->session()->get('errors')->all() : [];
@@ -765,7 +730,6 @@ class TestResponse
      */
     public function assertSessionHasErrorsIn($errorBag, $keys = [], $format = null) :TestResponse
     {
-        
         return $this->assertSessionHasErrors($keys, $format, $errorBag);
     }
     
@@ -780,7 +744,6 @@ class TestResponse
      */
     public function assertSessionHasErrors($keys = [], $errorBag = 'default', $format = null) :TestResponse
     {
-        
         $this->assertSessionHas('errors');
         
         $keys = (array) $keys;
@@ -789,12 +752,9 @@ class TestResponse
         
         foreach ($keys as $key => $value) {
             if (is_int($key)) {
-                
                 PHPUnit::assertTrue($errors->has($value), "Session missing error: $value");
-                
             }
             else {
-                
                 PHPUnit::assertContains(
                     is_bool($value) ? (string) $value : $value,
                     $errors->get($key, $format),
@@ -816,7 +776,6 @@ class TestResponse
      */
     public function assertSessionHas($key, $value = null) :TestResponse
     {
-        
         if (is_array($key)) {
             return $this->assertSessionHasAll($key);
         }
@@ -846,7 +805,6 @@ class TestResponse
      */
     public function assertSessionHasAll(array $bindings) :TestResponse
     {
-        
         foreach ($bindings as $key => $value) {
             if (is_int($key)) {
                 $this->assertSessionHas($value);
@@ -868,7 +826,6 @@ class TestResponse
      */
     public function assertSessionMissing($key) :TestResponse
     {
-        
         if (is_array($key)) {
             foreach ($key as $value) {
                 $this->assertSessionMissing($value);
@@ -886,7 +843,6 @@ class TestResponse
     
     public function assertIsHtml() :TestResponse
     {
-        
         $this->assertContentType('text/html');
         
         return $this;
@@ -894,11 +850,8 @@ class TestResponse
     
     public function assertContentType(string $expected, string $charset = 'UTF-8')
     {
-        
         if (Str::startsWith($expected, 'text')) {
-            
             $expected = trim($expected, ';').'; charset='.$charset;
-            
         }
         
         PHPUnit::assertSame(
@@ -910,19 +863,16 @@ class TestResponse
     
     public function assertExactJson(array $data) :TestResponse
     {
-        
         $this->assertIsJson();
         $actual = json_decode($this->streamed_content, true);
         
         PHPUnit::assertSame($data, $actual, 'Incorrect json response.');
         
         return $this;
-        
     }
     
     public function assertIsJson() :TestResponse
     {
-        
         $this->assertContentType('application/json');
         
         return $this;
@@ -930,37 +880,31 @@ class TestResponse
     
     private function isSuccessful() :bool
     {
-        
         return $this->psr_response->isSuccessful();
     }
     
     private function getStatusCode()
     {
-        
         return $this->status_code;
     }
     
     private function isOk() :bool
     {
-        
         return $this->psr_response->isOk();
     }
     
     private function isNotFound() :bool
     {
-        
         return $this->psr_response->isNotFound();
     }
     
     private function isForbidden() :bool
     {
-        
         return $this->psr_response->isForbidden();
     }
     
     private function isRedirect(string $location = null) :bool
     {
-        
         return $this->psr_response->isRedirect($location);
     }
     
@@ -971,11 +915,8 @@ class TestResponse
      */
     private function ensureResponseHasView() :TestResponse
     {
-        
         if ( ! $this->view instanceof ViewInterface) {
-            
             PHPUnit::fail('The response is not a view.');
-            
         }
         
         return $this;

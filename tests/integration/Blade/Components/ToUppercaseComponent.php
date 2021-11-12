@@ -16,9 +16,7 @@ class ToUppercaseComponent extends BladeComponent
     
     public function toUpper($string)
     {
-        
         return strtoupper($string);
-        
     }
     
 }

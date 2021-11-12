@@ -14,21 +14,16 @@ class ConditionWithDependency implements ConditionInterface
     private bool $make_it_pass;
     private Foo  $foo;
     
-    public function __construct($make_it_pass, Foo $foo)
+    public function __construct(Foo $foo, $make_it_pass)
     {
-        
         $this->make_it_pass = $make_it_pass;
         $this->foo = $foo;
-        
     }
     
     public function isSatisfied(Request $request) :bool
     {
-        
         if ( ! isset($this->foo)) {
-            
             return false;
-            
         }
         
         return $this->make_it_pass === true || $this->make_it_pass === 'foobar';
@@ -36,9 +31,7 @@ class ConditionWithDependency implements ConditionInterface
     
     public function getArguments(Request $request) :array
     {
-        
         return [];
-        
     }
     
 }

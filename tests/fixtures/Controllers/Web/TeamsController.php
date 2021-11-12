@@ -13,23 +13,22 @@ class TeamsController
     
     public function handle(Request $request, string $team, string $player)
     {
-        
         return $team.':'.$player;
-        
     }
     
-    public function withDependencies(Request $request, string $team, string $player, Foo $foo, Bar $bar)
+    public function withDependencies(Request $request, Foo $foo, Bar $bar, string $team, string $player)
     {
-        
-        return $team.':'.$player.':'.$foo->foo.':'.$bar->bar;
-        
+        return $foo->foo.':'.$bar->bar.':'.$team.':'.$player;
     }
     
-    public function withConditions(Request $request, $team, $player, $baz, $biz, Foo $foo, Bar $bar)
+    public function withoutClassDeps(string $team, string $player)
     {
-        
-        return $team.':'.$player.':'.$baz.':'.$biz.':'.$foo->foo.':'.$bar->bar;
-        
+        return $team.':'.$player;
+    }
+    
+    public function withConditions(Request $request, Foo $foo, Bar $bar, $baz, $biz)
+    {
+        return $foo->foo.':'.$bar->bar.':'.$baz.':'.$biz;
     }
     
 }

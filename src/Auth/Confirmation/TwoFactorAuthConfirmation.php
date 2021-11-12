@@ -41,7 +41,6 @@ class TwoFactorAuthConfirmation implements AuthConfirmation
     
     public function confirm(Request $request) :bool
     {
-        
         if ( ! $this->userHasTwoFactorEnabled($request->user())) {
             return $this->fallback->confirm($request);
         }
@@ -51,20 +50,15 @@ class TwoFactorAuthConfirmation implements AuthConfirmation
             $request,
             $request->userId()
         );
-        
     }
     
     public function viewResponse(Request $request) :ViewInterface
     {
-        
         if ( ! $this->userHasTwoFactorEnabled($request->user())) {
-            
             return $this->fallback->viewResponse($request);
-            
         }
         
         return $this->response->toView($request);
-        
     }
     
 }

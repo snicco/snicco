@@ -55,31 +55,23 @@ abstract class ServiceProvider
     /** Only use this function after all providers have been registered. */
     protected function sessionEnabled() :bool
     {
-        
         return $this->config->get('session.enabled', false)
                && in_array(SessionServiceProvider::class, $this->config->get('app.providers', []));
-        
     }
     
     protected function validAppKey() :bool
     {
-        
         $key = $this->appKey();
         
         if (Str::startsWith($key, $prefix = 'base64:')) {
-            
             $key = base64_decode(Str::after($key, $prefix));
-            
         }
         
         if (mb_strlen($key, '8bit') !== 32) {
-            
             return false;
-            
         }
         
         return true;
-        
     }
     
     protected function appKey()
@@ -89,7 +81,6 @@ abstract class ServiceProvider
     
     protected function extendRoutes($routes)
     {
-        
         $new_routes = Arr::wrap($routes);
         
         $routes = Arr::wrap($this->config->get('routing.definitions'));
@@ -98,50 +89,39 @@ abstract class ServiceProvider
         $routes = array_merge($routes, Arr::wrap($new_routes));
         
         $this->config->set('routing.definitions', $routes);
-        
     }
     
     protected function extendViews($views)
     {
-        
         $views = Arr::wrap($views);
         
         $old_views = $this->config->get('view.paths', []);
         $views = array_merge($old_views, $views);
         $this->config->set('view.paths', $views);
-        
     }
     
     protected function withSlashes() :bool
     {
-        
         $slashes = $this->config->get('routing.trailing_slash');
         
         if ($slashes === null) {
-            
             $this->config->set('routing.trailing_slash', $slashes = WP::usesTrailingSlashes());
-            
         }
         
         return $slashes;
-        
     }
     
     protected function responseFactory()
     {
-        
         if ( ! $this->response_factory instanceof ResponseFactory) {
-            
             $factory = $this->container->make(ResponseFactory::class);
             $this->container->instance(ResponseFactory::class, $factory);
             $this->response_factory = $factory;
             
             return $factory;
-            
         }
         
         return $this->response_factory;
-        
     }
     
     protected function siteUrl()
@@ -151,15 +131,11 @@ abstract class ServiceProvider
     
     protected function currentRequest()
     {
-        
         if ( ! $this->current_request instanceof Request) {
-            
             $this->current_request = $this->container->make(Request::class);
-            
         }
         
         return $this->current_request;
-        
     }
     
 }

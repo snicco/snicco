@@ -20,18 +20,14 @@ class AdminInit extends Event
     
     public function __construct(Request $request)
     {
-        
         $this->request = $request;
         
         $this->hook = WP::pluginPageHook();
         
         if ( ! $this->hook) {
-            
             global $pagenow;
             $this->hook = $pagenow;
-            
         }
-        
     }
     
     public function shouldDispatch() :bool

@@ -16,7 +16,6 @@ class UserDeleted extends Event
     
     public function __construct(int $deleted_user_id)
     {
-        
         $this->deleted_user_id = $deleted_user_id;
     }
     

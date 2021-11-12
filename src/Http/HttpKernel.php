@@ -18,14 +18,14 @@ use Snicco\Middleware\Core\RoutingMiddleware;
 use Snicco\Middleware\Core\SetRequestAttributes;
 use Snicco\Middleware\Core\OutputBufferMiddleware;
 use Snicco\Middleware\Core\AppendSpecialPathSuffix;
+use Snicco\Middleware\Core\SubstituteRouteBindings;
 use Snicco\Middleware\Core\EvaluateResponseMiddleware;
 
 class HttpKernel
 {
     
-    private Pipeline $pipeline;
-    
-    private array $core_middleware = [
+    private Pipeline        $pipeline;
+    private array           $core_middleware = [
         SetRequestAttributes::class,
         MethodOverride::class,
         EvaluateResponseMiddleware::class,
@@ -33,9 +33,9 @@ class HttpKernel
         AppendSpecialPathSuffix::class,
         OutputBufferMiddleware::class,
         RoutingMiddleware::class,
+        SubstituteRouteBindings::class,
         RouteRunner::class,
     ];
-    
     private ResponseEmitter $emitter;
     
     public function __construct(Pipeline $pipeline, ResponseEmitter $emitter)
@@ -46,16 +46,13 @@ class HttpKernel
     
     public function run(Request $request) :Response
     {
-        
         $response = $this->handle($request);
         
         return $this->sendResponse($response, $request);
-        
     }
     
     private function handle(Request $request) :Response
     {
-        
         return $this->pipeline->send($request)
                               ->through($this->gatherMiddleware($request))
                               ->run();
@@ -63,13 +60,11 @@ class HttpKernel
     
     private function gatherMiddleware(Request $request) :array
     {
-        
         if ( ! $request->isWpAdmin()) {
             Arr::pullByValue(OutputBufferMiddleware::class, $this->core_middleware);
         }
         
         return $this->core_middleware;
-        
     }
     
     private function sendResponse(Response $response, Request $request) :Response

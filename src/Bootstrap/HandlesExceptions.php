@@ -8,9 +8,9 @@ use Snicco\Http\Psr7\Request;
 use Snicco\Http\ResponseEmitter;
 use Snicco\Contracts\Bootstrapper;
 use Snicco\Application\Application;
-use Snicco\Contracts\ExceptionHandler;
 use Snicco\ExceptionHandling\FatalError;
 use Snicco\ExceptionHandling\PHPErrorLevel;
+use Snicco\Contracts\ExceptionHandlerInterface;
 use Snicco\ExceptionHandling\NativeErrorLogger;
 
 class HandlesExceptions implements Bootstrapper
@@ -40,7 +40,6 @@ class HandlesExceptions implements Bootstrapper
         $this->configureErrorLog($app);
         $this->configureErrorDisplay($app);
         $this->disableWPFatalErrorHandler($app);
-        
     }
     
     public function handleException(Throwable $e)
@@ -49,7 +48,6 @@ class HandlesExceptions implements Bootstrapper
             self::$reserved_memory = null;
             $this->getExceptionHandler()->report($e, $this->getRequest());
         } catch (Throwable $fatal) {
-            
             $class = get_class($e);
             $php_error_log = new NativeErrorLogger();
             $php_error_log->critical(
@@ -57,11 +55,9 @@ class HandlesExceptions implements Bootstrapper
                 ['exception' => $fatal]
             );
             $php_error_log->error($e->getMessage(), ['exception' => $e]);
-            
         }
         
         $this->renderHttpResponse($e);
-        
     }
     
     /**
@@ -69,7 +65,6 @@ class HandlesExceptions implements Bootstrapper
      */
     public function handleError($level, $message, $file = '', $line = 0, $context = [])
     {
-        
         if ( ! error_reporting() || ! $level) {
             return;
         }
@@ -79,20 +74,15 @@ class HandlesExceptions implements Bootstrapper
             : $this->app->config('app.error_levels.production', []);
         
         if (in_array($level, $dont_abort_on_error_levels)) {
-            
             $this->getExceptionHandler()->report(
                 new ErrorException($message, 0, $level, $file, $line),
                 $this->getRequest(),
                 PHPErrorLevel::toPsr3($level)
             );
-            
         }
         else {
-            
             throw new ErrorException($message, 0, $level, $file, $line);
-            
         }
-        
     }
     
     public function handleShutdown()
@@ -115,9 +105,9 @@ class HandlesExceptions implements Bootstrapper
         return new FatalError($error['message'], 0, $error, $traceOffset);
     }
     
-    private function getExceptionHandler() :ExceptionHandler
+    private function getExceptionHandler() :ExceptionHandlerInterface
     {
-        return $this->app->resolve(ExceptionHandler::class);
+        return $this->app->resolve(ExceptionHandlerInterface::class);
     }
     
     private function isFatal(int $type) :bool
@@ -132,7 +122,6 @@ class HandlesExceptions implements Bootstrapper
     
     private function renderHttpResponse(Throwable $e)
     {
-        
         try {
             /** @var ResponseEmitter $emitter */
             $emitter = $this->app->resolve(ResponseEmitter::class);
@@ -141,33 +130,25 @@ class HandlesExceptions implements Bootstrapper
             $response = $this->getExceptionHandler()->toHttpResponse($e, $request);
             $response = $emitter->prepare($response, $request);
             $emitter->emit($response);
-            
         } catch (Throwable $fatal) {
             // Nothing we can do. Remain silent.
         }
-        
     }
     
     private function configureErrorLog(Application $app)
     {
-        
         ini_set('log_errors', 'On');
         
         if ($log_path = $app->config('app.error_log_dir')) {
-            
             if ( ! is_dir($path = $app->basePath($log_path))) {
                 wp_mkdir_p($path);
             }
             
             ini_set('error_log', $path.DIRECTORY_SEPARATOR.'debug.log');
-            
         }
         else {
-            
             ini_set('error_log', WP_CONTENT_DIR.DIRECTORY_SEPARATOR.'debug.log');
-            
         }
-        
     }
     
     private function configureErrorDisplay(Application $app)
@@ -183,7 +164,6 @@ class HandlesExceptions implements Bootstrapper
     
     private function disableWPFatalErrorHandler(Application $app)
     {
-        
         $disabled_in_config = defined('WP_DISABLE_FATAL_ERROR_HANDLER')
                               && WP_DISABLE_FATAL_ERROR_HANDLER === true;
         
@@ -192,14 +172,11 @@ class HandlesExceptions implements Bootstrapper
         }
         
         if ( ! is_file(WP_CONTENT_DIR.'/php-error.php')) {
-            
             file_put_contents(
                 WP_CONTENT_DIR.'/php-error.php',
                 '<?php // generated to stop WP_Fatal_Error_Handler output.'
             );
-            
         }
-        
     }
     
 }

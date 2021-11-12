@@ -18,7 +18,6 @@ class ResetPasswordMail extends Mailable
     
     public function __construct(WP_User $user, string $magic_link, $expires)
     {
-        
         $this->user = $user;
         $this->site_name = WP::siteName();
         $this->magic_link = $magic_link;
@@ -27,17 +26,14 @@ class ResetPasswordMail extends Mailable
     
     public function unique() :bool
     {
-        
         return true;
     }
     
     public function build() :Mailable
     {
-        
         return $this
             ->subject($title = sprintf(__('[%s] Password Reset'), WP::siteName()))
             ->view('framework.mail.password-reset');
-        
     }
     
 }

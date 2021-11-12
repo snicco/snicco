@@ -17,19 +17,14 @@ trait ReliesOnIlluminateContainer
     
     private function parseIlluminateContainer() :IlluminateContainerInterface
     {
-        
         $concrete_container = $this->container->implementation();
         
         if ($concrete_container instanceof IlluminateContainerInterface) {
-            
             return $concrete_container;
-            
         }
         
         if ($this->container->offsetExists(IlluminateContainerInterface::class)) {
-            
             return $this->container->make(IlluminateContainerInterface::class);
-            
         }
         
         $this->container->instance(
@@ -38,18 +33,13 @@ trait ReliesOnIlluminateContainer
         );
         
         return $c;
-        
     }
     
     private function setFacadeContainer(IlluminateContainerInterface $container)
     {
-        
         if ( ! Facade::getFacadeApplication() instanceof IlluminateContainerInterface) {
-            
             Facade::setFacadeApplication($container);
-            
         }
-        
     }
     
     // Unfortunately laravel uses the container like a global service locator in many places.

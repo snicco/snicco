@@ -4,205 +4,155 @@ declare(strict_types=1);
 
 namespace Tests\unit\Routing;
 
-use Closure;
+use WP;
 use Mockery;
-use Tests\UnitTest;
-use Snicco\Support\WP;
-use Snicco\Events\Event;
-use Snicco\Routing\Route;
-use Snicco\Http\Delegate;
-use Snicco\Routing\Router;
-use Snicco\View\ViewFactory;
+use Tests\RoutingTestCase;
 use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
-use Snicco\Http\Psr7\Response;
-use Contracts\ContainerAdapter;
-use Snicco\Http\ResponseFactory;
-use Snicco\Routing\UrlGenerator;
-use Tests\helpers\CreatesWpUrls;
-use Tests\stubs\TestViewFactory;
-use Snicco\Contracts\Middleware;
 use Snicco\Listeners\FilterWpQuery;
 use Snicco\Events\WpQueryFilterable;
-use Tests\fixtures\Conditions\IsPost;
-use Tests\helpers\CreateTestSubjects;
-use Tests\helpers\CreateUrlGenerator;
-use Snicco\Factories\ConditionFactory;
-use Snicco\Factories\RouteActionFactory;
-use Tests\helpers\CreateDefaultWpApiMocks;
-use Snicco\Routing\CachedFastRouteCollection;
-use Snicco\Middleware\Core\OutputBufferMiddleware;
-use Snicco\Routing\FastRoute\CachedFastRouteMatcher;
 
-class RouteCachingTest extends UnitTest
+class RouteCachingTest extends RoutingTestCase
 {
     
-    use CreateDefaultWpApiMocks;
-    use CreateTestSubjects;
-    use CreatesWpUrls;
-    use CreateUrlGenerator;
+    private string $route_cache_file;
     
-    private Router $router;
+    protected function setUp() :void
+    {
+        parent::setUp();
+        
+        $this->route_cache_file =
+            TESTS_DIR.DS.'codecept'.DS.'_data'.DS.'__generated_snicco_wp_routes.php';
+        
+        $this->assertFalse(file_exists($this->route_cache_file));
+        
+        $this->createCachedRouteCollection($this->route_cache_file);
+    }
     
-    private string $route_map_file;
-    
-    private string $route_collection_file;
-    
-    private CachedFastRouteCollection $routes;
-    
-    private ContainerAdapter $container;
+    protected function tearDown() :void
+    {
+        parent::tearDown();
+        
+        if (file_exists($this->route_cache_file)) {
+            unlink($this->route_cache_file);
+        }
+    }
     
     /** @test */
     public function a_route_can_be_run_when_no_cache_files_exist_yet()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('foo', Controller::class.'@handle');
-            
         });
         
-        $this->runAndAssertOutput('foo', $this->webRequest('GET', 'foo'));
-        
+        $this->assertResponse('foo', $this->frontendRequest('GET', 'foo'));
     }
     
     /** @test */
     public function a_cache_file_is_created_after_the_routes_are_loaded_for_the_first_time()
     {
-        
-        $this->assertFalse(file_exists($this->route_collection_file));
-        $this->assertFalse(file_exists($this->route_map_file));
-        
         $this->createRoutes(function () {
-            
             $this->router->get('foo', Controller::class.'@handle');
-            
         });
         
-        $request = $this->webRequest('GET', 'foo');
-        $this->runAndAssertOutput('foo', $request);
+        $request = $this->frontendRequest('GET', 'foo');
+        $this->assertResponse('foo', $request);
         
-        $this->assertTrue(file_exists($this->route_map_file));
-        $this->assertTrue(file_exists($this->route_collection_file));
-        
+        $this->assertTrue(file_exists($this->route_cache_file));
     }
     
     /** @test */
     public function routes_can_be_read_from_the_cache_and_match_without_needing_to_define_them()
     {
-        
         // Creates the cache file
         $this->createRoutes(function () {
-            
             $this->router->get('foo', Controller::class.'@handle');
             $this->router->get('bar', Controller::class.'@handle');
             $this->router->get('baz', Controller::class.'@handle');
             $this->router->get('biz', Controller::class.'@handle');
             $this->router->get('boo', Controller::class.'@handle');
             $this->router->get('teams/{team}', Controller::class.'@handle');
-            
         });
         
         // New route collection from cache;
-        $this->newCachedRouter();
+        $this->createCachedRouteCollection($this->route_cache_file);
+        $this->routes->addToUrlMatcher();
         
-        $request = $this->webRequest('GET', 'foo');
-        $this->runAndAssertOutput('foo', $request);
+        $request = $this->frontendRequest('GET', 'foo');
+        $this->assertResponse('foo', $request);
         
-        $request = $this->webRequest('GET', 'bar');
-        $this->runAndAssertOutput('foo', $request);
+        $request = $this->frontendRequest('GET', 'bar');
+        $this->assertResponse('foo', $request);
         
-        $request = $this->webRequest('GET', 'biz');
-        $this->runAndAssertOutput('foo', $request);
+        $request = $this->frontendRequest('GET', 'biz');
+        $this->assertResponse('foo', $request);
         
-        $request = $this->webRequest('GET', 'baz');
-        $this->runAndAssertOutput('foo', $request);
+        $request = $this->frontendRequest('GET', 'baz');
+        $this->assertResponse('foo', $request);
         
-        $request = $this->webRequest('GET', 'boo');
-        $this->runAndAssertOutput('foo', $request);
+        $request = $this->frontendRequest('GET', 'boo');
+        $this->assertResponse('foo', $request);
         
-        $request = $this->webRequest('GET', '/teams/dortmund');
-        $this->runAndAssertOutput('foo', $request);
-        
+        $request = $this->frontendRequest('GET', '/teams/dortmund');
+        $this->assertResponse('foo', $request);
     }
     
     /** @test */
-    public function caching_works_with_closure_routes()
+    public function caching_works_with_closure_route_actions()
     {
-        
         $class = new Controller();
         
-        $this->assertFalse(file_exists($this->route_map_file));
-        $this->assertFalse(file_exists($this->route_collection_file));
-        
         $this->createRoutes(function () use ($class) {
-            
             $this->router->get('foo', function () use ($class) {
-                
                 return $class->handle();
-                
             });
-            
         });
         
-        $this->assertTrue(file_exists($this->route_map_file));
-        $this->assertTrue(file_exists($this->route_collection_file));
+        $this->assertTrue(file_exists($this->route_cache_file));
         
-        $this->newCachedRouter();
+        $this->createCachedRouteCollection($this->route_cache_file);
+        $this->routes->addToUrlMatcher();
         
-        $request = $this->webRequest('GET', 'foo');
-        $this->runAndAssertOutput('foo', $request);
-        
+        $request = $this->frontendRequest('GET', 'foo');
+        $this->assertResponse('foo', $request);
     }
     
     /** @test */
     public function a_route_with_conditions_can_be_cached()
     {
-        
         $this->createRoutes(function () {
-            
-            $this->router->get('foo', Controller::class.'@handle')->where('maybe', true);
-            $this->router->get('bar', Controller::class.'@handle')->where('maybe', false);
-            
+            $this->router->get('*', Controller::class.'@handle')->where('maybe', true);
+            $this->router->post('*', Controller::class.'@handle')->where('maybe', false);
         });
         
-        $this->newCachedRouter();
+        $this->createCachedRouteCollection($this->route_cache_file);
+        $this->routes->addToUrlMatcher();
         
-        $request = $this->webRequest('GET', 'bar');
-        $this->runAndAssertEmptyOutput($request);
+        $request = $this->frontendRequest('GET', 'foo');
+        $this->assertResponse('foo', $request);
         
-        $request = $this->webRequest('GET', 'foo');
-        $this->runAndAssertOutput('foo', $request);
-        
-        $request = $this->webRequest('GET', 'bar');
-        $this->runAndAssertEmptyOutput($request);
-        
+        $request = $this->frontendRequest('POST', 'foo');
+        $this->assertEmptyResponse($request);
     }
     
     /** @test */
     public function a_route_with_wordpress_query_filter_can_be_cached_and_read_from_cache()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('foo', function () {
-                
                 return 'foo';
-                
             })->wpquery(function () {
-                
                 return [
                     'foo' => 'baz',
                 ];
-                
             });
-            
         });
         
-        $wp = Mockery::mock(\WP::class);
+        $wp = Mockery::mock(WP::class);
         
         // from cache
-        $this->newCachedRouter();
+        $this->createCachedRouteCollection($this->route_cache_file);
+        $this->routes->addToUrlMatcher();
         
         $wp->query_vars = ['foo' => 'bar'];
         
@@ -210,313 +160,120 @@ class RouteCachingTest extends UnitTest
         $listener = new FilterWpQuery($this->routes);
         $this->assertFalse($listener->handleEvent($event));
         $this->assertSame(['foo' => 'baz'], $wp->query_vars);
-        $this->runAndAssertOutput('foo', $request);
-        
+        $this->assertResponse('foo', $request);
     }
     
     /** @test */
     public function reverse_routing_when_no_cache_file_is_created_yet()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('foo', Controller::class.'@handle')->name('foo');
-            
         });
         
         $url_generator = $this->newUrlGenerator();
         
         $this->assertSame('/foo', $url_generator->toRoute('foo', [], false, false));
-        
     }
     
     /** @test */
     public function reverse_routing_works_from_the_cache()
     {
-        
         // Create cache
         $this->createRoutes(function () {
-            
             $this->router->get('foo', Controller::class.'@handle')->name('foo');
             $this->router->get('bar', Controller::class.'@handle')->name('bar');
-            
         });
         
-        $this->newCachedRouter();
+        $this->createCachedRouteCollection($this->route_cache_file);
+        $this->routes->addToUrlMatcher();
         
         $url_generator = $this->newUrlGenerator();
         
         $this->assertSame('/foo', $url_generator->toRoute('foo', [], false, false));
         $this->assertSame('/bar', $url_generator->toRoute('bar', [], false, false));
-        
     }
     
     /** @test */
     public function route_attributes_that_get_changed_after_the_route_got_instantiated_by_the_router_still_get_cached()
     {
-        
         // Create cache
         $this->createRoutes(function () {
-            
             $this->router->get('foo', Controller::class.'@handle')->name('foo');
             $this->router->get('bar', Controller::class.'@handle')->name('bar');
-            
         });
         
         // Cache is loaded into this router instance
-        $this->newCachedRouter();
+        $this->createCachedRouteCollection($this->route_cache_file);
+        $this->routes->addToUrlMatcher();
         
         $url_generator = $this->newUrlGenerator();
         
         $this->assertSame('/foo', $url_generator->toRoute('foo', [], false, false));
         $this->assertSame('/bar', $url_generator->toRoute('bar', [], false, false));
         
-        $this->runAndAssertOutput('foo', $this->webRequest('GET', 'foo'));
-        $this->runAndAssertOutput('foo', $this->webRequest('GET', 'bar'));
-        
+        $this->assertResponse('foo', $this->frontendRequest('GET', 'foo'));
+        $this->assertResponse('foo', $this->frontendRequest('GET', 'bar'));
     }
     
     /** @test */
     public function cached_routes_work_with_admin_routes()
     {
-        
-        $this->withoutOutputBufferMiddleware();
-        
-        WP::shouldReceive('isAdmin')->andReturnTrue();
-        WP::shouldReceive('isAdminAjax')->andReturnFalse();
-        
         // No cache created
         $this->createRoutes(function () {
-            
             $this->router->prefix('wp-admin')->group(function () {
-                
                 $this->router->get('admin/foo', function (Request $request) {
-                    
                     return $request->input('page');
-                    
                 });
-                
             });
-            
         });
         
-        $this->newCachedRouter();
-        $request = $this->adminRequestTo('foo');
-        $this->runAndAssertOutput('foo', $request);
+        $this->createCachedRouteCollection($this->route_cache_file);
+        $this->routes->addToUrlMatcher();
         
+        $request = $this->adminRequest('GET', 'foo');
+        $this->assertResponse('foo', $request);
     }
     
     /** @test */
     public function cached_routes_work_with_ajax_routes()
     {
-        
-        WP::shouldReceive('isAdmin')->andReturnTrue();
-        WP::shouldReceive('isAdminAjax')->andReturnTrue();
-        
         $this->createRoutes(function () {
-            
             $this->router->prefix('wp-admin/admin-ajax.php')->group(function () {
-                
                 $this->router->post('foo_action')->handle(function () {
-                    
                     return 'FOO_ACTION';
-                    
                 });
-                
             });
-            
         });
         
-        $this->newCachedRouter();
+        $this->createCachedRouteCollection($this->route_cache_file);
+        $this->routes->addToUrlMatcher();
         
-        $ajax_request = $this->ajaxRequest('foo_action');
-        $this->runAndAssertOutput('FOO_ACTION', $ajax_request);
-        
-    }
-    
-    /** @test */
-    public function routes_with_conditions_can_be_cached()
-    {
-        
-        $this->createRoutes(function () {
-            
-            $this->router->get()->where(IsPost::class, true)
-                         ->handle(function () {
-                
-                             return 'FOO';
-                
-                         });
-            
-        });
-        
-        $this->newCachedRouter();
-        
-        $request = $this->webRequest('GET', 'post1');
-        $this->runAndAssertOutput('FOO', $request);
-        
+        $ajax_request = $this->adminAjaxRequest('POST', 'foo_action');
+        $this->assertResponse('FOO_ACTION', $ajax_request);
     }
     
     /** @test */
     public function routes_with_closure_conditions_can_be_cached()
     {
-        
         $_SERVER['pass_condition'] = true;
         
         $this->createRoutes(function () {
-            
             $this->router->get()
                          ->where(function () {
-                
                              return $_SERVER['pass_condition'];
                          })
                          ->handle(function () {
-                
                              return 'FOO';
-                
                          });
-            
         });
         
-        $this->newCachedRouter();
+        $this->createCachedRouteCollection($this->route_cache_file);
+        $this->routes->addToUrlMatcher();
         
-        $request = $this->webRequest('GET', 'post1');
-        $this->runAndAssertOutput('FOO', $request);
+        $request = $this->frontendRequest('GET', 'post1');
+        $this->assertResponse('FOO', $request);
         
         unset($_SERVER['pass_condition']);
-        
-    }
-    
-    /** @test */
-    public function a_named_route_with_a_closure_is_deserialized_when_found()
-    {
-        
-        $this->createRoutes(function () {
-            
-            // Create cache
-            $this->router->get('foo', function () {
-                //
-            })->name('foo');
-            
-        });
-        
-        $this->newCachedRouter();
-        
-        $route = $this->routes->findByName('foo');
-        
-        $this->assertInstanceOf(Route::class, $route);
-        
-        $this->assertInstanceOf(Closure::class, $route->getAction());
-        
-    }
-    
-    /** @test */
-    public function a_route_with_closure_condition_can_be_serialized()
-    {
-        
-        $_SERVER['pass_condition'] = true;
-        
-        // Creates the cache file
-        $this->createRoutes(function () {
-            
-            $this->router->get('foo', Controller::class.'@handle')
-                         ->where(function () {
-                
-                             return $_SERVER['pass_condition'];
-                
-                         });
-            
-        });
-        
-        $this->newCachedRouter();
-        
-        $request = $this->webRequest('GET', 'foo');
-        $this->runAndAssertOutput('foo', $request);
-        
-        unset($_SERVER['pass_condition']);
-        
-    }
-    
-    protected function newCachedRouteCollection() :CachedFastRouteCollection
-    {
-        
-        $condition_factory = new ConditionFactory($this->conditions(), $this->container);
-        $handler_factory = new RouteActionFactory([], $this->container);
-        
-        return new CachedFastRouteCollection(
-            new CachedFastRouteMatcher($this->createRouteMatcher(), $this->route_map_file),
-            $condition_factory,
-            $handler_factory,
-            $this->route_collection_file
-        );
-        
-    }
-    
-    protected function beforeTestRun()
-    {
-        
-        $this->route_map_file = TESTS_DIR.DS.'codecept'.DS.'_data'.DS.'route.cache.php';
-        $this->route_collection_file = TESTS_DIR.DS.'codecept'.DS.'_data'.DS.'route.collection.php';
-        
-        $this->container = $this->createContainer();
-        $this->routes = $this->newCachedRouteCollection();
-        
-        $this->container->instance(UrlGenerator::class, $this->newUrlGenerator());
-        $this->container->instance(ViewFactory::class, new TestViewFactory());
-        $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
-        
-        Event::make($this->container);
-        Event::fake();
-        WP::setFacadeContainer($this->container);
-        
-        $this->assertFalse(file_exists($this->route_map_file));
-        $this->assertFalse(file_exists($this->route_collection_file));
-        
-    }
-    
-    protected function beforeTearDown()
-    {
-        
-        if (file_exists($this->route_map_file)) {
-            
-            unlink($this->route_map_file);
-            
-        }
-        
-        if (file_exists($this->route_collection_file)) {
-            
-            unlink($this->route_collection_file);
-            
-        }
-        
-        Event::setInstance(null);
-        Mockery::close();
-        WP::reset();
-        
-    }
-    
-    private function newCachedRouter()
-    {
-        
-        $this->routes = $this->newCachedRouteCollection();
-        
-        $this->router = $this->newRouter();
-        
-    }
-    
-    private function withoutOutputBufferMiddleware() :void
-    {
-        $this->container->instance(
-            OutputBufferMiddleware::class,
-            new class extends Middleware
-            {
-                
-                public function handle(Request $request, Delegate $next) :Response
-                {
-                    return $next($request);
-                }
-                
-            }
-        );
     }
     
 }
@@ -526,9 +283,7 @@ class Controller
     
     public function handle()
     {
-        
         return 'foo';
-        
     }
     
 }

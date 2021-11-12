@@ -40,9 +40,7 @@ trait InteractsWithContainer
     private function replaceBindings()
     {
         $this->app->container()->singleton(ResponseEmitter::class, function () {
-            
             return $this->app->resolve(TestResponseEmitter::class);
-            
         });
     }
     
