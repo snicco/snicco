@@ -15,7 +15,7 @@ use Snicco\Contracts\Middleware;
 use Illuminate\Container\Container;
 use Whoops\Handler\HandlerInterface;
 use Snicco\Contracts\ServiceProvider;
-use Snicco\Contracts\ExceptionHandlerInterface;
+use Snicco\Contracts\ExceptionHandler;
 
 use function Snicco\Support\Functions\tap;
 
@@ -50,7 +50,7 @@ class ExceptionServiceProvider extends ServiceProvider
     
     private function bindErrorHandler() :void
     {
-        $this->container->singleton(ExceptionHandlerInterface::class, function () {
+        $this->container->singleton(ExceptionHandler::class, function () {
             if ( ! $this->config->get('app.exception_handling', false)) {
                 return new NullExceptionHandler();
             }
@@ -58,7 +58,7 @@ class ExceptionServiceProvider extends ServiceProvider
             $with_whoops = ! $this->app->isProduction()
                            && isset($this->container[RunInterface::class]);
             
-            return new ExceptionHandler(
+            return new ProductionExceptionHandler(
                 $this->container,
                 $this->container->make(LoggerInterface::class),
                 $this->container->make(ResponseFactory::class),

@@ -6,13 +6,13 @@ namespace Snicco\Session;
 
 use Snicco\Support\Str;
 use Illuminate\Encryption\Encrypter;
-use Snicco\Contracts\EncryptorInterface;
+use Snicco\Contracts\Encryptor;
 use Snicco\ExceptionHandling\Exceptions\EncryptException;
 use Snicco\ExceptionHandling\Exceptions\DecryptException;
 use Illuminate\Contracts\Encryption\EncryptException as IlluminateEncryptException;
 use Illuminate\Contracts\Encryption\DecryptException as IlluminateDecryptException;
 
-class IlluminateEncryptor implements EncryptorInterface
+class IlluminateEncryptor implements Encryptor
 {
     
     private Encrypter $encryptor;

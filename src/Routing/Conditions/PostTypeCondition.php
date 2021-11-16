@@ -6,9 +6,9 @@ namespace Snicco\Routing\Conditions;
 
 use Snicco\Support\Arr;
 use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\ConditionInterface;
+use Snicco\Contracts\Condition;
 
-class PostTypeCondition implements ConditionInterface
+class PostTypeCondition implements Condition
 {
     
     private array $post_types;

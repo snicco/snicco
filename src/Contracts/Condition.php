@@ -6,7 +6,7 @@ namespace Snicco\Contracts;
 
 use Snicco\Http\Psr7\Request;
 
-interface ConditionInterface
+interface Condition
 {
     
     /**

@@ -6,11 +6,11 @@ namespace Snicco\Session;
 
 use Snicco\Http\Psr7\Request;
 use Snicco\Routing\UrlGenerator;
-use Snicco\Contracts\AbstractRedirector;
+use Snicco\Contracts\Redirector;
 use Snicco\Http\Responses\RedirectResponse;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
-class StatefulRedirector extends AbstractRedirector
+class StatefulRedirector extends Redirector
 {
     
     private Session $session;

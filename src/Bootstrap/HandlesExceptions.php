@@ -10,7 +10,7 @@ use Snicco\Contracts\Bootstrapper;
 use Snicco\Application\Application;
 use Snicco\ExceptionHandling\FatalError;
 use Snicco\ExceptionHandling\PHPErrorLevel;
-use Snicco\Contracts\ExceptionHandlerInterface;
+use Snicco\Contracts\ExceptionHandler;
 use Snicco\ExceptionHandling\NativeErrorLogger;
 
 class HandlesExceptions implements Bootstrapper
@@ -105,9 +105,9 @@ class HandlesExceptions implements Bootstrapper
         return new FatalError($error['message'], 0, $error, $traceOffset);
     }
     
-    private function getExceptionHandler() :ExceptionHandlerInterface
+    private function getExceptionHandler() :ExceptionHandler
     {
-        return $this->app->resolve(ExceptionHandlerInterface::class);
+        return $this->app->resolve(ExceptionHandler::class);
     }
     
     private function isFatal(int $type) :bool

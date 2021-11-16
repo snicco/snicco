@@ -7,7 +7,7 @@ namespace Snicco\Routing\FastRoute;
 use Snicco\Support\Arr;
 use Snicco\Support\Str;
 use Snicco\Routing\Route;
-use Snicco\Contracts\UrlableInterface;
+use Snicco\Contracts\ConvertsToUrl;
 use Snicco\Contracts\RouteUrlGenerator;
 use Snicco\Contracts\RouteCollectionInterface;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
@@ -40,7 +40,7 @@ class FastRouteUrlGenerator implements RouteUrlGenerator
         
         $route = $this->findRoute($name);
         
-        if ($route instanceof UrlableInterface) {
+        if ($route instanceof ConvertsToUrl) {
             return $route->toUrl($arguments);
         }
         

@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\fixtures\Conditions;
 
 use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\ConditionInterface;
+use Snicco\Contracts\Condition;
 use Tests\fixtures\TestDependencies\Foo;
 
-class ConditionWithDependency implements ConditionInterface
+class ConditionWithDependency implements Condition
 {
     
     private bool $make_it_pass;

@@ -11,8 +11,7 @@ use Snicco\View\ViewFactory;
 use Snicco\View\PhpViewEngine;
 use Snicco\View\GlobalContext;
 use Snicco\View\ViewComposerCollection;
-use Snicco\Contracts\ViewEngineInterface;
-use Snicco\Contracts\ViewFactoryInterface;
+use Snicco\Contracts\ViewEngine;
 
 class ViewServiceProviderTest extends FrameworkTestCase
 {
@@ -41,13 +40,13 @@ class ViewServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function the_view_service_is_resolved_correctly()
     {
-        $this->assertInstanceOf(ViewFactory::class, TestApp::resolve(ViewFactoryInterface::class));
+        $this->assertInstanceOf(ViewFactory::class, TestApp::resolve(ViewFactory::class));
     }
     
     /** @test */
     public function the_view_engine_is_resolved_correctly()
     {
-        $this->assertInstanceOf(PhpViewEngine::class, TestApp::resolve(ViewEngineInterface::class));
+        $this->assertInstanceOf(PhpViewEngine::class, TestApp::resolve(ViewEngine::class));
     }
     
     /** @test */

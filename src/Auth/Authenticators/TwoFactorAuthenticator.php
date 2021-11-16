@@ -8,7 +8,7 @@ use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Contracts\Authenticator;
-use Snicco\Contracts\EncryptorInterface;
+use Snicco\Contracts\Encryptor;
 use Snicco\Auth\Events\FailedTwoFactorAuthentication;
 use Snicco\Auth\Traits\PerformsTwoFactorAuthentication;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
@@ -20,10 +20,10 @@ class TwoFactorAuthenticator extends Authenticator
     use PerformsTwoFactorAuthentication;
     
     private TwoFactorAuthenticationProvider $provider;
-    private EncryptorInterface              $encryptor;
+    private Encryptor                       $encryptor;
     private array                           $recovery_codes = [];
     
-    public function __construct(TwoFactorAuthenticationProvider $provider, EncryptorInterface $encryptor)
+    public function __construct(TwoFactorAuthenticationProvider $provider, Encryptor $encryptor)
     {
         $this->provider = $provider;
         $this->encryptor = $encryptor;

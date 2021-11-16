@@ -17,7 +17,7 @@ use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Contracts\ViewInterface;
-use Snicco\Contracts\AbstractRedirector;
+use Snicco\Contracts\Redirector;
 use Snicco\Http\Responses\RedirectResponse;
 
 /**
@@ -137,8 +137,8 @@ final class ApplicationMixin
      * @param  string|null  $path
      * @param  int  $status
      *
-     * @return RedirectResponse|AbstractRedirector
-     * @see AbstractRedirector
+     * @return RedirectResponse|Redirector
+     * @see Redirector
      */
     public static function redirect(?string $path = null, int $status = 302)
     {

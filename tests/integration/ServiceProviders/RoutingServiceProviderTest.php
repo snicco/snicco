@@ -8,12 +8,12 @@ use Tests\stubs\TestApp;
 use Snicco\Routing\Router;
 use Tests\FrameworkTestCase;
 use Snicco\Routing\UrlGenerator;
-use Snicco\Routing\RouteRegistrar;
+use Snicco\Routing\RouteFileRegistrar;
 use Snicco\Contracts\RouteUrlMatcher;
 use Snicco\Contracts\RouteUrlGenerator;
-use Snicco\Routing\CachedRouteRegistrar;
+use Snicco\Routing\CachedRouteFileRegistrar;
 use Snicco\Factories\RouteConditionFactory;
-use Snicco\Contracts\RouteRegistrarInterface;
+use Snicco\Contracts\RouteRegistrar;
 use Snicco\Routing\FastRoute\FastRouteUrlMatcher;
 use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
 
@@ -137,9 +137,9 @@ class RoutingServiceProviderTest extends FrameworkTestCase
         $this->withAddedConfig('routing.cache_dir', $this->route_cache_dir);
         $this->bootApp();
         
-        $registrar = TestApp::resolve(RouteRegistrarInterface::class);
+        $registrar = TestApp::resolve(RouteRegistrar::class);
         
-        $this->assertInstanceOf(CachedRouteRegistrar::class, $registrar);
+        $this->assertInstanceOf(CachedRouteFileRegistrar::class, $registrar);
     }
     
     /** @test */
@@ -172,7 +172,7 @@ class RoutingServiceProviderTest extends FrameworkTestCase
     {
         $this->bootApp();
         
-        $registrar = TestApp::resolve(RouteRegistrarInterface::class);
+        $registrar = TestApp::resolve(RouteRegistrar::class);
         
         $this->assertInstanceOf(RouteRegistrar::class, $registrar);
     }

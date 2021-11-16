@@ -12,8 +12,8 @@ use Tests\FrameworkTestCase;
 use Snicco\Routing\Pipeline;
 use Whoops\Handler\HandlerInterface;
 use Whoops\Handler\PrettyPageHandler;
-use Snicco\ExceptionHandling\ExceptionHandler;
-use Snicco\Contracts\ExceptionHandlerInterface;
+use Snicco\ExceptionHandling\ProductionExceptionHandler;
+use Snicco\Contracts\ExceptionHandler;
 use Snicco\ExceptionHandling\NullExceptionHandler;
 
 class ExceptionServiceProviderTest extends FrameworkTestCase
@@ -24,8 +24,8 @@ class ExceptionServiceProviderTest extends FrameworkTestCase
     {
         $this->bootApp();
         $this->assertInstanceOf(
-            ExceptionHandler::class,
-            TestApp::resolve(ExceptionHandlerInterface::class)
+            ProductionExceptionHandler::class,
+            TestApp::resolve(ExceptionHandler::class)
         );
     }
     
@@ -36,7 +36,7 @@ class ExceptionServiceProviderTest extends FrameworkTestCase
         
         $this->assertInstanceOf(
             NullExceptionHandler::class,
-            TestApp::resolve(ExceptionHandlerInterface::class)
+            TestApp::resolve(ExceptionHandler::class)
         );
     }
     
@@ -46,8 +46,8 @@ class ExceptionServiceProviderTest extends FrameworkTestCase
         $this->bootApp();
         $this->withAddedConfig('app.debug', false);
         
-        /** @var ExceptionHandler $exception_handler */
-        $exception_handler = $this->app->resolve(ExceptionHandlerInterface::class);
+        /** @var ProductionExceptionHandler $exception_handler */
+        $exception_handler = $this->app->resolve(ExceptionHandler::class);
         $class = new ReflectionClass($exception_handler);
         $prop = $class->getProperty('whoops');
         $prop->setAccessible(true);
@@ -68,8 +68,8 @@ class ExceptionServiceProviderTest extends FrameworkTestCase
             $this->app->resolve(HandlerInterface::class)
         );
         
-        /** @var ExceptionHandler $exception_handler */
-        $exception_handler = $this->app->resolve(ExceptionHandlerInterface::class);
+        /** @var ProductionExceptionHandler $exception_handler */
+        $exception_handler = $this->app->resolve(ExceptionHandler::class);
         $class = new ReflectionClass($exception_handler);
         $prop = $class->getProperty('whoops');
         $prop->setAccessible(true);

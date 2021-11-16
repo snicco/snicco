@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Http;
 
-use Snicco\Contracts\AbstractRedirector;
+use Snicco\Contracts\Redirector;
 use Snicco\Http\Responses\RedirectResponse;
 
-class Redirector extends AbstractRedirector
+class StatelessRedirector extends Redirector
 {
     
     public function createRedirectResponse(string $path, int $status_code = 302) :RedirectResponse

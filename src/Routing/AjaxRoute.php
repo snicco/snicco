@@ -7,9 +7,9 @@ namespace Snicco\Routing;
 use Snicco\Support\WP;
 use Snicco\Support\Str;
 use Snicco\Support\Arr;
-use Snicco\Contracts\UrlableInterface;
+use Snicco\Contracts\ConvertsToUrl;
 
-class AjaxRoute extends Route implements UrlableInterface
+class AjaxRoute extends Route implements ConvertsToUrl
 {
     
     public function toUrl(array $arguments = []) :string

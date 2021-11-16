@@ -18,7 +18,7 @@ use Snicco\Http\ResponseFactory;
 use Tests\concerns\CreateContainer;
 use Tests\fixtures\TestDependencies\Foo;
 use Tests\concerns\CreateDefaultWpApiMocks;
-use Snicco\ExceptionHandling\ExceptionHandler;
+use Snicco\ExceptionHandling\ProductionExceptionHandler;
 
 class ProductionExceptionHandlerLoggingTest extends UnitTest
 {
@@ -256,9 +256,9 @@ class ProductionExceptionHandlerLoggingTest extends UnitTest
         $this->test_logger->assertHasLogEntry('Foobar', ['foo' => 'bar', 'exception' => $e]);
     }
     
-    private function newErrorHandler() :ExceptionHandler
+    private function newErrorHandler() :ProductionExceptionHandler
     {
-        return new ExceptionHandler(
+        return new ProductionExceptionHandler(
             $this->container,
             $this->test_logger = new TestLogger(),
             Mockery::mock(ResponseFactory::class),
@@ -295,7 +295,7 @@ class StopPropagationException extends Exception
     {
         $GLOBALS['test']['log'][] = $this->getMessage();
         
-        return ExceptionHandler::STOP_REPORTING;
+        return ProductionExceptionHandler::STOP_REPORTING;
     }
     
 }
@@ -310,7 +310,7 @@ class LogExceptionWithFooDependency extends Exception
     
 }
 
-class CustomExceptionHandler extends ExceptionHandler
+class CustomExceptionHandler extends ProductionExceptionHandler
 {
     
     protected array $dont_report = [

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\fixtures\Conditions;
 
 use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\ConditionInterface;
+use Snicco\Contracts\Condition;
 
-class FalseCondition implements ConditionInterface
+class FalseCondition implements Condition
 {
     
     public function isSatisfied(Request $request) :bool

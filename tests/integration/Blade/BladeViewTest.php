@@ -6,7 +6,7 @@ namespace Tests\integration\Blade;
 
 use Tests\stubs\TestApp;
 use Snicco\Blade\BladeEngine;
-use Snicco\Contracts\ViewEngineInterface;
+use Snicco\Contracts\ViewEngine;
 use Snicco\ExceptionHandling\Exceptions\ViewException;
 
 class BladeViewTest extends BladeTestCase
@@ -17,7 +17,7 @@ class BladeViewTest extends BladeTestCase
     protected function setUp() :void
     {
         $this->afterApplicationBooted(function () {
-            $this->engine = TestApp::resolve(ViewEngineInterface::class);
+            $this->engine = TestApp::resolve(ViewEngine::class);
         });
         
         parent::setUp();

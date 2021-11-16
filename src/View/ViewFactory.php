@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace Snicco\View;
 
 use Snicco\Support\Arr;
+use Snicco\Contracts\ViewEngine;
 use Snicco\Contracts\ViewInterface;
-use Snicco\Contracts\ViewEngineInterface;
 use Snicco\Contracts\ViewFactoryInterface;
 
 class ViewFactory implements ViewFactoryInterface
 {
     
-    private ViewEngineInterface    $engine;
+    private ViewEngine             $engine;
     private ViewComposerCollection $composer_collection;
     private GlobalContext          $global_context;
     private ?ViewInterface         $rendered_view;
     
-    public function __construct(ViewEngineInterface $engine, ViewComposerCollection $composer_collection, GlobalContext $global_context)
+    public function __construct(ViewEngine $engine, ViewComposerCollection $composer_collection, GlobalContext $global_context)
     {
         $this->engine = $engine;
         $this->composer_collection = $composer_collection;

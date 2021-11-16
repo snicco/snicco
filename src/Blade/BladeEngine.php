@@ -9,10 +9,10 @@ use Snicco\Support\Arr;
 use Illuminate\View\Factory;
 use Illuminate\View\ViewName;
 use Snicco\Contracts\ViewInterface;
-use Snicco\Contracts\ViewEngineInterface;
+use Snicco\Contracts\ViewEngine;
 use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
 
-class BladeEngine implements ViewEngineInterface
+class BladeEngine implements ViewEngine
 {
     
     private Factory $view_factory;

@@ -16,7 +16,7 @@ use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
 trait CreateRouteCollection
 {
     
-    protected function createRouteCollection(string $cache_file = null) :RouteCollection
+    protected function createRouteCollection(string $cache_file = null) :RouteCollectionInterface
     {
         return new RouteCollection(new FastRouteUrlMatcher(), $cache_file);
     }

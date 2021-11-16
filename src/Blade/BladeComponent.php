@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Snicco\Blade;
 
-use Snicco\Contracts\ViewEngineInterface;
+use Snicco\Contracts\ViewEngine;
 use Illuminate\View\Component as IlluminateComponent;
 
 abstract class BladeComponent extends IlluminateComponent
 {
     
-    protected ViewEngineInterface $engine;
+    protected ViewEngine $engine;
     
     public function setEngine(BladeEngine $engine)
     {

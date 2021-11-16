@@ -7,7 +7,7 @@ namespace Snicco\Auth\Controllers;
 use Snicco\Http\Controller;
 use Snicco\Http\Psr7\Request;
 use Snicco\Auth\Traits\ResolvesUser;
-use Snicco\Contracts\EncryptorInterface;
+use Snicco\Contracts\Encryptor;
 use Snicco\Auth\Traits\InteractsWithTwoFactorCodes;
 use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
@@ -20,9 +20,9 @@ class TwoFactorAuthPreferenceController extends Controller
     use InteractsWithTwoFactorCodes;
     
     private TwoFactorAuthenticationProvider $provider;
-    private EncryptorInterface              $encryptor;
+    private Encryptor                       $encryptor;
     
-    public function __construct(TwoFactorAuthenticationProvider $provider, EncryptorInterface $encryptor)
+    public function __construct(TwoFactorAuthenticationProvider $provider, Encryptor $encryptor)
     {
         $this->provider = $provider;
         $this->encryptor = $encryptor;

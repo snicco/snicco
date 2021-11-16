@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\integration\Auth\Stubs;
 
-use Snicco\Contracts\EncryptorInterface;
+use Snicco\Contracts\Encryptor;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
 
 class TestTwoFactorProvider implements TwoFactorAuthenticationProvider
 {
     
-    private EncryptorInterface $encryptor;
+    private Encryptor $encryptor;
     
-    public function __construct(EncryptorInterface $encryptor)
+    public function __construct(Encryptor $encryptor)
     {
         $this->encryptor = $encryptor;
     }

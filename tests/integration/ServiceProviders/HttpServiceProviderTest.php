@@ -7,12 +7,12 @@ namespace Tests\integration\ServiceProviders;
 use ReflectionClass;
 use Tests\stubs\TestApp;
 use Snicco\Http\HttpKernel;
-use Snicco\Http\Redirector;
+use Snicco\Http\StatelessRedirector;
 use Tests\FrameworkTestCase;
 use RKA\Middleware\IpAddress;
 use Snicco\Http\ResponseFactory;
 use Snicco\Http\ResponsePostProcessor;
-use Snicco\Contracts\AbstractRedirector;
+use Snicco\Contracts\Redirector;
 use Psr\Http\Server\MiddlewareInterface;
 
 class HttpServiceProviderTest extends FrameworkTestCase
@@ -36,7 +36,7 @@ class HttpServiceProviderTest extends FrameworkTestCase
     public function the_redirector_can_be_resolved()
     {
         $this->bootApp();
-        $this->assertInstanceOf(Redirector::class, TestApp::resolve(AbstractRedirector::class));
+        $this->assertInstanceOf(StatelessRedirector::class, TestApp::resolve(Redirector::class));
     }
     
     /** @test */

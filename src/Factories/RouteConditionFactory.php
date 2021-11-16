@@ -6,7 +6,7 @@ namespace Snicco\Factories;
 
 use Contracts\ContainerAdapter;
 use Snicco\Routing\ConditionBlueprint;
-use Snicco\Contracts\ConditionInterface;
+use Snicco\Contracts\Condition;
 use Snicco\Support\ReflectionDependencies;
 use Snicco\Routing\Conditions\NegateCondition;
 use Snicco\Routing\Conditions\CustomCondition;
@@ -86,7 +86,7 @@ class RouteConditionFactory
     {
         $instance = $blueprint->instance();
         
-        if ($instance instanceof ConditionInterface) {
+        if ($instance instanceof Condition) {
             return new NegateCondition($instance);
         }
         

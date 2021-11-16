@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Snicco\Routing\Conditions;
 
 use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\ConditionInterface;
+use Snicco\Contracts\Condition;
 
-class NegateCondition implements ConditionInterface
+class NegateCondition implements Condition
 {
     
-    private ConditionInterface $condition;
+    private Condition $condition;
     
-    public function __construct(ConditionInterface $condition)
+    public function __construct(Condition $condition)
     {
         $this->condition = $condition;
     }

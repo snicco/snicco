@@ -6,9 +6,9 @@ namespace Snicco\Auth\Contracts;
 
 use WP_User;
 use Snicco\Auth\Traits\UsesCurrentRequest;
-use Snicco\Contracts\ResponseableInterface;
+use Snicco\Contracts\Responsable;
 
-abstract class AbstractLoginResponse implements ResponseableInterface
+abstract class AbstractLoginResponse implements Responsable
 {
     
     protected bool $remember_user = false;

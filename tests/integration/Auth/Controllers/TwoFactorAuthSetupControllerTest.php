@@ -4,7 +4,7 @@ namespace Tests\integration\Auth\Controllers;
 
 use Tests\AuthTestCase;
 use PragmaRX\Google2FA\Google2FA;
-use Snicco\Contracts\EncryptorInterface;
+use Snicco\Contracts\Encryptor;
 use Snicco\Auth\Google2FaAuthenticationProvider;
 use Tests\integration\Auth\Stubs\TestTwoFactorProvider;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
@@ -22,7 +22,7 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
         
         $this->afterApplicationBooted(function () {
             $this->withHeader('Accept', 'application/json');
-            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
+            $this->encryptor = $this->app->resolve(Encryptor::class);
             $this->swap(
                 TwoFactorAuthenticationProvider::class,
                 new TestTwoFactorProvider($this->encryptor)

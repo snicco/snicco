@@ -8,9 +8,9 @@ use Psr\Log\LogLevel;
 use Tests\stubs\TestLogger;
 use Tests\FrameworkTestCase;
 use Psr\Log\LoggerInterface;
-use Snicco\ExceptionHandling\ExceptionHandler;
+use Snicco\ExceptionHandling\ProductionExceptionHandler;
 
-/** @see ExceptionHandler */
+/** @see ProductionExceptionHandler */
 class ProductionErrorHandlingTest extends FrameworkTestCase
 {
     

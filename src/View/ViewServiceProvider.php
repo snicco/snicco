@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\View;
 
+use Snicco\Contracts\ViewEngine;
 use Snicco\Contracts\ServiceProvider;
-use Snicco\Contracts\ViewEngineInterface;
 use Snicco\Factories\ViewComposerFactory;
 use Snicco\Contracts\ViewFactoryInterface;
 
@@ -63,7 +63,7 @@ class ViewServiceProvider extends ServiceProvider
     
     private function bindViewEngineInterface() :void
     {
-        $this->container->singleton(ViewEngineInterface::class, PhpViewEngine::class);
+        $this->container->singleton(ViewEngine::class, PhpViewEngine::class);
     }
     
     private function bindViewComposerCollection() :void

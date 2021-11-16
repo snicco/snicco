@@ -14,7 +14,7 @@ use Snicco\Contracts\ServiceProvider;
 use Snicco\Auth\Fail2Ban\PHPSyslogger;
 use Snicco\Auth\Middleware\ConfirmAuth;
 use Snicco\Auth\Events\GenerateLoginUrl;
-use Snicco\Contracts\EncryptorInterface;
+use Snicco\Contracts\Encryptor;
 use Snicco\Auth\Responses\LoginRedirect;
 use Snicco\Auth\Events\GenerateLogoutUrl;
 use Snicco\Auth\Events\SettingAuthCookie;
@@ -246,7 +246,7 @@ class AuthServiceProvider extends ServiceProvider
                     $this->container->make(EmailAuthConfirmation::class),
                     $this->container->make(TwoFactorAuthenticationProvider::class),
                     $this->container->make(ResponseFactory::class),
-                    $this->container->make(EncryptorInterface::class),
+                    $this->container->make(Encryptor::class),
                     $this->container->make(Abstract2FAuthConfirmationView::class)
                 );
             }

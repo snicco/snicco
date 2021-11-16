@@ -8,10 +8,10 @@ use Snicco\Http\Cookie;
 use Snicco\Http\Cookies;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Contracts\ResponseableInterface;
+use Snicco\Contracts\Responsable;
 use Psr\Http\Message\StreamFactoryInterface;
 
-class Response implements ResponseInterface, ResponseableInterface
+class Response implements ResponseInterface, Responsable
 {
     
     use ImplementsPsr7Response;

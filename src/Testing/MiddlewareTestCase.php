@@ -7,7 +7,7 @@ namespace Snicco\Testing;
 use Closure;
 use RuntimeException;
 use Snicco\Http\Delegate;
-use Snicco\Http\Redirector;
+use Snicco\Http\StatelessRedirector;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Contracts\Middleware;
@@ -44,7 +44,7 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
             $this->viewFactory(),
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            new Redirector($this->url = $this->urlGenerator(), $this->psrResponseFactory())
+            new StatelessRedirector($this->url = $this->urlGenerator(), $this->psrResponseFactory())
         );
         
         $this->next_middleware_response = fn(Response $response) => $response;

@@ -10,7 +10,7 @@ use Snicco\Routing\UrlGenerator;
 use Snicco\Http\Responses\RedirectResponse;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
-abstract class AbstractRedirector
+abstract class Redirector
 {
     
     protected UrlGenerator $generator;

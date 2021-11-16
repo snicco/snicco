@@ -15,7 +15,7 @@ use Snicco\Http\Psr7\Response;
 use Snicco\Http\Responses\NullResponse;
 use Snicco\Auth\Responses\LoginResponse;
 use Snicco\Auth\Responses\LogoutResponse;
-use Snicco\Contracts\ResponseableInterface;
+use Snicco\Contracts\Responsable;
 use Snicco\Auth\Contracts\AbstractLoginView;
 use Snicco\Auth\Contracts\AbstractLoginResponse;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
@@ -31,7 +31,7 @@ class AuthSessionController extends Controller
         $this->auth_config = $auth_config;
     }
     
-    public function create(Request $request, AbstractLoginView $view_response) :ResponseableInterface
+    public function create(Request $request, AbstractLoginView $view_response) :Responsable
     {
         if ($request->boolean('reauth')) {
             $this->resetAuthSession($request->session());

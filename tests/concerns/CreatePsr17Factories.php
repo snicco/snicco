@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\concerns;
 
-use Snicco\Http\Redirector;
+use Snicco\Http\StatelessRedirector;
 use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\ResponseFactory;
@@ -51,7 +51,7 @@ trait CreatePsr17Factories
             new TestViewFactory(),
             $f = $this->psrResponseFactory(),
             $this->psrStreamFactory(),
-            new Redirector($this->newUrlGenerator(), $f),
+            new StatelessRedirector($this->newUrlGenerator(), $f),
         );
     }
     

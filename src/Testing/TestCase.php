@@ -27,7 +27,7 @@ use Snicco\Session\SessionServiceProvider;
 use Mockery\Exception\InvalidCountException;
 use Snicco\Testing\Concerns\InteractsWithMail;
 use Snicco\Testing\Concerns\MakesHttpRequests;
-use Snicco\Contracts\ExceptionHandlerInterface;
+use Snicco\Contracts\ExceptionHandler;
 use Snicco\Testing\Concerns\InteractsWithSession;
 use Snicco\ExceptionHandling\NullExceptionHandler;
 use Psr\Http\Message\ServerRequestFactoryInterface;
@@ -333,7 +333,7 @@ abstract class TestCase extends WPTestCase
     protected function withoutExceptionHandling() :TestCase
     {
         $this->config->set('app.exception_handling', false);
-        $this->instance(ExceptionHandlerInterface::class, new NullExceptionHandler());
+        $this->instance(ExceptionHandler::class, new NullExceptionHandler());
         
         return $this;
     }

@@ -27,7 +27,7 @@ use Tests\concerns\CreatePsr17Factories;
 use Tests\concerns\CreateRouteCollection;
 use Snicco\Contracts\ViewFactoryInterface;
 use Snicco\ExceptionHandling\WhoopsHandler;
-use Snicco\ExceptionHandling\ExceptionHandler;
+use Snicco\ExceptionHandling\ProductionExceptionHandler;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
 use Snicco\ExceptionHandling\Exceptions\ViewException;
 use Snicco\ExceptionHandling\Exceptions\ErrorViewException;
@@ -309,9 +309,9 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         }
     }
     
-    private function newErrorHandler(bool $debug_mode = false) :ExceptionHandler
+    private function newErrorHandler(bool $debug_mode = false) :ProductionExceptionHandler
     {
-        return new ExceptionHandler(
+        return new ProductionExceptionHandler(
             $this->container,
             new NullLogger(),
             $this->container[ResponseFactory::class],
@@ -376,7 +376,7 @@ class ExceptionWithDependencyInjection extends Exception
     
 }
 
-class TestExceptionHandler extends ExceptionHandler
+class TestExceptionHandler extends ProductionExceptionHandler
 {
     
     protected function toHttpException(Throwable $e, Request $request) :HttpException

@@ -6,7 +6,7 @@ namespace Snicco\Contracts;
 
 use Snicco\Application\Config;
 
-interface RouteRegistrarInterface
+interface RouteRegistrar
 {
     
     public function registerRoutes(Config $config) :void;

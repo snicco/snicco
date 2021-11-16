@@ -8,7 +8,7 @@ use Mockery;
 use stdClass;
 use Tests\UnitTest;
 use Tests\stubs\TestView;
-use Snicco\Http\Redirector;
+use Snicco\Http\StatelessRedirector;
 use InvalidArgumentException;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
@@ -189,7 +189,7 @@ class ResponseFactoryTest extends UnitTest
     /** @test */
     public function testRedirect_return_redirector()
     {
-        $this->assertInstanceOf(Redirector::class, $this->factory->redirect());
+        $this->assertInstanceOf(StatelessRedirector::class, $this->factory->redirect());
     }
     
     /** @test */

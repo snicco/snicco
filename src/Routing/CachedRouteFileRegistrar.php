@@ -6,15 +6,15 @@ namespace Snicco\Routing;
 
 use Snicco\Support\Str;
 use Snicco\Application\Config;
-use Snicco\Contracts\RouteRegistrarInterface;
+use Snicco\Contracts\RouteRegistrar;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
-class CachedRouteRegistrar implements RouteRegistrarInterface
+class CachedRouteFileRegistrar implements RouteRegistrar
 {
     
     private RouteRegistrar $registrar;
     
-    public function __construct(RouteRegistrar $registrar)
+    public function __construct(RouteFileRegistrar $registrar)
     {
         $this->registrar = $registrar;
     }

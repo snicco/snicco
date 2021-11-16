@@ -6,7 +6,7 @@ namespace Tests\unit\Encryption;
 
 use Tests\UnitTest;
 use Snicco\Session\IlluminateEncryptor;
-use Snicco\Contracts\EncryptorInterface;
+use Snicco\Contracts\Encryptor;
 
 class EncryptorTest extends UnitTest
 {
@@ -18,7 +18,7 @@ class EncryptorTest extends UnitTest
     {
         $encryptor = new IlluminateEncryptor(self::test_key);
         
-        $this->assertInstanceOf(EncryptorInterface::class, $encryptor);
+        $this->assertInstanceOf(Encryptor::class, $encryptor);
     }
     
     /** @test */

@@ -9,15 +9,15 @@ use Snicco\Support\FilePath;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\MagicLink;
 use Snicco\Http\DatabaseMagicLink;
+use Snicco\Contracts\RouteRegistrar;
 use Snicco\Contracts\RouteUrlMatcher;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Contracts\RouteUrlGenerator;
 use Snicco\Testing\TestDoubles\TestMagicLink;
-use Snicco\Contracts\RouteRegistrarInterface;
+use Snicco\Contracts\RouteCollectionInterface;
 use Snicco\Routing\Conditions\CustomCondition;
 use Snicco\Routing\Conditions\NegateCondition;
 use Snicco\Routing\Conditions\PostIdCondition;
-use Snicco\Contracts\RouteCollectionInterface;
 use Snicco\Routing\Conditions\PostSlugCondition;
 use Snicco\Routing\Conditions\PostTypeCondition;
 use Snicco\Routing\FastRoute\FastRouteUrlMatcher;
@@ -156,8 +156,8 @@ class RoutingServiceProvider extends ServiceProvider
     
     private function bindRouteRegistrar()
     {
-        $this->container->singleton(RouteRegistrarInterface::class, function () {
-            $registrar = new RouteRegistrar(
+        $this->container->singleton(RouteRegistrar::class, function () {
+            $registrar = new RouteFileRegistrar(
                 $this->container->make(Router::class),
             );
             
@@ -165,14 +165,14 @@ class RoutingServiceProvider extends ServiceProvider
                 return $registrar;
             }
             
-            return new CachedRouteRegistrar($registrar);
+            return new CachedRouteFileRegistrar($registrar);
         });
     }
     
     private function loadRoutes()
     {
-        /** @var RouteRegistrarInterface $registrar */
-        $registrar = $this->app->resolve(RouteRegistrarInterface::class);
+        /** @var RouteFileRegistrar $registrar */
+        $registrar = $this->app->resolve(RouteRegistrar::class);
         $registrar->registerRoutes($this->config);
         $this->app[Router::class]->loadRoutes();
     }

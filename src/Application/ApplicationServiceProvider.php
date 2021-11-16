@@ -13,7 +13,7 @@ use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\View\ViewComposerCollection;
-use Snicco\Contracts\AbstractRedirector;
+use Snicco\Contracts\Redirector;
 use Snicco\Contracts\ViewFactoryInterface;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
@@ -70,8 +70,8 @@ class ApplicationServiceProvider extends ServiceProvider
     {
         $app->alias('response', ResponseFactory::class);
         $app->alias('redirect', function (?string $path = null, int $status = 302) use ($app) {
-            /** @var AbstractRedirector $redirector */
-            $redirector = $app->resolve(AbstractRedirector::class);
+            /** @var Redirector $redirector */
+            $redirector = $app->resolve(Redirector::class);
             
             if ($path) {
                 return $redirector->to($path, $status);

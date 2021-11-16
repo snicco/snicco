@@ -6,7 +6,7 @@ namespace Snicco\Routing;
 
 use Snicco\Support\Str;
 use InvalidArgumentException;
-use Snicco\Contracts\ConditionInterface;
+use Snicco\Contracts\Condition;
 use Snicco\Routing\Conditions\CustomCondition;
 
 class ConditionBlueprint
@@ -15,11 +15,11 @@ class ConditionBlueprint
     const NEGATES_SIGN = '!';
     const NEGATES_WORD = 'negate';
     
-    protected                   $type;
-    protected                   $args;
-    private ?ConditionInterface $instance;
+    protected          $type;
+    protected          $args;
+    private ?Condition $instance;
     
-    /** @var null|string|ConditionInterface */
+    /** @var null|string|Condition */
     private $negates = null;
     
     public function __construct($condition = null, array $arguments = [])
@@ -108,14 +108,14 @@ class ConditionBlueprint
             return [$condition, $args];
         }
         
-        if ($condition instanceof ConditionInterface) {
+        if ($condition instanceof Condition) {
             return [get_class($condition), $args];
         }
         
         throw new InvalidArgumentException("An invalid condition was provided for a route.");
     }
     
-    private function parseInstance($condition, $arguments = []) :?ConditionInterface
+    private function parseInstance($condition, $arguments = []) :?Condition
     {
         if ($this->type === self::NEGATES_WORD && is_object($arguments[0] ?? '')) {
             return $this->parseInstance($arguments[0]);
@@ -125,7 +125,7 @@ class ConditionBlueprint
             return new CustomCondition($condition, $this->args);
         }
         
-        return ($condition instanceof ConditionInterface) ? $condition : null;
+        return ($condition instanceof Condition) ? $condition : null;
     }
     
 }

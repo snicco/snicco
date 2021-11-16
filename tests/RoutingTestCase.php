@@ -26,6 +26,7 @@ use Tests\concerns\CreateContainer;
 use Tests\concerns\CreatePsrRequests;
 use Tests\concerns\CreateRouteMatcher;
 use Snicco\Middleware\MiddlewareStack;
+use Snicco\Contracts\ExceptionHandler;
 use Snicco\Contracts\RouteUrlGenerator;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Factories\MiddlewareFactory;
@@ -47,7 +48,6 @@ use Tests\fixtures\Conditions\FalseCondition;
 use Tests\fixtures\Conditions\MaybeCondition;
 use Snicco\Contracts\RouteCollectionInterface;
 use Tests\fixtures\Conditions\UniqueCondition;
-use Snicco\Contracts\ExceptionHandlerInterface;
 use Tests\fixtures\Middleware\FooBarMiddleware;
 use Snicco\ExceptionHandling\NullExceptionHandler;
 use Snicco\Middleware\Core\OutputBufferMiddleware;
@@ -64,13 +64,13 @@ class RoutingTestCase extends TestCase
     use CreateDefaultWpApiMocks;
     use CreatePsrRequests;
     
-    protected MiddlewareStack           $middleware_stack;
-    protected ExceptionHandlerInterface $error_handler;
-    protected ResponseFactory           $response_factory;
-    protected HttpKernel                $kernel;
-    protected Router                    $router;
-    protected ContainerAdapter          $container;
-    protected RouteCollectionInterface  $routes;
+    protected MiddlewareStack          $middleware_stack;
+    protected ExceptionHandler         $error_handler;
+    protected ResponseFactory          $response_factory;
+    protected HttpKernel               $kernel;
+    protected Router                   $router;
+    protected ContainerAdapter         $container;
+    protected RouteCollectionInterface $routes;
     
     private int $output_buffer_level;
     
@@ -204,7 +204,7 @@ class RoutingTestCase extends TestCase
             new MethodOverride(new MethodField(TEST_APP_KEY))
         );
         $this->container->instance(RouteCollectionInterface::class, $this->routes);
-        $this->container->instance(ExceptionHandlerInterface::class, $this->error_handler);
+        $this->container->instance(ExceptionHandler::class, $this->error_handler);
         $this->container->instance(OutputBufferMiddleware::class, $this->outputBufferMiddleware());
         $this->container->instance(
             RouteUrlGenerator::class,

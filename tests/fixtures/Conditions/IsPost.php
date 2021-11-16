@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\fixtures\Conditions;
 
 use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\ConditionInterface;
+use Snicco\Contracts\Condition;
 
-class IsPost implements ConditionInterface
+class IsPost implements Condition
 {
     
     private bool $pass;

@@ -4,10 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Contracts;
 
-/**
- * Interface that view finders must implement.
- */
-interface ViewFinderInterface
+interface ViewFinder
 {
     
     /**

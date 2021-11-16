@@ -7,7 +7,7 @@ namespace Snicco\Auth\Authenticators;
 use WP_User;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
-use Snicco\Contracts\EncryptorInterface;
+use Snicco\Contracts\Encryptor;
 use Snicco\Auth\Contracts\Authenticator;
 use Snicco\Auth\Responses\SuccessfulLoginResponse;
 use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
@@ -20,7 +20,7 @@ class RedirectIf2FaAuthenticable extends Authenticator
     
     private AbstractTwoFactorChallengeResponse $challenge_response;
     
-    public function __construct(AbstractTwoFactorChallengeResponse $response, EncryptorInterface $encryptor)
+    public function __construct(AbstractTwoFactorChallengeResponse $response, Encryptor $encryptor)
     {
         $this->challenge_response = $response;
         $this->encryptor = $encryptor;

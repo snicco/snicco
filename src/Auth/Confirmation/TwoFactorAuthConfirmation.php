@@ -7,7 +7,7 @@ namespace Snicco\Auth\Confirmation;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\ResponseFactory;
 use Snicco\Contracts\ViewInterface;
-use Snicco\Contracts\EncryptorInterface;
+use Snicco\Contracts\Encryptor;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Auth\Traits\PerformsTwoFactorAuthentication;
 use Snicco\Auth\Contracts\Abstract2FAuthConfirmationView;
@@ -21,7 +21,7 @@ class TwoFactorAuthConfirmation implements AuthConfirmation
     private AuthConfirmation                $fallback;
     private TwoFactorAuthenticationProvider $provider;
     private ResponseFactory                 $response_factory;
-    private EncryptorInterface              $encryptor;
+    private Encryptor                       $encryptor;
     private string                          $user_secret;
     private Abstract2FAuthConfirmationView  $response;
     
@@ -29,7 +29,7 @@ class TwoFactorAuthConfirmation implements AuthConfirmation
         AuthConfirmation $fallback,
         TwoFactorAuthenticationProvider $provider,
         ResponseFactory $response_factory,
-        EncryptorInterface $encryptor,
+        Encryptor $encryptor,
         Abstract2FAuthConfirmationView $response
     ) {
         $this->fallback = $fallback;

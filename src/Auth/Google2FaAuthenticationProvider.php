@@ -10,7 +10,7 @@ use PragmaRX\Google2FA\Google2FA;
 use BaconQrCode\Renderer\Color\Rgb;
 use Snicco\Auth\Traits\ResolvesUser;
 use BaconQrCode\Renderer\ImageRenderer;
-use Snicco\Contracts\EncryptorInterface;
+use Snicco\Contracts\Encryptor;
 use BaconQrCode\Renderer\RendererStyle\Fill;
 use BaconQrCode\Renderer\Image\SvgImageBackEnd;
 use BaconQrCode\Renderer\RendererStyle\RendererStyle;
@@ -26,10 +26,10 @@ class Google2FaAuthenticationProvider implements TwoFactorAuthenticationProvider
     /**
      * The underlying library providing two-factor authentication helper services.
      */
-    private Google2FA          $engine;
-    private EncryptorInterface $encryptor;
+    private Google2FA $engine;
+    private Encryptor $encryptor;
     
-    public function __construct(Google2FA $engine, EncryptorInterface $encryptor)
+    public function __construct(Google2FA $engine, Encryptor $encryptor)
     {
         $this->engine = $engine;
         $this->encryptor = $encryptor;
