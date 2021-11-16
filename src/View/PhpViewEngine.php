@@ -7,13 +7,12 @@ namespace Snicco\View;
 use Throwable;
 use Snicco\Support\Arr;
 use Snicco\Events\MakingView;
-use Snicco\Contracts\PhpEngine;
 use Snicco\Contracts\ViewInterface;
-use Snicco\Contracts\PhpViewInterface;
+use Snicco\Contracts\ViewEngineInterface;
 use Snicco\ExceptionHandling\Exceptions\ViewException;
 use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
 
-class PhpViewEngine implements PhpEngine
+class PhpViewEngine implements ViewEngineInterface
 {
     
     private PhpViewFinder $finder;
@@ -39,7 +38,7 @@ class PhpViewEngine implements PhpEngine
         return new PhpView($this, $view_name, $this->finder->filePath($view_name));
     }
     
-    public function renderPhpView(PhpViewInterface $view) :string
+    public function renderPhpView(PhpView $view) :string
     {
         $ob_level = ob_get_level();
         
@@ -54,7 +53,7 @@ class PhpViewEngine implements PhpEngine
         return ltrim(ob_get_clean());
     }
     
-    private function render(PhpViewInterface $view)
+    private function render(PhpView $view)
     {
         if ($view->parent() !== null) {
             $shared = array_diff($view->context(), $view->parent()->context());
@@ -74,7 +73,7 @@ class PhpViewEngine implements PhpEngine
         $this->requireView($view);
     }
     
-    private function requireView(PhpViewInterface $view)
+    private function requireView(PhpView $view)
     {
         MakingView::dispatch([$view]);
         
@@ -84,7 +83,7 @@ class PhpViewEngine implements PhpEngine
         );
     }
     
-    private function handleViewException(Throwable $e, $ob_level, PhpViewInterface $view)
+    private function handleViewException(Throwable $e, $ob_level, PhpView $view)
     {
         while (ob_get_level() > $ob_level) {
             ob_end_clean();

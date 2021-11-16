@@ -7,9 +7,8 @@ namespace Snicco\View;
 use Snicco\Support\WP;
 use Snicco\Support\Arr;
 use Snicco\Contracts\ViewInterface;
-use Snicco\Contracts\PhpViewInterface;
 
-class PhpView implements PhpViewInterface
+class PhpView implements ViewInterface
 {
     
     /**
@@ -38,7 +37,7 @@ class PhpView implements PhpViewInterface
         return $this->filepath;
     }
     
-    public function parent() :?PhpViewInterface
+    public function parent() :?PhpView
     {
         return $this->parent_view;
     }
