@@ -5,15 +5,15 @@ declare(strict_types=1);
 namespace Tests\unit\Support;
 
 use Tests\UnitTest;
-use Snicco\Support\VariableBag;
+use Snicco\Support\Repository;
 
-class VariableBagTest extends UnitTest
+class RepositoryTest extends UnitTest
 {
     
     /** @test */
     public function single_elements_can_be_added()
     {
-        $var_bag = new VariableBag();
+        $var_bag = new Repository();
         
         $var_bag->add(['foo' => 'bar']);
         
@@ -23,7 +23,7 @@ class VariableBagTest extends UnitTest
     /** @test */
     public function multiple_elements_can_be_added()
     {
-        $var_bag = new VariableBag();
+        $var_bag = new Repository();
         
         $var_bag->add(['foo' => 'bar', 'bar' => 'baz']);
         
@@ -34,7 +34,7 @@ class VariableBagTest extends UnitTest
     /** @test */
     public function nested_elements_are_accessible_as_dot_notation()
     {
-        $var_bag = new VariableBag();
+        $var_bag = new Repository();
         
         $var_bag->add([
             

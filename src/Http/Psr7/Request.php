@@ -12,7 +12,7 @@ use Snicco\Support\Url;
 use Snicco\Http\Cookies;
 use Snicco\Routing\Route;
 use Snicco\Session\Session;
-use Snicco\Support\VariableBag;
+use Snicco\Support\Repository;
 use Snicco\Validation\Validator;
 use Psr\Http\Message\UriInterface;
 use Snicco\Traits\ValidatesWordpressNonces;
@@ -53,7 +53,7 @@ class Request implements ServerRequestInterface
     
     public function withCookies(array $cookies) :Request
     {
-        return $this->withAttribute('cookies', new VariableBag($cookies));
+        return $this->withAttribute('cookies', new Repository($cookies));
     }
     
     public function withSession(Session $session_store) :Request
@@ -151,10 +151,10 @@ class Request implements ServerRequestInterface
         return trim($this->getServerParams()['SCRIPT_NAME'] ?? '', DIRECTORY_SEPARATOR);
     }
     
-    public function cookies() :VariableBag
+    public function cookies() :Repository
     {
-        /** @var VariableBag $bag */
-        $bag = $this->getAttribute('cookies', new VariableBag());
+        /** @var Repository $bag */
+        $bag = $this->getAttribute('cookies', new Repository());
         
         if ($bag->all() === []) {
             $cookies = Cookies::parseHeader($this->getHeader('Cookie'));

@@ -13,7 +13,7 @@ use Snicco\Http\Psr7\Request;
 use Tests\MiddlewareTestCase;
 use Illuminate\Support\Carbon;
 use Snicco\Http\Psr7\Response;
-use Snicco\Support\VariableBag;
+use Snicco\Support\Repository;
 use Snicco\Session\SessionManager;
 use Tests\concerns\CreateContainer;
 use Tests\concerns\HashesSessionIds;
@@ -55,7 +55,7 @@ class StartSessionMiddlewareTest extends MiddlewareTestCase
         $this->request = $this->frontendRequest('GET', '/foo')
                               ->withAttribute(
                                   'cookies',
-                                  new VariableBag([
+                                  new Repository([
                                       'test_session' => $this->getSessionId(),
                                   ])
                               );

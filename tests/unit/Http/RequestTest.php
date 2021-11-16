@@ -11,7 +11,7 @@ use Snicco\Routing\Route;
 use Snicco\Session\Session;
 use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
-use Snicco\Support\VariableBag;
+use Snicco\Support\Repository;
 use Snicco\Validation\Validator;
 use Snicco\Session\Drivers\ArraySessionDriver;
 
@@ -117,12 +117,12 @@ class RequestTest extends UnitTest
     public function testCookies()
     {
         $cookies = $this->request->cookies();
-        $this->assertInstanceOf(VariableBag::class, $cookies);
+        $this->assertInstanceOf(Repository::class, $cookies);
         $this->assertSame([], $cookies->all());
         
         $request = $this->request->withCookies(['foo' => 'bar']);
         $cookies = $request->cookies();
-        $this->assertInstanceOf(VariableBag::class, $cookies);
+        $this->assertInstanceOf(Repository::class, $cookies);
         $this->assertSame(['foo' => 'bar'], $cookies->all());
     }
     
