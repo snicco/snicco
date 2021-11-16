@@ -6,7 +6,7 @@ namespace Snicco\Application;
 
 use Closure;
 use Snicco\Support\Arr;
-use Illuminate\Config\Repository;
+use Snicco\Support\Repository;
 
 class Config extends Repository
 {
@@ -20,7 +20,7 @@ class Config extends Repository
     {
         $user_config = $this->get($key, []);
         
-        $value = $this->replaceConfig($app_config, $user_config);
+        $value = $this->replace($app_config, $user_config);
         
         $this->set($key, $value);
     }
@@ -50,7 +50,7 @@ class Config extends Repository
      *
      * @return mixed
      */
-    private function replaceConfig($app_config, $user_config)
+    private function replace($app_config, $user_config)
     {
         if ($this->isEmptyArray($user_config) && ! $this->isEmptyArray($app_config)) {
             return $app_config;
@@ -70,7 +70,7 @@ class Config extends Repository
         $result = $user_config;
         
         foreach ($app_config as $key => $app_value) {
-            $result[$key] = $this->replaceConfig($app_value, Arr::get($user_config, $key, []));
+            $result[$key] = $this->replace($app_value, Arr::get($user_config, $key, []));
         }
         
         return $result;

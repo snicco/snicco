@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\View;
 
-use Snicco\Support\VariableBag;
+use Snicco\Support\Repository;
 
 class GlobalContext
 {
@@ -14,7 +14,7 @@ class GlobalContext
     public function add(string $name, $context)
     {
         if (is_array($context)) {
-            $context = new VariableBag($context);
+            $context = new Repository($context);
         }
         
         $this->context[$name] = $context;
