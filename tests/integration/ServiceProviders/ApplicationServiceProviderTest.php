@@ -9,7 +9,6 @@ use Tests\stubs\TestApp;
 use Snicco\Routing\Router;
 use Snicco\Http\Redirector;
 use Tests\FrameworkTestCase;
-use Snicco\Support\WpFacade;
 use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\ResponseFactory;
@@ -23,19 +22,18 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
 {
     
     /** @test */
-    public function the_wp_facade_has_the_correct_container()
+    public function the_wp_api_is_not_a_mockery_instance()
     {
         $this->bootApp();
-        $container = TestApp::container();
-        $this->assertSame($container, WpFacade::getFacadeContainer());
+        $this->assertFalse(WP::isUserLoggedIn());
     }
     
     /** @test */
     public function the_facade_can_be_swapped_during_test()
     {
         $this->bootApp();
-        WP::shouldReceive('isAdmin')->andReturn(true);
-        $this->assertTrue(WP::isAdmin());
+        WP::shouldReceive('isUserLoggedIn')->andReturn(true);
+        $this->assertTrue(WP::isUserLoggedIn());
     }
     
     /** @test */

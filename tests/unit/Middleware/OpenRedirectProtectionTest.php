@@ -11,7 +11,6 @@ use Snicco\Routing\Route;
 use Tests\MiddlewareTestCase;
 use Snicco\Http\Psr7\Response;
 use Snicco\Testing\TestResponse;
-use Tests\concerns\CreateContainer;
 use Snicco\Controllers\RedirectController;
 use Tests\concerns\CreateDefaultWpApiMocks;
 use Snicco\Middleware\Core\OpenRedirectProtection;
@@ -20,12 +19,10 @@ class OpenRedirectProtectionTest extends MiddlewareTestCase
 {
     
     use CreateDefaultWpApiMocks;
-    use CreateContainer;
     
     protected function setUp() :void
     {
         parent::setUp();
-        WP::setFacadeContainer($this->createContainer());
         $this->createDefaultWpApiMocks();
     }
     

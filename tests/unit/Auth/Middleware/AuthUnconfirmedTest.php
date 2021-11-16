@@ -11,7 +11,6 @@ use Snicco\Session\Session;
 use Tests\MiddlewareTestCase;
 use Snicco\Http\Psr7\Request;
 use Snicco\Routing\UrlGenerator;
-use Tests\concerns\CreateContainer;
 use Tests\concerns\CreateDefaultWpApiMocks;
 use Snicco\Auth\Middleware\AuthUnconfirmed;
 use Snicco\Session\Drivers\ArraySessionDriver;
@@ -20,14 +19,12 @@ class AuthUnconfirmedTest extends MiddlewareTestCase
 {
     
     use CreateDefaultWpApiMocks;
-    use CreateContainer;
     
     private Request $request;
     
     protected function setUp() :void
     {
         parent::setUp();
-        WP::setFacadeContainer($this->createContainer());
         WP::shouldReceive('wpAdminFolder')->andReturn('wp-admin');
         
         $route = new Route(['GET'], '/dashboard', function () {

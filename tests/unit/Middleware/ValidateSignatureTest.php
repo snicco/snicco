@@ -36,7 +36,6 @@ class ValidateSignatureTest extends MiddlewareTestCase
     protected function setUp() :void
     {
         WP::shouldReceive('userId')->andReturn(0)->byDefault();
-        WP::setFacadeContainer($this->createContainer());
         parent::setUp();
     }
     

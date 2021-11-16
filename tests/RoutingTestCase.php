@@ -80,7 +80,6 @@ class RoutingTestCase extends TestCase
         $this->resetGlobalState();
         $this->createDefaultWpApiMocks();
         $this->createInstances();
-        WP::setFacadeContainer($this->container);
         Event::make($this->container);
         Event::fake();
         $this->createDefaultWpApiMocks();

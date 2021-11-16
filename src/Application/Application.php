@@ -6,7 +6,6 @@ namespace Snicco\Application;
 
 use ArrayAccess;
 use RuntimeException;
-use Snicco\Support\WpFacade;
 use Contracts\ContainerAdapter;
 use Snicco\Bootstrap\CaptureRequest;
 use Snicco\Bootstrap\LoadConfiguration;
@@ -191,7 +190,6 @@ class Application implements ArrayAccess
         $this->container_adapter = $container;
         $this->container()->instance(Application::class, $this);
         $this->container()->instance(ContainerAdapter::class, $this->container());
-        WpFacade::setFacadeContainer($container);
         $this->container()->instance(Config::class, $this->config = new Config());
     }
     

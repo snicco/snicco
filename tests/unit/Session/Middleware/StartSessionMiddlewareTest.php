@@ -50,7 +50,6 @@ class StartSessionMiddlewareTest extends MiddlewareTestCase
     {
         parent::setUp();
         
-        WP::setFacadeContainer($this->createContainer());
         WP::shouldReceive('userId')->andReturn(1)->byDefault();
         
         $this->request = $this->frontendRequest('GET', '/foo')
