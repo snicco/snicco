@@ -8,6 +8,7 @@ use Snicco\Support\Arr;
 use Snicco\Events\PendingMail;
 use Contracts\ContainerAdapter;
 use BetterWpHooks\Contracts\Dispatcher;
+use Snicco\Support\ReflectionDependencies;
 
 class MailBuilder
 {
@@ -79,7 +80,9 @@ class MailBuilder
             ->cc($this->cc)
             ->bcc($this->bcc);
         
-        $mail = $this->container->call([$mail, 'build']);
+        $deps = (new ReflectionDependencies($this->container))->build([$mail, 'build']);
+        
+        $mail = $mail->build(...$deps);
         
         return $this->hasOverride($mail) ? $this->getOverride($mail) : $mail;
     }
@@ -96,7 +99,9 @@ class MailBuilder
         $new_mailable = call_user_func($func, $mail);
         
         if (get_class($new_mailable) !== $original_class) {
-            $new_mailable = $this->container->call([$new_mailable, 'build']);
+            $deps = (new ReflectionDependencies($this->container))->build([$new_mailable, 'build']);
+            
+            $new_mailable = $new_mailable->build(...$deps);
         }
         
         return $new_mailable;
