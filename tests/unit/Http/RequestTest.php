@@ -13,13 +13,10 @@ use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
 use Snicco\Support\VariableBag;
 use Snicco\Validation\Validator;
-use Tests\concerns\CreateContainer;
 use Snicco\Session\Drivers\ArraySessionDriver;
 
 class RequestTest extends UnitTest
 {
-    
-    use CreateContainer;
     
     private Request $request;
     
@@ -235,7 +232,6 @@ class RequestTest extends UnitTest
     
     public function testRouteIs()
     {
-        WP::setFacadeContainer($this->createContainer());
         WP::shouldReceive('wpAdminFolder')->andReturn('wp-admin');
         $route = new Route(['GET'], '/foo', function () { });
         $route->name('foobar');
