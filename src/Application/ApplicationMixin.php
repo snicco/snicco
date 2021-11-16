@@ -268,7 +268,7 @@ final class ApplicationMixin
     
     /**
      * Returns the global variable bag available to all views.
-     * Arrays are converted to an instance of VariableBag.
+     * Arrays are converted to an instance of Repository.
      * Returns the global context if no args are passed
      *
      * @see GlobalContext::add()

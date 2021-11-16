@@ -10,7 +10,7 @@ use Snicco\Support\Str;
 use Snicco\Support\Url;
 use Snicco\Session\Session;
 use Snicco\Http\Psr7\Response;
-use Snicco\Support\VariableBag;
+use Snicco\Support\Repository;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Application\Application;
 use Snicco\Contracts\ViewInterface;
@@ -25,7 +25,7 @@ class TestResponse
     
     public Response        $psr_response;
     protected string       $streamed_content;
-    private VariableBag    $headers;
+    private Repository     $headers;
     private int            $status_code;
     private ?ViewInterface $view    = null;
     private ?Session       $session = null;
@@ -34,7 +34,7 @@ class TestResponse
     public function __construct(Response $response)
     {
         $this->psr_response = $response;
-        $this->headers = new VariableBag($this->psr_response->getHeaders());
+        $this->headers = new Repository($this->psr_response->getHeaders());
         $this->streamed_content = (string) $this->psr_response->getBody();
         $this->status_code = $this->psr_response->getStatusCode();
     }
