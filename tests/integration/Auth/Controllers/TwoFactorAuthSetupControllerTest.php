@@ -14,6 +14,24 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
     
     private string $endpoint = '/auth/two-factor/setup';
     
+    protected function setUp() :void
+    {
+        $this->afterApplicationCreated(function () {
+            $this->with2Fa();
+        });
+        
+        $this->afterApplicationBooted(function () {
+            $this->withHeader('Accept', 'application/json');
+            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
+            $this->swap(
+                TwoFactorAuthenticationProvider::class,
+                new TestTwoFactorProvider($this->encryptor)
+            );
+        });
+        
+        parent::setUp();
+    }
+    
     /** @test */
     public function the_endpoint_is_not_accessible_with_2fa_disabled()
     {
@@ -25,18 +43,15 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
     /** @test */
     public function the_endpoint_is_not_accessible_if_not_authenticated()
     {
-        
         $this->bootApp();
         
         $this->post($this->endpoint)
              ->assertStatus(401);
-        
     }
     
     /** @test */
     public function the_endpoint_is_not_accessible_if_auth_confirmation_is_expired()
     {
-        
         $this->bootApp();
         
         $this->actingAs($calvin = $this->createAdmin());
@@ -44,25 +59,21 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
         $this->travelIntoFuture(10);
         
         $this->post($this->endpoint)->assertRedirectToRoute('auth.confirm');
-        
     }
     
     /** @test */
     public function the_endpoint_is_not_accessible_without_csrf_tokens()
     {
-        
         $this->bootApp();
         
         $this->actingAs($calvin = $this->createAdmin());
         
         $this->post($this->endpoint, [])->assertStatus(419);
-        
     }
     
     /** @test */
     public function the_initial_setup_qr_code_can_be_rendered()
     {
-        
         $this->bootApp();
         $this->actingAs($calvin = $this->createAdmin());
         $token = $this->withCsrfToken();
@@ -78,13 +89,11 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
         
         // 2fa is not confirmed yet.
         $this->assertSame('', get_user_meta($calvin->ID, 'two_factor_active', true));
-        
     }
     
     /** @test */
     public function an_error_is_returned_if_2fa_is_already_enabled_for_the_user()
     {
-        
         $this->bootApp();
         $this->withoutMiddleware('csrf');
         $this->actingAs($calvin = $this->createAdmin());
@@ -99,13 +108,11 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
                  ->assertExactJson([
                      'message' => 'Two-Factor authentication is already enabled.',
                  ]);
-        
     }
     
     /** @test */
     public function the_auth_set_up_is_marked_as_pending()
     {
-        
         $this->bootApp();
         $this->withoutMiddleware('csrf');
         $this->actingAs($calvin = $this->createAdmin());
@@ -116,7 +123,6 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
         $response->assertStatus(200);
         
         $this->assertSame('1', get_user_meta($calvin->ID, 'two_factor_pending', true));
-        
     }
     
     /** @test */
@@ -138,13 +144,11 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
             'Two factor secret stored as plain text.'
         );
         $this->assertSame('secret', $this->encryptor->decryptString($key));
-        
     }
     
     /** @test */
     public function the_setup_qr_code_and_secret_can_be_generated_any_amount_of_times()
     {
-        
         $this->bootApp();
         
         $this->swap(
@@ -169,27 +173,6 @@ class TwoFactorAuthSetupControllerTest extends AuthTestCase
         
         $this->assertNotSame($secret_one, $secret_two);
         $this->assertNotSame($qr_conde_one, $qr_conde_two);
-        
-    }
-    
-    protected function setUp() :void
-    {
-        
-        $this->afterApplicationCreated(function () {
-            $this->with2Fa();
-        });
-        
-        $this->afterApplicationBooted(function () {
-            $this->withHeader('Accept', 'application/json');
-            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
-            $this->swap(
-                TwoFactorAuthenticationProvider::class,
-                new TestTwoFactorProvider($this->encryptor)
-            );
-        });
-        
-        parent::setUp();
-        
     }
     
 }

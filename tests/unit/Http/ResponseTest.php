@@ -4,23 +4,36 @@ declare(strict_types=1);
 
 namespace Tests\unit\Http;
 
+use Mockery;
 use Tests\UnitTest;
 use Snicco\Http\Cookie;
+use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Http\ResponseFactory;
-use Tests\helpers\CreateUrlGenerator;
+use Snicco\Routing\UrlGenerator;
 use Psr\Http\Message\ResponseInterface;
-use Tests\helpers\CreateRouteCollection;
+use Tests\concerns\CreatePsr17Factories;
 
 class ResponseTest extends UnitTest
 {
     
-    use CreateUrlGenerator;
-    use CreateRouteCollection;
+    use CreatePsr17Factories;
     
     private ResponseFactory $factory;
+    private Response        $response;
     
-    private Response $response;
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->factory = $this->createResponseFactory();
+        $this->response = $this->factory->make();
+    }
+    
+    protected function tearDown() :void
+    {
+        parent::tearDown();
+        Mockery::close();
+    }
     
     public function testIsPsrResponse()
     {
@@ -121,40 +134,33 @@ class ResponseTest extends UnitTest
     /** @test */
     public function testIsRedirection()
     {
-        
         $response = $this->response->withStatus(299);
         $this->assertFalse($response->isRedirection());
         $this->assertTrue($response->withStatus(300)->isRedirection());
         $this->assertFalse($response->withStatus(400)->isRedirection());
-        
     }
     
     /** @test */
     public function testIsClientError()
     {
-        
         $response = $this->response->withStatus(399);
         $this->assertFalse($response->isClientError());
         $this->assertTrue($response->withStatus(400)->isClientError());
         $this->assertFalse($response->withStatus(500)->isClientError());
-        
     }
     
     /** @test */
     public function testIsServerError()
     {
-        
         $response = $this->response->withStatus(499);
         $this->assertFalse($response->isServerError());
         $this->assertTrue($response->withStatus(500)->isServerError());
         $this->assertTrue($response->withStatus(599)->isServerError());
-        
     }
     
     /** @test */
     public function testHasEmptyBody()
     {
-        
         $response = $this->factory->make();
         $this->assertTrue($response->hasEmptyBody());
         
@@ -163,7 +169,6 @@ class ResponseTest extends UnitTest
         
         $html_response = $this->factory->html('foobar');
         $this->assertFalse($html_response->hasEmptyBody());
-        
     }
     
     /** @test */
@@ -179,7 +184,6 @@ class ResponseTest extends UnitTest
     /** @test */
     public function testCookiesAreNotResetInNestedResponses()
     {
-        
         $redirect_response = $this->factory->createResponse()->withCookie(new Cookie('foo', 'bar'));
         
         $response = new Response($redirect_response);
@@ -193,15 +197,11 @@ class ResponseTest extends UnitTest
         $this->assertCount(2, $headers);
         $this->assertStringStartsWith('foo=bar', $headers[0]);
         $this->assertStringStartsWith('bar=baz', $headers[1]);
-        
     }
     
-    protected function setUp() :void
+    protected function newUrlGenerator(Request $request = null, bool $trailing_slash = false) :UrlGenerator
     {
-        parent::setUp();
-        
-        $this->factory = $this->createResponseFactory();
-        $this->response = $this->factory->make();
+        return Mockery::mock(UrlGenerator::class);
     }
     
 }

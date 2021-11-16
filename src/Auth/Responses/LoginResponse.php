@@ -12,7 +12,7 @@ class LoginResponse extends Response
 {
     
     private WP_User $user;
-    private bool     $remember;
+    private bool    $remember;
     
     public function __construct(ResponseInterface $psr7_response, WP_User $user, bool $remember = false)
     {

@@ -20,25 +20,21 @@ class ArraySessionDriver implements SessionDriver
     
     public function __construct(int $lifetime_in_seconds)
     {
-        
         $this->lifetime_in_seconds = $lifetime_in_seconds;
     }
     
     public function open($savePath, $sessionName)
     {
-        
         return true;
     }
     
     public function close()
     {
-        
         return true;
     }
     
     public function read($sessionId)
     {
-        
         if ( ! isset($this->storage[$sessionId])) {
             return '';
         }
@@ -56,7 +52,6 @@ class ArraySessionDriver implements SessionDriver
     
     public function isValid(string $id) :bool
     {
-        
         if ( ! isset($this->storage[$id])) {
             return false;
         }
@@ -70,12 +65,10 @@ class ArraySessionDriver implements SessionDriver
         }
         
         return true;
-        
     }
     
     public function write($sessionId, $data)
     {
-        
         $this->storage[$sessionId] = [
             'payload' => $data,
             'time' => $this->currentTime(),
@@ -87,7 +80,6 @@ class ArraySessionDriver implements SessionDriver
     
     public function destroy($sessionId)
     {
-        
         if (isset($this->storage[$sessionId])) {
             unset($this->storage[$sessionId]);
         }
@@ -97,7 +89,6 @@ class ArraySessionDriver implements SessionDriver
     
     public function gc($lifetime)
     {
-        
         $expiration = $this->calculateExpiration($lifetime);
         
         foreach ($this->storage as $sessionId => $session) {
@@ -111,18 +102,14 @@ class ArraySessionDriver implements SessionDriver
     
     public function setRequest(Request $request)
     {
-        
         $this->request = $request;
     }
     
     public function getAllByUserId(int $user_id) :array
     {
-        
         return collect($this->storage)
             ->map(function ($session, $key) use ($user_id) {
-                
                 if ($session['user_id'] === $user_id) {
-                    
                     $session = (object) $session;
                     $session->id = $key;
                     
@@ -130,7 +117,6 @@ class ArraySessionDriver implements SessionDriver
                 }
                 
                 return null;
-                
             })
             ->whereNotNull()
             ->values()
@@ -139,9 +125,7 @@ class ArraySessionDriver implements SessionDriver
     
     public function destroyOthersForUser(string $hashed_token, int $user_id)
     {
-        
         foreach ($this->storage as $id => $session) {
-            
             if ($session['user_id'] !== $user_id) {
                 continue;
             }
@@ -151,28 +135,22 @@ class ArraySessionDriver implements SessionDriver
             }
             
             unset($this->storage[$id]);
-            
         }
-        
     }
     
     public function destroyAllForUser(int $user_id)
     {
-        
         foreach ($this->storage as $id => $session) {
-            
             if ($session['user_id'] !== $user_id) {
                 continue;
             }
             
             unset($this->storage[$id]);
-            
         }
     }
     
     public function destroyAll()
     {
-        
         $this->storage = [];
     }
     
@@ -183,7 +161,6 @@ class ArraySessionDriver implements SessionDriver
     
     private function calculateExpiration(int $seconds) :int
     {
-        
         return $this->currentTime() - $seconds;
     }
     

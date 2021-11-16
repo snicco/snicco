@@ -2,8 +2,10 @@
 
 namespace Tests\integration\Routing;
 
+use Mockery;
 use Tests\FrameworkTestCase;
 use Snicco\Events\AdminInit;
+use Snicco\Http\Psr7\Response;
 use Snicco\Http\ResponseEmitter;
 use Snicco\Http\ResponsePreparation;
 
@@ -13,7 +15,6 @@ class AdminRoutesTest extends FrameworkTestCase
     /** @test */
     public function a_response_is_not_sent_directly_but_is_delayed_until_the_all_admin_notices_hook()
     {
-        
         $this->withRequest($this->adminRequest('GET', 'foo'));
         $this->bootApp();
         
@@ -30,19 +31,23 @@ class AdminRoutesTest extends FrameworkTestCase
         $level_after = ob_get_level();
         
         $this->assertSame($level_before, $level_after);
-        
     }
     
     /** @test */
     public function regular_admin_content_is_buffered()
     {
-        
         $this->withRequest($this->adminRequest('GET', 'foo'));
         $this->bootApp();
-        $this->swap(
-            ResponseEmitter::class,
-            new ResponseEmitter($this->app[ResponsePreparation::class])
-        );
+        
+        $emitter = Mockery::mock(ResponseEmitter::class);
+        $emitter->shouldReceive('prepare')->once()->andReturnArg(0);
+        $emitter->shouldReceive('emit')
+                ->once()
+                ->andReturnUsing(function (Response $response) {
+                    echo $response->getBody();
+                });
+        
+        $this->swap(ResponseEmitter::class, $emitter);
         
         $level_before = ob_get_level();
         AdminInit::dispatch([$this->request]);
@@ -74,13 +79,11 @@ class AdminRoutesTest extends FrameworkTestCase
             $level_after,
             "Output buffers not reset to original state."
         );
-        
     }
     
     /** @test */
     public function no_content_length_header_is_added_if_no_route_matches()
     {
-        
         $this->withRequest($this->adminRequest('GET', 'bogus'));
         $this->bootApp();
         
@@ -95,13 +98,11 @@ class AdminRoutesTest extends FrameworkTestCase
         $this->sentResponse()
              ->assertDelegatedToWordPress()
              ->assertHeaderMissing('content-length');
-        
     }
     
     /** @test */
     public function no_output_buffers_are_started_if_we_dont_have_a_matching_admin_route()
     {
-        
         $this->withRequest($this->adminRequest('GET', 'bogus'));
         $this->bootApp();
         $this->swap(
@@ -127,13 +128,11 @@ class AdminRoutesTest extends FrameworkTestCase
             ob_get_level(),
             'Output buffering was turned on for non matching admin route.'
         );
-        
     }
     
     /** @test */
     public function response_are_returned_immediately_if_its_a_redirect()
     {
-        
         $this->withRequest($this->adminRequest('GET', 'redirect'));
         $this->bootApp();
         
@@ -145,13 +144,11 @@ class AdminRoutesTest extends FrameworkTestCase
         
         $level_after = ob_get_level();
         $this->assertSame($level_before, $level_after);
-        
     }
     
     /** @test */
     public function response_are_returned_immediately_if_its_a_client_error()
     {
-        
         $this->withRequest($this->adminRequest('GET', 'client-error'));
         $this->bootApp();
         
@@ -163,13 +160,11 @@ class AdminRoutesTest extends FrameworkTestCase
         
         $level_after = ob_get_level();
         $this->assertSame($level_before, $level_after);
-        
     }
     
     /** @test */
     public function responses_are_returned_immediately_if_its_a_server_error()
     {
-        
         $this->withRequest($this->adminRequest('GET', 'server-error'));
         $this->bootApp();
         
@@ -181,7 +176,6 @@ class AdminRoutesTest extends FrameworkTestCase
         
         $level_after = ob_get_level();
         $this->assertSame($level_before, $level_after);
-        
     }
     
 }

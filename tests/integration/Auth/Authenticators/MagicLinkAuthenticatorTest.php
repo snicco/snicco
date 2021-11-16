@@ -21,10 +21,27 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
     
     private UrlGenerator $url;
     
+    protected function setUp() :void
+    {
+        $this->afterApplicationCreated(function () {
+            $this->withReplacedConfig('auth.through', [
+                MagicLinkAuthenticator::class,
+            ]);
+            $this->withReplacedConfig('auth.authenticator', 'email');
+            $this->withReplacedConfig('auth.primary_view', MagicLinkLoginView::class);
+            $this->withReplacedConfig('auth.fail2ban.enabled', true);
+        });
+        
+        $this->afterApplicationBooted(function () {
+            $this->url = $this->app->resolve(UrlGenerator::class);
+        });
+        parent::setUp();
+        $this->bootApp();
+    }
+    
     /** @test */
     public function an_invalid_magic_link_will_fail()
     {
-        
         $this->withoutExceptionHandling();
         
         $calvin = $this->createAdmin();
@@ -35,13 +52,11 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
         
         $this->assertGuest();
         $response->assertRedirectPath('/auth/login');
-        
     }
     
     /** @test */
     public function a_magic_link_for_a_non_resolvable_user_will_fail()
     {
-        
         $this->withoutExceptionHandling();
         $calvin = $this->createAdmin();
         
@@ -51,13 +66,11 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
         
         $this->assertGuest();
         $response->assertRedirectPath('/auth/login');
-        
     }
     
     /** @test */
     public function a_valid_link_will_log_the_user_in()
     {
-        
         $this->withAddedConfig('auth.features.remember_me', true);
         
         $calvin = $this->createAdmin();
@@ -76,13 +89,11 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
                       ->getStored(),
             'Auth magic link not deleted.'
         );
-        
     }
     
     /** @test */
     public function the_intended_url_from_the_query_string_param_of_the_magic_link_is_saved_to_the_session()
     {
-        
         $calvin = $this->createAdmin();
         
         // We would submit the redirect value as an urlencoded form parameter.
@@ -92,13 +103,11 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
         $response = $this->get($url);
         
         $response->assertLocation('/foo/bar?baz='.rawurlencode('foo bar'));
-        
     }
     
     /** @test */
     public function failed_attempts_will_dispatch_and_event_and_redirect_to_login()
     {
-        
         Event::fake([FailedMagicLinkAuthentication::class]);
         $this->followingRedirects();
         $calvin = $this->createAdmin();
@@ -112,17 +121,13 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
         );
         $this->assertGuest();
         Event::assertDispatched(function (FailedMagicLinkAuthentication $event) use ($calvin) {
-            
             return $event->userId() === $calvin->ID;
-            
         });
-        
     }
     
     /** @test */
     public function failed_attempts_will_be_recorded_by_fail2ban()
     {
-        
         $this->default_attributes = ['ip_address' => '127.0.0.1'];
         $this->swap(Syslogger::class, $syslogger = new TestSysLogger());
         $this->followingRedirects();
@@ -141,13 +146,11 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
             LOG_WARNING,
             "Failed authentication with magic link for user [$calvin->ID] from 127.0.0.1"
         );
-        
     }
     
     /** @test */
     public function post_requests_are_forwarded_to_the_next_authenticator()
     {
-        
         $this->withAddedConfig('auth.through', [AlwaysTrueAuthenticator::class]);
         $this->withoutMiddleware('csrf');
         
@@ -157,13 +160,11 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
         
         $response->assertRedirectToRoute('dashboard');
         $this->assertAuthenticated($calvin);
-        
     }
     
     /** @test */
     public function get_requests_without_signature_are_forwarded()
     {
-        
         $this->withAddedConfig('auth.through', [AlwaysTrueAuthenticator::class]);
         $this->withoutMiddleware('csrf');
         
@@ -173,30 +174,6 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
         
         $response->assertRedirectToRoute('dashboard');
         $this->assertAuthenticated($calvin);
-        
-    }
-    
-    protected function setUp() :void
-    {
-        
-        $this->afterApplicationCreated(function () {
-            
-            $this->withReplacedConfig('auth.through', [
-                MagicLinkAuthenticator::class,
-            ]);
-            $this->withReplacedConfig('auth.authenticator', 'email');
-            $this->withReplacedConfig('auth.primary_view', MagicLinkLoginView::class);
-            $this->withReplacedConfig('auth.fail2ban.enabled', true);
-            
-        });
-        
-        $this->afterApplicationBooted(function () {
-            
-            $this->url = $this->app->resolve(UrlGenerator::class);
-    
-        });
-        parent::setUp();
-        $this->bootApp();
     }
     
     private function routeUrl(int $user_id, string $redirect_to = null) :string

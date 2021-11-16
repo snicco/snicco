@@ -22,10 +22,8 @@ class ValidationException extends HttpException
         int $status = 400,
         Throwable $previous = null
     ) {
-        
         parent::__construct($status, $log_message, $previous);
         $this->errors = $errors;
-        
     }
     
     public static function withMessages(
@@ -34,26 +32,22 @@ class ValidationException extends HttpException
         string $log_message = 'Failed Validation',
         int $status = 400
     ) :ValidationException {
-        
         $bag = new MessageBag($messages);
         $e = new static($messages, $log_message, $status);
         $e->setMessageBag($bag);
         $e->withMessageForUsers($message_for_users);
         
         return $e;
-        
     }
     
     public function setMessageBag(
         MessageBag $message_bag,
         string $name = 'default'
     ) :ValidationException {
-        
         $this->messages = $message_bag;
         $this->message_bag_name = $name;
         
         return $this;
-        
     }
     
     public function setMessageBagName(string $name = 'default') :ValidationException

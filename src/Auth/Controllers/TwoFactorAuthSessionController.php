@@ -24,20 +24,16 @@ class TwoFactorAuthSessionController extends Controller
     
     public function create(Request $request, Abstract2FAChallengeView $view_response)
     {
-        
         $challenged_user = $request->session()->challengedUser();
         
         if ( ! $challenged_user
              || ! $this->userHasTwoFactorEnabled(
                 $this->getUserById($challenged_user)
             )) {
-            
             return $this->response_factory->redirect()->toRoute('auth.login');
-            
         }
         
         return $view_response->forRequest($request)->forUser($this->getUserById($challenged_user));
-        
     }
     
 }

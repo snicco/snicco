@@ -18,7 +18,6 @@ class NewLogin extends Event
     
     public function __construct(string $user_login, WP_User $user)
     {
-        
         $this->user_login = $user_login;
         $this->user = $user;
     }

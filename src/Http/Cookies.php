@@ -143,10 +143,8 @@ class Cookies
     
     public function add(Cookie $cookie)
     {
-        
         $this->response_cookies[$cookie->name()] = $cookie->properties();
         return $this;
-        
     }
     
     /**

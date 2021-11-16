@@ -30,26 +30,20 @@ class BladeEngine implements ViewEngineInterface
      */
     public function make($views) :ViewInterface
     {
-        
         try {
-            
             $view = $this->view_factory->first(
                 $this->normalizeNames($views)
             );
             
             return new BladeView($view);
-            
         } catch (Throwable $e) {
-            
             throw new ViewNotFoundException(
                 'Could not render any of the views: ['
                 .implode(',', Arr::wrap($views))
                 .'] with the blade engine.',
                 $e
             );
-            
         }
-        
     }
     
     /**
@@ -61,9 +55,7 @@ class BladeEngine implements ViewEngineInterface
      */
     private function normalizeNames($names) :array
     {
-        
         return collect($names)->map(fn($name) => ViewName::normalize($name))->all();
-        
     }
     
 }

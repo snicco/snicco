@@ -24,15 +24,12 @@ class TwoFactorAuthPreferenceController extends Controller
     
     public function __construct(TwoFactorAuthenticationProvider $provider, EncryptorInterface $encryptor)
     {
-        
         $this->provider = $provider;
         $this->encryptor = $encryptor;
-        
     }
     
     public function store(Request $request)
     {
-        
         $user = $request->user();
         
         if ( ! $this->userHasPending2FaSetup($user)) {
@@ -51,30 +48,25 @@ class TwoFactorAuthPreferenceController extends Controller
                 $this->twoFactorSecret($user),
                 $code
             )) {
-            
             return $this->response_factory->json(
                 [
                     'message' => 'Invalid or missing code provided.',
                 ],
                 400
             );
-            
         }
         
         $this->saveCodes($user->ID, $backup_codes = $this->generateNewRecoveryCodes());
         $this->activate2Fa($user->ID);
         
         return $this->response_factory->json($backup_codes);
-        
     }
     
     public function destroy(Request $request)
     {
-        
         $this->disableTwoFactorAuthentication($request->userId());
         
         return $this->response_factory->noContent();
-        
     }
     
 }

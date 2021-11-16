@@ -21,7 +21,6 @@ class DiscountMail extends Mailable
         return $this
             ->text('mails.new_discount')
             ->subject('We have a new discount');
-        
     }
     
     public function unique() :bool

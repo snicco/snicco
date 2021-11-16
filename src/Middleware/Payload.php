@@ -22,7 +22,6 @@ abstract class Payload extends Middleware
     
     public function contentType(array $contentType) :self
     {
-        
         $this->content_types = $contentType;
         
         return $this;
@@ -30,7 +29,6 @@ abstract class Payload extends Middleware
     
     public function methods(array $methods) :self
     {
-        
         $this->methods = $methods;
         
         return $this;
@@ -38,28 +36,19 @@ abstract class Payload extends Middleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        
         if ( ! $this->shouldParseRequest($request)) {
-            
             return $next($request);
-            
         }
         
         try {
-            
             $request = $request->withParsedBody($this->parse($request->getBody()));
             
             return $next($request);
-            
         } catch (RuntimeException $exception) {
-            
             throw new HttpException(
-                500, 'Failed to convert the request payload to JSON.',
-                $exception
+                500, $exception->getMessage()
             );
-            
         }
-        
     }
     
     /**
@@ -72,15 +61,11 @@ abstract class Payload extends Middleware
     
     private function shouldParseRequest(Request $request) :bool
     {
-        
         if ( ! in_array($request->getMethod(), $this->methods, true)) {
-            
             return false;
-            
         }
         
         return Str::contains($request->getHeaderLine('Content-Type'), $this->content_types);
-        
     }
     
 }

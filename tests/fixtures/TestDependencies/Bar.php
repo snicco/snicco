@@ -11,9 +11,7 @@ class Bar
     
     public function __toString()
     {
-        
         return $this->bar;
-        
     }
     
 }

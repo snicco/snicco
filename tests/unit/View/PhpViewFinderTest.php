@@ -4,48 +4,41 @@ declare(strict_types=1);
 
 namespace Tests\unit\View;
 
+use Tests\UnitTest;
 use Snicco\View\PhpViewFinder;
-use PHPUnit\Framework\TestCase;
 
-class PhpViewFinderTest extends TestCase
+class PhpViewFinderTest extends UnitTest
 {
     
     private PhpViewFinder $finder;
     
     public function setUp() :void
     {
-        
         parent::setUp();
         
         $this->finder = new PhpViewFinder([VIEWS_DIR]);
-        
     }
     
     /** @test */
     public function file_existence_can_be_checked()
     {
-        
         $this->assertTrue($this->finder->exists(VIEWS_DIR.DS.'view.php'));
         $this->assertTrue($this->finder->exists('view.php'));
         $this->assertTrue($this->finder->exists('view'));
         $this->assertFalse($this->finder->exists('nonexistent'));
         $this->assertFalse($this->finder->exists(''));
-        
     }
     
     /** @test */
     public function file_existence_can_be_checked_if_we_are_in_a_subdirectory()
     {
-        
         $this->assertTrue($this->finder->exists('subdirectory.subview.php'));
         $this->assertFalse($this->finder->exists('subdirectory.bogus.php'));
-        
     }
     
     /** @test */
     public function nested_files_can_be_found_by_dot_notation()
     {
-        
         // only direct child files
         $finder = new PhpViewFinder([VIEWS_DIR]);
         $this->assertTrue($finder->exists('view.php'));
@@ -60,13 +53,11 @@ class PhpViewFinderTest extends TestCase
         $this->assertFalse($finder->exists('level-one.level-two.third'));
         
         $this->assertTrue($finder->exists('level-one.level-two.level-three.third'));
-        
     }
     
     /** @test */
     public function file_paths_can_be_retrieved()
     {
-        
         $expected = VIEWS_DIR.DS.'view.php';
         
         $this->assertEquals($expected, $this->finder->filePath($expected));
@@ -79,7 +70,6 @@ class PhpViewFinderTest extends TestCase
     /** @test */
     public function absolute_file_paths_can_be_retrieved()
     {
-        
         $directory = VIEWS_DIR;
         $file = $directory.DS.'view.php';
         
@@ -92,7 +82,6 @@ class PhpViewFinderTest extends TestCase
     /** @test */
     public function files_can_be_retrieved_from_custom_directories()
     {
-        
         $subdirectory = VIEWS_DIR.DS.'subdirectory';
         $view = VIEWS_DIR.DS.'view.php';
         $subview = $subdirectory.DS.'subview.php';

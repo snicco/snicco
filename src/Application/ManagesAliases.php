@@ -16,7 +16,6 @@ trait ManagesAliases
     
     public function getAlias(string $alias) :?array
     {
-        
         if ( ! $this->hasAlias($alias)) {
             return null;
         }
@@ -26,7 +25,6 @@ trait ManagesAliases
     
     public function hasAlias(string $alias) :bool
     {
-        
         return isset($this->aliases[$alias]);
     }
     
@@ -43,7 +41,6 @@ trait ManagesAliases
      */
     public function alias(string $alias, $target, string $method = '')
     {
-        
         $this->setAlias([
             'name' => $alias,
             'target' => $target,
@@ -61,17 +58,12 @@ trait ManagesAliases
      */
     public function __call(string $method, array $parameters)
     {
-        
         if (method_exists($this, $method)) {
-            
             return call_user_func_array([$this, $method], $parameters);
-            
         }
         
         if ( ! $this->hasAlias($method)) {
-            
             throw new BadMethodCallException('Method: '.$method.' does not exist.');
-            
         }
         
         $alias = $this->aliases[$method];
@@ -94,7 +86,6 @@ trait ManagesAliases
     
     private function setAlias(array $alias) :void
     {
-        
         $name = Arr::get($alias, 'name');
         
         $this->aliases[$name] = [

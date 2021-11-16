@@ -23,9 +23,7 @@ class Dependency extends BladeComponent
     
     public function render()
     {
-        
         return $this->view('components.with-dependency');
-        
     }
     
 }

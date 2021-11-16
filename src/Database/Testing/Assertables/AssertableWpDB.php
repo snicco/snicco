@@ -16,22 +16,18 @@ class AssertableWpDB
     
     public function __construct(string $table)
     {
-        
         $this->table = $table;
         
         global $wpdb;
         $this->wpdb = $wpdb;
-        
     }
     
     public function assertRecordExists(array $column_conditions)
     {
-        
         $wheres = '';
         $values = [];
         
         foreach ($column_conditions as $column => $value) {
-            
             if (Str::endsWith($wheres, ['%f', '%d', '%s'])) {
                 $wheres .= " AND ";
             }
@@ -49,7 +45,6 @@ class AssertableWpDB
             }
             
             $values[] = $value;
-            
         }
         
         $query = $this->wpdb->prepare(
@@ -64,9 +59,7 @@ class AssertableWpDB
         $record_as_string = '';
         
         foreach ($column_conditions as $column => $value) {
-            
             $record_as_string .= "$column => $value,";
-            
         }
         
         $record_as_string = trim($record_as_string, ',');
@@ -75,12 +68,10 @@ class AssertableWpDB
             $result,
             "The record [$record_as_string] was not found in the table [$this->table]."
         );
-        
     }
     
     public function assertRecordNotExists(array $column_conditions)
     {
-        
         [$wheres, $values] = $this->compile($column_conditions);
         
         $query = $this->wpdb->prepare(
@@ -93,9 +84,7 @@ class AssertableWpDB
         $record_as_string = '';
         
         foreach ($column_conditions as $column => $value) {
-            
             $record_as_string .= "$column => $value,";
-            
         }
         
         $record_as_string = trim($record_as_string, ',');
@@ -105,7 +94,6 @@ class AssertableWpDB
             $exists,
             "The record [$record_as_string] was unexpectedly found in the table [$this->table]."
         );
-        
     }
     
     public function assertRecordEquals($conditions, array $expected)
@@ -118,12 +106,10 @@ class AssertableWpDB
         );
         
         PHPUnit::assertSame($expected, $record, 'The record does not exists as specified.');
-        
     }
     
     public function assertTotalCount(int $int)
     {
-        
         $query = "SELECT COUNT(*) FROM $this->table";
         
         $result = $this->wpdb->get_var($query);
@@ -133,12 +119,10 @@ class AssertableWpDB
             $result,
             "The expected count [$int] does not match the actual count [$result]."
         );
-        
     }
     
     public function assertCountWhere(array $column_conditions, int $count)
     {
-        
         [$wheres, $values] = $this->compile($column_conditions);
         
         $query = $this->wpdb->prepare("SELECT COUNT(*) FROM $this->table WHERE $wheres", $values);
@@ -150,17 +134,14 @@ class AssertableWpDB
             $actual_count,
             "The expected count [$count] does not match the actual count [$actual_count]."
         );
-        
     }
     
     private function compile($conditions) :array
     {
-        
         $wheres = '';
         $values = [];
         
         foreach ($conditions as $column => $value) {
-            
             if (Str::endsWith($wheres, ['%f', '%d', '%s'])) {
                 $wheres .= " AND ";
             }
@@ -178,7 +159,6 @@ class AssertableWpDB
             }
             
             $values[] = $value;
-            
         }
         
         return [$wheres, $values];
@@ -186,10 +166,8 @@ class AssertableWpDB
     
     private function format(array $data)
     {
-        
         $format = [];
         foreach ($data as $item) {
-            
             if (is_float($item)) {
                 $format[] = "%f";
             }
@@ -201,11 +179,9 @@ class AssertableWpDB
             if (is_string($item)) {
                 $format[] = "%s";
             }
-            
         }
         
         return $format;
-        
     }
     
 }

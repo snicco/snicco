@@ -5,57 +5,47 @@ declare(strict_types=1);
 namespace Snicco\Middleware\Core;
 
 use Snicco\Http\Delegate;
-use Snicco\Routing\Route;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\Middleware;
-use Snicco\Routing\RoutingResult;
 use Psr\Http\Message\ResponseInterface;
-use Snicco\Contracts\AbstractRouteCollection;
+use Snicco\Factories\RouteConditionFactory;
+use Snicco\Contracts\RouteCollectionInterface;
 
 class RoutingMiddleware extends Middleware
 {
     
-    private AbstractRouteCollection $routes;
+    private RouteCollectionInterface $routes;
+    private RouteConditionFactory    $factory;
     
-    public function __construct(AbstractRouteCollection $routes)
+    public function __construct(RouteCollectionInterface $routes, RouteConditionFactory $factory)
     {
         $this->routes = $routes;
+        $this->factory = $factory;
     }
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
+        $route = $this->routes->matchByUrlPattern($request);
         
-        $route_result = $this->routes->match($request);
-        
-        if ( ! $route_result->hasRoute() || $route_result->route()->isFallback()) {
-            
-            $condition_route_result = $this->matchByCondition($request, $route_result);
-            
+        if ($route && ! $route->isFallback()) {
+            return $next($request->withRoute($route));
         }
         
-        $route_result = (isset($condition_route_result) && $condition_route_result->hasRoute())
-            ? $condition_route_result
-            : $route_result;
+        $fallback_route = ($route && $route->isFallback()) ? $route : null;
         
-        return $next($request->withRoutingResult($route_result));
-        
-    }
-    
-    private function matchByCondition(Request $request, RoutingResult $route_result) :RoutingResult
-    {
-        
-        $possible_routes = collect($this->routes->withWildCardUrl($request->getMethod()));
-        
-        /** @var Route|null $route */
-        $route = $possible_routes->first(
-            fn(Route $route) => $route->instantiateConditions()->satisfiedBy($request)
-        );
+        if ( ! $route || $fallback_route) {
+            $route = $this->routes->matchByConditions($request, $this->factory);
+        }
         
         if ($route) {
-            $route->instantiateAction();
+            return $next($request->withRoute($route));
         }
         
-        return new RoutingResult($route, $route_result->capturedUrlSegmentValues());
+        if ($fallback_route) {
+            return $next($request->withRoute($fallback_route));
+        }
+        
+        return $next($request);
     }
     
 }

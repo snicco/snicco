@@ -17,44 +17,34 @@ class TestLogger extends AbstractLogger
     
     public function log($level, $message, array $context = [])
     {
-        
         $this->records[$level] = ['message' => $message, 'context' => $context];
         
         $this->messages[] = $message;
         $this->context[] = $context;
-        
     }
     
     public function assertHasLogEntry($message, array $context = [])
     {
-        
         Assert::assertContains($message, $this->messages);
         
         if ($context !== []) {
-            
             Assert::assertContains($context, $this->context);
-            
         }
-        
     }
     
     public function assertHasNoLogEntries(string $level = null)
     {
-        
         if ( ! $level) {
-            
             Assert::assertSame([], $this->records);
             
             return;
         }
         
         Assert::assertEmpty($this->records[$level]);
-        
     }
     
     public function assertHasLogLevelEntry(string $level, $message, array $context = [])
     {
-        
         Assert::assertArrayHasKey(
             $level,
             $this->records,
@@ -66,11 +56,8 @@ class TestLogger extends AbstractLogger
         Assert::assertSame($message, $record['message']);
         
         if ($context !== []) {
-            
             Assert::assertSame($context, $record['context']);
-            
         }
-        
     }
     
 }

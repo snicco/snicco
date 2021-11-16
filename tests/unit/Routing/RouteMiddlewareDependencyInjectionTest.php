@@ -4,113 +4,98 @@ declare(strict_types=1);
 
 namespace Tests\unit\Routing;
 
-use Mockery;
-use Tests\UnitTest;
-use Snicco\Support\WP;
-use Snicco\Events\Event;
-use Snicco\Routing\Router;
-use Snicco\View\ViewFactory;
+use Exception;
+use Snicco\Http\Delegate;
+use Tests\RoutingTestCase;
 use Snicco\Http\Psr7\Request;
-use Contracts\ContainerAdapter;
-use Snicco\Contracts\MagicLink;
-use Snicco\Routing\UrlGenerator;
-use Tests\stubs\TestViewFactory;
-use Tests\helpers\CreateTestSubjects;
-use Tests\helpers\CreateUrlGenerator;
-use Tests\helpers\CreateDefaultWpApiMocks;
-use Snicco\Testing\TestDoubles\TestMagicLink;
+use Snicco\Contracts\Middleware;
+use Psr\Http\Message\ResponseInterface;
+use Tests\fixtures\TestDependencies\Foo;
+use Tests\fixtures\TestDependencies\Bar;
 use Tests\fixtures\Middleware\MiddlewareWithDependencies;
 use Tests\fixtures\Controllers\Admin\AdminControllerWithMiddleware;
 
-class RouteMiddlewareDependencyInjectionTest extends UnitTest
+/**
+ * @todo Tests for parameters + dependencies.
+ */
+class RouteMiddlewareDependencyInjectionTest extends RoutingTestCase
 {
-    
-    use CreateTestSubjects;
-    use CreateDefaultWpApiMocks;
-    use CreateUrlGenerator;
-    
-    private ContainerAdapter $container;
-    private Router           $router;
     
     /** @test */
     public function middleware_is_resolved_from_the_service_container()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('/foo', function (Request $request) {
-                
                 return $request->body;
-                
             })->middleware(MiddlewareWithDependencies::class);
-            
         });
         
-        $request = $this->webRequest('GET', '/foo');
-        $this->runAndAssertOutput('foobar', $request);
-        
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('foobar', $request);
     }
     
     /** @test */
     public function controller_middleware_is_resolved_from_the_service_container()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('/foo', AdminControllerWithMiddleware::class.'@handle');
-            
         });
         
-        $request = $this->webRequest('GET', '/foo');
-        $this->runAndAssertOutput('foobarbaz:controller_with_middleware', $request);
-        
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('foobarbaz:controller_with_middleware', $request);
     }
     
     /** @test */
     public function after_controller_middleware_got_resolved_the_controller_is_not_instantiated_again_when_handling_the_request()
     {
-        
         $GLOBALS['test'][AdminControllerWithMiddleware::constructed_times] = 0;
         
         $this->createRoutes(function () {
-            
             $this->router->get('/foo', AdminControllerWithMiddleware::class.'@handle');
-            
         });
         
-        $request = $this->webRequest('GET', '/foo');
-        $this->runAndAssertOutput('foobarbaz:controller_with_middleware', $request);
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('foobarbaz:controller_with_middleware', $request);
         
         $this->assertRouteActionConstructedTimes(1, AdminControllerWithMiddleware::class);
-        
     }
     
-    protected function beforeTestRun()
+    /** @test */
+    public function middleware_arguments_are_passed_after_any_class_dependencies()
     {
+        $this->withMiddlewareAlias([
+            'm' => MiddlewareWithClassAndParamDependencies::class,
+        ]);
         
-        $this->container = $this->createContainer();
-        $this->routes = $this->newCachedRouteCollection();
-        $this->container->instance(UrlGenerator::class, $this->newUrlGenerator());
-        $this->container->instance(MagicLink::class, new TestMagicLink());
-        $this->container->instance(ViewFactory::class, new TestViewFactory());
-        Event::make($this->container);
-        Event::fake();
-        WP::setFacadeContainer($this->container);
+        $this->createRoutes(function () {
+            $this->router->get('/foo', function (Request $request) {
+                return $request->body;
+            })->middleware('m:BAZ,BIZ');
+        });
         
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('foobarBAZBIZ', $request);
     }
     
-    protected function beforeTearDown()
+    /** @test */
+    public function a_middleware_with_a_typed_default_value_and_no_passed_arguments_works()
     {
+        $this->withMiddlewareAlias([
+            'm' => MiddlewareWithTypedDefault::class,
+        ]);
         
-        Event::setInstance(null);
-        Mockery::close();
-        WP::reset();
+        $this->createRoutes(function () {
+            $this->router->get('/foo', function (Request $request) {
+                return 'foo';
+            })->middleware('m:BAZ,BIZ');
+        });
         
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('foo', $request);
     }
     
     private function assertRouteActionConstructedTimes(int $times, $class)
     {
-        
         $actual = $GLOBALS['test'][$class::constructed_times] ?? 0;
         
         $this->assertSame(
@@ -123,7 +108,50 @@ class RouteMiddlewareDependencyInjectionTest extends UnitTest
             .' times. Actual: '
             .$GLOBALS['test'][$class::constructed_times]
         );
+    }
+    
+}
+
+class MiddlewareWithClassAndParamDependencies extends Middleware
+{
+    
+    private Foo $foo;
+    private Bar $bar;
+    
+    public function __construct(Foo $foo, Bar $bar, $baz, $biz)
+    {
+        $this->foo = $foo;
+        $this->bar = $bar;
+        $this->baz = $baz;
+        $this->biz = $biz;
+    }
+    
+    public function handle(Request $request, Delegate $next) :ResponseInterface
+    {
+        $request->body = $this->foo->foo.$this->bar->bar.$this->baz.$this->biz;
         
+        return $next($request);
+    }
+    
+}
+
+class MiddlewareWithTypedDefault extends Middleware
+{
+    
+    private ?Foo $foo;
+    
+    public function __construct(?Foo $foo = null)
+    {
+        $this->foo = $foo;
+    }
+    
+    public function handle(Request $request, Delegate $next) :ResponseInterface
+    {
+        if ( ! is_null($this->foo)) {
+            throw new Exception('Foo is not null');
+        }
+        
+        return $next($request);
     }
     
 }

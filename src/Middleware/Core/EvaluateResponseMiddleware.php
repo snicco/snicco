@@ -27,21 +27,15 @@ class EvaluateResponseMiddleware extends Middleware
      */
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        
         $response = $next($request);
         
         if ($this->must_match_web_routes && $request->isWpFrontEnd()) {
-            
             if ($response instanceof NullResponse || $response instanceof DelegatedResponse) {
-                
                 throw new NotFoundException("404 for request path [{$request->fullPath()}]");
-                
             }
-            
         }
         
         return $response;
-        
     }
     
 }

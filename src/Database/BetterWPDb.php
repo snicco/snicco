@@ -30,75 +30,59 @@ class BetterWPDb implements BetterWPDbInterface
     
     public function __construct(wpdb $wpdb, mysqli $mysqli)
     {
-        
         $this->mysqli = $mysqli;
         $this->wpdb = $wpdb;
-        
     }
     
     public function doSelect($sql, $bindings) :array
     {
-        
         $stmt = $this->preparedStatement($sql, $bindings);
         
         $stmt->execute();
         
         return $stmt->get_result()->fetch_all(MYSQLI_ASSOC) ?? [];
-        
     }
     
     public function doStatement(string $sql, array $bindings) :bool
     {
-        
         if (empty($bindings)) {
-            
             $result = $this->mysqli->query($sql);
             
             return $result !== false;
-            
         }
         
         $stmt = $this->preparedStatement($sql, $bindings);
         
         return $stmt->execute();
-        
     }
     
     public function doAffectingStatement($sql, array $bindings) :int
     {
-        
         if (empty($bindings)) {
-            
             $this->mysqli->query($sql);
             
             return $this->mysqli->affected_rows;
-            
         }
         
         $this->preparedStatement($sql, $bindings)->execute();
         
         return $this->mysqli->affected_rows;
-        
     }
     
     public function doUnprepared(string $sql) :bool
     {
-        
         $result = $this->mysqli->query($sql);
         
         return $result !== false;
-        
     }
     
     public function doCursorSelect(string $sql, array $bindings) :mysqli_result
     {
-        
         $statement = $this->preparedStatement($sql, $bindings);
         
         $statement->execute();
         
         return $statement->get_result();
-        
     }
     
     public function startTransaction()
@@ -136,7 +120,6 @@ class BetterWPDb implements BetterWPDbInterface
      */
     private function preparedStatement($sql, $bindings, string $types = "") :mysqli_stmt
     {
-        
         $types = $types ? : str_repeat("s", count($bindings));
         $stmt = $this->mysqli->prepare($sql);
         
@@ -145,7 +128,6 @@ class BetterWPDb implements BetterWPDbInterface
         }
         
         if ( ! empty($bindings)) {
-            
             $success = $stmt->bind_param($types, ...$bindings);
             
             if ( ! $success) {
@@ -153,7 +135,6 @@ class BetterWPDb implements BetterWPDbInterface
                     $sql, $bindings, new RuntimeException($this->mysqli->error)
                 );
             }
-            
         }
         
         return $stmt;

@@ -9,8 +9,7 @@ use Snicco\Auth\Controllers\Compat\BulkPasswordResetEmailController;
 
 /** @var Router $router */
 
-$router->get('/wp-admin/users.php', [BulkPasswordResetEmailController::class, 'store'])
-       ->where('query_string', ['action' => 'resetpassword']);
+$router->get('/wp-admin/users.php', [BulkPasswordResetEmailController::class, 'store']);
 
 $router->post(
     '/wp-admin/admin-ajax.php/send-password-reset',

@@ -12,15 +12,12 @@ class TrueCondition implements ConditionInterface
     
     public function isSatisfied(Request $request) :bool
     {
-        
         return true;
     }
     
     public function getArguments(Request $request) :array
     {
-        
         return [];
-        
     }
     
 }

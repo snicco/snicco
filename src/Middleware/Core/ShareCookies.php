@@ -15,30 +15,22 @@ class ShareCookies extends Middleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        
         $response = $next($request);
         
         return $this->addCookiesToResponse($response);
-        
     }
     
-    private function addCookiesToResponse(Response $response) :ResponseInterface
+    public function addCookiesToResponse(Response $response) :ResponseInterface
     {
-        
         if (($headers = $response->cookies()->toHeaders()) === []) {
-            
             return $response;
-            
         }
         
         foreach ($headers as $header) {
-            
             $response = $response->withAddedHeader('Set-Cookie', $header);
-            
         }
         
         return $response;
-        
     }
     
 }

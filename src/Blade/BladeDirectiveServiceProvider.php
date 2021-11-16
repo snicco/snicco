@@ -20,25 +20,19 @@ class BladeDirectiveServiceProvider extends ServiceProvider
     
     function bootstrap() :void
     {
-        
         Blade::if('auth', fn() => WP::isUserLoggedIn());
         
         Blade::if('guest', fn() => ! WP::isUserLoggedIn());
         
         Blade::if('role', function ($expression) {
-            
             if ($expression === 'admin') {
-                
                 $expression = 'administrator';
-                
             }
             
             return WP::userIs($expression);
-            
         });
         
         Blade::directive('service', function ($expression) {
-            
             $segments = explode(',', preg_replace("/[()]/", '', $expression));
             
             $variable = trim($segments[0], " '\"");
@@ -50,22 +44,18 @@ class BladeDirectiveServiceProvider extends ServiceProvider
             $php = "<?php \${$variable} = {$app}::resolve({$service}::class) ?>";
             
             return $php;
-            
         });
         
         Blade::directive('csrf', function () {
-            
             /** @var Application $app */
             $app = $this->container->make(ApplicationTrait::class);
             
             $php = "<?php echo {$app}::csrfField() ?>";
             
             return $php;
-            
         });
         
         Blade::directive('method', function ($method) {
-            
             $method = str_replace("'", '', $method);
             
             /** @var Application $app */
@@ -74,9 +64,7 @@ class BladeDirectiveServiceProvider extends ServiceProvider
             $php = "<?php echo {$app}::methodField('$method') ?>";
             
             return $php;
-            
         });
-        
     }
     
 }

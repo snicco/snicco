@@ -15,56 +15,46 @@ trait ImplementsPsr7Request
     
     public function withProtocolVersion($version)
     {
-        
         return $this->new($this->psr_request->withProtocolVersion($version));
     }
     
     public function new(ServerRequestInterface $new_psr_request)
     {
-        
         return new static($new_psr_request);
-        
     }
     
     public function withHeader($name, $value)
     {
-        
         return $this->new($this->psr_request->withHeader($name, $value));
     }
     
     public function withAddedHeader($name, $value)
     {
-        
         return $this->new($this->psr_request->withAddedHeader($name, $value));
     }
     
     public function withoutHeader($name)
     {
-        
         return $this->new($this->psr_request->withoutHeader($name));
     }
     
     public function withBody(StreamInterface $body)
     {
-        
         return $this->new($this->psr_request->withBody($body));
     }
     
     public function withRequestTarget($requestTarget)
     {
-        
         return $this->new($this->psr_request->withRequestTarget($requestTarget));
     }
     
     public function withMethod($method)
     {
-        
         return $this->new($this->psr_request->withMethod($method));
     }
     
     public function withUri(UriInterface $uri, $preserveHost = false)
     {
-        
         return $this->new($this->psr_request->withUri($uri, $preserveHost));
     }
     
@@ -75,7 +65,6 @@ trait ImplementsPsr7Request
     
     public function withCookieParams(array $cookies)
     {
-        
         return $this->new($this->psr_request->withCookieParams($cookies));
     }
     
@@ -86,7 +75,6 @@ trait ImplementsPsr7Request
     
     public function withoutAttribute($name)
     {
-        
         return $this->new($this->psr_request->withoutAttribute($name));
     }
     
@@ -97,38 +85,31 @@ trait ImplementsPsr7Request
     
     public function withUploadedFiles(array $uploadedFiles)
     {
-        
         return $this->new($this->psr_request->withUploadedFiles($uploadedFiles));
     }
     
     public function getProtocolVersion()
     {
-        
         return $this->psr_request->getProtocolVersion();
-        
     }
     
     public function getHeaders()
     {
-        
         return $this->psr_request->getHeaders();
     }
     
     public function hasHeader($name)
     {
-        
         return $this->psr_request->hasHeader($name);
     }
     
     public function getHeader($name)
     {
-        
         return $this->psr_request->getHeader($name);
     }
     
     public function getHeaderLine($name)
     {
-        
         return $this->psr_request->getHeaderLine($name);
     }
     
@@ -139,25 +120,21 @@ trait ImplementsPsr7Request
     
     public function getRequestTarget()
     {
-        
         return $this->psr_request->getRequestTarget();
     }
     
     public function getMethod()
     {
-        
         return $this->psr_request->getMethod();
     }
     
     public function getUri()
     {
-        
         return $this->psr_request->getUri();
     }
     
     public function getServerParams()
     {
-        
         return $this->psr_request->getServerParams();
     }
     
@@ -168,14 +145,11 @@ trait ImplementsPsr7Request
     
     public function getQueryParams()
     {
-        
         return $this->psr_request->getQueryParams();
-        
     }
     
     public function getUploadedFiles()
     {
-        
         return $this->psr_request->getUploadedFiles();
     }
     
@@ -186,15 +160,12 @@ trait ImplementsPsr7Request
     
     public function getAttributes()
     {
-        
         return $this->psr_request->getAttributes();
     }
     
     public function getAttribute($name, $default = null)
     {
-        
         return $this->psr_request->getAttribute($name, $default);
-        
     }
     
 }

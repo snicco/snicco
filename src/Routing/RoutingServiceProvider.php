@@ -8,29 +8,23 @@ use Snicco\Support\WP;
 use Snicco\Support\FilePath;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\MagicLink;
-use Snicco\Contracts\RouteMatcher;
 use Snicco\Http\DatabaseMagicLink;
+use Snicco\Contracts\RouteUrlMatcher;
 use Snicco\Contracts\ServiceProvider;
-use Snicco\Factories\ConditionFactory;
 use Snicco\Contracts\RouteUrlGenerator;
-use Snicco\Factories\RouteActionFactory;
 use Snicco\Testing\TestDoubles\TestMagicLink;
-use Snicco\Contracts\AbstractRouteCollection;
 use Snicco\Contracts\RouteRegistrarInterface;
 use Snicco\Routing\Conditions\CustomCondition;
 use Snicco\Routing\Conditions\NegateCondition;
 use Snicco\Routing\Conditions\PostIdCondition;
-use Snicco\Routing\FastRoute\FastRouteMatcher;
+use Snicco\Contracts\RouteCollectionInterface;
 use Snicco\Routing\Conditions\PostSlugCondition;
 use Snicco\Routing\Conditions\PostTypeCondition;
-use Snicco\Routing\Conditions\AdminAjaxCondition;
-use Snicco\Routing\Conditions\AdminPageCondition;
+use Snicco\Routing\FastRoute\FastRouteUrlMatcher;
 use Snicco\Routing\Conditions\PostStatusCondition;
 use Snicco\Routing\Conditions\QueryStringCondition;
 use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
-use Snicco\Routing\FastRoute\CachedFastRouteMatcher;
 use Snicco\Routing\Conditions\PostTemplateCondition;
-use Snicco\Routing\Conditions\RequestAttributeCondition;
 
 class RoutingServiceProvider extends ServiceProvider
 {
@@ -47,11 +41,6 @@ class RoutingServiceProvider extends ServiceProvider
         'post_template' => PostTemplateCondition::class,
         'post_type' => PostTypeCondition::class,
         'query_string' => QueryStringCondition::class,
-        'request' => RequestAttributeCondition::class,
-        
-        // These two are only used to the url generation functionality
-        'admin_page' => AdminPageCondition::class,
-        'admin_ajax' => AdminAjaxCondition::class,
     ];
     
     public function register() :void
@@ -99,40 +88,24 @@ class RoutingServiceProvider extends ServiceProvider
     
     private function bindRouteMatcher() :void
     {
-        $this->container->singleton(RouteMatcher::class, function () {
-            
-            if ( ! $this->config->get('routing.cache', false)) {
-                return new FastRouteMatcher();
-            }
-            
-            $cache_dir = $this->config->get('routing.cache_dir', '');
-            
-            return new CachedFastRouteMatcher(
-                new FastRouteMatcher(),
-                FilePath::addTrailingSlash($cache_dir).'__generated_route_map'
-            );
-        });
+        $this->container->singleton(RouteUrlMatcher::class, FastRouteUrlMatcher::class);
     }
     
     private function bindRouteCollection() :void
     {
-        $this->container->singleton(AbstractRouteCollection::class, function () {
-            
+        $this->container->singleton(RouteCollectionInterface::class, function () {
             if ( ! $this->config->get('routing.cache', false)) {
                 return new RouteCollection(
-                    $this->container->make(RouteMatcher::class),
-                    $this->container->make(ConditionFactory::class),
-                    $this->container->make(RouteActionFactory::class)
+                    $this->container->make(RouteUrlMatcher::class),
+                    null
                 );
             }
             
             $cache_dir = $this->config->get('routing.cache_dir', '');
             
-            return new CachedFastRouteCollection(
-                $this->container->make(RouteMatcher::class),
-                $this->container->make(ConditionFactory::class),
-                $this->container->make(RouteActionFactory::class),
-                FilePath::addTrailingSlash($cache_dir).'__generated_route_collection',
+            return new RouteCollection(
+                $this->container->make(RouteUrlMatcher::class),
+                FilePath::addTrailingSlash($cache_dir).'__generated:snicco_wp_route_collection',
             );
         });
     }
@@ -141,8 +114,7 @@ class RoutingServiceProvider extends ServiceProvider
     {
         $this->container->singleton(Router::class, function () {
             return new Router(
-                $this->container,
-                $this->container->make(AbstractRouteCollection::class),
+                $this->container->make(RouteCollectionInterface::class),
                 $this->withSlashes()
             );
         });
@@ -150,19 +122,12 @@ class RoutingServiceProvider extends ServiceProvider
     
     private function bindRouteUrlGenerator() :void
     {
-        $this->container->singleton(RouteUrlGenerator::class, function () {
-            return new FastRouteUrlGenerator(
-                $this->container->make(
-                    AbstractRouteCollection::class
-                )
-            );
-        });
+        $this->container->singleton(RouteUrlGenerator::class, FastRouteUrlGenerator::class);
     }
     
     private function bindMagicLink()
     {
         $this->container->singleton(MagicLink::class, function () {
-            
             if ($this->app->isRunningUnitTest()) {
                 return new TestMagicLink();
             }
@@ -177,7 +142,6 @@ class RoutingServiceProvider extends ServiceProvider
     private function bindUrlGenerator() :void
     {
         $this->container->singleton(UrlGenerator::class, function () {
-            
             $generator = new UrlGenerator(
                 $this->container->make(RouteUrlGenerator::class),
                 $this->container->make(MagicLink::class),
@@ -193,7 +157,6 @@ class RoutingServiceProvider extends ServiceProvider
     private function bindRouteRegistrar()
     {
         $this->container->singleton(RouteRegistrarInterface::class, function () {
-            
             $registrar = new RouteRegistrar(
                 $this->container->make(Router::class),
             );
@@ -202,7 +165,7 @@ class RoutingServiceProvider extends ServiceProvider
                 return $registrar;
             }
             
-            return new CacheFileRouteRegistrar($registrar);
+            return new CachedRouteRegistrar($registrar);
         });
     }
     
@@ -221,7 +184,6 @@ class RoutingServiceProvider extends ServiceProvider
      */
     private function bindRoutePresets()
     {
-        
         $this->config->extend('routing.presets.web', [
             'middleware' => ['web'],
         ]);
@@ -239,7 +201,6 @@ class RoutingServiceProvider extends ServiceProvider
         ]);
         
         foreach ($this->config->get('routing.api.endpoints', []) as $name => $prefix) {
-            
             $this->config->extend(
                 'routing.presets.'.$name,
                 [
@@ -248,9 +209,7 @@ class RoutingServiceProvider extends ServiceProvider
                     'middleware' => ['api'],
                 ]
             );
-            
         }
-        
     }
     
 }

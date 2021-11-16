@@ -17,7 +17,6 @@ class PasswordAuthenticator extends Authenticator
     
     public function attempt(Request $request, $next)
     {
-        
         if ( ! $this->shouldHandle($request)) {
             return $next($request);
         }
@@ -26,23 +25,18 @@ class PasswordAuthenticator extends Authenticator
         $password = $request->post('pwd');
         
         if ( ! ($user = $this->getUserByLogin($login)) instanceof WP_User) {
-            
             FailedPasswordAuthentication::dispatch([$request, $login, $password, $user_id = null]);
             
             return $this->unauthenticated();
-            
         }
         
         if ( ! $this->isValidPassword($password, $user)) {
-            
             FailedPasswordAuthentication::dispatch([$request, $login, $password, $user->ID]);
             
             return $this->unauthenticated();
-            
         }
         
         return $this->login($user, $request->boolean('remember_me'));
-        
     }
     
     private function shouldHandle(Request $request) :bool

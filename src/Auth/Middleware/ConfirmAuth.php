@@ -15,34 +15,26 @@ class ConfirmAuth extends Middleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        
         $session = $request->session();
         
         if ( ! $session->hasValidAuthConfirmToken()) {
-            
             $this->setIntendedUrl($request, $session);
-            
+            $session->remove('auth.confirm');
             return $this->response_factory->redirect()->toRoute('auth.confirm');
-            
         }
         
         return $next($request);
-        
     }
     
     private function setIntendedUrl(Request $request, Session $session)
     {
-        
         if ($request->isGet() && ! $request->isAjax()) {
-            
             $session->setIntendedUrl($request->fullPath());
             
             return;
-            
         }
         
         $session->setIntendedUrl($session->getPreviousUrl());
-        
     }
     
 }

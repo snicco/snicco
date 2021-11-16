@@ -25,29 +25,23 @@ class MagicLinkAuthenticator extends Authenticator
     
     public function attempt(Request $request, $next)
     {
-        
         if ( ! $request->isGet() || ! $request->filled('signature')) {
-            
             return $next($request);
-            
         }
         
         $valid = $this->magic_link->hasValidSignature($request, true);
         $user_id = $request->query('user_id');
         
         if ( ! $valid || ! ($user = $this->getUserById($user_id)) instanceof WP_User) {
-            
             FailedMagicLinkAuthentication::dispatch([$request, $user_id]);
             
             return $this->unauthenticated();
-            
         }
         
         $this->magic_link->invalidate($request->fullUrl());
         
         // Whether remember_me will be allowed is determined by the config value in AuthSessionController
         return $this->login($user, true);
-        
     }
     
 }

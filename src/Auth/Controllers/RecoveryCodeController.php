@@ -33,12 +33,10 @@ class RecoveryCodeController extends Controller
     
     public function update(Request $request)
     {
-        
         $codes = $this->generateNewRecoveryCodes();
         $this->saveCodes($request->userId(), $codes);
         
         return $this->response_factory->json($codes);
-        
     }
     
 }

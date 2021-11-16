@@ -41,15 +41,12 @@ class Session
     
     public function __construct(SessionDriver $handler, int $token_strength_in_bytes = 32)
     {
-        
         $this->driver = $handler;
         $this->token_strength_in_bytes = $token_strength_in_bytes;
-        
     }
     
     public function start(string $session_id = '') :bool
     {
-        
         $this->setId($session_id);
         $this->loadDataFromDriver();
         
@@ -62,29 +59,24 @@ class Session
         $this->initial_attributes = $this->attributes;
         
         return $this->started;
-        
     }
     
     public function getId() :string
     {
-        
         return $this->id;
     }
     
     public function setId(string $id) :Session
     {
-        
         $this->id = $this->isValidId($id)
             ? $id
             : $this->generateSessionId();
         
         return $this;
-        
     }
     
     public function save() :void
     {
-        
         $this->ageFlashData();
         
         $this->setLastActivity($this->currentTime());
@@ -99,19 +91,16 @@ class Session
     
     public function forget($keys) :void
     {
-        
         Arr::forget($this->attributes, $keys);
     }
     
     public function get(string $key, $default = null)
     {
-        
         return Arr::get($this->attributes, $key, $default);
     }
     
     public function put($key, $value = null) :void
     {
-        
         if ( ! is_array($key)) {
             $key = [$key => $value];
         }
@@ -123,9 +112,7 @@ class Session
     
     public function setLastActivity(int $timestamp)
     {
-        
         $this->put('_last_activity', $timestamp);
-        
     }
     
     public function wasChanged() :bool
@@ -140,26 +127,21 @@ class Session
     
     public function all() :array
     {
-        
         return $this->attributes;
     }
     
     public function only($keys) :array
     {
-        
         return Arr::only($this->attributes, $keys);
-        
     }
     
     public function missing($key) :bool
     {
-        
         return ! $this->exists($key);
     }
     
     public function exists($key) :bool
     {
-        
         $placeholder = new stdClass;
         
         return ! collect(
@@ -167,14 +149,12 @@ class Session
                 ? $key
                 : func_get_args()
         )->contains(function ($key) use ($placeholder) {
-            
             return $this->get($key, $placeholder) === $placeholder;
         });
     }
     
     public function hasOldInput(string $key = null) :bool
     {
-        
         $old = $this->getOldInput($key);
         
         return is_null($key)
@@ -184,27 +164,22 @@ class Session
     
     public function getOldInput(string $key = null, $default = null)
     {
-        
         return Arr::get($this->get('_old_input', []), $key, $default);
     }
     
     public function replace(array $attributes) :void
     {
-        
         $this->put($attributes);
     }
     
     public function remember(string $key, Closure $callback)
     {
-        
         if ( ! is_null($value = $this->get($key))) {
             return $value;
         }
         
         return tap($callback(), function ($value) use ($key) {
-            
             $this->put($key, $value);
-            
         });
     }
     
@@ -215,7 +190,6 @@ class Session
     
     public function increment(string $key, int $amount = 1, int $start_value = 0) :int
     {
-        
         if ( ! $this->has($key)) {
             $this->put($key, $start_value);
         }
@@ -232,7 +206,6 @@ class Session
                 ? $key
                 : func_get_args()
         )->contains(function ($key) {
-            
             return is_null($this->get($key));
         });
     }
@@ -256,7 +229,6 @@ class Session
     
     public function push(string $key, $value) :void
     {
-        
         $array = $this->get($key, []);
         
         $array[] = $value;
@@ -273,7 +245,6 @@ class Session
     
     public function keep($keys = null) :void
     {
-        
         $this->mergeNewFlashes(
             $keys = is_array($keys)
                 ? $keys
@@ -306,7 +277,6 @@ class Session
     
     public function flush() :void
     {
-        
         $this->attributes = [];
     }
     
@@ -319,48 +289,38 @@ class Session
     
     public function isStarted() :bool
     {
-        
         return $this->started;
     }
     
     public function setUserId(int $user_id)
     {
-        
         $this->put('_user.id', $user_id);
-        
     }
     
     public function isValidId(string $id) :bool
     {
-        
         return (strlen($id) === 2 * $this->token_strength_in_bytes)
                && ctype_alnum($id)
                && $this->getDriver()->isValid($this->hash($id));
-        
     }
     
     public function getPreviousUrl(?string $fallback = '/') :?string
     {
-        
         return $this->get('_url.previous', $fallback);
     }
     
     public function setPreviousUrl(string $url) :void
     {
-        
         $this->put('_url.previous', $url);
     }
     
     public function getIntendedUrl(string $default = '')
     {
-        
         return $this->pull('_url.intended', $default);
-        
     }
     
     public function pull(string $key, $default = null)
     {
-        
         return Arr::pull($this->attributes, $key, $default);
     }
     
@@ -369,25 +329,19 @@ class Session
      */
     public function confirmAuthUntil($delay)
     {
-        
         $ts = $this->availableAt($delay);
         
         $this->put('auth.confirm.until', $ts);
-        
     }
     
     public function hasValidAuthConfirmToken() :bool
     {
-        
         return Carbon::now()->getTimestamp() < $this->get('auth.confirm.until', 0);
-        
     }
     
     public function setIntendedUrl(string $encoded_url)
     {
-        
         $this->put('_url.intended', $encoded_url);
-        
     }
     
     /**
@@ -420,7 +374,6 @@ class Session
     
     public function allowAccessToRoute(string $path, $expires)
     {
-        
         $allowed = $this->allowedRoutes();
         
         $allowed[$path] = (int) $expires;
@@ -430,7 +383,6 @@ class Session
     
     public function canAccessRoute(string $path) :bool
     {
-        
         $expires = $this->allowedRoutes()[$path] ?? null;
         
         if ( ! $expires) {
@@ -438,20 +390,16 @@ class Session
         }
         
         if ($expires < $this->currentTime()) {
-            
             $this->remove('_allow_routes.'.$path);
             
             return false;
-            
         }
         
         return true;
-        
     }
     
     public function remove(string $key)
     {
-        
         return Arr::pull($this->attributes, $key);
     }
     
@@ -460,17 +408,13 @@ class Session
      */
     public function setNextRotation($delay)
     {
-        
         $ts = $this->availableAt($delay);
         $this->put('_rotate_at', $ts);
-        
     }
     
     public function rotationDueAt() :int
     {
-        
         return $this->get('_rotate_at', 0);
-        
     }
     
     /**
@@ -478,37 +422,28 @@ class Session
      */
     public function setAbsoluteTimeout($delay)
     {
-        
         $ts = $this->availableAt($delay);
         $this->put('_expires_at', $ts);
-        
     }
     
     public function absoluteTimeout() :int
     {
-        
         return $this->get('_expires_at', 0);
-        
     }
     
     public function getAllForUser() :array
     {
-        
         $sessions = $this->getDriver()->getAllByUserId($this->userId());
         
         $collection = [];
         
         foreach ($sessions as $session) {
-            
             $payload = @unserialize($this->prepareForUnserialize($session->payload));
             
             if ($payload !== false && ! is_null($payload) && is_array($payload)) {
-                
                 $session->payload = $payload;
-                
             }
             else {
-                
                 $session->payload = [];
             }
             
@@ -516,44 +451,35 @@ class Session
         }
         
         return $collection;
-        
     }
     
     public function getDriver() :SessionDriver
     {
-        
         return $this->driver;
     }
     
     public function userId()
     {
-        
         return $this->get('_user.id', 0);
-        
     }
     
     public function isIdle(int $idle_timeout) :bool
     {
-        
         return ($this->currentTime() - $this->lastActivity()) > $idle_timeout;
     }
     
     public function lastActivity() :int
     {
-        
         return $this->get('_last_activity', 0);
-        
     }
     
     public function hasRememberMeToken() :bool
     {
-        
         return $this->get('auth.has_remember_token', false);
     }
     
     public function challengedUser() :int
     {
-        
         return $this->get('auth.2fa.challenged_user', 0);
     }
     
@@ -579,20 +505,16 @@ class Session
     
     private function loadDataFromDriver()
     {
-        
         $data = $this->readFromDriver();
         
         $this->loaded_data_from_handler = $data;
         
         $this->attributes = Arr::mergeRecursive($this->attributes, $data);
-        
     }
     
     private function readFromDriver() :array
     {
-        
         if ($data = $this->driver->read($this->hash($this->getId()))) {
-            
             $data = @unserialize($this->prepareForUnserialize($data));
             
             if ($data !== false && ! is_null($data) && is_array($data)) {
@@ -605,7 +527,6 @@ class Session
     
     private function hash(string $id)
     {
-        
         if (function_exists('hash')) {
             return hash('sha256', $id);
         }
@@ -616,18 +537,15 @@ class Session
     
     private function ageFlashData() :void
     {
-        
         $this->forget($this->get('_flash.old', []));
         
         $this->put('_flash.old', $this->get('_flash.new', []));
         
         $this->put('_flash.new', []);
-        
     }
     
     private function mergeNewFlashes(array $keys) :void
     {
-        
         $values = array_unique(array_merge($this->get('_flash.new', []), $keys));
         
         $this->put('_flash.new', $values);
@@ -635,13 +553,11 @@ class Session
     
     private function removeFromOldFlashData(array $keys) :void
     {
-        
         $this->put('_flash.old', array_diff($this->get('_flash.old', []), $keys));
     }
     
     private function migrate(bool $destroy_old = true) :bool
     {
-        
         if ($destroy_old) {
             $this->driver->destroy($this->hash($this->getId()));
         }
@@ -653,9 +569,7 @@ class Session
     
     private function generateSessionId() :string
     {
-        
         return bin2hex(random_bytes($this->token_strength_in_bytes));
-        
     }
     
     private function toMessageBag($provider) :MessageBag

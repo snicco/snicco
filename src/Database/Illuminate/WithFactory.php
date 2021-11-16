@@ -19,12 +19,10 @@ trait WithFactory
     
     protected static function newFactory() :Factory
     {
-        
         $model = Str::afterLast(static::class, '\\');
         $factory = $model.'Factory';
         $factory = static::$factory_namespace.'\\'.$factory;
         return new $factory();
-        
     }
     
 }

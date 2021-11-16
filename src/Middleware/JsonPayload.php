@@ -20,31 +20,24 @@ class JsonPayload extends Payload
         $json = trim((string) $stream);
         
         if ($json === '') {
-            
             return [];
-            
         }
         
         return $this->decode($json);
-        
     }
     
     private function decode(string $json)
     {
-        
         $data = json_decode($json, true, 512, JSON_OBJECT_AS_ARRAY);
         $code = json_last_error();
         
         if ($code !== JSON_ERROR_NONE) {
-            
             throw new RuntimeException(
-                sprintf('JSON: %s', json_last_error_msg())
+                sprintf('JSON: %s. Payload: %s.', json_last_error_msg(), $json)
             );
-            
         }
         
         return $data;
-        
     }
     
 }

@@ -21,7 +21,6 @@ class HttpKernelResponsesTest extends FrameworkTestCase
         $this->assertNull($response_emitter->response);
         $this->assertFalse($response_emitter->sent_headers);
         $this->assertFalse($response_emitter->sent_body);
-        
     }
     
     /** @test */
@@ -35,7 +34,6 @@ class HttpKernelResponsesTest extends FrameworkTestCase
         
         $this->assertTrue($response_emitter->sent_headers);
         $this->assertFalse($response_emitter->sent_body);
-        
     }
     
 }

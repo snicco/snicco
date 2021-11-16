@@ -16,7 +16,6 @@ trait SendsPasswordResetMails
     
     private function sendResetMail(WP_User $user)
     {
-        
         $magic_link = $this->url->signedRoute(
             'auth.reset.password',
             ['query' => ['id' => $user->ID]],
@@ -25,7 +24,6 @@ trait SendsPasswordResetMails
         );
         
         return $this->mail->to($user)->send(new ResetPasswordMail($user, $magic_link, 300));
-        
     }
     
 }

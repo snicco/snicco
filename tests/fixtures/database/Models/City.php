@@ -15,7 +15,6 @@ class City extends TestModel
     public function activities()
     {
         return $this->belongsToMany(Activity::class);
-        
     }
     
 }

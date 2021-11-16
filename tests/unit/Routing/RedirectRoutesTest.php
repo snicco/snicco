@@ -4,221 +4,146 @@ declare(strict_types=1);
 
 namespace Tests\unit\Routing;
 
-use Mockery;
-use Tests\UnitTest;
-use Snicco\Support\WP;
-use Snicco\Events\Event;
-use Snicco\Routing\Router;
+use Tests\RoutingTestCase;
 use Snicco\Http\Redirector;
-use Snicco\View\ViewFactory;
 use Tests\stubs\HeaderStack;
-use Contracts\ContainerAdapter;
-use Snicco\Http\ResponseFactory;
-use Snicco\Routing\UrlGenerator;
-use Tests\stubs\TestViewFactory;
-use Tests\helpers\CreateTestSubjects;
-use Tests\helpers\CreateUrlGenerator;
 use Snicco\Contracts\AbstractRedirector;
-use Tests\helpers\CreateDefaultWpApiMocks;
 
-class RedirectRoutesTest extends UnitTest
+class RedirectRoutesTest extends RoutingTestCase
 {
     
-    use CreateTestSubjects;
-    use CreateDefaultWpApiMocks;
-    use CreateUrlGenerator;
-    
-    private ContainerAdapter $container;
-    private Router           $router;
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bindRedirector();
+    }
     
     /** @test */
     public function a_redirect_route_can_be_created()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->redirect('/foo', '/bar');
-            
         });
-        $this->newRedirector();
         
-        $request = $this->webRequest('GET', '/foo');
-        $this->runAndAssertOutput('', $request);
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('', $request);
         
         HeaderStack::assertHasStatusCode(302);
         HeaderStack::assertContains('Location', '/bar');
-        
     }
     
     /** @test */
     public function a_permanent_redirect_can_be_created()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->permanentRedirect('/foo', '/bar');
-            
         });
-        $this->newRedirector();
         
-        $request = $this->webRequest('GET', '/foo');
-        $this->runAndAssertOutput('', $request);
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('', $request);
         
         HeaderStack::assertHasStatusCode(301);
         HeaderStack::assertContains('Location', '/bar');
-        
     }
     
     /** @test */
     public function a_temporary_redirect_can_be_created()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->temporaryRedirect('/foo', '/bar');
-            
         });
         
-        $this->newRedirector();
-        
-        $request = $this->webRequest('GET', '/foo');
-        $this->runAndAssertOutput('', $request);
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('', $request);
         
         HeaderStack::assertHasStatusCode(307);
         HeaderStack::assertContains('Location', '/bar');
-        
     }
     
     /** @test */
     public function a_redirect_to_an_external_url_can_be_created()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->redirectAway('/foo', 'https://foobar.com/', 303);
-            
         });
         
-        $this->newRedirector();
-        
-        $request = $this->webRequest('GET', '/foo');
-        $this->runAndAssertOutput('', $request);
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('', $request);
         
         HeaderStack::assertHasStatusCode(303);
         HeaderStack::assertContains('Location', 'https://foobar.com/');
-        
     }
     
     /** @test */
     public function a_redirect_to_a_route_can_be_created()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('/base/{param}', function () {
                 //
             })->name('base');
             
             $this->router->redirectToRoute('/foo', 'base', ['param' => 'baz'], 304);
-            
         });
         
-        $this->newRedirector();
-        
-        $request = $this->webRequest('GET', '/foo');
-        $this->runAndAssertOutput('', $request);
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('', $request);
         
         HeaderStack::assertHasStatusCode(304);
         HeaderStack::assertContains('Location', 'base/baz');
-        
     }
     
     /** @test */
     public function regex_based_redirects_works()
     
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->redirect('base/{slug}', 'base/new')
                          ->andEither('slug', ['foo', 'bar']);
             
             $this->router->get('base/biz', function () {
-                
                 return 'biz';
             });
             
             $this->router->get('base/{path}', function (string $path) {
-                
                 return $path;
             })->andEither('path', ['bam', 'boom']);
-            
         });
         
-        $this->newRedirector();
-        
-        $request = $this->webRequest('GET', 'base/foo');
-        $this->runAndAssertOutput('', $request);
+        $request = $this->frontendRequest('GET', 'base/foo');
+        $this->assertResponse('', $request);
         HeaderStack::assertHasStatusCode(302);
         HeaderStack::assertContains('Location', '/base/new');
         HeaderStack::reset();
         
-        $request = $this->webRequest('GET', 'base/bar');
-        $this->runAndAssertOutput('', $request);
+        $request = $this->frontendRequest('GET', 'base/bar');
+        $this->assertResponse('', $request);
         HeaderStack::assertHasStatusCode(302);
         HeaderStack::assertContains('Location', '/base/new');
         HeaderStack::reset();
         
-        $request = $this->webRequest('GET', 'base/baz');
-        $this->runAndAssertOutput('', $request);
+        $request = $this->frontendRequest('GET', 'base/baz');
+        $this->assertResponse('', $request);
         HeaderStack::assertNoStatusCodeSent();
         HeaderStack::reset();
         
-        $request = $this->webRequest('GET', 'base/biz');
-        $this->runAndAssertOutput('biz', $request);
+        $request = $this->frontendRequest('GET', 'base/biz');
+        $this->assertResponse('biz', $request);
         HeaderStack::assertHasStatusCode(200);
         HeaderStack::reset();
         
-        $request = $this->webRequest('GET', 'base/boom');
-        $this->runAndAssertOutput('boom', $request);
+        $request = $this->frontendRequest('GET', 'base/boom');
+        $this->assertResponse('boom', $request);
         HeaderStack::assertHasStatusCode(200);
         HeaderStack::reset();
         
-        $request = $this->webRequest('GET', 'base/bam');
-        $this->runAndAssertOutput('bam', $request);
+        $request = $this->frontendRequest('GET', 'base/bam');
+        $this->assertResponse('bam', $request);
         HeaderStack::assertHasStatusCode(200);
         HeaderStack::reset();
-        
     }
     
-    protected function beforeTestRun()
+    private function bindRedirector()
     {
-        
-        $this->container = $this->createContainer();
-        $this->routes = $this->newCachedRouteCollection();
-        $this->container->instance(UrlGenerator::class, $this->newUrlGenerator());
-        $this->container->instance(ViewFactory::class, new TestViewFactory());
-        $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
-        Event::make($this->container);
-        Event::fake();
-        WP::setFacadeContainer($this->container);
-        HeaderStack::reset();
-        
-    }
-    
-    protected function beforeTearDown()
-    {
-        
-        Event::setInstance(null);
-        Mockery::close();
-        WP::reset();
-        HeaderStack::reset();
-        
-    }
-    
-    private function newRedirector()
-    {
-        
         $this->container->instance(
             AbstractRedirector::class,
             new Redirector($this->newUrlGenerator(), $this->psrResponseFactory())

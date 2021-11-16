@@ -27,44 +27,35 @@ class PhpView implements PhpViewInterface
     
     public function __construct(PhpViewEngine $engine, string $name, string $path)
     {
-        
         $this->engine = $engine;
         $this->name = $name;
         $this->filepath = $path;
         $this->parent_view = $this->parseParentView();
-        
     }
     
     public function path() :string
     {
-        
         return $this->filepath;
     }
     
     public function parent() :?PhpViewInterface
     {
-        
         return $this->parent_view;
     }
     
     public function name() :string
     {
-        
         return $this->name;
     }
     
     public function toResponsable() :string
     {
-        
         return $this->toString();
-        
     }
     
     public function toString() :string
     {
-        
         return $this->engine->renderPhpView($this);
-        
     }
     
     /**
@@ -75,7 +66,6 @@ class PhpView implements PhpViewInterface
      */
     public function with($key, $value = null) :ViewInterface
     {
-        
         if (is_array($key)) {
             $this->context = array_merge($this->context(), $key);
         }
@@ -94,7 +84,6 @@ class PhpView implements PhpViewInterface
      */
     public function context(string $key = null, $default = null)
     {
-        
         if ($key === null) {
             return $this->context;
         }
@@ -109,7 +98,6 @@ class PhpView implements PhpViewInterface
      */
     private function parseParentView() :?PhpView
     {
-        
         if (empty($file_headers = $this->parseFileHeaders())) {
             return null;
         }
@@ -117,12 +105,10 @@ class PhpView implements PhpViewInterface
         $parent_view_name = trim($file_headers[0]);
         
         return $this->engine->make($parent_view_name);
-        
     }
     
     private function parseFileHeaders() :array
     {
-        
         return array_filter(
             WP::fileHeaderData(
                 $this->filepath,

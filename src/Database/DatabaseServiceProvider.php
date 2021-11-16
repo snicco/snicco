@@ -24,7 +24,6 @@ class DatabaseServiceProvider extends ServiceProvider
     
     public function register() :void
     {
-        
         $illuminate_container = $this->parseIlluminateContainer();
         
         $this->bindConfig();
@@ -35,7 +34,6 @@ class DatabaseServiceProvider extends ServiceProvider
         $this->bindDatabaseFactory();
         $this->bindIlluminateDispatcher($illuminate_container);
         $this->setIlluminateBindings($illuminate_container);
-        
     }
     
     function bootstrap() :void
@@ -45,7 +43,6 @@ class DatabaseServiceProvider extends ServiceProvider
     
     private function bindConfig()
     {
-        
         $this->config->extend('database.connections', [
             
             'wp_connection' => [
@@ -60,15 +57,12 @@ class DatabaseServiceProvider extends ServiceProvider
     
     private function bindIlluminateDispatcher(IlluminateContainerContract $illuminate_container)
     {
-        
         $illuminate_container->bindIf('events', fn() => new Dispatcher(), true);
-        
     }
     
     private function bindConnectionResolver()
     {
         $this->container->singleton(ConnectionResolverInterface::class, function () {
-            
             $connections = $this->config->get('database.connections');
             
             $r = new WPConnectionResolver(
@@ -78,7 +72,6 @@ class DatabaseServiceProvider extends ServiceProvider
             $r->setDefaultConnection('wp_connection');
             
             return $r;
-            
         });
     }
     
@@ -86,57 +79,43 @@ class DatabaseServiceProvider extends ServiceProvider
     {
         // allow overwriting in tests since this gets resolved when eloquent boots in the bootstrap method.
         if ( ! isset($this->container[BetterWPDbInterface::class])) {
-            
             // Class names only.
             $this->container->instance(BetterWPDbInterface::class, BetterWPDb::class);
-            
         }
-        
     }
     
     private function bindSchemaBuilder()
     {
-        
         $this->container->singleton(
             MySqlSchemaBuilder::class,
             fn() => new MySqlSchemaBuilder($this->resolveConnection())
         );
-        
     }
     
     private function resolveConnection(string $name = null)
     {
-        
         return $this->container->make(ConnectionResolverInterface::class)->connection($name);
-        
     }
     
     private function bindWPConnection()
     {
-        
         $this->container->singleton(WPConnectionInterface::class, function () {
-            
             return fn(string $name = null) => $this->resolveConnection($name);
-            
         });
     }
     
     private function bindDatabaseFactory()
     {
-        
         $this->container->singleton(FakerGenerator::class, function () {
-            
             $locale = $this->config->get('database.faker_locale', 'en_US');
             
             $faker = Factory::create($locale);
             $faker->unique(true);
             
             return $faker;
-            
         });
         
         EloquentFactory::guessFactoryNamesUsing(function (string $model) {
-            
             $namespace = $this->config->get('database.factory_namespace', 'Database\\Factories\\');
             $model = class_basename($model);
             
@@ -144,14 +123,11 @@ class DatabaseServiceProvider extends ServiceProvider
         });
         
         EloquentFactory::guessModelNamesUsing(function ($factory) {
-            
             $namespace = $this->config->get('database.model_namespace', 'App\\Models\\');
             $model = class_basename($factory);
             
             return str_replace('Factory', '', $namespace.$model);
-            
         });
-        
     }
     
     private function bootEloquent()

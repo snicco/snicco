@@ -7,7 +7,6 @@ use Snicco\Routing\Router;
 use Tests\fixtures\Middleware\GlobalMiddleware;
 
 TestApp::route()->group(function (Router $router) {
-    
     $router->get('foo', function () {
         return 'foo';
     })->middleware('custom_group');
@@ -15,5 +14,4 @@ TestApp::route()->group(function (Router $router) {
     $router->get('route-with-global', function () {
         return 'route-with-global';
     })->middleware(GlobalMiddleware::class);
-    
 }, ['prefix' => 'middleware']);

@@ -13,11 +13,8 @@ class GlobalContext
     
     public function add(string $name, $context)
     {
-        
         if (is_array($context)) {
-            
             $context = new VariableBag($context);
-            
         }
         
         $this->context[$name] = $context;
@@ -26,11 +23,9 @@ class GlobalContext
     public function get() :array
     {
         return array_map(function ($context) {
-            
             return is_callable($context)
                 ? call_user_func($context)
                 : $context;
-            
         }, $this->context);
     }
     

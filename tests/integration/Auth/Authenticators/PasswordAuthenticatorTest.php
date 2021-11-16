@@ -15,10 +15,26 @@ use Snicco\Auth\Authenticators\PasswordAuthenticator;
 class PasswordAuthenticatorTest extends AuthTestCase
 {
     
+    protected function setUp() :void
+    {
+        $this->afterApplicationCreated(function () {
+            $this->withReplacedConfig('auth.through', [
+                PasswordAuthenticator::class,
+            ]);
+            $this->withAddedConfig('auth.fail2ban.enabled', true);
+        });
+        
+        $this->afterApplicationBooted(function () {
+            $this->url = $this->app->resolve(UrlGenerator::class);
+        });
+        
+        parent::setUp();
+        $this->bootApp();
+    }
+    
     /** @test */
     public function missing_password_or_login_delegates_to_the_next_authenticator()
     {
-        
         $token = $this->withCsrfToken();
         $response = $this->post('/auth/login', $token + ['pwd' => 'password',]);
         
@@ -45,7 +61,6 @@ class PasswordAuthenticatorTest extends AuthTestCase
         $response->assertRedirectPath('/auth/login')
                  ->assertSessionHasErrors('login');
         $this->assertGuest();
-        
     }
     
     /** @test */
@@ -64,15 +79,12 @@ class PasswordAuthenticatorTest extends AuthTestCase
         );
         
         Event::assertDispatched(function (FailedPasswordAuthentication $event) {
-            
             return $event->login() === 'calvin';
-            
         });
         
         $response->assertRedirectPath('/auth/login')
                  ->assertSessionHasErrors('login');
         $this->assertGuest();
-        
     }
     
     /** @test */
@@ -96,17 +108,13 @@ class PasswordAuthenticatorTest extends AuthTestCase
                  ->assertSessionHasErrors('login');
         
         Event::assertDispatched(function (FailedPasswordAuthentication $event) use ($calvin) {
-            
             return $event->login() === $calvin->user_login && $event->password() === 'bogus';
-            
         });
-        
     }
     
     /** @test */
     public function a_user_can_login_with_valid_credentials()
     {
-        
         Event::fake([FailedPasswordAuthentication::class]);
         $this->withAddedConfig('auth.features.remember_me', true);
         
@@ -133,7 +141,6 @@ class PasswordAuthenticatorTest extends AuthTestCase
     /** @test */
     public function a_user_can_login_with_his_email_address_instead_of_the_username()
     {
-        
         Event::fake([FailedPasswordAuthentication::class]);
         $this->withAddedConfig('auth.features.remember_me', true);
         
@@ -155,13 +162,11 @@ class PasswordAuthenticatorTest extends AuthTestCase
         $this->assertAuthenticated($calvin);
         $this->assertTrue($this->session->hasRememberMeToken());
         Event::assertNotDispatched(FailedPasswordAuthentication::class);
-        
     }
     
     /** @test */
     public function a_failed_login_is_logged_with_fail2ban()
     {
-        
         $this->swap(Syslogger::class, $logger = new TestSysLogger());
         
         $this->default_attributes = ['ip_address' => '127.0.0.1'];
@@ -185,29 +190,6 @@ class PasswordAuthenticatorTest extends AuthTestCase
             LOG_WARNING,
             "Failed authentication attempt for user [$calvin->ID] with invalid password [bogus] from 127.0.0.1"
         );
-        
-    }
-    
-    protected function setUp() :void
-    {
-        
-        $this->afterApplicationCreated(function () {
-            
-            $this->withReplacedConfig('auth.through', [
-                PasswordAuthenticator::class,
-            ]);
-            $this->withAddedConfig('auth.fail2ban.enabled', true);
-            
-        });
-        
-        $this->afterApplicationBooted(function () {
-            
-            $this->url = $this->app->resolve(UrlGenerator::class);
-    
-        });
-        
-        parent::setUp();
-        $this->bootApp();
     }
     
 }

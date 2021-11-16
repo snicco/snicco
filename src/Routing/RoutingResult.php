@@ -7,50 +7,40 @@ namespace Snicco\Routing;
 class RoutingResult
 {
     
-    /** @var Route|array|null */
-    private $route;
+    private ?Route $route;
+    private array  $captured_segments;
+    private array  $compiled_segments;
     
-    private array $payload;
-    
-    private array $compiled_segments;
-    
-    /**
-     * @param  Route|array|null  $route
-     * @param  array  $payload
-     */
-    public function __construct($route, array $payload = [])
+    public function __construct(?Route $route, array $captured_segments = [])
     {
-        
         $this->route = $route;
-        $this->payload = $payload;
-        
+        $this->captured_segments = $captured_segments;
     }
     
-    public function route()
+    public function route() :?Route
     {
         return $this->route;
     }
     
+    /**
+     * @return array<string,mixed>
+     */
     public function capturedUrlSegmentValues() :array
     {
-        
         if ( ! isset($this->compiled_segments)) {
-            $values = collect($this->payload)->map(function ($value) {
-                
+            $values = collect($this->captured_segments)->map(function ($value) {
                 $value = ( ! is_int($value)) ? rawurldecode($value) : $value;
                 
                 if (is_numeric($value)) {
                     $value = intval($value);
                 }
                 return $value;
-                
             });
             
             $this->compiled_segments = $values->all();
         }
         
         return $this->compiled_segments;
-        
     }
     
     public function hasRoute() :bool

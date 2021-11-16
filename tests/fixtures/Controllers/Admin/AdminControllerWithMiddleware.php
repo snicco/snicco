@@ -20,7 +20,6 @@ class AdminControllerWithMiddleware extends Controller
     
     public function __construct(Baz $baz)
     {
-        
         $this->middleware(MiddlewareWithDependencies::class);
         
         $this->baz = $baz;
@@ -28,16 +27,13 @@ class AdminControllerWithMiddleware extends Controller
         $count = $GLOBALS['test'][self::constructed_times] ?? 0;
         $count++;
         $GLOBALS['test'][self::constructed_times] = $count;
-        
     }
     
     public function handle(Request $request) :string
     {
-        
         $request->body .= $this->baz->baz.':controller_with_middleware';
         
         return $request->body;
-        
     }
     
 }

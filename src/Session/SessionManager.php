@@ -36,48 +36,34 @@ class SessionManager implements SessionManagerInterface
     
     public function __construct(array $session_config, Session $session)
     {
-        
         $this->config = $session_config;
         $this->session = $session;
-        
     }
     
     public function save()
     {
-        
         if ($this->session->rotationDueAt() === 0) {
-            
             $this->session->setNextRotation($this->rotationInterval());
-            
         }
         
         if ($this->session->absoluteTimeout() === 0) {
-            
             $this->session->setAbsoluteTimeout($this->maxSessionLifetime());
-            
         }
         
         if ($this->needsRotation()) {
-            
             $this->session->regenerate();
             $this->session->setNextRotation($this->rotationInterval());
             SessionRegenerated::dispatch([$this->session]);
-            
         }
         
         $this->session->save();
-        
     }
     
     public function collectGarbage()
     {
-        
         if ($this->hitsLottery($this->config['lottery'])) {
-            
             $this->session->getDriver()->gc($this->maxSessionLifetime());
-            
         }
-        
     }
     
     /**
@@ -91,7 +77,6 @@ class SessionManager implements SessionManagerInterface
      */
     public function migrateAfterLogin(NewLogin $event, Request $request, ResponseEmitter $emitter)
     {
-        
         $this->start($request, $event->user->ID);
         
         $this->session->regenerate();
@@ -101,24 +86,20 @@ class SessionManager implements SessionManagerInterface
         $cookies->add($this->sessionCookie());
         
         $emitter->emitCookies($cookies);
-        
     }
     
     public function start(Request $request, int $user_id) :Session
     {
-        
         $cookie_name = $this->config['cookie'];
         $session_id = $request->cookies()->get($cookie_name, '');
         $this->session->start($session_id);
         $this->session->setUserId($user_id);
         
         return $this->session;
-        
     }
     
     public function sessionCookie() :Cookie
     {
-        
         $cookie = new Cookie($this->config['cookie'], $this->session->getId());
         
         $cookie->path($this->config['path'])
@@ -128,7 +109,6 @@ class SessionManager implements SessionManagerInterface
                ->domain($this->config['domain']);
         
         return $cookie;
-        
     }
     
     /**
@@ -141,7 +121,6 @@ class SessionManager implements SessionManagerInterface
      */
     public function invalidateAfterLogout(Request $request, ResponseEmitter $emitter)
     {
-        
         $this->start($request, 0);
         
         $this->session->invalidate();
@@ -151,7 +130,6 @@ class SessionManager implements SessionManagerInterface
         $cookies->add($this->sessionCookie());
         
         $emitter->emitCookies($cookies);
-        
     }
     
     public function setAbsoluteTimeoutResolver(callable $resolver)
@@ -161,31 +139,25 @@ class SessionManager implements SessionManagerInterface
     
     private function rotationInterval() :int
     {
-        
         return $this->config['rotate'];
     }
     
     private function maxSessionLifetime()
     {
-        
         $timeout = $this->config['lifetime'];
         
         if (isset($this->absolute_timout_resolver)
             && is_callable(
                 $this->absolute_timout_resolver
             )) {
-            
             return call_user_func($this->absolute_timout_resolver, $timeout);
-            
         }
         
         return $timeout;
-        
     }
     
     private function needsRotation() :bool
     {
-        
         if ( ! isset($this->config['rotate']) || ! is_int($this->config['rotate'])) {
             return false;
         }
@@ -193,7 +165,6 @@ class SessionManager implements SessionManagerInterface
         $rotation = $this->session->rotationDueAt();
         
         return $this->currentTime() - $rotation > 0;
-        
     }
     
 }

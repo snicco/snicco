@@ -23,7 +23,6 @@ class AuthenticateSessionTest extends AuthTestCase
         $response = $this->get('/');
         $this->assertFalse($response->session()->hasValidAuthConfirmToken());
         $this->assertFalse($response->session()->has('auth.confirm.foo'));
-        
     }
     
 }

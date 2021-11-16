@@ -53,20 +53,16 @@ class RedirectResponse extends Response
     
     public function withInput(array $input) :RedirectResponse
     {
-        
         $this->checkSession();
         
         $this->session->flashInput($input);
         
         return $this;
-        
     }
     
     public function hasSession() :bool
     {
-        
         return $this->session instanceof Session;
-        
     }
     
     /**
@@ -79,13 +75,11 @@ class RedirectResponse extends Response
      */
     public function withErrors($provider, string $bag = 'default') :RedirectResponse
     {
-        
         $this->checkSession();
         
         $this->session->withErrors($provider, $bag);
         
         return $this;
-        
     }
     
     public function canBypassValidation() :bool
@@ -101,16 +95,13 @@ class RedirectResponse extends Response
     
     private function checkSession()
     {
-        
         if ( ! $this->hasSession()) {
-            
             $called_method = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1]['function'];
             
             throw new LogicException(
                 "The method: [RedirectResponse::{$called_method}] can only be used if session are enabled in the config."
             );
         }
-        
     }
     
     private function toMessageBag($provider) :MessageBag

@@ -20,13 +20,11 @@ class Controller
     
     public function getMiddleware(string $method = null) :array
     {
-        
         return collect($this->middleware)
             ->filter(fn(ControllerMiddleware $middleware) => $middleware->appliesTo($method))
             ->map(fn(ControllerMiddleware $middleware) => $middleware->name())
             ->values()
             ->all();
-        
     }
     
     public function giveViewFactory(ViewFactoryInterface $view_factory)
@@ -46,9 +44,7 @@ class Controller
     
     protected function middleware(string $middleware_name) :ControllerMiddleware
     {
-        
         return $this->middleware[] = new ControllerMiddleware($middleware_name);
-        
     }
     
 }

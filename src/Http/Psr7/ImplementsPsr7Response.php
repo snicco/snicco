@@ -14,16 +14,12 @@ trait ImplementsPsr7Response
     
     public function withProtocolVersion($version)
     {
-        
         return $this->new($this->psr7_response->withProtocolVersion($version));
-        
     }
     
     public function withHeader($name, $value)
     {
-        
         return $this->new($this->psr7_response->withHeader($name, $value));
-        
     }
     
     public function withAddedHeader($name, $value)
@@ -33,28 +29,21 @@ trait ImplementsPsr7Response
     
     public function withoutHeader($name)
     {
-        
         return $this->new($this->psr7_response->withoutHeader($name));
-        
     }
     
     public function withBody(StreamInterface $body)
     {
-        
         return $this->new($this->psr7_response->withBody($body));
-        
     }
     
     public function withStatus($code, $reasonPhrase = '')
     {
-        
         return $this->new($this->psr7_response->withStatus($code, $reasonPhrase));
-        
     }
     
     public function getProtocolVersion()
     {
-        
         return $this->psr7_response->getProtocolVersion();
     }
     
@@ -70,14 +59,11 @@ trait ImplementsPsr7Response
     
     public function getHeader($name)
     {
-        
         return $this->psr7_response->getHeader($name);
-        
     }
     
     public function getHeaderLine($name)
     {
-        
         return $this->psr7_response->getHeaderLine($name);
     }
     
@@ -88,14 +74,11 @@ trait ImplementsPsr7Response
     
     public function getStatusCode()
     {
-        
         return $this->psr7_response->getStatusCode();
-        
     }
     
     public function getReasonPhrase()
     {
-        
         return $this->psr7_response->getReasonPhrase();
     }
     
