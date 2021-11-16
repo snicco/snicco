@@ -15,6 +15,7 @@ use Snicco\Http\Psr7\Response;
 use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Psr\Log\LoggerInterface as Psr3Logger;
+use Snicco\Support\ReflectionDependencies;
 use Snicco\Contracts\ExceptionHandlerInterface;
 use Illuminate\Support\Traits\ReflectsClosures;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
@@ -71,10 +72,10 @@ class ExceptionHandler implements ExceptionHandlerInterface
                 continue;
             }
             
-            $result = $this->container->call(
-                $custom_reporter,
-                ['request' => $request, 'exception' => $e, 'e' => $e]
-            );
+            $deps = (new ReflectionDependencies($this->container))
+                ->build($custom_reporter, [$e, $request]);
+            
+            $result = call_user_func_array($custom_reporter, $deps);
             
             if ($result === self::STOP_REPORTING) {
                 return;
@@ -82,7 +83,10 @@ class ExceptionHandler implements ExceptionHandlerInterface
         }
         
         if (method_exists($e, 'report')) {
-            if ($this->container->call([$e, 'report']) === self::STOP_REPORTING) {
+            $deps = (new ReflectionDependencies($this->container))
+                ->build([$e, 'report'], [$e, $request]);
+            
+            if ($e->report(...$deps) === self::STOP_REPORTING) {
                 return;
             }
         }
@@ -118,7 +122,7 @@ class ExceptionHandler implements ExceptionHandlerInterface
         }
         
         return $request->isExpectingJson()
-            ? $this->renderJson($e, $request)
+            ? $this->renderJson($e)
             : $this->renderHtml($e, $request);
     }
     
@@ -195,8 +199,10 @@ class ExceptionHandler implements ExceptionHandlerInterface
     
     private function renderableException(Throwable $e, Request $request) :Response
     {
+        $deps = (new ReflectionDependencies($this->container))->build([$e, 'render'], [$request]);
+        
         /** @var Response $response */
-        $response = $this->container->call([$e, 'render'], ['request' => $request]);
+        $response = $e->render(...$deps);
         
         if ($response instanceof Response) {
             return $response;
@@ -212,7 +218,7 @@ class ExceptionHandler implements ExceptionHandlerInterface
         );
     }
     
-    private function renderJson(HttpException $e, Request $request)
+    private function renderJson(HttpException $e)
     {
         if ($this->isDebug()) {
             return $this->response_factory->json(
@@ -257,10 +263,7 @@ class ExceptionHandler implements ExceptionHandlerInterface
                                           ->withStatus($status);
         }
         
-        $content = $this->container->call(
-            [new HtmlErrorRenderer(), 'render'],
-            ['e' => $e, 'request' => $request]
-        );
+        $content = $this->container[HtmlErrorRenderer::class]->render($e, $request);
         
         return $this->response_factory->html($content)->withStatus($e->httpStatusCode());
     }
