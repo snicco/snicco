@@ -4,59 +4,29 @@ declare(strict_types=1);
 
 namespace Tests;
 
-use Snicco\Http\Delegate;
-use Snicco\Session\Session;
-use Tests\stubs\TestRequest;
-use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\Middleware;
-use Snicco\Http\ResponseFactory;
-use Snicco\Routing\UrlGenerator;
-use Tests\helpers\AssertsResponse;
+use Tests\stubs\TestViewFactory;
 use Snicco\Routing\RouteCollection;
-use Tests\helpers\CreateUrlGenerator;
-use Psr\Http\Message\ResponseInterface;
-use Tests\helpers\CreateRouteCollection;
-use Snicco\Session\Drivers\ArraySessionDriver;
+use Snicco\Contracts\RouteUrlGenerator;
+use Tests\concerns\CreatePsr17Factories;
+use Snicco\Contracts\ViewFactoryInterface;
+use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
+use Snicco\Testing\MiddlewareTestCase as FrameworkMiddlewareTestCase;
 
-abstract class MiddlewareTestCase extends UnitTest
+class MiddlewareTestCase extends FrameworkMiddlewareTestCase
 {
     
-    use AssertsResponse;
-    use CreateUrlGenerator;
-    use CreateRouteCollection;
+    use CreatePsr17Factories;
     
-    protected Delegate        $route_action;
-    protected TestRequest     $request;
-    protected ResponseFactory $response_factory;
-    protected UrlGenerator    $generator;
     protected RouteCollection $routes;
     
-    abstract public function newMiddleware() :Middleware;
-    
-    protected function runMiddleware(Request $request = null, Delegate $delegate = null) :ResponseInterface
+    protected function routeUrlGenerator() :RouteUrlGenerator
     {
-        
-        $m = $this->newMiddleware();
-        $m->setResponseFactory($this->response_factory);
-        
-        $r = $request ?? $this->request;
-        $d = $delegate ?? $this->route_action;
-        
-        return $m->handle($r, $d);
-        
+        return new FastRouteUrlGenerator($this->routes = new RouteCollection());
     }
     
-    protected function newSession(int $lifetime = 10) :Session
+    protected function viewFactory() :ViewFactoryInterface
     {
-        return new Session(new ArraySessionDriver($lifetime));
-    }
-    
-    protected function setUp() :void
-    {
-        parent::setUp();
-        $this->response_factory = $this->createResponseFactory();
-        $this->request = TestRequest::from('GET', '/foo');
-        
+        return new TestViewFactory();
     }
     
 }

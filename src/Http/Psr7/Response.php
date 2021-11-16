@@ -83,7 +83,6 @@ class Response implements ResponseInterface, ResponseableInterface
         }
         
         return $this->cookies;
-        
     }
     
     public function html(StreamInterface $html) :Response

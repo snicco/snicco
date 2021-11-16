@@ -19,7 +19,6 @@ class Google2FaChallengeResponse extends AbstractTwoFactorChallengeResponse
     
     public function toResponsable()
     {
-        
         $query = [];
         
         if ($this->request->boolean('interim-login')) {

@@ -15,7 +15,7 @@ use Snicco\Contracts\Middleware;
 use Illuminate\Container\Container;
 use Whoops\Handler\HandlerInterface;
 use Snicco\Contracts\ServiceProvider;
-use Snicco\Contracts\ExceptionHandler;
+use Snicco\Contracts\ExceptionHandlerInterface;
 
 use function Snicco\Support\Functions\tap;
 
@@ -37,7 +37,6 @@ class ExceptionServiceProvider extends ServiceProvider
     
     private function bindConfig() :void
     {
-        
         $this->config->extendIfEmpty(
             'app.hide_debug_traces',
             fn() => [
@@ -51,8 +50,7 @@ class ExceptionServiceProvider extends ServiceProvider
     
     private function bindErrorHandler() :void
     {
-        $this->container->singleton(ExceptionHandler::class, function () {
-            
+        $this->container->singleton(ExceptionHandlerInterface::class, function () {
             if ( ! $this->config->get('app.exception_handling', false)) {
                 return new NullExceptionHandler();
             }
@@ -60,47 +58,37 @@ class ExceptionServiceProvider extends ServiceProvider
             $with_whoops = ! $this->app->isProduction()
                            && isset($this->container[RunInterface::class]);
             
-            return new ProductionExceptionHandler(
+            return new ExceptionHandler(
                 $this->container,
                 $this->container->make(LoggerInterface::class),
                 $this->container->make(ResponseFactory::class),
                 $with_whoops ? $this->container[RunInterface::class] : null
             );
-            
         });
     }
     
     private function bindPsr3Logger()
     {
         $this->container->singleton(LoggerInterface::class, function () {
-            
             $filter_frames = $this->config->get('app.hide_debug_traces', []);
             
             return $this->app->isRunningUnitTest()
                 ? new NullLogger()
                 : new NativeErrorLogger($filter_frames);
-            
         });
     }
     
     private function bindWhoops()
     {
-        
         if ($this->config->get('app.debug') === true && class_exists(Whoops::class)) {
-            
             $this->container->singleton(RunInterface::class, function () {
-                
                 return tap(new Whoops(), function (Whoops $whoops) {
-                    
                     $whoops->appendHandler($this->whoopsHandler());
                     $whoops->writeToOutput(false);
                     $whoops->allowQuit(false);
-                    
                 });
-                
             });
         }
-        
     }
     
     private function whoopsHandler()

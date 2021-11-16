@@ -23,8 +23,7 @@ class TrailingSlash extends Middleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        
-        if ( ! $request->isWpFrontEnd()) {
+        if ($request->isWpAdmin() || $request->isWpAjax()) {
             return $next($request);
         }
         
@@ -35,9 +34,7 @@ class TrailingSlash extends Middleware
             : Str::doesNotEndWith($path, '/');
         
         if ($accept_request || $path === '/') {
-            
             return $next($request);
-            
         }
         
         $redirect_to = $this->trailing_slash
@@ -45,7 +42,6 @@ class TrailingSlash extends Middleware
             : Url::removeTrailing($path);
         
         return $this->response_factory->permanentRedirectTo($redirect_to);
-        
     }
     
 }

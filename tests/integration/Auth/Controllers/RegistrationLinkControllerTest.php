@@ -11,54 +11,59 @@ use Snicco\Auth\Contracts\AbstractRegistrationView;
 class RegistrationLinkControllerTest extends AuthTestCase
 {
     
+    protected function setUp() :void
+    {
+        $this->afterApplicationCreated(function () {
+            $this->withAddedConfig('auth.features.registration', true);
+        });
+        
+        $this->afterApplicationBooted(function () {
+            $this->withoutMiddleware('csrf');
+            $this->instance(AbstractRegistrationView::class, new TestRegistrationViewView());
+        });
+        
+        parent::setUp();
+    }
+    
     /** @test */
     public function the_route_cant_be_accessed_if_registration_is_not_enabled()
     {
-        
         $this->withOutConfig('auth.features.registration')->bootApp();
         
         $response = $this->get('/auth/register');
         
         $response->assertDelegatedToWordPress();
-        
     }
     
     /** @test */
     public function the_route_cant_be_accessed_authenticated()
     {
-        
         $this->actingAs($this->createAdmin())->bootApp();
         
         $response = $this->get('/auth/register');
         
         $response->assertRedirectToRoute('dashboard');
-        
     }
     
     /** @test */
     public function the_registration_view_can_be_rendered()
     {
-        
         $response = $this->get('/auth/register');
         
         $response->assertOk()->assertSee('[Test] Register now.');
-        
     }
     
     /** @test */
     public function a_link_cant_be_requested_with_invalid_email()
     {
-        
         $response =
             $this->post('/auth/register', ['email' => 'bogus.de'], ['referer' => '/auth/register']);
         $response->assertRedirect('/auth/register')->assertSessionHasErrors('email');
-        
     }
     
     /** @test */
     public function a_link_can_be_requested_for_a_valid_email()
     {
-        
         $this->bootApp();
         $this->mailFake();
         
@@ -72,26 +77,6 @@ class RegistrationLinkControllerTest extends AuthTestCase
         $mail = $this->assertMailSent(ConfirmRegistrationEmail::class);
         $mail->assertTo('c@web.de');
         $mail->assertSee('/auth/accounts/create?expires=');
-        
-    }
-    
-    protected function setUp() :void
-    {
-        
-        $this->afterApplicationCreated(function () {
-            
-            $this->withAddedConfig('auth.features.registration', true);
-            
-        });
-        
-        $this->afterApplicationBooted(function () {
-            
-            $this->withoutMiddleware('csrf');
-            $this->instance(AbstractRegistrationView::class, new TestRegistrationViewView());
-        });
-        
-        parent::setUp();
-        
     }
     
 }
@@ -101,7 +86,6 @@ class TestRegistrationViewView extends AbstractRegistrationView
     
     public function toResponsable() :string
     {
-        
         return '[Test] Register now.';
     }
     

@@ -33,11 +33,9 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function the_facade_can_be_swapped_during_test()
     {
-        
         $this->bootApp();
         WP::shouldReceive('isAdmin')->andReturn(true);
         $this->assertTrue(WP::isAdmin());
-        
     }
     
     /** @test */
@@ -64,7 +62,6 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
         
         $expected = FIXTURES_DIR.DS.'dist'.DS.'foo';
         $this->assertSame($expected, TestApp::distPath('foo'));
-        
     }
     
     /** @test */
@@ -102,7 +99,6 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function the_base_path_is_set()
     {
-        
         $this->bootApp();
         
         $this->assertSame(FIXTURES_DIR, TestApp::config('app.base_path'));
@@ -270,7 +266,6 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function an_exception_is_thrown_if_no_app_key_is_provided_in_the_config()
     {
-        
         $provider = $this->customizeConfigProvider();
         $provider->remove('app.key');
         $this->withAddedProvider($provider);
@@ -279,20 +274,17 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
             "Your app.key config value is either missing or too insecure. Please generate a new one using Snicco\Application\Application::generateKey()"
         );
         $this->bootApp();
-        
     }
     
     /** @test */
     public function the_request_can_be_resolved_as_an_alias()
     {
-        
         $this->withRequest(TestRequest::from('GET', '/foo'));
         $this->bootApp();
         
         $this->assertInstanceOf(Request::class, $request = TestApp::request());
         
         $this->assertSame('/foo', $request->path());
-        
     }
     
 }

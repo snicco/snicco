@@ -12,15 +12,12 @@ class FalseCondition implements ConditionInterface
     
     public function isSatisfied(Request $request) :bool
     {
-        
         return false;
     }
     
     public function getArguments(Request $request) :array
     {
-        
         return [];
-        
     }
     
 }

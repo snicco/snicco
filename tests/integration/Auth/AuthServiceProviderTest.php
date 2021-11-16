@@ -46,7 +46,6 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_config_is_extended()
     {
-        
         $this->bootApp();
         
         $this->assertSame(10, TestApp::config('auth.confirmation.duration'));
@@ -55,32 +54,24 @@ class AuthServiceProviderTest extends AuthTestCase
         $this->assertFalse(TestApp::config('auth.features.2fa'));
         $this->assertFalse(TestApp::config('auth.features.password-resets'));
         $this->assertFalse(TestApp::config('auth.features.registration'));
-        
     }
     
     /** @test */
     public function an_exception_is_thrown_if_sessions_are_not_enabled()
     {
-        
         $this->withReplacedConfig('session.enabled', false);
         
         try {
-            
             $this->bootApp();
             $this->fail('No Configuration exceptions were thrown when they were expected');
-            
         } catch (ConfigurationException $e) {
-            
             $this->assertStringContainsString('Sessions need to be enabled', $e->getMessage());
-            
         }
-        
     }
     
     /** @test */
     public function the_auth_endpoints_have_defaults_set()
     {
-        
         $this->bootApp();
         
         $this->assertSame('auth', TestApp::config('auth.endpoints.prefix'));
@@ -95,26 +86,22 @@ class AuthServiceProviderTest extends AuthTestCase
         $this->assertSame('reset-password', TestApp::config('auth.endpoints.reset-password'));
         $this->assertSame('accounts', TestApp::config('auth.endpoints.accounts'));
         $this->assertSame('create', TestApp::config('auth.endpoints.accounts_create'));
-        
     }
     
     /** @test */
     public function the_auth_views_are_bound_in_the_config()
     {
-        
         $this->bootApp();
         
         $views = TestApp::config('view.paths');
         $expected = ROOT_DIR.DS.'src'.DS.'Auth'.DS.'views';
         
         $this->assertContains($expected, $views);
-        
     }
     
     /** @test */
     public function middleware_aliases_are_bound()
     {
-        
         $this->bootApp();
         
         $middleware_aliases = TestApp::config('middleware.aliases');
@@ -123,13 +110,11 @@ class AuthServiceProviderTest extends AuthTestCase
         $this->assertArrayHasKey('auth.unconfirmed', $middleware_aliases);
         $this->assertArrayHasKey('2fa.disabled', $middleware_aliases);
         $this->assertArrayHasKey('2fa.enabled', $middleware_aliases);
-        
     }
     
     /** @test */
     public function global_middleware_is_added()
     {
-        
         $this->bootApp();
         
         $this->assertContains(
@@ -141,13 +126,11 @@ class AuthServiceProviderTest extends AuthTestCase
             StartSessionMiddleware::class,
             TestApp::config('middleware.groups.global')
         );
-        
     }
     
     /** @test */
     public function the_start_session_middleware_has_a_higher_priority_then_the_authenticate_session_middleware()
     {
-        
         $this->bootApp();
         $priority = TestApp::config('middleware.priority');
         
@@ -156,26 +139,22 @@ class AuthServiceProviderTest extends AuthTestCase
         $authenticate = array_search(AuthenticateSession::class, $priority);
         
         $this->assertTrue($secure < $start_session && $start_session < $authenticate);
-        
     }
     
     /** @test */
     public function the_auth_routes_are_bound_in_the_config()
     {
-        
         $this->bootApp();
         
         $routes = TestApp::config('routing.definitions');
         $expected = ROOT_DIR.DS.'src'.DS.'Auth'.DS.'routes';
         
         $this->assertContains($expected, $routes);
-        
     }
     
     /** @test */
     public function all_controllers_are_bound()
     {
-        
         $this->bootApp();
         
         $this->assertInstanceOf(
@@ -194,13 +173,11 @@ class AuthServiceProviderTest extends AuthTestCase
             ConfirmedAuthSessionController::class,
             TestApp::resolve(ConfirmedAuthSessionController::class)
         );
-        
     }
     
     /** @test */
     public function the_wp_login_logout_events_from_the_session_package_are_unset()
     {
-        
         $this->bootApp();
         
         $listeners = TestApp::config('events.listeners');
@@ -210,50 +187,42 @@ class AuthServiceProviderTest extends AuthTestCase
         
         $this->assertNotContains([SessionManager::class, 'migrateAfterLogin'], $login);
         $this->assertNotContains([SessionManager::class, 'invalidateAfterLogout'], $logout);
-        
     }
     
     /** @test */
     public function the_authenticator_is_bound()
     {
-        
         $this->bootApp();
         
         $this->assertInstanceOf(
             PasswordAuthenticator::class,
             TestApp::resolve(PasswordAuthenticator::class)
         );
-        
     }
     
     /** @test */
     public function the_WP_Session_Token_class_is_extended()
     {
-        
         $this->bootApp();
         
         $instance = WP_Session_Tokens::get_instance(1);
         $this->assertInstanceOf(WpAuthSessionToken::class, $instance);
-        
     }
     
     /** @test */
     public function the_session_manager_interface_is_replaced()
     {
-        
         $this->bootApp();
         
         $this->assertInstanceOf(
             AuthSessionManager::class,
             TestApp::resolve(SessionManagerInterface::class)
         );
-        
     }
     
     /** @test */
     public function wp_login_php_is_a_permanent_redirected_for_all_requests_expect_personal_privacy_deletions()
     {
-        
         $this->default_server_variables = [
             'REQUEST_METHOD' => 'GET',
             'SCRIPT_NAME' => 'wp-login.php',
@@ -274,17 +243,13 @@ class AuthServiceProviderTest extends AuthTestCase
                  ->assertStatus(301);
         
         Event::assertDispatched(function (ResponseSent $event) {
-            
             return $event->response instanceof RedirectResponse;
-            
         });
-        
     }
     
     /** @test */
     public function wp_login_php_is_not_redirected_for_personal_privacy_deletion()
     {
-        
         $this->withServerVariables(['SCRIPT_NAME' => 'wp-login.php']);
         $this->withRequest($this->frontendRequest('GET', '/wp-login.php?action=confirmation'));
         $this->bootApp();
@@ -298,39 +263,33 @@ class AuthServiceProviderTest extends AuthTestCase
         $response->assertDelegatedToWordPress();
         
         Event::assertNotDispatched(ResponseSent::class);
-        
     }
     
     /** @test */
     public function the_login_url_is_filtered()
     {
-        
         $this->bootApp();
-    
+        
         $url = wp_login_url();
         
         $this->assertStringNotContainsString('wp-login', $url);
         $this->assertStringContainsString('/auth/login', $url);
-        
     }
     
     /** @test */
     public function the_logout_url_is_filtered()
     {
-        
         $this->bootApp();
-    
+        
         $url = wp_logout_url();
         
         $this->assertStringNotContainsString('wp-login', $url);
         $this->assertStringContainsString('/auth/logout', $url);
-        
     }
     
     /** @test */
     public function the_auth_cookie_is_filtered_and_contains_the_current_session_id()
     {
-        
         $this->bootApp();
         
         $calvin = $this->createAdmin();
@@ -344,50 +303,42 @@ class AuthServiceProviderTest extends AuthTestCase
         
         $this->assertNotSame($elements['token'], $token);
         $this->assertSame($elements['token'], TestApp::session()->getId());
-        
     }
     
     /** @test */
     public function the_cookie_expiration_is_set_to_now_when_remember_me_is_disabled()
     {
-        
         $this->bootApp();
         
         $lifetime = apply_filters('auth_cookie_expiration', 3600);
         
         $this->assertSame($this->config->get('session.lifetime'), $lifetime);
-        
     }
     
     /** @test */
     public function the_cookie_expiration_is_synced_with_the_custom_session_lifetime()
     {
-        
         $this->bootApp();
         
         $lifetime = apply_filters('auth_cookie_expiration', 10000);
         
         $this->assertSame($this->config->get('session.lifetime'), $lifetime);
-        
     }
     
     /** @test */
     public function by_default_the_password_login_view_response_is_used()
     {
-        
         $this->bootApp();
         
         $this->assertInstanceOf(
             PasswordLoginView::class,
             TestApp::resolve(AbstractLoginView::class)
         );
-        
     }
     
     /** @test */
     public function the_login_response_is_bound()
     {
-        
         $this->bootApp();
         
         $this->assertInstanceOf(
@@ -399,20 +350,17 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_login_view_response_is_bound()
     {
-        
         $this->bootApp();
         
         $this->assertInstanceOf(
             PasswordLoginView::class,
             TestApp::resolve(AbstractLoginView::class)
         );
-        
     }
     
     /** @test */
     public function the_login_view_response_can_be_swapped_for_an_email_login_screen()
     {
-        
         $this->withAddedConfig('auth.primary_view', MagicLinkLoginView::class);
         $this->bootApp();
         
@@ -420,38 +368,32 @@ class AuthServiceProviderTest extends AuthTestCase
             MagicLinkLoginView::class,
             TestApp::resolve(AbstractLoginView::class)
         );
-        
     }
     
     /** @test */
     public function the_auth_pipeline_uses_the_password_authenticator_by_default()
     {
-        
         $this->bootApp();
         
         $pipeline = TestApp::config('auth.through');
         
         $this->assertEquals([PasswordAuthenticator::class], $pipeline);
-        
     }
     
     /** @test */
     public function email_can_be_used_as_a_primary_authenticator()
     {
-        
         $this->withAddedConfig('auth.authenticator', 'email');
         $this->bootApp();
         
         $pipeline = TestApp::config('auth.through');
         
         $this->assertEquals([MagicLinkAuthenticator::class], $pipeline);
-        
     }
     
     /** @test */
     public function a_custom_auth_pipeline_can_be_used()
     {
-        
         $this->withAddedConfig('auth.through', ['foo', 'bar']);
         
         $this->bootApp();
@@ -459,23 +401,19 @@ class AuthServiceProviderTest extends AuthTestCase
         $pipeline = TestApp::config('auth.through');
         
         $this->assertSame(['foo', 'bar'], $pipeline);
-        
     }
     
     /** @test */
     public function password_resets_are_disabled_by_default()
     {
-        
         $this->bootApp();
         
         $this->assertFalse(TestApp::config('auth.features.password-resets'));
-        
     }
     
     /** @test */
     public function two_factor_authentication_can_be_enabled()
     {
-        
         $this->withAddedConfig('auth.features.2fa', true);
         $this->bootApp();
         
@@ -486,25 +424,21 @@ class AuthServiceProviderTest extends AuthTestCase
             RedirectIf2FaAuthenticable::class,
             PasswordAuthenticator::class,
         ], $pipeline);
-        
     }
     
     /** @test */
     public function auth_confirmation_uses_email_by_default()
     {
-        
         $this->bootApp();
         $this->assertInstanceOf(
             EmailAuthConfirmation::class,
             TestApp::resolve(AuthConfirmation::class)
         );
-        
     }
     
     /** @test */
     public function two_factor_auth_confirmation_is_used_if_enabled()
     {
-        
         $this->withAddedConfig('auth.features.2fa', true);
         $this->bootApp();
         
@@ -512,7 +446,6 @@ class AuthServiceProviderTest extends AuthTestCase
             TwoFactorAuthConfirmation::class,
             TestApp::resolve(AuthConfirmation::class)
         );
-        
     }
     
     /**
@@ -522,20 +455,16 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function fail2ban_is_disabled_by_default()
     {
-        
         $this->withOutConfig('auth.fail2ban.enabled')->bootApp();
         $this->assertNull(TestApp::config('auth.fail2ban.enabled'));
-        
     }
     
     /** @test */
     public function the_daemon_is_set()
     {
-        
         $this->withAddedConfig('auth.fail2ban.enabled', true);
         $this->bootApp();
         $this->assertSame('sniccowp', TestApp::config('auth.fail2ban.daemon'));
-        
     }
     
     /** @test */
@@ -544,7 +473,6 @@ class AuthServiceProviderTest extends AuthTestCase
         $this->withAddedConfig('auth.fail2ban.enabled', true);
         $this->bootApp();
         $this->assertSame(LOG_AUTH, TestApp::config('auth.fail2ban.facility'));
-        
     }
     
     /** @test */
@@ -558,14 +486,12 @@ class AuthServiceProviderTest extends AuthTestCase
     /** @test */
     public function the_fail2ban_class_is_bound()
     {
-        
         $this->withAddedConfig('auth.fail2ban.enabled', true);
         $this->bootApp();
         $this->assertInstanceOf(
             Fail2Ban::class,
             $this->app->container()->make(Fail2Ban::class)
         );
-        
     }
     
     /** @test */

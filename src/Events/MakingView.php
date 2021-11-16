@@ -13,16 +13,12 @@ class MakingView extends Event
     
     public function __construct(ViewInterface $view)
     {
-        
         $this->view = $view;
-        
     }
     
     public function payload() :ViewInterface
     {
-        
         return $this->view;
-        
     }
     
 }

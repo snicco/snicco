@@ -11,9 +11,7 @@ class Baz
     
     public function __toString()
     {
-        
         return $this->baz;
-        
     }
     
 }

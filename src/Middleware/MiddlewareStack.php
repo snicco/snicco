@@ -32,7 +32,6 @@ class MiddlewareStack
     
     public function createForRoute(Route $route) :array
     {
-        
         if ($this->middleware_disabled) {
             return [];
         }
@@ -45,39 +44,31 @@ class MiddlewareStack
         $middleware = $this->uniqueMiddleware($middleware);
         
         return $this->sortMiddleware($middleware, $this->middleware_priority);
-        
     }
     
     public function createForRequestWithoutRoute(Request $request, bool $force_include_global = false) :array
     {
-        
         $middleware =
             $this->expandMiddleware($this->coreMiddleware($request, $force_include_global));
         $middleware = $this->uniqueMiddleware($middleware);
         
         return $this->sortMiddleware($middleware, $this->middleware_priority);
-        
     }
     
     public function withMiddlewareGroup(string $group, array $middlewares)
     {
-        
         $this->middleware_groups[$group] = $middlewares;
-        
     }
     
     public function middlewarePriority(array $middleware_priority)
     {
-        
         $this->middleware_priority = $middleware_priority;
-        
     }
     
     public function middlewareAliases(array $route_middleware_aliases)
     {
-        
-        $this->route_middleware_aliases = $route_middleware_aliases;
-        
+        $this->route_middleware_aliases =
+            array_merge($this->route_middleware_aliases, $route_middleware_aliases);
     }
     
     public function disableAllMiddleware()
@@ -87,7 +78,6 @@ class MiddlewareStack
     
     private function coreMiddleware(Request $request, bool $force_include_global = false) :array
     {
-        
         if ($this->middleware_disabled) {
             return [];
         }
@@ -109,7 +99,6 @@ class MiddlewareStack
         }
         
         return $middleware;
-        
     }
     
 }

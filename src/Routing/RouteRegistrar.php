@@ -37,13 +37,11 @@ class RouteRegistrar implements RouteRegistrarInterface
      */
     private function requireFiles(array $files, Config $config)
     {
-        
         $seen = [];
         
         $web_routes = null;
         
         foreach ($files as $file) {
-            
             $name = Str::before($file->getFilename(), '.php');
             
             if (isset($seen[$name])) {
@@ -63,32 +61,25 @@ class RouteRegistrar implements RouteRegistrarInterface
             $this->requireFile($path, $preset, $config);
             
             $seen[$name] = $name;
-            
         }
         
         if ($web_routes) {
-            
             $preset = $config->get('routing.presets.web', []);
             
             $this->requireFile($web_routes, $preset, $config);
-            
         }
-        
     }
     
     private function requireFile(string $file_path, array $attributes, Config $config)
     {
         $this->router->group(function ($router) use ($file_path, $config) {
-            
             extract(['config' => $config, 'router' => $router]);
             require $file_path;
-            
         }, $attributes);
     }
     
     private function registerNormalRoutes(Config $config)
     {
-        
         $dirs = Arr::wrap($config->get('routing.definitions', []));
         
         $finder = new Finder();
@@ -104,7 +95,6 @@ class RouteRegistrar implements RouteRegistrarInterface
         }
         
         $this->requireFiles($files, $config);
-        
     }
     
     private function registerAPIRoutes(Config $config)
@@ -114,7 +104,6 @@ class RouteRegistrar implements RouteRegistrarInterface
     
     private function apiRoutes(Config $config) :array
     {
-        
         $api_dirs = collect($config->get('routing.definitions', []))
             ->map(fn($dir) => rtrim($dir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR.'api')
             ->filter(fn($dir) => is_dir($dir))
@@ -134,14 +123,11 @@ class RouteRegistrar implements RouteRegistrarInterface
         
         return collect(iterator_to_array($finder))
             ->reject(function (SplFileInfo $file) use ($endpoints) {
-                
                 $name = Str::before($file->getRelativePathname(), '.');
                 
                 return ! isset($endpoints[$name]);
-                
             })
             ->all();
-        
     }
     
 }

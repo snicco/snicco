@@ -29,21 +29,15 @@ class IncomingApiRequest extends IncomingRequest
     
     private function isApiEndpoint() :bool
     {
-        
         $endpoints = $this->config->get('routing.api.endpoints', []);
         
         foreach ($endpoints as $endpoint) {
-            
             if (Str::startsWith(trim($this->request->path(), '/'), trim($endpoint, '/'))) {
-                
                 return true;
-                
             }
-            
         }
         
         return false;
-        
     }
     
 }

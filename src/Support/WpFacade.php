@@ -29,15 +29,12 @@ abstract class WpFacade
      */
     public static function clearResolvedInstance(string $name)
     {
-        
         unset(static::$resolvedInstance[$name]);
     }
     
     public static function getFacadeContainer() :ContainerAdapter
     {
-        
         return static::$container;
-        
     }
     
     /**
@@ -51,7 +48,6 @@ abstract class WpFacade
      */
     public static function __callStatic(string $method, array $args)
     {
-        
         $instance = static::getFacadeRoot();
         
         if ( ! $instance) {
@@ -59,7 +55,6 @@ abstract class WpFacade
         }
         
         return $instance->$method(...$args);
-        
     }
     
     /**
@@ -69,9 +64,7 @@ abstract class WpFacade
      */
     public static function getFacadeRoot()
     {
-        
         return static::resolveFacadeInstance(static::getFacadeAccessor());
-        
     }
     
     /**
@@ -81,16 +74,13 @@ abstract class WpFacade
      */
     public static function spy()
     {
-        
         if ( ! static::isMock()) {
-            
             $class = static::getMockableClass();
             
             $spy = $class ? Mockery::spy($class) : Mockery::spy();
             static::swap($spy);
             
             return $spy;
-            
         }
     }
     
@@ -103,13 +93,11 @@ abstract class WpFacade
      */
     public static function swap($instance)
     {
-        
         static::$resolvedInstance[static::getFacadeAccessor()] = $instance;
         
         if (isset(static::$container)) {
             static::$container->swapInstance(static::getFacadeAccessor(), $instance);
         }
-        
     }
     
     /**
@@ -119,7 +107,6 @@ abstract class WpFacade
      */
     public static function partialMock()
     {
-        
         $name = static::getFacadeAccessor();
         
         $mock = static::isMock()
@@ -136,13 +123,11 @@ abstract class WpFacade
      */
     public static function createFreshMockInstance()
     {
-        
         $mock = static::createMock();
         static::swap($mock);
         $mock->shouldAllowMockingProtectedMethods();
         
         return $mock;
-        
     }
     
     /**
@@ -152,7 +137,6 @@ abstract class WpFacade
      */
     public static function shouldReceive()
     {
-        
         $name = static::getFacadeAccessor();
         
         $mock = static::isMock()
@@ -164,10 +148,8 @@ abstract class WpFacade
     
     public static function reset()
     {
-        
         self::clearResolvedInstances();
         self::setFacadeContainer(null);
-        
     }
     
     /**
@@ -177,16 +159,12 @@ abstract class WpFacade
      */
     public static function clearResolvedInstances()
     {
-        
         static::$resolvedInstance = [];
-        
     }
     
     public static function setFacadeContainer(?ContainerAdapter $container)
     {
-        
         static::$container = $container;
-        
     }
     
     /**
@@ -198,7 +176,6 @@ abstract class WpFacade
      */
     protected static function resolveFacadeInstance($name)
     {
-        
         if (is_object($name)) {
             return $name;
         }
@@ -208,11 +185,8 @@ abstract class WpFacade
         }
         
         if (static::$container) {
-            
             return static::$resolvedInstance[$name] = static::$container->make($name);
-            
         }
-        
     }
     
     /**
@@ -223,7 +197,6 @@ abstract class WpFacade
      */
     protected static function getFacadeAccessor()
     {
-        
         throw new RuntimeException('Facade does not implement getFacadeAccessor method.');
     }
     
@@ -234,7 +207,6 @@ abstract class WpFacade
      */
     protected static function isMock()
     {
-        
         $name = static::getFacadeAccessor();
         
         return isset(static::$resolvedInstance[$name])
@@ -248,7 +220,6 @@ abstract class WpFacade
      */
     protected static function getMockableClass()
     {
-        
         if ($root = static::getFacadeAccessor()) {
             return $root;
         }
@@ -261,7 +232,6 @@ abstract class WpFacade
      */
     protected static function createMock()
     {
-        
         $class = static::getMockableClass();
         
         return $class ? Mockery::mock($class) : Mockery::mock();

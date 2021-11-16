@@ -63,14 +63,12 @@ class AssertableCookie
     
     private function parseHeader(string $set_cookie_header)
     {
-        
         $this->value = Str::betweenFirst($set_cookie_header, '=', ';');
         $this->path = Str::betweenFirst($set_cookie_header, 'path=', ';');
         $this->expires = Str::betweenFirst($set_cookie_header, 'expires=', ';');
         $this->secure = Str::contains($set_cookie_header, 'secure');
         $this->http_only = Str::contains($set_cookie_header, 'HttpOnly');
         $this->same_site = Str::betweenFirst($set_cookie_header, 'SameSite=', ';');
-        
     }
     
 }

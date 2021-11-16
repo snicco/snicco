@@ -14,9 +14,7 @@ abstract class BladeComponent extends IlluminateComponent
     
     public function setEngine(BladeEngine $engine)
     {
-        
         $this->engine = $engine;
-        
     }
     
     protected function view(string $view)
@@ -24,7 +22,6 @@ abstract class BladeComponent extends IlluminateComponent
         $view = str_replace('components.', '', $view);
         
         return $this->engine->make('components.'.$view);
-        
     }
     
 }

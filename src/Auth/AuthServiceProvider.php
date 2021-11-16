@@ -66,7 +66,6 @@ class AuthServiceProvider extends ServiceProvider
     
     public function register() :void
     {
-        
         $this->bindConfig();
         $this->bindAuthPipeline();
         $this->extendRoutes(__DIR__.DIRECTORY_SEPARATOR.'routes');
@@ -86,25 +85,21 @@ class AuthServiceProvider extends ServiceProvider
         $this->bindAuthConfirmationView();
         $this->bindRegistrationViewResponse();
         $this->bindFail2Ban();
-        
     }
     
     public function bootstrap() :void
     {
         if ( ! $this->config->get('session.enabled')) {
-            
             throw new ConfigurationException(
                 'Sessions need to be enabled if you want to use the auth features.'
             );
         }
         
         $this->bindSessionManagerInterface();
-        
     }
     
     private function bindConfig()
     {
-        
         // Authentication
         $this->config->extend('auth.confirmation.duration', SessionManager::HOUR_IN_SEC * 3);
         $this->config->extend('auth.idle', SessionManager::HOUR_IN_SEC / 2);
@@ -159,16 +154,13 @@ class AuthServiceProvider extends ServiceProvider
                 'name' => 'auth',
             ]
         );
-        
     }
     
     private function bindAuthPipeline()
     {
-        
         $pipeline = $this->config->get('auth.through', []);
         
         if ( ! count($pipeline)) {
-            
             $primary = ($this->config->get('auth.authenticator') === 'email')
                 ? MagicLinkAuthenticator::class
                 : PasswordAuthenticator::class;
@@ -187,14 +179,11 @@ class AuthServiceProvider extends ServiceProvider
                     ])
                 )
             );
-            
         }
-        
     }
     
     private function bindEvents()
     {
-        
         $this->config->extend('events.listeners', [
             GenerateLoginUrl::class => [
                 
@@ -229,14 +218,11 @@ class AuthServiceProvider extends ServiceProvider
         // "setcookie()" function, but filters the expiration fragment in the cookie hash.
         // The maximum value can only ever be our session absolute timeout.
         add_filter('auth_cookie_expiration', fn() => $this->config->get('session.lifetime'), 10, 3);
-        
     }
     
     private function bindControllers()
     {
-        
         $this->container->singleton(ConfirmedAuthSessionController::class, function () {
-            
             return new ConfirmedAuthSessionController(
                 $this->container->make(AuthConfirmation::class),
                 $this->config->get('auth.confirmation.duration')
@@ -245,22 +231,17 @@ class AuthServiceProvider extends ServiceProvider
         
         $this->container->singleton(
             AuthSessionController::class, function () {
-            
             return new AuthSessionController(
                 $this->config->get('auth')
             );
-            
         }
         );
-        
     }
     
     private function bindAuthConfirmation()
     {
         $this->container->singleton(AuthConfirmation::class, function () {
-            
             if ($this->config->get('auth.features.2fa')) {
-                
                 return new TwoFactorAuthConfirmation(
                     $this->container->make(EmailAuthConfirmation::class),
                     $this->container->make(TwoFactorAuthenticationProvider::class),
@@ -268,19 +249,15 @@ class AuthServiceProvider extends ServiceProvider
                     $this->container->make(EncryptorInterface::class),
                     $this->container->make(Abstract2FAuthConfirmationView::class)
                 );
-                
             }
             
             return $this->container->make(EmailAuthConfirmation::class);
-            
         });
     }
     
     private function bindWpSessionToken()
     {
-        
         add_filter('session_token_manager', function () {
-            
             $manager = $this->container->make(SessionManagerInterface::class);
             
             // Ugly hack. But there is no other way to get this instance to the class that
@@ -293,14 +270,11 @@ class AuthServiceProvider extends ServiceProvider
             $__request = $this->container->make(Request::class);
             
             return WpAuthSessionToken::class;
-            
         });
-        
     }
     
     private function bindAuthSessionManager()
     {
-        
         $this->container->singleton(
             AuthSessionManager::class,
             fn() => new AuthSessionManager(
@@ -313,28 +287,22 @@ class AuthServiceProvider extends ServiceProvider
     
     private function bindLoginViewResponse()
     {
-        
         $this->container->singleton(AbstractLoginView::class, function () {
-            
             $response = $this->config->get('auth.primary_view');
             
             if ( ! $response) {
-                
                 $response =
                     $this->config->get('auth.authenticator') === 'email'
                         ? MagicLinkLoginView::class
                         : PasswordLoginView::class;
-                
             }
             
             return $this->container->make($response);
-            
         });
     }
     
     private function bindLoginResponse()
     {
-        
         $this->container->singleton(
             AbstractLoginResponse::class,
             fn() => $this->container->make(LoginRedirect::class)
@@ -343,7 +311,6 @@ class AuthServiceProvider extends ServiceProvider
     
     private function bindTwoFactorProvider()
     {
-        
         $this->container->singleton(
             TwoFactorAuthenticationProvider::class,
             fn() => $this->container->make(Google2FaAuthenticationProvider::class)
@@ -352,20 +319,15 @@ class AuthServiceProvider extends ServiceProvider
     
     private function bindTwoFactorChallengeResponse()
     {
-        
         $this->container->singleton(AbstractTwoFactorChallengeResponse::class,
             fn() => $this->container->make(Google2FaChallengeResponse::class)
         );
-        
     }
     
     private function bindRegistrationViewResponse()
     {
-        
         $this->container->singleton(AbstractRegistrationView::class, function () {
-            
             return $this->container->make(EmailRegistrationViewView::class);
-            
         });
     }
     
@@ -407,14 +369,11 @@ class AuthServiceProvider extends ServiceProvider
         
         $this->container->singleton(Syslogger::class, fn() => new PHPSyslogger());
         $this->container->singleton(Fail2Ban::class, function () {
-            
             return new Fail2Ban(
                 $this->container->make(Syslogger::class),
                 $this->config->get('auth.fail2ban')
             );
-            
         });
-        
     }
     
     private function bindSessionManagerInterface()

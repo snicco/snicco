@@ -16,6 +16,7 @@ class HttpServiceProvider extends ServiceProvider
     {
         $this->bindConfig();
         $this->bindRedirector();
+        $this->bindResponsePostProcessor();
         $this->bindIpAddressMiddleware();
     }
     
@@ -34,7 +35,6 @@ class HttpServiceProvider extends ServiceProvider
     
     private function bindConfig()
     {
-        
         if ( ! class_exists(IpAddress::class)) {
             return;
         }
@@ -42,13 +42,11 @@ class HttpServiceProvider extends ServiceProvider
         $this->config->extend('proxies.check', false);
         $this->config->extend('proxies.trust', []);
         $this->config->extend('proxies.headers', []);
-        
     }
     
     private function bindIpAddressMiddleware()
     {
         $this->container->singleton(IpAddress::class, function () {
-            
             $check = $this->config->get('proxies.check');
             $proxies = $this->config->get('proxies.trust');
             $headers = $this->config->get('proxies.headers');
@@ -63,7 +61,13 @@ class HttpServiceProvider extends ServiceProvider
             }
             
             return new IpAddress($check, $proxies, 'ip_address', $headers);
-            
+        });
+    }
+    
+    private function bindResponsePostProcessor()
+    {
+        $this->container->singleton(ResponsePostProcessor::class, function () {
+            return new ResponsePostProcessor($this->app->isRunningUnitTest());
         });
     }
     

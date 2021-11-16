@@ -4,16 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\unit\Support;
 
+use Tests\UnitTest;
 use Snicco\Support\FilePath;
-use PHPUnit\Framework\TestCase;
 
-class PathTest extends TestCase
+class PathTest extends UnitTest
 {
     
     /** @test */
     public function normalize_path()
     {
-        
         $ds = DIRECTORY_SEPARATOR;
         $input = '/foo\\bar/baz\\\\foobar';
         
@@ -25,7 +24,6 @@ class PathTest extends TestCase
     /** @test */
     public function add_trailing_slash()
     {
-        
         $input = '/foo';
         
         $this->assertEquals("/foo/", FilePath::addTrailingSlash($input, '/'));
@@ -34,7 +32,6 @@ class PathTest extends TestCase
     /** @test */
     public function remove_trailing_slash()
     {
-        
         $input = '/foo/';
         
         $this->assertEquals("/foo", FilePath::removeTrailingSlash($input, '/'));

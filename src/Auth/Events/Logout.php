@@ -18,7 +18,6 @@ class Logout extends Event
     
     public function __construct(Session $session, int $user_id)
     {
-        
         $this->session = $session;
         $this->user_id = $user_id;
         
@@ -31,7 +30,6 @@ class Logout extends Event
          * @since 1.5.0
          */
         do_action('wp_logout', $this->session->userId());
-        
     }
     
 }

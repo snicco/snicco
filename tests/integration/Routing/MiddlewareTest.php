@@ -14,7 +14,6 @@ class MiddlewareTest extends FrameworkTestCase
     /** @test */
     public function custom_middleware_groups_can_be_defined()
     {
-        
         $GLOBALS['test'][WebMiddleware::run_times] = 0;
         
         $this->withAddedMiddleware('custom_group', WebMiddleware::class);
@@ -22,13 +21,11 @@ class MiddlewareTest extends FrameworkTestCase
         $this->get('/middleware/foo')->assertSee('foo');
         
         $this->assertSame(1, $GLOBALS['test'][WebMiddleware::run_times]);
-        
     }
     
     /** @test */
     public function global_middleware_is_run_when_a_route_matches()
     {
-        
         $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
         
         $this->withAddedMiddleware('global', GlobalMiddleware::class);
@@ -40,13 +37,11 @@ class MiddlewareTest extends FrameworkTestCase
             $GLOBALS['test'][GlobalMiddleware::run_times],
             'Middleware was not run but was expected to.'
         );
-        
     }
     
     /** @test */
     public function global_middleware_is_not_run_by_default_if_no_route_matches()
     {
-        
         $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
         
         $this->withAddedMiddleware('global', GlobalMiddleware::class);
@@ -58,13 +53,11 @@ class MiddlewareTest extends FrameworkTestCase
             $GLOBALS['test'][GlobalMiddleware::run_times],
             'Middleware was run unexpectedly.'
         );
-        
     }
     
     /** @test */
     public function global_middleware_can_be_enabled_to_run_always_even_without_matching_a_route()
     {
-        
         $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
         
         $this->withAddedMiddleware('global', GlobalMiddleware::class)
@@ -77,13 +70,11 @@ class MiddlewareTest extends FrameworkTestCase
             $GLOBALS['test'][GlobalMiddleware::run_times],
             'Middleware was not run as expected'
         );
-        
     }
     
     /** @test */
     public function global_middleware_that_always_runs_that_also_is_route_middleware_is_not_run_twice()
     {
-        
         $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
         
         $this->withAddedMiddleware('global', GlobalMiddleware::class)
@@ -97,13 +88,11 @@ class MiddlewareTest extends FrameworkTestCase
             $GLOBALS['test'][GlobalMiddleware::run_times],
             'Middleware was not run as expected.'
         );
-        
     }
     
     /** @test */
     public function global_middleware_is_run_if_a_fallback_route_exists()
     {
-        
         $GLOBALS['test'][GlobalMiddleware::run_times] = 0;
         $GLOBALS['test']['include_fallback_route'] = true;
         $this->withAddedConfig(['middleware.groups.global' => [GlobalMiddleware::class]])
@@ -116,13 +105,11 @@ class MiddlewareTest extends FrameworkTestCase
             $GLOBALS['test'][GlobalMiddleware::run_times],
             'global middleware not run for non matching web route.'
         );
-        
     }
     
     /** @test */
     public function web_middleware_is_not_run_for_non_matching_web_routes_by_default()
     {
-        
         $GLOBALS['test'][WebMiddleware::run_times] = 0;
         
         $this->withAddedConfig([
@@ -137,13 +124,11 @@ class MiddlewareTest extends FrameworkTestCase
             $GLOBALS['test'][WebMiddleware::run_times],
             'web middleware was run unexpectedly.'
         );
-        
     }
     
     /** @test */
     public function web_middleware_can_be_enabled_to_run_for_non_matching_frontend_requests()
     {
-        
         $GLOBALS['test'][WebMiddleware::run_times] = 0;
         
         $this->withAddedConfig([
@@ -158,13 +143,11 @@ class MiddlewareTest extends FrameworkTestCase
             $GLOBALS['test'][WebMiddleware::run_times],
             'web middleware was not run.'
         );
-        
     }
     
     /** @test */
     public function admin_middleware_is_not_run_for_non_matching_admin_routes()
     {
-        
         $GLOBALS['test'][WebMiddleware::run_times] = 0;
         
         $this->withAddedConfig([
@@ -179,13 +162,11 @@ class MiddlewareTest extends FrameworkTestCase
             $GLOBALS['test'][WebMiddleware::run_times],
             'middleware was run unexpectedly for admin requests.'
         );
-        
     }
     
     /** @test */
     public function admin_middleware_can_be_enabled_to_run_for_non_matching_frontend_requests()
     {
-        
         $GLOBALS['test'][WebMiddleware::run_times] = 0;
         
         $this->withAddedConfig([
@@ -200,13 +181,11 @@ class MiddlewareTest extends FrameworkTestCase
             $GLOBALS['test'][WebMiddleware::run_times],
             'admin middleware was not run.'
         );
-        
     }
     
     /** @test */
     public function ajax_middleware_is_not_run_for_non_matching_ajax_routes()
     {
-        
         $GLOBALS['test'][WebMiddleware::run_times] = 0;
         
         $this->withAddedConfig([
@@ -221,13 +200,11 @@ class MiddlewareTest extends FrameworkTestCase
             $GLOBALS['test'][WebMiddleware::run_times],
             'middleware was run unexpectedly for admin requests.'
         );
-        
     }
     
     /** @test */
     public function ajax_middleware_can_be_enabled_to_run_for_non_matching_frontend_requests()
     {
-        
         $GLOBALS['test'][WebMiddleware::run_times] = 0;
         
         $this->withAddedConfig([
@@ -242,7 +219,6 @@ class MiddlewareTest extends FrameworkTestCase
             $GLOBALS['test'][WebMiddleware::run_times],
             'ajax middleware was not run.'
         );
-        
     }
     
 }

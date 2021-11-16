@@ -16,7 +16,6 @@ class SqlException extends HttpException
     
     public function __construct(string $sql, array $bindings = [], Throwable $previous = null)
     {
-        
         $this->sql = $sql;
         $this->bindings = $bindings;
         

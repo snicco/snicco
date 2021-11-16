@@ -18,12 +18,10 @@ class NativeErrorLogger extends AbstractLogger
     
     public function log($level, $message, array $context = [])
     {
-        
         $message = strval($message);
         $level = strtoupper($level);
         
         if ($e = $this->getException($context)) {
-            
             $has_previous = $e->getPrevious() instanceof Throwable;
             
             if ($has_previous) {
@@ -32,19 +30,16 @@ class NativeErrorLogger extends AbstractLogger
             else {
                 $entry = $this->formatWithoutPrevious($e, $level, $message);
             }
-            
         }
         else {
             $entry = "[$level]: $message";
         }
         
         error_log($entry);
-        
     }
     
     private function getException(array $context) :?Throwable
     {
-        
         $e = $context['exception'] ?? null;
         
         if ( ! $e instanceof Throwable) {
@@ -52,12 +47,10 @@ class NativeErrorLogger extends AbstractLogger
         }
         
         return $e;
-        
     }
     
     private function formatPrevious(Throwable $previous, Throwable $original, string $level, string $log_message) :string
     {
-        
         return vsprintf(
             PHP_EOL
             .'[%s]: %s'
@@ -85,12 +78,10 @@ class NativeErrorLogger extends AbstractLogger
                 $this->filterTrace($original),
             ]
         );
-        
     }
     
     private function formatWithoutPrevious(Throwable $e, string $level, string $log_message) :string
     {
-        
         return vsprintf('[%s]: %s'.PHP_EOL.'File: [%s]'.PHP_EOL.'Line: [%s]'.PHP_EOL.'Trace:[%s]',
             [
                 $level,
@@ -100,7 +91,6 @@ class NativeErrorLogger extends AbstractLogger
                 $this->filterTrace($e),
             ]
         );
-        
     }
     
     /**
@@ -112,7 +102,6 @@ class NativeErrorLogger extends AbstractLogger
      */
     private function filterTrace(Throwable $exception) :string
     {
-        
         $trace_as_string = $exception->getTraceAsString();
         
         if (empty($this->filter_frames)) {
@@ -122,28 +111,22 @@ class NativeErrorLogger extends AbstractLogger
         $imploded = array_values(array_filter(explode('#', $trace_as_string)));
         
         foreach ($imploded as $key => $line) {
-            
             if (Str::contains($line, $exception->getFile())) {
                 continue;
             }
             
             if (Str::contains($line, $this->filter_frames)) {
-                
                 unset($imploded[$key]);
-                
             }
-            
         }
         
         $imploded = array_values($imploded);
         
         foreach ($imploded as $key => $line) {
-            
             $imploded[$key] = "#$key /".Str::after($line, '/');
         }
         
         return implode('', $imploded);
-        
     }
     
 }

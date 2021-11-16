@@ -47,7 +47,6 @@ class DetectEnvironment implements Bootstrapper
         }
         
         return null;
-        
     }
     
     private function detectEnvironment(Closure $default) :string

@@ -22,7 +22,6 @@ trait InteractsWithTwoFactorSecrets
      */
     private function twoFactorSecret($user) :string
     {
-        
         $user_id = is_int($user)
             ? $user
             : $user->ID;
@@ -33,7 +32,6 @@ trait InteractsWithTwoFactorSecrets
         }
         
         return $this->encryptor->decryptString($secret);
-        
     }
     
     private function userHasTwoFactorEnabled(WP_User $user) :bool
@@ -51,7 +49,6 @@ trait InteractsWithTwoFactorSecrets
      */
     private function userHasPending2FaSetup($user) :bool
     {
-        
         $id = is_int($user)
             ? $user
             : $user->ID;
@@ -59,15 +56,12 @@ trait InteractsWithTwoFactorSecrets
             get_user_meta($id, 'two_factor_pending', true),
             FILTER_VALIDATE_BOOLEAN
         );
-        
     }
     
     private function saveSecret(int $user_id, string $secret)
     {
-        
         $encrypted_secret = $this->encryptor->encryptString($secret);
         update_user_meta($user_id, 'two_factor_secret', $encrypted_secret);
-        
     }
     
     private function activate2Fa(int $user_id)
@@ -78,11 +72,9 @@ trait InteractsWithTwoFactorSecrets
     
     private function disableTwoFactorAuthentication(int $user_id)
     {
-        
         delete_user_meta($user_id, 'two_factor_secret');
         delete_user_meta($user_id, 'two_factor_recovery_codes');
         delete_user_meta($user_id, 'two_factor_active');
-        
     }
     
     /**
@@ -92,12 +84,10 @@ trait InteractsWithTwoFactorSecrets
      */
     private function mark2FaSetupAsPending($user) :void
     {
-        
         $id = is_int($user)
             ? $user
             : $user->ID;
         update_user_meta($id, 'two_factor_pending', true);
-        
     }
     
 }

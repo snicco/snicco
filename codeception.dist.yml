@@ -7,16 +7,11 @@ actor_suffix: Tester
 extensions:
   enabled:
     - Codeception\Extension\RunFailed
-  commands:
-    - Codeception\Command\GenerateWPUnit
-    - Codeception\Command\GenerateWPRestApi
-    - Codeception\Command\GenerateWPRestController
-    - Codeception\Command\GenerateWPRestPostTypeController
-    - Codeception\Command\GenerateWPAjax
-    - Codeception\Command\GenerateWPCanonical
-    - Codeception\Command\GenerateWPXMLRPC
 params:
   - .env.testing
+
+bootstrap: codecept/bootstrap.php
+
 coverage:
   enabled: true
   show_uncovered: false

@@ -6,11 +6,11 @@ namespace Tests;
 
 use WP_User;
 use Snicco\Auth\RecoveryCode;
-use Snicco\Session\Encryptor;
 use Illuminate\Support\Collection;
 use Snicco\Session\SessionManager;
 use Snicco\Auth\AuthSessionManager;
 use Snicco\Auth\AuthServiceProvider;
+use Snicco\Session\IlluminateEncryptor;
 use Snicco\Session\SessionServiceProvider;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Validation\ValidationServiceProvider;
@@ -23,7 +23,7 @@ class AuthTestCase extends FrameworkTestCase
     
     protected array $codes;
     
-    protected Encryptor $encryptor;
+    protected IlluminateEncryptor $encryptor;
     
     protected string $valid_one_time_code = '123456';
     
@@ -31,7 +31,6 @@ class AuthTestCase extends FrameworkTestCase
     
     protected function packageProviders() :array
     {
-        
         return [
             ValidationServiceProvider::class,
             SessionServiceProvider::class,
@@ -103,9 +102,7 @@ class AuthTestCase extends FrameworkTestCase
     protected function generateTestRecoveryCodes() :array
     {
         return Collection::times(8, function () {
-            
             return RecoveryCode::generate();
-            
         })->all();
     }
     

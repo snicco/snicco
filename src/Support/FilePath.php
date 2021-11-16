@@ -17,13 +17,10 @@ class FilePath
      */
     public static function addTrailingSlash($path, string $slash = DIRECTORY_SEPARATOR) :string
     {
-        
         $path = static::removeTrailingSlash($path);
         
         $path = static::normalize($path, $slash);
-        $path = preg_replace('~'.preg_quote($slash, '~').'*$~', $slash, $path);
-        
-        return $path;
+        return preg_replace('~'.preg_quote($slash, '~').'*$~', $slash, $path);
     }
     
     /**
@@ -36,11 +33,9 @@ class FilePath
      */
     public static function removeTrailingSlash(string $path, string $slash = DIRECTORY_SEPARATOR) :string
     {
-        
         $path = static::normalize($path, $slash);
         
         return preg_replace('~'.preg_quote($slash, '~').'+$~', '', $path);
-        
     }
     
     /**
@@ -54,17 +49,14 @@ class FilePath
      */
     public static function normalize(string $path, string $slash = DIRECTORY_SEPARATOR) :string
     {
-        
         return preg_replace('~['.preg_quote('/\\', '~').']+~', $slash, $path);
     }
     
     public static function ending(string $path, string $ending) :string
     {
-        
         $cleaned_path = preg_replace('/(\.([a-z]+)?)/', '', $path);
         
         return $cleaned_path.'.'.trim($ending, '.');
-        
     }
     
     public static function removeExtensions($file_name) :string
@@ -77,13 +69,10 @@ class FilePath
         $name = pathinfo($file_path, PATHINFO_BASENAME);
         
         if ($ending) {
-            
             return Str::before($name, '.'.trim($ending, '.'));
-            
         }
         
         return $name;
-        
     }
     
 }

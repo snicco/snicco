@@ -19,17 +19,14 @@ class DatabaseMagicLink extends MagicLink
     
     public function __construct(string $table, array $lottery = [4, 100])
     {
-        
         global $wpdb;
         $this->wpdb = $wpdb;
         $this->table = $this->wpdb->prefix.$table;
         $this->lottery = $lottery;
-        
     }
     
     public function notUsed(Request $request) :bool
     {
-        
         $hash = md5($request->query('signature', ''));
         
         $query = $this->wpdb->prepare(
@@ -40,12 +37,10 @@ class DatabaseMagicLink extends MagicLink
         $exists = $this->wpdb->get_var($query);
         
         return (is_string($exists) && $exists === '1');
-        
     }
     
     public function gc() :bool
     {
-        
         $must_be_newer_than = $this->currentTime();
         
         $query = $this->wpdb->prepare(
@@ -54,21 +49,17 @@ class DatabaseMagicLink extends MagicLink
         );
         
         return $this->wpdb->query($query) !== false;
-        
     }
     
     public function destroy($signature)
     {
-        
         $hash = md5($signature);
         
         $this->wpdb->delete($this->table, ['signature' => $hash], ['%s']);
-        
     }
     
     public function store(string $signature, int $expires) :bool
     {
-        
         $cached = wp_cache_get($signature, 'magic_links');
         
         if ($cached !== false) {
@@ -86,7 +77,6 @@ class DatabaseMagicLink extends MagicLink
         $result = $this->wpdb->query($query);
         
         return $result !== false && $result !== 0;
-        
     }
     
 }

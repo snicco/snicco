@@ -60,7 +60,6 @@ class WPConnection implements WPConnectionInterface
     
     public function dbInstance() :BetterWPDbInterface
     {
-        
         return $this->wpdb;
     }
     
@@ -71,7 +70,6 @@ class WPConnection implements WPConnectionInterface
      */
     public function getSchemaGrammar() :MySqlSchemaGrammar
     {
-        
         return $this->schema_grammar;
     }
     
@@ -82,9 +80,7 @@ class WPConnection implements WPConnectionInterface
      */
     public function getSchemaBuilder() :MySqlSchemaBuilder
     {
-        
         return new MySqlSchemaBuilder($this);
-        
     }
     
     /**
@@ -97,9 +93,7 @@ class WPConnection implements WPConnectionInterface
      */
     public function table($table, $as = null) :QueryBuilder
     {
-        
         return $this->query()->from($table, $as);
-        
     }
     
     /**
@@ -109,11 +103,9 @@ class WPConnection implements WPConnectionInterface
      */
     public function query() :QueryBuilder
     {
-        
         return new QueryBuilder(
             $this, $this->getQueryGrammar(), $this->getPostProcessor()
         );
-        
     }
     
     /**
@@ -125,7 +117,6 @@ class WPConnection implements WPConnectionInterface
      */
     public function getQueryGrammar() :MySqlQueryGrammar
     {
-        
         return $this->query_grammar;
     }
     
@@ -184,9 +175,7 @@ class WPConnection implements WPConnectionInterface
      */
     public function selectOne($query, $bindings = [], $useReadPdo = true)
     {
-        
         return $this->runWpDB($query, $bindings, function ($query, $bindings) {
-            
             if ($this->pretending) {
                 return [];
             }
@@ -194,11 +183,9 @@ class WPConnection implements WPConnectionInterface
             $result = $this->wpdb->doSelect($query, $bindings);
             
             return array_shift($result);
-            
         }
         
         );
-        
     }
     
     /**
@@ -213,13 +200,11 @@ class WPConnection implements WPConnectionInterface
      */
     public function runWpDB(string $query, array $bindings, Closure $callback)
     {
-        
         return $this->runWithoutExceptions(
             $query,
             $this->prepareBindings($bindings),
             $callback
         );
-        
     }
     
     /**
@@ -231,20 +216,15 @@ class WPConnection implements WPConnectionInterface
      */
     public function prepareBindings(array $bindings) :array
     {
-        
         foreach ($bindings as $key => $binding) {
-            
             // Micro-optimization: check for scalar values before instances
             if (is_bool($binding)) {
                 $bindings[$key] = intval($binding);
             }
             elseif (is_scalar($binding)) {
-                
                 continue;
-                
             }
             elseif ($binding instanceof DateTime) {
-                
                 // We need to transform all instances of the DateTime class into an actual
                 // date string. Each query grammar maintains its own date string format
                 // so we'll just ask the grammar for the format to get from the date.
@@ -252,19 +232,15 @@ class WPConnection implements WPConnectionInterface
                     $this->getQueryGrammar()
                          ->getDateFormat()
                 );
-                
             }
         }
         
         return $bindings;
-        
     }
     
     public function selectFromWriteConnection($query, $bindings = []) :array
     {
-        
         return $this->select($query, $bindings, false);
-        
     }
     
     /**
@@ -279,25 +255,17 @@ class WPConnection implements WPConnectionInterface
      */
     public function select($query, $bindings = [], $useReadPdo = true)
     {
-        
         return $this->runWpDB($query, $bindings, function ($query, $bindings) {
-            
             if ($this->pretending) {
                 return [];
             }
             
             try {
-                
                 return $this->wpdb->doSelect($query, $bindings);
-                
             } catch (mysqli_sql_exception $e) {
-                
                 throw new SqlException($query, $bindings, $e);
-                
             }
-            
         });
-        
     }
     
     /**
@@ -311,9 +279,7 @@ class WPConnection implements WPConnectionInterface
      */
     public function insert($query, $bindings = [])
     {
-        
         return $this->statement($query, $bindings);
-        
     }
     
     /**
@@ -327,25 +293,17 @@ class WPConnection implements WPConnectionInterface
      */
     public function statement($query, $bindings = [])
     {
-        
         return $this->runWpDB($query, $bindings, function ($query, $bindings) {
-            
             if ($this->pretending) {
                 return true;
             }
             
             try {
-                
                 return $this->wpdb->doStatement($query, $bindings);
-                
             } catch (mysqli_sql_exception $e) {
-                
                 throw new SqlException($query, $bindings, $e);
-                
             }
-            
         });
-        
     }
     
     /**
@@ -359,7 +317,6 @@ class WPConnection implements WPConnectionInterface
      */
     public function update($query, $bindings = [])
     {
-        
         return $this->affectingStatement($query, $bindings);
     }
     
@@ -374,25 +331,17 @@ class WPConnection implements WPConnectionInterface
      */
     public function affectingStatement($query, $bindings = [])
     {
-        
         return $this->runWpDB($query, $bindings, function ($query, $bindings) {
-            
             if ($this->pretending) {
                 return 0;
             }
             
             try {
-                
                 return $this->wpdb->doAffectingStatement($query, $bindings);
-                
             } catch (mysqli_sql_exception $e) {
-                
                 throw new SqlException($query, $bindings, $e);
-                
             }
-            
         });
-        
     }
     
     /**
@@ -406,9 +355,7 @@ class WPConnection implements WPConnectionInterface
      */
     public function delete($query, $bindings = [])
     {
-        
         return $this->affectingStatement($query, $bindings);
-        
     }
     
     /**
@@ -433,25 +380,17 @@ class WPConnection implements WPConnectionInterface
      */
     public function unprepared($query)
     {
-        
         return $this->runWpDB($query, [], function ($query) {
-            
             if ($this->pretending) {
                 return true;
             }
             
             try {
-                
                 return $this->wpdb->doUnprepared($query);
-                
             } catch (mysqli_sql_exception $e) {
-                
                 throw new SqlException($query, [], $e);
-                
             }
-            
         });
-        
     }
     
     /**
@@ -468,25 +407,18 @@ class WPConnection implements WPConnectionInterface
      */
     public function cursor($query, $bindings = [], $useReadPdo = true) :Generator
     {
-        
         /** @var mysqli_result|array $result */
         
         $result = $this->runWpDB($query, $bindings, function ($query, $bindings) {
-            
             if ($this->pretending) {
                 return [];
             }
             
             try {
-                
                 return $this->wpdb->doCursorSelect($query, $bindings);
-                
             } catch (mysqli_sql_exception $e) {
-                
                 throw new SqlException($query, $bindings, $e);
-                
             }
-            
         });
         
         // $result can be null if runWpDb catches an exception.
@@ -495,11 +427,8 @@ class WPConnection implements WPConnectionInterface
         }
         
         while ($record = $result->fetch_assoc()) {
-            
             yield $record;
-            
         }
-        
     }
     
     /**
@@ -521,9 +450,7 @@ class WPConnection implements WPConnectionInterface
      */
     public function getDatabaseName() :string
     {
-        
         return $this->db_name;
-        
     }
     
     /*
@@ -548,9 +475,7 @@ class WPConnection implements WPConnectionInterface
     
     public function getTablePrefix() :string
     {
-        
         return $this->table_prefix;
-        
     }
     
     public function lastInsertId() :int
@@ -575,19 +500,15 @@ class WPConnection implements WPConnectionInterface
     
     private function runWithoutExceptions(string $query, array $bindings, Closure $callback)
     {
-        
         $start = microtime(true);
         
         $result = $callback($query, $bindings);
         
         if ($this->logging_queries) {
-            
             $this->logQuery($query, $bindings, $this->getElapsedTime($start));
-            
         }
         
         return $result;
-        
     }
     
 }

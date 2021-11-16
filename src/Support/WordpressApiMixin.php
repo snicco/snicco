@@ -25,7 +25,6 @@ class WordpressApiMixin
      */
     public static function siteName() :string
     {
-    
     }
     
     /**
@@ -34,7 +33,6 @@ class WordpressApiMixin
      */
     public static function removeFilter(string $tag, callable $function_to_remove, $priority = 10) :bool
     {
-    
     }
     
     /**
@@ -51,7 +49,6 @@ class WordpressApiMixin
      */
     public static function adminEmail() :string
     {
-    
     }
     
     /**
@@ -77,7 +74,6 @@ class WordpressApiMixin
      */
     public static function mail($email, string $subject, string $message, array $headers = [], array $attachments = []) :bool
     {
-    
     }
     
     /**
@@ -132,7 +128,6 @@ class WordpressApiMixin
      */
     public static function pluginPageHook() :?string
     {
-    
     }
     
     /**
@@ -190,7 +185,6 @@ class WordpressApiMixin
      */
     public static function currentUser() :WP_User
     {
-    
     }
     
     /**

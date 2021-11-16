@@ -33,7 +33,6 @@ class OutputBufferMiddleware extends Middleware
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
     {
-        
         $response = $next($request);
         
         // We delay every response that that has a body.
@@ -41,7 +40,6 @@ class OutputBufferMiddleware extends Middleware
         // has loaded the admin header, navbar etc.
         // Otherwise, our content will not be inside the correct dom element in the wp-admin area.
         if ($this->shouldDelayResponse($response)) {
-            
             $this->startOutputBuffer();
             add_action('all_admin_notices', [$this, 'flush']);
             $this->retained_response = $response;
@@ -49,11 +47,9 @@ class OutputBufferMiddleware extends Middleware
             
             // We don't want to send any headers or output yet.
             return $this->response_factory->null();
-            
         }
         
         return $response;
-        
     }
     
     public function startOutputBuffer()
@@ -64,17 +60,13 @@ class OutputBufferMiddleware extends Middleware
     
     public function flush()
     {
-        
         if ($this->retained_response instanceof Response) {
-            
             $body = $this->stream_factory->createStream();
             $body->write($this->getBufferedOutput().$this->retained_response->getBody());
             $response = $this->retained_response->withBody($body);
             
             $this->emitter->emit($this->emitter->prepare($response, $this->request));
-            
         }
-        
     }
     
     /**
@@ -93,7 +85,6 @@ class OutputBufferMiddleware extends Middleware
     
     private function shouldDelayResponse(Response $response) :bool
     {
-        
         if ($response instanceof NullResponse || $response instanceof DelegatedResponse) {
             return false;
         }
@@ -107,7 +98,6 @@ class OutputBufferMiddleware extends Middleware
         }
         
         return false;
-        
     }
     
 }

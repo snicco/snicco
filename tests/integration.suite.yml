@@ -18,5 +18,3 @@ modules:
       domain: "%FLUSHABLE_SITE_WP_DOMAIN%"
       adminEmail: "%FLUSHABLE_SITE_ADMIN_EMAIL%"
       title: "WP Test"
-      plugins: [ '' ]
-      activatePlugins: [ '' ]

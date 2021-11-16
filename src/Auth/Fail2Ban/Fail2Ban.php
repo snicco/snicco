@@ -41,7 +41,6 @@ class Fail2Ban
             $event,
         );
         return "{$message} from {$event->request()->getAttribute('ip_address')}";
-        
     }
     
 }

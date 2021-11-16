@@ -63,9 +63,7 @@ class TestSysLogger implements Syslogger
     
     public function assertLogEntry(int $priority, string $message)
     {
-        
         Assert::assertContains($priority.'-'.$message, $this->log_entries);
-        
     }
     
 }

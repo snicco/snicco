@@ -16,10 +16,15 @@ use Tests\fixtures\Mail\ConfirmAccountTestMail;
 class SendingMailsTest extends FrameworkTestCase
 {
     
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->bootApp();
+    }
+    
     /** @test */
     public function a_html_email_can_be_send()
     {
-        
         $mail = TestApp::mail();
         $mail
             ->to([['name' => 'Calvin', 'email' => 'c@web.de']])
@@ -43,13 +48,11 @@ class SendingMailsTest extends FrameworkTestCase
         $this->assertContains('Bcc: jane@web.de', $headers);
         
         $this->assertSame(['file1', 'file2'], $mail['attachments']);
-        
     }
     
     /** @test */
     public function a_plain_text_mail_can_be_sent()
     {
-        
         $mail = TestApp::mail();
         $mail
             ->to([['name' => 'Calvin', 'email' => 'c@web.de']])
@@ -73,13 +76,11 @@ class SendingMailsTest extends FrameworkTestCase
         $this->assertContains('Bcc: jane@web.de', $headers);
         
         $this->assertSame(['file1', 'file2'], $mail['attachments']);
-        
     }
     
     /** @test */
     public function a_mail_can_be_sent_to_multiple_recipients_and_the_mail_is_resend_for_every_recipient_if_unique_is_true()
     {
-        
         $mail = TestApp::mail();
         $mail
             ->to([
@@ -109,13 +110,11 @@ class SendingMailsTest extends FrameworkTestCase
         $this->assertContains('Reply-To: Front Office <office@web.de>', $headers);
         $this->assertContains('Content-Type: text/plain; charset=UTF-8', $headers);
         $this->assertSame(['file1', 'file2'], $second_mail['attachments']);
-        
     }
     
     /** @test */
     public function a_mail_can_be_sent_to_multiple_recipients_but_all_receive_the_same_view()
     {
-        
         $mail = TestApp::mail();
         $mail
             ->to([
@@ -134,13 +133,11 @@ class SendingMailsTest extends FrameworkTestCase
         $headers = $mail['headers'];
         
         $this->assertContains('Content-Type: text/plain; charset=UTF-8', $headers);
-        
     }
     
     /** @test */
     public function public_properties_of_the_mailable_are_available_to_views()
     {
-        
         $mail = TestApp::mail();
         $mail
             ->to('c@web.de')
@@ -158,13 +155,11 @@ class SendingMailsTest extends FrameworkTestCase
         
         $mail = $this->mail_data[0];
         $this->assertViewContent('We are launching a new discount for Shoes', $mail['message']);
-        
     }
     
     /** @test */
     public function the_build_method_is_resolved_from_the_service_container()
     {
-        
         $mail = TestApp::mail();
         $mail
             ->to('c@web.de')
@@ -174,22 +169,18 @@ class SendingMailsTest extends FrameworkTestCase
         
         $mail = $this->mail_data[0];
         $this->assertViewContent('Please confirm your account by visiting '.$url, $mail['message']);
-        
     }
     
     /** @test */
     public function a_mailable_can_be_swapped_out_for_another_mailable_class()
     {
-        
         $mail = TestApp::mail();
         
         $mail->setOverrides([
             ConfirmAccountTestMail::class => function (ConfirmAccountTestMail $mail) {
-                
                 $new = new OverrideMailable();
                 $new->to = $mail->to;
                 return $new;
-                
             },
         ]);
         
@@ -198,18 +189,10 @@ class SendingMailsTest extends FrameworkTestCase
         
         $mail = $this->mail_data[0];
         $this->assertViewContent('New Message', $mail['message']);
-        
-    }
-    
-    protected function setUp() :void
-    {
-        parent::setUp();
-        $this->bootApp();
     }
     
     private function clearAllMails()
     {
-        
         $this->mail_data = [];
     }
     
@@ -220,14 +203,12 @@ class OverrideMailable extends Mailable
     
     public function build() :OverrideMailable
     {
-        
         return $this->subject('New subject')
                     ->message('New Message');
     }
     
     public function unique() :bool
     {
-        
         return true;
     }
     

@@ -34,7 +34,6 @@ class GenerateNewAuthCookie
         $cookie = $user->user_login.'|'.$expiration.'|'.$token.'|'.$hash;
         
         return $cookie;
-        
     }
     
 }

@@ -24,39 +24,29 @@ class HtmlErrorRenderer
      */
     public function render(ViewFactoryInterface $view_factory, HttpException $e, Request $request)
     {
-        
         $views = $this->getPossibleViews($e, $request);
         
         try {
-            
             return $view_factory->render($views, [
                 'status_code' => $e->httpStatusCode(),
                 'message' => $e->messageForUsers(),
             ]);
-            
         } catch (Throwable $e) {
-            
             throw new ErrorViewException('Critical error while rendering an error view.', $e);
-            
         }
-        
     }
     
     private function getPossibleViews(HttpException $e, Request $request) :array
     {
-        
         $views = ['framework.errors.'.$e->httpStatusCode(), 'framework.errors.500'];
         
         if ( ! $request->isWpAdmin()) {
-            
             return $views;
-            
         }
         
         return collect($views)
             ->map(fn($view) => "$view-admin")
             ->merge($views)->all();
-        
     }
     
 }

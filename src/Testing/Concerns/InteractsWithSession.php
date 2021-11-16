@@ -36,11 +36,9 @@ trait InteractsWithSession
     
     protected function withCsrfToken() :array
     {
-        
         $this->withDataInSession($data = [VerifyCsrfToken::TOKEN_KEY => Str::random(40)]);
         
         return $data;
-        
     }
     
     /**
@@ -48,16 +46,12 @@ trait InteractsWithSession
      */
     protected function withDataInSession(array $data, string $id = null) :self
     {
-        
         foreach ($data as $key => $value) {
-            
             Arr::set($to_driver, $key, $value);
             $this->session->put($key, $value);
-            
         }
         
         if ( ! $this->session_id) {
-            
             $id = $id ?? $this->testSessionId();
             $write_to = $this->hash($id);
             
@@ -68,11 +62,9 @@ trait InteractsWithSession
             $this->session->setId($id);
             $this->session_id = $id;
             $this->withSessionCookie();
-            
         }
         
         return $this;
-        
     }
     
     protected function testSessionId() :string
@@ -105,7 +97,6 @@ trait InteractsWithSession
     
     protected function assertDriverHas($expected, string $key, $id = null)
     {
-        
         $data =
             unserialize($this->sessionDriver()->read($this->hash($id ?? $this->testSessionId())));
         
@@ -114,12 +105,10 @@ trait InteractsWithSession
             Arr::get($data, $key, 'null'),
             "The session driver does not have the correct value for [$key]"
         );
-        
     }
     
     protected function assertDriverNotHas(string $key, $id = null)
     {
-        
         $data =
             unserialize($this->sessionDriver()->read($this->hash($id ?? $this->testSessionId())));
         
@@ -127,12 +116,10 @@ trait InteractsWithSession
             Arr::get($data, $key),
             "Unexpect value in the session driver for [$key]"
         );
-        
     }
     
     protected function assertDriverEmpty(string $id)
     {
-        
         $data = $this->sessionDriver()->read($this->hash($id));
         
         if ($data === '') {
@@ -154,7 +141,6 @@ trait InteractsWithSession
             $data,
             "The session driver is not empty for id [$id].".PHP_EOL."Found keys [$keys]"
         );
-        
     }
     
     protected function assertSessionUserId(int $id)

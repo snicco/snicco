@@ -12,7 +12,6 @@ class Redirector extends AbstractRedirector
     
     public function createRedirectResponse(string $path, int $status_code = 302) :RedirectResponse
     {
-        
         $this->validateStatusCode($status_code);
         
         $psr_response = $this->response_factory->createResponse($status_code);
@@ -20,7 +19,6 @@ class Redirector extends AbstractRedirector
         $response = new RedirectResponse($psr_response);
         
         return $response->to($path);
-        
     }
     
 }

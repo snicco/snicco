@@ -20,9 +20,7 @@ class FooMiddleware extends Middleware
     
     public function handle(Request $request, $next) :ResponseInterface
     {
-        
         if (isset($request->body)) {
-            
             $request->body .= $this->foo;
             
             return $next($request);
@@ -31,7 +29,6 @@ class FooMiddleware extends Middleware
         $request->body = $this->foo;
         
         return $next($request);
-        
     }
     
 }

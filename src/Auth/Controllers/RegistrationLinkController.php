@@ -24,25 +24,20 @@ class RegistrationLinkController extends Controller
     
     public function create(Request $request, AbstractRegistrationView $response) :ResponseableInterface
     {
-        
         return $response->forRequest($request);
-        
     }
     
     public function store(Request $request, MailBuilder $mail_builder) :RedirectResponse
     {
-        
         $email = $request->input('email', '');
         
         $valid = filter_var($email, FILTER_VALIDATE_EMAIL);
         
         if ( ! $valid) {
-            
             return $this->response_factory->back()
                                           ->withErrors(
                                               ['email' => 'That email address does not seem to be valid.']
                                           );
-            
         }
         
         $request->session()->put('registration.email', $email);
@@ -53,7 +48,6 @@ class RegistrationLinkController extends Controller
         
         return $this->response_factory->back()
                                       ->with('registration.link.success', true);
-        
     }
     
 }

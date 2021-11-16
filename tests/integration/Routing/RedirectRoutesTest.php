@@ -21,11 +21,8 @@ class RedirectRoutesTest extends FrameworkTestCase
         $this->get('/location-a')->assertRedirect('/location-b');
         
         Event::assertDispatched(function (ResponseSent $event) {
-            
             return $event->response instanceof RedirectResponse;
-            
         });
-        
     }
     
 }

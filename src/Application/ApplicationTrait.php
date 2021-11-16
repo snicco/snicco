@@ -19,7 +19,6 @@ trait ApplicationTrait
     
     public static function make(string $base_path, ContainerAdapter $container = null) :Application
     {
-        
         static::setApplication(
             Application::create($base_path, $container ?? new BaseContainerAdapter())
         );
@@ -28,7 +27,6 @@ trait ApplicationTrait
         $app->container()->instance(ApplicationTrait::class, static::class);
         
         return $app;
-        
     }
     
     public static function setApplication(?Application $application)
@@ -52,7 +50,6 @@ trait ApplicationTrait
      */
     public static function __callStatic(string $method, array $parameters)
     {
-        
         $application = static::getApplication();
         $callable = [$application, $method];
         

@@ -9,7 +9,6 @@ trait WithDatabaseExceptions
     
     protected function withDatabaseExceptions()
     {
-        
         global $wpdb;
         
         /** @var mysqli $mysqli */
@@ -19,7 +18,6 @@ trait WithDatabaseExceptions
         mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
         
         $mysqli->query("SET SESSION sql_mode='TRADITIONAL'");
-        
     }
     
 }

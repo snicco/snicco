@@ -12,7 +12,6 @@ class UniqueCondition implements ConditionInterface
     
     public function isSatisfied(Request $request) :bool
     {
-        
         $count = $GLOBALS['test']['unique_condition'] ?? 0;
         
         $count++;
@@ -20,14 +19,11 @@ class UniqueCondition implements ConditionInterface
         $GLOBALS['test']['unique_condition'] = $count;
         
         return true;
-        
     }
     
     public function getArguments(Request $request) :array
     {
-        
         return [];
-        
     }
     
 }

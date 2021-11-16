@@ -5,19 +5,19 @@ declare(strict_types=1);
 namespace Snicco\Auth\Responses;
 
 use Snicco\Support\WP;
-use Snicco\View\ViewFactory;
 use Snicco\Application\Config;
 use Snicco\Routing\UrlGenerator;
+use Snicco\Contracts\ViewFactoryInterface;
 use Snicco\Auth\Contracts\AbstractLoginView;
 
 class MagicLinkLoginView extends AbstractLoginView
 {
     
-    private UrlGenerator $url;
-    private ViewFactory  $view_factory;
-    private Config       $config;
+    private UrlGenerator         $url;
+    private ViewFactoryInterface $view_factory;
+    private Config               $config;
     
-    public function __construct(ViewFactory $view, UrlGenerator $url, Config $config)
+    public function __construct(ViewFactoryInterface $view, UrlGenerator $url, Config $config)
     {
         $this->view_factory = $view;
         $this->url = $url;
@@ -26,7 +26,6 @@ class MagicLinkLoginView extends AbstractLoginView
     
     public function toResponsable()
     {
-        
         return $this->view_factory->make('framework.auth.login-with-email')->with(
             array_filter([
                 'title' => 'Log in | '.WP::siteName(),
@@ -35,7 +34,6 @@ class MagicLinkLoginView extends AbstractLoginView
                     ? $this->url->toRoute('auth.register') : null,
             ])
         );
-        
     }
     
 }

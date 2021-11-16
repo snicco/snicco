@@ -13,7 +13,6 @@ class GenerateLogoutUrl extends Event
     
     public function __construct(string $url, string $redirect_to = '/')
     {
-        
         $this->redirect_to = $redirect_to;
     }
     

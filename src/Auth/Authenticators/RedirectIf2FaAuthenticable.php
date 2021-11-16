@@ -28,19 +28,14 @@ class RedirectIf2FaAuthenticable extends Authenticator
     
     public function attempt(Request $request, $next) :Response
     {
-        
         $response = $next($request);
         
         if ( ! $response instanceof SuccessfulLoginResponse) {
-            
             return $response;
-            
         }
         
         if ( ! $this->userHasTwoFactorEnabled($user = $response->authenticateUser())) {
-            
             return $response;
-            
         }
         
         $this->challengeUser($request, $user);
@@ -48,15 +43,12 @@ class RedirectIf2FaAuthenticable extends Authenticator
         return $this->response_factory->toResponse(
             $this->challenge_response->forRequest($request)->toResponsable()
         );
-        
     }
     
     private function challengeUser(Request $request, WP_User $user) :void
     {
-        
         $request->session()->put('auth.2fa.challenged_user', $user->ID);
         $request->session()->put('auth.2fa.remember', $request->boolean('remember_me'));
-        
     }
     
 }

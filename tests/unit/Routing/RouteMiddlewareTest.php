@@ -4,78 +4,49 @@ declare(strict_types=1);
 
 namespace Tests\unit\Routing;
 
-use Mockery;
-use Tests\UnitTest;
-use Snicco\Support\WP;
-use Snicco\Events\Event;
-use Snicco\Routing\Router;
+use Tests\RoutingTestCase;
 use Snicco\Http\Psr7\Request;
-use Contracts\ContainerAdapter;
-use Tests\helpers\CreateTestSubjects;
-use Snicco\Middleware\Core\RouteRunner;
-use Tests\helpers\CreateDefaultWpApiMocks;
 use Tests\fixtures\Middleware\BarMiddleware;
 use Tests\fixtures\Middleware\BazMiddleware;
 use Tests\fixtures\Middleware\FooMiddleware;
 use Tests\fixtures\Middleware\FooBarMiddleware;
 
-class RouteMiddlewareTest extends UnitTest
+class RouteMiddlewareTest extends RoutingTestCase
 {
-    
-    use CreateTestSubjects;
-    use CreateDefaultWpApiMocks;
-    
-    private ContainerAdapter $container;
-    private Router           $router;
-    private RouteRunner      $route_runner;
     
     /** @test */
     public function applying_a_route_group_to_a_route_applies_all_middleware_in_the_group()
     {
-        
-        $this->createRoutes(function () {
-            
-            $this->router->get('/foo', function (Request $request) {
-                
-                return $request->body;
-                
-            })->middleware('foobar');
-            
-        });
-        
-        $kernel = $this->newKernel([
+        $this->withMiddlewareGroups([
             'foobar' => [
                 FooMiddleware::class,
                 BarMiddleware::class,
-            
             ],
         ]);
         
-        $request = $this->webRequest('GET', '/foo');
+        $this->createRoutes(function () {
+            $this->router->get('/foo', function (Request $request) {
+                return $request->body;
+            })->middleware('foobar');
+        });
         
-        $output = $this->runKernelAndGetOutput($request, $kernel);
+        $request = $this->frontendRequest('GET', '/foo');
         
-        $this->assertSame('foobar', $output);
-        
+        $this->assertResponse('foobar', $request);
     }
     
     /** @test */
     public function middleware_in_the_global_group_is_always_applied()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('/foo', function (Request $request) {
-                
                 return $request->body;
-                
             });
-            
         });
         
-        $request = $this->webRequest('GET', '/foo');
+        $request = $this->frontendRequest('GET', '/foo');
         
-        $kernel = $this->newKernel([
+        $this->withMiddlewareGroups([
             'global' => [
                 FooMiddleware::class,
                 BarMiddleware::class,
@@ -83,27 +54,19 @@ class RouteMiddlewareTest extends UnitTest
             ],
         ]);
         
-        $output = $this->runKernelAndGetOutput($request, $kernel);
-        
-        $this->assertSame('foobar', $output);
-        
+        $this->assertResponse('foobar', $request);
     }
     
     /** @test */
     public function duplicate_middleware_is_filtered_out()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->middleware('foobar')->get('/foo', function (Request $request) {
-                
                 return $request->body;
-                
             });
-            
         });
         
-        $kernel = $this->newKernel(
+        $this->withMiddlewareGroups(
             [
                 'global' => [
                     FooMiddleware::class,
@@ -117,27 +80,21 @@ class RouteMiddlewareTest extends UnitTest
             ]
         );
         
-        $request = $this->webRequest('GET', '/foo');
+        $request = $this->frontendRequest('GET', '/foo');
         
-        $this->assertSame('foobar', $this->runKernelAndGetOutput($request, $kernel));
-        
+        $this->assertResponse('foobar', $request);
     }
     
     /** @test */
     public function duplicate_middleware_is_filtered_out_when_passing_the_same_middleware_arguments()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('/foo', function (Request $request) {
-                
                 return $request->body;
-                
             })->middleware(['all', 'foo:FOO']);
-            
         });
         
-        $kernel = $this->newKernel([
+        $this->withMiddlewareGroups([
             'all' => [
                 FooMiddleware::class.':FOO',
                 BarMiddleware::class,
@@ -145,27 +102,21 @@ class RouteMiddlewareTest extends UnitTest
             ],
         ]);
         
-        $request = $this->webRequest('GET', 'foo');
-        $this->assertSame('FOObarbaz', $this->runKernelAndGetOutput($request, $kernel));
-        
+        $request = $this->frontendRequest('GET', 'foo');
+        $this->assertResponse('FOObarbaz', $request);
     }
     
     /** @test */
     public function multiple_middleware_groups_can_be_applied()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->middleware(['foo', 'bar'])
                          ->get('/foo', function (Request $request) {
-                
                              return $request->body;
-                
                          });
-            
         });
         
-        $kernel = $this->newKernel([
+        $this->withMiddlewareGroups([
             'foo' => [
                 FooMiddleware::class,
             ],
@@ -174,88 +125,62 @@ class RouteMiddlewareTest extends UnitTest
             ],
         ]);
         
-        $request = $this->webRequest('GET', '/foo');
+        $request = $this->frontendRequest('GET', '/foo');
         
-        $this->assertSame('foobar', $this->runKernelAndGetOutput($request, $kernel));
-        
+        $this->assertResponse('foobar', $request);
     }
     
     /** @test */
     public function unknown_middleware_throws_an_exception()
     {
-        
         $this->expectExceptionMessage('Unknown middleware [abc]');
         
         $this->createRoutes(function () {
-            
             $this->router->middleware('abc')->get('foo', function (Request $request) {
-                
                 return $request->body;
-                
             });
-            
         });
         
-        $kernel = $this->newKernel();
-        $kernel->run($this->webRequest('GET', 'foo'));
-        
+        $this->runKernel($this->frontendRequest('GET', 'foo'));
     }
     
     /** @test */
     public function multiple_middleware_arguments_can_be_passed()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('/foo', function (Request $request) {
-                
                 return $request->body;
-                
-            })
-                         ->middleware('foobar');
+            })->middleware('foobar');
             
             $this->router->post('/foo', function (Request $request) {
-                
                 return $request->body;
-                
-            })
-                         ->middleware('foobar:FOO');
+            })->middleware('foobar:FOO');
             
             $this->router->patch('/foo', function (Request $request) {
-                
                 return $request->body;
-                
-            })
-                         ->middleware('foobar:FOO,BAR');
-            
+            })->middleware('foobar:FOO,BAR');
         });
         
-        $request = $this->webRequest('GET', '/foo');
-        $this->assertSame('foobar', $this->runKernelAndGetOutput($request));
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('foobar', $request);
         
-        $request = $this->webRequest('POST', '/foo');
-        $this->assertSame('FOObar', $this->runKernelAndGetOutput($request));
+        $request = $this->frontendRequest('POST', '/foo');
+        $this->assertResponse('FOObar', $request);
         
-        $request = $this->webRequest('PATCH', '/foo');
-        $this->assertSame('FOOBAR', $this->runKernelAndGetOutput($request));
-        
+        $request = $this->frontendRequest('PATCH', '/foo');
+        $this->assertResponse('FOOBAR', $request);
     }
     
     /** @test */
     public function a_middleware_group_can_point_to_a_middleware_alias()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('/foo', function (Request $request) {
-                
                 return $request->body;
-                
             })->middleware('foogroup');
-            
         });
         
-        $kernel = $this->newKernel([
+        $this->withMiddlewareGroups([
             
             'foogroup' => [
                 'foo',
@@ -263,52 +188,40 @@ class RouteMiddlewareTest extends UnitTest
         
         ]);
         
-        $request = $this->webRequest('GET', '/foo');
-        $this->assertSame('foo', $this->runKernelAndGetOutput($request, $kernel));
-        
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('foo', $request);
     }
     
     /** @test */
     public function group_and_route_middleware_can_be_combined()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('/foo', function (Request $request) {
-                
                 return $request->body;
-                
             })->middleware(['baz', 'foobar']);
-            
         });
         
-        $kernel = $this->newKernel([
+        $this->withMiddlewareGroups([
             'foobar' => [
                 FooMiddleware::class,
                 BarMiddleware::class,
             ],
         ]);
         
-        $request = $this->webRequest('GET', '/foo');
-        $this->assertSame('bazfoobar', $this->runKernelAndGetOutput($request, $kernel));
-        
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('bazfoobar', $request);
     }
     
     /** @test */
     public function a_middleware_group_can_contain_another_middleware_group()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('/foo', function (Request $request) {
-                
                 return $request->body;
-                
             })->middleware('baz_group');
-            
         });
         
-        $kernel = $this->newKernel([
+        $this->withMiddlewareGroups([
             
             'baz_group' => [
                 BazMiddleware::class,
@@ -324,50 +237,36 @@ class RouteMiddlewareTest extends UnitTest
         
         ]);
         
-        $request = $this->webRequest('GET', '/foo');
-        $this->assertSame('bazbarfoo', $this->runKernelAndGetOutput($request, $kernel));
-        
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('bazbarfoo', $request);
     }
     
     /** @test */
     public function middleware_can_be_applied_without_an_alias()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('/foo', function (Request $request) {
-                
                 return $request->body;
-                
             })->middleware(FooBarMiddleware::class.':FOO,BAR');
-            
         });
         
-        $request = $this->webRequest('GET', '/foo');
-        $this->assertSame('FOOBAR', $this->runKernelAndGetOutput($request));
-        
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('FOOBAR', $request);
     }
     
     /** @test */
     public function non_global_middleware_can_be_sorted()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->middleware('barbaz')
                          ->group(function () {
-                
                              $this->router->get('/foo', function (Request $request) {
-                    
                                  return $request->body;
-                    
                              })->middleware(FooMiddleware::class);
-                
                          });
-            
         });
         
-        $kernel = $this->newKernel([
+        $this->withMiddlewareGroups([
             'barbaz' => [
                 BazMiddleware::class,
                 BarMiddleware::class,
@@ -382,26 +281,20 @@ class RouteMiddlewareTest extends UnitTest
         
         ]);
         
-        $request = $this->webRequest('GET', '/foo');
-        $this->assertSame('foobarbaz', $this->runKernelAndGetOutput($request, $kernel));
-        
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('foobarbaz', $request);
     }
     
     /** @test */
     public function middleware_keeps_its_relative_position_if_its_has_no_priority_defined()
     {
-        
         $this->createRoutes(function () {
-            
             $this->router->get('/foo', function (Request $request) {
-                
                 return $request->body;
-                
             })->middleware('all');
-            
         });
         
-        $kernel = $this->newKernel([
+        $this->withMiddlewareGroups([
             'all' => [
                 FooBarMiddleware::class,
                 BarMiddleware::class,
@@ -417,38 +310,8 @@ class RouteMiddlewareTest extends UnitTest
         
         ]);
         
-        $request = $this->webRequest('GET', '/foo');
-        $this->assertSame('foobarfoobarbaz', $this->runKernelAndGetOutput($request, $kernel));
-        
-    }
-    
-    /**
-     * SORTING
-     */
-    
-    protected function beforeTestRun()
-    {
-        
-        $this->container = $this->createContainer();
-        $this->routes = $this->newCachedRouteCollection();
-        Event::make($this->container);
-        Event::fake();
-        WP::setFacadeContainer($this->container);
-        
-    }
-    
-    protected function beforeTearDown()
-    {
-        
-        Event::setInstance(null);
-        Mockery::close();
-        WP::reset();
-        
-    }
-    
-    private function withMiddlewarePriority(array $array)
-    {
-        $this->middleware_stack->middlewarePriority($array);
+        $request = $this->frontendRequest('GET', '/foo');
+        $this->assertResponse('foobarfoobarbaz', $request);
     }
     
 }

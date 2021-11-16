@@ -8,7 +8,5 @@ use Snicco\Routing\Router;
  * @var Router $router
  */
 $router->get('other', function () {
-    
     return 'other';
-    
 });

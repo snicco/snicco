@@ -14,13 +14,11 @@ class PostSlugCondition implements ConditionInterface
     
     public function __construct(string $post_slug)
     {
-        
         $this->post_slug = $post_slug;
     }
     
     public function isSatisfied(Request $request) :bool
     {
-        
         $post = get_post();
         
         return (is_singular() && $post && $this->post_slug === $post->post_name);
@@ -28,7 +26,6 @@ class PostSlugCondition implements ConditionInterface
     
     public function getArguments(Request $request) :array
     {
-        
         return ['post_slug' => $this->post_slug];
     }
     

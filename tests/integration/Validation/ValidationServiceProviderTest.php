@@ -21,7 +21,6 @@ class ValidationServiceProviderTest extends FrameworkTestCase
         $v = TestApp::resolve(Validator::class);
         
         $this->assertInstanceOf(Validator::class, $v);
-        
     }
     
     /** @test */

@@ -22,13 +22,10 @@ class SessionManagerTest extends FrameworkTestCase
     
     public function setUp() :void
     {
-        
         $this->afterApplicationCreated(function () {
-            
             $this->withSessionCookie();
             $this->withRequest($this->frontendRequest('POST', '/wp-login.php'));
             $this->bootApp();
-            
         });
         $this->afterApplicationBooted(function () {
             $this->manager = $this->app->resolve(SessionManager::class);
@@ -40,7 +37,6 @@ class SessionManagerTest extends FrameworkTestCase
     /** @test */
     public function the_session_id_is_regenerated_on_a_login_event()
     {
-        
         $this->withDataInSession(['foo' => 'bar']);
         
         $id_before_login = $this->testSessionId();
@@ -62,13 +58,11 @@ class SessionManagerTest extends FrameworkTestCase
         // Driver got updated.
         $this->assertDriverHas('bar', 'foo', $new_id);
         $this->assertDriverEmpty($id_before_login);
-        
     }
     
     /** @test */
     public function session_are_invalidated_on_logout()
     {
-        
         $this->withDataInSession(['foo' => 'bar']);
         
         $calvin = $this->createAdmin();
@@ -91,25 +85,21 @@ class SessionManagerTest extends FrameworkTestCase
         
         // The old session is gone.
         $this->assertDriverEmpty($id_before_logout);
-        
     }
     
     /** @test */
     public function the_provided_user_id_is_set_on_the_session()
     {
-        
         $this->assertSessionUserId(0);
         
         $this->manager->start($this->request, 2);
         
         $this->assertSessionUserId(2);
-        
     }
     
     /** @test */
     public function initial_session_rotation_is_set()
     {
-        
         $this->manager->start($this->request, 1);
         
         $this->assertSame(0, $this->session->rotationDueAt());
@@ -118,13 +108,11 @@ class SessionManagerTest extends FrameworkTestCase
         
         // 3600 set in fixtures/config/session.php
         $this->assertSame($this->availableAt(3600), $this->session->rotationDueAt());
-        
     }
     
     /** @test */
     public function absolute_session_timeout_is_set()
     {
-        
         $this->manager->start($this->request, 1);
         
         $this->assertSame(0, $this->session->absoluteTimeout());
@@ -132,13 +120,11 @@ class SessionManagerTest extends FrameworkTestCase
         $this->manager->save();
         
         $this->assertSame($this->availableAt(7200), $this->session->absoluteTimeout());
-        
     }
     
     /** @test */
     public function absolute_session_timeout_can_be_customized_at_runtime()
     {
-        
         $this->manager->start($this->request, 1);
         $this->manager->setAbsoluteTimeoutResolver(function ($timout) {
             return $timout * 2;
@@ -150,25 +136,21 @@ class SessionManagerTest extends FrameworkTestCase
         
         // 7200 is the default in our test config fixture
         $this->assertSame($this->availableAt(7200 * 2), $this->session->absoluteTimeout());
-        
     }
     
     /** @test */
     public function the_cookie_expiration_is_equal_to_the_max_lifetime()
     {
-        
         $this->manager->start($this->request, 1);
         $this->manager->save();
         
         $cookie = $this->manager->sessionCookie()->properties();
         $this->assertSame($this->availableAt(7200), $cookie['expires']);
-        
     }
     
     /** @test */
     public function sessions_are_not_rotated_before_the_interval_passes()
     {
-        
         // Arrange
         $this->withDataInSession(['foo' => 'bar']);
         
@@ -199,13 +181,11 @@ class SessionManagerTest extends FrameworkTestCase
         
         // Assert
         $this->assertNotSame($this->session->getId(), $this->testSessionId());
-        
     }
     
     /** @test */
     public function the_regenerate_session_event_gets_dispatched()
     {
-        
         Event::fake([SessionRegenerated::class]);
         
         $this->manager->start($this->request, 1);
@@ -217,7 +197,6 @@ class SessionManagerTest extends FrameworkTestCase
         
         Event::assertDispatched(fn(SessionRegenerated $event) => $event->session === $this->session
         );
-        
     }
     
     protected function packageProviders() :array

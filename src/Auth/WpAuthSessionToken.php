@@ -16,7 +16,6 @@ class WpAuthSessionToken extends WP_Session_Tokens
     
     protected function __construct($user_id)
     {
-        
         parent::__construct($user_id);
         
         global $session_manager;
@@ -25,7 +24,6 @@ class WpAuthSessionToken extends WP_Session_Tokens
         $this->session_manager->start($__request, $user_id);
         unset ($GLOBALS['session_manager']);
         unset ($GLOBALS['__request']);
-        
     }
     
     /**
@@ -33,12 +31,10 @@ class WpAuthSessionToken extends WP_Session_Tokens
      */
     public static function drop_sessions() :void
     {
-        
         /** @var WpAuthSessionToken $instance */
         $instance = static::get_instance(0);
         
         $instance->session_manager->destroyAll();
-        
     }
     
     /**
@@ -51,9 +47,7 @@ class WpAuthSessionToken extends WP_Session_Tokens
      */
     protected function get_session($verifier) :?array
     {
-        
         return $this->get_sessions()[$verifier] ?? null;
-        
     }
     
     /**
@@ -64,7 +58,6 @@ class WpAuthSessionToken extends WP_Session_Tokens
      */
     protected function get_sessions() :array
     {
-        
         if ( ! empty($this->all_sessions_for_user)) {
             return $this->all_sessions_for_user;
         }
@@ -77,7 +70,6 @@ class WpAuthSessionToken extends WP_Session_Tokens
         $this->all_sessions_for_user = is_array($sessions) ? $sessions : [];
         
         return $this->all_sessions_for_user;
-        
     }
     
     /**
@@ -94,15 +86,11 @@ class WpAuthSessionToken extends WP_Session_Tokens
      */
     protected function update_session($verifier, $session = null) :void
     {
-        
         if ( ! $session) {
-            
             $this->session_manager->activeSession()->invalidate();
-            
         }
         
         $this->session_manager->activeSession()->put(static::wp_auth_key, $session);
-        
     }
     
     /**
@@ -114,9 +102,7 @@ class WpAuthSessionToken extends WP_Session_Tokens
      */
     protected function destroy_other_sessions($verifier) :void
     {
-        
         $this->session_manager->destroyOthersForUser($verifier, $this->user_id);
-        
     }
     
     /**
@@ -126,9 +112,7 @@ class WpAuthSessionToken extends WP_Session_Tokens
      */
     protected function destroy_all_sessions() :void
     {
-        
         $this->session_manager->destroyAllForUser($this->user_id);
-        
     }
     
 }

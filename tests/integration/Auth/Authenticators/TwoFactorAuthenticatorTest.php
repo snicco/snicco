@@ -23,21 +23,51 @@ use Snicco\Auth\Contracts\AbstractTwoFactorChallengeResponse;
 class TwoFactorAuthenticatorTest extends AuthTestCase
 {
     
+    protected function setUp() :void
+    {
+        $this->afterApplicationCreated(function () {
+            $this->with2Fa();
+            
+            $this->withReplacedConfig('auth.through',
+                [
+                    TwoFactorAuthenticator::class,
+                    RedirectIf2FaAuthenticable::class,
+                    TestAuthenticator::class,
+                ]
+            );
+            
+            $this->withAddedConfig('auth.fail2ban.enabled', true);
+        });
+        
+        $this->afterApplicationBooted(function () {
+            $this->withoutMiddleware('csrf');
+            $this->instance(
+                AbstractTwoFactorChallengeResponse::class,
+                $this->app->resolve(TestChallengeResponse::class)
+            );
+            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
+            $this->instance(
+                TwoFactorAuthenticationProvider::class,
+                new TestTwoFactorProvider($this->encryptor)
+            );
+        });
+        
+        parent::setUp();
+        $this->bootApp();
+    }
+    
     /** @test */
     public function any_non_login_response_is_returned_as_is()
     {
-        
         $response = $this->post('/auth/login');
         
         $response->assertRedirectToRoute('auth.login');
         $this->assertGuest();
-        
     }
     
     /** @test */
     public function a_successfully_authenticated_user_is_logged_in_if_he_doesnt_have_2fa_enabled()
     {
-        
         $calvin = $this->createAdmin();
         $this->assertNotAuthenticated($calvin);
         
@@ -47,13 +77,11 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
         
         $response->assertRedirectToRoute('dashboard');
         $this->assertAuthenticated($calvin);
-        
     }
     
     /** @test */
     public function a_user_with_2fa_enabled_is_challenged()
     {
-        
         $this->withAddedConfig('auth.features.remember_me', 10);
         
         $calvin = $this->createAdmin();
@@ -70,13 +98,11 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
         $response->assertSessionHas(['auth.2fa.remember' => true]);
         $this->assertSame($calvin->ID, $response->session()->challengedUser());
         $this->assertNotAuthenticated($calvin);
-        
     }
     
     /** @test */
     public function a_challenged_user_without_2fa_enabled_does_not_get_the_2fa_challenge_view()
     {
-        
         $calvin = $this->createAdmin();
         
         // For some reason calvin is challenged but does not use 2fa.
@@ -88,13 +114,11 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
         
         $response->assertRedirectToRoute('dashboard');
         $this->assertAuthenticated($calvin);
-        
     }
     
     /** @test */
     public function a_user_cant_login_with_an_invalid_one_time_code()
     {
-        
         Event::fake();
         $calvin = $this->createAdmin();
         $this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
@@ -111,13 +135,11 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
         Event::assertDispatched(
             fn(FailedTwoFactorAuthentication $event) => $event->userId() === $calvin->ID
         );
-        
     }
     
     /** @test */
     public function a_failed_login_will_be_recorded_with_fail2ban()
     {
-        
         $this->swap(Syslogger::class, $logger = new TestSysLogger());
         
         $this->default_attributes = ['ip_address' => '127.0.0.1'];
@@ -138,13 +160,11 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
             LOG_WARNING,
             "Failed two-factor authentication for user [$calvin->ID] from 127.0.0.1"
         );
-        
     }
     
     /** @test */
     public function a_user_can_login_with_a_valid_one_time_code()
     {
-        
         $calvin = $this->createAdmin();
         $this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
         $this->generateTestSecret($calvin);
@@ -162,7 +182,6 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
     /** @test */
     public function the_user_can_log_in_with_a_valid_recovery_codes()
     {
-        
         $this->withoutExceptionHandling();
         
         $calvin = $this->createAdmin();
@@ -191,13 +210,11 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
         $response->assertRedirectToRoute('dashboard');
         $this->assertAuthenticated($calvin);
         $response->assertSessionMissing('auth.2fa');
-        
     }
     
     /** @test */
     public function the_recovery_code_is_swapped_on_successful_use()
     {
-        
         $calvin = $this->createAdmin();
         $this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
         $this->enable2Fa($calvin);
@@ -222,44 +239,6 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
         $codes = json_decode($this->encryptor->decrypt($codes), true);
         
         $this->assertNotContains($code, $codes);
-        
-    }
-    
-    protected function setUp() :void
-    {
-        
-        $this->afterApplicationCreated(function () {
-            
-            $this->with2Fa();
-            
-            $this->withReplacedConfig('auth.through',
-                [
-                    TwoFactorAuthenticator::class,
-                    RedirectIf2FaAuthenticable::class,
-                    TestAuthenticator::class,
-                ]
-            );
-            
-            $this->withAddedConfig('auth.fail2ban.enabled', true);
-            
-        });
-        
-        $this->afterApplicationBooted(function () {
-            
-            $this->withoutMiddleware('csrf');
-            $this->instance(
-                AbstractTwoFactorChallengeResponse::class,
-                $this->app->resolve(TestChallengeResponse::class)
-            );
-            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
-            $this->instance(
-                TwoFactorAuthenticationProvider::class,
-                new TestTwoFactorProvider($this->encryptor)
-            );
-        });
-        
-        parent::setUp();
-        $this->bootApp();
     }
     
 }
@@ -271,7 +250,6 @@ class TestAuthenticator extends Authenticator
     
     public function attempt(Request $request, $next) :Response
     {
-        
         if ( ! $request->has('login')) {
             return $this->response_factory->redirect()->toRoute('auth.login');
         }
@@ -280,7 +258,6 @@ class TestAuthenticator extends Authenticator
         $user = $this->getUserByLogin($user);
         
         return $this->login($user);
-        
     }
     
 }
@@ -291,7 +268,6 @@ class TestChallengeResponse extends AbstractTwoFactorChallengeResponse
     public function toResponsable()
     {
         return '[test] Please enter your 2fa code.';
-        
     }
     
 }

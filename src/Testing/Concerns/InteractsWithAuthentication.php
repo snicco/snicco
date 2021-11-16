@@ -23,38 +23,30 @@ trait InteractsWithAuthentication
      */
     protected function actingAs($user) :self
     {
-        
         wp_logout();
         
         if ($this->session instanceof Session) {
-            
             $this->session->confirmAuthUntil($this->config->get('auth.confirmation.duration', 10));
             $this->session->setLastActivity(time());
             $this->withSessionCookie();
-            
         }
         
         if (is_int($user)) {
-            
             wp_set_current_user($user);
             return $this;
-            
         }
         
         if (is_array($user)) {
-            
             $user = $this->factory()->user->create_and_get(
                 array_merge([
                     'role' => 'administrator',
                 ], $user)
             );
-            
         }
         
         wp_set_current_user($user->ID);
         
         return $this;
-        
     }
     
     protected function assertGuest()
@@ -68,9 +60,7 @@ trait InteractsWithAuthentication
     protected function assertAuthenticated($user)
     {
         if ($user instanceof WP_User) {
-            
             $user = $user->ID;
-            
         }
         
         PHPUnit::assertTrue($this->isAuthenticated($user), 'The user is not authenticated.');
@@ -82,9 +72,7 @@ trait InteractsWithAuthentication
     protected function assertNotAuthenticated($user)
     {
         if ($user instanceof WP_User) {
-            
             $user = $user->ID;
-            
         }
         
         PHPUnit::assertFalse($this->isAuthenticated($user), 'The user is authenticated.');

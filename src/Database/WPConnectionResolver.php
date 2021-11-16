@@ -56,13 +56,11 @@ class WPConnectionResolver implements ConnectionResolverInterface
      */
     public function connection($name = null) :WPConnectionInterface
     {
-        
         if (is_null($name)) {
             $name = $this->getDefaultConnection();
         }
         
         return $this->resolveConnection($name);
-        
     }
     
     /**
@@ -72,7 +70,6 @@ class WPConnectionResolver implements ConnectionResolverInterface
      */
     public function getDefaultConnection() :string
     {
-        
         return $this->default_connection;
     }
     
@@ -85,13 +82,11 @@ class WPConnectionResolver implements ConnectionResolverInterface
      */
     public function setDefaultConnection($name)
     {
-        
         $this->default_connection = $name;
     }
     
     private function resolveConnection(string $name) :WPConnectionInterface
     {
-        
         if (isset($this->instantiated_connections[$name])) {
             return $this->instantiated_connections[$name];
         }
@@ -108,19 +103,16 @@ class WPConnectionResolver implements ConnectionResolverInterface
         $this->instantiated_connections[$name] = $connection;
         
         return $connection;
-        
     }
     
     private function createWPDb(array $config, string $name) :wpdb
     {
-        
         if ($this->isDefaultWordPressConnection($config)) {
             global $wpdb;
             return $wpdb;
         }
         
         try {
-            
             $wpdb = new wpdb(
                 $config['username'],
                 $config['password'],
@@ -129,22 +121,17 @@ class WPConnectionResolver implements ConnectionResolverInterface
             );
             
             return $wpdb;
-            
         } catch (Throwable $e) {
-            
             throw new ConfigurationException(
                 "Unable to create a wpdb connection with the config for connection [$name].",
                 $e->getCode(),
                 $e
             );
-            
         }
-        
     }
     
     private function isDefaultWordPressConnection(array $config) :bool
     {
-        
         return array_diff(array_values($config), [
                 DB_USER,
                 DB_NAME,
@@ -156,20 +143,14 @@ class WPConnectionResolver implements ConnectionResolverInterface
     private function extractMySQLi(wpdb $wpdb)
     {
         try {
-            
             // This is a protected property in wpdb but it has __get() access.
             return $wpdb->dbh;
-            
         } catch (Throwable $e) {
-            
             // This will work for sure if WordPress where ever
             // to delete magic method accessors, which tbh will probably never happen. Lol.
             return (function () {
-                
                 return $this->dbh;
-                
             })->call($wpdb);
-            
         }
     }
     

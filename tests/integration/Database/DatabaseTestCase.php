@@ -17,47 +17,35 @@ class DatabaseTestCase extends FrameworkTestCase
     
     use WithDatabaseExceptions;
     
+    protected function setUp() :void
+    {
+        $traits = class_uses_recursive(static::class);
+        
+        if (in_array(WithTestTables::class, $traits)) {
+            $this->afterApplicationBooted(function () {
+                $this->removeWpBrowserTransaction();
+                $this->withNewTables();
+            });
+        }
+        
+        if (in_array(WithTestTransactions::class, $traits)) {
+            $this->afterApplicationBooted(function () {
+                $this->beginTransaction();
+            });
+            
+            $this->beforeApplicationDestroyed(function () {
+                $this->rollbackTransaction();
+            });
+        }
+        
+        parent::setUp();
+    }
+    
     protected function packageProviders() :array
     {
         return [
             DatabaseServiceProvider::class,
         ];
-    }
-    
-    protected function setUp() :void
-    {
-        
-        $traits = class_uses_recursive(static::class);
-        
-        if (in_array(WithTestTables::class, $traits)) {
-            
-            $this->afterApplicationBooted(function () {
-                
-                $this->removeWpBrowserTransaction();
-                $this->withNewTables();
-                
-            });
-            
-        }
-        
-        if (in_array(WithTestTransactions::class, $traits)) {
-            
-            $this->afterApplicationBooted(function () {
-                
-                $this->beginTransaction();
-                
-            });
-            
-            $this->beforeApplicationDestroyed(function () {
-                
-                $this->rollbackTransaction();
-                
-            });
-            
-        }
-        
-        parent::setUp();
-        
     }
     
     protected function removeWpBrowserTransaction()
@@ -87,7 +75,6 @@ class DatabaseTestCase extends FrameworkTestCase
     protected function assertNotDefaultConnection(BetterWPDbInterface $wpdb) :void
     {
         $this->assertNotSame(DB_NAME, $wpdb->dbname);
-        
     }
     
     protected function withFakeDb() :DatabaseTestCase
@@ -112,12 +99,10 @@ class DatabaseTestCase extends FrameworkTestCase
         if ( ! $success) {
             $this->fail('Failed to insert with wpdb for test setup.');
         }
-        
     }
     
     protected function wpdbUpdate(string $table, array $data, array $where)
     {
-        
         global $wpdb;
         
         $where_format = $this->format($where);
@@ -128,7 +113,6 @@ class DatabaseTestCase extends FrameworkTestCase
         if ( ! $success) {
             $this->fail('Failed to update with wpdb.');
         }
-        
     }
     
     protected function wpdbDelete(string $table, array $wheres)
@@ -145,10 +129,8 @@ class DatabaseTestCase extends FrameworkTestCase
     
     private function format(array $data)
     {
-        
         $format = [];
         foreach ($data as $item) {
-            
             if (is_float($item)) {
                 $format[] = "%f";
             }
@@ -160,11 +142,9 @@ class DatabaseTestCase extends FrameworkTestCase
             if (is_string($item)) {
                 $format[] = "%s";
             }
-            
         }
         
         return $format;
-        
     }
     
 }

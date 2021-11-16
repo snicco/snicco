@@ -4,43 +4,45 @@ declare(strict_types=1);
 
 namespace Snicco\Listeners;
 
+use Snicco\Support\WP;
 use Snicco\Routing\Route;
 use Snicco\Events\WpQueryFilterable;
-use Snicco\Contracts\AbstractRouteCollection;
 use BetterWpHooks\Traits\ListensConditionally;
+use Snicco\Contracts\RouteCollectionInterface;
 
 class FilterWpQuery
 {
     
     use ListensConditionally;
     
-    private AbstractRouteCollection $routes;
+    private RouteCollectionInterface $routes;
     
-    public function __construct(AbstractRouteCollection $routes)
+    public function __construct(RouteCollectionInterface $routes)
     {
-        
         $this->routes = $routes;
     }
     
     public function handleEvent(WpQueryFilterable $event) :bool
     {
+        $route = $this->routes->matchByUrlPattern($event->server_request);
         
-        $routing_result = $this->routes->matchForQueryFiltering($event->server_request);
-        
-        $route = $routing_result->route();
-        
-        if ( ! $route instanceof Route || $route->isFallback()) {
-            
+        if ( ! $route instanceof Route) {
             return $event->do_request;
-            
+        }
+        else {
+            $this->routes->setCurrentRoute($route);
         }
         
-        $event->wp->query_vars = $route->filterWpQuery(
-            $routing_result->capturedUrlSegmentValues()
-        );
+        if ( ! $route->wantsToFilterWPQuery()) {
+            return $event->do_request;
+        }
+        
+        $event->wp->query_vars = $route->filterWpQuery();
+        
+        WP::removeFilter('template_redirect', 'redirect_canonical');
+        WP::removeFilter('template_redirect', 'remove_old_slug');
         
         return false;
-        
     }
     
     public function shouldHandle(WpQueryFilterable $event) :bool

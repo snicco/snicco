@@ -16,9 +16,7 @@ trait PerformsTwoFactorAuthentication
     
     protected function validateTwoFactorAuthentication(TwoFactorAuthenticationProvider $provider, Request $request, int $user_id) :bool
     {
-        
         if ($code = $this->validRecoveryCode($request, $user_id)) {
-            
             $this->replaceRecoveryCode($code, $user_id);
             return true;
         }
@@ -28,12 +26,10 @@ trait PerformsTwoFactorAuthentication
         }
         
         return false;
-        
     }
     
     private function validRecoveryCode(Request $request, int $user_id)
     {
-        
         $provided_code = $request->post('recovery-code');
         
         if ( ! $provided_code) {
@@ -49,21 +45,17 @@ trait PerformsTwoFactorAuthentication
         return collect($codes)->first(
             fn($code) => hash_equals($provided_code, $code) ? $code : null
         );
-        
     }
     
     private function replaceRecoveryCode($code, int $user_id)
     {
-        
         $new_codes = str_replace($code, RecoveryCode::generate(), $this->recoveryCodes($user_id));
         
         $this->saveCodes($user_id, $new_codes);
-        
     }
     
     private function hasValidOneTimeCode(TwoFactorAuthenticationProvider $provider, Request $request, int $user_id) :bool
     {
-        
         if ( ! $request->filled('one-time-code')) {
             return false;
         }
@@ -74,7 +66,6 @@ trait PerformsTwoFactorAuthentication
             $user_secret,
             $request->post('one-time-code')
         );
-        
     }
     
 }

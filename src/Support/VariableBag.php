@@ -11,9 +11,7 @@ class VariableBag extends Repository
     
     public function add(array $globals)
     {
-        
         $this->set($globals);
-        
     }
     
 }

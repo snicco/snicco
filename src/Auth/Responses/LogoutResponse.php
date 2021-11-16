@@ -12,7 +12,6 @@ class LogoutResponse extends Response
     
     public function __construct(ResponseInterface $psr7_response)
     {
-        
         $psr7_response = $psr7_response->withAddedHeader('Expires', 'Wed, 11 Jan 1984 06:00:00 GMT')
                                        ->withAddedHeader(
                                            'Cache-Control',

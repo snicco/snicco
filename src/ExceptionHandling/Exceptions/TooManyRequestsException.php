@@ -14,7 +14,6 @@ class TooManyRequestsException extends HttpException
     public function __construct($log_message, Throwable $previous = null)
     {
         parent::__construct(429, $log_message, $previous);
-        
     }
     
 }

@@ -8,9 +8,9 @@ use Throwable;
 use Psr\Log\LogLevel;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
-use Snicco\Contracts\ExceptionHandler;
+use Snicco\Contracts\ExceptionHandlerInterface;
 
-class NullExceptionHandler implements ExceptionHandler
+class NullExceptionHandler implements ExceptionHandlerInterface
 {
     
     public function report(Throwable $e, Request $request, string $psr3_log_level = LogLevel::ERROR)
