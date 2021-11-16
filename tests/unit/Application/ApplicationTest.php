@@ -9,7 +9,6 @@ use Mockery as m;
 use Tests\UnitTest;
 use RuntimeException;
 use Snicco\Support\WP;
-use Snicco\Support\WpFacade;
 use Snicco\Http\Psr7\Request;
 use Snicco\Application\Config;
 use Contracts\ContainerAdapter;
@@ -36,7 +35,6 @@ class ApplicationTest extends UnitTest
         
         $this->container = $this->createContainer();
         $this->base_path = __DIR__;
-        WP::setFacadeContainer($this->container);
         $this->createDefaultWpApiMocks();
     }
     
@@ -73,7 +71,6 @@ class ApplicationTest extends UnitTest
         
         $this->assertSame($app, $app->container()[Application::class]);
         $this->assertSame($app->container(), $app->container()[ContainerAdapter::class]);
-        $this->assertSame($app->container(), WpFacade::getFacadeContainer());
         $this->assertSame($app->config(), $app->container()[Config::class]);
         $this->assertInstanceOf(Config::class, $app->config());
     }
