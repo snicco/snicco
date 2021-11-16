@@ -8,11 +8,11 @@ use Throwable;
 use Snicco\Support\Arr;
 use Snicco\Events\MakingView;
 use Snicco\Contracts\ViewInterface;
-use Snicco\Contracts\ViewEngineInterface;
+use Snicco\Contracts\ViewEngine;
 use Snicco\ExceptionHandling\Exceptions\ViewException;
 use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
 
-class PhpViewEngine implements ViewEngineInterface
+class PhpViewEngine implements ViewEngine
 {
     
     private PhpViewFinder $finder;

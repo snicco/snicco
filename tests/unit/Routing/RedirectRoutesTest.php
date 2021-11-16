@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Tests\unit\Routing;
 
 use Tests\RoutingTestCase;
-use Snicco\Http\Redirector;
+use Snicco\Http\StatelessRedirector;
 use Tests\stubs\HeaderStack;
-use Snicco\Contracts\AbstractRedirector;
+use Snicco\Contracts\Redirector;
 
 class RedirectRoutesTest extends RoutingTestCase
 {
@@ -145,8 +145,8 @@ class RedirectRoutesTest extends RoutingTestCase
     private function bindRedirector()
     {
         $this->container->instance(
-            AbstractRedirector::class,
-            new Redirector($this->newUrlGenerator(), $this->psrResponseFactory())
+            Redirector::class,
+            new StatelessRedirector($this->newUrlGenerator(), $this->psrResponseFactory())
         );
     }
     

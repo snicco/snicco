@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Session;
 
-use Snicco\Contracts\EncryptorInterface;
+use Snicco\Contracts\Encryptor;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\ExceptionHandling\Exceptions\EncryptException;
 use Snicco\ExceptionHandling\Exceptions\DecryptException;
@@ -12,9 +12,9 @@ use Snicco\ExceptionHandling\Exceptions\DecryptException;
 class EncryptedSession extends Session
 {
     
-    protected EncryptorInterface $encryptor;
+    protected Encryptor $encryptor;
     
-    public function __construct(SessionDriver $handler, EncryptorInterface $encryptor, int $strength = 32)
+    public function __construct(SessionDriver $handler, Encryptor $encryptor, int $strength = 32)
     {
         $this->encryptor = $encryptor;
         

@@ -13,7 +13,7 @@ use Snicco\Http\ResponseFactory;
 use Snicco\Auth\Events\Registration;
 use Snicco\Auth\Contracts\DeletesUsers;
 use Snicco\Auth\Contracts\CreatesNewUser;
-use Snicco\Contracts\ResponseableInterface;
+use Snicco\Contracts\Responsable;
 use Snicco\Auth\Contracts\CreateAccountView;
 use Snicco\Auth\Contracts\AbstractRegistrationResponse;
 
@@ -264,7 +264,7 @@ class TestDeletesUser implements DeletesUsers
         ];
     }
     
-    public function response() :ResponseableInterface
+    public function response() :Responsable
     {
         return $this->response_factory->redirect()->to('/test/thank-you');
     }

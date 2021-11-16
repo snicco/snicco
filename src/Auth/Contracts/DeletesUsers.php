@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Contracts;
 
-use Snicco\Contracts\ResponseableInterface;
+use Snicco\Contracts\Responsable;
 
 interface DeletesUsers
 {
@@ -30,9 +30,9 @@ interface DeletesUsers
      * This function will be called if the request was not an ajax request and can
      * be used to redirect the user to a survey or thank you page.
      *
-     * @return ResponseableInterface
+     * @return Responsable
      */
-    public function response() :ResponseableInterface;
+    public function response() :Responsable;
     
     /**
      * Perform actions before the user is deleted.

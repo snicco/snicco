@@ -8,10 +8,10 @@ use Snicco\Support\Str;
 use Snicco\Support\Arr;
 use Snicco\Application\Config;
 use Symfony\Component\Finder\Finder;
+use Snicco\Contracts\RouteRegistrar;
 use Symfony\Component\Finder\SplFileInfo;
-use Snicco\Contracts\RouteRegistrarInterface;
 
-class RouteRegistrar implements RouteRegistrarInterface
+class RouteFileRegistrar implements RouteRegistrar
 {
     
     // Match all files that end with ".php" and don't start with an underscore.

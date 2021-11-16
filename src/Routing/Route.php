@@ -12,7 +12,7 @@ use Snicco\Traits\ExportsRoute;
 use Snicco\Traits\HydratesRoute;
 use Snicco\Contracts\RouteAction;
 use Snicco\Traits\SetsRouteAttributes;
-use Snicco\Contracts\ConditionInterface;
+use Snicco\Contracts\Condition;
 use Snicco\Factories\RouteActionFactory;
 use Snicco\Factories\RouteConditionFactory;
 
@@ -47,7 +47,7 @@ class Route
     private array $condition_blueprints = [];
     
     /**
-     * @var ConditionInterface[]
+     * @var Condition[]
      */
     private array $instantiated_conditions = [];
     
@@ -97,7 +97,7 @@ class Route
     public function satisfiedBy(Request $request) :bool
     {
         $failed_condition = collect($this->instantiated_conditions)
-            ->first(fn(ConditionInterface $condition) => ! $condition->isSatisfied($request));
+            ->first(fn(Condition $condition) => ! $condition->isSatisfied($request));
         
         return $failed_condition === null;
     }

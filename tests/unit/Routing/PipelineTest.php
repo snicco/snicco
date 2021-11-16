@@ -18,7 +18,7 @@ use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Snicco\Http\Psr7\Response as AppResponse;
-use Snicco\Contracts\ExceptionHandlerInterface;
+use Snicco\Contracts\ExceptionHandler;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
 
 class PipelineTest extends RoutingTestCase
@@ -204,7 +204,7 @@ class PipelineTest extends RoutingTestCase
     
 }
 
-class PipelineTestExceptionHandler implements ExceptionHandlerInterface
+class PipelineTestExceptionHandler implements ExceptionHandler
 {
     
     use CreatePsr17Factories;

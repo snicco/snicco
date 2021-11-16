@@ -6,9 +6,9 @@ namespace Snicco\Routing\Conditions;
 
 use Snicco\Http\Psr7\Request;
 use Illuminate\Support\Collection;
-use Snicco\Contracts\ConditionInterface;
+use Snicco\Contracts\Condition;
 
-class QueryStringCondition implements ConditionInterface
+class QueryStringCondition implements Condition
 {
     
     protected Collection $query_string_arguments;

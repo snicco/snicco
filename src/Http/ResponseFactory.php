@@ -8,36 +8,36 @@ use stdClass;
 use JsonSerializable;
 use InvalidArgumentException;
 use Snicco\Http\Psr7\Response;
+use Snicco\Contracts\Redirector;
+use Snicco\Contracts\Responsable;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Http\Responses\NullResponse;
-use Snicco\Contracts\AbstractRedirector;
 use Illuminate\Contracts\Support\Jsonable;
-use Snicco\Contracts\ResponseableInterface;
+use Snicco\Contracts\ViewFactoryInterface;
 use Snicco\Http\Responses\RedirectResponse;
 use Illuminate\Contracts\Support\Arrayable;
 use Snicco\Http\Responses\DelegatedResponse;
 use Psr\Http\Message\StreamFactoryInterface;
 use Psr\Http\Message\ResponseFactoryInterface;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
-use Snicco\Contracts\ViewFactoryInterface as ViewFactory;
 use Psr\Http\Message\StreamFactoryInterface as Psr17StreamFactory;
 use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 
 class ResponseFactory implements ResponseFactoryInterface, StreamFactoryInterface
 {
     
-    private ViewFactory $view_factory;
+    private ViewFactoryInterface $view_factory;
     
     private Psr17ResponseFactory $response_factory;
     
     private Psr17StreamFactory $stream_factory;
     
-    private AbstractRedirector $redirector;
+    private Redirector $redirector;
     
     private string $unrecoverable_error_message = 'Something has gone completely wrong.';
     
-    public function __construct(ViewFactory $view, Psr17ResponseFactory $response, Psr17StreamFactory $stream, AbstractRedirector $redirector)
+    public function __construct(ViewFactoryInterface $view, Psr17ResponseFactory $response, Psr17StreamFactory $stream, Redirector $redirector)
     {
         $this->view_factory = $view;
         $this->response_factory = $response;
@@ -101,7 +101,7 @@ class ResponseFactory implements ResponseFactoryInterface, StreamFactoryInterfac
         return $this->redirect()->toRoute($route, $status, $args, $secure, $absolute);
     }
     
-    public function redirect() :AbstractRedirector
+    public function redirect() :Redirector
     {
         return $this->redirector;
     }
@@ -182,7 +182,7 @@ class ResponseFactory implements ResponseFactoryInterface, StreamFactoryInterfac
             return $this->make(200)->json($stream);
         }
         
-        if ($response instanceof ResponseableInterface) {
+        if ($response instanceof Responsable) {
             return $this->toResponse(
                 $response->toResponsable()
             );

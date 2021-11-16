@@ -6,7 +6,7 @@ namespace Tests\integration\Auth\Confirmation;
 
 use Tests\AuthTestCase;
 use Snicco\Routing\UrlGenerator;
-use Snicco\Contracts\EncryptorInterface;
+use Snicco\Contracts\Encryptor;
 use Tests\integration\Auth\Stubs\TestTwoFactorProvider;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
 
@@ -21,7 +21,7 @@ class TwoFactorAuthConfirmationTest extends AuthTestCase
         
         $this->afterApplicationBooted(function () {
             $this->withoutMiddleware('csrf');
-            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
+            $this->encryptor = $this->app->resolve(Encryptor::class);
             $this->instance(
                 TwoFactorAuthenticationProvider::class,
                 new TestTwoFactorProvider($this->encryptor)

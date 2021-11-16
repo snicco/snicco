@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Routing\Conditions;
 
 use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\UrlableInterface;
-use Snicco\Contracts\ConditionInterface;
+use Snicco\Contracts\ConvertsToUrl;
+use Snicco\Contracts\Condition;
 
-class PostIdCondition implements ConditionInterface, UrlableInterface
+class PostIdCondition implements Condition, ConvertsToUrl
 {
     
     private int $post_id;

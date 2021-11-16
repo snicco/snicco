@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Auth\Contracts;
 
 use Snicco\Auth\Traits\UsesCurrentRequest;
-use Snicco\Contracts\ResponseableInterface;
+use Snicco\Contracts\Responsable;
 
-abstract class AbstractLoginView implements ResponseableInterface
+abstract class AbstractLoginView implements Responsable
 {
     
     use UsesCurrentRequest;

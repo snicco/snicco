@@ -7,7 +7,7 @@ namespace Snicco\Traits;
 use Snicco\Support\Arr;
 use Snicco\Routing\Route;
 use Snicco\Routing\Router;
-use Snicco\Contracts\ConditionInterface;
+use Snicco\Contracts\Condition;
 
 trait HoldsRouteBlueprint
 {
@@ -82,7 +82,7 @@ trait HoldsRouteBlueprint
     }
     
     /**
-     * @param  string|ConditionInterface|Closure|callable  $condition
+     * @param  string|Condition|Closure|callable  $condition
      * @param  mixed  $args,...  Arguments that will be passed into the condition (if any).
      * If the condition equals (string)'negate', the second argument will be used as the Condition.
      *

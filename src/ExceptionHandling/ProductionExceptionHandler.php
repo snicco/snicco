@@ -16,11 +16,11 @@ use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Psr\Log\LoggerInterface as Psr3Logger;
 use Snicco\Support\ReflectionDependencies;
-use Snicco\Contracts\ExceptionHandlerInterface;
+use Snicco\Contracts\ExceptionHandler;
 use Illuminate\Support\Traits\ReflectsClosures;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
 
-class ExceptionHandler implements ExceptionHandlerInterface
+class ProductionExceptionHandler implements ExceptionHandler
 {
     
     use ReflectsClosures;
@@ -126,7 +126,7 @@ class ExceptionHandler implements ExceptionHandlerInterface
             : $this->renderHtml($e, $request);
     }
     
-    public function renderable(callable $render_using) :ExceptionHandler
+    public function renderable(callable $render_using) :ProductionExceptionHandler
     {
         if ( ! $render_using instanceof Closure) {
             $render_using = Closure::fromCallable($render_using);
@@ -137,7 +137,7 @@ class ExceptionHandler implements ExceptionHandlerInterface
         return $this;
     }
     
-    public function reportable(callable $report_using) :ExceptionHandler
+    public function reportable(callable $report_using) :ProductionExceptionHandler
     {
         if ( ! $report_using instanceof Closure) {
             $report_using = Closure::fromCallable($report_using);

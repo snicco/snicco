@@ -7,7 +7,7 @@ namespace Snicco\Http;
 use RuntimeException;
 use RKA\Middleware\IpAddress;
 use Snicco\Contracts\ServiceProvider;
-use Snicco\Contracts\AbstractRedirector;
+use Snicco\Contracts\Redirector;
 
 class HttpServiceProvider extends ServiceProvider
 {
@@ -28,8 +28,8 @@ class HttpServiceProvider extends ServiceProvider
     private function bindRedirector()
     {
         $this->container->singleton(
-            AbstractRedirector::class,
-            fn() => $this->container->make(Redirector::class)
+            Redirector::class,
+            fn() => $this->container->make(StatelessRedirector::class)
         );
     }
     

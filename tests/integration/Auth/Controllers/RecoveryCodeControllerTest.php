@@ -6,7 +6,7 @@ namespace Tests\integration\Auth\Controllers;
 
 use Tests\AuthTestCase;
 use Snicco\Routing\UrlGenerator;
-use Snicco\Contracts\EncryptorInterface;
+use Snicco\Contracts\Encryptor;
 
 class RecoveryCodeControllerTest extends AuthTestCase
 {
@@ -18,7 +18,7 @@ class RecoveryCodeControllerTest extends AuthTestCase
         });
         $this->afterApplicationBooted(function () {
             $this->codes = $this->generateTestRecoveryCodes();
-            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
+            $this->encryptor = $this->app->resolve(Encryptor::class);
         });
         
         parent::setUp();

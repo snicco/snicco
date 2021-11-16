@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\integration\Auth\Controllers;
 
 use Tests\AuthTestCase;
-use Snicco\Contracts\EncryptorInterface;
+use Snicco\Contracts\Encryptor;
 use Tests\integration\Auth\Stubs\TestTwoFactorProvider;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
 
@@ -22,7 +22,7 @@ class TwoFactorAuthPreferenceControllerTest extends AuthTestCase
         
         $this->afterApplicationBooted(function () {
             $this->withHeader('Accept', 'application/json');
-            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
+            $this->encryptor = $this->app->resolve(Encryptor::class);
             $this->swap(
                 TwoFactorAuthenticationProvider::class,
                 new TestTwoFactorProvider($this->encryptor)

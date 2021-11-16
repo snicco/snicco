@@ -7,7 +7,7 @@ namespace Snicco\Auth\Controllers;
 use Snicco\Http\Controller;
 use Snicco\Http\Psr7\Request;
 use Snicco\Auth\Traits\ResolvesUser;
-use Snicco\Contracts\EncryptorInterface;
+use Snicco\Contracts\Encryptor;
 use Snicco\Auth\Contracts\Abstract2FAChallengeView;
 use Snicco\Auth\Traits\InteractsWithTwoFactorSecrets;
 
@@ -17,7 +17,7 @@ class TwoFactorAuthSessionController extends Controller
     use InteractsWithTwoFactorSecrets;
     use ResolvesUser;
     
-    public function __construct(EncryptorInterface $encryptor)
+    public function __construct(Encryptor $encryptor)
     {
         $this->encryptor = $encryptor;
     }

@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Routing\Conditions;
 
 use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\ConditionInterface;
+use Snicco\Contracts\Condition;
 
-class PostTemplateCondition implements ConditionInterface
+class PostTemplateCondition implements Condition
 {
     
     private string $post_template;

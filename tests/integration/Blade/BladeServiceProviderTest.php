@@ -8,7 +8,7 @@ use Tests\stubs\TestApp;
 use Illuminate\View\Factory;
 use Snicco\Blade\BladeEngine;
 use Illuminate\View\FileViewFinder;
-use Snicco\Contracts\ViewEngineInterface;
+use Snicco\Contracts\ViewEngine;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Compilers\BladeCompiler;
 
@@ -51,7 +51,7 @@ class BladeServiceProviderTest extends BladeTestCase
     {
         $this->bootApp();
         
-        $this->assertInstanceOf(BladeEngine::class, TestApp::resolve(ViewEngineInterface::class));
+        $this->assertInstanceOf(BladeEngine::class, TestApp::resolve(ViewEngine::class));
     }
     
     /** @test */

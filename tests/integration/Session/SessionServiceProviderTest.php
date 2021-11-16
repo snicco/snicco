@@ -6,7 +6,7 @@ namespace Tests\integration\Session;
 
 use Tests\stubs\TestApp;
 use Snicco\Session\Session;
-use Snicco\Http\Redirector;
+use Snicco\Http\StatelessRedirector;
 use Tests\FrameworkTestCase;
 use Snicco\Session\CsrfField;
 use Snicco\View\GlobalContext;
@@ -14,7 +14,7 @@ use Snicco\Http\ResponseFactory;
 use Snicco\Session\SessionManager;
 use Snicco\Session\EncryptedSession;
 use Snicco\Session\StatefulRedirector;
-use Snicco\Contracts\AbstractRedirector;
+use Snicco\Contracts\Redirector;
 use Snicco\Session\SessionServiceProvider;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Session\Drivers\DatabaseSessionDriver;
@@ -333,7 +333,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
         
         $this->assertInstanceOf(
             StatefulRedirector::class,
-            TestApp::resolve(AbstractRedirector::class)
+            TestApp::resolve(Redirector::class)
         );
     }
     
@@ -357,7 +357,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
             'session.enabled' => false,
         ])->bootApp();
         
-        $this->assertInstanceOf(Redirector::class, TestApp::resolve(AbstractRedirector::class));
+        $this->assertInstanceOf(StatelessRedirector::class, TestApp::resolve(Redirector::class));
     }
     
     protected function packageProviders() :array

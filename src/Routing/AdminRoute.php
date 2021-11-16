@@ -6,9 +6,9 @@ namespace Snicco\Routing;
 
 use Snicco\Support\WP;
 use Snicco\Support\Str;
-use Snicco\Contracts\UrlableInterface;
+use Snicco\Contracts\ConvertsToUrl;
 
-class AdminRoute extends Route implements UrlableInterface
+class AdminRoute extends Route implements ConvertsToUrl
 {
     
     public function toUrl(array $arguments = []) :string

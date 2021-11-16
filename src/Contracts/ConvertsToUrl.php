@@ -4,14 +4,11 @@ declare(strict_types=1);
 
 namespace Snicco\Contracts;
 
-/**
- * Interface signifying that an object can be converted to a URL.
- */
-interface UrlableInterface
+interface ConvertsToUrl
 {
     
     /**
-     * Convert to URL.
+     * Convert to object to an url
      *
      * @param  array  $arguments
      *

@@ -7,7 +7,7 @@ namespace Snicco\Contracts;
 use Snicco\ExceptionHandling\Exceptions\DecryptException;
 use Snicco\ExceptionHandling\Exceptions\EncryptException;
 
-interface EncryptorInterface
+interface Encryptor
 {
     
     /**

@@ -8,7 +8,7 @@ use Snicco\Http\Controller;
 use Snicco\Mail\MailBuilder;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Responses\RedirectResponse;
-use Snicco\Contracts\ResponseableInterface;
+use Snicco\Contracts\Responsable;
 use Snicco\Auth\Mail\ConfirmRegistrationEmail;
 use Snicco\Auth\Contracts\AbstractRegistrationView;
 
@@ -22,7 +22,7 @@ class RegistrationLinkController extends Controller
         $this->lifetime_in_seconds = $lifetime_in_seconds;
     }
     
-    public function create(Request $request, AbstractRegistrationView $response) :ResponseableInterface
+    public function create(Request $request, AbstractRegistrationView $response) :Responsable
     {
         return $response->forRequest($request);
     }

@@ -6,9 +6,9 @@ namespace Snicco\View;
 
 use Snicco\Support\Str;
 use Snicco\Support\FilePath;
-use Snicco\Contracts\ViewFinderInterface;
+use Snicco\Contracts\ViewFinder;
 
-class PhpViewFinder implements ViewFinderInterface
+class PhpViewFinder implements ViewFinder
 {
     
     /**

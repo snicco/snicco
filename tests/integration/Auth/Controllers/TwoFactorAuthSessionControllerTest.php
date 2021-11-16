@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\integration\Auth\Controllers;
 
 use Tests\AuthTestCase;
-use Snicco\Contracts\EncryptorInterface;
+use Snicco\Contracts\Encryptor;
 
 use function update_user_meta;
 
@@ -18,7 +18,7 @@ class TwoFactorAuthSessionControllerTest extends AuthTestCase
             $this->with2Fa();
         });
         $this->afterApplicationBooted(function () {
-            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
+            $this->encryptor = $this->app->resolve(Encryptor::class);
         });
         
         parent::setUp();

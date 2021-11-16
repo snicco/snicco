@@ -12,7 +12,7 @@ use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Snicco\Auth\Contracts\Authenticator;
-use Snicco\Contracts\EncryptorInterface;
+use Snicco\Contracts\Encryptor;
 use Snicco\Auth\Events\FailedTwoFactorAuthentication;
 use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
 use Tests\integration\Auth\Stubs\TestTwoFactorProvider;
@@ -45,7 +45,7 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
                 AbstractTwoFactorChallengeResponse::class,
                 $this->app->resolve(TestChallengeResponse::class)
             );
-            $this->encryptor = $this->app->resolve(EncryptorInterface::class);
+            $this->encryptor = $this->app->resolve(Encryptor::class);
             $this->instance(
                 TwoFactorAuthenticationProvider::class,
                 new TestTwoFactorProvider($this->encryptor)

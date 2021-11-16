@@ -15,20 +15,20 @@ use Snicco\Http\Psr7\Response;
 use Snicco\Http\ResponseFactory;
 use Snicco\Factories\MiddlewareFactory;
 use Psr\Http\Server\MiddlewareInterface;
-use Snicco\Contracts\ExceptionHandlerInterface;
+use Snicco\Contracts\ExceptionHandler;
 
 use function collect;
 
 class Pipeline
 {
     
-    private ExceptionHandlerInterface $error_handler;
-    private Request                   $request;
-    private ResponseFactory           $response_factory;
-    private array                     $middleware = [];
-    private MiddlewareFactory         $middleware_factory;
+    private ExceptionHandler  $error_handler;
+    private Request           $request;
+    private ResponseFactory   $response_factory;
+    private array             $middleware = [];
+    private MiddlewareFactory $middleware_factory;
     
-    public function __construct(MiddlewareFactory $middleware_factory, ExceptionHandlerInterface $error_handler, ResponseFactory $response_factory)
+    public function __construct(MiddlewareFactory $middleware_factory, ExceptionHandler $error_handler, ResponseFactory $response_factory)
     {
         $this->middleware_factory = $middleware_factory;
         $this->error_handler = $error_handler;

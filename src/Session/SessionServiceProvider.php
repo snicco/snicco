@@ -10,8 +10,8 @@ use Snicco\Session\Events\NewLogin;
 use Snicco\Auth\AuthServiceProvider;
 use Snicco\Session\Events\NewLogout;
 use Snicco\Contracts\ServiceProvider;
-use Snicco\Contracts\AbstractRedirector;
-use Snicco\Contracts\EncryptorInterface;
+use Snicco\Contracts\Redirector;
+use Snicco\Contracts\Encryptor;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Snicco\Session\Middleware\VerifyCsrfToken;
@@ -120,7 +120,7 @@ class SessionServiceProvider extends ServiceProvider
             if ($this->config->get('session.encrypt')) {
                 $store = new EncryptedSession(
                     $this->container->make(SessionDriver::class),
-                    $this->container->make(EncryptorInterface::class)
+                    $this->container->make(Encryptor::class)
                 );
             }
             else {
@@ -145,7 +145,7 @@ class SessionServiceProvider extends ServiceProvider
     
     private function bindEncryptor()
     {
-        $this->container->singleton(EncryptorInterface::class, function () {
+        $this->container->singleton(Encryptor::class, function () {
             return new IlluminateEncryptor($this->config->get('app.key'));
         });
     }
@@ -184,7 +184,7 @@ class SessionServiceProvider extends ServiceProvider
             return;
         }
         
-        $this->container->singleton(AbstractRedirector::class, StatefulRedirector::class);
+        $this->container->singleton(Redirector::class, StatefulRedirector::class);
     }
     
     private function bindViewContext()

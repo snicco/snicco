@@ -10,7 +10,7 @@ use Illuminate\Filesystem\Filesystem;
 use Snicco\Contracts\ServiceProvider;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\View\ViewServiceProvider;
-use Snicco\Contracts\ViewEngineInterface;
+use Snicco\Contracts\ViewEngine;
 use Snicco\Traits\ReliesOnIlluminateContainer;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Container\Container as IlluminateContainerInterface;
@@ -65,7 +65,7 @@ class BladeServiceProvider extends ServiceProvider
     private function registerBladeViewEngine() :void
     {
         $this->container->singleton(
-            ViewEngineInterface::class,
+            ViewEngine::class,
             fn() => new BladeEngine($this->container->make('view'))
         );
     }
@@ -78,7 +78,7 @@ class BladeServiceProvider extends ServiceProvider
         $container->resolving(
             BladeComponent::class,
             function (BladeComponent $component, IlluminateContainerInterface $container) {
-                $component->setEngine($container->make(ViewEngineInterface::class));
+                $component->setEngine($container->make(ViewEngine::class));
             }
         );
     }

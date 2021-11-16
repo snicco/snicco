@@ -7,7 +7,7 @@ namespace Tests\integration\ServiceProviders;
 use Snicco\Support\WP;
 use Tests\stubs\TestApp;
 use Snicco\Routing\Router;
-use Snicco\Http\Redirector;
+use Snicco\Http\StatelessRedirector;
 use Tests\FrameworkTestCase;
 use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
@@ -258,7 +258,7 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
         $this->bootApp();
         
         $this->assertInstanceOf(RedirectResponse::class, TestApp::redirect('/foo'));
-        $this->assertInstanceOf(Redirector::class, TestApp::redirect());
+        $this->assertInstanceOf(StatelessRedirector::class, TestApp::redirect());
     }
     
     /** @test */
