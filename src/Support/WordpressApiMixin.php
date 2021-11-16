@@ -77,49 +77,6 @@ class WordpressApiMixin
     }
     
     /**
-     * Log out the current user and destroy all auth cookies
-     *
-     * @see WordpressApi::logout
-     */
-    public static function logout()
-    {
-    }
-    
-    /**
-     * Check if we are in the admin dashboard
-     *
-     * @return bool
-     * @see \Snicco\Support\WordpressApi::isAdmin()
-     */
-    public static function isAdmin() :bool
-    {
-    }
-    
-    /**
-     * Verify a wp-nonce and dies on failure.
-     *
-     * @param  int|string  $action
-     * @param  string  $query_arg
-     *
-     * @return int|false
-     * @see check_admin_referer()
-     * @see \Snicco\Support\WordpressApi::checkAdminReferer()
-     */
-    public static function checkAdminReferer($action = -1, $query_arg = '_wpnonce')
-    {
-    }
-    
-    /**
-     * Check if we are doing a request to admin-ajax.php
-     *
-     * @return bool
-     * @see \Snicco\Support\WordpressApi::isAdminAjax()
-     */
-    public static function isAdminAjax() :bool
-    {
-    }
-    
-    /**
      * Return the current admin page if it was added with
      * add_menu_page() or add_submenu_page()
      *
@@ -127,18 +84,6 @@ class WordpressApiMixin
      * @see WordpressApi::pluginPageHook
      */
     public static function pluginPageHook() :?string
-    {
-    }
-    
-    /**
-     * @param  string  $path  Optional. FilePath relative to the home URL. Default empty.
-     * @param  string|null  $scheme  Optional. Scheme to give the home URL context. Accepts
-     *                            'http', 'https', 'relative', 'rest', or null. Default null.
-     *
-     * @return string
-     * @see \Snicco\Support\WordpressApi::homeUrl()
-     */
-    public static function homeUrl(string $path = '', string $scheme = null) :string
     {
     }
     
@@ -246,19 +191,6 @@ class WordpressApiMixin
     }
     
     /**
-     * Create a url to a plugin menu page
-     *
-     * @param  string  $menu_slug
-     *
-     * @return string
-     * @see WordpressApi::pluginPageUrl()
-     * @see menu_page_url()
-     */
-    public static function pluginPageUrl(string $menu_slug) :string
-    {
-    }
-    
-    /**
      * Return the name of the admin folder.
      * Default 'wp-admin".
      *
@@ -275,30 +207,7 @@ class WordpressApiMixin
      * @return string
      * @see WordpressApi::ajaxUrl()
      */
-    public static function ajaxUrl() :string { }
-    
-    /**
-     * @param  array  $keys  associative array of [param => value ] pairs
-     * @param  string  $url  Url to append to.
-     *
-     * @return string
-     * @see WordpressApi::addQueryArgs()
-     */
-    public static function addQueryArgs(array $keys, string $url) :string
-    {
-    }
-    
-    /**
-     * Append a single query var to an URL.
-     *
-     * @param  string  $key  parameter key
-     * @param  string  $value  parameter value
-     * @param  string  $base_url  URL to append to
-     *
-     * @return string
-     * @see WordpressApi::addQueryArg()
-     */
-    public static function addQueryArg(string $key, string $value, string $base_url) :string
+    public static function ajaxUrl() :string
     {
     }
     

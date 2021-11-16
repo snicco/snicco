@@ -8,21 +8,18 @@ use Mockery;
 use Snicco\Support\WP;
 use Snicco\Routing\Route;
 use Tests\MiddlewareTestCase;
-use Tests\concerns\CreateContainer;
 use Tests\concerns\CreateDefaultWpApiMocks;
 use Snicco\Middleware\RedirectIfAuthenticated;
 
 class RedirectIfAuthenticatedTest extends MiddlewareTestCase
 {
     
-    use CreateContainer;
     use CreateDefaultWpApiMocks;
     
     protected function setUp() :void
     {
         parent::setUp();
         
-        WP::setFacadeContainer($this->createContainer());
         WP::shouldReceive('homeUrl')->andReturn('https://foobar.com')->byDefault();
         $this->createDefaultWpApiMocks();
     }
