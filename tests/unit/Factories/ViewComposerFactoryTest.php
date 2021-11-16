@@ -84,7 +84,7 @@ class ViewComposerFactoryTest extends UnitTest
         $this->assertEquals('bar', $view->context('foo'));
     }
     
-    private function newPhpView() :PhpViewInterface
+    private function newPhpView() :ViewInterface
     {
         return new TestView('foo');
     }

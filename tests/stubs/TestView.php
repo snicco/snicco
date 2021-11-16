@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\stubs;
 
 use Snicco\Support\Arr;
+use Snicco\View\PhpView;
 use Snicco\Contracts\ViewInterface;
-use Snicco\Contracts\PhpViewInterface;
 
-class TestView implements PhpViewInterface
+class TestView implements ViewInterface
 {
     
     private array  $context = [];
@@ -62,7 +62,7 @@ class TestView implements PhpViewInterface
     {
     }
     
-    public function parent() :?PhpViewInterface
+    public function parent() :?PhpView
     {
     }
     
