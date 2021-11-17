@@ -7,6 +7,9 @@ namespace Snicco\EventDispatcher\Contracts;
 use Closure;
 use Snicco\EventDispatcher\Listener;
 
+/**
+ * @api
+ */
 interface ListenerFactory
 {
     

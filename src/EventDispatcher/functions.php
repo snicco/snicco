@@ -74,9 +74,9 @@ namespace Snicco\EventDispatcher\functions
     {
         $reflection = new ReflectionFunction($closure);
         
-        $parameters = $reflection->getParameters();
+        $parameters = (array) $reflection->getParameters();
         
-        if ( ! $parameters[0] instanceof ReflectionParameter) {
+        if ( ! count($parameters) || ! $parameters[0] instanceof ReflectionParameter) {
             throw new InvalidListenerException(
                 "The closure listener must have a type hinted event as the first parameter."
             );
