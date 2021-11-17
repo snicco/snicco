@@ -102,10 +102,10 @@ final class EventDispatcher
      * @param  string|Event  $event
      * @param  array  $payload
      *
-     * @return void|mixed
+     * @return Event
      * @api
      */
-    public function dispatch($event, array $payload = [])
+    public function dispatch($event, array $payload = []) :Event
     {
         [$event_name, $event] = $this->getEventAndPayload($event, $payload);
         

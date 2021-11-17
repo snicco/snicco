@@ -513,7 +513,7 @@ class GreaterThenThree implements Event, DispatchesConditionally
         $this->val = $val;
     }
     
-    public function shouldDispatch($event) :bool
+    public function shouldDispatch() :bool
     {
         return $this->val > 3;
     }

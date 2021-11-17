@@ -4,14 +4,19 @@ declare(strict_types=1);
 
 namespace Snicco\EventDispatcher\Contracts;
 
+/**
+ * @api
+ * Use this interface on your event class to control more gradually when it should be dispatched.
+ * This may be useful if you dispatch the same event in multiple places to avoid duplication.
+ */
 interface DispatchesConditionally
 {
     
     /**
-     * @param  Event|mixed  $event
+     * If false is returned no listeners will handle the event.
      *
      * @return bool
      */
-    public function shouldDispatch($event) :bool;
+    public function shouldDispatch() :bool;
     
 }
