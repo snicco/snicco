@@ -4,21 +4,18 @@ declare(strict_types=1);
 
 namespace Tests\integration\EventDispatcher;
 
-use Mockery;
-use Snicco\Shared\ContainerAdapter;
+use stdClass;
 use Codeception\TestCase\WPTestCase;
-use Tests\fixtures\TestDependencies\Foo;
 use Snicco\EventDispatcher\ImmutableEvent;
 use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\EventDispatcher;
-use Snicco\EventDispatcher\Contracts\Filter;
 use Snicco\EventDispatcher\Contracts\Mutable;
 use Snicco\Application\IlluminateContainerAdapter;
 use Snicco\EventDispatcher\InvalidListenerException;
 use Snicco\EventDispatcher\UnremovableListenerException;
 use Snicco\EventDispatcher\Contracts\IsForbiddenToWordPress;
 use Snicco\EventDispatcher\Contracts\DispatchesConditionally;
-use Snicco\EventDispatcher\DependencyInversionListenerFactory;
+use Snicco\EventDispatcher\Implementations\ParameterBasedListenerFactory;
 
 interface LoggableEvent extends Event
 {
@@ -130,35 +127,25 @@ class EventDispatcherTest extends WPTestCase
     /** @test */
     public function listeners_can_be_registered_as_only_a_class_name_where_the_handle_event_method_will_be_used()
     {
-        $dispatcher = $this->getDispatcher($container = Mockery::mock(ContainerAdapter::class));
-        $container->shouldReceive('make')
-                  ->once()
-                  ->with(ClassListener::class)
-                  ->andReturn(new ClassListener());
+        $dispatcher = $this->getDispatcher();
         
         $dispatcher->listen(FooEvent::class, ClassListener::class);
         
         $dispatcher->dispatch(new FooEvent('FOOBAR'));
         
         $this->assertListenerRun(FooEvent::class, ClassListener::class, 'FOOBAR');
-        
-        Mockery::close();
     }
     
     /** @test */
-    public function listeners_get_their_dependencies_injected()
+    public function a_listener_can_have_a_custom_method()
     {
         $dispatcher = $this->getDispatcher();
         
-        $dispatcher->listen(FooEvent::class, ListenerWithConstructorDependency::class);
+        $dispatcher->listen(FooEvent::class, [ClassListener::class, 'customHandleMethod']);
         
-        $dispatcher->dispatch(new FooEvent('EVENT_VALUE'));
+        $dispatcher->dispatch(new FooEvent('FOOBAR'));
         
-        $this->assertListenerRun(
-            FooEvent::class,
-            ListenerWithConstructorDependency::class,
-            'foo:EVENT_VALUE'
-        );
+        $this->assertListenerRun(FooEvent::class, ClassListener::class, 'FOOBAR');
     }
     
     /** @test */
@@ -179,7 +166,7 @@ class EventDispatcherTest extends WPTestCase
         
         $this->expectException(InvalidListenerException::class);
         $this->expectExceptionMessage(
-            'The listener [Tests\integration\EventDispatcher\ListenerWithNoHandleMethod] is does not have a handle method.'
+            "The listener [Tests\integration\EventDispatcher\ListenerWithNoHandleMethod] does not have a handle method and isn't invokable with __invoke().",
         );
         
         $dispatcher->listen('foo_event', ListenerWithNoHandleMethod::class);
@@ -204,7 +191,7 @@ class EventDispatcherTest extends WPTestCase
         
         $this->expectException(InvalidListenerException::class);
         $this->expectExceptionMessage(
-            'The listener [Tests\integration\EventDispatcher\ClassListener] does not have a method [bogus].'
+            "The listener [Tests\integration\EventDispatcher\ClassListener] does not have a handle method and isn't invokable with __invoke()."
         );
         
         $dispatcher->listen('foo_event', [ClassListener::class, 'bogus']);
@@ -260,22 +247,18 @@ class EventDispatcherTest extends WPTestCase
         $dispatcher = $this->getDispatcher();
         
         $dispatcher->listen(FooEvent::class, ClassListener::class);
-        $dispatcher->listen(FooEvent::class, ListenerWithConstructorDependency::class);
+        $dispatcher->listen(FooEvent::class, ClassListener2::class);
         
         $dispatcher->dispatch(new FooEvent('FOOBAR'));
         $this->assertListenerRun(FooEvent::class, ClassListener::class, 'FOOBAR');
-        $this->assertListenerRun(
-            FooEvent::class,
-            ListenerWithConstructorDependency::class,
-            'foo:FOOBAR'
-        );
+        $this->assertListenerRun(FooEvent::class, ClassListener2::class, 'FOOBAR');
         
         $this->resetListenersResponses();
         
         $dispatcher->remove(FooEvent::class);
         $dispatcher->dispatch(new FooEvent('FOOBAR'));
         $this->assertListenerNotRun(FooEvent::class, ClassListener::class);
-        $this->assertListenerNotRun(FooEvent::class, ListenerWithConstructorDependency::class);
+        $this->assertListenerNotRun(FooEvent::class, ClassListener2::class);
     }
     
     /** @test */
@@ -494,10 +477,29 @@ class EventDispatcherTest extends WPTestCase
         $this->assertListenerRun(PasswordLogin::class, 'closure1', 'password login');
     }
     
+    /** @test */
+    public function a_wildcard_listener_can_be_created()
+    {
+        $dispatcher = $this->getDispatcher();
+        
+        $user = new stdClass();
+        $user->first_name = 'calvin';
+        
+        $dispatcher->listen('user.*', function ($event_name, $passed_user, $time) use ($user) {
+            $this->assertSame($user, $passed_user);
+            $this->assertSame(12345678, $time);
+            $this->respondedToEvent($event_name, 'closure1', 'foo');
+        });
+        
+        $dispatcher->dispatch('user.created', $user, 12345678);
+        
+        $this->assertListenerRun('user.created', 'closure1', 'foo');
+    }
+    
     private function getDispatcher($container = null) :EventDispatcher
     {
         return new EventDispatcher(
-            new DependencyInversionListenerFactory($container ?? new IlluminateContainerAdapter())
+            new ParameterBasedListenerFactory($container ?? new IlluminateContainerAdapter())
         );
     }
     
@@ -544,7 +546,7 @@ class MutableEvent implements Event, Mutable
     
 }
 
-class FilterableEvent extends Filter
+class FilterableEvent implements Mutable, Event
 {
     
     public $val;
@@ -594,6 +596,23 @@ class ClassListener
         $this->respondedToEvent(FooEvent::class, ClassListener::class, $event->val);
     }
     
+    public function customHandleMethod(FooEvent $event)
+    {
+        $this->respondedToEvent(FooEvent::class, ClassListener::class, $event->val);
+    }
+    
+}
+
+class ClassListener2
+{
+    
+    use AssertListenerResponse;
+    
+    public function handle(FooEvent $event)
+    {
+        $this->respondedToEvent(FooEvent::class, ClassListener2::class, $event->val);
+    }
+    
 }
 
 class ListenerWithNoHandleMethod
@@ -609,25 +628,6 @@ class InvokableListener
     public function __invoke($foo, $bar)
     {
         $this->respondedToEvent('foo_event', static::class, $foo.$bar);
-    }
-    
-}
-
-class ListenerWithConstructorDependency
-{
-    
-    use AssertListenerResponse;
-    
-    private Foo $foo;
-    
-    public function __construct(Foo $foo)
-    {
-        $this->foo = $foo;
-    }
-    
-    public function handle(FooEvent $event)
-    {
-        $this->respondedToEvent($event, static::class, $this->foo.':'.$event->val);
     }
     
 }

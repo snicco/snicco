@@ -15,7 +15,7 @@ class ImmutableEventTest extends UnitTest
     /** @test */
     public function public_properties_can_be_read()
     {
-        $event = new ActionEvent('foo', 'bar');
+        $event = new ProxiedEvent('foo', 'bar');
         $immutable = new ImmutableEvent($event);
         
         $this->assertSame('foo', $immutable->foo);
@@ -24,7 +24,7 @@ class ImmutableEventTest extends UnitTest
     /** @test */
     public function private_properties_cant_be_read()
     {
-        $event = new ActionEvent('foo', 'bar');
+        $event = new ProxiedEvent('foo', 'bar');
         $immutable = new ImmutableEvent($event);
         
         try {
@@ -32,7 +32,7 @@ class ImmutableEventTest extends UnitTest
             $this->fail('accesss to private property allowed');
         } catch (BadMethodCallException $e) {
             $this->assertStringStartsWith(
-                "The property [bar] is private on the class [Tests\integration\EventDispatcher\ActionEvent].",
+                "The property [bar] is private on the class [Tests\integration\EventDispatcher\ProxiedEvent].",
                 $e->getMessage()
             );
         }
@@ -41,7 +41,7 @@ class ImmutableEventTest extends UnitTest
     /** @test */
     public function public_properties_cant_be_written()
     {
-        $event = new ActionEvent('foo', 'bar');
+        $event = new ProxiedEvent('foo', 'bar');
         $immutable = new ImmutableEvent($event);
         
         try {
@@ -49,7 +49,7 @@ class ImmutableEventTest extends UnitTest
             $this->fail('write access to public property allowed.');
         } catch (BadMethodCallException $e) {
             $this->assertStringStartsWith(
-                'The event [Tests\integration\EventDispatcher\ActionEvent] is an action and cant be changed.',
+                'The event [Tests\integration\EventDispatcher\ProxiedEvent] is an action and cant be changed.',
                 $e->getMessage()
             );
         }
@@ -58,7 +58,7 @@ class ImmutableEventTest extends UnitTest
     /** @test */
     public function public_methods_can_be_called()
     {
-        $event = new ActionEvent('foo', 'bar');
+        $event = new ProxiedEvent('foo', 'bar');
         $immutable = new ImmutableEvent($event);
         
         $this->assertSame('foo', $immutable->getFoo());
@@ -69,7 +69,7 @@ class ImmutableEventTest extends UnitTest
     /** @test */
     public function other_methods_can_not_be_called()
     {
-        $event = new ActionEvent('foo', 'bar');
+        $event = new ProxiedEvent('foo', 'bar');
         $immutable = new ImmutableEvent($event);
         
         try {
@@ -77,7 +77,7 @@ class ImmutableEventTest extends UnitTest
             $this->fail('Bad method was called on immutable event.');
         } catch (BadMethodCallException $e) {
             $this->assertStringStartsWith(
-                "The method [bogus] is not callable on the action event [Tests\integration\EventDispatcher\ActionEvent].",
+                "The method [bogus] is not callable on the action event [Tests\integration\EventDispatcher\ProxiedEvent].",
                 $e->getMessage()
             );
         }
@@ -85,7 +85,7 @@ class ImmutableEventTest extends UnitTest
     
 }
 
-class ActionEvent implements Event
+class ProxiedEvent implements Event
 {
     
     public  $foo;
