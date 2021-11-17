@@ -9,6 +9,8 @@ use LogicException;
 use InvalidArgumentException;
 use Snicco\EventDispatcher\Contracts\MappedFilter;
 use Snicco\EventDispatcher\Contracts\MappedAction;
+use Snicco\EventDispatcher\Contracts\MappedEventFactory;
+use Snicco\EventDispatcher\Implementations\ParameterBasedEventFactory;
 
 /**
  * @api
@@ -16,14 +18,15 @@ use Snicco\EventDispatcher\Contracts\MappedAction;
 final class EventMapper
 {
     
-    private EventDispatcher $event_dispatcher;
+    private MappedEventFactory $event_factory;
+    private EventDispatcher    $event_dispatcher;
+    private array              $mapped_actions = [];
+    private array              $mapped_filters = [];
     
-    private array $mapped_actions = [];
-    private array $mapped_filters = [];
-    
-    public function __construct(EventDispatcher $event_dispatcher)
+    public function __construct(EventDispatcher $event_dispatcher, ?MappedEventFactory $event_factory = null)
     {
         $this->event_dispatcher = $event_dispatcher;
+        $this->event_factory = $event_factory ?? new ParameterBasedEventFactory();
     }
     
     public function map(string $wordpress_hook_name, string $map_to, int $priority = 10)
@@ -72,9 +75,9 @@ final class EventMapper
         );
     }
     
-    private function dispatchMappedAction(string $event_name) :Closure
+    private function dispatchMappedAction(string $event_class) :Closure
     {
-        return function (...$args_from_wordpress_hooks) use ($event_name) {
+        return function (...$args_from_wordpress_hooks) use ($event_class) {
             // Remove the empty "" that WordPress will pass for actions without any passed arguments.
             if (is_string($args_from_wordpress_hooks[0])
                 && empty($args_from_wordpress_hooks[0])
@@ -82,22 +85,28 @@ final class EventMapper
                 array_shift($args_from_wordpress_hooks);
             }
             
-            $event = new $event_name(...$args_from_wordpress_hooks);
+            $event = $this->event_factory->make(
+                $event_class,
+                $args_from_wordpress_hooks
+            );
             
             $this->event_dispatcher->dispatch($event);
         };
     }
     
-    private function dispatchMappedFilter(string $event_name) :Closure
+    private function dispatchMappedFilter(string $event_class) :Closure
     {
-        return function (...$args_from_wordpress_hooks) use ($event_name) {
-            $event = new $event_name(...$args_from_wordpress_hooks);
+        return function (...$args_from_wordpress_hooks) use ($event_class) {
+            $event = $this->event_factory->make(
+                $event_class,
+                $args_from_wordpress_hooks
+            );
             
             $payload = $this->event_dispatcher->dispatch($event);
             
             if ( ! $payload instanceof MappedFilter) {
                 throw new LogicException(
-                    "Mapped Filter [$event_name] has to return an instance of [MappedFilter]."
+                    "Mapped Filter [$event_class] has to return an instance of [MappedFilter]."
                 );
             }
             

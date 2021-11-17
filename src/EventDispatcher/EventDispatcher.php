@@ -10,15 +10,19 @@ use ReflectionException;
 use InvalidArgumentException;
 use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\Mutable;
+use Snicco\EventDispatcher\Contracts\ObjectCopier;
 use Snicco\EventDispatcher\Contracts\ListenerFactory;
 use Snicco\EventDispatcher\Contracts\CustomizablePayload;
 use Snicco\EventDispatcher\Contracts\IsForbiddenToWordPress;
 use Snicco\EventDispatcher\Contracts\DispatchesConditionally;
+use Snicco\EventDispatcher\Implementations\NativeObjetCopier;
 
 use function has_filter;
 use function apply_filters;
 use function Snicco\EventDispatcher\functions\normalizeListener;
+use function Snicco\EventDispatcher\functions\isWildCardEventListener;
 use function Snicco\EventDispatcher\functions\getTypeHintedEventFromClosure;
+use function Snicco\EventDispatcher\functions\wildcardPatternMatchesEventName;
 
 final class EventDispatcher
 {
@@ -58,11 +62,23 @@ final class EventDispatcher
     private ListenerFactory $listener_factory;
     
     /**
-     * @param  ListenerFactory  $listener_factory
+     * Used the make immutable copies of event objects.
+     *
+     * @var ObjectCopier
      */
-    public function __construct(ListenerFactory $listener_factory)
+    private ObjectCopier $object_copier;
+    
+    private array $wildcards_cache = [];
+    private array $wildcards       = [];
+    
+    /**
+     * @param  ListenerFactory  $listener_factory
+     * @param  ObjectCopier|null  $object_copier
+     */
+    public function __construct(ListenerFactory $listener_factory, ?ObjectCopier $object_copier = null)
     {
         $this->listener_factory = $listener_factory;
+        $this->object_copier = $object_copier ?? new NativeObjetCopier();
     }
     
     /**
@@ -83,8 +99,12 @@ final class EventDispatcher
             $this->listen(getTypeHintedEventFromClosure($event_name), $event_name);
             return;
         }
-        
         $listener = normalizeListener($listener);
+        
+        if (isWildCardEventListener($event_name)) {
+            $this->registerWildcardListener($event_name, $listener);
+            return;
+        }
         
         if ($listener instanceof Closure) {
             $this->listeners[$event_name][] = $listener;
@@ -105,7 +125,7 @@ final class EventDispatcher
      * @return Event
      * @api
      */
-    public function dispatch($event, array $payload = []) :Event
+    public function dispatch($event, ...$payload) :Event
     {
         [$event_name, $event] = $this->getEventAndPayload($event, $payload);
         
@@ -120,7 +140,8 @@ final class EventDispatcher
         foreach ($this->getListenersForEvent($event_name) as $listener) {
             $this->callListener(
                 $listener,
-                $this->getPayloadForCurrentIteration($event)
+                $this->getPayloadForCurrentIteration($event),
+                $event_name
             );
         }
         
@@ -161,8 +182,9 @@ final class EventDispatcher
         if (isset($this->listeners[$event_name])
             && isset($this->listeners[$event_name][$listener_class])) {
             if (isset($this->unremovable[$event_name][$listener_class])) {
-                throw new UnremovableListenerException(
-                    "The listener [$listener_class] is marked as unremovable for the event [$event_name]."
+                throw UnremovableListenerException::becauseTheDeveloperTriedToRemove(
+                    $listener_class,
+                    $event_name
                 );
             }
             
@@ -173,6 +195,8 @@ final class EventDispatcher
     private function getListenersForEvent(string $event_name) :array
     {
         $listeners = $this->listeners[$event_name] ?? [];
+        
+        $listeners = array_merge($listeners, $this->getWildCardListeners($event_name));
         
         if ( ! class_exists($event_name)) {
             return $listeners;
@@ -203,19 +227,44 @@ final class EventDispatcher
         return [$event_name, $payload];
     }
     
-    private function callListener($listener, Event $event)
+    private function callListener($listener, Event $event, string $event_name)
     {
-        return $this->listener_factory->create($listener)->call($event);
+        return $this->listener_factory->create($listener, $event_name)->call($event);
     }
     
     private function getPayloadForCurrentIteration(Event $payload) :Event
     {
-        return $payload instanceof Mutable ? $payload : clone $payload;
+        return $payload instanceof Mutable ? $payload : $this->object_copier->copy($payload);
     }
     
     private function shouldDispatch(Event $event) :bool
     {
         return $event instanceof DispatchesConditionally ? $event->shouldDispatch() : true;
+    }
+    
+    private function registerWildcardListener(string $event_name, $listener)
+    {
+        $this->wildcards[$event_name][] = function (...$payload) use ($event_name, $listener) {
+            return call_user_func_array($listener, array_merge([$event_name], $payload));
+        };
+        unset($this->wildcards_cache[$event_name]);
+    }
+    
+    private function getWildCardListeners(string $event_name)
+    {
+        if (isset($this->wildcards_cache[$event_name])) {
+            return $this->wildcards_cache[$event_name] ?? [];
+        }
+        
+        $wildcards = [];
+        
+        foreach ($this->wildcards as $wildcard_pattern => $listeners) {
+            if (wildcardPatternMatchesEventName($wildcard_pattern, $event_name)) {
+                $wildcards = array_merge($wildcards, $listeners);
+            }
+        }
+        
+        return $this->wildcards_cache[$event_name] = $wildcards;
     }
     
 }

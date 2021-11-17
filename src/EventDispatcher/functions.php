@@ -29,17 +29,13 @@ namespace Snicco\EventDispatcher\functions
         
         if (is_string($listener)) {
             if ( ! class_exists($listener)) {
-                throw new InvalidListenerException(
-                    "The listener [$listener] is not a valid class."
-                );
+                throw InvalidListenerException::becauseTheListenerIsNotAValidClass($listener);
             }
             
             $invokable = method_exists($listener, '__invoke');
             
             if ( ! method_exists($listener, 'handle') && ! $invokable) {
-                throw new InvalidListenerException(
-                    "The listener [$listener] is does not have a handle method."
-                );
+                throw InvalidListenerException::becauseTheListenerHasNoValidMethod($listener);
             }
             
             return [$listener, $invokable ? '__invoke' : 'handle'];
@@ -50,16 +46,13 @@ namespace Snicco\EventDispatcher\functions
         }
         
         if ( ! class_exists($listener[0])) {
-            throw new InvalidListenerException(
-                "The listener [$listener[0]] is not a valid class."
-            );
+            throw InvalidListenerException::becauseTheListenerIsNotAValidClass($listener[0]);
         }
         
         if ( ! method_exists($listener[0], $listener[1] ??= 'handle')) {
-            throw new InvalidListenerException(
-                "The listener [$listener[0]] does not have a method [$listener[1]]."
-            );
+            throw InvalidListenerException::becauseTheListenerHasNoValidMethod($listener[0]);
         }
+        return $listener;
     }
     
     /**
@@ -77,9 +70,7 @@ namespace Snicco\EventDispatcher\functions
         $parameters = (array) $reflection->getParameters();
         
         if ( ! count($parameters) || ! $parameters[0] instanceof ReflectionParameter) {
-            throw new InvalidListenerException(
-                "The closure listener must have a type hinted event as the first parameter."
-            );
+            throw InvalidListenerException::becauseTheClosureDoesntHaveATypehintedEvent();
         }
         
         $param = $parameters[0];
@@ -87,11 +78,28 @@ namespace Snicco\EventDispatcher\functions
         $type = $param->getType();
         
         if ( ! $type || ! in_array(Event::class, class_implements($type->getName()))) {
-            throw new InvalidListenerException(
-                'The closure listener must have a type hinted event as the first parameter.'
-            );
+            throw InvalidListenerException::becauseTheClosureDoesntHaveATypehintedEvent();
         }
         
         return $type->getName();
+    }
+    
+    /**
+     * @internal
+     *
+     * @param  string  $event_name
+     *
+     * @return bool
+     */
+    function isWildCardEventListener(string $event_name) :bool
+    {
+        return strpos($event_name, '*') !== false;
+    }
+    
+    function wildcardPatternMatchesEventName(string $listens_to, string $event_name) :bool
+    {
+        $pattern = "/^".str_replace('\*', '.*', $listens_to)."$/";
+        $matches = preg_match($pattern, $event_name);
+        return $matches === 1;
     }
 }

@@ -11,7 +11,7 @@ use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\MappedFilter;
 use Snicco\Application\IlluminateContainerAdapter;
 use Snicco\EventDispatcher\Contracts\MappedAction;
-use Snicco\EventDispatcher\DependencyInversionListenerFactory;
+use Snicco\EventDispatcher\Implementations\ParameterBasedListenerFactory;
 
 class EventMapperTest extends WPTestCase
 {
@@ -25,7 +25,7 @@ class EventMapperTest extends WPTestCase
     {
         parent::setUp();
         $this->dispatcher = new EventDispatcher(
-            new DependencyInversionListenerFactory(new IlluminateContainerAdapter())
+            new ParameterBasedListenerFactory(new IlluminateContainerAdapter())
         );
         $this->event_mapper = new EventMapper($this->dispatcher);
         $this->resetListenersResponses();

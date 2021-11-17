@@ -8,7 +8,7 @@ use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\CustomizablePayload;
 
 /**
- * @api
+ * @internal
  */
 final class GenericEvent implements Event, CustomizablePayload
 {
