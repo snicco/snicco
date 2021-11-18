@@ -7,12 +7,12 @@ namespace Snicco\Testing;
 use Closure;
 use RuntimeException;
 use Snicco\Http\Delegate;
-use Snicco\Http\StatelessRedirector;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Contracts\Middleware;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Http\ResponseFactory;
+use Snicco\Http\StatelessRedirector;
 use Tests\concerns\CreatePsrRequests;
 use Snicco\Contracts\RouteUrlGenerator;
 use Psr\Http\Message\UriFactoryInterface;
@@ -92,60 +92,6 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
         return $this->transformResponse($response);
     }
     
-    //protected function frontendRequest(string $method = 'GET', $uri = '/') :Request
-    //{
-    //    $method = strtoupper($method);
-    //    $uri = $this->createUri($uri);
-    //
-    //    $request = new Request(
-    //        $this->psrServerRequestFactory()->createServerRequest(
-    //            $method,
-    //            $uri,
-    //            ['REQUEST_METHOD' => $method, 'SCRIPT_NAME' => 'index.php']
-    //        )
-    //    );
-    //
-    //    parse_str($request->getUri()->getQuery(), $query);
-    //    return $request->withQueryParams($query);
-    //}
-    
-    //protected function adminRequest(string $method, $menu_slug, $parent = 'admin.php') :Request
-    //{
-    //    $method = strtoupper($method);
-    //    $url = $this->adminUrlTo($menu_slug, $parent);
-    //    $uri = $this->createUri($url);
-    //
-    //    $request = new Request(
-    //        $this->psrServerRequestFactory()->createServerRequest(
-    //            $method,
-    //            $uri,
-    //            ['REQUEST_METHOD' => $method, 'SCRIPT_NAME' => "wp-admin/$parent"]
-    //        )
-    //    );
-    //
-    //    return $request->withQueryParams(['page' => $menu_slug]);
-    //}
-    
-    //protected function adminAjaxRequest(string $method, string $action, array $data = []) :Request
-    //{
-    //    $method = strtoupper($method);
-    //    $uri = $this->createUri($this->ajaxUrl($action));
-    //
-    //    $request = new Request(
-    //        $this->psrServerRequestFactory()->createServerRequest(
-    //            $method,
-    //            $uri,
-    //            ['REQUEST_METHOD' => $method, 'SCRIPT_NAME' => "wp-admin/admin.ajax.php"]
-    //        )
-    //    );
-    //
-    //    if ($request->isGet()) {
-    //        return $request->withQueryParams(array_merge(['action' => $action], $data));
-    //    }
-    //
-    //    return $request->withParsedBody(array_merge(['action' => $action], $data));
-    //}
-    
     protected function urlGenerator() :UrlGenerator
     {
         return new UrlGenerator(
@@ -170,34 +116,6 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
             new TestDoubles\TestDelegate($this->response_factory, $this->next_middleware_response)
         );
     }
-    
-    //private function createUri($uri) :UriInterface
-    //{
-    //    if (is_string($uri)) {
-    //        if ( ! Str::contains($uri, 'http')) {
-    //            $uri = Url::addLeading($uri);
-    //        }
-    //    }
-    //
-    //    $uri = $uri instanceof UriInterface
-    //        ? $uri
-    //        : $this->psrUriFactory()->createUri($uri);
-    //
-    //    if ( ! $uri->getScheme()) {
-    //        $uri = $uri->withScheme('https');
-    //    }
-    //
-    //    if ( ! $uri->getHost()) {
-    //        $uri = $uri->withHost(
-    //            parse_url(
-    //                'https://example.com/',
-    //                PHP_URL_HOST
-    //            )
-    //        );
-    //    }
-    //
-    //    return $uri;
-    //}
     
     private function transformResponse(Response $response)
     {
