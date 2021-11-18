@@ -96,6 +96,14 @@ namespace Snicco\EventDispatcher\functions
         return strpos($event_name, '*') !== false;
     }
     
+    /**
+     * @internal
+     *
+     * @param  string  $listens_to
+     * @param  string  $event_name
+     *
+     * @return bool
+     */
     function wildcardPatternMatchesEventName(string $listens_to, string $event_name) :bool
     {
         $pattern = "/^".str_replace('\*', '.*', $listens_to)."$/";

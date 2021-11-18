@@ -11,12 +11,16 @@ use BadMethodCallException;
 use Snicco\EventDispatcher\Contracts\Event;
 
 /**
+ * Takes an event object as a dependency and proxies all calls into the underlying event.
+ * Public properties will be READ ONLY.
+ *
  * @api
  */
 final class ImmutableEvent implements Event
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     private Event $event;
     

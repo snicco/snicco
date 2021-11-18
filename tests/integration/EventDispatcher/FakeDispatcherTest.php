@@ -6,12 +6,13 @@ namespace Tests\integration\EventDispatcher;
 
 use Closure;
 use Codeception\TestCase\WPTestCase;
-use Snicco\EventDispatcher\GenericEvent;
+use Snicco\EventDispatcher\ClassAsName;
 use Snicco\EventDispatcher\FakeDispatcher;
+use Snicco\EventDispatcher\ClassAsPayload;
 use Snicco\EventDispatcher\EventDispatcher;
 use Snicco\EventDispatcher\Contracts\Event;
-use Snicco\EventDispatcher\IsClassNameEvent;
 use PHPUnit\Framework\ExpectationFailedException;
+use Snicco\EventDispatcher\Implementations\GenericEvent;
 use Snicco\EventDispatcher\Implementations\ParameterBasedListenerFactory;
 
 final class FakeDispatcherTest extends WPTestCase
@@ -128,7 +129,7 @@ final class FakeDispatcherTest extends WPTestCase
         $event = $this->fake_dispatcher->dispatch('foo_event', 'FOOBAR');
         
         $this->assertInstanceOf(GenericEvent::class, $event);
-        $this->assertSame(['FOOBAR'], $event->payload());
+        $this->assertSame(['FOOBAR'], $event->getPayload());
     }
     
     /** @test */
@@ -283,8 +284,8 @@ final class FakeDispatcherTest extends WPTestCase
         });
         $this->fake_dispatcher->dispatch('foo_event', 'FOO', 'BAR');
         
-        $this->fake_dispatcher->assertDispatched('foo_event', function (GenericEvent $event) {
-            return $event->payload()[0] === 'FOO' && $event->payload()[1] === 'BAR';
+        $this->fake_dispatcher->assertDispatched('foo_event', function ($foo, $bar, $event_name) {
+            return $foo === 'FOO' && $bar === 'BAR' && $event_name === 'foo_event';
         });
     }
     
@@ -317,9 +318,9 @@ final class FakeDispatcherTest extends WPTestCase
         
         $this->fake_dispatcher->assertDispatched(
             EventStub::class,
-            function (EventStub $event_stub, string $event_name) {
+            function (EventStub $event_stub) {
                 return $event_stub->val1 === 'FOO' && $event_stub->val2 === 'BAR'
-                       && $event_name
+                       && $event_stub->getName()
                           === EventStub::class;
             }
         );
@@ -335,10 +336,8 @@ final class FakeDispatcherTest extends WPTestCase
             function () {
                 $this->fake_dispatcher->assertDispatched(
                     EventStub::class,
-                    function (EventStub $event_stub, string $event_name) {
-                        return $event_stub->val1 === 'FOO' && $event_stub->val2 === 'BAZ'
-                               && $event_name
-                                  === EventStub::class;
+                    function (EventStub $event_stub) {
+                        return $event_stub->val1 === 'FOO' && $event_stub->val2 === 'BAZ';
                     }
                 );
             },
@@ -426,8 +425,8 @@ final class FakeDispatcherTest extends WPTestCase
         
         $this->fake_dispatcher->assertNotDispatched(
             'foo_event',
-            function (GenericEvent $event, $event_name) {
-                return $event->payload()[0] === 'FOO' && $event_name === 'foo_event';
+            function ($val, $event_name) {
+                return $val === 'FOO' && $event_name === 'foo_event';
             }
         );
     }
@@ -440,8 +439,8 @@ final class FakeDispatcherTest extends WPTestCase
         $this->assertFailing(function () {
             $this->fake_dispatcher->assertNotDispatched(
                 'foo_event',
-                function (GenericEvent $event, $event_name) {
-                    return $event->payload()[0] === 'BAR' && $event_name === 'foo_event';
+                function ($val, $event_name) {
+                    return $val === 'BAR' && $event_name === 'foo_event';
                 }
             );
         }, "The event [foo_event] was dispatched and the condition passed.");
@@ -480,13 +479,15 @@ final class FakeDispatcherTest extends WPTestCase
         
         $this->fake_dispatcher->assertDispatched(
             'user.created',
-            function (GenericEvent $event, $event_name) {
-                return $event->payload()[0] === 'calvin' && $event_name === 'user.created';
+            function ($user_name, $event_name) {
+                return $user_name === 'calvin' && $event_name === 'user.created';
             }
         );
     }
     
-    /** @test */
+    /**
+     * @test
+     */
     public function testAssertDispatchedWithWildcardEventAndConditionCanFail()
     {
         $this->fake_dispatcher->dispatch('user.created', 'jon doe');
@@ -494,8 +495,10 @@ final class FakeDispatcherTest extends WPTestCase
         $this->assertFailing(function () {
             $this->fake_dispatcher->assertDispatched(
                 'user.created',
-                function (GenericEvent $event, $event_name) {
-                    return $event->payload()[0] === 'calvin' && $event_name === 'user.created';
+                function ($name, $event_name) {
+                    return $name === 'calvin'
+                           && $event_name
+                              === 'user.created';
                 }
             );
         }, "The event [user.created] was dispatched but the provided condition did not pass.");
@@ -521,7 +524,8 @@ final class FakeDispatcherTest extends WPTestCase
 class EventStub implements Event
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     public $val1;
     public $val2;

@@ -4,12 +4,15 @@ declare(strict_types=1);
 
 namespace Snicco\EventDispatcher;
 
-trait IsClassNameEvent
+/**
+ * @api
+ */
+trait ClassAsPayload
 {
     
-    public function getName() :string
+    public function getPayload()
     {
-        return static::class;
+        return $this;
     }
     
 }

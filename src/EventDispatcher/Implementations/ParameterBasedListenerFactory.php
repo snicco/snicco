@@ -12,7 +12,7 @@ use Snicco\EventDispatcher\Contracts\ListenerFactory;
 use Snicco\EventDispatcher\Exceptions\ListenerCreationException;
 
 /**
- * @api
+ * @internal
  */
 final class ParameterBasedListenerFactory implements ListenerFactory
 {

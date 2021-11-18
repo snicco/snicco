@@ -20,6 +20,7 @@ interface Dispatcher
      * retrieved from the first closure parameter.
      * @param  array|string|Closure  $listener
      * @param  bool  $can_be_removed
+     * Indicate if the event can be removed. Closures can never be removed.
      *
      * @throws InvalidListenerException|ReflectionException|InvalidArgumentException
      */
@@ -27,8 +28,7 @@ interface Dispatcher
     
     /**
      * @param  string|Event  $event
-     * @param  array  $payload  The payload SHALL NOT be used if $event is an Event object. In this
-     *     case the event object itself MUST BE to payload.
+     * @param  array  $payload
      *
      * @return Event
      */
