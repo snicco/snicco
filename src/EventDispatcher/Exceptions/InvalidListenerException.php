@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Snicco\EventDispatcher\Exceptions;
 
-use LogicException;
+use InvalidArgumentException;
 
 /**
  * @api
  */
-final class InvalidListenerException extends LogicException
+final class InvalidListenerException extends InvalidArgumentException
 {
     
     public static function becauseTheListenerIsNotAValidClass(string $listener) :InvalidListenerException

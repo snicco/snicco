@@ -10,6 +10,7 @@ use ReflectionException;
 use InvalidArgumentException;
 use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\Mutable;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\EventDispatcher\Contracts\ObjectCopier;
 use Snicco\EventDispatcher\Contracts\ListenerFactory;
 use Snicco\EventDispatcher\Contracts\CustomizablePayload;
@@ -26,7 +27,7 @@ use function Snicco\EventDispatcher\functions\isWildCardEventListener;
 use function Snicco\EventDispatcher\functions\getTypeHintedEventFromClosure;
 use function Snicco\EventDispatcher\functions\wildcardPatternMatchesEventName;
 
-final class EventDispatcher
+final class EventDispatcher implements Dispatcher
 {
     
     /**
@@ -131,10 +132,6 @@ final class EventDispatcher
     {
         [$event_name, $event] = $this->getEventAndPayload($event, $payload);
         
-        if ( ! $event instanceof Event) {
-            $event = new GenericEvent($event);
-        }
-        
         if ( ! $this->shouldDispatch($event)) {
             return $event;
         }
@@ -171,7 +168,7 @@ final class EventDispatcher
      * @param  string  $event_name
      * @param  string|null  $listener_class
      *
-     * @throws InvalidListenerException|InvalidArgumentException
+     * @throws UnremovableListenerException
      * @api
      */
     public function remove(string $event_name, string $listener_class = null)
@@ -192,6 +189,22 @@ final class EventDispatcher
             
             unset($this->listeners[$event_name][$listener_class]);
         }
+    }
+    
+    /**
+     * @param $event_name
+     * @param  array  $payload
+     *
+     * @return array<string,Event>
+     * @interal
+     */
+    public function getEventAndPayload($event_name, array $payload) :array
+    {
+        if ($event_name instanceof Event) {
+            return [get_class($event_name), $event_name];
+        }
+        
+        return [$event_name, new GenericEvent($payload)];
     }
     
     private function getListenersForEvent(string $event_name) :array
@@ -218,15 +231,6 @@ final class EventDispatcher
         }
         
         return array_merge($listeners, $this->getListenersForEvent($parent));
-    }
-    
-    private function getEventAndPayload($event_name, array $payload) :array
-    {
-        if ($event_name instanceof Event) {
-            return [get_class($event_name), $event_name];
-        }
-        
-        return [$event_name, $payload];
     }
     
     private function callListener($listener, Event $event, string $event_name)
