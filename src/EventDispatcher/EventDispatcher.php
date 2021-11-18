@@ -154,9 +154,13 @@ final class EventDispatcher implements Dispatcher
         
         if ($event instanceof Mutable) {
             // Don't return the returned value of apply_filters() since third party devs might return something completely wrong.
+            // Since our event is mutable it is passed by reference here. Developers can manipulate the event object directly
+            // within our defined constraints.
             apply_filters($event_name, $event);
         }
         else {
+            // Make an immutable copy of the event. Developers can interact with this event object the same
+            // way as with the original event expect that public properties are read only.
             do_action($event_name, new ImmutableEvent($event));
         }
         return $event;
@@ -233,9 +237,10 @@ final class EventDispatcher implements Dispatcher
         return array_merge($listeners, $this->getListenersForEvent($parent));
     }
     
-    private function callListener($listener, Event $event, string $event_name)
+    private function callListener($listener, Event $event, string $event_name) :void
     {
-        return $this->listener_factory->create($listener, $event_name)->call($event, $event_name);
+        $this->listener_factory->create($listener, $event_name)
+                               ->call($event, $event_name);
     }
     
     private function getPayloadForCurrentIteration(Event $payload) :Event
