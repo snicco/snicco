@@ -487,13 +487,16 @@ class EventDispatcherTest extends WPTestCase
         
         $dispatcher->listen('user.*', function ($event_name, $passed_user, $time) use ($user) {
             $this->assertSame($user, $passed_user);
-            $this->assertSame(12345678, $time);
-            $this->respondedToEvent($event_name, 'closure1', 'foo');
+            $this->respondedToEvent($event_name, 'closure1', $time);
         });
         
-        $dispatcher->dispatch('user.created', $user, 12345678);
+        $dispatcher->dispatch('user.created', $user, 1234);
+        $this->assertListenerRun('user.created', 'closure1', 1234);
         
-        $this->assertListenerRun('user.created', 'closure1', 'foo');
+        $this->resetListenersResponses();
+        
+        $dispatcher->dispatch('user.deleted', $user, 5678);
+        $this->assertListenerRun('user.deleted', 'closure1', 5678);
     }
     
     private function getDispatcher($container = null) :EventDispatcher
