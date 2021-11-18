@@ -57,6 +57,66 @@ final class FakeDispatcherTest extends WPTestCase
     }
     
     /** @test */
+    public function all_events_can_be_faked()
+    {
+        $this->fake_dispatcher->listen('foo_event', function ($val) {
+            $this->respondedToEvent('foo_event', 'closure1', $val);
+        });
+        
+        $this->fake_dispatcher->listen('bar_event', function ($val) {
+            $this->respondedToEvent('bar_event', 'closure2', $val);
+        });
+        
+        $this->fake_dispatcher->fake();
+        
+        $this->fake_dispatcher->dispatch('foo_event', 'FOOBAR');
+        $this->assertListenerNotRun('foo_event', 'closure1');
+        
+        $this->fake_dispatcher->dispatch('bar_event', 'FOOBAR');
+        $this->assertListenerNotRun('bar_event', 'closure2');
+    }
+    
+    /** @test */
+    public function all_events_can_be_faked_as_an_alias_call()
+    {
+        $this->fake_dispatcher->listen('foo_event', function ($val) {
+            $this->respondedToEvent('foo_event', 'closure1', $val);
+        });
+        
+        $this->fake_dispatcher->listen('bar_event', function ($val) {
+            $this->respondedToEvent('foo_event', 'closure2', $val);
+        });
+        
+        $this->fake_dispatcher->fakeAll();
+        
+        $this->fake_dispatcher->dispatch('foo_event', 'FOOBAR');
+        $this->assertListenerNotRun('foo_event', 'closure1');
+        
+        $this->fake_dispatcher->dispatch('bar_event', 'FOOBAR');
+        $this->assertListenerNotRun('bar_event', 'closure2');
+    }
+    
+    /** @test */
+    public function test_fake_except()
+    {
+        $this->fake_dispatcher->listen('foo_event', function ($val) {
+            $this->respondedToEvent('foo_event', 'closure1', $val);
+        });
+        
+        $this->fake_dispatcher->listen('bar_event', function ($val) {
+            $this->respondedToEvent('bar_event', 'closure2', $val);
+        });
+        
+        $this->fake_dispatcher->fakeExcept('bar_event');
+        
+        $this->fake_dispatcher->dispatch('foo_event', 'FOOBAR');
+        $this->assertListenerNotRun('foo_event', 'closure1');
+        
+        $this->fake_dispatcher->dispatch('bar_event', 'FOOBAR');
+        $this->assertListenerRun('bar_event', 'closure2', 'FOOBAR');
+    }
+    
+    /** @test */
     public function test_confirms_to_return_type_for_string_events()
     {
         $this->fake_dispatcher->listen('foo_event', function ($val) {
@@ -222,8 +282,8 @@ final class FakeDispatcherTest extends WPTestCase
         });
         $this->fake_dispatcher->dispatch('foo_event', 'FOO', 'BAR');
         
-        $this->fake_dispatcher->assertDispatched('foo_event', function ($foo, $bar) {
-            return $foo === 'FOO' && $bar === 'BAR';
+        $this->fake_dispatcher->assertDispatched('foo_event', function (GenericEvent $event) {
+            return $event->payload()[0] === 'FOO' && $event->payload()[1] === 'BAR';
         });
     }
     
@@ -365,8 +425,8 @@ final class FakeDispatcherTest extends WPTestCase
         
         $this->fake_dispatcher->assertNotDispatched(
             'foo_event',
-            function (string $foo, $event_name) {
-                return $foo === 'FOO' && $event_name === 'foo_event';
+            function (GenericEvent $event, $event_name) {
+                return $event->payload()[0] === 'FOO' && $event_name === 'foo_event';
             }
         );
     }
@@ -379,8 +439,8 @@ final class FakeDispatcherTest extends WPTestCase
         $this->assertFailing(function () {
             $this->fake_dispatcher->assertNotDispatched(
                 'foo_event',
-                function (string $foo, $event_name) {
-                    return $foo === 'BAR' && $event_name === 'foo_event';
+                function (GenericEvent $event, $event_name) {
+                    return $event->payload()[0] === 'BAR' && $event_name === 'foo_event';
                 }
             );
         }, "The event [foo_event] was dispatched and the condition passed.");
@@ -410,6 +470,34 @@ final class FakeDispatcherTest extends WPTestCase
                 }
             );
         }, "The event [".EventStub::class."] was dispatched and the condition passed.");
+    }
+    
+    /** @test */
+    public function testAssertDispatchedWithWildcardEventAndConditionCanPass()
+    {
+        $this->fake_dispatcher->dispatch('user.created', 'calvin');
+        
+        $this->fake_dispatcher->assertDispatched(
+            'user.created',
+            function (GenericEvent $event, $event_name) {
+                return $event->payload()[0] === 'calvin' && $event_name === 'user.created';
+            }
+        );
+    }
+    
+    /** @test */
+    public function testAssertDispatchedWithWildcardEventAndConditionCanFail()
+    {
+        $this->fake_dispatcher->dispatch('user.created', 'jon doe');
+        
+        $this->assertFailing(function () {
+            $this->fake_dispatcher->assertDispatched(
+                'user.created',
+                function (GenericEvent $event, $event_name) {
+                    return $event->payload()[0] === 'calvin' && $event_name === 'user.created';
+                }
+            );
+        }, "The event [user.created] was dispatched but the provided condition did not pass.");
     }
     
     private function failBecauseOfWrongAssertion($message = null)
