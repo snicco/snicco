@@ -9,6 +9,8 @@ use ReflectionException;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\EventDispatcher\Contracts\EventParser;
+use Snicco\EventDispatcher\Implementations\GenericEventParser;
 
 use function Snicco\EventDispatcher\functions\getTypeHintedEventFromClosure;
 use function Snicco\EventDispatcher\functions\wildcardPatternMatchesEventName;
@@ -16,7 +18,7 @@ use function Snicco\EventDispatcher\functions\wildcardPatternMatchesEventName;
 final class FakeDispatcher implements Dispatcher
 {
     
-    private EventDispatcher $dispatcher;
+    private Dispatcher $dispatcher;
     
     /**
      * @var string[]
@@ -27,11 +29,13 @@ final class FakeDispatcher implements Dispatcher
     
     private bool $fake_all = false;
     
-    private array $dont_fake = [];
+    private array       $dont_fake = [];
+    private EventParser $event_parser;
     
-    public function __construct(EventDispatcher $dispatcher)
+    public function __construct(Dispatcher $dispatcher, ?EventParser $event_parser = null)
     {
         $this->dispatcher = $dispatcher;
+        $this->event_parser = $event_parser ?? new GenericEventParser();
     }
     
     public function listen($event_name, $listener = null, bool $can_be_removed = true)
@@ -41,7 +45,10 @@ final class FakeDispatcher implements Dispatcher
     
     public function dispatch($event, ...$payload) :Event
     {
-        [$_event_name, $_event] = $this->dispatcher->getEventAndPayload($event, $payload);
+        [$_event_name, $_event] = $this->event_parser->transformEventNameAndPayload(
+            $event,
+            $payload
+        );
         
         if ($this->shouldFakeEvent($_event_name)) {
             return $_event;

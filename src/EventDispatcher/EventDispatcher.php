@@ -11,12 +11,14 @@ use InvalidArgumentException;
 use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\Mutable;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\EventDispatcher\Contracts\EventParser;
 use Snicco\EventDispatcher\Contracts\ObjectCopier;
 use Snicco\EventDispatcher\Contracts\ListenerFactory;
 use Snicco\EventDispatcher\Contracts\CustomizablePayload;
 use Snicco\EventDispatcher\Contracts\IsForbiddenToWordPress;
 use Snicco\EventDispatcher\Contracts\DispatchesConditionally;
 use Snicco\EventDispatcher\Implementations\NativeObjetCopier;
+use Snicco\EventDispatcher\Implementations\GenericEventParser;
 use Snicco\EventDispatcher\Exceptions\InvalidListenerException;
 use Snicco\EventDispatcher\Exceptions\UnremovableListenerException;
 
@@ -87,15 +89,21 @@ final class EventDispatcher implements Dispatcher
      *
      * @var array<string,array<Closure>>
      */
-    private array $wildcard_listeners = [];
+    private array        $wildcard_listeners = [];
+    private ?EventParser $event_parser;
     
     /**
      * @param  ListenerFactory  $listener_factory
      * @param  ObjectCopier|null  $object_copier
      */
-    public function __construct(ListenerFactory $listener_factory, ?ObjectCopier $object_copier = null)
+    public function __construct(
+        ListenerFactory $listener_factory,
+        ?EventParser $event_parser = null,
+        ?ObjectCopier $object_copier = null
+    )
     {
         $this->listener_factory = $listener_factory;
+        $this->event_parser = $event_parser ?? new GenericEventParser();
         $this->object_copier = $object_copier ?? new NativeObjetCopier();
     }
     
@@ -147,7 +155,10 @@ final class EventDispatcher implements Dispatcher
      */
     public function dispatch($event, ...$payload) :Event
     {
-        [$event_name, $event] = $this->getEventAndPayload($event, $payload);
+        [$event_name, $event] = $this->event_parser->transformEventNameAndPayload(
+            $event,
+            $payload
+        );
         
         if ( ! $this->shouldDispatch($event)) {
             return $event;
@@ -210,22 +221,6 @@ final class EventDispatcher implements Dispatcher
             
             unset($this->listeners[$event_name][$listener_class]);
         }
-    }
-    
-    /**
-     * @param $event_name
-     * @param  array  $payload
-     *
-     * @return array<string,Event>
-     * @interal
-     */
-    public function getEventAndPayload($event_name, array $payload) :array
-    {
-        if ($event_name instanceof Event) {
-            return [get_class($event_name), $event_name];
-        }
-        
-        return [$event_name, new GenericEvent($payload)];
     }
     
     private function getListenersForEvent(string $event_name) :array
