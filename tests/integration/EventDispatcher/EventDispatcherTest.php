@@ -10,6 +10,7 @@ use Codeception\TestCase\WPTestCase;
 use Snicco\EventDispatcher\ClassAsName;
 use Snicco\EventDispatcher\ImmutableEvent;
 use Snicco\EventDispatcher\ClassAsPayload;
+use Tests\concerns\AssertListenerResponse;
 use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\EventDispatcher;
 use Snicco\EventDispatcher\Contracts\Mutable;

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\integration\EventDispatcher;
+namespace Tests\concerns;
 
 use PHPUnit\Framework\Assert;
 
@@ -14,36 +14,36 @@ trait AssertListenerResponse
         if (is_object($event)) {
             $event = get_class($event);
         }
-        $GLOBALS['test']['listeners'][$event][$key] = $response;
+        $GLOBALS['test']['sniccowp_listeners'][$event][$key] = $response;
     }
     
     private function assertListenerRun($event, string $key, $expected)
     {
         Assert::assertArrayHasKey(
             $event,
-            $GLOBALS['test']['listeners'],
+            $GLOBALS['test']['sniccowp_listeners'],
             "No listeners were called for the event [$event]."
         );
         
         Assert::assertArrayHasKey(
             $key,
-            $GLOBALS['test']['listeners'][$event],
+            $GLOBALS['test']['sniccowp_listeners'][$event],
             "No listeners with key [$key] were called for the event [$event]."
         );
         
         Assert::assertSame(
             $expected,
-            $actual = $GLOBALS['test']['listeners'][$event][$key],
+            $actual = $GLOBALS['test']['sniccowp_listeners'][$event][$key],
             "The response from the listener with key [$key] was [$actual]. Expected: [$expected]."
         );
     }
     
     private function assertListenerNotRun($event, string $key)
     {
-        if (isset($GLOBALS['test']['listeners'][$event])) {
+        if (isset($GLOBALS['test']['sniccowp_listeners'][$event])) {
             Assert::assertArrayNotHasKey(
                 $key,
-                $GLOBALS['test']['listeners'][$event],
+                $GLOBALS['test']['sniccowp_listeners'][$event],
                 "The listener with key [$key] was run."
             );
         }
@@ -54,7 +54,7 @@ trait AssertListenerResponse
     
     private function resetListenersResponses()
     {
-        $GLOBALS['test']['listeners'] = [];
+        $GLOBALS['test']['sniccowp_listeners'] = [];
     }
     
 }
