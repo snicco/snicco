@@ -13,6 +13,13 @@ use RuntimeException;
 final class MappedEventCreationException extends RuntimeException
 {
     
+    /**
+     * @param  array  $wordpress_hook_arguments
+     * @param  string  $event_class
+     * @param  Throwable  $previous
+     *
+     * @return static
+     */
     public static function becauseTheEventCouldNotBeConstructorWithArgs(array $wordpress_hook_arguments, string $event_class, Throwable $previous) :self
     {
         $args = json_encode($wordpress_hook_arguments);

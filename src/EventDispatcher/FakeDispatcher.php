@@ -15,6 +15,9 @@ use Snicco\EventDispatcher\Implementations\GenericEventParser;
 use function Snicco\EventDispatcher\functions\getTypeHintedEventFromClosure;
 use function Snicco\EventDispatcher\functions\wildcardPatternMatchesEventName;
 
+/**
+ * @api
+ */
 final class FakeDispatcher implements Dispatcher
 {
     
@@ -25,11 +28,17 @@ final class FakeDispatcher implements Dispatcher
      */
     private array $events_to_fake = [];
     
+    /**
+     * The dispatched event objects keyed by name.
+     *
+     * @var array<string,array<Event>>
+     */
     private array $dispatched_events = [];
     
     private bool $fake_all = false;
     
-    private array       $dont_fake = [];
+    private array $dont_fake = [];
+    
     private EventParser $event_parser;
     
     public function __construct(Dispatcher $dispatcher, ?EventParser $event_parser = null)
@@ -45,7 +54,7 @@ final class FakeDispatcher implements Dispatcher
     
     public function dispatch($event, ...$payload) :Event
     {
-        $_event = $this->event_parser->transformEventNameAndPayload(
+        $_event = $this->event_parser->transformToEvent(
             $event,
             $payload
         );
@@ -55,7 +64,7 @@ final class FakeDispatcher implements Dispatcher
         }
         
         $this->dispatched_events[$_event->getName()][] = [$_event];
-        // Make sure to pass the arguments unchanged to the dispatcher.
+        // Make sure to pass the arguments unchanged to the dispatcher we are adapting.
         return $this->dispatcher->dispatch($event, ...$payload);
     }
     
@@ -201,7 +210,9 @@ final class FakeDispatcher implements Dispatcher
         
         foreach ($this->dispatched_events[$event_name] ?? [] as $events) {
             foreach ($events as $event) {
-                if (call_user_func($callback_condition, $event, $event_name) === true) {
+                $listener = new Listener($callback_condition);
+                
+                if ($listener->call($event) === true) {
                     $passed[] = $event;
                 }
             }

@@ -2,22 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Snicco\EventDispatcher;
+namespace Snicco\EventDispatcher\Implementations;
 
 use Snicco\EventDispatcher\Contracts\Event;
-use Snicco\EventDispatcher\Contracts\CustomizablePayload;
+use Snicco\EventDispatcher\Contracts\EventSharing;
 
 /**
  * If you dispatch an event as a string instead of using a dedicated class
  * the event will be transformed into a GenericEvent.
  * Assuming you would call $dispatcher->dispatch('foo_event', 'bar', ['baz', 'biz]'):
  * A listener would receive the three arguments in this order. ('bar', ['baz','biz'], 'foo_event').
+ * Events you dispatch as a strings ARE NOT MUTABLE by default and thus can not be filtered.
+ * They can only be used as an action. You can customize this behaviour by passing
+ * a different implementation of "EventSharing" into the dispatcher.
  *
- * @note Events you dispatch as a string ARE NOT MUTABLE and thus can not be filtered.
- * They can only be used as an action.
+ * @see EventSharing
+ * @see GenericEventParser::transformToEvent()
  * @api
  */
-final class GenericEvent implements Event, CustomizablePayload
+final class GenericEvent implements Event
 {
     
     private array  $arguments;
@@ -29,7 +32,7 @@ final class GenericEvent implements Event, CustomizablePayload
         $this->name = $name;
     }
     
-    public function payload() :array
+    public function getPayload() :array
     {
         return $this->arguments;
     }

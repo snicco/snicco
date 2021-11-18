@@ -12,6 +12,12 @@ use LogicException;
 final class UnremovableListenerException extends LogicException
 {
     
+    /**
+     * @param  string  $listener_class
+     * @param  string  $event_name
+     *
+     * @return static
+     */
     public static function becauseTheDeveloperTriedToRemove(string $listener_class, string $event_name) :self
     {
         return new UnremovableListenerException(

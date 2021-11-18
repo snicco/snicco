@@ -7,9 +7,21 @@ namespace Snicco\EventDispatcher\Exceptions;
 use Throwable;
 use RuntimeException;
 
+/**
+ * @api
+ */
 final class ListenerCreationException extends RuntimeException
 {
     
+    /**
+     * @internal
+     *
+     * @param  string  $event_name
+     * @param  Throwable  $previous
+     * @param  array  $listener
+     *
+     * @return MappedEventCreationException
+     */
     public static function becauseTheListenerWasNotInstantiatable(array $listener, string $event_name, Throwable $previous) :MappedEventCreationException
     {
         $message =

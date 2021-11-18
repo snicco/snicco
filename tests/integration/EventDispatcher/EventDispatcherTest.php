@@ -7,10 +7,11 @@ namespace Tests\integration\EventDispatcher;
 use stdClass;
 use InvalidArgumentException;
 use Codeception\TestCase\WPTestCase;
+use Snicco\EventDispatcher\ClassAsName;
 use Snicco\EventDispatcher\ImmutableEvent;
+use Snicco\EventDispatcher\ClassAsPayload;
 use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\EventDispatcher;
-use Snicco\EventDispatcher\IsClassNameEvent;
 use Snicco\EventDispatcher\Contracts\Mutable;
 use Snicco\Application\IlluminateContainerAdapter;
 use Snicco\EventDispatcher\Contracts\IsForbiddenToWordPress;
@@ -512,6 +513,20 @@ class EventDispatcherTest extends WPTestCase
         $this->getDispatcher()->dispatch(new stdClass(), []);
     }
     
+    /** @test */
+    public function an_event_can_be_dispatched_with_a_custom_name()
+    {
+        $dispatcher = $this->getDispatcher();
+        
+        $dispatcher->listen('my_plugin_user_created', function (UserCreated $event) {
+            $this->respondedToEvent($event->getName(), 'closure1', $event->user_name);
+        });
+        
+        $dispatcher->dispatch(new UserCreated('calvin'));
+        
+        $this->assertListenerRun('my_plugin_user_created', 'closure1', 'calvin');
+    }
+    
     private function getDispatcher($container = null) :EventDispatcher
     {
         return new EventDispatcher(
@@ -521,10 +536,30 @@ class EventDispatcherTest extends WPTestCase
     
 }
 
+class UserCreated implements Event
+{
+    
+    use ClassAsPayload;
+    
+    public $user_name;
+    
+    public function __construct($user_name)
+    {
+        $this->user_name = $user_name;
+    }
+    
+    public function getName() :string
+    {
+        return 'my_plugin_user_created';
+    }
+    
+}
+
 class GreaterThenThree implements Event, DispatchesConditionally
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     public int $val;
     
@@ -543,7 +578,8 @@ class GreaterThenThree implements Event, DispatchesConditionally
 class FooEvent implements Event
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     public $val;
     
@@ -557,7 +593,8 @@ class FooEvent implements Event
 class MutableEvent implements Event, Mutable
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     public $val;
     
@@ -571,7 +608,8 @@ class MutableEvent implements Event, Mutable
 class FilterableEvent implements Mutable, Event
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     public $val;
     
@@ -585,7 +623,8 @@ class FilterableEvent implements Mutable, Event
 class ActionEvent implements Event
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     public $foo;
     public $bar;
@@ -603,7 +642,8 @@ class ActionEvent implements Event
 class ForbiddenToWordPressEvent implements Event, Mutable, IsForbiddenToWordPress
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     public $val;
     
@@ -663,7 +703,8 @@ class InvokableListener
 class LogEvent1 implements LoggableEvent
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     private $message;
     
@@ -682,7 +723,8 @@ class LogEvent1 implements LoggableEvent
 class LogEvent2 implements LoggableEvent
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     private $message;
     
@@ -708,7 +750,8 @@ abstract class AbstractLogin implements Event
 class PasswordLogin extends AbstractLogin
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     public function message()
     {

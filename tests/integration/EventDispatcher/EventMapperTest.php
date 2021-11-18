@@ -7,9 +7,10 @@ namespace Tests\integration\EventDispatcher;
 use LogicException;
 use Codeception\TestCase\WPTestCase;
 use Snicco\EventDispatcher\EventMapper;
+use Snicco\EventDispatcher\ClassAsName;
+use Snicco\EventDispatcher\ClassAsPayload;
 use Snicco\EventDispatcher\EventDispatcher;
 use Snicco\EventDispatcher\Contracts\Event;
-use Snicco\EventDispatcher\IsClassNameEvent;
 use Snicco\EventDispatcher\Contracts\MappedFilter;
 use Snicco\EventDispatcher\Contracts\MappedAction;
 use Snicco\EventDispatcher\Implementations\ParameterBasedListenerFactory;
@@ -450,13 +451,15 @@ class EventMapperTest extends WPTestCase
 class NormalEvent implements Event
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
 }
 
 class EventFilterWithNoArgs implements MappedFilter
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     public $filterable_value;
     
@@ -475,7 +478,8 @@ class EventFilterWithNoArgs implements MappedFilter
 class EventFilter1 implements MappedFilter
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     public $foo;
     public $bar;
@@ -496,7 +500,8 @@ class EventFilter1 implements MappedFilter
 class EventFilter2 implements MappedFilter
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     public $foo;
     public $bar;
@@ -517,7 +522,8 @@ class EventFilter2 implements MappedFilter
 class EmptyActionEvent implements MappedAction
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     public $value = 'foo';
     
@@ -526,7 +532,8 @@ class EmptyActionEvent implements MappedAction
 class EmptyActionEvent2 implements MappedAction
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     public $value = 'bar';
     
@@ -535,7 +542,8 @@ class EmptyActionEvent2 implements MappedAction
 class FooActionEvent implements MappedAction
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     private $foo;
     private $bar;
@@ -558,7 +566,8 @@ class FooActionEvent implements MappedAction
 class ActionWithArrayArguments implements MappedAction
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     public string $message;
     

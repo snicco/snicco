@@ -6,9 +6,10 @@ namespace Tests\integration\EventDispatcher;
 
 use Tests\UnitTest;
 use BadMethodCallException;
+use Snicco\EventDispatcher\ClassAsName;
+use Snicco\EventDispatcher\ClassAsPayload;
 use Snicco\EventDispatcher\ImmutableEvent;
 use Snicco\EventDispatcher\Contracts\Event;
-use Snicco\EventDispatcher\IsClassNameEvent;
 
 class ImmutableEventTest extends UnitTest
 {
@@ -89,7 +90,8 @@ class ImmutableEventTest extends UnitTest
 class ProxiedEvent implements Event
 {
     
-    use IsClassNameEvent;
+    use ClassAsName;
+    use ClassAsPayload;
     
     public  $foo;
     private $bar;

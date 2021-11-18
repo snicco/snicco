@@ -15,7 +15,6 @@ use Snicco\EventDispatcher\Contracts\EventParser;
 use Snicco\EventDispatcher\Contracts\EventSharing;
 use Snicco\EventDispatcher\Contracts\ObjectCopier;
 use Snicco\EventDispatcher\Contracts\ListenerFactory;
-use Snicco\EventDispatcher\Contracts\CustomizablePayload;
 use Snicco\EventDispatcher\Contracts\IsForbiddenToWordPress;
 use Snicco\EventDispatcher\Contracts\DispatchesConditionally;
 use Snicco\EventDispatcher\Implementations\NativeObjetCopier;
@@ -168,7 +167,7 @@ final class EventDispatcher implements Dispatcher
             );
         }
         
-        $event = $this->event_parser->transformEventNameAndPayload(
+        $event = $this->event_parser->transformToEvent(
             $event,
             $payload
         );

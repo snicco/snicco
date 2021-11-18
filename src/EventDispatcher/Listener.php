@@ -6,7 +6,6 @@ namespace Snicco\EventDispatcher;
 
 use Closure;
 use Snicco\EventDispatcher\Contracts\Event;
-use Snicco\EventDispatcher\Contracts\CustomizablePayload;
 
 /**
  * @internal
@@ -26,11 +25,15 @@ final class Listener
     
     public function call(Event $event)
     {
-        $payload = $event instanceof CustomizablePayload ? $event->payload() : [$event];
+        $payload = $event->getPayload();
+        
+        $__payload = is_array($payload) ? $payload : [$payload];
+        
+        $__payload[] = $event->getName();
         
         return call_user_func_array(
             $this->listener,
-            array_merge($payload, [$event->getName()])
+            $__payload
         );
     }
     

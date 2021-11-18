@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\EventDispatcher\Contracts;
 
+use Snicco\EventDispatcher\Implementations\GenericEventParser;
+
 /**
  * @api
  */
@@ -15,7 +17,8 @@ interface EventParser
      * @param  array  $payload
      *
      * @return Event
+     * @see GenericEventParser::transformToEvent()
      */
-    public function transformEventNameAndPayload($event, array $payload) :Event;
+    public function transformToEvent($event, array $payload) :Event;
     
 }

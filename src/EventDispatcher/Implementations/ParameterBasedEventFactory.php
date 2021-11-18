@@ -9,6 +9,9 @@ use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\MappedEventFactory;
 use Snicco\EventDispatcher\Exceptions\MappedEventCreationException;
 
+/**
+ * @internal
+ */
 final class ParameterBasedEventFactory implements MappedEventFactory
 {
     
