@@ -25,6 +25,10 @@ final class FakeDispatcher implements Dispatcher
     
     private array $dispatched_events = [];
     
+    private bool $fake_all = false;
+    
+    private array $dont_fake = [];
+    
     public function __construct(EventDispatcher $dispatcher)
     {
         $this->dispatcher = $dispatcher;
@@ -56,11 +60,34 @@ final class FakeDispatcher implements Dispatcher
     /**
      * @param  string|string[]  $event_names
      */
-    public function fake($event_names)
+    public function fake($event_names = [])
     {
         $event_names = is_array($event_names) ? $event_names : [$event_names];
         
+        if (empty($event_names)) {
+            $this->fakeAll();
+        }
+        
         $this->events_to_fake = array_merge($this->events_to_fake, $event_names);
+    }
+    
+    /**
+     * @param  string|string[]  $event_names
+     */
+    public function fakeExcept($event_names = [])
+    {
+        $event_names = is_array($event_names) ? $event_names : [$event_names];
+        
+        if (empty($event_names)) {
+            $this->fakeAll();
+        }
+        
+        $this->dont_fake = array_merge($this->dont_fake, $event_names);
+    }
+    
+    public function fakeAll()
+    {
+        $this->fake_all = true;
     }
     
     public function assertNotingDispatched()
@@ -137,6 +164,14 @@ final class FakeDispatcher implements Dispatcher
     
     private function shouldFakeEvent(string $event_name) :bool
     {
+        if ($this->fake_all) {
+            return true;
+        }
+        
+        if (count($this->dont_fake)) {
+            return ! in_array($event_name, $this->dont_fake, true);
+        }
+        
         $event_name = $this->getEventName($event_name);
         
         if (in_array($event_name, $this->events_to_fake, true)) {
@@ -166,10 +201,7 @@ final class FakeDispatcher implements Dispatcher
         
         foreach ($this->dispatched_events[$event_name] ?? [] as $events) {
             foreach ($events as $event) {
-                $payload = $event instanceof GenericEvent ? $event->payload() : [$event];
-                
-                if (call_user_func_array($callback_condition, array_merge($payload, [$event_name]))
-                    === true) {
+                if (call_user_func($callback_condition, $event, $event_name) === true) {
                     $passed[] = $event;
                 }
             }
