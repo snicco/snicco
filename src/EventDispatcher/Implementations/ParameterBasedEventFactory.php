@@ -7,7 +7,7 @@ namespace Snicco\EventDispatcher\Implementations;
 use Throwable;
 use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\MappedEventFactory;
-use Snicco\EventDispatcher\MappedEventCreationException;
+use Snicco\EventDispatcher\Exceptions\MappedEventCreationException;
 
 final class ParameterBasedEventFactory implements MappedEventFactory
 {

@@ -24,11 +24,13 @@ final class Listener
         $this->listener = $listener;
     }
     
-    public function call(Event $event)
+    public function call(Event $event, string $event_name)
     {
+        $payload = $event instanceof CustomizablePayload ? $event->payload() : [$event];
+        
         return call_user_func_array(
             $this->listener,
-            $event instanceof CustomizablePayload ? $event->payload() : [$event]
+            array_merge($payload, [$event_name])
         );
     }
     

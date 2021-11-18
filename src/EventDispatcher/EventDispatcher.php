@@ -16,6 +16,8 @@ use Snicco\EventDispatcher\Contracts\CustomizablePayload;
 use Snicco\EventDispatcher\Contracts\IsForbiddenToWordPress;
 use Snicco\EventDispatcher\Contracts\DispatchesConditionally;
 use Snicco\EventDispatcher\Implementations\NativeObjetCopier;
+use Snicco\EventDispatcher\Exceptions\InvalidListenerException;
+use Snicco\EventDispatcher\Exceptions\UnremovableListenerException;
 
 use function has_filter;
 use function apply_filters;
@@ -154,7 +156,7 @@ final class EventDispatcher
         }
         
         if ($event instanceof Mutable) {
-            // Don't return the returned value of apply_filters() since third party devs return something completely wrong.
+            // Don't return the returned value of apply_filters() since third party devs might return something completely wrong.
             apply_filters($event_name, $event);
         }
         else {
@@ -229,7 +231,7 @@ final class EventDispatcher
     
     private function callListener($listener, Event $event, string $event_name)
     {
-        return $this->listener_factory->create($listener, $event_name)->call($event);
+        return $this->listener_factory->create($listener, $event_name)->call($event, $event_name);
     }
     
     private function getPayloadForCurrentIteration(Event $payload) :Event
@@ -244,9 +246,12 @@ final class EventDispatcher
     
     private function registerWildcardListener(string $event_name, $listener)
     {
-        $this->wildcards[$event_name][] = function (...$payload) use ($event_name, $listener) {
-            return call_user_func_array($listener, array_merge([$event_name], $payload));
+        $this->wildcards[$event_name][] = function (...$payload) use ($listener) {
+            $last = array_pop($payload);
+            array_unshift($payload, $last);
+            return call_user_func_array($listener, $payload);
         };
+        
         unset($this->wildcards_cache[$event_name]);
     }
     

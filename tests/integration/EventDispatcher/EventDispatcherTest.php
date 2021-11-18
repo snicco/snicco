@@ -11,10 +11,10 @@ use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\EventDispatcher;
 use Snicco\EventDispatcher\Contracts\Mutable;
 use Snicco\Application\IlluminateContainerAdapter;
-use Snicco\EventDispatcher\InvalidListenerException;
-use Snicco\EventDispatcher\UnremovableListenerException;
 use Snicco\EventDispatcher\Contracts\IsForbiddenToWordPress;
 use Snicco\EventDispatcher\Contracts\DispatchesConditionally;
+use Snicco\EventDispatcher\Exceptions\InvalidListenerException;
+use Snicco\EventDispatcher\Exceptions\UnremovableListenerException;
 use Snicco\EventDispatcher\Implementations\ParameterBasedListenerFactory;
 
 interface LoggableEvent extends Event
@@ -91,7 +91,7 @@ class EventDispatcherTest extends WPTestCase
             $this->respondedToEvent('foo_event', 'closure1', $foo.$bar);
         });
         
-        $dispatcher->dispatch('foo_event', ['FOO', 'BAR']);
+        $dispatcher->dispatch('foo_event', 'FOO', 'BAR');
         
         $this->assertListenerRun('foo_event', 'closure1', 'FOOBAR');
     }
@@ -179,7 +179,7 @@ class EventDispatcherTest extends WPTestCase
         
         $dispatcher->listen('foo_event', InvokableListener::class);
         
-        $dispatcher->dispatch('foo_event', ['foo', 'bar']);
+        $dispatcher->dispatch('foo_event', 'foo', 'bar');
         
         $this->assertListenerRun('foo_event', InvokableListener::class, 'foobar');
     }
@@ -478,7 +478,7 @@ class EventDispatcherTest extends WPTestCase
     }
     
     /** @test */
-    public function a_wildcard_listener_can_be_created()
+    public function a_wildcard_listener_can_be_created_and_receive_the_event_name_as_the_first_parameter()
     {
         $dispatcher = $this->getDispatcher();
         
