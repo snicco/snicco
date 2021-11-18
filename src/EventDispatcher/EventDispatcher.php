@@ -12,6 +12,7 @@ use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\Mutable;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\EventDispatcher\Contracts\EventParser;
+use Snicco\EventDispatcher\Contracts\EventSharing;
 use Snicco\EventDispatcher\Contracts\ObjectCopier;
 use Snicco\EventDispatcher\Contracts\ListenerFactory;
 use Snicco\EventDispatcher\Contracts\CustomizablePayload;
@@ -19,11 +20,11 @@ use Snicco\EventDispatcher\Contracts\IsForbiddenToWordPress;
 use Snicco\EventDispatcher\Contracts\DispatchesConditionally;
 use Snicco\EventDispatcher\Implementations\NativeObjetCopier;
 use Snicco\EventDispatcher\Implementations\GenericEventParser;
+use Snicco\EventDispatcher\Implementations\ShareWithWordPress;
 use Snicco\EventDispatcher\Exceptions\InvalidListenerException;
 use Snicco\EventDispatcher\Exceptions\UnremovableListenerException;
+use Snicco\EventDispatcher\Implementations\ParameterBasedListenerFactory;
 
-use function has_filter;
-use function apply_filters;
 use function Snicco\EventDispatcher\functions\validatedListener;
 use function Snicco\EventDispatcher\functions\isWildCardEventListener;
 use function Snicco\EventDispatcher\functions\getTypeHintedEventFromClosure;
@@ -75,6 +76,10 @@ final class EventDispatcher implements Dispatcher
      */
     private ObjectCopier $object_copier;
     
+    private EventParser $event_parser;
+    
+    private EventSharing $event_sharing;
+    
     /**
      * Cache of the matching listeners keyed by event name. Used so that we don't have to match
      * again if a wildcard event were to be dispatched a second time.
@@ -89,22 +94,24 @@ final class EventDispatcher implements Dispatcher
      *
      * @var array<string,array<Closure>>
      */
-    private array        $wildcard_listeners = [];
-    private ?EventParser $event_parser;
+    private array $wildcard_listeners = [];
     
     /**
-     * @param  ListenerFactory  $listener_factory
+     * @param  ListenerFactory|null  $listener_factory
+     * @param  EventParser|null  $event_parser
+     * @param  EventSharing|null  $event_sharing
      * @param  ObjectCopier|null  $object_copier
      */
     public function __construct(
-        ListenerFactory $listener_factory,
+        ?ListenerFactory $listener_factory = null,
         ?EventParser $event_parser = null,
+        ?EventSharing $event_sharing = null,
         ?ObjectCopier $object_copier = null
-    )
-    {
-        $this->listener_factory = $listener_factory;
+    ) {
+        $this->listener_factory = $listener_factory ?? new ParameterBasedListenerFactory();
         $this->event_parser = $event_parser ?? new GenericEventParser();
         $this->object_copier = $object_copier ?? new NativeObjetCopier();
+        $this->event_sharing = $event_sharing ?? new ShareWithWordPress();
     }
     
     /**
@@ -155,7 +162,13 @@ final class EventDispatcher implements Dispatcher
      */
     public function dispatch($event, ...$payload) :Event
     {
-        [$event_name, $event] = $this->event_parser->transformEventNameAndPayload(
+        if ( ! is_string($event) && ! $event instanceof Event) {
+            throw new InvalidArgumentException(
+                "A dispatched event has to be a string or an instance of [".Event::class."]."
+            );
+        }
+        
+        $event = $this->event_parser->transformEventNameAndPayload(
             $event,
             $payload
         );
@@ -164,33 +177,15 @@ final class EventDispatcher implements Dispatcher
             return $event;
         }
         
-        foreach ($this->getListenersForEvent($event_name) as $listener) {
+        foreach ($this->getListenersForEvent($event->getName()) as $listener) {
             $this->callListener(
                 $listener,
                 $this->getPayloadForCurrentIteration($event),
-                $event_name
             );
         }
         
-        if ($event instanceof IsForbiddenToWordPress) {
-            return $event;
-        }
+        $this->event_sharing->share($event);
         
-        if ( ! has_filter($event_name)) {
-            return $event;
-        }
-        
-        if ($event instanceof Mutable) {
-            // Don't return the returned value of apply_filters() since third party devs might return something completely wrong.
-            // Since our event is mutable it is passed by reference here. Developers can manipulate the event object directly
-            // within our defined constraints.
-            apply_filters($event_name, $event);
-        }
-        else {
-            // Make an immutable copy of the event. Developers can interact with this event object the same
-            // way as with the original event expect that public properties are read only.
-            do_action($event_name, new ImmutableEvent($event));
-        }
         return $event;
     }
     
@@ -249,10 +244,10 @@ final class EventDispatcher implements Dispatcher
         return array_merge($listeners, $this->getListenersForEvent($parent));
     }
     
-    private function callListener($listener, Event $event, string $event_name) :void
+    private function callListener($listener, Event $event) :void
     {
-        $this->listener_factory->create($listener, $event_name)
-                               ->call($event, $event_name);
+        $this->listener_factory->create($listener, $event)
+                               ->call($event);
     }
     
     private function getPayloadForCurrentIteration(Event $payload) :Event

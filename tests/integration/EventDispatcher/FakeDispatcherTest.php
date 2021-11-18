@@ -10,6 +10,7 @@ use Snicco\EventDispatcher\GenericEvent;
 use Snicco\EventDispatcher\FakeDispatcher;
 use Snicco\EventDispatcher\EventDispatcher;
 use Snicco\EventDispatcher\Contracts\Event;
+use Snicco\EventDispatcher\IsClassNameEvent;
 use PHPUnit\Framework\ExpectationFailedException;
 use Snicco\EventDispatcher\Implementations\ParameterBasedListenerFactory;
 
@@ -519,6 +520,8 @@ final class FakeDispatcherTest extends WPTestCase
 
 class EventStub implements Event
 {
+    
+    use IsClassNameEvent;
     
     public $val1;
     public $val2;

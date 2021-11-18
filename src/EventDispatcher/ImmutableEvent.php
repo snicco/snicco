@@ -16,6 +16,8 @@ use Snicco\EventDispatcher\Contracts\Event;
 final class ImmutableEvent implements Event
 {
     
+    use IsClassNameEvent;
+    
     private Event $event;
     
     private array  $properties = [];

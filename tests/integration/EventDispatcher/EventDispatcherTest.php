@@ -5,10 +5,12 @@ declare(strict_types=1);
 namespace Tests\integration\EventDispatcher;
 
 use stdClass;
+use InvalidArgumentException;
 use Codeception\TestCase\WPTestCase;
 use Snicco\EventDispatcher\ImmutableEvent;
 use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\EventDispatcher;
+use Snicco\EventDispatcher\IsClassNameEvent;
 use Snicco\EventDispatcher\Contracts\Mutable;
 use Snicco\Application\IlluminateContainerAdapter;
 use Snicco\EventDispatcher\Contracts\IsForbiddenToWordPress;
@@ -499,6 +501,17 @@ class EventDispatcherTest extends WPTestCase
         $this->assertListenerRun('user.deleted', 'closure1', 5678);
     }
     
+    /** @test */
+    public function test_invalid_argument_for_dispatching()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            'A dispatched event has to be a string or an instance of [Snicco\EventDispatcher\Contracts\Event].'
+        );
+        
+        $this->getDispatcher()->dispatch(new stdClass(), []);
+    }
+    
     private function getDispatcher($container = null) :EventDispatcher
     {
         return new EventDispatcher(
@@ -510,6 +523,8 @@ class EventDispatcherTest extends WPTestCase
 
 class GreaterThenThree implements Event, DispatchesConditionally
 {
+    
+    use IsClassNameEvent;
     
     public int $val;
     
@@ -528,6 +543,8 @@ class GreaterThenThree implements Event, DispatchesConditionally
 class FooEvent implements Event
 {
     
+    use IsClassNameEvent;
+    
     public $val;
     
     public function __construct($val)
@@ -539,6 +556,8 @@ class FooEvent implements Event
 
 class MutableEvent implements Event, Mutable
 {
+    
+    use IsClassNameEvent;
     
     public $val;
     
@@ -552,6 +571,8 @@ class MutableEvent implements Event, Mutable
 class FilterableEvent implements Mutable, Event
 {
     
+    use IsClassNameEvent;
+    
     public $val;
     
     public function __construct($val)
@@ -563,6 +584,8 @@ class FilterableEvent implements Mutable, Event
 
 class ActionEvent implements Event
 {
+    
+    use IsClassNameEvent;
     
     public $foo;
     public $bar;
@@ -579,6 +602,8 @@ class ActionEvent implements Event
 
 class ForbiddenToWordPressEvent implements Event, Mutable, IsForbiddenToWordPress
 {
+    
+    use IsClassNameEvent;
     
     public $val;
     
@@ -638,6 +663,8 @@ class InvokableListener
 class LogEvent1 implements LoggableEvent
 {
     
+    use IsClassNameEvent;
+    
     private $message;
     
     public function __construct($message)
@@ -654,6 +681,8 @@ class LogEvent1 implements LoggableEvent
 
 class LogEvent2 implements LoggableEvent
 {
+    
+    use IsClassNameEvent;
     
     private $message;
     
@@ -678,6 +707,8 @@ abstract class AbstractLogin implements Event
 
 class PasswordLogin extends AbstractLogin
 {
+    
+    use IsClassNameEvent;
     
     public function message()
     {

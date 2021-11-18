@@ -9,6 +9,7 @@ use Codeception\TestCase\WPTestCase;
 use Snicco\EventDispatcher\EventMapper;
 use Snicco\EventDispatcher\EventDispatcher;
 use Snicco\EventDispatcher\Contracts\Event;
+use Snicco\EventDispatcher\IsClassNameEvent;
 use Snicco\EventDispatcher\Contracts\MappedFilter;
 use Snicco\EventDispatcher\Contracts\MappedAction;
 use Snicco\EventDispatcher\Implementations\ParameterBasedListenerFactory;
@@ -448,11 +449,14 @@ class EventMapperTest extends WPTestCase
 
 class NormalEvent implements Event
 {
-
+    
+    use IsClassNameEvent;
 }
 
 class EventFilterWithNoArgs implements MappedFilter
 {
+    
+    use IsClassNameEvent;
     
     public $filterable_value;
     
@@ -470,6 +474,8 @@ class EventFilterWithNoArgs implements MappedFilter
 
 class EventFilter1 implements MappedFilter
 {
+    
+    use IsClassNameEvent;
     
     public $foo;
     public $bar;
@@ -490,6 +496,8 @@ class EventFilter1 implements MappedFilter
 class EventFilter2 implements MappedFilter
 {
     
+    use IsClassNameEvent;
+    
     public $foo;
     public $bar;
     
@@ -509,6 +517,8 @@ class EventFilter2 implements MappedFilter
 class EmptyActionEvent implements MappedAction
 {
     
+    use IsClassNameEvent;
+    
     public $value = 'foo';
     
 }
@@ -516,12 +526,16 @@ class EmptyActionEvent implements MappedAction
 class EmptyActionEvent2 implements MappedAction
 {
     
+    use IsClassNameEvent;
+    
     public $value = 'bar';
     
 }
 
 class FooActionEvent implements MappedAction
 {
+    
+    use IsClassNameEvent;
     
     private $foo;
     private $bar;
@@ -543,6 +557,8 @@ class FooActionEvent implements MappedAction
 
 class ActionWithArrayArguments implements MappedAction
 {
+    
+    use IsClassNameEvent;
     
     public string $message;
     

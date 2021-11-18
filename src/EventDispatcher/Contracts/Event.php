@@ -11,4 +11,6 @@ namespace Snicco\EventDispatcher\Contracts;
 interface Event
 {
     
+    public function getName() :string;
+    
 }

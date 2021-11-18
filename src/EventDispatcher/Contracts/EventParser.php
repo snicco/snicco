@@ -14,8 +14,8 @@ interface EventParser
      * @param  string|Event  $event
      * @param  array  $payload
      *
-     * @return array<string,Event>
+     * @return Event
      */
-    public function transformEventNameAndPayload($event, array $payload) :array;
+    public function transformEventNameAndPayload($event, array $payload) :Event;
     
 }

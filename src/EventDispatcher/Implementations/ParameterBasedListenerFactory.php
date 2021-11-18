@@ -7,6 +7,7 @@ namespace Snicco\EventDispatcher\Implementations;
 use Closure;
 use Throwable;
 use Snicco\EventDispatcher\Listener;
+use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\ListenerFactory;
 use Snicco\EventDispatcher\Exceptions\ListenerCreationException;
 
@@ -16,13 +17,7 @@ use Snicco\EventDispatcher\Exceptions\ListenerCreationException;
 final class ParameterBasedListenerFactory implements ListenerFactory
 {
     
-    /**
-     * @param  Closure|string[]  $listener
-     * @param  string  $event_name
-     *
-     * @return Listener
-     */
-    public function create($listener, string $event_name) :Listener
+    public function create($listener, Event $event) :Listener
     {
         if ($listener instanceof Closure) {
             return new Listener($listener);
@@ -32,7 +27,7 @@ final class ParameterBasedListenerFactory implements ListenerFactory
         } catch (Throwable $e) {
             throw ListenerCreationException::becauseTheListenerWasNotInstantiatable(
                 $listener,
-                $event_name,
+                $event->getName(),
                 $e
             );
         }
