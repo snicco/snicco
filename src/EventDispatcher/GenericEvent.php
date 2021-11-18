@@ -20,16 +20,23 @@ use Snicco\EventDispatcher\Contracts\CustomizablePayload;
 final class GenericEvent implements Event, CustomizablePayload
 {
     
-    private array $arguments;
+    private array  $arguments;
+    private string $name;
     
-    public function __construct(array $arguments)
+    public function __construct(string $name, array $arguments)
     {
         $this->arguments = $arguments;
+        $this->name = $name;
     }
     
     public function payload() :array
     {
         return $this->arguments;
+    }
+    
+    public function getName() :string
+    {
+        return $this->name;
     }
     
 }

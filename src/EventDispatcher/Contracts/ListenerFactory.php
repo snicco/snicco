@@ -18,11 +18,11 @@ interface ListenerFactory
      * Create a listener and inject constructor dependencies if the listener is a class.
      *
      * @param  Closure|array<string,string>  $listener
-     * @param  string  $event_name
+     * @param  Event  $event  The event that is being dispatched.
      *
      * @return Listener
      * @throws ListenerCreationException
      */
-    public function create($listener, string $event_name) :Listener;
+    public function create($listener, Event $event) :Listener;
     
 }

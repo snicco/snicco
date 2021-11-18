@@ -45,16 +45,16 @@ final class FakeDispatcher implements Dispatcher
     
     public function dispatch($event, ...$payload) :Event
     {
-        [$_event_name, $_event] = $this->event_parser->transformEventNameAndPayload(
+        $_event = $this->event_parser->transformEventNameAndPayload(
             $event,
             $payload
         );
         
-        if ($this->shouldFakeEvent($_event_name)) {
+        if ($this->shouldFakeEvent($_event->getName())) {
             return $_event;
         }
         
-        $this->dispatched_events[$this->getEventName($_event_name)][] = [$_event];
+        $this->dispatched_events[$_event->getName()][] = [$_event];
         // Make sure to pass the arguments unchanged to the dispatcher.
         return $this->dispatcher->dispatch($event, ...$payload);
     }
@@ -179,8 +179,6 @@ final class FakeDispatcher implements Dispatcher
             return ! in_array($event_name, $this->dont_fake, true);
         }
         
-        $event_name = $this->getEventName($event_name);
-        
         if (in_array($event_name, $this->events_to_fake, true)) {
             return true;
         }
@@ -193,11 +191,6 @@ final class FakeDispatcher implements Dispatcher
         }
         
         return false;
-    }
-    
-    private function getEventName($event) :string
-    {
-        return is_string($event) ? $event : get_class($event);
     }
     
     private function getDispatched(string $event_name, Closure $callback_condition = null) :array

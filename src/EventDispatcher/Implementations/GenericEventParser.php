@@ -11,13 +11,13 @@ use Snicco\EventDispatcher\Contracts\EventParser;
 final class GenericEventParser implements EventParser
 {
     
-    public function transformEventNameAndPayload($event, array $payload) :array
+    public function transformEventNameAndPayload($event, array $payload) :Event
     {
         if ($event instanceof Event) {
-            return [get_class($event), $event];
+            return $event;
         }
         
-        return [$event, new GenericEvent($payload)];
+        return new GenericEvent($event, $payload);
     }
     
 }
