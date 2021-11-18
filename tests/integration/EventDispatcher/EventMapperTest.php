@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\integration\EventDispatcher;
 
+use LogicException;
 use Codeception\TestCase\WPTestCase;
 use Snicco\EventDispatcher\EventMapper;
 use Snicco\EventDispatcher\EventDispatcher;
 use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\MappedFilter;
-use Snicco\Application\IlluminateContainerAdapter;
 use Snicco\EventDispatcher\Contracts\MappedAction;
 use Snicco\EventDispatcher\Implementations\ParameterBasedListenerFactory;
 
@@ -25,7 +25,7 @@ class EventMapperTest extends WPTestCase
     {
         parent::setUp();
         $this->dispatcher = new EventDispatcher(
-            new ParameterBasedListenerFactory(new IlluminateContainerAdapter())
+            new ParameterBasedListenerFactory()
         );
         $this->event_mapper = new EventMapper($this->dispatcher);
         $this->resetListenersResponses();
@@ -263,6 +263,161 @@ class EventMapperTest extends WPTestCase
         
         $this->assertSame('foo_wp_filtered_1_bar_wp_filtered_2_bar', $final_value);
     }
+    
+    /**
+     * MAP_FIRST
+     */
+    
+    /** @test */
+    public function test_map_first_if_no_other_callback_present()
+    {
+        $count = 0;
+        
+        $this->event_mapper->mapFirst('wp_hook', EmptyActionEvent::class);
+        
+        add_action('wp_hook', function () use (&$count) {
+            $count++;
+        }, PHP_INT_MIN);
+        
+        $this->dispatcher->listen(EmptyActionEvent::class, function () use (&$count) {
+            $this->assertSame(0, $count, 'Mapped Event did not run first.');
+            $count++;
+        });
+        
+        do_action('wp_hook');
+        
+        $this->assertSame(2, $count);
+    }
+    
+    /** @test */
+    public function test_map_first_if_already_present()
+    {
+        $count = 0;
+        
+        add_action('wp_hook', function () use (&$count) {
+            $count++;
+        }, 10);
+        
+        $this->event_mapper->mapFirst('wp_hook', EmptyActionEvent::class);
+        
+        $this->dispatcher->listen(EmptyActionEvent::class, function () use (&$count) {
+            $this->assertSame(0, $count, "Mapped Event did not run first.");
+            $count++;
+        });
+        
+        do_action('wp_hook');
+        
+        $this->assertSame(2, $count);
+    }
+    
+    /** @test */
+    public function test_map_first_if_registered_with_php_int_min()
+    {
+        $count = 0;
+        
+        add_action('wp_hook', function () use (&$count) {
+            $this->assertSame(1, $count);
+            $count++;
+        }, PHP_INT_MIN);
+        
+        add_action('wp_hook', function () use (&$count) {
+            $this->assertSame(2, $count);
+            $count++;
+        }, PHP_INT_MIN);
+        
+        add_action('wp_hook', function () use (&$count) {
+            $this->assertSame(3, $count);
+            $count++;
+        }, 20);
+        
+        add_action('wp_hook', function () use (&$count) {
+            $this->assertSame(4, $count);
+            $count++;
+        }, 50);
+        
+        $this->event_mapper->mapFirst('wp_hook', EmptyActionEvent::class);
+        
+        $this->dispatcher->listen(EmptyActionEvent::class, function () use (&$count) {
+            $this->assertSame(0, $count, 'Mapped Event did not run first.');
+            $count++;
+        });
+        
+        do_action('wp_hook');
+        
+        $this->assertSame(5, $count);
+    }
+    
+    /** @test */
+    public function test_exception_if_filtering_during_the_same_same_filter()
+    {
+        $this->expectException(LogicException::class);
+        $this->expectExceptionMessage(
+            "You can can't map the event [Tests\integration\EventDispatcher\EmptyActionEvent] to the hook [wp_hook] after it was fired."
+        );
+        
+        add_action('wp_hook', function () {
+            $this->event_mapper->mapFirst('wp_hook', EmptyActionEvent::class);
+        });
+        
+        do_action('wp_hook');
+    }
+    
+    /**
+     * MAP_LAST
+     */
+    
+    /** @test */
+    public function test_map_last_if_no_other_callback_present()
+    {
+        $count = 0;
+        
+        $this->event_mapper->mapLast('wp_hook', EmptyActionEvent::class);
+        
+        $this->dispatcher->listen(EmptyActionEvent::class, function () use (&$count) {
+            $count++;
+        });
+        
+        do_action('wp_hook');
+        
+        $this->assertSame(1, $count);
+    }
+    
+    /** @test */
+    public function test_ensure_last_with_callback_added_after()
+    {
+        $count = 0;
+        
+        $this->event_mapper->mapLast('wp_hook', EmptyActionEvent::class);
+        $this->dispatcher->listen(EmptyActionEvent::class, function () use (&$count) {
+            $this->assertSame(4, $count, 'Mapped Event did not run last.');
+            $count++;
+        });
+        
+        add_action('wp_hook', function () use (&$count) {
+            $this->assertSame(0, $count);
+            $count++;
+        }, 50);
+        
+        add_action('wp_hook', function () use (&$count) {
+            $this->assertSame(1, $count);
+            $count++;
+        }, 100);
+        
+        add_action('wp_hook', function () use (&$count) {
+            $this->assertSame(2, $count);
+            $count++;
+        }, 200);
+        
+        add_action('wp_hook', function () use (&$count) {
+            $this->assertSame(3, $count);
+            $count++;
+        }, PHP_INT_MAX);
+        
+        do_action('wp_hook');
+        
+        $this->assertSame(5, $count);
+    }
+    
     
     /**
      * VALIDATION

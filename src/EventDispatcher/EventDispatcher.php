@@ -22,7 +22,7 @@ use Snicco\EventDispatcher\Exceptions\UnremovableListenerException;
 
 use function has_filter;
 use function apply_filters;
-use function Snicco\EventDispatcher\functions\normalizeListener;
+use function Snicco\EventDispatcher\functions\validatedListener;
 use function Snicco\EventDispatcher\functions\isWildCardEventListener;
 use function Snicco\EventDispatcher\functions\getTypeHintedEventFromClosure;
 use function Snicco\EventDispatcher\functions\wildcardPatternMatchesEventName;
@@ -51,28 +51,43 @@ final class EventDispatcher implements Dispatcher
     private array $listeners = [];
     
     /**
-     * All listeners that are marked as unremovable for an event name
+     * All listeners that are marked as unremovable keyed by event name
      *
      * @var array<string,array>
      */
     private array $unremovable = [];
     
     /**
-     * The listener factory will be responsible for creating a matching listener.
+     * The listener factory will be responsible for instantiating a matching listener.
      *
      * @var ListenerFactory
      */
     private ListenerFactory $listener_factory;
     
     /**
-     * Used the make immutable copies of event objects.
+     * Used the make immutable copies of event objects. By default, the native "clone" function
+     * will be used. If your event objects contain public properties that are in and of themselves
+     * object you should consider using something like: https://github.com/myclabs/DeepCopy
      *
      * @var ObjectCopier
      */
     private ObjectCopier $object_copier;
     
-    private array $wildcards_cache = [];
-    private array $wildcards       = [];
+    /**
+     * Cache of the matching listeners keyed by event name. Used so that we don't have to match
+     * again if a wildcard event were to be dispatched a second time.
+     * The cache is reset everytime a new event is added.
+     *
+     * @var array<string,array>
+     */
+    private array $wildcards_listeners_cache = [];
+    
+    /**
+     * Array of the wildcard listeners keyed by the wildcard pattern.
+     *
+     * @var array<string,array<Closure>>
+     */
+    private array $wildcard_listeners = [];
     
     /**
      * @param  ListenerFactory  $listener_factory
@@ -102,7 +117,7 @@ final class EventDispatcher implements Dispatcher
             $this->listen(getTypeHintedEventFromClosure($event_name), $event_name);
             return;
         }
-        $listener = normalizeListener($listener);
+        $listener = validatedListener($listener);
         
         if (isWildCardEventListener($event_name)) {
             $this->registerWildcardListener($event_name, $listener);
@@ -110,7 +125,9 @@ final class EventDispatcher implements Dispatcher
         }
         
         if ($listener instanceof Closure) {
+            // Closure listeners can not be removed.
             $this->listeners[$event_name][] = $listener;
+            return;
         }
         else {
             $this->listeners[$event_name][$listener[0]] = $listener;
@@ -255,30 +272,32 @@ final class EventDispatcher implements Dispatcher
     
     private function registerWildcardListener(string $event_name, $listener)
     {
-        $this->wildcards[$event_name][] = function (...$payload) use ($listener) {
-            $last = array_pop($payload);
-            array_unshift($payload, $last);
+        $this->wildcard_listeners[$event_name][] = function (...$payload) use ($listener) {
+            // For wildcard listeners we want to pass the event name as the first argument.
+            $event_name = array_pop($payload);
+            array_unshift($payload, $event_name);
+            
             return call_user_func_array($listener, $payload);
         };
         
-        unset($this->wildcards_cache[$event_name]);
+        $this->wildcards_listeners_cache = [];
     }
     
-    private function getWildCardListeners(string $event_name)
+    private function getWildCardListeners(string $event_name) :array
     {
-        if (isset($this->wildcards_cache[$event_name])) {
-            return $this->wildcards_cache[$event_name] ?? [];
+        if (isset($this->wildcards_listeners_cache[$event_name])) {
+            return $this->wildcards_listeners_cache[$event_name] ?? [];
         }
         
         $wildcards = [];
         
-        foreach ($this->wildcards as $wildcard_pattern => $listeners) {
+        foreach ($this->wildcard_listeners as $wildcard_pattern => $listeners) {
             if (wildcardPatternMatchesEventName($wildcard_pattern, $event_name)) {
                 $wildcards = array_merge($wildcards, $listeners);
             }
         }
         
-        return $this->wildcards_cache[$event_name] = $wildcards;
+        return $this->wildcards_listeners_cache[$event_name] = $wildcards;
     }
     
 }

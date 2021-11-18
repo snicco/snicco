@@ -21,7 +21,7 @@ namespace Snicco\EventDispatcher\functions
      * @throws InvalidListenerException
      * @returns Closure|array<string,string>
      */
-    function normalizeListener($listener)
+    function validatedListener($listener)
     {
         if ($listener instanceof Closure) {
             return $listener;

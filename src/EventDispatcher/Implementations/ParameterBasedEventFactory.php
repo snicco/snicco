@@ -19,7 +19,8 @@ final class ParameterBasedEventFactory implements MappedEventFactory
         } catch (Throwable $e) {
             throw MappedEventCreationException::becauseTheEventCouldNotBeConstructorWithArgs(
                 $wordpress_hook_arguments,
-                $event_class
+                $event_class,
+                $e
             );
         }
     }
