@@ -8,7 +8,7 @@ use Closure;
 use Throwable;
 use Snicco\EventDispatcher\Listener;
 use Snicco\EventDispatcher\Contracts\ListenerFactory;
-use Snicco\EventDispatcher\ListenerCreationException;
+use Snicco\EventDispatcher\Exceptions\ListenerCreationException;
 
 /**
  * @api

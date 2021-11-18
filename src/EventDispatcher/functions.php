@@ -11,7 +11,7 @@ namespace Snicco\EventDispatcher\functions
     use ReflectionException;
     use InvalidArgumentException;
     use Snicco\EventDispatcher\Contracts\Event;
-    use Snicco\EventDispatcher\InvalidListenerException;
+    use Snicco\EventDispatcher\Exceptions\InvalidListenerException;
     
     /**
      * @internal

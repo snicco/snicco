@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\EventDispatcher\Contracts;
 
-use Snicco\EventDispatcher\MappedEventCreationException;
+use Snicco\EventDispatcher\Exceptions\MappedEventCreationException;
 
 /**
  * @api

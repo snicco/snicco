@@ -6,7 +6,7 @@ namespace Snicco\EventDispatcher\Contracts;
 
 use Closure;
 use Snicco\EventDispatcher\Listener;
-use Snicco\EventDispatcher\ListenerCreationException;
+use Snicco\EventDispatcher\Exceptions\ListenerCreationException;
 
 /**
  * @api
