@@ -9,6 +9,7 @@ use Codeception\TestCase\WPTestCase;
 use Snicco\EventDispatcher\EventMapper;
 use Snicco\EventDispatcher\ClassAsName;
 use Snicco\EventDispatcher\ClassAsPayload;
+use Tests\concerns\AssertListenerResponse;
 use Snicco\EventDispatcher\EventDispatcher;
 use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\MappedFilter;

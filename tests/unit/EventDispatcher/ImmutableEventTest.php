@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tests\integration\EventDispatcher;
+namespace Tests\unit\EventDispatcher;
 
 use Tests\UnitTest;
 use BadMethodCallException;
 use Snicco\EventDispatcher\ClassAsName;
-use Snicco\EventDispatcher\ClassAsPayload;
 use Snicco\EventDispatcher\ImmutableEvent;
+use Snicco\EventDispatcher\ClassAsPayload;
 use Snicco\EventDispatcher\Contracts\Event;
 
 class ImmutableEventTest extends UnitTest
@@ -34,7 +34,7 @@ class ImmutableEventTest extends UnitTest
             $this->fail('accesss to private property allowed');
         } catch (BadMethodCallException $e) {
             $this->assertStringStartsWith(
-                "The property [bar] is private on the class [Tests\integration\EventDispatcher\ProxiedEvent].",
+                "The property [bar] is private on the class [Tests\unit\EventDispatcher\ProxiedEvent].",
                 $e->getMessage()
             );
         }
@@ -51,7 +51,7 @@ class ImmutableEventTest extends UnitTest
             $this->fail('write access to public property allowed.');
         } catch (BadMethodCallException $e) {
             $this->assertStringStartsWith(
-                'The event [Tests\integration\EventDispatcher\ProxiedEvent] is an action and cant be changed.',
+                'The event [Tests\unit\EventDispatcher\ProxiedEvent] is an action and cant be changed.',
                 $e->getMessage()
             );
         }
@@ -79,7 +79,7 @@ class ImmutableEventTest extends UnitTest
             $this->fail('Bad method was called on immutable event.');
         } catch (BadMethodCallException $e) {
             $this->assertStringStartsWith(
-                "The method [bogus] is not callable on the action event [Tests\integration\EventDispatcher\ProxiedEvent].",
+                "The method [bogus] is not callable on the action event [Tests\unit\EventDispatcher\ProxiedEvent].",
                 $e->getMessage()
             );
         }
