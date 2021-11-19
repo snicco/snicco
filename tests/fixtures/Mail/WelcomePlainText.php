@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\fixtures\Mail;
 
-use Snicco\Mail\Mailable;
+use Snicco\Mail\Email;
 
-class WelcomePlainText extends Mailable
+class WelcomePlainText extends Email
 {
     
-    public function build() :Mailable
+    public function configure() :Email
     {
         return $this->text('mails.welcome_plain')
                     ->from('c@web.de', 'Calvin INC')
