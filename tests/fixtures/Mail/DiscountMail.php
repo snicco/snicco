@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\fixtures\Mail;
 
-use Snicco\Mail\Mailable;
+use Snicco\Mail\Email;
 
-class DiscountMail extends Mailable
+class DiscountMail extends Email
 {
     
     public string $product;
@@ -16,7 +16,7 @@ class DiscountMail extends Mailable
         $this->product = $product;
     }
     
-    public function build() :Mailable
+    public function configure() :Email
     {
         return $this
             ->text('mails.new_discount')
