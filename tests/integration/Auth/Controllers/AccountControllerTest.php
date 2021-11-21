@@ -7,13 +7,14 @@ namespace Tests\integration\Auth\Controllers;
 use WP_User;
 use Tests\AuthTestCase;
 use Tests\stubs\TestApp;
-use Snicco\Events\Event;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\ResponseFactory;
+use Snicco\Contracts\Responsable;
+use Snicco\Auth\Events\UserDeleted;
 use Snicco\Auth\Events\Registration;
+use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Contracts\DeletesUsers;
 use Snicco\Auth\Contracts\CreatesNewUser;
-use Snicco\Contracts\Responsable;
 use Snicco\Auth\Contracts\CreateAccountView;
 use Snicco\Auth\Contracts\AbstractRegistrationResponse;
 
@@ -65,7 +66,7 @@ class AccountControllerTest extends AuthTestCase
     {
         $this->bootApp();
         
-        Event::fake();
+        $this->dispatcher->fake(Registration::class);
         
         $response = $this->post($this->validStoreLink(), [
             'user_login' => 'calvin',
@@ -77,7 +78,7 @@ class AccountControllerTest extends AuthTestCase
         $user = get_user_by('login', 'calvin');
         $this->assertInstanceOf(WP_User::class, $user);
         
-        Event::assertDispatched(function (Registration $event) use ($user) {
+        $this->dispatcher->assertDispatched(function (Registration $event) use ($user) {
             return $event->user->user_login === $user->user_login
                    && $event->user->user_login
                       === 'calvin';
@@ -89,6 +90,8 @@ class AccountControllerTest extends AuthTestCase
     {
         $this->bootApp();
         
+        $this->dispatcher->fake(UserDeleted::class);
+        
         $calvin = $this->createSubscriber();
         $this->actingAs($calvin);
         
@@ -97,6 +100,10 @@ class AccountControllerTest extends AuthTestCase
         
         $response->assertStatus(204);
         $this->assertUserDeleted($calvin);
+        
+        $this->dispatcher->assertDispatched(function (UserDeleted $event) use ($calvin) {
+            return $event->deleted_user_id === $calvin->ID;
+        });
     }
     
     /** @test */
@@ -227,12 +234,16 @@ class TestRegisteredResponse extends AbstractRegistrationResponse
 class TestCreatesNewUser implements CreatesNewUser
 {
     
-    public function create(Request $request) :int
+    use ResolvesUser;
+    
+    public function create(Request $request) :WP_User
     {
-        return wp_create_user(
-            $request->input('user_login'),
-            'password',
-            $request->input('user_email'),
+        return $this->getUserById(
+            wp_create_user(
+                $request->input('user_login'),
+                'password',
+                $request->input('user_email'),
+            )
         );
     }
     

@@ -13,6 +13,7 @@ use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Contracts\DeletesUsers;
 use Snicco\Auth\Contracts\CreatesNewUser;
 use Snicco\Auth\Contracts\CreateAccountView;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Auth\Contracts\AbstractRegistrationResponse;
 use Snicco\ExceptionHandling\Exceptions\AuthorizationException;
 
@@ -21,10 +22,12 @@ class AccountController extends Controller
     
     use ResolvesUser;
     
-    private int $lifetime_in_seconds;
+    private int        $lifetime_in_seconds;
+    private Dispatcher $events;
     
-    public function __construct($lifetime_in_seconds = 900)
+    public function __construct(Dispatcher $events, $lifetime_in_seconds = 900)
     {
+        $this->events = $events;
         $this->lifetime_in_seconds = $lifetime_in_seconds;
     }
     
@@ -37,9 +40,9 @@ class AccountController extends Controller
     
     public function store(Request $request, CreatesNewUser $creates_new_user, AbstractRegistrationResponse $response)
     {
-        $user = $this->getUserById($creates_new_user->create($request));
+        $user = $creates_new_user->create($request);
         
-        Registration::dispatch([$user]);
+        $this->events->dispatch(new Registration($user));
         
         return $response->forRequest($request)->forUser($user);
     }
@@ -65,7 +68,7 @@ class AccountController extends Controller
         
         $deletes_users->postDelete($user_id);
         
-        UserDeleted::dispatch([$user_id]);
+        $this->events->dispatch(new UserDeleted($user_id));
         
         return $request->isExpectingJson()
             ? $this->response_factory->noContent()

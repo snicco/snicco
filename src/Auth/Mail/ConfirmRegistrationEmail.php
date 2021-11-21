@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Auth\Mail;
 
 use Snicco\Support\WP;
-use Snicco\Mail\Mailable;
+use Snicco\Mail\Email;
 
-class ConfirmRegistrationEmail extends Mailable
+class ConfirmRegistrationEmail extends Email
 {
     
     public string $magic_link;
@@ -17,7 +17,7 @@ class ConfirmRegistrationEmail extends Mailable
         $this->magic_link = $magic_link;
     }
     
-    public function build() :ConfirmRegistrationEmail
+    public function configure() :ConfirmRegistrationEmail
     {
         return $this->subject(sprintf("Confirm your registration at %s", WP::siteName()))
                     ->view('framework.mail.confirm-registration');

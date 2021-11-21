@@ -6,8 +6,9 @@ namespace Snicco\Http;
 
 use RuntimeException;
 use RKA\Middleware\IpAddress;
-use Snicco\Contracts\ServiceProvider;
 use Snicco\Contracts\Redirector;
+use Snicco\Contracts\ServiceProvider;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 
 class HttpServiceProvider extends ServiceProvider
 {
@@ -67,7 +68,10 @@ class HttpServiceProvider extends ServiceProvider
     private function bindResponsePostProcessor()
     {
         $this->container->singleton(ResponsePostProcessor::class, function () {
-            return new ResponsePostProcessor($this->app->isRunningUnitTest());
+            return new ResponsePostProcessor(
+                $this->container[Dispatcher::class],
+                $this->app->isRunningUnitTest()
+            );
         });
     }
     

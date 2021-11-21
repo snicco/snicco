@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Listeners;
 
-use Snicco\Events\Event;
-use Snicco\Events\PreWP404;
+use Snicco\Core\Events\EventObjects\PreWP404;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 
 /**
  * This event listener will prevent that WordPress handles any 404s before we had a chance
@@ -14,16 +14,23 @@ use Snicco\Events\PreWP404;
 class Manage404s
 {
     
-    public function shortCircuit() :bool
+    private Dispatcher $dispatcher;
+    
+    public function __construct(Dispatcher $dispatcher)
     {
-        return true;
+        $this->dispatcher = $dispatcher;
+    }
+    
+    public function shortCircuit(PreWP404 $pre_WP_404)
+    {
+        $pre_WP_404->process_404 = false;
     }
     
     public function check404()
     {
         global $wp;
         
-        Event::forget(PreWP404::class);
+        $this->dispatcher->remove(PreWP404::class, self::class);
         
         $wp->handle_404();
     }

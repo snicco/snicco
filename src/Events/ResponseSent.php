@@ -6,8 +6,9 @@ namespace Snicco\Events;
 
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
+use Snicco\Core\Events\EventObjects\CoreEvent;
 
-class ResponseSent extends Event
+class ResponseSent extends CoreEvent
 {
     
     public Response $response;

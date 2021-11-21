@@ -4,14 +4,14 @@ declare(strict_types=1);
 
 namespace Tests\integration\Mail;
 
-use Snicco\Mail\Mailable;
+use Snicco\Mail\Email;
 use Snicco\Mail\MailBuilder;
 use Snicco\Mail\Testing\FakeMailer;
 use Codeception\TestCase\WPTestCase;
-use Snicco\Mail\Testing\TestableMail;
+use Snicco\Mail\Testing\TestableEmail;
 use Snicco\Mail\ValueObjects\Recipient;
 use Tests\concerns\AssertPHPUnitFailures;
-use Snicco\Mail\Implementations\WordPressTestMail;
+use Snicco\Mail\Testing\WordPressTestMail;
 use Snicco\Testing\Concerns\InteractsWithWordpressUsers;
 
 final class FakeMailerTest extends WPTestCase
@@ -254,7 +254,7 @@ final class FakeMailerTest extends WPTestCase
         
         $this->assertFailing(
             function () {
-                $this->fake_mailer->assertSent(TestMail::class, function (TestableMail $mail) {
+                $this->fake_mailer->assertSent(TestMail::class, function (TestableEmail $mail) {
                     return $mail->hasTo('calvin@web.de');
                 });
             },
@@ -263,13 +263,13 @@ final class FakeMailerTest extends WPTestCase
             .'] was sent [2] time[s] but none matched the passed condition.'
         );
         
-        $this->fake_mailer->assertSent(TestMail::class, function (TestableMail $mail) {
+        $this->fake_mailer->assertSent(TestMail::class, function (TestableEmail $mail) {
             return $mail->hasTo('calvinalkan@web.de');
         });
         
         $this->assertFailing(
             function () {
-                $this->fake_mailer->assertSent(TestMail::class, function (TestableMail $mail) {
+                $this->fake_mailer->assertSent(TestMail::class, function (TestableEmail $mail) {
                     return $mail->hasTo('calvin@web.de') && $mail->getSubject() === 'bogus';
                 });
             },
@@ -278,7 +278,7 @@ final class FakeMailerTest extends WPTestCase
             .'] was sent [2] time[s] but none matched the passed condition.'
         );
         
-        $this->fake_mailer->assertSent(TestMail::class, function (TestableMail $mail) {
+        $this->fake_mailer->assertSent(TestMail::class, function (TestableEmail $mail) {
             return $mail->hasTo('calvinalkan@web.de')
                    && $mail->getFrom()->getName()
                       === 'Calvin INC';
@@ -295,7 +295,7 @@ final class FakeMailerTest extends WPTestCase
                      ->bcc('jondoe@web.de')
                      ->send(new TestMail());
         
-        $this->fake_mailer->assertSent(TestMail::class, function (TestableMail $mail) {
+        $this->fake_mailer->assertSent(TestMail::class, function (TestableEmail $mail) {
             return $mail->hasTo('calvinalkan@web.de')
                    && $mail->hasCC('marlon@web.de')
                    && $mail->hasBcc('jondoe@web.de');
@@ -303,7 +303,7 @@ final class FakeMailerTest extends WPTestCase
         
         $this->assertFailing(
             function () {
-                $this->fake_mailer->assertSent(TestMail::class, function (TestableMail $mail) {
+                $this->fake_mailer->assertSent(TestMail::class, function (TestableEmail $mail) {
                     return $mail->hasTo('calvin@web.de')
                            && $mail->hasCC('bogus@web.de')
                            && $mail->hasBcc('jondoe@web.de');
@@ -317,7 +317,7 @@ final class FakeMailerTest extends WPTestCase
     
 }
 
-class TestMail extends Mailable
+class TestMail extends Email
 {
     
     public function configure(Recipient $recipient) :void
@@ -327,7 +327,7 @@ class TestMail extends Mailable
     
 }
 
-class DifferentTestMail extends Mailable
+class DifferentTestMail extends Email
 {
     
     public function configure(Recipient $recipient) :void

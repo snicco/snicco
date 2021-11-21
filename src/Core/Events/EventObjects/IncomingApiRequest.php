@@ -2,17 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Events;
+namespace Snicco\Core\Events\EventObjects;
 
 use Snicco\Support\Str;
 use Snicco\Http\Psr7\Request;
 use Snicco\Application\Config;
-use BetterWpHooks\Traits\DispatchesConditionally;
 
 class IncomingApiRequest extends IncomingRequest
 {
-    
-    use DispatchesConditionally;
     
     private Config $config;
     

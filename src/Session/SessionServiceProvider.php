@@ -5,16 +5,18 @@ declare(strict_types=1);
 namespace Snicco\Session;
 
 use Snicco\View\GlobalContext;
+use Snicco\Contracts\Encryptor;
+use Snicco\Contracts\Redirector;
 use Snicco\Application\Application;
 use Snicco\Session\Events\NewLogin;
 use Snicco\Auth\AuthServiceProvider;
 use Snicco\Session\Events\NewLogout;
 use Snicco\Contracts\ServiceProvider;
-use Snicco\Contracts\Redirector;
-use Snicco\Contracts\Encryptor;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Snicco\Session\Middleware\VerifyCsrfToken;
+use Snicco\Session\Listeners\InvalidateSession;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Session\Drivers\DatabaseSessionDriver;
 use Snicco\Session\Contracts\SessionManagerInterface;
 use Snicco\Session\Middleware\StartSessionMiddleware;
@@ -107,7 +109,8 @@ class SessionServiceProvider extends ServiceProvider
         $this->container->singleton(SessionManager::class, function () {
             return new SessionManager(
                 $this->config->get('session'),
-                $this->container->make(Session::class),
+                $this->container[Session::class],
+                $this->container[Dispatcher::class]
             );
         });
         
@@ -157,21 +160,21 @@ class SessionServiceProvider extends ServiceProvider
         }
         
         $this->config->extend('events.mapped', [
-            'wp_login' => NewLogin::class,
-            'wp_logout' => NewLogout::class,
+            'wp_login' => [NewLogin::class],
+            'wp_logout' => [NewLogout::class],
         ]);
         
         $this->config->extend('events.listeners', [
             
             NewLogin::class => [
                 
-                [SessionManager::class, 'migrateAfterLogin'],
+                [InvalidateSession::class, 'handleLogin'],
             
             ],
             
             NewLogout::class => [
                 
-                [SessionManager::class, 'invalidateAfterLogout'],
+                [InvalidateSession::class, 'handleLogout'],
             
             ],
         

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Tests\integration\EventDispatcher;
 
-use Closure;
 use Codeception\TestCase\WPTestCase;
 use Snicco\EventDispatcher\ClassAsName;
+use Tests\concerns\AssertPHPUnitFailures;
 use Snicco\EventDispatcher\FakeDispatcher;
 use Snicco\EventDispatcher\ClassAsPayload;
 use Tests\concerns\AssertListenerResponse;
@@ -20,6 +20,7 @@ final class FakeDispatcherTest extends WPTestCase
 {
     
     use AssertListenerResponse;
+    use AssertPHPUnitFailures;
     
     private FakeDispatcher $fake_dispatcher;
     
@@ -97,6 +98,19 @@ final class FakeDispatcherTest extends WPTestCase
         
         $this->fake_dispatcher->dispatch('bar_event', 'FOOBAR');
         $this->assertListenerNotRun('bar_event', 'closure2');
+    }
+    
+    /** @test */
+    public function test_faked_events_count_as_dispatched()
+    {
+        $this->fake_dispatcher->listen('foo_event', function () {
+        });
+        
+        $this->fake_dispatcher->fake('foo_event');
+        
+        $this->fake_dispatcher->dispatch('foo_event', 'foo');
+        
+        $this->fake_dispatcher->assertDispatched('foo_event');
     }
     
     /** @test */
@@ -215,6 +229,24 @@ final class FakeDispatcherTest extends WPTestCase
         
         $this->fake_dispatcher->dispatch('post.deleted', 'my_post');
         $this->assertListenerRun('post.deleted', 'closure2', 'my_post');
+    }
+    
+    /** @test */
+    public function the_fake_dispatcher_can_be_reset()
+    {
+        $this->fake_dispatcher->listen('foo_event', function ($val) {
+            $this->respondedToEvent('foo_event', 'closure1', $val);
+        });
+        $this->fake_dispatcher->fake('foo_event');
+        $this->fake_dispatcher->dispatch('foo_event', 'FOOBAR');
+        $this->assertListenerNotRun('foo_event', 'closure1');
+        
+        $this->resetListenersResponses();
+        
+        $this->fake_dispatcher->reset();
+        
+        $this->fake_dispatcher->dispatch('foo_event', 'FOOBAR');
+        $this->assertListenerRun('foo_event', 'closure1', 'FOOBAR');
     }
     
     /**
@@ -503,21 +535,6 @@ final class FakeDispatcherTest extends WPTestCase
                 }
             );
         }, "The event [user.created] was dispatched but the provided condition did not pass.");
-    }
-    
-    private function failBecauseOfWrongAssertion($message = null)
-    {
-        $this->fail($message ?? "The fake dispatcher made a wrong test assertion.");
-    }
-    
-    private function assertFailing(Closure $closure, string $expected_failure_message)
-    {
-        try {
-            $closure();
-            $this->failBecauseOfWrongAssertion();
-        } catch (ExpectationFailedException $e) {
-            $this->assertStringStartsWith($expected_failure_message, $e->getMessage());
-        }
     }
     
 }

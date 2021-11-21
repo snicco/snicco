@@ -4,9 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\integration\Events;
 
-use Snicco\Events\Event;
 use Tests\FrameworkTestCase;
-use Snicco\Events\DoShutdown;
+use Snicco\Core\Events\EventObjects\DoShutdown;
 
 class IncomingWebRequest404CompatTest extends FrameworkTestCase
 {
@@ -21,23 +20,20 @@ class IncomingWebRequest404CompatTest extends FrameworkTestCase
     }
     
     /** @test */
-    public function if_a_route_matches_the_wp_main_function_will_never_set_a_404()
+    public function if_a_route_matches_the_wp_main_function_will_never_set_a_404_because_our_kernel_terminates_the_script()
     {
         $this->withRequest($this->frontendRequest('GET', '/foo'));
         $this->bootApp();
         $this->simulate404();
         global $wp, $wp_query;
         
-        // In production this will call exit() and no 404 will be processed.
-        $did_shutdown = false;
-        Event::listen(DoShutdown::class, function () use (&$did_shutdown, $wp_query) {
-            $this->assertFalse($wp_query->is_404());
-            $did_shutdown = true;
-        });
+        $this->dispatcher->fake(DoShutdown::class);
         
         $wp->main();
         
-        $this->assertTrue($did_shutdown);
+        $this->dispatcher->assertDispatched(function (DoShutdown $event) {
+            return $event->do_shutdown === true;
+        });
     }
     
     /** @test */

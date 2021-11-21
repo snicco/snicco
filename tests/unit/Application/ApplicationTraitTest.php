@@ -5,7 +5,9 @@ declare(strict_types=1);
 namespace Tests\unit\Application;
 
 use Tests\UnitTest;
+use LogicException;
 use BadMethodCallException;
+use Snicco\Application\Application;
 use Snicco\Application\ApplicationTrait;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
@@ -31,27 +33,34 @@ class ApplicationTraitTest extends UnitTest
     /** @test */
     public function a_new_app_instance_can_be_created()
     {
-        $this->assertNull(FooApp::getApplication());
         $app = FooApp::make($this->base_path);
-        $this->assertSame($app, FooApp::getApplication());
+        $this->assertInstanceOf(Application::class, $app);
+    }
+    
+    /** @test */
+    public function an_application_can_not_be_created_twice()
+    {
+        $app = FooApp::make($this->base_path);
+        $this->assertInstanceOf(Application::class, $app);
+        
+        try {
+            $app = FooApp::make($this->base_path);
+            $this->fail("App created twice.");
+        } catch (LogicException $e) {
+            $this->assertStringStartsWith(
+                "Application already created for class [Tests\unit\Application\FooApp].",
+                $e->getMessage()
+            );
+        }
     }
     
     /** @test */
     public function multiple_app_instances_can_exists_independently()
     {
-        $this->assertNull(FooApp::getApplication());
-        $this->assertNull(BarApp::getApplication());
+        $this->assertInstanceOf(Application::class, $foo = FooApp::make($this->base_path));
+        $this->assertInstanceOf(Application::class, $bar = BarApp::make($this->base_path));
         
-        $foo = FooApp::make($this->base_path);
-        
-        $this->assertSame($foo, FooApp::getApplication());
-        $this->assertNull(BarApp::getApplication());
-        
-        $bar = BarApp::make($this->base_path);
-        
-        $this->assertSame($foo, FooApp::getApplication());
-        $this->assertSame($bar, BarApp::getApplication());
-        $this->assertNotSame(FooApp::getApplication(), BarApp::getApplication());
+        $this->assertNotSame($foo, $bar);
     }
     
     /** @test */

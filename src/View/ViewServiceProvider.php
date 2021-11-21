@@ -8,6 +8,7 @@ use Snicco\Contracts\ViewEngine;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Factories\ViewComposerFactory;
 use Snicco\Contracts\ViewFactoryInterface;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 
 class ViewServiceProvider extends ServiceProvider
 {
@@ -56,7 +57,8 @@ class ViewServiceProvider extends ServiceProvider
     {
         $this->container->singleton(PhpViewEngine::class, function () {
             return new PhpViewEngine(
-                new PhpViewFinder($this->config->get('view.paths', []))
+                new PhpViewFinder($this->config->get('view.paths', [])),
+                $this->container[Dispatcher::class]
             );
         });
     }

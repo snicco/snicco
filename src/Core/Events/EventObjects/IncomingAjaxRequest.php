@@ -2,17 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Events;
+namespace Snicco\Core\Events\EventObjects;
 
 use Snicco\Support\Arr;
-use BetterWpHooks\Traits\IsAction;
-use BetterWpHooks\Traits\DispatchesConditionally;
 
 class IncomingAjaxRequest extends IncomingRequest
 {
-    
-    use DispatchesConditionally;
-    use IsAction;
     
     public function shouldDispatch() :bool
     {

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\integration\Routing;
 
-use Snicco\Events\Event;
 use Snicco\Http\Delegate;
 use Tests\FrameworkTestCase;
 use Snicco\Http\Psr7\Request;
@@ -15,14 +14,6 @@ use Psr\Http\Message\ResponseInterface;
 
 class ApiRoutesTest extends FrameworkTestCase
 {
-    
-    protected function setUp() :void
-    {
-        $this->afterApplicationBooted(function () {
-            Event::fake([ResponseSent::class]);
-        });
-        parent::setUp();
-    }
     
     /** @test */
     public function an_api_endpoint_can_be_created_where_all_routes_are_run_on_init_and_shut_down_the_script_afterwards()
@@ -37,7 +28,7 @@ class ApiRoutesTest extends FrameworkTestCase
         $response->assertSee('foo endpoint');
         
         // This will shut the script down.
-        Event::assertDispatched(function (ResponseSent $event) {
+        $this->dispatcher->assertDispatched(function (ResponseSent $event) {
             return $event->request->isWpFrontEnd();
         });
     }
@@ -53,7 +44,7 @@ class ApiRoutesTest extends FrameworkTestCase
         $this->assertNoResponse();
         
         // This will shut the script down.
-        Event::assertNotDispatched(ResponseSent::class);
+        $this->dispatcher->assertNotDispatched(ResponseSent::class);
     }
     
     /** @test */

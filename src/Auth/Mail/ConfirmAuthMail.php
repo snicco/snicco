@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Auth\Mail;
 
 use WP_User;
-use Snicco\Mail\Mailable;
+use Snicco\Mail\Email;
 use Snicco\Routing\UrlGenerator;
 
-class ConfirmAuthMail extends Mailable
+class ConfirmAuthMail extends Email
 {
     
     public WP_User $user;
@@ -21,7 +21,7 @@ class ConfirmAuthMail extends Mailable
         $this->lifetime = $link_lifetime_in_sec;
     }
     
-    public function build(UrlGenerator $generator) :Mailable
+    public function configure(UrlGenerator $generator) :Email
     {
         return $this
             ->subject('Your Email Confirmation link.')

@@ -44,6 +44,8 @@ class FilterWpQueryTest extends FrameworkTestCase
     /** @test */
     public function captured_route_params_get_passed_to_the_query_filter()
     {
+        $this->withoutExceptionHandling();
+        
         $this->withRequest($this->frontendRequest('GET', '/wpquery/teams/germany/dortmund'))
              ->bootApp();
         
