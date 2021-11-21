@@ -4,23 +4,37 @@ declare(strict_types=1);
 
 namespace Snicco\Events;
 
+use Snicco\Support\Arr;
 use Snicco\Http\HttpKernel;
 use Snicco\Listeners\Manage404s;
 use Snicco\Listeners\ComposeView;
 use Snicco\Listeners\FilterWpQuery;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Http\ResponsePostProcessor;
-use BetterWpHooks\Contracts\Dispatcher;
+use Snicco\EventDispatcher\EventMapper;
 use Snicco\Listeners\CreateDynamicHooks;
+use Snicco\EventDispatcher\FakeDispatcher;
+use Snicco\EventDispatcher\EventDispatcher;
+use Snicco\Core\Events\EventObjects\PreWP404;
+use Snicco\Core\Events\EventObjects\AdminInit;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\EventDispatcher\Contracts\ListenerFactory;
+use Snicco\Core\Events\EventObjects\WPQueryFilterable;
+use Snicco\Core\Events\DependencyInversionEventFactory;
+use Snicco\Core\Events\EventObjects\IncomingApiRequest;
+use Snicco\Core\Events\EventObjects\IncomingWebRequest;
+use Snicco\EventDispatcher\Contracts\MappedEventFactory;
+use Snicco\Core\Events\EventObjects\IncomingAjaxRequest;
+use Snicco\Core\Events\EventObjects\IncomingAdminRequest;
+use Snicco\Core\Events\DependencyInversionListenerFactory;
 
 class EventServiceProvider extends ServiceProvider
 {
     
     private array $mapped_events = [
         'admin_init' => [
-            [AdminInit::class],
+            AdminInit::class,
         ],
-        
         'pre_handle_404' => [
             [PreWP404::class, 999],
         ],
@@ -33,7 +47,7 @@ class EventServiceProvider extends ServiceProvider
     ];
     
     private array $ensure_last = [
-        'do_parse_request' => WpQueryFilterable::class,
+        'do_parse_request' => WPQueryFilterable::class,
     ];
     
     private array $event_listeners = [
@@ -59,8 +73,8 @@ class EventServiceProvider extends ServiceProvider
             [HttpKernel::class, 'run'],
         ],
         
-        WpQueryFilterable::class => [
-            [FilterWpQuery::class, 'handleEvent'],
+        WPQueryFilterable::class => [
+            FilterWpQuery::class,
         ],
         
         ResponseSent::class => [
@@ -79,23 +93,50 @@ class EventServiceProvider extends ServiceProvider
     
     public function register() :void
     {
+        $this->bindEventDispatcher();
+        $this->bindEventListenerFactory();
+        $this->bindMappedEventFactory();
+        $this->bindEventMapper();
         $this->bindConfig();
     }
     
     public function bootstrap() :void
     {
-        Event::make($this->container)
-             ->map($this->config->get('events.mapped', []))
-             ->ensureFirst($this->config->get('events.first', []))
-             ->ensureLast($this->config->get('events.last', []))
-             ->listeners($this->config->get('events.listeners', []))
-             ->boot();
+        /** @var EventMapper $event_mapper */
+        $event_mapper = $this->container[EventMapper::class];
         
-        //Event::listen(MakingView::class, function (ViewInterface $view) {
-        //    $this->container[ViewFactoryInterface::class]->compose($view);
-        //});
+        foreach ($this->config->get('events.mapped', []) as $hook_name => $events) {
+            foreach ($events as $event) {
+                $event = Arr::wrap($event);
+                $event_mapper->map($hook_name, $event[0], $event[1] ?? 10);
+            }
+        }
+        unset($hook_name);
         
-        $this->container->instance(Dispatcher::class, Event::dispatcher());
+        foreach ($this->config->get('events.first', []) as $hook_name => $events) {
+            foreach (Arr::wrap($events) as $event) {
+                $event_mapper->mapFirst($hook_name, $event);
+            }
+        }
+        
+        unset($hook_name);
+        
+        foreach ($this->config->get('events.last', []) as $hook_name => $events) {
+            foreach (Arr::wrap($events) as $event) {
+                $event_mapper->mapLast($hook_name, $event);
+            }
+        }
+        
+        unset($hook_name);
+        
+        /** @var Dispatcher $event_dispatcher */
+        $event_dispatcher = $this->container[Dispatcher::class];
+        
+        foreach ($this->config->get('events.listeners', []) as $listener => $events) {
+            foreach ($events as $event) {
+                $event_dispatcher->listen($listener, $event);
+            }
+        }
     }
     
     private function bindConfig()
@@ -104,6 +145,44 @@ class EventServiceProvider extends ServiceProvider
         $this->config->extend('events.listeners', $this->event_listeners);
         $this->config->extend('events.first', $this->ensure_first);
         $this->config->extend('events.last', $this->ensure_last);
+    }
+    
+    private function bindEventDispatcher()
+    {
+        $this->container->singleton(EventDispatcher::class, EventDispatcher::class);
+        
+        $this->container->singleton(Dispatcher::class, function () {
+            return $this->app->isRunningUnitTest()
+                ? new FakeDispatcher($this->container[EventDispatcher::class])
+                : $this->container[EventDispatcher::class];
+        });
+    }
+    
+    private function bindEventListenerFactory()
+    {
+        $this->container->singleton(
+            ListenerFactory::class,
+            DependencyInversionListenerFactory::class
+        );
+    }
+    
+    private function bindMappedEventFactory()
+    {
+        $this->container->singleton(
+            MappedEventFactory::class,
+            DependencyInversionEventFactory::class
+        );
+    }
+    
+    private function bindEventMapper()
+    {
+        $this->container->instance(
+            EventMapper::class,
+            new EventMapper(
+                $this->container[Dispatcher::class],
+                $this->container[MappedEventFactory::class]
+            )
+        );
     }
     
 }

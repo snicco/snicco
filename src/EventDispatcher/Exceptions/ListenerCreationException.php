@@ -25,7 +25,7 @@ final class ListenerCreationException extends RuntimeException
     public static function becauseTheListenerWasNotInstantiatable(array $listener, string $event_name, Throwable $previous) :MappedEventCreationException
     {
         $message =
-            "The listener [$listener] could not be instantiated. Current event: [$event_name].";
+            "The listener [{$listener[0]}, {$listener[1]}] could not be instantiated. Current event: [$event_name].";
         
         return new MappedEventCreationException($message, $previous->getCode(), $previous);
     }

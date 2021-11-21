@@ -4,17 +4,20 @@ declare(strict_types=1);
 
 namespace Snicco\Http;
 
-use Snicco\Events\DoShutdown;
 use Snicco\Events\ResponseSent;
+use Snicco\Core\Events\EventObjects\DoShutdown;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 
 class ResponsePostProcessor
 {
     
-    private bool $running_unit_tests;
+    private bool       $running_unit_tests;
+    private Dispatcher $event_dispatcher;
     
-    public function __construct(bool $running_unit_tests = false)
+    public function __construct(Dispatcher $event_dispatcher, $running_unit_tests = false)
     {
         $this->running_unit_tests = $running_unit_tests;
+        $this->event_dispatcher = $event_dispatcher;
     }
     
     public function maybeExit(ResponseSent $response_sent)
@@ -39,13 +42,15 @@ class ResponsePostProcessor
     
     private function exit(ResponseSent $response_sent)
     {
-        $terminate = DoShutdown::dispatch([$response_sent->request, $response_sent->response]);
+        $this->event_dispatcher->dispatch(
+            $shutdown = new DoShutdown($response_sent->request, $response_sent->response)
+        );
         
         if ($this->running_unit_tests) {
             return;
         }
         
-        if (is_bool($terminate) && $terminate !== true) {
+        if ( ! $shutdown->do_shutdown) {
             return;
         }
         

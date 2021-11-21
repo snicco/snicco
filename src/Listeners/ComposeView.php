@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Listeners;
 
-use Snicco\Contracts\ViewInterface;
+use Snicco\Events\MakingView;
 use Snicco\Contracts\ViewFactoryInterface;
 
 class ComposeView
@@ -17,9 +17,9 @@ class ComposeView
         $this->view_factory = $view_factory;
     }
     
-    public function __invoke(ViewInterface $view)
+    public function handle(MakingView $event)
     {
-        $this->view_factory->compose($view);
+        $this->view_factory->compose($event->view);
     }
     
 }

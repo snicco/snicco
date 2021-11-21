@@ -9,35 +9,42 @@ use Snicco\Routing\UrlGenerator;
 use Snicco\Auth\Events\GenerateLoginUrl;
 use Snicco\Auth\Events\GenerateLogoutUrl;
 
-class WpLoginLinkGenerator
+class WPLoginLinks
 {
     
+    private UrlGenerator $url_generator;
+    
+    public function __construct(UrlGenerator $url_generator)
+    {
+        $this->url_generator = $url_generator;
+    }
+    
     /** NOTE: WordPress always returns these as absolute urls so lets stay compatible */
-    public function loginUrl(GenerateLoginUrl $event, UrlGenerator $url) :string
+    public function createLoginUrl(GenerateLoginUrl $event)
     {
         $query = [];
         
         $query['redirect_to'] = $event->redirect_to !== ''
             ? $event->redirect_to
-            : $url->toRoute('dashboard');
+            : $this->url_generator->toRoute('dashboard');
         
         if ($event->force_reauth) {
             $query['reauth'] = 'yes';
         }
         
-        return $url->toRoute('auth.login', [
+        $event->url = $this->url_generator->toRoute('auth.login', [
             'query' => $query,
         ], true, true);
     }
     
     /** NOTE: WordPress always returns these as absolute urls so lets stay compatible */
-    public function logoutUrl(GenerateLogoutUrl $event, UrlGenerator $url) :string
+    public function createLogoutUrl(GenerateLogoutUrl $event)
     {
         $redirect = $event->redirect_to;
         
-        $url = $url->signedLogout(WP::userId(), $redirect, 3600, true);
+        $url = $this->url_generator->signedLogout(WP::userId(), $redirect, 3600, true);
         
-        return esc_html($url);
+        $event->url = esc_html($url);
     }
     
 }

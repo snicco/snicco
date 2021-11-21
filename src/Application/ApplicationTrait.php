@@ -4,9 +4,11 @@ declare(strict_types=1);
 
 namespace Snicco\Application;
 
+use LogicException;
 use BadMethodCallException;
 use Contracts\ContainerAdapter;
 use SniccoAdapter\BaseContainerAdapter;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 /**
@@ -15,15 +17,20 @@ use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 trait ApplicationTrait
 {
     
-    public static ?Application $instance = null;
+    private static ?Application $instance = null;
     
     public static function make(string $base_path, ContainerAdapter $container = null) :Application
     {
+        if ( ! is_null(static::$instance)) {
+            $class = static::class;
+            throw new LogicException("Application already created for class [$class].");
+        }
+        
         static::setApplication(
             Application::create($base_path, $container ?? new BaseContainerAdapter())
         );
         
-        $app = static::getApplication();
+        $app = static::$instance;
         $app->container()->instance(ApplicationTrait::class, static::class);
         
         return $app;
@@ -32,11 +39,6 @@ trait ApplicationTrait
     public static function setApplication(?Application $application)
     {
         static::$instance = $application;
-    }
-    
-    public static function getApplication() :?Application
-    {
-        return static::$instance;
     }
     
     /**
@@ -50,7 +52,7 @@ trait ApplicationTrait
      */
     public static function __callStatic(string $method, array $parameters)
     {
-        $application = static::getApplication();
+        $application = static::$instance;
         $callable = [$application, $method];
         
         if ( ! $application) {
@@ -67,6 +69,11 @@ trait ApplicationTrait
         }
         
         return call_user_func_array($callable, $parameters);
+    }
+    
+    public static function events() :Dispatcher
+    {
+        return static::$instance[Dispatcher::class];
     }
     
 }

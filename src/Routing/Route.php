@@ -9,10 +9,10 @@ use Snicco\Support\Url;
 use Snicco\Http\Psr7\Request;
 use Snicco\Support\UrlParser;
 use Snicco\Traits\ExportsRoute;
+use Snicco\Contracts\Condition;
 use Snicco\Traits\HydratesRoute;
 use Snicco\Contracts\RouteAction;
 use Snicco\Traits\SetsRouteAttributes;
-use Snicco\Contracts\Condition;
 use Snicco\Factories\RouteActionFactory;
 use Snicco\Factories\RouteConditionFactory;
 
@@ -87,7 +87,6 @@ class Route
     {
         return $this->instantiated_action->execute(
             array_merge(
-                [$request],
                 $this->compiledParameters($request),
                 $this->defaults
             )

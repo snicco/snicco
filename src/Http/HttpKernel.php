@@ -16,6 +16,7 @@ use Snicco\Middleware\Core\MethodOverride;
 use Snicco\Http\Responses\DelegatedResponse;
 use Snicco\Middleware\Core\RoutingMiddleware;
 use Snicco\Middleware\Core\SetRequestAttributes;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Middleware\Core\OutputBufferMiddleware;
 use Snicco\Middleware\Core\AppendSpecialPathSuffix;
 use Snicco\Middleware\Core\SubstituteRouteBindings;
@@ -24,8 +25,9 @@ use Snicco\Middleware\Core\EvaluateResponseMiddleware;
 class HttpKernel
 {
     
-    private Pipeline        $pipeline;
-    private array           $core_middleware = [
+    private Pipeline $pipeline;
+    
+    private array $core_middleware = [
         SetRequestAttributes::class,
         MethodOverride::class,
         EvaluateResponseMiddleware::class,
@@ -36,12 +38,16 @@ class HttpKernel
         SubstituteRouteBindings::class,
         RouteRunner::class,
     ];
+    
     private ResponseEmitter $emitter;
     
-    public function __construct(Pipeline $pipeline, ResponseEmitter $emitter)
+    private Dispatcher $event_dispatcher;
+    
+    public function __construct(Pipeline $pipeline, ResponseEmitter $emitter, Dispatcher $event_dispatcher)
     {
         $this->pipeline = $pipeline;
         $this->emitter = $emitter;
+        $this->event_dispatcher = $event_dispatcher;
     }
     
     public function run(Request $request) :Response
@@ -82,7 +88,7 @@ class HttpKernel
         
         $this->emitter->emit($response);
         
-        ResponseSent::dispatch([$response, $request]);
+        $this->event_dispatcher->dispatch(new ResponseSent($response, $request));
         
         return $response;
     }

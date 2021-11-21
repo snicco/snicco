@@ -2,17 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Events;
+namespace Snicco\Core\Events\EventObjects;
 
 use Snicco\Support\Str;
-use BetterWpHooks\Traits\IsAction;
-use BetterWpHooks\Traits\DispatchesConditionally;
+
+use function rest_get_url_prefix;
 
 class IncomingWebRequest extends IncomingRequest
 {
-    
-    use IsAction;
-    use DispatchesConditionally;
     
     public function shouldDispatch() :bool
     {

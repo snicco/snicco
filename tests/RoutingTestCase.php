@@ -38,6 +38,7 @@ use Snicco\Routing\RoutingServiceProvider;
 use Snicco\Contracts\ViewFactoryInterface;
 use Snicco\Factories\RouteConditionFactory;
 use Tests\concerns\CreateDefaultWpApiMocks;
+use Snicco\EventDispatcher\EventDispatcher;
 use Psr\Http\Message\StreamFactoryInterface;
 use Tests\fixtures\Conditions\TrueCondition;
 use Tests\fixtures\Middleware\FooMiddleware;
@@ -53,6 +54,7 @@ use Snicco\ExceptionHandling\NullExceptionHandler;
 use Snicco\Middleware\Core\OutputBufferMiddleware;
 use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
 use Tests\fixtures\Conditions\ConditionWithDependency;
+use Snicco\Core\Events\DependencyInversionListenerFactory;
 
 class RoutingTestCase extends TestCase
 {
@@ -217,9 +219,11 @@ class RoutingTestCase extends TestCase
             new Pipeline(
                 new MiddlewareFactory($this->container),
                 $this->error_handler,
-                $this->response_factory
+                $this->response_factory,
             ),
-            $this->container->make(ResponseEmitter::class)
+            $this->container->make(ResponseEmitter::class),
+            $this->event_dispatcher =
+                new EventDispatcher(new DependencyInversionListenerFactory($this->container))
         );
     }
     

@@ -2,18 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Events;
+namespace Snicco\Core\Events\EventObjects;
 
 use Snicco\Support\WP;
 use Snicco\Http\Psr7\Request;
-use BetterWpHooks\Traits\IsAction;
-use BetterWpHooks\Traits\DispatchesConditionally;
+use Snicco\EventDispatcher\Contracts\MappedAction;
 
-class AdminInit extends Event
+class AdminInit extends CoreEvent implements MappedAction
 {
-    
-    use IsAction;
-    use DispatchesConditionally;
     
     public Request $request;
     public ?string $hook;

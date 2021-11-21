@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\integration\Mail;
 
 use LogicException;
-use Snicco\Mail\Mailable;
+use Snicco\Mail\Email;
 use Snicco\Mail\MailBuilder;
 use Snicco\Mail\DefaultConfig;
 use Codeception\TestCase\WPTestCase;
@@ -317,7 +317,7 @@ final class MailBuilderTest extends WPTestCase
         
         $this->expectException(MailRenderingException::class);
         
-        $mail_builder->to('foo@web.de')->cc('calvin@web.de')->send(new NamedViewMailable());
+        $mail_builder->to('foo@web.de')->cc('calvin@web.de')->send(new NamedViewEmail());
     }
     
     /** @test */
@@ -329,7 +329,7 @@ final class MailBuilderTest extends WPTestCase
         
         $mail_builder = new MailBuilder(new WordPressMailer(), $chain);
         
-        $mail_builder->to('foo@web.de')->cc('calvin@web.de')->send(new NamedViewMailable());
+        $mail_builder->to('foo@web.de')->cc('calvin@web.de')->send(new NamedViewEmail());
         
         $this->assertCount(1, $this->mail_data);
     }
@@ -346,7 +346,7 @@ final class MailBuilderTest extends WPTestCase
         $mail_builder = new MailBuilder(new WordPressMailer(), $chain);
         
         $mail_builder->to([['foo@web.de'], ['bar@web.de']])->cc('calvin@web.de')->send(
-            new NamedViewMailable()
+            new NamedViewEmail()
         );
         
         $this->assertCount(2, $this->mail_data);
@@ -357,7 +357,7 @@ final class MailBuilderTest extends WPTestCase
     
 }
 
-class WelcomeEmail extends Mailable
+class WelcomeEmail extends Email
 {
     
     /**
@@ -382,7 +382,7 @@ class WelcomeEmail extends Mailable
     
 }
 
-class PlainTextMail extends Mailable
+class PlainTextMail extends Email
 {
     
     /**
@@ -409,7 +409,7 @@ class PlainTextMail extends Mailable
     
 }
 
-class CustomHeaderMail extends Mailable
+class CustomHeaderMail extends Email
 {
     
     protected $subject = 'foo';
@@ -426,7 +426,7 @@ class CustomHeaderMail extends Mailable
     
 }
 
-class PureHTMLMail extends Mailable
+class PureHTMLMail extends Email
 {
     
     protected $subject = 'foo';
@@ -439,7 +439,7 @@ class PureHTMLMail extends Mailable
     
 }
 
-class PHPMail extends Mailable
+class PHPMail extends Email
 {
     
     public    $foo;
@@ -460,7 +460,7 @@ class PHPMail extends Mailable
     
 }
 
-class IncorrectMail extends Mailable
+class IncorrectMail extends Email
 {
     
     /**
@@ -501,7 +501,7 @@ class IncorrectMail extends Mailable
     
 }
 
-class NamedViewMailable extends Mailable
+class NamedViewEmail extends Email
 {
     
     protected $subject = 'foo';

@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Snicco\Auth\Events;
 
 use WP_User;
-use Snicco\Events\Event;
-use BetterWpHooks\Traits\IsAction;
+use Snicco\EventDispatcher\ClassAsName;
+use Snicco\EventDispatcher\ClassAsPayload;
+use Snicco\EventDispatcher\Contracts\Event;
 
-class Registration extends Event
+class Registration implements Event
 {
     
-    use IsAction;
+    use ClassAsName;
+    use ClassAsPayload;
     
     public WP_User $user;
     

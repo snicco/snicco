@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Tests\integration\ServiceProviders;
 
+use Snicco\Mail\Sender;
 use Tests\stubs\TestApp;
-use Tests\FrameworkTestCase;
-use Snicco\Contracts\Mailer;
 use Snicco\Mail\MailBuilder;
-use Snicco\Listeners\SendMail;
+use Tests\FrameworkTestCase;
 use Snicco\Events\PendingMail;
-use Snicco\Mail\WordPressMailer;
+use Snicco\Mail\Contracts\Mailer;
+use Snicco\Mail\Testing\FakeMailBuilder;
+use Snicco\Mail\Contracts\MailBuilderInterface;
+use Snicco\Mail\Implementations\WordPressMailer;
 
 class MailServiceProviderTest extends FrameworkTestCase
 {
@@ -23,10 +25,34 @@ class MailServiceProviderTest extends FrameworkTestCase
     }
     
     /** @test */
-    public function the_mail_builder_can_be_resolved_correctly()
+    public function the_mail_builder_is__a_singleton()
     {
         $this->bootApp();
-        $this->assertInstanceOf(MailBuilder::class, TestApp::mail());
+        $this->assertInstanceOf(
+            MailBuilder::class,
+            $first = $this->app[MailBuilderInterface::class]
+        );
+        $this->assertInstanceOf(
+            MailBuilder::class,
+            $second = $this->app[MailBuilderInterface::class]
+        );
+        $this->assertSame($first, $second);
+    }
+    
+    /** @test */
+    public function the_fake_mail_builder_is_used_during_unit_testing()
+    {
+        $this->withAddedConfig('app.env', 'testing');
+        $this->bootApp();
+        $this->assertInstanceOf(
+            FakeMailBuilder::class,
+            $first = $this->app[MailBuilderInterface::class]
+        );
+        $this->assertInstanceOf(
+            FakeMailBuilder::class,
+            $second = $this->app[MailBuilderInterface::class]
+        );
+        $this->assertSame($first, $second);
     }
     
     /** @test */
@@ -35,7 +61,7 @@ class MailServiceProviderTest extends FrameworkTestCase
         $this->bootApp();
         $listeners = TestApp::config('events.listeners');
         
-        $this->assertSame([SendMail::class], $listeners[PendingMail::class]);
+        $this->assertSame([Sender::class], $listeners[PendingMail::class]);
     }
     
     /** @test */

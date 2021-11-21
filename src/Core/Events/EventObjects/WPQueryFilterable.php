@@ -2,12 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Events;
+namespace Snicco\Core\Events\EventObjects;
 
 use WP;
 use Snicco\Http\Psr7\Request;
+use Snicco\EventDispatcher\Contracts\MappedFilter;
 
-class WpQueryFilterable extends Event
+class WPQueryFilterable extends CoreEvent implements MappedFilter
 {
     
     public bool    $do_request = true;
@@ -21,7 +22,7 @@ class WpQueryFilterable extends Event
         $this->wp = $wp;
     }
     
-    public function default() :bool
+    public function filterableAttribute()
     {
         return $this->do_request;
     }

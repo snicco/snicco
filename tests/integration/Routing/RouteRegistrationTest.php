@@ -9,8 +9,8 @@ use Snicco\Support\Arr;
 use Tests\stubs\TestApp;
 use Tests\FrameworkTestCase;
 use Snicco\Contracts\ServiceProvider;
-use Snicco\Events\IncomingAjaxRequest;
-use Snicco\Events\IncomingAdminRequest;
+use Snicco\Core\Events\EventObjects\IncomingAjaxRequest;
+use Snicco\Core\Events\EventObjects\IncomingAdminRequest;
 
 class RouteRegistrationTest extends FrameworkTestCase
 {
@@ -102,7 +102,7 @@ class RouteRegistrationTest extends FrameworkTestCase
         
         $this->makeFallbackConditionPass();
         
-        IncomingAdminRequest::dispatch([$request]);
+        $this->dispatcher->dispatch(new IncomingAdminRequest($request));
         
         $this->sentResponse()->assertDelegatedToWordPress();
     }
@@ -114,7 +114,7 @@ class RouteRegistrationTest extends FrameworkTestCase
         $this->bootApp();
         $this->makeFallbackConditionPass();
         
-        IncomingAjaxRequest::dispatch([$request]);
+        $this->dispatcher->dispatch(new IncomingAjaxRequest($request));
         
         $this->sentResponse()->assertDelegatedToWordPress();
     }

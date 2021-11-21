@@ -2,15 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail;
+namespace Snicco\Core\Mail;
 
 use Snicco\Support\WP;
-use Snicco\Contracts\Mailer;
-use Snicco\Listeners\SendMail;
-use Snicco\Events\PendingMail;
+use Snicco\Mail\MailBuilder;
 use Snicco\Application\Config;
+use Snicco\Mail\Contracts\Mailer;
 use Snicco\Contracts\ServiceProvider;
-use BetterWpHooks\Contracts\Dispatcher;
+use Snicco\Mail\Testing\FakeMailBuilder;
+use Snicco\Mail\Contracts\MailBuilderInterface;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Mail\Implementations\WordPressMailer;
 
 class MailServiceProvider extends ServiceProvider
 {
@@ -18,8 +20,8 @@ class MailServiceProvider extends ServiceProvider
     public function register() :void
     {
         $this->bindMailer();
-        $this->bindMailBuilder();
         $this->bindConfig();
+        $this->bindMailBuilder();
     }
     
     public function bootstrap() :void
@@ -32,24 +34,14 @@ class MailServiceProvider extends ServiceProvider
         $this->container->singleton(Mailer::class, fn() => new WordPressMailer());
     }
     
-    private function bindMailBuilder()
-    {
-        $this->container->singleton(MailBuilder::class, function () {
-            return new MailBuilder(
-                $this->container->make(Dispatcher::class),
-                $this->container
-            );
-        });
-    }
-    
     private function bindConfig()
     {
         $this->app->alias('mail', MailBuilder::class);
         $this->config->extend('events.listeners', [
             
-            PendingMail::class => [
-                SendMail::class,
-            ],
+            //PendingMail::class => [
+            //    [Sender::class,
+            //],
         
         ]);
         
@@ -58,6 +50,15 @@ class MailServiceProvider extends ServiceProvider
             fn() => ['name' => WP::siteName(), 'email' => WP::adminEmail()]
         );
         $this->config->extend('mail.reply_to', fn(Config $config) => $config['mail.from']);
+    }
+    
+    private function bindMailBuilder()
+    {
+        $this->container->singleton(MailBuilderInterface::class, function () {
+            return ($this->app->isRunningUnitTest() && class_exists(FakeMailBuilder::class))
+                ? new FakeMailBuilder()
+                : new MailBuilder($this->container[Dispatcher::class], $this->container);
+        });
     }
     
 }

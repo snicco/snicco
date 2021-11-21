@@ -6,9 +6,9 @@ namespace Snicco\Auth\Mail;
 
 use WP_User;
 use Snicco\Support\WP;
-use Snicco\Mail\Mailable;
+use Snicco\Mail\Email;
 
-class MagicLinkLoginMail extends Mailable
+class MagicLinkLoginMail extends Email
 {
     
     public WP_User $user;
@@ -30,7 +30,7 @@ class MagicLinkLoginMail extends Mailable
         return true;
     }
     
-    public function build() :MagicLinkLoginMail
+    public function configure() :MagicLinkLoginMail
     {
         return $this
             ->subject(sprintf(__('[%s] Login Link'), WP::siteName()))

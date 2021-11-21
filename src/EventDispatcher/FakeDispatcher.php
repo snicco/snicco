@@ -59,11 +59,12 @@ final class FakeDispatcher implements Dispatcher
             $payload
         );
         
+        $this->dispatched_events[$_event->getName()][] = [$_event];
+        
         if ($this->shouldFakeEvent($_event->getName())) {
             return $_event;
         }
         
-        $this->dispatched_events[$_event->getName()][] = [$_event];
         // Make sure to pass the arguments unchanged to the dispatcher we are adapting.
         return $this->dispatcher->dispatch($event, ...$payload);
     }
@@ -114,7 +115,7 @@ final class FakeDispatcher implements Dispatcher
     
     /**
      * @param  string|Closure  $event_name
-     * @param  null  $condition  ;
+     * @param  null  $condition
      *
      * @throws ReflectionException
      */
@@ -176,6 +177,14 @@ final class FakeDispatcher implements Dispatcher
                 "The event [$event_name] was dispatched and the condition passed."
             );
         }
+    }
+    
+    public function reset()
+    {
+        $this->events_to_fake = [];
+        $this->fake_all = false;
+        $this->dont_fake = [];
+        $this->dispatched_events = [];
     }
     
     private function shouldFakeEvent(string $event_name) :bool

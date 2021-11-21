@@ -38,7 +38,6 @@ final class EventDispatcher implements Dispatcher
      * @var string[]
      */
     private array $internal_interfaces = [
-        CustomizablePayload::class,
         DispatchesConditionally::class,
         Event::class,
         IsForbiddenToWordPress::class,

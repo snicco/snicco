@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Snicco\Blade;
 
 use Snicco\Events\MakingView;
+use Snicco\Contracts\ViewEngine;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Filesystem\Filesystem;
 use Snicco\Contracts\ServiceProvider;
 use Illuminate\Contracts\View\Factory;
 use Illuminate\View\ViewServiceProvider;
-use Snicco\Contracts\ViewEngine;
 use Snicco\Traits\ReliesOnIlluminateContainer;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Container\Container as IlluminateContainerInterface;
@@ -88,7 +88,9 @@ class BladeServiceProvider extends ServiceProvider
         /** @var Dispatcher $laravel_dispatcher */
         $laravel_dispatcher = $this->container->make('events');
         $laravel_dispatcher->listen('composing:*', function ($event_name, $payload) {
-            MakingView::dispatch([new BladeView($payload[0])]);
+            $this->container[\Snicco\EventDispatcher\Contracts\Dispatcher::class]->dispatch(
+                new MakingView(new BladeView($payload[0]))
+            );
         });
     }
     

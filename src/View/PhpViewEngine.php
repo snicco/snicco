@@ -7,8 +7,9 @@ namespace Snicco\View;
 use Throwable;
 use Snicco\Support\Arr;
 use Snicco\Events\MakingView;
-use Snicco\Contracts\ViewInterface;
 use Snicco\Contracts\ViewEngine;
+use Snicco\Contracts\ViewInterface;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\ExceptionHandling\Exceptions\ViewException;
 use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
 
@@ -16,10 +17,12 @@ class PhpViewEngine implements ViewEngine
 {
     
     private PhpViewFinder $finder;
+    private Dispatcher    $dispatcher;
     
-    public function __construct(PhpViewFinder $finder)
+    public function __construct(PhpViewFinder $finder, Dispatcher $dispatcher)
     {
         $this->finder = $finder;
+        $this->dispatcher = $dispatcher;
     }
     
     public function make($views) :ViewInterface
@@ -75,7 +78,7 @@ class PhpViewEngine implements ViewEngine
     
     private function requireView(PhpView $view)
     {
-        MakingView::dispatch([$view]);
+        $this->dispatcher->dispatch(new MakingView($view));
         
         $this->finder->includeFile(
             $view->path(),
