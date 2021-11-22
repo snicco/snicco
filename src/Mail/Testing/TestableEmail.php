@@ -4,100 +4,112 @@ declare(strict_types=1);
 
 namespace Snicco\Mail\Testing;
 
-use Snicco\Mail\ValueObjects\CC;
-use Snicco\Mail\ValueObjects\CCs;
-use Snicco\Mail\ValueObjects\BCC;
-use Snicco\Mail\ValueObjects\BCCs;
-use Snicco\Mail\ValueObjects\From;
 use Snicco\Mail\ValueObjects\Address;
-use Snicco\Mail\ValueObjects\ReplyTo;
-use Snicco\Mail\ValueObjects\Recipient;
+use Snicco\Mail\ValueObjects\Envelope;
 use Snicco\Mail\Contracts\ImmutableEmail;
-use Snicco\Mail\ValueObjects\Recipients;
 
 final class TestableEmail implements ImmutableEmail
 {
     
-    private ImmutableEmail $mail;
-    private Recipients     $recipients;
-    private CCs            $ccs;
-    private BCCs           $bccs;
+    use InspectRecipients;
     
-    public function __construct(ImmutableEmail $mail, Recipients $recipients, CCs $ccs, BCCs $bccs)
+    /**
+     * @var ImmutableEmail
+     */
+    private $mail;
+    /**
+     * @var Envelope
+     */
+    private $envelope;
+    
+    public function __construct(ImmutableEmail $mail, Envelope $envelope)
     {
         $this->mail = $mail;
-        $this->recipients = $recipients;
-        $this->ccs = $ccs;
-        $this->bccs = $bccs;
+        $this->envelope = $envelope;
+        $this->to = $this->mail->getTo();
+        $this->cc = $this->mail->getCc();
+        $this->bcc = $this->mail->getBcc();
     }
     
-    public function hasTo($recipient, bool $compare_email_only = true) :bool
+    public function getEnvelope() :Envelope
     {
-        $expected_recipient = Address::normalize($recipient, Recipient::class);
-        
-        foreach ($this->recipients->getValid()->toArray() as $recipient) {
-            if ($expected_recipient->formatted() !== $recipient->formatted()
-                && ! $compare_email_only) {
-                continue;
-            }
-            
-            if ($expected_recipient->getEmail() === $recipient->getEmail()) {
-                return true;
-            }
-        }
-        
-        return false;
+        return $this->envelope;
     }
     
-    public function hasCC($recipient, $compare_email_only = true) :bool
+    /**
+     * @inheritdoc
+     */
+    public function getAttachments() :array
     {
-        $expected_cc = Address::normalize($recipient, CC::class);
-        
-        foreach ($this->ccs->getValid()->toArray() as $cc) {
-            if ($expected_cc->formatted() !== $cc->formatted()
-                && ! $compare_email_only) {
-                continue;
-            }
-            
-            if ($expected_cc->getEmail() === $cc->getEmail()) {
-                return true;
-            }
-        }
-        
-        return false;
+        return $this->mail->getAttachments();
     }
     
-    public function hasBcc($recipient, $compare_email_only = true)
+    /**
+     * @inheritdoc
+     */
+    public function getBcc() :array
     {
-        $expected_bcc = Address::normalize($recipient, BCC::class);
-        
-        foreach ($this->bccs->getValid()->toArray() as $bcc) {
-            if ($expected_bcc->formatted() !== $bcc->formatted()
-                && ! $compare_email_only) {
-                continue;
-            }
-            
-            if ($expected_bcc->getEmail() === $bcc->getEmail()) {
-                return true;
-            }
-        }
-        
-        return false;
+        return $this->mail->getBcc();
     }
     
-    public function getFrom() :From
+    /**
+     * @inheritdoc
+     */
+    public function getCc() :array
+    {
+        return $this->mail->getCc();
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function getTo() :array
+    {
+        return $this->mail->getTo();
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function getFrom() :array
     {
         return $this->mail->getFrom();
     }
     
-    public function getReplyTo() :ReplyTo
+    /**
+     * @inheritdoc
+     */
+    public function getHtmlBody()
+    {
+        return $this->mail->getHtmlBody();
+    }
+    
+    public function getHtmlCharset() :?string
+    {
+        return $this->mail->getHtmlCharset();
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function getReplyTo() :array
     {
         return $this->mail->getReplyTo();
     }
     
-    public function getContentType() :string
+    public function getPriority() :?int
     {
-        return $this->mail->getContentType();
+        return $this->mail->getPriority();
+    }
+    
+    public function getReturnPath() :?Address
+    {
+        return $this->mail->getReturnPath();
+    }
+    
+    public function getSender() :?Address
+    {
+        return $this->mail->getSender();
     }
     
     public function getSubject() :string
@@ -105,14 +117,48 @@ final class TestableEmail implements ImmutableEmail
         return $this->mail->getSubject();
     }
     
-    public function getMessage() :string
+    /**
+     * @inheritdoc
+     */
+    public function getTextBody()
     {
-        return $this->mail->getMessage();
+        return $this->mail->getTextBody();
     }
     
-    public function getAttachments() :array
+    public function getTextCharset() :?string
     {
-        return $this->mail->getAttachments();
+        return $this->mail->getTextCharset();
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function getCustomHeaders() :array
+    {
+        return $this->mail->getCustomHeaders();
+    }
+    
+    /**
+     * @inheritdoc
+     */
+    public function getCid(string $filename) :string
+    {
+        return $this->mail->getCid($filename);
+    }
+    
+    public function getContext() :array
+    {
+        return $this->mail->getContext();
+    }
+    
+    public function getHtmlTemplate() :?string
+    {
+        return $this->mail->getHtmlTemplate();
+    }
+    
+    public function getTextTemplate() :?string
+    {
+        return $this->mail->getTextTemplate();
     }
     
 }

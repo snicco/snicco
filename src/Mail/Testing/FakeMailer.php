@@ -5,17 +5,11 @@ declare(strict_types=1);
 namespace Snicco\Mail\Testing;
 
 use Closure;
-use Snicco\Mail\ValueObjects\CC;
+use WP_User;
 use Snicco\Mail\Contracts\Mailer;
-use Snicco\Mail\ValueObjects\CCs;
-use Snicco\Mail\ValueObjects\BCC;
-use Snicco\Mail\ValueObjects\BCCs;
-use Snicco\Mail\ValueObjects\From;
 use Snicco\Mail\ValueObjects\Address;
-use Snicco\Mail\ValueObjects\ReplyTo;
+use Snicco\Mail\ValueObjects\Envelope;
 use PHPUnit\Framework\Assert as PHPUnit;
-use Snicco\Mail\ValueObjects\Recipient;
-use Snicco\Mail\ValueObjects\Recipients;
 use Snicco\Mail\Contracts\ImmutableEmail;
 
 use function add_filter;
@@ -28,15 +22,9 @@ final class FakeMailer implements Mailer
      */
     private $sent_mails;
     
-    /**
-     * @param  ImmutableEmail  $mail
-     * @param  Recipients  $recipients
-     * @param  CCs  $ccs
-     * @param  BCCs  $bcc
-     */
-    public function send(ImmutableEmail $mail, Recipients $recipients, CCs $ccs, BCCs $bcc) :void
+    public function send(ImmutableEmail $email, Envelope $envelope) :void
     {
-        $this->recordMail($mail, $recipients, $ccs, $bcc);
+        $this->recordMail($email, $envelope);
     }
     
     public function interceptWordPressEmails()
@@ -91,9 +79,13 @@ final class FakeMailer implements Mailer
         );
     }
     
+    /**
+     * @param  string|WP_User|array<string,<string>  $recipient
+     * @param  string  $mailable_class
+     */
     public function assertSentTo($recipient, string $mailable_class)
     {
-        $expected_recipient = Address::normalize($recipient, Recipient::class)->formatted();
+        $expected_recipient = Address::create($recipient)->toString();
         
         PHPUnit::assertTrue(
             $this->wasSentTo($mailable_class, $expected_recipient),
@@ -101,18 +93,24 @@ final class FakeMailer implements Mailer
         );
     }
     
+    /**
+     * @param  string|WP_User|array<string,<string>  $recipient
+     */
     public function assertSentToExact($recipient, string $mailable_class)
     {
-        $expected_recipient = Address::normalize($recipient, Recipient::class)->formatted();
+        $expected_recipient = Address::create($recipient)->toString();
         PHPUnit::assertTrue(
             $this->wasSentTo($mailable_class, $expected_recipient, false),
             'No mailable of type ['.$mailable_class."] was sent to [$expected_recipient]."
         );
     }
     
+    /**
+     * @param  string|WP_User|array<string,<string>  $recipient
+     */
     public function assertNotSentTo($recipient, string $mailable_class)
     {
-        $expected_recipient = Address::normalize($recipient, Recipient::class)->formatted();
+        $expected_recipient = Address::create($recipient)->toString();
         PHPUnit::assertFalse(
             $this->wasSentTo($mailable_class, $expected_recipient),
             'A mailable of type ['.$mailable_class."] was sent to [$expected_recipient]."
@@ -145,9 +143,15 @@ final class FakeMailer implements Mailer
         return $matching;
     }
     
-    private function getTestableMail(array $data) :TestableEmail
+    private function getTestableMail(array $data)
     {
-        return new TestableEmail($data['mail'], $data['recipients'], $data['ccs'], $data['bccs']);
+        $email = $data['email'];
+        
+        if ($email instanceof WordPressMail) {
+            return $email;
+        }
+        
+        return new TestableEmail($email, $data['envelope']);
     }
     
     private function wasSentTo(string $mailable_class, $recipient, bool $email_only = true) :bool
@@ -157,12 +161,7 @@ final class FakeMailer implements Mailer
         }
         
         foreach ($this->sent_mails[$mailable_class] as $data) {
-            $testable_mail = new TestableEmail(
-                $data['mail'],
-                $data['recipients'],
-                $data['ccs'],
-                $data['bccs']
-            );
+            $testable_mail = $this->getTestableMail($data);
             
             if ($testable_mail->hasTo($recipient, $email_only)) {
                 return true;
@@ -172,60 +171,72 @@ final class FakeMailer implements Mailer
         return false;
     }
     
-    private function recordMail(ImmutableEmail $mail, Recipients $recipients, CCs $ccs, BCCs $bcc)
+    private function recordMail($email, Envelope $envelope)
     {
-        $class = get_class($mail);
+        $class = get_class($email);
         
         $this->sent_mails[$class][] = [
-            'mail' => $mail,
-            'recipients' => $recipients,
-            'ccs' => $ccs,
-            'bccs' => $bcc,
+            'email' => $email,
+            'envelope' => $envelope,
         ];
     }
     
     private function recordWPMail(array $attributes)
     {
-        $recipients = [];
+        $to = [];
         foreach ((array) $attributes['to'] as $recipient) {
-            $recipients[] = Address::normalize($recipient, Recipient::class);
+            $to[] = Address::create($recipient);
         }
         
         $headers = (array) $attributes['headers'];
         $carbon_copies = [];
         $blind_carbon_copies = [];
         
-        $from = null;
-        $reply_to = null;
+        $reply_to = [];
         $attachments = [];
+        $sitename = wp_parse_url(network_home_url(), PHP_URL_HOST);
+        if ('www.' === substr($sitename, 0, 4)) {
+            $sitename = substr($sitename, 4);
+        }
+        $from = 'wordpress@'.$sitename;
         
         foreach (($headers) as $header) {
             if (strpos($header, 'Cc:') !== false) {
-                $carbon_copies[] = Address::normalize($header, CC::class);
+                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
+                $carbon_copies[] = Address::create($matches['value']);
             }
             if (strpos($header, 'Bcc:') !== false) {
-                $blind_carbon_copies[] = Address::normalize($header, BCC::class);
+                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
+                $blind_carbon_copies[] = Address::create($matches['value']);
             }
             
             if (strpos($header, 'From:') !== false) {
-                $from = Address::normalize($header, From::class);
+                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
+                $from = $matches['value'];
             }
             if (strpos($header, 'Reply-To:') !== false) {
-                $reply_to = Address::normalize($header, ReplyTo::class);
+                preg_match('/\w+:\s(?<value>.+)/', $header, $matches);
+                $reply_to[] = Address::create($matches['value']);
             }
         }
         
+        $from = apply_filters('wp_mail_from', $from);
+        $from = Address::create($from);
+        
+        $recipients = array_merge($to, $carbon_copies, $blind_carbon_copies);
+        
         $this->recordMail(
-            new WordPressTestMail(
+            new WordPressMail(
                 $attributes['subject'],
                 $attributes['message'],
-                $from,
+                $to,
+                $carbon_copies,
+                $blind_carbon_copies,
+                [$from],
                 $reply_to,
                 $attachments
             ),
-            new Recipients(...$recipients),
-            new CCs(...$carbon_copies),
-            new BCCs(...$blind_carbon_copies)
+            new Envelope($from, ...$recipients)
         );
     }
     
