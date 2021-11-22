@@ -9,9 +9,8 @@ use Snicco\Mail\MailBuilder;
 use Snicco\Mail\Testing\FakeMailer;
 use Codeception\TestCase\WPTestCase;
 use Snicco\Mail\Testing\TestableEmail;
-use Snicco\Mail\ValueObjects\Recipient;
+use Snicco\Mail\Testing\WordPressMail;
 use Tests\concerns\AssertPHPUnitFailures;
-use Snicco\Mail\Testing\WordPressTestMail;
 use Snicco\Testing\Concerns\InteractsWithWordpressUsers;
 
 final class FakeMailerTest extends WPTestCase
@@ -25,7 +24,10 @@ final class FakeMailerTest extends WPTestCase
      */
     private $mail_data = [];
     
-    private FakeMailer $fake_mailer;
+    /**
+     * @var FakeMailer
+     */
+    private $fake_mailer;
     
     protected function setUp() :void
     {
@@ -86,14 +88,14 @@ final class FakeMailerTest extends WPTestCase
             $this->fake_mailer->assertSentTimes(TestMail::class, 1);
         }, 'No mailable of type ['.TestMail::class.'] sent.');
         
-        // Two unique emails are sent.
+        // 1 unique emails is sent.
         $mail_builder->to([['calvin@web.de'], ['marlon@web.de']])->send(new TestMail());
         
         $this->assertFailing(function () {
-            $this->fake_mailer->assertSentTimes(TestMail::class, 3);
-        }, "The mailable [".TestMail::class."] was sent [2] time[s].");
+            $this->fake_mailer->assertSentTimes(TestMail::class, 2);
+        }, "The mailable [".TestMail::class."] was sent [1] time[s].");
         
-        $this->fake_mailer->assertSentTimes(TestMail::class, 2);
+        $this->fake_mailer->assertSentTimes(TestMail::class, 1);
     }
     
     /** @test */
@@ -179,10 +181,9 @@ final class FakeMailerTest extends WPTestCase
         $fake_builder->interceptWordPressEmails();
         
         $count = 0;
-        add_filter('wp_mail_from', function ($from) use (&$count) {
+        add_action('phpmailer_init', function () use (&$count) {
             $count++;
-            return $from;
-        }, PHP_INT_MAX, 2);
+        }, PHP_INT_MAX);
         
         wp_mail('calvin@web.de', 'subject', 'message');
         $mail_builder->to('calvin@web.de')->send(new TestMail());
@@ -211,37 +212,37 @@ final class FakeMailerTest extends WPTestCase
     {
         $this->fake_mailer->interceptWordPressEmails();
         
-        $this->fake_mailer->assertNotSent(WordPressTestMail::class);
+        $this->fake_mailer->assertNotSent(WordPressMail::class);
         
         wp_mail('calvin@web.de', 'subject', 'message');
         
-        $this->fake_mailer->assertSent(WordPressTestMail::class);
-        $this->fake_mailer->assertSentTo('calvin@web.de', WordPressTestMail::class);
-        $this->fake_mailer->assertNotSentTo('marlon@web.de', WordPressTestMail::class);
-        $this->fake_mailer->assertSentTimes(WordPressTestMail::class, 1);
+        $this->fake_mailer->assertSent(WordPressMail::class);
+        $this->fake_mailer->assertSentTo('calvin@web.de', WordPressMail::class);
+        $this->fake_mailer->assertNotSentTo('marlon@web.de', WordPressMail::class);
+        $this->fake_mailer->assertSentTimes(WordPressMail::class, 1);
         
         $this->fake_mailer->reset();
         
         wp_mail(['calvin@web.de', 'marlon@web.de'], 'subject', 'message');
         
-        $this->fake_mailer->assertSent(WordPressTestMail::class);
-        $this->fake_mailer->assertSentTo('calvin@web.de', WordPressTestMail::class);
-        $this->fake_mailer->assertSentTo('marlon@web.de', WordPressTestMail::class);
-        $this->fake_mailer->assertSentTimes(WordPressTestMail::class, 1);
+        $this->fake_mailer->assertSent(WordPressMail::class);
+        $this->fake_mailer->assertSentTo('calvin@web.de', WordPressMail::class);
+        $this->fake_mailer->assertSentTo('marlon@web.de', WordPressMail::class);
+        $this->fake_mailer->assertSentTimes(WordPressMail::class, 1);
         
         $this->fake_mailer->reset();
         
         wp_mail('Calvin Alkan <calvin@web.de>', 'subject', 'message');
-        $this->fake_mailer->assertSentTimes(WordPressTestMail::class, 1);
-        $this->fake_mailer->assertSentTo('Calvin Alkan <calvin@web.de>', WordPressTestMail::class);
+        $this->fake_mailer->assertSentTimes(WordPressMail::class, 1);
+        $this->fake_mailer->assertSentTo('Calvin Alkan <calvin@web.de>', WordPressMail::class);
         
         $this->fake_mailer->reset();
         wp_mail('Calvin Alkan <calvin@web.de>', 'subject', 'message');
         wp_mail('Marlon Alkan <marlon@web.de>', 'subject', 'message');
         
-        $this->fake_mailer->assertSentTimes(WordPressTestMail::class, 2);
-        $this->fake_mailer->assertSentTo('calvin@web.de', WordPressTestMail::class);
-        $this->fake_mailer->assertSentTo('marlon@web.de', WordPressTestMail::class);
+        $this->fake_mailer->assertSentTimes(WordPressMail::class, 2);
+        $this->fake_mailer->assertSentTo('calvin@web.de', WordPressMail::class);
+        $this->fake_mailer->assertSentTo('marlon@web.de', WordPressMail::class);
     }
     
     /** @test */
@@ -280,7 +281,7 @@ final class FakeMailerTest extends WPTestCase
         
         $this->fake_mailer->assertSent(TestMail::class, function (TestableEmail $mail) {
             return $mail->hasTo('calvinalkan@web.de')
-                   && $mail->getFrom()->getName()
+                   && $mail->getFrom()[0]->getName()
                       === 'Calvin INC';
         });
     }
@@ -315,14 +316,43 @@ final class FakeMailerTest extends WPTestCase
         );
     }
     
+    /** @test */
+    public function testAssertSentWithClosureAndWordPressEmail()
+    {
+        $this->fake_mailer->interceptWordPressEmails();
+        
+        $this->fake_mailer->assertNotSent(WordPressMail::class);
+        
+        wp_mail(
+            'calvin@web.de',
+            'subject',
+            'message',
+            [
+                'From: My Company <mycompany@web.de>',
+                'Reply-To: Office <office@mycompany.de>',
+                'Bcc: Jon Doe <jon@web.de>',
+                'Cc: Jane Doe <jane@web.de>',
+            ]
+        );
+        
+        $this->fake_mailer->assertSent(WordPressMail::class, function (WordPressMail $email) {
+            return $email->hasTo('calvin@web.de')
+                   && $email->hasCC('Jane Doe <jane@web.de>')
+                   && $email->hasBcc('jon@web.de')
+                   && $email->getSubject() === 'subject'
+                   && $email->getReplyTo()[0]->getName() === 'Office'
+                   && $email->getFrom()[0]->toString() === 'My Company <mycompany@web.de>';
+        });
+    }
+    
 }
 
 class TestMail extends Email
 {
     
-    public function configure(Recipient $recipient) :void
+    public function configure() :void
     {
-        $this->subject('subject')->message('foo')->from('calvincorp@info.de', 'Calvin INC');
+        $this->subject('subject')->text('foo')->addFrom('calvincorp@info.de', 'Calvin INC');
     }
     
 }
@@ -330,9 +360,9 @@ class TestMail extends Email
 class DifferentTestMail extends Email
 {
     
-    public function configure(Recipient $recipient) :void
+    public function configure() :void
     {
-        $this->subject('subject')->message('foo');
+        $this->subject('subject')->text('foo');
     }
     
 }

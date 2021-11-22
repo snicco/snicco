@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\Implementations;
+namespace Snicco\Mail\Renderer;
 
 use Snicco\Mail\Contracts\MailRenderer;
 
@@ -13,17 +13,17 @@ final class FilesystemRenderer implements MailRenderer
 {
     
     /**
-     * @param  string  $view
+     * @param  string  $template_name
      * @param  array  $context
      *
-     * @return string
+     * @return string|resource
      */
-    public function getMailContent(string $view, array $context = []) :string
+    public function getMailContent(string $template_name, array $context = []) :string
     {
         ob_start();
-        (static function () use ($view, $context) {
+        (static function () use ($template_name, $context) {
             extract($context, EXTR_SKIP);
-            require $view;
+            require $template_name;
         })();
         return ob_get_clean();
     }

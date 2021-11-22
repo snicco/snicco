@@ -4,37 +4,43 @@ declare(strict_types=1);
 
 namespace Tests\integration\Mail;
 
+use WP_Error;
+use MockPHPMailer;
 use LogicException;
-use Snicco\Mail\Email;
 use Snicco\Mail\MailBuilder;
-use Snicco\Mail\DefaultConfig;
 use Codeception\TestCase\WPTestCase;
-use Snicco\Mail\ValueObjects\Recipient;
 use Snicco\Mail\Contracts\MailRenderer;
-use Snicco\Mail\Implementations\WordPressMailer;
+use Snicco\Mail\Mailer\WordPressMailer;
+use Snicco\Mail\ValueObjects\DefaultConfig;
+use Snicco\Mail\Renderer\AggregateRenderer;
+use Snicco\Mail\Renderer\FilesystemRenderer;
 use Snicco\Mail\Exceptions\MailRenderingException;
-use Snicco\Mail\Implementations\AggregateRenderer;
-use Snicco\Mail\Implementations\FilesystemRenderer;
+use Tests\integration\Mail\fixtures\Emails\HtmlMail;
+use Snicco\Mail\Exceptions\WPMailTransportException;
 use Snicco\Testing\Concerns\InteractsWithWordpressUsers;
+use Tests\integration\Mail\fixtures\Emails\WelcomeEmail;
+use Tests\integration\Mail\fixtures\Emails\PlainTextMail;
+use Tests\integration\Mail\fixtures\Emails\MultiPartEmail;
+use Tests\integration\Mail\fixtures\Emails\CustomSenderMail;
+use Tests\integration\Mail\fixtures\Emails\ImageAttachmentMail;
+use Tests\integration\Mail\fixtures\Emails\InMemoryAttachmentMail;
+use Tests\integration\Mail\fixtures\Emails\CombinedAttachmentMail;
+use Tests\integration\Mail\fixtures\Emails\EmbeddedByPathAttachmentMail;
+use Tests\integration\Mail\fixtures\Emails\InlineAttachmentCIDTemplateMail;
+use Tests\integration\Mail\fixtures\Emails\EmbeddedFromMemoryAttachmentMail;
 
 final class MailBuilderTest extends WPTestCase
 {
     
     use InteractsWithWordpressUsers;
     
-    /**
-     * @var array
-     */
-    private $mail_data = [];
-    
     protected function setUp() :void
     {
         parent::setUp();
-        $this->mail_data = [];
-        add_filter('pre_wp_mail', function ($null, array $wp_mail_input) {
-            $this->mail_data[] = $wp_mail_input;
-            return true;
-        }, 10, 2);
+        global $phpmailer;
+        
+        $phpmailer = new MockPHPMailer(true);
+        $phpmailer->mock_sent = [];
     }
     
     /** @test */
@@ -45,88 +51,90 @@ final class MailBuilderTest extends WPTestCase
         $admin1 = $this->createAdmin(['user_email' => 'admin1@web.de', 'display_name' => 'admin1']);
         $admin2 = $this->createAdmin(['user_email' => 'admin2@web.de', 'display_name' => 'admin2']);
         
-        $mail_builder->to(['c@web.de', 'Calvin Alkan'])
-                     ->cc([['jon@web.de', 'Jon'], ['jane@web.de', 'Jane Doe']])
+        $mail_builder->to([['c@web.de', 'Calvin Alkan'], ['m@web.de', 'Marlon Alkan']])
+                     ->cc([['name' => 'Jon', 'email' => 'jon@web.de'], ['jane@web.de', 'Jane Doe']])
                      ->bcc([$admin1, $admin2])
-                     ->send(new WelcomeEmail());
+                     ->send(new fixtures\Emails\WelcomeEmail('Calvin'));
         
-        $data = $this->mail_data[0];
+        $data = $this->getSentMails()[0];
+        $header = $data['header'];
         
-        $this->assertSame('Calvin Alkan <c@web.de>', $data['to'][0]);
-        $this->assertSame('Hi Calvin Alkan', $data['subject']);
-        $this->assertSame('whats up.', $data['message']);
-        
-        $headers = $data['headers'];
-        
-        $this->assertContains('Content-Type: text/html; charset=UTF-8', $headers);
-        $this->assertContains('Cc: Jon <jon@web.de>', $headers);
-        $this->assertContains('Cc: Jane Doe <jane@web.de>', $headers);
-        $this->assertContains('Bcc: Admin1 <admin1@web.de>', $headers);
-        $this->assertContains('Bcc: Admin2 <admin2@web.de>', $headers);
+        $this->assertSame('Hi Calvin', $data['subject']);
+        $this->assertSame('hey whats up.', trim($data['body'], "\n"));
+        $this->assertStringContainsString(
+            'To: Calvin Alkan <c@web.de>, Marlon Alkan <m@web.de>',
+            $header
+        );
+        $this->assertStringContainsString('Content-Type: text/html; charset=utf-8', $header);
+        $this->assertStringContainsString('Cc: Jon <jon@web.de>, Jane Doe <jane@web.de>', $header);
+        $this->assertStringContainsString(
+            'Bcc: Admin1 <admin1@web.de>, Admin2 <admin2@web.de>',
+            $header
+        );
     }
     
     /** @test */
-    public function sending_to_multiple_recipients_works()
-    {
-        $mail_builder = new MailBuilder(new WordPressMailer());
-        
-        $mail_builder->to([
-            ['c@web.de', 'Calvin Alkan'],
-            ['m@web.de', 'Marlon Alkan'],
-        ])->cc([['jon@web.de', 'Jon'], ['jane@web.de', 'Jane Doe']])->send(new WelcomeEmail());
-        
-        $first_email = $this->mail_data[0];
-        
-        $this->assertSame('Calvin Alkan <c@web.de>', $first_email['to'][0]);
-        $this->assertSame('Hi Calvin Alkan', $first_email['subject']);
-        $this->assertSame('whats up.', $first_email['message']);
-        
-        $headers = $first_email['headers'];
-        
-        $this->assertContains('Content-Type: text/html; charset=UTF-8', $headers);
-        $this->assertContains('Cc: Jon <jon@web.de>', $headers);
-        $this->assertContains('Cc: Jane Doe <jane@web.de>', $headers);
-        
-        $second_email = $this->mail_data[1];
-        
-        $this->assertSame('Marlon Alkan <m@web.de>', $second_email['to'][0]);
-        $this->assertSame('Hi Marlon Alkan', $second_email['subject']);
-        $this->assertSame('whats up.', $second_email['message']);
-        
-        $headers = $second_email['headers'];
-        
-        $this->assertContains('Content-Type: text/html; charset=UTF-8', $headers);
-        $this->assertContains('Cc: Jon <jon@web.de>', $headers);
-        $this->assertContains('Cc: Jane Doe <jane@web.de>', $headers);
-    }
-    
-    /** @test */
-    public function other_headers_are_added()
+    public function default_headers_are_added_if_not_configured_on_the_sending_mail()
     {
         $config = new DefaultConfig(
-            'Calvin INC.',
             'no-reply@inc.de',
-            'Office Calvin INC.',
-            'office@inc.de'
+            'Calvin INC',
+            'office@inc.de',
+            'Office Calvin INC',
         );
-        $mail_builder = new MailBuilder(new WordPressMailer(), new FilesystemRenderer(), $config);
+        
+        $mail_builder =
+            new MailBuilder(new WordPressMailer(), new FilesystemRenderer(), null, $config);
         
         $mail_builder->to(['name' => 'Calvin Alkan', 'email' => 'c@web.de'])->send(
-            new WelcomeEmail(__FILE__)
+            new fixtures\Emails\WelcomeEmail()
         );
         
-        $first_email = $this->mail_data[0];
+        $data = $this->getSentMails()[0];
+        $headers = $data['header'];
         
-        $this->assertSame('Calvin Alkan <c@web.de>', $first_email['to'][0]);
-        $this->assertSame('Hi Calvin Alkan', $first_email['subject']);
-        $this->assertSame('whats up.', $first_email['message']);
+        $this->assertStringContainsString('To: Calvin Alkan <c@web.de>', $headers);
+        $this->assertStringContainsString('From: Calvin INC <no-reply@inc.de>', $headers);
+        $this->assertStringContainsString('Reply-To: Office Calvin INC <office@inc.de>', $headers);
+    }
+    
+    /** @test */
+    public function multiple_reply_to_addresses_can_be_added()
+    {
+        $mail = new MailBuilder();
         
-        $headers = $first_email['headers'];
+        $mail->to('client@web.de')->send(
+            new fixtures\Emails\ReplyToMultipleMail()
+        );
         
-        $this->assertContains('From: Calvin INC. <no-reply@inc.de>', $headers);
-        $this->assertContains('Reply-To: Office Calvin INC. <office@inc.de>', $headers);
+        $data = $this->getSentMails()[0];
+        $headers = $data['header'];
         
-        $this->assertContains(__FILE__, $first_email['attachments']);
+        $this->assertStringContainsString('To: client@web.de', $headers);
+        $this->assertStringContainsString(
+            'Reply-To: Calvin Alkan <c@web.de>, Marlon Alkan <m@web.de>',
+            $headers
+        );
+    }
+    
+    /** @test */
+    public function plain_text_messages_can_be_sent()
+    {
+        $mail_builder = new MailBuilder();
+        
+        $mail_builder->to(['name' => 'Calvin Alkan', 'email' => 'c@web.de'])->send(
+            new fixtures\Emails\PlainTextMail('PLAIN_TEXT')
+        );
+        
+        $first_email = $this->getSentMails()[0];
+        $header = $first_email['header'];
+        
+        $this->assertStringContainsString('To: Calvin Alkan <c@web.de>', $header);
+        $this->assertStringContainsString('Subject: Hello', $header);
+        $this->assertStringContainsString('Content-Type: text/plain; charset=utf-8', $header);
+        $this->assertStringNotContainsString('text/html', $header);
+        
+        $this->assertStringContainsString("PLAIN_TEXT", $first_email['body']);
     }
     
     /** @test */
@@ -135,38 +143,80 @@ final class MailBuilderTest extends WPTestCase
         $mail_builder = new MailBuilder();
         
         $mail_builder->to(['name' => 'Calvin Alkan', 'email' => 'c@web.de'])->send(
-            new PlainTextMail()
+            new fixtures\Emails\PlainTextMail()
         );
         
-        $first_email = $this->mail_data[0];
+        $first_email = $this->getSentMails()[0];
+        $header = $first_email['header'];
         
-        $this->assertSame('Calvin Alkan <c@web.de>', $first_email['to'][0]);
-        $this->assertSame('Hello', $first_email['subject']);
-        $this->assertSame("Hello, what's up my man.", $first_email['message']);
+        $this->assertStringContainsString('To: Calvin Alkan <c@web.de>', $header);
+        $this->assertStringContainsString('Subject: Hello', $header);
+        $this->assertStringContainsString('Content-Type: text/plain; charset=utf-8', $header);
+        $this->assertStringNotContainsString('text/html', $header);
         
-        $headers = $first_email['headers'];
-        
-        $this->assertContains('Content-Type: text/plain; charset=UTF-8', $headers);
+        $this->assertStringContainsString("Hello, what's up my man.", $first_email['body']);
     }
     
     /** @test */
-    public function plain_text_mails_can_be_set_inline()
+    public function plain_text_messages_can_be_a_resource()
     {
         $mail_builder = new MailBuilder();
         
         $mail_builder->to(['name' => 'Calvin Alkan', 'email' => 'c@web.de'])->send(
-            new PlainTextMail('YOOOOOO.')
+            new fixtures\Emails\PlainTextResourceEmail()
         );
         
-        $first_email = $this->mail_data[0];
+        $first_email = $this->getSentMails()[0];
+        $header = $first_email['header'];
         
-        $this->assertSame('Calvin Alkan <c@web.de>', $first_email['to'][0]);
-        $this->assertSame('Hello', $first_email['subject']);
-        $this->assertSame("YOOOOOO.", $first_email['message']);
+        $this->assertStringContainsString('To: Calvin Alkan <c@web.de>', $header);
+        $this->assertStringContainsString('Content-Type: text/plain; charset=utf-8', $header);
+        $this->assertStringNotContainsString('text/html', $header);
         
-        $headers = $first_email['headers'];
+        $this->assertStringContainsString("Hello, what's up my man.", $first_email['body']);
+    }
+    
+    /** @test */
+    public function a_html_mail_can_be_sent()
+    {
+        $mail_builder = new MailBuilder();
         
-        $this->assertContains('Content-Type: text/plain; charset=UTF-8', $headers);
+        $mail_builder->to(['name' => 'Calvin Alkan', 'email' => 'c@web.de'])->send(
+            new HtmlMail()
+        );
+        
+        $first_email = $this->getSentMails()[0];
+        $header = $first_email['header'];
+        
+        $this->assertStringContainsString('To: Calvin Alkan <c@web.de>', $header);
+        $this->assertStringContainsString('Subject: Hi', $header);
+        $this->assertStringContainsString('Content-Type: text/html; charset=utf-8', $header);
+        $this->assertStringNotContainsString("text/plain", $header);
+        
+        $this->assertStringContainsString('<h1>Hello World</h1>', $first_email['body']);
+    }
+    
+    /** @test */
+    public function a_html_email_can_be_created_with_a_template_and_all_public_properties_and_additional_data_are_passed()
+    {
+        $mail_builder = new MailBuilder();
+        $mail_builder->to(['name' => 'Calvin Alkan', 'email' => 'c@web.de'])->send(
+            new fixtures\Emails\PHPMail('FOO', 'BAR')
+        );
+        
+        $first_email = $this->getSentMails()[0];
+        
+        $this->assertSame(
+            '<h1>Hi</h1><p>FOO</p><p>BAR_NOT_AVAILABLE_CAUSE_PRIVATE_PROPERTY</p><p>BAZ</p>',
+            str_replace("\n", '', $first_email['body'])
+        );
+        
+        $header = $first_email['header'];
+        
+        $this->assertStringContainsString('To: Calvin Alkan <c@web.de>', $header);
+        $this->assertStringContainsString('Subject: Hello Calvin', $header);
+        $this->assertStringContainsString('Content-Type: text/html; charset=utf-8', $header);
+        $this->assertStringNotContainsString('text/plain', $header);
     }
     
     /** @test */
@@ -178,13 +228,13 @@ final class MailBuilderTest extends WPTestCase
         $mail_builder = new MailBuilder();
         
         $mail_builder->to(['name' => 'Calvin Alkan', 'email' => 'c@web.de'])->send(
-            new PlainTextMail('YOOOOOO.')
+            new fixtures\Emails\PlainTextMail('YOOOOOO.')
         );
         
-        $headers = $this->mail_data[0]['headers'];
+        $header = $this->getSentMails()[0]['header'];
         
-        $this->assertContains("From: $site_name <$admin_email>", $headers);
-        $this->assertContains("Reply-To: $site_name <$admin_email>", $headers);
+        $this->assertStringContainsString("From: $site_name <$admin_email>", $header);
+        $this->assertStringContainsString("Reply-To: $site_name <$admin_email>", $header);
     }
     
     /** @test */
@@ -192,19 +242,17 @@ final class MailBuilderTest extends WPTestCase
     {
         $mail_builder = new MailBuilder();
         
-        $mail_builder->to('client@web.de')->send(new CustomHeaderMail());
+        $mail_builder->to('client@web.de')->send(new fixtures\Emails\CustomHeaderMail());
         
-        $mail = $this->mail_data[0];
+        $mail = $this->getSentMails()[0];
         
-        $this->assertSame('client@web.de', $mail['to'][0]);
-        $this->assertSame('foo', $mail['subject']);
-        $this->assertSame('bar', $mail['message']);
+        $header = $mail['header'];
         
-        $headers = $mail['headers'];
-        
-        $this->assertContains('Content-Type: text/plain; charset=UTF-8', $headers);
-        $this->assertContains('From: Calvin Alkan <calvin@web.de>', $headers);
-        $this->assertContains('Reply-To: Marlon Alkan <marlon@web.de>', $headers);
+        $this->assertStringContainsString('Content-Type: text/plain; charset=utf-8', $header);
+        $this->assertStringContainsString('From: Calvin Alkan <calvin@web.de>', $header);
+        $this->assertStringContainsString('Reply-To: Marlon Alkan <marlon@web.de>', $header);
+        $this->assertStringContainsString('Subject: foo', $header);
+        $this->assertStringStartsWith('bar', $mail['body']);
     }
     
     /** @test */
@@ -213,38 +261,15 @@ final class MailBuilderTest extends WPTestCase
         $mail_builder = new MailBuilder();
         
         $mail_builder->to(['name' => 'Calvin Alkan', 'email' => 'c@web.de'])->send(
-            new PureHTMLMail()
+            new fixtures\Emails\PureHTMLMail()
         );
         
-        $first_email = $this->mail_data[0];
+        $first_email = $this->getSentMails()[0];
         
-        $this->assertSame('Calvin Alkan <c@web.de>', $first_email['to'][0]);
-        $this->assertSame('foo', $first_email['subject']);
-        $this->assertSame('<h1>Hi Calvin</h1>', $first_email['message']);
+        $header = $first_email['header'];
         
-        $headers = $first_email['headers'];
-        
-        $this->assertContains('Content-Type: text/html; charset=UTF-8', $headers);
-    }
-    
-    /** @test */
-    public function mail_views_can_be_loaded_with_php_and_receive_the_public_context()
-    {
-        $mail_builder = new MailBuilder();
-        $mail_builder->to(['name' => 'Calvin Alkan', 'email' => 'calvin@web.de'])->send(
-            new PHPMail('FOO', 'BAR')
-        );
-        
-        $first_email = $this->mail_data[0];
-        
-        $this->assertSame(
-            '<h1>Hi Calvin Alkan</h1><p>FOO</p><p>BAR_NOT_AVAILABLE_CAUSE_PRIVATE_PROPERTY</p>',
-            str_replace("\n", '', $first_email['message'])
-        );
-        
-        $headers = $first_email['headers'];
-        
-        $this->assertContains('Content-Type: text/html; charset=UTF-8', $headers);
+        $this->assertStringContainsString('Content-Type: text/html; charset=utf-8', $header);
+        $this->assertStringContainsString('<h1>Hi Calvin</h1>', $first_email['body']);
     }
     
     /** @test */
@@ -256,19 +281,15 @@ final class MailBuilderTest extends WPTestCase
         $admin2 = $this->createAdmin(['user_email' => 'admin2@web.de', 'display_name' => 'admin2']);
         
         $mail_builder->to([$admin1, $admin2])
-                     ->send(new WelcomeEmail());
+                     ->send(new fixtures\Emails\WelcomeEmail());
         
-        $first_mail = $this->mail_data[0];
+        $first_mail = $this->getSentMails()[0];
+        $header = $first_mail['header'];
         
-        $this->assertSame('Admin1 <admin1@web.de>', $first_mail['to'][0]);
-        $this->assertSame('Hi Admin1', $first_mail['subject']);
-        $this->assertSame('whats up.', $first_mail['message']);
-        
-        $second_mail = $this->mail_data[1];
-        
-        $this->assertSame('Admin2 <admin2@web.de>', $second_mail['to'][0]);
-        $this->assertSame('Hi Admin2', $second_mail['subject']);
-        $this->assertSame('whats up.', $second_mail['message']);
+        $this->assertStringContainsString(
+            'To: Admin1 <admin1@web.de>, Admin2 <admin2@web.de>',
+            $header
+        );
     }
     
     /** @test */
@@ -276,9 +297,11 @@ final class MailBuilderTest extends WPTestCase
     {
         $mail_builder = new MailBuilder();
         
-        $this->expectExceptionMessage('The mailable has no subject line.');
+        $this->expectExceptionMessage(
+            'The mailable [Tests\integration\Mail\fixtures\Emails\IncorrectMail] has no subject line.'
+        );
         
-        $mail_builder->to('calvin@web.de')->send(new IncorrectMail());
+        $mail_builder->to('calvin@web.de')->send(new fixtures\Emails\IncorrectMail());
     }
     
     /** @test */
@@ -286,19 +309,9 @@ final class MailBuilderTest extends WPTestCase
     {
         $mail_builder = new MailBuilder();
         
-        $this->expectExceptionMessage('The mailable has no message.');
+        $this->expectExceptionMessage('A mailable must have text, html or attachments.');
         
-        $mail_builder->to('calvin@web.de')->send(new IncorrectMail('subject'));
-    }
-    
-    /** @test */
-    public function testExceptionWhenNoContentType()
-    {
-        $mail_builder = new MailBuilder();
-        
-        $this->expectExceptionMessage('The mailable has no content-type.');
-        
-        $mail_builder->to('calvin@web.de')->send(new IncorrectMail('subject', 'message'));
+        $mail_builder->to('calvin@web.de')->send(new fixtures\Emails\IncorrectMail('subject'));
     }
     
     /** @test */
@@ -307,7 +320,20 @@ final class MailBuilderTest extends WPTestCase
         $this->expectException(LogicException::class);
         $mail_builder = new MailBuilder();
         
-        $mail_builder->cc('foo@web.de')->to('calvin@web.de')->send(new PlainTextMail());
+        $mail_builder->cc('foo@web.de')->to('calvin@web.de')->send(
+            new fixtures\Emails\PlainTextMail()
+        );
+    }
+    
+    /** @test */
+    public function testExceptionWhenBCCisCalledBeforeTo()
+    {
+        $this->expectException(LogicException::class);
+        $mail_builder = new MailBuilder();
+        
+        $mail_builder->bcc('foo@web.de')->to('calvin@web.de')->send(
+            new fixtures\Emails\PlainTextMail()
+        );
     }
     
     /** @test */
@@ -317,7 +343,9 @@ final class MailBuilderTest extends WPTestCase
         
         $this->expectException(MailRenderingException::class);
         
-        $mail_builder->to('foo@web.de')->cc('calvin@web.de')->send(new NamedViewEmail());
+        $mail_builder->to('foo@web.de')->cc('calvin@web.de')->send(
+            new fixtures\Emails\NamedViewEmail()
+        );
     }
     
     /** @test */
@@ -329,9 +357,11 @@ final class MailBuilderTest extends WPTestCase
         
         $mail_builder = new MailBuilder(new WordPressMailer(), $chain);
         
-        $mail_builder->to('foo@web.de')->cc('calvin@web.de')->send(new NamedViewEmail());
+        $mail_builder->to('foo@web.de')->cc('calvin@web.de')->send(
+            new fixtures\Emails\NamedViewEmail()
+        );
         
-        $this->assertCount(1, $this->mail_data);
+        $this->assertCount(1, $this->getSentMails());
     }
     
     /** @test */
@@ -346,169 +376,382 @@ final class MailBuilderTest extends WPTestCase
         $mail_builder = new MailBuilder(new WordPressMailer(), $chain);
         
         $mail_builder->to([['foo@web.de'], ['bar@web.de']])->cc('calvin@web.de')->send(
-            new NamedViewEmail()
+            new fixtures\Emails\NamedViewEmail()
         );
         
-        $this->assertCount(2, $this->mail_data);
-        
+        $this->assertCount(1, $this->getSentMails());
         $this->assertSame(1, $GLOBALS['renderer_called_times']);
+        
+        $mail_builder->to([['foo@web.de'], ['bar@web.de']])->cc('calvin@web.de')->send(
+            new fixtures\Emails\NamedViewEmail()
+        );
+        
+        $this->assertCount(2, $this->getSentMails());
+        $this->assertSame(1, $GLOBALS['renderer_called_times']);
+        
         unset($GLOBALS['renderer_called_times']);
     }
     
-}
-
-class WelcomeEmail extends Email
-{
-    
-    /**
-     * @var string|null
-     */
-    private $file;
-    
-    public function __construct(string $file = null)
+    /** @test */
+    public function testResetEverythingAfterSending()
     {
-        $this->file = $file;
-    }
-    
-    public function configure(Recipient $recipient) :void
-    {
-        $this->subject("Hi {$recipient->getName()}")
-             ->message("whats up.");
+        $mail_builder = new MailBuilder();
         
-        if ($this->file) {
-            $this->attach($this->file);
+        $mail_builder->to(['name' => 'Calvin Alkan', 'email' => 'c@web.de'])->cc('jon@web.de')->bcc(
+            'jane@web.de'
+        )->send(
+            new fixtures\Emails\PlainTextMail('PLAIN_TEXT')
+        );
+        
+        $first_mail = $this->getSentMails()[0];
+        $this->assertStringContainsString('To: Calvin Alkan <c@web.de>', $first_mail['header']);
+        $this->assertStringContainsString('Cc: jon@web.de', $first_mail['header']);
+        $this->assertStringContainsString('Bcc: jane@web.de', $first_mail['header']);
+        
+        $mail_builder->to(['name' => 'Marlon Alkan', 'email' => 'm@web.de'])->send(
+            new fixtures\Emails\PlainTextMail('PLAIN_TEXT')
+        );
+        
+        $second_mail = $this->getSentMails()[1];
+        $this->assertStringContainsString('To: Marlon Alkan <m@web.de>', $second_mail['header']);
+        $this->assertStringNotContainsString('To: Calvin Alkan <c@web.de>', $second_mail['header']);
+        $this->assertStringNotContainsString('Cc: jon@web.de', $second_mail['header']);
+        $this->assertStringNotContainsString('Bcc: jane@web.de', $second_mail['header']);
+    }
+    
+    /** @test */
+    public function the_sender_has_priority_over_the_from_name_and_return_path()
+    {
+        $mail_builder = new MailBuilder();
+        
+        $mail_builder->to('client@web.de')->send(new CustomSenderMail());
+        
+        $mail = $this->getSentMails()[0];
+        $header = $mail['header'];
+        
+        $this->assertStringContainsString('From: Calvin Alkan <c@web.de>', $header);
+        
+        // PHP Mailer doesnt support return path.
+        $this->assertStringNotContainsString(
+            'Return-Path: My Company <return@company.de>',
+            $header
+        );
+        
+        // PHPMailer does not support multiple from Addresses. And since the sender has a higher priority we take that.
+        $this->assertStringNotContainsString('Marlon Alkan', $header);
+    }
+    
+    /** @test */
+    public function wp_mail_errors_lead_to_an_exception()
+    {
+        add_action('wp_mail_content_type', function () {
+            do_action(
+                'wp_mail_failed',
+                new WP_Error(
+                    'wp_mail_failed',
+                    'Something went wrong here.',
+                    ['to' => 'foo', 'subject' => 'bar']
+                )
+            );
+        });
+        
+        try {
+            $mail = new MailBuilder();
+            $mail->to('calvin@web.de')->send(new PlainTextMail());
+            $this->fail('No exception thrown.');
+        } catch (WPMailTransportException $e) {
+            $this->assertSame(
+                'wp_mail() failure. Message: [Something went wrong here.]. Data: [to: foo, subject: bar, ]',
+                $e->getMessage()
+            );
         }
     }
     
-}
-
-class PlainTextMail extends Email
-{
-    
-    /**
-     * @var string|null
-     */
-    private $_message;
-    
-    public function __construct(string $_message = null)
+    /** @test */
+    public function the_alt_body_and_body_will_be_reset_on_the_php_mailer_instance_if_an_exception_occurs()
     {
-        $this->_message = $_message;
-    }
-    
-    public function configure(Recipient $recipient) :void
-    {
-        $this->subject('Hello');
-        if ($this->_message) {
-            $this->message($this->_message, 'text/plain');
-        }
-        else {
-            $file = __DIR__.'/fixtures/plain-text-mail.txt';
-            $this->text($file);
-        }
-    }
-    
-}
-
-class CustomHeaderMail extends Email
-{
-    
-    protected $subject = 'foo';
-    
-    protected $message = 'bar';
-    
-    protected $content_type = 'text/plain';
-    
-    public function configure(Recipient $recipient) :void
-    {
-        $this->from('calvin@web.de', 'Calvin Alkan');
-        $this->replyTo('marlon@web.de', 'Marlon Alkan');
-    }
-    
-}
-
-class PureHTMLMail extends Email
-{
-    
-    protected $subject = 'foo';
-    
-    public function configure(Recipient $recipient) :void
-    {
-        $file = __DIR__.'/fixtures/html-mail.html';
-        $this->view($file);
-    }
-    
-}
-
-class PHPMail extends Email
-{
-    
-    public    $foo;
-    protected $subject = 'foo';
-    protected $message = 'bar';
-    private   $bar;
-    
-    public function __construct($foo, $bar)
-    {
-        $this->foo = $foo;
-        $this->bar = $bar;
-    }
-    
-    public function configure(Recipient $recipient) :void
-    {
-        $this->view(__DIR__.'/fixtures/php-mail.php');
-    }
-    
-}
-
-class IncorrectMail extends Email
-{
-    
-    /**
-     * @var string|null
-     */
-    private $m;
-    /**
-     * @var string|null
-     */
-    private $s;
-    /**
-     * @var string|null
-     */
-    private $c;
-    
-    public function __construct(string $s = null, string $m = null, string $c = null)
-    {
-        $this->m = $m;
-        $this->s = $s;
-        $this->c = $c;
-    }
-    
-    public function configure(Recipient $recipient) :void
-    {
-        if ($this->m) {
-            $this->message($this->m);
-        }
-        if ($this->s) {
-            $this->subject($this->s);
-        }
-        if ($this->c) {
-            $this->content_type = $this->c;
-        }
-        else {
-            $this->content_type = '';
+        global $phpmailer;
+        $phpmailer->AltBody = 'foobar';
+        $phpmailer->Body = 'baz';
+        
+        add_action('wp_mail_content_type', function () {
+            do_action(
+                'wp_mail_failed',
+                new WP_Error(
+                    'wp_mail_failed',
+                    'Something went wrong here.',
+                    ['to' => 'foo', 'subject' => 'bar']
+                )
+            );
+        });
+        
+        try {
+            $mail = new MailBuilder();
+            $mail->to('calvin@web.de')->send(new PlainTextMail());
+            $this->fail('No exception thrown.');
+        } catch (WPMailTransportException $e) {
+            $this->assertSame('', $phpmailer->AltBody);
+            $this->assertSame('', $phpmailer->Body);
         }
     }
     
-}
-
-class NamedViewEmail extends Email
-{
-    
-    protected $subject = 'foo';
-    
-    public function configure(Recipient $recipient) :void
+    /** @test */
+    public function the_priority_is_reset()
     {
-        $this->view('mail.foobar-mail');
+        $mail = new MailBuilder();
+        $mail->to('calvin@web.de')->send(new WelcomeEmail());
+        
+        global $phpmailer;
+        $this->assertNull($phpmailer->Priority);
+    }
+    
+    /** @test */
+    public function a_multipart_email_can_be_sent()
+    {
+        $mail = new MailBuilder();
+        
+        $mail->to('calvin@web.de')->send(new MultiPartEmail('öö', '<h1>ÜÜ</h1>'));
+        
+        $first_mail = $this->getSentMails()[0];
+        $header = $first_mail['header'];
+        
+        $this->assertStringContainsString('Content-Type: multipart/alternative', $header);
+        $this->assertStringContainsString('boundary=', $header);
+        
+        $this->assertStringContainsString(
+            'This is a multi-part message in MIME format',
+            $first_mail['body']
+        );
+        $this->assertStringContainsString(
+            "Content-Type: text/plain; charset=utf-8",
+            $first_mail['body']
+        );
+        $this->assertStringContainsString("öö", $first_mail['body']);
+        
+        $this->assertStringContainsString(
+            "Content-Type: text/html; charset=utf-8",
+            $first_mail['body']
+        );
+        $this->assertStringContainsString("<h1>ÜÜ</h1>", $first_mail['body']);
+    }
+    
+    /** @test */
+    public function the_alt_body_is_reset_after_sending_a_multipart_email()
+    {
+        global $phpmailer;
+        
+        $mail = new MailBuilder();
+        
+        $mail->to('calvin@web.de')->send(new MultiPartEmail('öö', '<h1>ÜÜ</h1>'));
+        
+        $this->assertSame('', $phpmailer->AltBody);
+    }
+    
+    /** @test */
+    public function all_filters_are_unhooked_after_sending_a_mail()
+    {
+        $mail = new MailBuilder();
+        
+        $mail->to('calvin@web.de')->send(new MultiPartEmail('öö', '<h1>ÜÜ</h1>'));
+        
+        wp_mail('calvin@web.de', 'foo', '<h1>bar</h1>', ['Content-Type: text/plain; charset=utf-8']
+        );
+        
+        $second_mail = $this->getSentMails()[1];
+        
+        $this->assertStringNotContainsString(
+            'Content-Type: multipart/alternative',
+            $second_mail['header']
+        );
+        $this->assertStringNotContainsString('öö', $second_mail['body']);
+        
+        // Will not throw an exception.
+        do_action('wp_mail_failed', new WP_Error());
+    }
+    
+    /** @test */
+    public function attachments_can_be_added_from_file_path()
+    {
+        $mail = new MailBuilder();
+        
+        $mail->to('calvin@web.de')->send(new ImageAttachmentMail());
+        
+        $first_mail = $this->getSentMails()[0];
+        $header = $first_mail['header'];
+        $body = $first_mail['body'];
+        
+        $this->assertStringContainsString('Content-Type: multipart/mixed', $header);
+        
+        $this->assertStringContainsString('Content-Type: multipart/alternative', $body);
+        $this->assertStringContainsString('Content-Type: text/plain; charset=utf-8', $body);
+        $this->assertStringContainsString('Content-Type: text/html; charset=utf-8', $body);
+        
+        $this->assertStringContainsString('öö', $body);
+        $this->assertStringContainsString('<h1>ÜÜ</h1>', $body);
+        $this->assertStringContainsString(
+            "Content-Type: image/jpeg; name=my-elephant\nContent-Transfer-Encoding: base64\nContent-Disposition: attachment; filename=my-elephant\n",
+            $body
+        );
+    }
+    
+    /** @test */
+    public function attachments_can_be_added_as_an_in_memory_string()
+    {
+        $mail = new MailBuilder();
+        
+        $mail->to('calvin@web.de')->send(new InMemoryAttachmentMail());
+        
+        $first_mail = $this->getSentMails()[0];
+        $header = $first_mail['header'];
+        $body = $first_mail['body'];
+        
+        $this->assertStringContainsString('Content-Type: multipart/mixed', $header);
+        
+        $this->assertStringContainsString('Content-Type: multipart/alternative', $body);
+        $this->assertStringContainsString('Content-Type: text/plain; charset=utf-8', $body);
+        $this->assertStringContainsString('Content-Type: text/html; charset=utf-8', $body);
+        
+        $this->assertStringContainsString('öö', $body);
+        $this->assertStringContainsString('<h1>ÜÜ</h1>', $body);
+        
+        // octet-stream because the mail did not provide a content-type specifically.
+        $this->assertStringContainsString(
+            "Content-Type: application/octet-stream; name=php-elephant\nContent-Transfer-Encoding: base64\nContent-Disposition: attachment; filename=php-elephant\n",
+            $body
+        );
+    }
+    
+    /** @test */
+    public function attachments_can_be_embedded_by_path()
+    {
+        $mail = new MailBuilder();
+        
+        $mail->to('calvin@web.de')->send(new EmbeddedByPathAttachmentMail());
+        
+        $first_mail = $this->getSentMails()[0];
+        $header = $first_mail['header'];
+        $body = $first_mail['body'];
+        
+        $this->assertStringContainsString('Content-Type: multipart/alternative', $header);
+        $this->assertStringContainsString('Content-Type: multipart/related', $body);
+        $this->assertStringContainsString('Content-Type: text/plain; charset=utf-8', $body);
+        $this->assertStringContainsString('Content-Type: text/html; charset=utf-8', $body);
+        
+        $this->assertStringContainsString('öö', $body);
+        $this->assertStringContainsString('<h1>ÜÜ</h1>', $body);
+        $this->assertStringContainsString(
+            "Content-Type: image/jpeg; name=my-elephant\nContent-Transfer-Encoding: base64",
+            $body
+        );
+        $this->assertStringContainsString(
+            "Content-Disposition: inline; filename=my-elephant",
+            $body
+        );
+    }
+    
+    /** @test */
+    public function attachments_can_be_added_from_memory()
+    {
+        $mail = new MailBuilder();
+        
+        $mail->to('calvin@web.de')->send(new EmbeddedFromMemoryAttachmentMail());
+        
+        $first_mail = $this->getSentMails()[0];
+        $header = $first_mail['header'];
+        $body = $first_mail['body'];
+        
+        $this->assertStringContainsString('Content-Type: multipart/alternative', $header);
+        $this->assertStringContainsString('Content-Type: multipart/related', $body);
+        $this->assertStringContainsString('Content-Type: text/plain; charset=utf-8', $body);
+        $this->assertStringContainsString('Content-Type: text/html; charset=utf-8', $body);
+        
+        $this->assertStringContainsString('öö', $body);
+        $this->assertStringContainsString('<h1>ÜÜ</h1>', $body);
+        $this->assertStringContainsString(
+            "Content-Type: image/jpeg; name=my-elephant\nContent-Transfer-Encoding: base64\nContent-ID: <",
+            $body
+        );
+        $this->assertStringContainsString(
+            "Content-Disposition: inline; filename=my-elephant",
+            $body
+        );
+    }
+    
+    /** @test */
+    public function attachments_can_be_combined_inline_and_in_memory()
+    {
+        $mail = new MailBuilder();
+        
+        $mail->to('calvin@web.de')->send(new CombinedAttachmentMail());
+        
+        $first_mail = $this->getSentMails()[0];
+        $header = $first_mail['header'];
+        $body = $first_mail['body'];
+        
+        $this->assertStringContainsString('Content-Type: multipart/mixed', $header);
+        
+        $this->assertStringContainsString('Content-Type: multipart/alternative', $body);
+        $this->assertStringContainsString('Content-Type: multipart/related', $body);
+        $this->assertStringContainsString('Content-Type: text/plain; charset=utf-8', $body);
+        $this->assertStringContainsString('Content-Type: text/html; charset=utf-8', $body);
+        
+        $this->assertStringContainsString('öö', $body);
+        $this->assertStringContainsString('<h1>ÜÜ</h1>', $body);
+        $this->assertStringContainsString(
+            "Content-Type: image/jpeg; name=php-elephant-inline\nContent-Transfer-Encoding: base64\nContent-ID: <",
+            $body
+        );
+        $this->assertStringContainsString(
+            "Content-Disposition: inline; filename=php-elephant-inline\n",
+            $body
+        );
+        
+        $this->assertStringContainsString(
+            "Content-Type: image/jpeg; name=php-elephant-attachment\nContent-Transfer-Encoding: base64\nContent-Disposition: attachment; filename=php-elephant-attachment\n",
+            $body
+        );
+    }
+    
+    /** @test */
+    public function the_cid_gets_passed_into_the_template_for_inline_attachments()
+    {
+        $mail = new MailBuilder();
+        
+        $mail->to('calvin@web.de')->send(new InlineAttachmentCIDTemplateMail());
+        
+        $first_mail = $this->getSentMails()[0];
+        $header = $first_mail['header'];
+        $body = $first_mail['body'];
+        
+        $this->assertStringContainsString('Content-Type: multipart/alternative', $header);
+        $this->assertStringContainsString('Content-Type: multipart/related', $body);
+        $this->assertStringContainsString('Content-Type: text/plain; charset=utf-8', $body);
+        
+        // us-ascii set by phpmailer because we have no 8-bit chars.
+        $this->assertStringContainsString('Content-Type: text/html; charset=us-ascii', $body);
+        
+        $this->assertStringContainsString('öö', $body);
+        
+        // The CID is random.
+        $this->assertStringContainsString(
+            '<h1>Hi</h1><p>Here is your image</p><img src="cid:',
+            $body
+        );
+        $this->assertStringContainsString(
+            "Content-Type: image/jpeg; name=php-elephant-inline\nContent-Transfer-Encoding: base64\nContent-ID: <",
+            $body
+        );
+        
+        $this->assertStringContainsString(
+            "Content-Disposition: inline; filename=php-elephant-inline\n",
+            $body
+        );
+    }
+    
+    private function getSentMails() :array
+    {
+        global $phpmailer;
+        return $phpmailer->mock_sent;
     }
     
 }
@@ -516,9 +759,9 @@ class NamedViewEmail extends Email
 class NamedViewRenderer implements MailRenderer
 {
     
-    public function getMailContent(string $view, array $context = []) :string
+    public function getMailContent(string $template_name, array $context = []) :string
     {
-        return $view;
+        return $template_name;
     }
     
     public function supports(string $view, ?string $extension = null) :bool

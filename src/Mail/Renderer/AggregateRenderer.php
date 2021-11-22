@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Mail\Implementations;
+namespace Snicco\Mail\Renderer;
 
 use Snicco\Mail\Contracts\MailRenderer;
 use Snicco\Mail\Exceptions\MailRenderingException;
@@ -29,37 +29,36 @@ final class AggregateRenderer implements MailRenderer
     }
     
     /**
-     * @param  string  $view
+     * @param  string  $template_name
      * @param  array  $context
-     * @param  bool  $plain_text
      *
-     * @return string
+     * @return string|resource
      * @throws MailRenderingException
      */
-    public function getMailContent(string $view, array $context = [], bool $plain_text = false) :string
+    public function getMailContent(string $template_name, array $context = []) :string
     {
-        if (isset($this->renderer_cache[$view])) {
-            return $this->renderer_cache[$view]->getMailContent($view, $context);
+        if (isset($this->renderer_cache[$template_name])) {
+            return $this->renderer_cache[$template_name]->getMailContent($template_name, $context);
         }
         
         $renderer = null;
-        $extension = pathinfo($view, PATHINFO_EXTENSION);
+        $extension = pathinfo($template_name, PATHINFO_EXTENSION);
         $extension = empty($extension) ? null : $extension;
         foreach ($this->renderers as $r) {
-            if ($r->supports($view, $extension)) {
+            if ($r->supports($template_name, $extension)) {
                 $renderer = $r;
-                $this->renderer_cache[$view] = $r;
+                $this->renderer_cache[$template_name] = $r;
                 break;
             }
         }
         
         if ( ! $renderer) {
             throw new MailRenderingException(
-                "None of the given renderers supports the current the view [$view]."
+                "None of the given renderers supports the current the view [$template_name]."
             );
         }
         
-        return $renderer->getMailContent($view, $context);
+        return $renderer->getMailContent($template_name, $context);
     }
     
     public function supports(string $view, ?string $extension = null) :bool

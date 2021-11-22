@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Snicco\Mail\Contracts;
 
+use Snicco\Mail\Renderer\AggregateRenderer;
 use Snicco\Mail\Exceptions\MailRenderingException;
-use Snicco\Mail\Implementations\AggregateRenderer;
 
 /**
  * @api
@@ -14,13 +14,13 @@ interface MailRenderer
 {
     
     /**
-     * @param  string  $view
+     * @param  string  $template_name
      * @param  array  $context
      *
-     * @return string
+     * @return string|resource
      * @throws MailRenderingException
      */
-    public function getMailContent(string $view, array $context = []) :string;
+    public function getMailContent(string $template_name, array $context = []) :string;
     
     /**
      * @param  string  $view

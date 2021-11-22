@@ -9,10 +9,10 @@ use Snicco\Mail\MailBuilder;
 use Snicco\Application\Config;
 use Snicco\Mail\Contracts\Mailer;
 use Snicco\Contracts\ServiceProvider;
+use Snicco\Mail\Mailer\WordPressMailer;
 use Snicco\Mail\Testing\FakeMailBuilder;
 use Snicco\Mail\Contracts\MailBuilderInterface;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
-use Snicco\Mail\Implementations\WordPressMailer;
 
 class MailServiceProvider extends ServiceProvider
 {

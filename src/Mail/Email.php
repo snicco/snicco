@@ -4,234 +4,275 @@ declare(strict_types=1);
 
 namespace Snicco\Mail;
 
-use LogicException;
 use ReflectionClass;
 use ReflectionProperty;
-use Snicco\Mail\ValueObjects\From;
-use Snicco\Mail\ValueObjects\ReplyTo;
-use Snicco\Mail\ValueObjects\Recipient;
-use Snicco\Mail\Contracts\MailRenderer;
+use InvalidArgumentException;
+use Snicco\Mail\ValueObjects\Address;
+use Snicco\Mail\Contracts\MutableEmail;
 use Snicco\Mail\ValueObjects\Attachment;
 use Snicco\Mail\Contracts\ImmutableEmail;
+use Snicco\Mail\Exceptions\MissingContentIdException;
 
-abstract class Email implements ImmutableEmail
+abstract class Email implements ImmutableEmail, MutableEmail
 {
     
     /**
-     * @var string
-     * @api
+     * @var int Between 1-5, 1 being the highest priority.
      */
-    protected $subject;
-    
-    /**
-     * @var string
-     * @api
-     */
-    protected $content_type = 'text/html';
-    
-    /**
-     * @var string
-     * @api
-     */
-    protected $message;
+    protected $priority;
     
     /**
      * @var string
      */
-    private $view;
+    protected $subject = '';
     
     /**
-     * @var From
+     * @var string
      */
-    private $from;
+    protected $text_charset = 'utf-8';
     
     /**
-     * @var ReplyTo
+     * @var string
      */
-    private $reply_to;
-    
-    /**
-     * @var Attachment[]
-     */
-    private $attachments = [];
+    protected $html_charset = 'utf-8';
     
     /**
      * @var array
      */
-    private $view_data = [];
-    
-    abstract public function configure(Recipient $recipient) :void;
+    private $attachments = [];
     
     /**
-     * @internal
+     * @var Address[];
      */
-    public function compile(MailRenderer $mail_renderer, DefaultConfig $defaults, Recipient $recipient)
+    private $bcc = [];
+    
+    /**
+     * @var Address[]
+     */
+    private $cc = [];
+    
+    /**
+     * @var Address[]
+     */
+    private $to = [];
+    
+    /**
+     * @var Address[]
+     */
+    private $from = [];
+    
+    /**
+     * @var resource|string|null
+     */
+    private $html;
+    
+    /**
+     * @var resource|string|null
+     */
+    private $text;
+    
+    /**
+     * @var Address[]
+     */
+    private $reply_to = [];
+    
+    /**
+     * @var Address
+     */
+    private $return_path;
+    
+    /**
+     * @var Address
+     */
+    private $sender;
+    
+    /**
+     * @var string
+     */
+    private $text_template;
+    
+    /**
+     * @var string
+     */
+    private $html_template;
+    
+    /**
+     * @var array
+     */
+    private $view_context = [];
+    
+    /**
+     * @var array<string,string>
+     */
+    private $custom_headers = [];
+    
+    /**
+     * @var array
+     */
+    private $context;
+    
+    /**
+     * @var array
+     */
+    private $compiled_attachments;
+    
+    abstract public function configure();
+    
+    /**
+     * @return Attachment[]
+     */
+    public function getAttachments() :array
     {
-        $this->configure($recipient);
-        
-        if (isset($this->view) && ! empty($this->view)) {
-            $context = $this->buildViewData();
-            
-            $context = array_merge(['recipient' => $recipient], $context);
-            
-            $this->message = $mail_renderer->getMailContent($this->view, $context);
+        if (isset($this->compiled_attachments)) {
+            return $this->compiled_attachments;
         }
         
-        if ( ! isset($this->from)) {
-            $this->from = $defaults->getFrom();
-            $this->reply_to = $defaults->getReplyTo();
+        $_att = [];
+        
+        foreach ($this->attachments as $attachment) {
+            if (isset($attachment['body'])) {
+                $_att[] = Attachment::fromData(
+                    $attachment['body'],
+                    $attachment['name'] ?? null,
+                    $attachment['content-type'] ?? null,
+                    $attachment['disposition'] === 'inline'
+                );
+            }
+            else {
+                $_att[] = Attachment::fromPath(
+                    $attachment['path'] ?? '',
+                    $attachment['name'] ?? null,
+                    $attachment['content-type'] ?? null,
+                    $attachment['disposition'] === 'inline'
+                );
+            }
         }
         
-        $this->validate();
+        $this->compiled_attachments = $_att;
+        
+        return $_att;
     }
     
     /**
-     * @return From
-     * @api
+     * @return Address[]
      */
-    public function getFrom() :From
+    public function getTo() :array
+    {
+        return $this->to;
+    }
+    
+    /**
+     * @return Address[]
+     */
+    public function getBcc() :array
+    {
+        return $this->bcc;
+    }
+    
+    /**
+     * @return Address[]
+     */
+    public function getCc() :array
+    {
+        return $this->cc;
+    }
+    
+    /**
+     * @return Address[]
+     */
+    public function getFrom() :array
     {
         return $this->from;
     }
     
     /**
-     * @return ReplyTo
-     * @api
+     * @return resource|string|null
      */
-    public function getReplyTo() :ReplyTo
+    public function getHtmlBody()
+    {
+        return $this->html ?? null;
+    }
+    
+    public function getHtmlCharset() :?string
+    {
+        return $this->html_charset;
+    }
+    
+    /**
+     * @return Address[]
+     */
+    public function getReplyTo() :array
     {
         return $this->reply_to;
     }
     
-    /**
-     * @return string
-     * @api
-     */
-    public function getContentType() :string
+    public function getPriority() :?int
     {
-        return $this->content_type;
+        if ( ! isset($this->priority)) {
+            return null;
+        }
+        return $this->priority;
     }
     
     /**
-     * @return string
-     * @api
+     * @return array<string,string>
      */
+    public function getCustomHeaders() :array
+    {
+        return $this->custom_headers;
+    }
+    
+    public function getReturnPath() :?Address
+    {
+        return $this->return_path ?? null;
+    }
+    
+    public function getSender() :?Address
+    {
+        return $this->sender ?? null;
+    }
+    
     public function getSubject() :string
     {
         return $this->subject;
     }
     
     /**
-     * @return string
-     * @api
+     * @return resource|string|null
      */
-    public function getMessage() :string
+    public function getTextBody()
     {
-        return $this->message;
+        return $this->text ?? null;
     }
     
-    /**
-     * @return Attachment[]
-     * @api
-     */
-    public function getAttachments() :array
+    public function getTextCharset() :?string
     {
-        return $this->attachments;
+        return $this->text_charset;
     }
     
-    /**
-     * @return $this
-     * @api
-     */
-    protected function message(string $message, string $content_type = 'text/html') :Email
+    public function getCid(string $filename) :string
     {
-        $this->message = $message;
-        $this->content_type = $content_type;
-        return $this;
-    }
-    
-    /**
-     * @return $this
-     * @api
-     */
-    protected function from(string $email, string $name = '') :Email
-    {
-        $this->from = new From($email, $name);
-        
-        return $this;
-    }
-    
-    /**
-     * @return $this
-     * @api
-     */
-    protected function replyTo(string $email, string $name = '') :Email
-    {
-        $this->reply_to = new ReplyTo($email, $name);
-        return $this;
-    }
-    
-    /**
-     * @return $this
-     * @api
-     */
-    protected function attach(string $file_path, string $file_name = '') :Email
-    {
-        $this->attachments[] = new Attachment($file_path, $file_name);
-        return $this;
-    }
-    
-    /**
-     * @return $this
-     * @api
-     */
-    protected function view(string $view_name) :Email
-    {
-        $this->view = $view_name;
-        $this->content_type = 'text/html';
-        return $this;
-    }
-    
-    /**
-     * @return $this
-     * @api
-     */
-    protected function subject(string $subject) :Email
-    {
-        $this->subject = $subject;
-        return $this;
-    }
-    
-    /**
-     * @return $this
-     * @api
-     */
-    protected function text(string $view_name) :Email
-    {
-        $this->view = $view_name;
-        $this->content_type = 'text/plain';
-        return $this;
-    }
-    
-    /**
-     * @return $this
-     * @api
-     */
-    protected function with($key, $value = null) :Email
-    {
-        if (is_array($key)) {
-            $this->view_data = array_merge($this->view_data, $key);
+        foreach ($this->getInlineAttachments() as $attachment) {
+            if ($attachment->getName() === $filename) {
+                return $attachment->getContentId();
+            }
         }
-        else {
-            $this->view_data[$key] = $value;
+        throw new MissingContentIdException(
+            sprintf(
+                'The mailable [%s] has no embedded attachment with the name: [%s].',
+                static::class,
+                $filename
+            )
+        );
+    }
+    
+    public function getContext() :array
+    {
+        if (isset($this->context)) {
+            return $this->context;
         }
         
-        return $this;
-    }
-    
-    private function buildViewData() :array
-    {
-        $data = $this->view_data;
+        $data = $this->view_context;
         
         $properties = (new ReflectionClass($this))->getProperties(ReflectionProperty::IS_PUBLIC);
         
@@ -241,22 +282,207 @@ abstract class Email implements ImmutableEmail
             }
         }
         
-        return $data;
+        if (count($attachments = $this->getInlineAttachments())) {
+            foreach ($attachments as $attachment) {
+                $data['images'][$attachment->getName()] = $attachment->getContentId();
+            }
+        }
+        $this->context = $data;
+        
+        return $this->context;
     }
     
-    private function validate()
+    public function getHtmlTemplate() :?string
     {
-        if (empty($this->subject)) {
-            throw new LogicException("The mailable has no subject line.");
+        return $this->html_template ?? null;
+    }
+    
+    public function getTextTemplate() :?string
+    {
+        return $this->text_template ?? null;
+    }
+    
+    /**
+     * @internal
+     *
+     * @param  Address  ...$addresses
+     */
+    public function cc(Address ...$addresses) :MutableEmail
+    {
+        $this->cc = $addresses;
+        return $this;
+    }
+    
+    /**
+     * @internal
+     *
+     * @param  Address  ...$address
+     */
+    public function bcc(Address ...$address) :MutableEmail
+    {
+        $this->bcc = $address;
+        return $this;
+    }
+    
+    /**
+     * @internal
+     */
+    public function to(Address ...$address) :MutableEmail
+    {
+        $this->to = $address;
+        return $this;
+    }
+    
+    public function subject(string $subject) :MutableEmail
+    {
+        $this->subject = $subject;
+        return $this;
+    }
+    
+    public function priority(int $priority) :MutableEmail
+    {
+        $this->priority = $priority;
+        return $this;
+    }
+    
+    public function sender(string $email, string $name = '') :MutableEmail
+    {
+        $this->sender = Address::create([$email, $name]);
+        return $this;
+    }
+    
+    public function returnPath(string $email, string $name = '') :MutableEmail
+    {
+        $this->return_path = Address::create([$email, $name]);
+        return $this;
+    }
+    
+    public function addReplyTo(string $email, string $name = '') :MutableEmail
+    {
+        $this->reply_to[] = Address::create([$email, $name]);
+        return $this;
+    }
+    
+    public function addFrom(string $email, string $name = '') :MutableEmail
+    {
+        $this->from[] = Address::create([$email, $name]);
+        return $this;
+    }
+    
+    public function attachFromPath(string $path, string $name = null, string $content_type = null) :MutableEmail
+    {
+        $this->attachments[] = [
+            'path' => $path,
+            'name' => $name,
+            'content-type' => $content_type,
+            'disposition' => 'attachment',
+        ];
+        return $this;
+    }
+    
+    /**
+     * @param  string|resource  $data
+     */
+    public function attach($data, string $name = null, string $content_type = null) :MutableEmail
+    {
+        $this->attachments[] = [
+            'body' => $data,
+            'name' => $name,
+            'content-type' => $content_type,
+            'disposition' => 'attachment',
+        ];
+        return $this;
+    }
+    
+    public function embedFromPath(string $path, string $name, string $content_type = null) :MutableEmail
+    {
+        $this->attachments[] = [
+            'path' => $path,
+            'name' => $name,
+            'content-type' => $content_type,
+            'disposition' => 'inline',
+        ];
+        return $this;
+    }
+    
+    /**
+     * @param  string|resource  $data
+     */
+    public function embed($data, string $name, string $content_type = null) :MutableEmail
+    {
+        $this->attachments[] = [
+            'body' => $data,
+            'name' => $name,
+            'content-type' => $content_type,
+            'disposition' => 'inline',
+        ];
+        return $this;
+    }
+    
+    /**
+     * @param  string|resource  $html
+     */
+    public function html($html) :MutableEmail
+    {
+        if ( ! is_string($html) && ! is_resource($html)) {
+            throw new InvalidArgumentException("Html value must be resource or string.");
+        }
+        $this->html = $html;
+        return $this;
+    }
+    
+    public function context($key, $value = null) :MutableEmail
+    {
+        if (is_array($key)) {
+            $this->view_context = array_merge($this->view_context, $key);
+        }
+        else {
+            $this->view_context[$key] = $value;
         }
         
-        if (empty($this->message)) {
-            throw new LogicException("The mailable has no message.");
+        return $this;
+    }
+    
+    public function textTemplate(string $template_name) :MutableEmail
+    {
+        $this->text_template = $template_name;
+        return $this;
+    }
+    
+    public function htmlTemplate(string $template_name) :MutableEmail
+    {
+        $this->html_template = $template_name;
+        return $this;
+    }
+    
+    /**
+     * @param  string|resource  $text
+     */
+    public function text($text) :MutableEmail
+    {
+        if ( ! is_string($text) && ! is_resource($text)) {
+            throw new InvalidArgumentException('text value must be resource or string.');
+        }
+        $this->text = $text;
+        return $this;
+    }
+    
+    /**
+     * @return Attachment[]
+     */
+    private function getInlineAttachments() :array
+    {
+        $inline = [];
+        
+        $attachments = $this->getAttachments();
+        
+        foreach ($attachments as $attachment) {
+            if ($attachment->getDisposition() === 'inline') {
+                $inline[] = $attachment;
+            }
         }
         
-        if (empty($this->content_type)) {
-            throw new LogicException("The mailable has no content-type.");
-        }
+        return $inline;
     }
     
 }

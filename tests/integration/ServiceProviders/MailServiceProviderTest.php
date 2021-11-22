@@ -10,9 +10,9 @@ use Snicco\Mail\MailBuilder;
 use Tests\FrameworkTestCase;
 use Snicco\Events\PendingMail;
 use Snicco\Mail\Contracts\Mailer;
+use Snicco\Mail\Mailer\WordPressMailer;
 use Snicco\Mail\Testing\FakeMailBuilder;
 use Snicco\Mail\Contracts\MailBuilderInterface;
-use Snicco\Mail\Implementations\WordPressMailer;
 
 class MailServiceProviderTest extends FrameworkTestCase
 {
