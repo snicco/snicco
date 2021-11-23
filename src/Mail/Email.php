@@ -302,31 +302,18 @@ abstract class Email implements ImmutableEmail, MutableEmail
         return $this->text_template ?? null;
     }
     
-    /**
-     * @internal
-     *
-     * @param  Address  ...$addresses
-     */
     public function cc(Address ...$addresses) :MutableEmail
     {
         $this->cc = $addresses;
         return $this;
     }
     
-    /**
-     * @internal
-     *
-     * @param  Address  ...$address
-     */
     public function bcc(Address ...$address) :MutableEmail
     {
         $this->bcc = $address;
         return $this;
     }
     
-    /**
-     * @internal
-     */
     public function to(Address ...$address) :MutableEmail
     {
         $this->to = $address;
