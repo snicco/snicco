@@ -62,8 +62,8 @@ final class MailBuilder implements MailBuilderInterface
     private $event_dispatcher;
     
     public function __construct(
-        Mailer $mailer = null,
-        MailRenderer $mail_renderer = null,
+        ?Mailer $mailer = null,
+        ?MailRenderer $mail_renderer = null,
         ?MailEventDispatcher $event_dispatcher = null,
         ?DefaultConfig $default_config = null
     ) {
