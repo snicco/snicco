@@ -14,6 +14,7 @@ use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\MappedFilter;
 use Snicco\EventDispatcher\Contracts\MappedAction;
 use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
+use Tests\integration\EventDispatcher\fixtures\FooEvent;
 use Snicco\EventDispatcher\Implementations\ParameterBasedListenerFactory;
 
 class EventMapperTest extends WPTestCase
