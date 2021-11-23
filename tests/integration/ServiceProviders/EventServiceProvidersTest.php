@@ -5,10 +5,10 @@ declare(strict_types=1);
 namespace Tests\integration\ServiceProviders;
 
 use Tests\FrameworkTestCase;
-use Snicco\EventDispatcher\FakeDispatcher;
-use Snicco\EventDispatcher\EventDispatcher;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
 use Snicco\EventDispatcher\Contracts\ListenerFactory;
+use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 use Snicco\Core\Events\DependencyInversionEventFactory;
 use Snicco\EventDispatcher\Contracts\MappedEventFactory;
 use Snicco\Core\Events\DependencyInversionListenerFactory;

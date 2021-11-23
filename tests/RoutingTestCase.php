@@ -38,7 +38,6 @@ use Snicco\Routing\RoutingServiceProvider;
 use Snicco\Contracts\ViewFactoryInterface;
 use Snicco\Factories\RouteConditionFactory;
 use Tests\concerns\CreateDefaultWpApiMocks;
-use Snicco\EventDispatcher\EventDispatcher;
 use Psr\Http\Message\StreamFactoryInterface;
 use Tests\fixtures\Conditions\TrueCondition;
 use Tests\fixtures\Middleware\FooMiddleware;
@@ -53,6 +52,7 @@ use Tests\fixtures\Middleware\FooBarMiddleware;
 use Snicco\ExceptionHandling\NullExceptionHandler;
 use Snicco\Middleware\Core\OutputBufferMiddleware;
 use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
+use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 use Tests\fixtures\Conditions\ConditionWithDependency;
 use Snicco\Core\Events\DependencyInversionListenerFactory;
 

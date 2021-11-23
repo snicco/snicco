@@ -10,10 +10,10 @@ use Snicco\EventDispatcher\EventMapper;
 use Snicco\EventDispatcher\ClassAsName;
 use Snicco\EventDispatcher\ClassAsPayload;
 use Tests\concerns\AssertListenerResponse;
-use Snicco\EventDispatcher\EventDispatcher;
 use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\MappedFilter;
 use Snicco\EventDispatcher\Contracts\MappedAction;
+use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 use Snicco\EventDispatcher\Implementations\ParameterBasedListenerFactory;
 
 class EventMapperTest extends WPTestCase
@@ -420,7 +420,6 @@ class EventMapperTest extends WPTestCase
         
         $this->assertSame(5, $count);
     }
-    
     
     /**
      * VALIDATION

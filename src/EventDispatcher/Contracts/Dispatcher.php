@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\EventDispatcher\Contracts;
 
+use Closure;
 use ReflectionException;
 use InvalidArgumentException;
 use Snicco\EventDispatcher\Exceptions\InvalidListenerException;
