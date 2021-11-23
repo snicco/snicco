@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\EventDispatcher;
+namespace Snicco\EventDispatcher\Dispatcher;
 
 use Closure;
 use ReflectionClass;
@@ -12,14 +12,12 @@ use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\Mutable;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\EventDispatcher\Contracts\EventParser;
-use Snicco\EventDispatcher\Contracts\EventSharing;
 use Snicco\EventDispatcher\Contracts\ObjectCopier;
 use Snicco\EventDispatcher\Contracts\ListenerFactory;
 use Snicco\EventDispatcher\Contracts\IsForbiddenToWordPress;
 use Snicco\EventDispatcher\Contracts\DispatchesConditionally;
 use Snicco\EventDispatcher\Implementations\NativeObjetCopier;
 use Snicco\EventDispatcher\Implementations\GenericEventParser;
-use Snicco\EventDispatcher\Implementations\ShareWithWordPress;
 use Snicco\EventDispatcher\Exceptions\InvalidListenerException;
 use Snicco\EventDispatcher\Exceptions\UnremovableListenerException;
 use Snicco\EventDispatcher\Implementations\ParameterBasedListenerFactory;
@@ -76,8 +74,6 @@ final class EventDispatcher implements Dispatcher
     
     private EventParser $event_parser;
     
-    private EventSharing $event_sharing;
-    
     /**
      * Cache of the matching listeners keyed by event name. Used so that we don't have to match
      * again if a wildcard event were to be dispatched a second time.
@@ -97,19 +93,16 @@ final class EventDispatcher implements Dispatcher
     /**
      * @param  ListenerFactory|null  $listener_factory
      * @param  EventParser|null  $event_parser
-     * @param  EventSharing|null  $event_sharing
      * @param  ObjectCopier|null  $object_copier
      */
     public function __construct(
         ?ListenerFactory $listener_factory = null,
         ?EventParser $event_parser = null,
-        ?EventSharing $event_sharing = null,
         ?ObjectCopier $object_copier = null
     ) {
         $this->listener_factory = $listener_factory ?? new ParameterBasedListenerFactory();
         $this->event_parser = $event_parser ?? new GenericEventParser();
         $this->object_copier = $object_copier ?? new NativeObjetCopier();
-        $this->event_sharing = $event_sharing ?? new ShareWithWordPress();
     }
     
     /**
@@ -181,8 +174,6 @@ final class EventDispatcher implements Dispatcher
                 $this->getPayloadForCurrentIteration($event),
             );
         }
-        
-        $this->event_sharing->share($event);
         
         return $event;
     }

@@ -7,12 +7,12 @@ namespace Tests\integration\EventDispatcher;
 use Codeception\TestCase\WPTestCase;
 use Snicco\EventDispatcher\ClassAsName;
 use Tests\concerns\AssertPHPUnitFailures;
-use Snicco\EventDispatcher\FakeDispatcher;
 use Snicco\EventDispatcher\ClassAsPayload;
 use Tests\concerns\AssertListenerResponse;
-use Snicco\EventDispatcher\EventDispatcher;
 use Snicco\EventDispatcher\Contracts\Event;
 use PHPUnit\Framework\ExpectationFailedException;
+use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
+use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 use Snicco\EventDispatcher\Implementations\GenericEvent;
 use Snicco\EventDispatcher\Implementations\ParameterBasedListenerFactory;
 

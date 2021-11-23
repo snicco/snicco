@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\EventDispatcher\Implementations;
 
 use Snicco\EventDispatcher\Contracts\Event;
-use Snicco\EventDispatcher\Contracts\EventSharing;
+use Snicco\EventDispatcher\Dispatcher\WordPressDispatcher;
 
 /**
  * If you dispatch an event as a string instead of using a dedicated class
@@ -16,7 +16,7 @@ use Snicco\EventDispatcher\Contracts\EventSharing;
  * They can only be used as an action. You can customize this behaviour by passing
  * a different implementation of "EventSharing" into the dispatcher.
  *
- * @see EventSharing
+ * @see WordPressDispatcher
  * @see GenericEventParser::transformToEvent()
  * @api
  */

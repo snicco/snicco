@@ -2,10 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Snicco\EventDispatcher;
+namespace Snicco\EventDispatcher\Dispatcher;
 
 use Closure;
 use ReflectionException;
+use Snicco\EventDispatcher\Listener;
 use PHPUnit\Framework\Assert as PHPUnit;
 use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
