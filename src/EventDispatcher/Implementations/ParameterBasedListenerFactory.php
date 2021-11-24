@@ -31,7 +31,10 @@ final class ParameterBasedListenerFactory implements ListenerFactory
             );
         }
         
-        return new Listener(fn(...$payload) => $instance->{$listener[1]}(...$payload));
+        return new Listener(function (...$payload) use ($instance, $listener) {
+            return $instance->{$listener[1]}(...$payload);
+        }
+        );
     }
     
 }

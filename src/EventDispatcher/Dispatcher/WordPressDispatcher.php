@@ -16,7 +16,10 @@ use Snicco\EventDispatcher\Contracts\IsForbiddenToWordPress;
 final class WordPressDispatcher implements Dispatcher
 {
     
-    private Dispatcher $dispatcher;
+    /**
+     * @var Dispatcher
+     */
+    private $dispatcher;
     
     public function __construct(Dispatcher $dispatcher)
     {

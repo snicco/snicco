@@ -20,10 +20,25 @@ use Snicco\EventDispatcher\Implementations\ParameterBasedEventFactory;
 final class EventMapper
 {
     
-    private MappedEventFactory $event_factory;
-    private Dispatcher         $event_dispatcher;
-    private array              $mapped_actions = [];
-    private array              $mapped_filters = [];
+    /**
+     * @var MappedEventFactory
+     */
+    private $event_factory;
+    
+    /**
+     * @var Dispatcher
+     */
+    private $event_dispatcher;
+    
+    /**
+     * @var array
+     */
+    private $mapped_actions = [];
+    
+    /**
+     * @var array
+     */
+    private $mapped_filters = [];
     
     public function __construct(Dispatcher $event_dispatcher, ?MappedEventFactory $event_factory = null)
     {

@@ -22,26 +22,43 @@ use function Snicco\EventDispatcher\functions\wildcardPatternMatchesEventName;
 final class FakeDispatcher implements Dispatcher
 {
     
-    private Dispatcher $dispatcher;
+    /**
+     * @var Dispatcher
+     */
+    private $dispatcher;
     
     /**
      * @var string[]
      */
-    private array $events_to_fake = [];
+    private $events_to_fake = [];
     
     /**
      * The dispatched event objects keyed by name.
      *
      * @var array<string,array<Event>>
      */
-    private array $dispatched_events = [];
+    private $dispatched_events = [];
     
-    private bool $fake_all = false;
+    /**
+     * @var bool
+     */
+    private $fake_all = false;
     
-    private array $dont_fake = [];
+    /**
+     * @var array
+     */
+    private $dont_fake = [];
     
-    private EventParser $event_parser;
+    /**
+     * @var EventParser|GenericEventParser
+     */
+    private $event_parser;
     
+    /**
+     * @param  Dispatcher  $dispatcher
+     * @param  EventParser|null  $event_parser  The event parser has to be the same class as the
+     *     one that the wrapped dispatcher uses.
+     */
     public function __construct(Dispatcher $dispatcher, ?EventParser $event_parser = null)
     {
         $this->dispatcher = $dispatcher;
@@ -224,7 +241,7 @@ final class FakeDispatcher implements Dispatcher
     
     private function getDispatched(string $event_name, Closure $callback_condition = null) :array
     {
-        $callback_condition = $callback_condition ?? fn() => true;
+        $callback_condition = $callback_condition ?? function () { return true; };
         
         $passed = [];
         

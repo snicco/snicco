@@ -23,8 +23,15 @@ use Snicco\EventDispatcher\Dispatcher\WordPressDispatcher;
 final class GenericEvent implements Event
 {
     
-    private array  $arguments;
-    private string $name;
+    /**
+     * @var array
+     */
+    private $arguments;
+    
+    /**
+     * @var string
+     */
+    private $name;
     
     public function __construct(string $name, array $arguments)
     {
