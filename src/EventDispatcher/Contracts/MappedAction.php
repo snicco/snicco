@@ -9,7 +9,7 @@ namespace Snicco\EventDispatcher\Contracts;
  *
  * @api
  */
-interface MappedAction extends Event, IsForbiddenToWordPress
+interface MappedAction extends Event, IsForbiddenToWordPress, DispatchesConditionally
 {
 
 }

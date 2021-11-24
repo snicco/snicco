@@ -10,6 +10,9 @@ use Snicco\EventDispatcher\Contracts\Mutable;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\EventDispatcher\Contracts\IsForbiddenToWordPress;
 
+/**
+ * @api
+ */
 final class WordPressDispatcher implements Dispatcher
 {
     
@@ -20,17 +23,11 @@ final class WordPressDispatcher implements Dispatcher
         $this->dispatcher = $dispatcher;
     }
     
-    /**
-     * @inheritdoc
-     */
-    public function listen($event_name, $listener = null, bool $can_be_removed = true)
+    public function listen($event_name, $listener = null, bool $can_be_removed = true) :void
     {
         $this->dispatcher->listen($event_name, $listener, $can_be_removed);
     }
     
-    /**
-     * @inheritdoc
-     */
     public function dispatch($event, ...$payload) :Event
     {
         $event = $this->dispatcher->dispatch($event, ...$payload);
@@ -62,12 +59,19 @@ final class WordPressDispatcher implements Dispatcher
         return $event;
     }
     
-    /**
-     * @inheritdoc
-     */
-    public function remove(string $event_name, string $listener_class = null)
+    public function remove(string $event_name, $listener = null) :void
     {
-        $this->dispatcher->listen($event_name, $listener_class);
+        $this->dispatcher->listen($event_name, $listener);
+    }
+    
+    public function mute(string $event_name, $listener = null) :void
+    {
+        $this->dispatcher->mute($event_name, $listener);
+    }
+    
+    public function unmute(string $event_name, $listener = null) :void
+    {
+        $this->dispatcher->unmute($event_name, $listener);
     }
     
 }

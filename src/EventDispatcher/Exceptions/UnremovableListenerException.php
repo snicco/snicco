@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\EventDispatcher\Exceptions;
 
+use Closure;
 use LogicException;
 
 /**
@@ -13,15 +14,23 @@ final class UnremovableListenerException extends LogicException
 {
     
     /**
-     * @param  string  $listener_class
+     * @param  array|Closure  $listener
      * @param  string  $event_name
      *
      * @return static
      */
-    public static function becauseTheDeveloperTriedToRemove(string $listener_class, string $event_name) :self
+    public static function becauseTheDeveloperTriedToRemove($listener, string $event_name) :self
     {
+        $identifier = $listener instanceof Closure
+            ? ['Closure', spl_object_hash($listener)]
+            : $listener;
+        
         return new UnremovableListenerException(
-            "The listener [$listener_class] is marked as unremovable for the event [$event_name]."
+            sprintf(
+                "The listener [%s] is marked as unremovable for the event [%s].",
+                implode(',', $identifier),
+                $event_name
+            )
         );
     }
     

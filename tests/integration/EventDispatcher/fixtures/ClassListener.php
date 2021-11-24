@@ -16,9 +16,9 @@ class ClassListener
         $this->respondedToEvent(FooEvent::class, ClassListener::class, $event->val);
     }
     
-    public function customHandleMethod(FooEvent $event)
+    public function customHandleMethod($event)
     {
-        $this->respondedToEvent(FooEvent::class, ClassListener::class, $event->val);
+        $this->respondedToEvent(get_class($event), ClassListener::class, $event->val);
     }
     
 }

@@ -9,7 +9,7 @@ namespace Snicco\EventDispatcher\Contracts;
  *
  * @api
  */
-interface MappedFilter extends Event, Mutable, IsForbiddenToWordPress
+interface MappedFilter extends Event, Mutable, IsForbiddenToWordPress, DispatchesConditionally
 {
     
     /**
