@@ -24,4 +24,9 @@ class GenerateLogoutUrl extends CoreEvent implements MappedFilter
         return $this->url;
     }
     
+    public function shouldDispatch() :bool
+    {
+        return true;
+    }
+    
 }

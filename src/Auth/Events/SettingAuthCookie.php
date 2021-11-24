@@ -31,4 +31,9 @@ class SettingAuthCookie extends CoreEvent implements MappedFilter
         return $this->cookie;
     }
     
+    public function shouldDispatch() :bool
+    {
+        return true;
+    }
+    
 }
