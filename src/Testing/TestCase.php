@@ -16,6 +16,7 @@ use Snicco\Session\Session;
 use Snicco\Http\Psr7\Request;
 use Snicco\Application\Config;
 use Snicco\Contracts\Middleware;
+use Snicco\Mail\Contracts\Mailer;
 use Illuminate\Container\Container;
 use Snicco\Application\Application;
 use Codeception\TestCase\WPTestCase;
@@ -100,6 +101,7 @@ abstract class TestCase extends WPTestCase
             $this->replaceBindings();
             $this->setProperties();
             $this->dispatcher = $this->app[Dispatcher::class];
+            $this->fake_mailer = $this->app[Mailer::class];
         });
         
         foreach ($this->after_application_created as $callback) {
