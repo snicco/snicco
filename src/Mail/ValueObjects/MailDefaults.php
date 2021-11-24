@@ -9,7 +9,7 @@ use function apply_filters;
 /**
  * @api
  */
-final class DefaultConfig
+final class MailDefaults
 {
     
     /**
@@ -40,12 +40,12 @@ final class DefaultConfig
         $this->reply_to_email = $reply_to_email;
     }
     
-    public static function fromWordPressSettings() :DefaultConfig
+    public static function fromWordPressSettings() :MailDefaults
     {
         $email = apply_filters('wp_mail_from', get_bloginfo('admin_email'));
         $name = apply_filters('wp_mail_from_name', get_bloginfo('name'));
         
-        return new DefaultConfig(
+        return new MailDefaults(
             $email,
             $name,
             $email,
