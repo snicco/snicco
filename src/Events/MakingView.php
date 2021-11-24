@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Events;
 
 use Snicco\Contracts\ViewInterface;
+use Snicco\EventDispatcher\Contracts\Mutable;
 use Snicco\Core\Events\EventObjects\CoreEvent;
 
-class MakingView extends CoreEvent
+class MakingView extends CoreEvent implements Mutable
 {
     
     public ViewInterface $view;

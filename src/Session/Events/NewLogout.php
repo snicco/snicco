@@ -9,5 +9,10 @@ use Snicco\EventDispatcher\Contracts\MappedAction;
 
 class NewLogout extends CoreEvent implements MappedAction
 {
-
+    
+    public function shouldDispatch() :bool
+    {
+        return true;
+    }
+    
 }

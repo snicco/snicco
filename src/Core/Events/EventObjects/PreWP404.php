@@ -18,4 +18,9 @@ class PreWP404 extends CoreEvent implements MappedFilter
         return $this->process_404;
     }
     
+    public function shouldDispatch() :bool
+    {
+        return true;
+    }
+    
 }

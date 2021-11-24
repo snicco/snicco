@@ -8,7 +8,6 @@ use Closure;
 use Throwable;
 use Contracts\ContainerAdapter;
 use Snicco\EventDispatcher\Listener;
-use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\ListenerFactory;
 use Snicco\EventDispatcher\Exceptions\ListenerCreationException;
 
@@ -23,7 +22,7 @@ final class DependencyInversionListenerFactory implements ListenerFactory
         $this->container_adapter = $container_adapter;
     }
     
-    public function create($listener, Event $event) :Listener
+    public function create($listener, string $event_name) :Listener
     {
         if ($listener instanceof Closure) {
             return new Listener($listener);

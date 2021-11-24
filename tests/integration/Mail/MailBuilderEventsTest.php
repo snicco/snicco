@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\integration\Mail;
 
-use Closure;
 use MockPHPMailer;
 use Snicco\Mail\MailBuilder;
 use Snicco\Mail\Event\SendingEmail;
@@ -102,19 +101,9 @@ final class MailBuilderEventsTest extends WPTestCase
         $this->assertStringContainsString('To: Calvin Alkan <c@web.de>', $header);
     }
     
-    private function getEventDispatcher() :Closure
+    private function getEventDispatcher() :TestDispatcher
     {
-        return function ($event) {
-            $dispatcher = new TestDispatcher();
-            
-            if ($event instanceof SendingEmail) {
-                $dispatcher->fireSending($event);
-            }
-            
-            if ($event instanceof EmailWasSent) {
-                $dispatcher->fireSent($event);
-            }
-        };
+        return new TestDispatcher();
     }
     
     private function getSentMails() :array
@@ -125,7 +114,7 @@ final class MailBuilderEventsTest extends WPTestCase
     
 }
 
-class TestDispatcher
+class TestDispatcher implements MailEventDispatcher
 {
     
     public function fireSending(SendingEmail $sending_email) :void

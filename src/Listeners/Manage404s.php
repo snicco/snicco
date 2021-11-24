@@ -30,7 +30,7 @@ class Manage404s
     {
         global $wp;
         
-        $this->dispatcher->remove(PreWP404::class, self::class);
+        $this->dispatcher->remove(PreWP404::class);
         
         $wp->handle_404();
     }

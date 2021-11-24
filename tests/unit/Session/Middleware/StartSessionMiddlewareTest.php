@@ -23,6 +23,8 @@ use Tests\concerns\CreateDefaultWpApiMocks;
 use Snicco\Session\Drivers\ArraySessionDriver;
 use Snicco\ExceptionHandling\NullExceptionHandler;
 use Snicco\Session\Middleware\StartSessionMiddleware;
+use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
+use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 
 class StartSessionMiddlewareTest extends MiddlewareTestCase
 {
@@ -33,7 +35,7 @@ class StartSessionMiddlewareTest extends MiddlewareTestCase
     
     private Cookies $cookies;
     
-    private array   $config = [
+    private array $config = [
         'lifetime' => 1,
         'lottery' => [0, 100],
         'cookie' => 'test_session',
@@ -244,7 +246,9 @@ class StartSessionMiddlewareTest extends MiddlewareTestCase
         
         $config['lottery'] = $gc_collection;
         
-        return new StartSessionMiddleware(new SessionManager($config, $session));
+        return new StartSessionMiddleware(
+            new SessionManager($config, $session, new FakeDispatcher(new EventDispatcher()))
+        );
     }
     
     private function newSession($handler = null) :Session

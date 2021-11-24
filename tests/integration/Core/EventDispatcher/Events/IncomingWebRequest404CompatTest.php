@@ -2,10 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Tests\integration\Events;
+namespace Tests\integration\Core\EventDispatcher\Events;
 
 use Tests\FrameworkTestCase;
 use Snicco\Core\Events\EventObjects\DoShutdown;
+
+use function add_filter;
+use function remove_filter;
 
 class IncomingWebRequest404CompatTest extends FrameworkTestCase
 {
