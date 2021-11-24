@@ -4,7 +4,7 @@ namespace Snicco\ExceptionHandling;
 
 use Throwable;
 use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\ViewFactoryInterface;
+use Snicco\View\Contracts\ViewFactoryInterface;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
 use Snicco\ExceptionHandling\Exceptions\ErrorViewException;
 

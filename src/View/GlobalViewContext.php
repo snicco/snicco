@@ -6,10 +6,16 @@ namespace Snicco\View;
 
 use Snicco\Support\Repository;
 
-class GlobalContext
+/**
+ * @api
+ */
+class GlobalViewContext
 {
     
-    private array $context = [];
+    /**
+     * @var array
+     */
+    private $context = [];
     
     public function add(string $name, $context)
     {

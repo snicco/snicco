@@ -8,11 +8,11 @@ use Throwable;
 use Snicco\Support\Arr;
 use Illuminate\View\Factory;
 use Illuminate\View\ViewName;
-use Snicco\Contracts\ViewInterface;
-use Snicco\Contracts\ViewEngine;
+use Snicco\View\Contracts\ViewInterface;
+use Snicco\View\Contracts\ViewEngineInterface;
 use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
 
-class BladeEngine implements ViewEngine
+class BladeEngine implements ViewEngineInterface
 {
     
     private Factory $view_factory;

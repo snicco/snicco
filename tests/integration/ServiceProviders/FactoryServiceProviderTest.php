@@ -8,9 +8,9 @@ use Tests\stubs\TestApp;
 use Tests\FrameworkTestCase;
 use Snicco\Routing\ControllerAction;
 use Snicco\Factories\RouteActionFactory;
-use Snicco\Factories\ViewComposerFactory;
 use Snicco\Factories\RouteConditionFactory;
 use Tests\fixtures\ViewComposers\FooComposer;
+use Snicco\Core\View\DependencyInjectionViewComposerFactory;
 
 class FactoryServiceProviderTest extends FrameworkTestCase
 {
@@ -31,8 +31,8 @@ class FactoryServiceProviderTest extends FrameworkTestCase
             TestApp::resolve(RouteActionFactory::class)
         );
         $this->assertInstanceOf(
-            ViewComposerFactory::class,
-            TestApp::resolve(ViewComposerFactory::class)
+            DependencyInjectionViewComposerFactory::class,
+            TestApp::resolve(DependencyInjectionViewComposerFactory::class)
         );
         $this->assertInstanceOf(
             RouteConditionFactory::class,
@@ -63,8 +63,8 @@ class FactoryServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function the_view_composer_namespace_can_be_configured_correctly()
     {
-        /** @var ViewComposerFactory $factory */
-        $factory = TestApp::resolve(ViewComposerFactory::class);
+        /** @var DependencyInjectionViewComposerFactory $factory */
+        $factory = TestApp::resolve(DependencyInjectionViewComposerFactory::class);
         
         $composer = $factory->create('FooComposer');
         

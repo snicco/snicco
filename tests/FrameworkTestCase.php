@@ -12,9 +12,9 @@ use Contracts\ContainerAdapter;
 use Snicco\Testing\TestResponse;
 use Snicco\Http\ResponseEmitter;
 use Snicco\Application\Application;
-use Snicco\Contracts\ViewInterface;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Snicco\Contracts\ServiceProvider;
+use Snicco\View\Contracts\ViewInterface;
 use Snicco\Testing\TestCase as BaseTestCase;
 
 class FrameworkTestCase extends BaseTestCase

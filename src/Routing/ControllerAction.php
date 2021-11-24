@@ -8,8 +8,8 @@ use Snicco\Http\Controller;
 use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Snicco\Contracts\RouteAction;
-use Snicco\Contracts\ViewFactoryInterface;
 use Snicco\Support\ReflectionDependencies;
+use Snicco\View\Contracts\ViewFactoryInterface;
 
 class ControllerAction implements RouteAction
 {

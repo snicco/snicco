@@ -15,7 +15,7 @@ use Snicco\Testing\MiddlewareTestCase;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Contracts\RouteUrlGenerator;
 use Tests\concerns\CreatePsr17Factories;
-use Snicco\Contracts\ViewFactoryInterface;
+use Snicco\View\Contracts\ViewFactoryInterface;
 use PHPUnit\Framework\ExpectationFailedException;
 use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
 use Snicco\Testing\Assertable\MiddlewareTestResponse;

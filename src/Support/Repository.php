@@ -16,7 +16,10 @@ use ArrayAccess;
 class Repository implements ArrayAccess
 {
     
-    protected array $items = [];
+    /**
+     * @var array
+     */
+    protected $items = [];
     
     public function __construct(array $items = [])
     {

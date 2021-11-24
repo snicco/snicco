@@ -7,6 +7,7 @@ namespace Snicco\Http;
 use RuntimeException;
 use RKA\Middleware\IpAddress;
 use Snicco\Contracts\Redirector;
+use Snicco\Core\Http\MethodField;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 
@@ -19,6 +20,7 @@ class HttpServiceProvider extends ServiceProvider
         $this->bindRedirector();
         $this->bindResponsePostProcessor();
         $this->bindIpAddressMiddleware();
+        $this->bindMethodField();
     }
     
     public function bootstrap() :void
@@ -73,6 +75,11 @@ class HttpServiceProvider extends ServiceProvider
                 $this->app->isRunningUnitTest()
             );
         });
+    }
+    
+    private function bindMethodField()
+    {
+        $this->container->singleton(MethodField::class, fn() => new MethodField($this->appKey()));
     }
     
 }

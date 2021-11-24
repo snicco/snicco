@@ -6,7 +6,7 @@ namespace Snicco\Blade;
 
 use Throwable;
 use Snicco\Support\Arr;
-use Snicco\Contracts\ViewInterface;
+use Snicco\View\Contracts\ViewInterface;
 use Snicco\ExceptionHandling\Exceptions\ViewException;
 use Illuminate\Contracts\View\View as IlluminateViewContract;
 

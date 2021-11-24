@@ -2,13 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Snicco\View;
+namespace Snicco\View\Implementations;
 
 use Snicco\Support\Str;
 use Snicco\Support\FilePath;
-use Snicco\Contracts\ViewFinder;
 
-class PhpViewFinder implements ViewFinder
+/**
+ * @internal
+ */
+class PHPViewFinder
 {
     
     /**
@@ -16,19 +18,19 @@ class PhpViewFinder implements ViewFinder
      *
      * @param  string[]  $directories
      */
-    private array $directories;
+    private $directories;
     
-    public function __construct(array $directories)
+    public function __construct(array $directories = [])
     {
         $this->directories = $this->normalize($directories);
     }
     
     public function exists(string $view_name) :bool
     {
-        return file_exists($this->filePath($view_name));
+        return $this->filePath($view_name) !== null;
     }
     
-    public function filePath(string $view_name) :string
+    public function filePath(string $view_name) :?string
     {
         if (is_file($view_name)) {
             return $view_name;
@@ -42,14 +44,14 @@ class PhpViewFinder implements ViewFinder
         foreach ($this->directories as $directory) {
             $path = rtrim($directory, '/').'/'.$view_name.'.php';
             
-            $exists = file_exists($path);
+            $exists = is_file($path);
             
             if ($exists) {
                 return $path;
             }
         }
         
-        return '';
+        return null;
     }
     
     public function includeFile(string $path, array $context)

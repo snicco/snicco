@@ -2,13 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Snicco\View;
+namespace Snicco\View\Implementations;
 
 use Snicco\Support\WP;
 use Snicco\Support\Arr;
-use Snicco\Contracts\ViewInterface;
+use Snicco\View\Contracts\ViewInterface;
 
-class PhpView implements ViewInterface
+/**
+ * @api
+ */
+class PHPView implements ViewInterface
 {
     
     /**
@@ -18,13 +21,32 @@ class PhpView implements ViewInterface
      */
     public const PARENT_FILE_INDICATOR = 'Extends';
     
-    private PhpViewEngine $engine;
-    private string        $filepath;
-    private ?PhpView      $parent_view;
-    private array         $context = [];
-    private string        $name;
+    /**
+     * @var PHPViewFactory
+     */
+    private $engine;
     
-    public function __construct(PhpViewEngine $engine, string $name, string $path)
+    /**
+     * @var string
+     */
+    private $filepath;
+    
+    /**
+     * @var PHPView|null
+     */
+    private $parent_view;
+    
+    /**
+     * @var array
+     */
+    private $context = [];
+    
+    /**
+     * @var string
+     */
+    private $name;
+    
+    public function __construct(PHPViewFactory $engine, string $name, string $path)
     {
         $this->engine = $engine;
         $this->name = $name;
@@ -37,7 +59,7 @@ class PhpView implements ViewInterface
         return $this->filepath;
     }
     
-    public function parent() :?PhpView
+    public function parent() :?PHPView
     {
         return $this->parent_view;
     }
@@ -93,9 +115,9 @@ class PhpView implements ViewInterface
     /**
      * Create a view instance for the given view's layout header, if any.
      *
-     * @return ViewInterface|PhpView|null
+     * @return ViewInterface|PHPView|null
      */
-    private function parseParentView() :?PhpView
+    private function parseParentView() :?PHPView
     {
         if (empty($file_headers = $this->parseFileHeaders())) {
             return null;
@@ -103,7 +125,7 @@ class PhpView implements ViewInterface
         
         $parent_view_name = trim($file_headers[0]);
         
-        return $this->engine->make($parent_view_name);
+        return $this->engine->make([$parent_view_name]);
     }
     
     private function parseFileHeaders() :array

@@ -6,28 +6,27 @@ namespace Tests\unit\View;
 
 use Tests\UnitTest;
 use Tests\stubs\TestView;
-use Tests\concerns\CreateContainer;
-use Snicco\Contracts\ViewInterface;
+use InvalidArgumentException;
+use Snicco\View\GlobalViewContext;
 use Snicco\View\ViewComposerCollection;
-use Snicco\Factories\ViewComposerFactory;
-
-use const TEST_CONFIG;
+use Snicco\View\Contracts\ViewComposer;
+use Snicco\View\Contracts\ViewInterface;
+use Snicco\Core\View\DependencyInjectionViewComposerFactory;
+use Snicco\View\Implementations\NewableInstanceViewComposerFactory;
 
 class ViewComposerCollectionTest extends UnitTest
 {
     
-    use CreateContainer;
-    
-    private ViewComposerFactory $factory;
+    /**
+     * @var DependencyInjectionViewComposerFactory
+     */
+    private $factory;
     
     protected function setUp() :void
     {
         parent::setUp();
         
-        $this->factory = new ViewComposerFactory(
-            $this->createContainer(),
-            TEST_CONFIG['composers']
-        );
+        $this->factory = new NewableInstanceViewComposerFactory();
     }
     
     /** @test */
@@ -36,7 +35,6 @@ class ViewComposerCollectionTest extends UnitTest
         $collection = $this->newViewComposerCollection();
         
         $view = new TestView('foo_view');
-        $view->with(['foo' => 'bar']);
         
         $collection->addComposer('foo_view', function (ViewInterface $view) {
             $view->with(['foo' => 'baz']);
@@ -53,7 +51,6 @@ class ViewComposerCollectionTest extends UnitTest
         $collection = $this->newViewComposerCollection();
         
         $view = new TestView('foo_view');
-        $view->with(['foo' => 'bar']);
         
         $collection->addComposer('bar_view', function (ViewInterface $view) {
             $view->with(['foo' => 'baz']);
@@ -61,7 +58,7 @@ class ViewComposerCollectionTest extends UnitTest
         
         $collection->compose($view);
         
-        $this->assertSame('bar', $view->context('foo'));
+        $this->assertSame([], $view->context());
     }
     
     /** @test */
@@ -110,7 +107,6 @@ class ViewComposerCollectionTest extends UnitTest
         $collection = $this->newViewComposerCollection();
         
         $view = new TestView('foo_view');
-        $view->with(['foo' => 'bar']);
         
         $collection->addComposer('foo_view', function ($view_file) {
             $view_file->with(['foo' => 'baz']);
@@ -121,11 +117,116 @@ class ViewComposerCollectionTest extends UnitTest
         $this->assertSame('baz', $view->context('foo'));
     }
     
-    private function newViewComposerCollection() :ViewComposerCollection
+    /** @test */
+    public function test_exception_for_adding_a_bad_view_composer()
     {
-        return new ViewComposerCollection($this->factory);
+        $this->expectException(InvalidArgumentException::class);
+        
+        $collection = $this->newViewComposerCollection();
+        
+        $collection->addComposer('foo_view', 1);
+    }
+    
+    /** @test */
+    public function a_view_composer_can_be_a_class()
+    {
+        $collection = $this->newViewComposerCollection();
+        
+        $view = new TestView('foo_view');
+        
+        $collection->addComposer('foo_view', TestComposer::class);
+        
+        $collection->compose($view);
+        
+        $this->assertSame('baz', $view->context('foo'));
+    }
+    
+    /** @test */
+    public function test_exception_for_bad_composer_class()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage("[BadComposer] is not a valid class.");
+        
+        $collection = $this->newViewComposerCollection();
+        
+        $collection->addComposer('foo_view', 'BadComposer');
+    }
+    
+    /** @test */
+    public function test_exception_for_composer_without_interface()
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage(
+            sprintf(
+                "Class [%s] does not implement [%s]",
+                ComposerWithoutInterface::class,
+                ViewComposer::class
+            )
+        );
+        
+        $collection = $this->newViewComposerCollection();
+        
+        $collection->addComposer('foo_view', ComposerWithoutInterface::class);
+    }
+    
+    /** @test */
+    public function local_context_has_priority_over_a_view_composer()
+    {
+        $collection = $this->newViewComposerCollection();
+        
+        $view = new TestView('foo_view');
+        $view->with('foo', 'bar');
+        
+        $collection->addComposer('foo_view', function (ViewInterface $view) {
+            $view->with(['foo' => 'baz']);
+        });
+        
+        $collection->compose($view);
+        
+        $this->assertSame('bar', $view->context('foo'));
+    }
+    
+    /** @test */
+    public function view_composer_have_priority_over_global_context()
+    {
+        $collection = $this->newViewComposerCollection($global_context = new GlobalViewContext());
+        $global_context->add('foo', 'bar');
+        
+        $view = new TestView('foo_view');
+        
+        $collection->addComposer('foo_view', function (ViewInterface $view) {
+            $view->with(['foo' => 'baz']);
+        });
+        
+        $collection->compose($view);
+        
+        $this->assertSame('baz', $view->context('foo'));
+    }
+    
+    private function newViewComposerCollection(GlobalViewContext $global_view_context = null) :ViewComposerCollection
+    {
+        return new ViewComposerCollection($this->factory, $global_view_context);
     }
     
 }
 
+class TestComposer implements ViewComposer
+{
+    
+    public function compose(ViewInterface $view) :void
+    {
+        $view->with(['foo' => 'baz']);
+    }
+    
+}
+
+class ComposerWithoutInterface
+{
+    
+    public function compose(ViewInterface $view) :void
+    {
+        $view->with(['foo' => 'baz']);
+    }
+    
+}
 

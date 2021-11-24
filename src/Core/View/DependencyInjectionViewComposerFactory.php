@@ -2,15 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Factories;
+namespace Snicco\Core\View;
 
 use Closure;
 use RuntimeException;
 use Contracts\ContainerAdapter;
-use Snicco\Contracts\ViewComposer;
 use Snicco\View\ClosureViewComposer;
+use Snicco\View\Contracts\ViewComposer;
+use Snicco\View\Contracts\ViewComposerFactory;
 
-class ViewComposerFactory
+class DependencyInjectionViewComposerFactory implements ViewComposerFactory
 {
     
     /**

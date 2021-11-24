@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\unit\Routing;
 
 use Tests\RoutingTestCase;
-use Snicco\View\ViewFactory;
+use Snicco\View\ViewEngine;
 use Tests\stubs\HeaderStack;
 use Tests\stubs\TestViewFactory;
 
@@ -15,7 +15,7 @@ class ViewRoutesTest extends RoutingTestCase
     protected function setUp() :void
     {
         parent::setUp();
-        $this->container->instance(ViewFactory::class, new TestViewFactory());
+        $this->container->instance(ViewEngine::class, new TestViewFactory());
     }
     
     /** @test */

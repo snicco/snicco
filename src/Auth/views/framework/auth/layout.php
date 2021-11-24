@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-/** @var ViewFactoryInterface $view_factory */
+/** @var \Snicco\View\Contracts\ViewFactoryInterface $view_factory */
 
 /** @var string $view */
 
-use Snicco\Contracts\ViewFactoryInterface;
+use Snicco\View\Contracts\ViewFactoryInterface;
 
 ?>
 
