@@ -8,7 +8,7 @@ use Tests\stubs\TestViewFactory;
 use Snicco\Routing\RouteCollection;
 use Snicco\Contracts\RouteUrlGenerator;
 use Tests\concerns\CreatePsr17Factories;
-use Snicco\Contracts\ViewFactoryInterface;
+use Snicco\View\Contracts\ViewFactoryInterface;
 use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
 use Snicco\Testing\MiddlewareTestCase as FrameworkMiddlewareTestCase;
 

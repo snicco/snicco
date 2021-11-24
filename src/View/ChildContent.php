@@ -6,10 +6,16 @@ namespace Snicco\View;
 
 use Closure;
 
+/**
+ * @internal
+ */
 class ChildContent
 {
     
-    private Closure $content;
+    /**
+     * @var Closure
+     */
+    private $content;
     
     public function __construct(Closure $content)
     {

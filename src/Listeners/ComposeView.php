@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Listeners;
 
 use Snicco\Events\MakingView;
-use Snicco\Contracts\ViewFactoryInterface;
+use Snicco\View\Contracts\ViewFactoryInterface;
 
 class ComposeView
 {

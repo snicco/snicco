@@ -16,10 +16,10 @@ use Snicco\Http\StatelessRedirector;
 use Tests\concerns\CreatePsrRequests;
 use Snicco\Contracts\RouteUrlGenerator;
 use Psr\Http\Message\UriFactoryInterface;
-use Snicco\Contracts\ViewFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
 use Snicco\Testing\TestDoubles\TestMagicLink;
 use Psr\Http\Message\ResponseFactoryInterface;
+use Snicco\View\Contracts\ViewFactoryInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 use Snicco\Testing\Assertable\MiddlewareTestResponse;
 

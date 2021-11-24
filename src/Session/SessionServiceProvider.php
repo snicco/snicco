@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Session;
 
-use Snicco\View\GlobalContext;
 use Snicco\Contracts\Encryptor;
 use Snicco\Contracts\Redirector;
+use Snicco\View\GlobalViewContext;
 use Snicco\Application\Application;
 use Snicco\Session\Events\NewLogin;
 use Snicco\Auth\AuthServiceProvider;
@@ -192,8 +192,8 @@ class SessionServiceProvider extends ServiceProvider
     
     private function bindViewContext()
     {
-        /** @var GlobalContext $global_context */
-        $global_context = $this->container->make(GlobalContext::class);
+        /** @var GlobalViewContext $global_context */
+        $global_context = $this->container->make(GlobalViewContext::class);
         
         $global_context->add('csrf', fn() => $this->container->make(CsrfField::class));
         $global_context->add('session', fn() => $this->container->make(Session::class));

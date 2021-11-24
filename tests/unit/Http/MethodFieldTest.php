@@ -2,12 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Tests\unit\View;
+namespace Tests\unit\Http;
 
 use LogicException;
 use Tests\UnitTest;
 use Snicco\Support\Str;
-use Snicco\View\MethodField;
+use Snicco\Core\Http\MethodField;
+
+use const TEST_APP_KEY;
 
 class MethodFieldTest extends UnitTest
 {

@@ -2,9 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Contracts;
+namespace Snicco\View\Contracts;
 
-interface ViewInterface extends Responsable
+/**
+ * @api
+ */
+interface ViewInterface
 {
     
     /**
@@ -37,11 +40,11 @@ interface ViewInterface extends Responsable
     /**
      * @return string The name of the view
      */
-    public function name();
+    public function name() :string;
     
     /**
      * @return string The full local path of the view
      */
-    public function path();
+    public function path() :string;
     
 }

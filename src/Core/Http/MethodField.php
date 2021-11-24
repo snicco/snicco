@@ -2,9 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Snicco\View;
+namespace Snicco\Core\Http;
 
 use LogicException;
+
+use function hash_hmac;
+use function hash_equals;
 
 class MethodField
 {

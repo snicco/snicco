@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Tests\integration\ServiceProviders;
 
 use Tests\stubs\TestApp;
+use Snicco\View\ViewEngine;
 use Tests\FrameworkTestCase;
-use Snicco\View\MethodField;
-use Snicco\View\ViewFactory;
-use Snicco\View\PhpViewEngine;
-use Snicco\View\GlobalContext;
+use Snicco\Core\Http\MethodField;
+use Snicco\View\GlobalViewContext;
 use Snicco\View\ViewComposerCollection;
-use Snicco\Contracts\ViewEngine;
+use Snicco\View\Contracts\ViewEngineInterface;
+use Snicco\View\Implementations\PHPViewFactory;
 
 class ViewServiceProviderTest extends FrameworkTestCase
 {
@@ -25,14 +25,14 @@ class ViewServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function the_global_context_is_a_singleton()
     {
-        /** @var GlobalContext $context */
-        $context = TestApp::resolve(GlobalContext::class);
-        $this->assertInstanceOf(GlobalContext::class, $context);
+        /** @var GlobalViewContext $context */
+        $context = TestApp::resolve(GlobalViewContext::class);
+        $this->assertInstanceOf(GlobalViewContext::class, $context);
         
         $this->assertArrayNotHasKey('foo', $context->get());
         TestApp::globals('foo', 'bar');
         
-        $context = TestApp::resolve(GlobalContext::class);
+        $context = TestApp::resolve(GlobalViewContext::class);
         
         $this->assertArrayHasKey('foo', $context->get());
     }
@@ -40,13 +40,16 @@ class ViewServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function the_view_service_is_resolved_correctly()
     {
-        $this->assertInstanceOf(ViewFactory::class, TestApp::resolve(ViewFactory::class));
+        $this->assertInstanceOf(ViewEngine::class, TestApp::resolve(ViewEngine::class));
     }
     
     /** @test */
     public function the_view_engine_is_resolved_correctly()
     {
-        $this->assertInstanceOf(PhpViewEngine::class, TestApp::resolve(ViewEngine::class));
+        $this->assertInstanceOf(
+            PHPViewFactory::class,
+            TestApp::resolve(ViewEngineInterface::class)
+        );
     }
     
     /** @test */
@@ -76,7 +79,7 @@ class ViewServiceProviderTest extends FrameworkTestCase
     public function the_view_factory_is_added_to_the_global_context()
     {
         $context = TestApp::globals();
-        $this->assertInstanceOf(ViewFactory::class, $context->get()['__view']);
+        $this->assertInstanceOf(ViewEngine::class, $context->get()['__view']);
     }
     
 }

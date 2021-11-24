@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Events;
 
-use Snicco\Contracts\ViewInterface;
+use Snicco\View\Contracts\ViewInterface;
 use Snicco\EventDispatcher\Contracts\Mutable;
 use Snicco\Core\Events\EventObjects\CoreEvent;
 

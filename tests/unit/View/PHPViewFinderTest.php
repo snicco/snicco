@@ -5,18 +5,21 @@ declare(strict_types=1);
 namespace Tests\unit\View;
 
 use Tests\UnitTest;
-use Snicco\View\PhpViewFinder;
+use Snicco\View\Implementations\PHPViewFinder;
 
-class PhpViewFinderTest extends UnitTest
+class PHPViewFinderTest extends UnitTest
 {
     
-    private PhpViewFinder $finder;
+    /**
+     * @var PHPViewFinder
+     */
+    private $finder;
     
     public function setUp() :void
     {
         parent::setUp();
         
-        $this->finder = new PhpViewFinder([VIEWS_DIR]);
+        $this->finder = new PHPViewFinder([VIEWS_DIR]);
     }
     
     /** @test */
@@ -40,12 +43,12 @@ class PhpViewFinderTest extends UnitTest
     public function nested_files_can_be_found_by_dot_notation()
     {
         // only direct child files
-        $finder = new PhpViewFinder([VIEWS_DIR]);
+        $finder = new PHPViewFinder([VIEWS_DIR]);
         $this->assertTrue($finder->exists('view.php'));
         $this->assertFalse($finder->exists('first.php'));
         
         // one child dir
-        $finder = new PhpViewFinder([VIEWS_DIR]);
+        $finder = new PHPViewFinder([VIEWS_DIR]);
         $this->assertTrue($finder->exists('view'));
         $this->assertTrue($finder->exists('level-one.first'));
         $this->assertTrue($finder->exists('level-one.level-two.second'));
@@ -86,7 +89,7 @@ class PhpViewFinderTest extends UnitTest
         $view = VIEWS_DIR.DS.'view.php';
         $subview = $subdirectory.DS.'subview.php';
         
-        $finder = new PhpViewFinder([VIEWS_DIR]);
+        $finder = new PHPViewFinder([VIEWS_DIR]);
         $this->assertEquals($view, $finder->filePath('/view.php'));
         $this->assertEquals($view, $finder->filePath('view.php'));
         $this->assertEquals($view, $finder->filePath('/view'));
@@ -94,7 +97,7 @@ class PhpViewFinderTest extends UnitTest
         $this->assertEquals('', $finder->filePath('/nonexistent'));
         $this->assertEquals('', $finder->filePath('nonexistent'));
         
-        $finder = new PhpViewFinder([VIEWS_DIR, $subdirectory]);
+        $finder = new PHPViewFinder([VIEWS_DIR, $subdirectory]);
         $this->assertEquals($view, $finder->filePath('/view.php'));
         $this->assertEquals($view, $finder->filePath('view.php'));
         $this->assertEquals($view, $finder->filePath('/view'));

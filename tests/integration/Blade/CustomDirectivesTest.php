@@ -6,8 +6,8 @@ namespace Tests\integration\Blade;
 
 use Tests\stubs\TestApp;
 use Illuminate\Support\MessageBag;
-use Snicco\Contracts\ViewInterface;
 use Illuminate\Support\ViewErrorBag;
+use Snicco\View\Contracts\ViewInterface;
 use Snicco\Session\SessionServiceProvider;
 
 class CustomDirectivesTest extends BladeTestCase

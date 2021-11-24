@@ -25,11 +25,11 @@ use Tests\concerns\CreateContainer;
 use Snicco\Application\Application;
 use Tests\concerns\CreatePsr17Factories;
 use Tests\concerns\CreateRouteCollection;
-use Snicco\Contracts\ViewFactoryInterface;
 use Snicco\ExceptionHandling\WhoopsHandler;
-use Snicco\ExceptionHandling\ProductionExceptionHandler;
+use Snicco\View\Contracts\ViewFactoryInterface;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
 use Snicco\ExceptionHandling\Exceptions\ViewException;
+use Snicco\ExceptionHandling\ProductionExceptionHandler;
 use Snicco\ExceptionHandling\Exceptions\ErrorViewException;
 
 class ProductionExceptionHandlerRenderingTest extends UnitTest

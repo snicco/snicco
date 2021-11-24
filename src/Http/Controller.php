@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Http;
 
 use Snicco\Routing\UrlGenerator;
-use Snicco\Contracts\ViewFactoryInterface;
+use Snicco\View\Contracts\ViewFactoryInterface;
 
 class Controller
 {

@@ -7,7 +7,7 @@ namespace Snicco\Auth\Confirmation;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\MagicLink;
 use Snicco\Routing\UrlGenerator;
-use Snicco\Contracts\ViewInterface;
+use Snicco\View\Contracts\ViewInterface;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Auth\Contracts\AbstractEmailAuthConfirmationView;
 
