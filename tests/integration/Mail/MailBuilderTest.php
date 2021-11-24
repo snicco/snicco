@@ -11,7 +11,7 @@ use Snicco\Mail\MailBuilder;
 use Codeception\TestCase\WPTestCase;
 use Snicco\Mail\Contracts\MailRenderer;
 use Snicco\Mail\Mailer\WordPressMailer;
-use Snicco\Mail\ValueObjects\DefaultConfig;
+use Snicco\Mail\ValueObjects\MailDefaults;
 use Snicco\Mail\Renderer\AggregateRenderer;
 use Snicco\Mail\Renderer\FilesystemRenderer;
 use Snicco\Mail\Exceptions\MailRenderingException;
@@ -76,7 +76,7 @@ final class MailBuilderTest extends WPTestCase
     /** @test */
     public function default_headers_are_added_if_not_configured_on_the_sending_mail()
     {
-        $config = new DefaultConfig(
+        $config = new MailDefaults(
             'no-reply@inc.de',
             'Calvin INC',
             'office@inc.de',
