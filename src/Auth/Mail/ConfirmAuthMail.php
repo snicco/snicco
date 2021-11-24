@@ -6,44 +6,26 @@ namespace Snicco\Auth\Mail;
 
 use WP_User;
 use Snicco\Mail\Email;
-use Snicco\Routing\UrlGenerator;
 
 class ConfirmAuthMail extends Email
 {
     
     public WP_User $user;
     
-    public int $lifetime;
+    public int    $lifetime;
+    public string $magic_link;
     
-    public function __construct(WP_User $user, int $link_lifetime_in_sec)
+    public function __construct(WP_User $user, int $link_lifetime_in_sec, string $magic_link)
     {
         $this->user = $user;
         $this->lifetime = $link_lifetime_in_sec;
+        $this->magic_link = $magic_link;
     }
     
-    public function configure(UrlGenerator $generator) :Email
+    public function configure()
     {
-        return $this
-            ->subject('Your Email Confirmation link.')
-            ->view('framework.mail.confirm-auth')
-            ->with([
-                'magic_link' => $this->generateSignedUrl($generator),
-            ]);
-    }
-    
-    public function unique() :bool
-    {
-        return false;
-    }
-    
-    private function generateSignedUrl(UrlGenerator $generator) :string
-    {
-        return $generator->signedRoute(
-            'auth.confirm.magic-link',
-            [],
-            $this->lifetime,
-            true
-        );
+        $this->subject('Your Email Confirmation link.')
+             ->htmlTemplate('framework.mail.confirm-auth');
     }
     
 }
