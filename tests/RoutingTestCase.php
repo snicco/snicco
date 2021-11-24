@@ -7,7 +7,6 @@ namespace Tests;
 use Closure;
 use Mockery;
 use Snicco\Support\WP;
-use Snicco\Events\Event;
 use Snicco\Http\Delegate;
 use Snicco\Routing\Router;
 use Snicco\Http\HttpKernel;
@@ -52,6 +51,7 @@ use Tests\fixtures\Middleware\FooBarMiddleware;
 use Snicco\ExceptionHandling\NullExceptionHandler;
 use Snicco\Middleware\Core\OutputBufferMiddleware;
 use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
+use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
 use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 use Tests\fixtures\Conditions\ConditionWithDependency;
 use Snicco\Core\Events\DependencyInversionListenerFactory;
@@ -73,8 +73,8 @@ class RoutingTestCase extends TestCase
     protected Router                   $router;
     protected ContainerAdapter         $container;
     protected RouteCollectionInterface $routes;
-    
-    private int $output_buffer_level;
+    protected FakeDispatcher $event_dispatcher;
+    private int              $output_buffer_level;
     
     protected function setUp() :void
     {
@@ -82,8 +82,6 @@ class RoutingTestCase extends TestCase
         $this->resetGlobalState();
         $this->createDefaultWpApiMocks();
         $this->createInstances();
-        Event::make($this->container);
-        Event::fake();
         $this->createDefaultWpApiMocks();
         $this->output_buffer_level = ob_get_level();
         HeaderStack::reset();
@@ -93,7 +91,6 @@ class RoutingTestCase extends TestCase
     {
         $this->resetGlobalState();
         parent::tearDown();
-        Event::setInstance(null);
         Mockery::close();
         WP::reset();
         while (ob_get_level() > $this->output_buffer_level) {
@@ -223,7 +220,9 @@ class RoutingTestCase extends TestCase
             ),
             $this->container->make(ResponseEmitter::class),
             $this->event_dispatcher =
-                new EventDispatcher(new DependencyInversionListenerFactory($this->container))
+                new FakeDispatcher(
+                    new EventDispatcher(new DependencyInversionListenerFactory($this->container))
+                )
         );
     }
     

@@ -8,9 +8,11 @@ use Snicco\Support\WP;
 use Snicco\Mail\MailBuilder;
 use Snicco\Application\Config;
 use Snicco\Mail\Contracts\Mailer;
+use Snicco\Mail\Testing\FakeMailer;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Mail\Mailer\WordPressMailer;
-use Snicco\Mail\Testing\FakeMailBuilder;
+use Snicco\Mail\ValueObjects\MailDefaults;
+use Snicco\Mail\Contracts\MailEventDispatcher;
 use Snicco\Mail\Contracts\MailBuilderInterface;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 
@@ -22,6 +24,8 @@ class MailServiceProvider extends ServiceProvider
         $this->bindMailer();
         $this->bindConfig();
         $this->bindMailBuilder();
+        $this->bindMailDefaults();
+        $this->bindMailEventDispatcher();
     }
     
     public function bootstrap() :void
@@ -31,20 +35,16 @@ class MailServiceProvider extends ServiceProvider
     
     private function bindMailer()
     {
-        $this->container->singleton(Mailer::class, fn() => new WordPressMailer());
+        $this->container->singleton(Mailer::class, function () {
+            return $this->app->isRunningUnitTest()
+                ? new FakeMailer()
+                : new WordPressMailer();
+        });
     }
     
     private function bindConfig()
     {
         $this->app->alias('mail', MailBuilder::class);
-        $this->config->extend('events.listeners', [
-            
-            //PendingMail::class => [
-            //    [Sender::class,
-            //],
-        
-        ]);
-        
         $this->config->extendIfEmpty(
             'mail.from',
             fn() => ['name' => WP::siteName(), 'email' => WP::adminEmail()]
@@ -54,10 +54,27 @@ class MailServiceProvider extends ServiceProvider
     
     private function bindMailBuilder()
     {
-        $this->container->singleton(MailBuilderInterface::class, function () {
-            return ($this->app->isRunningUnitTest() && class_exists(FakeMailBuilder::class))
-                ? new FakeMailBuilder()
-                : new MailBuilder($this->container[Dispatcher::class], $this->container);
+        $this->container->singleton(MailBuilderInterface::class, MailBuilder::class);
+    }
+    
+    private function bindMailDefaults()
+    {
+        $this->container->singleton(MailDefaults::class, function () {
+            return new MailDefaults(
+                $this->config->get('mail.from.email'),
+                $this->config->get('mail.from.name'),
+                $this->config->get('mail.reply_to.email'),
+                $this->config->get('mail.reply_to.name'),
+            );
+        });
+    }
+    
+    private function bindMailEventDispatcher()
+    {
+        $this->container->singleton(MailEventDispatcher::class, function () {
+            return new FrameworkMailEventDispatcher(
+                $this->container[Dispatcher::class]
+            );
         });
     }
     

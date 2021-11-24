@@ -27,4 +27,9 @@ class WPQueryFilterable extends CoreEvent implements MappedFilter
         return $this->do_request;
     }
     
+    public function shouldDispatch() :bool
+    {
+        return true;
+    }
+    
 }

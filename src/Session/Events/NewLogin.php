@@ -20,4 +20,9 @@ class NewLogin extends CoreEvent implements MappedAction
         $this->user = $user;
     }
     
+    public function shouldDispatch() :bool
+    {
+        return true;
+    }
+    
 }

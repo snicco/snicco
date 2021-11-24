@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\integration\ServiceProviders;
+namespace Tests\integration\Core\EventDispatcher;
 
 use Tests\FrameworkTestCase;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
