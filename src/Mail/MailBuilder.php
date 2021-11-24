@@ -14,7 +14,7 @@ use Snicco\Mail\ValueObjects\Envelope;
 use Snicco\Mail\Contracts\MailRenderer;
 use Snicco\Mail\Mailer\WordPressMailer;
 use Snicco\Mail\Renderer\AggregateRenderer;
-use Snicco\Mail\ValueObjects\DefaultConfig;
+use Snicco\Mail\ValueObjects\MailDefaults;
 use Snicco\Mail\Renderer\FilesystemRenderer;
 use Snicco\Mail\Contracts\TransportException;
 use Snicco\Mail\Contracts\MailEventDispatcher;
@@ -42,7 +42,7 @@ final class MailBuilder implements MailBuilderInterface
     private $bcc = [];
     
     /**
-     * @var DefaultConfig
+     * @var MailDefaults
      */
     private $default_config;
     
@@ -65,11 +65,11 @@ final class MailBuilder implements MailBuilderInterface
         ?Mailer $mailer = null,
         ?MailRenderer $mail_renderer = null,
         ?MailEventDispatcher $event_dispatcher = null,
-        ?DefaultConfig $default_config = null
+        ?MailDefaults $default_config = null
     ) {
         $this->mailer = $mailer ?? new WordPressMailer();
         $this->event_dispatcher = $event_dispatcher ?? new NullDispatcher();
-        $this->default_config = $default_config ?? DefaultConfig::fromWordPressSettings();
+        $this->default_config = $default_config ?? MailDefaults::fromWordPressSettings();
         $this->mail_renderer = $mail_renderer ?? new AggregateRenderer(new FilesystemRenderer());
     }
     
