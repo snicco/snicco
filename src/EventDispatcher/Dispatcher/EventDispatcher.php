@@ -37,7 +37,7 @@ final class EventDispatcher implements Dispatcher
      *
      * @var string[]
      */
-    private array $internal_interfaces = [
+    private $internal_interfaces = [
         DispatchesConditionally::class,
         Event::class,
         IsForbiddenToWordPress::class,
@@ -49,21 +49,21 @@ final class EventDispatcher implements Dispatcher
      *
      * @var array<string,array>
      */
-    private array $listeners = [];
+    private $listeners = [];
     
     /**
      * All listeners that are marked as unremovable keyed by event name
      *
      * @var array<string,array>
      */
-    private array $unremovable = [];
+    private $unremovable = [];
     
     /**
      * The listener factory will be responsible for instantiating a matching listener.
      *
      * @var ListenerFactory
      */
-    private ListenerFactory $listener_factory;
+    private $listener_factory;
     
     /**
      * Used the make immutable copies of event objects. By default, the native "clone" function
@@ -72,9 +72,12 @@ final class EventDispatcher implements Dispatcher
      *
      * @var ObjectCopier
      */
-    private ObjectCopier $object_copier;
+    private $object_copier;
     
-    private EventParser $event_parser;
+    /**
+     * @var EventParser|GenericEventParser
+     */
+    private $event_parser;
     
     /**
      * Cache of the matching listeners keyed by event name. Used so that we don't have to match
@@ -83,14 +86,14 @@ final class EventDispatcher implements Dispatcher
      *
      * @var array<string,array>
      */
-    private array $wildcards_listeners_cache = [];
+    private $wildcards_listeners_cache = [];
     
     /**
      * Array of the wildcard listeners keyed by the wildcard pattern.
      *
      * @var array<string,array<Closure>>
      */
-    private array $wildcard_listeners = [];
+    private $wildcard_listeners = [];
     
     /**
      * @var array<string,string>

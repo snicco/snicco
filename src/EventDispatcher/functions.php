@@ -49,7 +49,11 @@ namespace Snicco\EventDispatcher\functions
             throw InvalidListenerException::becauseTheListenerIsNotAValidClass($listener[0]);
         }
         
-        if ( ! method_exists($listener[0], $listener[1] ??= 'handle')) {
+        if ( ! isset($listener[1])) {
+            $listener[1] = 'handle';
+        }
+        
+        if ( ! method_exists($listener[0], $listener[1])) {
             throw InvalidListenerException::becauseTheListenerHasNoValidMethod($listener[0]);
         }
         return $listener;
