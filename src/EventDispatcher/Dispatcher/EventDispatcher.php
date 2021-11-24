@@ -6,7 +6,6 @@ namespace Snicco\EventDispatcher\Dispatcher;
 
 use Closure;
 use ReflectionClass;
-use ReflectionException;
 use InvalidArgumentException;
 use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\Mutable;
@@ -14,11 +13,11 @@ use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\EventDispatcher\Contracts\EventParser;
 use Snicco\EventDispatcher\Contracts\ObjectCopier;
 use Snicco\EventDispatcher\Contracts\ListenerFactory;
+use Snicco\EventDispatcher\Implementations\GenericEvent;
 use Snicco\EventDispatcher\Contracts\IsForbiddenToWordPress;
 use Snicco\EventDispatcher\Contracts\DispatchesConditionally;
 use Snicco\EventDispatcher\Implementations\NativeObjetCopier;
 use Snicco\EventDispatcher\Implementations\GenericEventParser;
-use Snicco\EventDispatcher\Exceptions\InvalidListenerException;
 use Snicco\EventDispatcher\Exceptions\UnremovableListenerException;
 use Snicco\EventDispatcher\Implementations\ParameterBasedListenerFactory;
 
@@ -27,11 +26,14 @@ use function Snicco\EventDispatcher\functions\isWildCardEventListener;
 use function Snicco\EventDispatcher\functions\getTypeHintedEventFromClosure;
 use function Snicco\EventDispatcher\functions\wildcardPatternMatchesEventName;
 
+/**
+ * @api
+ */
 final class EventDispatcher implements Dispatcher
 {
     
     /**
-     * Internal interfaces that should be used as a listener alias.
+     * Internal interfaces that should not be used as a listener alias.
      *
      * @var string[]
      */
@@ -91,6 +93,16 @@ final class EventDispatcher implements Dispatcher
     private array $wildcard_listeners = [];
     
     /**
+     * @var array<string,string>
+     */
+    private $muted_events = [];
+    
+    /**
+     * @var array<string,string[]>
+     */
+    private $muted_listeners = [];
+    
+    /**
      * @param  ListenerFactory|null  $listener_factory
      * @param  EventParser|null  $event_parser
      * @param  ObjectCopier|null  $object_copier
@@ -105,60 +117,8 @@ final class EventDispatcher implements Dispatcher
         $this->object_copier = $object_copier ?? new NativeObjetCopier();
     }
     
-    /**
-     * @param  string|Closure  $event_name  If  the event name is a closure the event will be
-     * retrieved from the first closure parameter.
-     * @param  array|string|Closure  $listener  Array: [class, method].
-     * string: A class that either has a handle method or the __invoke method defined.
-     * Closure: The closure will be used as is. No additional dependencies will be passed to the
-     *     closure besides the event object.
-     * @param  bool  $can_be_removed
-     *
-     * @throws InvalidListenerException|InvalidArgumentException|ReflectionException
-     * @api
-     */
-    public function listen($event_name, $listener = null, bool $can_be_removed = true)
-    {
-        if ($event_name instanceof Closure) {
-            $this->listen(getTypeHintedEventFromClosure($event_name), $event_name);
-            return;
-        }
-        $listener = validatedListener($listener);
-        
-        if (isWildCardEventListener($event_name)) {
-            $this->registerWildcardListener($event_name, $listener);
-            return;
-        }
-        
-        if ($listener instanceof Closure) {
-            // Closure listeners can not be removed.
-            $this->listeners[$event_name][] = $listener;
-            return;
-        }
-        else {
-            $this->listeners[$event_name][$listener[0]] = $listener;
-        }
-        
-        if ( ! $can_be_removed) {
-            $this->unremovable[$event_name][$listener[0]] = $listener[0];
-        }
-    }
-    
-    /**
-     * @param  string|Event  $event
-     * @param  array  $payload
-     *
-     * @return Event
-     * @api
-     */
     public function dispatch($event, ...$payload) :Event
     {
-        if ( ! is_string($event) && ! $event instanceof Event) {
-            throw new InvalidArgumentException(
-                "A dispatched event has to be a string or an instance of [".Event::class."]."
-            );
-        }
-        
         $event = $this->event_parser->transformToEvent(
             $event,
             $payload
@@ -178,33 +138,70 @@ final class EventDispatcher implements Dispatcher
         return $event;
     }
     
-    /**
-     * @note Closure listeners can't be removed.
-     *
-     * @param  string  $event_name
-     * @param  string|null  $listener_class
-     *
-     * @throws UnremovableListenerException
-     * @api
-     */
-    public function remove(string $event_name, string $listener_class = null)
+    public function listen($event_name, $listener = null, bool $can_be_removed = true) :void
     {
-        if (is_null($listener_class)) {
+        if ($event_name instanceof Closure) {
+            $this->listen(getTypeHintedEventFromClosure($event_name), $event_name);
+            return;
+        }
+        $listener = validatedListener($listener);
+        
+        if (isWildCardEventListener($event_name)) {
+            $this->registerWildcardListener($event_name, $listener);
+            return;
+        }
+        
+        $this->listeners[$event_name][$id = $this->getListenerID($listener)] = $listener;
+        
+        if ( ! $can_be_removed) {
+            $this->unremovable[$event_name][$id] = $listener;
+        }
+    }
+    
+    public function remove(string $event_name, $listener = null) :void
+    {
+        if (is_null($listener)) {
             unset($this->listeners[$event_name]);
             return;
         }
         
-        if (isset($this->listeners[$event_name])
-            && isset($this->listeners[$event_name][$listener_class])) {
-            if (isset($this->unremovable[$event_name][$listener_class])) {
-                throw UnremovableListenerException::becauseTheDeveloperTriedToRemove(
-                    $listener_class,
-                    $event_name
-                );
-            }
-            
-            unset($this->listeners[$event_name][$listener_class]);
+        if ( ! isset($this->listeners[$event_name])) {
+            return;
         }
+        
+        $id = $this->getListenerID($listener = validatedListener($listener));
+        
+        if ( ! isset($this->listeners[$event_name][$id])) {
+            return;
+        }
+        
+        if (isset($this->unremovable[$event_name][$id])) {
+            throw UnremovableListenerException::becauseTheDeveloperTriedToRemove(
+                $listener,
+                $event_name
+            );
+        }
+        
+        unset($this->listeners[$event_name][$id]);
+    }
+    
+    public function mute(string $event_name, $listener = null) :void
+    {
+        if ($listener === null) {
+            $this->muted_events[$event_name] = $event_name;
+            return;
+        }
+        
+        $this->muted_listeners[$event_name][$id = $this->getListenerID($listener)] = $id;
+    }
+    
+    public function unmute(string $event_name, $listener = null) :void
+    {
+        if ($listener === null) {
+            unset($this->muted_events[$event_name]);
+            return;
+        }
+        unset($this->muted_listeners[$event_name][$this->getListenerID($listener)]);
     }
     
     private function getListenersForEvent(string $event_name) :array
@@ -226,16 +223,18 @@ final class EventDispatcher implements Dispatcher
         
         $parent = get_parent_class($event_name);
         
-        if ( ! $parent || ! (new ReflectionClass($parent))->isAbstract()) {
-            return $listeners;
+        if ($parent && (new ReflectionClass($parent))->isAbstract()) {
+            $listeners = array_merge($listeners, $this->getListenersForEvent($parent));
         }
         
-        return array_merge($listeners, $this->getListenersForEvent($parent));
+        return array_filter($listeners, function ($listener) use ($event_name) {
+            return ! isset($this->muted_listeners[$event_name][$this->getListenerID($listener)]);
+        });
     }
     
     private function callListener($listener, Event $event) :void
     {
-        $this->listener_factory->create($listener, $event)
+        $this->listener_factory->create($listener, $event->getName())
                                ->call($event);
     }
     
@@ -246,18 +245,24 @@ final class EventDispatcher implements Dispatcher
     
     private function shouldDispatch(Event $event) :bool
     {
+        if (isset($this->muted_events[$event->getName()])) {
+            return false;
+        }
+        
         return $event instanceof DispatchesConditionally ? $event->shouldDispatch() : true;
     }
     
     private function registerWildcardListener(string $event_name, $listener)
     {
-        $this->wildcard_listeners[$event_name][] = function (...$payload) use ($listener) {
-            // For wildcard listeners we want to pass the event name as the first argument.
-            $event_name = array_pop($payload);
-            array_unshift($payload, $event_name);
-            
-            return call_user_func_array($listener, $payload);
-        };
+        $this->wildcard_listeners[$event_name][$this->getListenerID($listener)] =
+            function (...$payload) use ($listener) {
+                // For wildcard listeners we want to pass the event name as the first argument.
+                $event_name = array_pop($payload);
+                array_unshift($payload, $event_name);
+                
+                $listener = $this->listener_factory->create($listener, $event_name);
+                $listener->call(new GenericEvent($event_name, $payload));
+            };
         
         $this->wildcards_listeners_cache = [];
     }
@@ -277,6 +282,21 @@ final class EventDispatcher implements Dispatcher
         }
         
         return $this->wildcards_listeners_cache[$event_name] = $wildcards;
+    }
+    
+    private function getListenerID($listener) :string
+    {
+        if ($listener instanceof Closure) {
+            return spl_object_hash($listener);
+        }
+        
+        if (is_array($listener)) {
+            return implode('.', $listener);
+        }
+        
+        throw new InvalidArgumentException(
+            "A listener has to be a closure or an class callable passed as an array."
+        );
     }
     
 }

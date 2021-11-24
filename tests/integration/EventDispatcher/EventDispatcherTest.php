@@ -10,7 +10,12 @@ use Codeception\TestCase\WPTestCase;
 use Tests\concerns\AssertListenerResponse;
 use Snicco\Application\IlluminateContainerAdapter;
 use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
+use Tests\integration\EventDispatcher\fixtures\FooEvent;
+use Tests\integration\EventDispatcher\fixtures\BarEvent;
+use Tests\integration\EventDispatcher\fixtures\ClassListener;
+use Tests\integration\EventDispatcher\fixtures\ClassListener2;
 use Snicco\EventDispatcher\Exceptions\InvalidListenerException;
+use Tests\integration\EventDispatcher\fixtures\WildcardListener;
 use Snicco\EventDispatcher\Exceptions\UnremovableListenerException;
 use Snicco\EventDispatcher\Implementations\ParameterBasedListenerFactory;
 
@@ -87,11 +92,11 @@ class EventDispatcherTest extends WPTestCase
     }
     
     /** @test */
-    public function events_can_be_objects()
+    public function events_can_be_instances_of_the_event_interface()
     {
         $dispatcher = $this->getDispatcher();
         
-        $dispatcher->listen(fixtures\FooEvent::class, function (fixtures\FooEvent $event) {
+        $dispatcher->listen(FooEvent::class, function (fixtures\FooEvent $event) {
             $this->respondedToEvent('foo_event', 'closure1', $event->val);
         });
         
@@ -101,11 +106,45 @@ class EventDispatcherTest extends WPTestCase
     }
     
     /** @test */
+    public function payloads_can_be_plain_objects()
+    {
+        $dispatcher = $this->getDispatcher();
+        
+        $dispatcher->listen('foo_event', function (stdClass $event) {
+            $this->respondedToEvent('foo_event', 'closure1', $event->foo.$event->bar);
+        });
+        
+        $payload = new stdClass();
+        $payload->foo = 'FOO';
+        $payload->bar = 'BAR';
+        $dispatcher->dispatch('foo_event', $payload);
+        
+        $this->assertListenerRun('foo_event', 'closure1', 'FOOBAR');
+    }
+    
+    /** @test */
+    public function events_can_be_plain_objects()
+    {
+        $dispatcher = $this->getDispatcher();
+        
+        $dispatcher->listen(stdClass::class, function (stdClass $event) {
+            $this->respondedToEvent(stdClass::class, 'closure1', $event->foo.$event->bar);
+        });
+        
+        $payload = new stdClass();
+        $payload->foo = 'FOO';
+        $payload->bar = 'BAR';
+        $dispatcher->dispatch($payload);
+        
+        $this->assertListenerRun(stdClass::class, 'closure1', 'FOOBAR');
+    }
+    
+    /** @test */
     public function the_payload_arguments_is_discarded_if_an_object_is_dispatched()
     {
         $dispatcher = $this->getDispatcher();
         
-        $dispatcher->listen(fixtures\FooEvent::class, function (fixtures\FooEvent $event) {
+        $dispatcher->listen(FooEvent::class, function (fixtures\FooEvent $event) {
             $this->respondedToEvent('foo_event', 'closure1', $event->val);
         });
         
@@ -119,11 +158,11 @@ class EventDispatcherTest extends WPTestCase
     {
         $dispatcher = $this->getDispatcher();
         
-        $dispatcher->listen(fixtures\FooEvent::class, fixtures\ClassListener::class);
+        $dispatcher->listen(FooEvent::class, ClassListener::class);
         
         $dispatcher->dispatch(new fixtures\FooEvent('FOOBAR'));
         
-        $this->assertListenerRun(fixtures\FooEvent::class, fixtures\ClassListener::class, 'FOOBAR');
+        $this->assertListenerRun(FooEvent::class, ClassListener::class, 'FOOBAR');
     }
     
     /** @test */
@@ -132,13 +171,13 @@ class EventDispatcherTest extends WPTestCase
         $dispatcher = $this->getDispatcher();
         
         $dispatcher->listen(
-            fixtures\FooEvent::class,
-            [fixtures\ClassListener::class, 'customHandleMethod']
+            FooEvent::class,
+            [ClassListener::class, 'customHandleMethod']
         );
         
         $dispatcher->dispatch(new fixtures\FooEvent('FOOBAR'));
         
-        $this->assertListenerRun(fixtures\FooEvent::class, fixtures\ClassListener::class, 'FOOBAR');
+        $this->assertListenerRun(FooEvent::class, ClassListener::class, 'FOOBAR');
     }
     
     /** @test */
@@ -159,7 +198,7 @@ class EventDispatcherTest extends WPTestCase
         
         $this->expectException(InvalidListenerException::class);
         $this->expectExceptionMessage(
-            "The listener [Tests\integration\EventDispatcher\\fixtures\ListenerWithNoHandleMethod] does not have a handle method and isn't invokable with __invoke().",
+            "The listener [Tests\integration\EventDispatcher\\fixtures\ListenerWithNoHandleMethod] does not have a handle method and is not invokable with __invoke().",
         );
         
         $dispatcher->listen('foo_event', fixtures\ListenerWithNoHandleMethod::class);
@@ -184,10 +223,10 @@ class EventDispatcherTest extends WPTestCase
         
         $this->expectException(InvalidListenerException::class);
         $this->expectExceptionMessage(
-            "The listener [Tests\integration\EventDispatcher\\fixtures\ClassListener] does not have a handle method and isn't invokable with __invoke()."
+            "The listener [Tests\integration\EventDispatcher\\fixtures\ClassListener] does not have a handle method and is not invokable with __invoke()."
         );
         
-        $dispatcher->listen('foo_event', [fixtures\ClassListener::class, 'bogus']);
+        $dispatcher->listen('foo_event', [ClassListener::class, 'bogus']);
     }
     
     /** @test */
@@ -209,12 +248,12 @@ class EventDispatcherTest extends WPTestCase
         $dispatcher = $this->getDispatcher();
         
         $dispatcher->listen(function (fixtures\FooEvent $event) {
-            $this->respondedToEvent(fixtures\FooEvent::class, 'closure1', $event->val);
+            $this->respondedToEvent(FooEvent::class, 'closure1', $event->val);
         });
         
         $dispatcher->dispatch(new fixtures\FooEvent('foobar'));
         
-        $this->assertListenerRun(fixtures\FooEvent::class, 'closure1', 'foobar');
+        $this->assertListenerRun(FooEvent::class, 'closure1', 'foobar');
     }
     
     /** @test */
@@ -222,16 +261,60 @@ class EventDispatcherTest extends WPTestCase
     {
         $dispatcher = $this->getDispatcher();
         
-        $dispatcher->listen(fixtures\FooEvent::class, fixtures\ClassListener::class);
+        $dispatcher->listen(FooEvent::class, ClassListener::class);
         
         $dispatcher->dispatch(new fixtures\FooEvent('FOOBAR'));
-        $this->assertListenerRun(fixtures\FooEvent::class, fixtures\ClassListener::class, 'FOOBAR');
+        $this->assertListenerRun(FooEvent::class, ClassListener::class, 'FOOBAR');
         
         $this->resetListenersResponses();
         
-        $dispatcher->remove(fixtures\FooEvent::class, fixtures\ClassListener::class);
+        $dispatcher->remove(FooEvent::class, ClassListener::class);
         $dispatcher->dispatch(new fixtures\FooEvent('FOOBAR'));
-        $this->assertListenerNotRun(fixtures\FooEvent::class, fixtures\ClassListener::class);
+        $this->assertListenerNotRun(FooEvent::class, ClassListener::class);
+    }
+    
+    /** @test */
+    public function closure_listeners_can_be_removed_by_object_id()
+    {
+        $dispatcher = $this->getDispatcher();
+        
+        $dispatcher->listen(
+            FooEvent::class,
+            $closure = function (FooEvent $event) {
+                $this->respondedToEvent(FooEvent::class, 'closure1', $event->val);
+            }
+        );
+        
+        $dispatcher->dispatch(new FooEvent('FOOBAR'));
+        $this->assertListenerRun(FooEvent::class, 'closure1', 'FOOBAR');
+        
+        $this->resetListenersResponses();
+        
+        $dispatcher->remove(FooEvent::class, $closure);
+        $dispatcher->dispatch(new fixtures\FooEvent('FOOBAR'));
+        $this->assertListenerNotRun(FooEvent::class, 'closure1');
+    }
+    
+    /** @test */
+    public function class_listeners_can_be_removed_by_method()
+    {
+        $dispatcher = $this->getDispatcher();
+        
+        $dispatcher->listen(FooEvent::class, [ClassListener::class, 'customHandleMethod']);
+        $dispatcher->listen(BarEvent::class, [ClassListener::class, 'customHandleMethod']);
+        
+        $dispatcher->dispatch(new FooEvent('FOOBAR'));
+        $this->assertListenerRun(FooEvent::class, ClassListener::class, 'FOOBAR');
+        
+        $this->resetListenersResponses();
+        
+        $dispatcher->remove(FooEvent::class, [ClassListener::class, 'customHandleMethod']);
+        $dispatcher->dispatch(new FooEvent('FOOBAR'));
+        $this->assertListenerNotRun(FooEvent::class, ClassListener::class);
+        
+        // Other methods are still registered as listeners.
+        $dispatcher->dispatch(new BarEvent('BARBAZ'));
+        $this->assertListenerRun(BarEvent::class, ClassListener::class, 'BARBAZ');
     }
     
     /** @test */
@@ -239,23 +322,23 @@ class EventDispatcherTest extends WPTestCase
     {
         $dispatcher = $this->getDispatcher();
         
-        $dispatcher->listen(fixtures\FooEvent::class, fixtures\ClassListener::class);
-        $dispatcher->listen(fixtures\FooEvent::class, fixtures\ClassListener2::class);
+        $dispatcher->listen(FooEvent::class, ClassListener::class);
+        $dispatcher->listen(FooEvent::class, ClassListener2::class);
         
         $dispatcher->dispatch(new fixtures\FooEvent('FOOBAR'));
-        $this->assertListenerRun(fixtures\FooEvent::class, fixtures\ClassListener::class, 'FOOBAR');
+        $this->assertListenerRun(FooEvent::class, ClassListener::class, 'FOOBAR');
         $this->assertListenerRun(
-            fixtures\FooEvent::class,
-            fixtures\ClassListener2::class,
+            FooEvent::class,
+            ClassListener2::class,
             'FOOBAR'
         );
         
         $this->resetListenersResponses();
         
-        $dispatcher->remove(fixtures\FooEvent::class);
+        $dispatcher->remove(FooEvent::class);
         $dispatcher->dispatch(new fixtures\FooEvent('FOOBAR'));
-        $this->assertListenerNotRun(fixtures\FooEvent::class, fixtures\ClassListener::class);
-        $this->assertListenerNotRun(fixtures\FooEvent::class, fixtures\ClassListener2::class);
+        $this->assertListenerNotRun(FooEvent::class, ClassListener::class);
+        $this->assertListenerNotRun(FooEvent::class, ClassListener2::class);
     }
     
     /** @test */
@@ -263,13 +346,13 @@ class EventDispatcherTest extends WPTestCase
     {
         $dispatcher = $this->getDispatcher();
         
-        $dispatcher->listen(fixtures\FooEvent::class, fixtures\ClassListener::class, false);
+        $dispatcher->listen(FooEvent::class, ClassListener::class, false);
         
         $dispatcher->dispatch(new fixtures\FooEvent('FOOBAR'));
         
         $this->expectException(UnremovableListenerException::class);
         
-        $dispatcher->remove(fixtures\FooEvent::class, fixtures\ClassListener::class);
+        $dispatcher->remove(FooEvent::class, ClassListener::class);
     }
     
     /** @test */
@@ -277,19 +360,19 @@ class EventDispatcherTest extends WPTestCase
     {
         $dispatcher = $this->getDispatcher();
         
-        $dispatcher->listen(fixtures\FooEvent::class, function (fixtures\FooEvent $event) {
+        $dispatcher->listen(FooEvent::class, function (fixtures\FooEvent $event) {
             $val = $event->val;
             $event->val = 'FOOBAZ';
-            $this->respondedToEvent(fixtures\FooEvent::class, 'closure1', $val);
+            $this->respondedToEvent(FooEvent::class, 'closure1', $val);
         });
-        $dispatcher->listen(fixtures\FooEvent::class, function (fixtures\FooEvent $event) {
-            $this->respondedToEvent(fixtures\FooEvent::class, 'closure2', $event->val);
+        $dispatcher->listen(FooEvent::class, function (fixtures\FooEvent $event) {
+            $this->respondedToEvent(FooEvent::class, 'closure2', $event->val);
         });
         
         $dispatcher->dispatch(new fixtures\FooEvent('FOOBAR'));
         
-        $this->assertListenerRun(fixtures\FooEvent::class, 'closure1', 'FOOBAR');
-        $this->assertListenerRun(fixtures\FooEvent::class, 'closure2', 'FOOBAR');
+        $this->assertListenerRun(FooEvent::class, 'closure1', 'FOOBAR');
+        $this->assertListenerRun(FooEvent::class, 'closure2', 'FOOBAR');
     }
     
     /** @test */
@@ -416,14 +499,25 @@ class EventDispatcherTest extends WPTestCase
     }
     
     /** @test */
-    public function test_invalid_argument_for_dispatching()
+    public function wildcard_listeners_can_be_classes()
+    {
+        $dispatcher = $this->getDispatcher();
+        
+        $dispatcher->listen('user.*', [WildcardListener::class, 'customMethod1']);
+        
+        $dispatcher->dispatch('user.created', 'calvin');
+        $this->assertListenerRun('user.created', WildcardListener::class, 'calvin');
+    }
+    
+    /** @test */
+    public function test_invalid_event_throws_exception()
     {
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage(
             'A dispatched event has to be a string or an instance of [Snicco\EventDispatcher\Contracts\Event].'
         );
         
-        $this->getDispatcher()->dispatch(new stdClass(), []);
+        $this->getDispatcher()->dispatch(1, []);
     }
     
     /** @test */
@@ -438,6 +532,67 @@ class EventDispatcherTest extends WPTestCase
         $dispatcher->dispatch(new fixtures\UserCreated('calvin'));
         
         $this->assertListenerRun('my_plugin_user_created', 'closure1', 'calvin');
+    }
+    
+    /** @test */
+    public function an_event_can_be_muted()
+    {
+        $dispatcher = $this->getDispatcher();
+        
+        $dispatcher->listen(
+            FooEvent::class,
+            [ClassListener::class, 'customHandleMethod']
+        );
+        
+        $dispatcher->listen(
+            FooEvent::class,
+            [ClassListener2::class, 'handle']
+        );
+        
+        $dispatcher->mute(FooEvent::class);
+        
+        $dispatcher->dispatch(new FooEvent('FOOBAR'));
+        
+        $this->assertListenerNotRun(FooEvent::class, ClassListener::class);
+        $this->assertListenerNotRun(FooEvent::class, ClassListener2::class);
+        
+        $dispatcher->unmute(FooEvent::class);
+        
+        $dispatcher->dispatch(new FooEvent('FOOBAR'));
+        
+        $this->assertListenerRun(FooEvent::class, ClassListener::class, 'FOOBAR');
+        $this->assertListenerRun(FooEvent::class, ClassListener2::class, 'FOOBAR');
+    }
+    
+    /** @test */
+    public function specific_listeners_can_be_muted()
+    {
+        $dispatcher = $this->getDispatcher();
+        
+        $dispatcher->listen(
+            FooEvent::class,
+            [ClassListener::class, 'customHandleMethod']
+        );
+        
+        $dispatcher->listen(
+            FooEvent::class,
+            [ClassListener2::class, 'handle']
+        );
+        
+        $dispatcher->mute(FooEvent::class, [ClassListener::class, 'customHandleMethod']);
+        
+        $dispatcher->dispatch(new FooEvent('FOOBAR'));
+        
+        $this->assertListenerNotRun(FooEvent::class, ClassListener::class);
+        $this->assertListenerRun(FooEvent::class, ClassListener2::class, 'FOOBAR');
+        
+        $this->resetListenersResponses();
+        
+        $dispatcher->unmute(FooEvent::class, [ClassListener::class, 'customHandleMethod']);
+        $dispatcher->dispatch(new FooEvent('FOOBAR'));
+        
+        $this->assertListenerRun(FooEvent::class, ClassListener::class, 'FOOBAR');
+        $this->assertListenerRun(FooEvent::class, ClassListener2::class, 'FOOBAR');
     }
     
     private function getDispatcher($container = null) :EventDispatcher
