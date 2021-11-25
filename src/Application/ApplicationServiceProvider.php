@@ -6,15 +6,15 @@ namespace Snicco\Application;
 
 use Snicco\Support\WP;
 use Snicco\Routing\Router;
-use Snicco\View\MethodField;
 use Snicco\Http\Psr7\Request;
-use Snicco\View\GlobalContext;
 use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
+use Snicco\Contracts\Redirector;
+use Snicco\Core\Http\MethodField;
+use Snicco\View\GlobalViewContext;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\View\ViewComposerCollection;
-use Snicco\Contracts\Redirector;
-use Snicco\Contracts\ViewFactoryInterface;
+use Snicco\View\Contracts\ViewFactoryInterface;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 class ApplicationServiceProvider extends ServiceProvider
@@ -98,8 +98,8 @@ class ApplicationServiceProvider extends ServiceProvider
     private function viewAliases(Application $app)
     {
         $app->alias('globals', function () use ($app) {
-            /** @var GlobalContext $globals */
-            $globals = $app->resolve(GlobalContext::class);
+            /** @var GlobalViewContext $globals */
+            $globals = $app->resolve(GlobalViewContext::class);
             
             $args = func_get_args();
             if (empty($args) || (is_null($args[0] && is_null($args[1])))) {

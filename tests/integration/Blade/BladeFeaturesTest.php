@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\integration\Blade;
 
 use Tests\stubs\TestApp;
+use Snicco\ExceptionHandling\Exceptions\ViewException;
 
 class BladeFeaturesTest extends BladeTestCase
 {
@@ -159,11 +160,18 @@ class BladeFeaturesTest extends BladeTestCase
     }
     
     /** @test */
-    public function service_injection_works()
+    public function service_injection_is_forbidden()
     {
         $view = $this->view('service-injection');
-        $content = $view->toString();
-        $this->assertViewContent('foo', $content);
+        try {
+            $view->toString();
+            $this->fail("@service was allowed.");
+        } catch (ViewException $e) {
+            $this->assertStringStartsWith(
+                "The service directive is not allowed. Dont use it. Its evil.",
+                $e->getPrevious()->getMessage()
+            );
+        }
     }
     
     /** @test */

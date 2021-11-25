@@ -4,10 +4,10 @@ namespace Tests\integration\Routing;
 
 use Mockery;
 use Tests\FrameworkTestCase;
-use Snicco\Events\AdminInit;
 use Snicco\Http\Psr7\Response;
 use Snicco\Http\ResponseEmitter;
 use Snicco\Http\ResponsePreparation;
+use Snicco\Core\Events\EventObjects\AdminInit;
 
 class AdminRoutesTest extends FrameworkTestCase
 {
@@ -15,11 +15,12 @@ class AdminRoutesTest extends FrameworkTestCase
     /** @test */
     public function a_response_is_not_sent_directly_but_is_delayed_until_the_all_admin_notices_hook()
     {
+        $this->withoutHooks();
         $this->withRequest($this->adminRequest('GET', 'foo'));
         $this->bootApp();
         
         $level_before = ob_get_level();
-        AdminInit::dispatch([$this->request]);
+        do_action('admin_init');
         do_action("load-toplevel_page_foo");
         
         $this->assertNoResponse();
@@ -50,7 +51,7 @@ class AdminRoutesTest extends FrameworkTestCase
         $this->swap(ResponseEmitter::class, $emitter);
         
         $level_before = ob_get_level();
-        AdminInit::dispatch([$this->request]);
+        $this->dispatcher->dispatch(new AdminInit($this->request));
         
         // Our menu page gets rendered in the correct spot
         $this->expectOutputString('Topmenu-SidebarFOO_ADMIN');
@@ -87,7 +88,7 @@ class AdminRoutesTest extends FrameworkTestCase
         $this->withRequest($this->adminRequest('GET', 'bogus'));
         $this->bootApp();
         
-        AdminInit::dispatch([$this->request]);
+        $this->dispatcher->dispatch(new AdminInit($this->request));
         
         // On a normal WordPress installation no output should ever be sent before the load-xxx hook.
         do_action('load-toplevel_page_bogus');
@@ -113,7 +114,7 @@ class AdminRoutesTest extends FrameworkTestCase
         $this->expectOutputString('TopmenuSidebar');
         
         $level_before = ob_get_level();
-        AdminInit::dispatch([$this->request]);
+        $this->dispatcher->dispatch(new AdminInit($this->request));
         
         // On a normal WordPress installation no output should ever be sent before the load-xxx hook.
         do_action('load-toplevel_page_bogus');
@@ -137,7 +138,8 @@ class AdminRoutesTest extends FrameworkTestCase
         $this->bootApp();
         
         $level_before = ob_get_level();
-        AdminInit::dispatch([$this->request]);
+        $this->dispatcher->dispatch(new AdminInit($this->request));
+        
         do_action('load-toplevel_page_redirect');
         
         $this->sentResponse()->assertRedirect();
@@ -147,13 +149,14 @@ class AdminRoutesTest extends FrameworkTestCase
     }
     
     /** @test */
-    public function response_are_returned_immediately_if_its_a_client_error()
+    public function responses_are_returned_immediately_if_its_a_client_error()
     {
         $this->withRequest($this->adminRequest('GET', 'client-error'));
         $this->bootApp();
         
         $level_before = ob_get_level();
-        AdminInit::dispatch([$this->request]);
+        $this->dispatcher->dispatch(new AdminInit($this->request));
+        
         do_action('load-toplevel_page_client-error');
         
         $this->sentResponse()->assertStatus(403);
@@ -169,7 +172,8 @@ class AdminRoutesTest extends FrameworkTestCase
         $this->bootApp();
         
         $level_before = ob_get_level();
-        AdminInit::dispatch([$this->request]);
+        $this->dispatcher->dispatch(new AdminInit($this->request));
+        
         do_action('load-toplevel_page_server-error');
         
         $this->sentResponse()->assertStatus(500);

@@ -8,12 +8,13 @@ use Mockery;
 use stdClass;
 use Tests\UnitTest;
 use Tests\stubs\TestView;
-use Snicco\Http\StatelessRedirector;
 use InvalidArgumentException;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
+use Snicco\Contracts\Responsable;
+use Snicco\Http\StatelessRedirector;
 use Snicco\Http\Responses\NullResponse;
 use Tests\concerns\CreatePsr17Factories;
 use Illuminate\Contracts\Support\Jsonable;
@@ -170,13 +171,21 @@ class ResponseFactoryTest extends UnitTest
     /** @test */
     public function testToResponse_is_responseable()
     {
-        $view = new TestView('view');
+        $class = new class implements Responsable
+        {
+            
+            public function toResponsable()
+            {
+                return 'foo';
+            }
+            
+        };
         
-        $response = $this->factory->toResponse($view);
+        $response = $this->factory->toResponse($class);
         
         $this->assertInstanceOf(Response::class, $response);
         $this->assertSame('text/html', $response->getHeaderLine('content-type'));
-        $this->assertSame('VIEW:view,CONTEXT:[]', (string) $response->getBody());
+        $this->assertSame('foo', (string) $response->getBody());
     }
     
     /** @test */
@@ -184,6 +193,17 @@ class ResponseFactoryTest extends UnitTest
     {
         $this->expectException(HttpException::class);
         $this->factory->toResponse(1);
+    }
+    
+    /** @test */
+    public function testViewToResponse()
+    {
+        $view = new TestView('foo');
+        
+        $response = $this->factory->toResponse($view);
+        $this->assertInstanceOf(Response::class, $response);
+        $this->assertSame('text/html', $response->getHeaderLine('content-type'));
+        $this->assertSame('VIEW:foo,CONTEXT:[]', (string) $response->getBody());
     }
     
     /** @test */

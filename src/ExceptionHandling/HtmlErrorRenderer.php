@@ -3,19 +3,19 @@
 namespace Snicco\ExceptionHandling;
 
 use Throwable;
+use Snicco\View\ViewEngine;
 use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\ViewFactoryInterface;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
 use Snicco\ExceptionHandling\Exceptions\ErrorViewException;
 
 class HtmlErrorRenderer
 {
     
-    private ViewFactoryInterface $view_factory;
+    private ViewEngine $view_engine;
     
-    public function __construct(ViewFactoryInterface $view_factory)
+    public function __construct(ViewEngine $view_factory)
     {
-        $this->view_factory = $view_factory;
+        $this->view_engine = $view_factory;
     }
     
     /**
@@ -33,7 +33,7 @@ class HtmlErrorRenderer
         $views = $this->getPossibleViews($e, $request);
         
         try {
-            return $this->view_factory->render($views, [
+            return $this->view_engine->render($views, [
                 'status_code' => $e->httpStatusCode(),
                 'message' => $e->messageForUsers(),
             ]);

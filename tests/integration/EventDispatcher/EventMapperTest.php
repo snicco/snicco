@@ -10,10 +10,11 @@ use Snicco\EventDispatcher\EventMapper;
 use Snicco\EventDispatcher\ClassAsName;
 use Snicco\EventDispatcher\ClassAsPayload;
 use Tests\concerns\AssertListenerResponse;
-use Snicco\EventDispatcher\EventDispatcher;
 use Snicco\EventDispatcher\Contracts\Event;
 use Snicco\EventDispatcher\Contracts\MappedFilter;
 use Snicco\EventDispatcher\Contracts\MappedAction;
+use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
+use Tests\integration\EventDispatcher\fixtures\FooEvent;
 use Snicco\EventDispatcher\Implementations\ParameterBasedListenerFactory;
 
 class EventMapperTest extends WPTestCase
@@ -421,7 +422,6 @@ class EventMapperTest extends WPTestCase
         $this->assertSame(5, $count);
     }
     
-    
     /**
      * VALIDATION
      */
@@ -474,6 +474,11 @@ class EventFilterWithNoArgs implements MappedFilter
         return $this->filterable_value;
     }
     
+    public function shouldDispatch() :bool
+    {
+        return true;
+    }
+    
 }
 
 class EventFilter1 implements MappedFilter
@@ -494,6 +499,11 @@ class EventFilter1 implements MappedFilter
     public function filterableAttribute()
     {
         return $this->foo;
+    }
+    
+    public function shouldDispatch() :bool
+    {
+        return true;
     }
     
 }
@@ -518,6 +528,11 @@ class EventFilter2 implements MappedFilter
         return $this->foo;
     }
     
+    public function shouldDispatch() :bool
+    {
+        return true;
+    }
+    
 }
 
 class EmptyActionEvent implements MappedAction
@@ -528,6 +543,11 @@ class EmptyActionEvent implements MappedAction
     
     public $value = 'foo';
     
+    public function shouldDispatch() :bool
+    {
+        return true;
+    }
+    
 }
 
 class EmptyActionEvent2 implements MappedAction
@@ -537,6 +557,11 @@ class EmptyActionEvent2 implements MappedAction
     use ClassAsPayload;
     
     public $value = 'bar';
+    
+    public function shouldDispatch() :bool
+    {
+        return true;
+    }
     
 }
 
@@ -562,6 +587,11 @@ class FooActionEvent implements MappedAction
         return $this->foo.$this->bar.$this->baz;
     }
     
+    public function shouldDispatch() :bool
+    {
+        return true;
+    }
+    
 }
 
 class ActionWithArrayArguments implements MappedAction
@@ -570,11 +600,16 @@ class ActionWithArrayArguments implements MappedAction
     use ClassAsName;
     use ClassAsPayload;
     
-    public string $message;
+    public $message;
     
     public function __construct(array $words, $suffix)
     {
         $this->message = implode('|', $words).':'.$suffix;
+    }
+    
+    public function shouldDispatch() :bool
+    {
+        return true;
     }
     
 }

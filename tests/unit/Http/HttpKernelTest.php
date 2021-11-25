@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\unit\Http;
 
-use Snicco\Events\Event;
 use Snicco\Http\Delegate;
 use Tests\RoutingTestCase;
 use Tests\stubs\HeaderStack;
@@ -19,6 +18,13 @@ use Snicco\ExceptionHandling\Exceptions\NotFoundException;
 
 class HttpKernelTest extends RoutingTestCase
 {
+    
+    protected function setUp() :void
+    {
+        parent::setUp();
+        $this->event_dispatcher->reset();
+        $this->event_dispatcher->fake(ResponseSent::class);
+    }
     
     /** @test */
     public function no_response_gets_send_when_no_route_matched()
@@ -56,7 +62,7 @@ class HttpKernelTest extends RoutingTestCase
         $request = $this->frontendRequest('GET', '/foo');
         
         $this->assertResponse('foo', $request);
-        Event::assertDispatched(ResponseSent::class);
+        $this->event_dispatcher->assertDispatched(ResponseSent::class);
     }
     
     /** @test */
@@ -98,7 +104,7 @@ class HttpKernelTest extends RoutingTestCase
         
         $this->runKernel($this->frontendRequest('GET', '/foo'));
         
-        Event::assertDispatched(ResponseSent::class, function ($event) {
+        $this->event_dispatcher->assertDispatched(ResponseSent::class, function ($event) {
             return $event->response instanceof RedirectResponse;
         });
     }

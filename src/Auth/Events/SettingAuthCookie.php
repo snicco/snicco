@@ -5,20 +5,17 @@ declare(strict_types=1);
 namespace Snicco\Auth\Events;
 
 use WP_User;
-use Snicco\Events\Event;
+use Snicco\Core\Events\EventObjects\CoreEvent;
+use Snicco\EventDispatcher\Contracts\MappedFilter;
 
-class SettingAuthCookie extends Event
+class SettingAuthCookie extends CoreEvent implements MappedFilter
 {
     
+    public string  $cookie;
     public WP_User $user;
-    
-    public int $user_id;
-    
-    public int $expiration;
-    
-    public string $scheme;
-    
-    private string $cookie;
+    public int     $user_id;
+    public int     $expiration;
+    public string  $scheme;
     
     public function __construct($cookie, $user_id, $expiration, $scheme)
     {
@@ -29,9 +26,14 @@ class SettingAuthCookie extends Event
         $this->scheme = $scheme;
     }
     
-    public function default() :string
+    public function filterableAttribute()
     {
         return $this->cookie;
+    }
+    
+    public function shouldDispatch() :bool
+    {
+        return true;
     }
     
 }

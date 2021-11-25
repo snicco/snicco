@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Auth\Confirmation;
 
 use Snicco\Http\Psr7\Request;
-use Snicco\Http\ResponseFactory;
-use Snicco\Contracts\ViewInterface;
 use Snicco\Contracts\Encryptor;
+use Snicco\Http\ResponseFactory;
+use Snicco\View\Contracts\ViewInterface;
 use Snicco\Auth\Contracts\AuthConfirmation;
 use Snicco\Auth\Traits\PerformsTwoFactorAuthentication;
 use Snicco\Auth\Contracts\Abstract2FAuthConfirmationView;

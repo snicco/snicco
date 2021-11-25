@@ -6,15 +6,15 @@ namespace Tests\integration\Session;
 
 use Tests\stubs\TestApp;
 use Snicco\Session\Session;
-use Snicco\Http\StatelessRedirector;
 use Tests\FrameworkTestCase;
 use Snicco\Session\CsrfField;
-use Snicco\View\GlobalContext;
 use Snicco\Http\ResponseFactory;
+use Snicco\Contracts\Redirector;
+use Snicco\View\GlobalViewContext;
 use Snicco\Session\SessionManager;
+use Snicco\Http\StatelessRedirector;
 use Snicco\Session\EncryptedSession;
 use Snicco\Session\StatefulRedirector;
-use Snicco\Contracts\Redirector;
 use Snicco\Session\SessionServiceProvider;
 use Snicco\Session\Contracts\SessionDriver;
 use Snicco\Session\Drivers\DatabaseSessionDriver;
@@ -319,7 +319,7 @@ class SessionServiceProviderTest extends FrameworkTestCase
             'session.enabled' => true,
         ])->bootApp();
         
-        $context = TestApp::resolve(GlobalContext::class)->get();
+        $context = TestApp::resolve(GlobalViewContext::class)->get();
         
         $this->assertInstanceOf(CsrfField::class, $context['csrf']);
     }

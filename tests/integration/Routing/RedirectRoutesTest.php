@@ -4,10 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\integration\Routing;
 
-use Snicco\Events\Event;
 use Tests\FrameworkTestCase;
-use Snicco\Events\ResponseSent;
-use Snicco\Http\Responses\RedirectResponse;
+use Snicco\Core\Events\EventObjects\DoShutdown;
 
 class RedirectRoutesTest extends FrameworkTestCase
 {
@@ -16,12 +14,13 @@ class RedirectRoutesTest extends FrameworkTestCase
     public function the_script_will_be_shut_down_if_a_redirect_route_matches()
     {
         $this->bootApp();
-        Event::fake([ResponseSent::class]);
+        
+        $this->dispatcher->fake(DoShutdown::class);
         
         $this->get('/location-a')->assertRedirect('/location-b');
         
-        Event::assertDispatched(function (ResponseSent $event) {
-            return $event->response instanceof RedirectResponse;
+        $this->dispatcher->assertDispatched(function (DoShutdown $event) {
+            return $event->do_shutdown === true;
         });
     }
     

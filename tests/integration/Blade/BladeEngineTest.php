@@ -6,7 +6,7 @@ namespace Tests\integration\Blade;
 
 use Tests\stubs\TestApp;
 use Snicco\Blade\BladeView;
-use Snicco\Contracts\ViewFactoryInterface;
+use Snicco\View\Contracts\ViewFactoryInterface;
 use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
 
 class BladeEngineTest extends BladeTestCase

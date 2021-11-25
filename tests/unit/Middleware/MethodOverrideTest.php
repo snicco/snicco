@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\unit\Middleware;
 
 use Snicco\Support\Str;
-use Snicco\View\MethodField;
 use Tests\MiddlewareTestCase;
+use Snicco\Core\Http\MethodField;
 use Snicco\Middleware\Core\MethodOverride;
 
 class MethodOverrideTest extends MiddlewareTestCase

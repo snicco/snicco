@@ -17,9 +17,9 @@ use Snicco\Http\Psr7\Response;
 use Snicco\Testing\TestResponse;
 use Psr\Http\Message\UriInterface;
 use Snicco\Application\Application;
-use Snicco\Contracts\ViewInterface;
+use Snicco\View\Contracts\ViewInterface;
 use Psr\Http\Message\UriFactoryInterface;
-use Snicco\Contracts\ViewFactoryInterface;
+use Snicco\View\Contracts\ViewFactoryInterface;
 use Psr\Http\Message\ServerRequestFactoryInterface;
 
 /**

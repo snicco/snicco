@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace Snicco\Middleware\Core;
 
 use Snicco\Http\Delegate;
-use Snicco\View\MethodField;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\Middleware;
+use Snicco\Core\Http\MethodField;
 use Psr\Http\Message\ResponseInterface;
 
 class MethodOverride extends Middleware

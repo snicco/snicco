@@ -29,7 +29,9 @@ final class Listener
         
         $__payload = is_array($payload) ? $payload : [$payload];
         
-        $__payload[] = $event->getName();
+        if ( ! in_array($event->getName(), $__payload, true)) {
+            $__payload[] = $event->getName();
+        }
         
         return call_user_func_array(
             $this->listener,

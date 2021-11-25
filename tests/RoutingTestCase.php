@@ -7,11 +7,10 @@ namespace Tests;
 use Closure;
 use Mockery;
 use Snicco\Support\WP;
-use Snicco\Events\Event;
 use Snicco\Http\Delegate;
 use Snicco\Routing\Router;
 use Snicco\Http\HttpKernel;
-use Snicco\View\MethodField;
+use Snicco\View\ViewEngine;
 use Snicco\Routing\Pipeline;
 use Tests\stubs\HeaderStack;
 use Snicco\Http\Psr7\Request;
@@ -21,7 +20,7 @@ use Snicco\Contracts\MagicLink;
 use Snicco\Http\ResponseFactory;
 use Snicco\Http\ResponseEmitter;
 use Snicco\Contracts\Middleware;
-use Tests\stubs\TestViewFactory;
+use Snicco\Core\Http\MethodField;
 use Tests\concerns\CreateContainer;
 use Tests\concerns\CreatePsrRequests;
 use Tests\concerns\CreateRouteMatcher;
@@ -35,7 +34,6 @@ use Snicco\Factories\RouteActionFactory;
 use Tests\concerns\CreateRouteCollection;
 use Snicco\Middleware\Core\MethodOverride;
 use Snicco\Routing\RoutingServiceProvider;
-use Snicco\Contracts\ViewFactoryInterface;
 use Snicco\Factories\RouteConditionFactory;
 use Tests\concerns\CreateDefaultWpApiMocks;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -52,7 +50,10 @@ use Tests\fixtures\Middleware\FooBarMiddleware;
 use Snicco\ExceptionHandling\NullExceptionHandler;
 use Snicco\Middleware\Core\OutputBufferMiddleware;
 use Snicco\Routing\FastRoute\FastRouteUrlGenerator;
+use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
+use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 use Tests\fixtures\Conditions\ConditionWithDependency;
+use Snicco\Core\Events\DependencyInversionListenerFactory;
 
 class RoutingTestCase extends TestCase
 {
@@ -71,8 +72,9 @@ class RoutingTestCase extends TestCase
     protected Router                   $router;
     protected ContainerAdapter         $container;
     protected RouteCollectionInterface $routes;
-    
-    private int $output_buffer_level;
+    protected FakeDispatcher           $event_dispatcher;
+    protected ViewEngine               $view_engine;
+    private int                        $output_buffer_level;
     
     protected function setUp() :void
     {
@@ -80,8 +82,6 @@ class RoutingTestCase extends TestCase
         $this->resetGlobalState();
         $this->createDefaultWpApiMocks();
         $this->createInstances();
-        Event::make($this->container);
-        Event::fake();
         $this->createDefaultWpApiMocks();
         $this->output_buffer_level = ob_get_level();
         HeaderStack::reset();
@@ -91,7 +91,6 @@ class RoutingTestCase extends TestCase
     {
         $this->resetGlobalState();
         parent::tearDown();
-        Event::setInstance(null);
         Mockery::close();
         WP::reset();
         while (ob_get_level() > $this->output_buffer_level) {
@@ -211,15 +210,19 @@ class RoutingTestCase extends TestCase
             new FastRouteUrlGenerator($this->routes)
         );
         $this->container->instance(MagicLink::class, new TestMagicLink());
-        $this->container->instance(ViewFactoryInterface::class, new TestViewFactory());
+        $this->container->instance(ViewEngine::class, $this->view_engine);
         
         $this->kernel = new HttpKernel(
             new Pipeline(
                 new MiddlewareFactory($this->container),
                 $this->error_handler,
-                $this->response_factory
+                $this->response_factory,
             ),
-            $this->container->make(ResponseEmitter::class)
+            $this->container->make(ResponseEmitter::class),
+            $this->event_dispatcher =
+                new FakeDispatcher(
+                    new EventDispatcher(new DependencyInversionListenerFactory($this->container))
+                )
         );
     }
     

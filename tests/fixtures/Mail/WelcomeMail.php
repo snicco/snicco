@@ -4,23 +4,19 @@ declare(strict_types=1);
 
 namespace Tests\fixtures\Mail;
 
-use Snicco\Mail\Mailable;
+use Snicco\Mail\Email;
+use Snicco\Mail\ValueObjects\Recipient;
 
-class WelcomeMail extends Mailable
+class WelcomeMail extends Email
 {
     
-    public function build() :Mailable
+    public function configure(Recipient $recipient) :void
     {
-        return $this->view('mails.welcome_html.php')
-                    ->from('c@web.de', 'Calvin INC')
-                    ->reply_to('office@web.de', 'Front Office')
-                    ->subject('welcome to our site')
-                    ->attach(['file1', 'file2']);
-    }
-    
-    public function unique() :bool
-    {
-        return false;
+        $this->view('mails.welcome_html.php')
+             ->from('c@web.de', 'Calvin INC')
+             ->reply_to('office@web.de', 'Front Office')
+             ->subject("welcome to our site [{$recipient->getName()}]")
+             ->attach(__FILE__);
     }
     
 }

@@ -44,6 +44,7 @@ class ReflectionDependencies
     public function build($route_action, array $parsed_parameters = []) :array
     {
         $route_dependencies = [];
+        $added_instances = [];
         $reflection_method = $this->getCallReflector($route_action);
         
         if ( ! $reflection_method) {
@@ -56,7 +57,7 @@ class ReflectionDependencies
         }
         
         if ( ! $this->firstParameterIsClass($params)) {
-            return $this->onlyPrimitives($parsed_parameters);
+            return $this->filterClasses($parsed_parameters, $added_instances);
         }
         
         foreach ($params as $reflection_parameter) {
@@ -66,15 +67,23 @@ class ReflectionDependencies
             
             if ($class = $this->classInParameters($class_name, $parsed_parameters)) {
                 $route_dependencies[] = $class;
+                $added_instances[] = get_class($class);
                 continue;
             }
             
-            $route_dependencies[] = $reflection_parameter->isDefaultValueAvailable()
-                ? $reflection_parameter->getDefaultValue()
-                : $this->container->make($class_name);
+            if ($reflection_parameter->isDefaultValueAvailable()) {
+                $route_dependencies[] = $reflection_parameter->getDefaultValue();
+                continue;
+            }
+            
+            $route_dependencies[] = $class = $this->container->make($class_name);
+            $added_instances[] = get_class($class);
         }
         
-        return array_merge($route_dependencies, $this->onlyPrimitives($parsed_parameters));
+        return array_merge(
+            $route_dependencies,
+            $this->filterClasses($parsed_parameters, $added_instances)
+        );
     }
     
     private function classInParameters(string $class_name, array $parsed_parameters) :?object
@@ -92,10 +101,12 @@ class ReflectionDependencies
         return ! is_null(Reflector::getParameterClassName($reflection_params[0]));
     }
     
-    private function onlyPrimitives(array $args) :array
+    private function filterClasses(array $args, array $added_classes) :array
     {
         return collect($args)
-            ->reject(fn($value) => is_object($value))
+            ->reject(
+                fn($value) => is_object($value) && in_array(get_class($value), $added_classes, true)
+            )
             ->values()
             ->all();
     }

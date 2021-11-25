@@ -7,16 +7,23 @@ namespace Tests\integration\ServiceProviders;
 use ReflectionClass;
 use Tests\stubs\TestApp;
 use Snicco\Http\HttpKernel;
-use Snicco\Http\StatelessRedirector;
 use Tests\FrameworkTestCase;
 use RKA\Middleware\IpAddress;
 use Snicco\Http\ResponseFactory;
-use Snicco\Http\ResponsePostProcessor;
 use Snicco\Contracts\Redirector;
+use Snicco\Core\Http\MethodField;
+use Snicco\Http\StatelessRedirector;
+use Snicco\Http\ResponsePostProcessor;
 use Psr\Http\Server\MiddlewareInterface;
 
 class HttpServiceProviderTest extends FrameworkTestCase
 {
+    
+    /** @test */
+    public function the_method_field_can_be_resolved()
+    {
+        $this->assertInstanceOf(MethodField::class, $this->app->resolve(MethodField::class));
+    }
     
     /** @test */
     public function the_kernel_can_be_resolved_correctly()

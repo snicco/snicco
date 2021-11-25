@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Blade;
 
+use RuntimeException;
 use Snicco\Support\WP;
 use Snicco\Application\Application;
 use Snicco\Contracts\ServiceProvider;
@@ -32,18 +33,10 @@ class BladeDirectiveServiceProvider extends ServiceProvider
             return WP::userIs($expression);
         });
         
-        Blade::directive('service', function ($expression) {
-            $segments = explode(',', preg_replace("/[()]/", '', $expression));
-            
-            $variable = trim($segments[0], " '\"");
-            
-            $service = trim($segments[1]);
-            
-            $app = $this->container->make(ApplicationTrait::class);
-            
-            $php = "<?php \${$variable} = {$app}::resolve({$service}::class) ?>";
-            
-            return $php;
+        Blade::directive('service', function () {
+            throw new RuntimeException(
+                'The service directive is not allowed. Dont use it. Its evil.'
+            );
         });
         
         Blade::directive('csrf', function () {

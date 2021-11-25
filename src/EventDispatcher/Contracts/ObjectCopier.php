@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\EventDispatcher\Contracts;
 
-use Snicco\EventDispatcher\EventDispatcher;
+use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 
 /**
  * @api

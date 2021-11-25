@@ -9,10 +9,10 @@ use Snicco\Support\WP;
 use Snicco\Http\Controller;
 use Snicco\Mail\MailBuilder;
 use Snicco\Http\Psr7\Request;
-use Snicco\Contracts\ViewInterface;
 use Snicco\Auth\Traits\ResolvesUser;
 use Respect\Validation\Validator as v;
 use Snicco\Auth\Mail\ResetPasswordMail;
+use Snicco\View\Contracts\ViewInterface;
 use Snicco\Http\Responses\RedirectResponse;
 use Snicco\Auth\Events\FailedPasswordResetLinkRequest;
 

@@ -6,14 +6,11 @@ namespace Snicco\Listeners;
 
 use Snicco\Support\WP;
 use Snicco\Routing\Route;
-use Snicco\Events\WpQueryFilterable;
-use BetterWpHooks\Traits\ListensConditionally;
 use Snicco\Contracts\RouteCollectionInterface;
+use Snicco\Core\Events\EventObjects\WPQueryFilterable;
 
 class FilterWpQuery
 {
-    
-    use ListensConditionally;
     
     private RouteCollectionInterface $routes;
     
@@ -22,19 +19,23 @@ class FilterWpQuery
         $this->routes = $routes;
     }
     
-    public function handleEvent(WpQueryFilterable $event) :bool
+    public function handle(WPQueryFilterable $event)
     {
+        if ( ! $event->server_request->isReadVerb()) {
+            return;
+        }
+        
         $route = $this->routes->matchByUrlPattern($event->server_request);
         
         if ( ! $route instanceof Route) {
-            return $event->do_request;
+            return;
         }
         else {
             $this->routes->setCurrentRoute($route);
         }
         
         if ( ! $route->wantsToFilterWPQuery()) {
-            return $event->do_request;
+            return;
         }
         
         $event->wp->query_vars = $route->filterWpQuery();
@@ -42,10 +43,10 @@ class FilterWpQuery
         WP::removeFilter('template_redirect', 'redirect_canonical');
         WP::removeFilter('template_redirect', 'remove_old_slug');
         
-        return false;
+        $event->do_request = false;
     }
     
-    public function shouldHandle(WpQueryFilterable $event) :bool
+    public function shouldHandle(WPQueryFilterable $event) :bool
     {
         return $event->server_request->isReadVerb();
     }
