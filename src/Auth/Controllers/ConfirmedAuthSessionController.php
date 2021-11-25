@@ -8,19 +8,22 @@ use Snicco\Http\Controller;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Auth\Contracts\AuthConfirmation;
-use Snicco\Session\Events\SessionRegenerated;
 use Snicco\Auth\Events\FailedAuthConfirmation;
+use Snicco\Session\Events\SessionWasRegenerated;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 
 class ConfirmedAuthSessionController extends Controller
 {
     
     private AuthConfirmation $auth_confirmation;
+    private Dispatcher       $events;
     private int              $duration;
     
-    public function __construct(AuthConfirmation $auth_confirmation, int $duration)
+    public function __construct(AuthConfirmation $auth_confirmation, Dispatcher $events, int $duration)
     {
         $this->auth_confirmation = $auth_confirmation;
         $this->duration = $duration;
+        $this->events = $events;
     }
     
     public function create(Request $request)
@@ -33,7 +36,12 @@ class ConfirmedAuthSessionController extends Controller
         $confirmed = $this->auth_confirmation->confirm($request);
         
         if ($confirmed !== true) {
-            FailedAuthConfirmation::dispatch([$request, $request->userId()]);
+            $this->events->dispatch(
+                new FailedAuthConfirmation(
+                    $request,
+                    $request->userId()
+                )
+            );
             
             return $request->isExpectingJson()
                 ? $this->response_factory->json(['message' => 'Invalid credentials.'], 422)
@@ -57,7 +65,7 @@ class ConfirmedAuthSessionController extends Controller
         $session->forget('auth.confirm');
         $session->confirmAuthUntil($this->duration);
         $session->regenerate();
-        SessionRegenerated::dispatch([$session]);
+        $this->events->dispatch(new SessionWasRegenerated($session));
     }
     
 }

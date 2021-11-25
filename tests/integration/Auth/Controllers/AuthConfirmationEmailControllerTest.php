@@ -6,6 +6,7 @@ namespace Tests\integration\Auth\Controllers;
 
 use Tests\AuthTestCase;
 use Snicco\Auth\Mail\ConfirmAuthMail;
+use Snicco\Mail\Testing\TestableEmail;
 
 class AuthConfirmationEmailControllerTest extends AuthTestCase
 {
@@ -44,8 +45,6 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
     /** @test */
     public function a_confirmation_email_can_be_requested()
     {
-        $this->withoutExceptionHandling();
-        
         $this->authenticateAndUnconfirm($calvin = $this->createAdmin());
         $token = $this->withCsrfToken();
         
@@ -64,42 +63,39 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
         });
         
         $this->fake_mailer->assertSentTo($calvin, ConfirmAuthMail::class);
-        //$mail->assertTo($calvin);
-        //$mail->assertViewHas(['magic_link']);
-        //$mail->assertSee('/auth/confirm/magic-link?expires=');
+        $this->fake_mailer->assertSent(ConfirmAuthMail::class, function (TestableEmail $mail) {
+            return strpos($mail->getHtmlBody(), '/auth/confirm/magic-link?expires=') !== false;
+        });
     }
     
     /** @test */
     public function a_confirmation_email_can_be_requested_JSON()
     {
-        $this->mailFake();
-        
         $this->authenticateAndUnconfirm($calvin = $this->createAdmin());
         $token = $this->withCsrfToken();
         
         $response = $this->post($this->endpoint, $token, ['Accept' => 'application/json']);
         $response->assertStatus(204);
         
-        $mail = $this->assertMailSent(ConfirmAuthMail::class);
-        $mail->assertTo($calvin);
+        $this->fake_mailer->assertSentTo($calvin, ConfirmAuthMail::class);
     }
     
     /** @test */
     public function users_cant_request_unlimited_emails()
     {
-        $this->mailFake();
-        
         $this->authenticateAndUnconfirm($calvin = $this->createAdmin());
         $token = $this->withCsrfToken();
         
-        $response =
-            $this->post($this->endpoint, $token, ['referer' => 'https://foobar.com/auth/confirm']);
+        $response = $this->post(
+            $this->endpoint,
+            $token,
+            ['referer' => 'https://foobar.com/auth/confirm']
+        );
         $response->assertRedirectPath('/auth/confirm');
         
-        $this->assertMailSent(ConfirmAuthMail::class)
-             ->assertTo($calvin);
+        $this->fake_mailer->assertSentTo($calvin, ConfirmAuthMail::class);
         
-        $this->clearSentMails();
+        $this->fake_mailer->reset();
         
         $token = $this->withCsrfToken();
         $response =
@@ -108,9 +104,9 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
                  ->assertSessionHasErrors('auth.confirm.email.message')
                  ->assertSessionHas('auth.confirm.email.next');
         
-        $this->assertMailNotSent(ConfirmAuthMail::class);
+        $this->fake_mailer->assertNotSent(ConfirmAuthMail::class);
         
-        $this->clearSentMails();
+        $this->fake_mailer->reset();
         
         $this->travelIntoFuture(16);
         $token = $this->withCsrfToken();
@@ -119,8 +115,7 @@ class AuthConfirmationEmailControllerTest extends AuthTestCase
         $response->assertRedirectPath('/auth/confirm')
                  ->assertSessionHasNoErrors();
         
-        $this->assertMailSent(ConfirmAuthMail::class)
-             ->assertTo($calvin);
+        $this->fake_mailer->assertSentTo($calvin, ConfirmAuthMail::class);
     }
     
 }

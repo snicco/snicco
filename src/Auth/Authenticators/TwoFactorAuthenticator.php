@@ -6,9 +6,10 @@ namespace Snicco\Auth\Authenticators;
 
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
+use Snicco\Contracts\Encryptor;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Contracts\Authenticator;
-use Snicco\Contracts\Encryptor;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Auth\Events\FailedTwoFactorAuthentication;
 use Snicco\Auth\Traits\PerformsTwoFactorAuthentication;
 use Snicco\Auth\Contracts\TwoFactorAuthenticationProvider;
@@ -21,12 +22,14 @@ class TwoFactorAuthenticator extends Authenticator
     
     private TwoFactorAuthenticationProvider $provider;
     private Encryptor                       $encryptor;
+    private Dispatcher                      $dispatcher;
     private array                           $recovery_codes = [];
     
-    public function __construct(TwoFactorAuthenticationProvider $provider, Encryptor $encryptor)
+    public function __construct(TwoFactorAuthenticationProvider $provider, Encryptor $encryptor, Dispatcher $dispatcher)
     {
         $this->provider = $provider;
         $this->encryptor = $encryptor;
+        $this->dispatcher = $dispatcher;
     }
     
     public function attempt(Request $request, $next) :Response
@@ -45,7 +48,9 @@ class TwoFactorAuthenticator extends Authenticator
         );
         
         if ( ! $valid) {
-            FailedTwoFactorAuthentication::dispatch([$request, $user_id]);
+            $this->dispatcher->dispatch(
+                new FailedTwoFactorAuthentication($request, (int) $user_id)
+            );
             
             return $this->response_factory->redirect()
                                           ->back()

@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\integration\Auth\Authenticators;
 
 use Tests\AuthTestCase;
-use Snicco\Events\Event;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\MagicLink;
 use Snicco\Routing\UrlGenerator;
@@ -57,7 +56,6 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
     /** @test */
     public function a_magic_link_for_a_non_resolvable_user_will_fail()
     {
-        $this->withoutExceptionHandling();
         $calvin = $this->createAdmin();
         
         $url = $this->routeUrl($calvin->ID + 1000);
@@ -108,7 +106,6 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
     /** @test */
     public function failed_attempts_will_dispatch_and_event_and_redirect_to_login()
     {
-        Event::fake([FailedMagicLinkAuthentication::class]);
         $this->followingRedirects();
         $calvin = $this->createAdmin();
         
@@ -120,9 +117,11 @@ class MagicLinkAuthenticatorTest extends AuthTestCase
             'Your magic link is either invalid or expired. Please request a new one.'
         );
         $this->assertGuest();
-        Event::assertDispatched(function (FailedMagicLinkAuthentication $event) use ($calvin) {
-            return $event->userId() === $calvin->ID;
-        });
+        $this->dispatcher->assertDispatched(
+            function (FailedMagicLinkAuthentication $event) use ($calvin) {
+                return $event->userId() === $calvin->ID;
+            }
+        );
     }
     
     /** @test */

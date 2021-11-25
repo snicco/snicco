@@ -4,20 +4,27 @@ declare(strict_types=1);
 
 namespace Snicco\Blade;
 
-use Throwable;
 use Snicco\Support\Arr;
-use Illuminate\View\Factory;
 use Illuminate\View\ViewName;
+use InvalidArgumentException;
+use Illuminate\Support\Collection;
+use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\Contracts\ViewInterface;
-use Snicco\View\Contracts\ViewEngineInterface;
-use Snicco\ExceptionHandling\Exceptions\ViewNotFoundException;
+use Snicco\View\Exceptions\ViewNotFoundException;
+use Illuminate\View\Factory as IlluminateViewFactory;
 
-class BladeEngine implements ViewEngineInterface
+/**
+ * @internal
+ */
+class BladeViewFactory implements ViewFactory
 {
     
-    private Factory $view_factory;
+    /**
+     * @var IlluminateViewFactory
+     */
+    private $view_factory;
     
-    public function __construct(Factory $view_factory)
+    public function __construct(IlluminateViewFactory $view_factory)
     {
         $this->view_factory = $view_factory;
     }
@@ -36,11 +43,12 @@ class BladeEngine implements ViewEngineInterface
             );
             
             return new BladeView($view);
-        } catch (Throwable $e) {
+        } catch (InvalidArgumentException $e) {
             throw new ViewNotFoundException(
-                'Could not render any of the views: ['
+                'Could not find any of the views: ['
                 .implode(',', Arr::wrap($views))
                 .'] with the blade engine.',
+                $e->getCode(),
                 $e
             );
         }
@@ -55,7 +63,9 @@ class BladeEngine implements ViewEngineInterface
      */
     private function normalizeNames($names) :array
     {
-        return collect($names)->map(fn($name) => ViewName::normalize($name))->all();
+        return (new Collection($names))->map(function ($name) {
+            return ViewName::normalize($name);
+        })->all();
     }
     
 }

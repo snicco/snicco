@@ -7,7 +7,7 @@ namespace Snicco\Session\Events;
 use Snicco\Session\Session;
 use Snicco\Core\Events\EventObjects\CoreEvent;
 
-class SessionRegenerated extends CoreEvent
+class SessionWasRegenerated extends CoreEvent
 {
     
     public Session $session;

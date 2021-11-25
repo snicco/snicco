@@ -4,20 +4,27 @@ declare(strict_types=1);
 
 namespace Tests\integration\Blade;
 
-use Tests\stubs\TestApp;
 use Snicco\Blade\BladeView;
-use Snicco\Blade\BladeEngine;
-use Snicco\View\Contracts\ViewEngineInterface;
+use Snicco\Blade\BladeViewFactory;
+use Snicco\View\GlobalViewContext;
+use Snicco\View\Contracts\ViewFactory;
+use Snicco\View\ViewComposerCollection;
 
 class ViewComposingTest extends BladeTestCase
 {
     
-    private BladeEngine $engine;
+    private BladeViewFactory $engine;
+    
+    private GlobalViewContext $global_view_context;
+    
+    private ViewComposerCollection $composers;
     
     protected function setUp() :void
     {
         $this->afterApplicationBooted(function () {
-            $this->engine = TestApp::resolve(ViewEngineInterface::class);
+            $this->engine = $this->app[ViewFactory::class];
+            $this->global_view_context = $this->app[GlobalViewContext::class];
+            $this->composers = $this->app[ViewComposerCollection::class];
         });
         parent::setUp();
         $this->bootApp();
@@ -26,7 +33,7 @@ class ViewComposingTest extends BladeTestCase
     /** @test */
     public function global_data_can_be_shared_with_all_views()
     {
-        TestApp::globals('globals', ['foo' => 'calvin']);
+        $this->global_view_context->add('globals', ['foo' => 'calvin']);
         
         $this->assertSame('calvin', $this->makeView('globals'));
     }
@@ -34,10 +41,13 @@ class ViewComposingTest extends BladeTestCase
     /** @test */
     public function data_is_shared_with_nested_views()
     {
-        TestApp::globals('globals', ['surname' => 'alkan']);
-        TestApp::addComposer('components.view-composer-parent', function (BladeView $view) {
-            $view->with(['name' => 'calvin']);
-        });
+        $this->global_view_context->add('globals', ['surname' => 'alkan']);
+        $this->composers->addComposer(
+            'components.view-composer-parent',
+            function (BladeView $view) {
+                $view->with(['name' => 'calvin']);
+            }
+        );
         
         $this->assertSame('calvinalkan', $this->makeView('nested-view-composer'));
     }
@@ -45,7 +55,7 @@ class ViewComposingTest extends BladeTestCase
     /** @test */
     public function a_view_composer_can_be_added_to_a_view()
     {
-        TestApp::addComposer('view-composer', function (BladeView $view) {
+        $this->composers->addComposer('view-composer', function (BladeView $view) {
             $view->with(['name' => 'calvin']);
         });
         

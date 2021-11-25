@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\integration\Auth\Controllers;
 
 use Tests\AuthTestCase;
-use Snicco\Events\Event;
 use Snicco\Auth\Fail2Ban\Syslogger;
+use Snicco\Mail\Testing\TestableEmail;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Snicco\Auth\Mail\MagicLinkLoginMail;
 use Snicco\Auth\Events\FailedLoginLinkCreationRequest;
@@ -49,23 +49,21 @@ class LoginMagicLinkControllerTest extends AuthTestCase
     /** @test */
     public function no_email_is_sent_for_invalid_user_login()
     {
-        $this->mailFake();
-        
         $response = $this->post('/auth/login/magic-link', ['login' => 'bogus']);
         $response->assertRedirect('/auth/login');
         $response->assertSessionHas('login.link.processed');
         
-        $this->assertMailNotSent(MagicLinkLoginMail::class);
+        $this->fake_mailer->assertNotSent(MagicLinkLoginMail::class);
     }
     
     /** @test */
     public function an_event_is_dispatched_for_invalid_logins()
     {
-        Event::fake([FailedLoginLinkCreationRequest::class]);
+        $this->dispatcher->fake(FailedLoginLinkCreationRequest::class);
         
         $this->post('/auth/login/magic-link', ['login' => 'bogus']);
         
-        Event::assertDispatched(
+        $this->dispatcher->assertDispatched(
             fn(FailedLoginLinkCreationRequest $event) => $event->login() === 'bogus'
         );
     }
@@ -87,8 +85,6 @@ class LoginMagicLinkControllerTest extends AuthTestCase
     /** @test */
     public function a_login_email_is_sent_for_valid_user_login()
     {
-        $this->mailFake();
-        
         $calvin = $this->createAdmin();
         
         $response =
@@ -102,19 +98,24 @@ class LoginMagicLinkControllerTest extends AuthTestCase
         $response->assertRedirect('/auth/login');
         $response->assertSessionHas('login.link.processed');
         
-        $mail = $this->assertMailSent(MagicLinkLoginMail::class);
-        $mail->assertTo($calvin);
-        $mail->assertSee('/auth/login/magic-link?expires=');
-        $mail->assertSee('/auth/login/magic-link?expires=');
-        $mail->assertSee("user_id=$calvin->ID");
-        $mail->assertSee(htmlentities('redirect_to='.rawurlencode('/foo/bar/?baz=foo%20bar')));
+        $this->fake_mailer->assertSent(
+            MagicLinkLoginMail::class,
+            function (TestableEmail $email) use ($calvin) {
+                $body = $email->getHtmlBody();
+                return $email->hasTo($calvin)
+                       && strpos($body, '/auth/login/magic-link?expires=') !== false
+                       && strpos($body, "user_id=$calvin->ID") !== false
+                       && strpos(
+                              $body,
+                              htmlentities('redirect_to='.rawurlencode('/foo/bar/?baz=foo%20bar'))
+                          ) !== false;
+            }
+        );
     }
     
     /** @test */
     public function a_login_email_can_be_request_with_ajax()
     {
-        $this->mailFake();
-        
         $calvin = $this->createAdmin();
         
         $response = $this->post(
@@ -128,12 +129,7 @@ class LoginMagicLinkControllerTest extends AuthTestCase
         
         $response->assertIsJson()->assertOk();
         
-        $mail = $this->assertMailSent(MagicLinkLoginMail::class);
-        $mail->assertTo($calvin);
-        $mail->assertSee('/auth/login/magic-link?expires=');
-        $mail->assertSee('/auth/login/magic-link?expires=');
-        $mail->assertSee("user_id=$calvin->ID");
-        $mail->assertSee(htmlentities('redirect_to='.rawurlencode('/foo/bar/?baz=foo%20bar')));
+        $this->fake_mailer->assertSentTo($calvin, MagicLinkLoginMail::class);
     }
     
 }

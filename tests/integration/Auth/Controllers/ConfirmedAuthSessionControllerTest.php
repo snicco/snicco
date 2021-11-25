@@ -5,13 +5,12 @@ declare(strict_types=1);
 namespace Tests\integration\Auth\Controllers;
 
 use Tests\AuthTestCase;
-use Snicco\Events\Event;
 use Snicco\Http\Psr7\Request;
 use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Snicco\Auth\Contracts\AuthConfirmation;
-use Snicco\Session\Events\SessionRegenerated;
 use Snicco\Auth\Events\FailedAuthConfirmation;
+use Snicco\Session\Events\SessionWasRegenerated;
 
 class ConfirmedAuthSessionControllerTest extends AuthTestCase
 {
@@ -102,7 +101,7 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
     /** @test */
     public function invalid_auth_confirmations_throw_an_event()
     {
-        Event::fake([FailedAuthConfirmation::class]);
+        $this->dispatcher->fake(FailedAuthConfirmation::class);
         $this->authenticateAndUnconfirm($calvin = $this->createAdmin());
         $token = $this->withCsrfToken();
         
@@ -116,7 +115,7 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
         $response->assertRedirectToRoute('auth.confirm');
         $response->assertSessionHasErrors('auth.confirmation');
         $this->assertFalse($response->session()->hasValidAuthConfirmToken());
-        Event::assertDispatched(
+        $this->dispatcher->assertDispatched(
             fn(FailedAuthConfirmation $event) => $event->forUser() === $calvin->ID
         );
     }
@@ -145,7 +144,8 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
     /** @test */
     public function auth_can_be_confirmed()
     {
-        Event::fake([SessionRegenerated::class]);
+        $this->dispatcher->fake(SessionWasRegenerated::class);
+        
         $this->authenticateAndUnconfirm($this->createAdmin());
         $token = $this->withCsrfToken();
         $id_before_confirmation = $this->testSessionId();
@@ -164,7 +164,7 @@ class ConfirmedAuthSessionControllerTest extends AuthTestCase
         $this->assertFalse($this->session->hasValidAuthConfirmToken());
         
         $this->assertNotSame($id_before_confirmation, $response->session()->getId());
-        Event::assertDispatched(SessionRegenerated::class);
+        $this->dispatcher->assertDispatched(SessionWasRegenerated::class);
     }
     
     /** @test */

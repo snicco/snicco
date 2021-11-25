@@ -6,6 +6,7 @@ namespace Snicco\Application;
 
 use Snicco\Support\WP;
 use Snicco\Routing\Router;
+use Snicco\View\ViewEngine;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
@@ -14,7 +15,6 @@ use Snicco\Core\Http\MethodField;
 use Snicco\View\GlobalViewContext;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\View\ViewComposerCollection;
-use Snicco\View\Contracts\ViewFactoryInterface;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 class ApplicationServiceProvider extends ServiceProvider
@@ -118,14 +118,14 @@ class ApplicationServiceProvider extends ServiceProvider
             $composer_collection->addComposer(...$args);
         });
         $app->alias('view', function () use ($app) {
-            /** @var ViewFactoryInterface $view_service */
-            $view_service = $app->container()->make(ViewFactoryInterface::class);
+            /** @var ViewEngine $view_service */
+            $view_service = $app->container()->make(ViewEngine::class);
             
             return call_user_func_array([$view_service, 'make'], func_get_args());
         });
         $app->alias('render', function () use ($app) {
-            /** @var ViewFactoryInterface $view_service */
-            $view_service = $app->container()->make(ViewFactoryInterface::class);
+            /** @var ViewEngine $view_service */
+            $view_service = $app->container()->make(ViewEngine::class);
             
             $view_as_string = call_user_func_array([$view_service, 'render',], func_get_args());
             

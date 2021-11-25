@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Tests\integration\Auth\Controllers;
 
 use Tests\AuthTestCase;
+use Snicco\Mail\Testing\TestableEmail;
 use Snicco\Auth\Mail\ConfirmRegistrationEmail;
 use Snicco\Auth\Contracts\AbstractRegistrationView;
 
@@ -65,7 +66,6 @@ class RegistrationLinkControllerTest extends AuthTestCase
     public function a_link_can_be_requested_for_a_valid_email()
     {
         $this->bootApp();
-        $this->mailFake();
         
         $response =
             $this->post('/auth/register', ['email' => 'c@web.de'], ['referer' => '/auth/register']);
@@ -74,9 +74,16 @@ class RegistrationLinkControllerTest extends AuthTestCase
         $response->assertSessionHas('registration.link.success', true);
         $response->assertSessionHas('registration.email', 'c@web.de');
         
-        $mail = $this->assertMailSent(ConfirmRegistrationEmail::class);
-        $mail->assertTo('c@web.de');
-        $mail->assertSee('/auth/accounts/create?expires=');
+        $this->fake_mailer->assertSent(
+            ConfirmRegistrationEmail::class,
+            function (TestableEmail $email) {
+                return $email->hasTo('c@web.de')
+                       && strpos(
+                           $email->getHtmlBody(),
+                           '/auth/accounts/create?expires='
+                       );
+            }
+        );
     }
     
 }

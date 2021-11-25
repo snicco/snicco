@@ -22,6 +22,7 @@ class HttpServiceProviderTest extends FrameworkTestCase
     /** @test */
     public function the_method_field_can_be_resolved()
     {
+        $this->bootApp();
         $this->assertInstanceOf(MethodField::class, $this->app->resolve(MethodField::class));
     }
     
