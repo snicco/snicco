@@ -2,16 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Tests\integration\ServiceProviders;
+namespace Tests\integration\Core\View;
 
-use Tests\stubs\TestApp;
 use Snicco\View\ViewEngine;
 use Tests\FrameworkTestCase;
-use Snicco\Core\Http\MethodField;
 use Snicco\View\GlobalViewContext;
+use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
-use Snicco\View\Contracts\ViewEngineInterface;
 use Snicco\View\Implementations\PHPViewFactory;
+
+use const DS;
+use const ROOT_DIR;
 
 class ViewServiceProviderTest extends FrameworkTestCase
 {
@@ -26,29 +27,29 @@ class ViewServiceProviderTest extends FrameworkTestCase
     public function the_global_context_is_a_singleton()
     {
         /** @var GlobalViewContext $context */
-        $context = TestApp::resolve(GlobalViewContext::class);
+        $context = $this->app->resolve(GlobalViewContext::class);
         $this->assertInstanceOf(GlobalViewContext::class, $context);
         
         $this->assertArrayNotHasKey('foo', $context->get());
-        TestApp::globals('foo', 'bar');
+        $context->add('foo', 'bar');
         
-        $context = TestApp::resolve(GlobalViewContext::class);
+        $context_new = $this->app->resolve(GlobalViewContext::class);
         
-        $this->assertArrayHasKey('foo', $context->get());
-    }
-    
-    /** @test */
-    public function the_view_service_is_resolved_correctly()
-    {
-        $this->assertInstanceOf(ViewEngine::class, TestApp::resolve(ViewEngine::class));
+        $this->assertArrayHasKey('foo', $context_new->get());
     }
     
     /** @test */
     public function the_view_engine_is_resolved_correctly()
     {
+        $this->assertInstanceOf(ViewEngine::class, $this->app->resolve(ViewEngine::class));
+    }
+    
+    /** @test */
+    public function the_view_factory_is_resolved_correctly()
+    {
         $this->assertInstanceOf(
             PHPViewFactory::class,
-            TestApp::resolve(ViewEngineInterface::class)
+            $this->app->resolve(ViewFactory::class)
         );
     }
     
@@ -57,29 +58,16 @@ class ViewServiceProviderTest extends FrameworkTestCase
     {
         $this->assertInstanceOf(
             ViewComposerCollection::class,
-            TestApp::resolve(ViewComposerCollection::class)
+            $this->app->resolve(ViewComposerCollection::class)
         );
     }
     
     /** @test */
     public function the_internal_views_are_included()
     {
-        $views = TestApp::config('view.paths');
+        $views = $this->app->config('view.paths');
         
         $this->assertSame(ROOT_DIR.DS.'resources'.DS.'views', end($views));
-    }
-    
-    /** @test */
-    public function the_method_field_can_be_resolved()
-    {
-        $this->assertInstanceOf(MethodField::class, TestApp::resolve(MethodField::class));
-    }
-    
-    /** @test */
-    public function the_view_factory_is_added_to_the_global_context()
-    {
-        $context = TestApp::globals();
-        $this->assertInstanceOf(ViewEngine::class, $context->get()['__view']);
     }
     
 }

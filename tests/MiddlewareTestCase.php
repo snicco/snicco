@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests;
 
+use Snicco\View\ViewEngine;
 use Tests\stubs\TestViewFactory;
 use Snicco\Routing\RouteCollection;
 use Snicco\Contracts\RouteUrlGenerator;
@@ -24,9 +25,9 @@ class MiddlewareTestCase extends FrameworkMiddlewareTestCase
         return new FastRouteUrlGenerator($this->routes = new RouteCollection());
     }
     
-    protected function viewFactory() :ViewFactoryInterface
+    protected function viewEngine() :ViewEngine
     {
-        return new TestViewFactory();
+        return new ViewEngine(new TestViewFactory());
     }
     
 }

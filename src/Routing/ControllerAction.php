@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Snicco\Routing;
 
 use Snicco\Http\Controller;
+use Snicco\View\ViewEngine;
 use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Snicco\Contracts\RouteAction;
@@ -34,7 +35,7 @@ class ControllerAction implements RouteAction
         if ($controller instanceof Controller) {
             $controller->giveResponseFactory($this->container->make(ResponseFactory::class));
             $controller->giveUrlGenerator($this->container->make(UrlGenerator::class));
-            $controller->giveViewFactory($this->container->make(ViewFactoryInterface::class));
+            $controller->giveViewEngine($this->container->make(ViewEngine::class));
         }
         
         return call_user_func_array(

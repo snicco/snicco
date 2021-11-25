@@ -7,6 +7,7 @@ namespace Snicco\Testing;
 use Closure;
 use RuntimeException;
 use Snicco\Http\Delegate;
+use Snicco\View\ViewEngine;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Contracts\Middleware;
@@ -41,7 +42,7 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
         parent::setUp();
         
         $this->response_factory = new ResponseFactory(
-            $this->viewFactory(),
+            $this->viewEngine(),
             $this->psrResponseFactory(),
             $this->psrStreamFactory(),
             new StatelessRedirector($this->url = $this->urlGenerator(), $this->psrResponseFactory())
@@ -61,7 +62,7 @@ abstract class MiddlewareTestCase extends \PHPUnit\Framework\TestCase
     
     abstract protected function routeUrlGenerator() :RouteUrlGenerator;
     
-    abstract protected function viewFactory() :ViewFactoryInterface;
+    abstract protected function viewEngine() :ViewEngine;
     
     /**
      * Overwrite this function if you want to specify a custom response that should be returned by

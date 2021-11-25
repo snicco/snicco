@@ -4,15 +4,15 @@ declare(strict_types=1);
 
 namespace Snicco\Http;
 
+use Snicco\View\ViewEngine;
 use Snicco\Routing\UrlGenerator;
-use Snicco\View\Contracts\ViewFactoryInterface;
 
 class Controller
 {
     
-    protected ViewFactoryInterface $view_factory;
-    protected ResponseFactory      $response_factory;
-    protected UrlGenerator         $url;
+    protected ViewEngine      $view_factory;
+    protected ResponseFactory $response_factory;
+    protected UrlGenerator    $url;
     /**
      * @var ControllerMiddleware[]
      */
@@ -27,7 +27,7 @@ class Controller
             ->all();
     }
     
-    public function giveViewFactory(ViewFactoryInterface $view_factory)
+    public function giveViewEngine(ViewEngine $view_factory)
     {
         $this->view_factory = $view_factory;
     }
