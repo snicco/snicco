@@ -7,10 +7,10 @@ namespace Tests\integration\Routing;
 use Snicco\Http\Delegate;
 use Tests\FrameworkTestCase;
 use Snicco\Http\Psr7\Request;
-use Snicco\Events\ResponseSent;
 use Snicco\Contracts\Middleware;
 use Snicco\Http\ResponseFactory;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Core\Events\EventObjects\ResponseSent;
 
 class ApiRoutesTest extends FrameworkTestCase
 {

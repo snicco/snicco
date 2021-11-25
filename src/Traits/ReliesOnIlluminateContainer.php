@@ -2,7 +2,7 @@
 
 namespace Snicco\Traits;
 
-use Contracts\ContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Container\Container as IlluminateContainer;

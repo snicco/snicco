@@ -7,7 +7,7 @@ namespace Snicco\Factories;
 use Closure;
 use RuntimeException;
 use Snicco\Support\Str;
-use Contracts\ContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
 use Illuminate\Support\Reflector;
 use Snicco\Traits\ReflectsCallable;
 

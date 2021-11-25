@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Factories;
 
-use Contracts\ContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
 use Snicco\Routing\ConditionBlueprint;
 use Snicco\Contracts\Condition;
 use Snicco\Support\ReflectionDependencies;

@@ -15,7 +15,7 @@ use Snicco\Routing\Pipeline;
 use Tests\stubs\HeaderStack;
 use Snicco\Http\Psr7\Request;
 use PHPUnit\Framework\TestCase;
-use Contracts\ContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
 use Snicco\Contracts\MagicLink;
 use Snicco\Http\ResponseFactory;
 use Snicco\Http\ResponseEmitter;

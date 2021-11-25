@@ -6,7 +6,7 @@ namespace Snicco\Application;
 
 use ArrayAccess;
 use RuntimeException;
-use Contracts\ContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
 use Snicco\Bootstrap\CaptureRequest;
 use Snicco\Bootstrap\LoadConfiguration;
 use Snicco\Bootstrap\DetectEnvironment;

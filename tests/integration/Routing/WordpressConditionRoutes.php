@@ -6,8 +6,8 @@ namespace Tests\integration\Routing;
 
 use Snicco\Events\Event;
 use Tests\FrameworkTestCase;
-use Snicco\Events\ResponseSent;
 use Tests\fixtures\Middleware\WebMiddleware;
+use Snicco\Core\Events\EventObjects\ResponseSent;
 
 class WordpressConditionRoutes extends FrameworkTestCase
 {

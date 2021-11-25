@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Application;
 
-use Contracts\ContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
 
 trait HasContainer
 {

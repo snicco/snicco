@@ -16,7 +16,6 @@ use Snicco\Application\Application;
 use Snicco\Http\StatelessRedirector;
 use Snicco\View\Contracts\ViewInterface;
 use Snicco\Http\Responses\RedirectResponse;
-use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 class ApplicationServiceProviderTest extends FrameworkTestCase
@@ -284,15 +283,6 @@ class ApplicationServiceProviderTest extends FrameworkTestCase
         $this->assertInstanceOf(Request::class, $request = TestApp::request());
         
         $this->assertSame('/foo', $request->path());
-    }
-    
-    /** @test */
-    public function the_event_dispatcher_can_be_accessed()
-    {
-        $this->bootApp();
-        $dispatcher = $this->app->resolve(Dispatcher::class);
-        $this->assertInstanceOf(Dispatcher::class, $dispatcher);
-        $this->assertSame($dispatcher, TestApp::events());
     }
     
 }

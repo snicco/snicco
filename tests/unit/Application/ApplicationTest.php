@@ -11,12 +11,12 @@ use RuntimeException;
 use Snicco\Support\WP;
 use Snicco\Http\Psr7\Request;
 use Snicco\Application\Config;
-use Contracts\ContainerAdapter;
 use Tests\concerns\CreateContainer;
 use Snicco\Application\Application;
-use SniccoAdapter\BaseContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
 use Tests\concerns\CreatePsr17Factories;
 use Tests\concerns\CreateDefaultWpApiMocks;
+use Snicco\Illuminate\IlluminateContainerAdapter;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 class ApplicationTest extends UnitTest
@@ -61,7 +61,7 @@ class ApplicationTest extends UnitTest
     public function an_app_can_not_be_instantiated_without_the_static_constructor()
     {
         $this->expectError();
-        $app = new Application(new BaseContainerAdapter());
+        $app = new Application(new IlluminateContainerAdapter());
     }
     
     /** @test */

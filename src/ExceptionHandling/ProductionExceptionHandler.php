@@ -12,7 +12,7 @@ use Whoops\Run as Whoops;
 use Illuminate\Support\Arr;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
-use Contracts\ContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Psr\Log\LoggerInterface as Psr3Logger;
 use Snicco\Support\ReflectionDependencies;

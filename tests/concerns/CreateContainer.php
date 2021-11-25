@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\concerns;
 
-use Contracts\ContainerAdapter;
-use SniccoAdapter\BaseContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
+use Snicco\Illuminate\IlluminateContainerAdapter;
 
 /**
  * @internal
@@ -15,7 +15,7 @@ trait CreateContainer
     
     public function createContainer() :ContainerAdapter
     {
-        return new BaseContainerAdapter();
+        return new IlluminateContainerAdapter();
     }
     
 }
