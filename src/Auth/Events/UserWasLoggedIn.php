@@ -5,13 +5,10 @@ declare(strict_types=1);
 namespace Snicco\Auth\Events;
 
 use WP_User;
-use Snicco\Events\Event;
-use BetterWpHooks\Traits\IsAction;
+use Snicco\Core\Events\EventObjects\CoreEvent;
 
-class Login extends Event
+class UserWasLoggedIn extends CoreEvent
 {
-    
-    use IsAction;
     
     public WP_User $user;
     public bool    $remember;

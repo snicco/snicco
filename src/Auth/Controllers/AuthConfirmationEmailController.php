@@ -24,15 +24,17 @@ class AuthConfirmationEmailController extends Controller
     
     public function __construct(
         MailBuilderInterface $mail_builder,
+        UrlGenerator $url,
         int $cool_of_period = 15,
         $link_lifetime_in_seconds = 300
     ) {
         $this->cool_of_period = $cool_of_period;
         $this->link_lifetime_in_seconds = $link_lifetime_in_seconds;
         $this->mail_builder = $mail_builder;
+        $this->url = $url;
     }
     
-    public function store(Request $request, UrlGenerator $url)
+    public function store(Request $request)
     {
         $user = $request->user();
         $session = $request->session();
@@ -45,7 +47,7 @@ class AuthConfirmationEmailController extends Controller
                 ]);
         }
         
-        $this->sendConfirmationMailTo($user, $session, $url);
+        $this->sendConfirmationMailTo($user, $session);
         
         return $request->isExpectingJson()
             ? $this->response_factory->make(204)
@@ -68,7 +70,7 @@ class AuthConfirmationEmailController extends Controller
         return true;
     }
     
-    private function sendConfirmationMailTo(WP_User $user, Session $session, UrlGenerator $url)
+    private function sendConfirmationMailTo(WP_User $user, Session $session)
     {
         $session->flash('auth.confirm.email.sent', true);
         $session->put('auth.confirm.email.next', $this->availableAt($this->cool_of_period));
@@ -78,7 +80,7 @@ class AuthConfirmationEmailController extends Controller
             new ConfirmAuthMail(
                 $user,
                 $this->link_lifetime_in_seconds,
-                $url->signedRoute(
+                $this->url->signedRoute(
                     'auth.confirm.magic-link',
                     [],
                     $this->link_lifetime_in_seconds,

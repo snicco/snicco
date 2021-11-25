@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\integration\Blade;
 
-use Tests\stubs\TestApp;
 use Illuminate\View\Factory;
-use Snicco\Blade\BladeEngine;
+use Snicco\Blade\BladeViewFactory;
 use Illuminate\View\FileViewFinder;
+use Illuminate\Container\Container;
+use Snicco\View\Contracts\ViewFactory;
 use Illuminate\View\Engines\EngineResolver;
 use Illuminate\View\Compilers\BladeCompiler;
-use Snicco\View\Contracts\ViewEngineInterface;
 
 class BladeServiceProviderTest extends BladeTestCase
 {
@@ -19,31 +19,32 @@ class BladeServiceProviderTest extends BladeTestCase
     public function the_blade_view_factory_is_bound_correctly()
     {
         $this->bootApp();
-        $this->assertInstanceOf(Factory::class, TestApp::resolve('view'));
+        $container = Container::getInstance();
+        $this->assertInstanceOf(Factory::class, $container->make('view'));
     }
     
     /** @test */
     public function the_blade_view_finder_is_bound_correctly()
     {
         $this->bootApp();
-        
-        $this->assertInstanceOf(FileViewFinder::class, TestApp::resolve('view.finder'));
+        $container = Container::getInstance();
+        $this->assertInstanceOf(FileViewFinder::class, $container->make('view.finder'));
     }
     
     /** @test */
     public function the_blade_compiler_is_bound_correctly()
     {
         $this->bootApp();
-        
-        $this->assertInstanceOf(BladeCompiler::class, TestApp::resolve('blade.compiler'));
+        $container = Container::getInstance();
+        $this->assertInstanceOf(BladeCompiler::class, $container->make('blade.compiler'));
     }
     
     /** @test */
     public function the_engine_resolver_is_bound_correctly()
     {
         $this->bootApp();
-        
-        $this->assertInstanceOf(EngineResolver::class, TestApp::resolve('view.engine.resolver'));
+        $container = Container::getInstance();
+        $this->assertInstanceOf(EngineResolver::class, $container->make('view.engine.resolver'));
     }
     
     /** @test */
@@ -51,7 +52,10 @@ class BladeServiceProviderTest extends BladeTestCase
     {
         $this->bootApp();
         
-        $this->assertInstanceOf(BladeEngine::class, TestApp::resolve(ViewEngineInterface::class));
+        $this->assertInstanceOf(
+            BladeViewFactory::class,
+            $this->app->resolve(ViewFactory::class)
+        );
     }
     
     /** @test */
@@ -59,7 +63,7 @@ class BladeServiceProviderTest extends BladeTestCase
     {
         $this->withAddedConfig('view.blade_cache', __DIR__)->bootApp();
         
-        $this->assertSame(__DIR__, TestApp::config('view.compiled'));
+        $this->assertSame(__DIR__, Container::getInstance()['config']['view.compiled']);
     }
     
 }

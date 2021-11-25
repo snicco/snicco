@@ -7,22 +7,23 @@ namespace Snicco\Blade;
 use Throwable;
 use Snicco\Support\Arr;
 use Snicco\View\Contracts\ViewInterface;
-use Snicco\ExceptionHandling\Exceptions\ViewException;
+use Snicco\View\Exceptions\ViewRenderingException;
 use Illuminate\Contracts\View\View as IlluminateViewContract;
 
-class BladeView implements ViewInterface, IlluminateViewContract
+/**
+ * @internal
+ */
+final class BladeView implements ViewInterface, IlluminateViewContract
 {
     
-    private IlluminateViewContract $illuminate_view;
+    /**
+     * @var IlluminateViewContract
+     */
+    private $illuminate_view;
     
     public function __construct($illuminate_view)
     {
         $this->illuminate_view = $illuminate_view;
-    }
-    
-    public function toResponsable() :string
-    {
-        return $this->toString();
     }
     
     public function toString() :string
@@ -30,8 +31,10 @@ class BladeView implements ViewInterface, IlluminateViewContract
         try {
             return $this->illuminate_view->render();
         } catch (Throwable $e) {
-            throw new ViewException(
-                'Error rendering view:['.$this->name().']', $e
+            throw new ViewRenderingException(
+                "Error rendering view:[{$this->name()}] Caused by: {$e->getMessage()}",
+                $e->getCode(),
+                $e,
             );
         }
     }
@@ -74,7 +77,7 @@ class BladeView implements ViewInterface, IlluminateViewContract
         return $this->context();
     }
     
-    public function path()
+    public function path() :string
     {
         return $this->illuminate_view->getPath();
     }

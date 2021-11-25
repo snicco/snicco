@@ -6,9 +6,8 @@ namespace Tests\integration\Auth\Controllers;
 
 use WP_User;
 use Tests\AuthTestCase;
-use Snicco\Events\Event;
-use Snicco\Auth\Events\Logout;
 use Snicco\Routing\UrlGenerator;
+use Snicco\Auth\Events\UserWasLoggedOut;
 use Snicco\Auth\Responses\LogoutResponse;
 use Snicco\Auth\Controllers\AuthSessionController;
 use Snicco\ExceptionHandling\Exceptions\InvalidSignatureException;
@@ -68,7 +67,7 @@ class AuthSessionControllerLogoutTest extends AuthTestCase
     /** @test */
     public function the_current_user_is_logged_out()
     {
-        Event::fake([Logout::class]);
+        $this->dispatcher->fake(UserWasLoggedOut::class);
         $this->actingAs($calvin = $this->createAdmin());
         $this->assertAuthenticated($calvin);
         
@@ -84,8 +83,8 @@ class AuthSessionControllerLogoutTest extends AuthTestCase
         $this->assertNotAuthenticated($calvin);
         $this->assertTrue($auth_cookie_cleared);
         $this->assertSessionUserId(0);
-        Event::assertDispatched(function (Logout $event) use ($calvin) {
-            return $event->user_id = $calvin->ID;
+        $this->dispatcher->assertDispatched(function (UserWasLoggedOut $logout) use ($calvin) {
+            return $logout->user_id === $calvin->ID;
         });
     }
     
@@ -115,7 +114,7 @@ class AuthSessionControllerLogoutTest extends AuthTestCase
         
         $id_after_logout = $this->session->getId();
         
-        // Session Id not the same
+        // Session id not the same
         $this->assertNotSame($id_before_logout, $id_after_logout);
         
         $response->cookie('snicco_test_session')->assertValue($id_after_logout);

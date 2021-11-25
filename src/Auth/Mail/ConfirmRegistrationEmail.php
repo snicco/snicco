@@ -17,15 +17,10 @@ class ConfirmRegistrationEmail extends Email
         $this->magic_link = $magic_link;
     }
     
-    public function configure() :ConfirmRegistrationEmail
+    public function configure()
     {
-        return $this->subject(sprintf("Confirm your registration at %s", WP::siteName()))
-                    ->view('framework.mail.confirm-registration');
-    }
-    
-    public function unique() :bool
-    {
-        return true;
+        $this->subject(sprintf("Confirm your registration at %s", WP::siteName()))
+             ->htmlTemplate('framework.mail.confirm-registration');
     }
     
 }

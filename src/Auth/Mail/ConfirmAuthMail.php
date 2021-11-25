@@ -12,7 +12,8 @@ class ConfirmAuthMail extends Email
     
     public WP_User $user;
     
-    public int    $lifetime;
+    public int $lifetime;
+    
     public string $magic_link;
     
     public function __construct(WP_User $user, int $link_lifetime_in_sec, string $magic_link)

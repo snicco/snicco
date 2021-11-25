@@ -5,14 +5,13 @@ declare(strict_types=1);
 namespace Tests\integration\Auth\Authenticators;
 
 use Tests\AuthTestCase;
-use Snicco\Events\Event;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
+use Snicco\Contracts\Encryptor;
 use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Fail2Ban\TestSysLogger;
 use Snicco\Auth\Contracts\Authenticator;
-use Snicco\Contracts\Encryptor;
 use Snicco\Auth\Events\FailedTwoFactorAuthentication;
 use Snicco\Auth\Authenticators\TwoFactorAuthenticator;
 use Tests\integration\Auth\Stubs\TestTwoFactorProvider;
@@ -119,7 +118,6 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
     /** @test */
     public function a_user_cant_login_with_an_invalid_one_time_code()
     {
-        Event::fake();
         $calvin = $this->createAdmin();
         $this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
         $this->generateTestSecret($calvin);
@@ -132,7 +130,7 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
         $response->assertRedirectToRoute('auth.2fa.challenge');
         $response->assertSessionHasErrors('login');
         $this->assertNotAuthenticated($calvin);
-        Event::assertDispatched(
+        $this->dispatcher->assertDispatched(
             fn(FailedTwoFactorAuthentication $event) => $event->userId() === $calvin->ID
         );
     }
@@ -182,8 +180,6 @@ class TwoFactorAuthenticatorTest extends AuthTestCase
     /** @test */
     public function the_user_can_log_in_with_a_valid_recovery_codes()
     {
-        $this->withoutExceptionHandling();
-        
         $calvin = $this->createAdmin();
         $this->withDataInSession(['auth.2fa.challenged_user' => $calvin->ID]);
         $this->enable2Fa($calvin);

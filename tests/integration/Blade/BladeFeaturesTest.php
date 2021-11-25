@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\integration\Blade;
 
 use Tests\stubs\TestApp;
-use Snicco\ExceptionHandling\Exceptions\ViewException;
+use Snicco\View\Exceptions\ViewRenderingException;
 
 class BladeFeaturesTest extends BladeTestCase
 {
@@ -166,7 +166,7 @@ class BladeFeaturesTest extends BladeTestCase
         try {
             $view->toString();
             $this->fail("@service was allowed.");
-        } catch (ViewException $e) {
+        } catch (ViewRenderingException $e) {
             $this->assertStringStartsWith(
                 "The service directive is not allowed. Dont use it. Its evil.",
                 $e->getPrevious()->getMessage()

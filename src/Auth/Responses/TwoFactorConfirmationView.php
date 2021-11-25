@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Responses;
 
+use Snicco\View\ViewEngine;
 use Snicco\Http\Psr7\Request;
 use Snicco\View\Contracts\ViewInterface;
-use Snicco\View\Contracts\ViewFactoryInterface;
 use Snicco\Auth\Contracts\Abstract2FAuthConfirmationView;
 
 class TwoFactorConfirmationView extends Abstract2FAuthConfirmationView
 {
     
-    private ViewFactoryInterface $view_factory;
+    private ViewEngine $view_factory;
     
-    public function __construct(ViewFactoryInterface $view_factory)
+    public function __construct(ViewEngine $view_factory)
     {
         $this->view_factory = $view_factory;
     }

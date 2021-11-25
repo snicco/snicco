@@ -5,9 +5,8 @@ declare(strict_types=1);
 namespace Tests\integration\Blade;
 
 use Tests\FrameworkTestCase;
-use Snicco\Blade\BladeServiceProvider;
 use Snicco\Session\SessionServiceProvider;
-use Snicco\Blade\BladeDirectiveServiceProvider;
+use Snicco\Core\Blade\BladeServiceProvider;
 
 class BladeTestCase extends FrameworkTestCase
 {
@@ -23,7 +22,6 @@ class BladeTestCase extends FrameworkTestCase
     {
         return [
             BladeServiceProvider::class,
-            BladeDirectiveServiceProvider::class,
             SessionServiceProvider::class,
         ];
     }

@@ -4,21 +4,15 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Events;
 
-use Snicco\Events\Event;
-use Snicco\Session\Session;
-use BetterWpHooks\Traits\IsAction;
+use Snicco\Core\Events\EventObjects\CoreEvent;
 
-class Logout extends Event
+class UserWasLoggedOut extends CoreEvent
 {
     
-    use IsAction;
+    public int $user_id;
     
-    public Session $session;
-    public int     $user_id;
-    
-    public function __construct(Session $session, int $user_id)
+    public function __construct(int $user_id)
     {
-        $this->session = $session;
         $this->user_id = $user_id;
         
         /**
@@ -29,7 +23,7 @@ class Logout extends Event
          * @since 5.5.0 Added the `$user_id` parameter.
          * @since 1.5.0
          */
-        do_action('wp_logout', $this->session->userId());
+        do_action('wp_logout', $user_id);
     }
     
 }
