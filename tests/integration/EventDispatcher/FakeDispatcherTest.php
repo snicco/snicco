@@ -4,15 +4,12 @@ declare(strict_types=1);
 
 namespace Tests\integration\EventDispatcher;
 
-use Closure;
 use Codeception\TestCase\WPTestCase;
-use Snicco\EventDispatcher\ClassAsName;
-use Snicco\EventDispatcher\FakeDispatcher;
-use Snicco\EventDispatcher\ClassAsPayload;
+use Tests\concerns\AssertPHPUnitFailures;
 use Tests\concerns\AssertListenerResponse;
-use Snicco\EventDispatcher\EventDispatcher;
-use Snicco\EventDispatcher\Contracts\Event;
 use PHPUnit\Framework\ExpectationFailedException;
+use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
+use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 use Snicco\EventDispatcher\Implementations\GenericEvent;
 use Snicco\EventDispatcher\Implementations\ParameterBasedListenerFactory;
 
@@ -20,6 +17,7 @@ final class FakeDispatcherTest extends WPTestCase
 {
     
     use AssertListenerResponse;
+    use AssertPHPUnitFailures;
     
     private FakeDispatcher $fake_dispatcher;
     
@@ -100,6 +98,19 @@ final class FakeDispatcherTest extends WPTestCase
     }
     
     /** @test */
+    public function test_faked_events_count_as_dispatched()
+    {
+        $this->fake_dispatcher->listen('foo_event', function () {
+        });
+        
+        $this->fake_dispatcher->fake('foo_event');
+        
+        $this->fake_dispatcher->dispatch('foo_event', 'foo');
+        
+        $this->fake_dispatcher->assertDispatched('foo_event');
+    }
+    
+    /** @test */
     public function test_fake_except()
     {
         $this->fake_dispatcher->listen('foo_event', function ($val) {
@@ -136,18 +147,22 @@ final class FakeDispatcherTest extends WPTestCase
     /** @test */
     public function test_confirms_to_return_type_for_object_events()
     {
-        $this->fake_dispatcher->listen(EventStub::class, function ($event) {
-            $this->respondedToEvent(EventStub::class, 'closure1', $event->val1.$event->val2);
+        $this->fake_dispatcher->listen(fixtures\EventStub::class, function ($event) {
+            $this->respondedToEvent(
+                fixtures\EventStub::class,
+                'closure1',
+                $event->val1.$event->val2
+            );
         });
-        $this->fake_dispatcher->fake(EventStub::class);
+        $this->fake_dispatcher->fake(fixtures\EventStub::class);
         
-        $result = $this->fake_dispatcher->dispatch($event = new EventStub('FOO', 'BAR'));
+        $result = $this->fake_dispatcher->dispatch($event = new fixtures\EventStub('FOO', 'BAR'));
         
         $this->assertSame($event, $result);
         $this->assertSame('FOO', $result->val1);
         $this->assertSame('BAR', $result->val2);
         
-        $this->assertListenerNotRun(EventStub::class, 'closure1');
+        $this->assertListenerNotRun(fixtures\EventStub::class, 'closure1');
     }
     
     /** @test */
@@ -215,6 +230,24 @@ final class FakeDispatcherTest extends WPTestCase
         
         $this->fake_dispatcher->dispatch('post.deleted', 'my_post');
         $this->assertListenerRun('post.deleted', 'closure2', 'my_post');
+    }
+    
+    /** @test */
+    public function the_fake_dispatcher_can_be_reset()
+    {
+        $this->fake_dispatcher->listen('foo_event', function ($val) {
+            $this->respondedToEvent('foo_event', 'closure1', $val);
+        });
+        $this->fake_dispatcher->fake('foo_event');
+        $this->fake_dispatcher->dispatch('foo_event', 'FOOBAR');
+        $this->assertListenerNotRun('foo_event', 'closure1');
+        
+        $this->resetListenersResponses();
+        
+        $this->fake_dispatcher->reset();
+        
+        $this->fake_dispatcher->dispatch('foo_event', 'FOOBAR');
+        $this->assertListenerRun('foo_event', 'closure1', 'FOOBAR');
     }
     
     /**
@@ -315,14 +348,14 @@ final class FakeDispatcherTest extends WPTestCase
     /** @test */
     public function testAssertDispatchedCanPassWithObjectEvent()
     {
-        $this->fake_dispatcher->dispatch(new EventStub('FOO', 'BAR'));
+        $this->fake_dispatcher->dispatch(new fixtures\EventStub('FOO', 'BAR'));
         
         $this->fake_dispatcher->assertDispatched(
-            EventStub::class,
-            function (EventStub $event_stub) {
+            fixtures\EventStub::class,
+            function (fixtures\EventStub $event_stub) {
                 return $event_stub->val1 === 'FOO' && $event_stub->val2 === 'BAR'
                        && $event_stub->getName()
-                          === EventStub::class;
+                          === fixtures\EventStub::class;
             }
         );
     }
@@ -330,20 +363,20 @@ final class FakeDispatcherTest extends WPTestCase
     /** @test */
     public function testAssertDispatchedCanFailWithObject()
     {
-        $this->fake_dispatcher->dispatch(new EventStub('FOO', 'BAR'));
+        $this->fake_dispatcher->dispatch(new fixtures\EventStub('FOO', 'BAR'));
         
         $this->assertFailing(
             
             function () {
                 $this->fake_dispatcher->assertDispatched(
-                    EventStub::class,
-                    function (EventStub $event_stub) {
+                    fixtures\EventStub::class,
+                    function (fixtures\EventStub $event_stub) {
                         return $event_stub->val1 === 'FOO' && $event_stub->val2 === 'BAZ';
                     }
                 );
             },
             'The event ['
-            .EventStub::class
+            .fixtures\EventStub::class
             .'] was dispatched but the provided condition did not pass.'
         );
     }
@@ -351,13 +384,13 @@ final class FakeDispatcherTest extends WPTestCase
     /** @test */
     public function testAssertDispatchedCanPassWorksWithClosureOnly()
     {
-        $this->fake_dispatcher->dispatch(new EventStub('FOO', 'BAR'));
+        $this->fake_dispatcher->dispatch(new fixtures\EventStub('FOO', 'BAR'));
         
         $this->fake_dispatcher->assertDispatched(
-            function (EventStub $event_stub, string $event_name) {
+            function (fixtures\EventStub $event_stub, string $event_name) {
                 return $event_stub->val1 === 'FOO' && $event_stub->val2 === 'BAR'
                        && $event_name
-                          === EventStub::class;
+                          === fixtures\EventStub::class;
             }
         );
     }
@@ -365,21 +398,21 @@ final class FakeDispatcherTest extends WPTestCase
     /** @test */
     public function testAssertDispatchedCanFailWithClosureOnly()
     {
-        $this->fake_dispatcher->dispatch(new EventStub('FOO', 'BAR'));
+        $this->fake_dispatcher->dispatch(new fixtures\EventStub('FOO', 'BAR'));
         
         $this->assertFailing(
             
             function () {
                 $this->fake_dispatcher->assertDispatched(
-                    function (EventStub $event_stub, string $event_name) {
+                    function (fixtures\EventStub $event_stub, string $event_name) {
                         return $event_stub->val1 === 'FOO'
                                && $event_stub->val2 === 'BAZ'
-                               && $event_name === EventStub::class;
+                               && $event_name === fixtures\EventStub::class;
                     }
                 );
             },
             'The event ['
-            .EventStub::class
+            .fixtures\EventStub::class
             .'] was dispatched but the provided condition did not pass.'
         );
     }
@@ -450,10 +483,10 @@ final class FakeDispatcherTest extends WPTestCase
     /** @test */
     public function testAssertNotDispatchedCanPassWithObjectAndCondition()
     {
-        $this->fake_dispatcher->dispatch(new EventStub('FOO', 'BAZ'));
+        $this->fake_dispatcher->dispatch(new fixtures\EventStub('FOO', 'BAZ'));
         
         $this->fake_dispatcher->assertNotDispatched(
-            function (EventStub $event_stub) {
+            function (fixtures\EventStub $event_stub) {
                 return $event_stub->val1 === 'FOO' && $event_stub->val2 === 'BAR';
             }
         );
@@ -462,15 +495,15 @@ final class FakeDispatcherTest extends WPTestCase
     /** @test */
     public function testAssertNotDispatchedCanPassWithObjectAndConditionCanFail()
     {
-        $this->fake_dispatcher->dispatch(new EventStub('FOO', 'BAZ'));
+        $this->fake_dispatcher->dispatch(new fixtures\EventStub('FOO', 'BAZ'));
         
         $this->assertFailing(function () {
             $this->fake_dispatcher->assertNotDispatched(
-                function (EventStub $event_stub) {
+                function (fixtures\EventStub $event_stub) {
                     return $event_stub->val1 === 'FOO' && $event_stub->val2 === 'BAZ';
                 }
             );
-        }, "The event [".EventStub::class."] was dispatched and the condition passed.");
+        }, "The event [".fixtures\EventStub::class."] was dispatched and the condition passed.");
     }
     
     /** @test */
@@ -505,36 +538,5 @@ final class FakeDispatcherTest extends WPTestCase
         }, "The event [user.created] was dispatched but the provided condition did not pass.");
     }
     
-    private function failBecauseOfWrongAssertion($message = null)
-    {
-        $this->fail($message ?? "The fake dispatcher made a wrong test assertion.");
-    }
-    
-    private function assertFailing(Closure $closure, string $expected_failure_message)
-    {
-        try {
-            $closure();
-            $this->failBecauseOfWrongAssertion();
-        } catch (ExpectationFailedException $e) {
-            $this->assertStringStartsWith($expected_failure_message, $e->getMessage());
-        }
-    }
-    
 }
 
-class EventStub implements Event
-{
-    
-    use ClassAsName;
-    use ClassAsPayload;
-    
-    public $val1;
-    public $val2;
-    
-    public function __construct($foo, $bar)
-    {
-        $this->val1 = $foo;
-        $this->val2 = $bar;
-    }
-    
-}

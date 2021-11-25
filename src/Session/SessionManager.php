@@ -9,9 +9,9 @@ use Snicco\Http\Cookies;
 use Snicco\Http\Psr7\Request;
 use Snicco\Traits\HasLottery;
 use Snicco\Http\ResponseEmitter;
-use Snicco\Session\Events\NewLogin;
 use Illuminate\Support\InteractsWithTime;
 use Snicco\Session\Events\SessionRegenerated;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Session\Contracts\SessionManagerInterface;
 
 class SessionManager implements SessionManagerInterface
@@ -34,10 +34,13 @@ class SessionManager implements SessionManagerInterface
      */
     private $absolute_timout_resolver;
     
-    public function __construct(array $session_config, Session $session)
+    private Dispatcher $events;
+    
+    public function __construct(array $session_config, Session $session, Dispatcher $events)
     {
         $this->config = $session_config;
         $this->session = $session;
+        $this->events = $events;
     }
     
     public function save()
@@ -53,7 +56,7 @@ class SessionManager implements SessionManagerInterface
         if ($this->needsRotation()) {
             $this->session->regenerate();
             $this->session->setNextRotation($this->rotationInterval());
-            SessionRegenerated::dispatch([$this->session]);
+            $this->events->dispatch(new SessionRegenerated($this->session));
         }
         
         $this->session->save();
@@ -64,28 +67,6 @@ class SessionManager implements SessionManagerInterface
         if ($this->hitsLottery($this->config['lottery'])) {
             $this->session->getDriver()->gc($this->maxSessionLifetime());
         }
-    }
-    
-    /**
-     * @note We are not in a routing flow. This method gets called on the wp_login
-     * event.
-     * The Event Listener for this method gets unhooked when using the AUTH-Extension
-     *
-     * @param  NewLogin  $event
-     * @param  Request  $request
-     * @param  ResponseEmitter  $emitter
-     */
-    public function migrateAfterLogin(NewLogin $event, Request $request, ResponseEmitter $emitter)
-    {
-        $this->start($request, $event->user->ID);
-        
-        $this->session->regenerate();
-        $this->session->save();
-        
-        $cookies = new Cookies();
-        $cookies->add($this->sessionCookie());
-        
-        $emitter->emitCookies($cookies);
     }
     
     public function start(Request $request, int $user_id) :Session

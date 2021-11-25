@@ -12,12 +12,13 @@ use Snicco\Session\Session;
 use Snicco\Mail\MailBuilder;
 use Snicco\Session\CsrfField;
 use Snicco\Http\Psr7\Request;
-use Snicco\View\GlobalContext;
 use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
-use Snicco\Contracts\ViewInterface;
 use Snicco\Contracts\Redirector;
+use Snicco\Core\Http\MethodField;
+use Snicco\View\GlobalViewContext;
+use Snicco\View\Contracts\ViewInterface;
 use Snicco\Http\Responses\RedirectResponse;
 
 /**
@@ -247,7 +248,7 @@ final class ApplicationMixin
      * @param  array<string, mixed>  $context
      *
      * @return string
-     * @see    \Snicco\Contracts\ViewInterface::toString()
+     * @see    \Snicco\View\Contracts\ViewInterface::toString()
      */
     public static function render($views, array $context = []) :string
     {
@@ -271,9 +272,9 @@ final class ApplicationMixin
      * Arrays are converted to an instance of Repository.
      * Returns the global context if no args are passed
      *
-     * @see GlobalContext::add()
+     * @see GlobalViewContext::add()
      */
-    public static function globals(?string $name = null, $context = null) :GlobalContext
+    public static function globals(?string $name = null, $context = null) :GlobalViewContext
     {
     }
     

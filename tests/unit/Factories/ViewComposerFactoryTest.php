@@ -6,12 +6,12 @@ namespace Tests\unit\Factories;
 
 use Tests\UnitTest;
 use Tests\stubs\TestView;
-use Snicco\Contracts\ViewComposer;
 use Tests\concerns\CreateContainer;
-use Snicco\Contracts\ViewInterface;
 use Snicco\Contracts\PhpViewInterface;
-use Snicco\Factories\ViewComposerFactory;
+use Snicco\View\Contracts\ViewComposer;
+use Snicco\View\Contracts\ViewInterface;
 use Tests\fixtures\ViewComposers\FooComposer;
+use Snicco\Core\View\DependencyInjectionViewComposerFactory;
 
 use const TEST_CONFIG;
 
@@ -20,14 +20,17 @@ class ViewComposerFactoryTest extends UnitTest
     
     use CreateContainer;
     
-    private ViewComposerFactory $factory;
+    private DependencyInjectionViewComposerFactory $factory;
     
     protected function setUp() :void
     {
         parent::setUp();
         
         $this->factory =
-            new ViewComposerFactory($this->createContainer(), TEST_CONFIG['composers']);
+            new DependencyInjectionViewComposerFactory(
+                $this->createContainer(),
+                TEST_CONFIG['composers']
+            );
     }
     
     /** @test */

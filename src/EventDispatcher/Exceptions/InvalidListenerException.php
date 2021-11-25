@@ -20,7 +20,7 @@ final class InvalidListenerException extends InvalidArgumentException
     public static function becauseTheListenerHasNoValidMethod(string $listener) :InvalidListenerException
     {
         return new InvalidListenerException(
-            "The listener [$listener] does not have a handle method and isn't invokable with __invoke()."
+            "The listener [$listener] does not have a handle method and is not invokable with __invoke()."
         );
     }
     

@@ -6,9 +6,9 @@ namespace Snicco\Auth\Mail;
 
 use WP_User;
 use Snicco\Support\WP;
-use Snicco\Mail\Mailable;
+use Snicco\Mail\Email;
 
-class ResetPasswordMail extends Mailable
+class ResetPasswordMail extends Email
 {
     
     public WP_User $user;
@@ -29,7 +29,7 @@ class ResetPasswordMail extends Mailable
         return true;
     }
     
-    public function build() :Mailable
+    public function configure() :Email
     {
         return $this
             ->subject($title = sprintf(__('[%s] Password Reset'), WP::siteName()))

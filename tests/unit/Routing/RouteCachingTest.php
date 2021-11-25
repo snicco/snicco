@@ -10,7 +10,7 @@ use Tests\RoutingTestCase;
 use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
 use Snicco\Listeners\FilterWpQuery;
-use Snicco\Events\WpQueryFilterable;
+use Snicco\Core\Events\EventObjects\WPQueryFilterable;
 
 class RouteCachingTest extends RoutingTestCase
 {
@@ -156,9 +156,9 @@ class RouteCachingTest extends RoutingTestCase
         
         $wp->query_vars = ['foo' => 'bar'];
         
-        $event = new WpQueryFilterable($request = TestRequest::from('GET', 'foo'), true, $wp);
+        $event = new WPQueryFilterable($request = TestRequest::from('GET', 'foo'), true, $wp);
         $listener = new FilterWpQuery($this->routes);
-        $this->assertFalse($listener->handleEvent($event));
+        $listener->handle($event);
         $this->assertSame(['foo' => 'baz'], $wp->query_vars);
         $this->assertResponse('foo', $request);
     }

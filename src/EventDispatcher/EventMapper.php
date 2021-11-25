@@ -8,6 +8,7 @@ use Closure;
 use WP_Hook;
 use LogicException;
 use InvalidArgumentException;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\EventDispatcher\Contracts\MappedFilter;
 use Snicco\EventDispatcher\Contracts\MappedAction;
 use Snicco\EventDispatcher\Contracts\MappedEventFactory;
@@ -19,12 +20,27 @@ use Snicco\EventDispatcher\Implementations\ParameterBasedEventFactory;
 final class EventMapper
 {
     
-    private MappedEventFactory $event_factory;
-    private EventDispatcher    $event_dispatcher;
-    private array              $mapped_actions = [];
-    private array              $mapped_filters = [];
+    /**
+     * @var MappedEventFactory
+     */
+    private $event_factory;
     
-    public function __construct(EventDispatcher $event_dispatcher, ?MappedEventFactory $event_factory = null)
+    /**
+     * @var Dispatcher
+     */
+    private $event_dispatcher;
+    
+    /**
+     * @var array
+     */
+    private $mapped_actions = [];
+    
+    /**
+     * @var array
+     */
+    private $mapped_filters = [];
+    
+    public function __construct(Dispatcher $event_dispatcher, ?MappedEventFactory $event_factory = null)
     {
         $this->event_dispatcher = $event_dispatcher;
         $this->event_factory = $event_factory ?? new ParameterBasedEventFactory();
@@ -203,12 +219,13 @@ final class EventMapper
     
     private function ensureLast(string $wordpress_hook_name, string $map_to)
     {
-        add_action($wordpress_hook_name, function () use ($map_to) {
+        add_action($wordpress_hook_name, function (...$args) use ($map_to) {
             // Even if somebody else registered a filter with PHP_INT_MAX our mapped action
             // will be run after the present callback unless it was also added during runtime
             // at the priority PHP_INT_MAX -1 which is highly unlikely.
             $this->mapValidated(current_filter(), $map_to, PHP_INT_MAX);
-        }, PHP_INT_MAX - 1);
+            return $args[0];
+        }, PHP_INT_MAX - 1, 999);
     }
     
 }

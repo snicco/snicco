@@ -9,7 +9,7 @@ use Snicco\EventDispatcher\Exceptions\MappedEventCreationException;
 /**
  * You can implement this interface and resolve mapped events using a DI container if for example
  * you need some configuration value. If you choose to do this use this feature sparingly.
- * Event class are ment to be data classes and should have limited behaviour. Under no
+ * Event class are meant to be data classes and should have limited behaviour. Under no
  * circumstances should you use an event class to provide dependencies to one of your attached
  * listeners. Use the ListenerFactory interface for this.
  *

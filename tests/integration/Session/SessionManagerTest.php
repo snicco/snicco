@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Tests\integration\Session;
 
 use Snicco\Http\Cookies;
-use Snicco\Events\Event;
 use Tests\FrameworkTestCase;
 use Snicco\Http\ResponseEmitter;
 use Snicco\Session\SessionManager;
@@ -186,7 +185,7 @@ class SessionManagerTest extends FrameworkTestCase
     /** @test */
     public function the_regenerate_session_event_gets_dispatched()
     {
-        Event::fake([SessionRegenerated::class]);
+        $this->dispatcher->fake(SessionRegenerated::class);
         
         $this->manager->start($this->request, 1);
         $this->manager->save();
@@ -195,7 +194,10 @@ class SessionManagerTest extends FrameworkTestCase
         $this->manager->save();
         $this->backToPresent();
         
-        Event::assertDispatched(fn(SessionRegenerated $event) => $event->session === $this->session
+        $this->dispatcher->assertDispatched(
+            function (SessionRegenerated $event) {
+                return $event->session === $this->session;
+            }
         );
     }
     

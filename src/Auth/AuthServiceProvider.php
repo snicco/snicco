@@ -6,6 +6,7 @@ namespace Snicco\Auth;
 
 use Snicco\Http\Psr7\Request;
 use Snicco\Middleware\Secure;
+use Snicco\Contracts\Encryptor;
 use Snicco\Http\ResponseFactory;
 use Snicco\Auth\Fail2Ban\Fail2Ban;
 use Snicco\Session\SessionManager;
@@ -13,8 +14,8 @@ use Snicco\Auth\Fail2Ban\Syslogger;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Auth\Fail2Ban\PHPSyslogger;
 use Snicco\Auth\Middleware\ConfirmAuth;
+use Snicco\Auth\Listeners\WPLoginLinks;
 use Snicco\Auth\Events\GenerateLoginUrl;
-use Snicco\Contracts\Encryptor;
 use Snicco\Auth\Responses\LoginRedirect;
 use Snicco\Auth\Events\GenerateLogoutUrl;
 use Snicco\Auth\Events\SettingAuthCookie;
@@ -29,7 +30,6 @@ use Snicco\Auth\Listeners\RefreshAuthCookies;
 use Snicco\Session\Events\SessionRegenerated;
 use Snicco\Auth\Responses\MagicLinkLoginView;
 use Snicco\Auth\Events\FailedAuthConfirmation;
-use Snicco\Auth\Listeners\WpLoginLinkGenerator;
 use Snicco\Auth\Middleware\AuthenticateSession;
 use Snicco\Auth\Contracts\AbstractLoginResponse;
 use Snicco\Auth\Listeners\GenerateNewAuthCookie;
@@ -186,12 +186,10 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->config->extend('events.listeners', [
             GenerateLoginUrl::class => [
-                
-                [WpLoginLinkGenerator::class, 'loginUrl'],
-            
+                [WPLoginLinks::class, 'createLoginUrl'],
             ],
             GenerateLogoutUrl::class => [
-                [WpLoginLinkGenerator::class, 'logoutUrl'],
+                [WPLoginLinks::class, 'createLogoutUrl'],
             ],
             SettingAuthCookie::class => [
                 GenerateNewAuthCookie::class,

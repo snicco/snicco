@@ -4,13 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\fixtures\Mail;
 
-use Snicco\Mail\Mailable;
+use Snicco\Mail\Email;
 use Snicco\Routing\UrlGenerator;
 
-class ConfirmAccountTestMail extends Mailable
+class ConfirmAccountTestMail extends Email
 {
     
-    public function build(UrlGenerator $g) :Mailable
+    public function configure(UrlGenerator $g) :Email
     {
         return $this->subject('Confirm your account')
                     ->text('mails.confirm-account-email')

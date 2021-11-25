@@ -6,7 +6,6 @@ namespace Tests\integration\Auth;
 
 use WP_Session_Tokens;
 use Tests\AuthTestCase;
-use Snicco\Events\Event;
 use Tests\stubs\TestApp;
 use Snicco\Middleware\Secure;
 use Snicco\Events\ResponseSent;
@@ -230,7 +229,7 @@ class AuthServiceProviderTest extends AuthTestCase
         $this->withRequest($this->frontendRequest('GET', 'wp-login.php'));
         $this->bootApp();
         
-        Event::fake([ResponseSent::class]);
+        $this->dispatcher->fake(ResponseSent::class);
         
         do_action('init');
         
@@ -242,7 +241,7 @@ class AuthServiceProviderTest extends AuthTestCase
         $response->assertRedirect($expected_redirect)
                  ->assertStatus(301);
         
-        Event::assertDispatched(function (ResponseSent $event) {
+        $this->dispatcher->assertDispatched(function (ResponseSent $event) {
             return $event->response instanceof RedirectResponse;
         });
     }
@@ -254,7 +253,7 @@ class AuthServiceProviderTest extends AuthTestCase
         $this->withRequest($this->frontendRequest('GET', '/wp-login.php?action=confirmation'));
         $this->bootApp();
         
-        Event::fake([ResponseSent::class]);
+        $this->dispatcher->fake(ResponseSent::class);
         
         do_action('init');
         
@@ -262,7 +261,7 @@ class AuthServiceProviderTest extends AuthTestCase
         
         $response->assertDelegatedToWordPress();
         
-        Event::assertNotDispatched(ResponseSent::class);
+        $this->dispatcher->assertNotDispatched(ResponseSent::class);
     }
     
     /** @test */

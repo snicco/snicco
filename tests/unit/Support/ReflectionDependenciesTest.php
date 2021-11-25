@@ -26,7 +26,8 @@ class ReflectionDependenciesTest extends UnitTest
         $this->route_action_dependencies = new ReflectionDependencies($this->container);
     }
     
-    /** @test
+    /**
+     * @test
      */
     public function testMethodWithNoDependencies()
     {
@@ -95,19 +96,6 @@ class ReflectionDependenciesTest extends UnitTest
     }
     
     /** @test */
-    public function testObjectsAreRemovedIfTheClassHasNoObjects()
-    {
-        $bar = new Bar();
-        
-        $args = $this->route_action_dependencies->build(
-            [TestRouteAction::class, 'withNoClassDependencies'],
-            [$bar, '1', '2']
-        );
-        
-        $this->assertSame(['1', '2'], $args);
-    }
-    
-    /** @test */
     public function testWithClosure()
     {
         $this->container->instance(
@@ -141,6 +129,19 @@ class ReflectionDependenciesTest extends UnitTest
         $this->assertSame([$bar, $foo, '1',], $args);
     }
     
+    /** @test */
+    public function testObjectThatArePassedAsAPayloadAreNotFilteredOut()
+    {
+        $this->container->instance(Foo::class, $foo = new Foo());
+        
+        $args = $this->route_action_dependencies->build(
+            [TestRouteAction::class, 'withObjectValue'],
+            ['val', $bar = new Bar()]
+        );
+        
+        $this->assertSame([$foo, 'val', $bar], $args);
+    }
+    
 }
 
 class TestRouteAction
@@ -163,6 +164,10 @@ class TestRouteAction
     }
     
     public function onlyDefaultValues(string $foo = 'foo', string $bar = 'bar')
+    {
+    }
+    
+    public function withObjectValue(Foo $foo, string $val, Bar $bar)
     {
     }
     

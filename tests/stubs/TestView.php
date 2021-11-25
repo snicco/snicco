@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Tests\stubs;
 
 use Snicco\Support\Arr;
-use Snicco\View\PhpView;
-use Snicco\Contracts\ViewInterface;
+use Snicco\View\Implementations\PHPView;
+use Snicco\View\Contracts\ViewInterface;
 
 class TestView implements ViewInterface
 {
@@ -50,6 +50,9 @@ class TestView implements ViewInterface
         $context = '[';
         
         foreach ($this->context as $key => $value) {
+            if ($key === '__view') {
+                continue;
+            }
             $context .= $key.'=>'.$value.',';
         }
         $context = rtrim($context, ',');
@@ -62,7 +65,7 @@ class TestView implements ViewInterface
     {
     }
     
-    public function parent() :?PhpView
+    public function parent() :?PHPView
     {
     }
     

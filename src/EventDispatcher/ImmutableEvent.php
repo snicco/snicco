@@ -22,11 +22,25 @@ final class ImmutableEvent implements Event
     use ClassAsName;
     use ClassAsPayload;
     
-    private Event $event;
+    /**
+     * @var Event
+     */
+    private $event;
     
-    private array  $properties = [];
-    private array  $methods    = [];
-    private string $event_class;
+    /**
+     * @var array
+     */
+    private $properties = [];
+    
+    /**
+     * @var array
+     */
+    private $methods = [];
+    
+    /**
+     * @var string
+     */
+    private $event_class;
     
     public function __construct(Event $event)
     {

@@ -6,6 +6,7 @@ namespace Snicco\Http;
 
 use stdClass;
 use JsonSerializable;
+use Snicco\View\ViewEngine;
 use InvalidArgumentException;
 use Snicco\Http\Psr7\Response;
 use Snicco\Contracts\Redirector;
@@ -13,8 +14,8 @@ use Snicco\Contracts\Responsable;
 use Psr\Http\Message\StreamInterface;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Http\Responses\NullResponse;
+use Snicco\View\Contracts\ViewInterface;
 use Illuminate\Contracts\Support\Jsonable;
-use Snicco\Contracts\ViewFactoryInterface;
 use Snicco\Http\Responses\RedirectResponse;
 use Illuminate\Contracts\Support\Arrayable;
 use Snicco\Http\Responses\DelegatedResponse;
@@ -27,7 +28,7 @@ use Psr\Http\Message\ResponseFactoryInterface as Psr17ResponseFactory;
 class ResponseFactory implements ResponseFactoryInterface, StreamFactoryInterface
 {
     
-    private ViewFactoryInterface $view_factory;
+    private ViewEngine $view_engine;
     
     private Psr17ResponseFactory $response_factory;
     
@@ -37,9 +38,9 @@ class ResponseFactory implements ResponseFactoryInterface, StreamFactoryInterfac
     
     private string $unrecoverable_error_message = 'Something has gone completely wrong.';
     
-    public function __construct(ViewFactoryInterface $view, Psr17ResponseFactory $response, Psr17StreamFactory $stream, Redirector $redirector)
+    public function __construct(ViewEngine $view, Psr17ResponseFactory $response, Psr17StreamFactory $stream, Redirector $redirector)
     {
-        $this->view_factory = $view;
+        $this->view_engine = $view;
         $this->response_factory = $response;
         $this->stream_factory = $stream;
         $this->redirector = $redirector;
@@ -47,7 +48,7 @@ class ResponseFactory implements ResponseFactoryInterface, StreamFactoryInterfac
     
     public function view(string $view, array $data = [], $status = 200, array $headers = []) :Response
     {
-        $content = $this->view_factory->make($view)->with($data)->toString();
+        $content = $this->view_engine->make($view)->with($data)->toString();
         $response = $this->html($content, $status);
         
         foreach ($headers as $name => $value) {
@@ -160,6 +161,10 @@ class ResponseFactory implements ResponseFactoryInterface, StreamFactoryInterfac
         
         if ($response instanceof ResponseInterface) {
             return new Response($response);
+        }
+        
+        if ($response instanceof ViewInterface) {
+            return $this->toResponse($response->toString());
         }
         
         if (is_string($response)) {

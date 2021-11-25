@@ -4,18 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\stubs;
 
-use Snicco\Contracts\ViewInterface;
-use Snicco\Contracts\ViewFactoryInterface;
+use Snicco\View\Contracts\ViewFactory;
+use Snicco\View\Contracts\ViewInterface;
 
-class TestViewFactory implements ViewFactoryInterface
+class TestViewFactory implements ViewFactory
 {
     
     private ?ViewInterface $rendered_view = null;
-    
-    public function compose(ViewInterface $view)
-    {
-        //
-    }
     
     public function make($views) :ViewInterface
     {

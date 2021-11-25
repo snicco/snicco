@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Tests\fixtures\ViewComposers;
 
-use Snicco\Contracts\ViewComposer;
-use Snicco\Contracts\ViewInterface;
+use Snicco\View\Contracts\ViewComposer;
+use Snicco\View\Contracts\ViewInterface;
 use Tests\fixtures\TestDependencies\Bar;
 
 class FooComposer implements ViewComposer
@@ -18,7 +18,7 @@ class FooComposer implements ViewComposer
         $this->bar = $bar;
     }
     
-    public function compose(ViewInterface $view)
+    public function compose(ViewInterface $view) :void
     {
         $view->with(['foo' => $this->bar->bar]);
     }

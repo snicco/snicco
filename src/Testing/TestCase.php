@@ -16,18 +16,21 @@ use Snicco\Session\Session;
 use Snicco\Http\Psr7\Request;
 use Snicco\Application\Config;
 use Snicco\Contracts\Middleware;
+use Snicco\Mail\Contracts\Mailer;
 use Illuminate\Container\Container;
 use Snicco\Application\Application;
 use Codeception\TestCase\WPTestCase;
 use Snicco\Contracts\ServiceProvider;
 use Illuminate\Support\Facades\Facade;
+use Snicco\Contracts\ExceptionHandler;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Testing\Concerns\TravelsTime;
 use Snicco\Session\SessionServiceProvider;
 use Mockery\Exception\InvalidCountException;
 use Snicco\Testing\Concerns\InteractsWithMail;
 use Snicco\Testing\Concerns\MakesHttpRequests;
-use Snicco\Contracts\ExceptionHandler;
+use Snicco\Testing\Concerns\InteractsWithEvents;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Testing\Concerns\InteractsWithSession;
 use Snicco\ExceptionHandling\NullExceptionHandler;
 use Psr\Http\Message\ServerRequestFactoryInterface;
@@ -39,6 +42,7 @@ abstract class TestCase extends WPTestCase
 {
     
     use MakesHttpRequests;
+    use InteractsWithEvents;
     use InteractsWithContainer;
     use InteractsWithSession;
     use InteractsWithAuthentication;
@@ -96,6 +100,8 @@ abstract class TestCase extends WPTestCase
         $this->afterApplicationBooted(function () {
             $this->replaceBindings();
             $this->setProperties();
+            $this->dispatcher = $this->app[Dispatcher::class];
+            $this->fake_mailer = $this->app[Mailer::class];
         });
         
         foreach ($this->after_application_created as $callback) {

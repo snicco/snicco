@@ -7,8 +7,8 @@ namespace Snicco\Auth\Responses;
 use Snicco\Support\WP;
 use Snicco\Application\Config;
 use Snicco\Routing\UrlGenerator;
-use Snicco\Contracts\ViewFactoryInterface;
 use Snicco\Auth\Contracts\AbstractLoginView;
+use Snicco\View\Contracts\ViewFactoryInterface;
 
 class PasswordLoginView extends AbstractLoginView
 {

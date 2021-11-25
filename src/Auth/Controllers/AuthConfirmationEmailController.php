@@ -7,22 +7,23 @@ namespace Snicco\Auth\Controllers;
 use WP_User;
 use Snicco\Session\Session;
 use Snicco\Http\Controller;
-use Snicco\Mail\MailBuilder;
 use Snicco\Http\Psr7\Request;
+use Snicco\Routing\UrlGenerator;
 use Snicco\Auth\Mail\ConfirmAuthMail;
 use Illuminate\Support\InteractsWithTime;
+use Snicco\Mail\Contracts\MailBuilderInterface;
 
 class AuthConfirmationEmailController extends Controller
 {
     
     use InteractsWithTime;
     
-    private int         $cool_of_period;
-    private int         $link_lifetime_in_seconds;
-    private MailBuilder $mail_builder;
+    private int                  $cool_of_period;
+    private int                  $link_lifetime_in_seconds;
+    private MailBuilderInterface $mail_builder;
     
     public function __construct(
-        MailBuilder $mail_builder,
+        MailBuilderInterface $mail_builder,
         int $cool_of_period = 15,
         $link_lifetime_in_seconds = 300
     ) {
@@ -31,7 +32,7 @@ class AuthConfirmationEmailController extends Controller
         $this->mail_builder = $mail_builder;
     }
     
-    public function store(Request $request)
+    public function store(Request $request, UrlGenerator $url)
     {
         $user = $request->user();
         $session = $request->session();
@@ -44,7 +45,7 @@ class AuthConfirmationEmailController extends Controller
                 ]);
         }
         
-        $this->sendConfirmationMailTo($user, $session);
+        $this->sendConfirmationMailTo($user, $session, $url);
         
         return $request->isExpectingJson()
             ? $this->response_factory->make(204)
@@ -67,7 +68,7 @@ class AuthConfirmationEmailController extends Controller
         return true;
     }
     
-    private function sendConfirmationMailTo(WP_User $user, Session $session)
+    private function sendConfirmationMailTo(WP_User $user, Session $session, UrlGenerator $url)
     {
         $session->flash('auth.confirm.email.sent', true);
         $session->put('auth.confirm.email.next', $this->availableAt($this->cool_of_period));
@@ -76,9 +77,14 @@ class AuthConfirmationEmailController extends Controller
         $this->mail_builder->to($user)->send(
             new ConfirmAuthMail(
                 $user,
-                $this->link_lifetime_in_seconds
+                $this->link_lifetime_in_seconds,
+                $url->signedRoute(
+                    'auth.confirm.magic-link',
+                    [],
+                    $this->link_lifetime_in_seconds,
+                    true
+                )
             )
-        
         );
     }
     

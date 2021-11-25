@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace Snicco\Session\Events;
 
-use Snicco\Events\Event;
 use Snicco\Session\Session;
+use Snicco\Core\Events\EventObjects\CoreEvent;
 
-class SessionRegenerated extends Event
+class SessionRegenerated extends CoreEvent
 {
     
     public Session $session;
