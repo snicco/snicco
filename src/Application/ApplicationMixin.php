@@ -12,7 +12,7 @@ use Snicco\Session\Session;
 use Snicco\Mail\MailBuilder;
 use Snicco\Session\CsrfField;
 use Snicco\Http\Psr7\Request;
-use Contracts\ContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Snicco\Routing\UrlGenerator;
 use Snicco\Contracts\Redirector;

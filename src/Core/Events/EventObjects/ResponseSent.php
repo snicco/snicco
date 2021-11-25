@@ -2,11 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Events;
+namespace Snicco\Core\Events\EventObjects;
 
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
-use Snicco\Core\Events\EventObjects\CoreEvent;
 
 class ResponseSent extends CoreEvent
 {

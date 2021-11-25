@@ -8,7 +8,7 @@ use Snicco\Support\Arr;
 use Tests\stubs\TestApp;
 use PHPUnit\Framework\Assert;
 use Snicco\Application\Config;
-use Contracts\ContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
 use Snicco\Testing\TestResponse;
 use Snicco\Http\ResponseEmitter;
 use Snicco\Application\Application;

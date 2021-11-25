@@ -7,8 +7,8 @@ namespace Tests\unit\Application;
 use stdClass;
 use Tests\UnitTest;
 use Tests\concerns\CreateContainer;
+use Snicco\Shared\ContainerAdapter;
 use Snicco\Application\ManagesAliases;
-use SniccoAdapter\BaseContainerAdapter;
 use Tests\fixtures\TestDependencies\Foo;
 
 class ManagesAliasesTest extends UnitTest
@@ -106,7 +106,7 @@ class ManagesAliasImplementation
     
     use ManagesAliases;
     
-    public BaseContainerAdapter $container;
+    public ContainerAdapter $container;
     
     public function resolve(string $key)
     {

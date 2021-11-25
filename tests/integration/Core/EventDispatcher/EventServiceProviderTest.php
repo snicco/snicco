@@ -13,7 +13,7 @@ use Snicco\Core\Events\DependencyInversionEventFactory;
 use Snicco\EventDispatcher\Contracts\MappedEventFactory;
 use Snicco\Core\Events\DependencyInversionListenerFactory;
 
-final class EventServiceProvidersTest extends FrameworkTestCase
+final class EventServiceProviderTest extends FrameworkTestCase
 {
     
     /** @test */
@@ -51,6 +51,15 @@ final class EventServiceProvidersTest extends FrameworkTestCase
             DependencyInversionListenerFactory::class,
             $this->app->resolve(ListenerFactory::class)
         );
+    }
+    
+    /** @test */
+    public function the_event_dispatcher_is_a_singleton()
+    {
+        $this->bootApp();
+        $dispatcher = $this->app->resolve(Dispatcher::class);
+        $this->assertInstanceOf(Dispatcher::class, $dispatcher);
+        $this->assertSame($dispatcher, $this->app->resolve(Dispatcher::class));
     }
     
 }

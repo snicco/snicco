@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Application;
+namespace Snicco\Illuminate;
 
 use Snicco\Shared\ContainerAdapter;
 use Illuminate\Container\Container;
@@ -40,12 +40,7 @@ final class IlluminateContainerAdapter implements ContainerAdapter
     
     public function singleton($abstract, $concrete)
     {
-        $this->container->bind($abstract, $concrete);
-    }
-    
-    public function implementation()
-    {
-        // TODO: Implement implementation() method.
+        $this->container->singleton($abstract, $concrete);
     }
     
     public function offsetExists($offset)

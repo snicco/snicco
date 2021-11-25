@@ -8,7 +8,6 @@ use Mockery;
 use RuntimeException;
 use Snicco\Support\WP;
 use Snicco\Support\Arr;
-use Snicco\Events\Event;
 use Snicco\Http\Delegate;
 use Illuminate\Support\Str;
 use Snicco\Http\HttpKernel;
@@ -82,7 +81,6 @@ abstract class TestCase extends WPTestCase
             Container::setInstance();
         }
         
-        Event::setInstance(null);
         WP::reset();
         
         parent::setUp();
@@ -148,7 +146,6 @@ abstract class TestCase extends WPTestCase
         
         // WpTestCase will take care of resetting the user.
         //$this->logout();
-        Event::setInstance(null);
         WP::reset();
     }
     

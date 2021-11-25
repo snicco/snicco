@@ -6,7 +6,7 @@ namespace Snicco\Core\Events;
 
 use Closure;
 use Throwable;
-use Contracts\ContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
 use Snicco\EventDispatcher\Listener;
 use Snicco\EventDispatcher\Contracts\ListenerFactory;
 use Snicco\EventDispatcher\Exceptions\ListenerCreationException;

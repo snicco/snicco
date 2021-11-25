@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Snicco\Events;
+namespace Snicco\Core\Events;
 
 use Snicco\Support\Arr;
 use Snicco\Http\HttpKernel;
@@ -16,17 +16,16 @@ use Snicco\Listeners\CreateDynamicHooks;
 use Snicco\Core\Events\EventObjects\PreWP404;
 use Snicco\Core\Events\EventObjects\AdminInit;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Core\Events\EventObjects\ResponseSent;
 use Snicco\EventDispatcher\Dispatcher\FakeDispatcher;
 use Snicco\EventDispatcher\Contracts\ListenerFactory;
 use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 use Snicco\Core\Events\EventObjects\WPQueryFilterable;
-use Snicco\Core\Events\DependencyInversionEventFactory;
 use Snicco\Core\Events\EventObjects\IncomingApiRequest;
 use Snicco\Core\Events\EventObjects\IncomingWebRequest;
 use Snicco\EventDispatcher\Contracts\MappedEventFactory;
 use Snicco\Core\Events\EventObjects\IncomingAjaxRequest;
 use Snicco\Core\Events\EventObjects\IncomingAdminRequest;
-use Snicco\Core\Events\DependencyInversionListenerFactory;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -83,10 +82,6 @@ class EventServiceProvider extends ServiceProvider
         
         PreWP404::class => [
             [Manage404s::class, 'shortCircuit'],
-        ],
-        
-        MakingView::class => [
-            ComposeView::class,
         ],
     
     ];

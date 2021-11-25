@@ -8,11 +8,11 @@ use Snicco\Http\Delegate;
 use Tests\RoutingTestCase;
 use Tests\stubs\HeaderStack;
 use Snicco\Http\Psr7\Request;
-use Snicco\Events\ResponseSent;
 use Snicco\Http\ResponseFactory;
 use Snicco\Contracts\Middleware;
 use Psr\Http\Message\ResponseInterface;
 use Snicco\Http\Responses\RedirectResponse;
+use Snicco\Core\Events\EventObjects\ResponseSent;
 use Snicco\Middleware\Core\EvaluateResponseMiddleware;
 use Snicco\ExceptionHandling\Exceptions\NotFoundException;
 

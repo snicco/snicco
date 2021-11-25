@@ -9,8 +9,8 @@ use Snicco\Support\Str;
 use Snicco\Support\Arr;
 use Snicco\Http\Psr7\Request;
 use Snicco\Application\Config;
-use Contracts\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
+use Snicco\Shared\ContainerAdapter;
 use Snicco\Application\Application;
 use Snicco\Session\SessionServiceProvider;
 
