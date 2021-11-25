@@ -10,6 +10,7 @@ use Snicco\Support\WP;
 use Snicco\Http\Delegate;
 use Snicco\Routing\Router;
 use Snicco\Http\HttpKernel;
+use Snicco\View\ViewEngine;
 use Snicco\Routing\Pipeline;
 use Tests\stubs\HeaderStack;
 use Snicco\Http\Psr7\Request;
@@ -19,7 +20,6 @@ use Snicco\Contracts\MagicLink;
 use Snicco\Http\ResponseFactory;
 use Snicco\Http\ResponseEmitter;
 use Snicco\Contracts\Middleware;
-use Tests\stubs\TestViewFactory;
 use Snicco\Core\Http\MethodField;
 use Tests\concerns\CreateContainer;
 use Tests\concerns\CreatePsrRequests;
@@ -46,7 +46,6 @@ use Tests\fixtures\Conditions\FalseCondition;
 use Tests\fixtures\Conditions\MaybeCondition;
 use Snicco\Contracts\RouteCollectionInterface;
 use Tests\fixtures\Conditions\UniqueCondition;
-use Snicco\View\Contracts\ViewFactoryInterface;
 use Tests\fixtures\Middleware\FooBarMiddleware;
 use Snicco\ExceptionHandling\NullExceptionHandler;
 use Snicco\Middleware\Core\OutputBufferMiddleware;
@@ -74,6 +73,7 @@ class RoutingTestCase extends TestCase
     protected ContainerAdapter         $container;
     protected RouteCollectionInterface $routes;
     protected FakeDispatcher           $event_dispatcher;
+    protected ViewEngine               $view_engine;
     private int                        $output_buffer_level;
     
     protected function setUp() :void
@@ -210,7 +210,7 @@ class RoutingTestCase extends TestCase
             new FastRouteUrlGenerator($this->routes)
         );
         $this->container->instance(MagicLink::class, new TestMagicLink());
-        $this->container->instance(ViewFactoryInterface::class, new TestViewFactory());
+        $this->container->instance(ViewEngine::class, $this->view_engine);
         
         $this->kernel = new HttpKernel(
             new Pipeline(

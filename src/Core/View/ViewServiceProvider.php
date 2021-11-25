@@ -10,6 +10,7 @@ use Snicco\Contracts\ServiceProvider;
 use Snicco\View\Contracts\ViewFactory;
 use Snicco\View\ViewComposerCollection;
 use Snicco\View\Implementations\PHPViewFinder;
+use Snicco\View\Contracts\ViewComposerFactory;
 use Snicco\View\Implementations\PHPViewFactory;
 
 class ViewServiceProvider extends ServiceProvider
@@ -53,17 +54,21 @@ class ViewServiceProvider extends ServiceProvider
         $this->container->singleton(PHPViewFactory::class, function () {
             return new PHPViewFactory(
                 new PHPViewFinder($this->config->get('view.paths', [])),
+                $this->container->make(ViewComposerCollection::class),
             );
         });
     }
     
     private function bindViewComposerCollection() :void
     {
-        $this->container->singleton(ViewComposerCollection::class, function () {
-            return new ViewComposerCollection(
-                $this->container->make(DependencyInjectionViewComposerFactory::class),
+        $this->container->singleton(ViewComposerFactory::class, function () {
+            return new DependencyInjectionViewComposerFactory(
+                $this->container,
+                $this->config['view.composers'] ?? []
             );
         });
+        
+        $this->container->singleton(ViewComposerCollection::class, ViewComposerCollection::class);
     }
     
 }

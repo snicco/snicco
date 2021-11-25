@@ -13,6 +13,7 @@ use RuntimeException;
 use Snicco\Support\WP;
 use Psr\Log\NullLogger;
 use Illuminate\Support\Arr;
+use Snicco\View\ViewEngine;
 use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
@@ -26,9 +27,8 @@ use Snicco\Application\Application;
 use Tests\concerns\CreatePsr17Factories;
 use Tests\concerns\CreateRouteCollection;
 use Snicco\ExceptionHandling\WhoopsHandler;
-use Snicco\View\Contracts\ViewFactoryInterface;
+use Snicco\View\Exceptions\ViewRenderingException;
 use Snicco\ExceptionHandling\Exceptions\HttpException;
-use Snicco\ExceptionHandling\Exceptions\ViewException;
 use Snicco\ExceptionHandling\ProductionExceptionHandler;
 use Snicco\ExceptionHandling\Exceptions\ErrorViewException;
 
@@ -48,7 +48,7 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
         $this->container = $this->createContainer();
         $this->request = TestRequest::from('GET', 'foo');
         $this->container->instance(ResponseFactory::class, $this->createResponseFactory());
-        $this->container->instance(ViewFactoryInterface::class, new TestViewFactory());
+        $this->container->instance(ViewEngine::class, new ViewEngine(new TestViewFactory()));
     }
     
     protected function tearDown() :void
@@ -227,11 +227,11 @@ class ProductionExceptionHandlerRenderingTest extends UnitTest
     /** @test */
     public function an_exception_while_trying_to_render_a_default_error_view_will_throw_an_special_error_view_exception()
     {
-        $view_factory = Mockery::mock(ViewFactoryInterface::class);
-        $view_factory->shouldReceive('render')->once()->andThrow(
-            $view_exception = new ViewException()
+        $view_factory = Mockery::mock(TestViewFactory::class);
+        $view_factory->shouldReceive('make')->once()->andThrow(
+            $view_exception = new ViewRenderingException()
         );
-        $this->container->instance(ViewFactoryInterface::class, $view_factory);
+        $this->container->instance(ViewEngine::class, new ViewEngine($view_factory));
         
         $handler = $this->newErrorHandler();
         

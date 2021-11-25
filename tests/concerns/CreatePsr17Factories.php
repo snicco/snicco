@@ -4,12 +4,13 @@ declare(strict_types=1);
 
 namespace Tests\concerns;
 
-use Snicco\Http\StatelessRedirector;
+use Snicco\View\ViewEngine;
 use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\ResponseFactory;
 use Tests\stubs\TestViewFactory;
 use Snicco\Routing\UrlGenerator;
+use Snicco\Http\StatelessRedirector;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Psr\Http\Message\UriFactoryInterface;
 use Psr\Http\Message\StreamFactoryInterface;
@@ -48,7 +49,7 @@ trait CreatePsr17Factories
     public function createResponseFactory() :ResponseFactory
     {
         return new ResponseFactory(
-            new TestViewFactory(),
+            $this->view_engine = new ViewEngine(new TestViewFactory()),
             $f = $this->psrResponseFactory(),
             $this->psrStreamFactory(),
             new StatelessRedirector($this->newUrlGenerator(), $f),

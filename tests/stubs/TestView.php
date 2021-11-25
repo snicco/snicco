@@ -50,6 +50,9 @@ class TestView implements ViewInterface
         $context = '[';
         
         foreach ($this->context as $key => $value) {
+            if ($key === '__view') {
+                continue;
+            }
             $context .= $key.'=>'.$value.',';
         }
         $context = rtrim($context, ',');

@@ -7,6 +7,7 @@ namespace Tests\unit\Testing;
 use Mockery;
 use RuntimeException;
 use Snicco\Http\Delegate;
+use Snicco\View\ViewEngine;
 use Snicco\Http\Psr7\Request;
 use Snicco\Contracts\Middleware;
 use Tests\stubs\TestViewFactory;
@@ -294,9 +295,9 @@ class MiddlewareTestCaseTest extends MiddlewareTestCase
         return Mockery::mock(FastRouteUrlGenerator::class);
     }
     
-    protected function viewFactory() :ViewFactoryInterface
+    protected function viewEngine() :ViewEngine
     {
-        return new TestViewFactory();
+        return new ViewEngine(new TestViewFactory());
     }
     
 }
