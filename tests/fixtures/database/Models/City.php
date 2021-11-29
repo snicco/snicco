@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\fixtures\database\Models;
 
-class City extends TestModel
+class City extends TestWPModel
 {
     
     public function country()

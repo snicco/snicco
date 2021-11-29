@@ -6,6 +6,7 @@ namespace Snicco\Blade;
 
 use RuntimeException;
 use Snicco\Support\WP;
+use Illuminate\Support\Fluent;
 use Illuminate\Events\Dispatcher;
 use Illuminate\Container\Container;
 use Illuminate\Filesystem\Filesystem;
@@ -108,13 +109,20 @@ final class BladeStandalone
     // These are all the dependencies that Blade expects to be present in the global service container.
     private function bindDependencies()
     {
-        // Blade only needs some config element that works with array access.
-        $this->illuminate_container->bindIf('config', function () {
-            $config = new DummyConfig();
-            $config->set('view.compiled', $this->view_cache_directory);
-            $config->set('view.paths', $this->view_directories);
-            return $config;
-        }, true);
+        if ($this->illuminate_container->has('config')) {
+            $config = $this->illuminate_container->get('config');
+            $config['view.compiled'] = $this->view_cache_directory;
+            $config['view.paths'] = $this->view_directories;
+        }
+        else {
+            // Blade only needs some config element that works with array access.
+            $this->illuminate_container->singleton('config', function () {
+                $config = new Fluent();
+                $config['view.compiled'] = $this->view_cache_directory;
+                $config['view.paths'] = $this->view_directories;
+                return $config;
+            });
+        }
         
         $this->illuminate_container->bindIf('files', function () {
             return new Filesystem();
