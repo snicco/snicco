@@ -8,7 +8,6 @@ use stdClass;
 use InvalidArgumentException;
 use Codeception\TestCase\WPTestCase;
 use Tests\concerns\AssertListenerResponse;
-use Snicco\Application\IlluminateContainerAdapter;
 use Snicco\EventDispatcher\Dispatcher\EventDispatcher;
 use Tests\integration\EventDispatcher\fixtures\FooEvent;
 use Tests\integration\EventDispatcher\fixtures\BarEvent;
@@ -595,10 +594,10 @@ class EventDispatcherTest extends WPTestCase
         $this->assertListenerRun(FooEvent::class, ClassListener2::class, 'FOOBAR');
     }
     
-    private function getDispatcher($container = null) :EventDispatcher
+    private function getDispatcher() :EventDispatcher
     {
         return new EventDispatcher(
-            new ParameterBasedListenerFactory($container ?? new IlluminateContainerAdapter())
+            new ParameterBasedListenerFactory()
         );
     }
     

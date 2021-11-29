@@ -10,7 +10,7 @@ use Snicco\Http\Psr7\Request;
 use Snicco\Traits\HasLottery;
 use Snicco\Http\ResponseEmitter;
 use Illuminate\Support\InteractsWithTime;
-use Snicco\Session\Events\SessionRegenerated;
+use Snicco\Session\Events\SessionWasRegenerated;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Session\Contracts\SessionManagerInterface;
 
@@ -56,7 +56,7 @@ class SessionManager implements SessionManagerInterface
         if ($this->needsRotation()) {
             $this->session->regenerate();
             $this->session->setNextRotation($this->rotationInterval());
-            $this->events->dispatch(new SessionRegenerated($this->session));
+            $this->events->dispatch(new SessionWasRegenerated($this->session));
         }
         
         $this->session->save();

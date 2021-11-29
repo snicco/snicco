@@ -9,22 +9,13 @@
     "preferred-install": "dist",
     "sort-packages": true
   },
-  "repositories": [
-    {
-      "type": "vcs",
-      "url": "https://github.com/sniccowp/database"
-    }
-  ],
   "require": {
     "php": "^7.4",
     "ext-json": "*",
     "ext-mbstring": "*",
     "ext-mysqli": "*",
     "akrabat/ip-address-middleware": "^2.0",
-    "calvinalkan/base-container": "0.1.*",
-    "calvinalkan/better-wordpress-hooks": "dev-master",
-    "calvinalkan/reflection-payload": "^1.0",
-    "illuminate/support": "8.35.1",
+    "illuminate/support": "^8.0.0",
     "nesbot/carbon": "^2.31",
     "nikic/fast-route": "1.3.0",
     "nyholm/psr7-server": "^1.0-stable",
@@ -39,14 +30,14 @@
     "mockery/mockery": "^1.4.2",
     "phpunit/phpunit": "^9.0",
     "lucatume/wp-browser": "3.0.6",
-    "illuminate/view": "8.x",
+    "illuminate/view": "^8.0.0",
     "adriansuter/php-autoload-override": "^1.2",
     "respect/validation": "2.2.3",
     "bjeavons/zxcvbn-php": "^1.0",
     "roots/wp-password-bcrypt": "dev-master",
     "bacon/bacon-qr-code": "^2.0",
     "pragmarx/google2fa": "8.0.0",
-    "illuminate/database": "dev-better-wp-db-8.x",
+    "illuminate/database": "^8.0.0",
     "nyholm/psr7": "^1.0.0-stable",
     "fakerphp/faker": "^1.0.0-stable"
   },

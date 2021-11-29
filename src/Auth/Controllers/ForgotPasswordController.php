@@ -14,6 +14,8 @@ use Respect\Validation\Validator as v;
 use Snicco\Auth\Mail\ResetPasswordMail;
 use Snicco\View\Contracts\ViewInterface;
 use Snicco\Http\Responses\RedirectResponse;
+use Snicco\Mail\Contracts\MailBuilderInterface;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Auth\Events\FailedPasswordResetLinkRequest;
 
 class ForgotPasswordController extends Controller
@@ -21,11 +23,15 @@ class ForgotPasswordController extends Controller
     
     use ResolvesUser;
     
-    protected int $expiration;
+    private int                  $expiration;
+    private MailBuilderInterface $mail_builder;
+    private Dispatcher           $dispatcher;
     
-    public function __construct(int $expiration = 600)
+    public function __construct(MailBuilderInterface $mail_builder, Dispatcher $dispatcher, int $expiration = 600)
     {
         $this->expiration = $expiration;
+        $this->mail_builder = $mail_builder;
+        $this->dispatcher = $dispatcher;
     }
     
     public function create() :ViewInterface
@@ -51,7 +57,9 @@ class ForgotPasswordController extends Controller
                  ->send(new ResetPasswordMail($user, $magic_link, $this->expiration));
         }
         else {
-            FailedPasswordResetLinkRequest::dispatch([$request, $validated['login']]);
+            $this->dispatcher->dispatch(
+                new FailedPasswordResetLinkRequest($request, $validated['login'])
+            );
         }
         
         return $this->response_factory->redirect()

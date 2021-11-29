@@ -4,19 +4,19 @@ declare(strict_types=1);
 
 namespace Snicco\Auth\Responses;
 
+use Snicco\View\ViewEngine;
 use Snicco\Http\Psr7\Request;
 use Snicco\Routing\UrlGenerator;
 use Snicco\View\Contracts\ViewInterface;
-use Snicco\View\Contracts\ViewFactoryInterface;
 use Snicco\Auth\Contracts\AbstractEmailAuthConfirmationView;
 
 class EmailAuthConfirmationView extends AbstractEmailAuthConfirmationView
 {
     
-    private ViewFactoryInterface $view_factory;
-    private UrlGenerator         $url;
+    private ViewEngine   $view_factory;
+    private UrlGenerator $url;
     
-    public function __construct(ViewFactoryInterface $view_factory, UrlGenerator $url)
+    public function __construct(ViewEngine $view_factory, UrlGenerator $url)
     {
         $this->view_factory = $view_factory;
         $this->url = $url;

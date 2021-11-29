@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Snicco\Shared;
 
+use Closure;
 use ArrayAccess;
 
 interface ContainerAdapter extends ArrayAccess
@@ -17,7 +18,7 @@ interface ContainerAdapter extends ArrayAccess
      *
      * @return mixed
      */
-    public function make($abstract, array $parameters = []);
+    public function make(string $abstract, array $parameters = []);
     
     /**
      * Hotswap an underlying Container Instance
@@ -37,35 +38,28 @@ interface ContainerAdapter extends ArrayAccess
      *
      * @return mixed
      */
-    public function instance($abstract, $instance);
+    public function instance(string $abstract, $instance);
     
     /**
      * Register a binding with the container.
      * This will not be a singleton but a new object everytime it gets resolved.
      *
      * @param  string  $abstract
-     * @param  Closure|string|null  $concrete
+     * @param  Closure|string  $concrete
      *
      * @return void
      */
-    public function bind($abstract, $concrete);
+    public function bind(string $abstract, $concrete);
     
     /**
      * Register a shared binding in the container.
      * This object will be a singleton always
      *
      * @param  string  $abstract
-     * @param  Closure|string|null  $concrete
+     * @param  Closure|string  $concrete
      *
      * @return void
      */
-    public function singleton($abstract, $concrete);
-    
-    /**
-     * Return the underlying container implementation for this adapter.
-     *
-     * @return mixed
-     */
-    public function implementation();
+    public function singleton(string $abstract, $concrete);
     
 }

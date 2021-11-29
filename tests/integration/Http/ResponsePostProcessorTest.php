@@ -3,9 +3,9 @@
 namespace Tests\integration\Http;
 
 use Tests\FrameworkTestCase;
-use Snicco\Events\ResponseSent;
 use Snicco\Http\ResponseFactory;
 use Snicco\Core\Events\EventObjects\DoShutdown;
+use Snicco\Core\Events\EventObjects\ResponseSent;
 
 class ResponsePostProcessorTest extends FrameworkTestCase
 {

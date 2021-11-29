@@ -13,7 +13,7 @@ use Snicco\Support\WP;
 use Tests\stubs\TestLogger;
 use Tests\stubs\TestRequest;
 use Snicco\Http\Psr7\Request;
-use Contracts\ContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
 use Snicco\Http\ResponseFactory;
 use Tests\concerns\CreateContainer;
 use Tests\fixtures\TestDependencies\Foo;

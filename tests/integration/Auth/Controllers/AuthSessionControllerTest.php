@@ -6,12 +6,11 @@ namespace Tests\integration\Auth\Controllers;
 
 use WP_User;
 use Tests\AuthTestCase;
-use Snicco\Events\Event;
-use Snicco\Auth\Events\Login;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Testing\TestResponse;
 use Snicco\Auth\Traits\ResolvesUser;
+use Snicco\Auth\Events\UserWasLoggedIn;
 use Snicco\Auth\Contracts\Authenticator;
 use Snicco\Auth\Authenticators\PasswordAuthenticator;
 
@@ -214,7 +213,7 @@ class AuthSessionControllerTest extends AuthTestCase
     /** @test */
     public function the_session_is_updated_on_login()
     {
-        Event::fake([Login::class]);
+        $this->dispatcher->fake(UserWasLoggedIn::class);
         $calvin = $this->createAdmin();
         $this->withDataInSession(['foo' => 'bar']);
         $session_id_pre_login = $this->session->getId();
@@ -241,7 +240,7 @@ class AuthSessionControllerTest extends AuthTestCase
         $this->assertFalse($this->session->hasRememberMeToken());
         
         // Login event
-        Event::assertDispatched(function (Login $login) use ($calvin) {
+        $this->dispatcher->assertDispatched(function (UserWasLoggedIn $login) use ($calvin) {
             return $login->user->ID === $calvin->ID && $login->remember === false;
         });
     }

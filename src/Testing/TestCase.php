@@ -8,7 +8,6 @@ use Mockery;
 use RuntimeException;
 use Snicco\Support\WP;
 use Snicco\Support\Arr;
-use Snicco\Events\Event;
 use Snicco\Http\Delegate;
 use Illuminate\Support\Str;
 use Snicco\Http\HttpKernel;
@@ -24,6 +23,7 @@ use Snicco\Contracts\ServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use Snicco\Contracts\ExceptionHandler;
 use Psr\Http\Message\ResponseInterface;
+use Illuminate\Database\Eloquent\Model;
 use Snicco\Testing\Concerns\TravelsTime;
 use Snicco\Session\SessionServiceProvider;
 use Mockery\Exception\InvalidCountException;
@@ -73,6 +73,8 @@ abstract class TestCase extends WPTestCase
     
     protected function setUp() :void
     {
+        parent::setUp();
+        
         if (class_exists(Facade::class)) {
             Facade::clearResolvedInstances();
             Facade::setFacadeApplication(null);
@@ -82,10 +84,13 @@ abstract class TestCase extends WPTestCase
             Container::setInstance();
         }
         
-        Event::setInstance(null);
-        WP::reset();
+        if (class_exists(Model::class)) {
+            Model::clearBootedModels();
+            Model::unsetConnectionResolver();
+            Model::unsetEventDispatcher();
+        }
         
-        parent::setUp();
+        WP::reset();
         
         $this->backToPresent();
         
@@ -148,7 +153,6 @@ abstract class TestCase extends WPTestCase
         
         // WpTestCase will take care of resetting the user.
         //$this->logout();
-        Event::setInstance(null);
         WP::reset();
     }
     

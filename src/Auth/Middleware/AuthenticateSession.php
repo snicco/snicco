@@ -7,24 +7,27 @@ namespace Snicco\Auth\Middleware;
 use Snicco\Http\Delegate;
 use Snicco\Session\Session;
 use Snicco\Http\Psr7\Request;
-use Snicco\Auth\Events\Login;
-use Snicco\Auth\Events\Logout;
 use Snicco\Contracts\Middleware;
 use Snicco\Auth\AuthSessionManager;
+use Snicco\Auth\Events\UserWasLoggedIn;
 use Psr\Http\Message\ResponseInterface;
+use Snicco\Auth\Events\UserWasLoggedOut;
 use Snicco\Auth\Responses\LoginResponse;
 use Snicco\Auth\Responses\LogoutResponse;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 
 class AuthenticateSession extends Middleware
 {
     
-    protected array            $forget_keys_on_idle;
+    private array              $forget_keys_on_idle;
     private AuthSessionManager $manager;
+    private Dispatcher         $events;
     
-    public function __construct(AuthSessionManager $manager, array $forget_keys_on_idle = [])
+    public function __construct(AuthSessionManager $manager, Dispatcher $events, array $forget_keys_on_idle = [])
     {
         $this->manager = $manager;
         $this->forget_keys_on_idle = $forget_keys_on_idle;
+        $this->events = $events;
     }
     
     public function handle(Request $request, Delegate $next) :ResponseInterface
@@ -70,7 +73,7 @@ class AuthenticateSession extends Middleware
         wp_clear_auth_cookie();
         wp_set_current_user(0);
         
-        Logout::dispatch([$session, $user_being_logged_out]);
+        $this->events->dispatch(new UserWasLoggedOut($user_being_logged_out));
     }
     
     private function doLogin(LoginResponse $response, Request $request)
@@ -88,8 +91,7 @@ class AuthenticateSession extends Middleware
         $session->regenerate();
         wp_set_auth_cookie($user->ID, $remember, true);
         wp_set_current_user($user->ID);
-        
-        Login::dispatch([$user, $remember]);
+        $this->events->dispatch(new UserWasLoggedIn($user, $remember));
     }
     
 }

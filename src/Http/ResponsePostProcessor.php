@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Snicco\Http;
 
-use Snicco\Events\ResponseSent;
 use Snicco\Core\Events\EventObjects\DoShutdown;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Core\Events\EventObjects\ResponseSent;
 
 class ResponsePostProcessor
 {

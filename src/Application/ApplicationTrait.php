@@ -5,10 +5,11 @@ declare(strict_types=1);
 namespace Snicco\Application;
 
 use LogicException;
+use RuntimeException;
 use BadMethodCallException;
-use Contracts\ContainerAdapter;
-use SniccoAdapter\BaseContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
 use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Illuminate\IlluminateContainerAdapter;
 use Snicco\ExceptionHandling\Exceptions\ConfigurationException;
 
 /**
@@ -26,8 +27,19 @@ trait ApplicationTrait
             throw new LogicException("Application already created for class [$class].");
         }
         
+        if ( ! $container) {
+            if (class_exists(IlluminateContainerAdapter::class)) {
+                $container = new IlluminateContainerAdapter();
+            }
+            else {
+                throw new RuntimeException(
+                    "An explicit container is required since the IlluminateContainerAdapter is not installed."
+                );
+            }
+        }
+        
         static::setApplication(
-            Application::create($base_path, $container ?? new BaseContainerAdapter())
+            Application::create($base_path, $container)
         );
         
         $app = static::$instance;

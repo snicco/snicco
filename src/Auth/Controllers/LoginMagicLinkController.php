@@ -11,6 +11,8 @@ use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
 use Snicco\Auth\Traits\ResolvesUser;
 use Snicco\Auth\Mail\MagicLinkLoginMail;
+use Snicco\Mail\Contracts\MailBuilderInterface;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
 use Snicco\Auth\Events\FailedLoginLinkCreationRequest;
 
 class LoginMagicLinkController extends Controller
@@ -18,12 +20,21 @@ class LoginMagicLinkController extends Controller
     
     use ResolvesUser;
     
+    private MailBuilderInterface $mail_builder;
+    private Dispatcher           $dispatcher;
+    
+    public function __construct(MailBuilderInterface $mail_builder, Dispatcher $dispatcher)
+    {
+        $this->mail_builder = $mail_builder;
+        $this->dispatcher = $dispatcher;
+    }
+    
     public function store(Request $request, MailBuilder $mail_builder) :Response
     {
         $user = $this->getUserByLogin($login = $request->post('login', ''));
         
         if ( ! $user instanceof WP_User) {
-            FailedLoginLinkCreationRequest::dispatch([$request, $login]);
+            $this->dispatcher->dispatch(new FailedLoginLinkCreationRequest($request, $login));
         }
         else {
             $redirect_to = $request->post('redirect_to');

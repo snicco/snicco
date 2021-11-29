@@ -2,15 +2,12 @@
 
 namespace Snicco\Auth\Events;
 
-use Snicco\Events\Event;
 use Snicco\Http\Psr7\Request;
 use Snicco\Auth\Fail2Ban\Bannable;
-use BetterWpHooks\Traits\IsAction;
+use Snicco\Core\Events\EventObjects\CoreEvent;
 
-abstract class BannableEvent extends Event implements Bannable
+abstract class BannableEvent extends CoreEvent implements Bannable
 {
-    
-    use IsAction;
     
     protected Request $request;
     

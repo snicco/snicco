@@ -10,7 +10,7 @@ use Snicco\Routing\Route;
 use Snicco\Routing\Pipeline;
 use Snicco\Http\Psr7\Request;
 use Snicco\Http\Psr7\Response;
-use Contracts\ContainerAdapter;
+use Snicco\Shared\ContainerAdapter;
 use Snicco\Contracts\Middleware;
 use Snicco\Middleware\MiddlewareStack;
 use Psr\Http\Message\ResponseInterface;
