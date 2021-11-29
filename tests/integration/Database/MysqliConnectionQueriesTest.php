@@ -10,6 +10,7 @@ use Codeception\TestCase\WPTestCase;
 use Snicco\Database\MysqliConnection;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\LazyCollection;
+use Illuminate\Database\Eloquent\Model;
 use Snicco\Database\WPEloquentStandalone;
 use Tests\integration\Database\Concerns\WithTestTables;
 use Tests\integration\Database\Concerns\WPDBTestHelpers;
@@ -24,9 +25,13 @@ final class MysqliConnectionQueriesTest extends WPTestCase
     {
         parent::setUp();
         $this->withDatabaseExceptions();
+        
         Container::setInstance();
         Facade::clearResolvedInstances();
         Facade::setFacadeApplication(null);
+        Model::unsetEventDispatcher();
+        Model::unsetConnectionResolver();
+        
         $wp_eloquent = new WPEloquentStandalone();
         $wp_eloquent->bootstrap();
         $this->withDatabaseExceptions();

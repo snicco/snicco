@@ -4,106 +4,136 @@ declare(strict_types=1);
 
 namespace Tests\integration\Core\Database;
 
-use Faker\Generator;
-use Snicco\Database\FakeDB;
-use Snicco\Database\BetterWPDb;
+use Tests\FrameworkTestCase;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Container\Container;
 use Snicco\Database\MysqliConnection;
+use Illuminate\Database\Eloquent\Model;
 use Snicco\Database\WPConnectionResolver;
-use Snicco\Database\Illuminate\MySqlSchemaBuilder;
-use Snicco\Database\Contracts\_ConnectionInterface;
-use Snicco\Database\Contracts\MysqliDriverInterface;
+use Tests\fixtures\database\Models\Country;
+use Illuminate\Database\ConnectionInterface;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Snicco\Core\Database\DatabaseServiceProvider;
 use Illuminate\Database\ConnectionResolverInterface;
+use Illuminate\Contracts\Events\Dispatcher as IlluminateDispatcher;
 
-use const DB_USER;
-use const DB_HOST;
-use const DB_NAME;
-use const DB_PASSWORD;
-
-class DatabaseServiceProviderTest extends DatabaseTestCase
+class DatabaseServiceProviderTest extends FrameworkTestCase
 {
     
     /** @test */
-    public function the_connection_resolver_is_bound_correctly()
+    public function eloquent_is_booted()
     {
         $this->bootApp();
         
         $this->assertInstanceOf(
             WPConnectionResolver::class,
-            $this->app->resolve(ConnectionResolverInterface::class)
+            $resolver = $this->app->resolve(ConnectionResolverInterface::class)
         );
+        
+        $this->assertSame($resolver, Model::getConnectionResolver());
+        $this->assertInstanceOf(
+            MysqliConnection::class,
+            $connection = $this->app->resolve(ConnectionInterface::class)
+        );
+        
+        $this->assertSame($connection, DB::connection());
     }
     
     /** @test */
-    public function the_default_connection_is_set()
+    public function facades_can_be_disabled()
     {
+        $this->withAddedConfig('database.enable_global_facades', false);
         $this->bootApp();
         
-        /** @var ConnectionResolverInterface $resolver */
-        $resolver = $this->app->resolve(ConnectionResolverInterface::class);
+        $this->assertInstanceOf(
+            WPConnectionResolver::class,
+            $resolver = $this->app->resolve(ConnectionResolverInterface::class)
+        );
         
-        $this->assertSame('default_wp_connection', $resolver->getDefaultConnection());
+        $this->assertSame($resolver, Model::getConnectionResolver());
+        $this->assertInstanceOf(
+            MysqliConnection::class,
+            $connection = $this->app->resolve(ConnectionInterface::class)
+        );
+        
+        $this->assertFalse(Container::getInstance()->has('db'));
     }
     
     /** @test */
-    public function by_default_the_current_wpdb_instance_is_used()
+    public function eloquent_events_are_used()
     {
         $this->bootApp();
-        
-        /** @var ConnectionResolverInterface $resolver */
-        $resolver = $this->app->resolve(ConnectionResolverInterface::class);
-        $c = $resolver->connection();
-        
-        $this->assertInstanceOf(_ConnectionInterface::class, $c);
-        
-        $this->assertSame(DB_USER, $c->dbInstance()->dbuser);
-        $this->assertSame(DB_HOST, $c->dbInstance()->dbhost);
-        $this->assertSame(DB_NAME, $c->dbInstance()->dbname);
-        $this->assertSame(DB_PASSWORD, $c->dbInstance()->dbpassword);
+        $this->assertInstanceOf(IlluminateDispatcher::class, $first = Model::getEventDispatcher());
+        $this->assertInstanceOf(
+            IlluminateDispatcher::class,
+            $second = Container::getInstance()['events']
+        );
+        $this->assertSame($first, $second);
     }
     
     /** @test */
-    public function the_wpdb_abstraction_can_be_changed()
-    {
-        $this->bootApp();
-        $this->assertSame(BetterWPDb::class, $this->app->resolve(MysqliDriverInterface::class));
-        
-        $this->instance(MysqliDriverInterface::class, FakeDB::class);
-        $this->assertSame(FakeDB::class, $this->app->resolve(MysqliDriverInterface::class));
-    }
-    
-    /** @test */
-    public function the_schema_builder_can_be_resolved_for_the_default_connection()
+    public function eloquent_events_work()
     {
         $this->bootApp();
         
-        $b = $this->app->resolve(MySqlSchemaBuilder::class);
-        $this->assertInstanceOf(MySqlSchemaBuilder::class, $b);
+        /** @var Dispatcher $dispatcher */
+        $dispatcher = $this->app->resolve(Dispatcher::class);
+        $dispatcher->listen("eloquent.saving: ".Country::class, function (Country $country) {
+            $country->name = 'spain';
+        });
+        
+        $country = new Country();
+        $country->name = 'germany';
+        $country->continent = 'europe';
+        $country->save();
+        
+        $country = $country->refresh();
+        
+        $this->assertSame('spain', $country->name);
     }
     
     /** @test */
-    public function the_connection_can_be_resolved_as_a_closure()
+    public function eloquent_events_work_with_mapped_events()
     {
         $this->bootApp();
         
-        $connection = $this->app->resolve(_ConnectionInterface::class)();
-        $this->assertInstanceOf(MysqliConnection::class, $connection);
+        Country::observe(CountryObserver::class);
+        
+        $country = new Country();
+        $country->name = 'germany';
+        $country->continent = 'europe';
+        $country->save();
+        
+        $GLOBALS['test']['deleted_country'] = '';
+        
+        $country->delete();
+        
+        $this->assertSame('germany', $GLOBALS['test']['deleted_country']);
     }
     
     /** @test */
-    public function the_db_facade_works()
+    public function eloquent_observers_work()
     {
         $this->bootApp();
         
-        $connection = DB::connection();
-        $this->assertInstanceOf(MysqliConnection::class, $connection);
+        Country::observe(CountryObserver::class);
     }
     
-    /** @test */
-    public function the_faker_instance_is_registered()
+    protected function packageProviders() :array
     {
-        $this->bootApp();
-        $this->assertInstanceOf(Generator::class, $this->app->resolve(Generator::class));
+        return [
+            DatabaseServiceProvider::class,
+        ];
+    }
+    
+}
+
+class CountryObserver
+{
+    
+    public function deleted(Country $country)
+    {
+        $GLOBALS['test']['deleted_country'] = $country->name;
     }
     
 }

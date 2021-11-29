@@ -11,11 +11,11 @@ use Snicco\Database\MysqliConnection;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\Facades\Schema;
 use PHPUnit\Framework\Assert as PHPUnit;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Query\Expression;
 use Illuminate\Database\Schema\Blueprint;
 use Snicco\Database\WPEloquentStandalone;
 use Illuminate\Database\Schema\MySqlBuilder;
-use Snicco\Database\Illuminate\MySqlSchemaBuilder;
 use Tests\integration\Database\Concerns\AssertableWpDB;
 use Tests\integration\Database\Concerns\WPDBTestHelpers;
 
@@ -28,7 +28,7 @@ class SchemaBuilderTest extends WPTestCase
     use WPDBTestHelpers;
     
     /**
-     * @var MySqlSchemaBuilder
+     * @var MySqlBuilder
      */
     private $builder;
     
@@ -43,6 +43,9 @@ class SchemaBuilderTest extends WPTestCase
         Container::setInstance();
         Facade::clearResolvedInstances();
         Facade::setFacadeApplication(null);
+        Model::unsetEventDispatcher();
+        Model::unsetConnectionResolver();
+        
         $this->withDatabaseExceptions();
         
         (new WPEloquentStandalone())->bootstrap();

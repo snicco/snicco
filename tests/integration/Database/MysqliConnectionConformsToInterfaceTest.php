@@ -11,6 +11,7 @@ use Codeception\TestCase\WPTestCase;
 use Snicco\Database\MysqliConnection;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Database\Query\Builder;
+use Illuminate\Database\Eloquent\Model;
 use Snicco\Database\WPEloquentStandalone;
 use Illuminate\Database\Schema\MySqlBuilder;
 use Illuminate\Database\Query\Processors\MySqlProcessor;
@@ -23,9 +24,13 @@ final class MysqliConnectionConformsToInterfaceTest extends WPTestCase
     protected function setUp() :void
     {
         parent::setUp();
+        
         Container::setInstance();
         Facade::clearResolvedInstances();
         Facade::setFacadeApplication(null);
+        Model::unsetEventDispatcher();
+        Model::unsetConnectionResolver();
+        
         $wp_eloquent = new WPEloquentStandalone();
         $wp_eloquent->bootstrap();
     }

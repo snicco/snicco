@@ -34,6 +34,8 @@ final class WPEloquentStandaloneTest extends WPTestCase
         Container::setInstance();
         Facade::clearResolvedInstances();
         Facade::setFacadeApplication(null);
+        Eloquent::unsetEventDispatcher();
+        Eloquent::unsetConnectionResolver();
     }
     
     /** @test */

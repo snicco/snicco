@@ -7,7 +7,6 @@ namespace Snicco\Core\Events;
 use Snicco\Support\Arr;
 use Snicco\Http\HttpKernel;
 use Snicco\Listeners\Manage404s;
-use Snicco\Listeners\ComposeView;
 use Snicco\Listeners\FilterWpQuery;
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Http\ResponsePostProcessor;

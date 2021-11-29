@@ -6,27 +6,16 @@ namespace Snicco\Core\Database;
 
 use Snicco\Contracts\ServiceProvider;
 use Snicco\Database\WPEloquentStandalone;
-
-use const DB_NAME;
-use const DB_HOST;
-use const DB_USER;
-use const DB_PASSWORD;
+use Illuminate\Database\ConnectionInterface;
+use Snicco\EventDispatcher\Contracts\Dispatcher;
+use Illuminate\Database\ConnectionResolverInterface;
 
 class DatabaseServiceProvider extends ServiceProvider
 {
     
     public function register() :void
     {
-        $this->bindConfig();
-        
-        $eloquent = new WPEloquentStandalone($this->config->get('database.connections'));
-        $eloquent->bootstrap();
-        if ($this->app->isRunningUnitTest()) {
-            $eloquent->withDatabaseFactories(
-                $this->config->get('database.model_namespace'),
-                $this->config->get('database.factory_namespace')
-            );
-        }
+        $this->bootEloquent();
     }
     
     function bootstrap() :void
@@ -34,28 +23,33 @@ class DatabaseServiceProvider extends ServiceProvider
         //
     }
     
-    private function bindConfig()
+    private function bootEloquent()
     {
-        $this->config->extend('database.connections', [
-            'default_wp_connection' => [
-                'username' => DB_USER,
-                'database' => DB_NAME,
-                'password' => DB_PASSWORD,
-                'host' => DB_HOST,
-            ],
-        ]);
-    }
-    
-    private function bindSchemaBuilder()
-    {
-        $this->container->singleton(MySqlSchemaBuilder::class, function () {
-            return new MySqlSchemaBuilder($this->resolveConnection());
+        $eloquent = new WPEloquentStandalone(
+            $this->config->get('database.connections', []),
+            $this->config->get('database.enable_global_facades', true)
+        
+        );
+        $resolver = $eloquent->bootstrap();
+        $this->container->singleton(ConnectionResolverInterface::class,
+            function () use ($resolver) {
+                return $resolver;
+            }
+        );
+        $this->container->singleton(ConnectionInterface::class, function () {
+            return $this->container[ConnectionResolverInterface::class]->connection();
         });
-    }
-    
-    private function resolveConnection(string $name = null)
-    {
-        return $this->container->make(ConnectionResolverInterface::class)->connection($name);
+        
+        if ($this->app->isRunningUnitTest()) {
+            $eloquent->withDatabaseFactories(
+                $this->config->get('database.model_namespace'),
+                $this->config->get('database.factory_namespace')
+            );
+        }
+        
+        $eloquent->withEvents(
+            new IlluminateEventDispatcherAdapter($this->container[Dispatcher::class])
+        );
     }
     
 }
