@@ -14,6 +14,7 @@ use Snicco\Database\MysqliConnection;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Database\QueryException;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Schema\Blueprint;
 use Snicco\Database\WPEloquentStandalone;
 use Tests\integration\Database\Concerns\WPDBTestHelpers;
@@ -38,6 +39,9 @@ class TransactionsTest extends WPTestCase
         Container::setInstance();
         Facade::clearResolvedInstances();
         Facade::setFacadeApplication(null);
+        Model::unsetEventDispatcher();
+        Model::unsetConnectionResolver();
+        
         $this->removeWpBrowserTransaction();
         $this->verification_connection = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
         (new WPEloquentStandalone())->bootstrap();

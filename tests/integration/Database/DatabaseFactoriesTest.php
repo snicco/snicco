@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Container\Container;
 use Codeception\TestCase\WPTestCase;
 use Illuminate\Support\Facades\Facade;
+use Illuminate\Database\Eloquent\Model;
 use Tests\fixtures\database\Models\City;
 use Snicco\Database\WPEloquentStandalone;
 use Tests\fixtures\database\Models\Country;
@@ -30,6 +31,8 @@ class DatabaseFactoriesTest extends WPTestCase
         Container::setInstance();
         Facade::clearResolvedInstances();
         Facade::setFacadeApplication(null);
+        Model::unsetEventDispatcher();
+        Model::unsetConnectionResolver();
         
         ($eloquent = new WPEloquentStandalone())->bootstrap();
         $eloquent->withDatabaseFactories(

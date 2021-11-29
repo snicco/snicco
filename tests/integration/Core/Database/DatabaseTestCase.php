@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Tests\integration\Core\Database;
 
-use Snicco\Database\FakeDB;
 use Tests\FrameworkTestCase;
 use Snicco\Database\MysqliConnection;
 use Snicco\Testing\WithDatabaseExceptions;

@@ -56,7 +56,7 @@ interface ContainerAdapter extends ArrayAccess
      * This object will be a singleton always
      *
      * @param  string  $abstract
-     * @param  string|Closure  $concrete
+     * @param  Closure|string  $concrete
      *
      * @return void
      */
