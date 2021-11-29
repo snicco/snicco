@@ -6,38 +6,47 @@ namespace Tests\integration\Database;
 
 use mysqli;
 use Exception;
-use Snicco\Database\WPConnection;
+use RuntimeException;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Container\Container;
+use Codeception\TestCase\WPTestCase;
+use Snicco\Database\MysqliConnection;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Facade;
+use Illuminate\Database\QueryException;
 use Illuminate\Database\Schema\Blueprint;
-use Snicco\Database\Exceptions\SqlException;
+use Snicco\Database\WPEloquentStandalone;
+use Tests\integration\Database\Concerns\WPDBTestHelpers;
 
-class TransactionsTest extends DatabaseTestCase
+class TransactionsTest extends WPTestCase
 {
+    
+    use WPDBTestHelpers;
     
     /**
      * We use a separate mysqli connection to verify that our transactions indeed work as
      * expected since the same mysqli instance will always have access to the data inside the
      * transaction.
+     *
+     * @var mysqli
      */
-    private mysqli $verification_connection;
+    private $verification_connection;
     
     protected function setUp() :void
     {
-        $this->afterApplicationBooted(function () {
-            $this->createInitialTable();
-            $this->removeWpBrowserTransaction();
-        });
         parent::setUp();
-        $this->bootApp();
-        
+        Container::setInstance();
+        Facade::clearResolvedInstances();
+        Facade::setFacadeApplication(null);
+        $this->removeWpBrowserTransaction();
         $this->verification_connection = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_NAME);
+        (new WPEloquentStandalone())->bootstrap();
+        $this->createInitialTable();
     }
     
     protected function tearDown() :void
     {
         $this->dropInitialTable();
-        
         parent::tearDown();
     }
     
@@ -53,6 +62,10 @@ class TransactionsTest extends DatabaseTestCase
             ['name' => 'FC Barcelona', 'country' => 'spain'],
         ]);
         
+        // This runs with the same mysqli connection as the DB facade so the transaction data is already present.
+        $db->assertRecordExists(['name' => 'FC Barcelona']);
+        
+        // This runs with our verification mysqli instance which does not yet have the transaction data.
         $this->assertTeamNotExists('FC Barcelona');
         
         DB::commit();
@@ -70,59 +83,40 @@ class TransactionsTest extends DatabaseTestCase
                 ['name' => 'Liverpool', 'country' => 'england'],
             ]);
             
-            // will throw non unique error
+            // will throw non-unique error
             DB::table('football_teams')->insert([
                 ['name' => 'Real Madrid', 'country' => 'spain'],
             ]);
-        } catch (SqlException $e) {
+        } catch (QueryException $e) {
             DB::rollback();
-            $this->assertTeamNotExists('Liverpool');
+            $db = $this->assertDbTable('wp_football_teams');
+            $db->assertRecordNotExists(['name' => 'Liverpool']);
         }
     }
     
     /** @test */
-    public function you_can_rollback_to_custom_savepoints_manually()
+    public function nested_transactions_work()
     {
-        DB::beginTransaction();
-        
         try {
-            DB::table('football_teams')->insert([
-                ['name' => 'Liverpool', 'country' => 'england'],
-            ]);
-            
-            // Savepoint 2
-            DB::savepoint();
-            
-            DB::table('football_teams')->insert([
-                ['name' => 'Chelsea', 'country' => 'england'],
-            ]);
-            
-            // Savepoint 3
-            DB::savepoint();
-            
-            DB::table('football_teams')->insert([
-                ['name' => 'Sevilla', 'country' => 'spain'],
-            ]);
-            
-            // will throw non unique error
-            DB::table('football_teams')->insert([
-                ['name' => 'Real Madrid', 'country' => 'spain'],
-            ]);
-        } catch (SqlException $e) {
-            DB::rollback(3);
-            
-            DB::commit();
-            
-            $this->assertTeamExists('Liverpool');
-            $this->assertTeamExists('Chelsea');
-            $this->assertTeamNotExists('Sevilla');
+            DB::transaction(function () {
+                DB::transaction(function () {
+                    DB::table('football_teams')
+                      ->where('name', 'Real Madrid')->delete();
+                });
+                throw new RuntimeException("test exception");
+            });
+        } catch (RuntimeException $e) {
+            $this->assertSame('test exception', $e->getMessage());
+        }
+        finally {
+            $this->assertTeamExists('Real Madrid');
         }
     }
     
     /** @test */
     public function automatic_transactions_work_when_no_errors_occur()
     {
-        DB::transaction(function (WPConnection $connection) {
+        DB::transaction(function (MysqliConnection $connection) {
             $connection->table('football_teams')->insert([
                 ['name' => 'Liverpool', 'country' => 'england'],
                 ['name' => 'Chelsea', 'country' => 'england'],
@@ -139,7 +133,7 @@ class TransactionsTest extends DatabaseTestCase
     public function automatic_transactions_get_rolled_back_when_a_sql_error_occurs()
     {
         try {
-            DB::transaction(function (WpConnection $connection) {
+            DB::transaction(function (MysqliConnection $connection) {
                 $connection->table('football_teams')->insert([
                     ['name' => 'Liverpool', 'country' => 'england'],
                     ['name' => 'Chelsea', 'country' => 'england'],
@@ -150,7 +144,7 @@ class TransactionsTest extends DatabaseTestCase
             });
             
             $this->fail('Expected query exception was not thrown.');
-        } catch (SqlException $e) {
+        } catch (QueryException $e) {
             $this->assertStringContainsString(
                 "Duplicate entry 'Real Madrid' for key 'wp_football_teams.football_teams_name_unique",
                 $e->getMessage()
@@ -169,7 +163,7 @@ class TransactionsTest extends DatabaseTestCase
     public function any_exception_will_cause_the_transaction_to_be_rolled_back()
     {
         try {
-            DB::transaction(function (WpConnection $connection) {
+            DB::transaction(function (MysqliConnection $connection) {
                 $connection->table('football_teams')->insert([
                     ['name' => 'Liverpool', 'country' => 'england'],
                     ['name' => 'Chelsea', 'country' => 'england'],
@@ -186,7 +180,9 @@ class TransactionsTest extends DatabaseTestCase
                 $e->getMessage()
             );
             
+            // From our test setup
             $this->assertTeamExists('Real Madrid');
+            
             $this->assertTeamNotExists('Chelsea');
             $this->assertTeamNotExists('Arsenal');
             $this->assertTeamNotExists('Arsenal');
@@ -200,7 +196,7 @@ class TransactionsTest extends DatabaseTestCase
         );
         $count = $result->fetch_object()->count;
         
-        $this->assertSame('0', $count, 'The team: '.$team_name.' was not found.');
+        $this->assertSame('0', $count, 'The team: '.$team_name.' was found.');
     }
     
     private function assertTeamExists(string $team_name)
